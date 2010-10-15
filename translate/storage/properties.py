@@ -533,6 +533,16 @@ class propfile(base.TranslationStore):
         return "".join(lines)
 
 
+class javafile(propfile):
+    Name = _("Java Properties")
+    Exensions = ['properties']
+
+    def __init__(self, *args, **kwargs):
+        kwargs['personality'] = "java"
+        kwargs['encoding'] = "auto"
+        super(javafile, self).__init__(*args, **kwargs)
+
+
 class stringsfile(propfile):
     Name = _("OS X Strings")
     Extensions = ['strings']
