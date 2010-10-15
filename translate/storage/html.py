@@ -86,7 +86,7 @@ def normalize_html(text):
 
 def safe_escape(html):
     """Escape &, < and >"""
-    return re.sub("&(?![a-zA-Z0-9]+;)", "&amp;", html).replace("<", "&lt;")
+    return re.sub("&(?![a-zA-Z0-9]+;)", "&amp;", html)
 
 
 class htmlunit(base.TranslationUnit):
@@ -98,7 +98,7 @@ class htmlunit(base.TranslationUnit):
 
     def getsource(self):
         #TODO: Rethink how clever we should try to be with html entities.
-        text = self._text.replace("&amp;", "&").replace("&lt;", "<")
+        text = self._text.replace("&amp;", "&")
         text = text.replace("\r\n", " ").replace("\n", " ").replace("\r", " ")
         return text
 
