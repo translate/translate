@@ -448,7 +448,7 @@ class propfile(base.TranslationStore):
         """construct a propfile, optionally reading in from inputfile"""
         super(propfile, self).__init__(unitclass=self.UnitClass)
         self.personality = get_dialect(personality)
-        self.encoding = encoding
+        self.encoding = encoding or self.personality.default_encoding
         self.filename = getattr(inputfile, 'name', '')
         if inputfile is not None:
             propsrc = inputfile.read()
@@ -457,12 +457,17 @@ class propfile(base.TranslationStore):
 
     def parse(self, propsrc):
         """read the source of a properties file in and include them as units"""
+        if self.encoding == "auto":
+            import chardet
+            detected = chardet.detect(propsrc)
+            if detected['confidence'] > 0.48:
+                self.encoding = detected['encoding']
+            else:
+                self.encoding = self.personality.default_encoding
+
         newunit = propunit("", self.personality.name)
         inmultilinevalue = False
-        if self.encoding is not None:
-            propsrc = unicode(propsrc, self.encoding)
-        else:
-            propsrc = unicode(propsrc, self.personality.default_encoding)
+        propsrc = unicode(propsrc, self.encoding)
         for line in propsrc.split(u"\n"):
             # handle multiline value if we're in one
             line = quote.rstripeol(line)
