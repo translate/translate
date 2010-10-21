@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 #
-# Copyright 2007 Zuza Software Foundation
+# Copyright 2007, 2010 Zuza Software Foundation
 #
 # This file is part of translate.
 #
@@ -26,6 +26,31 @@ For more information, see U{http://en.wikipedia.org/wiki/Persian_language}
 
 from translate.lang import common
 
+import re
+
+def guillemets(text):
+
+    def convertquotation(match):
+        prefix = match.group(1)
+        # Let's see that we didn't perhaps match an XML tag property like
+        # <a href="something">
+        if prefix == u"=":
+            return match.group(0)
+        return u"%s«%s»" % (prefix, match.group(2))
+
+    # Check that there is an even number of double quotes, otherwise it is
+    # probably not safe to convert them.
+    if text.count(u'"') % 2 == 0:
+        text = re.sub('(.|^)"([^"]+)"', convertquotation, text)
+    singlecount = text.count(u"'")
+    if singlecount:
+        if singlecount == text.count(u'`'):
+            text = re.sub("(.|^)`([^']+)'", convertquotation, text)
+        elif singlecount % 2 == 0:
+            text = re.sub("(.|^)'([^']+)'", convertquotation, text)
+    text = re.sub(u'(.|^)“([^”]+)”', convertquotation, text)
+    return text
+
 
 class fa(common.Common):
     """This class represents Persian."""
@@ -43,4 +68,9 @@ class fa(common.Common):
     ignoretests = ["startcaps", "simplecaps"]
     #TODO: check persian numerics
     #TODO: zwj and zwnj?
-    #French quoting?
+
+    def punctranslate(cls, text):
+        """Implement "French" quotation marks."""
+        text = super(cls, cls).punctranslate(text)
+        return guillemets(text)
+    punctranslate = classmethod(punctranslate)
