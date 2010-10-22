@@ -20,7 +20,23 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
 """classes that hold units of .dtd files (dtdunit) or entire files (dtdfile)
-these are specific .dtd files for localisation used by mozilla"""
+these are specific .dtd files for localisation used by mozilla
+
+Specifications
+==============
+The following information is provided by Mozilla::
+
+*  U{Specification<http://www.w3.org/TR/REC-xml/#sec-entexpand>}
+
+There is a grammar for entity definitions, which isn't really precise,
+as the spec says.  There's no formal specification for DTD files, it's
+just "whatever makes this work" basically. The whole piece is clearly not
+the strongest point of the xml spec
+
+XML elements are allowed in entity values. A number of things that are
+allowed will just break the resulting document, Mozilla forbids these
+in their DTD parser.
+"""
 
 from translate.storage import base
 from translate.misc import quote
