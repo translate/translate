@@ -85,7 +85,7 @@ def unescape(text):
 def escape(text):
     """Convert Unicode string to Trodas escapes"""
     for trados_escape, char in RTF_ESCAPES.iteritems():
-        text = text.replace(char, escape_trados)
+        text = text.replace(char, trados_escape)
     return text
 
 
