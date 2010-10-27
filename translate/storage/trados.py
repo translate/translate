@@ -37,11 +37,12 @@ A Trados file looks like this::
     </TrU>
 """
 
+import re
 import time
 
 try:
     # FIXME see if we can't use lxml
-    from BeautifulSoup import *
+    from BeautifulSoup import BeautifulStoneSoup
 except ImportError:
     raise ImportError("BeautifulSoup is not installed")
 
