@@ -551,7 +551,12 @@ class pofile(pocommon.pofile):
     def __str__(self):
         """Convert to a string. double check that unicode is handled somehow here"""
         self._cpo_store = cpo.pofile(encoding=self._encoding, noheader=True)
-        self._build_cpo_from_self()
+        try:
+            self._build_cpo_from_self()
+        except UnicodeEncodeError, e:
+            self._encoding = "utf-8"
+            self.updateheader(add=True, Content_Type="text/plain; charset=UTF-8")
+            self._build_cpo_from_self()
         output = str(self._cpo_store)
         del self._cpo_store
         return output

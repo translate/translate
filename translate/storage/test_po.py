@@ -762,3 +762,22 @@ msgstr "start thing dingis fish"
         assert pofile2.units[1].target == u"start thing dingis fish"
         print str(pofile2)
         assert str(pofile1) == str(pofile2)
+
+    def test_encoding_change(self):
+        posource = ur'''
+msgid ""
+msgstr ""
+"PO-Revision-Date: 2006-02-09 23:33+0200\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=ISO-8859-1\n"
+"Content-Transfer-Encoding: 8-bit\n"
+
+msgid "a"
+msgstr "d"
+'''.encode('iso-8859-1')
+        pofile = self.poparse(posource)
+        unit = pofile.units[1]
+        unit.target = u"ḓ"
+        contents = str(pofile)
+        assert 'msgstr "\341\270\223"' in contents
+        assert 'charset=UTF-8' in contents

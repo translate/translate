@@ -799,7 +799,15 @@ class pofile(pocommon.pofile):
         """Convert to a string. double check that unicode is handled somehow here"""
         output = self._getoutput()
         if isinstance(output, unicode):
-            return output.encode(getattr(self, "_encoding", "UTF-8"))
+            try:
+                return output.encode(getattr(self, "_encoding", "UTF-8"))
+            except UnicodeEncodeError, e:
+                self.updateheader(add=True, Content_Type="text/plain; charset=UTF-8")
+                self._encoding = "UTF-8"
+                for unit in self.units:
+                    unit._encoding = "UTF-8"
+                return self._getoutput().encode("UTF-8")
+
         return output
 
     def _getoutput(self):
