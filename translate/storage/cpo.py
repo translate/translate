@@ -182,7 +182,7 @@ class pounit(pocommon.pounit):
     def __init__(self, source=None, encoding='utf-8', gpo_message=None):
         self._rich_source = None
         self._rich_target = None
-        self._encoding = encoding
+        self._encoding = encoding or 'utf-8'
         if not gpo_message:
             self._gpo_message = gpo.po_message_create()
         if source or source == "":
@@ -528,13 +528,13 @@ class pounit(pocommon.pounit):
         context = data.forceunicode(context)
         gpo.po_message_set_msgctxt(self._gpo_message, context)
 
-    def buildfromunit(cls, unit):
+    def buildfromunit(cls, unit, encoding=None):
         """Build a native unit from a foreign unit, preserving as much
         information as possible."""
         if type(unit) == cls and hasattr(unit, "copy") and callable(unit.copy):
             return unit.copy()
         elif isinstance(unit, pocommon.pounit):
-            newunit = cls(unit.source)
+            newunit = cls(unit.source, encoding)
             newunit.target = unit.target
             #context
             newunit.msgidcomment = unit._extract_msgidcomments()

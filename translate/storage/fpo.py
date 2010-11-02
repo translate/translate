@@ -481,10 +481,10 @@ class pofile(pocommon.pofile):
         self._cpo_store = cpo.pofile(noheader=True)
         for unit in self.units:
             if not unit.isblank():
-                self._cpo_store.addunit(cpo.pofile.UnitClass.buildfromunit(unit))
+                self._cpo_store.addunit(cpo.pofile.UnitClass.buildfromunit(unit, self._encoding))
         if not self._cpo_store.header():
             #only add a temporary header
-            self._cpo_store.makeheader(charset="utf-8", encoding="8bit")
+            self._cpo_store.makeheader(charset=self._encoding, encoding="8bit")
 
     def parse(self, input):
         """Parses the given file or file source string."""
