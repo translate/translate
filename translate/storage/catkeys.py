@@ -115,13 +115,13 @@ class CatkeysHeader(object):
     def __init__(self, header=None):
         self._header_dict = {}
         if not header:
-            self.header = self._create_default_header()
+            self._header_dict = self._create_default_header()
         elif isinstance(header, dict):
-            self.header = header
+            self._header_dict = header
 
     def _create_default_header(self):
         """Create a default catkeys header"""
-        defaultheader = FIELDNAMES_HEADER_DEFAULTS
+        defaultheader = FIELDNAMES_HEADER_DEFAULTS.copy()
         return defaultheader
 
     def settargetlang(self, newlang):
@@ -266,8 +266,9 @@ class CatkeysFile(base.TranslationStore):
 
     def __str__(self):
         output = csv.StringIO()
-        writer = csv.DictWriter(output, fieldnames=FIELDNAMES, dialect="catkeys")
+        writer = csv.DictWriter(output, fieldnames=FIELDNAMES_HEADER, dialect="catkeys")
         writer.writerow(self.header._header_dict)
+        writer = csv.DictWriter(output, fieldnames=FIELDNAMES, dialect="catkeys")
         for unit in self.units:
             writer.writerow(unit.dict)
         return output.getvalue()
