@@ -57,7 +57,7 @@
 import csv
 import sys
 
-from translate.lang.data import tr_lang
+from translate.lang import data
 from translate.storage import base
 
 FIELDNAMES_HEADER = ["version", "language", "mimetype", "checksum"]
@@ -124,10 +124,13 @@ class CatkeysHeader(object):
         defaultheader = FIELDNAMES_HEADER_DEFAULTS.copy()
         return defaultheader
 
-    def settargetlang(self, newlang):
+    def settargetlanguage(self, newlang):
         """Set a human readable target language"""
-        self._header_dict['language'] = tr_lang('en')(newlang)
-    targetlang = property(None, settargetlang)
+        if not newlang or newlang not in data.languages:
+            return
+        #XXX assumption about the current structure of the languages dict in data
+        self._header_dict['language'] = data.languages[newlang][0].lower()
+    targetlanguage = property(None, settargetlanguage)
 
 
 class CatkeysUnit(base.TranslationUnit):
@@ -245,6 +248,9 @@ class CatkeysFile(base.TranslationStore):
         self._encoding = 'utf-8'
         if inputfile is not None:
             self.parse(inputfile)
+
+    def settargetlanguage(self, newlang):
+        self.header.settargetlanguage(newlang)
 
     def parse(self, input):
         """parsse the given file or file source string"""
