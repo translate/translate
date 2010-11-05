@@ -20,12 +20,12 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
 
-"""convert Gettext PO localization files to .ini files"""
+"""Convert Gettext PO localization files to JSON files"""
 
 from translate.storage import factory
 
 
-class reini:
+class rejson:
 
     def __init__(self, templatefile, inputstore):
         from translate.storage import jsonl10n
@@ -48,12 +48,12 @@ class reini:
         return str(self.templatestore)
 
 
-def convertini(inputfile, outputfile, templatefile, includefuzzy=False):
+def convertjson(inputfile, outputfile, templatefile, includefuzzy=False):
     inputstore = factory.getobject(inputfile)
     if templatefile is None:
-        raise ValueError("must have template file for ini files")
+        raise ValueError("Must have template file for JSON files")
     else:
-        convertor = reini(templatefile, inputstore)
+        convertor = rejson(templatefile, inputstore)
     outputstring = convertor.convertstore(includefuzzy)
     outputfile.write(outputstring)
     return 1
@@ -63,7 +63,7 @@ def main(argv=None):
     # handle command line options
     from translate.convert import convert
     formats = {
-               ("po", "json"): ("json", convertini),
+               ("po", "json"): ("json", convertjson),
               }
     parser = convert.ConvertOptionParser(formats, usetemplates=True, description=__doc__)
     parser.add_fuzzy_option()

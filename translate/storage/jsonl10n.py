@@ -208,9 +208,9 @@ class JsonFile(base.TranslationStore):
         elif not getattr(self, 'filename', ''):
             self.filename = ''
         if hasattr(input, "read"):
-            inisrc = input.read()
+            src = input.read()
             input.close()
-            input = inisrc
+            input = src
         if isinstance(input, str):
             input = StringIO(input)
         try:
