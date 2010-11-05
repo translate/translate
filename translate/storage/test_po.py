@@ -781,3 +781,26 @@ msgstr "d"
         contents = str(pofile)
         assert 'msgstr "\341\270\223"' in contents
         assert 'charset=UTF-8' in contents
+
+    def test_istranslated(self):
+        """checks that istranslated works ok."""
+        posource = ur'''
+msgid ""
+msgstr ""
+"PO-Revision-Date: 2006-02-09 23:33+0200\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=ISO-8859-1\n"
+"Content-Transfer-Encoding: 8-bit\n"
+
+msgid "a"
+msgid_plural "aa"
+msgstr[0] ""
+'''
+        pofile = self.poparse(posource)
+        unit = pofile.units[1]
+        print str(unit)
+        assert "msgid_plural" in str(unit)
+        assert not unit.istranslated()
+        assert unit.get_state_n() == 0
+
+

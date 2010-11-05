@@ -500,7 +500,7 @@ class pounit(pocommon.pounit):
     def markfuzzy(self, present=True):
         if present:
             self.set_state_n(self.STATE[self.S_FUZZY][0])
-        elif is_null(self.msgstr):
+        elif self.hasplural() and not self._msgstrlen() or is_null(self.msgstr):
             self.set_state_n(self.STATE[self.S_UNTRANSLATED][0])
         else:
             self.set_state_n(self.STATE[self.S_TRANSLATED][0])
@@ -740,7 +740,8 @@ class pofile(pocommon.pofile):
 
     def parse(self, input):
         """Parses the given file or file source string."""
-        try:
+        if True:
+#        try:
             if hasattr(input, 'name'):
                 self.filename = input.name
             elif not getattr(self, 'filename', ''):
@@ -750,8 +751,8 @@ class pofile(pocommon.pofile):
             # clear units to get rid of automatically generated headers before parsing
             self.units = []
             poparser.parse_units(poparser.ParseState(input, pounit), self)
-        except Exception, e:
-            raise base.ParseError(e)
+#        except Exception, e:
+#            raise base.ParseError(e)
 
     def removeduplicates(self, duplicatestyle="merge"):
         """Make sure each msgid is unique ; merge comments etc from duplicates into original"""
