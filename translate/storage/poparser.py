@@ -300,8 +300,8 @@ def parse_unit(parse_state, unit=None):
     if obsolete_unit is not None:
         return obsolete_unit
     parsed_msg_entries = parse_msg_entries(parse_state, unit)
-    unit.infer_state()
     if parsed_comments or parsed_msg_entries:
+        unit.infer_state()
         return unit
     else:
         return None
