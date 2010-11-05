@@ -68,6 +68,7 @@ TODO
 
 """
 
+import os
 from StringIO import StringIO
 try:
     import json as json #available since Python 2.6
@@ -82,12 +83,14 @@ class JsonUnit(base.TranslationUnit):
 
     def __init__(self, source=None, ref=None, item=None, encoding="UTF-8"):
         self._id = None
+        self._item = str(os.urandom(30))
+        if item is not None:
+            self._item = item
         self._ref = {}
         if ref is not None:
             self._ref = ref
-        self._item = "only_for_testing"
-        if item is not None:
-            self._item = item
+        if ref is None and item is None:
+            self._ref[self._item] = ""
         if source:
             self.source = source
         super(JsonUnit, self).__init__(source)
@@ -100,10 +103,17 @@ class JsonUnit(base.TranslationUnit):
     source = property(getsource, setsource)
 
     def gettarget(self):
+
+        def change_type(value):
+            if isinstance(value, bool):
+                return str(value)
+            return value
+
+            return newvalue
         if isinstance(self._ref, list):
-            return self._ref[self._item]
+            return change_type(self._ref[self._item])
         elif isinstance(self._ref, dict):
-            return self._ref[self._item]
+            return change_type(self._ref[self._item])
 
     def settarget(self, target):
 
