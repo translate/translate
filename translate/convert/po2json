@@ -24,4 +24,3 @@ from translate.convert import po2json
 
 if __name__ == '__main__':
     po2json.main()
-

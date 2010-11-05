@@ -65,7 +65,8 @@ def main(argv=None):
     formats = {
                ("po", "json"): ("json", convertjson),
               }
-    parser = convert.ConvertOptionParser(formats, usetemplates=True, description=__doc__)
+    parser = convert.ConvertOptionParser(formats, usetemplates=True,
+                                         description=__doc__)
     parser.add_fuzzy_option()
     parser.run(argv)
 

@@ -24,4 +24,3 @@ from translate.convert import json2po
 
 if __name__ == '__main__':
     json2po.main()
-
