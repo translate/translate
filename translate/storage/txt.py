@@ -38,7 +38,7 @@ dokuwiki.append(("Dokuwiki bullet", re.compile(r"([\s]{2,}\*[\s]*)(.+)"), re.com
 dokuwiki.append(("Dokuwiki numbered item", re.compile(r"([\s]{2,}-[\s]*)(.+)"), re.compile("[\s]+$")))
 
 mediawiki = []
-mediawiki.append(("MediaWiki heading", re.compile(r"(={2,5}[\s]*)(.+)"), re.compile("([\s]*={2,5}[\s]*)$")))
+mediawiki.append(("MediaWiki heading", re.compile(r"(={1,5}[\s]*)(.+)"), re.compile("([\s]*={1,5}[\s]*)$")))
 mediawiki.append(("MediaWiki bullet", re.compile(r"(\*+[\s]*)(.+)"), re.compile("[\s]+$")))
 mediawiki.append(("MediaWiki numbered item", re.compile(r"(#+[\s]*)(.+)"), re.compile("[\s]+$")))
 
