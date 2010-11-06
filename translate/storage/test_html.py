@@ -20,7 +20,7 @@
 
 """Tests for the HTML classes"""
 
-from py.test import raises
+from py.test import raises, mark
 
 from translate.storage import base
 from translate.storage import html
@@ -67,4 +67,13 @@ class TestHTMLParsing:
     def test_self_closing_tags(self):
         h = html.htmlfile()
         store = h.parsestring("<h3>Some text <img><br><img></h3>")
+        assert len(store.units) == 1
+
+    @mark.xfail(reason="Not implemented")
+    def test_escaping_script_and_pre(self):
+        """<script> and <pre> can contain < and > and these should not be
+        interpretted as tags"""
+        h = html.htmlfile()
+        store = h.parsestring("<p>We are here</p><script>Some </tag>like data<script></p>")
+        print store.units[0].source
         assert len(store.units) == 1
