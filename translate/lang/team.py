@@ -433,3 +433,10 @@ def guess_language(team_string):
         #print (u"MISSED: '%s'" % team_string).encode('utf-8')
         return None
     return lang
+
+if __name__ == "__main__":
+    from sys import argv
+    from translate.storage import factory
+    for fname in argv[1:]:
+        store = factory.getobject(fname)
+        print fname, guess_language(store.parseheader().get('Language-Team', u""))
