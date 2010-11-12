@@ -77,6 +77,14 @@ def match_template_id(input_unit, template_store):
     matching_unit = template_store.findid(input_unit.getid())
     return matching_unit
 
+def match_source(input_unit, template_store):
+    """Returns a matching unit from a template. matching based on unit id"""
+    # hack for weird mozilla single letter strings, we don't want to
+    # match them by anything but locations
+    if len(input_unit.source) > 1:
+        matching_unit = template_store.findunit(input_unit.source)
+        return matching_unit
+
 def match_fuzzy(input_unit, matchers):
     """Return a fuzzy match from a queue of matchers."""
     for matcher in matchers:
@@ -100,8 +108,13 @@ def pretranslate_unit(input_unit, template_store, matchers=None, mark_reused=Fal
     if matching_unit and matching_unit.gettargetlen() > 0:
         input_unit.merge(matching_unit, authoritative=True)
     elif matchers:
-        #do fuzzy matching
-        matching_unit = match_fuzzy(input_unit, matchers)
+        # quickly try exact match by source
+        matching_unit = match_source(input_unit, template_store)
+
+        if not matching_unit or not matching_unit.gettargetlen():
+            #do fuzzy matching
+            matching_unit = match_fuzzy(input_unit, matchers)
+
         if matching_unit and matching_unit.gettargetlen() > 0:
             #FIXME: should we dispatch here instead of this crude type check
             if isinstance(input_unit, xliff.xliffunit):
