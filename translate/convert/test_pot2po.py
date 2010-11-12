@@ -125,7 +125,9 @@ msgstr[1] "%d handleidings."
         assert str(self.singleunit(newpo)) == poexpected
 
     def test_merging_location_and_whitespace_change(self):
-        """test that even if the location changes that if the msgid only has whitespace changes we can still merge"""
+        """test that even if the location changes that if the msgid
+        only has whitespace changes we can still merge"""
+
         potsource = '''#: singlespace.label%ssinglespace.accesskey\nmsgid "&We have spaces"\nmsgstr ""\n''' % po.lsep
         posource = '''#: doublespace.label%sdoublespace.accesskey\nmsgid "&We  have  spaces"\nmsgstr "&One  het  spasies"\n''' % po.lsep
         poexpected = '''#: singlespace.label%ssinglespace.accesskey\n#, fuzzy\nmsgid "&We have spaces"\nmsgstr "&One  het  spasies"\n''' % po.lsep
@@ -490,17 +492,29 @@ msgstr "trans"
         """Test that we migrate correctly from msgidcomments to msgctxt.
 
         This is needed for our move away from using msgidcomments for mozilla."""
-        potsource = '#: bla\nmsgctxt "bla"\nmsgid ""\nmsgstr ""'
-        posource = r"""
+        potsource = r'''
 msgid ""
-"Project-Id-Version: Pootle 0.10\n"
 msgstr ""
+"X-Accelerator-Marker: &\n"
+
+
+#: bla
+msgctxt "bla"
+msgid ""
+msgstr ""
+'''
+        posource = r'''
+msgid ""
+msgstr ""
+"Project-Id-Version: Pootle 0.10\n"
+"X-Accelerator-Marker: &\n"
+
 
 #: bla
 msgid ""
 "_: bla\n"
 msgstr "trans"
-"""
+'''
         newpo = self.convertpot(potsource, posource)
         print newpo
         assert len(newpo.units) == 2
@@ -555,6 +569,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=INTEGER; plural=EXPRESSION;\n"
 "X-Generator: Translate Toolkit 0.10rc2\n"
+"X-Accelerator-Marker: &\n"
 
 #: new_disassociated_mozilla_accesskey
 msgid "R"
@@ -573,6 +588,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "X-Generator: Translate Toolkit 0.9\n"
+"X-Accelerator-Marker: &\n"
 
 #: old_disassociated_mozilla_accesskey
 msgid "R"
@@ -591,6 +607,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "X-Generator: Translate Toolkit 0.10rc2\n"
+"X-Accelerator-Marker: &\n"
 
 #: new_disassociated_mozilla_accesskey
 msgid "R"
