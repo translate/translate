@@ -338,14 +338,48 @@ class csvfile(base.TranslationStore):
                 fieldnames = [fieldname.strip() for fieldname in fieldnames.split(",")]
             self.fieldnames = fieldnames
         self.filename = getattr(inputfile, 'name', '')
+        self.dialect = 'default'
         if inputfile is not None:
             csvsrc = inputfile.read()
             inputfile.close()
             self.parse(csvsrc)
 
     def parse(self, csvsrc):
-        reader = SimpleDictReader(csvfile, self.fieldnames)
+        sniffer = csv.Sniffer()
+        # FIXME: maybe we should sniff a smaller sample
+        sample = csvsrc[:1024]
+        if isinstance(sample, unicode):
+            sample = sample.encode("utf-8")
+
+        try:
+            self.dialect = sniffer.sniff(sample)
+            if not self.dialect.escapechar:
+                self.dialect.escapechar = '\\'
+                if self.dialect.quoting == csv.QUOTE_MINIMAL:
+                    #HACKISH: most probably a default, not real detection
+                    self.dialect.quoting = csv.QUOTE_ALL
+                    self.dialect.doublequote = True
+        except csv.Error:
+            self.dialect = 'default'
+
+        try:
+            has_header, columncount = detect_header(sample, self.dialect)
+            columncount = max(3, columncount)
+        except csv.Error:
+            has_header = False
+            columncount = None
+
+        if not has_header:
+            fieldnames = self.fieldnames[:columncount]
+        else:
+            fieldnames = None
+
         inputfile = csv.StringIO(csvsrc)
+        reader = try_dialects(inputfile, fieldnames, self.dialect)
+
+        if has_header:
+            self.fieldnames = reader.fieldnames
+        #reader = SimpleDictReader(csvfile, fieldnames=fieldnames, dialect=dialect)
         for row in reader:
             newce = self.UnitClass()
             newce.fromdict(row)
