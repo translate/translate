@@ -94,6 +94,11 @@ class SimpleDictReader:
                 values[self.fieldnames[fieldnum]] = fields[fieldnum]
         return values
 
+def from_unicode(text, encoding='utf-8'):
+    if isinstance(text, unicode):
+        return text.encode(encoding)
+    return text
+
 def to_unicode(text, encoding='utf-8'):
     if isinstance(text, unicode):
         return text
@@ -235,15 +240,21 @@ class csvunit(base.TranslationUnit):
 
 
     def todict(self, encoding='utf-8'):
+        #FIXME: use apis?
         comment, source, target = self.comment, self.source, self.target
         source, target = self.add_spreadsheet_escapes(source, target)
-        if isinstance(comment, unicode):
-            comment = comment.encode(encoding)
-        if isinstance(source, unicode):
-            source = source.encode(encoding)
-        if isinstance(target, unicode):
-            target = target.encode(encoding)
-        return {'location': comment, 'source': source, 'target': target}
+        output = {
+            'location': from_unicode(self.location, encoding),
+            'source': from_unicode(source, encoding),
+            'target': from_unicode(target, encoding),
+            'id': from_unicode(self.id, encoding),
+            'fuzzy': str(self.fuzzy),
+            'context': from_unicode(self.context, encoding),
+            'translator_comments': from_unicode(self.translator_comments, encoding),
+            'developer_comments': from_unicode(self.developer_comments, encoding),
+            }
+
+        return output
 
 
 class csvfile(base.TranslationStore):
