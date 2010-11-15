@@ -256,6 +256,8 @@ class csvunit(base.TranslationUnit):
 
         return output
 
+    def __str__(self):
+        return str(self.todict())
 
 class csvfile(base.TranslationStore):
     """This class represents a .csv file with various lines.
