@@ -94,6 +94,9 @@ class SimpleDictReader:
                 values[self.fieldnames[fieldnum]] = fields[fieldnum]
         return values
 
+csv.register_dialect('default', delimiter=',', doublequote=True, escapechar='\\', lineterminator='\r\n',
+                     quotechar = '"', quoting=csv.QUOTE_NONNUMERIC, skipinitialspace=True)
+
 def from_unicode(text, encoding='utf-8'):
     if isinstance(text, unicode):
         return text.encode(encoding)
@@ -273,6 +276,49 @@ fieldname_map = {
     'developer comments': 'developer_comments',
     'state': 'fuzzy',
 }
+
+def try_dialects(inputfile, fieldnames, dialect):
+    #FIXME: does it verify at all if we don't actually step through the file?
+    try:
+        inputfile.seek(0)
+        reader = csv.DictReader(inputfile, fieldnames=fieldnames, dialect=dialect)
+    except csv.Error:
+        try:
+            inputfile.seek(0)
+            reader = csv.DictReader(inputfile, fieldnames=fieldnames, dialect='default')
+        except csv.Error:
+            inputfile.seek(0)
+            reader = csv.DictReader(inputfile, fieldnames=fieldnames, dialect='excel')
+    return reader
+
+def valid_fieldnames(fieldnames):
+    """check if fieldnames are valid"""
+    for fieldname in fieldnames:
+        if fieldname in canonical_field_names and fieldname == 'source':
+            return True
+        elif fieldname in fieldname_map and fieldname_map[fieldname] == 'source':
+            return True
+    return False
+
+def detect_header(sample, dialect):
+    """Test if file has a header or not, also returns number of columns in first row"""
+    inputfile = StringIO.StringIO(sample)
+    try:
+        reader = csv.reader(inputfile, dialect)
+    except csv.Error:
+        try:
+            inputfile.seek(0)
+            reader = csv.reader(inputfile, 'default')
+        except csv.Error:
+            inputfile.seek(0)
+            reader = csv.reader(inputfile, 'excel')
+
+    header = reader.next()
+    columns = len(header)
+    if valid_fieldnames(header):
+        return True, columns
+    return False, columns
+
 class csvfile(base.TranslationStore):
     """This class represents a .csv file with various lines.
     The default format contains three columns: location, source, target"""
