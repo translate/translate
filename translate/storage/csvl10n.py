@@ -100,9 +100,88 @@ class csvunit(base.TranslationUnit):
 
     def __init__(self, source=None):
         super(csvunit, self).__init__(source)
-        self.comment = ""
-        self.source = source
+        self.location = ""
+        self.source = source or ""
         self.target = ""
+        self.id = ""
+        self.fuzzy = False
+        self.developer_comments = ""
+        self.translator_comments = ""
+        self.context = ""
+
+    def getid(self):
+        if self.id:
+            return self.id
+
+        result  = self.source
+        context = self.context
+        if context:
+            result = u"%s\04%s" % (context, result)
+
+        return result
+
+    def setid(self, value):
+        self.id = value
+
+    def getlocations(self):
+        #FIXME: do we need to support more than one location
+        return [self.location]
+
+    def addlocation(self, location):
+        self.location = location
+
+    def getcontext(self):
+        return self.context
+
+    def setcontext(self, value):
+        self.context = value
+
+    def getnotes(self, origin=None):
+        if origin is None:
+            result = self.translator_comments
+            if self.developer_comments:
+                if result:
+                    result += '\n' + self.developer_comments
+                else:
+                    result = self.developer_comments
+            return result
+        elif origin == "translator":
+            return self.translator_comments
+        elif origin in ('programmer', 'developer', 'source code'):
+            return self.developer_comments
+        else:
+            raise ValueError("Comment type not valid")
+
+    def addnote(self, text, origin=None, position="append"):
+        if origin in ('programmer', 'developer', 'source code'):
+            if position == 'append' and self.developer_comments:
+                self.developer_comments += '\n' + text
+            elif position == 'prepend' and self.developer_comments:
+                self.developer_comments = text + '\n' +  self.developer_comments
+            else:
+                self.developer_comments = text
+        else:
+            if position == 'append' and self.translator_comments:
+                self.translator_comments += '\n' + text
+            elif position == 'prepend' and self.translator_comments:
+                self.translator_comments = self.translator_comments + '\n' + text
+            else:
+                self.translator_comments = text
+
+    def removenotes(self):
+        self.translator_comments = u''
+
+    def isfuzzy(self):
+        return self.fuzzy
+
+    def markfuzzy(self, value=True):
+        self.fuzzy = value
+
+    def isheader(self):
+        for key, value in self.todict().iteritems():
+            if key != value:
+                return False
+        return True
 
     def add_spreadsheet_escapes(self, source, target):
         """add common spreadsheet escapes to two strings"""
