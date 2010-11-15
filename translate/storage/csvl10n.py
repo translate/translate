@@ -214,7 +214,6 @@ class csvunit(base.TranslationUnit):
         return source, target
 
     def fromdict(self, cedict):
-        self.source, self.target = self.remove_spreadsheet_escapes(self.source, self.target)
         for key, value in cedict.iteritems():
             rkey = fieldname_map.get(key, key)
             if value is None:
@@ -241,11 +240,13 @@ class csvunit(base.TranslationUnit):
             elif rkey == "developer_comments":
                 self.developer_comments = value
 
+        #self.source, self.target = self.remove_spreadsheet_escapes(self.source, self.target)
 
     def todict(self, encoding='utf-8'):
         #FIXME: use apis?
-        comment, source, target = self.comment, self.source, self.target
-        source, target = self.add_spreadsheet_escapes(source, target)
+        #source, target = self.add_spreadsheet_escapes(self.source, self.target)
+        source = self.source
+        target = self.target
         output = {
             'location': from_unicode(self.location, encoding),
             'source': from_unicode(source, encoding),
