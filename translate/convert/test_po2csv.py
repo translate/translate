@@ -44,7 +44,7 @@ msgid "Term"
 msgstr "asdf"'''
         csvfile = self.po2csv(minipo)
         unit = self.singleelement(csvfile)
-        assert unit.comment == "term.cpp"
+        assert unit.location == "term.cpp"
         assert unit.source == "Term"
         assert unit.target == "asdf"
 
