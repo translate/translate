@@ -94,6 +94,10 @@ class SimpleDictReader:
                 values[self.fieldnames[fieldnum]] = fields[fieldnum]
         return values
 
+def to_unicode(text, encoding='utf-8'):
+    if isinstance(text, unicode):
+        return text
+    return text.decode(encoding)
 
 class csvunit(base.TranslationUnit):
     spreadsheetescapes = [("+", "\\+"), ("-", "\\-"), ("=", "\\="), ("'", "\\'")]
@@ -202,16 +206,33 @@ class csvunit(base.TranslationUnit):
         return source, target
 
     def fromdict(self, cedict):
-        self.comment = cedict.get('location', '').decode('utf-8')
-        self.source = cedict.get('source', '').decode('utf-8')
-        self.target = cedict.get('target', '').decode('utf-8')
-        if self.comment is None:
-            self.comment = ''
-        if self.source is None:
-            self.source = ''
-        if self.target is None:
-            self.target = ''
         self.source, self.target = self.remove_spreadsheet_escapes(self.source, self.target)
+        for key, value in cedict.iteritems():
+            rkey = fieldname_map.get(key, key)
+            if value is None:
+                continue
+            value = to_unicode(value)
+            if rkey == "id":
+                self.id = value
+            elif rkey == "source":
+                self.source = value
+            elif rkey == "target":
+                self.target = value
+            elif rkey == "location":
+                self.location = value
+            elif rkey == "fuzzy":
+                if value in ('1', 'x', 'X', 'True', 'true', 'TRUE', 'Yes', 'yes', 'YES', 'Fuzzy', 'fuzzy', 'FUZZY'):
+                    self.fuzzy = True
+                else:
+                    self.fuzzy = False
+
+            elif rkey == "context":
+                self.context = value
+            elif rkey == "translator_comments":
+                self.translator_comments = value
+            elif rkey == "developer_comments":
+                self.developer_comments = value
+
 
     def todict(self, encoding='utf-8'):
         comment, source, target = self.comment, self.source, self.target
