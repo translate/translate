@@ -315,6 +315,9 @@ class csvfile(base.TranslationStore):
     def getoutput(self):
         outputfile = StringIO.StringIO()
         writer = csv.DictWriter(outputfile, self.fieldnames, extrasaction='ignore', dialect=self.dialect)
+        # write header
+        hdict = dict(map(None, self.fieldnames, self.fieldnames))
+        writer.writerow(hdict)
         for ce in self.units:
             cedict = ce.todict()
             writer.writerow(cedict)
