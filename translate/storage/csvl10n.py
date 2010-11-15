@@ -24,6 +24,10 @@ or entire files (csvfile) for use with localisation
 """
 
 import csv
+try:
+    import cStringIO as StringIO
+except:
+    import StringIO
 
 from translate.misc import sparse
 from translate.storage import base
@@ -166,8 +170,8 @@ class csvfile(base.TranslationStore):
             self.parse(csvsrc)
 
     def parse(self, csvsrc):
-        csvfile = csv.StringIO(csvsrc)
         reader = SimpleDictReader(csvfile, self.fieldnames)
+        inputfile = csv.StringIO(csvsrc)
         for row in reader:
             newce = self.UnitClass()
             newce.fromdict(row)
@@ -181,10 +185,10 @@ class csvfile(base.TranslationStore):
         return source
 
     def getoutput(self):
-        csvfile = csv.StringIO()
-        writer = csv.DictWriter(csvfile, self.fieldnames)
+        outputfile = StringIO.StringIO()
+        writer = csv.DictWriter(outputfile, self.fieldnames, extrasaction='ignore', dialect=self.dialect)
         for ce in self.units:
             cedict = ce.todict()
             writer.writerow(cedict)
-        csvfile.reset()
-        return "".join(csvfile.readlines())
+        outputfile.seek(0)
+        return "".join(outputfile.readlines())
