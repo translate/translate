@@ -92,16 +92,16 @@ class csv2po:
     def convertunit(self, csvunit):
         """converts csv unit to po unit"""
         pounit = po.pounit(encoding="UTF-8")
-        if csvunit.comment:
-            pounit.addlocation(csvunit.comment)
+        if csvunit.location:
+            pounit.addlocation(csvunit.location)
         pounit.source = csvunit.source
         pounit.target = csvunit.target
         return pounit
 
     def handlecsvunit(self, csvunit):
         """handles reintegrating a csv unit into the .po file"""
-        if len(csvunit.comment.strip()) > 0 and csvunit.comment in self.commentindex:
-            pounit = self.commentindex[csvunit.comment]
+        if len(csvunit.location.strip()) > 0 and csvunit.location in self.commentindex:
+            pounit = self.commentindex[csvunit.location]
         elif csvunit.source in self.sourceindex:
             pounit = self.sourceindex[csvunit.source]
         elif simplify(csvunit.source) in self.simpleindex:
@@ -109,13 +109,13 @@ class csv2po:
             if len(thepolist) > 1:
                 csvfilename = getattr(self.csvfile, "filename", "(unknown)")
                 matches = "\n  ".join(["possible match: " + pounit.source for pounit in thepolist])
-                print >> sys.stderr, "%s - csv entry not found in pofile, multiple matches found:\n  location\t%s\n  original\t%s\n  translation\t%s\n  %s" % (csvfilename, csvunit.comment, csvunit.source, csvunit.target, matches)
+                print >> sys.stderr, "%s - csv entry not found in pofile, multiple matches found:\n  location\t%s\n  original\t%s\n  translation\t%s\n  %s" % (csvfilename, csvunit.location, csvunit.source, csvunit.target, matches)
                 self.unmatched += 1
                 return
             pounit = thepolist[0]
         else:
             csvfilename = getattr(self.csvfile, "filename", "(unknown)")
-            print >> sys.stderr, "%s - csv entry not found in pofile:\n  location\t%s\n  original\t%s\n  translation\t%s" % (csvfilename, csvunit.comment, csvunit.source, csvunit.target)
+            print >> sys.stderr, "%s - csv entry not found in pofile:\n  location\t%s\n  original\t%s\n  translation\t%s" % (csvfilename, csvunit.location, csvunit.source, csvunit.target)
             self.unmatched += 1
             return
         if pounit.hasplural():
@@ -160,10 +160,10 @@ class csv2po:
             if mightbeheader:
                 # ignore typical header strings...
                 mightbeheader = False
-                if [item.strip().lower() for item in csvunit.comment, csvunit.source, csvunit.target] == \
+                if [item.strip().lower() for item in csvunit.location, csvunit.source, csvunit.target] == \
                         ["location", "source", "target"]:
                     continue
-                if len(csvunit.comment.strip()) == 0 and csvunit.source.find("Content-Type:") != -1:
+                if len(csvunit.location.strip()) == 0 and csvunit.source.find("Content-Type:") != -1:
                     continue
             if mergemode:
                 self.handlecsvunit(csvunit)
