@@ -44,7 +44,7 @@ class po2csv:
         elif inputunit.isblank():
             return None
         else:
-            csvunit.comment = self.convertcomments(inputunit)
+            csvunit.location = self.convertcomments(inputunit)
             csvunit.source = inputunit.source
             csvunit.target = inputunit.target
         return csvunit
@@ -59,7 +59,7 @@ class po2csv:
         if len(inputunit.target.strings) == 1:  # No plural forms
             return None
         csvunit = csvl10n.csvunit()
-        csvunit.comment = self.convertcomments(inputunit)
+        csvunit.location = self.convertcomments(inputunit)
         csvunit.source = inputunit.source.strings[1]
         csvunit.target = inputunit.target.strings[1]
         return csvunit
