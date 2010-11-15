@@ -284,8 +284,9 @@ class csvfile(base.TranslationStore):
     def __init__(self, inputfile=None, fieldnames=None):
         base.TranslationStore.__init__(self, unitclass=self.UnitClass)
         self.units = []
-        if fieldnames is None:
-            self.fieldnames = ['location', 'source', 'target']
+
+        if not fieldnames:
+            self.fieldnames = ['location', 'source', 'target', 'id', 'fuzzy', 'context', 'translator_comments', 'developer_comments']
         else:
             if isinstance(fieldnames, basestring):
                 fieldnames = [fieldname.strip() for fieldname in fieldnames.split(",")]
