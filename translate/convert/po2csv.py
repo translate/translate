@@ -37,9 +37,10 @@ class po2csv:
     def convertunit(self, inputunit):
         csvunit = csvl10n.csvunit()
         if inputunit.isheader():
-            csvunit.comment = "location"
-            csvunit.source = "source"
-            csvunit.target = "target"
+            return None
+            #csvunit.location = "location"
+            #csvunit.source = "source"
+            #csvunit.target = "target"
         elif inputunit.isblank():
             return None
         else:
