@@ -259,6 +259,20 @@ class csvunit(base.TranslationUnit):
     def __str__(self):
         return str(self.todict())
 
+canonical_field_names = ('location', 'source', 'target', 'id', 'fuzzy', 'context', 'translator_comments', 'developer_comments')
+fieldname_map = {
+    'original': 'source',
+    'untranslated': 'source',
+    'translated': 'target',
+    'translation': 'target',
+    'identified': 'id',
+    'key': 'id',
+    'label': 'id',
+    'transaltor comments': 'translator_comments',
+    'notes': 'translator_comments',
+    'developer comments': 'developer_comments',
+    'state': 'fuzzy',
+}
 class csvfile(base.TranslationStore):
     """This class represents a .csv file with various lines.
     The default format contains three columns: location, source, target"""
