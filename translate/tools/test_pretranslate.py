@@ -1,4 +1,5 @@
 #!/usr/bin/env python
+# -*- coding: utf-8 -*-
 
 import warnings
 
@@ -8,9 +9,18 @@ from translate.tools import pretranslate
 from translate.convert import test_convert
 from translate.misc import wStringIO
 from translate.storage import po
+from translate.storage import xliff
 
 
 class TestPretranslate:
+    xliff_skeleton = '''<?xml version="1.0" encoding="utf-8"?>
+<xliff version="1.1" xmlns="urn:oasis:names:tc:xliff:document:1.1">
+        <file original="doc.txt" source-language="en-US">
+                <body>
+                        %s
+                </body>
+        </file>
+</xliff>'''
 
     def setup_method(self, method):
         warnings.resetwarnings()
@@ -30,6 +40,19 @@ class TestPretranslate:
         pretranslate.pretranslate_file(input_file, output_file, template_file)
         output_file.seek(0)
         return po.pofile(output_file.read())
+
+    def pretranslatexliff(self, input_source, template_source=None):
+        """helper that converts strings to po source without requiring files"""
+        input_file = wStringIO.StringIO(input_source)
+        if template_source:
+            template_file = wStringIO.StringIO(template_source)
+        else:
+            template_file = None
+        output_file = wStringIO.StringIO()
+
+        pretranslate.pretranslate_file(input_file, output_file, template_file)
+        output_file.seek(0)
+        return xliff.xlifffile(output_file.read())
 
     def singleunit(self, pofile):
         """checks that the pofile contains a single non-header unit, and
@@ -256,6 +279,27 @@ msgstr "36em"
         newpounit = self.singleunit(newpo)
         assert newpounit.isfuzzy()
         assert newpounit.hastypecomment("c-format")
+
+    def test_xliff_states(self):
+        """Test correct maintenance of XLIFF states."""
+        xlf_template = self.xliff_skeleton \
+          % '''<trans-unit id="1" xml:space="preserve">
+                   <source> File  1 </source>
+               </trans-unit>'''
+        xlf_old = self.xliff_skeleton \
+          % '''<trans-unit id="1" xml:space="preserve" approved="yes">
+                   <source> File  1 </source>
+                   <target> Lêer 1 </target>
+               </trans-unit>'''
+
+        template = xliff.xlifffile.parsestring(xlf_template)
+        old = xliff.xlifffile.parsestring(xlf_old)
+        new = self.pretranslatexliff(template, old)
+        print str(old)
+        print '---'
+        print str(new)
+        assert new.units[0].isapproved()
+        # Layout might have changed, so we won't compare the serialised versions
 
 
 class TestPretranslateCommand(test_convert.TestConvertCommand, TestPretranslate):
