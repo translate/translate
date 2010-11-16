@@ -25,6 +25,7 @@
 @license: U{GPL <http://www.fsf.org/licensing/licenses/gpl.html>}
 """
 
+import logging
 try:
     import cPickle as pickle
 except ImportError:
@@ -703,6 +704,41 @@ class TranslationStore(object):
             newstore.parse(storestring)
         return newstore
     parsestring = classmethod(parsestring)
+
+    def detect_encoding(self, text, default_encodings=None):
+        if not default_encodings:
+            default_encodings = ['utf-8']
+        try:
+            import chardet
+            detected_encoding = chardet.detect(text)
+            if detected_encoding['confidence'] < 0.48:
+                detected_encoding = None
+        except ImportError:
+            detected_encoding = None
+
+        encodings = []
+        if self.encoding == 'auto':
+            if detected_encoding and detected_encoding['encoding'] not in encodings:
+                encodings.append(detected_encoding['encoding'])
+            for encoding in default_encodings:
+                if encoding not in encodings:
+                    encodings.append(encoding)
+        else:
+            encodings.append(self.encoding)
+            if detected_encoding and detected_encoding['encoding'] != self.encoding:
+                logging.warn("trying to parse % with encoding: %s but detected encoding is %s",
+                             self.filename, self.encoding, detected_encoding['encoding'])
+            encodings.append(self.encoding)
+
+        for encoding in encodings:
+            try:
+                r_text = unicode(text, encoding)
+                r_encoding = encoding
+                break
+            except UnicodeDecodeError:
+                r_text = None
+                r_encoding = None
+        return r_text, r_encoding
 
     def parse(self, data):
         """parser to process the given source string"""
