@@ -306,7 +306,7 @@ def valid_fieldnames(fieldnames):
             return True
     return False
 
-def detect_header(sample, dialect):
+def detect_header(sample, dialect, fieldnames):
     """Test if file has a header or not, also returns number of columns in first row"""
     inputfile = StringIO.StringIO(sample)
     try:
@@ -320,10 +320,10 @@ def detect_header(sample, dialect):
             reader = csv.reader(inputfile, 'excel')
 
     header = reader.next()
-    columns = len(header)
+    columncount = max(len(header), 3)
     if valid_fieldnames(header):
-        return True, columns
-    return False, columns
+        return header
+    return fieldnames[:columncount]
 
 class csvfile(base.TranslationStore):
     """This class represents a .csv file with various lines.
@@ -369,22 +369,14 @@ class csvfile(base.TranslationStore):
             self.dialect = 'default'
 
         try:
-            has_header, columncount = detect_header(sample, self.dialect)
-            columncount = max(3, columncount)
+            fieldnames = detect_header(sample, self.dialect, self.fieldnames)
+            self.fieldnames = fieldnames
         except csv.Error:
-            has_header = False
-            columncount = None
-
-        if not has_header:
-            fieldnames = self.fieldnames[:columncount]
-        else:
-            fieldnames = None
+            pass
 
         inputfile = csv.StringIO(csvsrc)
-        reader = try_dialects(inputfile, fieldnames, self.dialect)
+        reader = try_dialects(inputfile, self.fieldnames, self.dialect)
 
-        if has_header:
-            self.fieldnames = reader.fieldnames
         #reader = SimpleDictReader(csvfile, fieldnames=fieldnames, dialect=dialect)
         for row in reader:
             newce = self.UnitClass()
