@@ -200,7 +200,7 @@ class csvunit(base.TranslationUnit):
 
     def isheader(self):
         for key, value in self.todict().iteritems():
-            if key != value:
+            if key.lower() != value.lower():
                 return False
         return True
 
@@ -381,7 +381,8 @@ class csvfile(base.TranslationStore):
         for row in reader:
             newce = self.UnitClass()
             newce.fromdict(row)
-            self.addunit(newce)
+            if not newce.isheader():
+                self.addunit(newce)
 
     def __str__(self):
         """convert to a string. double check that unicode is handled somehow here"""
