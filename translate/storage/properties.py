@@ -115,10 +115,12 @@
 
      # .strings specific
      "key" = "value";
+'"
 """
 
 import re
 import warnings
+import logging
 
 from translate.lang import data
 from translate.misc import quote
@@ -467,17 +469,13 @@ class propfile(base.TranslationStore):
 
     def parse(self, propsrc):
         """read the source of a properties file in and include them as units"""
-        if self.encoding == "auto":
-            import chardet
-            detected = chardet.detect(propsrc)
-            if detected['confidence'] > 0.48:
-                self.encoding = detected['encoding']
-            else:
-                self.encoding = self.personality.default_encoding
+        text, encoding = self.detect_encoding(propsrc, default_encodings=[self.personality.default_encoding, 'utf-8', 'utf-16'])
+        self.encoding = encoding
+        propsrc = text
 
         newunit = propunit("", self.personality.name)
         inmultilinevalue = False
-        propsrc = unicode(propsrc, self.encoding)
+
         for line in propsrc.split(u"\n"):
             # handle multiline value if we're in one
             line = quote.rstripeol(line)
