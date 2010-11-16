@@ -25,6 +25,7 @@ or entire files (csvfile) for use with localisation
 
 import csv
 import logging
+import codecs
 try:
     import cStringIO as StringIO
 except:
@@ -357,9 +358,14 @@ class csvfile(base.TranslationStore):
 
 
     def parse(self, csvsrc):
-        fish, encoding = self.detect_encoding(csvsrc, default_encodings=['utf-8', 'utf-16'])
+        text, encoding = self.detect_encoding(csvsrc, default_encodings=['utf-8', 'utf-16'])
         #FIXME: raise parse error if encoding detection fails?
-        self.encoding = encoding or 'utf-8'
+        if encoding.lower().startswith('utf-16'):
+            csvsrc = text.encode('utf-8').lstrip(codecs.BOM_UTF8)
+            self.encoding = encoding
+            encoding = 'utf-8'
+        else:
+            self.encoding = encoding or 'utf-8'
 
         sniffer = csv.Sniffer()
         # FIXME: maybe we should sniff a smaller sample
@@ -390,7 +396,7 @@ class csvfile(base.TranslationStore):
         #reader = SimpleDictReader(csvfile, fieldnames=fieldnames, dialect=dialect)
         for row in reader:
             newce = self.UnitClass()
-            newce.fromdict(row, self.encoding)
+            newce.fromdict(row, encoding or 'utf-8')
             if not newce.isheader():
                 self.addunit(newce)
 
