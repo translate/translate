@@ -94,8 +94,12 @@ class SimpleDictReader:
                 values[self.fieldnames[fieldnum]] = fields[fieldnum]
         return values
 
-csv.register_dialect('default', delimiter=',', doublequote=True, escapechar='\\', lineterminator='\r\n',
-                     quotechar = '"', quoting=csv.QUOTE_NONNUMERIC, skipinitialspace=True)
+class DefaultDialect(csv.excel):
+    skipinitialspace = True
+    quoting = csv.QUOTE_NONNUMERIC
+    escapechar = '\\'
+
+csv.register_dialect('default', DefaultDialect)
 
 def from_unicode(text, encoding='utf-8'):
     if isinstance(text, unicode):
