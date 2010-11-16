@@ -120,7 +120,7 @@ class csvunit(base.TranslationUnit):
         self.source = source or ""
         self.target = ""
         self.id = ""
-        self.fuzzy = False
+        self.fuzzy = 'False'
         self.developer_comments = ""
         self.translator_comments = ""
         self.context = ""
@@ -188,10 +188,15 @@ class csvunit(base.TranslationUnit):
         self.translator_comments = u''
 
     def isfuzzy(self):
-        return self.fuzzy
+        if self.fuzzy.lower() in ('1', 'x', 'true', 'yes','fuzzy'):
+            return True
+        return False
 
     def markfuzzy(self, value=True):
-        self.fuzzy = value
+        if value:
+            self.fuzzy = 'True'
+        else:
+            self.fuzzy = 'False'
 
     def isheader(self):
         for key, value in self.todict().iteritems():
@@ -232,11 +237,7 @@ class csvunit(base.TranslationUnit):
             elif rkey == "location":
                 self.location = value
             elif rkey == "fuzzy":
-                if value in ('1', 'x', 'X', 'True', 'true', 'TRUE', 'Yes', 'yes', 'YES', 'Fuzzy', 'fuzzy', 'FUZZY'):
-                    self.fuzzy = True
-                else:
-                    self.fuzzy = False
-
+                self.fuzzy = value
             elif rkey == "context":
                 self.context = value
             elif rkey == "translator_comments":
