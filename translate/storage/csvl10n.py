@@ -394,8 +394,9 @@ class csvfile(base.TranslationStore):
         outputfile = StringIO.StringIO()
         writer = csv.DictWriter(outputfile, self.fieldnames, extrasaction='ignore', dialect=self.dialect)
         # write header
-        hdict = dict(map(None, self.fieldnames, self.fieldnames))
-        writer.writerow(hdict)
+        if not (self.units and self.units[0].isheader()):
+            hdict = dict(map(None, self.fieldnames, self.fieldnames))
+            writer.writerow(hdict)
         for ce in self.units:
             cedict = ce.todict()
             writer.writerow(cedict)
