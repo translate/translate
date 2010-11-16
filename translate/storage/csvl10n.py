@@ -24,6 +24,7 @@ or entire files (csvfile) for use with localisation
 """
 
 import csv
+import logging
 try:
     import cStringIO as StringIO
 except:
@@ -102,11 +103,15 @@ class DefaultDialect(csv.excel):
 csv.register_dialect('default', DefaultDialect)
 
 def from_unicode(text, encoding='utf-8'):
+    if encoding == 'auto':
+        encoding = 'utf-8'
     if isinstance(text, unicode):
         return text.encode(encoding)
     return text
 
 def to_unicode(text, encoding='utf-8'):
+    if encoding == 'auto':
+        encoding = 'utf-8'
     if isinstance(text, unicode):
         return text
     return text.decode(encoding)
@@ -222,12 +227,12 @@ class csvunit(base.TranslationUnit):
                 target = target.replace(escaped, unescaped, 1)
         return source, target
 
-    def fromdict(self, cedict):
+    def fromdict(self, cedict, encoding='utf-8'):
         for key, value in cedict.iteritems():
             rkey = fieldname_map.get(key, key)
             if value is None:
                 continue
-            value = to_unicode(value)
+            value = to_unicode(value, encoding)
             if rkey == "id":
                 self.id = value
             elif rkey == "source":
@@ -333,10 +338,10 @@ class csvfile(base.TranslationStore):
     Mimetypes = ['text/comma-separated-values', 'text/csv']
     Extensions = ["csv"]
 
-    def __init__(self, inputfile=None, fieldnames=None):
+    def __init__(self, inputfile=None, fieldnames=None, encoding="auto"):
         base.TranslationStore.__init__(self, unitclass=self.UnitClass)
         self.units = []
-
+        self.encoding = encoding or 'utf-8'
         if not fieldnames:
             self.fieldnames = ['location', 'source', 'target', 'id', 'fuzzy', 'context', 'translator_comments', 'developer_comments']
         else:
@@ -350,12 +355,17 @@ class csvfile(base.TranslationStore):
             inputfile.close()
             self.parse(csvsrc)
 
+
     def parse(self, csvsrc):
+        fish, encoding = self.detect_encoding(csvsrc, default_encodings=['utf-8', 'utf-16'])
+        #FIXME: raise parse error if encoding detection fails?
+        self.encoding = encoding or 'utf-8'
+
         sniffer = csv.Sniffer()
         # FIXME: maybe we should sniff a smaller sample
         sample = csvsrc[:1024]
         if isinstance(sample, unicode):
-            sample = sample.encode("utf-8")
+            sample = sample.encode(self.encoding)
 
         try:
             self.dialect = sniffer.sniff(sample)
@@ -380,7 +390,7 @@ class csvfile(base.TranslationStore):
         #reader = SimpleDictReader(csvfile, fieldnames=fieldnames, dialect=dialect)
         for row in reader:
             newce = self.UnitClass()
-            newce.fromdict(row)
+            newce.fromdict(row, self.encoding)
             if not newce.isheader():
                 self.addunit(newce)
 
@@ -399,7 +409,7 @@ class csvfile(base.TranslationStore):
             hdict = dict(map(None, self.fieldnames, self.fieldnames))
             writer.writerow(hdict)
         for ce in self.units:
-            cedict = ce.todict()
+            cedict = ce.todict(self.encoding)
             writer.writerow(cedict)
         outputfile.seek(0)
         return "".join(outputfile.readlines())
