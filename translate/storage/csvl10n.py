@@ -205,10 +205,13 @@ class csvunit(base.TranslationUnit):
             self.fuzzy = 'False'
 
     def isheader(self):
+        some_value = False
         for key, value in self.todict().iteritems():
-            if key.lower() != value.lower():
+            if value:
+                some_value = True
+            if value and key.lower() != value.lower():
                 return False
-        return True
+        return some_value
 
     def add_spreadsheet_escapes(self, source, target):
         """add common spreadsheet escapes to two strings"""
