@@ -360,18 +360,15 @@ class csvfile(base.TranslationStore):
     def parse(self, csvsrc):
         text, encoding = self.detect_encoding(csvsrc, default_encodings=['utf-8', 'utf-16'])
         #FIXME: raise parse error if encoding detection fails?
-        if encoding.lower().startswith('utf-16'):
+        if encoding and encoding.lower() != 'utf-8':
             csvsrc = text.encode('utf-8').lstrip(codecs.BOM_UTF8)
-            self.encoding = encoding
-            encoding = 'utf-8'
-        else:
-            self.encoding = encoding or 'utf-8'
+        self.encoding = encoding or 'utf-8'
 
         sniffer = csv.Sniffer()
         # FIXME: maybe we should sniff a smaller sample
         sample = csvsrc[:1024]
         if isinstance(sample, unicode):
-            sample = sample.encode(self.encoding)
+            sample = sample.encode('utf-8')
 
         try:
             self.dialect = sniffer.sniff(sample)
@@ -396,16 +393,16 @@ class csvfile(base.TranslationStore):
         #reader = SimpleDictReader(csvfile, fieldnames=fieldnames, dialect=dialect)
         for row in reader:
             newce = self.UnitClass()
-            newce.fromdict(row, encoding or 'utf-8')
+            newce.fromdict(row)
             if not newce.isheader():
                 self.addunit(newce)
 
     def __str__(self):
         """convert to a string. double check that unicode is handled somehow here"""
         source = self.getoutput()
-        if isinstance(source, unicode):
-            return source.encode(getattr(self, "encoding", "UTF-8"))
-        return source
+        if not isinstance(source, unicode):
+            source = source.decode('utf-8')
+        return source.encode(self.encoding)
 
     def getoutput(self):
         outputfile = StringIO.StringIO()
@@ -415,7 +412,6 @@ class csvfile(base.TranslationStore):
             hdict = dict(map(None, self.fieldnames, self.fieldnames))
             writer.writerow(hdict)
         for ce in self.units:
-            cedict = ce.todict(self.encoding)
+            cedict = ce.todict()
             writer.writerow(cedict)
-        outputfile.seek(0)
-        return "".join(outputfile.readlines())
+        return outputfile.getvalue()
