@@ -402,7 +402,11 @@ class csvfile(base.TranslationStore):
         source = self.getoutput()
         if not isinstance(source, unicode):
             source = source.decode('utf-8')
-        return source.encode(self.encoding)
+        if not self.encoding or self.encoding == 'auto':
+            encoding = 'utf-8'
+        else:
+            encoding = self.encoding
+        return source.encode(encoding)
 
     def getoutput(self):
         outputfile = StringIO.StringIO()
