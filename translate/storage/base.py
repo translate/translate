@@ -738,6 +738,8 @@ class TranslationStore(object):
             except UnicodeDecodeError:
                 r_text = None
                 r_encoding = None
+        if r_encoding == 'ascii':
+            r_encoding = 'utf-8'
         return r_text, r_encoding
 
     def parse(self, data):
