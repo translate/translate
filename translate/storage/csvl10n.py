@@ -209,7 +209,7 @@ class csvunit(base.TranslationUnit):
         for key, value in self.todict().iteritems():
             if value:
                 some_value = True
-            if value and key.lower() != value.lower():
+            if key.lower() != 'fuzzy' and value and key.lower() != value.lower():
                 return False
         return some_value
 
