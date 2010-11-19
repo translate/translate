@@ -117,7 +117,7 @@ def extractpoline(line):
 
 
 def unquotefrompo(postr):
-    return u"".join([extractpoline(line) for line in postr])
+    return "".join([extractpoline(line) for line in postr])
 
 
 def is_null(lst):
