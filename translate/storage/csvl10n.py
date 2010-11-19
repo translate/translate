@@ -204,7 +204,8 @@ class csvunit(base.TranslationUnit):
         else:
             self.fuzzy = 'False'
 
-    def isheader(self):
+    def match_header(self):
+        """see if unit might be a header"""
         some_value = False
         for key, value in self.todict().iteritems():
             if value:
@@ -394,11 +395,13 @@ class csvfile(base.TranslationStore):
         reader = try_dialects(inputfile, self.fieldnames, self.dialect)
 
         #reader = SimpleDictReader(csvfile, fieldnames=fieldnames, dialect=dialect)
+        first_row = True
         for row in reader:
             newce = self.UnitClass()
             newce.fromdict(row)
-            if not newce.isheader():
+            if not first_row or not newce.match_header():
                 self.addunit(newce)
+            first_row = False
 
     def __str__(self):
         """convert to a string. double check that unicode is handled somehow here"""
@@ -415,9 +418,8 @@ class csvfile(base.TranslationStore):
         outputfile = StringIO.StringIO()
         writer = csv.DictWriter(outputfile, self.fieldnames, extrasaction='ignore', dialect=self.dialect)
         # write header
-        if not (self.units and self.units[0].isheader()):
-            hdict = dict(map(None, self.fieldnames, self.fieldnames))
-            writer.writerow(hdict)
+        hdict = dict(map(None, self.fieldnames, self.fieldnames))
+        writer.writerow(hdict)
         for ce in self.units:
             cedict = ce.todict()
             writer.writerow(cedict)
