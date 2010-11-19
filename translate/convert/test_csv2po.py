@@ -99,10 +99,10 @@ wat lank aanhou"
 
     def test_empties(self):
         """Tests that things keep working with empty entries"""
-        minicsv = ',Source,'
+        minicsv = ',SomeSource,'
         pofile = self.csv2po(minicsv)
-        assert pofile.findunit("Source") is not None
-        assert pofile.findunit("Source").target == ""
+        assert pofile.findunit("SomeSource") is not None
+        assert pofile.findunit("SomeSource").target == ""
         assert headerless_len(pofile.units) == 1
 
     def test_kdecomment(self):
