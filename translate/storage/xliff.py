@@ -286,8 +286,6 @@ class xliffunit(lisa.LISAunit):
         if targetnode is None:
             if self.isapproved():
                 return self.S_UNREVIEWED
-            elif self.target:
-                return self.S_NEEDS_TRANSLATION
             else:
                 return self.S_UNTRANSLATED
 
