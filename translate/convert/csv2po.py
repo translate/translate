@@ -160,8 +160,7 @@ class csv2po:
             if mightbeheader:
                 # ignore typical header strings...
                 mightbeheader = False
-                if [item.strip().lower() for item in csvunit.location, csvunit.source, csvunit.target] == \
-                        ["location", "source", "target"]:
+                if csvunit.match_header():
                     continue
                 if len(csvunit.location.strip()) == 0 and csvunit.source.find("Content-Type:") != -1:
                     continue
