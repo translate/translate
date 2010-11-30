@@ -24,7 +24,6 @@ or entire files (csvfile) for use with localisation
 """
 
 import csv
-import logging
 import codecs
 try:
     import cStringIO as StringIO
@@ -235,7 +234,7 @@ class csvunit(base.TranslationUnit):
     def fromdict(self, cedict, encoding='utf-8'):
         for key, value in cedict.iteritems():
             rkey = fieldname_map.get(key, key)
-            if value is None:
+            if value is None or key is None or key == EXTRA_KEY:
                 continue
             value = to_unicode(value, encoding)
             if rkey == "id":
@@ -293,18 +292,19 @@ fieldname_map = {
     'state': 'fuzzy',
 }
 
+EXTRA_KEY = '__CSVL10N__EXTRA__'
 def try_dialects(inputfile, fieldnames, dialect):
     #FIXME: does it verify at all if we don't actually step through the file?
     try:
         inputfile.seek(0)
-        reader = csv.DictReader(inputfile, fieldnames=fieldnames, dialect=dialect)
+        reader = csv.DictReader(inputfile, fieldnames=fieldnames, dialect=dialect, restkey=EXTRA_KEY)
     except csv.Error:
         try:
             inputfile.seek(0)
-            reader = csv.DictReader(inputfile, fieldnames=fieldnames, dialect='default')
+            reader = csv.DictReader(inputfile, fieldnames=fieldnames, dialect='default', restkey=EXTRA_KEY)
         except csv.Error:
             inputfile.seek(0)
-            reader = csv.DictReader(inputfile, fieldnames=fieldnames, dialect='excel')
+            reader = csv.DictReader(inputfile, fieldnames=fieldnames, dialect='excel', restkey=EXTRA_KEY)
     return reader
 
 def valid_fieldnames(fieldnames):
