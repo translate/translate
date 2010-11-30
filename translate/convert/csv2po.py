@@ -154,9 +154,9 @@ class csv2po:
         targetheader.addnote("extracted from %s" % self.csvfile.filename, "developer")
         mightbeheader = True
         for csvunit in self.csvfile.units:
-            if self.charset is not None:
-                csvunit.source = csvunit.source.decode(self.charset)
-                csvunit.target = csvunit.target.decode(self.charset)
+            #if self.charset is not None:
+            #    csvunit.source = csvunit.source.decode(self.charset)
+            #    csvunit.target = csvunit.target.decode(self.charset)
             if mightbeheader:
                 # ignore typical header strings...
                 mightbeheader = False
