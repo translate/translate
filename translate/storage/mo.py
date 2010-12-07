@@ -175,6 +175,9 @@ class mofile(poheader.poheader, base.TranslationStore):
             hash_size = 3
         MESSAGES = {}
         for unit in self.units:
+            # If the unit is not translated, we should rather omit it entirely
+            if not unit.istranslated():
+                continue
             if isinstance(unit.source, multistring):
                 source = "".join(unit.msgidcomments) + \
                          "\0".join(unit.source.strings)
