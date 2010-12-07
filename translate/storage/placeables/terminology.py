@@ -88,7 +88,7 @@ class TerminologyPlaceable(base.Ph):
             term_placeable.translations = list(set(term_placeable.translations))
 
             lastend = end
-        if lastend != len(pstr):
+        if lastend != len(pstr) and parts:
             parts.append(StringElem(pstr[lastend:]))
 
         return parts or None
