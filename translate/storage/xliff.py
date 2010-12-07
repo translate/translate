@@ -311,7 +311,7 @@ class xliffunit(lisa.LISAunit):
 
         #FIXME: handle state qualifiers
         if value == self.S_UNTRANSLATED:
-            if targetnode is not None and state in targetnode.attrib:
+            if targetnode is not None and "state" in targetnode.attrib:
                 del targetnode.attrib["state"]
         else:
             if targetnode is not None:
