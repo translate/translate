@@ -90,7 +90,7 @@ class pounit(base.TranslationUnit):
             self.addnote(newnotes, origin="translator")
 
     def istranslated(self):
-        return super(pounit, self).istranslated() and not self.isobsolete()
+        return super(pounit, self).istranslated() and not self.isobsolete() and not self.isheader()
 
     def istranslatable(self):
         return not (self.isheader() or self.isblank() or self.isobsolete())
