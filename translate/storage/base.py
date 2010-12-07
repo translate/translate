@@ -102,25 +102,29 @@ class TranslationUnit(object):
     S_UNREVIEWED = states.UNREVIEWED
     S_FINAL = states.FINAL
 
-    STATE = {
-        S_OBSOLETE: (states.OBSOLETE, states.EMPTY),
-        S_EMPTY: (states.EMPTY, states.NEEDS_WORK),
-        S_NEEDS_WORK: (states.NEEDS_WORK, states.REJECTED),
-        S_REJECTED: (states.REJECTED, states.NEEDS_REVIEW),
-        S_NEEDS_REVIEW: (states.NEEDS_REVIEW, states.UNREVIEWED),
-        S_UNREVIEWED: (states.UNREVIEWED, states.FINAL),
-        S_FINAL: (states.FINAL, states.MAX),
-    }
-    """
-    Default supported states:
-        * obsolete: The unit is not to be used.
-        * empty: The unit has not been translated before.
-        * needs work: Some translation has been done, but is not complete.
-        * rejected: The unit has been reviewed, but was rejected.
-        * needs review: The unit has been translated, but review was requested.
-        * unreviewed: The unit has been translated, but not reviewed.
-        * final: The unit is translated, reviewed and accepted.
-    """
+    # Elaborate state support could look something like this:
+    # STATE = {
+    #     S_OBSOLETE: (states.OBSOLETE, states.EMPTY),
+    #     S_EMPTY: (states.EMPTY, states.NEEDS_WORK),
+    #     S_NEEDS_WORK: (states.NEEDS_WORK, states.REJECTED),
+    #     S_REJECTED: (states.REJECTED, states.NEEDS_REVIEW),
+    #     S_NEEDS_REVIEW: (states.NEEDS_REVIEW, states.UNREVIEWED),
+    #     S_UNREVIEWED: (states.UNREVIEWED, states.FINAL),
+    #     S_FINAL: (states.FINAL, states.MAX),
+    # }
+    # """
+    # Default supported states:
+    #     * obsolete: The unit is not to be used.
+    #     * empty: The unit has not been translated before.
+    #     * needs work: Some translation has been done, but is not complete.
+    #     * rejected: The unit has been reviewed, but was rejected.
+    #     * needs review: The unit has been translated, but review was requested.
+    #     * unreviewed: The unit has been translated, but not reviewed.
+    #     * final: The unit is translated, reviewed and accepted.
+    # """
+    #
+    # ... but by default a format will not support state:
+    STATE = {}
 
     def __init__(self, source):
         """Constructs a TranslationUnit containing the given source string."""
@@ -446,10 +450,16 @@ class TranslationUnit(object):
         for state_id, state_range in self.STATE.iteritems():
             if state_range[0] <= n < state_range[1]:
                 return state_id
-        raise ValueError('No state containing value %s' % (n))
+        if self.STATE:
+            raise ValueError('No state containing value %s' % (n))
+        else:
+            return n
 
     def get_state_n(self):
-        return self._state_n
+        if self.STATE:
+            return self._state_n
+        else:
+            return self.istranslated() and 100 or 0
 
     def set_state_n(self, value):
         self._state_n = value
