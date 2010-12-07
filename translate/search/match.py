@@ -295,12 +295,29 @@ class terminologymatcher(matcher):
         """Normal matching after converting text to lower case. Then replace
         with the original unit to retain comments, etc."""
         text = text.lower()
+        text_l = len(text)
         comparer = self.comparer
         comparer.match_info = {}
         match_info = {}
         matches = []
         known = set()
-        for cand in self.candidates.units:
+
+        # We want to limit our search in self.candidates, so we want to ignore
+        # all units with a source string that is too long. We use binary search
+        # to find the first string short enough to occur in text, from where we
+        # start our search in the candidates.
+
+        # the maximum possible length is text_l
+        startindex = 0
+        endindex = len(self.candidates.units)
+        while startindex < endindex:
+            mid = (startindex + endindex) // 2
+            if sourcelen(self.candidates.units[mid]) > text_l:
+                startindex = mid + 1
+            else:
+                endindex = mid
+
+        for cand in self.candidates.units[startindex:]:
             source = cand.source
             if (source, cand.target) in known:
                 continue
