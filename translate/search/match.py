@@ -294,8 +294,11 @@ class terminologymatcher(matcher):
     def matches(self, text):
         """Normal matching after converting text to lower case. Then replace
         with the original unit to retain comments, etc."""
-        text = text.lower()
         text_l = len(text)
+        if text_l < self.getstartlength(0, ''): # parameters unused
+            # impossible to return anything
+            return []
+        text = text.lower()
         comparer = self.comparer
         comparer.match_info = {}
         match_info = {}
