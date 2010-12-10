@@ -39,7 +39,7 @@ if [ ! -f $compendium ]; then
 	exit 1
 fi
 
-dir=`echo $compendium | sed 's/\/[^\/]*$//'`
+dir=`dirname $compendium`
 prefix=$dir/`basename $compendium .po`
 translated=${prefix}-translated.po
 fuzzy=${prefix}-fuzzy.po
