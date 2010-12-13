@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 #
-# Copyright 2004-2008 Zuza Software Foundation
+# Copyright 2004-2008,2010 Zuza Software Foundation
 #
 # This file is part of translate.
 #
@@ -119,15 +119,17 @@ wordswithpunctuation = ["'n", "'t", # Afrikaans
 # map all the words to their non-punctified equivalent
 wordswithpunctuation = dict([(word, filter(str.isalnum, word)) for word in wordswithpunctuation])
 
+word_with_apos_re = re.compile("(?u)\w+'\w+")
 
 def filterwordswithpunctuation(str1):
     """goes through a list of known words that have punctuation and removes the
     punctuation from them"""
-    assert isinstance(str1, unicode)
+    if u"'" not in str1:
+        return str1
     occurrences = []
     for word, replacement in wordswithpunctuation.iteritems():
         occurrences.extend([(pos, word, replacement) for pos in quote.find_all(str1, word)])
-    for match in re.finditer("(?u)\w+'\w+", str1):
+    for match in word_with_apos_re.finditer(str1):
         word = match.group()
         replacement = filter(unicode.isalnum, word)
         occurrences.append((match.start(), word, replacement))
