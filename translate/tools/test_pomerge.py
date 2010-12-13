@@ -33,6 +33,7 @@ class TestPOMerge:
 </xliff>'''
 
     def mergestore(self, templatesource, inputsource, mergeblanks="yes",
+                   mergefuzzy="yes",
                    mergecomments="yes"):
         """merges the sources of the given files and returns a new pofile object"""
         templatefile = wStringIO.StringIO(templatesource)
@@ -40,12 +41,15 @@ class TestPOMerge:
         outputfile = wStringIO.StringIO()
         assert pomerge.mergestore(inputfile, outputfile, templatefile,
                                   mergeblanks=mergeblanks,
-                                  mergecomments=mergecomments)
+                                  mergefuzzy=mergefuzzy,
+                                  mergecomments=mergecomments,
+        )
         outputpostring = outputfile.getvalue()
         outputpofile = po.pofile(outputpostring)
         return outputpofile
 
     def mergexliff(self, templatesource, inputsource, mergeblanks="yes",
+                   mergefuzzy="yes",
                    mergecomments="yes"):
         """merges the sources of the given files and returns a new xlifffile object"""
         templatefile = wStringIO.StringIO(templatesource)
@@ -53,6 +57,7 @@ class TestPOMerge:
         outputfile = wStringIO.StringIO()
         assert pomerge.mergestore(inputfile, outputfile, templatefile,
                                   mergeblanks=mergeblanks,
+                                  mergefuzzy=mergefuzzy,
                                   mergecomments=mergecomments)
         outputxliffstring = outputfile.getvalue()
         print "Generated XML:"
@@ -123,6 +128,21 @@ msgstr "Dimpled Ring"'''
         pounit = self.singleunit(pofile)
         assert pounit.source == "Simple String"
         assert pounit.target == "Dimpled Ring"
+
+    def test_merging_fuzzies(self):
+        """By default we will merge fuzzies, but can can also override that."""
+        templatepo = '''#: simple.test\nmsgid "Simple String"\nmsgstr "Dimpled Ring"\n'''
+        inputpo = '''#: simple.test\n#, fuzzy\nmsgid "Simple String"\nmsgstr "changed fish"\n'''
+        pofile = self.mergestore(templatepo, inputpo)
+        pounit = self.singleunit(pofile)
+        assert pounit.source == "Simple String"
+        assert pounit.target == "changed fish"
+        assert pounit.isfuzzy()
+        pofile = self.mergestore(templatepo, inputpo, mergefuzzy="no")
+        pounit = self.singleunit(pofile)
+        assert pounit.source == "Simple String"
+        assert pounit.target == "Dimpled Ring"
+        assert pounit.isfuzzy() == False
 
     def test_merging_locations(self):
         """check that locations on separate lines are output in Gettext form of all on one line"""

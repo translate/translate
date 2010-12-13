@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 #
-# Copyright 2002-2006 Zuza Software Foundation
+# Copyright 2002-2010 Zuza Software Foundation
 #
 # This file is part of translate.
 #
@@ -34,8 +34,9 @@ from translate.storage import factory
 from translate.storage.poheader import poheader
 
 
-def mergestores(store1, store2, mergeblanks, mergecomments):
+def mergestores(store1, store2, mergeblanks, mergefuzzy, mergecomments):
     """Take any new translations in store2 and write them into store1."""
+    print mergefuzzy
 
     for unit2 in store2.units:
         if unit2.isheader():
@@ -51,6 +52,9 @@ def mergestores(store1, store2, mergeblanks, mergecomments):
         else:
             if not mergeblanks:
                 if len(unit2.target.strip()) == 0:
+                    continue
+            if not mergefuzzy:
+                if unit2.isfuzzy():
                     continue
             unit1.merge(unit2, overwrite=True, comments=mergecomments)
     return store1
@@ -73,7 +77,7 @@ def str2bool(option):
         raise ValueError("invalid boolean value: %r" % option)
 
 
-def mergestore(inputfile, outputfile, templatefile, mergeblanks="no",
+def mergestore(inputfile, outputfile, templatefile, mergeblanks="no", mergefuzzy="no",
                mergecomments="yes"):
     try:
         mergecomments = str2bool(mergecomments)
@@ -83,14 +87,18 @@ def mergestore(inputfile, outputfile, templatefile, mergeblanks="no",
         mergeblanks = str2bool(mergeblanks)
     except ValueError:
         raise ValueError("invalid mergeblanks value: %r" % mergeblanks)
+    try:
+        mergefuzzy = str2bool(mergefuzzy)
+    except ValueError:
+        raise ValueError("invalid mergefuzzy value: %r" % mergefuzzy)
     inputstore = factory.getobject(inputfile)
     if templatefile is None:
         # just merge nothing
         templatestore = type(inputstore)()
     else:
         templatestore = factory.getobject(templatefile)
-    outputstore = mergestores(templatestore, inputstore, mergeblanks,
-                              mergecomments)
+    outputstore = mergestores(templatestore, inputstore, mergeblanks, 
+                    mergefuzzy, mergecomments)
     if outputstore.isempty():
         return 0
     outputfile.write(str(outputstore))
@@ -111,6 +119,9 @@ def main():
     mergeblanksoption = convert.optparse.Option("", "--mergeblanks",
         dest="mergeblanks", action="store", default="yes",
         help="whether to overwrite existing translations with blank translations (yes/no). Default is yes.")
+    mergefuzzyoption = convert.optparse.Option("", "--mergefuzzy",
+        dest="mergefuzzy", action="store", default="yes",
+        help="whether to consider fuzzy translations from input (yes/no). Default is yes.")
     mergecommentsoption = convert.optparse.Option("", "--mergecomments",
         dest="mergecomments", action="store", default="yes",
         help="whether to merge comments as well as translations (yes/no). Default is yes.")
@@ -118,6 +129,8 @@ def main():
                                          description=__doc__)
     parser.add_option(mergeblanksoption)
     parser.passthrough.append("mergeblanks")
+    parser.add_option(mergefuzzyoption)
+    parser.passthrough.append("mergefuzzy")
     parser.add_option(mergecommentsoption)
     parser.passthrough.append("mergecomments")
     parser.run()
