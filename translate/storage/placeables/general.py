@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 #
-# Copyright 2009 Zuza Software Foundation
+# Copyright 2009-2010 Zuza Software Foundation
 #
 # This file is part of the Translate Toolkit.
 #
@@ -275,7 +275,14 @@ class XMLTagPlaceable(Ph):
 
     iseditable = True
     istranslatable = False
-    regex = re.compile(r'<([\w:]+)(\s([\w:]+=".*?")?)*/?>|</(\w+)>')
+    regex = re.compile(r'''
+        <                         # start of opening tag
+        ([\w:]+)                  # tag name, possibly namespaced
+        (\s([\w:]+=               # space and attribute name followed by =
+            ((".*?")|('.*?'))     # attribute value, single or double quoted
+        )?)*/?>                   # end of opening tag, possibly self closing
+        |</(\w+)>                 # or a closing tag
+        ''', re.VERBOSE)
     parse = classmethod(regex_parse)
 
 
