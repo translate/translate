@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 #
-# Copyright 2004-2006,2008-2009 Zuza Software Foundation
+# Copyright 2004-2006,2008-2010 Zuza Software Foundation
 #
 # This file is part of the Translate Toolkit.
 #
@@ -315,7 +315,11 @@ def convertpo(inputfile, outputfile, templatefile, format=None, rewritestyle=Non
 
 def main():
     from translate.convert import convert
-    formats = {"po": ("po", convertpo), "pot": ("po", convertpo), "xlf": ("xlf", convertpo)}
+    formats = {
+            "po": ("po", convertpo), "pot": ("po", convertpo),
+            "xlf": ("xlf", convertpo),
+            "tmx": ("tmx", convertpo),
+    }
     parser = convert.ConvertOptionParser(formats, description=__doc__)
     # TODO: add documentation on format strings...
     parser.add_option("-f", "--format", dest="format", default="",
