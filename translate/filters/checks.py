@@ -124,11 +124,13 @@ class FilterFailure(Exception):
         if not isinstance(messages, list):
             messages = [messages]
         assert isinstance(messages[0], unicode)  # Assumption: all of same type
-        joined = u", ".join(messages)
-        Exception.__init__(self, joined)
-        # Python 2.3 doesn't have .args
-        if not hasattr(self, "args"):
-            self.args = joined
+        self.messages = messages
+
+    def __unicode__(self):
+        return unicode(u", ".join(self.messages))
+
+    def __str__(self):
+        return str(u", ".join(self.messages))
 
 
 class SeriousFilterFailure(FilterFailure):
@@ -368,7 +370,7 @@ class UnitChecker(object):
                 filterresult = self.run_test(filterfunction, unit)
             except FilterFailure, e:
                 filterresult = False
-                filtermessage = e.args[0]
+                filtermessage = unicode(e)
             except Exception, e:
                 if self.errorhandler is None:
                     raise ValueError("error in filter %s: %r, %r, %s" % \
@@ -412,7 +414,7 @@ class TranslationChecker(UnitChecker):
                         filterresult = False
                 except FilterFailure, e:
                     filterresult = False
-                    filtermessages.append(unicode(e.args))
+                    filtermessages.extend(e.messages)
             if not filterresult and filtermessages:
                 raise FilterFailure(filtermessages)
             else:
