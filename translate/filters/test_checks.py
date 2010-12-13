@@ -204,6 +204,8 @@ def test_doublequoting():
     assert fails(frchecker.doublequoting, "Do \"this\"", "Do \"this\"")
     assert passes(frchecker.doublequoting, "Do \"this\"", "Do « this »")
     assert fails(frchecker.doublequoting, "Do \"this\"", "Do « this » « this »")
+    # This used to fail because we strip variables, and was left with an empty quotation that was not converted
+    assert passes(frchecker.doublequoting, u"Copying `%s' to `%s'", u"Copie de « %s » vers « %s »")
 
     vichecker = checks.StandardChecker(checks.CheckerConfig(targetlanguage="vi"))
     assert passes(vichecker.doublequoting, 'Save "File"', u"Lưu « Tập tin »")
@@ -276,8 +278,10 @@ def test_endpunc():
 def test_endwhitespace():
     """tests endwhitespace"""
     stdchecker = checks.StandardChecker()
+    assert passes(stdchecker.endwhitespace, "A setence.", "I'm correct.")
     assert passes(stdchecker.endwhitespace, "A setence. ", "I'm correct. ")
     assert fails(stdchecker.endwhitespace, "A setence. ", "'I'm incorrect.")
+    assert passes(stdchecker.endwhitespace, "Problem with something: %s\n", "Probleem met iets: %s\n")
 
     zh_checker = checks.StandardChecker(checks.CheckerConfig(targetlanguage='zh'))
     # This should pass since the space is not needed in Chinese
@@ -860,6 +864,8 @@ def test_xmltags():
     assert fails(stdchecker.xmltags, "<b>Current Translation</b>", "<b>Traducción Actual:<b>")
     assert passes(stdchecker.xmltags, "<Error>", "<Fout>")
     assert fails(stdchecker.xmltags, "%d/%d translated\n(%d blank, %d fuzzy)", "<br>%d/%d μεταφρασμένα\n<br>(%d κενά, %d ασαφή)")
+    assert fails(stdchecker.xmltags, '(and <a href="http://www.schoolforge.net/education-software" class="external">other open source software</a>)', '(en <a href="http://www.schoolforge.net/education-software" class="external">ander Vry Sagteware</a)')
+    assert fails(stdchecker.xmltags, 'Because Tux Paint (and <a href="http://www.schoolforge.net/education-software" class="external">other open source software</a>) is free of cost and not limited in any way, a school can use it <i>today</i>, without waiting for procurement or a budget!', 'Omdat Tux Paint (en <a href="http://www.schoolforge.net/education-software" class="external">ander Vry Sagteware</a)gratis is en nie beperk is op enige manier nie, kan \'n skool dit vandag</i> gebruik sonder om te wag vir goedkeuring of \'n begroting!')
     frchecker = checks.StandardChecker(checks.CheckerConfig(targetlanguage="fr"))
     assert fails(frchecker.xmltags, "Click <a href=\"page.html\">", "Klik <a href=« page.html »>")
 
