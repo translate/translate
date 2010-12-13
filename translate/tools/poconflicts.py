@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 #
-# Copyright 2005-2007 Zuza Software Foundation
+# Copyright 2005-2008,2010 Zuza Software Foundation
 #
 # This file is part of translate.
 #
@@ -161,9 +161,12 @@ class ConflictOptionParser(optrecurse.RecursiveOptionParser):
         """saves the result of the conflict match"""
         print "%d/%d different strings have conflicts" % (len(self.conflictmap), len(self.textmap))
         reducedmap = {}
+        def str_len(x):
+            return len(x)
+
         for source, translations in self.conflictmap.iteritems():
             words = source.split()
-            words.sort(lambda x, y: cmp(len(x), len(y)))
+            words.sort(key=str_len)
             source = words[-1]
             reducedmap.setdefault(source, []).extend(translations)
         # reduce plurals
