@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 #
-# Copyright 2007-2009 Zuza Software Foundation
+# Copyright 2007-2010 Zuza Software Foundation
 #
 # This file is part of the Translate Toolkit.
 #
@@ -443,12 +443,13 @@ class StatsCache(object):
                 if unitindex:
                     index = unitindex
                 # what about plurals in .source and .target?
+                unit_state_for_db = statefordb(unit),
                 unitvalues.append((unit.getid(), fileid, index, \
                                 unit.source, unit.target, \
                                 sourcewords, targetwords, \
-                                statefordb(unit),
+                                unit_state_for_db,
                                 unit.get_state_id()))
-                file_totals_record = file_totals_record + FileTotals.new_record(statefordb(unit), sourcewords, targetwords)
+                file_totals_record = file_totals_record + FileTotals.new_record(unit_state_for_db, sourcewords, targetwords)
         # XXX: executemany is non-standard
         self.cur.executemany("""INSERT INTO units
             (unitid, fileid, unitindex, source, target, sourcewords, targetwords, state, e_state)
