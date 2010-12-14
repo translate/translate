@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 #
-# Copyright 2006 Zuza Software Foundation
+# Copyright 2006-2010 Zuza Software Foundation
 #
 # This file is part of translate.
 #
@@ -23,12 +23,7 @@
 
 import os
 from gzip import GzipFile
-try:
-    # bz2 is not available on python 2.3
-    from bz2 import BZ2File
-except ImportError:
-    BZ2File = None
-import sys
+from bz2 import BZ2File
 
 from translate.storage import base
 from translate.storage import catkeys
@@ -57,6 +52,7 @@ try:
     from translate.storage import xliff
     support_xml = True
 except ImportError, e:
+    import sys
     print >> sys.stderr, str(e)
     support_xml = False
 
@@ -91,9 +87,8 @@ if support_xml:
 
 decompressclass = {
     'gz': GzipFile,
+    'bz2': BZ2File,
 }
-if BZ2File:
-    decompressclass['bz2'] = BZ2File
 
 
 def _examine_txt(storefile):
