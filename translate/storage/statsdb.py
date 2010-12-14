@@ -296,7 +296,7 @@ class StatsCache(object):
 
             def clear_old_data(cache):
                 try:
-                    cache.cur.execute("""SELECT toolkitbuild FROM files""")
+                    cache.cur.execute("""SELECT min(toolkitbuild) FROM files""")
                     val = cache.cur.fetchone()
                     # If the database is empty, we have no idea whether its layout
                     # is correct, so we might as well delete it.
