@@ -758,6 +758,7 @@ class TranslationStore(object):
 
     def savefile(self, storefile):
         """Writes the string representation to the given file (or filename)."""
+        storestring = str(self)
         if isinstance(storefile, basestring):
             mode = 'w'
             if self._binary:
@@ -765,7 +766,6 @@ class TranslationStore(object):
             storefile = open(storefile, mode)
         self.fileobj = storefile
         self._assignname()
-        storestring = str(self)
         storefile.write(storestring)
         storefile.close()
 
