@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 #
-# Copyright 2008-2009 Zuza Software Foundation
+# Copyright 2008-2010 Zuza Software Foundation
 #
 # This file is part of translate.
 #
@@ -31,7 +31,6 @@ try:
     import json #available since Python 2.6
 except ImportError:
     import simplejson as json #API compatible with the json module
-from wsgiref import simple_server
 
 from translate.misc import selector
 from translate.misc import wsgi
