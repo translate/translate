@@ -28,7 +28,6 @@ Applies the patch onto another text, allowing for errors.
 
 __author__ = 'fraser@google.com (Neil Fraser)'
 
-import math
 import re
 import sys
 import time
