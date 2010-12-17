@@ -56,7 +56,17 @@ if not hasattr(xliff, "xliffunit"):
 # cover everything we leave \w instead of specifying the exact letters as
 # this should capture printf types defined in other platforms.
 # extended to support Python named format specifiers
-printf_pat = re.compile('%((?:(?P<ord>\d+)\$|\((?P<key>\w+)\))?(?P<fullvar>[+#-]*(?:\d+)?(?:\.\d+)?(hh\|h\|l\|ll)?(?P<type>[\w%])))')
+printf_pat = re.compile('
+        %(                          # initial %
+              (?:(?P<ord>\d+)\$|    # variable order, like %1$s
+              \((?P<key>\w+)\))?    # Python style variables, like %(var)s
+        (?P<fullvar>
+            [+#-]*                  # flags
+            (?:\d+)?                # width
+            (?:\.\d+)?              # precision
+            (hh\|h\|l\|ll)?         # length formatting
+            (?P<type>[\w%]))        # type (%s, %d, etc.)
+        )', re.VERBOSE)
 
 # The name of the XML tag
 tagname_re = re.compile("<[\s]*([\w\/]*)")
