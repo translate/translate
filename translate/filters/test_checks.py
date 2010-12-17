@@ -4,7 +4,7 @@ from py.test import mark
 
 from translate.filters import checks
 from translate.lang import data
-from translate.storage import po
+from translate.storage import po, xliff
 
 
 def strprep(str1, str2, message=None):
@@ -1010,3 +1010,30 @@ def test_gconf():
     gnomechecker.locations = ['file.schemas.in.h:24']
     assert passes(gnomechecker.gconf, 'Blah "gconf_setting"', 'Bleh "gconf_setting"')
     assert fails(gnomechecker.gconf, 'Blah "gconf_setting"', 'Bleh "gconf_steling"')
+
+
+def test_hassuggestion():
+    """test that hassuggestion() works"""
+    checker = checks.StandardUnitChecker()
+
+    po_store = po.pofile()
+    po_store.addsourceunit("koeie")
+    assert checker.hassuggestion(po_store.units[-1])
+
+    xliff_store = xliff.xlifffile.parsestring('''
+<xliff version='1.2'
+       xmlns='urn:oasis:names:tc:xliff:document:1.2'>
+<file original='hello.txt' source-language='en' target-language='fr' datatype='plaintext'>
+<body>
+    <trans-unit id='hi'>
+        <source>Hello world</source>
+        <target>Bonjour le monde</target>
+        <alt-trans>
+            <target xml:lang='es'>Hola mundo</target>
+        </alt-trans>
+    </trans-unit>
+</body>
+</file>
+</xliff>
+''')
+    assert not checker.hassuggestion(xliff_store.units[0])
