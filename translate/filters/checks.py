@@ -636,13 +636,23 @@ class StandardChecker(TranslationChecker):
             plural = self.hasplural
         for var_num2, match2 in enumerate(printf_pat.finditer(str2)):
             count2 = var_num2 + 1
+            str2ord = match2.group('ord')
             str2key = match2.group('key')
-            if match2.group('ord'):
+            if str2ord:
+                str1ord = None
                 for var_num1, match1 in enumerate(printf_pat.finditer(str1)):
                     count1 = var_num1 + 1
-                    if int(match2.group('ord')) == var_num1 + 1:
+                    if match1.group('ord'):
+                        if str2ord == match1.group('ord'):
+                            str1ord = str2ord
+                            if match2.group('fullvar') != match1.group('fullvar'):
+                                return 0
+                    elif int(str2ord) == var_num1 + 1:
+                        str1ord = str2ord
                         if match2.group('fullvar') != match1.group('fullvar'):
                             return 0
+                if str1ord == None:
+                    return 0
             elif str2key:
                 str1key = None
                 for var_num1, match1 in enumerate(printf_pat.finditer(str1)):
