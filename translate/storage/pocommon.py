@@ -151,6 +151,8 @@ class pofile(poheader.poheader, base.TranslationStore):
     Name = _("Gettext PO file") # pylint: disable-msg=E0602
     Mimetypes = ["text/x-gettext-catalog", "text/x-gettext-translation", "text/x-po", "text/x-pot"]
     Extensions = ["po", "pot"]
+    # We don't want windows line endings on Windows:
+    _binary = True
 
     def __init__(self, inputfile=None, encoding=None):
         super(pofile, self).__init__(unitclass=self.UnitClass)
