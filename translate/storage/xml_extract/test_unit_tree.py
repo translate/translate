@@ -79,7 +79,9 @@ def make_tree_2(unit_1, unit_2):
 
 
 def test__add_unit_to_tree():
-    xliff_file = factory.classes[u'xlf']()
+    from translate.storage import xliff
+    xliff_file = xliff.xlifffile
+#    xliff_file = factory.classes[u'xlf']()
 
     # Add the first unit
 
