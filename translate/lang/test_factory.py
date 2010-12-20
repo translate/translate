@@ -32,6 +32,10 @@ def test_getlanguage():
     #Test with a language code that is a reserved word in Python
     language = factory.getlanguage('is')
     assert language.nplurals == 2
+    assert language.fullname == 'Icelandic'
+
+    language = factory.getlanguage('or')
+    assert "startcaps" in language.ignoretests
 
     #Test with a language code contains '@'
     language = factory.getlanguage('ca@valencia')
