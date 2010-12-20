@@ -45,8 +45,6 @@ def getlanguage(code):
         langclass = getattr(module, internal_code)
         return langclass(code)
     except ImportError, e:
-        if code and code.startswith(prefix):
-            code = code[:len(prefix)]
         simplercode = data.simplercode(code)
         if simplercode:
             relatedlanguage = getlanguage(simplercode)
