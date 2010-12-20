@@ -22,9 +22,7 @@
 with clients using JSON over HTTP."""
 
 #import urllib
-import StringIO
 import logging
-import sys
 from cgi import parse_qs
 from optparse import OptionParser
 try:
@@ -34,7 +32,6 @@ except ImportError:
 
 from translate.misc import selector
 from translate.misc import wsgi
-from translate.storage import factory
 from translate.storage import base
 from translate.storage import tmdb
 
@@ -47,12 +44,8 @@ class TMServer(object):
 
         self.tmdb = tmdb.TMDB(tmdbfile, max_candidates, min_similarity, max_length)
 
-        #load files into db
-        if isinstance(tmfiles, list):
-            [self.tmdb.add_store(factory.getobject(tmfile), source_lang, target_lang) \
-                    for tmfile in tmfiles]
-        elif tmfiles:
-            self.tmdb.add_store(factory.getobject(tmfiles), source_lang, target_lang)
+        if tmfiles:
+            self._load_files(tmfiles)
 
         #initialize url dispatcher
         self.rest = selector.Selector(prefix=prefix)
@@ -67,6 +60,14 @@ class TMServer(object):
                       PUT=self.upload_store,
                       POST=self.add_store,
                       DELETE=self.forget_store)
+
+    def _load_files(self, tmfiles):
+        from translate.storage import factory
+        if isinstance(tmfiles, list):
+            [self.tmdb.add_store(factory.getobject(tmfile), source_lang, target_lang) \
+                    for tmfile in tmfiles]
+        elif tmfiles:
+            self.tmdb.add_store(factory.getobject(tmfiles), source_lang, target_lang)
 
     @selector.opliant
     def translate_unit(self, environ, start_response, uid, slang, tlang):
@@ -121,6 +122,8 @@ class TMServer(object):
     @selector.opliant
     def upload_store(self, environ, start_response, sid, slang, tlang):
         """add units from uploaded file to tmdb"""
+        import StringIO
+        from translate.storage import factory
         start_response("200 OK", [('Content-type', 'text/plain')])
         data = StringIO.StringIO(environ['wsgi.input'].read(int(environ['CONTENT_LENGTH'])))
         data.name = sid
@@ -177,6 +180,7 @@ def main():
     level = options.debug and logging.DEBUG or logging.WARNING
     if options.debug:
         format = '%(levelname)7s %(module)s.%(funcName)s:%(lineno)d: %(message)s'
+        import sys
         if sys.version_info[:2] < (2, 5):
             format = '%(levelname)7s %(module)s [%(filename)s:%(lineno)d]: %(message)s'
     else:
