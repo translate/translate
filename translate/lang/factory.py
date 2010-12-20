@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 #
-# Copyright 2007 Zuza Software Foundation
+# Copyright 2007-2010 Zuza Software Foundation
 #
 # This file is part of translate.
 #
@@ -35,20 +35,15 @@ def getlanguage(code):
     if code:
         code = code.replace("-", "_").replace("@", "_").lower()
     try:
-        try:
-            if code is None:
-                raise ImportError("Can't determine language code")
-            exec("from translate.lang import %s" % code)
-            exec("langclass = %s.%s" % (code, code))
-            return langclass(code)
-        except SyntaxError, e:
-            # Someone is probably trying to import a language of which the code
-            # is a reserved word in python (like Icelandic (is) / Oriya (or))
-            # The convention to handle these is to have it in a file like
-            # code_is, for example.
-            exec("from translate.lang import %s%s" % (prefix, code))
-            exec("langclass = %s%s.%s%s" % (prefix, code, prefix, code))
-            return langclass(code)
+        if code is None:
+            raise ImportError("Can't determine language code")
+        if code in ('or', 'is'):
+            internal_code = prefix + code
+        else:
+            internal_code = code
+        module = __import__("translate.lang.%s" % internal_code, globals(), fromlist=internal_code)
+        langclass = getattr(module, internal_code)
+        return langclass(code)
     except ImportError, e:
         if code and code.startswith(prefix):
             code = code[:len(prefix)]
