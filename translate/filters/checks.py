@@ -517,7 +517,7 @@ class StandardChecker(TranslationChecker):
         # we could also check for things like str1.isnumeric(), but the test
         # above (str1.upper() == str1) makes this unnecessary
         if str1.lower() == str2.lower():
-            raise FilterFailure(u"please translate")
+            raise FilterFailure(u"Consider translating")
         return True
 
     def blank(self, str1, str2):
