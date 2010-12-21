@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 #
-# Copyright 2005, 2006 Zuza Software Foundation
+# Copyright 2005, 2006,2010 Zuza Software Foundation
 #
 # This file is part of the translate-toolkit
 #
@@ -39,7 +39,7 @@ class POCompile:
     def convertstore(self, inputfile, includefuzzy=False):
         outputfile = mo.mofile()
         for unit in inputfile.units:
-            if unit.istranslated() or (unit.isfuzzy() and includefuzzy and unit.target):
+            if unit.istranslated() or (unit.isfuzzy() and includefuzzy and unit.target) or unit.isheader():
                 mounit = mo.mounit()
                 if unit.isheader():
                     mounit.source = ""
