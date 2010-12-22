@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 #
-# Copyright 2004-2008 Zuza Software Foundation
+# Copyright 2004-2010 Zuza Software Foundation
 #
 # This file is part of translate.
 #
@@ -545,7 +545,7 @@ class StandardChecker(TranslationChecker):
         if not helpers.countsmatch(str1, str2, (u"\\", u"\\\\")):
             escapes1 = u", ".join([u"'%s'" % word for word in str1.split() if u"\\" in word])
             escapes2 = u", ".join([u"'%s'" % word for word in str2.split() if u"\\" in word])
-            raise SeriousFilterFailure(u"escapes in original (%s) don't match "
+            raise SeriousFilterFailure(u"Escapes in original (%s) don't match "
                                        "escapes in translation (%s)" %
                                        (escapes1, escapes2))
         else:
@@ -554,7 +554,7 @@ class StandardChecker(TranslationChecker):
     def newlines(self, str1, str2):
         """checks whether newlines are consistent between the two strings"""
         if not helpers.countsmatch(str1, str2, (u"\n", u"\r")):
-            raise FilterFailure(u"line endings in original don't match "
+            raise FilterFailure(u"Line endings in original don't match "
                                 "line endings in translation")
         else:
             return True
@@ -562,7 +562,7 @@ class StandardChecker(TranslationChecker):
     def tabs(self, str1, str2):
         """checks whether tabs are consistent between the two strings"""
         if not helpers.countmatch(str1, str2, "\t"):
-            raise SeriousFilterFailure(u"tabs in original don't match "
+            raise SeriousFilterFailure(u"Tabs in original don't match "
                                        "tabs in translation")
         else:
             return True
@@ -688,20 +688,20 @@ class StandardChecker(TranslationChecker):
                 continue
             if count1 == 1 and count2 == 0:
                 if countbad2 == 1:
-                    messages.append(u"accelerator %s appears before an invalid "
+                    messages.append(u"Accelerator '%s' appears before an invalid "
                                     "accelerator character '%s' (eg. space)" %
                                     (accelmarker, bad2[0]))
                 else:
-                    messages.append(u"accelerator %s is missing from translation" %
+                    messages.append(u"Accelerator '%s' is missing from translation" %
                                     accelmarker)
             elif count1 == 0:
-                messages.append(u"accelerator %s does not occur in original "
+                messages.append(u"Accelerator '%s' does not occur in original "
                                 "and should not be in translation" % accelmarker)
             elif count1 == 1 and count2 > count1:
-                messages.append(u"accelerator %s is repeated in translation" %
+                messages.append(u"Accelerator '%s' is repeated in translation" %
                                 accelmarker)
             else:
-                messages.append(u"accelerator %s occurs %d time(s) in original "
+                messages.append(u"Accelerator '%s' occurs %d time(s) in original "
                                 "and %d time(s) in translation" %
                                 (accelmarker, count1, count2))
         if messages:
@@ -758,9 +758,9 @@ class StandardChecker(TranslationChecker):
                 mismatch1.extend(vars1)
                 mismatch2.extend(vars2)
         if mismatch1:
-            messages.append(u"do not translate: %s" % u", ".join(mismatch1))
+            messages.append(u"Do not translate: %s" % u", ".join(mismatch1))
         elif mismatch2:
-            messages.append(u"translation contains variables not in original: %s" % u", ".join(mismatch2))
+            messages.append(u"Translation contains variables not in original: %s" % u", ".join(mismatch2))
         if messages and mismatch1:
             raise SeriousFilterFailure(messages)
         elif messages:
@@ -833,9 +833,9 @@ class StandardChecker(TranslationChecker):
             elif count2 > count1:
                 extra.append(u"'%s'" % bracket)
         if missing:
-            messages.append(u"translation is missing %s" % u", ".join(missing))
+            messages.append(u"Translation is missing %s" % u", ".join(missing))
         if extra:
-            messages.append(u"translation has extra %s" % u", ".join(extra))
+            messages.append(u"Translation has extra %s" % u", ".join(extra))
         if messages:
             raise FilterFailure(messages)
         return True
@@ -924,7 +924,7 @@ class StandardChecker(TranslationChecker):
                 if str2.find(word) == -1:
                     acronyms.append(word)
         if acronyms:
-            raise FilterFailure(u"acronyms should not be translated: %s" %
+            raise FilterFailure(u"Consider not translating acronyms: %s" %
                                 u", ".join(acronyms))
         return True
 
@@ -955,7 +955,7 @@ class StandardChecker(TranslationChecker):
         words2 = self.filteraccelerators(str2).split()
         stopwords = [word for word in words1 if word in self.config.notranslatewords and word not in words2]
         if stopwords:
-            raise FilterFailure(u"do not translate: %s" %
+            raise FilterFailure(u"Do not translate: %s" %
                                 (u", ".join(stopwords)))
         return True
 
@@ -975,7 +975,7 @@ class StandardChecker(TranslationChecker):
         words2 = self.filteraccelerators(str2).split()
         stopwords = [word for word in words1 if word in self.config.musttranslatewords and word in words2]
         if stopwords:
-            raise FilterFailure(u"please translate: %s" % (u", ".join(stopwords)))
+            raise FilterFailure(u"Please translate: %s" % (u", ".join(stopwords)))
         return True
 
     def validchars(self, str1, str2):
@@ -987,7 +987,7 @@ class StandardChecker(TranslationChecker):
         invalid2 = str2.translate(self.config.validcharsmap)
         invalidchars = [u"'%s' (\\u%04x)" % (invalidchar, ord(invalidchar)) for invalidchar in invalid2 if invalidchar not in invalid1]
         if invalidchars:
-            raise FilterFailure(u"invalid chars: %s" % (u", ".join(invalidchars)))
+            raise FilterFailure(u"Invalid characters: %s" % (u", ".join(invalidchars)))
         return True
 
     def filepaths(self, str1, str2):
@@ -1075,7 +1075,7 @@ class StandardChecker(TranslationChecker):
             # hack to ignore hyphenisation rules
             if word in suggestions:
                 continue
-            messages.append(u"check spelling of %s (could be %s)" %
+            messages.append(u"Check the spelling of %s (could be %s)" %
                             (word, u" / ".join(suggestions[:5])))
         if messages:
             raise FilterFailure(messages)
@@ -1228,7 +1228,7 @@ class GnomeChecker(StandardChecker):
                 #stopwords = [word for word in words1 if word in self.config.notranslatewords and word not in words2]
                 stopwords = [word for word in gconf_attributes if word[1:-1] not in str2]
                 if stopwords:
-                    raise FilterFailure(u"do not translate gconf attribute: %s" %
+                    raise FilterFailure(u"Do not translate gconf attributes: %s" %
                                         (u", ".join(stopwords)))
         return True
 
