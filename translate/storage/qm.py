@@ -87,7 +87,7 @@ class qmfile(base.TranslationStore):
 
     def __str__(self):
         """Output a string representation of the .qm data file"""
-        return ""
+        raise Exception("Writing of .qm files is not supported yet")
 
     def parse(self, input):
         """parses the given file or file source string"""
