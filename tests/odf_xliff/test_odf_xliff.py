@@ -28,7 +28,7 @@ from lxml import etree
 
 from translate.convert import odf2xliff
 from translate.convert import xliff2odf
-from translate.storage import factory
+from translate.storage import factory, xliff
 
 
 def setup_module(module):
@@ -57,7 +57,7 @@ def args(src, tgt, **kwargs):
 def xliff___eq__(self, other):
     return self.units == other.units
 
-factory.classes[u'xlf'].__eq__ = xliff___eq__
+xliff.xlifffile.__eq__ = xliff___eq__
 
 
 def print_diff(store1, store2):
