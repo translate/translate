@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 #
-# Copyright 2004-2009 Zuza Software Foundation
+# Copyright 2004-2010 Zuza Software Foundation
 #
 # This file is part of translate.
 #
@@ -33,19 +33,19 @@ from translate.storage import poheader, po
 from translate.storage import catkeys
 
 
-def convertpot(input_file, output_file, template_file, tm=None, min_similarity=75, fuzzymatching=True, classes=factory.classes, **kwargs):
+def convertpot(input_file, output_file, template_file, tm=None, min_similarity=75, fuzzymatching=True, classes=None, classes_str=factory.classes_str, **kwargs):
     """Main conversion function"""
 
-    input_store = factory.getobject(input_file, classes=classes)
+    input_store = factory.getobject(input_file, classes=classes, classes_str=classes_str)
     try:
-        temp_store = factory.getobject(input_file, classes=classes)
+        temp_store = factory.getobject(input_file, classes_str=classes_str)
     except:
         # StringIO and other file like objects will be closed after parsing
         temp_store = None
 
     template_store = None
     if template_file is not None:
-        template_store = factory.getobject(template_file, classes=classes)
+        template_store = factory.getobject(template_file, classes_str=classes_str)
     output_store = convert_stores(input_store, template_store, temp_store, tm, min_similarity, fuzzymatching, **kwargs)
     output_file.write(str(output_store))
     return 1
