@@ -214,23 +214,25 @@ def getobject(storefile, ignore=None, classes=classes, hiddenclasses=hiddenclass
     return store
 
 
+supported = [
+        ('Gettext PO file', ['po', 'pot'], ["text/x-gettext-catalog", "text/x-gettext-translation", "text/x-po", "text/x-pot"]),
+        ('XLIFF Translation File', ['xlf', 'xliff', 'sdlxliff'], ["application/x-xliff", "application/x-xliff+xml"]),
+        ('Gettext MO file', ['mo', 'gmo'], ["application/x-gettext-catalog", "application/x-mo"]),
+        ('Qt .qm file', ['qm'], ["application/x-qm"]),
+        ('TBX Glossary', ['tbx'], ['application/x-tbx']),
+        ('TMX Translation Memory', ['tmx'], ["application/x-tmx"]),
+        ('Qt Linguist Translation File', ['ts'], ["application/x-linguist"]),
+        ('Qt Phrase Book', ['qph'], ["application/x-qph"]),
+        ('OmegaT Glossary', ['tab'], ["application/x-omegat-glossary"]),
+        ('OmegaT Glossary', ['utf8'], ["application/x-omegat-glossary"]),
+        ('UTX Simple Dictionary', ['utx'], ["text/x-utx"]),
+        ('Haiku catkeys file', ['catkeys'], ["application/x-catkeys"]),
+]
+
 def supported_files():
     """Returns data about all supported files
 
     @return: list of type that include (name, extensions, mimetypes)
     @rtype: list
     """
-
-    supported = {}
-    for supported_class in classes.itervalues():
-        name = getattr(supported_class, "Name", None)
-        if name is None:
-            continue
-        extensions = getattr(supported_class, "Extensions", None)
-        mimetypes = getattr(supported_class, "Mimetypes", None)
-        if not name in supported:
-            supported[name] = (extensions, mimetypes)
-        else:
-            supported[name][0].extend(extensions)
-            supported[name][1].extend(mimetypes)
-    return [(name, ext_mime[0], ext_mime[1]) for name, ext_mime in supported.iteritems()]
+    return supported[:]
