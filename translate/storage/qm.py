@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 #
-# Copyright 2007 Zuza Software Foundation
+# Copyright 2007-2010 Zuza Software Foundation
 #
 # This file is part of translate.
 #
@@ -164,7 +164,7 @@ class qmfile(base.TranslationStore):
                         target = multistring(string)
                     pos = pos + 4 + length
                 else:
-                    target = ""
+                    target = u""
                     pos = pos + 4
                 #print "Translation: %s" % target.encode('utf-8')
             elif subsection == 0x06: # SourceText
