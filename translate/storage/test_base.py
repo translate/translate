@@ -26,7 +26,7 @@ import warnings
 from py import test
 
 from translate.misc.multistring import multistring
-from translate.storage import base
+from translate.storage import base, factory
 from translate.storage.placeables import general, parse as rich_parse
 
 
@@ -332,3 +332,32 @@ class TestTranslationStore(object):
         assert answer == u"Beziér-kurwe"
         #Just test that __str__ doesn't raise exception:
         src = str(store)
+
+    def test_extensions(self):
+        """Test that the factory knows the extensions for this class."""
+        supported = factory.supported_files()
+        supported_dict = dict([ (name, (extensions, mimetypes)) for name, extensions, mimetypes in supported])
+        if not (self.StoreClass.Name and self.StoreClass.Name in supported_dict):
+            return
+        detail = supported_dict[self.StoreClass.Name] # will start to get problematic once translated
+        print "Factory:", detail[0]
+        print "StoreClass:", self.StoreClass.Extensions
+        for ext in detail[0]:
+            assert ext in self.StoreClass.Extensions
+        for ext in self.StoreClass.Extensions:
+            assert ext in detail[0]
+
+    def test_mimetypes(self):
+        """Test that the factory knows the mimetypes for this class."""
+        supported = factory.supported_files()
+        supported_dict = dict([ (name, (extensions, mimetypes)) for name, extensions, mimetypes in supported])
+        if not (self.StoreClass.Name and self.StoreClass.Name in supported_dict):
+            return
+        detail = supported_dict[self.StoreClass.Name] # will start to get problematic once translated
+        print "Factory:", detail[1]
+        print "StoreClass:", self.StoreClass.Mimetypes
+        for ext in detail[1]:
+            assert ext in self.StoreClass.Mimetypes
+        for ext in self.StoreClass.Mimetypes:
+            assert ext in detail[1]
+
