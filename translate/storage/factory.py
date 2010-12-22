@@ -23,70 +23,39 @@
 
 import os
 
-from translate.storage import catkeys
-from translate.storage import csvl10n
-from translate.storage import mo
-from translate.storage import omegat
-from translate.storage import po
-from translate.storage import qm
-try:
-    # trados uses BeutifulSoup which might not be available
-    from translate.storage import trados
-except ImportError:
-    trados = None
-from translate.storage import utx
-from translate.storage import wordfast
-#Let's try to import the XML formats carefully. They might fail if the user
-#doesn't have lxml installed. Let's try to continue gracefully, but print an
-#informative warning.
-try:
-    #Although poxliff is unused in this module, it is referenced in test_factory
-    from translate.storage import poxliff
-    from translate.storage import qph
-    from translate.storage import tbx
-    from translate.storage import tmx
-    from translate.storage import ts2 as ts
-    from translate.storage import xliff
-    support_xml = True
-except ImportError, e:
-    import sys
-    print >> sys.stderr, str(e)
-    support_xml = False
-
 
 #TODO: Monolingual formats (with template?)
-
-classes = {
-           "csv": csvl10n.csvfile,
-           "tab": omegat.OmegaTFileTab, "utf8": omegat.OmegaTFile,
-           "po": po.pofile, "pot": po.pofile,
-           "mo": mo.mofile, "gmo": mo.mofile,
-           "qm": qm.qmfile,
-           "utx": utx.UtxFile,
-           "_wftm": wordfast.WordfastTMFile,
-           "catkeys": catkeys.CatkeysFile,
-          }
-"""Dictionary of file extensions and their associated class.
-
-_ext is a pseudo extension, that is their is no real extension by that name."""
-if trados:
-    classes["_trados_txt_tm"] = trados.TradosTxtTmFile
-
-if support_xml:
-    classes.update({
-           "qph": qph.QphFile,
-           "tbx": tbx.tbxfile,
-           "tmx": tmx.tmxfile,
-           "ts": ts.tsfile,
-           "xliff": xliff.xlifffile, "xlf": xliff.xlifffile,
-           "sdlxliff": xliff.xlifffile,
-    })
 
 decompressclass = {
     'gz': ("gzip", "GzipFile"),
     'bz2': ("bz2", "BZ2File"),
 }
 
+
+classes_str = {
+           "csv": ("csvl10n", "csvfile"),
+           "tab": ("omegat", "OmegaTFileTab"), "utf8": ("omegat", "OmegaTFile"),
+           "po": ("po", "pofile"), "pot": ("po", "pofile"),
+           "mo": ("mo", "mofile"), "gmo": ("mo", "mofile"),
+           "qm": ("qm", "qmfile"),
+           "utx": ("utx", "UtxFile"),
+           "_wftm": ("wordfast", "WordfastTMFile"),
+           "_trados_txt_tm": ("trados", "TradosTxtTmFile"),
+           "catkeys": ("catkeys", "CatkeysFile"),
+
+           "qph": ("qph", "QphFile"),
+           "tbx": ("tbx", "tbxfile"),
+           "tmx": ("tmx", "tmxfile"),
+           "ts":  ("ts2", "tsfile"),
+           "xliff": ("xliff", "xlifffile"), "xlf": ("xliff", "xlifffile"),
+           "sdlxliff": ("xliff", "xlifffile"),
+}
+
+"""Dictionary of file extensions and the names of their associated class.
+
+Used for dynamic lazy loading of modules.
+_ext is a pseudo extension, that is their is no real extension by that name.
+"""
 
 def _examine_txt(storefile):
     """Determine the true filetype for a .txt file"""
@@ -97,6 +66,7 @@ def _examine_txt(storefile):
     except AttributeError:
         raise ValueError("Need to read object to determine type")
     # Some encoding magic for Wordfast
+    from translate.storage import wordfast
     if wordfast.TAB_UTF16 in start.split("\n")[0]:
         encoding = 'utf-16'
     else:
@@ -155,7 +125,7 @@ def _getname(storefile):
     return storefilename
 
 
-def getclass(storefile, ignore=None, classes=classes, hiddenclasses=hiddenclasses):
+def getclass(storefile, ignore=None, classes=None, classes_str=classes_str, hiddenclasses=hiddenclasses):
     """Factory that returns the applicable class for the type of file presented.
     Specify ignore to ignore some part at the back of the name (like .gz). """
     storefilename = _getname(storefile)
@@ -178,13 +148,19 @@ def getclass(storefile, ignore=None, classes=classes, hiddenclasses=hiddenclasse
         else:
             ext = guesserfn(storefile)
     try:
-        storeclass = classes[ext]
+        # we prefer classes (if given) since that is the older API that Pootle uses
+        if classes:
+            storeclass = classes[ext]
+        else:
+            _module, _class = classes_str[ext]
+            module = __import__("translate.storage.%s" % _module, globals(), fromlist=_module)
+            storeclass = getattr(module, _class)
     except KeyError:
         raise ValueError("Unknown filetype (%s)" % storefilename)
     return storeclass
 
 
-def getobject(storefile, ignore=None, classes=classes, hiddenclasses=hiddenclasses):
+def getobject(storefile, ignore=None, classes=None, classes_str=classes_str, hiddenclasses=hiddenclasses):
     """Factory that returns a usable object for the type of file presented.
 
     @type storefile: file or str
@@ -198,7 +174,7 @@ def getobject(storefile, ignore=None, classes=classes, hiddenclasses=hiddenclass
             from translate.storage import directory
             return directory.Directory(storefile)
     storefilename = _getname(storefile)
-    storeclass = getclass(storefile, ignore, classes=classes, hiddenclasses=hiddenclasses)
+    storeclass = getclass(storefile, ignore, classes=classes, classes_str=classes_str, hiddenclasses=hiddenclasses)
     if os.path.exists(storefilename) or not getattr(storefile, "closed", True):
         name, ext = os.path.splitext(storefilename)
         ext = ext[len(os.path.extsep):].lower()
