@@ -44,7 +44,7 @@ try:
     # FIXME see if we can't use lxml
     from BeautifulSoup import BeautifulStoneSoup
 except ImportError:
-    raise ImportError("BeautifulSoup is not installed")
+    raise ImportError("BeautifulSoup is not installed. Support for Trados txt is disabled.")
 
 from translate.storage import base
 
