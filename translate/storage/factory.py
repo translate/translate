@@ -22,8 +22,6 @@
 """factory methods to build real storage objects that conform to base.py"""
 
 import os
-from gzip import GzipFile
-from bz2 import BZ2File
 
 from translate.storage import catkeys
 from translate.storage import csvl10n
@@ -85,8 +83,8 @@ if support_xml:
     })
 
 decompressclass = {
-    'gz': GzipFile,
-    'bz2': BZ2File,
+    'gz': ("gzip", "GzipFile"),
+    'bz2': ("bz2", "BZ2File"),
 }
 
 
@@ -173,7 +171,10 @@ def getclass(storefile, ignore=None, classes=classes, hiddenclasses=hiddenclasse
     if ext in hiddenclasses:
         guesserfn = hiddenclasses[ext]
         if decomp:
-            ext = guesserfn(decompressclass[decomp](storefile))
+            _module, _class = decompressclass[decomp]
+            module = __import__(_module, globals())
+            _file = getattr(module, _class)
+            ext = guesserfn(_file(storefile))
         else:
             ext = guesserfn(storefile)
     try:
@@ -202,7 +203,10 @@ def getobject(storefile, ignore=None, classes=classes, hiddenclasses=hiddenclass
         name, ext = os.path.splitext(storefilename)
         ext = ext[len(os.path.extsep):].lower()
         if ext in decompressclass:
-            storefile = decompressclass[ext](storefilename)
+            _module, _class = decompressclass[ext]
+            module = __import__(_module, globals())
+            _file = getattr(module, _class)
+            storefile = _file(storefilename)
         store = storeclass.parsefile(storefile)
     else:
         store = storeclass()
