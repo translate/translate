@@ -28,3 +28,14 @@ class TestQtFile(test_base.TestTranslationStore):
         # QM does not implement saving
         assert test.raises(Exception, self.StoreClass.savefile,
                            self.StoreClass())
+
+    def test_nonascii(self):
+        # QM does not implement serialising
+        assert test.raises(Exception, self.StoreClass.__str__,
+                           self.StoreClass())
+
+    def test_add(self):
+        # QM does not implement serialising
+        assert test.raises(Exception, self.StoreClass.__str__,
+                           self.StoreClass())
+
