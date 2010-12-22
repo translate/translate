@@ -41,7 +41,7 @@ def getlanguage(code):
             internal_code = prefix + code
         else:
             internal_code = code
-        module = __import__("translate.lang.%s" % internal_code, globals(), fromlist=internal_code)
+        module = __import__("translate.lang.%s" % internal_code, globals(), {}, internal_code)
         langclass = getattr(module, internal_code)
         return langclass(code)
     except ImportError, e:

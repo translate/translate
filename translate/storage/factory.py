@@ -142,7 +142,7 @@ def getclass(storefile, ignore=None, classes=None, classes_str=classes_str, hidd
         guesserfn = hiddenclasses[ext]
         if decomp:
             _module, _class = decompressclass[decomp]
-            module = __import__(_module, globals())
+            module = __import__(_module, globals(), {}, [])
             _file = getattr(module, _class)
             ext = guesserfn(_file(storefile))
         else:
@@ -153,7 +153,7 @@ def getclass(storefile, ignore=None, classes=None, classes_str=classes_str, hidd
             storeclass = classes[ext]
         else:
             _module, _class = classes_str[ext]
-            module = __import__("translate.storage.%s" % _module, globals(), fromlist=_module)
+            module = __import__("translate.storage.%s" % _module, globals(), {}, _module)
             storeclass = getattr(module, _class)
     except KeyError:
         raise ValueError("Unknown filetype (%s)" % storefilename)
@@ -180,7 +180,7 @@ def getobject(storefile, ignore=None, classes=None, classes_str=classes_str, hid
         ext = ext[len(os.path.extsep):].lower()
         if ext in decompressclass:
             _module, _class = decompressclass[ext]
-            module = __import__(_module, globals())
+            module = __import__(_module, globals(), {}, [])
             _file = getattr(module, _class)
             storefile = _file(storefilename)
         store = storeclass.parsefile(storefile)
