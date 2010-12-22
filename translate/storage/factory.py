@@ -25,7 +25,6 @@ import os
 from gzip import GzipFile
 from bz2 import BZ2File
 
-from translate.storage import base
 from translate.storage import catkeys
 from translate.storage import csvl10n
 from translate.storage import mo
@@ -193,8 +192,6 @@ def getobject(storefile, ignore=None, classes=classes, hiddenclasses=hiddenclass
     Specify ignore to ignore some part at the back of the name (like .gz).
     """
 
-    if isinstance(storefile, base.TranslationStore):
-        return storefile
     if isinstance(storefile, basestring):
         if os.path.isdir(storefile) or storefile.endswith(os.path.sep):
             from translate.storage import directory
