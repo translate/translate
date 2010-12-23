@@ -43,7 +43,7 @@ from translate.misc.multistring import multistring
 from translate.storage import factory
 from translate.storage.workflow import StateEnum
 
-kdepluralre = re.compile("^_n: ")
+#kdepluralre = re.compile("^_n: ") #Restore this if you really need support for old kdeplurals
 brtagre = re.compile("<br\s*?/?>")
 xmltagre = re.compile("<[^>]+>")
 numberre = re.compile("\\D\\.\\D")
@@ -69,8 +69,8 @@ state_strings = {
 
 
 def wordcount(string):
-    # TODO: po class should understand KDE style plurals
-    string = kdepluralre.sub("", string)
+    # TODO: po class should understand KDE style plurals ##
+    #string = kdepluralre.sub("", string) #Restore this if you really need support for old kdeplurals
     string = brtagre.sub("\n", string)
     string = xmltagre.sub("", string)
     string = numberre.sub(" ", string)
