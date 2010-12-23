@@ -21,13 +21,13 @@
 """Factory methods to convert supported input files to supported translatable files."""
 
 import os
-import tempfile
 
 from translate.convert import prop2po, po2prop, odf2xliff, xliff2odf
 
 
 __all__ = ['converters', 'convertfile', 'UnknownExtensionError', 'UnsupportedConversionError']
 
+# Turn into property to support lazy loading of things?
 converters = {}
 for module in (prop2po, po2prop, odf2xliff, xliff2odf):
     if not hasattr(module, 'formats'):
@@ -194,6 +194,7 @@ def convert(inputfile, template=None, options=None, convert_options=None):
     #      issues when being closed (and deleted) by the rest of the toolkit
     #      (eg. TranslationStore.savefile()). Therefore none of mkstemp()'s
     #      security features are being utilised.
+    import tempfile
     tempfd, tempfname = tempfile.mkstemp(prefix='ttk_convert', suffix=os.extsep + out_ext)
     os.close(tempfd)
     outputfile = open(tempfname, 'w')
