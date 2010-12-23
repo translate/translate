@@ -200,8 +200,7 @@ supported = [
         ('TMX Translation Memory', ['tmx'], ["application/x-tmx"]),
         ('Qt Linguist Translation File', ['ts'], ["application/x-linguist"]),
         ('Qt Phrase Book', ['qph'], ["application/x-qph"]),
-        ('OmegaT Glossary', ['tab'], ["application/x-omegat-glossary"]),
-        ('OmegaT Glossary', ['utf8'], ["application/x-omegat-glossary"]),
+        ('OmegaT Glossary', ['utf8', 'tab'], ["application/x-omegat-glossary"]),
         ('UTX Simple Dictionary', ['utx'], ["text/x-utx"]),
         ('Haiku catkeys file', ['catkeys'], ["application/x-catkeys"]),
 ]
