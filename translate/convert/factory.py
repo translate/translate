@@ -22,20 +22,20 @@
 
 import os
 
-from translate.convert import prop2po, po2prop, odf2xliff, xliff2odf
+#from translate.convert import prop2po, po2prop, odf2xliff, xliff2odf
 
 
 __all__ = ['converters', 'convertfile', 'UnknownExtensionError', 'UnsupportedConversionError']
 
 # Turn into property to support lazy loading of things?
 converters = {}
-for module in (prop2po, po2prop, odf2xliff, xliff2odf):
-    if not hasattr(module, 'formats'):
-        continue
-    for extension in module.formats:
-        if extension not in converters:
-            converters[extension] = []
-        converters[extension].append(module.formats[extension])
+#for module in (prop2po, po2prop, odf2xliff, xliff2odf):
+#    if not hasattr(module, 'formats'):
+#        continue
+#    for extension in module.formats:
+#        if extension not in converters:
+#            converters[extension] = []
+#        converters[extension].append(module.formats[extension])
 
 
 class UnknownExtensionError(Exception):
