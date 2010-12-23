@@ -31,7 +31,6 @@ __author__ = 'fraser@google.com (Neil Fraser)'
 import re
 import sys
 import time
-import urllib
 
 class diff_match_patch:
   """Class containing the diff, match and patch methods.
@@ -1146,6 +1145,7 @@ class diff_match_patch:
     Returns:
       Delta text.
     """
+    import urllib
     text = []
     for (op, data) in diffs:
       if op == self.DIFF_INSERT:
@@ -1172,6 +1172,7 @@ class diff_match_patch:
     Raises:
       ValueError: If invalid input.
     """
+    import urllib
     if type(delta) == unicode:
       # Deltas should be composed of a subset of ascii chars, Unicode not
       # required.  If this encode raises UnicodeEncodeError, delta is invalid.
@@ -1841,6 +1842,7 @@ class diff_match_patch:
 
       del text[0]
 
+      import urllib
       while len(text) != 0:
         if text[0]:
           sign = text[0][0]
@@ -1891,6 +1893,7 @@ class patch_obj:
     Returns:
       The GNU diff string.
     """
+    import urllib
     if self.length1 == 0:
       coords1 = str(self.start1) + ",0"
     elif self.length1 == 1:
