@@ -50,6 +50,7 @@ classes_str = {
            "xliff": ("xliff", "xlifffile"), "xlf": ("xliff", "xlifffile"),
            "sdlxliff": ("xliff", "xlifffile"),
 }
+###  XXX:  if you add anything here, you must also add it to translate.storage.
 
 """Dictionary of file extensions and the names of their associated class.
 
