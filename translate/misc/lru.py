@@ -31,9 +31,10 @@ class LRUCachingDict(WeakValueDictionary):
     maxsize is reached.
     """
 
-    def __init__(self, maxsize, cullsize=2, *args, **kwargs):
+    def __init__(self, maxsize, cullsize=2, peakmult=10, agressive_gc=True, *args, **kwargs):
         self.cullsize = max(2, cullsize)
         self.maxsize = max(cullsize, maxsize)
+        self.peakmult = peakmult
         self.queue = deque()
         WeakValueDictionary.__init__(self, *args, **kwargs)
 
@@ -75,7 +76,7 @@ class LRUCachingDict(WeakValueDictionary):
             # appended again
             self.queue.pop()
 
-        if len(self) >= self.maxsize:
+        if len(self) >= self.maxsize or len(self.queue) >= self.maxsize * self.peakmult:
             self.cull()
 
         self.queue.append((key, value))
