@@ -245,7 +245,7 @@ class tsunit(lisa.LISAunit):
         return self._gettype() == "unfinished"
 
     def isfuzzy(self):
-        return self._gettype() == "unfinished"
+        return self._gettype() == "unfinished" and self.target
 
     def markfuzzy(self, value=True):
         if value:

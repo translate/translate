@@ -61,7 +61,8 @@ class xliffunit(lisa.LISAunit):
     S_SIGNED_OFF = state.FINAL
     S_FINAL = state.MAX
 
-    statemap = {"new": S_UNTRANSLATED + 1,
+    statemap = {
+                "new": S_UNTRANSLATED + 1,
                 "needs-translation": S_NEEDS_TRANSLATION,
                 "needs-adaptation": S_NEEDS_TRANSLATION + 1,
                 "needs-l10n": S_NEEDS_TRANSLATION + 2,
@@ -350,7 +351,7 @@ class xliffunit(lisa.LISAunit):
 #        return not targetnode is None and \
 #                (targetnode.get("state-qualifier") == "fuzzy-match" or \
 #                targetnode.get("state") == "needs-review-translation")
-        return not self.isapproved()
+        return not self.isapproved() and self.target
 
     def markfuzzy(self, value=True):
         state_id = self.get_state_id()
