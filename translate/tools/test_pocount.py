@@ -1,6 +1,8 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
+from py.test import mark
+
 from translate.storage import po
 from translate.storage import statsdb
 
@@ -64,6 +66,7 @@ class TestPOCount:
         # msgstr[0] "e paletšwe go hwetša sešireletši sa seswantšho sa paete ya %u"
         # msgstr[1] "e paletšwe go hwetša sešireletši sa seswantšho sa dipaete tša %u"
 
+    @mark.xfail(reason="Support commented out pending removal")
     def test_plurals_kde(self):
         """test that we correcly count old style KDE plurals"""
         self.count("_n: Singular\\n\nPlural", 2, "Een\\n\ntwee\\n\ndrie", 3)
