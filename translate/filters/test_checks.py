@@ -88,9 +88,9 @@ def test_accelerator_markers():
 def test_messages():
     """test that our helpers can check for messages and that these error messages can contain Unicode"""
     stdchecker = checks.StandardChecker(checks.CheckerConfig(validchars='ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz'))
-    assert fails(stdchecker.validchars, "Some unexpected characters", "©", "invalid chars: '©' (\\u00a9)")
+    assert fails(stdchecker.validchars, "Some unexpected characters", "©", "Invalid characters: '©' (\\u00a9)")
     stdchecker = checks.StandardChecker()
-    assert fails_serious(stdchecker.escapes, r"A tab", r"'n Ṱab\t", r"""escapes in original () don't match escapes in translation ('Ṱab\t')""")
+    assert fails_serious(stdchecker.escapes, r"A tab", r"'n Ṱab\t", r"""Escapes in original () don't match escapes in translation ('Ṱab\t')""")
 
 
 def test_accelerators():
