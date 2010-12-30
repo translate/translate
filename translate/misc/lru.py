@@ -92,6 +92,8 @@ class LRUCachingDict(WeakValueDictionary):
 
         # only append if item is not at right end of queue
         if not (len(self.queue) and self.queue[-1][0] == key):
+            if len(self) >= self.maxsize or len(self.queue) >= self.maxsize * self.peakmult:
+                self.cull()
             self.queue.append((key, value))
 
         return value
