@@ -34,6 +34,7 @@ class LRUCachingDict(WeakValueDictionary):
     def __init__(self, maxsize, cullsize=2, peakmult=10, agressive_gc=True, *args, **kwargs):
         self.cullsize = max(2, cullsize)
         self.maxsize = max(cullsize, maxsize)
+        self.agressive_gc = agressive_gc
         self.peakmult = peakmult
         self.queue = deque()
         WeakValueDictionary.__init__(self, *args, **kwargs)
@@ -51,7 +52,7 @@ class LRUCachingDict(WeakValueDictionary):
         while len(self) >= self.maxsize <= len(self.queue):
             cullsize = max(int(len(self.queue) / self.cullsize), 2)
             try:
-                for i in range(cullsize):
+                for i in xrange(cullsize):
                     self.queue.popleft()
             except IndexError:
                 # queue is empty, bail out.
@@ -61,8 +62,10 @@ class LRUCachingDict(WeakValueDictionary):
             # call garbage collecter manually since objects
             # with circular references take some time to get
             # collected
-            for i in xrange(5):
-                gc.collect()
+            if self.agressive_gc:
+                rounds = min(max(int(self.agressive_gc), 5), 50)
+                for i in xrange(rounds):
+                    gc.collect()
 
     def __setitem__(self, key, value):
         # check boundaries to minimiza duplicate references
