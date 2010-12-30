@@ -66,6 +66,8 @@ class LRUCachingDict(WeakValueDictionary):
                 rounds = min(max(int(self.aggressive_gc), 5), 50)
                 for i in xrange(rounds):
                     gc.collect()
+            else:
+                gc.collect()
 
     def __setitem__(self, key, value):
         # check boundaries to minimiza duplicate references
