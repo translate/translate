@@ -39,6 +39,7 @@ from translate.lang import data
 from translate.misc.multistring import multistring
 from translate.storage import base, lisa
 from translate.storage.placeables import general
+from translate.storage.workflow import StateEnum as state
 
 # TODO: handle translation types
 
@@ -70,6 +71,28 @@ class tsunit(lisa.LISAunit):
     textNode = ""
     namespace = ''
     rich_parsers = general.parsers
+
+    S_OBSOLETE = state.OBSOLETE
+    S_UNTRANSLATED = state.EMPTY
+    S_FUZZY = state.NEEDS_WORK
+    S_TRANSLATED = state.UNREVIEWED
+
+    statemap = {
+                "obsolete": S_OBSOLETE,
+                "unfinished": S_FUZZY,
+                "": S_TRANSLATED,
+                None: S_TRANSLATED,
+    }
+    """This maps the unit "type" attribute to state."""
+
+    STATE = {
+        S_OBSOLETE: (state.OBSOLETE, state.EMPTY),
+        S_UNTRANSLATED: (state.EMPTY, state.NEEDS_WORK),
+        S_FUZZY: (state.NEEDS_WORK, state.UNREVIEWED),
+        S_TRANSLATED: (state.UNREVIEWED, state.MAX),
+    }
+
+    statemap_r = dict((i[1], i[0]) for i in statemap.iteritems())
 
     def createlanguageNode(self, lang, text, purpose):
         """Returns an xml Element setup with given parameters."""
@@ -293,6 +316,27 @@ class tsunit(lisa.LISAunit):
 
     def isobsolete(self):
         return self._gettype() == "obsolete"
+
+    def get_state_n(self):
+        type = self._gettype()
+        if type == "unfinished":
+            # We want to distinguish between fuzzy and untranslated, which the
+            # format doesn't really do
+            if self.target:
+                return self.S_FUZZY
+            else:
+                return self.S_UNTRANSLATED
+        return self.statemap[type]
+
+    def set_state_n(self, value):
+        if value not in self.statemap_r:
+            value = self.get_state_id(value)
+
+        if value == self.S_UNTRANSLATED:
+            # No real way of representing that in the format, so we just
+            # handle it the same as unfinished
+            value = self.S_FUZZY
+        self._settype(self.statemap_r[value])
 
 
 class tsfile(lisa.LISAfile):
