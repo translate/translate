@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 #
 # Copyright (c) 2006 Thomas Mangin
-# Copyright (c) 2009 Zuza Software Foundation
+# Copyright (c) 2009-2010 Zuza Software Foundation
 #
 # This program is distributed under Gnu General Public License
 # (cf. the file COPYING in distribution). Alternatively, you can use
@@ -24,20 +24,25 @@
 #
 # Orignal file from http://thomas.mangin.me.uk/data/source/ngram.py
 
+import sys
 import re
+from os import path
+import glob
+
 
 nb_ngrams = 400
+white_space_re = re.compile('\s+')
 
 
 class _NGram:
 
-    def __init__(self, arg={}):
+    def __init__(self, arg=None):
         if isinstance(arg, basestring):
             self.addText(arg)
             self.normalise()
         elif isinstance(arg, dict):
+            # This must already be normalised!
             self.ngrams = arg
-            self.normalise()
         else:
             self.ngrams = dict()
 
@@ -47,38 +52,34 @@ class _NGram:
 
         ngrams = dict()
 
-        text = text.replace('\n', ' ')
-        text = re.sub('\s+', ' ', text)
-        words = text.split(' ')
-
-        for word in words:
-            word = '_' + word + '_'
+        for word in white_space_re.split(text):
+            word = '_%s_' % word
             size = len(word)
-            for i in xrange(size):
+            for i in xrange(size - 1):
                 for s in (1, 2, 3, 4):
-                    sub = word[i:i + s]
+                    end = i+s
+                    if end >= size:
+                        break
+                    sub = word[i:end]
+
                     if not sub in ngrams:
                         ngrams[sub] = 0
                     ngrams[sub] += 1
 
-                    if i + s >= size:
-                        break
         self.ngrams = ngrams
         return self
 
-    def sorted(self):
-        sorted = [(self.ngrams[k], k) for k in self.ngrams.keys()]
+    def sorted_by_score(self):
+        sorted = [(self.ngrams[k], k) for k in self.ngrams]
         sorted.sort()
         sorted.reverse()
         sorted = sorted[:nb_ngrams]
         return sorted
 
     def normalise(self):
-        count = 0
         ngrams = {}
-        for v, k in self.sorted():
+        for count, (v, k) in enumerate(self.sorted_by_score()):
             ngrams[k] = count
-            count += 1
 
         self.ngrams = ngrams
         return self
@@ -90,7 +91,7 @@ class _NGram:
     def compare(self, ngram):
         d = 0
         ngrams = ngram.ngrams
-        for k in self.ngrams.keys():
+        for k in self.ngrams:
             if k in ngrams:
                 d += abs(ngrams[k] - self.ngrams[k])
             else:
@@ -98,56 +99,39 @@ class _NGram:
         return d
 
 
-import os
-import glob
-
 
 class NGram:
 
     def __init__(self, folder, ext='.lm'):
         self.ngrams = dict()
-        folder = os.path.join(folder, '*' + ext)
+        folder = path.join(folder, '*' + ext)
         size = len(ext)
-        count = 0
 
-        for fname in glob.glob(os.path.normcase(folder)):
-            count += 1
-            lang = os.path.split(fname)[-1][:-size]
+        for fname in glob.glob(path.normcase(folder)):
+            lang = path.split(fname)[-1][:-size]
             ngrams = {}
-            lines = open(fname, 'r').readlines()
-
             try:
-                i = len(lines)
-                for line in lines:
-                    line = line.decode('utf-8')
-                    parts = line[:-1].split()
-                    if len(parts) != 2:
-                        try:
-                            ngrams[parts[0]] = i
-                        except IndexError:
-                            # Line probably only contained spaces, if anything
-                            pass
-                    else:
-                        ngrams[parts[0]] = int(parts[1])
-                    i -= 1
+                f = open(fname, 'r')
+                lines = f.read().decode('utf-8').splitlines()
+                for i, line in enumerate(lines):
+                    ngram, _t, _f = line.partition(u'\t')
+                    ngrams[ngram] = i
             except UnicodeDecodeError, e:
                 continue
 
             if ngrams:
                 self.ngrams[lang] = _NGram(ngrams)
 
-        if not count:
+        if not self.ngrams:
             raise ValueError("no language files found")
 
     def classify(self, text):
         ngram = _NGram(text)
         r = 'guess'
 
-        langs = self.ngrams.keys()
-        r = langs.pop()
-        min = self.ngrams[r].compare(ngram)
+        min = sys.maxint
 
-        for lang in langs:
+        for lang in self.ngrams:
             d = self.ngrams[lang].compare(ngram)
             if d < min:
                 min = d
@@ -162,11 +146,11 @@ class Generate:
 
     def __init__(self, folder, ext='.txt'):
         self.ngrams = dict()
-        folder = os.path.join(folder, '*' + ext)
+        folder = path.join(folder, '*' + ext)
         size = len(ext)
 
-        for fname in glob.glob(os.path.normcase(folder)):
-            lang = os.path.split(fname)[-1][:-size]
+        for fname in glob.glob(path.normcase(folder)):
+            lang = path.split(fname)[-1][:-size]
             n = _NGram()
 
             file = open(fname, 'r')
@@ -179,9 +163,9 @@ class Generate:
 
     def save(self, folder, ext='.lm'):
         for lang in self.ngrams.keys():
-            fname = os.path.join(folder, lang + ext)
+            fname = path.join(folder, lang + ext)
             file = open(fname, 'w')
-            for v, k in self.ngrams[lang].sorted():
+            for v, k in self.ngrams[lang].sorted_by_score():
                 file.write("%s\t %d\n" % (k, v))
             file.close()
 
