@@ -532,6 +532,8 @@ def test_sentencecount():
     assert passes(stdchecker.sentencecount, "One two three", "Een twee drie.")
     assert fails(stdchecker.sentencecount, "One. Two. Three.", "Een Twee. Drie.")
     assert passes(stdchecker.sentencecount, "Sentence with i.e. in it.", "Sin met d.w.s. in dit.") # bug 178, description item 8
+    el_checker = checks.StandardChecker(checks.CheckerConfig(targetlanguage='el'))
+    assert fails(el_checker.sentencecount, "First sentence. Second sentence.", "Πρώτη πρόταση. δεύτερη πρόταση.")
 
 
 def test_short():
