@@ -422,6 +422,8 @@ class poheader(object):
         headeritems = self.makeheaderdict(**kwargs)
         headervalue = ""
         for (key, value) in headeritems.items():
+            if value is None:
+                continue
             headervalue += "%s: %s\n" % (key, value)
         headerpo.target = headervalue
         return headerpo
