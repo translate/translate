@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 #
-# Copyright 2007 Zuza Software Foundation
+# Copyright 2007-2009,2011 Zuza Software Foundation
 #
 # This file is part of translate.
 #
@@ -35,12 +35,12 @@ class el(common.Common):
     # Greek uses ; as question mark and the middot instead
     sentenceend = u".!;…"
 
-    sentencere = re.compile(r"""(?s)    #make . also match newlines
+    sentencere = re.compile(ur"""(?s)   #make . also match newlines
                             .*?         #anything, but match non-greedy
                             [%s]        #the puntuation for sentence ending
                             \s+         #the spacing after the puntuation
-                            (?=[^a-z\d])#lookahead that next part starts with caps
-                            """ % sentenceend, re.VERBOSE)
+                            (?=[^a-zά-ώ\d])#lookahead that next part starts with caps
+                            """ % sentenceend, re.VERBOSE | re.UNICODE)
 
     puncdict = {
         u"?": u";",

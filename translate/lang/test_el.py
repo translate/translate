@@ -22,3 +22,7 @@ def test_sentences():
 
     sentences = language.sentences(u"Θέλετε να αποθηκεύσετε το παιχνίδι σας; (Θα σβησθούν οι Αυτόματες-Αποθηκεύσεις)")
     assert sentences == [u"Θέλετε να αποθηκεύσετε το παιχνίδι σας;", u"(Θα σβησθούν οι Αυτόματες-Αποθηκεύσεις)"]
+    sentences = language.sentences(u"Πρώτη πρόταση. Δεύτερη πρόταση.")
+    assert sentences == [u"Πρώτη πρόταση.", u"Δεύτερη πρόταση."]
+    sentences = language.sentences(u"Πρώτη πρόταση. δεύτερη πρόταση.")
+    assert sentences == [u"Πρώτη πρόταση. δεύτερη πρόταση."]
