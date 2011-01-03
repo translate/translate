@@ -23,5 +23,6 @@ def test_sentences():
     assert sentences == []
 
     sentences = language.sentences(u"Արխիվն արդեն գոյություն ունի։ Դուք ցանկանու՞մ եք կրկին գրել այն։")
-    print sentences
     assert sentences == [u"Արխիվն արդեն գոյություն ունի։", u"Դուք ցանկանու՞մ եք կրկին գրել այն։"]
+    sentences = language.sentences(u"Արխիվն արդեն գոյություն ունի։ դուք ցանկանու՞մ եք կրկին գրել այն։")
+    assert sentences == [u"Արխիվն արդեն գոյություն ունի։ դուք ցանկանու՞մ եք կրկին գրել այն։"]
