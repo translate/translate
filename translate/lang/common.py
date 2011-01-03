@@ -149,12 +149,12 @@ class Common(object):
     #what works, see test_common.py. We try to ignore abbreviations, for
     #example, by checking that the following sentence doesn't start with lower
     #case or numbers.
-    sentencere = re.compile(r"""(?s)    #make . also match newlines
+    sentencere = re.compile(ur"""(?s)   #make . also match newlines
                             .*?         #anything, but match non-greedy
                             [%s]        #the puntuation for sentence ending
                             \s+         #the spacing after the puntuation
-                            (?=[^a-z\d])#lookahead that next part starts with caps
-                            """ % sentenceend, re.VERBOSE)
+                            (?=[^a-zа-џ\d])#lookahead that next part starts with caps
+                            """ % sentenceend, re.VERBOSE | re.UNICODE)
 
     puncdict = {}
     """A dictionary of punctuation transformation rules that can be used by
