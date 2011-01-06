@@ -1293,7 +1293,7 @@ class StandardUnitChecker(UnitChecker):
             # if we don't have a valid nplurals value, don't run the test
             nplurals = self.config.lang.nplurals
             if nplurals > 0:
-                return len(unit.target.strings) == nplurals
+                return len(filter(None, unit.target.strings)) == nplurals
         return True
 
     def hassuggestion(self, unit):
