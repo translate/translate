@@ -94,6 +94,7 @@ languages = {
 'lo': (u'Lao', 1, '0'),
 'lt': (u'Lithuanian', 3, '(n%10==1 && n%100!=11 ? 0 : n%10>=2 && (n%100<10 || n%100>=20) ? 1 : 2)'),
 'lv': (u'Latvian', 3, '(n%10==1 && n%100!=11 ? 0 : n != 0 ? 1 : 2)'),
+'mai': (u'Maithili', 2, '(n != 1)'),
 'mg': (u'Malagasy', 2, '(n > 1)'),
 'mi': (u'Maori', 2, '(n > 1)'),
 'mk': (u'Macedonian', 2, 'n==1 || n%10==1 ? 0 : 1'),
