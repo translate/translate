@@ -113,9 +113,15 @@ class NGram:
             try:
                 f = open(fname, 'r')
                 lines = f.read().decode('utf-8').splitlines()
-                for i, line in enumerate(lines):
-                    ngram, _t, _f = line.partition(u'\t')
-                    ngrams[ngram] = i
+                try:
+                    for i, line in enumerate(lines):
+                        ngram, _t, _f = line.partition(u'\t')
+                        ngrams[ngram] = i
+                except AttributeError, e:
+                    # Python2.4 doesn't have unicode.partition()
+                    for i, line in enumerate(lines):
+                        ngram = line.split(u'\t')[0]
+                        ngrams[ngram] = i
             except UnicodeDecodeError, e:
                 continue
 
