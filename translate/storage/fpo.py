@@ -311,6 +311,9 @@ class pounit(pocommon.pounit):
     def istranslatable(self):
         return not (self.isheader() or self.isblank() or self.isobsolete())
 
+    def isfuzzy(self):
+        return self.hastypecomment("fuzzy")
+
     def _domarkfuzzy(self, present=True):
         self.settypecomment("fuzzy", present)
 

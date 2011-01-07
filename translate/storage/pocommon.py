@@ -105,7 +105,8 @@ class pounit(base.TranslationUnit):
         return self.STATE[self.S_OBSOLETE][0] <= self.get_state_n() < self.STATE[self.S_OBSOLETE][1]
 
     def isfuzzy(self):
-        return self.STATE[self.S_FUZZY][0] <= self.get_state_n() < self.STATE[self.S_FUZZY][1]
+        # implementation specific fuzzy detection, must not use get_state_n()
+        raise NotImplementedError()
 
     def markfuzzy(self, present=True):
         if present:

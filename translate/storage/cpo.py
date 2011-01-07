@@ -445,11 +445,8 @@ class pounit(pocommon.pounit):
                 return True
         return False
 
-    #def isfuzzy(self):
-    #    state_is_fuzzy = self.STATE[self.S_FUZZY][0] <= self.get_state_n() < self.STATE[self.S_FUZZY][1]
-    #    if gpo.po_message_is_fuzzy(self._gpo_message) != state_is_fuzzy:
-    #        raise ValueError('Inconsistent fuzzy state')
-    #    return super(pounit, self).isfuzzy()
+    def isfuzzy(self):
+        return gpo.po_message_is_fuzzy(self._gpo_message)
 
     def _domarkfuzzy(self, present=True):
         gpo.po_message_set_fuzzy(self._gpo_message, present)

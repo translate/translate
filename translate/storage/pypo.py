@@ -492,10 +492,7 @@ class pounit(pocommon.pounit):
                 self.typecomments = filter(lambda tcline: tcline.strip() != "#,", typecomments)
 
     def isfuzzy(self):
-        state_isfuzzy = self.STATE[self.S_FUZZY][0] <= self.get_state_n() < self.STATE[self.S_FUZZY][1]
-        if self.hastypecomment('fuzzy') != state_isfuzzy:
-            raise ValueError('Inconsistent fuzzy state')
-        return super(pounit, self).isfuzzy()
+        return self.hastypecomment('fuzzy')
 
     def markfuzzy(self, present=True):
         if present:
