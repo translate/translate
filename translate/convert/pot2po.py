@@ -153,14 +153,12 @@ def _store_post_merge_pofile(input_store, output_store, template_store):
     if template_store:
         newlyobsoleted = []
         for unit in template_store.units:
-            if not unit.istranslatable() or not unit.istranslated():
+            if unit.isheader() or unit.isblank():
                 continue
             if unit.target and not (input_store.findid(unit.getid()) or hasattr(unit, "reused")):
                 #not in .pot, make it obsolete
                 unit.makeobsolete()
                 newlyobsoleted.append(unit)
-            elif unit.isobsolete():
-                output_store.addunit(unit)
         for unit in newlyobsoleted:
             output_store.addunit(unit)
 
