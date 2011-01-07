@@ -655,7 +655,7 @@ class TranslationStore(object):
         self.id_index = {}
         for index, unit in enumerate(self.units):
             unit.index = index
-            if unit.istranslatable():
+            if not (unit.isheader() or unit.isblank()):
                 self.add_unit_to_index(unit)
 
     def require_index(self):
