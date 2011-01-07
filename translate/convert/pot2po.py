@@ -137,16 +137,6 @@ def _unit_post_merge(input_unit, input_store, output_store, template_store, **kw
 
 
 ##format specific functions
-def _prepare_merge_pofile(input_store, output_store, template_store):
-    """PO format specific template preparation logic."""
-    #we need to revive obsolete units to be able to consider
-    #their translation when matching
-    if template_store:
-        for unit in template_store.units:
-            if unit.isobsolete():
-                unit.resurrect()
-
-
 def _unit_post_merge_pounit(input_unit, input_store, output_store, template_store):
     """PO format specific plural string initializtion logic."""
     #FIXME: do we want to do that for poxliff also?
