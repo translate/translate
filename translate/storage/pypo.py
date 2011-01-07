@@ -162,11 +162,6 @@ class pounit(pocommon.pounit):
         self.msgid_pluralcomments = []
         self.msgid_plural = []
         self.msgstr = []
-        self.obsoletemsgctxt = []
-        self.obsoletemsgid = []
-        self.obsoletemsgid_pluralcomments = []
-        self.obsoletemsgid_plural = []
-        self.obsoletemsgstr = []
         pocommon.pounit.__init__(self, source)
 
     def _initallcomments(self, blankall=False):
@@ -177,7 +172,6 @@ class pounit(pocommon.pounit):
             self.sourcecomments = []
             self.typecomments = []
             self.msgidcomments = []
-            self.obsoletemsgidcomments = []
 
     def _get_all_comments(self):
         return [self.othercomments,
@@ -185,7 +179,7 @@ class pounit(pocommon.pounit):
                 self.sourcecomments,
                 self.typecomments,
                 self.msgidcomments,
-                self.obsoletemsgidcomments]
+                ]
 
     allcomments = property(_get_all_comments)
 
@@ -517,41 +511,12 @@ class pounit(pocommon.pounit):
     def makeobsolete(self):
         """Makes this unit obsolete"""
         self.obsolete = True
-        if self.msgctxt:
-            self.obsoletemsgctxt = self.msgctxt
-        if self.msgid:
-            self.obsoletemsgid = self.msgid
-            self.msgid = []
-        if self.msgidcomments:
-            self.obsoletemsgidcomments = self.msgidcomments
-            self.msgidcomments = []
-        if self.msgid_plural:
-            self.obsoletemsgid_plural = self.msgid_plural
-            self.msgid_plural = []
-        if self.msgstr:
-            self.obsoletemsgstr = self.msgstr
-            self.msgstr = []
         self.sourcecomments = []
         self.automaticcomments = []
 
     def resurrect(self):
         """Makes an obsolete unit normal"""
         self.obsolete = False
-        if self.obsoletemsgctxt:
-            self.msgid = self.obsoletemsgctxt
-            self.obsoletemsgctxt = []
-        if self.obsoletemsgid:
-            self.msgid = self.obsoletemsgid
-            self.obsoletemsgid = []
-        if self.obsoletemsgidcomments:
-            self.msgidcomments = self.obsoletemsgidcomments
-            self.obsoletemsgidcomments = []
-        if self.obsoletemsgid_plural:
-            self.msgid_plural = self.obsoletemsgid_plural
-            self.obsoletemsgid_plural = []
-        if self.obsoletemsgstr:
-            self.msgstr = self.obsoletemsgstr
-            self.obsoletemgstr = []
 
     def hasplural(self):
         """returns whether this pounit contains plural strings..."""
@@ -634,12 +599,12 @@ class pounit(pocommon.pounit):
             lines.extend(self.typecomments)
             obsoletelines = []
             add_prev_msgid_info(obsoletelines, prefix="#~|")
-            if self.obsoletemsgctxt:
-                obsoletelines.append(self._getmsgpartstr("#~ msgctxt", self.obsoletemsgctxt))
-            obsoletelines.append(self._getmsgpartstr("#~ msgid", self.obsoletemsgid, self.obsoletemsgidcomments))
-            if self.obsoletemsgid_plural or self.obsoletemsgid_pluralcomments:
-                obsoletelines.append(self._getmsgpartstr("#~ msgid_plural", self.obsoletemsgid_plural, self.obsoletemsgid_pluralcomments))
-            obsoletelines.append(self._getmsgpartstr("#~ msgstr", self.obsoletemsgstr))
+            if self.msgctxt:
+                obsoletelines.append(self._getmsgpartstr("#~ msgctxt", self.msgctxt))
+            obsoletelines.append(self._getmsgpartstr("#~ msgid", self.msgid, self.msgidcomments))
+            if self.msgid_plural or self.msgid_pluralcomments:
+                obsoletelines.append(self._getmsgpartstr("#~ msgid_plural", self.msgid_plural, self.msgid_pluralcomments))
+            obsoletelines.append(self._getmsgpartstr("#~ msgstr", self.msgstr))
             for index, obsoleteline in enumerate(obsoletelines):
                 # We need to account for a multiline msgid or msgstr here
                 obsoletelines[index] = obsoleteline.replace('\n"', '\n#~ "')

@@ -328,11 +328,9 @@ def decode_list(lst, decode):
 
 def decode_header(unit, decode):
     for attr in ('msgctxt', 'msgid', 'msgid_pluralcomments',
-                 'msgid_plural', 'msgstr', 'obsoletemsgctxt',
-                 'obsoletemsgid', 'obsoletemsgid_pluralcomments',
-                 'obsoletemsgid_plural', 'obsoletemsgstr',
+                 'msgid_plural', 'msgstr',
                  'othercomments', 'automaticcomments', 'sourcecomments',
-                 'typecomments', 'msgidcomments', 'obsoletemsgidcomments'):
+                 'typecomments', 'msgidcomments'):
         element = getattr(unit, attr)
         if isinstance(element, list):
             setattr(unit, attr, decode_list(element, decode))
