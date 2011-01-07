@@ -110,10 +110,9 @@ class pounit(base.TranslationUnit):
     def markfuzzy(self, present=True):
         if present:
             self.set_state_n(self.STATE[self.S_FUZZY][0])
-        elif self.gettarget():
-            self.set_state_n(self.STATE[self.S_TRANSLATED][0])
         else:
-            self.set_state_n(self.STATE[self.S_UNTRANSLATED][0])
+            self.set_state_n(self.STATE[self.S_TRANSLATED][0])
+        # set_state_n will check if target exists
 
     def makeobsolete(self):
         self.set_state_n(self.STATE[self.S_OBSOLETE][0])
@@ -128,8 +127,20 @@ class pounit(base.TranslationUnit):
 
     def set_state_n(self, value):
         super(pounit, self).set_state_n(value)
-        isfuzzy = self.STATE[self.S_FUZZY][0] <= value < self.STATE[self.S_FUZZY][1]
-        self._domarkfuzzy(isfuzzy) # Implementation specific fuzzy-marking
+        has_target = False
+        if self.hasplural():
+            for string in self.target.strings:
+                if string:
+                    has_target = True
+                    break
+        else:
+            has_target = bool(self.target)
+        if has_target:
+            isfuzzy = self.STATE[self.S_FUZZY][0] <= value < self.STATE[self.S_FUZZY][1]
+            self._domarkfuzzy(isfuzzy) # Implementation specific fuzzy-marking
+        else:
+            super(pounit, self).set_state_n(self.S_UNTRANSLATED)
+            self._domarkfuzzy(False)
 
 
 def encodingToUse(encoding):
