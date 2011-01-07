@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 #
-# Copyright 2002-2009 Zuza Software Foundation
+# Copyright 2002-2011 Zuza Software Foundation
 #
 # This file is part of the Translate Toolkit.
 #
@@ -312,7 +312,7 @@ class pounit(pocommon.pounit):
         return not (self.isheader() or self.isblank() or self.isobsolete())
 
     def _domarkfuzzy(self, present=True):
-        pass
+        self.settypecomment("fuzzy", present)
 
     def makeobsolete(self):
         """Makes this unit obsolete"""
