@@ -11,11 +11,6 @@ from translate.storage.placeables.xliff import X, G
 class TestXLIFFUnit(test_base.TestTranslationUnit):
     UnitClass = xliff.xliffunit
 
-    def test_isfuzzy(self):
-        """The default behaviour for XLIFF is different, so we adapt the test
-        from test_base.py"""
-        assert self.unit.isfuzzy()
-
     def test_markreview(self):
         """Tests if we can mark the unit to need review."""
         unit = self.unit
@@ -271,7 +266,7 @@ class TestXLIFFfile(test_base.TestTranslationStore):
         xlifffile = xliff.xlifffile()
         unit = xlifffile.addsourceunit("Concept")
         unit.markfuzzy()
-        assert unit.isfuzzy()
+        assert not unit.isfuzzy() #untranslated
         unit.target = "Konsep"
         assert unit.isfuzzy()
         unit.markfuzzy()
