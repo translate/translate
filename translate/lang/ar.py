@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 #
-# Copyright 2007 Zuza Software Foundation
+# Copyright 2007,2009,2011 Zuza Software Foundation
 #
 # This file is part of translate.
 #
@@ -24,7 +24,14 @@
 For more information, see U{http://en.wikipedia.org/wiki/Arabic_language}
 """
 
+import re
+
 from translate.lang import common
+
+def reverse_quotes(text):
+    def convertquotation(match):
+        return u"”%s“" % match.group(1)
+    return re.sub(u'“([^”]+)”', convertquotation, text)
 
 
 class ar(common.Common):
@@ -41,3 +48,8 @@ class ar(common.Common):
     }
 
     ignoretests = ["startcaps", "simplecaps", "acronyms"]
+
+    def punctranslate(cls, text):
+        text = super(cls, cls).punctranslate(text)
+        return reverse_quotes(text)
+    punctranslate = classmethod(punctranslate)

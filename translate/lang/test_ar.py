@@ -11,6 +11,8 @@ def test_punctranslate():
     assert language.punctranslate(u"abc efg") == u"abc efg"
     assert language.punctranslate(u"abc efg.") == u"abc efg."
     assert language.punctranslate(u"abc, efg; d?") == u"abc، efg؛ d؟"
+    # See http://bugs.locamotion.org/show_bug.cgi?id=1819
+    assert language.punctranslate(u"It is called “abc”") == u"It is called ”abc“"
 
 
 def test_sentences():
