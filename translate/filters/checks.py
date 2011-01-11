@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 #
-# Copyright 2004-2010 Zuza Software Foundation
+# Copyright 2004-2011 Zuza Software Foundation
 #
 # This file is part of translate.
 #
@@ -524,21 +524,30 @@ class StandardChecker(TranslationChecker):
         """checks whether a translation only contains spaces"""
         len1 = len(str1.strip())
         len2 = len(str2.strip())
-        return not (len1 > 0 and len(str2) != 0 and len2 == 0)
+        if len1 > 0 and len(str2) != 0 and len2 == 0:
+            raise FilterFailure(u"Translation is empty")
+        else:
+            return True
 
     def short(self, str1, str2):
         """checks whether a translation is much shorter than the original
         string"""
         len1 = len(str1.strip())
         len2 = len(str2.strip())
-        return not ((len1 > 0) and (0 < len2 < (len1 * 0.1)) or ((len1 > 1) and (len2 == 1)))
+        if (len1 > 0) and (0 < len2 < (len1 * 0.1)) or ((len1 > 1) and (len2 == 1)):
+            raise FilterFailure(u"The translation is much shorter than the original")
+        else:
+            return True
 
     def long(self, str1, str2):
         """checks whether a translation is much longer than the original
         string"""
         len1 = len(str1.strip())
         len2 = len(str2.strip())
-        return not ((len1 > 0) and (0 < len1 < (len2 * 0.1)) or ((len1 == 1) and (len2 > 1)))
+        if (len1 > 0) and (0 < len1 < (len2 * 0.1)) or ((len1 == 1) and (len2 > 1)):
+            raise FilterFailure(u"The translation is much longer than the original")
+        else:
+            return True
 
     def escapes(self, str1, str2):
         """checks whether escaping is consistent between the two strings"""
@@ -554,16 +563,14 @@ class StandardChecker(TranslationChecker):
     def newlines(self, str1, str2):
         """checks whether newlines are consistent between the two strings"""
         if not helpers.countsmatch(str1, str2, (u"\n", u"\r")):
-            raise FilterFailure(u"Line endings in original don't match "
-                                "line endings in translation")
+            raise FilterFailure(u"Different line endings")
         else:
             return True
 
     def tabs(self, str1, str2):
         """checks whether tabs are consistent between the two strings"""
         if not helpers.countmatch(str1, str2, "\t"):
-            raise SeriousFilterFailure(u"Tabs in original don't match "
-                                       "tabs in translation")
+            raise SeriousFilterFailure(u"Different tabs")
         else:
             return True
 
@@ -572,7 +579,10 @@ class StandardChecker(TranslationChecker):
         str1 = self.filterwordswithpunctuation(self.filteraccelerators(self.filtervariables(str1)))
         str1 = self.config.lang.punctranslate(str1)
         str2 = self.filterwordswithpunctuation(self.filteraccelerators(self.filtervariables(str2)))
-        return helpers.countsmatch(str1, str2, (u"'", u"''", u"\\'"))
+        if helpers.countsmatch(str1, str2, (u"'", u"''", u"\\'")):
+            return True
+        else:
+            raise FilterFailure(u"Different quotation marks")
 
     def doublequoting(self, str1, str2):
         """checks whether doublequoting is consistent between the two strings"""
@@ -581,14 +591,20 @@ class StandardChecker(TranslationChecker):
         str1 = self.config.lang.punctranslate(str1)
         str2 = self.filteraccelerators(self.filtervariables(str2))
         str2 = self.filterxml(str2)
-        return helpers.countsmatch(str1, str2, (u'"', u'""', u'\\"', u"«",
-                                                u"»", u"“", u"”"))
+        if helpers.countsmatch(str1, str2, (u'"', u'""', u'\\"', u"«",
+                                        u"»", u"“", u"”")):
+            return True
+        else:
+            raise FilterFailure(u"Different quotation marks")
 
     def doublespacing(self, str1, str2):
         """checks for bad double-spaces by comparing to original"""
         str1 = self.filteraccelerators(str1)
         str2 = self.filteraccelerators(str2)
-        return helpers.countmatch(str1, str2, u"  ")
+        if helpers.countmatch(str1, str2, u"  "):
+            return True
+        else:
+            raise FilterFailure(u"Different use of double spaces")
 
     def puncspacing(self, str1, str2):
         """checks for bad spacing after punctuation"""
@@ -614,7 +630,7 @@ class StandardChecker(TranslationChecker):
                 # handle extra spaces that are because of transposed punctuation
                 if abs(spacecount1 - spacecount2) == 1 and str1.endswith(puncchar) != str2.endswith(puncchar):
                     continue
-                return False
+                raise FilterFailure(u"Different spacing around punctuation")
         return True
 
     def printf(self, str1, str2):
@@ -635,13 +651,13 @@ class StandardChecker(TranslationChecker):
                         if str2ord == match1.group('ord'):
                             str1ord = str2ord
                             if match2.group('fullvar') != match1.group('fullvar'):
-                                return 0
+                                raise FilterFailure(u"Different printf variable: %s" % match2.group())
                     elif int(str2ord) == var_num1 + 1:
                         str1ord = str2ord
                         if match2.group('fullvar') != match1.group('fullvar'):
-                            return 0
+                            raise FilterFailure(u"Different printf variable: %s" % match2.group())
                 if str1ord == None:
-                    return 0
+                    raise FilterFailure(u"Added printf variable: %s" % match2.group())
             elif str2key:
                 str1key = None
                 for var_num1, match1 in enumerate(printf_pat.finditer(str1)):
@@ -652,9 +668,9 @@ class StandardChecker(TranslationChecker):
                         if plural and match2.group('fullvar') == '.0s':
                             continue
                         if match1.group('fullvar') != match2.group('fullvar'):
-                            return 0
+                            raise FilterFailure(u"Different printf variable: %s" % match2.group())
                 if str1key == None:
-                    return 0
+                    raise FilterFailure(u"Added printf variable: %s" % match2.group())
             else:
                 for var_num1, match1 in enumerate(printf_pat.finditer(str1)):
                     count1 = var_num1 + 1
@@ -662,14 +678,15 @@ class StandardChecker(TranslationChecker):
                     if plural and match2.group('fullvar') == '.0s':
                         continue
                     if (var_num1 == var_num2) and (match1.group('fullvar') != match2.group('fullvar')):
-                        return 0
+                        raise FilterFailure(u"Different printf variable: %s" % match2.group())
 
         if count2 is None:
-            if list(printf_pat.finditer(str1)):
-                return 0
+            str1_variables = list(m.group() for m in printf_pat.finditer(str1))
+            if str1_variables:
+                raise FilterFailure(u"Missing printf variable: %s" % u", ".join(str1_variables))
 
         if (count1 or count2) and (count1 != count2):
-            return 0
+            raise FilterFailure(u"Different number of printf variables")
         return 1
 
     def accelerators(self, str1, str2):
@@ -689,14 +706,13 @@ class StandardChecker(TranslationChecker):
             if count1 == 1 and count2 == 0:
                 if countbad2 == 1:
                     messages.append(u"Accelerator '%s' appears before an invalid "
-                                    "accelerator character '%s' (eg. space)" %
+                                    "accelerator character '%s'" %
                                     (accelmarker, bad2[0]))
                 else:
-                    messages.append(u"Accelerator '%s' is missing from translation" %
+                    messages.append(u"Missing accelerator '%s'" %
                                     accelmarker)
             elif count1 == 0:
-                messages.append(u"Accelerator '%s' does not occur in original "
-                                "and should not be in translation" % accelmarker)
+                messages.append(u"Added accelerator '%s'" % accelmarker)
             elif count1 == 1 and count2 > count1:
                 messages.append(u"Accelerator '%s' is repeated in translation" %
                                 accelmarker)
@@ -760,7 +776,7 @@ class StandardChecker(TranslationChecker):
         if mismatch1:
             messages.append(u"Do not translate: %s" % u", ".join(mismatch1))
         elif mismatch2:
-            messages.append(u"Translation contains variables not in original: %s" % u", ".join(mismatch2))
+            messages.append(u"Added variables: %s" % u", ".join(mismatch2))
         if messages and mismatch1:
             raise SeriousFilterFailure(messages)
         elif messages:
@@ -770,36 +786,57 @@ class StandardChecker(TranslationChecker):
     def functions(self, str1, str2):
         """checks that function names are not translated"""
         # We can't just use helpers.funcmatch() since it doesn't ignore order
-        return not set(decoration.getfunctions(str1)).symmetric_difference(set(decoration.getfunctions(str2)))
+        if not set(decoration.getfunctions(str1)).symmetric_difference(set(decoration.getfunctions(str2))):
+            return True
+        else:
+            raise FilterFailure(u"Different functions")
 
     def emails(self, str1, str2):
         """checks that emails are not translated"""
-        return helpers.funcmatch(str1, str2, decoration.getemails)
+        if helpers.funcmatch(str1, str2, decoration.getemails):
+            return True
+        else:
+            raise FilterFailure(u"Different e-mails")
 
     def urls(self, str1, str2):
         """checks that URLs are not translated"""
-        return helpers.funcmatch(str1, str2, decoration.geturls)
+        if helpers.funcmatch(str1, str2, decoration.geturls):
+            return True
+        else:
+            raise FilterFailure(u"Different URLs")
 
     def numbers(self, str1, str2):
         """checks whether numbers of various forms are consistent between the
         two strings"""
-        return helpers.countsmatch(str1, str2, decoration.getnumbers(str1))
+        if helpers.countsmatch(str1, str2, decoration.getnumbers(str1)):
+            return True
+        else:
+            raise FilterFailure(u"Different numbers")
 
     def startwhitespace(self, str1, str2):
         """checks whether whitespace at the beginning of the strings matches"""
-        return helpers.funcmatch(str1, str2, decoration.spacestart)
+        if helpers.funcmatch(str1, str2, decoration.spacestart):
+            return True
+        else:
+            raise FilterFailure(u"Different whitespace at the start")
 
     def endwhitespace(self, str1, str2):
         """checks whether whitespace at the end of the strings matches"""
         str1 = self.config.lang.punctranslate(str1)
-        return helpers.funcmatch(str1, str2, decoration.spaceend)
+        if helpers.funcmatch(str1, str2, decoration.spaceend):
+            return True
+        else:
+            raise FilterFailure(u"Different whitespace at the end")
 
     def startpunc(self, str1, str2):
         """checks whether punctuation at the beginning of the strings match"""
         str1 = self.filterxml(self.filterwordswithpunctuation(self.filteraccelerators(self.filtervariables(str1))))
         str1 = self.config.lang.punctranslate(str1)
         str2 = self.filterxml(self.filterwordswithpunctuation(self.filteraccelerators(self.filtervariables(str2))))
-        return helpers.funcmatch(str1, str2, decoration.puncstart, self.config.punctuation)
+        if helpers.funcmatch(str1, str2, decoration.puncstart, self.config.punctuation):
+            return True
+        else:
+            raise FilterFailure(u"Different punctuation at the start")
 
     def endpunc(self, str1, str2):
         """checks whether punctuation at the end of the strings match"""
@@ -808,15 +845,22 @@ class StandardChecker(TranslationChecker):
         str2 = self.filtervariables(str2)
         str1 = str1.rstrip()
         str2 = str2.rstrip()
-        return helpers.funcmatch(str1, str2, decoration.puncend, self.config.endpunctuation + u":")
+        if helpers.funcmatch(str1, str2, decoration.puncend, self.config.endpunctuation + u":"):
+            return True
+        else:
+            raise FilterFailure(u"Different punctuation at the end")
 
     def purepunc(self, str1, str2):
         """checks that strings that are purely punctuation are not changed"""
         # this test is a subset of startandend
         if (decoration.ispurepunctuation(str1)):
-            return str1 == str2
+            success = str1 == str2
         else:
-            return not decoration.ispurepunctuation(str2)
+            success = not decoration.ispurepunctuation(str2)
+        if success:
+            return True
+        else:
+            raise FilterFailure(u"Consider not translating punctuation")
 
     def brackets(self, str1, str2):
         """checks that the number of brackets in both strings match"""
@@ -833,9 +877,9 @@ class StandardChecker(TranslationChecker):
             elif count2 > count1:
                 extra.append(u"'%s'" % bracket)
         if missing:
-            messages.append(u"Translation is missing %s" % u", ".join(missing))
+            messages.append(u"Missing %s" % u", ".join(missing))
         if extra:
-            messages.append(u"Translation has extra %s" % u", ".join(extra))
+            messages.append(u"Added %s" % u", ".join(extra))
         if messages:
             raise FilterFailure(messages)
         return True
@@ -847,8 +891,8 @@ class StandardChecker(TranslationChecker):
         sentences1 = len(self.config.sourcelang.sentences(str1))
         sentences2 = len(self.config.lang.sentences(str2))
         if not sentences1 == sentences2:
-            raise FilterFailure(u"The number of sentences differ: "
-                                "%d versus %d" % (sentences1, sentences2))
+            raise FilterFailure(u"Different number of sentences: "
+                                u"%d ≠ %d" % (sentences1, sentences2))
         return True
 
     def options(self, str1, str2):
@@ -858,11 +902,11 @@ class StandardChecker(TranslationChecker):
             if word1 != u"--" and word1.startswith(u"--") and word1[-1].isalnum():
                 parts = word1.split(u"=")
                 if not parts[0] in str2:
-                    raise FilterFailure(u"The option %s does not occur or is "
-                                        "translated in the translation." % parts[0])
+                    raise FilterFailure(u"Missing or translated option '%s'" % parts[0])
                 if len(parts) > 1 and parts[1] in str2:
-                    raise FilterFailure(u"The parameter %(param)s in option %(option)s "
-                                        "is not translated." % {"param": parts[1],
+                    raise FilterFailure(u"Consider translating parameter "
+                                        u"'%(param)s' of option '%(option)s'"
+                                                                % {"param": parts[1],
                                                                 "option": parts[0]})
         return True
 
@@ -871,11 +915,14 @@ class StandardChecker(TranslationChecker):
         str1 = self.filteraccelerators(str1)
         str2 = self.filteraccelerators(str2)
         if len(str1) > 1 and len(str2) > 1:
-            return self.config.sourcelang.capsstart(str1) == self.config.lang.capsstart(str2)
+            if self.config.sourcelang.capsstart(str1) == self.config.lang.capsstart(str2):
+                return True
+            else:
+                raise FilterFailure(u"Different capitalization at the start")
         if len(str1) == 0 and len(str2) == 0:
             return True
         if len(str1) == 0 or len(str2) == 0:
-            return False
+            raise FilterFailure(u"Different capitalization at the start")
         return True
 
     def simplecaps(self, str1, str2):
@@ -891,19 +938,26 @@ class StandardChecker(TranslationChecker):
         alpha2 = helpers.filtercount(str2, unicode.isalpha)
         # Capture the all caps case
         if capitals1 == alpha1:
-            return capitals2 == alpha2
+            if capitals2 == alpha2:
+                return True
+            else:
+                raise FilterFailure(u"Different capitalization")
         # some heuristic tests to try and see that the style of capitals is
         # vaguely the same
         if capitals1 == 0 or capitals1 == 1:
-            return capitals2 == capitals1
+            success = capitals2 == capitals1
         elif capitals1 < len(str1) / 10:
-            return capitals2 <= len(str2) / 8
+            success = capitals2 <= len(str2) / 8
         elif len(str1) < 10:
-            return abs(capitals1 - capitals2) < 3
+            success = abs(capitals1 - capitals2) < 3
         elif capitals1 > len(str1) * 6 / 10:
-            return capitals2 > len(str2) * 6 / 10
+            success = capitals2 > len(str2) * 6 / 10
         else:
-            return abs(capitals1 - capitals2) < (len(str1) + len(str2)) / 6
+            success = abs(capitals1 - capitals2) < (len(str1) + len(str2)) / 6
+        if success:
+            return True
+        else:
+            raise FilterFailure(u"Different capitalization")
 
     def acronyms(self, str1, str2):
         """checks that acronyms that appear are unchanged"""
@@ -995,7 +1049,7 @@ class StandardChecker(TranslationChecker):
         for word1 in self.filteraccelerators(str1).split():
             if word1.startswith(u"/"):
                 if not helpers.countsmatch(str1, str2, (word1,)):
-                    return False
+                    raise FilterFailure(u"Different file paths")
         return True
 
     def xmltags(self, str1, str2):
@@ -1017,13 +1071,13 @@ class StandardChecker(TranslationChecker):
             # TODO: consider the consequences of different ordering of
             # attributes/tags
             if filtered1 != filtered2:
-                return False
+                raise FilterFailure(u"Different XML tags")
         else:
             # No tags in str1, let's just check that none were added in str2.
             # This might be useful for fuzzy strings wrongly unfuzzied.
             tags2 = tag_re.findall(str2)
             if len(tags2) > 0:
-                return False
+                raise FilterFailure(u"Added XML tags")
         return True
 
     def kdecomments(self, str1, str2):
@@ -1049,8 +1103,14 @@ class StandardChecker(TranslationChecker):
         sourcecount = numberofpatterns(str1, sourcepatterns)
         targetcount = numberofpatterns(str2, targetpatterns)
         if self.config.lang.nplurals == 1:
-            return not targetcount
-        return sourcecount == targetcount
+            if targetcount:
+                raise FilterFailure(u"Plural(s) were kept in translation")
+            else:
+                return True
+        if sourcecount == targetcount:
+            return True
+        else:
+            raise FilterFailure(u"The original uses plural(s)")
 
     def spellcheck(self, str1, str2):
         """checks words that don't pass a spell check"""
@@ -1084,7 +1144,10 @@ class StandardChecker(TranslationChecker):
     def credits(self, str1, str2):
         """checks for messages containing translation credits instead of normal
         translations."""
-        return not str1 in self.config.credit_sources
+        if str1 in self.config.credit_sources:
+            raise FilterFailure(u"Don't translate. Just credit the translators.")
+        else:
+            return True
 
     # If the precondition filter is run and fails then the other tests listed are ignored
     preconditions = {
@@ -1185,7 +1248,7 @@ class MozillaChecker(StandardChecker):
         translations."""
         for location in self.locations:
             if location in ['MOZ_LANGPACK_CONTRIBUTORS', 'credit.translation']:
-                return False
+                raise FilterFailure(u"Don't translate. Just credit the translators.")
         return True
 
 drupalconfig = CheckerConfig(
