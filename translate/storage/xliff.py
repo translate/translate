@@ -144,6 +144,7 @@ class xliffunit(lisa.LISAunit):
     rich_source = property(get_rich_source, set_rich_source)
 
     def set_rich_target(self, value, lang='xx', append=False):
+        self._rich_target = None
         if value is None:
             self.set_target_dom(self.createlanguageNode(lang, u'', "target"))
             return
@@ -159,11 +160,14 @@ class xliffunit(lisa.LISAunit):
         languageNode.text = None
 
         strelem_to_xml(languageNode, value[0])
+        self._rich_target = value
 
     def get_rich_target(self, lang=None):
         """retrieves the "target" text (second entry), or the entry in the
         specified language, if it exists"""
-        return [xml_to_strelem(self.get_target_dom(lang), getXMLspace(self.xmlelement, self._default_xml_space))]
+        if self._rich_target is None:
+            self._rich_target = [xml_to_strelem(self.get_target_dom(lang), getXMLspace(self.xmlelement, self._default_xml_space))]
+        return self._rich_target
     rich_target = property(get_rich_target, set_rich_target)
 
     def addalttrans(self, txt, origin=None, lang=None, sourcetxt=None, matchquality=None):
