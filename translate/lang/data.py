@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 #
-# Copyright 2007-2009 Zuza Software Foundation
+# Copyright 2007-2011 Zuza Software Foundation
 #
 # This file is part of translate.
 #
@@ -66,6 +66,7 @@ languages = {
 'fur': (u'Friulian', 2, '(n != 1)'),
 'fy': (u'Frisian', 2, '(n != 1)'),
 'ga': (u'Irish', 3, 'n==1 ? 0 : n==2 ? 1 : 2'),
+'gd': (u'Gaelic; Scottish Gaelic', 2, 'nplurals=4; plural=(n==1 || n==11) ? 0 : (n==2 || n==12) ? 1 : (n > 2 && n < 20) ? 2 : 3'),
 'gl': (u'Galician', 2, '(n != 1)'),
 'gu': (u'Gujarati', 2, '(n != 1)'),
 'gun': (u'Gun', 2, '(n > 1)'),
@@ -95,6 +96,7 @@ languages = {
 'lt': (u'Lithuanian', 3, '(n%10==1 && n%100!=11 ? 0 : n%10>=2 && (n%100<10 || n%100>=20) ? 1 : 2)'),
 'lv': (u'Latvian', 3, '(n%10==1 && n%100!=11 ? 0 : n != 0 ? 1 : 2)'),
 'mai': (u'Maithili', 2, '(n != 1)'),
+'mfe': (u'Morisyen', 2, '(n > 1)'),
 'mg': (u'Malagasy', 2, '(n > 1)'),
 'mi': (u'Maori', 2, '(n > 1)'),
 'mk': (u'Macedonian', 2, 'n==1 || n%10==1 ? 0 : 1'),
@@ -109,7 +111,7 @@ languages = {
 'ne': (u'Nepali', 2, '(n != 1)'),
 'nl': (u'Dutch; Flemish', 2, '(n != 1)'),
 'nn': (u'Norwegian Nynorsk; Nynorsk, Norwegian', 2, '(n != 1)'),
-'nso': (u'Pedi; Sepedi; Northern Sotho', 2, '(n > 1)'),
+'nso': (u'Pedi; Sepedi; Northern Sotho', 2, '(n != 1)'),
 'oc': (u'Occitan (post 1500)', 2, '(n > 1)'),
 'or': (u'Oriya', 2, '(n != 1)'),
 'pa': (u'Panjabi; Punjabi', 2, '(n != 1)'),
@@ -170,6 +172,7 @@ _fixed_names = {
         u"Divehi; Dhivehi; Maldivian": u"Divehi",
         u"Dutch; Flemish": u"Dutch",
         u"Filipino; Pilipino": u"Filipino",
+        u"Gaelic; Scottish Gaelic": u"Scottish Gaelic",
         u"Greek, Modern (1453-)": u"Greek",
         u"Interlingua (International Auxiliary Language Association)": u"Interlingua",
         u"Kirghiz; Kyrgyz": u"Kirghiz",
