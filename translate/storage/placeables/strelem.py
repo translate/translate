@@ -723,9 +723,8 @@ class StringElem(object):
             if sub.isleaf() and filter(sub):
                 yield sub
             else:
-                for node in sub.iter_depth_first():
-                    if filter(node):
-                        yield node
+                for node in sub.iter_depth_first(filter):
+                    yield node
 
     def map(self, f, filter=None):
         """Apply C{f} to all nodes for which C{filter} returned C{True} (optional)."""
