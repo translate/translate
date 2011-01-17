@@ -56,15 +56,16 @@ class StringElem(object):
     # INITIALIZERS #
     def __init__(self, sub=None, id=None, rid=None, xid=None, **kwargs):
         if sub is None:
-            sub = []
-        if isinstance(sub, (unicode, StringElem)):
-            sub = [sub]
+            self.sub = []
+        elif isinstance(sub, (unicode, StringElem)):
+            self.sub = [sub]
+        else:
+            for elem in sub:
+                if not isinstance(elem, (unicode, StringElem)):
+                    raise ValueError(elem)
+            self.sub = sub
+            self.prune()
 
-        for elem in sub:
-            if not isinstance(elem, (unicode, StringElem)):
-                raise ValueError(elem)
-
-        self.sub = sub
         self.id = id
         self.rid = rid
         self.xid = xid
@@ -74,7 +75,6 @@ class StringElem(object):
                 raise ValueError('attribute already exists: %s' % (key))
             setattr(self, key, value)
 
-        self.prune()
 
     # SPECIAL METHODS #
     def __add__(self, rhs):
