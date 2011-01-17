@@ -178,7 +178,7 @@ def xml_append_string(node, string):
 
 
 def strelem_to_xml(parent_node, elem):
-    if isinstance(elem, (str, unicode)):
+    if isinstance(elem, unicode):
         return xml_append_string(parent_node, elem)
     if not isinstance(elem, StringElem):
         return parent_node
