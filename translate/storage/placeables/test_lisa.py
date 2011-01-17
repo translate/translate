@@ -27,6 +27,10 @@ from translate.storage.placeables.xliff import Bx, Ex, G, UnknownXML, X
 
 
 def test_xml_to_strelem():
+    source = etree.fromstring(u'<source>a</source>')
+    elem = lisa.xml_to_strelem(source)
+    assert elem == StringElem(u'a')
+
     source = etree.fromstring(u'<source>a<x id="foo[1]/bar[1]/baz[1]"/></source>')
     elem = lisa.xml_to_strelem(source)
     assert elem.sub == [StringElem(u'a'), X(id=u'foo[1]/bar[1]/baz[1]')]

@@ -101,12 +101,19 @@ def xml_to_strelem(dom_node, xml_space="preserve"):
         dom_node = etree.fromstring(dom_node)
     normalize_xml_space(dom_node, xml_space, remove_start=True)
     result = StringElem()
-    if dom_node.text:
-        result.sub.append(StringElem(unicode(dom_node.text)))
+    sub = result.sub # just an optimisation
     for child_dom_node in dom_node:
-        result.sub.append(make_placeable(child_dom_node, xml_space))
+        sub.append(make_placeable(child_dom_node, xml_space))
         if child_dom_node.tail:
-            result.sub.append(StringElem(unicode(child_dom_node.tail)))
+            sub.append(StringElem(unicode(child_dom_node.tail)))
+
+    # This is just a strange way of inserting the first text and avoiding a
+    # call to .prune() which is very expensive. We assume the tree is optimal.
+    node_text = unicode(dom_node.text)
+    if sub and node_text:
+        sub.insert(0, StringElem(node_text))
+    elif dom_node.text:
+        sub.append(node_text)
     return result
 
 # ==========================================================
