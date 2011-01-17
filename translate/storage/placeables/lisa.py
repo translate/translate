@@ -109,11 +109,11 @@ def xml_to_strelem(dom_node, xml_space="preserve"):
 
     # This is just a strange way of inserting the first text and avoiding a
     # call to .prune() which is very expensive. We assume the tree is optimal.
-    node_text = unicode(dom_node.text)
+    node_text = dom_node.text
     if sub and node_text:
-        sub.insert(0, StringElem(node_text))
-    elif dom_node.text:
-        sub.append(node_text)
+        sub.insert(0, StringElem(unicode(node_text)))
+    elif node_text:
+        sub.append(unicode(node_text))
     return result
 
 # ==========================================================
