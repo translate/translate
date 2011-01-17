@@ -107,7 +107,6 @@ def xml_to_strelem(dom_node, xml_space="preserve"):
         result.sub.append(make_placeable(child_dom_node, xml_space))
         if child_dom_node.tail:
             result.sub.append(StringElem(unicode(child_dom_node.tail)))
-    result.prune()
     return result
 
 # ==========================================================
