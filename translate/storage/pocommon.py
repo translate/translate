@@ -126,6 +126,18 @@ class pounit(base.TranslationUnit):
     def _domarkfuzzy(self, present=True):
         raise NotImplementedError()
 
+    def get_state_n(self):
+        obsolete = super(pounit, self).get_state_n() == self.S_OBSOLETE
+        if obsolete:
+            return self.S_OBSOLETE
+        if self.target:
+            if self.isfuzzy():
+                return self.S_FUZZY
+            else:
+                return self.S_TRANSLATED
+        else:
+            return self.S_UNTRANSLATED
+
     def set_state_n(self, value):
         super(pounit, self).set_state_n(value)
         has_target = False
