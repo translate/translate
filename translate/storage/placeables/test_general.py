@@ -57,6 +57,8 @@ def test_placeable_xml_entity():
 def test_placeable_xml_tag():
     assert general.XMLTagPlaceable.parse(u'<a>koei</a>')[0] == general.XMLTagPlaceable([u'<a>'])
     assert general.XMLTagPlaceable.parse(u'<a>koei</a>')[2] == general.XMLTagPlaceable([u'</a>'])
+    assert general.XMLTagPlaceable.parse(u'<Exif.XResolution>')[0] == general.XMLTagPlaceable([u'<Exif.XResolution>'])
+    assert general.XMLTagPlaceable.parse(u'<tag_a>')[0] == general.XMLTagPlaceable([u'<tag_a>'])
     assert general.XMLTagPlaceable.parse(u'<img src="koei.jpg" />')[0] == general.XMLTagPlaceable([u'<img src="koei.jpg" />'])
     # We don't want this to be recognised, so we test for None - not sure if that is a stable assumption
     assert general.XMLTagPlaceable.parse(u'<important word>') is None

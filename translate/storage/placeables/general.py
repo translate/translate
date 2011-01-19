@@ -277,11 +277,11 @@ class XMLTagPlaceable(Ph):
     istranslatable = False
     regex = re.compile(r'''
         <                         # start of opening tag
-        ([\w:]+)                  # tag name, possibly namespaced
-        (\s([\w:]+=               # space and attribute name followed by =
+        ([\w.:]+)                 # tag name, possibly namespaced
+        (\s([\w.:]+=              # space and attribute name followed by =
             ((".*?")|('.*?'))     # attribute value, single or double quoted
         )?)*/?>                   # end of opening tag, possibly self closing
-        |</(\w+)>                 # or a closing tag
+        |</([\w.]+)>              # or a closing tag
         ''', re.VERBOSE)
     parse = classmethod(regex_parse)
 
