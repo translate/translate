@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 #
-# Copyright 2002-2007 Zuza Software Foundation
+# Copyright 2002-2011 Zuza Software Foundation
 #
 # This file is part of translate.
 #
@@ -40,12 +40,14 @@ def extract_msgid_comment(text):
 
 
 class pounit(base.TranslationUnit):
+    S_FUZZY_OBSOLETE = state.OBSOLETE-1
     S_OBSOLETE = state.OBSOLETE
     S_UNTRANSLATED = state.EMPTY
     S_FUZZY = state.NEEDS_WORK
     S_TRANSLATED = state.UNREVIEWED
 
     STATE = {
+        S_FUZZY_OBSOLETE: (S_FUZZY_OBSOLETE, state.OBSOLETE),
         S_OBSOLETE: (state.OBSOLETE, state.EMPTY),
         S_UNTRANSLATED: (state.EMPTY, state.NEEDS_WORK),
         S_FUZZY: (state.NEEDS_WORK, state.UNREVIEWED),
@@ -102,7 +104,7 @@ class pounit(base.TranslationUnit):
         return self.hasmarkedcomment("review") or self.hasmarkedcomment("pofilter")
 
     def isobsolete(self):
-        return self.STATE[self.S_OBSOLETE][0] <= self.get_state_n() < self.STATE[self.S_OBSOLETE][1]
+        return self.STATE[self.S_FUZZY_OBSOLETE][0] <= self.get_state_n() < self.STATE[self.S_OBSOLETE][1]
 
     def isfuzzy(self):
         # implementation specific fuzzy detection, must not use get_state_n()
@@ -116,7 +118,10 @@ class pounit(base.TranslationUnit):
         # set_state_n will check if target exists
 
     def makeobsolete(self):
-        self.set_state_n(self.STATE[self.S_OBSOLETE][0])
+        if self.isfuzzy():
+            self.set_state_n(self.STATE[self.S_FUZZY_OBSOLETE][0])
+        else:
+            self.set_state_n(self.STATE[self.S_OBSOLETE][0])
 
     def resurrect(self):
         self.set_state_n(self.STATE[self.S_TRANSLATED][0])
@@ -127,9 +132,9 @@ class pounit(base.TranslationUnit):
         raise NotImplementedError()
 
     def get_state_n(self):
-        obsolete = super(pounit, self).get_state_n() == self.S_OBSOLETE
-        if obsolete:
-            return self.S_OBSOLETE
+        value = super(pounit, self).get_state_n()
+        if value <= self.S_OBSOLETE:
+            return value
         if self.target:
             if self.isfuzzy():
                 return self.S_FUZZY
@@ -149,7 +154,8 @@ class pounit(base.TranslationUnit):
         else:
             has_target = bool(self.target)
         if has_target:
-            isfuzzy = self.STATE[self.S_FUZZY][0] <= value < self.STATE[self.S_FUZZY][1]
+            isfuzzy = self.STATE[self.S_FUZZY][0] <= value < self.STATE[self.S_FUZZY][1] or \
+                    self.STATE[self.S_FUZZY_OBSOLETE][0] <= value < self.STATE[self.S_FUZZY_OBSOLETE][1]
             self._domarkfuzzy(isfuzzy) # Implementation specific fuzzy-marking
         else:
             super(pounit, self).set_state_n(self.S_UNTRANSLATED)
