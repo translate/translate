@@ -510,12 +510,14 @@ class pounit(pocommon.pounit):
 
     def makeobsolete(self):
         """Makes this unit obsolete"""
+        super(pounit, self).makeobsolete()
         self.obsolete = True
         self.sourcecomments = []
         self.automaticcomments = []
 
     def resurrect(self):
         """Makes an obsolete unit normal"""
+        super(pounit, self).resurrect()
         self.obsolete = False
 
     def hasplural(self):
