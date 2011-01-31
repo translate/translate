@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 #
-# Copyright 2008-2009 Zuza Software Foundation
+# Copyright 2008-2011 Zuza Software Foundation
 #
 # This file is part of translate.
 #
@@ -448,10 +448,10 @@ class XapianEnquire(CommonIndexer.CommonEnquire):
         result = []
         for match in matches:
             elem = {}
-            elem["rank"] = match[xapian.MSET_RANK]
-            elem["docid"] = match[xapian.MSET_DID]
-            elem["percent"] = match[xapian.MSET_PERCENT]
-            elem["document"] = match[xapian.MSET_DOCUMENT]
+            elem["rank"] = match.rank
+            elem["docid"] = match.docid
+            elem["percent"] = match.percent
+            elem["document"] = match.document
             result.append(elem)
         return (matches.size(), matches.get_matches_estimated(), result)
 
