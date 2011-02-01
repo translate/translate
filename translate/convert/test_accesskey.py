@@ -61,6 +61,11 @@ def test_empty_string():
     assert accesskey.extract(u"", u"~") == (u"", u"")
 
 
+def test_end_of_string():
+    """test that we can handle an accesskey at the end of the string"""
+    assert accesskey.extract(u"Hlola&") == (u"Hlola&", u"")
+
+
 def test_combine_label_accesskey():
     """test that we can combine accesskey and label to create a label+accesskey
     string"""
