@@ -723,8 +723,8 @@ class TranslationStore(object):
             detected_encoding = chardet.detect(text)
             if detected_encoding['confidence'] < 0.48:
                 detected_encoding = None
-            if detected_encoding == 'ascii':
-                detected_encoding = 'utf-8'
+            if detected_encoding['encoding'] == 'ascii':
+                detected_encoding['encoding'] = 'utf-8'
         except ImportError:
             detected_encoding = None
 
