@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 #
-# Copyright 2007,2009,2010 Zuza Software Foundation
+# Copyright 2007,2009-2011 Zuza Software Foundation
 #
 # This file is part of the Translate Toolkit.
 #
@@ -173,24 +173,26 @@ class JsonFile(base.TranslationStore):
         usable = {}
         if isinstance(data, dict):
             for k, v in data.iteritems():
-                usable.update(self._extract_translatables(v, stop,
+                for x in self._extract_translatables(v, stop,
                                                           "%s.%s" % (prev, k),
-                                                          k, None, data))
+                                                          k, None, data):
+                    yield x
         elif isinstance(data, list):
             for i, item in enumerate(data):
-                usable.update(self._extract_translatables(item, stop,
+                for x in self._extract_translatables(item, stop,
                                                           "%s[%s]" % (prev, i),
-                                                          i, name_node, data))
+                                                          i, name_node, data):
+                    yield x
         elif isinstance(data, str) or isinstance(data, unicode):
             if (stop is None \
                 or (isinstance(last_node, dict) and name_node in stop) \
                 or (isinstance(last_node, list) and name_last_node in stop)):
-                usable[prev] = (data, last_node, name_node)
+                yield (prev, data, last_node, name_node)
         elif isinstance(data, bool):
             if (stop is None \
                 or (isinstance(last_node, dict) and name_node in stop) \
                 or (isinstance(last_node, list) and name_last_node in stop)):
-                usable[prev] = (str(data), last_node, name_node)
+                yield (prev, str(data), last_node, name_node)
         elif data is None:
             pass
             #usable[prev] = None
@@ -199,7 +201,6 @@ class JsonFile(base.TranslationStore):
                              "Type: %s\n"
                              "Data: %s\n"
                              "Previous: %s" % (type(data), data, prev))
-        return usable
 
     def parse(self, input):
         """parse the given file or file source string"""
@@ -218,9 +219,8 @@ class JsonFile(base.TranslationStore):
         except ValueError, e:
             raise base.ParseError(e.message)
 
-        for k, v in self._extract_translatables(self._file,
-                                                stop=self._filter).iteritems():
-            data, ref, item = v
+        for k, data, ref, item in self._extract_translatables(self._file,
+                                                stop=self._filter):
             unit = self.UnitClass(data, ref, item)
             unit.setid(k)
             self.addunit(unit)
