@@ -170,7 +170,6 @@ class JsonFile(base.TranslationStore):
         last - is the name of the last node
         last_node - the last list or dict
         """
-        usable = {}
         if isinstance(data, dict):
             for k, v in data.iteritems():
                 for x in self._extract_translatables(v, stop,
@@ -195,7 +194,6 @@ class JsonFile(base.TranslationStore):
                 yield (prev, str(data), last_node, name_node)
         elif data is None:
             pass
-            #usable[prev] = None
         else:
             raise ValueError("We don't handle these values:\n"
                              "Type: %s\n"
