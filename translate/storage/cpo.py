@@ -497,14 +497,14 @@ class pounit(pocommon.pounit):
                 locstring = locname
             else:
                 locstring = locname + ":" + str(locline)
-            locations.append(urllib.unquote_plus(locstring))
+            locations.append(urllib.unquote_plus(locstring).decode('utf-8'))
             i += 1
             location = gpo.po_message_filepos(self._gpo_message, i)
         return locations
 
     def addlocation(self, location):
         if location.find(" ") != -1:
-            location = urllib.quote_plus(location)
+            location = urllib.quote_plus(location.encode('utf-8'))
         parts = location.split(":")
         file = parts[0]
         if len(parts) == 2:

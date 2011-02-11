@@ -58,6 +58,7 @@ class TestPOUnit(test_base.TestTranslationUnit):
         locations_helper("key")
         locations_helper("file.c:100")
         locations_helper("I am a key")
+        locations_helper(u"unicoḓe key")
 
     def test_adding_empty_note(self):
         unit = self.UnitClass("bla")

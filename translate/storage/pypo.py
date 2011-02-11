@@ -641,7 +641,7 @@ class pounit(pocommon.pounit):
         for sourcecomment in self.sourcecomments:
             locations += quote.rstripeol(sourcecomment)[3:].split()
         for i, loc in enumerate(locations):
-            locations[i] = urllib.unquote_plus(loc)
+            locations[i] = urllib.unquote_plus(loc).decode('utf-8')
         return locations
 
     def addlocation(self, location):
@@ -652,7 +652,7 @@ class pounit(pocommon.pounit):
 
         """
         if location.find(" ") != -1:
-            location = urllib.quote_plus(location)
+            location = urllib.quote_plus(location.encode("utf-8"))
         self.sourcecomments.append("#: %s\n" % location)
 
     def _extract_msgidcomments(self, text=None):
