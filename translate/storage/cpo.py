@@ -37,7 +37,6 @@ import os
 import re
 import sys
 import tempfile
-import urllib
 
 from translate.lang import data
 from translate.misc.multistring import multistring
@@ -497,14 +496,14 @@ class pounit(pocommon.pounit):
                 locstring = locname
             else:
                 locstring = locname + ":" + str(locline)
-            locations.append(urllib.unquote_plus(locstring).decode('utf-8'))
+            locations.append(pocommon.unquote_plus(locstring))
             i += 1
             location = gpo.po_message_filepos(self._gpo_message, i)
         return locations
 
     def addlocation(self, location):
         if location.find(" ") != -1:
-            location = urllib.quote_plus(location.encode('utf-8'))
+            location = pocommon.quote_plus(location)
         parts = location.split(":")
         file = parts[0]
         if len(parts) == 2:

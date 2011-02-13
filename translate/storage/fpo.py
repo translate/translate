@@ -31,7 +31,6 @@ directly, but can be used once cpo has been established to work."""
 import re
 import copy
 import cStringIO
-import urllib
 
 from translate.lang import data
 from translate.misc.multistring import multistring
@@ -345,7 +344,7 @@ class pounit(pocommon.pounit):
 
         """
         #TODO: rename to .locations
-        return [urllib.unquote_plus(loc).decode('utf-8') for loc in self.sourcecomments]
+        return [pocommon.unquote_plus(loc) for loc in self.sourcecomments]
 
     def addlocation(self, location):
         """Add a location to sourcecomments in the PO unit
@@ -354,7 +353,7 @@ class pounit(pocommon.pounit):
         @type location: String
         """
         if location.find(" ") != -1:
-            location = urllib.quote_plus(location.encode('utf-8'))
+            location = pocommon.quote_plus(location)
         self.sourcecomments.extend(location.split())
 
     def _extract_msgidcomments(self, text=None):

@@ -25,7 +25,6 @@ from __future__ import generators
 import copy
 import cStringIO
 import re
-import urllib
 
 from translate.lang import data
 from translate.misc.multistring import multistring
@@ -641,7 +640,7 @@ class pounit(pocommon.pounit):
         for sourcecomment in self.sourcecomments:
             locations += quote.rstripeol(sourcecomment)[3:].split()
         for i, loc in enumerate(locations):
-            locations[i] = urllib.unquote_plus(loc).decode('utf-8')
+            locations[i] = pocommon.unquote_plus(loc)
         return locations
 
     def addlocation(self, location):
@@ -652,7 +651,7 @@ class pounit(pocommon.pounit):
 
         """
         if location.find(" ") != -1:
-            location = urllib.quote_plus(location.encode("utf-8"))
+            location = pocommon.quote_plus(location)
         self.sourcecomments.append("#: %s\n" % location)
 
     def _extract_msgidcomments(self, text=None):

@@ -20,6 +20,7 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
 import re
+import urllib
 
 from translate.storage import base
 from translate.storage import poheader
@@ -37,6 +38,16 @@ def extract_msgid_comment(text):
     if msgidcomment:
         return msgidcomment.group(1)
     return u""
+
+
+def quote_plus(text):
+    """Quote the query fragment of a URL; replacing ' ' with '+'"""
+    return urllib.quote_plus(text.encode("utf-8"))
+
+
+def unquote_plus(text):
+    """unquote('%7e/abc+def') -> '~/abc def'"""
+    return urllib.unquote_plus(text).decode('utf-8')
 
 
 class pounit(base.TranslationUnit):
