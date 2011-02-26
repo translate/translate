@@ -129,6 +129,7 @@ languages = {
 'sk': (u'Slovak', 3, '(n==1) ? 0 : (n>=2 && n<=4) ? 1 : 2'),
 'sl': (u'Slovenian', 4, '(n%100==1 ? 0 : n%100==2 ? 1 : n%100==3 || n%100==4 ? 2 : 3)'),
 'so': (u'Somali', 2, '(n != 1)'),
+'son': (u'Songhai languages', 2, '(n != 1)'),
 'sq': (u'Albanian', 2, '(n != 1)'),
 'sr': (u'Serbian', 3, '(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2)'),
 'st': (u'Sotho, Southern', 2, '(n != 1)'),
@@ -150,6 +151,7 @@ languages = {
 # Chinese is difficult because the main divide is on script, not really
 # country. Simplified Chinese is used mostly in China, Singapore and Malaysia.
 # Traditional Chinese is used mostly in Hong Kong, Taiwan and Macau.
+'yo': (u'Yorba', 2, '(n != 1)'),
 'zh_CN': (u'Chinese (China)', 1, '0'),
 'zh_HK': (u'Chinese (Hong Kong)', 1, '0'),
 'zh_TW': (u'Chinese (Taiwan)', 1, '0'),
