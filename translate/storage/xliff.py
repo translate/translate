@@ -414,7 +414,10 @@ class xliffunit(lisa.LISAunit):
 
     def getlocations(self):
         id_attr = unicode(self.xmlelement.get("id") or u"")
-        if id_attr:
+        # XLIFF files downloaded from PO projects in Pootle
+        # might have id equal to .source, so let's avoid
+        # that:
+        if id_attr and id_attr != self.source:
             return [id_attr]
         return []
 
