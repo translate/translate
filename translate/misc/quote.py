@@ -250,6 +250,8 @@ def javapropertiesencode(source):
     .properties files
     """
     output = u""
+    if source and source[0] == u" ":
+        output = u"\\"
     for char in source:
         charnum = ord(char)
         if char in controlchars:

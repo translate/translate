@@ -142,6 +142,11 @@ class TestProp(test_monolingual.TestMonolingualStore):
             print repr(propsource), repr(propunit.name), repr(propunit.source)
             assert propunit.name == key
             assert propunit.source == value
+            # let's reparse the output to ensure good serialisation->parsing roundtrip:
+            propfile = self.propparse(str(propunit))
+            propunit = propfile.units[0]
+            assert propunit.name == key
+            assert propunit.source == value
 
     def test_key_value_delimiters_simple(self):
         """test that we can handle colon, equals and space delimiter
