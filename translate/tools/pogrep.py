@@ -131,7 +131,7 @@ def find_matches(unit, part, strings, re_search):
 class GrepFilter:
 
     def __init__(self, searchstring, searchparts, ignorecase=False, useregexp=False,
-            invertmatch=False, accelchar=None, encoding='utf-8',
+            invertmatch=False, keeptranslations=False, accelchar=None, encoding='utf-8',
             max_matches=0):
         """builds a checkfilter using the given checker"""
         if isinstance(searchstring, unicode):
@@ -158,6 +158,7 @@ class GrepFilter:
         if self.useregexp:
             self.searchpattern = re.compile(self.searchstring)
         self.invertmatch = invertmatch
+        self.keeptranslations = keeptranslations
         self.accelchar = accelchar
         self.max_matches = max_matches
 
@@ -182,6 +183,9 @@ class GrepFilter:
         """runs filters on an element"""
         if unit.isheader():
             return []
+
+        if self.keeptranslations and unit.target:
+            return True
 
         if self.search_source:
             if isinstance(unit.source, multistring):
@@ -312,7 +316,7 @@ class GrepOptionParser(optrecurse.RecursiveOptionParser):
         (options, args) = self.parse_args()
         options.inputformats = self.inputformats
         options.outputoptions = self.outputoptions
-        options.checkfilter = GrepFilter(options.searchstring, options.searchparts, options.ignorecase, options.useregexp, options.invertmatch, options.accelchar, locale.getpreferredencoding())
+        options.checkfilter = GrepFilter(options.searchstring, options.searchparts, options.ignorecase, options.useregexp, options.invertmatch, options.keeptranslations, options.accelchar, locale.getpreferredencoding())
         self.usepsyco(options)
         self.recursiveprocess(options)
 
@@ -346,6 +350,8 @@ def cmdlineparser():
     parser.add_option("", "--accelerator", dest="accelchar",
         action="store", type="choice", choices=["&", "_", "~"],
         metavar="ACCELERATOR", help="ignores the given accelerator when matching")
+    parser.add_option("-k", "--keep-translations", dest="keeptranslations",
+        action="store_true", default=False, help="always keep units with translations")
     parser.set_usage()
     parser.passthrough.append('checkfilter')
     parser.description = __doc__

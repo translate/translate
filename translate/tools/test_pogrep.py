@@ -21,7 +21,7 @@ class TestPOGrep:
         if cmdlineoptions is None:
             cmdlineoptions = []
         options, args = pogrep.cmdlineparser().parse_args(["xxx.po"] + cmdlineoptions)
-        grepfilter = pogrep.GrepFilter(searchstring, options.searchparts, options.ignorecase, options.useregexp, options.invertmatch, options.accelchar)
+        grepfilter = pogrep.GrepFilter(searchstring, options.searchparts, options.ignorecase, options.useregexp, options.invertmatch, options.keeptranslations, options.accelchar)
         tofile = grepfilter.filterfile(self.poparse(posource))
         print str(tofile)
         return str(tofile)
@@ -95,6 +95,14 @@ class TestPOGrep:
             print "Source:\n%s\nSearch: %s\n" % (source, search)
             poresult = self.pogrep(source, search, ["--regexp"])
             assert poresult.index(expected) >= 0
+
+    def test_keep_translations(self):
+        """check that we can grep unicode messages and use unicode regex search strings"""
+        posource = '#: schemas.in\nmsgid "test"\nmsgstr "rest"\n'
+        poresult = self.pogrep(posource, "schemas.in", ["--invert-match", "--keep-translations", "--search=locations"])
+        assert poresult.index(posource) >= 0
+        poresult = self.pogrep(posource, "schemas.in", ["--invert-match", "--search=locations"])
+        assert headerless_len(po.pofile(poresult).units) == 0
 
     def test_unicode_normalise(self):
         """check that we normlise unicode strings before comparing"""
