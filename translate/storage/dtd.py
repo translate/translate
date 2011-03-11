@@ -140,6 +140,7 @@ class dtdunit(base.TranslationUnit):
         self.source = source
         self.space_pre_entity = ' '
         self.space_pre_definition = ' '
+        self.closing = ">"
 
     # Note that source and target are equivalent for monolingual units
     def setsource(self, source):
@@ -345,6 +346,7 @@ class dtdunit(base.TranslationUnit):
                     self.entityhelp = (0, self.entityhelp[1])
                     self.definition += defpart
                     if not self.instring:
+                        self.closing = line[e+len(defpart):].rstrip("\n\r")
                         self.inentity = False
                         break
 
@@ -378,9 +380,9 @@ class dtdunit(base.TranslationUnit):
         # for n in self.locnotes: yield n
         if len(self.entity) > 0:
             if getattr(self, 'entitytype', None) == 'external':
-                entityline = '<!ENTITY % ' + self.entity + ' ' + self.entityparameter + ' ' + self.definition+'>'
+                entityline = '<!ENTITY % ' + self.entity + ' ' + self.entityparameter + ' ' + self.definition + self.closing
             else:
-                entityline = '<!ENTITY' + self.space_pre_entity + self.entity + self.space_pre_definition + self.definition + '>'
+                entityline = '<!ENTITY' + self.space_pre_entity + self.entity + self.space_pre_definition + self.definition + self.closing
             if getattr(self, 'hashprefix', None):
                 entityline = self.hashprefix + " " + entityline
             if isinstance(entityline, unicode):

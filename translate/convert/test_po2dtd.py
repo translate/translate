@@ -227,10 +227,26 @@ msgstr "&searchIntegration.engineName; &ileti aramasına izin ver"
         assert str(dtdfile) == dtdexpected
 
     def test_preserving_spaces(self):
-        """ensure that we preseve spaces between entity and value"""
+        """ensure that we preseve spaces between entity and value. Bug 1662"""
         posource = '''#: simple.label\nmsgid "One"\nmsgstr "Een"\n'''
         dtdtemplate = '<!ENTITY     simple.label         "One">\n'
         dtdexpected = '<!ENTITY     simple.label         "Een">\n'
+        dtdfile = self.merge2dtd(dtdtemplate, posource)
+        print dtdfile
+        assert str(dtdfile) == dtdexpected
+
+    def test_preserving_spaces(self):
+        """Preseve spaces after value. Bug 1662"""
+        # Space between value and >
+        posource = '''#: simple.label\nmsgid "One"\nmsgstr "Een"\n'''
+        dtdtemplate = '<!ENTITY simple.label "One" >\n'
+        dtdexpected = '<!ENTITY simple.label "Een" >\n'
+        dtdfile = self.merge2dtd(dtdtemplate, posource)
+        print dtdfile
+        assert str(dtdfile) == dtdexpected
+        # Space after >
+        dtdtemplate = '<!ENTITY simple.label "One"> \n'
+        dtdexpected = '<!ENTITY simple.label "Een"> \n'
         dtdfile = self.merge2dtd(dtdtemplate, posource)
         print dtdfile
         assert str(dtdfile) == dtdexpected
