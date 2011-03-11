@@ -9,10 +9,13 @@
 from translate.storage import base
 from translate.storage import txt
 
+
 class LangUnit(base.TranslationUnit):
     """This is just a normal unit with a weird string output"""
+
     def __str__(self):
-        return ";%s\n%s" % (str(self.source), str(self.target))
+        return u";%s\n%s" % (self.source, self.target)
+
 
 class LangStore(txt.TxtFile):
     """We extend TxtFile, since that has a lot of useful stuff for encoding"""
@@ -37,8 +40,8 @@ class LangStore(txt.TxtFile):
 
             if line[0] == ';':
                 u = self.addsourceunit(line[1:])
-                readyTrans = True # We're now expecting a translation on the next line
-                u.addlocation("%s:%d" % (self.filename, linenum+1))
+                readyTrans = True # Now expecting a translation on the next line
+                u.addlocation("%s:%d" % (self.filename, linenum + 1))
 
     def __str__(self):
-        return "\n\n".join([str(unit) for unit in self.units])
+        return u"\n\n".join([unicode(unit) for unit in self.units]).encode('utf-8')

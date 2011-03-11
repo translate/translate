@@ -6,10 +6,12 @@
 # Author: Dan Schafer <dschafer@mozilla.com>
 # Date: 10 Jun 2008
 
+from translate.storage import mozilla_lang as lang
 from translate.storage import po
-import lang
+
 
 class po2lang:
+
     def __init__(self, duplicatestyle="msgctxt"):
         self.duplicatestyle = duplicatestyle
 
@@ -26,8 +28,10 @@ class po2lang:
             newunit.settarget(pounit.target)
         return thetargetfile
 
+
 def convertlang(inputfile, outputfile, templates):
-    """reads in stdin using fromfileclass, converts using convertorclass, writes to stdout"""
+    """reads in stdin using fromfileclass, converts using convertorclass,
+    writes to stdout"""
     inputstore = po.pofile(inputfile)
     if inputstore.isempty():
         return 0
@@ -36,14 +40,22 @@ def convertlang(inputfile, outputfile, templates):
     outputfile.write(str(outputstore))
     return 1
 
+
+formats = {
+    "po": ("lang", convertlang),
+    ("po", "lang"): ("lang", convertlang),
+}
+
+
 def main(argv=None):
     from translate.convert import convert
     from translate.misc import stdiotell
     import sys
     sys.stdout = stdiotell.StdIOWrapper(sys.stdout)
-    formats = {"po": ("lang", convertlang)}
-    parser = convert.ConvertOptionParser(formats, usepots=True, description=__doc__)
+    parser = convert.ConvertOptionParser(formats, usetemplates=True,
+                                           description=__doc__)
     parser.run(argv)
+
 
 if __name__ == '__main__':
     main()
