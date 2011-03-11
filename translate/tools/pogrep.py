@@ -351,7 +351,7 @@ def cmdlineparser():
         action="store", type="choice", choices=["&", "_", "~"],
         metavar="ACCELERATOR", help="ignores the given accelerator when matching")
     parser.add_option("-k", "--keep-translations", dest="keeptranslations",
-        action="store_true", default=False, help="always keep units with translations")
+        action="store_true", default=False, help="always extract units with translations")
     parser.set_usage()
     parser.passthrough.append('checkfilter')
     parser.description = __doc__
