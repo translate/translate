@@ -287,20 +287,26 @@ class DialectJava(Dialect):
 register_dialect(DialectJava)
 
 
+class DialectJavaUtf8(DialectJava):
+    name = "java-utf8"
+    default_encoding = "utf-8"
+    delimiters = [u"=", u":", u" "]
+
+    def encode(cls, string, encoding=None):
+        return quote.mozillapropertiesencode(string or u"")
+    encode = classmethod(encode)
+register_dialect(DialectJavaUtf8)
+
+
 class DialectFlex(DialectJava):
     name = "flex"
     default_encoding = "utf-8"
 register_dialect(DialectFlex)
 
 
-class DialectMozilla(Dialect):
+class DialectMozilla(DialectJavaUtf8):
     name = "mozilla"
-    default_encoding = "utf-8"
     delimiters = [u"="]
-
-    def encode(cls, string, encoding=None):
-        return quote.mozillapropertiesencode(string or u"")
-    encode = classmethod(encode)
 register_dialect(DialectMozilla)
 
 
@@ -538,6 +544,16 @@ class javafile(propfile):
     def __init__(self, *args, **kwargs):
         kwargs['personality'] = "java"
         kwargs['encoding'] = "auto"
+        super(javafile, self).__init__(*args, **kwargs)
+
+
+class javafile(propfile):
+    Name = _("Java Properties (UTF-8)")
+    Exensions = ['properties']
+
+    def __init__(self, *args, **kwargs):
+        kwargs['personality'] = "java-utf8"
+        kwargs['encoding'] = "utf-8"
         super(javafile, self).__init__(*args, **kwargs)
 
 
