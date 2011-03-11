@@ -45,7 +45,7 @@ class TMServer(object):
         self.tmdb = tmdb.TMDB(tmdbfile, max_candidates, min_similarity, max_length)
 
         if tmfiles:
-            self._load_files(tmfiles)
+            self._load_files(tmfiles, source_lang, target_lang)
 
         #initialize url dispatcher
         self.rest = selector.Selector(prefix=prefix)
@@ -61,7 +61,7 @@ class TMServer(object):
                       POST=self.add_store,
                       DELETE=self.forget_store)
 
-    def _load_files(self, tmfiles):
+    def _load_files(self, tmfiles, source_lang, target_lang):
         from translate.storage import factory
         if isinstance(tmfiles, list):
             [self.tmdb.add_store(factory.getobject(tmfile), source_lang, target_lang) \
