@@ -47,7 +47,7 @@ class po2lang:
             if pounit.isheader():
                 continue
             newunit = thetargetfile.addsourceunit(pounit.source)
-            if not pounit.isfuzzy():
+            if includefuzzy or not pounit.isfuzzy():
                 newunit.settarget(pounit.target)
             else:
                 newunit.settarget(pounit.source)
