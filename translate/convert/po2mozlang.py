@@ -37,7 +37,7 @@ class po2lang:
     def __init__(self, duplicatestyle="msgctxt"):
         self.duplicatestyle = duplicatestyle
 
-    def convertstore(self, inputstore):
+    def convertstore(self, inputstore, includefuzzy=False):
         """converts a file to .lang format"""
         thetargetfile = lang.LangStore()
 
@@ -47,18 +47,21 @@ class po2lang:
             if pounit.isheader():
                 continue
             newunit = thetargetfile.addsourceunit(pounit.source)
-            newunit.settarget(pounit.target)
+            if not pounit.isfuzzy():
+                newunit.settarget(pounit.target)
+            else:
+                newunit.settarget(pounit.source)
         return thetargetfile
 
 
-def convertlang(inputfile, outputfile, templates):
+def convertlang(inputfile, outputfile, templates,  includefuzzy=False):
     """reads in stdin using fromfileclass, converts using convertorclass,
     writes to stdout"""
     inputstore = po.pofile(inputfile)
     if inputstore.isempty():
         return 0
     convertor = po2lang()
-    outputstore = convertor.convertstore(inputstore)
+    outputstore = convertor.convertstore(inputstore,  includefuzzy)
     outputfile.write(str(outputstore))
     return 1
 
