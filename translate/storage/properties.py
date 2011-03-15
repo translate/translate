@@ -547,14 +547,14 @@ class javafile(propfile):
         super(javafile, self).__init__(*args, **kwargs)
 
 
-class javafile(propfile):
+class javautf8file(propfile):
     Name = _("Java Properties (UTF-8)")
     Exensions = ['properties']
 
     def __init__(self, *args, **kwargs):
         kwargs['personality'] = "java-utf8"
         kwargs['encoding'] = "utf-8"
-        super(javafile, self).__init__(*args, **kwargs)
+        super(javautf8file, self).__init__(*args, **kwargs)
 
 
 class stringsfile(propfile):
