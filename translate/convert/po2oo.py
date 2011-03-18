@@ -136,11 +136,10 @@ class reoo:
             theoo.addline(part2)
 
     def convertstore(self, sourcestore):
-        self.p = sourcestore
         # translate the strings
-        for unit in self.p.units:
+        for unit in sourcestore.units:
             # there may be more than one element due to msguniq merge
-            if filter.validelement(unit, self.p.filename, self.filteraction):
+            if filter.validelement(unit, sourcestore.filename, self.filteraction):
                 self.handleunit(unit)
         # return the modified oo file object
         return self.o
