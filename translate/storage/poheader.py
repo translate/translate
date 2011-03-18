@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 #
-# Copyright 2002-2009 Zuza Software Foundation
+# Copyright 2002-2011 Zuza Software Foundation
 #
 # This file is part of the Translate Toolkit.
 #
@@ -276,7 +276,11 @@ class poheader(object):
         header = self.parseheader()
         lang = header.get('Language', None)
         if lang is not None:
-            return lang
+            from translate.lang.data import langcode_ire
+            if langcode_ire.match(lang):
+                return lang
+            else:
+                lang = None
         if 'X-Poedit-Language' in header:
             from translate.lang import poedit
             language = header.get('X-Poedit-Language')
