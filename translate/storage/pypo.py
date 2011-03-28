@@ -473,16 +473,16 @@ class pounit(pocommon.pounit):
     def settypecomment(self, typecomment, present=True):
         """Alters whether a given typecomment is present"""
         if self.hastypecomment(typecomment) != present:
+            typecomments = re.findall(r"\b[-\w]+\b", "\n".join(self.typecomments))
             if present:
-                if len(self.typecomments):
-                    # There is already a comment, so we have to add onto it
-                    self.typecomments[0] = "%s, %s\n" % (self.typecomments[0][:-1], typecomment)
-                else:
-                    self.typecomments.append("#, %s\n" % typecomment)
+                typecomments.append(typecomment)
             else:
-                # this should handle word boundaries properly ...
-                typecomments = map(lambda tcline: re.sub("\\b%s\\b[ \t,]*" % typecomment, "", tcline), self.typecomments)
-                self.typecomments = filter(lambda tcline: tcline.strip() != "#,", typecomments)
+                typecomments.remove(typecomment)
+            if typecomments:
+                typecomments.sort()
+                self.typecomments = ["#, %s\n" % ", ".join(typecomments)]
+            else:
+                self.typecomments = []
 
     def isfuzzy(self):
         return self.hastypecomment('fuzzy')

@@ -329,7 +329,7 @@ msgstr "POT-Creation-Date: 2006-03-08 17:30+0200\n"
 
         posource = '#, fuzzy, python-format\nmsgid "ball"\nmsgstr "bal"\n'
         expectednonfuzzy = '#, python-format\nmsgid "ball"\nmsgstr "bal"\n'
-        expectedfuzzyagain = '#, python-format, fuzzy\nmsgid "ball"\nmsgstr "bal"\n'
+        expectedfuzzyagain = '#, fuzzy, python-format\nmsgid "ball"\nmsgstr "bal"\n' # must be sorted
         pofile = self.poparse(posource)
         print pofile
         assert pofile.units[0].isfuzzy()
@@ -338,7 +338,22 @@ msgstr "POT-Creation-Date: 2006-03-08 17:30+0200\n"
         assert str(pofile) == expectednonfuzzy
         pofile.units[0].markfuzzy()
         print str(pofile)
-        assert str(pofile) == expectedfuzzyagain or str(pofile) == posource
+        assert str(pofile) == expectedfuzzyagain
+
+        # test the same, but with flags in a different order
+        posource = '#, python-format, fuzzy\nmsgid "ball"\nmsgstr "bal"\n'
+        expectednonfuzzy = '#, python-format\nmsgid "ball"\nmsgstr "bal"\n'
+        expectedfuzzyagain = '#, fuzzy, python-format\nmsgid "ball"\nmsgstr "bal"\n' # must be sorted
+        pofile = self.poparse(posource)
+        print pofile
+        assert pofile.units[0].isfuzzy()
+        pofile.units[0].markfuzzy(False)
+        assert not pofile.units[0].isfuzzy()
+        print str(pofile)
+        assert str(pofile) == expectednonfuzzy
+        pofile.units[0].markfuzzy()
+        print str(pofile)
+        assert str(pofile) == expectedfuzzyagain
 
     @mark.xfail(reason="Check differing behaviours between pypo and cpo")
     def test_makeobsolete_untranslated(self):
