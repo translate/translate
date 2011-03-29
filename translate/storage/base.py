@@ -723,7 +723,7 @@ class TranslationStore(object):
             detected_encoding = chardet.detect(text)
             if detected_encoding['confidence'] < 0.48:
                 detected_encoding = None
-            if detected_encoding['encoding'] == 'ascii':
+            elif detected_encoding['encoding'] == 'ascii':
                 detected_encoding['encoding'] = 'utf-8'
         except ImportError:
             detected_encoding = None
@@ -738,8 +738,8 @@ class TranslationStore(object):
         else:
             encodings.append(self.encoding)
             if detected_encoding and detected_encoding['encoding'] != self.encoding:
-                logging.warn("trying to parse %s with encoding: %s but detected encoding is %s",
-                             self.filename, self.encoding, detected_encoding['encoding'])
+                logging.warn("trying to parse %s with encoding: %s but detected encoding is %s (confidence: %s)",
+                             self.filename, self.encoding, detected_encoding['encoding'], detected_encoding['confidence'])
             encodings.append(self.encoding)
 
         for encoding in encodings:
