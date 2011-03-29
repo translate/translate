@@ -720,7 +720,8 @@ class TranslationStore(object):
             default_encodings = ['utf-8']
         try:
             import chardet
-            detected_encoding = chardet.detect(text)
+            # many false complaints with ellipse (see bug 1825)
+            detected_encoding = chardet.detect(text.replace("…", ""))
             if detected_encoding['confidence'] < 0.48:
                 detected_encoding = None
             elif detected_encoding['encoding'] == 'ascii':
