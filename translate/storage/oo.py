@@ -246,9 +246,18 @@ class oounit:
         """convert to a string. double check that unicode is handled"""
         return encode_if_needed_utf8(self.getoutput())
 
-    def getoutput(self):
+    def getoutput(self, skip_source=False, fallback_lang=None):
         """return the lines in tab-delimited form"""
-        return "\r\n".join([str(line) for line in self.lines])
+        if skip_source:
+            lines = self.lines[1:]
+            if not lines:
+                # Untranslated, so let's do fall-back: (bug 1883)
+                new_line = ooline(self.lines[0].getparts())
+                new_line.languageid = fallback_lang
+                lines = [new_line]
+        else:
+            lines = self.lines
+        return "\r\n".join([str(line) for line in lines])
 
 
 class oofile:
@@ -295,11 +304,11 @@ class oofile:
             thisline = ooline(parts)
             self.addline(thisline)
 
-    def __str__(self):
+    def __str__(self, skip_source=False, fallback_lang=None):
         """convert to a string. double check that unicode is handled"""
-        return encode_if_needed_utf8(self.getoutput())
+        return encode_if_needed_utf8(self.getoutput(skip_source, fallback_lang))
 
-    def getoutput(self):
+    def getoutput(self, skip_source=False, fallback_lang=None):
         """converts all the lines back to tab-delimited form"""
         lines = []
         for oe in self.units:
@@ -307,7 +316,7 @@ class oofile:
                 warnings.warn("contains %d lines (should be 2 at most): languages %r" % (len(oe.lines), oe.languages))
                 oekeys = [line.getkey() for line in oe.lines]
                 warnings.warn("contains %d lines (should be 2 at most): keys %r" % (len(oe.lines), oekeys))
-            oeline = str(oe) + "\r\n"
+            oeline = oe.getoutput(skip_source, fallback_lang) + "\r\n"
             lines.append(oeline)
         return "".join(lines)
 

@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 #
-# Copyright 2004-2006 Zuza Software Foundation
+# Copyright 2004-2008,20010-2011 Zuza Software Foundation
 #
 # This file is part of translate.
 #
@@ -186,7 +186,7 @@ options = oofilteroptions()
 filter = oocheckfilter(options, [checks.OpenOfficeChecker, checks.StandardUnitChecker], checks.openofficeconfig)
 
 
-def convertoo(inputfile, outputfile, templatefile, sourcelanguage=None, targetlanguage=None, timestamp=None, includefuzzy=False, multifilestyle="single", filteraction=None):
+def convertoo(inputfile, outputfile, templatefile, sourcelanguage=None, targetlanguage=None, timestamp=None, includefuzzy=False, multifilestyle="single", skip_source=False, filteraction=None):
     inputstore = factory.getobject(inputfile)
     inputstore.filename = getattr(inputfile, 'name', '')
     if not targetlanguage:
@@ -203,7 +203,7 @@ def convertoo(inputfile, outputfile, templatefile, sourcelanguage=None, targetla
         convertor = reoo(templatefile, languages=languages, timestamp=timestamp, includefuzzy=includefuzzy, long_keys=multifilestyle != "single", filteraction=filteraction)
     outputstore = convertor.convertstore(inputstore)
     # TODO: check if we need to manually delete missing items
-    outputfile.write(str(outputstore))
+    outputfile.write(outputstore.__str__(skip_source, targetlanguage))
     return True
 
 
@@ -221,6 +221,7 @@ def main(argv=None):
             help="don't change the timestamps of the strings")
     parser.add_option("", "--nonrecursiveoutput", dest="allowrecursiveoutput", default=True, action="store_false", help="don't treat the output oo as a recursive store")
     parser.add_option("", "--nonrecursivetemplate", dest="allowrecursivetemplate", default=True, action="store_false", help="don't treat the template oo as a recursive store")
+    parser.add_option("", "--skipsource", dest="skip_source", default=False, action="store_true", help="don't output the source language, but fallback to it where needed")
     parser.add_option("", "--filteraction", dest="filteraction", default="none", metavar="ACTION",
             help="action on pofilter failure: none (default), warn, exclude-serious, exclude-all")
     parser.add_fuzzy_option()
@@ -228,6 +229,7 @@ def main(argv=None):
     parser.passthrough.append("sourcelanguage")
     parser.passthrough.append("targetlanguage")
     parser.passthrough.append("timestamp")
+    parser.passthrough.append("skip_source")
     parser.passthrough.append("filteraction")
     parser.run(argv)
 
