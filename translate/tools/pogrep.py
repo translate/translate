@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 #
-# Copyright 2002-2008 Zuza Software Foundation
+# Copyright 2002-2011 Zuza Software Foundation
 #
 # This file is part of translate.
 #
@@ -182,7 +182,7 @@ class GrepFilter:
     def filterunit(self, unit):
         """runs filters on an element"""
         if unit.isheader():
-            return []
+            return True
 
         if self.keeptranslations and unit.target:
             return True
