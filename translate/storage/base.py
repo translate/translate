@@ -134,8 +134,10 @@ class TranslationUnit(object):
     _state_n = 0
     notes = ""
 
+    def __init__(self, source=None):
         """Constructs a TranslationUnit containing the given source string."""
-        self.source = source
+        if source is not None:
+            self.source = source
 
     def __eq__(self, other):
         """Compares two TranslationUnits.
