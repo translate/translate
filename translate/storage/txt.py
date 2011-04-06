@@ -121,7 +121,7 @@ class TxtFile(base.TranslationStore):
         if not isinstance(lines, list):
             lines = lines.split("\n")
         for linenum in range(len(lines)):
-            line = lines[linenum].rstrip("\n").rstrip("\r")
+            line = lines[linenum].rstrip("\r\n")
             for rule, prere, postre in self.flavour:
                 match = prere.match(line)
                 if match:
