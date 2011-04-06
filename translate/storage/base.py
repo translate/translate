@@ -499,7 +499,6 @@ class TranslationStore(object):
         self.units = []
         if unitclass:
             self.UnitClass = unitclass
-        super(TranslationStore, self).__init__()
 
     def getsourcelanguage(self):
         """Gets the source language for this store"""
