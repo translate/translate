@@ -126,15 +126,16 @@ class TranslationUnit(object):
     # ... but by default a format will not support state:
     STATE = {}
 
-    def __init__(self, source):
+    _store = None
+    _source = None
+    _target = None
+    _rich_source = None
+    _rich_target = None
+    _state_n = 0
+    notes = ""
+
         """Constructs a TranslationUnit containing the given source string."""
-        self.notes = ""
-        self._store = None
         self.source = source
-        self._target = None
-        self._rich_source = None
-        self._rich_target = None
-        self._state_n = 0
 
     def __eq__(self, other):
         """Compares two TranslationUnits.
@@ -488,11 +489,12 @@ class TranslationStore(object):
     """Indicates if format can store suggestions and alternative translation
     for a unit"""
 
+    sourcelanguage = None
+    targetlanguage = None
+
     def __init__(self, unitclass=None):
         """Constructs a blank TranslationStore."""
         self.units = []
-        self.sourcelanguage = None
-        self.targetlanguage = None
         if unitclass:
             self.UnitClass = unitclass
         super(TranslationStore, self).__init__()
