@@ -180,7 +180,7 @@ class tsunit(lisa.LISAunit):
         return self.xmlelement.get("numerus") == "yes"
 
     def addnote(self, text, origin=None, position="append"):
-        """Add a note specifically in a "comment" tag"""
+        """Add a note specifically in the appropriate "*comment" tag"""
         if isinstance(text, str):
             text = text.decode("utf-8")
         current_notes = self.getnotes(origin)
@@ -198,9 +198,6 @@ class tsunit(lisa.LISAunit):
         #TODO: consider only responding when origin has certain values
         comments = []
         if origin in ["programmer", "developer", "source code", None]:
-            notenode = self.xmlelement.find(self.namespaced("comment"))
-            if notenode is not None and notenode.text is not None:
-                comments.append(notenode.text)
             notenode = self.xmlelement.find(self.namespaced("extracomment"))
             if notenode is not None and notenode.text is not None:
                 comments.append(notenode.text)
@@ -213,9 +210,6 @@ class tsunit(lisa.LISAunit):
     def removenotes(self, origin=None):
         """Remove all the translator notes."""
         if origin in ["programmer", "developer", "source code", None]:
-            note = self.xmlelement.find(self.namespaced("comment"))
-            if not note is None:
-                self.xmlelement.remove(note)
             note = self.xmlelement.find(self.namespaced("extracomment"))
             if not note is None:
                 self.xmlelement.remove(note)
@@ -272,7 +266,7 @@ class tsunit(lisa.LISAunit):
         # like we do with PO.
         return bool(self.getid()) and not self.isobsolete()
 
-    def getcontext(self):
+    def getcontextname(self):
         parent = self.xmlelement.getparent()
         if parent is None:
             return None
@@ -280,6 +274,14 @@ class tsunit(lisa.LISAunit):
         if context is None:
             return None
         return context.text
+
+    def getcontext(self):
+        contexts = [self.getcontextname()]
+        commentnode = self.xmlelement.find(self.namespaced("comment"))
+        if commentnode is not None and commentnode.text is not None:
+            contexts.append(commentnode.text)
+        contexts = filter(None, contexts)
+        return '\n'.join(contexts)
 
     def addlocation(self, location):
         if isinstance(location, str):
@@ -436,7 +438,7 @@ class tsfile(lisa.LISAfile):
         If the contextname is specified, switch to that context (creating it
         if allowed by createifmissing)."""
         if contextname is None:
-            contextname = unit.getcontext()
+            contextname = unit.getcontextname()
 
         if self._contextname != contextname:
             if not self._switchcontext(contextname, createifmissing):
