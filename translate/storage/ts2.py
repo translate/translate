@@ -363,7 +363,7 @@ class tsfile(lisa.LISAfile):
         self.namespace = self.document.getroot().nsmap.get(None, None)
         self.header = self.document.getroot()
         if self._contextname:
-            self.body = self.getcontextnode(self._contextname)
+            self.body = self._getcontextnode(self._contextname)
         else:
             self.body = self.document.getroot()
 
