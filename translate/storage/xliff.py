@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 #
-# Copyright 2005-2010 Zuza Software Foundation
+# Copyright 2005-2011 Zuza Software Foundation
 #
 # This file is part of the Translate Toolkit.
 #
@@ -355,7 +355,7 @@ class xliffunit(lisa.LISAunit):
 #        return not targetnode is None and \
 #                (targetnode.get("state-qualifier") == "fuzzy-match" or \
 #                targetnode.get("state") == "needs-review-translation")
-        return not self.isapproved() and self.target
+        return not self.isapproved() and bool(self.target)
 
     def markfuzzy(self, value=True):
         state_id = self.get_state_id()

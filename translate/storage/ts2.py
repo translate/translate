@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 #
-# Copyright 2008-2009 Zuza Software Foundation
+# Copyright 2008-2011 Zuza Software Foundation
 #
 # This file is part of the Translate Toolkit.
 #
@@ -239,7 +239,7 @@ class tsunit(lisa.LISAunit):
         return self._gettype() == "unfinished"
 
     def isfuzzy(self):
-        return self._gettype() == "unfinished" and self.target
+        return self._gettype() == "unfinished" and bool(self.target)
 
     def markfuzzy(self, value=True):
         if value:
