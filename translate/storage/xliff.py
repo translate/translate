@@ -159,7 +159,7 @@ class xliffunit(lisa.LISAunit):
         languageNode.text = None
 
         strelem_to_xml(languageNode, value[0])
-        self._rich_target = value
+        ### currently giving some issues in Virtaal: self._rich_target = value
 
     def get_rich_target(self, lang=None):
         """retrieves the "target" text (second entry), or the entry in the
