@@ -102,7 +102,6 @@ class xliffunit(lisa.LISAunit):
         #TODO: check language
 #        lisa.setXMLlang(langset, lang)
 
-#        self.createPHnodes(langset, text)
         langset.text = text
         return langset
 

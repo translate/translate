@@ -33,35 +33,6 @@ from translate.storage import base
 from translate.lang import data
 
 
-def _findAllMatches(text, re_obj):
-    """generate match objects for all L{re_obj} matches in L{text}."""
-    start = 0
-    max = len(text)
-    while start < max:
-        m = re_obj.search(text, start)
-        if not m:
-            break
-        yield m
-        start = m.end()
-
-#TODO: we can now do better with our proper placeables support
-placeholders = ['(%[diouxXeEfFgGcrs])', r'(\\+.?)',
-                '(%[0-9]$lx)', '(%[0-9]\$[a-z])', '(<.+?>)']
-re_placeholders = [re.compile(ph) for ph in placeholders]
-
-
-def _getPhMatches(text):
-    """return list of regexp matchobjects for with all place holders in the
-    L{text}"""
-    matches = []
-    for re_ph in re_placeholders:
-        matches.extend(list(_findAllMatches(text, re_ph)))
-
-    # sort them so they come sequentially
-    matches.sort(lambda a, b: cmp(a.start(), b.start()))
-    return matches
-
-
 class LISAunit(base.TranslationUnit):
     """
     A single unit in the file.  Provisional work is done to make several
