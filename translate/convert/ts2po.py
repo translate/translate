@@ -33,15 +33,17 @@ from translate.storage import ts
 
 class ts2po:
 
-    def __init__(self, duplicatestyle="msgctxt"):
+    def __init__(self, duplicatestyle="msgctxt", pot=False):
         self.duplicatestyle = duplicatestyle
+        self.pot = pot
 
     def convertmessage(self, contextname, messagenum, source, target, msgcomments, transtype):
         """makes a pounit from the given message"""
         thepo = po.pounit(encoding="UTF-8")
         thepo.addlocation("%s#%d" % (contextname, messagenum))
         thepo.source = source
-        thepo.target = target
+        if not self.pot:
+            thepo.target = target
         if len(msgcomments) > 0:
             thepo.addnote(msgcomments)
         if transtype == "unfinished" and thepo.istranslated():
@@ -72,9 +74,9 @@ class ts2po:
         return thetargetfile
 
 
-def convertts(inputfile, outputfile, templates, duplicatestyle="msgctxt"):
+def convertts(inputfile, outputfile, templates, pot=False, duplicatestyle="msgctxt"):
     """reads in stdin using fromfileclass, converts using convertorclass, writes to stdout"""
-    convertor = ts2po(duplicatestyle=duplicatestyle)
+    convertor = ts2po(duplicatestyle=duplicatestyle, pot=pot)
     outputstore = convertor.convertfile(inputfile)
     if outputstore.isempty():
         return 0
@@ -87,4 +89,5 @@ def main(argv=None):
     formats = {"ts": ("po", convertts)}
     parser = convert.ConvertOptionParser(formats, usepots=True, description=__doc__)
     parser.add_duplicates_option()
+    parser.passthrough.append("pot")
     parser.run(argv)
