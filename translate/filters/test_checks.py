@@ -838,6 +838,8 @@ def test_variables_openoffice():
     assert fails_serious(ooochecker.variables, "Save [file]", "Stoor [leer]")
     assert passes(ooochecker.variables, "Save $file", "Stoor $file")
     assert fails_serious(ooochecker.variables, "Save $file", "Stoor $leer")
+    assert passes(ooochecker.variables, "Use @EXTENSION@", "Gebruik @EXTENSION@")
+    assert fails_serious(ooochecker.variables, "Use @EXTENSUION@", "Gebruik @UITBRUIDING@")
     # Same variable name twice
     assert fails_serious(ooochecker.variables, r"""Start %PROGRAMNAME% as %PROGRAMNAME%""", "Begin %PROGRAMNAME%")
 
