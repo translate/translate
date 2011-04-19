@@ -107,9 +107,9 @@ class inifile(base.TranslationStore):
                 match = re.match('\\[(?P<section>.+)\\](?P<entry>.+)', location)
                 _outinifile[match.groupdict()['section']][match.groupdict()['entry']] = self._dialect.escape(unit.target)
         if _outinifile:
-            return str(_outinifile)
+            return unicode(_outinifile)
         else:
-            return ""
+            return u""
 
     def parse(self, input):
         """parse the given file or file source string"""

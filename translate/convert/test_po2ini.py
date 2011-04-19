@@ -91,7 +91,6 @@ msgstr "translated"
         print inifile
         assert inifile == iniexpected
 
-    @mark.xfail(reason="We have some encoding issues with this test")
     def test_dialects_inno(self):
         """test that we output correctly for Inno files."""
         posource = ur'''#: [section]prop
@@ -99,7 +98,7 @@ msgid "value\tvalue2\n"
 msgstr "ṽḁḽṻḝ\tṽḁḽṻḝ2\n"
 '''
         initemplate = u'''[section]\nprop  =  value%tvalue%n\n'''
-        iniexpected = u'''[section]\nprop  =  ṽḁḽṻḝ%tṽḁḽṻḝ2%n'''
+        iniexpected = u'''[section]\nprop  =  ṽḁḽṻḝ%tṽḁḽṻḝ2%n\n'''
         inifile = self.merge2ini(initemplate, posource, "inno")
         print inifile
         assert inifile == iniexpected
