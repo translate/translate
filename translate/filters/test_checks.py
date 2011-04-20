@@ -897,6 +897,11 @@ def test_ooxmltags():
     assert passes(ooochecker.xmltags, "<link name=\"John\">", "<link name=\"Jan\">")
     assert fails(ooochecker.xmltags, "<link name=\"John\">", "<link naam=\"Jan\">")
 
+    # Reported OOo error
+    ## Bug 1910
+    assert fails(ooochecker.xmltags, u"""<variable id="FehlendesElement">In a database file window, click the <emph>Queries</emph> icon, then choose <emph>Edit - Edit</emph>. When referenced fields no longer exist, you see this dialog</variable>""", u"""<variable id="FehlendesElement">Dans  une fenêtre de fichier de base de données, cliquez sur l'icône <emph>Requêtes</emph>, puis choisissez <emph>Éditer - Éditer</emp>. Lorsque les champs de référence n'existent plus, vous voyez cette boîte de dialogue</variable>""")
+    assert fails(ooochecker.xmltags, "<variable> <emph></emph> <emph></emph> </variable>", "<variable> <emph></emph> <emph></emp> </variable>")
+
 
 def test_functions():
     """tests to see that funtions() are not translated"""
