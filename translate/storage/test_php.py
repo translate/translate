@@ -203,3 +203,17 @@ $lang[2] = "Yeah";
         phpunit = phpfile.units[0]
         assert phpunit.name == "$lang->'item1'"
         assert phpunit.source == "value1"
+
+    @mark.xfail(reason="Bug #1898")
+    def test_parsing_arrays_space_before_comma(self):
+        """parse the array syntax where we don't have a trailing comma.
+        Bug #1685"""
+        phpsource = '''$lang = array(
+         'item1' => 'value1',
+         'item2' => 'value2' ,
+      );'''
+        phpfile = self.phpparse(phpsource)
+        assert len(phpfile.units) == 2
+        phpunit = phpfile.units[0]
+        assert phpunit.name == "$lang->'item1'"
+        assert phpunit.source == "value1"
