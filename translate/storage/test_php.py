@@ -154,15 +154,16 @@ $lang[2] = "Yeah";
 
     def test_parsing_arrays(self):
         """parse the array syntax"""
-        phpsource = '''$lang = array(
+        phpsource = '''$lang = %s(
          'item1' => 'value1',
          'item2' => 'value2',
       );'''
-        phpfile = self.phpparse(phpsource)
-        assert len(phpfile.units) == 2
-        phpunit = phpfile.units[0]
-        assert phpunit.name == "$lang->'item1'"
-        assert phpunit.source == "value1"
+        for arrayfn in ['array', 'Array', 'ARRAY']:
+            phpfile = self.phpparse(phpsource % arrayfn)
+            assert len(phpfile.units) == 2
+            phpunit = phpfile.units[0]
+            assert phpunit.name == "$lang->'item1'"
+            assert phpunit.source == "value1"
 
     def test_parsing_arrays_keys_with_spaces(self):
         """Ensure that our identifiers can have spaces. Bug #1683"""

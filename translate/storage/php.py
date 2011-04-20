@@ -222,7 +222,7 @@ class phpfile(base.TranslationStore):
             if incomment and commentstartpos == -1:
                 newunit.addnote(line.strip(), "developer")
                 continue
-            if line.find('array(') != -1:
+            if line.lower().find('array(') != -1:
                 equaldel = "=>"
                 enddel = ","
                 inarray = True
