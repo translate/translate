@@ -123,7 +123,8 @@ class LanguageIdentifier(object):
 if __name__ == "__main__":
     from sys import argv
     script_dir = path.abspath(path.dirname(argv[0]))
-    identifier = LanguageIdentifier(path.join(script_dir, '..', 'share', 'langmodels'))
+    identifier = LanguageIdentifier()
     import locale
     encoding = locale.getpreferredencoding()
-    print "Language detected:", identifier.identify_lang(argv[1].decode(encoding))
+    text = file(argv[1]).read().decode(encoding)
+    print "Language detected:", identifier.identify_lang(text)
