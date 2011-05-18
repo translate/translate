@@ -59,7 +59,6 @@ class xliffunit(lisa.LISAunit):
     S_NEEDS_REVIEW = state.NEEDS_REVIEW
     S_TRANSLATED = state.UNREVIEWED
     S_SIGNED_OFF = state.FINAL
-    S_FINAL = state.MAX
 
     statemap = {
                 "new": S_UNTRANSLATED + 1,
@@ -71,7 +70,7 @@ class xliffunit(lisa.LISAunit):
                 "needs-review-l10n": S_NEEDS_REVIEW + 2,
                 "translated": S_TRANSLATED,
                 "signed-off": S_SIGNED_OFF,
-                "final": S_FINAL,
+                "final": S_SIGNED_OFF+1,
                 }
 
     statemap_r = dict((i[1], i[0]) for i in statemap.iteritems())
