@@ -50,7 +50,10 @@ def process_l10n_ini(inifile):
         frompath = os.path.join(l10n_ini_path, l10n.get('general', 'depth'), dir, 'locales', 'en-US')
         if verbose:
             print '%s -> %s' % (frompath, os.path.join(l10ncheckout, 'en-US', dir))
-        shutil.copytree(frompath, os.path.join(l10ncheckout, 'en-US', dir))
+        try:
+            shutil.copytree(frompath, os.path.join(l10ncheckout, 'en-US', dir))
+        except OSError:
+            print 'ERROR: %s does not exist' % frompath
 
     try:
         for include in l10n.options('includes'):
