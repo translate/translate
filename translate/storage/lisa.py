@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 #
-# Copyright 2006-2009 Zuza Software Foundation
+# Copyright 2006-2011 Zuza Software Foundation
 #
 # This file is part of the Translate Toolkit.
 #
@@ -234,8 +234,11 @@ class LISAunit(base.TranslationUnit):
             terms = languageNode.iterdescendants(self.namespaced(self.textNode))
             if terms is None:
                 return None
-            else:
+            try:
                 return getText(terms.next(), xml_space)
+            except StopIteration:
+                # didn't have the structure we expected
+                return None
         else:
             return getText(languageNode, xml_space)
 
