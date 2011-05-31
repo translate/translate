@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 #
-# Copyright 2008-2009 Zuza Software Foundation
+# Copyright 2008-2009,2011 Zuza Software Foundation
 #
 # This file is part of the Translate Toolkit.
 #
@@ -103,6 +103,8 @@ def xml_to_strelem(dom_node, xml_space="preserve"):
     result = StringElem()
     sub = result.sub # just an optimisation
     for child_dom_node in dom_node:
+        if child_dom_node.tag is etree.Comment:
+            continue
         sub.append(make_placeable(child_dom_node, xml_space))
         if child_dom_node.tail:
             sub.append(StringElem(unicode(child_dom_node.tail)))
