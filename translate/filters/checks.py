@@ -58,7 +58,7 @@ printf_pat = re.compile('''
         )''', re.VERBOSE)
 
 # The name of the XML tag
-tagname_re = re.compile("<[\s]*([\w\/]*)")
+tagname_re = re.compile("<[\s]*([\w\/]*).*?(/)?[\s]*>")
 
 # We allow escaped quotes, probably for old escaping style of OOo helpcontent
 #TODO: remove escaped strings once usage is audited
@@ -72,7 +72,8 @@ gconf_attribute_re = re.compile('"[a-z_]+?"')
 
 def tagname(string):
     """Returns the name of the XML/HTML tag in string"""
-    return tagname_re.match(string).groups(1)[0]
+    tagname_match = tagname_re.match(string)
+    return tagname_match.groups(1)[0] + tagname_match.groups('')[1]
 
 
 def intuplelist(pair, list):

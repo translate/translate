@@ -877,6 +877,8 @@ def test_xmltags():
     assert fails(stdchecker.xmltags, "%d/%d translated\n(%d blank, %d fuzzy)", "<br>%d/%d μεταφρασμένα\n<br>(%d κενά, %d ασαφή)")
     assert fails(stdchecker.xmltags, '(and <a href="http://www.schoolforge.net/education-software" class="external">other open source software</a>)', '(en <a href="http://www.schoolforge.net/education-software" class="external">ander Vry Sagteware</a)')
     assert fails(stdchecker.xmltags, 'Because Tux Paint (and <a href="http://www.schoolforge.net/education-software" class="external">other open source software</a>) is free of cost and not limited in any way, a school can use it <i>today</i>, without waiting for procurement or a budget!', 'Omdat Tux Paint (en <a href="http://www.schoolforge.net/education-software" class="external">ander Vry Sagteware</a)gratis is en nie beperk is op enige manier nie, kan \'n skool dit vandag</i> gebruik sonder om te wag vir goedkeuring of \'n begroting!')
+    assert fails(stdchecker.xmltags, "test <br />", "test <br>")
+    assert fails(stdchecker.xmltags, "test <img src='foo.jpg'/ >", "test <img src='foo.jpg'  >")
     frchecker = checks.StandardChecker(checks.CheckerConfig(targetlanguage="fr"))
     assert fails(frchecker.xmltags, "Click <a href=\"page.html\">", "Klik <a href=« page.html »>")
 
