@@ -1048,3 +1048,14 @@ def test_hassuggestion():
 </xliff>
 ''')
     assert not checker.hassuggestion(xliff_store.units[0])
+
+
+def test_dialogsizes():
+    """test Mozilla dialog sizes"""
+    mozillachecker = checks.MozillaChecker()
+    assert passes(mozillachecker.dialogsizes, 'width: 12em;', 'width: 12em;')
+    assert passes(mozillachecker.dialogsizes, 'width: 12em; height: 36em', 'width: 12em; height: 36em')
+    assert fails(mozillachecker.dialogsizes, 'height: 12em;', 'hoogde: 12em;')
+    assert passes(mozillachecker.dialogsizes, 'height: 12em;', 'height: 24px;')
+    assert fails(mozillachecker.dialogsizes, 'height: 12em;', 'height: 24xx;')
+    assert fails(mozillachecker.dialogsizes, 'height: 12.5em;', 'height: 12,5em;')

@@ -1162,7 +1162,7 @@ class StandardChecker(TranslationChecker):
                          "isreview", "notranslatewords", "musttranslatewords",
                          "emails", "simpleplurals", "urls", "printf",
                          "tabs", "newlines", "functions", "options",
-                         "blank", "nplurals", "gconf"),
+                         "blank", "nplurals", "gconf", "dialogsizes"),
           "blank": ("simplecaps", "variables", "startcaps",
                     "accelerators", "brackets", "endpunc",
                     "acronyms", "xmltags", "startpunc",
@@ -1173,7 +1173,7 @@ class StandardChecker(TranslationChecker):
                     "isreview", "notranslatewords", "musttranslatewords",
                     "emails", "simpleplurals", "urls", "printf",
                     "tabs", "newlines", "functions", "options",
-                    "gconf"),
+                    "gconf", "dialogsizes"),
           "credits": ("simplecaps", "variables", "startcaps",
                       "accelerators", "brackets", "endpunc",
                       "acronyms", "xmltags", "startpunc",
@@ -1252,6 +1252,37 @@ class MozillaChecker(StandardChecker):
             if location in ['MOZ_LANGPACK_CONTRIBUTORS', 'credit.translation']:
                 raise FilterFailure(u"Don't translate. Just credit the translators.")
         return True
+
+    mozilla_dialog_re = re.compile("""(                          # option pair "key: value;"
+                                      (?P<key>[-a-z]+)           # key
+                                      :\s+                       # seperator
+                                      (?P<number>\d+(?:[.]\d+)?) # number
+                                      (?P<unit>[a-z][a-z]);?     # units
+                                      )+                         # multiple pairs
+                                   """, re.VERBOSE)
+    mozilla_dialog_valid_units = ['em', 'px', 'ch']
+    def dialogsizes(self, str1, str2):
+        """checks that dialog sizes are not translated"""
+        # Example: "width: 635px; height: 400px;"
+        if "width" in str1 or "height" in str1:
+            str1pairs = self.mozilla_dialog_re.findall(str1)
+            if str1pairs:
+                str2pairs = self.mozilla_dialog_re.findall(str2)
+                if len(str1pairs) != len(str2pairs):
+                    raise FilterFailure(u"A dialog pair is missing")
+                for i, pair1 in enumerate(str1pairs):
+                    pair2 = str2pairs[i]
+                    if pair1[0] != pair2[0]:  # Only check pairs that differ
+                        if len(pair2) != 4:
+                            raise FilterFailure(u"A part of the dialog pair is missing")
+                        if pair1[1] not in pair2: # key
+                            raise FilterFailure(u"Do not translate the key '%s'" % pair1[1])
+                        # FIXME we could check more carefully for numbers in pair1[2]
+                        if pair2[3] not in self.mozilla_dialog_valid_units:
+                            raise FilterFailure(u"Units should be one of '%s'. "
+                                                 "The source string uses '%s'" % (", ".join(self.mozilla_dialog_valid_units), pair1[3]))
+        return True
+
 
 drupalconfig = CheckerConfig(
     varmatches=[("%", None), ("@", None), ("!", None)],
