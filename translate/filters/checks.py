@@ -1324,7 +1324,7 @@ class GnomeChecker(StandardChecker):
                 #stopwords = [word for word in words1 if word in self.config.notranslatewords and word not in words2]
                 stopwords = [word for word in gconf_attributes if word[1:-1] not in str2]
                 if stopwords:
-                    raise FilterFailure(u"Do not translate gconf attributes: %s" %
+                    raise FilterFailure(u"Do not translate GConf attributes: %s" %
                                         (u", ".join(stopwords)))
         return True
 
