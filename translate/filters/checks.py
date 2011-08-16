@@ -1326,6 +1326,7 @@ class GnomeChecker(StandardChecker):
                 if stopwords:
                     raise FilterFailure(u"Do not translate GConf attributes: %s" %
                                         (u", ".join(stopwords)))
+                return True
         return True
 
 kdeconfig = CheckerConfig(
