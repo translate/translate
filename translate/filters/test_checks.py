@@ -1021,6 +1021,10 @@ def test_gconf():
     gnomechecker.locations = ['file.schemas.in.h:24']
     assert passes(gnomechecker.gconf, 'Blah "gconf_setting"', 'Bleh "gconf_setting"')
     assert fails(gnomechecker.gconf, 'Blah "gconf_setting"', 'Bleh "gconf_steling"')
+    # redo the same, but with the new location comment:
+    gnomechecker.locations = ['file.gschema.xml.in.in.h:24']
+    assert passes(gnomechecker.gconf, 'Blah "gconf_setting"', 'Bleh "gconf_setting"')
+    assert fails(gnomechecker.gconf, 'Blah "gconf_setting"', 'Bleh "gconf_steling"')
 
 
 def test_hassuggestion():

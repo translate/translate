@@ -1319,7 +1319,7 @@ class GnomeChecker(StandardChecker):
     def gconf(self, str1, str2):
         """Checks if we have any gconf config settings translated."""
         for location in self.locations:
-            if location.find('schemas.in') != -1:
+            if location.find('schemas.in') != -1 or location.find('gschema.xml.in') != -1:
                 gconf_attributes = gconf_attribute_re.findall(str1)
                 #stopwords = [word for word in words1 if word in self.config.notranslatewords and word not in words2]
                 stopwords = [word for word in gconf_attributes if word[1:-1] not in str2]
