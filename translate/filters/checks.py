@@ -1361,6 +1361,19 @@ class CCLicenseChecker(StandardChecker):
         checkerconfig.update(cclicenseconfig)
         StandardChecker.__init__(self, **kwargs)
 
+termconfig = CheckerConfig()
+
+
+class TermChecker(StandardChecker):
+
+    def __init__(self, **kwargs):
+        checkerconfig = kwargs.get("checkerconfig", None)
+        if checkerconfig is None:
+            checkerconfig = CheckerConfig()
+            kwargs["checkerconfig"] = checkerconfig
+        checkerconfig.update(cclicenseconfig)
+        StandardChecker.__init__(self, **kwargs)
+
 projectcheckers = {
     "openoffice": OpenOfficeChecker,
     "mozilla": MozillaChecker,
@@ -1369,6 +1382,7 @@ projectcheckers = {
     "gnome": GnomeChecker,
     "creativecommons": CCLicenseChecker,
     "drupal": DrupalChecker,
+    "terminology": TermChecker,
     }
 
 
