@@ -65,7 +65,7 @@ languages = {
 'fr': (u'French', 2, '(n > 1)'),
 'fur': (u'Friulian', 2, '(n != 1)'),
 'fy': (u'Frisian', 2, '(n != 1)'),
-'ga': (u'Irish', 3, 'n==1 ? 0 : n==2 ? 1 : 2'),
+'ga': (u'Irish', 5, 'n==1 ? 0 : n==2 ? 1 : n<7 ? 2 : n<11 ? 3 : 4'),
 'gd': (u'Gaelic; Scottish Gaelic', 4, '(n==1 || n==11) ? 0 : (n==2 || n==12) ? 1 : (n > 2 && n < 20) ? 2 : 3'),
 'gl': (u'Galician', 2, '(n != 1)'),
 'gu': (u'Gujarati', 2, '(n != 1)'),
