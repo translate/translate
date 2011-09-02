@@ -154,14 +154,16 @@ do
 	[ -z ${updated} ] && [ -d ${PO_DIR}/${polang}/.svn ] && (cd ${PO_DIR}/${polang}; svn up) && updated="1"
 
 	# Copy directory structure while preserving version control metadata
-	rm -rf ${POUPDATED_DIR}/${polang}
-	cp -R ${PO_DIR}/${polang} ${POUPDATED_DIR}
-	(cd ${POUPDATED_DIR/${polang}; find $PRODUCT_DIRS -name '*.po' -exec rm -f {} \;)
+	if [ -d ${PO_DIR}/${polang} ]; then
+		rm -rf ${POUPDATED_DIR}/${polang}
+		cp -R ${PO_DIR}/${polang} ${POUPDATED_DIR}
+		(cd ${POUPDATED_DIR/${polang}; find $PRODUCT_DIRS -name '*.po' -exec rm -f {} \;)
+	fi
 
 	## MIGRATE - Migrate PO files to new POT files.
 	# Comment out the following "pomigrate2"-line if migration should not be done.
 	tempdir=`mktemp -d tmp.XXXXXXXXXX`
-	cp -R ${PO_DIR}/${polang} ${tempdir}/${polang}
+	[ -d ${PO_DIR}/${polang} ] && cp -R ${PO_DIR}/${polang} ${tempdir}/${polang}
 	pomigrate2 --use-compendium --pot2po --quiet ${tempdir}/${polang} ${POUPDATED_DIR}/${polang} ${L10N_DIR}/pot
 	rm -rf ${tempdir}
 
@@ -174,8 +176,9 @@ do
 		mv $po.2 $po
 	done
 	)
+
 	# Revert files with only header changes
-	svn revert $(svn diff --diff-cmd diff -x "--unified=3 --ignore-matching-lines=POT-Creation --ignore-matching-lines=X-Generator -s" ${POUPDATED_DIR}/${polang} |
+	[ -d ${POUPDATED_DIR}/${polang}/.svn ] && svn revert $(svn diff --diff-cmd diff -x "--unified=3 --ignore-matching-lines=POT-Creation --ignore-matching-lines=X-Generator -s" ${POUPDATED_DIR}/${polang} |
 	egrep "are identical$" |
 	sed -r "s/^Files //;s/\s+\(revision.*$//")
 
