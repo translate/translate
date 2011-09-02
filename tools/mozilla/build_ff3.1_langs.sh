@@ -146,7 +146,7 @@ do
 	# Copy directory structure while preserving version control metadata
 	rm -rf ${POUPDATED_DIR}/${polang}
 	cp -R ${PO_DIR}/${polang} ${POUPDATED_DIR}
-	find ${POUPDATED_DIR}/${polang} -name '*.po' -exec rm -f {} \;
+	(cd ${POUPDATED_DIR/${polang}; find $PRODUCT_DIRS -name '*.po' -exec rm -f {} \;)
 
 	## MIGRATE - Migrate PO files to new POT files.
 	# Comment out the following "pomigrate2"-line if migration should not be done.
@@ -157,11 +157,13 @@ do
 
 	## Cleanup migrated PO files
 	# msgcat to make them look the same
-	for po in $(find ${POUPDATED_DIR}/${polang} -name "*.po")
+	(cd ${POUPDATED_DIR}/${polang}
+	for po in $(find ${PRODUCT_DIRS} -name "*.po")
 	do
 		msgcat $po > $po.2
 		mv $po.2 $po
 	done
+	)
 	# Revert files with only header changes
 	svn revert $(svn diff --diff-cmd diff -x "--unified=3 --ignore-matching-lines=POT-Creation --ignore-matching-lines=X-Generator -s" ${POUPDATED_DIR}/${polang} |
 	egrep "are identical$" |
@@ -169,26 +171,35 @@ do
 
 	## Migrate to new PO files: move old to obsolete/ and add new files
 	(cd ${POUPDATED_DIR}/${polang}
-	svn revert -R mail editor other-licenses/branding/thunderbird
-	for newfile in $(svn status . | egrep "^\?" | egrep "\.po$" | sed "s/\?\w*//")
+	for newfile in $(svn status $PRODUCT_DIRS | egrep "^\?" | sed "s/\?\w*//")
 	do
-		svn add $newfile
+		[ -d $newfile ] && svn add $newfile
+		[ -f $newfile -a "$(echo $newfile | cut -d"." -f2)" == "po" ] && svn add $newfile
 	done
 
 	svn revert -R obsolete
 	mkdir -p obsolete
 	svn add obsolete
-	for oldfile in $(svn status . | egrep "^!"| egrep "\.po$" | sed "s/!\w*//")
+	for oldfile in $(svn status $PRODUCT_DIRS | egrep "^!"| sed "s/!\w*//")
 	do
-		svn revert $oldfile
-		svn move --parents $oldfile obsolete/$oldfile
+		if [ -d $newfile ]; then
+			svn revert -R $oldfile
+			svn move --parents $oldfile obsolete/$oldfile
+		fi
+		if [ -f $newfile -a "$(echo $newfile | cut -d"." -f2)" == "po" ]; then
+			svn revert $oldfile
+			svn move --parents $oldfile obsolete/$oldfile
+		fi
 	done
 	)
 
 	# Pre-po2moz hacks
 	lang_product_dirs=
 	for dir in ${PRODUCT_DIRS}; do lang_product_dirs="${lang_product_dirs} ${L10N_DIR}/$lang/$dir"; done
-	[ -d ${L10N_DIR}/${lang} ] && find ${lang_product_dirs} \( -name '*.dtd' -o -name '*.properties' \) -exec rm -f {} \;
+	for product_dir in ${lang_product_dirs}
+	do
+		[ -d ${product_dir} ] && find ${product_dir} \( -name '*.dtd' -o -name '*.properties' \) -exec rm -f {} \;
+	done
 	find ${POUPDATED_DIR} \( -name '*.html.po' -o -name '*.xhtml.po' \) -exec rm -f {} \;
 
 	# PO2MOZ - Create Mozilla l10n layout from migrated PO files.
