@@ -23,8 +23,6 @@
 # http://translate.sourceforge.net/wiki/toolkit/mozilla_l10n_scripts     #
 ##########################################################################
 
-. ~/dev/lm/trunk/setpath
-
 if [ $# -eq 0 ]; then
 	#HG_LANGS="af ak am en-ZA ff km lg nso ur son st-LS su sw zu"
 	HG_LANGS="af ak am en-ZA ff lg nso ur son st-LS su sw wo zu"
@@ -36,6 +34,7 @@ BUILD_DIR="/home/dwayne/dev/mozilla"
 MOZCENTRAL_DIR="${BUILD_DIR}/mozilla-aurora" # Change "../mozilla-central" on line 39 too if you change this var
 L10N_DIR="${BUILD_DIR}/l10n"
 PO_DIR="${BUILD_DIR}/po"
+TOOLS_DIR="${BUILD_DIR}/tools"
 POPACK_DIR="${BUILD_DIR}/popacks"
 PORECOVER_DIR="${BUILD_DIR}/po-recover"
 POT_INCLUDES="../README.mozilla-pot"
@@ -62,6 +61,15 @@ done
 # (This assumes that both directories are sub-directories of ${BUILD_DIR}
 L10N_DIR_REL=`echo ${L10N_DIR} | sed "s#${BUILD_DIR}/##"`
 POUPDATED_DIR_REL=`echo ${POUPDATED_DIR} | sed "s#${BUILD_DIR}/##"`
+
+if [ -d ${TOOLS_DIR} ]; then
+	svn up ${TOOLS_DIR}
+else
+	svn co https://translate.svn.sourceforge.net/svnroot/translate/src/trunk ${TOOLS_DIR}
+fi
+(cd ${TOOLS_DIR}; ./setuppath)
+
+. ${TOOLS_DIR}/setpath
 
 (cd ${MOZCENTRAL_DIR}; hg pull -u; hg update -C)
 (find ${MOZCENTRAL_DIR} -name '*.orig' | xargs rm) || /bin/true
