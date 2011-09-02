@@ -207,7 +207,7 @@ do
 	copyfile browser/profile/chrome/userContent-example.css ${lang}
         # Ignore lists.txt since we need specil approval for that
 	#copyfile browser/searchplugins/list.txt ${lang}
-	copyfile toolkit/chrome/global/intl.css ${lang}
+	#copyfile toolkit/chrome/global/intl.css ${lang}
         # Revert some files that need careful human review or authorisation
 	[ -d ${L10N_DIR}/${lang}/.hg ] && (cd ${L10N_DIR}/${lang}; hg revert browser/chrome/browser-region/region.properties browser/searchplugins/list.txt)
 	# These seem to have been removed for Fx4
