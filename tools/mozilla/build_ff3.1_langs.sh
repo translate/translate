@@ -180,28 +180,33 @@ do
 	sed -r "s/^Files //;s/\s+\(revision.*$//")
 
 	## Migrate to new PO files: move old to obsolete/ and add new files
-	(cd ${POUPDATED_DIR}/${polang}
-	for newfile in $(svn status $PRODUCT_DIRS | egrep "^\?" | sed "s/\?\w*//")
-	do
-		[ -d $newfile ] && svn add $newfile
-		[ -f $newfile -a "$(echo $newfile | cut -d"." -f2)" == "po" ] && svn add $newfile
-	done
+	if [ ! -d ${POUPDATED_DIR}/${polang}/.svn ]; then
+		# No VC so assume it's a new language
+		svn add ${POUPDATED_DIR}/${polang}
+	else
+		(cd ${POUPDATED_DIR}/${polang}
+		for newfile in $(svn status $PRODUCT_DIRS | egrep "^\?" | sed "s/\?\w*//")
+		do
+			[ -d $newfile ] && svn add $newfile
+			[ -f $newfile -a "$(echo $newfile | cut -d"." -f2)" == "po" ] && svn add $newfile
+		done
 
-	svn revert -R obsolete
-	mkdir -p obsolete
-	svn add obsolete
-	for oldfile in $(svn status $PRODUCT_DIRS | egrep "^!"| sed "s/!\w*//")
-	do
-		if [ -d $newfile ]; then
-			svn revert -R $oldfile
-			svn move --parents $oldfile obsolete/$oldfile
-		fi
-		if [ -f $newfile -a "$(echo $newfile | cut -d"." -f2)" == "po" ]; then
-			svn revert $oldfile
-			svn move --parents $oldfile obsolete/$oldfile
-		fi
-	done
-	)
+		svn revert -R obsolete
+		mkdir -p obsolete
+		svn add obsolete
+		for oldfile in $(svn status $PRODUCT_DIRS | egrep "^!"| sed "s/!\w*//")
+		do
+			if [ -d $newfile ]; then
+				svn revert -R $oldfile
+				svn move --parents $oldfile obsolete/$oldfile
+			fi
+			if [ -f $newfile -a "$(echo $newfile | cut -d"." -f2)" == "po" ]; then
+				svn revert $oldfile
+				svn move --parents $oldfile obsolete/$oldfile
+			fi
+		done
+		)
+	fi
 
 	# Pre-po2moz hacks
 	lang_product_dirs=
