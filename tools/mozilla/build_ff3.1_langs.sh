@@ -40,7 +40,8 @@ PORECOVER_DIR="${BUILD_DIR}/po-recover"
 POT_INCLUDES="../README.mozilla-pot"
 POTPACK_DIR="${BUILD_DIR}/potpacks"
 POUPDATED_DIR="${BUILD_DIR}/po-updated"
-PRODUCT_DIRS="browser dom netwerk other-licenses/branding/firefox security services/sync toolkit" # Directories in language repositories to clear before running po2moz
+# FIXME we should build this from the get_moz_enUS script
+PRODUCT_DIRS="browser dom netwerk security services/sync toolkit" # Directories in language repositories to clear before running po2moz
 LANGPACK_DIR="${BUILD_DIR}/xpi"
 FF_VERSION="4.0b7pre"
 
