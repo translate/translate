@@ -30,6 +30,7 @@ else
 	HG_LANGS=$*
 fi
 
+# FIXME lets make this the execution directory
 BUILD_DIR="/home/dwayne/dev/mozilla"
 MOZCENTRAL_DIR="${BUILD_DIR}/mozilla-aurora" # Change "../mozilla-central" on line 39 too if you change this var
 L10N_DIR="${BUILD_DIR}/l10n"
