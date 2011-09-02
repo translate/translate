@@ -225,6 +225,6 @@ do
 
 	## CREATE XPI LANGPACK
 	# Comment out the "buildxpi"-line below if XPI langpacks should not be built.
-	#buildxpi.py -L ${L10N_DIR} -s ${MOZCENTRAL_DIR} -o ${LANGPACK_DIR} ${lang}
+	#buildxpi.py -d -L ${L10N_DIR} -s ${MOZCENTRAL_DIR} -o ${LANGPACK_DIR} ${lang}
 
 done
