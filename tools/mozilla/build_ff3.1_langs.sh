@@ -150,7 +150,7 @@ do
 
 	## MIGRATE - Migrate PO files to new POT files.
 	# Comment out the following "pomigrate2"-line if migration should not be done.
-	tempdir=`mktemp -d`
+	tempdir=`mktemp -d tmp.XXXXXXXXXX`
 	cp -R ${PO_DIR}/${polang} ${tempdir}/${polang}
 	pomigrate2 --use-compendium --pot2po --quiet ${tempdir}/${polang} ${POUPDATED_DIR}/${polang} ${L10N_DIR}/pot
 	rm -rf ${tempdir}
