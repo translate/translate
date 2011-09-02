@@ -102,7 +102,8 @@ ac_add_options --enable-application=%(product)s""" % \
                 builddir,
                 product == 'mail' and 'mozilla' or '',
                 'dist',
-                'install',
+                '*',
+                'xpi',
                 '*.%s.langpack.xpi' % lang
             )
         )[0]
