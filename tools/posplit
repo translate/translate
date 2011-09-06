@@ -24,7 +24,7 @@
 #	compendium-translated.po
 #	compendium-fuzzy.po
 #	compendium-untranslated.po
-# and removes the original. A simple msgcat can recombine the PO
+# A simple msgcat can recombine the PO
 
 
 if [ $# -ne 1 ]; then
@@ -50,5 +50,3 @@ rm -f $translated $fuzzy $untranslated
 msgattrib --output-file=$translated --translated --no-fuzzy $compendium
 msgattrib --output-file=$fuzzy --only-fuzzy $compendium
 msgattrib --output-file=$untranslated --untranslated $compendium
-
-rm $compendium
