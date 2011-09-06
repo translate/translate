@@ -21,32 +21,32 @@
 
 # posplit - takes any po file, usually a compendium PO file,
 # and converts it into 3 distinct files named:
-#	compendium-translated.po
-#	compendium-fuzzy.po
-#	compendium-untranslated.po
+#	$original-translated.po
+#	$original-fuzzy.po
+#	$original-untranslated.po
 # A simple msgcat can recombine the PO
 
 
 if [ $# -ne 1 ]; then
-	echo "Usage: `basename $0` compendium.po"
+	echo "Usage: `basename $0` original.po"
 	exit 1
 fi
 
-compendium=$1
+original=$1
 
-if [ ! -f $compendium ]; then
-	echo "Problem with compendium '$compendium'"
+if [ ! -f $original ]; then
+	echo "Problem with '$original'"
 	exit 1
 fi
 
-dir=`dirname $compendium`
-prefix=$dir/`basename $compendium .po`
+dir=`dirname $original`
+prefix=$dir/`basename $original .po`
 translated=${prefix}-translated.po
 fuzzy=${prefix}-fuzzy.po
 untranslated=${prefix}-untranslated.po
 
 rm -f $translated $fuzzy $untranslated
 
-msgattrib --output-file=$translated --translated --no-fuzzy $compendium
-msgattrib --output-file=$fuzzy --only-fuzzy $compendium
-msgattrib --output-file=$untranslated --untranslated $compendium
+msgattrib --output-file=$translated --translated --no-fuzzy $original
+msgattrib --output-file=$fuzzy --only-fuzzy $original
+msgattrib --output-file=$untranslated --untranslated $original
