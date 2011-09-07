@@ -194,9 +194,13 @@ do
 			[ -f $newfile -a "$(echo $newfile | cut -d"." -f2)" == "po" ] && svn add $newfile
 		done
 
-		svn revert -R obsolete
-		mkdir -p obsolete
-		svn add obsolete
+		if [ -d obsolete/.svn ]; then
+			svn revert -R obsolete
+		else
+			mkdir -p obsolete
+			svn add obsolete
+		fi
+
 		for oldfile in $(svn status $PRODUCT_DIRS | egrep "^!"| sed "s/!\w*//")
 		do
 			if [ -d $newfile ]; then
