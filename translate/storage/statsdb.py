@@ -326,6 +326,8 @@ class StatsCache(object):
                     cachedir = os.path.join(userdir, ".translate_toolkit")
                 if not os.path.exists(cachedir):
                     os.mkdir(cachedir)
+                # sqlite needs to get the name in utf-8 on all platforms
+                cachedir = cachedir.decode(sys.getfilesystemencoding()).encode('utf-8')
                 cls.defaultfile = os.path.realpath(os.path.join(cachedir, "stats.db"))
             statsfile = cls.defaultfile
         else:
