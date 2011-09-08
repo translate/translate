@@ -41,6 +41,9 @@ class TMServer(object):
 
     def __init__(self, tmdbfile, tmfiles, max_candidates=3, min_similarity=75,
             max_length=1000, prefix="", source_lang=None, target_lang=None):
+        if not isinstance(tmdbfile, unicode):
+            import sys
+            tmdbfile = tmdbfile.decode(sys.getfilesystemencoding())
 
         self.tmdb = tmdb.TMDB(tmdbfile, max_candidates, min_similarity, max_length)
 
