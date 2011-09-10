@@ -50,9 +50,12 @@ def quote_plus(text):
 @returns(unicode)
 def unquote_plus(text):
     """unquote('%7e/abc+def') -> '~/abc def'"""
-    # We force text to string which is safe since quote will only have ASCII
-    # chars.  If we don't force it we get decoding errors.
-    return urllib.unquote_plus(str(text)).decode('utf-8')
+    try:
+        return urllib.unquote_plus(text).decode('utf-8')
+    except UnicodeEncodeError, e:
+        # for some reason there is a non-ascii character here. Let's assume it
+        # is already unicode (because of originally decoding the file)
+        return text
 
 
 class pounit(base.TranslationUnit):
