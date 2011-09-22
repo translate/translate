@@ -70,7 +70,7 @@ class LRUCachingDict(WeakValueDictionary):
                 gc.collect()
 
     def __setitem__(self, key, value):
-        # check boundaries to minimiza duplicate references
+        # check boundaries to minimize duplicate references
         while len(self.queue) and self.queue[0][0] == key:
             # item at left end of queue pop it since it'll be appended
             # to right
