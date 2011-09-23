@@ -23,6 +23,30 @@
 # http://translate.sourceforge.net/wiki/toolkit/mozilla_l10n_scripts     #
 ##########################################################################
 
+opt_vc="yes"
+opt_build_xpi=""
+
+for option in $*
+do
+	if [ "${option##-*}" != "$option" ]; then
+		case $option in
+			--xpi)
+				opt_build_xpi="yes"
+			;;
+			--no-vc)
+				opt_vc=""
+			;;
+			*) 
+			echo "Unkown option: $option"
+			exit
+			;;
+		esac
+		shift
+	else
+		break
+	fi
+done
+
 if [ $# -eq 0 ]; then
 	#HG_LANGS="af ak am en-ZA ff km lg nso ur son st-LS su sw zu"
 	HG_LANGS="af ak am en-ZA ff lg nso ur sah son st-LS su sw wo zu"
@@ -64,7 +88,7 @@ done
 L10N_DIR_REL=`echo ${L10N_DIR} | sed "s#${BUILD_DIR}/##"`
 POUPDATED_DIR_REL=`echo ${POUPDATED_DIR} | sed "s#${BUILD_DIR}/##"`
 
-if [ -d ${TOOLS_DIR} ]; then
+[ $opt_vc ] && if [ -d ${TOOLS_DIR} ]; then
 	svn up ${TOOLS_DIR}
 else
 	svn co https://translate.svn.sourceforge.net/svnroot/translate/src/trunk ${TOOLS_DIR}
@@ -73,16 +97,16 @@ fi
 
 . ${TOOLS_DIR}/setpath
 
-(cd ${MOZCENTRAL_DIR}; hg pull -u; hg update -C)
-(find ${MOZCENTRAL_DIR} -name '*.orig' | xargs rm) || /bin/true
+[ $opt_vc ] && (cd ${MOZCENTRAL_DIR}; hg pull -u; hg update -C)
+[ $opt_vc ] && (find ${MOZCENTRAL_DIR} -name '*.orig' | xargs --no-run-if-empty rm) || /bin/true
 
 cd ${L10N_DIR}
 
 # Update all Mercurial-managed languages
 for lang in ${HG_LANGS}
 do
-	[ -d ${lang}/.hg ] && (cd ${lang}; hg revert --all -r default; hg pull -u; hg update -C)
-	(find ${lang} -name '*.orig' | xargs rm) || /bin/true
+	[ -d ${lang}/.hg ] && [ $opt_vc ] && (cd ${lang}; hg revert --all -r default; hg pull -u; hg update -C)
+	[ $opt_vc ] && (find ${lang} -name '*.orig' | xargs --no-run-if-empty rm) || /bin/true
 done
 
 [ -d pot ] && rm -rf pot
@@ -257,7 +281,6 @@ do
 	)
 
 	## CREATE XPI LANGPACK
-	# Comment out the "buildxpi"-line below if XPI langpacks should not be built.
-	#buildxpi.py -d -L ${L10N_DIR} -s ${MOZCENTRAL_DIR} -o ${LANGPACK_DIR} ${lang}
+	[ $opt_build_xpi ] && buildxpi.py -d -L ${L10N_DIR} -s ${MOZCENTRAL_DIR} -o ${LANGPACK_DIR} ${lang}
 
 done
