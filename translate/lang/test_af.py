@@ -14,6 +14,8 @@ def test_sentences():
     assert sentences == [u"Wat?", "'n Fout?"]
     sentences = language.sentences(u"Dit sal a.g.v. 'n fout gebeur.")
     assert sentences == [u"Dit sal a.g.v. 'n fout gebeur."]
+    sentences = language.sentences(u"Weet nie hoe om lêer '%s' te open nie.\nMiskien is dit 'n tipe beeld wat nog nie ondersteun word nie.\n\nKies liewer 'n ander prent.")
+    assert len(sentences) == 3
 
 
 def test_capsstart():
