@@ -142,7 +142,7 @@ if [ ! $option_pot2po ]; then
 	for po in `cd $new ; find . -name "*.po" | sort`
 	do
 		[ $option_verbose ] && echo -n $new/$po
-		msgmerge $option_verbose_msgmerge $option_no_fuzzy_matching $option_no_wrap $option_use_compendium $option_use_own_compendium --backup=off --update $new/$po $templates/${po}t
+		[ -f $templates/${po}t ] && msgmerge --previous $option_verbose_msgmerge $option_no_fuzzy_matching $option_no_wrap $option_use_compendium $option_use_own_compendium --backup=off --update $new/$po $templates/${po}t
 	done
 else
 	temp_pot2po_new=`mktemp -d tmp.XXXXXXXXXX`
