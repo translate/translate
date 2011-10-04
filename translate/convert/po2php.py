@@ -157,7 +157,10 @@ def convertphp(inputfile, outputfile, templatefile, includefuzzy=False):
 def main(argv=None):
     # handle command line options
     from translate.convert import convert
-    formats = {("po", "php"): ("php", convertphp)}
+    formats = {
+            ("po", "php"): ("php", convertphp),
+            ("po", "html"): ("html", convertphp),
+    }
     parser = convert.ConvertOptionParser(formats, usetemplates=True,
                                          description=__doc__)
     parser.add_fuzzy_option()

@@ -101,7 +101,10 @@ def convertphp(inputfile, outputfile, templatefile, pot=False, duplicatestyle="m
 
 def main(argv=None):
     from translate.convert import convert
-    formats = {"php": ("po", convertphp), ("php", "php"): ("po", convertphp)}
+    formats = {
+            "php": ("po", convertphp), ("php", "php"): ("po", convertphp),
+            "html": ("po", convertphp), ("html", "html"): ("po", convertphp),
+    }
     parser = convert.ConvertOptionParser(formats, usetemplates=True, usepots=True, description=__doc__)
     parser.add_duplicates_option()
     parser.passthrough.append("pot")
