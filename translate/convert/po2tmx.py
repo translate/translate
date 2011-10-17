@@ -104,6 +104,7 @@ class TmxOptionParser(convert.ArchiveConvertOptionParser):
         self.output = open(options.output, 'w')
         options.outputarchive.tmxfile.setsourcelanguage(options.sourcelanguage)
         self.output.write(str(options.outputarchive.tmxfile))
+        self.output.close()
 
 
 def main(argv=None):
