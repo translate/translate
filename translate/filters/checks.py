@@ -1283,6 +1283,14 @@ class MozillaChecker(StandardChecker):
                                                  "The source string uses '%s'" % (", ".join(self.mozilla_dialog_valid_units), pair1[3]))
         return True
 
+    def numbers(self, str1, str2):
+        """Checks that numbers are not translated
+
+        Special handling for Mozilla to ignore entries that are dialogsizes"""
+        if self.mozilla_dialog_re.findall(str1):
+            return True
+        return super(MozillaChecker, self).numbers(str1, str2)
+
 
 drupalconfig = CheckerConfig(
     varmatches=[("%", None), ("@", None), ("!", None)],
