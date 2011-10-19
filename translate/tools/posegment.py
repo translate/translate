@@ -30,10 +30,11 @@ from translate.lang import factory as lang_factory
 
 class segment:
 
-    def __init__(self, sourcelang, targetlang, stripspaces=True):
+    def __init__(self, sourcelang, targetlang, stripspaces=True, onlyaligned=False):
         self.sourcelang = sourcelang
         self.targetlang = targetlang
         self.stripspaces = stripspaces
+        self.onlyaligned = onlyaligned
 
     def segmentunit(self, unit):
         if unit.isheader() or unit.hasplural():
@@ -41,7 +42,10 @@ class segment:
         sourcesegments = self.sourcelang.sentences(unit.source, strip=self.stripspaces)
         targetsegments = self.targetlang.sentences(unit.target, strip=self.stripspaces)
         if unit.istranslated() and (len(sourcesegments) != len(targetsegments)):
-            return [unit]
+            if not self.onlyaligned:
+                return [unit]
+            else:
+                return None
         # We could do more here to check if the lengths correspond more or less,
         # certain quality checks are passed, etc.  But for now this is a good
         # start.
@@ -60,12 +64,13 @@ class segment:
         tostore = type(fromstore)()
         for unit in fromstore.units:
             newunits = self.segmentunit(unit)
-            for newunit in newunits:
-                tostore.addunit(newunit)
+            if newunits:
+                for newunit in newunits:
+                    tostore.addunit(newunit)
         return tostore
 
 
-def segmentfile(inputfile, outputfile, templatefile, sourcelanguage="en", targetlanguage=None, stripspaces=True):
+def segmentfile(inputfile, outputfile, templatefile, sourcelanguage="en", targetlanguage=None, stripspaces=True, onlyaligned=False):
     """reads in inputfile, segments it then, writes to outputfile"""
     # note that templatefile is not used, but it is required by the converter...
     inputstore = factory.getobject(inputfile)
@@ -73,7 +78,7 @@ def segmentfile(inputfile, outputfile, templatefile, sourcelanguage="en", target
         return 0
     sourcelang = lang_factory.getlanguage(sourcelanguage)
     targetlang = lang_factory.getlanguage(targetlanguage)
-    convertor = segment(sourcelang, targetlang, stripspaces=stripspaces)
+    convertor = segment(sourcelang, targetlang, stripspaces=stripspaces, onlyaligned=onlyaligned)
     outputstore = convertor.convertstore(inputstore)
     outputfile.write(str(outputstore))
     return 1
@@ -92,6 +97,9 @@ def main():
     parser.add_option("", "--keepspaces", dest="stripspaces", action="store_false",
             default=True, help="Disable automatic stripping of whitespace")
     parser.passthrough.append("stripspaces")
+    parser.add_option("", "--only-aligned", dest="onlyaligned", action="store_true",
+            default=False, help="Removes units where sentence number does not correspond")
+    parser.passthrough.append("onlyaligned")
     parser.run()
 
 
