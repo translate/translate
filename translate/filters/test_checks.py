@@ -451,6 +451,9 @@ def test_numbers():
     assert fails(stdchecker.numbers, "1,000.00", "1 000,00")
     # You should be able to reorder numbers
     assert passes(stdchecker.numbers, "40-bit RC2 encryption with RSA and an MD5", "Umbhalo ocashile i-RC2 onamabhithi angu-40 one-RSA ne-MD5")
+    # Don't fail the numbers check if the entry is a dialogsize entry
+    mozillachecker = checks.MozillaChecker()
+    assert passes(mozillachecker.numbers, 'width: 12em;', 'width: 20em;')
 
 
 def test_options():
@@ -1063,5 +1066,3 @@ def test_dialogsizes():
     assert passes(mozillachecker.dialogsizes, 'height: 12em;', 'height: 24px;')
     assert fails(mozillachecker.dialogsizes, 'height: 12em;', 'height: 24xx;')
     assert fails(mozillachecker.dialogsizes, 'height: 12.5em;', 'height: 12,5em;')
-    # Don't fail the numbers check
-    assert passes(mozillachecker.numbers, 'width: 12em;', 'width: 20em;')
