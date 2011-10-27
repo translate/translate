@@ -722,6 +722,9 @@ def test_unchanged():
     # Don't translate words should be ignored
     stdchecker = checks.StandardChecker(checks.CheckerConfig(notranslatewords=["Mozilla"]))
     assert passes(stdchecker.unchanged, "Mozilla", "Mozilla") # bug 178, description item 10
+    # Don't fail unchanged if the entry is a dialogsize, quite plausible that you won't change it
+    mozillachecker = checks.MozillaChecker()
+    assert passes(mozillachecker.unchanged, 'width: 12em;', 'width: 12em;')
 
 
 def test_untranslated():

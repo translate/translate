@@ -1291,6 +1291,15 @@ class MozillaChecker(StandardChecker):
             return True
         return super(MozillaChecker, self).numbers(str1, str2)
 
+    def unchanged(self, str1, str2):
+        """checks whether a translation is basically identical to the original
+        string
+
+        Special handling for Mozilla to ignore entries that are dialogsizes"""
+        if self.mozilla_dialog_re.findall(str1):
+            return True
+        return super(MozillaChecker, self).unchanged(str1, str2)
+
 
 drupalconfig = CheckerConfig(
     varmatches=[("%", None), ("@", None), ("!", None)],
