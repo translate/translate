@@ -18,7 +18,7 @@ class TestAutocorrect:
 
     def test_empty_target(self):
         """test that we do nothing with an empty target"""
-        self.correct(u"String...", u"", u"")
+        self.correct(u"String...", u"", None)
 
     def test_correct_ellipsis(self):
         """test that we convert single … or ... to match source and target"""
@@ -44,6 +44,13 @@ class TestAutocorrect:
         self.correct(u"Simple string.", u"Dimpled ring", u"Dimpled ring.")
         #self.correct(u"Simple string. ", u"Dimpled ring", u"Dimpled ring. ")
         self.correct(u"Simple string?", u"Dimpled ring", u"Dimpled ring?")
+
+    def test_correct_combinations(self):
+        """test that we can correct combinations of failures"""
+        self.correct(u"Simple string:", u"Dimpled ring ", u"Dimpled ring:")
+        self.correct(u"simple string ", u"Dimpled ring", u"dimpled ring ")
+        self.correct(u"Simple string...", u"dimpled ring..", u"Dimpled ring...")
+        self.correct(u"Simple string:", u"Dimpled ring ", u"Dimpled ring:")
 
     def test_nothing_to_do(self):
         """test that when nothing changes we return None"""
