@@ -322,6 +322,9 @@ def test_newlines():
     assert fails(stdchecker.newlines, "A file\n", "'n Leer\r\n")
     assert fails(stdchecker.newlines, "A file\r\n", "'n Leer\n")
     assert fails(stdchecker.newlines, "blah.\nA file", "bleah. 'n leer")
+    # msgfmt errors
+    assert fails(stdchecker.newlines, "One two\n", "Een\ntwee")
+    assert fails(stdchecker.newlines, "\nOne two", "Een\ntwee")
     # Real example
     ooochecker = checks.OpenOfficeChecker()
     assert fails(ooochecker.newlines, "The arrowhead was modified without saving.\nWould you like to save the arrowhead now?", "Ṱhoho ya musevhe yo khwinifhadzwa hu si na u seiva.Ni khou ṱoda u seiva thoho ya musevhe zwino?")

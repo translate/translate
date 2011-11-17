@@ -565,8 +565,11 @@ class StandardChecker(TranslationChecker):
         """checks whether newlines are consistent between the two strings"""
         if not helpers.countsmatch(str1, str2, (u"\n", u"\r")):
             raise FilterFailure(u"Different line endings")
-        else:
-            return True
+        if str1.endswith(u"\n") and not str2.endswith(u"\n"):
+            raise FilterFailure(u"Newlines different at end")
+        if str1.startswith(u"\n") and not str2.startswith(u"\n"):
+            raise FilterFailure(u"Newlines different at beginning")
+        return True
 
     def tabs(self, str1, str2):
         """checks whether tabs are consistent between the two strings"""
