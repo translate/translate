@@ -399,7 +399,7 @@ class pounit(pocommon.pounit):
             #context
             newunit.msgidcomment = unit._extract_msgidcomments()
             if not newunit.msgidcomment:
-                newunit._msgctxt = unit.getcontext()
+                newunit.setcontext(unit.getcontext())
 
             locations = unit.getlocations()
             if locations:
