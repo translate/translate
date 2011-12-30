@@ -58,7 +58,7 @@ printf_pat = re.compile('''
         )''', re.VERBOSE)
 
 # The name of the XML tag
-tagname_re = re.compile("<[\s]*([\w\/]*).*?(/)?[\s]*>")
+tagname_re = re.compile("<[\s]*([\w\/]*).*?(/)?[\s]*>", re.DOTALL)
 
 # We allow escaped quotes, probably for old escaping style of OOo helpcontent
 #TODO: remove escaped strings once usage is audited
