@@ -60,6 +60,13 @@ class TestPOUnit(test_base.TestTranslationUnit):
         locations_helper("I am a key")
         locations_helper(u"unicoḓe key")
 
+    def test_nongettext_location(self):
+        """test that we correctly handle a non-gettext (file:linenumber) location"""
+        u = self.UnitClass(u"")
+        u.addlocation(u"programming/C/programming.xml:44(para)")
+        assert "programming/C/programming.xml:44(para)" in str(u)
+        assert u"programming/C/programming.xml:44(para)" in u.getlocations()
+
     def test_adding_empty_note(self):
         unit = self.UnitClass("bla")
         print str(unit)
@@ -280,6 +287,18 @@ msgstr[1] "Kóeie"
         unit = pofile.units[0]
         assert isinstance(unit.source, multistring)
         assert isinstance(unit.source.strings[1], unicode)
+
+    def test_nongettext_location(self):
+        """test that we correctly handle a non-gettext (file:linenumber) location"""
+        posource = '#: programming/C/programming.xml:44(para)\nmsgid "test"\nmsgstr "rest"\n'
+        pofile = self.poparse(posource)
+        u = pofile.units[-1]
+
+        locations = u.getlocations()
+        print locations
+        assert len(locations) == 1
+        assert locations[0] == u"programming/C/programming.xml:44(para)"
+        assert isinstance(locations[0], unicode)
 
     @mark.xfail(reason="Not Implemented")
     def test_kde_plurals(self):
