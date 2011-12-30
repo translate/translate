@@ -522,7 +522,7 @@ class pounit(pocommon.pounit):
 
     def setcontext(self, context):
         context = data.forceunicode(context)
-        gpo.po_message_set_msgctxt(self._gpo_message, context)
+        gpo.po_message_set_msgctxt(self._gpo_message, context.encode(self._encoding))
 
     def buildfromunit(cls, unit, encoding=None):
         """Build a native unit from a foreign unit, preserving as much
@@ -536,7 +536,7 @@ class pounit(pocommon.pounit):
             newunit.msgidcomment = unit._extract_msgidcomments()
             context = unit.getcontext()
             if not newunit.msgidcomment and context:
-                gpo.po_message_set_msgctxt(newunit._gpo_message, context)
+                newunit.setcontext(context)
 
             locations = unit.getlocations()
             if locations:
@@ -621,16 +621,16 @@ class pofile(pocommon.pofile):
                 elif duplicatestyle == "msgctxt":
                     origpo = id_dict[id]
                     if origpo not in markedpos:
-                        gpo.po_message_set_msgctxt(origpo._gpo_message, " ".join(origpo.getlocations()))
+                        origpo.setcontext(" ".join(origpo.getlocations()))
                         markedpos.append(thepo)
-                    gpo.po_message_set_msgctxt(thepo._gpo_message, " ".join(thepo.getlocations()))
+                    thepo.setcontext(" ".join(thepo.getlocations()))
                     uniqueunits.append(thepo)
             else:
                 if not id:
                     if duplicatestyle == "merge":
                         addcomment(thepo)
                     else:
-                        gpo.po_message_set_msgctxt(thepo._gpo_message, " ".join(thepo.getlocations()))
+                        thepo.setcontext(" ".join(thepo.getlocations()))
                 id_dict[id] = thepo
                 uniqueunits.append(thepo)
         new_gpo_memory_file = gpo.po_file_create()
