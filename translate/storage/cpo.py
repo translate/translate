@@ -505,10 +505,11 @@ class pounit(pocommon.pounit):
         if location.find(" ") != -1:
             location = pocommon.quote_plus(location)
         parts = location.split(":")
-        file = parts[0]
-        if len(parts) == 2:
+        if len(parts) == 2 and parts[1].isdigit():
+            file = parts[0]
             line = int(parts[1] or "0")
         else:
+            file = location
             line = -1
         gpo.po_message_add_filepos(self._gpo_message, file, line)
 
