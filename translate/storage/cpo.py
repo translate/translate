@@ -490,12 +490,12 @@ class pounit(pocommon.pounit):
         i = 0
         location = gpo.po_message_filepos(self._gpo_message, i)
         while location:
-            locname = gpo.po_filepos_file(location)
+            locname = gpo.po_filepos_file(location).decode(self._encoding)
             locline = gpo.po_filepos_start_line(location)
             if locline == -1:
                 locstring = locname
             else:
-                locstring = locname + ":" + str(locline)
+                locstring = locname + u":" + unicode(locline)
             locations.append(pocommon.unquote_plus(locstring))
             i += 1
             location = gpo.po_message_filepos(self._gpo_message, i)
