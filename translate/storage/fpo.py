@@ -344,7 +344,7 @@ class pounit(pocommon.pounit):
 
         """
         #TODO: rename to .locations
-        return [pocommon.unquote_plus(loc) for loc in self.sourcecomments]
+        return self.sourcecomments
 
     def addlocation(self, location):
         """Add a location to sourcecomments in the PO unit
@@ -352,9 +352,7 @@ class pounit(pocommon.pounit):
         @param location: Text location e.g. 'file.c:23' does not include #:
         @type location: String
         """
-        if location.find(" ") != -1:
-            location = pocommon.quote_plus(location)
-        self.sourcecomments.extend(location.split())
+        self.sourcecomments.append(location)
 
     def _extract_msgidcomments(self, text=None):
         """Extract KDE style msgid comments from the unit.
