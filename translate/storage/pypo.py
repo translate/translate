@@ -650,6 +650,7 @@ class pounit(pocommon.pounit):
         @type location: String
 
         """
+        location = data.forceunicode(location)
         if location.find(" ") != -1:
             location = pocommon.quote_plus(location)
         self.sourcecomments.append("#: %s\n" % location)
