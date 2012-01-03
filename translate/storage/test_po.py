@@ -303,10 +303,10 @@ msgstr[1] "Kóeie"
     @mark.xfail(reason="Not Implemented")
     def test_kde_plurals(self):
         """Tests kde-style plurals. (Bug: 191)"""
-        posource = '''msgid "_n Singular\n"
+        posource = '''msgid "_n Singular\\n"
 "Plural"
-msgstr "Een\n"
-"Twee\n"
+msgstr "Een\\n"
+"Twee\\n"
 "Drie"
 '''
         pofile = self.poparse(posource)
