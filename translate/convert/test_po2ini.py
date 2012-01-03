@@ -97,8 +97,8 @@ msgstr "translated"
 msgid "value\tvalue2\n"
 msgstr "ṽḁḽṻḝ\tṽḁḽṻḝ2\n"
 '''
-        initemplate = u'''[section]\nprop  =  value%tvalue%n\n'''
-        iniexpected = u'''[section]\nprop  =  ṽḁḽṻḝ%tṽḁḽṻḝ2%n\n'''
+        initemplate = '''[section]\nprop  =  value%tvalue%n\n'''
+        iniexpected = '''[section]\nprop  =  ṽḁḽṻḝ%tṽḁḽṻḝ2%n\n'''
         inifile = self.merge2ini(initemplate, posource, "inno")
         print inifile
         assert inifile == iniexpected
