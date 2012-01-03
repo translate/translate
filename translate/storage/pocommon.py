@@ -51,6 +51,8 @@ def quote_plus(text):
 def unquote_plus(text):
     """unquote('%7e/abc+def') -> '~/abc def'"""
     try:
+        if isinstance(text, unicode):
+            text = text.encode('utf-8')
         return urllib.unquote_plus(text).decode('utf-8')
     except UnicodeEncodeError, e:
         # for some reason there is a non-ascii character here. Let's assume it
