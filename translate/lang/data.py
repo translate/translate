@@ -21,10 +21,6 @@
 
 """This module stores information and functionality that relates to plurals."""
 
-import unicodedata
-
-from translate.storage.placeables import StringElem
-
 
 languages = {
 'af': (u'Afrikaans', 2, '(n != 1)'),
@@ -331,6 +327,7 @@ def normalize(string, normal_form="NFC"):
     if string is None:
         return None
     else:
+        import unicodedata
         return unicodedata.normalize(normal_form, string)
 
 
@@ -344,6 +341,7 @@ def forceunicode(string):
     """
     if string is None:
         return None
+    from translate.storage.placeables import StringElem
     if isinstance(string, str):
         encoding = getattr(string, "encoding", "utf-8")
         string = string.decode(encoding)
