@@ -46,7 +46,7 @@ class reini:
                         unit.target = inputunit.target
                 else:
                     unit.target = unit.source
-        return unicode(self.templatestore)
+        return str(self.templatestore)
 
 
 def convertini(inputfile, outputfile, templatefile, includefuzzy=False, dialect="default"):
