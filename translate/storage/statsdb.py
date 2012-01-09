@@ -291,7 +291,8 @@ class StatsCache(object):
         def make_database(statsfile):
 
             def connect(cache):
-                cache.con = dbapi2.connect(statsfile)
+                # sqlite needs to get the name in utf-8 on all platforms
+                cache.con = dbapi2.connect(statsfile.encode('utf-8'))
                 cache.cur = cache.con.cursor()
 
             def clear_old_data(cache):
@@ -326,9 +327,8 @@ class StatsCache(object):
                     cachedir = os.path.join(userdir, ".translate_toolkit")
                 if not os.path.exists(cachedir):
                     os.mkdir(cachedir)
-                # sqlite needs to get the name in utf-8 on all platforms
-                cachedir = cachedir.decode(sys.getfilesystemencoding()).encode('utf-8')
-                cls.defaultfile = os.path.realpath(os.path.join(cachedir, "stats.db"))
+                cachedir = cachedir.decode(sys.getfilesystemencoding())
+                cls.defaultfile = os.path.realpath(os.path.join(cachedir, u"stats.db"))
             statsfile = cls.defaultfile
         else:
             statsfile = os.path.realpath(statsfile)
