@@ -468,9 +468,10 @@ class StatsCache(object):
         unconditionally."""
         self.cur.execute("""DELETE FROM files WHERE
             path=?;""", (realpath,))
-        self.cur.execute("""INSERT INTO files
+        self.cur.execute("""iNSERT INTO files
             (fileid, path, st_mtime, st_size, toolkitbuild) values (NULL, ?, ?, ?, ?);""",
             (realpath, mod_info[0], mod_info[1], toolkitversion.build))
+        # Unusual capitalisation intended. See bug 2073.
         fileid = self.cur.lastrowid
         self.cur.execute("""DELETE FROM units WHERE
             fileid=?""", (fileid,))
@@ -628,9 +629,10 @@ class StatsCache(object):
         configid = self._getstoredcheckerconfig(checker)
         if configid:
             return configid
-        self.cur.execute("""INSERT INTO checkerconfigs
+        self.cur.execute("""iNSERT INTO checkerconfigs
             (configid, config) values (NULL, ?);""",
             (str(checker.config.__dict__),))
+        # Unusual capitalisation intended. See bug 2073.
         return self.cur.lastrowid
 
     def filechecks(self, filename, checker, store=None):
