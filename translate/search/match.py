@@ -20,6 +20,7 @@
 
 """Class to perform translation memory matching from a store of translation units"""
 
+import itertools
 import heapq
 import re
 
@@ -104,8 +105,7 @@ class matcher(object):
         """
         if isinstance(units, base.TranslationUnit):
             units = [units]
-        candidates = filter(self.usable, units)
-        for candidate in candidates:
+        for candidate in itertools.ifilter(self.usable, units):
             simpleunit = base.TranslationUnit("")
             # We need to ensure that we don't pass multistrings futher, since
             # some modules (like the native Levenshtein) can't use it.
