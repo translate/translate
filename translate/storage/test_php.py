@@ -127,6 +127,25 @@ class TestPhpFile(test_monolingual.TestMonolingualStore):
         assert phpunit.name == "$lang[ 'mediaselect' ]"
         assert phpunit.source == "Bestand selectie"
 
+    def test_comment_definition(self):
+        """check that comments are fully preserved"""
+        phpsource = """/*
+ * Comment line 1
+ * Comment line 2
+ */
+$foo = "bar";
+"""
+        phpfile = self.phpparse(phpsource)
+        assert len(phpfile.units) == 1
+        phpunit = phpfile.units[0]
+        assert phpunit.name == "$foo"
+        assert phpunit.source == "bar"
+        assert phpunit._comments == ["""/*""",
+                                     """ * Comment line 1""",
+                                     """ * Comment line 2""",
+                                     """ */"""
+                                    ]
+
     def test_comment_blocks(self):
         """check that we don't process name value pairs in comment blocks"""
         phpsource = """/*
@@ -140,6 +159,20 @@ $lang[2] = "Yeah";
         phpunit = phpfile.units[0]
         assert phpunit.name == "$lang[2]"
         assert phpunit.source == "Yeah"
+
+    def test_comment_output(self):
+        """check that linebreaks and spacing is preserved when comments are output"""
+        # php.py uses single quotes and doesn't add spaces before or after '='
+        phpsource = """/*
+ * Comment line 1
+ * Comment line 2
+ */
+$foo='bar';
+"""
+        phpfile = self.phpparse(phpsource)
+        assert len(phpfile.units) == 1
+        phpunit = phpfile.units[0]
+        assert phpunit.getoutput() == phpsource
 
     def test_multiline(self):
         """check that we preserve newlines in a multiline message"""

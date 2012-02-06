@@ -142,7 +142,7 @@ class phpunit(base.TranslationUnit):
 
     def getoutput(self):
         """convert the unit back into formatted lines for a php file"""
-        return "".join(self._comments + ["%s='%s';\n" % (self.name, self.translation or self.value)])
+        return "\n".join(self._comments + ["%s='%s';\n" % (self.name, self.translation or self.value)])
 
     def addlocation(self, location):
         self.name = location
@@ -210,17 +210,17 @@ class phpfile(base.TranslationStore):
             if commentstartpos != -1:
                 incomment = True
                 if commentendpos != -1:
-                    newunit.addnote(line[commentstartpos:commentendpos].strip(),
+                    newunit.addnote(line[commentstartpos:commentendpos+2],
                                     "developer")
                     incomment = False
                 else:
-                    newunit.addnote(line[commentstartpos:].strip(),
+                    newunit.addnote(line[commentstartpos:],
                                     "developer")
             if commentendpos != -1 and incomment:
-                newunit.addnote(line[:commentendpos+2].strip(), "developer")
+                newunit.addnote(line[:commentendpos+2], "developer")
                 incomment = False
             if incomment and commentstartpos == -1:
-                newunit.addnote(line.strip(), "developer")
+                newunit.addnote(line, "developer")
                 continue
             if line.lower().find('array(') != -1:
                 equaldel = "=>"
