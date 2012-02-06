@@ -292,7 +292,9 @@ class TerminologyExtractor(object):
             terms[term] = ((10 * numfiles) + numsources, termunit)
         return terms
 
-    def filter_terms(self, terms, nonstopmin=1, sortorders=["frequency", "dictionary", "length"]):
+    sortorders_default = ["frequency", "dictionary", "length"]
+
+    def filter_terms(self, terms, nonstopmin=1, sortorders=sortorders_default):
         """reduce subphrases from extracted terms"""
         # reduce subphrase
         termlist = terms.keys()
@@ -317,6 +319,8 @@ class TerminologyExtractor(object):
                     del terms[' '.join(words)]
         print >> sys.stderr, "%d terms after subphrase reduction" % len(terms.keys())
         termitems = terms.values()
+        if sortorders is None:
+            sortorders = self.sortorders_default
         while len(sortorders) > 0:
             order = sortorders.pop()
             if order == "frequency":
@@ -493,10 +497,9 @@ def main():
     parser.add_option("", "--locs-needed", type="int", dest="locmin", default="2",
         help="omit terms appearing in less than MIN different original source files (default 2)", metavar="MIN")
 
-    sortorders_default = ["frequency", "dictionary", "length"]
     parser.add_option("", "--sort", dest="sortorders", action="append",
-        type="choice", choices=sortorders_default, metavar="ORDER", default=sortorders_default,
-        help="output sort order(s): %s (default is all orders in the above priority)" % ', '.join(sortorders_default))
+        type="choice", choices=TerminologyExtractor.sortorders_default, metavar="ORDER",
+        help="output sort order(s): %s (may repeat option, default is all in above order)" % ', '.join(TerminologyExtractor.sortorders_default))
 
     parser.add_option("", "--source-language", dest="sourcelanguage", default="en",
         help="the source language code (default 'en')", metavar="LANG")
