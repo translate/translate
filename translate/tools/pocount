@@ -1,6 +1,6 @@
 #!/usr/bin/python
 # 
-# Copyright 2008 Zuza Software Foundation
+# Copyright 2004 Zuza Software Foundation
 # 
 # This file is part of the translate-toolkit
 #
@@ -17,11 +17,10 @@
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, see <http://www.gnu.org/licenses/>.
 
-"""reads a set of .po or .pot files to produce a pootle-terminology.pot"""
+"""takes a .po translation file and produces word counts and other statistics"""
 
-from translate.tools import poterminology
+from translate.tools import pocount
 
 if __name__ == '__main__':
-  poterminology.main()
-
+  pocount.main()
 

@@ -1,8 +1,8 @@
-#!/usr/bin/python
+#!/usr/bin/env python
 # 
-# Copyright 2008 Zuza Software Foundation
+# Copyright 2004 Zuza Software Foundation
 # 
-# This file is part of the translate-toolkit
+# This file is part of translate.
 #
 # translate is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -17,11 +17,10 @@
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, see <http://www.gnu.org/licenses/>.
 
-"""reads a set of .po or .pot files to produce a pootle-terminology.pot"""
+"""simple script to insert debug messages into po file translations"""
 
-from translate.tools import poterminology
+from translate.tools import podebug
 
 if __name__ == '__main__':
-  poterminology.main()
-
+  podebug.main()
 
