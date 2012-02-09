@@ -35,7 +35,11 @@ class LangUnit(base.TranslationUnit):
         base.TranslationUnit.__init__(self, source)
 
     def __str__(self):
-        return u";%s\n%s" % (self.source, self.target)
+        if self.source == self.target:
+            unchanged = " {ok}"
+        else:
+            unchanged = ""
+        return u";%s\n%s%s" % (self.source, self.target, unchanged)
 
     def getlocations(self):
         return self.locations
@@ -61,7 +65,7 @@ class LangStore(txt.TxtFile):
                 continue
 
             if readyTrans: #If we are expecting a translation, set the target
-                u.target = line
+                u.target = line.replace(" {ok}", "")
                 readyTrans = False #We already have our translation
                 continue
 
