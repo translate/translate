@@ -226,7 +226,7 @@ do
 	# Revert files with only header changes
 	[ -d ${POUPDATED_DIR}/${polang}/.svn ] && svn revert $(svn diff --diff-cmd diff -x "--unified=3 --ignore-matching-lines=POT-Creation --ignore-matching-lines=X-Generator -s" ${POUPDATED_DIR}/${polang} |
 	egrep "are identical$" |
-	sed -r "s/^Files //;s/\s+\(revision.*$//")
+	sed "s/^Files //;s/\(\.po\).*/\1/")
 
 	## Migrate to new PO files: move old to obsolete/ and add new files
 	if [ ! -d ${POUPDATED_DIR}/${polang}/.svn ]; then
