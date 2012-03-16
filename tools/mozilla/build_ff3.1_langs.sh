@@ -115,6 +115,7 @@ done
 [ -d en-US_browser ] && rm -rf en-US_browser
 [ -L en-US ] && rm en-US
 get_moz_enUS.py -s ../mozilla-aurora -d . -p browser -v
+get_moz_enUS.py -s ../mozilla-aurora -d . -p mobile -v
 mv en-US{,_browser}
 ln -sf en-US_browser ./en-US
 # CREATE POT FILES FROM en-US
