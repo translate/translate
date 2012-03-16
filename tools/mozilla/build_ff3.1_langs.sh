@@ -54,7 +54,7 @@ else
 fi
 
 # FIXME lets make this the execution directory
-BUILD_DIR="/home/dwayne/dev/mozilla"
+BUILD_DIR="$(pwd)"
 MOZCENTRAL_DIR="${BUILD_DIR}/mozilla-aurora" # Change "../mozilla-central" on line 39 too if you change this var
 L10N_DIR="${BUILD_DIR}/l10n"
 PO_DIR="${BUILD_DIR}/po"
