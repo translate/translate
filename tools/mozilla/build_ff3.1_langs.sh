@@ -65,7 +65,7 @@ POT_INCLUDES="../README.mozilla-pot"
 POTPACK_DIR="${BUILD_DIR}/potpacks"
 POUPDATED_DIR="${BUILD_DIR}/po-updated"
 # FIXME we should build this from the get_moz_enUS script
-PRODUCT_DIRS="browser dom netwerk security services/sync toolkit" # Directories in language repositories to clear before running po2moz
+PRODUCT_DIRS="browser dom netwerk security services/sync toolkit mobile embedding" # Directories in language repositories to clear before running po2moz
 LANGPACK_DIR="${BUILD_DIR}/xpi"
 FF_VERSION="4.0b7pre"
 
