@@ -97,16 +97,37 @@ fi
 
 . ${TOOLS_DIR}/setpath
 
-[ $opt_vc ] && (cd ${MOZCENTRAL_DIR}; hg pull -u; hg update -C)
-[ $opt_vc ] && (find ${MOZCENTRAL_DIR} -name '*.orig' | xargs --no-run-if-empty rm) || /bin/true
+if [ $opt_vc ]; then
+	if [ -d "${MOZCENTRAL_DIR}/.hg" ]; then
+	    cd ${MOZCENTRAL_DIR}
+		hg pull -u
+		hg update -C
+	else
+		hg clone http://hg.mozilla.org/releases/mozilla-aurora/ ${MOZVENTRAL_DIR}
+	fi
+    find ${MOZCENTRAL_DIR} -name '*.orig' | xargs  --no-run-if-empty rm
+fi
 
 cd ${L10N_DIR}
 
 # Update all Mercurial-managed languages
 for lang in ${HG_LANGS}
 do
-	[ -d ${lang}/.hg ] && [ $opt_vc ] && (cd ${lang}; hg revert --all -r default; hg pull -u; hg update -C)
-	[ $opt_vc ] && (find ${lang} -name '*.orig' | xargs --no-run-if-empty rm) || /bin/true
+	if [ $opt_vc ]; then
+	    if [ -d ${lang} ]; then
+	        if [ -d ${lang}/.hg ]; then
+		        (cd ${lang}
+		    	hg revert --all -r default
+		    	hg pull -u
+		    	hg update -C)
+			else
+		        rm -rf ${lang}/* 
+			fi
+		else
+		    hg clone http://hg.mozilla.org/releases/l10n/mozilla-aurora/${lang} ${lang} || mkdir ${lang}
+	    fi
+	    find ${lang} -name '*.orig' | xargs  --no-run-if-empty rm
+	fi
 done
 
 [ -d pot ] && rm -rf pot
