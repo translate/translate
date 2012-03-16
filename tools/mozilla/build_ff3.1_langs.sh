@@ -48,8 +48,7 @@ do
 done
 
 if [ $# -eq 0 ]; then
-	#HG_LANGS="af ak am en-ZA ff km lg nso ur son st-LS su sw zu"
-	HG_LANGS="af ak am en-ZA ff lg nso ur sah son st-LS su sw wo zu"
+	HG_LANGS="ach af ak am en-ZA ff gd hz ki lg ng nso ny sah son st-LS su sw tn ur ve wo xog zu"
 else
 	HG_LANGS=$*
 fi
