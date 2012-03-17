@@ -98,13 +98,13 @@ fi
 
 if [ $opt_vc ]; then
 	if [ -d "${MOZCENTRAL_DIR}/.hg" ]; then
-	    cd ${MOZCENTRAL_DIR}
+		cd ${MOZCENTRAL_DIR}
 		hg pull -u
 		hg update -C
 	else
 		hg clone http://hg.mozilla.org/releases/mozilla-aurora/ ${MOZVENTRAL_DIR}
 	fi
-    find ${MOZCENTRAL_DIR} -name '*.orig' | xargs  --no-run-if-empty rm
+    (find ${MOZCENTRAL_DIR} -name '*.orig' | xargs  --no-run-if-empty rm)
 fi
 
 cd ${L10N_DIR}
@@ -136,8 +136,8 @@ done
 [ -L en-US ] && rm en-US
 get_moz_enUS.py -s ../mozilla-aurora -d . -p browser -v
 get_moz_enUS.py -s ../mozilla-aurora -d . -p mobile -v
-mv en-US{,_browser}
-ln -sf en-US_browser ./en-US
+#mv en-US{,_browser}
+#ln -sf en-US_browser ./en-US
 # CREATE POT FILES FROM en-US
 moz2po --errorlevel=traceback --progress=none -P --duplicates=msgctxt --exclude '.hg' en-US pot
 find pot \( -name '*.html.pot' -o -name '*.xhtml.pot' \) -exec rm -f {} \;
