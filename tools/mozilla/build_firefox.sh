@@ -59,10 +59,6 @@ MOZCENTRAL_DIR="${BUILD_DIR}/mozilla-aurora" # Change "../mozilla-central" on li
 L10N_DIR="${BUILD_DIR}/l10n"
 PO_DIR="${BUILD_DIR}/po"
 TOOLS_DIR="${BUILD_DIR}/tools"
-POPACK_DIR="${BUILD_DIR}/popacks"
-PORECOVER_DIR="${BUILD_DIR}/po-recover"
-POT_INCLUDES="../README.mozilla-pot"
-POTPACK_DIR="${BUILD_DIR}/potpacks"
 POUPDATED_DIR="${BUILD_DIR}/po-updated"
 # FIXME we should build this from the get_moz_enUS script
 PRODUCT_DIRS="browser dom netwerk security services/sync toolkit mobile embedding" # Directories in language repositories to clear before running po2moz
@@ -77,7 +73,7 @@ fi
 PATH=${CURDIR}:${PATH}
 
 # Make sure all directories exist
-for dir in ${MOZCENTRAL_DIR} ${L10N_DIR} ${PO_DIR} ${POPACK_DIR} ${PORECOVER_DIR} ${POTPACK_DIR} ${POUPDATED_DIR} ${LANGPACK_DIR}
+for dir in ${L10N_DIR} ${POUPDATED_DIR} ${LANGPACK_DIR}
 do
 	[ ! -d ${dir} ] && mkdir -p ${dir}
 done
@@ -142,12 +138,6 @@ get_moz_enUS.py -s ../mozilla-aurora -d . -p mobile -v
 moz2po --errorlevel=traceback --progress=none -P --duplicates=msgctxt --exclude '.hg' en-US pot
 find pot \( -name '*.html.pot' -o -name '*.xhtml.pot' \) -exec rm -f {} \;
 
-# Create POT pack
-# Comment out the lines starting with "tar" and/or "zip" to keep from building archives in the specific format(s).
-PACKNAME="${POTPACK_DIR}/firefox-${FF_VERSION}-`date +%Y%m%d`"
-#tar chjf ${PACKNAME}.tar.bz2 pot en-US ${POT_INCLUDES}
-#zip -qr9 ${PACKNAME}.zip pot en-US ${POT_INCLUDES}
-
 # The following functions are used in the loop following it
 function copyfile {
 	filename=$1
@@ -183,14 +173,6 @@ function copydir {
 
 for lang in ${HG_LANGS}
 do
-	### RECOVER - Recover PO files from existing l10n directory.
-	### Comment out the following "moz2po"-line if recovery should not be done.
-	#[ ! -d ${PORECOVER_DIR}/${lang} ] && mkdir -p ${PORECOVER_DIR}/${lang}
-	#moz2po --progress=none --errorlevel=traceback --duplicates=msgctxt --exclude=".#*" --exclude='.hg' \
-	#	-t ${L10N_DIR}/en-US ${L10N_DIR}/${lang} ${PORECOVER_DIR}/${lang}
-
-	#[ ! -d ${PO_DIR}/${lang} ] && cp -R ${PORECOVER_DIR}/${lang} ${PO_DIR}
-
 	# Try and update existing PO files
         polang=$(echo $lang|sed "s/-/_/g")
 	updated=""
@@ -291,15 +273,6 @@ do
 	# These seem to have been removed for Fx4
 	#[ ! -f ${L10N_DIR}/${lang}/browser/profile/bookmarks.html ] && copyfile browser/profile/bookmarks.html ${lang}
 	#sed -i "s/en-US/${lang}/g" ${L10N_DIR}/${lang}/browser/profile/bookmarks.html || /bin/true
-
-	## CREATE PO PACK - Create archives of PO files.
-	# Comment out the lines starting with "tar" and/or "zip" to keep from building archives in the specific format(s).
-	PACKNAME="${POPACK_DIR}/firefox-${FF_VERSION}-${polang}-`date +%Y%m%d`"
-	(
-		cd ${BUILD_DIR}
-		#tar cjf ${PACKNAME}.tar.bz2 --exclude '.svn' --exclude '.hg' ${L10N_DIR_REL}/${lang} ${POUPDATED_DIR_REL}/${polang}
-		#zip -qr9 ${PACKNAME}.zip ${L10N_DIR_REL}/${lang} ${POUPDATED_DIR_REL}/${polang} -x '*.svn*' -x "*.hg*"
-	)
 
 	## CREATE XPI LANGPACK
 	[ $opt_build_xpi ] && buildxpi.py -d -L ${L10N_DIR} -s ${MOZCENTRAL_DIR} -o ${LANGPACK_DIR} ${lang}
