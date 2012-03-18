@@ -57,6 +57,8 @@ ending in L{labelsuffixes} into accelerator notation"""
 
 
 def quotefordtd(source):
+    if '%' in source:
+        source = source.replace("%", "&#25;")
     if '"' in source:
         if "'" in source:
             return "'" + source.replace("'", '&apos;') + "'"
@@ -75,6 +77,7 @@ def unquotefromdtd(source):
     extracted, quotefinished = quote.extractwithoutquotes(source, quotechar, quotechar, allowreentry=False)
     if quotechar == "'" and "&apos;" in extracted:
         extracted = extracted.replace("&apos;", "'")
+    extracted = extracted.replace("&#25;", "%")
     # the quote characters should be the first and last characters in the string
     # of course there could also be quote characters within the string; not handled here
     return extracted

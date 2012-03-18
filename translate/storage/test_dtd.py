@@ -24,6 +24,15 @@ def test_roundtrip_quoting():
         assert special == unquoted_special
 
 
+def test_quotefordtd():
+    """Test quoting and unqouting dtd definitions"""
+    def tester(raw_original, dtd_ready_result):
+        #print dtd.quotefordtd(raw_original)
+        assert dtd.quotefordtd(raw_original) == dtd_ready_result
+        #print dtd.unquotefromdtd(dtd_ready_result)
+        assert dtd.unquotefromdtd(dtd_ready_result) == raw_original
+    tester("Unintentional variable %S", '"Unintentional variable &#25;S"')
+
 def test_removeinvalidamp(recwarn):
     """tests the the removeinvalidamps function"""
 
