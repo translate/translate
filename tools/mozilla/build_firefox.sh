@@ -66,9 +66,9 @@ LANGPACK_DIR="${BUILD_DIR}/xpi"
 FF_VERSION="4.0b7pre"
 
 # Include current dir in path (for buildxpi and others)
-CURDIR=`dirname $0`
-if [ x"$CURDIR" == x ] || [ x"$CURDIR" == x. ]; then
-    CURDIR=`pwd`
+CURDIR=$(dirname $0)
+if [ "$CURDIR" == "" -o  "$CURDIR" == '.' ]; then
+    CURDIR=$(pwd)
 fi
 PATH=${CURDIR}:${PATH}
 
