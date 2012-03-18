@@ -175,10 +175,7 @@ for lang in ${HG_LANGS}
 do
 	# Try and update existing PO files
         polang=$(echo $lang|sed "s/-/_/g")
-	updated=""
-	[ -z ${updated} ] && [ -d ${PO_DIR}/${polang}/CVS ] && (cd ${PO_DIR}/${polang}; cvs up) && updated="1"
-	[ -z ${updated} ] && [ -d ${PO_DIR}/${polang}/.hg ] && (cd ${PO_DIR}/${polang}; hg pull -u) && updated="1"
-	[ -z ${updated} ] && [ -d ${PO_DIR}/${polang}/.svn ] && (cd ${PO_DIR}/${polang}; svn up) && updated="1"
+	(cd ${PO_DIR}; svn up ${polang}) 
 
 	# Copy directory structure while preserving version control metadata
 	if [ -d ${PO_DIR}/${polang} ]; then
