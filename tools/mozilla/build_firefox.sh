@@ -98,7 +98,7 @@ if [ $opt_vc ]; then
 		hg pull -u
 		hg update -C
 	else
-		hg clone http://hg.mozilla.org/releases/mozilla-aurora/ ${MOZVENTRAL_DIR}
+		hg clone http://hg.mozilla.org/releases/mozilla-aurora/ ${MOZCENTRAL_DIR}
 	fi
     (find ${MOZCENTRAL_DIR} -name '*.orig' | xargs  --no-run-if-empty rm)
 fi
