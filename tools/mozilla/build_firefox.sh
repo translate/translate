@@ -103,9 +103,14 @@ if [ $opt_vc ]; then
     (find ${MOZCENTRAL_DIR} -name '*.orig' | xargs  --no-run-if-empty rm)
 fi
 
-cd ${L10N_DIR}
+[ $opt_vc ] && if [ -d ${PO_DIR} ]; then
+	svn up --depth=files ${PO_DIR}
+else
+	svn co --depth=files  https://zaf.svn.sourceforge.net/svnroot/zaf/trunk/po/fftb ${PO_DIR}
+fi
 
 # Update all Mercurial-managed languages
+cd ${L10N_DIR}
 for lang in ${HG_LANGS}
 do
 	if [ $opt_vc ]; then
