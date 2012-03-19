@@ -58,7 +58,7 @@ ending in L{labelsuffixes} into accelerator notation"""
 
 def quotefordtd(source):
     if '%' in source:
-        source = source.replace("%", "&#25;")
+        source = source.replace("%", "&#x25;")
     if '"' in source:
         if "'" in source:
             return "'" + source.replace("'", '&apos;') + "'"
@@ -77,7 +77,7 @@ def unquotefromdtd(source):
     extracted, quotefinished = quote.extractwithoutquotes(source, quotechar, quotechar, allowreentry=False)
     if quotechar == "'" and "&apos;" in extracted:
         extracted = extracted.replace("&apos;", "'")
-    extracted = extracted.replace("&#25;", "%")
+    extracted = extracted.replace("&#x25;", "%")
     # the quote characters should be the first and last characters in the string
     # of course there could also be quote characters within the string; not handled here
     return extracted
@@ -471,6 +471,7 @@ class dtdfile(base.TranslationStore):
             try:
                 # #expand is a Mozilla hack and are removed as they are not valid in DTDs
                 dtd = etree.DTD(StringIO.StringIO(re.sub("#expand", "", self.getoutput())))
-            except etree.DTDParseError:
+            except etree.DTDParseError as e:
+                warnings.warn("DTD parse error: %s" % e.error_log)
                 return False
         return True
