@@ -90,7 +90,7 @@ else
 	git clone git@github.com:translate/translate.git ${TOOLS_DIR}/translate
 fi
 
-export PYTHONPATH="${TOOLS_DIR}":"$PYTHONPATH"
+export PYTHONPATH="${TOOLS_DIR}/translate":"$PYTHONPATH"
 export PATH="${TOOLS_DIR}/translate/tools":\
 "${TOOLS_DIR}/translate/translate/convert":\
 "${TOOLS_DIR}/translate/translate/tools":\
