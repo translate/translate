@@ -44,7 +44,6 @@ from tempfile   import mkdtemp
 
 
 HOMEDIR = os.getenv('HOME', '~')
-MOZCONFIG = os.path.join(HOMEDIR, '.mozconfig')
 
 def run(cmd, expected_status=0, stdout=None, stderr=None, shell=False):
     if VERBOSE:
@@ -62,6 +61,7 @@ def run(cmd, expected_status=0, stdout=None, stderr=None, shell=False):
     return cmd_status
 
 def build_xpi(l10nbase, srcdir, outputdir, lang, product, delete_dest=False):
+    MOZCONFIG = os.path.join(srcdir, '.mozconfig')
     # Backup existing .mozconfig if it exists
     backup_name = ''
     if os.path.exists(MOZCONFIG):
