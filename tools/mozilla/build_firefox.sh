@@ -88,9 +88,14 @@ POUPDATED_DIR_REL=`echo ${POUPDATED_DIR} | sed "s#${BUILD_DIR}/##"`
 else
 	svn co https://translate.svn.sourceforge.net/svnroot/translate/src/trunk ${TOOLS_DIR}
 fi
-(cd ${TOOLS_DIR}; ./setuppath)
 
-. ${TOOLS_DIR}/setpath
+export PYTHONPATH="${TOOLS_DIR}":"$PYTHONPATH"
+export PATH="${TOOLS_DIR}/translate/tools":\
+"${TOOLS_DIR}/translate/translate/convert":\
+"${TOOLS_DIR}/translate/translate/tools":\
+"${TOOLS_DIR}/translate/translate/filters":\
+"${TOOLS_DIR}/translate/tools/mozilla":\
+"$PATH"
 
 if [ $opt_vc ]; then
 	if [ -d "${MOZCENTRAL_DIR}/.hg" ]; then
