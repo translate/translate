@@ -226,7 +226,7 @@ do
 		for newfile in $(svn status $PRODUCT_DIRS | egrep "^\?" | sed "s/\?\w*//")
 		do
 			[ -d $newfile ] && svn add $newfile
-			[ -f $newfile -a "$(echo $newfile | cut -d"." -f2)" = "po" ] && svn add $newfile
+			[ -f $newfile -a "$(echo $newfile | cut -d"." -f3)" = "po" ] && svn add $newfile
 		done
 
 		if [ -d obsolete/.svn ]; then
@@ -242,7 +242,7 @@ do
 				svn revert -R $oldfile
 				svn move --parents $oldfile obsolete/$oldfile
 			fi
-			if [ -f $newfile -a "$(echo $newfile | cut -d"." -f2)" = "po" ]; then
+			if [ -f $newfile -a "$(echo $newfile | cut -d"." -f3)" = "po" ]; then
 				svn revert $oldfile
 				svn move --parents $oldfile obsolete/$oldfile
 			fi
