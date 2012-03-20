@@ -82,10 +82,12 @@ done
 L10N_DIR_REL=`echo ${L10N_DIR} | sed "s#${BUILD_DIR}/##"`
 POUPDATED_DIR_REL=`echo ${POUPDATED_DIR} | sed "s#${BUILD_DIR}/##"`
 
-[ $opt_vc ] && if [ -d ${TOOLS_DIR} ]; then
-	svn up ${TOOLS_DIR}
+[ $opt_vc ] && if [ -d ${TOOLS_DIR}/translate/.git ]; then
+	(cd ${TOOLS_DIR}/translate/
+	git pull
+	git checkout)
 else
-	svn co https://translate.svn.sourceforge.net/svnroot/translate/src/trunk ${TOOLS_DIR}
+	git clone git@github.com:translate/translate.git ${TOOLS_DIR}/translate
 fi
 
 export PYTHONPATH="${TOOLS_DIR}":"$PYTHONPATH"
