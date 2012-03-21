@@ -114,6 +114,9 @@ fi
 else
 	svn co --depth=files  https://zaf.svn.sourceforge.net/svnroot/zaf/trunk/po/fftb ${PO_DIR}
 fi
+if [ ! -d ${POUPDATED_DIR}/.svn ]; then
+	cp -rp ${PO_DIR}/.svn ${POUPDATED_DIR}
+fi
 
 # Update all Mercurial-managed languages
 cd ${L10N_DIR}
