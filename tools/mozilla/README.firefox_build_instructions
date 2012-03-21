@@ -1,0 +1,137 @@
+================
+Firefox Building
+================  
+
+The following are instructions for setting up a build environment
+to use the Translate Toolkit and Pootle hosted at pootle.locamotion.org
+to build Firefox and Firefox Mobile.
+
+There are bound to be issues as we progress but generally the scripts
+and tools are widely tested managing over 15 languages.
+
+
+Setting up your environment
+===========================
+
+We use vagrant to manage VirtualBox VMs easily
+
+1. Install VirtualBox
+2. Install Vagrant
+3. Create a directory for your Firefox work.  We use ~/dev/mozilla
+   # mkdir -p ~/dev/mozilla
+   # cd ~/dev/mozilla
+4. # vagrant box add base http://download.locamotion.org/firefox_build.box
+5. # vagrant init
+6. # vagrant up
+7. # vagrant ssh
+8. # ./postinstall.sh
+9. # ./setup_firefox.sh
+
+You now have a VM that we will use exclusively for Firefox localisation.
+
+
+Configuring your development setup
+==================================
+
+We need to setup some things so that you can work with
+version control and have acces to the servers.
+
+1. Setup SSH for access to Mozilla mercurial
+   You SSH setup is copied from your computer into vagrant so if
+   this already works on your computer then it is already setup.
+2. Copy ~/.hgrc and ~/.gitconfig into $HOME on vagrant
+3. Send dwayne your public key to the Pootle server
+4. Ask dwayne for commit access to the sourceforge ZAF project to store your PO files
+
+Now you should be able to commit changes in PO and Mozilla files. You should
+also be able to get and push translations to the Pootle server.
+
+
+Building Firefox
+================
+
+The previous steps are one off.  The following are steps that you will repeat for every build.
+In the following examples we are working with Akan or ak.
+
+1. Get ready
+   # vagrant ssh
+   # cd firefox
+2. Get the new PO translations.
+   # cd po
+   # ./get-from-pootle.sh ak
+3. Review and commit translations
+   # svndiff ak
+   Review the diff and check for any glaring errors.  If you 
+   are happy then commit.  We commit before we work on the files so that we
+   have something to go back to. Please use a good message as this is used by
+   others to track the changes.  E.g. could be.  "Update to 100% in user1 for Akan",
+   "Update translations following Acholi sprint"
+   # svn ci ak
+   Files are now committed and we can get ready to process.
+4. Begin updateing. You might want to tell your team that you are doing this
+   as any changes they make on Pootle will be lost at a later step.
+   # cd ~/firefox
+   # ./build_firefox.sh ak
+   A lot of processing will happen.  Check for any errors in the process.
+5. Now check the updated PO files
+   # cd po-updated
+   # svndiff ak
+   Review for any glaring errors.  You probably only care about such updates after
+   a large migration e.g. Aurora 12 to Aurora 13.  If you are still in the cycle then
+   you don't really care about po-updated output.  Happy? Then commit as you did in po/
+   Find any errors?  Fix them on Pootle or in the files in po/ak and run build_firefox.sh
+   again.
+6. Now we push our work to Mozilla
+   # cd ~/firefox/l10n
+   # cd ak
+   Check that Axel's compare locales pass
+   # ./compare-locales.sh ak
+   Check for any erorrs and correct.  Removed files should be fixed here. Errors in 
+   translations should be fixed on Pootle or in po/
+   # hg status
+   Check for any new or removed files. ? means a file not in version control.  ! means a files
+   that was in version control and now isn't which usually means we don't need it anymore.
+   # svn addremove path/to/files.dtd
+   Add the files carefully check what you are adding
+   # hg diff
+   Review the changes and check that you haven't broken anything. Happy?
+   # hg commit
+   # hg push
+7. Wait for Mozilla to build your stuff
+   Go to https://l10n-stage-sj.mozilla.org/shipping/dashboard?av=fx-aurora
+   http://ftp.mozilla.org/pub/mozilla.org/firefox/nightly/latest-mozilla-aurora/
+   Once you have tested.  Signoff your build.
+8. Push changes back to Pootle
+   If you made changes in po-updated/ak then:
+   # cd ~/firefox/po
+   # svn up
+   Or commit any changes you made in po/ak
+   # svn ci
+   Please please tell us what the commit is about
+   Now you need to push the files to Pootle
+   # ./push-to-pootle.sh ak
+   You will be asked if you want to proceed.  This is just a check that first syncs files on
+   Pootle to check that nobody has made any changes.  Remember your files will overwrite
+   anything done in your language on pootle.
+   Happy? Press y<enter>
+   You are now synced and can tell your team to continue translating.
+
+
+Handling types of errors
+========================
+
+* The best place to fix anything is on Pootle.  So try to do it their if possible
+* If you need to do it on the PO files.  Make sure you get-from-pootle.sh before you work
+  and push-to-pootle.sh after your changes.
+* compare-locale fixes are best done with the files in po/ak for speed.  Fix them all before
+  doing another build
+* If you see bugs against your language.  Fix them in Pootle then close the bug.  your fix
+  will come through in your next update.
+* If you see your translators making a common error please share it on the firefox-l10n
+  list and try to educate them.
+
+
+Notes
+=====
+As long as you commit before major work you will be able to rollback any major issue.
+So be brave and careful.
