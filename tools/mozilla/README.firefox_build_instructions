@@ -63,6 +63,7 @@ with your language code.
    # cd firefox
 2. Get the new PO translations from Pootle.
    # cd po
+   # svn up zz
    # ./get-from-pootle.sh zz
 3. Review and commit translations.
    # svndiff zz
