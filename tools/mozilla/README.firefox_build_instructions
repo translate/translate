@@ -24,7 +24,11 @@ We use vagrant to manage VirtualBox VMs easily
 5. # vagrant up
 6. # vagrant ssh
 7. # sudo ./postinstall.sh
-8. # ./setup_firefox.sh
+8. # exit
+9. # vagrant halt
+10. # vagrant up
+11. # vagrant ssh
+12. # ./setup_firefox.sh
 
 You now have a VM that we will use exclusively for Firefox localisation.
 
