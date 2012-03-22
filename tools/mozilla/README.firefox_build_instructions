@@ -16,7 +16,10 @@ Setting up your environment
 We use vagrant to manage VirtualBox VMs easily
 
 1. Install VirtualBox
+   Downloads https://www.virtualbox.org/wiki/Downloads
+   Vagrant installation instructions http://vagrantup.com/docs/getting-started/index.html
 2. Install Vagrant
+   Downloads http://downloads.vagrantup.com/
 3. Create a directory for your Firefox work.  We use ~/dev/mozilla
    # mkdir -p ~/dev/mozilla
    # cd ~/dev/mozilla
