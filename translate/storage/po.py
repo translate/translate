@@ -31,12 +31,12 @@ import os
 if os.getenv('USECPO'):
     if os.getenv('USECPO') == "1":
         logging.info("Using cPO")
-        from translate.storage.cpo import * # pylint: disable-msg=W0401,W0614
+        from translate.storage.cpo import * # pylint: disable=W0401,W0614
     elif os.getenv('USECPO') == "2":
         logging.info("Using new cPO")
-        from translate.storage.fpo import * # pylint: disable-msg=W0401,W0614
+        from translate.storage.fpo import * # pylint: disable=W0401,W0614
     else:
         logging.info("Using Python PO")
-        from translate.storage.pypo import * # pylint: disable-msg=W0401,W0614
+        from translate.storage.pypo import * # pylint: disable=W0401,W0614
 else:
-    from translate.storage.pypo import * # pylint: disable-msg=W0401
+    from translate.storage.pypo import * # pylint: disable=W0401
