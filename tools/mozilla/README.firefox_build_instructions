@@ -107,6 +107,10 @@ with your language code.
    Review the changes and check that you haven't broken anything. Happy?
    # hg commit
    # hg push
+   If your push fails with remote: 'ssl required' then you need to do the following.  Edit
+   l10/zz/.hg/hgrc, duplicate the line 'default = http:....' and replace default with default-push,
+   replace http:// with ssh://
+   Now try push again.
 7. Wait for Mozilla to build your stuff
    Go to https://l10n-stage-sj.mozilla.org/shipping/dashboard?av=fx-aurora and check
    that you have been built.
