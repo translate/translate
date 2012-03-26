@@ -1030,7 +1030,7 @@ class StandardChecker(TranslationChecker):
             str2 = str2.replace(seperator, u" ")
         words1 = self.filteraccelerators(str1).split()
         words2 = self.filteraccelerators(str2).split()
-        stopwords = [word for word in words1 if word in self.config.musttranslatewords and word in words2]
+        stopwords = [word for word in words1 if word.lower() in self.config.musttranslatewords and word in words2]
         if stopwords:
             raise FilterFailure(u"Please translate: %s" % (u", ".join(stopwords)))
         return True
