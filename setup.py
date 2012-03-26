@@ -180,7 +180,7 @@ class InnoScript:
             print >> ofi, r'Source: "%s"; DestDir: "{app}\%s"; Flags: ignoreversion' % (path, os.path.dirname(path))
         print >> ofi
         print >> ofi, r"[Icons]"
-        print >> ofi, r'Name: "{group}\Documentation"; Filename: "{app}\doc\index.html";'
+        print >> ofi, r'Name: "{group}\Documentation"; Filename: "{app}\docs\index.html";'
         print >> ofi, r'Name: "{group}\Translate Toolkit Command Prompt"; Filename: "cmd.exe"'
         print >> ofi, r'Name: "{group}\Uninstall %s"; Filename: "{uninstallexe}"' % self.name
         print >> ofi
@@ -265,11 +265,10 @@ def getdatafiles():
   def listfiles(srcdir):
     return join(sitepackages, srcdir), [join(srcdir, f) for f in os.listdir(srcdir) if os.path.isfile(join(srcdir, f))]
   docfiles = []
-  for subdir in ['doc', 'share']:
+  for subdir in ['docs', 'share']:
     docwalk=os.walk(os.path.join('translate', subdir))
     for docs in docwalk:
-      if not '.svn' in docs[0]:
-        docfiles.append(listfiles(docs[0]))
+      docfiles.append(listfiles(docs[0]))
     datafiles += docfiles
   return datafiles
 
@@ -305,7 +304,7 @@ def buildmanifest_in(file, scripts):
   for scriptname in scripts:
     print >>file, "include %s" % scriptname
   print >> file, "# include our documentation"
-  print >> file, "graft translate/doc"
+  print >> file, "graft translate/docs"
   print >> file, "graft translate/share"
   # wordlist, portal are in the source tree but unconnected to the python code
   print >>file, "prune wordlist"
