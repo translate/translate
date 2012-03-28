@@ -67,18 +67,18 @@ class Project(object):
 
     # METHODS #
     def add_source(self, srcfile, src_fname=None):
-        """Proxy for C{self.store.append_sourcefile()}."""
+        """Proxy for ``self.store.append_sourcefile()``."""
         return self.store.append_sourcefile(srcfile, src_fname)
 
     def add_source_convert(self, srcfile, src_fname=None, convert_options=None, extension=None):
-        """Convenience method that calls L{add_source} and L{convert_forward}
+        """Convenience method that calls :ref:`add_source` and :ref:`convert_forward`
             and returns the results from both."""
         srcfile, srcfname = self.add_source(srcfile, src_fname)
         transfile, transfname = self.convert_forward(srcfname, convert_options=convert_options)
         return srcfile, srcfname, transfile, transfname
 
     def close(self):
-        """Proxy for C{self.store.close()}."""
+        """Proxy for ``self.store.close()``."""
         self.store.close()
 
     def convert_forward(self, input_fname, template=None, output_fname=None, **options):
@@ -86,11 +86,11 @@ class Project(object):
             Source document (eg. ODT) -> Translation file (eg. XLIFF) ->
             Translated document (eg. ODT).
 
-            @type  input_fname: basestring
-            @param input_fname: The project name of the file to convert
-            @type  convert_options: dict (optional)
-            @param convert_options: Passed as-is to
-                                    C{translate.convert.factory.convert()}.
+            :type  input_fname: basestring
+            :param input_fname: The project name of the file to convert
+            :type  convert_options: dict (optional)
+            :param convert_options: Passed as-is to
+                                    ``translate.convert.factory.convert()``.
             @returns 2-tuple: the converted file object and it's project name."""
         inputfile = self.get_file(input_fname)
         input_type = self.store.get_filename_type(input_fname)
@@ -178,16 +178,16 @@ class Project(object):
 
     def export_file(self, fname, destfname):
         """Export the file with the specified filename to the given destination.
-            This method will raise L{FileNotInProjectError} via the call to
-            L{ProjectStore.get_file()} if C{fname} is not found in the project."""
+            This method will raise :ref:`FileNotInProjectError` via the call to
+            :ref:`ProjectStore.get_file()` if ``fname`` is not found in the project."""
         open(destfname, 'w').write(self.store.get_file(fname).read())
 
     def get_file(self, fname):
-        """Proxy for C{self.store.get_file()}."""
+        """Proxy for ``self.store.get_file()``."""
         return self.store.get_file(fname)
 
     def get_proj_filename(self, realfname):
-        """Proxy for C{self.store.get_proj_filename()}."""
+        """Proxy for ``self.store.get_proj_filename()``."""
         return self.store.get_proj_filename(realfname)
 
     def get_real_filename(self, projfname):
@@ -199,13 +199,13 @@ class Project(object):
         return rfname
 
     def remove_file(self, projfname, ftype=None):
-        """Proxy for C{self.store.remove_file()}."""
+        """Proxy for ``self.store.remove_file()``."""
         self.store.remove_file(projfname, ftype)
 
     def save(self, filename=None):
-        """Proxy for C{self.store.save()}."""
+        """Proxy for ``self.store.save()``."""
         self.store.save(filename)
 
     def update_file(self, proj_fname, infile):
-        """Proxy for C{self.store.update_file()}."""
+        """Proxy for ``self.store.update_file()``."""
         self.store.update_file(proj_fname, infile)

@@ -33,7 +33,7 @@ def extract_msgid_comment(text):
     """The one definitive way to extract a msgid comment out of an unescaped
     unicode string that might contain it.
 
-    @rtype: unicode"""
+    :rtype: unicode"""
     msgidcomment = msgid_comment_re.match(text)
     if msgidcomment:
         return msgidcomment.group(1)

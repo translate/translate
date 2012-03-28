@@ -20,7 +20,7 @@
 
 """Class that manages .ini files for translation
 
-@note: A simple summary of what is permissible follows.
+.. note::: A simple summary of what is permissible follows.
 
 # a comment
 ; a comment

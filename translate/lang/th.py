@@ -20,7 +20,7 @@
 
 """This module represents Thai language.
 
-For more information, see U{http://en.wikipedia.org/wiki/Thai_language}
+For more information, see http://en.wikipedia.org/wiki/Thai_language
 """
 
 from translate.lang import common

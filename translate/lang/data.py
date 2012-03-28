@@ -195,10 +195,10 @@ def simplercode(code):
     codes, for example.
 
     @see:
-      - U{http://www.rfc-editor.org/rfc/bcp/bcp47.txt}
-      - U{http://www.rfc-editor.org/rfc/rfc4646.txt}
-      - U{http://www.rfc-editor.org/rfc/rfc4647.txt}
-      - U{http://www.w3.org/International/articles/language-tags/}
+      - http://www.rfc-editor.org/rfc/bcp/bcp47.txt
+      - http://www.rfc-editor.org/rfc/rfc4646.txt
+      - http://www.rfc-editor.org/rfc/rfc4647.txt
+      - http://www.w3.org/International/articles/language-tags/
     """
     if not code:
         return code
@@ -248,7 +248,7 @@ dialect_name_re = re.compile(r"(.+)\s\(([^)\d]{,25})\)$")
 
 
 def tr_lang(langcode=None):
-    """Gives a function that can translate a language name, even in the form C{"language (country)"},
+    """Gives a function that can translate a language name, even in the form ``"language (country)"``,
        into the language with iso code langcode, or the system language if no language is specified."""
     langfunc = gettext_lang(langcode)
     countryfunc = gettext_country(langcode)
@@ -319,9 +319,9 @@ def gettext_country(langcode=None):
 def normalize(string, normal_form="NFC"):
     """Return a unicode string in its normalized form
 
-       @param string: The string to be normalized
-       @param normal_form: NFC (default), NFD, NFKC, NFKD
-       @return: Normalized string
+       :param string: The string to be normalized
+       :param normal_form: NFC (default), NFD, NFKC, NFKD
+       :return: Normalized string
     """
     if string is None:
         return None
@@ -333,10 +333,10 @@ def normalize(string, normal_form="NFC"):
 def forceunicode(string):
     """Ensures that the string is in unicode.
 
-       @param string: A text string
-       @type string: Unicode, String
-       @return: String converted to Unicode and normalized as needed.
-       @rtype: Unicode
+       :param string: A text string
+       :type string: Unicode, String
+       :return: String converted to Unicode and normalized as needed.
+       :rtype: Unicode
     """
     if string is None:
         return None

@@ -21,11 +21,11 @@
 """Classes that hold units of .properties, and similar, files that are used in
    translating Java, Mozilla, MacOS and other software.
 
-   The L{propfile} class is a monolingual class with L{propunit} providing unit
+   The :ref:`propfile` class is a monolingual class with :ref:`propunit` providing unit
    level access.
 
    The .properties store has become a general key value pair class with
-   L{Dialect} providing the ability to change the behaviour of the parsing
+   :ref:`Dialect` providing the ability to change the behaviour of the parsing
    and handling of the various dialects.
 
    Currently we support::
@@ -47,11 +47,11 @@
 
    The following U{.properties file
    description<http://java.sun.com/j2se/1.4.2/docs/api/java/util/Properties.html#load(java.io.InputStream)>}
-   and U{example <http://www.exampledepot.com/egs/java.util/Props.html>} give
+   and `example  <http://www.exampledepot.com/egs/java.util/Props.html>`_ give
    some good references to the .properties specification.
 
    Properties file may also hold Java
-   U{MessageFormat<http://java.sun.com/j2se/1.4.2/docs/api/java/text/MessageFormat.html>}
+   `MessageFormat <http://java.sun.com/j2se/1.4.2/docs/api/java/text/MessageFormat.html>`_
    messages.  No special handling is provided in this storage class for
    MessageFormat, but this may be implemented in future.
 
@@ -66,15 +66,15 @@
    Strings
    -------
    Mac OS X strings files are implemented using
-   U{these<http://developer.apple.com/mac/library/documentation/MacOSX/Conceptual/BPInternational/Articles/StringsFiles.html>}
-   U{two<http://developer.apple.com/mac/library/documentation/Cocoa/Conceptual/LoadingResources/Strings/Strings.html>}
+   `these <http://developer.apple.com/mac/library/documentation/MacOSX/Conceptual/BPInternational/Articles/StringsFiles.html>`_
+   `two <http://developer.apple.com/mac/library/documentation/Cocoa/Conceptual/LoadingResources/Strings/Strings.html>`_
    articles as references.
 
    Flex
    ----
    Adobe Flex files seem to be normal .properties files but in UTF-8 just like
    Mozilla files. This
-   U{page<http://livedocs.adobe.com/flex/3/html/help.html?content=l10n_3.html>}
+   `page <http://livedocs.adobe.com/flex/3/html/help.html?content=l10n_3.html>`_
    provides the information used to implement the dialect.
 
    Skype
@@ -141,12 +141,12 @@ def _find_delimiter(line, delimiters):
     We find the position of each delimiter, then find the one that appears
     first.
 
-    @param line: A properties line
-    @type line: str
-    @param delimiters: valid delimiters
-    @type delimiters: list
-    @return: delimiter character and offset within L{line}
-    @rtype: Tuple (delimiter char, Offset Integer)
+    :param line: A properties line
+    :type line: str
+    :param delimiters: valid delimiters
+    :type delimiters: list
+    :return: delimiter character and offset within :ref:`line`
+    :rtype: Tuple (delimiter char, Offset Integer)
     """
     delimiter_dict = {}
     for delimiter in delimiters:
@@ -193,17 +193,17 @@ def find_delimeter(line):
 @accepts(unicode)
 @returns(bool)
 def is_line_continuation(line):
-    """Determine whether L{line} has a line continuation marker.
+    """Determine whether :ref:`line` has a line continuation marker.
 
     .properties files can be terminated with a backslash (\\) indicating
     that the 'value' continues on the next line.  Continuation is only
     valid if there are an odd number of backslashses (an even number
     would result in a set of N/2 slashes not an escape)
 
-    @param line: A properties line
-    @type line: str
-    @return: Does L{line} end with a line continuation
-    @rtype: Boolean
+    :param line: A properties line
+    :type line: str
+    :return: Does :ref:`line` end with a line continuation
+    :rtype: Boolean
     """
     pos = -1
     count = 0
@@ -222,10 +222,10 @@ def is_line_continuation(line):
 def _key_strip(key):
     """Cleanup whitespace found around a key
 
-    @param key: A properties key
-    @type key: str
-    @return: Key without any uneeded whitespace
-    @rtype: str
+    :param key: A properties key
+    :type key: str
+    :return: Key without any uneeded whitespace
+    :rtype: str
     """
     newkey = key.rstrip()
     # If line now end in \ we put back the whitespace that was escaped

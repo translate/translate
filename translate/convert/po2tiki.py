@@ -31,7 +31,7 @@ class po2tiki:
     def convertstore(self, thepofile):
         """Converts a given (parsed) po file to a tiki file.
 
-        @param thepofile: a pofile pre-loaded with input data
+        :param thepofile: a pofile pre-loaded with input data
         """
         thetargetfile = tiki.TikiStore()
         for unit in thepofile.units:
@@ -55,9 +55,9 @@ class po2tiki:
 def convertpo(inputfile, outputfile, template=None):
     """Converts from po file format to tiki.
 
-    @param inputfile: file handle of the source
-    @param outputfile: file handle to write to
-    @param template: unused
+    :param inputfile: file handle of the source
+    :param outputfile: file handle to write to
+    :param template: unused
     """
     inputstore = po.pofile(inputfile)
     if inputstore.isempty():

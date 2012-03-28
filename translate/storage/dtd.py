@@ -25,7 +25,7 @@ Specifications
 ==============
 The following information is provided by Mozilla::
 
-*  U{Specification<http://www.w3.org/TR/REC-xml/#sec-entexpand>}
+*  `Specification <http://www.w3.org/TR/REC-xml/#sec-entexpand>`_
 
 There is a grammar for entity definitions, which isn't really precise,
 as the spec says.  There's no formal specification for DTD files, it's
@@ -50,10 +50,10 @@ except ImportError:
 
 labelsuffixes = (".label", ".title")
 """Label suffixes: entries with this suffix are able to be comibed with accesskeys
-found in in entries ending with L{accesskeysuffixes}"""
+found in in entries ending with :ref:`accesskeysuffixes`"""
 accesskeysuffixes = (".accesskey", ".accessKey", ".akey")
 """Accesskey Suffixes: entries with this suffix may be combined with labels
-ending in L{labelsuffixes} into accelerator notation"""
+ending in :ref:`labelsuffixes` into accelerator notation"""
 
 
 def quotefordtd(source):
@@ -92,16 +92,16 @@ def removeinvalidamps(name, value):
     thus by removing potential broken & and warning the users we can ensure that the output
     DTD will always be parsable.
 
-    @type name: String
-    @param name: Entity name
-    @type value: String
-    @param value: Entity text value
-    @rtype: String
-    @return: Entity value without bad ampersands
+    :type name: String
+    :param name: Entity name
+    :type value: String
+    :param value: Entity text value
+    :rtype: String
+    :return: Entity value without bad ampersands
     """
 
     def is_valid_entity_name(name):
-        """Check that supplied L{name} is a valid entity name"""
+        """Check that supplied :ref:`name` is a valid entity name"""
         if name.replace('.', '').isalnum():
             return True
         elif name[0] == '#' and name[1:].isalnum():
@@ -464,8 +464,8 @@ class dtdfile(base.TranslationStore):
 
         This uses ElementTree to parse the DTD
 
-        @return: If the store passes validation
-        @rtype: Boolean
+        :return: If the store passes validation
+        :rtype: Boolean
         """
         if etree is not None:
             try:

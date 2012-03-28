@@ -20,7 +20,7 @@
 
 """This module represents Gujarati language.
 
-For more information, see U{http://en.wikipedia.org/wiki/Gujarati_language}
+For more information, see http://en.wikipedia.org/wiki/Gujarati_language
 """
 
 from translate.lang import common

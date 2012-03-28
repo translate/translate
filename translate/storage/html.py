@@ -135,7 +135,7 @@ class htmlfile(HTMLParser.HTMLParser, base.TranslationStore):
                          u"param"]
     """HTML self-closing tags.  Tags that should be specified as <img /> but
     might be <img>.
-    U{Reference<http://learnwebsitemaking.com/htmlselfclosingtags.html>}"""
+    `Reference <http://learnwebsitemaking.com/htmlselfclosingtags.html>`_"""
 
     def __init__(self, includeuntaggeddata=None, inputfile=None,
                  callback=None):

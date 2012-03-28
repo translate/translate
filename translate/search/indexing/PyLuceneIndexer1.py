@@ -46,22 +46,22 @@ class PyLuceneDatabase(PyLuceneIndexer.PyLuceneDatabase):
         basically this function parses the string and returns the resulting
         query
 
-        @param text: the query string
-        @type text: str
-        @param require_all: boolean operator
+        :param text: the query string
+        :type text: str
+        :param require_all: boolean operator
             (True -> AND (default) / False -> OR)
-        @type require_all: bool
-        @param analyzer: the analyzer to be used
+        :type require_all: bool
+        :param analyzer: the analyzer to be used
             possible analyzers are:
-              - L{CommonDatabase.ANALYZER_TOKENIZE}
+              - :ref:`CommonDatabase.ANALYZER_TOKENIZE`
                     the field value is splitted to be matched word-wise
-              - L{CommonDatabase.ANALYZER_PARTIAL}
+              - :ref:`CommonDatabase.ANALYZER_PARTIAL`
                     the field value must start with the query string
-              - L{CommonDatabase.ANALYZER_EXACT}
+              - :ref:`CommonDatabase.ANALYZER_EXACT`
                     keep special characters and the like
-        @type analyzer: bool
-        @return: resulting query object
-        @rtype: PyLucene.Query
+        :type analyzer: bool
+        :return: resulting query object
+        :rtype: PyLucene.Query
         """
         if analyzer is None:
             analyzer = self.analyzer
@@ -90,21 +90,21 @@ class PyLuceneDatabase(PyLuceneIndexer.PyLuceneDatabase):
 
         this functions creates a field->value query
 
-        @param field: the fieldname to be used
-        @type field: str
-        @param value: the wanted value of the field
-        @type value: str
-        @param analyzer: the analyzer to be used
+        :param field: the fieldname to be used
+        :type field: str
+        :param value: the wanted value of the field
+        :type value: str
+        :param analyzer: the analyzer to be used
             possible analyzers are:
-              - L{CommonDatabase.ANALYZER_TOKENIZE}
+              - :ref:`CommonDatabase.ANALYZER_TOKENIZE`
                     the field value is splitted to be matched word-wise
-              - L{CommonDatabase.ANALYZER_PARTIAL}
+              - :ref:`CommonDatabase.ANALYZER_PARTIAL`
                     the field value must start with the query string
-              - L{CommonDatabase.ANALYZER_EXACT}
+              - :ref:`CommonDatabase.ANALYZER_EXACT`
                     keep special characters and the like
-        @type analyzer: bool
-        @return: resulting query object
-        @rtype: PyLucene.Query
+        :type analyzer: bool
+        :return: resulting query object
+        :rtype: PyLucene.Query
         """
         if analyzer is None:
             analyzer = self.analyzer
@@ -121,13 +121,13 @@ class PyLuceneDatabase(PyLuceneIndexer.PyLuceneDatabase):
     def _create_query_combined(self, queries, require_all=True):
         """generate a combined query
 
-        @param queries: list of the original queries
-        @type queries: list of xapian.Query
-        @param require_all: boolean operator
+        :param queries: list of the original queries
+        :type queries: list of xapian.Query
+        :param require_all: boolean operator
             (True -> AND (default) / False -> OR)
-        @type require_all: bool
-        @return: the resulting combined query object
-        @rtype: PyLucene.Query
+        :type require_all: bool
+        :return: the resulting combined query object
+        :rtype: PyLucene.Query
         """
         combined_query = PyLucene.BooleanQuery()
         for query in queries:
@@ -138,12 +138,12 @@ class PyLuceneDatabase(PyLuceneIndexer.PyLuceneDatabase):
     def _add_plain_term(self, document, term, tokenize=True):
         """add a term to a document
 
-        @param document: the document to be changed
-        @type document: xapian.Document | PyLucene.Document
-        @param term: a single term to be added
-        @type term: str
-        @param tokenize: should the term be tokenized automatically
-        @type tokenize: bool
+        :param document: the document to be changed
+        :type document: xapian.Document | PyLucene.Document
+        :param term: a single term to be added
+        :type term: str
+        :param tokenize: should the term be tokenized automatically
+        :type tokenize: bool
         """
         # Field parameters: name, string, store, index, token
         document.add(PyLucene.Field(str(PyLuceneIndex.UNNAMED_FIELD_NAME), term,
@@ -152,14 +152,14 @@ class PyLuceneDatabase(PyLuceneIndexer.PyLuceneDatabase):
     def _add_field_term(self, document, field, term, tokenize=True):
         """add a field term to a document
 
-        @param document: the document to be changed
-        @type document: xapian.Document | PyLucene.Document
-        @param field: name of the field
-        @type field: str
-        @param term: term to be associated to the field
-        @type term: str
-        @param tokenize: should the term be tokenized automatically
-        @type tokenize: bool
+        :param document: the document to be changed
+        :type document: xapian.Document | PyLucene.Document
+        :param field: name of the field
+        :type field: str
+        :param term: term to be associated to the field
+        :type term: str
+        :param tokenize: should the term be tokenized automatically
+        :type tokenize: bool
         """
         # TODO: decoding (utf-8) is missing
         # Field parameters: name, string, store, index, token
@@ -169,10 +169,10 @@ class PyLuceneDatabase(PyLuceneIndexer.PyLuceneDatabase):
     def get_query_result(self, query):
         """return an object containing the results of a query
 
-        @param query: a pre-compiled query
-        @type query: a query object of the real implementation
-        @return: an object that allows access to the results
-        @rtype: subclass of CommonEnquire
+        :param query: a pre-compiled query
+        :type query: a query object of the real implementation
+        :return: an object that allows access to the results
+        :rtype: subclass of CommonEnquire
         """
         return PyLucene.indexSearcher.search(query)
 
@@ -180,12 +180,12 @@ class PyLuceneDatabase(PyLuceneIndexer.PyLuceneDatabase):
         """return a list of the contents of specified fields for all matches of
         a query
 
-        @param query: the query to be issued
-        @type query: a query object of the real implementation
-        @param fieldnames: the name(s) of a field of the document content
-        @type fieldnames: string | list of strings
-        @return: a list of dicts containing the specified field(s)
-        @rtype: list of dicts
+        :param query: the query to be issued
+        :type query: a query object of the real implementation
+        :param fieldnames: the name(s) of a field of the document content
+        :type fieldnames: string | list of strings
+        :return: a list of dicts containing the specified field(s)
+        :rtype: list of dicts
         """
         if isinstance(fieldnames, basestring):
             fieldnames = [fieldnames]

@@ -20,7 +20,7 @@
 
 """This module represents Urdu language.
 
-For more information, see U{http://en.wikipedia.org/wiki/Urdu_language}
+For more information, see http://en.wikipedia.org/wiki/Urdu_language
 """
 
 from translate.lang import common

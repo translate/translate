@@ -28,7 +28,7 @@ phrases and their translations. These files are created and updated by Qt
 Linguist and may be used by any number of projects and applications.
 
 A DTD to define the format does not seem to exist, but the following U{code
-U{code<http://qt.gitorious.org/qt/qt/blobs/4.7/tools/linguist/shared/qph.cpp}>
+code<http://qt.gitorious.org/qt/qt/blobs/4.7/tools/linguist/shared/qph.cpp>
 provides the reference implementation for the Qt Linguist product.
 """
 
@@ -120,8 +120,8 @@ class QphFile(lisa.LISAfile):
         altering the source language in .qph files, it should be set correctly
         by the extraction tools.
 
-        @return: ISO code e.g. af, fr, pt_BR
-        @rtype: String
+        :return: ISO code e.g. af, fr, pt_BR
+        :rtype: String
         """
         lang = data.normalize_code(self.header.get('sourcelanguage', "en"))
         if lang == 'en-us':
@@ -131,16 +131,16 @@ class QphFile(lisa.LISAfile):
     def gettargetlanguage(self):
         """Get the target language for this .qph file.
 
-        @return: ISO code e.g. af, fr, pt_BR
-        @rtype: String
+        :return: ISO code e.g. af, fr, pt_BR
+        :rtype: String
         """
         return data.normalize_code(self.header.get('language'))
 
     def settargetlanguage(self, targetlanguage):
-        """Set the target language for this .qph file to L{targetlanguage}.
+        """Set the target language for this .qph file to :ref:`targetlanguage`.
 
-        @param targetlanguage: ISO code e.g. af, fr, pt_BR
-        @type targetlanguage: String
+        :param targetlanguage: ISO code e.g. af, fr, pt_BR
+        :type targetlanguage: String
         """
         if targetlanguage:
             self.header.set('language', targetlanguage)

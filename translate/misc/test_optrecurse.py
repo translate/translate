@@ -11,7 +11,7 @@ class TestRecursiveOptionParser:
         self.parser = optrecurse.RecursiveOptionParser({"txt": ("po", None)})
 
     def test_splitext(self):
-        """test the L{optrecurse.splitext} function"""
+        """test the :ref:`optrecurse.splitext` function"""
         name = "name"
         extension = "ext"
         filename = name + os.extsep + extension

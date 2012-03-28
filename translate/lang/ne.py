@@ -20,7 +20,7 @@
 
 """This module represents Nepali language.
 
-For more information, see U{http://en.wikipedia.org/wiki/Nepali_language}
+For more information, see http://en.wikipedia.org/wiki/Nepali_language
 """
 
 import re

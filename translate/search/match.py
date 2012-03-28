@@ -96,10 +96,10 @@ class matcher(object):
     def extendtm(self, units, store=None, sort=True):
         """Extends the memory with extra unit(s).
 
-        @param units: The units to add to the TM.
-        @param store: Optional store from where some metadata can be retrieved
+        :param units: The units to add to the TM.
+        :param store: Optional store from where some metadata can be retrieved
         and associated with each unit.
-        @param sort:  Optional parameter that can be set to False to supress
+        :param sort:  Optional parameter that can be set to False to supress
         sorting of the candidates list. This should probably only be used in
         inittm().
         """
@@ -148,10 +148,10 @@ class matcher(object):
     def matches(self, text):
         """Returns a list of possible matches for given source text.
 
-        @type text: String
-        @param text: The text that will be search for in the translation memory
-        @rtype: list
-        @return: a list of units with the source and target strings from the
+        :type text: String
+        :param text: The text that will be search for in the translation memory
+        :rtype: list
+        :return: a list of units with the source and target strings from the
         translation memory. If self.addpercentage is true (default) the match
         quality is given as a percentage in the notes.
         """

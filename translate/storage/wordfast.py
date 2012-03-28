@@ -21,10 +21,10 @@
 """Manage the Wordfast Translation Memory format
 
    Wordfast TM format is the Translation Memory format used by the
-   U{Wordfast<http://www.wordfast.net/>} computer aided translation tool.
+   `Wordfast <http://www.wordfast.net/>`_ computer aided translation tool.
 
-   It is a bilingual base class derived format with L{WordfastTMFile}
-   and L{WordfastUnit} providing file and unit level access.
+   It is a bilingual base class derived format with :ref:`WordfastTMFile`
+   and :ref:`WordfastUnit` providing file and unit level access.
 
    Wordfast tools
    ==============
@@ -42,7 +42,7 @@
    extension which does make it more difficult to automatically identify
    such files.
 
-   The dialect of the TSV files is specified by L{WordfastDialect}.
+   The dialect of the TSV files is specified by :ref:`WordfastDialect`.
 
    Encoding
    --------
@@ -56,13 +56,13 @@
 
    Timestamps
    ----------
-   L{WordfastTime} allows for the correct management of the Wordfast
+   :ref:`WordfastTime` allows for the correct management of the Wordfast
    YYYYMMDD~HHMMSS timestamps.  However, timestamps on individual units are
    not updated when edited.
 
    Header
    ------
-   L{WordfastHeader} provides header management support.  The header
+   :ref:`WordfastHeader` provides header management support.  The header
    functionality is fully implemented through observing the behaviour of the
    files in real use cases, input from the Wordfast programmers and
    public documentation.
@@ -79,7 +79,7 @@
         we where able to observe all possible escapes. Unfortunately the
         escaping differs slightly between Windows and Mac version.  This
         might cause errors in future.
-   Functions allow for L{conversion to Unicode<_wf_to_char>} and L{back to
+   Functions allow for :ref:`<_wf_to_char>` and L{back to
    Wordfast escapes<_char_to_wf>}.
 
    Extended Attributes
@@ -231,8 +231,8 @@ class WordfastTime(object):
     def set_timestring(self, timestring):
         """Set the time_sturct object using a Wordfast time formated string
 
-        @param timestring: A Wordfast time string (YYYMMDD~hhmmss)
-        @type timestring: String
+        :param timestring: A Wordfast time string (YYYMMDD~hhmmss)
+        :type timestring: String
         """
         self._time = time.strptime(timestring, WF_TIMEFORMAT)
     timestring = property(get_timestring, set_timestring)
@@ -244,8 +244,8 @@ class WordfastTime(object):
     def set_time(self, newtime):
         """Set the time_struct object
 
-        @param newtime: a new time object
-        @type newtime: time.time_struct
+        :param newtime: a new time object
+        :type newtime: time.time_struct
         """
         if newtime and isinstance(newtime, time.struct_time):
             self._time = newtime
@@ -314,8 +314,8 @@ class WordfastUnit(base.TranslationUnit):
     def setdict(self, newdict):
         """Set the dictionary of values for a Wordfast line
 
-        @param newdict: a new dictionary with Wordfast line elements
-        @type newdict: Dict
+        :param newdict: a new dictionary with Wordfast line elements
+        :type newdict: Dict
         """
         # TODO First check that the values are OK
         self._dict = newdict

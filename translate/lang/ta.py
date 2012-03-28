@@ -20,7 +20,7 @@
 
 """This module represents Tamil language.
 
-For more information, see U{http://en.wikipedia.org/wiki/Tamil_language}
+For more information, see http://en.wikipedia.org/wiki/Tamil_language
 """
 
 from translate.lang import common

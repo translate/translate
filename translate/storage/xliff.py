@@ -171,8 +171,8 @@ class xliffunit(lisa.LISAunit):
     def addalttrans(self, txt, origin=None, lang=None, sourcetxt=None, matchquality=None):
         """Adds an alt-trans tag and alt-trans components to the unit.
 
-        @type txt: String
-        @param txt: Alternative translation of the source text.
+        :type txt: String
+        :param txt: Alternative translation of the source text.
         """
 
         #TODO: support adding a source tag ad match quality attribute.  At
@@ -483,8 +483,8 @@ class xliffunit(lisa.LISAunit):
             return False
 
     def multistring_to_rich(cls, mstr):
-        """Override L{TranslationUnit.multistring_to_rich} which is used by the
-            C{rich_source} and C{rich_target} properties."""
+        """Override :ref:`TranslationUnit.multistring_to_rich` which is used by the
+            ``rich_source`` and ``rich_target`` properties."""
         strings = mstr
         if isinstance(mstr, multistring):
             strings = mstr.strings
@@ -495,8 +495,8 @@ class xliffunit(lisa.LISAunit):
     multistring_to_rich = classmethod(multistring_to_rich)
 
     def rich_to_multistring(cls, elem_list):
-        """Override L{TranslationUnit.rich_to_multistring} which is used by the
-            C{rich_source} and C{rich_target} properties."""
+        """Override :ref:`TranslationUnit.rich_to_multistring` which is used by the
+            ``rich_source`` and ``rich_target`` properties."""
         return multistring([unicode(elem) for elem in elem_list])
     rich_to_multistring = classmethod(rich_to_multistring)
 

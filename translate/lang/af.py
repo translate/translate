@@ -20,7 +20,7 @@
 
 """This module represents Afrikaans language.
 
-For more information, see U{http://en.wikipedia.org/wiki/Afrikaans_language}
+For more information, see http://en.wikipedia.org/wiki/Afrikaans_language
 """
 
 import re

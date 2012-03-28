@@ -84,15 +84,15 @@ class XapianDatabase(CommonIndexer.CommonDatabase):
                 is incompatible (e.g. created by a different indexing engine)
         @raise OSError: the database failed to initialize
 
-        @param basedir: the parent directory of the database
-        @type basedir: str
-        @param analyzer: bitwise combination of possible analyzer flags
+        :param basedir: the parent directory of the database
+        :type basedir: str
+        :param analyzer: bitwise combination of possible analyzer flags
             to be used as the default analyzer for this database. Leave it empty
             to use the system default analyzer (self.ANALYZER_DEFAULT).
             see self.ANALYZER_TOKENIZE, self.ANALYZER_PARTIAL, ...
-        @type analyzer: int
-        @param create_allowed: create the database, if necessary; default: True
-        @type create_allowed: bool
+        :type analyzer: int
+        :param create_allowed: create the database, if necessary; default: True
+        :type create_allowed: bool
         """
         # call the __init__ function of our parent
         super(XapianDatabase, self).__init__(basedir, analyzer=analyzer,
@@ -136,8 +136,8 @@ class XapianDatabase(CommonIndexer.CommonDatabase):
     def flush(self, optimize=False):
         """force to write the current changes to disk immediately
 
-        @param optimize: ignored for xapian
-        @type optimize: bool
+        :param optimize: ignored for xapian
+        :type optimize: bool
         """
         # write changes to disk (only if database is read-write)
         if self._writer_is_open():
@@ -156,10 +156,10 @@ class XapianDatabase(CommonIndexer.CommonDatabase):
 
         basically this function should just create a copy of the original
 
-        @param query: the original query object
-        @type query: xapian.Query
-        @return: the resulting query object
-        @rtype: xapian.Query
+        :param query: the original query object
+        :type query: xapian.Query
+        :return: the resulting query object
+        :rtype: xapian.Query
         """
         # create a copy of the original query
         return xapian.Query(query)
@@ -171,20 +171,20 @@ class XapianDatabase(CommonIndexer.CommonDatabase):
         basically this function parses the string and returns the resulting
         query
 
-        @param text: the query string
-        @type text: str
-        @param require_all: boolean operator
+        :param text: the query string
+        :type text: str
+        :param require_all: boolean operator
             (True -> AND (default) / False -> OR)
-        @type require_all: bool
-        @param analyzer: Define query options (partial matching, exact matching,
+        :type require_all: bool
+        :param analyzer: Define query options (partial matching, exact matching,
             tokenizing, ...) as bitwise combinations of
             CommonIndexer.ANALYZER_???.
             This can override previously defined field analyzer settings.
             If analyzer is None (default), then the configured analyzer for the
             field is used.
-        @type analyzer: int
-        @return: resulting query object
-        @rtype: xapian.Query
+        :type analyzer: int
+        :return: resulting query object
+        :rtype: xapian.Query
         """
         qp = xapian.QueryParser()
         qp.set_database(self.reader)
@@ -210,19 +210,19 @@ class XapianDatabase(CommonIndexer.CommonDatabase):
 
         this functions creates a field->value query
 
-        @param field: the fieldname to be used
-        @type field: str
-        @param value: the wanted value of the field
-        @type value: str
-        @param analyzer: Define query options (partial matching, exact matching,
+        :param field: the fieldname to be used
+        :type field: str
+        :param value: the wanted value of the field
+        :type value: str
+        :param analyzer: Define query options (partial matching, exact matching,
             tokenizing, ...) as bitwise combinations of
             CommonIndexer.ANALYZER_???.
             This can override previously defined field analyzer settings.
             If analyzer is None (default), then the configured analyzer for the
             field is used.
-        @type analyzer: int
-        @return: the resulting query object
-        @rtype: xapian.Query
+        :type analyzer: int
+        :return: the resulting query object
+        :rtype: xapian.Query
         """
         if analyzer is None:
             analyzer = self.analyzer
@@ -244,13 +244,13 @@ class XapianDatabase(CommonIndexer.CommonDatabase):
     def _create_query_combined(self, queries, require_all=True):
         """generate a combined query
 
-        @param queries: list of the original queries
-        @type queries: list of xapian.Query
-        @param require_all: boolean operator
+        :param queries: list of the original queries
+        :type queries: list of xapian.Query
+        :param require_all: boolean operator
             (True -> AND (default) / False -> OR)
-        @type require_all: bool
-        @return: the resulting combined query object
-        @rtype: xapian.Query
+        :type require_all: bool
+        :return: the resulting combined query object
+        :rtype: xapian.Query
         """
         if require_all:
             query_op = xapian.Query.OP_AND
@@ -261,20 +261,20 @@ class XapianDatabase(CommonIndexer.CommonDatabase):
     def _create_empty_document(self):
         """create an empty document to be filled and added to the index later
 
-        @return: the new document object
-        @rtype: xapian.Document
+        :return: the new document object
+        :rtype: xapian.Document
         """
         return xapian.Document()
 
     def _add_plain_term(self, document, term, tokenize=True):
         """add a term to a document
 
-        @param document: the document to be changed
-        @type document: xapian.Document
-        @param term: a single term to be added
-        @type term: str
-        @param tokenize: should the term be tokenized automatically
-        @type tokenize: bool
+        :param document: the document to be changed
+        :type document: xapian.Document
+        :param term: a single term to be added
+        :type term: str
+        :param tokenize: should the term be tokenized automatically
+        :type tokenize: bool
         """
         if tokenize:
             term_gen = xapian.TermGenerator()
@@ -286,14 +286,14 @@ class XapianDatabase(CommonIndexer.CommonDatabase):
     def _add_field_term(self, document, field, term, tokenize=True):
         """add a field term to a document
 
-        @param document: the document to be changed
-        @type document: xapian.Document
-        @param field: name of the field
-        @type field: str
-        @param term: term to be associated to the field
-        @type term: str
-        @param tokenize: should the term be tokenized automatically
-        @type tokenize: bool
+        :param document: the document to be changed
+        :type document: xapian.Document
+        :param field: name of the field
+        :type field: str
+        :param term: term to be associated to the field
+        :type term: str
+        :param tokenize: should the term be tokenized automatically
+        :type tokenize: bool
         """
         if tokenize:
             term_gen = xapian.TermGenerator()
@@ -306,8 +306,8 @@ class XapianDatabase(CommonIndexer.CommonDatabase):
     def _add_document_to_index(self, document):
         """add a prepared document to the index database
 
-        @param document: the document to be added
-        @type document: xapian.Document
+        :param document: the document to be added
+        :type document: xapian.Document
         """
         # open the database for writing
         self._writer_open()
@@ -341,10 +341,10 @@ class XapianDatabase(CommonIndexer.CommonDatabase):
     def get_query_result(self, query):
         """return an object containing the results of a query
 
-        @param query: a pre-compiled xapian query
-        @type query: xapian.Query
-        @return: an object that allows access to the results
-        @rtype: XapianIndexer.CommonEnquire
+        :param query: a pre-compiled xapian query
+        :type query: xapian.Query
+        :return: an object that allows access to the results
+        :rtype: XapianIndexer.CommonEnquire
         """
         enquire = xapian.Enquire(self.reader)
         enquire.set_query(query)
@@ -353,8 +353,8 @@ class XapianDatabase(CommonIndexer.CommonDatabase):
     def delete_document_by_id(self, docid):
         """delete a specified document
 
-        @param docid: the document ID to be deleted
-        @type docid: int
+        :param docid: the document ID to be deleted
+        :type docid: int
         """
         # open the database for writing
         self._writer_open()
@@ -368,12 +368,12 @@ class XapianDatabase(CommonIndexer.CommonDatabase):
         """return a list of the contents of specified fields for all matches of
         a query
 
-        @param query: the query to be issued
-        @type query: xapian.Query
-        @param fieldnames: the name(s) of a field of the document content
-        @type fieldnames: string | list of strings
-        @return: a list of dicts containing the specified field(s)
-        @rtype: list of dicts
+        :param query: the query to be issued
+        :type query: xapian.Query
+        :param fieldnames: the name(s) of a field of the document content
+        :type fieldnames: string | list of strings
+        :return: a list of dicts containing the specified field(s)
+        :rtype: list of dicts
         """
         result = []
         if isinstance(fieldnames, basestring):
@@ -434,12 +434,12 @@ class XapianEnquire(CommonIndexer.CommonEnquire):
     def get_matches(self, start, number):
         """return a specified number of qualified matches of a previous query
 
-        @param start: index of the first match to return (starting from zero)
-        @type start: int
-        @param number: the number of matching entries to return
-        @type number: int
-        @return: a set of matching entries and some statistics
-        @rtype: tuple of (returned number, available number, matches)
+        :param start: index of the first match to return (starting from zero)
+        :type start: int
+        :param number: the number of matching entries to return
+        :type number: int
+        :return: a set of matching entries and some statistics
+        :rtype: tuple of (returned number, available number, matches)
                 "matches" is a dictionary of::
                     ["rank", "percent", "document", "docid"]
         """
@@ -459,14 +459,14 @@ def _truncate_term_length(term, taken=0):
     """truncate the length of a term string length to the maximum allowed
     for xapian terms
 
-    @param term: the value of the term, that should be truncated
-    @type term: str
-    @param taken: since a term consists of the name of the term and its
+    :param term: the value of the term, that should be truncated
+    :type term: str
+    :param taken: since a term consists of the name of the term and its
         actual value, this additional parameter can be used to reduce the
         maximum count of possible characters
-    @type taken: int
-    @return: the truncated string
-    @rtype: str
+    :type taken: int
+    :return: the truncated string
+    :rtype: str
     """
     if len(term) > _MAX_TERM_LENGTH - taken:
         return term[0:_MAX_TERM_LENGTH - taken - 1]
@@ -479,12 +479,12 @@ def _extract_fieldvalues(match, (result, fieldnames)):
 
     usually this function should be used together with '_walk_matches'
     for traversing a list of matches
-    @param match: a single match object
-    @type match: xapian.MSet
-    @param result: the resulting dict will be added to this list
-    @type result: list of dict
-    @param fieldnames: the names of the fields to be added to the dict
-    @type fieldnames: list of str
+    :param match: a single match object
+    :type match: xapian.MSet
+    :param result: the resulting dict will be added to this list
+    :type result: list of dict
+    :param fieldnames: the names of the fields to be added to the dict
+    :type fieldnames: list of str
     """
     # prepare empty dict
     item_fields = {}

@@ -20,9 +20,6 @@
 
 """Module to provide statistics and related functionality.
 
-@organization: Zuza Software Foundation
-@copyright: 2007 Zuza Software Foundation
-@license: U{GPL <http://www.fsf.org/licensing/licenses/gpl.html>}
 """
 
 from translate import lang
@@ -129,7 +126,7 @@ class Statistics(object):
     def classifyunit(self, unit):
         """Returns a list of the classes that the unit belongs to.
 
-        @param unit: the unit to classify
+        :param unit: the unit to classify
         """
         classes = ["total"]
         if unit.isfuzzy():
@@ -185,7 +182,7 @@ class Statistics(object):
     def reclassifyunit(self, item):
         """Updates the classification of a unit in self.classification.
 
-        @param item: an integer that is an index in .getunits().
+        :param item: an integer that is an index in .getunits().
         """
         unit = self.getunits()[item]
         self.sourcewordcounts[item] = [self.wordcount(text) for text in unit.source.strings]

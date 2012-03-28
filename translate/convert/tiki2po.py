@@ -30,14 +30,14 @@ class tiki2po:
 
     def __init__(self, includeunused=False):
         """
-        @param includeunused: On conversion, should the "unused" section be preserved?  Default: False
+        :param includeunused: On conversion, should the "unused" section be preserved?  Default: False
         """
         self.includeunused = includeunused
 
     def convertstore(self, thetikifile):
         """Converts a given (parsed) tiki file to a po file.
 
-        @param thetikifile: a tikifile pre-loaded with input data
+        :param thetikifile: a tikifile pre-loaded with input data
         """
         thetargetfile = po.pofile()
 
@@ -61,10 +61,10 @@ class tiki2po:
 def converttiki(inputfile, outputfile, template=None, includeunused=False):
     """Converts from tiki file format to po.
 
-    @param inputfile: file handle of the source
-    @param outputfile: file handle to write to
-    @param template: unused
-    @param includeunused: Include the "usused" section of the tiki file? Default: False
+    :param inputfile: file handle of the source
+    :param outputfile: file handle to write to
+    :param template: unused
+    :param includeunused: Include the "usused" section of the tiki file? Default: False
     """
     convertor = tiki2po(includeunused=includeunused)
     inputstore = tiki.TikiStore(inputfile)

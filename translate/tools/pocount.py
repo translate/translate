@@ -86,13 +86,13 @@ def summarize(title, stats, style=style_full, indent=8, incomplete_only=False):
     """
     Print summary for a .po file in specified format.
 
-    @param title: name of .po file
-    @param stats: array with translation statistics for the file specified
-    @param indent: indentation of the 2nd column (length of longest filename)
-    @param incomplete_only: omit fully translated files
-    @type incomplete_only: Boolean
-    @rtype: Boolean
-    @return: 1 if counting incomplete files (incomplete_only=True) and the
+    :param title: name of .po file
+    :param stats: array with translation statistics for the file specified
+    :param indent: indentation of the 2nd column (length of longest filename)
+    :param incomplete_only: omit fully translated files
+    :type incomplete_only: Boolean
+    :rtype: Boolean
+    :return: 1 if counting incomplete files (incomplete_only=True) and the
     file is completely translated, 0 otherwise
     """
 

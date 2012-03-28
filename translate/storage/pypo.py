@@ -45,7 +45,7 @@ po_escape_map = dict([(value, key) for (key, value) in po_unescape_map.items()])
 def escapeforpo(line):
     """Escapes a line for po format. assumes no \n occurs in the line.
 
-    @param line: unescaped text
+    :param line: unescaped text
     """
     special_locations = []
     for special_key in po_escape_map:
@@ -109,7 +109,7 @@ def quoteforpo(text):
 def extractpoline(line):
     """Remove quote and unescape line from po file.
 
-    @param line: a quoted line from a po file (msgid or msgstr)
+    :param line: a quoted line from a po file (msgid or msgstr)
     """
     extracted = quote.extractwithoutquotes(line, '"', '"', '\\', includeescapes=unescapehandler)[0]
     return extracted
@@ -216,7 +216,7 @@ class pounit(pocommon.pounit):
     def setsource(self, source):
         """Sets the msgid to the given (unescaped) value.
 
-        @param source: an unescaped source string.
+        :param source: an unescaped source string.
         """
         self._rich_source = None
         self.msgid, self.msgid_plural = self._set_source_vars(source)
@@ -229,7 +229,7 @@ class pounit(pocommon.pounit):
     def _set_prev_source(self, source):
         """Sets the msgid to the given (unescaped) value.
 
-        @param source: an unescaped source string.
+        :param source: an unescaped source string.
         """
         self.prev_msgid, self.prev_msgid_plural = self._set_source_vars(source)
     prev_source = property(_get_prev_source, _set_prev_source)
@@ -646,8 +646,8 @@ class pounit(pocommon.pounit):
     def addlocation(self, location):
         """Add a location to sourcecomments in the PO unit
 
-        @param location: Text location e.g. 'file.c:23' does not include #:
-        @type location: String
+        :param location: Text location e.g. 'file.c:23' does not include #:
+        :type location: String
 
         """
         location = data.forceunicode(location)
@@ -658,8 +658,8 @@ class pounit(pocommon.pounit):
     def _extract_msgidcomments(self, text=None):
         """Extract KDE style msgid comments from the unit.
 
-        @rtype: String
-        @return: Returns the extracted msgidcomments found in this unit's msgid.
+        :rtype: String
+        :return: Returns the extracted msgidcomments found in this unit's msgid.
         """
 
         if not text:

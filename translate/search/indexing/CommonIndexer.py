@@ -36,8 +36,8 @@ def is_available():
     this function must exist in every module that contains indexing engine
     interfaces
 
-    @return: is this interface usable?
-    @rtype: bool
+    :return: is this interface usable?
+    :rtype: bool
     """
     return False
 
@@ -84,15 +84,15 @@ class CommonDatabase(object):
                 is incompatible (e.g. created by a different indexing engine)
         @raise OSError: the database failed to initialize
 
-        @param basedir: the parent directory of the database
-        @type basedir: str
-        @param analyzer: bitwise combination of possible analyzer flags
+        :param basedir: the parent directory of the database
+        :type basedir: str
+        :param analyzer: bitwise combination of possible analyzer flags
             to be used as the default analyzer for this database. Leave it empty
             to use the system default analyzer (self.ANALYZER_DEFAULT).
             see self.ANALYZER_TOKENIZE, self.ANALYZER_PARTIAL, ...
-        @type analyzer: int
-        @param create_allowed: create the database, if necessary; default: True
-        @type create_allowed: bool
+        :type analyzer: int
+        :param create_allowed: create the database, if necessary; default: True
+        :type create_allowed: bool
         """
         # just do some checks
         if self.QUERY_TYPE is None:
@@ -117,8 +117,8 @@ class CommonDatabase(object):
 
         some databases also support index optimization
 
-        @param optimize: should the index be optimized if possible?
-        @type optimize: bool
+        :param optimize: should the index be optimized if possible?
+        :type optimize: bool
         """
         raise NotImplementedError("Incomplete indexer implementation: " \
                 + "'flush' is missing")
@@ -131,25 +131,25 @@ class CommonDatabase(object):
         'set_field_analyzers'. The parameter 'match_text_partial' can override
         the previously defined default setting.
 
-        @param args: queries or search string or description of field query
+        :param args: queries or search string or description of field query
             examples::
                 [xapian.Query("foo"), xapian.Query("bar")]
                 xapian.Query("foo")
                 "bar"
                 {"foo": "bar", "foobar": "foo"}
-        @type args: list of queries | single query | str | dict
-        @param require_all: boolean operator
+        :type args: list of queries | single query | str | dict
+        :param require_all: boolean operator
             (True -> AND (default) / False -> OR)
-        @type require_all: boolean
-        @param analyzer: (only applicable for 'dict' or 'str')
+        :type require_all: boolean
+        :param analyzer: (only applicable for 'dict' or 'str')
             Define query options (partial matching, exact matching, tokenizing,
             ...) as bitwise combinations of CommonIndexer.ANALYZER_???.
             This can override previously defined field analyzer settings.
             If analyzer is None (default), then the configured analyzer for the
             field is used.
-        @type analyzer: int
-        @return: the combined query
-        @rtype: query type of the specific implemention
+        :type analyzer: int
+        :return: the combined query
+        :rtype: query type of the specific implemention
         """
         # turn a dict into a list if necessary
         if isinstance(args, dict):
@@ -194,10 +194,10 @@ class CommonDatabase(object):
 
         basically this function should just create a copy of the original
 
-        @param query: the original query object
-        @type query: xapian.Query
-        @return: the resulting query object
-        @rtype: xapian.Query | PyLucene.Query
+        :param query: the original query object
+        :type query: xapian.Query
+        :return: the resulting query object
+        :rtype: xapian.Query | PyLucene.Query
         """
         raise NotImplementedError("Incomplete indexer implementation: " \
                 + "'_create_query_for_query' is missing")
@@ -209,20 +209,20 @@ class CommonDatabase(object):
         basically this function parses the string and returns the resulting
         query
 
-        @param text: the query string
-        @type text: str
-        @param require_all: boolean operator
+        :param text: the query string
+        :type text: str
+        :param require_all: boolean operator
             (True -> AND (default) / False -> OR)
-        @type require_all: bool
-        @param analyzer: Define query options (partial matching, exact matching,
+        :type require_all: bool
+        :param analyzer: Define query options (partial matching, exact matching,
             tokenizing, ...) as bitwise combinations of
             CommonIndexer.ANALYZER_???.
             This can override previously defined field analyzer settings.
             If analyzer is None (default), then the configured analyzer for the
             field is used.
-        @type analyzer: int
-        @return: resulting query object
-        @rtype: xapian.Query | PyLucene.Query
+        :type analyzer: int
+        :return: resulting query object
+        :rtype: xapian.Query | PyLucene.Query
         """
         raise NotImplementedError("Incomplete indexer implementation: " \
                 + "'_create_query_for_string' is missing")
@@ -232,19 +232,19 @@ class CommonDatabase(object):
 
         this functions creates a field->value query
 
-        @param field: the fieldname to be used
-        @type field: str
-        @param value: the wanted value of the field
-        @type value: str
-        @param analyzer: Define query options (partial matching, exact matching,
+        :param field: the fieldname to be used
+        :type field: str
+        :param value: the wanted value of the field
+        :type value: str
+        :param analyzer: Define query options (partial matching, exact matching,
             tokenizing, ...) as bitwise combinations of
             CommonIndexer.ANALYZER_???.
             This can override previously defined field analyzer settings.
             If analyzer is None (default), then the configured analyzer for the
             field is used.
-        @type analyzer: int
-        @return: resulting query object
-        @rtype: xapian.Query | PyLucene.Query
+        :type analyzer: int
+        :return: resulting query object
+        :rtype: xapian.Query | PyLucene.Query
         """
         raise NotImplementedError("Incomplete indexer implementation: " \
                 + "'_create_query_for_field' is missing")
@@ -252,13 +252,13 @@ class CommonDatabase(object):
     def _create_query_combined(self, queries, require_all=True):
         """generate a combined query
 
-        @param queries: list of the original queries
-        @type queries: list of xapian.Query
-        @param require_all: boolean operator
+        :param queries: list of the original queries
+        :type queries: list of xapian.Query
+        :param require_all: boolean operator
             (True -> AND (default) / False -> OR)
-        @type require_all: bool
-        @return: the resulting combined query object
-        @rtype: xapian.Query | PyLucene.Query
+        :type require_all: bool
+        :return: the resulting combined query object
+        :rtype: xapian.Query | PyLucene.Query
         """
         raise NotImplementedError("Incomplete indexer implementation: " \
                 + "'_create_query_combined' is missing")
@@ -266,13 +266,13 @@ class CommonDatabase(object):
     def index_document(self, data):
         """add the given data to the database
 
-        @param data: the data to be indexed.
+        :param data: the data to be indexed.
             A dictionary will be treated as fieldname:value combinations.
             If the fieldname is None then the value will be interpreted as a
             plain term or as a list of plain terms.
             Lists of terms are indexed separately.
             Lists of strings are treated as plain terms.
-        @type data: dict | list of str
+        :type data: dict | list of str
         """
         doc = self._create_empty_document()
         if isinstance(data, dict):
@@ -312,8 +312,8 @@ class CommonDatabase(object):
     def _create_empty_document(self):
         """create an empty document to be filled and added to the index later
 
-        @return: the new document object
-        @rtype: xapian.Document | PyLucene.Document
+        :return: the new document object
+        :rtype: xapian.Document | PyLucene.Document
         """
         raise NotImplementedError("Incomplete indexer implementation: " \
                 + "'_create_empty_document' is missing")
@@ -321,12 +321,12 @@ class CommonDatabase(object):
     def _add_plain_term(self, document, term, tokenize=True):
         """add a term to a document
 
-        @param document: the document to be changed
-        @type document: xapian.Document | PyLucene.Document
-        @param term: a single term to be added
-        @type term: str
-        @param tokenize: should the term be tokenized automatically
-        @type tokenize: bool
+        :param document: the document to be changed
+        :type document: xapian.Document | PyLucene.Document
+        :param term: a single term to be added
+        :type term: str
+        :param tokenize: should the term be tokenized automatically
+        :type tokenize: bool
         """
         raise NotImplementedError("Incomplete indexer implementation: " \
                 + "'_add_plain_term' is missing")
@@ -334,14 +334,14 @@ class CommonDatabase(object):
     def _add_field_term(self, document, field, term, tokenize=True):
         """add a field term to a document
 
-        @param document: the document to be changed
-        @type document: xapian.Document | PyLucene.Document
-        @param field: name of the field
-        @type field: str
-        @param term: term to be associated to the field
-        @type term: str
-        @param tokenize: should the term be tokenized automatically
-        @type tokenize: bool
+        :param document: the document to be changed
+        :type document: xapian.Document | PyLucene.Document
+        :param field: name of the field
+        :type field: str
+        :param term: term to be associated to the field
+        :type term: str
+        :param tokenize: should the term be tokenized automatically
+        :type tokenize: bool
         """
         raise NotImplementedError("Incomplete indexer implementation: " \
                 + "'_add_field_term' is missing")
@@ -349,8 +349,8 @@ class CommonDatabase(object):
     def _add_document_to_index(self, document):
         """add a prepared document to the index database
 
-        @param document: the document to be added
-        @type document: xapian.Document | PyLucene.Document
+        :param document: the document to be added
+        :type document: xapian.Document | PyLucene.Document
         """
         raise NotImplementedError("Incomplete indexer implementation: " \
                 + "'_add_document_to_index' is missing")
@@ -388,10 +388,10 @@ class CommonDatabase(object):
     def get_query_result(self, query):
         """return an object containing the results of a query
 
-        @param query: a pre-compiled query
-        @type query: a query object of the real implementation
-        @return: an object that allows access to the results
-        @rtype: subclass of CommonEnquire
+        :param query: a pre-compiled query
+        :type query: a query object of the real implementation
+        :return: an object that allows access to the results
+        :rtype: subclass of CommonEnquire
         """
         raise NotImplementedError("Incomplete indexer implementation: " \
                 + "'get_query_result' is missing")
@@ -399,8 +399,8 @@ class CommonDatabase(object):
     def delete_document_by_id(self, docid):
         """delete a specified document
 
-        @param docid: the document ID to be deleted
-        @type docid: int
+        :param docid: the document ID to be deleted
+        :type docid: int
         """
         raise NotImplementedError("Incomplete indexer implementation: " \
                 + "'delete_document_by_id' is missing")
@@ -409,12 +409,12 @@ class CommonDatabase(object):
         """return a list of the contents of specified fields for all matches of
         a query
 
-        @param query: the query to be issued
-        @type query: a query object of the real implementation
-        @param fieldnames: the name(s) of a field of the document content
-        @type fieldnames: string | list of strings
-        @return: a list of dicts containing the specified field(s)
-        @rtype: list of dicts
+        :param query: the query to be issued
+        :type query: a query object of the real implementation
+        :param fieldnames: the name(s) of a field of the document content
+        :type fieldnames: string | list of strings
+        :return: a list of dicts containing the specified field(s)
+        :rtype: list of dicts
         """
         raise NotImplementedError("Incomplete indexer implementation: " \
                 + "'search' is missing")
@@ -422,8 +422,8 @@ class CommonDatabase(object):
     def delete_doc(self, ident):
         """delete the documents returned by a query
 
-        @param ident: [list of] document IDs | dict describing a query | query
-        @type ident: int | list of tuples | dict | list of dicts |
+        :param ident: [list of] document IDs | dict describing a query | query
+        :type ident: int | list of tuples | dict | list of dicts |
             query (e.g. xapian.Query) | list of queries
         """
         # turn a doc-ID into a list of doc-IDs
@@ -473,12 +473,12 @@ class CommonDatabase(object):
              self._walk_matches(query, function_for_match, arg_for_func)
             'function_for_match' expects only one argument: the matched object
 
-        @param query: a query object of the real implementation
-        @type query: xapian.Query | PyLucene.Query
-        @param function: the function to execute with every match
-        @type function: function
-        @param arg_for_function: an optional argument for the function
-        @type arg_for_function: anything
+        :param query: a query object of the real implementation
+        :type query: xapian.Query | PyLucene.Query
+        :param function: the function to execute with every match
+        :type function: function
+        :param arg_for_function: an optional argument for the function
+        :type arg_for_function: anything
         """
         # execute the query
         enquire = self.get_query_result(query)
@@ -502,8 +502,8 @@ class CommonDatabase(object):
 
         All bitwise combinations of CommonIndexer.ANALYZER_??? are possible.
 
-        @param field_analyzers: mapping of field names and analyzers
-        @type field_analyzers: dict containing field names and analyzers
+        :param field_analyzers: mapping of field names and analyzers
+        :type field_analyzers: dict containing field names and analyzers
         @raise TypeError: invalid values in 'field_analyzers'
         """
         for field, analyzer in field_analyzers.items():
@@ -520,12 +520,12 @@ class CommonDatabase(object):
 
         see 'set_field_analyzers' for details
 
-        @param fieldnames: the analyzer of this field (or all/multiple fields)
+        :param fieldnames: the analyzer of this field (or all/multiple fields)
             is requested; leave empty (or "None") to request all fields
-        @type fieldnames: str | list of str | None
-        @return: the analyzer setting of the field - see
+        :type fieldnames: str | list of str | None
+        :return: the analyzer setting of the field - see
             CommonDatabase.ANALYZER_??? or a dict of field names and analyzers
-        @rtype: int | dict
+        :rtype: int | dict
         """
         # all field analyzers are requested
         if fieldnames is None:
@@ -569,20 +569,20 @@ class CommonEnquire(object):
     def __init__(self, enquire):
         """intialization of a wrapper around enquires of different backends
 
-        @param enquire: a previous enquire
-        @type enquire: xapian.Enquire | pylucene-enquire
+        :param enquire: a previous enquire
+        :type enquire: xapian.Enquire | pylucene-enquire
         """
         self.enquire = enquire
 
     def get_matches(self, start, number):
         """return a specified number of qualified matches of a previous query
 
-        @param start: index of the first match to return (starting from zero)
-        @type start: int
-        @param number: the number of matching entries to return
-        @type number: int
-        @return: a set of matching entries and some statistics
-        @rtype: tuple of (returned number, available number, matches)
+        :param start: index of the first match to return (starting from zero)
+        :type start: int
+        :param number: the number of matching entries to return
+        :type number: int
+        :return: a set of matching entries and some statistics
+        :rtype: tuple of (returned number, available number, matches)
                 "matches" is a dictionary of::
                     ["rank", "percent", "document", "docid"]
         """
@@ -593,8 +593,8 @@ class CommonEnquire(object):
         """return the estimated number of matches
 
         use "CommonIndexer.search" to retrieve the exact number of matches
-        @return: the estimaed number of matches
-        @rtype: int
+        :return: the estimaed number of matches
+        :rtype: int
         """
         (returned, estimate_count, matches) = self.get_matches(0, 1)
         return estimate_count

@@ -12,7 +12,7 @@ def test_php_escaping_single_quote():
     """Test the helper escaping funtions for 'single quotes'
 
     The tests are built mostly from examples from the PHP
-    U{string type definition<http://www.php.net/manual/en/language.types.string.php#language.types.string.syntax.single>}.
+    `string type definition <http://www.php.net/manual/en/language.types.string.php#language.types.string.syntax.single>`_.
     """
     # Decoding - PHP -> Python
     assert php.phpdecode(r"\'") == r"'"     # To specify a literal single quote, escape it with a backslash (\).

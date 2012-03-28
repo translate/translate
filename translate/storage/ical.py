@@ -22,7 +22,7 @@
 
    Implementation
    ==============
-   iCalendar files follow the U{RFC2445<http://tools.ietf.org/html/rfc2445>}
+   iCalendar files follow the `RFC2445 <http://tools.ietf.org/html/rfc2445>`_
    specification.
 
    The iCalendar specification uses the following naming conventions:
@@ -48,8 +48,8 @@
 
    Future Format Support
    =====================
-   As this format used U{vobject<http://vobject.skyhouseconsulting.com/>} which
-   supports various formats including U{vCard<http://en.wikipedia.org/wiki/VCard>}
+   As this format used `vobject <http://vobject.skyhouseconsulting.com/>`_ which
+   supports various formats including `vCard <http://en.wikipedia.org/wiki/VCard>`_
    it is possible to expand this format to understand those if needed.
 
 """

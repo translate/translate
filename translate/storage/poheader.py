@@ -54,7 +54,7 @@ def parseheaderstring(input):
 def tzstring():
     """Returns the timezone as a string in the format [+-]0000, eg +0200.
 
-    @rtype: str"""
+    :rtype: str"""
     if time.daylight:
         tzoffset = time.altzone
     else:
@@ -71,8 +71,8 @@ def update(existing, add=False, **kwargs):
     """Update an existing header dictionary with the values in kwargs, adding new values
     only if add is true.
 
-    @return: Updated dictionary of header entries
-    @rtype: dict
+    :return: Updated dictionary of header entries
+    :rtype: dict
     """
     headerargs = dictutils.ordereddict()
     fixedargs = dictutils.cidict()
@@ -147,8 +147,8 @@ class poheader(object):
         po_revision_date can be None (form), False (=pot_creation_date), True (=now),
         or a value (datetime or string)
 
-        @return: Dictionary with the header items
-        @rtype: dict
+        :return: Dictionary with the header items
+        :rtype: dict
         """
         if project_id_version is None:
             project_id_version = "PACKAGE VERSION"
@@ -298,8 +298,8 @@ class poheader(object):
 
         This removes any custom Poedit headers if they exist.
 
-        @param lang: the new target language code
-        @type lang: str
+        :param lang: the new target language code
+        :type lang: str
         """
         if isinstance(lang, basestring) and len(lang) > 1:
             self.updateheader(add=True, Language=lang, X_Poedit_Language=None, X_Poedit_Country=None)
@@ -340,8 +340,8 @@ class poheader(object):
     def setprojectstyle(self, project_style):
         """Set the project in the header.
 
-        @param project_style: the new project
-        @type project_style: str
+        :param project_style: the new project
+        :type project_style: str
         """
         from translate.filters.checks import projectcheckers
         if project_style in projectcheckers:
@@ -352,7 +352,7 @@ class poheader(object):
 
         This header is assumed to be the template.
 
-        @type otherstore: L{base.TranslationStore}
+        :type otherstore: :ref:`base.TranslationStore`
         """
 
         newvalues = otherstore.parseheader()

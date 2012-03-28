@@ -21,10 +21,10 @@
 """Manage the Haiku catkeys translation format
 
    The Haiku catkeys format is the translation format used for localisation of
-   the U{Haiku<http://www.haiku-os.org/>} operating system.
+   the `Haiku <http://www.haiku-os.org/>`_ operating system.
 
-   It is a bilingual base class derived format with L{CatkeysFile} and
-   L{CatkeysUnit} providing file and unit level access.  The file format is
+   It is a bilingual base class derived format with :ref:`CatkeysFile` and
+   :ref:`CatkeysUnit` providing file and unit level access.  The file format is
    described here:
    http://www.haiku-os.org/blog/pulkomandy/2009-09-24_haiku_locale_kit_translator_handbook
 
@@ -36,7 +36,7 @@
    extension which does make it more difficult to automatically identify
    such files.
 
-   The dialect of the TSV files is specified by L{CatkeysDialect}.
+   The dialect of the TSV files is specified by :ref:`CatkeysDialect`.
 
    Encoding
    --------
@@ -44,14 +44,14 @@
 
    Header
    ------
-   L{CatkeysHeader} provides header management support.
+   :ref:`CatkeysHeader` provides header management support.
 
    Escaping
    --------
    catkeys seem to escape things like in C++ (strings are just extracted from
    the source code unchanged, it seems.
 
-   Functions allow for L{escaping<_escape>} and L{unescaping<_unescape>}.
+   Functions allow for :ref:`<_escape>` and :ref:`<_unescape>`.
 """
 
 import csv
@@ -149,8 +149,8 @@ class CatkeysUnit(base.TranslationUnit):
     def setdict(self, newdict):
         """Set the dictionary of values for a catkeys line
 
-        @param newdict: a new dictionary with catkeys line elements
-        @type newdict: Dict
+        :param newdict: a new dictionary with catkeys line elements
+        :type newdict: Dict
         """
         # TODO First check that the values are OK
         self._dict = newdict

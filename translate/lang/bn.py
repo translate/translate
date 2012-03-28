@@ -20,7 +20,7 @@
 
 """This module represents Bengali language.
 
-For more information, see U{http://en.wikipedia.org/wiki/Bengali_language}
+For more information, see http://en.wikipedia.org/wiki/Bengali_language
 """
 
 import re

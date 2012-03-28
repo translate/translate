@@ -20,7 +20,7 @@
 
 """This module represents Armenian language.
 
-For more information, see U{http://en.wikipedia.org/wiki/Armenian_language}
+For more information, see http://en.wikipedia.org/wiki/Armenian_language
 """
 
 import re

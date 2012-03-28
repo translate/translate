@@ -29,7 +29,7 @@ prefix = "code_"
 def getlanguage(code):
     """This returns a language class.
 
-    @param code: The ISO 639 language code
+    :param code: The ISO 639 language code
     """
     if code:
         code = code.replace("-", "_").replace("@", "_").lower()

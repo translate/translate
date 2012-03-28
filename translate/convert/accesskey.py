@@ -31,10 +31,10 @@ def extract(string, accesskey_marker=DEFAULT_ACCESSKEY_MARKER):
     The function will also try to ignore &entities; which would obviously not
     contain accesskeys.
 
-    @type string: Unicode
-    @param string: A string that might contain a label with accesskey marker
-    @type accesskey_marker: Char
-    @param accesskey_marker: The character that is used to prefix an access key
+    :type string: Unicode
+    :param string: A string that might contain a label with accesskey marker
+    :type accesskey_marker: Char
+    :param accesskey_marker: The character that is used to prefix an access key
     """
     assert isinstance(string, unicode)
     assert isinstance(accesskey_marker, unicode)
@@ -65,12 +65,12 @@ def combine(label, accesskey,
     We place an accesskey marker before the accesskey in the label and this creates a
     string with the two combined e.g. "File" + "F" = "&File"
 
-    @type label: unicode
-    @param label: a label
-    @type accesskey: unicode char
-    @param accesskey: The accesskey
-    @rtype: unicode or None
-    @return: label+accesskey string or None if uncombineable
+    :type label: unicode
+    :param label: a label
+    :type accesskey: unicode char
+    :param accesskey: The accesskey
+    :rtype: unicode or None
+    :return: label+accesskey string or None if uncombineable
     """
     assert isinstance(label, unicode)
     assert isinstance(accesskey, unicode)

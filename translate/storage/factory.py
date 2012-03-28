@@ -163,8 +163,8 @@ def getclass(storefile, ignore=None, classes=None, classes_str=classes_str, hidd
 def getobject(storefile, ignore=None, classes=None, classes_str=classes_str, hiddenclasses=hiddenclasses):
     """Factory that returns a usable object for the type of file presented.
 
-    @type storefile: file or str
-    @param storefile: File object or file name.
+    :type storefile: file or str
+    :param storefile: File object or file name.
 
     Specify ignore to ignore some part at the back of the name (like .gz).
     """
@@ -207,7 +207,7 @@ supported = [
 def supported_files():
     """Returns data about all supported files
 
-    @return: list of type that include (name, extensions, mimetypes)
-    @rtype: list
+    :return: list of type that include (name, extensions, mimetypes)
+    :rtype: list
     """
     return supported[:]

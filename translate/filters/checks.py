@@ -26,7 +26,7 @@ and derivatives of TranslationChecker (like StandardChecker) check
 (source, target) translation pairs.
 
 When adding a new test here, please document and explain the behaviour on the
-U{wiki <http://translate.sourceforge.net/wiki/toolkit/pofilter_tests>}.
+`wiki  <http://translate.sourceforge.net/wiki/toolkit/pofilter_tests>`_.
 """
 
 import re
@@ -188,9 +188,9 @@ class CheckerConfig(object):
     def _init_list(self, list):
         """initialise configuration paramaters that are lists
 
-        @type list: List
-        @param list: None (we'll initialise a blank list) or a list paramater
-        @rtype: List
+        :type list: List
+        :param list: None (we'll initialise a blank list) or a list paramater
+        :rtype: List
         """
         if list is None:
             list = []
@@ -199,9 +199,9 @@ class CheckerConfig(object):
     def _init_default(self, param, default):
         """initialise parameters that can have default options
 
-        @param param: the user supplied paramater value
-        @param default: default values when param is not specified
-        @return: the paramater as specified by the user of the default settings
+        :param param: the user supplied paramater value
+        :param default: default values when param is not specified
+        :return: the paramater as specified by the user of the default settings
         """
         if param is None:
             return default

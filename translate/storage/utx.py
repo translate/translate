@@ -24,8 +24,8 @@ UTX is a format for terminology exchange, designed it seems with Machine
 Translation (MT) as it's primary consumer.  The format is created by
 the Asia-Pacific Association for Machine Translation (AAMT).
 
-It is a bilingual base class derived format with L{UtxFile}
-and L{UtxUnit} providing file and unit level access.
+It is a bilingual base class derived format with :ref:`UtxFile`
+and :ref:`UtxUnit` providing file and unit level access.
 
 The format can manage monolingual dictionaries but these classes don't
 implement that.
@@ -33,7 +33,7 @@ implement that.
 Specification
 =============
 The format is implemented according to the v1.0 UTX
-L{specification<http://www.aamt.info/english/utx/utx-simple-1.00-specification-e.pdf>}
+:ref:`<http://www.aamt.info/english/utx/utx-simple-1.00-specification-e.pdf>`
 
 Format Implementation
 =====================
@@ -106,8 +106,8 @@ class UtxUnit(base.TranslationUnit):
     def setdict(self, newdict):
         """Set the dictionary of values for a UTX line
 
-        @param newdict: a new dictionary with UTX line elements
-        @type newdict: Dict
+        :param newdict: a new dictionary with UTX line elements
+        :type newdict: Dict
         """
         # TODO First check that the values are OK
         self._dict = newdict

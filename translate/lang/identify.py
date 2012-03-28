@@ -36,7 +36,7 @@ class LanguageIdentifier(object):
     CONF_FILE = 'fpdb.conf'
     """
     The name of the file that contains language name-code pairs
-    (relative to C{MODEL_DIR}).
+    (relative to ``MODEL_DIR``).
     """
 
     def __init__(self, model_dir=None, conf_file=None):
@@ -90,10 +90,10 @@ class LanguageIdentifier(object):
         """Identify the source language of the given translation store or
             units.
 
-            @type  instore: C{TranslationStore} or list or tuple of
-                C{TranslationUnit}s.
-            @param instore: The translation store to extract source text from.
-            @returns: The identified language's code or C{None} if the language
+            :type  instore: ``TranslationStore`` or list or tuple of
+                ``TranslationUnit``s.
+            :param instore: The translation store to extract source text from.
+            @returns: The identified language's code or ``None`` if the language
                 could not be identified."""
         if not isinstance(instore, (TranslationStore, list, tuple)):
             return None
@@ -107,10 +107,10 @@ class LanguageIdentifier(object):
         """Identify the target language of the given translation store or
             units.
 
-            @type  instore: C{TranslationStore} or list or tuple of
-                C{TranslationUnit}s.
-            @param instore: The translation store to extract target text from.
-            @returns: The identified language's code or C{None} if the language
+            :type  instore: ``TranslationStore`` or list or tuple of
+                ``TranslationUnit``s.
+            :param instore: The translation store to extract target text from.
+            @returns: The identified language's code or ``None`` if the language
                 could not be identified."""
         if not isinstance(instore, (TranslationStore, list, tuple)):
             return None

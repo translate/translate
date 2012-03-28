@@ -167,7 +167,7 @@ class Workflow(object):
         return [e[1] for e in self.edges if e[0] is self._current_state]
 
     def get_state_by_name(self, state_name):
-        """Get the C{State} object for the given name."""
+        """Get the ``State`` object for the given name."""
         for s in self.states:
             if s.name == state_name:
                 return s
@@ -176,9 +176,9 @@ class Workflow(object):
 
     def set_current_state(self, state):
         """Set the current state. This is absolute and not subject to edge
-            constraints. The current state's C{leave} and the new state's
-            C{enter} method is still called. For edge transitions, see the
-            C{trans} method."""
+            constraints. The current state's ``leave`` and the new state's
+            ``enter`` method is still called. For edge transitions, see the
+            ``trans`` method."""
         if isinstance(state, basestring):
             state = self.get_state_by_name(state)
         if state not in self.states:
@@ -190,7 +190,7 @@ class Workflow(object):
         self._current_state.enter(self._workflow_obj)
 
     def set_initial_state(self, state):
-        """Sets the initial state, used by the L{reset} method."""
+        """Sets the initial state, used by the :ref:`reset` method."""
         if isinstance(state, basestring):
             state = self.get_state_by_name(state)
         if not isinstance(state, State):
@@ -217,7 +217,7 @@ class Workflow(object):
 
     def trans(self, to_state=None):
         """Transition to the given state. If no state is given, the first one
-            returned by C{get_to_states} is used."""
+            returned by ``get_to_states`` is used."""
         if self._current_state is None:
             raise ValueError('No current state set')
         if isinstance(to_state, basestring):

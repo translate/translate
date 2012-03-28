@@ -20,7 +20,7 @@
 
 """This module represents Japanese language.
 
-For more information, see U{http://en.wikipedia.org/wiki/Japanese_language}
+For more information, see http://en.wikipedia.org/wiki/Japanese_language
 """
 
 import re
