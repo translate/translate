@@ -1,5 +1,8 @@
 # /
 /LICENSE
 
+# /docs/
+/docs/_build/
+
 # General
 *.pyc
