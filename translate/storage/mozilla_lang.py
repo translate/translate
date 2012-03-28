@@ -52,6 +52,9 @@ class LangStore(txt.TxtFile):
     """We extend TxtFile, since that has a lot of useful stuff for encoding"""
     UnitClass = LangUnit
 
+    Name = _("Mozilla .lang")
+    Extensions = ['lang']
+
     def parse(self, lines):
         #Have we just seen a ';' line, and so are ready for a translation
         readyTrans = False
@@ -75,4 +78,4 @@ class LangStore(txt.TxtFile):
                 u.addlocation("%s:%d" % (self.filename, lineoffset + 1))
 
     def __str__(self):
-        return u"\n\n".join([unicode(unit) for unit in self.units]).encode('utf-8')
+        return u"\n\n\n".join([unicode(unit) for unit in self.units]).encode('utf-8') + "\n"
