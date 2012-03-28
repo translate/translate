@@ -77,10 +77,10 @@ try:
         """Runs a command (array of program name and arguments) and returns the
         exitcode, the output and the error as a tuple.
 
-        @param command: list of arguments to be joined for a program call
-        @type command: list
-        @param cwd: optional directory where the command should be executed
-        @type cwd: str
+        :param command: list of arguments to be joined for a program call
+        :type command: list
+        :param cwd: optional directory where the command should be executed
+        :type cwd: str
         """
         # ok - we use "subprocess"
         try:
@@ -108,10 +108,10 @@ except ImportError:
         since popen2 opens a shell that will fail with an error code in case
         of a missing executable.
 
-        @param command: list of arguments to be joined for a program call
-        @type command: list
-        @param cwd: optional directory where the command should be executed
-        @type cwd: str
+        :param command: list of arguments to be joined for a program call
+        :type command: list
+        :param cwd: optional directory where the command should be executed
+        :type cwd: str
         """
         escaped_command = " ".join([__shellescape(arg) for arg in command])
         if cwd:
@@ -186,8 +186,8 @@ class GenericRevisionControlSystem:
     def _find_rcs_directory(self, rcs_obj):
         """Try to find the metadata directory of the RCS
 
-        @rtype: tuple
-        @return:
+        :rtype: tuple
+        :return:
           - the absolute path of the directory, that contains the metadata directory
           - the absolute path of the RCS object
           - the relative path of the RCS object based on the directory above

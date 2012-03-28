@@ -83,7 +83,7 @@ class UnknownXML(StringElem):
         """String representation of the sub-tree with the current node as the
             root.
 
-            Copied from L{StringElem.__repr__}, but includes C{self.xml_node.tag}."""
+            Copied from :ref:`StringElem.__repr__`, but includes ``self.xml_node.tag``."""
         tag = self.xml_node.tag
         if tag.startswith('{'):
             tag = tag[tag.index('}')+1:]
@@ -105,7 +105,7 @@ class UnknownXML(StringElem):
         """Returns a copy of the sub-tree.
             This should be overridden in sub-classes with more data.
 
-            NOTE: C{self.renderer} is B{not} copied."""
+            .. note:: ``self.renderer`` is **not** copied."""
         from copy import copy
         cp = self.__class__(id=self.id, rid=self.rid, xid=self.xid, xml_node=copy(self.xml_node))
         for sub in self.sub:

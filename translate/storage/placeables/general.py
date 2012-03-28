@@ -32,7 +32,7 @@ __all__ = ['AltAttrPlaceable', 'XMLEntityPlaceable', 'XMLTagPlaceable', 'parsers
 
 def regex_parse(cls, pstr):
     """A parser method to extract placeables from a string based on a regular
-        expression. Use this function as the C{@parse()} method of a placeable
+        expression. Use this function as the ``@parse()`` method of a placeable
         class."""
     if cls.regex is None:
         return None
@@ -78,7 +78,7 @@ class QtFormattingPlaceable(Ph):
     """Placeable representing a Qt string formatting variable.
 
     Implemented following Qt documentation on
-    U{QString::arg<http://doc.trolltech.com/4.5/qstring.html#arg>} where
+    `QString::arg <http://doc.trolltech.com/4.5/qstring.html#arg>`_ where
     the placeables are refered to as 'place markers'
 
     Notes:
@@ -102,7 +102,7 @@ class PythonFormattingPlaceable(Ph):
     """Placeable representing a Python string formatting variable.
 
     Implemented following Python documentation on
-    U{String Formatting Operations<http://docs.python.org/library/stdtypes.html#string-formatting-operations>}"""
+    `String Formatting Operations <http://docs.python.org/library/stdtypes.html#string-formatting-operations>`_"""
 
     iseditable = False
     istranslatable = False
@@ -126,9 +126,9 @@ class JavaMessageFormatPlaceable(Ph):
     documentation<http://java.sun.com/j2se/1.4.2/docs/api/java/text/MessageFormat.html>}.
 
     Information about custom formats:
-      - number - U{DecimalFormat<http://java.sun.com/j2se/1.4.2/docs/api/java/text/DecimalFormat.html>}
-      - date/time - U{SimpleDateFormat<http://java.sun.com/j2se/1.4.2/docs/api/java/text/SimpleDateFormat.html>}
-      - choice - U{ChoiceFormat<http://java.sun.com/j2se/1.4.2/docs/api/java/text/ChoiceFormat.html>}
+      - number - `DecimalFormat <http://java.sun.com/j2se/1.4.2/docs/api/java/text/DecimalFormat.html>`_
+      - date/time - `SimpleDateFormat <http://java.sun.com/j2se/1.4.2/docs/api/java/text/SimpleDateFormat.html>`_
+      - choice - `ChoiceFormat <http://java.sun.com/j2se/1.4.2/docs/api/java/text/ChoiceFormat.html>`_
     """
 
     iseditable = False  # TODO: Technically incorrect as you need to change
@@ -224,7 +224,7 @@ class PunctuationPlaceable(Ph):
 
 
 class XMLEntityPlaceable(Ph):
-    """Placeable handling XML entities (C{&xxxxx;}-style entities)."""
+    """Placeable handling XML entities (``&xxxxx;``-style entities)."""
 
     iseditable = False
     istranslatable = False

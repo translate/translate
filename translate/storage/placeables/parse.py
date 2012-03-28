@@ -19,7 +19,7 @@
 # along with this program; if not, see <http://www.gnu.org/licenses/>.
 
 """
-Contains the C{parse} function that parses normal strings into StringElem-
+Contains the ``parse`` function that parses normal strings into StringElem-
 based "rich" string element trees.
 """
 
@@ -30,21 +30,21 @@ def parse(tree, parse_funcs):
     """Parse placeables from the given string or sub-tree by using the
         parsing functions provided.
 
-        The output of this function is B{heavily} dependent on the order of the
+        The output of this function is **heavily** dependent on the order of the
         parsing functions. This is because of the algorithm used.
 
-        An over-simplification of the algorithm: the leaves in the C{StringElem}
+        An over-simplification of the algorithm: the leaves in the ``StringElem``
         tree are expanded to the output of the first parsing function in
-        C{parse_funcs}. The next level of recursion is then started on the new
+        ``parse_funcs``. The next level of recursion is then started on the new
         set of leaves with the used parsing function removed from
-        C{parse_funcs}.
+        ``parse_funcs``.
 
-        @type  tree: unicode|StringElem
-        @param tree: The string or string element sub-tree to parse.
-        @type  parse_funcs: A list of parsing functions. It must take exactly
-            one argument (a C{unicode} string to parse) and return a list of
-            C{StringElem}s which, together, form the original string. If nothing
-            could be parsed, it should return C{None}."""
+        :type  tree: unicode|StringElem
+        :param tree: The string or string element sub-tree to parse.
+        :type  parse_funcs: A list of parsing functions. It must take exactly
+            one argument (a ``unicode`` string to parse) and return a list of
+            ``StringElem``s which, together, form the original string. If nothing
+            could be parsed, it should return ``None``."""
     if isinstance(tree, unicode):
         tree = StringElem(tree)
     if not parse_funcs:

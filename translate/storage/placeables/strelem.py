@@ -19,7 +19,7 @@
 # along with this program; if not, see <http://www.gnu.org/licenses/>.
 
 """
-Contains the base L{StringElem} class that represents a node in a parsed rich-
+Contains the base :ref:`StringElem` class that represents a node in a parsed rich-
 string tree. It is the base class of all placeables.
 """
 
@@ -47,7 +47,7 @@ class StringElem(object):
     """Whether this string should be changable by the user. Not used at the moment."""
     isfragile = False
     """Whether this element should be deleted in its entirety when partially
-        deleted. Only checked when C{iseditable = False}"""
+        deleted. Only checked when ``iseditable = False``"""
     istranslatable = True
     """Whether this string is translatable into other languages."""
     isvisible = True
@@ -78,15 +78,15 @@ class StringElem(object):
 
     # SPECIAL METHODS #
     def __add__(self, rhs):
-        """Emulate the C{unicode} class."""
+        """Emulate the ``unicode`` class."""
         return unicode(self) + rhs
 
     def __contains__(self, item):
-        """Emulate the C{unicode} class."""
+        """Emulate the ``unicode`` class."""
         return item in unicode(self)
 
     def __eq__(self, rhs):
-        """@returns: C{True} if (and only if) all members as well as sub-trees
+        """:returns: ``True`` if (and only if) all members as well as sub-trees
             are equal. False otherwise."""
         if not isinstance(rhs, StringElem):
             return False
@@ -101,19 +101,19 @@ class StringElem(object):
                 not [i for i in range(len(self.sub)) if self.sub[i] != rhs.sub[i]]
 
     def __ge__(self, rhs):
-        """Emulate the C{unicode} class."""
+        """Emulate the ``unicode`` class."""
         return unicode(self) >= rhs
 
     def __getitem__(self, i):
-        """Emulate the C{unicode} class."""
+        """Emulate the ``unicode`` class."""
         return unicode(self)[i]
 
     def __getslice__(self, i, j):
-        """Emulate the C{unicode} class."""
+        """Emulate the ``unicode`` class."""
         return unicode(self)[i:j]
 
     def __gt__(self, rhs):
-        """Emulate the C{unicode} class."""
+        """Emulate the ``unicode`` class."""
         return unicode(self) > rhs
 
     def __iter__(self):
@@ -122,30 +122,30 @@ class StringElem(object):
             yield elem
 
     def __le__(self, rhs):
-        """Emulate the C{unicode} class."""
+        """Emulate the ``unicode`` class."""
         return unicode(self) <= rhs
 
     def __len__(self):
-        """Emulate the C{unicode} class."""
+        """Emulate the ``unicode`` class."""
         return len(unicode(self))
 
     def __lt__(self, rhs):
-        """Emulate the C{unicode} class."""
+        """Emulate the ``unicode`` class."""
         return unicode(self) < rhs
 
     def __mul__(self, rhs):
-        """Emulate the C{unicode} class."""
+        """Emulate the ``unicode`` class."""
         return unicode(self) * rhs
 
     def __ne__(self, rhs):
         return not self.__eq__(rhs)
 
     def __radd__(self, lhs):
-        """Emulate the C{unicode} class."""
+        """Emulate the ``unicode`` class."""
         return self + lhs
 
     def __rmul__(self, lhs):
-        """Emulate the C{unicode} class."""
+        """Emulate the ``unicode`` class."""
         return self * lhs
 
     def __repr__(self):
@@ -172,8 +172,8 @@ class StringElem(object):
 
     # METHODS #
     def apply_to_strings(self, f):
-        """Apply C{f} to all actual strings in the tree.
-            @param f: Must take one (str or unicode) argument and return a
+        """Apply ``f`` to all actual strings in the tree.
+            :param f: Must take one (str or unicode) argument and return a
                 string or unicode."""
         for elem in self.flatten():
             for i in range(len(elem.sub)):
@@ -184,7 +184,7 @@ class StringElem(object):
         """Returns a copy of the sub-tree.
             This should be overridden in sub-classes with more data.
 
-            NOTE: C{self.renderer} is B{not} copied."""
+            NOTE: ``self.renderer`` is **not** copied."""
         #logging.debug('Copying instance of class %s' % (self.__class__.__name__))
         cp = self.__class__(id=self.id, xid=self.xid, rid=self.rid)
         for sub in self.sub:
@@ -212,13 +212,13 @@ class StringElem(object):
 
     def delete_range(self, start_index, end_index):
         """Delete the text in the range given by the string-indexes
-            C{start_index} and C{end_index}.
+            ``start_index`` and ``end_index``.
             Partial nodes will only be removed if they are editable.
-            @returns: A C{StringElem} representing the removed sub-string, the
+            :returns: A ``StringElem`` representing the removed sub-string, the
                 parent node from which it was deleted as well as the offset at
-                which it was deleted from. C{None} is returned for the parent
+                which it was deleted from. ``None`` is returned for the parent
                 value if the root was deleted. If the parent and offset values
-                are not C{None}, C{parent.insert(offset, deleted)} effectively
+                are not ``None``, ``parent.insert(offset, deleted)`` effectively
                 undoes the delete."""
         if start_index == end_index:
             return StringElem(), self, 0
@@ -390,16 +390,16 @@ class StringElem(object):
         return elems
 
     def encode(self, encoding=sys.getdefaultencoding()):
-        """More C{unicode} class emulation."""
+        """More ``unicode`` class emulation."""
         return unicode(self).encode(encoding)
 
     def elem_offset(self, elem):
-        """Find the offset of C{elem} in the current tree.
-            This cannot be reliably used if C{self.renderer} is used and even
+        """Find the offset of ``elem`` in the current tree.
+            This cannot be reliably used if ``self.renderer`` is used and even
             less so if the rendering function renders the string differently
-            upon different calls. In Virtaal the C{StringElemGUI.index()} method
+            upon different calls. In Virtaal the ``StringElemGUI.index()`` method
             is used as replacement for this one.
-            @returns: The string index where element C{e} starts, or -1 if C{e}
+            :returns: The string index where element ``e`` starts, or -1 if ``e``
                 was not found."""
         offset = 0
         for e in self.iter_depth_first():
@@ -422,7 +422,7 @@ class StringElem(object):
         return -1
 
     def elem_at_offset(self, offset):
-        """Get the C{StringElem} in the tree that contains the string rendered
+        """Get the ``StringElem`` in the tree that contains the string rendered
             at the given offset."""
         if offset < 0 or offset > len(self):
             return None
@@ -437,7 +437,7 @@ class StringElem(object):
         return elem
 
     def find(self, x):
-        """Find sub-string C{x} in this string tree and return the position
+        """Find sub-string ``x`` in this string tree and return the position
             at which it starts."""
         if isinstance(x, basestring):
             return unicode(self).find(x)
@@ -446,7 +446,7 @@ class StringElem(object):
         return None
 
     def find_elems_with(self, x):
-        """Find all elements in the current sub-tree containing C{x}."""
+        """Find all elements in the current sub-tree containing ``x``."""
         return [elem for elem in self.flatten() if x in unicode(elem)]
 
     def flatten(self, filter=None):
@@ -463,10 +463,10 @@ class StringElem(object):
 
     def get_index_data(self, index):
         """Get info about the specified range in the tree.
-            @returns: A dictionary with the following items:
-                * I{elem}: The element in which C{index} resides.
-                * I{index}: Copy of the C{index} parameter
-                * I{offset}: The offset of C{index} into C{'elem'}."""
+            :returns: A dictionary with the following items:
+                * *elem*: The element in which ``index`` resides.
+                * *index*: Copy of the ``index`` parameter
+                * *offset*: The offset of ``index`` into ``'elem'``."""
         info = {
             'elem': self.elem_at_offset(index),
             'index': index,
@@ -483,7 +483,7 @@ class StringElem(object):
 
     def get_parent_elem(self, child):
         """Searches the current sub-tree for and returns the parent of the
-            C{child} element."""
+            ``child`` element."""
         for elem in self.iter_depth_first():
             if not isinstance(elem, StringElem):
                 continue
@@ -601,7 +601,7 @@ class StringElem(object):
         return False
 
     def insert_between(self, left, right, text):
-        """Insert the given text between the two parameter C{StringElem}s."""
+        """Insert the given text between the two parameter ``StringElem``s."""
         if not isinstance(left, StringElem) and left is not None:
             raise ValueError('"left" is not a StringElem or None')
         if not isinstance(right, StringElem) and right is not None:
@@ -699,12 +699,12 @@ class StringElem(object):
 
     def isleaf(self):
         """
-        Whether or not this instance is a leaf node in the C{StringElem} tree.
+        Whether or not this instance is a leaf node in the ``StringElem`` tree.
 
-        A node is a leaf node if it is a C{StringElem} (not a sub-class) and
-        contains only sub-elements of type C{str} or C{unicode}.
+        A node is a leaf node if it is a ``StringElem`` (not a sub-class) and
+        contains only sub-elements of type ``str`` or ``unicode``.
 
-        @rtype: bool
+        :rtype: bool
         """
         for e in self.sub:
             if not isinstance(e, (str, unicode)):
@@ -727,7 +727,7 @@ class StringElem(object):
                     yield node
 
     def map(self, f, filter=None):
-        """Apply C{f} to all nodes for which C{filter} returned C{True} (optional)."""
+        """Apply ``f`` to all nodes for which ``filter`` returned ``True`` (optional)."""
         if filter is not None and not callable(filter):
             raise ValueError('filter is not callable or None')
         if filter is None:
@@ -741,11 +741,11 @@ class StringElem(object):
     def parse(cls, pstr):
         """Parse an instance of this class from the start of the given string.
             This method should be implemented by any sub-class that wants to
-            parseable by L{translate.storage.placeables.parse}.
+            parseable by :ref:`translate.storage.placeables.parse`.
 
-            @type  pstr: unicode
-            @param pstr: The string to parse into an instance of this class.
-            @returns: An instance of the current class, or C{None} if the
+            :type  pstr: unicode
+            :param pstr: The string to parse into an instance of this class.
+            :returns: An instance of the current class, or ``None`` if the
                 string not parseable by this class."""
         return cls(pstr)
 
@@ -829,7 +829,7 @@ class StringElem(object):
 
     # TODO: Write unit test for this method
     def remove_type(self, ptype):
-        """Replace nodes with type C{ptype} with base C{StringElem}s, containing
+        """Replace nodes with type ``ptype`` with base ``StringElem``s, containing
             the same sub-elements. This is only applicable to elements below the
             element tree root node."""
         for elem in self.iter_depth_first():
@@ -848,6 +848,6 @@ class StringElem(object):
             This method should be either overridden in implementing sub-classes
             or dynamically replaced by specific applications.
 
-            @returns: The transformed Unicode string representing the sub-tree.
+            :returns: The transformed Unicode string representing the sub-tree.
             """
         return self.copy()

@@ -40,9 +40,9 @@ class cvs(GenericRevisionControlSystem):
         Read a single file from the CVS repository without checking out a full
         working directory.
 
-        @param cvsroot: the CVSROOT for the repository
-        @param path: path to the file relative to cvs root
-        @param revision: revision or tag to get (retrieves from HEAD if None)
+        :param cvsroot: the CVSROOT for the repository
+        :param path: path to the file relative to cvs root
+        :param revision: revision or tag to get (retrieves from HEAD if None)
         """
         command = ["cvs", "-d", cvsroot, "-Q", "co", "-p"]
         if revision:

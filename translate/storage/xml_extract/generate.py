@@ -80,7 +80,9 @@ def reduce_dom_tree(f, dom_node, *state):
 
 @accepts(etree._Element, etree._Element)
 def find_dom_root(parent_dom_node, dom_node):
-    """@see: L{find_placeable_dom_tree_roots}"""
+    """
+    .. seealso:: :ref:`find_placeable_dom_tree_roots`
+    """
     if dom_node is None or parent_dom_node is None:
         return None
     if dom_node.getparent() == parent_dom_node:
@@ -121,7 +123,7 @@ def _map_source_dom_to_doc_dom(unit_node, source_dom_node):
     placeables, with DOM nodes in the XML document template (this information is obtained
     from unit_node). We are interested in DOM nodes in the XML document template which
     are the roots of placeables. See the diagram below, as well as
-    L{find_placeable_dom_tree_roots}.
+    :ref:`find_placeable_dom_tree_roots`.
 
     XLIFF Source (below)::
         <source>This is text <g> bold text</g> and a footnote<x/></source>

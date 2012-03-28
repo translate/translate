@@ -54,7 +54,7 @@ class hg(GenericRevisionControlSystem):
     def update(self, revision=None):
         """Does a clean update of the given path
 
-        @param revision: ignored for hg
+        :param revision: ignored for hg
         """
         # revert local changes (avoids conflicts)
         command = ["hg", "-R", self.root_dir, "revert",
