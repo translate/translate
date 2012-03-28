@@ -80,9 +80,9 @@ class XapianDatabase(CommonIndexer.CommonDatabase):
     def __init__(self, basedir, analyzer=None, create_allowed=True):
         """initialize or open a xapian database
 
-        @raise ValueError: the given location exists, but the database type
+        :raise ValueError: the given location exists, but the database type
                 is incompatible (e.g. created by a different indexing engine)
-        @raise OSError: the database failed to initialize
+        :raise OSError: the database failed to initialize
 
         :param basedir: the parent directory of the database
         :type basedir: str

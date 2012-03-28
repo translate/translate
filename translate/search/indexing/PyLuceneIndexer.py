@@ -67,9 +67,9 @@ class PyLuceneDatabase(CommonIndexer.CommonDatabase):
 
         Any derived class must override __init__.
 
-        @raise ValueError: the given location exists, but the database type
+        :raise ValueError: the given location exists, but the database type
                 is incompatible (e.g. created by a different indexing engine)
-        @raise OSError: the database failed to initialize
+        :raise OSError: the database failed to initialize
 
         :param basedir: the parent directory of the database
         :type basedir: str

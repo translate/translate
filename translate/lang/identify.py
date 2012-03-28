@@ -93,7 +93,7 @@ class LanguageIdentifier(object):
             :type  instore: ``TranslationStore`` or list or tuple of
                 ``TranslationUnit``s.
             :param instore: The translation store to extract source text from.
-            @returns: The identified language's code or ``None`` if the language
+            :returns: The identified language's code or ``None`` if the language
                 could not be identified."""
         if not isinstance(instore, (TranslationStore, list, tuple)):
             return None
@@ -110,7 +110,7 @@ class LanguageIdentifier(object):
             :type  instore: ``TranslationStore`` or list or tuple of
                 ``TranslationUnit``s.
             :param instore: The translation store to extract target text from.
-            @returns: The identified language's code or ``None`` if the language
+            :returns: The identified language's code or ``None`` if the language
                 could not be identified."""
         if not isinstance(instore, (TranslationStore, list, tuple)):
             return None

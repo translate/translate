@@ -197,7 +197,7 @@ class BundleProjectStore(ProjectStore):
         """Updates the file with the given project file name with the contents
             of ``infile``.
 
-            @returns: the results from :ref:`self.append_file`."""
+            :returns: the results from :ref:`self.append_file`."""
         if pfname not in self._files:
             raise FileNotInProjectError(pfname)
 

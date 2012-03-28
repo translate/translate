@@ -263,7 +263,7 @@ class ProjectStore(object):
         """Remove the project file with name ``pfname`` and add the contents
             from ``infile`` to the project under the same file name.
 
-            @returns: the results from :ref:`self.append_file`."""
+            :returns: the results from :ref:`self.append_file`."""
         ftype = self.get_filename_type(pfname)
         self.remove_file(pfname)
         self.append_file(infile, pfname, ftype)

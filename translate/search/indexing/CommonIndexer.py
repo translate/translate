@@ -80,9 +80,9 @@ class CommonDatabase(object):
         Any implementation can rely on the "self.location" attribute to be set
         by the __init__ function of the super class.
 
-        @raise ValueError: the given location exists, but the database type
+        :raise ValueError: the given location exists, but the database type
                 is incompatible (e.g. created by a different indexing engine)
-        @raise OSError: the database failed to initialize
+        :raise OSError: the database failed to initialize
 
         :param basedir: the parent directory of the database
         :type basedir: str
@@ -504,7 +504,7 @@ class CommonDatabase(object):
 
         :param field_analyzers: mapping of field names and analyzers
         :type field_analyzers: dict containing field names and analyzers
-        @raise TypeError: invalid values in 'field_analyzers'
+        :raise TypeError: invalid values in 'field_analyzers'
         """
         for field, analyzer in field_analyzers.items():
             # check for invald input types

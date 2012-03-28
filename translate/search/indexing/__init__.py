@@ -142,10 +142,10 @@ def get_indexer(basedir, preference=None):
     indexers knows how to handle it. Otherwise we return the first available
     indexer.
 
-    @raise IndexError: there is no indexing engine available
-    @raise ValueError: the database location already exists, but we did not find
+    :raise IndexError: there is no indexing engine available
+    :raise ValueError: the database location already exists, but we did not find
                        a suitable indexing engine for it
-    @raise OSError: any error that could occour while creating or opening the
+    :raise OSError: any error that could occour while creating or opening the
                     database
 
     :param basedir: the parent directory of (possible) different indexing
