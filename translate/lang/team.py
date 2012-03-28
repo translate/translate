@@ -356,13 +356,13 @@ spelling and varients, that can be used to uniquely identify the language"""
 def _regex_guesser(prefilter, regex, string, postfilter=None):
     """Use regular expressions to extract the language team
 
-    @param prefilter: simple filter to apply before attempting the regex
-    @param regex: regular expression with one group that will contain
+    :param prefilter: simple filter to apply before attempting the regex
+    :param regex: regular expression with one group that will contain
     the language code
-    @param string: the language team string that should be examined
-    @param postfilter: filter to apply to reject any potential matches
+    :param string: the language team string that should be examined
+    :param postfilter: filter to apply to reject any potential matches
     after they have been retreived by the regex
-    @return: ISO language code for the found language
+    :return: ISO language code for the found language
     """
     # TODO instead of a posfilter, have a dictionary of transform rules
     # e.g. for debian-l10n-albanian a dict of {'russian': 'ru' would allow
@@ -396,10 +396,10 @@ def _snippet_guesser(snippets_dict, string, filter_=_nofilter):
     """Guess the language based on a snippet of text in the language team
     string.
 
-    @param snippets_dict: A dict of snippets that can be used to identify a
+    :param snippets_dict: A dict of snippets that can be used to identify a
     language in the format {'lang': ('snippet1', 'snippet2'), 'lang2'...}
-    @param string: The language string to be analysed
-    @param filter_: a function to be applied to the string and snippets
+    :param string: The language string to be analysed
+    :param filter_: a function to be applied to the string and snippets
     before examination
     """
     string = filter_(string)

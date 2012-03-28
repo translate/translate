@@ -75,7 +75,7 @@ class json2po:
     def convert_unit(self, input_unit, commenttype):
         """Converts a JSON unit to a PO unit
 
-        @return: None if empty or not for translation
+        :return: None if empty or not for translation
         """
         if input_unit is None:
             return None
@@ -89,8 +89,8 @@ class json2po:
 
 def convertjson(input_file, output_file, template_file, pot=False,
                 duplicatestyle="msgctxt", dialect="default", filter=None):
-    """Reads in L{input_file} using jsonl10n, converts using L{json2po},
-    writes to L{output_file}"""
+    """Reads in :ref:`input_file` using jsonl10n, converts using :ref:`json2po`,
+    writes to :ref:`output_file`"""
     from translate.storage import jsonl10n
     if filter is not None:
         filter = filter.split(',')

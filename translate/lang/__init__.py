@@ -21,7 +21,7 @@
 """lang contains classes that represent languages and provides language specific
 information.
 
-All classes inherit from the parent class called L{common}.  The type of data
+All classes inherit from the parent class called :ref:`common`.  The type of data
 includes:
   - language codes
   - language name
@@ -29,6 +29,4 @@ includes:
   - punctuation transformation
   - etc
 
-@group Common Language Functionality: common data poedit identify factory
-@group Languages: *
 """

@@ -80,8 +80,8 @@ class RecursiveOptionParser(optparse.OptionParser, object):
                  description=None):
         """Construct the specialized Option Parser.
 
-        @type formats: Dictionary
-        @param formats: See L{setformats()} for an explanation of the formats
+        :type formats: Dictionary
+        :param formats: See :ref:`setformats()` for an explanation of the formats
         parameter.
 
         """
@@ -240,14 +240,14 @@ class RecursiveOptionParser(optparse.OptionParser, object):
     def setformats(self, formats, usetemplates):
         """Sets the format options using the given format dictionary.
 
-        @type formats: Dictionary
-        @param formats: The dictionary I{keys} should be:
+        :type formats: Dictionary
+        :param formats: The dictionary *keys* should be:
             - single strings (or 1-tuples) containing an input format (if not
               usetemplates)
             - tuples containing an input format and template format (if
               usetemplates)
             - formats can be None to indicate what to do with standard input
-        The dictionary I{values} should be tuples of outputformat (string) and
+        The dictionary *values* should be tuples of outputformat (string) and
         processor method.
         """
 
@@ -665,12 +665,12 @@ class RecursiveOptionParser(optparse.OptionParser, object):
         return inputfiles
 
     def splitext(self, pathname):
-        """Splits L{pathname} into name and ext, and removes the extsep
+        """Splits :ref:`pathname` into name and ext, and removes the extsep
 
-        @param pathname: A file path
-        @type pathname: string
-        @return: root, ext
-        @rtype: tuple
+        :param pathname: A file path
+        :type pathname: string
+        :return: root, ext
+        :rtype: tuple
         """
         root, ext = os.path.splitext(pathname)
         ext = ext.replace(os.extsep, "", 1)

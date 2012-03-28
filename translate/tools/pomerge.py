@@ -62,9 +62,9 @@ def mergestores(store1, store2, mergeblanks, mergefuzzy, mergecomments):
 def str2bool(option):
     """Convert a string value to boolean
 
-    @param option: yes, true, 1, no, false, 0
-    @type option: String
-    @rtype: Boolean
+    :param option: yes, true, 1, no, false, 0
+    :type option: String
+    :rtype: Boolean
 
     """
     option = option.lower()

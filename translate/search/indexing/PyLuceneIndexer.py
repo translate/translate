@@ -71,15 +71,15 @@ class PyLuceneDatabase(CommonIndexer.CommonDatabase):
                 is incompatible (e.g. created by a different indexing engine)
         @raise OSError: the database failed to initialize
 
-        @param basedir: the parent directory of the database
-        @type basedir: str
-        @param analyzer: bitwise combination of possible analyzer flags
+        :param basedir: the parent directory of the database
+        :type basedir: str
+        :param analyzer: bitwise combination of possible analyzer flags
             to be used as the default analyzer for this database. Leave it empty
             to use the system default analyzer (self.ANALYZER_DEFAULT).
             see self.ANALYZER_TOKENIZE, self.ANALYZER_PARTIAL, ...
-        @type analyzer: int
-        @param create_allowed: create the database, if necessary; default: True
-        @type create_allowed: bool
+        :type analyzer: int
+        :param create_allowed: create the database, if necessary; default: True
+        :type create_allowed: bool
         """
         jvm = PyLucene.getVMEnv()
         jvm.attachCurrentThread()
@@ -164,8 +164,8 @@ class PyLuceneDatabase(CommonIndexer.CommonDatabase):
 
         some databases also support index optimization
 
-        @param optimize: should the index be optimized if possible?
-        @type optimize: bool
+        :param optimize: should the index be optimized if possible?
+        :type optimize: bool
         """
         keep_open = self._writer_is_open()
         self._writer_open()
@@ -187,10 +187,10 @@ class PyLuceneDatabase(CommonIndexer.CommonDatabase):
 
         basically this function should just create a copy of the original
 
-        @param query: the original query object
-        @type query: PyLucene.Query
-        @return: resulting query object
-        @rtype: PyLucene.Query
+        :param query: the original query object
+        :type query: PyLucene.Query
+        :return: resulting query object
+        :rtype: PyLucene.Query
         """
         # TODO: a deep copy or a clone would be safer
         # somehow not working (returns "null"): copy.deepcopy(query)
@@ -203,22 +203,22 @@ class PyLuceneDatabase(CommonIndexer.CommonDatabase):
         basically this function parses the string and returns the resulting
         query
 
-        @param text: the query string
-        @type text: str
-        @param require_all: boolean operator
+        :param text: the query string
+        :type text: str
+        :param require_all: boolean operator
             (True -> AND (default) / False -> OR)
-        @type require_all: bool
-        @param analyzer: the analyzer to be used
+        :type require_all: bool
+        :param analyzer: the analyzer to be used
             possible analyzers are:
-             -  L{CommonDatabase.ANALYZER_TOKENIZE}
+             -  :ref:`CommonDatabase.ANALYZER_TOKENIZE`
                     the field value is splitted to be matched word-wise
-             -  L{CommonDatabase.ANALYZER_PARTIAL}
+             -  :ref:`CommonDatabase.ANALYZER_PARTIAL`
                     the field value must start with the query string
-             -  L{CommonDatabase.ANALYZER_EXACT}
+             -  :ref:`CommonDatabase.ANALYZER_EXACT`
                     keep special characters and the like
-        @type analyzer: bool
-        @return: resulting query object
-        @rtype: PyLucene.Query
+        :type analyzer: bool
+        :return: resulting query object
+        :rtype: PyLucene.Query
         """
         if analyzer is None:
             analyzer = self.analyzer
@@ -242,21 +242,21 @@ class PyLuceneDatabase(CommonIndexer.CommonDatabase):
 
         this functions creates a field->value query
 
-        @param field: the fieldname to be used
-        @type field: str
-        @param value: the wanted value of the field
-        @type value: str
-        @param analyzer: the analyzer to be used
+        :param field: the fieldname to be used
+        :type field: str
+        :param value: the wanted value of the field
+        :type value: str
+        :param analyzer: the analyzer to be used
             possible analyzers are:
-              - L{CommonDatabase.ANALYZER_TOKENIZE}
+              - :ref:`CommonDatabase.ANALYZER_TOKENIZE`
                     the field value is splitted to be matched word-wise
-              - L{CommonDatabase.ANALYZER_PARTIAL}
+              - :ref:`CommonDatabase.ANALYZER_PARTIAL`
                     the field value must start with the query string
-              - L{CommonDatabase.ANALYZER_EXACT}
+              - :ref:`CommonDatabase.ANALYZER_EXACT`
                     keep special characters and the like
-        @type analyzer: bool
-        @return: resulting query object
-        @rtype: PyLucene.Query
+        :type analyzer: bool
+        :return: resulting query object
+        :rtype: PyLucene.Query
         """
         if analyzer is None:
             analyzer = self.analyzer
@@ -274,13 +274,13 @@ class PyLuceneDatabase(CommonIndexer.CommonDatabase):
     def _create_query_combined(self, queries, require_all=True):
         """generate a combined query
 
-        @param queries: list of the original queries
-        @type queries: list of PyLucene.Query
-        @param require_all: boolean operator
+        :param queries: list of the original queries
+        :type queries: list of PyLucene.Query
+        :param require_all: boolean operator
             (True -> AND (default) / False -> OR)
-        @type require_all: bool
-        @return: the resulting combined query object
-        @rtype: PyLucene.Query
+        :type require_all: bool
+        :return: the resulting combined query object
+        :rtype: PyLucene.Query
         """
         combined_query = PyLucene.BooleanQuery()
         for query in queries:
@@ -291,20 +291,20 @@ class PyLuceneDatabase(CommonIndexer.CommonDatabase):
     def _create_empty_document(self):
         """create an empty document to be filled and added to the index later
 
-        @return: the new document object
-        @rtype: PyLucene.Document
+        :return: the new document object
+        :rtype: PyLucene.Document
         """
         return PyLucene.Document()
 
     def _add_plain_term(self, document, term, tokenize=True):
         """add a term to a document
 
-        @param document: the document to be changed
-        @type document: PyLucene.Document
-        @param term: a single term to be added
-        @type term: str
-        @param tokenize: should the term be tokenized automatically
-        @type tokenize: bool
+        :param document: the document to be changed
+        :type document: PyLucene.Document
+        :param term: a single term to be added
+        :type term: str
+        :param tokenize: should the term be tokenized automatically
+        :type tokenize: bool
         """
         if tokenize:
             token_flag = PyLucene.Field.Index.TOKENIZED
@@ -316,14 +316,14 @@ class PyLuceneDatabase(CommonIndexer.CommonDatabase):
     def _add_field_term(self, document, field, term, tokenize=True):
         """add a field term to a document
 
-        @param document: the document to be changed
-        @type document: PyLucene.Document
-        @param field: name of the field
-        @type field: str
-        @param term: term to be associated to the field
-        @type term: str
-        @param tokenize: should the term be tokenized automatically
-        @type tokenize: bool
+        :param document: the document to be changed
+        :type document: PyLucene.Document
+        :param field: name of the field
+        :type field: str
+        :param term: term to be associated to the field
+        :type term: str
+        :param tokenize: should the term be tokenized automatically
+        :type tokenize: bool
         """
         if tokenize:
             token_flag = PyLucene.Field.Index.TOKENIZED
@@ -335,8 +335,8 @@ class PyLuceneDatabase(CommonIndexer.CommonDatabase):
     def _add_document_to_index(self, document):
         """add a prepared document to the index database
 
-        @param document: the document to be added
-        @type document: PyLucene.Document
+        :param document: the document to be added
+        :type document: PyLucene.Document
         """
         self._writer_open()
         self.writer.addDocument(document)
@@ -379,10 +379,10 @@ class PyLuceneDatabase(CommonIndexer.CommonDatabase):
     def get_query_result(self, query):
         """return an object containing the results of a query
 
-        @param query: a pre-compiled query
-        @type query: a query object of the real implementation
-        @return: an object that allows access to the results
-        @rtype: subclass of CommonEnquire
+        :param query: a pre-compiled query
+        :type query: a query object of the real implementation
+        :return: an object that allows access to the results
+        :rtype: subclass of CommonEnquire
         """
         return PyLuceneHits(self.searcher.search(query))
 
@@ -394,8 +394,8 @@ class PyLuceneDatabase(CommonIndexer.CommonDatabase):
     def delete_document_by_id(self, docid):
         """delete a specified document
 
-        @param docid: the document ID to be deleted
-        @type docid: int
+        :param docid: the document ID to be deleted
+        :type docid: int
         """
         if self._writer_is_open():
             self._writer_close()
@@ -409,12 +409,12 @@ class PyLuceneDatabase(CommonIndexer.CommonDatabase):
         """return a list of the contents of specified fields for all matches of
         a query
 
-        @param query: the query to be issued
-        @type query: a query object of the real implementation
-        @param fieldnames: the name(s) of a field of the document content
-        @type fieldnames: string | list of strings
-        @return: a list of dicts containing the specified field(s)
-        @rtype: list of dicts
+        :param query: the query to be issued
+        :type query: a query object of the real implementation
+        :param fieldnames: the name(s) of a field of the document content
+        :type fieldnames: string | list of strings
+        :return: a list of dicts containing the specified field(s)
+        :rtype: list of dicts
         """
         if isinstance(fieldnames, basestring):
             fieldnames = [fieldnames]
@@ -500,12 +500,12 @@ class PyLuceneHits(CommonIndexer.CommonEnquire):
     def get_matches(self, start, number):
         """return a specified number of qualified matches of a previous query
 
-        @param start: index of the first match to return (starting from zero)
-        @type start: int
-        @param number: the number of matching entries to return
-        @type number: int
-        @return: a set of matching entries and some statistics
-        @rtype: tuple of (returned number, available number, matches)
+        :param start: index of the first match to return (starting from zero)
+        :type start: int
+        :param number: the number of matching entries to return
+        :type number: int
+        :return: a set of matching entries and some statistics
+        :rtype: tuple of (returned number, available number, matches)
                 "matches" is a dictionary of::
                     ["rank", "percent", "document", "docid"]
         """
@@ -544,8 +544,8 @@ def _occur(required, prohibited):
 def _get_pylucene_version():
     """get the installed pylucene version
 
-    @return: 1 -> PyLucene v1.x / 2 -> PyLucene v2.x / 0 -> unknown
-    @rtype: int
+    :return: 1 -> PyLucene v1.x / 2 -> PyLucene v2.x / 0 -> unknown
+    :rtype: int
     """
     version = PyLucene.VERSION
     if version.startswith("1."):

@@ -125,12 +125,12 @@ def convert(inputfile, template=None, options=None, convert_options=None):
         that can handle the input file (and the format/extension it gives as
         output) is used.
 
-        @type  inputfile: file
-        @param inputfile: The input file to be converted
-        @type  template: file
-        @param template: Template file to use during conversion
-        @type  options: dict (default: None)
-        @param options: Valid options are:
+        :type  inputfile: file
+        :param inputfile: The input file to be converted
+        :type  template: file
+        :param template: Template file to use during conversion
+        :type  options: dict (default: None)
+        :param options: Valid options are:
             - in_ext: The extension (format) of the input file.
             - out_ext: The extension (format) to use for the output file.
             - templ_ext: The extension (format) of the template file.

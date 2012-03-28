@@ -20,7 +20,7 @@
 
 """This module represents Khmer language.
 
-For more information, see U{http://en.wikipedia.org/wiki/Khmer_language}
+For more information, see http://en.wikipedia.org/wiki/Khmer_language
 """
 
 import re

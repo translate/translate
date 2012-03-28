@@ -20,7 +20,7 @@
 
 """This module represents Chinese language. (Both tradisional and simplified)
 
-For more information, see U{http://en.wikipedia.org/wiki/Chinese_language}
+For more information, see http://en.wikipedia.org/wiki/Chinese_language
 """
 
 import re

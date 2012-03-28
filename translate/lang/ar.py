@@ -20,7 +20,7 @@
 
 """This module represents Arabic language.
 
-For more information, see U{http://en.wikipedia.org/wiki/Arabic_language}
+For more information, see http://en.wikipedia.org/wiki/Arabic_language
 """
 
 import re

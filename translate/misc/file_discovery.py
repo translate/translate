@@ -29,8 +29,8 @@ def get_abs_data_filename(path_parts, basedirs=None):
     """Get the absolute path to the given file- or directory name in the current
         running application's data directory.
 
-        @type  path_parts: list
-        @param path_parts: The path parts that can be joined by os.path.join().
+        :type  path_parts: list
+        :param path_parts: The path parts that can be joined by os.path.join().
         """
     if basedirs is None:
         basedirs = []

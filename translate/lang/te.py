@@ -20,7 +20,7 @@
 
 """This module represents Telugu language.
 
-For more information, see U{http://en.wikipedia.org/wiki/Telugu_language}
+For more information, see http://en.wikipedia.org/wiki/Telugu_language
 """
 
 from translate.lang import common

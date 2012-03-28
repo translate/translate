@@ -101,12 +101,12 @@ def _sort_indexers_by_preference(indexer_classes, pref_order):
     (without suppix ".py") of the respective modules (e.g.: XapianIndexer or
     PyLuceneIndexer)
 
-    @param indexer_classes: the list of all available indexer classes
-    @type indexer_classes: list of CommonIndexer.CommonDatabase objects
-    @param pref_order: list of preferred indexer names
-    @type pref_order: str
-    @return: sorted list of indexer classes
-    @rtype: list of CommonIndexer.CommonDatabase objects
+    :param indexer_classes: the list of all available indexer classes
+    :type indexer_classes: list of CommonIndexer.CommonDatabase objects
+    :param pref_order: list of preferred indexer names
+    :type pref_order: str
+    :return: sorted list of indexer classes
+    :rtype: list of CommonIndexer.CommonDatabase objects
     """
     # define useful function for readability
     get_indexer_name = lambda indexer_class: \
@@ -148,11 +148,11 @@ def get_indexer(basedir, preference=None):
     @raise OSError: any error that could occour while creating or opening the
                     database
 
-    @param basedir: the parent directory of (possible) different indexing
+    :param basedir: the parent directory of (possible) different indexing
              databases
-    @type basedir: string
-    @return: the class of the most appropriate indexer
-    @rtype: subclass of L{CommonIndexer.CommonDatabase}
+    :type basedir: string
+    :return: the class of the most appropriate indexer
+    :rtype: subclass of :ref:`CommonIndexer.CommonDatabase`
     """
     if not _AVAILABLE_INDEXERS:
         raise IndexError("Indexer: no indexing engines are available")

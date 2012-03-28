@@ -20,8 +20,9 @@
 
 """Class that manages subtitle files for translation
 
-   This class makes use of the subtitle functionality of L{gaupol}
-   @see: gaupo/agents/open.py::open_main
+   This class makes use of the subtitle functionality of :ref:`gaupol`
+
+   .. seealso:: gaupol/agents/open.py::open_main
 
    a patch to gaupol is required to open utf-8 files successfully
 """

@@ -72,9 +72,9 @@ class phppo2pypo:
 def convertphp2py(inputfile, outputfile, template=None):
     """Converts from PHP .po format to Python .po format
 
-    @param inputfile: file handle of the source
-    @param outputfile: file handle to write to
-    @param template: unused
+    :param inputfile: file handle of the source
+    :param outputfile: file handle to write to
+    :param template: unused
     """
     convertor = phppo2pypo()
     inputstore = po.pofile(inputfile)

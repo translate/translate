@@ -21,7 +21,7 @@
 """Classes that hold units of .rc files (rcunit) or entire files
 (rcfile) used in translating Windows Resources.
 
-@note: This implementation is based mostly on observing WINE .rc files,
+.. note::: This implementation is based mostly on observing WINE .rc files,
 these should mimic other non-WINE .rc files.
 """
 

@@ -92,24 +92,24 @@ class ProjectStore(object):
 
     # ACCESSORS #
     def _get_sourcefiles(self):
-        """Read-only access to C{self._sourcefiles}."""
+        """Read-only access to ``self._sourcefiles``."""
         return tuple(self._sourcefiles)
     sourcefiles = property(_get_sourcefiles)
 
     def _get_targetfiles(self):
-        """Read-only access to C{self._targetfiles}."""
+        """Read-only access to ``self._targetfiles``."""
         return tuple(self._targetfiles)
     targetfiles = property(_get_targetfiles)
 
     def _get_transfiles(self):
-        """Read-only access to C{self._transfiles}."""
+        """Read-only access to ``self._transfiles``."""
         return tuple(self._transfiles)
     transfiles = property(_get_transfiles)
 
 
     # SPECIAL METHODS #
     def __in__(self, lhs):
-        """@returns C{True} if C{lhs} is a file name or file object in the project store."""
+        """@returns ``True`` if ``lhs`` is a file name or file object in the project store."""
         return  lhs in self._sourcefiles or \
                 lhs in self._targetfiles or \
                 lhs in self._transfiles or \
@@ -120,12 +120,12 @@ class ProjectStore(object):
     # METHODS #
     def append_file(self, afile, fname, ftype='trans', delete_orig=False):
         """Append the given file to the project with the given filename, marked
-            to be of type C{ftype} ('src', 'trans', 'tgt').
+            to be of type ``ftype`` ('src', 'trans', 'tgt').
 
-            @type  delete_orig: bool
-            @param delete_orig: Whether or not the original (given) file should
+            :type  delete_orig: bool
+            :param delete_orig: Whether or not the original (given) file should
                                 be deleted after being appended. This is set to
-                                C{True} by L{project.convert_forward()}. Not
+                                ``True`` by :ref:`project.convert_forward()`. Not
                                 used in this class."""
         if not ftype in self.TYPE_INFO['f_prefix']:
             raise ValueError('Invalid file type: %s' % (ftype))
@@ -206,16 +206,17 @@ class ProjectStore(object):
     def get_file(self, fname, mode='rb'):
         """Retrieve the file with the given name from the project store.
 
-            The file is looked up in the C{self._files} dictionary. The values
-            in this dictionary may be C{None}, to indicate that the file is not
+            The file is looked up in the ``self._files`` dictionary. The values
+            in this dictionary may be ``None``, to indicate that the file is not
             cacheable and needs to be retrieved in a special way. This special
             way must be defined in this method of sub-classes. The value may
             also be a string, which indicates that it is a real file accessible
-            via C{open()}.
+            via ``open()``.
 
-            @type  mode: str
-            @param mode: The mode in which to re-open the file (if it is closed)
-            @see BundleProjectStore.get_file"""
+            :type  mode: str
+            :param mode: The mode in which to re-open the file (if it is closed)
+            .. seealso::
+  """
         if fname not in self._files:
             raise FileNotInProjectError(fname)
 
@@ -259,10 +260,10 @@ class ProjectStore(object):
         pass
 
     def update_file(self, pfname, infile):
-        """Remove the project file with name C{pfname} and add the contents
-            from C{infile} to the project under the same file name.
+        """Remove the project file with name ``pfname`` and add the contents
+            from ``infile`` to the project under the same file name.
 
-            @returns: the results from L{self.append_file}."""
+            @returns: the results from :ref:`self.append_file`."""
         ftype = self.get_filename_type(pfname)
         self.remove_file(pfname)
         self.append_file(infile, pfname, ftype)
@@ -337,7 +338,7 @@ class ProjectStore(object):
 
     def _load_settings(self, settingsxml):
         """Load project settings from the given XML string.
-            C{settingsxml} is parsed into a DOM tree (L{lxml.etree.fromstring})
+            ``settingsxml`` is parsed into a DOM tree (:ref:`lxml.etree.fromstring`)
             which is then inspected."""
         settings = {}
         xml = etree.fromstring(settingsxml)

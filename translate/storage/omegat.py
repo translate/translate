@@ -21,18 +21,18 @@
 """Manage the OmegaT glossary format
 
    OmegaT glossary format is used by the
-   U{OmegaT<http://www.omegat.org/en/omegat.html>} computer aided
+   `OmegaT <http://www.omegat.org/en/omegat.html>`_ computer aided
    translation tool.
 
-   It is a bilingual base class derived format with L{OmegaTFile}
-   and L{OmegaTUnit} providing file and unit level access.
+   It is a bilingual base class derived format with :ref:`OmegaTFile`
+   and :ref:`OmegaTUnit` providing file and unit level access.
 
    Format Implementation
    =====================
    The OmegaT glossary format is a simple Tab Separated Value (TSV) file
    with the columns: source, target, comment.
 
-   The dialect of the TSV files is specified by L{OmegaTDialect}.
+   The dialect of the TSV files is specified by :ref:`OmegaTDialect`.
 
    Encoding
    --------
@@ -84,8 +84,8 @@ class OmegaTUnit(base.TranslationUnit):
     def setdict(self, newdict):
         """Set the dictionary of values for a OmegaT line
 
-        @param newdict: a new dictionary with OmegaT line elements
-        @type newdict: Dict
+        :param newdict: a new dictionary with OmegaT line elements
+        :type newdict: Dict
         """
         # TODO First check that the values are OK
         self._dict = newdict

@@ -20,7 +20,7 @@
 
 """This module represents Greek language.
 
-For more information, see U{http://en.wikipedia.org/wiki/Greek_language}
+For more information, see http://en.wikipedia.org/wiki/Greek_language
 """
 
 import re

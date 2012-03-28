@@ -20,7 +20,7 @@
 
 """This module represents Sinhala language.
 
-For more information, see U{http://en.wikipedia.org/wiki/Sinhala_language}
+For more information, see http://en.wikipedia.org/wiki/Sinhala_language
 """
 
 from translate.lang import common

@@ -72,7 +72,7 @@ ur"\_": u"‑", # Nonbreaking hyphen \U2011
 #ur"\'hh": "",
 }
 """RTF control to Unicode map
-U{<http://msdn.microsoft.com/en-us/library/aa140283%28v=office.10%29.aspx#rtfspec_specialchar>}
+<http://msdn.microsoft.com/en-us/library/aa140283%28v=office.10%29.aspx#rtfspec_specialchar>
 """
 
 
@@ -111,8 +111,8 @@ class TradosTxtDate(object):
     def set_timestring(self, timestring):
         """Set the time_struct object using a Trados time formated string
 
-        @param timestring: A Trados time string (DDMMYYYY, hh:mm:ss)
-        @type timestring: String
+        :param timestring: A Trados time string (DDMMYYYY, hh:mm:ss)
+        :type timestring: String
         """
         self._time = time.strptime(timestring, TRADOS_TIMEFORMAT)
     timestring = property(get_timestring, set_timestring)
@@ -124,8 +124,8 @@ class TradosTxtDate(object):
     def set_time(self, newtime):
         """Set the time_struct object
 
-        @param newtime: a new time object
-        @type newtime: time.time_struct
+        :param newtime: a new time object
+        :type newtime: time.time_struct
         """
         if newtime and isinstance(newtime, time.struct_time):
             self._time = newtime

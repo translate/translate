@@ -164,8 +164,8 @@ def unquotefrompo(postr):
 def get_libgettextpo_version():
     """Returns the libgettextpo version
 
-       @rtype: three-value tuple
-       @return: libgettextpo version in the following format::
+       :rtype: three-value tuple
+       :return: libgettextpo version in the following format::
            (major version, minor version, subminor version)
     """
     libversion = c_long.in_dll(gpo, 'libgettextpo_version')
@@ -465,8 +465,8 @@ class pounit(pocommon.pounit):
     def _extract_msgidcomments(self, text=None):
         """Extract KDE style msgid comments from the unit.
 
-        @rtype: String
-        @return: Returns the extracted msgidcomments found in this unit's msgid.
+        :rtype: String
+        :return: Returns the extracted msgidcomments found in this unit's msgid.
         """
         if not text:
             text = (gpo.po_message_msgid(self._gpo_message) or "").decode(self._encoding)

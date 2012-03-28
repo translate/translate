@@ -45,7 +45,7 @@ In addition there are several auto-generated //-style comments scattered through
 page and array, some of which matter when being parsed.
 
 This has all been gleaned from the
-U{TikiWiki source<http://tikiwiki.svn.sourceforge.net/viewvc/tikiwiki/trunk/get_strings.php?view=markup>}.
+`TikiWiki source <http://tikiwiki.svn.sourceforge.net/viewvc/tikiwiki/trunk/get_strings.php?view=markup>`_.
 As far as I know no detailed documentation exists for the tiki language.php files.
 
 """
@@ -75,7 +75,7 @@ class TikiUnit(base.TranslationUnit):
         """Location is defined by the comments in the file. This function will only
         set valid locations.
 
-        @param location: Where the string is located in the file.  Must be a valid location.
+        :param location: Where the string is located in the file.  Must be a valid location.
         """
         if location in ['unused', 'untranslated', 'possiblyuntranslated', 'translated']:
             self.location.append(location)
@@ -91,7 +91,7 @@ class TikiStore(base.TranslationStore):
     def __init__(self, inputfile=None):
         """If an inputfile is specified it will be parsed.
 
-        @param inputfile: Either a string or a filehandle of the source file
+        :param inputfile: Either a string or a filehandle of the source file
         """
         base.TranslationStore.__init__(self, TikiUnit)
         self.units = []
@@ -148,7 +148,7 @@ class TikiStore(base.TranslationStore):
     def parse(self, input):
         """Parse the given input into source units.
 
-        @param input: the source, either a string or filehandle
+        :param input: the source, either a string or filehandle
         """
         if hasattr(input, "name"):
             self.filename = input.name

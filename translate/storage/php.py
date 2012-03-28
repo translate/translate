@@ -18,8 +18,8 @@
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, see <http://www.gnu.org/licenses/>.
 
-"""Classes that hold units of PHP localisation files L{phpunit} or entire files
-   L{phpfile}. These files are used in translating many PHP based applications.
+"""Classes that hold units of PHP localisation files :ref:`phpunit` or entire files
+   :ref:`phpfile`. These files are used in translating many PHP based applications.
 
    Only PHP files written with these conventions are supported::
       $lang['item'] = "vale";  # Array of values
@@ -35,7 +35,7 @@
    The working of PHP strings and specifically the escaping conventions which
    differ between single quote (') and double quote (") characters are
    implemented as outlined in the PHP documentation for the
-   U{String type<http://www.php.net/language.types.string>}
+   `String type <http://www.php.net/language.types.string>`_
 """
 
 import re
@@ -47,8 +47,8 @@ def phpencode(text, quotechar="'"):
     """convert Python string to PHP escaping
 
     The encoding is implemented for
-    U{'single quote'<http://www.php.net/manual/en/language.types.string.php#language.types.string.syntax.single>}
-    and U{"double quote"<http://www.php.net/manual/en/language.types.string.php#language.types.string.syntax.double>}
+    `'single quote' <http://www.php.net/manual/en/language.types.string.php#language.types.string.syntax.single>`_
+    and `"double quote" <http://www.php.net/manual/en/language.types.string.php#language.types.string.syntax.double>`_
     syntax.
 
     heredoc and nowdoc are not implemented and it is not certain whether this

@@ -20,7 +20,7 @@
 
 """This module represents French language.
 
-For more information, see U{http://en.wikipedia.org/wiki/French_language}
+For more information, see http://en.wikipedia.org/wiki/French_language
 """
 
 import re

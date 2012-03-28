@@ -20,7 +20,7 @@
 
 """This module represents Persian language.
 
-For more information, see U{http://en.wikipedia.org/wiki/Persian_language}
+For more information, see http://en.wikipedia.org/wiki/Persian_language
 """
 
 from translate.lang import common

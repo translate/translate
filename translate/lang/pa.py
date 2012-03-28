@@ -20,7 +20,7 @@
 
 """This module represents Punjabi language.
 
-For more information, see U{http://en.wikipedia.org/wiki/Punjabi_language}
+For more information, see http://en.wikipedia.org/wiki/Punjabi_language
 """
 
 import re

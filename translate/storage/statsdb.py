@@ -21,9 +21,6 @@
 
 """Module to provide a cache of statistics in a database.
 
-@organization: Zuza Software Foundation
-@copyright: 2007 Zuza Software Foundation
-@license: U{GPL <http://www.fsf.org/licensing/licenses/gpl.html>}
 """
 
 try:

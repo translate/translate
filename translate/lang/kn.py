@@ -20,7 +20,7 @@
 
 """This module represents Kannada language.
 
-For more information, see U{http://en.wikipedia.org/wiki/Kannada_language}
+For more information, see http://en.wikipedia.org/wiki/Kannada_language
 """
 
 from translate.lang import common
