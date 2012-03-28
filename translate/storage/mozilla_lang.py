@@ -55,6 +55,9 @@ class LangStore(txt.TxtFile):
     Name = _("Mozilla .lang")
     Extensions = ['lang']
 
+    def __init__(self, inputfile=None, flavour=None, encoding="utf-8"):
+        super(LangStore, self).__init__(inputfile, flavour, encoding)
+
     def parse(self, lines):
         #Have we just seen a ';' line, and so are ready for a translation
         readyTrans = False
@@ -68,7 +71,8 @@ class LangStore(txt.TxtFile):
                 continue
 
             if readyTrans: #If we are expecting a translation, set the target
-                u.target = line.replace(" {ok}", "")
+                if line != u.source:
+                    u.target = line.replace(" {ok}", "")
                 readyTrans = False #We already have our translation
                 continue
 
