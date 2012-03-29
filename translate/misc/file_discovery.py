@@ -54,6 +54,7 @@ def get_abs_data_filename(path_parts, basedirs=None):
         BASE_DIRS += os.environ['RESOURCEPATH'].split(os.path.pathsep)
 
     DATA_DIRS = [
+        ["..", "..", "share"],
         ["..", "share"],
         ["share"],
     ]
