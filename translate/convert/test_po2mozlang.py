@@ -20,7 +20,7 @@ class TestPO2Lang:
     def test_simple(self):
         """check the simplest case of merging a translation"""
         posource = '''#: prop\nmsgid "Source"\nmsgstr "Target"\n'''
-        propexpected = ''';Source\nTarget'''
+        propexpected = ''';Source\nTarget\n'''
         langfile = self.po2lang(posource)
         print langfile
         assert str(langfile) == propexpected
