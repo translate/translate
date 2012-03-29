@@ -23,9 +23,9 @@ these are specific .dtd files for localisation used by mozilla
 
 Specifications
 ==============
-The following information is provided by Mozilla::
+The following information is provided by Mozilla:
 
-*  `Specification <http://www.w3.org/TR/REC-xml/#sec-entexpand>`_
+`Specification <http://www.w3.org/TR/REC-xml/#sec-entexpand>`_
 
 There is a grammar for entity definitions, which isn't really precise,
 as the spec says.  There's no formal specification for DTD files, it's
