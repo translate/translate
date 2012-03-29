@@ -42,8 +42,7 @@ class po2lang:
 
         # Run over the po units
         for pounit in inputstore.units:
-            # Skip the header
-            if pounit.isheader():
+            if pounit.isheader() or not pounit.istranslatable():
                 continue
             newunit = thetargetfile.addsourceunit(pounit.source)
             if includefuzzy or not pounit.isfuzzy():

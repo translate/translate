@@ -27,6 +27,7 @@ usage instructions
 from translate.convert import dtd2po
 from translate.convert import prop2po
 from translate.convert import mozfunny2prop
+from translate.convert import mozlang2po
 from translate.storage import xpi
 from translate.convert import convert
 
@@ -42,6 +43,7 @@ def main(argv=None):
                   ("it", mozfunny2prop.it2po),
                   ("ini", mozfunny2prop.ini2po),
                   ("inc", mozfunny2prop.inc2po),
+                  ("lang", mozlang2po.convertlang),
                  ]
     for format, converter in converters:
         formats[(format, format)] = (format + ".po", converter)

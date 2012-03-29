@@ -28,6 +28,7 @@ import os.path
 
 from translate.convert import po2dtd
 from translate.convert import po2prop
+from translate.convert import po2mozlang
 from translate.convert import prop2mozfunny
 from translate.storage import xpi
 from translate.convert import convert
@@ -103,6 +104,7 @@ def main(argv=None):
                ("it.po", "it"): ("it", prop2mozfunny.po2it),
                ("ini.po", "ini"): ("ini", prop2mozfunny.po2ini),
                ("inc.po", "inc"): ("inc", prop2mozfunny.po2inc),
+               ("lang.po", "lang"): ("lang", po2mozlang.convertlang),
                # (None, "*"): ("*", convert.copytemplate),
                ("*", "*"): ("*", convert.copyinput),
                "*": ("*", convert.copyinput)}
