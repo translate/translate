@@ -37,6 +37,7 @@ classes_str = {
            "po": ("po", "pofile"), "pot": ("po", "pofile"),
            "mo": ("mo", "mofile"), "gmo": ("mo", "mofile"),
            "qm": ("qm", "qmfile"),
+           "lang": ("mozilla_lang", "LangStore"),
            "utx": ("utx", "UtxFile"),
            "_wftm": ("wordfast", "WordfastTMFile"),
            "_trados_txt_tm": ("trados", "TradosTxtTmFile"),
