@@ -1,8 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-from py.test import mark
-
 from translate.storage import mozilla_lang
 from translate.storage import test_base
 
