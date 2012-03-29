@@ -39,7 +39,11 @@ class LangUnit(base.TranslationUnit):
             unchanged = " {ok}"
         else:
             unchanged = ""
-        return u";%s\n%s%s" % (self.source, self.target, unchanged)
+        if self.target == "" or self.target is None:
+            target = self.source
+        else:
+            target = self.target
+        return u";%s\n%s%s" % (self.source, target, unchanged)
 
     def getlocations(self):
         return self.locations

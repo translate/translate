@@ -16,6 +16,18 @@ class TestMozLangUnit(test_base.TestTranslationUnit):
         assert unit.target == "Open"
         assert str(unit).endswith(" {ok}")
 
+    def test_untranslated(self):
+        """THe target is always written to files and is never blank."""
+        unit = self.UnitClass("Open")
+        assert unit.target is None
+        assert str(unit).find("Open") == 1
+        assert str(unit).find("Open", 2) == 6
+        unit = self.UnitClass("Closed")
+        unit.target = ""
+        assert unit.target == ""
+        assert str(unit).find("Closed") == 1
+        assert str(unit).find("Closed", 2) == 8
+
 
 class TestMozLangFile(test_base.TestTranslationStore):
     StoreClass = mozilla_lang.LangStore
