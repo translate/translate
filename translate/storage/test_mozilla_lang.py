@@ -10,7 +10,6 @@ from translate.storage import test_base
 class TestMozLangUnit(test_base.TestTranslationUnit):
     UnitClass = mozilla_lang.LangUnit
 
-    @mark.xfail(reason="Bug 1999")
     def test_translate_but_same(self):
         """Mozilla allows {ok} to indicate a line that is the 
         same in source and target on purpose"""
