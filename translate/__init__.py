@@ -20,7 +20,8 @@
 
 """The Translate Toolkit is a Python package that assists in localization of software.
 
-See U{http://translate.sourceforge.net/wiki/toolkit/index} or U{http://translate.org.za} for more information.
+See http://translate.sourceforge.net/wiki/toolkit/index or
+http://translate.org.za for more information.
 
 @organization: Zuza Software Foundation
 @copyright: 2002-2010 Zuza Software Foundation

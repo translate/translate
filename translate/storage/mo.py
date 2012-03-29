@@ -29,8 +29,8 @@
 
 """Module for parsing Gettext .mo files for translation.
 
-The coding of .mo files was produced from U{Gettext documentation
-<http://www.gnu.org/software/gettext/manual/gettext.html#MO-Files>},
+The coding of .mo files was produced from `Gettext documentation
+<http://www.gnu.org/software/gettext/manual/gettext.html#MO-Files>`_,
 Pythons msgfmt.py and by observing and testing existing .mo files in the wild.
 
 The hash algorithm is implemented for MO files, this should result in

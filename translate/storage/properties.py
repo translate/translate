@@ -45,9 +45,9 @@
    Java .properties are supported completely except for the ability to drop
    pairs that are not translated.
 
-   The following U{.properties file
-   description<http://java.sun.com/j2se/1.4.2/docs/api/java/util/Properties.html#load(java.io.InputStream)>}
-   and `example  <http://www.exampledepot.com/egs/java.util/Props.html>`_ give
+   The following `.properties file description
+   <http://java.sun.com/j2se/1.4.2/docs/api/java/util/Properties.html#load(java.io.InputStream)>`_
+   and `example <http://www.exampledepot.com/egs/java.util/Props.html>`_ give
    some good references to the .properties specification.
 
    Properties file may also hold Java
