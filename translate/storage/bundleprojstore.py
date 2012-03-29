@@ -74,7 +74,7 @@ class BundleProjectStore(ProjectStore):
             :param delete_orig: If ``True``, as set by
                                 :ref:`project.convert_forward()`, ``afile`` is
                                 deleted after appending, if possible.
-            NOTE: For this implementation, the appended file will be deleted
+            .. note:: For this implementation, the appended file will be deleted
                   from disk if ``delete_orig`` is ``True``."""
         if fname and fname in self.zip.namelist():
             raise ValueError("File already in bundle archive: %s" % (fname))
