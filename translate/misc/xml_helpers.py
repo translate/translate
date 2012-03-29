@@ -89,6 +89,7 @@ def namespaced(namespace, name):
 
        For example namespaced("source") in an XLIFF document might return::
            {urn:oasis:names:tc:xliff:document:1.1}source
+
        This is needed throughout lxml.
     """
     if namespace:
@@ -101,7 +102,7 @@ MULTIWHITESPACE_RE = re.compile(MULTIWHITESPACE_PATTERN, re.MULTILINE)
 
 
 def normalize_space(text):
-    """Normalize the given text for implimentation of xml:space="default"."""
+    """Normalize the given text for implementation of ``xml:space="default"``."""
     text = MULTIWHITESPACE_RE.sub(u" ", text)
     return text
 

@@ -114,7 +114,6 @@
 
      # .strings specific
      "key" = "value";
-'"
 """
 
 import re

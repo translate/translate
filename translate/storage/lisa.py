@@ -211,9 +211,9 @@ class LISAunit(base.TranslationUnit):
         return list(self.xmlelement.iterchildren(self.namespaced(self.languageNode)))
 
     def getlanguageNode(self, lang=None, index=None):
-        """Retrieves a languageNode either by language or by index"""
+        """Retrieves a :attr:`languageNode` either by language or by index."""
         if lang is None and index is None:
-            raise KeyError("No criterea for languageNode given")
+            raise KeyError("No criteria for languageNode given")
         languageNodes = self.getlanguageNodes()
         if lang:
             for set in languageNodes:
@@ -227,7 +227,7 @@ class LISAunit(base.TranslationUnit):
         return None
 
     def getNodeText(self, languageNode, xml_space="preserve"):
-        """Retrieves the term from the given languageNode"""
+        """Retrieves the term from the given :attr:`languageNode`."""
         if languageNode is None:
             return None
         if self.textNode:

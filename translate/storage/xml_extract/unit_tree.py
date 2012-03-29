@@ -80,13 +80,15 @@ def _add_unit_to_tree(node, xpath_components, unit):
 
       add_unit_to_tree(node, [('p', 2), ('text', 3), ('body', 2), ('document-content', 1)], unit)
 
-    would begin by popping ('document-content', 1) from the path and following the node marked
-    ('document-content', 1) in the tree. Likewise, will descend down the nodes marked ('body', 2)
-    and ('text', 3).
+    would begin by popping ('document-content', 1) from the path and
+    following the node marked ``('document-content', 1)`` in the tree.
+    Likewise, will descend down the nodes marked ``('body', 2)``
+    and ``('text', 3)``.
 
-    Since the node marked ('text', 3) has no child node marked ('p', 2), this node is created. Then
-    the add_unit_to_tree descends down this node. When this happens, there are no xpath components
-    left to pop. Thus, node.unit = unit is executed.
+    Since the node marked ``('text', 3)`` has no child node marked
+    ``('p', 2)``, this node is created. Then the ``add_unit_to_tree``
+    descends down this node. When this happens, there are no xpath
+    components left to pop. Thus, ``node.unit = unit`` is executed.
     """
     if len(xpath_components) > 0:
         component = xpath_components.pop() # pop the stack; is a component such as ('p', 4)
@@ -106,6 +108,7 @@ def build_unit_tree(store):
     containing the unit, is equal to the XPath of the unit.
 
     The tree looks something like this::
+
         root
            `- ('document-content', 1)
               `- ('body', 2)

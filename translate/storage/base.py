@@ -143,7 +143,7 @@ class TranslationUnit(object):
 
     def __str__(self):
         """Converts to a string representation that can be parsed back using
-        :ref:`parsestring()`."""
+        :meth:`~.TranslationStore.parsestring`."""
         # no point in pickling store object, so let's hide it for a while.
         store = getattr(self, "_store", None)
         self._store = None
@@ -230,8 +230,11 @@ class TranslationUnit(object):
     def gettargetlen(self):
         """Returns the length of the target string.
 
-        .. note:: Plural forms might be combined.
         :rtype: Integer
+
+        .. note::
+
+        Plural forms might be combined.
         """
         length = len(self.target or "")
         strings = getattr(self.target, "strings", [])
@@ -260,24 +263,34 @@ class TranslationUnit(object):
     def getlocations(self):
         """A list of source code locations.
 
-        .. note:: Shouldn't be implemented if the format doesn't support it.
         :rtype: List
+
+        .. note::
+
+        Shouldn't be implemented if the format doesn't support it.
         """
         return []
 
     def addlocation(self, location):
         """Add one location to the list of locations.
 
-        .. note:: Shouldn't be implemented if the format doesn't support it.
+        .. note::
+
+        Shouldn't be implemented if the format doesn't support it.
         """
         pass
 
     def addlocations(self, location):
         """Add a location or a list of locations.
 
-        .. note:: Most classes shouldn't need to implement this,
-               but should rather implement :ref:`addlocation()`.
-        .. warning::: This method might be removed in future.
+        .. note::
+
+        Most classes shouldn't need to implement this, but should rather
+        implement :ref:`addlocation()`.
+
+        .. warning::
+
+        This method might be removed in future.
         """
         if isinstance(location, list):
             for item in location:
@@ -310,8 +323,8 @@ class TranslationUnit(object):
         :type origin: string
         :param origin: Specifies who/where the comment comes from.
                        Origin can be one of the following text strings:
-                         - 'translator'
-                         - 'developer', 'programmer', 'source code' (synonyms)
+                       - 'translator'
+                       - 'developer', 'programmer', 'source code' (synonyms)
         """
         if position == "append" and getattr(self, "notes", None):
             self.notes += '\n' + text
@@ -391,7 +404,9 @@ class TranslationUnit(object):
     def isblank(self):
         """Used to see if this unit has no source or target string.
 
-        .. note:: This is probably used more to find translatable units,
+        .. note::
+
+        This is probably used more to find translatable units,
         and we might want to move in that direction rather and get rid of this.
         """
         return not (self.source or self.target)
@@ -677,7 +692,7 @@ class TranslationStore(object):
 
     def __str__(self):
         """Converts to a string representation that can be parsed back using
-        :ref:`parsestring()`."""
+        :meth:`~.TranslationStore.parsestring`."""
         # We can't pickle fileobj if it is there, so let's hide it for a while.
         fileobj = getattr(self, "fileobj", None)
         self.fileobj = None

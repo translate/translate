@@ -23,8 +23,8 @@
 JSON is an acronym for JavaScript Object Notation, it is an open standard
 designed for human-readable data interchange.
 
-JSON basic types
-================
+JSON basic types:
+
   - Number (integer or real)
   - String (double-quoted Unicode with backslash escaping)
   - Boolean (true or false)
@@ -34,8 +34,7 @@ JSON basic types
     enclosed in curly braces)
   - null
 
-Example
-=======
+Example::
 
   {
        "firstName": "John",
@@ -60,8 +59,8 @@ Example
    }
 
 
-TODO
-====
+TODO:
+
   - Handle \u and other escapes in Unicode
   - Manage data type storage and conversion. True -> "True" -> True
   - Sort the extracted data to the order of the JSON file
@@ -164,11 +163,12 @@ class JsonFile(base.TranslationStore):
                                name_last_node=None, last_node=None):
         """Recursive function to extract items from the data files
 
-        data - is the current branch to walk down
-        stop - is a list of leaves to extract or None to extract everything
-        prev - is the heirchy of the tree at this iteration
-        last - is the name of the last node
-        last_node - the last list or dict
+        :param data: the current branch to walk down
+        :param stop: a list of leaves to extract or None to extract everything
+        :param prev: the heirarchy of the tree at this iteration
+        :param name_node:
+        :param name_last_node: the name of the last node
+        :param last_node: the last list or dict
         """
         if isinstance(data, dict):
             for k, v in data.iteritems():
