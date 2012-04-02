@@ -281,9 +281,6 @@ do
 	#copyfile toolkit/chrome/global/intl.css ${lang}
         # Revert some files that need careful human review or authorisation
 	[ -d ${L10N_DIR}/${lang}/.hg ] && (cd ${L10N_DIR}/${lang}; hg revert browser/chrome/browser-region/region.properties browser/searchplugins/list.txt)
-	# These seem to have been removed for Fx4
-	#[ ! -f ${L10N_DIR}/${lang}/browser/profile/bookmarks.html ] && copyfile browser/profile/bookmarks.html ${lang}
-	#sed -i "s/en-US/${lang}/g" ${L10N_DIR}/${lang}/browser/profile/bookmarks.html || /bin/true
 
 	## CREATE XPI LANGPACK
 	[ $opt_build_xpi ] && buildxpi.py -d -L ${L10N_DIR} -s ${MOZCENTRAL_DIR} -o ${LANGPACK_DIR} ${lang}
