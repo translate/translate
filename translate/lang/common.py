@@ -20,40 +20,40 @@
 
 """This module contains all the common features for languages.
 
-   Supported features
-   ==================
-     - language code (km, af)
-     - language name (Khmer, Afrikaans)
-     - Plurals
-       - Number of plurals (nplurals)
-       - Plural equation
-     - pofilter tests to ignore
+Supported features
+==================
+ - language code (km, af)
+ - language name (Khmer, Afrikaans)
+ - Plurals
+   - Number of plurals (nplurals)
+   - Plural equation
+ - pofilter tests to ignore
 
-   Segmentation
-   ------------
-     - characters
-     - words
-     - sentences
+Segmentation
+------------
+ - characters
+ - words
+ - sentences
 
-   TODOs and Ideas for possible features
-   =====================================
-     - Language-Team information
-     - Segmentation
-       - phrases
+TODOs and Ideas for possible features
+=====================================
+ - Language-Team information
+ - Segmentation
+   - phrases
 
-   Punctuation
-   -----------
-     - End of sentence
-     - Start of sentence
-     - Middle of sentence
-     - Quotes
-       - single
-       - double
+Punctuation
+-----------
+ - End of sentence
+ - Start of sentence
+ - Middle of sentence
+ - Quotes
+   - single
+   - double
 
-     - Valid characters
-     - Accelerator characters
-     - Special characters
-     - Direction (rtl or ltr)
+ - Valid characters
+ - Accelerator characters
+ - Special characters
+ - Direction (rtl or ltr)
 """
 
 import re
@@ -89,7 +89,7 @@ class Common(object):
     0 is not a valid value - it must be overridden.
     Any positive integer is valid (it should probably be between 1 and 6)
 
-    .. seealso:: :ref:`data`
+    .. seealso:: :mod:`translate.lang.data`
     """
 
     pluralequation = "0"
@@ -99,7 +99,7 @@ class Common(object):
 
     .. seealso::
 
-       `Gettext manual <http://www.gnu.org/software/gettext/manual/html_node/gettext_150.html#Plural-forms>`_, :ref:`data` 
+       `Gettext manual <http://www.gnu.org/software/gettext/manual/html_node/gettext_150.html#Plural-forms>`_, :mod:`translate.lang.data` 
     """
     # Don't change these defaults of nplurals or pluralequation willy-nilly:
     # some code probably depends on these for unrecognised languages

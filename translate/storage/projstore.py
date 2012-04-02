@@ -125,8 +125,9 @@ class ProjectStore(object):
             :type  delete_orig: bool
             :param delete_orig: Whether or not the original (given) file should
                                 be deleted after being appended. This is set to
-                                ``True`` by :ref:`project.convert_forward()`. Not
-                                used in this class."""
+                                ``True`` by
+                                :meth:`~translate.storage.project.convert_forward`
+                                . Not used in this class."""
         if not ftype in self.TYPE_INFO['f_prefix']:
             raise ValueError('Invalid file type: %s' % (ftype))
 
@@ -206,17 +207,16 @@ class ProjectStore(object):
     def get_file(self, fname, mode='rb'):
         """Retrieve the file with the given name from the project store.
 
-            The file is looked up in the ``self._files`` dictionary. The values
-            in this dictionary may be ``None``, to indicate that the file is not
-            cacheable and needs to be retrieved in a special way. This special
-            way must be defined in this method of sub-classes. The value may
-            also be a string, which indicates that it is a real file accessible
-            via ``open()``.
+        The file is looked up in the ``self._files`` dictionary. The values
+        in this dictionary may be ``None``, to indicate that the file is not
+        cacheable and needs to be retrieved in a special way. This special
+        way must be defined in this method of sub-classes. The value may
+        also be a string, which indicates that it is a real file accessible
+        via ``open``.
 
-            :type  mode: str
-            :param mode: The mode in which to re-open the file (if it is closed)
-            .. seealso::
-  """
+        :type  mode: str
+        :param mode: The mode in which to re-open the file (if it is closed).
+        """
         if fname not in self._files:
             raise FileNotInProjectError(fname)
 
@@ -263,7 +263,7 @@ class ProjectStore(object):
         """Remove the project file with name ``pfname`` and add the contents
             from ``infile`` to the project under the same file name.
 
-            :returns: the results from :ref:`self.append_file`."""
+            :returns: the results from :meth:`ProjectStore.append_file`."""
         ftype = self.get_filename_type(pfname)
         self.remove_file(pfname)
         self.append_file(infile, pfname, ftype)
@@ -338,8 +338,8 @@ class ProjectStore(object):
 
     def _load_settings(self, settingsxml):
         """Load project settings from the given XML string.
-            ``settingsxml`` is parsed into a DOM tree (:ref:`lxml.etree.fromstring`)
-            which is then inspected."""
+        ``settingsxml`` is parsed into a DOM tree (``lxml.etree.fromstring``)
+        which is then inspected."""
         settings = {}
         xml = etree.fromstring(settingsxml)
 

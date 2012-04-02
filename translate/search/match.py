@@ -18,7 +18,8 @@
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, see <http://www.gnu.org/licenses/>.
 
-"""Class to perform translation memory matching from a store of translation units"""
+"""Class to perform translation memory matching from a store of
+translation units."""
 
 import itertools
 import heapq
@@ -32,7 +33,7 @@ from translate.misc.multistring import multistring
 
 
 def sourcelen(unit):
-    """Returns the length of the source string"""
+    """Returns the length of the source string."""
     return len(unit.source)
 
 
@@ -47,7 +48,8 @@ def _sort_matches(matches, match_info):
 
 
 class matcher(object):
-    """A class that will do matching and store configuration for the matching process"""
+    """A class that will do matching and store configuration for the
+    matching process."""
 
     sort_reverse = False
 
@@ -98,10 +100,10 @@ class matcher(object):
 
         :param units: The units to add to the TM.
         :param store: Optional store from where some metadata can be retrieved
-        and associated with each unit.
-        :param sort:  Optional parameter that can be set to False to supress
-        sorting of the candidates list. This should probably only be used in
-        inittm().
+                      and associated with each unit.
+        :param sort: Optional parameter that can be set to False to supress
+                     sorting of the candidates list. This should probably
+                     only be used in :meth:`matcher.inittm`.
         """
         if isinstance(units, base.TranslationUnit):
             units = [units]
@@ -152,8 +154,9 @@ class matcher(object):
         :param text: The text that will be search for in the translation memory
         :rtype: list
         :return: a list of units with the source and target strings from the
-        translation memory. If self.addpercentage is true (default) the match
-        quality is given as a percentage in the notes.
+                 translation memory. If :attr:`self.addpercentage` is
+                 *True* (default) the match quality is given as a
+                 percentage in the notes.
         """
         bestcandidates = [(0.0, None)]*self.MAX_CANDIDATES
         #We use self.MIN_SIMILARITY, but if we already know we have max_candidates
@@ -206,7 +209,8 @@ class matcher(object):
         return self.buildunits(bestcandidates)
 
     def buildunits(self, candidates):
-        """Builds a list of units conforming to base API, with the score in the comment"""
+        """Builds a list of units conforming to base API, with the score
+        in the comment."""
         units = []
         for score, candidate in candidates:
             if hasattr(candidate, "orig_source"):
@@ -243,7 +247,7 @@ context_re = re.compile("\s+\(.*\)\s*$")
 
 
 class terminologymatcher(matcher):
-    """A matcher with settings specifically for terminology matching"""
+    """A matcher with settings specifically for terminology matching."""
 
     sort_reverse = True
 
@@ -372,7 +376,7 @@ def unit2dict(unit):
 
 
 def _parse_quality(comment):
-    """extracts match quality from po comments"""
+    """Extracts match quality from po comments."""
     quality = re.search('([0-9]+)%', comment)
     if quality:
         return quality.group(1)

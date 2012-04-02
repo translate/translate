@@ -19,101 +19,93 @@
 # along with this program; if not, see <http://www.gnu.org/licenses/>.
 
 """Classes that hold units of .properties, and similar, files that are used in
-   translating Java, Mozilla, MacOS and other software.
+translating Java, Mozilla, MacOS and other software.
 
-   The :ref:`propfile` class is a monolingual class with :ref:`propunit` providing unit
-   level access.
+The :class:`propfile` class is a monolingual class with :class:`propunit`
+providing unit level access.
 
-   The .properties store has become a general key value pair class with
-   :ref:`Dialect` providing the ability to change the behaviour of the parsing
-   and handling of the various dialects.
+The .properties store has become a general key value pair class with
+:class:`Dialect` providing the ability to change the behaviour of the
+parsing and handling of the various dialects.
 
-   Currently we support::
-     * Java .properties
-     * Mozilla .properties
-     * Adobe Flex files
-     * MacOS X .strings files
-     * Skype .lang files
+Currently we support:
 
+    - Java .properties
+    - Mozilla .properties
+    - Adobe Flex files
+    - MacOS X .strings files
+    - Skype .lang files
 
-   Dialects
-   ========
-   The following provides references and descriptions of the various dialects supported::
+The following provides references and descriptions of the various dialects supported:
 
-   Java
-   ----
-   Java .properties are supported completely except for the ability to drop
-   pairs that are not translated.
+Java
+    Java .properties are supported completely except for the ability to drop
+    pairs that are not translated.
 
-   The following `.properties file description
-   <http://java.sun.com/j2se/1.4.2/docs/api/java/util/Properties.html#load(java.io.InputStream)>`_
-   and `example <http://www.exampledepot.com/egs/java.util/Props.html>`_ give
-   some good references to the .properties specification.
+    The following `.properties file description
+    <http://java.sun.com/j2se/1.4.2/docs/api/java/util/Properties.html#load(java.io.InputStream)>`_
+    and `example <http://www.exampledepot.com/egs/java.util/Props.html>`_ give
+    some good references to the .properties specification.
 
-   Properties file may also hold Java
-   `MessageFormat <http://java.sun.com/j2se/1.4.2/docs/api/java/text/MessageFormat.html>`_
-   messages.  No special handling is provided in this storage class for
-   MessageFormat, but this may be implemented in future.
+    Properties file may also hold Java
+    `MessageFormat <http://java.sun.com/j2se/1.4.2/docs/api/java/text/MessageFormat.html>`_
+    messages.  No special handling is provided in this storage class for
+    MessageFormat, but this may be implemented in future.
 
-   All delimiter types, comments, line continuations and spaces handling in
-   delimeters are supported.
+    All delimiter types, comments, line continuations and spaces handling in
+    delimeters are supported.
 
-   Mozilla
-   -------
-   Mozilla files use '=' as a delimiter, are UTF-8 encoded and thus don't need \\u
-   escaping.  Any \\U values will be converted to correct Unicode characters.
-`
-   Strings
-   -------
-   Mac OS X strings files are implemented using
-   `these <http://developer.apple.com/mac/library/documentation/MacOSX/Conceptual/BPInternational/Articles/StringsFiles.html>`_
-   `two <http://developer.apple.com/mac/library/documentation/Cocoa/Conceptual/LoadingResources/Strings/Strings.html>`_
-   articles as references.
+Mozilla
+    Mozilla files use '=' as a delimiter, are UTF-8 encoded and thus don't need \\u
+    escaping.  Any \\U values will be converted to correct Unicode characters.
 
-   Flex
-   ----
-   Adobe Flex files seem to be normal .properties files but in UTF-8 just like
-   Mozilla files. This
-   `page <http://livedocs.adobe.com/flex/3/html/help.html?content=l10n_3.html>`_
-   provides the information used to implement the dialect.
+Strings
+    Mac OS X strings files are implemented using
+    `these <http://developer.apple.com/mac/library/documentation/MacOSX/Conceptual/BPInternational/Articles/StringsFiles.html>`_
+    `two <http://developer.apple.com/mac/library/documentation/Cocoa/Conceptual/LoadingResources/Strings/Strings.html>`_
+    articles as references.
 
-   Skype
-   -----
-   Skype .lang files seem to be UTF-16 encoded .properties files.
+Flex
+    Adobe Flex files seem to be normal .properties files but in UTF-8 just like
+    Mozilla files. This
+    `page <http://livedocs.adobe.com/flex/3/html/help.html?content=l10n_3.html>`_
+    provides the information used to implement the dialect.
 
-   Implementation
-   ==============
+Skype
+    Skype .lang files seem to be UTF-16 encoded .properties files.
 
-   A simple summary of what is permissible follows.
+A simple summary of what is permissible follows.
 
-   Comments supported::
-     # a comment
-     ! a comment
-     // a comment (only at the beginning of a line)
-     /* a comment (not across multiple lines) */
+Comments supported::
 
-   Name and Value pairs::
-     # Delimiters
-     key = value
-     key : value
-     key value
+    # a comment
+    ! a comment
+    // a comment (only at the beginning of a line)
+    /* a comment (not across multiple lines) */
 
-     # Space in key and around value
-     \ key\ = \ value
+Name and Value pairs::
 
-     # Note that the b and c are escaped for epydoc rendering
-     b = a string with escape sequences \\t \\n \\r \\\\ \\" \\' \\ (space) \u0123
-     c = a string with a continuation line \\
-         continuation line
+    # Delimiters
+    key = value
+    key : value
+    key value
 
-     # Special cases
-     # key with no value
-     key
-     # value no key (extractable in prop2po but not mergeable in po2prop)
-     =value
+    # Space in key and around value
+    \ key\ = \ value
 
-     # .strings specific
-     "key" = "value";
+    # Note that the b and c are escaped for reST rendering
+    b = a string with escape sequences \\t \\n \\r \\\\ \\" \\' \\ (space) \u0123
+    c = a string with a continuation line \\
+        continuation line
+
+    # Special cases
+    # key with no value
+    key
+    # value no key (extractable in prop2po but not mergeable in po2prop)
+    =value
+
+    # .strings specific
+    "key" = "value";
 """
 
 import re
@@ -144,7 +136,7 @@ def _find_delimiter(line, delimiters):
     :type line: str
     :param delimiters: valid delimiters
     :type delimiters: list
-    :return: delimiter character and offset within :ref:`line`
+    :return: delimiter character and offset within *line*
     :rtype: Tuple (delimiter char, Offset Integer)
     """
     delimiter_dict = {}
@@ -192,7 +184,7 @@ def find_delimeter(line):
 @accepts(unicode)
 @returns(bool)
 def is_line_continuation(line):
-    """Determine whether :ref:`line` has a line continuation marker.
+    """Determine whether *line* has a line continuation marker.
 
     .properties files can be terminated with a backslash (\\) indicating
     that the 'value' continues on the next line.  Continuation is only
@@ -201,7 +193,7 @@ def is_line_continuation(line):
 
     :param line: A properties line
     :type line: str
-    :return: Does :ref:`line` end with a line continuation
+    :return: Does *line* end with a line continuation
     :rtype: Boolean
     """
     pos = -1
@@ -353,8 +345,8 @@ register_dialect(DialectStrings)
 
 
 class propunit(base.TranslationUnit):
-    """an element of a properties file i.e. a name and value, and any comments
-    associated"""
+    """An element of a properties file i.e. a name and value, and any
+    comments associated."""
 
     def __init__(self, source="", personality="java"):
         """construct a blank propunit"""
@@ -398,15 +390,15 @@ class propunit(base.TranslationUnit):
     encoding = property(_get_encoding)
 
     def __str__(self):
-        """convert to a string. double check that unicode is handled somehow
-        here"""
+        """Convert to a string. double check that unicode is handled
+        somehow here."""
         source = self.getoutput()
         assert isinstance(source, unicode)
         return source.encode(self.encoding)
 
     def getoutput(self):
-        """convert the element back into formatted lines for a .properties
-        file"""
+        """Convert the element back into formatted lines for a
+        .properties file"""
         notes = self.getnotes()
         if notes:
             notes += u"\n"
@@ -472,7 +464,8 @@ class propfile(base.TranslationStore):
             self.parse(propsrc)
 
     def parse(self, propsrc):
-        """read the source of a properties file in and include them as units"""
+        """Read the source of a properties file in and include them
+        as units."""
         text, encoding = self.detect_encoding(propsrc, default_encodings=[self.personality.default_encoding, 'utf-8', 'utf-16'])
         self.encoding = encoding
         propsrc = text
@@ -528,7 +521,7 @@ class propfile(base.TranslationStore):
             self.addunit(newunit)
 
     def __str__(self):
-        """convert the units back to lines"""
+        """Convert the units back to lines."""
         lines = []
         for unit in self.units:
             lines.append(str(unit))

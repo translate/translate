@@ -337,7 +337,7 @@ class pounit(pocommon.pounit):
         return str(_cpo_unit)
 
     def getlocations(self):
-        """Get a list of locations from sourcecomments in the PO unit
+        """Get a list of locations from sourcecomments in the PO unit.
 
         rtype: List
         return: A list of the locations with '#: ' stripped
@@ -347,7 +347,7 @@ class pounit(pocommon.pounit):
         return self.sourcecomments
 
     def addlocation(self, location):
-        """Add a location to sourcecomments in the PO unit
+        """Add a location to sourcecomments in the PO unit.
 
         :param location: Text location e.g. 'file.c:23' does not include #:
         :type location: String

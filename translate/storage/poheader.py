@@ -352,7 +352,7 @@ class poheader(object):
 
         This header is assumed to be the template.
 
-        :type otherstore: :ref:`base.TranslationStore`
+        :type otherstore: :class:`~translate.storage.base.TranslationStore`
         """
 
         newvalues = otherstore.parseheader()

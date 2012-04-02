@@ -82,7 +82,8 @@ class ical2po:
 
 
 def convertical(input_file, output_file, template_file, pot=False, duplicatestyle="msgctxt"):
-    """Reads in :ref:`input_file` using iCal, converts using :ref:`ical2po`, writes to :ref:`output_file`"""
+    """Reads in *input_file* using iCal, converts using :class:`ical2po`,
+    writes to *output_file*."""
     input_store = ical.icalfile(input_file)
     convertor = ical2po()
     if template_file is None:

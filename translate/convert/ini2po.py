@@ -18,7 +18,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, see <http://www.gnu.org/licenses/>.
 
-"""convert .ini files to Gettext PO localization files"""
+"""Convert .ini files to Gettext PO localization files."""
 
 import sys
 
@@ -81,7 +81,8 @@ class ini2po:
 
 
 def convertini(input_file, output_file, template_file, pot=False, duplicatestyle="msgctxt", dialect="default"):
-    """Reads in :ref:`input_file` using ini, converts using :ref:`ini2po`, writes to :ref:`output_file`"""
+    """Reads in *input_file* using ini, converts using :class:`ini2po`,
+    writes to *output_file*."""
     from translate.storage import ini
     input_store = ini.inifile(input_file, dialect=dialect)
     convertor = ini2po()

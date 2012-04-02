@@ -180,7 +180,7 @@ class tsunit(lisa.LISAunit):
         return self.xmlelement.get("numerus") == "yes"
 
     def addnote(self, text, origin=None, position="append"):
-        """Add a note specifically in the appropriate "*comment" tag"""
+        """Add a note specifically in the appropriate *comment* tag"""
         if isinstance(text, str):
             text = text.decode("utf-8")
         current_notes = self.getnotes(origin)
@@ -396,7 +396,7 @@ class tsfile(lisa.LISAfile):
         return data.normalize_code(self.header.get('language'))
 
     def settargetlanguage(self, targetlanguage):
-        """Set the target language for this .ts file to :ref:`targetlanguage`.
+        """Set the target language for this .ts file to *targetlanguage*.
 
         :param targetlanguage: ISO code e.g. af, fr, pt_BR
         :type targetlanguage: String

@@ -20,38 +20,34 @@
 
 """Manage the Haiku catkeys translation format
 
-   The Haiku catkeys format is the translation format used for localisation of
-   the `Haiku <http://www.haiku-os.org/>`_ operating system.
+The Haiku catkeys format is the translation format used for localisation of
+the `Haiku <http://www.haiku-os.org/>`_ operating system.
 
-   It is a bilingual base class derived format with :ref:`CatkeysFile` and
-   :ref:`CatkeysUnit` providing file and unit level access.  The file format is
-   described here:
-   http://www.haiku-os.org/blog/pulkomandy/2009-09-24_haiku_locale_kit_translator_handbook
+It is a bilingual base class derived format with :class:`CatkeysFile` and
+:class:`CatkeysUnit` providing file and unit level access.  The file format is
+described here:
+http://www.haiku-os.org/blog/pulkomandy/2009-09-24_haiku_locale_kit_translator_handbook
 
-   Implementation
-   ==============
-   The implementation covers the full requirements of a catkeys file. The
-   files are simple Tab Separated Value (TSV) files that can be read
-   by Microsoft Excel and other spreadsheet programs. They use the .txt
-   extension which does make it more difficult to automatically identify
-   such files.
+Implementation
+    The implementation covers the full requirements of a catkeys file. The
+    files are simple Tab Separated Value (TSV) files that can be read
+    by Microsoft Excel and other spreadsheet programs. They use the .txt
+    extension which does make it more difficult to automatically identify
+    such files.
 
-   The dialect of the TSV files is specified by :ref:`CatkeysDialect`.
+    The dialect of the TSV files is specified by :class:`CatkeysDialect`.
 
-   Encoding
-   --------
-   The files are UTF-8 encoded.
+Encoding
+    The files are UTF-8 encoded.
 
-   Header
-   ------
-   :ref:`CatkeysHeader` provides header management support.
+Header
+    :class:`CatkeysHeader` provides header management support.
 
-   Escaping
-   --------
-   catkeys seem to escape things like in C++ (strings are just extracted from
-   the source code unchanged, it seems.
+Escaping
+    catkeys seem to escape things like in C++ (strings are just extracted from
+    the source code unchanged, it seems.
 
-   Functions allow for :ref:`<_escape>` and :ref:`<_unescape>`.
+    Functions allow for :func:`._escape` and :func:`._unescape`.
 """
 
 import csv

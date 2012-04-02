@@ -81,9 +81,10 @@ class UnknownXML(StringElem):
     # SPECIAL METHODS #
     def __repr__(self):
         """String representation of the sub-tree with the current node as the
-            root.
+        root.
 
-            Copied from :ref:`StringElem.__repr__`, but includes ``self.xml_node.tag``."""
+        Copied from :meth:`StringElem.__repr__`, but includes
+        ``self.xml_node.tag``."""
         tag = self.xml_node.tag
         if tag.startswith('{'):
             tag = tag[tag.index('}')+1:]

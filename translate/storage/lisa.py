@@ -88,9 +88,12 @@ class LISAunit(base.TranslationUnit):
     def namespaced(self, name):
         """Returns name in Clark notation.
 
-           For example namespaced("source") in an XLIFF document might return::
-               {urn:oasis:names:tc:xliff:document:1.1}source
-           This is needed throughout lxml.
+        For example ``namespaced("source")`` in an XLIFF document
+        might return::
+
+            {urn:oasis:names:tc:xliff:document:1.1}source
+
+        This is needed throughout lxml.
         """
         return namespaced(self.namespace, name)
 
@@ -296,9 +299,12 @@ class LISAfile(base.TranslationStore):
     def namespaced(self, name):
         """Returns name in Clark notation.
 
-           For example namespaced("source") in an XLIFF document might return::
-               {urn:oasis:names:tc:xliff:document:1.1}source
-           This is needed throughout lxml.
+        For example ``namespaced("source")`` in an XLIFF document
+        might return::
+
+            {urn:oasis:names:tc:xliff:document:1.1}source
+
+        This is needed throughout lxml.
         """
         return namespaced(self.namespace, name)
 

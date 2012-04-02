@@ -24,26 +24,22 @@ UTX is a format for terminology exchange, designed it seems with Machine
 Translation (MT) as it's primary consumer.  The format is created by
 the Asia-Pacific Association for Machine Translation (AAMT).
 
-It is a bilingual base class derived format with :ref:`UtxFile`
-and :ref:`UtxUnit` providing file and unit level access.
+It is a bilingual base class derived format with :class:`UtxFile`
+and :class:`UtxUnit` providing file and unit level access.
 
 The format can manage monolingual dictionaries but these classes don't
 implement that.
 
 Specification
-=============
-The format is implemented according to the v1.0 UTX
-:ref:`<http://www.aamt.info/english/utx/utx-simple-1.00-specification-e.pdf>`
+    The format is implemented according to the `v1.0 UTX <http://www.aamt.info/english/utx/utx-simple-1.00-specification-e.pdf>`_
 
 Format Implementation
-=====================
-The UTX format is a Tab Seperated Value (TSV) file in UTF-8.  The
-first two lines are headers with subsequent lines containing a
-single source target definition.
+    The UTX format is a Tab Seperated Value (TSV) file in UTF-8.  The
+    first two lines are headers with subsequent lines containing a
+    single source target definition.
 
 Encoding
---------
-The files are UTF-8 encoded with no BOM and CR+LF line terminators.
+    The files are UTF-8 encoded with no BOM and CR+LF line terminators.
 """
 
 import csv

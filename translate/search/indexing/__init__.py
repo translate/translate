@@ -19,10 +19,7 @@
 #
 
 
-"""
-interface for differrent indexing engines for the translate toolkit
-
-"""
+"""Interface for differrent indexing engines for the Translate Toolkit."""
 
 __revision__ = "$Id$"
 
@@ -152,7 +149,7 @@ def get_indexer(basedir, preference=None):
              databases
     :type basedir: string
     :return: the class of the most appropriate indexer
-    :rtype: subclass of :ref:`CommonIndexer.CommonDatabase`
+    :rtype: subclass of :class:`CommonIndexer.CommonDatabase`
     """
     if not _AVAILABLE_INDEXERS:
         raise IndexError("Indexer: no indexing engines are available")

@@ -46,19 +46,19 @@ class PyLuceneDatabase(PyLuceneIndexer.PyLuceneDatabase):
         basically this function parses the string and returns the resulting
         query
 
-        :param text: the query string
+        :param text: The query string
         :type text: str
         :param require_all: boolean operator
-            (True -> AND (default) / False -> OR)
+                            (True -> AND (default) / False -> OR)
         :type require_all: bool
-        :param analyzer: the analyzer to be used
-            possible analyzers are:
-              - :ref:`CommonDatabase.ANALYZER_TOKENIZE`
-                    the field value is splitted to be matched word-wise
-              - :ref:`CommonDatabase.ANALYZER_PARTIAL`
-                    the field value must start with the query string
-              - :ref:`CommonDatabase.ANALYZER_EXACT`
-                    keep special characters and the like
+        :param analyzer: The analyzer to be used
+                         Possible analyzers are:
+                         - :attr:`CommonDatabase.ANALYZER_TOKENIZE`
+                           the field value is splitted to be matched word-wise
+                         - :attr:`CommonDatabase.ANALYZER_PARTIAL`
+                           the field value must start with the query string
+                         - :attr:`CommonDatabase.ANALYZER_EXACT`
+                           keep special characters and the like
         :type analyzer: bool
         :return: resulting query object
         :rtype: PyLucene.Query
@@ -86,24 +86,24 @@ class PyLuceneDatabase(PyLuceneIndexer.PyLuceneDatabase):
         return qp.parse(text)
 
     def _create_query_for_field(self, field, value, analyzer=None):
-        """generate a field query
+        """Generate a field query.
 
-        this functions creates a field->value query
+        This functions creates a field->value query.
 
-        :param field: the fieldname to be used
+        :param field: The fieldname to be used
         :type field: str
-        :param value: the wanted value of the field
+        :param value: The wanted value of the field
         :type value: str
-        :param analyzer: the analyzer to be used
-            possible analyzers are:
-              - :ref:`CommonDatabase.ANALYZER_TOKENIZE`
-                    the field value is splitted to be matched word-wise
-              - :ref:`CommonDatabase.ANALYZER_PARTIAL`
-                    the field value must start with the query string
-              - :ref:`CommonDatabase.ANALYZER_EXACT`
-                    keep special characters and the like
+        :param analyzer: The analyzer to be used
+                         Possible analyzers are:
+                         - :attr:`CommonDatabase.ANALYZER_TOKENIZE`
+                           the field value is splitted to be matched word-wise
+                         - :attr:`CommonDatabase.ANALYZER_PARTIAL`
+                           the field value must start with the query string
+                         - :attr:`CommonDatabase.ANALYZER_EXACT`
+                           keep special characters and the like
         :type analyzer: bool
-        :return: resulting query object
+        :return: Resulting query object
         :rtype: PyLucene.Query
         """
         if analyzer is None:

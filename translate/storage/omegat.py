@@ -20,25 +20,23 @@
 
 """Manage the OmegaT glossary format
 
-   OmegaT glossary format is used by the
-   `OmegaT <http://www.omegat.org/en/omegat.html>`_ computer aided
-   translation tool.
+OmegaT glossary format is used by the
+`OmegaT <http://www.omegat.org/en/omegat.html>`_ computer aided
+translation tool.
 
-   It is a bilingual base class derived format with :ref:`OmegaTFile`
-   and :ref:`OmegaTUnit` providing file and unit level access.
+It is a bilingual base class derived format with :class:`OmegaTFile`
+and :class:`OmegaTUnit` providing file and unit level access.
 
-   Format Implementation
-   =====================
-   The OmegaT glossary format is a simple Tab Separated Value (TSV) file
-   with the columns: source, target, comment.
+Format Implementation
+    The OmegaT glossary format is a simple Tab Separated Value (TSV) file
+    with the columns: source, target, comment.
 
-   The dialect of the TSV files is specified by :ref:`OmegaTDialect`.
+    The dialect of the TSV files is specified by :class:`OmegaTDialect`.
 
-   Encoding
-   --------
-   The files are either UTF-8 or encoded using the system default.  UTF-8
-   encoded files use the .utf8 extension while system encoded files use
-   the .tab extension.
+Encoding
+    The files are either UTF-8 or encoded using the system default.  UTF-8
+    encoded files use the .utf8 extension while system encoded files use
+    the .tab extension.
 """
 
 import csv

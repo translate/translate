@@ -20,72 +20,64 @@
 
 """Manage the Wordfast Translation Memory format
 
-   Wordfast TM format is the Translation Memory format used by the
-   `Wordfast <http://www.wordfast.net/>`_ computer aided translation tool.
+Wordfast TM format is the Translation Memory format used by the
+`Wordfast <http://www.wordfast.net/>`_ computer aided translation tool.
 
-   It is a bilingual base class derived format with :ref:`WordfastTMFile`
-   and :ref:`WordfastUnit` providing file and unit level access.
+It is a bilingual base class derived format with :class:`WordfastTMFile`
+and :class:`WordfastUnit` providing file and unit level access.
 
-   Wordfast tools
-   ==============
-   Wordfast is a computer aided translation tool.  It is an application
-   built on top of Microsoft Word and is implemented as a rather
-   sophisticated set of macros.  Understanding that helps us understand
-   many of the seemingly strange choices around this format including:
-   encoding, escaping and file naming.
+Wordfast is a computer aided translation tool.  It is an application
+built on top of Microsoft Word and is implemented as a rather
+sophisticated set of macros.  Understanding that helps us understand
+many of the seemingly strange choices around this format including:
+encoding, escaping and file naming.
 
-   Implementation
-   ==============
-   The implementation covers the full requirements of a Wordfast TM file.
-   The files are simple Tab Separated Value (TSV) files that can be read
-   by Microsoft Excel and other spreadsheet programs.  They use the .txt
-   extension which does make it more difficult to automatically identify
-   such files.
+Implementation
+    The implementation covers the full requirements of a Wordfast TM file.
+    The files are simple Tab Separated Value (TSV) files that can be read
+    by Microsoft Excel and other spreadsheet programs.  They use the .txt
+    extension which does make it more difficult to automatically identify
+    such files.
 
-   The dialect of the TSV files is specified by :ref:`WordfastDialect`.
+    The dialect of the TSV files is specified by :class:`WordfastDialect`.
 
-   Encoding
-   --------
-   The files are UTF-16 or ISO-8859-1 (Latin1) encoded.  These choices
-   are most likely because Microsoft Word is the base editing tool for
-   Wordfast.
+Encoding
+    The files are UTF-16 or ISO-8859-1 (Latin1) encoded.  These choices
+    are most likely because Microsoft Word is the base editing tool for
+    Wordfast.
 
-   The format is tab separated so we are able to detect UTF-16 vs Latin-1
-   by searching for the occurance of a UTF-16 tab character and then
-   continuing with the parsing.
+    The format is tab separated so we are able to detect UTF-16 vs Latin-1
+    by searching for the occurance of a UTF-16 tab character and then
+    continuing with the parsing.
 
-   Timestamps
-   ----------
-   :ref:`WordfastTime` allows for the correct management of the Wordfast
-   YYYYMMDD~HHMMSS timestamps.  However, timestamps on individual units are
-   not updated when edited.
+Timestamps
+    :class:`WordfastTime` allows for the correct management of the Wordfast
+    YYYYMMDD~HHMMSS timestamps.  However, timestamps on individual units are
+    not updated when edited.
 
-   Header
-   ------
-   :ref:`WordfastHeader` provides header management support.  The header
-   functionality is fully implemented through observing the behaviour of the
-   files in real use cases, input from the Wordfast programmers and
-   public documentation.
+Header
+    :class:`WordfastHeader` provides header management support.  The header
+    functionality is fully implemented through observing the behaviour of the
+    files in real use cases, input from the Wordfast programmers and
+    public documentation.
 
-   Escaping
-   --------
-   Wordfast TM implements a form of escaping that covers two aspects:
-     1. Placeable: bold, formating, etc.  These are left as is and ignored.
-        It is up to the editor and future placeable implementation to manage
-        these.
-     2. Escapes: items that may confuse Excel or translators are
-        escaped as &'XX;. These are fully implemented and are converted to
-        and from Unicode.  By observing behaviour and reading documentation
-        we where able to observe all possible escapes. Unfortunately the
-        escaping differs slightly between Windows and Mac version.  This
-        might cause errors in future.
-   Functions allow for :ref:`<_wf_to_char>` and L{back to
-   Wordfast escapes<_char_to_wf>}.
+Escaping
+    Wordfast TM implements a form of escaping that covers two aspects:
 
-   Extended Attributes
-   -------------------
-   The last 4 columns allow users to define and manage extended attributes.
-   These are left as is and are not directly managed byour implemenation.
+    1. Placeable: bold, formating, etc.  These are left as is and ignored.
+    It is up to the editor and future placeable implementation to manage these.
+
+    2. Escapes: items that may confuse Excel or translators are
+    escaped as &'XX;. These are fully implemented and are converted to and from
+    Unicode.  By observing behaviour and reading documentation we where able
+    to observe all possible escapes. Unfortunately the escaping differs slightly
+    between Windows and Mac version.  This might cause errors in future.
+    Functions allow for ``<_wf_to_char>`` and back to Wordfast escape
+    (``<_char_to_wf>``).
+
+Extended Attributes
+    The last 4 columns allow users to define and manage extended attributes.
+    These are left as is and are not directly managed byour implemenation.
 """
 
 import csv

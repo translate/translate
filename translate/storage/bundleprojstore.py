@@ -72,10 +72,13 @@ class BundleProjectStore(ProjectStore):
             to be of type ``ftype`` ('src', 'trans', 'tgt').
 
             :param delete_orig: If ``True``, as set by
-                                :ref:`project.convert_forward()`, ``afile`` is
-                                deleted after appending, if possible.
+                                :meth:`~translate.storage.Project.convert_forward`,
+                                ``afile`` is deleted after appending, if
+                                possible.
+
             .. note:: For this implementation, the appended file will be deleted
-                  from disk if ``delete_orig`` is ``True``."""
+                      from disk if ``delete_orig`` is ``True``.
+            """
         if fname and fname in self.zip.namelist():
             raise ValueError("File already in bundle archive: %s" % (fname))
         if not fname and isinstance(afile, basestring) and afile in self.zip.namelist():
@@ -197,7 +200,7 @@ class BundleProjectStore(ProjectStore):
         """Updates the file with the given project file name with the contents
             of ``infile``.
 
-            :returns: the results from :ref:`self.append_file`."""
+            :returns: the results from :meth:`BundleProjStore.append_file`."""
         if pfname not in self._files:
             raise FileNotInProjectError(pfname)
 

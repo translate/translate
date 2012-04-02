@@ -190,7 +190,7 @@ class Workflow(object):
         self._current_state.enter(self._workflow_obj)
 
     def set_initial_state(self, state):
-        """Sets the initial state, used by the :ref:`reset` method."""
+        """Sets the initial state, used by the :meth:`.reset` method."""
         if isinstance(state, basestring):
             state = self.get_state_by_name(state)
         if not isinstance(state, State):

@@ -18,11 +18,13 @@
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, see <http://www.gnu.org/licenses/>.
 
-"""Classes that hold units of .rc files (rcunit) or entire files
-(rcfile) used in translating Windows Resources.
+"""Classes that hold units of .rc files (:class:`rcunit`) or entire files
+(:class:`rcfile`) used in translating Windows Resources.
 
-.. note::: This implementation is based mostly on observing WINE .rc files,
-these should mimic other non-WINE .rc files.
+.. note:::
+
+   This implementation is based mostly on observing WINE .rc files,
+   these should mimic other non-WINE .rc files.
 """
 
 import re
@@ -31,7 +33,7 @@ from translate.storage import base
 
 
 def escape_to_python(string):
-    """escape a given .rc string into a valid Python string"""
+    """Escape a given .rc string into a valid Python string."""
     pystring = re.sub('"\s*\\\\\n\s*"', "", string)   # xxx"\n"xxx line continuation
     pystring = re.sub("\\\\\\\n", "", pystring)       # backslash newline line continuation
     pystring = re.sub("\\\\n", "\n", pystring)        # Convert escaped newline to a real newline
@@ -72,7 +74,7 @@ class rcunit(base.TranslationUnit):
     source = property(getsource, setsource)
 
     def settarget(self, target):
-        """Note: this also sets the .source attribute!"""
+        """.. note:: This also sets the ``.source`` attribute!"""
         self._rich_target = None
         self.source = target
 
@@ -234,5 +236,5 @@ class rcfile(base.TranslationStore):
                     self.addunit(newunit)
 
     def __str__(self):
-        """convert the units back to lines"""
+        """Convert the units back to lines."""
         return "".join(self.blocks)

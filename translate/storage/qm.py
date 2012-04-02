@@ -19,24 +19,39 @@
 # along with this program; if not, see <http://www.gnu.org/licenses/>.
 #
 
-"""Module for parsing Qt .qm files
+"""Module for parsing Qt .qm files.
 
-.. note::: based on documentation from Gettext's .qm implementation
-(see write-qt.c) and on observation of the output of lrelease.
-.. note::: Certain deprecated section tags are not implemented.  These will break
-and print out the missing tag.  They are easy to implement and should follow
-the structure in 03 (Translation).  We could find no examples that use these
-so we'd rather leave it unimplemented until we actually have test data.
-.. note::: Many .qm files are unable to be parsed as they do not have the source
-text.  We assume that since they use a hash table to lookup the data there is
-actually no need for the source text.  It seems however that in Qt4's lrelease
-all data is included in the resultant .qm file.
-.. todo::: We can only parse, not create, a .qm file.  The main issue is that we
-need to implement the hashing algorithm (which seems to be identical to the
-Gettext hash algorithm).  Unlike Gettext it seems that the hash is required,
-but that has not been validated.
-.. todo::: The code can parse files correctly.  But it could be cleaned up to be
-more readable, especially the part that breaks the file into sections.
+.. note::
+
+    Based on documentation from Gettext's .qm implementation
+    (see *write-qt.c*) and on observation of the output of lrelease.
+
+.. note::
+
+    Certain deprecated section tags are not implemented.  These will break
+    and print out the missing tag.  They are easy to implement and should
+    follow the structure in 03 (Translation).  We could find no examples
+    that use these so we'd rather leave it unimplemented until we
+    actually have test data.
+
+.. note::
+
+    Many .qm files are unable to be parsed as they do not have the source
+    text.  We assume that since they use a hash table to lookup the
+    data there is actually no need for the source text.  It seems however
+    that in Qt4's lrelease all data is included in the resultant .qm file.
+
+.. note::
+
+    We can only parse, not create, a .qm file.  The main issue is that we
+    need to implement the hashing algorithm (which seems to be identical to the
+    Gettext hash algorithm).  Unlike Gettext it seems that the hash is
+    required, but that has not been validated.
+
+.. note::
+
+    The code can parse files correctly.  But it could be cleaned up to be
+    more readable, especially the part that breaks the file into sections.
 
 http://qt.gitorious.org/+kde-developers/qt/kde-qt/blobs/master/tools/linguist/shared/qm.cpp
 `Plural information <http://qt.gitorious.org/+kde-developers/qt/kde-qt/blobs/master/tools/linguist/shared/numerus.cpp>`_
@@ -89,7 +104,7 @@ class qmfile(base.TranslationStore):
         raise Exception("Writing of .qm files is not supported yet")
 
     def parse(self, input):
-        """parses the given file or file source string"""
+        """Parses the given file or file source string."""
         if hasattr(input, 'name'):
             self.filename = input.name
         elif not getattr(self, 'filename', ''):

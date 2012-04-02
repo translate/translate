@@ -26,7 +26,9 @@ Xapian v1.0 or higher is supported.
 
 If you are interested in writing an interface for Xapian 0.x, then
 you should checkout the following::
+
     svn export -r 7235 https://translate.svn.sourceforge.net/svnroot/translate/src/branches/translate-search-indexer-generic-merging/translate/search/indexer/
+
 It is not completely working, but it should give you a good start.
 """
 
@@ -71,14 +73,13 @@ _MAX_TERM_LENGTH = 128
 
 
 class XapianDatabase(CommonIndexer.CommonDatabase):
-    """interface to the xapian (http://xapian.org) indexer
-    """
+    """Interface to the `Xapian <http://xapian.org>`_ indexer."""
 
     QUERY_TYPE = xapian.Query
     INDEX_DIRECTORY_NAME = "xapian"
 
     def __init__(self, basedir, analyzer=None, create_allowed=True):
-        """initialize or open a xapian database
+        """Initialize or open a Xapian database.
 
         :raise ValueError: the given location exists, but the database type
                 is incompatible (e.g. created by a different indexing engine)
@@ -87,9 +88,11 @@ class XapianDatabase(CommonIndexer.CommonDatabase):
         :param basedir: the parent directory of the database
         :type basedir: str
         :param analyzer: bitwise combination of possible analyzer flags
-            to be used as the default analyzer for this database. Leave it empty
-            to use the system default analyzer (self.ANALYZER_DEFAULT).
-            see self.ANALYZER_TOKENIZE, self.ANALYZER_PARTIAL, ...
+                         to be used as the default analyzer for this
+                         database. Leave it empty to use the system default
+                         analyzer (self.ANALYZER_DEFAULT).
+
+                         see self.ANALYZER_TOKENIZE, self.ANALYZER_PARTIAL, ...
         :type analyzer: int
         :param create_allowed: create the database, if necessary; default: True
         :type create_allowed: bool
@@ -177,11 +180,14 @@ class XapianDatabase(CommonIndexer.CommonDatabase):
             (True -> AND (default) / False -> OR)
         :type require_all: bool
         :param analyzer: Define query options (partial matching, exact matching,
-            tokenizing, ...) as bitwise combinations of
-            CommonIndexer.ANALYZER_???.
-            This can override previously defined field analyzer settings.
-            If analyzer is None (default), then the configured analyzer for the
-            field is used.
+                         tokenizing, ...) as bitwise combinations of
+                         CommonIndexer.ANALYZER_???.
+
+                         This can override previously defined field
+                         analyzer settings.
+
+                         If analyzer is None (default), then the configured
+                         analyzer for the field is used.
         :type analyzer: int
         :return: resulting query object
         :rtype: xapian.Query
@@ -214,12 +220,15 @@ class XapianDatabase(CommonIndexer.CommonDatabase):
         :type field: str
         :param value: the wanted value of the field
         :type value: str
-        :param analyzer: Define query options (partial matching, exact matching,
-            tokenizing, ...) as bitwise combinations of
-            CommonIndexer.ANALYZER_???.
-            This can override previously defined field analyzer settings.
-            If analyzer is None (default), then the configured analyzer for the
-            field is used.
+        :param analyzer: Define query options (partial matching, exact
+                         matching, tokenizing, ...) as bitwise combinations of
+                         CommonIndexer.ANALYZER_???.
+
+                         This can override previously defined field
+                         analyzer settings.
+
+                         If analyzer is None (default), then the configured
+                         analyzer for the field is used.
         :type analyzer: int
         :return: the resulting query object
         :rtype: xapian.Query
@@ -314,7 +323,7 @@ class XapianDatabase(CommonIndexer.CommonDatabase):
         self.writer.add_document(document)
 
     def begin_transaction(self):
-        """begin a transaction
+        """Begin a transaction.
 
         Xapian supports transactions to group multiple database modifications.
         This avoids intermediate flushing and therefore increases performance.

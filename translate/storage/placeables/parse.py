@@ -28,23 +28,25 @@ from translate.storage.placeables import base, StringElem
 
 def parse(tree, parse_funcs):
     """Parse placeables from the given string or sub-tree by using the
-        parsing functions provided.
+    parsing functions provided.
 
-        The output of this function is **heavily** dependent on the order of the
-        parsing functions. This is because of the algorithm used.
+    The output of this function is **heavily** dependent on the order of the
+    parsing functions. This is because of the algorithm used.
 
-        An over-simplification of the algorithm: the leaves in the ``StringElem``
-        tree are expanded to the output of the first parsing function in
-        ``parse_funcs``. The next level of recursion is then started on the new
-        set of leaves with the used parsing function removed from
-        ``parse_funcs``.
+    An over-simplification of the algorithm: the leaves in the ``StringElem``
+    tree are expanded to the output of the first parsing function in
+    ``parse_funcs``. The next level of recursion is then started on the new
+    set of leaves with the used parsing function removed from
+    ``parse_funcs``.
 
-        :type  tree: unicode|StringElem
-        :param tree: The string or string element sub-tree to parse.
-        :type  parse_funcs: A list of parsing functions. It must take exactly
-            one argument (a ``unicode`` string to parse) and return a list of
-            ``StringElem``s which, together, form the original string. If nothing
-            could be parsed, it should return ``None``."""
+    :type  tree: unicode|StringElem
+    :param tree: The string or string element sub-tree to parse.
+    :type  parse_funcs: A list of parsing functions. It must take exactly
+                        one argument (a ``unicode`` string to parse) and
+                        return a list of ``StringElem``s which, together,
+                        form the original string. If nothing could be
+                        parsed, it should return ``None``.
+    """
     if isinstance(tree, unicode):
         tree = StringElem(tree)
     if not parse_funcs:

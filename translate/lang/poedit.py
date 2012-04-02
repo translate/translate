@@ -20,8 +20,8 @@
 
 """Functions to manage Poedit's language features.
 
-  ISO 639 maps are form Poedit's `isocode.cpp 1.4.2 <http://poedit.svn.sourceforge.net/viewvc/poedit/poedit/tags/release-1.4.2/src/isocodes.cpp?revision=1452&view=markup>`_
-  to ensure that we match currently released versions of Poedit.
+ISO 639 maps are from Poedit's `isocode.cpp 1.4.2 <http://poedit.svn.sourceforge.net/viewvc/poedit/poedit/tags/release-1.4.2/src/isocodes.cpp?revision=1452&view=markup>`_
+to ensure that we match currently released versions of Poedit.
 """
 
 lang_codes = {
@@ -195,7 +195,7 @@ lang_codes = {
 Mostly these are identical to ISO 639, but there are some differences."""
 
 lang_names = dict([(value, key) for (key, value) in lang_codes.items()])
-"""Reversed :ref:`lang_codes`"""
+"""Reversed :data:`lang_codes`"""
 
 dialects = {
   "Portuguese": {"PORTUGAL": "pt", "BRAZIL": "pt_BR", "None": "pt"},
@@ -215,7 +215,7 @@ def isocode(language, country=None):
       - X-Poedit-Country
 
     This function converts the supplied language name into the required ISO 639
-    code. If needed, in the case of :ref:`dialects`, the country name is used
+    code. If needed, in the case of :data:`dialects`, the country name is used
     to create an xx_YY style dialect code.
 
     :param language: Language name

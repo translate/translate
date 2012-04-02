@@ -483,8 +483,8 @@ class xliffunit(lisa.LISAunit):
             return False
 
     def multistring_to_rich(cls, mstr):
-        """Override :ref:`TranslationUnit.multistring_to_rich` which is used by the
-            ``rich_source`` and ``rich_target`` properties."""
+        """Override :meth:`TranslationUnit.multistring_to_rich` which is used
+        by the ``rich_source`` and ``rich_target`` properties."""
         strings = mstr
         if isinstance(mstr, multistring):
             strings = mstr.strings
@@ -495,8 +495,8 @@ class xliffunit(lisa.LISAunit):
     multistring_to_rich = classmethod(multistring_to_rich)
 
     def rich_to_multistring(cls, elem_list):
-        """Override :ref:`TranslationUnit.rich_to_multistring` which is used by the
-            ``rich_source`` and ``rich_target`` properties."""
+        """Override :meth:`TranslationUnit.rich_to_multistring` which is used
+        by the ``rich_source`` and ``rich_target`` properties."""
         return multistring([unicode(elem) for elem in elem_list])
     rich_to_multistring = classmethod(rich_to_multistring)
 

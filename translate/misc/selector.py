@@ -62,11 +62,11 @@ def not_found(environ, start_response):
 class Selector(object):
     """WSGI middleware for URL paths and HTTP method based delegation.
     
-    see http://lukearno.com/projects/selector/
+    See http://lukearno.com/projects/selector/
 
-    mappings are given are an iterable that returns tuples like this:
+    Mappings are given are an iterable that returns tuples like this::
 
-    (path_expression, http_methods_dict, optional_prefix)
+        (path_expression, http_methods_dict, optional_prefix)
     """
     
     status405 = staticmethod(method_not_allowed)
@@ -187,32 +187,32 @@ class Selector(object):
     def slurp_file(self, the_file, prefix=None, parser=None, wrap=None):
         """Read mappings from a simple text file.
         
-        == Format looks like this: ==
+        Format looks like this::
 
-        {{{
-        
-        # Comments if first non-whitespace char on line is '#'
-        # Blank lines are ignored
+            {{{
+            
+            # Comments if first non-whitespace char on line is '#'
+            # Blank lines are ignored
 
-        /foo/{id}[/]
-            GET somemodule:some_wsgi_app
-            POST pak.subpak.mod:other_wsgi_app
-        
-        @prefix /myapp
-        /path[/]
-            GET module:app
-            POST package.module:get_app('foo')
-            PUT package.module:FooApp('hello', resolve('module.setting'))
+            /foo/{id}[/]
+                GET somemodule:some_wsgi_app
+                POST pak.subpak.mod:other_wsgi_app
+            
+            @prefix /myapp
+            /path[/]
+                GET module:app
+                POST package.module:get_app('foo')
+                PUT package.module:FooApp('hello', resolve('module.setting'))
 
-        @parser :lambda x: x
-        @prefix 
-        ^/spam/eggs[/]$
-            GET mod:regex_mapped_app
+            @parser :lambda x: x
+            @prefix 
+            ^/spam/eggs[/]$
+                GET mod:regex_mapped_app
 
-        }}}
+            }}}
 
-        @prefix and @parser directives take effect 
-        until the end of the file or until changed
+        ``@prefix`` and ``@parser`` directives take effect 
+        until the end of the file or until changed.
         """
         if isinstance(the_file, str):
             the_file = open(the_file)
@@ -283,25 +283,25 @@ class Selector(object):
 class SimpleParser(object):
     """Callable to turn path expressions into regexes with named groups.
     
-    For instance "/hello/{name}" becomes r"^\/hello\/(?P<name>[^\^.]+)$"
+    For instance ``"/hello/{name}"`` becomes ``r"^\/hello\/(?P<name>[^\^.]+)$"``
 
-    For /hello/{name:pattern} 
-    you get whatever is in self.patterns['pattern'] instead of "[^\^.]+"
+    For ``/hello/{name:pattern}``
+    you get whatever is in ``self.patterns['pattern']`` instead of ``"[^\^.]+"``
 
-    Optional portions of path expression can be expressed [like this]
+    Optional portions of path expression can be expressed ``[like this]``
 
-    /hello/{name}[/] (can have trailing slash or not)
+    ``/hello/{name}[/]`` (can have trailing slash or not)
 
-    Example:
+    Example::
 
-    /blog/archive/{year:digits}/{month:digits}[/[{article}[/]]]
+        /blog/archive/{year:digits}/{month:digits}[/[{article}[/]]]
 
-    This would catch any of these:
+    This would catch any of these::
 
-    /blog/archive/2005/09
-    /blog/archive/2005/09/
-    /blog/archive/2005/09/1
-    /blog/archive/2005/09/1/
+        /blog/archive/2005/09
+        /blog/archive/2005/09/
+        /blog/archive/2005/09/1
+        /blog/archive/2005/09/1/
 
     (I am not suggesting that this example is a best practice.
     I would probably have a separate mapping for listing the month
@@ -345,7 +345,7 @@ class SimpleParser(object):
         return "^%s$" % regex
 
     def openended(self, regex):
-        """Process the result of __call__ right before it returns.
+        """Process the result of ``__call__`` right before it returns.
         
         Adds the ^ to the beginning but no $ to the end.
         Called as a special alternative to lastly.
@@ -435,14 +435,15 @@ class MiddlewareComposer(object):
         
         Each predicate is passes the environ to evaluate.
 
-        Given this set of rules:
-        
-        t = lambda x: True; f = lambda x: False
-        [(t, a), (f, b), (t, c), (f, d), (t, e)]
+        Given this set of rules::
 
-        The app composed would be equivalent to this:
+            t = lambda x: True; f = lambda x: False
+            [(t, a), (f, b), (t, c), (f, d), (t, e)]
 
-        a(c(e(app)))
+        The app composed would be equivalent to this::
+
+            a(c(e(app)))
+
         """
         app = self.app
         for predicate, middleware in reversed(self.rules):
@@ -467,7 +468,7 @@ class Naked(object):
     def _is_exposed(self, obj):
         """Determine if obj should be exposed.
         
-        If self._expose_all is True, always return True.
+        If ``self._expose_all`` is True, always return True.
         Otherwise, look at obj._exposed.
         """
         return self._expose_all or getattr(obj, '_exposed', False)
@@ -485,7 +486,7 @@ class Naked(object):
     
 
 class ByMethod(object):
-    """Base class for dispatching to method named by REQUEST_METHOD."""
+    """Base class for dispatching to method named by ``REQUEST_METHOD``."""
 
     _method_not_allowed = staticmethod(method_not_allowed)
     
@@ -499,11 +500,13 @@ class ByMethod(object):
 
 
 def pliant(func):
-    """Decorate an unbound wsgi callable taking args from wsgiorg.routing_args.
-    
-    @pliant
-    def app(environ, start_response, arg1, arg2, foo='bar'):
-        ...
+    """Decorate an unbound wsgi callable taking args from
+    ``wsgiorg.routing_args``::
+
+        @pliant
+        def app(environ, start_response, arg1, arg2, foo='bar'):
+            ...
+
     """
     def wsgi_func(environ, start_response):
         args, kwargs = environ.get('wsgiorg.routing_args', ([], {}))
@@ -515,12 +518,13 @@ def pliant(func):
 
         
 def opliant(meth):
-    """Decorate a bound wsgi callable taking args from wsgiorg.routing_args.
-    
-    class App(object):
-        @opliant
-        def __call__(self, environ, start_response, arg1, arg2, foo='bar'):
-            ...
+    """Decorate a bound wsgi callable taking args from
+    ``wsgiorg.routing_args``::
+
+        class App(object):
+            @opliant
+            def __call__(self, environ, start_response, arg1, arg2, foo='bar'):
+                ...
     """
     def wsgi_meth(self, environ, start_response):
         args, kwargs = environ.get('wsgiorg.routing_args', ([], {}))
@@ -530,4 +534,3 @@ def opliant(meth):
         args.insert(0, self)
         return apply(meth, args, dict(kwargs))
     return wsgi_meth
-

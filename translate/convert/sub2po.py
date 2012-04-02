@@ -81,7 +81,8 @@ def convert_unit(input_unit, commenttype):
 
 
 def convertsub(input_file, output_file, template_file=None, pot=False, duplicatestyle="msgctxt"):
-    """Reads in :ref:`input_file` using translate.subtitles, converts using :ref:`sub2po`, writes to :ref:`output_file`"""
+    """Reads in *input_file* using translate.subtitles, converts using
+    :class:`sub2po`, writes to *output_file*."""
     from translate.storage import subtitles
     input_store = subtitles.SubtitleFile(input_file)
     if template_file is None:

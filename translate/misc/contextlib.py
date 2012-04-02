@@ -80,7 +80,7 @@ class GeneratorContextManager(object):
 def contextmanager(func):
     """@contextmanager decorator.
 
-    Typical usage:
+    Typical usage::
 
         @contextmanager
         def some_generator(<arguments>):
@@ -90,12 +90,12 @@ def contextmanager(func):
             finally:
                 <cleanup>
 
-    This makes this:
+    This makes this::
 
         with some_generator(<arguments>) as <variable>:
             <body>
 
-    equivalent to this:
+    equivalent to this::
 
         <setup>
         try:
@@ -121,12 +121,12 @@ def contextmanager(func):
 def nested(*managers):
     """Support multiple context managers in a single with-statement.
 
-    Code like this:
+    Code like this::
 
         with nested(A, B, C) as (X, Y, Z):
             <body>
 
-    is equivalent to this:
+    is equivalent to this::
 
         with A as X:
             with B as Y:
@@ -174,12 +174,12 @@ def nested(*managers):
 class closing(object):
     """Context to automatically close something at the end of a block.
 
-    Code like this:
+    Code like this::
 
         with closing(<module>.open(<arguments>)) as f:
             <block>
 
-    is equivalent to this:
+    is equivalent to this::
 
         f = <module>.open(<arguments>)
         try:

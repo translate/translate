@@ -18,23 +18,24 @@
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, see <http://www.gnu.org/licenses/>.
 
-"""classes that hold units of .dtd files (dtdunit) or entire files (dtdfile)
-these are specific .dtd files for localisation used by mozilla
+"""Classes that hold units of .dtd files (:class:`dtdunit`) or entire files
+(:class:`dtdfile`).
+
+These are specific .dtd files for localisation used by mozilla.
 
 Specifications
-==============
-The following information is provided by Mozilla:
+    The following information is provided by Mozilla:
 
-`Specification <http://www.w3.org/TR/REC-xml/#sec-entexpand>`_
+    `Specification <http://www.w3.org/TR/REC-xml/#sec-entexpand>`_
 
-There is a grammar for entity definitions, which isn't really precise,
-as the spec says.  There's no formal specification for DTD files, it's
-just "whatever makes this work" basically. The whole piece is clearly not
-the strongest point of the xml spec
+    There is a grammar for entity definitions, which isn't really precise,
+    as the spec says.  There's no formal specification for DTD files, it's
+    just "whatever makes this work" basically. The whole piece is clearly not
+    the strongest point of the xml spec
 
-XML elements are allowed in entity values. A number of things that are
-allowed will just break the resulting document, Mozilla forbids these
-in their DTD parser.
+    XML elements are allowed in entity values. A number of things that are
+    allowed will just break the resulting document, Mozilla forbids these
+    in their DTD parser.
 """
 
 from translate.storage import base
@@ -50,10 +51,10 @@ except ImportError:
 
 labelsuffixes = (".label", ".title")
 """Label suffixes: entries with this suffix are able to be comibed with accesskeys
-found in in entries ending with :ref:`accesskeysuffixes`"""
+found in in entries ending with :attr:`.accesskeysuffixes`"""
 accesskeysuffixes = (".accesskey", ".accessKey", ".akey")
 """Accesskey Suffixes: entries with this suffix may be combined with labels
-ending in :ref:`labelsuffixes` into accelerator notation"""
+ending in :attr:`.labelsuffixes` into accelerator notation"""
 
 
 def quotefordtd(source):
@@ -101,7 +102,7 @@ def removeinvalidamps(name, value):
     """
 
     def is_valid_entity_name(name):
-        """Check that supplied :ref:`name` is a valid entity name"""
+        """Check that supplied *name* is a valid entity name."""
         if name.replace('.', '').isalnum():
             return True
         elif name[0] == '#' and name[1:].isalnum():

@@ -137,7 +137,7 @@ class QphFile(lisa.LISAfile):
         return data.normalize_code(self.header.get('language'))
 
     def settargetlanguage(self, targetlanguage):
-        """Set the target language for this .qph file to :ref:`targetlanguage`.
+        """Set the target language for this .qph file to *targetlanguage*.
 
         :param targetlanguage: ISO code e.g. af, fr, pt_BR
         :type targetlanguage: String

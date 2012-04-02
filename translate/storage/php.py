@@ -18,24 +18,27 @@
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, see <http://www.gnu.org/licenses/>.
 
-"""Classes that hold units of PHP localisation files :ref:`phpunit` or entire files
-   :ref:`phpfile`. These files are used in translating many PHP based applications.
+"""Classes that hold units of PHP localisation files :class:`phpunit` or
+entire files :class:`phpfile`. These files are used in translating many
+PHP based applications.
 
-   Only PHP files written with these conventions are supported::
-      $lang['item'] = "vale";  # Array of values
-      $some_entity = "value";  # Named variables
-      $lang = array(
-         'item1' => 'value1',
-         'item2' => 'value2',
-      );
+Only PHP files written with these conventions are supported::
 
-   Nested arrays are not supported::
-      $lang = array(array('key' => 'value'));
+  $lang['item'] = "vale";  # Array of values
+  $some_entity = "value";  # Named variables
+  $lang = array(
+     'item1' => 'value1',
+     'item2' => 'value2',
+  );
 
-   The working of PHP strings and specifically the escaping conventions which
-   differ between single quote (') and double quote (") characters are
-   implemented as outlined in the PHP documentation for the
-   `String type <http://www.php.net/language.types.string>`_
+Nested arrays are not supported::
+
+  $lang = array(array('key' => 'value'));
+
+The working of PHP strings and specifically the escaping conventions which
+differ between single quote (') and double quote (") characters are
+implemented as outlined in the PHP documentation for the
+`String type <http://www.php.net/language.types.string>`_.
 """
 
 import re

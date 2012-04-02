@@ -17,14 +17,14 @@
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, see <http://www.gnu.org/licenses/>.
 
-"""Perform quality checks on Gettext PO, XLIFF and TMX localization files
+"""Perform quality checks on Gettext PO, XLIFF and TMX localization files.
 
 Snippet files whenever a test fails.  These can be examined, corrected and
-merged back into the originals using pomerge
+merged back into the originals using pomerge.
 
 See: http://translate.sourceforge.net/wiki/toolkit/pofilter for examples and
 usage instructions and http://translate.sourceforge.net/wiki/toolkit/pofilter_tests
-for full descriptions of all tests
+for full descriptions of all tests.
 """
 
 import os
@@ -106,10 +106,9 @@ class pocheckfilter:
 
     def filterfile(self, transfile):
         """Runs filters on a translation store object.
-        Parameters:
-            - transfile. A translation store object.
-        Return value:
-            - A new translation store object with the results of the filter included."""
+        :param transfile: A translation store object.
+        :return: A new translation store object with the results of
+                 the filter included."""
         newtransfile = type(transfile)()
         newtransfile.setsourcelanguage(transfile.getsourcelanguage())
         newtransfile.settargetlanguage(transfile.gettargetlanguage())
@@ -129,10 +128,10 @@ class pocheckfilter:
 
 
 class FilterOptionParser(optrecurse.RecursiveOptionParser):
-    """a specialized Option Parser for filter tools..."""
+    """A specialized Option Parser for filter tools..."""
 
     def __init__(self, formats):
-        """construct the specialized Option Parser"""
+        """Construct the specialized Option Parser."""
         optrecurse.RecursiveOptionParser.__init__(self, formats)
         self.set_usage()
         self.add_option("-l", "--listfilters", action="callback", dest='listfilters',
@@ -140,12 +139,14 @@ class FilterOptionParser(optrecurse.RecursiveOptionParser):
             callback=self.parse_noinput, help="list filters available")
 
     def parse_noinput(self, option, opt, value, parser, *args, **kwargs):
-        """this sets an option to true, but also sets input to - to prevent an error"""
+        """This sets an option to *True*, but also sets input to *-*
+        to prevent an error."""
         setattr(parser.values, option.dest, kwargs['dest_value'])
         parser.values.input = "-"
 
     def run(self):
-        """parses the arguments, and runs recursiveprocess with the resulting options"""
+        """Parses the arguments, and runs recursiveprocess with the
+        resulting options."""
         (options, args) = self.parse_args()
         if options.filterclass is None:
             checkerclasses = [checks.StandardChecker, checks.StandardUnitChecker]
@@ -165,7 +166,7 @@ class FilterOptionParser(optrecurse.RecursiveOptionParser):
 
 
 def runfilter(inputfile, outputfile, templatefile, checkfilter=None):
-    """reads in inputfile, filters using checkfilter, writes to outputfile"""
+    """Reads in inputfile, filters using checkfilter, writes to outputfile."""
     fromfile = factory.getobject(inputfile)
     tofile = checkfilter.filterfile(fromfile)
     if tofile.isempty():

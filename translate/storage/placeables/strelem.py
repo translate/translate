@@ -19,8 +19,8 @@
 # along with this program; if not, see <http://www.gnu.org/licenses/>.
 
 """
-Contains the base :ref:`StringElem` class that represents a node in a parsed rich-
-string tree. It is the base class of all placeables.
+Contains the base :class:`StringElem` class that represents a node in a
+parsed rich-string tree. It is the base class of all placeables.
 """
 
 import logging
@@ -212,14 +212,16 @@ class StringElem(object):
 
     def delete_range(self, start_index, end_index):
         """Delete the text in the range given by the string-indexes
-            ``start_index`` and ``end_index``.
-            Partial nodes will only be removed if they are editable.
-            :returns: A ``StringElem`` representing the removed sub-string, the
-                parent node from which it was deleted as well as the offset at
-                which it was deleted from. ``None`` is returned for the parent
-                value if the root was deleted. If the parent and offset values
-                are not ``None``, ``parent.insert(offset, deleted)`` effectively
-                undoes the delete."""
+        ``start_index`` and ``end_index``.
+
+         Partial nodes will only be removed if they are editable.
+
+        :returns: A ``StringElem`` representing the removed sub-string, the
+                  parent node from which it was deleted as well as the offset at
+                  which it was deleted from. ``None`` is returned for the parent
+                  value if the root was deleted. If the parent and offset values
+                  are not ``None``, ``parent.insert(offset, deleted)``
+                  effectively undoes the delete."""
         if start_index == end_index:
             return StringElem(), self, 0
         if start_index > end_index:
@@ -395,12 +397,14 @@ class StringElem(object):
 
     def elem_offset(self, elem):
         """Find the offset of ``elem`` in the current tree.
-            This cannot be reliably used if ``self.renderer`` is used and even
-            less so if the rendering function renders the string differently
-            upon different calls. In Virtaal the ``StringElemGUI.index()`` method
-            is used as replacement for this one.
-            :returns: The string index where element ``e`` starts, or -1 if ``e``
-                was not found."""
+
+        This cannot be reliably used if ``self.renderer`` is used and even
+        less so if the rendering function renders the string differently
+        upon different calls. In Virtaal the ``StringElemGUI.index()`` method
+        is used as replacement for this one.
+
+        :returns: The string index where element ``e`` starts, or -1 if ``e``
+                  was not found."""
         offset = 0
         for e in self.iter_depth_first():
             if e is elem:
@@ -601,7 +605,7 @@ class StringElem(object):
         return False
 
     def insert_between(self, left, right, text):
-        """Insert the given text between the two parameter ``StringElem``s."""
+        """Insert the given text between the two parameter ``StringElem``\s."""
         if not isinstance(left, StringElem) and left is not None:
             raise ValueError('"left" is not a StringElem or None')
         if not isinstance(right, StringElem) and right is not None:
@@ -741,7 +745,7 @@ class StringElem(object):
     def parse(cls, pstr):
         """Parse an instance of this class from the start of the given string.
             This method should be implemented by any sub-class that wants to
-            parseable by :ref:`translate.storage.placeables.parse`.
+            parseable by :mod:`translate.storage.placeables.parse`.
 
             :type  pstr: unicode
             :param pstr: The string to parse into an instance of this class.
@@ -829,9 +833,9 @@ class StringElem(object):
 
     # TODO: Write unit test for this method
     def remove_type(self, ptype):
-        """Replace nodes with type ``ptype`` with base ``StringElem``s, containing
-            the same sub-elements. This is only applicable to elements below the
-            element tree root node."""
+        """Replace nodes with type ``ptype`` with base ``StringElem``\s,
+        containing the same sub-elements. This is only applicable to
+        elements below the element tree root node."""
         for elem in self.iter_depth_first():
             if type(elem) is ptype:
                 parent = self.get_parent_elem(elem)

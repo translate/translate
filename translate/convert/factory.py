@@ -25,7 +25,7 @@ import os
 #from translate.convert import prop2po, po2prop, odf2xliff, xliff2odf
 
 
-__all__ = ['converters', 'convertfile', 'UnknownExtensionError', 'UnsupportedConversionError']
+__all__ = ['converters', 'UnknownExtensionError', 'UnsupportedConversionError']
 
 # Turn into property to support lazy loading of things?
 converters = {}

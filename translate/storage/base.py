@@ -18,9 +18,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, see <http://www.gnu.org/licenses/>.
 
-"""Base classes for storage interfaces.
-
-"""
+"""Base classes for storage interfaces."""
 
 import logging
 try:
@@ -69,6 +67,7 @@ class TranslationUnit(object):
     terminology.
 
     A translation unit consists of the following:
+
       - A *source* string. This is the original translatable text.
       - A *target* string. This is the translation of the *source*.
       - Zero or more *notes* on the unit. Notes would typically be some
@@ -76,7 +75,8 @@ class TranslationUnit(object):
         from the source code.
       - Zero or more *locations*. Locations indicate where in the original
         source code this unit came from.
-      - Zero or more *errors*. Some tools (eg. :ref:`<filters.pofilter>`)
+      - Zero or more *errors*. Some tools (eg.
+        :mod:`~translate.filters.pofilter`)
         can run checks on translations and produce error messages.
 
     """
@@ -134,10 +134,11 @@ class TranslationUnit(object):
     def __eq__(self, other):
         """Compares two TranslationUnits.
 
-        :type other: :ref:`TranslationUnit`
-        :param other: Another :ref:`TranslationUnit`
+        :type other: :class:`TranslationUnit`
+        :param other: Another :class:`TranslationUnit`
         :rtype: Boolean
-        :return: Returns True if the supplied TranslationUnit equals this unit.
+        :return: Returns *True* if the supplied :class:`TranslationUnit`
+                 equals this unit.
         """
         return self.source == other.source and self.target == other.target
 
@@ -205,7 +206,7 @@ class TranslationUnit(object):
             self.source = multi
     rich_source = property(_get_rich_source, _set_rich_source)
     """
-    .. seealso:: :ref:`rich_to_multistring`, :ref:`multistring_to_rich`
+    .. seealso:: :meth:`.rich_to_multistring`, :meth:`multistring_to_rich`
     """
 
     def _get_rich_target(self):
@@ -224,7 +225,7 @@ class TranslationUnit(object):
         self.target = self.rich_to_multistring(value)
     rich_target = property(_get_rich_target, _set_rich_target)
     """
-    .. seealso:: :ref:`rich_to_multistring`, :ref:`multistring_to_rich`
+    .. seealso:: :meth:`.rich_to_multistring`, :meth:`.multistring_to_rich`
     """
 
     def gettargetlen(self):
@@ -234,7 +235,7 @@ class TranslationUnit(object):
 
         .. note::
 
-        Plural forms might be combined.
+           Plural forms might be combined.
         """
         length = len(self.target or "")
         strings = getattr(self.target, "strings", [])
@@ -267,7 +268,7 @@ class TranslationUnit(object):
 
         .. note::
 
-        Shouldn't be implemented if the format doesn't support it.
+           Shouldn't be implemented if the format doesn't support it.
         """
         return []
 
@@ -276,7 +277,7 @@ class TranslationUnit(object):
 
         .. note::
 
-        Shouldn't be implemented if the format doesn't support it.
+           Shouldn't be implemented if the format doesn't support it.
         """
         pass
 
@@ -285,12 +286,12 @@ class TranslationUnit(object):
 
         .. note::
 
-        Most classes shouldn't need to implement this, but should rather
-        implement :ref:`addlocation()`.
+           Most classes shouldn't need to implement this, but should rather
+           implement :meth:`TranslationUnit.addlocation`.
 
         .. warning::
 
-        This method might be removed in future.
+           This method might be removed in future.
         """
         if isinstance(location, list):
             for item in location:
@@ -311,7 +312,8 @@ class TranslationUnit(object):
 
         It will probably be freeform text or something reasonable that can be
         synthesised by the format.
-        It should not include location comments (see :ref:`getlocations()`).
+        It should not include location comments (see
+        :meth:`~.TranslationUnit.getlocations`).
         """
         return getattr(self, "notes", "")
 
@@ -406,8 +408,9 @@ class TranslationUnit(object):
 
         .. note::
 
-        This is probably used more to find translatable units,
-        and we might want to move in that direction rather and get rid of this.
+           This is probably used more to find translatable units,
+           and we might want to move in that direction rather and
+           get rid of this.
         """
         return not (self.source or self.target)
 
@@ -548,7 +551,7 @@ class TranslationStore(object):
         This method should always be used rather than trying to modify the
         list manually.
 
-        :type unit: :ref:`TranslationUnit`
+        :type unit: :class:`TranslationUnit`
         :param unit: The unit that will be added.
         """
         unit._store = self
@@ -557,7 +560,7 @@ class TranslationStore(object):
     def addsourceunit(self, source):
         """Adds and returns a new unit with the given source string.
 
-        :rtype: :ref:`TranslationUnit`
+        :rtype: :class:`TranslationUnit`
         """
         unit = self.UnitClass(source)
         self.addunit(unit)
@@ -571,7 +574,7 @@ class TranslationStore(object):
     def findunit(self, source):
         """Finds the unit with the given source string.
 
-        :rtype: :ref:`TranslationUnit` or None
+        :rtype: :class:`TranslationUnit` or None
         """
         if len(getattr(self, "sourceindex", [])):
             if source in self.sourceindex:
@@ -585,7 +588,7 @@ class TranslationStore(object):
     def findunits(self, source):
         """Finds the units with the given source string.
 
-        :rtype: :ref:`TranslationUnit` or None
+        :rtype: :class:`TranslationUnit` or None
         """
         if len(getattr(self, "sourceindex", [])):
             if source in self.sourceindex:
