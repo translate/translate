@@ -84,8 +84,10 @@ POUPDATED_DIR_REL=`echo ${POUPDATED_DIR} | sed "s#${BUILD_DIR}/##"`
 
 [ $opt_vc ] && if [ -d ${TOOLS_DIR}/translate/.git ]; then
 	(cd ${TOOLS_DIR}/translate/
-	git pull
-	git checkout)
+	git stash
+	git pull --rebase
+	git checkout
+	git stash pop)
 else
 	git clone git@github.com:translate/translate.git ${TOOLS_DIR}/translate
 fi
