@@ -80,17 +80,18 @@ class diff_match_patch:
     """Find the differences between two texts.  Simplifies the problem by
       stripping any common prefix or suffix off the texts before diffing.
 
-    Args:
-      text1: Old string to be diffed.
-      text2: New string to be diffed.
-      checklines: Optional speedup flag.  If present and false, then don't run
-        a line-level diff first to identify the changed areas.
-        Defaults to true, which does a faster, slightly less optimal diff.
-      deadline: Optional time when the diff should be complete by.  Used
-        internally for recursive calls.  Users should set DiffTimeout instead.
+    :param text1: Old string to be diffed.
+    :param text2: New string to be diffed.
+    :param checklines: Optional speedup flag.  If present and false, then don't
+                       run a line-level diff first to identify the changed
+                       areas.
+                       Defaults to True, which does a faster, slightly
+                       less optimal diff.
+    :param deadline: Optional time when the diff should be complete by.  Used
+                     internally for recursive calls.  Users should set
+                     DiffTimeout instead.
 
-    Returns:
-      Array of changes.
+    :returns: Array of changes.
     """
     # Set a deadline by which time the diff must be complete.
     if deadline == None:
@@ -140,16 +141,14 @@ class diff_match_patch:
     """Find the differences between two texts.  Assumes that the texts do not
       have any common prefix or suffix.
 
-    Args:
-      text1: Old string to be diffed.
-      text2: New string to be diffed.
-      checklines: Speedup flag.  If false, then don't run a line-level diff
-        first to identify the changed areas.
-        If true, then run a faster, slightly less optimal diff.
-      deadline: Time when the diff should be complete by.
+    :param text1: Old string to be diffed.
+    :param text2: New string to be diffed.
+    :param checklines: Speedup flag.  If false, then don't run a line-level
+                       diff first to identify the changed areas.  If true, then
+                       run a faster, slightly less optimal diff.
+    :param deadline: Time when the diff should be complete by.
 
-    Returns:
-      Array of changes.
+    :returns: Array of changes.
     """
     if not text1:
       # Just add some text (speedup).
@@ -383,14 +382,13 @@ class diff_match_patch:
     """Split two texts into an array of strings.  Reduce the texts to a string
     of hashes where each Unicode character represents one line.
 
-    Args:
-      text1: First string.
-      text2: Second string.
+    :param text1: First string.
+    :param text2: Second string.
 
-    Returns:
-      Three element tuple, containing the encoded text1, the encoded text2 and
-      the array of unique strings.  The zeroth element of the array of unique
-      strings is intentionally blank.
+    :returns: Three element tuple, containing the encoded text1,
+              the encoded text2 and the array of unique strings.
+              The zeroth element of the array of unique strings is
+              intentionally blank.
     """
     lineArray = []  # e.g. lineArray[4] == "Hello\n"
     lineHash = {}   # e.g. lineHash["Hello\n"] == 4
@@ -404,11 +402,9 @@ class diff_match_patch:
       of hashes where each Unicode character represents one line.
       Modifies linearray and linehash through being a closure.
 
-      Args:
-        text: String to encode.
+      :param text: String to encode.
 
-      Returns:
-        Encoded string.
+      :returns: Encoded string.
       """
       chars = []
       # Walk the text, pulling out a substring for each line.
@@ -439,9 +435,8 @@ class diff_match_patch:
     """Rehydrate the text in a diff from a string of line hashes to real lines
     of text.
 
-    Args:
-      diffs: Array of diff tuples.
-      lineArray: Array of unique strings.
+    :param diffs: Array of diff tuples.
+    :param lineArray: Array of unique strings.
     """
     for x in xrange(len(diffs)):
       text = []
@@ -452,12 +447,10 @@ class diff_match_patch:
   def diff_commonPrefix(self, text1, text2):
     """Determine the common prefix of two strings.
 
-    Args:
-      text1: First string.
-      text2: Second string.
+    :param text1: First string.
+    :param text2: Second string.
 
-    Returns:
-      The number of characters common to the start of each string.
+    :returns: The number of characters common to the start of each string.
     """
     # Quick check for common null cases.
     if not text1 or not text2 or text1[0] != text2[0]:
@@ -480,12 +473,10 @@ class diff_match_patch:
   def diff_commonSuffix(self, text1, text2):
     """Determine the common suffix of two strings.
 
-    Args:
-      text1: First string.
-      text2: Second string.
+    :param text1: First string.
+    :param text2: Second string.
 
-    Returns:
-      The number of characters common to the end of each string.
+    :returns: The number of characters common to the end of each string.
     """
     # Quick check for common null cases.
     if not text1 or not text2 or text1[-1] != text2[-1]:
@@ -553,14 +544,12 @@ class diff_match_patch:
     the longer text?
     This speedup can produce non-minimal diffs.
 
-    Args:
-      text1: First string.
-      text2: Second string.
+    :param text1: First string.
+    :param text2: Second string.
 
-    Returns:
-      Five element Array, containing the prefix of text1, the suffix of text1,
-      the prefix of text2, the suffix of text2 and the common middle.  Or None
-      if there was no match.
+    :returns: Five element Array, containing the prefix of text1, the
+              suffix of text1, the prefix of text2, the suffix of text2
+              and the common middle.  Or None if there was no match.
     """
     if self.Diff_Timeout <= 0:
       # Don't risk returning a non-optimal diff if we have unlimited time.
@@ -577,15 +566,13 @@ class diff_match_patch:
       substring is at least half the length of longtext?
       Closure, but does not reference any external variables.
 
-      Args:
-        longtext: Longer string.
-        shorttext: Shorter string.
-        i: Start index of quarter length substring within longtext.
+      :param longtext: Longer string.
+      :param shorttext: Shorter string.
+      :param i: Start index of quarter length substring within longtext.
 
-      Returns:
-        Five element Array, containing the prefix of longtext, the suffix of
-        longtext, the prefix of shorttext, the suffix of shorttext and the
-        common middle.  Or None if there was no match.
+      :returns: Five element Array, containing the prefix of longtext, the
+                suffix of longtext, the prefix of shorttext, the suffix of
+                shorttext and the common middle.  Or None if there was no match.
       """
       seed = longtext[i:i + len(longtext) // 4]
       best_common = ''
@@ -636,8 +623,7 @@ class diff_match_patch:
     """Reduce the number of edits by eliminating semantically trivial
     equalities.
 
-    Args:
-      diffs: Array of diff tuples.
+    :param diffs: Array of diff tuples.
     """
     changes = False
     equalities = []  # Stack of indices where equalities are found.
@@ -732,8 +718,7 @@ class diff_match_patch:
     which can be shifted sideways to align the edit to a word boundary.
     e.g: The c<ins>at c</ins>ame. -> The <ins>cat </ins>came.
 
-    Args:
-      diffs: Array of diff tuples.
+    :param diffs: Array of diff tuples.
     """
 
     def diff_cleanupSemanticScore(one, two):
@@ -742,12 +727,10 @@ class diff_match_patch:
       Scores range from 6 (best) to 0 (worst).
       Closure, but does not reference any external variables.
 
-      Args:
-        one: First string.
-        two: Second string.
+      :param one: First string.
+      :param two: Second string.
 
-      Returns:
-        The score.
+      :returns: The score.
       """
       if not one or not two:
         # Edges are the best.
@@ -846,8 +829,7 @@ class diff_match_patch:
     """Reduce the number of edits by eliminating operationally trivial
     equalities.
 
-    Args:
-      diffs: Array of diff tuples.
+    :param diffs: Array of diff tuples.
     """
     changes = False
     equalities = []  # Stack of indices where equalities are found.
@@ -917,8 +899,7 @@ class diff_match_patch:
     """Reorder and merge like edit sections.  Merge equalities.
     Any edit section can move as long as it doesn't cross an equality.
 
-    Args:
-      diffs: Array of diff tuples.
+    :param diffs: Array of diff tuples.
     """
     diffs.append((self.DIFF_EQUAL, ''))  # Add a dummy entry at the end.
     pointer = 0
@@ -1028,12 +1009,10 @@ class diff_match_patch:
     """loc is a location in text1, compute and return the equivalent location
     in text2.  e.g. "The cat" vs "The big cat", 1->1, 5->8
 
-    Args:
-      diffs: Array of diff tuples.
-      loc: Location within text1.
+    :param diffs: Array of diff tuples.
+    :param loc: Location within text1.
 
-    Returns:
-      Location within text2.
+    :returns: Location within text2.
     """
     chars1 = 0
     chars2 = 0
@@ -1059,11 +1038,9 @@ class diff_match_patch:
   def diff_prettyHtml(self, diffs):
     """Convert a diff array into a pretty HTML report.
 
-    Args:
-      diffs: Array of diff tuples.
+    :param diffs: Array of diff tuples.
 
-    Returns:
-      HTML representation.
+    :returns: HTML representation.
     """
     html = []
     for (op, data) in diffs:
@@ -1080,11 +1057,9 @@ class diff_match_patch:
   def diff_text1(self, diffs):
     """Compute and return the source text (all equalities and deletions).
 
-    Args:
-      diffs: Array of diff tuples.
+    :param diffs: Array of diff tuples.
 
-    Returns:
-      Source text.
+    :returns: Source text.
     """
     text = []
     for (op, data) in diffs:
@@ -1095,11 +1070,9 @@ class diff_match_patch:
   def diff_text2(self, diffs):
     """Compute and return the destination text (all equalities and insertions).
 
-    Args:
-      diffs: Array of diff tuples.
+    :param diffs: Array of diff tuples.
 
-    Returns:
-      Destination text.
+    :returns: Destination text.
     """
     text = []
     for (op, data) in diffs:
@@ -1111,11 +1084,9 @@ class diff_match_patch:
     """Compute the Levenshtein distance; the number of inserted, deleted or
     substituted characters.
 
-    Args:
-      diffs: Array of diff tuples.
+    :param diffs: Array of diff tuples.
 
-    Returns:
-      Number of changes.
+    :returns: Number of changes.
     """
     levenshtein = 0
     insertions = 0
@@ -1139,11 +1110,9 @@ class diff_match_patch:
     E.g. =3\t-2\t+ing  -> Keep 3 chars, delete 2 chars, insert 'ing'.
     Operations are tab-separated.  Inserted text is escaped using %xx notation.
 
-    Args:
-      diffs: Array of diff tuples.
+    :param diffs: Array of diff tuples.
 
-    Returns:
-      Delta text.
+    :returns: Delta text.
     """
     import urllib
     text = []
@@ -1162,15 +1131,12 @@ class diff_match_patch:
     """Given the original text1, and an encoded string which describes the
     operations required to transform text1 into text2, compute the full diff.
 
-    Args:
-      text1: Source string for the diff.
-      delta: Delta text.
+    :param text1: Source string for the diff.
+    :param delta: Delta text.
 
-    Returns:
-      Array of diff tuples.
+    :returns: Array of diff tuples.
 
-    Raises:
-      ValueError: If invalid input.
+    :raise ValueError: If invalid input.
     """
     import urllib
     if type(delta) == unicode:
@@ -1218,13 +1184,11 @@ class diff_match_patch:
   def match_main(self, text, pattern, loc):
     """Locate the best instance of 'pattern' in 'text' near 'loc'.
 
-    Args:
-      text: The text to search.
-      pattern: The pattern to search for.
-      loc: The location to search around.
+    :param text: The text to search.
+    :param pattern: The pattern to search for.
+    :param loc: The location to search around.
 
-    Returns:
-      Best match index or -1.
+    :returns: Best match index or -1.
     """
     # Check for null inputs.
     if text == None or pattern == None:
@@ -1249,13 +1213,11 @@ class diff_match_patch:
     """Locate the best instance of 'pattern' in 'text' near 'loc' using the
     Bitap algorithm.
 
-    Args:
-      text: The text to search.
-      pattern: The pattern to search for.
-      loc: The location to search around.
+    :param text: The text to search.
+    :param pattern: The pattern to search for.
+    :param loc: The location to search around.
 
-    Returns:
-      Best match index or -1.
+    :returns: Best match index or -1.
     """
     # Python doesn't have a maxint limit, so ignore this check.
     #if self.Match_MaxBits != 0 and len(pattern) > self.Match_MaxBits:
@@ -1268,12 +1230,10 @@ class diff_match_patch:
       """Compute and return the score for a match with e errors and x location.
       Accesses loc and pattern through being a closure.
 
-      Args:
-        e: Number of errors in match.
-        x: Location of match.
+      :param e: Number of errors in match.
+      :param x: Location of match.
 
-      Returns:
-        Overall score for match (0.0 = good, 1.0 = bad).
+      :returns: Overall score for match (0.0 = good, 1.0 = bad).
       """
       accuracy = float(e) / len(pattern)
       proximity = abs(loc - x)
@@ -1354,11 +1314,9 @@ class diff_match_patch:
   def match_alphabet(self, pattern):
     """Initialise the alphabet for the Bitap algorithm.
 
-    Args:
-      pattern: The text to encode.
+    :param pattern: The text to encode.
 
-    Returns:
-      Hash of character locations.
+    :returns: Hash of character locations.
     """
     s = {}
     for char in pattern:
@@ -1373,9 +1331,8 @@ class diff_match_patch:
     """Increase the context until it is unique,
     but don't let the pattern expand beyond Match_MaxBits.
 
-    Args:
-      patch: The patch to grow.
-      text: Source text.
+    :param patch: The patch to grow.
+    :param text: Source text.
     """
     if len(text) == 0:
       return
@@ -1424,16 +1381,14 @@ class diff_match_patch:
     Method 4 (deprecated, use method 3):
     a = text1, b = text2, c = diffs
 
-    Args:
-      a: text1 (methods 1,3,4) or Array of diff tuples for text1 to
-          text2 (method 2).
-      b: text2 (methods 1,4) or Array of diff tuples for text1 to
-          text2 (method 3) or undefined (method 2).
-      c: Array of diff tuples for text1 to text2 (method 4) or
-          undefined (methods 1,2,3).
+    :param a: text1 (methods 1,3,4) or Array of diff tuples for text1 to
+              text2 (method 2).
+    :param b: text2 (methods 1,4) or Array of diff tuples for text1 to
+              text2 (method 3) or undefined (method 2).
+    :param c: Array of diff tuples for text1 to text2 (method 4) or
+              undefined (methods 1,2,3).
 
-    Returns:
-      Array of Patch objects.
+    :returns: Array of Patch objects.
     """
     text1 = None
     diffs = None
@@ -1527,11 +1482,9 @@ class diff_match_patch:
   def patch_deepCopy(self, patches):
     """Given an array of patches, return another array that is identical.
 
-    Args:
-      patches: Array of Patch objects.
+    :param patches: Array of Patch objects.
 
-    Returns:
-      Array of Patch objects.
+    :returns: Array of Patch objects.
     """
     patchesCopy = []
     for patch in patches:
@@ -1549,12 +1502,11 @@ class diff_match_patch:
     """Merge a set of patches onto the text.  Return a patched text, as well
     as a list of true/false values indicating which patches were applied.
 
-    Args:
-      patches: Array of Patch objects.
-      text: Old text.
+    :param patches: Array of Patch objects.
+    :param text: Old text.
 
-    Returns:
-      Two element Array, containing the new text and an array of boolean values.
+    :returns: Two element Array, containing the new text and an array of
+              boolean values.
     """
     if not patches:
       return (text, [])
@@ -1637,11 +1589,9 @@ class diff_match_patch:
     """Add some padding on text start and end so that edges can match
     something.  Intended to be called only from within patch_apply.
 
-    Args:
-      patches: Array of Patch objects.
+    :param patches: Array of Patch objects.
 
-    Returns:
-      The padding string added to each side.
+    :returns: The padding string added to each side.
     """
     paddingLength = self.Patch_Margin
     nullPadding = ""
@@ -1696,8 +1646,7 @@ class diff_match_patch:
     maximum limit of the match algorithm.
     Intended to be called only from within patch_apply.
 
-    Args:
-      patches: Array of Patch objects.
+    :param patches: Array of patch objects.
     """
     patch_size = self.Match_MaxBits
     if patch_size == 0:
@@ -1782,11 +1731,9 @@ class diff_match_patch:
   def patch_toText(self, patches):
     """Take a list of patches and return a textual representation.
 
-    Args:
-      patches: Array of Patch objects.
+    :param patches: Array of Patch objects.
 
-    Returns:
-      Text representation of patches.
+    :returns: Text representation of patches.
     """
     text = []
     for patch in patches:
@@ -1797,14 +1744,11 @@ class diff_match_patch:
     """Parse a textual representation of patches and return a list of patch
     objects.
 
-    Args:
-      textline: Text representation of patches.
+    :param textline: Text representation of patches.
 
-    Returns:
-      Array of Patch objects.
+    :returns: Array of Patch objects.
 
-    Raises:
-      ValueError: If invalid input.
+    :raises ValueError: If invalid input.
     """
     if type(textline) == unicode:
       # Patches should be composed of a subset of ascii chars, Unicode not
@@ -1890,8 +1834,7 @@ class patch_obj:
     Header: @@ -382,8 +481,9 @@
     Indicies are printed as 1-based, not 0-based.
 
-    Returns:
-      The GNU diff string.
+    :returns: The GNU diff string.
     """
     import urllib
     if self.length1 == 0:
