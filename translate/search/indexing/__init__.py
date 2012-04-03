@@ -21,8 +21,6 @@
 
 """Interface for differrent indexing engines for the Translate Toolkit."""
 
-__revision__ = "$Id$"
-
 import os
 import shutil
 import logging

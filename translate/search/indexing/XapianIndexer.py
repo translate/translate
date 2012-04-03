@@ -32,8 +32,6 @@ you should checkout the following::
 It is not completely working, but it should give you a good start.
 """
 
-__revision__ = "$Id$"
-
 # xapian module versions before 1.0.13 hangs apache under mod_python
 import sys
 import re

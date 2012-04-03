@@ -25,8 +25,6 @@ interface for the PyLucene (v2.x) indexing engine
 take a look at PyLuceneIndexer1.py for the PyLucene v1.x interface
 """
 
-__revision__ = "$Id$"
-
 import re
 import os
 import time

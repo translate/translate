@@ -27,8 +27,6 @@ import os
 
 import translate.lang.data
 
-__revision__ = "$Id$"
-
 
 def is_available():
     """Check if this indexing engine interface is usable.

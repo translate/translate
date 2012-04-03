@@ -25,8 +25,6 @@ interface for the pylucene (v1.x) indexing engine
 take a look at PyLuceneIndexer.py for PyLucene v2.x support
 """
 
-__revision__ = "$Id$"
-
 # this module is based on PyLuceneIndexer (for PyLucene v2.x)
 import PyLuceneIndexer
 import PyLucene
