@@ -22,7 +22,7 @@ checks
 
 
 decoration
---------
+----------
 
 .. automodule:: translate.filters.decoration
    :members:

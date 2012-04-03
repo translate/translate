@@ -57,26 +57,27 @@ def is_available():
 
 
 class PyLuceneDatabase(CommonIndexer.CommonDatabase):
-    """manage and use a pylucene indexing database"""
+    """Manage and use a pylucene indexing database."""
 
     QUERY_TYPE = PyLucene.Query
     INDEX_DIRECTORY_NAME = "lucene"
 
     def __init__(self, basedir, analyzer=None, create_allowed=True):
-        """initialize or open an indexing database
+        """Initialize or open an indexing database.
 
         Any derived class must override __init__.
 
-        :raise ValueError: the given location exists, but the database type
-                is incompatible (e.g. created by a different indexing engine)
+        :raise ValueError: The given location exists, but the database type
+                           is incompatible (e.g. created by a different indexing engine)
         :raise OSError: the database failed to initialize
 
-        :param basedir: the parent directory of the database
+        :param basedir: The parent directory of the database
         :type basedir: str
-        :param analyzer: bitwise combination of possible analyzer flags
-            to be used as the default analyzer for this database. Leave it empty
-            to use the system default analyzer (self.ANALYZER_DEFAULT).
-            see self.ANALYZER_TOKENIZE, self.ANALYZER_PARTIAL, ...
+        :param analyzer: Bitwise combination of possible analyzer flags
+                         to be used as the default analyzer for this database.
+                         Leave it empty to use the system default analyzer
+                         (self.ANALYZER_DEFAULT). See self.ANALYZER_TOKENIZE,
+                         self.ANALYZER_PARTIAL, ...
         :type analyzer: int
         :param create_allowed: create the database, if necessary; default: True
         :type create_allowed: bool

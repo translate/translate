@@ -83,8 +83,7 @@ def calcstats(filename):
 
 
 def summarize(title, stats, style=style_full, indent=8, incomplete_only=False):
-    """
-    Print summary for a .po file in specified format.
+    """Print summary for a .po file in specified format.
 
     :param title: name of .po file
     :param stats: array with translation statistics for the file specified
@@ -93,7 +92,7 @@ def summarize(title, stats, style=style_full, indent=8, incomplete_only=False):
     :type incomplete_only: Boolean
     :rtype: Boolean
     :return: 1 if counting incomplete files (incomplete_only=True) and the
-    file is completely translated, 0 otherwise
+             file is completely translated, 0 otherwise
     """
 
     def percent(denominator, devisor):

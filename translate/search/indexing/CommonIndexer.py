@@ -50,7 +50,7 @@ class CommonDatabase(object):
 
     field_analyzers = {}
     """mapping of field names and analyzers - see
-    :meth:`~CommonDatabase.set_field_analyzers`"""
+    :meth:`~.CommonDatabase.set_field_analyzers`"""
 
     ANALYZER_EXACT = 0
     """exact matching: the query string must equal the whole term string"""
@@ -132,7 +132,7 @@ class CommonDatabase(object):
         combine multiple queries (AND/OR).
 
         To specifiy rules for field searches, you may want to take a look at
-        :meth:`~CommonDatabase.set_field_analyzers`. The parameter
+        :meth:`~.CommonDatabase.set_field_analyzers`. The parameter
         'match_text_partial' can override the previously defined
         default setting.
 
@@ -151,7 +151,7 @@ class CommonDatabase(object):
         :param analyzer: (only applicable for 'dict' or 'str')
                          Define query options (partial matching, exact
                          matching, tokenizing, ...) as bitwise
-                         combinations of CommonIndexer.ANALYZER_???.
+                         combinations of *CommonIndexer.ANALYZER_???*.
 
                          This can override previously defined field
                          analyzer settings.
@@ -160,7 +160,7 @@ class CommonDatabase(object):
                          configured analyzer for the field is used.
         :type analyzer: int
         :return: the combined query
-        :rtype: query type of the specific implemention
+        :rtype: query type of the specific implementation
         """
         # turn a dict into a list if necessary
         if isinstance(args, dict):
@@ -227,7 +227,7 @@ class CommonDatabase(object):
         :type require_all: bool
         :param analyzer: Define query options (partial matching, exact matching,
                          tokenizing, ...) as bitwise combinations of
-                         ``CommonIndexer.ANALYZER_???``.
+                         *CommonIndexer.ANALYZER_???*.
                          This can override previously defined field
                          analyzer settings.
                          If analyzer is None (default), then the configured
@@ -250,7 +250,7 @@ class CommonDatabase(object):
         :type value: str
         :param analyzer: Define query options (partial matching, exact matching,
                          tokenizing, ...) as bitwise combinations of
-                         ``CommonIndexer.ANALYZER_???``.
+                         *CommonIndexer.ANALYZER_???*.
                          This can override previously defined field
                          analyzer settings.
                          If analyzer is None (default), then the configured
@@ -516,7 +516,7 @@ class CommonDatabase(object):
     def set_field_analyzers(self, field_analyzers):
         """Set the analyzers for different fields of the database documents.
 
-        All bitwise combinations of CommonIndexer.ANALYZER_??? are possible.
+        All bitwise combinations of *CommonIndexer.ANALYZER_???* are possible.
 
         :param field_analyzers: mapping of field names and analyzers
         :type field_analyzers: dict containing field names and analyzers
@@ -534,14 +534,15 @@ class CommonDatabase(object):
     def get_field_analyzers(self, fieldnames=None):
         """Return the analyzer that was mapped to a specific field.
 
-        See :meth:`~CommonDatabase.set_field_analyzers` for details.
+        See :meth:`~.CommonDatabase.set_field_analyzers` for details.
 
         :param fieldnames: the analyzer of this field (or all/multiple fields)
                            is requested; leave empty (or *None*) to
                            request all fields.
         :type fieldnames: str | list of str | None
         :return: The analyzer setting of the field - see
-                 CommonDatabase.ANALYZER_??? or a dict of field names and analyzers
+                 *CommonDatabase.ANALYZER_???* or a dict of field names
+                 and analyzers
         :rtype: int | dict
         """
         # all field analyzers are requested
@@ -610,8 +611,9 @@ class CommonEnquire(object):
     def get_matches_count(self):
         """Return the estimated number of matches.
 
-        use :meth:`CommonIndexer.search` to retrieve the exact number of matches
-        :return: the estimaed number of matches
+        Use :meth:`translate.search.indexing.CommonIndexer.search`
+        to retrieve the exact number of matches
+        :return: The estimated number of matches
         :rtype: int
         """
         (returned, estimate_count, matches) = self.get_matches(0, 1)

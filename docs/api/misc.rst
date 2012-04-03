@@ -152,7 +152,7 @@ textwrap
 typecheck
 ---------
 
-.. automodule:: translate.misc.typecheck.mixins
+.. automodule:: translate.misc.typecheck
    :show-inheritance:
 
 

@@ -501,12 +501,12 @@ class ByMethod(object):
 
 def pliant(func):
     """Decorate an unbound wsgi callable taking args from
-    ``wsgiorg.routing_args``::
+    ``wsgiorg.routing_args``
+    ::
 
         @pliant
         def app(environ, start_response, arg1, arg2, foo='bar'):
             ...
-
     """
     def wsgi_func(environ, start_response):
         args, kwargs = environ.get('wsgiorg.routing_args', ([], {}))
@@ -519,7 +519,8 @@ def pliant(func):
         
 def opliant(meth):
     """Decorate a bound wsgi callable taking args from
-    ``wsgiorg.routing_args``::
+    ``wsgiorg.routing_args``
+    ::
 
         class App(object):
             @opliant

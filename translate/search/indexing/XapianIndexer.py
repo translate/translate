@@ -73,7 +73,7 @@ _MAX_TERM_LENGTH = 128
 
 
 class XapianDatabase(CommonIndexer.CommonDatabase):
-    """Interface to the `Xapian <http://xapian.org>`_ indexer."""
+    """Interface to the `Xapian indexer <http://xapian.org>`_."""
 
     QUERY_TYPE = xapian.Query
     INDEX_DIRECTORY_NAME = "xapian"
@@ -87,12 +87,12 @@ class XapianDatabase(CommonIndexer.CommonDatabase):
 
         :param basedir: the parent directory of the database
         :type basedir: str
-        :param analyzer: bitwise combination of possible analyzer flags
+        :param analyzer: Bitwise combination of possible analyzer flags
                          to be used as the default analyzer for this
                          database. Leave it empty to use the system default
                          analyzer (self.ANALYZER_DEFAULT).
 
-                         see self.ANALYZER_TOKENIZE, self.ANALYZER_PARTIAL, ...
+                         See self.ANALYZER_TOKENIZE, self.ANALYZER_PARTIAL, ...
         :type analyzer: int
         :param create_allowed: create the database, if necessary; default: True
         :type create_allowed: bool
@@ -177,11 +177,11 @@ class XapianDatabase(CommonIndexer.CommonDatabase):
         :param text: the query string
         :type text: str
         :param require_all: boolean operator
-            (True -> AND (default) / False -> OR)
+                            (True -> AND (default) / False -> OR)
         :type require_all: bool
         :param analyzer: Define query options (partial matching, exact matching,
                          tokenizing, ...) as bitwise combinations of
-                         CommonIndexer.ANALYZER_???.
+                         *CommonIndexer.ANALYZER_???*.
 
                          This can override previously defined field
                          analyzer settings.
@@ -222,7 +222,7 @@ class XapianDatabase(CommonIndexer.CommonDatabase):
         :type value: str
         :param analyzer: Define query options (partial matching, exact
                          matching, tokenizing, ...) as bitwise combinations of
-                         CommonIndexer.ANALYZER_???.
+                         *CommonIndexer.ANALYZER_???*.
 
                          This can override previously defined field
                          analyzer settings.
@@ -256,7 +256,7 @@ class XapianDatabase(CommonIndexer.CommonDatabase):
         :param queries: list of the original queries
         :type queries: list of xapian.Query
         :param require_all: boolean operator
-            (True -> AND (default) / False -> OR)
+                            (True -> AND (default) / False -> OR)
         :type require_all: bool
         :return: the resulting combined query object
         :rtype: xapian.Query
@@ -340,15 +340,16 @@ class XapianDatabase(CommonIndexer.CommonDatabase):
         self._writer_close()
 
     def commit_transaction(self):
-        """submit the changes of an ongoing transaction
+        """Submit the changes of an ongoing transaction.
 
-        all changes since the last execution of 'begin_transaction' are written
+        All changes since the last execution of 'begin_transaction'
+        are written.
         """
         self.writer.commit_transaction()
         self._writer_close()
 
     def get_query_result(self, query):
-        """return an object containing the results of a query
+        """Return an object containing the results of a query.
 
         :param query: a pre-compiled xapian query
         :type query: xapian.Query
@@ -360,7 +361,7 @@ class XapianDatabase(CommonIndexer.CommonDatabase):
         return XapianEnquire(enquire)
 
     def delete_document_by_id(self, docid):
-        """delete a specified document
+        """Delete a specified document.
 
         :param docid: the document ID to be deleted
         :type docid: int
@@ -374,8 +375,8 @@ class XapianDatabase(CommonIndexer.CommonDatabase):
             return False
 
     def search(self, query, fieldnames):
-        """return a list of the contents of specified fields for all matches of
-        a query
+        """Return a list of the contents of specified fields for all matches
+        of a query.
 
         :param query: the query to be issued
         :type query: xapian.Query
@@ -441,7 +442,7 @@ class XapianEnquire(CommonIndexer.CommonEnquire):
     """
 
     def get_matches(self, start, number):
-        """return a specified number of qualified matches of a previous query
+        """Return a specified number of qualified matches of a previous query.
 
         :param start: index of the first match to return (starting from zero)
         :type start: int
@@ -450,6 +451,7 @@ class XapianEnquire(CommonIndexer.CommonEnquire):
         :return: a set of matching entries and some statistics
         :rtype: tuple of (returned number, available number, matches)
                 "matches" is a dictionary of::
+
                     ["rank", "percent", "document", "docid"]
         """
         matches = self.enquire.get_mset(start, number)

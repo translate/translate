@@ -18,40 +18,39 @@
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, see <http://www.gnu.org/licenses/>.
 
-"""Class that manages iCalender files for translation
+"""Class that manages iCalender files for translation.
 
-   Implementation
-   ==============
-   iCalendar files follow the `RFC2445 <http://tools.ietf.org/html/rfc2445>`_
-   specification.
+iCalendar files follow the `RFC2445 <http://tools.ietf.org/html/rfc2445>`_
+specification.
 
-   The iCalendar specification uses the following naming conventions:
-     - Component: an event, journal entry, timezone, etc
-     - Property: a property of a component: summary, description, start time, etc
-     - Attribute: an attribute of a property, e.g. language
+The iCalendar specification uses the following naming conventions:
 
-   The following are localisable in this implementation:
-     - VEVENT component: SUMMARY, DESCRIPTION, COMMENT and LOCATION properties
+    - Component: an event, journal entry, timezone, etc
+    - Property: a property of a component: summary, description, start
+      time, etc
+    - Attribute: an attribute of a property, e.g. language
 
-   While other items could be localised this is not seen as important until use
-   cases arise.  In such a case simply adjusting the component.name and
-   property.name lists to include these will allow expanded localisation.
+The following are localisable in this implementation:
 
-   LANGUAGE Attribute
-   ------------------
-   While the iCalendar format allows items to have a language attribute this is
-   not used. The reason being that for most of the items that we localise they
-   are only allowed to occur zero or once.  Thus 'summary' would ideally
-   be present in multiple languages in one file, the format does not allow
-   such multiple entries.  This is unfortunate as it prevents the creation
-   of a single multilingual iCalendar file.
+    - VEVENT component: SUMMARY, DESCRIPTION, COMMENT and LOCATION properties
 
-   Future Format Support
-   =====================
-   As this format used `vobject <http://vobject.skyhouseconsulting.com/>`_ which
-   supports various formats including `vCard <http://en.wikipedia.org/wiki/VCard>`_
-   it is possible to expand this format to understand those if needed.
+While other items could be localised this is not seen as important until use
+cases arise.  In such a case simply adjusting the component.name and
+property.name lists to include these will allow expanded localisation.
 
+LANGUAGE Attribute
+    While the iCalendar format allows items to have a language attribute this is
+    not used. The reason being that for most of the items that we localise they
+    are only allowed to occur zero or once.  Thus 'summary' would ideally
+    be present in multiple languages in one file, the format does not allow
+    such multiple entries.  This is unfortunate as it prevents the creation
+    of a single multilingual iCalendar file.
+
+Future Format Support
+    As this format used `vobject <http://vobject.skyhouseconsulting.com/>`_
+    which supports various formats including
+    `vCard <http://en.wikipedia.org/wiki/VCard>`_ it is possible to expand
+    this format to understand those if needed.
 """
 import re
 from StringIO import StringIO
