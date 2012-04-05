@@ -200,7 +200,7 @@ for lang in ${HG_LANGS}
 do
 	# Try and update existing PO files
         polang=$(echo $lang|sed "s/-/_/g")
-	(cd ${PO_DIR}; svn up ${polang}) 
+	(cd ${PO_DIR}; svn up --quiet ${polang})
 
 	# Copy directory structure while preserving version control metadata
 	if [ -d ${PO_DIR}/${polang} ]; then
