@@ -28,6 +28,9 @@ opt_build_xpi=""
 progress=none
 errorlevel=traceback
 export USECPO=0
+hgverbosity="--quiet" # --verbose to make it noisy
+gitverbosity="--quiet" # --verbose to make it noisy
+svnverbosity="--quiet"
 
 for option in $*
 do
@@ -87,12 +90,12 @@ POUPDATED_DIR_REL=`echo ${POUPDATED_DIR} | sed "s#${BUILD_DIR}/##"`
 
 [ $opt_vc ] && if [ -d ${TOOLS_DIR}/translate/.git ]; then
 	(cd ${TOOLS_DIR}/translate/
-	git stash
-	git pull --rebase
-	git checkout
-	git stash pop)
+	git stash $gitverbosity
+	git pull $gitverbosity --rebase
+	git checkout $gitverbosity
+	git stash $gitverbosity pop || true)
 else
-	git clone git@github.com:translate/translate.git ${TOOLS_DIR}/translate
+	git clone $gitverbosity git@github.com:translate/translate.git ${TOOLS_DIR}/translate
 fi
 
 export PYTHONPATH="${TOOLS_DIR}/translate":"$PYTHONPATH"
@@ -106,18 +109,18 @@ export PATH="${TOOLS_DIR}/translate/tools":\
 if [ $opt_vc ]; then
 	if [ -d "${MOZCENTRAL_DIR}/.hg" ]; then
 		cd ${MOZCENTRAL_DIR}
-		hg pull -u
-		hg update -C
+		hg pull $hgverbosity -u
+		hg update $hgverbosity -C
 	else
-		hg clone http://hg.mozilla.org/releases/mozilla-aurora/ ${MOZCENTRAL_DIR}
+		hg clone $hgverbosity http://hg.mozilla.org/releases/mozilla-aurora/ ${MOZCENTRAL_DIR}
 	fi
     (find ${MOZCENTRAL_DIR} -name '*.orig' | xargs  --no-run-if-empty rm)
 fi
 
 [ $opt_vc ] && if [ -d ${PO_DIR} ]; then
-	svn up --depth=files ${PO_DIR}
+	svn up $svnverbosity --depth=files ${PO_DIR}
 else
-	svn co --depth=files  https://zaf.svn.sourceforge.net/svnroot/zaf/trunk/po/fftb ${PO_DIR}
+	svn co $svnverbosity --depth=files  https://zaf.svn.sourceforge.net/svnroot/zaf/trunk/po/fftb ${PO_DIR}
 fi
 if [ ! -d ${POUPDATED_DIR}/.svn ]; then
 	cp -rp ${PO_DIR}/.svn ${POUPDATED_DIR}
@@ -128,19 +131,19 @@ cd ${L10N_DIR}
 for lang in ${HG_LANGS}
 do
 	if [ $opt_vc ]; then
-	    if [ -d ${lang} ]; then
-	        if [ -d ${lang}/.hg ]; then
-		        (cd ${lang}
-		    	hg revert --all -r default
-		    	hg pull -u
-		    	hg update -C)
+		if [ -d ${lang} ]; then
+			if [ -d ${lang}/.hg ]; then
+			        (cd ${lang}
+				hg revert $hgverbosity --all -r default
+				hg pull $hgverbosity -u
+				hg update $hgverbosity -C)
 			else
-		        rm -rf ${lang}/* 
+			        rm -rf ${lang}/* 
 			fi
 		else
-		    hg clone http://hg.mozilla.org/releases/l10n/mozilla-aurora/${lang} ${lang} || mkdir ${lang}
-	    fi
-	    find ${lang} -name '*.orig' | xargs  --no-run-if-empty rm
+		    hg clone $hgverbosity http://hg.mozilla.org/releases/l10n/mozilla-aurora/${lang} ${lang} || mkdir ${lang}
+		fi
+		find ${lang} -name '*.orig' | xargs  --no-run-if-empty rm
 	fi
 done
 
@@ -198,9 +201,10 @@ function copydir {
 
 for lang in ${HG_LANGS}
 do
+	echo "Language: $Lang"
 	# Try and update existing PO files
         polang=$(echo $lang|sed "s/-/_/g")
-	(cd ${PO_DIR}; svn up --quiet ${polang})
+	(cd ${PO_DIR}; svn up $svnverbosity ${polang})
 
 	# Copy directory structure while preserving version control metadata
 	if [ -d ${PO_DIR}/${polang} ]; then
@@ -228,38 +232,38 @@ do
 	fi
 
 	# Revert files with only header changes
-	[ -d ${POUPDATED_DIR}/${polang}/.svn ] && svn revert --quiet $(svn diff --diff-cmd diff -x "--unified=3 --ignore-matching-lines=POT-Creation --ignore-matching-lines=X-Generator -s" ${POUPDATED_DIR}/${polang} |
+	[ -d ${POUPDATED_DIR}/${polang}/.svn ] && svn revert $svnverbosity $(svn diff --diff-cmd diff -x "--unified=3 --ignore-matching-lines=POT-Creation --ignore-matching-lines=X-Generator -s" ${POUPDATED_DIR}/${polang} |
 	egrep "are identical$" |
 	sed "s/^Files //;s/\(\.po\).*/\1/") || echo "No header only changes, so no reverts needed"
 
 	## Migrate to new PO files: move old to obsolete/ and add new files
 	if [ ! -d ${POUPDATED_DIR}/${polang}/.svn ]; then
 		# No VC so assume it's a new language
-		svn add ${POUPDATED_DIR}/${polang}
+		svn add $svnverbosity ${POUPDATED_DIR}/${polang}
 	else
 		(cd ${POUPDATED_DIR}/${polang}
 		for newfile in $(svn status $PRODUCT_DIRS | egrep "^\?" | sed "s/\?\w*//")
 		do
-			[ -d $newfile ] && svn add $newfile
-			[ -f $newfile -a "$(echo $newfile | cut -d"." -f3)" = "po" ] && svn add $newfile
+			[ -d $newfile ] && svn add $svnverbosity $newfile
+			[ -f $newfile -a "$(echo $newfile | cut -d"." -f3)" = "po" ] && svn add $svnverbosity $newfile
 		done
 
 		if [ -d obsolete/.svn ]; then
-			svn revert -R obsolete
+			svn revert $svnverbosity -R obsolete
 		else
 			mkdir -p obsolete
-			svn add obsolete
+			svn add $svnverbosity obsolete
 		fi
 
 		for oldfile in $(svn status $PRODUCT_DIRS | egrep "^!"| sed "s/!\w*//")
 		do
 			if [ -d $newfile ]; then
-				svn revert -R $oldfile
-				svn move --parents $oldfile obsolete/$oldfile
+				svn revert $svnverbosity -R $oldfile
+				svn move $svnverbosity --parents $oldfile obsolete/$oldfile
 			fi
 			if [ -f $newfile -a "$(echo $newfile | cut -d"." -f3)" = "po" ]; then
-				svn revert $oldfile
-				svn move --parents $oldfile obsolete/$oldfile
+				svn revert $svnverbosity $oldfile
+				svn move $svnverbosity --parents $oldfile obsolete/$oldfile
 			fi
 		done
 		)
@@ -292,7 +296,11 @@ do
 	#copyfile browser/searchplugins/list.txt ${lang}
 	#copyfile toolkit/chrome/global/intl.css ${lang}
         # Revert some files that need careful human review or authorisation
-	[ -d ${L10N_DIR}/${lang}/.hg ] && (cd ${L10N_DIR}/${lang}; hg revert browser/chrome/browser-region/region.properties browser/searchplugins/list.txt)
+	if [ -d ${L10N_DIR}/${lang}/.hg ]; then
+		(cd ${L10N_DIR}/${lang}
+		hg revert $hgverbosity browser/chrome/browser-region/region.properties browser/searchplugins/list.txt
+		rm browser/chrome/browser-region/region.properties.orig browser/searchplugins/list.txt.orig )
+	fi
 
 	## CREATE XPI LANGPACK
 	if [ $opt_build_xpi ]; then
