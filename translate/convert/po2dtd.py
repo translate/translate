@@ -29,6 +29,11 @@ from translate.misc import quote
 from translate.convert import accesskey
 
 
+def dtdwarning(message, category, filename, lineno, line=None):
+    return "Warning: %s\n" % message
+warnings.formatwarning = dtdwarning
+
+
 def getmixedentities(entities):
     """returns a list of mixed .label and .accesskey entities from a list of entities"""
     mixedentities = []    # those entities which have a .label and .accesskey combined
