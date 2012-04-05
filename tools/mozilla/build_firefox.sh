@@ -299,7 +299,7 @@ do
 	if [ -d ${L10N_DIR}/${lang}/.hg ]; then
 		(cd ${L10N_DIR}/${lang}
 		hg revert $hgverbosity browser/chrome/browser-region/region.properties browser/searchplugins/list.txt
-		rm browser/chrome/browser-region/region.properties.orig browser/searchplugins/list.txt.orig )
+		rm -f browser/chrome/browser-region/region.properties.orig browser/searchplugins/list.txt.orig )
 	fi
 
 	## CREATE XPI LANGPACK
