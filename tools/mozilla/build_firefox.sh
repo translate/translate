@@ -93,7 +93,7 @@ POUPDATED_DIR_REL=`echo ${POUPDATED_DIR} | sed "s#${BUILD_DIR}/##"`
 	git stash $gitverbosity
 	git pull $gitverbosity --rebase
 	git checkout $gitverbosity
-	git stash $gitverbosity pop || true)
+	git stash pop $gitverbosity || true)
 else
 	git clone $gitverbosity git@github.com:translate/translate.git ${TOOLS_DIR}/translate
 fi
