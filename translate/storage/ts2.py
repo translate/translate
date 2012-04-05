@@ -64,7 +64,7 @@ NPLURALS = {
 
 
 class tsunit(lisa.LISAunit):
-    """A single term in the xliff file."""
+    """A single term in the TS file."""
 
     rootNode = "message"
     languageNode = "source"
@@ -342,7 +342,7 @@ class tsunit(lisa.LISAunit):
 
 
 class tsfile(lisa.LISAfile):
-    """Class representing a XLIFF file store."""
+    """Class representing a TS file store."""
     UnitClass = tsunit
     Name = _("Qt Linguist Translation File")
     Mimetypes = ["application/x-linguist"]
