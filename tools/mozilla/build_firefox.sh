@@ -25,6 +25,9 @@
 
 opt_vc="yes"
 opt_build_xpi=""
+progress=none
+errorlevel=traceback
+export USECPO=0
 
 for option in $*
 do
@@ -151,7 +154,7 @@ get_moz_enUS.py -s ../mozilla-aurora -d . -p mobile -v
 #mv en-US{,_browser}
 #ln -sf en-US_browser ./en-US
 # CREATE POT FILES FROM en-US
-moz2po --errorlevel=traceback --progress=none -P --duplicates=msgctxt --exclude '.hg' en-US pot
+moz2po --errorlevel=$errorlevel --progress=$progress -P --duplicates=msgctxt --exclude '.hg' en-US pot
 find pot \( -name '*.html.pot' -o -name '*.xhtml.pot' \) -exec rm -f {} \;
 
 # The following functions are used in the loop following it
@@ -217,16 +220,17 @@ do
 
 	## Cleanup migrated PO files
 	# msgcat to make them look the same
-	(cd ${POUPDATED_DIR}/${polang}
-	for po in $(find ${PRODUCT_DIRS} -name "*.po")
-	do
-		msgcat $po > $po.2
-		mv $po.2 $po
-	done
-	)
+	if [ $USECPO -eq 0 ]; then
+		(cd ${POUPDATED_DIR}/${polang}
+		for po in $(find ${PRODUCT_DIRS} -name "*.po")
+		do
+			msgcat -o $po.2 $po 2> >(egrep -v "warning: internationalised messages should not contain the .* escape sequence" >&2) && mv $po.2 $po
+		done
+		)
+	fi
 
 	# Revert files with only header changes
-	[ -d ${POUPDATED_DIR}/${polang}/.svn ] && svn revert $(svn diff --diff-cmd diff -x "--unified=3 --ignore-matching-lines=POT-Creation --ignore-matching-lines=X-Generator -s" ${POUPDATED_DIR}/${polang} |
+	[ -d ${POUPDATED_DIR}/${polang}/.svn ] && svn revert --quiet $(svn diff --diff-cmd diff -x "--unified=3 --ignore-matching-lines=POT-Creation --ignore-matching-lines=X-Generator -s" ${POUPDATED_DIR}/${polang} |
 	egrep "are identical$" |
 	sed "s/^Files //;s/\(\.po\).*/\1/") || echo "No header only changes, so no reverts needed"
 
@@ -274,7 +278,7 @@ do
 
 	# PO2MOZ - Create Mozilla l10n layout from migrated PO files.
 	# Comment out the "po2moz"-line below to prevent l10n files to be updated to the current PO files.
-	po2moz --progress=none --errorlevel=traceback --exclude=".svn" --exclude=".hg" --exclude="obsolete" --exclude="editor" --exclude="mail" --exclude="thunderbird" \
+	po2moz --progress=$progress --errorlevel=$errorlevel --exclude=".svn" --exclude=".hg" --exclude="obsolete" --exclude="editor" --exclude="mail" --exclude="thunderbird" \
 		-t ${L10N_DIR}/en-US -i ${POUPDATED_DIR}/${polang} -o ${L10N_DIR}/${lang}
 
 	# Copy files not handled by moz2po/po2moz
