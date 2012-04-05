@@ -165,6 +165,14 @@ function copyfile {
 	fi
 }
 
+function copyfileifmissing {
+	filename=$1
+	language=$2
+	if [ ! -f ${L10N_DIR}/$language/$filename ]; then
+		copyfile $1 $2
+	fi
+}
+
 function copyfiletype {
 	filetype=$1
 	language=$2
@@ -285,6 +293,9 @@ do
 	[ -d ${L10N_DIR}/${lang}/.hg ] && (cd ${L10N_DIR}/${lang}; hg revert browser/chrome/browser-region/region.properties browser/searchplugins/list.txt)
 
 	## CREATE XPI LANGPACK
-	[ $opt_build_xpi ] && buildxpi.py -d -L ${L10N_DIR} -s ${MOZCENTRAL_DIR} -o ${LANGPACK_DIR} ${lang}
+	if [ $opt_build_xpi ]; then
+		copyfileifmissing toolkit/chrome/global/intl.css ${lang}
+		buildxpi.py -d -L ${L10N_DIR} -s ${MOZCENTRAL_DIR} -o ${LANGPACK_DIR} ${lang}
+	fi
 
 done
