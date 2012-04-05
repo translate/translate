@@ -201,7 +201,7 @@ function copydir {
 
 for lang in ${HG_LANGS}
 do
-	echo "Language: $Lang"
+	echo "Language: $lang"
 	# Try and update existing PO files
         polang=$(echo $lang|sed "s/-/_/g")
 	(cd ${PO_DIR}; svn up $svnverbosity ${polang})
