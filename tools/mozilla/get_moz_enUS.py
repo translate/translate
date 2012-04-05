@@ -48,12 +48,21 @@ def process_l10n_ini(inifile):
 
     for dir in l10n.get('compare', 'dirs').split():
         frompath = os.path.join(l10n_ini_path, l10n.get('general', 'depth'), dir, 'locales', 'en-US')
+        topath = os.path.join(l10ncheckout, 'en-US', dir)
+        if not os.path.exists(frompath):
+            if verbose:
+                print "[Missing source]: %s" % frompath
+            continue
+        if os.path.exists(topath):
+            if verbose:
+                print "[Existing target]: %s" % topath
+            continue
         if verbose:
-            print '%s -> %s' % (frompath, os.path.join(l10ncheckout, 'en-US', dir))
+            print '%s -> %s' % (frompath, topath)
         try:
-            shutil.copytree(frompath, os.path.join(l10ncheckout, 'en-US', dir))
-        except OSError:
-            print 'ERROR: %s does not exist' % frompath
+            shutil.copytree(frompath, topath)
+        except OSError as e:
+            print e
 
     try:
         for include in l10n.options('includes'):
