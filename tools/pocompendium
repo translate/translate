@@ -156,7 +156,7 @@ if [ $option_ignorecase = 1 ]; then
 	done
 fi
 
-msgcat -o $output `find $tmp_dir -name "*.po"`
+msgcat -o $output `find $tmp_dir -name "*.po"` 2> >(egrep -v "warning: internationali.ed messages should not contain the .* escape sequence" >&2)
 
 # Extract only errors if requested
 if [ $option_errors -eq 1 ] ; then
@@ -168,8 +168,7 @@ fi
 # Extract only correct translations if requested
 if [ $option_correct -eq 1 ] ; then
 	tmp=`mktemp tmp.XXXXXXXXXX`
-	msgattrib --translated --no-fuzzy $output > $tmp
-	mv $tmp $output
+	msgattrib --translated --no-fuzzy -o $tmp $output  2> >(egrep -v "warning: internationali.ed messages should not contain the .* escape sequence" >&2) && mv $tmp $output
 fi
 
 rm -rf $tmp_dir
