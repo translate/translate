@@ -148,7 +148,7 @@ else
 	temp_pot2po_new=`mktemp -d tmp.XXXXXXXXXX`
 	temp_msgcat_new=`mktemp -d tmp.XXXXXXXXXX`
 	cp -rp $new/* $temp_pot2po_new
-	pot2po --errorlevel=traceback $option_pot2po_use_compendium $option_pot2po_use_own_compendium -t $temp_pot2po_new $templates $temp_msgcat_new
+	pot2po --errorlevel=traceback --progress=none $option_pot2po_use_compendium $option_pot2po_use_own_compendium -t $temp_pot2po_new $templates $temp_msgcat_new
 	for file in `cd $temp_msgcat_new; find . -name "*.po"`
 	do
 		mkdir -p $new/$(dirname $file)
