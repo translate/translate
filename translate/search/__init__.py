@@ -18,5 +18,4 @@
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, see <http://www.gnu.org/licenses/>.
 
-"""translate.search is part of the Translate Toolkit.
-It provides services for searching and matching of text."""
+"""Services for searching and matching of text."""

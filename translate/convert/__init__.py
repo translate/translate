@@ -18,7 +18,4 @@
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, see <http://www.gnu.org/licenses/>.
 
-"""translate.convert is part of the translate package
-It contains code to convert between different storage formats for localizations
-
-"""
+"""Code to convert between different storage formats for localizations."""
