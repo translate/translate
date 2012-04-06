@@ -26,6 +26,7 @@
 opt_vc="yes"
 opt_build_xpi=""
 opt_compare_locales="yes"
+opt_copyfiles="yes"
 
 progress=none
 errorlevel=traceback
@@ -46,6 +47,9 @@ do
 			;;
 			--no-compare-locales)
 				opt_compare_locales=""
+			;;
+			--no-copyfiles)
+				opt_copyfiles=""
 			;;
 			*) 
 			echo "Unkown option: $option"
@@ -291,19 +295,21 @@ do
 		-t ${L10N_DIR}/en-US -i ${POUPDATED_DIR}/${polang} -o ${L10N_DIR}/${lang}
 
 	# Copy files not handled by moz2po/po2moz
-	copyfiletype "*.xhtml" ${lang} # Our XHTML and HTML is broken
-	copyfiletype "*.rdf" ${lang}   # Don't support .rdf files
-	copyfile browser/firefox-l10n.js ${lang}
-	copyfile browser/profile/chrome/userChrome-example.css ${lang}
-	copyfile browser/profile/chrome/userContent-example.css ${lang}
-	copyfileifmissing toolkit/chrome/global/intl.css ${lang}
-        # Ignore lists.txt since we need specil approval for that
-	copyfileifmissing browser/searchplugins/list.txt ${lang}
-        # Revert some files that need careful human review or authorisation
-	if [ -d ${L10N_DIR}/${lang}/.hg ]; then
-		(cd ${L10N_DIR}/${lang}
-		hg revert $hgverbosity browser/chrome/browser-region/region.properties browser/searchplugins/list.txt
-		rm -f browser/chrome/browser-region/region.properties.orig browser/searchplugins/list.txt.orig )
+	if [ $opt_copyfiles ]; then
+		copyfiletype "*.xhtml" ${lang} # Our XHTML and HTML is broken
+		copyfiletype "*.rdf" ${lang}   # Don't support .rdf files
+		copyfile browser/firefox-l10n.js ${lang}
+		copyfile browser/profile/chrome/userChrome-example.css ${lang}
+		copyfile browser/profile/chrome/userContent-example.css ${lang}
+		copyfileifmissing toolkit/chrome/global/intl.css ${lang}
+		# This one needs special approval but we need it to pass and compile
+		copyfileifmissing browser/searchplugins/list.txt ${lang}
+		# Revert some files that need careful human review or authorisation
+		if [ -d ${L10N_DIR}/${lang}/.hg ]; then
+			(cd ${L10N_DIR}/${lang}
+			hg revert $hgverbosity browser/chrome/browser-region/region.properties browser/searchplugins/list.txt
+			rm -f browser/chrome/browser-region/region.properties.orig browser/searchplugins/list.txt.orig )
+		fi
 	fi
 
 	## CREATE XPI LANGPACK
