@@ -291,17 +291,14 @@ do
 		-t ${L10N_DIR}/en-US -i ${POUPDATED_DIR}/${polang} -o ${L10N_DIR}/${lang}
 
 	# Copy files not handled by moz2po/po2moz
-	copydir browser/os2 ${lang}
 	copyfiletype "*.xhtml" ${lang} # Our XHTML and HTML is broken
-	copyfiletype "*.html" ${lang}
 	copyfiletype "*.rdf" ${lang}   # Don't support .rdf files
 	copyfile browser/firefox-l10n.js ${lang}
-	copyfile browser/microsummary-generators/list.txt ${lang}
 	copyfile browser/profile/chrome/userChrome-example.css ${lang}
 	copyfile browser/profile/chrome/userContent-example.css ${lang}
+	copyfileifmissing toolkit/chrome/global/intl.css ${lang}
         # Ignore lists.txt since we need specil approval for that
-	#copyfile browser/searchplugins/list.txt ${lang}
-	#copyfile toolkit/chrome/global/intl.css ${lang}
+	copyfileifmissing browser/searchplugins/list.txt ${lang}
         # Revert some files that need careful human review or authorisation
 	if [ -d ${L10N_DIR}/${lang}/.hg ]; then
 		(cd ${L10N_DIR}/${lang}
@@ -311,7 +308,6 @@ do
 
 	## CREATE XPI LANGPACK
 	if [ $opt_build_xpi ]; then
-		copyfileifmissing toolkit/chrome/global/intl.css ${lang}
 		buildxpi.py -d -L ${L10N_DIR} -s ${MOZCENTRAL_DIR} -o ${LANGPACK_DIR} ${lang}
 	fi
 
