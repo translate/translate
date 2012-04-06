@@ -55,8 +55,10 @@ done
 
 if [ $# -eq 0 ]; then
 	HG_LANGS="ach af ak am cy en-ZA ff gd hz ki lg ng nso ny sah son st-LS su sw tn ur ve wo xog zu"
+	COUNT_LANGS=25
 else
 	HG_LANGS=$*
+	COUNT_LANGS=$#
 fi
 
 # FIXME lets make this the execution directory
@@ -201,7 +203,7 @@ function copydir {
 
 for lang in ${HG_LANGS}
 do
-	echo "Language: $lang"
+	[ $COUNT_LANGS -gt 1 ] && echo "Language: $lang"
 	# Try and update existing PO files
         polang=$(echo $lang|sed "s/-/_/g")
 	(cd ${PO_DIR}; svn up $svnverbosity ${polang})
