@@ -25,6 +25,8 @@
 
 opt_vc="yes"
 opt_build_xpi=""
+opt_compare_locales="yes"
+
 progress=none
 errorlevel=traceback
 export USECPO=0
@@ -41,6 +43,9 @@ do
 			;;
 			--no-vc)
 				opt_vc=""
+			;;
+			--no-compare-locales)
+				opt_compare_locales=""
 			;;
 			*) 
 			echo "Unkown option: $option"
@@ -308,6 +313,11 @@ do
 	if [ $opt_build_xpi ]; then
 		copyfileifmissing toolkit/chrome/global/intl.css ${lang}
 		buildxpi.py -d -L ${L10N_DIR} -s ${MOZCENTRAL_DIR} -o ${LANGPACK_DIR} ${lang}
+	fi
+
+	# COMPARE LOCALES
+	if [ $opt_compare_locales ]; then
+		compare-locales ${MOZCENTRAL_DIR}/browser/locales/l10n.ini ${L10N_DIR} $lang
 	fi
 
 done
