@@ -69,7 +69,7 @@ class LangStore(txt.TxtFile):
         if not isinstance(lines, list):
             lines = lines.split("\n")
         for lineoffset, line in enumerate(lines):
-            line = line.rstrip("\n").rstrip("\r")
+            line = line.decode(self.encoding).rstrip("\n").rstrip("\r")
 
             if len(line) == 0: #Skip blank lines
                 continue
