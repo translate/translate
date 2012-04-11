@@ -40,26 +40,39 @@ def build_checkerconfig(options):
     """Prepare the checker config from the given options.  This is mainly
     factored out for the sake of unit tests."""
     checkerconfig = checks.CheckerConfig(targetlanguage=options.targetlanguage)
+
     if options.notranslatefile:
         options.notranslatefile = os.path.expanduser(options.notranslatefile)
+
         if not os.path.exists(options.notranslatefile):
             self.error("notranslatefile %r does not exist" % options.notranslatefile)
+
         notranslatewords = [line.strip() for line in open(options.notranslatefile).readlines()]
         notranslatewords = dict.fromkeys([key for key in notranslatewords])
+
         checkerconfig.notranslatewords.update(notranslatewords)
+
     if options.musttranslatefile:
         options.musttranslatefile = os.path.expanduser(options.musttranslatefile)
+
         if not os.path.exists(options.musttranslatefile):
             self.error("musttranslatefile %r does not exist" % options.musttranslatefile)
+
         musttranslatewords = [line.strip() for line in open(options.musttranslatefile).readlines()]
         musttranslatewords = dict.fromkeys([key for key in musttranslatewords])
+
         checkerconfig.musttranslatewords.update(musttranslatewords)
+
     if options.validcharsfile:
         options.validcharsfile = os.path.expanduser(options.validcharsfile)
+
         if not os.path.exists(options.validcharsfile):
             self.error("validcharsfile %r does not exist" % options.validcharsfile)
+
         validchars = open(options.validcharsfile).read()
+
         checkerconfig.updatevalidchars(validchars)
+
     return checkerconfig
 
 
@@ -67,9 +80,10 @@ class pocheckfilter:
 
     def __init__(self, options, checkerclasses=None, checkerconfig=None):
         # excludefilters={}, limitfilters=None, includefuzzy=True, includereview=True, autocorrect=False):
-        """builds a checkfilter using the given checker (a list is allowed too)"""
+        """Builds a checkfilter using the given checker (a list is allowed too)"""
         if checkerclasses is None:
             checkerclasses = [checks.StandardChecker, checks.StandardUnitChecker]
+
         self.checker = checks.TeeChecker(checkerconfig=checkerconfig,
                                          excludefilters=options.excludefilters,
                                          limitfilters=options.limitfilters,
@@ -77,43 +91,58 @@ class pocheckfilter:
                                          languagecode=checkerconfig.targetlanguage)
         self.options = options
 
+
     def getfilterdocs(self):
-        """lists the docs for filters available on checker..."""
+        """Lists the docs for filters available on checker."""
         filterdict = self.checker.getfilters()
         filterdocs = ["%s\t%s" % (name, filterfunc.__doc__) for (name, filterfunc) in filterdict.iteritems()]
         filterdocs.sort()
+
         return "\n".join(filterdocs)
 
+
     def filterunit(self, unit):
-        """runs filters on an element"""
+        """Runs filters on an element."""
+
         if unit.isheader():
             return []
+
         if not self.options.includefuzzy and unit.isfuzzy():
             return []
+
         if not self.options.includereview and unit.isreview():
             return []
+
         failures = self.checker.run_filters(unit)
+
         if failures and self.options.autocorrect:
             # we can't get away with bad unquoting / requoting if we're going to change the result...
             correction = autocorrect.correct(unit.source, unit.target)
+
             if correction:
                 unit.target = correction
                 return autocorrect
             else:
                 # ignore failures we can't correct when in autocorrect mode
                 return []
+
         return failures
+
 
     def filterfile(self, transfile):
         """Runs filters on a translation store object.
+
         :param transfile: A translation store object.
         :return: A new translation store object with the results of
-                 the filter included."""
+                 the filter included.
+        """
         newtransfile = type(transfile)()
         newtransfile.setsourcelanguage(transfile.getsourcelanguage())
         newtransfile.settargetlanguage(transfile.gettargetlanguage())
+
         for unit in transfile.units:
             filterresult = self.filterunit(unit)
+
             if filterresult:
                 if filterresult != autocorrect:
                     for filtername, filtermessage in filterresult.iteritems():
@@ -121,9 +150,12 @@ class pocheckfilter:
                             unit.adderror(filtername, filtermessage)
                         if isinstance(filtermessage, checks.SeriousFilterFailure):
                             unit.markfuzzy()
+
                 newtransfile.addunit(unit)
+
         if isinstance(newtransfile, poheader):
             newtransfile.updateheader(add=True, **transfile.parseheader())
+
         return newtransfile
 
 
@@ -133,10 +165,12 @@ class FilterOptionParser(optrecurse.RecursiveOptionParser):
     def __init__(self, formats):
         """Construct the specialized Option Parser."""
         optrecurse.RecursiveOptionParser.__init__(self, formats)
+
         self.set_usage()
         self.add_option("-l", "--listfilters", action="callback", dest='listfilters',
             default=False, callback_kwargs={'dest_value': True},
             callback=self.parse_noinput, help="list filters available")
+
 
     def parse_noinput(self, option, opt, value, parser, *args, **kwargs):
         """This sets an option to *True*, but also sets input to *-*
@@ -144,21 +178,28 @@ class FilterOptionParser(optrecurse.RecursiveOptionParser):
         setattr(parser.values, option.dest, kwargs['dest_value'])
         parser.values.input = "-"
 
+
     def run(self):
         """Parses the arguments, and runs recursiveprocess with the
         resulting options."""
         (options, args) = self.parse_args()
+
         if options.filterclass is None:
             checkerclasses = [checks.StandardChecker, checks.StandardUnitChecker]
         else:
             checkerclasses = [options.filterclass, checks.StandardUnitChecker]
+
         checkerconfig = build_checkerconfig(options)
         options.checkfilter = pocheckfilter(options, checkerclasses, checkerconfig)
+
         if not options.checkfilter.checker.combinedfilters:
             self.error("No valid filters were specified")
+
         options.inputformats = self.inputformats
         options.outputoptions = self.outputoptions
+
         self.usepsyco(options)
+
         if options.listfilters:
             print options.checkfilter.getfilterdocs()
         else:
@@ -169,9 +210,12 @@ def runfilter(inputfile, outputfile, templatefile, checkfilter=None):
     """Reads in inputfile, filters using checkfilter, writes to outputfile."""
     fromfile = factory.getobject(inputfile)
     tofile = checkfilter.filterfile(fromfile)
+
     if tofile.isempty():
         return 0
+
     outputfile.write(str(tofile))
+
     return 1
 
 
@@ -182,6 +226,7 @@ def cmdlineparser():
             None: ("po", runfilter)}
 
     parser = FilterOptionParser(formats)
+
     parser.add_option("", "--review", dest="includereview",
         action="store_true", default=True,
         help="include units marked for review (default)")
@@ -235,8 +280,10 @@ def cmdlineparser():
     parser.add_option("", "--validcharsfile", dest="validcharsfile",
         default=None, type="string", metavar="FILE",
         help="read list of all valid characters from FILE (must be in UTF-8)")
+
     parser.passthrough.append('checkfilter')
     parser.description = __doc__
+
     return parser
 
 
