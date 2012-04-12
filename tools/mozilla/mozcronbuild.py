@@ -56,7 +56,7 @@ def update_rss():
     pass
 
 
-USAGE='%prog [<options>]'
+USAGE = '%prog [<options>]'
 
 
 def create_option_parser():

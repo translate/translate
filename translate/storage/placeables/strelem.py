@@ -434,7 +434,7 @@ class StringElem(object):
         elem = None
         for elem in self.flatten():
             elem_len = len(elem)
-            if length <= offset < length+elem_len:
+            if length <= offset < length + elem_len:
                 return elem
             length += elem_len
         return elem
@@ -554,7 +554,7 @@ class StringElem(object):
             parent.sub.append(checkleaf(parent, text))
             return True
 
-        before = self.elem_at_offset(offset-1)
+        before = self.elem_at_offset(offset - 1)
 
         # Case 3 #
         if oelem is before:
@@ -813,7 +813,7 @@ class StringElem(object):
                 while leafchanged:
                     leafchanged = False
 
-                    for i in range(len(elem.sub)-1):
+                    for i in range(len(elem.sub) - 1):
                         lsub = elem.sub[i]
                         rsub = elem.sub[i+1]
 

@@ -276,7 +276,7 @@ def getdatafiles():
 
     docfiles = []
     for subdir in ['docs', 'share']:
-        docwalk=os.walk(os.path.join('translate', subdir))
+        docwalk = os.walk(os.path.join('translate', subdir))
         for docs in docwalk:
             docfiles.append(listfiles(docs[0]))
         datafiles += docfiles
@@ -370,7 +370,7 @@ def standardsetup(name, version, custompackages=[], customdatafiles=[]):
     addsubpackages(subpackages)
     datafiles = getdatafiles()
     ext_modules = []
-    dosetup(name, version, packages + custompackages, datafiles + customdatafiles, translatescripts+ translatebashscripts, ext_modules)
+    dosetup(name, version, packages + custompackages, datafiles + customdatafiles, translatescripts + translatebashscripts, ext_modules)
 
 classifiers = [
   "Development Status :: 5 - Production/Stable",

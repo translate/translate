@@ -176,7 +176,7 @@ def checkout(cvstag, langs):
     os.chdir(l10ndir)
     for lang in langs:
         print '    %s' % (lang)
-        buildlang=lang.replace('_', '-')
+        buildlang = lang.replace('_', '-')
         if os.path.isdir(buildlang):
             run(['cvs', 'up', buildlang])
         else:
@@ -194,7 +194,7 @@ def checkout(cvstag, langs):
 
     os.chdir(mozilladir)
     run(['cvs', 'up', join('tools', 'l10n')])
-    run(['python', 'tools/l10n/l10n.py', '--dest='+join(os.pardir, l10ndir), '--app='+targetapp, 'en-US'])
+    run(['python', 'tools/l10n/l10n.py', '--dest=' + join(os.pardir, l10ndir), '--app='+targetapp, 'en-US'])
     os.chdir(olddir)
 
     os.chdir(l10ndir)
@@ -245,9 +245,9 @@ def pack_pot(includes):
         pass
 
     packname = join(potpacks, '%s-%s-%s' % (products[targetapp], mozversion, timestamp))
-    run(['tar', 'cjf', packname+'.tar.bz2',
+    run(['tar', 'cjf', packname + '.tar.bz2',
          join(l10ndir, 'en-US'), join(l10ndir, 'pot')] + inc)
-    run(['zip', '-qr9', packname+'.zip',
+    run(['zip', '-qr9', packname + '.zip',
          join(l10ndir, 'en-US'), join(l10ndir, 'pot')] + inc)
 
 
@@ -261,8 +261,8 @@ def pack_po(lang, buildlang):
 
     print '    %s' % (lang)
     packname = join(popacks, '%s-%s-%s-%s' % (products[targetapp], mozversion, buildlang, timestamp))
-    run(['tar', 'cjf', packname+'.tar.bz2', '--exclude', '.svn', join(l10ndir, buildlang), join(podir, buildlang)])
-    run(['zip', '-qr9', packname+'.zip', join(l10ndir, buildlang), join(podir, buildlang)], '-x', '*.svn*')
+    run(['tar', 'cjf', packname + '.tar.bz2', '--exclude', '.svn', join(l10ndir, buildlang), join(podir, buildlang)])
+    run(['zip', '-qr9', packname + '.zip', join(l10ndir, buildlang), join(podir, buildlang)], '-x', '*.svn*')
 
 
 def pre_po2moz_hacks(lang, buildlang, debug):
@@ -451,12 +451,12 @@ def create_diff(lang, buildlang):
     olddir = os.getcwd()
 
     os.chdir(l10ndir)
-    outfile = join(os.pardir, 'diff', buildlang+'-l10n.diff')
+    outfile = join(os.pardir, 'diff', buildlang + '-l10n.diff')
     run(['cvs', 'diff', '--newfile', buildlang], stdout=open(outfile, 'w'))
     os.chdir(olddir)
 
     os.chdir(join(podir_updated, buildlang))
-    outfile = join(os.pardir, os.pardir, 'diff', buildlang+'-po.diff')
+    outfile = join(os.pardir, os.pardir, 'diff', buildlang + '-po.diff')
     run(['svn', 'diff', '--diff-cmd', 'diff -x "-u --ignore-matching-lines=^\"POT\|^\"X-Gene"'], stdout=open(outfile, 'w'))
     os.chdir(olddir)
 
@@ -476,7 +476,7 @@ def create_langpack(lang, buildlang):
     langpack_name = 'langpack-' + buildlang
     moz_brand_dir = join('other-licenses', 'branding', 'firefox')
     langpack_file = join("'$(_ABS_DIST)'", 'install', "Firefox-Languagepack-'$(MOZ_APP_VERSION)'-%s.'$(AB_CD)'.xpi" % langpack_release)
-    run(['make', langpack_name, 'MOZ_BRANDING_DIRECTORY='+moz_brand_dir, 'LANGPACK_FILE='+langpack_file])
+    run(['make', langpack_name, 'MOZ_BRANDING_DIRECTORY=' + moz_brand_dir, 'LANGPACK_FILE=' + langpack_file])
     # The commented out (and very long) line below was found commented out in the source script as well.
     #( cd $mozilladir/$targetapp/locales; make repackage-win32-installer-af MOZ_BRANDING_DIRECTORY=other-licenses/branding/firefox WIN32_INSTALLER_IN=../../../Firefox-Setup-2.0.exe WIN32_INSTALLER_OUT='$(_ABS_DIST)'"/install/sea/Firefox-Setup-"'$(MOZ_APP_VERSION).$(AB_CD)'".exe" )
     os.chdir(olddir)
