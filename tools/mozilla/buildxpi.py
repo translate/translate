@@ -126,7 +126,6 @@ ac_add_options --enable-application=%(product)s""" % \
             os.rename(backup_name, MOZCONFIG)
 
 
-
 def create_option_parser():
     from optparse import OptionParser
     usage = 'Usage: buildxpi.py [<options>] <lang>'

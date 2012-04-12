@@ -107,7 +107,6 @@ def pretranslate_unit(input_unit, template_store, matchers=None, mark_reused=Fal
         else:
             matching_unit = match_template_id(input_unit, template_store)
 
-
     if matching_unit and matching_unit.gettargetlen() > 0:
         input_unit.merge(matching_unit, authoritative=True)
     elif matchers:

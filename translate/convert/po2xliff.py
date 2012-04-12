@@ -59,7 +59,6 @@ class po2xliff:
 
             #TODO: x-format, etc.
 
-
         #Handle # other comments
         comment = inputunit.getnotes("translator")
         if comment:

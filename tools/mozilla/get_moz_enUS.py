@@ -78,7 +78,6 @@ def process_l10n_ini(inifile):
         pass
 
 
-
 def create_option_parser():
     from optparse import OptionParser
     p = OptionParser()

@@ -77,7 +77,6 @@ class UnknownXML(StringElem):
         if sub:
             self.has_content = True
 
-
     # SPECIAL METHODS #
     def __repr__(self):
         """String representation of the sub-tree with the current node as the
@@ -99,7 +98,6 @@ class UnknownXML(StringElem):
             'xid': self.xid is not None and 'xid="%s" ' % (self.xid) or '',
             'subs': elemstr,
         }
-
 
     # METHODS #
     def copy(self):

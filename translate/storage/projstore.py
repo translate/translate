@@ -89,7 +89,6 @@ class ProjectStore(object):
         except Exception:
             pass
 
-
     # ACCESSORS #
     def _get_sourcefiles(self):
         """Read-only access to ``self._sourcefiles``."""
@@ -106,7 +105,6 @@ class ProjectStore(object):
         return tuple(self._transfiles)
     transfiles = property(_get_transfiles)
 
-
     # SPECIAL METHODS #
     def __in__(self, lhs):
         """@returns ``True`` if ``lhs`` is a file name or file object in the project store."""
@@ -115,7 +113,6 @@ class ProjectStore(object):
                 lhs in self._transfiles or \
                 lhs in self._files or \
                 lhs in self._files.values()
-
 
     # METHODS #
     def append_file(self, afile, fname, ftype='trans', delete_orig=False):

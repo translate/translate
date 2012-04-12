@@ -369,7 +369,6 @@ class csvfile(base.TranslationStore):
             inputfile.close()
             self.parse(csvsrc)
 
-
     def parse(self, csvsrc):
         text, encoding = self.detect_encoding(csvsrc, default_encodings=['utf-8', 'utf-16'])
         #FIXME: raise parse error if encoding detection fails?

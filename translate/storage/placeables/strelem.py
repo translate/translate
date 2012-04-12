@@ -75,7 +75,6 @@ class StringElem(object):
                 raise ValueError('attribute already exists: %s' % (key))
             setattr(self, key, value)
 
-
     # SPECIAL METHODS #
     def __add__(self, rhs):
         """Emulate the ``unicode`` class."""

@@ -98,7 +98,6 @@ class _NGram:
         return d
 
 
-
 class NGram:
 
     def __init__(self, folder, ext='.lm'):

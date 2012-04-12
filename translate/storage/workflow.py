@@ -122,7 +122,6 @@ class Workflow(object):
         self._states = []
         self._workflow_obj = wf_obj
 
-
     # ACCESSORS #
     def _get_edges(self):
         return list(self._edges)
@@ -131,7 +130,6 @@ class Workflow(object):
     def _get_states(self):
         return list(self._states)
     states = property(_get_states)
-
 
     # METHODS #
     def add_edge(self, from_state, to_state):
