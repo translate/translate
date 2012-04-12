@@ -139,7 +139,9 @@ def escape_help_text(text):
     text = text.replace("\\", "\\\\")
     for tag in helptagre.findall(text):
         escapethistag = False
-        for escape_tag in ["ahelp", "link", "item", "emph", "defaultinline", "switchinline", "caseinline", "variable", "bookmark_value", "image", "embedvar", "alt"]:
+        for escape_tag in ["ahelp", "link", "item", "emph", "defaultinline",
+                           "switchinline", "caseinline", "variable",
+                           "bookmark_value", "image", "embedvar", "alt"]:
             if tag.startswith("<%s" % escape_tag) or tag == "</%s>" % escape_tag:
                 escapethistag = True
         if tag in ["<br/>", "<help-id-missing/>"]:

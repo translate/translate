@@ -187,7 +187,9 @@ options = oofilteroptions()
 filter = oocheckfilter(options, [checks.OpenOfficeChecker, checks.StandardUnitChecker], checks.openofficeconfig)
 
 
-def convertoo(inputfile, outputfile, templatefile, sourcelanguage=None, targetlanguage=None, timestamp=None, includefuzzy=False, multifilestyle="single", skip_source=False, filteraction=None):
+def convertoo(inputfile, outputfile, templatefile, sourcelanguage=None,
+              targetlanguage=None, timestamp=None, includefuzzy=False,
+              multifilestyle="single", skip_source=False, filteraction=None):
     inputstore = factory.getobject(inputfile)
     inputstore.filename = getattr(inputfile, 'name', '')
     if not targetlanguage:
@@ -201,7 +203,10 @@ def convertoo(inputfile, outputfile, templatefile, sourcelanguage=None, targetla
     if templatefile is None:
         raise ValueError("must have template file for oo files")
     else:
-        convertor = reoo(templatefile, languages=languages, timestamp=timestamp, includefuzzy=includefuzzy, long_keys=multifilestyle != "single", filteraction=filteraction)
+        convertor = reoo(templatefile, languages=languages,
+                         timestamp=timestamp, includefuzzy=includefuzzy,
+                         long_keys=multifilestyle != "single",
+                         filteraction=filteraction)
     outputstore = convertor.convertstore(inputstore)
     # TODO: check if we need to manually delete missing items
     outputfile.write(outputstore.__str__(skip_source, targetlanguage))
@@ -210,21 +215,36 @@ def convertoo(inputfile, outputfile, templatefile, sourcelanguage=None, targetla
 
 def main(argv=None):
     from translate.convert import convert
-    formats = {("po", "oo"): ("oo", convertoo), ("xlf", "oo"): ("oo", convertoo), ("po", "sdf"): ("sdf", convertoo)}
+    formats = {
+                ("po", "oo"): ("oo", convertoo),
+                ("xlf", "oo"): ("oo", convertoo),
+                ("po", "sdf"): ("sdf", convertoo),
+              }
     # always treat the input as an archive unless it is a directory
     archiveformats = {(None, "output"): oo.oomultifile, (None, "template"): oo.oomultifile}
     parser = convert.ArchiveConvertOptionParser(formats, usetemplates=True, description=__doc__, archiveformats=archiveformats)
     parser.add_option("-l", "--language", dest="targetlanguage", default=None,
-            help="set target language code (e.g. af-ZA) [required]", metavar="LANG")
-    parser.add_option("", "--source-language", dest="sourcelanguage", default=None,
-            help="set source language code (default en-US)", metavar="LANG")
-    parser.add_option("-T", "--keeptimestamp", dest="timestamp", default=None, action="store_const", const=0,
+                      help="set target language code (e.g. af-ZA) [required]",
+                      metavar="LANG")
+    parser.add_option("", "--source-language", dest="sourcelanguage",
+                      default=None,
+                      help="set source language code (default en-US)",
+                      metavar="LANG")
+    parser.add_option("-T", "--keeptimestamp", dest="timestamp", default=None,
+                      action="store_const", const=0,
             help="don't change the timestamps of the strings")
-    parser.add_option("", "--nonrecursiveoutput", dest="allowrecursiveoutput", default=True, action="store_false", help="don't treat the output oo as a recursive store")
-    parser.add_option("", "--nonrecursivetemplate", dest="allowrecursivetemplate", default=True, action="store_false", help="don't treat the template oo as a recursive store")
-    parser.add_option("", "--skipsource", dest="skip_source", default=False, action="store_true", help="don't output the source language, but fallback to it where needed")
+    parser.add_option("", "--nonrecursiveoutput", dest="allowrecursiveoutput",
+                      default=True, action="store_false",
+                      help="don't treat the output oo as a recursive store")
+    parser.add_option("", "--nonrecursivetemplate",
+                      dest="allowrecursivetemplate", default=True,
+                      action="store_false",
+                      help="don't treat the template oo as a recursive store")
+    parser.add_option("", "--skipsource", dest="skip_source", default=False,
+                      action="store_true",
+                      help="don't output the source language, but fallback to it where needed")
     parser.add_option("", "--filteraction", dest="filteraction", default="none", metavar="ACTION",
-            help="action on pofilter failure: none (default), warn, exclude-serious, exclude-all")
+                      help="action on pofilter failure: none (default), warn, exclude-serious, exclude-all")
     parser.add_fuzzy_option()
     parser.add_multifile_option()
     parser.passthrough.append("sourcelanguage")

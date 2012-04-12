@@ -315,7 +315,14 @@ class GrepOptionParser(optrecurse.RecursiveOptionParser):
         (options, args) = self.parse_args()
         options.inputformats = self.inputformats
         options.outputoptions = self.outputoptions
-        options.checkfilter = GrepFilter(options.searchstring, options.searchparts, options.ignorecase, options.useregexp, options.invertmatch, options.keeptranslations, options.accelchar, locale.getpreferredencoding())
+        options.checkfilter = GrepFilter(options.searchstring,
+                                         options.searchparts,
+                                         options.ignorecase,
+                                         options.useregexp,
+                                         options.invertmatch,
+                                         options.keeptranslations,
+                                         options.accelchar,
+                                         locale.getpreferredencoding())
         self.usepsyco(options)
         self.recursiveprocess(options)
 

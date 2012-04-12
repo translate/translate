@@ -54,8 +54,12 @@ class po_message(Structure):
     _fields_ = []
 
 # Function prototypes
-xerror_prototype = CFUNCTYPE(None, c_int, POINTER(po_message), STRING, c_uint, c_uint, c_int, STRING)
-xerror2_prototype = CFUNCTYPE(None, c_int, POINTER(po_message), STRING, c_uint, c_uint, c_int, STRING, POINTER(po_message), STRING, c_uint, c_uint, c_int, STRING)
+xerror_prototype = CFUNCTYPE(None, c_int, POINTER(po_message), STRING, c_uint,
+                             c_uint, c_int, STRING)
+xerror2_prototype = CFUNCTYPE(None, c_int, POINTER(po_message), STRING,
+                              c_uint, c_uint, c_int, STRING,
+                              POINTER(po_message), STRING, c_uint, c_uint, 
+                              c_int, STRING)
 
 
 # Structures (error handler)
@@ -74,13 +78,16 @@ class po_error_handler(Structure):
 
 
 # Callback functions for po_xerror_handler
-def xerror_cb(severity, message, filename, lineno, column, multilint_p, message_text):
+def xerror_cb(severity, message, filename, lineno, column, multilint_p,
+              message_text):
     print >> sys.stderr, "xerror_cb", severity, message, filename, lineno, column, multilint_p, message_text
     if severity >= 1:
         raise ValueError(message_text)
 
 
-def xerror2_cb(severity, message1, filename1, lineno1, column1, multiline_p1, message_text1, message2, filename2, lineno2, column2, multiline_p2, message_text2):
+def xerror2_cb(severity, message1, filename1, lineno1, column1, multiline_p1,
+               message_text1, message2, filename2, lineno2, column2,
+               multiline_p2, message_text2):
     print >> sys.stderr, "xerror2_cb", severity, message1, filename1, lineno1, column1, multiline_p1, message_text1, message2, filename2, lineno2, column2, multiline_p2, message_text2
     if severity >= 1:
         raise ValueError(message_text1)
