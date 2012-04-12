@@ -236,10 +236,10 @@ class matcher(object):
 # The tuples define a regular expression to search for, and with what it
 # should be replaced.
 ignorepatterns = [
-    ("y\s*$", "ie"),          #category/categories, identify/identifies, apply/applied
-    ("[\s-]+", ""),           #down time / downtime, pre-order / preorder
-    ("-", " "),               #pre-order / pre order
-    (" ", "-"),               #pre order / pre-order
+    ("y\s*$", "ie"),          # category/categories, identify/identifies, apply/applied
+    ("[\s-]+", ""),           # down time / downtime, pre-order / preorder
+    ("-", " "),               # pre-order / pre order
+    (" ", "-"),               # pre order / pre-order
 ]
 ignorepatterns_re = [(re.compile(a), b) for (a, b) in ignorepatterns]
 

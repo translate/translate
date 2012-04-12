@@ -103,7 +103,7 @@ class SplitOptionParser(optrecurse.RecursiveOptionParser):
                         outputpofile = po.pofile(outputfile)
                     else:
                         outputpofile = po.pofile()
-                    outputpofile.units.append(pounit)   #TODO:perhaps check to see if it's already there...
+                    outputpofile.units.append(pounit)   # TODO:perhaps check to see if it's already there...
                     outputfile = open(fulloutputpath, 'w')
                     outputfile.write(str(outputpofile))
 
