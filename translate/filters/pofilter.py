@@ -141,14 +141,16 @@ class pocheckfilter:
         newtransfile.settargetlanguage(transfile.gettargetlanguage())
 
         for unit in transfile.units:
-            filterresult = self.filterunit(unit)
+            filter_result = self.filterunit(unit)
 
-            if filterresult:
-                if filterresult != autocorrect:
-                    for filtername, filtermessage in filterresult.iteritems():
+            if filter_result:
+                if filter_result != autocorrect:
+                    for filter_name in filter_result.iterkeys():
+                        filter_message = filter_result[filter_name]['message']
+
                         if self.options.addnotes:
-                            unit.adderror(filtername, filtermessage)
-                        if isinstance(filtermessage, checks.SeriousFilterFailure):
+                            unit.adderror(filter_name, filter_message)
+                        if isinstance(filter_message, checks.SeriousFilterFailure):
                             unit.markfuzzy()
 
                 newtransfile.addunit(unit)
