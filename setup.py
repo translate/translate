@@ -8,12 +8,12 @@ import os.path
 from translate import __version__
 from translate import __doc__
 try:
-  import py2exe
-  build_exe = py2exe.build_exe.py2exe
-  Distribution = py2exe.Distribution
+    import py2exe
+    build_exe = py2exe.build_exe.py2exe
+    Distribution = py2exe.Distribution
 except ImportError:
-  py2exe = None
-  build_exe = Command
+    py2exe = None
+    build_exe = Command
 
 # TODO: check out installing into a different path with --prefix/--home
 
@@ -94,14 +94,14 @@ translatebashscripts = [apply(join, ('tools', ) + (script, )) for script in [
                   ]]
 
 def addsubpackages(subpackages):
-  for subpackage in subpackages:
-    initfiles.append((join(sitepackages, 'translate', subpackage),
-                      [join('translate', subpackage, '__init__.py')]))
-    for infofile in ('README', 'TODO'):
-      infopath = join('translate', subpackage, infofile)
-      if os.path.exists(infopath):
-        infofiles.append((join(sitepackages, 'translate', subpackage), [infopath]))
-    packages.append("translate.%s" % subpackage)
+    for subpackage in subpackages:
+        initfiles.append((join(sitepackages, 'translate', subpackage),
+                          [join('translate', subpackage, '__init__.py')]))
+        for infofile in ('README', 'TODO'):
+            infopath = join('translate', subpackage, infofile)
+            if os.path.exists(infopath):
+                infofiles.append((join(sitepackages, 'translate', subpackage), [infopath]))
+        packages.append("translate.%s" % subpackage)
 
 class build_exe_map(build_exe):
     """distutils py2exe-based class that builds the exe file(s) but allows mapping data files"""
@@ -122,11 +122,11 @@ class build_exe_map(build_exe):
                 datadir, files = f
                 datadir = map_data_file(datadir)
                 if datadir is None:
-                  f = None
+                    f = None
                 else:
-                  f = datadir, files
+                    f = datadir, files
             if f is not None:
-              new_data_files.append(f)
+                new_data_files.append(f)
         return new_data_files
 
 class InnoScript:
@@ -160,9 +160,9 @@ class InnoScript:
     def create(self, pathname=None):
         """creates the InnoSetup script"""
         if pathname is None:
-          self.pathname = os.path.join(self.dist_dir, self.name + os.extsep + "iss").replace(' ', '_')
+            self.pathname = os.path.join(self.dist_dir, self.name + os.extsep + "iss").replace(' ', '_')
         else:
-          self.pathname = pathname
+            self.pathname = pathname
 # See http://www.jrsoftware.org/isfaq.php for more InnoSetup config options.
         ofi = self.file = open(self.pathname, "w")
         print >> ofi, "; WARNING: This script has been created by py2exe. Changes to this script"
@@ -238,125 +238,125 @@ class build_installer(build_exe_map):
         # Note: By default the final setup.exe will be in an Output subdirectory.
 
 def import_setup_module(modulename, modulepath):
-  import imp
-  modfile, pathname, description = imp.find_module(modulename, [modulepath])
-  return imp.load_module(modulename, modfile, pathname, description)
+    import imp
+    modfile, pathname, description = imp.find_module(modulename, [modulepath])
+    return imp.load_module(modulename, modfile, pathname, description)
 
 def map_data_file(data_file):
-  """remaps a data_file (could be a directory) to a different location
-  This version gets rid of Lib\\site-packages, etc"""
-  data_parts = data_file.split(os.sep)
-  if data_parts[:2] == ["Lib", "site-packages"]:
-    data_parts = data_parts[2:]
-    if data_parts:
-      data_file = os.path.join(*data_parts)
-    else:
-      data_file = ""
-  if data_parts[:1] == ["translate"]:
-    data_parts = data_parts[1:]
-    if data_parts:
-      data_file = os.path.join(*data_parts)
-    else:
-      data_file = ""
-  return data_file
+    """remaps a data_file (could be a directory) to a different location
+    This version gets rid of Lib\\site-packages, etc"""
+    data_parts = data_file.split(os.sep)
+    if data_parts[:2] == ["Lib", "site-packages"]:
+        data_parts = data_parts[2:]
+        if data_parts:
+            data_file = os.path.join(*data_parts)
+        else:
+            data_file = ""
+    if data_parts[:1] == ["translate"]:
+        data_parts = data_parts[1:]
+        if data_parts:
+            data_file = os.path.join(*data_parts)
+        else:
+            data_file = ""
+    return data_file
 
 def getdatafiles():
-  datafiles = initfiles + infofiles
-  def listfiles(srcdir):
-    return join(sitepackages, srcdir), [join(srcdir, f) for f in os.listdir(srcdir) if os.path.isfile(join(srcdir, f))]
-  docfiles = []
-  for subdir in ['docs', 'share']:
-    docwalk=os.walk(os.path.join('translate', subdir))
-    for docs in docwalk:
-      docfiles.append(listfiles(docs[0]))
-    datafiles += docfiles
-  return datafiles
+    datafiles = initfiles + infofiles
+    def listfiles(srcdir):
+        return join(sitepackages, srcdir), [join(srcdir, f) for f in os.listdir(srcdir) if os.path.isfile(join(srcdir, f))]
+    docfiles = []
+    for subdir in ['docs', 'share']:
+        docwalk=os.walk(os.path.join('translate', subdir))
+        for docs in docwalk:
+            docfiles.append(listfiles(docs[0]))
+        datafiles += docfiles
+    return datafiles
 
 def buildinfolinks():
-  linkfile = getattr(os, 'symlink', None)
-  linkdir = getattr(os, 'symlink', None)
-  import shutil
-  if linkfile is None:
-    linkfile = shutil.copy2
-  if linkdir is None:
-    linkdir = shutil.copytree
-  basedir = os.path.abspath(os.curdir)
-  os.chdir("translate")
-  if os.path.exists("LICENSE") or os.path.islink("LICENSE"):
-    os.remove("LICENSE")
-  linkfile("COPYING", "LICENSE")
-  os.chdir(basedir)
-  for infofile in ["COPYING", "README", "LICENSE"]:
-    if os.path.exists(infofile) or os.path.islink(infofile):
-      os.remove(infofile)
-    linkfile(os.path.join("translate", infofile), infofile)
+    linkfile = getattr(os, 'symlink', None)
+    linkdir = getattr(os, 'symlink', None)
+    import shutil
+    if linkfile is None:
+        linkfile = shutil.copy2
+    if linkdir is None:
+        linkdir = shutil.copytree
+    basedir = os.path.abspath(os.curdir)
+    os.chdir("translate")
+    if os.path.exists("LICENSE") or os.path.islink("LICENSE"):
+        os.remove("LICENSE")
+    linkfile("COPYING", "LICENSE")
+    os.chdir(basedir)
+    for infofile in ["COPYING", "README", "LICENSE"]:
+        if os.path.exists(infofile) or os.path.islink(infofile):
+            os.remove(infofile)
+        linkfile(os.path.join("translate", infofile), infofile)
 
 def buildmanifest_in(file, scripts):
-  """This writes the required files to a MANIFEST.in file"""
-  print >>file, "# MANIFEST.in: the below autogenerated by setup.py from translate %s" % translateversion
-  print >>file, "# things needed by translate setup.py to rebuild"
-  print >>file, "# informational files"
-  for infofile in ("README", "TODO", "ChangeLog", "COPYING", "LICENSE", "*.txt"):
-    print >>file, "global-include %s" % infofile
-  print >>file, "# C programs"
-  print >>file, "global-include *.c"
-  print >> file, "# scripts which don't get included by default in sdist"
-  for scriptname in scripts:
-    print >>file, "include %s" % scriptname
-  print >> file, "# include our documentation"
-  print >> file, "graft translate/docs"
-  print >> file, "graft translate/share"
-  # wordlist, portal are in the source tree but unconnected to the python code
-  print >>file, "prune wordlist"
-  print >>file, "prune spelling"
-  print >>file, "prune lingua"
-  print >>file, "prune Pootle"
-  print >>file, "prune pootling"
-  print >>file, "prune virtaal"
-  print >>file, "prune spelt"
-  print >>file, "prune corpuscatcher"
-  print >>file, "prune amagama"
-  print >>file, "prune .svn"
-  print >>file, "# MANIFEST.in: the above autogenerated by setup.py from translate %s" % translateversion
+    """This writes the required files to a MANIFEST.in file"""
+    print >>file, "# MANIFEST.in: the below autogenerated by setup.py from translate %s" % translateversion
+    print >>file, "# things needed by translate setup.py to rebuild"
+    print >>file, "# informational files"
+    for infofile in ("README", "TODO", "ChangeLog", "COPYING", "LICENSE", "*.txt"):
+        print >>file, "global-include %s" % infofile
+    print >>file, "# C programs"
+    print >>file, "global-include *.c"
+    print >> file, "# scripts which don't get included by default in sdist"
+    for scriptname in scripts:
+        print >>file, "include %s" % scriptname
+    print >> file, "# include our documentation"
+    print >> file, "graft translate/docs"
+    print >> file, "graft translate/share"
+    # wordlist, portal are in the source tree but unconnected to the python code
+    print >>file, "prune wordlist"
+    print >>file, "prune spelling"
+    print >>file, "prune lingua"
+    print >>file, "prune Pootle"
+    print >>file, "prune pootling"
+    print >>file, "prune virtaal"
+    print >>file, "prune spelt"
+    print >>file, "prune corpuscatcher"
+    print >>file, "prune amagama"
+    print >>file, "prune .svn"
+    print >>file, "# MANIFEST.in: the above autogenerated by setup.py from translate %s" % translateversion
 
 class TranslateDistribution(Distribution):
-  """a modified distribution class for translate"""
-  def __init__(self, attrs):
-    baseattrs = {}
-    py2exeoptions = {}
-    py2exeoptions["packages"] = ["translate", "encodings"]
-    py2exeoptions["compressed"] = True
-    py2exeoptions["excludes"] = ["PyLucene", "Tkconstants", "Tkinter", "tcl", "enchant",  # We need to do more to support spell checking on Windows
-            # strange things unnecessarily included with some versions of pyenchant:
-            "win32ui", "_win32sysloader", "win32pipe", "py2exe", "win32com", "pywin", "isapi", "_tkinter", "win32api",
-    ]
-    version = attrs.get("version", translateversion)
-    py2exeoptions["dist_dir"] = "translate-toolkit-%s" % version
-    py2exeoptions["includes"] = ["lxml", "lxml._elementpath", "psyco"]
-    options = {"py2exe": py2exeoptions}
-    baseattrs['options'] = options
-    if py2exe:
-      baseattrs['console'] = translatescripts
-      baseattrs['zipfile'] = "translate.zip"
-      baseattrs['cmdclass'] = {"py2exe": build_exe_map, "innosetup": build_installer}
-      options["innosetup"] = py2exeoptions.copy()
-      options["innosetup"]["install_script"] = []
-    baseattrs.update(attrs)
-    Distribution.__init__(self, baseattrs)
+    """a modified distribution class for translate"""
+    def __init__(self, attrs):
+        baseattrs = {}
+        py2exeoptions = {}
+        py2exeoptions["packages"] = ["translate", "encodings"]
+        py2exeoptions["compressed"] = True
+        py2exeoptions["excludes"] = ["PyLucene", "Tkconstants", "Tkinter", "tcl", "enchant",  # We need to do more to support spell checking on Windows
+                # strange things unnecessarily included with some versions of pyenchant:
+                "win32ui", "_win32sysloader", "win32pipe", "py2exe", "win32com", "pywin", "isapi", "_tkinter", "win32api",
+        ]
+        version = attrs.get("version", translateversion)
+        py2exeoptions["dist_dir"] = "translate-toolkit-%s" % version
+        py2exeoptions["includes"] = ["lxml", "lxml._elementpath", "psyco"]
+        options = {"py2exe": py2exeoptions}
+        baseattrs['options'] = options
+        if py2exe:
+            baseattrs['console'] = translatescripts
+            baseattrs['zipfile'] = "translate.zip"
+            baseattrs['cmdclass'] = {"py2exe": build_exe_map, "innosetup": build_installer}
+            options["innosetup"] = py2exeoptions.copy()
+            options["innosetup"]["install_script"] = []
+        baseattrs.update(attrs)
+        Distribution.__init__(self, baseattrs)
 
 def standardsetup(name, version, custompackages=[], customdatafiles=[]):
-  buildinfolinks()
-  # TODO: make these end with .py ending on Windows...
-  try:
-    manifest_in = open("MANIFEST.in", "w")
-    buildmanifest_in(manifest_in, translatescripts + translatebashscripts)
-    manifest_in.close()
-  except IOError, e:
-    print >> sys.stderr, "warning: could not recreate MANIFEST.in, continuing anyway. Error was %s" % e
-  addsubpackages(subpackages)
-  datafiles = getdatafiles()
-  ext_modules = []
-  dosetup(name, version, packages + custompackages, datafiles + customdatafiles, translatescripts+ translatebashscripts, ext_modules)
+    buildinfolinks()
+    # TODO: make these end with .py ending on Windows...
+    try:
+        manifest_in = open("MANIFEST.in", "w")
+        buildmanifest_in(manifest_in, translatescripts + translatebashscripts)
+        manifest_in.close()
+    except IOError, e:
+        print >> sys.stderr, "warning: could not recreate MANIFEST.in, continuing anyway. Error was %s" % e
+    addsubpackages(subpackages)
+    datafiles = getdatafiles()
+    ext_modules = []
+    dosetup(name, version, packages + custompackages, datafiles + customdatafiles, translatescripts+ translatebashscripts, ext_modules)
 
 classifiers = [
   "Development Status :: 5 - Production/Stable",
@@ -372,26 +372,26 @@ classifiers = [
   ]
 
 def dosetup(name, version, packages, datafiles, scripts, ext_modules=[]):
-  long_description = __doc__
-  description = __doc__.split("\n", 1)[0]
-  setup(name=name,
-        version=version,
-        license="GNU General Public License (GPL)",
-        description=description,
-        long_description=long_description,
-        author="Translate.org.za",
-        author_email="translate-devel@lists.sourceforge.net",
-        url="http://translate.sourceforge.net/wiki/toolkit/index",
-        download_url="http://sourceforge.net/project/showfiles.php?group_id=91920&package_id=97082",
-        platforms=["any"],
-        classifiers=classifiers,
-        packages=packages,
-        data_files=datafiles,
-        scripts=scripts,
-        ext_modules=ext_modules,
-        distclass=TranslateDistribution
-        )
+    long_description = __doc__
+    description = __doc__.split("\n", 1)[0]
+    setup(name=name,
+          version=version,
+          license="GNU General Public License (GPL)",
+          description=description,
+          long_description=long_description,
+          author="Translate.org.za",
+          author_email="translate-devel@lists.sourceforge.net",
+          url="http://translate.sourceforge.net/wiki/toolkit/index",
+          download_url="http://sourceforge.net/project/showfiles.php?group_id=91920&package_id=97082",
+          platforms=["any"],
+          classifiers=classifiers,
+          packages=packages,
+          data_files=datafiles,
+          scripts=scripts,
+          ext_modules=ext_modules,
+          distclass=TranslateDistribution,
+         )
 
 if __name__ == "__main__":
-  standardsetup("translate-toolkit", translateversion)
+    standardsetup("translate-toolkit", translateversion)
 

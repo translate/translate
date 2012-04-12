@@ -320,10 +320,10 @@ class poheader(object):
             return project
         bug_address = header.get('Report-Msgid-Bugs-To', None)
         if bug_address is not None:
-           if 'bugzilla.gnome.org' in bug_address:
-               return 'gnome'
-           if 'bugs.kde.org' in bug_address:
-               return 'kde'
+            if 'bugzilla.gnome.org' in bug_address:
+                return 'gnome'
+            if 'bugs.kde.org' in bug_address:
+                return 'kde'
         accelerator = header.get('X-Accelerator-Marker', None)
         if accelerator is not None:
             if accelerator == "~":
