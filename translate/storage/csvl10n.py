@@ -137,7 +137,7 @@ class csvunit(base.TranslationUnit):
         if self.id:
             return self.id
 
-        result  = self.source
+        result = self.source
         context = self.context
         if context:
             result = u"%s\04%s" % (context, result)
