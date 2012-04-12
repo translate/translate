@@ -242,7 +242,7 @@ def import_setup_module(modulename, modulepath):
   modfile, pathname, description = imp.find_module(modulename, [modulepath])
   return imp.load_module(modulename, modfile, pathname, description)
 
-def map_data_file (data_file):
+def map_data_file(data_file):
   """remaps a data_file (could be a directory) to a different location
   This version gets rid of Lib\\site-packages, etc"""
   data_parts = data_file.split(os.sep)
