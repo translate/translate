@@ -262,8 +262,10 @@ def map_data_file(data_file):
 
 def getdatafiles():
     datafiles = initfiles + infofiles
+
     def listfiles(srcdir):
         return join(sitepackages, srcdir), [join(srcdir, f) for f in os.listdir(srcdir) if os.path.isfile(join(srcdir, f))]
+
     docfiles = []
     for subdir in ['docs', 'share']:
         docwalk=os.walk(os.path.join('translate', subdir))
