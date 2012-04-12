@@ -11,6 +11,19 @@ def strprep(str1, str2, message=None):
     return data.normalized_unicode(str1), data.normalized_unicode(str2), data.normalized_unicode(message)
 
 
+def check_category(filterfunction):
+    """Checks whether ``filter_function`` has defined a category or not."""
+    has_category = []
+    classes = (checks.TeeChecker, checks.UnitChecker)
+
+    for klass in classes:
+        categories = getattr(klass, 'categories', None)
+        has_category.append(categories is not None and \
+                            filterfunction.__name__ in categories)
+
+    return True in has_category
+
+
 def passes(filterfunction, str1, str2):
     """returns whether the given strings pass on the given test, handling FilterFailures"""
     str1, str2, no_message = strprep(str1, str2)
@@ -18,6 +31,9 @@ def passes(filterfunction, str1, str2):
         filterresult = filterfunction(str1, str2)
     except checks.FilterFailure, e:
         filterresult = False
+
+    filterresult = filterresult and check_category(filterfunction)
+
     return filterresult
 
 
@@ -35,6 +51,9 @@ def fails(filterfunction, str1, str2, message=None):
             print exc_message.encode('utf-8')
         else:
             filterresult = False
+
+    filterresult = filterresult and check_category(filterfunction)
+
     return not filterresult
 
 
@@ -50,6 +69,9 @@ def fails_serious(filterfunction, str1, str2, message=None):
             print exc_message.encode('utf-8')
         else:
             filterresult = False
+
+    filterresult = filterresult and check_category(filterfunction)
+
     return not filterresult
 
 
