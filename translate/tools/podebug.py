@@ -144,7 +144,7 @@ class podebug:
             string = StringElem(string)
 
         def transpose(char):
-            loc = ord(char)-65
+            loc = ord(char) - 65
             if loc < 0 or loc > 56:
                 return char
             return self.REWRITE_UNICODE_MAP[loc]
@@ -173,7 +173,7 @@ class podebug:
             string = StringElem(string)
 
         def transpose(char):
-            loc = ord(char)-33
+            loc = ord(char) - 33
             if loc < 0 or loc > 89:
                 return char
             return self.REWRITE_FLIPPED_MAP[loc]

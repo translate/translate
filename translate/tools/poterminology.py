@@ -88,7 +88,7 @@ class TerminologyExtractor(object):
         self.xmlelpat = re.compile(r"<(?:![[-]|[/?]?[A-Za-z_:])[^>]*>")
         # handles XML/HTML entities (&#32; &#x20; &amp; &my_entity;)
         self.xmlentpat = re.compile(r"&(?:#(?:[0-9]+|x[0-9a-f]+)|[a-z_:][\w.-:]*);",
-                               flags=re.UNICODE|re.IGNORECASE)
+                               flags=re.UNICODE | re.IGNORECASE)
 
         self.units = 0
         self.glossary = {}
@@ -120,7 +120,7 @@ class TerminologyExtractor(object):
                     else:
                         logging.warning("%s line %d - bad case mapping directive", (self.stopfile, line))
                 elif stoptype == '/':
-                    self.stoprelist.append(re.compile(stopline[1:-1]+'$'))
+                    self.stoprelist.append(re.compile(stopline[1:-1] + '$'))
                 else:
                     self.stopwords[stopline[1:-1]] = actions[stoptype]
         except KeyError, character:
