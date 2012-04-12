@@ -277,9 +277,12 @@ def pack_po(lang, buildlang):
         pass
 
     print '    %s' % (lang)
-    packname = join(popacks, '%s-%s-%s-%s' % (products[targetapp], mozversion, buildlang, timestamp))
-    run(['tar', 'cjf', packname + '.tar.bz2', '--exclude', '.svn', join(l10ndir, buildlang), join(podir, buildlang)])
-    run(['zip', '-qr9', packname + '.zip', join(l10ndir, buildlang), join(podir, buildlang)], '-x', '*.svn*')
+    packname = join(popacks, '%s-%s-%s-%s' % (products[targetapp], mozversion,
+                                              buildlang, timestamp))
+    run(['tar', 'cjf', packname + '.tar.bz2', '--exclude', '.svn',
+         join(l10ndir, buildlang), join(podir, buildlang)])
+    run(['zip', '-qr9', packname + '.zip', join(l10ndir, buildlang),
+         join(podir, buildlang)], '-x', '*.svn*')
 
 
 def pre_po2moz_hacks(lang, buildlang, debug):
@@ -291,7 +294,8 @@ def pre_po2moz_hacks(lang, buildlang, debug):
 
     # Fix for languages that have no Windows codepage
     if lang == 've':
-        srcs = glob.glob(join(podir, 'en_ZA', 'browser', 'installer', '*.properties'))
+        srcs = glob.glob(join(podir, 'en_ZA',
+                              'browser', 'installer', '*.properties'))
         dest = join(temp_po, buildlang, 'browser', 'installer')
 
         for src in srcs:
@@ -300,7 +304,8 @@ def pre_po2moz_hacks(lang, buildlang, debug):
     old = join(temp_po, buildlang)
     new = join(podir_updated, buildlang)
     templates = join(l10ndir, 'pot')
-    run(['pomigrate2', '--use-compendium', '--quiet', '--pot2po', old, new, templates])
+    run(['pomigrate2', '--use-compendium', '--quiet', '--pot2po',
+         old, new, templates])
 
     os.path.walk(join(podir_updated, buildlang), delfiles, '*.html.po')
     os.path.walk(join(podir_updated, buildlang), delfiles, '*.xhtml.po')
@@ -308,7 +313,9 @@ def pre_po2moz_hacks(lang, buildlang, debug):
     if debug:
         olddir = os.getcwd()
         os.chdir(join("%s" % (podir_updated), buildlang))
-        run(['podebug', '--progress=none', '--errorlevel=traceback', '--ignore=mozilla', '.', '.'])
+        run(['podebug', '--progress=none', '--errorlevel=traceback',
+             '--ignore=mozilla',
+             '.', '.'])
         os.chdir(olddir)
 
     # Create l10n related files
@@ -323,7 +330,8 @@ def post_po2moz_hacks(lang, buildlang):
     """Hacks that should be run after running C{po2moz}."""
 
     # Hack to fix creating Thunderber installer
-    inst_inc_po = join(podir_updated, lang, 'mail', 'installer', 'installer.inc.po')
+    inst_inc_po = join(podir_updated, lang,
+                       'mail', 'installer', 'installer.inc.po')
     if os.path.isfile(inst_inc_po):
         tempdir = tempfile.mkdtemp()
         tmp_po = join(tempdir, 'installer.%s.properties.po' % (lang))
@@ -338,7 +346,8 @@ def post_po2moz_hacks(lang, buildlang):
              tmp_po,                # /tmp/installer.$lang.properties.po
              tmp_po[:-3]])          # /tmp/installer.$lang.properties
 
-        # mv /tmp/installer.$lang.properties $l10ndir/$buildlang/mail/installer/installer.inc
+        # mv /tmp/installer.$lang.properties \
+        #    $l10ndir/$buildlang/mail/installer/installer.inc
         shutil.move(
             tmp_po[:-3],
             join(l10ndir, buildlang, 'mail', 'installer', 'installer.inc')
@@ -383,7 +392,8 @@ def post_po2moz_hacks(lang, buildlang):
             join('browser', 'profile', 'chrome', 'userChrome-example.css'),
             join('browser', 'profile', 'chrome', 'userContent-example.css'),
             join('browser', 'searchplugins', 'list.txt'),
-            join('extensions', 'reporter', 'chrome', 'reporterOverlay.properties'),
+            join('extensions', 'reporter', 'chrome',
+                 'reporterOverlay.properties'),
             join('mail', 'all-l10n.js'),
             join('toolkit', 'chrome', 'global', 'intl.css'),
             join('toolkit', 'installer', 'windows', 'charset.mk')
@@ -448,12 +458,15 @@ def migrate_lang(lang, buildlang, recover, update_transl, debug):
     # Clean up where we made real tabs \t
     if mozversion < '3':
         run(['sed', '-i', '"/^USAGE_MSG/s/\\\t/\t/g"',
-             join(l10ndir, buildlang, 'toolkit', 'installer', 'unix', 'install.it')])
+             join(l10ndir, buildlang,
+                  'toolkit', 'installer', 'unix', 'install.it')])
         run(['sed', '-i', '"/^#define MSG_USAGE/s/\\\t/\t/g"',
-             join(l10ndir, buildlang, 'browser', 'installer', 'installer.inc')])
+             join(l10ndir, buildlang,
+                  'browser', 'installer', 'installer.inc')])
 
     # Fix bookmark file to point to the locale
-    # FIXME - need some way to preserve this file if its been translated already
+    # FIXME - need some way to preserve this file if its been translated
+    # already
     run(['sed', '-i', 's/en-US/%s/g' % (buildlang),
          join(l10ndir, buildlang, 'browser', 'profile', 'bookmarks.html')])
 
@@ -474,7 +487,10 @@ def create_diff(lang, buildlang):
 
     os.chdir(join(podir_updated, buildlang))
     outfile = join(os.pardir, os.pardir, 'diff', buildlang + '-po.diff')
-    run(['svn', 'diff', '--diff-cmd', 'diff -x "-u --ignore-matching-lines=^\"POT\|^\"X-Gene"'], stdout=open(outfile, 'w'))
+    run(['svn', 'diff',
+         '--diff-cmd',
+         'diff -x "-u --ignore-matching-lines=^\"POT\|^\"X-Gene"'],
+         stdout=open(outfile, 'w'))
     os.chdir(olddir)
 
 
@@ -486,15 +502,19 @@ def create_langpack(lang, buildlang):
     olddir = os.getcwd()
 
     os.chdir(mozilladir)
-    run(['./configure', '--disable-compile-environment', '--disable-xft', '--enable-application=%s' % (targetapp)])
+    run(['./configure', '--disable-compile-environment', '--disable-xft',
+         '--enable-application=%s' % (targetapp)])
     os.chdir(olddir)
 
     os.chdir(join(mozilladir, targetapp, 'locales'))
     langpack_name = 'langpack-' + buildlang
     moz_brand_dir = join('other-licenses', 'branding', 'firefox')
-    langpack_file = join("'$(_ABS_DIST)'", 'install', "Firefox-Languagepack-'$(MOZ_APP_VERSION)'-%s.'$(AB_CD)'.xpi" % langpack_release)
-    run(['make', langpack_name, 'MOZ_BRANDING_DIRECTORY=' + moz_brand_dir, 'LANGPACK_FILE=' + langpack_file])
-    # The commented out (and very long) line below was found commented out in the source script as well.
+    langpack_file = join("'$(_ABS_DIST)'", 'install',
+                         "Firefox-Languagepack-'$(MOZ_APP_VERSION)'-%s.'$(AB_CD)'.xpi" % langpack_release)
+    run(['make', langpack_name, 'MOZ_BRANDING_DIRECTORY=' + moz_brand_dir,
+         'LANGPACK_FILE=' + langpack_file])
+    # The commented out (and very long) line below was found commented 
+    # out in the source script as well.
     #( cd $mozilladir/$targetapp/locales; make repackage-win32-installer-af MOZ_BRANDING_DIRECTORY=other-licenses/branding/firefox WIN32_INSTALLER_IN=../../../Firefox-Setup-2.0.exe WIN32_INSTALLER_OUT='$(_ABS_DIST)'"/install/sea/Firefox-Setup-"'$(MOZ_APP_VERSION).$(AB_CD)'".exe" )
     os.chdir(olddir)
 
