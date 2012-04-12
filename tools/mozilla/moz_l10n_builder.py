@@ -57,10 +57,10 @@ podir_recover = podir + '-recover'
 podir_updated = podir + '-updated'
 potpacks = "potpacks"
 popacks = 'popacks'
-products = { 'browser': 'firefox' } #Simple mapping of possible "targetapp"s to product names.
+products = {'browser': 'firefox'} #Simple mapping of possible "targetapp"s to product names.
 
 devnull = open(os.devnull, 'wb')
-options = { 'verbose': True } # Global program options
+options = {'verbose': True} # Global program options
 USAGE='Usage: %prog [options] <langs...|ALL>'
 
 class CommandError(StandardError):
@@ -81,7 +81,7 @@ def delfiles(pattern, path, files):
         This function is meant to be used with C{os.path.walk}
         """
     path = os.path.abspath(path)
-    match_files = glob.glob( join(path, pattern) )
+    match_files = glob.glob(join(path, pattern))
     for f in files:
         if join(path, f) in match_files:
             os.unlink(join(path, f))
@@ -179,7 +179,7 @@ def checkout(cvstag, langs):
     # Make latest POT file
     for rmdir in ('en-US', 'pot'):
         try:
-            shutil.rmtree( join(l10ndir, rmdir) )
+            shutil.rmtree(join(l10ndir, rmdir))
         except OSError, oe:
             # "No such file or directory" errors are fine. The rest we raise again.
             if oe.errno != 2:
@@ -202,10 +202,11 @@ def checkout(cvstag, langs):
             raise oe
 
     if mozversion < '3':
-        for f in [  'en-US/browser/README.txt pot/browser/README.txt.pot',
-                    'en-US/browser/os2/README.txt pot/browser/os2/README.txt.pot',
-                    'en-US/mail/README.txt pot/mail/README.txt.pot',
-                    'en-US/mail/os2/README.txt pot/mail/os2/README.txt.pot' ]:
+        for f in ['en-US/browser/README.txt pot/browser/README.txt.pot',
+                  'en-US/browser/os2/README.txt pot/browser/os2/README.txt.pot',
+                  'en-US/mail/README.txt pot/mail/README.txt.pot',
+                  'en-US/mail/os2/README.txt pot/mail/os2/README.txt.pot',
+                 ]:
             run(['txt2po', '--progress=none', '-P', f])
     os.chdir(olddir)
 
@@ -236,9 +237,9 @@ def pack_pot(includes):
 
     packname = join(potpacks, '%s-%s-%s' % (products[targetapp], mozversion, timestamp))
     run(['tar', 'cjf', packname+'.tar.bz2',
-         join(l10ndir, 'en-US'), join(l10ndir, 'pot') ] + inc)
+         join(l10ndir, 'en-US'), join(l10ndir, 'pot')] + inc)
     run(['zip', '-qr9', packname+'.zip',
-         join(l10ndir, 'en-US'), join(l10ndir, 'pot') ] + inc)
+         join(l10ndir, 'en-US'), join(l10ndir, 'pot')] + inc)
 
 def pack_po(lang, buildlang):
     timestamp = time.strftime('%Y%m%d')
@@ -258,7 +259,7 @@ def pre_po2moz_hacks(lang, buildlang, debug):
 
     # Protect the real original PO dir
     temp_po = tempfile.mkdtemp()
-    shutil.copytree( join(podir, buildlang), join(temp_po, buildlang) )
+    shutil.copytree(join(podir, buildlang), join(temp_po, buildlang))
 
     # Fix for languages that have no Windows codepage
     if lang == 've':
@@ -283,7 +284,7 @@ def pre_po2moz_hacks(lang, buildlang, debug):
         os.chdir(olddir)
 
     # Create l10n related files
-    if os.path.isdir( join(l10ndir, buildlang) ):
+    if os.path.isdir(join(l10ndir, buildlang)):
         os.path.walk(join(l10ndir, buildlang), delfiles, '*.dtd')
         os.path.walk(join(l10ndir, buildlang), delfiles, '*.properties')
 
@@ -392,7 +393,7 @@ def migrate_lang(lang, buildlang, recover, update_transl, debug):
         shutil.copytree(join(podir, '.svn'), podir_updated)
     if os.path.isdir(join(podir_updated, buildlang)):
         shutil.rmtree(join(podir_updated, buildlang))
-    shutil.copytree( join(podir, buildlang), join(podir_updated, buildlang) )
+    shutil.copytree(join(podir, buildlang), join(podir_updated, buildlang))
     os.path.walk(join(podir_updated, buildlang), delfiles, '*.po')
 
     pre_po2moz_hacks(lang, buildlang, debug)
