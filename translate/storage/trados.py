@@ -64,9 +64,9 @@ ur"\lquote": u"‘",     # Left single quotation mark. \u2018
 ur"\rquote": u"’",     # Right single quotation mark. \u2019
 ur"\ldblquote": u"“",  # Left double quotation mark. \u201C
 ur"\rdblquote": u"”",  # Right double quotation mark. \u201D
-ur"\~": u"\u00a0", # Nonbreaking space
-ur"\-": u"\u00ad", # Optional hyphen.
-ur"\_": u"‑", # Nonbreaking hyphen \U2011
+ur"\~": u"\u00a0",  # Nonbreaking space
+ur"\-": u"\u00ad",  # Optional hyphen.
+ur"\_": u"‑",  # Nonbreaking hyphen \U2011
 # A hexadecimal value, based on the specified character set (may be used to
 # identify 8-bit values).
 #ur"\'hh": "",

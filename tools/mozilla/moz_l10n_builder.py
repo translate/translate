@@ -57,10 +57,10 @@ podir_recover = podir + '-recover'
 podir_updated = podir + '-updated'
 potpacks = "potpacks"
 popacks = 'popacks'
-products = {'browser': 'firefox'} #Simple mapping of possible "targetapp"s to product names.
+products = {'browser': 'firefox'}  # Simple mapping of possible "targetapp"s to product names.
 
 devnull = open(os.devnull, 'wb')
-options = {'verbose': True} # Global program options
+options = {'verbose': True}  # Global program options
 USAGE='Usage: %prog [options] <langs...|ALL>'
 
 class CommandError(StandardError):
@@ -140,7 +140,7 @@ def get_langs(lang_args):
         elif lang != 'en-US':
             langs.append(lang)
 
-    langs = list(set(langs)) # Remove duplicates from langs
+    langs = list(set(langs))  # Remove duplicates from langs
 
     print 'Selected languages: %s' % (' '.join(langs))
 
@@ -305,9 +305,9 @@ def post_po2moz_hacks(lang, buildlang):
         shutil.copy2(inst_inc, tmp_properties)
 
         run(['po2prop', '--progress=none', '--errorlevel=traceback',
-             '-t', tmp_properties, # -t /tmp/installer.properties
-             tmp_po,               # /tmp/installer.$lang.properties.po
-             tmp_po[:-3]])           # /tmp/installer.$lang.properties
+             '-t', tmp_properties,  # -t /tmp/installer.properties
+             tmp_po,                # /tmp/installer.$lang.properties.po
+             tmp_po[:-3]])          # /tmp/installer.$lang.properties
 
         # mv /tmp/installer.$lang.properties $l10ndir/$buildlang/mail/installer/installer.inc
         shutil.move(
@@ -328,7 +328,7 @@ def post_po2moz_hacks(lang, buildlang):
             try:
                 os.makedirs(join(l10ndir, language, dir))
             except OSError:
-                pass # Don't worry if the directory already exists
+                pass  # Don't worry if the directory already exists
             shutil.copy2(
                 join(enUS, dir, filename),
                 join(l10ndir, language, dir)

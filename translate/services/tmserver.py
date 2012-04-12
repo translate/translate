@@ -26,9 +26,9 @@ import logging
 from cgi import parse_qs
 from optparse import OptionParser
 try:
-    import json #available since Python 2.6
+    import json  # available since Python 2.6
 except ImportError:
-    import simplejson as json #API compatible with the json module
+    import simplejson as json  # API compatible with the json module
 
 from translate.misc import selector
 from translate.misc import wsgi

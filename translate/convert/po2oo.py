@@ -85,7 +85,7 @@ class reoo:
             key = oo.normalizefilename(key)
             if key in self.index:
                 # now we need to replace the definition of entity with msgstr
-                theoo = self.index[key] # find the oo
+                theoo = self.index[key]  # find the oo
                 self.applytranslation(key, subkey, theoo, unit)
             else:
                 print >> sys.stderr, "couldn't find key %s from po in %d keys" % (key, len(self.index))

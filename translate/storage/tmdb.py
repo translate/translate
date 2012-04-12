@@ -56,7 +56,7 @@ class TMDB(object):
         self.max_length = max_length
 
         if not isinstance(db_file, unicode):
-            db_file = unicode(db_file) # don't know which encoding
+            db_file = unicode(db_file)  # don't know which encoding
         self.db_file = db_file
         # share connections to same database file between different instances
         if db_file not in self._tm_dbs:

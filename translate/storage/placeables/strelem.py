@@ -327,14 +327,14 @@ class StringElem(object):
         #assert range_nodes[0] is start['elem'] and range_nodes[-1] is end['elem']
         #logging.debug("Nodes in delete range: %s" % (str(range_nodes)))
 
-        marked_nodes = [] # Contains nodes that have been marked for deletion (directly or inderectly (via parent)).
+        marked_nodes = []  # Contains nodes that have been marked for deletion (directly or inderectly (via parent)).
         for node in range_nodes[1:-1]:
             if [n for n in marked_nodes if n is node]:
                 continue
             subtree = node.depth_first()
             if not [e for e in subtree if e is end['elem']]:
                 #logging.debug("Marking node: %s" % (subtree))
-                marked_nodes.extend(subtree) # "subtree" does not include "node"
+                marked_nodes.extend(subtree)  # "subtree" does not include "node"
 
         ##### FOR DEBUGGING #####
         #s = ''
@@ -563,7 +563,7 @@ class StringElem(object):
                 #logging.debug('Case 3')
                 eoffset = offset - self.elem_offset(oelem)
                 if oelem.isleaf():
-                    s = unicode(oelem) # Collapse all sibling strings into one
+                    s = unicode(oelem)  # Collapse all sibling strings into one
                     head = s[:eoffset]
                     tail = s[eoffset:]
                     if type(text) is StringElem and text.isleaf():
@@ -590,17 +590,17 @@ class StringElem(object):
         # 4.2 #
         elif before.iseditable and oelem.iseditable:
             #logging.debug('Case 4.2')
-            return before.insert(len(before) + 1, text) # Reinterpret as a case 2
+            return before.insert(len(before) + 1, text)  # Reinterpret as a case 2
 
         # 4.3 #
         elif before.iseditable and not oelem.iseditable:
             #logging.debug('Case 4.3')
-            return before.insert(len(before) + 1, text) # Reinterpret as a case 2
+            return before.insert(len(before) + 1, text)  # Reinterpret as a case 2
 
         # 4.4 #
         elif not before.iseditable and oelem.iseditable:
             #logging.debug('Case 4.4')
-            return oelem.insert(0, text) # Reinterpret as a case 1
+            return oelem.insert(0, text)  # Reinterpret as a case 1
 
         return False
 

@@ -299,7 +299,7 @@ class terminologymatcher(matcher):
         """Normal matching after converting text to lower case. Then replace
         with the original unit to retain comments, etc."""
         text_l = len(text)
-        if text_l < self.getstartlength(0, ''): # parameters unused
+        if text_l < self.getstartlength(0, ''):  # parameters unused
             # impossible to return anything
             return []
         text = text.lower()

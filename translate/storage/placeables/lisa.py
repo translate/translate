@@ -101,7 +101,7 @@ def xml_to_strelem(dom_node, xml_space="preserve"):
         dom_node = etree.fromstring(dom_node)
     normalize_xml_space(dom_node, xml_space, remove_start=True)
     result = StringElem()
-    sub = result.sub # just an optimisation
+    sub = result.sub  # just an optimisation
     for child_dom_node in dom_node:
         if child_dom_node.tag is etree.Comment:
             continue

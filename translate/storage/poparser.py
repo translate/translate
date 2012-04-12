@@ -267,7 +267,7 @@ def parse_msgstr_array_entry(parse_state, msgstr_dict):
 def parse_msgstr_array(parse_state, unit):
     msgstr_dict = {}
     result = parse_msgstr_array_entry(parse_state, msgstr_dict)
-    if not result: # We require at least one result
+    if not result:  # We require at least one result
         return False
     while parse_msgstr_array_entry(parse_state, msgstr_dict):
         pass

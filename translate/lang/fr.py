@@ -36,7 +36,7 @@ def guillemets(text):
         # <a href="something">
         if prefix == u"=":
             return match.group(0)
-        return u"%s«\u00a0%s\u00a0»" % (prefix, match.group(2)) #\u00a0 is NBSP
+        return u"%s«\u00a0%s\u00a0»" % (prefix, match.group(2))  # \u00a0 is NBSP
 
     # Check that there is an even number of double quotes, otherwise it is
     # probably not safe to convert them.

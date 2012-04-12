@@ -117,39 +117,39 @@ WF_FIELDNAMES_HEADER_DEFAULTS = {
 # For now these look correct and have been taken from Windows CP1252 and
 # Macintosh code points found for the respective character sets on Linux.
 WF_ESCAPE_MAP = (
-              ("&'26;", u"\u0026"), # & - Ampersand (must be first to prevent
-                                    #     escaping of escapes)
-              ("&'82;", u"\u201A"), # ‚ - Single low-9 quotation mark
-              ("&'85;", u"\u2026"), # … - Elippsis
-              ("&'91;", u"\u2018"), # ‘ - left single quotation mark
-              ("&'92;", u"\u2019"), # ’ - right single quotation mark
-              ("&'93;", u"\u201C"), # “ - left double quotation mark
-              ("&'94;", u"\u201D"), # ” - right double quotation mark
-              ("&'96;", u"\u2013"), # – - en dash (validate)
-              ("&'97;", u"\u2014"), # — - em dash (validate)
-              ("&'99;", u"\u2122"), # ™ - Trade mark
+              ("&'26;", u"\u0026"),  # & - Ampersand (must be first to prevent
+                                     #     escaping of escapes)
+              ("&'82;", u"\u201A"),  # ‚ - Single low-9 quotation mark
+              ("&'85;", u"\u2026"),  # … - Elippsis
+              ("&'91;", u"\u2018"),  # ‘ - left single quotation mark
+              ("&'92;", u"\u2019"),  # ’ - right single quotation mark
+              ("&'93;", u"\u201C"),  # “ - left double quotation mark
+              ("&'94;", u"\u201D"),  # ” - right double quotation mark
+              ("&'96;", u"\u2013"),  # – - en dash (validate)
+              ("&'97;", u"\u2014"),  # — - em dash (validate)
+              ("&'99;", u"\u2122"),  # ™ - Trade mark
               # Windows only
-              ("&'A0;", u"\u00A0"), #   - Non breaking space
-              ("&'A9;", u"\u00A9"), # © - Copyright
-              ("&'AE;", u"\u00AE"), # ® - Registered
-              ("&'BC;", u"\u00BC"), # ¼
-              ("&'BD;", u"\u00BD"), # ½
-              ("&'BE;", u"\u00BE"), # ¾
+              ("&'A0;", u"\u00A0"),  #   - Non breaking space
+              ("&'A9;", u"\u00A9"),  # © - Copyright
+              ("&'AE;", u"\u00AE"),  # ® - Registered
+              ("&'BC;", u"\u00BC"),  # ¼
+              ("&'BD;", u"\u00BD"),  # ½
+              ("&'BE;", u"\u00BE"),  # ¾
               # Mac only
-              ("&'A8;", u"\u00AE"), # ® - Registered
-              ("&'AA;", u"\u2122"), # ™ - Trade mark
-              ("&'C7;", u"\u00AB"), # « - Left-pointing double angle quotation mark
-              ("&'C8;", u"\u00BB"), # » - Right-pointing double angle quotation mark
-              ("&'C9;", u"\u2026"), # … - Horizontal Elippsis
-              ("&'CA;", u"\u00A0"), #   - Non breaking space
-              ("&'D0;", u"\u2013"), # – - en dash (validate)
-              ("&'D1;", u"\u2014"), # — - em dash (validate)
-              ("&'D2;", u"\u201C"), # “ - left double quotation mark
-              ("&'D3;", u"\u201D"), # ” - right double quotation mark
-              ("&'D4;", u"\u2018"), # ‘ - left single quotation mark
-              ("&'D5;", u"\u2019"), # ’ - right single quotation mark
-              ("&'E2;", u"\u201A"), # ‚ - Single low-9 quotation mark
-              ("&'E3;", u"\u201E"), # „ - Double low-9 quotation mark
+              ("&'A8;", u"\u00AE"),  # ® - Registered
+              ("&'AA;", u"\u2122"),  # ™ - Trade mark
+              ("&'C7;", u"\u00AB"),  # « - Left-pointing double angle quotation mark
+              ("&'C8;", u"\u00BB"),  # » - Right-pointing double angle quotation mark
+              ("&'C9;", u"\u2026"),  # … - Horizontal Elippsis
+              ("&'CA;", u"\u00A0"),  #   - Non breaking space
+              ("&'D0;", u"\u2013"),  # – - en dash (validate)
+              ("&'D1;", u"\u2014"),  # — - em dash (validate)
+              ("&'D2;", u"\u201C"),  # “ - left double quotation mark
+              ("&'D3;", u"\u201D"),  # ” - right double quotation mark
+              ("&'D4;", u"\u2018"),  # ‘ - left single quotation mark
+              ("&'D5;", u"\u2019"),  # ’ - right single quotation mark
+              ("&'E2;", u"\u201A"),  # ‚ - Single low-9 quotation mark
+              ("&'E3;", u"\u201E"),  # „ - Double low-9 quotation mark
               # Other markers
               #("&'B;", u"\n"), # Soft-break - XXX creates a problem with
                                 # roundtripping could also be represented
@@ -191,9 +191,9 @@ class WordfastDialect(csv.Dialect):
     quoting = csv.QUOTE_NONE
     if sys.version_info < (2, 5, 0):
         # We need to define the following items for csv in Python < 2.5
-        quoting = csv.QUOTE_MINIMAL # Wordfast does not quote anything, since
-                                    # we escape \t anyway in _char_to_wf this
-                                    # should not be a problem
+        quoting = csv.QUOTE_MINIMAL  # Wordfast does not quote anything, since
+                                     # we escape \t anyway in _char_to_wf this
+                                     # should not be a problem
         doublequote = False
         skipinitialspace = False
         escapechar = None

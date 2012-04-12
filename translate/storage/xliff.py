@@ -452,7 +452,7 @@ class xliffunit(lisa.LISAunit):
                 pairs = []
                 for context in contexts:
                     pairs.append((context.get("context-type"), lisa.getText(context, getXMLspace(self.xmlelement, self._default_xml_space))))
-                groups.append(pairs) #not extend
+                groups.append(pairs)  # not extend
         return groups
 
     def getrestype(self):

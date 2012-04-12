@@ -574,7 +574,7 @@ if __name__ == '__main__':
             print "/".join(prefix), "->", "/".join(mapto)
     if options.listfiles:
         for name in xpifile.iterextractnames(includenonjars=True, includedirs=True):
-            print name #, xpifile.ostojarpath(name)
+            print name  # , xpifile.ostojarpath(name)
     if options.extractfiles:
         if options.extractdir and not os.path.isdir(options.extractdir):
             os.mkdir(options.extractdir)

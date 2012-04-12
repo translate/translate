@@ -104,7 +104,7 @@ class redtd:
         for entity in entities:
             if entity in self.dtdfile.index:
                 # now we need to replace the definition of entity with msgstr
-                dtdunit = self.dtdfile.index[entity] # find the dtd
+                dtdunit = self.dtdfile.index[entity]  # find the dtd
                 applytranslation(entity, dtdunit, inunit, mixedentities)
 
 

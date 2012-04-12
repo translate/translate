@@ -245,8 +245,8 @@ class BundleProjectStore(ProjectStore):
         if hasattr(infile, 'seek'):
             infile.seek(0)
         self.zip.writestr(pfname, infile.read())
-        self._files[pfname] = None # Clear the cached file object to force the
-                                  # file to be read from the zip file.
+        self._files[pfname] = None  # Clear the cached file object to force the
+                                    # file to be read from the zip file.
 
     def _zip_delete(self, fnames):
         """Delete the files with the given names from the zip file (``self.zip``)."""

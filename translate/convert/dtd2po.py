@@ -165,7 +165,7 @@ class dtd2po:
 
     def findmixedentities(self, thedtdfile):
         """creates self.mixedentities from the dtd file..."""
-        self.mixedentities = {} # those entities which have a .label/.title and .accesskey combined
+        self.mixedentities = {}  # those entities which have a .label/.title and .accesskey combined
         for entity in thedtdfile.index.keys():
             for labelsuffix in dtd.labelsuffixes:
                 if entity.endswith(labelsuffix):

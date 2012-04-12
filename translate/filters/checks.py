@@ -1566,7 +1566,7 @@ class MozillaChecker(StandardChecker):
                         if len(pair2) != 4:
                             raise FilterFailure(u"A part of the dialog pair is missing")
 
-                        if pair1[1] not in pair2: # key
+                        if pair1[1] not in pair2:  # key
                             raise FilterFailure(u"Do not translate the key '%s'" % pair1[1])
 
                         # FIXME we could check more carefully for numbers in pair1[2]

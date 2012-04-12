@@ -38,7 +38,7 @@ Provisional work is done to make several languages possible."""
             text = text.decode("utf-8")
         langset = etree.Element(self.languageNode)
         lisa.setXMLlang(langset, lang)
-        tig = etree.SubElement(langset, "tig") # or ntig with termGrp inside
+        tig = etree.SubElement(langset, "tig")  # or ntig with termGrp inside
         term = etree.SubElement(tig, self.textNode)
         # probably not what we want:
         # lisa.setXMLspace(term, "preserve")

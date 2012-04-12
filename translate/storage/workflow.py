@@ -143,7 +143,7 @@ class Workflow(object):
             if s not in self.states:
                 raise StateNotInWorkflowError(s)
         if (from_state, to_state) in self.edges:
-            return # Edge already exists. Return quietly
+            return  # Edge already exists. Return quietly
 
         self._edges.append((from_state, to_state))
 

@@ -427,7 +427,7 @@ class dtdfile(base.TranslationStore):
                 end += 1
             # print "processing from %d to %d" % (start,end)
 
-            linesprocessed = 1 # to initialise loop
+            linesprocessed = 1  # to initialise loop
             while linesprocessed >= 1:
                 newdtd = dtdunit()
                 try:

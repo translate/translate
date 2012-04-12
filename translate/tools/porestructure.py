@@ -88,7 +88,7 @@ class SplitOptionParser(optrecurse.RecursiveOptionParser):
         inputfile = self.openinputfile(options, fullinputpath)
         inputpofile = po.pofile(inputfile)
         for pounit in inputpofile.units:
-            if not (pounit.isheader() or pounit.hasplural()): #XXX
+            if not (pounit.isheader() or pounit.hasplural()):  # XXX
                 if pounit.hasmarkedcomment("poconflicts"):
                     for comment in pounit.othercomments:
                         if comment.find("# (poconflicts)") == 0:

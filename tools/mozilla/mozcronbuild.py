@@ -84,7 +84,7 @@ def main_cmd_line():
     """Processes command-line arguments and send them to main()."""
     options, args = create_option_parser().parse_args()
 
-    main(args, options.verbose) # args == langs to build
+    main(args, options.verbose)  # args == langs to build
 
 if __name__ == '__main__':
     main_cmd_line()

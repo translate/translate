@@ -91,7 +91,7 @@ def _add_unit_to_tree(node, xpath_components, unit):
     components left to pop. Thus, ``node.unit = unit`` is executed.
     """
     if len(xpath_components) > 0:
-        component = xpath_components.pop() # pop the stack; is a component such as ('p', 4)
+        component = xpath_components.pop()  # pop the stack; is a component such as ('p', 4)
         # if the current node does not have any children indexed by
         # the current component, add such a child
         if component not in node.children:

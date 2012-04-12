@@ -203,7 +203,7 @@ class phpfile(base.TranslationStore):
         invalue = False
         incomment = False
         inarray = False
-        valuequote = "" # either ' or "
+        valuequote = ""  # either ' or "
         equaldel = "="
         enddel = ";"
         prename = ""

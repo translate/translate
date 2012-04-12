@@ -255,7 +255,7 @@ class Common(object):
                 break
             code = data.simplercode(code)
         else:
-            expansion_factor = 0.1 # default
+            expansion_factor = 0.1  # default
         constant = max(5, int(40*expansion_factor))
         # The default: return 5 + length/10
         return constant + int(expansion_factor * length)

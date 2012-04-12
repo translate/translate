@@ -64,8 +64,8 @@ cyr2lat = {
    u"Г": "G", u"г": "g",  # see rule 3 and 4
    u"Д": "D", u"д": "d",
    u"ДЖ": "Dj", u"дж": "dj",
-   u"Е": "Je", u"е": "je", # Sometimes e need to check when/why see rule 5.
-   u"Ё": "Jo", u"ё": "jo", # see rule 6
+   u"Е": "Je", u"е": "je",  # Sometimes e need to check when/why see rule 5.
+   u"Ё": "Jo", u"ё": "jo",  # see rule 6
    u"ЕЙ": "Ei", u"ей": "ei",
    u"Ж": "Zj", u"ж": "zj",
    u"З": "Z", u"з": "z",
@@ -78,18 +78,18 @@ cyr2lat = {
    u"О": "O", u"о": "o",
    u"П": "P", u"п": "p",
    u"Р": "R", u"р": "r",
-   u"С": "S", u"с": "s", # see note 12
+   u"С": "S", u"с": "s",  # see note 12
    u"Т": "T", u"т": "t",
    u"У": "Oe", u"у": "oe",
    u"Ф": "F", u"ф": "f",
-   u"Х": "Ch", u"х": "ch", # see rule 12
+   u"Х": "Ch", u"х": "ch",  # see rule 12
    u"Ц": "Ts", u"ц": "ts",
    u"Ч": "Tj", u"ч": "tj",
    u"Ш": "Sj", u"ш": "sj",
    u"Щ": "Sjtsj", u"щ": "sjtsj",
-   u"Ы": "I", u"ы": "i", # see note 13
+   u"Ы": "I", u"ы": "i",  # see note 13
    u"Ъ": "", u"ъ": "",  # See note 14
-   u"Ь": "", u"ь": "", # this letter is not in the AWS we assume it is left out as in the previous letter
+   u"Ь": "", u"ь": "",  # this letter is not in the AWS we assume it is left out as in the previous letter
    u"Э": "E", u"э": "e",
    u"Ю": "Joe", u"ю": "joe",
    u"Я": "Ja", u"я": "ja",

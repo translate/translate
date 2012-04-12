@@ -111,7 +111,7 @@ class QphFile(lisa.LISAfile):
         XML again."""
         self.namespace = self.document.getroot().nsmap.get(None, None)
         self.header = self.document.getroot()
-        self.body = self.document.getroot() # The root node contains the units
+        self.body = self.document.getroot()  # The root node contains the units
 
     def getsourcelanguage(self):
         """Get the source language for this .qph file.

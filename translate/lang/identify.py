@@ -62,12 +62,12 @@ class LanguageIdentifier(object):
         for line in lines:
             parts = line.split()
             if not parts or line.startswith('#'):
-                continue # Skip comment- and empty lines
+                continue  # Skip comment- and empty lines
             lname, lcode = parts[0], parts[1]
 
-            lname = path.split(lname)[-1] # Make sure lname is not prefixed by directory names
+            lname = path.split(lname)[-1]  # Make sure lname is not prefixed by directory names
             if extsep in lname:
-                lname = lname[:lname.rindex(extsep)] # Remove extension if it has
+                lname = lname[:lname.rindex(extsep)]  # Remove extension if it has
 
             # Remove trailing '[_-]-utf8' from code
             if lcode.endswith('-utf8'):

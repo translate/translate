@@ -222,7 +222,7 @@ class LISAunit(base.TranslationUnit):
             for set in languageNodes:
                 if getXMLlang(set) == lang:
                     return set
-        else:#have to use index
+        else:  # have to use index
             if index >= len(languageNodes):
                 return None
             else:

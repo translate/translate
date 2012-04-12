@@ -176,7 +176,7 @@ class pounit(base.TranslationUnit):
         if has_target:
             isfuzzy = self.STATE[self.S_FUZZY][0] <= value < self.STATE[self.S_FUZZY][1] or \
                     self.STATE[self.S_FUZZY_OBSOLETE][0] <= value < self.STATE[self.S_FUZZY_OBSOLETE][1]
-            self._domarkfuzzy(isfuzzy) # Implementation specific fuzzy-marking
+            self._domarkfuzzy(isfuzzy)  # Implementation specific fuzzy-marking
         else:
             super(pounit, self).set_state_n(self.S_UNTRANSLATED)
             self._domarkfuzzy(False)
@@ -198,7 +198,7 @@ def encodingToUse(encoding):
 
 
 class pofile(poheader.poheader, base.TranslationStore):
-    Name = _("Gettext PO file") # pylint: disable=E0602
+    Name = _("Gettext PO file")  # pylint: disable=E0602
     Mimetypes = ["text/x-gettext-catalog", "text/x-gettext-translation", "text/x-po", "text/x-pot"]
     Extensions = ["po", "pot"]
     # We don't want windows line endings on Windows:

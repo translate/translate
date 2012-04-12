@@ -127,7 +127,7 @@ def summarize(title, stats, style=style_full, indent=8, incomplete_only=False):
               percent(stats["translatedsourcewords"], stats["totalsourcewords"]), \
               percent(stats["fuzzysourcewords"], stats["totalsourcewords"]), \
               percent(stats["untranslatedsourcewords"], stats["totalsourcewords"]))
-    else: # style == style_full
+    else:  # style == style_full
         print title
         print "type              strings      words (source)    words (translation)"
         print "translated:   %5d (%3d%%) %10d (%3d%%) %15d" % \
@@ -232,7 +232,7 @@ Review Messages, Review Source Words"
                                              self.longestfilename,
                                              self.incomplete_only)
             self.filecount += 1
-        except: # This happens if we have a broken file.
+        except:  # This happens if we have a broken file.
             print >> sys.stderr, sys.exc_info()[1]
 
     def handlefiles(self, dirname, filenames):

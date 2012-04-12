@@ -71,18 +71,18 @@ class LangStore(txt.TxtFile):
         for lineoffset, line in enumerate(lines):
             line = line.decode(self.encoding).rstrip("\n").rstrip("\r")
 
-            if len(line) == 0: #Skip blank lines
+            if len(line) == 0:  # Skip blank lines
                 continue
 
-            if readyTrans: #If we are expecting a translation, set the target
+            if readyTrans:  # If we are expecting a translation, set the target
                 if line != u.source:
                     u.target = line.replace(" {ok}", "")
-                readyTrans = False #We already have our translation
+                readyTrans = False  # We already have our translation
                 continue
 
             if line.startswith(';'):
                 u = self.addsourceunit(line[1:])
-                readyTrans = True # Now expecting a translation on the next line
+                readyTrans = True  # Now expecting a translation on the next line
                 u.addlocation("%s:%d" % (self.filename, lineoffset + 1))
 
     def __str__(self):

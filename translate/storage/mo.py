@@ -202,7 +202,7 @@ class mofile(poheader.poheader, base.TranslationStore):
             # NUL terminated; the NUL does not count into the size.
             # TODO: We don't do any encoding detection from the PO Header
             add_to_hash_table(id, i)
-            string = MESSAGES[id] # id already encoded for use as dictionary key
+            string = MESSAGES[id]  # id already encoded for use as dictionary key
             if isinstance(string, unicode):
                 string = string.encode('utf-8')
             offsets.append((len(ids), len(id), len(strs), len(string)))
@@ -226,9 +226,9 @@ class mofile(poheader.poheader, base.TranslationStore):
                              0,                 # Version
                              len(keys),         # # of entries
                              7 * 4,             # start of key index
-                             7 * 4 + len(keys) * 8, # start of value index
+                             7 * 4 + len(keys) * 8,  # start of value index
                              hash_size,         # size of hash table
-                             7 * 4 + 2 * (len(keys) * 8)) # offset of hash table
+                             7 * 4 + 2 * (len(keys) * 8))  # offset of hash table
         # additional data is not necessary for empty mo files
         if (len(keys) > 0):
             output = output + array.array("i", offsets).tostring()

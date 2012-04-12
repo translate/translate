@@ -70,9 +70,9 @@ TODO:
 import os
 from StringIO import StringIO
 try:
-    import json as json #available since Python 2.6
+    import json as json  # available since Python 2.6
 except ImportError:
-    import simplejson as json #API compatible with the json module
+    import simplejson as json  # API compatible with the json module
 
 from translate.storage import base
 
