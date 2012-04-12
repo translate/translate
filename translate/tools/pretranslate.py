@@ -72,10 +72,12 @@ def match_template_location(input_unit, template_store):
         if matching_unit is not None and matching_unit.source == input_unit.source and matching_unit.gettargetlen() > 0:
             return matching_unit
 
+
 def match_template_id(input_unit, template_store):
     """Returns a matching unit from a template. matching based on unit id"""
     matching_unit = template_store.findid(input_unit.getid())
     return matching_unit
+
 
 def match_source(input_unit, template_store):
     """Returns a matching unit from a template. matching based on unit id"""
@@ -84,6 +86,7 @@ def match_source(input_unit, template_store):
     if len(input_unit.source) > 1:
         matching_unit = template_store.findunit(input_unit.source)
         return matching_unit
+
 
 def match_fuzzy(input_unit, matchers):
     """Return a fuzzy match from a queue of matchers."""
@@ -131,6 +134,7 @@ def pretranslate_unit(input_unit, template_store, matchers=None, mark_reused=Fal
             original_unit.reused = True
 
     return input_unit
+
 
 def pretranslate_store(input_store, template_store, tm=None, min_similarity=75, fuzzymatching=True):
     """Do the actual pretranslation of a whole store."""

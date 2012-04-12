@@ -120,6 +120,7 @@ wordswithpunctuation = dict([(word, filter(str.isalnum, word)) for word in words
 
 word_with_apos_re = re.compile("(?u)\w+'\w+")
 
+
 def filterwordswithpunctuation(str1):
     """goes through a list of known words that have punctuation and removes the
     punctuation from them"""

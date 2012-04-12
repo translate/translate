@@ -254,6 +254,7 @@ _function_re = re.compile(r'''((?:
 ''', re.VERBOSE)  # shouldn't be locale aware
     # pam_*_item() IO::String NULL() POE::Component::Client::LDAP->new() POE::Wheel::Null mechanize.UserAgent POSIX::sigaction() window.resizeBy() @fptr()
 
+
 def getfunctions(str1):
     """returns the functions() that are in a string, while ignoring the trailing
     punctuation in the given parameter"""

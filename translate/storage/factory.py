@@ -58,6 +58,7 @@ Used for dynamic lazy loading of modules.
 _ext is a pseudo extension, that is their is no real extension by that name.
 """
 
+
 def _examine_txt(storefile):
     """Determine the true filetype for a .txt file"""
     if isinstance(storefile, basestring) and os.path.exists(storefile):
@@ -204,6 +205,7 @@ supported = [
         ('UTX Dictionary', ['utx'], ["text/x-utx"]),
         ('Haiku catkeys file', ['catkeys'], ["application/x-catkeys"]),
 ]
+
 
 def supported_files():
     """Returns data about all supported files

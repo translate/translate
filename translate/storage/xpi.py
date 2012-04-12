@@ -35,9 +35,12 @@ ZipFileBase = zipfileext.ZipFileExt
 
 
 from translate.misc import wStringIO
-# this is a fix to the StringIO in Python 2.3.3
-# submitted as patch 951915 on sourceforge
+
+
 class FixedStringIO(wStringIO.StringIO):
+    """This is a fix to the StringIO in Python 2.3.3
+    submitted as patch 951915 on sourceforge
+    """
 
     def truncate(self, size=None):
         StringIO.StringIO.truncate(self, size)

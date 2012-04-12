@@ -45,6 +45,7 @@ from tempfile   import mkdtemp
 
 HOMEDIR = os.getenv('HOME', '~')
 
+
 def run(cmd, expected_status=0, stdout=None, stderr=None, shell=False):
     if VERBOSE:
         print '>>> %s $ %s' % (os.getcwd(), ' '.join(cmd))
@@ -59,6 +60,7 @@ def run(cmd, expected_status=0, stdout=None, stderr=None, shell=False):
     if cmd_status != expected_status:
         print '!!! "%s" returned unexpected status %d' % (' '.join(cmd), cmd_status)
     return cmd_status
+
 
 def build_xpi(l10nbase, srcdir, outputdir, lang, product, delete_dest=False):
     MOZCONFIG = os.path.join(srcdir, '.mozconfig')

@@ -94,12 +94,14 @@ class SimpleDictReader:
                 values[self.fieldnames[fieldnum]] = fields[fieldnum]
         return values
 
+
 class DefaultDialect(csv.excel):
     skipinitialspace = True
     quoting = csv.QUOTE_NONNUMERIC
     escapechar = '\\'
 
 csv.register_dialect('default', DefaultDialect)
+
 
 def from_unicode(text, encoding='utf-8'):
     if encoding == 'auto':
@@ -108,12 +110,14 @@ def from_unicode(text, encoding='utf-8'):
         return text.encode(encoding)
     return text
 
+
 def to_unicode(text, encoding='utf-8'):
     if encoding == 'auto':
         encoding = 'utf-8'
     if isinstance(text, unicode):
         return text
     return text.decode(encoding)
+
 
 class csvunit(base.TranslationUnit):
     spreadsheetescapes = [("+", "\\+"), ("-", "\\-"), ("=", "\\="), ("'", "\\'")]
@@ -291,7 +295,10 @@ fieldname_map = {
     'state': 'fuzzy',
 }
 
+
 EXTRA_KEY = '__CSVL10N__EXTRA__'
+
+
 def try_dialects(inputfile, fieldnames, dialect):
     #FIXME: does it verify at all if we don't actually step through the file?
     try:
@@ -306,6 +313,7 @@ def try_dialects(inputfile, fieldnames, dialect):
             reader = csv.DictReader(inputfile, fieldnames=fieldnames, dialect='excel', restkey=EXTRA_KEY)
     return reader
 
+
 def valid_fieldnames(fieldnames):
     """check if fieldnames are valid"""
     for fieldname in fieldnames:
@@ -314,6 +322,7 @@ def valid_fieldnames(fieldnames):
         elif fieldname in fieldname_map and fieldname_map[fieldname] == 'source':
             return True
     return False
+
 
 def detect_header(sample, dialect, fieldnames):
     """Test if file has a header or not, also returns number of columns in first row"""
@@ -333,6 +342,7 @@ def detect_header(sample, dialect, fieldnames):
     if valid_fieldnames(header):
         return header
     return fieldnames[:columncount]
+
 
 class csvfile(base.TranslationStore):
     """This class represents a .csv file with various lines.

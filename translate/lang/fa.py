@@ -27,6 +27,7 @@ from translate.lang import common
 
 import re
 
+
 def guillemets(text):
 
     def convertquotation(match):

@@ -27,6 +27,7 @@ import re
 
 from translate.lang import common
 
+
 def reverse_quotes(text):
     def convertquotation(match):
         return u"”%s“" % match.group(1)

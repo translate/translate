@@ -28,6 +28,7 @@ l10ncheckout = "l10n"
 product = "browser"
 verbose = False
 
+
 def path_neutral(path):
     """Convert a path specified using Unix path seperator into a platform path"""
     newpath = ""

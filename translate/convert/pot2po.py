@@ -118,6 +118,7 @@ def _store_pre_merge(input_store, output_store, template_store, **kwargs):
     if store_pre_merge_hook in globals():
         globals()[store_pre_merge_hook](input_store, output_store, template_store, **kwargs)
 
+
 def _store_post_merge(input_store, output_store, template_store, **kwargs):
     """Close file after merging all translations, used for adding
     statistics, obsolete messages and similar wrapup tasks."""

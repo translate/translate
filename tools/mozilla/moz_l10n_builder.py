@@ -63,6 +63,7 @@ devnull = open(os.devnull, 'wb')
 options = {'verbose': True}  # Global program options
 USAGE='Usage: %prog [options] <langs...|ALL>'
 
+
 class CommandError(StandardError):
     """Exception raised if a command does not return its expected value."""
 
@@ -73,7 +74,10 @@ class CommandError(StandardError):
     def __str__(self):
         return '"%s" return unexptected status %d' % (self.cmd, self.status)
 
+
 ##### Utility Functions #####
+
+
 def delfiles(pattern, path, files):
     """Delete files with names in C{files} matching glob-pattern C{glob} in the
         directory specified by C{path}.
@@ -85,6 +89,7 @@ def delfiles(pattern, path, files):
     for f in files:
         if join(path, f) in match_files:
             os.unlink(join(path, f))
+
 
 def run(cmd, expected_status=0, stdout=None, stderr=None, shell=False):
     global options
@@ -101,6 +106,7 @@ def run(cmd, expected_status=0, stdout=None, stderr=None, shell=False):
     if cmd_status != expected_status:
         print '!!! "%s" returned unexpected status %d' % (' '.join(cmd), cmd_status)
         #raise CommandError(cmd, cmd_status)
+
 
 def get_langs(lang_args):
     """Returns the languages to handle based on the languages specified on the
@@ -146,6 +152,7 @@ def get_langs(lang_args):
 
     return langs
 #############################
+
 
 def checkout(cvstag, langs):
     """Check-out needed files from Mozilla's CVS."""
@@ -210,6 +217,7 @@ def checkout(cvstag, langs):
             run(['txt2po', '--progress=none', '-P', f])
     os.chdir(olddir)
 
+
 def recover_lang(lang, buildlang):
     print '    %s' % (lang)
     if not os.path.isdir(join(podir_recover, buildlang)):
@@ -219,6 +227,7 @@ def recover_lang(lang, buildlang):
          '-t', join(l10ndir, 'en-US'),
          join(l10ndir, buildlang),
          join(podir_recover, buildlang)])
+
 
 def pack_pot(includes):
     timestamp = time.strftime('%Y%m%d')
@@ -241,6 +250,7 @@ def pack_pot(includes):
     run(['zip', '-qr9', packname+'.zip',
          join(l10ndir, 'en-US'), join(l10ndir, 'pot')] + inc)
 
+
 def pack_po(lang, buildlang):
     timestamp = time.strftime('%Y%m%d')
 
@@ -253,6 +263,7 @@ def pack_po(lang, buildlang):
     packname = join(popacks, '%s-%s-%s-%s' % (products[targetapp], mozversion, buildlang, timestamp))
     run(['tar', 'cjf', packname+'.tar.bz2', '--exclude', '.svn', join(l10ndir, buildlang), join(podir, buildlang)])
     run(['zip', '-qr9', packname+'.zip', join(l10ndir, buildlang), join(podir, buildlang)], '-x', '*.svn*')
+
 
 def pre_po2moz_hacks(lang, buildlang, debug):
     """Hacks that should be run before running C{po2moz}."""
@@ -289,6 +300,7 @@ def pre_po2moz_hacks(lang, buildlang, debug):
         os.path.walk(join(l10ndir, buildlang), delfiles, '*.properties')
 
     shutil.rmtree(temp_po)
+
 
 def post_po2moz_hacks(lang, buildlang):
     """Hacks that should be run after running C{po2moz}."""
@@ -428,6 +440,7 @@ def migrate_lang(lang, buildlang, recover, update_transl, debug):
     run(['sed', '-i', 's/en-US/%s/g' % (buildlang),
          join(l10ndir, buildlang, 'browser', 'profile', 'bookmarks.html')])
 
+
 def create_diff(lang, buildlang):
     """Create CVS-diffs for all languages."""
 
@@ -446,6 +459,7 @@ def create_diff(lang, buildlang):
     outfile = join(os.pardir, os.pardir, 'diff', buildlang+'-po.diff')
     run(['svn', 'diff', '--diff-cmd', 'diff -x "-u --ignore-matching-lines=^\"POT\|^\"X-Gene"'], stdout=open(outfile, 'w'))
     os.chdir(olddir)
+
 
 def create_langpack(lang, buildlang):
     """Builds a XPI and installers for languages."""
@@ -567,6 +581,7 @@ def create_option_parser():
 
     return parser
 
+
 def main(
         langs=['ALL'], mozproduct='browser', mozcheckout=False, moztag='-A',
         recover=False, potpack=False, potincl=[], migrate=True, popack=False,
@@ -632,6 +647,7 @@ def main_cmd_line():
         langpack=options.langpack,
         verbose=options.verbose
     )
+
 
 if __name__ == '__main__':
     main_cmd_line()
