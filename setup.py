@@ -370,7 +370,9 @@ def standardsetup(name, version, custompackages=[], customdatafiles=[]):
     addsubpackages(subpackages)
     datafiles = getdatafiles()
     ext_modules = []
-    dosetup(name, version, packages + custompackages, datafiles + customdatafiles, translatescripts + translatebashscripts, ext_modules)
+    dosetup(name, version, packages + custompackages,
+            datafiles + customdatafiles,
+            translatescripts + translatebashscripts, ext_modules)
 
 classifiers = [
   "Development Status :: 5 - Production/Stable",
