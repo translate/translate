@@ -25,4 +25,3 @@ See U{http://translate.sourceforge.net/wiki/toolkit/index} or U{http://translate
 @license: U{GPL <http://www.fsf.org/licensing/licenses/gpl.html>}
 
 """
-
