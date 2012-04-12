@@ -57,10 +57,12 @@ podir_recover = podir + '-recover'
 podir_updated = podir + '-updated'
 potpacks = "potpacks"
 popacks = 'popacks'
-products = {'browser': 'firefox'}  # Simple mapping of possible "targetapp"s to product names.
+#: Mapping of possible "targetapp"s to product names.
+products = {'browser': 'firefox'}
 
 devnull = open(os.devnull, 'wb')
-options = {'verbose': True}  # Global program options
+#: Global program options
+options = {'verbose': True}
 USAGE = 'Usage: %prog [options] <langs...|ALL>'
 
 
@@ -104,7 +106,8 @@ def run(cmd, expected_status=0, stdout=None, stderr=None, shell=False):
         print p.stderr.read()
 
     if cmd_status != expected_status:
-        print '!!! "%s" returned unexpected status %d' % (' '.join(cmd), cmd_status)
+        print '!!! "%s" returned unexpected status %d' % (' '.join(cmd),
+                                                          cmd_status)
         #raise CommandError(cmd, cmd_status)
 
 
@@ -134,7 +137,8 @@ def get_langs(lang_args):
     for lang in lang_args:
         if lang == 'ALL':
             # Get all available languages from the locales file
-            locales_filename = join(mozilladir, targetapp, 'locales', 'shipped-locales')
+            locales_filename = join(mozilladir, targetapp,
+                                    'locales', 'shipped-locales')
             for line in open(locales_filename).readlines():
                 langcode = line.split()[0]
                 if langcode != 'en-US':
@@ -142,7 +146,8 @@ def get_langs(lang_args):
 
         elif lang == 'ZA':
             # South African languages
-            langs = langs + ["af", "en_ZA", "nr", "nso", "ss", "st", "tn", "ts", "ve", "xh", "zu"]
+            langs = langs + ["af", "en_ZA", "nr", "nso", "ss",
+                             "st", "tn", "ts", "ve", "xh", "zu"]
         elif lang != 'en-US':
             langs.append(lang)
 
@@ -162,16 +167,20 @@ def checkout(cvstag, langs):
         cvstag = "-r %s" % (cvstag)
 
     if not os.path.exists(mozilladir):
-        run(['cvs', '-d:pserver:anonymous@cvs-mirror.mozilla.org:/cvsroot', 'co', cvstag, join(mozilladir, 'client.mk')])
-        run(['cvs', '-d:pserver:anonymous@cvs-mirror.mozilla.org:/cvsroot', 'co', join(mozilladir, 'tools', 'l10n')])
+        run(['cvs', '-d:pserver:anonymous@cvs-mirror.mozilla.org:/cvsroot',
+             'co', cvstag, join(mozilladir, 'client.mk')])
+        run(['cvs', '-d:pserver:anonymous@cvs-mirror.mozilla.org:/cvsroot',
+             'co', join(mozilladir, 'tools', 'l10n')])
 
     os.chdir(mozilladir)
     run(['cvs', 'up', cvstag, 'client.mk'])
-    run(['make', '-f', 'client.mk', 'l10n-checkout', 'MOZ_CO_PROJECT=%s' % (targetapp)])
+    run(['make', '-f', 'client.mk', 'l10n-checkout',
+         'MOZ_CO_PROJECT=%s' % (targetapp)])
     os.chdir(olddir)
 
     if not os.path.exists(l10ndir):
-        run(['cvs', '-d:pserver:anonymous@cvs-mirror.mozilla.org:/l10n', 'co', '-d', l10ndir, '-l', 'l10n'])
+        run(['cvs', '-d:pserver:anonymous@cvs-mirror.mozilla.org:/l10n',
+             'co', '-d', l10ndir, '-l', 'l10n'])
 
     os.chdir(l10ndir)
     for lang in langs:
@@ -180,7 +189,8 @@ def checkout(cvstag, langs):
         if os.path.isdir(buildlang):
             run(['cvs', 'up', buildlang])
         else:
-            run(['cvs', '-d:pserver:anonymous@cvs-mirror.mozilla.org:/l10n', 'co', '-d', buildlang, join('l10n', buildlang)])
+            run(['cvs', '-d:pserver:anonymous@cvs-mirror.mozilla.org:/l10n',
+                 'co', '-d', buildlang, join('l10n', buildlang)])
     os.chdir(olddir)
 
     # Make latest POT file
@@ -188,17 +198,22 @@ def checkout(cvstag, langs):
         try:
             shutil.rmtree(join(l10ndir, rmdir))
         except OSError, oe:
-            # "No such file or directory" errors are fine. The rest we raise again.
+            # "No such file or directory" errors are fine.
+            # The rest we raise again.
             if oe.errno != 2:
                 raise oe
 
     os.chdir(mozilladir)
     run(['cvs', 'up', join('tools', 'l10n')])
-    run(['python', 'tools/l10n/l10n.py', '--dest=' + join(os.pardir, l10ndir), '--app=' + targetapp, 'en-US'])
+    run(['python', 'tools/l10n/l10n.py',
+         '--dest=' + join(os.pardir, l10ndir),
+         '--app=' + targetapp,
+         'en-US'])
     os.chdir(olddir)
 
     os.chdir(l10ndir)
-    run(['moz2po', '--progress=none', '-P', '--duplicates=msgctxt', 'en-US', 'pot'])
+    run(['moz2po', '--progress=none', '-P', '--duplicates=msgctxt',
+         'en-US', 'pot'])
 
     # Delete the help-related POT-files, seeing as Firefox help is now on-line.
     try:
@@ -223,7 +238,8 @@ def recover_lang(lang, buildlang):
     if not os.path.isdir(join(podir_recover, buildlang)):
         os.makedirs(join(podir_recover, buildlang))
 
-    run(['moz2po', '--progress=none', '--errorlevel=traceback', '--duplicates=msgctxt', '--exclude=".#*"',
+    run(['moz2po', '--progress=none', '--errorlevel=traceback',
+         '--duplicates=msgctxt', '--exclude=".#*"',
          '-t', join(l10ndir, 'en-US'),
          join(l10ndir, buildlang),
          join(podir_recover, buildlang)])
@@ -244,7 +260,8 @@ def pack_pot(includes):
     except OSError:
         pass
 
-    packname = join(potpacks, '%s-%s-%s' % (products[targetapp], mozversion, timestamp))
+    packname = join(potpacks, '%s-%s-%s' % (products[targetapp],
+                                            mozversion, timestamp))
     run(['tar', 'cjf', packname + '.tar.bz2',
          join(l10ndir, 'en-US'), join(l10ndir, 'pot')] + inc)
     run(['zip', '-qr9', packname + '.zip',
