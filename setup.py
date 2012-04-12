@@ -88,7 +88,7 @@ translatescripts = [apply(join, ('translate', ) + script) for script in
                   ('tools', 'build_tmdb')]
 
 translatebashscripts = [apply(join, ('tools', ) + (script, )) for script in [
-                  'pomigrate2', 'pocompendium', 
+                  'pomigrate2', 'pocompendium',
                   'posplit', 'popuretext', 'poreencode', 'pocommentclean',
                   'junitmsgfmt',
                   ]]
@@ -191,7 +191,7 @@ class InnoScript:
         print >> ofi, r"[Registry]"
         # TODO: Move the code to update the Path environment variable to a Python script which will be invoked by the [Run] section (below)
         print >> ofi, r'Root: HKCU; Subkey: "Environment"; ValueType: expandsz; ValueName: "Path"; ValueData: "{reg:HKCU\Environment,Path|};{app};"'
-        print >> ofi        
+        print >> ofi
         if self.install_scripts:
             print >> ofi, r"[Run]"
             for path in self.install_scripts:

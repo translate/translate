@@ -96,7 +96,7 @@ def mergestore(inputfile, outputfile, templatefile, mergeblanks="no", mergefuzzy
         templatestore = type(inputstore)()
     else:
         templatestore = factory.getobject(templatefile)
-    outputstore = mergestores(templatestore, inputstore, mergeblanks, 
+    outputstore = mergestores(templatestore, inputstore, mergeblanks,
                     mergefuzzy, mergecomments)
     if outputstore.isempty():
         return 0

@@ -218,7 +218,7 @@ Review Messages, Review Source Words"
         """Update self.totals with the statistics in stats."""
         for key in stats.keys():
             if key == "extended":
-                #FIXME: calculate extended totals 
+                #FIXME: calculate extended totals
                 continue
             if not key in self.totals:
                 self.totals[key] = 0

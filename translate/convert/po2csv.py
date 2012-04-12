@@ -52,7 +52,7 @@ class po2csv:
         """Convert PO plural units
 
         We only convert the first plural form.  So languages with multiple
-        plurals are not handled.  For single plural languages we simply 
+        plurals are not handled.  For single plural languages we simply
         skip this plural extraction.
         """
         if len(inputunit.target.strings) == 1:  # No plural forms

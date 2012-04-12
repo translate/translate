@@ -98,7 +98,7 @@ class Common(object):
 
     .. seealso::
 
-       `Gettext manual <http://www.gnu.org/software/gettext/manual/html_node/gettext_150.html#Plural-forms>`_, :mod:`translate.lang.data` 
+       `Gettext manual <http://www.gnu.org/software/gettext/manual/html_node/gettext_150.html#Plural-forms>`_, :mod:`translate.lang.data`
     """
     # Don't change these defaults of nplurals or pluralequation willy-nilly:
     # some code probably depends on these for unrecognised languages
