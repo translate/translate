@@ -181,7 +181,7 @@ class csvunit(base.TranslationUnit):
             if position == 'append' and self.developer_comments:
                 self.developer_comments += '\n' + text
             elif position == 'prepend' and self.developer_comments:
-                self.developer_comments = text + '\n' +  self.developer_comments
+                self.developer_comments = text + '\n' + self.developer_comments
             else:
                 self.developer_comments = text
         else:
