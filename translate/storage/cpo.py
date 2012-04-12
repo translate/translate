@@ -58,7 +58,7 @@ xerror_prototype = CFUNCTYPE(None, c_int, POINTER(po_message), STRING, c_uint,
                              c_uint, c_int, STRING)
 xerror2_prototype = CFUNCTYPE(None, c_int, POINTER(po_message), STRING,
                               c_uint, c_uint, c_int, STRING,
-                              POINTER(po_message), STRING, c_uint, c_uint, 
+                              POINTER(po_message), STRING, c_uint, c_uint,
                               c_int, STRING)
 
 
