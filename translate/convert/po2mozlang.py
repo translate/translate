@@ -52,14 +52,14 @@ class po2lang:
         return thetargetfile
 
 
-def convertlang(inputfile, outputfile, templates,  includefuzzy=False):
+def convertlang(inputfile, outputfile, templates, includefuzzy=False):
     """reads in stdin using fromfileclass, converts using convertorclass,
     writes to stdout"""
     inputstore = po.pofile(inputfile)
     if inputstore.isempty():
         return 0
     convertor = po2lang()
-    outputstore = convertor.convertstore(inputstore,  includefuzzy)
+    outputstore = convertor.convertstore(inputstore, includefuzzy)
     outputfile.write(str(outputstore))
     return 1
 

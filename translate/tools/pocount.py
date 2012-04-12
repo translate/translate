@@ -154,7 +154,7 @@ def summarize(title, stats, style=style_full, indent=8, incomplete_only=False):
             print ""
             for state, e_stats in stats["extended"].iteritems():
                 print "%s:    %5d (%3d%%) %10d (%3d%%) %15d" % (
-                    state, e_stats["units"],  percent(e_stats["units"], stats["total"]),
+                    state, e_stats["units"], percent(e_stats["units"], stats["total"]),
                     e_stats["sourcewords"], percent(e_stats["sourcewords"], stats["totalsourcewords"]),
                     e_stats["targetwords"])
 

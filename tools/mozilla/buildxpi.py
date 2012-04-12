@@ -82,7 +82,7 @@ ac_add_options --enable-application=%(product)s""" % \
             {
                 'builddir': builddir,
                 'l10nbase': l10nbase,
-                'product':  product
+                'product': product
             }
 
         mozconf = open(MOZCONFIG, 'w').write(content)

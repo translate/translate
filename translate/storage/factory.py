@@ -46,7 +46,7 @@ classes_str = {
            "qph": ("qph", "QphFile"),
            "tbx": ("tbx", "tbxfile"),
            "tmx": ("tmx", "tmxfile"),
-           "ts":  ("ts2", "tsfile"),
+           "ts": ("ts2", "tsfile"),
            "xliff": ("xliff", "xlifffile"), "xlf": ("xliff", "xlifffile"),
            "sdlxliff": ("xliff", "xlifffile"),
 }
