@@ -25,9 +25,9 @@ translateversion = __version__.sver
 packagesdir = distutils.sysconfig.get_python_lib()
 sitepackages = packagesdir.replace(sys.prefix + os.sep, '')
 
-infofiles = [(join(sitepackages,'translate'),
-             [join('translate',filename) for filename in 'ChangeLog', 'COPYING', 'LICENSE', 'README'])]
-initfiles = [(join(sitepackages,'translate'),[join('translate','__init__.py')])]
+infofiles = [(join(sitepackages, 'translate'),
+             [join('translate', filename) for filename in 'ChangeLog', 'COPYING', 'LICENSE', 'README'])]
+initfiles = [(join(sitepackages, 'translate'), [join('translate', '__init__.py')])]
 
 subpackages = [
         "convert",
