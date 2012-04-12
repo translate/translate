@@ -131,7 +131,7 @@ class build_exe_map(build_exe):
 
 class InnoScript:
     """class that builds an InnoSetup script"""
-    def __init__(self, name, lib_dir, dist_dir, exe_files = [], other_files = [], install_scripts = [], version = "1.0"):
+    def __init__(self, name, lib_dir, dist_dir, exe_files=[], other_files=[], install_scripts=[], version="1.0"):
         self.lib_dir = lib_dir
         self.dist_dir = dist_dir
         if not self.dist_dir.endswith(os.sep):
