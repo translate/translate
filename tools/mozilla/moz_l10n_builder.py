@@ -61,7 +61,7 @@ products = {'browser': 'firefox'}  # Simple mapping of possible "targetapp"s to 
 
 devnull = open(os.devnull, 'wb')
 options = {'verbose': True}  # Global program options
-USAGE='Usage: %prog [options] <langs...|ALL>'
+USAGE = 'Usage: %prog [options] <langs...|ALL>'
 
 
 class CommandError(StandardError):
@@ -194,7 +194,7 @@ def checkout(cvstag, langs):
 
     os.chdir(mozilladir)
     run(['cvs', 'up', join('tools', 'l10n')])
-    run(['python', 'tools/l10n/l10n.py', '--dest=' + join(os.pardir, l10ndir), '--app='+targetapp, 'en-US'])
+    run(['python', 'tools/l10n/l10n.py', '--dest=' + join(os.pardir, l10ndir), '--app=' + targetapp, 'en-US'])
     os.chdir(olddir)
 
     os.chdir(l10ndir)
