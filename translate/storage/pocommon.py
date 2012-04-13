@@ -60,7 +60,7 @@ def unquote_plus(text):
 
 
 class pounit(base.TranslationUnit):
-    S_FUZZY_OBSOLETE = state.OBSOLETE-1
+    S_FUZZY_OBSOLETE = state.OBSOLETE - 1
     S_OBSOLETE = state.OBSOLETE
     S_UNTRANSLATED = state.EMPTY
     S_FUZZY = state.NEEDS_WORK

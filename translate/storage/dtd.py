@@ -119,7 +119,7 @@ def removeinvalidamps(name, value):
             if semipos != -1:
                 if is_valid_entity_name(value[amppos:semipos]):
                     continue
-            invalid_amps.append(amppos-1)
+            invalid_amps.append(amppos - 1)
     if len(invalid_amps) > 0:
         warnings.warn("invalid ampersands in dtd entity %s" % (name))
         adjustment = 0
@@ -435,7 +435,7 @@ class dtdfile(base.TranslationStore):
                     if linesprocessed >= 1 and (not newdtd.isnull() or newdtd.unparsedlines):
                         self.units.append(newdtd)
                 except Exception, e:
-                    warnings.warn("%s\nError occured between lines %d and %d:\n%s" % (e, start+1, end, "\n".join(lines[start:end])))
+                    warnings.warn("%s\nError occured between lines %d and %d:\n%s" % (e, start + 1, end, "\n".join(lines[start:end])))
                 start += linesprocessed
 
     def __str__(self):
