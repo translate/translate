@@ -513,7 +513,7 @@ def create_langpack(lang, buildlang):
                          "Firefox-Languagepack-'$(MOZ_APP_VERSION)'-%s.'$(AB_CD)'.xpi" % langpack_release)
     run(['make', langpack_name, 'MOZ_BRANDING_DIRECTORY=' + moz_brand_dir,
          'LANGPACK_FILE=' + langpack_file])
-    # The commented out (and very long) line below was found commented 
+    # The commented out (and very long) line below was found commented
     # out in the source script as well.
     #( cd $mozilladir/$targetapp/locales; make repackage-win32-installer-af MOZ_BRANDING_DIRECTORY=other-licenses/branding/firefox WIN32_INSTALLER_IN=../../../Firefox-Setup-2.0.exe WIN32_INSTALLER_OUT='$(_ABS_DIST)'"/install/sea/Firefox-Setup-"'$(MOZ_APP_VERSION).$(AB_CD)'".exe" )
     os.chdir(olddir)
