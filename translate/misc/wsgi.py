@@ -75,6 +75,7 @@ def launch_server_cherrypy(host, port, app):
     except KeyboardInterrupt:
         server.stop()
 
+
 def launch_server_werkzeug(host, port, app):
     """use werkzeug's simple multiprocess multithreaded server"""
     from werkzeug import run_simple
