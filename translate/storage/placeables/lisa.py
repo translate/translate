@@ -25,7 +25,8 @@ from translate.storage.placeables import base, xliff, StringElem
 from translate.storage.xml_extract import misc
 
 __all__ = ['xml_to_strelem', 'strelem_to_xml']
-# Use the above functions as entry points into this module. The rest are used by these functions.
+# Use the above functions as entry points into this module. The rest are
+# used by these functions.
 
 
 def make_empty_replacement_placeable(klass, node, xml_space="preserve"):

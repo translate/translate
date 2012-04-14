@@ -28,7 +28,8 @@ __all__ = ['TerminologyPlaceable', 'parsers']
 
 
 class TerminologyPlaceable(base.Ph):
-    """Terminology distinguished from the rest of a string by being a placeable."""
+    """Terminology distinguished from the rest of a string by being
+    a placeable."""
 
     matchers = []
     """A list of matcher objects to use to identify terminology."""
@@ -52,8 +53,9 @@ class TerminologyPlaceable(base.Ph):
         lastend = 0
 
         def sort_matches(x, y):
-            # This function will sort a list of matches according to the match's starting
-            # position, putting the one with the longer source text first, if two are the same.
+            # This function will sort a list of matches according to the
+            #  match's starting position, putting the one with the longer
+            # source text first, if two are the same.
             c = cmp(match_info[x.source]['pos'], match_info[y.source]['pos'])
             return c and c or cmp(len(y.source), len(x.source))
         matches.sort(sort_matches)
@@ -94,7 +96,8 @@ class TerminologyPlaceable(base.Ph):
         return parts or None
 
     def translate(self):
-        return self.translations and self.translations[0] or super(TerminologyPlaceable, self).translate()
+        return (self.translations and self.translations[0] or
+                super(TerminologyPlaceable, self).translate())
 
 
 parsers = [TerminologyPlaceable.parse]

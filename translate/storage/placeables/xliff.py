@@ -23,7 +23,10 @@
 from translate.storage.placeables import base
 from translate.storage.placeables.strelem import StringElem
 
-__all__ = ['Bpt', 'Ept', 'X', 'Bx', 'Ex', 'G', 'It', 'Sub', 'Ph', 'UnknownXML', 'parsers', 'to_xliff_placeables']
+__all__ = [
+    'Bpt', 'Ept', 'X', 'Bx', 'Ex', 'G', 'It', 'Sub', 'Ph', 'UnknownXML',
+    'parsers', 'to_xliff_placeables'
+]
 
 
 class Bpt(base.Bpt):
@@ -68,8 +71,10 @@ class UnknownXML(StringElem):
     iseditable = True
 
     # INITIALIZERS #
-    def __init__(self, sub=None, id=None, rid=None, xid=None, xml_node=None, **kwargs):
-        super(UnknownXML, self).__init__(sub=sub, id=id, rid=rid, xid=xid, **kwargs)
+    def __init__(self, sub=None, id=None, rid=None,
+                 xid=None, xml_node=None, **kwargs):
+        super(UnknownXML, self).__init__(sub=sub, id=id, rid=rid,
+                                         xid=xid, **kwargs)
         if xml_node is None:
             raise ValueError('xml_node must be a lxml node')
         self.xml_node = xml_node
@@ -106,7 +111,8 @@ class UnknownXML(StringElem):
 
             .. note:: ``self.renderer`` is **not** copied."""
         from copy import copy
-        cp = self.__class__(id=self.id, rid=self.rid, xid=self.xid, xml_node=copy(self.xml_node))
+        cp = self.__class__(id=self.id, rid=self.rid, xid=self.xid,
+                            xml_node=copy(self.xml_node))
         for sub in self.sub:
             if isinstance(sub, StringElem):
                 cp.sub.append(sub.copy())
