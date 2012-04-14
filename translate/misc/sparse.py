@@ -30,7 +30,7 @@ def stringeval(text):
     if text[-1] != stringchar or stringchar not in ("'", '"'):
         # scratch your head
         raise ValueError("error parsing escaped string: %r" % text)
-    return text[1:-1].replace(stringchar+stringchar, stringchar)
+    return text[1:-1].replace((stringchar + stringchar), stringchar)
 
 
 def stringquote(text):
@@ -184,14 +184,14 @@ class SimpleParser:
     def findtokenpos(self, tokennum):
         """finds the position of the given token in the text"""
         currenttokenpos = 0
-        for currenttokennum in range(tokennum+1):
+        for currenttokennum in range(tokennum + 1):
             currenttokenpos = self.source.find(self.tokens[currenttokennum], currenttokenpos)
         return currenttokenpos
 
     def getlinepos(self, tokenpos):
         """finds the line and character position of the given character"""
         sourcecut = self.source[:tokenpos]
-        line = sourcecut.count("\n")+1
+        line = sourcecut.count("\n") + 1
         charpos = tokenpos - sourcecut.rfind("\n")
         return line, charpos
 

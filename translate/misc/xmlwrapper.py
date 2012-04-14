@@ -128,7 +128,7 @@ class XMLWrapper:
 
     def __repr__(self):
         """return a representation of the object"""
-        return self.tag+':'+repr(self.__dict__)
+        return self.tag + ':' + repr(self.__dict__)
 
     def getattr(self, attrname):
         """gets an attribute of the tag"""

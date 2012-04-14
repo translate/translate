@@ -39,7 +39,7 @@ def writexml_helper(self, writer, indent="", addindent="", newl=""):
     # indent = current indentation
     # addindent = indentation to add to higher levels
     # newl = newline string
-    writer.write(indent+"<" + self.tagName)
+    writer.write(indent + "<" + self.tagName)
 
     attrs = self._get_attributes()
     a_names = attrs.keys()
@@ -68,13 +68,13 @@ def writexml_helper(self, writer, indent="", addindent="", newl=""):
             writer.write("</%s>%s" % (self.tagName, newl))
         else:
             # This is the normal case that we do with pretty layout
-            writer.write(">%s"%(newl))
+            writer.write(">%s" % (newl))
             for node in self.childNodes:
                 if node.nodeType != self.TEXT_NODE:
-                    node.writexml(writer, indent+addindent, addindent, newl)
+                    node.writexml(writer, (indent + addindent), addindent, newl)
             writer.write("%s</%s>%s" % (indent, self.tagName, newl))
     else:
-        writer.write("/>%s"%(newl))
+        writer.write("/>%s" % (newl))
 
 
 def getElementsByTagName_helper(parent, name, dummy=None):
