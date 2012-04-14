@@ -398,7 +398,7 @@ msgstr "POT-Creation-Date: 2006-03-08 17:30+0200\n"
         posource = 'msgid "thing\nmsgstr "ding"\nmsgid "Second thing"\nmsgstr "Tweede ding"\n'
         pofile = self.poparse(posource)
         assert len(pofile.units) == 2
-        print `pofile.units[0].source`
+        print repr(pofile.units[0].source)
         assert pofile.units[0].source == u"thing"
 
     def test_malformed_obsolete_units(self):
@@ -791,7 +791,7 @@ msgstr "start thing dingis fish"
 "
 '''
         pofile1 = self.poparse(posource)
-        print `pofile1.units[1].target`
+        print repr(pofile1.units[1].target)
         assert pofile1.units[1].target == u"start thing dingis fish"
         pofile2 = self.poparse(str(pofile1))
         assert pofile2.units[1].target == u"start thing dingis fish"
