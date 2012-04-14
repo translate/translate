@@ -40,15 +40,18 @@ def launch_server_wsgiref(host, port, app):
             """Log errors using logging instead of printing to
             stderror"""
             logging.error("%s - - [%s] %s",
-                          self.address_string(), self.log_date_time_string(), format % args)
+                          self.address_string(), self.log_date_time_string(),
+                          format % args)
 
         def log_message(self, format, *args):
             """Log requests using logging instead of printing to
             stderror."""
             logging.info("%s - - [%s] %s",
-                         self.address_string(), self.log_date_time_string(), format % args)
+                         self.address_string(), self.log_date_time_string(),
+                         format % args)
 
-    server = simple_server.make_server(host, port, app, handler_class=CustomRequestHandler)
+    server = simple_server.make_server(host, port, app,
+                                       handler_class=CustomRequestHandler)
     logging.info("Starting wsgiref server, listening on port %s", port)
     server.serve_forever()
 
@@ -85,7 +88,8 @@ def launch_server_werkzeug(host, port, app):
 
 #FIXME: implement threading http server based on BaseHTTPServer and wsgiref
 
-servers = [launch_server_cherrypy, launch_server_werkzeug, launch_server_django, launch_server_wsgiref]
+servers = [launch_server_cherrypy, launch_server_werkzeug,
+           launch_server_django, launch_server_wsgiref]
 
 
 def launch_server(host, port, app):

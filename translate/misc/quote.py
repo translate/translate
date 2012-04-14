@@ -87,7 +87,8 @@ def extract(source, startdelim, enddelim,
             extracted += source[lastpos:pos]
             instring = False
             lastpos = pos
-        if (not instring) and pos in startdelim_places and not (enteredonce and not allowreentry):
+        if ((not instring) and pos in startdelim_places and
+            not (enteredonce and not allowreentry)):
             instring = True
             enteredonce = True
             lastpos = pos
@@ -164,7 +165,8 @@ def extractwithoutquotes(source, startdelim, enddelim, escape=None,
             extracted += section
             instring = False
             lastpos = pos
-        if (not instring) and pos in startdelim_places and not (enteredonce and not allowreentry):
+        if ((not instring) and pos in startdelim_places and
+            not (enteredonce and not allowreentry)):
             instring = True
             enteredonce = True
             lastpos = pos
@@ -177,7 +179,8 @@ def extractwithoutquotes(source, startdelim, enddelim, escape=None,
             last_epos = 0
             for epos in escape_list:
                 new_section += section[last_epos:epos]
-                if callable_includeescapes and includeescapes(section[epos:epos + lenescape + 1]):
+                if (callable_includeescapes and 
+                    includeescapes(section[epos:epos + lenescape + 1])):
                     last_epos = epos
                 else:
                     last_epos = epos + lenescape
@@ -226,7 +229,8 @@ def htmlentitydecode(source):
             continue
         if inentity:
             if char == ";":
-                if len(possibleentity) > 0 and possibleentity in htmlentitydefs.name2codepoint:
+                if (len(possibleentity) > 0 and 
+                    possibleentity in htmlentitydefs.name2codepoint):
                     output += unichr(htmlentitydefs.name2codepoint[possibleentity])
                     inentity = False
                 else:

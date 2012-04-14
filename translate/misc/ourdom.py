@@ -30,12 +30,14 @@ those objects.
 from xml.dom import minidom
 from xml.dom import expatbuilder
 
-# helper functions we use to do xml the way we want, used by modified classes below
+# helper functions we use to do xml the way we want, used by modified
+# classes below
 
 
 def writexml_helper(self, writer, indent="", addindent="", newl=""):
     """A replacement for writexml that formats it like typical XML files.
-    Nodes are intendented but text nodes, where whitespace can be significant, are not indented."""
+    Nodes are intendented but text nodes, where whitespace can be
+    significant, are not indented."""
     # indent = current indentation
     # addindent = indentation to add to higher levels
     # newl = newline string
@@ -84,8 +86,8 @@ def getElementsByTagName_helper(parent, name, dummy=None):
     list, therefore, the class below exposes this through yieldElementsByTagName"""
 
     for node in parent.childNodes:
-        if node.nodeType == minidom.Node.ELEMENT_NODE and \
-            (name == "*" or node.tagName == name):
+        if (node.nodeType == minidom.Node.ELEMENT_NODE and
+            (name == "*" or node.tagName == name)):
             yield node
         if node.hasChildNodes():
             for othernode in node.getElementsByTagName(name):
@@ -95,10 +97,11 @@ def getElementsByTagName_helper(parent, name, dummy=None):
 def searchElementsByTagName_helper(parent, name, onlysearch):
     """limits the search to within tags occuring in onlysearch"""
     for node in parent.childNodes:
-        if node.nodeType == minidom.Node.ELEMENT_NODE and \
-            (name == "*" or node.tagName == name):
+        if (node.nodeType == minidom.Node.ELEMENT_NODE and
+            (name == "*" or node.tagName == name)):
             yield node
-        if node.nodeType == minidom.Node.ELEMENT_NODE and node.tagName in onlysearch:
+        if (node.nodeType == minidom.Node.ELEMENT_NODE and
+            node.tagName in onlysearch):
             for node in node.searchElementsByTagName(name, onlysearch):
                 yield node
 
@@ -181,8 +184,9 @@ class ExpatBuilderNS(expatbuilder.ExpatBuilderNS):
         self._initNamespaces()
 
     def start_element_handler(self, name, attributes):
-        # all we want to do is construct our own Element instead of minidom.Element
-        # unfortunately the only way to do this is to copy this whole function from expatbuilder.py
+        # All we want to do is construct our own Element instead of
+        # minidom.Element, unfortunately the only way to do this is to
+        # copy this whole function from expatbuilder.py
         if ' ' in name:
             uri, localname, prefix, qname = expatbuilder._parse_ns_name(self, name)
         else:
@@ -198,7 +202,8 @@ class ExpatBuilderNS(expatbuilder.ExpatBuilderNS):
         if self._ns_ordered_prefixes:
             for prefix, uri in self._ns_ordered_prefixes:
                 if prefix:
-                    a = minidom.Attr(expatbuilder._intern(self, 'xmlns:' + prefix),
+                    a = minidom.Attr(expatbuilder._intern(self,
+                                                          'xmlns:' + prefix),
                              expatbuilder.XMLNS_NAMESPACE, prefix, "xmlns")
                 else:
                     a = minidom.Attr("xmlns", expatbuilder.XMLNS_NAMESPACE,

@@ -102,7 +102,8 @@ MULTIWHITESPACE_RE = re.compile(MULTIWHITESPACE_PATTERN, re.MULTILINE)
 
 
 def normalize_space(text):
-    """Normalize the given text for implementation of ``xml:space="default"``."""
+    """Normalize the given text for implementation of
+    ``xml:space="default"``."""
     text = MULTIWHITESPACE_RE.sub(u" ", text)
     return text
 

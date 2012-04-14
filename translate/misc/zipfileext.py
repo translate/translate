@@ -18,9 +18,11 @@
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, see <http://www.gnu.org/licenses/>.
 
-"""extensions to zipfile standard module that will hopefully get included in future..."""
+"""Extensions to zipfile standard module that will hopefully get
+included in future."""
 
-from zipfile import ZipFile, struct, structCentralDir, stringCentralDir, structEndArchive, stringEndArchive
+from zipfile import ZipFile, struct, structCentralDir, \
+                    stringCentralDir, structEndArchive, stringEndArchive
 
 
 class ZipFileExt(ZipFile, object):
@@ -36,13 +38,20 @@ class ZipFileExt(ZipFile, object):
                 deleted_offset = self.filelist[i].header_offset
                 # "file_offset" is only available in python up to 2.4
                 if hasattr(self.filelist[i], "file_offset"):
-                    deleted_size = (self.filelist[i].file_offset - self.filelist[i].header_offset) + self.filelist[i].compress_size
+                    deleted_size = ((self.filelist[i].file_offset - 
+                                     self.filelist[i].header_offset) +
+                                    self.filelist[i].compress_size)
                 else:
-                    deleted_size = (len(self.filelist[i].FileHeader()) - self.filelist[i].header_offset) + self.filelist[i].compress_size
-                zinfo_size = struct.calcsize(structCentralDir) + len(self.filelist[i].filename) + len(self.filelist[i].extra)
+                    deleted_size = ((len(self.filelist[i].FileHeader()) -
+                                     self.filelist[i].header_offset) +
+                                    self.filelist[i].compress_size)
+                zinfo_size = (struct.calcsize(structCentralDir) +
+                             len(self.filelist[i].filename) +
+                             len(self.filelist[i].extra))
                 # Remove the file's data from the archive.
                 current_offset = self.fp.tell()
-                # go to the end of the archive to calculate the total archive_size
+                # go to the end of the archive to calculate the
+                # total archive_size
                 self.fp.seek(0, 2)
                 archive_size = self.fp.tell()
                 self.fp.seek(deleted_offset + deleted_size)
@@ -50,11 +59,15 @@ class ZipFileExt(ZipFile, object):
                 self.fp.seek(deleted_offset)
                 self.fp.write(buf)
                 self.fp.truncate(archive_size - deleted_size - zinfo_size)
-                # go to the end of the archive to calculate the total archive_size
+                # go to the end of the archive to calculate the
+                # total archive_size
                 self.fp.seek(0, 2)
                 if self.debug >= 2:
-                    if self.fp.tell() != archive_size - deleted_size - zinfo_size:
-                        print "truncation failed: %r != %r" % (self.fp.tell(), archive_size - deleted_size - zinfo_size)
+                    if self.fp.tell() != (archive_size - deleted_size -
+                                          zinfo_size):
+                        print "truncation failed: %r != %r" % \
+                              (self.fp.tell(),
+                              (archive_size - deleted_size - zinfo_size))
                 if current_offset > deleted_offset + deleted_size:
                     current_offset -= deleted_size
                 elif current_offset > deleted_offset:

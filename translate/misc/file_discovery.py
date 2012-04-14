@@ -26,8 +26,8 @@ import os
 
 
 def get_abs_data_filename(path_parts, basedirs=None):
-    """Get the absolute path to the given file- or directory name in the current
-    running application's data directory.
+    """Get the absolute path to the given file- or directory name in the
+    current running application's data directory.
 
     :type  path_parts: list
     :param path_parts: The path parts that can be joined by ``os.path.join()``.
@@ -61,7 +61,8 @@ def get_abs_data_filename(path_parts, basedirs=None):
 
     for basepath, data_dir in ((x, y) for x in BASE_DIRS for y in DATA_DIRS):
         dir_and_filename = data_dir + path_parts
-        datafile = os.path.join(basepath or os.path.dirname(__file__), *dir_and_filename)
+        datafile = os.path.join(basepath or os.path.dirname(__file__),
+                                *dir_and_filename)
         if os.path.exists(datafile):
             return datafile
     raise Exception('Could not find "%s"' % (os.path.join(*path_parts)))

@@ -2,8 +2,9 @@
 # -*- coding: utf-8 -*-
 
 """simple parser / string tokenizer
-rather than returning a list of token types etc, we simple return a list of tokens...
-each tokenizing function takes a string as input and returns a list of tokens
+rather than returning a list of token types etc, we simple return a list
+of tokens.  Each tokenizing function takes a string as input and returns
+a list of tokens.
 """
 
 # Copyright 2002, 2003 St James Software
@@ -25,7 +26,8 @@ each tokenizing function takes a string as input and returns a list of tokens
 
 
 def stringeval(text):
-    """takes away repeated quotes (escapes) and returns the string represented by the text"""
+    """takes away repeated quotes (escapes) and returns the string
+    represented by the text"""
     stringchar = text[0]
     if text[-1] != stringchar or stringchar not in ("'", '"'):
         # scratch your head
@@ -34,7 +36,8 @@ def stringeval(text):
 
 
 def stringquote(text):
-    """escapes quotes as neccessary and returns a string representing the text"""
+    """escapes quotes as neccessary and returns a string representing
+    the text"""
     if "'" in text:
         if '"' in text:
             return '"' + text.replace('"', '""') + '"'
@@ -60,15 +63,19 @@ class ParserError(ValueError):
 class SimpleParser:
     """this is a simple parser"""
 
-    def __init__(self, defaulttokenlist=None, whitespacechars=" \t\r\n", includewhitespacetokens=0):
+    def __init__(self, defaulttokenlist=None, whitespacechars=" \t\r\n",
+                 includewhitespacetokens=0):
         if defaulttokenlist is None:
-            self.defaulttokenlist = ['<=', '>=', '==', '!=', '+=', '-=', '*=', '/=', '<>']
+            self.defaulttokenlist = ['<=', '>=', '==', '!=',
+                                     '+=', '-=', '*=', '/=', '<>']
             self.defaulttokenlist.extend('(),[]:=+-')
         else:
             self.defaulttokenlist = defaulttokenlist
         self.whitespacechars = whitespacechars
         self.includewhitespacetokens = includewhitespacetokens
-        self.standardtokenizers = [self.stringtokenize, self.removewhitespace, self.separatetokens]
+        self.standardtokenizers = [
+            self.stringtokenize, self.removewhitespace, self.separatetokens
+        ]
         self.quotechars = ('"', "'")
         self.endquotechars = {'"': '"', "'": "'"}
         self.stringescaping = 1
@@ -83,7 +90,8 @@ class SimpleParser:
         for pos in range(len(text)):
             char = text[pos]
             if instring:
-                if self.stringescaping and (gotescape or char == escapechar) and not gotclose:
+                if (self.stringescaping and
+                    (gotescape or char == escapechar) and not gotclose):
                     gotescape = not gotescape
                 elif char == endstringchar:
                     gotclose = not gotclose
@@ -136,7 +144,8 @@ class SimpleParser:
         return tokens
 
     def removewhitespace(self, text):
-        """this removes whitespace but lets it separate things out into separate tokens"""
+        """this removes whitespace but lets it separate things out into
+        separate tokens"""
         if self.keeptogether(text):
             return [text]
         # loop through and put tokens into a list
@@ -156,7 +165,8 @@ class SimpleParser:
                     if laststart < pos:
                         tokens.append(text[laststart:pos])
                     inwhitespace, laststart = 1, pos
-        if laststart < len(text) and (not inwhitespace or self.includewhitespacetokens):
+        if (laststart < len(text) and
+            (not inwhitespace or self.includewhitespacetokens)):
             tokens.append(text[laststart:])
         return tokens
 
@@ -185,7 +195,8 @@ class SimpleParser:
         """finds the position of the given token in the text"""
         currenttokenpos = 0
         for currenttokennum in range(tokennum + 1):
-            currenttokenpos = self.source.find(self.tokens[currenttokennum], currenttokenpos)
+            currenttokenpos = self.source.find(self.tokens[currenttokennum],
+                                               currenttokenpos)
         return currenttokenpos
 
     def getlinepos(self, tokenpos):

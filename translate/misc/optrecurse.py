@@ -329,7 +329,8 @@ class RecursiveOptionParser(optparse.OptionParser, object):
         errorleveloption = optparse.Option(None, "--errorlevel",
                 dest="errorlevel", default="message",
                 choices=self.errorleveltypes, metavar="ERRORLEVEL",
-                help="show errorlevel as: %s" % (", ".join(self.errorleveltypes)))
+                help="show errorlevel as: %s" % \
+                     (", ".join(self.errorleveltypes)))
         self.define_option(errorleveloption)
 
     def getformathelp(self, formats):
@@ -417,11 +418,14 @@ class RecursiveOptionParser(optparse.OptionParser, object):
                 if inputext is None:
                     raise ValueError("don't know what to do with input format (no file extension), no template file")
                 elif templateext is None:
-                    raise ValueError("don't know what to do with input format %s, no template file" % (os.extsep + inputext))
+                    raise ValueError("don't know what to do with input format %s, no template file" %
+                                     (os.extsep + inputext))
                 else:
-                    raise ValueError("don't know what to do with input format %s, template format %s" % (os.extsep + inputext, os.extsep + templateext))
+                    raise ValueError("don't know what to do with input format %s, template format %s" %
+                                     (os.extsep + inputext, os.extsep + templateext))
             else:
-                raise ValueError("don't know what to do with input format %s" % os.extsep + inputext)
+                raise ValueError("don't know what to do with input format %s" %
+                                 (os.extsep + inputext))
         if outputformat == "*":
             if inputext:
                 outputformat = inputext
@@ -432,11 +436,14 @@ class RecursiveOptionParser(optparse.OptionParser, object):
             else:
                 if self.usetemplates:
                     if templateext is None:
-                        raise ValueError("don't know what to do with input format %s, no template file" % (os.extsep + inputext))
+                        raise ValueError("don't know what to do with input format %s, no template file" %
+                                         (os.extsep + inputext))
                     else:
-                        raise ValueError("don't know what to do with input format %s, template format %s" % (os.extsep + inputext, os.extsep + templateext))
+                        raise ValueError("don't know what to do with input format %s, template format %s" %
+                                         (os.extsep + inputext, os.extsep + templateext))
                 else:
-                    raise ValueError("don't know what to do with input format %s" % os.extsep + inputext)
+                    raise ValueError("don't know what to do with input format %s" %
+                                     (os.extsep + inputext))
         return outputformat, fileprocessor
 
     def initprogressbar(self, allfiles, options):
@@ -465,7 +472,8 @@ class RecursiveOptionParser(optparse.OptionParser, object):
         """Gets the absolute path to a template file."""
         if not options.recursivetemplate:
             return templatepath
-        elif templatepath is not None and self.usetemplates and options.template:
+        elif (templatepath is not None and
+              self.usetemplates and options.template):
             return os.path.join(options.template, templatepath)
         else:
             return None
@@ -502,20 +510,26 @@ class RecursiveOptionParser(optparse.OptionParser, object):
                 options.input = os.path.dirname(options.input)
             else:
                 inputfiles = [options.input]
-        options.recursiveoutput = self.isrecursive(options.output, 'output') and getattr(options, "allowrecursiveoutput", True)
-        options.recursivetemplate = self.usetemplates and self.isrecursive(options.template, 'template') and getattr(options, "allowrecursivetemplate", True)
+        options.recursiveoutput = (self.isrecursive(options.output, 'output') and
+                                   getattr(options, "allowrecursiveoutput", True))
+        options.recursivetemplate = (self.usetemplates and
+                                     self.isrecursive(options.template, 'template') and
+                                     getattr(options, "allowrecursivetemplate", True))
         self.initprogressbar(inputfiles, options)
         for inputpath in inputfiles:
             try:
                 templatepath = self.gettemplatename(options, inputpath)
                 # If we have a recursive template, but the template doesn't
                 # have this input file, let's drop it.
-                if options.recursivetemplate and templatepath is None and not self.allowmissingtemplate:
-                    self.warning("No template at %s. Skipping %s." % (templatepath, inputpath))
+                if (options.recursivetemplate and templatepath is None and
+                    not self.allowmissingtemplate):
+                    self.warning("No template at %s. Skipping %s." %
+                                 (templatepath, inputpath))
                     continue
                 outputformat, fileprocessor = self.getoutputoptions(options, inputpath, templatepath)
                 fullinputpath = self.getfullinputpath(options, inputpath)
-                fulltemplatepath = self.getfulltemplatepath(options, templatepath)
+                fulltemplatepath = self.getfulltemplatepath(options,
+                                                            templatepath)
                 outputpath = self.getoutputname(options, inputpath, outputformat)
                 fulloutputpath = self.getfulloutputpath(options, outputpath)
                 if options.recursiveoutput and outputpath:
@@ -523,7 +537,8 @@ class RecursiveOptionParser(optparse.OptionParser, object):
             except Exception, error:
                 if isinstance(error, KeyboardInterrupt):
                     raise
-                self.warning("Couldn't handle input file %s" % inputpath, options, sys.exc_info())
+                self.warning("Couldn't handle input file %s" %
+                             inputpath, options, sys.exc_info())
                 continue
             try:
                 success = self.processfile(fileprocessor, options,
@@ -532,7 +547,9 @@ class RecursiveOptionParser(optparse.OptionParser, object):
             except Exception, error:
                 if isinstance(error, KeyboardInterrupt):
                     raise
-                self.warning("Error processing: input %s, output %s, template %s" % (fullinputpath, fulloutputpath, fulltemplatepath), options, sys.exc_info())
+                self.warning("Error processing: input %s, output %s, template %s" %
+                             (fullinputpath, fulloutputpath,
+                              fulltemplatepath), options, sys.exc_info())
                 success = False
             self.reportprogress(inputpath, success)
         del self.progressbar
@@ -574,7 +591,8 @@ class RecursiveOptionParser(optparse.OptionParser, object):
                     fulloutputpath, fulltemplatepath):
         """Process an individual file."""
         inputfile = self.openinputfile(options, fullinputpath)
-        if fulloutputpath and fulloutputpath in (fullinputpath, fulltemplatepath):
+        if (fulloutputpath and
+            fulloutputpath in (fullinputpath, fulltemplatepath)):
             outputfile = self.opentempoutputfile(options, fulloutputpath)
             tempoutput = True
         else:
@@ -586,7 +604,8 @@ class RecursiveOptionParser(optparse.OptionParser, object):
                          **passthroughoptions):
             if tempoutput:
                 self.warning("writing to temporary output...")
-                self.finalizetempoutputfile(options, outputfile, fulloutputpath)
+                self.finalizetempoutputfile(options, outputfile,
+                                            fulloutputpath)
             return True
         else:
             # remove the file if it is a file (could be stdout etc)
@@ -603,7 +622,8 @@ class RecursiveOptionParser(optparse.OptionParser, object):
     def mkdir(self, parent, subdir):
         """Makes a subdirectory (recursively if neccessary)."""
         if not os.path.isdir(parent):
-            raise ValueError("cannot make child directory %r if parent %r does not exist" % (subdir, parent))
+            raise ValueError("cannot make child directory %r if parent %r does not exist" %
+                             (subdir, parent))
         currentpath = parent
         subparts = subdir.split(os.sep)
         for part in subparts:
@@ -628,7 +648,8 @@ class RecursiveOptionParser(optparse.OptionParser, object):
 
     def recurseinputfilelist(self, options):
         """Use a list of files, and find a common base directory for them."""
-        # find a common base directory for the files to do everything relative to
+        # find a common base directory for the files to do everything
+        # relative to
         commondir = os.path.dirname(os.path.commonprefix(options.input))
         inputfiles = []
         for inputfile in options.input:
@@ -642,7 +663,7 @@ class RecursiveOptionParser(optparse.OptionParser, object):
         return inputfiles
 
     def recurseinputfiles(self, options):
-        """Recurse through directories and return files to be processed..."""
+        """Recurse through directories and return files to be processed."""
         dirstack = ['']
         join = os.path.join
         inputfiles = []
@@ -660,10 +681,11 @@ class RecursiveOptionParser(optparse.OptionParser, object):
                     dirs.append(inputpath)
                 elif os.path.isfile(fullinputpath):
                     if not self.isvalidinputname(options, name):
-                        # only handle names that match recognized input file extensions
+                        # only handle names that match recognized input
+                        # file extensions
                         continue
                     inputfiles.append(inputpath)
-            # make sure the directories are processed next time round...
+            # make sure the directories are processed next time round.
             dirs.reverse()
             dirstack.extend(dirs)
         return inputfiles
@@ -733,4 +755,5 @@ class RecursiveOptionParser(optparse.OptionParser, object):
     def isvalidinputname(self, options, inputname):
         """Checks if this is a valid input filename."""
         inputbase, inputext = self.splitinputext(inputname)
-        return (inputext in options.inputformats) or ("*" in options.inputformats)
+        return ((inputext in options.inputformats) or
+                ("*" in options.inputformats))

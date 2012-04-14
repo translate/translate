@@ -18,7 +18,8 @@
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, see <http://www.gnu.org/licenses/>.
 
-"""Supports a hybrid Unicode string that can also have a list of alternate strings in the strings attribute"""
+"""Supports a hybrid Unicode string that can also have a list of alternate
+strings in the strings attribute"""
 
 from translate.misc import autoencode
 
@@ -30,10 +31,12 @@ class multistring(autoencode.autoencode):
             if not string:
                 raise ValueError("multistring must contain at least one string")
             mainstring = string[0]
-            newstring = multistring.__new__(newtype, string[0], encoding, errors)
+            newstring = multistring.__new__(newtype, string[0],
+                                            encoding, errors)
             newstring.strings = [newstring] + [autoencode.autoencode.__new__(autoencode.autoencode, altstring, encoding, errors) for altstring in string[1:]]
         else:
-            newstring = autoencode.autoencode.__new__(newtype, string, encoding, errors)
+            newstring = autoencode.autoencode.__new__(newtype, string,
+                                                      encoding, errors)
             newstring.strings = [newstring]
         return newstring
 
@@ -67,14 +70,17 @@ class multistring(autoencode.autoencode):
         return self.__cmp__(otherstring) == 0
 
     def __repr__(self):
-        parts = [autoencode.autoencode.__repr__(self)] + [repr(a) for a in self.strings[1:]]
+        parts = [autoencode.autoencode.__repr__(self)] + \
+                [repr(a) for a in self.strings[1:]]
         return "multistring([" + ",".join(parts) + "])"
 
     def replace(self, old, new, count=None):
         if count is None:
-            newstr = multistring(super(multistring, self).replace(old, new), self.encoding)
+            newstr = multistring(super(multistring, self) \
+                   .replace(old, new), self.encoding)
         else:
-            newstr = multistring(super(multistring, self).replace(old, new, count), self.encoding)
+            newstr = multistring(super(multistring, self) \
+                   .replace(old, new, count), self.encoding)
         for s in self.strings[1:]:
             if count is None:
                 newstr.strings.append(s.replace(old, new))
