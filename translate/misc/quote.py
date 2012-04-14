@@ -379,7 +379,7 @@ def propertiesdecode(source):
             output += unicodedata.lookup(name)
             s = e + 1
         else:
-            output += c # Drop any \ that we don't specifically handle
+            output += c  # Drop any \ that we don't specifically handle
     return output
 
 

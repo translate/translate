@@ -146,7 +146,7 @@ class RecursiveOptionParser(optparse.OptionParser, object):
 
     def setpsycooption(self):
         try:
-            import psyco # pylint: disable=W0612
+            import psyco  # pylint: disable=W0612
         except ImportError:
             return
         psycomodes = ["none", "full", "profile"]
