@@ -360,4 +360,3 @@ class TestTranslationStore(object):
             assert ext in self.StoreClass.Mimetypes
         for ext in self.StoreClass.Mimetypes:
             assert ext in detail[1]
-

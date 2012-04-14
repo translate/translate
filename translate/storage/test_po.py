@@ -837,5 +837,3 @@ msgstr[0] ""
         assert "msgid_plural" in str(unit)
         assert not unit.istranslated()
         assert unit.get_state_n() == 0
-
-

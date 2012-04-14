@@ -38,4 +38,3 @@ class TestQtFile(test_base.TestTranslationStore):
         # QM does not implement serialising
         assert test.raises(Exception, self.StoreClass.__str__,
                            self.StoreClass())
-
