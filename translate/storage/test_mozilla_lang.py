@@ -9,7 +9,7 @@ class TestMozLangUnit(test_base.TestTranslationUnit):
     UnitClass = mozilla_lang.LangUnit
 
     def test_translate_but_same(self):
-        """Mozilla allows {ok} to indicate a line that is the 
+        """Mozilla allows {ok} to indicate a line that is the
         same in source and target on purpose"""
         unit = self.UnitClass("Open")
         unit.target = "Open"
