@@ -200,7 +200,7 @@ class LISAunit(base.TranslationUnit):
                 lasttag.tail = pretext
             #ph node
             phnode = etree.SubElement(parent, self.namespaced("ph"))
-            phnode.set("id", str(i+1))
+            phnode.set("id", str(i + 1))
             phnode.text = m.group()
             lasttag = phnode
             start = m.end()

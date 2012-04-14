@@ -524,7 +524,7 @@ class PyLuceneHits(CommonIndexer.CommonEnquire):
             item["percent"] = self.enquire.score(index)
             item["document"] = self.enquire.doc(index)
             result.append(item)
-        return (stop-start, self.enquire.length(), result)
+        return ((stop - start), self.enquire.length(), result)
 
 
 def _occur(required, prohibited):

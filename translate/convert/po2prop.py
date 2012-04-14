@@ -69,7 +69,7 @@ class reprop:
                 returnline = line
         # otherwise, this could be a comment
         elif line.strip()[:1] == '#':
-            returnline = quote.rstripeol(line)+eol
+            returnline = quote.rstripeol(line) + eol
         else:
             line = quote.rstripeol(line)
             delimiter_char, delimiter_pos = self.personality.find_delimiter(line)

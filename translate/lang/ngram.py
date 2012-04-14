@@ -56,7 +56,7 @@ class _NGram:
             size = len(word)
             for i in xrange(size - 1):
                 for s in (1, 2, 3, 4):
-                    end = i+s
+                    end = i + s
                     if end >= size:
                         break
                     sub = word[i:end]

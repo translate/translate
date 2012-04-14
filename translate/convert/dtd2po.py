@@ -110,10 +110,10 @@ class dtd2po:
                 idstart = locnote.find('(', typeend)
                 if idstart == -1:
                     continue
-                idend = locnote.find(')', idstart+1)
+                idend = locnote.find(')', (idstart + 1))
                 entity = locnote[idstart+1:idend].strip()
                 # parse the actual note
-                actualnotestart = locnote.find(':', idend+1)
+                actualnotestart = locnote.find(':', (idend + 1))
                 actualnoteend = locnote.find('-->', idend)
                 actualnote = locnote[actualnotestart+1:actualnoteend].strip()
                 # if it's for this entity, process it

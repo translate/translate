@@ -46,7 +46,7 @@ def getmixedentities(entities):
                 for akeytype in dtd.accesskeysuffixes:
                     if entitybase + akeytype in entities:
                         # add both versions to the list of mixed entities
-                        mixedentities += [entity, entitybase+akeytype]
+                        mixedentities += [entity, (entitybase + akeytype)]
     return mixedentities
 
 
@@ -134,7 +134,7 @@ class po2dtd:
         # msgidcomments are special - they're actually localization notes
         msgidcomment = inputunit._extract_msgidcomments()
         if msgidcomment:
-            locnote = quote.unstripcomment("LOCALIZATION NOTE ("+dtdunit.entity+"): "+msgidcomment)
+            locnote = quote.unstripcomment("LOCALIZATION NOTE (" + dtdunit.entity + "): " + msgidcomment)
             dtdunit.comments.append(("locnote", locnote))
 
     def convertstrings(self, inputunit, dtdunit):

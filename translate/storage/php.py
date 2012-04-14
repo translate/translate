@@ -259,7 +259,7 @@ class phpfile(base.TranslationStore):
                     newunit.escape_type = valuequote
                     lastvalue = ""
                     invalue = False
-                if not invalue and colonpos != len(value)-1:
+                if not invalue and colonpos != (len(value) - 1):
                     commentinlinepos = value.find("//", colonpos)
                     if commentinlinepos != -1:
                         newunit.addnote(value[commentinlinepos+2:].strip(),

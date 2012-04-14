@@ -38,7 +38,7 @@ def python_distance(a, b, stopvalue=-1):
         stopvalue = l2
     current = range(l1 + 1)
     for i in range(1, l2 + 1):
-        previous, current = current, [i] + [0] * l1
+        previous, current = current, ([i] + [0] * l1)
         least = l2
         for j in range(1, l1 + 1):
             change = previous[j-1]
@@ -126,7 +126,7 @@ class LevenshteinComparer:
 
         #maxsimilarity is the maximum similarity that can be attained as constrained
         #by the difference in string length
-        maxsimilarity = 100 - 100.0*abs(l1 - l2)/l2
+        maxsimilarity = 100 - 100.0 * abs(l1 - l2) / l2
         if maxsimilarity < stoppercentage:
             return maxsimilarity * 1.0
 
@@ -142,7 +142,7 @@ class LevenshteinComparer:
                 penalty += 7
 
         #The actual value in the array that would represent a giveup situation:
-        stopvalue = math.ceil((100.0 - stoppercentage)/100 * l2)
+        stopvalue = math.ceil((100.0 - stoppercentage) / 100 * l2)
         dist = distance(a, b, stopvalue)
         if dist > stopvalue:
             return stoppercentage - 1.0
@@ -151,7 +151,7 @@ class LevenshteinComparer:
         #representative of the distance between the whole, untrimmed strings
         if dist != 0:
             penalty = 0
-        return 100 - (dist*1.0/l2)*100 - penalty
+        return 100 - (dist * 1.0 / l2) * 100 - penalty
 
 
 if __name__ == "__main__":
