@@ -295,6 +295,7 @@ msgstr ""
     pofile = poparse(posource)
     assert pofile.gettargetlanguage() == 'fr_CA'
 
+
 def test_project():
     """Test that we can get a project from the relevant headers."""
     posource = r'''msgid ""

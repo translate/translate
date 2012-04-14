@@ -33,6 +33,7 @@ def test_quotefordtd():
         assert dtd.unquotefromdtd(dtd_ready_result) == raw_original
     tester("Unintentional variable %S", '"Unintentional variable &#x25;S"')
 
+
 def test_removeinvalidamp(recwarn):
     """tests the the removeinvalidamps function"""
 

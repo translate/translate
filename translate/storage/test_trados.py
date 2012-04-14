@@ -11,6 +11,7 @@ def test_unescape():
     assert trados.unescape(ur"Ordre du jour\~:") == u"Ordre du jour\u00a0:"
     assert trados.unescape(ur"Association for Road Safety \endash  Conference") == u"Association for Road Safety –  Conference"
 
+
 def test_escape():
     # NBSP
     assert trados.escape(u"Ordre du jour\u00a0:") == ur"Ordre du jour\~:"
