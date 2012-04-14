@@ -218,7 +218,8 @@ class FileDiffer:
                 started = True
             outfile.write(hunk)
         if not started and self.options.report_identical_files:
-            outfile.write("Files %s and %s are identical\n" % (self.fromfile, self.tofile))
+            outfile.write("Files %s and %s are identical\n" %
+                          (self.fromfile, self.tofile))
 
     def get_from_lines(self, group):
         """returns the lines referred to by group, from the fromfile"""
@@ -235,9 +236,10 @@ class FileDiffer:
         return to_lines
 
     def unified_diff(self, group):
-        """takes the group of opcodes and generates a unified diff line by line"""
+        """takes the group of opcodes and generates a unified diff line
+        by line"""
         i1, i2, j1, j2 = group[0][1], group[-1][2], group[0][3], group[-1][4]
-        yield "@@ -%d,%d +%d,%d @@%s" % (i1+1, i2-i1, j1+1, j2-j1, lineterm)
+        yield "@@ -%d,%d +%d,%d @@%s" % (i1 + 1, i2 - i1, j1 + 1, j2 - j1, lineterm)
         for tag, i1, i2, j1, j2 in group:
             if tag == 'equal':
                 for line in self.from_lines[i1:i2]:
