@@ -127,8 +127,8 @@ class TestCPOFile(test_po.TestPOFile):
         assert po.unquotefrompo(pofile.units[1].msgidcomments) == "_: source1\n"
         # Now lets check for formating
         for i in (0, 1):
-          expected = '''#: source%d\nmsgid ""\n"_: source%d\\n"\n"Same"\nmsgstr ""\n''' % (i, i)
-          assert pofile.units[i].__str__() == expected
+            expected = '''#: source%d\nmsgid ""\n"_: source%d\\n"\n"Same"\nmsgstr ""\n''' % (i, i)
+            assert pofile.units[i].__str__() == expected
 
     @mark.xfail(reason="Were disabled during port of Pypo to cPO - they might work")
     def test_keep_blanks(self):
