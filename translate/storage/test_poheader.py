@@ -162,7 +162,6 @@ def test_header_blank():
         assert headeritems["Content-Transfer-Encoding"] == "8bit"
         assert headeritems["Plural-Forms"] == "nplurals=INTEGER; plural=EXPRESSION;"
 
-
     """test header functionality"""
     posource = r'''# other comment\n
 msgid ""
