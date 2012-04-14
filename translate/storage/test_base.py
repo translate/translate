@@ -336,7 +336,7 @@ class TestTranslationStore(object):
     def test_extensions(self):
         """Test that the factory knows the extensions for this class."""
         supported = factory.supported_files()
-        supported_dict = dict([ (name, (extensions, mimetypes)) for name, extensions, mimetypes in supported])
+        supported_dict = dict([(name, (extensions, mimetypes)) for name, extensions, mimetypes in supported])
         if not (self.StoreClass.Name and self.StoreClass.Name in supported_dict):
             return
         detail = supported_dict[self.StoreClass.Name]  # will start to get problematic once translated
@@ -350,7 +350,7 @@ class TestTranslationStore(object):
     def test_mimetypes(self):
         """Test that the factory knows the mimetypes for this class."""
         supported = factory.supported_files()
-        supported_dict = dict([ (name, (extensions, mimetypes)) for name, extensions, mimetypes in supported])
+        supported_dict = dict([(name, (extensions, mimetypes)) for name, extensions, mimetypes in supported])
         if not (self.StoreClass.Name and self.StoreClass.Name in supported_dict):
             return
         detail = supported_dict[self.StoreClass.Name]  # will start to get problematic once translated
