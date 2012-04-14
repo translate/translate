@@ -537,7 +537,7 @@ def test_sentencecount():
     assert passes(stdchecker.sentencecount, "One. Two. Three.", "Een. Twee. Drie.")
     assert passes(stdchecker.sentencecount, "One two three", "Een twee drie.")
     assert fails(stdchecker.sentencecount, "One. Two. Three.", "Een Twee. Drie.")
-    assert passes(stdchecker.sentencecount, "Sentence with i.e. in it.", "Sin met d.w.s. in dit.") # bug 178, description item 8
+    assert passes(stdchecker.sentencecount, "Sentence with i.e. in it.", "Sin met d.w.s. in dit.")  # bug 178, description item 8
     el_checker = checks.StandardChecker(checks.CheckerConfig(targetlanguage='el'))
     assert fails(el_checker.sentencecount, "First sentence. Second sentence.", "Πρώτη πρόταση. δεύτερη πρόταση.")
 
@@ -705,12 +705,12 @@ def test_unchanged():
     assert fails(stdchecker.unchanged, "&Unchanged", "Un&changed")
     assert passes(stdchecker.unchanged, "Unchanged", "Changed")
     assert passes(stdchecker.unchanged, "1234", "1234")
-    assert passes(stdchecker.unchanged, "2×2", "2×2") # bug 178, description item 14
+    assert passes(stdchecker.unchanged, "2×2", "2×2")  # bug 178, description item 14
     assert passes(stdchecker.unchanged, "I", "I")
     assert passes(stdchecker.unchanged, "   ", "   ")  # bug 178, description item 5
     assert passes(stdchecker.unchanged, "???", "???")  # bug 178, description item 15
-    assert passes(stdchecker.unchanged, "&ACRONYM", "&ACRONYM") # bug 178, description item 7
-    assert passes(stdchecker.unchanged, "F1", "F1") # bug 178, description item 20
+    assert passes(stdchecker.unchanged, "&ACRONYM", "&ACRONYM")  # bug 178, description item 7
+    assert passes(stdchecker.unchanged, "F1", "F1")  # bug 178, description item 20
     assert fails(stdchecker.unchanged, "Two words", "Two words")
     #TODO: this still fails
 #    assert passes(stdchecker.unchanged, "NOMINAL", "NOMİNAL")
@@ -719,12 +719,12 @@ def test_unchanged():
     # Variable only and variable plus punctuation messages should be ignored
     mozillachecker = checks.MozillaChecker()
     assert passes(mozillachecker.unchanged, "$ProgramName$", "$ProgramName$")
-    assert passes(mozillachecker.unchanged, "$file$ : $dir$", "$file$ : $dir$") # bug 178, description item 13
+    assert passes(mozillachecker.unchanged, "$file$ : $dir$", "$file$ : $dir$")  # bug 178, description item 13
     assert fails(mozillachecker.unchanged, "$file$ in $dir$", "$file$ in $dir$")
     assert passes(mozillachecker.unchanged, "&brandShortName;", "&brandShortName;")
     # Don't translate words should be ignored
     stdchecker = checks.StandardChecker(checks.CheckerConfig(notranslatewords=["Mozilla"]))
-    assert passes(stdchecker.unchanged, "Mozilla", "Mozilla") # bug 178, description item 10
+    assert passes(stdchecker.unchanged, "Mozilla", "Mozilla")  # bug 178, description item 10
     # Don't fail unchanged if the entry is a dialogsize, quite plausible that you won't change it
     mozillachecker = checks.MozillaChecker()
     assert passes(mozillachecker.unchanged, 'width: 12em;', 'width: 12em;')

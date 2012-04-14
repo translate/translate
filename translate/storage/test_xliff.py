@@ -266,7 +266,7 @@ class TestXLIFFfile(test_base.TestTranslationStore):
         xlifffile = xliff.xlifffile()
         unit = xlifffile.addsourceunit("Concept")
         unit.markfuzzy()
-        assert not unit.isfuzzy() #untranslated
+        assert not unit.isfuzzy()  # untranslated
         unit.target = "Konsep"
         assert unit.isfuzzy()
         unit.markfuzzy()

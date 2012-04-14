@@ -147,10 +147,10 @@ msgstr "translated"
         proptemplate = '''prop = value\n'''
         propfile = self.merge2prop(proptemplate, posource)
         print propfile
-        assert propfile == proptemplate # We use the existing values
+        assert propfile == proptemplate  # We use the existing values
         propfile = self.merge2prop(proptemplate, posource, remove_untranslated=True)
         print propfile
-        assert propfile == '' # We drop the key
+        assert propfile == ''  # We drop the key
 
     def test_merging_untranslated_multiline(self):
         """check merging untranslated entries with multiline values"""
@@ -161,10 +161,10 @@ msgstr "translated"
         propexpected = '''prop = value1 value2\n'''
         propfile = self.merge2prop(proptemplate, posource)
         print propfile
-        assert propfile == propexpected # We use the existing values
+        assert propfile == propexpected  # We use the existing values
         propfile = self.merge2prop(proptemplate, posource, remove_untranslated=True)
         print propfile
-        assert propfile == '' # We drop the key
+        assert propfile == ''  # We drop the key
 
     def test_merging_untranslated_comments(self):
         """check merging untranslated entries with comments"""
@@ -173,11 +173,11 @@ msgstr "translated"
         propexpected = '# A comment\nprop = value\n'
         propfile = self.merge2prop(proptemplate, posource)
         print propfile
-        assert propfile == propexpected # We use the existing values
+        assert propfile == propexpected  # We use the existing values
         propfile = self.merge2prop(proptemplate, posource, remove_untranslated=True)
         print propfile
         # FIXME ideally we should drop the comment as well as the unit
-        assert propfile == '# A comment\n' # We drop the key
+        assert propfile == '# A comment\n'  # We drop the key
 
 
 class TestPO2PropCommand(test_convert.TestConvertCommand, TestPO2Prop):

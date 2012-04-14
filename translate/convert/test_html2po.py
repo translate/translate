@@ -409,11 +409,11 @@ ghi ?>'''
         innertext = '<a href="' + php1 + '/site.html">Body text</a> and some ' + php1 + ' more text ' + php1 + php1
         innertrans = '<a href="' + php1 + '/site.html">Texte de corps</a> et encore de ' + php1 + ' plus de texte ' + php1 + php1
 
-        htmlsource = '<html><head></head><body><p>' + innertext + '</p></body></html>' # Current html file
-        transsource = '<html><head></head><body><p>' + innertrans + '</p></body></html>' # Expected translation
+        htmlsource = '<html><head></head><body><p>' + innertext + '</p></body></html>'  # Current html file
+        transsource = '<html><head></head><body><p>' + innertrans + '</p></body></html>'  # Expected translation
 
         pofile = self.html2po(htmlsource)
-        pofile.units[1].target = innertrans # Register the translation in the PO file
+        pofile.units[1].target = innertrans  # Register the translation in the PO file
         htmlresult = self.po2html(pofile, htmlsource)
         assert htmlresult == transsource
 

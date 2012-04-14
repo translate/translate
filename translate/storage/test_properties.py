@@ -133,8 +133,8 @@ class TestProp(test_monolingual.TestMonolingualStore):
         """check that we remove extra whitespace around property"""
         whitespaces = (('key = value', 'key', 'value'),      # Standard for baseline
                        (' key =  value', 'key', 'value'),    # Extra \s before key and value
-                       ('\ key\ = value', '\ key\ ', 'value'), # extra space at start and end of key
-                       ('key = \ value ', 'key', ' value '), # extra space at start end end of value
+                       ('\ key\ = value', '\ key\ ', 'value'),  # extra space at start and end of key
+                       ('key = \ value ', 'key', ' value '),  # extra space at start end end of value
                       )
         for propsource, key, value in whitespaces:
             propfile = self.propparse(propsource)

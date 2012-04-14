@@ -339,7 +339,7 @@ class TestTranslationStore(object):
         supported_dict = dict([ (name, (extensions, mimetypes)) for name, extensions, mimetypes in supported])
         if not (self.StoreClass.Name and self.StoreClass.Name in supported_dict):
             return
-        detail = supported_dict[self.StoreClass.Name] # will start to get problematic once translated
+        detail = supported_dict[self.StoreClass.Name]  # will start to get problematic once translated
         print "Factory:", detail[0]
         print "StoreClass:", self.StoreClass.Extensions
         for ext in detail[0]:
@@ -353,7 +353,7 @@ class TestTranslationStore(object):
         supported_dict = dict([ (name, (extensions, mimetypes)) for name, extensions, mimetypes in supported])
         if not (self.StoreClass.Name and self.StoreClass.Name in supported_dict):
             return
-        detail = supported_dict[self.StoreClass.Name] # will start to get problematic once translated
+        detail = supported_dict[self.StoreClass.Name]  # will start to get problematic once translated
         print "Factory:", detail[1]
         print "StoreClass:", self.StoreClass.Mimetypes
         for ext in detail[1]:
