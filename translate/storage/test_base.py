@@ -271,7 +271,7 @@ class TestTranslationStore(object):
             store2unit = store2.units[n]
             match = store1unit == store2unit
             if not match:
-                print "match failed between elements %d of %d" % (n+1, headerless_len(store1.units))
+                print "match failed between elements %d of %d" % ((n + 1), headerless_len(store1.units))
                 print "store1:"
                 print str(store1)
                 print "store2:"

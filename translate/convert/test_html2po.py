@@ -56,9 +56,9 @@ class TestHTML2PO:
     def check_phpsnippet(self, php):
         """Given a snippet of php, put it into an HTML shell and see
         if the results are as expected"""
-        self.check_single('<html><head></head><body><p><a href="'+php+'/site.html">Body text</a></p></body></html>', "Body text")
-        self.check_single('<html><head></head><body><p>More things in <a href="'+php+'/site.html">Body text</a></p></body></html>', 'More things in <a href="'+php+'/site.html">Body text</a>')
-        self.check_null('<html><head></head><body><p>'+php+'</p></body></html>')
+        self.check_single('<html><head></head><body><p><a href="' + php + '/site.html">Body text</a></p></body></html>', "Body text")
+        self.check_single('<html><head></head><body><p>More things in <a href="' + php + '/site.html">Body text</a></p></body></html>', 'More things in <a href="' + php + '/site.html">Body text</a>')
+        self.check_null('<html><head></head><body><p>' + php + '</p></body></html>')
 
     def test_htmllang(self):
         """test to ensure that we no longer use the lang attribure"""
