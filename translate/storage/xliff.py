@@ -93,13 +93,14 @@ class xliffunit(lisa.LISAunit):
     def createlanguageNode(self, lang, text, purpose):
         """Returns an xml Element setup with given parameters."""
 
-        #TODO: for now we do source, but we have to test if it is target, perhaps
-        # with parameter. Alternatively, we can use lang, if supplied, since an xliff
-        #file has to conform to the bilingual nature promised by the header.
+        # TODO: for now we do source, but we have to test if it is target,
+        # perhaps with parameter. Alternatively, we can use lang, if
+        # supplied, since an xliff file has to conform to the bilingual
+        # nature promised by the header.
         assert purpose
         langset = etree.Element(self.namespaced(purpose))
-        #TODO: check language
-#        lisa.setXMLlang(langset, lang)
+        # TODO: check language
+        #lisa.setXMLlang(langset, lang)
 
         langset.text = text
         return langset
@@ -243,7 +244,8 @@ class xliffunit(lisa.LISAunit):
             note.set("from", origin)
 
     def getnotelist(self, origin=None):
-        """Private method that returns the text from notes matching 'origin' or all notes."""
+        """Private method that returns the text from notes matching
+        'origin' or all notes."""
         notenodes = self.xmlelement.iterdescendants(self.namespaced("note"))
         # TODO: consider using xpath to construct initial_list directly
         # or to simply get the correct text from the outset (just remember to
@@ -339,7 +341,9 @@ class xliffunit(lisa.LISAunit):
         return self.get_state_id() == self.S_NEEDS_REVIEW
 
     def markreviewneeded(self, needsreview=True, explanation=None):
-        """Marks the unit to indicate whether it needs review. Adds an optional explanation as a note."""
+        """Marks the unit to indicate whether it needs review.
+
+        Adds an optional explanation as a note."""
         state_id = self.get_state_id()
         if needsreview and state_id != self.S_NEEDS_REVIEW:
             self.set_state_n(self.S_NEEDS_REVIEW)
