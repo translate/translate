@@ -639,9 +639,14 @@ class xlifffile(lisa.LISAfile):
         return ""
 
     def getdate(self, filename=None):
-        """Returns the date attribute for the file. If no filename is given,
-        the date of the first file is given. If the date attribute is not
-        specified, None is returned."""
+        """Returns the date attribute for the file.
+
+        If no filename is given, the date of the first file is given.
+        If the date attribute is not specified, None is returned.
+
+        :returns: Date attribute of file
+        :rtype: Date or None
+        """
         if filename:
             node = self.getfilenode(filename)
             if not node is None:
