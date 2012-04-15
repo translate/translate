@@ -18,7 +18,8 @@
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, see <http://www.gnu.org/licenses/>.
 
-"""diff tool like GNU diff, but lets you have special options that are useful in dealing with PO files"""
+"""diff tool like GNU diff, but lets you have special options
+that are useful in dealing with PO files"""
 
 import difflib
 import optparse
@@ -85,7 +86,8 @@ class DirDiffer:
     """generates diffs between directories"""
 
     def __init__(self, fromdir, todir, options):
-        """constructs a comparison between the two dirs using the given options"""
+        """Constructs a comparison between the two dirs using the
+        given options"""
         self.fromdir = fromdir
         self.todir = todir
         self.options = options
@@ -136,7 +138,8 @@ class FileDiffer:
     """generates diffs between files"""
 
     def __init__(self, fromfile, tofile, options):
-        """constructs a comparison between the two files using the given options"""
+        """Constructs a comparison between the two files using the given
+        options"""
         self.fromfile = fromfile
         self.tofile = tofile
         self.options = options
