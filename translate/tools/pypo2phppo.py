@@ -18,7 +18,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, see <http://www.gnu.org/licenses/>.
 
-""" Convert Python format .po files to PHP format .po files """
+"""Convert Python format .po files to PHP format .po files"""
 
 import re
 
@@ -29,13 +29,20 @@ from translate.misc.multistring import multistring
 class pypo2phppo:
 
     def convertstore(self, inputstore):
-        """Converts a given .po file (Python Format) to a PHP format .po file, the difference being
-            how variable substitutions work.  PHP uses a %1$s format, and Python uses
-            a {0} format (zero indexed).  This method will convert, e.g.:
+        """Converts a given .po file (Python Format) to a PHP format .po file.
+
+       The difference being how variable substitutions work.  PHP uses a %1$s
+       format, and Python uses a {0} format (zero indexed).  This method will
+       convert::
+
                 I have {1} apples and {0} oranges
-                    to
+
+       To::
+
                 I have %2$s apples and %1$s oranges
-            This method ignores strings with %s as both languages will recognize that.
+
+        This method ignores strings with %s as both languages will recognize
+        that.
         """
         thetargetfile = po.pofile(inputfile="")
 
