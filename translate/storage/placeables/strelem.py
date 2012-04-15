@@ -626,7 +626,7 @@ class StringElem(object):
         if left is right:
             if left.sub:
                 # This is an error because the cursor cannot be inside an
-                # element ("left is right"), if it has any other content. 
+                # element ("left is right"), if it has any other content.
                 # If an element has content, it will be at least directly
                 # left or directly right of the current cursor position.
                 raise ValueError('"left" and "right" refer to the same element and is not empty.')
