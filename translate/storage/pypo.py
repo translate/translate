@@ -822,11 +822,13 @@ class pofile(pocommon.pofile):
         """decode any non-unicode strings in lines with self._encoding"""
         newlines = []
         for line in lines:
-            if isinstance(line, str) and self._encoding is not None and self._encoding.lower() != "charset":
+            if (isinstance(line, str) and self._encoding is not None and
+                self._encoding.lower() != "charset"):
                 try:
                     line = line.decode(self._encoding)
                 except UnicodeError, e:
-                    raise UnicodeError("Error decoding line with encoding %r: %s. Line is %r" % (self._encoding, e, line))
+                    raise UnicodeError("Error decoding line with encoding %r: %s. Line is %r" %
+                                       (self._encoding, e, line))
             newlines.append(line)
         return newlines
 
