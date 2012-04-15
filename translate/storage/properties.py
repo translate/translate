@@ -166,7 +166,9 @@ def _find_delimiter(line, delimiters):
     if mindelimiter is None and delimiters.get(u" ", -1) != -1:
         # Use space delimiter if we found nothing else
         return (u" ", delimiters[" "])
-    if mindelimiter is not None and u" " in delimiters and delimiters[u" "] < delimiters[mindelimiter]:
+    if (mindelimiter is not None and
+        u" " in delimiters and 
+        delimiters[u" "] < delimiters[mindelimiter]):
         # If space delimiter occurs earlier than ":" or "=" then it is the
         # delimiter only if there are non-whitespace characters between it and
         # the other detected delimiter.
@@ -179,7 +181,8 @@ def find_delimeter(line):
     """Spelling error that is kept around for in case someone relies on it.
 
     Deprecated."""
-    warnings.warn("deprecated use Dialect.find_delimiter instead", DeprecationWarning)
+    warnings.warn("deprecated use Dialect.find_delimiter instead",
+                  DeprecationWarning)
     return _find_delimiter(line, DialectJava.delimiters)
 
 
@@ -494,7 +497,9 @@ class propfile(base.TranslationStore):
             # otherwise, this could be a comment
             # FIXME handle /* */ in a more reliable way
             # FIXME handle // inline comments
-            elif line.strip()[:1] in (u'#', u'!') or line.strip()[:2] in (u"/*", u"//") or line.strip()[:-2] == "*/":
+            elif (line.strip()[:1] in (u'#', u'!') or
+                  line.strip()[:2] in (u"/*", u"//") or
+                  line.strip()[:-2] == "*/"):
                 # add a comment
                 if line not in self.personality.drop_comments:
                     newunit.comments.append(line)
