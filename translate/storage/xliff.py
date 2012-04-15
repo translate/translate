@@ -701,7 +701,11 @@ class xlifffile(lisa.LISAfile):
         return unit
 
     def switchfile(self, filename, createifmissing=False):
-        """adds the given trans-unit (will create the nodes required if asked). Returns success"""
+        """Adds the given trans-unit (will create the nodes required if asked).
+
+        :returns: Success
+        :rtype: Boolean
+        """
         self._filename = filename
         filenode = self.getfilenode(filename)
         if filenode is None:
