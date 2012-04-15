@@ -63,7 +63,9 @@ def calcstats_old(filename):
     stats["fuzzy"] = len(fuzzy)
     stats["untranslated"] = len(untranslated)
     stats["review"] = len(review)
-    stats["total"] = stats["translated"] + stats["fuzzy"] + stats["untranslated"]
+    stats["total"] = stats["translated"] + \
+                     stats["fuzzy"] + \
+                     stats["untranslated"]
 
     #words
     stats["translatedsourcewords"] = sourcewords(translated)
@@ -106,9 +108,12 @@ def summarize(title, stats, style=style_full, indent=8, incomplete_only=False):
 
     if (style == style_csv):
         print "%s, " % title,
-        print "%d, %d, %d," % (stats["translated"], stats["translatedsourcewords"], stats["translatedtargetwords"]),
+        print "%d, %d, %d," % (stats["translated"],
+                               stats["translatedsourcewords"],
+                               stats["translatedtargetwords"]),
         print "%d, %d," % (stats["fuzzy"], stats["fuzzysourcewords"]),
-        print "%d, %d," % (stats["untranslated"], stats["untranslatedsourcewords"]),
+        print "%d, %d," % (stats["untranslated"],
+                           stats["untranslatedsourcewords"]),
         print "%d, %d" % (stats["total"], stats["totalsourcewords"]),
         if stats["review"] > 0:
             print ", %d, %d" % (stats["review"], stats["reviewsourdcewords"]),
