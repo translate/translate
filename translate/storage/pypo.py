@@ -18,8 +18,9 @@
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, see <http://www.gnu.org/licenses/>.
 
-"""classes that hold units of .po files (pounit) or entire files (pofile)
-gettext-style .po (or .pot) files are used in translations for KDE et al (see kbabel)"""
+"""Classes that hold units of Gettext .po files (pounit) or entire
+files (pofile).
+"""
 
 from __future__ import generators
 import copy
@@ -83,7 +84,8 @@ def wrapline(line):
 
 
 def quoteforpo(text):
-    """quotes the given text for a PO file, returning quoted and escaped lines"""
+    """Quotes the given text for a PO file, returning quoted and
+    escaped lines"""
     polines = []
     if text is None:
         return polines
@@ -285,7 +287,10 @@ class pounit(pocommon.pounit):
         return []
 
     def getnotes(self, origin=None):
-        """Return comments based on origin value (programmer, developer, source code and translator)"""
+        """Return comments based on origin value.
+
+        :param origin: programmer, developer, source code, translator or None
+        """
         if origin == None:
             comments = u"".join([comment[2:] for comment in self.othercomments])
             comments += u"".join([comment[3:] for comment in self.automaticcomments])
@@ -299,7 +304,10 @@ class pounit(pocommon.pounit):
         return comments[:-1]
 
     def addnote(self, text, origin=None, position="append"):
-        """This is modeled on the XLIFF method. See xliff.py::xliffunit.addnote"""
+        """This is modeled on the XLIFF method.
+
+        See xliff.py::xliffunit.addnote
+        """
         # ignore empty strings and strings without non-space characters
         if not (text and text.strip()):
             return
@@ -418,8 +426,9 @@ class pounit(pocommon.pounit):
             mergelists(self.othercomments, otherpo.othercomments)
             mergelists(self.typecomments, otherpo.typecomments)
             if not authoritative:
-                # We don't bring across otherpo.automaticcomments as we consider ourself
-                # to be the the authority.  Same applies to otherpo.msgidcomments
+                # We don't bring across otherpo.automaticcomments as we
+                # consider ourself to be the the authority.  Same applies
+                # to otherpo.msgidcomments
                 mergelists(self.automaticcomments, otherpo.automaticcomments)
                 mergelists(self.msgidcomments, otherpo.msgidcomments)
                 mergelists(self.sourcecomments, otherpo.sourcecomments, split=True)
@@ -463,7 +472,12 @@ class pounit(pocommon.pounit):
         return sum(map(lambda tcline: len(re.findall("\\b%s\\b" % typecomment, tcline)), self.typecomments)) != 0
 
     def hasmarkedcomment(self, commentmarker):
-        """Check whether the given comment marker is present as # (commentmarker) ..."""
+        """Check whether the given comment marker is presenti.
+
+        These should appear as::
+
+                # (commentmarker) ...
+        """
         commentmarker = "(%s)" % commentmarker
         for comment in self.othercomments:
             if comment.replace("#", "", 1).strip().startswith(commentmarker):
@@ -570,14 +584,15 @@ class pounit(pocommon.pounit):
         return partstr
 
     def _encodeifneccessary(self, output):
-        """encodes unicode strings and returns other strings unchanged"""
+        """Encodes unicode strings and returns other strings unchanged"""
         if isinstance(output, unicode):
             encoding = encodingToUse(getattr(self, "_encoding", "UTF-8"))
             return output.encode(encoding)
         return output
 
     def __str__(self):
-        """convert to a string. double check that unicode is handled somehow here"""
+        """Convert to a string. Double check that unicode is handled
+        somehow here"""
         output = self._getoutput()
         return self._encodeifneccessary(output)
 
@@ -611,8 +626,9 @@ class pounit(pocommon.pounit):
                 obsoletelines[index] = obsoleteline.replace('\n"', '\n#~ "')
             lines.extend(obsoletelines)
             return u"".join(lines)
-        # if there's no msgid don't do msgid and string, unless we're the header
-        # this will also discard any comments other than plain othercomments...
+        # if there's no msgid don't do msgid and string, unless we're the
+        # header this will also discard any comments other than plain
+        # othercomments...
         if is_null(self.msgid):
             if not (self.isheader() or self.getcontext() or self.sourcecomments):
                 return u"".join(lines)
@@ -659,7 +675,8 @@ class pounit(pocommon.pounit):
         """Extract KDE style msgid comments from the unit.
 
         :rtype: String
-        :return: Returns the extracted msgidcomments found in this unit's msgid.
+        :return: Returns the extracted msgidcomments found in this
+                 unit's msgid.
         """
 
         if not text:
@@ -719,7 +736,8 @@ class pofile(pocommon.pofile):
 #            raise base.ParseError(e)
 
     def removeduplicates(self, duplicatestyle="merge"):
-        """Make sure each msgid is unique ; merge comments etc from duplicates into original"""
+        """Make sure each msgid is unique ; merge comments etc from
+        duplicates into original"""
         # TODO: can we handle consecutive calls to removeduplicates()? What
         # about files already containing msgctxt? - test
         id_dict = {}
@@ -761,7 +779,8 @@ class pofile(pocommon.pofile):
         self.units = uniqueunits
 
     def __str__(self):
-        """Convert to a string. double check that unicode is handled somehow here"""
+        """Convert to a string. Double check that unicode is handled somehow
+        here"""
         output = self._getoutput()
         if isinstance(output, unicode):
             try:
