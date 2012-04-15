@@ -139,7 +139,11 @@ class xliffunit(lisa.LISAunit):
         #logging.debug('rich source: %s' % (repr(rsrc)))
         #from dubulib.debug.misc import print_stack_funcs
         #print_stack_funcs()
-        return [xml_to_strelem(self.source_dom, getXMLspace(self.xmlelement, self._default_xml_space))]
+        return [
+            xml_to_strelem(self.source_dom,
+                           getXMLspace(self.xmlelement,
+                                       self._default_xml_space))
+        ]
     rich_source = property(get_rich_source, set_rich_source)
 
     def set_rich_target(self, value, lang='xx', append=False):
@@ -165,11 +169,15 @@ class xliffunit(lisa.LISAunit):
         """retrieves the "target" text (second entry), or the entry in the
         specified language, if it exists"""
         if self._rich_target is None:
-            self._rich_target = [xml_to_strelem(self.get_target_dom(lang), getXMLspace(self.xmlelement, self._default_xml_space))]
+            self._rich_target = [
+                xml_to_strelem(self.get_target_dom(lang),
+                getXMLspace(self.xmlelement, self._default_xml_space))
+            ]
         return self._rich_target
     rich_target = property(get_rich_target, set_rich_target)
 
-    def addalttrans(self, txt, origin=None, lang=None, sourcetxt=None, matchquality=None):
+    def addalttrans(self, txt, origin=None, lang=None, sourcetxt=None,
+                    matchquality=None):
         """Adds an alt-trans tag and alt-trans components to the unit.
 
         :type txt: String
@@ -209,13 +217,15 @@ class xliffunit(lisa.LISAunit):
                 # the source tag is optional
                 sourcenode = node.iterdescendants(self.namespaced("source"))
                 try:
-                    newunit.source = lisa.getText(sourcenode.next(), getXMLspace(node, self._default_xml_space))
+                    newunit.source = lisa.getText(sourcenode.next(),
+                                                  getXMLspace(node, self._default_xml_space))
                 except StopIteration:
                     pass
 
                 # must have one or more targets
                 targetnode = node.iterdescendants(self.namespaced("target"))
-                newunit.target = lisa.getText(targetnode.next(), getXMLspace(node, self._default_xml_space))
+                newunit.target = lisa.getText(targetnode.next(),
+                                              getXMLspace(node, self._default_xml_space))
                 #TODO: support multiple targets better
                 #TODO: support notes in alt-trans
                 newunit.xmlelement = node
@@ -542,7 +552,8 @@ class xlifffile(lisa.LISAfile):
         """Initialise the file header."""
         pass
 
-    def createfilenode(self, filename, sourcelanguage=None, targetlanguage=None, datatype='plaintext'):
+    def createfilenode(self, filename, sourcelanguage=None,
+                       targetlanguage=None, datatype='plaintext'):
         """creates a filenode with the given filename. All parameters
         are needed for XLIFF compliance."""
         if sourcelanguage is None:
@@ -667,8 +678,8 @@ class xlifffile(lisa.LISAfile):
         filenodes = list(self.document.getroot().iterchildren(self.namespaced("file")))
         if len(filenodes) > 1:
             for filenode in filenodes:
-                if filenode.get("original") == "NoName" and \
-                        not list(filenode.iterdescendants(self.namespaced(self.UnitClass.rootNode))):
+                if (filenode.get("original") == "NoName" and
+                    not list(filenode.iterdescendants(self.namespaced(self.UnitClass.rootNode)))):
                     self.document.getroot().remove(filenode)
                 break
 
