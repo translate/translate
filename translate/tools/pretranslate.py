@@ -43,8 +43,10 @@ def memory(tmfiles, max_candidates=1, min_similarity=75, max_length=1000):
     return tmmatcher
 
 
-def pretranslate_file(input_file, output_file, template_file, tm=None, min_similarity=75, fuzzymatching=True):
-    """Pretranslate any factory supported file with old translations and translation memory."""
+def pretranslate_file(input_file, output_file, template_file, tm=None,
+                      min_similarity=75, fuzzymatching=True):
+    """Pretranslate any factory supported file with old translations and
+    translation memory."""
     input_store = factory.getobject(input_file)
     template_store = None
     if template_file is not None:
