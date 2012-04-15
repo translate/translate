@@ -37,30 +37,38 @@ def main():
     parser = optparse.OptionParser(usage)
     # GNU diff like options
     parser.add_option("-i", "--ignore-case", default=False, action="store_true",
-            help='Ignore case differences in file contents.')
-    parser.add_option("-U", "--unified", type="int", metavar="NUM", default=3, dest="unified_lines",
-            help='Output NUM (default 3) lines of unified context')
+                      help='Ignore case differences in file contents.')
+    parser.add_option("-U", "--unified", type="int", metavar="NUM", default=3,
+                      dest="unified_lines",
+                      help='Output NUM (default 3) lines of unified context')
     parser.add_option("-r", "--recursive", default=False, action="store_true",
-            help='Recursively compare any subdirectories found.')
+                      help='Recursively compare any subdirectories found.')
     parser.add_option("-N", "--new-file", default=False, action="store_true",
-            help='Treat absent files as empty.')
-    parser.add_option("", "--unidirectional-new-file", default=False, action="store_true",
-            help='Treat absent first files as empty.')
-    parser.add_option("-s", "--report-identical-files", default=False, action="store_true",
-            help='Report when two files are the same.')
-    parser.add_option("-x", "--exclude", default=["CVS", "*.po~"], action="append", metavar="PAT",
-            help='Exclude files that match PAT.')
+                      help='Treat absent files as empty.')
+    parser.add_option("", "--unidirectional-new-file", default=False,
+                      action="store_true",
+                      help='Treat absent first files as empty.')
+    parser.add_option("-s", "--report-identical-files", default=False,
+                      action="store_true",
+                      help='Report when two files are the same.')
+    parser.add_option("-x", "--exclude", default=["CVS", "*.po~"],
+                      action="append", metavar="PAT",
+                      help='Exclude files that match PAT.')
     # our own options
-    parser.add_option("", "--fromcontains", type="string", default=None, metavar="TEXT",
-            help='Only show changes where fromfile contains TEXT')
-    parser.add_option("", "--tocontains", type="string", default=None, metavar="TEXT",
-            help='Only show changes where tofile contains TEXT')
-    parser.add_option("", "--contains", type="string", default=None, metavar="TEXT",
-            help='Only show changes where fromfile or tofile contains TEXT')
+    parser.add_option("", "--fromcontains", type="string", default=None,
+                      metavar="TEXT",
+                      help='Only show changes where fromfile contains TEXT')
+    parser.add_option("", "--tocontains", type="string", default=None,
+                      metavar="TEXT",
+                      help='Only show changes where tofile contains TEXT')
+    parser.add_option("", "--contains", type="string", default=None,
+                      metavar="TEXT",
+                      help='Only show changes where fromfile or tofile contains TEXT')
     parser.add_option("-I", "--ignore-case-contains", default=False, action="store_true",
-            help='Ignore case differences when matching any of the changes')
+                      help='Ignore case differences when matching any of the changes')
     parser.add_option("", "--accelerator", dest="accelchars", default="",
-            metavar="ACCELERATORS", help="ignores the given accelerator characters when matching")
+                      metavar="ACCELERATORS",
+                      help="ignores the given accelerator characters when matching")
     (options, args) = parser.parse_args()
 
     if len(args) != 2:
@@ -73,10 +81,12 @@ def main():
         if os.path.isdir(tofile):
             differ = DirDiffer(fromfile, tofile, options)
         else:
-            parser.error("File %s is a directory while file %s is a regular file" % (fromfile, tofile))
+            parser.error("File %s is a directory while file %s is a regular file" %
+                         (fromfile, tofile))
     else:
         if os.path.isdir(tofile):
-            parser.error("File %s is a regular file while file %s is a directory" % (fromfile, tofile))
+            parser.error("File %s is a regular file while file %s is a directory" %
+                         (fromfile, tofile))
         else:
             differ = FileDiffer(fromfile, tofile, options)
     differ.writediff(sys.stdout)
@@ -108,7 +118,8 @@ class DirDiffer:
         for difffile in difffiles:
             if self.isexcluded(difffile):
                 continue
-            from_ok = (difffile in fromfiles or self.options.new_file or self.options.unidirectional_new_file)
+            from_ok = (difffile in fromfiles or self.options.new_file or
+                       self.options.unidirectional_new_file)
             to_ok = (difffile in tofiles or self.options.new_file)
             if from_ok and to_ok:
                 fromfile = os.path.join(self.fromdir, difffile)
@@ -119,12 +130,15 @@ class DirDiffer:
                             differ = DirDiffer(fromfile, tofile, self.options)
                             differ.writediff(outfile)
                         else:
-                            outfile.write("Common subdirectories: %s and %s\n" % (fromfile, tofile))
+                            outfile.write("Common subdirectories: %s and %s\n" %
+                                          (fromfile, tofile))
                     else:
-                        outfile.write("File %s is a directory while file %s is a regular file\n" % (fromfile, tofile))
+                        outfile.write("File %s is a directory while file %s is a regular file\n" %
+                                      (fromfile, tofile))
                 else:
                     if os.path.isdir(tofile):
-                        parser.error("File %s is a regular file while file %s is a directory\n" % (fromfile, tofile))
+                        parser.error("File %s is a regular file while file %s is a directory\n" %
+                                     (fromfile, tofile))
                     else:
                         filediffer = FileDiffer(fromfile, tofile, self.options)
                         filediffer.writediff(outfile)
