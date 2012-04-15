@@ -36,7 +36,8 @@ Currently we support:
     - MacOS X .strings files
     - Skype .lang files
 
-The following provides references and descriptions of the various dialects supported:
+The following provides references and descriptions of the various
+dialects supported:
 
 Java
     Java .properties are supported completely except for the ability to drop
@@ -56,8 +57,9 @@ Java
     delimeters are supported.
 
 Mozilla
-    Mozilla files use '=' as a delimiter, are UTF-8 encoded and thus don't need \\u
-    escaping.  Any \\U values will be converted to correct Unicode characters.
+    Mozilla files use '=' as a delimiter, are UTF-8 encoded and thus don't
+    need \\u escaping.  Any \\U values will be converted to correct Unicode
+    characters.
 
 Strings
     Mac OS X strings files are implemented using
@@ -248,7 +250,8 @@ class Dialect(object):
 
     def encode(cls, string, encoding=None):
         """Encode the string"""
-        #FIXME: dialects are a bad idea, not possible for subclasses to override key methods
+        # FIXME: dialects are a bad idea, not possible for subclasses
+        # to override key methods
         if encoding != "utf-8":
             return quote.javapropertiesencode(string or u"")
         return string or u""
