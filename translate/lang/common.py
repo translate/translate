@@ -150,12 +150,14 @@ class Common(object):
     #what works, see test_common.py. We try to ignore abbreviations, for
     #example, by checking that the following sentence doesn't start with lower
     #case or numbers.
-    sentencere = re.compile(ur"""(?s)   #make . also match newlines
-                            .*?         #anything, but match non-greedy
-                            [%s]        #the puntuation for sentence ending
-                            \s+         #the spacing after the puntuation
-                            (?=[^a-zа-џ\d])#lookahead that next part starts with caps
-                            """ % sentenceend, re.VERBOSE | re.UNICODE)
+    sentencere = re.compile(ur"""
+        (?s)        # make . also match newlines
+        .*?         # anything, but match non-greedy
+        [%s]        # the puntuation for sentence ending
+        \s+         # the spacing after the puntuation
+        (?=[^a-zа-џ\d])  # lookahead that next part starts with caps
+        """ % sentenceend, re.VERBOSE | re.UNICODE
+    )
 
     puncdict = {}
     """A dictionary of punctuation transformation rules that can be used by
@@ -196,11 +198,13 @@ class Common(object):
         while code:
             langdata = data.languages.get(code, None)
             if langdata:
-                language.fullname, language.nplurals, language.pluralequation = langdata
+                language.fullname, language.nplurals, \
+                    language.pluralequation = langdata
                 break
             code = data.simplercode(code)
         if not code:
-#            print >> sys.stderr, "Warning: No information found about language code %s" % code
+            #print >> sys.stderr, \
+            #         "Warning: No information found about language code %s" % code
             pass
         return language
 
@@ -237,7 +241,8 @@ class Common(object):
         # As a simple improvement for messages ending in ellipses (...), we
         # test that the last character is different from the second last
         # This is only relevant if the string has two characters or more
-        if (text[-1] + u" " in cls.puncdict) and (len(text) < 2 or text[-2] != text[-1]):
+        if ((text[-1] + u" " in cls.puncdict) and 
+            (len(text) < 2 or text[-2] != text[-1])):
             text = text[:-1] + cls.puncdict[text[-1] + u" "].rstrip()
         return text
     punctranslate = classmethod(punctranslate)

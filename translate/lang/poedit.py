@@ -20,7 +20,8 @@
 
 """Functions to manage Poedit's language features.
 
-ISO 639 maps are from Poedit's `isocode.cpp 1.4.2 <http://poedit.svn.sourceforge.net/viewvc/poedit/poedit/tags/release-1.4.2/src/isocodes.cpp?revision=1452&view=markup>`_
+ISO 639 maps are from Poedit's
+`isocode.cpp 1.4.2 <http://poedit.svn.sourceforge.net/viewvc/poedit/poedit/tags/release-1.4.2/src/isocodes.cpp?revision=1452&view=markup>`_
 to ensure that we match currently released versions of Poedit.
 """
 
@@ -200,11 +201,16 @@ lang_names = dict([(value, key) for (key, value) in lang_codes.items()])
 dialects = {
   "Portuguese": {"PORTUGAL": "pt", "BRAZIL": "pt_BR", "None": "pt"},
   # We choose not to subtype en_US
-  "English": {"UNITED KINGDOM": "en_GB", "SOUTH AFRICA": "en_ZA", "None": "en"},
+  "English": {
+      "UNITED KINGDOM": "en_GB",
+      "SOUTH AFRICA": "en_ZA",
+      "None": "en",
+  },
   # zh_CN = Simplified, zh_TW = Traditional
   "Chinese": {"CHINA": "zh_CN", "TAIWAN": "zh_TW", "None": "zh_CN"},
 }
-"""Language dialects based on ISO 3166 country names, 'None' is the default fallback"""
+"""Language dialects based on ISO 3166 country names, 'None' is the
+default fallback"""
 
 
 def isocode(language, country=None):

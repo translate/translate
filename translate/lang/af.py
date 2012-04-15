@@ -36,13 +36,15 @@ class af(common.Common):
     punctuation = u"".join([common.Common.commonpunc, common.Common.quotes,
                             common.Common.miscpunc])
     sentenceend = u".!?…"
-    sentencere = re.compile(r"""(?s)    #make . also match newlines
-                            .*?         #anything, but match non-greedy
-                            [%s]        #the puntuation for sentence ending
-                            \s+         #the spacing after the puntuation
-                            (?='n\s[A-Z]|[^'a-z\d]|'[^n])
-                            #lookahead that next part starts with caps or 'n followed by caps
-                            """ % sentenceend, re.VERBOSE)
+    sentencere = re.compile(r"""
+        (?s)        # make . also match newlines
+        .*?         # anything, but match non-greedy
+        [%s]        # the puntuation for sentence ending
+        \s+         # the spacing after the puntuation
+        (?='n\s[A-Z]|[^'a-z\d]|'[^n])
+        # lookahead that next part starts with caps or 'n followed by caps
+        """ % sentenceend, re.VERBOSE
+    )
 
     def capsstart(cls, text):
         """Modify this for the indefinite article ('n)."""

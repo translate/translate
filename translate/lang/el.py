@@ -34,12 +34,14 @@ class el(common.Common):
     # Greek uses ; as question mark and the middot instead
     sentenceend = u".!;…"
 
-    sentencere = re.compile(ur"""(?s)   #make . also match newlines
-                            .*?         #anything, but match non-greedy
-                            [%s]        #the puntuation for sentence ending
-                            \s+         #the spacing after the puntuation
-                            (?=[^a-zά-ώ\d])#lookahead that next part starts with caps
-                            """ % sentenceend, re.VERBOSE | re.UNICODE)
+    sentencere = re.compile(ur"""
+        (?s)        # make . also match newlines
+        .*?         # anything, but match non-greedy
+        [%s]        # the puntuation for sentence ending
+        \s+         # the spacing after the puntuation
+        (?=[^a-zά-ώ\d])  # lookahead that next part starts with caps
+        """ % sentenceend, re.VERBOSE | re.UNICODE
+    )
 
     puncdict = {
         u"?": u";",

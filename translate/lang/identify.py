@@ -65,7 +65,8 @@ class LanguageIdentifier(object):
                 continue  # Skip comment- and empty lines
             lname, lcode = parts[0], parts[1]
 
-            lname = path.split(lname)[-1]  # Make sure lname is not prefixed by directory names
+            # Make sure lname is not prefixed by directory names
+            lname = path.split(lname)[-1]
             if extsep in lname:
                 lname = lname[:lname.rindex(extsep)]  # Remove extension if it has
 
