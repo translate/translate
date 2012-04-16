@@ -38,7 +38,7 @@ class ZipFileExt(ZipFile, object):
                 deleted_offset = self.filelist[i].header_offset
                 # "file_offset" is only available in python up to 2.4
                 if hasattr(self.filelist[i], "file_offset"):
-                    deleted_size = ((self.filelist[i].file_offset - 
+                    deleted_size = ((self.filelist[i].file_offset -
                                      self.filelist[i].header_offset) +
                                     self.filelist[i].compress_size)
                 else:
