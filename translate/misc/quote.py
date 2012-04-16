@@ -179,7 +179,7 @@ def extractwithoutquotes(source, startdelim, enddelim, escape=None,
             last_epos = 0
             for epos in escape_list:
                 new_section += section[last_epos:epos]
-                if (callable_includeescapes and 
+                if (callable_includeescapes and
                     includeescapes(section[epos:epos + lenescape + 1])):
                     last_epos = epos
                 else:
@@ -229,7 +229,7 @@ def htmlentitydecode(source):
             continue
         if inentity:
             if char == ";":
-                if (len(possibleentity) > 0 and 
+                if (len(possibleentity) > 0 and
                     possibleentity in htmlentitydefs.name2codepoint):
                     output += unichr(htmlentitydefs.name2codepoint[possibleentity])
                     inentity = False
