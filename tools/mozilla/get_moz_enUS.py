@@ -30,7 +30,8 @@ verbose = False
 
 
 def path_neutral(path):
-    """Convert a path specified using Unix path seperator into a platform path"""
+    """Convert a path specified using Unix path seperator into a
+    platform path"""
     newpath = ""
     for seg in path.split("/"):
         if not seg:
@@ -40,15 +41,16 @@ def path_neutral(path):
 
 
 def process_l10n_ini(inifile):
-    """Read a Mozilla l10n.ini file and process it to find the localisation files
-    needed by a project"""
+    """Read a Mozilla l10n.ini file and process it to find the localisation
+    files needed by a project"""
 
     l10n = ConfigParser()
     l10n.readfp(open(path_neutral(inifile)))
     l10n_ini_path = os.path.dirname(inifile)
 
     for dir in l10n.get('compare', 'dirs').split():
-        frompath = os.path.join(l10n_ini_path, l10n.get('general', 'depth'), dir, 'locales', 'en-US')
+        frompath = os.path.join(l10n_ini_path, l10n.get('general', 'depth'),
+                                dir, 'locales', 'en-US')
         topath = os.path.join(l10ncheckout, 'en-US', dir)
         if not os.path.exists(frompath):
             if verbose:
@@ -68,7 +70,8 @@ def process_l10n_ini(inifile):
     try:
         for include in l10n.options('includes'):
             include_ini = os.path.join(
-                l10n_ini_path, l10n.get('general', 'depth'), l10n.get('includes', include)
+                l10n_ini_path, l10n.get('general', 'depth'),
+                l10n.get('includes', include)
             )
             if os.path.isfile(include_ini):
                 process_l10n_ini(include_ini)
@@ -132,8 +135,9 @@ if __name__ == '__main__':
         os.makedirs(enUS_dir)
 
     if verbose:
-        print "%s -s %s -d %s -p %s -v %s" % (__file__, srccheckout, l10ncheckout, product,
-                options.deletedest and '--delete-dest' or '')
+        print "%s -s %s -d %s -p %s -v %s" % \
+              (__file__, srccheckout, l10ncheckout, product,
+               options.deletedest and '--delete-dest' or '')
     product_ini = os.path.join(srccheckout, product, 'locales', 'l10n.ini')
     if not os.path.isfile(product_ini):
         # Done for Fennec

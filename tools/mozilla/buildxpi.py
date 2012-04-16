@@ -18,23 +18,29 @@
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, see <http://www.gnu.org/licenses/>.
 
-"""Create a XPI language pack from Mozilla sources and translated l10n files. This script has
-only been tested with Firefox 3.1 beta sources.
+"""Create a XPI language pack from Mozilla sources and translated l10n files.
+This script has only been tested with Firefox 3.1 beta sources.
 
-(Basically the process described at https://developer.mozilla.org/en/Creating_a_Language_Pack)
+(Basically the process described at
+https://developer.mozilla.org/en/Creating_a_Language_Pack)
 
-Example usage: buildxpi.py -L /path/to/l10n -s /path/to/mozilla-central -o /path/to/xpi_output af
+Example usage::
 
-- "/path/to/l10n" is the path to a the parent directory of the "af" directory containing the
-  Afrikaans translated files.
-- "/path/to/mozilla-central" is the path to the Firefox sources checked out from Mercurial. Note
-  that --mozproduct is not specified, because the default is "browser". For Thunderbird (>=3.0) it
-  should be "/path/to/comm-central" and "--mozproduct mail" should be specified, although this is
-  not yet working.
+    buildxpi.py -L /path/to/l10n -s /path/to/mozilla-central -o /path/to/xpi_output af
+
+- "/path/to/l10n" is the path to a the parent directory of the "af" directory
+  containing the Afrikaans translated files.
+- "/path/to/mozilla-central" is the path to the Firefox sources checked out
+  from Mercurial. Note that --mozproduct is not specified, because the default
+  is "browser". For Thunderbird (>=3.0) it should be "/path/to/comm-central"
+  and "--mozproduct mail" should be specified, although this is not yet
+  working.
 - "/path/to/xpi_output" is the path to the output directory.
 - "af" is the language (Afrikaans in this case) to build a language pack for.
 
-NOTE: The .mozconfig in the process owner's home directory gets backed up, overwritten and replaced."""
+NOTE: The .mozconfig in the process owner's home directory gets backed up,
+overwritten and replaced.
+"""
 
 import os
 from glob       import glob
@@ -58,7 +64,8 @@ def run(cmd, expected_status=0, stdout=None, stderr=None, shell=False):
         print p.stderr.read()
 
     if cmd_status != expected_status:
-        print '!!! "%s" returned unexpected status %d' % (' '.join(cmd), cmd_status)
+        print '!!! "%s" returned unexpected status %d' % \
+              (' '.join(cmd), cmd_status)
     return cmd_status
 
 
@@ -89,7 +96,9 @@ ac_add_options --enable-application=%(product)s""" % \
 
         mozconf = open(MOZCONFIG, 'w').write(content)
 
-        # Start building process. See https://developer.mozilla.org/en/Creating_a_Language_Pack for more details.
+        # Start building process.
+        # See https://developer.mozilla.org/en/Creating_a_Language_Pack for
+        # more details.
         olddir = os.getcwd()
         os.chdir(srcdir)
         if run(['make', '-f', 'client.mk', 'configure']):
