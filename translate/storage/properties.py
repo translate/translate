@@ -167,7 +167,7 @@ def _find_delimiter(line, delimiters):
         # Use space delimiter if we found nothing else
         return (u" ", delimiters[" "])
     if (mindelimiter is not None and
-        u" " in delimiters and 
+        u" " in delimiters and
         delimiters[u" "] < delimiters[mindelimiter]):
         # If space delimiter occurs earlier than ":" or "=" then it is the
         # delimiter only if there are non-whitespace characters between it and
