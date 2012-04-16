@@ -306,7 +306,7 @@ class pounit(pocommon.pounit):
     def addnote(self, text, origin=None, position="append"):
         """This is modeled on the XLIFF method.
 
-        See xliff.py::xliffunit.addnote
+        See :meth:`translate.storage.xliff.xliffunit.addnote`
         """
         # ignore empty strings and strings without non-space characters
         if not (text and text.strip()):
@@ -472,7 +472,7 @@ class pounit(pocommon.pounit):
         return sum(map(lambda tcline: len(re.findall("\\b%s\\b" % typecomment, tcline)), self.typecomments)) != 0
 
     def hasmarkedcomment(self, commentmarker):
-        """Check whether the given comment marker is presenti.
+        """Check whether the given comment marker is present.
 
         These should appear as::
 
