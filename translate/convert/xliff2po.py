@@ -35,30 +35,32 @@ class xliff2po:
         """makes a pounit from the given transunit"""
         thepo = po.pounit()
 
-        #Header
+        # Header
         if transunit.getrestype() == "x-gettext-domain-header":
             thepo.source = ""
         else:
             thepo.source = transunit.source
         thepo.target = transunit.target
 
-        #Location comments
+        # Location comments
         locations = transunit.getlocations()
         if locations:
             thepo.addlocations(locations)
 
-        #NOTE: Supporting both <context> and <note> tags in xliff files for comments
-        #Translator comments
+        # NOTE: Supporting both <context> and <note> tags in xliff files
+        # for comments
+        # Translator comments
         trancomments = transunit.getnotes("translator")
         if trancomments:
             thepo.addnote(trancomments, origin="translator")
 
-        #Automatic and Developer comments
+        # Automatic and Developer comments
         autocomments = transunit.getnotes("developer")
         if autocomments:
             thepo.addnote(autocomments, origin="developer")
 
-        #See 5.6.1 of the spec. We should not check fuzzyness, but approved attribute
+        # See 5.6.1 of the spec. We should not check fuzzyness, but approved
+        # attribute
         if transunit.isfuzzy():
             thepo.markfuzzy(True)
 
@@ -67,21 +69,26 @@ class xliff2po:
     def convertstore(self, inputfile):
         """Converts a .xliff file to .po format"""
         # XXX: The inputfile is converted to string because Pootle supplies
-        # XXX: a PootleFile object as input which cannot be sent to PoXliffFile.
+        # XXX: a PootleFile object as input which cannot be sent to PoXliffFile
         # XXX: The better way would be to have a consistent conversion API.
         if not isinstance(inputfile, (file, wStringIO.StringIO)):
             inputfile = str(inputfile)
         XliffFile = xliff.xlifffile.parsestring(inputfile)
         thetargetfile = po.pofile()
-        targetheader = thetargetfile.init_headers(charset="UTF-8", encoding="8bit")
+        targetheader = thetargetfile.init_headers(charset="UTF-8",
+                                                  encoding="8bit")
         # TODO: support multiple files
         for transunit in XliffFile.units:
             if transunit.isheader():
                 thetargetfile.updateheader(add=True, **XliffFile.parseheader())
                 if transunit.getnotes('translator'):
-                    targetheader.addnote(transunit.getnotes('translator'), origin='translator', position='replace')
+                    targetheader.addnote(transunit.getnotes('translator'),
+                                         origin='translator',
+                                         position='replace')
                 if transunit.getnotes('developer'):
-                    targetheader.addnote(transunit.getnotes('developer'), origin='developer', position='replace')
+                    targetheader.addnote(transunit.getnotes('developer'),
+                                         origin='developer',
+                                         position='replace')
                 targetheader.markfuzzy(transunit.isfuzzy())
                 continue
             thepo = self.converttransunit(transunit)
@@ -90,7 +97,8 @@ class xliff2po:
 
 
 def convertxliff(inputfile, outputfile, templates):
-    """reads in stdin using fromfileclass, converts using convertorclass, writes to stdout"""
+    """reads in stdin using fromfileclass, converts using convertorclass,
+    writes to stdout"""
     convertor = xliff2po()
     outputstore = convertor.convertstore(inputfile)
     if outputstore.isempty():
@@ -102,5 +110,6 @@ def convertxliff(inputfile, outputfile, templates):
 def main(argv=None):
     from translate.convert import convert
     formats = {"xlf": ("po", convertxliff)}
-    parser = convert.ConvertOptionParser(formats, usepots=True, description=__doc__)
+    parser = convert.ConvertOptionParser(formats, usepots=True,
+                                         description=__doc__)
     parser.run(argv)

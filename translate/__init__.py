@@ -18,7 +18,8 @@
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, see <http://www.gnu.org/licenses/>.
 
-"""The Translate Toolkit is a Python package that assists in localization of software.
+"""The Translate Toolkit is a Python package that assists in localization
+of software.
 
 See http://translate.sourceforge.net/wiki/toolkit/index or
 http://translate.org.za for more information.

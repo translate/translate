@@ -40,7 +40,8 @@ class web2py2po:
 
     def convertstore(self, mydict):
 
-        targetheader = self.mypofile.init_headers(charset="UTF-8", encoding="8bit")
+        targetheader = self.mypofile.init_headers(charset="UTF-8",
+                                                  encoding="8bit")
         targetheader.addnote("extracted from web2py", "developer")
 
         for source_str in mydict.keys():
@@ -77,8 +78,12 @@ def convertpy(inputfile, outputfile, encoding="UTF-8"):
 
 def main(argv=None):
     from translate.convert import convert
-    formats = {("py", "po"): ("po", convertpy), ("py", None): ("po", convertpy)}
-    parser = convert.ConvertOptionParser(formats, usetemplates=False, description=__doc__)
+    formats = {
+        ("py", "po"): ("po", convertpy),
+        ("py", None): ("po", convertpy)
+    }
+    parser = convert.ConvertOptionParser(formats, usetemplates=False,
+                                         description=__doc__)
     parser.run(argv)
 
 

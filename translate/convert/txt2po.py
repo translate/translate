@@ -37,8 +37,10 @@ class txt2po:
     def convertstore(self, thetxtfile):
         """converts a file to .po format"""
         thetargetfile = po.pofile()
-        targetheader = thetargetfile.init_headers(charset="UTF-8", encoding="8bit")
-        targetheader.addnote("extracted from %s" % thetxtfile.filename, "developer")
+        targetheader = thetargetfile.init_headers(charset="UTF-8",
+                                                  encoding="8bit")
+        targetheader.addnote("extracted from %s" % thetxtfile.filename,
+                             "developer")
 
         for txtunit in thetxtfile.units:
             newunit = thetargetfile.addsourceunit(txtunit.source)
@@ -47,8 +49,10 @@ class txt2po:
         return thetargetfile
 
 
-def converttxt(inputfile, outputfile, templates, duplicatestyle="msgctxt", encoding="utf-8", flavour=None):
-    """reads in stdin using fromfileclass, converts using convertorclass, writes to stdout"""
+def converttxt(inputfile, outputfile, templates, duplicatestyle="msgctxt",
+               encoding="utf-8", flavour=None):
+    """reads in stdin using fromfileclass, converts using convertorclass,
+    writes to stdout"""
     inputstore = txt.TxtFile(inputfile, encoding=encoding, flavour=flavour)
     convertor = txt2po(duplicatestyle=duplicatestyle)
     outputstore = convertor.convertstore(inputstore)
@@ -64,14 +68,17 @@ def main(argv=None):
     import sys
     sys.stdout = stdiotell.StdIOWrapper(sys.stdout)
     formats = {"txt": ("po", converttxt), "*": ("po", converttxt)}
-    parser = convert.ConvertOptionParser(formats, usepots=True, description=__doc__)
-    parser.add_option("", "--encoding", dest="encoding", default='utf-8', type="string",
-            help="The encoding of the input file (default: UTF-8)")
+    parser = convert.ConvertOptionParser(formats, usepots=True,
+                                         description=__doc__)
+    parser.add_option("", "--encoding", dest="encoding", default='utf-8',
+                      type="string",
+                      help="The encoding of the input file (default: UTF-8)")
     parser.passthrough.append("encoding")
     parser.add_option("", "--flavour", dest="flavour", default="plain",
-            type="choice", choices=["plain", "dokuwiki", "mediawiki"],
-            help="The flavour of text file: plain (default), dokuwiki, mediawiki",
-            metavar="FLAVOUR")
+                      type="choice",
+                      choices=["plain", "dokuwiki", "mediawiki"],
+                      help="The flavour of text file: plain (default), dokuwiki, mediawiki",
+                      metavar="FLAVOUR")
     parser.passthrough.append("flavour")
     parser.add_duplicates_option()
     parser.run(argv)

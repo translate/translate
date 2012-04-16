@@ -30,7 +30,8 @@ class tiki2po:
 
     def __init__(self, includeunused=False):
         """
-        :param includeunused: On conversion, should the "unused" section be preserved?  Default: False
+        :param includeunused: On conversion, should the "unused" section be
+                              preserved?  Default: False
         """
         self.includeunused = includeunused
 
@@ -42,7 +43,8 @@ class tiki2po:
         thetargetfile = po.pofile()
 
         # Set up the header
-        targetheader = thetargetfile.init_headers(charset="UTF-8", encoding="8bit")
+        targetheader = thetargetfile.init_headers(charset="UTF-8",
+                                                  encoding="8bit")
 
         # For each lang unit, make the new po unit accordingly
         for unit in thetikifile.units:
@@ -64,7 +66,8 @@ def converttiki(inputfile, outputfile, template=None, includeunused=False):
     :param inputfile: file handle of the source
     :param outputfile: file handle to write to
     :param template: unused
-    :param includeunused: Include the "usused" section of the tiki file? Default: False
+    :param includeunused: Include the "usused" section of the tiki
+                          file? Default: False
     """
     convertor = tiki2po(includeunused=includeunused)
     inputstore = tiki.TikiStore(inputfile)
@@ -84,7 +87,9 @@ def main(argv=None):
     formats = {"php": ("po", converttiki)}
 
     parser = convert.ConvertOptionParser(formats, description=__doc__)
-    parser.add_option("", "--include-unused", dest="includeunused", action="store_true", default=False, help="Include strings in the unused section")
+    parser.add_option("", "--include-unused", dest="includeunused",
+                      action="store_true", default=False,
+                      help="Include strings in the unused section")
     parser.passthrough.append("includeunused")
     parser.run(argv)
 
