@@ -101,22 +101,26 @@ def addsubpackages(subpackages):
         for infofile in ('README', 'TODO'):
             infopath = join('translate', subpackage, infofile)
             if os.path.exists(infopath):
-                infofiles.append((join(sitepackages, 'translate', subpackage), [infopath]))
+                infofiles.append((join(sitepackages, 'translate', subpackage),
+                                 [infopath]))
         packages.append("translate.%s" % subpackage)
 
 
 class build_exe_map(build_exe):
-    """distutils py2exe-based class that builds the exe file(s) but allows mapping data files"""
+    """distutils py2exe-based class that builds the exe file(s) but allows
+    mapping data files"""
 
     def reinitialize_command(self, command, reinit_subcommands=0):
         if command == "install_data":
-            install_data = build_exe.reinitialize_command(self, command, reinit_subcommands)
+            install_data = build_exe.reinitialize_command(self, command,
+                                                          reinit_subcommands)
             install_data.data_files = self.remap_data_files(install_data.data_files)
             return install_data
         return build_exe.reinitialize_command(self, command, reinit_subcommands)
 
     def remap_data_files(self, data_files):
-        """maps the given data files to different locations using external map_data_file function"""
+        """maps the given data files to different locations using external
+        map_data_file function"""
         new_data_files = []
         for f in data_files:
             if type(f) in (str, unicode):
@@ -135,7 +139,8 @@ class build_exe_map(build_exe):
 
 class InnoScript:
     """class that builds an InnoSetup script"""
-    def __init__(self, name, lib_dir, dist_dir, exe_files=[], other_files=[], install_scripts=[], version="1.0"):
+    def __init__(self, name, lib_dir, dist_dir, exe_files=[], other_files=[],
+                 install_scripts=[], version="1.0"):
         self.lib_dir = lib_dir
         self.dist_dir = dist_dir
         if not self.dist_dir.endswith(os.sep):
@@ -149,7 +154,8 @@ class InnoScript:
     def getcompilecommand(self):
         try:
             import _winreg
-            compile_key = _winreg.OpenKey(_winreg.HKEY_CLASSES_ROOT, "innosetupscriptfile\\shell\\compile\\command")
+            compile_key = _winreg.OpenKey(_winreg.HKEY_CLASSES_ROOT,
+                                          "innosetupscriptfile\\shell\\compile\\command")
             compilecommand = _winreg.QueryValue(compile_key, "")
             compile_key.Close()
         except:
@@ -164,7 +170,8 @@ class InnoScript:
     def create(self, pathname=None):
         """creates the InnoSetup script"""
         if pathname is None:
-            self.pathname = os.path.join(self.dist_dir, self.name + os.extsep + "iss").replace(' ', '_')
+            self.pathname = os.path.join(self.dist_dir,
+                                         self.name + os.extsep + "iss").replace(' ', '_')
         else:
             self.pathname = pathname
 # See http://www.jrsoftware.org/isfaq.php for more InnoSetup config options.
@@ -181,7 +188,8 @@ class InnoScript:
         print >> ofi
         print >> ofi, r"[Files]"
         for path in self.exe_files + self.other_files:
-            print >> ofi, r'Source: "%s"; DestDir: "{app}\%s"; Flags: ignoreversion' % (path, os.path.dirname(path))
+            print >> ofi, r'Source: "%s"; DestDir: "{app}\%s"; Flags: ignoreversion' % \
+                            (path, os.path.dirname(path))
         print >> ofi
         print >> ofi, r"[Icons]"
         print >> ofi, r'Name: "{group}\Documentation"; Filename: "{app}\docs\index.html";'
@@ -189,7 +197,8 @@ class InnoScript:
         print >> ofi, r'Name: "{group}\Uninstall %s"; Filename: "{uninstallexe}"' % self.name
         print >> ofi
         print >> ofi, r"[Registry]"
-        # TODO: Move the code to update the Path environment variable to a Python script which will be invoked by the [Run] section (below)
+        # TODO: Move the code to update the Path environment variable to a
+        # Python script which will be invoked by the [Run] section (below)
         print >> ofi, r'Root: HKCU; Subkey: "Environment"; ValueType: expandsz; ValueName: "Path"; ValueData: "{reg:HKCU\Environment,Path|};{app};"'
         print >> ofi
         if self.install_scripts:
@@ -215,7 +224,8 @@ class InnoScript:
 
 
 class build_installer(build_exe_map):
-    """distutils class that first builds the exe file(s), then creates a Windows installer using InnoSetup"""
+    """distutils class that first builds the exe file(s), then creates a
+     Windows installer using InnoSetup"""
     description = "create an executable installer for MS Windows using InnoSetup and py2exe"
     user_options = getattr(build_exe, 'user_options', []) + \
         [('install-script=', None,
@@ -235,12 +245,16 @@ class build_installer(build_exe_map):
         install_scripts = self.install_script
         if isinstance(install_scripts, (str, unicode)):
             install_scripts = [install_scripts]
-        script = InnoScript(PRETTY_NAME, lib_dir, dist_dir, exe_files, self.lib_files, version=self.distribution.metadata.version, install_scripts=install_scripts)
+        script = InnoScript(PRETTY_NAME, lib_dir, dist_dir, exe_files,
+                            self.lib_files,
+                            version=self.distribution.metadata.version,
+                            install_scripts=install_scripts)
         print "*** creating the inno setup script***"
         script.create()
         print "*** compiling the inno setup script***"
         script.compile()
-        # Note: By default the final setup.exe will be in an Output subdirectory.
+        # Note: By default the final setup.exe will be in an Output
+        # subdirectory.
 
 
 def import_setup_module(modulename, modulepath):
@@ -339,9 +353,12 @@ class TranslateDistribution(Distribution):
         py2exeoptions = {}
         py2exeoptions["packages"] = ["translate", "encodings"]
         py2exeoptions["compressed"] = True
-        py2exeoptions["excludes"] = ["PyLucene", "Tkconstants", "Tkinter", "tcl", "enchant",  # We need to do more to support spell checking on Windows
-                # strange things unnecessarily included with some versions of pyenchant:
-                "win32ui", "_win32sysloader", "win32pipe", "py2exe", "win32com", "pywin", "isapi", "_tkinter", "win32api",
+        py2exeoptions["excludes"] = [
+            "PyLucene", "Tkconstants", "Tkinter", "tcl",
+            "enchant",  # Need to do more to support spell checking on Windows
+            # strange things unnecessarily included with some versions of pyenchant:
+            "win32ui", "_win32sysloader", "win32pipe", "py2exe", "win32com",
+            "pywin", "isapi", "_tkinter", "win32api",
         ]
         version = attrs.get("version", translateversion)
         py2exeoptions["dist_dir"] = "translate-toolkit-%s" % version
@@ -351,7 +368,9 @@ class TranslateDistribution(Distribution):
         if py2exe:
             baseattrs['console'] = translatescripts
             baseattrs['zipfile'] = "translate.zip"
-            baseattrs['cmdclass'] = {"py2exe": build_exe_map, "innosetup": build_installer}
+            baseattrs['cmdclass'] = {
+                "py2exe": build_exe_map, "innosetup": build_installer
+            }
             options["innosetup"] = py2exeoptions.copy()
             options["innosetup"]["install_script"] = []
         baseattrs.update(attrs)
