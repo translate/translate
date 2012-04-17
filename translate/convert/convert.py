@@ -35,10 +35,12 @@ optparse = optrecurse.optparse
 class ConvertOptionParser(optrecurse.RecursiveOptionParser, object):
     """A specialized Option Parser for convertor tools..."""
 
-    def __init__(self, formats, usetemplates=False, usepots=False, allowmissingtemplate=False, description=None):
+    def __init__(self, formats, usetemplates=False, usepots=False,
+                 allowmissingtemplate=False, description=None):
         """construct the specialized Option Parser"""
         optrecurse.RecursiveOptionParser.__init__(self, formats, usetemplates,
-                allowmissingtemplate=allowmissingtemplate, description=description)
+                                                  allowmissingtemplate=allowmissingtemplate,
+                                                  description=description)
         self.usepots = usepots
         self.setpotoption()
         self.set_usage()
@@ -51,22 +53,32 @@ class ConvertOptionParser(optrecurse.RecursiveOptionParser, object):
             fuzzyhelp += " (default)"
         else:
             nofuzzyhelp += " (default)"
-        self.add_option("", "--fuzzy", dest="includefuzzy", action="store_true", default=default, help=fuzzyhelp)
-        self.add_option("", "--nofuzzy", dest="includefuzzy", action="store_false", default=default, help=nofuzzyhelp)
+        self.add_option("", "--fuzzy", dest="includefuzzy",
+                        action="store_true", default=default, help=fuzzyhelp)
+        self.add_option("", "--nofuzzy", dest="includefuzzy",
+                        action="store_false", default=default, help=nofuzzyhelp)
         self.passthrough.append("includefuzzy")
 
     def add_duplicates_option(self, default="msgctxt"):
         """Adds an option to say what to do with duplicate strings."""
-        self.add_option("", "--duplicates", dest="duplicatestyle", default=default,
+        self.add_option(
+            "", "--duplicates", dest="duplicatestyle", default=default,
             type="choice", choices=["msgctxt", "merge"],
-            help="what to do with duplicate strings (identical source text): merge, msgctxt (default: '%s')" % default, metavar="DUPLICATESTYLE")
+            help="what to do with duplicate strings (identical source text): merge, msgctxt (default: '%s')" % \
+                 default,
+            metavar="DUPLICATESTYLE"
+        )
         self.passthrough.append("duplicatestyle")
 
     def add_multifile_option(self, default="single"):
         """Adds an option to say how to split the po/pot files."""
-        self.add_option("", "--multifile", dest="multifilestyle", default=default,
+        self.add_option(
+            "", "--multifile",
+            dest="multifilestyle", default=default,
             type="choice", choices=["single", "toplevel", "onefile"],
-            help="how to split po/pot files (single, toplevel or onefile)", metavar="MULTIFILESTYLE")
+            help="how to split po/pot files (single, toplevel or onefile)",
+            metavar="MULTIFILESTYLE"
+        )
         self.passthrough.append("multifilestyle")
 
     def potifyformat(self, fileformat):
@@ -115,13 +127,16 @@ class ConvertOptionParser(optrecurse.RecursiveOptionParser, object):
         """Sets the ``-P``/``--pot`` option depending on input/output
         formats etc."""
         if self.usepots:
-            potoption = optparse.Option("-P", "--pot", \
-                    action="store_true", dest="pot", default=False, \
-                    help="output PO Templates (.pot) rather than PO files (.po)")
+            potoption = optparse.Option(
+                "-P", "--pot",
+                action="store_true", dest="pot", default=False,
+                help="output PO Templates (.pot) rather than PO files (.po)"
+            )
             self.define_option(potoption)
 
     def verifyoptions(self, options):
-        """Verifies that the options are valid (required options are present, etc)."""
+        """Verifies that the options are valid (required options are
+        present, etc)."""
         pass
 
     def run(self, argv=None):
@@ -163,12 +178,14 @@ class Replacer:
         else:
             return text
 
-    def searchreplaceinput(self, inputfile, outputfile, templatefile, **kwargs):
+    def searchreplaceinput(self, inputfile, outputfile,
+                           templatefile, **kwargs):
         """copies the input file to the output file, searching and replacing"""
         outputfile.write(self.doreplace(inputfile.read()))
         return True
 
-    def searchreplacetemplate(self, inputfile, outputfile, templatefile, **kwargs):
+    def searchreplacetemplate(self, inputfile, outputfile,
+                              templatefile, **kwargs):
         """Copies the template file to the output file, searching and
         replacing."""
         outputfile.write(self.doreplace(templatefile.read()))
@@ -180,10 +197,13 @@ class Replacer:
 # - iterarchivefile: iterate through the names in the archivefile
 #   * requires the default iterator to do this
 # - archivefileexists: check if a given pathname exists inside the archivefile
-#   * uses the in operator - requires __contains__ (or will use __iter__ by default)
-# - openarchiveinputfile: returns an open input file from the archive, given the path
+#   * uses the in operator - requires __contains__ (or will use __iter__ 
+#     by default)
+# - openarchiveinputfile: returns an open input file from the archive, given
+#   the path
 #   * requires an archivefile.openinputfile method that takes the pathname
-# - openarchiveoutputfile: returns an open output file from the archive, given the path
+# - openarchiveoutputfile: returns an open output file from the archive, given
+#   the path
 #   * requires an archivefile.openoutputfile method that takes the pathname
 
 
@@ -196,13 +216,15 @@ class ArchiveConvertOptionParser(ConvertOptionParser):
     If the extension is only valid for input/output/template, it can be
     given as ``(extension, filepurpose)``."""
 
-    def __init__(self, formats, usetemplates=False, usepots=False, description=None, archiveformats=None):
+    def __init__(self, formats, usetemplates=False, usepots=False,
+                 description=None, archiveformats=None):
         if archiveformats is None:
             self.archiveformats = {}
         else:
             self.archiveformats = archiveformats
         self.archiveoptions = {}
-        ConvertOptionParser.__init__(self, formats, usetemplates, usepots, description=description)
+        ConvertOptionParser.__init__(self, formats, usetemplates, usepots,
+                                     description=description)
 
     def setarchiveoptions(self, **kwargs):
         """Allows setting options that will always be passed to openarchive."""
@@ -212,7 +234,8 @@ class ArchiveConvertOptionParser(ConvertOptionParser):
         """Checks if **fileoption** is a recursive file."""
         if self.isarchive(fileoption, filepurpose):
             return True
-        return super(ArchiveConvertOptionParser, self).isrecursive(fileoption, filepurpose)
+        return super(ArchiveConvertOptionParser, self).isrecursive(fileoption,
+                                                                   filepurpose)
 
     def isarchive(self, fileoption, filepurpose='input'):
         """Returns whether the file option is an archive file."""
@@ -222,7 +245,8 @@ class ArchiveConvertOptionParser(ConvertOptionParser):
         if mustexist and not os.path.isfile(fileoption):
             return False
         fileext = self.splitext(fileoption)[1]
-        # if None is in the archive formats, then treat all non-directory inputs as archives
+        # if None is in the archive formats, then treat all non-directory
+        # inputs as archives
         return self.getarchiveclass(fileext, filepurpose, os.path.isdir(fileoption)) is not None
 
     def getarchiveclass(self, fileext, filepurpose, isdir=False):
@@ -245,7 +269,8 @@ class ArchiveConvertOptionParser(ConvertOptionParser):
     def openarchive(self, archivefilename, filepurpose, **kwargs):
         """Creates an archive object for the given file."""
         archiveext = self.splitext(archivefilename)[1]
-        archiveclass = self.getarchiveclass(archiveext, filepurpose, os.path.isdir(archivefilename))
+        archiveclass = self.getarchiveclass(archiveext, filepurpose,
+                                            os.path.isdir(archivefilename))
         archiveoptions = self.archiveoptions.copy()
         archiveoptions.update(kwargs)
         return archiveclass(archivefilename, **archiveoptions)
@@ -288,7 +313,8 @@ class ArchiveConvertOptionParser(ConvertOptionParser):
     def opentemplatefile(self, options, fulltemplatepath):
         """Opens the template file (if required)."""
         if fulltemplatepath is not None:
-            if options.recursivetemplate and self.isarchive(options.template, 'template'):
+            if (options.recursivetemplate and
+                self.isarchive(options.template, 'template')):
                 # TODO: deal with different names in input/template archives
                 if fulltemplatepath in options.templatearchive:
                     return options.templatearchive.openinputfile(fulltemplatepath)
@@ -346,13 +372,17 @@ class ArchiveConvertOptionParser(ConvertOptionParser):
         """Opens the ``templatearchive`` if not already open."""
         if not self.usetemplates:
             return
-        if options.template and self.isarchive(options.template, 'template') and not hasattr(options, "templatearchive"):
-            options.templatearchive = self.openarchive(options.template, 'template')
+        if (options.template and
+            self.isarchive(options.template, 'template') and
+            not hasattr(options, "templatearchive")):
+            options.templatearchive = self.openarchive(options.template,
+                                                       'template')
 
     def initoutputarchive(self, options):
         """Creates an outputarchive if required."""
         if options.output and self.isarchive(options.output, 'output'):
-            options.outputarchive = self.openarchive(options.output, 'output', mode="w")
+            options.outputarchive = self.openarchive(options.output, 'output',
+                                                     mode="w")
 
     def recursiveprocess(self, options):
         """Recurse through directories and convert files."""
@@ -360,13 +390,15 @@ class ArchiveConvertOptionParser(ConvertOptionParser):
             self.setarchiveoptions(multifilestyle=options.multifilestyle)
             for filetype in ("input", "output", "template"):
                 allowoption = "allowrecursive%s" % filetype
-                if options.multifilestyle == "onefile" and getattr(options, allowoption, True):
+                if (options.multifilestyle == "onefile" and
+                    getattr(options, allowoption, True)):
                     setattr(options, allowoption, False)
         self.inittemplatearchive(options)
         self.initoutputarchive(options)
         return super(ArchiveConvertOptionParser, self).recursiveprocess(options)
 
-    def processfile(self, fileprocessor, options, fullinputpath, fulloutputpath, fulltemplatepath):
+    def processfile(self, fileprocessor, options, fullinputpath,
+                    fulloutputpath, fulltemplatepath):
         """Run an invidividual conversion."""
         if self.isarchive(options.output, 'output'):
             inputfile = self.openinputfile(options, fullinputpath)
@@ -374,7 +406,8 @@ class ArchiveConvertOptionParser(ConvertOptionParser):
             templatefile = self.opentemplatefile(options, fulltemplatepath)
             outputfile = self.openoutputfile(options, fulloutputpath)
             passthroughoptions = self.getpassthroughoptions(options)
-            if fileprocessor(inputfile, outputfile, templatefile, **passthroughoptions):
+            if fileprocessor(inputfile, outputfile, templatefile,
+                             **passthroughoptions):
                 if not outputfile.isatty():
                     outputfile.close()
                 return True
@@ -384,7 +417,10 @@ class ArchiveConvertOptionParser(ConvertOptionParser):
                     os.unlink(fulloutputpath)
                 return False
         else:
-            return super(ArchiveConvertOptionParser, self).processfile(fileprocessor, options, fullinputpath, fulloutputpath, fulltemplatepath)
+            return super(ArchiveConvertOptionParser,
+                        self).processfile(fileprocessor, options,
+                                          fullinputpath, fulloutputpath,
+                                          fulltemplatepath)
 
 
 def main(argv=None):
