@@ -26,7 +26,6 @@ usage instructions
 
 import sys
 
-from translate.misc import sparse
 from translate.storage import po
 from translate.storage import csvl10n
 
@@ -56,8 +55,6 @@ def quotecsvstr(source):
 
 def simplify(string):
     return filter(type(string).isalnum, string)
-    tokens = sparse.SimpleParser().tokenize(string)
-    return " ".join(tokens)
 
 
 class csv2po:
