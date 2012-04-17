@@ -197,7 +197,7 @@ class Replacer:
 # - iterarchivefile: iterate through the names in the archivefile
 #   * requires the default iterator to do this
 # - archivefileexists: check if a given pathname exists inside the archivefile
-#   * uses the in operator - requires __contains__ (or will use __iter__ 
+#   * uses the in operator - requires __contains__ (or will use __iter__
 #     by default)
 # - openarchiveinputfile: returns an open input file from the archive, given
 #   the path
