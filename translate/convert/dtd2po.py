@@ -34,7 +34,8 @@ def is_css_entity(entity):
     translated."""
     if '.' in entity:
         prefix, suffix = entity.rsplit('.', 1)
-        if suffix in ["height", "width", "unixWidth", "macWidth", "size"] or suffix.startswith("style"):
+        if (suffix in ["height", "width", "unixWidth", "macWidth", "size"] or
+            suffix.startswith("style")):
             return True
     return False
 
@@ -66,9 +67,11 @@ class dtd2po:
                 thepo.addnote(quote.stripcomment(comment), origin="developer")
         # handle group stuff
         if self.currentgroup is not None:
-            thepo.addnote(quote.stripcomment(self.currentgroup), origin="translator")
+            thepo.addnote(quote.stripcomment(self.currentgroup),
+                          origin="translator")
         if is_css_entity(entity):
-            thepo.addnote("Do not translate this.  Only change the numeric values if you need this dialogue box to appear bigger", origin="developer")
+            thepo.addnote("Do not translate this.  Only change the numeric values if you need this dialogue box to appear bigger",
+                          origin="developer")
 
     def convertstrings(self, thedtd, thepo):
         # extract the string, get rid of quoting
@@ -81,7 +84,8 @@ class dtd2po:
             del lines[0]
         while lines and not lines[-1].strip():
             del lines[-1]
-        # quotes have been escaped already by escapeforpo, so just add the start and end quotes
+        # quotes have been escaped already by escapeforpo, so just add the
+        # start and end quotes
         if len(lines) > 1:
             thepo.source = "\n".join([lines[0].rstrip() + ' '] + \
                     [line.strip() + ' ' for line in lines[1:-1]] + \
@@ -93,7 +97,8 @@ class dtd2po:
         thepo.target = ""
 
     def convertunit(self, thedtd):
-        """converts a dtd unit to a po unit, returns None if empty or not for translation"""
+        """converts a dtd unit to a po unit, returns None if empty or not for
+        translation"""
         if thedtd is None:
             return None
         if getattr(thedtd, "entityparameter", None) == "SYSTEM":
@@ -120,15 +125,18 @@ class dtd2po:
                 if thedtd.entity == entity:
                     # if it says don't translate (and nothing more),
                     if actualnote.startswith("DONT_TRANSLATE"):
-                        # take out the entity,definition and the DONT_TRANSLATE comment
+                        # take out the entity,definition and the
+                        # DONT_TRANSLATE comment
                         thedtd.entity = ""
                         thedtd.definition = ""
                         del thedtd.comments[commentnum]
                         # finished this for loop
                         break
                     else:
-                        # convert it into an automatic comment, to be processed by convertcomments
-                        thedtd.comments[commentnum] = ("automaticcomment", actualnote)
+                        # convert it into an automatic comment, to be
+                        # processed by convertcomments
+                        thedtd.comments[commentnum] = ("automaticcomment",
+                                                       actualnote)
         # do a standard translation
         self.convertcomments(thedtd, thepo)
         self.convertstrings(thedtd, thepo)
@@ -147,8 +155,10 @@ class dtd2po:
         thepo = po.pounit(encoding="UTF-8")
         thepo.addlocations(labelpo.getlocations())
         thepo.addlocations(accesskeypo.getlocations())
-        thepo.msgidcomment = thepo._extract_msgidcomments() + labelpo._extract_msgidcomments()
-        thepo.msgidcomment = thepo._extract_msgidcomments() + accesskeypo._extract_msgidcomments()
+        thepo.msgidcomment = thepo._extract_msgidcomments() + \
+                             labelpo._extract_msgidcomments()
+        thepo.msgidcomment = thepo._extract_msgidcomments() + \
+                             accesskeypo._extract_msgidcomments()
         thepo.addnote(labelpo.getnotes("developer"), "developer")
         thepo.addnote(accesskeypo.getnotes("developer"), "developer")
         thepo.addnote(labelpo.getnotes("translator"), "translator")
@@ -165,32 +175,37 @@ class dtd2po:
 
     def findmixedentities(self, thedtdfile):
         """creates self.mixedentities from the dtd file..."""
-        self.mixedentities = {}  # those entities which have a .label/.title and .accesskey combined
+        #: Entities which have a .label/.title and .accesskey combined
+        self.mixedentities = {}
         for entity in thedtdfile.index.keys():
             for labelsuffix in dtd.labelsuffixes:
                 if entity.endswith(labelsuffix):
                     entitybase = entity[:entity.rfind(labelsuffix)]
-                    # see if there is a matching accesskey in this line, making this a
-                    # mixed entity
+                    # see if there is a matching accesskey in this line,
+                    # making this a mixed entity
                     for akeytype in dtd.accesskeysuffixes:
                         if (entitybase + akeytype) in thedtdfile.index:
                             # add both versions to the list of mixed entities
                             self.mixedentities[entity] = {}
                             self.mixedentities[entitybase+akeytype] = {}
-                    # check if this could be a mixed entity (labelsuffix and ".accesskey")
+                    # check if this could be a mixed entity (labelsuffix and
+                    # ".accesskey")
 
     def convertdtdunit(self, thedtdfile, thedtd, mixbucket="dtd"):
-        """converts a dtd unit from thedtdfile to a po unit, handling mixed entities along the way..."""
+        """converts a dtd unit from thedtdfile to a po unit, handling mixed
+        entities along the way..."""
         # keep track of whether accesskey and label were combined
         if thedtd.entity in self.mixedentities:
             # use special convertmixed unit which produces one pounit with
             # both combined for the label and None for the accesskey
-            alreadymixed = self.mixedentities[thedtd.entity].get(mixbucket, None)
+            alreadymixed = self.mixedentities[thedtd.entity].get(mixbucket,
+                                                                 None)
             if alreadymixed:
                 # we are successfully throwing this away...
                 return None
             elif alreadymixed is None:
-                # depending on what we come across first, work out the label and the accesskey
+                # depending on what we come across first, work out the label
+                # and the accesskey
                 labeldtd, accesskeydtd = None, None
                 labelentity, accesskeyentity = None, None
                 for labelsuffix in dtd.labelsuffixes:
@@ -222,7 +237,8 @@ class dtd2po:
                         self.mixedentities[labelentity][mixbucket] = True
                     return thepo
                 else:
-                    # otherwise the mix failed. add each one separately and remember they weren't mixed
+                    # otherwise the mix failed. add each one separately and
+                    # remember they weren't mixed
                     if accesskeyentity is not None:
                         self.mixedentities[accesskeyentity][mixbucket] = False
                     if labelentity is not None:
@@ -231,8 +247,11 @@ class dtd2po:
 
     def convertstore(self, thedtdfile):
         thetargetfile = po.pofile()
-        targetheader = thetargetfile.init_headers(charset="UTF-8", encoding="8bit", x_accelerator_marker="&")
-        targetheader.addnote("extracted from %s" % thedtdfile.filename, "developer")
+        targetheader = thetargetfile.init_headers(charset="UTF-8",
+                                                  encoding="8bit",
+                                                  x_accelerator_marker="&")
+        targetheader.addnote("extracted from %s" % thedtdfile.filename,
+                             "developer")
 
         thedtdfile.makeindex()
         self.findmixedentities(thedtdfile)
@@ -248,8 +267,12 @@ class dtd2po:
 
     def mergestore(self, origdtdfile, translateddtdfile):
         thetargetfile = po.pofile()
-        targetheader = thetargetfile.init_headers(charset="UTF-8", encoding="8bit")
-        targetheader.addnote("extracted from %s, %s" % (origdtdfile.filename, translateddtdfile.filename), "developer")
+        targetheader = thetargetfile.init_headers(charset="UTF-8",
+                                                  encoding="8bit")
+        targetheader.addnote("extracted from %s, %s" % \
+                             (origdtdfile.filename,
+                              translateddtdfile.filename),
+                             "developer")
 
         origdtdfile.makeindex()
         self.findmixedentities(origdtdfile)
@@ -259,11 +282,13 @@ class dtd2po:
         for origdtd in origdtdfile.units:
             if origdtd.isnull():
                 continue
-            origpo = self.convertdtdunit(origdtdfile, origdtd, mixbucket="orig")
+            origpo = self.convertdtdunit(origdtdfile, origdtd,
+                                         mixbucket="orig")
             if origdtd.entity in self.mixedentities:
                 mixedentitydict = self.mixedentities[origdtd.entity]
                 if "orig" not in mixedentitydict:
-                    # this means that the entity is mixed in the translation, but not the original - treat as unmixed
+                    # this means that the entity is mixed in the translation,
+                    # but not the original - treat as unmixed
                     mixbucket = "orig"
                     del self.mixedentities[origdtd.entity]
                 elif mixedentitydict["orig"]:
@@ -275,11 +300,14 @@ class dtd2po:
             else:
                 mixbucket = "translate"
             if origpo is None:
-                # this means its a mixed entity (with accesskey) that's already been dealt with)
+                # this means its a mixed entity (with accesskey) that's
+                # already been dealt with)
                 continue
             if origdtd.entity in translateddtdfile.index:
                 translateddtd = translateddtdfile.index[origdtd.entity]
-                translatedpo = self.convertdtdunit(translateddtdfile, translateddtd, mixbucket=mixbucket)
+                translatedpo = self.convertdtdunit(translateddtdfile,
+                                                   translateddtd,
+                                                   mixbucket=mixbucket)
             else:
                 translatedpo = None
             if origpo is not None:
@@ -290,8 +318,10 @@ class dtd2po:
         return thetargetfile
 
 
-def convertdtd(inputfile, outputfile, templatefile, pot=False, duplicatestyle="msgctxt"):
-    """reads in inputfile and templatefile using dtd, converts using dtd2po, writes to outputfile"""
+def convertdtd(inputfile, outputfile, templatefile, pot=False,
+               duplicatestyle="msgctxt"):
+    """reads in inputfile and templatefile using dtd, converts using dtd2po,
+    writes to outputfile"""
     inputstore = dtd.dtdfile(inputfile)
     convertor = dtd2po(blankmsgstr=pot, duplicatestyle=duplicatestyle)
     if templatefile is None:
@@ -307,8 +337,12 @@ def convertdtd(inputfile, outputfile, templatefile, pot=False, duplicatestyle="m
 
 def main(argv=None):
     from translate.convert import convert
-    formats = {"dtd": ("po", convertdtd), ("dtd", "dtd"): ("po", convertdtd)}
-    parser = convert.ConvertOptionParser(formats, usetemplates=True, usepots=True, description=__doc__)
+    formats = {
+        "dtd": ("po", convertdtd),
+        ("dtd", "dtd"): ("po", convertdtd),
+    }
+    parser = convert.ConvertOptionParser(formats, usetemplates=True,
+                                         usepots=True, description=__doc__)
     parser.add_duplicates_option()
     parser.passthrough.append("pot")
     parser.run(argv)
