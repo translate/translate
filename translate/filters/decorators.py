@@ -20,7 +20,7 @@
 
 """Decorators to categorize pofilter checks."""
 
-from functools import wraps
+from translate.misc.decorators import decorate
 
 
 #: Quality checks' failure categories
@@ -30,9 +30,9 @@ COSMETIC = 30
 EXTRACTION = 10
 
 
+@decorate
 def critical(f):
 
-    @wraps(f)
     def critical_f(self, *args, **kwargs):
         if f.__name__ not in self.__class__.categories:
             self.__class__.categories[f.__name__] = CRITICAL
@@ -42,9 +42,9 @@ def critical(f):
     return critical_f
 
 
+@decorate
 def functional(f):
 
-    @wraps(f)
     def functional_f(self, *args, **kwargs):
         if f.__name__ not in self.__class__.categories:
             self.__class__.categories[f.__name__] = FUNCTIONAL
@@ -54,9 +54,9 @@ def functional(f):
     return functional_f
 
 
+@decorate
 def cosmetic(f):
 
-    @wraps(f)
     def cosmetic_f(self, *args, **kwargs):
         if f.__name__ not in self.__class__.categories:
             self.__class__.categories[f.__name__] = COSMETIC
@@ -66,9 +66,9 @@ def cosmetic(f):
     return cosmetic_f
 
 
+@decorate
 def extraction(f):
 
-    @wraps(f)
     def extraction_f(self, *args, **kwargs):
         if f.__name__ not in self.__class__.categories:
             self.__class__.categories[f.__name__] = EXTRACTION
