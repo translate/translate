@@ -32,6 +32,15 @@ from translate.storage import csvl10n
 
 
 def replacestrings(source, *pairs):
+    """Use ``pairs`` of ``(original, replacement)`` to replace text found in
+    ``source``.
+
+    :param source: String to on which ``pairs`` of strings are to be replaced
+    :type source: String
+    :param *pairs: Strings to be matched and replaced
+    :type *pair: One or more tuples of (original, replacement)
+    :return: String with ``*pairs`` of strings replaced
+    """
     for orig, new in pairs:
         source = source.replace(orig, new)
     return source
