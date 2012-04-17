@@ -12,7 +12,7 @@ def strprep(str1, str2, message=None):
 
 
 def check_category(filterfunction):
-    """Checks whether ``filter_function`` has defined a category or not."""
+    """Checks whether ``filterfunction`` has defined a category or not."""
     has_category = []
     classes = (checks.TeeChecker, checks.UnitChecker)
 
