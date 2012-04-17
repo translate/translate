@@ -8,6 +8,13 @@ from translate.storage import csvl10n
 from translate.storage.test_base import headerless_len, first_translatable
 
 
+def test_replacestrings():
+    """Test the _replacestring function"""
+    assert csv2po.replacestrings("Test one two three",
+                                 ("one", "een"),
+                                 ("two", "twee")) == "Test een twee three"
+
+
 class TestCSV2PO:
 
     def csv2po(self, csvsource, template=None):
