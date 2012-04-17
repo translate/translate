@@ -69,16 +69,17 @@ class csv2po:
         self.pofile = templatepo
         self.charset = charset
         self.duplicatestyle = duplicatestyle
+        self.commentindex = {}
+        self.sourceindex = {}
+        self.simpleindex = {}
+        self.csvfile = None
+        self.duplicatecomments = []
         if self.pofile is not None:
             self.unmatched = 0
             self.makeindex()
 
     def makeindex(self):
         """makes indexes required for searching..."""
-        self.commentindex = {}
-        self.sourceindex = {}
-        self.simpleindex = {}
-        self.duplicatecomments = []
         for pounit in self.pofile.units:
             joinedcomment = " ".join(pounit.getlocations())
             source = pounit.source
