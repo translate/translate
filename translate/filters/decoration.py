@@ -88,7 +88,8 @@ def isvalidaccelerator(accelerator, acceptlist=None):
     :type accelerator: character
     :param accelerator: A character to be checked for accelerator validity
     :type acceptlist: String
-    :param acceptlist: A list of characters that are permissible as accelerators
+    :param acceptlist: A list of characters that are permissible as
+                       accelerators
     :rtype: Boolean
     :return: True if the supplied character is an acceptable accelerator
     """
@@ -102,15 +103,16 @@ def isvalidaccelerator(accelerator, acceptlist=None):
             return True
         return False
     else:
-        # Old code path - ensures that we don't get a large number of regressions
+        # Old code path - ensures that we don't get a large number of
+        # regressions
         accelerator = accelerator.replace("_", "")
         if accelerator in u"-?":
             return True
         if not accelerator.isalnum():
             return False
 
-        # We don't want to have accelerators on characters with diacritics, so let's
-        # see if the character can decompose.
+        # We don't want to have accelerators on characters with diacritics,
+        # so let's see if the character can decompose.
         decomposition = unicodedata.decomposition(accelerator)
         # Next we strip out any extra information like <this>
         decomposition = re.sub("<[^>]+>", "", decomposition).strip()
@@ -118,7 +120,8 @@ def isvalidaccelerator(accelerator, acceptlist=None):
 
 
 def findaccelerators(str1, accelmarker, acceptlist=None):
-    """returns all the accelerators and locations in str1 marked with a given marker"""
+    """returns all the accelerators and locations in str1 marked with a
+    given marker"""
     accelerators = []
     badaccelerators = []
     currentpos = 0
@@ -141,7 +144,8 @@ def findaccelerators(str1, accelmarker, acceptlist=None):
 
 
 def findmarkedvariables(str1, startmarker, endmarker, ignorelist=[]):
-    """returns all the variables and locations in str1 marked with a given marker"""
+    """returns all the variables and locations in str1 marked with a given
+    marker"""
     variables = []
     currentpos = 0
     while currentpos >= 0:
@@ -151,7 +155,8 @@ def findmarkedvariables(str1, startmarker, endmarker, ignorelist=[]):
             startmatch = currentpos
             currentpos += len(startmarker)
             if endmarker is None:
-                # handle case without an end marker - use any non-alphanumeric character as the end marker, var must be len > 1
+                # handle case without an end marker - use any non-alphanumeric
+                # character as the end marker, var must be len > 1
                 endmatch = currentpos
                 for n in range(currentpos, len(str1)):
                     if not (str1[n].isalnum() or str1[n] == '_'):
@@ -163,7 +168,8 @@ def findmarkedvariables(str1, startmarker, endmarker, ignorelist=[]):
                     variable = str1[currentpos:endmatch]
                 currentpos = endmatch
             elif type(endmarker) == int:
-                # setting endmarker to an int means it is a fixed-length variable string (usually endmarker==1)
+                # setting endmarker to an int means it is a fixed-length
+                # variable string (usually endmarker==1)
                 endmatch = currentpos + endmarker
                 if endmatch > len(str1):
                     break
@@ -173,7 +179,8 @@ def findmarkedvariables(str1, startmarker, endmarker, ignorelist=[]):
                 endmatch = str1.find(endmarker, currentpos)
                 if endmatch == -1:
                     break
-                # search backwards in case there's an intervening startmarker (if not it's OK)...
+                # search backwards in case there's an intervening startmarker
+                # (if not it's OK)...
                 start2 = str1.rfind(startmarker, currentpos, endmatch)
                 if start2 != -1:
                     startmatch2 = start2
@@ -184,13 +191,15 @@ def findmarkedvariables(str1, startmarker, endmarker, ignorelist=[]):
                 variable = str1[currentpos:endmatch]
                 currentpos = endmatch + len(endmarker)
             if variable is not None and variable not in ignorelist:
-                if not variable or variable.replace("_", "").replace(".", "").isalnum():
+                if (not variable or
+                    variable.replace("_", "").replace(".", "").isalnum()):
                     variables.append((startmatch, variable))
     return variables
 
 
 def getaccelerators(accelmarker, acceptlist=None):
-    """returns a function that gets a list of accelerators marked using accelmarker"""
+    """returns a function that gets a list of accelerators marked using
+    accelmarker"""
 
     def getmarkedaccelerators(str1):
         """returns all the accelerators in str1 marked with a given marker"""
@@ -202,7 +211,8 @@ def getaccelerators(accelmarker, acceptlist=None):
 
 
 def getvariables(startmarker, endmarker):
-    """returns a function that gets a list of variables marked using startmarker and endmarker"""
+    """returns a function that gets a list of variables marked using
+    startmarker and endmarker"""
 
     def getmarkedvariables(str1):
         """returns all the variables in str1 marked with a given marker"""
@@ -252,12 +262,14 @@ _function_re = re.compile(r'''((?:
     \(\)                 # Must close with ()
 )+)
 ''', re.VERBOSE)  # shouldn't be locale aware
-    # pam_*_item() IO::String NULL() POE::Component::Client::LDAP->new() POE::Wheel::Null mechanize.UserAgent POSIX::sigaction() window.resizeBy() @fptr()
+    # pam_*_item() IO::String NULL() POE::Component::Client::LDAP->new()
+    # POE::Wheel::Null mechanize.UserAgent POSIX::sigaction()
+    # window.resizeBy() @fptr()
 
 
 def getfunctions(str1):
-    """returns the functions() that are in a string, while ignoring the trailing
-    punctuation in the given parameter"""
+    """returns the functions() that are in a string, while ignoring the
+    trailing punctuation in the given parameter"""
     if u"()" in str1:
         return _function_re.findall(str1)
     else:
@@ -271,13 +283,16 @@ def getemails(str1):
 
 def geturls(str1):
     """returns the URIs in a string"""
-    URLPAT = 'https?:[\w/\.:;+\-~\%#\$?=&,()]+|www\.[\w/\.:;+\-~\%#\$?=&,()]+|' +\
-            'ftp:[\w/\.:;+\-~\%#?=&,]+'
+    # TODO turn this into a verbose and compiled regex
+    URLPAT = 'https?:[\w/\.:;+\-~\%#\$?=&,()]+|' + \
+             'www\.[\w/\.:;+\-~\%#\$?=&,()]+|' + \
+             'ftp:[\w/\.:;+\-~\%#?=&,]+'
     return re.findall(URLPAT, str1)
 
 
 def countaccelerators(accelmarker, acceptlist=None):
-    """returns a function that counts the number of accelerators marked with the given marker"""
+    """returns a function that counts the number of accelerators marked
+    with the given marker"""
 
     def countmarkedaccelerators(str1):
         """returns all the variables in str1 marked with a given marker"""
