@@ -118,7 +118,9 @@ String slices:
     a[- 1:end]
 
 
-.. note: String slice formating is still under discussion
+.. note::
+
+   String slice formating is still under discussion.
 
 Comparisons:
   - against arbitrary types: ``==`` and ``!=``
@@ -163,8 +165,10 @@ If statements:
 Naming Conventions
 ------------------
 
-.. note: This has not been implemented or discussed.  The Translate code 
-         is not at all consistent with these conventions.
+.. note::
+
+   This has not been implemented or discussed.  The Translate code 
+   is not at all consistent with these conventions.
 
 - Class names: ``CamelCase``, with acronyms kept uppercase (``HTTPWriter``
   and not ``HttpWriter``)
@@ -237,7 +241,9 @@ Parameter documentation:
 
 Other useful Sphinx directives:
 
-.. note: Need to gather the useful ones that we want there.  E.g. how to talk
+.. note::
+
+   Need to gather the useful ones that we want there.  E.g. how to talk
    about a paramter in the docstring.  How to reference classes in the module.
    How to reference other modules, etc.
 
