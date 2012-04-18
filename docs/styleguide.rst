@@ -96,10 +96,11 @@ General whitespace rules:
     value = my_list[ index ]
     value = my_dict ['key']
 
-String slices:
+Slice notation:
   While pep8 calls for spaces around operators ``a = b + c`` this
   results in flags when you use ``a[b+1:c-1]`` but would allow
-  the rather unreadable ``a[b + 1:c - 1]`` to pass.
+  the rather unreadable ``a[b + 1:c - 1]`` to pass. PEP8 is
+  rather quiet on slice notation.
 
   - Don't use spaces with simple variables or numbers
   - Use brackets for expressions with spaces between binary operators
@@ -108,14 +109,15 @@ String slices:
 
     a[1:2]
     a[start:end]
-    a[(start - 1):(end + var + 2)]
+    a[(start - 1):(end + var + 2)]  # Brackets help group things don't hide the slice
     a[-1:(end + 1)]
 
   Bad::
 
-    a[start: end]
-    a[start - 1:end + 2]
-    a[- 1:end]
+    a[start: end]  # No spaces around :
+    a[start-1:end+var+2]  # Insanely hard to read
+    a[start - 1:end + 2]  # You lose sight of the face that it is a slice
+    a[- 1:end]  # -1 is unary, no space
 
 
 .. note::
