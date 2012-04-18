@@ -112,6 +112,7 @@ String slices:
     a[-1:(end + 1)]
 
   Bad::
+
     a[start: end]
     a[start - 1:end + 2]
     a[- 1:end]
@@ -143,6 +144,7 @@ If statements:
     operator precedent rules.
 
   Good::
+
     if length >= (upper + 2)
 
     if (length >= 25 and
@@ -151,6 +153,7 @@ If statements:
         do_something()
 
   Bad::
+
     if length >= upper + 2:
 
     if (length...
@@ -224,7 +227,7 @@ Parameter documentation:
   Document parameters as follows::
 
     def foo(bar):
-        ""Simple docstring
+        """Simple docstring
 
         :param bar: Something
         :type bar: Some type
@@ -267,17 +270,19 @@ General:
   - Write sentences correctly: proper capitalisation and punctuation.
 
   Good::
+
     # A comment
     statement  # Comment
 
   Bad::
+
     #Bad comment
     statement # Comment
 
 Docstring comments:
-Rules for comments are similar to docstrings.  Both are formatted with
-reStructuredText.  If a comment is used to document an attribute, put a
-colon after the opening pound sign (``#``)::
+  Rules for comments are similar to docstrings.  Both are formatted with
+  reStructuredText.  If a comment is used to document an attribute, put a
+  colon after the opening pound sign (``#``)::
 
     class User(object):
         #: the name of the user as unicode string
