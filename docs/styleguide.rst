@@ -271,13 +271,13 @@ General:
 
   Good::
 
-    # A comment
-    statement  # Comment
+    # Good comment with space before and full sentence.
+    statement  # Good comment with two spaces
 
   Bad::
 
-    #Bad comment
-    statement # Comment
+    #Bad comment no space before
+    statement # Bad comment, needs two spaces
 
 Docstring comments:
   Rules for comments are similar to docstrings.  Both are formatted with
