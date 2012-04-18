@@ -253,23 +253,28 @@ class xliffunit(lisa.LISAunit):
         if origin:
             note.set("from", origin)
 
-    def getnotelist(self, origin=None):
-        """Private method that returns the text from notes matching
-        'origin' or all notes."""
-        notenodes = self.xmlelement.iterdescendants(self.namespaced("note"))
+    def _getnotelist(self, origin=None):
+        """Returns the text from notes matching ``origin`` or all notes.
+
+        :param origin: The origin of the note (or note type)
+        :type origin: String
+        :return: The text from notes matching ``origin``
+        :rtype: List
+        """
+        note_nodes = self.xmlelement.iterdescendants(self.namespaced("note"))
         # TODO: consider using xpath to construct initial_list directly
         # or to simply get the correct text from the outset (just remember to
         # check for duplication.
-        initial_list = [lisa.getText(note, getXMLspace(self.xmlelement, self._default_xml_space)) for note in notenodes if self.correctorigin(note, origin)]
+        initial_list = [lisa.getText(note, getXMLspace(self.xmlelement, self._default_xml_space)) for note in note_nodes if self.correctorigin(note, origin)]
 
         # Remove duplicate entries from list:
         dictset = {}
-        notelist = [dictset.setdefault(note, note) for note in initial_list if note not in dictset]
+        note_list = [dictset.setdefault(note, note) for note in initial_list if note not in dictset]
 
-        return notelist
+        return note_list
 
     def getnotes(self, origin=None):
-        return '\n'.join(self.getnotelist(origin=origin))
+        return '\n'.join(self._getnotelist(origin=origin))
 
     def removenotes(self, origin="translator"):
         """Remove all the translator notes."""
@@ -289,7 +294,7 @@ class xliffunit(lisa.LISAunit):
     def geterrors(self):
         """Get all error messages."""
         #TODO: consider factoring out: some duplication between XLIFF and TMX
-        notelist = self.getnotelist(origin="pofilter")
+        notelist = self._getnotelist(origin="pofilter")
         errordict = {}
         for note in notelist:
             errorname, errortext = note.split(': ')

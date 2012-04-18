@@ -63,17 +63,20 @@ class tmxunit(lisa.LISAunit):
         note = etree.SubElement(self.xmlelement, self.namespaced("note"))
         note.text = text.strip()
 
-    def getnotelist(self, origin=None):
-        """Private method that returns the text from notes.
+    def _getnotelist(self, origin=None):
+        """Returns the text from notes.
 
-        The origin parameter is ignored.."""
+        :param origin: Ignored
+        :return: The text from notes
+        :rtype: List
+        """
         note_nodes = self.xmlelement.iterdescendants(self.namespaced("note"))
         note_list = [lisa.getText(note) for note in note_nodes]
 
         return note_list
 
     def getnotes(self, origin=None):
-        return '\n'.join(self.getnotelist(origin=origin))
+        return '\n'.join(self._getnotelist(origin=origin))
 
     def removenotes(self):
         """Remove all the translator notes."""
@@ -92,7 +95,7 @@ class tmxunit(lisa.LISAunit):
     def geterrors(self):
         """Get all error messages."""
         #TODO: consider factoring out: some duplication between XLIFF and TMX
-        notelist = self.getnotelist(origin="pofilter")
+        notelist = self._getnotelist(origin="pofilter")
         errordict = {}
         for note in notelist:
             errorname, errortext = note.split(': ')
