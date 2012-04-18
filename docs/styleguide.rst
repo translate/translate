@@ -276,6 +276,9 @@ Cross refencing code:
    it is good practice to cross-reference them with Sphinx's `Python
    cross-referencing`_.
 
+Other directives:
+   Use `paragraph-level markup`_ when needed.
+
 .. note::
 
    We still Need to gather the useful ones that we want you to use and how to use
@@ -342,3 +345,4 @@ Docstring comments:
 .. _Sphinx: http://sphinx.pocoo.org/
 .. _reStructuredText primer: http://sphinx.pocoo.org/rest.html
 .. _Sphinx documentation: http://sphinx.pocoo.org/contents.html
+.. _paragraph-level markup: http://sphinx.pocoo.org/markup/para.html#paragraph-level-markup
