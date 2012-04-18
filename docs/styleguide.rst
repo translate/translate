@@ -97,9 +97,9 @@ General whitespace rules:
     value = my_dict ['key']
 
 Slice notation:
-  While pep8 calls for spaces around operators ``a = b + c`` this
+  While :pep:`8` calls for spaces around operators ``a = b + c`` this
   results in flags when you use ``a[b+1:c-1]`` but would allow
-  the rather unreadable ``a[b + 1:c - 1]`` to pass. PEP8 is
+  the rather unreadable ``a[b + 1:c - 1]`` to pass. :pep:`8` is
   rather quiet on slice notation.
 
   - Don't use spaces with simple variables or numbers
@@ -109,14 +109,14 @@ Slice notation:
 
     a[1:2]
     a[start:end]
-    a[(start - 1):(end + var + 2)]  # Brackets help group things don't hide the slice
+    a[(start - 1):(end + var + 2)]  # Brackets help group things and don't hide the slice
     a[-1:(end + 1)]
 
   Bad::
 
     a[start: end]  # No spaces around :
-    a[start-1:end+var+2]  # Insanely hard to read
-    a[start - 1:end + 2]  # You lose sight of the face that it is a slice
+    a[start-1:end+var+2]  # Insanely hard to read, especially when your expressions are more complex
+    a[start - 1:end + 2]  # You lose sight of the fact that it is a slice
     a[- 1:end]  # -1 is unary, no space
 
 
@@ -195,8 +195,15 @@ Function and method arguments:
     or x.username)``
 
 
+Documentation
+=============
+
 Docstrings
 ----------
+
+We use Sphinx_ to generate our API documentation. Read the
+`reStructuredText primer`_ and `Sphinx documentation`_ as needed.
+
 
 Docstring conventions:
   All docstrings are formatted with reStructuredText as understood by
@@ -207,7 +214,7 @@ Docstring conventions:
   the string on its own line::
 
     def foo():
-        """This is a simple docstring"""
+        """This is a simple docstring."""
 
 
     def bar():
@@ -216,21 +223,44 @@ Docstring conventions:
         is on its own line.
         """
 
-  Use the first line to give a one line description, not a narrative.
-  Don't restate things that would appear in parameter descriptions.
-  Use subsequent paragraphs to provide further explanations. Use
-  proper capitalisation and punctuation::
+Please read :pep:`257` (Docstring Conventions) for a general overview,
+the important parts though are:
+
+  - A docstring should have a brief one-line summary, ending with a
+    period.
+  - If there are more details there should be a blank line between the one-line
+    summary and the rest of the text.  Use pragraphs and formating as
+    needed.
+  - Use `reST field lists`_ to describe the input parameters and/or return types
+    as the last part of the docstring.
+  - Use proper capitalisation and punctuation.
+  - Don't restate things that would appear in parameter descriptions.
+
+::
 
     def foo(bar):
         """One line description.
 
         Further explanations that might be needed.
 
-        :param bar: Parameters
+        :param bar: Parameter descriptions.
         """
 
+::
+
+    def addunit(self, unit):
+        """Appends the given unit to the object's list of units.
+
+        This method should always be used rather than trying to modify the
+        list manually.
+
+        :type unit: TranslationUnit
+        :param unit: Any object that inherits from :class:`TranslationUnit`.
+        """
+        self.units.append(unit)
+
 Parameter documentation:
-  Document parameters as follows::
+  Document parameters using `reST field lists`_ as follows::
 
     def foo(bar):
         """Simple docstring
@@ -241,22 +271,29 @@ Parameter documentation:
         :rtype: Return type 
         """
 
-Other useful Sphinx directives:
+Cross refencing code:
+   When talking about other objects, methods, functions and variables
+   it is good practice to cross-reference them with Sphinx's `Python
+   cross-referencing`_.
 
 .. note::
 
-   Need to gather the useful ones that we want there.  E.g. how to talk
-   about a paramter in the docstring.  How to reference classes in the module.
-   How to reference other modules, etc.
+   We still Need to gather the useful ones that we want you to use and how to use
+   then.  E.g. how to talk about a paramter in the docstring.  How to reference
+   classes in the module.  How to reference other modules, etc.
 
 
-.. Module header:
-  The module header consists of an utf-8 encoding declaration (if non
-  ASCII letters are used, but it is recommended all the time) and a
-  standard docstring::
+Module header:
+  The module header consists of an utf-8 encoding declaration, copyright
+  attribution, license block and a standard docstring::
 
-..    # -*- coding: utf-8 -*-
-    """
+    # -*- coding: utf-8 -*-
+    #
+    ... LICENSE BLOCK...
+
+    """A brief description"""
+
+..    """
         package.module
         ~~~~~~~~~~~~~~
 
@@ -300,3 +337,8 @@ Docstring comments:
 
 
 .. _Flask Styleguide: http://flask.pocoo.org/docs/styleguide/
+.. _reST field lists: http://sphinx.pocoo.org/domains.html#info-field-lists
+.. _Python cross-referencing: http://sphinx.pocoo.org/domains.html#cross-referencing-python-objects
+.. _Sphinx: http://sphinx.pocoo.org/
+.. _reStructuredText primer: http://sphinx.pocoo.org/rest.html
+.. _Sphinx documentation: http://sphinx.pocoo.org/contents.html
