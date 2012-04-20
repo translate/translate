@@ -101,5 +101,12 @@ class AndroidResourceFile(lisa.LISAfile):
         self.makeindex()
 
     def __str__(self):
-        return super(AndroidResourceFile, self).__str__()
+        """Converts to a string containing the file's XML"""
+        doc = etree.Element(self.rootNode)
+        # Use only non blank elements
+        for elm in self.document.iter('string'):
+            if not elm.text is None and elm.text != '':
+                doc.append(elm)
+        return etree.tostring(doc, pretty_print=True,
+                              xml_declaration=True, encoding='utf-8')
 
