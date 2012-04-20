@@ -32,6 +32,7 @@ class AndroidResourceUnit(base.TranslationUnit):
 
     def __init__(self, source, empty=False, **kwargs):
         self.xmlelement = etree.Element(self.rootNode)
+        self.xmlelement.tail = '\n'
         super(AndroidResourceUnit, self).__init__(source)
 
     def _parse(self):
@@ -103,6 +104,7 @@ class AndroidResourceFile(lisa.LISAfile):
     def __str__(self):
         """Converts to a string containing the file's XML"""
         doc = etree.Element(self.rootNode)
+        doc.tail = self.document.getroot().tail
         # Use only non blank elements
         for elm in self.document.iter('string'):
             if not elm.text is None and elm.text != '':
