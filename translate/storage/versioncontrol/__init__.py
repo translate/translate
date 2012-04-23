@@ -168,25 +168,32 @@ class GenericRevisionControlSystem:
     use "False" for these RCS
     """
 
-    def __init__(self, location):
+    def __init__(self, location, oldest_parent=None):
         """find the relevant information about this RCS object
 
         The IOError exception indicates that the specified object (file or
         directory) is not controlled by the given version control system.
+
+        :param oldest_parent: optional highest path where a recursive search
+                              should be stopped
+        :type oldest_parent: str
         """
         # check if the implementation looks ok - otherwise raise IOError
         self._self_check()
         # search for the repository information
-        result = self._find_rcs_directory(location)
+        result = self._find_rcs_directory(location, oldest_parent)
         if result is None:
             raise IOError("Could not find revision control information: %s" \
                     % location)
         else:
             self.root_dir, self.location_abs, self.location_rel = result
 
-    def _find_rcs_directory(self, rcs_obj):
+    def _find_rcs_directory(self, rcs_obj, oldest_parent=None):
         """Try to find the metadata directory of the RCS
 
+        :param oldest_parent: optional highest path where a recursive search
+                              should be stopped
+        :type oldest_parent: str
         :rtype: tuple
         :return:
           - the absolute path of the directory, that contains the metadata directory
@@ -207,27 +214,33 @@ class GenericRevisionControlSystem:
         elif self.SCAN_PARENTS:
             # scan for the metadir in parent directories
             # (for bzr, GIT, Darcs, ...)
-            return self._find_rcs_in_parent_directories(rcs_obj)
+            return self._find_rcs_in_parent_directories(rcs_obj, oldest_parent)
         else:
             # no RCS metadata found
             return None
 
-    def _find_rcs_in_parent_directories(self, rcs_obj):
+    def _find_rcs_in_parent_directories(self, rcs_obj, oldest_parent=None):
         """Try to find the metadata directory in all parent directories"""
         # first: resolve possible symlinks
         current_dir = os.path.dirname(os.path.realpath(rcs_obj))
         # prevent infite loops
         max_depth = 8
+        if oldest_parent:
+            oldest_parent = os.path.normpath(oldest_parent)
         # stop as soon as we find the metadata directory
         while not os.path.isdir(os.path.join(current_dir, self.RCS_METADIR)):
-            if os.path.dirname(current_dir) == current_dir:
+            if current_dir == oldest_parent:
+                # we were instructed not to look higher up
+                return None
+            parent_dir = os.path.dirname(current_dir)
+            if parent_dir == current_dir:
                 # we reached the root directory - stop
                 return None
             if max_depth <= 0:
                 # some kind of dead loop or a _very_ deep directory structure
                 return None
             # go to the next higher level
-            current_dir = os.path.dirname(current_dir)
+            current_dir = parent_dir
             max_depth -= 1
         # the loop was finished successfully
         # i.e.: we found the metadata directory
@@ -303,7 +316,9 @@ def get_versioned_objects_recursive(
 def get_versioned_object(
         location,
         versioning_systems=None,
-        follow_symlinks=True):
+        follow_symlinks=True,
+        oldest_parent=None,
+    ):
     """return a versioned object for the given file"""
     if versioning_systems is None:
         versioning_systems = DEFAULT_RCS
@@ -312,7 +327,7 @@ def get_versioned_object(
         try:
             vers_sys_class = __get_rcs_class(vers_sys)
             if not vers_sys_class is None:
-                return vers_sys_class(location)
+                return vers_sys_class(location, oldest_parent)
         except IOError:
             continue
     # if 'location' is a symlink, then we should try the original file
@@ -371,10 +386,10 @@ def updatedirectory(directory):
         rcs_obj.update()
 
 
-def hasversioning(item):
+def hasversioning(item, oldest_parent=None):
     try:
         # try all available version control systems
-        get_versioned_object(item)
+        get_versioned_object(item, oldest_parent=oldest_parent)
         return True
     except IOError:
         return False
