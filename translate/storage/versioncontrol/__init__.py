@@ -227,6 +227,7 @@ class GenericRevisionControlSystem:
                 return None
             # go to the next higher level
             current_dir = os.path.dirname(current_dir)
+            max_depth -= 1
         # the loop was finished successfully
         # i.e.: we found the metadata directory
         rcs_dir = current_dir
