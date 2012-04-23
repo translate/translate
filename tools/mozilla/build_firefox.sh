@@ -53,7 +53,7 @@ do
 				opt_copyfiles=""
 			;;
 			--verbose)
-				hgverbosity=""
+				hgverbosity="--verbose"
 				gitverbosity=""
 				svnverbosity=""
 				progress=bar
