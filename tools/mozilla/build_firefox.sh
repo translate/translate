@@ -328,6 +328,7 @@ do
 	# COMPARE LOCALES
 	if [ $opt_compare_locales ]; then
 		compare-locales ${MOZCENTRAL_DIR}/browser/locales/l10n.ini ${L10N_DIR} $lang
+		compare-locales ${MOZCENTRAL_DIR}/mobile/locales/l10n.ini ${L10N_DIR} $lang
 	fi
 
 done
