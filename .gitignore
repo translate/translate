@@ -6,3 +6,7 @@
 
 # General
 *.pyc
+
+# vim
+.*.swp
+*~
