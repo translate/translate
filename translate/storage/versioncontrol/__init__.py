@@ -216,7 +216,7 @@ class GenericRevisionControlSystem:
         # first: resolve possible symlinks
         current_dir = os.path.dirname(os.path.realpath(rcs_obj))
         # prevent infite loops
-        max_depth = 64
+        max_depth = 8
         # stop as soon as we find the metadata directory
         while not os.path.isdir(os.path.join(current_dir, self.RCS_METADIR)):
             if os.path.dirname(current_dir) == current_dir:
