@@ -71,7 +71,7 @@ do
 done
 
 if [ $# -eq 0 ]; then
-	HG_LANGS="ach af ak am cy en-ZA ff gd hz ki lg ng nso ny sah son st-LS su sw tn ur ve wo xog zu"
+	HG_LANGS="ach af ak am cy en-ZA ff gd hi-IN hz ki lg ng nso ny sah son st-LS su sw tn ur ve wo xog zu"
 	COUNT_LANGS=25
 else
 	HG_LANGS=$*
