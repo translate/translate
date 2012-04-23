@@ -34,6 +34,7 @@ export USECPO=0
 hgverbosity="--quiet" # --verbose to make it noisy
 gitverbosity="--quiet" # --verbose to make it noisy
 svnverbosity="--quiet"
+pomigrate2verbosity="--quiet"
 
 for option in $*
 do
@@ -50,6 +51,13 @@ do
 			;;
 			--no-copyfiles)
 				opt_copyfiles=""
+			;;
+			--verbose)
+				hgverbosity=""
+				gitverbosity=""
+				svnverbosity=""
+				progress=bar
+				pomigrate2verbosity=""
 			;;
 			*) 
 			echo "Unkown option: $option"
@@ -228,7 +236,7 @@ do
 	# Comment out the following "pomigrate2"-line if migration should not be done.
 	tempdir=`mktemp -d tmp.XXXXXXXXXX`
 	[ -d ${PO_DIR}/${polang} ] && cp -R ${PO_DIR}/${polang} ${tempdir}/${polang}
-	pomigrate2 --use-compendium --pot2po --quiet ${tempdir}/${polang} ${POUPDATED_DIR}/${polang} ${L10N_DIR}/pot
+	pomigrate2 --use-compendium --pot2po $pomigrate2verbosity ${tempdir}/${polang} ${POUPDATED_DIR}/${polang} ${L10N_DIR}/pot
 	rm -rf ${tempdir}
 
 	## Cleanup migrated PO files
