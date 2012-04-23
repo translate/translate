@@ -106,7 +106,7 @@ POUPDATED_DIR_REL=`echo ${POUPDATED_DIR} | sed "s#${BUILD_DIR}/##"`
 	git checkout $gitverbosity
 	git stash pop $gitverbosity || true)
 else
-	git clone $gitverbosity git@github.com:translate/translate.git ${TOOLS_DIR}/translate
+	git clone $gitverbosity git@github.com:translate/translate.git ${TOOLS_DIR}/translate || git clone git://github.com/translate/translate.git ${TOOLS_DIR}/translate 
 fi
 
 export PYTHONPATH="${TOOLS_DIR}/translate":"$PYTHONPATH"
