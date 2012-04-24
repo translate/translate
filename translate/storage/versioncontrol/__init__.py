@@ -31,6 +31,7 @@
 
 import os
 import re
+import subprocess
 
 DEFAULT_RCS = ["svn", "cvs", "darcs", "git", "bzr", "hg"]
 """the names of all supported revision control systems
@@ -66,73 +67,29 @@ def __get_rcs_class(name):
     return __CACHED_RCS_CLASSES[name]
 
 
-# use either 'popen2' or 'subprocess' for command execution
-try:
-    # available for python >= 2.4
-    import subprocess
+def run_command(command, cwd=None):
+    """Runs a command (array of program name and arguments) and returns the
+    exitcode, the output and the error as a tuple.
 
-    # The subprocess module allows to use cross-platform command execution
-    # without using the shell (increases security).
-
-    def run_command(command, cwd=None):
-        """Runs a command (array of program name and arguments) and returns the
-        exitcode, the output and the error as a tuple.
-
-        :param command: list of arguments to be joined for a program call
-        :type command: list
-        :param cwd: optional directory where the command should be executed
-        :type cwd: str
-        """
-        # ok - we use "subprocess"
-        try:
-            proc = subprocess.Popen(args=command,
-                    stdout=subprocess.PIPE,
-                    stderr=subprocess.PIPE,
-                    stdin=subprocess.PIPE,
-                    cwd=cwd)
-            (output, error) = proc.communicate()
-            ret = proc.returncode
-            return ret, output, error
-        except OSError, err_msg:
-            # failed to run the program (e.g. the executable was not found)
-            return -1, "", err_msg
-
-except ImportError:
-    # fallback for python < 2.4
-    import popen2
-
-    def run_command(command, cwd=None):
-        """Runs a command (array of program name and arguments) and returns the
-        exitcode, the output and the error as a tuple.
-
-        There is no need to check for exceptions (like for subprocess above),
-        since popen2 opens a shell that will fail with an error code in case
-        of a missing executable.
-
-        :param command: list of arguments to be joined for a program call
-        :type command: list
-        :param cwd: optional directory where the command should be executed
-        :type cwd: str
-        """
-        escaped_command = " ".join([__shellescape(arg) for arg in command])
-        if cwd:
-            # "Popen3" uses shell execution anyway - so we do it the easy way
-            # there is no need to chdir back, since the the shell is separated
-            escaped_command = "cd %s; %s" % (__shellescape(cwd), escaped_command)
-        proc = popen2.Popen3(escaped_command, True)
-        (c_stdin, c_stdout, c_stderr) = (proc.tochild, proc.fromchild, proc.childerr)
-        output = c_stdout.read()
-        error = c_stderr.read()
-        ret = proc.wait()
-        c_stdout.close()
-        c_stderr.close()
-        c_stdin.close()
+    :param command: list of arguments to be joined for a program call
+    :type command: list
+    :param cwd: optional directory where the command should be executed
+    :type cwd: str
+    """
+    # ok - we use "subprocess"
+    try:
+        proc = subprocess.Popen(args=command,
+                stdout=subprocess.PIPE,
+                stderr=subprocess.PIPE,
+                stdin=subprocess.PIPE,
+                cwd=cwd)
+        (output, error) = proc.communicate()
+        ret = proc.returncode
         return ret, output, error
+    except OSError, err_msg:
+        # failed to run the program (e.g. the executable was not found)
+        return -1, "", err_msg
 
-
-def __shellescape(path):
-    """Shell-escape any non-alphanumeric characters."""
-    return re.sub(r'(\W)', r'\\\1', path)
 
 
 class GenericRevisionControlSystem:
