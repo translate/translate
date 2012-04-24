@@ -142,8 +142,12 @@ class GenericRevisionControlSystem:
         if result is None:
             raise IOError("Could not find revision control information: %s" \
                     % location)
-        else:
-            self.root_dir, self.location_abs, self.location_rel = result
+
+        self.root_dir, self.location_abs, self.location_rel = result
+        if not os.path.isdir(location):
+            if not self._file_exists(location):
+                raise IOError("Not present in repository: %s" % location)
+
 
     def _find_rcs_directory(self, rcs_obj, oldest_parent=None):
         """Try to find the metadata directory of the RCS
@@ -229,6 +233,12 @@ class GenericRevisionControlSystem:
         # we do not check for implemented functions - they raise
         # NotImplementedError exceptions anyway
         return True
+
+    def _file_exists(self, path):
+        """Method to check if a file exists ``in the repository``."""
+        # If getcleanfile() worked, we assume the file exits. Implementations
+        # can provide optimised versions.
+        return bool(self.getcleanfile())
 
     def getcleanfile(self, revision=None):
         """Dummy to be overridden by real implementations"""
