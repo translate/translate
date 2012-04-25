@@ -245,7 +245,7 @@ class GenericRevisionControlSystem:
         raise NotImplementedError("Incomplete RCS interface implementation:" \
                 + " 'getcleanfile' is missing")
 
-    def commit(self, revision=None, author=None):
+    def commit(self, message=None, author=None):
         """Dummy to be overridden by real implementations"""
         raise NotImplementedError("Incomplete RCS interface implementation:" \
                 + " 'commit' is missing")
