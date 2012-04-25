@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 #
-# Copyright 2004-2007 Zuza Software Foundation
+# Copyright 2004-2008,2012 Zuza Software Foundation
 #
 # This file is part of translate.
 #
@@ -52,6 +52,21 @@ class darcs(GenericRevisionControlSystem):
         if exitcode != 0:
             raise IOError("[Darcs] error running '%s': %s" % (command, error))
         return output_revert + output_pull
+
+    def add(self, files, message=None, author=None):
+        """Add and commit files."""
+        if not isinstance(files, list):
+            files = [files]
+        command = ["darcs", "add", "--repodir", self.root_dir] + files
+        exitcode, output, error = run_command(command)
+        if exitcode != 0:
+            raise IOError("[Darcs] Error running darcs command '%s': %s" \
+                    % (command, error))
+
+        # go down as deep as possible in the tree to avoid accidental commits
+        # TODO: explicitly commit files by name
+        youngest_ancestor = os.path.commonprefix(files)
+        return output + type(self)(youngest_ancestor).commit(message, author)
 
     def commit(self, message=None, author=None):
         """Commits the file and supplies the given commit message if present"""

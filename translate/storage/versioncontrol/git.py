@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 #
-# Copyright 2004-2007 Zuza Software Foundation
+# Copyright 2004-2008,2012 Zuza Software Foundation
 #
 # This file is part of translate.
 #
@@ -65,6 +65,19 @@ class git(GenericRevisionControlSystem):
         if exitcode != 0:
             raise IOError("[GIT] pull failed (%s): %s" % (command, error))
         return output_checkout + output_pull
+
+    def add(self, files, message=None, author=None):
+        """Add and commit the new files."""
+        if not isinstance(files, list):
+            files = [files]
+        args = ["add"] + files
+        command = self._get_git_command(args)
+        exitcode, output, error = run_command(command, self.root_dir)
+        if exitcode != 0:
+            raise IOError("[GIT] add of files in '%s') failed: %s" \
+                    % (self.root_dir, error))
+
+        return output + self.commit(message, author, add=False)
 
     def commit(self, message=None, author=None, add=True):
         """Commits the file and supplies the given commit message if present"""

@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 #
-# Copyright 2004-2007 Zuza Software Foundation
+# Copyright 2004-2008,2012 Zuza Software Foundation
 #
 # This file is part of translate.
 #
@@ -102,6 +102,26 @@ class cvs(GenericRevisionControlSystem):
                     % (command, error))
         else:
             return output
+
+    def add(self, files, message=None, author=None):
+        """Add and commit the new files."""
+        if not isinstance(files, list):
+            files = [files]
+        working_dir = os.path.dirname(self.location_abs)
+        command = ["cvs", "-Q", "add"]
+        if message:
+            command.extend(["-m", message])
+        command.extend(files)
+        exitcode, output, error = run_command(command, working_dir)
+        # raise an error or return successfully - depending on the CVS command
+        if exitcode != 0:
+            raise IOError("[CVS] Error running CVS command '%s': %s" \
+                    % (command, error))
+
+        # go down as deep as possible in the tree to avoid accidental commits
+        # TODO: explicitly commit files by name
+        youngest_ancestor = os.path.commonprefix(files)
+        return output + type(self)(youngest_ancestor).commit(message, author)
 
     def commit(self, message=None, author=None):
         """Commits the file and supplies the given commit message if present
