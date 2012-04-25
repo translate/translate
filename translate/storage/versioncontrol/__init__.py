@@ -98,13 +98,15 @@ class GenericRevisionControlSystem:
 
     Always inherit from this class to implement another RC interface.
 
-    At least the two attributes "RCS_METADIR" and "SCAN_PARENTS" must be
-    overriden by all implementations that derive from this class.
+    At least the two attributes :attr:`RCS_METADIR` and :attr:`SCAN_PARENTS`
+    must be overriden by all implementations that derive from this class.
 
     By default, all implementations can rely on the following attributes:
-      - root_dir: the parent of the metadata directory of the working copy
-      - location_abs: the absolute path of the RCS object
-      - location_rel: the path of the RCS object relative to 'root_dir'
+      - :attr:`root_dir`: the parent of the metadata directory of the
+        working copy
+      - :attr:`location_abs`: the absolute path of the RCS object
+      - :attr:`location_rel`: the path of the RCS object relative
+        to :attr:`root_dir`
     """
 
     RCS_METADIR = None
@@ -114,23 +116,23 @@ class GenericRevisionControlSystem:
     """
 
     SCAN_PARENTS = None
-    """whether to check the parent directories for the metadata directory of
+    """Whether to check the parent directories for the metadata directory of
     the RCS working copy
 
-    some revision control systems store their metadata directory only
+    Some revision control systems store their metadata directory only
     in the base of the working copy (e.g. bzr, GIT and Darcs)
-    use "True" for these RCS
+    use ``True`` for these RCS
 
-    other RCS store a metadata directory in every single directory of
+    Other RCS store a metadata directory in every single directory of
     the working copy (e.g. Subversion and CVS)
-    use "False" for these RCS
+    use ``False`` for these RCS
     """
 
     def __init__(self, location, oldest_parent=None):
-        """find the relevant information about this RCS object
+        """Find the relevant information about this RCS object
 
-        The IOError exception indicates that the specified object (file or
-        directory) is not controlled by the given version control system.
+        The :exc:`IOError` exception indicates that the specified object (file
+        or directory) is not controlled by the given version control system.
 
         :param oldest_parent: optional highest path where a recursive search
                               should be stopped
@@ -223,7 +225,7 @@ class GenericRevisionControlSystem:
         """Check if all necessary attributes are defined
 
         Useful to make sure, that a new implementation does not forget
-        something like "RCS_METADIR"
+        something like :attr:`RCS_METADIR`
         """
         if self.RCS_METADIR is None:
             raise IOError("Incomplete RCS interface implementation: " \
@@ -339,9 +341,9 @@ def commitfile(filename, message=None, author=None):
 
 
 def commitdirectory(directory, message=None, author=None):
-    """commit all files below the given directory
+    """Commit all files below the given directory.
 
-    files that are just symlinked into the directory are supported, too
+    Files that are just symlinked into the directory are supported, too
     """
     # for now all files are committed separately
     # should we combine them into one commit?
@@ -350,9 +352,9 @@ def commitdirectory(directory, message=None, author=None):
 
 
 def updatedirectory(directory):
-    """update all files below the given directory
+    """Update all files below the given directory.
 
-    files that are just symlinked into the directory are supported, too
+    Files that are just symlinked into the directory are supported, too
     """
     # for now all files are updated separately
     # should we combine them into one update?
