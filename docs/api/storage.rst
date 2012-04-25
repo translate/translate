@@ -464,6 +464,7 @@ versioncontrol
 --------------
 
 .. automodule:: translate.storage.versioncontrol
+   :members:
    :show-inheritance:
 
 
