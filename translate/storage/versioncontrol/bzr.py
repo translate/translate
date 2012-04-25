@@ -30,8 +30,15 @@ def is_available():
     return exitcode == 0
 
 
+_version = None
+
+
 def get_version():
     """return a tuple of (major, minor) for the installed bazaar client"""
+    global _version
+    if _version:
+        return _version
+
     import re
     command = ["bzr", "--version"]
     exitcode, output, error = run_command(command)
@@ -41,7 +48,8 @@ def get_version():
         if version_match:
             major, minor = version_match.group().split(".")
             if (major.isdigit() and minor.isdigit()):
-                return (int(major), int(minor))
+                _version = (int(major), int(minor))
+                return _version
     # if anything broke before, then we return the invalid version number
     return (0, 0)
 
