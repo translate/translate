@@ -250,6 +250,11 @@ class GenericRevisionControlSystem:
         raise NotImplementedError("Incomplete RCS interface implementation:" \
                 + " 'commit' is missing")
 
+    def add(self, files, message=None, author=None):
+        """Dummy to be overridden by real implementations"""
+        raise NotImplementedError("Incomplete RCS interface implementation:" \
+                + " 'add' is missing")
+
     def update(self, revision=None):
         """Dummy to be overridden by real implementations"""
         raise NotImplementedError("Incomplete RCS interface implementation:" \
