@@ -20,13 +20,15 @@
 
 """This module manages interaction with version control systems.
 
-   To implement support for a new version control system, inherit the class
-   GenericRevisionControlSystem.
+To implement support for a new version control system, inherit from
+:class:`GenericRevisionControlSystem`.
 
-   TODO:
-     - add authentication handling
-     - 'commitdirectory' should do a single commit instead of one for each file
-     - maybe implement some caching for 'get_versioned_object' - check profiler
+TODO:
+  - Add authentication handling
+  - :function:`commitdirectory` should do a single commit instead of one for
+    each file
+  - Maybe implement some caching for :function:`get_versioned_object` - check
+    profiler
 """
 
 import os
@@ -91,7 +93,6 @@ def run_command(command, cwd=None):
         return -1, "", err_msg
 
 
-
 class GenericRevisionControlSystem:
     """The super class for all version control classes.
 
@@ -148,7 +149,6 @@ class GenericRevisionControlSystem:
             if not self._file_exists(location):
                 raise IOError("Not present in repository: %s" % location)
 
-
     def _find_rcs_directory(self, rcs_obj, oldest_parent=None):
         """Try to find the metadata directory of the RCS
 
@@ -157,7 +157,8 @@ class GenericRevisionControlSystem:
         :type oldest_parent: str
         :rtype: tuple
         :return:
-          - the absolute path of the directory, that contains the metadata directory
+          - the absolute path of the directory, that contains the metadata
+            directory
           - the absolute path of the RCS object
           - the relative path of the RCS object based on the directory above
         """
@@ -333,7 +334,8 @@ def getcleanfile(filename, revision=None):
 
 
 def commitfile(filename, message=None, author=None):
-    return get_versioned_object(filename).commit(message=message, author=author)
+    return get_versioned_object(filename).commit(message=message,
+                                                 author=author)
 
 
 def commitdirectory(directory, message=None, author=None):
