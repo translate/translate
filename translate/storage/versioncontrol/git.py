@@ -66,14 +66,16 @@ class git(GenericRevisionControlSystem):
             raise IOError("[GIT] pull failed (%s): %s" % (command, error))
         return output_checkout + output_pull
 
-    def commit(self, message=None, author=None):
+    def commit(self, message=None, author=None, add=True):
         """Commits the file and supplies the given commit message if present"""
         # add the file
-        command = self._get_git_command(["add", self.location_rel])
-        exitcode, output_add, error = run_command(command, self.root_dir)
-        if exitcode != 0:
-            raise IOError("[GIT] add of ('%s', '%s') failed: %s" \
-                    % (self.root_dir, self.location_rel, error))
+        output_add = ""
+        if add:
+            command = self._get_git_command(["add", self.location_rel])
+            exitcode, output_add, error = run_command(command, self.root_dir)
+            if exitcode != 0:
+                raise IOError("[GIT] add of ('%s', '%s') failed: %s" \
+                        % (self.root_dir, self.location_rel, error))
         # commit file
         command = self._get_git_command(["commit"])
         if message:
