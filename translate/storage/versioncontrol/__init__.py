@@ -25,9 +25,9 @@ To implement support for a new version control system, inherit from
 
 TODO:
   - Add authentication handling
-  - :function:`commitdirectory` should do a single commit instead of one for
+  - :func:`commitdirectory` should do a single commit instead of one for
     each file
-  - Maybe implement some caching for :function:`get_versioned_object` - check
+  - Maybe implement some caching for :func:`get_versioned_object` - check
     profiler
 """
 
