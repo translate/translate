@@ -28,15 +28,22 @@ def is_available():
     exitcode, output, error = run_command(["svn", "--version"])
     return exitcode == 0
 
+_version = None
+
 
 def get_version():
     """return a tuple of (major, minor) for the installed subversion client"""
+    global _version
+    if _version:
+        return _version
+
     command = ["svn", "--version", "--quiet"]
     exitcode, output, error = run_command(command)
     if exitcode == 0:
         major, minor = output.strip().split(".")[0:2]
         if (major.isdigit() and minor.isdigit()):
-            return (int(major), int(minor))
+            _version = (int(major), int(minor))
+            return _version
     # something went wrong above
     return (0, 0)
 
