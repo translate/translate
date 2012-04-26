@@ -22,7 +22,7 @@
 import os
 
 from translate.storage.versioncontrol import GenericRevisionControlSystem
-from translate.storage.versioncontrol import run_command
+from translate.storage.versioncontrol import run_command, prepare_files
 
 
 def is_available():
@@ -86,9 +86,7 @@ class hg(GenericRevisionControlSystem):
 
     def add(self, files, message=None, author=None):
         """Add and commit the new files."""
-        if not isinstance(files, list):
-            files = [files]
-        command = ["hg", "add", "-q", "--parents"] + files
+        command = ["hg", "add", "-q", "--parents"] + prepare_files(files)
         exitcode, output, error = run_command(command)
         if exitcode != 0:
             raise IOError("[Mercurial] Error running '%s': %s" % (command, error))

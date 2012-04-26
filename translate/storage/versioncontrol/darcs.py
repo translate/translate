@@ -22,7 +22,7 @@
 import os
 
 from translate.storage.versioncontrol import GenericRevisionControlSystem
-from translate.storage.versioncontrol import run_command
+from translate.storage.versioncontrol import run_command, prepare_files
 
 
 def is_available():
@@ -57,9 +57,7 @@ class darcs(GenericRevisionControlSystem):
 
     def add(self, files, message=None, author=None):
         """Add and commit files."""
-        if not isinstance(files, list):
-            files = [files]
-        command = ["darcs", "add", "--repodir", self.root_dir] + files
+        command = ["darcs", "add", "--repodir", self.root_dir] + prepare_files(files)
         exitcode, output, error = run_command(command)
         if exitcode != 0:
             raise IOError("[Darcs] Error running darcs command '%s': %s" \

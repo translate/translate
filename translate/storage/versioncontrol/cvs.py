@@ -20,7 +20,7 @@
 
 import os
 from translate.storage.versioncontrol import GenericRevisionControlSystem
-from translate.storage.versioncontrol import run_command
+from translate.storage.versioncontrol import run_command, prepare_files
 
 
 def is_available():
@@ -105,13 +105,11 @@ class cvs(GenericRevisionControlSystem):
 
     def add(self, files, message=None, author=None):
         """Add and commit the new files."""
-        if not isinstance(files, list):
-            files = [files]
         working_dir = os.path.dirname(self.location_abs)
         command = ["cvs", "-Q", "add"]
         if message:
             command.extend(["-m", message])
-        command.extend(files)
+        command.extend(prepare_files(files))
         exitcode, output, error = run_command(command, working_dir)
         # raise an error or return successfully - depending on the CVS command
         if exitcode != 0:

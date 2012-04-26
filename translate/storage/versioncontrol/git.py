@@ -25,7 +25,7 @@
 import os
 
 from translate.storage.versioncontrol import GenericRevisionControlSystem
-from translate.storage.versioncontrol import run_command
+from translate.storage.versioncontrol import run_command, prepare_filelist
 
 
 def is_available():
@@ -68,9 +68,7 @@ class git(GenericRevisionControlSystem):
 
     def add(self, files, message=None, author=None):
         """Add and commit the new files."""
-        if not isinstance(files, list):
-            files = [files]
-        args = ["add"] + files
+        args = ["add"] + prepare_filelist(files)
         command = self._get_git_command(args)
         exitcode, output, error = run_command(command, self.root_dir)
         if exitcode != 0:

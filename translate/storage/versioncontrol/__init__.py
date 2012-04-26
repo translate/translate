@@ -93,6 +93,12 @@ def run_command(command, cwd=None):
         return -1, "", err_msg
 
 
+def prepare_filelist(files):
+    if not isinstance(files, list):
+        files = [files]
+    return [os.path.realpath(f) for f in files]
+
+
 class GenericRevisionControlSystem:
     """The super class for all version control classes.
 
