@@ -22,7 +22,7 @@
 import os
 
 from translate.storage.versioncontrol import GenericRevisionControlSystem
-from translate.storage.versioncontrol import run_command, prepare_files
+from translate.storage.versioncontrol import run_command, prepare_filelist
 
 
 def is_available():
@@ -80,7 +80,7 @@ class svn(GenericRevisionControlSystem):
     def add(self, files, message=None, author=None):
         """Add and commit the new files."""
         command = ["svn", "add", "-q", "--non-interactive", "--parents"] + \
-                   prepare_files(files)
+                   prepare_filelist(files)
         exitcode, output, error = run_command(command)
         if exitcode != 0:
             raise IOError("[SVN] Error running SVN command '%s': %s" % (command, error))

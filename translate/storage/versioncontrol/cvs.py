@@ -20,7 +20,7 @@
 
 import os
 from translate.storage.versioncontrol import GenericRevisionControlSystem
-from translate.storage.versioncontrol import run_command, prepare_files
+from translate.storage.versioncontrol import run_command, prepare_filelist
 
 
 def is_available():
@@ -109,7 +109,7 @@ class cvs(GenericRevisionControlSystem):
         command = ["cvs", "-Q", "add"]
         if message:
             command.extend(["-m", message])
-        command.extend(prepare_files(files))
+        command.extend(prepare_filelist(files))
         exitcode, output, error = run_command(command, working_dir)
         # raise an error or return successfully - depending on the CVS command
         if exitcode != 0:
