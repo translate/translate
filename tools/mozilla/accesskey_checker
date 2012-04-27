@@ -16,6 +16,25 @@
 # with this program; if not, write to the Free Software Foundation, Inc.,
 # 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 
+# Finds problems with accesskeys in Mozilla DTD files
+#
+# Mozilla uses a system of naming such that:
+#   something.label
+#   something.accesskey
+# can create something in the UI with a label and accelerators
+# our mnemonic.
+#
+# The Translate Toolkit uses this alignment to convert the
+# seperate lable and accesskey into one entry.
+#
+# This tool tries to find problem with this alignment.  These could include:
+#  * Missing .label entry
+#  * Strangely names accesskeys
+#  * etc
+#
+#  TODO
+#  * Include .properties files
+
 # find .accesskey items and report which ones don't have a corresponding label
 for accesskeysuffix in accesskey
   do
