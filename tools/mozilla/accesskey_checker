@@ -35,7 +35,13 @@
 #  TODO
 #  * Include .properties files
 
-# find .accesskey items and report which ones don't have a corresponding label
+function header()
+{
+    echo
+    echo "### $1 ###"
+}
+
+header "Find .accesskey items and report those which don't have a corresponding .label"
 for accesskeysuffix in accesskey
   do
     for d in `find . -name "*.dtd"`
@@ -48,7 +54,7 @@ for accesskeysuffix in accesskey
       done
   done
 
-# report all .accessKey or .akey suffixes
+header "Report all non-standard .accessKey, .akey, etc suffixes"
 for accesskeysuffix in accessKey akey
   do
     for d in `find . -name "*.dtd"`
