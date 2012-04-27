@@ -42,7 +42,7 @@ function header()
 }
 
 header "Find .accesskey items and report those which don't have a corresponding .label"
-for accesskeysuffix in accesskey
+for accesskeysuffix in accesskey accessKey
 do
     for d in `find . -name "*.dtd"`
     do
@@ -54,8 +54,8 @@ do
     done
 done
 
-header "Report all non-standard .accessKey, .akey, etc suffixes"
-for accesskeysuffix in accessKey akey access
+header "Report all non-standard .akey, etc suffixes"
+for accesskeysuffix in akey access
 do
     for d in `find . -name "*.dtd"`
     do
