@@ -55,7 +55,7 @@ do
 done
 
 header "Report all non-standard .accessKey, .akey, etc suffixes"
-for accesskeysuffix in accessKey akey
+for accesskeysuffix in accessKey akey access
 do
     for d in `find . -name "*.dtd"`
     do
