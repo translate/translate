@@ -283,7 +283,7 @@ def map_data_file(data_file):
 
 
 def getdatafiles():
-    datafiles = initfiles + infofiles
+    datafiles = initfiles
 
     def listfiles(srcdir):
         return join(sitepackages, srcdir), [join(srcdir, f) for f in os.listdir(srcdir) if os.path.isfile(join(srcdir, f))]
