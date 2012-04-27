@@ -46,7 +46,7 @@ for accesskeysuffix in accesskey accessKey
 do
     for d in `find . -name "*.dtd"`
     do
-        for accesskeyprefix in `grep [.]${accesskeysuffix} $d | sed 's/^.* \([^ ]*\).'"${accesskeysuffix}"'.*$/\1/'`
+        for accesskeyprefix in `grep "[.]${accesskeysuffix} " $d | sed 's/^.* \([^ ]*\).'"${accesskeysuffix}"'.*$/\1/'`
         do
             otheroptions=`grep "[ ]${accesskeyprefix}[.]" $d | sed 's/^.* '"${accesskeyprefix}"'[.]\([^ ]*\).*$/\1/'`
             echo $d $accesskeyprefix: $otheroptions | egrep -v '\<label\>'
