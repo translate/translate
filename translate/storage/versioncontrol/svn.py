@@ -63,8 +63,8 @@ class svn(GenericRevisionControlSystem):
         exitcode, output_revert, error = run_command(command)
         # any errors?
         if exitcode != 0:
-            raise IOError("[SVN] Subversion error running '%s': %s" \
-                    % (command, error))
+            raise IOError("[SVN] Subversion error running '%s': %s" %
+                          (command, error))
         # update the working copy to the given revision
         command = ["svn", "update"]
         if not revision is None:
@@ -73,8 +73,8 @@ class svn(GenericRevisionControlSystem):
         command.append(self.location_abs)
         exitcode, output_update, error = run_command(command)
         if exitcode != 0:
-            raise IOError("[SVN] Subversion error running '%s': %s" \
-                    % (command, error))
+            raise IOError("[SVN] Subversion error running '%s': %s" %
+                          (command, error))
         return output_revert + output_update
 
     def add(self, files, message=None, author=None):
@@ -83,7 +83,8 @@ class svn(GenericRevisionControlSystem):
                    prepare_filelist(files)
         exitcode, output, error = run_command(command)
         if exitcode != 0:
-            raise IOError("[SVN] Error running SVN command '%s': %s" % (command, error))
+            raise IOError("[SVN] Error running SVN command '%s': %s" %
+                          (command, error))
 
         # go down as deep as possible in the tree to avoid accidental commits
         # TODO: explicitly commit files by name
@@ -105,7 +106,8 @@ class svn(GenericRevisionControlSystem):
         command.append(self.location_abs)
         exitcode, output, error = run_command(command)
         if exitcode != 0:
-            raise IOError("[SVN] Error running SVN command '%s': %s" % (command, error))
+            raise IOError("[SVN] Error running SVN command '%s': %s" %
+                          (command, error))
         return output
 
     def getcleanfile(self, revision=None):
@@ -117,5 +119,6 @@ class svn(GenericRevisionControlSystem):
         command.append(self.location_abs)
         exitcode, output, error = run_command(command)
         if exitcode != 0:
-            raise IOError("[SVN] Subversion error running '%s': %s" % (command, error))
+            raise IOError("[SVN] Subversion error running '%s': %s" %
+                          (command, error))
         return output

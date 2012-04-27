@@ -71,17 +71,20 @@ class hg(GenericRevisionControlSystem):
                 "--all", self.location_abs]
         exitcode, output_revert, error = run_command(command)
         if exitcode != 0:
-            raise IOError("[Mercurial] error running '%s': %s" % (command, error))
+            raise IOError("[Mercurial] error running '%s': %s" %
+                          (command, error))
         # pull new patches
         command = ["hg", "-R", self.root_dir, "pull"]
         exitcode, output_pull, error = run_command(command)
         if exitcode != 0:
-            raise IOError("[Mercurial] error running '%s': %s" % (command, error))
+            raise IOError("[Mercurial] error running '%s': %s" %
+                          (command, error))
         # update working directory
         command = ["hg", "-R", self.root_dir, "update"]
         exitcode, output_update, error = run_command(command)
         if exitcode != 0:
-            raise IOError("[Mercurial] error running '%s': %s" % (command, error))
+            raise IOError("[Mercurial] error running '%s': %s" %
+                          (command, error))
         return output_revert + output_pull + output_update
 
     def add(self, files, message=None, author=None):
@@ -89,7 +92,8 @@ class hg(GenericRevisionControlSystem):
         command = ["hg", "add", "-q", "--parents"] + prepare_filelist(files)
         exitcode, output, error = run_command(command)
         if exitcode != 0:
-            raise IOError("[Mercurial] Error running '%s': %s" % (command, error))
+            raise IOError("[Mercurial] Error running '%s': %s" %
+                          (command, error))
 
         # go down as deep as possible in the tree to avoid accidental commits
         # TODO: explicitly commit files by name
@@ -102,7 +106,8 @@ class hg(GenericRevisionControlSystem):
             message = ""
         # commit changes
         command = ["hg", "-R", self.root_dir, "commit", "-m", message]
-        # add the 'author' argument, if it was given (only supported since v1.0)
+        # add the 'author' argument, if it was given (only supported
+        # since v1.0)
         if author and (get_version() >= (1, 0)):
             command.extend(["--user", author])
         # the location is the last argument

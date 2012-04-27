@@ -19,6 +19,7 @@
 # along with this program; if not, see <http://www.gnu.org/licenses/>.
 
 import os
+
 from translate.storage.versioncontrol import GenericRevisionControlSystem
 from translate.storage.versioncontrol import run_command, prepare_filelist
 
@@ -98,8 +99,8 @@ class cvs(GenericRevisionControlSystem):
             pass
         # raise an error or return successfully - depending on the CVS command
         if exitcode != 0:
-            raise IOError("[CVS] Error running CVS command '%s': %s" \
-                    % (command, error))
+            raise IOError("[CVS] Error running CVS command '%s': %s" %
+                          (command, error))
         else:
             return output
 
@@ -113,8 +114,8 @@ class cvs(GenericRevisionControlSystem):
         exitcode, output, error = run_command(command, working_dir)
         # raise an error or return successfully - depending on the CVS command
         if exitcode != 0:
-            raise IOError("[CVS] Error running CVS command '%s': %s" \
-                    % (command, error))
+            raise IOError("[CVS] Error running CVS command '%s': %s" %
+                          (command, error))
 
         # go down as deep as possible in the tree to avoid accidental commits
         # TODO: explicitly commit files by name
@@ -136,8 +137,8 @@ class cvs(GenericRevisionControlSystem):
         exitcode, output, error = run_command(command, working_dir)
         # raise an error or return successfully - depending on the CVS command
         if exitcode != 0:
-            raise IOError("[CVS] Error running CVS command '%s': %s" \
-                    % (command, error))
+            raise IOError("[CVS] Error running CVS command '%s': %s" %
+                          (command, error))
         else:
             return output
 
