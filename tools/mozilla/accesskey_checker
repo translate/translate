@@ -1,0 +1,27 @@
+#!/bin/bash
+# find .accesskey items and report which ones don't have a corresponding label
+for accesskeysuffix in accesskey
+  do
+    for d in `find . -name "*.dtd"`
+      do
+        for accesskeyprefix in `grep [.]${accesskeysuffix} $d | sed 's/^.* \([^ ]*\).'"${accesskeysuffix}"'.*$/\1/'`
+          do
+            otheroptions=`grep "[ ]${accesskeyprefix}[.]" $d | sed 's/^.* '"${accesskeyprefix}"'[.]\([^ ]*\).*$/\1/'`
+            echo $d $accesskeyprefix: $otheroptions | egrep -v '\<label\>'
+          done
+      done
+  done
+
+# report all .accessKey or .akey suffixes
+for accesskeysuffix in accessKey akey
+  do
+    for d in `find . -name "*.dtd"`
+      do
+        for accesskeyprefix in `grep [.]${accesskeysuffix} $d | sed 's/^.* \([^ ]*\).'"${accesskeysuffix}"'.*$/\1/'`
+          do
+            otheroptions=`grep "[ ]${accesskeyprefix}[.]" $d | sed 's/^.* '"${accesskeyprefix}"'[.]\([^ ]*\).*$/\1/'`
+            echo $d $accesskeyprefix: $otheroptions
+          done
+      done
+  done
+
