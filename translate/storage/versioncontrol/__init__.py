@@ -99,7 +99,7 @@ def prepare_filelist(files):
     return [os.path.realpath(f) for f in files]
 
 
-class GenericRevisionControlSystem:
+class GenericRevisionControlSystem(object):
     """The super class for all version control classes.
 
     Always inherit from this class to implement another RC interface.
