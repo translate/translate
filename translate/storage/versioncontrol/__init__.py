@@ -147,6 +147,7 @@ class GenericRevisionControlSystem:
         # check if the implementation looks ok - otherwise raise IOError
         self._self_check()
         # search for the repository information
+        location = os.path.normpath(location)
         result = self._find_rcs_directory(location, oldest_parent)
         if result is None:
             raise IOError("Could not find revision control information: %s" \
