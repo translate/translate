@@ -96,9 +96,7 @@ class svn(GenericRevisionControlSystem):
 
         the 'author' parameter is used for revision property 'translate:author'
         """
-        command = ["svn", "-q", "--non-interactive", "commit"]
-        if message:
-            command.extend(["-m", message])
+        command = ["svn", "-q", "--non-interactive", "commit", "-m", message or ""]
         # the "--with-revprop" argument is support since svn v1.5
         if author and (get_version() >= (1, 5)):
             command.extend(["--with-revprop", "translate:author=%s" % author])
