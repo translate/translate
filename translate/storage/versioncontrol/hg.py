@@ -22,7 +22,7 @@
 import os
 
 from translate.storage.versioncontrol import GenericRevisionControlSystem
-from translate.storage.versioncontrol import run_command, prepare_filelist
+from translate.storage.versioncontrol import run_command, prepare_filelist, youngest_ancestor
 
 
 def is_available():
@@ -98,8 +98,8 @@ class hg(GenericRevisionControlSystem):
 
         # go down as deep as possible in the tree to avoid accidental commits
         # TODO: explicitly commit files by name
-        youngest_ancestor = os.path.commonprefix(files)
-        return output + type(self)(youngest_ancestor).commit(message, author)
+        ancestor = youngest_ancestor(files)
+        return output + type(self)(ancestor).commit(message, author)
 
     def commit(self, message=None, author=None):
         """Commits the file and supplies the given commit message if present"""
