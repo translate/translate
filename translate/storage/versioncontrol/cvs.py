@@ -110,7 +110,8 @@ class cvs(GenericRevisionControlSystem):
         command = ["cvs", "-Q", "add"]
         if message:
             command.extend(["-m", message])
-        command.extend(prepare_filelist(files))
+        files = prepare_filelist(files)
+        command.extend(files)
         exitcode, output, error = run_command(command, working_dir)
         # raise an error or return successfully - depending on the CVS command
         if exitcode != 0:

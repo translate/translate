@@ -79,8 +79,8 @@ class svn(GenericRevisionControlSystem):
 
     def add(self, files, message=None, author=None):
         """Add and commit the new files."""
-        command = ["svn", "add", "-q", "--non-interactive", "--parents"] + \
-                   prepare_filelist(files)
+        files = prepare_filelist(files)
+        command = ["svn", "add", "-q", "--non-interactive", "--parents"] + files
         exitcode, output, error = run_command(command)
         if exitcode != 0:
             raise IOError("[SVN] Error running SVN command '%s': %s" %

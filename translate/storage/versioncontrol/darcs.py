@@ -57,7 +57,8 @@ class darcs(GenericRevisionControlSystem):
 
     def add(self, files, message=None, author=None):
         """Add and commit files."""
-        command = ["darcs", "add", "--repodir", self.root_dir] + prepare_filelist(files)
+        files = prepare_filelist(files)
+        command = ["darcs", "add", "--repodir", self.root_dir] + files
         exitcode, output, error = run_command(command)
         if exitcode != 0:
             raise IOError("[Darcs] Error running darcs command '%s': %s" \

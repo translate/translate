@@ -78,7 +78,8 @@ class bzr(GenericRevisionControlSystem):
 
     def add(self, files, message=None, author=None):
         """Add and commit files."""
-        command = ["bzr", "add"] + prepare_filelist(files)
+        files = prepare_filelist(files)
+        command = ["bzr", "add"] + files
         exitcode, output, error = run_command(command)
         if exitcode != 0:
             raise IOError("[BZR] add in '%s' failed: %s" \
