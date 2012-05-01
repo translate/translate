@@ -87,11 +87,12 @@ def unquotefromdtd(source):
 def removeinvalidamps(name, value):
     """Find and remove ampersands that are not part of an entity definition.
 
-    A stray & in a DTD file can break an applications ability to parse the file.  In Mozilla
-    localisation this is very important and these can break the parsing of files used in XUL
-    and thus break interface rendering.  Tracking down the problem is very difficult,
-    thus by removing potential broken & and warning the users we can ensure that the output
-    DTD will always be parsable.
+    A stray & in a DTD file can break an application's ability to parse the
+    file. In Mozilla localisation this is very important and these can break the
+    parsing of files used in XUL and thus break interface rendering. Tracking
+    down the problem is very difficult, thus by removing potential broken
+    ampersand and warning the users we can ensure that the output DTD will
+    always be parsable.
 
     :type name: String
     :param name: Entity name
@@ -130,7 +131,7 @@ def removeinvalidamps(name, value):
 
 
 class dtdunit(base.TranslationUnit):
-    """this class represents an entity definition from a dtd file (and possibly associated comments)"""
+    """An entity definition from a DTD file (and any associated comments)."""
 
     def __init__(self, source=""):
         """construct the dtdunit, prepare it for parsing"""
@@ -395,7 +396,7 @@ class dtdunit(base.TranslationUnit):
 
 
 class dtdfile(base.TranslationStore):
-    """this class represents a .dtd file, made up of dtdunits"""
+    """A .dtd file made up of dtdunits."""
     UnitClass = dtdunit
 
     def __init__(self, inputfile=None):
