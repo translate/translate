@@ -40,14 +40,14 @@ function header()
 }
 
 header "Find .accesskey items and report those which don't have a corresponding .label"
-for accesskeysuffix in accesskey accessKey
+for accesskeysuffix in accesskey accessKey akey
 do
     for d in `find . -name "*.dtd"`
     do
         for accesskeyprefix in `grep "[.]${accesskeysuffix} " $d | sed 's/^.* \([^ ]*\).'"${accesskeysuffix}"'.*$/\1/'`
         do
             otheroptions=`grep "[ ]${accesskeyprefix}[.]" $d | sed 's/^.* '"${accesskeyprefix}"'[.]\([^ ]*\).*$/\1/'`
-            echo $d $accesskeyprefix: $otheroptions | egrep -v '\<label\>'
+            echo $d $accesskeyprefix: $otheroptions | egrep -v '\<(label|title)\>'
         done
     done
 done
