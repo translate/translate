@@ -21,16 +21,14 @@
 # Mozilla uses a system of naming such that:
 #   something.label
 #   something.accesskey
-# can create something in the UI with a label and accelerators
-# our mnemonic.
+# can create something in the UI with a label and accelerator/mnemonic.
 #
-# The Translate Toolkit uses this alignment to convert the
-# seperate lable and accesskey into one entry.
+# The Translate Toolkit uses this alignment to convert the seperate lable and
+# accesskey into one entry with the accelerator preceded by an ampersand.
 #
-# This tool tries to find problem with this alignment.  These could include:
+# This tool tries to find problems with this alignment. These could include:
 #  * Missing .label entry
-#  * Strangely names accesskeys
-#  * etc
+#  * Strangely named accesskeys
 #
 #  TODO
 #  * Include .properties files
