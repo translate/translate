@@ -22,3 +22,12 @@ def test_pop():
     value = d.pop(2)
     assert len(d.order) == 0
     assert value == 3
+
+
+def test_cidict_has_key():
+    cid = dictutils.cidict()
+    cid['lower'] = 'lowercase'
+    assert 'lower' in cid
+    assert 'Lower' in cid
+    assert 'LOWER' in cid
+    assert 'upper' not in cid
