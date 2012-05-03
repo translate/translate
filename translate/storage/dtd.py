@@ -62,11 +62,12 @@ def quotefordtd(source):
         source = source.replace("%", "&#x25;")
     if '"' in source:
         if "'" in source:
-            return "'" + source.replace("'", '&apos;') + "'"
+            value = "'" + source.replace("'", '&apos;') + "'"
         else:
-            return quote.singlequotestr(source)
+            value = quote.singlequotestr(source)
     else:
-        return quote.quotestr(source)
+        value = quote.quotestr(source)
+    return value.encode('utf-8')
 
 
 def unquotefromdtd(source):
@@ -81,7 +82,7 @@ def unquotefromdtd(source):
     extracted = extracted.replace("&#x25;", "%")
     # the quote characters should be the first and last characters in the string
     # of course there could also be quote characters within the string; not handled here
-    return extracted
+    return extracted.decode('utf-8')
 
 
 def removeinvalidamps(name, value):
@@ -168,6 +169,21 @@ class dtdunit(base.TranslationUnit):
         """gets the unquoted target string"""
         return unquotefromdtd(self.definition)
     target = property(gettarget, settarget)
+
+    def getid(self):
+        return self.entity
+
+    def setid(self, new_id):
+        self.entity = new_id
+
+    def getlocations(self):
+        """Return the entity as location (identifier)."""
+        assert quote.rstripeol(self.entity) == self.entity
+        return [self.entity]
+
+    def addlocation(self, location):
+        """Set the entity to the given "location"."""
+        self.entity = location
 
     def isnull(self):
         """returns whether this dtdunit doesn't actually have an entity definition"""
