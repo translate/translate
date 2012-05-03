@@ -48,9 +48,9 @@ class dtd2po:
         self.duplicatestyle = duplicatestyle
 
     def convertcomments(self, dtd_unit, po_unit):
-        entity = quote.rstripeol(dtd_unit.entity)
+        entity = dtd_unit.getid()
         if len(entity) > 0:
-            po_unit.addlocation(dtd_unit.entity)
+            po_unit.addlocation(entity)
         for commenttype, comment in dtd_unit.comments:
             # handle groups
             if (commenttype == "locgroupstart"):
@@ -75,7 +75,7 @@ class dtd2po:
 
     def convertstrings(self, dtd_unit, po_unit):
         # extract the string, get rid of quoting
-        unquoted = dtd.unquotefromdtd(dtd_unit.definition).replace("\r", "")
+        unquoted = dtd_unit.source.replace("\r", "")
         # escape backslashes... but not if they're for a newline
         # unquoted = unquoted.replace("\\", "\\\\").replace("\\\\n", "\\n")
         # now split the string into lines and quote them
@@ -122,13 +122,13 @@ class dtd2po:
                 actualnoteend = locnote.find('-->', idend)
                 actualnote = locnote[actualnotestart+1:actualnoteend].strip()
                 # if it's for this entity, process it
-                if dtd_unit.entity == entity:
+                if dtd_unit.getid() == entity:
                     # if it says don't translate (and nothing more),
                     if actualnote.startswith("DONT_TRANSLATE"):
                         # take out the entity,definition and the
                         # DONT_TRANSLATE comment
-                        dtd_unit.entity = ""
-                        dtd_unit.definition = ""
+                        dtd_unit.setid("")
+                        dtd_unit.source = ""
                         del dtd_unit.comments[commentnum]
                         # finished this for loop
                         break
@@ -164,8 +164,8 @@ class dtd2po:
         po_unit.addnote(labelpo.getnotes("translator"), "translator")
         po_unit.addnote(accesskeypo.getnotes("translator"), "translator")
         # redo the strings from original dtd...
-        label = dtd.unquotefromdtd(labeldtd.definition).decode('UTF-8')
-        accesskey = dtd.unquotefromdtd(accesskeydtd.definition).decode('UTF-8')
+        label = labeldtd.source
+        accesskey = accesskeydtd.source
         label = accesskeyfn.combine(label, accesskey)
         if label is None:
             return None
@@ -195,11 +195,11 @@ class dtd2po:
         """converts a dtd unit from dtd_store to a po unit, handling mixed
         entities along the way..."""
         # keep track of whether accesskey and label were combined
-        if dtd_unit.entity in self.mixedentities:
+        entity = dtd_unit.getid()
+        if entity in self.mixedentities:
             # use special convertmixed unit which produces one pounit with
             # both combined for the label and None for the accesskey
-            alreadymixed = self.mixedentities[dtd_unit.entity].get(mixbucket,
-                                                                 None)
+            alreadymixed = self.mixedentities[entity].get(mixbucket, None)
             if alreadymixed:
                 # we are successfully throwing this away...
                 return None
@@ -209,18 +209,18 @@ class dtd2po:
                 labeldtd, accesskeydtd = None, None
                 labelentity, accesskeyentity = None, None
                 for labelsuffix in dtd.labelsuffixes:
-                    if dtd_unit.entity.endswith(labelsuffix):
-                        entitybase = dtd_unit.entity[:dtd_unit.entity.rfind(labelsuffix)]
+                    if entity.endswith(labelsuffix):
+                        entitybase = entity[:entity.rfind(labelsuffix)]
                         for akeytype in dtd.accesskeysuffixes:
                             if (entitybase + akeytype) in dtd_store.index:
-                                labelentity, labeldtd = dtd_unit.entity, dtd_unit
+                                labelentity, labeldtd = entity, dtd_unit
                                 accesskeyentity = labelentity[:labelentity.rfind(labelsuffix)] + akeytype
                                 accesskeydtd = dtd_store.index[accesskeyentity]
                                 break
                 else:
                     for akeytype in dtd.accesskeysuffixes:
-                        if dtd_unit.entity.endswith(akeytype):
-                            accesskeyentity, accesskeydtd = dtd_unit.entity, dtd_unit
+                        if entity.endswith(akeytype):
+                            accesskeyentity, accesskeydtd = entity, dtd_unit
                             for labelsuffix in dtd.labelsuffixes:
                                 labelentity = accesskeyentity[:accesskeyentity.rfind(akeytype)] + labelsuffix
                                 if labelentity in dtd_store.index:
@@ -284,13 +284,14 @@ class dtd2po:
                 continue
             origpo = self.convertdtdunit(origdtdfile, origdtd,
                                          mixbucket="orig")
-            if origdtd.entity in self.mixedentities:
-                mixedentitydict = self.mixedentities[origdtd.entity]
+            orig_entity = origdtd.getid()
+            if orig_entity in self.mixedentities:
+                mixedentitydict = self.mixedentities[orig_entity]
                 if "orig" not in mixedentitydict:
                     # this means that the entity is mixed in the translation,
                     # but not the original - treat as unmixed
                     mixbucket = "orig"
-                    del self.mixedentities[origdtd.entity]
+                    del self.mixedentities[orig_entity]
                 elif mixedentitydict["orig"]:
                     # the original entity is already mixed successfully
                     mixbucket = "translate"
@@ -303,8 +304,8 @@ class dtd2po:
                 # this means its a mixed entity (with accesskey) that's
                 # already been dealt with)
                 continue
-            if origdtd.entity in translateddtdfile.index:
-                translateddtd = translateddtdfile.index[origdtd.entity]
+            if orig_entity in translateddtdfile.index:
+                translateddtd = translateddtdfile.index[orig_entity]
                 translatedpo = self.convertdtdunit(translateddtdfile,
                                                    translateddtd,
                                                    mixbucket=mixbucket)
