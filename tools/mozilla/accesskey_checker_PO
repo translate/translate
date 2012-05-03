@@ -19,7 +19,7 @@
 # Finds problems with accesskeys in Gettext PO files
 #
 # This is really only useful for Mozilla PO files.  It finds single
-# character msgid's, filters out those that we've reviewed and found
+# character msgids, filters out those that we've reviewed and found
 # to not be stray accesskeys.  It counts them and then leaves the
 # filtered PO files for later examination.
 
@@ -60,4 +60,4 @@ pocount $(find $accesskeydir -name "*dtd*") | tail
 echo "Properties potential errors"
 pocount $(find $accesskeydir -name "*properties*") | tail
 
-echo "Actual files problem files are located in directory: $accesskeydir"
+echo "Actual problem files are located in directory: $accesskeydir"
