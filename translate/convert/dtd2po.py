@@ -164,9 +164,8 @@ class dtd2po:
         target_unit.addnote(accesskey_unit.getnotes("developer"), "developer")
         target_unit.addnote(label_unit.getnotes("translator"), "translator")
         target_unit.addnote(accesskey_unit.getnotes("translator"), "translator")
-        # redo the strings from original dtd...
-        label = labeldtd.source
-        accesskey = accesskeydtd.source
+        label = label_unit.source
+        accesskey = accesskey_unit.source
         label = accesskeyfn.combine(label, accesskey)
         if label is None:
             return None
