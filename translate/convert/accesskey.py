@@ -44,6 +44,31 @@ def match_entities(dtd_store, labelsuffixes, accesskeysuffixes):
     return mixedentities
 
 
+def mix_units(label_unit, accesskey_unit, target_unit):
+    """Mix the given units into the given target_unit if possible.
+
+    Might return None if no match is possible.
+    """
+    target_unit.addlocations(label_unit.getlocations())
+    target_unit.addlocations(accesskey_unit.getlocations())
+    target_unit.msgidcomment = target_unit._extract_msgidcomments() + \
+                         label_unit._extract_msgidcomments()
+    target_unit.msgidcomment = target_unit._extract_msgidcomments() + \
+                         accesskey_unit._extract_msgidcomments()
+    target_unit.addnote(label_unit.getnotes("developer"), "developer")
+    target_unit.addnote(accesskey_unit.getnotes("developer"), "developer")
+    target_unit.addnote(label_unit.getnotes("translator"), "translator")
+    target_unit.addnote(accesskey_unit.getnotes("translator"), "translator")
+    label = label_unit.source
+    accesskey = accesskey_unit.source
+    label = combine(label, accesskey)
+    if label is None:
+        return None
+    target_unit.source = label
+    target_unit.target = ""
+    return target_unit
+
+
 def extract(string, accesskey_marker=DEFAULT_ACCESSKEY_MARKER):
     """Extract the label and accesskey from a label+accesskey string
 

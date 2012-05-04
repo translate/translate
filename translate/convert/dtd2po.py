@@ -154,24 +154,7 @@ class dtd2po:
         if accesskey_unit is None:
             return label_unit
         target_unit = po.pounit(encoding="UTF-8")
-        target_unit.addlocations(label_unit.getlocations())
-        target_unit.addlocations(accesskey_unit.getlocations())
-        target_unit.msgidcomment = target_unit._extract_msgidcomments() + \
-                             label_unit._extract_msgidcomments()
-        target_unit.msgidcomment = target_unit._extract_msgidcomments() + \
-                             accesskey_unit._extract_msgidcomments()
-        target_unit.addnote(label_unit.getnotes("developer"), "developer")
-        target_unit.addnote(accesskey_unit.getnotes("developer"), "developer")
-        target_unit.addnote(label_unit.getnotes("translator"), "translator")
-        target_unit.addnote(accesskey_unit.getnotes("translator"), "translator")
-        label = label_unit.source
-        accesskey = accesskey_unit.source
-        label = accesskeyfn.combine(label, accesskey)
-        if label is None:
-            return None
-        target_unit.source = label
-        target_unit.target = ""
-        return target_unit
+        return accesskeyfn.mix_units(label_unit, accesskey_unit, target_unit)
 
     def convertdtdunit(self, dtd_store, dtd_unit, mixbucket="dtd"):
         """converts a dtd unit from dtd_store to a po unit, handling mixed
