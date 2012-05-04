@@ -147,32 +147,32 @@ class dtd2po:
             return po_unit
 
     def convertmixedunit(self, labeldtd, accesskeydtd):
-        labelpo = self.convertunit(labeldtd)
-        accesskeypo = self.convertunit(accesskeydtd)
-        if labelpo is None:
-            return accesskeypo
-        if accesskeypo is None:
-            return labelpo
-        po_unit = po.pounit(encoding="UTF-8")
-        po_unit.addlocations(labelpo.getlocations())
-        po_unit.addlocations(accesskeypo.getlocations())
-        po_unit.msgidcomment = po_unit._extract_msgidcomments() + \
-                             labelpo._extract_msgidcomments()
-        po_unit.msgidcomment = po_unit._extract_msgidcomments() + \
-                             accesskeypo._extract_msgidcomments()
-        po_unit.addnote(labelpo.getnotes("developer"), "developer")
-        po_unit.addnote(accesskeypo.getnotes("developer"), "developer")
-        po_unit.addnote(labelpo.getnotes("translator"), "translator")
-        po_unit.addnote(accesskeypo.getnotes("translator"), "translator")
+        label_unit = self.convertunit(labeldtd)
+        accesskey_unit = self.convertunit(accesskeydtd)
+        if label_unit is None:
+            return accesskey_unit
+        if accesskey_unit is None:
+            return label_unit
+        target_unit = po.pounit(encoding="UTF-8")
+        target_unit.addlocations(label_unit.getlocations())
+        target_unit.addlocations(accesskey_unit.getlocations())
+        target_unit.msgidcomment = target_unit._extract_msgidcomments() + \
+                             label_unit._extract_msgidcomments()
+        target_unit.msgidcomment = target_unit._extract_msgidcomments() + \
+                             accesskey_unit._extract_msgidcomments()
+        target_unit.addnote(label_unit.getnotes("developer"), "developer")
+        target_unit.addnote(accesskey_unit.getnotes("developer"), "developer")
+        target_unit.addnote(label_unit.getnotes("translator"), "translator")
+        target_unit.addnote(accesskey_unit.getnotes("translator"), "translator")
         # redo the strings from original dtd...
         label = labeldtd.source
         accesskey = accesskeydtd.source
         label = accesskeyfn.combine(label, accesskey)
         if label is None:
             return None
-        po_unit.source = label
-        po_unit.target = ""
-        return po_unit
+        target_unit.source = label
+        target_unit.target = ""
+        return target_unit
 
     def convertdtdunit(self, dtd_store, dtd_unit, mixbucket="dtd"):
         """converts a dtd unit from dtd_store to a po unit, handling mixed
