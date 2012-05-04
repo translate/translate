@@ -98,8 +98,10 @@ class dtd2po:
         po_unit.target = ""
 
     def convertunit(self, dtd_unit):
-        """converts a dtd unit to a po unit, returns None if empty or not for
-        translation"""
+        """Converts a simple (non-mixed) dtd unit into a po unit.
+
+        Returns None if empty or not for translation.
+        """
         if dtd_unit is None:
             return None
         if getattr(dtd_unit, "entityparameter", None) == "SYSTEM":
