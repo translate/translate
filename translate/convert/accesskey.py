@@ -1,7 +1,6 @@
-#!/usr/bin/env python
 # -*- coding: utf-8 -*-
 #
-# Copyright 2002-2008 Zuza Software Foundation
+# Copyright 2002-2009,2011 Zuza Software Foundation
 #
 # This file is part of The Translate Toolkit.
 #
@@ -23,6 +22,26 @@
 from translate.storage.placeables.general import XMLEntityPlaceable
 
 DEFAULT_ACCESSKEY_MARKER = u"&"
+
+
+def match_entities(dtd_store, labelsuffixes, accesskeysuffixes):
+    """Populates mixedentities from the dtd file."""
+    #: Entities which have a .label/.title and .accesskey combined
+    mixedentities = {}
+    for entity in dtd_store.index.keys():
+        for labelsuffix in labelsuffixes:
+            if entity.endswith(labelsuffix):
+                entitybase = entity[:entity.rfind(labelsuffix)]
+                # see if there is a matching accesskey in this line,
+                # making this a mixed entity
+                for akeytype in accesskeysuffixes:
+                    if (entitybase + akeytype) in dtd_store.index:
+                        # add both versions to the list of mixed entities
+                        mixedentities[entity] = {}
+                        mixedentities[entitybase+akeytype] = {}
+                # check if this could be a mixed entity (labelsuffix and
+                # ".accesskey")
+    return mixedentities
 
 
 def extract(string, accesskey_marker=DEFAULT_ACCESSKEY_MARKER):

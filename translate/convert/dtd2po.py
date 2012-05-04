@@ -46,6 +46,7 @@ class dtd2po:
         self.currentgroup = None
         self.blankmsgstr = blankmsgstr
         self.duplicatestyle = duplicatestyle
+        self.mixedentities = {}
 
     def convertcomments(self, dtd_unit, po_unit):
         entity = dtd_unit.getid()
@@ -173,24 +174,6 @@ class dtd2po:
         po_unit.target = ""
         return po_unit
 
-    def findmixedentities(self, dtd_store):
-        """creates self.mixedentities from the dtd file..."""
-        #: Entities which have a .label/.title and .accesskey combined
-        self.mixedentities = {}
-        for entity in dtd_store.index.keys():
-            for labelsuffix in dtd.labelsuffixes:
-                if entity.endswith(labelsuffix):
-                    entitybase = entity[:entity.rfind(labelsuffix)]
-                    # see if there is a matching accesskey in this line,
-                    # making this a mixed entity
-                    for akeytype in dtd.accesskeysuffixes:
-                        if (entitybase + akeytype) in dtd_store.index:
-                            # add both versions to the list of mixed entities
-                            self.mixedentities[entity] = {}
-                            self.mixedentities[entitybase+akeytype] = {}
-                    # check if this could be a mixed entity (labelsuffix and
-                    # ".accesskey")
-
     def convertdtdunit(self, dtd_store, dtd_unit, mixbucket="dtd"):
         """converts a dtd unit from dtd_store to a po unit, handling mixed
         entities along the way..."""
@@ -254,7 +237,7 @@ class dtd2po:
                              "developer")
 
         dtd_store.makeindex()
-        self.findmixedentities(dtd_store)
+        self.mixedentities = accesskeyfn.match_entities(dtd_store, dtd.labelsuffixes, dtd.accesskeysuffixes)
         # go through the dtd and convert each unit
         for dtd_unit in dtd_store.units:
             if dtd_unit.isnull():
@@ -275,9 +258,10 @@ class dtd2po:
                              "developer")
 
         origdtdfile.makeindex()
-        self.findmixedentities(origdtdfile)
+        #TODO: self.mixedentities is overwritten below, so this is useless:
+        self.mixedentities = accesskeyfn.match_entities(origdtdfile, dtd.labelsuffixes, dtd.accesskeysuffixes)
         translateddtdfile.makeindex()
-        self.findmixedentities(translateddtdfile)
+        self.mixedentities = accesskeyfn.match_entities(translateddtdfile, dtd.labelsuffixes, dtd.accesskeysuffixes)
         # go through the dtd files and convert each unit
         for origdtd in origdtdfile.units:
             if origdtd.isnull():
