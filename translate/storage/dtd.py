@@ -62,11 +62,12 @@ def quotefordtd(source):
         source = source.replace("%", "&#x25;")
     if '"' in source:
         if "'" in source:
-            return "'" + source.replace("'", '&apos;') + "'"
+            value = "'" + source.replace("'", '&apos;') + "'"
         else:
-            return quote.singlequotestr(source)
+            value = quote.singlequotestr(source)
     else:
-        return quote.quotestr(source)
+        value = quote.quotestr(source)
+    return value.encode('utf-8')
 
 
 def unquotefromdtd(source):
@@ -81,7 +82,7 @@ def unquotefromdtd(source):
     extracted = extracted.replace("&#x25;", "%")
     # the quote characters should be the first and last characters in the string
     # of course there could also be quote characters within the string; not handled here
-    return extracted
+    return extracted.decode('utf-8')
 
 
 def removeinvalidamps(name, value):
@@ -169,6 +170,21 @@ class dtdunit(base.TranslationUnit):
         return unquotefromdtd(self.definition)
     target = property(gettarget, settarget)
 
+    def getid(self):
+        return self.entity
+
+    def setid(self, new_id):
+        self.entity = new_id
+
+    def getlocations(self):
+        """Return the entity as location (identifier)."""
+        assert quote.rstripeol(self.entity) == self.entity
+        return [self.entity]
+
+    def addlocation(self, location):
+        """Set the entity to the given "location"."""
+        self.entity = location
+
     def isnull(self):
         """returns whether this dtdunit doesn't actually have an entity definition"""
         # for dtds, we currently return a blank string if there is no .entity (==location in other files)
@@ -179,14 +195,14 @@ class dtdunit(base.TranslationUnit):
         """read the first dtd element from the source code into this object, return linesprocessed"""
         self.comments = []
         # make all the lists the same
-        self.locfilenotes = self.comments
-        self.locgroupstarts = self.comments
-        self.locgroupends = self.comments
-        self.locnotes = self.comments
-        # self.locfilenotes = []
-        # self.locgroupstarts = []
-        # self.locgroupends = []
-        # self.locnotes = []
+        self._locfilenotes = self.comments
+        self._locgroupstarts = self.comments
+        self._locgroupends = self.comments
+        self._locnotes = self.comments
+        # self._locfilenotes = []
+        # self._locgroupstarts = []
+        # self._locgroupends = []
+        # self._locnotes = []
         # self.comments = []
         self.entity = None
         self.definition = ''
@@ -250,13 +266,13 @@ class dtdunit(base.TranslationUnit):
                 # make it record the comment and type as a tuple
                 commentpair = (self.commenttype, comment)
                 if self.commenttype == "locfile":
-                    self.locfilenotes.append(commentpair)
+                    self._locfilenotes.append(commentpair)
                 elif self.commenttype == "locgroupstart":
-                    self.locgroupstarts.append(commentpair)
+                    self._locgroupstarts.append(commentpair)
                 elif self.commenttype == "locgroupend":
-                    self.locgroupends.append(commentpair)
+                    self._locgroupends.append(commentpair)
                 elif self.commenttype == "locnote":
-                    self.locnotes.append(commentpair)
+                    self._locnotes.append(commentpair)
                 elif self.commenttype == "comment":
                     self.comments.append(commentpair)
 
@@ -296,6 +312,8 @@ class dtdunit(base.TranslationUnit):
                         self.entity += line[e]
                         e += 1
                     s = e
+
+                    assert quote.rstripeol(self.entity) == self.entity
                     while (e < len(line) and line[e].isspace()):
                         e += 1
                     self.space_pre_definition = ' ' * (e - s)
@@ -378,10 +396,10 @@ class dtdunit(base.TranslationUnit):
         if self.isnull():
             result = "".join(lines)
             return result.rstrip() + "\n"
-        # for f in self.locfilenotes: yield f
-        # for ge in self.locgroupends: yield ge
-        # for gs in self.locgroupstarts: yield gs
-        # for n in self.locnotes: yield n
+        # for f in self._locfilenotes: yield f
+        # for ge in self._locgroupends: yield ge
+        # for gs in self._locgroupstarts: yield gs
+        # for n in self._locnotes: yield n
         if len(self.entity) > 0:
             if getattr(self, 'entitytype', None) == 'external':
                 entityline = '<!ENTITY % ' + self.entity + ' ' + self.entityparameter + ' ' + self.definition + self.closing

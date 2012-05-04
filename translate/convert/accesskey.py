@@ -1,7 +1,6 @@
-#!/usr/bin/env python
 # -*- coding: utf-8 -*-
 #
-# Copyright 2002-2008 Zuza Software Foundation
+# Copyright 2002-2009,2011 Zuza Software Foundation
 #
 # This file is part of The Translate Toolkit.
 #
@@ -23,6 +22,51 @@
 from translate.storage.placeables.general import XMLEntityPlaceable
 
 DEFAULT_ACCESSKEY_MARKER = u"&"
+
+
+def match_entities(dtd_store, labelsuffixes, accesskeysuffixes):
+    """Populates mixedentities from the dtd file."""
+    #: Entities which have a .label/.title and .accesskey combined
+    mixedentities = {}
+    for entity in dtd_store.index.keys():
+        for labelsuffix in labelsuffixes:
+            if entity.endswith(labelsuffix):
+                entitybase = entity[:entity.rfind(labelsuffix)]
+                # see if there is a matching accesskey in this line,
+                # making this a mixed entity
+                for akeytype in accesskeysuffixes:
+                    if (entitybase + akeytype) in dtd_store.index:
+                        # add both versions to the list of mixed entities
+                        mixedentities[entity] = {}
+                        mixedentities[entitybase+akeytype] = {}
+                # check if this could be a mixed entity (labelsuffix and
+                # ".accesskey")
+    return mixedentities
+
+
+def mix_units(label_unit, accesskey_unit, target_unit):
+    """Mix the given units into the given target_unit if possible.
+
+    Might return None if no match is possible.
+    """
+    target_unit.addlocations(label_unit.getlocations())
+    target_unit.addlocations(accesskey_unit.getlocations())
+    target_unit.msgidcomment = target_unit._extract_msgidcomments() + \
+                         label_unit._extract_msgidcomments()
+    target_unit.msgidcomment = target_unit._extract_msgidcomments() + \
+                         accesskey_unit._extract_msgidcomments()
+    target_unit.addnote(label_unit.getnotes("developer"), "developer")
+    target_unit.addnote(accesskey_unit.getnotes("developer"), "developer")
+    target_unit.addnote(label_unit.getnotes("translator"), "translator")
+    target_unit.addnote(accesskey_unit.getnotes("translator"), "translator")
+    label = label_unit.source
+    accesskey = accesskey_unit.source
+    label = combine(label, accesskey)
+    if label is None:
+        return None
+    target_unit.source = label
+    target_unit.target = ""
+    return target_unit
 
 
 def extract(string, accesskey_marker=DEFAULT_ACCESSKEY_MARKER):

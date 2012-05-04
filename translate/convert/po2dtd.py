@@ -71,7 +71,7 @@ def applytranslation(entity, dtdunit, inputunit, mixedentities):
                     if not unquotedstr:
                         warnings.warn("Could not find accesskey for %s" % entity)
                     else:
-                        original = dtd.unquotefromdtd(dtdunit.definition)
+                        original = dtdunit.source
                         # For the sake of diffs we keep the case of the
                         # accesskey the same if we know the translation didn't
                         # change. Casing matters in XUL.
@@ -81,7 +81,7 @@ def applytranslation(entity, dtdunit, inputunit, mixedentities):
                             elif original.islower():
                                 unquotedstr = unquotedstr.lower()
     if len(unquotedstr) > 0:
-        dtdunit.definition = dtd.quotefordtd(dtd.removeinvalidamps(entity, unquotedstr))
+        dtdunit.source = dtd.removeinvalidamps(entity, unquotedstr)
 
 
 class redtd:
@@ -142,7 +142,7 @@ class po2dtd:
             unquoted = inputunit.target
         else:
             unquoted = inputunit.source
-        dtdunit.definition = dtd.quotefordtd(dtd.removeinvalidamps(dtdunit.entity, unquoted))
+        dtdunit.source = dtd.removeinvalidamps(dtdunit.entity, unquoted)
 
     def convertunit(self, inputunit):
         dtdunit = dtd.dtdunit()
