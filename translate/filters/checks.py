@@ -1020,6 +1020,7 @@ class StandardChecker(TranslationChecker):
             raise FilterFailure(u"Different URLs")
 
 
+    @functional
     def numbers(self, str1, str2):
         """Checks whether numbers of various forms are consistent between the
         two strings.
