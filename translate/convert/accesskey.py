@@ -31,18 +31,18 @@ class UnitMixer(object):
         self.labelsuffixes = labelsuffixes
         self.accesskeysuffixes = accesskeysuffixes
 
-    def match_entities(self, dtd_store):
-        """Populates mixedentities from the dtd file."""
+    def match_entities(self, store):
+        """Populates mixedentities from the store."""
         #: Entities which have a .label/.title and .accesskey combined
         mixedentities = {}
-        for entity in dtd_store.index.keys():
+        for entity in store.index.keys():
             for labelsuffix in self.labelsuffixes:
                 if entity.endswith(labelsuffix):
                     entitybase = entity[:entity.rfind(labelsuffix)]
                     # see if there is a matching accesskey in this line,
                     # making this a mixed entity
                     for akeytype in self.accesskeysuffixes:
-                        if (entitybase + akeytype) in dtd_store.index:
+                        if (entitybase + akeytype) in store.index:
                             # add both versions to the list of mixed entities
                             mixedentities[entity] = {}
                             mixedentities[entitybase+akeytype] = {}
