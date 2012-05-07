@@ -168,31 +168,38 @@ class dtd2po:
         """
         # keep track of whether accesskey and label were combined
         entity = unit.getid()
-        if entity in self.mixedentities:
-            # use special convertmixed unit which produces one pounit with
-            # both combined for the label and None for the accesskey
-            alreadymixed = self.mixedentities[entity].get(mixbucket, None)
-            if alreadymixed:
-                # we are successfully throwing this away...
-                return None
-            elif alreadymixed is None:
-                labelentity, accesskeyentity = self.mixer.find_mixed_pair(self.mixedentities, store, unit)
-                labeldtd = store.index.get(labelentity, None)
-                accesskeydtd = store.index.get(accesskeyentity, None)
-                po_unit = self.convertmixedunit(labeldtd, accesskeydtd)
-                if po_unit is not None:
-                    if accesskeyentity is not None:
-                        self.mixedentities[accesskeyentity][mixbucket] = True
-                    if labelentity is not None:
-                        self.mixedentities[labelentity][mixbucket] = True
-                    return po_unit
-                else:
-                    # otherwise the mix failed. add each one separately and
-                    # remember they weren't mixed
-                    if accesskeyentity is not None:
-                        self.mixedentities[accesskeyentity][mixbucket] = False
-                    if labelentity is not None:
-                        self.mixedentities[labelentity][mixbucket] = False
+        if entity not in self.mixedentities:
+            return self.convertunit(unit)
+
+        # use special convertmixed unit which produces one pounit with
+        # both combined for the label and None for the accesskey
+        alreadymixed = self.mixedentities[entity].get(mixbucket, None)
+        if alreadymixed:
+            # we are successfully throwing this away...
+            return None
+        elif alreadymixed is False:
+            # The mix failed before
+            return self.convertunit(unit)
+
+        #assert alreadymixed is None
+        labelentity, accesskeyentity = self.mixer.find_mixed_pair(self.mixedentities, store, unit)
+        labeldtd = store.index.get(labelentity, None)
+        accesskeydtd = store.index.get(accesskeyentity, None)
+        po_unit = self.convertmixedunit(labeldtd, accesskeydtd)
+        if po_unit is not None:
+            if accesskeyentity is not None:
+                self.mixedentities[accesskeyentity][mixbucket] = True
+            if labelentity is not None:
+                self.mixedentities[labelentity][mixbucket] = True
+            return po_unit
+        else:
+            # otherwise the mix failed. add each one separately and
+            # remember they weren't mixed
+            if accesskeyentity is not None:
+                self.mixedentities[accesskeyentity][mixbucket] = False
+            if labelentity is not None:
+                self.mixedentities[labelentity][mixbucket] = False
+
         return self.convertunit(unit)
 
     def convertstore(self, dtd_store):
