@@ -158,11 +158,11 @@ class dtd2po:
         target_unit = po.pounit(encoding="UTF-8")
         return accesskeyfn.mix_units(label_unit, accesskey_unit, target_unit)
 
-    def convertdtdunit(self, dtd_store, dtd_unit, mixbucket="dtd"):
-        """converts a dtd unit from dtd_store to a po unit, handling mixed
+    def convertdtdunit(self, store, unit, mixbucket="dtd"):
+        """converts a dtd unit from store to a po unit, handling mixed
         entities along the way..."""
         # keep track of whether accesskey and label were combined
-        entity = dtd_unit.getid()
+        entity = unit.getid()
         if entity in self.mixedentities:
             # use special convertmixed unit which produces one pounit with
             # both combined for the label and None for the accesskey
@@ -179,19 +179,19 @@ class dtd2po:
                     if entity.endswith(labelsuffix):
                         entitybase = entity[:entity.rfind(labelsuffix)]
                         for akeytype in dtd.accesskeysuffixes:
-                            if (entitybase + akeytype) in dtd_store.index:
-                                labelentity, labeldtd = entity, dtd_unit
+                            if (entitybase + akeytype) in store.index:
+                                labelentity, labeldtd = entity, unit
                                 accesskeyentity = labelentity[:labelentity.rfind(labelsuffix)] + akeytype
-                                accesskeydtd = dtd_store.index[accesskeyentity]
+                                accesskeydtd = store.index[accesskeyentity]
                                 break
                 else:
                     for akeytype in dtd.accesskeysuffixes:
                         if entity.endswith(akeytype):
-                            accesskeyentity, accesskeydtd = entity, dtd_unit
+                            accesskeyentity, accesskeydtd = entity, unit
                             for labelsuffix in dtd.labelsuffixes:
                                 labelentity = accesskeyentity[:accesskeyentity.rfind(akeytype)] + labelsuffix
-                                if labelentity in dtd_store.index:
-                                    labeldtd = dtd_store.index[labelentity]
+                                if labelentity in store.index:
+                                    labeldtd = store.index[labelentity]
                                     break
                             else:
                                 labelentity = None
@@ -210,7 +210,7 @@ class dtd2po:
                         self.mixedentities[accesskeyentity][mixbucket] = False
                     if labelentity is not None:
                         self.mixedentities[labelentity][mixbucket] = False
-        return self.convertunit(dtd_unit)
+        return self.convertunit(unit)
 
     def convertstore(self, dtd_store):
         target_store = po.pofile()
