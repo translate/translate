@@ -211,7 +211,7 @@ class dtd2po:
                              "developer")
 
         dtd_store.makeindex()
-        self.mixedentities = self.mixer.match_entities(dtd_store)
+        self.mixedentities = self.mixer.match_entities(dtd_store.index)
         # go through the dtd and convert each unit
         for dtd_unit in dtd_store.units:
             if dtd_unit.isnull():
@@ -233,9 +233,9 @@ class dtd2po:
 
         origdtdfile.makeindex()
         #TODO: self.mixedentities is overwritten below, so this is useless:
-        self.mixedentities = self.mixer.match_entities(origdtdfile)
+        self.mixedentities = self.mixer.match_entities(origdtdfile.index)
         translateddtdfile.makeindex()
-        self.mixedentities = self.mixer.match_entities(translateddtdfile)
+        self.mixedentities = self.mixer.match_entities(translateddtdfile.index)
         # go through the dtd files and convert each unit
         for origdtd in origdtdfile.units:
             if origdtd.isnull():

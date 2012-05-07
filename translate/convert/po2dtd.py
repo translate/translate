@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 #
-# Copyright 2002-2009 Zuza Software Foundation
+# Copyright 2002-2009,2012 Zuza Software Foundation
 #
 # This file is part of translate.
 #
@@ -32,22 +32,6 @@ from translate.convert import accesskey
 def dtdwarning(message, category, filename, lineno, line=None):
     return "Warning: %s\n" % message
 warnings.formatwarning = dtdwarning
-
-
-def getmixedentities(entities):
-    """returns a list of mixed .label and .accesskey entities from a list of entities"""
-    mixedentities = []    # those entities which have a .label and .accesskey combined
-    # search for mixed entities...
-    for entity in entities:
-        for labelsuffix in dtd.labelsuffixes:
-            if entity.endswith(labelsuffix):
-                entitybase = entity[:entity.rfind(labelsuffix)]
-                # see if there is a matching accesskey, making this a mixed entity
-                for akeytype in dtd.accesskeysuffixes:
-                    if entitybase + akeytype in entities:
-                        # add both versions to the list of mixed entities
-                        mixedentities += [entity, (entitybase + akeytype)]
-    return mixedentities
 
 
 def applytranslation(entity, dtdunit, inputunit, mixedentities):
@@ -89,6 +73,7 @@ class redtd:
 
     def __init__(self, dtdfile):
         self.dtdfile = dtdfile
+        self.mixer = accesskey.UnitMixer(dtd.labelsuffixes, dtd.accesskeysuffixes)
 
     def convertstore(self, inputstore, includefuzzy=False):
         # translate the strings
@@ -100,7 +85,7 @@ class redtd:
 
     def handleinunit(self, inunit):
         entities = inunit.getlocations()
-        mixedentities = getmixedentities(entities)
+        mixedentities = self.mixer.match_entities(entities)
         for entity in entities:
             if entity in self.dtdfile.index:
                 # now we need to replace the definition of entity with msgstr
