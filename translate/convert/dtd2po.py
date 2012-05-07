@@ -26,7 +26,7 @@ You can convert back to .dtd using po2dtd.py"""
 from translate.storage import po
 from translate.storage import dtd
 from translate.misc import quote
-from translate.convert import accesskey as accesskeyfn
+from translate.convert.accesskey import UnitMixer
 
 
 def is_css_entity(entity):
@@ -47,6 +47,7 @@ class dtd2po:
         self.blankmsgstr = blankmsgstr
         self.duplicatestyle = duplicatestyle
         self.mixedentities = {}
+        self.mixer = UnitMixer(dtd.labelsuffixes, dtd.accesskeysuffixes)
 
     def convertcomments(self, dtd_unit, po_unit):
         entity = dtd_unit.getid()
@@ -156,7 +157,7 @@ class dtd2po:
         if accesskey_unit is None:
             return label_unit
         target_unit = po.pounit(encoding="UTF-8")
-        return accesskeyfn.mix_units(label_unit, accesskey_unit, target_unit)
+        return self.mixer.mix_units(label_unit, accesskey_unit, target_unit)
 
     def convertdtdunit(self, store, unit, mixbucket="dtd"):
         """converts a dtd unit from store to a po unit, handling mixed
@@ -221,7 +222,7 @@ class dtd2po:
                              "developer")
 
         dtd_store.makeindex()
-        self.mixedentities = accesskeyfn.match_entities(dtd_store, dtd.labelsuffixes, dtd.accesskeysuffixes)
+        self.mixedentities = self.mixer.match_entities(dtd_store)
         # go through the dtd and convert each unit
         for dtd_unit in dtd_store.units:
             if dtd_unit.isnull():
@@ -243,9 +244,9 @@ class dtd2po:
 
         origdtdfile.makeindex()
         #TODO: self.mixedentities is overwritten below, so this is useless:
-        self.mixedentities = accesskeyfn.match_entities(origdtdfile, dtd.labelsuffixes, dtd.accesskeysuffixes)
+        self.mixedentities = self.mixer.match_entities(origdtdfile)
         translateddtdfile.makeindex()
-        self.mixedentities = accesskeyfn.match_entities(translateddtdfile, dtd.labelsuffixes, dtd.accesskeysuffixes)
+        self.mixedentities = self.mixer.match_entities(translateddtdfile)
         # go through the dtd files and convert each unit
         for origdtd in origdtdfile.units:
             if origdtd.isnull():
