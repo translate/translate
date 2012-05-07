@@ -176,31 +176,9 @@ class dtd2po:
                 # we are successfully throwing this away...
                 return None
             elif alreadymixed is None:
-                # depending on what we come across first, work out the label
-                # and the accesskey
-                labeldtd, accesskeydtd = None, None
-                labelentity, accesskeyentity = None, None
-                for labelsuffix in dtd.labelsuffixes:
-                    if entity.endswith(labelsuffix):
-                        entitybase = entity[:entity.rfind(labelsuffix)]
-                        for akeytype in dtd.accesskeysuffixes:
-                            if (entitybase + akeytype) in store.index:
-                                labelentity, labeldtd = entity, unit
-                                accesskeyentity = labelentity[:labelentity.rfind(labelsuffix)] + akeytype
-                                accesskeydtd = store.index[accesskeyentity]
-                                break
-                else:
-                    for akeytype in dtd.accesskeysuffixes:
-                        if entity.endswith(akeytype):
-                            accesskeyentity, accesskeydtd = entity, unit
-                            for labelsuffix in dtd.labelsuffixes:
-                                labelentity = accesskeyentity[:accesskeyentity.rfind(akeytype)] + labelsuffix
-                                if labelentity in store.index:
-                                    labeldtd = store.index[labelentity]
-                                    break
-                            else:
-                                labelentity = None
-                                accesskeyentity = None
+                labelentity, accesskeyentity = self.mixer.find_mixed_pair(self.mixedentities, store, unit)
+                labeldtd = store.index.get(labelentity, None)
+                accesskeydtd = store.index.get(accesskeyentity, None)
                 po_unit = self.convertmixedunit(labeldtd, accesskeydtd)
                 if po_unit is not None:
                     if accesskeyentity is not None:

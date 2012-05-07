@@ -75,6 +75,35 @@ class UnitMixer(object):
         target_unit.target = ""
         return target_unit
 
+    def find_mixed_pair(self, mixedentities, store, unit):
+        entity = unit.getid()
+        if entity not in mixedentities:
+            return None, None
+
+        # depending on what we come across first, work out the label
+        # and the accesskey
+        labelentity, accesskeyentity = None, None
+        for labelsuffix in self.labelsuffixes:
+            if entity.endswith(labelsuffix):
+                entitybase = entity[:entity.rfind(labelsuffix)]
+                for akeytype in self.accesskeysuffixes:
+                    if (entitybase + akeytype) in store.index:
+                        labelentity = entity
+                        accesskeyentity = labelentity[:labelentity.rfind(labelsuffix)] + akeytype
+                        break
+        else:
+            for akeytype in self.accesskeysuffixes:
+                if entity.endswith(akeytype):
+                    accesskeyentity = entity
+                    for labelsuffix in self.labelsuffixes:
+                        labelentity = accesskeyentity[:accesskeyentity.rfind(akeytype)] + labelsuffix
+                        if labelentity in store.index:
+                            break
+                    else:
+                        labelentity = None
+                        accesskeyentity = None
+        return (labelentity, accesskeyentity)
+
 
 def extract(string, accesskey_marker=DEFAULT_ACCESSKEY_MARKER):
     """Extract the label and accesskey from a label+accesskey string
