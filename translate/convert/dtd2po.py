@@ -160,8 +160,12 @@ class dtd2po:
         return self.mixer.mix_units(label_unit, accesskey_unit, target_unit)
 
     def convertdtdunit(self, store, unit, mixbucket="dtd"):
-        """converts a dtd unit from store to a po unit, handling mixed
-        entities along the way..."""
+        """Converts a unit from store to a po unit, keeping track of mixed
+        entities along the way.
+
+        ``mixbucket`` can be specified to indicate if the given unit is part of
+        the template or the translated file.
+        """
         # keep track of whether accesskey and label were combined
         entity = unit.getid()
         if entity in self.mixedentities:
