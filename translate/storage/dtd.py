@@ -191,6 +191,11 @@ class dtdunit(base.TranslationUnit):
         # TODO: this needs to work better with base class expectations
         return self.entity is None
 
+    def istranslatable(self):
+        if getattr(self, "entityparameter", None) == "SYSTEM" or self.isnull():
+            return False
+        return True
+
     def parse(self, dtdsrc):
         """read the first dtd element from the source code into this object, return linesprocessed"""
         self.comments = []

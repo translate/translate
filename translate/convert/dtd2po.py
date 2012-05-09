@@ -105,8 +105,6 @@ class dtd2po:
         """
         if dtd_unit is None:
             return None
-        if getattr(dtd_unit, "entityparameter", None) == "SYSTEM":
-            return None
         po_unit = po.pounit(encoding="UTF-8")
         # remove unwanted stuff
         for commentnum in range(len(dtd_unit.comments)):
@@ -214,7 +212,7 @@ class dtd2po:
         self.mixedentities = self.mixer.match_entities(dtd_store.index)
         # go through the dtd and convert each unit
         for dtd_unit in dtd_store.units:
-            if dtd_unit.isnull():
+            if not dtd_unit.istranslatable():
                 continue
             po_unit = self.convertdtdunit(dtd_store, dtd_unit)
             if po_unit is not None:
@@ -238,7 +236,7 @@ class dtd2po:
         self.mixedentities = self.mixer.match_entities(translateddtdfile.index)
         # go through the dtd files and convert each unit
         for origdtd in origdtdfile.units:
-            if origdtd.isnull():
+            if not origdtd.istranslatable():
                 continue
             origpo = self.convertdtdunit(origdtdfile, origdtd,
                                          mixbucket="orig")
