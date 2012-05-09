@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 #
-# Copyright 2002-2006 Zuza Software Foundation
+# Copyright 2002-2010,2012 Zuza Software Foundation
 #
 # This file is part of translate.
 #
@@ -39,13 +39,10 @@ class prop2po:
         """converts a .properties file to a .po file..."""
         self.personality = personality
         thetargetfile = po.pofile()
-        if self.personality == "mozilla" or self.personality == "skype":
-            targetheader = thetargetfile.init_headers(charset="UTF-8",
-                                                      encoding="8bit",
-                                                      x_accelerator_marker="&")
+        if self.personality in ("mozilla", "skype"):
+            targetheader = thetargetfile.init_headers(x_accelerator_marker="&")
         else:
-            targetheader = thetargetfile.init_headers(charset="UTF-8",
-                                                      encoding="8bit")
+            targetheader = thetargetfile.init_headers()
         targetheader.addnote("extracted from %s" % thepropfile.filename,
                              "developer")
         # we try and merge the header po with any comments at the start of the
@@ -79,13 +76,10 @@ class prop2po:
         """converts two .properties files to a .po file..."""
         self.personality = personality
         thetargetfile = po.pofile()
-        if self.personality == "mozilla" or self.personality == "skype":
-            targetheader = thetargetfile.init_headers(charset="UTF-8",
-                                                      encoding="8bit",
-                                                      x_accelerator_marker="&")
+        if self.personality in ("mozilla", "skype"):
+            targetheader = thetargetfile.init_headers(x_accelerator_marker="&")
         else:
-            targetheader = thetargetfile.init_headers(charset="UTF-8",
-                                                      encoding="8bit")
+            targetheader = thetargetfile.init_headers()
         targetheader.addnote("extracted from %s, %s" % (origpropfile.filename, translatedpropfile.filename),
                              "developer")
         translatedpropfile.makeindex()
