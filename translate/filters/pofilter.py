@@ -113,7 +113,7 @@ class pocheckfilter:
         if not self.options.includereview and unit.isreview():
             return []
 
-        failures = self.checker.run_filters(unit)
+        failures = self.checker.run_filters(unit, categorised=True)
 
         if failures and self.options.autocorrect:
             # we can't get away with bad unquoting / requoting if we're going to change the result...

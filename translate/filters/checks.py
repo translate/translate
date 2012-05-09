@@ -408,8 +408,7 @@ class UnitChecker(object):
         """
         return test(unit)
 
-
-    def run_filters(self, unit):
+    def run_filters(self, unit, categorised=False):
         """Run all the tests in this suite, return failures as a dictionary::
 
             {'testname': {'message': message_or_exception,
@@ -463,6 +462,9 @@ class UnitChecker(object):
 
         self.results_cache = {}
 
+        if not categorised:
+            for name, info in failures.iteritems():
+                failures[name] = info['message']
         return failures
 
 
@@ -505,7 +507,7 @@ class TranslationChecker(UnitChecker):
             return test(self.str1, self.str2)
 
 
-    def run_filters(self, unit):
+    def run_filters(self, unit, categorised=False):
         """Do some optimisation by caching some data of the unit for the
         benefit of :meth:`~TranslationChecker.run_test`.
         """
@@ -514,7 +516,7 @@ class TranslationChecker(UnitChecker):
         self.hasplural = unit.hasplural()
         self.locations = unit.getlocations()
 
-        return super(TranslationChecker, self).run_filters(unit)
+        return super(TranslationChecker, self).run_filters(unit, categorised)
 
 
 class TeeChecker:
@@ -578,12 +580,12 @@ class TeeChecker:
         return self.combinedfilters
 
 
-    def run_filters(self, unit):
+    def run_filters(self, unit, categorised=False):
         """Run all the tests in the checker's suites."""
         failures = {}
 
         for checker in self.checkers:
-            failures.update(checker.run_filters(unit))
+            failures.update(checker.run_filters(unit, categorised))
 
         return failures
 
