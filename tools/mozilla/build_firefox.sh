@@ -147,7 +147,8 @@ if [ $opt_vc ]; then
 	else
 		hg clone $hgverbosity http://hg.mozilla.org/releases/mozilla-aurora/ ${MOZCENTRAL_DIR}
 	fi
-    (find ${MOZCENTRAL_DIR} -name '*.orig' | xargs  --no-run-if-empty rm)
+	verbose "mozilla-aurora - find and remove any *.orig files"
+	(find ${MOZCENTRAL_DIR} -name '*.orig' | xargs  --no-run-if-empty rm)
 fi
 
 verbose "Translations - prepare the parent directory po/"
