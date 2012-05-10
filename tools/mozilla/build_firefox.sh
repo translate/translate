@@ -83,7 +83,8 @@ fi
 
 function verbose() {
 	if [ "$verbosity" == "yes" ]; then
-		echo INFO: $1
+		color=32 # Green
+		echo -e "\033[${color}mINFO:\033[0m $1"
 	fi
 }
 
