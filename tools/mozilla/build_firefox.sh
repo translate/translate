@@ -31,10 +31,12 @@ opt_copyfiles="yes"
 progress=none
 errorlevel=traceback
 export USECPO=0
+verbosity="no"
 hgverbosity="--quiet" # --verbose to make it noisy
 gitverbosity="--quiet" # --verbose to make it noisy
 svnverbosity="--quiet"
 pomigrate2verbosity="--quiet"
+
 
 for option in $*
 do
@@ -53,6 +55,7 @@ do
 				opt_copyfiles=""
 			;;
 			--verbose)
+				verbosity="yes"
 				hgverbosity="--verbose"
 				gitverbosity=""
 				svnverbosity=""
@@ -77,6 +80,12 @@ else
 	HG_LANGS=$*
 	COUNT_LANGS=$#
 fi
+
+function verbose() {
+	if [ "$verbosity" == "yes" ]; then
+		echo INFO: $1
+	fi
+}
 
 # FIXME lets make this the execution directory
 BUILD_DIR="$(pwd)"
@@ -107,6 +116,7 @@ done
 L10N_DIR_REL=`echo ${L10N_DIR} | sed "s#${BUILD_DIR}/##"`
 POUPDATED_DIR_REL=`echo ${POUPDATED_DIR} | sed "s#${BUILD_DIR}/##"`
 
+verbose "Translate Toolkit - update/pull using Git"
 [ $opt_vc ] && if [ -d ${TOOLS_DIR}/translate/.git ]; then
 	(cd ${TOOLS_DIR}/translate/
 	git stash $gitverbosity
@@ -125,6 +135,7 @@ export PATH="${TOOLS_DIR}/translate/tools":\
 "${TOOLS_DIR}/translate/tools/mozilla":\
 "$PATH"
 
+verbose "mozilla-aurora - update/pull using Mercurial"
 if [ $opt_vc ]; then
 	if [ -d "${MOZCENTRAL_DIR}/.hg" ]; then
 		cd ${MOZCENTRAL_DIR}
@@ -136,6 +147,7 @@ if [ $opt_vc ]; then
     (find ${MOZCENTRAL_DIR} -name '*.orig' | xargs  --no-run-if-empty rm)
 fi
 
+verbose "Translations - prepare the parent directory po/"
 [ $opt_vc ] && if [ -d ${PO_DIR} ]; then
 	svn up $svnverbosity --depth=files ${PO_DIR}
 else
@@ -145,10 +157,11 @@ if [ ! -d ${POUPDATED_DIR}/.svn ]; then
 	cp -rp ${PO_DIR}/.svn ${POUPDATED_DIR}
 fi
 
-# Update all Mercurial-managed languages
+verbose "Localisations - update Mercurial-managed languages in l10n/"
 cd ${L10N_DIR}
 for lang in ${HG_LANGS}
 do
+	verbose "Update l10n/$lang"
 	if [ $opt_vc ]; then
 		if [ -d ${lang} ]; then
 			if [ -d ${lang}/.hg ]; then
@@ -168,12 +181,12 @@ done
 
 [ -d pot ] && rm -rf pot
 
-# Extract the en-US source files from the repo into localisation structure
+verbose "Extract the en-US source files from the repo into localisation structure in l10n/en-US"
 rm -rf en-US
 get_moz_enUS.py -s ../mozilla-aurora -d . -p browser  # add -v to debug
 get_moz_enUS.py -s ../mozilla-aurora -d . -p mobile   # add -v to debug
 
-# CREATE POT FILES FROM en-US
+verbose "moz2po - Create POT files from l10n/en-US"
 moz2po --errorlevel=$errorlevel --progress=$progress -P --duplicates=msgctxt --exclude '.hg' en-US pot
 find pot \( -name '*.html.pot' -o -name '*.xhtml.pot' \) -exec rm -f {} \;
 
@@ -218,29 +231,28 @@ function copydir {
 	fi
 }
 
+verbose "Translations - build l10n/ files"
 for lang in ${HG_LANGS}
 do
 	[ $COUNT_LANGS -gt 1 ] && echo "Language: $lang"
-	# Try and update existing PO files
         polang=$(echo $lang|sed "s/-/_/g")
+	verbose "Update existing po/$lang in case any changes are in version control"
 	(cd ${PO_DIR}; svn up $svnverbosity ${polang})
 
-	# Copy directory structure while preserving version control metadata
+	verbose "Copy directory structure while preserving version control metadata"
 	if [ -d ${PO_DIR}/${polang} ]; then
 		rm -rf ${POUPDATED_DIR}/${polang}
 		cp -R ${PO_DIR}/${polang} ${POUPDATED_DIR}
 		(cd ${POUPDATED_DIR/${polang}; find $PRODUCT_DIRS -name '*.po' -exec rm -f {} \;)
 	fi
 
-	## MIGRATE - Migrate PO files to new POT files.
-	# Comment out the following "pomigrate2"-line if migration should not be done.
+	verbose "Migrate - update PO files to new POT files"
 	tempdir=`mktemp -d tmp.XXXXXXXXXX`
 	[ -d ${PO_DIR}/${polang} ] && cp -R ${PO_DIR}/${polang} ${tempdir}/${polang}
 	pomigrate2 --use-compendium --pot2po $pomigrate2verbosity ${tempdir}/${polang} ${POUPDATED_DIR}/${polang} ${L10N_DIR}/pot
 	rm -rf ${tempdir}
 
-	## Cleanup migrated PO files
-	# msgcat to make them look the same
+	verbose "Migration cleanup - fix migrated PO files using msgcat"
 	if [ $USECPO -eq 0 ]; then
 		(cd ${POUPDATED_DIR}/${polang}
 		for po in $(find ${PRODUCT_DIRS} -name "*.po")
@@ -250,12 +262,12 @@ do
 		)
 	fi
 
-	# Revert files with only header changes
+	verbose "Migration cleanup - Revert files with only header changes"
 	[ -d ${POUPDATED_DIR}/${polang}/.svn ] && svn revert $svnverbosity $(svn diff --diff-cmd diff -x "--unified=3 --ignore-matching-lines=POT-Creation --ignore-matching-lines=X-Generator -s" ${POUPDATED_DIR}/${polang} |
 	egrep "are identical$" |
 	sed "s/^Files //;s/\(\.po\).*/\1/") || echo "No header only changes, so no reverts needed"
 
-	## Migrate to new PO files: move old to obsolete/ and add new files
+	verbose "Migrate to new PO files: move old to obsolete/ and add new files"
 	if [ ! -d ${POUPDATED_DIR}/${polang}/.svn ]; then
 		# No VC so assume it's a new language
 		svn add $svnverbosity ${POUPDATED_DIR}/${polang}
@@ -288,7 +300,7 @@ do
 		)
 	fi
 
-	# Pre-po2moz hacks
+	verbose "Pre-po2moz hacks"
 	lang_product_dirs=
 	for dir in ${PRODUCT_DIRS}; do lang_product_dirs="${lang_product_dirs} ${L10N_DIR}/$lang/$dir"; done
 	for product_dir in ${lang_product_dirs}
@@ -297,12 +309,11 @@ do
 	done
 	find ${POUPDATED_DIR} \( -name '*.html.po' -o -name '*.xhtml.po' \) -exec rm -f {} \;
 
-	# PO2MOZ - Create Mozilla l10n layout from migrated PO files.
-	# Comment out the "po2moz"-line below to prevent l10n files to be updated to the current PO files.
+	verbose "po2moz - Create Mozilla l10n layout from migrated PO files."
 	po2moz --progress=$progress --errorlevel=$errorlevel --exclude=".svn" --exclude=".hg" --exclude="obsolete" --exclude="editor" --exclude="mail" --exclude="thunderbird" \
 		-t ${L10N_DIR}/en-US -i ${POUPDATED_DIR}/${polang} -o ${L10N_DIR}/${lang}
 
-	# Copy files not handled by moz2po/po2moz
+	verbose "Copy files not handled by moz2po/po2moz"
 	if [ $opt_copyfiles ]; then
 		copyfiletype "*.xhtml" ${lang} # Our XHTML and HTML is broken
 		copyfiletype "*.rdf" ${lang}   # Don't support .rdf files
@@ -322,11 +333,13 @@ do
 
 	## CREATE XPI LANGPACK
 	if [ $opt_build_xpi ]; then
+		verbose "Language Pack - create an XPI"
 		buildxpi.py -d -L ${L10N_DIR} -s ${MOZCENTRAL_DIR} -o ${LANGPACK_DIR} ${lang}
 	fi
 
 	# COMPARE LOCALES
 	if [ $opt_compare_locales ]; then
+		verbose "Compare-Locales - to find errors"
 		compare-locales ${MOZCENTRAL_DIR}/browser/locales/l10n.ini ${L10N_DIR} $lang
 		compare-locales ${MOZCENTRAL_DIR}/mobile/locales/l10n.ini ${L10N_DIR} $lang
 	fi
