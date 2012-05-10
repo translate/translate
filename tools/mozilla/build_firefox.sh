@@ -36,6 +36,7 @@ hgverbosity="--quiet" # --verbose to make it noisy
 gitverbosity="--quiet" # --verbose to make it noisy
 svnverbosity="--quiet"
 pomigrate2verbosity="--quiet"
+get_moz_enUS_verbosity=""
 
 
 for option in $*
@@ -61,6 +62,7 @@ do
 				svnverbosity=""
 				progress=bar
 				pomigrate2verbosity=""
+				get_moz_enUS_verbosity="-v"
 			;;
 			*) 
 			echo "Unkown option: $option"
@@ -184,8 +186,8 @@ done
 
 verbose "Extract the en-US source files from the repo into localisation structure in l10n/en-US"
 rm -rf en-US
-get_moz_enUS.py -s ../mozilla-aurora -d . -p browser  # add -v to debug
-get_moz_enUS.py -s ../mozilla-aurora -d . -p mobile   # add -v to debug
+get_moz_enUS.py $get_moz_enUS_verbosity -s ../mozilla-aurora -d . -p browser
+get_moz_enUS.py $get_moz_enUS_verbosity -s ../mozilla-aurora -d . -p mobile
 
 verbose "moz2po - Create POT files from l10n/en-US"
 moz2po --errorlevel=$errorlevel --progress=$progress -P --duplicates=msgctxt --exclude '.hg' en-US pot
