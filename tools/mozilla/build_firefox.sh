@@ -29,6 +29,7 @@ opt_build_xpi=""
 opt_compare_locales="yes"
 opt_copyfiles="yes"
 opt_verbose=""
+opt_time=""
 
 progress=none
 errorlevel=traceback
@@ -65,6 +66,9 @@ do
 				pomigrate2verbosity=""
 				get_moz_enUS_verbosity="-v"
 			;;
+			--time)
+				opt_time="yes"
+			;;
 			*) 
 			echo "Unkown option: $option"
 			exit
@@ -85,7 +89,7 @@ else
 fi
 
 function verbose() {
-	if [ $opt_verbose ]; then
+	if [ "$opt_verbose" -o "$opt_time" ]; then
 		info_color=32 # Green
 		time_color=34 # Blue
 		end_time=$(date +%s)
