@@ -23,7 +23,8 @@
 # http://translate.sourceforge.net/wiki/toolkit/mozilla_l10n_scripts     #
 ##########################################################################
 
-start_time=$(date +%s)
+abs_start_time=$(date +%s)
+start_time=$abs_start_time
 opt_vc="yes"
 opt_build_xpi=""
 opt_compare_locales="yes"
@@ -361,3 +362,6 @@ done
 
 # Cleanup rubbish we seem to leave behind
 rm -rf ${L10N_DIR}/tmp*
+abs_end_time=$(date +%s)
+total_time=$(($abs_end_time - $abs_start_time))
+verbose "Total time $(date --date="@$total_time" +%M:%S)"
