@@ -23,15 +23,16 @@
 # http://translate.sourceforge.net/wiki/toolkit/mozilla_l10n_scripts     #
 ##########################################################################
 
+start_time=$(date +%s)
 opt_vc="yes"
 opt_build_xpi=""
 opt_compare_locales="yes"
 opt_copyfiles="yes"
+opt_verbose=""
 
 progress=none
 errorlevel=traceback
 export USECPO=0
-verbosity="no"
 hgverbosity="--quiet" # --verbose to make it noisy
 gitverbosity="--quiet" # --verbose to make it noisy
 svnverbosity="--quiet"
@@ -56,7 +57,7 @@ do
 				opt_copyfiles=""
 			;;
 			--verbose)
-				verbosity="yes"
+				opt_verbose="yes"
 				hgverbosity="--verbose"
 				gitverbosity=""
 				svnverbosity=""
@@ -84,9 +85,13 @@ else
 fi
 
 function verbose() {
-	if [ "$verbosity" == "yes" ]; then
-		color=32 # Green
-		echo -e "\033[${color}mINFO:\033[0m $1"
+	if [ $opt_verbose ]; then
+		info_color=32 # Green
+		time_color=34 # Blue
+		end_time=$(date +%s)
+		time_diff=$(($end_time - $start_time))
+		echo -e "\033[${info_color}mINFO:\033[0m $1 [previous step \033[${time_color}m$time_diff sec\033[0m]"
+		start_time=$end_time
 	fi
 }
 
