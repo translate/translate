@@ -33,6 +33,20 @@ class TestPODebug:
         unit = base.TranslationUnit("default:LTR")
         assert self.debug.ignore_gtk(unit) == True
 
+    def test_keep_target(self):
+        """Test that we use the target for rewriting if it exists."""
+        unit = base.TranslationUnit(u"blie")
+
+        unit.target = u"bla"
+        debugger = podebug.podebug(rewritestyle="xxx")
+        unit = debugger.convertunit(unit, "")
+        assert unit.target == u"xxxblaxxx"
+
+        unit.target = u"d%d"
+        debugger = podebug.podebug(rewritestyle="flipped")
+        unit = debugger.convertunit(unit, "")
+        assert unit.target == u"\u202ep%d"
+
     def test_rewrite_blank(self):
         """Test the blank rewrite function"""
         assert str(self.debug.rewrite_blank(u"Test")) == u""
