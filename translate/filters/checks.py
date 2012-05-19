@@ -1587,6 +1587,7 @@ class MozillaChecker(StandardChecker):
         StandardChecker.__init__(self, **kwargs)
 
 
+    @extraction
     def credits(self, str1, str2):
         """Checks for messages containing translation credits instead of
         normal translations.
