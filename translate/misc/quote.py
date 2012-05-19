@@ -32,11 +32,12 @@ def find_all(searchin, substr):
     locations are not allowed to overlap"""
     location = 0
     locations = []
+    substr_len = len(substr)
     while location != -1:
         location = searchin.find(substr, location)
         if location != -1:
             locations.append(location)
-            location += len(substr)
+            location += substr_len
     return locations
 
 
