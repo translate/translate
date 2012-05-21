@@ -9,6 +9,25 @@ from translate.storage import pypo
 from translate.storage import test_po
 
 
+class TestHelpers():
+    def test_unescape(self):
+        assert pypo.unescape(r"koei") == "koei"
+        assert pypo.unescape(r"koei\n") == "koei\n"
+        assert pypo.unescape(r"koei\\") == "koei\\"
+        assert pypo.unescape(r"koei\"") == "koei\""
+        assert pypo.unescape(r"koei\r") == "koei\r"
+
+        assert pypo.unescape(r"\nkoei\n") == "\nkoei\n"
+        assert pypo.unescape(r"\\koei\\") == "\\koei\\"
+        assert pypo.unescape(r"\"koei\"") == "\"koei\""
+        assert pypo.unescape(r"\rkoei\r") == "\rkoei\r"
+
+        assert pypo.unescape(r"\n\nkoei\n") == "\n\nkoei\n"
+        assert pypo.unescape(r"\\\nkoei\\\n") == "\\\nkoei\\\n"
+        assert pypo.unescape(r"\"\\koei\"\\") == "\"\\koei\"\\"
+        assert pypo.unescape(r"\\\rkoei\r\\") == "\\\rkoei\r\\"
+
+
 class TestPYPOUnit(test_po.TestPOUnit):
     UnitClass = pypo.pounit
 

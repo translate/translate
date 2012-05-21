@@ -112,13 +112,47 @@ def extractpoline(line):
     """Remove quote and unescape line from po file.
 
     :param line: a quoted line from a po file (msgid or msgstr)
+
+    .. deprecated:: 1.10
     """
     extracted = quote.extractwithoutquotes(line, '"', '"', '\\', includeescapes=unescapehandler)[0]
+
+
+def unescape(line):
+    """Unescape the given line.
+
+    Quotes on either side should already have been removed.
+    """
+    escape_places = quote.find_all(line, "\\")
+    if not escape_places:
+        return line
+
+    # filter escaped escapes
+    true_escape = False
+    true_escape_places = []
+    for escape_pos in escape_places:
+        if escape_pos - 1 in escape_places:
+            true_escape = not true_escape
+        else:
+            true_escape = True
+        if true_escape:
+            true_escape_places.append(escape_pos)
+
+    extracted = ""
+    lastpos = 0
+    for pos in true_escape_places:
+        # everything leading up to the escape
+        extracted += line[lastpos:pos]
+        # the escaped sequence (consuming 2 characters)
+        extracted += unescapehandler(line[pos:pos+2])
+        lastpos = pos+2
+
+    extracted += line[lastpos:]
     return extracted
 
 
 def unquotefrompo(postr):
-    return "".join([extractpoline(line) for line in postr])
+    return "".join([unescape(line[1:-1]) for line in postr])
 
 
 def is_null(lst):
