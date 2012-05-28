@@ -1536,7 +1536,8 @@ class StandardChecker(TranslationChecker):
                           "doublespacing", "endpunc", "xmltags",
                           "startwhitespace", "endwhitespace",
                           "singlequoting", "doublequoting",
-                          "filepaths", "purepunc", "doublewords", "printf"),
+                          "filepaths", "purepunc", "doublewords", "printf",
+                          "newlines"),
          }
 
 # code to actually run the tests (use unittest?)
