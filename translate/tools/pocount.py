@@ -48,7 +48,7 @@ def calcstats_old(filename):
     except ValueError, e:
         print str(e)
         return {}
-    units = filter(lambda unit: not unit.isheader(), store.units)
+    units = filter(lambda unit: unit.istranslatable(), store.units)
     translated = translatedmessages(units)
     fuzzy = fuzzymessages(units)
     review = filter(lambda unit: unit.isreview(), units)
