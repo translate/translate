@@ -220,13 +220,11 @@ class pounit(pocommon.pounit):
     allcomments = property(_get_all_comments)
 
     def _get_source_vars(self, msgid, msgid_plural):
-        multi = multistring(unquotefrompo(msgid), self._encoding)
+        singular = unquotefrompo(msgid)
         if self.hasplural():
             pluralform = unquotefrompo(msgid_plural)
-            if isinstance(pluralform, str):
-                pluralform = pluralform.decode(self._encoding)
-            multi.strings.append(pluralform)
-        return multi
+            return multistring([singular, pluralform], self._encoding)
+        return singular
 
     def _set_source_vars(self, source):
         msgid = None
@@ -274,10 +272,9 @@ class pounit(pocommon.pounit):
     def gettarget(self):
         """Returns the unescaped msgstr"""
         if isinstance(self.msgstr, dict):
-            multi = multistring(map(unquotefrompo, self.msgstr.values()), self._encoding)
+            return multistring(map(unquotefrompo, self.msgstr.values()), self._encoding)
         else:
-            multi = multistring(unquotefrompo(self.msgstr), self._encoding)
-        return multi
+            return unquotefrompo(self.msgstr)
 
     def settarget(self, target):
         """Sets the msgstr to the given (unescaped) value"""
