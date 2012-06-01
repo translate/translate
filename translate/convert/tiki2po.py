@@ -42,10 +42,6 @@ class tiki2po:
         """
         thetargetfile = po.pofile()
 
-        # Set up the header
-        targetheader = thetargetfile.init_headers(charset="UTF-8",
-                                                  encoding="8bit")
-
         # For each lang unit, make the new po unit accordingly
         for unit in thetikifile.units:
             if not self.includeunused and "unused" in unit.getlocations():

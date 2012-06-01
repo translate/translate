@@ -75,8 +75,7 @@ class xliff2po:
             inputfile = str(inputfile)
         XliffFile = xliff.xlifffile.parsestring(inputfile)
         thetargetfile = po.pofile()
-        targetheader = thetargetfile.init_headers(charset="UTF-8",
-                                                  encoding="8bit")
+        targetheader = thetargetfile.header()
         # TODO: support multiple files
         for transunit in XliffFile.units:
             if transunit.isheader():

@@ -42,7 +42,7 @@ class prop2po:
         if self.personality in ("mozilla", "skype"):
             targetheader = thetargetfile.init_headers(x_accelerator_marker="&")
         else:
-            targetheader = thetargetfile.init_headers()
+            targetheader = thetargetfile.header()
         targetheader.addnote("extracted from %s" % thepropfile.filename,
                              "developer")
         # we try and merge the header po with any comments at the start of the
@@ -79,7 +79,7 @@ class prop2po:
         if self.personality in ("mozilla", "skype"):
             targetheader = thetargetfile.init_headers(x_accelerator_marker="&")
         else:
-            targetheader = thetargetfile.init_headers()
+            targetheader = thetargetfile.header()
         targetheader.addnote("extracted from %s, %s" % (origpropfile.filename, translatedpropfile.filename),
                              "developer")
         translatedpropfile.makeindex()

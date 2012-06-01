@@ -40,8 +40,7 @@ class web2py2po:
 
     def convertstore(self, mydict):
 
-        targetheader = self.mypofile.init_headers(charset="UTF-8",
-                                                  encoding="8bit")
+        targetheader = self.mypofile.header()
         targetheader.addnote("extracted from web2py", "developer")
 
         for source_str in mydict.keys():

@@ -32,7 +32,7 @@ class rc2po:
     def convert_store(self, input_store, duplicatestyle="msgctxt"):
         """converts a .rc file to a .po file..."""
         output_store = po.pofile()
-        output_header = output_store.init_headers(charset="UTF-8", encoding="8bit")
+        output_header = output_store.init_headers()
         output_header.addnote("extracted from %s" % input_store.filename, "developer")
         for input_unit in input_store.units:
             output_unit = self.convert_unit(input_unit, "developer")
@@ -44,7 +44,7 @@ class rc2po:
     def merge_store(self, template_store, input_store, blankmsgstr=False, duplicatestyle="msgctxt"):
         """converts two .rc files to a .po file..."""
         output_store = po.pofile()
-        output_header = output_store.init_headers(charset="UTF-8", encoding="8bit")
+        output_header = output_store.init_headers()
         output_header.addnote("extracted from %s, %s" % (template_store.filename, input_store.filename), "developer")
         input_store.makeindex()
         for template_unit in template_store.units:
