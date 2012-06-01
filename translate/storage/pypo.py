@@ -116,6 +116,7 @@ def extractpoline(line):
     .. deprecated:: 1.10
     """
     extracted = quote.extractwithoutquotes(line, '"', '"', '\\', includeescapes=unescapehandler)[0]
+    return extracted
 
 
 def unescape(line):
