@@ -501,7 +501,7 @@ class pounit(pocommon.pounit):
     def hastypecomment(self, typecomment):
         """Check whether the given type comment is present"""
         # check for word boundaries properly by using a regular expression...
-        return sum(map(lambda tcline: len(re.findall("\\b%s\\b" % typecomment, tcline)), self.typecomments)) != 0
+        return bool([c for c in self.typecomments if re.search("\\b%s\\b" % typecomment, c)])
 
     def hasmarkedcomment(self, commentmarker):
         """Check whether the given comment marker is present.
