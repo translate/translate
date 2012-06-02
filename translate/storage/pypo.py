@@ -124,7 +124,7 @@ def unescape(line):
 
     Quotes on either side should already have been removed.
     """
-    escape_places = quote.find_all(line, "\\")
+    escape_places = quote.find_all(line, u"\\")
     if not escape_places:
         return line
 
@@ -139,7 +139,7 @@ def unescape(line):
         if true_escape:
             true_escape_places.append(escape_pos)
 
-    extracted = ""
+    extracted = u""
     lastpos = 0
     for pos in true_escape_places:
         # everything leading up to the escape
