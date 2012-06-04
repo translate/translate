@@ -153,7 +153,7 @@ def unescape(line):
 
 
 def unquotefrompo(postr):
-    return "".join([unescape(line[1:-1]) for line in postr])
+    return u"".join([unescape(line[1:-1]) for line in postr])
 
 
 def is_null(lst):
