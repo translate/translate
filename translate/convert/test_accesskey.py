@@ -26,9 +26,10 @@ from translate.convert import accesskey
 def test_get_label_and_accesskey():
     """test that we can extract the label and accesskey components from an
     accesskey+label string"""
+    assert accesskey.extract(u"File") == (u"File", u"")
     assert accesskey.extract(u"&File") == (u"File", u"F")
     assert accesskey.extract(u"~File", u"~") == (u"File", u"F")
-    assert accesskey.extract(u"~File", u"~") == (u"File", u"F")
+    assert accesskey.extract(u"_File", u"_") == (u"File", u"F")
 
 
 def test_ignore_entities():
@@ -75,3 +76,4 @@ def test_combine_label_accesskey():
 def test_uncombinable():
     """test our behaviour when we cannot combine label and accesskey"""
     assert accesskey.combine(u"File", u"D") is None
+    assert accesskey.combine(u"File", u"") is None
