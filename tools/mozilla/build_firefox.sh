@@ -260,8 +260,8 @@ do
 	verbose "Update existing po/$lang in case any changes are in version control"
 	(cd ${PO_DIR}; svn up $svnverbosity ${polang})
 
-	verbose "Copy directory structure while preserving version control metadata"
 	if [ -d ${PO_DIR}/${polang} ]; then
+		verbose "Copy directory structure while preserving version control metadata"
 		rm -rf ${POUPDATED_DIR}/${polang}
 		cp -R ${PO_DIR}/${polang} ${POUPDATED_DIR}
 		(cd ${POUPDATED_DIR/${polang}; find $PRODUCT_DIRS -name '*.po' -exec rm -f {} \;)
@@ -273,8 +273,8 @@ do
 	pomigrate2 --use-compendium --pot2po $pomigrate2verbosity ${tempdir}/${polang} ${POUPDATED_DIR}/${polang} ${L10N_DIR}/pot
 	rm -rf ${tempdir}
 
-	verbose "Migration cleanup - fix migrated PO files using msgcat"
 	if [ $USECPO -eq 0 ]; then
+		verbose "Migration cleanup - fix migrated PO files using msgcat"
 		(cd ${POUPDATED_DIR}/${polang}
 		for po in $(find ${PRODUCT_DIRS} -name "*.po")
 		do
@@ -334,8 +334,8 @@ do
 	po2moz --progress=$progress --errorlevel=$errorlevel --exclude=".svn" --exclude=".hg" --exclude="obsolete" --exclude="editor" --exclude="mail" --exclude="thunderbird" \
 		-t ${L10N_DIR}/en-US -i ${POUPDATED_DIR}/${polang} -o ${L10N_DIR}/${lang}
 
-	verbose "Copy files not handled by moz2po/po2moz"
 	if [ $opt_copyfiles ]; then
+		verbose "Copy files not handled by moz2po/po2moz"
 		copyfiletype "*.xhtml" ${lang} # Our XHTML and HTML is broken
 		copyfiletype "*.rdf" ${lang}   # Don't support .rdf files
 		copyfile browser/firefox-l10n.js ${lang}
