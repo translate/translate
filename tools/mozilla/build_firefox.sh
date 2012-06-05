@@ -140,6 +140,11 @@ else
 	git clone $gitverbosity git@github.com:translate/translate.git ${TOOLS_DIR}/translate || git clone git://github.com/translate/translate.git ${TOOLS_DIR}/translate 
 fi
 
+if [ $opt_vc ]; then
+	verbose "Compare-Locales - update if needed"
+	sudo easy_install -U compare-locales
+fi
+
 export PYTHONPATH="${TOOLS_DIR}/translate":"$PYTHONPATH"
 export PATH="${TOOLS_DIR}/translate/tools":\
 "${TOOLS_DIR}/translate/translate/convert":\
