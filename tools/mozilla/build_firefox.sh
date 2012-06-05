@@ -129,15 +129,17 @@ done
 L10N_DIR_REL=`echo ${L10N_DIR} | sed "s#${BUILD_DIR}/##"`
 POUPDATED_DIR_REL=`echo ${POUPDATED_DIR} | sed "s#${BUILD_DIR}/##"`
 
-verbose "Translate Toolkit - update/pull using Git"
-[ $opt_vc ] && if [ -d ${TOOLS_DIR}/translate/.git ]; then
-	(cd ${TOOLS_DIR}/translate/
-	git stash $gitverbosity
-	git pull $gitverbosity --rebase
-	git checkout $gitverbosity
-	git stash pop $gitverbosity || true)
-else
-	git clone $gitverbosity git@github.com:translate/translate.git ${TOOLS_DIR}/translate || git clone git://github.com/translate/translate.git ${TOOLS_DIR}/translate 
+if [ $opt_vc ]; then
+	verbose "Translate Toolkit - update/pull using Git"
+	if [ -d ${TOOLS_DIR}/translate/.git ]; then
+		(cd ${TOOLS_DIR}/translate/
+		git stash $gitverbosity
+		git pull $gitverbosity --rebase
+		git checkout $gitverbosity
+		git stash pop $gitverbosity || true)
+	else
+		git clone $gitverbosity git@github.com:translate/translate.git ${TOOLS_DIR}/translate || git clone git://github.com/translate/translate.git ${TOOLS_DIR}/translate 
+	fi
 fi
 
 if [ $opt_vc ]; then
@@ -153,8 +155,8 @@ export PATH="${TOOLS_DIR}/translate/tools":\
 "${TOOLS_DIR}/translate/tools/mozilla":\
 "$PATH"
 
-verbose "mozilla-aurora - update/pull using Mercurial"
 if [ $opt_vc ]; then
+	verbose "mozilla-aurora - update/pull using Mercurial"
 	if [ -d "${MOZCENTRAL_DIR}/.hg" ]; then
 		cd ${MOZCENTRAL_DIR}
 		hg pull $hgverbosity -u
@@ -164,22 +166,24 @@ if [ $opt_vc ]; then
 	fi
 fi
 
-verbose "Translations - prepare the parent directory po/"
-[ $opt_vc ] && if [ -d ${PO_DIR} ]; then
-	svn up $svnverbosity --depth=files ${PO_DIR}
-else
-	svn co $svnverbosity --depth=files  https://zaf.svn.sourceforge.net/svnroot/zaf/trunk/po/fftb ${PO_DIR}
-fi
-if [ ! -d ${POUPDATED_DIR}/.svn ]; then
-	cp -rp ${PO_DIR}/.svn ${POUPDATED_DIR}
+if [ $opt_vc ]; then
+	verbose "Translations - prepare the parent directory po/"
+	if [ -d ${PO_DIR} ]; then
+		svn up $svnverbosity --depth=files ${PO_DIR}
+	else
+		svn co $svnverbosity --depth=files  https://zaf.svn.sourceforge.net/svnroot/zaf/trunk/po/fftb ${PO_DIR}
+	fi
+	if [ ! -d ${POUPDATED_DIR}/.svn ]; then
+		cp -rp ${PO_DIR}/.svn ${POUPDATED_DIR}
+	fi
 fi
 
 verbose "Localisations - update Mercurial-managed languages in l10n/"
 cd ${L10N_DIR}
 for lang in ${HG_LANGS}
 do
-	verbose "Update l10n/$lang"
 	if [ $opt_vc ]; then
+		verbose "Update l10n/$lang"
 		if [ -d ${lang} ]; then
 			if [ -d ${lang}/.hg ]; then
 			        (cd ${lang}
