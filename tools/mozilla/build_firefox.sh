@@ -40,6 +40,7 @@ gitverbosity="--quiet" # --verbose to make it noisy
 svnverbosity="--quiet"
 pomigrate2verbosity="--quiet"
 get_moz_enUS_verbosity=""
+easy_install_verbosity="--quiet"
 
 
 for option in $*
@@ -66,6 +67,7 @@ do
 				progress=bar
 				pomigrate2verbosity=""
 				get_moz_enUS_verbosity="-v"
+				easy_install_verbosity="--verbose"
 			;;
 			--time)
 				opt_time="yes"
@@ -144,7 +146,7 @@ fi
 
 if [ $opt_vc ]; then
 	verbose "Compare-Locales - update if needed"
-	sudo easy_install -U compare-locales
+	sudo easy_install $easy_install_verbosity --upgrade compare-locales
 fi
 
 export PYTHONPATH="${TOOLS_DIR}/translate":"$PYTHONPATH"
