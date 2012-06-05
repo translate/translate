@@ -34,6 +34,11 @@ def test_quotefordtd():
     tester("Unintentional variable %S", '"Unintentional variable &#x25;S"')
 
 
+def test_quoteforandroid():
+    assert dtd.quoteforandroid("don't") == r'"don\'t"'
+    assert dtd.quoteforandroid('the "thing"') == r'"the \"thing\""'
+
+
 def test_removeinvalidamp(recwarn):
     """tests the the removeinvalidamps function"""
 
