@@ -496,7 +496,7 @@ class dtdfile(base.TranslationStore):
             try:
                 # #expand is a Mozilla hack and are removed as they are not valid in DTDs
                 dtd = etree.DTD(StringIO.StringIO(re.sub("#expand", "", self.getoutput())))
-            except etree.DTDParseError as e:
+            except etree.DTDParseError, e:
                 warnings.warn("DTD parse error: %s" % e.error_log)
                 return False
         return True
