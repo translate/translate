@@ -1,13 +1,16 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
+import StringIO
+from translate.tools import pocount
+
 from py.test import mark
 
 from translate.storage import po
 from translate.storage import statsdb
 
 
-class TestPOCount:
+class TestCount:
 
     def count(self, source, expectedsource, target=None, expectedtarget=None):
         """simple helper to check the respective word counts"""
@@ -84,3 +87,73 @@ class TestPOCount:
     # Do we correctly identify a translated yet blank message?
 
     # Need to test that we can differentiate between fuzzy, translated and untranslated
+
+
+class TestPOCount:
+    """This only tests the old (memory-based) pocount method, not the current
+    code based on statsdb."""
+
+    inputdata = r'''
+msgid "translated unit"
+msgstr "translated unit"
+
+#, fuzzy
+msgid "fuzzy unit"
+msgstr "fuzzy unit"
+
+# untranslated
+msgid "untranslated unit"
+msgstr ""
+
+# obsolete
+#~ msgid "obsolete translated unit"
+#~ msgstr "obsolete translated unit"
+
+#, fuzzy
+#~ msgid "obsolete fuzzy unit"
+#~ msgstr "obsolete fuzzy unit"
+
+# untranslated
+#~ msgid "obsolete untranslated unit"
+#~ msgstr ""
+'''
+
+    def test_translated(self):
+        pofile = StringIO.StringIO(self.inputdata)
+        stats = pocount.calcstats_old(pofile)
+        assert stats['translated'] == 1
+
+    def test_fuzzy(self):
+        pofile = StringIO.StringIO(self.inputdata)
+        stats = pocount.calcstats_old(pofile)
+        assert stats['fuzzy'] == 1
+
+    def test_untranslated(self):
+        pofile = StringIO.StringIO(self.inputdata)
+        stats = pocount.calcstats_old(pofile)
+        assert stats['untranslated'] == 1
+
+    def test_total(self):
+        pofile = StringIO.StringIO(self.inputdata)
+        stats = pocount.calcstats_old(pofile)
+        assert stats['total'] == 3
+
+    def test_translatedsourcewords(self):
+        pofile = StringIO.StringIO(self.inputdata)
+        stats = pocount.calcstats_old(pofile)
+        assert stats['translatedsourcewords'] == 2
+
+    def test_fuzzysourcewords(self):
+        pofile = StringIO.StringIO(self.inputdata)
+        stats = pocount.calcstats_old(pofile)
+        assert stats['fuzzysourcewords'] == 2
+
+    def test_untranslatedsourcewords(self):
+        pofile = StringIO.StringIO(self.inputdata)
+        stats = pocount.calcstats_old(pofile)
+        assert stats['untranslatedsourcewords'] == 2
+
+    def test_totalsourcewords(self):
+        pofile = StringIO.StringIO(self.inputdata)
+        stats = pocount.calcstats_old(pofile)
+        assert stats['totalsourcewords'] == 6

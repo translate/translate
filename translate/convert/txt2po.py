@@ -37,8 +37,7 @@ class txt2po:
     def convertstore(self, thetxtfile):
         """converts a file to .po format"""
         thetargetfile = po.pofile()
-        targetheader = thetargetfile.init_headers(charset="UTF-8",
-                                                  encoding="8bit")
+        targetheader = thetargetfile.header()
         targetheader.addnote("extracted from %s" % thetxtfile.filename,
                              "developer")
 

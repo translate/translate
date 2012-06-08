@@ -36,7 +36,7 @@ class php2po:
     def convertstore(self, inputstore, duplicatestyle="msgctxt"):
         """converts a .php file to a .po file..."""
         outputstore = po.pofile()
-        outputheader = outputstore.init_headers(charset="UTF-8", encoding="8bit")
+        outputheader = outputstore.header()
         outputheader.addnote("extracted from %s" % inputstore.filename, "developer")
 
         for inputunit in inputstore.units:
@@ -49,7 +49,7 @@ class php2po:
     def mergestore(self, templatestore, inputstore, blankmsgstr=False, duplicatestyle="msgctxt"):
         """converts two .properties files to a .po file..."""
         outputstore = po.pofile()
-        outputheader = outputstore.init_headers(charset="UTF-8", encoding="8bit")
+        outputheader = outputstore.header()
         outputheader.addnote("extracted from %s, %s" % (templatestore.filename, inputstore.filename), "developer")
 
         inputstore.makeindex()

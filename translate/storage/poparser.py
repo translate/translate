@@ -300,7 +300,6 @@ def parse_unit(parse_state, unit=None):
         return obsolete_unit
     parsed_msg_entries = parse_msg_entries(parse_state, unit)
     if parsed_comments or parsed_msg_entries:
-        unit.infer_state()
         return unit
     else:
         return None
@@ -349,6 +348,7 @@ def parse_header(parse_state, store):
 def parse_units(parse_state, store):
     unit = parse_header(parse_state, store)
     while unit:
+        unit.infer_state()
         store.addunit(unit)
         unit = parse_unit(parse_state)
     return parse_state.eof

@@ -112,13 +112,48 @@ def extractpoline(line):
     """Remove quote and unescape line from po file.
 
     :param line: a quoted line from a po file (msgid or msgstr)
+
+    .. deprecated:: 1.10
     """
     extracted = quote.extractwithoutquotes(line, '"', '"', '\\', includeescapes=unescapehandler)[0]
     return extracted
 
 
+def unescape(line):
+    """Unescape the given line.
+
+    Quotes on either side should already have been removed.
+    """
+    escape_places = quote.find_all(line, u"\\")
+    if not escape_places:
+        return line
+
+    # filter escaped escapes
+    true_escape = False
+    true_escape_places = []
+    for escape_pos in escape_places:
+        if escape_pos - 1 in escape_places:
+            true_escape = not true_escape
+        else:
+            true_escape = True
+        if true_escape:
+            true_escape_places.append(escape_pos)
+
+    extracted = u""
+    lastpos = 0
+    for pos in true_escape_places:
+        # everything leading up to the escape
+        extracted += line[lastpos:pos]
+        # the escaped sequence (consuming 2 characters)
+        extracted += unescapehandler(line[pos:pos+2])
+        lastpos = pos+2
+
+    extracted += line[lastpos:]
+    return extracted
+
+
 def unquotefrompo(postr):
-    return "".join([extractpoline(line) for line in postr])
+    return u"".join([unescape(line[1:-1]) for line in postr])
 
 
 def is_null(lst):
@@ -185,13 +220,11 @@ class pounit(pocommon.pounit):
     allcomments = property(_get_all_comments)
 
     def _get_source_vars(self, msgid, msgid_plural):
-        multi = multistring(unquotefrompo(msgid), self._encoding)
+        singular = unquotefrompo(msgid)
         if self.hasplural():
             pluralform = unquotefrompo(msgid_plural)
-            if isinstance(pluralform, str):
-                pluralform = pluralform.decode(self._encoding)
-            multi.strings.append(pluralform)
-        return multi
+            return multistring([singular, pluralform], self._encoding)
+        return singular
 
     def _set_source_vars(self, source):
         msgid = None
@@ -239,10 +272,9 @@ class pounit(pocommon.pounit):
     def gettarget(self):
         """Returns the unescaped msgstr"""
         if isinstance(self.msgstr, dict):
-            multi = multistring(map(unquotefrompo, self.msgstr.values()), self._encoding)
+            return multistring(map(unquotefrompo, self.msgstr.values()), self._encoding)
         else:
-            multi = multistring(unquotefrompo(self.msgstr), self._encoding)
-        return multi
+            return unquotefrompo(self.msgstr)
 
     def settarget(self, target):
         """Sets the msgstr to the given (unescaped) value"""
@@ -468,8 +500,13 @@ class pounit(pocommon.pounit):
 
     def hastypecomment(self, typecomment):
         """Check whether the given type comment is present"""
-        # check for word boundaries properly by using a regular expression...
-        return sum(map(lambda tcline: len(re.findall("\\b%s\\b" % typecomment, tcline)), self.typecomments)) != 0
+        if not self.typecomments:
+            return False
+        for tc in self.typecomments:
+            # check for word boundaries properly by using a regular expression
+            if re.search("\\b%s\\b" % typecomment, tc):
+                return True
+        return False
 
     def hasmarkedcomment(self, commentmarker):
         """Check whether the given comment marker is present.

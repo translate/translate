@@ -41,8 +41,7 @@ class lang2po:
         thetargetfile = po.pofile()
 
         # Set up the header
-        targetheader = thetargetfile.init_headers(charset="UTF-8",
-                                                 encoding="8bit")
+        targetheader = thetargetfile.header()
         targetheader.addnote("extracted from %s" %
                              thelangfile.filename, "developer")
 

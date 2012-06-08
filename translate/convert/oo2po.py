@@ -99,10 +99,10 @@ class oo2po:
                              "component": "l10n",
                              "form_name": "enter_issue",
                             })
-        targetheader = thetargetfile.init_headers(charset="UTF-8",
-                                                  encoding="8bit",
-                                                  x_accelerator_marker="~",
-                                                  report_msgid_bugs_to=bug_url)
+        targetheader = thetargetfile.init_headers(
+                              x_accelerator_marker="~",
+                              report_msgid_bugs_to=bug_url,
+        )
         targetheader.addnote("extracted from %s" % theoofile.filename,
                              "developer")
         thetargetfile.setsourcelanguage(self.sourcelanguage)

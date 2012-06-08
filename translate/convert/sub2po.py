@@ -28,7 +28,7 @@ from translate.storage import po
 def convert_store(input_store, duplicatestyle="msgctxt"):
     """converts a subtitle file to a .po file..."""
     output_store = po.pofile()
-    output_header = output_store.init_headers(charset="UTF-8", encoding="8bit")
+    output_header = output_store.header()
     output_header.addnote("extracted from %s" % input_store.filename,
                           "developer")
 
@@ -44,7 +44,7 @@ def merge_store(template_store, input_store, blankmsgstr=False,
                 duplicatestyle="msgctxt"):
     """converts two subtitle files to a .po file..."""
     output_store = po.pofile()
-    output_header = output_store.init_headers(charset="UTF-8", encoding="8bit")
+    output_header = output_store.headers()
     output_header.addnote("extracted from %s, %s" % \
                           (template_store.filename, input_store.filename),
                           "developer")

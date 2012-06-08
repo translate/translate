@@ -57,7 +57,6 @@ class ts2po:
         """converts a .ts file to .po format"""
         tsfile = ts.QtTsParser(inputfile)
         thetargetfile = po.pofile()
-        targetheader = thetargetfile.init_headers(charset="UTF-8", encoding="8bit")
 
         for contextname, messages in tsfile.iteritems():
             messagenum = 0

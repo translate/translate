@@ -31,8 +31,7 @@ class json2po:
     def convert_store(self, input_store, duplicatestyle="msgctxt"):
         """Converts a JSON file to a PO file"""
         output_store = po.pofile()
-        output_header = output_store.init_headers(charset="UTF-8",
-                                                  encoding="8bit")
+        output_header = output_store.header()
         output_header.addnote("extracted from %s" % input_store.filename,
                               "developer")
         for input_unit in input_store.units:
@@ -46,8 +45,7 @@ class json2po:
                     duplicatestyle="msgctxt"):
         """Converts two JSON files to a PO file"""
         output_store = po.pofile()
-        output_header = output_store.init_headers(charset="UTF-8",
-                                                  encoding="8bit")
+        output_header = output_store.header()
         output_header.addnote("extracted from %s, %s" % (template_store.filename,
                                                          input_store.filename),
                               "developer")

@@ -1536,7 +1536,8 @@ class StandardChecker(TranslationChecker):
                           "doublespacing", "endpunc", "xmltags",
                           "startwhitespace", "endwhitespace",
                           "singlequoting", "doublequoting",
-                          "filepaths", "purepunc", "doublewords", "printf"),
+                          "filepaths", "purepunc", "doublewords", "printf",
+                          "newlines"),
          }
 
 # code to actually run the tests (use unittest?)
@@ -1587,6 +1588,7 @@ class MozillaChecker(StandardChecker):
         StandardChecker.__init__(self, **kwargs)
 
 
+    @extraction
     def credits(self, str1, str2):
         """Checks for messages containing translation credits instead of
         normal translations.

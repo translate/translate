@@ -202,9 +202,7 @@ class dtd2po:
 
     def convertstore(self, dtd_store):
         target_store = po.pofile()
-        targetheader = target_store.init_headers(charset="UTF-8",
-                                                  encoding="8bit",
-                                                  x_accelerator_marker="&")
+        targetheader = target_store.init_headers(x_accelerator_marker="&")
         targetheader.addnote("extracted from %s" % dtd_store.filename,
                              "developer")
 
@@ -222,8 +220,7 @@ class dtd2po:
 
     def mergestore(self, origdtdfile, translateddtdfile):
         target_store = po.pofile()
-        targetheader = target_store.init_headers(charset="UTF-8",
-                                                  encoding="8bit")
+        targetheader = target_store.init_headers(x_accelerator_marker="&")
         targetheader.addnote("extracted from %s, %s" % \
                              (origdtdfile.filename,
                               translateddtdfile.filename),

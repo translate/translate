@@ -57,6 +57,14 @@ accesskeysuffixes = (".accesskey", ".accessKey", ".akey")
 ending in :attr:`.labelsuffixes` into accelerator notation"""
 
 
+def quoteforandroid(source):
+    """Escapes a line for Android DTD files. """
+    if u'%' in source:
+        source = source.replace(u"%", u"&#x25;")
+    value = quote.quotestr(source.replace(u"'", u'\\\''))
+    return value.encode('utf-8')
+
+
 def quotefordtd(source):
     if '%' in source:
         source = source.replace("%", "&#x25;")
@@ -134,8 +142,10 @@ def removeinvalidamps(name, value):
 class dtdunit(base.TranslationUnit):
     """An entity definition from a DTD file (and any associated comments)."""
 
-    def __init__(self, source=""):
+    def __init__(self, source="", android=False):
         """construct the dtdunit, prepare it for parsing"""
+        self.android = android
+
         super(dtdunit, self).__init__(source)
         self.comments = []
         self.unparsedlines = []
@@ -150,7 +160,10 @@ class dtdunit(base.TranslationUnit):
     # Note that source and target are equivalent for monolingual units
     def setsource(self, source):
         """Sets the definition to the quoted value of source"""
-        self.definition = quotefordtd(source)
+        if self.android:
+            self.definition = quoteforandroid(source)
+        else:
+            self.definition = quotefordtd(source)
         self._rich_source = None
 
     def getsource(self):
@@ -162,7 +175,10 @@ class dtdunit(base.TranslationUnit):
         """Sets the definition to the quoted value of target"""
         if target is None:
             target = ""
-        self.definition = quotefordtd(target)
+        if self.android:
+            self.definition = quoteforandroid(target)
+        else:
+            self.definition = quotefordtd(target)
         self._rich_target = None
 
     def gettarget(self):
@@ -422,10 +438,11 @@ class dtdfile(base.TranslationStore):
     """A .dtd file made up of dtdunits."""
     UnitClass = dtdunit
 
-    def __init__(self, inputfile=None):
+    def __init__(self, inputfile=None, android=False):
         """construct a dtdfile, optionally reading in from inputfile"""
         base.TranslationStore.__init__(self, unitclass=self.UnitClass)
         self.filename = getattr(inputfile, 'name', '')
+        self.android = android
         if inputfile is not None:
             dtdsrc = inputfile.read()
             self.parse(dtdsrc)
@@ -453,7 +470,7 @@ class dtdfile(base.TranslationStore):
 
             linesprocessed = 1  # to initialise loop
             while linesprocessed >= 1:
-                newdtd = dtdunit()
+                newdtd = dtdunit(android=self.android)
                 try:
                     linesprocessed = newdtd.parse("\n".join(lines[start:end]))
                     if linesprocessed >= 1 and (not newdtd.isnull() or newdtd.unparsedlines):
@@ -492,11 +509,12 @@ class dtdfile(base.TranslationStore):
         :return: If the store passes validation
         :rtype: Boolean
         """
-        if etree is not None:
+        # Android files are invalid DTDs
+        if etree is not None and not self.android:
             try:
                 # #expand is a Mozilla hack and are removed as they are not valid in DTDs
                 dtd = etree.DTD(StringIO.StringIO(re.sub("#expand", "", self.getoutput())))
-            except etree.DTDParseError as e:
+            except etree.DTDParseError, e:
                 warnings.warn("DTD parse error: %s" % e.error_log)
                 return False
         return True

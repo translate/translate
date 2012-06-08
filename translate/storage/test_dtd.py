@@ -16,6 +16,7 @@ def test_roundtrip_quoting():
                 'A "solution"', "skop 'n bal", '"""', "'''",
                 '\n', '\t', '\r',
                 'Escape at end \\',
+                '',
                 '\\n', '\\t', '\\r', '\\"', '\r\n', '\\r\\n', '\\']
     for special in specials:
         quoted_special = dtd.quotefordtd(special)
@@ -32,6 +33,11 @@ def test_quotefordtd():
         #print dtd.unquotefromdtd(dtd_ready_result)
         assert dtd.unquotefromdtd(dtd_ready_result) == raw_original
     tester("Unintentional variable %S", '"Unintentional variable &#x25;S"')
+
+
+def test_quoteforandroid():
+    assert dtd.quoteforandroid("don't") == r'"don\'t"'
+    assert dtd.quoteforandroid('the "thing"') == r'"the \"thing\""'
 
 
 def test_removeinvalidamp(recwarn):
@@ -88,6 +94,10 @@ class TestDTD(test_monolingual.TestMonolingualStore):
 
     def test_simpleentity_source(self):
         """checks that a simple dtd entity definition can be regenerated as source"""
+        dtdsource = '<!ENTITY test.me "">\n'
+        dtdregen = self.dtdregen(dtdsource)
+        assert dtdsource == dtdregen
+
         dtdsource = '<!ENTITY test.me "bananas for sale">\n'
         dtdregen = self.dtdregen(dtdsource)
         assert dtdsource == dtdregen

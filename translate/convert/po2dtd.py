@@ -71,9 +71,10 @@ def applytranslation(entity, dtdunit, inputunit, mixedentities):
 class redtd:
     """this is a convertor class that creates a new dtd based on a template using translations in a po"""
 
-    def __init__(self, dtdfile):
+    def __init__(self, dtdfile, android=False):
         self.dtdfile = dtdfile
         self.mixer = accesskey.UnitMixer(dtd.labelsuffixes, dtd.accesskeysuffixes)
+        self.android = False
 
     def convertstore(self, inputstore, includefuzzy=False):
         # translate the strings
@@ -95,6 +96,9 @@ class redtd:
 
 class po2dtd:
     """this is a convertor class that creates a new dtd file based on a po file without a template"""
+
+    def __init__(self, android=False):
+        self.android = android
 
     def convertcomments(self, inputunit, dtdunit):
         entities = inputunit.getlocations()
@@ -136,7 +140,7 @@ class po2dtd:
         return dtdunit
 
     def convertstore(self, inputstore, includefuzzy=False):
-        outputstore = dtd.dtdfile()
+        outputstore = dtd.dtdfile(android=self.android)
         self.currentgroups = []
         for inputunit in inputstore.units:
             if includefuzzy or not inputunit.isfuzzy():
@@ -148,11 +152,24 @@ class po2dtd:
 
 def convertdtd(inputfile, outputfile, templatefile, includefuzzy=False):
     inputstore = po.pofile(inputfile)
+
+    # Some of the DTD files used for Firefox Mobile are actually completely
+    # different with different escaping and quoting rules. The best way to
+    # identify them seems to be on their file path in the tree (based on code
+    # in compare-locales).
+    android_dtd = False
+    header_comment = u""
+    input_header = inputstore.header()
+    if input_header:
+        header_comment = input_header.getnotes("developer")
+        if "embedding/android" in header_comment or "mobile/android/base" in header_comment:
+            android_dtd = True
+
     if templatefile is None:
-        convertor = po2dtd()
+        convertor = po2dtd(android=android_dtd)
     else:
-        templatestore = dtd.dtdfile(templatefile)
-        convertor = redtd(templatestore)
+        templatestore = dtd.dtdfile(templatefile, android=android_dtd)
+        convertor = redtd(templatestore, android=android_dtd)
     outputstore = convertor.convertstore(inputstore, includefuzzy)
     outputfile.write(str(outputstore))
     return 1

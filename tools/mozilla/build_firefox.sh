@@ -40,6 +40,7 @@ gitverbosity="--quiet" # --verbose to make it noisy
 svnverbosity="--quiet"
 pomigrate2verbosity="--quiet"
 get_moz_enUS_verbosity=""
+easy_install_verbosity="--quiet"
 
 
 for option in $*
@@ -66,6 +67,7 @@ do
 				progress=bar
 				pomigrate2verbosity=""
 				get_moz_enUS_verbosity="-v"
+				easy_install_verbosity="--verbose"
 			;;
 			--time)
 				opt_time="yes"
@@ -129,15 +131,22 @@ done
 L10N_DIR_REL=`echo ${L10N_DIR} | sed "s#${BUILD_DIR}/##"`
 POUPDATED_DIR_REL=`echo ${POUPDATED_DIR} | sed "s#${BUILD_DIR}/##"`
 
-verbose "Translate Toolkit - update/pull using Git"
-[ $opt_vc ] && if [ -d ${TOOLS_DIR}/translate/.git ]; then
-	(cd ${TOOLS_DIR}/translate/
-	git stash $gitverbosity
-	git pull $gitverbosity --rebase
-	git checkout $gitverbosity
-	git stash pop $gitverbosity || true)
-else
-	git clone $gitverbosity git@github.com:translate/translate.git ${TOOLS_DIR}/translate || git clone git://github.com/translate/translate.git ${TOOLS_DIR}/translate 
+if [ $opt_vc ]; then
+	verbose "Translate Toolkit - update/pull using Git"
+	if [ -d ${TOOLS_DIR}/translate/.git ]; then
+		(cd ${TOOLS_DIR}/translate/
+		git stash $gitverbosity
+		git pull $gitverbosity --rebase
+		git checkout $gitverbosity
+		git stash pop $gitverbosity || true)
+	else
+		git clone $gitverbosity git@github.com:translate/translate.git ${TOOLS_DIR}/translate || git clone git://github.com/translate/translate.git ${TOOLS_DIR}/translate 
+	fi
+fi
+
+if [ $opt_vc ]; then
+	verbose "Compare-Locales - update if needed"
+	sudo easy_install $easy_install_verbosity --upgrade compare-locales
 fi
 
 export PYTHONPATH="${TOOLS_DIR}/translate":"$PYTHONPATH"
@@ -148,8 +157,8 @@ export PATH="${TOOLS_DIR}/translate/tools":\
 "${TOOLS_DIR}/translate/tools/mozilla":\
 "$PATH"
 
-verbose "mozilla-aurora - update/pull using Mercurial"
 if [ $opt_vc ]; then
+	verbose "mozilla-aurora - update/pull using Mercurial"
 	if [ -d "${MOZCENTRAL_DIR}/.hg" ]; then
 		cd ${MOZCENTRAL_DIR}
 		hg pull $hgverbosity -u
@@ -157,26 +166,26 @@ if [ $opt_vc ]; then
 	else
 		hg clone $hgverbosity http://hg.mozilla.org/releases/mozilla-aurora/ ${MOZCENTRAL_DIR}
 	fi
-	verbose "mozilla-aurora - find and remove any *.orig files"
-	(find ${MOZCENTRAL_DIR} -name '*.orig' | xargs  --no-run-if-empty rm)
 fi
 
-verbose "Translations - prepare the parent directory po/"
-[ $opt_vc ] && if [ -d ${PO_DIR} ]; then
-	svn up $svnverbosity --depth=files ${PO_DIR}
-else
-	svn co $svnverbosity --depth=files  https://zaf.svn.sourceforge.net/svnroot/zaf/trunk/po/fftb ${PO_DIR}
-fi
-if [ ! -d ${POUPDATED_DIR}/.svn ]; then
-	cp -rp ${PO_DIR}/.svn ${POUPDATED_DIR}
+if [ $opt_vc ]; then
+	verbose "Translations - prepare the parent directory po/"
+	if [ -d ${PO_DIR} ]; then
+		svn up $svnverbosity --depth=files ${PO_DIR}
+	else
+		svn co $svnverbosity --depth=files  https://zaf.svn.sourceforge.net/svnroot/zaf/trunk/po/fftb ${PO_DIR}
+	fi
+	if [ ! -d ${POUPDATED_DIR}/.svn ]; then
+		cp -rp ${PO_DIR}/.svn ${POUPDATED_DIR}
+	fi
 fi
 
 verbose "Localisations - update Mercurial-managed languages in l10n/"
 cd ${L10N_DIR}
 for lang in ${HG_LANGS}
 do
-	verbose "Update l10n/$lang"
 	if [ $opt_vc ]; then
+		verbose "Update l10n/$lang"
 		if [ -d ${lang} ]; then
 			if [ -d ${lang}/.hg ]; then
 			        (cd ${lang}
@@ -253,8 +262,8 @@ do
 	verbose "Update existing po/$lang in case any changes are in version control"
 	(cd ${PO_DIR}; svn up $svnverbosity ${polang})
 
-	verbose "Copy directory structure while preserving version control metadata"
 	if [ -d ${PO_DIR}/${polang} ]; then
+		verbose "Copy directory structure while preserving version control metadata"
 		rm -rf ${POUPDATED_DIR}/${polang}
 		cp -R ${PO_DIR}/${polang} ${POUPDATED_DIR}
 		(cd ${POUPDATED_DIR/${polang}; find $PRODUCT_DIRS -name '*.po' -exec rm -f {} \;)
@@ -266,8 +275,8 @@ do
 	pomigrate2 --use-compendium --pot2po $pomigrate2verbosity ${tempdir}/${polang} ${POUPDATED_DIR}/${polang} ${L10N_DIR}/pot
 	rm -rf ${tempdir}
 
-	verbose "Migration cleanup - fix migrated PO files using msgcat"
 	if [ $USECPO -eq 0 ]; then
+		verbose "Migration cleanup - fix migrated PO files using msgcat"
 		(cd ${POUPDATED_DIR}/${polang}
 		for po in $(find ${PRODUCT_DIRS} -name "*.po")
 		do
@@ -327,8 +336,8 @@ do
 	po2moz --progress=$progress --errorlevel=$errorlevel --exclude=".svn" --exclude=".hg" --exclude="obsolete" --exclude="editor" --exclude="mail" --exclude="thunderbird" \
 		-t ${L10N_DIR}/en-US -i ${POUPDATED_DIR}/${polang} -o ${L10N_DIR}/${lang}
 
-	verbose "Copy files not handled by moz2po/po2moz"
 	if [ $opt_copyfiles ]; then
+		verbose "Copy files not handled by moz2po/po2moz"
 		copyfiletype "*.xhtml" ${lang} # Our XHTML and HTML is broken
 		copyfiletype "*.rdf" ${lang}   # Don't support .rdf files
 		copyfile browser/firefox-l10n.js ${lang}
