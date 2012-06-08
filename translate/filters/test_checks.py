@@ -819,6 +819,8 @@ def test_variables_mozilla():
     assert fails_serious(mozillachecker.variables, "About $_CLICK and more", "Oor $_KLIK en meer")
     assert passes(mozillachecker.variables, "About $(^NameDA)", "Oor $(^NameDA)")
     assert fails_serious(mozillachecker.variables, "About $(^NameDA)", "Oor $(^NaamDA)")
+    assert passes(mozillachecker.variables, "Open {{pageCount}} pages", "Make {{pageCount}} bladsye oop")
+    assert fails_serious(mozillachecker.variables, "Open {{pageCount}} pages", "Make {{bladTelling}} bladsye oop")
     # Double variable problem
     assert fails_serious(mozillachecker.variables, "Create In &lt;&lt;", "Etsa ka Ho &lt;lt;")
     # Variables at the end of a sentence

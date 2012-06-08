@@ -1570,7 +1570,7 @@ class OpenOfficeChecker(StandardChecker):
 mozillaconfig = CheckerConfig(
     accelmarkers=["&"],
     varmatches=[("&", ";"), ("%", "%"), ("%", 1), ("$", "$"), ("$", None),
-                ("#", 1), ("${", "}"), ("$(^", ")")],
+                ("#", 1), ("${", "}"), ("$(^", ")"), ("{{", "}}"), ],
     criticaltests=["accelerators"],
     )
 
