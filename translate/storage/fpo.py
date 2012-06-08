@@ -533,7 +533,8 @@ class pofile(pocommon.pofile):
                         uniqueunits.append(thepo)
                 elif duplicatestyle == "msgctxt":
                     origpo = id_dict[id]
-                    if origpo not in markedpos:
+                    if origpo not in markedpos and id:
+                        # if it doesn't have an id, we already added msgctxt
                         origpo._msgctxt += " ".join(origpo.getlocations())
                         markedpos.append(thepo)
                     thepo._msgctxt += " ".join(thepo.getlocations())
