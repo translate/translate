@@ -92,16 +92,16 @@ with your language code.
    again.
 6. Now we push our work to Mozilla
    # cd ~/firefox/l10n
-   # cd zz
    Check that Axel's compare locales pass
    # ./compare-locales.sh zz
    Check for any errors and correct.  Removed files should be fixed here. Errors in 
    translations should be fixed on Pootle or in po/
+   # cd zz
    # hg status
    Check for any new or removed files. ? means a file not in version control.  ! means a files
    that was in version control and now isn't which usually means we don't need it anymore.
-   # svn addremove path/to/files.dtd
-   Add the files and please arefully check what you are adding.  You shouldn't be adding anything
+   # hg addremove path/to/files.dtd
+   Add the files and please carefully check what you are adding.  You shouldn't be adding anything
    ending in .orig
    # hg diff
    Review the changes and check that you haven't broken anything. Happy?
