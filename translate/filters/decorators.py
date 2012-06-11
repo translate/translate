@@ -24,11 +24,12 @@ from translate.misc.decorators import decorate
 
 
 #: Quality checks' failure categories
-CRITICAL = 100
-FUNCTIONAL = 60
-COSMETIC = 30
-EXTRACTION = 10
-NO_CATEGORY = 0
+class Category(object):
+    CRITICAL = 100
+    FUNCTIONAL = 60
+    COSMETIC = 30
+    EXTRACTION = 10
+    NO_CATEGORY = 0
 
 
 @decorate
@@ -36,7 +37,7 @@ def critical(f):
 
     def critical_f(self, *args, **kwargs):
         if f.__name__ not in self.__class__.categories:
-            self.__class__.categories[f.__name__] = CRITICAL
+            self.__class__.categories[f.__name__] = Category.CRITICAL
 
         return f(self, *args, **kwargs)
 
@@ -48,7 +49,7 @@ def functional(f):
 
     def functional_f(self, *args, **kwargs):
         if f.__name__ not in self.__class__.categories:
-            self.__class__.categories[f.__name__] = FUNCTIONAL
+            self.__class__.categories[f.__name__] = Category.FUNCTIONAL
 
         return f(self, *args, **kwargs)
 
@@ -60,7 +61,7 @@ def cosmetic(f):
 
     def cosmetic_f(self, *args, **kwargs):
         if f.__name__ not in self.__class__.categories:
-            self.__class__.categories[f.__name__] = COSMETIC
+            self.__class__.categories[f.__name__] = Category.COSMETIC
 
         return f(self, *args, **kwargs)
 
@@ -72,7 +73,7 @@ def extraction(f):
 
     def extraction_f(self, *args, **kwargs):
         if f.__name__ not in self.__class__.categories:
-            self.__class__.categories[f.__name__] = EXTRACTION
+            self.__class__.categories[f.__name__] = Category.EXTRACTION
 
         return f(self, *args, **kwargs)
 
