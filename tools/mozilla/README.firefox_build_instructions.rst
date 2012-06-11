@@ -112,7 +112,7 @@ with your language code.
    replace http:// with ssh://
    Now try push again.
 7. Wait for Mozilla to build your stuff
-   Go to https://l10n-stage-sj.mozilla.org/shipping/dashboard?av=fx-aurora and check
+   Go to https://l10n-stage-sj.mozilla.org/teams/zz (Change zz of course) and check
    that you have been built.
    Get your nightly test build from
    http://ftp.mozilla.org/pub/mozilla.org/firefox/nightly/latest-mozilla-aurora/
