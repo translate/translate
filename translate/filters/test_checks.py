@@ -750,6 +750,7 @@ def test_unchanged():
     # Don't fail unchanged if the entry is a dialogsize, quite plausible that you won't change it
     mozillachecker = checks.MozillaChecker()
     assert passes(mozillachecker.unchanged, 'width: 12em;', 'width: 12em;')
+    assert passes(mozillachecker.unchanged, '7em', '7em')
 
 
 def test_untranslated():
