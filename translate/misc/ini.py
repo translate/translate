@@ -42,7 +42,13 @@ Example:
 # Backward-compatiable with ConfigParser
 
 import re
-from sets import Set
+try:
+    # test to see if the built-in type is available:
+    __test_set = set()
+    del __test_set
+    #if it is, we'll avoid the deprecation warning inside the sets module
+except Exception:
+    from sets import Set as set
 
 from iniparse import config
 from ConfigParser import DEFAULTSECT, ParsingError, MissingSectionHeaderError
@@ -350,7 +356,7 @@ class INISection(config.ConfigNamespace):
         del self._options[key]
 
     def __iter__(self):
-        d = Set()
+        d = set()
         for l in self._lines:
             for x in l.contents:
                 if isinstance(x, LineContainer):
@@ -440,7 +446,7 @@ class INIConfig(config.ConfigNamespace):
         del self._sections[key]
 
     def __iter__(self):
-        d = Set()
+        d = set()
         for x in self._data.contents:
             if isinstance(x, LineContainer):
                 if x.name not in d:
