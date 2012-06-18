@@ -760,6 +760,48 @@ msgstr "b"
         for line in pofile.units[0].getnotes():
             assert isinstance(line, unicode)
 
+    def test_non_ascii_header_comments(self):
+        posource = r'''
+# Copyright bla.
+msgid ""
+msgstr ""
+"PO-Revision-Date: 2006-02-09 23:33+0200\n"
+"MIME-Version: 1.0\n"
+"Last-Translator: Tránslátór\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8-bit\n"
+
+msgid "a"
+msgstr "b"
+'''
+        pofile = self.poparse(posource)
+        assert u"Tránslátór" in pofile.units[0].target
+        header_dict = pofile.parseheader()
+        assert u"Last-Translator" in header_dict
+        assert header_dict[u"Last-Translator"] == u"Tránslátór"
+
+
+        # let's test the same with latin-1:
+        posource = r'''
+# Copyright bla.
+msgid ""
+msgstr ""
+"PO-Revision-Date: 2006-02-09 23:33+0200\n"
+"MIME-Version: 1.0\n"
+"Last-Translator: Tránslátór\n"
+"Content-Type: text/plain; charset=ISO-8859-1\n"
+"Content-Transfer-Encoding: 8-bit\n"
+
+msgid "a"
+msgstr "b"
+'''.decode('utf-8').encode('ISO-8859-1')
+
+        pofile = self.poparse(posource)
+        assert u"Tránslátór" in pofile.units[0].target
+        header_dict = pofile.parseheader()
+        assert u"Last-Translator" in header_dict
+        assert header_dict[u"Last-Translator"] == u"Tránslátór"
+
     def test_final_slash(self):
         """Test that \ as last character is correcly interpreted (bug 960)."""
         posource = r'''
