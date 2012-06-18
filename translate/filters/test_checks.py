@@ -1114,3 +1114,4 @@ def test_dialogsizes():
     assert passes(mozillachecker.dialogsizes, 'height: 12em;', 'height: 24px;')
     assert fails(mozillachecker.dialogsizes, 'height: 12em;', 'height: 24xx;')
     assert fails(mozillachecker.dialogsizes, 'height: 12.5em;', 'height: 12,5em;')
+    assert fails(mozillachecker.dialogsizes, 'width: 36em; height: 18em;', 'width: 30em; min-height: 20em;')
