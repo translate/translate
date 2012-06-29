@@ -1175,6 +1175,8 @@ class StandardChecker(TranslationChecker):
         if len(str1) > 1 and len(str2) > 1:
             if self.config.sourcelang.capsstart(str1) == self.config.lang.capsstart(str2):
                 return True
+            elif self.config.sourcelang.numstart(str1) or self.config.lang.numstart(str2):
+                return True
             else:
                 raise FilterFailure(u"Different capitalization at the start")
 

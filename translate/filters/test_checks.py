@@ -675,10 +675,13 @@ def test_startcaps():
     # Unicode further down the Unicode tables
     assert passes(stdchecker.startcaps, "A text enclosed...", u"Ḽiṅwalwa ḽo katelwaho...")
     assert fails(stdchecker.startcaps, "A text enclosed...", u"ḽiṅwalwa ḽo katelwaho...")
-
     # Accelerators
     stdchecker = checks.StandardChecker(checks.CheckerConfig(accelmarkers="&"))
     assert passes(stdchecker.startcaps, "&Find", "Vi&nd")
+    # Numbers - we really can't tell what should happen with numbers, so ignore
+    # source or target that start with a number
+    assert passes(stdchecker.startcaps, "360 degrees", "Grade 360")
+    assert passes(stdchecker.startcaps, "360 degrees", "grade 360")
 
     # Language specific stuff
     afchecker = checks.StandardChecker(checks.CheckerConfig(targetlanguage='af'))

@@ -82,6 +82,16 @@ def test_capsstart():
     assert not language.capsstart("")
 
 
+def test_numstart():
+    """Tests for basic sane behaviour in startcaps()."""
+    language = common.Common
+    assert language.numstart("360 degress")
+    assert language.numstart("3D file")
+    assert not language.numstart("Open 360 degrees")
+    assert not language.numstart(":")
+    assert not language.numstart("")
+
+
 def test_punctranslate():
     """Test the basic punctranslate function"""
     language = common.Common
