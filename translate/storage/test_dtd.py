@@ -37,7 +37,7 @@ def test_quotefordtd():
 
 def test_quoteforandroid():
     assert dtd.quoteforandroid("don't") == r'"don\'t"'
-    assert dtd.quoteforandroid('the "thing"') == r'"the \"thing\""'
+    assert dtd.quoteforandroid('the "thing"') == r'"the \&quot;thing\&quot;"'
 
 
 def test_removeinvalidamp(recwarn):

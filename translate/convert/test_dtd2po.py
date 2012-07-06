@@ -94,6 +94,13 @@ class TestDTD2PO:
         assert "credit.translation" in str(pounit)
         assert 'msgctxt "credit.translation"' in str(pounit)
 
+    def test_two_empty_entities(self):
+        """checks that two empty entitu definitions have correct context (bug 2190)."""
+        dtdsource = '<!ENTITY community.exp.start "">\n<!ENTITY contribute.end "">\n'
+        pofile = self.dtd2po(dtdsource)
+        assert pofile.units[-2].getcontext() == u"community.exp.start"
+        assert pofile.units[-1].getcontext() == u"contribute.end"
+
     def test_emptyentity_translated(self):
         """checks that if we translate an empty entity it makes it into the PO, bug 101"""
         dtdtemplate = '<!ENTITY credit.translation "">\n'

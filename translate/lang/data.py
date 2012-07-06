@@ -58,6 +58,7 @@ languages = {
 'et': (u'Estonian', 2, '(n != 1)'),
 'eu': (u'Basque', 2, '(n != 1)'),
 'fa': (u'Persian', 1, '0'),
+'ff': (u'Fulah', 2, '(n != 1)'),
 'fi': (u'Finnish', 2, '(n != 1)'),
 'fil': (u'Filipino; Pilipino', 2, '(n > 1)'),
 'fo': (u'Faroese', 2, '(n != 1)'),

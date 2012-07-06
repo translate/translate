@@ -346,3 +346,9 @@ class Common(object):
         stripped = text.lstrip().lstrip(cls.punctuation)
         return stripped and stripped[0].isupper()
     capsstart = classmethod(capsstart)
+
+    def numstart(cls, text):
+        """Determines whether the text starts with a mumeric value."""
+        stripped = text.lstrip().lstrip(cls.punctuation)
+        return stripped and stripped[0].isnumeric()
+    numstart = classmethod(numstart)

@@ -675,24 +675,27 @@ def test_startcaps():
     # Unicode further down the Unicode tables
     assert passes(stdchecker.startcaps, "A text enclosed...", u"Ḽiṅwalwa ḽo katelwaho...")
     assert fails(stdchecker.startcaps, "A text enclosed...", u"ḽiṅwalwa ḽo katelwaho...")
-
     # Accelerators
     stdchecker = checks.StandardChecker(checks.CheckerConfig(accelmarkers="&"))
     assert passes(stdchecker.startcaps, "&Find", "Vi&nd")
+    # Numbers - we really can't tell what should happen with numbers, so ignore
+    # source or target that start with a number
+    assert passes(stdchecker.startcaps, "360 degrees", "Grade 360")
+    assert passes(stdchecker.startcaps, "360 degrees", "grade 360")
 
     # Language specific stuff
-    stdchecker = checks.StandardChecker(checks.CheckerConfig(targetlanguage='af'))
-    assert passes(stdchecker.startcaps, "A cow", "'n Koei")
-    assert passes(stdchecker.startcaps, "A list of ", "'n Lys van ")
+    afchecker = checks.StandardChecker(checks.CheckerConfig(targetlanguage='af'))
+    assert passes(afchecker.startcaps, "A cow", "'n Koei")
+    assert passes(afchecker.startcaps, "A list of ", "'n Lys van ")
     # should pass:
-    #assert passes(stdchecker.startcaps, "A 1k file", u"'n 1k-lêer")
-    assert passes(stdchecker.startcaps, "'Do it'", "'Doen dit'")
-    assert fails(stdchecker.startcaps, "'Closer than'", "'nader as'")
-    assert passes(stdchecker.startcaps, "List", "Lys")
-    assert passes(stdchecker.startcaps, "a cow", "'n koei")
-    assert fails(stdchecker.startcaps, "a cow", "'n Koei")
-    assert passes(stdchecker.startcaps, "(A cow)", "('n Koei)")
-    assert fails(stdchecker.startcaps, "(a cow)", "('n Koei)")
+    #assert passes(afchecker.startcaps, "A 1k file", u"'n 1k-lêer")
+    assert passes(afchecker.startcaps, "'Do it'", "'Doen dit'")
+    assert fails(afchecker.startcaps, "'Closer than'", "'nader as'")
+    assert passes(afchecker.startcaps, "List", "Lys")
+    assert passes(afchecker.startcaps, "a cow", "'n koei")
+    assert fails(afchecker.startcaps, "a cow", "'n Koei")
+    assert passes(afchecker.startcaps, "(A cow)", "('n Koei)")
+    assert fails(afchecker.startcaps, "(a cow)", "('n Koei)")
 
 
 def test_startpunc():
@@ -750,6 +753,9 @@ def test_unchanged():
     # Don't fail unchanged if the entry is a dialogsize, quite plausible that you won't change it
     mozillachecker = checks.MozillaChecker()
     assert passes(mozillachecker.unchanged, 'width: 12em;', 'width: 12em;')
+    assert fails(stdchecker.unchanged, 'width: 12em;', 'width: 12em;')
+    assert passes(mozillachecker.unchanged, '7em', '7em')
+    assert fails(stdchecker.unchanged, '7em', '7em')
 
 
 def test_untranslated():
@@ -819,6 +825,8 @@ def test_variables_mozilla():
     assert fails_serious(mozillachecker.variables, "About $_CLICK and more", "Oor $_KLIK en meer")
     assert passes(mozillachecker.variables, "About $(^NameDA)", "Oor $(^NameDA)")
     assert fails_serious(mozillachecker.variables, "About $(^NameDA)", "Oor $(^NaamDA)")
+    assert passes(mozillachecker.variables, "Open {{pageCount}} pages", "Make {{pageCount}} bladsye oop")
+    assert fails_serious(mozillachecker.variables, "Open {{pageCount}} pages", "Make {{bladTelling}} bladsye oop")
     # Double variable problem
     assert fails_serious(mozillachecker.variables, "Create In &lt;&lt;", "Etsa ka Ho &lt;lt;")
     # Variables at the end of a sentence
@@ -1109,3 +1117,4 @@ def test_dialogsizes():
     assert passes(mozillachecker.dialogsizes, 'height: 12em;', 'height: 24px;')
     assert fails(mozillachecker.dialogsizes, 'height: 12em;', 'height: 24xx;')
     assert fails(mozillachecker.dialogsizes, 'height: 12.5em;', 'height: 12,5em;')
+    assert fails(mozillachecker.dialogsizes, 'width: 36em; height: 18em;', 'width: 30em; min-height: 20em;')

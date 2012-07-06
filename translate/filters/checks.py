@@ -1175,6 +1175,8 @@ class StandardChecker(TranslationChecker):
         if len(str1) > 1 and len(str2) > 1:
             if self.config.sourcelang.capsstart(str1) == self.config.lang.capsstart(str2):
                 return True
+            elif self.config.sourcelang.numstart(str1) or self.config.lang.numstart(str2):
+                return True
             else:
                 raise FilterFailure(u"Different capitalization at the start")
 
@@ -1570,7 +1572,7 @@ class OpenOfficeChecker(StandardChecker):
 mozillaconfig = CheckerConfig(
     accelmarkers=["&"],
     varmatches=[("&", ";"), ("%", "%"), ("%", 1), ("$", "$"), ("$", None),
-                ("#", 1), ("${", "}"), ("$(^", ")")],
+                ("#", 1), ("${", "}"), ("$(^", ")"), ("{{", "}}"), ],
     criticaltests=["accelerators"],
     )
 
@@ -1660,7 +1662,8 @@ class MozillaChecker(StandardChecker):
 
         Special handling for Mozilla to ignore entries that are dialog sizes.
         """
-        if self.mozilla_dialog_re.findall(str1):
+        if (self.mozilla_dialog_re.findall(str1) or
+            str1.strip().lstrip('0123456789') in self.mozilla_dialog_valid_units):
             return True
 
         return super(MozillaChecker, self).unchanged(str1, str2)

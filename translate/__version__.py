@@ -20,6 +20,6 @@
 
 """This file contains the version of the Translate Toolkit."""
 
-build = 12012
-sver = "1.9.0"
+build = 12013
+sver = "1.9.1-pre"
 ver = (1, 9, 0)

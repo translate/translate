@@ -21,7 +21,7 @@
 """Convert Symbian localisation files to Gettext PO localization files."""
 
 from translate.storage import factory
-from translate.storage.pypo import extractpoline
+from translate.storage.pypo import unescape
 from translate.storage.symbian import *
 
 
@@ -51,7 +51,7 @@ def parse(ps):
             skip_no_translate(ps)
             match = string_entry_re.match(ps.current_line)
             if match is not None:
-                units.append((match.groupdict()['id'], extractpoline(match.groupdict()['str'])))
+                units.append((match.groupdict()['id'], unescape(match.groupdict()['str'][1:-1])))
             ps.read_line()
     except StopIteration:
         pass

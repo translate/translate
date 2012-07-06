@@ -92,16 +92,16 @@ with your language code.
    again.
 6. Now we push our work to Mozilla
    # cd ~/firefox/l10n
-   # cd zz
    Check that Axel's compare locales pass
    # ./compare-locales.sh zz
    Check for any errors and correct.  Removed files should be fixed here. Errors in 
    translations should be fixed on Pootle or in po/
+   # cd zz
    # hg status
    Check for any new or removed files. ? means a file not in version control.  ! means a files
    that was in version control and now isn't which usually means we don't need it anymore.
-   # svn addremove path/to/files.dtd
-   Add the files and please arefully check what you are adding.  You shouldn't be adding anything
+   # hg addremove path/to/files.dtd
+   Add the files and please carefully check what you are adding.  You shouldn't be adding anything
    ending in .orig
    # hg diff
    Review the changes and check that you haven't broken anything. Happy?
@@ -112,7 +112,7 @@ with your language code.
    replace http:// with ssh://
    Now try push again.
 7. Wait for Mozilla to build your stuff
-   Go to https://l10n-stage-sj.mozilla.org/shipping/dashboard?av=fx-aurora and check
+   Go to https://l10n-stage-sj.mozilla.org/teams/zz (Change zz of course) and check
    that you have been built.
    Get your nightly test build from
    http://ftp.mozilla.org/pub/mozilla.org/firefox/nightly/latest-mozilla-aurora/
