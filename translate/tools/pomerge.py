@@ -35,7 +35,6 @@ from translate.storage.poheader import poheader
 
 def mergestores(store1, store2, mergeblanks, mergefuzzy, mergecomments):
     """Take any new translations in store2 and write them into store1."""
-    print mergefuzzy
 
     for unit2 in store2.units:
         if unit2.isheader():
