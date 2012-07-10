@@ -282,7 +282,7 @@ def get_versioned_objects_recursive(
     """
     rcs_objs = []
     if versioning_systems is None:
-        versioning_systems = DEFAULT_RCS
+        versioning_systems = DEFAULT_RCS[:]
 
     def scan_directory(arg, dirname, fnames):
         for fname in fnames:
@@ -306,7 +306,7 @@ def get_versioned_object(
     ):
     """return a versioned object for the given file"""
     if versioning_systems is None:
-        versioning_systems = DEFAULT_RCS
+        versioning_systems = DEFAULT_RCS[:]
     # go through all RCS and return a versioned object if possible
     for vers_sys in versioning_systems:
         try:
