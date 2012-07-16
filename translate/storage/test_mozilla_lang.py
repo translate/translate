@@ -28,6 +28,13 @@ class TestMozLangUnit(test_base.TestTranslationUnit):
         assert str(unit).find("Closed") == 1
         assert str(unit).find("Closed", 2) == 8
 
+    def test_comments(self):
+        """Comments start with #."""
+        unit = self.UnitClass("One")
+        unit.addnote("Hello")
+        assert str(unit).find("Hello") == 2
+        assert str(unit).find("# Hello") == 0
+
 
 class TestMozLangFile(test_base.TestTranslationStore):
     StoreClass = mozilla_lang.LangStore

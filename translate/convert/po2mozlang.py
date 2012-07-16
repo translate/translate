@@ -49,6 +49,8 @@ class po2lang:
                 newunit.settarget(pounit.target)
             else:
                 newunit.settarget(pounit.source)
+            if pounit.getnotes('developer'):
+                newunit.addnote(pounit.getnotes('developer'), 'developer')
         return thetargetfile
 
 

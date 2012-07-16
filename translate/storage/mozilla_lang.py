@@ -43,6 +43,9 @@ class LangUnit(base.TranslationUnit):
             target = self.source
         else:
             target = self.target
+        if self.getnotes():
+            notes = ('').join(["# %s" % note for note in [self.getnotes('developer')]])
+            return u"%s\n;%s\n%s%s" % (notes, self.source, target, unchanged)
         return u";%s\n%s%s" % (self.source, target, unchanged)
 
     def getlocations(self):
@@ -65,6 +68,7 @@ class LangStore(txt.TxtFile):
     def parse(self, lines):
         #Have we just seen a ';' line, and so are ready for a translation
         readyTrans = False
+        comment = ""
 
         if not isinstance(lines, list):
             lines = lines.split("\n")
@@ -80,10 +84,16 @@ class LangStore(txt.TxtFile):
                 readyTrans = False  # We already have our translation
                 continue
 
+            if line.startswith('#'): # A comment
+                comment += line[1:].strip()
+
             if line.startswith(';'):
                 u = self.addsourceunit(line[1:])
                 readyTrans = True  # Now expecting a translation on the next line
                 u.addlocation("%s:%d" % (self.filename, lineoffset + 1))
+                if comment is not None:
+                    u.addnote(comment, 'developer')
+                    comment = ""
 
     def __str__(self):
         return u"\n\n\n".join([unicode(unit) for unit in self.units]).encode('utf-8') + "\n"

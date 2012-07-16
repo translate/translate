@@ -49,6 +49,15 @@ class TestLang2PO:
         assert pounit.source == "One"
         assert pounit.target == "Een"
 
+    def test_simpleentry(self):
+        """Handle simple comments"""
+        source = '# Comment\n;One\nEen\n'
+        pofile = self.lang2po(source)
+        pounit = self.singleelement(pofile)
+        assert pounit.source == "One"
+        assert pounit.target == "Een"
+        assert pounit.getnotes() == "Comment"
+
 
 class TestLang2POCommand(test_convert.TestConvertCommand, TestLang2PO):
     """Tests running actual lang2po commands on files"""

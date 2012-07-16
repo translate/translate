@@ -25,6 +25,14 @@ class TestPO2Lang:
         print langfile
         assert str(langfile) == propexpected
 
+    def test_comment(self):
+        """Simple # comments"""
+        posource = '''#. Comment\n#: prop\nmsgid "Source"\nmsgstr "Target"\n'''
+        propexpected = '''# Comment\n;Source\nTarget\n'''
+        langfile = self.po2lang(posource)
+        print langfile
+        assert str(langfile) == propexpected
+
 
 class TestPO2LangCommand(test_convert.TestConvertCommand, TestPO2Lang):
     """Tests running actual po2prop commands on files"""

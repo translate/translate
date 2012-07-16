@@ -50,6 +50,7 @@ class lang2po:
             newunit = thetargetfile.addsourceunit(langunit.source)
             newunit.settarget(langunit.target)
             newunit.addlocations(langunit.getlocations())
+            newunit.addnote(langunit.getnotes(), 'developer')
 
         # Remove duplicates, because we can
         thetargetfile.removeduplicates(self.duplicatestyle)
