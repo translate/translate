@@ -60,14 +60,17 @@ class bzr(GenericRevisionControlSystem):
     RCS_METADIR = ".bzr"
     SCAN_PARENTS = True
 
-    def update(self, revision=None):
+    def update(self, revision=None, needs_revert=True):
         """Does a clean update of the given path"""
-        # bzr revert
-        command = ["bzr", "revert", self.location_abs]
-        exitcode, output_revert, error = run_command(command)
-        if exitcode != 0:
-            raise IOError("[BZR] revert of '%s' failed: %s" \
-                    % (self.location_abs, error))
+        output_revert = ""
+        if needs_revert:
+            # bzr revert
+            command = ["bzr", "revert", self.location_abs]
+            exitcode, output_revert, error = run_command(command)
+            if exitcode != 0:
+                raise IOError("[BZR] revert of '%s' failed: %s" \
+                        % (self.location_abs, error))
+
         # bzr pull
         command = ["bzr", "pull"]
         exitcode, output_pull, error = run_command(command)

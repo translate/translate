@@ -61,18 +61,21 @@ class hg(GenericRevisionControlSystem):
     RCS_METADIR = ".hg"
     SCAN_PARENTS = True
 
-    def update(self, revision=None):
+    def update(self, revision=None, needs_revert=True):
         """Does a clean update of the given path
 
         :param revision: ignored for hg
         """
-        # revert local changes (avoids conflicts)
-        command = ["hg", "-R", self.root_dir, "revert",
-                "--all", self.location_abs]
-        exitcode, output_revert, error = run_command(command)
-        if exitcode != 0:
-            raise IOError("[Mercurial] error running '%s': %s" %
-                          (command, error))
+        output_revert = ""
+        if needs_revert:
+            # revert local changes (avoids conflicts)
+            command = ["hg", "-R", self.root_dir, "revert",
+                    "--all", self.location_abs]
+            exitcode, output_revert, error = run_command(command)
+            if exitcode != 0:
+                raise IOError("[Mercurial] error running '%s': %s" %
+                              (command, error))
+
         # pull new patches
         command = ["hg", "-R", self.root_dir, "pull"]
         exitcode, output_pull, error = run_command(command)

@@ -37,17 +37,20 @@ class darcs(GenericRevisionControlSystem):
     RCS_METADIR = "_darcs"
     SCAN_PARENTS = True
 
-    def update(self, revision=None):
+    def update(self, revision=None, needs_revert=True):
         """Does a clean update of the given path
 
         :param revision: ignored for darcs
         """
-        # revert local changes (avoids conflicts)
-        command = ["darcs", "revert", "--repodir", self.root_dir,
-                "-a", self.location_rel]
-        exitcode, output_revert, error = run_command(command)
-        if exitcode != 0:
-            raise IOError("[Darcs] error running '%s': %s" % (command, error))
+        output_revert = ""
+        if needs_revert:
+            # revert local changes (avoids conflicts)
+            command = ["darcs", "revert", "--repodir", self.root_dir,
+                    "-a", self.location_rel]
+            exitcode, output_revert, error = run_command(command)
+            if exitcode != 0:
+                raise IOError("[Darcs] error running '%s': %s" % (command, error))
+
         # pull new patches
         command = ["darcs", "pull", "--repodir", self.root_dir, "-a"]
         exitcode, output_pull, error = run_command(command)

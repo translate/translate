@@ -52,13 +52,16 @@ class git(GenericRevisionControlSystem):
         command.extend(args)
         return command
 
-    def update(self, revision=None):
+    def update(self, revision=None, needs_revert=True):
         """Does a clean update of the given path"""
-        # git checkout
-        command = self._get_git_command(["checkout", self.location_rel])
-        exitcode, output_checkout, error = run_command(command, self.root_dir)
-        if exitcode != 0:
-            raise IOError("[GIT] checkout failed (%s): %s" % (command, error))
+        output_checkout = ""
+        if needs_revert:
+            # git checkout
+            command = self._get_git_command(["checkout", self.location_rel])
+            exitcode, output_checkout, error = run_command(command, self.root_dir)
+            if exitcode != 0:
+                raise IOError("[GIT] checkout failed (%s): %s" % (command, error))
+
         # pull changes
         command = self._get_git_command(["pull"])
         exitcode, output_pull, error = run_command(command, self.root_dir)

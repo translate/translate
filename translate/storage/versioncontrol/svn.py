@@ -56,15 +56,18 @@ class svn(GenericRevisionControlSystem):
     RCS_METADIR = ".svn"
     SCAN_PARENTS = False
 
-    def update(self, revision=None):
+    def update(self, revision=None, needs_revert=True):
         """update the working copy - remove local modifications if necessary"""
-        # revert the local copy (remove local changes)
-        command = ["svn", "revert", self.location_abs]
-        exitcode, output_revert, error = run_command(command)
-        # any errors?
-        if exitcode != 0:
-            raise IOError("[SVN] Subversion error running '%s': %s" %
-                          (command, error))
+        output_revert = ""
+        if needs_revert:
+            # revert the local copy (remove local changes)
+            command = ["svn", "revert", self.location_abs]
+            exitcode, output_revert, error = run_command(command)
+            # any errors?
+            if exitcode != 0:
+                raise IOError("[SVN] Subversion error running '%s': %s" %
+                              (command, error))
+
         # update the working copy to the given revision
         command = ["svn", "update"]
         if not revision is None:

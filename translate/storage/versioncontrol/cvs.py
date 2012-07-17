@@ -71,8 +71,9 @@ class cvs(GenericRevisionControlSystem):
             revision = self._getcvsrevision(cvsentries)
         return self._readfile(cvsroot, cvsfilename, revision)
 
-    def update(self, revision=None):
+    def update(self, revision=None, needs_revert=True):
         """Does a clean update of the given path"""
+        #TODO: take needs_revert parameter into account
         working_dir = os.path.dirname(self.location_abs)
         filename = self.location_abs
         filename_backup = filename + os.path.extsep + "bak"
