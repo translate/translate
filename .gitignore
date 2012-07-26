@@ -10,3 +10,7 @@
 # vim
 .*.swp
 *~
+
+# distutils
+/build/
+/dist/
