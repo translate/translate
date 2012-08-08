@@ -214,7 +214,8 @@ class PunctuationPlaceable(Ph):
                              [℃℉°]|          # Degree related
                              [±πθ×÷−√∞∆Σ′″]| # Maths
                              [‘’ʼ‚‛“”„‟]|    # Quote characters
-                             [£¥]|           # Currencies
+                             [«»]|           # Guillemets
+                             [£¥€]|          # Currencies
                              …|              # U2026 - horizontal ellipsis
                              —|              # U2014 - em dash
                              –|              # U2013 - en dash
