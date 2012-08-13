@@ -207,6 +207,15 @@ do=translate me
         assert unit.source == "value"
         assert unit.getnotes("developer") == "# 1st Unassociated comment\n# 2nd Connected comment"
 
+    def test_accel_header(self):
+        """Test that we correctly create the header entry for accelerators."""
+        propsource = '''prop=value\n'''
+        inputfile = wStringIO.StringIO(propsource)
+        inputprop = properties.propfile(inputfile, personality="mozilla")
+        convertor = prop2po.prop2po()
+        outputpo = convertor.convertstore(inputprop, personality="mozilla")
+        assert "X-Accelerator-Marker" in str(outputpo)
+
 
 class TestProp2POCommand(test_convert.TestConvertCommand, TestProp2PO):
     """Tests running actual prop2po commands on files"""
