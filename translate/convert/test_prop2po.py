@@ -241,6 +241,7 @@ message-multiedit-header[other]={{ n }} selected
         outputpo = convertor.convertstore(inputprop, personality="gaia")
         pounit = self.singleelement(outputpo)
         assert pounit.hasplural()
+        assert pounit.getlocations() == [u'message-multiedit-header']
 
 class TestProp2POCommand(test_convert.TestConvertCommand, TestProp2PO):
     """Tests running actual prop2po commands on files"""

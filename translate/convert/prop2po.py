@@ -36,6 +36,7 @@ def _collapse(store, units):
     # TODO: only consider the right ones for sources and targets
     plural_unit = store.addsourceunit(sources)
     plural_unit.target = targets
+    return plural_unit
 
 
 class prop2po:
@@ -162,7 +163,8 @@ class prop2po:
                     continue
                 elif current_plural:
                     # End of a set of plural units
-                    _collapse(new_store, plurals[current_plural])
+                    new_unit = _collapse(new_store, plurals[current_plural])
+                    new_unit.addlocation(current_plural)
                     del plurals[current_plural]
                     current_plural = u""
 
@@ -170,7 +172,8 @@ class prop2po:
 
         if current_plural:
             # The file ended with a set of plural units
-            _collapse(new_store, plurals[current_plural])
+            new_unit = _collapse(new_store, plurals[current_plural])
+            new_unit.addlocation(current_plural)
             del plurals[current_plural]
             current_plural = u""
 
