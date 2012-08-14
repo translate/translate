@@ -306,6 +306,12 @@ class DialectMozilla(DialectJavaUtf8):
 register_dialect(DialectMozilla)
 
 
+class DialectGaia(DialectMozilla):
+    name = "gaia"
+    delimiters = [u"="]
+register_dialect(DialectGaia)
+
+
 class DialectSkype(Dialect):
     name = "skype"
     default_encoding = "utf-16"

@@ -210,11 +210,19 @@ do=translate me
     def test_accel_header(self):
         """Test that we correctly create the header entry for accelerators."""
         propsource = '''prop=value\n'''
+        convertor = prop2po.prop2po()
+
         inputfile = wStringIO.StringIO(propsource)
         inputprop = properties.propfile(inputfile, personality="mozilla")
-        convertor = prop2po.prop2po()
         outputpo = convertor.convertstore(inputprop, personality="mozilla")
         assert "X-Accelerator-Marker" in str(outputpo)
+
+        # Even though the gaia flavour inherrits from mozilla, it should not
+        # get the header
+        inputfile = wStringIO.StringIO(propsource)
+        inputprop = properties.propfile(inputfile, personality="gaia")
+        outputpo = convertor.convertstore(inputprop, personality="gaia")
+        assert "X-Accelerator-Marker" not in str(outputpo)
 
 
 class TestProp2POCommand(test_convert.TestConvertCommand, TestProp2PO):
