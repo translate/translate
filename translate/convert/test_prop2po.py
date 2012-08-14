@@ -224,6 +224,23 @@ do=translate me
         outputpo = convertor.convertstore(inputprop, personality="gaia")
         assert "X-Accelerator-Marker" not in str(outputpo)
 
+    def test_gaia_plurals(self):
+        """Test conversion of gaia plural units."""
+        propsource = '''
+message-multiedit-header={[ plural(n) ]}
+message-multiedit-header[zero]=Edit
+message-multiedit-header[one]={{ n }} selected
+message-multiedit-header[two]={{ n }} selected
+message-multiedit-header[few]={{ n }} selected
+message-multiedit-header[many]={{ n }} selected
+message-multiedit-header[other]={{ n }} selected
+'''
+        convertor = prop2po.prop2po()
+        inputfile = wStringIO.StringIO(propsource)
+        inputprop = properties.propfile(inputfile, personality="gaia")
+        outputpo = convertor.convertstore(inputprop, personality="gaia")
+        pounit = self.singleelement(outputpo)
+        assert pounit.hasplural()
 
 class TestProp2POCommand(test_convert.TestConvertCommand, TestProp2PO):
     """Tests running actual prop2po commands on files"""

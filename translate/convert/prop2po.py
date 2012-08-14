@@ -30,6 +30,14 @@ from translate.storage import po
 from translate.storage import properties
 
 
+def _collapse(store, units):
+    sources = [u.source for u in units]
+    targets = [u.target for u in units]
+    # TODO: only consider the right ones for sources and targets
+    plural_unit = store.addsourceunit(sources)
+    plural_unit.target = targets
+
+
 class prop2po:
     """convert a .properties file to a .po file for handling the
     translation."""
@@ -68,6 +76,8 @@ class prop2po:
                                "developer", position="prepend")
                 waitingcomments = []
                 thetargetfile.addunit(pounit)
+        if self.personality == "gaia":
+            thetargetfile = self.fold_gaia_plurals(thetargetfile)
         thetargetfile.removeduplicates(duplicatestyle)
         return thetargetfile
 
@@ -123,8 +133,52 @@ class prop2po:
                 thetargetfile.addunit(origpo)
             elif translatedpo is not None:
                 print >> sys.stderr, "error converting original properties definition %s" % origprop.name
+        if self.personality == "gaia":
+            thetargetfile = self.fold_gaia_plurals(thetargetfile)
         thetargetfile.removeduplicates(duplicatestyle)
         return thetargetfile
+
+    def fold_gaia_plurals(self, postore):
+        """Fold the multiple plural units of a gaia file into a gettext plural."""
+        new_store = type(postore)()
+        plurals = {}
+        current_plural = u""
+        for unit in postore.units:
+            if not unit.istranslatable():
+                #TODO: reconsider: we could lose header comments here
+                continue
+            if u"plural(n)" in unit.source:
+                # start of a set of plural units
+                location = unit.getlocations()[0]
+                current_plural = location
+                plurals[location] = []
+                # We ignore the first one, since it doesn't contain translatable
+                # text, only a marker.
+            else:
+                print str(unit)
+                location = unit.getlocations()[0]
+                if current_plural and location.startswith(current_plural):
+                    plurals[current_plural].append(unit)
+                    continue
+                elif current_plural:
+                    # End of a set of plural units
+                    _collapse(new_store, plurals[current_plural])
+                    del plurals[current_plural]
+                    current_plural = u""
+
+                new_store.addunit(unit)
+
+        if current_plural:
+            # The file ended with a set of plural units
+            _collapse(new_store, plurals[current_plural])
+            del plurals[current_plural]
+            current_plural = u""
+
+        # if everything went well, there should be nothing left in plurals
+        if len(plurals) != 0:
+            print >> sys.stderr, "Not all plural units converted correctly:"
+            print >> sys.stderr, "\n".join(plurals.keys())
+        return new_store
 
     def convertunit(self, propunit, commenttype):
         """Converts a .properties unit to a .po unit. Returns None if empty
