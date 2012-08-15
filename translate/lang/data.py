@@ -201,6 +201,16 @@ _fixed_names = {
 }
 
 
+cldr_plural_categories = [
+        'zero',
+        'one',
+        'two',
+        'few',
+        'many',
+        'other',
+]
+
+
 def simplercode(code):
     """This attempts to simplify the given language code by ignoring country
     codes, for example.
