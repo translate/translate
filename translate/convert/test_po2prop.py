@@ -179,6 +179,39 @@ msgstr "translated"
         # FIXME ideally we should drop the comment as well as the unit
         assert propfile == '# A comment\n'  # We drop the key
 
+    def test_gaia_plurals(self):
+        """Test back conversion of gaia plural units."""
+        proptemplate = '''
+message-multiedit-header={[ plural(n) ]}
+message-multiedit-header[zero]=Edit
+message-multiedit-header[one]={{ n }} selected
+message-multiedit-header[two]={{ n }} selected
+message-multiedit-header[few]={{ n }} selected
+message-multiedit-header[many]={{ n }} selected
+message-multiedit-header[other]={{ n }} selected
+'''
+        posource = r'''#: message-multiedit-header
+msgid "Edit"
+msgid_plural "{{ n }} selected"
+msgstr[0] "Redigeer"
+msgstr[1] "{{ n }} gekies"
+msgstr[2] "{{ n }} gekies"
+msgstr[3] "{{ n }} gekies"
+msgstr[4] "{{ n }} gekies"
+msgstr[5] "{{ n }} gekies"
+'''
+        propexpected = '''
+message-multiedit-header={[ plural(n) ]}
+message-multiedit-header[zero]=Redigeer
+message-multiedit-header[one]={{ n }} gekies
+message-multiedit-header[two]={{ n }} gekies
+message-multiedit-header[few]={{ n }} gekies
+message-multiedit-header[many]={{ n }} gekies
+message-multiedit-header[other]={{ n }} gekies
+'''
+        propfile = self.merge2prop(proptemplate, posource, personality="gaia")
+        assert propfile == propexpected
+
 
 class TestPO2PropCommand(test_convert.TestConvertCommand, TestPO2Prop):
     """Tests running actual po2prop commands on files"""
