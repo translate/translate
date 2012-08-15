@@ -159,7 +159,9 @@ class prop2po:
                 location = unit.getlocations()[0]
                 if current_plural and location.startswith(current_plural):
                     plurals[current_plural].append(unit)
-                    continue
+                    if not '[zero]' in location:
+                        # We want to keep [zero] cases separately translatable
+                        continue
                 elif current_plural:
                     # End of a set of plural units
                     new_unit = _collapse(new_store, plurals[current_plural])

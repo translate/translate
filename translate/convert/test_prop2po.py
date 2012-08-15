@@ -239,9 +239,14 @@ message-multiedit-header[other]={{ n }} selected
         inputfile = wStringIO.StringIO(propsource)
         inputprop = properties.propfile(inputfile, personality="gaia")
         outputpo = convertor.convertstore(inputprop, personality="gaia")
-        pounit = self.singleelement(outputpo)
+        pounit = outputpo.units[-1]
         assert pounit.hasplural()
         assert pounit.getlocations() == [u'message-multiedit-header']
+
+        print outputpo
+        zero_unit = outputpo.units[-2]
+        assert not zero_unit.hasplural()
+        assert zero_unit.source == u"Edit"
 
 class TestProp2POCommand(test_convert.TestConvertCommand, TestProp2PO):
     """Tests running actual prop2po commands on files"""

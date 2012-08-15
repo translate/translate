@@ -190,10 +190,16 @@ message-multiedit-header[few]={{ n }} selected
 message-multiedit-header[many]={{ n }} selected
 message-multiedit-header[other]={{ n }} selected
 '''
-        posource = r'''#: message-multiedit-header
+        posource = r'''#: message-multiedit-header[zero]
+msgctxt "message-multiedit-header[zero]"
+msgid "Edit"
+msgstr "Redigeer"
+
+#: message-multiedit-header
+msgctxt "message-multiedit-header"
 msgid "Edit"
 msgid_plural "{{ n }} selected"
-msgstr[0] "Redigeer"
+msgstr[0] "xxxRedigeerxxx"
 msgstr[1] "{{ n }} gekies"
 msgstr[2] "{{ n }} gekies"
 msgstr[3] "{{ n }} gekies"
