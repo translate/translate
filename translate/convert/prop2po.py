@@ -156,7 +156,6 @@ class prop2po:
                 # We ignore the first one, since it doesn't contain translatable
                 # text, only a marker.
             else:
-                print str(unit)
                 location = unit.getlocations()[0]
                 if current_plural and location.startswith(current_plural):
                     plurals[current_plural].append(unit)
