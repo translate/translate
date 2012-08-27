@@ -1,3 +1,5 @@
+.. _styleguide:
+
 Translate Styleguide
 ====================
 
@@ -7,6 +9,8 @@ these guidelines.
 
 This Styleguide follows :pep:`8` with some clarifications. It is based almost
 verbatim on the `Flask Styleguide`_.
+
+.. _styleguide-general:
 
 General
 -------
@@ -194,6 +198,8 @@ Function and method arguments:
     with ``x`` like in ``display_name = property(lambda x: x.real_name
     or x.username)``
 
+
+.. _styleguide-docs:
 
 Documentation
 =============
