@@ -72,6 +72,9 @@ class AndroidResourceUnit(base.TranslationUnit):
         return etree.tostring(self.xmlelement, pretty_print=True,
                               encoding='utf-8')
 
+    def __eq__(self, other):
+        return (str(self) == str(other))
+
 class AndroidResourceFile(lisa.LISAfile):
     """Class representing a Android resource file store."""
     UnitClass = AndroidResourceUnit
