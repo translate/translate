@@ -33,11 +33,13 @@ class AndroidResourceUnit(base.TranslationUnit):
     def __init__(self, source, empty=False, **kwargs):
         self.xmlelement = etree.Element(self.rootNode)
         self.xmlelement.tail = '\n'
+        if source is not None:
+            self.xmlelement.set('name', source)
         super(AndroidResourceUnit, self).__init__(source)
 
     def _parse(self):
-        self._target = self.gettarget()
-        self._source = self.getid()
+        self.target = self.gettarget()
+        self.source = self.getid()
 
     def getid(self):
         return self.xmlelement.get("name")
