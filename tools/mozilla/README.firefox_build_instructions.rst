@@ -17,7 +17,7 @@ We use vagrant to manage VirtualBox VMs easily
 
 1. Install VirtualBox
    Downloads https://www.virtualbox.org/wiki/Downloads
-   Vagrant installation instructions http://vagrantup.com/docs/getting-started/index.html
+   Vagrant installation instructions http://vagrantup.com/v1/docs/getting-started/index.html
 2. Install Vagrant
    Downloads http://downloads.vagrantup.com/
 3. Create a directory for your Firefox work.  We use ~/dev/mozilla
@@ -40,14 +40,14 @@ Configuring your development setup
 ==================================
 
 We need to setup some things so that you can work with
-version control and have acces to the servers.
+version control and have access to the servers.
 
 1. Setup SSH for access to Mozilla mercurial
    Your SSH setup is copied from your computer into vagrant so if
    this already works on your computer then it is already setup.
 2. Copy ~/.hgrc and ~/.gitconfig into $HOME on vagrant
 3. Send your public key for access to the Pootle server (usually ~/.ssh/id_dsa.pub)
-4. Request commit access to the sourceforge ZAF project to store your PO files
+4. Request commit access to the SourceForge ZAF project to store your PO files
 
 Now you should be able to commit changes in PO and Mozilla files. You should
 also be able to get and push translations to the Pootle server.
@@ -129,7 +129,7 @@ with your language code.
    # ./push-to-pootle.sh zz
    You will be asked if you want to proceed.  This is just a check that first syncs files on
    Pootle to check that nobody has made any changes.  Remember your files will overwrite
-   anything done in your language on pootle.
+   anything done in your language on Pootle.
    Happy? Press y<enter>
    You are now synced and can tell your team to continue translating.
 
@@ -137,14 +137,14 @@ with your language code.
 Handling types of errors
 ========================
 
-* The best place to fix anything is on Pootle.  So try to do it their if possible.
-* If you need to do it on the PO files.  Make sure you get-from-pootle.sh before you work
+* The best place to fix anything is on Pootle.  So try to do it there if possible.
+* If you need to do it on the PO files, make sure you get-from-pootle.sh before you work
   and push-to-pootle.sh after your changes.  When pushing check that nobody has done any
-  work while you where busy, do that by checking the last activity column at 
-  http://pootle.locamotion.org/projects/firefox/
+  work while you were busy, do that by checking the last activity column at
+  http://mozilla.locamotion.org/projects/firefox/
 * compare-locale fixes are best done with the files in po/zz for speed.  Fix them all before
   doing another build
-* If you see Mozilla bugs against your language.  Fix them in Pootle then close the bug.  Your fix
+* If you see Mozilla bugs against your language:  Fix them in Pootle, then close the bug.  Your fix
   will come through in your next update.  If it is urgent you probably want to fix it in PO and
   make sure you push it through to Mozilla.
 * If you see your translators making a common error please share it on the firefox-l10n
