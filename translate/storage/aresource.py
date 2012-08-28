@@ -66,6 +66,9 @@ class AndroidResourceUnit(base.TranslationUnit):
         return term
     createfromxmlElement = classmethod(createfromxmlElement)
 
+    def __str__(self):
+        return self.xmlelement.__str__()
+
 class AndroidResourceFile(lisa.LISAfile):
     """Class representing a Android resource file store."""
     UnitClass = AndroidResourceUnit
