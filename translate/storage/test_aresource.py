@@ -47,14 +47,3 @@ class TestPropUnit(test_monolingual.TestMonolingualUnit):
 
 class TestProp(test_monolingual.TestMonolingualStore):
     StoreClass = aresource.AndroidResourceFile
-
-    def test_parse(self):
-        """Tests converting to a string and parsing the resulting string"""
-        store = self.StoreClass()
-        unit1 = store.addsourceunit("Test String")
-        unit1.target = "Test String"
-        unit2 = store.addsourceunit("Test String 2")
-        unit2.target = "Test String 2"
-        newstore = self.reparse(store)
-        self.check_equality(store, newstore)
-
