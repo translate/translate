@@ -280,7 +280,7 @@ do
 		(cd ${POUPDATED_DIR}/${polang}
 		for po in $(find ${PRODUCT_DIRS} -name "*.po")
 		do
-			msgcat -o $po.2 $po 2> >(egrep -v "warning: internationalised messages should not contain the .* escape sequence" >&2) && mv $po.2 $po
+			msgcat -o $po.2 $po 2> >(egrep -v "warning: internationali[zs]ed messages should not contain the .* escape sequence" >&2) && mv $po.2 $po # parallel?
 		done
 		)
 	fi
