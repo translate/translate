@@ -60,6 +60,8 @@ class AndroidResourceUnit(base.TranslationUnit):
         Code stolen from android2po
         <https://github.com/miracle2k/android2po>
         '''
+        if text is None:
+            return None
         # '<' and '>' as literal characters inside a text need to be
         # escaped; this is because we need to differentiate them to
         # actual tags inside a resource string which we write to the
