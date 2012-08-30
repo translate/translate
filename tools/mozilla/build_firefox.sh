@@ -211,7 +211,6 @@ get_moz_enUS.py $get_moz_enUS_verbosity -s ../mozilla-aurora -d . -p mobile
 
 verbose "moz2po - Create POT files from l10n/en-US"
 moz2po --errorlevel=$errorlevel --progress=$progress -P --duplicates=msgctxt --exclude '.hg' en-US pot
-find pot \( -name '*.html.pot' -o -name '*.xhtml.pot' \) -exec rm -f {} \;
 
 # The following functions are used in the loop following it
 function copyfile {
@@ -330,7 +329,6 @@ do
 	do
 		[ -d ${product_dir} ] && find ${product_dir} \( -name '*.dtd' -o -name '*.properties' \) -exec rm -f {} \;
 	done
-	find ${POUPDATED_DIR} \( -name '*.html.po' -o -name '*.xhtml.po' \) -exec rm -f {} \;
 
 	verbose "po2moz - Create Mozilla l10n layout from migrated PO files."
 	po2moz --progress=$progress --errorlevel=$errorlevel --exclude=".svn" --exclude=".hg" --exclude="obsolete" --exclude="editor" --exclude="mail" --exclude="thunderbird" \
