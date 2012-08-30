@@ -347,6 +347,7 @@ do
 		if [ -d ${L10N_DIR}/${lang}/.hg ]; then
 			(cd ${L10N_DIR}/${lang}
 			hg revert $hgverbosity --no-backup browser/chrome/browser-region/region.properties browser/searchplugins/list.txt
+			)
 		fi
 	fi
 
