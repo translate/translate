@@ -189,7 +189,7 @@ do
 		if [ -d ${lang} ]; then
 			if [ -d ${lang}/.hg ]; then
 			        (cd ${lang}
-				hg revert $hgverbosity --all -r default
+				hg revert $hgverbosity --no-backup --all -r default
 				hg pull $hgverbosity -u
 				hg update $hgverbosity -C)
 			else
@@ -198,7 +198,6 @@ do
 		else
 		    hg clone $hgverbosity http://hg.mozilla.org/releases/l10n/mozilla-aurora/${lang} ${lang} || mkdir ${lang}
 		fi
-		find ${lang} -name '*.orig' | xargs  --no-run-if-empty rm
 	fi
 done
 
@@ -347,8 +346,7 @@ do
 		# Revert some files that need careful human review or authorisation
 		if [ -d ${L10N_DIR}/${lang}/.hg ]; then
 			(cd ${L10N_DIR}/${lang}
-			hg revert $hgverbosity browser/chrome/browser-region/region.properties browser/searchplugins/list.txt
-			rm -f browser/chrome/browser-region/region.properties.orig browser/searchplugins/list.txt.orig )
+			hg revert $hgverbosity --no-backup browser/chrome/browser-region/region.properties browser/searchplugins/list.txt
 		fi
 	fi
 
