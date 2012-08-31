@@ -165,10 +165,10 @@ class AndroidResourceUnit(base.TranslationUnit):
                         # this first so we can use the ``in`` operator
                         # in the clauses below without issue.
                         pass
-                    elif c == 'n':
+                    elif c == 'n' or c == 'N':
                         text[i-1 : i+1] = '\n' # an actual newline
                         i -= 1
-                    elif c == 't':
+                    elif c == 't' or c == 'T':
                         text[i-1 : i+1] = '\t' # an actual tab
                         i -= 1
                     elif c in '"\'@':
