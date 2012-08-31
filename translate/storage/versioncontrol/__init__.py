@@ -62,7 +62,12 @@ def __get_rcs_class(name):
             else:
                 # the RCS client does not seem to be installed
                 rcs_class = None
-                DEFAULT_RCS.remove(name)
+                try:
+                    DEFAULT_RCS.remove(name)
+                except ValueError:
+                    # we might have had a race condition and another thread
+                    # already removed it
+                    pass
         except (ImportError, AttributeError):
             rcs_class = None
         __CACHED_RCS_CLASSES[name] = rcs_class
