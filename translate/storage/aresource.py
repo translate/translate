@@ -65,31 +65,6 @@ class AndroidResourceUnit(base.TranslationUnit):
         '''
         if text is None:
             return None
-        # '<' and '>' as literal characters inside a text need to be
-        # escaped; this is because we need to differentiate them to
-        # actual tags inside a resource string which we write to the
-        # .po file as literal '<', '>' characters. As a result, if the
-        # user puts &lt; inside his Android resource file, this is how
-        # it will end up in the .po file as well.
-        # We only do this for '<' and '<' right now, which is of course
-        # a hack. We'd need to process at least &amp; as well, because
-        # right now '&lt;' and '&amp;lt;' both generate the same on
-        # import. However, if we were to do that, a simple non-HTML
-        # text like "FAQ & Help" would end up us "FAQ &amp; Help" in
-        # the .po - not particularly nice.
-        # TODO: I can see two approaches to solve this: Handle things
-        # differently depending on whether there are nested tags. We'd
-        # be able to handle both '&amp;lt;' in a HTML string and output
-        # a nice & character in a plaintext string.
-        # Option 2: It might be possible to note the type of encoding
-        # we did in a .po comment. That would even allow us to present
-        # a string containing tags encoded using entities (but not actual
-        # nested XML tags) using plain < and > characters in the .po
-        # file. Instead of a comment, we could change the import code
-        # to require a look at the original resource xml file to
-        # determine which kind of encoding was done.
-        text = text.replace('<', '&lt;')
-        text = text.replace('>', "&gt;")
 
         # We need to collapse multiple whitespace while paying
         # attention to Android's quoting and escaping.
