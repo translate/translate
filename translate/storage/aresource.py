@@ -200,6 +200,9 @@ class AndroidResourceUnit(base.TranslationUnit):
             return
         text = text.replace('\\', '\\\\')
         text = text.replace('\n', '\\n')
+        # This will add non intrusive real newlines to
+        # ones in translation improving readability of result
+        text = text.replace(' \\n', '\n\\n')
         text = text.replace('\t', '\\t')
         text = text.replace('\'', '\\\'')
         text = text.replace('"', '\\"')

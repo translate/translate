@@ -14,6 +14,7 @@ class TestPropUnit(test_monolingual.TestMonolingualUnit):
 
     escape_data = [
         ('message\nwith newline', '<string name="Test String">message\\nwith newline</string>\n\n'),
+        ('message \nwith newline in xml', '<string name="Test String">message\n\\nwith newline in xml</string>\n\n'),
         ('@twitterescape', '<string name="Test String">\\@twitterescape</string>\n\n'),
         ('quote \'escape\'', '<string name="Test String">quote \\\'escape\\\'</string>\n\n'),
         ('double  space', '<string name="Test String">"double  space"</string>\n\n'),
