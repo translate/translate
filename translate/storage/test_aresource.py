@@ -19,7 +19,10 @@ class TestPropUnit(test_monolingual.TestMonolingualUnit):
     ]
 
     parse_test_data = escape_data + [
+        # Check that double quotes got removed
         ('double quoted text', '<string name="Test String">"double quoted text"</string>\n\n'),
+        # Check that newline is read as space (at least it seems to be what Android does)
+        ('newline in string', '<string name="Test String">newline\nin string</string>\n\n'),
     ]
 
     def test_escape(self):
