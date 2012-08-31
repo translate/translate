@@ -230,8 +230,7 @@ class AndroidResourceUnit(base.TranslationUnit):
         return text
 
     def settarget(self, target):
-        target = self.escape(target)
-        self.xmlelement.text = target
+        self.xmlelement.text = self.escape(target)
         super(AndroidResourceUnit, self).settarget(target)
 
     def gettarget(self, lang=None):
