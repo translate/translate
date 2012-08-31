@@ -202,9 +202,9 @@ class AndroidResourceUnit(base.TranslationUnit):
                         # All others, remove, like Android does as well.
                         # However, Android does so silently, we show a
                         # warning so the dev can fix the problem.
-                        raise ValueError('Resource "%s": removing unsupported '
-                                  'escape sequence "%s"' % (
-                                    name, "".join(text[i-1 : i+1])))
+                        raise ValueError('removing unsupported '
+                                  'escape sequence "%s"' %
+                                     "".join(text[i-1 : i+1]))
                         text[i-1 : i+1] = ''
                         i -= 1
                     active_escape = False
