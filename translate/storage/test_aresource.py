@@ -16,6 +16,8 @@ class TestPropUnit(test_monolingual.TestMonolingualUnit):
         ('message\nwith newline', '<string name="Test String">message\\nwith newline</string>\n\n'),
         ('@twitterescape', '<string name="Test String">\\@twitterescape</string>\n\n'),
         ('quote \'escape\'', '<string name="Test String">quote \\\'escape\\\'</string>\n\n'),
+        ('double  space', '<string name="Test String">"double  space"</string>\n\n'),
+        (' leading space', '<string name="Test String">" leading space"</string>\n\n'),
     ]
 
     parse_test_data = escape_data + [

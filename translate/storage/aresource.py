@@ -22,11 +22,14 @@
 
 from lxml import etree
 
+import re
+
 from translate.storage import lisa
 from translate.storage import base
 
 EOF = None
 WHITESPACE = ' \n\t' # Whitespace that we collapse
+MULTIWHITESPACE = re.compile('[ \n\t]{2}')
 
 class AndroidResourceUnit(base.TranslationUnit):
     """A single term in the Android resource file."""
@@ -225,8 +228,12 @@ class AndroidResourceUnit(base.TranslationUnit):
         text = text.replace('\t', '\\t')
         text = text.replace('\'', '\\\'')
         text = text.replace('"', '\\"')
+        # @ needs to be escaped at start
         if text.startswith('@'):
             text = '\\@' + text[1:]
+        # Quote strings with more whitespace
+        if text[0] in WHITESPACE or text[-1] in WHITESPACE or len(MULTIWHITESPACE.findall(text)) > 0:
+            return '"%s"' % text
         return text
 
     def settarget(self, target):
