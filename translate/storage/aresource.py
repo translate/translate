@@ -198,6 +198,8 @@ class AndroidResourceUnit(base.TranslationUnit):
         '''
         if text is None:
             return
+        if len(text) == 0:
+            return
         text = text.replace('\\', '\\\\')
         text = text.replace('\n', '\\n')
         # This will add non intrusive real newlines to
