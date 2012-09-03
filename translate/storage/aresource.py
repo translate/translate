@@ -146,6 +146,9 @@ class AndroidResourceUnit(base.TranslationUnit):
                     elif c == 't' or c == 'T':
                         text[i-1 : i+1] = '\t' # an actual tab
                         i -= 1
+                    elif c == ' ':
+                        text[i-1 : i+1] = ' ' # an actual space
+                        i -= 1
                     elif c in '"\'@':
                         text[i-1 : i] = '' # remove the backslash
                         i -= 1
