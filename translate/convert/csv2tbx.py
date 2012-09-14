@@ -42,10 +42,9 @@ class csv2tbx:
             if mightbeheader:
                 # ignore typical header strings...
                 mightbeheader = False
-                if [item.strip().lower() for item in thecsv.comment, thecsv.source, thecsv.target] == \
-                    ["comment", "original", "translation"]:
+                if thecsv.match_header():
                     continue
-                if (len(thecsv.comment.strip()) == 0 and
+                if (len(thecsv.location.strip()) == 0 and
                     thecsv.source.find("Content-Type:") != -1):
                     continue
             term = tbx.tbxunit.buildfromunit(thecsv)
