@@ -33,21 +33,21 @@ class csv2tbx:
         """construct the converter..."""
         self.charset = charset
 
-    def convertfile(self, thecsvfile):
+    def convertfile(self, csvfile):
         """converts a csvfile to a tbxfile, and returns it. uses templatepo
         if given at construction"""
         mightbeheader = True
         self.tbxfile = tbx.tbxfile()
-        for thecsv in thecsvfile.units:
+        for csvunit in csvfile.units:
             if mightbeheader:
                 # ignore typical header strings...
                 mightbeheader = False
-                if thecsv.match_header():
+                if csvunit.match_header():
                     continue
-                if (len(thecsv.location.strip()) == 0 and
-                    thecsv.source.find("Content-Type:") != -1):
+                if (len(csvunit.location.strip()) == 0 and
+                    csvunit.source.find("Content-Type:") != -1):
                     continue
-            term = tbx.tbxunit.buildfromunit(thecsv)
+            term = tbx.tbxunit.buildfromunit(csvunit)
             # TODO: we might want to get the location or other information
             # from CSV
             self.tbxfile.addunit(term)
