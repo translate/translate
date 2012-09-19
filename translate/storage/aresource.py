@@ -257,21 +257,3 @@ class AndroidResourceFile(lisa.LISAfile):
         XML again."""
         self.namespace = self.document.getroot().nsmap.get(None, None)
         self.body = self.document.getroot()
-
-    def set_base_resource(self, storefile):
-        """Loads base resource (containing English strings and all messages)."""
-        # Load resource
-        r = AndroidResourceFile.parsefile(storefile)
-        # We will need index
-        self.require_index()
-        # Update all units
-        for unit in r.units:
-            our_unit = self.findid(unit.getid())
-            if our_unit is None:
-                newunit = AndroidResourceUnit(unit.target)
-                newunit.setid(unit.getid())
-                newunit.target = ''
-                self.addunit(newunit)
-            else:
-                our_unit.source = unit.target
-        self.makeindex()
