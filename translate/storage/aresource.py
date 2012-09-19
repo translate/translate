@@ -63,8 +63,9 @@ class AndroidResourceUnit(base.TranslationUnit):
         Code stolen from android2po
         <https://github.com/miracle2k/android2po>
         '''
+        # Return text for empty elements
         if text is None:
-            return None
+            return ''
 
         # We need to collapse multiple whitespace while paying
         # attention to Android's quoting and escaping.
