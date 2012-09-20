@@ -231,9 +231,9 @@ class AndroidResourceUnit(base.TranslationUnit):
 
     def gettarget(self, lang=None):
         # Grab inner text
-        target = (self.xmlelement.text or '')
+        target = (self.xmlelement.text or u'')
         # Include markup as well
-        target += ''.join([etree.tostring(child, encoding = 'utf-8') for child in self.xmlelement.iterchildren()])
+        target += u''.join([data.forceunicode(etree.tostring(child, encoding = 'utf-8')) for child in self.xmlelement.iterchildren()])
         return self.unescape(data.forceunicode(target))
 
     target = property(gettarget, settarget)
