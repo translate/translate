@@ -22,6 +22,8 @@
 
 from lxml import etree
 
+from StringIO import StringIO
+
 import re
 
 from translate.storage import lisa
@@ -197,7 +199,7 @@ class AndroidResourceUnit(base.TranslationUnit):
         if text is None:
             return
         if len(text) == 0:
-            return
+            return ''
         text = text.replace('\\', '\\\\')
         text = text.replace('\n', '\\n')
         # This will add non intrusive real newlines to
@@ -215,7 +217,16 @@ class AndroidResourceUnit(base.TranslationUnit):
         return text
 
     def settarget(self, target):
-        self.xmlelement.text = self.escape(target)
+        if '<' in target:
+            # Handle text with markup
+            newtarget = etree.parse(StringIO('<string>' + self.escape(target) + '</string>')).getroot()
+            for attr in self.xmlelement.attrib:
+                newtarget.set(attr, self.xmlelement.attrib[attr])
+            self.xmlelement.getparent().replace(self.xmlelement, newtarget)
+            self.xmlelement = newtarget
+        else:
+            # Handle text only
+            self.xmlelement.text = self.escape(target)
         super(AndroidResourceUnit, self).settarget(target)
 
     def gettarget(self, lang=None):
