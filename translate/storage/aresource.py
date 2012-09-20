@@ -223,14 +223,16 @@ class AndroidResourceUnit(base.TranslationUnit):
         if '<' in target:
             # Handle text with markup
             target = self.escape(target).replace('&', '&amp;')
-            newtarget = etree.parse(StringIO('<string>' + target + '</string>')).getroot()
-            for attr in self.xmlelement.attrib:
-                newtarget.set(attr, self.xmlelement.attrib[attr])
-            parent = self.xmlelement.getparent()
-            # Parent is none when there are no elements
-            if parent is not None:
-                parent.replace(self.xmlelement, newtarget)
-            self.xmlelement = newtarget
+            # Parse new XML
+            newstring = etree.parse(StringIO('<string>' + target + '</string>')).getroot()
+            # Update text
+            self.xmlelement.text = newstring.text
+            # Remove old elements
+            for x in self.xmlelement.iterchildren():
+                self.xmlelement.remove(x)
+            # Add new elements
+            for x in newstring.iterchildren():
+                self.xmlelement.add(x)
         else:
             # Handle text only
             self.xmlelement.text = self.escape(target)
