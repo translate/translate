@@ -219,10 +219,14 @@ class AndroidResourceUnit(base.TranslationUnit):
     def settarget(self, target):
         if '<' in target:
             # Handle text with markup
-            newtarget = etree.parse(StringIO('<string>' + self.escape(target) + '</string>')).getroot()
+            target = self.escape(target).replace('&', '&amp;')
+            newtarget = etree.parse(StringIO('<string>' + target + '</string>')).getroot()
             for attr in self.xmlelement.attrib:
                 newtarget.set(attr, self.xmlelement.attrib[attr])
-            self.xmlelement.getparent().replace(self.xmlelement, newtarget)
+            parent = self.xmlelement.getparent()
+            # Parent is none when there are no elements
+            if parent is not None:
+                parent.replace(self.xmlelement, newtarget)
             self.xmlelement = newtarget
         else:
             # Handle text only
