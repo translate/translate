@@ -44,7 +44,6 @@ class AndroidResourceUnit(base.TranslationUnit):
         super(AndroidResourceUnit, self).__init__(source)
 
     def _parse(self):
-        self.target = self.gettarget()
         self.source = self.getid()
 
     def getid(self):
