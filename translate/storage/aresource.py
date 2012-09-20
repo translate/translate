@@ -26,6 +26,7 @@ import re
 
 from translate.storage import lisa
 from translate.storage import base
+from translate.lang import data
 
 EOF = None
 WHITESPACE = ' \n\t' # Whitespace that we collapse
@@ -219,8 +220,11 @@ class AndroidResourceUnit(base.TranslationUnit):
         super(AndroidResourceUnit, self).settarget(target)
 
     def gettarget(self, lang=None):
-        target = self.xmlelement.text
-        return self.unescape(target)
+        # Grab inner text
+        target = (self.xmlelement.text or '')
+        # Include markup as well
+        target += ''.join([etree.tostring(child, encoding = 'utf-8') for child in self.xmlelement.iterchildren()])
+        return self.unescape(data.forceunicode(target))
 
     target = property(gettarget, settarget)
 
