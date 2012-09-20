@@ -19,7 +19,8 @@ class TestPropUnit(test_monolingual.TestMonolingualUnit):
         ('quote \'escape\'', '<string name="Test String">quote \\\'escape\\\'</string>\n\n'),
         ('double  space', '<string name="Test String">"double  space"</string>\n\n'),
         (' leading space', '<string name="Test String">" leading space"</string>\n\n'),
-        ('<xml>&entities', '<string name="Test String">&lt;xml&gt;&amp;entities</string>\n\n'),
+        ('>xml&entities', '<string name="Test String">&gt;xml&amp;entities</string>\n\n'),
+        ('some <b>html code</b> here', '<string name="Test String">some <b>html code</b> here</string>\n'),
     ]
 
     parse_test_data = escape_data + [
