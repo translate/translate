@@ -39,9 +39,12 @@ class AndroidResourceUnit(base.TranslationUnit):
     rootNode = "string"
     languageNode = "string"
 
-    def __init__(self, source, empty=False, **kwargs):
-        self.xmlelement = etree.Element(self.rootNode)
-        self.xmlelement.tail = '\n'
+    def __init__(self, source, empty=False, xmlelement = None, **kwargs):
+        if xmlelement is not None:
+            self.xmlelement = xmlelement
+        else:
+            self.xmlelement = etree.Element(self.rootNode)
+            self.xmlelement.tail = '\n'
         if source is not None:
             self.xmlelement.set('name', source)
         super(AndroidResourceUnit, self).__init__(source)
@@ -246,8 +249,7 @@ class AndroidResourceUnit(base.TranslationUnit):
         return self.xmlelement
 
     def createfromxmlElement(cls, element):
-        term = cls(None, empty=True)
-        term.xmlelement = element
+        term = cls(None, xmlelement = element)
         term._parse()
         return term
     createfromxmlElement = classmethod(createfromxmlElement)
