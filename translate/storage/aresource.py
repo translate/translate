@@ -232,7 +232,7 @@ class AndroidResourceUnit(base.TranslationUnit):
                 self.xmlelement.remove(x)
             # Add new elements
             for x in newstring.iterchildren():
-                self.xmlelement.add(x)
+                self.xmlelement.append(x)
         else:
             # Handle text only
             self.xmlelement.text = self.escape(target)
