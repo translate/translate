@@ -168,7 +168,6 @@ class AndroidResourceUnit(base.TranslationUnit):
                         codepoint_str = "".join(text[i+1 : max_slice])
                         if len(codepoint_str) < 4:
                             codepoint_str = u"0" * (4-len(codepoint_str)) + codepoint_str
-                        print repr(codepoint_str)
                         try:
                             # We can't trust int() to raise a ValueError,
                             # it will ignore leading/trailing whitespace.
