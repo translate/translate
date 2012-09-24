@@ -391,14 +391,18 @@ def normalize_code(code):
     return code.replace("_", "-").replace("@", "-").lower()
 
 
+__normalised_languages = set(normalize_code(key) for key in languages.keys())
+
+
 def simplify_to_common(language_code, languages=languages):
     """Simplify language code to the most commonly used form for the
     language, stripping country information for languages that tend
     not to be localized differently for different countries"""
     simpler = simplercode(language_code)
-    if (normalize_code(language_code) in
-        [normalize_code(key) for key in languages.keys()] or
-        simpler == ""):
+    if simpler == "":
+        return language_code
+
+    if (normalize_code(language_code) in __normalised_languages):
         return language_code
     else:
         return simplify_to_common(simpler)
