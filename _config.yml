@@ -1,0 +1,10 @@
+auto: true
+
+name: Translate Toolkit
+description: A collection of useful tools for localization, and a powerful API for programmers of localization tools.
+latest_version: 1.9.0
+author: Translate House
+
+about_url: http://translatehouse.org/about.html
+docs_url: http://docs.translatehouse.org/projects/translate-toolkit/en/latest/
+gh_url: https://github.com/translate/translate

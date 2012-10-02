@@ -1,0 +1,16 @@
+# Stuff from the master branch
+*.pyc
+translate/
+docs/
+
+# LESS
+assets/less/bootstrap
+
+# Jekyll-generated
+_site
+
+# ViM-generated
+*.swn
+*.swo
+*.swp
+*~
