@@ -15,3 +15,7 @@ install:
   - if [[ $TRAVIS_PYTHON_VERSION == '2.7' ]]; then curl -O http://download.gna.org/gaupol/0.19/gaupol-0.19.2.tar.gz; tar xvzf gaupol-0.19.2.tar.gz; cd gaupol-0.19.2; ./setup.py --without-gaupol clean install; fi
   # Still need to handle with indexing engines and aeidon
 script: py.test
+notifications:
+  email:
+    on_failure: change
+    on_success: change
