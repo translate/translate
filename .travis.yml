@@ -11,6 +11,6 @@ install:
   - pip install --use-mirrors python-Levenshtein
   - pip install --use-mirrors BeautifulSoup
   - if [[ $TRAVIS_PYTHON_VERSION == '2.5' ]]; then pip install --use-mirrors simplejson; fi
-  - if [[ $TRAVIS_PYTHON_VERSION >= '2.6' ]]; then pip install http://download.gna.org/gaupol/0.19/gaupol-0.19.2.tar.gz; fi
+  - if [[ $TRAVIS_PYTHON_VERSION >= '2.6' ]]; then curl -O http://download.gna.org/gaupol/0.19/gaupol-0.19.2.tar.gz; cd gaupol-0.19.2; ./setup.py --without-gaupol clean install; fi
   # Still need to handle with indexing engines and aeidon
 script: py.test
