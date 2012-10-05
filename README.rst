@@ -1,6 +1,8 @@
 Translate Toolkit
 -----------------
 
+[![Build Status](https://travis-ci.org/translate/translate.png)](https://travis-ci.org/translate/translate)
+
 The Translate Toolkit is a set of software and documentation designed to help
 make the lives of localizers both more productive and less frustrating.
 The Toolkit is part of the translate.sourceforge.net project,
