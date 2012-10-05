@@ -1,4 +1,7 @@
 language: python
 python:
   - 2.7
+install:
+  - pip install --use-mirrors lxml iniparse python-Levenshtein aeidon
+  # Still need to handle with indexing engines
 script: py.test
