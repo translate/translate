@@ -1,7 +1,6 @@
 # https://travis-ci.org/#!/translate/translate
 language: python
 python:
-  #- 2.4 - earliest supported version for toolkit.  lxml doesn't seem to build
   - 2.5
   - 2.6
   - 2.7
