@@ -1,11 +1,11 @@
 # https://travis-ci.org/#!/translate/translate
 language: python
 python:
-  - 2.4
+  #- 2.4 - earliest supported version for toolkit.  lxml doesn't seem to build
   - 2.5
   - 2.6
   - 2.7
-  - pypy
+  #- pypy - nice to try once lxml is supported or we can switch lxml off
 install:
   - pip install --use-mirrors lxml iniparse python-Levenshtein BeautifulSoup
   # Still need to handle with indexing engines and aeidon
