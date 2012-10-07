@@ -292,7 +292,7 @@ do
 	fi
 
 	verbose "Migration cleanup - Revert files with only header changes"
-	[ "$(git status --porcelain ${polang})" != "?? ${polang}/" ] && git $gitverbosity checkout -- $(git difftool -y -x 'diff --unified=3 --ignore-matching-lines=POT-Creation --ignore-matching-lines=X-Generator -s' ${polang} |
+	[ "$(git status --porcelain ${polang})" != "?? ${polang}/" ] && git checkout $gitverbosity -- $(git difftool -y -x 'diff --unified=3 --ignore-matching-lines=POT-Creation --ignore-matching-lines=X-Generator -s' ${polang} |
 	egrep "are identical$" |
 	sed "s/^Files.*.\.po and //;s/\(\.po\).*/\1/") || echo "No header only changes, so no reverts needed"
 
