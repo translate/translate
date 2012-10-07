@@ -328,7 +328,7 @@ do
 	done
 
 	verbose "po2moz - Create Mozilla l10n layout from migrated PO files."
-	po2moz --progress=$progress --errorlevel=$errorlevel --exclude=".git" --exclude=".hg" --exclude="obsolete" --exclude="editor" --exclude="mail" --exclude="thunderbird" \
+	po2moz --progress=$progress --errorlevel=$errorlevel --exclude=".git" --exclude=".hg" --exclude="obsolete" --exclude="editor" --exclude="mail" --exclude="thunderbird" --exclude="chat" --exclude="*~" \
 		-t ${L10N_DIR}/en-US -i ${POUPDATED_DIR}/${polang} -o ${L10N_DIR}/${lang}
 
 	if [ $opt_copyfiles ]; then
