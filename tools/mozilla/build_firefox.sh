@@ -37,7 +37,6 @@ errorlevel=traceback
 export USECPO=0
 hgverbosity="--quiet" # --verbose to make it noisy
 gitverbosity="--quiet" # --verbose to make it noisy
-svnverbosity="--quiet"
 pomigrate2verbosity="--quiet"
 get_moz_enUS_verbosity=""
 easy_install_verbosity="--quiet"
@@ -63,7 +62,6 @@ do
 				opt_verbose="yes"
 				hgverbosity="--verbose"
 				gitverbosity=""
-				svnverbosity=""
 				progress=bar
 				pomigrate2verbosity=""
 				get_moz_enUS_verbosity="-v"
@@ -104,7 +102,8 @@ function verbose() {
 
 # FIXME lets make this the execution directory
 BUILD_DIR="$(pwd)"
-MOZCENTRAL_DIR="${BUILD_DIR}/mozilla-aurora" # Change "../mozilla-central" on line 39 too if you change this var
+MOZ_DIR="mozilla-aurora"
+MOZCENTRAL_DIR="${BUILD_DIR}/${MOZ_DIR}"
 L10N_DIR="${BUILD_DIR}/l10n"
 PO_DIR="${BUILD_DIR}/po"
 TOOLS_DIR="${BUILD_DIR}/tools"
@@ -121,7 +120,7 @@ fi
 PATH=${CURDIR}:${PATH}
 
 # Make sure all directories exist
-for dir in ${L10N_DIR} ${POUPDATED_DIR} ${LANGPACK_DIR}
+for dir in ${L10N_DIR} ${LANGPACK_DIR}
 do
 	[ ! -d ${dir} ] && mkdir -p ${dir}
 done
@@ -158,25 +157,29 @@ export PATH="${TOOLS_DIR}/translate/tools":\
 "$PATH"
 
 if [ $opt_vc ]; then
-	verbose "mozilla-aurora - update/pull using Mercurial"
+	verbose "${MOZ_DIR} - update/pull using Mercurial"
 	if [ -d "${MOZCENTRAL_DIR}/.hg" ]; then
 		cd ${MOZCENTRAL_DIR}
 		hg pull $hgverbosity -u
 		hg update $hgverbosity -C
 	else
-		hg clone $hgverbosity http://hg.mozilla.org/releases/mozilla-aurora/ ${MOZCENTRAL_DIR}
+		hg clone $hgverbosity http://hg.mozilla.org/releases/${MOZ_DIR}/ ${MOZCENTRAL_DIR}
 	fi
 fi
 
 if [ $opt_vc ]; then
 	verbose "Translations - prepare the parent directory po/"
 	if [ -d ${PO_DIR} ]; then
-		svn up $svnverbosity --depth=files ${PO_DIR}
+		(cd ${PO_DIR}
+		git stash $gitverbosity
+		git pull $gitverbosity --rebase
+		git checkout $gitverbosity
+		git stash pop $gitverbosity || true)
 	else
-		svn co $svnverbosity --depth=files  https://zaf.svn.sourceforge.net/svnroot/zaf/trunk/po/fftb ${PO_DIR}
+		git clone $gitverbosity git@github.com:translate/mozilla-l10n.git ${PO_DIR} || git clone git://github.com/translate/mozilla-l10n.git ${PO_DIR}
 	fi
-	if [ ! -d ${POUPDATED_DIR}/.svn ]; then
-		cp -rp ${PO_DIR}/.svn ${POUPDATED_DIR}
+	if [ -d ${POUPDATED_DIR} -a ! -d ${POUPDATED_DIR}/.git ]; then
+		git clone ${PO_DIR} ${POUPDATED_DIR}
 	fi
 fi
 
@@ -196,7 +199,7 @@ do
 			        rm -rf ${lang}/* 
 			fi
 		else
-		    hg clone $hgverbosity http://hg.mozilla.org/releases/l10n/mozilla-aurora/${lang} ${lang} || mkdir ${lang}
+		    hg clone $hgverbosity http://hg.mozilla.org/releases/l10n/${MOZ_DIR}/${lang} ${lang} || mkdir ${lang}
 		fi
 	fi
 done
@@ -205,8 +208,8 @@ done
 
 verbose "Extract the en-US source files from the repo into localisation structure in l10n/en-US"
 rm -rf en-US
-get_moz_enUS.py $get_moz_enUS_verbosity -s ../mozilla-aurora -d . -p browser
-get_moz_enUS.py $get_moz_enUS_verbosity -s ../mozilla-aurora -d . -p mobile
+get_moz_enUS.py $get_moz_enUS_verbosity -s ../${MOZ_DIR} -d . -p browser
+get_moz_enUS.py $get_moz_enUS_verbosity -s ../${MOZ_DIR} -d . -p mobile
 
 verbose "moz2po - Create POT files from l10n/en-US"
 moz2po --errorlevel=$errorlevel --progress=$progress -P --duplicates=msgctxt --exclude '.hg' en-US pot
@@ -258,7 +261,11 @@ do
 	[ $COUNT_LANGS -gt 1 ] && echo "Language: $lang"
         polang=$(echo $lang|sed "s/-/_/g")
 	verbose "Update existing po/$lang in case any changes are in version control"
-	(cd ${PO_DIR}; svn up $svnverbosity ${polang})
+	(cd ${PO_DIR};
+		git stash $gitverbosity
+		git pull $gitverbosity --rebase
+		git checkout $gitverbosity
+		git stash pop $gitverbosity || true)
 
 	if [ -d ${PO_DIR}/${polang} ]; then
 		verbose "Copy directory structure while preserving version control metadata"
@@ -273,9 +280,10 @@ do
 	pomigrate2 --use-compendium --pot2po $pomigrate2verbosity ${tempdir}/${polang} ${POUPDATED_DIR}/${polang} ${L10N_DIR}/pot
 	rm -rf ${tempdir}
 
+	(cd ${POUPDATED_DIR}
 	if [ $USECPO -eq 0 ]; then
 		verbose "Migration cleanup - fix migrated PO files using msgcat"
-		(cd ${POUPDATED_DIR}/${polang}
+		(cd ${polang}
 		for po in $(find ${PRODUCT_DIRS} -name "*.po")
 		do
 			msgcat -o $po.2 $po 2> >(egrep -v "warning: internationali[zs]ed messages should not contain the .* escape sequence" >&2) && mv $po.2 $po # parallel?
@@ -284,42 +292,32 @@ do
 	fi
 
 	verbose "Migration cleanup - Revert files with only header changes"
-	[ -d ${POUPDATED_DIR}/${polang}/.svn ] && svn revert $svnverbosity $(svn diff --diff-cmd diff -x "--unified=3 --ignore-matching-lines=POT-Creation --ignore-matching-lines=X-Generator -s" ${POUPDATED_DIR}/${polang} |
+	[ "$(git status --porcelain ${polang})" != "?? ${polang}/" ] && git $gitverbosity checkout -- $(git difftool -y -x 'diff --unified=3 --ignore-matching-lines=POT-Creation --ignore-matching-lines=X-Generator -s' ${polang} |
 	egrep "are identical$" |
-	sed "s/^Files //;s/\(\.po\).*/\1/") || echo "No header only changes, so no reverts needed"
+	sed "s/^Files.*.\.po and //;s/\(\.po\).*/\1/") || echo "No header only changes, so no reverts needed"
 
 	verbose "Migrate to new PO files: move old to obsolete/ and add new files"
-	if [ ! -d ${POUPDATED_DIR}/${polang}/.svn ]; then
-		# No VC so assume it's a new language
-		svn add $svnverbosity ${POUPDATED_DIR}/${polang}
+	if [ "$(git status --porcelain ${polang})" == "?? ${polang}/" ]; then
+		# Not VC managed, assume it's a new language
+		git $gitverbosity add ${polang}/\*.po
 	else
-		(cd ${POUPDATED_DIR}/${polang}
-		for newfile in $(svn status $PRODUCT_DIRS | egrep "^\?" | sed "s/\?\w*//")
+		(cd ${polang}
+		for newfile in $(git status --porcelain $PRODUCT_DIRS | egrep "^\?\?" | sed "s/^??\w*//")
 		do
-			[ -d $newfile ] && svn add $svnverbosity $newfile
-			[ -f $newfile -a "$(echo $newfile | cut -d"." -f3)" = "po" ] && svn add $svnverbosity $newfile
+			[ -f $newfile -a "$(echo $newfile | cut -d"." -f3)" = "po" ] && git $gitverbosity add $newfile
 		done
 
-		if [ -d obsolete/.svn ]; then
-			svn revert $svnverbosity -R obsolete
-		else
-			mkdir -p obsolete
-			svn add $svnverbosity obsolete
-		fi
-
-		for oldfile in $(svn status $PRODUCT_DIRS | egrep "^!"| sed "s/!\w*//")
+		for oldfile in $(git status --porcelain $PRODUCT_DIRS | egrep "^ D" | sed "s/^ D\w*//")
 		do
-			if [ -d $newfile ]; then
-				svn revert $svnverbosity -R $oldfile
-				svn move $svnverbosity --parents $oldfile obsolete/$oldfile
-			fi
 			if [ -f $newfile -a "$(echo $newfile | cut -d"." -f3)" = "po" ]; then
-				svn revert $svnverbosity $oldfile
-				svn move $svnverbosity --parents $oldfile obsolete/$oldfile
+				git $gitverbosity checkout -- $oldfile
+				mkdir -p obsolete/$(dirname $oldfile)
+				git $gitverbosity mv $oldfile obsolete/$oldfile
 			fi
 		done
 		)
 	fi
+	)
 
 	verbose "Pre-po2moz hacks"
 	lang_product_dirs=
@@ -330,7 +328,7 @@ do
 	done
 
 	verbose "po2moz - Create Mozilla l10n layout from migrated PO files."
-	po2moz --progress=$progress --errorlevel=$errorlevel --exclude=".svn" --exclude=".hg" --exclude="obsolete" --exclude="editor" --exclude="mail" --exclude="thunderbird" \
+	po2moz --progress=$progress --errorlevel=$errorlevel --exclude=".git" --exclude=".hg" --exclude="obsolete" --exclude="editor" --exclude="mail" --exclude="thunderbird" \
 		-t ${L10N_DIR}/en-US -i ${POUPDATED_DIR}/${polang} -o ${L10N_DIR}/${lang}
 
 	if [ $opt_copyfiles ]; then
