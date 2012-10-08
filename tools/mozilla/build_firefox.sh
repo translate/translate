@@ -139,7 +139,7 @@ if [ $opt_vc ]; then
 		git checkout $gitverbosity
 		git stash pop $gitverbosity || true)
 	else
-		git clone $gitverbosity git@github.com:translate/translate.git ${TOOLS_DIR}/translate || git clone git://github.com/translate/translate.git ${TOOLS_DIR}/translate 
+		git clone $gitverbosity git@github.com:translate/translate.git ${TOOLS_DIR}/translate || git clone $gitverbosity git://github.com/translate/translate.git ${TOOLS_DIR}/translate
 	fi
 fi
 
@@ -176,10 +176,10 @@ if [ $opt_vc ]; then
 		git checkout $gitverbosity
 		git stash pop $gitverbosity || true)
 	else
-		git clone $gitverbosity git@github.com:translate/mozilla-l10n.git ${PO_DIR} || git clone git://github.com/translate/mozilla-l10n.git ${PO_DIR}
+		git clone $gitverbosity git@github.com:translate/mozilla-l10n.git ${PO_DIR} || git clone $gitverbosity git://github.com/translate/mozilla-l10n.git ${PO_DIR}
 	fi
 	if [ -d ${POUPDATED_DIR} -a ! -d ${POUPDATED_DIR}/.git ]; then
-		git clone ${PO_DIR} ${POUPDATED_DIR}
+		git clone $gitverbosity ${PO_DIR} ${POUPDATED_DIR}
 	fi
 fi
 
@@ -299,20 +299,20 @@ do
 	verbose "Migrate to new PO files: move old to obsolete/ and add new files"
 	if [ "$(git status --porcelain ${polang})" == "?? ${polang}/" ]; then
 		# Not VC managed, assume it's a new language
-		git $gitverbosity add ${polang}/\*.po
+		git add ${polang}/\*.po
 	else
 		(cd ${polang}
 		for newfile in $(git status --porcelain $PRODUCT_DIRS | egrep "^\?\?" | sed "s/^??\w*//")
 		do
-			[ -f $newfile -a "$(echo $newfile | cut -d"." -f3)" = "po" ] && git $gitverbosity add $newfile
+			[ -f $newfile -a "$(echo $newfile | cut -d"." -f3)" = "po" ] && git add $newfile
 		done
 
 		for oldfile in $(git status --porcelain $PRODUCT_DIRS | egrep "^ D" | sed "s/^ D\w*//")
 		do
 			if [ -f $newfile -a "$(echo $newfile | cut -d"." -f3)" = "po" ]; then
-				git $gitverbosity checkout -- $oldfile
+				git checkout $gitverbosity -- $oldfile
 				mkdir -p obsolete/$(dirname $oldfile)
-				git $gitverbosity mv $oldfile obsolete/$oldfile
+				git mv $oldfile obsolete/$oldfile
 			fi
 		done
 		)
