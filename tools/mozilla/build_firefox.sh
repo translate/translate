@@ -333,8 +333,8 @@ do
 
 	if [ $opt_copyfiles ]; then
 		verbose "Copy files not handled by moz2po/po2moz"
-		copyfiletype "*.xhtml" ${lang} # Our XHTML and HTML is broken
-		copyfiletype "*.rdf" ${lang}   # Don't support .rdf files
+		copyfileismissing toolkit/chrome/mozapps/help/welcome.xhtml ${lang}
+		copyfileifmissing toolkit/chrome/mozapps/help/help-toc.rdf ${lang}
 		copyfile browser/firefox-l10n.js ${lang}
 		copyfile browser/profile/chrome/userChrome-example.css ${lang}
 		copyfile browser/profile/chrome/userContent-example.css ${lang}
