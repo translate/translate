@@ -183,7 +183,7 @@ if [ $opt_vc ]; then
 		fi
 	done
 	(cd ${POUPDATED_DIR}
-	git checkout)
+	git checkout $gitverbosity)
 fi
 
 verbose "Localisations - update Mercurial-managed languages in l10n/"
