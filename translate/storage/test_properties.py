@@ -329,3 +329,12 @@ key=value
         assert propunit.name == u''
         assert propunit.source == u''
         assert propunit.getnotes() == u"# END"
+
+    def test_utf16_byte_order_mark(self):
+        """test that BOM appears in the resulting text once only"""
+        propsource = u"key1 = value1\nkey2 = value2\n".encode('utf-16')
+        propfile = self.propparse(propsource, encoding='utf-16')
+        result = str(propfile)
+        bom = propsource[:2]
+        assert result.startswith(bom)
+        assert bom not in result[2:]
