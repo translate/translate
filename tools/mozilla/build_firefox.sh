@@ -334,7 +334,7 @@ do
 
 	if [ $opt_copyfiles ]; then
 		verbose "Copy files not handled by moz2po/po2moz"
-		copyfileismissing toolkit/chrome/mozapps/help/welcome.xhtml ${lang}
+		copyfileifmissing toolkit/chrome/mozapps/help/welcome.xhtml ${lang}
 		copyfileifmissing toolkit/chrome/mozapps/help/help-toc.rdf ${lang}
 		copyfile browser/firefox-l10n.js ${lang}
 		copyfile browser/profile/chrome/userChrome-example.css ${lang}
