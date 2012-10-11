@@ -146,7 +146,7 @@ fi
 
 if [ $opt_vc ]; then
 	verbose "Compare-Locales - update if needed"
-	sudo easy_install $easy_install_verbosity --upgrade compare-locales
+	easy_install $easy_install_verbosity --upgrade compare-locales
 fi
 
 export PYTHONPATH="${TOOLS_DIR}/translate":"$PYTHONPATH"
