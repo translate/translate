@@ -72,6 +72,26 @@ def test_key_strip():
     assert properties._key_strip(u"key\ ") == "key\ "
 
 
+def test_is_comment_one_line():
+    assert properties.is_comment_one_line("# comment")
+    assert properties.is_comment_one_line("! comment")
+    assert properties.is_comment_one_line("// comment")
+    assert properties.is_comment_one_line("  # comment")
+    assert properties.is_comment_one_line("/* comment */")
+    assert not properties.is_comment_one_line("not = comment_line /* comment */")
+    assert not properties.is_comment_one_line("/* comment ")
+
+
+def test_is_comment_start():
+    assert properties.is_comment_start("/* comment")
+    assert not properties.is_comment_start("/* comment */")
+
+
+def test_is_comment_end():
+    assert properties.is_comment_end(" comment */")
+    assert not properties.is_comment_end("/* comment */")
+
+
 class TestPropUnit(test_monolingual.TestMonolingualUnit):
     UnitClass = properties.propunit
 
