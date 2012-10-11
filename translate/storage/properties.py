@@ -588,8 +588,9 @@ class propfile(base.TranslationStore):
         """Convert the units back to lines."""
         lines = []
         for unit in self.units:
-            lines.append(str(unit))
-        return "".join(lines)
+            lines.append(unit.getoutput())
+        uret = u"".join(lines)
+        return uret.encode(self.encoding)
 
 
 class javafile(propfile):
