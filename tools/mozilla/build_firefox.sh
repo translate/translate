@@ -210,12 +210,12 @@ done
 [ -d ${POT_DIR} ] && rm -rf ${POT_DIR}/
 
 verbose "Extract the en-US source files from the repo into localisation structure in l10n/en-US"
-rm -rf en-US
+rm -rf ${L10N_DIR}/en-US
 get_moz_enUS.py $get_moz_enUS_verbosity -s ../${MOZ_DIR} -d . -p browser
 get_moz_enUS.py $get_moz_enUS_verbosity -s ../${MOZ_DIR} -d . -p mobile
 
 verbose "moz2po - Create POT files from l10n/en-US"
-moz2po --errorlevel=$errorlevel --progress=$progress -P --duplicates=msgctxt --exclude '.hg' en-US ${POT_DIR}
+moz2po --errorlevel=$errorlevel --progress=$progress -P --duplicates=msgctxt --exclude '.hg' ${L10N_DIR}/en-US ${POT_DIR}
 
 # The following functions are used in the loop following it
 function copyfile {
