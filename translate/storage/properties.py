@@ -212,6 +212,53 @@ def is_line_continuation(line):
         count += 1
     return (count % 2) == 1  # Odd is a line continuation, even is not
 
+@accepts(unicode)
+@returns(bool)
+def is_comment_one_line(line):
+    """Determine whether a *line* is a one-line comment.
+
+    :param line: A properties line
+    :type line: unicode
+    :return: True if line is a one-line comment
+    :rtype: bool
+    """
+    stripped = line.strip()
+    line_starters = (u'#', u'!', u'//', )
+    for starter in line_starters:
+        if stripped.startswith(starter):
+            return True
+    if stripped.startswith(u'/*') and stripped.endswith(u'*/'):
+        return True
+    return False
+
+
+@accepts(unicode)
+@returns(bool)
+def is_comment_start(line):
+    """Determine whether a *line* starts a new multi-line comment.
+
+    :param line: A properties line
+    :type line: unicode
+    :return: True if line starts a new multi-line comment
+    :rtype: bool
+    """
+    stripped = line.strip()
+    return stripped.startswith('/*') and not stripped.endswith('*/')
+
+
+@accepts(unicode)
+@returns(bool)
+def is_comment_end(line):
+    """Determine whether a *line* ends a new multi-line comment.
+
+    :param line: A properties line
+    :type line: unicode
+    :return: True if line ends a new multi-line comment
+    :rtype: bool
+    """
+    stripped = line.strip()
+    return not stripped.startswith('/*') and stripped.endswith('*/')
+
 
 @accepts(unicode)
 @returns(unicode)
@@ -484,6 +531,7 @@ class propfile(base.TranslationStore):
 
         newunit = propunit("", self.personality.name)
         inmultilinevalue = False
+        inmultilinecomment = False
 
         for line in propsrc.split(u"\n"):
             # handle multiline value if we're in one
@@ -501,14 +549,16 @@ class propfile(base.TranslationStore):
                     self.addunit(newunit)
                     newunit = propunit("", self.personality.name)
             # otherwise, this could be a comment
-            # FIXME handle /* */ in a more reliable way
             # FIXME handle // inline comments
-            elif (line.strip()[:1] in (u'#', u'!') or
-                  line.strip()[:2] in (u"/*", u"//") or
-                  line.strip()[:-2] == "*/"):
+            elif (inmultilinecomment or is_comment_one_line(line) or
+                  is_comment_start(line) or is_comment_end(line)):
                 # add a comment
                 if line not in self.personality.drop_comments:
                     newunit.comments.append(line)
+                if is_comment_start(line):
+                    inmultilinecomment = True
+                elif is_comment_end(line):
+                    inmultilinecomment = False
             elif not line.strip():
                 # this is a blank line...
                 if str(newunit).strip():
