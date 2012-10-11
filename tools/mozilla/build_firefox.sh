@@ -106,6 +106,7 @@ MOZ_DIR="mozilla-aurora"
 MOZCENTRAL_DIR="${BUILD_DIR}/${MOZ_DIR}"
 L10N_DIR="${BUILD_DIR}/l10n"
 PO_DIR="${BUILD_DIR}/po"
+POT_DIR="${PO_DIR}/templates"
 TOOLS_DIR="${BUILD_DIR}/tools"
 POUPDATED_DIR="${BUILD_DIR}/po-updated"
 # FIXME we should build this from the get_moz_enUS script
@@ -204,7 +205,7 @@ do
 	fi
 done
 
-[ -d pot ] && rm -rf pot
+[ -d ${POT_DIR} ] && rm -rf ${POT_DIR}/
 
 verbose "Extract the en-US source files from the repo into localisation structure in l10n/en-US"
 rm -rf en-US
@@ -212,7 +213,7 @@ get_moz_enUS.py $get_moz_enUS_verbosity -s ../${MOZ_DIR} -d . -p browser
 get_moz_enUS.py $get_moz_enUS_verbosity -s ../${MOZ_DIR} -d . -p mobile
 
 verbose "moz2po - Create POT files from l10n/en-US"
-moz2po --errorlevel=$errorlevel --progress=$progress -P --duplicates=msgctxt --exclude '.hg' en-US pot
+moz2po --errorlevel=$errorlevel --progress=$progress -P --duplicates=msgctxt --exclude '.hg' en-US ${POT_DIR}
 
 # The following functions are used in the loop following it
 function copyfile {
@@ -277,7 +278,7 @@ do
 	verbose "Migrate - update PO files to new POT files"
 	tempdir=`mktemp -d tmp.XXXXXXXXXX`
 	[ -d ${PO_DIR}/${polang} ] && cp -R ${PO_DIR}/${polang} ${tempdir}/${polang}
-	pomigrate2 --use-compendium --pot2po $pomigrate2verbosity ${tempdir}/${polang} ${POUPDATED_DIR}/${polang} ${L10N_DIR}/pot
+	pomigrate2 --use-compendium --pot2po $pomigrate2verbosity ${tempdir}/${polang} ${POUPDATED_DIR}/${polang} ${POT_DIR}
 	rm -rf ${tempdir}
 
 	(cd ${POUPDATED_DIR}
