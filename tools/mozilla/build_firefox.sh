@@ -170,18 +170,20 @@ fi
 
 if [ $opt_vc ]; then
 	verbose "Translations - prepare the parent directory po/"
-	if [ -d ${PO_DIR} ]; then
-		(cd ${PO_DIR}
-		git stash $gitverbosity
-		git pull $gitverbosity --rebase
-		git checkout $gitverbosity
-		git stash pop $gitverbosity || true)
-	else
-		git clone $gitverbosity git@github.com:translate/mozilla-l10n.git ${PO_DIR} || git clone $gitverbosity git://github.com/translate/mozilla-l10n.git ${PO_DIR}
-	fi
-	if [ -d ${POUPDATED_DIR} -a ! -d ${POUPDATED_DIR}/.git ]; then
-		git clone $gitverbosity ${PO_DIR} ${POUPDATED_DIR}
-	fi
+	for trans_repo in ${PO_DIR} ${POUPDATED_DIR}
+	do
+		if [ -d $trans_repo ]; then
+			(cd $trans_repo
+			git stash $gitverbosity
+			git pull $gitverbosity --rebase
+			git checkout $gitverbosity
+			git stash pop $gitverbosity || true)
+		else
+			git clone $gitverbosity git@github.com:translate/mozilla-l10n.git $trans_repo || git clone $gitverbosity git://github.com/translate/mozilla-l10n.git $trans_repo
+		fi
+	done
+	(cd ${POUPDATED_DIR}
+	git checkout)
 fi
 
 verbose "Localisations - update Mercurial-managed languages in l10n/"
