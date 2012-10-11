@@ -215,7 +215,13 @@ get_moz_enUS.py $get_moz_enUS_verbosity -s ../${MOZ_DIR} -d . -p browser
 get_moz_enUS.py $get_moz_enUS_verbosity -s ../${MOZ_DIR} -d . -p mobile
 
 verbose "moz2po - Create POT files from l10n/en-US"
-moz2po --errorlevel=$errorlevel --progress=$progress -P --duplicates=msgctxt --exclude '.hg' ${L10N_DIR}/en-US ${POT_DIR}
+moz2po --errorlevel=$errorlevel --progress=$progress -P --duplicates=msgctxt --exclude '.hg' en-US ${POT_DIR}
+pot_dir=$(basename ${POT_DIR})
+(cd ${POT_DIR}/..
+[ "$(git status --porcelain ${pot_dir})" != "?? ${pot_dir}/" ] && git checkout $gitverbosity -- $(git difftool -y -x 'diff --unified=3 --ignore-matching-lines=POT-Creation --ignore-matching-lines=X-Generator -s' ${pot_dir} |
+egrep "are identical$" |
+sed "s/^Files.*.\.pot and //;s/\(\.pot\).*/\1/") || echo "No header only changes, so no reverts needed"
+)
 
 # The following functions are used in the loop following it
 function copyfile {
