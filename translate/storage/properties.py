@@ -377,15 +377,18 @@ class DialectStrings(Dialect):
     pair_terminator = u";"
     key_wrap_char = u'"'
     value_wrap_char = u'"'
+    out_ending = u';'
+    out_delimiter_wrappers = u' '
     drop_comments = ["/* No comment provided by engineer. */"]
 
     def key_strip(cls, key):
-        """Strip uneeded characters from the key"""
+        """Strip unneeded characters from the key"""
         newkey = key.rstrip().rstrip('"')
         # If line now end in \ we put back the char that was escaped
         if newkey[-1:] == "\\":
             newkey += key[len(newkey):len(newkey)+1]
-        return newkey.lstrip().lstrip('"')
+        ret = newkey.lstrip().lstrip('"')
+        return ret.replace('\\"', '"')
     key_strip = classmethod(key_strip)
 
     def value_strip(cls, value):
@@ -394,11 +397,12 @@ class DialectStrings(Dialect):
         # If line now end in \ we put back the char that was escaped
         if newvalue[-1:] == "\\":
             newvalue += value[len(newvalue):len(newvalue)+1]
-        return newvalue.lstrip().lstrip('"')
+        ret = newvalue.lstrip().lstrip('"')
+        return ret.replace('\\"', '"')
     value_strip = classmethod(value_strip)
 
     def encode(cls, string, encoding=None):
-        return string.replace('"', '\\"').replace("\n", r"\n").replace("\t", r"\t")
+        return string.replace("\n", r"\n").replace("\t", r"\t")
     encode = classmethod(encode)
 register_dialect(DialectStrings)
 
@@ -417,6 +421,12 @@ class propunit(base.TranslationUnit):
         self.delimiter = u"="
         self.comments = []
         self.source = source
+        # a pair of symbols to enclose delimiter on the output
+        # (a " " can be used for the sake of convenience)
+        self.out_delimiter_wrappers = getattr(self.personality, 'out_delimiter_wrappers', u'')
+        # symbol which should ends every property sentence (";" is required for
+        # Mac OS X strings
+        self.out_ending = getattr(self.personality, 'out_ending', u'')
 
     def setsource(self, source):
         self._rich_source = None
@@ -466,11 +476,26 @@ class propunit(base.TranslationUnit):
         else:
             self.value = self.personality.encode(self.source, self.encoding)
             self.translation = self.personality.encode(self.target, self.encoding)
+            # encode key, if needed
+            key = self.name
+            kwc = self.personality.key_wrap_char
+            if kwc:
+                key = key.replace(kwc, '\\%s' % kwc)
+                key = '%s%s%s' % (kwc, key, kwc)
+            # encode value, if needed
             value = self.translation or self.value
-            return u"%(notes)s%(key)s%(del)s%(value)s\n" % {"notes": notes,
-                                                            "key": self.name,
-                                                            "del": self.delimiter,
-                                                            "value": value}
+            vwc = self.personality.value_wrap_char
+            if vwc:
+                value = value.replace(vwc, '\\%s' % vwc)
+                value = '%s%s%s' % (vwc, value, vwc)
+            wrappers = self.out_delimiter_wrappers
+            delimiter = '%s%s%s' % (wrappers, self.delimiter, wrappers)
+            ending = self.out_ending
+            return u"%(notes)s%(key)s%(del)s%(value)s%(ending)s\n" % {"notes": notes,
+                                                            "key": key,
+                                                            "del": delimiter,
+                                                            "value": value,
+                                                            "ending": ending}
 
     def getlocations(self):
         return [self.name]

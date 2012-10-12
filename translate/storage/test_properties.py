@@ -253,7 +253,7 @@ key=value
         propfile = self.propparse(propsource, personality="strings")
         assert len(propfile.units) == 1
         propunit = propfile.units[0]
-        assert propunit.name == ur'I am a \"key\"'
+        assert propunit.name == ur'I am a "key"'
         assert propunit.source.encode('utf-8') == u'I am a "value"'
 
     def test_mac_strings_unicode(self):
@@ -310,6 +310,27 @@ key=value
         assert propunit.name == u'key'
         assert propunit.source.encode('utf-8') == u'value'
         assert propunit.getnotes() == u""
+
+    def test_mac_strings_quotes(self):
+        """test that parser unescapes characters used as wrappers"""
+        propsource = ur'"key with \"quotes\"" = "value with \"quotes\"";'.encode('utf-16')
+        propfile = self.propparse(propsource, personality="strings")
+        propunit = propfile.units[0]
+        assert propunit.name == ur'key with "quotes"'
+        assert propunit.value == ur'value with "quotes"'
+
+    def test_mac_strings_serialization(self):
+        """test that serializer quotes mac strings properly"""
+        propsource = ur'"key with \"quotes\"" = "value with \"quotes\"";'.encode('utf-16')
+        propfile = self.propparse(propsource, personality="strings")
+        # we don't care about leading and tralinig newlines and zero bytes
+        # in the assert, we just want to make sure that
+        # - all quotes are in place
+        # - quotes inside are escaped
+        # - for the sake of beauty a pair of spaces encloses the equal mark
+        # - every line ends with ";"
+        assert str(propfile.units[0]).strip('\n\x00') == propsource.strip('\n\x00')
+        assert str(propfile).strip('\n\x00') == propsource.strip('\n\x00')
 
     def test_override_encoding(self):
         """test that we can override the encoding of a properties file"""
