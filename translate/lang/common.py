@@ -116,7 +116,7 @@ class Common(object):
     """These are different quotation marks used by various languages."""
 
     invertedpunc = u"¿¡"
-    """Inveted punctuation sometimes used at the beginning of sentences in
+    """Inverted punctuation sometimes used at the beginning of sentences in
     Spanish, Asturian, Galician, and Catalan."""
 
     rtlpunc = u"،؟؛÷"
