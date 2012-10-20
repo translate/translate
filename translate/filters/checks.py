@@ -182,7 +182,6 @@ class CheckerConfig(object):
         self.credit_sources = self._init_list(credit_sources)
 
         # Lang data
-        self.targetlanguage = targetlanguage
         self.updatetargetlanguage(targetlanguage)
         self.sourcelang = factory.getlanguage('en')
 
@@ -260,6 +259,7 @@ class CheckerConfig(object):
         """Updates the target language in the config to the given target
         language.
         """
+        self.targetlanguage = langcode
         self.lang = factory.getlanguage(langcode)
 
 
