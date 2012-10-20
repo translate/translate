@@ -1775,7 +1775,7 @@ class TermChecker(StandardChecker):
             checkerconfig = CheckerConfig()
             kwargs["checkerconfig"] = checkerconfig
 
-        checkerconfig.update(cclicenseconfig)
+        checkerconfig.update(termconfig)
         StandardChecker.__init__(self, **kwargs)
 
 
