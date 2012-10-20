@@ -126,7 +126,7 @@ class LevenshteinComparer:
 
         #maxsimilarity is the maximum similarity that can be attained as constrained
         #by the difference in string length
-        maxsimilarity = 100 - 100.0 * abs(l1 - l2) / l2
+        maxsimilarity = 100 - 100.0 * (l2 - l1) / l2
         if maxsimilarity < stoppercentage:
             return maxsimilarity * 1.0
 
