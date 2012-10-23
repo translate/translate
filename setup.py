@@ -253,12 +253,6 @@ class build_installer(build_exe_map):
         # subdirectory.
 
 
-def import_setup_module(modulename, modulepath):
-    import imp
-    modfile, pathname, description = imp.find_module(modulename, [modulepath])
-    return imp.load_module(modulename, modfile, pathname, description)
-
-
 def map_data_file(data_file):
     """remaps a data_file (could be a directory) to a different location
     This version gets rid of Lib\\site-packages, etc"""
