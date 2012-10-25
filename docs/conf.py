@@ -116,6 +116,8 @@ class Mock(object):
             return Mock()
 
 MOCK_MODULES = [
+    'BeautifulSoup',
+    'gaupol.subtitle',
     'iniparse',
     'lucene',
     'vobject',
@@ -123,6 +125,7 @@ MOCK_MODULES = [
     'xml',
     'xml.dom',
     'xml.etree',
+    'xml.parsers',
 ]
 for mod_name in MOCK_MODULES:
     sys.modules[mod_name] = Mock()
