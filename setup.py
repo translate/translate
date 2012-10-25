@@ -35,6 +35,7 @@ subpackages = [
         "lang",
         "misc",
         join("misc", "typecheck"),
+        join("misc", "wsgiserver"),
         "storage",
         join("storage", "placeables"),
         join("storage", "versioncontrol"),
