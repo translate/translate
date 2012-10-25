@@ -93,6 +93,41 @@ pygments_style = 'sphinx'
 # A list of ignored prefixes for module index sorting.
 #modindex_common_prefix = []
 
+# -- Missing modules --------------------------------------------------
+import sys
+
+class Mock(object):
+    VERSION = None
+    def __init__(self, *args, **kwargs):
+        pass
+
+    def __call__(self, *args, **kwargs):
+        return Mock()
+
+    @classmethod
+    def __getattr__(cls, name):
+        if name in ('__file__', '__path__'):
+            return '/dev/null'
+        elif name[0] == name[0].upper():
+            mockType = type(name, (), {})
+            mockType.__module__ = __name__
+            return mockType
+        else:
+            return Mock()
+
+MOCK_MODULES = [
+    'iniparse',
+    'lucene',
+    'vobject',
+    'xapian',
+    'xml',
+    'xml.dom',
+    'xml.etree',
+]
+for mod_name in MOCK_MODULES:
+    sys.modules[mod_name] = Mock()
+
+sys.modules['lucene'].VERSION = "2.3.0"
 
 # -- Options for HTML output --------------------------------------------------
 
