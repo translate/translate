@@ -1,0 +1,74 @@
+
+.. _pages/toolkit/odf2xliff#odf2xliff_and_xliff2odf:
+
+odf2xliff and xliff2odf
+***********************
+
+Convert OpenDocument (ODF) files to XLIFF localization files. Create translated ODF files by combining the original ODF files with XLIFF files containing translations of strings in the original document.
+
+XLIFF is the XML Localization Interchange File Format
+developed by `OASIS <http://www.oasis-open.org/committees/tc_home.php?wg_abbrev=xliff>`_ (The Organization for the Advancement of Structured Information Standards) to allow translation
+work to be standardised no matter what the source format and to allow the work to be freely moved from tool to
+tool.
+
+If you are more used to software translation or l10n, you might want to read a bit about :doc:`/guides/document_translation`. This should help you to get the most out of translating ODF with XLIFF.
+
+.. _pages/toolkit/odf2xliff#usage:
+
+Usage
+=====
+
+::
+
+  odf2xliff [options] <original_odf> <xliff>
+  xliff2odf [options] -t <original_odf> <xliff> <translated_odf>
+
+Where:
+| <original_odf> | is an ODF document whose strings have to be translated  |
+| <xliff>        | is an XLIFF file |
+| <translated_odf> | is an ODF file to generate by replacing the strings in <original_odf> with the translated strings in <xliff> |
+
+Options (odf2xliff):
+
+| --version            | show program's version number and exit  |
+| -h, --help           | show this help message and exit  |
+| --manpage            | output a manpage based on the help  |
+| :doc:`--progress=progress <option_progress>`  | show progress as: dots, none, bar, names, verbose  |
+| :doc:`--errorlevel=errorlevel <option_errorlevel>`  | show errorlevel as: none, message, exception, traceback  |
+| -i INPUT, --input=INPUT   | read from INPUT in ODF format  |
+| -o OUTPUT, --output=OUTPUT     | write to OUTPUT in XLIFF format  |
+| :doc:`--psyco=MODE <option_psyco>`         | use psyco to speed up the operation, modes: none, full, profile  |
+
+Options (xliff2odf):
+
+| --version            | show program's version number and exit    |
+| -h, --help           | show this help message and exit    |
+| --manpage            | output a manpage based on the help    |
+| :doc:`--progress=progress <option_progress>`  | show progress as: dots, none, bar, names, verbose    |
+| :doc:`--errorlevel=errorlevel <option_errorlevel>`    | show errorlevel as: none, message, exception, traceback    |
+| -i INPUT, --input=INPUT     | read from INPUT in XLIFF formats    |
+| -o OUTPUT, --output=OUTPUT  | write to OUTPUT in ODF format    |
+| -t TEMPLATE, --template=TEMPLATE   | read from TEMPLATE in ODF format    |
+| :doc:`--psyco=MODE <option_psyco>`         | use psyco to speed up the operation, modes: none, full, profile    |
+
+.. _pages/toolkit/odf2xliff#examples:
+
+Examples
+========
+
+::
+
+  odf2xliff english.odt english_français.xlf
+
+Create an XLIFF file from an ODT file (the source ODF file could also be any of the other ODF files, including ODS, ODG, etc.). ::
+
+  xliff2odf -t english.odt english_français.xlf français.odt
+
+Using english.odt as the template document, and english_français.xlf as the file of translations, create a translated file français.odt.
+
+.. _pages/toolkit/odf2xliff#bugs:
+
+Bugs
+====
+
+This filter is not yet extensively used - we appreciate your feedback.  For more information on conformance to standards, see the :doc:`/formats/xliff` or :doc:`/formats/odf` pages.

@@ -5,11 +5,13 @@ This part has the user's documentation for the tools included in the
 Translate Toolkit.
 
 .. toctree::
-   :maxdepth: 2
+   :maxdepth: 1
 
+   features
    installation
-   converters
-   scripts
+   commands/index
+   guides/index
+   Supported formats <formats/index>
 
 
 Developer's Guide
@@ -19,9 +21,12 @@ If you are a developer and are willing to use the Translate Toolkit for
 building new tools, make sure to read through this part.
 
 .. toctree::
-   :maxdepth: 2
+   :maxdepth: 1
 
    styleguide
+   development/building
+   development/contributing
+   development/developers
 
 
 API Reference
@@ -43,7 +48,8 @@ Additional Notes
 Changelog and legal information are included here.
 
 .. toctree::
-   :maxdepth: 2
+   :maxdepth: 1
 
    changelog
+   history
    license

@@ -1,0 +1,103 @@
+
+.. _pages/toolkit/duplicates_duplicatestyle#--duplicates=duplicatestyle:
+
+--duplicates=DUPLICATESTYLE
+***************************
+
+Gettext PO files only allow one message with a common msgid (source string).  Many other formats allow duplicate entries.  To create a valid PO file you need to merge these duplicate entries into one PO message.  However, this often negatively affects the roundtrip or is not what is expected by the user.  Thus we have a number of methods of handling duplicates which we call *duplicate styles*.
+
+Also affected are conversions in which the source format is empty (allowing possible translation). As the header in a PO file is identified by an empty source string, your message will appear to be a duplicate of the header.  In this case duplicate removal is critical.
+
+Previously the tools used msgid_comment (KDE style comments) to disambiguate text.  However, with the release of Gettext 0.15, the new msgctxt disambiguation is now recommended, especially if you wish to use your files with other Gettext the tools. Many other pieces of software now also support this feature, and will probably become the best choice for almost all circumstances.  It is the default in our converters.
+
+.. _pages/toolkit/duplicates_duplicatestyle#merge:
+
+merge
+=====
+
+This is the traditional Gettext approach.  All messages with the same source string or English string are merged into one PO message.
+
+::
+
+    #: file1.dtd:instruction_manual
+    #: file1.dtd:manual_process
+    msgid "Manual"
+    msgstr ""
+
+If however the source text is blank (these are often configuration options in Mozilla) then the *merge* style will use KDE comments as used in the *msgid_comment* style in order to create unambiguous entries that can still be used for configuration.
+
+::
+
+    #: file1.dtd:translators_name
+    msgid "_: file1.dtd:translators_name\n"
+    msgstr ""
+
+    #: file1.dtd:translators_email
+    msgid "_: file1.dtd:translators_email\n"
+    msgstr ""
+
+.. _pages/toolkit/duplicates_duplicatestyle#msgctxt:
+
+msgctxt
+=======
+
+This uses the msgctxt feature of Gettext that was introduced with Gettext 0.15. Some tools might not support it 100%. This option is the default in recent releases of the Translate Toolkit.
+
+::
+
+    #: file1.dtd:instruction_manual
+    msgctxt "instruction_manual"
+    msgid "Manual"
+    msgstr ""
+
+    #: file1.dtd:manual_process
+    msgctxt "manual_process"
+    msgid "Manual"
+    msgstr ""
+
+.. _pages/toolkit/duplicates_duplicatestyle#keep:
+
+keep
+====
+
+Duplicates are not merged and each appear in their own message.  This type of PO file will not work with the Gettext tools. This choice has been removed in Translate Toolkit 1.3.0.
+
+::
+
+    #: file1.dtd:instruction_manual
+    msgid "Manual"
+    msgstr ""
+
+    #: file1.dtd:manual_process
+    msgid "Manual"
+    msgstr ""
+
+.. _pages/toolkit/duplicates_duplicatestyle#msgid_comment:
+
+msgid_comment
+=============
+
+If a duplicates is discovered then we make use of the KDE style comments to make them unique. This choice has been removed in Translate Toolkit 1.3.0.
+
+::
+
+    #: file1.dtd:instruction_manual
+    msgid "_: instruction_manual\n"
+    "Manual"
+    msgstr ""
+
+    #: file1.dtd:manual_process
+    msgid "_: manual_process\n"
+    "Manual"
+    msgstr ""
+
+You can see that both the entries *instruction_manual* and *manual_process* have source strings of *"Manual"*.  By adding
+the KDE style comment we make the messages unique.  This is helpful for many people but isn't quite perfect in that in many cases your language will use the same word and you don't want it split - you now simply have more work.
+
+.. _pages/toolkit/duplicates_duplicatestyle#msgid_comment_all:
+
+msgid_comment_all
+=================
+
+This operates the same as *msgid_comment* except now **every** message has a KDE style comment added regardless if it is a duplicate or not.  This choice has been removed in Translate Toolkit 1.3.0.
+
