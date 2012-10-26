@@ -115,7 +115,7 @@ Rewrites the source text with Unicode characters that looks like the Latin chara
 This allows a translator or programmer to test a programs ability to use Unicode message strings. By using characters in the Unicode range but that are related to the plain Latin characters that they replace we ensure that the messages are still readable.
 
 .. note:: Before version 1.4, the rewrite rule will also rewrite variables
-   and XML tags, which would cause problems in some situations.  Run
-   :doc:`pofilter` as a quick method to fix up incorrect changes, or upgrade
-   to version 1.4.
+   and XML tags, which would cause problems in some situations.
+   Run :doc:`pofilter` as a quick method to fix up incorrect changes, or
+   upgrade to version 1.4.
 
