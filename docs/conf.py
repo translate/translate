@@ -116,10 +116,15 @@ class Mock(object):
             return Mock()
 
 MOCK_MODULES = [
+    'aeidon',
     'BeautifulSoup',
     'gaupol.subtitle',
+    'glib',
+    'gobject',
+    'gtk',
     'iniparse',
     'lucene',
+    #'PyLucene',
     'vobject',
     'xapian',
     'xml',
