@@ -115,11 +115,10 @@ text and a alphanumeric value.  Its is then easy to search for that value and fi
 
 .. _pages/toolkit/podebug#more_reading:
 
-More reading
-============
+Usings podebug
+==============
 
-Here are some more examples in a series of blog posts:
-
-* http://translate.org.za/blogs/friedel/en/content/pseudolocalisation-podebug-1
-* http://translate.org.za/blogs/friedel/en/content/pseudolocalisation-podebug-2
-* http://translate.org.za/blogs/friedel/en/content/pseudolocalisation-podebug-3-interview-rail-aliev
+Here are some more examples in a `series
+<http://translate.org.za/blogs/friedel/en/content/pseudolocalisation-podebug-1>`_
+`of <http://translate.org.za/blogs/friedel/en/content/pseudolocalisation-podebug-2>`_
+`blog posts <http://translate.org.za/blogs/friedel/en/content/pseudolocalisation-podebug-3-interview-rail-aliev>`_.
