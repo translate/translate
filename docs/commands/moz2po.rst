@@ -4,15 +4,15 @@
 moz2po and po2moz
 *****************
 
-moz2po converts Mozilla files to PO files.  It wraps converters that handle .properties, .dtd, .xhtml and some strange Mozilla files.
-The tool can extract from an XPI file and build your complete XPI file from your PO files or work with files from Mozilla CVS.  Thus providing
+moz2po converts Mozilla files to PO files.  It wraps converters that handle .properties, .dtd and some strange Mozilla files.
+The tool can extract from an XPI file or work with files from Mozilla's Mercurial repository.  The tools thus provides
 a complete roundtrip for Mozilla localisation using PO files and PO editors.
 
 .. note::
 
     This page should only be used as a reference to the command-line options for moz2po and po2moz. For more about using the Translate Toolkit and PO files for translating Mozilla products, please see the page on :doc:`mozilla_l10n_scripts`.
 
-.. warning:: The conversion to and from XPI files is no longer actively supported, please work directly against Mozilla CVS files.
+.. warning:: The conversion to and from XPI files is no longer actively supported.  The preffered method is to work directly with files in Mozilla's Mercurial version control system.
 
 .. _pages/toolkit/moz2po#usage:
 
