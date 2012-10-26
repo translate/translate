@@ -13,11 +13,13 @@ poconflicts allows you to quickly identify these problem messages, investigate a
 Usage
 =====
 
+::
+
   poconflicts [options] <po> <conflicts>
 
 Where:
-  * <po> -- is a directory of existing PO files or an individual PO file
-  * <conflicts> -- is a directory containing one PO file for each conflict
+* <po> -- is a directory of existing PO files or an individual PO file
+* <conflicts> -- is a directory containing one PO file for each conflict
 
 Options:
 | --version            | show program's version number and exit  |
@@ -38,13 +40,13 @@ Options:
 Examples
 ========
 
-Here are some examples that demonstrate the usefulness of poconflict
+Here are some examples that demonstrate the usefulness of poconflict ::
 
   poconflicts --accelerator=~ -I xhosa conflicts
 
-This extracts messages from the PO files in the *xhosa* directory and places a new PO file for each identified conflict in *conflicts*.  We are working with ` <http://qooxdoo.org//openoffice.org>`_ files and we therefore use the tilde (*~*) as the accelerator marker (with this set *F~ile* is considered the same as *~File*).  We are also ignoring the case of the message using *-I* (thus *File* is considered the same as *file* or *FILE*)
+This extracts messages from the PO files in the *xhosa* directory and places a new PO file for each identified conflict in *conflicts*.  We are working with OpenOffice files and we therefore use the tilde (*~*) as the accelerator marker (with this set *F~ile* is considered the same as *~File*).  We are also ignoring the case of the message using *-I* (thus *File* is considered the same as *file* or *FILE*)
 
-Another useful option is to look at the inverted conflicts.  This will detect target words that have been used to translate different source words.
+Another useful option is to look at the inverted conflicts.  This will detect target words that have been used to translate different source words. ::
 
   poconflicts --accelerator=~ -I -v xhosa conflicts
 
@@ -54,11 +56,11 @@ usability issue.
 
 The translator makes the needed corrections to the files and then we can proceed to merge the results back into the PO files. Unchanged entries can be removed.
 
-Now restructure the files to resemble the original directory structure using :doc:`porestructure`:
+Now restructure the files to resemble the original directory structure using :doc:`porestructure`::
 
   porestructure -i conflicts -o conflicts_tree
 
-Now merge the changes back using pomerge:
+Now merge the changes back using pomerge::
 
   pomerge -t xhosa -i conflicts_tree -o xhosa
 
