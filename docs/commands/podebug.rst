@@ -10,10 +10,10 @@ The pseudo translation or debug markers make it easy to reference and locate str
 
 Use it to:
 
-* Target your translations: see what files are being referenced for string appearing in your programs.
-* Debug translations: if you know in what file the message occurs then you can quickly find it and fix it.
-* Check that everything is translatable: any English only text needs to be analysed so that it can be localised.
-* Check for Unicode compliance: by inserting Unicode text outside of the Latin range it allows you to check that your program can handle non-Latin correctly.
+* *Target your translations*: see what files are being referenced for string appearing in your programs.
+* *Debug translations*: if you know in what file the message occurs then you can quickly find it and fix it.
+* *Check that everything is translatable*: any English only text needs to be analysed so that it can be localised.
+* *Check for Unicode compliance*: by inserting Unicode text outside of the Latin range it allows you to check that your program can handle non-Latin correctly.
 
 .. _pages/toolkit/podebug#usage:
 
@@ -22,30 +22,40 @@ Usage
 
 ::
 
-  podebug [options] [-f format] <in> <out>
+  podebug [options] <in> <out>
 
 Where:
 
-| -f     | is an optional format strings  |
-| <in>   | is an input directory or localisation file file  |
-| <out>  | is an output directory or localisation file, if missing output will be to standard out.   |
+=====  ======================================================================================
+<in>   is an input directory or localisation file file
+<out>  is an output directory or localisation file, if missing output will be to standard out.
+=====  ======================================================================================
 
 Options:
 
-| --version            | show program's version number and exit   |
-| -h, --help           | show this help message and exit   |
-| --manpage            | output a manpage based on the help   |
-| :doc:`--progress=progress <option_progress>`  | show progress as: dots, none, bar, names, verbose   |
-| :doc:`--errorlevel=errorlevel <option_errorlevel>`   | show errorlevel as: none, message, exception, traceback   |
-| -iINPUT, --input=INPUT    | read from INPUT in po, pot formats   |
-| -xEXCLUDE, --exclude=EXCLUDE   | exclude names matching EXCLUDE from input paths   |
-| -oOUTPUT, --output=OUTPUT  | write to OUTPUT in po, pot formats   |
-| :doc:`--psyco=MODE <option_psyco>`         | use psyco to speed up the operation, modes: none, full, profile   |
-| -P, --pot            | output PO Templates (.pot) rather than PO files (.po)   |
-| -fFORMAT, --format=FORMAT   | specify format string   |
-| :doc:`--rewrite=style <rewrite_style>`      | the translation rewrite style: xxx, en, blank, chef  (v1.2), unicode (v1.2) |
-| --ignore=APPLICATION  | apply tagging ignore rules for the given application: kde, gtk, openoffice, mozilla  |
-| --hash=LENGTH        | add an md5 hash to translations (only until version 1.3.0 - see %h below) |
+--version              show program's version number and exit
+-h, --help             show this help message and exit
+--manpage              output a manpage based on the help
+--progress=PROGRESS    show progress as: :doc:`dots, none, bar, names,
+                       verbose <option_progress>`
+--errorlevel=ERRORLEVEL
+                       show errorlevel as: :doc:`none, message, exception,
+                       traceback <option_errorlevel>`
+-iINPUT, --input=INPUT  read from INPUT in po, pot formats
+-xEXCLUDE, --exclude=EXCLUDE
+                       exclude names matching EXCLUDE from input paths
+-oOUTPUT, --output=OUTPUT
+                       write to OUTPUT in po, pot formats
+--psyco=MODE           use psyco to speed up the operation, modes: :doc:`none,
+                       full, profile <option_psyco>`
+-P, --pot              output PO Templates (.pot) rather than PO files (.po)
+-fFORMAT, --format=FORMAT     specify format string
+--rewrite=STYLE        the translation rewrite style: :doc:`xxx, en, blank,
+                       chef  (v1.2), unicode (v1.2) <rewrite_style>`
+--ignore=APPLICATION   apply tagging ignore rules for the given application:
+                       kde, gtk, openoffice, mozilla
+--hash=LENGTH          add an md5 hash to translations (only until version
+                       1.3.0 - see %h below)
 
 .. _pages/toolkit/podebug#formats:
 
@@ -76,10 +86,10 @@ A format string can have these various options:
 
 A format string may look like this:
 
-* ``%cf`` - the full filename without vowels
-* ``[%10cb] `` - the first ten character after compressing the base of the filename and place it in square brackets with a space before the real message
-* ``[%5cd - %cB] `` - the first 5 consonants of the directory, followed by a dash then the consonants of the filename with a .po extension.  All surrounded by square brackets with a space before the translations.
-* ``%4h.`` - insert a hash value of length 4
+* ``%cf`` -- the full filename without vowels
+* ``[%10cb] `` -- the first ten character after compressing the base of the filename and place it in square brackets with a space before the real message
+* ``[%5cd - %cB] `` -- the first 5 consonants of the directory, followed by a dash then the consonants of the filename with a .po extension.  All surrounded by square brackets with a space before the translations.
+* ``%4h.`` -- insert a hash value of length 4
 
 Complex format strings may make it too difficult to actually read the translation, so you are probably best served using as short a string as possible.
 
