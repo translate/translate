@@ -4,14 +4,14 @@
 --rewrite=STYLE
 ***************
 
-podebug allows you to rewrite the output text in a number of ways.
+:doc:`podebug` allows you to rewrite the output text in a number of ways.
 
 .. _pages/toolkit/rewrite_style#xxx:
 
 xxx
 ===
 
-The source text is surrounded by xxx as follows
+The target text is surrounded by ``xxx`` as follows
 
 .. code-block:: po
 
@@ -32,7 +32,7 @@ The source text is copied to the target
   msgid "English"
   msgstr "English"
 
-In this way you can create translations that contain only the source text.  Useful if you are preparing a roundtrip test or want to start an English derived translation such as British English.  It produces the same results as `msgen <http://linux.die.net/man/1/msgen>` but with the advantage that you can add debug markers.
+In this way you can create translations that contain only the source text.  Useful if you are preparing a roundtrip test or want to start an English derived translation such as British English.  It produces the same results as `msgen <http://linux.die.net/man/1/msgen>`_ but with the advantage that you can add debug markers.
 
 .. _pages/toolkit/rewrite_style#blank:
 
@@ -118,3 +118,4 @@ This allows a translator or programmer to test a programs ability to use Unicode
    and XML tags, which would cause problems in some situations.  Run
    :doc:`pofilter` as a quick method to fix up incorrect changes, or upgrade
    to version 1.4.
+
