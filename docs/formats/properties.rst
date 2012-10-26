@@ -30,7 +30,7 @@ Not implemented
 Examples
 ========
 
-.. code::
+.. code-block:: properties
 
   editmenu.label = "Edit"
   saveas.label = "Save As"
