@@ -17,6 +17,7 @@ Usage
   po2sub [options] [-t <foo.srt>] <XX.po> <foo-XX.srt>
 
 Where:
+
 | foo.srt    | is the input subtitle file   |
 | foo.po     | is an empty PO file that may be translated   |
 | XX.po      | is a PO file translated into the XX language   |

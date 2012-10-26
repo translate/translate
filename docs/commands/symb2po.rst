@@ -19,11 +19,13 @@ Usage
   po2symb [options] -t <target_lang_symb> <po> <target_lang_symb>
 
 Where:
+
 | <target_lang_symb>   | is a valid Symbian translation file or directory of those files  |
 | <source_lang_symb>   | is a valid Symbian translation file or directory of those files  |
 | <po>   | is a PO or POT file or a directory of PO or POT files  |
 
 Options (symb2po):
+
 | --version           | show program's version number and exit  |
 | -h, --help          | show this help message and exit  |
 | --manpage           | output a manpage based on the help  |
@@ -37,6 +39,7 @@ Options (symb2po):
 | -P, --pot    | output PO Templates (.pot) rather than PO files (.po)  |
 
 Options (po2symb):
+
 | --version            | show program's version number and exit  |
 | -h, --help           | show this help message and exit  |
 | --manpage            | output a manpage based on the help  |

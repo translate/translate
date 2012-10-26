@@ -30,11 +30,13 @@ Usage
   pocompendium [options] output.po <-d po-directory(ies)|po-file(s)>
 
 Where:
+
 | output.po            | the name of the output PO compendium    |
 | po-directory(ies)    | one or more directories to use as input for the compendium    |
 | po-file(s)           | one or more PO files to use as input for the compendium  |
 
 Options:
+
 | -v, --invert    | swap the msgid and msgstr in the input PO files   |
 | -e, --errors    | only return those msg blocks that have conflicts    |
 | -i, --ignore-case    | drops all msgstr's to lowercase    |

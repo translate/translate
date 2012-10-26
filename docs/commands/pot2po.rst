@@ -17,10 +17,12 @@ Usage
   pot2po [options] <pot> <po>
 
 Where:
+
 | <pot>  | is a PO Template (POT) file or directory of POT files   |
 | <po>   | is a PO file or a directory of PO files  |
 
 Options:
+
 | --version            | show program's version number and exit  |
 | -h, --help           | show this help message and exit   |
 | --manpage            | output a manpage based on the help  |

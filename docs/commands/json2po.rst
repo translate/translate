@@ -17,10 +17,12 @@ Usage
   po2json [options] -t <json> <po> <json>
 
 Where:
+
 | <json>   | is a valid .json file or directory of those files  |
 | <po>   | is a directory of PO or POT files  |
 
 Options (json2po):
+
 | --version           | show program's version number and exit  |
 | -h, --help          | show this help message and exit  |
 | --manpage           | output a manpage based on the help  |
@@ -36,6 +38,7 @@ Options (json2po):
 | :doc:`--duplicates=duplicatestyle <option_duplicates>`  | what to do with duplicate strings (identical source text): merge, msgctxt, (default: 'msgctxt')  |
 
 Options (po2json):
+
 | --version            | show program's version number and exit  |
 | -h, --help           | show this help message and exit  |
 | --manpage            | output a manpage based on the help  |
@@ -56,7 +59,7 @@ Examples
 
 This example looks at roundtrip of .json translations as well as recovery of existing translations.
 
-First we need to create a set of POT files.::
+First we need to create a set of POT files. ::
 
   json2po -P json/ pot/
 

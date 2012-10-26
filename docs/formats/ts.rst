@@ -21,7 +21,7 @@ The format is XML and seems to only have been documented properly in Qt 4.3
 Complete
 ========
 
-Note that :doc:`/commands/ts2po` uses and older version and does not support all of these features.  `Virtaal <http://virtaal.org>`_, `Pootle <http://pootle.translatehouse.org>`_ and other users of the new ts class support the following:
+Note that :doc:`ts2po </commands/ts2po>` uses and older version and does not support all of these features.  `Virtaal <http://virtaal.org>`_, `Pootle <http://pootle.translatehouse.org>`_ and other users of the new ts class support the following:
 
 * Context
 * Message: status (unfinished, finished, obsolete), source, translation, location
@@ -33,9 +33,12 @@ Note that :doc:`/commands/ts2po` uses and older version and does not support all
 TODO
 ====
 
-.. note::
-
-    A new parser has been added to the toolkit in v1.2. This allows `Virtaal <http://virtaal.org>`_, :doc:`/commands/pocount` and other users to work with v1.1 of the .ts format.  This corrects almost all of the issues listed below.  The converter :doc:`/commands/ts2po` continues to use the older storage class and thus continue to experience some of these problems.
+.. note:: A new parser has been added to the toolkit in v1.2. This allows
+   `Virtaal <http://virtaal.org>`_, :doc:`/commands/pocount` and other users
+   to work with v1.1 of the .ts format.  This corrects almost all of the
+   issues listed below.  The converter :doc:`ts2po </commands/ts2po>`
+   continues to use the older storage class and thus continue to experience
+   some of these problems.
 
 * Compliance with above DTD
 * byte: within various text areas

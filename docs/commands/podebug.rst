@@ -123,10 +123,3 @@ Here are some more examples in a series of blog posts:
 * http://translate.org.za/blogs/friedel/en/content/pseudolocalisation-podebug-1
 * http://translate.org.za/blogs/friedel/en/content/pseudolocalisation-podebug-2
 * http://translate.org.za/blogs/friedel/en/content/pseudolocalisation-podebug-3-interview-rail-aliev
-
-.. _pages/toolkit/podebug#bugs:
-
-Bugs
-====
-
-None known

@@ -41,8 +41,12 @@ Note these instructions are for building on Linux, they may work on Windows.  Al
 Latest Version
 ==============
 
-moz-l10n-builer is not currently distributed as part of the toolkit.  You can get the `latest version from Git <https://raw.github.com/translate/translate/master/tools/mozilla/moz-l10n-builder>`_
- and you will also need this `minor patch <https://raw.github.com/translate/translate/master/tools/mozilla/mozilla-l10n.patch>`_ to the mozilla source code.
+moz-l10n-builer is not currently distributed as part of the toolkit.  You can
+get the `latest version from Git
+<https://raw.github.com/translate/translate/master/tools/mozilla/moz-l10n-builder>`_
+and you will also need this `minor patch
+<https://raw.github.com/translate/translate/master/tools/mozilla/mozilla-l10n.patch>`_
+to the mozilla source code.
 
 .. _pages/toolkit/moz-l10n-builder#usage:
 

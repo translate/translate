@@ -9,11 +9,11 @@
 java (default)
 ==============
 
-Create output strictly according to the specification for .properties files.  This will use escaped Unicode for any non-ASCII characters.  Thus the following string found in a PO file:
+Create output strictly according to the specification for .properties files.  This will use escaped Unicode for any non-ASCII characters.  Thus the following string found in a PO file::
 
   ṽḁḽṻḝ
 
-Will appear as follows in the output .properties file:
+Will appear as follows in the output .properties file::
 
   \u1E7D\u1E01\u1E3D\u1E7B\u1E1D
 

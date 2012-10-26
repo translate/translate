@@ -20,6 +20,7 @@ Usage
   xliff2po [options] <xliff> <po>
 
 Where:
+
 | <po>     | is a PO file or directory of PO files  |
 | <xliff>  | is an XLIFF file or directory of XLIFF files  |
 

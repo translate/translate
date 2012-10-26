@@ -19,10 +19,12 @@ Usage
   po2ical [options] -t <ical> <po> <ical>
 
 Where:
+
 | <ical>   | is a valid .ics file or directory of those files  |
 | <po>   | is a directory of PO or POT files  |
 
 Options (ical2po):
+
 | --version           | show program's version number and exit  |
 | -h, --help          | show this help message and exit  |
 | --manpage           | output a manpage based on the help  |
@@ -37,6 +39,7 @@ Options (ical2po):
 | :doc:`--duplicates=duplicatestyle <option_duplicates>`  | what to do with duplicate strings (identical source text): merge, msgid_comment, msgctxt, keep,                        msgid_comment_all (default: 'msgctxt')  |
 
 Options (po2ical):
+
 | --version            | show program's version number and exit  |
 | -h, --help           | show this help message and exit  |
 | --manpage            | output a manpage based on the help  |
@@ -57,13 +60,13 @@ Examples
 
 This example looks at roundtrip of iCalendar translations. While you can do recovery of translations, its unlikely that you will ever need to do that.
 
-First we need to create a set of POT files.::
+First we need to create a set of POT files. ::
 
   ical2po -P ical.ics ical.pot
 
 The ical.ics file is converted to Gettext POT files called ical.pot.  Directories of iCalendar files can also be processed.
 
-Begin translating the ical.pot file by first copying it to make a PO file.::
+Begin translating the ical.pot file by first copying it to make a PO file. ::
 
   cp ical.pot ical-af.po
 

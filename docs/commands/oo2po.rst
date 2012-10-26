@@ -26,12 +26,14 @@ or for XLIFF files::
   xliff2oo [options] [-t <en-US.sdf>] -l <targetlang> <input> <sdf|output>
 
 Where:
+
 | <sdf>  | is a valid OpenOffice.org GSI or SDF files  |
 | <output>  | is a directory for the resultant PO/POT/XLIFF files  |
 | <input>   | is a directory of translated PO/XLIFF files  |
 | <targetlang> | is the `ISO 639 <https://en.wikipedia.org/wiki/ISO_639>`_ language code used in the sdf file, eg. af |
 
 Options (oo2po and oo2xliff):
+
 | --version            | show program's version number and exit  |
 | -h, --help           | show this help message and exit  |
 | --manpage            | output a manpage based on the help  |
@@ -49,6 +51,7 @@ Options (oo2po and oo2xliff):
 | --:doc:`multifile=multifilestyle <option_multifile>`   | how to split po/pot files (single, toplevel or onefile)  |
 
 Options (po2oo and xliff2oo):
+
 | --version            | show program's version number and exit  |
 | -h, --help           | show this help message and exit  |
 | --manpage            | output a manpage based on the help  |

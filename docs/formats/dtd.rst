@@ -4,7 +4,7 @@
 Mozilla DTD format
 ******************
 
-Mozilla makes use of a .dtd file to store many of its translatable elements, the :doc:`/commands/moz2po` converter can handle these.
+Mozilla makes use of a .dtd file to store many of its translatable elements, the :doc:`moz2po </commands/moz2po>` converter can handle these.
 
 .. _pages/toolkit/dtd#references:
 

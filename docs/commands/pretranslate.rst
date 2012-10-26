@@ -20,10 +20,12 @@ Usage
   pretranslate [options] <input> <output>
 
 Where:
+
 | <input>  | is the translation file or directory to be pretranslated   |
 | <output>   | is the translation file or a directory where the pretranslated version will be stored  |
 
 Options:
+
 | --version            | show program's version number and exit  |
 | -h, --help           | show this help message and exit   |
 | --manpage            | output a manpage based on the help  |

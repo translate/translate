@@ -16,11 +16,14 @@ Usage
   php2po [options] <php> <po>
   po2php [options] <po> <php>
 
+
 Where:
+
 | <php>  | is a valid PHP localisable file or directory of those files  |
 | <po>   | is a directory of PO or POT files  |
 
 Options (php2po):
+
 | --version           | show program's version number and exit  |
 | -h, --help          | show this help message and exit  |
 | --manpage           | output a manpage based on the help  |
@@ -35,6 +38,7 @@ Options (php2po):
 | :doc:`--duplicates=duplicatestyle <option_duplicates>`  | what to do with duplicate strings (identical source text): merge, msgid_comment, msgctxt, keep,                        msgid_comment_all (default: 'msgctxt')  |
 
 Options (po2php):
+
 | --version            | show program's version number and exit  |
 | -h, --help           | show this help message and exit  |
 | --manpage            | output a manpage based on the help  |
@@ -53,23 +57,17 @@ Options (po2php):
 Formats Supported
 =================
 
-PHP files need to be organized into separate languages per file and in the following format:
-
-::
+PHP files need to be organized into separate languages per file and in the following format::
 
     $variable = 'string';
       $another_variable = "another string";
 
-If $variable is an array it should be declared with the square bracket syntax.  For example, ``$lang['var']``.
-
-::
+If $variable is an array it should be declared with the square bracket syntax.  For example, ``$lang['var']``.  ::
 
     $lang['item'] = 'string';
       $lang['another_item'] = "another string";
 
-The converter also supports arrays in the form:
-
-::
+The converter also supports arrays in the form::
 
     $variable = array(
        name => 'value',

@@ -12,9 +12,9 @@ For information on more file formats, see :doc:`conformance`.
 References
 ==========
 
-  * `Standard home page <http://www.lisa.org/Term-Base-eXchange.32.0.html>`_
-  * `Specification <http://www.lisa.org/TBX-Specification.33.0.html>`_
-  * `ISO 30042 <http://www.iso.org/iso/iso_catalogue/catalogue_tc/catalogue_detail.htm?csnumber=45797>`_ - TBX is an approved ISO standard
+* `Standard home page <http://www.lisa.org/Term-Base-eXchange.32.0.html>`_
+* `Specification <http://www.lisa.org/TBX-Specification.33.0.html>`_
+* `ISO 30042 <http://www.iso.org/iso/iso_catalogue/catalogue_tc/catalogue_detail.htm?csnumber=45797>`_ - TBX is an approved ISO standard
 
 You might also be interested in reading about `TBX-Basic <http://www.lisa.org/TBX-Basic.926.0.html>`_ - a simpler, reduced version of TBX with most of the useful features included.
 
@@ -27,23 +27,23 @@ Standard conformance
 
 Done
 ----
-  * Basic file creation
-  * Creating a bilingual list from CSV with :doc:`/commands/csv2tbx`
-  * Using <tig> tags, not ntig
+* Basic file creation
+* Creating a bilingual list from CSV with :doc:`/commands/csv2tbx`
+* Using <tig> tags, not ntig
 
 .. _pages/toolkit/tbx#todo:
 
 Todo
 ----
-  * id attributes for termEntry tags
-  * ntig, read and write
-  * multiple languages
-  * synonyms
-  * cross references
-  * abbreviations
-  * definitions
-  * context
-  * parts of speech
+* id attributes for termEntry tags
+* ntig, read and write
+* multiple languages
+* synonyms
+* cross references
+* abbreviations
+* definitions
+* context
+* parts of speech
 
 .. _pages/toolkit/tbx#implementation_notes_for_missing_features:
 
@@ -52,22 +52,23 @@ Implementation notes for missing features
 
 Note here:
 
-  * NLS - South African National Language Services - Multilingual Maths Dictionary
+* NLS - South African National Language Services - Multilingual Maths Dictionary
 
 .. _pages/toolkit/tbx#synonyms:
 
 Synonyms
 --------
-NLS: Extra listing\\
+NLS: Extra listing
+
 TBX:
 
-::
+.. code-block:: xml
 
     <termNote type="termNote">synonym</termNote>
 
 according to this TBX documentation. In another place:
 
-::
+.. code-block:: xml
 
     <termNote type="termType">synonym</termNote>
 
@@ -77,10 +78,11 @@ inside a <termGrp>, following <term>
 
 Definition
 ----------
-NLS: term {definition/contextual information}\\
-TBX
+NLS: term {definition/contextual information}
 
-::
+TBX:
+
+.. code-block:: xml
 
     <descripGrp>
        <descrip type="definition">The longish definition of the term</descrip>
@@ -93,10 +95,11 @@ inside langSet
 
 Context
 -------
-NLS: term {definition/contextual information} (see above)\\
+NLS: term {definition/contextual information} (see above)
+
 TBX:
 
-::
+.. code-block:: xml
 
     <descrip type="context">A usually somewhat longer contextual sentence.</descrip>
 
@@ -106,10 +109,11 @@ inside <ntig>
 
 Parts of speech
 ---------------
-NLS: term v.  (or adj, or n.)\\
+NLS: term v.  (or adj, or n.)
+
 TBX:
 
-::
+.. code-block:: xml
 
     <termNote type="partOfSpeech" >noun</termNote>
 
@@ -119,14 +123,16 @@ following <term>
 
 Cross reference
 ---------------
-NLS: alternate term -> real lemma\\
+NLS: alternate term -> real lemma
+
 TBX: <ref> TODO
 
 .. _pages/toolkit/tbx#abbreviations:
 
 Abbreviations
 -------------
-NLS: same as alternate term: a.m. -> before noon\\
+NLS: same as alternate term: a.m. -> before noon
+
 TBX: TODO
 
 .. _pages/toolkit/tbx#tbx_cheat_sheet:
@@ -134,16 +140,16 @@ TBX: TODO
 TBX cheat sheet
 ===============
 
-  - source word in English
-  - definition in English
-  - translation of source word to XX
-  - definition in XX
-  - comment
-  - syntactic group
-  - one or more tags
-  - a reference number
+- source word in English
+- definition in English
+- translation of source word to XX
+- definition in XX
+- comment
+- syntactic group
+- one or more tags
+- a reference number
 
-::
+.. code-block:: xml
 
     <termEntry id="4324 (8)">
         <note>tag1, tag2, tag3 (7) -
@@ -280,33 +286,33 @@ Features priorization
 
 The upper ones are the most needed and interesting:
 
-  * Definition
-  * Several translations in the same language for the same concept
-  * Part of speech
-  * Grammatical gender
-  * Grammatical number
-  * Concept subject field
-  * Pretty printing
-  * Use of tig tag by default
-  * Link to external resources (including its type, address and description)
-  * Completion status
-  * Administrative status
-  * Administrative status reason
-  * Translation explaining note
-  * Translation identifier
-  * Related concepts
-  * Broader concept
-  * Acronym
-  * Abbreviation
-  * Example of use
-  * Link to real use example
+* Definition
+* Several translations in the same language for the same concept
+* Part of speech
+* Grammatical gender
+* Grammatical number
+* Concept subject field
+* Pretty printing
+* Use of tig tag by default
+* Link to external resources (including its type, address and description)
+* Completion status
+* Administrative status
+* Administrative status reason
+* Translation explaining note
+* Translation identifier
+* Related concepts
+* Broader concept
+* Acronym
+* Abbreviation
+* Example of use
+* Link to real use example
 
 .. _pages/toolkit/tbx#example_for_galician_tbx_requirements:
 
 Example for galician TBX requirements
 =====================================
 
-::
+.. code-block:: xml
 
     <?xml version='1.0' encoding='UTF-8'?>
     <!DOCTYPE martif SYSTEM 'TBXcoreStructV02.dtd'>

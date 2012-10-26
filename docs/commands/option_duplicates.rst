@@ -17,7 +17,7 @@ merge
 
 This is the traditional Gettext approach.  All messages with the same source string or English string are merged into one PO message.
 
-::
+.. code-block:: po
 
     #: file1.dtd:instruction_manual
     #: file1.dtd:manual_process
@@ -26,7 +26,7 @@ This is the traditional Gettext approach.  All messages with the same source str
 
 If however the source text is blank (these are often configuration options in Mozilla) then the *merge* style will use KDE comments as used in the *msgid_comment* style in order to create unambiguous entries that can still be used for configuration.
 
-::
+.. code-block:: po
 
     #: file1.dtd:translators_name
     msgid "_: file1.dtd:translators_name\n"
@@ -38,18 +38,18 @@ If however the source text is blank (these are often configuration options in Mo
 
 .. _pages/toolkit/duplicates_duplicatestyle#msgctxt:
 
-msgctxt
-=======
+msgctxt (default)
+=================
 
 This uses the msgctxt feature of Gettext that was introduced with Gettext 0.15. Some tools might not support it 100%. This option is the default in recent releases of the Translate Toolkit.
 
-::
+.. code-block:: po
 
     #: file1.dtd:instruction_manual
     msgctxt "instruction_manual"
     msgid "Manual"
     msgstr ""
-
+     
     #: file1.dtd:manual_process
     msgctxt "manual_process"
     msgid "Manual"

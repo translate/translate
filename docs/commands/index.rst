@@ -42,6 +42,7 @@ Converters
    option_multifile
    option_psyco
    option_personality
+   option_accelerator
 
 Converters change many different formats to PO and back again. Sometimes
 only one direction is supported, or conversion is done using non-PO formats.
@@ -94,7 +95,6 @@ Quality Assurance
    pomerge
    porestructure
    junitmsgfmt
-   option_accelerator
 
 These tools are especially useful for measuring and improving translation quality.
 

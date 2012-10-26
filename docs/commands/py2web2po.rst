@@ -23,10 +23,12 @@ Usage
   po2web2py [options] <po> <web2py>
 
 Where:
+
 | <web2py> | is a valid web2py translation file |
 | <po>   | is a PO or POT file or a directory of PO or POT files  |
 
 Options (web2py2po):
+
 | --version           | show program's version number and exit  |
 | -h, --help          | show this help message and exit  |
 | --manpage           | output a manpage based on the help  |
@@ -38,6 +40,7 @@ Options (web2py2po):
 | :doc:`--psyco=mode <option_psyco>`  | use psyco to speed up the operation, modes: none,                        full, profile  |
 
 Options (po2web2py):
+
 | --version            | show program's version number and exit  |
 | -h, --help           | show this help message and exit  |
 | --manpage            | output a manpage based on the help  |
@@ -48,11 +51,6 @@ Options (po2web2py):
 | -o OUTPUT, --output=OUTPUT      | write to OUTPUT in php format  |
 | :doc:`--psyco=mode <option_psyco>`         | use psyco to speed up the operation, modes: none, full, profile  |
 | --fuzzy %%|%% --nofuzzy     | include%%|%%exclude fuzzy translations  |
-
-.. _pages/toolkit/py2web2po#examples:
-
-Examples
-========
 
 .. _pages/toolkit/py2web2po#notes:
 
@@ -65,14 +63,3 @@ Untranslated messages in the web2py translation files are usually marked with a 
 
 * All target strings from the web2py sources with a leading ``%%"*** "%%`` are inserted as blank msgstr's into the PO result (web2py2po)
 * Blank msgstr's from the PO file will get the msgid string with a leading ``%%"*** "%%`` as target string in the web2py result (po2web2py)
-
-.. _pages/toolkit/py2web2po#issues:
-
-Issues
-======
-
-.. _pages/toolkit/py2web2po#bugs:
-
-Bugs
-====
-

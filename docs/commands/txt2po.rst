@@ -19,6 +19,7 @@ Usage
   po2txt [options] [-t <foo.txt>] <XX.po> <foo-XX.txt>
 
 Where:
+
 | foo.txt    | is the input plain text file   |
 | foo.po     | is an empty PO file that may be translated   |
 | XX.po      | is a PO file translated into the XX language   |

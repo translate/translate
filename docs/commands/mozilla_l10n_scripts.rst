@@ -105,9 +105,12 @@ This script is used by ``build_ff3.1_langs.sh`` to build language packs in its f
 
 Usage
 -----
+::
+
   buildxpi.py -L /path/to/l10n -s /path/to/mozilla-central -o /path/to/xpi_output af
 
 Options:
+
 | ``/path/to/l10n`` | The path to the parent directory of the "af" directory containing the Afrikaans translated l10n files. |
 | ``/path/to/mozilla-central`` | The path to the Firefox sources check out from `Mercurial <http://hg.mozilla.org/mozilla-central>`_. Note that ``--mozproduct`` is not specified, because the default is ``browser``. For Thunderbird (>=3.0) it should be ``/path/to/`comm-central <http://hg.mozilla.org/comm-central>`_`` and ``--mozproduct mail`` should be specified. |
 | ``/path/to/xpi_output`` | The path to the output directory. |
@@ -129,9 +132,12 @@ A simple script to collect the en-US l10n files from a Mozilla source tree (``'c
 Usage
 -----
 
+::
+
   get_moz_enUS.py [options]
 
 Options:
+
 | ``-h``, ``--help`` | Show this help message and exit. |
 | ``-s SRCDIR``, ``--src=SRCDIR`` | The directory containing the Mozilla l10n sources. (default: ``mozilla``) |
 | ``-d DESTDIR``, ``--dest=DESTDIR`` | The destination directory to copy the en-US locale files to. (default: ``l10n``) |

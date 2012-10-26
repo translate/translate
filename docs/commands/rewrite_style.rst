@@ -11,7 +11,9 @@ podebug allows you to rewrite the output text in a number of ways.
 xxx
 ===
 
-The source text is surrounded by xxx as follows::
+The source text is surrounded by xxx as follows
+
+.. code-block:: po
 
   msgid "English"
   msgstr "xxxEnglishxxx"
@@ -23,7 +25,9 @@ This is useful when you want to identify which text is localisable.  There might
 en
 ==
 
-The source text is copied to the target::
+The source text is copied to the target
+
+.. code-block:: po
 
   msgid "English"
   msgstr "English"
@@ -35,7 +39,9 @@ In this way you can create translations that contain only the source text.  Usef
 blank
 =====
 
-This simply empties your current translations::
+This simply empties your current translations
+
+.. code-block:: po
 
   msgid "English"
   msgstr ""
@@ -49,7 +55,9 @@ bracket
 
 .. versionadded:: 1.4
 
-Places brackets around the translated text.::
+Places brackets around the translated text.
+
+.. code-block:: po
 
   msgid "English"
   msgstr "[English]"
@@ -63,7 +71,9 @@ chef
 
 .. versionadded:: 1.2
 
-Rewrites the source text using mock Swedish as popularised by the `Swedish Chef <https://en.wikipedia.org/wiki/Swedish_Chef>`_.::
+Rewrites the source text using mock Swedish as popularised by the `Swedish Chef <https://en.wikipedia.org/wiki/Swedish_Chef>`_.
+
+.. code-block:: po
 
   msgid "English"
   msgstr "Ingleesh"
@@ -77,7 +87,9 @@ flipped
 
 .. versionadded:: 1.4
 
-Change the text into a version that uses equivalent Latin characters that are upside down.::
+Change the text into a version that uses equivalent Latin characters that are upside down.
+
+.. code-block:: po
 
   msgid "English"
   msgstr "‮Ǝuƃʅısɥ"
@@ -93,11 +105,16 @@ unicode
 
 .. versionadded:: 1.2
 
-Rewrites the source text with Unicode characters that looks like the Latin characters that they are replacing.::
+Rewrites the source text with Unicode characters that looks like the Latin characters that they are replacing.
+
+.. code-block:: po
 
   msgid "English"
   msgstr "Ḗƞɠŀīşħ"
 
 This allows a translator or programmer to test a programs ability to use Unicode message strings. By using characters in the Unicode range but that are related to the plain Latin characters that they replace we ensure that the messages are still readable.
 
-Note:  Before version 1.4, the rewrite rule will also rewrite variables and XML tags, which will cause problems in some situations.  Run :doc:`pofilter` as a quick method to fix up incorrect changes, or upgrade to version 1.4.
+.. note:: Before version 1.4, the rewrite rule will also rewrite variables
+   and XML tags, which would cause problems in some situations.  Run
+   :doc:`pofilter` as a quick method to fix up incorrect changes, or upgrade
+   to version 1.4.

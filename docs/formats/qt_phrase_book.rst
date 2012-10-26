@@ -13,7 +13,9 @@ Qt Linguist allows a translator to collect common phrases into a phrase book.  T
 Conformance
 ===========
 
-There is no formal definition of the format, although it follows a simple structure::
+There is no formal definition of the format, although it follows a simple structure
+
+.. code-block:: xml
 
   <!DOCTYPE QPH><QPH>
     <phrase>

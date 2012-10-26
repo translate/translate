@@ -31,11 +31,13 @@ Usage
   pomigrate [options] <from> <to> <new templates>
 
 Where:
+
 | from           | is a directory of existing PO files  |
 | to             | is the directory where the migrated PO files will be stored  |
 | new templates  | this is the directory that contains the PO Template files    |
 
 Options:
+
 | -F, --use-fuzzy-matching | use fuzzy algorithms when merging to attempt to match strings  |
 | -C, --use-compendium     | create and use a compendium built from the migrating files |
 | -C, --use-compendium=some-compendium.po  | use an external compendium during the migration  |
@@ -62,10 +64,3 @@ msginit is used to initialise any missing PO files.
 Lastly all the files in <to> are merged using msgmerge or pot2po.  This process updates the files
 to match the layout and messages in <templates>.  Optionally, by using --use-compendium,
 a compendium of all the translations in <from> can be created to be used in the final merge process.
-
-.. _pages/toolkit/pomigrate2#bugs:
-
-Bugs
-====
-
-None known

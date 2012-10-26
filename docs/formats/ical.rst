@@ -30,6 +30,7 @@ We are not creating iCal files, simply extracting localisable information and re
 The following data is extracted:
 
 * VEVENT:
+
   * SUMMARY
   * DESCRIPTION
   * LOCATION
@@ -58,7 +59,7 @@ However since only one SUMMARY entry is allowed this does not allow you to speci
 Broken Lotus Notes
 ------------------
 
-Lotus notes creates broken iCalendar files.  They include _ (underscore) is some of the property names, [A-Z0-9\-] are the only valid chars.  Therefore, we require vobject >= v0.6.5 (but there is unfortunately no way to check for the version of vobject).  See `vobject bug 12008 <https://bugzilla.osafoundation.org/show_bug.cgi?id=12008>`_ for further details.
+Lotus notes creates broken iCalendar files.  They include _ (underscore) in some of the property names, while [A-Z0-9\\-] are the only valid chars.  Therefore, we require vobject >= v0.6.5 (but there is unfortunately no way to check for the version of vobject).  See `vobject bug 12008 <https://bugzilla.osafoundation.org/show_bug.cgi?id=12008>`_ for further details.
 
 .. _pages/toolkit/ical#development_notes:
 

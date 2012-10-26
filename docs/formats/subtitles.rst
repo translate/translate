@@ -6,7 +6,7 @@ Subtitles
 
 .. versionadded:: 1.4
 
-The translation of subtitles are supported in the toolkit with the commands :doc:`/commands/sub2po` and po2sub.
+The translation of subtitles are supported in the toolkit with the commands :doc:`suc2po </commands/sub2po>` and po2sub.
 
 The following formats are supported for subtitles:
 
@@ -26,7 +26,9 @@ Both .sub and .srt are the main formats `supported by YouTube <http://help.youtu
 Implementation details
 ======================
 
-Format support is provided `Gaupol <http://home.gna.org/gaupol/>`_ a subtitling tool.  Further enhancement of format support in Gaupol will directly benefit our conversion ability.
+Format support is provided by `Gaupol <http://home.gna.org/gaupol/>`_ a
+subtitling tool.  Further enhancement of format support in Gaupol will
+directly benefit our conversion ability.
 
 .. _pages/toolkit/subtitles#usage:
 

@@ -12,8 +12,8 @@ for your OpenOffice.org translation.
 Quick Start
 ===========
 
-- `Download the latest POT and GSI files <ftp://ftp.linux.cz/pub/localization/openoffice.org/devel/pot>`_
-- :doc:`/commands/oo2po` -P <gsi> <new-pots>
+#. `Download the latest POT and GSI files <ftp://ftp.linux.cz/pub/localization/openoffice.org/devel/pot>`_
+#. ``oo2po` -P <gsi> <new-pots>``
 
 .. _pages/toolkit/using_oo2po#detailed_description:
 

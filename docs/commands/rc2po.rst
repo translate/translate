@@ -17,10 +17,12 @@ Usage
   po2rc [options] -t <rc> <po> <rc>
 
 Where:
+
 | <rc>   | is a valid Windows Resource file or directory of those files  |
 | <po>   | is a directory of PO or POT files  |
 
 Options (rc2po):
+
 | --version           | show program's version number and exit  |
 | -h, --help          | show this help message and exit  |
 | --manpage           | output a manpage based on the help  |
@@ -36,6 +38,7 @@ Options (rc2po):
 | :doc:`--duplicates=duplicatestyle <option_duplicates>`  | what to do with duplicate strings (identical source text): merge, msgid_comment, msgctxt, keep,                        msgid_comment_all (default: 'msgctxt')  |
 
 Options (po2rc):
+
 | --version            | show program's version number and exit  |
 | -h, --help           | show this help message and exit  |
 | --manpage            | output a manpage based on the help  |
@@ -66,7 +69,7 @@ Examples
 
 This example looks at roundtrip of Windows Resource translations as well as recovery of existing translations.
 
-First we need to create a set of POT files.::
+First we need to create a set of POT files. ::
 
   rc2po -P lang/ pot/
 
@@ -96,10 +99,3 @@ Issues
 If you are recovering translation using ``rc2po -t en.rc xx.rc xx.po`` then both en.rc and xx.rc need to be in the same encoding.
 
 There might be problems with MENUs that are deaply nested.
-
-.. _pages/toolkit/rc2po#bugs:
-
-Bugs
-====
-
-None known

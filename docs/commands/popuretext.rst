@@ -13,13 +13,15 @@ If you want to use other tools to analyse the text within a translation project,
 Prerequisites
 =============
 
-  * GNU Gettext
-  * sed
+* GNU Gettext
+* sed
 
 .. _pages/toolkit/popuretext#usage:
 
 Usage
 =====
+
+::
 
   popuretext <-P pot-dir|po-dir> <file.txt> [accelerator]
 
@@ -35,17 +37,12 @@ Where:
 Examples
 ========
 
+::
+
   popuretext -P pot pot.txt '&'
 
-Extract all the source text from the *pot* directory and place it in the *pot.txt* file removing all occurrences of the ``&`` accelerator.
+Extract all the source text from the *pot* directory and place it in the *pot.txt* file removing all occurrences of the ``&`` accelerator. ::
 
   popuretext af af.txt
 
 Extract all target text from the Afrikaans files in the *af* directory, placing the extracted text in *af.txt*.  In this case we are not filtering any accelerator characters.
-
-.. _pages/toolkit/popuretext#bugs:
-
-Bugs
-====
-
-None known

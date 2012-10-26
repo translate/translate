@@ -32,15 +32,19 @@ Some tests are more important than others so we have classified them to help
 you determine which to run first.
 
 * Critical -- can break a program
+
   * :ref:`pages/toolkit/pofilter_tests#accelerators`, :ref:`pages/toolkit/pofilter_tests#escapes`, :ref:`pages/toolkit/pofilter_tests#newlines`, :ref:`pages/toolkit/pofilter_tests#nplurals`, :ref:`pages/toolkit/pofilter_tests#printf`, :ref:`pages/toolkit/pofilter_tests#tabs`, :ref:`pages/toolkit/pofilter_tests#variables`, :ref:`pages/toolkit/pofilter_tests#xmltags`, :ref:`pages/toolkit/pofilter_tests#dialogsizes`
 
 * Functional -- may confuse the user
+
   * :ref:`pages/toolkit/pofilter_tests#acronyms`, :ref:`pages/toolkit/pofilter_tests#blank`, :ref:`pages/toolkit/pofilter_tests#emails`, :ref:`pages/toolkit/pofilter_tests#filepaths`, :ref:`pages/toolkit/pofilter_tests#functions`, :ref:`pages/toolkit/pofilter_tests#gconf`, :ref:`pages/toolkit/pofilter_tests#kdecomments`, :ref:`pages/toolkit/pofilter_tests#long`, :ref:`pages/toolkit/pofilter_tests#musttranslatewords`, :ref:`pages/toolkit/pofilter_tests#notranslatewords`, :ref:`pages/toolkit/pofilter_tests#numbers`, :ref:`pages/toolkit/pofilter_tests#options`, :ref:`pages/toolkit/pofilter_tests#purepunc`, :ref:`pages/toolkit/pofilter_tests#sentencecount`, :ref:`pages/toolkit/pofilter_tests#short`, :ref:`pages/toolkit/pofilter_tests#spellcheck`, :ref:`pages/toolkit/pofilter_tests#urls`, :ref:`pages/toolkit/pofilter_tests#unchanged`
 
 * Cosmetic -- make it look better
+
   * :ref:`pages/toolkit/pofilter_tests#brackets`, :ref:`pages/toolkit/pofilter_tests#doublequoting`, :ref:`pages/toolkit/pofilter_tests#doublespacing`, :ref:`pages/toolkit/pofilter_tests#doublewords`, :ref:`pages/toolkit/pofilter_tests#endpunc`, :ref:`pages/toolkit/pofilter_tests#endwhitespace`, :ref:`pages/toolkit/pofilter_tests#puncspacing`, :ref:`pages/toolkit/pofilter_tests#simplecaps`, :ref:`pages/toolkit/pofilter_tests#simpleplurals`, :ref:`pages/toolkit/pofilter_tests#startcaps`, :ref:`pages/toolkit/pofilter_tests#singlequoting`, :ref:`pages/toolkit/pofilter_tests#startpunc`, :ref:`pages/toolkit/pofilter_tests#startwhitespace`, :ref:`pages/toolkit/pofilter_tests#validchars`
 
 * Extraction -- useful mainly for extracting certain types of string
+
   * :ref:`pages/toolkit/pofilter_tests#compendiumconflicts`, :ref:`pages/toolkit/pofilter_tests#credits`, :ref:`pages/toolkit/pofilter_tests#hassuggestion`, :ref:`pages/toolkit/pofilter_tests#isfuzzy`, :ref:`pages/toolkit/pofilter_tests#isreview`, :ref:`pages/toolkit/pofilter_tests#untranslated`
 
 .. _pages/toolkit/pofilter_tests#test_description:

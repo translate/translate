@@ -112,10 +112,10 @@ Formats of translatable documents
 * :doc:`ical`
 * `JSON <https://en.wikipedia.org/wiki/JSON>`_ (from v1.9.0)
 * `OpenDocument <https://en.wikipedia.org/wiki/OpenDocument>`_ - all ODF file types
-* :doc:`text` - plain text with blocks separated by whitespace
-* :doc:`wiki` - `DokuWiki <https://en.wikipedia.org/wiki/DokuWiki>`_
-   and `MediaWiki <https://en.wikipedia.org/wiki/MediaWiki>`_ supported
-* :doc:`subtitles` - various formats (v1.4)
+* :doc:`Text <text>` -- plain text with blocks separated by whitespace
+* :doc:`Wiki <wiki>` -- `DokuWiki <https://en.wikipedia.org/wiki/DokuWiki>`_
+  and `MediaWiki <https://en.wikipedia.org/wiki/MediaWiki>`_ supported
+* :doc:`subtitles` -- various formats (v1.4)
 
 .. _pages/toolkit/formats#machine_readable_formats:
 

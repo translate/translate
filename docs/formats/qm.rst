@@ -4,7 +4,7 @@
 Qt .qm
 ******
 
-A .qm file is a compiled Qt :doc:`ts` file.  In many ways it is similar to Gettext, in that it uses a hashing table to lookup the translated text.  In older version they store only the hash and the translation which doesn't make the format useful for recovering translated text.
+A .qm file is a compiled :doc:`Qt linguist <ts>` file.  In many ways it is similar to Gettext, in that it uses a hashing table to lookup the translated text.  In older version they store only the hash and the translation which doesn't make the format useful for recovering translated text.
 
 .. _pages/toolkit/qm#conformance:
 
@@ -21,5 +21,5 @@ TODO
 ====
 
 * Writing
-  * Hash algorithm
 
+  * Hash algorithm

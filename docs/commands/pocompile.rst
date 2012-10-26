@@ -12,6 +12,8 @@ allow a Gettext enabled computer to provide the translations for the application
 Usage
 =====
 
+::
+
   pocompile <po> <mo>
 
 Where:
@@ -38,10 +40,12 @@ Options:
 Examples
 ========
 
+::
+
   pocompile --fuzzy file.po file.mo
 
 Creates a new MO file called *file.mo* based on the translation in the PO file *file.po*.  By using the *--fuzzy*
-option we use all translations including those marked fuzzy.
+option we use all translations including those marked fuzzy. ::
 
   pocompile file.xlf file.mo
 
@@ -49,7 +53,7 @@ Create an MO file from an XLIFF file called *file.xlf* (available from version 1
 
 .. _pages/toolkit/pocompile#bugs:
 
-Bugs
+Note
 ====
 
 Gettext plurals and msgctxt are not handled before version 1.1 of the toolkit.

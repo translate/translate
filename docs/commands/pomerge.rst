@@ -16,6 +16,8 @@ Pomerge will also attempt to make as small a change as possible to the text, mak
 Usage
 =====
 
+::
+
   pomerge [options] [-t <template>] -i <input> -o <output>
 
 Where:
@@ -45,11 +47,15 @@ Options:
 Examples
 ========
 
-These examples show pomerge in action.
+These examples show pomerge in action. ::
 
   pomerge -t af -i af-check -o af
 
-Take corrections from *af-check* merge them with the templates in *af* and output into *af*.  Thus merge af-check and override entries found in *af*.  Do this only if you are using a version control system so that you can check what changes pomerge made or if you have complete and utter confidence in this tool.
+Take corrections from *af-check* merge them with the templates in *af* and
+output into *af*.  Thus merge af-check and override entries found in *af*.
+Do this only if you are using a version control system so that you can check
+what changes pomerge made or if you have complete and utter confidence in this
+tool. ::
 
   pomerge --mergeblanks=yes -t af -i af-check -o af-new
 
@@ -60,6 +66,6 @@ Merge the corrections from *af-check* with templates in *af* and output to *af-n
 Issues
 ======
 
-  * Seems to have trouble merging KDE style comments back. (Probably not relevant with newest versions any more.)
-  * Only files found in the input directory will be copied to the output. The template directory is not searched for extra files to copy to the output. Therefore it is always best to have your input directory in version control, and use the same directory as output. This will allow you to use the diff function of the version control system to double check changes made, with all the files of the input still present.
+* Seems to have trouble merging KDE style comments back. (Probably not relevant with newest versions any more.)
+* Only files found in the input directory will be copied to the output. The template directory is not searched for extra files to copy to the output. Therefore it is always best to have your input directory in version control, and use the same directory as output. This will allow you to use the diff function of the version control system to double check changes made, with all the files of the input still present.
 

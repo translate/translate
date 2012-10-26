@@ -18,10 +18,12 @@ Usage
   po2wordfast [options] --language <target> <po> <wordfast>
 
 Where:
+
 | <po>  | a PO file or directory |
 | <wordfast>  | a Wordfast translation memory file  |
 
 Options:
+
 | --version            | show program's version number and exit  |
 | -h, --help           | show this help message and exit  |
 | --manpage            | output a manpage based on the help  |

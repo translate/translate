@@ -17,10 +17,12 @@ Usage
   po2html [options] <po> <html>
 
 Where:
+
 | <html>  | is an HTML file or a directory of HTML files  |
 | <po>    | is a PO file or directory of PO files  |
 
 Options (html2po):
+
 | --version            | show program's version number and exit  |
 | -h, --help           | show this help message and exit   |
 | --manpage            | output a manpage based on the help   |
@@ -35,6 +37,7 @@ Options (html2po):
 | --duplicates=DUPLICATESTYLE   | what to do with duplicate strings (identical source text): merge (default), msgid_comment, keep, msgid_comment_all   |
 
 Options (po2html):
+
 | --version            | show program's version number and exit  |
 | -h, --help           | show this help message and exit  |
 | --manpage            | output a manpage based on the help  |

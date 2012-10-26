@@ -18,10 +18,12 @@ Usage
   poconflicts [options] <po> <conflicts>
 
 Where:
+
 * <po> -- is a directory of existing PO files or an individual PO file
 * <conflicts> -- is a directory containing one PO file for each conflict
 
 Options:
+
 | --version            | show program's version number and exit  |
 | -h, --help           | show this help message and exit  |
 | --manpage            | output a manpage based on the help  |
@@ -65,10 +67,3 @@ Now merge the changes back using pomerge::
   pomerge -t xhosa -i conflicts_tree -o xhosa
 
 This takes the corrected files from *conflicts_tree* and merge them into the files in *xhosa* using the same files as templates.
-
-.. _pages/toolkit/poconflicts#bugs:
-
-Bugs
-====
-
-None Known

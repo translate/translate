@@ -4,7 +4,7 @@
 Using csv2po
 ************
 
-:doc:`/commands/csv2po` allows you to create CSV files from PO files.  This allows you to
+:doc:`csv2po </commands/csv2po>` allows you to create CSV files from PO files.  This allows you to
 send translation work to translators who do not or cannot use PO Editors but who
 can use a Spreadsheet.
 
@@ -13,15 +13,15 @@ can use a Spreadsheet.
 Quickstart
 ==========
 
-- :doc:`/commands/pofilter` --fuzzy --review -t untranslated <po-dir> <po-filtered-dir> (this step is optional)
-- divide into sections
-- :doc:`po2csv </commands/csv2po>` <po-dir|po-filtered-dir> <csv-out>
-- edit in Excel or OpenOffice.org Calc
-- :doc:`/commands/csv2po` --charset=windows-1250 -t templates <csv-in> <po-in> (you must work against a template directory, the charset option corrects problems with characters sets)
-- :doc:`/commands/phase` - to do basic checks sort out encoding issues
-- :doc:`/commands/pomerge` --mergeblank=no -t <po-dir> <po-in> <po-dir>
-- cvs diff -u > x.diff --- check the changes
-- cvs ci --- commit changes
+#. ``pofilter --fuzzy --review -t untranslated <po-dir> <po-filtered-dir>`` (this step is optional)
+#. divide into sections
+#. ``po2csv <po-dir|po-filtered-dir> <csv-out>``
+#. edit in Excel or OpenOffice.org Calc
+#. ``csv2po --charset=windows-1250 -t templates <csv-in> <po-in>`` (you must work against a template directory, the charset option corrects problems with characters sets)
+#. ``/commands/phase`` - to do basic checks sort out encoding issues
+#. ``pomerge --mergeblank=no -t <po-dir> <po-in> <po-dir>``
+#. ``git diff`` --- check the changes
+#. ``git add`` & ``git commit`` --- commit changes
 
 .. _pages/toolkit/using_csv2po#detailed_description:
 
@@ -70,6 +70,8 @@ separate directory.
 
 Creating the CSV files
 ----------------------
+
+::
 
   po2csv <po-dir|po-filtered-dir> <csv-out>
 
@@ -143,13 +145,14 @@ the csv2po command without templates as this allows you to preserve the original
 Only run it without -t if you are dealing with a partial part of the PO that you will
 merge back using a :doc:`/commands/pomerge`.
 
-Note (1): running csv2po using the input PO files as templates give spurious
-results.  It should probably be made to work but doesn't
+.. note:: Running csv2po using the input PO files as templates give spurious
+   results.  It should probably be made to work but doesn't
 
-Note (2): you might have encoding problems with the returned files. Use the
---charset option to convert the file from another encoding (all PO files are created using UTF-8).
-Usually Windows user will be using something like WINDOWS-1250. Check the file after conversion to
-see that characters are in fact correct if not try another encoding.
+.. note:: You might have encoding problems with the returned files. Use the
+   ``--charset`` option to convert the file from another encoding (all PO 
+   files are created using UTF-8).  Usually Windows user will be using
+   something like WINDOWS-1250. Check the file after conversion to
+   see that characters are in fact correct if not try another encoding.
 
 .. _pages/toolkit/using_csv2po#checking_the_new_po_files:
 
@@ -169,12 +172,12 @@ you need to remove the "#, fuzzy" markers.
 
 This is best performed against CVS otherwise who knows what changed.
 
-::
+.. code-block:: bash
 
     po-in-dir=your-incomming-po-files
     po-dir=your-existing-po-files
 
-    for pofile in `cd $po-in-dir; find . -name "*.po"`
+    for pofile in `cd $po-in-dir; find . -name "\*.po"`
     do
            egrep -v "^#, fuzzy" < $po-dir/$pofile > $po-dir/${pofile}.unfuzzy && \
            mv $po-dir/${pofile}.unfuzzy $po-dir/$pofile
@@ -187,9 +190,7 @@ Merging PO files into the main PO files
 
 This step would not be necessary if the CSV contained the complete PO file.  It
 is only needed when the translator has been editing a subset of the whole PO
-file.
-
-::
+file. ::
 
   pomerge --mergeblank=no -t po-dir -i po-in -o po-dir
 

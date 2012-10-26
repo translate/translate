@@ -23,6 +23,7 @@ Where:
 | <po>         | is an output directory to write the restructured files to   |
 
 Options:
+
 | --version            | show program's version number and exit  |
 | -h, --help           | show this help message and exit  |
 | --manpage            | output a manpage based on the help  |
@@ -41,8 +42,3 @@ Examples
 The documentation for poconflicts has :ref:`pages/toolkit/poconflicts#examples` for the complete process using poconflict, porestructure, and pomerge.
 
 .. _pages/toolkit/porestructure#bugs:
-
-Bugs
-====
-
-None Known

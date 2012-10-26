@@ -20,15 +20,19 @@ The following other formats are also supported via the :doc:`--personality <opti
 Usage
 =====
 
+::
+
   prop2po [options] <property> <po>
   po2prop [options] -t <template> <po> <property>
 
 Where:
+
 | <property>   | is a directory containing property files or an individual property file  |
 | <po>         | is a directory containing PO files and an individual property file  |
 | <template>   | is a directory of template property files or a single template property file  |
 
 Options (prop2po):
+
 | --version            | show program's version number and exit  |
 | -h, --help           | show this help message and exit  |
 | --manpage            | output a manpage based on the help  |
@@ -45,6 +49,7 @@ Options (prop2po):
 | :doc:`--duplicates=duplicatestyle <option_duplicates>`  | what to do with duplicate strings (identical source text): merge, msgctxt (default: 'msgctxt')  |
 
 Options (po2prop):
+
 | --version            | show program's version number and exit  |
 | -h, --help           | show this help message and exit  |
 | --manpage            | output a manpage based on the help  |
@@ -86,6 +91,8 @@ Extract messages from *file.properties* and place them in *file.pot*.
 
 Creating PO files from existing work
 ------------------------------------
+
+::
 
   prop2po --duplicates=msgctxt -t reference zu zu-po
 

@@ -17,10 +17,12 @@ Usage
   po2tiki [options] <po> <tiki>
 
 Where:
+
 | <tiki>   | is a valid language.php file for TikiWiki  |
 | <po>   | is a PO file  |
 
 Options (tiki2po):
+
 | --version           | show program's version number and exit  |
 | -h, --help          | show this help message and exit  |
 | --manpage           | output a manpage based on the help  |
@@ -32,6 +34,7 @@ Options (tiki2po):
 | --include-unused | When converting, include strings in the "unused" section? |
 
 Options (po2tiki):
+
 | --version            | show program's version number and exit  |
 | -h, --help           | show this help message and exit  |
 | --manpage            | output a manpage based on the help  |
@@ -62,10 +65,3 @@ Notes
 =====
 
 * Templates are not currently supported.
-
-.. _pages/toolkit/tiki2po#bugs:
-
-Bugs
-====
-
-None known

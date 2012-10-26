@@ -17,10 +17,12 @@ Usage
   po2ini [options] -t <ini> <po> <ini>
 
 Where:
+
 | <ini>   | is a valid .ini file or directory of those files  |
 | <po>   | is a directory of PO or POT files  |
 
 Options (ini2po):
+
 | --version           | show program's version number and exit  |
 | -h, --help          | show this help message and exit  |
 | --manpage           | output a manpage based on the help  |
@@ -35,6 +37,7 @@ Options (ini2po):
 | :doc:`--duplicates=duplicatestyle <option_duplicates>`  | what to do with duplicate strings (identical source text): merge, msgctxt, (default: 'msgctxt')  |
 
 Options (po2ini):
+
 | --version            | show program's version number and exit  |
 | -h, --help           | show this help message and exit  |
 | --manpage            | output a manpage based on the help  |
@@ -53,25 +56,19 @@ Options (po2ini):
 Formats Supported
 =================
 
-INI files need to be organized into separate languages per file and in the following format:
-
-::
+INI files need to be organized into separate languages per file and in the following format::
 
     [Section]
       ; a comment
       a = a string
 
-Comment marked with the hash symbol (#) are also allowed, and the colon (:) is also accepted as key-value delimiter:
-
-::
+Comment marked with the hash symbol (#) are also allowed, and the colon (:) is also accepted as key-value delimiter::
 
     [Section]
       # another comment
       b : a string
 
-This variants in comment marks and key-value delimiters can be mixed in one single INI file:
-
-::
+This variants in comment marks and key-value delimiters can be mixed in one single INI file::
 
     [Section]
     ; a comment
@@ -83,19 +80,18 @@ This variants in comment marks and key-value delimiters can be mixed in one sing
 
 The spacing between the key-value delimiter and the key, and the between the value and the key-value delimiter is not important since the converter automatically strips the blank spaces.
 
-**Note:** a section must be present at the file beginning in order to get ini2po working properly. You may add it by hand at the file beginning.
+.. note:: A section must be present at the file beginning in order to get ini2po working properly. You may add it by hand at the file beginning.
 
-**Note:** strings marked with double quotes and/or apostrophes will carry this quotation marks to the generated .po file, so they will appear like:
+.. note:: Strings marked with double quotes and/or apostrophes will carry
+   these quotation marks to the generated .po file, so they will appear like::
 
-::
-
-    #: [Section]c
-    msgid "'other example with apostrophes'"
-    msgstr ""
-
-    #: [Section]d
-    msgid "\"example with double quotes\""
-    msgstr ""
+       #: [Section]c
+       msgid "'other example with apostrophes'"
+       msgstr ""
+       
+       #: [Section]d
+       msgid "\"example with double quotes\""
+       msgstr ""
 
 .. _pages/toolkit/ini2po#examples:
 
@@ -104,7 +100,7 @@ Examples
 
 This example looks at roundtrip of .ini translations as well as recovery of existing translations.
 
-First we need to create a set of POT files.::
+First we need to create a set of POT files. ::
 
   ini2po -P ini/ pot/
 

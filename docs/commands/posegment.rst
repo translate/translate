@@ -15,13 +15,17 @@ Posegment won't do very advanced sentence boundary detection and alignment, but 
 Usage
 =====
 
+::
+
   posegment [options] <input> <segmented>
 
 Where:
+
 | <input> | translations to be segmented   |
 | <segmented>   |  translations segmented at the sentence level   |
 
 Options:
+
 | --version            | show program's version number and exit  |
 | -h, --help           | show this help message and exit   |
 | --manpage            | output a manpage based on the help  |
@@ -42,13 +46,13 @@ Options:
 Examples
 ========
 
-You want to reuse all of your Pidgin translations in another Instant Messenger:
+You want to reuse all of your Pidgin translations in another Instant Messenger::
 
   posegment pidgin-af.po pidgin-af-segmented.po
 
 Now all of our Pidgin translation are available, segmented at a sentence level, to be used as a Translation Memory for our other translation work.
 
-You can do the same at a project level.  Here we want to segment all of our OpenOffice.org translation work, a few hundred files:
+You can do the same at a project level.  Here we want to segment all of our OpenOffice.org translation work, a few hundred files::
 
   posegment af/ af-segmented/
 
@@ -59,6 +63,6 @@ We start with all our files in ``af`` which are now duplicated in ``af-segmented
 Issues
 ======
 
-  * If the toolkit doesn't have segmentation rules for your language then it will default to English which might be incorrect.
-  * Segmentation does not guarantee reuse as your TM software needs to know how to segment when matching. If you use software that doesn't do segmentation, you can consider joining the original and the segmented files together with msgcat, to get the best of both worlds.
-  * You cannot (yet) use the tool to break a file into segments, translate, and then recreate as the segmented file does not know which parts should be joined together to recreate a file.
+* If the toolkit doesn't have segmentation rules for your language then it will default to English which might be incorrect.
+* Segmentation does not guarantee reuse as your TM software needs to know how to segment when matching. If you use software that doesn't do segmentation, you can consider joining the original and the segmented files together with msgcat, to get the best of both worlds.
+* You cannot (yet) use the tool to break a file into segments, translate, and then recreate as the segmented file does not know which parts should be joined together to recreate a file.

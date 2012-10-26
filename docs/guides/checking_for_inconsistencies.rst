@@ -9,11 +9,11 @@ now your older translations have different text to your new translations.  In th
 
 Other cases in which you can expect inconsistencies:
 
-  * Multiple translators are involved
-  * Translations are very old
-  * You prepared this set of translations with translations from multiple sources
-  * You changed terminology at some stage in the translation
-  * You did not do a formal glossary development stage
+* Multiple translators are involved
+* Translations are very old
+* You prepared this set of translations with translations from multiple sources
+* You changed terminology at some stage in the translation
+* You did not do a formal glossary development stage
 
 .. _pages/toolkit/checking_for_inconsistencies#what_we_wont_be_able_to_achieve:
 
@@ -29,8 +29,8 @@ Scenario
 
 You are translating Mozilla Firefox into Afrikaans.  The files are stored in *af*.  You have the following issues:
 
-  - Your current translator is good but took over from a team of three
-  - Terminology is well defined but not well used by the old translators
+- Your current translator is good but took over from a team of three
+- Terminology is well defined but not well used by the old translators
 
 We'll look at the translations first from the English, or source text, point of view.  Then we will look at it from the Afrikaans point of view.  The first will pick up where we have translated the same English word differently in Afrikaans ie an inconsistency.  While the second will determine if we use the same English word for different English words, possibly this will confuse a user.
 
@@ -39,19 +39,21 @@ We'll look at the translations first from the English, or source text, point of 
 Step 1: Extracting conflicting target text translations
 -------------------------------------------------------
 
+::
+
   poconflicts -I --accelerator="&" af af-conflicts
 
 From our existing translation in *af* we extract conflicts and place them in *af-conflicts*.  We are ignoring case with *-I* so that ``Save as`` is considered the same as ``Save As``.  The *--accelerator* options allows us to ignore accelerators so that ``File`` is the sane as ``&File`` which is also the same as ``Fi&le``
 
-If we browse into *af-conflicts* we will see a flat structure of words with conflicts.
+If we browse into *af-conflicts* we will see a flat structure of words with conflicts. ::
 
-  cd af-conflicts
-  ls
-  change.po         disc.po         functionality.po  letter.po          overwrite.po       restored.po    subtitle.po
-  changes.po        document.po     gb.po             library.po         page.po            restore.po     suffix.po
-  character.po      dots.po         graphic.po        light.po           pager.po           retry.po       superscript.po
-  chart.po          double.po       grayscale.po      limit.po           percent.po         return.po      supported.po
-  check.po          down.po         grid.po           line.po            pies.po            right.po       symbols.po
+  $ cd af-conflicts
+  $ ls
+  change.po         disc.po         functionality.po  letter.po          overwrite.po       restored.po
+  changes.po        document.po     gb.po             library.po         page.po            restore.po
+  character.po      dots.po         graphic.po        light.po           pager.po           retry.po 
+  chart.po          double.po       grayscale.po      limit.po           percent.po         return.po
+  check.po          down.po         grid.po           line.po            pies.po            right.po
   circle.po         drawing.po      group.po
   etc...
 
@@ -64,11 +66,11 @@ Once all fixes have been made we can merge our changes back into the original fi
 Step 2: Merging our corrections back into the original files
 ------------------------------------------------------------
 
-Our files in *af-conflicts* are in a flat structure.  We need to structure them into the hierarchy of the existing PO files.
+Our files in *af-conflicts* are in a flat structure.  We need to structure them into the hierarchy of the existing PO files. ::
 
   porestructure af-conflicts af-restructured
 
-The entries that where in the files in *af-conflicts* have been placed in *af-restrucured*, they now appear in the correct place in the directory structure and also appear in the correct file.  We are now ready to merge
+The entries that where in the files in *af-conflicts* have been placed in *af-restrucured*, they now appear in the correct place in the directory structure and also appear in the correct file.  We are now ready to merge. ::
 
   pomerge -t af -i af-restructure -o af
 
@@ -83,20 +85,20 @@ Next we look at the inverted conflict problem.
 Step 3: Extracting conflicts of meaning
 ---------------------------------------
 
-If you have used the same Afrikaans word for two different English words then you could have created a conflict of meaning.  For instance in our Xhosa translations the word ``Cima`` was used for both ``Delete`` and ``Cancel``.  Clearly this is a serious issue.  This step will allow us to find those errors and take action.
+If you have used the same Afrikaans word for two different English words then you could have created a conflict of meaning.  For instance in our Xhosa translations the word ``Cima`` was used for both ``Delete`` and ``Cancel``.  Clearly this is a serious issue.  This step will allow us to find those errors and take action. ::
 
   poconflicts -v -I --accelerator="&" af af-conflicts-invert
 
 We use the same command line as in **Step 1** but add *-v* to allow us to invert the match.  We are also now outputting to *af-conflicts-invert* to make things clear.
 
-This time the PO files that are created have Afrikaans names
+This time the PO files that are created have Afrikaans names ::
 
-  cd af-conflicts-invert
-  ls
-  dataveld.po              grys.po             lisensieooreenkoms.po  paragraaf.po        sny.po              verslag.po
-  datumgekoop.po           hallo.po            lysinhoud.po           pasmaak.po          soek.po             verstek.po
-  datum.po                 hiperboliese.po     maateenheid.po         persentasie.po      sorteer.po          verteenwoordig.po
-  deaktiveer.po            hoekbeheer.po       maatskappynaam.po      posadres.po         sorteervolgorde.po  vertikaal.po
+  $ cd af-conflicts-invert
+  $ ls
+  dataveld.po              grys.po             lisensieooreenkoms.po  paragraaf.po        sny.po
+  datumgekoop.po           hallo.po            lysinhoud.po           pasmaak.po          soek.po
+  datum.po                 hiperboliese.po     maateenheid.po         persentasie.po      sorteer.po
+  deaktiveer.po            hoekbeheer.po       maatskappynaam.po      posadres.po         sorteervolgorde.po
   etc...
 
 We edit these as usual.  You need to remember that you will see a normal PO file but that you are looking at how the translation might be confusing to a user.  If you see the same Afrikaans translation for two different English terms but there is no conflict of meaning or no alternative then leave it as is.  You will find a lot of these instances so the results are less dramatic then the results from a normal conflict analysis.

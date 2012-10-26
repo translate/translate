@@ -13,6 +13,8 @@ then be merged using :doc:`pomerge`.
 Usage
 =====
 
+::
+
   pogrep [options] <in> <out>
 
 Where:
@@ -42,6 +44,8 @@ Options:
 Example
 =======
 
+::
+
   pogrep --accelerator="_" --search msgid -I -e "software|hardware" only-zu only-zu-check
 
 Search for the words "software" or "hardware" in the msgid field.  Ignore case
@@ -49,13 +53,13 @@ Search for the words "software" or "hardware" in the msgid field.  Ignore case
 through all PO files in the directory "only-zu" and place any matches in PO
 files in the directory "only-zu-check".  This would be useful to run if you know that
 the word for software and hardware has been changed during the course of translation and
-you want to check and correct all these instances.
+you want to check and correct all these instances. ::
 
   pogrep --search=msgid -e '^\w+(\s+\w+){0,3}$' -i templates -o short-words
 
 Find all messages in the *templates* directory that have between 1 and 4 words and place them
 in *short-words*.  Use this if you want to see quick results by translating messages that
-are most likely menu entries or dialogue labels.
+are most likely menu entries or dialogue labels. ::
 
   pogrep --search=msgstr -I -e "Ifayile" zu zu-check
 
@@ -74,13 +78,6 @@ Unicode normalization
 ---------------------
 
 pogrep will normalize Unicode strings.  This allows you to search for strings that contain the same character but that are using precomposed Unicode characters or which are composed using another composition recipe.  While an individual user will in all likelihood only compose characters in one way, normalization ensures that data created in a team setting can be shared.
-
-.. _pages/toolkit/pogrep#bugs:
-
-Bugs
-====
-
-None known
 
 .. _pages/toolkit/pogrep#further_reading:
 

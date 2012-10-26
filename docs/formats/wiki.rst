@@ -4,7 +4,7 @@
 Wiki Syntax
 ***********
 
-The Translate Toolkit can manage Wiki syntax pages.  This is implemented as part of the :doc:`text` format and the conversion is supported in :doc:`/commands/txt2po`.
+The Translate Toolkit can manage Wiki syntax pages.  This is implemented as part of the :doc:`text <text>` format and the conversion is supported in :doc:`txt2po </commands/txt2po>`.
 
 Those who edit wikis will appreciate that wiki text is simply a normal text document edited using a form of wiki syntax.  Whether the final storage is a database or a flat file the part that a user edits is a simple text file.
 
@@ -17,8 +17,8 @@ Supported Wiki Formats
 
 The following is a list of the wikis supported together with a list of the items that we can process:
 
-* `docuwiki <http://wiki.splitbrain.org/wiki:dokuwiki>`_ - heading, bullet, numbered list
-* `MediaWiki <http://www.mediawiki.org/wiki/MediaWiki>`_ - heading, bullet, numbered list
+* `docuwiki <http://wiki.splitbrain.org/wiki:dokuwiki>`_ -- heading, bullet, numbered list
+* `MediaWiki <http://www.mediawiki.org/wiki/MediaWiki>`_ -- heading, bullet, numbered list
 
 .. _pages/toolkit/wiki#possible_uses:
 

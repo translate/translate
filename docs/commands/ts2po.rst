@@ -19,10 +19,12 @@ Usage
   po2ts [options] <po> <ts>
 
 Where:
+
 | <ts>  | is a Qt .ts file or directory that contains .ts files  |
 | <po>  | is a PO file or a directory of PO files  |
 
 Options (ts2po):
+
 | --version            | show program's version number and exit  |
 | -h, --help           | show this help message and exit  |
 | --manpage            | output a manpage based on the help  |
@@ -35,6 +37,7 @@ Options (ts2po):
 | -P, --pot            | output PO Templates (.pot) rather than PO files (.po)  |
 
 Options (po2ts):
+
 | --version            | show program's version number and exit   |
 | -h, --help           | show this help message and exit   |
 | --manpage            | output a manpage based on the help   |
@@ -55,12 +58,14 @@ Examples
 
   ts2po -P psi.ts psi.pot
 
-This will create a POT file called *psi.pot* from the Qt .ts file called *psi.ts*.::
+This will create a POT file called *psi.pot* from the Qt .ts file called *psi.ts*. ::
 
   po2ts af.po psi_af.ts
 
-Now take your translated PO files *af.po* and convert it into a translated Qt .ts file, *psi_af.ts*.  Note: you
-need to use the tools from the Qt toolkit to create the compiled .qm language files for the application.
+Now take your translated PO files *af.po* and convert it into a translated Qt .ts file, *psi_af.ts*.
+
+.. note:: You need to use the tools from the Qt toolkit to create the compiled
+   .qm language files for the application.
 
 .. _pages/toolkit/ts2po#bugs:
 

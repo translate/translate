@@ -23,9 +23,11 @@ Usage
   pocommentclean [--backup] <po>
 
 Where:
+
 | po           | is a directory of existing PO files that you want to clean  |
 
 Options:
+
 | -- backup  | Create a backup file for each PO file converted, .po.bak  |
 
 .. _pages/toolkit/pocommentclean#operation:

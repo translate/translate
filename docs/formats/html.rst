@@ -4,7 +4,7 @@
 HTML
 ****
 
-The Translate Toolkit is able to process HTML files using the :doc:`/commands/html2po` converter.
+The Translate Toolkit is able to process HTML files using the :doc:`html2po </commands/html2po>` converter.
 
 The HTML support is basic, so please be aware of that.
 

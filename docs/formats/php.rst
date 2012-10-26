@@ -13,7 +13,7 @@ Example
 
 The localisable string arrays appear like this:
 
-::
+.. code-block:: php
 
     <?php
     $string['name'] = 'value'
@@ -27,18 +27,22 @@ Our format support allows:
 
 * PHP escaping (both for `single <http://www.php.net/manual/en/language.types.string.php#language.types.string.syntax.single>`_ and `double <http://www.php.net/manual/en/language.types.string.php#language.types.string.syntax.double>`_ quoted strings)
 * Multiline entries
-* Various layouts of the id::
+* Various layouts of the id
 
-    $string['name']
-    $string[name]
-    $string[ 'name' ]
+  .. code-block:: php
+  
+      $string['name']
+      $string[name]
+      $string[ 'name' ]
 
-* PHP array syntax for localisation (since > 1.6.0)::
+* PHP array syntax for localisation (since > 1.6.0)
 
-    $lang = array(
-       'name' => 'value',
-       'name2' => 'value2',
-    );
+  .. code-block:: php
+
+      $lang = array(
+         'name' => 'value',
+         'name2' => 'value2',
+      );
 
 .. _pages/toolkit/php#non-conformance:
 

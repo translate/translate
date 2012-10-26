@@ -4,7 +4,12 @@
 --accelerator=ACCELERATOR
 *************************
 
-^ Marker  ^ Used by  ^
-|  &      | KDE Desktop, Mozilla (when using :doc:`moz2po <moz2po>`)  |
-|  _      | GNOME Desktop  |
-|  ~      | LibreOffice and Apache OpenOffice |
++--------------+-----------------------------------------------------------+
+| ACCELERATOR  | Used by                                                   |
++==============+===========================================================+
+|  &           | KDE Desktop, Mozilla (when using :doc:`moz2po <moz2po>`)  |
++--------------+-----------------------------------------------------------+
+|  _           | GNOME Desktop                                             |
++--------------+-----------------------------------------------------------+
+|  ~           | LibreOffice and Apache OpenOffice                         |
++--------------+-----------------------------------------------------------+

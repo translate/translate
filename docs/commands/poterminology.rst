@@ -24,10 +24,12 @@ Usage
   poterminology [options] <input> <terminology>
 
 Where:
+
 | <input> | translations to be examined for terminology   |
 | <terminology>   | extracted potential terminology   |
 
 Options:
+
 | --version            | show program's version number and exit  |
 | -h, --help           | show this help message and exit   |
 | --manpage            | output a manpage based on the help  |
@@ -114,13 +116,15 @@ Reducing output terminology with thresholding options
 
 Depending on the size and number of the source files, and the desired scope of the output terminology file, there are several thresholding filters that can be adjusted to allow fewer or more terms in the output file.  We have seen above how one (--inputs-needed) can be used to require that terms be present in multiple input files, but there are also other thresholds that can be adjusted to control the size of the output terminology file.
 
-* --inputs-needed
+--inputs-needed
+---------------
 
 This is the most flexible and powerful thresholding control.  The default value is 2, unless only one input file (not counting an --update argument) is provided, in which case the threshold is 1 to avoid filtering out all terms and generating an empty output terminology file.
 
 By copying input files and providing them multiple times as inputs, you can even achieve "weighted" thresholding, so that for example, all terms in one original input file will pass thresholding, while other files may be filtered.  A simple version of this technique was used above to incorporate translations from the Gnome terminology PO files without having it affect the terms that passed the threshold filters. 
 
-* --locs-needed
+--locs-needed
+-------------
 
 Rather than requiring that a term appear in multiple input PO or POT files, this requires that it have been present in multiple source code files, as evidenced by location comments in the PO/POT sources.
 
@@ -132,9 +136,8 @@ Not all PO/POT files contain proper location comments.  If your input files don'
 
 The setting of the --locs-needed comment has another effect, which is that location comments in the output terminology file will be limited to twice that number; a location comment indicating the number of additional locations not specified will be added instead of the omitted locations.
 
-* --fullmsg-needed
-
-* --substr-needed
+--fullmsg-needed & --substr-needed
+----------------------------------
 
 These two thresholds specify the number of different translation units (messages) in which a term must appear; they both work in the same way, but the first one applies to terms which appear as complete translation units in one or more of the source files (full message terms), and the second one to all other terms (substring terms).  Note that translations are extracted only for full message terms; poterminology cannot identify the corresponding substring in a translation.
 
