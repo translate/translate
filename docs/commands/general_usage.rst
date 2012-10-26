@@ -54,8 +54,8 @@ source2target
 
 The converters all follow this convention:
 
-* source = the format from which you are converting e.g. in :doc:`oo2po` we are converting from OpenOffice.org SDF/GSI
-* target = the format into which you are converting e.g. in :doc:`oo2po` we are converting to Gettext PO
+* source = the format from which you are converting e.g. in :doc:`oo2po <oo2po>` we are converting from OpenOffice.org SDF/GSI
+* target = the format into which you are converting e.g. in :doc:`oo2po <oo2po>` we are converting to Gettext PO
 
 .. _pages/toolkit/general_usage#getting_help:
 
