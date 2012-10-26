@@ -16,7 +16,7 @@ none
 No visual feedback, this is useful if you want to use any of the scripts as part of another script and don't
 want feedback to interfere with the operation.
 
-.. code:: bash
+.. code-block:: bash
 
     [dwayne@laptop OOo20]$ oo2po -P --progress=none en-US.sdf pot
     [dwayne@laptop OOo20]$
@@ -28,7 +28,7 @@ dots
 
 Use visual dots to represent progress.  Each dot represent a file that has been processed.
 
-.. code:: bash
+.. code-block:: bash
 
     [dwayne@laptop OOo20]$ oo2po -P --progress=dots en-US.sdf pot
     .............................................................................................
@@ -43,7 +43,7 @@ bar (default)
 
 Use a progress bar consisting of hashes (#) to show progress.
 
-.. code:: bash
+.. code-block:: bash
 
     [dwayne@laptop OOo20]$ oo2po -P --progress=bar en-US.sdf pot
     processing 227 files...
@@ -51,7 +51,7 @@ Use a progress bar consisting of hashes (#) to show progress.
 
 This is the default mode of operation, therefore this command would create the same output.
 
-.. code:: bash
+.. code-block:: bash
 
     [dwayne@laptop OOo20]$ oo2po -P en-US.sdf pot
 
@@ -62,7 +62,7 @@ verbose
 
 Combine the hash (#) progress bar form the *bar* option with the actual names of files that have been processed.
 
-.. code:: bash
+.. code-block:: bash
 
     [dwayne@laptop OOo20]$ oo2po -P --progress=verbose en-US.sdf pot
     processing 227 files...
@@ -87,7 +87,7 @@ names
 Prints out only the filenames without any other progress indicator.  This is
 a good option when outputting to a log file rather than a terminal.
 
-.. code:: bash
+.. code-block:: bash
 
     [dwayne@laptop OOo20]$ oo2po -P --progress=names en-US.sdf pot
     so3/src.oo

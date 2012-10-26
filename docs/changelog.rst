@@ -365,17 +365,17 @@ This will migrate file with a compendium built from PO files in *<old>* and will
 
 When using templates for generating translated .properties files we will now preserve the formatting around the equal sign.
 
-.. code:: properties
+.. code-block:: properties
 
   # Previously if the template had
   property     =      value
 
-.. code:: properties
+.. code-block:: properties
 
   # We output
   property=translation
 
-.. code:: properties
+.. code-block:: properties
 
   # We will now output
   property     =      translation
