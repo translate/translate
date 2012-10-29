@@ -352,7 +352,7 @@ pot2po can replace msgmerge
 
 :doc:`/commands/pot2po` has undergone major changes which means that it now respects your header entries, can resurrect obsolete messages,
 does fuzzy matching using :doc:`Levenshtein distance </commands/levenshtein_distance>` algorithm, will correctly match messages with KDE style comments and can use an external Translation Memory.  You can now use pot2po instead of Gettext's msgmerge and it can also replace :doc:`/commands/pomigrate2`.  You may still want to use pomigrate2 if there
-where file movements between versions as pot2po can still not do intelligent matching of PO and POT files, pomigrate2 has also been adapted so that it can use pot2po as it background merging tool.
+where file movements between versions as pot2po can still not do intelligent matching of PO and POT files, pomigrate2 has also been adapted so that it can use pot2po as it background merging tool. ::
 
   pomigrate2 --use-compendium --pot2po <old> <pot> <new>
 
