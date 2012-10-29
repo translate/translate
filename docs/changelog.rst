@@ -142,7 +142,7 @@ We expect this change to create a few new fuzzy entries.  There is no action req
 oo2po Help (helpcontent2) escaping fixed
 ----------------------------------------
 
-OpenOffice.org Help (helpcontent2) has notoriously contained some unreadable esacping, e.g. \\\\<tag attr=\\"value\\"\\\\>.  The escaping has been fixed and oo2po now understands helpcontent2 escaping while leaving the current GUI escape handling unaltered.
+OpenOffice.org Help (helpcontent2) has notoriously contained some unreadable esacping, e.g. ``\\\\<tag attr=\\"value\\"\\\\>``.  The escaping has been fixed and oo2po now understands helpcontent2 escaping while leaving the current GUI escape handling unaltered.
 
 If you have not translated helpcontent2 then you are unaffected by this change.  If you have translated this content then you will need to follow these instructions when upgrading.
 
@@ -399,7 +399,7 @@ formats exchange Python strings and manage their own escaping.
 
 I doing this migration we revisited some of the format migration.  We found that we
 were escaping elements in our output DTD files.  DTD's should have no escaping ie ``\n`` is
-a literal '\' followed by an 'n' not a newline.
+a literal ``\`` followed by an ``n`` not a newline.
 
 A result of this change is that older PO files will have different escaping to what
 po2moz will now expect. Probably resulting in bad output .dtd files.
@@ -460,7 +460,7 @@ This we feel will put us back at a good balance of usefulness and usability.  We
 -----------------------------------------------
 
 The main use of the .properties converter class is to translate Mozilla files, although .properties files are actually a Java standard.  The old
-Mozilla way, and still the Java way, of working with .properties files is to escape any Unicode characters using the \uNNNN convention.  Mozilla
+Mozilla way, and still the Java way, of working with .properties files is to escape any Unicode characters using the ``\uNNNN`` convention.  Mozilla
 now allows you to use Unicode in UTF-8 encoding for these files.  Thus in 0.9 of the Toolkit we now output UTF-8 encoded properties files. Bug `114 <http://bugs.locamotion.org/show_bug.cgi?id=114>`_ tracks the status of this and we hope to add a feature to prop2po to restore the correct Java convention as an option.
 
 .. _pages/toolkit/important_changes#0.8:

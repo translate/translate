@@ -250,7 +250,7 @@ kdecomments
 
 checks to ensure that no KDE style comments appear in the translation
 
-KDE style translator comments appear in PO files as "_: comment\n". New translators often translate the comment.  This test tries to identify instances where the comment has been translated.
+KDE style translator comments appear in PO files as ``"_: comment\n"``. New translators often translate the comment.  This test tries to identify instances where the comment has been translated.
 
 .. _pages/toolkit/pofilter_tests#long:
 
@@ -281,7 +281,7 @@ newlines
 
 checks whether newlines are consistent between the two strings
 
-Counts the number of \n newlines (and variants such as \r\n) and reports and error if they differ.
+Counts the number of ``\n`` newlines (and variants such as ``\r\n``) and reports and error if they differ.
 
 .. _pages/toolkit/pofilter_tests#nplurals:
 
@@ -450,7 +450,7 @@ tabs
 
 checks whether tabs are consistent between the two strings
 
-Counts the number of \t tab markers and reports an error if they differ.
+Counts the number of ``\t`` tab markers and reports an error if they differ.
 
 .. _pages/toolkit/pofilter_tests#unchanged:
 

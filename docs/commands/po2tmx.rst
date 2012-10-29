@@ -66,7 +66,7 @@ It has not been widely tested so your mileage may vary.
 TMX and PO in OmegaT
 --------------------
 
-In some tools, like OmegaT, PO files are parsed without expanding escaped sequences, even though such tools use TMX for translation memory.  Keep this in mind when using po2tmx, because po2tmx converts \n and \t to newlines and tabs in the TMX file.  If such a TMX file is used while translating PO files in OmegaT, matching will be less than 100%.
+In some tools, like OmegaT, PO files are parsed without expanding escaped sequences, even though such tools use TMX for translation memory.  Keep this in mind when using po2tmx, because po2tmx converts ``\n`` and ``\t`` to newlines and tabs in the TMX file.  If such a TMX file is used while translating PO files in OmegaT, matching will be less than 100%.
 
 In other tools, such as Swordfish, the PO comment "no-wrap" is interpreted in the same way as the equivalent function in XML, which may also lead to mismatches if TMXes from po2tmx are used.
 

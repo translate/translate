@@ -13,7 +13,7 @@ PO format
 
 Strings are quoted using double quotes. For long strings multiline quotes are done by opening and closing the quotes on each line. Usually in this case the first line is left blank. The splitting of strings over lines is transparent i.e. it does not imply line breaks in the translated strings.
 
-Escaping is done with a backslash. An escaped double quote (\") corresponds to a double quote in the original string. \n for newline, \t for tabs etc are used. Backslashes can be escaped to to give a native backslash.
+Escaping is done with a backslash. An escaped double quote (``\"``) corresponds to a double quote in the original string. ``\n`` for newline, ``\t`` for tabs etc are used. Backslashes can be escaped to to give a native backslash.
 
 See also `escaping <guide/translation/escaping>`_ in the translation guide.
 
