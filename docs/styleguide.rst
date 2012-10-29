@@ -232,15 +232,15 @@ Docstring conventions:
 Please read :pep:`257` (Docstring Conventions) for a general overview,
 the important parts though are:
 
-  - A docstring should have a brief one-line summary, ending with a
-    period.
-  - If there are more details there should be a blank line between the one-line
-    summary and the rest of the text.  Use pragraphs and formating as
-    needed.
-  - Use `reST field lists`_ to describe the input parameters and/or return types
-    as the last part of the docstring.
-  - Use proper capitalisation and punctuation.
-  - Don't restate things that would appear in parameter descriptions.
+- A docstring should have a brief one-line summary, ending with a
+  period.
+- If there are more details there should be a blank line between the one-line
+  summary and the rest of the text.  Use pragraphs and formating as
+  needed.
+- Use `reST field lists`_ to describe the input parameters and/or return types
+  as the last part of the docstring.
+- Use proper capitalisation and punctuation.
+- Don't restate things that would appear in parameter descriptions.
 
 ::
 
