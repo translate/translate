@@ -215,11 +215,12 @@ def simplercode(code):
     """This attempts to simplify the given language code by ignoring country
     codes, for example.
 
-    @see:
-      - http://www.rfc-editor.org/rfc/bcp/bcp47.txt
-      - http://www.rfc-editor.org/rfc/rfc4646.txt
-      - http://www.rfc-editor.org/rfc/rfc4647.txt
-      - http://www.w3.org/International/articles/language-tags/
+    .. seealso::
+
+       - http://www.rfc-editor.org/rfc/bcp/bcp47.txt
+       - http://www.rfc-editor.org/rfc/rfc4646.txt
+       - http://www.rfc-editor.org/rfc/rfc4647.txt
+       - http://www.w3.org/International/articles/language-tags/
     """
     if not code:
         return code
