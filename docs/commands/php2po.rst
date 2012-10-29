@@ -109,10 +109,3 @@ Once translated you can convert back as follows::
 Your translations found in the Zulu PO directory, ``po-zu``, will be converted to PHP using the files in ``lang/en`` as templates and placing your new translations in ``lang/zu``.
 
 To update your translations simply redo the POT creation step and make use of :doc:`pot2po` to bring your translation up-to-date.
-
-.. _pages/toolkit/php2po#issues:
-
-Issues
-======
-
-None known

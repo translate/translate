@@ -143,10 +143,3 @@ If you have existing translations you can recover them as follows::
   prop2po -t some.properties translations.properties translations.po
 
 This takes the default English properties file and combines it with your translate properties file and created a PO file.  You now continue translating using your PO file.
-
-.. _prop2po#bugs:
-
-Bugs
-====
-
-None known.

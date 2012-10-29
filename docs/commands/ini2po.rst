@@ -128,10 +128,3 @@ Issues
 ======
 
 We do not extract comments from .ini files.  These are sometimes needed as developers provide guidance to translators in these comments.
-
-.. _pages/toolkit/ini2po#bugs:
-
-Bugs
-====
-
-None known

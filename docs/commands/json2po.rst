@@ -80,11 +80,3 @@ Once translated you can convert back as follows::
 Your translations found in the Zulu PO directory, ``po-zu/``, will be converted to .json using the files in ``lang/`` as templates and placing your newly translated .json files in ``zu/``.
 
 To update your translations simply redo the POT creation step and make use of :doc:`pot2po` to bring your translation up-to-date.
-
-.. _pages/toolkit/json2po#bugs:
-
-Bugs
-====
-
-None known
-
