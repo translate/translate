@@ -410,17 +410,22 @@ po2moz will now expect. Probably resulting in bad output .dtd files.
 We did not make this backward compatible as the fix is relatively simple and is one
 you would have done for any migration of your PO files.
 
-::
+1. Create a new set of POT files ::
 
-    # 1. Create a new set of POT files
-    moz2po -P mozilla pot
-    # 2. Migrate your old PO files
-    pomigrate2 old new pot
-    # 3a. Fix all the fuzzy translations by editing your PO files
-    # 3b. Use pofilter to check for escaping problems and fix them
-    pofilter -t escapes new new-check
-    # Edit file in new-check in your PO editor
-    pomerge -t new -i new-check -o new-check
+     moz2po -P mozilla pot
+
+2. Migrate your old PO files ::
+
+     pomigrate2 old new pot
+
+3. Fix all the fuzzy translations by editing your PO files
+4. Use pofilter to check for escaping problems and fix them ::
+
+      pofilter -t escapes new new-check
+
+5. Edit file in new-check in your PO editor ::
+
+      pomerge -t new -i new-check -o new-check
 
 .. _pages/toolkit/important_changes#migration_to_base_class:
 
