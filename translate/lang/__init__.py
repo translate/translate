@@ -24,9 +24,9 @@ All classes inherit from the parent class called :class:`common`.
 
 The type of data includes:
 
-  - Language codes
-  - Language name
-  - Plurals
-  - Punctuation transformation
-  - etc.
+- Language codes
+- Language name
+- Plurals
+- Punctuation transformation
+- etc.
 """

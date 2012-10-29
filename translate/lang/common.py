@@ -22,37 +22,42 @@
 
 Supported features:
 
-    - language code (km, af)
-    - language name (Khmer, Afrikaans)
-    - Plurals
-        - Number of plurals (nplurals)
-        - Plural equation
-    - pofilter tests to ignore
+- language code (km, af)
+- language name (Khmer, Afrikaans)
+- Plurals
+
+  - Number of plurals (nplurals)
+  - Plural equation
+
+- pofilter tests to ignore
 
 Segmentation:
 
-    - characters
-    - words
-    - sentences
+- characters
+- words
+- sentences
 
 Punctuation:
 
-    - End of sentence
-    - Start of sentence
-    - Middle of sentence
-    - Quotes
-        - single
-        - double
-    - Valid characters
-    - Accelerator characters
-    - Special characters
-    - Direction (rtl or ltr)
+- End of sentence
+- Start of sentence
+- Middle of sentence
+- Quotes
+
+  - single
+  - double
+
+- Valid characters
+- Accelerator characters
+- Special characters
+- Direction (rtl or ltr)
 
 TODOs and Ideas for possible features:
 
-    - Language-Team information
-    - Segmentation
-        - phrases
+- Language-Team information
+- Segmentation
+
+  - phrases
 """
 
 import re
@@ -76,10 +81,11 @@ class Common(object):
     fullname = ""
     """The full (English) name of this language.
 
-       Dialect codes should have the form of
-         - Khmer
-         - Portugese (Brazil)
-         - TODO: sr_YU@Latn?
+    Dialect codes should have the form of:
+
+    - Khmer
+    - Portugese (Brazil)
+    - TODO: sr_YU@Latn?
     """
 
     nplurals = 0
