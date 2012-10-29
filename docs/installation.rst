@@ -52,11 +52,19 @@ Installing packaged versions
 
 Get the package for your system:
 
-| -setup.exe | A complete Windows installer containing all dependencies, including Python |
-| .exe  | An installer for a Windows with Python and other dependencies already installed |
-| RPM  | If you want to install easily on an RPM based system  |
-| .tar.gz  | for source based installing on Linux  |
-| .deb  | for Debian GNU/Linux (etch version) |
++------------+------------------------------------------------------------+
+| -setup.exe | A complete Windows installer containing all dependencies,  |
+|            | including Python                                           |
++------------+------------------------------------------------------------+
+| .exe       | An installer for a Windows with Python and other           |
+|            | dependencies already installed                             |
++------------+------------------------------------------------------------+
+| RPM        | If you want to install easily on an RPM based system       |
++------------+------------------------------------------------------------+
+| .tar.gz    | for source based installing on Linux                       |
++------------+------------------------------------------------------------+
+| .deb       | for Debian GNU/Linux (etch version)                        |
++------------+------------------------------------------------------------+
 
 The RPM package can be installed by using the following command::
 
