@@ -245,9 +245,12 @@ The changes will affect you as follows:
 
 #. They will only impact you when using the Toolkit tools.
 #. You manipulate your files with a tool that follows Gettext PO layout
+
    * your experience should now improve as the new PO files will align with your existing files
    * updates should now only include real content changes not layout changes
+
 #. You manipulate your files using Toolkit related tools or manual editing
+
    * your files will go through a re-layout the first time you use any of the tools
    * subsequent usage should continue as normal
    * any manipulation using Gettext tools will leave your files correctly layed out.
