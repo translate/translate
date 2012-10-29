@@ -47,6 +47,8 @@ class AndroidResourceUnit(base.TranslationUnit):
         else:
             self.xmlelement = etree.Element(self.rootNode)
             self.xmlelement.tail = '\n'
+        if source is not None:
+            self.setid(source)
         super(AndroidResourceUnit, self).__init__(source)
 
     def getid(self):
