@@ -9,10 +9,10 @@ and on the `translate-devel <mailto:translate-devel@lists.sourceforge.net>`_ mai
 
 Here are some idea of how you can contribute
 
-- :ref:`Test <developers/contributing#testing>` - help us test new candidate releases before they are released
-- :ref:`Debug <developers/contributing#debugging>` - check bug reports, create tests to highlight problems
-- :ref:`Develop <developers/contributing#developing>` - add your Python developer skills to the mix
-- :ref:`Document <developers/contributing#documenting>` - help make our docs readable, useful and complete
+- :ref:`Test <contributing#testing>` - help us test new candidate releases before they are released
+- :ref:`Debug <contributing#debugging>` - check bug reports, create tests to highlight problems
+- :ref:`Develop <contributing#developing>` - add your Python developer skills to the mix
+- :ref:`Document <contributing#documenting>` - help make our docs readable, useful and complete
 
 Below we give you more detail on these:
 
