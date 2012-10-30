@@ -36,8 +36,8 @@ def replacestrings(source, *pairs):
 
     :param source: String to on which ``pairs`` of strings are to be replaced
     :type source: String
-    :param *pairs: Strings to be matched and replaced
-    :type *pair: One or more tuples of (original, replacement)
+    :param \*pairs: Strings to be matched and replaced
+    :type \*pairs: One or more tuples of (original, replacement)
     :return: String with ``*pairs`` of strings replaced
     """
     for orig, new in pairs:
