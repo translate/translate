@@ -18,9 +18,9 @@
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, see <http://www.gnu.org/licenses/>.
 
-"""This module represents Oriya language.
+"""This module represents the Oriya language.
 
-For more information, see http://en.wikipedia.org/wiki/Oriya_language
+.. seealso:: http://en.wikipedia.org/wiki/Oriya_language
 """
 
 import re

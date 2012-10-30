@@ -18,8 +18,9 @@
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, see <http://www.gnu.org/licenses/>.
 
-"""Module to guess the language ISO code based on the 'Language-Team entry in
-the header of a Gettext PO file."""
+"""Module to guess the language ISO code based on the 'Language-Team' entry in
+the header of a Gettext PO file.
+"""
 
 import re
 

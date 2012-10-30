@@ -18,9 +18,9 @@
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, see <http://www.gnu.org/licenses/>.
 
-"""This module represents French language.
+"""This module represents the French language.
 
-For more information, see http://en.wikipedia.org/wiki/French_language
+.. seealso:: http://en.wikipedia.org/wiki/French_language
 """
 
 import re

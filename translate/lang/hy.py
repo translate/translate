@@ -18,9 +18,9 @@
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, see <http://www.gnu.org/licenses/>.
 
-"""This module represents Armenian language.
+"""This module represents the Armenian language.
 
-For more information, see http://en.wikipedia.org/wiki/Armenian_language
+.. seealso:: http://en.wikipedia.org/wiki/Armenian_language
 """
 
 import re
