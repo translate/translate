@@ -139,9 +139,12 @@ Help with Wiki syntax
 dokuwiki
 --------
 
-To retrieve the raw syntax for your dokuwiki page add '?do=export_raw' to you URL.  The following would retrieve this current page in raw dokuwiki format http://translate.sourceforge.net/wiki/toolkit/txt2po?do=export_raw::
+To retrieve the raw syntax for your dokuwiki page add '?do=export_raw' to you
+URL.  The following would retrieve the `DokuWiki home page
+<https://www.dokuwiki.org/dokuwiki>`_ in raw dokuwiki format
+https://www.dokuwiki.org/dokuwiki?do=export_raw
 
-  wget http://translate.sourceforge.net/wiki/toolkit/txt2po?do=export_raw -O txt2po.txt
+  wget https://www.dokuwiki.org/dokuwiki?do=export_raw -O txt2po.txt
   txt2po --flavour=dokuwiki -P txt2po.txt txt2po.pot
   # edit txt2po.pot
   po2txt -t txt2po.txt fr.po fr.txt
