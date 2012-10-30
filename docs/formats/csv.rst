@@ -11,9 +11,17 @@ Conformance
 ===========
 CSV files were initially used to convert from and to :doc:`po files <po>`, and therefore contained three columns as follows:
 
-* A column with the location of the original msgid (in other words, a line in a programming source file, as indicated in the #: comments of PO files).
-* The source text (or msgid)
-* The target text (or msgstr)
++------------+---------------------------------------------------------------+
+| Column     | Description                                                   |
++============+===============================================================+
+| location   | A column with the location of the original msgid (in other    |
+|            | words, a line in a programming source file, as indicated in   |
+|            | the #: comments of PO files).                                 |
++------------+---------------------------------------------------------------+
+| source     | The source text (or msgid)                                    |
++------------+---------------------------------------------------------------+
+| target     | The target text (or msgstr)                                   |
++------------+---------------------------------------------------------------+
 
 Tabs and newlines are maintained, although it is not clear how easy it is to edit these things in a spreadsheet.
 
