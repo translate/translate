@@ -68,7 +68,7 @@ You want to generate a terminology file for Pootle that will be used to provide 
 
 This results in a ``./pootle-terminology.pot`` output file with 23 terms (from "file" to "does not exist") - without any translations.
 
-The default output file can be added to a Pootle project to provide :doc:`terminology matching <pootle:features/terminology>` suggestions for that project; alternately a special Terminology project can be used and it will provide terminology suggestions for all projects that do not have a pootle-terminology.po file.
+The default output file can be added to a Pootle project to provide :ref:`terminology matching <pootle:terminology>` suggestions for that project; alternately a special Terminology project can be used and it will provide terminology suggestions for all projects that do not have a pootle-terminology.po file.
 
 Generating a terminology file containing automatically extracted translations is possible as well, by using PO files with translations for the input files::
 
