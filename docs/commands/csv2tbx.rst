@@ -91,10 +91,3 @@ Notes
 =====
 
 For conformance to the standards and to see which features are implemented, see :doc:`/formats/csv` and :doc:`/formats/tbx`.
-
-.. _pages/toolkit/csv2tbx#bugs:
-
-Bugs
-====
-
-None.
