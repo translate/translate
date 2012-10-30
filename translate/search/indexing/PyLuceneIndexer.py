@@ -506,6 +506,7 @@ class PyLuceneHits(CommonIndexer.CommonEnquire):
         :return: a set of matching entries and some statistics
         :rtype: tuple of (returned number, available number, matches)
                 "matches" is a dictionary of::
+
                     ["rank", "percent", "document", "docid"]
         """
         # check if requested results do not exist
