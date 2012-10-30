@@ -24,7 +24,7 @@ Converters
    ical2po
    ini2po
    json2po
-   web2py2po <py2web2po>
+   web2py2po
    rc2po
    symb2po
    tiki2po
