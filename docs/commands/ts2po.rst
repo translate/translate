@@ -6,7 +6,16 @@ ts2po and po2ts
 
 Convert Qt .ts localization files to Gettext .po format files using ts2po and convert the translated :doc:`/formats/po` files back to :doc:`/formats/ts` using po2ts.
 
-The Qt toolkit comes with a localization application, Qt Linguist, however you might wish to standardise on one localization tool.  ts2po allows you to standardise on the PO format and PO related tools. Note that `Virtaal <http://virtaal.org>`_ and `Pootle <http://pootle.tramslatehouse.org>`_ can work with .ts files directly without needing conversion.
+The Qt toolkit comes with a localization application, Qt Linguist, however you might wish to standardise on one localization tool.  ts2po allows you to standardise on the PO format and PO related tools.
+
+.. note:: `Virtaal <http://virtaal.org>`_ and `Pootle
+   <http://pootle.tramslatehouse.org>`_ can edit .ts files directly without
+   the need for any conversion.
+
+.. warning:: po2ts uses our older .ts support.  Thus many of the newer
+   features in .ts are not supported.  To support those features rather edit
+   directly in `Virtaal <http://virtaal.org>`_ or `Pootle
+   <http://pootle.tramslatehouse.org>`_.
 
 .. _pages/toolkit/ts2po#usage:
 
