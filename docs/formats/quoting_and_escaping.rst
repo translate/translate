@@ -22,7 +22,7 @@ Example:
 .. code-block:: po
 
   msgid ""
-  "This is a long string with a \n newline, a \" double quote, and a backslash."
+  "This is a long string with a \n newline, a \" double quote, and a \\ backslash."
   "There is no space between the . at the end of the last sentence "
   "and the T at the beginning of this one."
 
