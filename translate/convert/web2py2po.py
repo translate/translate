@@ -87,6 +87,7 @@ def main(argv=None):
     }
     parser = convert.ConvertOptionParser(formats, usetemplates=False,
                                          description=__doc__)
+    parser.add_duplicates_option()
     parser.run(argv)
 
 

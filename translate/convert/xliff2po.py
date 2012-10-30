@@ -111,4 +111,5 @@ def main(argv=None):
     formats = {"xlf": ("po", convertxliff)}
     parser = convert.ConvertOptionParser(formats, usepots=True,
                                          description=__doc__)
+    parser.add_duplicates_option()
     parser.run(argv)
