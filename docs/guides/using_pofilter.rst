@@ -14,7 +14,7 @@ Other tools that can help with quality assurance are listed :ref:`here <pages/to
 Quickstart
 ==========
 
-*Use any preferred text editor wherever vim is used.*
+*Use any preferred text editor wherever* ``vim`` *is used.*
 
 #. Select filter(s): ``pofilter -l``
 #. Run filter(s): ``pofilter -i existing_files/ -o errors/ [-t specific tests] [--excludefilter don't perform specific tests]``
