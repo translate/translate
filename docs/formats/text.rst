@@ -4,7 +4,7 @@
 Simple Text Documents
 *********************
 
-The Translate Toolkit can process simple Text files.  This is very useful for translating installation files and READMEs.  The processing of these files is performed by the :doc:`tzt2po </commands/txt2po>` converter.
+The Translate Toolkit can process simple Text files.  This is very useful for translating installation files and READMEs.  The processing of these files is performed by the :doc:`txt2po </commands/txt2po>` converter.
 
 In some cases you will need to adjust the source text for the conversion management to work well.  This is because the text file format support considered units to be space separated blocks of text.
 
