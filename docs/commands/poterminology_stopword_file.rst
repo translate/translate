@@ -47,7 +47,7 @@ Lines beginning with a '**/**' are regular expression patterns - any word that m
 
 Regular expression patterns are only checked if the word itself does not appear in the stoplist file as a word entry.  The regular expression patterns are always applied to individual words, not phrases, and must match the entire word (i.e. they are anchored both at the start and end).
 
-Use regular expressions sparingly, as evaluating them for every word in the source files can be expensive.  In addition to stoplist regular expressions, poterminology has precompiled patterns for C and Python format specifiers (e.g. %d) and XML/HTML <elements> and &entities; - these are removed before stoplist processing and it is not possible to override this. 
+Use regular expressions sparingly, as evaluating them for every word in the source files can be expensive.  In addition to stoplist regular expressions, poterminology has precompiled patterns for C and Python format specifiers (e.g. %d) and XML/HTML <elements> and &entities; - these are removed before stoplist processing and it is not possible to override this.
 
 .. _poterminology_stopword_file#stoplist_words:
 
@@ -65,7 +65,7 @@ All other lines should begin with one of the following characters, which indicat
 
 Generally '+' is only needed for exceptions to regular expression patterns, but it may also be used to override an entry in a previous stoplist if you are using multiple stoplists.
 
-Note that if a word appears multiple times in a stoplist file with different function characters preceding it, the *last entry will take precedence* over the others.  This is the only exception to the general rule that order is not important in stopword files. 
+Note that if a word appears multiple times in a stoplist file with different function characters preceding it, the *last entry will take precedence* over the others.  This is the only exception to the general rule that order is not important in stopword files.
 
 .. _poterminology_stopword_file#default_file_example:
 
@@ -77,7 +77,7 @@ Default file example
   # apply title-case folding to words before comparing with this stoplist
   !F
 
-The fold-titlecase setting is the default, even if it were not explicitly specified.  This allows capitalized words at the start of a sentence (e.g. "Who") to match a stopword "who" but allows acronyms like WHO (World Health Organization) to be included in the terminology.  If you are using poterminology with source files that contain large amounts of ALL UPPERCASE TEXT you may find the ignore-case setting to be preferable. 
+The fold-titlecase setting is the default, even if it were not explicitly specified.  This allows capitalized words at the start of a sentence (e.g. "Who") to match a stopword "who" but allows acronyms like WHO (World Health Organization) to be included in the terminology.  If you are using poterminology with source files that contain large amounts of ALL UPPERCASE TEXT you may find the ignore-case setting to be preferable.
 
 ::
 
