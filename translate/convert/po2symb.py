@@ -107,7 +107,7 @@ def convert_symbian(input_file, output_file, template_file, pot=False, duplicate
 def main(argv=None):
     from translate.convert import convert
     formats = {"po": ("r0", convert_symbian)}
-    parser = convert.ConvertOptionParser(formats, usetemplates=True, usepots=True, description=__doc__)
+    parser = convert.ConvertOptionParser(formats, usetemplates=True, description=__doc__)
     parser.add_duplicates_option()
     parser.passthrough.append("pot")
     parser.run(argv)
