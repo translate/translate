@@ -17,8 +17,11 @@ Usage
 
 Where:
 
-| <csv>  | is a CSV file  |
-| <tbx>   | is the target TBX file |
++--------+------------------------+
+| <csv>  | is a CSV file          |
++--------+------------------------+
+| <tbx>  | is the target TBX file |
++--------+------------------------+
 
 Options (csv2tbx):
 

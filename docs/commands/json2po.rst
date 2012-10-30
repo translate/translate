@@ -19,8 +19,11 @@ Usage
 
 Where:
 
-| <json>   | is a valid .json file or directory of those files  |
-| <po>   | is a directory of PO or POT files  |
++---------+---------------------------------------------------+
+| <json>  | is a valid .json file or directory of those files |
++---------+---------------------------------------------------+
+| <po>    | is a directory of PO or POT files                 |
++---------+---------------------------------------------------+
 
 Options (json2po):
 

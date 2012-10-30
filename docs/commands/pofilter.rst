@@ -21,8 +21,11 @@ Usage
 
 Where:
 
-| <in>  | the input file or directory which contains PO or XLIFF files |
-| <out>  | the output file or directory that contains PO or XLIFF files that fail the various tests  |
++-------+-------------------------------------------------------------------------------------------+
+| <in>  | the input file or directory which contains PO or XLIFF files                              |
++-------+-------------------------------------------------------------------------------------------+
+| <out> | the output file or directory that contains PO or XLIFF files that fail the various tests  |
++-------+-------------------------------------------------------------------------------------------+
 
 Options:
 

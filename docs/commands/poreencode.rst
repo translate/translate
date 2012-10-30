@@ -24,8 +24,11 @@ Usage
 
 Where:
 
-| encoding  | is the encoding you would like to convert to eg. UTF-8  |
-| PO directory  | is a directory of existing PO files  |
++--------------+-----------------------------------------------------------+
+| encoding     | is the encoding you would like to convert to eg. UTF-8    |
++--------------+-----------------------------------------------------------+
+| PO directory | is a directory of existing PO files                       |
++--------------+-----------------------------------------------------------+
 
 Its is best to backup files before the conversion or to perform it against CVS
 which prevents a potential loss of data.

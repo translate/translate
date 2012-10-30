@@ -21,8 +21,11 @@ Usage
 
 Where:
 
++--------+----------------------------------------------+
 | <csv>  | is a file or directory containing CSV files  |
-| <po>   | is a file or directory containing PO files  |
++--------+----------------------------------------------+
+| <po>   | is a file or directory containing PO files   |
++--------+----------------------------------------------+
 
 Options (csv2po):
 

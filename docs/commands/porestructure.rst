@@ -19,8 +19,11 @@ Usage
 
 Where:
 
++--------------+----------------------------------------------------------------------+
 | <conflicts>  | is a directory containing one the corrected output from poconflict   |
-| <po>         | is an output directory to write the restructured files to   |
++--------------+----------------------------------------------------------------------+
+| <po>         | is an output directory to write the restructured files to            |
++--------------+----------------------------------------------------------------------+
 
 Options:
 

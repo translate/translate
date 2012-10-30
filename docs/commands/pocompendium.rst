@@ -31,9 +31,13 @@ Usage
 
 Where:
 
-| output.po            | the name of the output PO compendium    |
-| po-directory(ies)    | one or more directories to use as input for the compendium    |
-| po-file(s)           | one or more PO files to use as input for the compendium  |
++--------------------+-------------------------------------------------------------+
+| output.po          | the name of the output PO compendium                        |
++--------------------+-------------------------------------------------------------+
+| po-directory(ies)  | one or more directories to use as input for the compendium  |
++--------------------+-------------------------------------------------------------+
+| po-file(s)         | one or more PO files to use as input for the compendium     |
++--------------------+-------------------------------------------------------------+
 
 Options:
 

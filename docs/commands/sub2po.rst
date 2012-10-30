@@ -19,10 +19,15 @@ Usage
 
 Where:
 
-| foo.srt    | is the input subtitle file   |
-| foo.po     | is an empty PO file that may be translated   |
-| XX.po      | is a PO file translated into the XX language   |
++------------+---------------------------------------------------+
+| foo.srt    | is the input subtitle file                        |
++------------+---------------------------------------------------+
+| foo.po     | is an empty PO file that may be translated        |
++------------+---------------------------------------------------+
+| XX.po      | is a PO file translated into the XX language      |
++------------+---------------------------------------------------+
 | foo-XX.srt | is the foo.srt file translated into language XX   |
++------------+---------------------------------------------------+
 
 Options (sub2po):
 

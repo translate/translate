@@ -22,9 +22,14 @@ Usage
 
 Where:
 
-| <template>  | is a set of reference PO, XLIFF, TMX files, either the originals or a set of POT files  |
-| <input>     | contains the corrected files that are to override content in <output>  |
-| <output>    | contains the files whose content will be overridden by <input>.  This can be the same directory as <template>  |
++------------+-----------------------------------------------------------------------------------------+
+| <template> | is a set of reference PO, XLIFF, TMX files, either the originals or a set of POT files  |
++------------+-----------------------------------------------------------------------------------------+
+| <input>    | contains the corrected files that are to override content in <output>                   |
++------------+-----------------------------------------------------------------------------------------+
+| <output>   | contains the files whose content will be overridden by <input>.  This can be the same   |
+|            | directory as <template>                                                                 |
++------------+-----------------------------------------------------------------------------------------+
 
 Options:
 

@@ -20,8 +20,11 @@ Usage
 
 Where:
 
++--------+--------------------------------------------------------------+
 | <php>  | is a valid PHP localisable file or directory of those files  |
-| <po>   | is a directory of PO or POT files  |
++--------+--------------------------------------------------------------+
+| <po>   | is a directory of PO or POT files                            |
++--------+--------------------------------------------------------------+
 
 Options (php2po):
 

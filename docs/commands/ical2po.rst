@@ -21,8 +21,11 @@ Usage
 
 Where:
 
-| <ical>   | is a valid .ics file or directory of those files  |
-| <po>   | is a directory of PO or POT files  |
++---------+---------------------------------------------------+
+| <ical>  | is a valid .ics file or directory of those files  |
++---------+---------------------------------------------------+
+| <po>    | is a directory of PO or POT files                 |
++---------+---------------------------------------------------+
 
 Options (ical2po):
 

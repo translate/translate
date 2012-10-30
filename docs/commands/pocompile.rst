@@ -18,8 +18,11 @@ Usage
 
 Where:
 
++-------------+------------------------------------------------+
 | <po/xliff>  | is a standard PO file, XLIFF file or directory |
-| <mo>  | is the output MO file or directory of MO files |
++-------------+------------------------------------------------+
+| <mo>        | is the output MO file or directory of MO files |
++-------------+------------------------------------------------+
 
 Options:
 

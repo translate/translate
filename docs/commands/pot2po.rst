@@ -18,8 +18,11 @@ Usage
 
 Where:
 
++--------+---------------------------------------------------------+
 | <pot>  | is a PO Template (POT) file or directory of POT files   |
-| <po>   | is a PO file or a directory of PO files  |
++--------+---------------------------------------------------------+
+| <po>   | is a PO file or a directory of PO files                 |
++--------+---------------------------------------------------------+
 
 Options:
 

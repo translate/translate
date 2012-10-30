@@ -21,9 +21,13 @@ Usage
 
 Where:
 
++-------------+-------------------------------------------------------------------------------------------------+
 | <newsource> | is the translations (preferably 100% translated) of the preferred source language (like French) |
-| <current>   | is the (optional) current English based translation in your intended target language |
-| <new>       | is the intended output file / directory |
++-------------+-------------------------------------------------------------------------------------------------+
+| <current>   | is the (optional) current English based translation in your intended target language            |
++-------------+-------------------------------------------------------------------------------------------------+
+| <new>       | is the intended output file / directory                                                         |
++-------------+-------------------------------------------------------------------------------------------------+
 
 Options:
 

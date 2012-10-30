@@ -21,8 +21,11 @@ Usage
 
 Where:
 
-| <input> | translations to be segmented   |
-| <segmented>   |  translations segmented at the sentence level   |
++--------------+-------------------------------------------------+
+| <input>      | translations to be segmented                    |
++--------------+-------------------------------------------------+
+| <segmented>  |  translations segmented at the sentence level   |
++--------------+-------------------------------------------------+
 
 Options:
 

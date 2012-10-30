@@ -21,10 +21,15 @@ Usage
 
 Where:
 
-| foo.txt    | is the input plain text file   |
-| foo.po     | is an empty PO file that may be translated   |
-| XX.po      | is a PO file translated into the XX language   |
++-------------+---------------------------------------------------+
+| foo.txt     | is the input plain text file                      |
++-------------+---------------------------------------------------+
+| foo.po      | is an empty PO file that may be translated        |
++-------------+---------------------------------------------------+
+| XX.po       | is a PO file translated into the XX language      |
++-------------+---------------------------------------------------+
 | foo-XX.txt  | is the foo.txt file translated into language XX   |
++-------------+---------------------------------------------------+
 
 Options (txt2po):
 

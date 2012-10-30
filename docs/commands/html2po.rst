@@ -19,8 +19,11 @@ Usage
 
 Where:
 
++---------+-----------------------------------------------+
 | <html>  | is an HTML file or a directory of HTML files  |
-| <po>    | is a PO file or directory of PO files  |
++---------+-----------------------------------------------+
+| <po>    | is a PO file or directory of PO files         |
++---------+-----------------------------------------------+
 
 Options (html2po):
 

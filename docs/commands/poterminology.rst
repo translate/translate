@@ -25,8 +25,11 @@ Usage
 
 Where:
 
-| <input> | translations to be examined for terminology   |
-| <terminology>   | extracted potential terminology   |
++-----------------+-----------------------------------------------+
+| <input>         | translations to be examined for terminology   |
++-----------------+-----------------------------------------------+
+| <terminology>   | extracted potential terminology               |
++-----------------+-----------------------------------------------+
 
 Options:
 

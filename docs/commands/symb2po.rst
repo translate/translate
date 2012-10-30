@@ -21,9 +21,13 @@ Usage
 
 Where:
 
++----------------------+------------------------------------------------------------------+
 | <target_lang_symb>   | is a valid Symbian translation file or directory of those files  |
++----------------------+------------------------------------------------------------------+
 | <source_lang_symb>   | is a valid Symbian translation file or directory of those files  |
-| <po>   | is a PO or POT file or a directory of PO or POT files  |
++----------------------+------------------------------------------------------------------+
+| <po>                 | is a PO or POT file or a directory of PO or POT files            |
++----------------------+------------------------------------------------------------------+
 
 Options (symb2po):
 

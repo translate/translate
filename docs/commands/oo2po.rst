@@ -30,10 +30,16 @@ or for XLIFF files::
 
 Where:
 
-| <sdf>  | is a valid OpenOffice.org GSI or SDF files  |
-| <output>  | is a directory for the resultant PO/POT/XLIFF files  |
-| <input>   | is a directory of translated PO/XLIFF files  |
-| <targetlang> | is the `ISO 639 <https://en.wikipedia.org/wiki/ISO_639>`_ language code used in the sdf file, eg. af |
++--------------+-----------------------------------------------------------+
+| <sdf>        | is a valid OpenOffice.org GSI or SDF files                |
++--------------+-----------------------------------------------------------+
+| <output>     | is a directory for the resultant PO/POT/XLIFF files       |
++--------------+-----------------------------------------------------------+
+| <input>      | is a directory of translated PO/XLIFF files               |
++--------------+-----------------------------------------------------------+
+| <targetlang> | is the `ISO 639 <https://en.wikipedia.org/wiki/ISO_639>`_ |
+|              | language code used in the sdf file, eg. af                |
++--------------+-----------------------------------------------------------+
 
 Options (oo2po and oo2xliff):
 

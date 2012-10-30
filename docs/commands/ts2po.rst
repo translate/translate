@@ -30,8 +30,11 @@ Usage
 
 Where:
 
++-------+--------------------------------------------------------+
 | <ts>  | is a Qt .ts file or directory that contains .ts files  |
-| <po>  | is a PO file or a directory of PO files  |
++-------+--------------------------------------------------------+
+| <po>  | is a PO file or a directory of PO files                |
++-------+--------------------------------------------------------+
 
 Options (ts2po):
 

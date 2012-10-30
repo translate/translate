@@ -29,10 +29,15 @@ Prerequisites
   * Linux: `WINE <http://winehq.com/>`_ to run the Nullsoft installer
 * Directory structure under the directory you want to run moz-l10n-builder in:
 
-| l10n/ | Contains Mozilla l10n files for available/needed language(s) |
-| mozilla/ | The Mozilla source tree |
-| po/ | Contains your PO files (output from moz2po) |
-| potpacks/ | Where POT-archives go |
++-----------+--------------------------------------------------------------+
+| l10n/     | Contains Mozilla l10n files for available/needed language(s) |
++-----------+--------------------------------------------------------------+
+| mozilla/  | The Mozilla source tree                                      |
++-----------+--------------------------------------------------------------+
+| po/       | Contains your PO files (output from moz2po)                  |
++-----------+--------------------------------------------------------------+
+| potpacks/ | Where POT-archives go                                        |
++-----------+--------------------------------------------------------------+
 
 Note these instructions are for building on Linux, they may work on Windows.  All software should be available through your distribution.  You will need to use Wine to install the Nullsoft installer and may need to sort out some path issues to get it to run correctly.
 

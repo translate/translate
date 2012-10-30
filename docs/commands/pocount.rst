@@ -21,8 +21,11 @@ Usage
 
 Where:
 
++------------+--------------------------------------------------------------+
 | directory  | will recurse and count all files in the specified directory  |
-| file(s)    | will count all files specified  |
++------------+--------------------------------------------------------------+
+| file(s)    | will count all files specified                               |
++------------+--------------------------------------------------------------+
 
 Options:
 

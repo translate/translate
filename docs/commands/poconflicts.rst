@@ -19,8 +19,11 @@ Usage
 
 Where:
 
-* <po> -- is a directory of existing PO files or an individual PO file
-* <conflicts> -- is a directory containing one PO file for each conflict
++-------------+---------------------------------------------------------------+
+| <po>        | is a directory of existing PO files or an individual PO file  |
++-------------+---------------------------------------------------------------+
+| <conflicts> | is a directory containing one PO file for each conflict       |
++-------------+---------------------------------------------------------------+
 
 Options:
 

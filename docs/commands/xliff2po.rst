@@ -22,8 +22,11 @@ Usage
 
 Where:
 
-| <po>     | is a PO file or directory of PO files  |
++----------+-----------------------------------------------+
+| <po>     | is a PO file or directory of PO files         |
++----------+-----------------------------------------------+
 | <xliff>  | is an XLIFF file or directory of XLIFF files  |
++----------+-----------------------------------------------+
 
 Options (xliff2po):
 

@@ -28,9 +28,13 @@ Usage
 
 Where:
 
-| <property>   | is a directory containing property files or an individual property file  |
-| <po>         | is a directory containing PO files and an individual property file  |
++--------------+-------------------------------------------------------------------------------+
+| <property>   | is a directory containing property files or an individual property file       |
++--------------+-------------------------------------------------------------------------------+
+| <po>         | is a directory containing PO files and an individual property file            |
++--------------+-------------------------------------------------------------------------------+
 | <template>   | is a directory of template property files or a single template property file  |
++--------------+-------------------------------------------------------------------------------+
 
 Options (prop2po):
 

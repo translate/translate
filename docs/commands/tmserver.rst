@@ -14,9 +14,16 @@ Usage
 
   tmserver.py --bind=HOSTNAME --port=PORT [--tmdb=TMDBFILE] [--import-translation-file=TMFILE [--import-source-lang=SOURCE_LANG] [--import-target-lang=TARGET_LANG]]
 
-TMDBFILE is the SQLite database file containing translation memory data, if not specified a new temporary database is created
+Where:
 
-TMFILE is a translation file (po, xliff, etc.) that should be imported into the database (mostly useful when no tmdb file is specified).
++----------+-------------------------------------------------------------+
+| TMDBFILE | is the SQLite database file containing translation memory   |
+|          | data, if not specified a new temporary database is created  |
++----------+-------------------------------------------------------------+
+| TMFILE   | is a translation file (po, xliff, etc.) that should be      |
+|          | imported into the database (mostly useful when no tmdb file |
+|          | is specified).                                              |
++----------+-------------------------------------------------------------+
 
 Options:
 

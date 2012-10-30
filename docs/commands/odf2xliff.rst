@@ -26,9 +26,15 @@ Usage
 
 Where:
 
-| <original_odf> | is an ODF document whose strings have to be translated  |
-| <xliff>        | is an XLIFF file |
-| <translated_odf> | is an ODF file to generate by replacing the strings in <original_odf> with the translated strings in <xliff> |
++------------------+---------------------------------------------------------+
+| <original_odf>   | is an ODF document whose strings have to be translated  |
++------------------+---------------------------------------------------------+
+| <xliff>          | is an XLIFF file                                        |
++------------------+---------------------------------------------------------+
+| <translated_odf> | is an ODF file to generate by replacing the strings in  |
++------------------+---------------------------------------------------------+
+|                  | <original_odf> with the translated strings in <xliff>   |
++------------------+---------------------------------------------------------+
 
 Options (odf2xliff):
 

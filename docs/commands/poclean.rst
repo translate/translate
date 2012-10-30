@@ -17,8 +17,11 @@ Usage
 
 Where:
 
-| <input> | is the text versions of the unclean RTF files |
-| <output>  | is the intended output file / directory |
++----------+-----------------------------------------------+
+| <input>  | is the text versions of the unclean RTF files |
++----------+-----------------------------------------------+
+| <output> | is the intended output file / directory       |
++----------+-----------------------------------------------+
 
 Options:
 

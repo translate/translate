@@ -19,8 +19,11 @@ Usage
 
 Where:
 
++---------+---------------------------------------------------+
 | <ini>   | is a valid .ini file or directory of those files  |
-| <po>   | is a directory of PO or POT files  |
++---------+---------------------------------------------------+
+| <po>    | is a directory of PO or POT files                 |
++---------+---------------------------------------------------+
 
 Options (ini2po):
 

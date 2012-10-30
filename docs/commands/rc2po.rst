@@ -19,8 +19,11 @@ Usage
 
 Where:
 
++--------+---------------------------------------------------------------+
 | <rc>   | is a valid Windows Resource file or directory of those files  |
-| <po>   | is a directory of PO or POT files  |
++--------+---------------------------------------------------------------+
+| <po>   | is a directory of PO or POT files                             |
++--------+---------------------------------------------------------------+
 
 Options (rc2po):
 

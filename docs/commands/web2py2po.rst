@@ -25,8 +25,11 @@ Usage
 
 Where:
 
-| <web2py> | is a valid web2py translation file |
-| <po>   | is a PO or POT file or a directory of PO or POT files  |
++----------+--------------------------------------------------------+
+| <web2py> | is a valid web2py translation file                     |
++----------+--------------------------------------------------------+
+| <po>     | is a PO or POT file or a directory of PO or POT files  |
++----------+--------------------------------------------------------+
 
 Options (web2py2po):
 

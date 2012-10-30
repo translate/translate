@@ -21,8 +21,12 @@ Usage
 
 Where:
 
-| <input>  | is the translation file or directory to be pretranslated   |
-| <output>   | is the translation file or a directory where the pretranslated version will be stored  |
++-----------+------------------------------------------------------------+
+| <input>   | is the translation file or directory to be pretranslated   |
++-----------+------------------------------------------------------------+
+| <output>  | is the translation file or a directory where the           |
+|           | pretranslated version will be stored                       |
++-----------+------------------------------------------------------------+
 
 Options:
 

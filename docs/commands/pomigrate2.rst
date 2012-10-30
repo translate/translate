@@ -32,9 +32,13 @@ Usage
 
 Where:
 
-| from           | is a directory of existing PO files  |
++----------------+--------------------------------------------------------------+
+| from           | is a directory of existing PO files                          |
++----------------+--------------------------------------------------------------+
 | to             | is the directory where the migrated PO files will be stored  |
++----------------+--------------------------------------------------------------+
 | new templates  | this is the directory that contains the PO Template files    |
++----------------+--------------------------------------------------------------+
 
 Options:
 

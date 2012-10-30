@@ -26,10 +26,11 @@ Usage
 
 Where:
 
-=====  ======================================================================================
-<in>   is an input directory or localisation file file
-<out>  is an output directory or localisation file, if missing output will be to standard out.
-=====  ======================================================================================
++-------+-----------------------------------------------------------------------------------------+
+| <in>  | is an input directory or localisation file file                                         |
++-------+-----------------------------------------------------------------------------------------+
+| <out> | is an output directory or localisation file, if missing output will be to standard out. |
++-------+-----------------------------------------------------------------------------------------+
 
 Options:
 

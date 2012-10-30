@@ -25,6 +25,16 @@ Usage
   moz2po [options] <xpi|dir> <po>
   po2moz [options] <po> <xpi|dir>
 
+Where:
+
++---------+---------------------------------------------------+
+| <xpi>   | is a Mozilla language pack                        |
++---------+---------------------------------------------------+
+| <dir>   | is a directory containing valid Mozilla files     |
++---------+---------------------------------------------------+
+| <po>    | is a directory of PO or POT files                 |
++---------+---------------------------------------------------+
+
 Options (moz2po):
 
 | --version            | show program's version number and exit  |

@@ -24,7 +24,9 @@ Usage
 
 Where:
 
-| po           | is a directory of existing PO files that you want to clean  |
++-----+-------------------------------------------------------------+
+| po  | is a directory of existing PO files that you want to clean  |
++-----+-------------------------------------------------------------+
 
 Options:
 

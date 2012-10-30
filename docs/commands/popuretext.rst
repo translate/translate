@@ -27,10 +27,15 @@ Usage
 
 Where:
 
-| pot-dir   | a directory containing POT files  |
-| po-dir   | a directory containing PO files  |
-| file.txt  | file that contains the output text  |
++--------------+-----------------------------------------------------------+
+| pot-dir      | a directory containing POT files                          |
++--------------+-----------------------------------------------------------+
+| po-dir       | a directory containing PO files                           |
++--------------+-----------------------------------------------------------+
+| file.txt     | file that contains the output text                        |
++--------------+-----------------------------------------------------------+
 | accelerator  | optional: accelerator marker to be removed from the text  |
++--------------+-----------------------------------------------------------+
 
 .. _popuretext#examples:
 

@@ -19,8 +19,11 @@ Usage
 
 Where:
 
-*In* and *out* are either directories or files.  *Out* will contain PO/XLIFF files
-with only those messages that match the regular expression that was you searched for.
++------------+------------------------------------------------------------------------------------+
+| <in>/<out> | *In* and *out* are either directories or files.  *Out* will contain PO/XLIFF files |
+|            | with only those messages that match the regular expression that was you searched   |
+|            | for.                                                                               |
++------------+------------------------------------------------------------------------------------+
 
 Options:
 

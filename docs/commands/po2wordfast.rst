@@ -19,8 +19,11 @@ Usage
 
 Where:
 
-| <po>  | a PO file or directory |
++-------------+-------------------------------------+
+| <po>        | a PO file or directory              |
++-------------+-------------------------------------+
 | <wordfast>  | a Wordfast translation memory file  |
++-------------+-------------------------------------+
 
 Options:
 

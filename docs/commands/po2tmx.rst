@@ -19,8 +19,11 @@ Usage
 
 Where:
 
-| <po>  | is a PO file  |
-| <tmx>  | is a TMX file  |
++-------+----------------+
+| <po>  | is a PO file   |
++-------+----------------+
+| <tmx> | is a TMX file  |
++-------+----------------+
 
 Options:
 
