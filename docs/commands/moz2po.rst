@@ -92,7 +92,7 @@ After extracting the en-US l10n files, you can run the following command::
 
   moz2po -P l10n/en-US pot
 
-This creates a set of POT (``-P``) files in the ``pot`` directory from the Mozilla files in ``l10n/en-US``.::
+This creates a set of POT (``-P``) files in the ``pot`` directory from the Mozilla files in ``l10n/en-US``. ::
 
   moz2po -P en-US.xpi pot
 
@@ -113,7 +113,7 @@ If you have existing translations (Mozilla related or other Babelzilla files) an
 
   moz2po -t en-US af-ZA af-ZA_pofiles
 
-This will combine the untranslated template en-US files from ``en-US`` combine them with your existing translations in ``af-ZA`` and output PO files to ``af-ZA_pofiles``.::
+This will combine the untranslated template en-US files from ``en-US`` combine them with your existing translations in ``af-ZA`` and output PO files to ``af-ZA_pofiles``. ::
 
   moz2po -t l10n/fr l10n/xh po/xh
 
