@@ -18,7 +18,8 @@
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, see <http://www.gnu.org/licenses/>.
 
-""" Convert PHP format .po files to Python format .po files """
+"""Convert PHP format .po files to Python format .po files.
+"""
 
 import re
 

@@ -18,10 +18,10 @@
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, see <http://www.gnu.org/licenses/>.
 
-"""Compile XLIFF and Gettext PO localization files into Gettext MO (Machine Object) files
+"""Compile XLIFF and Gettext PO localization files into Gettext MO (Machine Object) files.
 
-See: http://translate.sourceforge.net/wiki/toolkit/pocompile for examples and
-usage instructions
+See: http://docs.translatehouse.org/projects/translate-toolkit/en/latest/commands/pocompile.html
+for examples and usage instructions.
 """
 
 from translate.storage import factory

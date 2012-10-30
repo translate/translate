@@ -20,8 +20,8 @@
 
 """Segment Gettext PO, XLIFF and TMX localization files at the sentence level.
 
-See: http://translate.sourceforge.net/wiki/toolkit/posegment for examples and
-usage instructions
+See: http://docs.translatehouse.org/projects/translate-toolkit/en/latest/commands/posegment.html
+for examples and usage instructions.
 """
 
 from translate.storage import factory

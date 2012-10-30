@@ -18,13 +18,13 @@
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, see <http://www.gnu.org/licenses/>.
 
-"""Grep XLIFF, Gettext PO and TMX localization files
+"""Grep XLIFF, Gettext PO and TMX localization files.
 
 Matches are output to snippet files of the same type which can then be reviewed
-and later merged using pomerge
+and later merged using :doc:`pomerge </command/pomerge>`.
 
-See: http://translate.sourceforge.net/wiki/toolkit/pogrep for examples and
-usage instructions
+See: http://docs.translatehouse.org/projects/translate-toolkit/en/latest/commands/pogrep.html
+for examples and usage instructions.
 """
 
 import re

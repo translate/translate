@@ -18,11 +18,12 @@
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, see <http://www.gnu.org/licenses/>.
 
-"""Create string and word counts for supported localization files including:
-XLIFF, TMX, Gettex PO and MO, Qt .ts and .qm, Wordfast TM, etc
+"""Count strings and words for supported localization files.
 
-See: http://translate.sourceforge.net/wiki/toolkit/pocount for examples and
-usage instructions
+These include: XLIFF, TMX, Gettex PO and MO, Qt .ts and .qm, Wordfast TM, etc
+
+See: http://docs.translatehouse.org/projects/translate-toolkit/en/latest/commands/pocount.html
+for examples and usage instructions.
 """
 
 from optparse import OptionParser

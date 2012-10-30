@@ -20,6 +20,9 @@
 
 """Fill localization files with suggested translations based on
 translation memory and existing translations.
+
+See: http://docs.translatehouse.org/projects/translate-toolkit/en/latest/commands/pretranslate.html
+for examples and usage instructions.
 """
 
 from translate.storage import factory

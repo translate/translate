@@ -16,10 +16,10 @@
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, see <http://www.gnu.org/licenses/>.
 
-"""reads a set of .po or .pot files to produce a pootle-terminology.pot
+"""Create a terminology file by reading a set of .po or .pot files to produce a pootle-terminology.pot.
 
-See: http://translate.sourceforge.net/wiki/toolkit/poterminology for examples and
-usage instructions
+See: http://docs.translatehouse.org/projects/translate-toolkit/en/latest/commands/poterminology.html
+for examples and usage instructions.
 """
 import os
 import re

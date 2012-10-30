@@ -18,11 +18,12 @@
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, see <http://www.gnu.org/licenses/>.
 
-"""Restructure Gettxt PO files produced by poconflicts into the original
-directory tree for merging using pomerge
+"""Restructure Gettxt PO files produced by
+:doc:`poconflicts </command/poconflicts>` into the original directory tree
+for merging using :doc:`pomerge </commands/pomerge>`.
 
-See: http://translate.sourceforge.net/wiki/toolkit/porestructure for examples and
-usage instructions
+See: http://docs.translatehouse.org/projects/translate-toolkit/en/latest/commands/pomerge.html
+for examples and usage instructions.
 """
 
 import os
