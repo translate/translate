@@ -63,8 +63,8 @@ Options (po2rc):
 --psyco=MODE          use psyco to speed up the operation, modes: :doc:`none,
                       full, profile <option_psyco>`
 --charset=CHARSET    charset to use to decode the RC files (default: utf-8)
---lang=LANG  LANG entry
---sublang=SUBLANG SUBLANG entry (default: SUBLANG_DEFAULT)
+-l LANG, --lang=LANG  LANG entry
+--sublang=SUBLANG     SUBLANG entry (default: SUBLANG_DEFAULT)
 --fuzzy              use translations marked fuzzy
 --nofuzzy            don't use translations marked fuzzy (default)
 

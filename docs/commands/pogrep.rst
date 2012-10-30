@@ -39,7 +39,7 @@ Options:
 -oOUTPUT, --output=OUTPUT     write to OUTPUT in po, pot, xlf formats (XLIFF since version 1.0)
 --psyco=MODE          use psyco to speed up the operation, modes: :doc:`none,
                       full, profile <option_psyco>`
---search=SEARCHPARTS searches the given parts (source, target, notes, locations)
+--search=SEARCHPARTS  searches the given parts (source, target, notes, locations)
 -I, --ignore-case    ignore case distinctions
 -e, --regexp         use regular expression matching
 -v, --invert-match   select non-matching lines
