@@ -16,7 +16,7 @@ Using Mercurial
 
 Since Firefox 3.1 and Thunderbird 3.0, Mozilla has switched to using Mercurial for version control. See the Mozilla's `L10n on Mercurial <https://developer.mozilla.org/en/l10n_on_mercurial>`_ page for instructions on how to checkout and update your Mozilla sources and l10n files.
 
-You can use :ref:`get_moz_enUS.py </commands/mozilla_l10n_scripts#get_moz_enus.py>` to extract an en-US directory from the source tree:
+You can use :ref:`get_moz_enUS.py <mozilla_l10n_scripts#get_moz_enus.py>` to extract an en-US directory from the source tree:
 
 ::
 
