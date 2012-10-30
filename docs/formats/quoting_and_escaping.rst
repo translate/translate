@@ -17,7 +17,9 @@ Escaping is done with a backslash. An escaped double quote (``\"``) corresponds 
 
 See also `escaping <guide/translation/escaping>`_ in the translation guide.
 
-Example::
+Example:
+
+.. code-block:: po
 
   msgid ""
   "This is a long string with a \n newline, a \" double quote, and a backslash."
