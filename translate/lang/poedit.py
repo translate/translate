@@ -217,8 +217,9 @@ def isocode(language, country=None):
     """Returns a language code for the given Poedit language name.
 
     Poedit uses language and country names in the PO header entries:
-      - X-Poedit-Language
-      - X-Poedit-Country
+
+    - X-Poedit-Language
+    - X-Poedit-Country
 
     This function converts the supplied language name into the required ISO 639
     code. If needed, in the case of :data:`dialects`, the country name is used
