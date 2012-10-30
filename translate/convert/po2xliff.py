@@ -104,8 +104,12 @@ def convertpo(inputfile, outputfile, templatefile):
 
 def main(argv=None):
     from translate.convert import convert
-    formats = {"po": ("xlf", convertpo), ("po", "xlf"): ("xlf", convertpo)}
-    parser = convert.ConvertOptionParser(formats, usepots=True, usetemplates=True, description=__doc__)
+    formats = {
+        "po": ("xlf", convertpo),
+        ("po", "xlf"): ("xlf", convertpo),
+    }
+    parser = convert.ConvertOptionParser(formats, usetemplates=True,
+                                         description=__doc__)
     parser.run(argv)
 
 
