@@ -242,14 +242,12 @@ class RecursiveOptionParser(optparse.OptionParser, object):
         :type formats: Dictionary
         :param formats: The dictionary *keys* should be:
 
-                          - Single strings (or 1-tuples) containing an
-                            input format (if not *usetemplates*)
-
-                          - Tuples containing an input format and
-                            template format (if *usetemplates*)
-
-                          - Formats can be *None* to indicate what to do
-                            with standard input
+                        - Single strings (or 1-tuples) containing an
+                          input format (if not *usetemplates*)
+                        - Tuples containing an input format and
+                          template format (if *usetemplates*)
+                        - Formats can be *None* to indicate what to do
+                          with standard input
 
                         The dictionary *values* should be tuples of
                         outputformat (string) and processor method.
