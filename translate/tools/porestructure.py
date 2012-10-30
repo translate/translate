@@ -19,7 +19,7 @@
 # along with this program; if not, see <http://www.gnu.org/licenses/>.
 
 """Restructure Gettxt PO files produced by
-:doc:`poconflicts </command/poconflicts>` into the original directory tree
+:doc:`poconflicts </commands/poconflicts>` into the original directory tree
 for merging using :doc:`pomerge </commands/pomerge>`.
 
 See: http://docs.translatehouse.org/projects/translate-toolkit/en/latest/commands/pomerge.html

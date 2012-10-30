@@ -20,7 +20,7 @@
 
 """Merges XLIFF and Gettext PO localization files.
 
-Snippet file produced by e.g. :doc:`pogrep </command/pogrep>` and updated by a
+Snippet file produced by e.g. :doc:`pogrep </commands/pogrep>` and updated by a
 translator can be merged back into the original files.
 
 See: http://docs.translatehouse.org/projects/translate-toolkit/en/latest/commands/pomerge.html

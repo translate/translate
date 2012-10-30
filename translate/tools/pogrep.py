@@ -21,7 +21,7 @@
 """Grep XLIFF, Gettext PO and TMX localization files.
 
 Matches are output to snippet files of the same type which can then be reviewed
-and later merged using :doc:`pomerge </command/pomerge>`.
+and later merged using :doc:`pomerge </commands/pomerge>`.
 
 See: http://docs.translatehouse.org/projects/translate-toolkit/en/latest/commands/pogrep.html
 for examples and usage instructions.
