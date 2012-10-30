@@ -33,29 +33,29 @@ Where:
 
 Options:
 
-| --version            | show program's version number and exit  |
-| -h, --help           | show this help message and exit   |
-| --manpage            | output a manpage based on the help  |
-| :doc:`--progress=progress <option_progress>`  | show progress as: dots, none, bar, names, verbose  |
-| :doc:`--errorlevel=errorlevel <option_errorlevel>`  | show errorlevel as: none, message, exception, traceback  |
-| -i INPUT, --input=INPUT   | read from INPUT in pot, po formats  |
-| -x EXCLUDE, --exclude=EXCLUDE  | exclude names matching EXCLUDE from input paths  |
-| -o OUTPUT, --output=OUTPUT     | write to OUTPUT in po, pot formats  |
-| -u UPDATEFILE, --update=UPDATEFILE  | update terminology in UPDATEFILE |
-| :doc:`--psyco=MODE <option_psyco>`         | use psyco to speed up the operation, modes: none, full, profile  |
-| -S STOPFILE, --stopword-list=STOPFILE  | read stopword (term exclusion) list from STOPFILE (default site-packages/translate/share/stoplist-en)  |
-| -F, --fold-titlecase  | fold "Title Case" to lowercase (default)  |
-| -C, --preserve-case   | preserve all uppercase/lowercase  |
-| -I, --ignore-case     | make all terms lowercase  |
-| --accelerator=ACCELERATORS | ignores the given accelerator characters when matching (accelerator characters probably require quoting)  |
-| -t LENGTH, --term-words=LENGTH  | generate terms of up to LENGTH words (default 3)  |
-| --inputs-needed=MIN   | omit terms appearing in less than MIN input files (default 2, or 1 if only one input file)  |
-| --fullmsg-needed=MIN  | omit full message terms appearing in less than MIN different messages (default 1)  |
-| --substr-needed=MIN   | omit substring-only terms appearing in less than MIN different messages (default 2)  |
-| --locs-needed=MIN     | omit terms appearing in less than MIN different original program locations (default 2)  |
-| --sort=ORDER          | output sort order(s): frequency, dictionary, length (default is all orders in the above priority)  |
-| --source-language=LANG  | the source language code (default 'en')  |
-| -v, --invert          | invert the source and target languages for terminology  |
+--version            show program's version number and exit
+-h, --help           show this help message and exit
+--manpage            output a manpage based on the help
+:doc:`--progress=progress <option_progress>`  show progress as: dots, none, bar, names, verbose
+:doc:`--errorlevel=errorlevel <option_errorlevel>`  show errorlevel as: none, message, exception, traceback
+-i INPUT, --input=INPUT   read from INPUT in pot, po formats
+-x EXCLUDE, --exclude=EXCLUDE  exclude names matching EXCLUDE from input paths
+-o OUTPUT, --output=OUTPUT     write to OUTPUT in po, pot formats
+-u UPDATEFILE, --update=UPDATEFILE  update terminology in UPDATEFILE
+:doc:`--psyco=MODE <option_psyco>`         use psyco to speed up the operation, modes: none, full, profile
+-S STOPFILE, --stopword-list=STOPFILE  read stopword (term exclusion) list from STOPFILE (default site-packages/translate/share/stoplist-en)
+-F, --fold-titlecase  fold "Title Case" to lowercase (default)
+-C, --preserve-case   preserve all uppercase/lowercase
+-I, --ignore-case     make all terms lowercase
+--accelerator=ACCELERATORS ignores the given accelerator characters when matching (accelerator characters probably require quoting)
+-t LENGTH, --term-words=LENGTH  generate terms of up to LENGTH words (default 3)
+--inputs-needed=MIN   omit terms appearing in less than MIN input files (default 2, or 1 if only one input file)
+--fullmsg-needed=MIN  omit full message terms appearing in less than MIN different messages (default 1)
+--substr-needed=MIN   omit substring-only terms appearing in less than MIN different messages (default 2)
+--locs-needed=MIN     omit terms appearing in less than MIN different original program locations (default 2)
+--sort=ORDER          output sort order(s): frequency, dictionary, length (default is all orders in the above priority)
+--source-language=LANG  the source language code (default 'en')
+-v, --invert          invert the source and target languages for terminology
 
 .. _poterminology#examples:
 

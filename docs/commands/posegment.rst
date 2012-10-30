@@ -29,20 +29,20 @@ Where:
 
 Options:
 
-| --version            | show program's version number and exit  |
-| -h, --help           | show this help message and exit   |
-| --manpage            | output a manpage based on the help  |
-| :doc:`--progress=progress <option_progress>`  | show progress as: dots, none, bar, names, verbose  |
-| :doc:`--errorlevel=errorlevel <option_errorlevel>`  | show errorlevel as: none, message, exception, traceback  |
-| -iINPUT, --input=INPUT   | read from INPUT in pot format  |
-| -xEXCLUDE, --exclude=EXCLUDE  | exclude names matching EXCLUDE from input paths  |
-| -oOUTPUT, --output=OUTPUT     | write to OUTPUT in po, pot formats  |
-| :doc:`--psyco=MODE <option_psyco>`         | use psyco to speed up the operation, modes: none, full, profile  |
-| -P, --pot  | output PO Templates (.pot) rather than PO files (.po)  |
-| -l, --language=LANG | the target language code |
-| --source-language=LANG | the source language code (default 'en') |
-| --keepspaces | Disable automatic stripping of whitespace |
-| --only-aligned | Removes units where sentence number does not correspond |
+--version            show program's version number and exit
+-h, --help           show this help message and exit
+--manpage            output a manpage based on the help
+:doc:`--progress=progress <option_progress>`  show progress as: dots, none, bar, names, verbose
+:doc:`--errorlevel=errorlevel <option_errorlevel>`  show errorlevel as: none, message, exception, traceback
+-iINPUT, --input=INPUT   read from INPUT in pot format
+-xEXCLUDE, --exclude=EXCLUDE  exclude names matching EXCLUDE from input paths
+-oOUTPUT, --output=OUTPUT     write to OUTPUT in po, pot formats
+:doc:`--psyco=MODE <option_psyco>`         use psyco to speed up the operation, modes: none, full, profile
+-P, --pot  output PO Templates (.pot) rather than PO files (.po)
+-l, --language=LANG the target language code
+--source-language=LANG the source language code (default 'en')
+--keepspaces Disable automatic stripping of whitespace
+--only-aligned Removes units where sentence number does not correspond
 
 .. _posegment#examples:
 

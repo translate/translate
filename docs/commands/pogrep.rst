@@ -27,20 +27,20 @@ Where:
 
 Options:
 
-| --version             | show program's version number and exit  |
-| -h, --help           | show this help message and exit  |
-| --manpage            | output a manpage based on the help   |
-| :doc:`--progress=progress <option_progress>`  | show progress as: dots, none, bar, names, verbose  |
-| :doc:`--errorlevel=errorlevel <option_errorlevel>`  | show errorlevel as: none, message, exception, traceback  |
-| -iINPUT, --input=INPUT   | read from INPUT in po, pot, xlf formats (XLIFF since version 1.0) |
-| -xEXCLUDE, --exclude=EXCLUDE  | exclude names matching EXCLUDE from input paths  |
-| -oOUTPUT, --output=OUTPUT     | write to OUTPUT in po, pot, xlf formats (XLIFF since version 1.0) |
-| :doc:`--psyco=MODE <option_psyco>`        | use psyco to speed up the operation (set mode)  |
-| --search=SEARCHPARTS | searches the given parts (source, target, notes, locations)  |
-| -I, --ignore-case    | ignore case distinctions  |
-| -e, --regexp         | use regular expression matching  |
-| -v, --invert-match   | select non-matching lines  |
-| :doc:`--accelerator=accelerator <option_accelerator>`     | ignores the given accelerator when matching  |
+--version             show program's version number and exit
+-h, --help           show this help message and exit
+--manpage            output a manpage based on the help
+:doc:`--progress=progress <option_progress>`  show progress as: dots, none, bar, names, verbose
+:doc:`--errorlevel=errorlevel <option_errorlevel>`  show errorlevel as: none, message, exception, traceback
+-iINPUT, --input=INPUT   read from INPUT in po, pot, xlf formats (XLIFF since version 1.0)
+-xEXCLUDE, --exclude=EXCLUDE  exclude names matching EXCLUDE from input paths
+-oOUTPUT, --output=OUTPUT     write to OUTPUT in po, pot, xlf formats (XLIFF since version 1.0)
+:doc:`--psyco=MODE <option_psyco>`        use psyco to speed up the operation (set mode)
+--search=SEARCHPARTS searches the given parts (source, target, notes, locations)
+-I, --ignore-case    ignore case distinctions
+-e, --regexp         use regular expression matching
+-v, --invert-match   select non-matching lines
+:doc:`--accelerator=accelerator <option_accelerator>`     ignores the given accelerator when matching
 
 .. _pogrep#example:
 

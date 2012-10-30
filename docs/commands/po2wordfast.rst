@@ -27,17 +27,17 @@ Where:
 
 Options:
 
-| --version            | show program's version number and exit  |
-| -h, --help           | show this help message and exit  |
-| --manpage            | output a manpage based on the help  |
-| :doc:`--progress=progress <option_progress>`  | show progress as: dots, none, bar, names, verbose  |
-| :doc:`--errorlevel=errorlevel <option_errorlevel>`  | show errorlevel as: none, message, exception, traceback  |
-| -iINPUT, --input=INPUT   | read from INPUT in po, pot formats  |
-| -xEXCLUDE, --exclude=EXCLUDE  | exclude names matching EXCLUDE from input paths  |
-| -oOUTPUT, --output=OUTPUT     | write to OUTPUT in tmx format  |
-| :doc:`--psyco=MODE <option_psyco>`         | use psyco to speed up the operation, modes: none, full, profile  |
-| -lLANG, --language=LANG  | set target language code (e.g. af-ZA) [required]   |
-| --source-language=LANG   | set source language code (default: en)  |
+--version            show program's version number and exit
+-h, --help           show this help message and exit
+--manpage            output a manpage based on the help
+:doc:`--progress=progress <option_progress>`  show progress as: dots, none, bar, names, verbose
+:doc:`--errorlevel=errorlevel <option_errorlevel>`  show errorlevel as: none, message, exception, traceback
+-iINPUT, --input=INPUT   read from INPUT in po, pot formats
+-xEXCLUDE, --exclude=EXCLUDE  exclude names matching EXCLUDE from input paths
+-oOUTPUT, --output=OUTPUT     write to OUTPUT in tmx format
+:doc:`--psyco=MODE <option_psyco>`         use psyco to speed up the operation, modes: none, full, profile
+-lLANG, --language=LANG  set target language code (e.g. af-ZA) [required]
+--source-language=LANG   set source language code (default: en)
 
 .. _po2wordfast#examples:
 

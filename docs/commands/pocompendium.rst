@@ -41,12 +41,12 @@ Where:
 
 Options:
 
-| -v, --invert    | swap the msgid and msgstr in the input PO files   |
-| -e, --errors    | only return those msg blocks that have conflicts    |
-| -i, --ignore-case    | drops all msgstr's to lowercase    |
-| -st, -tilde, --strip-accel-amp   | remove all & style accelerator markers    |
-| -sa, -amp, --strip-accel-tilde   | remove all ~ style accelerator markers    |
-| -su, --strip-accel-under         | remove all _ style accelerator markers    |
+-v, --invert    swap the msgid and msgstr in the input PO files
+-e, --errors    only return those msg blocks that have conflicts
+-i, --ignore-case    drops all msgstr's to lowercase
+-st, -tilde, --strip-accel-amp   remove all & style accelerator markers
+-sa, -amp, --strip-accel-tilde   remove all ~ style accelerator markers
+-su, --strip-accel-under         remove all _ style accelerator markers
 
 .. _pocompendium#examples:
 

@@ -30,19 +30,19 @@ Where:
 
 Options:
 
-| --version            | show program's version number and exit  |
-| -h, --help           | show this help message and exit   |
-| --manpage            | output a manpage based on the help  |
-| :doc:`--progress=progress <option_progress>`  | show progress as: dots, none, bar, names, verbose  |
-| :doc:`--errorlevel=errorlevel <option_errorlevel>`  | show errorlevel as: none, message, exception, traceback  |
-| -iINPUT, --input=INPUT   | read from INPUT in pot format  |
-| -xEXCLUDE, --exclude=EXCLUDE  | exclude names matching EXCLUDE from input paths  |
-| -oOUTPUT, --output=OUTPUT     | write to OUTPUT in po, pot formats  |
-| -tTEMPLATE, --template=TEMPLATE   | read old translations from TEMPLATE |
-| :doc:`--psyco=MODE <option_psyco>`         | use psyco to speed up the operation, modes: none, full, profile  |
-| --tm=TM              | The file to use as translation memory when fuzzy matching     |
-| -sMIN_SIMILARITY, --similarity=MIN_SIMILARITY   | The minimum similarity for inclusion (default: 75%) |
-| --nofuzzymatching    | Disable all fuzzy matching  |
+--version            show program's version number and exit
+-h, --help           show this help message and exit
+--manpage            output a manpage based on the help
+:doc:`--progress=progress <option_progress>`  show progress as: dots, none, bar, names, verbose
+:doc:`--errorlevel=errorlevel <option_errorlevel>`  show errorlevel as: none, message, exception, traceback
+-iINPUT, --input=INPUT   read from INPUT in pot format
+-xEXCLUDE, --exclude=EXCLUDE  exclude names matching EXCLUDE from input paths
+-oOUTPUT, --output=OUTPUT     write to OUTPUT in po, pot formats
+-tTEMPLATE, --template=TEMPLATE   read old translations from TEMPLATE
+:doc:`--psyco=MODE <option_psyco>`         use psyco to speed up the operation, modes: none, full, profile
+--tm=TM              The file to use as translation memory when fuzzy matching
+-sMIN_SIMILARITY, --similarity=MIN_SIMILARITY   The minimum similarity for inclusion (default: 75%)
+--nofuzzymatching    Disable all fuzzy matching
 
 .. _pretranslate#examples:
 

@@ -33,28 +33,28 @@ Where:
 
 Options (web2py2po):
 
-| --version           | show program's version number and exit  |
-| -h, --help          | show this help message and exit  |
-| --manpage           | output a manpage based on the help  |
-| :doc:`--progress=progress <option_progress>`  | show progress as: dots, none, bar, names, verbose  |
-| :doc:`--errorlevel=errorlevel <option_errorlevel>`  | show errorlevel as: none, message, exception, traceback   |
-| -i INPUT, --input=INPUT      | read from INPUT in php format  |
-| -x EXCLUDE, --exclude=EXCLUDE  | exclude names matching EXCLUDE from input paths   |
-| -o OUTPUT, --output=OUTPUT     | write to OUTPUT in po, pot formats  |
-| :doc:`--psyco=mode <option_psyco>`  | use psyco to speed up the operation, modes: none,                        full, profile  |
+--version           show program's version number and exit
+-h, --help          show this help message and exit
+--manpage           output a manpage based on the help
+:doc:`--progress=progress <option_progress>`  show progress as: dots, none, bar, names, verbose
+:doc:`--errorlevel=errorlevel <option_errorlevel>`  show errorlevel as: none, message, exception, traceback
+-i INPUT, --input=INPUT      read from INPUT in php format
+-x EXCLUDE, --exclude=EXCLUDE  exclude names matching EXCLUDE from input paths
+-o OUTPUT, --output=OUTPUT     write to OUTPUT in po, pot formats
+:doc:`--psyco=mode <option_psyco>`  use psyco to speed up the operation, modes: none,                        full, profile
 
 Options (po2web2py):
 
-| --version            | show program's version number and exit  |
-| -h, --help           | show this help message and exit  |
-| --manpage            | output a manpage based on the help  |
-| :doc:`--progress=progress <option_progress>`  | show progress as: dots, none, bar, names, verbose  |
-| :doc:`--errorlevel=errorlevel <option_errorlevel>`    | show errorlevel as: none, message, exception, traceback  |
-| -i INPUT, --input=INPUT  | read from INPUT in po, pot formats  |
-| -x EXCLUDE, --exclude=EXCLUDE   | exclude names matching EXCLUDE from input paths  |
-| -o OUTPUT, --output=OUTPUT      | write to OUTPUT in php format  |
-| :doc:`--psyco=mode <option_psyco>`         | use psyco to speed up the operation, modes: none, full, profile  |
-| --fuzzy %%|%% --nofuzzy     | include%%|%%exclude fuzzy translations  |
+--version            show program's version number and exit
+-h, --help           show this help message and exit
+--manpage            output a manpage based on the help
+:doc:`--progress=progress <option_progress>`  show progress as: dots, none, bar, names, verbose
+:doc:`--errorlevel=errorlevel <option_errorlevel>`    show errorlevel as: none, message, exception, traceback
+-i INPUT, --input=INPUT  read from INPUT in po, pot formats
+-x EXCLUDE, --exclude=EXCLUDE   exclude names matching EXCLUDE from input paths
+-o OUTPUT, --output=OUTPUT      write to OUTPUT in php format
+:doc:`--psyco=mode <option_psyco>`         use psyco to speed up the operation, modes: none, full, profile
+--fuzzy %%%% --nofuzzy     include%%%%exclude fuzzy translations
 
 .. _py2web2po#notes:
 

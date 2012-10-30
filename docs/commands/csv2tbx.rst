@@ -25,17 +25,17 @@ Where:
 
 Options (csv2tbx):
 
-| --version            | show program's version number and exit   |
-| -h, --help           | show this help message and exit   |
-| --manpage            | output a manpage based on the help   |
-| :doc:`--progress=progress <option_progress>`  | show progress as: dots, none, bar, names, verbose   |
-| :doc:`--errorlevel=errorlevel <option_errorlevel>`   | show errorlevel as: none, message, exception, traceback   |
-| -iINPUT, --input=INPUT    | read from INPUT in csv format   |
-| -xEXCLUDE, --exclude=EXCLUDE    | exclude names matching EXCLUDE from input paths   |
-| -oOUTPUT, --output=OUTPUT   | write to OUTPUT in tbx format   |
-| :doc:`--psyco=MODE <option_psyco>`         | use psyco to speed up the operation, modes: none, full, profile   |
-| --charset=CHARSET    | set charset to decode from csv files   |
-| --columnorder=COLUMNORDER   | specify the order and position of columns (comment,source,target)   |
+--version            show program's version number and exit
+-h, --help           show this help message and exit
+--manpage            output a manpage based on the help
+:doc:`--progress=progress <option_progress>`  show progress as: dots, none, bar, names, verbose
+:doc:`--errorlevel=errorlevel <option_errorlevel>`   show errorlevel as: none, message, exception, traceback
+-iINPUT, --input=INPUT    read from INPUT in csv format
+-xEXCLUDE, --exclude=EXCLUDE    exclude names matching EXCLUDE from input paths
+-oOUTPUT, --output=OUTPUT   write to OUTPUT in tbx format
+:doc:`--psyco=MODE <option_psyco>`         use psyco to speed up the operation, modes: none, full, profile
+--charset=CHARSET    set charset to decode from csv files
+--columnorder=COLUMNORDER   specify the order and position of columns (comment,source,target)
 
 .. _csv2tbx#csv_file_layout:
 

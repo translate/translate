@@ -27,13 +27,13 @@ Where:
 
 Options:
 
-| -h, --help | show this help message and exit |
-| -d TMDBFILE, --tmdb=TMDBFILE | translation memory database |
-| -f TMFILES, --import-translation-file=TMFILE | translation file to import into the database |
-| -t TARGET_LANG, --import-target-lang=TARGET_LANG | target language of translation files |
-| -s SOURCE_LANG, --import-source-lang=SOURCE_LANG | source language of translation files |
-| -b BIND, --bind=HOSTNAME | adress to bind server to |
-| -p PORT, --port=PORT | port to listen on |
+-h, --help show this help message and exit
+-d TMDBFILE, --tmdb=TMDBFILE translation memory database
+-f TMFILES, --import-translation-file=TMFILE translation file to import into the database
+-t TARGET_LANG, --import-target-lang=TARGET_LANG target language of translation files
+-s SOURCE_LANG, --import-source-lang=SOURCE_LANG source language of translation files
+-b BIND, --bind=HOSTNAME adress to bind server to
+-p PORT, --port=PORT port to listen on
 
 .. _tmserver#testing:
 

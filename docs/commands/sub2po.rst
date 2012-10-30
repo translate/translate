@@ -31,32 +31,32 @@ Where:
 
 Options (sub2po):
 
-| --version            | show program's version number and exit   |
-| -h, --help           | show this help message and exit   |
-| --manpage            | output a manpage based on the help   |
-| :doc:`--progress=progress <option_progress>`  | show progress as: dots, none, bar, names, verbose   |
-| :doc:`--errorlevel=errorlevel <option_errorlevel>`   | show errorlevel as: none, message, exception, traceback   |
-| -iINPUT, --input=INPUT    | read from INPUT in .srt format   |
-| -xEXCLUDE, --exclude=EXCLUDE   | exclude names matching EXCLUDE from input paths   |
-| -oOUTPUT, --output=OUTPUT  | write to OUTPUT in po, pot formats   |
-| :doc:`--psyco=MODE <option_psyco>`         | use psyco to speed up the operation, modes: none, full, profile   |
-| -P, --pot            | output PO Templates (.pot) rather than PO files (.po)   |
-| :doc:`--duplicates=duplicatestyle <option_duplicates>`  | what to do with duplicate strings (identical source text): merge, msgctxt (default) |
+--version            show program's version number and exit
+-h, --help           show this help message and exit
+--manpage            output a manpage based on the help
+:doc:`--progress=progress <option_progress>`  show progress as: dots, none, bar, names, verbose
+:doc:`--errorlevel=errorlevel <option_errorlevel>`   show errorlevel as: none, message, exception, traceback
+-iINPUT, --input=INPUT    read from INPUT in .srt format
+-xEXCLUDE, --exclude=EXCLUDE   exclude names matching EXCLUDE from input paths
+-oOUTPUT, --output=OUTPUT  write to OUTPUT in po, pot formats
+:doc:`--psyco=MODE <option_psyco>`         use psyco to speed up the operation, modes: none, full, profile
+-P, --pot            output PO Templates (.pot) rather than PO files (.po)
+:doc:`--duplicates=duplicatestyle <option_duplicates>`  what to do with duplicate strings (identical source text): merge, msgctxt (default)
 
 Options (po2sub):
 
-| --version            | show program's version number and exit   |
-| -h, --help           | show this help message and exit   |
-| --manpage            | output a manpage based on the help   |
-| :doc:`--progress=progress <option_progress>`  | show progress as: dots, none, bar, names, verbose   |
-| :doc:`--errorlevel=errorlevel <option_errorlevel>`   | show errorlevel as: none, message, exception, traceback   |
-| -iINPUT, --input=INPUT    | read from INPUT in po, pot formats   |
-| -xEXCLUDE, --exclude=EXCLUDE   | exclude names matching EXCLUDE from input paths   |
-| -oOUTPUT, --output=OUTPUT   | write to OUTPUT in srt format   |
-| -tTEMPLATE, --template=TEMPLATE   | read from TEMPLATE in txt format   |
-| :doc:`--psyco=MODE <option_psyco>`         | use psyco to speed up the operation, modes: none, full, profile   |
-| --fuzzy              | use translations marked fuzzy  |
-| --nofuzzy            | don't use translations marked fuzzy (default)  |
+--version            show program's version number and exit
+-h, --help           show this help message and exit
+--manpage            output a manpage based on the help
+:doc:`--progress=progress <option_progress>`  show progress as: dots, none, bar, names, verbose
+:doc:`--errorlevel=errorlevel <option_errorlevel>`   show errorlevel as: none, message, exception, traceback
+-iINPUT, --input=INPUT    read from INPUT in po, pot formats
+-xEXCLUDE, --exclude=EXCLUDE   exclude names matching EXCLUDE from input paths
+-oOUTPUT, --output=OUTPUT   write to OUTPUT in srt format
+-tTEMPLATE, --template=TEMPLATE   read from TEMPLATE in txt format
+:doc:`--psyco=MODE <option_psyco>`         use psyco to speed up the operation, modes: none, full, profile
+--fuzzy              use translations marked fuzzy
+--nofuzzy            don't use translations marked fuzzy (default)
 
 .. _sub2po#examples:
 

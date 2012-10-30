@@ -30,7 +30,7 @@ Where:
 
 Options:
 
-| -- backup  | Create a backup file for each PO file converted, .po.bak  |
+--backup  Create a backup file for each PO file converted, .po.bak
 
 .. _pocommentclean#operation:
 

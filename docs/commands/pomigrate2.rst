@@ -42,13 +42,13 @@ Where:
 
 Options:
 
-| -F, --use-fuzzy-matching | use fuzzy algorithms when merging to attempt to match strings  |
-| -C, --use-compendium     | create and use a compendium built from the migrating files |
-| -C, --use-compendium=some-compendium.po  | use an external compendium during the migration  |
-| --no-wrap                | do not wrap long lines |
-| --locale                 | set locale for newly born files  |
-| -q, --quiet              | suppress most output   |
-| -p, --pot2po             | use pot2po instead of msgmerge to migrate   |
+-F, --use-fuzzy-matching use fuzzy algorithms when merging to attempt to match strings
+-C, --use-compendium     create and use a compendium built from the migrating files
+-C, --use-compendium=some-compendium.po  use an external compendium during the migration
+--no-wrap                do not wrap long lines
+--locale                 set locale for newly born files
+-q, --quiet              suppress most output
+-p, --pot2po             use pot2po instead of msgmerge to migrate
 
 .. _pomigrate2#operation:
 

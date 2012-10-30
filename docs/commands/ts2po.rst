@@ -38,29 +38,29 @@ Where:
 
 Options (ts2po):
 
-| --version            | show program's version number and exit  |
-| -h, --help           | show this help message and exit  |
-| --manpage            | output a manpage based on the help  |
-| :doc:`--progress=progress <option_progress>`  | show progress as: dots, none, bar, names, verbose  |
-| :doc:`--errorlevel=errorlevel <option_errorlevel>`  | show errorlevel as: none, message, exception, traceback  |
-| -iINPUT, --input=INPUT   | read from INPUT in ts format  |
-| -xEXCLUDE, --exclude=EXCLUDE  | exclude names matching EXCLUDE from input paths  |
-| -oOUTPUT, --output=OUTPUT   | write to OUTPUT in po, pot formats  |
-| :doc:`--psyco=MODE <option_psyco>`         | use psyco to speed up the operation, modes: none, full, profile  |
-| -P, --pot            | output PO Templates (.pot) rather than PO files (.po)  |
+--version            show program's version number and exit
+-h, --help           show this help message and exit
+--manpage            output a manpage based on the help
+:doc:`--progress=progress <option_progress>`  show progress as: dots, none, bar, names, verbose
+:doc:`--errorlevel=errorlevel <option_errorlevel>`  show errorlevel as: none, message, exception, traceback
+-iINPUT, --input=INPUT   read from INPUT in ts format
+-xEXCLUDE, --exclude=EXCLUDE  exclude names matching EXCLUDE from input paths
+-oOUTPUT, --output=OUTPUT   write to OUTPUT in po, pot formats
+:doc:`--psyco=MODE <option_psyco>`         use psyco to speed up the operation, modes: none, full, profile
+-P, --pot            output PO Templates (.pot) rather than PO files (.po)
 
 Options (po2ts):
 
-| --version            | show program's version number and exit   |
-| -h, --help           | show this help message and exit   |
-| --manpage            | output a manpage based on the help   |
-| :doc:`--progress=progress <option_progress>`  | show progress as: dots, none, bar, names, verbose   |
-| :doc:`--errorlevel=errorlevel <option_errorlevel>`   | show errorlevel as: none, message, exception, traceback   |
-| -iINPUT, --input=INPUT    | read from INPUT in po, pot formats   |
-| -xEXCLUDE, --exclude=EXCLUDE   | exclude names matching EXCLUDE from input paths   |
-| -oOUTPUT, --output=OUTPUT  | write to OUTPUT in ts format   |
-| -tTEMPLATE, --template=TEMPLATE   | read from TEMPLATE in ts format   |
-| :doc:`--psyco=MODE <option_psyco>`         | use psyco to speed up the operation, modes: none, full, profile  |
+--version            show program's version number and exit
+-h, --help           show this help message and exit
+--manpage            output a manpage based on the help
+:doc:`--progress=progress <option_progress>`  show progress as: dots, none, bar, names, verbose
+:doc:`--errorlevel=errorlevel <option_errorlevel>`   show errorlevel as: none, message, exception, traceback
+-iINPUT, --input=INPUT    read from INPUT in po, pot formats
+-xEXCLUDE, --exclude=EXCLUDE   exclude names matching EXCLUDE from input paths
+-oOUTPUT, --output=OUTPUT  write to OUTPUT in ts format
+-tTEMPLATE, --template=TEMPLATE   read from TEMPLATE in ts format
+:doc:`--psyco=MODE <option_psyco>`         use psyco to speed up the operation, modes: none, full, profile
 
 .. _ts2po#examples:
 

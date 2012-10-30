@@ -27,18 +27,18 @@ Where:
 
 Options:
 
-| --version            | show program's version number and exit  |
-| -h, --help           | show this help message and exit  |
-| --manpage            | output a manpage based on the help  |
-| :doc:`--progress=progress <option_progress>`  | show progress as: dots, none, bar, names, verbose  |
-| :doc:`--errorlevel=errorlevel <option_errorlevel>`  | show errorlevel as: none, message, exception, traceback  |
-| -iINPUT, --input=INPUT   | read from INPUT in po format  |
-| -xEXCLUDE, --exclude=EXCLUDE  | exclude names matching EXCLUDE from input paths  |
-| -oOUTPUT, --output=OUTPUT  | write to OUTPUT in po format  |
-| :doc:`--psyco=MODE <option_psyco>`         | use psyco to speed up the operation, modes: none, full, profile  |
-| -I, --ignore-case    | ignore case distinctions  |
-| -v, --invert         | invert the conflicts thus extracting conflicting destination words  |
-| :doc:`--accelerator=ACCELERATORS <option_accelerator>`  | ignores the given accelerator characters when matching  |
+--version            show program's version number and exit
+-h, --help           show this help message and exit
+--manpage            output a manpage based on the help
+:doc:`--progress=progress <option_progress>`  show progress as: dots, none, bar, names, verbose
+:doc:`--errorlevel=errorlevel <option_errorlevel>`  show errorlevel as: none, message, exception, traceback
+-iINPUT, --input=INPUT   read from INPUT in po format
+-xEXCLUDE, --exclude=EXCLUDE  exclude names matching EXCLUDE from input paths
+-oOUTPUT, --output=OUTPUT  write to OUTPUT in po format
+:doc:`--psyco=MODE <option_psyco>`         use psyco to speed up the operation, modes: none, full, profile
+-I, --ignore-case    ignore case distinctions
+-v, --invert         invert the conflicts thus extracting conflicting destination words
+:doc:`--accelerator=ACCELERATORS <option_accelerator>`  ignores the given accelerator characters when matching
 
 .. _poconflicts#examples:
 
