@@ -96,7 +96,9 @@ The spacing between the key-value delimiter and the key, and the between the val
 .. note:: A section must be present at the file beginning in order to get ini2po working properly. You may add it by hand at the file beginning.
 
 .. note:: Strings marked with double quotes and/or apostrophes will carry
-   these quotation marks to the generated .po file, so they will appear like::
+   these quotation marks to the generated .po file, so they will appear like:
+
+   .. code-block:: po
 
        #: [Section]c
        msgid "'other example with apostrophes'"
