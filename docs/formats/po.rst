@@ -3,9 +3,10 @@
 
 PO Files
 ********
-PO files use the file format of the Gettext tools. See http://www.gnu.org/software/gettext/
+PO files use the file format of the Gettext tools.
 
-For information on KDE style PO files, see http://public.planetmirror.com/pub/kde/devel/gettext-kde/
+.. seealso:: http://www.gnu.org/software/gettext/ and
+   `KDE style PO files <http://public.planetmirror.com/pub/kde/devel/gettext-kde/>`_
 
 .. _pages/toolkit/po#supported_features:
 
