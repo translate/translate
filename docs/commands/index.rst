@@ -67,7 +67,7 @@ that will make the converters much easier to use and understand.
 * :doc:`ical2po <ical2po>` - iCalendar file converter
 * :doc:`ini2po <ini2po>` - Windows INI file converter
 * :doc:`json2po <json2po>` - JSON file converter
-* :doc:`web2py2po <py2web2po>` - web2py translation to PO converter
+* :doc:`web2py2po` - web2py translation to PO converter
 * :doc:`rc2po <rc2po>` - Windows Resource .rc (C++ Resource Compiler) converter
 * :doc:`symb2po <symb2po>` - Symbian-style translation to PO converter
 * :doc:`tiki2po <tiki2po>` - `TikiWiki <http://tikiwiki.org/>`_ language.php converter
