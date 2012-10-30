@@ -86,7 +86,7 @@ Examples
 Creating POT files
 ------------------
 
-See :doc:`this page </guides/creating_mozilla_pot_files>` for more information on creating Mozilla POT files.
+.. seealso:: :doc:`Creating Mozilla POT files </guides/creating_mozilla_pot_files>`.
 
 After extracting the en-US l10n files, you can run the following command::
 
