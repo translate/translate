@@ -76,14 +76,4 @@ Also know as KDE style comments as they are used by KDE for message disambiguati
 Unsupported Features
 ====================
 
-.. _pages/toolkit/po#alternate_language:
-
-Alternate language
-------------------
-
-.. code-block:: po
-
-  msgid "English"
-  msgid[af] "Engels"
-
-(This was proposed but not yet accepted in a released version of Gettext.)
+None
