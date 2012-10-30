@@ -52,7 +52,7 @@ Options:
 -P, --pot              output PO Templates (.pot) rather than PO files (.po)
 -fFORMAT, --format=FORMAT     specify format string
 --rewrite=STYLE        the translation rewrite style: :doc:`xxx, en, blank,
-                       chef  (v1.2), unicode (v1.2) <options_rewrite>`
+                       chef  (v1.2), unicode (v1.2) <option_rewrite>`
 --ignore=APPLICATION   apply tagging ignore rules for the given application:
                        kde, gtk, openoffice, mozilla
 --hash=LENGTH          add an md5 hash to translations (only until version
