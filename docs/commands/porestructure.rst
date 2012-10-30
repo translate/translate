@@ -42,6 +42,6 @@ Options:
 Examples
 ========
 
-The documentation for poconflicts has :ref:`pages/toolkit/poconflicts#examples` for the complete process using poconflict, porestructure, and pomerge.
+The documentation for poconflicts has :ref:`poconflicts#examples` for the complete process using poconflict, porestructure, and pomerge.
 
 .. _porestructure#bugs:
