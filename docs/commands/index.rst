@@ -119,7 +119,7 @@ Other tools
    poterminology_stopword_file
    pocount
    podebug
-   rewrite_style
+   option_rewrite
    posegment
    pocompile
    poswap

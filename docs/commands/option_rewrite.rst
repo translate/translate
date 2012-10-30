@@ -1,12 +1,12 @@
 
-.. _pages/toolkit/rewrite_style#--rewrite=style:
+.. _option_rewrite#--rewrite=style:
 
 --rewrite=STYLE
 ***************
 
 :doc:`podebug` allows you to rewrite the output text in a number of ways.
 
-.. _pages/toolkit/rewrite_style#xxx:
+.. _option_rewrite#xxx:
 
 xxx
 ===
@@ -20,7 +20,7 @@ The target text is surrounded by ``xxx`` as follows
 
 This is useful when you want to identify which text is localisable.  There might be text in your application which you cannot localise this will allow you to quickly identify that text.
 
-.. _pages/toolkit/rewrite_style#en:
+.. _option_rewrite#en:
 
 en
 ==
@@ -34,7 +34,7 @@ The source text is copied to the target
 
 In this way you can create translations that contain only the source text.  Useful if you are preparing a roundtrip test or want to start an English derived translation such as British English.  It produces the same results as `msgen <http://linux.die.net/man/1/msgen>`_ but with the advantage that you can add debug markers.
 
-.. _pages/toolkit/rewrite_style#blank:
+.. _option_rewrite#blank:
 
 blank
 =====
@@ -48,7 +48,7 @@ This simply empties your current translations
 
 When you have a set of translation files but no template this allows you to essentially convert a PO into a POT file.  This mimics the --empty functionality of `msghack <http:////linux.die.net/man/1/msghack>`_
 
-.. _pages/toolkit/rewrite_style#bracket:
+.. _option_rewrite#bracket:
 
 bracket
 =======
@@ -64,7 +64,7 @@ Places brackets around the translated text.
 
 This can be used in the same way as ``xxx`` to check for translatability.  It is also useful with very long strings as it allows you to check that the full string in rendered and has not been cutoff by the application.
 
-.. _pages/toolkit/rewrite_style#chef:
+.. _option_rewrite#chef:
 
 chef
 ====
@@ -80,7 +80,7 @@ Rewrites the source text using mock Swedish as popularised by the `Swedish Chef 
 
 This is probably only useful for some fun.  It's not guaranteed that every string will be rewritten as the mock Swedish rules might not apply thus its not ideal for identifying untranslatable strings.
 
-.. _pages/toolkit/rewrite_style#flipped:
+.. _option_rewrite#flipped:
 
 flipped
 =======
@@ -98,7 +98,7 @@ Change the text into a version that uses equivalent Latin characters that are up
 
 For really testing right-to-left GUIs, you want to make sure that the whole application is shown in RTL, not just the strings. Test your pseudo-translated file as a translation of an RTL language like Arabic or Hebrew. In case the application relies on other files coming from libraries (like GTK+), you might need to repeat the process for them, or at least ensure that you have the Arabic/Hebrew .mo files for them installed.
 
-.. _pages/toolkit/rewrite_style#unicode:
+.. _option_rewrite#unicode:
 
 unicode
 =======

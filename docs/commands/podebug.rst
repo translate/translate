@@ -51,7 +51,7 @@ Options:
 -P, --pot              output PO Templates (.pot) rather than PO files (.po)
 -fFORMAT, --format=FORMAT     specify format string
 --rewrite=STYLE        the translation rewrite style: :doc:`xxx, en, blank,
-                       chef  (v1.2), unicode (v1.2) <rewrite_style>`
+                       chef  (v1.2), unicode (v1.2) <options_rewrite>`
 --ignore=APPLICATION   apply tagging ignore rules for the given application:
                        kde, gtk, openoffice, mozilla
 --hash=LENGTH          add an md5 hash to translations (only until version
@@ -98,7 +98,7 @@ Complex format strings may make it too difficult to actually read the translatio
 Rewriting (style)
 =================
 
-The rewriting options are designed to change the target text in various ways (c.f. the various :doc:`rewriting styles <rewrite_style>` available).  This is mostly valuable for debugging English text.  The 'xxx' rewriter is useful in that it allows you to identify text that has not localisable as that text will lack the xxx characters.
+The rewriting options are designed to change the target text in various ways (c.f. the various :doc:`rewriting styles <option_rewrite>` available).  This is mostly valuable for debugging English text.  The 'xxx' rewriter is useful in that it allows you to identify text that has not localisable as that text will lack the xxx characters.
 
 The 'en' rewriter can be used to prepare English hashed (see below) files for quickly finding strings that have spelling or other errors.  It can also be used to create a translated English file which can then be used for other purposes such as British English translation.
 
