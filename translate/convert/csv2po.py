@@ -221,6 +221,7 @@ def main(argv=None):
         ("csv", None): ("po", convertcsv),
     }
     parser = convert.ConvertOptionParser(formats, usetemplates=True,
+                                         usepots=True,
                                          description=__doc__)
     parser.add_option("", "--charset", dest="charset", default=None,
         help="set charset to decode from csv files", metavar="CHARSET"
