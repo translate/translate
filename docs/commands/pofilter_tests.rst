@@ -1,10 +1,12 @@
 
-.. _pages/toolkit/pofilter_tests#descriptions_of_all_pofilter_tests:
+.. _commands/pofilter_tests#descriptions_of_all_pofilter_tests:
+
+.. _descriptions_of_all_pofilter_tests:
 
 Descriptions of all pofilter tests
 **********************************
 
-The following are descriptions of the tests available in :doc:`pofilter`, :doc:`Pootle <pootle:features/checks>` and :doc:`Virtaal <virtaal:checks>` (since version 0.7) with some details about what type of errors they are useful to test for and the limitations of each test.
+The following are descriptions of the tests available in :doc:`pofilter`, :ref:`Pootle <pootle:checks>` and :ref:`Virtaal <virtaal:checks>` (since version 0.7) with some details about what type of errors they are useful to test for and the limitations of each test.
 
 Keep in mind that the software might point to errors which are not necessarily wrong (false positives).
 
