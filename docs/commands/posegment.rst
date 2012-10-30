@@ -32,12 +32,15 @@ Options:
 --version            show program's version number and exit
 -h, --help           show this help message and exit
 --manpage            output a manpage based on the help
-:doc:`--progress=progress <option_progress>`  show progress as: dots, none, bar, names, verbose
-:doc:`--errorlevel=errorlevel <option_errorlevel>`  show errorlevel as: none, message, exception, traceback
+--progress=PROGRESS    show progress as: :doc:`dots, none, bar, names, verbose <option_progress>`
+--errorlevel=ERRORLEVEL
+                      show errorlevel as: :doc:`none, message, exception,
+                      traceback <option_errorlevel>`
 -iINPUT, --input=INPUT   read from INPUT in pot format
 -xEXCLUDE, --exclude=EXCLUDE  exclude names matching EXCLUDE from input paths
 -oOUTPUT, --output=OUTPUT     write to OUTPUT in po, pot formats
-:doc:`--psyco=MODE <option_psyco>`         use psyco to speed up the operation, modes: none, full, profile
+--psyco=MODE          use psyco to speed up the operation, modes: :doc:`none,
+                      full, profile <option_psyco>`
 -P, --pot  output PO Templates (.pot) rather than PO files (.po)
 -l, --language=LANG the target language code
 --source-language=LANG the source language code (default 'en')

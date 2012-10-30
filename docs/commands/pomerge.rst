@@ -36,13 +36,16 @@ Options:
 --version            show program's version number and exit
 -h, --help           show this help message and exit
 --manpage            output a manpage based on the help
-:doc:`--progress=progress <option_progress>`  show progress as: dots, none, bar, names, verbose
-:doc:`--errorlevel=errorlevel <option_errorlevel>`  show errorlevel as: none, message, exception, traceback
+--progress=PROGRESS    show progress as: :doc:`dots, none, bar, names, verbose <option_progress>`
+--errorlevel=ERRORLEVEL
+                      show errorlevel as: :doc:`none, message, exception,
+                      traceback <option_errorlevel>`
 -iINPUT, --input=INPUT   read from INPUT in po, pot, xlf, tmx formats
 -xEXCLUDE, --exclude=EXCLUDE   exclude names matching EXCLUDE from input paths
 -oOUTPUT, --output=OUTPUT   write to OUTPUT in po, pot, xlf, tmx formats
 -tTEMPLATE, --template=TEMPLATE   read from TEMPLATE in po, pot, xlf, tmx formats
-:doc:`--psyco=MODE <option_psyco>`        use psyco to speed up the operation (set mode)
+--psyco=MODE          use psyco to speed up the operation, modes: :doc:`none,
+                      full, profile <option_psyco>`
 --mergeblanks=MERGEBLANKS  whether to overwrite existing translations with blank translations (yes/no). Default is yes.
 --mergefuzzy=MERGEFUZZY  whether to overwrite existing translations with fuzzy translations (yes/no). Default is yes. (new in version 1.9)
 --mergecomments=MERGECOMMENTS  whether to merge comments as well as translations (yes/no). Default is yes.

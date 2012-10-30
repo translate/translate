@@ -30,17 +30,21 @@ Options:
 --version             show program's version number and exit
 -h, --help           show this help message and exit
 --manpage            output a manpage based on the help
-:doc:`--progress=progress <option_progress>`  show progress as: dots, none, bar, names, verbose
-:doc:`--errorlevel=errorlevel <option_errorlevel>`  show errorlevel as: none, message, exception, traceback
+--progress=PROGRESS    show progress as: :doc:`dots, none, bar, names, verbose <option_progress>`
+--errorlevel=ERRORLEVEL
+                      show errorlevel as: :doc:`none, message, exception,
+                      traceback <option_errorlevel>`
 -iINPUT, --input=INPUT   read from INPUT in po, pot, xlf formats (XLIFF since version 1.0)
 -xEXCLUDE, --exclude=EXCLUDE  exclude names matching EXCLUDE from input paths
 -oOUTPUT, --output=OUTPUT     write to OUTPUT in po, pot, xlf formats (XLIFF since version 1.0)
-:doc:`--psyco=MODE <option_psyco>`        use psyco to speed up the operation (set mode)
+--psyco=MODE          use psyco to speed up the operation, modes: :doc:`none,
+                      full, profile <option_psyco>`
 --search=SEARCHPARTS searches the given parts (source, target, notes, locations)
 -I, --ignore-case    ignore case distinctions
 -e, --regexp         use regular expression matching
 -v, --invert-match   select non-matching lines
-:doc:`--accelerator=accelerator <option_accelerator>`     ignores the given accelerator when matching
+--accelerator=ACCELERATORS
+                      ignores the given :doc:`accelerator characters <option_accelerator>` when matching
 
 .. _pogrep#example:
 

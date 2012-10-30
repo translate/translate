@@ -46,40 +46,55 @@ Options (oo2po and oo2xliff):
 --version            show program's version number and exit
 -h, --help           show this help message and exit
 --manpage            output a manpage based on the help
---:doc:`progress=progress <option_progress>`  show progress as: dots, none, bar, names, verbose
---:doc:`errorlevel=errorlevel <option_errorlevel>`  show errorlevel as: none, message, exception, traceback
+--progress=PROGRESS    show progress as: :doc:`dots, none, bar, names, verbose <option_progress>`
+--errorlevel=ERRORLEVEL
+                      show errorlevel as: :doc:`none, message, exception,
+                      traceback <option_errorlevel>`
 -iINPUT, --input=INPUT   read from INPUT in oo format
 -xEXCLUDE, --exclude=EXCLUDE  exclude names matching EXCLUDE from input paths
 -oOUTPUT, --output=OUTPUT  write to OUTPUT in po, pot formats
-:doc:`--psyco=MODE <option_psyco>`        use psyco to speed up the operation, modes: none, full, profile
+--psyco=MODE          use psyco to speed up the operation, modes: :doc:`none,
+                      full, profile <option_psyco>`
 -P, --pot            output PO Templates (.pot) rather than PO files (.po) (only available in oo2po
 -lLANG, --language=LANG  set target language to extract from oo file (e.g. af-ZA) (required for oo2xliff)
 --source-language=LANG   set source language code (default en-US)
 --nonrecursiveinput      don't treat the input oo as a recursive store
---:doc:`duplicates=duplicatestyle <option_duplicates>`  what to do with duplicate strings (identical original text)
---:doc:`multifile=multifilestyle <option_multifile>`   how to split po/pot files (single, toplevel or onefile)
+--duplicates=DUPLICATESTYLE
+                      what to do with duplicate strings (identical source
+                      text): :doc:`merge, msgctxt <option_duplicates>`
+                      (default: 'msgctxt')
+--multifile=MULTIFILESTYLE
+                      how to split po/pot files (:doc:`single, toplevel or
+                      onefile <option_multifile>`)
 
 Options (po2oo and xliff2oo):
 
 --version            show program's version number and exit
 -h, --help           show this help message and exit
 --manpage            output a manpage based on the help
---:doc:`progress=progress <option_progress>`  show progress as: dots, none, bar, names, verbose
---:doc:`errorlevel=errorlevel <option_errorlevel>`  show errorlevel as: none, message, exception, traceback
+--progress=PROGRESS    show progress as: :doc:`dots, none, bar, names, verbose <option_progress>`
+--errorlevel=ERRORLEVEL
+                      show errorlevel as: :doc:`none, message, exception,
+                      traceback <option_errorlevel>`
 -iINPUT, --input=INPUT   read from INPUT in po, pot formats
 -xEXCLUDE, --exclude=EXCLUDE  exclude names matching EXCLUDE from input paths
 -oOUTPUT, --output=OUTPUT  write to OUTPUT in oo format
 -tTEMPLATE, --template=TEMPLATE  read from TEMPLATE in oo format
-:doc:`--psyco=MODE <option_psyco>`        use psyco to speed up the operation, modes: none, full, profile
+--psyco=MODE          use psyco to speed up the operation, modes: :doc:`none,
+                      full, profile <option_psyco>`
 -lLANG, --language=LANG  set target language code (e.g. af-ZA) [required]
 --source-language=LANG   set source language code (default en-US)
 -T, --keeptimestamp      don't change the timestamps of the strings
 --nonrecursiveoutput     don't treat the output oo as a recursive store
 --nonrecursivetemplate   don't treat the template oo as a recursive store
-:doc:`--filteraction=action <option_filteraction>`    action on pofilter failure: none (default), warn, exclude-serious, exclude-all
+--filteraction=ACTION
+                      action on pofilter failure: :doc:`none (default), warn,
+                      exclude-serious, exclude-all <option_filteraction>`
 --fuzzy                  use translations marked fuzzy
 --nofuzzy                don't use translations marked fuzzy (default)
---:doc:`multifile=multifilestyle <option_multifile>`   how to split po/pot files (single, toplevel or onefile)
+--multifile=MULTIFILESTYLE
+                      how to split po/pot files (:doc:`single, toplevel or
+                      onefile <option_multifile>`)
 
 .. _oo2po#examples:
 

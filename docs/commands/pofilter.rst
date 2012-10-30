@@ -32,12 +32,15 @@ Options:
 --version            show program's version number and exit
 -h, --help           show this help message and exit
 --manpage            output a manpage based on the help
-:doc:`--progress=progress <option_progress>`  show progress as: dots, none, bar, names, verbose
-:doc:`--errorlevel=errorlevel <option_errorlevel>`  show errorlevel as: none, message, exception, traceback
+--progress=PROGRESS    show progress as: :doc:`dots, none, bar, names, verbose <option_progress>`
+--errorlevel=ERRORLEVEL
+                      show errorlevel as: :doc:`none, message, exception,
+                      traceback <option_errorlevel>`
 -iINPUT, --input=INPUT   read from INPUT in pot, po, xlf, tmx formats
 -xEXCLUDE, --exclude=EXCLUDE  exclude names matching EXCLUDE from input paths
 -oOUTPUT, --output=OUTPUT  write to OUTPUT in po, pot, xlf, tmx formats
-:doc:`--psyco=MODE <option_psyco>`        use psyco to speed up the operation (set mode)
+--psyco=MODE          use psyco to speed up the operation, modes: :doc:`none,
+                      full, profile <option_psyco>`
 -l, --listfilters    list filters available
 --review             include elements marked for review (default)
 --noreview           exclude elements marked for review

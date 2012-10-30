@@ -30,29 +30,38 @@ Options (rc2po):
 --version           show program's version number and exit
 -h, --help          show this help message and exit
 --manpage           output a manpage based on the help
-:doc:`--progress=progress <option_progress>`  show progress as: dots, none, bar, names, verbose
-:doc:`--errorlevel=errorlevel <option_errorlevel>`  show errorlevel as: none, message, exception, traceback
+--progress=PROGRESS    show progress as: :doc:`dots, none, bar, names, verbose <option_progress>`
+--errorlevel=ERRORLEVEL
+                      show errorlevel as: :doc:`none, message, exception,
+                      traceback <option_errorlevel>`
 -i INPUT, --input=INPUT      read from INPUT in rc format
 -x EXCLUDE, --exclude=EXCLUDE  exclude names matching EXCLUDE from input paths
 -o OUTPUT, --output=OUTPUT     write to OUTPUT in po, pot formats
 -t TEMPLATE, --template=TEMPLATE  read from TEMPLATE in rc format
-:doc:`--psyco=mode <option_psyco>`  use psyco to speed up the operation, modes: none,                        full, profile
+--psyco=MODE          use psyco to speed up the operation, modes: :doc:`none,
+                      full, profile <option_psyco>`
 -P, --pot    output PO Templates (.pot) rather than PO files (.po)
 --charset=CHARSET    charset to use to decode the RC files (default:                        cp1252)
-:doc:`--duplicates=duplicatestyle <option_duplicates>`  what to do with duplicate strings (identical source text): merge, msgid_comment, msgctxt, keep,                        msgid_comment_all (default: 'msgctxt')
+--duplicates=DUPLICATESTYLE
+                      what to do with duplicate strings (identical source
+                      text): :doc:`merge, msgctxt <option_duplicates>`
+                      (default: 'msgctxt')
 
 Options (po2rc):
 
 --version            show program's version number and exit
 -h, --help           show this help message and exit
 --manpage            output a manpage based on the help
-:doc:`--progress=progress <option_progress>`  show progress as: dots, none, bar, names, verbose
-:doc:`--errorlevel=errorlevel <option_errorlevel>`    show errorlevel as: none, message, exception, traceback
+--progress=PROGRESS    show progress as: :doc:`dots, none, bar, names, verbose <option_progress>`
+--errorlevel=ERRORLEVEL
+                      show errorlevel as: :doc:`none, message, exception,
+                      traceback <option_errorlevel>`
 -i INPUT, --input=INPUT  read from INPUT in po, pot formats
 -x EXCLUDE, --exclude=EXCLUDE   exclude names matching EXCLUDE from input paths
 -o OUTPUT, --output=OUTPUT      write to OUTPUT in rc format
 -t TEMPLATE, --template=TEMPLATE  read from TEMPLATE in rc format
-:doc:`--psyco=mode <option_psyco>`         use psyco to speed up the operation, modes: none, full, profile
+--psyco=MODE          use psyco to speed up the operation, modes: :doc:`none,
+                      full, profile <option_psyco>`
 --charset=CHARSET    charset to use to decode the RC files (default: utf-8)
 --lang=LANG  LANG entry
 --sublang=SUBLANG SUBLANG entry (default: SUBLANG_DEFAULT)

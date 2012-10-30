@@ -40,28 +40,37 @@ Options (moz2po):
 --version            show program's version number and exit
 -h, --help           show this help message and exit
 --manpage            output a manpage based on the help
---:doc:`progress=progress <option_progress>`  show progress as: dots, none, bar, names, verbose
---:doc:`errorlevel=errorlevel <option_errorlevel>`   show errorlevel as: none, message, exception, traceback
+--progress=PROGRESS    show progress as: :doc:`dots, none, bar, names, verbose <option_progress>`
+--errorlevel=ERRORLEVEL
+                      show errorlevel as: :doc:`none, message, exception,
+                      traceback <option_errorlevel>`
 -iINPUT, --input=INPUT    read from INPUT in inc, it, \*, dtd, properties formats
 -xEXCLUDE, --exclude=EXCLUDE   exclude names matching EXCLUDE from input paths
 -oOUTPUT, --output=OUTPUT   write to OUTPUT in it.po, it.pot, manifest, xhtml.po, xhtml.pot, ini.po, ini.pot, rdf, js, \*, html.po, html.pot, inc.po, inc.pot, dtd.po, dtd.pot, properties.po, properties.pot formats
 -tTEMPLATE, --template=TEMPLATE   read from TEMPLATE in it, \*, properties, dtd, inc formats
---:doc:`psyco=MODE <option_psyco>`         use psyco to speed up the operation, modes: none, full, profile
+--psyco=MODE          use psyco to speed up the operation, modes: :doc:`none,
+                      full, profile <option_psyco>`
 -P, --pot            output PO Templates (.pot) rather than PO files (.po)
---:doc:`duplicates=duplicatestyle <option_duplicates>`   what to do with duplicate strings (identical source text): merge (default), msgid_comment, keep, msgid_comment_all
+--duplicates=DUPLICATESTYLE
+                      what to do with duplicate strings (identical source
+                      text): :doc:`merge, msgctxt <option_duplicates>`
+                      (default: 'msgctxt')
 
 Options (po2moz):
 
 --version            show program's version number and exit
 -h, --help           show this help message and exit
 --manpage            output a manpage based on the help
---:doc:`progress=progress <option_progress>`  show progress as: dots, none, bar, names, verbose
---:doc:`errorlevel=errorlevel <option_errorlevel>`  show errorlevel as: none, message, exception, traceback
+--progress=PROGRESS    show progress as: :doc:`dots, none, bar, names, verbose <option_progress>`
+--errorlevel=ERRORLEVEL
+                      show errorlevel as: :doc:`none, message, exception,
+                      traceback <option_errorlevel>`
 -iINPUT, --input=INPUT   read from INPUT in dtd.po, dtd.pot, ini.po, ini.pot, inc.po, inc.pot, manifest, it.po, it.pot, \*, html.po, html.pot, js, rdf, properties.po, properties.pot, xhtml.po, xhtml.pot formats
 -xEXCLUDE, --exclude=EXCLUDE  exclude names matching EXCLUDE from input paths
 -oOUTPUT, --output=OUTPUT     write to OUTPUT in dtd, \*, inc, it, properties formats
 -tTEMPLATE, --template=TEMPLATE  read from TEMPLATE in dtd, \*, inc, it, properties formats
---:doc:`psyco=MODE <option_psyco>`         use psyco to speed up the operation, modes: none, full, profile
+--psyco=MODE          use psyco to speed up the operation, modes: :doc:`none,
+                      full, profile <option_psyco>`
 -lLOCALE, --locale=LOCALE  set output locale (required as this sets the directory names)
 --clonexpi=CLONEXPI  clone xpi structure from the given xpi file
 --fuzzy              use translations marked fuzzy

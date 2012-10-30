@@ -41,23 +41,29 @@ Options (odf2xliff):
 --version            show program's version number and exit
 -h, --help           show this help message and exit
 --manpage            output a manpage based on the help
-:doc:`--progress=progress <option_progress>`  show progress as: dots, none, bar, names, verbose
-:doc:`--errorlevel=errorlevel <option_errorlevel>`  show errorlevel as: none, message, exception, traceback
+--progress=PROGRESS    show progress as: :doc:`dots, none, bar, names, verbose <option_progress>`
+--errorlevel=ERRORLEVEL
+                      show errorlevel as: :doc:`none, message, exception,
+                      traceback <option_errorlevel>`
 -i INPUT, --input=INPUT   read from INPUT in ODF format
 -o OUTPUT, --output=OUTPUT     write to OUTPUT in XLIFF format
-:doc:`--psyco=MODE <option_psyco>`         use psyco to speed up the operation, modes: none, full, profile
+--psyco=MODE          use psyco to speed up the operation, modes: :doc:`none,
+                      full, profile <option_psyco>`
 
 Options (xliff2odf):
 
 --version            show program's version number and exit
 -h, --help           show this help message and exit
 --manpage            output a manpage based on the help
-:doc:`--progress=progress <option_progress>`  show progress as: dots, none, bar, names, verbose
-:doc:`--errorlevel=errorlevel <option_errorlevel>`    show errorlevel as: none, message, exception, traceback
+--progress=PROGRESS    show progress as: :doc:`dots, none, bar, names, verbose <option_progress>`
+--errorlevel=ERRORLEVEL
+                      show errorlevel as: :doc:`none, message, exception,
+                      traceback <option_errorlevel>`
 -i INPUT, --input=INPUT     read from INPUT in XLIFF formats
 -o OUTPUT, --output=OUTPUT  write to OUTPUT in ODF format
 -t TEMPLATE, --template=TEMPLATE   read from TEMPLATE in ODF format
-:doc:`--psyco=MODE <option_psyco>`         use psyco to speed up the operation, modes: none, full, profile
+--psyco=MODE          use psyco to speed up the operation, modes: :doc:`none,
+                      full, profile <option_psyco>`
 
 .. _odf2xliff#examples:
 

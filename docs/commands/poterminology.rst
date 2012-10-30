@@ -36,13 +36,16 @@ Options:
 --version            show program's version number and exit
 -h, --help           show this help message and exit
 --manpage            output a manpage based on the help
-:doc:`--progress=progress <option_progress>`  show progress as: dots, none, bar, names, verbose
-:doc:`--errorlevel=errorlevel <option_errorlevel>`  show errorlevel as: none, message, exception, traceback
+--progress=PROGRESS    show progress as: :doc:`dots, none, bar, names, verbose <option_progress>`
+--errorlevel=ERRORLEVEL
+                      show errorlevel as: :doc:`none, message, exception,
+                      traceback <option_errorlevel>`
 -i INPUT, --input=INPUT   read from INPUT in pot, po formats
 -x EXCLUDE, --exclude=EXCLUDE  exclude names matching EXCLUDE from input paths
 -o OUTPUT, --output=OUTPUT     write to OUTPUT in po, pot formats
 -u UPDATEFILE, --update=UPDATEFILE  update terminology in UPDATEFILE
-:doc:`--psyco=MODE <option_psyco>`         use psyco to speed up the operation, modes: none, full, profile
+--psyco=MODE          use psyco to speed up the operation, modes: :doc:`none,
+                      full, profile <option_psyco>`
 -S STOPFILE, --stopword-list=STOPFILE  read stopword (term exclusion) list from STOPFILE (default site-packages/translate/share/stoplist-en)
 -F, --fold-titlecase  fold "Title Case" to lowercase (default)
 -C, --preserve-case   preserve all uppercase/lowercase
