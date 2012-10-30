@@ -1,5 +1,5 @@
 
-.. _option_rewrite#--rewrite=style:
+.. _option_rewrite:
 
 --rewrite=STYLE
 ***************

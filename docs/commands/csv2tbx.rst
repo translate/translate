@@ -1,5 +1,5 @@
 
-.. _csv2tbx#csv2tbx:
+.. _csv2tbx:
 
 csv2tbx
 *******

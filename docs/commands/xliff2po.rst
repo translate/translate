@@ -1,5 +1,5 @@
 
-.. _xliff2po#xliff2po_and_po2xliff:
+.. _xliff2po:
 
 xliff2po and po2xliff
 *********************

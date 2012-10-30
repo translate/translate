@@ -1,5 +1,5 @@
 
-.. _ical2po#ical2po:
+.. _ical2po:
 
 ical2po
 *******

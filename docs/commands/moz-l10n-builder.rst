@@ -1,5 +1,5 @@
 
-.. _moz-l10n-builder#moz-l10n-builder:
+.. _moz-l10n-builder:
 
 moz-l10n-builder
 ****************

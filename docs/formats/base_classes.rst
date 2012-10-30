@@ -1,5 +1,5 @@
 
-.. _base_classes#base_classes:
+.. _base_classes:
 
 Base classes
 ************

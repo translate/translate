@@ -1,5 +1,5 @@
 
-.. _pogrep#pogrep:
+.. _pogrep:
 
 pogrep
 ******

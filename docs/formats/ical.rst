@@ -1,5 +1,6 @@
 
-.. _ical#icalendar:
+.. _ical:
+.. _icalendar:
 
 iCalendar
 *********

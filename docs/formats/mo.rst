@@ -1,5 +1,6 @@
 
-.. _mo#gettext_.mo:
+.. _mo:
+.. _gettext_mo:
 
 Gettext .mo
 ***********

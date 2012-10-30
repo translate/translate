@@ -1,5 +1,5 @@
 
-.. _oo2po#oo2po_and_po2oo:
+.. _oo2po:
 
 oo2po and po2oo
 ***************

@@ -1,5 +1,5 @@
 
-.. _cleanup_translator_comments#cleanup_translator_comments:
+.. _cleanup_translator_comments:
 
 Cleanup translator comments
 ***************************

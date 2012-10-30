@@ -1,5 +1,6 @@
 
-.. _using_pofilter#checking_your_files_with_po_filter:
+.. _using_pofilter:
+.. _checking_your_files_with_po_filter:
 
 Checking your files with PO filter
 **********************************
@@ -7,7 +8,7 @@ Checking your files with PO filter
 :doc:`/commands/pofilter` allows you to check your PO or XLIFF files for certain common errors.  This quick-start guide takes
 you through the process of using this tool, making corrections and merging your correction back into your translations.
 
-Other tools that can help with quality assurance are listed :ref:`here <pages/toolkit/index#quality_assurance>`.
+The toolkit also other tools that can assist with :ref:`quality assurance <commands#quality_assurance>`.
 
 .. _using_pofilter#quickstart:
 

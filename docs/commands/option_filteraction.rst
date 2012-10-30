@@ -1,31 +1,31 @@
 
-.. _filteraction_action#--filteraction=action:
+.. _option_filteraction:
 
 --filteraction=ACTION
 *********************
 
-.. _filteraction_action#none_default:
+.. _option_filteraction#none_default:
 
 none (default)
 ==============
 
 Take no action.  Messages from failing test will appear in the output file
 
-.. _filteraction_action#warn:
+.. _option_filteraction#warn:
 
 warn
 ====
 
 Print a warning but otherwise include the message in the output file.
 
-.. _filteraction_action#exclude-serious:
+.. _option_filteraction#exclude-serious:
 
 exclude-serious
 ===============
 
 Only exclude errors that are listed as serious by the convertor.  All other are included.
 
-.. _filteraction_action#exclude-all:
+.. _option_filteraction#exclude-all:
 
 exclude-all
 ===========

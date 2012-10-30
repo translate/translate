@@ -1,5 +1,5 @@
 
-.. _wml#wireless_markup_language:
+.. _wml:
 
 Wireless Markup Language
 ************************

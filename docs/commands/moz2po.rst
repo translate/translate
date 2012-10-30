@@ -1,5 +1,5 @@
 
-.. _moz2po#moz2po_and_po2moz:
+.. _moz2po:
 
 moz2po and po2moz
 *****************

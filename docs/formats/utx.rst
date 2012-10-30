@@ -1,5 +1,5 @@
 
-.. _utx#universal_terminology_exchange_utx:
+.. _utx:
 
 Universal Terminology eXchange (UTX)
 ************************************

@@ -1,5 +1,5 @@
 
-.. _php#php:
+.. _php:
 
 PHP
 ***

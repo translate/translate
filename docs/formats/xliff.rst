@@ -1,5 +1,5 @@
 
-.. _xliff#xliff:
+.. _xliff:
 
 XLIFF
 *****

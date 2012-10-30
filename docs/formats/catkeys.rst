@@ -1,5 +1,5 @@
 
-.. _catkeys#haiku_catkeys:
+.. _catkeys:
 
 Haiku catkeys
 *************

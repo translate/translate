@@ -1,5 +1,5 @@
 
-.. _dtd#mozilla_dtd_format:
+.. _dtd:
 
 Mozilla DTD format
 ******************

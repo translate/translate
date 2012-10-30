@@ -1,5 +1,5 @@
 
-.. _text#simple_text_documents:
+.. _text:
 
 Simple Text Documents
 *********************

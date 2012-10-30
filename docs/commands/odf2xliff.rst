@@ -1,5 +1,5 @@
 
-.. _odf2xliff#odf2xliff_and_xliff2odf:
+.. _odf2xliff:
 
 odf2xliff and xliff2odf
 ***********************

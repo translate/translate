@@ -1,5 +1,6 @@
 
-.. _odf#opendocument_format:
+.. _odf:
+.. _opendocument_format:
 
 OpenDocument Format
 *******************

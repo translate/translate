@@ -1,5 +1,5 @@
 
-.. _poterminology#poterminology:
+.. _poterminology:
 
 poterminology
 *************

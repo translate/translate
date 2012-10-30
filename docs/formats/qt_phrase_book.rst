@@ -1,5 +1,6 @@
 
-.. _qt_phrase_book#qt_phrase_book_.qph:
+.. _qt_phrase_book:
+.. _qph:
 
 Qt Phrase Book (.qph)
 *********************

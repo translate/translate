@@ -1,5 +1,5 @@
 
-.. _running_the_tools_on_microsoft_windows#running_the_tools_on_microsoft_windows:
+.. _running_the_tools_on_microsoft_windows:
 
 Running the tools on Microsoft Windows
 **************************************

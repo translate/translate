@@ -1,5 +1,5 @@
 
-.. _subtitles#subtitles:
+.. _subtitles:
 
 Subtitles
 *********

@@ -1,5 +1,5 @@
 
-.. _commands/pofilter_tests#descriptions_of_all_pofilter_tests:
+.. _pofilter_tests:
 
 .. _descriptions_of_all_pofilter_tests:
 

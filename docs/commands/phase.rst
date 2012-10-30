@@ -1,5 +1,5 @@
 
-.. _phase#phase:
+.. _phase:
 
 phase
 *****

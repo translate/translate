@@ -1,5 +1,5 @@
 
-.. _pretranslate#pretranslate:
+.. _pretranslate:
 
 pretranslate
 ************

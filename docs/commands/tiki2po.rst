@@ -1,5 +1,5 @@
 
-.. _tiki2po#tiki2po:
+.. _tiki2po:
 
 tiki2po
 *******

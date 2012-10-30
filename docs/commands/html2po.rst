@@ -1,5 +1,5 @@
 
-.. _html2po#html2po_and_po2html:
+.. _html2po:
 
 html2po and po2html
 *******************

@@ -1,5 +1,5 @@
 
-.. _podebug#podebug:
+.. _podebug:
 
 podebug
 *******

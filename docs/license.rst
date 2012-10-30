@@ -1,5 +1,6 @@
 
-.. _copyright#copyright:
+.. _license:
+.. _copyright:
 
 License
 *******

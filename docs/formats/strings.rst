@@ -1,5 +1,5 @@
 
-.. _strings#mac_osx_strings:
+.. _strings:
 
 Mac OSX strings
 ***************

@@ -1,5 +1,5 @@
 
-.. _accelerator_accelerator#--accelerator=accelerator:
+.. _option_accelerator:
 
 --accelerator=ACCELERATOR
 *************************

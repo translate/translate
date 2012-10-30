@@ -1,5 +1,5 @@
 
-.. _ts2po#ts2po_and_po2ts:
+.. _ts2po:
 
 ts2po and po2ts
 ***************

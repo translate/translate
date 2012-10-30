@@ -1,5 +1,5 @@
 
-.. _quoting_and_escaping#quoting_and_escaping:
+.. _quoting_and_escaping:
 
 Quoting and Escaping
 ********************

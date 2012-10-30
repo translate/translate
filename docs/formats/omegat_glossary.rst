@@ -1,5 +1,5 @@
 
-.. _omegat_glossary#omegat_glossary:
+.. _omegat_glossary:
 
 OmegaT glossary
 ***************

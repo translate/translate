@@ -1,5 +1,5 @@
 
-.. _pomerge#pomerge:
+.. _pomerge:
 
 pomerge
 *******

@@ -1,4 +1,6 @@
-.. _index#converters:
+.. _commands:
+
+.. _commands#converters:
 
 Converters
 **********
@@ -72,14 +74,14 @@ that will make the converters much easier to use and understand.
 * :doc:`ts2po <ts2po>` - Qt Linguist .ts converter
 * :doc:`xliff2po <xliff2po>` - XLIFF (XML Localisation Interchange File Format) converter
 
-.. _index#tools:
+.. _commands#tools:
 
 Tools
 *****
 
 The PO tools allow you to manipulate and work with PO files
 
-.. _index#quality_assurance:
+.. _commands#quality_assurance:
 
 Quality Assurance
 =================
@@ -105,7 +107,7 @@ These tools are especially useful for measuring and improving translation qualit
 * :doc:`porestructure` - restructures PO files according to poconflict directives
 * :doc:`junitmsgfmt` - run msgfmt and provide JUnit type output for use in continuous integration systems like Hudson and Jenkins
 
-.. _index#other_tools:
+.. _commands#other_tools:
 
 Other tools
 ===========
@@ -138,7 +140,7 @@ Other tools
 * :doc:`pretranslate` - fill any missing translations from translation memory via fuzzy matching.
 * :doc:`levenshtein_distance` - edit distance algorithms for translation memory matching
 
-.. _index#scripts:
+.. _commands#scripts:
 
 Scripts
 *******

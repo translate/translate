@@ -1,5 +1,5 @@
 
-.. _creating_mozilla_pot_files#creating_mozilla_pot_files:
+.. _creating_mozilla_pot_files:
 
 Creating Mozilla POT files
 **************************

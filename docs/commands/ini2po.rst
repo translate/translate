@@ -1,5 +1,5 @@
 
-.. _ini2po#ini2po:
+.. _ini2po:
 
 ini2po
 ******

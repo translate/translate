@@ -1,5 +1,5 @@
 
-.. _sub2po#sub2po_and_po2sub:
+.. _sub2po:
 
 sub2po and po2sub
 *****************

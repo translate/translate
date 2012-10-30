@@ -1,5 +1,5 @@
 
-.. _csv2po#csv2po_and_po2csv:
+.. _csv2po:
 
 csv2po and po2csv
 *****************

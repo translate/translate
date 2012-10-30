@@ -1,5 +1,5 @@
 
-.. _pocompendium#pocompendium:
+.. _pocompendium:
 
 pocompendium
 ************

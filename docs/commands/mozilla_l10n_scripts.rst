@@ -1,5 +1,5 @@
 
-.. _mozilla_l10n_scripts#mozilla_l10n_scripts:
+.. _mozilla_l10n_scripts:
 
 Mozilla L10n Scripts
 ********************

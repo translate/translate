@@ -1,5 +1,5 @@
 
-.. _developers#translate_toolkit_developers_guide:
+.. _translate_toolkit_developers_guide:
 
 Translate Toolkit Developers Guide
 **********************************

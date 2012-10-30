@@ -1,5 +1,5 @@
 
-.. _progress_progress#--progress=progress:
+.. _option_progress:
 
 --progress=PROGRESS
 *******************
@@ -8,7 +8,7 @@ All of the programs can give visual feedback.  This options allows you to select
 
 In the examples we are converting and OpenOffice.org 2.0 sdf/gsi file into POT files using :doc:`oo2po <oo2po>`.
 
-.. _progress_progress#none:
+.. _option_progress#none:
 
 none
 ====
@@ -21,7 +21,7 @@ want feedback to interfere with the operation.
     [dwayne@laptop OOo20]$ oo2po -P --progress=none en-US.sdf pot
     [dwayne@laptop OOo20]$
 
-.. _progress_progress#dots:
+.. _option_progress#dots:
 
 dots
 ====
@@ -36,7 +36,7 @@ Use visual dots to represent progress.  Each dot represent a file that has been 
     .........................................
     [dwayne@laptop OOo20]$
 
-.. _progress_progress#bar_default:
+.. _option_progress#bar_default:
 
 bar (default)
 =============
@@ -55,7 +55,7 @@ This is the default mode of operation, therefore this command would create the s
 
     [dwayne@laptop OOo20]$ oo2po -P en-US.sdf pot
 
-.. _progress_progress#verbose:
+.. _option_progress#verbose:
 
 verbose
 =======
@@ -79,7 +79,7 @@ Combine the hash (#) progress bar form the *bar* option with the actual names of
     filter/source/xsltdialog.oo
     [##                                         ]   5%
 
-.. _progress_progress#names:
+.. _option_progress#names:
 
 names
 =====

@@ -1,5 +1,5 @@
 
-.. _wordfast#wordfast_translation_memory:
+.. _wordfast:
 
 Wordfast Translation Memory
 ***************************

@@ -1,5 +1,5 @@
 
-.. _levenshtein_distance#levenshtein_distance:
+.. _levenshtein_distance:
 
 Levenshtein distance
 ********************

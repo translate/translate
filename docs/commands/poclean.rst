@@ -1,5 +1,5 @@
 
-.. _poclean#poclean:
+.. _poclean:
 
 poclean
 *******

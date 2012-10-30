@@ -1,5 +1,5 @@
 
-.. _contributing#contributing:
+.. _contributing:
 
 Contributing
 ************

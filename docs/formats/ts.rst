@@ -1,5 +1,6 @@
 
-.. _ts#qt_.ts:
+.. _ts:
+.. _qt_linguist:
 
 Qt .ts
 ******

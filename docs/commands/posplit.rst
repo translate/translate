@@ -1,5 +1,5 @@
 
-.. _posplit#posplit:
+.. _posplit:
 
 posplit
 *******

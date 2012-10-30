@@ -1,5 +1,5 @@
 
-.. _rc2po#rc2po:
+.. _rc2po:
 
 rc2po
 *****

@@ -1,5 +1,5 @@
 
-.. _prop2po#prop2po_and_po2prop:
+.. _prop2po:
 
 prop2po and po2prop
 *******************

@@ -1,11 +1,11 @@
 
-.. _pages/guide/document_translation#document_translation:
+.. _document_translation:
 
 Document translation
 ********************
 Translating documents can be quite different from translating software interfaces. Many issues specific to software localisation might not be relevant in documents, such as accelerators, translation length, constructed phrases, etc.  However, document translation has several other issues that is good to be aware of.
 
-.. _pages/guide/document_translation#preparing_for_translation:
+.. _document_translation#preparing_for_translation:
 
 Preparing for translation
 =========================
@@ -16,7 +16,7 @@ Ideally a document should be prepared for translation. A good source document wi
 * Read `"writing for translation" <http://www.multilingualwebmaster.com/library/writing-TR.html>`_
 * For structured documents, use proper structure like headings and subheadings instead of using style only.
 
-.. _pages/guide/document_translation#translation:
+.. _document_translation#translation:
 
 Translation
 ===========
@@ -24,7 +24,7 @@ A lot can be said about translation in general, but this is only meant to give y
 
 Be to be aware of issues arising out of translation memory. You could possibly have exact matches (identical string translated before), or In Context Exact (ICE) matches, where some translation tools will specifically indicate that the translation is identical, but also that the surrounding text from the paragraph is the same. It could also indicate agreement with regards to domain, file, date, etc.
 
-.. _pages/guide/document_translation#post-processing:
+.. _document_translation#post-processing:
 
 Post-processing
 ===============

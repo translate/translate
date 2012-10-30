@@ -1,5 +1,5 @@
 
-.. _ini#ini_files:
+.. _ini:
 
 INI Files
 *********

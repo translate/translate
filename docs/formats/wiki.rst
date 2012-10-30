@@ -1,5 +1,5 @@
 
-.. _wiki#wiki_syntax:
+.. _wiki:
 
 Wiki Syntax
 ***********

@@ -1,5 +1,6 @@
 
-.. _checking_for_inconsistencies#checking_for_inconsistencies_in_your_translations:
+.. _checking_for_inconsistencies:
+.. _checking_for_inconsistencies_in_your_translations:
 
 Checking for inconsistencies in your translations
 *************************************************

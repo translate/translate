@@ -1,5 +1,5 @@
 
-.. _flex#adobe_flex_properties_files:
+.. _flex:
 
 Adobe Flex properties files
 ***************************

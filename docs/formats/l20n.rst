@@ -1,5 +1,5 @@
 
-.. _l20n#mozilla_l20n:
+.. _l20n:
 
 Mozilla l20n
 ************

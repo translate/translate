@@ -1,5 +1,5 @@
 
-.. _junitmsgfmt#junitmsgfmt:
+.. _junitmsgfmt:
 
 junitmsgfmt
 ***********

@@ -1,5 +1,5 @@
 
-.. _pofilter#pofilter:
+.. _pofilter:
 
 pofilter
 ********

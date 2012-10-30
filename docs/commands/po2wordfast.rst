@@ -1,5 +1,5 @@
 
-.. _po2wordfast#po2wordfast:
+.. _po2wordfast:
 
 po2wordfast
 ***********

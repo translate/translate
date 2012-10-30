@@ -1,5 +1,5 @@
 
-.. _csv#csv:
+.. _csv:
 
 CSV
 ***

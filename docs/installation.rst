@@ -1,5 +1,5 @@
 
-.. _installation#installation:
+.. _installation:
 
 Installation
 ************
@@ -39,7 +39,7 @@ For build instructions, see the :doc:`development/building` page.
 Download
 ========
 
-Download a stable `released version <http://sourceforge.net/projects/translate/files/Translate%20Toolkit/>`_.  Or if you have a python environment, run `easy_install translate-toolkit`.  For those who need problems fixed, or who want to work on the bleeding edge, get the latest source from :ref:`Git <pages/toolkit/installation#installing_from_git>`.
+Download a stable `released version <http://sourceforge.net/projects/translate/files/Translate%20Toolkit/>`_.  Or if you have a python environment, run `easy_install translate-toolkit`.  For those who need problems fixed, or who want to work on the bleeding edge, get the latest source from :ref:`Git <installation#installing_from_git>`.
 
 For most Windows users, the file named "translate-toolkit-...-setup.exe" is the best choice and contains everything you need if you just want to run Toolkit commands.  If you want to use it for development, you will need to install it with easy_install or from the source package.
 

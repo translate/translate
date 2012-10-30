@@ -1,5 +1,5 @@
 
-.. _po2tmx#po2tmx:
+.. _po2tmx:
 
 po2tmx
 ******

@@ -1,5 +1,5 @@
 
-.. _psyco_mode#--psyco=mode:
+.. _option_psyco:
 
 --psyco=MODE
 ************
@@ -14,21 +14,21 @@ Note psyco only works on i386 architectures.
 
 To install psyco, you can look for it in your distribution's packages, or obtain it here: http://psyco.sourceforge.net/
 
-.. _psyco_mode#none:
+.. _option_psyco#none:
 
 none
 ====
 
 Switch psyco optimisation off.
 
-.. _psyco_mode#full_default:
+.. _option_psyco#full_default:
 
 full (default)
 ==============
 
 This is the default option, even if no --psyco command line options is specified. It will try to optimise everything, so potentially it might consume more memory.
 
-.. _psyco_mode#profile:
+.. _option_psyco#profile:
 
 profile
 =======

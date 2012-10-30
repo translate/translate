@@ -1,5 +1,5 @@
 
-.. _pocompile#pocompile:
+.. _pocompile:
 
 pocompile
 *********

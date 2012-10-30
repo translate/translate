@@ -1,5 +1,5 @@
 
-.. _poterminology_stopword_file#stopword_file_format:
+.. _poterminology_stopword_file:
 
 Stopword file format
 ********************

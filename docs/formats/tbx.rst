@@ -1,5 +1,5 @@
 
-.. _tbx#tbx:
+.. _tbx:
 
 TBX
 ***

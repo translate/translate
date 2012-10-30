@@ -1,5 +1,5 @@
 
-.. _pot2po#pot2po:
+.. _pot2po:
 
 pot2po
 ******

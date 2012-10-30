@@ -1,5 +1,5 @@
 
-.. _history#history_of_the_translate_toolkit:
+.. _history:
 
 History of the Translate Toolkit
 ********************************

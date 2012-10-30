@@ -1,5 +1,5 @@
 
-.. _posegment#posegment:
+.. _posegment:
 
 posegment
 *********

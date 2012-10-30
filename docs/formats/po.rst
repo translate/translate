@@ -1,5 +1,5 @@
 
-.. _po#po_files:
+.. _po:
 
 PO Files
 ********

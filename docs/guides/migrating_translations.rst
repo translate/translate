@@ -1,5 +1,5 @@
 
-.. _migrating_translations#migrating_your_translations:
+.. _migrating_translations:
 
 Migrating your translations
 ***************************

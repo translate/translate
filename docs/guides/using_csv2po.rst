@@ -1,5 +1,5 @@
 
-.. _using_csv2po#using_csv2po:
+.. _using_csv2po:
 
 Using csv2po
 ************

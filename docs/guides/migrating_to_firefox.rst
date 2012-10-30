@@ -1,5 +1,6 @@
 
-.. _migrating_to_firefox#migrating_mozilla_translations_to_firefox:
+.. _migrating_to_firefox:
+.. _migrating_mozilla_translations_to_firefox:
 
 Migrating Mozilla Translations to Firefox
 *****************************************

@@ -1,5 +1,5 @@
 
-.. _pocount#pocount:
+.. _pocount:
 
 pocount
 *******

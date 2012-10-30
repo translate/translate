@@ -1,5 +1,5 @@
 
-.. _poswap#poswap:
+.. _poswap:
 
 poswap
 ******

@@ -1,5 +1,5 @@
 
-.. _conformance#standards_conformance:
+.. _conformance:
 
 Standards conformance
 *********************

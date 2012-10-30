@@ -1,5 +1,5 @@
 
-.. _html#html:
+.. _html:
 
 HTML
 ****

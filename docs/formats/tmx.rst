@@ -1,5 +1,5 @@
 
-.. _tmx#tmx:
+.. _tmx:
 
 TMX
 ***

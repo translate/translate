@@ -1,3 +1,4 @@
+.. _translate-toolkit:
 
 Translate Toolkit
 =================

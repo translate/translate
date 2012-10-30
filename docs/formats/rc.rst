@@ -1,5 +1,6 @@
 
-.. _rc#windows_rc_files:
+.. _rc:
+.. _windows_rc:
 
 Windows RC files
 ****************

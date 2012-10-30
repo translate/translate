@@ -1,4 +1,4 @@
-.. _formats#translation_related_file_formats:
+.. _formats:
 
 
 Translation Related File Formats

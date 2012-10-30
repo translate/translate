@@ -1,5 +1,5 @@
 
-.. _poreencode#poreencode:
+.. _poreencode:
 
 poreencode
 **********

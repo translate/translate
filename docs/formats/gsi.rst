@@ -1,5 +1,6 @@
 
-.. _gsi#openoffice.org_gsi/sdf_format:
+.. _gsi:
+.. _sdf:
 
 OpenOffice.org GSI/SDF format
 *****************************

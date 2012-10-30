@@ -1,5 +1,5 @@
 
-.. _pocommentclean#pocommentclean:
+.. _pocommentclean:
 
 pocommentclean
 **************

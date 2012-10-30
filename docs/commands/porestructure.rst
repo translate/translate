@@ -1,5 +1,5 @@
 
-.. _porestructure#porestructure:
+.. _porestructure:
 
 porestructure
 *************

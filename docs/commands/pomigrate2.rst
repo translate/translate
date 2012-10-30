@@ -1,5 +1,5 @@
 
-.. _pomigrate2#pomigrate2:
+.. _pomigrate2:
 
 pomigrate2
 **********

@@ -1,5 +1,5 @@
 
-.. _features#features:
+.. _features:
 
 Features
 ********

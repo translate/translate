@@ -1,5 +1,5 @@
 
-.. _general_usage#general_usage:
+.. _general_usage:
 
 General Usage
 *************

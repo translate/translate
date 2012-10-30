@@ -1,5 +1,5 @@
 
-.. _building#building:
+.. _building:
 
 Building
 ********

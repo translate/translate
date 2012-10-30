@@ -1,5 +1,5 @@
 
-.. _duplicates_duplicatestyle#--duplicates=duplicatestyle:
+.. _option_duplicates:
 
 --duplicates=DUPLICATESTYLE
 ***************************
@@ -10,7 +10,7 @@ Also affected are conversions in which the source format is empty (allowing poss
 
 Previously the tools used msgid_comment (KDE style comments) to disambiguate text.  However, with the release of Gettext 0.15, the new msgctxt disambiguation is now recommended, especially if you wish to use your files with other Gettext the tools. Many other pieces of software now also support this feature, and will probably become the best choice for almost all circumstances.  It is the default in our converters.
 
-.. _duplicates_duplicatestyle#merge:
+.. _option_duplicates#merge:
 
 merge
 =====
@@ -36,7 +36,7 @@ If however the source text is blank (these are often configuration options in Mo
     msgid "_: file1.dtd:translators_email\n"
     msgstr ""
 
-.. _duplicates_duplicatestyle#msgctxt:
+.. _option_duplicates#msgctxt:
 
 msgctxt (default)
 =================

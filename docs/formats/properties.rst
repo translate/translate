@@ -1,5 +1,5 @@
 
-.. _properties#mozilla_and_java_properties_files:
+.. _properties:
 
 Mozilla and Java properties files
 *********************************

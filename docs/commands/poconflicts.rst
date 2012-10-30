@@ -1,5 +1,5 @@
 
-.. _poconflicts#poconflicts:
+.. _poconflicts:
 
 poconflicts
 ***********

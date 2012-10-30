@@ -1,5 +1,6 @@
 
-.. _using_oo2po#creating_openoffice.org_pot_files:
+.. _using_oo2po:
+.. _creating_openoffice.org_pot_files:
 
 Creating OpenOffice.org POT files
 *********************************

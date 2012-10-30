@@ -1,5 +1,5 @@
 
-.. _popuretext#popuretext:
+.. _popuretext:
 
 popuretext
 **********

@@ -1,5 +1,5 @@
 
-.. _creating_a_terminology_list_from_your_existing_translations#creating_a_terminology_list_from_your_existing_translations:
+.. _creating_a_terminology_list_from_your_existing_translations:
 
 Creating a terminology list from your existing translations
 ***********************************************************

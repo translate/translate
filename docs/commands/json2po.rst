@@ -1,5 +1,5 @@
 
-.. _json2po#json2po:
+.. _json2po:
 
 json2po
 *******

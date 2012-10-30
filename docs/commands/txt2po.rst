@@ -1,5 +1,5 @@
 
-.. _txt2po#txt2po_and_po2txt:
+.. _txt2po:
 
 txt2po and po2txt
 *****************

@@ -1,5 +1,5 @@
 
-.. _tmserver#tmserver:
+.. _tmserver:
 
 tmserver
 ********
