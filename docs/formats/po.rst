@@ -25,34 +25,49 @@ Supported Features
 Supported comments
 ==================
 
-* normal comments ::
+* normal comments
+
+.. code-block:: po
 
     # this is another comment
 
-* automatic comments ::
+* automatic comments
+
+.. code-block:: po
 
     #. comment extracted from the source code
 
-* source location comments ::
+* source location comments
+
+.. code-block:: po
 
     #: sourcefile.xxx:35
 
-* typecomments ::
+* typecomments
+
+.. code-block:: po
 
     #, fuzzy
 
-* msgidcomments ::
+* msgidcomments
 
-    magid "_: within msgid\n"
+.. code-block:: po
+
+    msgid "_: comment\n"
+    "translation"
 
 Also know as KDE style comments as they are used by KDE for message disambiguation and comments to translators. (support for this is being phased out)
 
-* obsolete messages ::
+* obsolete messages
+
+.. code-block:: po
 
     #~ msgid "Blah"
     #~ msgstr "Bleeh"
 
-* previous msgid and msgctxt ::
+* previous msgid and msgctxt
+
+.. code-block:: po
 
     #| msgid "previous message"
 
@@ -66,7 +81,7 @@ Unsupported Features
 Alternate language
 ------------------
 
-::
+.. code-block:: po
 
   msgid "English"
   msgid[af] "Engels"
