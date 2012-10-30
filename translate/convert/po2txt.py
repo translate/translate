@@ -17,12 +17,11 @@
 #
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, see <http://www.gnu.org/licenses/>.
-#
 
-"""convert Gettext PO localization files to plain text (.txt) files
+"""Convert Gettext PO localization files to plain text (.txt) files.
 
-see: http://translate.sourceforge.net/wiki/toolkit/po2txt for examples and
-usage instructions
+See: http://docs.translatehouse.org/projects/translate-toolkit/en/latest/commands/txt2po.html
+for examples and usage instructions.
 """
 
 try:

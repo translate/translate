@@ -18,7 +18,11 @@
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, see <http://www.gnu.org/licenses/>.
 
-""" Convert TikiWiki's language.php files to GetText PO files. """
+"""Convert TikiWiki's language.php files to GetText PO files.
+
+See: http://docs.translatehouse.org/projects/translate-toolkit/en/latest/commands/tiki2po.html
+for examples and usage instructions.
+"""
 
 import sys
 

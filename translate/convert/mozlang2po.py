@@ -21,10 +21,7 @@
 # Original Author: Dan Schafer <dschafer@mozilla.com>
 # Date: 10 Jun 2008
 
-"""convert Java/Mozilla .properties files to Gettext PO localization files
-
-See: http://translate.sourceforge.net/wiki/toolkit/prop2po for examples and
-usage instructions
+"""Convert Mozilla .lang files to Gettext PO localization files.
 """
 
 from translate.storage import mozilla_lang as lang

@@ -19,7 +19,11 @@
 # along with this program; if not, see <http://www.gnu.org/licenses/>.
 #
 
-"""convert OpenDocument (ODF) files to Gettext PO localization files"""
+"""Convert XLIFF translation files to OpenDocument (ODF) files.
+
+See: http://docs.translatehouse.org/projects/translate-toolkit/en/latest/commands/odf2xliff.html
+for examples and usage instructions.
+"""
 
 import cStringIO
 import zipfile

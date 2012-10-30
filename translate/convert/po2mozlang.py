@@ -21,10 +21,7 @@
 # Original Author: Dan Schafer <dschafer@mozilla.com>
 # Date: 10 Jun 2008
 
-"""convert Gettext PO localization files to Mozilla .lang files
-
-see: http://translate.sourceforge.net/wiki/toolkit/po2mozlang for examples and
-usage instructions
+"""Convert Gettext PO localization files to Mozilla .lang files.
 """
 
 from translate.storage import mozilla_lang as lang

@@ -19,9 +19,10 @@
 # along with this program; if not, see <http://www.gnu.org/licenses/>.
 #
 
-"""convert an OpenOffice.org (SDF) localization file to XLIFF localization files
+"""Convert an OpenOffice.org (SDF) localization file to XLIFF localization files.
 
-User documentation: http://translate.sourceforge.net/wiki/toolkit/oo2po
+See: http://docs.translatehouse.org/projects/translate-toolkit/en/latest/commands/oo2po.html
+for examples and usage instructions.
 """
 
 import sys

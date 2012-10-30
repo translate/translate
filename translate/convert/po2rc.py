@@ -18,10 +18,10 @@
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, see <http://www.gnu.org/licenses/>.
 
-"""Convert Gettext PO localization files back to Windows Resource (.rc) files
+"""Convert Gettext PO localization files back to Windows Resource (.rc) files.
 
-See: http://translate.sourceforge.net/wiki/toolkit/po2rc for examples and
-usage instructions.
+See: http://docs.translatehouse.org/projects/translate-toolkit/en/latest/commands/rc2po.html
+for examples and usage instructions.
 """
 
 from translate.storage import po

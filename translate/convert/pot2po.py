@@ -18,11 +18,11 @@
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, see <http://www.gnu.org/licenses/>.
 
-"""Convert template files (like .pot or template .xlf files) translation files,
-preserving existing translations.
+"""Convert template files (like .pot or template .xlf files) to translation
+files, preserving existing translations.
 
-See: http://translate.sourceforge.net/wiki/toolkit/pot2po for examples and
-usage instructions.
+See: http://docs.translatehouse.org/projects/translate-toolkit/en/latest/commands/pot2po.html
+for examples and usage instructions.
 """
 
 from translate.storage import factory

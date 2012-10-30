@@ -18,7 +18,11 @@
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, see <http://www.gnu.org/licenses/>.
 
-"""convert .rc files to Gettext PO localization files"""
+"""Convert Windows RC files to Gettext PO localization files.
+
+See: http://docs.translatehouse.org/projects/translate-toolkit/en/latest/commands/rc2po.html
+for examples and usage instructions.
+"""
 
 import sys
 

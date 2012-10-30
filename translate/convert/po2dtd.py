@@ -18,8 +18,11 @@
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, see <http://www.gnu.org/licenses/>.
 
-"""script that converts a .po file to a UTF-8 encoded .dtd file as used by mozilla
-either done using a template or just using the .po file"""
+"""Converts a Gettext PO file to a UTF-8 encoded Mozilla .dtd file.
+
+.. note: Conversion is either done using a template plus PO file or just
+   using the .po file.
+"""
 
 import warnings
 

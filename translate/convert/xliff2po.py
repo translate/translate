@@ -20,8 +20,8 @@
 
 """Convert XLIFF localization files to Gettext PO localization files.
 
-see: http://translate.sourceforge.net/wiki/toolkit/xliff2po for examples and
-usage instructions.
+See: http://docs.translatehouse.org/projects/translate-toolkit/en/latest/commands/xliff2po.html
+for examples and usage instructions.
 """
 
 from translate.storage import po

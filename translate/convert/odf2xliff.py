@@ -19,7 +19,11 @@
 # along with this program; if not, see <http://www.gnu.org/licenses/>.
 #
 
-"""convert OpenDocument (ODF) files to XLIFF localization files"""
+"""Convert OpenDocument (ODF) files to XLIFF localization files.
+
+See: http://docs.translatehouse.org/projects/translate-toolkit/en/latest/commands/odf2xliff.html
+for examples and usage instructions.
+"""
 
 from translate.storage import factory
 from translate.misc.contextlib import contextmanager

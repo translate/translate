@@ -18,10 +18,13 @@
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, see <http://www.gnu.org/licenses/>.
 
-"""script to convert a mozilla .dtd UTF-8 localization format to a
-gettext .po localization file using the po and dtd modules, and the
+"""Convert a Mozilla .dtd UTF-8 localization format to a
+Gettext PO localization file.
+
+Uses the po and dtd modules, and the
 dtd2po convertor class which is in this module
-You can convert back to .dtd using po2dtd.py"""
+You can convert back to .dtd using po2dtd.py.
+"""
 
 from translate.storage import po
 from translate.storage import dtd

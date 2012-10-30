@@ -18,10 +18,10 @@
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, see <http://www.gnu.org/licenses/>.
 
-"""convert Gettext PO localization files to Comma-Separated Value (.csv) files
+"""Convert Gettext PO localization files to Comma-Separated Value (.csv) files.
 
-see: http://translate.sourceforge.net/wiki/toolkit/po2csv for examples and
-usage instructions
+See: http://docs.translatehouse.org/projects/translate-toolkit/en/latest/commands/csv2po.html
+for examples and usage instructions.
 """
 
 from translate.storage import po

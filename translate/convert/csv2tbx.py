@@ -18,8 +18,12 @@
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, see <http://www.gnu.org/licenses/>.
 
-"""convert Comma-Separated Value (.csv) files to a TermBase eXchange (.tbx)
-glossary file"""
+"""Convert Comma-Separated Value (.csv) files to a TermBase eXchange (.tbx)
+glossary file
+
+See: http://docs.translatehouse.org/projects/translate-toolkit/en/latest/commands/csv2tbx.html
+for examples and usage instructions
+"""
 
 from translate.storage import tbx
 from translate.storage import csvl10n

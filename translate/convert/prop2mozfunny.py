@@ -18,7 +18,8 @@
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, see <http://www.gnu.org/licenses/>.
 
-"""converts properties files back to funny mozilla files"""
+"""Converts properties files to additional Mozilla format files.
+"""
 
 from translate.storage import properties
 from translate.convert import po2prop

@@ -18,11 +18,10 @@
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, see <http://www.gnu.org/licenses/>.
 
+"""Convert Gettext PO localization files to Java/Mozilla .properties files.
 
-"""convert Gettext PO localization files to Java/Mozilla .properties files
-
-see: http://translate.sourceforge.net/wiki/toolkit/po2prop for examples and
-usage instructions
+See: http://docs.translatehouse.org/projects/translate-toolkit/en/latest/commands/prop2po.html
+for examples and usage instructions.
 """
 
 from translate.misc import quote

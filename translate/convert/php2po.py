@@ -18,10 +18,10 @@
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, see <http://www.gnu.org/licenses/>.
 
-"""convert PHP localization files to Gettext PO localization files
+"""Convert PHP localization files to Gettext PO localization files.
 
-See: http://translate.sourceforge.net/wiki/toolkit/php2po for examples and
-usage instructions
+See: http://docs.translatehouse.org/projects/translate-toolkit/en/latest/commands/php2po.html
+for examples and usage instructions.
 """
 
 import sys
