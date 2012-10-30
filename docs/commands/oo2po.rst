@@ -1,8 +1,11 @@
 
 .. _oo2po:
+.. _po2oo:
+.. _oo2xliff:
+.. _xliff2oo:
 
-oo2po and po2oo
-***************
+oo2po
+*****
 
 Convert between OpenOffice.org GSI/SDF files and the PO format.  This tool provides a
 complete roundtrip; it preserves the structure of the GSI file and creates

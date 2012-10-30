@@ -1,5 +1,6 @@
 
 .. _json2po:
+.. _po2json:
 
 json2po
 *******

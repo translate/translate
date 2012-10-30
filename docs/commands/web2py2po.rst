@@ -1,5 +1,6 @@
 
 .. _py2web2po:
+.. _po2web2py:
 
 web2py2po
 *********

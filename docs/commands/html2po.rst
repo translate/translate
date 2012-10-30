@@ -1,8 +1,9 @@
 
 .. _html2po:
+.. _po2html:
 
-html2po and po2html
-*******************
+html2po
+*******
 
 Convert translatable items in HTML to the PO format.
 

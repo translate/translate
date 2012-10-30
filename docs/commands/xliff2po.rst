@@ -1,8 +1,9 @@
 
 .. _xliff2po:
+.. _po2xliff:
 
-xliff2po and po2xliff
-*********************
+xliff2po
+********
 
 Converts XLIFF localization files to Gettext PO files.  XLIFF is the XML Localization Interchange File Format
 developed by `OASIS <http://www.oasis-open.org/committees/tc_home.php?wg_abbrev=xliff>`_ (Organization for the Advancement of Structured Information Standards) to allow translation

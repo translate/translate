@@ -1,5 +1,6 @@
 
 .. _symb2po:
+.. _po2symb:
 
 symb2po
 *******

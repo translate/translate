@@ -1,8 +1,9 @@
 
 .. _txt2po:
+.. _po2txt:
 
-txt2po and po2txt
-*****************
+txt2po
+******
 
 txt2po allows you to use the same principles of PO files with normal text
 files.  In PO only items that change are marked fuzzy and only new items need

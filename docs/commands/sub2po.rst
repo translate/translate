@@ -1,8 +1,9 @@
 
 .. _sub2po:
+.. _po2sub:
 
-sub2po and po2sub
-*****************
+sub2po
+******
 
 sub2po allows you to use the same principles of PO files with :doc:`/formats/subtitles`. In PO only items that change are marked fuzzy and only new items need to be translated, unchanged items remain unchanged for the translation.
 

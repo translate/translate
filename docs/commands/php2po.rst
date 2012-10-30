@@ -1,5 +1,6 @@
 
 .. _php2po:
+.. _po2php:
 
 php2po
 ******

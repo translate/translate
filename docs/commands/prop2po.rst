@@ -1,8 +1,9 @@
 
 .. _prop2po:
+.. _po2prop:
 
-prop2po and po2prop
-*******************
+prop2po
+*******
 
 Convert between Java property files (.properties) and Gettext PO format.
 

@@ -1,8 +1,9 @@
 
 .. _csv2po:
+.. _po2csv:
 
-csv2po and po2csv
-*****************
+csv2po
+******
 
 Convert between CSV (Comma Separated Value) files and the PO format.  This is useful for those translators who can only use a Spreadsheet, a modern spreadsheet can open CSV files for editing.  It is also useful if you have other data such as translation memory in CSV format and you wish to use it with your PO translations.
 

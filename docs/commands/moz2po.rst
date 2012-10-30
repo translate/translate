@@ -1,8 +1,9 @@
 
 .. _moz2po:
+.. _po2moz:
 
-moz2po and po2moz
-*****************
+moz2po
+******
 
 moz2po converts Mozilla files to PO files.  It wraps converters that handle .properties, .dtd and some strange Mozilla files.
 The tool can extract from an XPI file or work with files from Mozilla's Mercurial repository.  The tools thus provides

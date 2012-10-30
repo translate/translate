@@ -1,8 +1,9 @@
 
 .. _ts2po:
+.. _po2ts:
 
-ts2po and po2ts
-***************
+ts2po
+*****
 
 Convert Qt .ts localization files to Gettext .po format files using ts2po and convert the translated :doc:`/formats/po` files back to :doc:`/formats/ts` using po2ts.
 
