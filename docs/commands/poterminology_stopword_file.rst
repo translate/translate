@@ -1,5 +1,5 @@
 
-.. _pages/toolkit/poterminology_stopword_file#stopword_file_format:
+.. _poterminology_stopword_file#stopword_file_format:
 
 Stopword file format
 ********************
@@ -10,7 +10,7 @@ The default stopword file for :doc:`poterminology` describes the syntax of these
 
   poterminology --manpage | sed -n '/STOPFILE/s/.*(\(.*\)).*/\1/p'
 
-.. _pages/toolkit/poterminology_stopword_file#overview:
+.. _poterminology_stopword_file#overview:
 
 Overview
 ========
@@ -23,7 +23,7 @@ Apart from comment lines (which begin with '#') and empty lines (which are also 
 * stoplist regular expressions
 * stoplist words
 
-.. _pages/toolkit/poterminology_stopword_file#case_mapping_specifiers:
+.. _poterminology_stopword_file#case_mapping_specifiers:
 
 Case mapping specifiers
 -----------------------
@@ -38,7 +38,7 @@ These correspond to the equivalent --preserve-case / --fold-titlecase / --ignore
 
 There should only be one case mapping specifier in a stoplist file; if more than one are present, the last one will take precedence over the others, and its mapping will apply to all entries.  If multiple stoplist files are used, the last case mapping specifier processed will apply to all entries **in all files**.
 
-.. _pages/toolkit/poterminology_stopword_file#stoplist_regular_expressions:
+.. _poterminology_stopword_file#stoplist_regular_expressions:
 
 Stoplist regular expressions
 ----------------------------
@@ -49,7 +49,7 @@ Regular expression patterns are only checked if the word itself does not appear 
 
 Use regular expressions sparingly, as evaluating them for every word in the source files can be expensive.  In addition to stoplist regular expressions, poterminology has precompiled patterns for C and Python format specifiers (e.g. %d) and XML/HTML <elements> and &entities; - these are removed before stoplist processing and it is not possible to override this. 
 
-.. _pages/toolkit/poterminology_stopword_file#stoplist_words:
+.. _poterminology_stopword_file#stoplist_words:
 
 Stoplist words
 --------------
@@ -67,7 +67,7 @@ Generally '+' is only needed for exceptions to regular expression patterns, but 
 
 Note that if a word appears multiple times in a stoplist file with different function characters preceding it, the *last entry will take precedence* over the others.  This is the only exception to the general rule that order is not important in stopword files. 
 
-.. _pages/toolkit/poterminology_stopword_file#default_file_example:
+.. _poterminology_stopword_file#default_file_example:
 
 Default file example
 ====================

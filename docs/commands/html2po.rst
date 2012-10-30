@@ -1,12 +1,12 @@
 
-.. _pages/toolkit/html2po#html2po_and_po2html:
+.. _html2po#html2po_and_po2html:
 
 html2po and po2html
 *******************
 
 Convert translatable items in HTML to the PO format.
 
-.. _pages/toolkit/html2po#usage:
+.. _html2po#usage:
 
 Usage
 =====
@@ -53,7 +53,7 @@ Options (po2html):
 | --fuzzy              | use translations marked fuzzy   |
 | --nofuzzy            | don't use translations marked fuzzy (default)   |
 
-.. _pages/toolkit/html2po#examples:
+.. _html2po#examples:
 
 Examples
 ========
@@ -68,7 +68,7 @@ This will find all HTML files (.htm, .html, .xhtml) in *site* convert them to PO
 
 All the PO translations in *xh* will be converted to html using html files in *site* as templates and outputting new translated HTML files in *site-xh*
 
-.. _pages/toolkit/html2po#bugs:
+.. _html2po#bugs:
 
 Bugs
 ====

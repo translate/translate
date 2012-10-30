@@ -1,5 +1,5 @@
 
-.. _pages/toolkit/po#po_files:
+.. _po#po_files:
 
 PO Files
 ********
@@ -8,7 +8,7 @@ PO files use the file format of the Gettext tools.
 .. seealso:: `Gettext manual <http://www.gnu.org/software/gettext/>`_ and
    `KDE style PO files <http://public.planetmirror.com/pub/kde/devel/gettext-kde/>`_
 
-.. _pages/toolkit/po#supported_features:
+.. _po#supported_features:
 
 Supported Features
 ==================
@@ -20,7 +20,7 @@ Supported Features
 * Language header (since gettext version 0.17)
 * Previous message ID and context (#| msgid and #| msgctxt)
 
-.. _pages/toolkit/po#supported_comments:
+.. _po#supported_comments:
 
 Supported comments
 ==================
@@ -71,7 +71,7 @@ Also know as KDE style comments as they are used by KDE for message disambiguati
 
     #| msgid "previous message"
 
-.. _pages/toolkit/po#unsupported_features:
+.. _po#unsupported_features:
 
 Unsupported Features
 ====================

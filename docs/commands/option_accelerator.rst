@@ -1,5 +1,5 @@
 
-.. _pages/toolkit/accelerator_accelerator#--accelerator=accelerator:
+.. _accelerator_accelerator#--accelerator=accelerator:
 
 --accelerator=ACCELERATOR
 *************************

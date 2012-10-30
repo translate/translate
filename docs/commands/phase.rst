@@ -1,5 +1,5 @@
 
-.. _pages/toolkit/phase#phase:
+.. _phase#phase:
 
 phase
 *****
@@ -9,7 +9,7 @@ You can create a ZIP file for a phase, run checks against a phase, review a phas
 the tasks that would be involved in sending work to various translators, receiving work, checking it and committing to
 CVS.
 
-.. _pages/toolkit/phase#prerequisites:
+.. _phase#prerequisites:
 
 Prerequisites
 =============
@@ -18,14 +18,14 @@ Prerequisites
 * `diff <http://linux.die.net/man/1/diff>`_
 * `cvs <http://linux.die.net/man/1/cvs>`_
 
-.. _pages/toolkit/phase#latest_version:
+.. _phase#latest_version:
 
 Latest Version
 ==============
 
 phase is not currently distributed as part of the toolkit.  You can get the `latest version from Git <https://raw.github.com/translate/translate/master/tools/phase>`_
 
-.. _pages/toolkit/phase#usage:
+.. _phase#usage:
 
 Usage
 =====
@@ -43,7 +43,7 @@ A full list of commands and options can be seen by running::
 
   phase --help
 
-.. _pages/toolkit/phase#commands:
+.. _phase#commands:
 
 Commands
 ========
@@ -81,7 +81,7 @@ These are the commands that you can use:
 * reviewsinout <language> <phase-name> -- counts the number of review files returned vs sent and shows which are missing
 * reviewsdiff <language> <phase-name> -- create a diff between what was sent for review and what was returned
 
-.. _pages/toolkit/phase#bugs:
+.. _phase#bugs:
 
 Bugs
 ====

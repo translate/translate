@@ -1,12 +1,12 @@
 
-.. _pages/toolkit/php2po#php2po:
+.. _php2po#php2po:
 
 php2po
 ******
 
 Converts PHP localisable string arrays to Gettext PO format.
 
-.. _pages/toolkit/php2po#usage:
+.. _php2po#usage:
 
 Usage
 =====
@@ -52,7 +52,7 @@ Options (po2php):
 | --fuzzy              | use translations marked fuzzy  |
 | --nofuzzy            | don't use translations marked fuzzy (default)  |
 
-.. _pages/toolkit/php2po#formats_supported:
+.. _php2po#formats_supported:
 
 Formats Supported
 =================
@@ -82,7 +82,7 @@ Gettext notations are also not supported, use the Gettext tools for those files.
 
     $lang = array(array('key' => 'value')); #NOT SUPPORTED
 
-.. _pages/toolkit/php2po#examples:
+.. _php2po#examples:
 
 Examples
 ========

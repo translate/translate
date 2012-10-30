@@ -1,5 +1,5 @@
 
-.. _pages/toolkit/creating_mozilla_pot_files#creating_mozilla_pot_files:
+.. _creating_mozilla_pot_files#creating_mozilla_pot_files:
 
 Creating Mozilla POT files
 **************************
@@ -9,7 +9,7 @@ You can do this two ways:
 - Using Mozilla source (from CVS or Mercurial)
 - Using an en-US XPI file
 
-.. _pages/toolkit/creating_mozilla_pot_files#using_mercurial:
+.. _creating_mozilla_pot_files#using_mercurial:
 
 Using Mercurial
 ===============
@@ -31,7 +31,7 @@ that you can use for translation or updating your existing PO files.
 
 There are also :doc:`other scripts </commands/mozilla_l10n_scripts>` that can help with creating and updating POT and PO files for Mozilla localisation.
 
-.. _pages/toolkit/creating_mozilla_pot_files#using_cvs:
+.. _creating_mozilla_pot_files#using_cvs:
 
 Using CVS
 =========
@@ -55,7 +55,7 @@ This will move the correct en-US files to ``l10n/en-US``.  You can now create PO
 This will create the POT files in ``l10n/pot`` using the American English files from ``en-US``.  You now have a set of POT files
 that you can use for translation or updating your existing PO files.
 
-.. _pages/toolkit/creating_mozilla_pot_files#using_an_en-us_xpi_file:
+.. _creating_mozilla_pot_files#using_an_en-us_xpi_file:
 
 Using an en-US XPI file
 =======================

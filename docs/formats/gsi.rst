@@ -1,12 +1,12 @@
 
-.. _pages/toolkit/gsi#openoffice.org_gsi/sdf_format:
+.. _gsi#openoffice.org_gsi/sdf_format:
 
 OpenOffice.org GSI/SDF format
 *****************************
 
 OpenOffice.org uses an internal format called SDF to manage localisation text.  The toolkit can successfully manage all features of this format converting it to XLIFF or PO format with the :doc:`oo2po </commands/oo2po>` and oo2xliff tools.
 
-.. _pages/toolkit/gsi#features:
+.. _gsi#features:
 
 Features
 ========

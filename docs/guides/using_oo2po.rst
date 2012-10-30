@@ -1,5 +1,5 @@
 
-.. _pages/toolkit/using_oo2po#creating_openoffice.org_pot_files:
+.. _using_oo2po#creating_openoffice.org_pot_files:
 
 Creating OpenOffice.org POT files
 *********************************
@@ -7,7 +7,7 @@ Creating OpenOffice.org POT files
 This quick start guide shows you how to create the PO Template files
 for your OpenOffice.org translation.
 
-.. _pages/toolkit/using_oo2po#quick_start:
+.. _using_oo2po#quick_start:
 
 Quick Start
 ===========
@@ -15,12 +15,12 @@ Quick Start
 #. `Download the latest POT and GSI files <ftp://ftp.linux.cz/pub/localization/openoffice.org/devel/pot>`_
 #. ``oo2po -P <gsi> <new-pots>``
 
-.. _pages/toolkit/using_oo2po#detailed_description:
+.. _using_oo2po#detailed_description:
 
 Detailed Description
 ====================
 
-.. _pages/toolkit/using_oo2po#download_the_latest_pot_and_gsi_files:
+.. _using_oo2po#download_the_latest_pot_and_gsi_files:
 
 Download the latest POT and GSI files
 -------------------------------------
@@ -32,7 +32,7 @@ same file that produces the POT files.  So to begin translating you don't need t
 
 However, you will need this file if you need to use some of the other features of :doc:`/commands/oo2po` such as changing the source language from English.
 
-.. _pages/toolkit/using_oo2po#produce_the_pot_files_using_oo2po:
+.. _using_oo2po#produce_the_pot_files_using_oo2po:
 
 Produce the POT files using oo2po
 ---------------------------------
@@ -51,7 +51,7 @@ If you want to create one large .pot file instead of a lot of small ones, you sh
 
 option as described in :doc:`/commands/oo2po`.
 
-.. _pages/toolkit/using_oo2po#produce_a_pot_files_with_french_source_text:
+.. _using_oo2po#produce_a_pot_files_with_french_source_text:
 
 Produce a POT files with French source text
 -------------------------------------------

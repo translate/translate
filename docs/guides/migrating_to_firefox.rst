@@ -1,5 +1,5 @@
 
-.. _pages/toolkit/migrating_to_firefox#migrating_mozilla_translations_to_firefox:
+.. _migrating_to_firefox#migrating_mozilla_translations_to_firefox:
 
 Migrating Mozilla Translations to Firefox
 *****************************************
@@ -12,7 +12,7 @@ Note: This guide assumes that you are or will be using PO files.
 
 FIXME this page needs to be rewriten now that Mozilla is using CSV.  The steps are more or less the same.  Look at :doc:`creating_mozilla_pot_files` which talks about creating POT file from CVS. Then the process is mostly the same except swap any reference to XPI to be the translations in Mozilla CVS.
 
-.. _pages/toolkit/migrating_to_firefox#quick_start:
+.. _migrating_to_firefox#quick_start:
 
 Quick Start
 ===========
@@ -21,12 +21,12 @@ Quick Start
 #. :doc:`moz2po </commands/moz2po>` -P firefox-1.0-en-US.xpi templates-ff-1.0
 #. :doc:`/commands/pomigrate2` xxYY-1.7.3 xxYY-ff-1.0 templates-ff-1.0
 
-.. _pages/toolkit/migrating_to_firefox#detailed_description:
+.. _migrating_to_firefox#detailed_description:
 
 Detailed Description
 ====================
 
-.. _pages/toolkit/migrating_to_firefox#make_sure_your_mozilla_is_in_po_format:
+.. _migrating_to_firefox#make_sure_your_mozilla_is_in_po_format:
 
 Make sure your Mozilla is in PO format
 --------------------------------------
@@ -34,7 +34,7 @@ Make sure your Mozilla is in PO format
 If you are not currently using PO files to do your translations then you can
 migrate an existing XPI to PO format.
 
-.. _pages/toolkit/migrating_to_firefox#get_the_correct_en-us_xpi:
+.. _migrating_to_firefox#get_the_correct_en-us_xpi:
 
 Get the correct en-US xpi
 ^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -47,7 +47,7 @@ for the same release::
 Change 1.7.3 to the release that you need.  Note: Linux and Windows
 langenus.xpi are the same so no need to worry about that.
 
-.. _pages/toolkit/migrating_to_firefox#create_mozilla_po_files_for_your_language:
+.. _migrating_to_firefox#create_mozilla_po_files_for_your_language:
 
 Create Mozilla PO files for your language
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -65,7 +65,7 @@ Where:
 * langXXYY.xpi is your existing translated XPI with the same version and the en-US one downloaded.
 * xxYY-1.7.3 is an output directory for the PO files
 
-.. _pages/toolkit/migrating_to_firefox#create_firefox_pot_files:
+.. _migrating_to_firefox#create_firefox_pot_files:
 
 Create Firefox POT files
 ------------------------
@@ -73,7 +73,7 @@ Create Firefox POT files
 You need to create a set of Firefox PO Template files that you will use as templates
 when you migrate your Mozilla translations.  Template files are simply blank PO files.
 
-.. _pages/toolkit/migrating_to_firefox#getting_the_en-us.xpi:
+.. _migrating_to_firefox#getting_the_en-us.xpi:
 
 Getting the en-US.xpi
 ^^^^^^^^^^^^^^^^^^^^^
@@ -83,7 +83,7 @@ Rumour has it that the en-US XPI files for Firefox are different for Windows and
 * Linux -- Firefox 1.0: ftp://ftp.mozilla.org/pub/mozilla.org/firefox/releases/1.0/linux-i686/xpi/en-US.xpi
 * Windows -- Firefox 1.0: ftp://ftp.mozilla.org/pub/mozilla.org/firefox/releases/1.0/win32/xpi/en-US.xpi
 
-.. _pages/toolkit/migrating_to_firefox#create_the_pot_files:
+.. _migrating_to_firefox#create_the_pot_files:
 
 Create the POT files
 ^^^^^^^^^^^^^^^^^^^^
@@ -98,7 +98,7 @@ Where:
 * *firefox-1.0-en-US.xpi* is an en-US.xpi for Firefox downloaded earlier
 * *templates-ff-1.0* is the new directory that will contain the POT files
 
-.. _pages/toolkit/migrating_to_firefox#migrate_the_mozilla_po_files_to_firefox:
+.. _migrating_to_firefox#migrate_the_mozilla_po_files_to_firefox:
 
 Migrate the Mozilla PO files to Firefox
 ---------------------------------------
@@ -117,7 +117,7 @@ Where:
 * *xxYY-ff-1.0* will contain your new Firefox files
 * *templates-ff-1.0* contains the Firefox template files
 
-.. _pages/toolkit/migrating_to_firefox#how_does_it_do_the_migration:
+.. _migrating_to_firefox#how_does_it_do_the_migration:
 
 How does it do the migration?
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -147,7 +147,7 @@ The result is that all Firefox files are at least initialised.  Many of them
 are populated with conflicting entries clearly highlighted and ready for you to
 fix.
 
-.. _pages/toolkit/migrating_to_firefox#begin_translating:
+.. _migrating_to_firefox#begin_translating:
 
 Begin translating
 -----------------

@@ -51,12 +51,12 @@ Options (po2symb):
 | -t TEMPLATE, --template=TEMPLATE  | read from TEMPLATE in the Symbian translation format  |
 | :doc:`--psyco=mode <option_psyco>`         | use psyco to speed up the operation, modes: none, full, profile  |
 
-.. _pages/toolkit/symb2po#examples:
+.. _symb2po#examples:
 
 Examples
 ========
 
-.. _pages/toolkit/symb2po#symb2po:
+.. _symb2po#symb2po:
 
 symb2po
 -------
@@ -77,7 +77,7 @@ To create a file called ``my_project-en-fr.po`` (this is not the recommended PO 
 
     Ensure that the English and French files are well aligned, in other words, no changes to the source text should have happened since the translation was done.
 
-.. _pages/toolkit/symb2po#po2symb:
+.. _symb2po#po2symb:
 
 po2symb
 -------
@@ -88,7 +88,7 @@ In order to produce a French Symbian translation file using the English Symbian 
 
   po2symb -t my_project.r01 my_project-en-fr.po my_project.r02
 
-.. _pages/toolkit/symb2po#notes:
+.. _symb2po#notes:
 
 Notes
 =====
@@ -101,7 +101,7 @@ The string ``r_string_languagegroup_name`` is used to set the ``Language-Team`` 
 
 The Symbian translation header field ``Author`` is used to set the ``Last-Translator`` PO header field.
 
-.. _pages/toolkit/symb2po#issues:
+.. _symb2po#issues:
 
 Issues
 ======
@@ -114,7 +114,7 @@ The tools do nothing with the ``Name`` and ``Description`` Symbian header fields
 
 in a generated French translation file.
 
-.. _pages/toolkit/symb2po#bugs:
+.. _symb2po#bugs:
 
 Bugs
 ====

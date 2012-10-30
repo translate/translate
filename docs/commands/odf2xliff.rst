@@ -1,5 +1,5 @@
 
-.. _pages/toolkit/odf2xliff#odf2xliff_and_xliff2odf:
+.. _odf2xliff#odf2xliff_and_xliff2odf:
 
 odf2xliff and xliff2odf
 ***********************
@@ -13,7 +13,7 @@ tool.
 
 If you are more used to software translation or l10n, you might want to read a bit about :doc:`/guides/document_translation`. This should help you to get the most out of translating ODF with XLIFF.
 
-.. _pages/toolkit/odf2xliff#usage:
+.. _odf2xliff#usage:
 
 Usage
 =====
@@ -52,7 +52,7 @@ Options (xliff2odf):
 | -t TEMPLATE, --template=TEMPLATE   | read from TEMPLATE in ODF format    |
 | :doc:`--psyco=MODE <option_psyco>`         | use psyco to speed up the operation, modes: none, full, profile    |
 
-.. _pages/toolkit/odf2xliff#examples:
+.. _odf2xliff#examples:
 
 Examples
 ========
@@ -67,7 +67,7 @@ Create an XLIFF file from an ODT file (the source ODF file could also be any of 
 
 Using english.odt as the template document, and english_français.xlf as the file of translations, create a translated file français.odt.
 
-.. _pages/toolkit/odf2xliff#bugs:
+.. _odf2xliff#bugs:
 
 Bugs
 ====

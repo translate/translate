@@ -1,12 +1,12 @@
 
-.. _pages/toolkit/php#php:
+.. _php#php:
 
 PHP
 ***
 
 Many `PHP <https://en.wikipedia.org/wiki/PHP>`_ programs make use of a localisable string array.  The toolkit supports the full localisation of such files with :doc:`/commands/php2po` and po2php.
 
-.. _pages/toolkit/php#example:
+.. _php#example:
 
 Example
 =======
@@ -18,7 +18,7 @@ The localisable string arrays appear like this:
     <?php
     $string['name'] = 'value'
 
-.. _pages/toolkit/php#conformance:
+.. _php#conformance:
 
 Conformance
 ===========
@@ -44,7 +44,7 @@ Our format support allows:
          'name2' => 'value2',
       );
 
-.. _pages/toolkit/php#non-conformance:
+.. _php#non-conformance:
 
 Non-Conformance
 ===============

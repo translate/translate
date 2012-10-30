@@ -1,12 +1,12 @@
 
-.. _pages/toolkit/sub2po#sub2po_and_po2sub:
+.. _sub2po#sub2po_and_po2sub:
 
 sub2po and po2sub
 *****************
 
 sub2po allows you to use the same principles of PO files with :doc:`/formats/subtitles`. In PO only items that change are marked fuzzy and only new items need to be translated, unchanged items remain unchanged for the translation.
 
-.. _pages/toolkit/sub2po#usage:
+.. _sub2po#usage:
 
 Usage
 =====
@@ -52,7 +52,7 @@ Options (po2sub):
 | --fuzzy              | use translations marked fuzzy  |
 | --nofuzzy            | don't use translations marked fuzzy (default)  |
 
-.. _pages/toolkit/sub2po#examples:
+.. _sub2po#examples:
 
 Examples
 --------
@@ -67,14 +67,14 @@ To convert back::
 
   po2sub -t SUBTITLE_FILE   subtitles-XX.po  subtitles-XX.srt
 
-.. _pages/toolkit/sub2po#translating:
+.. _sub2po#translating:
 
 Translating
 -----------
 
 Translate as normal. However, see the issues mentioned at :doc:`/formats/subtitles`.
 
-.. _pages/toolkit/sub2po#bugs:
+.. _sub2po#bugs:
 
 Bugs
 ----

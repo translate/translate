@@ -1,12 +1,12 @@
 
-.. _pages/toolkit/tiki2po#tiki2po:
+.. _tiki2po#tiki2po:
 
 tiki2po
 *******
 
 Converts `TikiWiki <http://tikiwiki.org>`_ language.php files to Gettext PO format.
 
-.. _pages/toolkit/tiki2po#usage:
+.. _tiki2po#usage:
 
 Usage
 =====
@@ -44,7 +44,7 @@ Options (po2tiki):
 | -x EXCLUDE, --exclude=EXCLUDE   | exclude names matching EXCLUDE from input paths  |
 | -o OUTPUT, --output=OUTPUT      | write to OUTPUT in php format  |
 
-.. _pages/toolkit/tiki2po#examples:
+.. _tiki2po#examples:
 
 Examples
 ========
@@ -59,7 +59,7 @@ Convert the tiki language.php file to .po::
 
 Convert a .po file to a tiki language.php file
 
-.. _pages/toolkit/tiki2po#notes:
+.. _tiki2po#notes:
 
 Notes
 =====

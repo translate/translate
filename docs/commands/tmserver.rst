@@ -1,11 +1,11 @@
 
-.. _pages/toolkit/tmserver#tmserver:
+.. _tmserver#tmserver:
 
 tmserver
 ********
 tmserver is a Translation Memory service that can be queried via HTTP using a simple REST like URL/http and data is exchanged between server and client encoded in JSON
 
-.. _pages/toolkit/tmserver#usage:
+.. _tmserver#usage:
 
 Usage
 =====
@@ -28,7 +28,7 @@ Options:
 | -b BIND, --bind=HOSTNAME | adress to bind server to |
 | -p PORT, --port=PORT | port to listen on |
 
-.. _pages/toolkit/tmserver#testing:
+.. _tmserver#testing:
 
 Testing
 =======

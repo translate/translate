@@ -1,19 +1,19 @@
 
-.. _pages/toolkit/dtd#mozilla_dtd_format:
+.. _dtd#mozilla_dtd_format:
 
 Mozilla DTD format
 ******************
 
 Mozilla makes use of a .dtd file to store many of its translatable elements, the :doc:`moz2po </commands/moz2po>` converter can handle these.
 
-.. _pages/toolkit/dtd#references:
+.. _dtd#references:
 
 References
 ==========
 
 * `XML specification <http://www.w3.org/TR/REC-xml/>`_
 
-.. _pages/toolkit/dtd#features:
+.. _dtd#features:
 
 Features
 ========
@@ -22,7 +22,7 @@ Features
 * Accelerators - if a unit has an associated access key entry then these are combined into a single unit
 * Translator directive - all LOCALIZATION NOTE items such as DONT_TRANSLATE are handled and such items are discarded
 
-.. _pages/toolkit/dtd#issues:
+.. _dtd#issues:
 
 Issues
 ======

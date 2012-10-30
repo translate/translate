@@ -1,5 +1,5 @@
 
-.. _pages/toolkit/wiki#wiki_syntax:
+.. _wiki#wiki_syntax:
 
 Wiki Syntax
 ***********
@@ -10,7 +10,7 @@ Those who edit wikis will appreciate that wiki text is simply a normal text docu
 
 The format does not support all features of the wiki syntax and will simply dump the full form if it doesn't understand the text.  But structures such as headers and lists are understood and the filter can remove these are correctly add them.
 
-.. _pages/toolkit/wiki#supported_wiki_formats:
+.. _wiki#supported_wiki_formats:
 
 Supported Wiki Formats
 ======================
@@ -20,7 +20,7 @@ The following is a list of the wikis supported together with a list of the items
 * `docuwiki <http://wiki.splitbrain.org/wiki:dokuwiki>`_ -- heading, bullet, numbered list
 * `MediaWiki <http://www.mediawiki.org/wiki/MediaWiki>`_ -- heading, bullet, numbered list
 
-.. _pages/toolkit/wiki#possible_uses:
+.. _wiki#possible_uses:
 
 Possible uses
 =============
@@ -29,7 +29,7 @@ As part of a localisation process for a wiki this format and the filters could b
 
 With further enhancement the tool could probably be capable of converting from one wiki syntax to another, but that is of course not its main aim
 
-.. _pages/toolkit/wiki#additional_notes_on_mediawiki:
+.. _wiki#additional_notes_on_mediawiki:
 
 Additional notes on MediaWiki
 =============================

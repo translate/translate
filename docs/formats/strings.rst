@@ -1,5 +1,5 @@
 
-.. _pages/toolkit/strings#mac_osx_strings:
+.. _strings#mac_osx_strings:
 
 Mac OSX strings
 ***************
@@ -8,7 +8,7 @@ Mac OSX strings
 
 Mac OSX .strings files are used for some Cocoa / Carbon application localization, such as for the iPhone, iPod, and OSX. They are somewhat similar to Java properties, and therefore :doc:`prop2po </commands/prop2po>` and po2prop are used for conversion.
 
-.. _pages/toolkit/strings#references:
+.. _strings#references:
 
 References
 ==========

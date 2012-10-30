@@ -1,12 +1,12 @@
 
-.. _pages/toolkit/csv2tbx#csv2tbx:
+.. _csv2tbx#csv2tbx:
 
 csv2tbx
 *******
 
 Convert between CSV (Comma Separated Value) files and the :doc:`/formats/tbx` format for terminology exchange.
 
-.. _pages/toolkit/csv2tbx#usage:
+.. _csv2tbx#usage:
 
 Usage
 =====
@@ -34,7 +34,7 @@ Options (csv2tbx):
 | --charset=CHARSET    | set charset to decode from csv files   |
 | --columnorder=COLUMNORDER   | specify the order and position of columns (comment,source,target)   |
 
-.. _pages/toolkit/csv2tbx#csv_file_layout:
+.. _csv2tbx#csv_file_layout:
 
 CSV file layout
 ===============
@@ -53,7 +53,7 @@ The CSV file is expected to have three columns (separated by commas, not other c
 |  C     | Target Language   | The msgstr or target language                                    |
 +--------+-------------------+------------------------------------------------------------------+
 
-.. _pages/toolkit/csv2tbx#examples:
+.. _csv2tbx#examples:
 
 Examples
 ========
@@ -76,7 +76,7 @@ Users working on Windows will often return files in encoding other the Unicode b
 CSV files found in *csv* from *windows-1250* to UTF-8 and place the correctly encoded files in *tbx*. Note that
 UTF-8 is the only available destination encoding.
 
-.. _pages/toolkit/csv2tbx#two_column_csv:
+.. _csv2tbx#two_column_csv:
 
 Two column CSV
 ==============
@@ -85,7 +85,7 @@ Two column CSV
 
   csv2tbx --columnorder=source,target foo.csv foo.tbx
 
-.. _pages/toolkit/csv2tbx#notes:
+.. _csv2tbx#notes:
 
 Notes
 =====

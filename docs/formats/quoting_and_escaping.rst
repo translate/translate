@@ -1,12 +1,12 @@
 
-.. _pages/toolkit/quoting_and_escaping#quoting_and_escaping:
+.. _quoting_and_escaping#quoting_and_escaping:
 
 Quoting and Escaping
 ********************
 
 Different translation :doc:`formats <index>` handle quoting and escaping strings differently. This is meant to be a common page which outlines the differences
 
-.. _pages/toolkit/quoting_and_escaping#po_format:
+.. _quoting_and_escaping#po_format:
 
 PO format
 =========
@@ -26,7 +26,7 @@ Example:
   "There is no space between the . at the end of the last sentence "
   "and the T at the beginning of this one."
 
-.. _pages/toolkit/quoting_and_escaping#dtd_format:
+.. _quoting_and_escaping#dtd_format:
 
 DTD format
 ==========
@@ -35,7 +35,7 @@ Strings are quoted using either double or single quotes. The quoting character m
 
 Some DTD files seem to have backslash-escapes, but these are anomalies: see `discussion thread on Mozilla l10n-dev <http://groups.google.com/group/mozilla.dev.l10n/browse_thread/thread/58256c1f59c22798/b4bac2de4182f3e0>`_
 
-.. _pages/toolkit/quoting_and_escaping#mozilla_properties_format:
+.. _quoting_and_escaping#mozilla_properties_format:
 
 Mozilla properties format
 =========================

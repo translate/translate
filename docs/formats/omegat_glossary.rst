@@ -1,5 +1,5 @@
 
-.. _pages/toolkit/omegat_glossary#omegat_glossary:
+.. _omegat_glossary#omegat_glossary:
 
 OmegaT glossary
 ***************
@@ -8,7 +8,7 @@ OmegaT glossary
 
 OmegaT allows a translator to create a terminology list of glossary files.  It uses this file to provide its glossary matches to the OmegaT users.
 
-.. _pages/toolkit/omegat_glossary#format_specifications:
+.. _omegat_glossary#format_specifications:
 
 Format specifications
 =====================
@@ -21,14 +21,14 @@ The glossary files is a tab delimeted files with three columns:
 
 The files is stored in the system locale if the files extension is ``.txt`` or in UTF-8 if the file extension is ``.utf8``.
 
-.. _pages/toolkit/omegat_glossary#conformance:
+.. _omegat_glossary#conformance:
 
 Conformance
 ===========
 
 The implementation can load files in UTF-8 or the system encoding.
 
-.. _pages/toolkit/omegat_glossary#issues:
+.. _omegat_glossary#issues:
 
 Issues
 ======

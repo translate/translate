@@ -1,5 +1,5 @@
 
-.. _pages/toolkit/installation#installation:
+.. _installation#installation:
 
 Installation
 ************
@@ -10,7 +10,7 @@ These packages might not be the absolute newest, or you might want to install fr
 
 If your system already has the toolkit prepackaged, then please let us know what steps are required to install it.
 
-.. _pages/toolkit/installation#prerequisites:
+.. _installation#prerequisites:
 
 Prerequisites
 =============
@@ -27,14 +27,14 @@ The dollowing advice only applies to manual installation from tar ball.
 
      rm /usr/local/lib/python2.5/dist-packages/translate -R
 
-.. _pages/toolkit/installation#building:
+.. _installation#building:
 
 Building
 ========
 
 For build instructions, see the :doc:`development/building` page.
 
-.. _pages/toolkit/installation#download:
+.. _installation#download:
 
 Download
 ========
@@ -45,7 +45,7 @@ For most Windows users, the file named "translate-toolkit-...-setup.exe" is the 
 
 If you install the complete "setup" version in Windows, or if you install through your distribution's package manager, you should automatically have all the dependencies you need. If you are installing from the Version Control System, or from a source release, you should check the README file for information on the dependencies that are needed. Some of the dependencies are optional. The README file documents this.
 
-.. _pages/toolkit/installation#installing_packaged_versions:
+.. _installation#installing_packaged_versions:
 
 Installing packaged versions
 ============================
@@ -89,7 +89,7 @@ If you are using an old Debian stable system, you might want to install the .tar
 
 Alternatively newer packages might be in testing.
 
-.. _pages/toolkit/installation#installing_from_git:
+.. _installation#installing_from_git:
 
 Installing from Git
 ===================
@@ -112,7 +112,7 @@ or, running the tools from the source directory
     ./setuppath # Only needed the first time
     . setpath  # Do this once for a session
 
-.. _pages/toolkit/installation#verify_installed_version:
+.. _installation#verify_installed_version:
 
 Verify installed version
 ========================

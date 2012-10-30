@@ -1,12 +1,12 @@
 
-.. _pages/toolkit/ini2po#ini2po:
+.. _ini2po#ini2po:
 
 ini2po
 ******
 
 Converts .ini files to Gettext PO format.
 
-.. _pages/toolkit/ini2po#usage:
+.. _ini2po#usage:
 
 Usage
 =====
@@ -51,7 +51,7 @@ Options (po2ini):
 | --fuzzy              | use translations marked fuzzy  |
 | --nofuzzy            | don't use translations marked fuzzy (default)  |
 
-.. _pages/toolkit/ini2po#formats_supported:
+.. _ini2po#formats_supported:
 
 Formats Supported
 =================
@@ -93,7 +93,7 @@ The spacing between the key-value delimiter and the key, and the between the val
        msgid "\"example with double quotes\""
        msgstr ""
 
-.. _pages/toolkit/ini2po#examples:
+.. _ini2po#examples:
 
 Examples
 ========
@@ -122,7 +122,7 @@ Your translations found in the Zulu PO directory, ``po-zu/``, will be converted 
 
 To update your translations simply redo the POT creation step and make use of :doc:`pot2po` to bring your translation up-to-date.
 
-.. _pages/toolkit/ini2po#issues:
+.. _ini2po#issues:
 
 Issues
 ======

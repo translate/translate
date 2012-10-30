@@ -1,5 +1,5 @@
 
-.. _pages/toolkit/xliff2po#xliff2po_and_po2xliff:
+.. _xliff2po#xliff2po_and_po2xliff:
 
 xliff2po and po2xliff
 *********************
@@ -9,7 +9,7 @@ developed by `OASIS <http://www.oasis-open.org/committees/tc_home.php?wg_abbrev=
 work to be standardised no matter what the source format and to allow the work to be freely moved from tool to
 tool.
 
-.. _pages/toolkit/xliff2po#usage:
+.. _xliff2po#usage:
 
 Usage
 =====
@@ -51,7 +51,7 @@ Options (po2xliff):
 | :doc:`--psyco=MODE <option_psyco>`         | use psyco to speed up the operation, modes: none, full, profile    |
 | -P, --pot            | output PO Templates (.pot) rather than PO files (.po)   |
 
-.. _pages/toolkit/xliff2po#examples:
+.. _xliff2po#examples:
 
 Examples
 ========
@@ -68,7 +68,7 @@ Create POT files from the XLIFF files found in directory *xliff* and output them
 
 Convert the Xhosa PO files in *xh* to XLIFF and place them in *xh-xlf*
 
-.. _pages/toolkit/xliff2po#bugs:
+.. _xliff2po#bugs:
 
 Bugs
 ====

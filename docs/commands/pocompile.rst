@@ -1,5 +1,5 @@
 
-.. _pages/toolkit/pocompile#pocompile:
+.. _pocompile#pocompile:
 
 pocompile
 *********
@@ -7,7 +7,7 @@ pocompile
 Compile PO or XLIFF files into MO (Machine Object) files.  MO files are installed on your computer and
 allow a Gettext enabled computer to provide the translations for the application.
 
-.. _pages/toolkit/pocompile#usage:
+.. _pocompile#usage:
 
 Usage
 =====
@@ -35,7 +35,7 @@ Options:
 | --fuzzy              | use translations marked fuzzy   |
 | --nofuzzy            | don't use translations marked fuzzy (default)   |
 
-.. _pages/toolkit/pocompile#examples:
+.. _pocompile#examples:
 
 Examples
 ========
@@ -51,7 +51,7 @@ option we use all translations including those marked fuzzy. ::
 
 Create an MO file from an XLIFF file called *file.xlf* (available from version 1.1 of the toolkit).
 
-.. _pages/toolkit/pocompile#bugs:
+.. _pocompile#bugs:
 
 Note
 ====

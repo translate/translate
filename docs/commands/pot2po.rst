@@ -1,5 +1,5 @@
 
-.. _pages/toolkit/pot2po#pot2po:
+.. _pot2po#pot2po:
 
 pot2po
 ******
@@ -7,7 +7,7 @@ pot2po
 Convert a Gettext PO Template file to a PO file and merge in existing
 translations if they are present. A translation memory (compendium) can also be used for fuzzy matching. This corresponds to a large extent with the program "msgmerge" from the gettext package.
 
-.. _pages/toolkit/pot2po#usage:
+.. _pot2po#usage:
 
 Usage
 =====
@@ -38,7 +38,7 @@ Options:
 | -sMIN_SIMILARITY, --similarity=MIN_SIMILARITY   | The minimum similarity for inclusion (default: 75%) |
 | --nofuzzymatching    | Disable all fuzzy matching  |
 
-.. _pages/toolkit/pot2po#examples:
+.. _pot2po#examples:
 
 Examples
 ========
@@ -55,7 +55,7 @@ If the POT files have undergone major reshuffling then you may want to use :doc:
 
 With this update we are using *compendium.po* as a translations memory (you can make use of other files such as TMX, etc).  We will accept any match that scores above *60%*.
 
-.. _pages/toolkit/pot2po#merging:
+.. _pot2po#merging:
 
 Merging
 =======
@@ -68,7 +68,7 @@ It helps to understand when and how pot2po will merge. The default is to follow 
 * If we cannot find a match we will first look through the current and obsolete messages and then through any global translation memory
 * Fuzzy matching makes use of the :doc:`/commands/levenshtein_distance` algorithm to detect the best matches
 
-.. _pages/toolkit/pot2po#performance:
+.. _pot2po#performance:
 
 Performance
 ===========
@@ -77,7 +77,7 @@ Fuzzy matches are usually of good quality. Installation of the `python-Levenshte
 
 Install psyco for additional speedup (it is used by most toolkit tools if it is installed.)
 
-.. _pages/toolkit/pot2po#bugs:
+.. _pot2po#bugs:
 
 Bugs
 ====

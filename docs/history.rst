@@ -1,12 +1,12 @@
 
-.. _pages/toolkit/history#history_of_the_translate_toolkit:
+.. _history#history_of_the_translate_toolkit:
 
 History of the Translate Toolkit
 ********************************
 
 This is a short history of the Translate Toolkit. In many ways written so that people who see problems in the toolkit can understand how it evolved and where it is going.
 
-.. _pages/toolkit/history#conception:
+.. _history#conception:
 
 Conception
 ==========
@@ -15,14 +15,14 @@ The toolkit was developed by David Fraser while working for `Translate.org.za <h
 
 Thus was born what initially was called the mozpotools.
 
-.. _pages/toolkit/history#growth:
+.. _history#growth:
 
 Growth
 ======
 
 The first problem with the tools was that it was possible to break Mozilla translations.  This was a combination of the fact that translators would often translate variables such as &browserName; and that the toolkit had developed a method of folding labels and accelerators into one PO field.  These breakages where presented as broken XML.  Thus was born pofilter which allowed us to check the translations for problems in variables and accelerators.  pomerge its sister allowed us to merge the corrections back into the main.  We also developed pocount which allowed us to for the first time get a real feel of the volume of work required in translating a PO file.
 
-.. _pages/toolkit/history#expansion:
+.. _history#expansion:
 
 Expansion
 =========
@@ -31,14 +31,14 @@ Of course once you can convert the convoluted Mozilla translations then you real
 
 The key being that files are converted to PO to allow translations and use of the Gettext tools and existing PO files.
 
-.. _pages/toolkit/history#pootle:
+.. _history#pootle:
 
 Pootle
 ======
 
 Initially started as a separate project to allow online translation it was soon realised that the toolkit being file based gave all the infrastructure to allow Pootle to be a wrapper around the toolkit.  So a file based, web translation tool was created.
 
-.. _pages/toolkit/history#wordforge_project:
+.. _history#wordforge_project:
 
 WordForge project
 =================
@@ -51,7 +51,7 @@ The toolkit was also adapted to make dealing with encodings, plural forms, and e
 
 As part of the WordForge project Pootling was created which in the same way that Pootle is a web-based wrapper around the toolkit so Pootling is a GUI wrapper around the toolkit.
 
-.. _pages/toolkit/history#anloc_project:
+.. _history#anloc_project:
 
 ANLoc project
 =============
@@ -59,7 +59,7 @@ The `African Network for Localisation <http://africanlocalisation.net>`_ provide
 
 Format support improved a lot, with several bilingual file formats now support (Wordfast TM, Qt TS, etc.), and several monolingual file formats (PHP arrays, video subtitles, Mac OS X strings, etc.).
 
-.. _pages/toolkit/history#the_future:
+.. _history#the_future:
 
 The Future
 ==========

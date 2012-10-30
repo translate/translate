@@ -1,12 +1,12 @@
 
-.. _pages/toolkit/poclean#poclean:
+.. _poclean#poclean:
 
 poclean
 *******
 
 This is a rudimentary tool to produce a clean file from an unclean file (Trados/Wordfast) by stripping out the tw4win indicators.
 
-.. _pages/toolkit/poclean#usage:
+.. _poclean#usage:
 
 Usage
 =====
@@ -33,7 +33,7 @@ Options:
 | -tTEMPLATE, --template=TEMPLATE   | read from TEMPLATE in po, pot formats  |
 | :doc:`--psyco=MODE <option_psyco>`         | use psyco to speed up the operation, modes: none, full, profile  |
 
-.. _pages/toolkit/poclean#examples:
+.. _poclean#examples:
 
 Examples
 ========

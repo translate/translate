@@ -1,5 +1,5 @@
 
-.. _pages/toolkit/cleanup_translator_comments#cleanup_translator_comments:
+.. _cleanup_translator_comments#cleanup_translator_comments:
 
 Cleanup translator comments
 ***************************
@@ -8,7 +8,7 @@ Translate Toolkit 1.1 saw source comments being converted to developer comments 
 
 This use case shows you how to get rid of the old translator comments.
 
-.. _pages/toolkit/cleanup_translator_comments#the_change:
+.. _cleanup_translator_comments#the_change:
 
 The Change
 ==========
@@ -34,7 +34,7 @@ If you don't clean up your PO files you will now end up with::
 
 Thus a duplicated comment.  Fortunately you only need to clean your PO files once.
 
-.. _pages/toolkit/cleanup_translator_comments#removing_old_translator_comments:
+.. _cleanup_translator_comments#removing_old_translator_comments:
 
 Removing old translator comments
 ================================

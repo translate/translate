@@ -1,5 +1,5 @@
 
-.. _pages/toolkit/pomerge#pomerge:
+.. _pomerge#pomerge:
 
 pomerge
 *******
@@ -11,7 +11,7 @@ It is probably best to run pomerge against files stored in some kind of version 
 
 Pomerge will also attempt to make as small a change as possible to the text, making it easier to see the changes using your version control system.
 
-.. _pages/toolkit/pomerge#usage:
+.. _pomerge#usage:
 
 Usage
 =====
@@ -42,7 +42,7 @@ Options:
 | --mergefuzzy=MERGEFUZZY  | whether to overwrite existing translations with fuzzy translations (yes/no). Default is yes. (new in version 1.9) |
 | --mergecomments=MERGECOMMENTS  | whether to merge comments as well as translations (yes/no). Default is yes.  |
 
-.. _pages/toolkit/pomerge#examples:
+.. _pomerge#examples:
 
 Examples
 ========
@@ -61,7 +61,7 @@ tool. ::
 
 Merge the corrections from *af-check* with templates in *af* and output to *af-new*.  If an entry is blank in *af-check* then make it blank in the output in *af-new*.
 
-.. _pages/toolkit/pomerge#issues:
+.. _pomerge#issues:
 
 Issues
 ======

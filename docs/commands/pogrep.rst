@@ -1,5 +1,5 @@
 
-.. _pages/toolkit/pogrep#pogrep:
+.. _pogrep#pogrep:
 
 pogrep
 ******
@@ -8,7 +8,7 @@ The pogrep tool extracts messages that match a regular expression into a new set
 of PO files that can be examined, edited and corrected.  These corrections can
 then be merged using :doc:`pomerge`.
 
-.. _pages/toolkit/pogrep#usage:
+.. _pogrep#usage:
 
 Usage
 =====
@@ -39,7 +39,7 @@ Options:
 | -v, --invert-match   | select non-matching lines  |
 | :doc:`--accelerator=accelerator <option_accelerator>`     | ignores the given accelerator when matching  |
 
-.. _pages/toolkit/pogrep#example:
+.. _pogrep#example:
 
 Example
 =======
@@ -67,19 +67,19 @@ Search all translations for the occurrence of *Ifayile*.  You would use this to 
 been used correctly.  Useful if you find problematic use of the same word for different concepts.
 You can use :doc:`pocompendium` to find these conflicts.
 
-.. _pages/toolkit/pogrep#notes:
+.. _pogrep#notes:
 
 Notes
 =====
 
-.. _pages/toolkit/pogrep#unicode_normalization:
+.. _pogrep#unicode_normalization:
 
 Unicode normalization
 ---------------------
 
 pogrep will normalize Unicode strings.  This allows you to search for strings that contain the same character but that are using precomposed Unicode characters or which are composed using another composition recipe.  While an individual user will in all likelihood only compose characters in one way, normalization ensures that data created in a team setting can be shared.
 
-.. _pages/toolkit/pogrep#further_reading:
+.. _pogrep#further_reading:
 
 Further reading
 ===============

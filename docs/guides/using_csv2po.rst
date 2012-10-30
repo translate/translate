@@ -1,5 +1,5 @@
 
-.. _pages/toolkit/using_csv2po#using_csv2po:
+.. _using_csv2po#using_csv2po:
 
 Using csv2po
 ************
@@ -8,7 +8,7 @@ Using csv2po
 send translation work to translators who do not or cannot use PO Editors but who
 can use a Spreadsheet.
 
-.. _pages/toolkit/using_csv2po#quickstart:
+.. _using_csv2po#quickstart:
 
 Quickstart
 ==========
@@ -23,7 +23,7 @@ Quickstart
 #. ``git diff`` --- check the changes
 #. ``git add`` & ``git commit`` --- commit changes
 
-.. _pages/toolkit/using_csv2po#detailed_description:
+.. _using_csv2po#detailed_description:
 
 Detailed Description
 ====================
@@ -34,7 +34,7 @@ files -> CSV files -> back to PO.  We also look at a case where you may have
 submitted a subset of the PO files for translation and you need to integrate
 these.
 
-.. _pages/toolkit/using_csv2po#creating_a_subset:
+.. _using_csv2po#creating_a_subset:
 
 Creating a subset
 -----------------
@@ -46,7 +46,7 @@ review run::
 
   pofilter --isfuzzy --isreview -t untranslated <po-dir> <po-filtered-dir>
 
-.. _pages/toolkit/using_csv2po#divide_into_sections:
+.. _using_csv2po#divide_into_sections:
 
 Divide into sections
 --------------------
@@ -66,7 +66,7 @@ simple measure to ensure constancy.
 Now continue as normal and convert to CSV and perform word counts for each
 separate directory.
 
-.. _pages/toolkit/using_csv2po#creating_the_csv_files:
+.. _using_csv2po#creating_the_csv_files:
 
 Creating the CSV files
 ----------------------
@@ -78,7 +78,7 @@ Creating the CSV files
 This will create a set of CSV files in *csv-out* which you can compress using zip
 (we use zip because most people are Windows users)
 
-.. _pages/toolkit/using_csv2po#creating_a_word_count:
+.. _using_csv2po#creating_a_word_count:
 
 Creating a word count
 ---------------------
@@ -95,7 +95,7 @@ Place the word count file in both the PO and CSV directory to avoid the problem
 of finding it later.  Check the number to make sure you haven't inadvertently
 including something that you didn't want in.
 
-.. _pages/toolkit/using_csv2po#package_the_csv_files:
+.. _using_csv2po#package_the_csv_files:
 
 Package the CSV files
 ---------------------
@@ -104,7 +104,7 @@ Package the CSV files
 
   zip -r9 work.zip <csv-out>
 
-.. _pages/toolkit/using_csv2po#translating:
+.. _using_csv2po#translating:
 
 Translating
 -----------
@@ -118,7 +118,7 @@ few problems with spreadsheets:
 * Sentences with + - or +- will create errors and the translators will have to escape them as \+ \- \+-
 * Sentences that only contain numbers can get broken: "1." will be converted to "1"
 
-.. _pages/toolkit/using_csv2po#converting_excel_spreadsheets_to_csv_file:
+.. _using_csv2po#converting_excel_spreadsheets_to_csv_file:
 
 Converting Excel spreadsheets to CSV file
 -----------------------------------------
@@ -130,7 +130,7 @@ many files will have been changed to XLS files.  To convert them by hand is tedi
 
   xlhtml -xp:0 -csv file.xls > file.csv
 
-.. _pages/toolkit/using_csv2po#converting_csv_back_to_po:
+.. _using_csv2po#converting_csv_back_to_po:
 
 Converting CSV back to PO
 -------------------------
@@ -154,14 +154,14 @@ merge back using a :doc:`/commands/pomerge`.
    something like WINDOWS-1250. Check the file after conversion to
    see that characters are in fact correct if not try another encoding.
 
-.. _pages/toolkit/using_csv2po#checking_the_new_po_files:
+.. _using_csv2po#checking_the_new_po_files:
 
 Checking the new PO files
 -------------------------
 
 Use :doc:`/commands/pofilter` to run checks against your new files. Read :doc:`using_pofilter` to get a good idea of how to use the tool.
 
-.. _pages/toolkit/using_csv2po#removing_fuzzies:
+.. _using_csv2po#removing_fuzzies:
 
 Removing fuzzies
 ----------------
@@ -183,7 +183,7 @@ This is best performed against CVS otherwise who knows what changed.
            mv $po-dir/${pofile}.unfuzzy $po-dir/$pofile
     done
 
-.. _pages/toolkit/using_csv2po#merging_po_files_into_the_main_po_files:
+.. _using_csv2po#merging_po_files_into_the_main_po_files:
 
 Merging PO files into the main PO files
 ---------------------------------------

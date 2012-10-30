@@ -1,5 +1,5 @@
 
-.. _pages/toolkit/levenshtein_distance#levenshtein_distance:
+.. _levenshtein_distance#levenshtein_distance:
 
 Levenshtein distance
 ********************
@@ -18,7 +18,7 @@ The following things should be noted:
 *  Only the first MAX_LEN characters are considered. Long strings differing at the end will therefore seem to match better than they should. A penalty is awarded if strings are shortened.
 * The calculation can stop prematurely as soon as it realise that the supplied minimum required similarity can not be reached. Strings with widely different lengths give the opportunity for this shortcut. This is by definition of the Levenshtein distance: the distance will be at least as much as the difference in string length. Similarities lower than your supplied minimum (or the default) should therefore not be considered authoritive.
 
-.. _pages/toolkit/levenshtein_distance#shortcommings:
+.. _levenshtein_distance#shortcommings:
 
 Shortcommings
 =============

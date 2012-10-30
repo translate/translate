@@ -1,5 +1,5 @@
 
-.. _pages/toolkit/using_pofilter#checking_your_files_with_po_filter:
+.. _using_pofilter#checking_your_files_with_po_filter:
 
 Checking your files with PO filter
 **********************************
@@ -9,7 +9,7 @@ you through the process of using this tool, making corrections and merging your 
 
 Other tools that can help with quality assurance are listed :ref:`here <pages/toolkit/index#quality_assurance>`.
 
-.. _pages/toolkit/using_pofilter#quickstart:
+.. _using_pofilter#quickstart:
 
 Quickstart
 ==========
@@ -24,14 +24,14 @@ Quickstart
 #. Check to see that the updates are what you want: ``vim x.diff``
 #. Commit changes: ``cvs ci existing_files/``
 
-.. _pages/toolkit/using_pofilter#detailed_description:
+.. _using_pofilter#detailed_description:
 
 Detailed Description
 ====================
 
 :doc:`/commands/pofilter` runs a number of checks against your translation files.  Any messages that fail are output to a set of new files (in the same structure as the source/input files).  You then edit these new/output files to correct any errors.  Once you are satisfied with your corrections these corrected files are then merged back into the original files using :doc:`/commands/pomerge`.
 
-.. _pages/toolkit/using_pofilter#extracting_errors:
+.. _using_pofilter#extracting_errors:
 
 Extracting Errors
 -----------------
@@ -66,7 +66,7 @@ errors.  For a small file it is probably best to run all of the test together.
 
 By using the *--autocorrect* option you can automatically correct some very common errors.  Use with caution though. This option assumes you use the same punctuation style as the source text.
 
-.. _pages/toolkit/using_pofilter#edit_the_files:
+.. _using_pofilter#edit_the_files:
 
 Edit the files
 --------------
@@ -99,7 +99,7 @@ The computer can get it wrong, so an error that pofilter finds may in fact not b
 to hear about these false positives so that we can improve the checks.  Also if you have some checks that
 you have added or ideas for better checks, then let us know.
 
-.. _pages/toolkit/using_pofilter#merging_your_corrections_back_into_the_originals:
+.. _using_pofilter#merging_your_corrections_back_into_the_originals:
 
 Merging your corrections back into the originals
 ------------------------------------------------
@@ -113,7 +113,7 @@ If -t and -o are the same directory, the corrections will be merged into the
 existing files.  Do this only if you are using some kind of version control system
 so that you can check the changes made by :doc:`/commands/pomerge`.
 
-.. _pages/toolkit/using_pofilter#checking_the_corrections:
+.. _using_pofilter#checking_the_corrections:
 
 Checking the corrections
 ------------------------

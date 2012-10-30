@@ -1,5 +1,5 @@
 
-.. _pages/toolkit/pretranslate#pretranslate:
+.. _pretranslate#pretranslate:
 
 pretranslate
 ************
@@ -10,7 +10,7 @@ This functionality used to be part of pot2po and corresponds to "msgmerge" from 
 
 pretranslate works on PO and XLIFF files.
 
-.. _pages/toolkit/pretranslate#usage:
+.. _pretranslate#usage:
 
 Usage
 =====
@@ -40,7 +40,7 @@ Options:
 | -sMIN_SIMILARITY, --similarity=MIN_SIMILARITY   | The minimum similarity for inclusion (default: 75%) |
 | --nofuzzymatching    | Disable all fuzzy matching  |
 
-.. _pages/toolkit/pretranslate#examples:
+.. _pretranslate#examples:
 
 Examples
 ========
@@ -54,7 +54,7 @@ compendium. the result is stored in *zu-2.0.2-translate*
 
 unlike pot2po pretranslate will not change anything in the input file except merge translations, no reordering or changes to headers.
 
-.. _pages/toolkit/pretranslate#merging:
+.. _pretranslate#merging:
 
 Merging
 =======
@@ -66,7 +66,7 @@ It helps to understand when and how pretranslate will merge. The default is to f
 * If we cannot find a match we will first look through the current and obsolete messages and then through any global translation memory
 * Fuzzy matching makes use of the :doc:`Levenshtein distance <levenshtein_distance>` algorithm to detect the best matches
 
-.. _pages/toolkit/pretranslate#performance:
+.. _pretranslate#performance:
 
 Performance
 ===========

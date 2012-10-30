@@ -1,5 +1,5 @@
 
-.. _pages/toolkit/po2tmx#po2tmx:
+.. _po2tmx#po2tmx:
 
 po2tmx
 ******
@@ -8,7 +8,7 @@ Convert :doc:`Gettext PO </formats/po>` files to a :doc:`/formats/tmx` translati
 
 If you are interested in po2tmx, you might also be interested in :doc:`posegment` that can be used to perform some automated segmentation on sentence level.
 
-.. _pages/toolkit/po2tmx#usage:
+.. _po2tmx#usage:
 
 Usage
 =====
@@ -36,7 +36,7 @@ Options:
 | -lLANG, --language=LANG  | set target language code (e.g. af-ZA) [required]   |
 | --source-language=LANG   | set source language code (default: en)  |
 
-.. _pages/toolkit/po2tmx#examples:
+.. _po2tmx#examples:
 
 Examples
 ========
@@ -47,12 +47,12 @@ Examples
 
 Use the Xhosa (*xh*) translations in the PO file *browser.po* to create a TMX file called *browser.tmx*
 
-.. _pages/toolkit/po2tmx#bugs_and_issues:
+.. _po2tmx#bugs_and_issues:
 
 Bugs and issues
 ===============
 
-.. _pages/toolkit/po2tmx#markup_stripping:
+.. _po2tmx#markup_stripping:
 
 Markup stripping
 ----------------
@@ -61,7 +61,7 @@ po2tmx conforms to TMX v1.4 without stripping markup.  See the :doc:`/formats/tm
 
 It has not been widely tested so your mileage may vary.
 
-.. _pages/toolkit/po2tmx#tmx_and_po_in_omegat:
+.. _po2tmx#tmx_and_po_in_omegat:
 
 TMX and PO in OmegaT
 --------------------
@@ -72,12 +72,12 @@ In other tools, such as Swordfish, the PO comment "no-wrap" is interpreted in th
 
 There is nothing wrong with po2tmx, but if used in conjunction with tools that handle PO files differently, it may lead to less than perfect matching.
 
-.. _pages/toolkit/po2tmx#tips:
+.. _po2tmx#tips:
 
 Tips
 ====
 
-.. _pages/toolkit/po2tmx#tmx_with_only_unique_segments:
+.. _po2tmx#tmx_with_only_unique_segments:
 
 TMX with only unique segments
 -----------------------------

@@ -1,5 +1,5 @@
 
-.. _pages/toolkit/ical2po#ical2po:
+.. _ical2po#ical2po:
 
 ical2po
 *******
@@ -8,7 +8,7 @@ ical2po
 
 Converts iCalendar (\*.ics) files to Gettext PO format.
 
-.. _pages/toolkit/ical2po#usage:
+.. _ical2po#usage:
 
 Usage
 =====
@@ -53,7 +53,7 @@ Options (po2ical):
 | --fuzzy              | use translations marked fuzzy  |
 | --nofuzzy            | don't use translations marked fuzzy (default)  |
 
-.. _pages/toolkit/ical2po#examples:
+.. _ical2po#examples:
 
 Examples
 ========
@@ -80,7 +80,7 @@ Your translations found in the Afrikaans PO file, ``ical-ad.po``, will be conver
 
 To update your translations simply redo the POT creation step and make use of :doc:`pot2po` to bring your translation up-to-date.
 
-.. _pages/toolkit/ical2po#notes:
+.. _ical2po#notes:
 
 Notes
 =====

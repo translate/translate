@@ -1,5 +1,5 @@
 
-.. _pages/toolkit/pomigrate2#pomigrate2:
+.. _pomigrate2#pomigrate2:
 
 pomigrate2
 **********
@@ -10,7 +10,7 @@ Therefore it is ideal for when you are
 migrating many languages or migrating from related but divergent products e.g.
 Mozilla to Firefox.
 
-.. _pages/toolkit/pomigrate2#prerequisites:
+.. _pomigrate2#prerequisites:
 
 Prerequisites
 =============
@@ -21,7 +21,7 @@ GNU Gettext:
 * `msgcat <http://linux.die.net/man/1/msgcat>`_
 * `msgmerge <http://linux.die.net/man/1/msgmerge>`_
 
-.. _pages/toolkit/pomigrate2#usage:
+.. _pomigrate2#usage:
 
 Usage
 =====
@@ -46,7 +46,7 @@ Options:
 | -q, --quiet              | suppress most output   |
 | -p, --pot2po             | use pot2po instead of msgmerge to migrate   |
 
-.. _pages/toolkit/pomigrate2#operation:
+.. _pomigrate2#operation:
 
 Operation
 =========

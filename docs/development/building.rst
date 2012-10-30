@@ -1,20 +1,20 @@
 
-.. _pages/toolkit/building#building:
+.. _building#building:
 
 Building
 ********
 
-.. _pages/toolkit/building#unix:
+.. _building#unix:
 
 UNIX
 ====
 
-.. _pages/toolkit/building#windows:
+.. _building#windows:
 
 Windows
 =======
 
-.. _pages/toolkit/building#requirements:
+.. _building#requirements:
 
 Requirements
 ------------
@@ -24,7 +24,7 @@ Requirements
 
 Consult the README in the source distribution for the build dependencies. 
 
-.. _pages/toolkit/building#building_python_packages_with_c_extensions_under_windows:
+.. _building#building_python_packages_with_c_extensions_under_windows:
 
 Building Python packages with C extensions under Windows
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -43,7 +43,7 @@ To build a Windows installer when using MinGW, execute::
   
   python setup.py build -c mingw32 bdist_wininst
 
-.. _pages/toolkit/building#building:
+.. _building#building:
 
 Building
 --------

@@ -1,5 +1,5 @@
 
-.. _pages/toolkit/creating_a_terminology_list_from_your_existing_translations#creating_a_terminology_list_from_your_existing_translations:
+.. _creating_a_terminology_list_from_your_existing_translations#creating_a_terminology_list_from_your_existing_translations:
 
 Creating a terminology list from your existing translations
 ***********************************************************
@@ -10,7 +10,7 @@ A terminology list or glossary is a list of words and phrases with their expecte
 
 With existing translations you have embedded a list of valid translation.  This example will help you to extract the terms.  It is only the first step you will need to review the terms and must not regard this as a complete list.  And of course you would want to take your corrections and feed them back into the original translations.
 
-.. _pages/toolkit/creating_a_terminology_list_from_your_existing_translations#quick_overview:
+.. _creating_a_terminology_list_from_your_existing_translations#quick_overview:
 
 Quick Overview
 ==============
@@ -23,7 +23,7 @@ This describes a multi-stage process for extracting terminology from translation
 - Extract and review items that are fuzzy and drop untranslated items
 - Create a new PO files and process into CSV and TMX format
 
-.. _pages/toolkit/creating_a_terminology_list_from_your_existing_translations#get_short_phrases_from_the_current_translations:
+.. _creating_a_terminology_list_from_your_existing_translations#get_short_phrases_from_the_current_translations:
 
 Get short phrases from the current translations
 ===============================================
@@ -36,7 +36,7 @@ We will not be able to identify terminology within bodies of text, we are only g
 
 We use --header to ensure that the PO files have a header entry (which is important for encoding).  We are searching only in the msgid and the regular expression we use is looking for a string with between 1 and 3 words in it.  We are searching through the folder *zulu* and outputting the result in *zulu-short*
 
-.. _pages/toolkit/creating_a_terminology_list_from_your_existing_translations#remove_any_translations_with_issues:
+.. _creating_a_terminology_list_from_your_existing_translations#remove_any_translations_with_issues:
 
 Remove any translations with issues
 ===================================
@@ -52,7 +52,7 @@ We use the -v option to invert the search.  Our *cleaner* potential glossary wor
 * Entries with only numbers
 * Entries that only contain punctuation
 
-.. _pages/toolkit/creating_a_terminology_list_from_your_existing_translations#create_a_compendium:
+.. _creating_a_terminology_list_from_your_existing_translations#create_a_compendium:
 
 Create a compendium
 ===================
@@ -65,7 +65,7 @@ You can use various methods but our bash script is quite good.  Here we ignore c
 
 We now have a single file containing all glossary terms and the clean up and review can begin.
 
-.. _pages/toolkit/creating_a_terminology_list_from_your_existing_translations#split_the_file:
+.. _creating_a_terminology_list_from_your_existing_translations#split_the_file:
 
 Split the file
 ==============
@@ -86,7 +86,7 @@ This will create three files:
 
 We discard ``zulu-gnome-glossary-untranslated.po`` since they are of no use to us.
 
-.. _pages/toolkit/creating_a_terminology_list_from_your_existing_translations#dealing_with_the_fuzzies:
+.. _creating_a_terminology_list_from_your_existing_translations#dealing_with_the_fuzzies:
 
 Dealing with the fuzzies
 ========================
@@ -118,7 +118,7 @@ Of course if a word is clearly wrong, misspelled etc. then you can eliminate it.
 
 You now have a cleaned fuzzy file and we are ready to proceed.
 
-.. _pages/toolkit/creating_a_terminology_list_from_your_existing_translations#put_it_back_together_again:
+.. _creating_a_terminology_list_from_your_existing_translations#put_it_back_together_again:
 
 Put it back together again
 ==========================
@@ -129,7 +129,7 @@ Put it back together again
 
 We now have a single file ``zulu-gnome-glossary.po`` which contains our glossary texts.
 
-.. _pages/toolkit/creating_a_terminology_list_from_your_existing_translations#create_other_formats:
+.. _creating_a_terminology_list_from_your_existing_translations#create_other_formats:
 
 Create other formats
 ====================
@@ -150,7 +150,7 @@ In that format they are now available to almost all localisers in the world.
 
 FIXME need scripts to generate these formats.
 
-.. _pages/toolkit/creating_a_terminology_list_from_your_existing_translations#the_work_has_only_just_begun:
+.. _creating_a_terminology_list_from_your_existing_translations#the_work_has_only_just_begun:
 
 The work has only just begun
 ****************************

@@ -1,5 +1,5 @@
 
-.. _pages/toolkit/podebug#podebug:
+.. _podebug#podebug:
 
 podebug
 *******
@@ -15,7 +15,7 @@ Use it to:
 * *Check that everything is translatable*: any English only text needs to be analysed so that it can be localised.
 * *Check for Unicode compliance*: by inserting Unicode text outside of the Latin range it allows you to check that your program can handle non-Latin correctly.
 
-.. _pages/toolkit/podebug#usage:
+.. _podebug#usage:
 
 Usage
 =====
@@ -57,7 +57,7 @@ Options:
 --hash=LENGTH          add an md5 hash to translations (only until version
                        1.3.0 - see %h below)
 
-.. _pages/toolkit/podebug#formats:
+.. _podebug#formats:
 
 Formats
 =======
@@ -93,7 +93,7 @@ A format string may look like this:
 
 Complex format strings may make it too difficult to actually read the translation, so you are probably best served using as short a string as possible.
 
-.. _pages/toolkit/podebug#rewriting_style:
+.. _podebug#rewriting_style:
 
 Rewriting (style)
 =================
@@ -102,7 +102,7 @@ The rewriting options are designed to change the target text in various ways (c.
 
 The 'en' rewriter can be used to prepare English hashed (see below) files for quickly finding strings that have spelling or other errors.  It can also be used to create a translated English file which can then be used for other purposes such as British English translation.
 
-.. _pages/toolkit/podebug#ignoring_messages:
+.. _podebug#ignoring_messages:
 
 Ignoring messages
 =================
@@ -113,7 +113,7 @@ The ``--ignore`` option allows you to specify the application for which you are 
 
 In Mozilla we do not mark lone ``.accesskey``, ``.width``, ``.height``, etc since these can really be thought of as configuration options.
 
-.. _pages/toolkit/podebug#hashing:
+.. _podebug#hashing:
 
 Hashing
 =======
@@ -123,7 +123,7 @@ it easy to find a string in your files we can produce a hash on the strings loca
 unique alphanumeric sequences which are prepended to the target text.  Thus now in your application you have your translated
 text and a alphanumeric value.  Its is then easy to search for that value and find your problem string.
 
-.. _pages/toolkit/podebug#more_reading:
+.. _podebug#more_reading:
 
 Usings podebug
 ==============

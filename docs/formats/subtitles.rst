@@ -1,5 +1,5 @@
 
-.. _pages/toolkit/subtitles#subtitles:
+.. _subtitles#subtitles:
 
 Subtitles
 *********
@@ -21,7 +21,7 @@ The following formats are supported for subtitles:
 
 Both .sub and .srt are the main formats `supported by YouTube <http://help.youtube.com/support/youtube/bin/answer.py?answer=100077>`_
 
-.. _pages/toolkit/subtitles#implementation_details:
+.. _subtitles#implementation_details:
 
 Implementation details
 ======================
@@ -30,7 +30,7 @@ Format support is provided by `Gaupol <http://home.gna.org/gaupol/>`_ a
 subtitling tool.  Further enhancement of format support in Gaupol will
 directly benefit our conversion ability.
 
-.. _pages/toolkit/subtitles#usage:
+.. _subtitles#usage:
 
 Usage
 =====

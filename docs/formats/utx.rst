@@ -1,5 +1,5 @@
 
-.. _pages/toolkit/utx#universal_terminology_exchange_utx:
+.. _utx#universal_terminology_exchange_utx:
 
 Universal Terminology eXchange (UTX)
 ************************************
@@ -9,7 +9,7 @@ Universal Terminology eXchange (UTX)
 UTX is implemented by the Asia-Pacific Association for
 Machine Translation
 
-.. _pages/toolkit/utx#resources:
+.. _utx#resources:
 
 Resources
 =========
@@ -17,7 +17,7 @@ Resources
 * `UTX site <http://www.aamt.info/english/utx/index.htm>`_
 * `Specification <http://www.aamt.info/english/utx/utx-simple-1.00-specification-e.pdf>`_ (v1.0)
 
-.. _pages/toolkit/utx#conformance:
+.. _utx#conformance:
 
 Conformance
 ===========

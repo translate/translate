@@ -1,5 +1,5 @@
 
-.. _pages/toolkit/properties#mozilla_and_java_properties_files:
+.. _properties#mozilla_and_java_properties_files:
 
 Mozilla and Java properties files
 *********************************
@@ -9,7 +9,7 @@ The Translate Toolkit can manage Java .properties files with the :doc:`/commands
 * :doc:`Mac OSX strings <strings>`
 * :doc:`Adobe Flex <flex>` properties files.
 
-.. _pages/toolkit/properties#features:
+.. _properties#features:
 
 Features
 ========
@@ -17,7 +17,7 @@ Features
 * Fully manage Java escaping (Mozilla non-escaped form is also handled)
 * Preserves the layout of the original source file in the translated version
 
-.. _pages/toolkit/properties#not_implemented:
+.. _properties#not_implemented:
 
 Not implemented
 ===============
@@ -25,7 +25,7 @@ Not implemented
 * Does not fold access keys together as done in the :doc:`Mozilla DTD <dtd>` format.
 * We don't allow filtering of unchanged values.  In Java you can inherit translations, if the key is missing from a file then Java will look to other files in the hierarchy to determine the translation.
 
-.. _pages/toolkit/properties#examples:
+.. _properties#examples:
 
 Examples
 ========
@@ -35,7 +35,7 @@ Examples
   editmenu.label = "Edit"
   saveas.label = "Save As"
 
-.. _pages/toolkit/properties#references:
+.. _properties#references:
 
 References
 ==========

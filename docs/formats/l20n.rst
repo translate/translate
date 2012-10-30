@@ -1,11 +1,11 @@
 
-.. _pages/toolkit/l20n#mozilla_l20n:
+.. _l20n#mozilla_l20n:
 
 Mozilla l20n
 ************
 L20n is a proposed method for localisation in the Mozilla project. https://wiki.mozilla.org/L20n
 
-.. _pages/toolkit/l20n#comments:
+.. _l20n#comments:
 
 Comments
 ========
@@ -26,7 +26,7 @@ l20n is pretty powerful with the ability to arbitrarily make up functions/macros
 
 We could write a simple converter to another format for simple string based objects without further structure, but that doesn't expose the power of l20n yet, and doesn't handle complexity in the source text if it was present.
 
-.. _pages/toolkit/l20n#issues:
+.. _l20n#issues:
 
 Issues
 ------
@@ -46,7 +46,7 @@ Issues
   - A translator might want to define a local entity (an entity which is not in the original source document), or it might be there from before.
 - Still needs some thought on how to do anything meaningful with our current translation features like TM, MT, quality checks.
 
-.. _pages/toolkit/l20n#approach:
+.. _l20n#approach:
 
 Approach
 --------

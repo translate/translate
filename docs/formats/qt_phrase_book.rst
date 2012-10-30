@@ -1,5 +1,5 @@
 
-.. _pages/toolkit/qt_phrase_book#qt_phrase_book_.qph:
+.. _qt_phrase_book#qt_phrase_book_.qph:
 
 Qt Phrase Book (.qph)
 *********************
@@ -8,7 +8,7 @@ Qt Phrase Book (.qph)
 
 Qt Linguist allows a translator to collect common phrases into a phrase book.  This plays a role of glossary lookup as opposed to translation memory.
 
-.. _pages/toolkit/qt_phrase_book#conformance:
+.. _qt_phrase_book#conformance:
 
 Conformance
 ===========
@@ -25,7 +25,7 @@ There is no formal definition of the format, although it follows a simple struct
     </phrase>
   </QPH>
 
-.. _pages/toolkit/qt_phrase_book#missing_features:
+.. _qt_phrase_book#missing_features:
 
 Missing features
 ================

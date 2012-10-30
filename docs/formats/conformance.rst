@@ -1,11 +1,11 @@
 
-.. _pages/toolkit/conformance#standards_conformance:
+.. _conformance#standards_conformance:
 
 Standards conformance
 *********************
 This page links to pages documenting standard conformance for different standards or file :doc:`formats <index>`.
 
-.. _pages/toolkit/conformance#lisa_and_oasis_standards:
+.. _conformance#lisa_and_oasis_standards:
 
 LISA and OASIS standards
 ========================
@@ -14,7 +14,7 @@ LISA and OASIS standards
 * :doc:`xliff`
 * :doc:`tbx`
 
-.. _pages/toolkit/conformance#other_formats:
+.. _conformance#other_formats:
 
 Other formats
 =============
@@ -27,7 +27,7 @@ Other formats
 * :doc:`Wordfast translation memory <wordfast>`
 * OmegaT glossary
 
-.. _pages/toolkit/conformance#searching_and_matching:
+.. _conformance#searching_and_matching:
 
 Searching and matching
 ======================

@@ -1,10 +1,10 @@
 
-.. _pages/toolkit/personality_type#--personality=type:
+.. _personality_type#--personality=type:
 
 --personality=TYPE
 ******************
 
-.. _pages/toolkit/personality_type#java_default:
+.. _personality_type#java_default:
 
 java (default)
 ==============
@@ -17,7 +17,7 @@ Will appear as follows in the output .properties file::
 
   \u1E7D\u1E01\u1E3D\u1E7B\u1E1D
 
-.. _pages/toolkit/personality_type#mozilla:
+.. _personality_type#mozilla:
 
 mozilla
 =======
@@ -26,21 +26,21 @@ Mozilla has made slight adjustments to the Java .properties spec.  Mozilla will 
 
 Of course this style of file is only used by Mozilla and should not be used for other projects that follow the Java spec more strictly.
 
-.. _pages/toolkit/personality_type#skype:
+.. _personality_type#skype:
 
 skype
 =====
 
 Skype .lang files are .properties files in UTF-16. The & is used as an accelerator (marked in the PO header).
 
-.. _pages/toolkit/personality_type#flex:
+.. _personality_type#flex:
 
 flex
 ====
 
 Flex follows the Mozilla approach, a UTF-8 encoded file with no escaped unicode. We include it as its own dialect for ease of use.
 
-.. _pages/toolkit/personality_type#strings:
+.. _personality_type#strings:
 
 strings
 =======

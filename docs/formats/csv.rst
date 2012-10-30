@@ -1,11 +1,11 @@
 
-.. _pages/toolkit/csv#csv:
+.. _csv#csv:
 
 CSV
 ***
 CSV (Comma Separated Values) is a simple file format for general data interchange. It can be used in the toolkit for simple data interchange, and can be edited with most spreadsheet programs. There is no formal specification for the CSV file format, but more information can be acquired from `Comma-Separated Values <https://en.wikipedia.org/wiki/Comma-separated_values>`_
 
-.. _pages/toolkit/csv#conformance:
+.. _csv#conformance:
 
 Conformance
 ===========

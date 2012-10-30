@@ -1,5 +1,5 @@
 
-.. _pages/toolkit/pofilter#pofilter:
+.. _pofilter#pofilter:
 
 pofilter
 ********
@@ -10,7 +10,7 @@ Use ``pofilter -l`` to get a list of available checks.
 
 Once you have corrected the errors in your PO files you can merge the corrections into your existing translated PO files using :doc:`pomerge`.
 
-.. _pages/toolkit/pofilter#usage:
+.. _pofilter#usage:
 
 Usage
 =====
@@ -56,7 +56,7 @@ Options:
 | --musttranslatefile=FILE  | read list of translatable words from FILE (must be translated)  |
 | --validcharsfile=FILE  | read list of all valid characters from FILE (must be in UTF-8)  |
 
-.. _pages/toolkit/pofilter#example:
+.. _pofilter#example:
 
 Example
 =======
@@ -91,7 +91,7 @@ Tell pofilter not to complain about your untranslated units. ::
 
 List all the available checks.
 
-.. _pages/toolkit/pofilter#bugs:
+.. _pofilter#bugs:
 
 Bugs
 ====

@@ -1,5 +1,5 @@
 
-.. _pages/toolkit/pocompendium#pocompendium:
+.. _pocompendium#pocompendium:
 
 pocompendium
 ************
@@ -8,7 +8,7 @@ Takes a directory of translated PO files and creates a single PO files called a
 PO compendium.  This compendium can be used to review word choice conflicts or
 as input during a merge using :doc:`pomigrate2`.
 
-.. _pages/toolkit/pocompendium#prerequisites:
+.. _pocompendium#prerequisites:
 
 Prerequisites
 =============
@@ -20,7 +20,7 @@ GNU Gettext:
 * `msghack <http://linux.die.net/man/1/msghack>`_ (may not be present on your installation of Gettext, but is only required for the invert command)
 * `msgfilter <http://linux.die.net/man/1/msgfilter>`_
 
-.. _pages/toolkit/pocompendium#usage:
+.. _pocompendium#usage:
 
 Usage
 =====
@@ -44,7 +44,7 @@ Options:
 | -sa, -amp, --strip-accel-tilde   | remove all ~ style accelerator markers    |
 | -su, --strip-accel-under         | remove all _ style accelerator markers    |
 
-.. _pages/toolkit/pocompendium#examples:
+.. _pocompendium#examples:
 
 Examples
 ========
@@ -53,7 +53,7 @@ Examples
 - *Conflicting translations* --- use *--errors* to find where you have translated an English string differently.  Many times this is OK but often it will pick up subtle spelling mistakes or help you to migrate older translations to a newer choice of words
 - *Conflicting word choice* --- use *--invert* and *--errors* to get a compendium file that show how you have used a translated word for different English words. You might have chosen a word that is valid for both of the English expressions but that in the context of computers would cause confusion for the user.  You can now easily identify these words and make changes in the underlying translations.
 
-.. _pages/toolkit/pocompendium#narrowing_results:
+.. _pocompendium#narrowing_results:
 
 Narrowing Results
 =================
@@ -65,7 +65,7 @@ translation not on shifts in capitals.  To this end you can use the following:
 
 *--ignore-case*, *--strip-accel-amp*, *--strip-accel-tilde*, *--strip-accel-under*
 
-.. _pages/toolkit/pocompendium#operation:
+.. _pocompendium#operation:
 
 Operation
 =========
@@ -75,7 +75,7 @@ traverses the PO directories and cat's all found PO files into the single
 compendium output file.  It then uses msgattrib to extract only certain messages, msghack to
 invert messages and msgfilter to convert messages to lowercase.
 
-.. _pages/toolkit/pocompendium#bugs:
+.. _pocompendium#bugs:
 
 Bugs
 ====

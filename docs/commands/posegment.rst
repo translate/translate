@@ -1,5 +1,5 @@
 
-.. _pages/toolkit/posegment#posegment:
+.. _posegment#posegment:
 
 posegment
 *********
@@ -10,7 +10,7 @@ This is useful for the creation of a file that can be used as a Translation Memo
 
 Posegment won't do very advanced sentence boundary detection and alignment, but has customisations for the punctuation rules of several languages (Amharic, Afrikaans, Arabic, Armenian, Chinese, Greek, Japanese, Khmer, Oriya, Persian). For the purpose of increasing your TM (as described below), it is already very useful. Give it a try and help us to improve it even more for your language.
 
-.. _pages/toolkit/posegment#usage:
+.. _posegment#usage:
 
 Usage
 =====
@@ -41,7 +41,7 @@ Options:
 | --keepspaces | Disable automatic stripping of whitespace |
 | --only-aligned | Removes units where sentence number does not correspond |
 
-.. _pages/toolkit/posegment#examples:
+.. _posegment#examples:
 
 Examples
 ========
@@ -58,7 +58,7 @@ You can do the same at a project level.  Here we want to segment all of our Open
 
 We start with all our files in ``af`` which are now duplicated in ``af-segmented`` except files are now fully segmented.
 
-.. _pages/toolkit/posegment#issues:
+.. _posegment#issues:
 
 Issues
 ======

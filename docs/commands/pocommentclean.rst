@@ -1,19 +1,19 @@
 
-.. _pages/toolkit/pocommentclean#pocommentclean:
+.. _pocommentclean#pocommentclean:
 
 pocommentclean
 **************
 
 pocommentclean will remove all translator comments from a directory of PO files.
 
-.. _pages/toolkit/pocommentclean#prerequisites:
+.. _pocommentclean#prerequisites:
 
 Prerequisites
 =============
 
 * `sed <http://linux.die.net/man/1/bash>`_
 
-.. _pages/toolkit/pocommentclean#usage:
+.. _pocommentclean#usage:
 
 Usage
 =====
@@ -30,14 +30,14 @@ Options:
 
 | -- backup  | Create a backup file for each PO file converted, .po.bak  |
 
-.. _pages/toolkit/pocommentclean#operation:
+.. _pocommentclean#operation:
 
 Operation
 =========
 
 Using sed pocommentclean will delete all lines starting with # but which are not standard Gettext PO format lines.  So it won't delete developer comments (#.), obsolete messages (#~), flags (#,) or locations (#:).
 
-.. _pages/toolkit/pocommentclean#bugs:
+.. _pocommentclean#bugs:
 
 Bugs
 ====

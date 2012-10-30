@@ -1,19 +1,19 @@
 
-.. _pages/toolkit/poreencode#poreencode:
+.. _poreencode#poreencode:
 
 poreencode
 **********
 
 Takes a directory of existing PO files and converts them to a given encoding.
 
-.. _pages/toolkit/poreencode#prerequisites:
+.. _poreencode#prerequisites:
 
 Prerequisites
 =============
 
 GNU Gettext
 
-.. _pages/toolkit/poreencode#usage:
+.. _poreencode#usage:
 
 Usage
 =====
@@ -30,7 +30,7 @@ Where:
 Its is best to backup files before the conversion or to perform it against CVS
 which prevents a potential loss of data.
 
-.. _pages/toolkit/poreencode#operation:
+.. _poreencode#operation:
 
 Operation
 =========
@@ -39,7 +39,7 @@ poreencode makes use of the Gettext tool `msgconv <http://linux.die.net/man/1/ms
 traverses the PO directory and finds all PO file.  It uses msgconv to
 convert the PO file from its existing encoding to the new encoding.
 
-.. _pages/toolkit/poreencode#bugs:
+.. _poreencode#bugs:
 
 Bugs
 ====

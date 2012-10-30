@@ -1,11 +1,11 @@
 
-.. _pages/toolkit/tmx#tmx:
+.. _tmx#tmx:
 
 TMX
 ***
 TMX is the LISA standard for translation memories. See http://www.lisa.org/standards/tmx.
 
-.. _pages/toolkit/tmx#standard_conformance:
+.. _tmx#standard_conformance:
 
 Standard conformance
 ====================

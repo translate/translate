@@ -1,12 +1,12 @@
 
-.. _pages/toolkit/json2po#json2po:
+.. _json2po#json2po:
 
 json2po
 *******
 
 Converts .json files to Gettext PO format.
 
-.. _pages/toolkit/json2po#usage:
+.. _json2po#usage:
 
 Usage
 =====
@@ -52,7 +52,7 @@ Options (po2json):
 | --fuzzy              | use translations marked fuzzy  |
 | --nofuzzy            | don't use translations marked fuzzy (default)  |
 
-.. _pages/toolkit/json2po#examples:
+.. _json2po#examples:
 
 Examples
 ========

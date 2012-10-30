@@ -1,5 +1,5 @@
 
-.. _pages/toolkit/migrating_translations#migrating_your_translations:
+.. _migrating_translations#migrating_your_translations:
 
 Migrating your translations
 ***************************
@@ -12,7 +12,7 @@ This migration HOWTO takes you through the steps in a generic fashion so that yo
 OpenOffice.org as an example for clarity.  Our task in the examples is to migrate old translation for OpenOffice.org 1.1.3 to
 OpenOffice.org 2.0.
 
-.. _pages/toolkit/migrating_translations#requirements:
+.. _migrating_translations#requirements:
 
 Requirements
 ============
@@ -24,7 +24,7 @@ You will need:
 * A text editor
 * A PO editing tool
 
-.. _pages/toolkit/migrating_translations#preparing_the_new_pot_files:
+.. _migrating_translations#preparing_the_new_pot_files:
 
 Preparing the new POT files
 ===========================
@@ -37,7 +37,7 @@ We need the new POT files.  Either download these from the project or generate t
 
 This will create new POT files in *ooo-20-pot*.
 
-.. _pages/toolkit/migrating_translations#checking_your_old_po_files_for_errors:
+.. _migrating_translations#checking_your_old_po_files_for_errors:
 
 Checking your old PO files for errors
 =====================================
@@ -53,7 +53,7 @@ all your old translations.  pocompendium is a wrapper around various Gettext too
 
 Use your text editor to find and correct these errors.  If you do not correct these now they will migrate to your new version.  Once encoding errors are fixed they're usually gone for good, so it is time well spent.
 
-.. _pages/toolkit/migrating_translations#optional:_checking_your_old_po_files_for_consistency:
+.. _migrating_translations#optional:_checking_your_old_po_files_for_consistency:
 
 Optional: Checking your old PO files for consistency
 ====================================================
@@ -70,7 +70,7 @@ Then we check for words in your language that are used for more than one English
 
 We now have a file similar to the previous one except your language appears in the msgid and the English appears in the msgstr.  Look for inconsistencies that would cause problems for the user and correct them in the source files.
 
-.. _pages/toolkit/migrating_translations#migrate:
+.. _migrating_translations#migrate:
 
 Migrate
 =======
@@ -83,7 +83,7 @@ You are now ready to migrate using :doc:`/commands/pomigrate2`.  You have create
 
 This will take all translations from *ooo-113-old* and migrate them to *ooo-20-new* using *ooo-20-pot* as templates.  By default pomigrate2 migrates without any fancy text matching, there are options to allow for fuzzy matching and the use of a compendium.  Read the :doc:`/commands/pomigrate2` help page to find out more about these options.
 
-.. _pages/toolkit/migrating_translations#techie:_what_does_pomigrate2_do_to_your_file:
+.. _migrating_translations#techie:_what_does_pomigrate2_do_to_your_file:
 
 Techie: what does pomigrate2 do to your file?
 ---------------------------------------------
@@ -100,7 +100,7 @@ This section is for those insanely curious about what pomigrate will do to their
 
 That's it. At the end you should have every file that needs translation updated to the latest template files.  Files that moved should still be preserved and not lost.  Files that where renamed will still be translated if you used a compendium otherwise they will be untranslated.
 
-.. _pages/toolkit/migrating_translations#how_well_did_you_do:
+.. _migrating_translations#how_well_did_you_do:
 
 How well did you do
 ===================
@@ -113,7 +113,7 @@ You might want to see how much of your old work was reusable in the new version:
 
 This will use :doc:`/commands/pocount` to count the words in your new files and you can compare the number of translate and untranslated messages from your old version.
 
-.. _pages/toolkit/migrating_translations#conclusion:
+.. _migrating_translations#conclusion:
 
 Conclusion
 ==========

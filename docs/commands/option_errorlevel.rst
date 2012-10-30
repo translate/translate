@@ -1,19 +1,19 @@
 
-.. _pages/toolkit/errorlevel_errorlevel#--errorlevel=errorlevel:
+.. _errorlevel_errorlevel#--errorlevel=errorlevel:
 
 --errorlevel=ERRORLEVEL
 ***********************
 
 This is a parameter that can be passed to most of the programs in the translate toolkit in order to choose the level of feedback that you need when errors occur.  It is mostly useful for debugging. Please report your errors to the developers with --errorlevel=traceback.
 
-.. _pages/toolkit/errorlevel_errorlevel#none:
+.. _errorlevel_errorlevel#none:
 
 none
 ====
 
 Display no error messages
 
-.. _pages/toolkit/errorlevel_errorlevel#message:
+.. _errorlevel_errorlevel#message:
 
 message
 =======
@@ -24,7 +24,7 @@ Display on the error message
 
     An error occurred processing PO file
 
-.. _pages/toolkit/errorlevel_errorlevel#exception:
+.. _errorlevel_errorlevel#exception:
 
 exception
 =========
@@ -35,7 +35,7 @@ Give the error message and name and Python exception
 
     ValueError: An error occurred processing PO file
 
-.. _pages/toolkit/errorlevel_errorlevel#traceback:
+.. _errorlevel_errorlevel#traceback:
 
 traceback
 =========

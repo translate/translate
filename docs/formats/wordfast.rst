@@ -1,5 +1,5 @@
 
-.. _pages/toolkit/wordfast#wordfast_translation_memory:
+.. _wordfast#wordfast_translation_memory:
 
 Wordfast Translation Memory
 ***************************
@@ -8,7 +8,7 @@ The Wordfast format, as used by the `Wordfast <https://en.wikipedia.org/wiki/Wor
 
 The storage format can read and write Wordfast TM files.
 
-.. _pages/toolkit/wordfast#conformance:
+.. _wordfast#conformance:
 
 Conformance
 ===========

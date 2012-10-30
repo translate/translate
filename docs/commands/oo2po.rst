@@ -1,5 +1,5 @@
 
-.. _pages/toolkit/oo2po#oo2po_and_po2oo:
+.. _oo2po#oo2po_and_po2oo:
 
 oo2po and po2oo
 ***************
@@ -10,7 +10,7 @@ completely valid PO files.
 
 oo2xliff will convert the SDF files to XLIFF format.
 
-.. _pages/toolkit/oo2po#usage:
+.. _oo2po#usage:
 
 Usage
 =====
@@ -72,14 +72,14 @@ Options (po2oo and xliff2oo):
 | --nofuzzy                | don't use translations marked fuzzy (default)  |
 | --:doc:`multifile=multifilestyle <option_multifile>`   | how to split po/pot files (single, toplevel or onefile)  |
 
-.. _pages/toolkit/oo2po#examples:
+.. _oo2po#examples:
 
 Examples
 ========
 
 These examples demonstrate most of the useful invocations of oo2po:
 
-.. _pages/toolkit/oo2po#creating_pot_files:
+.. _oo2po#creating_pot_files:
 
 Creating POT files
 ------------------
@@ -95,7 +95,7 @@ Extract messages from *en-US.sdf* and place them in a directory called *pot*.  T
 Instead of creating English POT files we are now creating POT files that contain French in the msgid.  This is useful for translators who are
 not English literate.  You will need to have a fully translated sdf in the source language.
 
-.. _pages/toolkit/oo2po#creating_po_files_from_existing_work:
+.. _oo2po#creating_po_files_from_existing_work:
 
 Creating PO files from existing work
 ------------------------------------
@@ -111,7 +111,7 @@ Extract all existing Zulu (*zu*) messages from *zu-ZA.sdf* and place them in a d
 
 Here we are creating PO files with your existing translations but a different source language.  Firstly we combine the two SDF files.  Then oo2po creates a set of PO files in *af-xh-po* using Afrikaans (*af*) as the source language and Xhosa (*xh*) as the target language from the combined SDF file *GSI_af-xh.sdf*
 
-.. _pages/toolkit/oo2po#creating_a_new_gsi/sdf_file:
+.. _oo2po#creating_a_new_gsi/sdf_file:
 
 Creating a new GSI/SDF file
 ---------------------------
@@ -128,7 +128,7 @@ Create an Afrikaans (*af*) SDF file called *af_ZA.sdf* using *en-US.sdf* as a te
 while also eliminating any serious errors in translation.  Using templates ensures that the resultant SDF file has exactly the same format as
 the template SDF file.  In an SDF file each translated string can have a timestamp attached.  This creates a large amount of unuseful traffic when comparing version of the SDF file, by preserving the timestamp we ensure that this does not change and can therefore see the translation changes clearly.  We have included the *nofuzzy* option (on by default) that prevent fuzzy PO messages from getting into the SDF file.  Lastly the *filteraction* option is set to exclude serious errors: variables failures and translated XML will be excluded from the final SDF.
 
-.. _pages/toolkit/oo2po#helpcontent2:
+.. _oo2po#helpcontent2:
 
 helpcontent2
 ============

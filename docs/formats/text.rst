@@ -1,5 +1,5 @@
 
-.. _pages/toolkit/text#simple_text_documents:
+.. _text#simple_text_documents:
 
 Simple Text Documents
 *********************
@@ -8,7 +8,7 @@ The Translate Toolkit can process simple Text files.  This is very useful for tr
 
 In some cases you will need to adjust the source text for the conversion management to work well.  This is because the text file format support considered units to be space separated blocks of text.
 
-.. _pages/toolkit/text#example:
+.. _text#example:
 
 Example
 =======

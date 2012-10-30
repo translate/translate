@@ -1,5 +1,5 @@
 
-.. _pages/toolkit/catkeys#haiku_catkeys:
+.. _catkeys#haiku_catkeys:
 
 Haiku catkeys
 *************
@@ -8,7 +8,7 @@ Haiku catkeys
 
 Localisation for the `Haiku <http://www.haiku-os.org/>`_ operating system is done with a file format called catkeys.  It is a bilingual file format.
 
-.. _pages/toolkit/catkeys#links:
+.. _catkeys#links:
 
 Links
 =====

@@ -1,5 +1,5 @@
 
-.. _pages/toolkit/poterminology#poterminology:
+.. _poterminology#poterminology:
 
 poterminology
 *************
@@ -14,7 +14,7 @@ The more separate PO files you use to generate terminology, the better your resu
 
 Read more about `terminology extraction <http://en.wikipedia.org/wiki/Terminology_extraction>`_
 
-.. _pages/toolkit/poterminology#usage:
+.. _poterminology#usage:
 
 Usage
 =====
@@ -54,7 +54,7 @@ Options:
 | --source-language=LANG  | the source language code (default 'en')  |
 | -v, --invert          | invert the source and target languages for terminology  |
 
-.. _pages/toolkit/poterminology#examples:
+.. _poterminology#examples:
 
 Examples
 ========
@@ -86,7 +86,7 @@ For a language like Spanish, with both Pootle translations and Gnome terminology
   poterminology --inputs=3 --update glossary-es.po \
     Pootle/po/pootle/es/*.po Pootle/po/terminology/es/gnome/es.po
 
-.. _pages/toolkit/poterminology#reduced_terminology_glossaries:
+.. _poterminology#reduced_terminology_glossaries:
 
 Reduced terminology glossaries
 ------------------------------
@@ -109,7 +109,7 @@ The third line gives the number of terms remaining after eliminating subphrases 
 
 However, in the first example above (generating terminology for Pootle itself), the term "not exist" passes the stoplist and threshold filters, but all occurrences of this term also contained the term "does not exist" which also passes the stoplist and threshold filters.  Given this duplication, the shorter phrase is eliminated in favor of the longer one, resulting in 23 terms (out of 25 that pass the threshold filters).
 
-.. _pages/toolkit/poterminology#reducing_output_terminology_with_thresholding_options:
+.. _poterminology#reducing_output_terminology_with_thresholding_options:
 
 Reducing output terminology with thresholding options
 =====================================================
@@ -143,7 +143,7 @@ These two thresholds specify the number of different translation units (messages
 
 If you are working with a single input file without useful location comments, increasing these thresholds may be the only way to effectively reduce the output terminology.  Generally, you should increase the --substr-needed threshold first, as the full message terms are more likely to be useful terminology.
 
-.. _pages/toolkit/poterminology#stop_word_files:
+.. _poterminology#stop_word_files:
 
 Stop word files
 ===============
@@ -165,7 +165,7 @@ You can use poterminology --help to see the default stopword list pathname, whic
 
 Note that if you are using multiple stopword list files, as in the above, they will all be subject to the same case mapping (fold "Title Case" to lower case by default) - if you specify a different case mapping in the second file it will override the mapping for all the stopword list files.
 
-.. _pages/toolkit/poterminology#issues:
+.. _poterminology#issues:
 
 Issues
 ======
@@ -186,7 +186,7 @@ Currently, message context information (PO msgctxt) is not used in any way; this
 
 A single execution of poterminology can only perform automatic translation extraction for a single target language - having the ability to handle all target languages in one run would allow a single command to generate all terminology for an entire project.  Additionally, this could provide even more information for identifying variant terms by comparing the number of target languages that have variant translations.
 
-.. _pages/toolkit/poterminology#on_single_files:
+.. _poterminology#on_single_files:
 
 On single files
 ===============

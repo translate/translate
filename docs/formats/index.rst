@@ -1,4 +1,4 @@
-.. _pages/toolkit/formats#translation_related_file_formats:
+.. _formats#translation_related_file_formats:
 
 
 Translation Related File Formats
@@ -12,7 +12,7 @@ handling translation files which allows for a uniform API which covers
 other issues such as :doc:`quoting and escaping <quoting_and_escaping>` of
 text.
 
-.. _pages/toolkit/formats#primary_translation_formats:
+.. _formats#primary_translation_formats:
 
 Primary translation formats
 ===========================
@@ -23,7 +23,7 @@ Primary translation formats
    xliff
    Gettext PO <po>
 
-.. _pages/toolkit/formats#other_translation_formats:
+.. _formats#other_translation_formats:
 
 Other translation formats
 =========================
@@ -57,7 +57,7 @@ Other translation formats
 * Adobe :doc:`flex` files (from version 1.8)
 * Haiku :doc:`catkeys` (from version 1.8)
 
-.. _pages/toolkit/formats#translation_memory_formats:
+.. _formats#translation_memory_formats:
 
 Translation Memory formats
 ==========================
@@ -73,7 +73,7 @@ Translation Memory formats
 * :doc:`wordfast`: TM
 * Trados: .txt TM (from v1.9.0 - read only)
 
-.. _pages/toolkit/formats#glossary_formats:
+.. _formats#glossary_formats:
 
 Glossary formats
 ================
@@ -92,7 +92,7 @@ Glossary formats
 * :doc:`tbx`
 * :doc:`utx` (from v1.9.0)
 
-.. _pages/toolkit/formats#formats_of_translatable_documents:
+.. _formats#formats_of_translatable_documents:
 
 Formats of translatable documents
 =================================
@@ -117,7 +117,7 @@ Formats of translatable documents
   and `MediaWiki <https://en.wikipedia.org/wiki/MediaWiki>`_ supported
 * :doc:`subtitles` -- various formats (v1.4)
 
-.. _pages/toolkit/formats#machine_readable_formats:
+.. _formats#machine_readable_formats:
 
 Machine readable formats
 ========================
@@ -132,12 +132,12 @@ Machine readable formats
 * Gettext :doc:`mo`
 * Qt :doc:`qm` (read-only)
 
-.. _pages/toolkit/formats#in_development:
+.. _formats#in_development:
 
 In development
 ==============
 
-.. _pages/toolkit/formats#unsupported_formats:
+.. _formats#unsupported_formats:
 
 Unsupported formats
 ===================
@@ -201,7 +201,7 @@ Formats that we would like to support but don't currently support:
 * Deja Vu External View: `Instructions sent to a translator <http://dvx.atril.com/docs/DVX/InstructionsExternalView.pdf>`_, `Description of external view options and process <http://simmer-lossner.com/lib/presentations/External_Proofreading_for_DVX.pdf>`_
 * :doc:`Mozilla's l20n <l20n>`.
 
-.. _pages/toolkit/formats#unlikely_to_be_supported:
+.. _formats#unlikely_to_be_supported:
 
 Unlikely to be supported
 ========================

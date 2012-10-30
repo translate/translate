@@ -1,5 +1,5 @@
 
-.. _pages/toolkit/tbx#tbx:
+.. _tbx#tbx:
 
 TBX
 ***
@@ -7,7 +7,7 @@ TBX is the LISA standard for terminology and term exchange.
 
 For information on more file formats, see :doc:`conformance`.
 
-.. _pages/toolkit/tbx#references:
+.. _tbx#references:
 
 References
 ==========
@@ -18,12 +18,12 @@ References
 
 You might also be interested in reading about `TBX-Basic <http://www.lisa.org/TBX-Basic.926.0.html>`_ - a simpler, reduced version of TBX with most of the useful features included.
 
-.. _pages/toolkit/tbx#standard_conformance:
+.. _tbx#standard_conformance:
 
 Standard conformance
 ====================
 
-.. _pages/toolkit/tbx#done:
+.. _tbx#done:
 
 Done
 ----
@@ -31,7 +31,7 @@ Done
 * Creating a bilingual list from CSV with :doc:`/commands/csv2tbx`
 * Using <tig> tags, not ntig
 
-.. _pages/toolkit/tbx#todo:
+.. _tbx#todo:
 
 Todo
 ----
@@ -45,7 +45,7 @@ Todo
 * context
 * parts of speech
 
-.. _pages/toolkit/tbx#implementation_notes_for_missing_features:
+.. _tbx#implementation_notes_for_missing_features:
 
 Implementation notes for missing features
 =========================================
@@ -54,7 +54,7 @@ Note here:
 
 * NLS - South African National Language Services - Multilingual Maths Dictionary
 
-.. _pages/toolkit/tbx#synonyms:
+.. _tbx#synonyms:
 
 Synonyms
 --------
@@ -74,7 +74,7 @@ according to this TBX documentation. In another place:
 
 inside a <termGrp>, following <term>
 
-.. _pages/toolkit/tbx#definition:
+.. _tbx#definition:
 
 Definition
 ----------
@@ -91,7 +91,7 @@ TBX:
 inside langSet
 <descript> can probably be used directly under langSet
 
-.. _pages/toolkit/tbx#context:
+.. _tbx#context:
 
 Context
 -------
@@ -105,7 +105,7 @@ TBX:
 
 inside <ntig>
 
-.. _pages/toolkit/tbx#parts_of_speech:
+.. _tbx#parts_of_speech:
 
 Parts of speech
 ---------------
@@ -119,7 +119,7 @@ TBX:
 
 following <term>
 
-.. _pages/toolkit/tbx#cross_reference:
+.. _tbx#cross_reference:
 
 Cross reference
 ---------------
@@ -127,7 +127,7 @@ NLS: alternate term -> real lemma
 
 TBX: <ref> TODO
 
-.. _pages/toolkit/tbx#abbreviations:
+.. _tbx#abbreviations:
 
 Abbreviations
 -------------
@@ -135,7 +135,7 @@ NLS: same as alternate term: a.m. -> before noon
 
 TBX: TODO
 
-.. _pages/toolkit/tbx#tbx_cheat_sheet:
+.. _tbx#tbx_cheat_sheet:
 
 TBX cheat sheet
 ===============
@@ -182,7 +182,7 @@ TBX cheat sheet
 
 Note that the <xref> tags are optional (as are just about everything except termEntry, langSet and tig). They allow to link to an external source. An internal source can also be specified, or the definition can be specified without a source as shown for the term "klank".
 
-.. _pages/toolkit/tbx#tbx_requirements_by_galician_translation_team_proxecto_trasno:
+.. _tbx#tbx_requirements_by_galician_translation_team_proxecto_trasno:
 
 TBX requirements by Galician translation team (Proxecto Trasno)
 ***************************************************************
@@ -279,7 +279,7 @@ Below you can see a diagram that shows the levels and the data that goes in each
 
 .. image:: /_static/tbx_levels_structure.png
 
-.. _pages/toolkit/tbx#features_priorization:
+.. _tbx#features_priorization:
 
 Features priorization
 =====================
@@ -307,7 +307,7 @@ The upper ones are the most needed and interesting:
 * Example of use
 * Link to real use example
 
-.. _pages/toolkit/tbx#example_for_galician_tbx_requirements:
+.. _tbx#example_for_galician_tbx_requirements:
 
 Example for galician TBX requirements
 =====================================

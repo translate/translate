@@ -1,5 +1,5 @@
 
-.. _pages/toolkit/contributing#contributing:
+.. _contributing#contributing:
 
 Contributing
 ************
@@ -16,7 +16,7 @@ Here are some idea of how you can contribute
 
 Below we give you more detail on these:
 
-.. _pages/toolkit/contributing#testing:
+.. _contributing#testing:
 
 Testing
 =======
@@ -34,7 +34,7 @@ Check for any files that are missing, tools that were not installed, etc.
 
 Finally, simply work with the software.  Checking all your current usage patterns and report problems.
 
-.. _pages/toolkit/contributing#debugging:
+.. _contributing#debugging:
 
 Debugging
 =========
@@ -60,7 +60,7 @@ The last case, an existing bug is the most interesting.  Check through the bug a
 - If you can identify the bug but not fix it then explain what needs fixing
 - Move on to the next bug
 
-.. _pages/toolkit/contributing#developing:
+.. _contributing#developing:
 
 Developing
 ==========
@@ -82,7 +82,7 @@ You will definitely need to be on the `Development <http://lists.sourceforge.net
 
 Now is the time to familiarise yourself with the :doc:`developers guide <developers>`.
 
-.. _pages/toolkit/contributing#documenting:
+.. _contributing#documenting:
 
 Documenting
 ===========

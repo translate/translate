@@ -1,5 +1,5 @@
 
-.. _pages/toolkit/posplit#posplit:
+.. _posplit#posplit:
 
 posplit
 *******
@@ -8,14 +8,14 @@ Takes an existing PO file and splits it into three components: translated, untra
 
 Note that the input file is removed by the script (until version 1.9.1). The generated output files can be combined again with msgcat.
 
-.. _pages/toolkit/posplit#prerequisites:
+.. _posplit#prerequisites:
 
 Prerequisites
 =============
 
 GNU Gettext
 
-.. _pages/toolkit/posplit#usage:
+.. _posplit#usage:
 
 Usage
 =====
@@ -28,7 +28,7 @@ Where:
 
 | file.po   | is an existing PO file or PO compendium  |
 
-.. _pages/toolkit/posplit#bugs:
+.. _posplit#bugs:
 
 Bugs
 ====

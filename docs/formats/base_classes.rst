@@ -1,5 +1,5 @@
 
-.. _pages/toolkit/base_classes#base_classes:
+.. _base_classes#base_classes:
 
 Base classes
 ************
@@ -9,7 +9,7 @@ For the implementation of the different storage classes that the toolkit support
 
 These ideas explained here should be seen as drafts only.
 
-.. _pages/toolkit/base_classes#requirements:
+.. _base_classes#requirements:
 
 Requirements
 ============
@@ -28,13 +28,13 @@ her possibilities:
 
 All these do not mean that all formats must support al these features, but in the formats that do support these features, it must be accessible through the base class, and it must be possible to interrogate the storage format through the base class to know which features it supports.
 
-.. _pages/toolkit/base_classes#the_classes:
+.. _base_classes#the_classes:
 
 The classes
 ===========
 A file contains a number of translation units, and possibly a header. Each translation unit contains one or more strings corresponding to each of the languages represented in that unit.
 
-.. _pages/toolkit/base_classes#message/string_multistring:
+.. _base_classes#message/string_multistring:
 
 Message/string (multistring)
 ----------------------------
@@ -44,7 +44,7 @@ Note that when storing different plural forms of the same string, they should be
 
 Any string from a plural unit must be a multistring.
 
-.. _pages/toolkit/base_classes#translation_unit:
+.. _base_classes#translation_unit:
 
 Translation unit
 ----------------
@@ -61,13 +61,13 @@ As the number of of languages can be seen as one "dimension" of the translation 
 
 Comments/notes are supported in this class. Quality or status information (fuzzy, last-changed-by) should be stored. TODO: see if this should be on unit level or language level.
 
-.. _pages/toolkit/base_classes#store:
+.. _base_classes#store:
 
 Store
 -----
 This class represents a whole collection of translation units, usually stored in a single file. It supports the concept of a header, and possibly comments at file level. A file will not necessarily be contained alone in single file on disc. See "multifile" below.
 
-.. _pages/toolkit/base_classes#multifile:
+.. _base_classes#multifile:
 
 Multifile
 ---------
@@ -75,7 +75,7 @@ This abstraction is only used by a few converters.
 
 This class represents a storage format that contains other files or file like objects. Examples include ZIP, XPI and XLIFF, and OpenOffice SDF files. It must give access to the contained files, and possibly give access to the translation units contained in those files, as if they are contained natively.
 
-.. _pages/toolkit/base_classes#additional_notes:
+.. _base_classes#additional_notes:
 
 Additional Notes
 ****************

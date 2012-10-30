@@ -1,5 +1,5 @@
 
-.. _pages/toolkit/checking_for_inconsistencies#checking_for_inconsistencies_in_your_translations:
+.. _checking_for_inconsistencies#checking_for_inconsistencies_in_your_translations:
 
 Checking for inconsistencies in your translations
 *************************************************
@@ -15,14 +15,14 @@ Other cases in which you can expect inconsistencies:
 * You changed terminology at some stage in the translation
 * You did not do a formal glossary development stage
 
-.. _pages/toolkit/checking_for_inconsistencies#what_we_wont_be_able_to_achieve:
+.. _checking_for_inconsistencies#what_we_wont_be_able_to_achieve:
 
 What we won't be able to achieve
 ================================
 
 We cannot find grammatical errors and we won't be able to find all cases of words, etc
 
-.. _pages/toolkit/checking_for_inconsistencies#scenario:
+.. _checking_for_inconsistencies#scenario:
 
 Scenario
 ========
@@ -34,7 +34,7 @@ You are translating Mozilla Firefox into Afrikaans.  The files are stored in *af
 
 We'll look at the translations first from the English, or source text, point of view.  Then we will look at it from the Afrikaans point of view.  The first will pick up where we have translated the same English word differently in Afrikaans ie an inconsistency.  While the second will determine if we use the same English word for different English words, possibly this will confuse a user.
 
-.. _pages/toolkit/checking_for_inconsistencies#step_1:_extracting_conflicting_target_text_translations:
+.. _checking_for_inconsistencies#step_1:_extracting_conflicting_target_text_translations:
 
 Step 1: Extracting conflicting target text translations
 -------------------------------------------------------
@@ -61,7 +61,7 @@ These are normal PO files which you can edit in any PO editor or text editor.  I
 
 Once all fixes have been made we can merge our changes back into the original files.
 
-.. _pages/toolkit/checking_for_inconsistencies#step_2:_merging_our_corrections_back_into_the_original_files:
+.. _checking_for_inconsistencies#step_2:_merging_our_corrections_back_into_the_original_files:
 
 Step 2: Merging our corrections back into the original files
 ------------------------------------------------------------
@@ -80,7 +80,7 @@ You might want to run **Step 1** again to make sure you didn't miss anything or 
 
 Next we look at the inverted conflict problem.
 
-.. _pages/toolkit/checking_for_inconsistencies#step_3:_extracting_conflicts_of_meaning:
+.. _checking_for_inconsistencies#step_3:_extracting_conflicts_of_meaning:
 
 Step 3: Extracting conflicts of meaning
 ---------------------------------------
@@ -105,7 +105,7 @@ We edit these as usual.  You need to remember that you will see a normal PO file
 
 Lastly follow **Step 2** to restructure and merge these conflicts back into your translations
 
-.. _pages/toolkit/checking_for_inconsistencies#conclusion:
+.. _checking_for_inconsistencies#conclusion:
 
 Conclusion
 ==========

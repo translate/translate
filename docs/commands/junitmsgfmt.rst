@@ -1,5 +1,5 @@
 
-.. _pages/toolkit/junitmsgfmt#junitmsgfmt:
+.. _junitmsgfmt#junitmsgfmt:
 
 junitmsgfmt
 ***********
@@ -8,7 +8,7 @@ junitmsgfmt
 
 Run msgfmt and provide JUnit type output for use in continuous integration systems like Hudson and Jenkins.
 
-.. _pages/toolkit/junitmsgfmt#usage:
+.. _junitmsgfmt#usage:
 
 Usage
 =====

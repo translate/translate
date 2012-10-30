@@ -1,5 +1,5 @@
 
-.. _pages/toolkit/poconflicts#poconflicts:
+.. _poconflicts#poconflicts:
 
 poconflicts
 ***********
@@ -8,7 +8,7 @@ poconflicts takes a PO file and creates an set of output PO files that contain m
 
 poconflicts allows you to quickly identify these problem messages, investigate and correct them. To merge the files back, they have to be restructured into the correct directory structure using :doc:`porestructure` in order to enable merging using :doc:`pomerge`.
 
-.. _pages/toolkit/poconflicts#usage:
+.. _poconflicts#usage:
 
 Usage
 =====
@@ -37,7 +37,7 @@ Options:
 | -v, --invert         | invert the conflicts thus extracting conflicting destination words  |
 | :doc:`--accelerator=ACCELERATORS <option_accelerator>`  | ignores the given accelerator characters when matching  |
 
-.. _pages/toolkit/poconflicts#examples:
+.. _poconflicts#examples:
 
 Examples
 ========

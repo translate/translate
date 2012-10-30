@@ -1,12 +1,12 @@
 
-.. _pages/toolkit/ts#qt_.ts:
+.. _ts#qt_.ts:
 
 Qt .ts
 ******
 
 The Qt toolkit uses a .ts file format to store translations which are traditionally edited using Qt Linguist.
 
-.. _pages/toolkit/ts#references:
+.. _ts#references:
 
 References
 ==========
@@ -16,7 +16,7 @@ The format is XML and seems to only have been documented properly in Qt 4.3
 * `Current DTD Specification <http://doc.trolltech.com/4.5/linguist-ts-file-format.html>`_ for Qt 4.5, older versions; `Qt 4.3 <http://doc.trolltech.com/4.3/linguist-ts-file-format.html>`_
 * http://svn.ez.no/svn/ezcomponents/trunk/Translation/docs/linguist-format.txt
 
-.. _pages/toolkit/ts#complete:
+.. _ts#complete:
 
 Complete
 ========
@@ -28,7 +28,7 @@ Note that :doc:`ts2po </commands/ts2po>` uses and older version and does not sup
 * Notes: comment, extracomment, translatorcomment (last two since Toolkit 1.6.0)
 * Plurals: numerusform
 
-.. _pages/toolkit/ts#todo:
+.. _ts#todo:
 
 TODO
 ====
@@ -47,7 +47,7 @@ TODO
 * \*comment: various new comment fields
 * old\*: ability to store previous source and comments
 
-.. _pages/toolkit/ts#validate:
+.. _ts#validate:
 
 Validate
 ========

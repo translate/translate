@@ -1,12 +1,12 @@
 
-.. _pages/toolkit/developers#translate_toolkit_developers_guide:
+.. _developers#translate_toolkit_developers_guide:
 
 Translate Toolkit Developers Guide
 **********************************
 
 The goal of the translate toolkit is to simplify and unify the process of translation.
 
-.. _pages/toolkit/developers#history:
+.. _developers#history:
 
 History
 =======
@@ -17,12 +17,12 @@ The tools have now evolved to include other formats such as OpenOffice.org and t
 
 These tools we group as converters.  Along the way we developed other tools that allowed us to manipulate PO files and check them for consistency.  As we evolved the converter tools we have also improved and abstracted the classes that read the various file types.  In the future we hope to define these better so that we have a more or less stable API for converters.
 
-.. _pages/toolkit/developers#resources:
+.. _developers#resources:
 
 Resources
 =========
 
-.. _pages/toolkit/developers#git_access:
+.. _developers#git_access:
 
 Git access
 ----------
@@ -32,14 +32,14 @@ Translate Toolkit uses Git as a Version Control System. You can directly clone t
 
   git clone https://github.com/translate/translate.git
 
-.. _pages/toolkit/developers#bugzilla:
+.. _developers#bugzilla:
 
 Bugzilla
 --------
 
 * http://bugs.locamotion.org/
 
-.. _pages/toolkit/developers#communication:
+.. _developers#communication:
 
 Communication
 -------------
@@ -48,7 +48,7 @@ Communication
 * Developers mailing list - https://lists.sourceforge.net/lists/listinfo/translate-devel
 * Commits to version control - https://lists.sourceforge.net/lists/listinfo/translate-cvs
 
-.. _pages/toolkit/developers#source_code_map:
+.. _developers#source_code_map:
 
 Source code map
 ===============
@@ -64,7 +64,7 @@ The source code for the tools is hosted on GitHub https://github.com/translate/t
 * search -- translation memory, terminology matching, and indexing / searching
 * share -- data files
 
-.. _pages/toolkit/developers#setup:
+.. _developers#setup:
 
 Setup
 =====
@@ -79,7 +79,7 @@ The various setup options are yours to explore
 
 To run / test things without installing, see the :doc:`instructions for Pootle <pootle:no_install>`. Those instructions sets your environment for both Pootle and the toolkit
 
-.. _pages/toolkit/developers#general_overview_of_the_programs:
+.. _developers#general_overview_of_the_programs:
 
 General overview of the programs
 ================================
@@ -91,14 +91,14 @@ Each tool in the toolkit has both a core program and a command line wrapper.  Fo
 
 This is done so that the tools can be used from within the Pootle server thus reusing the toolkit easily.
 
-.. _pages/toolkit/developers#command_line_options:
+.. _developers#command_line_options:
 
 Command line options
 --------------------
 
 Getting lost with the command line options?  Well you might want to volunteer to move some of them into configuration files.  But in terms of programming you might be confused as to where they are located.  Many of the command line options are implemented in each tool.  Things such as --progress and --errorlevel are used in each program.  Thus these are abstracted in **misc/optrecurse.py**.  While each tools unique command line options are implemented in **xxx.py**.
 
-.. _pages/toolkit/developers#converters:
+.. _developers#converters:
 
 Converters
 ==========
@@ -113,7 +113,7 @@ Where we are headed is to get to a level where the storage formats themselves ar
 
 If you want to create a new converter it is best to look at a simple instance such as :doc:`/commands/csv2tbx` or :doc:`/commands/txt2po` and their associated storage classes.  The :doc:`storage base class documentation </api/storage>` will give you the information you need for the storage class implementation.
 
-.. _pages/toolkit/developers#tools:
+.. _developers#tools:
 
 Tools
 =====
@@ -122,7 +122,7 @@ The tools in some way copy the logic of the converters.  We have a class so that
 
 :doc:`/commands/pocount` should be converted to this but does not follow this conventions.  In fact pocount should move the counting to the storage formats to allow any format to return its own word count.
 
-.. _pages/toolkit/developers#checks:
+.. _developers#checks:
 
 Checks
 ======
@@ -146,7 +146,7 @@ pofilter is now relatively mature.  The best areas for contributions are:
 
 The :doc:`API documentation </api/filters>` is a good start if you want to add a new tests.  To add a new language have a look at a language you understand amongst those already implemented.
 
-.. _pages/toolkit/developers#storage:
+.. _developers#storage:
 
 Storage
 =======
@@ -169,7 +169,7 @@ You can help by:
 * helping us move to a position where any format should convert to the base format: PO and in the future XLIFF without having to create a specific converter wrapper.
 * Ensuring that our formats :doc:`conform to the standards </formats/conformance>`
 
-.. _pages/toolkit/developers#base_classes:
+.. _developers#base_classes:
 
 Base Classes
 ------------

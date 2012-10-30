@@ -1,5 +1,5 @@
 
-.. _pages/toolkit/rc#windows_rc_files:
+.. _rc#windows_rc_files:
 
 Windows RC files
 ****************
@@ -8,14 +8,14 @@ Windows RC files
 
 Windows .rc files, or resource files, are used to store translatable text, dialogs, menu, etc. for Windows applications.  The format can be handled by the Translate Toolkit :doc:`/commands/rc2po` and po2rc.
 
-.. _pages/toolkit/rc#conformance:
+.. _rc#conformance:
 
 Conformance
 ===========
 
 The actual specification of .rc files is hard to come by.  The parser was built using `WINE <https://en.wikipedia.org/wiki/Wine_%28software%29>`_ .rc files as a reference.  This was done as WINE is a good target for .rc translations.  We are confident though that the extraction will prove robust for all .rc files.
 
-.. _pages/toolkit/rc#useful_resource:
+.. _rc#useful_resource:
 
 Useful resource
 ===============
@@ -23,7 +23,7 @@ Useful resource
 * `RC converter <http://www.soft-gems.net:8080/browse/RC-Converter>`_
 * `ReactOS translation instructions <http://www.reactos.org/wiki/index.php/Translating_introduction>`_
 
-.. _pages/toolkit/rc#supported_elements:
+.. _rc#supported_elements:
 
 Supported elements
 ==================
@@ -33,7 +33,7 @@ Supported elements
 * STRINGTABLE
 * LANGUAGE: We only parse the first language tag, further LANGUAGE section are ignored
 
-.. _pages/toolkit/rc#bugs:
+.. _rc#bugs:
 
 Bugs
 ====

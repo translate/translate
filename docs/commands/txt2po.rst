@@ -1,5 +1,5 @@
 
-.. _pages/toolkit/txt2po#txt2po_and_po2txt:
+.. _txt2po#txt2po_and_po2txt:
 
 txt2po and po2txt
 *****************
@@ -8,7 +8,7 @@ txt2po allows you to use the same principles of PO files with normal text
 files.  In PO only items that change are marked fuzzy and only new items need
 to be translated, unchanged items remain unchanged for the translation.
 
-.. _pages/toolkit/txt2po#usage:
+.. _txt2po#usage:
 
 Usage
 =====
@@ -57,12 +57,12 @@ Options (po2txt):
 | --nofuzzy            | don't use translations marked fuzzy (default)  |
 | --encoding           | encoding of the template file  |
 
-.. _pages/toolkit/txt2po#a_roundtrip_example:
+.. _txt2po#a_roundtrip_example:
 
 A roundtrip example
 ===================
 
-.. _pages/toolkit/txt2po#preparing_input_files:
+.. _txt2po#preparing_input_files:
 
 Preparing input files
 ---------------------
@@ -81,7 +81,7 @@ could for example place them in alphabetic order for their translation.
 
 Once the input file is prepared you can proceed to the next step.
 
-.. _pages/toolkit/txt2po#creating_the_pot_files:
+.. _txt2po#creating_the_pot_files:
 
 Creating the POT files
 ----------------------
@@ -97,7 +97,7 @@ You might want to manually edit the POT file to remove items that should not be
 translated.  For instance if part of the document is a license you might want
 to remove those if you do not want the license translated for legal reasons.
 
-.. _pages/toolkit/txt2po#translating:
+.. _txt2po#translating:
 
 Translating
 -----------
@@ -114,7 +114,7 @@ indicate things such as::
 They will need to adapt these to work in their language being aware of how they
 will appear once they are merged with the original text document.
 
-.. _pages/toolkit/txt2po#creating_a_translated_text_file:
+.. _txt2po#creating_a_translated_text_file:
 
 Creating a translated text file
 -------------------------------
@@ -129,12 +129,12 @@ file using the translations found in the PO file.
 The *-w* command allows you to reflow the translated text to *N* number of
 characters, otherwise the text will appear as one long line.
 
-.. _pages/toolkit/txt2po#help_with_wiki_syntax:
+.. _txt2po#help_with_wiki_syntax:
 
 Help with Wiki syntax
 =====================
 
-.. _pages/toolkit/txt2po#dokuwiki:
+.. _txt2po#dokuwiki:
 
 dokuwiki
 --------
@@ -151,7 +151,7 @@ https://www.dokuwiki.org/dokuwiki?do=export_raw
 
 First we retrieve the file in raw dokuwiki format, then we create a POT file for editing.  We created a French translation and using po2txt plus the original file as a template we output fr.txt which is a French version of the original txt2po.txt.  This file can now be uploaded to the wiki server.
 
-.. _pages/toolkit/txt2po#mediawiki:
+.. _txt2po#mediawiki:
 
 MediaWiki
 ---------

@@ -1,12 +1,12 @@
 
-.. _pages/toolkit/rc2po#rc2po:
+.. _rc2po#rc2po:
 
 rc2po
 *****
 
 Converts Windows Resource .rc files to Gettext PO format.
 
-.. _pages/toolkit/rc2po#usage:
+.. _rc2po#usage:
 
 Usage
 =====
@@ -55,14 +55,14 @@ Options (po2rc):
 | --fuzzy              | use translations marked fuzzy  |
 | --nofuzzy            | don't use translations marked fuzzy (default)  |
 
-.. _pages/toolkit/rc2po#formats_supported:
+.. _rc2po#formats_supported:
 
 Formats Supported
 =================
 
 .. note:: This implementation is based mostly on observing WINE .rc files, these should mimic other non-WINE .rc files.
 
-.. _pages/toolkit/rc2po#examples:
+.. _rc2po#examples:
 
 Examples
 ========
@@ -91,7 +91,7 @@ Your translations found in the Zulu PO directory, ``po-zu``, will be converted t
 
 To update your translations simply redo the POT creation step and make use of :doc:`pot2po` to bring your translation up-to-date.
 
-.. _pages/toolkit/rc2po#issues:
+.. _rc2po#issues:
 
 Issues
 ======

@@ -1,5 +1,5 @@
 
-.. _pages/toolkit/flex#adobe_flex_properties_files:
+.. _flex#adobe_flex_properties_files:
 
 Adobe Flex properties files
 ***************************
@@ -13,7 +13,7 @@ Adobe Flex applications use .properties files similar to :doc:`Java properties
 We welcome more testing and feedback, but based on our solid support for
 properties, this probably works perfectly.
 
-.. _pages/toolkit/flex#references:
+.. _flex#references:
 
 References
 ==========

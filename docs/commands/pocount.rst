@@ -1,5 +1,5 @@
 
-.. _pages/toolkit/pocount#pocount:
+.. _pocount#pocount:
 
 pocount
 *******
@@ -10,7 +10,7 @@ Supported formates include: PO and XLIFF.   Almost all bilingual file formats su
 
 A number of other :doc:`formats </formats/index>` should be countable as the toolkit develops.  Note that only multilingual formats based the storage :doc:`base class </formats/base_classes>` are supported, but that includes almost all storage formats.
 
-.. _pages/toolkit/pocount#usage:
+.. _pocount#usage:
 
 Usage
 =====
@@ -34,14 +34,14 @@ Options:
 | --short-strings | statistics of strings in short format - one line per file  |
 | --short-words   | statistics of words in short format - one line per file  |
 
-.. _pages/toolkit/pocount#examples:
+.. _pocount#examples:
 
 Examples
 ========
 
 pocount makes it easy to count the current state of a body of translations. The most interesting options are those that adjust the output style and decide what to count.
 
-.. _pages/toolkit/pocount#easy_counting:
+.. _pocount#easy_counting:
 
 Easy counting
 -------------
@@ -64,7 +64,7 @@ You can have full control of the files to count by using some of the abilities o
 
 This will first find all files that match ``*.properties.po`` and then count them.  That would make it easy to count the state of your Mozilla translations of .properties files.
 
-.. _pages/toolkit/pocount#incomplete_work:
+.. _pocount#incomplete_work:
 
 Incomplete work
 ---------------
@@ -75,14 +75,14 @@ To count what still needs to be done, ignoring what is 100% complete you can use
 
 We are now counting all XLIFF files by using the ``*.xlf`` expansion.  We are only counting files that are not 100% complete and we're outputing string counts using the ``--short`` option.
 
-.. _pages/toolkit/pocount#output_formats:
+.. _pocount#output_formats:
 
 Output formats
 ==============
 
 The output options provide the following types of output
 
-.. _pages/toolkit/pocount#--full:
+.. _pocount#--full:
 
 --full
 ------
@@ -98,7 +98,7 @@ This is the normal, or default, mode.  It produces the most comprehensive and ea
 
 A grand total and file count is provided if the number of files is greater than one.
 
-.. _pages/toolkit/pocount#--csv:
+.. _pocount#--csv:
 
 --csv
 -----
@@ -110,7 +110,7 @@ This format is useful if you want to reuse the data in a spreadsheet.  In CSV mo
 
 Totals are not provided in CSV mode.
 
-.. _pages/toolkit/pocount#--short-strings_alias_--short:
+.. _pocount#--short-strings_alias_--short:
 
 --short-strings (alias --short)
 -------------------------------
@@ -121,7 +121,7 @@ The focus is on easily accessible data in a compact form.  This will only count 
 
 The filename is followed by a word indicating the type of count, here we are counting strings.  The total give the total string count.  While the letters t, f and u represent 'translated', 'fuzzy' and 'untranslated' and here indicate the string counts for each of those categories.  The counts are followed by a percentage representation of the same categories.
 
-.. _pages/toolkit/pocount#--short-words:
+.. _pocount#--short-words:
 
 --short-words
 -------------
@@ -132,7 +132,7 @@ The output is very similar to --short-strings above::
 
 But instead of counting string we are now counting words as indicated by the term 'source words'
 
-.. _pages/toolkit/pocount#bugs:
+.. _pocount#bugs:
 
 Bugs
 ====

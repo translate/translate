@@ -1,5 +1,5 @@
 
-.. _pages/toolkit/csv2po#csv2po_and_po2csv:
+.. _csv2po#csv2po_and_po2csv:
 
 csv2po and po2csv
 *****************
@@ -8,7 +8,7 @@ Convert between CSV (Comma Separated Value) files and the PO format.  This is us
 
 If you are starting out with your own CSV files (not created by po2csv), take note of the assumptions of the column layout explained below.
 
-.. _pages/toolkit/csv2po#usage:
+.. _csv2po#usage:
 
 Usage
 =====
@@ -52,7 +52,7 @@ Options (po2csv):
 | -P, --pot            | output PO Templates (.pot) rather than PO files (.po)   |
 | --columnorder=COLUMNORDER   | specify the order and position of columns (location,source,target)   |
 
-.. _pages/toolkit/csv2po#csv_file_layout:
+.. _csv2po#csv_file_layout:
 
 CSV file layout
 ===============
@@ -70,7 +70,7 @@ The resultant CSV file has the following layout
 |  C     |   Target Language  |  The msgstr or target language                                      |
 +--------+--------------------+---------------------------------------------------------------------+
 
-.. _pages/toolkit/csv2po#examples:
+.. _csv2po#examples:
 
 Examples
 ========
@@ -92,7 +92,7 @@ CSV files found in *csv* from *windows-1250* to UTF-8 and place the correctly en
 the templates found in *pot* to ensure that we preserve formatting and other data.  Note that
 UTF-8 is the only available destination encoding.
 
-.. _pages/toolkit/csv2po#bugs:
+.. _csv2po#bugs:
 
 Bugs
 ====

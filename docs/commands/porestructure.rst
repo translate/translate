@@ -1,5 +1,5 @@
 
-.. _pages/toolkit/porestructure#porestructure:
+.. _porestructure#porestructure:
 
 porestructure
 *************
@@ -8,7 +8,7 @@ porestructure takes the PO files output by :doc:`poconflicts` (a flat structure)
 
 Since poconflicts adds conflicting messages, from many different PO files, into a single PO file, the original structure of the files and directories are lost and the new PO files are output to a single directory. The original structure information is left in "(pofilter)" comments for each PO element.
 
-.. _pages/toolkit/porestructure#usage:
+.. _porestructure#usage:
 
 Usage
 =====
@@ -34,11 +34,11 @@ Options:
 | -oOUTPUT, --output=OUTPUT  | write to OUTPUT in po format  |
 | :doc:`--psyco=MODE <option_psyco>`         | use psyco to speed up the operation, modes: none, full, profile  |
 
-.. _pages/toolkit/porestructure#examples:
+.. _porestructure#examples:
 
 Examples
 ========
 
 The documentation for poconflicts has :ref:`pages/toolkit/poconflicts#examples` for the complete process using poconflict, porestructure, and pomerge.
 
-.. _pages/toolkit/porestructure#bugs:
+.. _porestructure#bugs:

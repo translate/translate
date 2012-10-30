@@ -1,5 +1,5 @@
 
-.. _pages/toolkit/moz2po#moz2po_and_po2moz:
+.. _moz2po#moz2po_and_po2moz:
 
 moz2po and po2moz
 *****************
@@ -14,7 +14,7 @@ a complete roundtrip for Mozilla localisation using PO files and PO editors.
 
 .. warning:: The conversion to and from XPI files is no longer actively supported.  The preffered method is to work directly with files in Mozilla's Mercurial version control system.
 
-.. _pages/toolkit/moz2po#usage:
+.. _moz2po#usage:
 
 Usage
 =====
@@ -56,12 +56,12 @@ Options (po2moz):
 | --fuzzy              | use translations marked fuzzy   |
 | --nofuzzy            | don't use translations marked fuzzy (default)   |
 
-.. _pages/toolkit/moz2po#examples:
+.. _moz2po#examples:
 
 Examples
 ========
 
-.. _pages/toolkit/moz2po#creating_pot_files:
+.. _moz2po#creating_pot_files:
 
 Creating POT files
 ------------------
@@ -84,7 +84,7 @@ If you want to create a set of POT files with another base language try the foll
 
 This will create a set of POT files in ``fr-pot`` that have French as your source language.
 
-.. _pages/toolkit/moz2po#creating_po_files_from_existing_non-po_translations:
+.. _moz2po#creating_po_files_from_existing_non-po_translations:
 
 Creating PO files from existing non-PO translations
 ---------------------------------------------------
@@ -99,7 +99,7 @@ This will combine the untranslated template en-US files from ``en-US`` combine t
 
 For those who are not English fluent you can do the same with another languages.  In this case ``msgid`` will contain the French text from ``l10n/fr``.  This is useful for translating where the translators other languages is not English but French, Spanish or Portuguese.  Please make sure that the source languages i.e. the ``msgid`` language is fully translated as against en-US.
 
-.. _pages/toolkit/moz2po#creating_an_xpi_or_cvs_ready_translations:
+.. _moz2po#creating_an_xpi_or_cvs_ready_translations:
 
 Creating an XPI or CVS ready translations
 -----------------------------------------
@@ -114,7 +114,7 @@ Create a Zulu language (``-lzu-ZA``) XPI called ``zu-ZA.xpi`` from translations 
 
 Create Mozilla files using the templates files in ``l10n/en-US`` (see above for how to create them) with PO translations in ``po/xh`` and ouput them to ``l10n/xh``.  The files now in ``l10n/xh`` are ready for submission to Mozilla and can be used to build a language pack or translated version of Mozilla.
 
-.. _pages/toolkit/moz2po#issues:
+.. _moz2po#issues:
 
 Issues
 ======

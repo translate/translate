@@ -1,5 +1,5 @@
 
-.. _pages/toolkit/poswap#poswap:
+.. _poswap#poswap:
 
 poswap
 ******
@@ -10,7 +10,7 @@ This makes it possible to have French as the source file for translation, rather
 
 It can also be used to convert translatable files that use logical IDs instead of source text into a format usable by human localisers.
 
-.. _pages/toolkit/poswap#usage:
+.. _poswap#usage:
 
 Usage
 =====
@@ -39,7 +39,7 @@ Options:
 | :doc:`--psyco=MODE <option_psyco>`         | use psyco to speed up the operation, modes: none, full, profile  |
 | --reverse  | Do the inverse operation (converting back to a normal English based file). See the examples.  |
 
-.. _pages/toolkit/poswap#examples:
+.. _poswap#examples:
 
 Examples
 ========
@@ -69,7 +69,7 @@ To convert the fr-ku files back to en-ku::
 
 This recreates the English based Kurdish translation from the French based files previously created in fr-ku/.
 
-.. _pages/toolkit/poswap#issues:
+.. _poswap#issues:
 
 Issues
 ======

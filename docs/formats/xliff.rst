@@ -1,12 +1,12 @@
 
-.. _pages/toolkit/xliff#xliff:
+.. _xliff#xliff:
 
 XLIFF
 *****
 
 XLIFF is the OASIS standard for translation. See http://www.oasis-open.org/committees/xliff/documents/xliff-specification.htm.
 
-.. _pages/toolkit/xliff#flavours:
+.. _xliff#flavours:
 
 Flavours
 ========
@@ -24,12 +24,12 @@ XLIFF also has documents that specify the conversion from various standard sourc
   * Draft `XLIFF 1.2 Representation Guide for Java Resource Bundles <http://docs.oasis-open.org/xliff/v1.2/xliff-profile-java/xliff-profile-java-v1.2.html>`_
 * ICU Resource Bundles - not officially being developed by XLIFF - Proposed `representation guide <http://www.icu-project.org/repos/icu/icuhtml/trunk/design/locale/xliff-profile-icuresourcebundle-1.2.htm>`_
 
-.. _pages/toolkit/xliff#standard_conformance:
+.. _xliff#standard_conformance:
 
 Standard conformance
 ====================
 
-.. _pages/toolkit/xliff#done:
+.. _xliff#done:
 
 Done
 ----
@@ -49,7 +49,7 @@ Done
 * context groups
 * alt-trans
 
-.. _pages/toolkit/xliff#xliff_and_other_tools:
+.. _xliff#xliff_and_other_tools:
 
 XLIFF and other tools
 =====================

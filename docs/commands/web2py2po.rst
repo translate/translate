@@ -1,5 +1,5 @@
 
-.. _pages/toolkit/py2web2po#web2py2po:
+.. _py2web2po#web2py2po:
 
 web2py2po
 *********
@@ -12,7 +12,7 @@ Web2py uses an internal localization engine based on Python dictionaries, which 
 
 On the other hand, for collaboration and workflow control in a wider community you might probably rather want to use Pootle, Launchpad or similar facilities for translation, thus need to transform the web2py dictionaries into PO files and vice versa. And exactly that is what the web2py2po converters are good for.
 
-.. _pages/toolkit/py2web2po#usage:
+.. _py2web2po#usage:
 
 Usage
 =====
@@ -52,7 +52,7 @@ Options (po2web2py):
 | :doc:`--psyco=mode <option_psyco>`         | use psyco to speed up the operation, modes: none, full, profile  |
 | --fuzzy %%|%% --nofuzzy     | include%%|%%exclude fuzzy translations  |
 
-.. _pages/toolkit/py2web2po#notes:
+.. _py2web2po#notes:
 
 Notes
 =====

@@ -1,5 +1,5 @@
 
-.. _pages/toolkit/copyright#copyright:
+.. _copyright#copyright:
 
 License
 *******

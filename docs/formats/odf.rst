@@ -1,5 +1,5 @@
 
-.. _pages/toolkit/odf#opendocument_format:
+.. _odf#opendocument_format:
 
 OpenDocument Format
 *******************

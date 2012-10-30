@@ -1,5 +1,5 @@
 
-.. _pages/toolkit/popuretext#popuretext:
+.. _popuretext#popuretext:
 
 popuretext
 **********
@@ -8,7 +8,7 @@ Extracts all the source text from a directory of POT files or the target text fr
 
 If you want to use other tools to analyse the text within a translation project, then this is the tool for you.  For example, you can use it to calculate word frequencies to create an initial glossary based on the pure source text.
 
-.. _pages/toolkit/popuretext#prerequisites:
+.. _popuretext#prerequisites:
 
 Prerequisites
 =============
@@ -16,7 +16,7 @@ Prerequisites
 * GNU Gettext
 * sed
 
-.. _pages/toolkit/popuretext#usage:
+.. _popuretext#usage:
 
 Usage
 =====
@@ -32,7 +32,7 @@ Where:
 | file.txt  | file that contains the output text  |
 | accelerator  | optional: accelerator marker to be removed from the text  |
 
-.. _pages/toolkit/popuretext#examples:
+.. _popuretext#examples:
 
 Examples
 ========

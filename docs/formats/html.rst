@@ -1,5 +1,5 @@
 
-.. _pages/toolkit/html#html:
+.. _html#html:
 
 HTML
 ****
@@ -8,7 +8,7 @@ The Translate Toolkit is able to process HTML files using the :doc:`html2po </co
 
 The HTML support is basic, so please be aware of that.
 
-.. _pages/toolkit/html#conformance:
+.. _html#conformance:
 
 Conformance
 ===========
@@ -17,7 +17,7 @@ Conformance
 * Does not convert HTML entities (e.g. &copy;) to normal strings
 * It does not handle inline elements well and will drop them, so complicated HTML might not make it through the filter
 
-.. _pages/toolkit/html#references:
+.. _html#references:
 
 References
 ==========

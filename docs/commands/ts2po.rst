@@ -1,5 +1,5 @@
 
-.. _pages/toolkit/ts2po#ts2po_and_po2ts:
+.. _ts2po#ts2po_and_po2ts:
 
 ts2po and po2ts
 ***************
@@ -17,7 +17,7 @@ The Qt toolkit comes with a localization application, Qt Linguist, however you m
    directly in `Virtaal <http://virtaal.org>`_ or `Pootle
    <http://pootle.tramslatehouse.org>`_.
 
-.. _pages/toolkit/ts2po#usage:
+.. _ts2po#usage:
 
 Usage
 =====
@@ -58,7 +58,7 @@ Options (po2ts):
 | -tTEMPLATE, --template=TEMPLATE   | read from TEMPLATE in ts format   |
 | :doc:`--psyco=MODE <option_psyco>`         | use psyco to speed up the operation, modes: none, full, profile  |
 
-.. _pages/toolkit/ts2po#examples:
+.. _ts2po#examples:
 
 Examples
 ========
@@ -76,7 +76,7 @@ Now take your translated PO files *af.po* and convert it into a translated Qt .t
 .. note:: You need to use the tools from the Qt toolkit to create the compiled
    .qm language files for the application.
 
-.. _pages/toolkit/ts2po#bugs:
+.. _ts2po#bugs:
 
 Bugs
 ====

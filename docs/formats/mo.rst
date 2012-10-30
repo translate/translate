@@ -1,12 +1,12 @@
 
-.. _pages/toolkit/mo#gettext_.mo:
+.. _mo#gettext_.mo:
 
 Gettext .mo
 ***********
 
 The Gettext .mo (Machine Object) file is a compiled :doc:`Gettext PO <po>` file.  In execution Gettext enabled programs retrieve translations from the .mo file.  The file contains arrays for the English and the translations, an optional hash can speed up the access to the translations.
 
-.. _pages/toolkit/mo#conformance:
+.. _mo#conformance:
 
 Conformance
 ===========

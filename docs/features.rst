@@ -1,5 +1,5 @@
 
-.. _pages/toolkit/features#features:
+.. _features#features:
 
 Features
 ********

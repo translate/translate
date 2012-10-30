@@ -1,12 +1,12 @@
 
-.. _pages/toolkit/general_usage#general_usage:
+.. _general_usage#general_usage:
 
 General Usage
 *************
 
 The tools follow a general usage convention which is helpful to understand.
 
-.. _pages/toolkit/general_usage#input_&_output:
+.. _general_usage#input_&_output:
 
 Input & Output
 ==============
@@ -19,7 +19,7 @@ You can of course still us the ``-i`` and ``-o`` options which allows you to reo
 
   moz2po -o <output> -i <input>
 
-.. _pages/toolkit/general_usage#error_reporting:
+.. _general_usage#error_reporting:
 
 Error Reporting
 ===============
@@ -28,7 +28,7 @@ All tools accept the option ``--errorlevel``.  If you find a bug, add this optio
 
   moz2po <other-options> --errorlevel=traceback
 
-.. _pages/toolkit/general_usage#templates:
+.. _general_usage#templates:
 
 Templates
 =========
@@ -47,7 +47,7 @@ The same concept of templates is also used when you merge files. ::
 
 This would take the ``<old>`` files merge in the ``<fixes>`` and output new PO files, preserving formatting, into ``<new>``.  You can use the same directory for ``<old>`` and ``<new>`` if you want the merges to overwrite files in ``<old>``.
 
-.. _pages/toolkit/general_usage#source2target:
+.. _general_usage#source2target:
 
 source2target
 =============
@@ -57,7 +57,7 @@ The converters all follow this convention:
 * source = the format from which you are converting e.g. in :doc:`oo2po <oo2po>` we are converting from OpenOffice.org SDF/GSI
 * target = the format into which you are converting e.g. in :doc:`oo2po <oo2po>` we are converting to Gettext PO
 
-.. _pages/toolkit/general_usage#getting_help:
+.. _general_usage#getting_help:
 
 Getting Help
 ============

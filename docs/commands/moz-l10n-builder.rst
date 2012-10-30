@@ -1,5 +1,5 @@
 
-.. _pages/toolkit/moz-l10n-builder#moz-l10n-builder:
+.. _moz-l10n-builder#moz-l10n-builder:
 
 moz-l10n-builder
 ****************
@@ -12,7 +12,7 @@ Please also check the page on `creating a language pack <http://developer.mozill
 
     For information about working with the new source trees in Mercurial, see the :doc:`mozilla_l10n_scripts` page.
 
-.. _pages/toolkit/moz-l10n-builder#prerequisites:
+.. _moz-l10n-builder#prerequisites:
 
 Prerequisites
 =============
@@ -36,7 +36,7 @@ Prerequisites
 
 Note these instructions are for building on Linux, they may work on Windows.  All software should be available through your distribution.  You will need to use Wine to install the Nullsoft installer and may need to sort out some path issues to get it to run correctly.
 
-.. _pages/toolkit/moz-l10n-builder#latest_version:
+.. _moz-l10n-builder#latest_version:
 
 Latest Version
 ==============
@@ -48,7 +48,7 @@ and you will also need this `minor patch
 <https://raw.github.com/translate/translate/master/tools/mozilla/mozilla-l10n.patch>`_
 to the mozilla source code.
 
-.. _pages/toolkit/moz-l10n-builder#usage:
+.. _moz-l10n-builder#usage:
 
 Usage
 =====
@@ -63,7 +63,7 @@ Where:
 
 Your translations will not be modified.
 
-.. _pages/toolkit/moz-l10n-builder#operation:
+.. _moz-l10n-builder#operation:
 
 Operation
 =========
@@ -78,7 +78,7 @@ moz-l10n-builder does the following:
 * Performs various hacks to cater for the anomalies of file formats
 * Outputs a diff of you migrated PO files and your newly generated Mozilla l10n/ files
 
-.. _pages/toolkit/moz-l10n-builder#bugs:
+.. _moz-l10n-builder#bugs:
 
 Bugs
 ====
