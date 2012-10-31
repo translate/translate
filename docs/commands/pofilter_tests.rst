@@ -7,9 +7,9 @@ Descriptions of all pofilter tests
 **********************************
 
 The following are descriptions of the tests available in :doc:`pofilter`,
-:ref:`Pootle <pootle:checks>` and :ref:`Virtaal <virtaal:checks>` (since
-version 0.7) with some details about what type of errors they are useful to
-test for and the limitations of each test.
+:ref:`Pootle <pootle:checks>` and :ref:`Virtaal <virtaal:checks>` with some
+details about what type of errors they are useful to test for and the
+limitations of each test.
 
 Keep in mind that the software might point to errors which are not necessarily
 wrong (false positives).
