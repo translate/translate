@@ -91,8 +91,8 @@ accelerators
 Checks whether :doc:`guide/translation/accelerators` are consistent between the
 two strings.
 
-Make sure you use the --mozilla, --kde, etc options so that pofilter knows
-which type of accelerator it is looking for.  The test will pick up
+Make sure you use the ``--mozilla``, ``--kde``, etc options so that pofilter
+knows which type of accelerator it is looking for.  The test will pick up
 accelerators that are missing and ones that shouldn't be there.
 
 .. _pofilter_tests#acronyms:
@@ -205,7 +205,7 @@ Words that have been repeated in a translation will be highlighted with this
 test e.g. "the the", "a a".  These are generally typos that need correcting.
 Some languages may have valid repeated words in their structure, in that case
 either ignore those instances or switch this test off using the
---excludefilters option.
+``--excludefilters`` option.
 
 .. _pofilter_tests#emails:
 
@@ -324,8 +324,8 @@ isfuzzy
 check if the po element has been marked fuzzy
 
 If a message is marked fuzzy in the PO file then it is extracted.  Note this is
-different from --fuzzy and --nofuzzy options which specify whether tests should
-be performed against messages marked fuzzy
+different from ``--fuzzy`` and ``--nofuzzy`` options which specify whether
+tests should be performed against messages marked fuzzy.
 
 .. _pofilter_tests#isreview:
 
@@ -340,9 +340,9 @@ If you have made use of the 'review' flags in your translations::
   # (pofilter) testname: explanation for translator
 
 Then if a message is marked for review in the PO file it will be extracted.
-Note this is different from --review and --noreview options which specify
-whether tests should be performed against messages already marked as under
-review.
+Note this is different from ``--review`` and ``--noreview`` options which
+specify whether tests should be performed against messages already marked as
+under review.
 
 .. _pofilter_tests#kdecomments:
 
@@ -378,7 +378,7 @@ translation
 If for instance in your language you decide that you must translate 'OK' then
 this test will flag any occurances of 'OK' in the translation if it appeared in
 the source string.  You must specify a file containing all of the *must
-translate* words using *--musttranslatefile*.
+translate* words using ``--musttranslatefile``.
 
 .. _pofilter_tests#newlines:
 
@@ -411,7 +411,7 @@ checks that words configured as untranslatable appear in the translation too
 Many brand names should not be translated, this test allows you to easily make
 sure that words like: Word, Excel, Impress, Calc, etc. are not translated.  You
 must specify a file containing all of the *no translate* words using
-*--notranslatefile*.
+``--notranslatefile``.
 
 .. _pofilter_tests#numbers:
 
@@ -568,7 +568,7 @@ need to have PyEnchant installed as well as a dictionary for your language (for
 example, one of the `Hunspell
 <http://wiki.services.openoffice.org/wiki/Dictionaries>`_ or `aspell
 <http://ftp.gnu.org/gnu/aspell/dict/>`_ dictionaries).  This test will only
-work if you have specified the *--language* option.
+work if you have specified the ``--language`` option.
 
 The pofilter error that is created, lists the misspelled word, plus
 suggestions returned from the spell checker.  That makes it easy for you to
@@ -678,9 +678,9 @@ variables
 checks whether variables of various forms are consistent between the two strings
 
 This checks to make sure that variables that appear in the original also appear
-in the translation.  Make sure you use the --kde, --openoffice, etc flags as
-these define what variables will be searched for.  It does not at the moment
-cope with variables that use the reordering syntax of Gettext PO files.
+in the translation.  Make sure you use the ``--kde``, ``--openoffice``, etc
+flags as these define what variables will be searched for.  It does not at the
+moment cope with variables that use the reordering syntax of Gettext PO files.
 
 .. _pofilter_tests#xmltags:
 
