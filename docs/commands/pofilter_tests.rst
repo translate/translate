@@ -112,7 +112,7 @@ down translations of the acronym and correcting them.
 blank
 -----
 
-checks whether a translation is totally blank
+Checks whether a translation is totally blank
 
 This will check to see if a translation has inadvertently been translated as
 blank ie as spaces.  This is different from untranslated which is completely
@@ -124,7 +124,7 @@ appear to most tools as if it is translated.
 brackets
 --------
 
-checks that the number of brackets in both strings match
+Checks that the number of brackets in both strings match
 
 If ([{ or }]) appear in the original this will check that the same number
 appear in the translation.
@@ -134,7 +134,7 @@ appear in the translation.
 compendiumconflicts
 -------------------
 
-checks for Gettext compendium conflicts (#-#-#-#-#)
+Checks for Gettext compendium conflicts (#-#-#-#-#)
 
 When you use msgcat to create a PO compendium it will insert #-#-#-#-# into
 entries that are not consistent.  If the compendium is used later in a message
@@ -146,7 +146,7 @@ extracts those for correction.
 credits
 -------
 
-checks for messages containing translation credits instead of normal
+Checks for messages containing translation credits instead of normal
 translations.
 
 Some projects have consistent ways of giving credit to translators by having a
@@ -160,7 +160,7 @@ triggered for these units (such as urls, emails, etc.)
 dialogsizes
 -----------
 
-checks that dialog sizes are not translated
+Checks that dialog sizes are not translated
 
 This is a Mozilla specific test.  Mozilla uses a language called XUL to define
 dialogues and screens.  This can make use of CSS to specify properties of the
@@ -176,7 +176,7 @@ other types of errors in these units.
 doublequoting
 -------------
 
-checks whether doublequoting is consistent between the two strings
+Checks whether doublequoting is consistent between the two strings
 
 Checks on double quotes " to ensure that you have the same number in both the
 original and the translated string. This tests takes into account that several
@@ -187,7 +187,7 @@ languages use different quoting characters, and will test for them instead.
 doublespacing
 -------------
 
-checks for bad double-spaces by comparing to original
+Checks for bad double-spaces by comparing to original
 
 This will identify if you have [space][space] in when you don't have it in the
 original or it appears in the original but not in your translation. Some of
@@ -199,7 +199,7 @@ language.
 doublewords
 -----------
 
-checks for repeated words in the translation
+Checks for repeated words in the translation
 
 Words that have been repeated in a translation will be highlighted with this
 test e.g. "the the", "a a".  These are generally typos that need correcting.
@@ -212,7 +212,7 @@ either ignore those instances or switch this test off using the
 emails
 ------
 
-checks to see that emails are not translated
+Checks to see that emails are not translated
 
 Generally you should not be translating email addresses.  This check will look
 to see that email addresses e.g. info@example.com are not translated.  In some
@@ -223,7 +223,7 @@ cases of course you should translate the address but generally you shouldn't.
 endpunc
 -------
 
-checks whether punctuation at the end of the strings match
+Checks whether punctuation at the end of the strings match
 
 This will ensure that the ending of your translation has the same punctuation
 as the original.  E.g. if it ends in :[space] then so should yours.  It is
@@ -251,7 +251,7 @@ be added easily if it is not there yet.
 endwhitespace
 -------------
 
-checks whether whitespace at the end of the strings matches
+Checks whether whitespace at the end of the strings matches
 
 Operates the same as endpunc but is only concerned with whitespace. This filter
 is particularly useful for those strings which will evidently be followed by
@@ -267,7 +267,7 @@ in the character might be enough without an added extra space.
 escapes
 -------
 
-checks whether escaping is consistent between the two strings
+Checks whether escaping is consistent between the two strings
 
 Checks escapes such as ``\n`` ``\uNNNN`` to ensure that if they exist in the
 original that you have them in the translation.
@@ -277,7 +277,7 @@ original that you have them in the translation.
 filepaths
 ---------
 
-checks that file paths have not been translated
+Checks that file paths have not been translated
 
 Checks that paths such as ``/home/user1`` have not been translated.  Generally
 you do not translate a file-path, unless it is being used as an example, e.g.
@@ -288,7 +288,7 @@ you do not translate a file-path, unless it is being used as an example, e.g.
 functions
 ---------
 
-checks to see that function names are not translated
+Checks to see that function names are not translated
 
 Checks that function names eg. ``rgb()`` or ``getEntity.Name()`` are not
 translated.
@@ -321,7 +321,7 @@ used by Pootle and is probably only useful in pofilter when using XLIFF files.
 isfuzzy
 -------
 
-check if the po element has been marked fuzzy
+Checks if the po element has been marked fuzzy
 
 If a message is marked fuzzy in the PO file then it is extracted.  Note this is
 different from ``--fuzzy`` and ``--nofuzzy`` options which specify whether
@@ -332,7 +332,7 @@ tests should be performed against messages marked fuzzy.
 isreview
 --------
 
-check if the po element has been marked review
+Checks if the po element has been marked for review
 
 If you have made use of the 'review' flags in your translations::
 
@@ -349,7 +349,7 @@ under review.
 kdecomments
 -----------
 
-checks to ensure that no KDE style comments appear in the translation
+Checks to ensure that no KDE style comments appear in the translation
 
 KDE style translator comments appear in PO files as ``"_: comment\n"``. New
 translators often translate the comment.  This test tries to identify instances
@@ -360,7 +360,7 @@ where the comment has been translated.
 long
 ----
 
-checks whether a translation is much longer than the original string
+Checks whether a translation is much longer than the original string
 
 This is most useful in the special case where the translation is multiple
 characters long while the source text is only 1 character long.  Otherwise, we
@@ -372,7 +372,7 @@ conservatively to limit the number of false positives.
 musttranslatewords
 ------------------
 
-checks that words configured as definitely translatable don't appear in the
+Checks that words configured as definitely translatable don't appear in the
 translation
 
 If for instance in your language you decide that you must translate 'OK' then
@@ -385,7 +385,7 @@ translate* words using ``--musttranslatefile``.
 newlines
 --------
 
-checks whether newlines are consistent between the two strings
+Checks whether newlines are consistent between the two strings
 
 Counts the number of ``\n`` newlines (and variants such as ``\r\n``) and
 reports and error if they differ.
@@ -395,7 +395,7 @@ reports and error if they differ.
 nplurals
 --------
 
-checks for the correct number of noun forms for plural translations.
+Checks for the correct number of noun forms for plural translations.
 
 This uses the plural information in the language module of the toolkit.  This
 is the same as the Gettext nplural value.  It will check that the number of
@@ -406,7 +406,7 @@ plurals required is the same as the number supplied in your translation.
 notranslatewords
 ----------------
 
-checks that words configured as untranslatable appear in the translation too
+Checks that words configured as untranslatable appear in the translation too
 
 Many brand names should not be translated, this test allows you to easily make
 sure that words like: Word, Excel, Impress, Calc, etc. are not translated.  You
@@ -418,7 +418,7 @@ must specify a file containing all of the *no translate* words using
 numbers
 -------
 
-checks whether numbers of various forms are consistent between the two strings
+Checks whether numbers of various forms are consistent between the two strings
 
 You will see some errors where you have either written the number in full or
 converted it to the digit in your translation.  Also changes in order will
@@ -429,7 +429,7 @@ trigger this error.
 options
 -------
 
-checks that command line options are not translated
+Checks that command line options are not translated
 
 In messages that contain command line options, such as '--help', this test will
 check that these remain untranslated.  These could be translated in the future
@@ -442,7 +442,7 @@ will check that the parameter has been translated.
 printf
 ------
 
-checks whether printf format strings match
+Checks whether printf format strings match
 
 If the printf formatting variables are not identical, then this will indicate
 an error.  Printf statements are used by programs to format output in a human
@@ -460,7 +460,7 @@ strictly identical, but they may be reordered.
 puncspacing
 -----------
 
-checks for bad spacing after punctuation
+Checks for bad spacing after punctuation
 
 In the case of [full-stop][space] in the original, this test checks that your
 translation does not remove the space.  It checks also for [comma], [colon],
@@ -475,7 +475,7 @@ account.
 purepunc
 --------
 
-checks that strings that are purely punctuation are not changed
+Checks that strings that are purely punctuation are not changed
 
 This extracts strings like "+" or "-" as these usually should not be changed.
 
@@ -484,7 +484,7 @@ This extracts strings like "+" or "-" as these usually should not be changed.
 sentencecount
 -------------
 
-checks that the number of sentences in both strings match
+Checks that the number of sentences in both strings match
 
 Adds the number of sentences to see that the sentence count is the same between
 the original and translated string. You may not always want to use this test,
@@ -498,7 +498,7 @@ want to convey, not the exact way it was written in the English.
 short
 -----
 
-checks whether a translation is much shorter than the original string
+Checks whether a translation is much shorter than the original string
 
 This is most useful in the special case where the translation is 1 characters
 long while the source text is multiple characters long.  Otherwise, we use a
@@ -510,7 +510,7 @@ limit the number of false positives.
 simplecaps
 ----------
 
-checks the capitalisation of two strings isn't wildly different
+Checks the capitalisation of two strings isn't wildly different
 
 This will pick up many false positives, so don't be a slave to it.  It is
 useful for identifying translations that don't start with a capital letter
@@ -524,7 +524,7 @@ Title Case, or change them all to normal sentence case.
 simpleplurals
 -------------
 
-checks for English style plural(s) for you to review
+Checks for English style plural(s) for you to review
 
 This test will extract any message that contains words with a final "(s)" in
 the source text.  You can then inspect the message, to check that the correct
@@ -542,7 +542,7 @@ test that nothing like "(s)" was used in the translation.
 singlequoting
 -------------
 
-checks whether singlequoting is consistent between the two strings
+Checks whether singlequoting is consistent between the two strings
 
 The same as doublequoting but checks for the ' character.  Because this is used
 in contractions like it's and in possessive forms like user's, this test can
@@ -555,7 +555,7 @@ might not be detected properly by the check.
 spellcheck
 ----------
 
-checks for words that don't pass a spell-check
+Checks for words that don't pass a spell-check
 
 This test will check for misspelled words in your translation.  The test first
 checks for misspelled words in the original (usually English) text, and adds
@@ -579,7 +579,7 @@ identify the word and select a replacement.
 startcaps
 ---------
 
-checks that the message starts with the correct capitalisation
+Checks that the message starts with the correct capitalisation
 
 After stripping whitespace and common punctuation characters, it then checks to
 see that the first remaining character is correctly capitalised.  So, if the
@@ -595,7 +595,7 @@ disabled for your language.
 startpunc
 ---------
 
-checks whether punctuation at the beginning of the strings match
+Checks whether punctuation at the beginning of the strings match
 
 Operates as endpunc but you will probably see fewer errors.
 
@@ -604,7 +604,7 @@ Operates as endpunc but you will probably see fewer errors.
 startwhitespace
 ---------------
 
-checks whether whitespace at the beginning of the strings matches
+Checks whether whitespace at the beginning of the strings matches
 
 As in endwhitespace but you will see fewer errors.
 
@@ -613,7 +613,7 @@ As in endwhitespace but you will see fewer errors.
 tabs
 ----
 
-checks whether tabs are consistent between the two strings
+Checks whether tabs are consistent between the two strings
 
 Counts the number of ``\t`` tab markers and reports an error if they differ.
 
@@ -622,7 +622,7 @@ Counts the number of ``\t`` tab markers and reports an error if they differ.
 unchanged
 ---------
 
-checks whether a translation is basically identical to the original string
+Checks whether a translation is basically identical to the original string
 
 This checks to see if the translation isn't just a copy of the English
 original.  Sometimes, this is what you want, but other times you will detect
@@ -633,7 +633,7 @@ words that should have been translated.
 untranslated
 ------------
 
-checks whether a string has been translated at all
+Checks whether a string has been translated at all
 
 This check is really only useful if you want to extract untranslated strings so
 that they can be translated independently of the main work.
@@ -643,7 +643,7 @@ that they can be translated independently of the main work.
 urls
 ----
 
-checks to see that URLs are not translated
+Checks to see that URLs are not translated
 
 This checks only basic URLs (http, ftp, mailto etc.) not all URIs (e.g. afp,
 smb, file).  Generally, you don't want to translate URLs, unless they are
@@ -657,7 +657,7 @@ is very clearly marked: such information should go into a configuration file.
 validchars
 ----------
 
-checks that only characters specified as valid appear in the translation
+Checks that only characters specified as valid appear in the translation
 
 Often during character conversion to and from UTF-8 you get some strange
 characters appearing in your translation.  This test presents a simple way to
@@ -675,7 +675,7 @@ test will print the character together with its Unicode value (e.g. 002B).
 variables
 ---------
 
-checks whether variables of various forms are consistent between the two strings
+Checks whether variables of various forms are consistent between the two strings
 
 This checks to make sure that variables that appear in the original also appear
 in the translation.  Make sure you use the ``--kde``, ``--openoffice``, etc
@@ -687,7 +687,7 @@ moment cope with variables that use the reordering syntax of Gettext PO files.
 xmltags
 -------
 
-checks that :doc:`XML/HTML <guide/translation/html>` tags have not been
+Checks that :doc:`XML/HTML <guide/translation/html>` tags have not been
 translated
 
 This check finds the number of tags in the source string and checks that the
