@@ -35,7 +35,8 @@ the specifics of your language.
 
 .. _test_classification:
 
-Test Classification ===================
+Test Classification
+===================
 
 Some tests are more important than others so we have classified them to help
 you determine which to run first.
