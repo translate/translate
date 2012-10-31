@@ -329,7 +329,9 @@ printf
 
 checks whether printf format strings match
 
-If the printf formatting variables are not identical, then this will indicate an error.  Prinf statements are used by programs to format output in a human readable form (they are place holders for variable data).  They allow you to specify lengths of string variables, string padding, number padding, precision, etc. (See `printf <https://en.wikipedia.org/wiki/Printf_format_string>`_ for more details).  Generally they will look like this: %d, %5.2f, %100s, etc. The test can also manage variables-reordering using the %1$s syntax.  The variables' type and details following data are tested to ensure that they are strictly identical, but they may be reordered.
+If the printf formatting variables are not identical, then this will indicate an error.  Prinf statements are used by programs to format output in a human readable form (they are place holders for variable data).  They allow you to specify lengths of string variables, string padding, number padding, precision, etc. Generally they will look like this: ``%d``, ``%5.2f``, ``%100s``, etc. The test can also manage variables-reordering using the ``%1$s`` syntax.  The variables' type and details following data are tested to ensure that they are strictly identical, but they may be reordered.
+
+.. seealso:: `printf Format String <https://en.wikipedia.org/wiki/Printf_format_string>`_
 
 .. _pofilter_tests#puncspacing:
 
