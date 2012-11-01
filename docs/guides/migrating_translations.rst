@@ -91,10 +91,13 @@ Techie: what does pomigrate2 do to your file?
 This section is for those insanely curious about what pomigrate will do to their files. You don't need to understand this section :-)
 
 * Init stage
+
   * If a file has not changed location between old and new then it is simply copied across
   * If it has moved then we try to find a file by the same name and move ours there.  If there are multiple files by the same name, then we join them together and copy them
   * If a file does not exist then we initialise it
+
 * Update stage
+
   * We now update our translations using msgmerge or pot2po
   * If you asked for a compendium, we will build one from the existing files and update using it and optionally other external compendiums
 
