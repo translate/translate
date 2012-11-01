@@ -85,8 +85,10 @@ A lot of what we discussed is related to the above.
 A quick summary:
 
 * Implement a new base class.
+
   * Flesh out the API, clean and clear definitions.
   * Document the API.
+
 * We need to discuss the class hierarchy, e.g.:
 
 ::
@@ -102,6 +104,7 @@ A quick summary:
                         -- tbx
 
 * Clean up converters.
+
   * Parsing of file content needs to happen only in the storage implementation of each filetype/storage type. Currently parsing happens all over the place.
   * Currently there are separate conversion programs for each type and direction to convert to, eg. po2xliff and xliff2po (24 commands with lots of duplicate code in them). Ideally conversion should be as simple as:
 
@@ -128,12 +131,19 @@ This works because all the data in any translation store object is accessible vi
 A concept class implementing the above code snippet has already been written.
 
 * Move certain options into their respective storage classes.
+
   * eg the --duplicates option can move into po.py
+
 * Store the meta data for a storage object.
+
   * Can be implemented as separate sqlite file that accompanies the real file.
   * Features not directly supported by a file format can be stored in the metadata file.
+
 * A storage object should know all information pertaining to itself.
+
   * eg. "am I monolingual?"
+
 * We should discuss how to make an object aware that it is monolingual, bilingual or multilingual.
+
   * Maybe through mixin-classes?
   * How will the behaviour of a monolingual store differ from a bilingual store?
