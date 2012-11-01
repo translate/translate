@@ -8,8 +8,7 @@ posegment takes a Gettext PO or XLIFF file and segments the entries, generating
 a new file with revised and smaller translation units.
 
 This is useful for the creation of a file that can be used as a Translation
-Memory (e.g. when using :ref:`pootle:updatetm` to create translation memory for
-Pootle) as you should get better matching after you have exposed translated
+Memory as you should get better matching after you have exposed translated
 sentences that might occur elsewhere in your work.
 
 Posegment won't do very advanced sentence boundary detection and alignment, but
