@@ -10,7 +10,7 @@ If you didn't understand any of that then simply understand that it makes you pr
 
 By default it is switched on, so you can safely ignore this option and benefit from psyco optimisations anyway.
 
-Note psyco only works on i386 architectures.
+.. note:: psyco only works on i386 architectures.
 
 To install psyco, you can look for it in your distribution's packages, or obtain it here: http://psyco.sourceforge.net/
 
