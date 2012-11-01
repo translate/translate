@@ -18,15 +18,19 @@ Prerequisites
 =============
 
 * Translation update component and building XPIs
+
   * :doc:`Translate Toolkit </installation>`
   * Existing Mozilla translations in PO format
   * A checkout of `Mozilla sources <http://developer.mozilla.org/en/docs/Mozilla_Source_Code_Via_CVS>`_ updated to the correct `BRANCH or RELEASE <http://developer.mozilla.org/en/docs/CVS_Tags>`_
+
 * Building Windows executables
+
   * Firefox or Thunderbird `en-US .exe <http://releases.mozilla.org/pub/mozilla.org/firefox/releases/>`_ file eg. `Firefox 2.0 en-US <http://releases.mozilla.org/pub/mozilla.org/firefox/releases/2.0/win32/en-US/Firefox%20Setup%202.0.exe>`_
   * `upx <http://upx.sourceforge.net/>`_ for executable compression
   * `Nullsoft installer <http://nsis.sourceforge.net/Main_Page>`_ to package the installer.
   * `7zip <http://www.7-zip.org/>`_ for various compression
   * Linux: `WINE <http://winehq.com/>`_ to run the Nullsoft installer
+
 * Directory structure under the directory you want to run moz-l10n-builder in:
 
 +-----------+--------------------------------------------------------------+
