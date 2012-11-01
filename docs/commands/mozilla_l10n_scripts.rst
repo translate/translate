@@ -123,7 +123,9 @@ It is basically the scripted version of the process described on Mozilla's `"Cre
 
 This script is used by ``build_ff3.1_langs.sh`` to build language packs in its final step.
 
-**Note:** This script uses the ``.mozconfig`` file in your home directory. Any existing ``.mozconfig`` is renamed to ``.mozconfig.bak`` during operation and copied back afterwards.
+.. note:: This script uses the ``.mozconfig`` file in your home directory. Any
+   existing ``.mozconfig`` is renamed to ``.mozconfig.bak`` during operation
+   and copied back afterwards.
 
 .. _mozilla_l10n_scripts#usage:
 
