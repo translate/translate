@@ -22,7 +22,8 @@ The base classes should be rich enough in functionality to enable users of the b
 * Accessing units, and determining if they are translatable, translated, a unique identifier for the unit in the file, etc.
 * Support for plural units that can vary between different languages (as the PO format allows with msgid_plural, etc.)
 
-her possibilities:
+Other possibilities:
+
 * Support for variable number of languages in the format. Examples: .txt and .properties support one language, PO supports two, :doc:`tmx` supports many.
 * Support for "multifiles", in other words a file that contain other entities that corresponds to files in other formats. Examples: ZIP, XPI and :doc:`xliff`. In reality this is only used by some of the converters. This isn't present in the base class yet.
 
