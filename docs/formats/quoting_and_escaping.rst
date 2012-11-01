@@ -42,6 +42,4 @@ Mozilla properties format
 
 Note that this section does not describe the Java properties files, even though they are quite similar.
 
-See http://www.xulplanet.com/tutorials/xultu/locprops.html
-
 It seems that the literal string ``\n`` (a backslash followed by the character 'n') and ``\t`` and ``\r`` can not be encoded in properties files. This is the assumption of the toolkit. 
