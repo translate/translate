@@ -68,7 +68,10 @@ Usage
 
 Where:
 
-| language-code  | build only the supplied languages, or build ALL if specified or if no option is supplied  |
++----------------+-----------------------------------------------------------+
+| language-code  | build only the supplied languages, or build ALL if        |
+|                | specified or if no option is supplied                     |
++----------------+-----------------------------------------------------------+
 
 Your translations will not be modified.
 
