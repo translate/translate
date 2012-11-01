@@ -409,10 +409,12 @@ class UnitChecker(object):
         return test(unit)
 
     def run_filters(self, unit, categorised=False):
-        """Run all the tests in this suite, return failures as a dictionary::
+        """Run all the tests in this suite.
 
-            {'testname': {'message': message_or_exception,
-                          'category': failure_category} }
+        :rtype: Dictionary
+        :return: Content of the dictionary is as follows::
+
+           {'testname': { 'message': message_or_exception, 'category': failure_category } }
         """
         self.results_cache = {}
         failures = {}
