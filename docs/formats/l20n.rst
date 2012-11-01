@@ -16,6 +16,7 @@ Our tools are based on the idea of units. Each unit has an associated (source, t
 l20n is based on the idea of entity soup, or object soup. Files are (at least in the first iteration) monolingual, and each language defines a set of objects which can contain one or more presentation forms of an entity/string, to vary it according to gender, case, declension, plural, time of day, etc.  A language can define extra entities to help in constructing others by "factoring out" things, if you will. The structure of each object is left to the programmer for the target language to define.
 
 Findings
+--------
 Our tools work on the principle of units.  A unit being in its simplest form a source to target mapping, in other words the English source text plus the target translation make a unit.  Our code has, for a long time now, a good understanding of units that don't have a one to one mapping.  In PO those are plural units.  This is where N source strings map to M target strings.  We currently only have 1-M and 2-M mappings for Qt and PO files. l20n introduces N-M mappings which we don't currently support.
 
 l20n is of course working around an idea of translation objects not strings.  But I think the string metaphor works in most cases to ease explanation.
