@@ -335,6 +335,7 @@ pofilter xmltags produces less false positives
 ----------------------------------------------
 
 In the xmltags check we handle the case where we had some false positives. E.g. "<Error>" which looks like XML/HTML but should actually be translated. These are handled by
+
 #. identifying them as being the same length as the source text,
 #. not containing any '=' sign.  Thus the following would not be detected by this hack. "An <Error> occurred" -> "<Error name="bob">", but these ones need human eyes anyway.
 
