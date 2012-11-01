@@ -4,7 +4,8 @@
 Mozilla DTD format
 ******************
 
-Mozilla makes use of a .dtd file to store many of its translatable elements, the :doc:`moz2po </commands/moz2po>` converter can handle these.
+Mozilla makes use of a .dtd file to store many of its translatable elements,
+the :doc:`moz2po </commands/moz2po>` converter can handle these.
 
 .. _dtd#references:
 
@@ -19,8 +20,10 @@ Features
 ========
 
 * Comments - these are handled correctly and integrated with the unit
-* Accelerators - if a unit has an associated access key entry then these are combined into a single unit
-* Translator directive - all LOCALIZATION NOTE items such as DONT_TRANSLATE are handled and such items are discarded
+* Accelerators - if a unit has an associated access key entry then these are
+  combined into a single unit
+* Translator directive - all LOCALIZATION NOTE items such as DONT_TRANSLATE are
+  handled and such items are discarded
 
 .. _dtd#issues:
 

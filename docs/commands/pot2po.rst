@@ -5,7 +5,9 @@ pot2po
 ******
 
 Convert a Gettext PO Template file to a PO file and merge in existing
-translations if they are present. A translation memory (compendium) can also be used for fuzzy matching. This corresponds to a large extent with the program "msgmerge" from the gettext package.
+translations if they are present. A translation memory (compendium) can also be
+used for fuzzy matching. This corresponds to a large extent with the program
+"msgmerge" from the gettext package.
 
 .. _pot2po#usage:
 
@@ -53,35 +55,50 @@ Examples
 
   pot2po -t zu-1.0.1 pot-2.0.2 zu-2.0.2
 
-Here we are initialising the PO files in *zu-2.0.2* based on the POT files in *pot-2.0.2*.  We are using the old translations in *zu-1.0.1* as templates so that we can reuse our existing translations in the new files.
+Here we are initialising the PO files in *zu-2.0.2* based on the POT files in
+*pot-2.0.2*.  We are using the old translations in *zu-1.0.1* as templates so
+that we can reuse our existing translations in the new files.
 
-If the POT files have undergone major reshuffling then you may want to use :doc:`pomigrate2` which can now use pot2po as its merging backend.  pomigrate2 will do its best to migrate your files to the correct locations before merging.  It will also make make use of a compendium if requested.::
+If the POT files have undergone major reshuffling then you may want to use
+:doc:`pomigrate2` which can now use pot2po as its merging backend.  pomigrate2
+will do its best to migrate your files to the correct locations before merging.
+It will also make make use of a compendium if requested.::
 
   pot2po --tm=compendium.po --similarity=60 -t xh-old pot xh-new
 
-With this update we are using *compendium.po* as a translations memory (you can make use of other files such as TMX, etc).  We will accept any match that scores above *60%*.
+With this update we are using *compendium.po* as a translations memory (you can
+make use of other files such as TMX, etc).  We will accept any match that
+scores above *60%*.
 
 .. _pot2po#merging:
 
 Merging
 =======
 
-It helps to understand when and how pot2po will merge. The default is to follow msgmerge's behaviour but we add some extra features with fuzzy matching:
+It helps to understand when and how pot2po will merge. The default is to follow
+msgmerge's behaviour but we add some extra features with fuzzy matching:
 
 * If everything matches we carry that across
 * We can resurrect obsolete messages for reuse
 * Messages no longer used are made obsolete
-* If we cannot find a match we will first look through the current and obsolete messages and then through any global translation memory
-* Fuzzy matching makes use of the :doc:`/commands/levenshtein_distance` algorithm to detect the best matches
+* If we cannot find a match we will first look through the current and obsolete
+  messages and then through any global translation memory
+* Fuzzy matching makes use of the :doc:`/commands/levenshtein_distance`
+  algorithm to detect the best matches
 
 .. _pot2po#performance:
 
 Performance
 ===========
 
-Fuzzy matches are usually of good quality. Installation of the `python-Levenshtein <https://sourceforge.net/project/showfiles.php?group_id=91920&package_id=260161>`_ package will speed up fuzzy matching. Without this a Python based matcher is used which is considerably slower.
+Fuzzy matches are usually of good quality. Installation of the
+`python-Levenshtein
+<https://sourceforge.net/project/showfiles.php?group_id=91920&package_id=260161>`_
+package will speed up fuzzy matching. Without this a Python based matcher is
+used which is considerably slower.
 
-Install psyco for additional speedup (it is used by most toolkit tools if it is installed.)
+Install psyco for additional speedup (it is used by most toolkit tools if it is
+installed.)
 
 .. _pot2po#bugs:
 

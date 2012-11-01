@@ -5,10 +5,12 @@
 xliff2po
 ********
 
-Converts XLIFF localization files to Gettext PO files.  XLIFF is the XML Localization Interchange File Format
-developed by `OASIS <http://www.oasis-open.org/committees/tc_home.php?wg_abbrev=xliff>`_ (Organization for the Advancement of Structured Information Standards) to allow translation
-work to be standardised no matter what the source format and to allow the work to be freely moved from tool to
-tool.
+Converts XLIFF localization files to Gettext PO files.  XLIFF is the XML
+Localization Interchange File Format developed by `OASIS
+<http://www.oasis-open.org/committees/tc_home.php?wg_abbrev=xliff>`_
+(Organization for the Advancement of Structured Information Standards) to allow
+translation work to be standardised no matter what the source format and to
+allow the work to be freely moved from tool to tool.
 
 .. _xliff2po#usage:
 
@@ -74,7 +76,8 @@ Examples
 
   xliff2po -P xliff pot
 
-Create POT files from the XLIFF files found in directory *xliff* and output them to the directory *pot*
+Create POT files from the XLIFF files found in directory *xliff* and output
+them to the directory *pot*
 
 ::
 
@@ -87,8 +90,7 @@ Convert the Xhosa PO files in *xh* to XLIFF and place them in *xh-xlf*
 Bugs
 ====
 
-This filter is not yet extensively used... expect bugs.  See
-:doc:`XLIFF </formats/xliff>` to see how well our implementation conforms to
-the standard.
+This filter is not yet extensively used... expect bugs.  See :doc:`XLIFF
+</formats/xliff>` to see how well our implementation conforms to the standard.
 
 The PO plural implementation is still very new and needs active testing.

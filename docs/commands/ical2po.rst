@@ -71,35 +71,48 @@ Options (po2ical):
 Examples
 ========
 
-This example looks at roundtrip of iCalendar translations. While you can do recovery of translations, its unlikely that you will ever need to do that.
+This example looks at roundtrip of iCalendar translations. While you can do
+recovery of translations, its unlikely that you will ever need to do that.
 
 First we need to create a set of POT files. ::
 
   ical2po -P ical.ics ical.pot
 
-The ical.ics file is converted to Gettext POT files called ical.pot.  Directories of iCalendar files can also be processed.
+The ical.ics file is converted to Gettext POT files called ical.pot.
+Directories of iCalendar files can also be processed.
 
 Begin translating the ical.pot file by first copying it to make a PO file. ::
 
   cp ical.pot ical-af.po
 
-You are now in a position to translate the file ical-af.po in your favourite translation tool.
+You are now in a position to translate the file ical-af.po in your favourite
+translation tool.
 
 Once translated you can convert back as follows::
 
   po2ical -t ical.ics ical-af.po ical-af.ics
 
-Your translations found in the Afrikaans PO file, ``ical-ad.po``, will be converted to .ics using the file ``ical.ics`` as a template and creating your newly translated .ics file ``ical-af.ics``.
+Your translations found in the Afrikaans PO file, ``ical-ad.po``, will be
+converted to .ics using the file ``ical.ics`` as a template and creating your
+newly translated .ics file ``ical-af.ics``.
 
-To update your translations simply redo the POT creation step and make use of :doc:`pot2po` to bring your translation up-to-date.
+To update your translations simply redo the POT creation step and make use of
+:doc:`pot2po` to bring your translation up-to-date.
 
 .. _ical2po#notes:
 
 Notes
 =====
 
-The converter will only process events in the calender file, the file itself can contain many other things that could be localisable.  Please raise a bug if you want to extract additional items.
+The converter will only process events in the calender file, the file itself
+can contain many other things that could be localisable.  Please raise a bug if
+you want to extract additional items.
 
-The converter does not make use of the LANGUAGE attribute which is permitted in the format.  The LANGUAGE attribute does not aid multilingualism in this context so is ignored.
+The converter does not make use of the LANGUAGE attribute which is permitted in
+the format.  The LANGUAGE attribute does not aid multilingualism in this
+context so is ignored.
 
-The converter could conceivably also process `vCard <https://en.wikipedia.org/wiki/Vcard>`_ files, but this has not been implemented for lack of a clear need.  Please raise a bug with an example if you have such a file that could benefit from localisation.
+The converter could conceivably also process `vCard
+<https://en.wikipedia.org/wiki/Vcard>`_ files, but this has not been
+implemented for lack of a clear need.  Please raise a bug with an example if
+you have such a file that could benefit from localisation.

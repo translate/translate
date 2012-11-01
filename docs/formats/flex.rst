@@ -18,4 +18,5 @@ properties, this probably works perfectly.
 References
 ==========
 
-* `Description for Adobe Flex properties files <http://livedocs.adobe.com/flex/3/html/l10n_3.html>`_
+* `Description for Adobe Flex properties files
+  <http://livedocs.adobe.com/flex/3/html/l10n_3.html>`_

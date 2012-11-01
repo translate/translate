@@ -4,11 +4,15 @@
 pofilter
 ********
 
-Pofilter allows you to run a :doc:`number of checks <pofilter_tests>` against your PO, XLIFF or TMX files.  These checks are designed to pick up problems with capitalisation, accelerators, variables, etc.  Those messages that fail any of the checks are output and marked so that you can correct them.
+Pofilter allows you to run a :doc:`number of checks <pofilter_tests>` against
+your PO, XLIFF or TMX files.  These checks are designed to pick up problems
+with capitalisation, accelerators, variables, etc.  Those messages that fail
+any of the checks are output and marked so that you can correct them.
 
 Use ``pofilter -l`` to get a list of available checks.
 
-Once you have corrected the errors in your PO files you can merge the corrections into your existing translated PO files using :doc:`pomerge`.
+Once you have corrected the errors in your PO files you can merge the
+corrections into your existing translated PO files using :doc:`pomerge`.
 
 .. _pofilter#usage:
 
@@ -21,11 +25,12 @@ Usage
 
 Where:
 
-+-------+-------------------------------------------------------------------------------------------+
-| <in>  | the input file or directory which contains PO or XLIFF files                              |
-+-------+-------------------------------------------------------------------------------------------+
-| <out> | the output file or directory that contains PO or XLIFF files that fail the various tests  |
-+-------+-------------------------------------------------------------------------------------------+
++-------+-------------------------------------------------------------------+
+| <in>  | the input file or directory which contains PO or XLIFF files      |
++-------+-------------------------------------------------------------------+
+| <out> | the output file or directory that contains PO or XLIFF files that |
+|       | fail the various tests                                            |
++-------+-------------------------------------------------------------------+
 
 Options:
 
@@ -71,23 +76,31 @@ Here are some examples to demonstrate how to use pofilter::
 
   pofilter --openoffice af af-check
 
-Use the default settings (accelerator and variables) for OpenOffice.org.  Check all PO files in *af* and output any messages
-that fail the check in *af-check* (create the directory if it does not already exist). ::
+Use the default settings (accelerator and variables) for OpenOffice.org.  Check
+all PO files in *af* and output any messages that fail the check in *af-check*
+(create the directory if it does not already exist). ::
 
   pofilter -t isfuzzy -t untranslated zu zu-check
 
-Only run the *isfuzzy* and *untranslated* checks, this will extract all messages that are either fuzzy or untranslated. ::
+Only run the *isfuzzy* and *untranslated* checks, this will extract all
+messages that are either fuzzy or untranslated. ::
 
   pofilter --excludefilter=simplecaps --nofuzzy nso nso-check
 
-Run all filters except *simplecaps*.  You might want to do this if your language does not make use of capitalisation or if the test is
-creating too many false positives.  Also only run the checks against messages that are not marked fuzzy.  This is useful if you
-have already marked problem strings as fuzzy or you know that the fuzzy strings are bad, with this option you don't have to see the
-obviously wrong messages. ::
+Run all filters except *simplecaps*.  You might want to do this if your
+language does not make use of capitalisation or if the test is creating too
+many false positives.  Also only run the checks against messages that are not
+marked fuzzy.  This is useful if you have already marked problem strings as
+fuzzy or you know that the fuzzy strings are bad, with this option you don't
+have to see the obviously wrong messages. ::
 
   pofilter --language=fr dir dir-check
 
-Tell pofilter that you are checking French translations so that it can take the conventions of the language into account (for things like punctuation, spacing, quoting, etc.) It will also disable some tests that are not meaningful for your language, like capitalisation checks for languages that don't have capital letters. ::
+Tell pofilter that you are checking French translations so that it can take the
+conventions of the language into account (for things like punctuation, spacing,
+quoting, etc.) It will also disable some tests that are not meaningful for your
+language, like capitalisation checks for languages that don't have capital
+letters. ::
 
   pofilter --excludefilter=untranslated
 
@@ -102,4 +115,5 @@ List all the available checks.
 Bugs
 ====
 
-There are minor bugs in the filters.  Most relate to false positives, corner cases or minor changes for better fault description.
+There are minor bugs in the filters.  Most relate to false positives, corner
+cases or minor changes for better fault description.

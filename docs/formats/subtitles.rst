@@ -6,7 +6,8 @@ Subtitles
 
 .. versionadded:: 1.4
 
-The translation of subtitles are supported in the toolkit with the commands :doc:`suc2po </commands/sub2po>` and po2sub.
+The translation of subtitles are supported in the toolkit with the commands
+:doc:`suc2po </commands/sub2po>` and po2sub.
 
 The following formats are supported for subtitles:
 
@@ -19,7 +20,8 @@ The following formats are supported for subtitles:
 * Sub Station Alpha
 * Advanced Sub Station Alpha
 
-Both .sub and .srt are the main formats `supported by YouTube <http://help.youtube.com/support/youtube/bin/answer.py?answer=100077>`_
+Both .sub and .srt are the main formats `supported by YouTube
+<http://help.youtube.com/support/youtube/bin/answer.py?answer=100077>`_
 
 .. _subtitles#implementation_details:
 
@@ -27,14 +29,20 @@ Implementation details
 ======================
 
 Format support is provided by `Gaupol <http://home.gna.org/gaupol/>`_ a
-subtitling tool.  Further enhancement of format support in Gaupol will
-directly benefit our conversion ability.
+subtitling tool.  Further enhancement of format support in Gaupol will directly
+benefit our conversion ability.
 
 .. _subtitles#usage:
 
 Usage
 =====
 
-It must be noted that our tools provide the ability to localise the subtitles. This in itself is useful and allows a translator to use their existing localisation tools.  But this is pure localisation and users should be aware that they might still need to post edit their work to account for timing, limited text space, limits in the ability of viewers to keep up with the text.
+It must be noted that our tools provide the ability to localise the subtitles.
+This in itself is useful and allows a translator to use their existing
+localisation tools.  But this is pure localisation and users should be aware
+that they might still need to post edit their work to account for timing,
+limited text space, limits in the ability of viewers to keep up with the text.
 
-For most cases simply localising will be good enough.  But in some cases the translated work might need to be reviewed to fix any such issues.  You can use Gaupol to perform those reviews.
+For most cases simply localising will be good enough.  But in some cases the
+translated work might need to be reviewed to fix any such issues.  You can use
+Gaupol to perform those reviews.

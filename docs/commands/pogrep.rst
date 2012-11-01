@@ -4,9 +4,9 @@
 pogrep
 ******
 
-The pogrep tool extracts messages that match a regular expression into a new set
-of PO files that can be examined, edited and corrected.  These corrections can
-then be merged using :doc:`pomerge`.
+The pogrep tool extracts messages that match a regular expression into a new
+set of PO files that can be examined, edited and corrected.  These corrections
+can then be merged using :doc:`pomerge`.
 
 .. _pogrep#usage:
 
@@ -19,11 +19,11 @@ Usage
 
 Where:
 
-+------------+------------------------------------------------------------------------------------+
-| <in>/<out> | *In* and *out* are either directories or files.  *Out* will contain PO/XLIFF files |
-|            | with only those messages that match the regular expression that was you searched   |
-|            | for.                                                                               |
-+------------+------------------------------------------------------------------------------------+
++------------+-------------------------------------------------------------+
+| <in>/<out> | *In* and *out* are either directories or files.  *Out* will |
+|            | contain PO/XLIFF files with only those messages that match  |
+|            | the regular expression that was you searched for.           |
++------------+-------------------------------------------------------------+
 
 Options:
 
@@ -58,21 +58,22 @@ Example
 Search for the words "software" or "hardware" in the msgid field.  Ignore case
 (-I) and treat the underscore (_) character as an accelerator key.  Search
 through all PO files in the directory "only-zu" and place any matches in PO
-files in the directory "only-zu-check".  This would be useful to run if you know that
-the word for software and hardware has been changed during the course of translation and
-you want to check and correct all these instances. ::
+files in the directory "only-zu-check".  This would be useful to run if you
+know that the word for software and hardware has been changed during the course
+of translation and you want to check and correct all these instances. ::
 
   pogrep --search=msgid -e '^\w+(\s+\w+){0,3}$' -i templates -o short-words
 
-Find all messages in the *templates* directory that have between 1 and 4 words and place them
-in *short-words*.  Use this if you want to see quick results by translating messages that
-are most likely menu entries or dialogue labels. ::
+Find all messages in the *templates* directory that have between 1 and 4 words
+and place them in *short-words*.  Use this if you want to see quick results by
+translating messages that are most likely menu entries or dialogue labels. ::
 
   pogrep --search=msgstr -I -e "Ifayile" zu zu-check
 
-Search all translations for the occurrence of *Ifayile*.  You would use this to check if words have
-been used correctly.  Useful if you find problematic use of the same word for different concepts.
-You can use :doc:`pocompendium` to find these conflicts.
+Search all translations for the occurrence of *Ifayile*.  You would use this to
+check if words have been used correctly.  Useful if you find problematic use of
+the same word for different concepts.  You can use :doc:`pocompendium` to find
+these conflicts.
 
 .. _pogrep#notes:
 
@@ -84,12 +85,17 @@ Notes
 Unicode normalization
 ---------------------
 
-pogrep will normalize Unicode strings.  This allows you to search for strings that contain the same character but that are using precomposed Unicode characters or which are composed using another composition recipe.  While an individual user will in all likelihood only compose characters in one way, normalization ensures that data created in a team setting can be shared.
+pogrep will normalize Unicode strings.  This allows you to search for strings
+that contain the same character but that are using precomposed Unicode
+characters or which are composed using another composition recipe.  While an
+individual user will in all likelihood only compose characters in one way,
+normalization ensures that data created in a team setting can be shared.
 
 .. _pogrep#further_reading:
 
 Further reading
 ===============
-Here is a blog post explaining how pogrep can be used to do more targeted localisation of GNOME:
+Here is a blog post explaining how pogrep can be used to do more targeted
+localisation of GNOME:
 http://translate.org.za/blogs/friedel/en/content/better-lies-about-gnome-localisation
 

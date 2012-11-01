@@ -4,9 +4,14 @@
 po2tmx
 ******
 
-Convert :doc:`Gettext PO </formats/po>` files to a :doc:`/formats/tmx` translation memory file.  TMX is the Translation Memory eXchange format developed by `LISA <http://lisa.org/>`_ (Localization Industry Standards Association).
+Convert :doc:`Gettext PO </formats/po>` files to a :doc:`/formats/tmx`
+translation memory file.  TMX is the Translation Memory eXchange format
+developed by `LISA <http://lisa.org/>`_ (Localization Industry Standards
+Association).
 
-If you are interested in po2tmx, you might also be interested in :doc:`posegment` that can be used to perform some automated segmentation on sentence level.
+If you are interested in po2tmx, you might also be interested in
+:doc:`posegment` that can be used to perform some automated segmentation on
+sentence level.
 
 .. _po2tmx#usage:
 
@@ -51,7 +56,8 @@ Examples
 
   po2tmx -l xh browser.po browser.tmx
 
-Use the Xhosa (*xh*) translations in the PO file *browser.po* to create a TMX file called *browser.tmx*
+Use the Xhosa (*xh*) translations in the PO file *browser.po* to create a TMX
+file called *browser.tmx*
 
 .. _po2tmx#bugs_and_issues:
 
@@ -63,7 +69,8 @@ Bugs and issues
 Markup stripping
 ----------------
 
-po2tmx conforms to TMX v1.4 without stripping markup.  See the :doc:`/formats/tmx` conformance page for more details.
+po2tmx conforms to TMX v1.4 without stripping markup.  See the
+:doc:`/formats/tmx` conformance page for more details.
 
 It has not been widely tested so your mileage may vary.
 
@@ -72,11 +79,18 @@ It has not been widely tested so your mileage may vary.
 TMX and PO in OmegaT
 --------------------
 
-In some tools, like OmegaT, PO files are parsed without expanding escaped sequences, even though such tools use TMX for translation memory.  Keep this in mind when using po2tmx, because po2tmx converts ``\n`` and ``\t`` to newlines and tabs in the TMX file.  If such a TMX file is used while translating PO files in OmegaT, matching will be less than 100%.
+In some tools, like OmegaT, PO files are parsed without expanding escaped
+sequences, even though such tools use TMX for translation memory.  Keep this in
+mind when using po2tmx, because po2tmx converts ``\n`` and ``\t`` to newlines
+and tabs in the TMX file.  If such a TMX file is used while translating PO
+files in OmegaT, matching will be less than 100%.
 
-In other tools, such as Swordfish, the PO comment "no-wrap" is interpreted in the same way as the equivalent function in XML, which may also lead to mismatches if TMXes from po2tmx are used.
+In other tools, such as Swordfish, the PO comment "no-wrap" is interpreted in
+the same way as the equivalent function in XML, which may also lead to
+mismatches if TMXes from po2tmx are used.
 
-There is nothing wrong with po2tmx, but if used in conjunction with tools that handle PO files differently, it may lead to less than perfect matching.
+There is nothing wrong with po2tmx, but if used in conjunction with tools that
+handle PO files differently, it may lead to less than perfect matching.
 
 .. _po2tmx#tips:
 
@@ -88,4 +102,5 @@ Tips
 TMX with only unique segments
 -----------------------------
 
-To create a TMX with no duplicates (in other words, only unique strings), use msgcat to first create a large PO file with non-uniques removed.
+To create a TMX with no duplicates (in other words, only unique strings), use
+msgcat to first create a large PO file with non-uniques removed.

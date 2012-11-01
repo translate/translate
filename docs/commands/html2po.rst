@@ -75,23 +75,29 @@ Examples
 
   html2po -P site pot
 
-This will find all HTML files (.htm, .html, .xhtml) in *site* convert them to POT files and place them in *pot*::
+This will find all HTML files (.htm, .html, .xhtml) in *site* convert them to
+POT files and place them in *pot*::
 
   po2html -t site xh site-xh
 
-All the PO translations in *xh* will be converted to html using html files in *site* as templates and outputting new translated HTML files in *site-xh*
+All the PO translations in *xh* will be converted to html using html files in
+*site* as templates and outputting new translated HTML files in *site-xh*
 
 .. _html2po#bugs:
 
 Bugs
 ====
 
-We don't hide enough of some of the tags, e.g. <a> tags have too much exposed, we should expose only what needs to be translated and 
-allow the changing on position of the tag within the translation block.  Similarly there is some markup that could be excluded eg <b> tags that 
-appear at the start and end of a msgid, i.e. they don't need placement from the translator.
+We don't hide enough of some of the tags, e.g. <a> tags have too much exposed,
+we should expose only what needs to be translated and allow the changing on
+position of the tag within the translation block.  Similarly there is some
+markup that could be excluded eg <b> tags that appear at the start and end of a
+msgid, i.e. they don't need placement from the translator.
 
 If the HTML is indented you get very odd msgid's
 
 Some items end up in the msgid's that should not be translated
 
-It might be worth investigating http://opensource.bureau-cornavin.com/html2pot-po2html/index.html which uses XSLT to transform XHTML to Gettext PO
+It might be worth investigating
+http://opensource.bureau-cornavin.com/html2pot-po2html/index.html which uses
+XSLT to transform XHTML to Gettext PO

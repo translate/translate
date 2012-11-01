@@ -30,7 +30,7 @@ Where:
 | PO directory | is a directory of existing PO files                       |
 +--------------+-----------------------------------------------------------+
 
-Its is best to backup files before the conversion or to perform it against CVS
+It is best to backup files before the conversion or to perform it against CVS
 which prevents a potential loss of data.
 
 .. _poreencode#operation:
@@ -38,9 +38,10 @@ which prevents a potential loss of data.
 Operation
 =========
 
-poreencode makes use of the Gettext tool `msgconv <http://linux.die.net/man/1/msgconv>`_ to perform its task.  It
-traverses the PO directory and finds all PO file.  It uses msgconv to
-convert the PO file from its existing encoding to the new encoding.
+poreencode makes use of the Gettext tool `msgconv
+<http://linux.die.net/man/1/msgconv>`_ to perform its task.  It traverses the
+PO directory and finds all PO file.  It uses msgconv to convert the PO file
+from its existing encoding to the new encoding.
 
 .. _poreencode#bugs:
 

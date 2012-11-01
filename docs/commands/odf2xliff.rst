@@ -5,14 +5,19 @@
 odf2xliff and xliff2odf
 ***********************
 
-Convert OpenDocument (ODF) files to XLIFF localization files. Create translated ODF files by combining the original ODF files with XLIFF files containing translations of strings in the original document.
+Convert OpenDocument (ODF) files to XLIFF localization files. Create translated
+ODF files by combining the original ODF files with XLIFF files containing
+translations of strings in the original document.
 
-XLIFF is the XML Localization Interchange File Format
-developed by `OASIS <http://www.oasis-open.org/committees/tc_home.php?wg_abbrev=xliff>`_ (The Organization for the Advancement of Structured Information Standards) to allow translation
-work to be standardised no matter what the source format and to allow the work to be freely moved from tool to
-tool.
+XLIFF is the XML Localization Interchange File Format developed by `OASIS
+<http://www.oasis-open.org/committees/tc_home.php?wg_abbrev=xliff>`_ (The
+Organization for the Advancement of Structured Information Standards) to allow
+translation work to be standardised no matter what the source format and to
+allow the work to be freely moved from tool to tool.
 
-If you are more used to software translation or l10n, you might want to read a bit about :doc:`/guides/document_translation`. This should help you to get the most out of translating ODF with XLIFF.
+If you are more used to software translation or l10n, you might want to read a
+bit about :doc:`/guides/document_translation`. This should help you to get the
+most out of translating ODF with XLIFF.
 
 .. _odf2xliff#usage:
 
@@ -74,15 +79,19 @@ Examples
 
   odf2xliff english.odt english_français.xlf
 
-Create an XLIFF file from an ODT file (the source ODF file could also be any of the other ODF files, including ODS, ODG, etc.). ::
+Create an XLIFF file from an ODT file (the source ODF file could also be any of
+the other ODF files, including ODS, ODG, etc.). ::
 
   xliff2odf -t english.odt english_français.xlf français.odt
 
-Using english.odt as the template document, and english_français.xlf as the file of translations, create a translated file français.odt.
+Using english.odt as the template document, and english_français.xlf as the
+file of translations, create a translated file français.odt.
 
 .. _odf2xliff#bugs:
 
 Bugs
 ====
 
-This filter is not yet extensively used - we appreciate your feedback.  For more information on conformance to standards, see the :doc:`/formats/xliff` or :doc:`/formats/odf` pages.
+This filter is not yet extensively used - we appreciate your feedback.  For
+more information on conformance to standards, see the :doc:`/formats/xliff` or
+:doc:`/formats/odf` pages.

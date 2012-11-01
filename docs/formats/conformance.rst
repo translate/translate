@@ -3,7 +3,8 @@
 
 Standards conformance
 *********************
-This page links to pages documenting standard conformance for different standards or file :doc:`formats <index>`.
+This page links to pages documenting standard conformance for different
+standards or file :doc:`formats <index>`.
 
 .. _conformance#lisa_and_oasis_standards:
 

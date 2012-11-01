@@ -7,11 +7,19 @@ web2py2po
 
 Converts web2py translation files to PO files and vice versa.
 
-`Web2py <http://mdp.cti.depaul.edu>`_, formerly known as Gluon) is an open-source, Python-based web application framework by Massimo Di Pierro (inspired by Django and Rails).
+`Web2py <http://mdp.cti.depaul.edu>`_, formerly known as Gluon) is an
+open-source, Python-based web application framework by Massimo Di Pierro
+(inspired by Django and Rails).
 
-Web2py uses an internal localization engine based on Python dictionaries, which is applied with the T() lookup function. Web2py provides a built-in translation interface for the T()-engine, which is excellent for rapid application development.
+Web2py uses an internal localization engine based on Python dictionaries, which
+is applied with the T() lookup function. Web2py provides a built-in translation
+interface for the T()-engine, which is excellent for rapid application
+development.
 
-On the other hand, for collaboration and workflow control in a wider community you might probably rather want to use Pootle, Launchpad or similar facilities for translation, thus need to transform the web2py dictionaries into PO files and vice versa. And exactly that is what the web2py2po converters are good for.
+On the other hand, for collaboration and workflow control in a wider community
+you might probably rather want to use Pootle, Launchpad or similar facilities
+for translation, thus need to transform the web2py dictionaries into PO files
+and vice versa. And exactly that is what the web2py2po converters are good for.
 
 .. _py2web2po#usage:
 
@@ -74,7 +82,10 @@ Notes
 
 **Handling of blanks/untranslated messages:**
 
-Untranslated messages in the web2py translation files are usually marked with a leading ``%%"*** "%%``, so:
+Untranslated messages in the web2py translation files are usually marked with a
+leading ``%%"*** "%%``, so:
 
-* All target strings from the web2py sources with a leading ``%%"*** "%%`` are inserted as blank msgstr's into the PO result (web2py2po)
-* Blank msgstr's from the PO file will get the msgid string with a leading ``%%"*** "%%`` as target string in the web2py result (po2web2py)
+* All target strings from the web2py sources with a leading ``%%"*** "%%`` are
+  inserted as blank msgstr's into the PO result (web2py2po)
+* Blank msgstr's from the PO file will get the msgid string with a leading
+  ``%%"*** "%%`` as target string in the web2py result (po2web2py)

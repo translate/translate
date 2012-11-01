@@ -70,26 +70,37 @@ Options (po2json):
 Examples
 ========
 
-This example looks at roundtrip of .json translations as well as recovery of existing translations.
+This example looks at roundtrip of .json translations as well as recovery of
+existing translations.
 
 First we need to create a set of POT files. ::
 
   json2po -P json/ pot/
 
-All .json files found in the ``json/`` directory are converted to Gettext POT files and placed in the ``pot/`` directory.
+All .json files found in the ``json/`` directory are converted to Gettext POT
+files and placed in the ``pot/`` directory.
 
-If you are translating for the first time then you can skip the next step.  If you need to recover your existing translations then we do the following::
+If you are translating for the first time then you can skip the next step.  If
+you need to recover your existing translations then we do the following::
 
   json2po -t lang/ zu/ po-zu/
 
-Using the English .json files found in ``lang/`` and your existing Zulu translation in ``zu/`` we create a set of PO files in ``po-zu/``.  These will now have your translations.  Please be aware that in order for the to work 100% you need to have both English and Zulu at the same revision. If they are not, you will have to review all translations.
+Using the English .json files found in ``lang/`` and your existing Zulu
+translation in ``zu/`` we create a set of PO files in ``po-zu/``.  These will
+now have your translations.  Please be aware that in order for the to work 100%
+you need to have both English and Zulu at the same revision. If they are not,
+you will have to review all translations.
 
-You are now in a position to translate your recovered translations or your new POT files.
+You are now in a position to translate your recovered translations or your new
+POT files.
 
 Once translated you can convert back as follows::
 
   po2json -t lang/ po-zu/ zu/
 
-Your translations found in the Zulu PO directory, ``po-zu/``, will be converted to .json using the files in ``lang/`` as templates and placing your newly translated .json files in ``zu/``.
+Your translations found in the Zulu PO directory, ``po-zu/``, will be converted
+to .json using the files in ``lang/`` as templates and placing your newly
+translated .json files in ``zu/``.
 
-To update your translations simply redo the POT creation step and make use of :doc:`pot2po` to bring your translation up-to-date.
+To update your translations simply redo the POT creation step and make use of
+:doc:`pot2po` to bring your translation up-to-date.

@@ -5,8 +5,8 @@ PO Files
 ********
 PO files use the file format of the Gettext tools.
 
-.. seealso:: `Gettext manual <http://www.gnu.org/software/gettext/>`_ and
-   `KDE style PO files <http://public.planetmirror.com/pub/kde/devel/gettext-kde/>`_
+.. seealso:: `Gettext manual <http://www.gnu.org/software/gettext/>`_ and `KDE
+   style PO files <http://public.planetmirror.com/pub/kde/devel/gettext-kde/>`_
 
 .. _po#supported_features:
 
@@ -56,7 +56,9 @@ Supported comments
     msgid "_: comment\n"
     "translation"
 
-Also know as KDE style comments as they are used by KDE for message disambiguation and comments to translators. (support for this is being phased out)
+Also know as KDE style comments as they are used by KDE for message
+disambiguation and comments to translators. (support for this is being phased
+out)
 
 * obsolete messages
 

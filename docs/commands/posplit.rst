@@ -4,9 +4,12 @@
 posplit
 *******
 
-Takes an existing PO file and splits it into three components: translated, untranslated and fuzzy.  This is useful for reviewing translations or for extracting good translations from a compendium file.
+Takes an existing PO file and splits it into three components: translated,
+untranslated and fuzzy.  This is useful for reviewing translations or for
+extracting good translations from a compendium file.
 
-Note that the input file is removed by the script (until version 1.9.1). The generated output files can be combined again with msgcat.
+Note that the input file is removed by the script (until version 1.9.1). The
+generated output files can be combined again with msgcat.
 
 .. _posplit#prerequisites:
 

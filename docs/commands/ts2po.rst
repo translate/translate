@@ -5,17 +5,21 @@
 ts2po
 *****
 
-Convert Qt .ts localization files to Gettext .po format files using ts2po and convert the translated :doc:`/formats/po` files back to :doc:`/formats/ts` using po2ts.
+Convert Qt .ts localization files to Gettext .po format files using ts2po and
+convert the translated :doc:`/formats/po` files back to :doc:`/formats/ts`
+using po2ts.
 
-The Qt toolkit comes with a localization application, Qt Linguist, however you might wish to standardise on one localization tool.  ts2po allows you to standardise on the PO format and PO related tools.
+The Qt toolkit comes with a localization application, Qt Linguist, however you
+might wish to standardise on one localization tool.  ts2po allows you to
+standardise on the PO format and PO related tools.
 
 .. note:: `Virtaal <http://virtaal.org>`_ and `Pootle
-   <http://pootle.tramslatehouse.org>`_ can edit .ts files directly without
-   the need for any conversion.
+   <http://pootle.tramslatehouse.org>`_ can edit .ts files directly without the
+   need for any conversion.
 
-.. warning:: po2ts uses our older .ts support.  Thus many of the newer
-   features in .ts are not supported.  To support those features rather edit
-   directly in `Virtaal <http://virtaal.org>`_ or `Pootle
+.. warning:: po2ts uses our older .ts support.  Thus many of the newer features
+   in .ts are not supported.  To support those features rather edit directly in
+   `Virtaal <http://virtaal.org>`_ or `Pootle
    <http://pootle.tramslatehouse.org>`_.
 
 .. _ts2po#usage:
@@ -81,11 +85,13 @@ Examples
 
   ts2po -P psi.ts psi.pot
 
-This will create a POT file called *psi.pot* from the Qt .ts file called *psi.ts*. ::
+This will create a POT file called *psi.pot* from the Qt .ts file called
+*psi.ts*. ::
 
   po2ts af.po psi_af.ts
 
-Now take your translated PO files *af.po* and convert it into a translated Qt .ts file, *psi_af.ts*.
+Now take your translated PO files *af.po* and convert it into a translated Qt
+.ts file, *psi_af.ts*.
 
 .. note:: You need to use the tools from the Qt toolkit to create the compiled
    .qm language files for the application.
@@ -95,4 +101,7 @@ Now take your translated PO files *af.po* and convert it into a translated Qt .t
 Bugs
 ====
 
-There are probably still some bugs related to migrating the various attributes across for the different formats. The converters don't support all the newer features of the TS format, whereas the native support of Virtaal and Pootle is much better.
+There are probably still some bugs related to migrating the various attributes
+across for the different formats. The converters don't support all the newer
+features of the TS format, whereas the native support of Virtaal and Pootle is
+much better.

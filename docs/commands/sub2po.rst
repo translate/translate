@@ -5,7 +5,10 @@
 sub2po
 ******
 
-sub2po allows you to use the same principles of PO files with :doc:`/formats/subtitles`. In PO only items that change are marked fuzzy and only new items need to be translated, unchanged items remain unchanged for the translation.
+sub2po allows you to use the same principles of PO files with
+:doc:`/formats/subtitles`. In PO only items that change are marked fuzzy and
+only new items need to be translated, unchanged items remain unchanged for the
+translation.
 
 .. _sub2po#usage:
 
@@ -76,7 +79,9 @@ To create the POT files is simple::
 
   sub2po -P SUBTITLE_FILE subtitles.pot
 
-A translator would copy the POT file to their own PO file and then create translations of the entries. If you wish to create a PO file and not a POT file then leave off the *-P* option.
+A translator would copy the POT file to their own PO file and then create
+translations of the entries. If you wish to create a PO file and not a POT file
+then leave off the *-P* option.
 
 To convert back::
 
@@ -87,11 +92,14 @@ To convert back::
 Translating
 -----------
 
-Translate as normal. However, see the issues mentioned at :doc:`/formats/subtitles`.
+Translate as normal. However, see the issues mentioned at
+:doc:`/formats/subtitles`.
 
 .. _sub2po#bugs:
 
 Bugs
 ----
-There might be some issues with encodings, since the srt files don't specify them. We assume files to be encoded in UTF-8, so a conversion should solve this easily. Note that most of the handling of the srt files come from gaupol.
+There might be some issues with encodings, since the srt files don't specify
+them. We assume files to be encoded in UTF-8, so a conversion should solve this
+easily. Note that most of the handling of the srt files come from gaupol.
 

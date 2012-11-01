@@ -85,11 +85,11 @@ Issues
 ======
 
 * If the toolkit doesn't have segmentation rules for your language then it will
-default to English which might be incorrect.
+  default to English which might be incorrect.
 * Segmentation does not guarantee reuse as your TM software needs to know how
-to segment when matching. If you use software that doesn't do segmentation, you
-can consider joining the original and the segmented files together with msgcat,
-to get the best of both worlds.
+  to segment when matching. If you use software that doesn't do segmentation,
+  you can consider joining the original and the segmented files together with
+  msgcat, to get the best of both worlds.
 * You cannot (yet) use the tool to break a file into segments, translate, and
-then recreate as the segmented file does not know which parts should be joined
-together to recreate a file.
+  then recreate as the segmented file does not know which parts should be
+  joined together to recreate a file.

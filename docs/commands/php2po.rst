@@ -70,15 +70,17 @@ Options (po2php):
 Formats Supported
 =================
 
-PHP files need to be organized into separate languages per file and in the following format::
+PHP files need to be organized into separate languages per file and in the
+following format::
 
     $variable = 'string';
-      $another_variable = "another string";
+    $another_variable = "another string";
 
-If $variable is an array it should be declared with the square bracket syntax.  For example, ``$lang['var']``.  ::
+If $variable is an array it should be declared with the square bracket syntax.
+For example, ``$lang['var']``.  ::
 
     $lang['item'] = 'string';
-      $lang['another_item'] = "another string";
+    $lang['another_item'] = "another string";
 
 The converter also supports arrays in the form::
 
@@ -87,7 +89,8 @@ The converter also supports arrays in the form::
        other => "other value",
     )
 
-Gettext notations are also not supported, use the Gettext tools for those files.
+Gettext notations are also not supported, use the Gettext tools for those
+files.
 
 .. note:: Nested arrays are not supported:
 
@@ -99,26 +102,37 @@ Gettext notations are also not supported, use the Gettext tools for those files.
 
 Examples
 ========
-This example looks at roundtrip of PHP translations as well as recovery of existing translations.
+This example looks at roundtrip of PHP translations as well as recovery of
+existing translations.
 
 First we need to create a set of POT files.::
 
   php2po -P lang/en pot/
 
-All .php files found in the ``lang/en`` directory are converted to Gettext POT files and placed in the ``pot`` directory.
+All .php files found in the ``lang/en`` directory are converted to Gettext POT
+files and placed in the ``pot`` directory.
 
-If you are translating for the first time then you can skip the next step. If you need to recover your existing translations then we do the following::
+If you are translating for the first time then you can skip the next step. If
+you need to recover your existing translations then we do the following::
 
   php2po -t lang/en lang/zu po-zu/
 
-Using the English PHP files found in ``lang/en`` and your existing Zulu translation in ``lang/zu`` we create a set of PO files in ``po-zu``.  These will now have your translations. Please be aware that in order for that to work 100% you need to have both English and Zulu at the same revision, if they are not you will have to review all translations.
+Using the English PHP files found in ``lang/en`` and your existing Zulu
+translation in ``lang/zu`` we create a set of PO files in ``po-zu``.  These
+will now have your translations. Please be aware that in order for that to work
+100% you need to have both English and Zulu at the same revision, if they are
+not you will have to review all translations.
 
-You are now in a position to translate your recovered translations or your new POT files.
+You are now in a position to translate your recovered translations or your new
+POT files.
 
 Once translated you can convert back as follows::
 
   po2php -t lang/en po-zu/ lang/zu
 
-Your translations found in the Zulu PO directory, ``po-zu``, will be converted to PHP using the files in ``lang/en`` as templates and placing your new translations in ``lang/zu``.
+Your translations found in the Zulu PO directory, ``po-zu``, will be converted
+to PHP using the files in ``lang/en`` as templates and placing your new
+translations in ``lang/zu``.
 
-To update your translations simply redo the POT creation step and make use of :doc:`pot2po` to bring your translation up-to-date.
+To update your translations simply redo the POT creation step and make use of
+:doc:`pot2po` to bring your translation up-to-date.

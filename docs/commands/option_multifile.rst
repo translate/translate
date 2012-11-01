@@ -4,9 +4,9 @@
 --multifile=MULTIFILESTYLE
 **************************
 
-This options determines how the POT/PO files are spli from the source files.  In many cases
-you have source files that generate either too many small files or one large files which you would rather see
-split up into smaller files.
+This options determines how the POT/PO files are spli from the source files.
+In many cases you have source files that generate either too many small files
+or one large files which you would rather see split up into smaller files.
 
 .. _option_multifile#single:
 
@@ -20,7 +20,8 @@ Output individual files.
 toplevel
 ========
 
-Split the source files at the top level.  Ie you see a number of top level files.
+Split the source files at the top level.  Ie you see a number of top level
+files.
 
 .. _option_multifile#onefiles:
 

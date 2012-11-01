@@ -3,9 +3,9 @@
 Translate Styleguide
 ====================
 
-The Translate styleguide is the styleguide for all Translate projects, including
-Translate Toolkit, Pootle, Virtaal and others.  Patches are required to follow
-these guidelines.
+The Translate styleguide is the styleguide for all Translate projects,
+including Translate Toolkit, Pootle, Virtaal and others.  Patches are required
+to follow these guidelines.
 
 This Styleguide follows :pep:`8` with some clarifications. It is based almost
 verbatim on the `Flask Styleguide`_.
@@ -148,8 +148,8 @@ If statements:
   - Wrap between ``and``, ``or``, etc.
   - Keep ``not`` with the expression
   - Use ``()`` alignment between expressions 
-  - Use extra ``()`` to eliminate abiguity, don't rely on an understanding of Python
-    operator precedent rules.
+  - Use extra ``()`` to eliminate abiguity, don't rely on an understanding of
+    Python operator precedent rules.
 
   Good::
 
@@ -176,27 +176,26 @@ Naming Conventions
    This has not been implemented or discussed.  The Translate code 
    is not at all consistent with these conventions.
 
-- Class names: ``CamelCase``, with acronyms kept uppercase (``HTTPWriter``
-  and not ``HttpWriter``)
+- Class names: ``CamelCase``, with acronyms kept uppercase (``HTTPWriter`` and
+  not ``HttpWriter``)
 - Variable names: ``lowercase_with_underscores``
 - Method and function names: ``lowercase_with_underscores``
 - Constants: ``UPPERCASE_WITH_UNDERSCORES``
 - precompiled regular expressions: ``name_re``
 
-Protected members are prefixed with a single underscore.  Double
-underscores are reserved for mixin classes.
+Protected members are prefixed with a single underscore.  Double underscores
+are reserved for mixin classes.
 
 On classes with keywords, trailing underscores are appended.  Clashes with
-builtins are allowed and **must not** be resolved by appending an
-underline to the variable name.  If the function needs to access a
-shadowed builtin, rebind the builtin to a different name instead.
+builtins are allowed and **must not** be resolved by appending an underline to
+the variable name.  If the function needs to access a shadowed builtin, rebind
+the builtin to a different name instead.
 
 Function and method arguments:
   - class methods: ``cls`` as first parameter
   - instance methods: ``self`` as first parameter
-  - lambdas for properties might have the first parameter replaced
-    with ``x`` like in ``display_name = property(lambda x: x.real_name
-    or x.username)``
+  - lambdas for properties might have the first parameter replaced with ``x``
+    like in ``display_name = property(lambda x: x.real_name or x.username)``
 
 
 .. _styleguide-docs:
@@ -241,11 +240,9 @@ Docstring conventions:
 Please read :pep:`257` (Docstring Conventions) for a general overview,
 the important parts though are:
 
-- A docstring should have a brief one-line summary, ending with a
-  period.
+- A docstring should have a brief one-line summary, ending with a period.
 - If there are more details there should be a blank line between the one-line
-  summary and the rest of the text.  Use pragraphs and formating as
-  needed.
+  summary and the rest of the text.  Use pragraphs and formating as needed.
 - Use `reST field lists`_ to describe the input parameters and/or return types
   as the last part of the docstring.
 - Use proper capitalisation and punctuation.

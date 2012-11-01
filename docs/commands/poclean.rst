@@ -4,7 +4,8 @@
 poclean
 *******
 
-This is a rudimentary tool to produce a clean file from an unclean file (Trados/Wordfast) by stripping out the tw4win indicators.
+This is a rudimentary tool to produce a clean file from an unclean file
+(Trados/Wordfast) by stripping out the tw4win indicators.
 
 .. _poclean#usage:
 
@@ -44,7 +45,9 @@ Options:
 Examples
 ========
 
-To create a text version of the unclean RTF file, you need UnRTF, available here: `project site <http://www.gnu.org/software/unrtf/unrtf.html>`_ or `here (windows) <http://gnuwin32.sourceforge.net/packages/unrtf.htm>`_. ::
+To create a text version of the unclean RTF file, you need UnRTF, available
+here: `project site <http://www.gnu.org/software/unrtf/unrtf.html>`_ or `here
+(windows) <http://gnuwin32.sourceforge.net/packages/unrtf.htm>`_. ::
 
   unrtf translation.rtf  --text > translation.po
 

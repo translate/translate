@@ -73,42 +73,57 @@ Options (po2rc):
 Formats Supported
 =================
 
-.. note:: This implementation is based mostly on observing WINE .rc files, these should mimic other non-WINE .rc files.
+.. note:: This implementation is based mostly on observing WINE .rc files,
+   these should mimic other non-WINE .rc files.
 
 .. _rc2po#examples:
 
 Examples
 ========
 
-This example looks at roundtrip of Windows Resource translations as well as recovery of existing translations.
+This example looks at roundtrip of Windows Resource translations as well as
+recovery of existing translations.
 
 First we need to create a set of POT files. ::
 
   rc2po -P lang/ pot/
 
-All .rc files found in the ``lang/`` directory are converted to Gettext POT files and placed in the ``pot/`` directory.
+All .rc files found in the ``lang/`` directory are converted to Gettext POT
+files and placed in the ``pot/`` directory.
 
-If you are translating for the first time then you can skip the next step.  If you need to recovery your existing translations then we do the following::
+If you are translating for the first time then you can skip the next step.  If
+you need to recovery your existing translations then we do the following::
 
   rc2po -t lang zu po-zu/
 
-Using the English .rc files found in ``lang`` and your existing Zulu translation in ``zu`` we create a set of PO files in ``po-zu``.  These will now have your translations.  Please be aware that in order for the to work 100% you need to have both English and Zulu at the same revision, if they are not you will have to review all translations.  Also the .rc files may be in different encoding, we cannot at the moment process files of different encodings and assume both are in the same encoding supplied.
+Using the English .rc files found in ``lang`` and your existing Zulu
+translation in ``zu`` we create a set of PO files in ``po-zu``.  These will now
+have your translations.  Please be aware that in order for the to work 100% you
+need to have both English and Zulu at the same revision, if they are not you
+will have to review all translations.  Also the .rc files may be in different
+encoding, we cannot at the moment process files of different encodings and
+assume both are in the same encoding supplied.
 
-You are now in a position to translate your recovered translations or your new POT files.
+You are now in a position to translate your recovered translations or your new
+POT files.
 
 Once translated you can convert back as follows::
 
   po2rc -t lang/ po-zu/ zu/
 
-Your translations found in the Zulu PO directory, ``po-zu``, will be converted to .rc using the files in ``lang/`` as templates and placing your new translations in ``zu/``.
+Your translations found in the Zulu PO directory, ``po-zu``, will be converted
+to .rc using the files in ``lang/`` as templates and placing your new
+translations in ``zu/``.
 
-To update your translations simply redo the POT creation step and make use of :doc:`pot2po` to bring your translation up-to-date.
+To update your translations simply redo the POT creation step and make use of
+:doc:`pot2po` to bring your translation up-to-date.
 
 .. _rc2po#issues:
 
 Issues
 ======
 
-If you are recovering translation using ``rc2po -t en.rc xx.rc xx.po`` then both en.rc and xx.rc need to be in the same encoding.
+If you are recovering translation using ``rc2po -t en.rc xx.rc xx.po`` then
+both en.rc and xx.rc need to be in the same encoding.
 
 There might be problems with MENUs that are deaply nested.

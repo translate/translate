@@ -5,13 +5,16 @@
 Migrating Mozilla Translations to Firefox
 *****************************************
 
-This quickstart shows you how to migrate your existing translations
-of the Mozilla suite to the Firefox web-browser.  The same
-instructions can be used to migrate Thunderbird§.
+This quickstart shows you how to migrate your existing translations of the
+Mozilla suite to the Firefox web-browser.  The same instructions can be used to
+migrate Thunderbird§.
 
 Note: This guide assumes that you are or will be using PO files.
 
-FIXME this page needs to be rewriten now that Mozilla is using CSV.  The steps are more or less the same.  Look at :doc:`creating_mozilla_pot_files` which talks about creating POT file from CVS. Then the process is mostly the same except swap any reference to XPI to be the translations in Mozilla CVS.
+FIXME this page needs to be rewriten now that Mozilla is using CSV.  The steps
+are more or less the same.  Look at :doc:`creating_mozilla_pot_files` which
+talks about creating POT file from CVS. Then the process is mostly the same
+except swap any reference to XPI to be the translations in Mozilla CVS.
 
 .. _migrating_to_firefox#quick_start:
 
@@ -40,8 +43,8 @@ migrate an existing XPI to PO format.
 Get the correct en-US xpi
 ^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Firstly make sure you have an XPI for your language then download a Mozilla English (US) XPI
-for the same release::
+Firstly make sure you have an XPI for your language then download a Mozilla
+English (US) XPI for the same release::
 
   ftp://ftp.mozilla.org/pub/mozilla.org/mozilla/releases/mozilla1.7.3/linux-xpi/langenus.xpi
 
@@ -63,7 +66,8 @@ the en-US XPI.
 Where:
 
 * mozilla-1.7.3-langenus.xpi is the langenus.xpi downloaded above
-* langXXYY.xpi is your existing translated XPI with the same version and the en-US one downloaded.
+* langXXYY.xpi is your existing translated XPI with the same version and the
+  en-US one downloaded.
 * xxYY-1.7.3 is an output directory for the PO files
 
 .. _migrating_to_firefox#create_firefox_pot_files:
@@ -71,18 +75,22 @@ Where:
 Create Firefox POT files
 ------------------------
 
-You need to create a set of Firefox PO Template files that you will use as templates
-when you migrate your Mozilla translations.  Template files are simply blank PO files.
+You need to create a set of Firefox PO Template files that you will use as
+templates when you migrate your Mozilla translations.  Template files are
+simply blank PO files.
 
 .. _migrating_to_firefox#getting_the_en-us.xpi:
 
 Getting the en-US.xpi
 ^^^^^^^^^^^^^^^^^^^^^
 
-Rumour has it that the en-US XPI files for Firefox are different for Windows and Linux.
+Rumour has it that the en-US XPI files for Firefox are different for Windows
+and Linux.
 
-* Linux -- Firefox 1.0: ftp://ftp.mozilla.org/pub/mozilla.org/firefox/releases/1.0/linux-i686/xpi/en-US.xpi
-* Windows -- Firefox 1.0: ftp://ftp.mozilla.org/pub/mozilla.org/firefox/releases/1.0/win32/xpi/en-US.xpi
+* Linux -- Firefox 1.0:
+  ftp://ftp.mozilla.org/pub/mozilla.org/firefox/releases/1.0/linux-i686/xpi/en-US.xpi
+* Windows -- Firefox 1.0:
+  ftp://ftp.mozilla.org/pub/mozilla.org/firefox/releases/1.0/win32/xpi/en-US.xpi
 
 .. _migrating_to_firefox#create_the_pot_files:
 
@@ -106,7 +114,9 @@ Migrate the Mozilla PO files to Firefox
 
 We will now take the existing Mozilla PO files and migrate them to Firefox.
 Note that this tool only works on Linux (or an operating environment with bash
-and the gettext tools).  If you need help ask at `translate-devel@lists.sourceforge.net <mailto:translate-devel@lists.sourceforge.net>`_.
+and the gettext tools).  If you need help ask at
+`translate-devel@lists.sourceforge.net
+<mailto:translate-devel@lists.sourceforge.net>`_.
 
 ::
 
@@ -136,7 +146,9 @@ migration will do the following:
 
      * Else
 
-       * combine all the copies you find and then copy them to the Firefox PO location
+       * combine all the copies you find and then copy them to the Firefox PO
+         location
+
    * Else
 
      * Initialise a blank PO file

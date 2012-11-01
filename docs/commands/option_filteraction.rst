@@ -23,7 +23,8 @@ Print a warning but otherwise include the message in the output file.
 exclude-serious
 ===============
 
-Only exclude errors that are listed as serious by the convertor.  All other are included.
+Only exclude errors that are listed as serious by the convertor.  All other are
+included.
 
 .. _option_filteraction#exclude-all:
 

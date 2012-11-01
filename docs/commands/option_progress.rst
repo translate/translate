@@ -4,17 +4,19 @@
 --progress=PROGRESS
 *******************
 
-All of the programs can give visual feedback.  This options allows you to select the style of that feedback.
+All of the programs can give visual feedback.  This options allows you to
+select the style of that feedback.
 
-In the examples we are converting and OpenOffice.org 2.0 sdf/gsi file into POT files using :doc:`oo2po <oo2po>`.
+In the examples we are converting and OpenOffice.org 2.0 sdf/gsi file into POT
+files using :doc:`oo2po <oo2po>`.
 
 .. _option_progress#none:
 
 none
 ====
 
-No visual feedback, this is useful if you want to use any of the scripts as part of another script and don't
-want feedback to interfere with the operation.
+No visual feedback, this is useful if you want to use any of the scripts as
+part of another script and don't want feedback to interfere with the operation.
 
 .. code-block:: bash
 
@@ -26,7 +28,8 @@ want feedback to interfere with the operation.
 dots
 ====
 
-Use visual dots to represent progress.  Each dot represent a file that has been processed.
+Use visual dots to represent progress.  Each dot represent a file that has been
+processed.
 
 .. code-block:: bash
 
@@ -49,7 +52,8 @@ Use a progress bar consisting of hashes (#) to show progress.
     processing 227 files...
     [##############################             ]  69%
 
-This is the default mode of operation, therefore this command would create the same output.
+This is the default mode of operation, therefore this command would create the
+same output.
 
 .. code-block:: bash
 
@@ -60,7 +64,8 @@ This is the default mode of operation, therefore this command would create the s
 verbose
 =======
 
-Combine the hash (#) progress bar form the *bar* option with the actual names of files that have been processed.
+Combine the hash (#) progress bar form the *bar* option with the actual names
+of files that have been processed.
 
 .. code-block:: bash
 
@@ -84,8 +89,8 @@ Combine the hash (#) progress bar form the *bar* option with the actual names of
 names
 =====
 
-Prints out only the filenames without any other progress indicator.  This is
-a good option when outputting to a log file rather than a terminal.
+Prints out only the filenames without any other progress indicator.  This is a
+good option when outputting to a log file rather than a terminal.
 
 .. code-block:: bash
 

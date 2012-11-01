@@ -5,14 +5,19 @@
 Gettext .mo
 ***********
 
-The Gettext .mo (Machine Object) file is a compiled :doc:`Gettext PO <po>` file.  In execution Gettext enabled programs retrieve translations from the .mo file.  The file contains arrays for the English and the translations, an optional hash can speed up the access to the translations.
+The Gettext .mo (Machine Object) file is a compiled :doc:`Gettext PO <po>`
+file.  In execution Gettext enabled programs retrieve translations from the .mo
+file.  The file contains arrays for the English and the translations, an
+optional hash can speed up the access to the translations.
 
 .. _mo#conformance:
 
 Conformance
 ===========
 
-The toolkit can create .mo files from PO or XLIFF files, handling plurals and msgctxt.  It can also read .mo files, allowing counting, etc and also allowing the .mo files to act as a translation memory.
+The toolkit can create .mo files from PO or XLIFF files, handling plurals and
+msgctxt.  It can also read .mo files, allowing counting, etc and also allowing
+the .mo files to act as a translation memory.
 
 .. versionchanged:: 1.2
    The hash table is also generated (the Gettext .mo files works fine without

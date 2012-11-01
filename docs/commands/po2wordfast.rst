@@ -6,7 +6,8 @@ po2wordfast
 
 Convert Gettext PO files to a :doc:`/formats/wordfast` translation memory file.
 
-`Wordfast <https://en.wikipedia.org/wiki/Wordfast>`_ is a popular Windows based computer-assisted translation tool.
+`Wordfast <https://en.wikipedia.org/wiki/Wordfast>`_ is a popular Windows based
+computer-assisted translation tool.
 
 .. _po2wordfast#usage:
 
@@ -51,5 +52,6 @@ Examples
 
   po2wordfast -l xh-ZA browser.po browser.txt
 
-Use the Xhosa (*xh-ZA*) translations in the PO file *browser.po* to create a Wordfast translation memory file called *browser.txt*
+Use the Xhosa (*xh-ZA*) translations in the PO file *browser.po* to create a
+Wordfast translation memory file called *browser.txt*
 

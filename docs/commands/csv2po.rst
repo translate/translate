@@ -5,9 +5,14 @@
 csv2po
 ******
 
-Convert between CSV (Comma Separated Value) files and the PO format.  This is useful for those translators who can only use a Spreadsheet, a modern spreadsheet can open CSV files for editing.  It is also useful if you have other data such as translation memory in CSV format and you wish to use it with your PO translations.
+Convert between CSV (Comma Separated Value) files and the PO format.  This is
+useful for those translators who can only use a Spreadsheet, a modern
+spreadsheet can open CSV files for editing.  It is also useful if you have
+other data such as translation memory in CSV format and you wish to use it with
+your PO translations.
 
-If you are starting out with your own CSV files (not created by po2csv), take note of the assumptions of the column layout explained below.
+If you are starting out with your own CSV files (not created by po2csv), take
+note of the assumptions of the column layout explained below.
 
 .. _csv2po#usage:
 
@@ -73,16 +78,17 @@ CSV file layout
 
 The resultant CSV file has the following layout
 
-+--------+--------------------+---------------------------------------------------------------------+
-| Column | Data               |  Description                                                        |
-+========+====================+=====================================================================+
-|  A     |   Location         |  All the PO #: location comments.  These are needed to reconstruct  |
-|        |                    |  or merge the CSV back into the PO file                             |
-+--------+--------------------+---------------------------------------------------------------------+
-|  B     |   Source Language  |  The msgid or source string                                         |
-+--------+--------------------+---------------------------------------------------------------------+
-|  C     |   Target Language  |  The msgstr or target language                                      |
-+--------+--------------------+---------------------------------------------------------------------+
++--------+-----------------+---------------------------------------------+
+| Column | Data            | Description                                 |
++========+=================+=============================================+
+|  A     | Location        | All the PO #: location comments.  These are |
+|        |                 | needed to reconstruct or merge the CSV back |
+|        |                 | into the PO file                            |
++--------+-----------------+---------------------------------------------+
+|  B     | Source Language | The msgid or source string                  |
++--------+-----------------+---------------------------------------------+
+|  C     | Target Language | The msgstr or target language               |
++--------+-----------------+---------------------------------------------+
 
 .. _csv2po#examples:
 
@@ -93,7 +99,8 @@ These examples demonstrate the use of csv2po::
 
   po2csv -P pot csv
 
-We use the *-P* option to recognise POT files found in *pot* and convert them to CSV files placed in *csv*::
+We use the *-P* option to recognise POT files found in *pot* and convert them
+to CSV files placed in *csv*::
 
   csv2po csv po
 
@@ -101,9 +108,10 @@ Convert CSV files in *csv* to PO files placed in *po*::
 
   csv2po --charset=windows-1250 -t pot csv po
 
-User working on Windows will often return files encoded in everything but Unicode.  In this case we convert
-CSV files found in *csv* from *windows-1250* to UTF-8 and place the correctly encoded files in *po*.  We use
-the templates found in *pot* to ensure that we preserve formatting and other data.  Note that
+User working on Windows will often return files encoded in everything but
+Unicode.  In this case we convert CSV files found in *csv* from *windows-1250*
+to UTF-8 and place the correctly encoded files in *po*.  We use the templates
+found in *pot* to ensure that we preserve formatting and other data.  Note that
 UTF-8 is the only available destination encoding.
 
 .. _csv2po#bugs:
@@ -111,5 +119,7 @@ UTF-8 is the only available destination encoding.
 Bugs
 ====
 
-* Translation comments #[space] and KDE comments _: are not available in CSV mode which effects the translators effectiveness
-* Locations #: that are not conformant to PO (i.e. have spaces) will get messed up by PO tools.
+* Translation comments #[space] and KDE comments _: are not available in CSV
+  mode which effects the translators effectiveness
+* Locations #: that are not conformant to PO (i.e. have spaces) will get messed
+  up by PO tools.

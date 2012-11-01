@@ -4,11 +4,17 @@
 Installation
 ************
 
-This is a guide to installing the Translate Toolkit on your system.  If the Translate Toolkit is already packaged for your system, this is probably the easiest way to install it. For Windows users, we provide installers. For several Linux distributions, the package might be available through your package manager.
+This is a guide to installing the Translate Toolkit on your system.  If the
+Translate Toolkit is already packaged for your system, this is probably the
+easiest way to install it. For Windows users, we provide installers. For
+several Linux distributions, the package might be available through your
+package manager.
 
-These packages might not be the absolute newest, or you might want to install from our packaged releases for some other reason.
+These packages might not be the absolute newest, or you might want to install
+from our packaged releases for some other reason.
 
-If your system already has the toolkit prepackaged, then please let us know what steps are required to install it.
+If your system already has the toolkit prepackaged, then please let us know
+what steps are required to install it.
 
 .. _installation#prerequisites:
 
@@ -39,11 +45,23 @@ For build instructions, see the :doc:`development/building` page.
 Download
 ========
 
-Download a stable `released version <http://sourceforge.net/projects/translate/files/Translate%20Toolkit/>`_.  Or if you have a python environment, run `easy_install translate-toolkit`.  For those who need problems fixed, or who want to work on the bleeding edge, get the latest source from :ref:`Git <installation#installing_from_git>`.
+Download a stable `released version
+<http://sourceforge.net/projects/translate/files/Translate%20Toolkit/>`_.  Or
+if you have a python environment, run `easy_install translate-toolkit`.  For
+those who need problems fixed, or who want to work on the bleeding edge, get
+the latest source from :ref:`Git <installation#installing_from_git>`.
 
-For most Windows users, the file named "translate-toolkit-...-setup.exe" is the best choice and contains everything you need if you just want to run Toolkit commands.  If you want to use it for development, you will need to install it with easy_install or from the source package.
+For most Windows users, the file named "translate-toolkit-...-setup.exe" is the
+best choice and contains everything you need if you just want to run Toolkit
+commands.  If you want to use it for development, you will need to install it
+with easy_install or from the source package.
 
-If you install the complete "setup" version in Windows, or if you install through your distribution's package manager, you should automatically have all the dependencies you need. If you are installing from the Version Control System, or from a source release, you should check the README file for information on the dependencies that are needed. Some of the dependencies are optional. The README file documents this.
+If you install the complete "setup" version in Windows, or if you install
+through your distribution's package manager, you should automatically have all
+the dependencies you need. If you are installing from the Version Control
+System, or from a source release, you should check the README file for
+information on the dependencies that are needed. Some of the dependencies are
+optional. The README file documents this.
 
 .. _installation#installing_packaged_versions:
 
@@ -83,7 +101,8 @@ On Debian (if you are on etch), just type the following command::
 
   aptitude install translate-toolkit
 
-If you are using an old Debian stable system, you might want to install the .tar.bz2 version. Be sure to install python and python development first with::
+If you are using an old Debian stable system, you might want to install the
+.tar.bz2 version. Be sure to install python and python development first with::
 
   apt-get install python python-dev
 
@@ -94,11 +113,13 @@ Alternatively newer packages might be in testing.
 Installing from Git
 ===================
 
-If you want to try the bleeding edge, or just want to have the latest fixes from a stabilising branch then you need to use Git to get your sources.::
+If you want to try the bleeding edge, or just want to have the latest fixes
+from a stabilising branch then you need to use Git to get your sources.::
 
   git clone https://github.com/translate/translate.git
 
-This will retrieve the ``master`` branch of the Toolkit.  Further Git `instructions <http://git.or.cz/course/svn.html>`_ are also available.
+This will retrieve the ``master`` branch of the Toolkit.  Further Git
+`instructions <http://git.or.cz/course/svn.html>`_ are also available.
 
 Once you have the sources you have two options, a full install::
 

@@ -17,7 +17,8 @@ GNU Gettext:
 
 * `msgattrib <http://linux.die.net/man/1/msgattrib>`_
 * `msgcat <http://linux.die.net/man/1/msgcat>`_
-* `msghack <http://linux.die.net/man/1/msghack>`_ (may not be present on your installation of Gettext, but is only required for the invert command)
+* `msghack <http://linux.die.net/man/1/msghack>`_ (may not be present on your
+  installation of Gettext, but is only required for the invert command)
 * `msgfilter <http://linux.die.net/man/1/msgfilter>`_
 
 .. _pocompendium#usage:
@@ -53,9 +54,19 @@ Options:
 Examples
 ========
 
-- *Compendium creation* --- create a compendium with all your translations to use as input during a message merge either when migrating an existing project or starting a new one.
-- *Conflicting translations* --- use *--errors* to find where you have translated an English string differently.  Many times this is OK but often it will pick up subtle spelling mistakes or help you to migrate older translations to a newer choice of words
-- *Conflicting word choice* --- use *--invert* and *--errors* to get a compendium file that show how you have used a translated word for different English words. You might have chosen a word that is valid for both of the English expressions but that in the context of computers would cause confusion for the user.  You can now easily identify these words and make changes in the underlying translations.
+- *Compendium creation* --- create a compendium with all your translations to
+  use as input during a message merge either when migrating an existing project
+  or starting a new one.
+- *Conflicting translations* --- use *--errors* to find where you have
+  translated an English string differently.  Many times this is OK but often it
+  will pick up subtle spelling mistakes or help you to migrate older
+  translations to a newer choice of words
+- *Conflicting word choice* --- use *--invert* and *--errors* to get a
+  compendium file that show how you have used a translated word for different
+  English words. You might have chosen a word that is valid for both of the
+  English expressions but that in the context of computers would cause
+  confusion for the user.  You can now easily identify these words and make
+  changes in the underlying translations.
 
 .. _pocompendium#narrowing_results:
 
@@ -67,7 +78,8 @@ whitespace as different translations.  In cases 2) and 3) above it is sometimes
 useful to remove the inconsistencies so that you can focus on the errors in
 translation not on shifts in capitals.  To this end you can use the following:
 
-*--ignore-case*, *--strip-accel-amp*, *--strip-accel-tilde*, *--strip-accel-under*
+*--ignore-case*, *--strip-accel-amp*, *--strip-accel-tilde*,
+*--strip-accel-under*
 
 .. _pocompendium#operation:
 
@@ -76,8 +88,9 @@ Operation
 
 pocompendium makes use of the Gettext tool msgcat to perform its task.  It
 traverses the PO directories and cat's all found PO files into the single
-compendium output file.  It then uses msgattrib to extract only certain messages, msghack to
-invert messages and msgfilter to convert messages to lowercase.
+compendium output file.  It then uses msgattrib to extract only certain
+messages, msghack to invert messages and msgfilter to convert messages to
+lowercase.
 
 .. _pocompendium#bugs:
 

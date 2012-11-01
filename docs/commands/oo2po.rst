@@ -7,9 +7,9 @@
 oo2po
 *****
 
-Convert between OpenOffice.org GSI/SDF files and the PO format.  This tool provides a
-complete roundtrip; it preserves the structure of the GSI file and creates
-completely valid PO files.
+Convert between OpenOffice.org GSI/SDF files and the PO format.  This tool
+provides a complete roundtrip; it preserves the structure of the GSI file and
+creates completely valid PO files.
 
 oo2xliff will convert the SDF files to XLIFF format.
 
@@ -112,12 +112,15 @@ Creating POT files
 
   oo2po -P en-US.sdf pot
 
-Extract messages from *en-US.sdf* and place them in a directory called *pot*.  The -P option ensures that we create POT files instead of PO files.::
+Extract messages from *en-US.sdf* and place them in a directory called *pot*.
+The -P option ensures that we create POT files instead of PO files.::
 
   oo2po -P --source-language=fr fr-FR.sdf french-pot
 
-Instead of creating English POT files we are now creating POT files that contain French in the msgid.  This is useful for translators who are
-not English literate.  You will need to have a fully translated sdf in the source language.
+Instead of creating English POT files we are now creating POT files that
+contain French in the msgid.  This is useful for translators who are not
+English literate.  You will need to have a fully translated sdf in the source
+language.
 
 .. _oo2po#creating_po_files_from_existing_work:
 
@@ -128,12 +131,19 @@ Creating PO files from existing work
 
   oo2po --duplicates=merge -l zu zu-ZA.sdf zulu
 
-Extract all existing Zulu (*zu*) messages from *zu-ZA.sdf* and place them in a directory called *zulu*.  If you find duplicate messages in a file then merge them into a single message (This is the default behaviour for traditional PO files).  You might want to use :doc:`pomigrate2` to ensure that your PO files match the latest POT files.::
+Extract all existing Zulu (*zu*) messages from *zu-ZA.sdf* and place them in a
+directory called *zulu*.  If you find duplicate messages in a file then merge
+them into a single message (This is the default behaviour for traditional PO
+files).  You might want to use :doc:`pomigrate2` to ensure that your PO files
+match the latest POT files.::
 
-  cat GSI_af.sdf GSI_xh.sdf > GSI_af-xh.sdf
-  oo2po --source-language=af -l xh GSI_af-xh.sdf af-xh-po
+  cat GSI_af.sdf GSI_xh.sdf > GSI_af-xh.sdf oo2po --source-language=af -l xh
+GSI_af-xh.sdf af-xh-po
 
-Here we are creating PO files with your existing translations but a different source language.  Firstly we combine the two SDF files.  Then oo2po creates a set of PO files in *af-xh-po* using Afrikaans (*af*) as the source language and Xhosa (*xh*) as the target language from the combined SDF file *GSI_af-xh.sdf*
+Here we are creating PO files with your existing translations but a different
+source language.  Firstly we combine the two SDF files.  Then oo2po creates a
+set of PO files in *af-xh-po* using Afrikaans (*af*) as the source language and
+Xhosa (*xh*) as the target language from the combined SDF file *GSI_af-xh.sdf*
 
 .. _oo2po#creating_a_new_gsi/sdf_file:
 
@@ -144,17 +154,30 @@ Creating a new GSI/SDF file
 
   po2oo -l zu zulu zu_ZA.sdf
 
-Using PO files found in *zulu* create an SDF files called *zu_ZA.sdf* for language *zu*::
+Using PO files found in *zulu* create an SDF files called *zu_ZA.sdf* for
+language *zu*::
 
-  po2oo -l af -t en-US.sdf --nofuzzy --keeptimestamp --filteraction=exclude-serious afrikaans af_ZA.sdf
+  po2oo -l af -t en-US.sdf --nofuzzy --keeptimestamp
+--filteraction=exclude-serious afrikaans af_ZA.sdf
 
-Create an Afrikaans (*af*) SDF file called *af_ZA.sdf* using *en-US.sdf* as a template and preserving the timestamps within the SDF file
-while also eliminating any serious errors in translation.  Using templates ensures that the resultant SDF file has exactly the same format as
-the template SDF file.  In an SDF file each translated string can have a timestamp attached.  This creates a large amount of unuseful traffic when comparing version of the SDF file, by preserving the timestamp we ensure that this does not change and can therefore see the translation changes clearly.  We have included the *nofuzzy* option (on by default) that prevent fuzzy PO messages from getting into the SDF file.  Lastly the *filteraction* option is set to exclude serious errors: variables failures and translated XML will be excluded from the final SDF.
+Create an Afrikaans (*af*) SDF file called *af_ZA.sdf* using *en-US.sdf* as a
+template and preserving the timestamps within the SDF file while also
+eliminating any serious errors in translation.  Using templates ensures that
+the resultant SDF file has exactly the same format as the template SDF file.
+In an SDF file each translated string can have a timestamp attached.  This
+creates a large amount of unuseful traffic when comparing version of the SDF
+file, by preserving the timestamp we ensure that this does not change and can
+therefore see the translation changes clearly.  We have included the *nofuzzy*
+option (on by default) that prevent fuzzy PO messages from getting into the SDF
+file.  Lastly the *filteraction* option is set to exclude serious errors:
+variables failures and translated XML will be excluded from the final SDF.
 
 .. _oo2po#helpcontent2:
 
 helpcontent2
 ============
 
-The escaping of ``helpcontent2`` from SDF files was very confusing, :bug:`295` implemented a fix that appeared in version 1.1.0 (All known issues were fixed in 1.1.1).  Translators are now able to translate helpcontent2 with clean escaping.
+The escaping of ``helpcontent2`` from SDF files was very confusing, :bug:`295`
+implemented a fix that appeared in version 1.1.0 (All known issues were fixed
+in 1.1.1).  Translators are now able to translate helpcontent2 with clean
+escaping.

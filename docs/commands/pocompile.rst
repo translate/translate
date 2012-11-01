@@ -4,8 +4,9 @@
 pocompile
 *********
 
-Compile PO or XLIFF files into MO (Machine Object) files.  MO files are installed on your computer and
-allow a Gettext enabled computer to provide the translations for the application.
+Compile PO or XLIFF files into MO (Machine Object) files.  MO files are
+installed on your computer and allow a Gettext enabled computer to provide the
+translations for the application.
 
 .. _pocompile#usage:
 
@@ -50,9 +51,11 @@ Examples
 
   pocompile --fuzzy file.po file.mo
 
-Creates a new MO file called *file.mo* based on the translation in the PO file *file.po*.  By using the *--fuzzy*
-option we use all translations including those marked fuzzy. ::
+Creates a new MO file called *file.mo* based on the translation in the PO file
+*file.po*.  By using the *--fuzzy* option we use all translations including
+those marked fuzzy. ::
 
   pocompile file.xlf file.mo
 
-Create an MO file from an XLIFF file called *file.xlf* (available from version 1.1 of the toolkit).
+Create an MO file from an XLIFF file called *file.xlf* (available from version
+1.1 of the toolkit).

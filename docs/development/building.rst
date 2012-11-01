@@ -29,9 +29,12 @@ Consult the README in the source distribution for the build dependencies.
 Building Python packages with C extensions under Windows
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-In order to build modules which have C extensions, you will need either the Visual Studio C++ compiler or `MinGW <http://sourceforge.net/project/showfiles.php?group_id=2435&package_id=240780>`_.
+In order to build modules which have C extensions, you will need either the
+Visual Studio C++ compiler or `MinGW
+<http://sourceforge.net/project/showfiles.php?group_id=2435&package_id=240780>`_.
 
-Make sure that your Visual Studio C++ or MinGW program path is part of your system's program path, since the Python build system requires this.
+Make sure that your Visual Studio C++ or MinGW program path is part of your
+system's program path, since the Python build system requires this.
 
 To build and install a package with MinGW, you need to execute::
 
@@ -52,5 +55,6 @@ Simply execute::
 
   python setup.py innosetup
 
-The generated file can be found under ``translate-toolkit-<version>\Output`` (where ``<version>`` is the software version).
+The generated file can be found under ``translate-toolkit-<version>\Output``
+(where ``<version>`` is the software version).
 

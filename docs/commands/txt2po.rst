@@ -106,8 +106,9 @@ This is simple::
 
   txt2po -P TEXT_FILE text_file.pot
 
-A translator would copy the POT file to their own PO file and then create translations of the entries.
-If you wish to create a PO file and not a POT file then leave off the *-P* option.
+A translator would copy the POT file to their own PO file and then create
+translations of the entries.  If you wish to create a PO file and not a POT
+file then leave off the *-P* option.
 
 You might want to manually edit the POT file to remove items that should not be
 translated.  For instance if part of the document is a license you might want
@@ -135,12 +136,13 @@ will appear once they are merged with the original text document.
 Creating a translated text file
 -------------------------------
 
-With the translations complete you can create a translated text file like this::
+With the translations complete you can create a translated text file like
+this::
 
   po2txt -w 75 -t TEXT_FILE translated.po TEXT_FILE.translated
 
-This uses the original text file as a template and creates a new translated text
-file using the translations found in the PO file.
+This uses the original text file as a template and creates a new translated
+text file using the translations found in the PO file.
 
 The *-w* command allows you to reflow the translated text to *N* number of
 characters, otherwise the text will appear as one long line.
@@ -158,20 +160,27 @@ dokuwiki
 To retrieve the raw syntax for your dokuwiki page add '?do=export_raw' to you
 URL.  The following would retrieve the `DokuWiki home page
 <https://www.dokuwiki.org/dokuwiki>`_ in raw dokuwiki format
-https://www.dokuwiki.org/dokuwiki?do=export_raw
+https://www.dokuwiki.org/dokuwiki?do=export_raw ::
 
   wget https://www.dokuwiki.org/dokuwiki?do=export_raw -O txt2po.txt
   txt2po --flavour=dokuwiki -P txt2po.txt txt2po.pot
   # edit txt2po.pot
   po2txt -t txt2po.txt fr.po fr.txt
 
-First we retrieve the file in raw dokuwiki format, then we create a POT file for editing.  We created a French translation and using po2txt plus the original file as a template we output fr.txt which is a French version of the original txt2po.txt.  This file can now be uploaded to the wiki server.
+First we retrieve the file in raw dokuwiki format, then we create a POT file
+for editing.  We created a French translation and using po2txt plus the
+original file as a template we output fr.txt which is a French version of the
+original txt2po.txt.  This file can now be uploaded to the wiki server.
 
 .. _txt2po#mediawiki:
 
 MediaWiki
 ---------
 
-To retrieve the raw media wiki syntax add '?action=raw' to you wiki URL.  The following retrieves the Translate Toolkit page from Wikipedia in raw MediaWiki format http://en.wikipedia.org/wiki/Translate_Toolkit?action=raw or http://en.wikipedia.org/w/index.php?title=Pootle&action=raw.
+To retrieve the raw media wiki syntax add '?action=raw' to you wiki URL.  The
+following retrieves the Translate Toolkit page from Wikipedia in raw MediaWiki
+format http://en.wikipedia.org/wiki/Translate_Toolkit?action=raw or
+http://en.wikipedia.org/w/index.php?title=Pootle&action=raw.
 
-To process follow the instructions above but substituting the MediaWiki retrieval method.
+To process follow the instructions above but substituting the MediaWiki
+retrieval method.

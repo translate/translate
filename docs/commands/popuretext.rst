@@ -4,9 +4,14 @@
 popuretext
 **********
 
-Extracts all the source text from a directory of POT files or the target text from a directory of PO files, removing PO headers and optionally the accelerator keys.
+Extracts all the source text from a directory of POT files or the target text
+from a directory of PO files, removing PO headers and optionally the
+accelerator keys.
 
-If you want to use other tools to analyse the text within a translation project, then this is the tool for you.  For example, you can use it to calculate word frequencies to create an initial glossary based on the pure source text.
+If you want to use other tools to analyse the text within a translation
+project, then this is the tool for you.  For example, you can use it to
+calculate word frequencies to create an initial glossary based on the pure
+source text.
 
 .. _popuretext#prerequisites:
 
@@ -46,8 +51,11 @@ Examples
 
   popuretext -P pot pot.txt '&'
 
-Extract all the source text from the *pot* directory and place it in the *pot.txt* file removing all occurrences of the ``&`` accelerator. ::
+Extract all the source text from the *pot* directory and place it in the
+*pot.txt* file removing all occurrences of the ``&`` accelerator. ::
 
   popuretext af af.txt
 
-Extract all target text from the Afrikaans files in the *af* directory, placing the extracted text in *af.txt*.  In this case we are not filtering any accelerator characters.
+Extract all target text from the Afrikaans files in the *af* directory, placing
+the extracted text in *af.txt*.  In this case we are not filtering any
+accelerator characters.

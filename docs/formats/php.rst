@@ -4,7 +4,9 @@
 PHP
 ***
 
-Many `PHP <https://en.wikipedia.org/wiki/PHP>`_ programs make use of a localisable string array.  The toolkit supports the full localisation of such files with :doc:`/commands/php2po` and po2php.
+Many `PHP <https://en.wikipedia.org/wiki/PHP>`_ programs make use of a
+localisable string array.  The toolkit supports the full localisation of such
+files with :doc:`/commands/php2po` and po2php.
 
 .. _php#example:
 
@@ -25,7 +27,11 @@ Conformance
 
 Our format support allows:
 
-* PHP escaping (both for `single <http://www.php.net/manual/en/language.types.string.php#language.types.string.syntax.single>`_ and `double <http://www.php.net/manual/en/language.types.string.php#language.types.string.syntax.double>`_ quoted strings)
+* PHP escaping (both for `single
+  <http://www.php.net/manual/en/language.types.string.php#language.types.string.syntax.single>`_
+  and `double
+  <http://www.php.net/manual/en/language.types.string.php#language.types.string.syntax.double>`_
+  quoted strings)
 * Multiline entries
 * Various layouts of the id
 
@@ -51,4 +57,8 @@ Non-Conformance
 
 The following are not yet supported:
 
-* `herdoc <http://www.php.net/manual/en/language.types.string.php#language.types.string.syntax.heredoc>`_ and `nowdoc <http://www.php.net/manual/en/language.types.string.php#language.types.string.syntax.nowdoc>`_ are not managed
+* `herdoc
+  <http://www.php.net/manual/en/language.types.string.php#language.types.string.syntax.heredoc>`_
+  and `nowdoc
+  <http://www.php.net/manual/en/language.types.string.php#language.types.string.syntax.nowdoc>`_
+  are not managed

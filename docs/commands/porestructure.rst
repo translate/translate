@@ -4,9 +4,16 @@
 porestructure
 *************
 
-porestructure takes the PO files output by :doc:`poconflicts` (a flat structure), and recreates the directory structure according to the poonflict location comments found in each PO message. After being restructured, the messages in the resulting directory structure can be merged back using :doc:`pomerge`.
+porestructure takes the PO files output by :doc:`poconflicts` (a flat
+structure), and recreates the directory structure according to the poonflict
+location comments found in each PO message. After being restructured, the
+messages in the resulting directory structure can be merged back using
+:doc:`pomerge`.
 
-Since poconflicts adds conflicting messages, from many different PO files, into a single PO file, the original structure of the files and directories are lost and the new PO files are output to a single directory. The original structure information is left in "(pofilter)" comments for each PO element.
+Since poconflicts adds conflicting messages, from many different PO files, into
+a single PO file, the original structure of the files and directories are lost
+and the new PO files are output to a single directory. The original structure
+information is left in "(pofilter)" comments for each PO element.
 
 .. _porestructure#usage:
 
@@ -19,11 +26,12 @@ Usage
 
 Where:
 
-+--------------+----------------------------------------------------------------------+
-| <conflicts>  | is a directory containing one the corrected output from poconflict   |
-+--------------+----------------------------------------------------------------------+
-| <po>         | is an output directory to write the restructured files to            |
-+--------------+----------------------------------------------------------------------+
++-------------+-----------------------------------------------------------+
+| <conflicts> | is a directory containing one the corrected output from   |
+|             | poconflict                                                |
++-------------+-----------------------------------------------------------+
+| <po>        | is an output directory to write the restructured files to |
++-------------+-----------------------------------------------------------+
 
 Options:
 
@@ -45,6 +53,7 @@ Options:
 Examples
 ========
 
-The documentation for poconflicts has :ref:`poconflicts#examples` for the complete process using poconflict, porestructure, and pomerge.
+The documentation for poconflicts has :ref:`poconflicts#examples` for the
+complete process using poconflict, porestructure, and pomerge.
 
 .. _porestructure#bugs:
