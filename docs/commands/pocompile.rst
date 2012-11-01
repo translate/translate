@@ -56,12 +56,3 @@ option we use all translations including those marked fuzzy. ::
   pocompile file.xlf file.mo
 
 Create an MO file from an XLIFF file called *file.xlf* (available from version 1.1 of the toolkit).
-
-.. _pocompile#bugs:
-
-Note
-====
-
-Gettext plurals and msgctxt are not handled before version 1.1 of the toolkit.
-
-The .mo implementation does not support Gettext hash tables.
