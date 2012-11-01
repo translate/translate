@@ -61,18 +61,41 @@ This script takes no command-line parameters and is only configurable via the va
 
 The variables are used in the following ways:
 
-| ``BUILD_DIR`` | The base build directory from where building is done. |
-| ``MOZCENTRAL_DIR`` | The directory containing a checkout of the Mozilla source tree (from http://hg.mozilla.org/mozilla-central/). |
-| ``HG_LANGS`` | A space-separated list of language codes to build for. |
-| ``L10N_DIR`` | The directory where Mozilla l10n files (from l10n-central) should be collected. |
-| ``PO_DIR`` | The directory containing the externally-hosted or previously available source PO files (ex. PO files managed in another VCS repository). It contains a sub-directory for each language. |
-| ``POPACK_DIR`` | The output directory for PO archives. |
-| ``PORECOVER_DIR`` | The directory to put recovered PO files in. It contains a sub-directory for each language. |
-| ``POT_INCLUDES`` | A space-separated list of files to be included in POT archives. |
-| ``POTPACK_DIR`` | The output directory for POT archives. |
-| ``POUPDATED_DIR`` | The directory to use for updated PO files. It contains a sub-directory for each language. |
-| ``LANGPACK_DIR`` | The directory to put langpacks (XPIs) in. |
-| ``FF_VERSION`` | The version of Firefox that is being built for. This is used in the file names of archives. |
++--------------------+-------------------------------------------------------+
+| ``BUILD_DIR``      | The base build directory from where building is done. |
++--------------------+-------------------------------------------------------+
+| ``MOZCENTRAL_DIR`` | The directory containing a checkout of the Mozilla    |
+|                    | source tree http://hg.mozilla.org/mozilla-central/    |
++--------------------+-------------------------------------------------------+
+| ``HG_LANGS``       | A space-separated list of language codes to build     |
+|                    | for.                                                  |
++--------------------+-------------------------------------------------------+
+| ``L10N_DIR``       | The directory where Mozilla l10n files                |
+|                    | (from l10n-central) should be collected.              |
++--------------------+-------------------------------------------------------+
+| ``PO_DIR``         | The directory containing the externally-hosted or     |
+|                    | previously available source PO files (e.g. PO files   |
+|                    | managed in another VCS repository). It contains a     |
+|                    | sub-directory for each language.                      |
++--------------------+-------------------------------------------------------+
+| ``POPACK_DIR``     | The output directory for PO archives.                 |
++--------------------+-------------------------------------------------------+
+| ``PORECOVER_DIR``  | The directory to put recovered PO files in. It        |
+|                    | contains a sub-directory for each language.           |
++--------------------+-------------------------------------------------------+
+| ``POT_INCLUDES``   | A space-separated list of files to be included in POT |
+|                    | archives.                                             |
++--------------------+-------------------------------------------------------+
+| ``POTPACK_DIR``    | The output directory for POT archives.                |
++--------------------+-------------------------------------------------------+
+| ``POUPDATED_DIR``  | The directory to use for updated PO files. It         |
+|                    | contains a sub-directory for each language.           |
++--------------------+-------------------------------------------------------+
+| ``LANGPACK_DIR``   | The directory to put langpacks (XPIs) in.             |
++--------------------+-------------------------------------------------------+
+| ``FF_VERSION``     | The version of Firefox that is being built for. This  |
+|                    | is used in the file names of archives.                |
++--------------------+-------------------------------------------------------+
 
 .. note::
     It is **strongly** recommended that you mirror the directory structure specified by the default values of the ``*_DIR`` variables. For example the default value for ``L10N_DIR`` is ``${BUILD_DIR}/l10n``, then you should put your l10n-central check-outs in the ``l10n`` directory under your main build directory (``BUILD_DIR``).
