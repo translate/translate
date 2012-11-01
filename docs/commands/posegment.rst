@@ -41,11 +41,14 @@ Options:
 -oOUTPUT, --output=OUTPUT     write to OUTPUT in po, pot formats
 --psyco=MODE          use psyco to speed up the operation, modes: :doc:`none,
                       full, profile <option_psyco>`
--P, --pot  output PO Templates (.pot) rather than PO files (.po)
--l, --language=LANG the target language code
---source-language=LANG the source language code (default 'en')
---keepspaces Disable automatic stripping of whitespace
---only-aligned Removes units where sentence number does not correspond
+-P, --pot             output PO Templates (.pot) rather than PO files (.po)
+-l LANG, --language=LANG
+                      the target language code
+--source-language=LANG
+                      the source language code (default 'en')
+--keepspaces          Disable automatic stripping of whitespace
+--only-aligned        Removes units where sentence number does not
+                      correspond
 
 .. _posegment#examples:
 
