@@ -44,6 +44,7 @@ This is a simple bash script that embodies most of the Mozilla l10n process and 
 #. :doc:`Create new POT files </guides/creating_mozilla_pot_files>` from the :ref:`en-US <mozilla_l10n_scripts#get_moz_enus.py>` l10n files.
 #. Create archives of the POT files.
 #. For each language:
+
    #. Update existing PO files if the checked out from a CVS, Subversion or Mercurial repository.
    #. :doc:`Migrate </guides/migrating_translations>` PO files to new POT files.
    #. :doc:`Create Mozilla l10n files <moz2po>` for the language based on the migrated PO files.
