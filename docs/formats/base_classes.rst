@@ -90,9 +90,7 @@ A quick summary:
   * Flesh out the API, clean and clear definitions.
   * Document the API.
 
-* We need to discuss the class hierarchy, e.g.:
-
-::
+* We need to discuss the class hierarchy, e.g.::
 
     base
          -- po
@@ -107,25 +105,23 @@ A quick summary:
 * Clean up converters.
 
   * Parsing of file content needs to happen only in the storage implementation of each filetype/storage type. Currently parsing happens all over the place.
-  * Currently there are separate conversion programs for each type and direction to convert to, eg. po2xliff and xliff2po (24 commands with lots of duplicate code in them). Ideally conversion should be as simple as:
+  * Currently there are separate conversion programs for each type and direction to convert to, eg. po2xliff and xliff2po (24 commands with lots of duplicate code in them). Ideally conversion should be as simple as::
 
-::
-
-    >>> po_store = POStore(filecontent)
-    >>> print str(po_store)
-    msgid "bleep"
-    msgstr "blorp"
-
-    >>> xliff_store = XliffStore(po_store)
-    >>> print str(xliff_store)
-    <xliff>
-      <file>
-        <trans-unit>
-          <source>bleep</source>
-          <target>blorp</target>
-        </trans-unit>
-      </file>
-    </xliff>
+      >>> po_store = POStore(filecontent)
+      >>> print str(po_store)
+      msgid "bleep"
+      msgstr "blorp"
+       
+      >>> xliff_store = XliffStore(po_store)
+      >>> print str(xliff_store)
+      <xliff>
+        <file>
+          <trans-unit>
+            <source>bleep</source>
+            <target>blorp</target>
+          </trans-unit>
+        </file>
+      </xliff>
 
 Note that the xliffstore is being instantiated using the postore object.
 This works because all the data in any translation store object is accessible via the same well-defined base API.
