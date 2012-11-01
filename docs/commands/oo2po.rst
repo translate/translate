@@ -157,4 +157,4 @@ the template SDF file.  In an SDF file each translated string can have a timesta
 helpcontent2
 ============
 
-The escaping of ``helpcontent2`` from SDF files was very confusing, `bug 295 <http://bugs.locamotion.org/show_bug.cgi?id=295>`_ implemented a fix that appeared in version 1.1.0 (All known issues were fixed in 1.1.1).  Translators are now able to translate helpcontent2 with clean escaping.
+The escaping of ``helpcontent2`` from SDF files was very confusing, :bug:`295` implemented a fix that appeared in version 1.1.0 (All known issues were fixed in 1.1.1).  Translators are now able to translate helpcontent2 with clean escaping.

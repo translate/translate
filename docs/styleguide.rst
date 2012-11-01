@@ -204,12 +204,21 @@ Function and method arguments:
 Documentation
 =============
 
-Docstrings
-----------
-
-We use Sphinx_ to generate our API documentation. Read the
+We use Sphinx_ to generate our API and user documentation. Read the
 `reStructuredText primer`_ and `Sphinx documentation`_ as needed.
 
+Special roles
+-------------
+
+We introduce a number of special roles for documentation:
+
+* ``:bug:`` -- use this to link to bugs in Translate's Bugzilla.
+
+  * ``:bug:`123``` gives: :bug:`123`
+  * ``:bug:`broken <123>``` gives: :bug:`broken <123>`
+
+Docstrings
+----------
 
 Docstring conventions:
   All docstrings are formatted with reStructuredText as understood by

@@ -159,7 +159,7 @@ Formats that we would like to support but don't currently support:
 * Apple:
 
   * `AppleGlot <ftp://ftp.apple.com/developer/tool_chest/localization_tools/appleglot/appleglot_3.2_usersguide.pdf>`_
-  * .plist - see `bug 633 <http://bugs.locamotion.org/show_bug.cgi?id=633>`_ and `plistlib <http://docs.python.org/library/plistlib.html>`_ for Python
+  * .plist - see :bug:`633` and `plistlib <http://docs.python.org/library/plistlib.html>`_ for Python
 * Adobe:
 
   * FrameMaker's Maker Interchange Format - `MIF <http://help.adobe.com/en_US/FrameMaker/8.0/mif_reference.pdf>`_ (See also `python-gendoc <http://lino.sourceforge.net/src/100.html>`_, and `Perl MIF module <http://search.cpan.org/~rst/FrameMaker-MifTree-0.075/lib/FrameMaker/MifTree.pm>`_)
@@ -171,7 +171,7 @@ Formats that we would like to support but don't currently support:
   * `Rich Text Format <https://en.wikipedia.org/wiki/Rich_Text_Format>`_ (RTF) see also
     `pyrtf-ng <http://code.google.com/p/pyrtf-ng/>`_
   * `Open XML Paper Specification <https://en.wikipedia.org/wiki/Open_XML_Paper_Specification>`_
-  * .NET Resource files (.resx) - `Bug 396 <http://bugs.locamotion.org/show_bug.cgi?id=396>`_
+  * .NET Resource files (.resx) - :bug:`Bug 396 <396>`
 * XML related
 
   * Generic XML

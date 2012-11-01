@@ -36,5 +36,5 @@ Bugs
 ====
 
 * Some relative path bugs thus the need for ./ before file.po.
-* Until version 1.9.1, the original input file was removed, `bug 2006 <http://bugs.locamotion.org/show_bug.cgi?id=2006>`_
+* Until version 1.9.1, the original input file was removed, :bug:`2006`.
 

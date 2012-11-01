@@ -40,5 +40,5 @@ Bugs
 ====
 
 * There may be problems with very deeply nested MENU's
-* LANGUAGE elements cannot yet be updated in :doc:`po2rc </commands/rc2po>` (`Bug 360 <http://bugs.locamotion.org/show_bug.cgi?id=360>`_)
+* LANGUAGE elements cannot yet be updated in :doc:`po2rc </commands/rc2po>` (:bug:`Bug 360 <360>`)
 

@@ -129,7 +129,7 @@ Converting the current Python based PO parser to the Gettext C based parser for 
 Premature termination of DTD entities
 -------------------------------------
 
-Although this does not occur frequently a case emerged where some DTD entities where not fully extracted from the DTD source.  This was fixed in bug `331 <http://bugs.locamotion.org/show_bug.cgi?id=331>`_.
+Although this does not occur frequently a case emerged where some DTD entities where not fully extracted from the DTD source.  This was fixed in :bug:`331`.
 
 We expect this change to create a few new fuzzy entries.  There is no action required from the user as the next update of your PO files will bring the correct text into your translations, if you are using a translation memory your translation might be recovered from obsolete translations.
 
@@ -470,7 +470,7 @@ This we feel will put us back at a good balance of usefulness and usability.  We
 
 The main use of the .properties converter class is to translate Mozilla files, although .properties files are actually a Java standard.  The old
 Mozilla way, and still the Java way, of working with .properties files is to escape any Unicode characters using the ``\uNNNN`` convention.  Mozilla
-now allows you to use Unicode in UTF-8 encoding for these files.  Thus in 0.9 of the Toolkit we now output UTF-8 encoded properties files. Bug `114 <http://bugs.locamotion.org/show_bug.cgi?id=114>`_ tracks the status of this and we hope to add a feature to prop2po to restore the correct Java convention as an option.
+now allows you to use Unicode in UTF-8 encoding for these files.  Thus in 0.9 of the Toolkit we now output UTF-8 encoded properties files. :bug:`Bug 114 <114>` tracks the status of this and we hope to add a feature to prop2po to restore the correct Java convention as an option.
 
 .. _changelog#0.8:
 
