@@ -34,16 +34,22 @@ Issues
 - N-M mapping. We need to support arbitrary mappings between source and target
 - Determining N and M on the fly.  We need to have the ability to determine N and M in real time.  So that would mean being able to read l20n files and determine what function is used, then determine how many possible results that function can return.  We'd do that for both source and target.  Thus we'd get N and M counts which we can use in the interface.
 - GUI for Pootle/Virtaal to allow dynamic source and target numbers.  We already adapt to N and M on both platforms, but doing this on the fly is harder.
+
   - If we assume that functions are implemented once in a common library and named the same (for example for plural support) then this is easy.
   - If functions are arbitrarily implemented per target file but at least named the same then this is harder.
   - If names of functions are changed then we'd need to present the ability to change the function that a translator would use in their translation.  How to do this so that it isn't confusing would require quite some thought.
   - Being able to write functions on the fly within the translation tool would most likely be the ultimate ability.  We suspect we won't need to address that level just yet.
+
 - Backend file store.  We have two options.
+
   - Covert to a bilingual store - this is what we do in moz2po.
   - Support monolingual stores - we can do that in Pootle, but it needs wider testing.  In Virtaal we do automatic conversion to bilingual formats, but is is currently disabled.  To enable this so that we can rely on it we'd need some work on both Pootle and Virtaal; in testing and in managing source and target files changes reliably.
+
 - More complex l20n interactions.  These start pushing the translation tool into an IDE but would include:
+
   - A translator making a 1-1 into a 1-M (to add gender, vary on the time of day, platform, etc). Since no functions are present in the source we'd need to have access to a library of functions or have a structured object editor.
   - A translator might want to define a local entity (an entity which is not in the original source document), or it might be there from before.
+
 - Still needs some thought on how to do anything meaningful with our current translation features like TM, MT, quality checks.
 
 .. _l20n#approach:
