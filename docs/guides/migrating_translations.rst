@@ -58,7 +58,11 @@ Use your text editor to find and correct these errors.  If you do not correct th
 Optional: Checking your old PO files for consistency
 ====================================================
 
-Note this step is optional, a more detailed explanation is given in :doc:`checking_for_inconsistencies`.  We now look at consistency within the translations.  The first check extracts situations were the same English string was translated in two different ways::
+.. note:: Note this step is optional, a more detailed explanation is given in
+   :doc:`checking_for_inconsistencies`.
+
+We now look at consistency within the translations.  The first check extracts
+situations were the same English string was translated in two different ways::
 
   pocompendium --ignore-case --accel-amp --errors check.po -d ooo-113-old
 
