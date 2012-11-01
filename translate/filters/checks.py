@@ -404,7 +404,7 @@ class UnitChecker(object):
     def run_test(self, test, unit):
         """Runs the given test on the given unit.
 
-        Note that this can raise a FilterFailure as part of normal operation.
+        Note that this can raise a :exc:`FilterFailure` as part of normal operation.
         """
         return test(unit)
 
@@ -484,7 +484,7 @@ class TranslationChecker(UnitChecker):
     def run_test(self, test, unit):
         """Runs the given test on the given unit.
 
-        Note that this can raise a :cls:`FilterFailure` as part of normal
+        Note that this can raise a :exc:`FilterFailure` as part of normal
         operation.
         """
         if self.hasplural:
