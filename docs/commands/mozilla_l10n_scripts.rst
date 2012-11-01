@@ -131,14 +131,26 @@ Usage
 -----
 ::
 
+  buildxpi.py [<options>] <lang>
+
+Example::
+
   buildxpi.py -L /path/to/l10n -s /path/to/mozilla-central -o /path/to/xpi_output af
 
 Options:
 
-| ``/path/to/l10n`` | The path to the parent directory of the "af" directory containing the Afrikaans translated l10n files. |
-| ``/path/to/mozilla-central`` | The path to the Firefox sources check out from `Mercurial <http://hg.mozilla.org/mozilla-central>`_. Note that ``--mozproduct`` is not specified, because the default is ``browser``. For Thunderbird (>=3.0) it should be ``/path/to/`comm-central <http://hg.mozilla.org/comm-central>`_`` and ``--mozproduct mail`` should be specified. |
-| ``/path/to/xpi_output`` | The path to the output directory. |
-| ``af`` | The language (Afrikaans in this case) to build a language pack for. |
+-h, --help            show this help message and exit
+-L L10NBASE, --l10n-base=L10NBASE
+                      The directory containing the <lang> subdirectory.
+-o OUTPUTDIR, --output-dir=OUTPUTDIR
+                      The directory to copy the built XPI to (default:
+                      current directory).
+-p MOZPRODUCT, --mozproduct=MOZPRODUCT
+                      The Mozilla product name (default: "browser").
+-s SRCDIR, --src=SRCDIR
+                      The directory containing the Mozilla l10n sources.
+-d, --delete-dest     Delete output XPI if it already exists.
+-v, --verbose         Be more noisy
 
 .. _mozilla_l10n_scripts#get_moz_enus.py:
 
@@ -162,12 +174,16 @@ Usage
 
 Options:
 
-| ``-h``, ``--help`` | Show this help message and exit. |
-| ``-s SRCDIR``, ``--src=SRCDIR`` | The directory containing the Mozilla l10n sources. (default: ``mozilla``) |
-| ``-d DESTDIR``, ``--dest=DESTDIR`` | The destination directory to copy the en-US locale files to. (default: ``l10n``) |
-| ``-pMOZPRODUCT``, ``--mozproduct=MOZPRODUCT`` | The Mozilla product name. (default: ``browser``) |
-| ``--delete-dest`` | Delete the destination directory (if it exists). |
-| ``-v, --verbose`` | Be more noisy. |
+-h, --help            show this help message and exit
+-s SRCDIR, --src=SRCDIR
+                      The directory containing the Mozilla l10n sources.
+-d DESTDIR, --dest=DESTDIR
+                      The destination directory to copy the en-US locale
+                      files to.
+-p MOZPRODUCT, --mozproduct=MOZPRODUCT
+                      The Mozilla product name.
+--delete-dest         Delete the destination directory (if it exists).
+-v, --verbose         Be more noisy
 
 .. _mozilla_l10n_scripts#moz-l10n-builder:
 
