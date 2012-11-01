@@ -308,7 +308,8 @@ Would become::
 
   po2prop --personality=mozilla -t moz.properties moz.properties.po my-moz.properties
 
-Note: output in java style escaped Unicode will still be usable by Mozilla but will be harder to read.
+.. note:: Output in java style escaped Unicode will still be usable by Mozilla
+   but will be harder to read.
 
 .. _changelog#support_for_compressed_files:
 
