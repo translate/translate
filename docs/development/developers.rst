@@ -53,7 +53,7 @@ Communication
 Source code map
 ===============
 
-The source code for the tools is hosted on GitHub https://github.com/translate/translate (previously in `SVN at SourceForge <https://translate.svn.sourceforge.net/viewvc/translate/src/trunk/>`_).  This rough map will allow you to navigate the source code tree:
+The source code for the tools is hosted on `GitHub <https://github.com/translate/translate>`_.  This rough map will allow you to navigate the source code tree:
 
 * convert -- convert between different formats and PO format
 * filters -- :doc:`/commands/pofilter` and its helper functions (badly named, it is really a checking tool)

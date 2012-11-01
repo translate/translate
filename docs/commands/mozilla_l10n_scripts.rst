@@ -12,7 +12,7 @@ This page describes the purpose and usage of scripts available in the Translate 
 
 Mozilla's move from CVS to Mercurial made a lot of these scripts necessary. For more information about Mozilla l10n from CVS, see the :doc:`moz-l10n-builder` page.
 
-All of these scripts are available on Subversion from `here <https://translate.svn.sourceforge.net/svnroot/translate/src/trunk/tools/mozilla/>`_.
+All of these scripts are available on Subversion from `here <https://github.com/translate/translate/tree/master/tools/mozilla>`_.
 
 We are currently generating POT files for most major betas, RCs and releases of Firefox and Thunderbird. They are available here:
 http://l10n.mozilla.org/pootle/pot/
