@@ -32,8 +32,8 @@ The latest version of the Translate Toolkit can be downloaded from:
 <http://sourceforge.net/projects/translate/files/Translate%20Toolkit/>.
 
 The latest documentation is always available at
-<http://translate.sourceforge.net/wiki/toolkit/index>.
-Documentation is also included in the doc directory.
+http://docs.translatehouse.org/projects/translate-toolkit/en/latest/
+(Documentation is also included in the doc directory).
 
 
 Copying
