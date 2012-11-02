@@ -202,7 +202,7 @@ Some help in writing useful bug reports are mentioned here:
 Documentation
 -------------
 Please read our documentation online at
-<http://translate.sourceforge.net/wiki/toolkit/index>.
+http://docs.translatehouse.org/projects/translate-toolkit/en/latest/.
 There they are constantly being updated. Please feel free to contribute new
 sections and suggest corrections.
 
