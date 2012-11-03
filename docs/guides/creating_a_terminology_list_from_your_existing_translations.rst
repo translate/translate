@@ -40,7 +40,8 @@ Get short phrases from the current translations
 ===============================================
 
 We will not be able to identify terminology within bodies of text, we are only
-going to extract short bit of text ie ones that are between 1 and 3 words long.
+going to extract short bit of text i.e. ones that are between 1 and 3 words
+long.
 
 ::
 

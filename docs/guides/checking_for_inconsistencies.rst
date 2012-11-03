@@ -40,7 +40,7 @@ You are translating Mozilla Firefox into Afrikaans.  The files are stored in
 We'll look at the translations first from the English, or source text, point of
 view.  Then we will look at it from the Afrikaans point of view.  The first
 will pick up where we have translated the same English word differently in
-Afrikaans ie an inconsistency.  While the second will determine if we use the
+Afrikaans i.e. an inconsistency.  While the second will determine if we use the
 same English word for different English words, possibly this will confuse a
 user.
 

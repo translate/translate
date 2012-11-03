@@ -207,8 +207,8 @@ file. ::
   pomerge --mergeblank=no -t po-dir -i po-in -o po-dir
 
 This will take PO files from *po-in* merge them with those in *po-dir* using
-*po-dir* as the template -- ie overwriting files in *po-dir*. It will also
-ignore entries that have blank msgstr's ie it will not merge untranslated
+*po-dir* as the template -- i.e. overwriting files in *po-dir*. It will also
+ignore entries that have blank msgstr's i.e. it will not merge untranslated
 items. The default behaviour of pomerge is to take all changes from *po-in* and
 apply them to *po-dir* by overriding this we can ignore all untranslated items.
 

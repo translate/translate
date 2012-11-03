@@ -115,7 +115,7 @@ blank
 Checks whether a translation is totally blank.
 
 This will check to see if a translation has inadvertently been translated as
-blank ie as spaces.  This is different from untranslated which is completely
+blank i.e. as spaces.  This is different from untranslated which is completely
 empty.  This test is useful in that if something is translated as "   " it will
 appear to most tools as if it is translated.
 

@@ -568,7 +568,7 @@ being that formats exchange Python strings and manage their own escaping.
 
 I doing this migration we revisited some of the format migration.  We found
 that we were escaping elements in our output DTD files.  DTD's should have no
-escaping ie ``\n`` is a literal ``\`` followed by an ``n`` not a newline.
+escaping i.e. ``\n`` is a literal ``\`` followed by an ``n`` not a newline.
 
 A result of this change is that older PO files will have different escaping to
 what po2moz will now expect. Probably resulting in bad output .dtd files.
