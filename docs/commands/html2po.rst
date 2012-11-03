@@ -91,8 +91,8 @@ Bugs
 We don't hide enough of some of the tags, e.g. <a> tags have too much exposed,
 we should expose only what needs to be translated and allow the changing on
 position of the tag within the translation block.  Similarly there is some
-markup that could be excluded eg <b> tags that appear at the start and end of a
-msgid, i.e. they don't need placement from the translator.
+markup that could be excluded e.g. <b> tags that appear at the start and end of
+a msgid, i.e. they don't need placement from the translator.
 
 If the HTML is indented you get very odd msgid's
 

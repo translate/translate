@@ -25,7 +25,7 @@ Usage
 Where:
 
 +--------------+-----------------------------------------------------------+
-| encoding     | is the encoding you would like to convert to eg. UTF-8    |
+| encoding     | is the encoding you would like to convert to e.g. UTF-8   |
 +--------------+-----------------------------------------------------------+
 | PO directory | is a directory of existing PO files                       |
 +--------------+-----------------------------------------------------------+

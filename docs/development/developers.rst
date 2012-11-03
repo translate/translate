@@ -184,7 +184,7 @@ PO or XLIFF files.  Here are the helper file and their descriptions.
 * decorations.py -- various helper functions to identify accelerators,
   variables and markers
 * helpers.py -- functions used by the tests
-* prefilters.py -- functions to eg remove variables and accelerators before
+* prefilters.py -- functions to e.g. remove variables and accelerators before
   applying tests to the PO message
 
 pofilter is now relatively mature.  The best areas for contributions are:
@@ -231,7 +231,7 @@ You can help by:
 
 * abstracting more of the functions and documenting that so that we can get a
   better API
-* adding other formats and converters eg .DOC, .ODF and others
+* adding other formats and converters e.g. .DOC, .ODF and others
 * helping us move to a position where any format should convert to the base
   format: PO and in the future XLIFF without having to create a specific
   converter wrapper.

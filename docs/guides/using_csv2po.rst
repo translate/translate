@@ -57,12 +57,12 @@ Divide into sections
 You might want to divide the work into sections if you are apportioning it to
 different translators.  In that case create new directories::
 
-  eg. po-filtered-dir-1 po-filtered-dir-2
+  e.g. po-filtered-dir-1 po-filtered-dir-2
   or  po-filtered-dir-bob po-filtered-dir-mary
 
 Copy files from *po-filtered-dir* to *po-filtered-dir-N* in a way that balance
 the work or apportions the amounts you want for each translator.  Try to keep
-sections together and not break them up to much eg.  Give one translator all
+sections together and not break them up to much e.g.  Give one translator all
 the OpenOffice.org Calc work don't split it between two people -- this is just a
 simple measure to ensure constancy.
 

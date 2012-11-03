@@ -35,7 +35,7 @@ Prerequisites
 * Building Windows executables
 
   * Firefox or Thunderbird `en-US .exe
-    <http://releases.mozilla.org/pub/mozilla.org/firefox/releases/>`_ file eg.
+    <http://releases.mozilla.org/pub/mozilla.org/firefox/releases/>`_ file e.g.
     `Firefox 2.0 en-US
     <http://releases.mozilla.org/pub/mozilla.org/firefox/releases/2.0/win32/en-US/Firefox%20Setup%202.0.exe>`_
   * `upx <http://upx.sourceforge.net/>`_ for executable compression

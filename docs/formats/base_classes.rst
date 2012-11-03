@@ -153,7 +153,7 @@ what we discussed is related to the above.  A quick summary:
     of each filetype/storage type. Currently parsing happens all over the
     place.
   * Currently there are separate conversion programs for each type and
-    direction to convert to, eg. po2xliff and xliff2po (24 commands with lots
+    direction to convert to, e.g. po2xliff and xliff2po (24 commands with lots
     of duplicate code in them). Ideally conversion should be as simple as::
 
       >>> po_store = POStore(filecontent)
@@ -189,7 +189,7 @@ snippet has already been written.
 
 * A storage object should know all information pertaining to itself.
 
-  * eg. "am I monolingual?"
+  * e.g. "am I monolingual?"
 
 * We should discuss how to make an object aware that it is monolingual,
   bilingual or multilingual.

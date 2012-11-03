@@ -290,7 +290,7 @@ functions
 
 Checks to see that function names are not translated.
 
-Checks that function names eg. ``rgb()`` or ``getEntity.Name()`` are not
+Checks that function names e.g. ``rgb()`` or ``getEntity.Name()`` are not
 translated.
 
 .. _pofilter_tests#gconf:

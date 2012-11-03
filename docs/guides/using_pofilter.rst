@@ -98,7 +98,7 @@ Edit the files
 --------------
 
 Once the errors have been marked you can edit them with any text editor or PO
-editor eg. `Virtaal <http://virtaal.org>`_.  You will be editing the files in
+editor e.g. `Virtaal <http://virtaal.org>`_.  You will be editing the files in
 the *errors* directory.  Only messages that failed one of the tests will be
 present.  If no messages failed then there will be no error PO file for the
 source PO file.  Only critical errors are marked fuzzy -- all others are simply
