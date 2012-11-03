@@ -37,8 +37,7 @@ The source text is copied to the target
 In this way you can create translations that contain only the source text.
 Useful if you are preparing a roundtrip test or want to start an English
 derived translation such as British English.  It produces the same results as
-`msgen <http://linux.die.net/man/1/msgen>`_ but with the advantage that you can
-add debug markers.
+:man:`msgen` but with the advantage that you can add debug markers.
 
 .. _option_rewrite#blank:
 
@@ -54,7 +53,7 @@ This simply empties your current translations
 
 When you have a set of translation files but no template this allows you to
 essentially convert a PO into a POT file.  This mimics the :opt:`--empty`
-functionality of `msghack <http:////linux.die.net/man/1/msghack>`_
+functionality of :man:`msghack`.
 
 .. _option_rewrite#bracket:
 

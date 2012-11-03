@@ -211,16 +211,20 @@ Special roles
 
 We introduce a number of special roles for documentation:
 
-* ``:bug:`` -- bugs in Translate's Bugzilla.
+* ``:bug:`` -- links to a bug in Translate's Bugzilla.
 
   * ``:bug:`123``` gives: :bug:`123`
   * ``:bug:`broken <123>``` gives: :bug:`broken <123>`
 
-* ``:opt:`` -- command options and values.
+* ``:opt:`` -- mark command options and command values.
 
   * ``:opt:`-P``` gives :opt:`-P`
   * ``:opt:`--progress=dots``` gives :opt:`--proress=dots`
   * ``:opt:`dots``` gives :opt:`dots`
+
+* ``:man:`` -- link to a Linux man page.
+
+  * ``:man:`msgfmt``` gives :man:msgfmt
 
 Docstrings
 ----------

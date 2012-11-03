@@ -16,9 +16,9 @@ Prerequisites
 
 GNU Gettext:
 
-* `msginit <http://linux.die.net/man/1/msginit>`_
-* `msgcat <http://linux.die.net/man/1/msgcat>`_
-* `msgmerge <http://linux.die.net/man/1/msgmerge>`_
+* :man:`msginit`
+* :man:`msgcat`
+* :man:`msgmerge`
 
 .. _pomigrate2#usage:
 

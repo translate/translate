@@ -15,11 +15,11 @@ Prerequisites
 
 GNU Gettext:
 
-* `msgattrib <http://linux.die.net/man/1/msgattrib>`_
-* `msgcat <http://linux.die.net/man/1/msgcat>`_
-* `msghack <http://linux.die.net/man/1/msghack>`_ (may not be present on your
-  installation of Gettext, but is only required for the invert command)
-* `msgfilter <http://linux.die.net/man/1/msgfilter>`_
+* :man:`msgattrib`
+* :man:`msgcat`
+* :man:`msghack` (may not be present on your installation of Gettext, but is
+  only required for the invert command)
+* :man:`msgfilter`
 
 .. _pocompendium#usage:
 

@@ -12,7 +12,7 @@ files.
 Prerequisites
 =============
 
-* `sed <http://linux.die.net/man/1/bash>`_
+* :man:`sed`
 
 .. _pocommentclean#usage:
 

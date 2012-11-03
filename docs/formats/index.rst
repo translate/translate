@@ -191,7 +191,7 @@ Formats that we would like to support but don't currently support:
 
   * Generic XML
   * `DocBook <https://en.wikipedia.org/wiki/DocBook>`_ (can be handled by KDE's
-    `xml2pot <http://linux.die.net/man/1/xml2pot>`_)
+    :man:`xml2pot`)
   * `SVG <http://www.w3.org/TR/SVG/>`_
   * `Android <https://en.wikipedia.org/wiki/Android_%28operating_system%29>`_
     `resource files

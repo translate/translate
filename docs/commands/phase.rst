@@ -15,9 +15,9 @@ receiving work, checking it and committing to CVS.
 Prerequisites
 =============
 
-* An environment that will run `bash <http://linux.die.net/man/1/bash>`_
-* `diff <http://linux.die.net/man/1/diff>`_
-* `cvs <http://linux.die.net/man/1/cvs>`_
+* An environment that will run :man:`bash`
+* :man:`diff`
+* :man:`cvs`
 
 .. _phase#latest_version:
 
