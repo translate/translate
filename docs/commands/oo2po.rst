@@ -157,8 +157,7 @@ Creating a new GSI/SDF file
 Using PO files found in *zulu* create an SDF files called *zu_ZA.sdf* for
 language *zu*::
 
-  po2oo -l af -t en-US.sdf --nofuzzy --keeptimestamp
---filteraction=exclude-serious afrikaans af_ZA.sdf
+  po2oo -l af -t en-US.sdf --nofuzzy --keeptimestamp --filteraction=exclude-serious afrikaans af_ZA.sdf
 
 Create an Afrikaans (*af*) SDF file called *af_ZA.sdf* using *en-US.sdf* as a
 template and preserving the timestamps within the SDF file while also
