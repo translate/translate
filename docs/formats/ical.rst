@@ -22,8 +22,8 @@ Resources
   Scheduling Core Object Specification (iCalendar)
 * iCal `spec <http://www.kanzaki.com/docs/ical/>`_ in a simple adaptation of
   the rfc that makes it easy to refer to all sections, items and attributes.
-* `VObject <http://vobject.skyhouseconsulting.com/>`_ - the python library used
-  to read the iCal file.
+* `VObject <http://vobject.skyhouseconsulting.com/>`_ -- the python library
+  used to read the iCal file.
 * `iCalender validator <http://severinghaus.org/projects/icv/>`_
 * `iCalendar <https://en.wikipedia.org/wiki/ICalendar>`_
 * `Components and their properties

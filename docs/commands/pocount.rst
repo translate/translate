@@ -40,8 +40,8 @@ Options:
 --full          (default) statistics in full, verbose format
 --csv           statistics in CSV format
 --short         same as --short-strings
---short-strings statistics of strings in short format - one line per file
---short-words   statistics of words in short format - one line per file
+--short-strings statistics of strings in short format -- one line per file
+--short-words   statistics of words in short format -- one line per file
 
 .. _pocount#examples:
 

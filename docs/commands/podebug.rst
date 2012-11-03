@@ -65,7 +65,7 @@ Options:
 --ignore=APPLICATION   apply tagging ignore rules for the given application:
                        kde, gtk, openoffice, mozilla
 --hash=LENGTH          add an md5 hash to translations (only until version
-                       1.3.0 - see %h below)
+                       1.3.0 -- see %h below)
 
 .. _podebug#formats:
 
@@ -89,7 +89,7 @@ A format string can have these various options:
 +---+----------------------------------------------------+
 | c | use only consonants                                |
 +---+----------------------------------------------------+
-| h | hash value (since version 1.4 - see notes below)   |
+| h | hash value (since version 1.4 -- see notes below)  |
 +---+----------------------------------------------------+
 | N | a set number of characters                         |
 +---+----------------------------------------------------+

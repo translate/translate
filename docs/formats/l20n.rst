@@ -80,8 +80,8 @@ Issues
 
 - Backend file store.  We have two options.
 
-  - Covert to a bilingual store - this is what we do in moz2po.
-  - Support monolingual stores - we can do that in Pootle, but it needs wider
+  - Covert to a bilingual store -- this is what we do in moz2po.
+  - Support monolingual stores -- we can do that in Pootle, but it needs wider
     testing.  In Virtaal we do automatic conversion to bilingual formats, but
     is is currently disabled.  To enable this so that we can rely on it we'd need
     some work on both Pootle and Virtaal; in testing and in managing source and

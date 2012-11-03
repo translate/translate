@@ -60,7 +60,7 @@ Options:
 --drupal            use the standard checks for Drupal translations
 --gnome              use the standard checks for Gnome translations
 --kde                use the standard checks for KDE translations
---wx                 use the standard checks for wxWidgets translations - identical to --kde
+--wx                 use the standard checks for wxWidgets translations -- identical to --kde
 --excludefilter=FILTER  don't use FILTER when filtering
 -tFILTER, --test=FILTER  only use test FILTERs specified with this option when filtering
 --notranslatefile=FILE   read list of untranslatable words from FILE (must not be translated)

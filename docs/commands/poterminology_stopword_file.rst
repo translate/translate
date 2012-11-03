@@ -65,10 +65,10 @@ files**.
 Stoplist regular expressions
 ----------------------------
 
-Lines beginning with a '**/**' are regular expression patterns - any word that
+Lines beginning with a '**/**' are regular expression patterns -- any word that
 matches will be ignored by itself, and any phrase containing it will be
 excluded as well.  The regular expression consists of all characters on the
-line following the initial '/' - these are extended regular expressions, so
+line following the initial '/' -- these are extended regular expressions, so
 grouping, alternation, and such are available.
 
 Regular expression patterns are only checked if the word itself does not appear
@@ -79,7 +79,7 @@ always applied to individual words, not phrases, and must match the entire word
 Use regular expressions sparingly, as evaluating them for every word in the
 source files can be expensive.  In addition to stoplist regular expressions,
 poterminology has precompiled patterns for C and Python format specifiers (e.g.
-%d) and XML/HTML <elements> and &entities; - these are removed before stoplist
+%d) and XML/HTML <elements> and &entities; -- these are removed before stoplist
 processing and it is not possible to override this.
 
 .. _poterminology_stopword_file#stoplist_words:

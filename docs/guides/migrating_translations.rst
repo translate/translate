@@ -79,7 +79,7 @@ situations were the same English string was translated in two different ways::
 
 In *check.po* you will find all situations where the same English text was
 translated differently.  We use :opt:`--accel-amp` to remove accelerator
-markers (you'll change this depending on the one used by the project - we can
+markers (you'll change this depending on the one used by the project -- we can
 do & _ or ~).   Now view *check.po* in a PO editor or text editor.  You will
 need to correct each inconsistency in the source PO files, using *check.po* as
 the guide.  Many of the errors are usually spelling mistakes.  You can

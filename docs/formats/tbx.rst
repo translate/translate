@@ -16,10 +16,10 @@ References
 * `Specification <http://www.lisa.org/TBX-Specification.33.0.html>`_
 * `ISO 30042
   <http://www.iso.org/iso/iso_catalogue/catalogue_tc/catalogue_detail.htm?csnumber=45797>`_
-  - TBX is an approved ISO standard
+  -- TBX is an approved ISO standard
 
 You might also be interested in reading about `TBX-Basic
-<http://www.lisa.org/TBX-Basic.926.0.html>`_ - a simpler, reduced version of
+<http://www.lisa.org/TBX-Basic.926.0.html>`_ -- a simpler, reduced version of
 TBX with most of the useful features included.
 
 .. _tbx#standard_conformance:
@@ -56,7 +56,7 @@ Implementation notes for missing features
 
 Note here:
 
-* NLS - South African National Language Services - Multilingual Maths
+* NLS -- South African National Language Services -- Multilingual Maths
   Dictionary
 
 .. _tbx#synonyms:

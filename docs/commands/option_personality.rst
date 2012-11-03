@@ -26,9 +26,9 @@ mozilla
 
 Mozilla has made slight adjustments to the Java .properties spec.  Mozilla will
 accept UTF-8 encoded strings in the property file and thus does not need
-escaped Unicode.  Thus the above string - ṽḁḽṻḝ - will not be escaped.  Mozilla
-property files are thus more useful for non-Latin languages in that they are
-actually readable.
+escaped Unicode.  Thus the above string -- ṽḁḽṻḝ -- will not be escaped.
+Mozilla property files are thus more useful for non-Latin languages in that
+they are actually readable.
 
 Of course this style of file is only used by Mozilla and should not be used for
 other projects that follow the Java spec more strictly.

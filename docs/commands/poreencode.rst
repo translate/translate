@@ -49,6 +49,6 @@ Bugs
 ====
 
 Like most Gettext tools they do a little bit more than documented, msgconv will
-decide which strings are in fact fuzzy and delete fuzzy marking - not a lot but
-you do need to diff (this probably related to #, fuzzy entries that are not
+decide which strings are in fact fuzzy and delete fuzzy marking -- not a lot
+but you do need to diff (this probably related to #, fuzzy entries that are not
 placed in the place Gettext expects them).

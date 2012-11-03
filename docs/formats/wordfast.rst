@@ -15,11 +15,11 @@ The storage format can read and write Wordfast TM files.
 Conformance
 ===========
 
-* Escaping - The format correctly handles Wordfast ``&'XX;`` escaping and will
+* Escaping -- The format correctly handles Wordfast ``&'XX;`` escaping and will
   unescape and escape seamlessly.
-* Soft-breaks - these are not managed and are left as escaped
-* Replaceables - these are not managed
-* Header - Only basic updating and reading of the header is implemented
-* Tab-separated value (TSV) - the format correctly handles the TSV format used
+* Soft-breaks -- these are not managed and are left as escaped
+* Replaceables -- these are not managed
+* Header -- Only basic updating and reading of the header is implemented
+* Tab-separated value (TSV) -- the format correctly handles the TSV format used
   by Wordfast.  There is no quoting, Windows newlines are used and the ``\t``
   is used as a delimiter (see :bug:`472`)

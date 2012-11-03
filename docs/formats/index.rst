@@ -71,7 +71,7 @@ Translation Memory formats
 
 * :doc:`tmx`
 * :doc:`wordfast`: TM
-* Trados: .txt TM (from v1.9.0 - read only)
+* Trados: .txt TM (from v1.9.0 -- read only)
 
 .. _formats#glossary_formats:
 
@@ -111,7 +111,7 @@ Formats of translatable documents
 * :doc:`html`
 * :doc:`ical`
 * `JSON <https://en.wikipedia.org/wiki/JSON>`_ (from v1.9.0)
-* `OpenDocument <https://en.wikipedia.org/wiki/OpenDocument>`_ - all ODF file
+* `OpenDocument <https://en.wikipedia.org/wiki/OpenDocument>`_ -- all ODF file
   types
 * :doc:`Text <text>` -- plain text with blocks separated by whitespace
 * :doc:`Wiki <wiki>` -- `DokuWiki <https://en.wikipedia.org/wiki/DokuWiki>`_
@@ -162,12 +162,12 @@ Formats that we would like to support but don't currently support:
 * Apple:
 
   * `AppleGlot <ftp://ftp.apple.com/developer/tool_chest/localization_tools/appleglot/appleglot_3.2_usersguide.pdf>`_
-  * .plist - see :bug:`633` and `plistlib
+  * .plist -- see :bug:`633` and `plistlib
     <http://docs.python.org/library/plistlib.html>`_ for Python
 
 * Adobe:
 
-  * FrameMaker's Maker Interchange Format - `MIF
+  * FrameMaker's Maker Interchange Format -- `MIF
     <http://help.adobe.com/en_US/FrameMaker/8.0/mif_reference.pdf>`_ (See also
     `python-gendoc <http://lino.sourceforge.net/src/100.html>`_, and `Perl MIF
     module
@@ -185,7 +185,7 @@ Formats that we would like to support but don't currently support:
     see also `pyrtf-ng <http://code.google.com/p/pyrtf-ng/>`_
   * `Open XML Paper Specification
     <https://en.wikipedia.org/wiki/Open_XML_Paper_Specification>`_
-  * .NET Resource files (.resx) - :bug:`Bug 396 <396>`
+  * .NET Resource files (.resx) -- :bug:`Bug 396 <396>`
 
 * XML related
 
@@ -204,10 +204,10 @@ Formats that we would like to support but don't currently support:
 * `PDF <https://en.wikipedia.org/wiki/Portable_Document_Format>`_ see `spec
   <http://www.adobe.com/devnet/pdf/pdf_reference.html>`_, `PDFedit
   <http://pdfedit.petricek.net/en/index.html>`_
-* `LaTeX <https://en.wikipedia.org/wiki/LaTeX>`_ - see `plasTeX
+* `LaTeX <https://en.wikipedia.org/wiki/LaTeX>`_ -- see `plasTeX
   <http://plastex.sourceforge.net/plastex/index.html>`_, a Python framework for
   processing LaTeX documents
-* `unoconv <http://dag.wieers.com/home-made/unoconv/>`_ - Python bindings to
+* `unoconv <http://dag.wieers.com/home-made/unoconv/>`_ -- Python bindings to
   OpenOffice.org UNO which could allow manipulation of all formats understood
   by OpenOffice.org.
 * Trados:
@@ -228,7 +228,7 @@ Formats that we would like to support but don't currently support:
 
   * NSIS installer: `Existing C++ implementation
     <http://trac.vidalia-project.net/browser/vidalia/trunk/src/tools>`_
-  * WiX - MSI (Microsoft Installer) creator.  `Localization instructions
+  * WiX -- MSI (Microsoft Installer) creator.  `Localization instructions
     <http://wix.mindcapers.com/wiki/Localization>`_, `more notes on
     localisation
     <http://www.mail-archive.com/wix-users@lists.sourceforge.net/msg15489.html>`_.

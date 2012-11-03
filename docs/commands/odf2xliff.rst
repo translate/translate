@@ -92,6 +92,6 @@ file of translations, create a translated file français.odt.
 Bugs
 ====
 
-This filter is not yet extensively used - we appreciate your feedback.  For
+This filter is not yet extensively used -- we appreciate your feedback.  For
 more information on conformance to standards, see the :doc:`/formats/xliff` or
 :doc:`/formats/odf` pages.

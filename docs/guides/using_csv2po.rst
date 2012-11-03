@@ -21,7 +21,7 @@ Quickstart
 #. ``csv2po --charset=windows-1250 -t templates <csv-in> <po-in>`` (you must
    work against a template directory, the charset option corrects problems with
    characters sets)
-#. ``/commands/phase`` - to do basic checks sort out encoding issues
+#. ``/commands/phase`` -- to do basic checks sort out encoding issues
 #. ``pomerge --mergeblank=no -t <po-dir> <po-in> <po-dir>``
 #. ``git diff`` --- check the changes
 #. ``git add`` & ``git commit`` --- commit changes
@@ -63,7 +63,7 @@ different translators.  In that case create new directories::
 Copy files from *po-filtered-dir* to *po-filtered-dir-N* in a way that balance
 the work or apportions the amounts you want for each translator.  Try to keep
 sections together and not break them up to much eg.  Give one translator all
-the OpenOffice.org Calc work don't split it between two people - this is just a
+the OpenOffice.org Calc work don't split it between two people -- this is just a
 simple measure to ensure constancy.
 
 Now continue as normal and convert to CSV and perform word counts for each
@@ -115,13 +115,13 @@ Translating
 Translators can use most Spreadsheets. Excel works well.  However there are a
 few problems with spreadsheets:
 
-* Encoding - you can sort that out later
-* Strings that start with ' - most spreadsheets treat cells starting with ' as
+* Encoding -- you can sort that out later
+* Strings that start with ' -- most spreadsheets treat cells starting with ' as
   text and gobble up the '.  A work around is to escape those like this \'.
   po2csv should do this for you.
-* Autocorrect - Excel changes ... to a single character and does other odd
+* Autocorrect -- Excel changes ... to a single character and does other odd
   things.  pofilter will help catch these later.
-* Sentences with + - or +- will create errors and the translators will have to
+* Sentences with + -- or +- will create errors and the translators will have to
   escape them as \+ \- \+-
 * Sentences that only contain numbers can get broken: "1." will be converted to
   "1"

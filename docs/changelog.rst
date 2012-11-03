@@ -558,8 +558,8 @@ translations to gt the formatting correct.
 
 .. _changelog#escaping_-_dtd_files_are_no_longer_escaped:
 
-Escaping - DTD files are no longer escaped
-------------------------------------------
+Escaping -- DTD files are no longer escaped
+-------------------------------------------
 
 Previously each converter handled escaping, which made it a nightmare every
 time we identified an escaping related error or added a new format.  Escaping
@@ -618,8 +618,8 @@ expose the bug and a fix if possible.
 
 .. _changelog#duplicate_merging_in_po_files_-_merge_now_the_default:
 
-Duplicate Merging in PO files - merge now the default
------------------------------------------------------
+Duplicate Merging in PO files -- merge now the default
+------------------------------------------------------
 
 We added the :opt:`--duplicatestyle` option to allow duplicate messages to be
 merged, commented or simply appear in the PO unmerged.  Initially we used the

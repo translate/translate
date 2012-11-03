@@ -19,16 +19,16 @@ References
 Features
 ========
 
-* Comments - these are handled correctly and integrated with the unit
-* Accelerators - if a unit has an associated access key entry then these are
+* Comments -- these are handled correctly and integrated with the unit
+* Accelerators -- if a unit has an associated access key entry then these are
   combined into a single unit
-* Translator directive - all LOCALIZATION NOTE items such as DONT_TRANSLATE are
-  handled and such items are discarded
+* Translator directive -- all LOCALIZATION NOTE items such as DONT_TRANSLATE
+  are handled and such items are discarded
 
 .. _dtd#issues:
 
 Issues
 ======
 
-* We don't escape character entities like ``&lt;``, ``&#38;`` - this doesn't
+* We don't escape character entities like ``&lt;``, ``&#38;`` -- this doesn't
   break anything but it would be nicer to see © rather than &copy;

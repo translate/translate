@@ -50,5 +50,5 @@ References
 * Java Properties Class `load method
   <http://java.sun.com/j2se/1.5.0/docs/api/java/util/Properties.html#load(java.io.InputStream)>`_
   describes the properties format.
-* http://java.sun.com/dtd/properties.dtd - alternate XML based property
+* http://java.sun.com/dtd/properties.dtd -- alternate XML based property
   representation

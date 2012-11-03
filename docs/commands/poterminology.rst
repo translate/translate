@@ -78,7 +78,7 @@ suggestions for translating Pootle itself::
   poterminology Pootle/po/pootle/templates/*.pot .
 
 This results in a ``./pootle-terminology.pot`` output file with 23 terms (from
-"file" to "does not exist") - without any translations.
+"file" to "does not exist") -- without any translations.
 
 The default output file can be added to a Pootle project to provide
 :ref:`terminology matching <pootle:terminology>` suggestions for that project;
@@ -92,7 +92,7 @@ is possible as well, by using PO files with translations for the input files::
   poterminology Pootle/po/pootle/fi/*.po --output fi/pootle-terminology.po --sort dictionary
 
 Using PO files with Finnish translations, you get an output file that contains
-the same 23 terms, with translations of eight terms - one ("login") is fuzzy
+the same 23 terms, with translations of eight terms -- one ("login") is fuzzy
 due to slightly different translations in jToolkit and Pootle.  The file is
 sorted in alphabetical order (by source term, not translated term), which can
 be useful when comparing different terminology files.
@@ -264,7 +264,7 @@ pathname, which may differ from the one shown above.
 
 Note that if you are using multiple stopword list files, as in the above, they
 will all be subject to the same case mapping (fold "Title Case" to lower case
-by default) - if you specify a different case mapping in the second file it
+by default) -- if you specify a different case mapping in the second file it
 will override the mapping for all the stopword list files.
 
 .. _poterminology#issues:
@@ -320,7 +320,7 @@ this could provide an additional source of information for distinguishing
 variants of the same term.
 
 A single execution of poterminology can only perform automatic translation
-extraction for a single target language - having the ability to handle all
+extraction for a single target language -- having the ability to handle all
 target languages in one run would allow a single command to generate all
 terminology for an entire project.  Additionally, this could provide even more
 information for identifying variant terms by comparing the number of target

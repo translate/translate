@@ -99,9 +99,9 @@ We want to split the file into translated, untranslated and fuzzy entries::
 
 This will create three files:
 
-* zulu-gnome-glossary-translated.po - all fully translated entries
-* zulu-gnome-glossary-untranslated.po - messages with no translation
-* zulu-gnome-glossary-fuzzy.po - words that need investigation
+* zulu-gnome-glossary-translated.po -- all fully translated entries
+* zulu-gnome-glossary-untranslated.po -- messages with no translation
+* zulu-gnome-glossary-fuzzy.po -- words that need investigation
 
 ::
 
@@ -178,8 +178,8 @@ can create CSV and TMX files from your PO.
 For the terminology to be usable by Trados or Wordfast translators they need to
 be in the following formats:
 
-* Trados - comma delimited file ``source,target``
-* Wordfast - tab delimited file ``source[tab]target``
+* Trados -- comma delimited file ``source,target``
+* Wordfast -- tab delimited file ``source[tab]target``
 
 In that format they are now available to almost all localisers in the world.
 
