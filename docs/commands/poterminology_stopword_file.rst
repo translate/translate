@@ -9,7 +9,7 @@ Stopword file format
 The default stopword file for :doc:`poterminology` describes the syntax of
 these files and provides a good default for most applications using English
 source text.  You can find the location of the default stopword file by looking
-at the output of poterminology --help, or using the following command::
+at the output of poterminology :opt:`--help`, or using the following command::
 
   poterminology --manpage | sed -n '/STOPFILE/s/.*(\(.*\)).*/\1/p'
 
@@ -46,12 +46,13 @@ second character on this line must be one of the following:
 * **F** 'Title Case" words / terms are folded to lower case (default)
 * **I** all words are mapped to lowercase
 
-These correspond to the equivalent --preserve-case / --fold-titlecase /
---ignore-case options to poterminology, but are completely independent and only
-apply to stoplist matching.  You can run poterminology with -I to map all terms
-to lowercase, and if the case mapping specifier in the stopword file is
-'**!C**' a stoplist with "pootle" in it will not prevent a term containing
-"Pootle" from passing the stoplist (and then being mapped to "pootle").
+These correspond to the equivalent :opt:`--preserve-case` /
+:opt:`--fold-titlecase` / :opt:`--ignore-case` options to poterminology, but
+are completely independent and only apply to stoplist matching.  You can run
+poterminology with :opt:`-I` to map all terms to lowercase, and if the case
+mapping specifier in the stopword file is '**!C**' a stoplist with "pootle" in
+it will not prevent a term containing "Pootle" from passing the stoplist (and
+then being mapped to "pootle").
 
 There should only be one case mapping specifier in a stoplist file; if more
 than one are present, the last one will take precedence over the others, and
@@ -89,14 +90,16 @@ Stoplist words
 All other lines should begin with one of the following characters, which
 indicate whether the word should be **ignored** (as a word alone),
 **disregarded** in a phrase (i.e. a phrase containing it is allowed, and the
-word does not count against the --term-words length limit), or any phrase
-containing it should be **excluded**.
+word does not count against the :opt:`--term-words` length limit), or any
+phrase containing it should be **excluded**.
 
 * **+** allow word alone, allow phrases containing it
-* **:** allow word alone, disregarded (for --term-word-length) inside phrase
+* **:** allow word alone, disregarded (for :opt:`--term-word-length`) inside
+  phrase
 * **<** allow word alone, but exclude any phrase containing it
 * **=** ignore word alone, but allow phrases containing it
-* **>** ignore word alone, disregarded (for --term-word-length) inside phrase
+* **>** ignore word alone, disregarded (for :opt:`--term-word-length`) inside
+  phrase
 * **@** ignore word alone, and exclude any phrase containing it
 
 Generally '+' is only needed for exceptions to regular expression patterns, but

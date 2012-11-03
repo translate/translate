@@ -48,9 +48,10 @@ corrected files are then merged back into the original files using
 Extracting Errors
 -----------------
 
-pofilter will run all tests unless you use the -t or --excludefilter options.
-There are over :doc:`38 tests </commands/pofilter_tests>` and pofilter can
-itself provide you with a current list of all the available checks::
+pofilter will run all tests unless you use the :opt:`-t` or
+:opt:`--excludefilter` options.  There are over :doc:`38 tests
+</commands/pofilter_tests>` and pofilter can itself provide you with a current
+list of all the available checks::
 
   pofilter -l
 
@@ -63,32 +64,33 @@ correctly::
   pofilter -t accelerators -t escapes -t variables -t xmltags --openoffice existing_files errors
 
 Any messages that fail one of the 4 checks will be placed in files in *errors*.
-We also used the *--openoffice* option to ensure that the tool is aware of the
-OpenOffice.org accelerator marker (*~*) and the OpenOffice.org variable styles
-(OpenOffice.org has over 10 variable styles).  You can also specify other
-styles of project including GNOME, KDE or Mozilla.
+We also used the :opt:`--openoffice` option to ensure that the tool is aware of
+the OpenOffice.org accelerator marker (*~*) and the OpenOffice.org variable
+styles (OpenOffice.org has over 10 variable styles).  You can also specify
+other styles of project including GNOME, KDE or Mozilla.
 
 You can also specify whether you want fuzzy entries included and checked, by
-specifying the --fuzzy parameter. By default this is off because fuzzy strings
-are usually known to be broken and will be reviewed by translators anyway.
+specifying the :opt:`--fuzzy` parameter. By default this is off because fuzzy
+strings are usually known to be broken and will be reviewed by translators
+anyway.
 
-Similarly you can include items marked for review by specifying --review or
---ingnorereview.  By default review items are included.  This is not part of
-the standard Gettext format. We have allowed entries like this when we want to
-communicate to someone what error we have picked up::
+Similarly you can include items marked for review by specifying :opt:`--review`
+or :opt:`--ingnorereview`.  By default review items are included.  This is not
+part of the standard Gettext format. We have allowed entries like this when we
+want to communicate to someone what error we have picked up::
 
   # (review) - wrong word for gallery chosen
 
-You can run pofilter without the -t option.  This runs all the checks. This can
-be confusing if you have a lot of errors as you easily lose focus.  One
-strategy is to run each test individually.  This allows you to focus on one
+You can run pofilter without the :opt:`-t` option.  This runs all the checks.
+This can be confusing if you have a lot of errors as you easily lose focus.
+One strategy is to run each test individually.  This allows you to focus on one
 problem at a time across a number of files.  It is much easier to correct end
 punctuation on its own then to correct many different types of errors.  For a
 small file it is probably best to run all of the test together.
 
-By using the *--autocorrect* option you can automatically correct some very
-common errors.  Use with caution though. This option assumes you use the same
-punctuation style as the source text.
+By using the :opt:`--autocorrect` option you can automatically correct some
+very common errors.  Use with caution though. This option assumes you use the
+same punctuation style as the source text.
 
 .. _using_pofilter#edit_the_files:
 
@@ -139,9 +141,10 @@ back into the originals using :doc:`/commands/pomerge`. ::
 
   pomerge -t existing_files -i errors -o files_without_errors
 
-If -t and -o are the same directory, the corrections will be merged into the
-existing files.  Do this only if you are using some kind of version control
-system so that you can check the changes made by :doc:`/commands/pomerge`.
+If :opt:`-t` and :opt:`-o` are the same directory, the corrections will be
+merged into the existing files.  Do this only if you are using some kind of
+version control system so that you can check the changes made by
+:doc:`/commands/pomerge`.
 
 .. _using_pofilter#checking_the_corrections:
 

@@ -81,7 +81,7 @@ To create the POT files is simple::
 
 A translator would copy the POT file to their own PO file and then create
 translations of the entries. If you wish to create a PO file and not a POT file
-then leave off the *-P* option.
+then leave off the :opt:`-P` option.
 
 To convert back::
 

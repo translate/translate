@@ -70,5 +70,5 @@ PO files.
 
 Lastly all the files in <to> are merged using msgmerge or pot2po.  This process
 updates the files to match the layout and messages in <templates>.  Optionally,
-by using --use-compendium, a compendium of all the translations in <from> can
-be created to be used in the final merge process.
+by using :opt:`--use-compendium`, a compendium of all the translations in
+<from> can be created to be used in the final merge process.

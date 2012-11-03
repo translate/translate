@@ -56,9 +56,9 @@ Example
   pogrep --accelerator="_" --search msgid -I -e "software|hardware" only-zu only-zu-check
 
 Search for the words "software" or "hardware" in the msgid field.  Ignore case
-(-I) and treat the underscore (_) character as an accelerator key.  Search
-through all PO files in the directory "only-zu" and place any matches in PO
-files in the directory "only-zu-check".  This would be useful to run if you
+(:opt:`-I`) and treat the underscore (_) character as an accelerator key.
+Search through all PO files in the directory "only-zu" and place any matches in
+PO files in the directory "only-zu-check".  This would be useful to run if you
 know that the word for software and hardware has been changed during the course
 of translation and you want to check and correct all these instances. ::
 

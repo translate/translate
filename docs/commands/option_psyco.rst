@@ -31,7 +31,7 @@ Switch psyco optimisation off.
 full (default)
 ==============
 
-This is the default option, even if no --psyco command line options is
+This is the default option, even if no :opt:`--psyco` command line options is
 specified. It will try to optimise everything, so potentially it might consume
 more memory.
 

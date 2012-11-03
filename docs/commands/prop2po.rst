@@ -106,8 +106,8 @@ Creating POT files
   prop2po -P properties pot
 
 Extract messages from *properties* directory and place them in a directory
-called *pot*.  The -P option ensures that we create POT files instead of PO
-files.::
+called *pot*.  The :opt:`-P` option ensures that we create POT files instead of
+PO files.::
 
   prop2po -P file.properties file.pot
 

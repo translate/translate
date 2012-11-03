@@ -108,7 +108,7 @@ This is simple::
 
 A translator would copy the POT file to their own PO file and then create
 translations of the entries.  If you wish to create a PO file and not a POT
-file then leave off the *-P* option.
+file then leave off the :opt:`-P` option.
 
 You might want to manually edit the POT file to remove items that should not be
 translated.  For instance if part of the document is a license you might want
@@ -144,8 +144,8 @@ this::
 This uses the original text file as a template and creates a new translated
 text file using the translations found in the PO file.
 
-The *-w* command allows you to reflow the translated text to *N* number of
-characters, otherwise the text will appear as one long line.
+The :opt:`-w` command allows you to reflow the translated text to :opt:`N`
+number of characters, otherwise the text will appear as one long line.
 
 .. _txt2po#help_with_wiki_syntax:
 

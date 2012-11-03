@@ -98,12 +98,12 @@ After extracting the en-US l10n files, you can run the following command::
 
   moz2po -P l10n/en-US pot
 
-This creates a set of POT (``-P``) files in the ``pot`` directory from the
+This creates a set of POT (:opt:`-P`) files in the ``pot`` directory from the
 Mozilla files in ``l10n/en-US``. ::
 
   moz2po -P en-US.xpi pot
 
-Creating set of POT (``-P``) files from the American English XPI
+Creating set of POT (:opt:`-P`) files from the American English XPI
 (``en-US.xpi``) and placing them in ``pot`` for use as PO Templates.
 
 If you want to create a set of POT files with another base language try the
@@ -147,7 +147,7 @@ Creating an XPI or CVS ready translations
 
   po2moz -lzu-ZA -t en-US.xpi zu zu-ZA.xpi
 
-Create a Zulu language (``-lzu-ZA``) XPI called ``zu-ZA.xpi`` from translations
+Create a Zulu language (:opt:`-lzu-ZA`) XPI called ``zu-ZA.xpi`` from translations
 found in ``zu`` using ``en-US.xpi`` as a template.  We use a template to ensure
 that our DTD and .properties files appear exactly as those in en-US::
 

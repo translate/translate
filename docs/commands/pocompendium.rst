@@ -57,12 +57,12 @@ Examples
 - *Compendium creation* --- create a compendium with all your translations to
   use as input during a message merge either when migrating an existing project
   or starting a new one.
-- *Conflicting translations* --- use *--errors* to find where you have
+- *Conflicting translations* --- use :opt:`--errors` to find where you have
   translated an English string differently.  Many times this is OK but often it
   will pick up subtle spelling mistakes or help you to migrate older
   translations to a newer choice of words
-- *Conflicting word choice* --- use *--invert* and *--errors* to get a
-  compendium file that show how you have used a translated word for different
+- *Conflicting word choice* --- use :opt:`--invert` and :opt:`--errors` to get
+  a compendium file that show how you have used a translated word for different
   English words. You might have chosen a word that is valid for both of the
   English expressions but that in the context of computers would cause
   confusion for the user.  You can now easily identify these words and make
@@ -78,8 +78,8 @@ whitespace as different translations.  In cases 2) and 3) above it is sometimes
 useful to remove the inconsistencies so that you can focus on the errors in
 translation not on shifts in capitals.  To this end you can use the following:
 
-*--ignore-case*, *--strip-accel-amp*, *--strip-accel-tilde*,
-*--strip-accel-under*
+:opt:`--ignore-case`, :opt:`--strip-accel-amp`, :opt:`--strip-accel-tilde`,
+:opt:`--strip-accel-under`
 
 .. _pocompendium#operation:
 

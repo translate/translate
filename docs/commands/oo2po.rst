@@ -113,7 +113,7 @@ Creating POT files
   oo2po -P en-US.sdf pot
 
 Extract messages from *en-US.sdf* and place them in a directory called *pot*.
-The -P option ensures that we create POT files instead of PO files.::
+The :opt:`-P` option ensures that we create POT files instead of PO files. ::
 
   oo2po -P --source-language=fr fr-FR.sdf french-pot
 

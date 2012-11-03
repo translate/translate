@@ -133,9 +133,9 @@ In some applications their are translations that should not be translated
 (usually these are configuration options).  If you do translate them then the
 application will fail to compile or run.
 
-The ``--ignore`` option allows you to specify the application for which you are
-producing PO debug files.  In this case it will then not mark certain of the PO
-entries with debug messages.
+The :opt:`--ignore` option allows you to specify the application for which you
+are producing PO debug files.  In this case it will then not mark certain of
+the PO entries with debug messages.
 
 In Mozilla we do not mark lone ``.accesskey``, ``.width``, ``.height``, etc
 since these can really be thought of as configuration options.

@@ -49,7 +49,7 @@ Produce the POT files using oo2po
   oo2po -P en-US.gsi pot
 
 This takes the *en-US.gsi* file and creates POT files in the *pot* directory.
-The *-P* option ensures that .pot files are created instead of .po file.
+The :opt:`-P` option ensures that .pot files are created instead of .po file.
 
 If you want to create one large .pot file instead of a lot of small ones, you
 should use the::

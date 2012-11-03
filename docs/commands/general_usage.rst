@@ -16,8 +16,8 @@ files/directories::
 
   moz2po <input> <output>
 
-You can of course still us the ``-i`` and ``-o`` options which allows you to
-reorder commands ::
+You can of course still us the :opt:`-i` and :opt:`-o` options which allows you
+to reorder commands ::
 
   moz2po -o <output> -i <input>
 
@@ -26,7 +26,7 @@ reorder commands ::
 Error Reporting
 ===============
 
-All tools accept the option ``--errorlevel``.  If you find a bug, add this
+All tools accept the option :opt:`--errorlevel`.  If you find a bug, add this
 option and send the traceback to the developers. ::
 
   moz2po <other-options> --errorlevel=traceback
@@ -73,6 +73,6 @@ The converters all follow this convention:
 Getting Help
 ============
 
-The ``--help`` option will always list the available commands for the tool. ::
+The :opt:`--help` option will always list the available commands for the tool. ::
 
   moz2po --help

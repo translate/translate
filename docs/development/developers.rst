@@ -120,8 +120,8 @@ Command line options
 Getting lost with the command line options?  Well you might want to volunteer
 to move some of them into configuration files.  But in terms of programming you
 might be confused as to where they are located.  Many of the command line
-options are implemented in each tool.  Things such as --progress and
---errorlevel are used in each program.  Thus these are abstracted in
+options are implemented in each tool.  Things such as :opt:`--progress` and
+:opt:`--errorlevel` are used in each program.  Thus these are abstracted in
 **misc/optrecurse.py**.  While each tools unique command line options are
 implemented in **xxx.py**.
 
@@ -177,10 +177,10 @@ There's really only one, :doc:`/commands/pofilter`.  But there are lots of
 helper functions for pofilter.  pofilters main task is to check for errors in
 PO or XLIFF files.  Here are the helper file and their descriptions.
 
-* autocorrect.py -- when using --autocorrect it will attempt some basic
+* autocorrect.py -- when using :opt:`--autocorrect` it will attempt some basic
   corrections found in this file
 * checks.py -- the heart. This contains: the actual checks and their error
-  reports, and defined variables and accelerators for eg --mozilla
+  reports, and defined variables and accelerators for e.g, :opt:`--mozilla`
 * decorations.py -- various helper functions to identify accelerators,
   variables and markers
 * helpers.py -- functions used by the tests

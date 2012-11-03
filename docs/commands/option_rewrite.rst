@@ -53,7 +53,7 @@ This simply empties your current translations
   msgstr ""
 
 When you have a set of translation files but no template this allows you to
-essentially convert a PO into a POT file.  This mimics the --empty
+essentially convert a PO into a POT file.  This mimics the :opt:`--empty`
 functionality of `msghack <http:////linux.die.net/man/1/msghack>`_
 
 .. _option_rewrite#bracket:

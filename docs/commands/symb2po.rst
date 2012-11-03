@@ -94,7 +94,7 @@ translation file ``my_project.r01``, the following is executed::
 In order to re-use existing translations in the Symbian translation format,
 symb2po can merge that translation into the source Symbian translation to
 produce a translated PO file. The existing Symbian translation file is
-specified with the ``-t`` flag.
+specified with the :opt:`-t` flag.
 
 To create a file called ``my_project-en-fr.po`` (this is not the recommended PO
 naming convention) from the source Symbian translation file ``my_project.r01``

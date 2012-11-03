@@ -52,8 +52,8 @@ Examples
   pocompile --fuzzy file.po file.mo
 
 Creates a new MO file called *file.mo* based on the translation in the PO file
-*file.po*.  By using the *--fuzzy* option we use all translations including
-those marked fuzzy. ::
+*file.po*.  By using the :opt:`--fuzzy` option we use all translations
+including those marked fuzzy. ::
 
   pocompile file.xlf file.mo
 

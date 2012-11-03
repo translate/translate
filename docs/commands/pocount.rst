@@ -62,7 +62,7 @@ To count how much work is to be done in you project::
   pocount project/
 
 This will count all translatable files found in the directory *project*/ and
-output the results in ``--full`` format.
+output the results in :opt:`--full` format.
 
 You might want to be more specific and only count certain files::
 
@@ -87,13 +87,13 @@ Incomplete work
 ---------------
 
 To count what still needs to be done, ignoring what is 100% complete you can
-use the ``--incomplete`` option.::
+use the :opt:`--incomplete` option.::
 
   pocount --incomplete --short *.xlf
 
 We are now counting all XLIFF files by using the ``*.xlf`` expansion.  We are
 only counting files that are not 100% complete and we're outputing string
-counts using the ``--short`` option.
+counts using the :opt:`--short` option.
 
 .. _pocount#output_formats:
 
@@ -156,7 +156,7 @@ percentage representation of the same categories.
 --short-words
 -------------
 
-The output is very similar to --short-strings above::
+The output is very similar to :opt:`--short-strings` above::
 
   test-po/fuzzy.po source words: total: 3	| 0t	3f	0u	| 0%t	100%f	0%u
 

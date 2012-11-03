@@ -7,7 +7,7 @@
 This is a parameter that can be passed to most of the programs in the translate
 toolkit in order to choose the level of feedback that you need when errors
 occur.  It is mostly useful for debugging. Please report your errors to the
-developers with --errorlevel=traceback.
+developers with :opt:`--errorlevel=traceback`.
 
 .. _option_errorlevel#none:
 

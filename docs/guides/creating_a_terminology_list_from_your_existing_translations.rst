@@ -46,8 +46,8 @@ going to extract short bit of text ie ones that are between 1 and 3 words long.
 
   pogrep --header --search=msgid -e '^\w+(\s+\w+){0,2}$' zulu zulu-short
 
-We use --header to ensure that the PO files have a header entry (which is
-important for encoding).  We are searching only in the msgid and the regular
+We use :opt:`--header` to ensure that the PO files have a header entry (which
+is important for encoding).  We are searching only in the msgid and the regular
 expression we use is looking for a string with between 1 and 3 words in it.  We
 are searching through the folder *zulu* and outputting the result in
 *zulu-short*
@@ -64,9 +64,9 @@ eliminating all those spurious accelerator keys.
 
   pogrep --header --search=msgid -v -e "^.$" zulu-short zulu-short-clean
 
-We use the -v option to invert the search.  Our *cleaner* potential glossary
-words are now in *zulu-short-clean*.  What you can eliminate is only limited by
-your ability to build regular expressions but yu could eliminate:
+We use the :opt:`-v` option to invert the search.  Our *cleaner* potential
+glossary words are now in *zulu-short-clean*.  What you can eliminate is only
+limited by your ability to build regular expressions but yu could eliminate:
 
 * Entries with only numbers
 * Entries that only contain punctuation
@@ -82,8 +82,8 @@ Thus we create a PO compendium::
   ~/path/to/pocompendium -i -su zulu-gnome-glossary.po -d zulu-short-clean
 
 You can use various methods but our bash script is quite good.  Here we ignore
-case, -i, and ignore the underscore (_) accelerator key, -su, outputting the
-results in.
+case, :opt:`-i`, and ignore the underscore (_) accelerator key, :opt:`-su`,
+outputting the results in.
 
 We now have a single file containing all glossary terms and the clean up and
 review can begin.

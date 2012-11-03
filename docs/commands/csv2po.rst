@@ -99,8 +99,8 @@ These examples demonstrate the use of csv2po::
 
   po2csv -P pot csv
 
-We use the *-P* option to recognise POT files found in *pot* and convert them
-to CSV files placed in *csv*::
+We use the :opt:`-P` option to recognise POT files found in *pot* and convert
+them to CSV files placed in *csv*::
 
   csv2po csv po
 

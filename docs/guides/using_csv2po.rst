@@ -153,17 +153,17 @@ Extract the CSV files here we assume they are in *csv-in*::
 This will create new PO files in *po-in* based on the CSV files in the *csv-in*
 and the template PO files in *templates*.  You shouldn't run the csv2po command
 without templates as this allows you to preserve the original file layout.
-Only run it without -t if you are dealing with a partial part of the PO that
-you will merge back using a :doc:`/commands/pomerge`.
+Only run it without :opt:`-t` if you are dealing with a partial part of the PO
+that you will merge back using a :doc:`/commands/pomerge`.
 
 .. note:: Running csv2po using the input PO files as templates give spurious
    results.  It should probably be made to work but doesn't
 
 .. note:: You might have encoding problems with the returned files. Use the
-   ``--charset`` option to convert the file from another encoding (all PO files
-   are created using UTF-8).  Usually Windows user will be using something like
-   WINDOWS-1250. Check the file after conversion to see that characters are in
-   fact correct if not try another encoding.
+   :opt:`--charset` option to convert the file from another encoding (all PO
+   files are created using UTF-8).  Usually Windows user will be using
+   something like WINDOWS-1250. Check the file after conversion to see that
+   characters are in fact correct if not try another encoding.
 
 .. _using_csv2po#checking_the_new_po_files:
 

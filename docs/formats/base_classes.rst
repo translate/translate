@@ -179,7 +179,7 @@ snippet has already been written.
 
 * Move certain options into their respective storage classes.
 
-  * eg the --duplicates option can move into po.py
+  * e.g. the :opt:`--duplicates` option can move into po.py
 
 * Store the meta data for a storage object.
 

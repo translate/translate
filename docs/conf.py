@@ -20,6 +20,7 @@ import os
 # documentation root, use os.path.abspath to make it absolute, like shown here.
 #sys.path.insert(0, os.path.abspath('.'))
 
+sys.path.insert(0, os.path.abspath('_ext'))
 sys.path.insert(0, os.path.abspath('.'))
 sys.path.insert(0, os.path.abspath('..'))
 
@@ -32,6 +33,7 @@ sys.path.insert(0, os.path.abspath('..'))
 # extensions # coming with Sphinx (named 'sphinx.ext.*') or your custom
 # ones.
 extensions = [
+    'translate_docs',
     'sphinx.ext.autodoc',
     'sphinx.ext.coverage',
     'sphinx.ext.extlinks',

@@ -88,8 +88,9 @@ you can see and review these changes.
 
 Hashing in podebug
 ------------------
-The --hash option in :doc:`/commands/podebug` has been replaced by a format
-specifier %h to be able to better control the positioning of the hash value.
+The :opt:`--hash` option in :doc:`/commands/podebug` has been replaced by a
+format specifier %h to be able to better control the positioning of the hash
+value.
 
 .. _changelog#1.3.0:
 
@@ -159,8 +160,8 @@ Converting the current Python based PO parser to the Gettext C based parser for
 PO.  This offers quite a dramatic speed improvement and conformance to the
 output found in Gettext itself.  For most users there will be a number of
 changes in layout of the files as they will now conform fully to Gettext
-layout.  The 'keep' option in --duplicatestyle will no longer be supported as
-this is not valid Gettext output.
+layout.  The 'keep' option in :opt:`--duplicatestyle` will no longer be
+supported as this is not valid Gettext output.
 
 .. _changelog#1.1.1:
 
@@ -315,8 +316,8 @@ files should work correctly again.
 Fuzzy matching in pot2po is optional
 ------------------------------------
 Fuzzy matching can now be entirely disabled in :doc:`/commands/pot2po` with the
---nofuzzymatching parameter. This should make it much faster, although pot2po
-is **substantially** faster than earlier versions, especially if
+:opt:`--nofuzzymatching` parameter. This should make it much faster, although
+pot2po is **substantially** faster than earlier versions, especially if
 :doc:`python-Levenshtein </commands/levenshtein_distance>` is installed.
 
 .. _changelog#old_match/levenshtein.py*_can_cause_name_clash:
@@ -412,7 +413,7 @@ Previously no fuzzy states were changed during a merge.
 pofilter will make Mozilla accelerators a serious failure
 ---------------------------------------------------------
 
-If you use :doc:`/commands/pofilter` with the ``--mozilla`` option then
+If you use :doc:`/commands/pofilter` with the :opt:`--mozilla` option then
 accelerator failures will produce a serious filter error, i.e. the message will
 be marked as ``fuzzy``.  This has been done because accelerator problems in
 your translations have the potential to break Mozilla applications.
@@ -422,10 +423,10 @@ your translations have the potential to break Mozilla applications.
 po2prop can output Mozilla or Java style properties
 ---------------------------------------------------
 
-We have added the --personality option to allow a user to select output in
-either ``java``, or ``mozilla`` style (Java property files use escaped Unicode,
-while Mozilla uses actual Unicode characters).  This functionality was always
-available but was not exposed to the user and we always defaulted to the
+We have added the :opt:`--personality` option to allow a user to select output
+in either :opt:`java`, or :opt:`mozilla` style (Java property files use escaped
+Unicode, while Mozilla uses actual Unicode characters).  This functionality was
+always available but was not exposed to the user and we always defaulted to the
 Mozilla style.
 
 When using :doc:`po2moz </commands/moz2po>` the behaviour is not changed for
@@ -434,7 +435,7 @@ style.
 
 However, when using :doc:`po2prop </commands/prop2po>` the default style is now
 ``java``, thus if you are converting a single ``.properties`` file as part of a
-Mozilla conversion you will need to add ``--personality=mozilla`` to your
+Mozilla conversion you will need to add :opt:`--personality=mozilla` to your
 conversion.  Thus::
 
   po2prop -t moz.properties moz.properties.po my-moz.properties
@@ -452,9 +453,9 @@ Support for compressed files
 ----------------------------
 There is some initial support for reading from and writing to compressed files.
 Single files compressed with gzip or bzip2 compression is supported, but not
-tarballs.  Most tools don't support it, but pocount and the --tm parameter to
-pot2po will work with it, for example. Naturally it is slower than working with
-uncompressed files. Hopefully more tools can support it in future.
+tarballs.  Most tools don't support it, but pocount and the :opt:`--tm`
+parameter to pot2po will work with it, for example. Naturally it is slower than
+working with uncompressed files. Hopefully more tools can support it in future.
 
 .. _changelog#0.11:
 
@@ -466,11 +467,11 @@ uncompressed files. Hopefully more tools can support it in future.
 po2oo defaults to not check for errors
 --------------------------------------
 
-In po2oo we made the default ``--filteraction=none`` i.e. do nothing and don't
-warn.  Until we have a way of clearly marking false positives we'll have to
-disable this functionality as there is no way to quiet the output or mark non
-errors.  Also renamed exclude to exclude-all so that it is clearer what it does
-i.e. it excludes 'all' vs excludes 'serious'.
+In po2oo we made the default :opt:`--filteraction=none` i.e. do nothing and
+don't warn.  Until we have a way of clearly marking false positives we'll have
+to disable this functionality as there is no way to quiet the output or mark
+non errors.  Also renamed exclude to exclude-all so that it is clearer what it
+does i.e. it excludes 'all' vs excludes 'serious'.
 
 .. _changelog#pofilter_xmltags_produces_less_false_positives:
 
@@ -620,8 +621,8 @@ expose the bug and a fix if possible.
 Duplicate Merging in PO files - merge now the default
 -----------------------------------------------------
 
-We added the --duplicatestyle option to allow duplicate messages to be merged,
-commented or simply appear in the PO unmerged.  Initially we used the
+We added the :opt:`--duplicatestyle` option to allow duplicate messages to be
+merged, commented or simply appear in the PO unmerged.  Initially we used the
 msgid_comments options as the default.  This adds a KDE style comment to all
 affected messages which created a good balance allowing users to see duplicates
 in the PO file but still create a valid PO file.

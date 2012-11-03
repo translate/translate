@@ -66,8 +66,8 @@ This extracts messages from the PO files in the *xhosa* directory and places a
 new PO file for each identified conflict in *conflicts*.  We are working with
 OpenOffice files and we therefore use the tilde (*~*) as the accelerator marker
 (with this set *F~ile* is considered the same as *~File*).  We are also
-ignoring the case of the message using *-I* (thus *File* is considered the same
-as *file* or *FILE*)
+ignoring the case of the message using :opt:`-I` (thus *File* is considered the
+same as *file* or *FILE*)
 
 Another useful option is to look at the inverted conflicts.  This will detect
 target words that have been used to translate different source words. ::

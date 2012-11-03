@@ -54,10 +54,10 @@ Step 1: Extracting conflicting target text translations
   poconflicts -I --accelerator="&" af af-conflicts
 
 From our existing translation in *af* we extract conflicts and place them in
-*af-conflicts*.  We are ignoring case with *-I* so that ``Save as`` is
-considered the same as ``Save As``.  The *--accelerator* options allows us to
-ignore accelerators so that ``File`` is the sane as ``&File`` which is also the
-same as ``Fi&le``
+*af-conflicts*.  We are ignoring case with :opt:`-I` so that ``Save as`` is
+considered the same as ``Save As``.  The :opt:`--accelerator` options allows us
+to ignore accelerators so that ``File`` is the sane as ``&File`` which is also
+the same as ``Fi&le``
 
 If we browse into *af-conflicts* we will see a flat structure of words with
 conflicts. ::
@@ -120,7 +120,7 @@ and take action. ::
 
   poconflicts -v -I --accelerator="&" af af-conflicts-invert
 
-We use the same command line as in **Step 1** but add *-v* to allow us to
+We use the same command line as in **Step 1** but add :opt:`-v` to allow us to
 invert the match.  We are also now outputting to *af-conflicts-invert* to make
 things clear.
 
