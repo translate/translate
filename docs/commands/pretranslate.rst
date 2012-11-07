@@ -62,7 +62,7 @@ Here we are pretranslating the PO or XLIFF files in *zu-2.0.2* using the old
 translations in *zu-1.0.1* and fuzzy matches from the zu_tm.po compendium. the
 result is stored in *zu-2.0.2-translate*
 
-unlike pot2po pretranslate will not change anything in the input file except
+Unlike pot2po pretranslate will not change anything in the input file except
 merge translations, no reordering or changes to headers.
 
 .. _pretranslate#merging:
