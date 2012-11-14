@@ -195,6 +195,10 @@ class PyLuceneDatabase(CommonIndexer.CommonDatabase):
         # somehow not working (returns "null"): copy.deepcopy(query)
         return query
 
+    def _escape_term_value(self, value):
+        """Escapes special :param:`value` characters."""
+        return PyLucene.QueryParser.escape(value)
+
     def _create_query_for_string(self, text, require_all=True,
             analyzer=None):
         """generate a query for a plain term of a string query
@@ -224,7 +228,7 @@ class PyLuceneDatabase(CommonIndexer.CommonDatabase):
         if analyzer == self.ANALYZER_EXACT:
             analyzer_obj = PyLucene.KeywordAnalyzer()
         else:
-            text = _escape_term_value(text)
+            text = self._escape_term_value(text)
             analyzer_obj = PyLucene.StandardAnalyzer()
         qp = PyLucene.QueryParser(UNNAMED_FIELD_NAME, analyzer_obj)
         if (analyzer & self.ANALYZER_PARTIAL > 0):
@@ -262,7 +266,7 @@ class PyLuceneDatabase(CommonIndexer.CommonDatabase):
         if analyzer == self.ANALYZER_EXACT:
             analyzer_obj = PyLucene.KeywordAnalyzer()
         else:
-            value = _escape_term_value(value)
+            value = self._escape_term_value(value)
             analyzer_obj = PyLucene.StandardAnalyzer()
         qp = PyLucene.QueryParser(field, analyzer_obj)
         if (analyzer & self.ANALYZER_PARTIAL > 0):
@@ -554,7 +558,3 @@ def _get_pylucene_version():
         return 2
     else:
         return 0
-
-
-def _escape_term_value(text):
-    return re.sub("\*", "", text)
