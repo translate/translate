@@ -620,7 +620,7 @@ class propfile(base.TranslationStore):
 
 class javafile(propfile):
     Name = _("Java Properties")
-    Exensions = ['properties']
+    Extensions = ['properties']
 
     def __init__(self, *args, **kwargs):
         kwargs['personality'] = "java"
@@ -630,7 +630,7 @@ class javafile(propfile):
 
 class javautf8file(propfile):
     Name = _("Java Properties (UTF-8)")
-    Exensions = ['properties']
+    Extensions = ['properties']
 
     def __init__(self, *args, **kwargs):
         kwargs['personality'] = "java-utf8"
