@@ -48,7 +48,6 @@ classes_str = {
            "tmx": ("tmx", "tmxfile"),
            "ts": ("ts2", "tsfile"),
            "xliff": ("xliff", "xlifffile"), "xlf": ("xliff", "xlifffile"),
-           "xml": ("aresource", "AndroidResourceFile"),
            "sdlxliff": ("xliff", "xlifffile"),
 }
 ###  XXX:  if you add anything here, you must also add it to translate.storage.
