@@ -25,7 +25,6 @@ from lxml import etree
 from StringIO import StringIO
 
 import re
-import pdb
 
 from translate.storage import lisa
 from translate.storage import base
