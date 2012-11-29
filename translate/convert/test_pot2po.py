@@ -465,6 +465,32 @@ msgstr "teks"
         print newpo
         assert poexpected in str(newpo)
 
+    def test_msgctxt_multiline(self):
+        pot_source = '''#. |1MV
+#: ActionTe.ulf
+msgctxt ""
+"ActionTe.ulf\n"
+"OOO_ACTIONTEXT_21\n"
+"LngText.text"
+msgid "Computing space requirements"
+msgstr ""
+'''
+
+        po_source = '''#. |1MV
+#: ActionTe.ulf
+msgctxt ""
+"ActionTe.ulf\n"
+"OOO_ACTIONTEXT_21\n"
+"LngText.text"
+msgid "Computing space requirements"
+msgstr "A szükséges lemezterület kiszámítása"'''
+
+        new_po = self.convertpot(pot_source, po_source)
+        assert new_po.units[0].isheader()
+        unit = new_po.units[1]
+        assert not unit.isfuzzy()
+        assert po_source == str(unit)
+
     def test_empty_msgid(self):
         """Test that we handle empty msgids correctly."""
         #TODO: this test will fail if we don't have the gettext location
