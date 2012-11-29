@@ -466,6 +466,7 @@ msgstr "teks"
         assert poexpected in str(newpo)
 
     def test_msgctxt_multiline(self):
+        """Test multiline msgctxt fields."""
         pot_source = r'''#. |1MV
 #: ActionTe.ulf
 msgctxt ""
