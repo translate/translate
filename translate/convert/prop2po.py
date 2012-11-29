@@ -51,7 +51,7 @@ class prop2po:
         if self.personality in ("mozilla", "skype"):
             targetheader = thetargetfile.init_headers(
                     x_accelerator_marker="&",
-                    x_merge_on="location"
+                    x_merge_on="location",
             )
         else:
             targetheader = thetargetfile.header()
@@ -93,7 +93,7 @@ class prop2po:
         if self.personality in ("mozilla", "skype"):
             targetheader = thetargetfile.init_headers(
                     x_accelerator_marker="&",
-                    x_merge_on="location"
+                    x_merge_on="location",
             )
         else:
             targetheader = thetargetfile.header()

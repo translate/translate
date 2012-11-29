@@ -38,7 +38,7 @@ class rc2po:
         output_store = po.pofile()
         output_header = output_store.init_headers(
                 x_accelerator_marker="&",
-                x_merge_on="location"
+                x_merge_on="location",
         )
         output_header.addnote("extracted from %s" % input_store.filename, "developer")
         for input_unit in input_store.units:
@@ -53,7 +53,7 @@ class rc2po:
         output_store = po.pofile()
         output_header = output_store.init_headers(
                 x_accelerator_marker="&",
-                x_merge_on="location"
+                x_merge_on="location",
         )
         output_header.addnote("extracted from %s, %s" % (template_store.filename, input_store.filename), "developer")
         input_store.makeindex()
