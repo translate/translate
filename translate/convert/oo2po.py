@@ -101,6 +101,7 @@ class oo2po:
                             })
         targetheader = thetargetfile.init_headers(
                               x_accelerator_marker="~",
+                              x_merge_on="location",
                               report_msgid_bugs_to=bug_url,
         )
         targetheader.addnote("extracted from %s" % theoofile.filename,

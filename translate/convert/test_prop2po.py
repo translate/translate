@@ -207,8 +207,10 @@ do=translate me
         assert unit.source == "value"
         assert unit.getnotes("developer") == "# 1st Unassociated comment\n# 2nd Connected comment"
 
-    def test_accel_header(self):
-        """Test that we correctly create the header entry for accelerators."""
+    def test_x_header(self):
+        """Test that we correctly create the custom header entries
+        (accelerators, merge criterion).
+        """
         propsource = '''prop=value\n'''
         convertor = prop2po.prop2po()
 
@@ -216,6 +218,7 @@ do=translate me
         inputprop = properties.propfile(inputfile, personality="mozilla")
         outputpo = convertor.convertstore(inputprop, personality="mozilla")
         assert "X-Accelerator-Marker" in str(outputpo)
+        assert "X-Merge-On" in str(outputpo)
 
         # Even though the gaia flavour inherrits from mozilla, it should not
         # get the header
@@ -223,6 +226,7 @@ do=translate me
         inputprop = properties.propfile(inputfile, personality="gaia")
         outputpo = convertor.convertstore(inputprop, personality="gaia")
         assert "X-Accelerator-Marker" not in str(outputpo)
+        assert "X-Merge-On" not in str(outputpo)
 
     def test_gaia_plurals(self):
         """Test conversion of gaia plural units."""

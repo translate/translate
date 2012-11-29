@@ -10,13 +10,17 @@ This page lists what has changed, how it might affect you and how to work
 around the change either to bring your files in line or to use the old
 behaviour if required.
 
-.. _changelog#trunk:
+.. _changelog#1.10:
 
-trunk
-=====
-This section describes the changes in the (unreleased) development files. It
-should reflect upcoming changes in the next version of the toolkit and latest
-`beta or rc release <http://translate.sourceforge.net/snapshots/>`_.
+1.10
+====
+
+- The matching criterion when merging units can now be specified with the
+  ``X-Merge-On`` header. Available values for this header are `location` and
+  `id`. By default merges will be done by matching IDs. This supersedes the
+  effects of the ``X-Accelerator`` header when merging and establishes an
+  explicit way to set the desired matching criterion.
+
 
 .. _changelog#mozilla_dtd_files_change:
 

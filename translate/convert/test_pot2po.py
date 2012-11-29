@@ -493,6 +493,134 @@ msgstr "A szükséges lemezterület kiszámítása"
         assert not unit.isfuzzy()
         assert po_source == str(unit)
 
+    def test_msgid_merge_on_location(self):
+        """Tests that unit merges rely on location-based matching."""
+        pot_source = r'''
+msgid ""
+msgstr ""
+"X-Merge-On: location\n"
+
+#. $:am
+#: ActionTe.ulf
+msgctxt ""
+"ActionTe.ulf\n"
+"OOO_ACTIONTEXT_11\n"
+"LngText.text"
+msgid "Computing space requirements"
+msgstr ""
+
+#. NjJ3
+#: ActionTe.ulf
+msgctxt ""
+"ActionTe.ulf\n"
+"OOO_ACTIONTEXT_12\n"
+"LngText.text"
+msgid "Computing space requirements"
+msgstr ""
+'''
+
+        po_source = r'''
+#. $:am
+#: ActionTe.ulf
+msgctxt ""
+"ActionTe.ulf\n"
+"OOO_ACTIONTEXT_11\n"
+"LngText.text"
+msgid "Computing space requirements"
+msgstr "A szükséges lemezterület kiszámítása"
+
+#. NjJ3
+#: ActionTe.ulf
+msgctxt ""
+"ActionTe.ulf\n"
+"OOO_ACTIONTEXT_12\n"
+"LngText.text"
+msgid "Computing space requirements"
+msgstr "A szükséges lemezterület kiszámítása"
+'''
+
+        new_po = self.convertpot(pot_source, po_source)
+
+        assert len(new_po.units) == 3
+        assert new_po.units[0].isheader()
+
+        assert not new_po.units[1].isfuzzy()
+        assert new_po.units[2].isfuzzy()
+
+    def test_msgid_merge_on_id(self):
+        """Tests that unit merges rely on location-based matching."""
+        pot_source = r'''
+msgid ""
+msgstr ""
+"X-Merge-On: id\n"
+
+#. $:am
+#: ActionTe.ulf
+msgctxt ""
+"ActionTe.ulf\n"
+"OOO_ACTIONTEXT_11\n"
+"LngText.text"
+msgid "Computing space requirements"
+msgstr ""
+
+#. NjJ3
+#: ActionTe.ulf
+msgctxt ""
+"ActionTe.ulf\n"
+"OOO_ACTIONTEXT_12\n"
+"LngText.text"
+msgid "Computing space requirements"
+msgstr ""
+'''
+        pot_source_noheader = r'''
+#. $:am
+#: ActionTe.ulf
+msgctxt ""
+"ActionTe.ulf\n"
+"OOO_ACTIONTEXT_11\n"
+"LngText.text"
+msgid "Computing space requirements"
+msgstr ""
+
+#. NjJ3
+#: ActionTe.ulf
+msgctxt ""
+"ActionTe.ulf\n"
+"OOO_ACTIONTEXT_12\n"
+"LngText.text"
+msgid "Computing space requirements"
+msgstr ""
+'''
+
+        po_source = r'''
+#. $:am
+#: ActionTe.ulf
+msgctxt ""
+"ActionTe.ulf\n"
+"OOO_ACTIONTEXT_11\n"
+"LngText.text"
+msgid "Computing space requirements"
+msgstr "A szükséges lemezterület kiszámítása"
+
+#. NjJ3
+#: ActionTe.ulf
+msgctxt ""
+"ActionTe.ulf\n"
+"OOO_ACTIONTEXT_12\n"
+"LngText.text"
+msgid "Computing space requirements"
+msgstr "A szükséges lemezterület kiszámítása"
+'''
+
+        for pot in (pot_source, pot_source_noheader):
+            new_po = self.convertpot(pot, po_source)
+
+            assert len(new_po.units) == 3
+            assert new_po.units[0].isheader()
+
+            assert not new_po.units[1].isfuzzy()
+            assert not new_po.units[2].isfuzzy()
+
     def test_empty_msgid(self):
         """Test that we handle empty msgids correctly."""
         #TODO: this test will fail if we don't have the gettext location
@@ -524,6 +652,7 @@ msgstr "trans"
         potsource = r'''
 msgid ""
 msgstr ""
+"X-Merge-On: location\n"
 "X-Accelerator-Marker: &\n"
 
 
@@ -598,6 +727,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=INTEGER; plural=EXPRESSION;\n"
 "X-Generator: Translate Toolkit 0.10rc2\n"
+"X-Merge-On: location\n"
 "X-Accelerator-Marker: &\n"
 
 #: new_disassociated_mozilla_accesskey
@@ -636,6 +766,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "X-Generator: Translate Toolkit 0.10rc2\n"
+"X-Merge-On: location\n"
 "X-Accelerator-Marker: &\n"
 
 #: new_disassociated_mozilla_accesskey

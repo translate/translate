@@ -89,15 +89,12 @@ def convert_stores(input_store, template_store, temp_store=None, tm=None,
     _store_pre_merge(input_store, temp_store, template_store)
 
     # Do matching
-    input_accel_marker = input_store.parseheader().get('X-Accelerator-Marker')
-    match_locations = (isinstance(input_store, po.pofile)
-                       and input_accel_marker in ('&', '~'))
     for input_unit in temp_store.units:
         if input_unit.istranslatable():
             input_unit = pretranslate \
                     .pretranslate_unit(input_unit, template_store, matchers,
                                        mark_reused=True,
-                                       match_locations=match_locations)
+                                       merge_on=input_store.merge_on)
             _unit_post_merge(input_unit, input_store, temp_store, template_store)
 
     #finalize store

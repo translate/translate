@@ -49,7 +49,10 @@ class prop2po:
         self.personality = personality
         thetargetfile = po.pofile()
         if self.personality in ("mozilla", "skype"):
-            targetheader = thetargetfile.init_headers(x_accelerator_marker="&")
+            targetheader = thetargetfile.init_headers(
+                    x_accelerator_marker="&",
+                    x_merge_on="location"
+            )
         else:
             targetheader = thetargetfile.header()
         targetheader.addnote("extracted from %s" % thepropfile.filename,
@@ -88,7 +91,10 @@ class prop2po:
         self.personality = personality
         thetargetfile = po.pofile()
         if self.personality in ("mozilla", "skype"):
-            targetheader = thetargetfile.init_headers(x_accelerator_marker="&")
+            targetheader = thetargetfile.init_headers(
+                    x_accelerator_marker="&",
+                    x_merge_on="location"
+            )
         else:
             targetheader = thetargetfile.header()
         targetheader.addnote("extracted from %s, %s" % (origpropfile.filename, translatedpropfile.filename),

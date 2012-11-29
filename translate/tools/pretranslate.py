@@ -107,13 +107,22 @@ def match_fuzzy(input_unit, matchers):
 
 
 def pretranslate_unit(input_unit, template_store, matchers=None,
-                      mark_reused=False, match_locations=False):
-    """Pretranslate a unit or return unchanged if no translation was found."""
+                      mark_reused=False, merge_on='id'):
+    """Pretranslate a unit or return unchanged if no translation was found.
 
+    :param input_unit: Unit that will be pretranslated.
+    :param template_store: Fill input units with units matching in this store.
+    :param matchers: List of fuzzy :class:`~translate.search.match.matcher`
+        objects.
+    :param mark_reused: Whether to mark old translations as reused or not.
+    :param merge_on: Where will the merge matching happen on.
+    """
     matching_unit = None
-    #do template matching
+
+    # Do template matching
     if template_store:
-        if match_locations:
+        # :param:`merge_on` supports `location` and `id` for now
+        if merge_on == 'location':
             matching_unit = match_template_location(input_unit, template_store)
         else:
             matching_unit = match_template_id(input_unit, template_store)
@@ -178,13 +187,12 @@ def pretranslate_store(input_store, template_store, tm=None,
         matcher.addpercentage = False
         matchers.append(matcher)
 
-    #main loop
-    match_locations = isinstance(input_store, po.pofile) and input_store.parseheader().get('X-Accelerator-Marker') in ('&', '~')
+    # Main loop
     for input_unit in input_store.units:
         if  input_unit.istranslatable():
             input_unit = pretranslate_unit(input_unit, template_store,
                                            matchers,
-                                           match_locations=match_locations)
+                                           merge_on=input_store.merge_on)
 
     return input_store
 

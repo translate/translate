@@ -213,3 +213,8 @@ class pofile(poheader.poheader, base.TranslationStore):
             self.parse(inputfile)
         else:
             self.init_headers()
+
+    @property
+    def merge_on(self):
+        """The matching criterion to use when merging on."""
+        return self.parseheader().get('X-Merge-On', 'id')

@@ -827,3 +827,12 @@ class TranslationStore(object):
         newstore._assignname()
         return newstore
     parsefile = classmethod(parsefile)
+
+    @property
+    def merge_on(self):
+        """The matching criterion to use when merging on.
+
+        :return: The default matching criterion for all the subclasses.
+        :rtype: string
+        """
+        return "id"
