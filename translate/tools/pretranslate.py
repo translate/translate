@@ -111,7 +111,7 @@ def pretranslate_unit(input_unit, template_store, matchers=None,
     """Pretranslate a unit or return unchanged if no translation was found.
 
     :param input_unit: Unit that will be pretranslated.
-    :param template_store: Fill input units with units matching in this store.
+    :param template_store: Fill input unit with units matching in this store.
     :param matchers: List of fuzzy :class:`~translate.search.match.matcher`
         objects.
     :param mark_reused: Whether to mark old translations as reused or not.
