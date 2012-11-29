@@ -466,7 +466,7 @@ msgstr "teks"
         assert poexpected in str(newpo)
 
     def test_msgctxt_multiline(self):
-        pot_source = '''#. |1MV
+        pot_source = r'''#. |1MV
 #: ActionTe.ulf
 msgctxt ""
 "ActionTe.ulf\n"
@@ -476,14 +476,15 @@ msgid "Computing space requirements"
 msgstr ""
 '''
 
-        po_source = '''#. |1MV
+        po_source = r'''#. |1MV
 #: ActionTe.ulf
 msgctxt ""
 "ActionTe.ulf\n"
 "OOO_ACTIONTEXT_21\n"
 "LngText.text"
 msgid "Computing space requirements"
-msgstr "A szükséges lemezterület kiszámítása"'''
+msgstr "A szükséges lemezterület kiszámítása"
+'''
 
         new_po = self.convertpot(pot_source, po_source)
         assert new_po.units[0].isheader()
