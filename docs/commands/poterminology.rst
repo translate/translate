@@ -57,7 +57,7 @@ Options:
 -F, --fold-titlecase  fold "Title Case" to lowercase (default)
 -C, --preserve-case   preserve all uppercase/lowercase
 -I, --ignore-case     make all terms lowercase
---accelerator=ACCELERATORS ignores the given accelerator characters when matching (accelerator characters probably require quoting)
+--accelerator=ACCELERATORS  ignore the given accelerator characters when matching (accelerator characters probably require quoting)
 -t LENGTH, --term-words=LENGTH  generate terms of up to LENGTH words (default 3)
 --inputs-needed=MIN   omit terms appearing in less than MIN input files (default 2, or 1 if only one input file)
 --fullmsg-needed=MIN  omit full message terms appearing in less than MIN different messages (default 1)

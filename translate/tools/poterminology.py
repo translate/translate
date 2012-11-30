@@ -481,7 +481,7 @@ def main():
         action="store_true", help="make all terms lowercase")
 
     parser.add_option("", "--accelerator", dest="accelchars", default="",
-        metavar="ACCELERATORS", help="ignores the given accelerator characters when matching")
+        metavar="ACCELERATORS", help="ignore the given accelerator characters when matching")
 
     parser.add_option("-t", "--term-words", type="int", dest="termlength", default="3",
         help="generate terms of up to LENGTH words (default 3)", metavar="LENGTH")
