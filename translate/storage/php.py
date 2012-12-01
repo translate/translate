@@ -242,7 +242,8 @@ class phpfile(base.TranslationStore):
                 enddel = ");"
             equalpos = line.find(equaldel)
             hashpos = line.find("#")
-            if 0 <= hashpos < equalpos:
+            doubleslashpos = line.lstrip().find("//")
+            if 0 <= hashpos < equalpos or doubleslashpos == 0:
                 # Assume that this is a '#' comment line
                 newunit.addnote(line.strip(), "developer")
                 continue
