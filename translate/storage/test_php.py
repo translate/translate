@@ -224,6 +224,25 @@ $foo='bar';
         assert phpunit.name == "$lang->'item 3'"
         assert phpunit.source == "value3"
 
+    @mark.xfail(reason="Bug #1898")
+    def test_parsing_simpledefinition_spaces_before_end_delimiter(self):
+        """Parse define syntax with spaces before the end delimiter"""
+        phpsource = """$month_jan = 'Jan';
+$month_feb = 'Feb'  ;
+$month_mar = 'Mar';"""
+        phpfile = self.phpparse(phpsource)
+        print len(phpfile.units)
+        assert len(phpfile.units) == 3
+        phpunit = phpfile.units[0]
+        assert phpunit.name == '$month_jan'
+        assert phpunit.source == "Jan"
+        phpunit = phpfile.units[1]
+        assert phpunit.name == '$month_feb'
+        assert phpunit.source == "Feb"
+        phpunit = phpfile.units[2]
+        assert phpunit.name == '$month_mar'
+        assert phpunit.source == "Mar"
+
     @mark.xfail(reason="Bug #1685")
     def test_parsing_arrays_no_trailing_comma(self):
         """parse the array syntax where we don't have a trailing comma.
