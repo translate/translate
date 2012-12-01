@@ -224,6 +224,166 @@ $foo='bar';
         assert phpunit.name == "$lang->'item 3'"
         assert phpunit.source == "value3"
 
+    def test_parsing_simple_define(self):
+        """Parse simple define syntax"""
+        phpsource = """define("_FINISH", "Rematar");
+define('_POSTEDON', 'Enviado o');"""
+        phpfile = self.phpparse(phpsource)
+        print len(phpfile.units)
+        assert len(phpfile.units) == 2
+        phpunit = phpfile.units[0]
+        assert phpunit.name == 'define("_FINISH"'
+        assert phpunit.source == "Rematar"
+        phpunit = phpfile.units[1]
+        assert phpunit.name == "define('_POSTEDON'"
+        assert phpunit.source == "Enviado o"
+
+    def test_parsing_simple_define_with_spaces_before_key(self):
+        """Parse simple define syntax with spaces before key"""
+        phpsource = """define( "_FINISH", "Rematar");
+define( '_CM_POSTED', 'Enviado');"""
+        phpfile = self.phpparse(phpsource)
+        print len(phpfile.units)
+        assert len(phpfile.units) == 2
+        phpunit = phpfile.units[0]
+        assert phpunit.name == 'define( "_FINISH"'
+        assert phpunit.source == "Rematar"
+        phpunit = phpfile.units[1]
+        assert phpunit.name == "define( '_CM_POSTED'"
+        assert phpunit.source == "Enviado"
+
+    def test_parsing_define_spaces_after_equal_delimiter(self):
+        """Parse define syntax with spaces after the equal delimiter"""
+        phpsource = """define("_RELOAD",       "Recargar");
+define('_CM_POSTED',    'Enviado');"""
+        phpfile = self.phpparse(phpsource)
+        print len(phpfile.units)
+        assert len(phpfile.units) == 2
+        phpunit = phpfile.units[0]
+        assert phpunit.name == 'define("_RELOAD"'
+        assert phpunit.source == "Recargar"
+        phpunit = phpfile.units[1]
+        assert phpunit.name == "define('_CM_POSTED'"
+        assert phpunit.source == "Enviado"
+
+    def test_parsing_define_spaces_after_equal_delimiter_and_before_key(self):
+        """Parse define syntax with spaces after the equal delimiter as well
+        before the key
+        """
+        phpsource = """define( "_FINISH",       "Rematar");
+define(  '_UPGRADE_CHARSET',    'Upgrade charset');"""
+        phpfile = self.phpparse(phpsource)
+        print len(phpfile.units)
+        assert len(phpfile.units) == 2
+        phpunit = phpfile.units[0]
+        assert phpunit.name == 'define( "_FINISH"'
+        assert phpunit.source == "Rematar"
+        phpunit = phpfile.units[1]
+        assert phpunit.name == "define(  '_UPGRADE_CHARSET'"
+        assert phpunit.source == "Upgrade charset"
+
+    def test_parsing_define_no_spaces_after_equal_delimiter(self):
+        """Parse define syntax without spaces after the equal delimiter"""
+        phpsource = """define("_POSTEDON","Enviado o");
+define('_UPGRADE_CHARSET','Upgrade charset');"""
+        phpfile = self.phpparse(phpsource)
+        print len(phpfile.units)
+        assert len(phpfile.units) == 2
+        phpunit = phpfile.units[0]
+        assert phpunit.name == 'define("_POSTEDON"'
+        assert phpunit.source == "Enviado o"
+        phpunit = phpfile.units[1]
+        assert phpunit.name == "define('_UPGRADE_CHARSET'"
+        assert phpunit.source == "Upgrade charset"
+
+
+    def test_parsing_define_no_spaces_after_equaldel_but_before_key(self):
+        """Parse define syntax without spaces after the equal delimiter but
+        with spaces before the key
+        """
+        phpsource = """define( "_FINISH","Rematar");
+define( '_CM_POSTED','Enviado');"""
+        phpfile = self.phpparse(phpsource)
+        print len(phpfile.units)
+        assert len(phpfile.units) == 2
+        phpunit = phpfile.units[0]
+        assert phpunit.name == 'define( "_FINISH"'
+        assert phpunit.source == "Rematar"
+        phpunit = phpfile.units[1]
+        assert phpunit.name == "define( '_CM_POSTED'"
+        assert phpunit.source == "Enviado"
+
+    def test_parsing_define_entries_with_quotes(self):
+        """Parse define syntax for entries with quotes"""
+        phpsource = """define('_SETTINGS_COOKIEPREFIX', 'Prefixo da "cookie"');
+define('_YOUR_USERNAME', 'O seu nome de usuario: "cookie"');"""
+        phpfile = self.phpparse(phpsource)
+        print len(phpfile.units)
+        assert len(phpfile.units) == 2
+        phpunit = phpfile.units[0]
+        assert phpunit.name == "define('_SETTINGS_COOKIEPREFIX'"
+        assert phpunit.source == "Prefixo da \"cookie\""
+        phpunit = phpfile.units[1]
+        assert phpunit.name == "define('_YOUR_USERNAME'"
+        assert phpunit.source == "O seu nome de usuario: \"cookie\""
+
+    def test_parsing_define_comments_at_entry_line_end(self):
+        """Parse define syntax with comments at the end of the entry line"""
+        phpsource = """define("_POSTEDON", "Enviado o");// Keep this short
+define('_CM_POSTED', 'Enviado'); // Posted date"""
+        phpfile = self.phpparse(phpsource)
+        print len(phpfile.units)
+        assert len(phpfile.units) == 2
+        phpunit = phpfile.units[0]
+        assert phpunit.name == 'define("_POSTEDON"'
+        assert phpunit.source == "Enviado o"
+        assert phpunit._comments == ["Keep this short"]
+        phpunit = phpfile.units[1]
+        assert phpunit.name == "define('_CM_POSTED'"
+        assert phpunit.source == "Enviado"
+        assert phpunit._comments == ["Posted date"]
+
+    def test_parsing_define_double_slash_comments_before_entries(self):
+        """Parse define syntax with double slash comments before the entries"""
+        phpsource = """// Keep this short
+define("_FINISH", "Rematar");
+
+// This means it was published
+// It appears besides posts
+define('_CM_POSTED', 'Enviado');"""
+        phpfile = self.phpparse(phpsource)
+        print len(phpfile.units)
+        assert len(phpfile.units) == 2
+        phpunit = phpfile.units[0]
+        assert phpunit.name == 'define("_FINISH"'
+        assert phpunit.source == "Rematar"
+        assert phpunit._comments == ["// Keep this short"]
+        phpunit = phpfile.units[1]
+        assert phpunit.name == "define('_CM_POSTED'"
+        assert phpunit.source == "Enviado"
+        assert phpunit._comments == ["// This means it was published",
+                                     "// It appears besides posts"
+                                    ]
+
+    @mark.xfail(reason="Bug #1898")
+    def test_parsing_define_spaces_before_end_delimiter(self):
+        """Parse define syntax with spaces before the end delimiter"""
+        phpsource = """define("_POSTEDON", "Enviado o");
+define("_FINISH", "Rematar"     );
+define("_RELOAD", "Recargar");"""
+        phpfile = self.phpparse(phpsource)
+        print len(phpfile.units)
+        assert len(phpfile.units) == 3
+        phpunit = phpfile.units[0]
+        assert phpunit.name == 'define("_POSTEDON"'
+        assert phpunit.source == "Enviado o"
+        phpunit = phpfile.units[1]
+        assert phpunit.name == 'define("_FINISH"'
+        assert phpunit.source == "Rematar"
+        phpunit = phpfile.units[2]
+        assert phpunit.name == 'define("_RELOAD"'
+        assert phpunit.source == "Recargar"
+
     @mark.xfail(reason="Bug #1898")
     def test_parsing_simpledefinition_spaces_before_end_delimiter(self):
         """Parse define syntax with spaces before the end delimiter"""
