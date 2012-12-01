@@ -365,7 +365,6 @@ define('_CM_POSTED', 'Enviado');"""
                                      "// It appears besides posts"
                                     ]
 
-    @mark.xfail(reason="Bug #1898")
     def test_parsing_define_spaces_before_end_delimiter(self):
         """Parse define syntax with spaces before the end delimiter"""
         phpsource = """define("_POSTEDON", "Enviado o");
@@ -384,7 +383,6 @@ define("_RELOAD", "Recargar");"""
         assert phpunit.name == 'define("_RELOAD"'
         assert phpunit.source == "Recargar"
 
-    @mark.xfail(reason="Bug #1898")
     def test_parsing_simpledefinition_spaces_before_end_delimiter(self):
         """Parse define syntax with spaces before the end delimiter"""
         phpsource = """$month_jan = 'Jan';
@@ -417,7 +415,6 @@ $month_mar = 'Mar';"""
         assert phpunit.name == "$lang->'item1'"
         assert phpunit.source == "value1"
 
-    @mark.xfail(reason="Bug #1898")
     def test_parsing_arrays_space_before_comma(self):
         """parse the array syntax where we don't have a trailing comma.
         Bug #1685"""

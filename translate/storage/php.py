@@ -259,8 +259,12 @@ class phpfile(base.TranslationStore):
                     value = line
             colonpos = value.rfind(enddel)
             while colonpos != -1:
-                if value[colonpos-1] == valuequote:
-                    newunit.value = lastvalue + value[:colonpos-1]
+                # Check if the latest non-whitespace character before the end
+                # delimiter is the valuequote
+                if value[:colonpos].rstrip()[-1] == valuequote:
+                    # Save the value string without trailing whitespaces and
+                    # without the ending quotes
+                    newunit.value = lastvalue + value[:colonpos].rstrip()[:-1]
                     newunit.escape_type = valuequote
                     lastvalue = ""
                     invalue = False
