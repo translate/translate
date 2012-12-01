@@ -1134,6 +1134,31 @@ def test_gconf():
     assert passes(gnomechecker.gconf, 'Blah "gconf_setting"', 'Bleh "gconf_setting"')
     assert fails(gnomechecker.gconf, 'Blah "gconf_setting"', 'Bleh "gconf_steling"')
 
+def test_validxml():
+    """test wheather validxml recognize invalid xml/html expressions"""
+    ooechecker = checks.OpenOfficeChecker()
+    # Test validity only for xrm and xhp files
+    ooechecker.locations = ["description.xml"]
+    assert passes(ooechecker.validxml, "","normal string")
+    assert passes(ooechecker.validxml, "","<emph> only an open tag")
+    ooechecker.locations = ["readme.xrm"]
+    assert passes(ooechecker.validxml, "","normal string")
+    assert passes(ooechecker.validxml, "","<tt>closed formula</tt>")
+    assert fails(ooechecker.validxml, "","<tt> only an open tag")
+    ooechecker.locations = ["wikisend.xhp"]
+    assert passes(ooechecker.validxml, "","A <emph> well formed expression </emph>")
+    assert fails(ooechecker.validxml, "","Missing <emph> close tag <emph>")
+    assert fails(ooechecker.validxml, "","Missing open tag </emph>")
+    assert fails(ooechecker.validxml, "","<ahelp hid=\".\"> open tag not match with close tag</link>")
+    assert passes(ooechecker.validxml, "","Skip <IMG> because it is with capitalization so it is part of the text")
+    assert passes(ooechecker.validxml, "","Skip the capitalized <Empty>, because it is just a pseudo tag not a real one")
+    assert passes(ooechecker.validxml, "","Skip <br\> short tag, because no need to close it.")
+    # Larger tests
+    assert passes(ooechecker.validxml, "","<bookmark_value>yazdırma; çizim varsayılanları</bookmark_value><bookmark_value>çizimler; yazdırma varsayılanları</bookmark_value><bookmark_value>sayfalar;sunumlarda sayfa adı yazdırma</bookmark_value><bookmark_value>yazdırma; sunumlarda tarihler</bookmark_value><bookmark_value>tarihler; sunumlarda  yazdırma</bookmark_value><bookmark_value>zamanlar; sunumları yazdırırken ekleme</bookmark_value><bookmark_value>yazdırma; sunumların gizli sayfaları</bookmark_value><bookmark_value>gizli sayfalar; sunumlarda yazdırma</bookmark_value><bookmark_value>yazdırma; sunumlarda ölçeklendirme olmadan</bookmark_value><bookmark_value>ölçekleme; sunumlar yazdırılırken</bookmark_value><bookmark_value>yazdırma; sunumlarda sayfalara sığdırma</bookmark_value><bookmark_value>sayfalara sığdırma; sunumlarda yazdırma ayarları</bookmark_value><bookmark_value>yazdırma; sunumlarda kapak sayfası</bookmark_value>")
+    assert fails(ooechecker.validxml, "","Kullanıcı etkileşimi verisinin kaydedilmesini ve bu verilerin gönderilmesini dilediğiniz zaman etkinleştirebilir veya devre dışı bırakabilirsiniz.  <item type=\"menuitem\"><switchinline select=\"sys\"><caseinline select=\"MAC\">%PRODUCTNAME - Tercihler</caseinline><defaultinline>Araçlar - Seçenekler</defaultinline></switchinline> - %PRODUCTNAME - Gelişim Programı</item>'nı seçin. Daha fazla bilgi için web sitesinde gezinmek için <defaultinline>Bilgi</emph> simgesine tıklayın.")
+    assert fails(ooechecker.validxml, "","<caseinline select=\"DRAW\">Bir sayfanın içerik menüsünde ek komutlar vardır:</caseinline><caseinline select=\"IMPRESS\">Bir sayfanın içerik menüsünde ek komutlar vardır:</caseinline></switchinline>")
+    assert fails(ooechecker.validxml, "","<bookmark_value>sunum; sihirbazı başlatmak<bookmark_value>nesneler; her zaman taşınabilir (Impress/Draw)</bookmark_value><bookmark_value>çizimleri eğriltme</bookmark_value><bookmark_value>aralama; sunumdaki sekmeler</bookmark_value><bookmark_value>metin nesneleri; sunumlarda ve çizimlerde</bookmark_value>")
+
 
 def test_hassuggestion():
     """test that hassuggestion() works"""
