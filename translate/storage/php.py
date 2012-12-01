@@ -26,6 +26,7 @@ Only PHP files written with these conventions are supported::
 
   $lang['item'] = "vale";  # Array of values
   $some_entity = "value";  # Named variables
+  define("ENTITY", "value");
   $lang = array(
      'item1' => 'value1',
      'item2' => 'value2',
@@ -236,6 +237,9 @@ class phpfile(base.TranslationStore):
                 enddel = ";"
                 inarray = False
                 continue
+            if line.lstrip().startswith("define("):
+                equaldel = ","
+                enddel = ");"
             equalpos = line.find(equaldel)
             hashpos = line.find("#")
             if 0 <= hashpos < equalpos:
