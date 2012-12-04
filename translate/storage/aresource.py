@@ -38,7 +38,7 @@ class AndroidResourceUnit(base.TranslationUnit):
     rootNode = "string"
     languageNode = "string"
 
-    def __init__(self, source, empty=False, xmlelement = None, **kwargs):
+    def __init__(self, source, empty=False, xmlelement=None, **kwargs):
         if xmlelement is not None:
             self.xmlelement = xmlelement
         else:
@@ -251,8 +251,8 @@ class AndroidResourceUnit(base.TranslationUnit):
         # Grab inner text
         target = (self.xmlelement.text or u'')
         # Include markup as well
-        target += u''.join([data.forceunicode(etree.tostring(child, encoding = 'utf-8')) for child in self.xmlelement.iterchildren()])
-        return self.unescape(data.forceunicode(target))
+        target += u''.join([data.forceunicode(etree.tostring(child, encoding='utf-8')) for child in self.xmlelement.iterchildren()])
+        return self.unescape(target)
 
     target = property(gettarget, settarget)
 
