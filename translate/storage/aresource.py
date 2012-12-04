@@ -256,7 +256,6 @@ class AndroidResourceUnit(base.TranslationUnit):
 
     target = property(gettarget, settarget)
 
-
     def getlanguageNode(self, lang=None, index=None):
         return self.xmlelement
 
@@ -301,6 +300,7 @@ class AndroidResourceUnit(base.TranslationUnit):
 
     def __eq__(self, other):
         return (str(self) == str(other))
+
 
 class AndroidResourceFile(lisa.LISAfile):
     """Class representing a Android resource file store."""

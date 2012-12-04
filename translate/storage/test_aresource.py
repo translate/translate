@@ -9,6 +9,7 @@ from translate.misc import wStringIO
 from translate.storage import aresource
 from translate.storage import test_monolingual
 
+
 class TestPropUnit(test_monolingual.TestMonolingualUnit):
     UnitClass = aresource.AndroidResourceUnit
 
@@ -52,6 +53,7 @@ class TestPropUnit(test_monolingual.TestMonolingualUnit):
             print "unit.target:", repr(unit.target)
             print "string:", string
             assert unit.target == string
+
 
 class TestProp(test_monolingual.TestMonolingualStore):
     StoreClass = aresource.AndroidResourceFile
