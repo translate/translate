@@ -204,7 +204,6 @@ supported = [
         ('OmegaT Glossary', ['utf8', 'tab'], ["application/x-omegat-glossary"]),
         ('UTX Dictionary', ['utx'], ["text/x-utx"]),
         ('Haiku catkeys file', ['catkeys'], ["application/x-catkeys"]),
-        ('Android resources', ['xml'], ['application/xml']),
 ]
 
 
