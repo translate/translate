@@ -22,8 +22,6 @@
 
 from lxml import etree
 
-from StringIO import StringIO
-
 import re
 
 from translate.storage import lisa
@@ -235,7 +233,7 @@ class AndroidResourceUnit(base.TranslationUnit):
             target = self.escape(target).replace('&', '&amp;')
             target = OPEN_TAG_TO_ESCAPE.sub('&lt;', target)
             # Parse new XML
-            newstring = etree.parse(StringIO('<string>' + target + '</string>')).getroot()
+            newstring = etree.fromstring('<string>%s</string>' % target)
             # Update text
             self.xmlelement.text = newstring.text
             # Remove old elements
