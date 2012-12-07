@@ -39,7 +39,7 @@ def prop2inc(pf):
                 for blank in pendingblanks:
                     yield blank
                 # TODO: could convert commented # x=y back to # #define x y
-                yield comment
+                yield comment + "\n"
         if unit.isblank():
             pendingblanks.append("\n")
         else:
