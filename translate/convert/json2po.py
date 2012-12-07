@@ -102,7 +102,7 @@ def convertjson(input_file, output_file, template_file, pot=False,
         output_store = convertor.convert_store(input_store,
                                                duplicatestyle=duplicatestyle)
     else:
-        template_store = jsonl10n.JsonFile(template_file, dialect=dialect)
+        template_store = jsonl10n.JsonFile(template_file)
         output_store = convertor.merge_store(template_store, input_store,
                                              blankmsgstr=pot,
                                              duplicatestyle=duplicatestyle)
