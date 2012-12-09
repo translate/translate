@@ -182,23 +182,22 @@ class JsonFile(base.TranslationStore):
                                                           "%s[%s]" % (prev, i),
                                                           i, name_node, data):
                     yield x
-        elif isinstance(data, str) or isinstance(data, unicode):
-            if (stop is None \
-                or (isinstance(last_node, dict) and name_node in stop) \
-                or (isinstance(last_node, list) and name_last_node in stop)):
+        # apply filter
+        elif (stop is None \
+            or (isinstance(last_node, dict) and name_node in stop) \
+            or (isinstance(last_node, list) and name_last_node in stop)):
+
+            if isinstance(data, str) or isinstance(data, unicode):
                 yield (prev, data, last_node, name_node)
-        elif isinstance(data, bool):
-            if (stop is None \
-                or (isinstance(last_node, dict) and name_node in stop) \
-                or (isinstance(last_node, list) and name_last_node in stop)):
+            elif isinstance(data, bool):
                 yield (prev, str(data), last_node, name_node)
-        elif data is None:
-            pass
-        else:
-            raise ValueError("We don't handle these values:\n"
-                             "Type: %s\n"
-                             "Data: %s\n"
-                             "Previous: %s" % (type(data), data, prev))
+            elif data is None:
+                pass
+            else:
+                raise ValueError("We don't handle these values:\n"
+                                 "Type: %s\n"
+                                 "Data: %s\n"
+                                 "Previous: %s" % (type(data), data, prev))
 
     def parse(self, input):
         """parse the given file or file source string"""
