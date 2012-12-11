@@ -15,6 +15,13 @@ except ImportError:
     py2exe = None
     build_exe = Command
 
+try:
+    from sphinx.setup_command import BuildDoc
+    cmdclass = {'build_sphinx': BuildDoc}
+except ImportError:
+    cmdclass = {}
+
+
 # TODO: check out installing into a different path with --prefix/--home
 
 join = os.path.join
@@ -327,9 +334,10 @@ class TranslateDistribution(Distribution):
         if py2exe:
             baseattrs['console'] = translatescripts
             baseattrs['zipfile'] = "translate.zip"
-            baseattrs['cmdclass'] = {
-                "py2exe": build_exe_map, "innosetup": build_installer
-            }
+            baseattrs['cmdclass'] = cmdclass.update({
+                "py2exe": build_exe_map,
+                "innosetup": build_installer,
+            })
             options["innosetup"] = py2exeoptions.copy()
             options["innosetup"]["install_script"] = []
         baseattrs.update(attrs)
@@ -384,6 +392,7 @@ def dosetup(name, version, packages, datafiles, scripts, ext_modules=[]):
           scripts=scripts,
           ext_modules=ext_modules,
           distclass=TranslateDistribution,
+          cmdclass = cmdclass
          )
 
 if __name__ == "__main__":
