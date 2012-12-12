@@ -664,7 +664,7 @@ class TranslationStore(object):
 
     def makeindex(self):
         """Indexes the items in this store. At least .sourceindex should be
-        usefull."""
+        useful."""
         self.locationindex = {}
         self.sourceindex = {}
         self.id_index = {}
