@@ -316,16 +316,20 @@ define( '_CM_POSTED','Enviado');"""
     def test_parsing_define_entries_with_quotes(self):
         """Parse define syntax for entries with quotes"""
         phpsource = """define('_SETTINGS_COOKIEPREFIX', 'Prefixo da "cookie"');
-define('_YOUR_USERNAME', 'O seu nome de usuario: "cookie"');"""
+define('_YOUR_USERNAME', 'O seu nome de usuario: "cookie"');
+define("_REGISTER", "Register <a href=\"register.php\">here</a>");"""
         phpfile = self.phpparse(phpsource)
         print len(phpfile.units)
-        assert len(phpfile.units) == 2
+        assert len(phpfile.units) == 3
         phpunit = phpfile.units[0]
         assert phpunit.name == "define('_SETTINGS_COOKIEPREFIX'"
         assert phpunit.source == "Prefixo da \"cookie\""
         phpunit = phpfile.units[1]
         assert phpunit.name == "define('_YOUR_USERNAME'"
         assert phpunit.source == "O seu nome de usuario: \"cookie\""
+        phpunit = phpfile.units[2]
+        assert phpunit.name == 'define("_REGISTER"'
+        assert phpunit.source == "Register <a href=\"register.php\">here</a>"
 
     def test_parsing_define_comments_at_entry_line_end(self):
         """Parse define syntax with comments at the end of the entry line"""
