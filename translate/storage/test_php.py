@@ -416,7 +416,7 @@ $month_mar = 'Mar';"""
         assert phpunit.source == "value1"
 
     def test_parsing_arrays_space_before_comma(self):
-        """parse the array syntax where we don't have a trailing comma.
+        """parse the array syntax with spaces before the comma.
         Bug #1685"""
         phpsource = '''$lang = array(
          'item1' => 'value1',
