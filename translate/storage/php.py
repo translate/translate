@@ -26,6 +26,7 @@ Only PHP files written with these conventions are supported::
 
   $lang['item'] = "vale";  # Array of values
   $some_entity = "value";  # Named variables
+  define("ENTITY", "value");
   $lang = array(
      'item1' => 'value1',
      'item2' => 'value2',
@@ -236,9 +237,13 @@ class phpfile(base.TranslationStore):
                 enddel = ";"
                 inarray = False
                 continue
+            if line.lstrip().startswith("define("):
+                equaldel = ","
+                enddel = ");"
             equalpos = line.find(equaldel)
             hashpos = line.find("#")
-            if 0 <= hashpos < equalpos:
+            doubleslashpos = line.lstrip().find("//")
+            if 0 <= hashpos < equalpos or doubleslashpos == 0:
                 # Assume that this is a '#' comment line
                 newunit.addnote(line.strip(), "developer")
                 continue
@@ -254,8 +259,12 @@ class phpfile(base.TranslationStore):
                     value = line
             colonpos = value.rfind(enddel)
             while colonpos != -1:
-                if value[colonpos-1] == valuequote:
-                    newunit.value = lastvalue + value[:colonpos-1]
+                # Check if the latest non-whitespace character before the end
+                # delimiter is the valuequote
+                if value[:colonpos].rstrip()[-1] == valuequote:
+                    # Save the value string without trailing whitespaces and
+                    # without the ending quotes
+                    newunit.value = lastvalue + value[:colonpos].rstrip()[:-1]
                     newunit.escape_type = valuequote
                     lastvalue = ""
                     invalue = False
