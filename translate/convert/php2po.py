@@ -47,7 +47,7 @@ class php2po:
         return outputstore
 
     def mergestore(self, templatestore, inputstore, blankmsgstr=False, duplicatestyle="msgctxt"):
-        """converts two .properties files to a .po file..."""
+        """converts two .php files to a .po file..."""
         outputstore = po.pofile()
         outputheader = outputstore.header()
         outputheader.addnote("extracted from %s, %s" % (templatestore.filename, inputstore.filename), "developer")
