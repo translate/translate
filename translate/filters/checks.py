@@ -42,10 +42,12 @@ from translate.lang import data
 
 # These are some regular expressions that are compiled for use in some tests
 
-# printf syntax based on http://en.wikipedia.org/wiki/Printf which doens't
+# printf syntax based on http://en.wikipedia.org/wiki/Printf which doesn't
 # cover everything we leave \w instead of specifying the exact letters as
 # this should capture printf types defined in other platforms.
-# extended to support Python named format specifiers
+# Extended to support Python named format specifiers and objective-C special
+# "%@" format specifier
+# (see https://developer.apple.com/library/mac/documentation/Cocoa/Conceptual/Strings/Articles/formatSpecifiers.html)
 printf_pat = re.compile('''
         %(                          # initial %
               (?:(?P<ord>\d+)\$|    # variable order, like %1$s
@@ -55,7 +57,7 @@ printf_pat = re.compile('''
             (?:\d+)?                # width
             (?:\.\d+)?              # precision
             (hh\|h\|l\|ll)?         # length formatting
-            (?P<type>[\w%]))        # type (%s, %d, etc.)
+            (?P<type>[\w%@]))       # type (%s, %d, etc.)
         )''', re.VERBOSE)
 
 # The name of the XML tag
