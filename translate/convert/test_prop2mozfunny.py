@@ -38,3 +38,15 @@ msgstr "<em:contributor>Mr Fury</em:contributor>"
         incfile = self.merge2inc(inctemplate, posource)
         print incfile
         assert incfile == incexpected
+
+    def test_multiline_comment_newlines(self):
+        """Ensure that we preserve newlines in multiline comments"""
+        inctemplate = '''# This Source Code Form is subject to the terms of the Mozilla Public
+# License, v. 2.0. If a copy of the MPL was not distributed with this
+# file, You can obtain one at http://mozilla.org/MPL/2.0/.
+#filter emptyLines
+'''
+        incexpected = inctemplate
+        incfile = self.merge2inc(inctemplate, None)
+        print incfile
+        assert incfile == incexpected
