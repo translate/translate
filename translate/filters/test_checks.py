@@ -525,6 +525,11 @@ def test_printf():
     # checking omitted plural format string placeholder %.0s
     stdchecker.hasplural = 1
     assert passes(stdchecker.printf, "%d plurals", "%.0s plural")
+    # checking Objective-C %@ format specification
+    assert fails(stdchecker.printf, "I am %@", "Ek is @%")  # typo
+    assert fails(stdchecker.printf, "Object %@ and object %@", "String %1$@ en string %3$@")  # out of bounds
+    assert fails(stdchecker.printf, "I am %@", "Ek is %s")  # wrong specification
+    assert passes(stdchecker.printf, "Object %@ and string %s", "Object %1$@ en string %2$s")  # correct sentence
 
 
 def test_puncspacing():
