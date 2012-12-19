@@ -436,3 +436,33 @@ $month_mar = 'Mar';"""
         phpunit = phpfile.units[1]
         assert phpunit.name == "$lang->'item2'"
         assert phpunit.source == "value2"
+
+    @mark.xfail(reason="Bug #2240")
+    def test_parsing_nested_arrays(self):
+        """parse the nested array syntax. Bug #2240"""
+        phpsource = '''$app_list_strings = array(
+            'Mailbox' => 'Mailbox',
+            'moduleList' => array(
+                'Home' => 'Home',
+                'Contacts' => 'Contacts',
+                'Accounts' => 'Accounts',
+            ),
+            'FAQ' => 'FAQ',
+        );'''
+        phpfile = self.phpparse(phpsource)
+        assert len(phpfile.units) == 5
+        phpunit = phpfile.units[0]
+        assert phpunit.name == "$app_list_strings->'Mailbox'"
+        assert phpunit.source == "Mailbox"
+        phpunit = phpfile.units[1]
+        assert phpunit.name == "$app_list_strings->'moduleList'->'Home'"
+        assert phpunit.source == "Home"
+        phpunit = phpfile.units[2]
+        assert phpunit.name == "$app_list_strings->'moduleList'->'Contacts'"
+        assert phpunit.source == "Contacts"
+        phpunit = phpfile.units[3]
+        assert phpunit.name == "$app_list_strings->'moduleList'->'Accounts'"
+        assert phpunit.source == "Accounts"
+        phpunit = phpfile.units[4]
+        assert phpunit.name == "$app_list_strings->'FAQ'"
+        assert phpunit.source == "FAQ"
