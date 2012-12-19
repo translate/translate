@@ -455,7 +455,6 @@ $month_mar = 'Mar';"""
         assert phpunit.name == "$lang->'item2'"
         assert phpunit.source == "value2"
 
-    @mark.xfail(reason="Bug #2240")
     def test_parsing_nested_arrays(self):
         """parse the nested array syntax. Bug #2240"""
         phpsource = '''$app_list_strings = array(

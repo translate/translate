@@ -235,10 +235,14 @@ class phpfile(base.TranslationStore):
 
             # If an array starts in the current line.
             if line.lower().find('array(') != -1:
-                equaldel = "=>"
-                enddel = ","
-                inarray = True
-                prename = line[:line.find('=')].strip() + "->"
+                # If this is a nested array.
+                if inarray:
+                    prename = prename + line[:line.find('=')].strip() + "->"
+                else:
+                    equaldel = "=>"
+                    enddel = ","
+                    inarray = True
+                    prename = line[:line.find('=')].strip() + "->"
                 continue
 
             # If an array ends in the current line, reset variables to default
@@ -248,6 +252,12 @@ class phpfile(base.TranslationStore):
                 enddel = ";"
                 inarray = False
                 prename = ""
+                continue
+
+            # If a nested array ends in the current line, reset prename to its
+            # parent array default value by stripping out the last part.
+            if inarray and line.find('),') != -1:
+                prename = prename[:prename.find("->")+2]
                 continue
 
             # If the current line hosts a define syntax translation.
