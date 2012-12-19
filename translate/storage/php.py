@@ -204,6 +204,7 @@ class phpfile(base.TranslationStore):
         invalue = False
         incomment = False
         inarray = False
+        innestedarray = False
         valuequote = ""  # either ' or "
         equaldel = "="
         enddel = ";"
@@ -226,16 +227,30 @@ class phpfile(base.TranslationStore):
             if incomment and commentstartpos == -1:
                 newunit.addnote(line, "developer")
                 continue
+            # If an array starts in the current line.
             if line.lower().find('array(') != -1:
-                equaldel = "=>"
-                enddel = ","
-                inarray = True
-                prename = line[:line.find('=')].strip() + "->"
+                # If this is a nested array
+                if inarray:
+                    innestedarray = True
+                    prename = prename + line[:line.find('=')].strip() + "->"
+                else:
+                    equaldel = "=>"
+                    enddel = ","
+                    inarray = True
+                    prename = line[:line.find('=')].strip() + "->"
                 continue
+            # If an array ends in the current line, reset variables to default
+            # values.
             if inarray and line.find(');') != -1:
                 equaldel = "="
                 enddel = ";"
                 inarray = False
+                continue
+            # If a nested array ends in the current line, reset prename to its
+            # parent array default value by stripping out the last part.
+            if inarray and line.find('),') != -1:
+                innestedarray = False
+                prename = prename[:prename.find("->")+2]
                 continue
             if line.lstrip().startswith("define("):
                 equaldel = ","
