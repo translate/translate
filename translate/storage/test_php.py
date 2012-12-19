@@ -388,7 +388,8 @@ define("_RELOAD", "Recargar");"""
         assert phpunit.source == "Recargar"
 
     def test_parsing_simpledefinition_spaces_before_end_delimiter(self):
-        """Parse define syntax with spaces before the end delimiter"""
+        """Parse simple definition syntax with spaces before the end
+        delimiter"""
         phpsource = """$month_jan = 'Jan';
 $month_feb = 'Feb'  ;
 $month_mar = 'Mar';"""
