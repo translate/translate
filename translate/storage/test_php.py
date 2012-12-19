@@ -531,3 +531,36 @@ $month_mar = 'Mar';"""
         phpunit = phpfile.units[2]
         assert phpunit.name == "$lang->'item2'"
         assert phpunit.source == "value2"
+
+    @mark.xfail(reason="Bug #2611")
+    def test_parsing_simple_heredoc_syntax(self):
+        """parse the heredoc syntax. Bug #2611"""
+        phpsource = '''$month_jan = 'Jan';
+$lang_register_approve_email = <<<EOT
+A new user with the username "{USER_NAME}" has registered in your gallery.
+
+In order to activate the account, you need to click on the link below.
+
+<a href="{ACT_LINK}">{ACT_LINK}</a>
+EOT;
+
+$foobar = <<<FOOBAR
+Simple example
+FOOBAR;
+
+$month_mar = 'Mar';
+        '''
+        phpfile = self.phpparse(phpsource)
+        assert len(phpfile.units) == 3
+        phpunit = phpfile.units[0]
+        assert phpunit.name == '$month_jan'
+        assert phpunit.source == "Jan"
+        phpunit = phpfile.units[1]
+        assert phpunit.name == '$lang_register_approve_email'
+        assert phpunit.source == "A new user with the username \"{USER_NAME}\" has registered in your gallery.\n\nIn order to activate the account, you need to click on the link below.\n\n<a href=\"{ACT_LINK}\">{ACT_LINK}</a>"
+        phpunit = phpfile.units[2]
+        assert phpunit.name == '$foobar'
+        assert phpunit.source == "Simple example"
+        phpunit = phpfile.units[3]
+        assert phpunit.name == '$month_mar'
+        assert phpunit.source == "Mar"
