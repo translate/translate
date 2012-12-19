@@ -208,9 +208,11 @@ class phpfile(base.TranslationStore):
         equaldel = "="
         enddel = ";"
         prename = ""
+        # For each line in the PHP translation file.
         for line in phpsrc.decode(self._encoding).split("\n"):
             commentstartpos = line.find("/*")
             commentendpos = line.rfind("*/")
+            # If a multiline comment starts in the current line.
             if commentstartpos != -1:
                 incomment = True
                 if commentendpos != -1:
@@ -220,9 +222,11 @@ class phpfile(base.TranslationStore):
                 else:
                     newunit.addnote(line[commentstartpos:],
                                     "developer")
+            # If this a multiline comment that ends in the current line.
             if commentendpos != -1 and incomment:
                 newunit.addnote(line[:commentendpos+2], "developer")
                 incomment = False
+            # If this is a multiline comment which started in a previous line.
             if incomment and commentstartpos == -1:
                 newunit.addnote(line, "developer")
                 continue
@@ -237,26 +241,40 @@ class phpfile(base.TranslationStore):
                 enddel = ";"
                 inarray = False
                 continue
+            # If the current line hosts a define syntax translation.
             if line.lstrip().startswith("define("):
                 equaldel = ","
                 enddel = ");"
             equalpos = line.find(equaldel)
             hashpos = line.find("#")
             doubleslashpos = line.lstrip().find("//")
+            # If this is a '#' comment line or a '//' comment that starts at
+            # the line begining.
             if 0 <= hashpos < equalpos or doubleslashpos == 0:
                 # Assume that this is a '#' comment line
                 newunit.addnote(line.strip(), "developer")
                 continue
+            # If equalpos is present in the current line and this line is not
+            # part of a multiline translation.
             if equalpos != -1 and not invalue:
+                # Get the quoting character which encloses the translation
+                # (either ' or ").
                 valuequote = line[equalpos+len(equaldel):].lstrip()[0]
                 if valuequote in ['"', "'"]:
+                    # Add the location to the translation unit. prename is the
+                    # array name, or blank if no array is present. The line
+                    # (until the equal delimiter) is appended to the location.
                     newunit.addlocation(prename + line[:equalpos].strip())
+                    # Save the translation in the value variable.
                     value = line[equalpos+len(equaldel):].lstrip()[1:]
                     lastvalue = ""
                     invalue = True
             else:
+                # If no equalpos is present in the current line, but this is a
+                # multiline translation.
                 if invalue:
                     value = line
+            # Get the end delimiter position (colonpos)
             colonpos = value.rfind(enddel)
             while colonpos != -1:
                 # Check if the latest non-whitespace character before the end
@@ -268,16 +286,23 @@ class phpfile(base.TranslationStore):
                     newunit.escape_type = valuequote
                     lastvalue = ""
                     invalue = False
+                # If there is more text (a comment) after the translation.
                 if not invalue and colonpos != (len(value) - 1):
                     commentinlinepos = value.find("//", colonpos)
                     if commentinlinepos != -1:
                         newunit.addnote(value[commentinlinepos+2:].strip(),
                                         "developer")
+                # If the translation is already parsed, save it and initialize
+                # a new translation unit.
                 if not invalue:
                     self.addunit(newunit)
                     value = ""
                     newunit = phpunit()
+                # Update end delimiter position (colonpos) to the previous last
+                # appearance of end delimiter.
                 colonpos = value.rfind(enddel, 0, colonpos)
+            # If this is part of a multiline translation, just append it to the
+            # previous translation lines.
             if invalue:
                 lastvalue = lastvalue + value + "\n"
 
