@@ -33,13 +33,21 @@ Our format support allows:
   <http://www.php.net/manual/en/language.types.string.php#language.types.string.syntax.double>`_
   quoted strings)
 * Multiline entries
+* PHP simple variable syntax
+
+.. code-block:: php
+
+    $variable = 'string';
+    $another_variable = "another string";
+
 * Various layouts of the id
 
   .. code-block:: php
   
-      $string['name']
-      $string[name]
-      $string[ 'name' ]
+      $string['name'];
+      $string['name'] ;
+      $string[name];
+      $string[ 'name' ];
 
 * PHP array syntax for localisation (since > 1.6.0)
 
@@ -49,6 +57,20 @@ Our format support allows:
          'name' => 'value',
          'name2' => 'value2',
       );
+
+* PHP define syntax
+
+.. code-block:: php
+
+    define('item', 'string');
+    define("another_item", "another string");
+
+* Whitespace before end delimiter
+
+  .. code-block:: php
+  
+      $string['name']     ;
+      $string['name'] ;
 
 .. _php#non-conformance:
 

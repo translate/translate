@@ -316,16 +316,20 @@ define( '_CM_POSTED','Enviado');"""
     def test_parsing_define_entries_with_quotes(self):
         """Parse define syntax for entries with quotes"""
         phpsource = """define('_SETTINGS_COOKIEPREFIX', 'Prefixo da "cookie"');
-define('_YOUR_USERNAME', 'O seu nome de usuario: "cookie"');"""
+define('_YOUR_USERNAME', 'O seu nome de usuario: "cookie"');
+define("_REGISTER", "Register <a href=\"register.php\">here</a>");"""
         phpfile = self.phpparse(phpsource)
         print len(phpfile.units)
-        assert len(phpfile.units) == 2
+        assert len(phpfile.units) == 3
         phpunit = phpfile.units[0]
         assert phpunit.name == "define('_SETTINGS_COOKIEPREFIX'"
         assert phpunit.source == "Prefixo da \"cookie\""
         phpunit = phpfile.units[1]
         assert phpunit.name == "define('_YOUR_USERNAME'"
         assert phpunit.source == "O seu nome de usuario: \"cookie\""
+        phpunit = phpfile.units[2]
+        assert phpunit.name == 'define("_REGISTER"'
+        assert phpunit.source == "Register <a href=\"register.php\">here</a>"
 
     def test_parsing_define_comments_at_entry_line_end(self):
         """Parse define syntax with comments at the end of the entry line"""
@@ -414,16 +418,149 @@ $month_mar = 'Mar';"""
         phpunit = phpfile.units[0]
         assert phpunit.name == "$lang->'item1'"
         assert phpunit.source == "value1"
+        phpunit = phpfile.units[1]
+        assert phpunit.name == "$lang->'item2'"
+        assert phpunit.source == "value2"
 
     def test_parsing_arrays_space_before_comma(self):
-        """parse the array syntax where we don't have a trailing comma.
-        Bug #1685"""
+        """parse the array syntax with spaces before the comma. Bug #1898"""
         phpsource = '''$lang = array(
          'item1' => 'value1',
          'item2' => 'value2' ,
-      );'''
+        );'''
         phpfile = self.phpparse(phpsource)
         assert len(phpfile.units) == 2
         phpunit = phpfile.units[0]
         assert phpunit.name == "$lang->'item1'"
         assert phpunit.source == "value1"
+        phpunit = phpfile.units[1]
+        assert phpunit.name == "$lang->'item2'"
+        assert phpunit.source == "value2"
+
+    @mark.xfail(reason="Bug #2646")
+    def test_parsing_arrays_with_space_before_array_declaration(self):
+        """parse the array syntax with spaces before the array declaration.
+        Bug #2646"""
+        phpsource = '''$lang = array   (
+         'item1' => 'value1',
+         'item2' => 'value2',
+        );'''
+        phpfile = self.phpparse(phpsource)
+        assert len(phpfile.units) == 2
+        phpunit = phpfile.units[0]
+        assert phpunit.name == "$lang->'item1'"
+        assert phpunit.source == "value1"
+        phpunit = phpfile.units[1]
+        assert phpunit.name == "$lang->'item2'"
+        assert phpunit.source == "value2"
+
+    @mark.xfail(reason="Bug #2240")
+    def test_parsing_nested_arrays(self):
+        """parse the nested array syntax. Bug #2240"""
+        phpsource = '''$app_list_strings = array(
+            'Mailbox' => 'Mailbox',
+            'moduleList' => array(
+                'Home' => 'Home',
+                'Contacts' => 'Contacts',
+                'Accounts' => 'Accounts',
+            ),
+            'FAQ' => 'FAQ',
+        );'''
+        phpfile = self.phpparse(phpsource)
+        assert len(phpfile.units) == 5
+        phpunit = phpfile.units[0]
+        assert phpunit.name == "$app_list_strings->'Mailbox'"
+        assert phpunit.source == "Mailbox"
+        phpunit = phpfile.units[1]
+        assert phpunit.name == "$app_list_strings->'moduleList'->'Home'"
+        assert phpunit.source == "Home"
+        phpunit = phpfile.units[2]
+        assert phpunit.name == "$app_list_strings->'moduleList'->'Contacts'"
+        assert phpunit.source == "Contacts"
+        phpunit = phpfile.units[3]
+        assert phpunit.name == "$app_list_strings->'moduleList'->'Accounts'"
+        assert phpunit.source == "Accounts"
+        phpunit = phpfile.units[4]
+        assert phpunit.name == "$app_list_strings->'FAQ'"
+        assert phpunit.source == "FAQ"
+
+    @mark.xfail(reason="Bug #2647")
+    def test_parsing_nested_arrays_with_array_declaration_in_next_line(self):
+        """parse the nested array syntax with array declaration in the next
+        line. Bug #2647"""
+        phpsource = '''$lang = array(
+            'item1' => 'value1',
+            'newsletter_frequency_dom' =>
+                array(
+                    'Weekly' => 'Weekly',
+                ),
+            'item2' => 'value2',
+        );'''
+        phpfile = self.phpparse(phpsource)
+        assert len(phpfile.units) == 3
+        phpunit = phpfile.units[0]
+        assert phpunit.name == "$lang->'item1'"
+        assert phpunit.source == "value1"
+        phpunit = phpfile.units[1]
+        assert phpunit.name == "$lang->'newsletter_frequency_dom'->'Weekly'"
+        assert phpunit.source == "Weekly"
+        phpunit = phpfile.units[2]
+        assert phpunit.name == "$lang->'item2'"
+        assert phpunit.source == "value2"
+
+    @mark.xfail(reason="Bug #2648")
+    def test_parsing_nested_arrays_with_blank_entries(self):
+        """parse the nested array syntax with blank entries. Bug #2648"""
+        phpsource = '''$lang = array(
+            'item1' => 'value1',
+            'newsletter_frequency_dom' =>
+                array(
+                    '' => '',
+                    'Weekly' => 'Weekly',
+                ),
+            'item2' => 'value2',
+        );'''
+        phpfile = self.phpparse(phpsource)
+        assert len(phpfile.units) == 3
+        phpunit = phpfile.units[0]
+        assert phpunit.name == "$lang->'item1'"
+        assert phpunit.source == "value1"
+        phpunit = phpfile.units[1]
+        assert phpunit.name == "$lang->'newsletter_frequency_dom'->'Weekly'"
+        assert phpunit.source == "Weekly"
+        phpunit = phpfile.units[2]
+        assert phpunit.name == "$lang->'item2'"
+        assert phpunit.source == "value2"
+
+    @mark.xfail(reason="Bug #2611")
+    def test_parsing_simple_heredoc_syntax(self):
+        """parse the heredoc syntax. Bug #2611"""
+        phpsource = '''$month_jan = 'Jan';
+$lang_register_approve_email = <<<EOT
+A new user with the username "{USER_NAME}" has registered in your gallery.
+
+In order to activate the account, you need to click on the link below.
+
+<a href="{ACT_LINK}">{ACT_LINK}</a>
+EOT;
+
+$foobar = <<<FOOBAR
+Simple example
+FOOBAR;
+
+$month_mar = 'Mar';
+        '''
+        phpfile = self.phpparse(phpsource)
+        assert len(phpfile.units) == 3
+        phpunit = phpfile.units[0]
+        assert phpunit.name == '$month_jan'
+        assert phpunit.source == "Jan"
+        phpunit = phpfile.units[1]
+        assert phpunit.name == '$lang_register_approve_email'
+        assert phpunit.source == "A new user with the username \"{USER_NAME}\" has registered in your gallery.\n\nIn order to activate the account, you need to click on the link below.\n\n<a href=\"{ACT_LINK}\">{ACT_LINK}</a>"
+        phpunit = phpfile.units[2]
+        assert phpunit.name == '$foobar'
+        assert phpunit.source == "Simple example"
+        phpunit = phpfile.units[3]
+        assert phpunit.name == '$month_mar'
+        assert phpunit.source == "Mar"
