@@ -68,7 +68,7 @@ Our format support allows:
 * Whitespace before end delimiter
 
   .. code-block:: php
-  
+
       $string['name']     ;
       $string['name'] ;
 
