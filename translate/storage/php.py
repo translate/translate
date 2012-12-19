@@ -232,7 +232,7 @@ class phpfile(base.TranslationStore):
                 newunit.addnote(line, "developer")
                 continue
             # If an array starts in the current line.
-            if line.lower().find('array(') != -1:
+            if line.lower().replace(" ", "").find('array(') != -1:
                 # If this is a nested array
                 if inarray:
                     innestedarray = True
