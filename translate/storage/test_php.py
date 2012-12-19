@@ -437,6 +437,23 @@ $month_mar = 'Mar';"""
         assert phpunit.name == "$lang->'item2'"
         assert phpunit.source == "value2"
 
+    @mark.xfail(reason="Bug #2646")
+    def test_parsing_arrays_with_space_before_array_declaration(self):
+        """parse the array syntax with spaces before the array declaration.
+        Bug #2646"""
+        phpsource = '''$lang = array   (
+         'item1' => 'value1',
+         'item2' => 'value2',
+        );'''
+        phpfile = self.phpparse(phpsource)
+        assert len(phpfile.units) == 2
+        phpunit = phpfile.units[0]
+        assert phpunit.name == "$lang->'item1'"
+        assert phpunit.source == "value1"
+        phpunit = phpfile.units[1]
+        assert phpunit.name == "$lang->'item2'"
+        assert phpunit.source == "value2"
+
     @mark.xfail(reason="Bug #2240")
     def test_parsing_nested_arrays(self):
         """parse the nested array syntax. Bug #2240"""
