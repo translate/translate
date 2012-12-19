@@ -507,3 +507,27 @@ $month_mar = 'Mar';"""
         phpunit = phpfile.units[2]
         assert phpunit.name == "$lang->'item2'"
         assert phpunit.source == "value2"
+
+    @mark.xfail(reason="Bug #2648")
+    def test_parsing_nested_arrays_with_blank_entries(self):
+        """parse the nested array syntax with blank entries. Bug #2648"""
+        phpsource = '''$lang = array(
+            'item1' => 'value1',
+            'newsletter_frequency_dom' =>
+                array(
+                    '' => '',
+                    'Weekly' => 'Weekly',
+                ),
+            'item2' => 'value2',
+        );'''
+        phpfile = self.phpparse(phpsource)
+        assert len(phpfile.units) == 3
+        phpunit = phpfile.units[0]
+        assert phpunit.name == "$lang->'item1'"
+        assert phpunit.source == "value1"
+        phpunit = phpfile.units[1]
+        assert phpunit.name == "$lang->'newsletter_frequency_dom'->'Weekly'"
+        assert phpunit.source == "Weekly"
+        phpunit = phpfile.units[2]
+        assert phpunit.name == "$lang->'item2'"
+        assert phpunit.source == "value2"
