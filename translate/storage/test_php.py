@@ -423,14 +423,16 @@ $month_mar = 'Mar';"""
         assert phpunit.source == "value2"
 
     def test_parsing_arrays_space_before_comma(self):
-        """parse the array syntax with spaces before the comma.
-        Bug #1685"""
+        """parse the array syntax with spaces before the comma. Bug #1898"""
         phpsource = '''$lang = array(
          'item1' => 'value1',
          'item2' => 'value2' ,
-      );'''
+        );'''
         phpfile = self.phpparse(phpsource)
         assert len(phpfile.units) == 2
         phpunit = phpfile.units[0]
         assert phpunit.name == "$lang->'item1'"
         assert phpunit.source == "value1"
+        phpunit = phpfile.units[1]
+        assert phpunit.name == "$lang->'item2'"
+        assert phpunit.source == "value2"
