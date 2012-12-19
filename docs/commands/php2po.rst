@@ -71,30 +71,42 @@ Formats Supported
 =================
 
 PHP files need to be organized into separate languages per file and in the
-following format::
+following format:
+
+.. code-block:: php
 
     $variable = 'string';
     $another_variable = "another string";
 
-If $variable is an array it should be declared with the square bracket syntax.
-For example, ``$lang['var']``.  ::
+If $variable is an array it can be declared with the square bracket syntax:
+
+.. code-block:: php
 
     $lang['item'] = 'string';
     $lang['another_item'] = "another string";
 
-The converter also supports arrays in the form::
+The converter also supports arrays in the form:
+
+.. code-block:: php
 
     $variable = array(
        name => 'value',
        other => "other value",
     )
 
+Finally, the converter also supports the define syntax:
+
+.. code-block:: php
+
+    define('item', 'string');
+    define("another_item", "another string");
+
 Gettext notations are also not supported, use the Gettext tools for those
 files.
 
 .. note:: Nested arrays are not supported:
 
-::
+.. code-block:: php
 
     $lang = array(array('key' => 'value')); #NOT SUPPORTED
 
