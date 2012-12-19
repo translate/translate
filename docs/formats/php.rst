@@ -177,6 +177,18 @@ Our format support allows:
          ),
       );
 
+* Whitespace in the array declaration
+
+  .. versionadded:: 1.11.0
+
+  .. code-block:: php
+
+      <?php
+      $variable = array    (
+         "one" => "this",
+         "two" => "that",
+      );
+
 
 .. _php#non-conformance:
 
