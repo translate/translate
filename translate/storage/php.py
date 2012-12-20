@@ -28,11 +28,18 @@ Only PHP files written with these conventions are supported::
   $some_entity = "value";  # Named variables
   define("ENTITY", "value");
   $lang = array(
-     'item1' => 'value1',
+     'item1' => 'value1'    ,   #Supports space before comma
      'item2' => 'value2',
   );
+  $lang = array(    # Nested arrays
+     'item1' => 'value1',
+     'item2' => array(
+        'key' => 'value'    ,   #Supports space before comma
+        'key2' => 'value2',
+     ),
+  );
 
-Nested arrays are not supported::
+Nested arrays without key for nested array are not supported::
 
   $lang = array(array('key' => 'value'));
 
