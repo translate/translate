@@ -94,6 +94,18 @@ The converter also supports arrays in the form:
        other => "other value",
     )
 
+Nested arrays are also supported:
+
+.. code-block:: php
+
+    $lang = array(
+       'name' => 'value',
+       'name2' => array(
+          'key' => 'value',
+          'key2' => 'value2',
+       ),
+    );
+
 Finally, the converter also supports the define syntax:
 
 .. code-block:: php
@@ -104,7 +116,7 @@ Finally, the converter also supports the define syntax:
 Gettext notations are also not supported, use the Gettext tools for those
 files.
 
-.. note:: Nested arrays are not supported:
+.. note:: Nested arrays without key for nested arrays are not supported:
 
 .. code-block:: php
 

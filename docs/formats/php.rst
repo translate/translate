@@ -58,6 +58,18 @@ Our format support allows:
          'name2' => 'value2',
       );
 
+* PHP nested array syntax for localisation (since > 1.9.1)
+
+  .. code-block:: php
+
+      $lang = array(
+         'name' => 'value',
+         'name2' => array(
+            'key' => 'value',
+            'key2' => 'value2',
+         ),
+      );
+
 * PHP define syntax for localisation (since > 1.9.1)
 
   .. code-block:: php
