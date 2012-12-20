@@ -35,15 +35,15 @@ Our format support allows:
 * Multiline entries
 * PHP simple variable syntax
 
-.. code-block:: php
+  .. code-block:: php
 
-    $variable = 'string';
-    $another_variable = "another string";
+      $variable = 'string';
+      $another_variable = "another string";
 
 * Various layouts of the id
 
   .. code-block:: php
-  
+
       $string['name'];
       $string['name'] ;
       $string[name];
@@ -58,14 +58,14 @@ Our format support allows:
          'name2' => 'value2',
       );
 
-* PHP define syntax
+* PHP define syntax for localisation (since > 1.9.1)
 
-.. code-block:: php
+  .. code-block:: php
 
-    define('item', 'string');
-    define("another_item", "another string");
+      define('item', 'string');
+      define("another_item", "another string");
 
-* Whitespace before end delimiter
+* Whitespace before end delimiter (since > 1.9.1)
 
   .. code-block:: php
   
@@ -79,7 +79,7 @@ Non-Conformance
 
 The following are not yet supported:
 
-* `herdoc
+* `heredoc
   <http://www.php.net/manual/en/language.types.string.php#language.types.string.syntax.heredoc>`_
   and `nowdoc
   <http://www.php.net/manual/en/language.types.string.php#language.types.string.syntax.nowdoc>`_
