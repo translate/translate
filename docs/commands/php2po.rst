@@ -113,6 +113,19 @@ Finally, the converter also supports the define syntax:
     define('item', 'string');
     define("another_item", "another string");
 
+The converter supports whitespaces in various places (before the end
+delimiter, in the array declaration, etc) in the different dialects supported:
+
+.. code-block:: php
+
+    $variable = 'string'     ;
+    $lang['item'] = 'string'    ;
+    $variable = array    (
+       name => 'value'    ,
+       other => "other value",
+    )
+    define('item', 'string'   );
+
 Gettext notations are also not supported, use the Gettext tools for those
 files.
 
@@ -121,6 +134,15 @@ files.
 .. code-block:: php
 
     $lang = array(array('key' => 'value')); #NOT SUPPORTED
+
+.. note:: In the arrays all entries should have an ending comma:
+
+.. code-block:: php
+
+    $variable = array(
+       name => 'value',
+       other => "other value" #NOT SUPPORTED
+    );
 
 .. _php2po#examples:
 
