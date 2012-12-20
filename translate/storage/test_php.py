@@ -483,6 +483,36 @@ $month_mar = 'Mar';"""
         assert phpunit.name == "$app_list_strings->'FAQ'"
         assert phpunit.source == "FAQ"
 
+    def test_parsing_nested_arrays_with_space_before_array_declaration(self):
+        """parse the nested array syntax with whitespace before the array
+        declaration."""
+        phpsource = '''$app_list_strings = array  (
+            'Mailbox' => 'Mailbox',
+            'moduleList' => array  (
+                'Home' => 'Home',
+                'Contacts' => 'Contacts',
+                'Accounts' => 'Accounts',
+            ),
+            'FAQ' => 'FAQ',
+        );'''
+        phpfile = self.phpparse(phpsource)
+        assert len(phpfile.units) == 5
+        phpunit = phpfile.units[0]
+        assert phpunit.name == "$app_list_strings->'Mailbox'"
+        assert phpunit.source == "Mailbox"
+        phpunit = phpfile.units[1]
+        assert phpunit.name == "$app_list_strings->'moduleList'->'Home'"
+        assert phpunit.source == "Home"
+        phpunit = phpfile.units[2]
+        assert phpunit.name == "$app_list_strings->'moduleList'->'Contacts'"
+        assert phpunit.source == "Contacts"
+        phpunit = phpfile.units[3]
+        assert phpunit.name == "$app_list_strings->'moduleList'->'Accounts'"
+        assert phpunit.source == "Accounts"
+        phpunit = phpfile.units[4]
+        assert phpunit.name == "$app_list_strings->'FAQ'"
+        assert phpunit.source == "FAQ"
+
     @mark.xfail(reason="Bug #2647")
     def test_parsing_nested_arrays_with_array_declaration_in_next_line(self):
         """parse the nested array syntax with array declaration in the next
