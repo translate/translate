@@ -76,10 +76,8 @@ Requirements
 ------------
 Python 2.4 or later is recommended.
 
-The Toolkit mostly still works using Python 2.3 but is now most extensively
-tested using Python 2.4.  If you experience any errors and are using Python 2.2
-or 2.3, please first check that the error also occurs in 2.4 or 2.5 before
-reporting it as a bug.
+The Toolkit should still work with Python 2.4 but is now most extensively
+tested using Python 2.7.
 
 The package lxml is needed for XML file processing. Version 1.3.4 and upwards
 should work, but lxml 2.1.0 or later is strongly recommended. <http://lxml.de/>
