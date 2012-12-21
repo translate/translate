@@ -52,6 +52,11 @@ class git(GenericRevisionControlSystem):
         command.extend(args)
         return command
 
+    def _has_changes(self):
+        command = self._get_git_command(["diff", "--cached", "--exit-code"])
+        exitcode, output_checkout, error = run_command(command, self.root_dir)
+        return bool(exitcode)
+
     def update(self, revision=None, needs_revert=True):
         """Does a clean update of the given path"""
         output_checkout = ""
@@ -90,6 +95,10 @@ class git(GenericRevisionControlSystem):
             if exitcode != 0:
                 raise IOError("[GIT] add of ('%s', '%s') failed: %s" \
                         % (self.root_dir, self.location_rel, error))
+
+        if not self._has_changes():
+            raise IOError("[GIT] no changes to commit")
+
         # commit file
         command = self._get_git_command(["commit"])
         if message:
