@@ -25,7 +25,7 @@
 
 abs_start_time=$(date +%s)
 start_time=$abs_start_time
-opt_vc="yes"
+opt_vc=""
 opt_build_xpi=""
 opt_compare_locales="yes"
 opt_copyfiles="yes"
@@ -49,8 +49,8 @@ do
 			--xpi)
 				opt_build_xpi="yes"
 			;;
-			--no-vc)
-				opt_vc=""
+			--vc)
+				opt_vc="yes"
 			;;
 			--no-compare-locales)
 				opt_compare_locales=""
@@ -88,6 +88,14 @@ else
 	HG_LANGS=$*
 	COUNT_LANGS=$#
 fi
+
+for lang in $HG_LANGS
+do
+	if [ "$lang" == "templates" ]; then
+		opt_vc="yes"
+		break
+	fi
+done
 
 function verbose() {
 	if [ "$opt_verbose" -o "$opt_time" ]; then
@@ -204,21 +212,23 @@ do
 	fi
 done
 
-[ -d ${POT_DIR} ] && rm -rf ${POT_DIR}/
-
-verbose "Extract the en-US source files from the repo into localisation structure in l10n/en-US"
-rm -rf ${L10N_DIR}/en-US
-get_moz_enUS.py $get_moz_enUS_verbosity -s ../${MOZ_DIR} -d . -p browser
-get_moz_enUS.py $get_moz_enUS_verbosity -s ../${MOZ_DIR} -d . -p mobile
-
-verbose "moz2po - Create POT files from l10n/en-US"
-moz2po --errorlevel=$errorlevel --progress=$progress -P --duplicates=msgctxt --exclude '.hg' en-US ${POT_DIR}
-pot_dir=$(basename ${POT_DIR})
-(cd ${POT_DIR}/..
-[ "$(git status --porcelain ${pot_dir})" != "?? ${pot_dir}/" ] && git checkout $gitverbosity -- $(git difftool -y -x 'diff --unified=3 --ignore-matching-lines=POT-Creation --ignore-matching-lines=X-Generator -s' ${pot_dir} |
-egrep "are identical$" |
-sed "s/^Files.*.\.pot and //;s/\(\.pot\).*/\1/") || echo "No header only changes, so no reverts needed"
-)
+if [ $opt_vc ]; then
+	[ -d ${POT_DIR} ] && rm -rf ${POT_DIR}/
+	
+	verbose "Extract the en-US source files from the repo into localisation structure in l10n/en-US"
+	rm -rf ${L10N_DIR}/en-US
+	get_moz_enUS.py $get_moz_enUS_verbosity -s ../${MOZ_DIR} -d . -p browser
+	get_moz_enUS.py $get_moz_enUS_verbosity -s ../${MOZ_DIR} -d . -p mobile
+	
+	verbose "moz2po - Create POT files from l10n/en-US"
+	moz2po --errorlevel=$errorlevel --progress=$progress -P --duplicates=msgctxt --exclude '.hg' en-US ${POT_DIR}
+	pot_dir=$(basename ${POT_DIR})
+	(cd ${POT_DIR}/..
+	[ "$(git status --porcelain ${pot_dir})" != "?? ${pot_dir}/" ] && git checkout $gitverbosity -- $(git difftool -y -x 'diff --unified=3 --ignore-matching-lines=POT-Creation --ignore-matching-lines=X-Generator -s' ${pot_dir} |
+	egrep "are identical$" |
+	sed "s/^Files.*.\.pot and //;s/\(\.pot\).*/\1/") || echo "No header only changes, so no reverts needed"
+	)
+fi
 
 # The following functions are used in the loop following it
 function copyfile {
@@ -264,6 +274,9 @@ function copydir {
 verbose "Translations - build l10n/ files"
 for lang in ${HG_LANGS}
 do
+	if [ "$lang" == "templates" ]; then
+		continue
+	fi
 	[ $COUNT_LANGS -gt 1 ] && echo "Language: $lang"
         polang=$(echo $lang|sed "s/-/_/g")
 	verbose "Update existing po/$lang in case any changes are in version control"
