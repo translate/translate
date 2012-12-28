@@ -133,11 +133,6 @@ do
 	[ ! -d ${dir} ] && mkdir -p ${dir}
 done
 
-# Compute relative paths of ${L10N_DIR} and ${POUPDATED_DIR}.
-# (This assumes that both directories are sub-directories of ${BUILD_DIR}
-L10N_DIR_REL=`echo ${L10N_DIR} | sed "s#${BUILD_DIR}/##"`
-POUPDATED_DIR_REL=`echo ${POUPDATED_DIR} | sed "s#${BUILD_DIR}/##"`
-
 if [ $opt_vc ]; then
 	verbose "Translate Toolkit - update/pull using Git"
 	if [ -d ${TOOLS_DIR}/translate/.git ]; then
