@@ -108,7 +108,6 @@ L10N_DIR="${BUILD_DIR}/l10n"
 PO_DIR="${BUILD_DIR}/po"
 POT_DIR="${PO_DIR}/templates"
 TOOLS_DIR="${BUILD_DIR}/tools"
-POUPDATED_DIR="${BUILD_DIR}/po-updated"
 # FIXME we should build this from the get_moz_enUS script
 PRODUCT_DIRS="browser dom netwerk security services/sync toolkit mobile embedding" # Directories in language repositories to clear before running po2moz
 LANGPACK_DIR="${BUILD_DIR}/xpi"
@@ -170,7 +169,7 @@ fi
 
 if [ $opt_vc ]; then
 	verbose "Translations - prepare the parent directory po/"
-	for trans_repo in ${PO_DIR} ${POUPDATED_DIR}
+	for trans_repo in ${PO_DIR}
 	do
 		if [ -d $trans_repo ]; then
 			(cd $trans_repo
@@ -182,8 +181,6 @@ if [ $opt_vc ]; then
 			git clone $gitverbosity git@github.com:translate/mozilla-l10n.git $trans_repo || git clone $gitverbosity git://github.com/translate/mozilla-l10n.git $trans_repo
 		fi
 	done
-	(cd ${POUPDATED_DIR}
-	git checkout $gitverbosity)
 fi
 
 verbose "Localisations - update Mercurial-managed languages in l10n/"
@@ -276,20 +273,13 @@ do
 		git checkout $gitverbosity
 		git stash pop $gitverbosity || true)
 
-	if [ -d ${PO_DIR}/${polang} ]; then
-		verbose "Copy directory structure while preserving version control metadata"
-		rm -rf ${POUPDATED_DIR}/${polang}
-		cp -R ${PO_DIR}/${polang} ${POUPDATED_DIR}
-		(cd ${POUPDATED_DIR/${polang}; find $PRODUCT_DIRS -name '*.po' -exec rm -f {} \;)
-	fi
-
 	verbose "Migrate - update PO files to new POT files"
 	tempdir=`mktemp -d tmp.XXXXXXXXXX`
 	[ -d ${PO_DIR}/${polang} ] && cp -R ${PO_DIR}/${polang} ${tempdir}/${polang}
-	pomigrate2 --use-compendium --pot2po $pomigrate2verbosity ${tempdir}/${polang} ${POUPDATED_DIR}/${polang} ${POT_DIR}
+	pomigrate2 --use-compendium --pot2po $pomigrate2verbosity ${tempdir}/${polang} ${PO_DIR}/${polang} ${POT_DIR}
 	rm -rf ${tempdir}
 
-	(cd ${POUPDATED_DIR}
+	(cd ${PO_DIR}
 	if [ $USECPO -eq 0 ]; then
 		verbose "Migration cleanup - fix migrated PO files using msgcat"
 		(cd ${polang}
@@ -338,7 +328,7 @@ do
 
 	verbose "po2moz - Create Mozilla l10n layout from migrated PO files."
 	po2moz --progress=$progress --errorlevel=$errorlevel --exclude=".git" --exclude=".hg" --exclude="obsolete" --exclude="editor" --exclude="mail" --exclude="thunderbird" --exclude="chat" --exclude="*~" \
-		-t ${L10N_DIR}/en-US -i ${POUPDATED_DIR}/${polang} -o ${L10N_DIR}/${lang}
+		-t ${L10N_DIR}/en-US -i ${PO_DIR}/${polang} -o ${L10N_DIR}/${lang}
 
 	if [ $opt_copyfiles ]; then
 		verbose "Copy files not handled by moz2po/po2moz"
