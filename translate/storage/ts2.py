@@ -315,6 +315,8 @@ class tsunit(lisa.LISAunit):
         #TODO: check if this is necessary:
         if otherunit.isfuzzy():
             self.markfuzzy()
+        else:
+            self.markfuzzy(False)
 
     def isobsolete(self):
         return self._gettype() == "obsolete"
