@@ -136,3 +136,52 @@ class TestTSfile(test_base.TestTranslationStore):
         assert len(tsfile.units) == 2
         assert tsfile.units[0].getlocations() == ['../tools/qtconfig/mainwindow.cpp:+202']
         assert tsfile.units[1].getlocations() == ['+5']
+
+    def test_merge_with_fuzzies(self):
+        """test that merge with fuzzy works well"""
+        tsstr1 = '''<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE TS>
+<TS version="2.0" language="hu">
+<context>
+    <name>MainWindow</name>
+    <message>
+        <location filename="../tools/qtconfig/mainwindow.cpp" line="+202"/>
+        <source>Desktop Settings (Default)</source>
+        <translation type="unfinished">Asztali beállítások (Alapértelmezett)</translation>
+    </message>
+    <message>
+        <location line="+5"/>
+        <source>Choose style and palette based on your desktop settings.</source>
+        <translation>Stílus és paletta alapú kiválasztása az asztali beállításokban.</translation>
+    </message>
+</context>
+</TS>
+'''
+
+        tsstr2 = '''<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE TS>
+<TS version="2.0" language="hu">
+<context>
+    <name>MainWindow</name>
+    <message>
+        <location filename="../tools/qtconfig/mainwindow.cpp" line="+202"/>
+        <source>Desktop Settings (Default)</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <location line="+5"/>
+        <source>Choose style and palette based on your desktop settings.</source>
+        <translation type="unfinished"/>
+    </message>
+</context>
+</TS>
+'''
+        tsfile = ts.tsfile.parsestring(tsstr1)
+        tsfile2 = ts.tsfile.parsestring(tsstr2)
+        assert len(tsfile.units) == 2
+        assert len(tsfile2.units) == 2
+
+        tsfile2.units[0].merge(tsfile.units[0]) #fuzzy
+        tsfile2.units[1].merge(tsfile.units[1]) #not fuzzy
+        assert tsfile2.units[0].isfuzzy() == True
+        assert tsfile2.units[1].isfuzzy() == False
