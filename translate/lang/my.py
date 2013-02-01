@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 #
-# Copyright 2008-2009 Zuza Software Foundation
+# Copyright 2013 Zuza Software Foundation
 #
 # This file is part of the Translate Toolkit.
 #
@@ -18,8 +18,15 @@
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, see <http://www.gnu.org/licenses/>.
 
-"""This file contains the version of the Translate Toolkit."""
+"""This module represents the Burmese language.
 
-build = 12015
-sver = "1.10.0-rc1"
-ver = (1, 10, 0)
+.. seealso:: http://en.wikipedia.org/wiki/Burmese_language
+"""
+
+from translate.lang import common
+
+
+class si(common.Common):
+    """This class represents Burmese."""
+
+    ignoretests = ["startcaps", "simplecaps"]
