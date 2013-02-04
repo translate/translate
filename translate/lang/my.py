@@ -26,7 +26,11 @@
 from translate.lang import common
 
 
-class si(common.Common):
+class my(common.Common):
     """This class represents Burmese."""
+
+    puncdict = {
+        u".": u"။",
+    }
 
     ignoretests = ["startcaps", "simplecaps"]
