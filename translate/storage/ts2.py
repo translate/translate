@@ -280,6 +280,9 @@ class tsunit(lisa.LISAunit):
         commentnode = self.xmlelement.find(self.namespaced("comment"))
         if commentnode is not None and commentnode.text is not None:
             contexts.append(commentnode.text)
+        message_id = self.xmlelement.get('id')
+        if message_id is not None:
+            contexts.append(message_id)
         contexts = filter(None, contexts)
         return '\n'.join(contexts)
 
