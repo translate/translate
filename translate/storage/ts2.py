@@ -248,13 +248,17 @@ class tsunit(lisa.LISAunit):
             self._settype(None)
 
     def getid(self):
-        if self.source is None:
-            return None
         context_name = self.getcontext()
+        if self.source is None and context_name is None:
+            return None
+
         #XXX: context_name is not supposed to be able to be None (the <name>
         # tag is compulsary in the <context> tag)
         if context_name is not None:
-            return context_name + self.source
+            if self.source:
+                return context_name + self.source
+            else:
+                return context_name
         else:
             return self.source
 
@@ -280,6 +284,9 @@ class tsunit(lisa.LISAunit):
         commentnode = self.xmlelement.find(self.namespaced("comment"))
         if commentnode is not None and commentnode.text is not None:
             contexts.append(commentnode.text)
+        message_id = self.xmlelement.get('id')
+        if message_id is not None:
+            contexts.append(message_id)
         contexts = filter(None, contexts)
         return '\n'.join(contexts)
 
