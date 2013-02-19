@@ -283,7 +283,6 @@ class TestAndroidDTD(test_monolingual.TestMonolingualStore):
         return str(self.androiddtdparse(dtdsource))
 
     # Test for bug #2480
-    @mark.xfail(reason="Not Implemented")
     def test_android_single_quote_escape(self):
         """test android single quote escaping (bug #2480)"""
         dtdsource = '<!ENTITY pref_char_encoding_off "Don\'t show menu">\n'
@@ -295,7 +294,6 @@ class TestAndroidDTD(test_monolingual.TestMonolingualStore):
         assert dtdunit.source == "Don't show menu"
 
     # Test for bug #2480
-    @mark.xfail(reason="Not Implemented")
     def test_android_single_quote_escape_roundtrip(self):
         """Test android single quote escaping roundtrip (bug #2480)"""
         dtdsource = '<!ENTITY pref_char_encoding_off "Don\'t show menu">\n'

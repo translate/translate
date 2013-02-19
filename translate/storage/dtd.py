@@ -66,6 +66,13 @@ def quoteforandroid(source):
     return value.encode('utf-8')
 
 
+def unquotefromandroid(source):
+    """Unquotes a quoted Android DTD definition."""
+    extracted = unquotefromdtd(source)  # extracted is an UTF-8 encoded string.
+    extracted = extracted.replace(u"\\\'", u"'")
+    return extracted
+
+
 def quotefordtd(source):
     """Quotes and escapes a line for regular DTD files."""
     source = source.replace("&", "&amp;")  # This must be the first replacement
@@ -171,7 +178,10 @@ class dtdunit(base.TranslationUnit):
 
     def getsource(self):
         """gets the unquoted source string"""
-        return unquotefromdtd(self.definition)
+        if self.android:
+            return unquotefromandroid(self.definition)
+        else:
+            return unquotefromdtd(self.definition)
     source = property(getsource, setsource)
 
     def settarget(self, target):
@@ -186,7 +196,10 @@ class dtdunit(base.TranslationUnit):
 
     def gettarget(self):
         """gets the unquoted target string"""
-        return unquotefromdtd(self.definition)
+        if self.android:
+            return unquotefromandroid(self.definition)
+        else:
+            return unquotefromdtd(self.definition)
     target = property(gettarget, settarget)
 
     def getid(self):
