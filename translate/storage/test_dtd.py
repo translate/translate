@@ -217,7 +217,6 @@ class TestDTD(test_monolingual.TestMonolingualStore):
         assert recwarn.pop(Warning)
 
     # Test for bug #68
-    @mark.xfail(reason="Not Implemented")
     def test_entity_escaping(self):
         """Test entities escaping (&amp; &quot; &lt; &gt; &apos;) (bug #68)"""
         dtdsource = ('<!ENTITY securityView.privacy.header "Privacy &amp; '
@@ -257,7 +256,6 @@ class TestDTD(test_monolingual.TestMonolingualStore):
                                   "between <p> and </p> tags.")
 
     # Test for bug #68
-    @mark.xfail(reason="Not Implemented")
     def test_entity_escaping_roundtrip(self):
         """Test entities escaping roundtrip (&amp; &quot; ...) (bug #68)"""
         dtdsource = ('<!ENTITY securityView.privacy.header "Privacy &amp; '

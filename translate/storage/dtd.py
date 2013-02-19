@@ -67,15 +67,14 @@ def quoteforandroid(source):
 
 
 def quotefordtd(source):
-    if '%' in source:
-        source = source.replace("%", "&#x25;")
-    if '"' in source:
-        if "'" in source:
-            value = "'" + source.replace("'", '&apos;') + "'"
-        else:
-            value = quote.singlequotestr(source)
-    else:
-        value = quote.quotestr(source)
+    """Quotes and escapes a line for regular DTD files."""
+    source = source.replace("&", "&amp;")  # This must be the first replacement
+    source = source.replace("'", "&apos;")
+    source = source.replace("\"", "&quot;")
+    source = source.replace("<", "&lt;")
+    source = source.replace(">", "&gt;")
+    source = source.replace("%", "&#x25;")
+    value = quote.quotestr(source)
     return value.encode('utf-8')
 
 
@@ -86,8 +85,11 @@ def unquotefromdtd(source):
         source = '""'
     quotechar = source[0]
     extracted, quotefinished = quote.extractwithoutquotes(source, quotechar, quotechar, allowreentry=False)
-    if quotechar == "'" and "&apos;" in extracted:
-        extracted = extracted.replace("&apos;", "'")
+    extracted = extracted.replace("&apos;", "'")
+    extracted = extracted.replace("&quot;", "\"")
+    extracted = extracted.replace("&amp;", "&")
+    extracted = extracted.replace("&lt;", "<")
+    extracted = extracted.replace("&gt;", ">")
     extracted = extracted.replace("&#x25;", "%")
     # the quote characters should be the first and last characters in the string
     # of course there could also be quote characters within the string; not handled here
