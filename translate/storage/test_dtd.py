@@ -267,3 +267,37 @@ class TestDTD(test_monolingual.TestMonolingualStore):
                      'are enclosed between &lt;p&gt; and &lt;/p&gt; tags.">\n')
         dtdregen = self.dtdregen(dtdsource)
         assert dtdsource == dtdregen
+
+
+class TestAndroidDTD(test_monolingual.TestMonolingualStore):
+    StoreClass = dtd.dtdfile
+
+    def androiddtdparse(self, dtdsource):
+        """helper that parses android dtd source without requiring files"""
+        dummyfile = wStringIO.StringIO(dtdsource)
+        dtdfile = dtd.dtdfile(dummyfile, android=True)
+        return dtdfile
+
+    def androiddtdregen(self, dtdsource):
+        """helper that converts dtd source to dtdfile object and back"""
+        return str(self.androiddtdparse(dtdsource))
+
+    # Test for bug #2480
+    @mark.xfail(reason="Not Implemented")
+    def test_android_single_quote_escape(self):
+        """test android single quote escaping (bug #2480)"""
+        dtdsource = '<!ENTITY pref_char_encoding_off "Don\'t show menu">\n'
+        dtdfile = self.androiddtdparse(dtdsource)
+        assert len(dtdfile.units) == 1
+        dtdunit = dtdfile.units[0]
+        assert dtdunit.definition == '"Don\'t show menu"'
+        assert dtdunit.target == "Don't show menu"
+        assert dtdunit.source == "Don't show menu"
+
+    # Test for bug #2480
+    @mark.xfail(reason="Not Implemented")
+    def test_android_single_quote_escape_roundtrip(self):
+        """Test android single quote escaping roundtrip (bug #2480)"""
+        dtdsource = '<!ENTITY pref_char_encoding_off "Don\'t show menu">\n'
+        dtdregen = self.androiddtdregen(dtdsource)
+        assert dtdsource == dtdregen
