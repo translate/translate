@@ -69,6 +69,8 @@ class TestDTDUnit(test_monolingual.TestMonolingualUnit):
     UnitClass = dtd.dtdunit
 
     def test_escapes(self):
+        # Overwriting since inherited method fails due to DTD particularities.
+        # test_roundtrip_quoting() already performs this check.
         pass
 
     def test_rich_get(self):
