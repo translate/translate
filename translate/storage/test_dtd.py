@@ -26,13 +26,22 @@ def test_roundtrip_quoting():
 
 
 def test_quotefordtd():
-    """Test quoting and unqouting dtd definitions"""
-    def tester(raw_original, dtd_ready_result):
-        #print dtd.quotefordtd(raw_original)
-        assert dtd.quotefordtd(raw_original) == dtd_ready_result
-        #print dtd.unquotefromdtd(dtd_ready_result)
-        assert dtd.unquotefromdtd(dtd_ready_result) == raw_original
-    tester("Unintentional variable %S", '"Unintentional variable &#x25;S"')
+    """Test quoting DTD definitions with characters that should be escaped."""
+    assert dtd.quotefordtd("Translated 60%") == '"Translated 60&#x25;"'
+    assert dtd.quotefordtd("Colour & Light") == '"Colour &amp; Light"'
+    assert dtd.quotefordtd("Doesn't work") == '"Doesn&apos;t work"'
+    assert dtd.quotefordtd("Press \"Send\"") == '"Press &quot;Send&quot;"'
+    assert dtd.quotefordtd("Between <p> and </p>") == ('"Between &lt;p&gt; and'
+                                                       ' &lt;/p&gt;"')
+
+
+def test_unquotefromdtd():
+    """Test unquoting DTD definitions with escaped characters."""
+    assert dtd.unquotefromdtd('"Translated 60&#x25;"') == "Translated 60%"
+    assert dtd.unquotefromdtd('"Colour &amp; Light"') == "Colour & Light"
+    assert dtd.unquotefromdtd('"Doesn&apos;t work"') == "Doesn't work"
+    assert dtd.unquotefromdtd('"Press &quot;Send&quot;"') == "Press \"Send\""
+    assert dtd.unquotefromdtd('"&lt;p&gt; and &lt;/p&gt;"') == "<p> and </p>"
 
 
 def test_quoteforandroid():
