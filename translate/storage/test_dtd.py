@@ -25,7 +25,6 @@ def test_roundtrip_quoting():
         assert special == unquoted_special
 
 
-@mark.xfail(reason="Not Implemented")
 def test_quotefordtd():
     """Test quoting DTD definitions with characters that should be escaped."""
     assert dtd.quotefordtd("Translated 60%") == '"Translated 60&#037;"'
@@ -36,7 +35,6 @@ def test_quotefordtd():
                                                        ' &lt;/p&gt;"')
 
 
-@mark.xfail(reason="Not Implemented")
 def test_unquotefromdtd():
     """Test unquoting DTD definitions with escaped characters."""
     assert dtd.unquotefromdtd('"Translated 60&#037;"') == "Translated 60%"

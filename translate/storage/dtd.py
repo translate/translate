@@ -80,7 +80,7 @@ def quotefordtd(source):
     source = source.replace("\"", "&quot;")
     source = source.replace("<", "&lt;")
     source = source.replace(">", "&gt;")
-    source = source.replace("%", "&#x25;")
+    source = source.replace("%", "&#037;")  # Always escape % sign as &#037;.
     value = quote.quotestr(source)
     return value.encode('utf-8')
 
@@ -97,6 +97,8 @@ def unquotefromdtd(source):
     extracted = extracted.replace("&amp;", "&")
     extracted = extracted.replace("&lt;", "<")
     extracted = extracted.replace("&gt;", ">")
+    extracted = extracted.replace("&#037;", "%")
+    extracted = extracted.replace("&#37;", "%")
     extracted = extracted.replace("&#x25;", "%")
     # the quote characters should be the first and last characters in the string
     # of course there could also be quote characters within the string; not handled here
