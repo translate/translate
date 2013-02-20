@@ -285,21 +285,21 @@ class TestDTD(test_monolingual.TestMonolingualStore):
 class TestAndroidDTD(test_monolingual.TestMonolingualStore):
     StoreClass = dtd.dtdfile
 
-    def androiddtdparse(self, dtdsource):
+    def dtdparse(self, dtdsource):
         """helper that parses android dtd source without requiring files"""
         dummyfile = wStringIO.StringIO(dtdsource)
         dtdfile = dtd.dtdfile(dummyfile, android=True)
         return dtdfile
 
-    def androiddtdregen(self, dtdsource):
+    def dtdregen(self, dtdsource):
         """helper that converts dtd source to dtdfile object and back"""
-        return str(self.androiddtdparse(dtdsource))
+        return str(self.dtdparse(dtdsource))
 
     # Test for bug #2480
     def test_android_single_quote_escape(self):
         """test android single quote escaping (bug #2480)"""
         dtdsource = '<!ENTITY pref_char_encoding_off "Don\'t show menu">\n'
-        dtdfile = self.androiddtdparse(dtdsource)
+        dtdfile = self.dtdparse(dtdsource)
         assert len(dtdfile.units) == 1
         dtdunit = dtdfile.units[0]
         assert dtdunit.definition == '"Don\'t show menu"'
@@ -310,5 +310,5 @@ class TestAndroidDTD(test_monolingual.TestMonolingualStore):
     def test_android_single_quote_escape_roundtrip(self):
         """Test android single quote escaping roundtrip (bug #2480)"""
         dtdsource = '<!ENTITY pref_char_encoding_off "Don\'t show menu">\n'
-        dtdregen = self.androiddtdregen(dtdsource)
+        dtdregen = self.dtdregen(dtdsource)
         assert dtdsource == dtdregen
