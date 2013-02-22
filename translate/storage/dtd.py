@@ -74,7 +74,7 @@ def quotefordtd(source):
         if "'" in source:
             value = "'" + source.replace("'", '&apos;') + "'"
         else:
-            value = quote.singlequotestr(source)
+            value = "'" + source + "'"
     else:
         value = quote.quotestr(source)
     return value.encode('utf-8')
