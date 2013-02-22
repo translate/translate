@@ -62,7 +62,7 @@ def quoteforandroid(source):
     if u'%' in source:
         source = source.replace(u"%", u"&#x25;")
     source = source.replace(u"'", u'\\\'').replace(u'"', u'\\&quot;')
-    value = quote.quotestr(source)
+    value = u"\"" + source + u"\""  # Quote the string using double quotes.
     return value.encode('utf-8')
 
 
@@ -74,7 +74,7 @@ def quotefordtd(source):
         source = source.replace("'", "&apos;")
         value = "'" + source + "'"  # Quote the string using single quotes.
     else:
-        value = quote.quotestr(source)
+        value = "\"" + source + "\""  # Quote the string using double quotes.
     return value.encode('utf-8')
 
 
