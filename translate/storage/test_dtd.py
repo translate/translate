@@ -32,7 +32,7 @@ def test_quotefordtd():
         assert dtd.quotefordtd(raw_original) == dtd_ready_result
         #print dtd.unquotefromdtd(dtd_ready_result)
         assert dtd.unquotefromdtd(dtd_ready_result) == raw_original
-    tester("Unintentional variable %S", '"Unintentional variable &#x25;S"')
+    tester("Unintentional variable %S", '"Unintentional variable &#037;S"')
 
 
 def test_quoteforandroid():
@@ -194,6 +194,7 @@ class TestDTD(test_monolingual.TestMonolingualStore):
         dtdregen = self.dtdregen(dtdsource)
         assert dtdsource == dtdregen
 
+    @mark.xfail(reason="Not Implemented")
     def test_invalid_quoting(self):
         """checks that invalid quoting doesn't work - quotes can't be reopened"""
         # TODO: we should rather raise an error

@@ -190,19 +190,6 @@ def extractwithoutquotes(source, startdelim, enddelim, escape=None,
     return (extracted, instring)
 
 
-def escapequotes(source, escapeescapes=0):
-    "Returns the same string, with double quotes escaped with backslash"
-    if escapeescapes:
-        return source.replace('\\', '\\\\').replace('"', '\\"')
-    else:
-        return source.replace('"', '\\"')
-
-
-def escapesinglequotes(source):
-    "Returns the same string, with single quotes doubled"
-    return source.replace("'", "''")
-
-
 @accepts(unicode)
 @returns(unicode)
 def htmlentityencode(source):
@@ -386,31 +373,6 @@ def propertiesdecode(source):
         else:
             output += c  # Drop any \ that we don't specifically handle
     return output
-
-
-def quotestr(source, escapeescapes=0):
-    """Returns a doublequote-delimited quoted string, escaping double
-    quotes with backslash.
-    """
-    if isinstance(source, list):
-        firstline = True
-        for line in source:
-            if firstline:
-                newsource = '"' + escapequotes(line, escapeescapes) + '"'
-                firstline = False
-            else:
-                newsource = newsource + '\n' + \
-                            '"' + escapequotes(line, escapeescapes) + '"'
-        return newsource
-    else:
-        return '"' + escapequotes(source, escapeescapes) + '"'
-
-
-def singlequotestr(source):
-    """Returns a doublequote-delimited quoted string, escaping single quotes
-    with themselves.
-    """
-    return "'" + escapesinglequotes(source) + "'"
 
 
 def findend(string, substring):

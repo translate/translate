@@ -111,13 +111,3 @@ class TestEncoding:
                               (u"&rogerrabbit;", u"&rogerrabbit;"),
                              ]:
             assert quote.htmlentitydecode(encoded) == real
-
-
-class TestQuote:
-
-    def test_quote_wrapping(self):
-        """test that we can wrap strings in double quotes"""
-        string = 'A string'
-        assert quote.quotestr(string) == '"A string"'
-        list = ['One', 'Two']
-        assert quote.quotestr(list) == '"One"\n"Two"'
