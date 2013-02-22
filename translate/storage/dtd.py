@@ -59,8 +59,7 @@ ending in :attr:`.labelsuffixes` into accelerator notation"""
 
 def quoteforandroid(source):
     """Escapes a line for Android DTD files. """
-    if u'%' in source:
-        source = source.replace(u"%", u"&#x25;")
+    source = source.replace(u"%", u"&#037;")  # Always escape % sign as &#037;.
     source = source.replace(u"'", u"\\\'")
     source = source.replace(u"\"", u"\\&quot;")
     value = u"\"" + source + u"\""  # Quote the string using double quotes.
@@ -69,8 +68,7 @@ def quoteforandroid(source):
 
 def quotefordtd(source):
     """Quotes and escapes a line for regular DTD files."""
-    if '%' in source:
-        source = source.replace("%", "&#x25;")
+    source = source.replace("%", "&#037;")  # Always escape % sign as &#037;.
     if '"' in source:
         source = source.replace("'", "&apos;")
         value = "'" + source + "'"  # Quote the string using single quotes.
@@ -88,6 +86,8 @@ def unquotefromdtd(source):
     extracted, quotefinished = quote.extractwithoutquotes(source, quotechar, quotechar, allowreentry=False)
     if quotechar == "'" and "&apos;" in extracted:
         extracted = extracted.replace("&apos;", "'")
+    extracted = extracted.replace("&#037;", "%")
+    extracted = extracted.replace("&#37;", "%")
     extracted = extracted.replace("&#x25;", "%")
     # the quote characters should be the first and last characters in the string
     # of course there could also be quote characters within the string; not handled here
