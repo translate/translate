@@ -61,7 +61,8 @@ def quoteforandroid(source):
     """Escapes a line for Android DTD files. """
     if u'%' in source:
         source = source.replace(u"%", u"&#x25;")
-    source = source.replace(u"'", u'\\\'').replace(u'"', u'\\&quot;')
+    source = source.replace(u"'", u"\\\'")
+    source = source.replace(u"\"", u"\\&quot;")
     value = u"\"" + source + u"\""  # Quote the string using double quotes.
     return value.encode('utf-8')
 
