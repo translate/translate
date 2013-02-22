@@ -67,6 +67,7 @@ def quoteforandroid(source):
 
 
 def quotefordtd(source):
+    """Quotes and escapes a line for regular DTD files."""
     if '%' in source:
         source = source.replace("%", "&#x25;")
     if '"' in source:
