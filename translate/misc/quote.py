@@ -198,11 +198,6 @@ def escapequotes(source, escapeescapes=0):
         return source.replace('"', '\\"')
 
 
-def escapesinglequotes(source):
-    "Returns the same string, with single quotes doubled"
-    return source.replace("'", "''")
-
-
 @accepts(unicode)
 @returns(unicode)
 def htmlentityencode(source):
@@ -404,13 +399,6 @@ def quotestr(source, escapeescapes=0):
         return newsource
     else:
         return '"' + escapequotes(source, escapeescapes) + '"'
-
-
-def singlequotestr(source):
-    """Returns a doublequote-delimited quoted string, escaping single quotes
-    with themselves.
-    """
-    return "'" + escapesinglequotes(source) + "'"
 
 
 def findend(string, substring):
