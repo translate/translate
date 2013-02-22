@@ -71,10 +71,8 @@ def quotefordtd(source):
     if '%' in source:
         source = source.replace("%", "&#x25;")
     if '"' in source:
-        if "'" in source:
-            value = "'" + source.replace("'", '&apos;') + "'"
-        else:
-            value = "'" + source + "'"
+        source = source.replace("'", "&apos;")
+        value = "'" + source + "'"  # Quote the string using single quotes.
     else:
         value = quote.quotestr(source)
     return value.encode('utf-8')
