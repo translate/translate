@@ -25,7 +25,6 @@ def test_roundtrip_quoting():
         assert special == unquoted_special
 
 
-@mark.xfail(reason="Not Implemented")
 def test_quotefordtd():
     """Test quoting DTD definitions"""
     assert dtd.quotefordtd("Completed %S") == '"Completed &#037;S"'
@@ -33,7 +32,6 @@ def test_quotefordtd():
     assert dtd.quotefordtd("<a href=\"http") == "'<a href=\"http'"
 
 
-@mark.xfail(reason="Not Implemented")
 def test_unquotefromdtd():
     """Test unquoting DTD definitions"""
     assert dtd.unquotefromdtd('"Completed &#037;S"') == "Completed %S"

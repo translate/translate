@@ -73,7 +73,7 @@ def unquotefromandroid(source):
     value = value.replace(u"\\&apos;", u"'")
     value = value.replace(u"\\'", u"'")
     value = value.replace(u"\\u0027", u"'")
-    value = value.replace(u"\\&quot;", u"\"")
+    value = value.replace("\\\"", "\"")  # This converts \&quot; to ".
     return value
 
 
@@ -83,10 +83,14 @@ def quotefordtd(source):
     #source = source.replace("<", "&lt;")  # Not really so useful.
     #source = source.replace(">", "&gt;")  # Not really so useful.
     if '"' in source:
-        source = source.replace("'", "&apos;")
-        value = "'" + source + "'"  # Quote the string using single quotes.
+        source = source.replace("'", "&apos;")  # This seems not to runned.
+        if '="' not in source:  # Avoid escaping " chars in href attributes.
+            source = source.replace("\"", "&quot;")
+            value = "\"" + source + "\""  # Quote using double quotes.
+        else:
+            value = "'" + source + "'"  # Quote using single quotes.
     else:
-        value = "\"" + source + "\""  # Quote the string using double quotes.
+        value = "\"" + source + "\""  # Quote using double quotes.
     return value.encode('utf-8')
 
 
@@ -99,6 +103,7 @@ def unquotefromdtd(source):
     extracted, quotefinished = quote.extractwithoutquotes(source, quotechar, quotechar, allowreentry=False)
     if quotechar == "'" and "&apos;" in extracted:
         extracted = extracted.replace("&apos;", "'")
+    extracted = extracted.replace("&quot;", "\"")
     extracted = extracted.replace("&#037;", "%")
     extracted = extracted.replace("&#37;", "%")
     extracted = extracted.replace("&#x25;", "%")
