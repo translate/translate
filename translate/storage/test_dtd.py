@@ -38,7 +38,6 @@ def test_unquotefromdtd():
     assert dtd.unquotefromdtd('"Completed &#x25;S"') == "Completed %S"
 
 
-@mark.xfail(reason="Not Implemented")
 def test_quoteforandroid():
     """Test quoting Android DTD definitions."""
     assert dtd.quoteforandroid("don't") == r'"don\u0027t"'
