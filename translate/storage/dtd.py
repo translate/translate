@@ -69,6 +69,8 @@ def quoteforandroid(source):
 def quotefordtd(source):
     """Quotes and escapes a line for regular DTD files."""
     source = source.replace("%", "&#037;")  # Always escape % sign as &#037;.
+    #source = source.replace("<", "&lt;")  # Not really so useful.
+    #source = source.replace(">", "&gt;")  # Not really so useful.
     if '"' in source:
         source = source.replace("'", "&apos;")
         value = "'" + source + "'"  # Quote the string using single quotes.
@@ -89,6 +91,8 @@ def unquotefromdtd(source):
     extracted = extracted.replace("&#037;", "%")
     extracted = extracted.replace("&#37;", "%")
     extracted = extracted.replace("&#x25;", "%")
+    #extracted = extracted.replace("&lt;", "<")  # Not really so useful.
+    #extracted = extracted.replace("&gt;", ">")  # Not really so useful.
     # the quote characters should be the first and last characters in the string
     # of course there could also be quote characters within the string; not handled here
     return extracted.decode('utf-8')
