@@ -28,6 +28,7 @@ def test_roundtrip_quoting():
 def test_quotefordtd():
     """Test quoting DTD definitions"""
     assert dtd.quotefordtd("Completed %S") == '"Completed &#037;S"'
+    assert dtd.quotefordtd("A \"thing\"") == "'A \"thing\"'"
 
 
 def test_unquotefromdtd():
