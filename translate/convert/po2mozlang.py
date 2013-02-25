@@ -46,7 +46,7 @@ class po2lang:
             if includefuzzy or not pounit.isfuzzy():
                 newunit.settarget(pounit.target)
             else:
-                newunit.settarget(pounit.source)
+                newunit.settarget("")
             if pounit.getnotes('developer'):
                 newunit.addnote(pounit.getnotes('developer'), 'developer')
         return thetargetfile
