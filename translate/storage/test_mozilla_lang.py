@@ -45,22 +45,22 @@ class TestMozLangFile(test_base.TestTranslationStore):
         pass
 
     def test_format_layout(self):
-	"""General test of layout of the format"""
-	lang = ("# Comment\n"
+        """General test of layout of the format"""
+        lang = ("# Comment\n"
                 ";Source\n"
                 "Target\n")
         store = self.StoreClass.parsestring(lang)
-	unit = store.units[0]
-	assert unit.source == "Source"
-	assert unit.target == "Target"
-	assert "Comment" in unit.getnotes()
-	assert str(store) == lang
+        unit = store.units[0]
+        assert unit.source == "Source"
+        assert unit.target == "Target"
+        assert "Comment" in unit.getnotes()
+        assert str(store) == lang
 
     def test_active_flag(self):
-	"""Test the ## active ## flag"""
-	lang = ("## active ##\n"
+        """Test the ## active ## flag"""
+        lang = ("## active ##\n"
                 ";Source\n"
                 "Target\n")
         store = self.StoreClass.parsestring(lang)
-	assert store.is_active
-	assert str(store) == lang
+        assert store.is_active
+        assert str(store) == lang
