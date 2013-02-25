@@ -65,3 +65,14 @@ class TestMozLangFile(test_base.TestTranslationStore):
         store = self.StoreClass.parsestring(lang)
         assert store.is_active
         assert str(store) == lang
+
+    def test_multiline_comments(self):
+        """Ensure we can handle and preserve miltiline comments"""
+        lang = ("## active ##\n"
+                "# First comment\n"
+                "# Second comment\n"
+                "# Third comment\n"
+                ";Source\n"
+                "Target\n")
+        store = self.StoreClass.parsestring(lang)
+        assert str(store) == lang

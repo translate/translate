@@ -44,7 +44,7 @@ class LangUnit(base.TranslationUnit):
         else:
             target = self.target
         if self.getnotes():
-            notes = ('').join(["# %s" % note for note in [self.getnotes('developer')]])
+            notes = ('\n').join(["# %s" % note for note in self.getnotes('developer').split("\n")])
             return u"%s\n;%s\n%s%s" % (notes, self.source, target, unchanged)
         return u";%s\n%s%s" % (self.source, target, unchanged)
 
@@ -91,14 +91,14 @@ class LangStore(txt.TxtFile):
                 continue
 
             if line.startswith('#'): # A comment
-                comment += line[1:].strip()
+                comment += line[1:].strip() + "\n"
 
             if line.startswith(';'):
                 u = self.addsourceunit(line[1:])
                 readyTrans = True  # Now expecting a translation on the next line
                 u.addlocation("%s:%d" % (self.filename, lineoffset + 1))
                 if comment is not None:
-                    u.addnote(comment, 'developer')
+                    u.addnote(comment[:-1], 'developer')
                     comment = ""
 
     def __str__(self):
