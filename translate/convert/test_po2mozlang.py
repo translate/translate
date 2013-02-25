@@ -41,6 +41,14 @@ class TestPO2Lang:
         print langfile
         assert str(langfile) == propexpected
 
+    def test_ok_marker(self):
+        """The {ok} marker"""
+        posource = '''#: prop\nmsgid "Same"\nmsgstr "Same"\n'''
+        propexpected = ''';Same\nSame {ok}\n'''
+        langfile = self.po2lang(posource)
+        print langfile
+        assert str(langfile) == propexpected
+
 
 class TestPO2LangCommand(test_convert.TestConvertCommand, TestPO2Lang):
     """Tests running actual po2prop commands on files"""
