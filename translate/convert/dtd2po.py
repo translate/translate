@@ -285,12 +285,17 @@ def convertdtd(inputfile, outputfile, templatefile, pot=False,
                duplicatestyle="msgctxt"):
     """reads in inputfile and templatefile using dtd, converts using dtd2po,
     writes to outputfile"""
-    inputstore = dtd.dtdfile(inputfile)
+    android_dtd = False
+    # Check if it is an Android DTD file.
+    if ("embedding/android" in inputfile.name or
+        "mobile/android/base" in inputfile.name):
+        android_dtd = True
+    inputstore = dtd.dtdfile(inputfile, android=android_dtd)
     convertor = dtd2po(blankmsgstr=pot, duplicatestyle=duplicatestyle)
     if templatefile is None:
         outputstore = convertor.convertstore(inputstore)
     else:
-        templatestore = dtd.dtdfile(templatefile)
+        templatestore = dtd.dtdfile(templatefile, android=android_dtd)
         outputstore = convertor.mergestore(templatestore, inputstore)
     if outputstore.isempty():
         return 0
