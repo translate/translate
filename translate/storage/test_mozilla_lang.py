@@ -50,6 +50,7 @@ class TestMozLangFile(test_base.TestTranslationStore):
                 ";Source\n"
                 "Target\n")
         store = self.StoreClass.parsestring(lang)
+        store.mark_active = False
         unit = store.units[0]
         assert unit.source == "Source"
         assert unit.target == "Target"

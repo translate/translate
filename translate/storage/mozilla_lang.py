@@ -62,8 +62,9 @@ class LangStore(txt.TxtFile):
     Name = _("Mozilla .lang")
     Extensions = ['lang']
 
-    def __init__(self, inputfile=None, flavour=None, encoding="utf-8"):
+    def __init__(self, inputfile=None, flavour=None, encoding="utf-8", mark_active=True):
         self.is_active = False
+        self.mark_active = mark_active
         super(LangStore, self).__init__(inputfile, flavour, encoding)
 
     def parse(self, lines):
@@ -102,7 +103,7 @@ class LangStore(txt.TxtFile):
 
     def __str__(self):
         ret_string = ""
-        if self.is_active:
+        if self.is_active or self.mark_active:
             ret_string += "## active ##\n"
         ret_string += u"\n\n\n".join([unicode(unit) for unit in self.units]).encode('utf-8')
         ret_string += "\n"
