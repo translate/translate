@@ -45,6 +45,15 @@ def test_quoteforandroid():
     assert dtd.quoteforandroid('the "thing"') == r'"the \&quot;thing\&quot;"'
 
 
+@mark.xfail(reason="Not Implemented")
+def test_unquotefromandroid():
+    """Test unquoting Android DTD definitions."""
+    assert dtd.unquotefromandroid('"Don\\&apos;t show"') == "Don't show"
+    assert dtd.unquotefromandroid('"Don\\\'t show"') == "Don't show"
+    assert dtd.unquotefromandroid('"Don\\u0027t show"') == "Don't show"
+    assert dtd.unquotefromandroid('"A \\&quot;thing\\&quot;"') == "A \"thing\""
+
+
 def test_removeinvalidamp(recwarn):
     """tests the the removeinvalidamps function"""
 
