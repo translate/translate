@@ -25,17 +25,22 @@ def test_roundtrip_quoting():
         assert special == unquoted_special
 
 
+@mark.xfail(reason="Not Implemented")
 def test_quotefordtd():
     """Test quoting DTD definitions"""
     assert dtd.quotefordtd("Completed %S") == '"Completed &#037;S"'
-    assert dtd.quotefordtd("A \"thing\"") == "'A \"thing\"'"
+    assert dtd.quotefordtd("A \"thing\"") == '"A &quot;thing&quot;"'
+    assert dtd.quotefordtd("<a href=\"http") == "'<a href=\"http'"
 
 
+@mark.xfail(reason="Not Implemented")
 def test_unquotefromdtd():
     """Test unquoting DTD definitions"""
     assert dtd.unquotefromdtd('"Completed &#037;S"') == "Completed %S"
     assert dtd.unquotefromdtd('"Completed &#37;S"') == "Completed %S"
     assert dtd.unquotefromdtd('"Completed &#x25;S"') == "Completed %S"
+    assert dtd.unquotefromdtd('"A &quot;thing&quot;"') == "A \"thing\""
+    assert dtd.unquotefromdtd("'<a href=\"http'") == "<a href=\"http"
 
 
 def test_quoteforandroid():
