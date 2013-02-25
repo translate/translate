@@ -33,6 +33,8 @@ def test_quotefordtd():
 def test_unquotefromdtd():
     """Test unquoting DTD definitions"""
     assert dtd.unquotefromdtd('"Completed &#037;S"') == "Completed %S"
+    assert dtd.unquotefromdtd('"Completed &#37;S"') == "Completed %S"
+    assert dtd.unquotefromdtd('"Completed &#x25;S"') == "Completed %S"
 
 
 def test_quoteforandroid():
