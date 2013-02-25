@@ -26,13 +26,13 @@ def test_roundtrip_quoting():
 
 
 def test_quotefordtd():
-    """Test quoting and unqouting dtd definitions"""
-    def tester(raw_original, dtd_ready_result):
-        #print dtd.quotefordtd(raw_original)
-        assert dtd.quotefordtd(raw_original) == dtd_ready_result
-        #print dtd.unquotefromdtd(dtd_ready_result)
-        assert dtd.unquotefromdtd(dtd_ready_result) == raw_original
-    tester("Unintentional variable %S", '"Unintentional variable &#037;S"')
+    """Test quoting DTD definitions"""
+    assert dtd.quotefordtd("Completed %S") == '"Completed &#037;S"'
+
+
+def test_unquotefromdtd():
+    """Test unquoting DTD definitions"""
+    assert dtd.unquotefromdtd('"Completed &#037;S"') == "Completed %S"
 
 
 def test_quoteforandroid():
