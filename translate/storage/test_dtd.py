@@ -26,18 +26,30 @@ def test_roundtrip_quoting():
 
 
 def test_quotefordtd():
-    """Test quoting and unqouting dtd definitions"""
-    def tester(raw_original, dtd_ready_result):
-        #print dtd.quotefordtd(raw_original)
-        assert dtd.quotefordtd(raw_original) == dtd_ready_result
-        #print dtd.unquotefromdtd(dtd_ready_result)
-        assert dtd.unquotefromdtd(dtd_ready_result) == raw_original
-    tester("Unintentional variable %S", '"Unintentional variable &#037;S"')
+    """Test quoting DTD definitions"""
+    assert dtd.quotefordtd("Completed %S") == '"Completed &#037;S"'
+    assert dtd.quotefordtd("A \"thing\"") == "'A \"thing\"'"
+
+
+def test_unquotefromdtd():
+    """Test unquoting DTD definitions"""
+    assert dtd.unquotefromdtd('"Completed &#037;S"') == "Completed %S"
+    assert dtd.unquotefromdtd('"Completed &#37;S"') == "Completed %S"
+    assert dtd.unquotefromdtd('"Completed &#x25;S"') == "Completed %S"
 
 
 def test_quoteforandroid():
-    assert dtd.quoteforandroid("don't") == r'"don\'t"'
+    """Test quoting Android DTD definitions."""
+    assert dtd.quoteforandroid("don't") == r'"don\u0027t"'
     assert dtd.quoteforandroid('the "thing"') == r'"the \&quot;thing\&quot;"'
+
+
+def test_unquotefromandroid():
+    """Test unquoting Android DTD definitions."""
+    assert dtd.unquotefromandroid('"Don\\&apos;t show"') == "Don't show"
+    assert dtd.unquotefromandroid('"Don\\\'t show"') == "Don't show"
+    assert dtd.unquotefromandroid('"Don\\u0027t show"') == "Don't show"
+    assert dtd.unquotefromandroid('"A \\&quot;thing\\&quot;"') == "A \"thing\""
 
 
 def test_removeinvalidamp(recwarn):

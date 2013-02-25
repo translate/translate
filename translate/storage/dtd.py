@@ -59,16 +59,29 @@ ending in :attr:`.labelsuffixes` into accelerator notation"""
 
 def quoteforandroid(source):
     """Escapes a line for Android DTD files. """
-    source = source.replace(u"%", u"&#037;")  # Always escape % sign as &#037;.
-    source = source.replace(u"'", u"\\\'")
+    # Replace "'" character with the \u0027 escape. Other possible replaces are
+    # "\\&apos;" or "\\'".
+    source = source.replace(u"'", u"\\u0027")
     source = source.replace(u"\"", u"\\&quot;")
-    value = u"\"" + source + u"\""  # Quote the string using double quotes.
-    return value.encode('utf-8')
+    value = quotefordtd(source)  # value is an UTF-8 encoded string.
+    return value
+
+
+def unquotefromandroid(source):
+    """Unquotes a quoted Android DTD definition."""
+    value = unquotefromdtd(source)  # value is an UTF-8 encoded string.
+    value = value.replace(u"\\&apos;", u"'")
+    value = value.replace(u"\\'", u"'")
+    value = value.replace(u"\\u0027", u"'")
+    value = value.replace(u"\\&quot;", u"\"")
+    return value
 
 
 def quotefordtd(source):
     """Quotes and escapes a line for regular DTD files."""
     source = source.replace("%", "&#037;")  # Always escape % sign as &#037;.
+    #source = source.replace("<", "&lt;")  # Not really so useful.
+    #source = source.replace(">", "&gt;")  # Not really so useful.
     if '"' in source:
         source = source.replace("'", "&apos;")
         value = "'" + source + "'"  # Quote the string using single quotes.
@@ -89,6 +102,8 @@ def unquotefromdtd(source):
     extracted = extracted.replace("&#037;", "%")
     extracted = extracted.replace("&#37;", "%")
     extracted = extracted.replace("&#x25;", "%")
+    #extracted = extracted.replace("&lt;", "<")  # Not really so useful.
+    #extracted = extracted.replace("&gt;", ">")  # Not really so useful.
     # the quote characters should be the first and last characters in the string
     # of course there could also be quote characters within the string; not handled here
     return extracted.decode('utf-8')
@@ -169,7 +184,10 @@ class dtdunit(base.TranslationUnit):
 
     def getsource(self):
         """gets the unquoted source string"""
-        return unquotefromdtd(self.definition)
+        if self.android:
+            return unquotefromandroid(self.definition)
+        else:
+            return unquotefromdtd(self.definition)
     source = property(getsource, setsource)
 
     def settarget(self, target):
@@ -184,7 +202,10 @@ class dtdunit(base.TranslationUnit):
 
     def gettarget(self):
         """gets the unquoted target string"""
-        return unquotefromdtd(self.definition)
+        if self.android:
+            return unquotefromandroid(self.definition)
+        else:
+            return unquotefromdtd(self.definition)
     target = property(gettarget, settarget)
 
     def getid(self):
