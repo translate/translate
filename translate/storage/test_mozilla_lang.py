@@ -43,3 +43,16 @@ class TestMozLangFile(test_base.TestTranslationStore):
         # FIXME investigate why this doesn't pass or why we even do this
         # text with UTF-8 encoded strings
         pass
+
+    def test_format_layout(self):
+	"""General test of layout of the format"""
+	lang = ("# Comment\n"
+                ";Source\n"
+                "Target\n")
+        store = self.StoreClass.parsestring(lang)
+	unit = store.units[0]
+	assert unit.source == "Source"
+	assert unit.target == "Target"
+	assert "Comment" in unit.getnotes()
+	assert str(store) == lang
+
