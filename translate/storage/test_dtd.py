@@ -44,7 +44,6 @@ def test_quoteforandroid():
     assert dtd.quoteforandroid('the "thing"') == r'"the \&quot;thing\&quot;"'
 
 
-@mark.xfail(reason="Not Implemented")
 def test_unquotefromandroid():
     """Test unquoting Android DTD definitions."""
     assert dtd.unquotefromandroid('"Don\\&apos;t show"') == "Don't show"
