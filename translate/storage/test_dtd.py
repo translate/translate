@@ -39,6 +39,7 @@ def test_unquotefromdtd():
 
 
 def test_quoteforandroid():
+    """Test quoting Android DTD definitions."""
     assert dtd.quoteforandroid("don't") == r'"don\'t"'
     assert dtd.quoteforandroid('the "thing"') == r'"the \&quot;thing\&quot;"'
 
