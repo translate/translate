@@ -63,6 +63,7 @@ class LangStore(txt.TxtFile):
     Extensions = ['lang']
 
     def __init__(self, inputfile=None, flavour=None, encoding="utf-8"):
+	self.is_active = False
         super(LangStore, self).__init__(inputfile, flavour, encoding)
 
     def parse(self, lines):
@@ -74,6 +75,10 @@ class LangStore(txt.TxtFile):
             lines = lines.split("\n")
         for lineoffset, line in enumerate(lines):
             line = line.decode(self.encoding).rstrip("\n").rstrip("\r")
+
+	    if lineoffset == 0 and line == "## active ##":
+                self.is_active = True
+		continue
 
             if len(line) == 0:  # Skip blank lines
                 continue
@@ -96,4 +101,9 @@ class LangStore(txt.TxtFile):
                     comment = ""
 
     def __str__(self):
-        return u"\n\n\n".join([unicode(unit) for unit in self.units]).encode('utf-8') + "\n"
+	ret_string = ""
+	if self.is_active:
+	    ret_string += "## active ##\n"
+	ret_string += u"\n\n\n".join([unicode(unit) for unit in self.units]).encode('utf-8')
+	ret_string += "\n"
+	return ret_string

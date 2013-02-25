@@ -56,3 +56,11 @@ class TestMozLangFile(test_base.TestTranslationStore):
 	assert "Comment" in unit.getnotes()
 	assert str(store) == lang
 
+    def test_active_flag(self):
+	"""Test the ## active ## flag"""
+	lang = ("## active ##\n"
+                ";Source\n"
+                "Target\n")
+        store = self.StoreClass.parsestring(lang)
+	assert store.is_active
+	assert str(store) == lang
