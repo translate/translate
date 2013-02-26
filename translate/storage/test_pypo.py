@@ -27,6 +27,31 @@ class TestHelpers():
         assert pypo.unescape(r"\"\\koei\"\\") == "\"\\koei\"\\"
         assert pypo.unescape(r"\\\rkoei\r\\") == "\\\rkoei\r\\"
 
+    def test_quoteforpo(self):
+        """Special escaping routine to manage newlines and linewrap in PO"""
+        # Simple case
+        assert pypo.quoteforpo("Some test") == ['"Some test"']
+        # Newline handling
+        assert pypo.quoteforpo("One\nTwo\n") == ['""', '"One\\n"', '"Two\\n"']
+        # First line wrapping
+        assert pypo.quoteforpo("A very long sentence. A very long sentence. A very long sentence. A ver") == \
+                             ['"A very long sentence. A very long sentence. A very long sentence. A ver"']
+        assert pypo.quoteforpo("A very long sentence. A very long sentence. A very long sentence. A very") == \
+                              ['""',
+                               '"A very long sentence. A very long sentence. A very long sentence. A very"']
+        # Long line with a newline
+        assert pypo.quoteforpo("A very long sentence. A very long sentence. A very long sentence. A very lon\n") == \
+                             ['"A very long sentence. A very long sentence. A very long sentence. A very lon\\n"']
+        # Special 77 char failure.
+        assert pypo.quoteforpo("Ukuba uyayiqonda into eyenzekayo, \nungaxelela i-&brandShortName; ukuba iqalise ukuthemba ufaniso lwale sayithi. \n<b>Nokuba uyayithemba isayithi, le mposiso isenokuthetha ukuba   kukho umntu \nobhucabhuca ukudibanisa kwakho.</b>") == \
+                             ['""',
+                              '"Ukuba uyayiqonda into eyenzekayo, \\n"',
+                              '"ungaxelela i-&brandShortName; ukuba iqalise ukuthemba ufaniso lwale sayithi. "',
+                              '"\\n"',
+                              '"<b>Nokuba uyayithemba isayithi, le mposiso isenokuthetha ukuba   kukho umntu "',
+                              '"\\n"',
+                              '"obhucabhuca ukudibanisa kwakho.</b>"']
+
 
 class TestPYPOUnit(test_po.TestPOUnit):
     UnitClass = pypo.pounit
