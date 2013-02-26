@@ -99,6 +99,8 @@ def unquotefromdtd(source):
     # extract the string, get rid of quoting
     if len(source) == 0:
         source = '""'
+    # The quote characters should be the first and last characters in the
+    # string. Of course there could also be quote characters within the string.
     quotechar = source[0]
     extracted, quotefinished = quote.extractwithoutquotes(source, quotechar, quotechar, allowreentry=False)
     if quotechar == "'" and "&apos;" in extracted:
@@ -109,8 +111,6 @@ def unquotefromdtd(source):
     extracted = extracted.replace("&#x25;", "%")
     #extracted = extracted.replace("&lt;", "<")  # Not really so useful.
     #extracted = extracted.replace("&gt;", ">")  # Not really so useful.
-    # the quote characters should be the first and last characters in the string
-    # of course there could also be quote characters within the string; not handled here
     return extracted.decode('utf-8')
 
 
