@@ -304,3 +304,16 @@ class TestDTD(test_monolingual.TestMonolingualStore):
         #                          "between <p> and </p> tags.")
         #assert dtdunit.source == ("In HTML the text paragraphs are enclosed "
         #                          "between <p> and </p> tags.")
+
+    # Test for bug #68
+    def test_entity_escaping_roundtrip(self):
+        """Test entities escaping roundtrip (&amp; &quot; ...) (bug #68)"""
+        dtdsource = ('<!ENTITY securityView.privacy.header "Privacy &amp; '
+                     'History">\n<!ENTITY rights.safebrowsing-term3 "Uncheck '
+                     'the options to &quot;&blockAttackSites.label;&quot; and '
+                     '&quot;&blockWebForgeries.label;&quot;">\n<!ENTITY '
+                     'translate.test1 \'XML encodings don&apos;t work\'>\n'
+                     '<!ENTITY translate.test2 "In HTML the text paragraphs '
+                     'are enclosed between &lt;p&gt; and &lt;/p&gt; tags.">\n')
+        dtdregen = self.dtdregen(dtdsource)
+        assert dtdsource == dtdregen
