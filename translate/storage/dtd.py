@@ -36,6 +36,52 @@ Specifications
     XML elements are allowed in entity values. A number of things that are
     allowed will just break the resulting document, Mozilla forbids these
     in their DTD parser.
+
+Dialects
+    There are two dialects:
+
+    - Regular DTD
+    - Android DTD
+
+    Both dialects are similar, but the Android DTD uses some particular escapes
+    that regular DTDs don't have.
+
+Escaping in regular DTD
+    In DTD usually there are characters escaped in the entities. In order to
+    ease the translation some of those escaped characters are unescaped when
+    reading from, or converting, the DTD, and that are escaped again when
+    saving, or converting to a DTD.
+
+    In regular DTD the following characters are usually or sometimes escaped:
+
+    - The % character is escaped using &#037; or &#37; or &#x25;
+    - The " character is escaped using &quot;
+    - The ' character is escaped using &apos; (partial roundtrip)
+    - The & character is escaped using &amp; (not yet implemented)
+    - The < character is escaped using &lt; (not yet implemented)
+    - The > character is escaped using &gt; (not yet implemented)
+
+    Besides the previous ones there are a lot of escapes for a huge number of
+    characters. This escapes usually have the form of &#NUMBER; where NUMBER
+    represents the numerical code for the character.
+
+    There are a few particularities in DTD escaping. Some of the escapes are
+    not yet implemented since they are not really necessary, or because its
+    implementation is too hard.
+
+    A special case is the ' escaping using &apos; which doesn't provide a full
+    roundtrip conversion in order to support some special Mozilla DTD files.
+
+    Also the " character is never escaped in the case that the previous
+    character is = (the sequence =" is present on the string) in order to avoid
+    escaping the " character indicating an attribute assignment, for example in
+    a href attribute for an a tag in HTML (anchor tag).
+
+Escaping in Android DTD
+    It has the sames escapes as in regular DTD, plus this ones:
+
+    - The ' character is escaped using \&apos; or \' or \u0027
+    - The " character is escaped using \&quot;
 """
 
 from translate.storage import base
