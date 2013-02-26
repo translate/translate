@@ -423,3 +423,13 @@ class TestAndroidDTD(test_monolingual.TestMonolingualStore):
                      '<!ENTITY sync.nodevice.label "Don\\u0027t show">\n')
         dtdregen = self.dtdregen(dtdsource)
         assert dtdsource == dtdregen
+
+    def test_android_double_quote_escape(self):
+        """Checks double quote unescaping in Android DTD."""
+        dtdsource = '<!ENTITY translate.test "A \\&quot;thing\\&quot;">\n'
+        dtdfile = self.dtdparse(dtdsource)
+        assert len(dtdfile.units) == 1
+        dtdunit = dtdfile.units[0]
+        assert dtdunit.definition == '"A \\&quot;thing\\&quot;"'
+        assert dtdunit.target == "A \"thing\""
+        assert dtdunit.source == "A \"thing\""
