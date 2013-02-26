@@ -11,17 +11,43 @@ from translate.storage import test_monolingual
 
 
 def test_roundtrip_quoting():
-    specials = ['Fish & chips', 'five < six', 'six > five',
-                'Use &nbsp;', 'Use &amp;nbsp;'
-                'A "solution"', "skop 'n bal", '"""', "'''",
-                '\n', '\t', '\r',
-                'Escape at end \\',
-                '',
-                '\\n', '\\t', '\\r', '\\"', '\r\n', '\\r\\n', '\\']
+    specials = [
+        'Fish & chips',
+        'five < six',
+        'six > five',
+        'Use &nbsp;',
+        'Use &amp;nbsp;A "solution"',
+        "skop 'n bal",
+        '"""',
+        "'''",
+        '\n',
+        '\t',
+        '\r',
+        'Escape at end \\',
+        '',
+        '\\n',
+        '\\t',
+        '\\r',
+        '\\"',
+        '\r\n',
+        '\\r\\n',
+        '\\',
+        "Completed %S",
+        "&blockAttackSites;",
+        "&#x00A0;",
+        "&intro-point2-a;",
+        "&basePBMenu.label;",
+        #"Don't buy",
+        #"Don't \"buy\"",
+        "A \"thing\"",
+        "<a href=\"http"
+    ]
     for special in specials:
         quoted_special = dtd.quotefordtd(special)
         unquoted_special = dtd.unquotefromdtd(quoted_special)
-        print "special: %r\nquoted: %r\nunquoted: %r\n" % (special, quoted_special, unquoted_special)
+        print "special: %r\nquoted: %r\nunquoted: %r\n" % (special,
+                                                           quoted_special,
+                                                           unquoted_special)
         assert special == unquoted_special
 
 
