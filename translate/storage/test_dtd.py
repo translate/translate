@@ -376,6 +376,15 @@ class TestAndroidDTD(test_monolingual.TestMonolingualStore):
         dtdfile = dtd.dtdfile(dummyfile, android=True)
         return dtdfile
 
+    def dtdregen(self, dtdsource):
+        """Parses an Android DTD string to DTD store and then converts it back.
+
+        This allows to simulate reading from an Android DTD file to an
+        in-memory store and writing back to an Android DTD file without really
+        having a real file.
+        """
+        return str(self.dtdparse(dtdsource))
+
     # Test for bug #2480
     def test_android_single_quote_escape(self):
         """Checks several single quote unescaping cases in Android DTD.
@@ -399,3 +408,18 @@ class TestAndroidDTD(test_monolingual.TestMonolingualStore):
         assert dtdunit.definition == '"Don\\u0027t show"'
         assert dtdunit.target == "Don't show"
         assert dtdunit.source == "Don't show"
+
+    # Test for bug #2480
+    def test_android_single_quote_escape_parse_and_convert_back(self):
+        """Checks that Android DTD don't change after parse and convert back.
+
+        An Android DTD source string with several single quote escapes is used
+        instead of real files.
+
+        See bug #2480.
+        """
+        dtdsource = ('<!ENTITY pref_char_encoding_off "Don\\\'t show menu">\n'
+                     '<!ENTITY sync.nodevice.label \'Don\\&apos;t show\'>\n'
+                     '<!ENTITY sync.nodevice.label "Don\\u0027t show">\n')
+        dtdregen = self.dtdregen(dtdsource)
+        assert dtdsource == dtdregen
