@@ -99,8 +99,7 @@ def quoteforpo(text):
             if len(lns) > 0:
                 for ln in lns[:-1]:
                     polines.extend(['"' + escapeforpo(ln) + '"'])
-                if lns[-1]:
-                    polines.extend(['"' + escapeforpo(lns[-1]) + '\\n"'])
+                polines.extend(['"' + escapeforpo(lns[-1]) + '\\n"'])
             else:
                 polines.extend(['"\\n"'])
     if lines[-1]:
