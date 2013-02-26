@@ -265,3 +265,42 @@ class TestDTD(test_monolingual.TestMonolingualStore):
         dtdfile = self.dtdparse(dtdsource)
         assert len(dtdfile.units) == 1
         assert recwarn.pop(Warning)
+
+    # Test for bug #68
+    def test_entity_escaping(self):
+        """Test entities escaping (&amp; &quot; &lt; &gt; &apos;) (bug #68)"""
+        dtdsource = ('<!ENTITY securityView.privacy.header "Privacy &amp; '
+                     'History">\n<!ENTITY rights.safebrowsing-term3 "Uncheck '
+                     'the options to &quot;&blockAttackSites.label;&quot; and '
+                     '&quot;&blockWebForgeries.label;&quot;">\n<!ENTITY '
+                     'translate.test1 \'XML encodings don&apos;t work\'>\n'
+                     '<!ENTITY translate.test2 "In HTML the text paragraphs '
+                     'are enclosed between &lt;p&gt; and &lt;/p&gt; tags.">\n')
+        dtdfile = self.dtdparse(dtdsource)
+        assert len(dtdfile.units) == 4
+        #dtdunit = dtdfile.units[0]
+        #assert dtdunit.definition == '"Privacy &amp; History"'
+        #assert dtdunit.target == "Privacy & History"
+        #assert dtdunit.source == "Privacy & History"
+        dtdunit = dtdfile.units[1]
+        assert dtdunit.definition == ('"Uncheck the options to &quot;'
+                                      '&blockAttackSites.label;&quot; and '
+                                      '&quot;&blockWebForgeries.label;&quot;"')
+        assert dtdunit.target == ("Uncheck the options to \""
+                                  "&blockAttackSites.label;\" and \""
+                                  "&blockWebForgeries.label;\"")
+        assert dtdunit.source == ("Uncheck the options to \""
+                                  "&blockAttackSites.label;\" and \""
+                                  "&blockWebForgeries.label;\"")
+        dtdunit = dtdfile.units[2]
+        assert dtdunit.definition == "'XML encodings don&apos;t work'"
+        assert dtdunit.target == "XML encodings don\'t work"
+        assert dtdunit.source == "XML encodings don\'t work"
+        #dtdunit = dtdfile.units[3]
+        #assert dtdunit.definition == ('"In HTML the text paragraphs are '
+        #                              'enclosed between &lt;p&gt; and &lt;/p'
+        #                              '&gt; tags."')
+        #assert dtdunit.target == ("In HTML the text paragraphs are enclosed "
+        #                          "between <p> and </p> tags.")
+        #assert dtdunit.source == ("In HTML the text paragraphs are enclosed "
+        #                          "between <p> and </p> tags.")
