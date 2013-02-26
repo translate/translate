@@ -103,7 +103,7 @@ def unquotefromdtd(source):
     # string. Of course there could also be quote characters within the string.
     quotechar = source[0]
     extracted, quotefinished = quote.extractwithoutquotes(source, quotechar, quotechar, allowreentry=False)
-    if quotechar == "'" and "&apos;" in extracted:
+    if quotechar == "'":
         extracted = extracted.replace("&apos;", "'")
     extracted = extracted.replace("&quot;", "\"")
     extracted = extracted.replace("&#037;", "%")
