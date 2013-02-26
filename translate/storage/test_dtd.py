@@ -361,3 +361,41 @@ class TestDTD(test_monolingual.TestMonolingualStore):
                      'are enclosed between &lt;p&gt; and &lt;/p&gt; tags.">\n')
         dtdregen = self.dtdregen(dtdsource)
         assert dtdsource == dtdregen
+
+
+class TestAndroidDTD(test_monolingual.TestMonolingualStore):
+    StoreClass = dtd.dtdfile
+
+    def dtdparse(self, dtdsource):
+        """Parses an Android DTD source string and returns a DTD store.
+
+        This allows to simulate reading from Android DTD files without really
+        having real Android DTD files.
+        """
+        dummyfile = wStringIO.StringIO(dtdsource)
+        dtdfile = dtd.dtdfile(dummyfile, android=True)
+        return dtdfile
+
+    # Test for bug #2480
+    def test_android_single_quote_escape(self):
+        """Checks several single quote unescaping cases in Android DTD.
+
+        See bug #2480.
+        """
+        dtdsource = ('<!ENTITY pref_char_encoding_off "Don\\\'t show menu">\n'
+                     '<!ENTITY sync.nodevice.label \'Don\\&apos;t show\'>\n'
+                     '<!ENTITY sync.nodevice.label "Don\\u0027t show">\n')
+        dtdfile = self.dtdparse(dtdsource)
+        assert len(dtdfile.units) == 3
+        dtdunit = dtdfile.units[0]
+        assert dtdunit.definition == '"Don\\\'t show menu"'
+        assert dtdunit.target == "Don't show menu"
+        assert dtdunit.source == "Don't show menu"
+        dtdunit = dtdfile.units[1]
+        assert dtdunit.definition == "'Don\\&apos;t show'"
+        assert dtdunit.target == "Don't show"
+        assert dtdunit.source == "Don't show"
+        dtdunit = dtdfile.units[2]
+        assert dtdunit.definition == '"Don\\u0027t show"'
+        assert dtdunit.target == "Don't show"
+        assert dtdunit.source == "Don't show"
