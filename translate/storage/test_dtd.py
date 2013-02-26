@@ -433,3 +433,13 @@ class TestAndroidDTD(test_monolingual.TestMonolingualStore):
         assert dtdunit.definition == '"A \\&quot;thing\\&quot;"'
         assert dtdunit.target == "A \"thing\""
         assert dtdunit.source == "A \"thing\""
+
+    def test_android_double_quote_escape_parse_and_convert_back(self):
+        """Checks that Android DTD don't change after parse and convert back.
+
+        An Android DTD source string with double quote escapes is used instead
+        of real files.
+        """
+        dtdsource = '<!ENTITY translate.test "A \\&quot;thing\\&quot;">\n'
+        dtdregen = self.dtdregen(dtdsource)
+        assert dtdsource == dtdregen
