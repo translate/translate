@@ -59,6 +59,14 @@ def test_unquotefromdtd():
     assert dtd.unquotefromdtd('"Completed &#037;S"') == "Completed %S"
     assert dtd.unquotefromdtd('"Completed &#37;S"') == "Completed %S"
     assert dtd.unquotefromdtd('"Completed &#x25;S"') == "Completed %S"
+    assert dtd.unquotefromdtd('"Color&light &block;"') == "Color&light &block;"
+    assert dtd.unquotefromdtd('"Color & Light; Red"') == "Color & Light; Red"
+    assert dtd.unquotefromdtd('"&blockAttackSites;"') == "&blockAttackSites;"
+    assert dtd.unquotefromdtd('"&#x00A0;"') == "&#x00A0;"
+    assert dtd.unquotefromdtd('"&intro-point2-a;"') == "&intro-point2-a;"
+    assert dtd.unquotefromdtd('"&basePBMenu.label"') == "&basePBMenu.label"
+    assert dtd.unquotefromdtd("'Don&apos;t buy'") == "Don't buy"
+    assert dtd.unquotefromdtd("'Don&apos;t &quot;buy&quot;'") == 'Don\'t "buy"'
     assert dtd.unquotefromdtd('"A &quot;thing&quot;"') == "A \"thing\""
     assert dtd.unquotefromdtd("'<a href=\"http'") == "<a href=\"http"
 
