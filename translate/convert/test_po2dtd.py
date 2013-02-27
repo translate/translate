@@ -237,6 +237,7 @@ msgstr "&searchIntegration.engineName; &ileti aramasına izin ver"
         # string should be provided to compare with the roundtrip result.
         self.check_roundtrip(r"""'Quote Escape "" '""",
                              r'''"Quote Escape &quot;&quot; "''')
+        self.check_roundtrip(r'''"Double-Quote Escape &quot;&quot; "''')
         self.check_roundtrip(r'''"Single-Quote ' "''')
         self.check_roundtrip(r'''"Single-Quote Escape \' "''')
         # NOTE: during the roundtrip, if " quote mark is present, then ' is
@@ -249,6 +250,16 @@ msgstr "&searchIntegration.engineName; &ileti aramasına izin ver"
         # Thus the string cannot be compared with itself and therefore another
         # string should be provided to compare with the roundtrip result.
         self.check_roundtrip(r"""'Both Quotes "" &apos;&apos; '""",
+                             r'''"Both Quotes &quot;&quot; &apos;&apos; "''')
+        self.check_roundtrip(r'''"Both Quotes &quot;&quot; &apos;&apos; "''')
+        # NOTE: during the roundtrip, if &quot; is present, then ' is converted
+        # to &apos; Also the resulting string is always enclosed between "
+        # characters independently of which quotation marks the original string
+        # is enclosed between.
+        #
+        # Thus the string cannot be compared with itself and therefore another
+        # string should be provided to compare with the roundtrip result.
+        self.check_roundtrip(r'''"Both Quotes &quot;&quot; '' "''',
                              r'''"Both Quotes &quot;&quot; &apos;&apos; "''')
 
     def test_merging_entries_with_spaces_removed(self):
