@@ -60,7 +60,9 @@ class TestPO2DTD:
         dtdoutputfile = wStringIO.StringIO()
         po2dtd.convertdtd(poinputfile, dtdoutputfile, dtdtemplatefile)
         dtdresult = dtdoutputfile.getvalue()
-        print "original dtd:\n", dtdsource, "po version:\n", posource, "output dtd:\n", dtdresult
+        print_string = "Original DTD:\n%s\n\nPO version:\n%s\n\n"
+        print_string = print_string + "Output DTD:\n%s\n################"
+        print print_string % (dtdsource, posource, dtdresult)
         return dtdresult
 
     def roundtripstring(self, entitystring):
