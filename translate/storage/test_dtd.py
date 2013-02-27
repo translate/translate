@@ -54,6 +54,14 @@ def test_quotefordtd():
     assert dtd.quotefordtd("<a href=\"http") == "'<a href=\"http'"
 
 
+@mark.xfail(reason="Not Implemented")
+def test_unquotefromdtd_unimplemented_cases():
+    """Test unimplemented unquoting DTD cases."""
+    assert dtd.unquotefromdtd('"Color &amp; Light"') == "Color & Light"
+    assert dtd.unquotefromdtd('"Color &amp; &block;"') == "Color & &block;"
+    assert dtd.unquotefromdtd('"&lt;p&gt; and &lt;/p&gt;"') == "<p> and </p>"
+
+
 def test_unquotefromdtd():
     """Test unquoting DTD definitions"""
     assert dtd.unquotefromdtd('"Completed &#037;S"') == "Completed %S"
