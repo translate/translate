@@ -27,8 +27,19 @@ def test_roundtrip_quoting():
 
 def test_quotefordtd():
     """Test quoting DTD definitions"""
+    assert dtd.quotefordtd('') == '""'
+    assert dtd.quotefordtd("") == '""'
     assert dtd.quotefordtd("Completed %S") == '"Completed &#037;S"'
+    assert dtd.quotefordtd("&blockAttackSites;") == '"&blockAttackSites;"'
+    assert dtd.quotefordtd("&#x00A0;") == '"&#x00A0;"'
+    assert dtd.quotefordtd("&intro-point2-a;") == '"&intro-point2-a;"'
+    assert dtd.quotefordtd("&basePBMenu.label;") == '"&basePBMenu.label;"'
+    # The ' character isn't escaped as &apos; since the " char isn't present.
+    assert dtd.quotefordtd("Don't buy") == '"Don\'t buy"'
+    # The ' character is escaped as &apos; because the " character is present.
+    assert dtd.quotefordtd("Don't \"buy\"") == '"Don&apos;t &quot;buy&quot;"'
     assert dtd.quotefordtd("A \"thing\"") == '"A &quot;thing&quot;"'
+    # The " character is not escaped when it indicates an attribute value.
     assert dtd.quotefordtd("<a href=\"http") == "'<a href=\"http'"
 
 
