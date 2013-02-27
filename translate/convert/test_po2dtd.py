@@ -60,7 +60,9 @@ class TestPO2DTD:
         dtdoutputfile = wStringIO.StringIO()
         po2dtd.convertdtd(poinputfile, dtdoutputfile, dtdtemplatefile)
         dtdresult = dtdoutputfile.getvalue()
-        print "original dtd:\n", dtdsource, "po version:\n", posource, "output dtd:\n", dtdresult
+        print_string = "Original DTD:\n%s\n\nPO version:\n%s\n\n"
+        print_string = print_string + "Output DTD:\n%s\n################"
+        print print_string % (dtdsource, posource, dtdresult)
         return dtdresult
 
     def roundtripstring(self, entitystring):
@@ -71,9 +73,22 @@ class TestPO2DTD:
         assert dtdresult.startswith(dtdintro) and dtdresult.endswith(dtdoutro)
         return dtdresult[len(dtdintro):-len(dtdoutro)]
 
-    def check_roundtrip(self, dtdsource):
-        """Checks that the round-tripped string is the same as the original"""
-        assert self.roundtripstring(dtdsource) == dtdsource
+    def check_roundtrip(self, dtdsource, dtdcompare=None):
+        """Checks that the round-tripped string is the same as dtdcompare.
+
+        If no dtdcompare string is provided then the round-tripped string is
+        compared with the original string.
+
+        The reason why sometimes another string is provided to compare with the
+        resulting string from the roundtrip is that if the original string
+        contains some characters, like " character, or escapes like &quot;,
+        then when the roundtrip is performed those characters or escapes are
+        escaped, rendering a round-tripped string which differs from the
+        original one.
+        """
+        if not dtdcompare:
+            dtdcompare = dtdsource
+        assert self.roundtripstring(dtdsource) == dtdcompare
 
     def test_joinlines(self):
         """tests that po lines are joined seamlessly (bug 16)"""
@@ -209,12 +224,45 @@ msgstr "&searchIntegration.engineName; &ileti aramasına izin ver"
         self.check_roundtrip(r'"End Line Escape \"')
 
     def test_roundtrip_quotes(self):
-        """checks that (escaped) quotes in strings make it through a dtd->po->dtd roundtrip"""
-        self.check_roundtrip(r"""'Quote Escape "" '""")
+        """Checks that quotes make it through a DTD->PO->DTD roundtrip.
+
+        Quotes may be escaped or not.
+        """
+        # NOTE: during the roundtrip, if " quote mark is present, then it is
+        # converted to &quot; and the resulting string is always enclosed
+        # between " characters independently of which quotation marks the
+        # original string is enclosed between. Thus the string cannot be
+        # compared with itself and therefore other string should be provided to
+        # compare with the result.
+        #
+        # Thus the string cannot be compared with itself and therefore another
+        # string should be provided to compare with the roundtrip result.
+        self.check_roundtrip(r"""'Quote Escape "" '""",
+                             r'''"Quote Escape &quot;&quot; "''')
+        self.check_roundtrip(r'''"Double-Quote Escape &quot;&quot; "''')
         self.check_roundtrip(r'''"Single-Quote ' "''')
         self.check_roundtrip(r'''"Single-Quote Escape \' "''')
-        # NOTE: if both quote marks are present, than ' is converted to &apos;
-        self.check_roundtrip(r"""'Both Quotes "" &apos;&apos; '""")
+        # NOTE: during the roundtrip, if " quote mark is present, then ' is
+        # converted to &apos; and " is converted to &quot; Also the resulting
+        # string is always enclosed between " characters independently of which
+        # quotation marks the original string is enclosed between. Thus the
+        # string cannot be compared with itself and therefore another string
+        # should be provided to compare with the result.
+        #
+        # Thus the string cannot be compared with itself and therefore another
+        # string should be provided to compare with the roundtrip result.
+        self.check_roundtrip(r"""'Both Quotes "" &apos;&apos; '""",
+                             r'''"Both Quotes &quot;&quot; &apos;&apos; "''')
+        self.check_roundtrip(r'''"Both Quotes &quot;&quot; &apos;&apos; "''')
+        # NOTE: during the roundtrip, if &quot; is present, then ' is converted
+        # to &apos; Also the resulting string is always enclosed between "
+        # characters independently of which quotation marks the original string
+        # is enclosed between.
+        #
+        # Thus the string cannot be compared with itself and therefore another
+        # string should be provided to compare with the roundtrip result.
+        self.check_roundtrip(r'''"Both Quotes &quot;&quot; '' "''',
+                             r'''"Both Quotes &quot;&quot; &apos;&apos; "''')
 
     def test_merging_entries_with_spaces_removed(self):
         """dtd2po removes pretty printed spaces, this tests that we can merge this back into the pretty printed dtd"""
