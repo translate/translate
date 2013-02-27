@@ -123,6 +123,20 @@ def test_unquotefromdtd():
     assert dtd.unquotefromdtd("'<a href=\"http'") == "<a href=\"http"
 
 
+def test_android_roundtrip_quoting():
+    specials = [
+        "don't",
+        'the "thing"'
+    ]
+    for special in specials:
+        quoted_special = dtd.quoteforandroid(special)
+        unquoted_special = dtd.unquotefromandroid(quoted_special)
+        print "special: %r\nquoted: %r\nunquoted: %r\n" % (special,
+                                                           quoted_special,
+                                                           unquoted_special)
+        assert special == unquoted_special
+
+
 def test_quoteforandroid():
     """Test quoting Android DTD definitions."""
     assert dtd.quoteforandroid("don't") == r'"don\u0027t"'
