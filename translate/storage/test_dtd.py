@@ -25,6 +25,17 @@ def test_roundtrip_quoting():
         assert special == unquoted_special
 
 
+@mark.xfail(reason="Not Implemented")
+def test_quotefordtd_unimplemented_cases():
+    """Test unimplemented quoting DTD cases."""
+    assert dtd.quotefordtd("Color & Light") == '"Color &amp; Light"'
+    assert dtd.quotefordtd("Color & &block;") == '"Color &amp; &block;"'
+    assert dtd.quotefordtd("Color&Light &red;") == '"Color&amp;Light &red;"'
+    assert dtd.quotefordtd("Color & Light; Yes") == '"Color &amp; Light; Yes"'
+    assert dtd.quotefordtd("Between <p> and </p>") == ('"Between &lt;p&gt; and'
+                                                       ' &lt;/p&gt;"')
+
+
 def test_quotefordtd():
     """Test quoting DTD definitions"""
     assert dtd.quotefordtd('') == '""'
