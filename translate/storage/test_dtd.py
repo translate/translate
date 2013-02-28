@@ -123,6 +123,20 @@ def test_unquotefromdtd():
     assert dtd.unquotefromdtd("'<a href=\"http'") == "<a href=\"http"
 
 
+def test_android_roundtrip_quoting():
+    specials = [
+        "don't",
+        'the "thing"'
+    ]
+    for special in specials:
+        quoted_special = dtd.quoteforandroid(special)
+        unquoted_special = dtd.unquotefromandroid(quoted_special)
+        print "special: %r\nquoted: %r\nunquoted: %r\n" % (special,
+                                                           quoted_special,
+                                                           unquoted_special)
+        assert special == unquoted_special
+
+
 def test_quoteforandroid():
     """Test quoting Android DTD definitions."""
     assert dtd.quoteforandroid("don't") == r'"don\u0027t"'
@@ -359,5 +373,87 @@ class TestDTD(test_monolingual.TestMonolingualStore):
                      'translate.test1 \'XML encodings don&apos;t work\'>\n'
                      '<!ENTITY translate.test2 "In HTML the text paragraphs '
                      'are enclosed between &lt;p&gt; and &lt;/p&gt; tags.">\n')
+        dtdregen = self.dtdregen(dtdsource)
+        assert dtdsource == dtdregen
+
+
+class TestAndroidDTD(test_monolingual.TestMonolingualStore):
+    StoreClass = dtd.dtdfile
+
+    def dtdparse(self, dtdsource):
+        """Parses an Android DTD source string and returns a DTD store.
+
+        This allows to simulate reading from Android DTD files without really
+        having real Android DTD files.
+        """
+        dummyfile = wStringIO.StringIO(dtdsource)
+        dtdfile = dtd.dtdfile(dummyfile, android=True)
+        return dtdfile
+
+    def dtdregen(self, dtdsource):
+        """Parses an Android DTD string to DTD store and then converts it back.
+
+        This allows to simulate reading from an Android DTD file to an
+        in-memory store and writing back to an Android DTD file without really
+        having a real file.
+        """
+        return str(self.dtdparse(dtdsource))
+
+    # Test for bug #2480
+    def test_android_single_quote_escape(self):
+        """Checks several single quote unescaping cases in Android DTD.
+
+        See bug #2480.
+        """
+        dtdsource = ('<!ENTITY pref_char_encoding_off "Don\\\'t show menu">\n'
+                     '<!ENTITY sync.nodevice.label \'Don\\&apos;t show\'>\n'
+                     '<!ENTITY sync.nodevice.label "Don\\u0027t show">\n')
+        dtdfile = self.dtdparse(dtdsource)
+        assert len(dtdfile.units) == 3
+        dtdunit = dtdfile.units[0]
+        assert dtdunit.definition == '"Don\\\'t show menu"'
+        assert dtdunit.target == "Don't show menu"
+        assert dtdunit.source == "Don't show menu"
+        dtdunit = dtdfile.units[1]
+        assert dtdunit.definition == "'Don\\&apos;t show'"
+        assert dtdunit.target == "Don't show"
+        assert dtdunit.source == "Don't show"
+        dtdunit = dtdfile.units[2]
+        assert dtdunit.definition == '"Don\\u0027t show"'
+        assert dtdunit.target == "Don't show"
+        assert dtdunit.source == "Don't show"
+
+    # Test for bug #2480
+    def test_android_single_quote_escape_parse_and_convert_back(self):
+        """Checks that Android DTD don't change after parse and convert back.
+
+        An Android DTD source string with several single quote escapes is used
+        instead of real files.
+
+        See bug #2480.
+        """
+        dtdsource = ('<!ENTITY pref_char_encoding_off "Don\\\'t show menu">\n'
+                     '<!ENTITY sync.nodevice.label \'Don\\&apos;t show\'>\n'
+                     '<!ENTITY sync.nodevice.label "Don\\u0027t show">\n')
+        dtdregen = self.dtdregen(dtdsource)
+        assert dtdsource == dtdregen
+
+    def test_android_double_quote_escape(self):
+        """Checks double quote unescaping in Android DTD."""
+        dtdsource = '<!ENTITY translate.test "A \\&quot;thing\\&quot;">\n'
+        dtdfile = self.dtdparse(dtdsource)
+        assert len(dtdfile.units) == 1
+        dtdunit = dtdfile.units[0]
+        assert dtdunit.definition == '"A \\&quot;thing\\&quot;"'
+        assert dtdunit.target == "A \"thing\""
+        assert dtdunit.source == "A \"thing\""
+
+    def test_android_double_quote_escape_parse_and_convert_back(self):
+        """Checks that Android DTD don't change after parse and convert back.
+
+        An Android DTD source string with double quote escapes is used instead
+        of real files.
+        """
+        dtdsource = '<!ENTITY translate.test "A \\&quot;thing\\&quot;">\n'
         dtdregen = self.dtdregen(dtdsource)
         assert dtdsource == dtdregen
