@@ -409,8 +409,8 @@ class PyLuceneDatabase(CommonIndexer.CommonDatabase):
             self.reader.deleteDocument(docid)
 
     def search(self, query, fieldnames):
-        """return a list of the contents of specified fields for all matches of
-        a query
+        """Return a list of the contents of specified fields for all matches of
+        a query.
 
         :param query: the query to be issued
         :type query: a query object of the real implementation

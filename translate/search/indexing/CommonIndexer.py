@@ -432,7 +432,7 @@ class CommonDatabase(object):
                 + "'search' is missing")
 
     def delete_doc(self, ident):
-        """delete the documents returned by a query
+        """Delete the documents returned by a query.
 
         :param ident: [list of] document IDs | dict describing a query | query
         :type ident: int | list of tuples | dict | list of dicts |
@@ -472,16 +472,16 @@ class CommonDatabase(object):
         # delete all resulting documents step by step
 
         def add_docid_to_list(match):
-            """collect every document ID"""
+            """Collect every document ID."""
             remove_list.append(match["docid"])
         self._walk_matches(query, add_docid_to_list)
         return self.delete_doc(remove_list)
 
     def _walk_matches(self, query, function, arg_for_function=None):
         """Use this function if you want to do something with every single match
-        of a query
+        of a query.
 
-        example::
+        Example::
 
             self._walk_matches(query, function_for_match, arg_for_func)
 
@@ -611,6 +611,7 @@ class CommonEnquire(object):
 
         Use :meth:`translate.search.indexing.CommonIndexer.search`
         to retrieve the exact number of matches
+
         :return: The estimated number of matches
         :rtype: int
         """
