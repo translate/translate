@@ -95,11 +95,18 @@ translatescripts = [apply(join, ('translate', ) + script) for script in
                   ('services', 'tmserver'),
                   ('tools', 'build_tmdb')]
 
-translatebashscripts = [apply(join, ('tools', ) + (script, )) for script in [
-                  'pomigrate2', 'pocompendium',
-                  'posplit', 'popuretext', 'poreencode', 'pocommentclean',
-                  'junitmsgfmt',
-                  ]]
+translatebashscripts = [
+    apply(join, ('tools', ) + script) for script in [
+                  ('junitmsgfmt', ),
+                  ('mozilla', 'build_firefox.sh'),
+                  ('pocommentclean', ),
+                  ('pocompendium', ),
+                  ('pomigrate2', ),
+                  ('popuretext', ),
+                  ('poreencode', ),
+                  ('posplit', ),
+    ]
+]
 
 
 def addsubpackages(subpackages):
