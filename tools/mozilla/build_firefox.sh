@@ -130,12 +130,6 @@ if [ "$CURDIR" == "" -o  "$CURDIR" == '.' ]; then
 fi
 PATH=${CURDIR}:${PATH}
 
-# Make sure all directories exist
-for dir in ${L10N_DIR} ${LANGPACK_DIR}
-do
-	[ ! -d ${dir} ] && mkdir -p ${dir}
-done
-
 if [ $opt_vc ]; then
 	verbose "Translate Toolkit - update/pull using Git"
 	if [ -d ${TOOLS_DIR}/translate/.git ]; then
@@ -190,6 +184,7 @@ if [ $opt_vc ]; then
 fi
 
 verbose "Localisations - update Mercurial-managed languages in l10n/"
+mkdir -p ${L10N_DIR}
 cd ${L10N_DIR}
 for lang in ${HG_LANGS}
 do
@@ -387,6 +382,7 @@ do
 
 	## CREATE XPI LANGPACK
 	if [ $opt_build_xpi ]; then
+		mkdir -p ${LANGPACK_DIR}
 		verbose "Language Pack - create an XPI"
 		buildxpi.py -d -L ${L10N_DIR} -s ${MOZCENTRAL_DIR} -o ${LANGPACK_DIR} ${lang}
 	fi
