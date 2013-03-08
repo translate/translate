@@ -309,14 +309,14 @@ do
 		git add ${polang}/\*.po
 	else
 		(cd ${polang}
-		for newfile in $(git status --porcelain $PRODUCT_DIRS | egrep "^\?\?" | sed "s/^??\w*//")
+		for newfile in $(git status --porcelain $PRODUCT_DIRS | egrep "^\?\?" | sed "s/^??\w*[^\/]*\///")
 		do
-			[ -f $newfile -a "$(echo $newfile | cut -d"." -f3)" = "po" ] && git add $newfile
+			[ -f $newfile -a "$(basename $newfile | cut -d"." -f3)" = "po" ] && git add $newfile
 		done
 
-		for oldfile in $(git status --porcelain $PRODUCT_DIRS | egrep "^ D" | sed "s/^ D\w*//")
+		for oldfile in $(git status --porcelain $PRODUCT_DIRS | egrep "^ D" | sed "s/^ D\w*[^\/]*\///")
 		do
-			if [ -f $newfile -a "$(echo $newfile | cut -d"." -f3)" = "po" ]; then
+			if [ "$(basename $oldfile | cut -d'.' -f3)" = "po" ]; then
 				git checkout $gitverbosity -- $oldfile
 				mkdir -p obsolete/$(dirname $oldfile)
 				git mv $oldfile obsolete/$oldfile
