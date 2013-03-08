@@ -267,6 +267,8 @@ def main(argv=None):
         "xlf": ("xlf", convertpot),
         ("xlf", "xlf"): ("xlf", convertpot),
         "ts": ("ts", convertpot),
+        "lang": ("lang", convertpot),
+        ("lang", "lang"): ("lang", convertpot),
         ("ts", "ts"): ("ts", convertpot),
         "catkeys": ("catkeys", convertpot),
         ("catkeys", "catkeys"): ("catkeys", convertpot),
