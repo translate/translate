@@ -279,6 +279,13 @@ function copydir {
 	fi
 }
 
+verbose "Update ${PO_DIR} in case any changes are in version control"
+(cd ${PO_DIR};
+git stash $gitverbosity
+git pull $gitverbosity --rebase
+git checkout $gitverbosity
+git stash pop $gitverbosity || true)
+
 verbose "Translations - build l10n/ files"
 for lang in ${HG_LANGS}
 do
@@ -287,13 +294,6 @@ do
 	fi
 	[ $COUNT_LANGS -gt 1 ] && echo "Language: $lang"
         polang=$(echo $lang|sed "s/-/_/g")
-	verbose "Update existing po/$lang in case any changes are in version control"
-	(cd ${PO_DIR};
-		git stash $gitverbosity
-		git pull $gitverbosity --rebase
-		git checkout $gitverbosity
-		git stash pop $gitverbosity || true)
-
 	verbose "Migrate - update PO files to new POT files"
 	tempdir=`mktemp -d tmp.XXXXXXXXXX`
 	[ -d ${PO_DIR}/${polang} ] && cp -R ${PO_DIR}/${polang} ${tempdir}/${polang}
