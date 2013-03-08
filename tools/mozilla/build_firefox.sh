@@ -114,6 +114,7 @@ MOZ_DIR="mozilla-aurora"
 MOZCENTRAL_DIR="${BUILD_DIR}/${MOZ_DIR}"
 L10N_DIR="${BUILD_DIR}/l10n"
 PO_DIR="${BUILD_DIR}/po"
+L10N_ENUS="${PO_DIR}/templates-en-US"
 POT_DIR="${PO_DIR}/templates"
 TOOLS_DIR="${BUILD_DIR}/tools"
 # FIXME we should build this from the get_moz_enUS script
@@ -210,13 +211,25 @@ done
 if [ $opt_vc ]; then
 	[ -d ${POT_DIR} ] && rm -rf ${POT_DIR}/
 	
-	verbose "Extract the en-US source files from the repo into localisation structure in l10n/en-US"
-	rm -rf ${L10N_DIR}/en-US
-	get_moz_enUS.py $get_moz_enUS_verbosity -s ../${MOZ_DIR} -d . -p browser
-	get_moz_enUS.py $get_moz_enUS_verbosity -s ../${MOZ_DIR} -d . -p mobile
+	verbose "Extract the en-US source files from the repo into localisation structure"
+	rm -rf ${L10N_ENUS} ${PO_DIR}/en-US
+	get_moz_enUS.py $get_moz_enUS_verbosity -s ../${MOZ_DIR} -d ${PO_DIR} -p browser
+	get_moz_enUS.py $get_moz_enUS_verbosity -s ../${MOZ_DIR} -d ${PO_DIR} -p mobile
+	mv ${PO_DIR}/en-US ${L10N_ENUS}
 	
-	verbose "moz2po - Create POT files from l10n/en-US"
-	moz2po --errorlevel=$errorlevel --progress=$progress -P --duplicates=msgctxt --exclude '.hg' en-US ${POT_DIR}
+	verbose "moz2po - Create POT files from n-US"
+	(cd ${L10N_ENUS}
+	moz2po --errorlevel=$errorlevel --progress=$progress -P --duplicates=msgctxt --exclude '.hg'  . ${POT_DIR}
+	)
+	if [ $USECPO -eq 0 ]; then
+		verbose "Cleanup - fix POT files using msgcat"
+		(cd ${POT_DIR}
+		for po in $(find ${PRODUCT_DIRS} -regex ".*\.po[t]?$")
+		do
+			msgcat -o $po.2 $po 2> >(egrep -v "warning: internationali[zs]ed messages should not contain the .* escape sequence" >&2) && mv $po.2 $po # parallel?
+		done
+		)
+	fi
 	pot_dir=$(basename ${POT_DIR})
 	(cd ${POT_DIR}/..
 	[ "$(git status --porcelain ${pot_dir})" != "?? ${pot_dir}/" ] && git checkout $gitverbosity -- $(git difftool -y -x 'diff --unified=3 --ignore-matching-lines=POT-Creation --ignore-matching-lines=X-Generator -s' ${pot_dir} |
@@ -230,9 +243,9 @@ function copyfile {
 	filename=$1
 	language=$2
 	directory=$(dirname $filename)
-	if [ -f ${L10N_DIR}/en-US/$filename ]; then
+	if [ -f ${L10N_ENUS}/$filename ]; then
 		mkdir -p ${L10N_DIR}/$language/$directory
-		cp -p ${L10N_DIR}/en-US/$filename ${L10N_DIR}/$language/$directory
+		cp -p ${L10N_ENUS}/$filename ${L10N_DIR}/$language/$directory
 	fi
 }
 
@@ -247,7 +260,7 @@ function copyfileifmissing {
 function copyfiletype {
 	filetype=$1
 	language=$2
-	files=$(cd ${L10N_DIR}/en-US; find . -name "$filetype")
+	files=$(cd ${L10N_ENUS}; find . -name "$filetype")
 	for file in $files
 	do
 		copyfile $file $language
@@ -257,8 +270,8 @@ function copyfiletype {
 function copydir {
 	dir=$1
 	language=$2
-	if [ -d ${L10N_DIR}/en-US/$dir ]; then
-		files=$(cd ${L10N_DIR}/en-US/$dir && find . -type f)
+	if [ -d ${L10N_ENUS}/$dir ]; then
+		files=$(cd ${L10N_ENUS}/$dir && find . -type f)
 		for file in $files
 		do
 			copyfile $dir/$file $language
@@ -336,7 +349,7 @@ do
 
 	verbose "po2moz - Create Mozilla l10n layout from migrated PO files."
 	po2moz --progress=$progress --errorlevel=$errorlevel --exclude=".git" --exclude=".hg" --exclude=".hgtags" --exclude="obsolete" --exclude="editor" --exclude="mail" --exclude="thunderbird" --exclude="chat" --exclude="*~" \
-		-t ${L10N_DIR}/en-US -i ${PO_DIR}/${polang} -o ${L10N_DIR}/${lang}
+		-t ${L10N_ENUS} -i ${PO_DIR}/${polang} -o ${L10N_DIR}/${lang}
 
 	if [ $opt_copyfiles ]; then
 		verbose "Copy files not handled by moz2po/po2moz"
