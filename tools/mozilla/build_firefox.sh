@@ -329,7 +329,11 @@ do
 		(cd ${polang}
 		for newfile in $(git status --porcelain $PRODUCT_DIRS | egrep "^\?\?" | sed "s/^??\w*[^\/]*\///")
 		do
-			[ -f $newfile -a "$(basename $newfile | cut -d"." -f3)" = "po" ] && git add $newfile
+			if [ -f $newfile -a "$(basename $newfile | cut -d"." -f3)" = "po" ]; then
+				git add $newfile
+			elif [ -d $newfile -a "$(find $newfiles -name '*.po')" ]; then
+				git add $newfile
+			fi
 		done
 
 		for oldfile in $(git status --porcelain $PRODUCT_DIRS $RETIRED_PRODUCT_DIRS | egrep "^ D" | sed "s/^ D\w*[^\/]*\///")
