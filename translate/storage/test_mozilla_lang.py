@@ -17,16 +17,20 @@ class TestMozLangUnit(test_base.TestTranslationUnit):
         assert str(unit).endswith(" {ok}")
 
     def test_untranslated(self):
-        """THe target is always written to files and is never blank."""
+	"""The target is always written to files and is never blank. If it is
+        truly untranslated then it won't end with '{ok}."""
         unit = self.UnitClass("Open")
         assert unit.target is None
         assert str(unit).find("Open") == 1
         assert str(unit).find("Open", 2) == 6
+        assert not str(unit).endswith(" {ok}")
+
         unit = self.UnitClass("Closed")
         unit.target = ""
         assert unit.target == ""
         assert str(unit).find("Closed") == 1
         assert str(unit).find("Closed", 2) == 8
+        assert not str(unit).endswith(" {ok}")
 
     def test_comments(self):
         """Comments start with #."""
