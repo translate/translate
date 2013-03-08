@@ -119,6 +119,8 @@ POT_DIR="${PO_DIR}/templates"
 TOOLS_DIR="${BUILD_DIR}/tools"
 # FIXME we should build this from the get_moz_enUS script
 PRODUCT_DIRS="browser dom netwerk security services/sync toolkit mobile embedding" # Directories in language repositories to clear before running po2moz
+# Directories in language repositories to clear before running po2moz
+RETIRED_PRODUCT_DIRS="other-licenses/branding/firefox extensions/reporter"
 LANGPACK_DIR="${BUILD_DIR}/xpi"
 
 # Include current dir in path (for buildxpi and others)
@@ -298,7 +300,7 @@ do
 	tempdir=`mktemp -d tmp.XXXXXXXXXX`
 	if [ -d ${PO_DIR}/${polang} ]; then
 		cp -R ${PO_DIR}/${polang} ${tempdir}/${polang}
-		(cd ${PO_DIR}/${polang}; rm $(find ${PRODUCT_DIRS} -type f -name "*.po"))
+		(cd ${PO_DIR}/${polang}; rm $(find ${PRODUCT_DIRS} ${RETIRED_PRODUCT_DIR} -type f -name "*.po"))
 	fi
 	pomigrate2 --use-compendium --pot2po $pomigrate2verbosity ${tempdir}/${polang} ${PO_DIR}/${polang} ${POT_DIR}
 	rm -rf ${tempdir}
@@ -330,7 +332,7 @@ do
 			[ -f $newfile -a "$(basename $newfile | cut -d"." -f3)" = "po" ] && git add $newfile
 		done
 
-		for oldfile in $(git status --porcelain $PRODUCT_DIRS | egrep "^ D" | sed "s/^ D\w*[^\/]*\///")
+		for oldfile in $(git status --porcelain $PRODUCT_DIRS $RETIRED_PRODUCT_DIRS | egrep "^ D" | sed "s/^ D\w*[^\/]*\///")
 		do
 			if [ "$(basename $oldfile | cut -d'.' -f3)" = "po" ]; then
 				git checkout $gitverbosity -- $oldfile
