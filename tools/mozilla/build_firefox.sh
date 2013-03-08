@@ -296,7 +296,10 @@ do
         polang=$(echo $lang|sed "s/-/_/g")
 	verbose "Migrate - update PO files to new POT files"
 	tempdir=`mktemp -d tmp.XXXXXXXXXX`
-	[ -d ${PO_DIR}/${polang} ] && cp -R ${PO_DIR}/${polang} ${tempdir}/${polang}
+	if [ -d ${PO_DIR}/${polang} ]; then
+		cp -R ${PO_DIR}/${polang} ${tempdir}/${polang}
+		(cd ${PO_DIR}/${polang}; rm $(find ${PRODUCT_DIRS} -type f -name "*.po"))
+	fi
 	pomigrate2 --use-compendium --pot2po $pomigrate2verbosity ${tempdir}/${polang} ${PO_DIR}/${polang} ${POT_DIR}
 	rm -rf ${tempdir}
 
