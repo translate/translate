@@ -338,12 +338,14 @@ do
 
 		for oldfile in $(git status --porcelain $PRODUCT_DIRS $RETIRED_PRODUCT_DIRS | egrep "^ D" | sed "s/^ D\w*[^\/]*\///")
 		do
+			# FIXME - allow POT files also
 			if [ "$(basename $oldfile | cut -d'.' -f3)" = "po" ]; then
 				git checkout $gitverbosity -- $oldfile
 				mkdir -p obsolete/$(dirname $oldfile)
 				git mv $oldfile obsolete/$oldfile
 			fi
 		done
+		# FIXME - do a PO cleanup here
 		)
 	fi
 	)
