@@ -359,7 +359,12 @@ do
 	done
 
 	verbose "po2moz - Create Mozilla l10n layout from migrated PO files."
-	po2moz --progress=$progress --errorlevel=$errorlevel --exclude=".git" --exclude=".hg" --exclude=".hgtags" --exclude="obsolete" --exclude="editor" --exclude="mail" --exclude="thunderbird" --exclude="chat" --exclude="*~" \
+	for exclude in $RETIRED_PRODUCT_DIR
+	do
+		excludes=$(echo '$excludes --exclude="$exclude"')
+	done
+	echo $excludes
+	po2moz --progress=$progress --errorlevel=$errorlevel --exclude=".git" --exclude=".hg" --exclude=".hgtags" --exclude="obsolete" --exclude="editor" --exclude="mail" --exclude="thunderbird" --exclude="chat" --exclude="*~" $excludes \
 		-t ${L10N_ENUS} -i ${PO_DIR}/${polang} -o ${L10N_DIR}/${lang}
 
 	if [ $opt_copyfiles ]; then
