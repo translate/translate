@@ -390,8 +390,12 @@ do
 	# COMPARE LOCALES
 	if [ $opt_compare_locales ]; then
 		verbose "Compare-Locales - to find errors"
-		compare-locales ${MOZCENTRAL_DIR}/browser/locales/l10n.ini ${L10N_DIR} $lang
-		compare-locales ${MOZCENTRAL_DIR}/mobile/locales/l10n.ini ${L10N_DIR} $lang
+		if [ -f ${MOZCENTRAL_DIR}/browser/locales/l10n.ini ]; then
+			compare-locales ${MOZCENTRAL_DIR}/browser/locales/l10n.ini ${L10N_DIR} $lang
+			compare-locales ${MOZCENTRAL_DIR}/mobile/locales/l10n.ini ${L10N_DIR} $lang
+		else
+			echo "Can't run compare-locales without ${MOZCENTRAL_DIR} checkout"
+		fi
 	fi
 
 done
