@@ -167,7 +167,7 @@ if [ $opt_vc ]; then
 	fi
 fi
 
-if [ $opt_vc ]; then
+if [ "$opt_vc" -o ! -d "${PO_DIR}" ]; then
 	verbose "Translations - prepare the parent directory po/"
 	for trans_repo in ${PO_DIR}
 	do
