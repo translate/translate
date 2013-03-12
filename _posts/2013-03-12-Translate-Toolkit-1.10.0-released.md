@@ -51,7 +51,7 @@ Checks
 ------
 * New OpenOffice variables style used in extensions
 * Check for self-closing tags in the xmltags test [Seb M].
-* GCong test fixes
+* GConf test fixes
 * Terminology checker type for future terminology features
 * Categorize pofilter checks into critical, functional, cosmetic, etc
 * Added support for Objective-C %@ printf specifiers
