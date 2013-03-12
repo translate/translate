@@ -18,24 +18,28 @@
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, see <http://www.gnu.org/licenses/>.
 
-"""The Translate Toolkit is a Python package that assists in software localization.
+"""The Translate Toolkit is a toolkit for localization engineering.
 
-See http://translate.sourceforge.net/wiki/toolkit/index or
-http://translate.org.za for more information.
+The `Translate Toolkit <http://toolkit.translatehouse.org/>`_ is created by
+localizers for localizers. It contains several utilities, as well as an API for
+building localization tools.
 
-The Translate Toolkit is created by Translate.org.za and others. It contains
-several utilities, as well as an API for building localization tools. Some of
-the tools include:
+Some of the **tools** include:
 
-- File format converters
-- Quality checking tools
+- File format `converters
+  <http://docs.translatehouse.org/projects/translate-toolkit/en/latest/commands/index.html#converters>`_
+- `Quality checking
+  <http://docs.translatehouse.org/projects/translate-toolkit/en/latest/commands/index.html#quality-assurance>`_
+  tools
 - Tools for counting, grepping, terminology extraction, and pseudo-localization
 
-Apart from the code for the tools above, some features of the API include:
+Apart from the code for the tools above, some features of the **API** include:
 
-- Support for multiple file formats
-- Language information language support code (including language detection)
+- Support for multiple `file formats
+  <http://docs.translatehouse.org/projects/translate-toolkit/en/latest/formats/index.html>`_
+- Language information and language support code (including language detection)
 - Code for translation memory, terminology matching and indexed search
-- Several helper classes and functions for tools built on the Translate Toolkit.
+- Several helper classes and functions for tools built on the Translate
+  Toolkit.
 
 """
