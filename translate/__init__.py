@@ -18,7 +18,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, see <http://www.gnu.org/licenses/>.
 
-"""The Translate Toolkit is a toolkit for localization engineering.
+"""Tools and API for translation and localization engineering.
 
 The `Translate Toolkit <http://toolkit.translatehouse.org/>`_ is created by
 localizers for localizers. It contains several utilities, as well as an API for
