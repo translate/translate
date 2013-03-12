@@ -6,6 +6,13 @@ title: Download
   <h2>Download the Translate Toolkit</h2>
   <p>The latest stable version is <strong>{{ site.latest_version }}</strong>.</p>
   <p><a class="btn btn-success btn-huge"
-    href="http://sourceforge.net/projects/translate/files/Translate Toolkit/1.9.0/">Download
+    href="http://sourceforge.net/projects/translate/files/Translate Toolkit/1.10.0/">Download
     Now&nbsp;<i class="icon-circle-arrow-down icon-large"></i></a></p>
+
+  <hr>
+
+  <h2>About this release <small>{{ site.latest_version }}</small></h2>
+  {% for post in site.categories.releases limit:1 %}
+  {{ post.content }}
+  {% endfor %}
 </div>
