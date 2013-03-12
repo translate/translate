@@ -382,8 +382,7 @@ classifiers = [
 
 
 def dosetup(name, version, packages, datafiles, scripts, ext_modules=[]):
-    long_description = __doc__
-    description = __doc__.split("\n", 1)[0]
+    description, long_description = __doc__.split("\n", 1)
     setup(name=name,
           version=version,
           license="GNU General Public License (GPL)",
