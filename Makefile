@@ -29,5 +29,7 @@ help:
 	@echo "----"
 	@echo
 	@echo "  build - create sdist with required prep"
-	@echo "  publish - publish on PyPI"
-	@echo "  test-publish - publish on PyPI testing platform"
+	@echo "  publish-pypi - publish on PyPI"
+	@echo "  test-publish-pypi - publish on PyPI testing platform"
+	@echo "  publish-sourceforge - publish on sourceforge"
+	@echo "  publish - publish on PyPI and sourceforge"
