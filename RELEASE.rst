@@ -196,10 +196,12 @@ You will need:
    for the moment.
 #. ``make publish-sourceforge`` will give you the command to upload your
    tarball and ``README.rst``.
+
    #. Upload tarball for release.
    #. Upload release notes as ``README.rst``.
    #. Click on the info icon for ``README.rst`` and tick "Exclude Stats" to
       exlude the README from stats counting.
+
 #. Check that the README.rst for the parent ``Translate Toolkit`` folder is
    still appropriate, this is the text from ``translate/__info__.py``.
 #. Check all links for ``README.rst`` files, new release and parent.
