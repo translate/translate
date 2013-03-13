@@ -68,6 +68,7 @@ notes.  You should remove all log messages before the release.
 Read for grammar and spelling errors.
 
 .. note:: When writing the notes please remember:
+
    #. The voice is active. 'Translate has released a new version of the
       toolkit', not 'A new version of the toolkit was release by Translate'.
    #. The connection to the users is human not distant.
