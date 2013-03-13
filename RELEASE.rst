@@ -249,6 +249,7 @@ Let people know that there is a new version:
    translate-announce@lists.sourceforge.net
 #. Adjust the #pootle channel notice. Use ``/topic`` to change the topic.
 #. Email important users
+#. Tweet about it
 
 
 Cleanup
