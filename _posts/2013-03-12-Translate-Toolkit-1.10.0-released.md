@@ -85,7 +85,7 @@ Mozilla tooling fixes
 * Support new {{xx}} variable style introduced in PDF viewer
 
 
-...and refactoring, PEP8, test coverage and of couese many many bugfixes.
+...and refactoring, PEP8, test coverage and of course many many bugfixes.
 
 
 Contributors
