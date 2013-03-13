@@ -17,10 +17,13 @@ tried to credit them wherever possible (sorry if somehow we missed you).
 
 ..
   This is used for the email and other release notifications
-  Getting it
-  ==========
-  * `Sourceforge download <https://sourceforge.net/projects/translate/files/Translate%20Toolkit/1.10.0/>`_
+  Getting it and sharing it
+  =========================
   * pip install translate-toolkit
+  * `Sourceforge download
+    <https://sourceforge.net/projects/translate/files/Translate%20Toolkit/1.10.0/>`_
+  * Please share this URL http://toolkit.translatehouse.org/download.html if
+    you'd like to tweet or post about the release.
 
 
 Highlighted improvements
