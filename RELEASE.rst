@@ -247,7 +247,7 @@ Let people know that there is a new version:
 #. Announce on mailing lists:
    Send the announcement to the translate-announce mailing lists on
    translate-announce@lists.sourceforge.net
-#. Adjust the #pootle channel notice
+#. Adjust the #pootle channel notice. Use ``/topic`` to change the topic.
 #. Email important users
 
 
