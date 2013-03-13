@@ -66,20 +66,12 @@ Language specific fixes
 
 Documentation
 -------------
-All documentation has been moved into Git and we are using Sphinx.  The
-documentation is published on Read The Docs (RTD).
-
-The migration meant migrating all wiki content to RTD, fixing any broken
-formating and taking the opportunity to do a documentation cleanup.  We created
-a wonderful looking new style for the documentation which makes it a joy to
-read.
-
-All API and code documentation has also been moved from epydoc into
-reStructured Text.
-
-The first draft of the Translate styleguide has guided a lot of code and
-documentation quality improvements. Special Sphinx command to create
-steller documentation.
+* Moved to Git and we are now using reStructured Text and Sphinx
+* Published in Read The Docs (RTD).
+* Old wiki migrated to RTD.
+* New clean theme for documentation and website
+* API and code epydoc moved to reStructured Text.
+* Translate code Style Guide written
 
 
 Mozilla tooling fixes
