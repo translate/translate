@@ -3,7 +3,9 @@
 
 TBX
 ***
-TBX is the LISA standard for terminology and term exchange.
+TBX is the `LISA OSCAR standard
+<http://www.gala-global.org/lisa-oscar-standards>`_ for terminology and term
+exchange.
 
 For information on more file formats, see :doc:`conformance`.
 
@@ -12,15 +14,16 @@ For information on more file formats, see :doc:`conformance`.
 References
 ==========
 
-* `Standard home page <http://www.lisa.org/Term-Base-eXchange.32.0.html>`_
-* `Specification <http://www.lisa.org/TBX-Specification.33.0.html>`_
+* `Standard home page <http://www.gala-global.org/lisa-oscar-standards>`_
+* `Specification
+  <http://www.gala-global.org/oscarStandards/tbx/tbx_oscar.pdf>`_
 * `ISO 30042
   <http://www.iso.org/iso/iso_catalogue/catalogue_tc/catalogue_detail.htm?csnumber=45797>`_
   -- TBX is an approved ISO standard
 
 You might also be interested in reading about `TBX-Basic
-<http://www.lisa.org/TBX-Basic.926.0.html>`_ -- a simpler, reduced version of
-TBX with most of the useful features included.
+<http://www.gala-global.org/oscarStandards/tbx/tbx-basic.html>`_ -- a simpler,
+reduced version of TBX with most of the useful features included.
 
 .. _tbx#standard_conformance:
 
