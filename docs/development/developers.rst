@@ -217,6 +217,7 @@ defined:
   e.g. PO message, CSV records, DTD elements
 * XXfile -- handles the document or file level of the format.  Eg a PO file, a
   CSV file a DTD file
+
   * fromlines -- read in a file and initialise the various elements
   * tolines -- convert the elements stored in XXelements and portions in XXfile
     to a raw file in that format
