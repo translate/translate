@@ -38,7 +38,7 @@ Options (tiki2po):
 -i INPUT, --input=INPUT      read from INPUT in php format
 -x EXCLUDE, --exclude=EXCLUDE  exclude names matching EXCLUDE from input paths
 -o OUTPUT, --output=OUTPUT     write to OUTPUT in po, pot formats
---include-unused When converting, include strings in the "unused" section?
+--include-unused      When converting, include strings in the "unused" section?
 
 Options (po2tiki):
 
