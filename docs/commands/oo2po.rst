@@ -137,8 +137,8 @@ them into a single message (This is the default behaviour for traditional PO
 files).  You might want to use :doc:`pomigrate2` to ensure that your PO files
 match the latest POT files.::
 
-  cat GSI_af.sdf GSI_xh.sdf > GSI_af-xh.sdf oo2po --source-language=af -l xh
-GSI_af-xh.sdf af-xh-po
+  cat GSI_af.sdf GSI_xh.sdf > GSI_af-xh.sdf
+  oo2po --source-language=af -l xh GSI_af-xh.sdf af-xh-po
 
 Here we are creating PO files with your existing translations but a different
 source language.  Firstly we combine the two SDF files.  Then oo2po creates a
