@@ -17,6 +17,7 @@
 #
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, see <http://www.gnu.org/licenses/>.
+import types
 
 """module for handling Android resource files"""
 
@@ -560,6 +561,8 @@ class AndroidResourceUnit(base.TranslationUnit):
     def hasplurals(self, thing):
         if not isinstance(thing, multistring):
             return False
+        elif isinstance(thing, types.ListType):
+            return True
         return len(thing.strings) > 1
 
 
