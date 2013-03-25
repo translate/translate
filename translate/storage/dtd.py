@@ -152,6 +152,7 @@ def unquotefromdtd(source):
     if quotechar == "'":
         extracted = extracted.replace("&apos;", "'")
     extracted = extracted.replace("&quot;", "\"")
+    extracted = extracted.replace("&#x0022;", "\"")
     extracted = extracted.replace("&#037;", "%")
     extracted = extracted.replace("&#37;", "%")
     extracted = extracted.replace("&#x25;", "%")
