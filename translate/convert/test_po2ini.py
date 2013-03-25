@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-from py.test import mark
+from py.test import mark, skipif
 
 from translate.convert import po2ini
 from translate.convert import test_convert
@@ -9,6 +9,7 @@ from translate.misc import wStringIO
 from translate.storage import po
 
 
+@skipif("__import__('iniparse') is None")
 class TestPO2Ini:
 
     def po2ini(self, posource):
