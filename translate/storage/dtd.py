@@ -149,16 +149,19 @@ def unquotefromdtd(source):
     # string. Of course there could also be quote characters within the string.
     quotechar = source[0]
     extracted, quotefinished = quote.extractwithoutquotes(source, quotechar, quotechar, allowreentry=False)
+    extracted = extracted.decode('utf-8')
     if quotechar == "'":
         extracted = extracted.replace("&apos;", "'")
     extracted = extracted.replace("&quot;", "\"")
     extracted = extracted.replace("&#x0022;", "\"")
+    # FIXME these should probably be handled with a lookup
+    extracted = extracted.replace("&#187;", u"»")
     extracted = extracted.replace("&#037;", "%")
     extracted = extracted.replace("&#37;", "%")
     extracted = extracted.replace("&#x25;", "%")
     #extracted = extracted.replace("&lt;", "<")  # Not really so useful.
     #extracted = extracted.replace("&gt;", ">")  # Not really so useful.
-    return extracted.decode('utf-8')
+    return extracted
 
 
 def removeinvalidamps(name, value):
