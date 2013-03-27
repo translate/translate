@@ -23,7 +23,7 @@ building new tools, make sure to read through this part.
 .. toctree::
    :maxdepth: 1
 
-   styleguide
+   development/styleguide
    development/building
    development/contributing
    development/developers
