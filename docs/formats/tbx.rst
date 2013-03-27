@@ -20,6 +20,7 @@ References
 * `ISO 30042
   <http://www.iso.org/iso/iso_catalogue/catalogue_tc/catalogue_detail.htm?csnumber=45797>`_
   -- TBX is an approved ISO standard
+* `Additional TBX resources <http://www.tbxconvert.gevterm.net/>`_
 
 You might also be interested in reading about `TBX-Basic
 <http://www.gala-global.org/oscarStandards/tbx/tbx-basic.html>`_ -- a simpler,
