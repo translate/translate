@@ -27,7 +27,7 @@ Resources
 * `iCalender validator <http://severinghaus.org/projects/icv/>`_
 * `iCalendar <https://en.wikipedia.org/wiki/ICalendar>`_
 * `Components and their properties
-  <http://upload.wikimedia.org/wikipedia/en/c/c0/ICalendarSpecification.png>`_
+  <https://upload.wikimedia.org/wikipedia/commons/c/c0/ICalendarSpecification.png>`_
 
 .. _ical#conformance:
 

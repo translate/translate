@@ -20,7 +20,7 @@ standardise on the PO format and PO related tools.
 .. warning:: po2ts uses our older .ts support.  Thus many of the newer features
    in .ts are not supported.  To support those features rather edit directly in
    `Virtaal <http://virtaal.org>`_ or `Pootle
-   <http://pootle.tramslatehouse.org>`_.
+   <http://pootle.translatehouse.org>`_.
 
 .. _ts2po#usage:
 

@@ -60,8 +60,8 @@ class ParseError(Exception):
 class TranslationUnit(object):
     """Base class for translation units.
 
-    Our concept of a *translation unit* is influenced heavily by XLIFF:
-    http://www.oasis-open.org/committees/xliff/documents/xliff-specification.htm
+    Our concept of a *translation unit* is influenced heavily by `XLIFF
+    <http://docs.oasis-open.org/xliff/xliff-core/xliff-core.html>`_.
 
     As such most of the method- and variable names borrows from XLIFF
     terminology.

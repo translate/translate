@@ -25,8 +25,8 @@ Derivatives of UnitChecker (like StandardUnitChecker) check translation units,
 and derivatives of TranslationChecker (like StandardChecker) check
 (source, target) translation pairs.
 
-When adding a new test here, please document and explain the behaviour on the
-`wiki <http://translate.sourceforge.net/wiki/toolkit/pofilter_tests>`_.
+When adding a new test here, please document and explain their behaviour on the
+:doc:`pofilter tests </commands/pofilter_tests>` page.
 """
 
 import re

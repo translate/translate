@@ -3,8 +3,8 @@
 
 Base classes
 ************
-NOTE: This page is mostly useful for :doc:`developers` as it describes some
-programming detail of the :doc:`toolkit <index>`.
+NOTE: This page is mostly useful for :doc:`/development/developers` as it
+describes some programming detail of the :doc:`toolkit <index>`.
 
 For the implementation of the different storage classes that the toolkit
 supports, we want to define a set of base classes to form a common API for all

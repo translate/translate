@@ -7,9 +7,9 @@ web2py2po
 
 Converts web2py translation files to PO files and vice versa.
 
-`Web2py <http://mdp.cti.depaul.edu>`_, formerly known as Gluon) is an
-open-source, Python-based web application framework by Massimo Di Pierro
-(inspired by Django and Rails).
+`Web2py <http://web2py.com/>`_, formerly known as Gluon) is an open-source,
+Python-based web application framework by Massimo Di Pierro (inspired by Django
+and Rails).
 
 Web2py uses an internal localization engine based on Python dictionaries, which
 is applied with the T() lookup function. Web2py provides a built-in translation

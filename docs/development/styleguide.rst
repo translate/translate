@@ -362,9 +362,9 @@ Docstring comments:
 
 
 .. _Flask Styleguide: http://flask.pocoo.org/docs/styleguide/
-.. _reST field lists: http://sphinx.pocoo.org/domains.html#info-field-lists
-.. _Python cross-referencing: http://sphinx.pocoo.org/domains.html#cross-referencing-python-objects
-.. _Sphinx: http://sphinx.pocoo.org/
-.. _reStructuredText primer: http://sphinx.pocoo.org/rest.html
-.. _Sphinx documentation: http://sphinx.pocoo.org/contents.html
-.. _paragraph-level markup: http://sphinx.pocoo.org/markup/para.html#paragraph-level-markup
+.. _reST field lists: http://sphinx-doc.org/domains.html#info-field-lists
+.. _Python cross-referencing: http://sphinx-doc.org/domains.html#cross-referencing-python-objects
+.. _Sphinx: http://sphinx-doc.org/
+.. _reStructuredText primer: http://sphinx-doc.org/rest.html
+.. _Sphinx documentation: http://sphinx-doc.org/contents.html
+.. _paragraph-level markup: http://sphinx-doc.org/markup/para.html#paragraph-level-markup

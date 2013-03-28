@@ -150,7 +150,7 @@ script has only been tested with Firefox 3.1 beta sources.
 
 It is basically the scripted version of the process described on Mozilla's
 `"Creating a language pack"
-<https://developer.mozilla.org/en/creating_a_language_pack>`_ page.
+<https://developer.mozilla.org/en-US/docs/Creating_a_Language_Pack>`_ page.
 
 This script is used by ``build_ff3.1_langs.sh`` to build language packs in its
 final step.

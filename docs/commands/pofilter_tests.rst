@@ -563,12 +563,11 @@ those to an exclusion list. The advantage of this exclusion is that many words
 that are specific to the application will not raise errors e.g. program names,
 brand names, function names.
 
-The checker works with `PyEnchant <http://pyenchant.sourceforge.net/>`_. You
+The checker works with `PyEnchant <http://pythonhosted.org/pyenchant/>`_. You
 need to have PyEnchant installed as well as a dictionary for your language (for
-example, one of the `Hunspell
-<http://wiki.services.openoffice.org/wiki/Dictionaries>`_ or `aspell
-<http://ftp.gnu.org/gnu/aspell/dict/>`_ dictionaries).  This test will only
-work if you have specified the :opt:`--language` option.
+example, one of the `Hunspell <http://wiki.openoffice.org/wiki/Dictionaries>`_
+or `aspell <http://ftp.gnu.org/gnu/aspell/dict/>`_ dictionaries).  This test
+will only work if you have specified the :opt:`--language` option.
 
 The pofilter error that is created, lists the misspelled word, plus
 suggestions returned from the spell checker.  That makes it easy for you to

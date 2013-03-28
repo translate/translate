@@ -125,14 +125,6 @@ quote
    :inherited-members:
 
 
-selector
---------
-
-.. automodule:: translate.misc.selector
-   :members:
-   :inherited-members:
-
-
 sparse
 ------
 

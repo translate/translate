@@ -20,8 +20,8 @@ The following formats are supported for subtitles:
 * Sub Station Alpha
 * Advanced Sub Station Alpha
 
-Both .sub and .srt are the main formats `supported by YouTube
-<http://help.youtube.com/support/youtube/bin/answer.py?answer=100077>`_
+YouTube supports `a number of formats
+<http://support.google.com/youtube/bin/static.py?hl=en&topic=2734694&guide=2734661&page=guide.cs>`_
 
 .. _subtitles#implementation_details:
 

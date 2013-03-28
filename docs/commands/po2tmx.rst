@@ -6,8 +6,13 @@ po2tmx
 
 Convert :doc:`Gettext PO </formats/po>` files to a :doc:`/formats/tmx`
 translation memory file.  TMX is the Translation Memory eXchange format
-developed by `LISA <http://lisa.org/>`_ (Localization Industry Standards
-Association).
+developed by OSCAR.
+
+.. [*] OSCAR (Open Standards for Container/Content Allowing Re-use), a special
+   interest group of the now defunct LISA (Localization Industry Standards
+   Association). The Gala `LISA OSCAR Standards
+   <http://www.gala-global.org/lisa-oscar-standards>`_ page has more details on
+   the possble future for the standards.
 
 If you are interested in po2tmx, you might also be interested in
 :doc:`posegment` that can be used to perform some automated segmentation on

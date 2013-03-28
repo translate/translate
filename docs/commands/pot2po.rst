@@ -92,10 +92,9 @@ Performance
 ===========
 
 Fuzzy matches are usually of good quality. Installation of the
-`python-Levenshtein
-<https://sourceforge.net/project/showfiles.php?group_id=91920&package_id=260161>`_
-package will speed up fuzzy matching. Without this a Python based matcher is
-used which is considerably slower.
+`python-Levenshtein <https://pypi.python.org/pypi/python-Levenshtein>`_ package
+will speed up fuzzy matching. Without this a Python based matcher is used which
+is considerably slower.
 
 Install psyco for additional speedup (it is used by most toolkit tools if it is
 installed.)

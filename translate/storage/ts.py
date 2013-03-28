@@ -23,11 +23,11 @@
 
 Currently this module supports the old format of .ts files. Some applictaions
 use the newer .ts format which are documented here:
-`TS file format 4.3 <http://doc.trolltech.com/4.3/linguist-ts-file-format.html>`_,
+`TS file format 4.3 <http://doc.qt.digia.com/4.3/linguist-ts-file-format.html>`_,
 `Example <http://svn.ez.no/svn/ezcomponents/trunk/Translation/docs/linguist-format.txt>`_
 
-`Specification of the valid variable entries  <http://doc.trolltech.com/4.3/qstring.html#arg>`_,
-`2  <http://doc.trolltech.com/4.3/qstring.html#arg-2>`_
+`Specification of the valid variable entries <http://qt-project.org/doc/qt-5.0/qtcore/qstring.html#arg>`_,
+`2 <http://qt-project.org/doc/qt-5.0/qtcore/qstring.html#arg-2>`_
 """
 
 from translate.misc import ourdom

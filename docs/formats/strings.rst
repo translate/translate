@@ -17,8 +17,8 @@ References
 ==========
 
 * `Localising string resources
-  <http://developer.apple.com/mac/library/documentation/MacOSX/Conceptual/BPInternational/Articles/StringsFiles.html#//apple_ref/doc/uid/20000005-SW1>`_
-* `manual creation of .strings files
-  <http://developer.apple.com/mac/library/documentation/Cocoa/Conceptual/LoadingResources/Strings/Strings.html#//apple_ref/doc/uid/10000051i-CH6-SW10>`_
+  <https://developer.apple.com/library/mac/#documentation/MacOSX/Conceptual/BPInternational/Articles/StringsFiles.html#//apple_ref/doc/uid/20000005-SW1>`_
+* `Manual creation of .strings files
+  <https://developer.apple.com/library/mac/#documentation/Cocoa/Conceptual/LoadingResources/Strings/Strings.html#//apple_ref/doc/uid/10000051i-CH6-SW10>`_
 * `String format specifiers
-  <http://developer.apple.com/mac/library/documentation/Cocoa/Conceptual/Strings/Articles/formatSpecifiers.html>`_
+  <https://developer.apple.com/library/mac/#documentation/Cocoa/Conceptual/Strings/Articles/formatSpecifiers.html>`_

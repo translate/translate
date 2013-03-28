@@ -70,13 +70,14 @@ tool was created.
 WordForge project
 =================
 
-In 2006 with funding from the `Open Society Institute <http://www.soros.org/>`_
-(OSI) and `IDRC <http://www.idrc.ca/>`_ the toolkit was adapted to allow many
-core changes.  The first being to introduce the concept of a base class from
-which PO and XLIFF storage formats are derived.  This allowed tools to be
-adapted to allow output to XLIFF or PO files.  The tools themselves where
-adapted to allow them to work with the core formats XLIFF and PO as well as all
-base class derived formats.  Thus we can count XLIFF, PO, MO and other formats.
+In 2006 with funding from the `Open Society Institute
+<http://www.opensocietyfoundations.org/>`_ (OSI) and `IDRC
+<http://www.idrc.ca/>`_ the toolkit was adapted to allow many core changes.
+The first being to introduce the concept of a base class from which PO and
+XLIFF storage formats are derived.  This allowed tools to be adapted to allow
+output to XLIFF or PO files.  The tools themselves where adapted to allow them
+to work with the core formats XLIFF and PO as well as all base class derived
+formats.  Thus we can count XLIFF, PO, MO and other formats.
 
 Additional contributions during this phase where the adaptation of Pootle to
 use XLIFF as well as PO.  The creation of tools to manage translation memory

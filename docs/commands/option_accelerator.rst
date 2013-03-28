@@ -12,9 +12,9 @@
 |              | <http://mozilla.org>`_ (when using :doc:`moz2po           |
 |              | <moz2po>`)                                                |
 +--------------+-----------------------------------------------------------+
-|  _           | `GNOME Desktop <http://gnome.org>`_ and other `GTK+       |
-|              | <http://gtk.org>`_ based applications                     |
+|  _           | `GNOME Desktop <http://www.gnome.org>`_ and other `GTK+   |
+|              | <http://www.gtk.org>`_ based applications                 |
 +--------------+-----------------------------------------------------------+
-|  ~           | `LibreOffice <http://libreoffice.org>`_ and `Apache       |
-|              | OpenOffice <http://openoffice.org>`_                      |
+|  ~           | `LibreOffice <http://www.libreoffice.org>`_ and `Apache   |
+|              | OpenOffice <http://www.openoffice.org>`_                  |
 +--------------+-----------------------------------------------------------+

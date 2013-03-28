@@ -19,11 +19,13 @@
 # along with this program; if not, see <http://www.gnu.org/licenses/>.
 
 """A class to calculate a similarity based on the Levenshtein
-distance. See http://en.wikipedia.org/wiki/Levenshtein_distance.
+distance.
 
-If available, the python-Levenshtein package will be used which will provide
-better performance as it is implemented natively. See
-http://trific.ath.cx/python/levenshtein/
+See http://en.wikipedia.org/wiki/Levenshtein_distance.
+
+If available, the `python-Levenshtein
+<https://pypi.python.org/pypi/python-Levenshtein>`_ will be used which will
+provide better performance as it is implemented natively.
 """
 
 import math

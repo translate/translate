@@ -22,7 +22,7 @@
 
 """Convert GNU/gettext PO files to web2py translation dictionaries (.py).
 
-See: http://docs.translatehouse.org/projects/translate-toolkit/en/latest/commands/py2web2po.html
+See: http://docs.translatehouse.org/projects/translate-toolkit/en/latest/commands/web2py2po.html
 for examples and usage instructions.
 """
 

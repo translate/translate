@@ -17,4 +17,4 @@ Links
 * `Some notes about the format
   <http://www.haiku-os.org/blog/pulkomandy/2009-09-24_haiku_locale_kit_translator_handbook>`_
 * `Some example files
-  <http://dev.haiku-os.org/browser/haiku/trunk/data/catalogs/>`_
+  <http://cgit.haiku-os.org/haiku/tree/data/catalogs/>`_

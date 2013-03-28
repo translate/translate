@@ -10,7 +10,7 @@ ODF files by combining the original ODF files with XLIFF files containing
 translations of strings in the original document.
 
 XLIFF is the XML Localization Interchange File Format developed by `OASIS
-<http://www.oasis-open.org/committees/tc_home.php?wg_abbrev=xliff>`_ (The
+<https://www.oasis-open.org/committees/tc_home.php?wg_abbrev=xliff>`_ (The
 Organization for the Advancement of Structured Information Standards) to allow
 translation work to be standardised no matter what the source format and to
 allow the work to be freely moved from tool to tool.

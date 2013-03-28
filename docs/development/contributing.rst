@@ -92,9 +92,9 @@ Here are some ideas to get you going:
   </formats/conformance>`
 
 You will definitely need to be on the `Development
-<http://lists.sourceforge.net/lists/listinfo/translate-devel>`_ and probably on
-the `Subversion checkin
-<http://lists.sourceforge.net/lists/listinfo/translate-cvs>`_ lists.
+<https://lists.sourceforge.net/lists/listinfo/translate-devel>`_ and probably
+on the `Subversion checkin
+<https://lists.sourceforge.net/lists/listinfo/translate-cvs>`_ lists.
 
 Now is the time to familiarise yourself with the :doc:`developers guide
 <developers>`.
