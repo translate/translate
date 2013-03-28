@@ -126,17 +126,17 @@ brackets
 
 Checks that the number of brackets in both strings match.
 
-If ([{ or }]) appear in the original this will check that the same number
-appear in the translation.
+If ``([{`` or ``}])`` appear in the original this will check that the same
+number appear in the translation.
 
 .. _pofilter_tests#compendiumconflicts:
 
 compendiumconflicts
 -------------------
 
-Checks for Gettext compendium conflicts (#-#-#-#-#).
+Checks for Gettext compendium conflicts (``#-#-#-#-#``).
 
-When you use msgcat to create a PO compendium it will insert #-#-#-#-# into
+When you use msgcat to create a PO compendium it will insert ``#-#-#-#-#`` into
 entries that are not consistent.  If the compendium is used later in a message
 merge then these conflicts will appear in your translations.  This test quickly
 extracts those for correction.
@@ -178,9 +178,10 @@ doublequoting
 
 Checks whether doublequoting is consistent between the two strings.
 
-Checks on double quotes " to ensure that you have the same number in both the
-original and the translated string. This tests takes into account that several
-languages use different quoting characters, and will test for them instead.
+Checks on double quotes ``"`` to ensure that you have the same number in both
+the original and the translated string. This tests takes into account that
+several languages use different quoting characters, and will test for them
+instead.
 
 .. _pofilter_tests#doublespacing:
 
@@ -544,11 +545,11 @@ singlequoting
 
 Checks whether singlequoting is consistent between the two strings.
 
-The same as doublequoting but checks for the ' character.  Because this is used
-in contractions like it's and in possessive forms like user's, this test can
-output spurious errors if your language doesn't use such forms.  If a quote
-appears at the end of a sentence in the translation, i.e. '[full-stop], this
-might not be detected properly by the check.
+The same as doublequoting but checks for the ``'`` character.  Because this is
+used in contractions like it's and in possessive forms like user's, this test
+can output spurious errors if your language doesn't use such forms.  If a quote
+appears at the end of a sentence in the translation, i.e. ``'.``, this might
+not be detected properly by the check.
 
 .. _pofilter_tests#spellcheck:
 
