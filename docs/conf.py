@@ -330,3 +330,11 @@ extlinks = {
     'man': ('http://linux.die.net/man/1/%s', ''),
     'wiki': ('http://translate.sourceforge.net/wiki/%s', ''),
 }
+
+# -- Options for Linkcheck -------------------------------------------------
+
+# Add regex's here for links that should be ignored.
+linkcheck_ignore = [
+    'http://your_server.com/filename.html',  # Example URL
+    '.*localhost.*',
+]
