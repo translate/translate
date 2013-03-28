@@ -94,10 +94,6 @@ As root
 
 The various setup options are yours to explore
 
-To run / test things without installing, see the :doc:`instructions for Pootle
-<pootle:no_install>`. Those instructions sets your environment for both Pootle
-and the toolkit
-
 .. _developers#general_overview_of_the_programs:
 
 General overview of the programs
