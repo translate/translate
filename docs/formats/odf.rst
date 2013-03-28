@@ -23,5 +23,5 @@ released versions of the Translate Toolkit are not aware of their existence.
   <https://github.com/translate/translate/blob/master/translate/storage/odf_shared.py#L23>`_
 
 More complex tag uses are still needed to extract 100% correctly in some
-complex cases. For more information, see the list of :doc:`issues from testing
+complex cases. For more information, see the list of :wiki:`issues from testing
 <odf/testing>`.

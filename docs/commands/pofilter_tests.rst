@@ -88,8 +88,8 @@ Test Description
 accelerators
 ------------
 
-Checks whether :doc:`guide/translation/accelerators` are consistent between the
-two strings.
+Checks whether :wiki:`guide/translation/accelerators` are consistent between
+the two strings.
 
 Make sure you use the :opt:`--mozilla`, :opt:`--kde`, etc options so that
 pofilter knows which type of accelerator it is looking for.  The test will pick
@@ -688,7 +688,7 @@ files.
 xmltags
 -------
 
-Checks that :doc:`XML/HTML <guide/translation/html>` tags have not been
+Checks that :wiki:`XML/HTML <guide/translation/html>` tags have not been
 translated.
 
 This check finds the number of tags in the source string and checks that the

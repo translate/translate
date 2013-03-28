@@ -142,7 +142,7 @@ Valid accelerators
 The :doc:`/commands/pofilter` accelerator test is now able to make use of a
 list of valid accelerators.  This allows translators to control the behaviour
 of the test for their language and add or remove characters that can be used as
-accelerators.  Please define :doc:`l10n/valid accelerators` for your language
+accelerators.  Please define :wiki:`l10n/valid_accelerators` for your language
 and these will then be included in future releases of the toolkit.  By default
 the old process if followed so if you take no action then this check will
 continue to work as expected.

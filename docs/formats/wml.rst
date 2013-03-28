@@ -8,4 +8,4 @@ This page documents the support for `WML
 planning our work on it.
 
 This is implemented as a generic XML document type that is handled similarly to
-the way the :doc:`developers/projects/odf` project handles ODF documents.
+the way the :wiki:`developers/projects/odf` project handles ODF documents.
