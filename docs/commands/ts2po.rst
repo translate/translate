@@ -14,7 +14,7 @@ might wish to standardise on one localization tool.  ts2po allows you to
 standardise on the PO format and PO related tools.
 
 .. note:: `Virtaal <http://virtaal.org>`_ and `Pootle
-   <http://pootle.tramslatehouse.org>`_ can edit .ts files directly without the
+   <http://pootle.translatehouse.org>`_ can edit .ts files directly without the
    need for any conversion.
 
 .. warning:: po2ts uses our older .ts support.  Thus many of the newer features
