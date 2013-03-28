@@ -14,9 +14,9 @@ Mozilla wiki, to stay abreast of the latest Mozilla way of doing things.
 
 .. note:: This page is only applicable to Mozilla products with its source
    hosted in CVS. This includes Firefox versions before 3.1 and Thunderbird
-    versions before 3.0.
+   versions before 3.0.
 
-    For information about working with the new source trees in Mercurial, see the :doc:`mozilla_l10n_scripts` page.
+   For information about working with the new source trees in Mercurial, see the :doc:`mozilla_l10n_scripts` page.
 
 .. _moz-l10n-builder#prerequisites:
 

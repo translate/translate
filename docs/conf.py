@@ -124,8 +124,10 @@ class Mock(object):
 
 MOCK_MODULES = [
     'aeidon',
+    'aeidon.encodings',
+    'aeidon.util',
+    'aeidon.files',
     'BeautifulSoup',
-    'gaupol.subtitle',
     'glib',
     'gobject',
     'gtk',

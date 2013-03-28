@@ -442,6 +442,7 @@ ts
 .. automodule:: translate.storage.ts
    :members:
    :inherited-members:
+   :deprecated:
 
 
 txt
@@ -600,7 +601,7 @@ xpi
 
 .. automodule:: translate.storage.xpi
    :members:
-   :inherited-members:
+.. :inherited-members: DON'T USE - broken Sphinx from inherited
 
 
 zip

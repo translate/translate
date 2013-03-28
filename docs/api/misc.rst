@@ -225,4 +225,4 @@ zipfileext
 
 .. automodule:: translate.misc.zipfileext
    :members:
-   :inherited-members:
+.. :inherited-members: DON'T USE - broken Sphinx from inherited

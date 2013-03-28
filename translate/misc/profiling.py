@@ -97,8 +97,7 @@ def profile_func(filename=None, mode='w+'):
                      decorated function's name is used, followed by
                      ``_func.profile``.
     :type mode: str
-    :param mode: The mode in which to open :param:`filename`. Default is
-                 ``w+``.
+    :param mode: The mode in which to open ``filename``. Default is ``w+``.
     """
     def proffunc(f):
         def profiled_func(*args, **kwargs):
