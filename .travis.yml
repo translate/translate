@@ -14,7 +14,7 @@ install:
   - if [[ $TRAVIS_PYTHON_VERSION == '2.6' ]]; then sudo apt-get install python-aeidon; fi
   - if [[ $TRAVIS_PYTHON_VERSION == '2.7' ]]; then sudo apt-get install python-aeidon; fi
   # Still need to handle with indexing engines and aeidon
-script: py.test
+script: py.test; cd docs; make html
 notifications:
   email:
     on_failure: change
