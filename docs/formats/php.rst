@@ -35,15 +35,17 @@ Our format support allows:
 * Multiline entries
 * PHP simple variable syntax
 
-.. code-block:: php
+  .. code-block:: php
 
-    $variable = 'string';
-    $another_variable = "another string";
+      <?php
+      $variable = 'string';
+      $another_variable = "another string";
 
 * Various layouts of the id
 
   .. code-block:: php
-  
+
+      <?php
       $string['name'];
       $string['name'] ;
       $string[name];
@@ -53,6 +55,7 @@ Our format support allows:
 
   .. code-block:: php
 
+      <?php
       $lang = array(
          'name' => 'value',
          'name2' => 'value2',
@@ -60,15 +63,17 @@ Our format support allows:
 
 * PHP define syntax
 
-.. code-block:: php
+  .. code-block:: php
 
-    define('item', 'string');
-    define("another_item", "another string");
+      <?php
+      define('item', 'string');
+      define("another_item", "another string");
 
 * Whitespace before end delimiter
 
   .. code-block:: php
 
+      <?php
       $string['name']     ;
       $string['name'] ;
 
