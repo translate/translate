@@ -454,7 +454,7 @@ test can also manage variables-reordering using the ``%1$s`` syntax.  The
 variables' type and details following data are tested to ensure that they are
 strictly identical, but they may be reordered.
 
-.. seealso:: `printf Format String <https://en.wikipedia.org/wiki/Printf_format_string>`_
+.. seealso:: :wp:`printf Format String <Printf_format_string>`
 
 .. _pofilter_tests#puncspacing:
 

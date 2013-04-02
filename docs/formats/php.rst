@@ -4,9 +4,9 @@
 PHP
 ***
 
-Many `PHP <https://en.wikipedia.org/wiki/PHP>`_ programs make use of a
-localisable string array.  The toolkit supports the full localisation of such
-files with :doc:`/commands/php2po` and po2php.
+Many :wp:`PHP` programs make use of a localisable string array.  The toolkit
+supports the full localisation of such files with :doc:`/commands/php2po` and
+po2php.
 
 .. _php#example:
 

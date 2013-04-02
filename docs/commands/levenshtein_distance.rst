@@ -3,10 +3,9 @@
 
 Levenshtein distance
 ********************
-The `levenshtein distance
-<https://en.wikipedia.org/wiki/Levenshtein_distance>`_ is used for measuring
-the "distance" or similarity of two character strings. Other similarity
-algorithms can be supplied to the code that does the matching.
+The `levenshtein distance <Levenshtein_distance>` is used for measuring the
+"distance" or similarity of two character strings. Other similarity algorithms
+can be supplied to the code that does the matching.
 
 This code is used in :doc:`pot2po`, :doc:`tmserver` and `Virtaal
 <http://virtaal.org>`_. It is implemented in the toolkit, but can optionally

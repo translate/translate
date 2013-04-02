@@ -110,12 +110,10 @@ Formats of translatable documents
 
 * :doc:`html`
 * :doc:`ical`
-* `JSON <https://en.wikipedia.org/wiki/JSON>`_ (from v1.9.0)
-* `OpenDocument <https://en.wikipedia.org/wiki/OpenDocument>`_ -- all ODF file
-  types
+* :wp:`JSON` (from v1.9.0)
+* :wp:`OpenDocument` -- all ODF file types
 * :doc:`Text <text>` -- plain text with blocks separated by whitespace
-* :doc:`Wiki <wiki>` -- `DokuWiki <https://en.wikipedia.org/wiki/DokuWiki>`_
-  and `MediaWiki <https://en.wikipedia.org/wiki/MediaWiki>`_ supported
+* :doc:`Wiki <wiki>` -- :wp:`DokuWiki` and :wp:`MediaWiki` supported
 * :doc:`subtitles` -- various formats (v1.4)
 
 .. _formats#machine_readable_formats:
@@ -178,33 +176,31 @@ Formats that we would like to support but don't currently support:
 * Microsoft
 
   * Word, Excel, etc (probably through usage of OpenOffice.org)
-  * `OOXML <https://en.wikipedia.org/wiki/OOXML>`_ (at least at the text level
-    we don't have to deal with much of the mess inside OOXML).  See also: `Open
-    XML SDK v1 <http://go.microsoft.com/fwlink/?LinkId=120908>`_
-  * `Rich Text Format <https://en.wikipedia.org/wiki/Rich_Text_Format>`_ (RTF)
-    see also `pyrtf-ng <http://code.google.com/p/pyrtf-ng/>`_
-  * `Open XML Paper Specification
-    <https://en.wikipedia.org/wiki/Open_XML_Paper_Specification>`_
+  * :wp:`OOXML` (at least at the text level we don't have to deal with much of
+    the mess inside OOXML).  See also: `Open XML SDK v1
+    <http://go.microsoft.com/fwlink/?LinkId=120908>`_
+  * :wp:`Rich Text Format <Rich_Text_Format>` (RTF) see also `pyrtf-ng
+    <http://code.google.com/p/pyrtf-ng/>`_
+  * :wp:`Open XML Paper Specification <Open_XML_Paper_Specification>`
   * .NET Resource files (.resx) -- :bug:`Bug 396 <396>`
 
 * XML related
 
   * Generic XML
-  * `DocBook <https://en.wikipedia.org/wiki/DocBook>`_ (can be handled by KDE's
-    :man:`xml2pot`)
+  * :wp:`DocBook` (can be handled by KDE's :man:`xml2pot`)
   * `SVG <http://www.w3.org/TR/SVG/>`_
-  * `Android <https://en.wikipedia.org/wiki/Android_%28operating_system%29>`_
+  * :wp:`Android <Android_%28operating_system%29>`
     `resource files
     <http://developer.android.com/guide/topics/resources/resources-i18n.html>`_ specifically
     `string resources
     <http://developer.android.com/guide/topics/resources/available-resources.html#stringresources>`_
     (`more background <http://www.linux-mag.com/id/7794>`_)
 
-* `DITA <https://en.wikipedia.org/wiki/Darwin_Information_Typing_Architecture>`_
-* `PDF <https://en.wikipedia.org/wiki/Portable_Document_Format>`_ see `spec
+* :wp:`DITA <Darwin_Information_Typing_Architecture>`
+* :wp:`PDF <Portable_Document_Format>` see `spec
   <http://www.adobe.com/devnet/pdf/pdf_reference.html>`_, `PDFedit
   <http://pdfedit.cz/en/index.html>`_
-* `LaTeX <https://en.wikipedia.org/wiki/LaTeX>`_ -- see `plasTeX
+* :wp:`LaTeX` -- see `plasTeX
   <http://plastex.sourceforge.net/plastex/index.html>`_, a Python framework for
   processing LaTeX documents
 * `unoconv <http://dag.wieers.com/home-made/unoconv/>`_ -- Python bindings to

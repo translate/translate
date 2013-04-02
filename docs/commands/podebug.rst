@@ -4,8 +4,7 @@
 podebug
 *******
 
-Insert `pseudo translations
-<https://en.wikipedia.org/wiki/Pseudolocalization>`_ or debug markers into
+Insert :wp:`pseudo translations <Pseudolocalization>` or debug markers into
 target text in XLIFF, Gettex PO and other localization files.
 
 The pseudo translation or debug markers make it easy to reference and locate

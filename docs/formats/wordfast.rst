@@ -4,9 +4,8 @@
 Wordfast Translation Memory
 ***************************
 
-The Wordfast format, as used by the `Wordfast
-<https://en.wikipedia.org/wiki/Wordfast>`_ translation tool, is a simple tab
-delimited file.
+The Wordfast format, as used by the :wp:`Wordfast` translation tool, is a
+simple tab delimited file.
 
 The storage format can read and write Wordfast TM files.
 

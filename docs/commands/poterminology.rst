@@ -18,8 +18,7 @@ target language.
 The more separate PO files you use to generate terminology, the better your
 results will be, but poterminology can be used with just a single input file.
 
-Read more about `terminology extraction
-<http://en.wikipedia.org/wiki/Terminology_extraction>`_
+Read more about :wp:`terminology extraction <Terminology_extraction>`
 
 .. _poterminology#usage:
 

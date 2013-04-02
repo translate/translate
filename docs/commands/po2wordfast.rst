@@ -6,8 +6,7 @@ po2wordfast
 
 Convert Gettext PO files to a :doc:`/formats/wordfast` translation memory file.
 
-`Wordfast <https://en.wikipedia.org/wiki/Wordfast>`_ is a popular Windows based
-computer-assisted translation tool.
+:wp:`Wordfast` is a popular Windows based computer-assisted translation tool.
 
 .. _po2wordfast#usage:
 

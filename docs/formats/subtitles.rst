@@ -14,8 +14,8 @@ The following formats are supported for subtitles:
 * MicroDVD
 * MPL2
 * MPsub
-* `SubRip <https://en.wikipedia.org/wiki/SubRip>`_ (.srt)
-* `SubViewer <https://en.wikipedia.org/wiki/SubViewer>`_ 2.0 (.sub)
+* :wp:`SubRip` (.srt)
+* :wp:`SubViewer` 2.0 (.sub)
 * TMPlayer
 * Sub Station Alpha
 * Advanced Sub Station Alpha

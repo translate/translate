@@ -108,7 +108,6 @@ The converter does not make use of the LANGUAGE attribute which is permitted in
 the format.  The LANGUAGE attribute does not aid multilingualism in this
 context so is ignored.
 
-The converter could conceivably also process `vCard
-<https://en.wikipedia.org/wiki/Vcard>`_ files, but this has not been
-implemented for lack of a clear need.  Please raise a bug with an example if
-you have such a file that could benefit from localisation.
+The converter could conceivably also process :wp:`vCard <Vcard>` files, but
+this has not been implemented for lack of a clear need.  Please raise a bug
+with an example if you have such a file that could benefit from localisation.

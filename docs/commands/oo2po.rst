@@ -37,8 +37,8 @@ Where:
 +--------------+-----------------------------------------------------------+
 | <input>      | is a directory of translated PO/XLIFF files               |
 +--------------+-----------------------------------------------------------+
-| <targetlang> | is the `ISO 639 <https://en.wikipedia.org/wiki/ISO_639>`_ |
-|              | language code used in the sdf file, e.g. af               |
+| <targetlang> | is the :wp:`ISO 639 <ISO_639>` language code used in the  |
+|              | sdf file, e.g. af                                         |
 +--------------+-----------------------------------------------------------+
 
 Options (oo2po and oo2xliff):

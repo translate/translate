@@ -34,5 +34,5 @@ References
 
 Further information is available on .ini files:
 
-- Wikipedia `INI file format <https://en.wikipedia.org/wiki/INI_file>`_ article
+- Wikipedia :wp:`INI file format <INI_file>` article
 - `Unofficial specification <http://www.cloanto.com/specs/ini/>`_
