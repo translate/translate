@@ -108,9 +108,6 @@ use libgettextpo from the gettext-tools package (it might have a slightly
 different name on your distribution). This can greatly speed up access to PO
 files, but has not yet been tested as extensively. Feedback is most welcome.
 
-The python wrapper to htmltidy is needed for po2html.
-http://utidylib.berlios.de/
-
 The package iniparse is necessary for ini2po and po2ini.
 http://code.google.com/p/iniparse/
 
