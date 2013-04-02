@@ -18,9 +18,9 @@
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, see <http://www.gnu.org/licenses/>.
 
-"""This module represents Malayalam language.
+"""This module represents the Malayalam language.
 
-For more information, see U{http://en.wikipedia.org/wiki/Malayalam_language}
+.. seealso:: http://en.wikipedia.org/wiki/Malayalam_language
 """
 
 from translate.lang import common

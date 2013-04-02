@@ -19,9 +19,12 @@
 # along with this program; if not, see <http://www.gnu.org/licenses/>.
 #
 # (c) 2009 Dominic König (dominic@nursix.org)
-#
 
-"""convert GNU/gettext PO files to web2py translation dictionaries (.py)"""
+"""Convert GNU/gettext PO files to web2py translation dictionaries (.py).
+
+See: http://docs.translatehouse.org/projects/translate-toolkit/en/latest/commands/web2py2po.html
+for examples and usage instructions.
+"""
 
 from translate.storage import factory
 

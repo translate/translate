@@ -31,7 +31,8 @@ class LRUCachingDict(WeakValueDictionary):
     maxsize is reached.
     """
 
-    def __init__(self, maxsize, cullsize=2, peakmult=10, aggressive_gc=True, *args, **kwargs):
+    def __init__(self, maxsize, cullsize=2, peakmult=10, aggressive_gc=True,
+                 *args, **kwargs):
         self.cullsize = max(2, cullsize)
         self.maxsize = max(cullsize, maxsize)
         self.aggressive_gc = aggressive_gc
@@ -81,7 +82,8 @@ class LRUCachingDict(WeakValueDictionary):
             # appended again
             self.queue.pop()
 
-        if len(self) >= self.maxsize or len(self.queue) >= self.maxsize * self.peakmult:
+        if (len(self) >= self.maxsize or
+            len(self.queue) >= self.maxsize * self.peakmult):
             self.cull()
 
         self.queue.append((key, value))
@@ -97,7 +99,8 @@ class LRUCachingDict(WeakValueDictionary):
 
         # only append if item is not at right end of queue
         if not (len(self.queue) and self.queue[-1][0] == key):
-            if len(self) >= self.maxsize or len(self.queue) >= self.maxsize * self.peakmult:
+            if (len(self) >= self.maxsize or
+                len(self.queue) >= self.maxsize * self.peakmult):
                 self.cull()
             self.queue.append((key, value))
 

@@ -18,10 +18,10 @@
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, see <http://www.gnu.org/licenses/>.
 
-"""convert PHP localization files to Gettext PO localization files
+"""Convert PHP localization files to Gettext PO localization files.
 
-See: http://translate.sourceforge.net/wiki/toolkit/php2po for examples and
-usage instructions
+See: http://docs.translatehouse.org/projects/translate-toolkit/en/latest/commands/php2po.html
+for examples and usage instructions.
 """
 
 import sys
@@ -36,7 +36,7 @@ class php2po:
     def convertstore(self, inputstore, duplicatestyle="msgctxt"):
         """converts a .php file to a .po file..."""
         outputstore = po.pofile()
-        outputheader = outputstore.init_headers(charset="UTF-8", encoding="8bit")
+        outputheader = outputstore.header()
         outputheader.addnote("extracted from %s" % inputstore.filename, "developer")
 
         for inputunit in inputstore.units:
@@ -47,9 +47,9 @@ class php2po:
         return outputstore
 
     def mergestore(self, templatestore, inputstore, blankmsgstr=False, duplicatestyle="msgctxt"):
-        """converts two .properties files to a .po file..."""
+        """converts two .php files to a .po file..."""
         outputstore = po.pofile()
-        outputheader = outputstore.init_headers(charset="UTF-8", encoding="8bit")
+        outputheader = outputstore.header()
         outputheader.addnote("extracted from %s, %s" % (templatestore.filename, inputstore.filename), "developer")
 
         inputstore.makeindex()

@@ -1,6 +1,9 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
+import pytest
+pytest.importorskip("vobject")
+
 from translate.convert import po2ical
 from translate.convert import test_convert
 from translate.misc import wStringIO

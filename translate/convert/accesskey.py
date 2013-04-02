@@ -1,7 +1,6 @@
-#!/usr/bin/env python
 # -*- coding: utf-8 -*-
 #
-# Copyright 2002-2008 Zuza Software Foundation
+# Copyright 2002-2009,2011 Zuza Software Foundation
 #
 # This file is part of The Translate Toolkit.
 #
@@ -25,16 +24,97 @@ from translate.storage.placeables.general import XMLEntityPlaceable
 DEFAULT_ACCESSKEY_MARKER = u"&"
 
 
+class UnitMixer(object):
+    """Helper to mix separately defined labels and accesskeys into one unit."""
+
+    def __init__(self, labelsuffixes, accesskeysuffixes):
+        self.labelsuffixes = labelsuffixes
+        self.accesskeysuffixes = accesskeysuffixes
+
+    def match_entities(self, index):
+        """Populates mixedentities from the index."""
+        #: Entities which have a .label/.title and .accesskey combined
+        mixedentities = {}
+        for entity in index:
+            for labelsuffix in self.labelsuffixes:
+                if entity.endswith(labelsuffix):
+                    entitybase = entity[:entity.rfind(labelsuffix)]
+                    # see if there is a matching accesskey in this line,
+                    # making this a mixed entity
+                    for akeytype in self.accesskeysuffixes:
+                        if (entitybase + akeytype) in index:
+                            # add both versions to the list of mixed entities
+                            mixedentities[entity] = {}
+                            mixedentities[entitybase+akeytype] = {}
+                    # check if this could be a mixed entity (labelsuffix and
+                    # ".accesskey")
+        return mixedentities
+
+
+    def mix_units(self, label_unit, accesskey_unit, target_unit):
+        """Mix the given units into the given target_unit if possible.
+
+        Might return None if no match is possible.
+        """
+        target_unit.addlocations(label_unit.getlocations())
+        target_unit.addlocations(accesskey_unit.getlocations())
+        target_unit.msgidcomment = target_unit._extract_msgidcomments() + \
+                             label_unit._extract_msgidcomments()
+        target_unit.msgidcomment = target_unit._extract_msgidcomments() + \
+                             accesskey_unit._extract_msgidcomments()
+        target_unit.addnote(label_unit.getnotes("developer"), "developer")
+        target_unit.addnote(accesskey_unit.getnotes("developer"), "developer")
+        target_unit.addnote(label_unit.getnotes("translator"), "translator")
+        target_unit.addnote(accesskey_unit.getnotes("translator"), "translator")
+        label = label_unit.source
+        accesskey = accesskey_unit.source
+        label = combine(label, accesskey)
+        if label is None:
+            return None
+        target_unit.source = label
+        target_unit.target = ""
+        return target_unit
+
+    def find_mixed_pair(self, mixedentities, store, unit):
+        entity = unit.getid()
+        if entity not in mixedentities:
+            return None, None
+
+        # depending on what we come across first, work out the label
+        # and the accesskey
+        labelentity, accesskeyentity = None, None
+        for labelsuffix in self.labelsuffixes:
+            if entity.endswith(labelsuffix):
+                entitybase = entity[:entity.rfind(labelsuffix)]
+                for akeytype in self.accesskeysuffixes:
+                    if (entitybase + akeytype) in store.index:
+                        labelentity = entity
+                        accesskeyentity = labelentity[:labelentity.rfind(labelsuffix)] + akeytype
+                        break
+        else:
+            for akeytype in self.accesskeysuffixes:
+                if entity.endswith(akeytype):
+                    accesskeyentity = entity
+                    for labelsuffix in self.labelsuffixes:
+                        labelentity = accesskeyentity[:accesskeyentity.rfind(akeytype)] + labelsuffix
+                        if labelentity in store.index:
+                            break
+                    else:
+                        labelentity = None
+                        accesskeyentity = None
+        return (labelentity, accesskeyentity)
+
+
 def extract(string, accesskey_marker=DEFAULT_ACCESSKEY_MARKER):
     """Extract the label and accesskey from a label+accesskey string
 
     The function will also try to ignore &entities; which would obviously not
     contain accesskeys.
 
-    @type string: Unicode
-    @param string: A string that might contain a label with accesskey marker
-    @type accesskey_marker: Char
-    @param accesskey_marker: The character that is used to prefix an access key
+    :type string: Unicode
+    :param string: A string that might contain a label with accesskey marker
+    :type accesskey_marker: Char
+    :param accesskey_marker: The character that is used to prefix an access key
     """
     assert isinstance(string, unicode)
     assert isinstance(accesskey_marker, unicode)
@@ -50,7 +130,8 @@ def extract(string, accesskey_marker=DEFAULT_ACCESSKEY_MARKER):
             marker_pos += 1
             if marker_pos == len(string):
                 break
-            if accesskey_marker == '&' and XMLEntityPlaceable.regex.match(string[marker_pos-1:]):
+            if (accesskey_marker == '&' and
+                XMLEntityPlaceable.regex.match(string[marker_pos-1:])):
                 continue
             label = string[:marker_pos-1] + string[marker_pos:]
             accesskey = string[marker_pos]
@@ -62,15 +143,15 @@ def combine(label, accesskey,
             accesskey_marker=DEFAULT_ACCESSKEY_MARKER):
     """Combine a label and and accesskey to form a label+accesskey string
 
-    We place an accesskey marker before the accesskey in the label and this creates a
-    string with the two combined e.g. "File" + "F" = "&File"
+    We place an accesskey marker before the accesskey in the label and this
+    creates a string with the two combined e.g. "File" + "F" = "&File"
 
-    @type label: unicode
-    @param label: a label
-    @type accesskey: unicode char
-    @param accesskey: The accesskey
-    @rtype: unicode or None
-    @return: label+accesskey string or None if uncombineable
+    :type label: unicode
+    :param label: a label
+    :type accesskey: unicode char
+    :param accesskey: The accesskey
+    :rtype: unicode or None
+    :return: label+accesskey string or None if uncombineable
     """
     assert isinstance(label, unicode)
     assert isinstance(accesskey, unicode)

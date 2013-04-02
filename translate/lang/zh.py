@@ -18,9 +18,9 @@
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, see <http://www.gnu.org/licenses/>.
 
-"""This module represents Chinese language. (Both tradisional and simplified)
+"""This module represents the Chinese language (Both tradisional and simplified).
 
-For more information, see U{http://en.wikipedia.org/wiki/Chinese_language}
+.. seealso:: http://en.wikipedia.org/wiki/Chinese_language
 """
 
 import re

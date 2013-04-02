@@ -18,10 +18,10 @@
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, see <http://www.gnu.org/licenses/>.
 
-"""Conflict finder for Gettext PO localization files
+"""Conflict finder for Gettext PO localization files.
 
-See: http://translate.sourceforge.net/wiki/toolkit/poconflicts for examples and
-usage instructions
+See: http://docs.translatehouse.org/projects/translate-toolkit/en/latest/commands/poconflicts.html
+for examples and usage instructions.
 """
 
 import sys
@@ -160,6 +160,7 @@ class ConflictOptionParser(optrecurse.RecursiveOptionParser):
         """saves the result of the conflict match"""
         print "%d/%d different strings have conflicts" % (len(self.conflictmap), len(self.textmap))
         reducedmap = {}
+
         def str_len(x):
             return len(x)
 

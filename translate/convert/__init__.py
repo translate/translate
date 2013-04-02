@@ -18,12 +18,4 @@
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, see <http://www.gnu.org/licenses/>.
 
-"""translate.convert is part of the translate package
-It contains code to convert between different storage formats for localizations
-
-@group XLIFF: *xliff*
-@group Bilingual: pot2po po2tmx oo2po po2oo csv2tbx *wordfast* *ts*
-@group Monolingual: *prop* *dtd* csv2po po2csv *html* *ical* *ini* *rc* *txt* moz2po po2moz *php* *sub* *symb* *monopo* *tiki* *web2py* *lang* skype
-@group Support: accesskey convert
-@group Other: poreplace
-"""
+"""Code to convert between different storage formats for localizations."""

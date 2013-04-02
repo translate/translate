@@ -1,7 +1,8 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-"""Implements a case-insensitive (on keys) dictionary and order-sensitive dictionary"""
+"""Implements a case-insensitive (on keys) dictionary and
+order-sensitive dictionary"""
 
 # Copyright 2002, 2003 St James Software
 #
@@ -37,7 +38,8 @@ class cidict(dict):
 
     def __getitem__(self, key):
         if type(key) != str and type(key) != unicode:
-            raise TypeError("cidict can only have str or unicode as key (got %r)" % type(key))
+            raise TypeError("cidict can only have str or unicode as key (got %r)" %
+                            type(key))
         for akey in self.iterkeys():
             if akey.lower() == key.lower():
                 return dict.__getitem__(self, akey)
@@ -45,20 +47,23 @@ class cidict(dict):
 
     def __setitem__(self, key, value):
         if type(key) != str and type(key) != unicode:
-            raise TypeError("cidict can only have str or unicode as key (got %r)" % type(key))
+            raise TypeError("cidict can only have str or unicode as key (got %r)" %
+                            type(key))
         for akey in self.iterkeys():
             if akey.lower() == key.lower():
                 return dict.__setitem__(self, akey, value)
         return dict.__setitem__(self, key, value)
 
     def update(self, updatedict):
-        """D.update(E) -> None.  Update D from E: for k in E.keys(): D[k] = E[k]"""
+        """D.update(E) -> None.
+           Update D from E: for k in E.keys(): D[k] = E[k]"""
         for key, value in updatedict.iteritems():
             self[key] = value
 
     def __delitem__(self, key):
         if type(key) != str and type(key) != unicode:
-            raise TypeError("cidict can only have str or unicode as key (got %r)" % type(key))
+            raise TypeError("cidict can only have str or unicode as key (got %r)" %
+                            type(key))
         for akey in self.iterkeys():
             if akey.lower() == key.lower():
                 return dict.__delitem__(self, akey)
@@ -66,7 +71,8 @@ class cidict(dict):
 
     def __contains__(self, key):
         if type(key) != str and type(key) != unicode:
-            raise TypeError("cidict can only have str or unicode as key (got %r)" % type(key))
+            raise TypeError("cidict can only have str or unicode as key (got %r)" %
+                            type(key))
         for akey in self.iterkeys():
             if akey.lower() == key.lower():
                 return 1
@@ -83,14 +89,16 @@ class cidict(dict):
 
 
 class ordereddict(dict):
-    """a dictionary which remembers its keys in the order in which they were given"""
+    """a dictionary which remembers its keys in the order in which they
+    were given"""
 
     def __init__(self, *args):
         if len(args) == 0:
             super(ordereddict, self).__init__()
             self.order = []
         elif len(args) > 1:
-            raise TypeError("ordereddict() takes at most 1 argument (%d given)" % len(args))
+            raise TypeError("ordereddict() takes at most 1 argument (%d given)" %
+                            len(args))
         else:
             initarg = args[0]
             apply(super(ordereddict, self).__init__, args)
@@ -113,7 +121,8 @@ class ordereddict(dict):
         return result
 
     def update(self, updatedict):
-        """D.update(E) -> None.  Update D from E: for k in E.keys(): D[k] = E[k]"""
+        """D.update(E) -> None.
+        Update D from E: for k in E.keys(): D[k] = E[k]"""
         for key, value in updatedict.iteritems():
             self[key] = value
 
@@ -156,7 +165,8 @@ class ordereddict(dict):
         return self.order[:]
 
     def popitem(self):
-        """D.popitem() -> (k, v), remove and return some (key, value) pair as a 2-tuple; but raise KeyError if D is empty"""
+        """D.popitem() -> (k, v), remove and return some (key, value) pair
+        as a 2-tuple; but raise KeyError if D is empty"""
         if len(self.order) == 0:
             raise KeyError("popitem(): ordered dictionary is empty")
         k = self.order.pop()

@@ -267,7 +267,7 @@ def parse_msgstr_array_entry(parse_state, msgstr_dict):
 def parse_msgstr_array(parse_state, unit):
     msgstr_dict = {}
     result = parse_msgstr_array_entry(parse_state, msgstr_dict)
-    if not result: # We require at least one result
+    if not result:  # We require at least one result
         return False
     while parse_msgstr_array_entry(parse_state, msgstr_dict):
         pass
@@ -300,7 +300,6 @@ def parse_unit(parse_state, unit=None):
         return obsolete_unit
     parsed_msg_entries = parse_msg_entries(parse_state, unit)
     if parsed_comments or parsed_msg_entries:
-        unit.infer_state()
         return unit
     else:
         return None
@@ -349,6 +348,7 @@ def parse_header(parse_state, store):
 def parse_units(parse_state, store):
     unit = parse_header(parse_state, store)
     while unit:
+        unit.infer_state()
         store.addunit(unit)
         unit = parse_unit(parse_state)
     return parse_state.eof

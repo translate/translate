@@ -20,7 +20,7 @@
 
 """Class that manages .ini files for translation
 
-@note: A simple summary of what is permissible follows.
+.. note::: A simple summary of what is permissible follows.
 
 # a comment
 ; a comment
@@ -55,7 +55,7 @@ class DialectDefault(Dialect):
         return text
 
     def escape(self, text):
-        return text
+        return text.encode('utf-8')
 register_dialect("default", DialectDefault)
 
 
@@ -65,7 +65,7 @@ class DialectInno(DialectDefault):
         return text.replace("%n", "\n").replace("%t", "\t")
 
     def escape(self, text):
-        return text.replace("\t", "%t").replace("\n", "%n")
+        return text.replace("\t", "%t").replace("\n", "%n").encode('utf-8')
 register_dialect("inno", DialectInno)
 
 

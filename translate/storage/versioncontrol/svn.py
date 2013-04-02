@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 #
-# Copyright 2004-2007 Zuza Software Foundation
+# Copyright 2004-2008,2012 Zuza Software Foundation
 #
 # This file is part of translate.
 #
@@ -19,8 +19,10 @@
 # along with this program; if not, see <http://www.gnu.org/licenses/>.
 
 
+import os
+
 from translate.storage.versioncontrol import GenericRevisionControlSystem
-from translate.storage.versioncontrol import run_command
+from translate.storage.versioncontrol import run_command, prepare_filelist, youngest_ancestor
 
 
 def is_available():
@@ -28,15 +30,22 @@ def is_available():
     exitcode, output, error = run_command(["svn", "--version"])
     return exitcode == 0
 
+_version = None
+
 
 def get_version():
     """return a tuple of (major, minor) for the installed subversion client"""
+    global _version
+    if _version:
+        return _version
+
     command = ["svn", "--version", "--quiet"]
     exitcode, output, error = run_command(command)
     if exitcode == 0:
         major, minor = output.strip().split(".")[0:2]
         if (major.isdigit() and minor.isdigit()):
-            return (int(major), int(minor))
+            _version = (int(major), int(minor))
+            return _version
     # something went wrong above
     return (0, 0)
 
@@ -47,15 +56,18 @@ class svn(GenericRevisionControlSystem):
     RCS_METADIR = ".svn"
     SCAN_PARENTS = False
 
-    def update(self, revision=None):
+    def update(self, revision=None, needs_revert=True):
         """update the working copy - remove local modifications if necessary"""
-        # revert the local copy (remove local changes)
-        command = ["svn", "revert", self.location_abs]
-        exitcode, output_revert, error = run_command(command)
-        # any errors?
-        if exitcode != 0:
-            raise IOError("[SVN] Subversion error running '%s': %s" \
-                    % (command, error))
+        output_revert = ""
+        if needs_revert:
+            # revert the local copy (remove local changes)
+            command = ["svn", "revert", self.location_abs]
+            exitcode, output_revert, error = run_command(command)
+            # any errors?
+            if exitcode != 0:
+                raise IOError("[SVN] Subversion error running '%s': %s" %
+                              (command, error))
+
         # update the working copy to the given revision
         command = ["svn", "update"]
         if not revision is None:
@@ -64,18 +76,30 @@ class svn(GenericRevisionControlSystem):
         command.append(self.location_abs)
         exitcode, output_update, error = run_command(command)
         if exitcode != 0:
-            raise IOError("[SVN] Subversion error running '%s': %s" \
-                    % (command, error))
+            raise IOError("[SVN] Subversion error running '%s': %s" %
+                          (command, error))
         return output_revert + output_update
+
+    def add(self, files, message=None, author=None):
+        """Add and commit the new files."""
+        files = prepare_filelist(files)
+        command = ["svn", "add", "-q", "--non-interactive", "--parents"] + files
+        exitcode, output, error = run_command(command)
+        if exitcode != 0:
+            raise IOError("[SVN] Error running SVN command '%s': %s" %
+                          (command, error))
+
+        # go down as deep as possible in the tree to avoid accidental commits
+        # TODO: explicitly commit files by name
+        ancestor = youngest_ancestor(files)
+        return output + type(self)(ancestor).commit(message, author)
 
     def commit(self, message=None, author=None):
         """commit the file and return the given message if present
 
         the 'author' parameter is used for revision property 'translate:author'
         """
-        command = ["svn", "-q", "--non-interactive", "commit"]
-        if message:
-            command.extend(["-m", message])
+        command = ["svn", "-q", "--non-interactive", "commit", "-m", message or ""]
         # the "--with-revprop" argument is support since svn v1.5
         if author and (get_version() >= (1, 5)):
             command.extend(["--with-revprop", "translate:author=%s" % author])
@@ -83,7 +107,8 @@ class svn(GenericRevisionControlSystem):
         command.append(self.location_abs)
         exitcode, output, error = run_command(command)
         if exitcode != 0:
-            raise IOError("[SVN] Error running SVN command '%s': %s" % (command, error))
+            raise IOError("[SVN] Error running SVN command '%s': %s" %
+                          (command, error))
         return output
 
     def getcleanfile(self, revision=None):
@@ -95,5 +120,6 @@ class svn(GenericRevisionControlSystem):
         command.append(self.location_abs)
         exitcode, output, error = run_command(command)
         if exitcode != 0:
-            raise IOError("[SVN] Subversion error running '%s': %s" % (command, error))
+            raise IOError("[SVN] Subversion error running '%s': %s" %
+                          (command, error))
         return output

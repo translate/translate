@@ -21,17 +21,19 @@
 """Builds a new translation file with the target of the input language as
 source language.
 
-Ensure that the two po files correspond 100% to the same pot file before using
-this.
+.. note:: Ensure that the two po files correspond 100% to the same pot file before using
+   this.
 
 To translate Kurdish (ku) through French::
+
     po2swap -i fr/ -t ku -o fr-ku
 
 To convert the fr-ku files back to en-ku::
+
     po2swap --reverse -i fr/ -t fr-ku -o en-ku
 
-See: http://translate.sourceforge.net/wiki/toolkit/poswap for further examples and
-usage instructions
+See: http://docs.translatehouse.org/projects/translate-toolkit/en/latest/commands/poswap.html
+for examples and usage instructions.
 """
 
 from translate.storage import po

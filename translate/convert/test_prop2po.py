@@ -207,6 +207,50 @@ do=translate me
         assert unit.source == "value"
         assert unit.getnotes("developer") == "# 1st Unassociated comment\n# 2nd Connected comment"
 
+    def test_x_header(self):
+        """Test that we correctly create the custom header entries
+        (accelerators, merge criterion).
+        """
+        propsource = '''prop=value\n'''
+        convertor = prop2po.prop2po()
+
+        inputfile = wStringIO.StringIO(propsource)
+        inputprop = properties.propfile(inputfile, personality="mozilla")
+        outputpo = convertor.convertstore(inputprop, personality="mozilla")
+        assert "X-Accelerator-Marker" in str(outputpo)
+        assert "X-Merge-On" in str(outputpo)
+
+        # Even though the gaia flavour inherrits from mozilla, it should not
+        # get the header
+        inputfile = wStringIO.StringIO(propsource)
+        inputprop = properties.propfile(inputfile, personality="gaia")
+        outputpo = convertor.convertstore(inputprop, personality="gaia")
+        assert "X-Accelerator-Marker" not in str(outputpo)
+        assert "X-Merge-On" not in str(outputpo)
+
+    def test_gaia_plurals(self):
+        """Test conversion of gaia plural units."""
+        propsource = '''
+message-multiedit-header={[ plural(n) ]}
+message-multiedit-header[zero]=Edit
+message-multiedit-header[one]={{ n }} selected
+message-multiedit-header[two]={{ n }} selected
+message-multiedit-header[few]={{ n }} selected
+message-multiedit-header[many]={{ n }} selected
+message-multiedit-header[other]={{ n }} selected
+'''
+        convertor = prop2po.prop2po()
+        inputfile = wStringIO.StringIO(propsource)
+        inputprop = properties.propfile(inputfile, personality="gaia")
+        outputpo = convertor.convertstore(inputprop, personality="gaia")
+        pounit = outputpo.units[-1]
+        assert pounit.hasplural()
+        assert pounit.getlocations() == [u'message-multiedit-header']
+
+        print outputpo
+        zero_unit = outputpo.units[-2]
+        assert not zero_unit.hasplural()
+        assert zero_unit.source == u"Edit"
 
 class TestProp2POCommand(test_convert.TestConvertCommand, TestProp2PO):
     """Tests running actual prop2po commands on files"""

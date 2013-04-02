@@ -299,7 +299,8 @@ msgstr "36em"
         print '---'
         print str(new)
         assert new.units[0].isapproved()
-        # Layout might have changed, so we won't compare the serialised versions
+        # Layout might have changed, so we won't compare the serialised
+        # versions
 
 
 class TestPretranslateCommand(test_convert.TestConvertCommand, TestPretranslate):

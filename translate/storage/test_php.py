@@ -12,7 +12,7 @@ def test_php_escaping_single_quote():
     """Test the helper escaping funtions for 'single quotes'
 
     The tests are built mostly from examples from the PHP
-    U{string type definition<http://www.php.net/manual/en/language.types.string.php#language.types.string.syntax.single>}.
+    `string type definition <http://www.php.net/manual/en/language.types.string.php#language.types.string.syntax.single>`_.
     """
     # Decoding - PHP -> Python
     assert php.phpdecode(r"\'") == r"'"     # To specify a literal single quote, escape it with a backslash (\).
@@ -224,6 +224,187 @@ $foo='bar';
         assert phpunit.name == "$lang->'item 3'"
         assert phpunit.source == "value3"
 
+    def test_parsing_simple_define(self):
+        """Parse simple define syntax"""
+        phpsource = """define("_FINISH", "Rematar");
+define('_POSTEDON', 'Enviado o');"""
+        phpfile = self.phpparse(phpsource)
+        print len(phpfile.units)
+        assert len(phpfile.units) == 2
+        phpunit = phpfile.units[0]
+        assert phpunit.name == 'define("_FINISH"'
+        assert phpunit.source == "Rematar"
+        phpunit = phpfile.units[1]
+        assert phpunit.name == "define('_POSTEDON'"
+        assert phpunit.source == "Enviado o"
+
+    def test_parsing_simple_define_with_spaces_before_key(self):
+        """Parse simple define syntax with spaces before key"""
+        phpsource = """define( "_FINISH", "Rematar");
+define( '_CM_POSTED', 'Enviado');"""
+        phpfile = self.phpparse(phpsource)
+        print len(phpfile.units)
+        assert len(phpfile.units) == 2
+        phpunit = phpfile.units[0]
+        assert phpunit.name == 'define( "_FINISH"'
+        assert phpunit.source == "Rematar"
+        phpunit = phpfile.units[1]
+        assert phpunit.name == "define( '_CM_POSTED'"
+        assert phpunit.source == "Enviado"
+
+    def test_parsing_define_spaces_after_equal_delimiter(self):
+        """Parse define syntax with spaces after the equal delimiter"""
+        phpsource = """define("_RELOAD",       "Recargar");
+define('_CM_POSTED',    'Enviado');"""
+        phpfile = self.phpparse(phpsource)
+        print len(phpfile.units)
+        assert len(phpfile.units) == 2
+        phpunit = phpfile.units[0]
+        assert phpunit.name == 'define("_RELOAD"'
+        assert phpunit.source == "Recargar"
+        phpunit = phpfile.units[1]
+        assert phpunit.name == "define('_CM_POSTED'"
+        assert phpunit.source == "Enviado"
+
+    def test_parsing_define_spaces_after_equal_delimiter_and_before_key(self):
+        """Parse define syntax with spaces after the equal delimiter as well
+        before the key
+        """
+        phpsource = """define( "_FINISH",       "Rematar");
+define(  '_UPGRADE_CHARSET',    'Upgrade charset');"""
+        phpfile = self.phpparse(phpsource)
+        print len(phpfile.units)
+        assert len(phpfile.units) == 2
+        phpunit = phpfile.units[0]
+        assert phpunit.name == 'define( "_FINISH"'
+        assert phpunit.source == "Rematar"
+        phpunit = phpfile.units[1]
+        assert phpunit.name == "define(  '_UPGRADE_CHARSET'"
+        assert phpunit.source == "Upgrade charset"
+
+    def test_parsing_define_no_spaces_after_equal_delimiter(self):
+        """Parse define syntax without spaces after the equal delimiter"""
+        phpsource = """define("_POSTEDON","Enviado o");
+define('_UPGRADE_CHARSET','Upgrade charset');"""
+        phpfile = self.phpparse(phpsource)
+        print len(phpfile.units)
+        assert len(phpfile.units) == 2
+        phpunit = phpfile.units[0]
+        assert phpunit.name == 'define("_POSTEDON"'
+        assert phpunit.source == "Enviado o"
+        phpunit = phpfile.units[1]
+        assert phpunit.name == "define('_UPGRADE_CHARSET'"
+        assert phpunit.source == "Upgrade charset"
+
+
+    def test_parsing_define_no_spaces_after_equaldel_but_before_key(self):
+        """Parse define syntax without spaces after the equal delimiter but
+        with spaces before the key
+        """
+        phpsource = """define( "_FINISH","Rematar");
+define( '_CM_POSTED','Enviado');"""
+        phpfile = self.phpparse(phpsource)
+        print len(phpfile.units)
+        assert len(phpfile.units) == 2
+        phpunit = phpfile.units[0]
+        assert phpunit.name == 'define( "_FINISH"'
+        assert phpunit.source == "Rematar"
+        phpunit = phpfile.units[1]
+        assert phpunit.name == "define( '_CM_POSTED'"
+        assert phpunit.source == "Enviado"
+
+    def test_parsing_define_entries_with_quotes(self):
+        """Parse define syntax for entries with quotes"""
+        phpsource = """define('_SETTINGS_COOKIEPREFIX', 'Prefixo da "cookie"');
+define('_YOUR_USERNAME', 'O seu nome de usuario: "cookie"');
+define("_REGISTER", "Register <a href=\"register.php\">here</a>");"""
+        phpfile = self.phpparse(phpsource)
+        print len(phpfile.units)
+        assert len(phpfile.units) == 3
+        phpunit = phpfile.units[0]
+        assert phpunit.name == "define('_SETTINGS_COOKIEPREFIX'"
+        assert phpunit.source == "Prefixo da \"cookie\""
+        phpunit = phpfile.units[1]
+        assert phpunit.name == "define('_YOUR_USERNAME'"
+        assert phpunit.source == "O seu nome de usuario: \"cookie\""
+        phpunit = phpfile.units[2]
+        assert phpunit.name == 'define("_REGISTER"'
+        assert phpunit.source == "Register <a href=\"register.php\">here</a>"
+
+    def test_parsing_define_comments_at_entry_line_end(self):
+        """Parse define syntax with comments at the end of the entry line"""
+        phpsource = """define("_POSTEDON", "Enviado o");// Keep this short
+define('_CM_POSTED', 'Enviado'); // Posted date"""
+        phpfile = self.phpparse(phpsource)
+        print len(phpfile.units)
+        assert len(phpfile.units) == 2
+        phpunit = phpfile.units[0]
+        assert phpunit.name == 'define("_POSTEDON"'
+        assert phpunit.source == "Enviado o"
+        assert phpunit._comments == ["Keep this short"]
+        phpunit = phpfile.units[1]
+        assert phpunit.name == "define('_CM_POSTED'"
+        assert phpunit.source == "Enviado"
+        assert phpunit._comments == ["Posted date"]
+
+    def test_parsing_define_double_slash_comments_before_entries(self):
+        """Parse define syntax with double slash comments before the entries"""
+        phpsource = """// Keep this short
+define("_FINISH", "Rematar");
+
+// This means it was published
+// It appears besides posts
+define('_CM_POSTED', 'Enviado');"""
+        phpfile = self.phpparse(phpsource)
+        print len(phpfile.units)
+        assert len(phpfile.units) == 2
+        phpunit = phpfile.units[0]
+        assert phpunit.name == 'define("_FINISH"'
+        assert phpunit.source == "Rematar"
+        assert phpunit._comments == ["// Keep this short"]
+        phpunit = phpfile.units[1]
+        assert phpunit.name == "define('_CM_POSTED'"
+        assert phpunit.source == "Enviado"
+        assert phpunit._comments == ["// This means it was published",
+                                     "// It appears besides posts"
+                                    ]
+
+    def test_parsing_define_spaces_before_end_delimiter(self):
+        """Parse define syntax with spaces before the end delimiter"""
+        phpsource = """define("_POSTEDON", "Enviado o");
+define("_FINISH", "Rematar"     );
+define("_RELOAD", "Recargar");"""
+        phpfile = self.phpparse(phpsource)
+        print len(phpfile.units)
+        assert len(phpfile.units) == 3
+        phpunit = phpfile.units[0]
+        assert phpunit.name == 'define("_POSTEDON"'
+        assert phpunit.source == "Enviado o"
+        phpunit = phpfile.units[1]
+        assert phpunit.name == 'define("_FINISH"'
+        assert phpunit.source == "Rematar"
+        phpunit = phpfile.units[2]
+        assert phpunit.name == 'define("_RELOAD"'
+        assert phpunit.source == "Recargar"
+
+    def test_parsing_simpledefinition_spaces_before_end_delimiter(self):
+        """Parse define syntax with spaces before the end delimiter"""
+        phpsource = """$month_jan = 'Jan';
+$month_feb = 'Feb'  ;
+$month_mar = 'Mar';"""
+        phpfile = self.phpparse(phpsource)
+        print len(phpfile.units)
+        assert len(phpfile.units) == 3
+        phpunit = phpfile.units[0]
+        assert phpunit.name == '$month_jan'
+        assert phpunit.source == "Jan"
+        phpunit = phpfile.units[1]
+        assert phpunit.name == '$month_feb'
+        assert phpunit.source == "Feb"
+        phpunit = phpfile.units[2]
+        assert phpunit.name == '$month_mar'
+        assert phpunit.source == "Mar"
+
     @mark.xfail(reason="Bug #1685")
     def test_parsing_arrays_no_trailing_comma(self):
         """parse the array syntax where we don't have a trailing comma.
@@ -237,17 +418,149 @@ $foo='bar';
         phpunit = phpfile.units[0]
         assert phpunit.name == "$lang->'item1'"
         assert phpunit.source == "value1"
+        phpunit = phpfile.units[1]
+        assert phpunit.name == "$lang->'item2'"
+        assert phpunit.source == "value2"
 
-    @mark.xfail(reason="Bug #1898")
     def test_parsing_arrays_space_before_comma(self):
-        """parse the array syntax where we don't have a trailing comma.
-        Bug #1685"""
+        """parse the array syntax with spaces before the comma. Bug #1898"""
         phpsource = '''$lang = array(
          'item1' => 'value1',
          'item2' => 'value2' ,
-      );'''
+        );'''
         phpfile = self.phpparse(phpsource)
         assert len(phpfile.units) == 2
         phpunit = phpfile.units[0]
         assert phpunit.name == "$lang->'item1'"
         assert phpunit.source == "value1"
+        phpunit = phpfile.units[1]
+        assert phpunit.name == "$lang->'item2'"
+        assert phpunit.source == "value2"
+
+    @mark.xfail(reason="Bug #2646")
+    def test_parsing_arrays_with_space_before_array_declaration(self):
+        """parse the array syntax with spaces before the array declaration.
+        Bug #2646"""
+        phpsource = '''$lang = array   (
+         'item1' => 'value1',
+         'item2' => 'value2',
+        );'''
+        phpfile = self.phpparse(phpsource)
+        assert len(phpfile.units) == 2
+        phpunit = phpfile.units[0]
+        assert phpunit.name == "$lang->'item1'"
+        assert phpunit.source == "value1"
+        phpunit = phpfile.units[1]
+        assert phpunit.name == "$lang->'item2'"
+        assert phpunit.source == "value2"
+
+    @mark.xfail(reason="Bug #2240")
+    def test_parsing_nested_arrays(self):
+        """parse the nested array syntax. Bug #2240"""
+        phpsource = '''$app_list_strings = array(
+            'Mailbox' => 'Mailbox',
+            'moduleList' => array(
+                'Home' => 'Home',
+                'Contacts' => 'Contacts',
+                'Accounts' => 'Accounts',
+            ),
+            'FAQ' => 'FAQ',
+        );'''
+        phpfile = self.phpparse(phpsource)
+        assert len(phpfile.units) == 5
+        phpunit = phpfile.units[0]
+        assert phpunit.name == "$app_list_strings->'Mailbox'"
+        assert phpunit.source == "Mailbox"
+        phpunit = phpfile.units[1]
+        assert phpunit.name == "$app_list_strings->'moduleList'->'Home'"
+        assert phpunit.source == "Home"
+        phpunit = phpfile.units[2]
+        assert phpunit.name == "$app_list_strings->'moduleList'->'Contacts'"
+        assert phpunit.source == "Contacts"
+        phpunit = phpfile.units[3]
+        assert phpunit.name == "$app_list_strings->'moduleList'->'Accounts'"
+        assert phpunit.source == "Accounts"
+        phpunit = phpfile.units[4]
+        assert phpunit.name == "$app_list_strings->'FAQ'"
+        assert phpunit.source == "FAQ"
+
+    @mark.xfail(reason="Bug #2647")
+    def test_parsing_nested_arrays_with_array_declaration_in_next_line(self):
+        """parse the nested array syntax with array declaration in the next
+        line. Bug #2647"""
+        phpsource = '''$lang = array(
+            'item1' => 'value1',
+            'newsletter_frequency_dom' =>
+                array(
+                    'Weekly' => 'Weekly',
+                ),
+            'item2' => 'value2',
+        );'''
+        phpfile = self.phpparse(phpsource)
+        assert len(phpfile.units) == 3
+        phpunit = phpfile.units[0]
+        assert phpunit.name == "$lang->'item1'"
+        assert phpunit.source == "value1"
+        phpunit = phpfile.units[1]
+        assert phpunit.name == "$lang->'newsletter_frequency_dom'->'Weekly'"
+        assert phpunit.source == "Weekly"
+        phpunit = phpfile.units[2]
+        assert phpunit.name == "$lang->'item2'"
+        assert phpunit.source == "value2"
+
+    @mark.xfail(reason="Bug #2648")
+    def test_parsing_nested_arrays_with_blank_entries(self):
+        """parse the nested array syntax with blank entries. Bug #2648"""
+        phpsource = '''$lang = array(
+            'item1' => 'value1',
+            'newsletter_frequency_dom' =>
+                array(
+                    '' => '',
+                    'Weekly' => 'Weekly',
+                ),
+            'item2' => 'value2',
+        );'''
+        phpfile = self.phpparse(phpsource)
+        assert len(phpfile.units) == 3
+        phpunit = phpfile.units[0]
+        assert phpunit.name == "$lang->'item1'"
+        assert phpunit.source == "value1"
+        phpunit = phpfile.units[1]
+        assert phpunit.name == "$lang->'newsletter_frequency_dom'->'Weekly'"
+        assert phpunit.source == "Weekly"
+        phpunit = phpfile.units[2]
+        assert phpunit.name == "$lang->'item2'"
+        assert phpunit.source == "value2"
+
+    @mark.xfail(reason="Bug #2611")
+    def test_parsing_simple_heredoc_syntax(self):
+        """parse the heredoc syntax. Bug #2611"""
+        phpsource = '''$month_jan = 'Jan';
+$lang_register_approve_email = <<<EOT
+A new user with the username "{USER_NAME}" has registered in your gallery.
+
+In order to activate the account, you need to click on the link below.
+
+<a href="{ACT_LINK}">{ACT_LINK}</a>
+EOT;
+
+$foobar = <<<FOOBAR
+Simple example
+FOOBAR;
+
+$month_mar = 'Mar';
+        '''
+        phpfile = self.phpparse(phpsource)
+        assert len(phpfile.units) == 3
+        phpunit = phpfile.units[0]
+        assert phpunit.name == '$month_jan'
+        assert phpunit.source == "Jan"
+        phpunit = phpfile.units[1]
+        assert phpunit.name == '$lang_register_approve_email'
+        assert phpunit.source == "A new user with the username \"{USER_NAME}\" has registered in your gallery.\n\nIn order to activate the account, you need to click on the link below.\n\n<a href=\"{ACT_LINK}\">{ACT_LINK}</a>"
+        phpunit = phpfile.units[2]
+        assert phpunit.name == '$foobar'
+        assert phpunit.source == "Simple example"
+        phpunit = phpfile.units[3]
+        assert phpunit.name == '$month_mar'
+        assert phpunit.source == "Mar"

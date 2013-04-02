@@ -19,10 +19,10 @@
 # along with this program; if not, see <http://www.gnu.org/licenses/>.
 #
 
-"""convert an OpenOffice.org (SDF) localization file to Gettext PO localization files
+"""Convert an OpenOffice.org (SDF) localization file to Gettext PO localization files.
 
-See: http://translate.sourceforge.net/wiki/toolkit/oo2po for examples and
-usage instructions
+See: http://docs.translatehouse.org/projects/translate-toolkit/en/latest/commands/oo2po.html
+for examples and usage instructions.
 """
 
 import sys
@@ -99,10 +99,11 @@ class oo2po:
                              "component": "l10n",
                              "form_name": "enter_issue",
                             })
-        targetheader = thetargetfile.init_headers(charset="UTF-8",
-                                                  encoding="8bit",
-                                                  x_accelerator_marker="~",
-                                                  report_msgid_bugs_to=bug_url)
+        targetheader = thetargetfile.init_headers(
+                              x_accelerator_marker="~",
+                              x_merge_on="location",
+                              report_msgid_bugs_to=bug_url,
+        )
         targetheader.addnote("extracted from %s" % theoofile.filename,
                              "developer")
         thetargetfile.setsourcelanguage(self.sourcelanguage)
@@ -151,15 +152,23 @@ def convertoo(inputfile, outputfile, templates, pot=False, sourcelanguage=None, 
 
 def main(argv=None):
     from translate.convert import convert
-    formats = {"oo": ("po", convertoo), "sdf": ("po", convertoo)}
+    formats = {
+                "oo": ("po", convertoo),
+                "sdf": ("po", convertoo),
+              }
     # always treat the input as an archive unless it is a directory
     archiveformats = {(None, "input"): oo.oomultifile}
-    parser = convert.ArchiveConvertOptionParser(formats, usepots=True, description=__doc__, archiveformats=archiveformats)
+    parser = convert.ArchiveConvertOptionParser(formats, usepots=True,
+                                                description=__doc__,
+                                                archiveformats=archiveformats)
     parser.add_option("-l", "--language", dest="targetlanguage", default=None,
-            help="set target language to extract from oo file (e.g. af-ZA)", metavar="LANG")
+                      help="set target language to extract from oo file (e.g. af-ZA)",
+                      metavar="LANG")
     parser.add_option("", "--source-language", dest="sourcelanguage", default=None,
             help="set source language code (default en-US)", metavar="LANG")
-    parser.add_option("", "--nonrecursiveinput", dest="allowrecursiveinput", default=True, action="store_false", help="don't treat the input oo as a recursive store")
+    parser.add_option("", "--nonrecursiveinput", dest="allowrecursiveinput",
+                      default=True, action="store_false",
+                      help="don't treat the input oo as a recursive store")
     parser.add_duplicates_option()
     parser.add_multifile_option()
     parser.passthrough.append("pot")

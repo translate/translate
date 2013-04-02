@@ -18,9 +18,9 @@
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, see <http://www.gnu.org/licenses/>.
 
-"""This module represents Greek language.
+"""This module represents the Greek language.
 
-For more information, see U{http://en.wikipedia.org/wiki/Greek_language}
+.. seealso:: http://en.wikipedia.org/wiki/Greek_language
 """
 
 import re
@@ -34,12 +34,14 @@ class el(common.Common):
     # Greek uses ; as question mark and the middot instead
     sentenceend = u".!;…"
 
-    sentencere = re.compile(ur"""(?s)   #make . also match newlines
-                            .*?         #anything, but match non-greedy
-                            [%s]        #the puntuation for sentence ending
-                            \s+         #the spacing after the puntuation
-                            (?=[^a-zά-ώ\d])#lookahead that next part starts with caps
-                            """ % sentenceend, re.VERBOSE | re.UNICODE)
+    sentencere = re.compile(ur"""
+        (?s)        # make . also match newlines
+        .*?         # anything, but match non-greedy
+        [%s]        # the puntuation for sentence ending
+        \s+         # the spacing after the puntuation
+        (?=[^a-zά-ώ\d])  # lookahead that next part starts with caps
+        """ % sentenceend, re.VERBOSE | re.UNICODE
+    )
 
     puncdict = {
         u"?": u";",

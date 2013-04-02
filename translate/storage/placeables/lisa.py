@@ -25,7 +25,8 @@ from translate.storage.placeables import base, xliff, StringElem
 from translate.storage.xml_extract import misc
 
 __all__ = ['xml_to_strelem', 'strelem_to_xml']
-# Use the above functions as entry points into this module. The rest are used by these functions.
+# Use the above functions as entry points into this module. The rest are
+# used by these functions.
 
 
 def make_empty_replacement_placeable(klass, node, xml_space="preserve"):
@@ -101,7 +102,7 @@ def xml_to_strelem(dom_node, xml_space="preserve"):
         dom_node = etree.fromstring(dom_node)
     normalize_xml_space(dom_node, xml_space, remove_start=True)
     result = StringElem()
-    sub = result.sub # just an optimisation
+    sub = result.sub  # just an optimisation
     for child_dom_node in dom_node:
         if child_dom_node.tag is etree.Comment:
             continue

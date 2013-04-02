@@ -35,7 +35,8 @@ class TestPOMerge:
     def mergestore(self, templatesource, inputsource, mergeblanks="yes",
                    mergefuzzy="yes",
                    mergecomments="yes"):
-        """merges the sources of the given files and returns a new pofile object"""
+        """merges the sources of the given files and returns a new pofile
+        object"""
         templatefile = wStringIO.StringIO(templatesource)
         inputfile = wStringIO.StringIO(inputsource)
         outputfile = wStringIO.StringIO()
@@ -51,7 +52,8 @@ class TestPOMerge:
     def mergexliff(self, templatesource, inputsource, mergeblanks="yes",
                    mergefuzzy="yes",
                    mergecomments="yes"):
-        """merges the sources of the given files and returns a new xlifffile object"""
+        """merges the sources of the given files and returns a new xlifffile
+        object"""
         templatefile = wStringIO.StringIO(templatesource)
         inputfile = wStringIO.StringIO(inputsource)
         outputfile = wStringIO.StringIO()
@@ -73,7 +75,8 @@ class TestPOMerge:
             return len(pofile.units)
 
     def singleunit(self, pofile):
-        """checks that the pofile contains a single non-header unit, and returns it"""
+        """checks that the pofile contains a single non-header unit, and
+        returns it"""
         assert self.countunits(pofile) == 1
         return pofile.units[-1]
 
@@ -82,10 +85,10 @@ class TestPOMerge:
         templatefile = wStringIO.StringIO("")
         inputfile = wStringIO.StringIO("")
         outputfile = wStringIO.StringIO()
-        test.raises(ValueError, pomerge.mergestore, inputfile, outputfile, templatefile,
-                    mergeblanks="yay")
-        test.raises(ValueError, pomerge.mergestore, inputfile, outputfile, templatefile,
-                    mergecomments="yay")
+        test.raises(ValueError, pomerge.mergestore, inputfile, outputfile,
+                    templatefile, mergeblanks="yay")
+        test.raises(ValueError, pomerge.mergestore, inputfile, outputfile,
+                    templatefile, mergecomments="yay")
 
     def test_simplemerge(self):
         """checks that a simple po entry merges OK"""
@@ -145,7 +148,8 @@ msgstr "Dimpled Ring"'''
         assert pounit.isfuzzy() == False
 
     def test_merging_locations(self):
-        """check that locations on separate lines are output in Gettext form of all on one line"""
+        """check that locations on separate lines are output in Gettext form
+        of all on one line"""
         templatepo = '''#: location.c:1\n#: location.c:2\nmsgid "Simple String"\nmsgstr ""\n'''
         inputpo = '''#: location.c:1\n#: location.c:2\nmsgid "Simple String"\nmsgstr "Dimpled Ring"\n'''
         expectedpo = '''#: location.c:1%slocation.c:2\nmsgid "Simple String"\nmsgstr "Dimpled Ring"\n''' % po.lsep
@@ -190,7 +194,8 @@ msgstr "Dimpled Ring"
         assert str(pofile) == expectedpo
 
     def test_reflowed_source_comments(self):
-        """ensure that we don't duplicate source comments (locations) if they have been reflowed"""
+        """ensure that we don't duplicate source comments (locations) if they
+        have been reflowed"""
         templatepo = '''#: newMenu.label\n#: newMenu.accesskey\nmsgid "&New"\nmsgstr ""\n'''
         newpo = '''#: newMenu.label newMenu.accesskey\nmsgid "&New"\nmsgstr "&Nuwe"\n'''
         expectedpo = '''#: newMenu.label%snewMenu.accesskey\nmsgid "&New"\nmsgstr "&Nuwe"\n''' % po.lsep
@@ -216,7 +221,8 @@ msgstr "blabla"
         assert str(pofile) == expectedpo
 
     def test_merge_dont_delete_unassociated_comments(self):
-        """ensure that we do not delete comments in the PO file that are not assocaited with a message block"""
+        """ensure that we do not delete comments in the PO file that are not
+        assocaited with a message block"""
         templatepo = '''# Lonely comment\n\n# Translation comment\nmsgid "Bob"\nmsgstr "Toolmaker"\n'''
         mergepo = '''# Translation comment\nmsgid "Bob"\nmsgstr "Builder"\n'''
         expectedpo = '''# Lonely comment\n# Translation comment\nmsgid "Bob"\nmsgstr "Builder"\n'''
@@ -243,7 +249,8 @@ msgstr "blabla"
         assert str(pofile) == expectedpo or str(pofile) == expectedpo2
 
     def test_preserve_format_minor_start_and_end_of_sentence_changes(self):
-        """Test that we are not too fussy about large diffs for simple changes at the start or end of a sentence"""
+        """Test that we are not too fussy about large diffs for simple
+        changes at the start or end of a sentence"""
         templatepo = '''msgid "Target type:"\nmsgstr "Doelsoort"\n\n'''
         mergepo = '''msgid "Target type:"\nmsgstr "Doelsoort:"\n'''
         expectedpo = mergepo
@@ -266,7 +273,8 @@ msgstr "blabla"
         assert str(pofile) == expectedpo
 
     def test_preserve_format_last_entry_in_a_file(self):
-        """The last entry in a PO file is usualy not followed by an empty line.  Test that we preserve this"""
+        """The last entry in a PO file is usualy not followed by an empty
+        line.  Test that we preserve this"""
         templatepo = '''msgid "First"\nmsgstr ""\n\nmsgid "Second"\nmsgstr ""\n'''
         mergepo = '''msgid "First"\nmsgstr "Eerste"\n\nmsgid "Second"\nmsgstr "Tweede"\n'''
         expectedpo = '''msgid "First"\nmsgstr "Eerste"\n\nmsgid "Second"\nmsgstr "Tweede"\n'''
@@ -283,7 +291,8 @@ msgstr "blabla"
 
     @mark.xfail(reason="Not Implemented")
     def test_escape_tabs(self):
-        """Ensure that input tabs are escaped in the output, like gettext does."""
+        """Ensure that input tabs are escaped in the output, like
+        gettext does."""
 
         # The strings below contains the tab character, not spaces.
         templatepo = '''msgid "First	Second"\nmsgstr ""\n\n'''
@@ -296,7 +305,8 @@ msgstr "Eerste\tTweede"
         assert str(pofile) == expectedpo
 
     def test_preserve_comments_layout(self):
-        """Ensure that when we merge with new '# (poconflict)' or other comments that we don't mess formating"""
+        """Ensure that when we merge with new '# (poconflict)' or other
+        comments that we don't mess formating"""
         templatepo = '''#: filename\nmsgid "Desktop Background.bmp"\nmsgstr "Desktop Background.bmp"\n\n'''
         mergepo = '''# (pofilter) unchanged: please translate\n#: filename\nmsgid "Desktop Background.bmp"\nmsgstr "Desktop Background.bmp"\n'''
         expectedpo = mergepo
@@ -305,7 +315,8 @@ msgstr "Eerste\tTweede"
         assert str(pofile) == expectedpo
 
     def test_merge_dos2unix(self):
-        """Test that merging a comment line with dos newlines doesn't add a new line"""
+        """Test that merging a comment line with dos newlines doesn't add a
+        new line"""
         templatepo = '''# User comment\n# (pofilter) Translate Toolkit comment\n#. Automatic comment\n#: location_comment.c:110\nmsgid "File"\nmsgstr "File"\n\n'''
         mergepo = '''# User comment\r\n# (pofilter) Translate Toolkit comment\r\n#. Automatic comment\r\n#: location_comment.c:110\r\nmsgid "File"\r\nmsgstr "Ifayile"\r\n\r\n'''
         expectedpo = '''# User comment\n# (pofilter) Translate Toolkit comment\n#. Automatic comment\n#: location_comment.c:110\nmsgid "File"\nmsgstr "Ifayile"\n'''
@@ -364,7 +375,8 @@ msgstr "Eerste\tTweede"
         assert str(pofile) == expectedpo
 
     def test_merging_dont_merge_kde_comments_found_in_translation(self):
-        """If we find a KDE comment in the translation (target) then do not merge it."""
+        """If we find a KDE comment in the translation (target) then do not
+        merge it."""
 
         templatepo = '''msgid "_: KDE comment\\n"\n"File"\nmsgstr "File"\n\n'''
         mergepo = '''msgid "_: KDE comment\\n"\n"File"\nmsgstr "_: KDE comment\\n"\n"Ifayile"\n\n'''
@@ -387,7 +399,8 @@ msgstr "Eerste\tTweede"
         assert str(pofile) == expectedpo
 
     def test_merging_untranslated_with_kde_disambiguation(self):
-        """test merging untranslated messages that are the same except for KDE disambiguation"""
+        """test merging untranslated messages that are the same except for
+        KDE disambiguation"""
         templatepo = r'''#: sendMsgTitle
 #: sendMsgTitle.accesskey
 msgid "_: sendMsgTitle sendMsgTitle.accesskey\n"
@@ -418,7 +431,8 @@ msgstr "Stuur"
         assert str(pofile) == expectedpo
 
     def test_merging_header_entries(self):
-        """Check that we do the right thing if we have header entries in the input PO."""
+        """Check that we do the right thing if we have header entries in the
+        input PO."""
 
         templatepo = r'''#, fuzzy
 msgid ""

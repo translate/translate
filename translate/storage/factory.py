@@ -37,6 +37,7 @@ classes_str = {
            "po": ("po", "pofile"), "pot": ("po", "pofile"),
            "mo": ("mo", "mofile"), "gmo": ("mo", "mofile"),
            "qm": ("qm", "qmfile"),
+           "lang": ("mozilla_lang", "LangStore"),
            "utx": ("utx", "UtxFile"),
            "_wftm": ("wordfast", "WordfastTMFile"),
            "_trados_txt_tm": ("trados", "TradosTxtTmFile"),
@@ -45,7 +46,7 @@ classes_str = {
            "qph": ("qph", "QphFile"),
            "tbx": ("tbx", "tbxfile"),
            "tmx": ("tmx", "tmxfile"),
-           "ts":  ("ts2", "tsfile"),
+           "ts": ("ts2", "tsfile"),
            "xliff": ("xliff", "xlifffile"), "xlf": ("xliff", "xlifffile"),
            "sdlxliff": ("xliff", "xlifffile"),
 }
@@ -56,6 +57,7 @@ classes_str = {
 Used for dynamic lazy loading of modules.
 _ext is a pseudo extension, that is their is no real extension by that name.
 """
+
 
 def _examine_txt(storefile):
     """Determine the true filetype for a .txt file"""
@@ -163,8 +165,8 @@ def getclass(storefile, ignore=None, classes=None, classes_str=classes_str, hidd
 def getobject(storefile, ignore=None, classes=None, classes_str=classes_str, hiddenclasses=hiddenclasses):
     """Factory that returns a usable object for the type of file presented.
 
-    @type storefile: file or str
-    @param storefile: File object or file name.
+    :type storefile: file or str
+    :param storefile: File object or file name.
 
     Specify ignore to ignore some part at the back of the name (like .gz).
     """
@@ -204,10 +206,11 @@ supported = [
         ('Haiku catkeys file', ['catkeys'], ["application/x-catkeys"]),
 ]
 
+
 def supported_files():
     """Returns data about all supported files
 
-    @return: list of type that include (name, extensions, mimetypes)
-    @rtype: list
+    :return: list of type that include (name, extensions, mimetypes)
+    :rtype: list
     """
     return supported[:]

@@ -16,10 +16,10 @@
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, see <http://www.gnu.org/licenses/>.
 
-"""reads a set of .po or .pot files to produce a pootle-terminology.pot
+"""Create a terminology file by reading a set of .po or .pot files to produce a pootle-terminology.pot.
 
-See: http://translate.sourceforge.net/wiki/toolkit/poterminology for examples and
-usage instructions
+See: http://docs.translatehouse.org/projects/translate-toolkit/en/latest/commands/poterminology.html
+for examples and usage instructions.
 """
 import os
 import re
@@ -88,7 +88,7 @@ class TerminologyExtractor(object):
         self.xmlelpat = re.compile(r"<(?:![[-]|[/?]?[A-Za-z_:])[^>]*>")
         # handles XML/HTML entities (&#32; &#x20; &amp; &my_entity;)
         self.xmlentpat = re.compile(r"&(?:#(?:[0-9]+|x[0-9a-f]+)|[a-z_:][\w.-:]*);",
-                               flags=re.UNICODE|re.IGNORECASE)
+                               flags=re.UNICODE | re.IGNORECASE)
 
         self.units = 0
         self.glossary = {}
@@ -120,7 +120,7 @@ class TerminologyExtractor(object):
                     else:
                         logging.warning("%s line %d - bad case mapping directive", (self.stopfile, line))
                 elif stoptype == '/':
-                    self.stoprelist.append(re.compile(stopline[1:-1]+'$'))
+                    self.stoprelist.append(re.compile(stopline[1:-1] + '$'))
                 else:
                     self.stopwords[stopline[1:-1]] = actions[stoptype]
         except KeyError, character:
@@ -481,7 +481,7 @@ def main():
         action="store_true", help="make all terms lowercase")
 
     parser.add_option("", "--accelerator", dest="accelchars", default="",
-        metavar="ACCELERATORS", help="ignores the given accelerator characters when matching")
+        metavar="ACCELERATORS", help="ignore the given accelerator characters when matching")
 
     parser.add_option("-t", "--term-words", type="int", dest="termlength", default="3",
         help="generate terms of up to LENGTH words (default 3)", metavar="LENGTH")

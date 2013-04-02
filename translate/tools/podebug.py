@@ -18,10 +18,10 @@
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, see <http://www.gnu.org/licenses/>.
 
-"""Insert debug messages into XLIFF and Gettext PO localization files
+"""Insert debug messages into XLIFF and Gettext PO localization files.
 
-See: http://translate.sourceforge.net/wiki/toolkit/podebug for examples and
-usage instructions.
+See: http://docs.translatehouse.org/projects/translate-toolkit/en/latest/commands/podebug.html
+for examples and usage instructions.
 """
 
 import os
@@ -39,6 +39,7 @@ def add_prefix(prefix, stringelems):
         for string in stringelem.flatten():
             if len(string.sub) > 0:
                 string.sub[0] = prefix + string.sub[0]
+                break
     return stringelems
 
 podebug_parsers = general.parsers
@@ -144,7 +145,7 @@ class podebug:
             string = StringElem(string)
 
         def transpose(char):
-            loc = ord(char)-65
+            loc = ord(char) - 65
             if loc < 0 or loc > 56:
                 return char
             return self.REWRITE_UNICODE_MAP[loc]
@@ -173,7 +174,7 @@ class podebug:
             string = StringElem(string)
 
         def transpose(char):
-            loc = ord(char)-33
+            loc = ord(char) - 33
             if loc < 0 or loc > 89:
                 return char
             return self.REWRITE_FLIPPED_MAP[loc]
@@ -232,16 +233,17 @@ class podebug:
             else:
                 hashable = unit.source
             prefix = prefix.replace("@hash_placeholder@", hash.md5_f(hashable).hexdigest()[:self.hash_len])
-        rich_source = unit.rich_source
-        if not isinstance(rich_source, StringElem):
-            rich_source = [rich_parse(string, podebug_parsers) for string in rich_source]
+        if unit.istranslated():
+            rich_string = unit.rich_target
+        else:
+            rich_string = unit.rich_source
+        if not isinstance(rich_string, StringElem):
+            rich_string = [rich_parse(string, podebug_parsers) for string in rich_string]
         if self.rewritefunc:
-            rewritten = [self.rewritefunc(string) for string in rich_source]
+            rewritten = [self.rewritefunc(string) for string in rich_string]
             if rewritten:
-                unit.rich_target = rewritten
-        elif not unit.istranslated():
-            unit.rich_target = unit.rich_source
-        unit.rich_target = add_prefix(prefix, unit.rich_target)
+                rich_string = rewritten
+        unit.rich_target = add_prefix(prefix, rich_string)
         return unit
 
     def convertstore(self, store):

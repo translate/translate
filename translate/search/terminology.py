@@ -28,7 +28,7 @@ class TerminologyComparer:
         self.MAX_LEN = max_len
 
     def similarity(self, text, term, stoppercentage=40):
-        """Returns the match quality of C{term} in the C{text}"""
+        """Returns the match quality of ``term`` in the ``text``"""
         # We could segment the words, but mostly it will give less ideal
         # results, since we'll miss plurals, etc. Then we also can't search for
         # multiword terms, such as "Free Software". Ideally we should use a

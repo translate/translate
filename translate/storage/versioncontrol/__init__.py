@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 #
-# Copyright 2004-2008 Zuza Software Foundation
+# Copyright 2004-2009,2012 Zuza Software Foundation
 #
 # This file is part of translate.
 #
@@ -20,17 +20,20 @@
 
 """This module manages interaction with version control systems.
 
-   To implement support for a new version control system, inherit the class
-   GenericRevisionControlSystem.
+To implement support for a new version control system, inherit from
+:class:`GenericRevisionControlSystem`.
 
-   TODO:
-     - add authentication handling
-     - 'commitdirectory' should do a single commit instead of one for each file
-     - maybe implement some caching for 'get_versioned_object' - check profiler
+TODO:
+  - Add authentication handling
+  - :func:`commitdirectory` should do a single commit instead of one for
+    each file
+  - Maybe implement some caching for :func:`get_versioned_object` - check
+    profiler
 """
 
 import os
 import re
+import subprocess
 
 DEFAULT_RCS = ["svn", "cvs", "darcs", "git", "bzr", "hg"]
 """the names of all supported revision control systems
@@ -59,93 +62,65 @@ def __get_rcs_class(name):
             else:
                 # the RCS client does not seem to be installed
                 rcs_class = None
+                try:
+                    DEFAULT_RCS.remove(name)
+                except ValueError:
+                    # we might have had a race condition and another thread
+                    # already removed it
+                    pass
         except (ImportError, AttributeError):
             rcs_class = None
         __CACHED_RCS_CLASSES[name] = rcs_class
     return __CACHED_RCS_CLASSES[name]
 
 
-# use either 'popen2' or 'subprocess' for command execution
-try:
-    # available for python >= 2.4
-    import subprocess
+def run_command(command, cwd=None):
+    """Runs a command (array of program name and arguments) and returns the
+    exitcode, the output and the error as a tuple.
 
-    # The subprocess module allows to use cross-platform command execution
-    # without using the shell (increases security).
-
-    def run_command(command, cwd=None):
-        """Runs a command (array of program name and arguments) and returns the
-        exitcode, the output and the error as a tuple.
-
-        @param command: list of arguments to be joined for a program call
-        @type command: list
-        @param cwd: optional directory where the command should be executed
-        @type cwd: str
-        """
-        # ok - we use "subprocess"
-        try:
-            proc = subprocess.Popen(args=command,
-                    stdout=subprocess.PIPE,
-                    stderr=subprocess.PIPE,
-                    stdin=subprocess.PIPE,
-                    cwd=cwd)
-            (output, error) = proc.communicate()
-            ret = proc.returncode
-            return ret, output, error
-        except OSError, err_msg:
-            # failed to run the program (e.g. the executable was not found)
-            return -1, "", err_msg
-
-except ImportError:
-    # fallback for python < 2.4
-    import popen2
-
-    def run_command(command, cwd=None):
-        """Runs a command (array of program name and arguments) and returns the
-        exitcode, the output and the error as a tuple.
-
-        There is no need to check for exceptions (like for subprocess above),
-        since popen2 opens a shell that will fail with an error code in case
-        of a missing executable.
-
-        @param command: list of arguments to be joined for a program call
-        @type command: list
-        @param cwd: optional directory where the command should be executed
-        @type cwd: str
-        """
-        escaped_command = " ".join([__shellescape(arg) for arg in command])
-        if cwd:
-            # "Popen3" uses shell execution anyway - so we do it the easy way
-            # there is no need to chdir back, since the the shell is separated
-            escaped_command = "cd %s; %s" % (__shellescape(cwd), escaped_command)
-        proc = popen2.Popen3(escaped_command, True)
-        (c_stdin, c_stdout, c_stderr) = (proc.tochild, proc.fromchild, proc.childerr)
-        output = c_stdout.read()
-        error = c_stderr.read()
-        ret = proc.wait()
-        c_stdout.close()
-        c_stderr.close()
-        c_stdin.close()
+    :param command: list of arguments to be joined for a program call
+    :type command: list
+    :param cwd: optional directory where the command should be executed
+    :type cwd: str
+    """
+    # ok - we use "subprocess"
+    try:
+        proc = subprocess.Popen(args=command,
+                stdout=subprocess.PIPE,
+                stderr=subprocess.PIPE,
+                stdin=subprocess.PIPE,
+                cwd=cwd)
+        (output, error) = proc.communicate()
+        ret = proc.returncode
         return ret, output, error
+    except OSError, err_msg:
+        # failed to run the program (e.g. the executable was not found)
+        return -1, "", err_msg
 
 
-def __shellescape(path):
-    """Shell-escape any non-alphanumeric characters."""
-    return re.sub(r'(\W)', r'\\\1', path)
+def prepare_filelist(files):
+    if not isinstance(files, list):
+        files = [files]
+    return [os.path.realpath(f) for f in files]
 
 
-class GenericRevisionControlSystem:
+def youngest_ancestor(files):
+    return os.path.commonprefix([os.path.dirname(f) for f in files])
+
+class GenericRevisionControlSystem(object):
     """The super class for all version control classes.
 
     Always inherit from this class to implement another RC interface.
 
-    At least the two attributes "RCS_METADIR" and "SCAN_PARENTS" must be
-    overriden by all implementations that derive from this class.
+    At least the two attributes :attr:`RCS_METADIR` and :attr:`SCAN_PARENTS`
+    must be overriden by all implementations that derive from this class.
 
     By default, all implementations can rely on the following attributes:
-      - root_dir: the parent of the metadata directory of the working copy
-      - location_abs: the absolute path of the RCS object
-      - location_rel: the path of the RCS object relative to 'root_dir'
+      - :attr:`root_dir`: the parent of the metadata directory of the
+        working copy
+      - :attr:`location_abs`: the absolute path of the RCS object
+      - :attr:`location_rel`: the path of the RCS object relative
+        to :attr:`root_dir`
     """
 
     RCS_METADIR = None
@@ -155,40 +130,52 @@ class GenericRevisionControlSystem:
     """
 
     SCAN_PARENTS = None
-    """whether to check the parent directories for the metadata directory of
+    """Whether to check the parent directories for the metadata directory of
     the RCS working copy
 
-    some revision control systems store their metadata directory only
+    Some revision control systems store their metadata directory only
     in the base of the working copy (e.g. bzr, GIT and Darcs)
-    use "True" for these RCS
+    use ``True`` for these RCS
 
-    other RCS store a metadata directory in every single directory of
+    Other RCS store a metadata directory in every single directory of
     the working copy (e.g. Subversion and CVS)
-    use "False" for these RCS
+    use ``False`` for these RCS
     """
 
-    def __init__(self, location):
-        """find the relevant information about this RCS object
+    def __init__(self, location, oldest_parent=None):
+        """Find the relevant information about this RCS object
 
-        The IOError exception indicates that the specified object (file or
-        directory) is not controlled by the given version control system.
+        The :exc:`IOError` exception indicates that the specified object (file
+        or directory) is not controlled by the given version control system.
+
+        :param oldest_parent: optional highest path where a recursive search
+                              should be stopped
+        :type oldest_parent: str
         """
         # check if the implementation looks ok - otherwise raise IOError
         self._self_check()
         # search for the repository information
-        result = self._find_rcs_directory(location)
+        location = os.path.normpath(location)
+        result = self._find_rcs_directory(location, oldest_parent)
         if result is None:
             raise IOError("Could not find revision control information: %s" \
                     % location)
-        else:
-            self.root_dir, self.location_abs, self.location_rel = result
 
-    def _find_rcs_directory(self, rcs_obj):
+        self.root_dir, self.location_abs, self.location_rel = result
+        if not os.path.isdir(location):
+            if not self._file_exists(location):
+                raise IOError("Not present in repository: %s" % location)
+
+    def _find_rcs_directory(self, rcs_obj, oldest_parent=None):
         """Try to find the metadata directory of the RCS
 
-        @rtype: tuple
-        @return:
-          - the absolute path of the directory, that contains the metadata directory
+        :param oldest_parent: optional highest path where a recursive search
+                              should be stopped
+        :type oldest_parent: str
+        :rtype: tuple
+        :return:
+          - the absolute path of the directory, that contains the metadata
+            directory
           - the absolute path of the RCS object
           - the relative path of the RCS object based on the directory above
         """
@@ -206,27 +193,34 @@ class GenericRevisionControlSystem:
         elif self.SCAN_PARENTS:
             # scan for the metadir in parent directories
             # (for bzr, GIT, Darcs, ...)
-            return self._find_rcs_in_parent_directories(rcs_obj)
+            return self._find_rcs_in_parent_directories(rcs_obj, oldest_parent)
         else:
             # no RCS metadata found
             return None
 
-    def _find_rcs_in_parent_directories(self, rcs_obj):
+    def _find_rcs_in_parent_directories(self, rcs_obj, oldest_parent=None):
         """Try to find the metadata directory in all parent directories"""
         # first: resolve possible symlinks
         current_dir = os.path.dirname(os.path.realpath(rcs_obj))
         # prevent infite loops
-        max_depth = 64
+        max_depth = 8
+        if oldest_parent:
+            oldest_parent = os.path.normpath(oldest_parent)
         # stop as soon as we find the metadata directory
         while not os.path.isdir(os.path.join(current_dir, self.RCS_METADIR)):
-            if os.path.dirname(current_dir) == current_dir:
+            if current_dir == oldest_parent:
+                # we were instructed not to look higher up
+                return None
+            parent_dir = os.path.dirname(current_dir)
+            if parent_dir == current_dir:
                 # we reached the root directory - stop
                 return None
             if max_depth <= 0:
                 # some kind of dead loop or a _very_ deep directory structure
                 return None
             # go to the next higher level
-            current_dir = os.path.dirname(current_dir)
+            current_dir = parent_dir
+            max_depth -= 1
         # the loop was finished successfully
         # i.e.: we found the metadata directory
         rcs_dir = current_dir
@@ -246,7 +240,7 @@ class GenericRevisionControlSystem:
         """Check if all necessary attributes are defined
 
         Useful to make sure, that a new implementation does not forget
-        something like "RCS_METADIR"
+        something like :attr:`RCS_METADIR`
         """
         if self.RCS_METADIR is None:
             raise IOError("Incomplete RCS interface implementation: " \
@@ -258,17 +252,28 @@ class GenericRevisionControlSystem:
         # NotImplementedError exceptions anyway
         return True
 
+    def _file_exists(self, path):
+        """Method to check if a file exists ``in the repository``."""
+        # If getcleanfile() worked, we assume the file exits. Implementations
+        # can provide optimised versions.
+        return bool(self.getcleanfile())
+
     def getcleanfile(self, revision=None):
         """Dummy to be overridden by real implementations"""
         raise NotImplementedError("Incomplete RCS interface implementation:" \
                 + " 'getcleanfile' is missing")
 
-    def commit(self, revision=None, author=None):
+    def commit(self, message=None, author=None):
         """Dummy to be overridden by real implementations"""
         raise NotImplementedError("Incomplete RCS interface implementation:" \
                 + " 'commit' is missing")
 
-    def update(self, revision=None):
+    def add(self, files, message=None, author=None):
+        """Dummy to be overridden by real implementations"""
+        raise NotImplementedError("Incomplete RCS interface implementation:" \
+                + " 'add' is missing")
+
+    def update(self, revision=None, needs_revert=True):
         """Dummy to be overridden by real implementations"""
         raise NotImplementedError("Incomplete RCS interface implementation:" \
                 + " 'update' is missing")
@@ -282,7 +287,7 @@ def get_versioned_objects_recursive(
     """
     rcs_objs = []
     if versioning_systems is None:
-        versioning_systems = DEFAULT_RCS
+        versioning_systems = DEFAULT_RCS[:]
 
     def scan_directory(arg, dirname, fnames):
         for fname in fnames:
@@ -301,16 +306,18 @@ def get_versioned_objects_recursive(
 def get_versioned_object(
         location,
         versioning_systems=None,
-        follow_symlinks=True):
+        follow_symlinks=True,
+        oldest_parent=None,
+    ):
     """return a versioned object for the given file"""
     if versioning_systems is None:
-        versioning_systems = DEFAULT_RCS
+        versioning_systems = DEFAULT_RCS[:]
     # go through all RCS and return a versioned object if possible
     for vers_sys in versioning_systems:
         try:
             vers_sys_class = __get_rcs_class(vers_sys)
             if not vers_sys_class is None:
-                return vers_sys_class(location)
+                return vers_sys_class(location, oldest_parent)
         except IOError:
             continue
     # if 'location' is a symlink, then we should try the original file
@@ -344,13 +351,14 @@ def getcleanfile(filename, revision=None):
 
 
 def commitfile(filename, message=None, author=None):
-    return get_versioned_object(filename).commit(message=message, author=author)
+    return get_versioned_object(filename).commit(message=message,
+                                                 author=author)
 
 
 def commitdirectory(directory, message=None, author=None):
-    """commit all files below the given directory
+    """Commit all files below the given directory.
 
-    files that are just symlinked into the directory are supported, too
+    Files that are just symlinked into the directory are supported, too
     """
     # for now all files are committed separately
     # should we combine them into one commit?
@@ -359,9 +367,9 @@ def commitdirectory(directory, message=None, author=None):
 
 
 def updatedirectory(directory):
-    """update all files below the given directory
+    """Update all files below the given directory.
 
-    files that are just symlinked into the directory are supported, too
+    Files that are just symlinked into the directory are supported, too
     """
     # for now all files are updated separately
     # should we combine them into one update?
@@ -369,10 +377,10 @@ def updatedirectory(directory):
         rcs_obj.update()
 
 
-def hasversioning(item):
+def hasversioning(item, oldest_parent=None):
     try:
         # try all available version control systems
-        get_versioned_object(item)
+        get_versioned_object(item, oldest_parent=oldest_parent)
         return True
     except IOError:
         return False

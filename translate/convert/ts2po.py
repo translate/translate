@@ -17,12 +17,11 @@
 #
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, see <http://www.gnu.org/licenses/>.
-#
 
-"""convert Qt Linguist (.ts) files to Gettext PO localization files
+"""Convert Qt Linguist (.ts) files to Gettext PO localization files.
 
-See: http://translate.sourceforge.net/wiki/toolkit/ts2po for examples and
-usage instructions
+See: http://docs.translatehouse.org/projects/translate-toolkit/en/latest/commands/ts2po.html
+for examples and usage instructions.
 """
 
 
@@ -57,7 +56,6 @@ class ts2po:
         """converts a .ts file to .po format"""
         tsfile = ts.QtTsParser(inputfile)
         thetargetfile = po.pofile()
-        targetheader = thetargetfile.init_headers(charset="UTF-8", encoding="8bit")
 
         for contextname, messages in tsfile.iteritems():
             messagenum = 0

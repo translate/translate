@@ -20,72 +20,64 @@
 
 """Manage the Wordfast Translation Memory format
 
-   Wordfast TM format is the Translation Memory format used by the
-   U{Wordfast<http://www.wordfast.net/>} computer aided translation tool.
+Wordfast TM format is the Translation Memory format used by the
+`Wordfast <http://www.wordfast.net/>`_ computer aided translation tool.
 
-   It is a bilingual base class derived format with L{WordfastTMFile}
-   and L{WordfastUnit} providing file and unit level access.
+It is a bilingual base class derived format with :class:`WordfastTMFile`
+and :class:`WordfastUnit` providing file and unit level access.
 
-   Wordfast tools
-   ==============
-   Wordfast is a computer aided translation tool.  It is an application
-   built on top of Microsoft Word and is implemented as a rather
-   sophisticated set of macros.  Understanding that helps us understand
-   many of the seemingly strange choices around this format including:
-   encoding, escaping and file naming.
+Wordfast is a computer aided translation tool.  It is an application
+built on top of Microsoft Word and is implemented as a rather
+sophisticated set of macros.  Understanding that helps us understand
+many of the seemingly strange choices around this format including:
+encoding, escaping and file naming.
 
-   Implementation
-   ==============
-   The implementation covers the full requirements of a Wordfast TM file.
-   The files are simple Tab Separated Value (TSV) files that can be read
-   by Microsoft Excel and other spreadsheet programs.  They use the .txt
-   extension which does make it more difficult to automatically identify
-   such files.
+Implementation
+    The implementation covers the full requirements of a Wordfast TM file.
+    The files are simple Tab Separated Value (TSV) files that can be read
+    by Microsoft Excel and other spreadsheet programs.  They use the .txt
+    extension which does make it more difficult to automatically identify
+    such files.
 
-   The dialect of the TSV files is specified by L{WordfastDialect}.
+    The dialect of the TSV files is specified by :class:`WordfastDialect`.
 
-   Encoding
-   --------
-   The files are UTF-16 or ISO-8859-1 (Latin1) encoded.  These choices
-   are most likely because Microsoft Word is the base editing tool for
-   Wordfast.
+Encoding
+    The files are UTF-16 or ISO-8859-1 (Latin1) encoded.  These choices
+    are most likely because Microsoft Word is the base editing tool for
+    Wordfast.
 
-   The format is tab separated so we are able to detect UTF-16 vs Latin-1
-   by searching for the occurance of a UTF-16 tab character and then
-   continuing with the parsing.
+    The format is tab separated so we are able to detect UTF-16 vs Latin-1
+    by searching for the occurance of a UTF-16 tab character and then
+    continuing with the parsing.
 
-   Timestamps
-   ----------
-   L{WordfastTime} allows for the correct management of the Wordfast
-   YYYYMMDD~HHMMSS timestamps.  However, timestamps on individual units are
-   not updated when edited.
+Timestamps
+    :class:`WordfastTime` allows for the correct management of the Wordfast
+    YYYYMMDD~HHMMSS timestamps.  However, timestamps on individual units are
+    not updated when edited.
 
-   Header
-   ------
-   L{WordfastHeader} provides header management support.  The header
-   functionality is fully implemented through observing the behaviour of the
-   files in real use cases, input from the Wordfast programmers and
-   public documentation.
+Header
+    :class:`WordfastHeader` provides header management support.  The header
+    functionality is fully implemented through observing the behaviour of the
+    files in real use cases, input from the Wordfast programmers and
+    public documentation.
 
-   Escaping
-   --------
-   Wordfast TM implements a form of escaping that covers two aspects:
-     1. Placeable: bold, formating, etc.  These are left as is and ignored.
-        It is up to the editor and future placeable implementation to manage
-        these.
-     2. Escapes: items that may confuse Excel or translators are
-        escaped as &'XX;. These are fully implemented and are converted to
-        and from Unicode.  By observing behaviour and reading documentation
-        we where able to observe all possible escapes. Unfortunately the
-        escaping differs slightly between Windows and Mac version.  This
-        might cause errors in future.
-   Functions allow for L{conversion to Unicode<_wf_to_char>} and L{back to
-   Wordfast escapes<_char_to_wf>}.
+Escaping
+    Wordfast TM implements a form of escaping that covers two aspects:
 
-   Extended Attributes
-   -------------------
-   The last 4 columns allow users to define and manage extended attributes.
-   These are left as is and are not directly managed byour implemenation.
+    1. Placeable: bold, formating, etc.  These are left as is and ignored.
+    It is up to the editor and future placeable implementation to manage these.
+
+    2. Escapes: items that may confuse Excel or translators are
+    escaped as &'XX;. These are fully implemented and are converted to and from
+    Unicode.  By observing behaviour and reading documentation we where able
+    to observe all possible escapes. Unfortunately the escaping differs slightly
+    between Windows and Mac version.  This might cause errors in future.
+    Functions allow for ``<_wf_to_char>`` and back to Wordfast escape
+    (``<_char_to_wf>``).
+
+Extended Attributes
+    The last 4 columns allow users to define and manage extended attributes.
+    These are left as is and are not directly managed byour implemenation.
 """
 
 import csv
@@ -125,39 +117,39 @@ WF_FIELDNAMES_HEADER_DEFAULTS = {
 # For now these look correct and have been taken from Windows CP1252 and
 # Macintosh code points found for the respective character sets on Linux.
 WF_ESCAPE_MAP = (
-              ("&'26;", u"\u0026"), # & - Ampersand (must be first to prevent
-                                    #     escaping of escapes)
-              ("&'82;", u"\u201A"), # ‚ - Single low-9 quotation mark
-              ("&'85;", u"\u2026"), # … - Elippsis
-              ("&'91;", u"\u2018"), # ‘ - left single quotation mark
-              ("&'92;", u"\u2019"), # ’ - right single quotation mark
-              ("&'93;", u"\u201C"), # “ - left double quotation mark
-              ("&'94;", u"\u201D"), # ” - right double quotation mark
-              ("&'96;", u"\u2013"), # – - en dash (validate)
-              ("&'97;", u"\u2014"), # — - em dash (validate)
-              ("&'99;", u"\u2122"), # ™ - Trade mark
+              ("&'26;", u"\u0026"),  # & - Ampersand (must be first to prevent
+                                     #     escaping of escapes)
+              ("&'82;", u"\u201A"),  # ‚ - Single low-9 quotation mark
+              ("&'85;", u"\u2026"),  # … - Elippsis
+              ("&'91;", u"\u2018"),  # ‘ - left single quotation mark
+              ("&'92;", u"\u2019"),  # ’ - right single quotation mark
+              ("&'93;", u"\u201C"),  # “ - left double quotation mark
+              ("&'94;", u"\u201D"),  # ” - right double quotation mark
+              ("&'96;", u"\u2013"),  # – - en dash (validate)
+              ("&'97;", u"\u2014"),  # — - em dash (validate)
+              ("&'99;", u"\u2122"),  # ™ - Trade mark
               # Windows only
-              ("&'A0;", u"\u00A0"), #   - Non breaking space
-              ("&'A9;", u"\u00A9"), # © - Copyright
-              ("&'AE;", u"\u00AE"), # ® - Registered
-              ("&'BC;", u"\u00BC"), # ¼
-              ("&'BD;", u"\u00BD"), # ½
-              ("&'BE;", u"\u00BE"), # ¾
+              ("&'A0;", u"\u00A0"),  #   - Non breaking space
+              ("&'A9;", u"\u00A9"),  # © - Copyright
+              ("&'AE;", u"\u00AE"),  # ® - Registered
+              ("&'BC;", u"\u00BC"),  # ¼
+              ("&'BD;", u"\u00BD"),  # ½
+              ("&'BE;", u"\u00BE"),  # ¾
               # Mac only
-              ("&'A8;", u"\u00AE"), # ® - Registered
-              ("&'AA;", u"\u2122"), # ™ - Trade mark
-              ("&'C7;", u"\u00AB"), # « - Left-pointing double angle quotation mark
-              ("&'C8;", u"\u00BB"), # » - Right-pointing double angle quotation mark
-              ("&'C9;", u"\u2026"), # … - Horizontal Elippsis
-              ("&'CA;", u"\u00A0"), #   - Non breaking space
-              ("&'D0;", u"\u2013"), # – - en dash (validate)
-              ("&'D1;", u"\u2014"), # — - em dash (validate)
-              ("&'D2;", u"\u201C"), # “ - left double quotation mark
-              ("&'D3;", u"\u201D"), # ” - right double quotation mark
-              ("&'D4;", u"\u2018"), # ‘ - left single quotation mark
-              ("&'D5;", u"\u2019"), # ’ - right single quotation mark
-              ("&'E2;", u"\u201A"), # ‚ - Single low-9 quotation mark
-              ("&'E3;", u"\u201E"), # „ - Double low-9 quotation mark
+              ("&'A8;", u"\u00AE"),  # ® - Registered
+              ("&'AA;", u"\u2122"),  # ™ - Trade mark
+              ("&'C7;", u"\u00AB"),  # « - Left-pointing double angle quotation mark
+              ("&'C8;", u"\u00BB"),  # » - Right-pointing double angle quotation mark
+              ("&'C9;", u"\u2026"),  # … - Horizontal Elippsis
+              ("&'CA;", u"\u00A0"),  #   - Non breaking space
+              ("&'D0;", u"\u2013"),  # – - en dash (validate)
+              ("&'D1;", u"\u2014"),  # — - em dash (validate)
+              ("&'D2;", u"\u201C"),  # “ - left double quotation mark
+              ("&'D3;", u"\u201D"),  # ” - right double quotation mark
+              ("&'D4;", u"\u2018"),  # ‘ - left single quotation mark
+              ("&'D5;", u"\u2019"),  # ’ - right single quotation mark
+              ("&'E2;", u"\u201A"),  # ‚ - Single low-9 quotation mark
+              ("&'E3;", u"\u201E"),  # „ - Double low-9 quotation mark
               # Other markers
               #("&'B;", u"\n"), # Soft-break - XXX creates a problem with
                                 # roundtripping could also be represented
@@ -199,9 +191,9 @@ class WordfastDialect(csv.Dialect):
     quoting = csv.QUOTE_NONE
     if sys.version_info < (2, 5, 0):
         # We need to define the following items for csv in Python < 2.5
-        quoting = csv.QUOTE_MINIMAL # Wordfast does not quote anything, since
-                                    # we escape \t anyway in _char_to_wf this
-                                    # should not be a problem
+        quoting = csv.QUOTE_MINIMAL  # Wordfast does not quote anything, since
+                                     # we escape \t anyway in _char_to_wf this
+                                     # should not be a problem
         doublequote = False
         skipinitialspace = False
         escapechar = None
@@ -231,8 +223,8 @@ class WordfastTime(object):
     def set_timestring(self, timestring):
         """Set the time_sturct object using a Wordfast time formated string
 
-        @param timestring: A Wordfast time string (YYYMMDD~hhmmss)
-        @type timestring: String
+        :param timestring: A Wordfast time string (YYYMMDD~hhmmss)
+        :type timestring: String
         """
         self._time = time.strptime(timestring, WF_TIMEFORMAT)
     timestring = property(get_timestring, set_timestring)
@@ -244,8 +236,8 @@ class WordfastTime(object):
     def set_time(self, newtime):
         """Set the time_struct object
 
-        @param newtime: a new time object
-        @type newtime: time.time_struct
+        :param newtime: a new time object
+        :type newtime: time.time_struct
         """
         if newtime and isinstance(newtime, time.struct_time):
             self._time = newtime
@@ -314,8 +306,8 @@ class WordfastUnit(base.TranslationUnit):
     def setdict(self, newdict):
         """Set the dictionary of values for a Wordfast line
 
-        @param newdict: a new dictionary with Wordfast line elements
-        @type newdict: Dict
+        :param newdict: a new dictionary with Wordfast line elements
+        :type newdict: Dict
         """
         # TODO First check that the values are OK
         self._dict = newdict

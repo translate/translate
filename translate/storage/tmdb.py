@@ -56,7 +56,7 @@ class TMDB(object):
         self.max_length = max_length
 
         if not isinstance(db_file, unicode):
-            db_file = unicode(db_file) # don't know which encoding
+            db_file = unicode(db_file)  # don't know which encoding
         self.db_file = db_file
         # share connections to same database file between different instances
         if db_file not in self._tm_dbs:
@@ -324,8 +324,8 @@ DROP TRIGGER IF EXISTS sources_delete_trig;
 
 
 def min_levenshtein_length(length, min_similarity):
-    return math.ceil(max(length * (min_similarity/100.0), 2))
+    return math.ceil(max(length * (min_similarity / 100.0), 2))
 
 
 def max_levenshtein_length(length, min_similarity, max_length):
-    return math.floor(min(length / (min_similarity/100.0), max_length))
+    return math.floor(min(length / (min_similarity / 100.0), max_length))

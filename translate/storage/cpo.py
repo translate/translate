@@ -54,8 +54,12 @@ class po_message(Structure):
     _fields_ = []
 
 # Function prototypes
-xerror_prototype = CFUNCTYPE(None, c_int, POINTER(po_message), STRING, c_uint, c_uint, c_int, STRING)
-xerror2_prototype = CFUNCTYPE(None, c_int, POINTER(po_message), STRING, c_uint, c_uint, c_int, STRING, POINTER(po_message), STRING, c_uint, c_uint, c_int, STRING)
+xerror_prototype = CFUNCTYPE(None, c_int, POINTER(po_message), STRING, c_uint,
+                             c_uint, c_int, STRING)
+xerror2_prototype = CFUNCTYPE(None, c_int, POINTER(po_message), STRING,
+                              c_uint, c_uint, c_int, STRING,
+                              POINTER(po_message), STRING, c_uint, c_uint,
+                              c_int, STRING)
 
 
 # Structures (error handler)
@@ -74,13 +78,16 @@ class po_error_handler(Structure):
 
 
 # Callback functions for po_xerror_handler
-def xerror_cb(severity, message, filename, lineno, column, multilint_p, message_text):
+def xerror_cb(severity, message, filename, lineno, column, multilint_p,
+              message_text):
     print >> sys.stderr, "xerror_cb", severity, message, filename, lineno, column, multilint_p, message_text
     if severity >= 1:
         raise ValueError(message_text)
 
 
-def xerror2_cb(severity, message1, filename1, lineno1, column1, multiline_p1, message_text1, message2, filename2, lineno2, column2, multiline_p2, message_text2):
+def xerror2_cb(severity, message1, filename1, lineno1, column1, multiline_p1,
+               message_text1, message2, filename2, lineno2, column2,
+               multiline_p2, message_text2):
     print >> sys.stderr, "xerror2_cb", severity, message1, filename1, lineno1, column1, multiline_p1, message_text1, message2, filename2, lineno2, column2, multiline_p2, message_text2
     if severity >= 1:
         raise ValueError(message_text1)
@@ -164,8 +171,8 @@ def unquotefrompo(postr):
 def get_libgettextpo_version():
     """Returns the libgettextpo version
 
-       @rtype: three-value tuple
-       @return: libgettextpo version in the following format::
+       :rtype: three-value tuple
+       :return: libgettextpo version in the following format::
            (major version, minor version, subminor version)
     """
     libversion = c_long.in_dll(gpo, 'libgettextpo_version')
@@ -193,7 +200,10 @@ class pounit(pocommon.pounit):
     def infer_state(self):
         #FIXME: do obsolete
         if gpo.po_message_is_obsolete(self._gpo_message):
-            self.set_state_n(self.STATE[self.S_OBSOLETE][0])
+            if gpo.po_message_is_fuzzy(self._gpo_message):
+                self.set_state_n(self.STATE[self.S_FUZZY_OBSOLETE][0])
+            else:
+                self.set_state_n(self.STATE[self.S_OBSOLETE][0])
         elif gpo.po_message_is_fuzzy(self._gpo_message):
             self.set_state_n(self.STATE[self.S_FUZZY][0])
         elif self.gettarget():
@@ -465,8 +475,8 @@ class pounit(pocommon.pounit):
     def _extract_msgidcomments(self, text=None):
         """Extract KDE style msgid comments from the unit.
 
-        @rtype: String
-        @return: Returns the extracted msgidcomments found in this unit's msgid.
+        :rtype: String
+        :return: Returns the extracted msgidcomments found in this unit's msgid.
         """
         if not text:
             text = (gpo.po_message_msgid(self._gpo_message) or "").decode(self._encoding)

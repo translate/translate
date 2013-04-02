@@ -18,7 +18,8 @@
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, see <http://www.gnu.org/licenses/>.
 
-""" Convert PHP format .po files to Python format .po files """
+"""Convert PHP format .po files to Python format .po files.
+"""
 
 import re
 
@@ -55,7 +56,7 @@ class phppo2pypo:
         return unit
 
     def convertstring(self, input):
-        return re.sub('%(\d)\$s', lambda x: "{%d}" % (int(x.group(1))-1), input)
+        return re.sub('%(\d)\$s', lambda x: "{%d}" % (int(x.group(1)) - 1), input)
 
     def convertstrings(self, input):
         if isinstance(input, multistring):
@@ -65,16 +66,16 @@ class phppo2pypo:
         else:
             return self.convertstring(input)
         for index, string in enumerate(strings):
-            strings[index] = re.sub('%(\d)\$s', lambda x: "{%d}" % (int(x.group(1))-1), string)
+            strings[index] = re.sub('%(\d)\$s', lambda x: "{%d}" % (int(x.group(1)) - 1), string)
         return multistring(strings)
 
 
 def convertphp2py(inputfile, outputfile, template=None):
     """Converts from PHP .po format to Python .po format
 
-    @param inputfile: file handle of the source
-    @param outputfile: file handle to write to
-    @param template: unused
+    :param inputfile: file handle of the source
+    :param outputfile: file handle to write to
+    :param template: unused
     """
     convertor = phppo2pypo()
     inputstore = po.pofile(inputfile)

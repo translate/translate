@@ -17,12 +17,11 @@
 #
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, see <http://www.gnu.org/licenses/>.
-#
 
-"""convert Gettext PO localization files to XLIFF localization files
+"""Convert Gettext PO localization files to XLIFF localization files.
 
-see: http://translate.sourceforge.net/wiki/toolkit/po2xliff for examples and
-usage instructions
+See: http://docs.translatehouse.org/projects/translate-toolkit/en/latest/commands/xliff2po.html
+for examples and usage instructions.
 """
 
 from translate.storage import po
@@ -58,7 +57,6 @@ class po2xliff:
                 unit.addnote(comment, origin="developer")
 
             #TODO: x-format, etc.
-
 
         #Handle # other comments
         comment = inputunit.getnotes("translator")
@@ -106,8 +104,12 @@ def convertpo(inputfile, outputfile, templatefile):
 
 def main(argv=None):
     from translate.convert import convert
-    formats = {"po": ("xlf", convertpo), ("po", "xlf"): ("xlf", convertpo)}
-    parser = convert.ConvertOptionParser(formats, usepots=True, usetemplates=True, description=__doc__)
+    formats = {
+        "po": ("xlf", convertpo),
+        ("po", "xlf"): ("xlf", convertpo),
+    }
+    parser = convert.ConvertOptionParser(formats, usetemplates=True,
+                                         description=__doc__)
     parser.run(argv)
 
 

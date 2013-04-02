@@ -18,11 +18,12 @@
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, see <http://www.gnu.org/licenses/>.
 
-"""Create string and word counts for supported localization files including:
-XLIFF, TMX, Gettex PO and MO, Qt .ts and .qm, Wordfast TM, etc
+"""Count strings and words for supported localization files.
 
-See: http://translate.sourceforge.net/wiki/toolkit/pocount for examples and
-usage instructions
+These include: XLIFF, TMX, Gettex PO and MO, Qt .ts and .qm, Wordfast TM, etc
+
+See: http://docs.translatehouse.org/projects/translate-toolkit/en/latest/commands/pocount.html
+for examples and usage instructions.
 """
 
 from optparse import OptionParser
@@ -48,7 +49,7 @@ def calcstats_old(filename):
     except ValueError, e:
         print str(e)
         return {}
-    units = filter(lambda unit: not unit.isheader(), store.units)
+    units = filter(lambda unit: unit.istranslatable(), store.units)
     translated = translatedmessages(units)
     fuzzy = fuzzymessages(units)
     review = filter(lambda unit: unit.isreview(), units)
@@ -63,7 +64,9 @@ def calcstats_old(filename):
     stats["fuzzy"] = len(fuzzy)
     stats["untranslated"] = len(untranslated)
     stats["review"] = len(review)
-    stats["total"] = stats["translated"] + stats["fuzzy"] + stats["untranslated"]
+    stats["total"] = stats["translated"] + \
+                     stats["fuzzy"] + \
+                     stats["untranslated"]
 
     #words
     stats["translatedsourcewords"] = sourcewords(translated)
@@ -83,17 +86,16 @@ def calcstats(filename):
 
 
 def summarize(title, stats, style=style_full, indent=8, incomplete_only=False):
-    """
-    Print summary for a .po file in specified format.
+    """Print summary for a .po file in specified format.
 
-    @param title: name of .po file
-    @param stats: array with translation statistics for the file specified
-    @param indent: indentation of the 2nd column (length of longest filename)
-    @param incomplete_only: omit fully translated files
-    @type incomplete_only: Boolean
-    @rtype: Boolean
-    @return: 1 if counting incomplete files (incomplete_only=True) and the
-    file is completely translated, 0 otherwise
+    :param title: name of .po file
+    :param stats: array with translation statistics for the file specified
+    :param indent: indentation of the 2nd column (length of longest filename)
+    :param incomplete_only: omit fully translated files
+    :type incomplete_only: Boolean
+    :rtype: Boolean
+    :return: 1 if counting incomplete files (incomplete_only=True) and the
+             file is completely translated, 0 otherwise
     """
 
     def percent(denominator, devisor):
@@ -107,9 +109,12 @@ def summarize(title, stats, style=style_full, indent=8, incomplete_only=False):
 
     if (style == style_csv):
         print "%s, " % title,
-        print "%d, %d, %d," % (stats["translated"], stats["translatedsourcewords"], stats["translatedtargetwords"]),
+        print "%d, %d, %d," % (stats["translated"],
+                               stats["translatedsourcewords"],
+                               stats["translatedtargetwords"]),
         print "%d, %d," % (stats["fuzzy"], stats["fuzzysourcewords"]),
-        print "%d, %d," % (stats["untranslated"], stats["untranslatedsourcewords"]),
+        print "%d, %d," % (stats["untranslated"],
+                           stats["untranslatedsourcewords"]),
         print "%d, %d" % (stats["total"], stats["totalsourcewords"]),
         if stats["review"] > 0:
             print ", %d, %d" % (stats["review"], stats["reviewsourdcewords"]),
@@ -128,7 +133,7 @@ def summarize(title, stats, style=style_full, indent=8, incomplete_only=False):
               percent(stats["translatedsourcewords"], stats["totalsourcewords"]), \
               percent(stats["fuzzysourcewords"], stats["totalsourcewords"]), \
               percent(stats["untranslatedsourcewords"], stats["totalsourcewords"]))
-    else: # style == style_full
+    else:  # style == style_full
         print title
         print "type              strings      words (source)    words (translation)"
         print "translated:   %5d (%3d%%) %10d (%3d%%) %15d" % \
@@ -155,7 +160,7 @@ def summarize(title, stats, style=style_full, indent=8, incomplete_only=False):
             print ""
             for state, e_stats in stats["extended"].iteritems():
                 print "%s:    %5d (%3d%%) %10d (%3d%%) %15d" % (
-                    state, e_stats["units"],  percent(e_stats["units"], stats["total"]),
+                    state, e_stats["units"], percent(e_stats["units"], stats["total"]),
                     e_stats["sourcewords"], percent(e_stats["sourcewords"], stats["totalsourcewords"]),
                     e_stats["targetwords"])
 
@@ -219,7 +224,7 @@ Review Messages, Review Source Words"
         """Update self.totals with the statistics in stats."""
         for key in stats.keys():
             if key == "extended":
-                #FIXME: calculate extended totals 
+                #FIXME: calculate extended totals
                 continue
             if not key in self.totals:
                 self.totals[key] = 0
@@ -233,7 +238,7 @@ Review Messages, Review Source Words"
                                              self.longestfilename,
                                              self.incomplete_only)
             self.filecount += 1
-        except: # This happens if we have a broken file.
+        except:  # This happens if we have a broken file.
             print >> sys.stderr, sys.exc_info()[1]
 
     def handlefiles(self, dirname, filenames):

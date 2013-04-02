@@ -21,10 +21,7 @@
 # Original Author: Dan Schafer <dschafer@mozilla.com>
 # Date: 10 Jun 2008
 
-"""convert Gettext PO localization files to Mozilla .lang files
-
-see: http://translate.sourceforge.net/wiki/toolkit/po2mozlang for examples and
-usage instructions
+"""Convert Gettext PO localization files to Mozilla .lang files.
 """
 
 from translate.storage import mozilla_lang as lang
@@ -33,34 +30,36 @@ from translate.storage import po
 
 class po2lang:
 
-    def __init__(self, duplicatestyle="msgctxt"):
+    def __init__(self, duplicatestyle="msgctxt", mark_active=True):
         self.duplicatestyle = duplicatestyle
+        self.mark_active = mark_active
 
     def convertstore(self, inputstore, includefuzzy=False):
         """converts a file to .lang format"""
-        thetargetfile = lang.LangStore()
+        thetargetfile = lang.LangStore(mark_active=self.mark_active)
 
         # Run over the po units
         for pounit in inputstore.units:
-            # Skip the header
-            if pounit.isheader():
+            if pounit.isheader() or not pounit.istranslatable():
                 continue
             newunit = thetargetfile.addsourceunit(pounit.source)
             if includefuzzy or not pounit.isfuzzy():
                 newunit.settarget(pounit.target)
             else:
-                newunit.settarget(pounit.source)
+                newunit.settarget("")
+            if pounit.getnotes('developer'):
+                newunit.addnote(pounit.getnotes('developer'), 'developer')
         return thetargetfile
 
 
-def convertlang(inputfile, outputfile, templates,  includefuzzy=False):
+def convertlang(inputfile, outputfile, templates, includefuzzy=False, mark_active=True):
     """reads in stdin using fromfileclass, converts using convertorclass,
     writes to stdout"""
     inputstore = po.pofile(inputfile)
     if inputstore.isempty():
         return 0
-    convertor = po2lang()
-    outputstore = convertor.convertstore(inputstore,  includefuzzy)
+    convertor = po2lang(mark_active=mark_active)
+    outputstore = convertor.convertstore(inputstore, includefuzzy)
     outputfile.write(str(outputstore))
     return 1
 
@@ -78,7 +77,10 @@ def main(argv=None):
     sys.stdout = stdiotell.StdIOWrapper(sys.stdout)
     parser = convert.ConvertOptionParser(formats, usetemplates=True,
                                            description=__doc__)
+    parser.add_option("", "--mark-active", dest="mark_active", default=False,
+            action="store_true", help="mark the file as active")
     parser.add_fuzzy_option()
+    parser.passthrough.append("mark_active")
     parser.run(argv)
 
 

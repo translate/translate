@@ -11,7 +11,7 @@ from translate.storage import php
 class TestPhp2PO:
 
     def php2po(self, phpsource, phptemplate=None):
-        """helper that converts .phperties source to po source without requiring files"""
+        """helper that converts .php source to po source without requiring files"""
         inputfile = wStringIO.StringIO(phpsource)
         inputphp = php.phpfile(inputfile)
         convertor = php2po.php2po()
@@ -86,7 +86,7 @@ reduce the number of cached connections.';"""
 $lang['prefPanel-smime'] = 'Security';'''
         pofile = self.php2po(phpsource)
         pounit = self.singleelement(pofile)
-        assert pounit.getnotes("developer") == "/* Comment"
+        assert pounit.getnotes("developer") == "/* Comment */"
         # TODO write test for inline comments and check for // comments that precede an entry
 
     def test_emptyentry(self):

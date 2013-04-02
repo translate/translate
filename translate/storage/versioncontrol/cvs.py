@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 #
-# Copyright 2004-2007 Zuza Software Foundation
+# Copyright 2004-2008,2012 Zuza Software Foundation
 #
 # This file is part of translate.
 #
@@ -19,8 +19,9 @@
 # along with this program; if not, see <http://www.gnu.org/licenses/>.
 
 import os
+
 from translate.storage.versioncontrol import GenericRevisionControlSystem
-from translate.storage.versioncontrol import run_command
+from translate.storage.versioncontrol import run_command, prepare_filelist, youngest_ancestor
 
 
 def is_available():
@@ -40,9 +41,9 @@ class cvs(GenericRevisionControlSystem):
         Read a single file from the CVS repository without checking out a full
         working directory.
 
-        @param cvsroot: the CVSROOT for the repository
-        @param path: path to the file relative to cvs root
-        @param revision: revision or tag to get (retrieves from HEAD if None)
+        :param cvsroot: the CVSROOT for the repository
+        :param path: path to the file relative to cvs root
+        :param revision: revision or tag to get (retrieves from HEAD if None)
         """
         command = ["cvs", "-d", cvsroot, "-Q", "co", "-p"]
         if revision:
@@ -70,8 +71,9 @@ class cvs(GenericRevisionControlSystem):
             revision = self._getcvsrevision(cvsentries)
         return self._readfile(cvsroot, cvsfilename, revision)
 
-    def update(self, revision=None):
+    def update(self, revision=None, needs_revert=True):
         """Does a clean update of the given path"""
+        #TODO: take needs_revert parameter into account
         working_dir = os.path.dirname(self.location_abs)
         filename = self.location_abs
         filename_backup = filename + os.path.extsep + "bak"
@@ -98,10 +100,29 @@ class cvs(GenericRevisionControlSystem):
             pass
         # raise an error or return successfully - depending on the CVS command
         if exitcode != 0:
-            raise IOError("[CVS] Error running CVS command '%s': %s" \
-                    % (command, error))
+            raise IOError("[CVS] Error running CVS command '%s': %s" %
+                          (command, error))
         else:
             return output
+
+    def add(self, files, message=None, author=None):
+        """Add and commit the new files."""
+        working_dir = os.path.dirname(self.location_abs)
+        command = ["cvs", "-Q", "add"]
+        if message:
+            command.extend(["-m", message])
+        files = prepare_filelist(files)
+        command.extend(files)
+        exitcode, output, error = run_command(command, working_dir)
+        # raise an error or return successfully - depending on the CVS command
+        if exitcode != 0:
+            raise IOError("[CVS] Error running CVS command '%s': %s" %
+                          (command, error))
+
+        # go down as deep as possible in the tree to avoid accidental commits
+        # TODO: explicitly commit files by name
+        ancestor = youngest_ancestor(files)
+        return output + type(self)(ancestor).commit(message, author)
 
     def commit(self, message=None, author=None):
         """Commits the file and supplies the given commit message if present
@@ -118,8 +139,8 @@ class cvs(GenericRevisionControlSystem):
         exitcode, output, error = run_command(command, working_dir)
         # raise an error or return successfully - depending on the CVS command
         if exitcode != 0:
-            raise IOError("[CVS] Error running CVS command '%s': %s" \
-                    % (command, error))
+            raise IOError("[CVS] Error running CVS command '%s': %s" %
+                          (command, error))
         else:
             return output
 

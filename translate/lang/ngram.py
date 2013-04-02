@@ -20,8 +20,11 @@
 #
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, see <http://www.gnu.org/licenses/>.
-#
-# Orignal file from http://thomas.mangin.me.uk/data/source/ngram.py
+
+"""Ngram models for language guessing.
+
+.. note:: Orignal code from http://thomas.mangin.me.uk/data/source/ngram.py
+"""
 
 import sys
 import re
@@ -56,7 +59,7 @@ class _NGram:
             size = len(word)
             for i in xrange(size - 1):
                 for s in (1, 2, 3, 4):
-                    end = i+s
+                    end = i + s
                     if end >= size:
                         break
                     sub = word[i:end]
@@ -96,7 +99,6 @@ class _NGram:
             else:
                 d += nb_ngrams
         return d
-
 
 
 class NGram:

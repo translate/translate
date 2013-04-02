@@ -18,7 +18,11 @@
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, see <http://www.gnu.org/licenses/>.
 
-"""convert Gettext PO localization files to Symbian translation files."""
+"""Convert Gettext PO localization files to Symbian translation files.
+
+See: http://docs.translatehouse.org/projects/translate-toolkit/en/latest/commands/symb2po.html
+for examples and usage instructions.
+"""
 
 from translate.storage import factory
 from translate.storage.pypo import po_escape_map
@@ -103,7 +107,7 @@ def convert_symbian(input_file, output_file, template_file, pot=False, duplicate
 def main(argv=None):
     from translate.convert import convert
     formats = {"po": ("r0", convert_symbian)}
-    parser = convert.ConvertOptionParser(formats, usetemplates=True, usepots=True, description=__doc__)
+    parser = convert.ConvertOptionParser(formats, usetemplates=True, description=__doc__)
     parser.add_duplicates_option()
     parser.passthrough.append("pot")
     parser.run(argv)

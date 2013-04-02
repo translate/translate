@@ -18,17 +18,15 @@
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, see <http://www.gnu.org/licenses/>.
 
-"""lang contains classes that represent languages and provides language specific
-information.
+"""Classes that represent languages and provides language-specific information.
 
-All classes inherit from the parent class called L{common}.  The type of data
-includes:
-  - language codes
-  - language name
-  - plurals
-  - punctuation transformation
-  - etc
+All classes inherit from the parent class called :class:`common`.
 
-@group Common Language Functionality: common data poedit identify factory
-@group Languages: *
+The type of data includes:
+
+- Language codes
+- Language name
+- Plurals
+- Punctuation transformation
+- etc.
 """

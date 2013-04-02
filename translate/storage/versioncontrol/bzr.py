@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 #
-# Copyright 2004-2007 Zuza Software Foundation
+# Copyright 2004-2008,2012 Zuza Software Foundation
 #
 # This file is part of translate.
 #
@@ -19,9 +19,9 @@
 # along with this program; if not, see <http://www.gnu.org/licenses/>.
 
 
-import translate.storage.versioncontrol
+import os.path
 from translate.storage.versioncontrol import GenericRevisionControlSystem
-from translate.storage.versioncontrol import run_command
+from translate.storage.versioncontrol import run_command, prepare_filelist, youngest_ancestor
 
 
 def is_available():
@@ -30,8 +30,15 @@ def is_available():
     return exitcode == 0
 
 
+_version = None
+
+
 def get_version():
     """return a tuple of (major, minor) for the installed bazaar client"""
+    global _version
+    if _version:
+        return _version
+
     import re
     command = ["bzr", "--version"]
     exitcode, output, error = run_command(command)
@@ -41,7 +48,8 @@ def get_version():
         if version_match:
             major, minor = version_match.group().split(".")
             if (major.isdigit() and minor.isdigit()):
-                return (int(major), int(minor))
+                _version = (int(major), int(minor))
+                return _version
     # if anything broke before, then we return the invalid version number
     return (0, 0)
 
@@ -52,14 +60,17 @@ class bzr(GenericRevisionControlSystem):
     RCS_METADIR = ".bzr"
     SCAN_PARENTS = True
 
-    def update(self, revision=None):
+    def update(self, revision=None, needs_revert=True):
         """Does a clean update of the given path"""
-        # bzr revert
-        command = ["bzr", "revert", self.location_abs]
-        exitcode, output_revert, error = run_command(command)
-        if exitcode != 0:
-            raise IOError("[BZR] revert of '%s' failed: %s" \
-                    % (self.location_abs, error))
+        output_revert = ""
+        if needs_revert:
+            # bzr revert
+            command = ["bzr", "revert", self.location_abs]
+            exitcode, output_revert, error = run_command(command)
+            if exitcode != 0:
+                raise IOError("[BZR] revert of '%s' failed: %s" \
+                        % (self.location_abs, error))
+
         # bzr pull
         command = ["bzr", "pull"]
         exitcode, output_pull, error = run_command(command)
@@ -67,6 +78,20 @@ class bzr(GenericRevisionControlSystem):
             raise IOError("[BZR] pull of '%s' failed: %s" \
                     % (self.location_abs, error))
         return output_revert + output_pull
+
+    def add(self, files, message=None, author=None):
+        """Add and commit files."""
+        files = prepare_filelist(files)
+        command = ["bzr", "add"] + files
+        exitcode, output, error = run_command(command)
+        if exitcode != 0:
+            raise IOError("[BZR] add in '%s' failed: %s" \
+                    % (self.location_abs, error))
+
+        # go down as deep as possible in the tree to avoid accidental commits
+        # TODO: explicitly commit files by name
+        ancestor = youngest_ancestor(files)
+        return output + type(self)(ancestor).commit(message, author)
 
     def commit(self, message=None, author=None):
         """Commits the file and supplies the given commit message if present"""

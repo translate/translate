@@ -18,24 +18,28 @@
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, see <http://www.gnu.org/licenses/>.
 
-"""Classes that hold units of PHP localisation files L{phpunit} or entire files
-   L{phpfile}. These files are used in translating many PHP based applications.
+"""Classes that hold units of PHP localisation files :class:`phpunit` or
+entire files :class:`phpfile`. These files are used in translating many
+PHP based applications.
 
-   Only PHP files written with these conventions are supported::
-      $lang['item'] = "vale";  # Array of values
-      $some_entity = "value";  # Named variables
-      $lang = array(
-         'item1' => 'value1',
-         'item2' => 'value2',
-      );
+Only PHP files written with these conventions are supported::
 
-   Nested arrays are not supported::
-      $lang = array(array('key' => 'value'));
+  $lang['item'] = "vale";  # Array of values
+  $some_entity = "value";  # Named variables
+  define("ENTITY", "value");
+  $lang = array(
+     'item1' => 'value1',
+     'item2' => 'value2',
+  );
 
-   The working of PHP strings and specifically the escaping conventions which
-   differ between single quote (') and double quote (") characters are
-   implemented as outlined in the PHP documentation for the
-   U{String type<http://www.php.net/language.types.string>}
+Nested arrays are not supported::
+
+  $lang = array(array('key' => 'value'));
+
+The working of PHP strings and specifically the escaping conventions which
+differ between single quote (') and double quote (") characters are
+implemented as outlined in the PHP documentation for the
+`String type <http://www.php.net/language.types.string>`_.
 """
 
 import re
@@ -47,8 +51,8 @@ def phpencode(text, quotechar="'"):
     """convert Python string to PHP escaping
 
     The encoding is implemented for
-    U{'single quote'<http://www.php.net/manual/en/language.types.string.php#language.types.string.syntax.single>}
-    and U{"double quote"<http://www.php.net/manual/en/language.types.string.php#language.types.string.syntax.double>}
+    `'single quote' <http://www.php.net/manual/en/language.types.string.php#language.types.string.syntax.single>`_
+    and `"double quote" <http://www.php.net/manual/en/language.types.string.php#language.types.string.syntax.double>`_
     syntax.
 
     heredoc and nowdoc are not implemented and it is not certain whether this
@@ -200,7 +204,7 @@ class phpfile(base.TranslationStore):
         invalue = False
         incomment = False
         inarray = False
-        valuequote = "" # either ' or "
+        valuequote = ""  # either ' or "
         equaldel = "="
         enddel = ";"
         prename = ""
@@ -233,9 +237,13 @@ class phpfile(base.TranslationStore):
                 enddel = ";"
                 inarray = False
                 continue
+            if line.lstrip().startswith("define("):
+                equaldel = ","
+                enddel = ");"
             equalpos = line.find(equaldel)
             hashpos = line.find("#")
-            if 0 <= hashpos < equalpos:
+            doubleslashpos = line.lstrip().find("//")
+            if 0 <= hashpos < equalpos or doubleslashpos == 0:
                 # Assume that this is a '#' comment line
                 newunit.addnote(line.strip(), "developer")
                 continue
@@ -251,12 +259,16 @@ class phpfile(base.TranslationStore):
                     value = line
             colonpos = value.rfind(enddel)
             while colonpos != -1:
-                if value[colonpos-1] == valuequote:
-                    newunit.value = lastvalue + value[:colonpos-1]
+                # Check if the latest non-whitespace character before the end
+                # delimiter is the valuequote
+                if value[:colonpos].rstrip()[-1] == valuequote:
+                    # Save the value string without trailing whitespaces and
+                    # without the ending quotes
+                    newunit.value = lastvalue + value[:colonpos].rstrip()[:-1]
                     newunit.escape_type = valuequote
                     lastvalue = ""
                     invalue = False
-                if not invalue and colonpos != len(value)-1:
+                if not invalue and colonpos != (len(value) - 1):
                     commentinlinepos = value.find("//", colonpos)
                     if commentinlinepos != -1:
                         newunit.addnote(value[commentinlinepos+2:].strip(),

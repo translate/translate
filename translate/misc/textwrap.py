@@ -6,8 +6,6 @@
 # Copyright (C) 2002, 2003 Python Software Foundation.
 # Written by Greg Ward <gward@python.net>
 
-__revision__ = "$Id$"
-
 import string, re
 
 # Do the right thing with boolean values for all known Python versions

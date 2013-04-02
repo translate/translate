@@ -17,12 +17,11 @@
 #
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, see <http://www.gnu.org/licenses/>.
-#
 
-"""convert Gettext PO localization files to a TMX (Translation Memory eXchange) file
+"""Convert Gettext PO localization files to a TMX (Translation Memory eXchange) file.
 
-see: http://translate.sourceforge.net/wiki/toolkit/po2tmx for examples and
-usage instructions
+See: http://docs.translatehouse.org/projects/translate-toolkit/en/latest/commands/po2tmx.html
+for examples and usage instructions.
 """
 
 import os

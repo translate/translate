@@ -36,7 +36,7 @@ class LanguageIdentifier(object):
     CONF_FILE = 'fpdb.conf'
     """
     The name of the file that contains language name-code pairs
-    (relative to C{MODEL_DIR}).
+    (relative to ``MODEL_DIR``).
     """
 
     def __init__(self, model_dir=None, conf_file=None):
@@ -62,12 +62,13 @@ class LanguageIdentifier(object):
         for line in lines:
             parts = line.split()
             if not parts or line.startswith('#'):
-                continue # Skip comment- and empty lines
+                continue  # Skip comment- and empty lines
             lname, lcode = parts[0], parts[1]
 
-            lname = path.split(lname)[-1] # Make sure lname is not prefixed by directory names
+            # Make sure lname is not prefixed by directory names
+            lname = path.split(lname)[-1]
             if extsep in lname:
-                lname = lname[:lname.rindex(extsep)] # Remove extension if it has
+                lname = lname[:lname.rindex(extsep)]  # Remove extension if it has
 
             # Remove trailing '[_-]-utf8' from code
             if lcode.endswith('-utf8'):
@@ -90,10 +91,10 @@ class LanguageIdentifier(object):
         """Identify the source language of the given translation store or
             units.
 
-            @type  instore: C{TranslationStore} or list or tuple of
-                C{TranslationUnit}s.
-            @param instore: The translation store to extract source text from.
-            @returns: The identified language's code or C{None} if the language
+            :type  instore: ``TranslationStore`` or list or tuple of
+                ``TranslationUnit``s.
+            :param instore: The translation store to extract source text from.
+            :returns: The identified language's code or ``None`` if the language
                 could not be identified."""
         if not isinstance(instore, (TranslationStore, list, tuple)):
             return None
@@ -107,10 +108,10 @@ class LanguageIdentifier(object):
         """Identify the target language of the given translation store or
             units.
 
-            @type  instore: C{TranslationStore} or list or tuple of
-                C{TranslationUnit}s.
-            @param instore: The translation store to extract target text from.
-            @returns: The identified language's code or C{None} if the language
+            :type  instore: ``TranslationStore`` or list or tuple of
+                ``TranslationUnit``s.
+            :param instore: The translation store to extract target text from.
+            :returns: The identified language's code or ``None`` if the language
                 could not be identified."""
         if not isinstance(instore, (TranslationStore, list, tuple)):
             return None

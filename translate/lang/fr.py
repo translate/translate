@@ -18,9 +18,9 @@
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, see <http://www.gnu.org/licenses/>.
 
-"""This module represents French language.
+"""This module represents the French language.
 
-For more information, see U{http://en.wikipedia.org/wiki/French_language}
+.. seealso:: http://en.wikipedia.org/wiki/French_language
 """
 
 import re
@@ -36,7 +36,7 @@ def guillemets(text):
         # <a href="something">
         if prefix == u"=":
             return match.group(0)
-        return u"%s«\u00a0%s\u00a0»" % (prefix, match.group(2)) #\u00a0 is NBSP
+        return u"%s«\u00a0%s\u00a0»" % (prefix, match.group(2))  # \u00a0 is NBSP
 
     # Check that there is an even number of double quotes, otherwise it is
     # probably not safe to convert them.

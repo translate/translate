@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 #
-# Copyright 2002-2006 Zuza Software Foundation
+# Copyright 2002-2010,2012 Zuza Software Foundation
 #
 # This file is part of translate.
 #
@@ -18,16 +18,25 @@
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, see <http://www.gnu.org/licenses/>.
 
-"""convert Java/Mozilla .properties files to Gettext PO localization files
+"""Convert Java/Mozilla .properties files to Gettext PO localization files.
 
-See: http://translate.sourceforge.net/wiki/toolkit/prop2po for examples and
-usage instructions
+See: http://docs.translatehouse.org/projects/translate-toolkit/en/latest/commands/prop2po.html
+for examples and usage instructions.
 """
 
 import sys
 
 from translate.storage import po
 from translate.storage import properties
+
+
+def _collapse(store, units):
+    sources = [u.source for u in units]
+    targets = [u.target for u in units]
+    # TODO: only consider the right ones for sources and targets
+    plural_unit = store.addsourceunit(sources)
+    plural_unit.target = targets
+    return plural_unit
 
 
 class prop2po:
@@ -39,13 +48,13 @@ class prop2po:
         """converts a .properties file to a .po file..."""
         self.personality = personality
         thetargetfile = po.pofile()
-        if self.personality == "mozilla" or self.personality == "skype":
-            targetheader = thetargetfile.init_headers(charset="UTF-8",
-                                                      encoding="8bit",
-                                                      x_accelerator_marker="&")
+        if self.personality in ("mozilla", "skype"):
+            targetheader = thetargetfile.init_headers(
+                    x_accelerator_marker="&",
+                    x_merge_on="location",
+            )
         else:
-            targetheader = thetargetfile.init_headers(charset="UTF-8",
-                                                      encoding="8bit")
+            targetheader = thetargetfile.header()
         targetheader.addnote("extracted from %s" % thepropfile.filename,
                              "developer")
         # we try and merge the header po with any comments at the start of the
@@ -71,6 +80,8 @@ class prop2po:
                                "developer", position="prepend")
                 waitingcomments = []
                 thetargetfile.addunit(pounit)
+        if self.personality == "gaia":
+            thetargetfile = self.fold_gaia_plurals(thetargetfile)
         thetargetfile.removeduplicates(duplicatestyle)
         return thetargetfile
 
@@ -79,13 +90,13 @@ class prop2po:
         """converts two .properties files to a .po file..."""
         self.personality = personality
         thetargetfile = po.pofile()
-        if self.personality == "mozilla" or self.personality == "skype":
-            targetheader = thetargetfile.init_headers(charset="UTF-8",
-                                                      encoding="8bit",
-                                                      x_accelerator_marker="&")
+        if self.personality in ("mozilla", "skype"):
+            targetheader = thetargetfile.init_headers(
+                    x_accelerator_marker="&",
+                    x_merge_on="location",
+            )
         else:
-            targetheader = thetargetfile.init_headers(charset="UTF-8",
-                                                      encoding="8bit")
+            targetheader = thetargetfile.header()
         targetheader.addnote("extracted from %s, %s" % (origpropfile.filename, translatedpropfile.filename),
                              "developer")
         translatedpropfile.makeindex()
@@ -129,8 +140,55 @@ class prop2po:
                 thetargetfile.addunit(origpo)
             elif translatedpo is not None:
                 print >> sys.stderr, "error converting original properties definition %s" % origprop.name
+        if self.personality == "gaia":
+            thetargetfile = self.fold_gaia_plurals(thetargetfile)
         thetargetfile.removeduplicates(duplicatestyle)
         return thetargetfile
+
+    def fold_gaia_plurals(self, postore):
+        """Fold the multiple plural units of a gaia file into a gettext plural."""
+        new_store = type(postore)()
+        plurals = {}
+        current_plural = u""
+        for unit in postore.units:
+            if not unit.istranslatable():
+                #TODO: reconsider: we could lose header comments here
+                continue
+            if u"plural(n)" in unit.source:
+                # start of a set of plural units
+                location = unit.getlocations()[0]
+                current_plural = location
+                plurals[location] = []
+                # We ignore the first one, since it doesn't contain translatable
+                # text, only a marker.
+            else:
+                location = unit.getlocations()[0]
+                if current_plural and location.startswith(current_plural):
+                    plurals[current_plural].append(unit)
+                    if not '[zero]' in location:
+                        # We want to keep [zero] cases separately translatable
+                        continue
+                elif current_plural:
+                    # End of a set of plural units
+                    new_unit = _collapse(new_store, plurals[current_plural])
+                    new_unit.addlocation(current_plural)
+                    del plurals[current_plural]
+                    current_plural = u""
+
+                new_store.addunit(unit)
+
+        if current_plural:
+            # The file ended with a set of plural units
+            new_unit = _collapse(new_store, plurals[current_plural])
+            new_unit.addlocation(current_plural)
+            del plurals[current_plural]
+            current_plural = u""
+
+        # if everything went well, there should be nothing left in plurals
+        if len(plurals) != 0:
+            print >> sys.stderr, "Not all plural units converted correctly:"
+            print >> sys.stderr, "\n".join(plurals.keys())
+        return new_store
 
     def convertunit(self, propunit, commenttype):
         """Converts a .properties unit to a .po unit. Returns None if empty

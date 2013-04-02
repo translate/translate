@@ -105,7 +105,7 @@ def test_unknown_xml_placeable():
         StringElem(u'TEXT'),
         UnknownXML(u'ept', id=u'_1_ski_238', xml_node=copy(source[2])),
         StringElem(u'TEXT'),
-        UnknownXML(id='_1_ski_337', xml_node=copy(source[3])), # ph-tag
+        UnknownXML(id='_1_ski_337', xml_node=copy(source[3])),  # ph-tag
         StringElem(u'TEXT'),
         UnknownXML(u'it', id='_1_ski_436', xml_node=copy(source[4])),
         StringElem(u'TEXT'),

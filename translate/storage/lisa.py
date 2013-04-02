@@ -88,9 +88,12 @@ class LISAunit(base.TranslationUnit):
     def namespaced(self, name):
         """Returns name in Clark notation.
 
-           For example namespaced("source") in an XLIFF document might return::
-               {urn:oasis:names:tc:xliff:document:1.1}source
-           This is needed throughout lxml.
+        For example ``namespaced("source")`` in an XLIFF document
+        might return::
+
+            {urn:oasis:names:tc:xliff:document:1.1}source
+
+        This is needed throughout lxml.
         """
         return namespaced(self.namespace, name)
 
@@ -197,7 +200,7 @@ class LISAunit(base.TranslationUnit):
                 lasttag.tail = pretext
             #ph node
             phnode = etree.SubElement(parent, self.namespaced("ph"))
-            phnode.set("id", str(i+1))
+            phnode.set("id", str(i + 1))
             phnode.text = m.group()
             lasttag = phnode
             start = m.end()
@@ -211,15 +214,15 @@ class LISAunit(base.TranslationUnit):
         return list(self.xmlelement.iterchildren(self.namespaced(self.languageNode)))
 
     def getlanguageNode(self, lang=None, index=None):
-        """Retrieves a languageNode either by language or by index"""
+        """Retrieves a :attr:`languageNode` either by language or by index."""
         if lang is None and index is None:
-            raise KeyError("No criterea for languageNode given")
+            raise KeyError("No criteria for languageNode given")
         languageNodes = self.getlanguageNodes()
         if lang:
             for set in languageNodes:
                 if getXMLlang(set) == lang:
                     return set
-        else:#have to use index
+        else:  # have to use index
             if index >= len(languageNodes):
                 return None
             else:
@@ -227,7 +230,7 @@ class LISAunit(base.TranslationUnit):
         return None
 
     def getNodeText(self, languageNode, xml_space="preserve"):
-        """Retrieves the term from the given languageNode"""
+        """Retrieves the term from the given :attr:`languageNode`."""
         if languageNode is None:
             return None
         if self.textNode:
@@ -296,9 +299,12 @@ class LISAfile(base.TranslationStore):
     def namespaced(self, name):
         """Returns name in Clark notation.
 
-           For example namespaced("source") in an XLIFF document might return::
-               {urn:oasis:names:tc:xliff:document:1.1}source
-           This is needed throughout lxml.
+        For example ``namespaced("source")`` in an XLIFF document
+        might return::
+
+            {urn:oasis:names:tc:xliff:document:1.1}source
+
+        This is needed throughout lxml.
         """
         return namespaced(self.namespace, name)
 

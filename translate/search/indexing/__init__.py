@@ -19,12 +19,7 @@
 #
 
 
-"""
-interface for differrent indexing engines for the translate toolkit
-
-"""
-
-__revision__ = "$Id$"
+"""Interface for differrent indexing engines for the Translate Toolkit."""
 
 import os
 import shutil
@@ -101,12 +96,12 @@ def _sort_indexers_by_preference(indexer_classes, pref_order):
     (without suppix ".py") of the respective modules (e.g.: XapianIndexer or
     PyLuceneIndexer)
 
-    @param indexer_classes: the list of all available indexer classes
-    @type indexer_classes: list of CommonIndexer.CommonDatabase objects
-    @param pref_order: list of preferred indexer names
-    @type pref_order: str
-    @return: sorted list of indexer classes
-    @rtype: list of CommonIndexer.CommonDatabase objects
+    :param indexer_classes: the list of all available indexer classes
+    :type indexer_classes: list of CommonIndexer.CommonDatabase objects
+    :param pref_order: list of preferred indexer names
+    :type pref_order: str
+    :return: sorted list of indexer classes
+    :rtype: list of CommonIndexer.CommonDatabase objects
     """
     # define useful function for readability
     get_indexer_name = lambda indexer_class: \
@@ -118,7 +113,7 @@ def _sort_indexers_by_preference(indexer_classes, pref_order):
     for choice in pref_order:
         # find matching indexers
         matches = [indexer for indexer in avail_indexers
-                if get_indexer_name(indexer) == choice]
+                   if get_indexer_name(indexer) == choice]
         # move all matching items to the 'result' queue
         for match_item in matches:
             result.append(match_item)
@@ -142,17 +137,17 @@ def get_indexer(basedir, preference=None):
     indexers knows how to handle it. Otherwise we return the first available
     indexer.
 
-    @raise IndexError: there is no indexing engine available
-    @raise ValueError: the database location already exists, but we did not find
+    :raise IndexError: there is no indexing engine available
+    :raise ValueError: the database location already exists, but we did not find
                        a suitable indexing engine for it
-    @raise OSError: any error that could occour while creating or opening the
+    :raise OSError: any error that could occour while creating or opening the
                     database
 
-    @param basedir: the parent directory of (possible) different indexing
+    :param basedir: the parent directory of (possible) different indexing
              databases
-    @type basedir: string
-    @return: the class of the most appropriate indexer
-    @rtype: subclass of L{CommonIndexer.CommonDatabase}
+    :type basedir: string
+    :return: the class of the most appropriate indexer
+    :rtype: subclass of :class:`CommonIndexer.CommonDatabase`
     """
     if not _AVAILABLE_INDEXERS:
         raise IndexError("Indexer: no indexing engines are available")
@@ -160,7 +155,7 @@ def get_indexer(basedir, preference=None):
         preference = []
     # sort available indexers by preference
     preferred_indexers = _sort_indexers_by_preference(_AVAILABLE_INDEXERS,
-            preference)
+                                                      preference)
     if os.path.exists(basedir):
         for index_class in preferred_indexers:
             try:
@@ -175,6 +170,7 @@ def get_indexer(basedir, preference=None):
         # class that can handle it - so we remove the whole base directory
         shutil.rmtree(basedir, ignore_errors=True)
         logging.info("Deleting invalid indexing directory '%s'", basedir)
+
     # the database does not exist or it was deleted (see above)
     # we choose the first available indexing engine
     return preferred_indexers[0](basedir)

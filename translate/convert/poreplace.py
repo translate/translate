@@ -18,7 +18,8 @@
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, see <http://www.gnu.org/licenses/>.
 
-"""simple script to do replacements on translated strings inside po files"""
+"""Simple script to do replacements on translated strings inside po files.
+"""
 
 # this is used as the basis for other scripts, it currently replaces nothing
 

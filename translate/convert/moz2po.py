@@ -18,15 +18,16 @@
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, see <http://www.gnu.org/licenses/>.
 
-"""convert Mozilla .dtd and .properties files to Gettext PO localization files
+"""Convert Mozilla .dtd and .properties files to Gettext PO localization files.
 
-See: http://translate.sourceforge.net/wiki/toolkit/moz2po for examples and
-usage instructions
+See: http://docs.translatehouse.org/projects/translate-toolkit/en/latest/commands/moz2po.html
+for examples and usage instructions.
 """
 
 from translate.convert import dtd2po
 from translate.convert import prop2po
 from translate.convert import mozfunny2prop
+from translate.convert import mozlang2po
 from translate.storage import xpi
 from translate.convert import convert
 
@@ -42,6 +43,7 @@ def main(argv=None):
                   ("it", mozfunny2prop.it2po),
                   ("ini", mozfunny2prop.ini2po),
                   ("inc", mozfunny2prop.inc2po),
+                  ("lang", mozlang2po.convertlang),
                  ]
     for format, converter in converters:
         formats[(format, format)] = (format + ".po", converter)

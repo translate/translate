@@ -20,6 +20,9 @@
 
 """Fill localization files with suggested translations based on
 translation memory and existing translations.
+
+See: http://docs.translatehouse.org/projects/translate-toolkit/en/latest/commands/pretranslate.html
+for examples and usage instructions.
 """
 
 from translate.storage import factory
@@ -39,18 +42,23 @@ def memory(tmfiles, max_candidates=1, min_similarity=75, max_length=1000):
             tmstore = [factory.getobject(tmfile) for tmfile in tmfiles]
         else:
             tmstore = factory.getobject(tmfiles)
-        tmmatcher = match.matcher(tmstore, max_candidates=max_candidates, min_similarity=min_similarity, max_length=max_length)
+        tmmatcher = match.matcher(tmstore, max_candidates=max_candidates,
+                                  min_similarity=min_similarity,
+                                  max_length=max_length)
     return tmmatcher
 
 
-def pretranslate_file(input_file, output_file, template_file, tm=None, min_similarity=75, fuzzymatching=True):
-    """Pretranslate any factory supported file with old translations and translation memory."""
+def pretranslate_file(input_file, output_file, template_file, tm=None,
+                      min_similarity=75, fuzzymatching=True):
+    """Pretranslate any factory supported file with old translations and
+    translation memory."""
     input_store = factory.getobject(input_file)
     template_store = None
     if template_file is not None:
         template_store = factory.getobject(template_file)
 
-    output = pretranslate_store(input_store, template_store, tm, min_similarity, fuzzymatching)
+    output = pretranslate_store(input_store, template_store, tm,
+                                min_similarity, fuzzymatching)
     output_file.write(str(output))
     return 1
 
@@ -69,13 +77,17 @@ def match_template_location(input_unit, template_store):
     # this makes no sense for normal gettext files
     for location in locations:
         matching_unit = template_store.locationindex.get(location, None)
-        if matching_unit is not None and matching_unit.source == input_unit.source and matching_unit.gettargetlen() > 0:
+        if (matching_unit is not None and
+            matching_unit.source == input_unit.source and
+            matching_unit.gettargetlen() > 0):
             return matching_unit
+
 
 def match_template_id(input_unit, template_store):
     """Returns a matching unit from a template. matching based on unit id"""
     matching_unit = template_store.findid(input_unit.getid())
     return matching_unit
+
 
 def match_source(input_unit, template_store):
     """Returns a matching unit from a template. matching based on unit id"""
@@ -85,6 +97,7 @@ def match_source(input_unit, template_store):
         matching_unit = template_store.findunit(input_unit.source)
         return matching_unit
 
+
 def match_fuzzy(input_unit, matchers):
     """Return a fuzzy match from a queue of matchers."""
     for matcher in matchers:
@@ -93,17 +106,26 @@ def match_fuzzy(input_unit, matchers):
             return fuzzycandidates[0]
 
 
-def pretranslate_unit(input_unit, template_store, matchers=None, mark_reused=False, match_locations=False):
-    """Pretranslate a unit or return unchanged if no translation was found."""
+def pretranslate_unit(input_unit, template_store, matchers=None,
+                      mark_reused=False, merge_on='id'):
+    """Pretranslate a unit or return unchanged if no translation was found.
 
+    :param input_unit: Unit that will be pretranslated.
+    :param template_store: Fill input unit with units matching in this store.
+    :param matchers: List of fuzzy :class:`~translate.search.match.matcher`
+        objects.
+    :param mark_reused: Whether to mark old translations as reused or not.
+    :param merge_on: Where will the merge matching happen on.
+    """
     matching_unit = None
-    #do template matching
+
+    # Do template matching
     if template_store:
-        if match_locations:
+        # :param:`merge_on` supports `location` and `id` for now
+        if merge_on == 'location':
             matching_unit = match_template_location(input_unit, template_store)
         else:
             matching_unit = match_template_id(input_unit, template_store)
-
 
     if matching_unit and matching_unit.gettargetlen() > 0:
         input_unit.merge(matching_unit, authoritative=True)
@@ -119,7 +141,8 @@ def pretranslate_unit(input_unit, template_store, matchers=None, mark_reused=Fal
             #FIXME: should we dispatch here instead of this crude type check
             if isinstance(input_unit, xliff.xliffunit):
                 #FIXME: what about origin, lang and matchquality
-                input_unit.addalttrans(matching_unit.target, origin="fish", sourcetxt=matching_unit.source)
+                input_unit.addalttrans(matching_unit.target, origin="fish",
+                                       sourcetxt=matching_unit.source)
             else:
                 input_unit.merge(matching_unit, authoritative=True)
 
@@ -132,7 +155,9 @@ def pretranslate_unit(input_unit, template_store, matchers=None, mark_reused=Fal
 
     return input_unit
 
-def pretranslate_store(input_store, template_store, tm=None, min_similarity=75, fuzzymatching=True):
+
+def pretranslate_store(input_store, template_store, tm=None,
+                       min_similarity=75, fuzzymatching=True):
     """Do the actual pretranslation of a whole store."""
     #preperation
     matchers = []
@@ -147,7 +172,9 @@ def pretranslate_store(input_store, template_store, tm=None, min_similarity=75, 
         if fuzzymatching:
             #create template matcher
             #FIXME: max_length hardcoded
-            matcher = match.matcher(template_store, max_candidates=1, min_similarity=min_similarity, max_length=3000, usefuzzy=True)
+            matcher = match.matcher(template_store, max_candidates=1,
+                                    min_similarity=min_similarity,
+                                    max_length=3000, usefuzzy=True)
             matcher.addpercentage = False
             matchers.append(matcher)
 
@@ -155,36 +182,45 @@ def pretranslate_store(input_store, template_store, tm=None, min_similarity=75, 
     #create tm matcher
     if tm and fuzzymatching:
         #FIXME: max_length hardcoded
-        matcher = memory(tm, max_candidates=1, min_similarity=min_similarity, max_length=1000)
+        matcher = memory(tm, max_candidates=1, min_similarity=min_similarity,
+                         max_length=1000)
         matcher.addpercentage = False
         matchers.append(matcher)
 
-    #main loop
-    match_locations = isinstance(input_store, po.pofile) and input_store.parseheader().get('X-Accelerator-Marker') in ('&', '~')
+    # Main loop
     for input_unit in input_store.units:
         if  input_unit.istranslatable():
-            input_unit = pretranslate_unit(input_unit, template_store, matchers, match_locations=match_locations)
+            input_unit = pretranslate_unit(input_unit, template_store,
+                                           matchers,
+                                           merge_on=input_store.merge_on)
 
     return input_store
 
 
 def main(argv=None):
     from translate.convert import convert
-    formats = {"pot": ("po", pretranslate_file), ("pot", "po"): ("po", pretranslate_file),
-               "po": ("po", pretranslate_file), ("po", "po"): ("po", pretranslate_file),
-               "xlf": ("xlf", pretranslate_file), ("xlf", "xlf"): ("xlf", pretranslate_file),
-               }
+    formats = {
+        "pot": ("po", pretranslate_file),
+                ("pot", "po"): ("po", pretranslate_file),
+        "po": ("po", pretranslate_file),
+               ("po", "po"): ("po", pretranslate_file),
+        "xlf": ("xlf", pretranslate_file),
+                ("xlf", "xlf"): ("xlf", pretranslate_file),
+    }
     parser = convert.ConvertOptionParser(formats, usetemplates=True,
-        allowmissingtemplate=True, description=__doc__)
+                                         allowmissingtemplate=True,
+                                         description=__doc__)
     parser.add_option("", "--tm", dest="tm", default=None,
-        help="The file to use as translation memory when fuzzy matching")
+                      help="The file to use as translation memory when fuzzy matching")
     parser.passthrough.append("tm")
     defaultsimilarity = 75
-    parser.add_option("-s", "--similarity", dest="min_similarity", default=defaultsimilarity,
-        type="float", help="The minimum similarity for inclusion (default: %d%%)" % defaultsimilarity)
+    parser.add_option("-s", "--similarity", dest="min_similarity",
+                      default=defaultsimilarity, type="float",
+                      help="The minimum similarity for inclusion (default: %d%%)" % defaultsimilarity)
     parser.passthrough.append("min_similarity")
-    parser.add_option("--nofuzzymatching", dest="fuzzymatching", action="store_false",
-        default=True, help="Disable fuzzy matching")
+    parser.add_option("--nofuzzymatching", dest="fuzzymatching",
+                      action="store_false", default=True,
+                      help="Disable fuzzy matching")
     parser.passthrough.append("fuzzymatching")
     parser.run(argv)
 

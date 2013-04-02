@@ -32,7 +32,7 @@ __all__ = ['AltAttrPlaceable', 'XMLEntityPlaceable', 'XMLTagPlaceable', 'parsers
 
 def regex_parse(cls, pstr):
     """A parser method to extract placeables from a string based on a regular
-        expression. Use this function as the C{@parse()} method of a placeable
+        expression. Use this function as the ``@parse()`` method of a placeable
         class."""
     if cls.regex is None:
         return None
@@ -78,7 +78,7 @@ class QtFormattingPlaceable(Ph):
     """Placeable representing a Qt string formatting variable.
 
     Implemented following Qt documentation on
-    U{QString::arg<http://doc.trolltech.com/4.5/qstring.html#arg>} where
+    `QString::arg <http://doc.trolltech.com/4.5/qstring.html#arg>`_ where
     the placeables are refered to as 'place markers'
 
     Notes:
@@ -102,7 +102,7 @@ class PythonFormattingPlaceable(Ph):
     """Placeable representing a Python string formatting variable.
 
     Implemented following Python documentation on
-    U{String Formatting Operations<http://docs.python.org/library/stdtypes.html#string-formatting-operations>}"""
+    `String Formatting Operations <http://docs.python.org/library/stdtypes.html#string-formatting-operations>`_"""
 
     iseditable = False
     istranslatable = False
@@ -122,13 +122,13 @@ class PythonFormattingPlaceable(Ph):
 class JavaMessageFormatPlaceable(Ph):
     """Placeable representing a Java MessageFormat formatting variable.
 
-    Implemented according to the Java U{MessageFormat
-    documentation<http://java.sun.com/j2se/1.4.2/docs/api/java/text/MessageFormat.html>}.
+    Implemented according to the Java `MessageFormat documentation
+    <http://java.sun.com/j2se/1.4.2/docs/api/java/text/MessageFormat.html>`_.
 
     Information about custom formats:
-      - number - U{DecimalFormat<http://java.sun.com/j2se/1.4.2/docs/api/java/text/DecimalFormat.html>}
-      - date/time - U{SimpleDateFormat<http://java.sun.com/j2se/1.4.2/docs/api/java/text/SimpleDateFormat.html>}
-      - choice - U{ChoiceFormat<http://java.sun.com/j2se/1.4.2/docs/api/java/text/ChoiceFormat.html>}
+      - number - `DecimalFormat <http://java.sun.com/j2se/1.4.2/docs/api/java/text/DecimalFormat.html>`_
+      - date/time - `SimpleDateFormat <http://java.sun.com/j2se/1.4.2/docs/api/java/text/SimpleDateFormat.html>`_
+      - choice - `ChoiceFormat <http://java.sun.com/j2se/1.4.2/docs/api/java/text/ChoiceFormat.html>`_
     """
 
     iseditable = False  # TODO: Technically incorrect as you need to change
@@ -214,7 +214,8 @@ class PunctuationPlaceable(Ph):
                              [℃℉°]|          # Degree related
                              [±πθ×÷−√∞∆Σ′″]| # Maths
                              [‘’ʼ‚‛“”„‟]|    # Quote characters
-                             [£¥]|           # Currencies
+                             [«»]|           # Guillemets
+                             [£¥€]|          # Currencies
                              …|              # U2026 - horizontal ellipsis
                              —|              # U2014 - em dash
                              –|              # U2013 - en dash
@@ -224,7 +225,7 @@ class PunctuationPlaceable(Ph):
 
 
 class XMLEntityPlaceable(Ph):
-    """Placeable handling XML entities (C{&xxxxx;}-style entities)."""
+    """Placeable handling XML entities (``&xxxxx;``-style entities)."""
 
     iseditable = False
     istranslatable = False
@@ -251,7 +252,7 @@ class CamelCasePlaceable(Ph):
             \b(
                [a-z]+[A-Z]|         #Not that strict if we start with lower (iPod)
                [A-Z]+[a-z]+[A-Z]|   #One capital at the start is not enough (OpenTran)
-               [A-Z]{2,}[a-z]       #Two capitals at the start is enough    (KBabel)
+               [A-Z]{2,}[a-z]       #Two capitals at the start is enough (KBabel)
             )[a-zA-Z0-9]*           #Let's allow any final lower/upper/digit
             \b''')
     parse = classmethod(regex_parse)

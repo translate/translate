@@ -21,14 +21,14 @@
 
 """Module for handling Qt Linguist Phrase Book (.qph) files.
 
-Extract from the U{Qt Linguist Manual:
-Translators<http://doc.trolltech.com/4.3/linguist-translators.html>}:
+Extract from the `Qt Linguist Manual: Translators
+<http://doc.trolltech.com/4.3/linguist-translators.html>`_:
 .qph Qt Phrase Book Files are human-readable XML files containing standard
 phrases and their translations. These files are created and updated by Qt
 Linguist and may be used by any number of projects and applications.
 
-A DTD to define the format does not seem to exist, but the following U{code
-U{code<http://qt.gitorious.org/qt/qt/blobs/4.7/tools/linguist/shared/qph.cpp}>
+A DTD to define the format does not seem to exist, but the following `code
+<http://qt.gitorious.org/qt/qt/blobs/4.7/tools/linguist/shared/qph.cpp>`_
 provides the reference implementation for the Qt Linguist product.
 """
 
@@ -111,7 +111,7 @@ class QphFile(lisa.LISAfile):
         XML again."""
         self.namespace = self.document.getroot().nsmap.get(None, None)
         self.header = self.document.getroot()
-        self.body = self.document.getroot() # The root node contains the units
+        self.body = self.document.getroot()  # The root node contains the units
 
     def getsourcelanguage(self):
         """Get the source language for this .qph file.
@@ -120,8 +120,8 @@ class QphFile(lisa.LISAfile):
         altering the source language in .qph files, it should be set correctly
         by the extraction tools.
 
-        @return: ISO code e.g. af, fr, pt_BR
-        @rtype: String
+        :return: ISO code e.g. af, fr, pt_BR
+        :rtype: String
         """
         lang = data.normalize_code(self.header.get('sourcelanguage', "en"))
         if lang == 'en-us':
@@ -131,16 +131,16 @@ class QphFile(lisa.LISAfile):
     def gettargetlanguage(self):
         """Get the target language for this .qph file.
 
-        @return: ISO code e.g. af, fr, pt_BR
-        @rtype: String
+        :return: ISO code e.g. af, fr, pt_BR
+        :rtype: String
         """
         return data.normalize_code(self.header.get('language'))
 
     def settargetlanguage(self, targetlanguage):
-        """Set the target language for this .qph file to L{targetlanguage}.
+        """Set the target language for this .qph file to *targetlanguage*.
 
-        @param targetlanguage: ISO code e.g. af, fr, pt_BR
-        @type targetlanguage: String
+        :param targetlanguage: ISO code e.g. af, fr, pt_BR
+        :type targetlanguage: String
         """
         if targetlanguage:
             self.header.set('language', targetlanguage)

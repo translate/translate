@@ -19,7 +19,8 @@
 # along with this program; if not, see <http://www.gnu.org/licenses/>.
 
 """
-This file contains abstract (semantic) interfaces for placeable implementations.
+This file contains abstract (semantic) interfaces for placeable
+ implementations.
 """
 
 from translate.storage.placeables.strelem import StringElem

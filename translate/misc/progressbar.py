@@ -33,7 +33,7 @@ class DotsProgressBar:
 
     def show(self, verbosemessage):
         """show a dot for progress :-)"""
-        # pylint: disable-msg=W0613
+        # pylint: disable=W0613
         self.stderr.write('.')
         self.stderr.flush()
 
@@ -96,7 +96,7 @@ class ProgressBar:
 
     def show(self, verbosemessage):
         """displays the progress bar"""
-        # pylint: disable-msg=W0613
+        # pylint: disable=W0613
         print self
 
 

@@ -1,4 +1,4 @@
-import zlib # implied prerequisite
+import zlib  # implied prerequisite
 import zipfile
 import os
 import StringIO
@@ -11,6 +11,7 @@ except ImportError:
         pass
 
 from translate.misc import zipfileext
+
 
 BrokenStringIO = StringIO.StringIO
 class FixedStringIO(BrokenStringIO):

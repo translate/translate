@@ -1,6 +1,10 @@
 Translate Toolkit
 -----------------
 
+.. image:: https://travis-ci.org/translate/translate.png
+    :alt: Build Status
+    :target: https://travis-ci.org/translate/translate
+
 The Translate Toolkit is a set of software and documentation designed to help
 make the lives of localizers both more productive and less frustrating.
 The Toolkit is part of the translate.sourceforge.net project,
@@ -28,8 +32,8 @@ The latest version of the Translate Toolkit can be downloaded from:
 <http://sourceforge.net/projects/translate/files/Translate%20Toolkit/>.
 
 The latest documentation is always available at
-<http://translate.sourceforge.net/wiki/toolkit/index>.
-Documentation is also included in the doc directory.
+http://docs.translatehouse.org/projects/translate-toolkit/en/latest/
+(Documentation is also included in the doc directory).
 
 
 Copying
@@ -72,10 +76,8 @@ Requirements
 ------------
 Python 2.4 or later is recommended.
 
-The Toolkit mostly still works using Python 2.3 but is now most extensively
-tested using Python 2.4.  If you experience any errors and are using Python 2.2
-or 2.3, please first check that the error also occurs in 2.4 or 2.5 before
-reporting it as a bug.
+The Toolkit should still work with Python 2.4 but is now most extensively
+tested using Python 2.7.
 
 The package lxml is needed for XML file processing. Version 1.3.4 and upwards
 should work, but lxml 2.1.0 or later is strongly recommended. <http://lxml.de/>
@@ -198,7 +200,7 @@ Some help in writing useful bug reports are mentioned here:
 Documentation
 -------------
 Please read our documentation online at
-<http://translate.sourceforge.net/wiki/toolkit/index>.
+http://docs.translatehouse.org/projects/translate-toolkit/en/latest/.
 There they are constantly being updated. Please feel free to contribute new
 sections and suggest corrections.
 

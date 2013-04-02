@@ -18,11 +18,10 @@
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, see <http://www.gnu.org/licenses/>.
 
+"""Convert Gettext PO localization files to Java/Mozilla .properties files.
 
-"""convert Gettext PO localization files to Java/Mozilla .properties files
-
-see: http://translate.sourceforge.net/wiki/toolkit/po2prop for examples and
-usage instructions
+See: http://docs.translatehouse.org/projects/translate-toolkit/en/latest/commands/prop2po.html
+for examples and usage instructions.
 """
 
 from translate.misc import quote
@@ -49,6 +48,8 @@ class reprop:
         self.inmultilinemsgid = False
         self.inecho = False
         self.inputstore.makeindex()
+        if self.personality.name == "gaia":
+            self._explode_gaia_plurals()
         outputlines = []
         # Readlines doesn't work for UTF-16, we read() and splitlines(keepends) instead
         content = self.templatefile.read().decode(self.encoding)
@@ -56,6 +57,32 @@ class reprop:
             outputstr = self.convertline(line)
             outputlines.append(outputstr)
         return u"".join(outputlines).encode(self.encoding)
+
+    def _explode_gaia_plurals(self):
+        """Explode the gaia plurals."""
+        from translate.lang import data
+        for unit in self.inputstore.units:
+            if not unit.hasplural():
+                continue
+            if unit.isfuzzy() and not self.includefuzzy or not unit.istranslated():
+                continue
+
+            names = data.cldr_plural_categories
+            location = unit.getlocations()[0]
+            for category, text in zip(names, unit.target.strings):
+                # TODO: for now we assume all forms are present. We need to
+                # fill in the rest after mapping things to the proper CLDR names.
+                if category == 'zero':
+                    # [zero] cases are translated as separate units
+                    continue
+                new_unit = self.inputstore.addsourceunit(u"fish") # not used
+                new_location = '%s[%s]' % (location, category)
+                new_unit.addlocation(new_location)
+                new_unit.target = text
+                self.inputstore.locationindex[new_location] = new_unit
+
+            # We don't want the plural marker to be translated:
+            del self.inputstore.locationindex[location]
 
     def convertline(self, line):
         returnline = u""
@@ -69,7 +96,7 @@ class reprop:
                 returnline = line
         # otherwise, this could be a comment
         elif line.strip()[:1] == '#':
-            returnline = quote.rstripeol(line)+eol
+            returnline = quote.rstripeol(line) + eol
         else:
             line = quote.rstripeol(line)
             delimiter_char, delimiter_pos = self.personality.find_delimiter(line)

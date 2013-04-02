@@ -18,7 +18,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, see <http://www.gnu.org/licenses/>.
 
-"""module for accessing mozilla xpi packages"""
+"""Module for accessing mozilla xpi packages."""
 
 from __future__ import generators
 import zipfile
@@ -35,9 +35,12 @@ ZipFileBase = zipfileext.ZipFileExt
 
 
 from translate.misc import wStringIO
-# this is a fix to the StringIO in Python 2.3.3
-# submitted as patch 951915 on sourceforge
+
+
 class FixedStringIO(wStringIO.StringIO):
+    """This is a fix to the StringIO in Python 2.3.3
+    submitted as patch 951915 on sourceforge
+    """
 
     def truncate(self, size=None):
         StringIO.StringIO.truncate(self, size)
@@ -574,7 +577,7 @@ if __name__ == '__main__':
             print "/".join(prefix), "->", "/".join(mapto)
     if options.listfiles:
         for name in xpifile.iterextractnames(includenonjars=True, includedirs=True):
-            print name #, xpifile.ostojarpath(name)
+            print name  # , xpifile.ostojarpath(name)
     if options.extractfiles:
         if options.extractdir and not os.path.isdir(options.extractdir):
             os.mkdir(options.extractdir)

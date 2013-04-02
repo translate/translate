@@ -18,7 +18,11 @@
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, see <http://www.gnu.org/licenses/>.
 
-"""convert .ini files to Gettext PO localization files"""
+"""Convert .ini files to Gettext PO localization files.
+
+See: http://docs.translatehouse.org/projects/translate-toolkit/en/latest/commands/ini2po.html
+for examples and usage instructions.
+"""
 
 import sys
 
@@ -31,7 +35,7 @@ class ini2po:
     def convert_store(self, input_store, duplicatestyle="msgctxt"):
         """converts a .ini file to a .po file..."""
         output_store = po.pofile()
-        output_header = output_store.init_headers(charset="UTF-8", encoding="8bit")
+        output_header = output_store.header()
         output_header.addnote("extracted from %s" % input_store.filename, "developer")
 
         for input_unit in input_store.units:
@@ -44,7 +48,7 @@ class ini2po:
     def merge_store(self, template_store, input_store, blankmsgstr=False, duplicatestyle="msgctxt"):
         """converts two .ini files to a .po file..."""
         output_store = po.pofile()
-        output_header = output_store.init_headers(charset="UTF-8", encoding="8bit")
+        output_header = output_store.header()
         output_header.addnote("extracted from %s, %s" % (template_store.filename, input_store.filename), "developer")
 
         input_store.makeindex()
@@ -81,7 +85,8 @@ class ini2po:
 
 
 def convertini(input_file, output_file, template_file, pot=False, duplicatestyle="msgctxt", dialect="default"):
-    """Reads in L{input_file} using ini, converts using L{ini2po}, writes to L{output_file}"""
+    """Reads in *input_file* using ini, converts using :class:`ini2po`,
+    writes to *output_file*."""
     from translate.storage import ini
     input_store = ini.inifile(input_file, dialect=dialect)
     convertor = ini2po()

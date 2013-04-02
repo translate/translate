@@ -24,13 +24,13 @@ This will eventually replace the older ts.py which only supports the older
 format. While converters haven't been updated to use this module, we retain
 both.
 
-U{TS file format 4.3<http://doc.trolltech.com/4.3/linguist-ts-file-format.html>},
-U{4.5<http://doc.trolltech.com/4.5/linguist-ts-file-format.html>},
-U{Example<http://svn.ez.no/svn/ezcomponents/trunk/Translation/docs/linguist-format.txt>},
-U{Plurals forms<http://www.koders.com/cpp/fidE7B7E83C54B9036EB7FA0F27BC56BCCFC4B9DF34.aspx#L200>}
+`TS file format 4.3 <http://doc.qt.digia.com/4.3/linguist-ts-file-format.html>`_,
+`4.8 <http://qt-project.org/doc/qt-4.8/linguist-ts-file-format.html>`_,
+`5.0 <http://qt-project.org/doc/qt-5.0/qtlinguist/linguist-ts-file-format.html>`_.
+`Example <http://svn.ez.no/svn/ezcomponents/trunk/Translation/docs/linguist-format.txt>`_.
 
-U{Specification of the valid variable entries <http://doc.trolltech.com/4.3/qstring.html#arg>},
-U{2 <http://doc.trolltech.com/4.3/qstring.html#arg-2>}
+`Specification of the valid variable entries <http://qt-project.org/doc/qt-5.0/qtcore/qstring.html#arg>`_,
+`2 <http://qt-project.org/doc/qt-5.0/qtcore/qstring.html#arg-2>`_
 """
 
 from lxml import etree
@@ -64,7 +64,7 @@ NPLURALS = {
 
 
 class tsunit(lisa.LISAunit):
-    """A single term in the xliff file."""
+    """A single term in the TS file."""
 
     rootNode = "message"
     languageNode = "source"
@@ -180,7 +180,7 @@ class tsunit(lisa.LISAunit):
         return self.xmlelement.get("numerus") == "yes"
 
     def addnote(self, text, origin=None, position="append"):
-        """Add a note specifically in the appropriate "*comment" tag"""
+        """Add a note specifically in the appropriate *comment* tag"""
         if isinstance(text, str):
             text = text.decode("utf-8")
         current_notes = self.getnotes(origin)
@@ -315,6 +315,8 @@ class tsunit(lisa.LISAunit):
         #TODO: check if this is necessary:
         if otherunit.isfuzzy():
             self.markfuzzy()
+        else:
+            self.markfuzzy(False)
 
     def isobsolete(self):
         return self._gettype() == "obsolete"
@@ -342,7 +344,7 @@ class tsunit(lisa.LISAunit):
 
 
 class tsfile(lisa.LISAfile):
-    """Class representing a XLIFF file store."""
+    """Class representing a TS file store."""
     UnitClass = tsunit
     Name = _("Qt Linguist Translation File")
     Mimetypes = ["application/x-linguist"]
@@ -379,8 +381,8 @@ class tsfile(lisa.LISAfile):
         altering the source language in .ts files, it should be set correctly
         by the extraction tools.
 
-        @return: ISO code e.g. af, fr, pt_BR
-        @rtype: String
+        :return: ISO code e.g. af, fr, pt_BR
+        :rtype: String
         """
         lang = data.normalize_code(self.header.get('sourcelanguage', "en"))
         if lang == 'en-us':
@@ -390,16 +392,16 @@ class tsfile(lisa.LISAfile):
     def gettargetlanguage(self):
         """Get the target language for this .ts file.
 
-        @return: ISO code e.g. af, fr, pt_BR
-        @rtype: String
+        :return: ISO code e.g. af, fr, pt_BR
+        :rtype: String
         """
         return data.normalize_code(self.header.get('language'))
 
     def settargetlanguage(self, targetlanguage):
-        """Set the target language for this .ts file to L{targetlanguage}.
+        """Set the target language for this .ts file to *targetlanguage*.
 
-        @param targetlanguage: ISO code e.g. af, fr, pt_BR
-        @type targetlanguage: String
+        :param targetlanguage: ISO code e.g. af, fr, pt_BR
+        :type targetlanguage: String
         """
         if targetlanguage:
             self.header.set('language', targetlanguage)

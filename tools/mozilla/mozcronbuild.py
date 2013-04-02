@@ -23,7 +23,8 @@ import os
 from tools.mozilla import moz_l10n_builder
 
 
-MOZDIR = os.path.join( os.path.expanduser('~'), 'mozbuild' )
+MOZDIR = os.path.join(os.path.expanduser('~'), 'mozbuild')
+
 
 def build_langs(langs, verbose):
     olddir = os.getcwd()
@@ -44,15 +45,20 @@ def build_langs(langs, verbose):
 
     os.chdir(olddir)
 
+
 def check_potpacks():
     """Copy new and check available POT-packs."""
     pass
+
 
 def update_rss():
     """Update the RSS feed with the available POT-packs."""
     pass
 
-USAGE='%prog [<options>]'
+
+USAGE = '%prog [<options>]'
+
+
 def create_option_parser():
     """Creates and returns cmd-line option parser."""
 
@@ -69,6 +75,7 @@ def create_option_parser():
 
     return parser
 
+
 def main(langs, verbose):
     if not langs:
         langs = ['ALL']
@@ -80,11 +87,12 @@ def main(langs, verbose):
     check_potpacks()
     update_rss()
 
+
 def main_cmd_line():
     """Processes command-line arguments and send them to main()."""
     options, args = create_option_parser().parse_args()
 
-    main(args, options.verbose) # args == langs to build
+    main(args, options.verbose)  # args == langs to build
 
 if __name__ == '__main__':
     main_cmd_line()

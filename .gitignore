@@ -1,5 +1,18 @@
 # /
 /LICENSE
 
+# /docs/
+/docs/_build/
+
 # General
 *.pyc
+
+# vim
+.*.swp
+*~
+
+# distutils
+/build/
+/dist/
+MANIFEST
+MANIFEST.in

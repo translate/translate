@@ -1,0 +1,63 @@
+#!/bin/bash
+#
+# Copyright 2012 Zuza Software Foundation
+#
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License along
+# with this program; if not, write to the Free Software Foundation, Inc.,
+# 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+
+# Finds problems with accesskeys in Gettext PO files
+#
+# This is really only useful for Mozilla PO files.  It finds single
+# character msgids, filters out those that we've reviewed and found
+# to not be stray accesskeys.  It counts them and then leaves the
+# filtered PO files for later examination.
+
+function usage()
+{
+	echo "Usage: $(basename $0) [dir]"
+	exit
+}
+
+if [ $# -ne 1 ]; then
+	usage
+fi
+if [ ! -d $1 ]; then
+	usage
+fi
+
+sourcedir=$1
+singledir=${sourcedir}-single
+accesskeydir=${sourcedir}-accesskey
+
+# Full entity names of items that should be ignored
+ignore_full_dtd="privatebrowsingpage.clearRecentHistoryAfter|firstdayofweek.default|noStyleSheet-tip-end.label|rememberActions.post.label|dontrememberActions.post.label|syncKey.findOutMore2.label|syncKey.footer3.label|aboutApps.noApps.post|aboutPage.licenseLinkSuffix|consoleEvaluate.label|rights.intro-point2-c|rights.intro-point3c|rights.intro-point4c|rights2.webservices-c"
+ignore_full_properties="gecko.handlerService.defaultHandlersVersion|Byte|Kilo|Mega|Giga|CertDumpAVACountry|CertDumpAVALocality|CertDumpAVAOrg|CertDumpPK9Email|pluralRule|intl.ellipsis|VK_SHIFT|VK_META|VK_ALT|VK_CONTROL|MODIFIER_SEPARATOR"
+
+# Items with these suffixes should be ignored
+ignore_suffix="commandkey|key|macCommandKey|commandKey"
+
+rm -rf $singledir $accesskeydir
+
+pogrep --progress=none --search=source -e "^.$" $sourcedir $singledir
+pogrep --progress=none --search=locations -e "($ignore_full_dtd|$ignore_full_properties|\.($ignore_suffix))" -v $singledir $accesskeydir
+
+rm -rf $singledir
+
+echo "DTD potential errors"
+pocount $(find $accesskeydir -name "*dtd*") | tail
+
+echo "Properties potential errors"
+pocount $(find $accesskeydir -name "*properties*") | tail
+
+echo "Actual problem files are located in directory: $accesskeydir"

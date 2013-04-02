@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 #
-# Copyright 2002-2009 Zuza Software Foundation
+# Copyright 2002-2009,2012 Zuza Software Foundation
 #
 # This file is part of translate.
 #
@@ -18,8 +18,11 @@
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, see <http://www.gnu.org/licenses/>.
 
-"""script that converts a .po file to a UTF-8 encoded .dtd file as used by mozilla
-either done using a template or just using the .po file"""
+"""Converts a Gettext PO file to a UTF-8 encoded Mozilla .dtd file.
+
+.. note: Conversion is either done using a template plus PO file or just
+   using the .po file.
+"""
 
 import warnings
 
@@ -29,20 +32,9 @@ from translate.misc import quote
 from translate.convert import accesskey
 
 
-def getmixedentities(entities):
-    """returns a list of mixed .label and .accesskey entities from a list of entities"""
-    mixedentities = []    # those entities which have a .label and .accesskey combined
-    # search for mixed entities...
-    for entity in entities:
-        for labelsuffix in dtd.labelsuffixes:
-            if entity.endswith(labelsuffix):
-                entitybase = entity[:entity.rfind(labelsuffix)]
-                # see if there is a matching accesskey, making this a mixed entity
-                for akeytype in dtd.accesskeysuffixes:
-                    if entitybase + akeytype in entities:
-                        # add both versions to the list of mixed entities
-                        mixedentities += [entity, entitybase+akeytype]
-    return mixedentities
+def dtdwarning(message, category, filename, lineno, line=None):
+    return "Warning: %s\n" % message
+warnings.formatwarning = dtdwarning
 
 
 def applytranslation(entity, dtdunit, inputunit, mixedentities):
@@ -66,7 +58,7 @@ def applytranslation(entity, dtdunit, inputunit, mixedentities):
                     if not unquotedstr:
                         warnings.warn("Could not find accesskey for %s" % entity)
                     else:
-                        original = dtd.unquotefromdtd(dtdunit.definition)
+                        original = dtdunit.source
                         # For the sake of diffs we keep the case of the
                         # accesskey the same if we know the translation didn't
                         # change. Casing matters in XUL.
@@ -76,14 +68,16 @@ def applytranslation(entity, dtdunit, inputunit, mixedentities):
                             elif original.islower():
                                 unquotedstr = unquotedstr.lower()
     if len(unquotedstr) > 0:
-        dtdunit.definition = dtd.quotefordtd(dtd.removeinvalidamps(entity, unquotedstr))
+        dtdunit.source = dtd.removeinvalidamps(entity, unquotedstr)
 
 
 class redtd:
     """this is a convertor class that creates a new dtd based on a template using translations in a po"""
 
-    def __init__(self, dtdfile):
+    def __init__(self, dtdfile, android=False):
         self.dtdfile = dtdfile
+        self.mixer = accesskey.UnitMixer(dtd.labelsuffixes, dtd.accesskeysuffixes)
+        self.android = False
 
     def convertstore(self, inputstore, includefuzzy=False):
         # translate the strings
@@ -95,16 +89,19 @@ class redtd:
 
     def handleinunit(self, inunit):
         entities = inunit.getlocations()
-        mixedentities = getmixedentities(entities)
+        mixedentities = self.mixer.match_entities(entities)
         for entity in entities:
             if entity in self.dtdfile.index:
                 # now we need to replace the definition of entity with msgstr
-                dtdunit = self.dtdfile.index[entity] # find the dtd
+                dtdunit = self.dtdfile.index[entity]  # find the dtd
                 applytranslation(entity, dtdunit, inunit, mixedentities)
 
 
 class po2dtd:
     """this is a convertor class that creates a new dtd file based on a po file without a template"""
+
+    def __init__(self, android=False):
+        self.android = android
 
     def convertcomments(self, inputunit, dtdunit):
         entities = inputunit.getlocations()
@@ -129,7 +126,7 @@ class po2dtd:
         # msgidcomments are special - they're actually localization notes
         msgidcomment = inputunit._extract_msgidcomments()
         if msgidcomment:
-            locnote = quote.unstripcomment("LOCALIZATION NOTE ("+dtdunit.entity+"): "+msgidcomment)
+            locnote = quote.unstripcomment("LOCALIZATION NOTE (" + dtdunit.entity + "): " + msgidcomment)
             dtdunit.comments.append(("locnote", locnote))
 
     def convertstrings(self, inputunit, dtdunit):
@@ -137,7 +134,7 @@ class po2dtd:
             unquoted = inputunit.target
         else:
             unquoted = inputunit.source
-        dtdunit.definition = dtd.quotefordtd(dtd.removeinvalidamps(dtdunit.entity, unquoted))
+        dtdunit.source = dtd.removeinvalidamps(dtdunit.entity, unquoted)
 
     def convertunit(self, inputunit):
         dtdunit = dtd.dtdunit()
@@ -146,7 +143,7 @@ class po2dtd:
         return dtdunit
 
     def convertstore(self, inputstore, includefuzzy=False):
-        outputstore = dtd.dtdfile()
+        outputstore = dtd.dtdfile(android=self.android)
         self.currentgroups = []
         for inputunit in inputstore.units:
             if includefuzzy or not inputunit.isfuzzy():
@@ -158,11 +155,24 @@ class po2dtd:
 
 def convertdtd(inputfile, outputfile, templatefile, includefuzzy=False):
     inputstore = po.pofile(inputfile)
+
+    # Some of the DTD files used for Firefox Mobile are actually completely
+    # different with different escaping and quoting rules. The best way to
+    # identify them seems to be on their file path in the tree (based on code
+    # in compare-locales).
+    android_dtd = False
+    header_comment = u""
+    input_header = inputstore.header()
+    if input_header:
+        header_comment = input_header.getnotes("developer")
+        if "embedding/android" in header_comment or "mobile/android/base" in header_comment:
+            android_dtd = True
+
     if templatefile is None:
-        convertor = po2dtd()
+        convertor = po2dtd(android=android_dtd)
     else:
-        templatestore = dtd.dtdfile(templatefile)
-        convertor = redtd(templatestore)
+        templatestore = dtd.dtdfile(templatefile, android=android_dtd)
+        convertor = redtd(templatestore, android=android_dtd)
     outputstore = convertor.convertstore(inputstore, includefuzzy)
     outputfile.write(str(outputstore))
     return 1

@@ -29,7 +29,7 @@ prefix = "code_"
 def getlanguage(code):
     """This returns a language class.
 
-    @param code: The ISO 639 language code
+    :param code: The ISO 639 language code
     """
     if code:
         code = code.replace("-", "_").replace("@", "_").lower()
@@ -40,7 +40,8 @@ def getlanguage(code):
             internal_code = prefix + code
         else:
             internal_code = code
-        module = __import__("translate.lang.%s" % internal_code, globals(), {}, internal_code)
+        module = __import__("translate.lang.%s" % internal_code, globals(), {},
+                            internal_code)
         langclass = getattr(module, internal_code)
         return langclass(code)
     except ImportError, e:

@@ -33,7 +33,7 @@ def extract_msgid_comment(text):
     """The one definitive way to extract a msgid comment out of an unescaped
     unicode string that might contain it.
 
-    @rtype: unicode"""
+    :rtype: unicode"""
     msgidcomment = msgid_comment_re.match(text)
     if msgidcomment:
         return msgidcomment.group(1)
@@ -60,7 +60,7 @@ def unquote_plus(text):
 
 
 class pounit(base.TranslationUnit):
-    S_FUZZY_OBSOLETE = state.OBSOLETE-1
+    S_FUZZY_OBSOLETE = state.OBSOLETE - 1
     S_OBSOLETE = state.OBSOLETE
     S_UNTRANSLATED = state.EMPTY
     S_FUZZY = state.NEEDS_WORK
@@ -176,7 +176,7 @@ class pounit(base.TranslationUnit):
         if has_target:
             isfuzzy = self.STATE[self.S_FUZZY][0] <= value < self.STATE[self.S_FUZZY][1] or \
                     self.STATE[self.S_FUZZY_OBSOLETE][0] <= value < self.STATE[self.S_FUZZY_OBSOLETE][1]
-            self._domarkfuzzy(isfuzzy) # Implementation specific fuzzy-marking
+            self._domarkfuzzy(isfuzzy)  # Implementation specific fuzzy-marking
         else:
             super(pounit, self).set_state_n(self.S_UNTRANSLATED)
             self._domarkfuzzy(False)
@@ -198,7 +198,7 @@ def encodingToUse(encoding):
 
 
 class pofile(poheader.poheader, base.TranslationStore):
-    Name = _("Gettext PO file") # pylint: disable-msg=E0602
+    Name = _("Gettext PO file")  # pylint: disable=E0602
     Mimetypes = ["text/x-gettext-catalog", "text/x-gettext-translation", "text/x-po", "text/x-pot"]
     Extensions = ["po", "pot"]
     # We don't want windows line endings on Windows:
@@ -213,3 +213,8 @@ class pofile(poheader.poheader, base.TranslationStore):
             self.parse(inputfile)
         else:
             self.init_headers()
+
+    @property
+    def merge_on(self):
+        """The matching criterion to use when merging on."""
+        return self.parseheader().get('X-Merge-On', 'id')

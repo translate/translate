@@ -18,8 +18,11 @@
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, see <http://www.gnu.org/licenses/>.
 
+"""Convert Gettext PO localization files to JSON files.
 
-"""Convert Gettext PO localization files to JSON files"""
+See: http://docs.translatehouse.org/projects/translate-toolkit/en/latest/commands/json2po.html
+for examples and usage instructions.
+"""
 
 from translate.storage import factory
 

@@ -271,7 +271,7 @@ class TestTranslationStore(object):
             store2unit = store2.units[n]
             match = store1unit == store2unit
             if not match:
-                print "match failed between elements %d of %d" % (n+1, headerless_len(store1.units))
+                print "match failed between elements %d of %d" % ((n + 1), headerless_len(store1.units))
                 print "store1:"
                 print str(store1)
                 print "store2:"
@@ -336,10 +336,10 @@ class TestTranslationStore(object):
     def test_extensions(self):
         """Test that the factory knows the extensions for this class."""
         supported = factory.supported_files()
-        supported_dict = dict([ (name, (extensions, mimetypes)) for name, extensions, mimetypes in supported])
+        supported_dict = dict([(name, (extensions, mimetypes)) for name, extensions, mimetypes in supported])
         if not (self.StoreClass.Name and self.StoreClass.Name in supported_dict):
             return
-        detail = supported_dict[self.StoreClass.Name] # will start to get problematic once translated
+        detail = supported_dict[self.StoreClass.Name]  # will start to get problematic once translated
         print "Factory:", detail[0]
         print "StoreClass:", self.StoreClass.Extensions
         for ext in detail[0]:
@@ -350,14 +350,13 @@ class TestTranslationStore(object):
     def test_mimetypes(self):
         """Test that the factory knows the mimetypes for this class."""
         supported = factory.supported_files()
-        supported_dict = dict([ (name, (extensions, mimetypes)) for name, extensions, mimetypes in supported])
+        supported_dict = dict([(name, (extensions, mimetypes)) for name, extensions, mimetypes in supported])
         if not (self.StoreClass.Name and self.StoreClass.Name in supported_dict):
             return
-        detail = supported_dict[self.StoreClass.Name] # will start to get problematic once translated
+        detail = supported_dict[self.StoreClass.Name]  # will start to get problematic once translated
         print "Factory:", detail[1]
         print "StoreClass:", self.StoreClass.Mimetypes
         for ext in detail[1]:
             assert ext in self.StoreClass.Mimetypes
         for ext in self.StoreClass.Mimetypes:
             assert ext in detail[1]
-

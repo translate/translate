@@ -18,5 +18,4 @@
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, see <http://www.gnu.org/licenses/>.
 
-"""translate.tools is part of the translate package
-It contains code to perform various operations (mostly on po files)"""
+"""Code to perform various operations, mostly on po files."""

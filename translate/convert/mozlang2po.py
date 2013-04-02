@@ -21,10 +21,7 @@
 # Original Author: Dan Schafer <dschafer@mozilla.com>
 # Date: 10 Jun 2008
 
-"""convert Java/Mozilla .properties files to Gettext PO localization files
-
-See: http://translate.sourceforge.net/wiki/toolkit/prop2po for examples and
-usage instructions
+"""Convert Mozilla .lang files to Gettext PO localization files.
 """
 
 from translate.storage import mozilla_lang as lang
@@ -41,8 +38,7 @@ class lang2po:
         thetargetfile = po.pofile()
 
         # Set up the header
-        targetheader = thetargetfile.init_headers(charset="UTF-8",
-                                                 encoding="8bit")
+        targetheader = thetargetfile.header()
         targetheader.addnote("extracted from %s" %
                              thelangfile.filename, "developer")
 
@@ -51,14 +47,15 @@ class lang2po:
             newunit = thetargetfile.addsourceunit(langunit.source)
             newunit.settarget(langunit.target)
             newunit.addlocations(langunit.getlocations())
+            newunit.addnote(langunit.getnotes(), 'developer')
 
         # Remove duplicates, because we can
         thetargetfile.removeduplicates(self.duplicatestyle)
         return thetargetfile
 
 
-def convertlang(inputfile, outputfile, templates, duplicatestyle="msgctxt",
-                encoding="utf-8"):
+def convertlang(inputfile, outputfile, templates, pot=False,
+                duplicatestyle="msgctxt", encoding="utf-8"):
     """reads in stdin using fromfileclass, converts using convertorclass,
     writes to stdout"""
     inputstore = lang.LangStore(inputfile, encoding=encoding)

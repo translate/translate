@@ -18,12 +18,13 @@
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, see <http://www.gnu.org/licenses/>.
 
-"""Class that manages subtitle files for translation
+"""Class that manages subtitle files for translation.
 
-   This class makes use of the subtitle functionality of L{gaupol}
-   @see: gaupo/agents/open.py::open_main
+   This class makes use of the subtitle functionality of ``gaupol``.
 
-   a patch to gaupol is required to open utf-8 files successfully
+   .. seealso:: gaupol/agents/open.py::open_main
+
+   A patch to gaupol is required to open utf-8 files successfully.
 """
 
 import os

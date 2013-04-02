@@ -32,11 +32,12 @@ def find_all(searchin, substr):
     locations are not allowed to overlap"""
     location = 0
     locations = []
+    substr_len = len(substr)
     while location != -1:
         location = searchin.find(substr, location)
         if location != -1:
             locations.append(location)
-            location += len(substr)
+            location += substr_len
     return locations
 
 
@@ -87,7 +88,8 @@ def extract(source, startdelim, enddelim,
             extracted += source[lastpos:pos]
             instring = False
             lastpos = pos
-        if (not instring) and pos in startdelim_places and not (enteredonce and not allowreentry):
+        if ((not instring) and pos in startdelim_places and
+            not (enteredonce and not allowreentry)):
             instring = True
             enteredonce = True
             lastpos = pos
@@ -164,7 +166,8 @@ def extractwithoutquotes(source, startdelim, enddelim, escape=None,
             extracted += section
             instring = False
             lastpos = pos
-        if (not instring) and pos in startdelim_places and not (enteredonce and not allowreentry):
+        if ((not instring) and pos in startdelim_places and
+            not (enteredonce and not allowreentry)):
             instring = True
             enteredonce = True
             lastpos = pos
@@ -177,26 +180,14 @@ def extractwithoutquotes(source, startdelim, enddelim, escape=None,
             last_epos = 0
             for epos in escape_list:
                 new_section += section[last_epos:epos]
-                if callable_includeescapes and includeescapes(section[epos:epos + lenescape + 1]):
+                if (callable_includeescapes and
+                    includeescapes(section[epos:epos + lenescape + 1])):
                     last_epos = epos
                 else:
                     last_epos = epos + lenescape
             section = new_section + section[last_epos:]
         extracted += section
     return (extracted, instring)
-
-
-def escapequotes(source, escapeescapes=0):
-    "Returns the same string, with double quotes escaped with backslash"
-    if escapeescapes:
-        return source.replace('\\', '\\\\').replace('"', '\\"')
-    else:
-        return source.replace('"', '\\"')
-
-
-def escapesinglequotes(source):
-    "Returns the same string, with single quotes doubled"
-    return source.replace("'", "''")
 
 
 @accepts(unicode)
@@ -226,7 +217,8 @@ def htmlentitydecode(source):
             continue
         if inentity:
             if char == ";":
-                if len(possibleentity) > 0 and possibleentity in htmlentitydefs.name2codepoint:
+                if (len(possibleentity) > 0 and
+                    possibleentity in htmlentitydefs.name2codepoint):
                     output += unichr(htmlentitydefs.name2codepoint[possibleentity])
                     inentity = False
                 else:
@@ -379,33 +371,8 @@ def propertiesdecode(source):
             output += unicodedata.lookup(name)
             s = e + 1
         else:
-            output += c # Drop any \ that we don't specifically handle
+            output += c  # Drop any \ that we don't specifically handle
     return output
-
-
-def quotestr(source, escapeescapes=0):
-    """Returns a doublequote-delimited quoted string, escaping double
-    quotes with backslash.
-    """
-    if isinstance(source, list):
-        firstline = True
-        for line in source:
-            if firstline:
-                newsource = '"' + escapequotes(line, escapeescapes) + '"'
-                firstline = False
-            else:
-                newsource = newsource + '\n' + \
-                            '"' + escapequotes(line, escapeescapes) + '"'
-        return newsource
-    else:
-        return '"' + escapequotes(source, escapeescapes) + '"'
-
-
-def singlequotestr(source):
-    """Returns a doublequote-delimited quoted string, escaping single quotes
-    with themselves.
-    """
-    return "'" + escapesinglequotes(source) + "'"
 
 
 def findend(string, substring):

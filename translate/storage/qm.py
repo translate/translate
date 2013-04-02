@@ -19,28 +19,43 @@
 # along with this program; if not, see <http://www.gnu.org/licenses/>.
 #
 
-"""Module for parsing Qt .qm files
+"""Module for parsing Qt .qm files.
 
-@note: based on documentation from Gettext's .qm implementation
-(see write-qt.c) and on observation of the output of lrelease.
-@note: Certain deprecated section tags are not implemented.  These will break
-and print out the missing tag.  They are easy to implement and should follow
-the structure in 03 (Translation).  We could find no examples that use these
-so we'd rather leave it unimplemented until we actually have test data.
-@note: Many .qm files are unable to be parsed as they do not have the source
-text.  We assume that since they use a hash table to lookup the data there is
-actually no need for the source text.  It seems however that in Qt4's lrelease
-all data is included in the resultant .qm file.
-@todo: We can only parse, not create, a .qm file.  The main issue is that we
-need to implement the hashing algorithm (which seems to be identical to the
-Gettext hash algorithm).  Unlike Gettext it seems that the hash is required,
-but that has not been validated.
-@todo: The code can parse files correctly.  But it could be cleaned up to be
-more readable, especially the part that breaks the file into sections.
+.. note::
 
-U{http://qt.gitorious.org/+kde-developers/qt/kde-qt/blobs/master/tools/linguist/shared/qm.cpp}
-U{Plural information<http://qt.gitorious.org/+kde-developers/qt/kde-qt/blobs/master/tools/linguist/shared/numerus.cpp>}
-U{QLocale languages<http://docs.huihoo.com/qt/4.5/qlocale.html#Language-enum>}
+    Based on documentation from Gettext's .qm implementation
+    (see *write-qt.c*) and on observation of the output of lrelease.
+
+.. note::
+
+    Certain deprecated section tags are not implemented.  These will break
+    and print out the missing tag.  They are easy to implement and should
+    follow the structure in 03 (Translation).  We could find no examples
+    that use these so we'd rather leave it unimplemented until we
+    actually have test data.
+
+.. note::
+
+    Many .qm files are unable to be parsed as they do not have the source
+    text.  We assume that since they use a hash table to lookup the
+    data there is actually no need for the source text.  It seems however
+    that in Qt4's lrelease all data is included in the resultant .qm file.
+
+.. note::
+
+    We can only parse, not create, a .qm file.  The main issue is that we
+    need to implement the hashing algorithm (which seems to be identical to the
+    Gettext hash algorithm).  Unlike Gettext it seems that the hash is
+    required, but that has not been validated.
+
+.. note::
+
+    The code can parse files correctly.  But it could be cleaned up to be
+    more readable, especially the part that breaks the file into sections.
+
+http://qt.gitorious.org/+kde-developers/qt/kde-qt/blobs/master/tools/linguist/shared/qm.cpp
+`Plural information <http://qt.gitorious.org/+kde-developers/qt/kde-qt/blobs/master/tools/linguist/shared/numerus.cpp>`_
+`QLocale languages <http://docs.huihoo.com/qt/4.5/qlocale.html#Language-enum>`_
 """
 
 import codecs
@@ -89,7 +104,7 @@ class qmfile(base.TranslationStore):
         raise Exception("Writing of .qm files is not supported yet")
 
     def parse(self, input):
-        """parses the given file or file source string"""
+        """Parses the given file or file source string."""
         if hasattr(input, 'name'):
             self.filename = input.name
         elif not getattr(self, 'filename', ''):
@@ -139,7 +154,7 @@ class qmfile(base.TranslationStore):
         source = target = None
         while pos < messages_start + len(messages_data):
             subsection, = struct.unpack(">B", input[pos:pos + 1])
-            if subsection == 0x01: # End
+            if subsection == 0x01:  # End
                 #print "End"
                 pos = pos + 1
                 if not source is None and not target is None:
@@ -152,7 +167,7 @@ class qmfile(base.TranslationStore):
             #print pos, subsection
             pos = pos + 1
             length, = struct.unpack(">l", input[pos:pos + 4])
-            if subsection == 0x03: # Translation
+            if subsection == 0x03:  # Translation
                 if length != -1:
                     raw, = struct.unpack(">%ds" % length,
                                          input[pos + 4:pos + 4 + length])
@@ -166,26 +181,26 @@ class qmfile(base.TranslationStore):
                     target = u""
                     pos = pos + 4
                 #print "Translation: %s" % target.encode('utf-8')
-            elif subsection == 0x06: # SourceText
+            elif subsection == 0x06:  # SourceText
                 source = input[pos + 4:pos + 4 + length].decode('iso-8859-1')
                 #print "SourceText: %s" % source
                 pos = pos + 4 + length
-            elif subsection == 0x07: # Context
+            elif subsection == 0x07:  # Context
                 context = input[pos + 4:pos + 4 + length].decode('iso-8859-1')
                 #print "Context: %s" % context
                 pos = pos + 4 + length
-            elif subsection == 0x08: # Disambiguating-comment
+            elif subsection == 0x08:  # Disambiguating-comment
                 comment = input[pos + 4:pos + 4 + length]
                 #print "Disambiguating-comment: %s" % comment
                 pos = pos + 4 + length
-            elif subsection == 0x05: # hash
+            elif subsection == 0x05:  # hash
                 hash = input[pos:pos + 4]
                 #print "Hash: %s" % hash
                 pos = pos + 4
             else:
-                if subsection == 0x02: # SourceText16
+                if subsection == 0x02:  # SourceText16
                     subsection_name = "SourceText16"
-                elif subsection == 0x04: # Context16
+                elif subsection == 0x04:  # Context16
                     subsection_name = "Context16"
                 else:
                     subsection_name = "Unkown"

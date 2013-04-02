@@ -42,10 +42,10 @@ def _get_indexer(location):
 
     create an indexer based on the preference order 'default_engine'
 
-    @param location: the path of the database to be created/opened
-    @type location: str
-    @return: the resulting indexing engine instance
-    @rtype: CommonIndexer.CommonDatabase
+    :param location: the path of the database to be created/opened
+    :type location: str
+    :return: the resulting indexing engine instance
+    :rtype: CommonIndexer.CommonDatabase
     """
     return indexing.get_indexer(location, [default_engine])
 
@@ -65,8 +65,8 @@ def create_example_content(database):
 
     this may be used to check some specific queries
 
-    @param database: a indexing database object
-    @type database: CommonIndexer.CommonDatabase
+    :param database: a indexing database object
+    :type database: CommonIndexer.CommonDatabase
     """
     # a reasonable foo-bar entry
     database.index_document(["foo", "bar", "med"])

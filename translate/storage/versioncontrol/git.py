@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 #
-# Copyright 2004-2007 Zuza Software Foundation
+# Copyright 2004-2008,2012 Zuza Software Foundation
 #
 # This file is part of translate.
 #
@@ -25,7 +25,7 @@
 import os
 
 from translate.storage.versioncontrol import GenericRevisionControlSystem
-from translate.storage.versioncontrol import run_command
+from translate.storage.versioncontrol import run_command, prepare_filelist
 
 
 def is_available():
@@ -52,13 +52,21 @@ class git(GenericRevisionControlSystem):
         command.extend(args)
         return command
 
-    def update(self, revision=None):
-        """Does a clean update of the given path"""
-        # git checkout
-        command = self._get_git_command(["checkout", self.location_rel])
+    def _has_changes(self):
+        command = self._get_git_command(["diff", "--cached", "--exit-code"])
         exitcode, output_checkout, error = run_command(command, self.root_dir)
-        if exitcode != 0:
-            raise IOError("[GIT] checkout failed (%s): %s" % (command, error))
+        return bool(exitcode)
+
+    def update(self, revision=None, needs_revert=True):
+        """Does a clean update of the given path"""
+        output_checkout = ""
+        if needs_revert:
+            # git checkout
+            command = self._get_git_command(["checkout", self.location_rel])
+            exitcode, output_checkout, error = run_command(command, self.root_dir)
+            if exitcode != 0:
+                raise IOError("[GIT] checkout failed (%s): %s" % (command, error))
+
         # pull changes
         command = self._get_git_command(["pull"])
         exitcode, output_pull, error = run_command(command, self.root_dir)
@@ -66,14 +74,31 @@ class git(GenericRevisionControlSystem):
             raise IOError("[GIT] pull failed (%s): %s" % (command, error))
         return output_checkout + output_pull
 
-    def commit(self, message=None, author=None):
+    def add(self, files, message=None, author=None):
+        """Add and commit the new files."""
+        args = ["add"] + prepare_filelist(files)
+        command = self._get_git_command(args)
+        exitcode, output, error = run_command(command, self.root_dir)
+        if exitcode != 0:
+            raise IOError("[GIT] add of files in '%s') failed: %s" \
+                    % (self.root_dir, error))
+
+        return output + self.commit(message, author, add=False)
+
+    def commit(self, message=None, author=None, add=True):
         """Commits the file and supplies the given commit message if present"""
         # add the file
-        command = self._get_git_command(["add", self.location_rel])
-        exitcode, output_add, error = run_command(command, self.root_dir)
-        if exitcode != 0:
-            raise IOError("[GIT] add of ('%s', '%s') failed: %s" \
-                    % (self.root_dir, self.location_rel, error))
+        output_add = ""
+        if add:
+            command = self._get_git_command(["add", self.location_rel])
+            exitcode, output_add, error = run_command(command, self.root_dir)
+            if exitcode != 0:
+                raise IOError("[GIT] add of ('%s', '%s') failed: %s" \
+                        % (self.root_dir, self.location_rel, error))
+
+        if not self._has_changes():
+            raise IOError("[GIT] no changes to commit")
+
         # commit file
         command = self._get_git_command(["commit"])
         if message:

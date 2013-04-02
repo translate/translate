@@ -337,7 +337,7 @@ class pounit(pocommon.pounit):
         return str(_cpo_unit)
 
     def getlocations(self):
-        """Get a list of locations from sourcecomments in the PO unit
+        """Get a list of locations from sourcecomments in the PO unit.
 
         rtype: List
         return: A list of the locations with '#: ' stripped
@@ -347,18 +347,18 @@ class pounit(pocommon.pounit):
         return self.sourcecomments
 
     def addlocation(self, location):
-        """Add a location to sourcecomments in the PO unit
+        """Add a location to sourcecomments in the PO unit.
 
-        @param location: Text location e.g. 'file.c:23' does not include #:
-        @type location: String
+        :param location: Text location e.g. 'file.c:23' does not include #:
+        :type location: String
         """
         self.sourcecomments.append(location)
 
     def _extract_msgidcomments(self, text=None):
         """Extract KDE style msgid comments from the unit.
 
-        @rtype: String
-        @return: Returns the extracted msgidcomments found in this unit's msgid.
+        :rtype: String
+        :return: Returns the extracted msgidcomments found in this unit's msgid.
         """
         if text:
             return pocommon.extract_msgid_comment(text)
@@ -533,7 +533,8 @@ class pofile(pocommon.pofile):
                         uniqueunits.append(thepo)
                 elif duplicatestyle == "msgctxt":
                     origpo = id_dict[id]
-                    if origpo not in markedpos:
+                    if origpo not in markedpos and id:
+                        # if it doesn't have an id, we already added msgctxt
                         origpo._msgctxt += " ".join(origpo.getlocations())
                         markedpos.append(thepo)
                     thepo._msgctxt += " ".join(thepo.getlocations())

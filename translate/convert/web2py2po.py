@@ -21,7 +21,11 @@
 # (c) 2009 Dominic König (dominic@nursix.org)
 #
 
-"""convert web2py translation dictionaries (.py) to GNU/gettext PO files"""
+"""Convert web2py translation dictionaries (.py) to GNU/gettext PO files.
+
+See: http://docs.translatehouse.org/projects/translate-toolkit/en/latest/commands/web2py2po.html
+for examples and usage instructions.
+"""
 
 from translate.storage import po
 
@@ -40,7 +44,7 @@ class web2py2po:
 
     def convertstore(self, mydict):
 
-        targetheader = self.mypofile.init_headers(charset="UTF-8", encoding="8bit")
+        targetheader = self.mypofile.header()
         targetheader.addnote("extracted from web2py", "developer")
 
         for source_str in mydict.keys():
@@ -77,8 +81,14 @@ def convertpy(inputfile, outputfile, encoding="UTF-8"):
 
 def main(argv=None):
     from translate.convert import convert
-    formats = {("py", "po"): ("po", convertpy), ("py", None): ("po", convertpy)}
-    parser = convert.ConvertOptionParser(formats, usetemplates=False, description=__doc__)
+    formats = {
+        ("py", "po"): ("po", convertpy),
+        ("py", None): ("po", convertpy)
+    }
+    parser = convert.ConvertOptionParser(formats, usetemplates=False,
+                                         usepots=True,
+                                         description=__doc__)
+    parser.add_duplicates_option()
     parser.run(argv)
 
 

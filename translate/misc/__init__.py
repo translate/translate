@@ -18,4 +18,5 @@
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, see <http://www.gnu.org/licenses/>.
 
-"""Miscellaneous modules for translate - including modules for backward compatibility with pre-2.3 versions of Python"""
+"""Miscellaneous modules for translate - including modules for backward
+compatibility with pre-2.3 versions of Python"""

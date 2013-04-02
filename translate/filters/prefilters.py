@@ -18,8 +18,8 @@
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, see <http://www.gnu.org/licenses/>.
 
-"""This is a set of string filters that strings can be passed through before
-certain tests."""
+"""Filters that strings can be passed through before certain tests.
+"""
 
 import re
 
@@ -28,7 +28,13 @@ from translate.misc import quote
 
 
 def removekdecomments(str1):
-    """removed kde-style po comments i.e. starting with _: and ending with litteral \\n"""
+    r"""Remove KDE-style PO comments.
+    
+    KDE comments start with ``_:[space]`` and end with a literal ``\n``.
+    Example::
+    
+      "_: comment\n"
+    """
     assert isinstance(str1, unicode)
     iskdecomment = False
     lines = str1.split("\n")
@@ -49,14 +55,22 @@ def removekdecomments(str1):
 
 
 def filteraccelerators(accelmarker):
-    """returns a function that filters accelerators marked using accelmarker in strings"""
+    """Returns a function that filters accelerators marked using *accelmarker*
+    from a strings.
+
+    :param string accelmarker: Accelerator marker character
+    :rtype: Function
+    :return: fn(str1, acceplist=None)
+    """
     if accelmarker is None:
         accelmarkerlen = 0
     else:
         accelmarkerlen = len(accelmarker)
 
     def filtermarkedaccelerators(str1, acceptlist=None):
-        """modifies the accelerators in str1 marked with a given marker, using a given filter"""
+	"""Modifies the accelerators in *str1* marked with the given
+        *accelmarker*, using a given *acceptlist* filter.
+        """
         acclocs, badlocs = decoration.findaccelerators(str1, accelmarker, acceptlist)
         fstr1, pos = "", 0
         for accelstart, accelerator in acclocs:
@@ -69,7 +83,16 @@ def filteraccelerators(accelmarker):
 
 
 def varname(variable, startmarker, endmarker):
-    """a simple variable filter that returns the variable name without the marking punctuation"""
+    """Variable filter that returns the variable name without the marking
+    punctuation.
+
+    .. note:: Currently this function simply returns *variable* unchanged, no
+       matter what *\*marker*’s are set to.
+
+    :rtype: String
+    :return: Variable name with the supplied *startmarker* and *endmarker*
+             removed.
+    """
     return variable
     # if the punctuation were included, we'd do the following:
     if startmarker is None:
@@ -81,13 +104,24 @@ def varname(variable, startmarker, endmarker):
 
 
 def varnone(variable, startmarker, endmarker):
-    """a simple variable filter that returns an emoty string"""
+    """Variable filter that returns an empty string.
+
+    :rtype: String
+    :return: Empty string
+    """
     return ""
 
 
 def filtervariables(startmarker, endmarker, varfilter):
-    """returns a function that filters variables marked using startmarker and
-    endmarker in strings"""
+    """Returns a function that filters variables marked using *startmarker* and
+    *endmarker* from a string.
+
+    :param string startmarker: Start of variable marker
+    :param string endmarker: End of variable marker
+    :param Function varfilter: fn(variable, startmarker, endmarker)
+    :rtype: Function
+    :return: fn(str1)
+    """
     if startmarker is None:
         startmarkerlen = 0
     else:
@@ -100,7 +134,8 @@ def filtervariables(startmarker, endmarker, varfilter):
         endmarkerlen = len(endmarker)
 
     def filtermarkedvariables(str1):
-        """modifies the variables in str1 marked with a given marker, using a given filter"""
+	"""Modifies the variables in *str1* marked with a given *\*marker*,
+        using a given filter."""
         varlocs = decoration.findmarkedvariables(str1, startmarker, endmarker)
         fstr1, pos = "", 0
         for varstart, variable in varlocs:
@@ -113,16 +148,18 @@ def filtervariables(startmarker, endmarker, varfilter):
 
 # a list of special words with punctuation
 # all apostrophes in the middle of the word are handled already
-wordswithpunctuation = ["'n", "'t", # Afrikaans
+wordswithpunctuation = ["'n", "'t",  # Afrikaans
                        ]
 # map all the words to their non-punctified equivalent
 wordswithpunctuation = dict([(word, filter(str.isalnum, word)) for word in wordswithpunctuation])
 
 word_with_apos_re = re.compile("(?u)\w+'\w+")
 
+
 def filterwordswithpunctuation(str1):
-    """goes through a list of known words that have punctuation and removes the
-    punctuation from them"""
+    """Goes through a list of known words that have punctuation and removes the
+    punctuation from them.
+    """
     if u"'" not in str1:
         return str1
     occurrences = []

@@ -64,15 +64,15 @@ ur"\lquote": u"‘",     # Left single quotation mark. \u2018
 ur"\rquote": u"’",     # Right single quotation mark. \u2019
 ur"\ldblquote": u"“",  # Left double quotation mark. \u201C
 ur"\rdblquote": u"”",  # Right double quotation mark. \u201D
-ur"\~": u"\u00a0", # Nonbreaking space
-ur"\-": u"\u00ad", # Optional hyphen.
-ur"\_": u"‑", # Nonbreaking hyphen \U2011
+ur"\~": u"\u00a0",  # Nonbreaking space
+ur"\-": u"\u00ad",  # Optional hyphen.
+ur"\_": u"‑",  # Nonbreaking hyphen \U2011
 # A hexadecimal value, based on the specified character set (may be used to
 # identify 8-bit values).
 #ur"\'hh": "",
 }
-"""RTF control to Unicode map
-U{<http://msdn.microsoft.com/en-us/library/aa140283%28v=office.10%29.aspx#rtfspec_specialchar>}
+"""RTF control to Unicode map. See
+http://msdn.microsoft.com/en-us/library/aa140283(v=office.10).aspx
 """
 
 
@@ -111,8 +111,8 @@ class TradosTxtDate(object):
     def set_timestring(self, timestring):
         """Set the time_struct object using a Trados time formated string
 
-        @param timestring: A Trados time string (DDMMYYYY, hh:mm:ss)
-        @type timestring: String
+        :param timestring: A Trados time string (DDMMYYYY, hh:mm:ss)
+        :type timestring: String
         """
         self._time = time.strptime(timestring, TRADOS_TIMEFORMAT)
     timestring = property(get_timestring, set_timestring)
@@ -124,8 +124,8 @@ class TradosTxtDate(object):
     def set_time(self, newtime):
         """Set the time_struct object
 
-        @param newtime: a new time object
-        @type newtime: time.time_struct
+        :param newtime: a new time object
+        :type newtime: time.time_struct
         """
         if newtime and isinstance(newtime, time.struct_time):
             self._time = newtime

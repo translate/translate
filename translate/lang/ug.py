@@ -18,9 +18,9 @@
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, see <http://www.gnu.org/licenses/>.
 
-"""This module represents Uyghur language.
+"""This module represents the Uyghur language.
 
-For more information, see U{http://en.wikipedia.org/wiki/Uyghur_language}
+.. seealso:: http://en.wikipedia.org/wiki/Uyghur_language
 """
 
 from translate.lang import common

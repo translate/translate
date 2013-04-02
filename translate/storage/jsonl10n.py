@@ -23,8 +23,8 @@
 JSON is an acronym for JavaScript Object Notation, it is an open standard
 designed for human-readable data interchange.
 
-JSON basic types
-================
+JSON basic types:
+
   - Number (integer or real)
   - String (double-quoted Unicode with backslash escaping)
   - Boolean (true or false)
@@ -34,8 +34,7 @@ JSON basic types
     enclosed in curly braces)
   - null
 
-Example
-=======
+Example::
 
   {
        "firstName": "John",
@@ -60,8 +59,8 @@ Example
    }
 
 
-TODO
-====
+TODO:
+
   - Handle \u and other escapes in Unicode
   - Manage data type storage and conversion. True -> "True" -> True
   - Sort the extracted data to the order of the JSON file
@@ -71,9 +70,9 @@ TODO
 import os
 from StringIO import StringIO
 try:
-    import json as json #available since Python 2.6
+    import json as json  # available since Python 2.6
 except ImportError:
-    import simplejson as json #API compatible with the json module
+    import simplejson as json  # API compatible with the json module
 
 from translate.storage import base
 
@@ -164,11 +163,12 @@ class JsonFile(base.TranslationStore):
                                name_last_node=None, last_node=None):
         """Recursive function to extract items from the data files
 
-        data - is the current branch to walk down
-        stop - is a list of leaves to extract or None to extract everything
-        prev - is the heirchy of the tree at this iteration
-        last - is the name of the last node
-        last_node - the last list or dict
+        :param data: the current branch to walk down
+        :param stop: a list of leaves to extract or None to extract everything
+        :param prev: the heirarchy of the tree at this iteration
+        :param name_node:
+        :param name_last_node: the name of the last node
+        :param last_node: the last list or dict
         """
         if isinstance(data, dict):
             for k, v in data.iteritems():
@@ -182,23 +182,22 @@ class JsonFile(base.TranslationStore):
                                                           "%s[%s]" % (prev, i),
                                                           i, name_node, data):
                     yield x
-        elif isinstance(data, str) or isinstance(data, unicode):
-            if (stop is None \
-                or (isinstance(last_node, dict) and name_node in stop) \
-                or (isinstance(last_node, list) and name_last_node in stop)):
+        # apply filter
+        elif (stop is None \
+            or (isinstance(last_node, dict) and name_node in stop) \
+            or (isinstance(last_node, list) and name_last_node in stop)):
+
+            if isinstance(data, str) or isinstance(data, unicode):
                 yield (prev, data, last_node, name_node)
-        elif isinstance(data, bool):
-            if (stop is None \
-                or (isinstance(last_node, dict) and name_node in stop) \
-                or (isinstance(last_node, list) and name_last_node in stop)):
+            elif isinstance(data, bool):
                 yield (prev, str(data), last_node, name_node)
-        elif data is None:
-            pass
-        else:
-            raise ValueError("We don't handle these values:\n"
-                             "Type: %s\n"
-                             "Data: %s\n"
-                             "Previous: %s" % (type(data), data, prev))
+            elif data is None:
+                pass
+            else:
+                raise ValueError("We don't handle these values:\n"
+                                 "Type: %s\n"
+                                 "Data: %s\n"
+                                 "Previous: %s" % (type(data), data, prev))
 
     def parse(self, input):
         """parse the given file or file source string"""

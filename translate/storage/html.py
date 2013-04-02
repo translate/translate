@@ -135,7 +135,7 @@ class htmlfile(HTMLParser.HTMLParser, base.TranslationStore):
                          u"param"]
     """HTML self-closing tags.  Tags that should be specified as <img /> but
     might be <img>.
-    U{Reference<http://learnwebsitemaking.com/htmlselfclosingtags.html>}"""
+    `Reference <http://learnwebsitemaking.com/htmlselfclosingtags.html>`_"""
 
     def __init__(self, includeuntaggeddata=None, inputfile=None,
                  callback=None):
@@ -222,12 +222,12 @@ class htmlfile(HTMLParser.HTMLParser, base.TranslationStore):
 
     def parse(self, htmlsrc):
         htmlsrc = self.do_encoding(htmlsrc)
-        htmlsrc = self.pi_escape(htmlsrc) #Clear out the PHP before parsing
+        htmlsrc = self.pi_escape(htmlsrc)  # Clear out the PHP before parsing
         self.feed(htmlsrc)
 
     def addhtmlblock(self, text):
         text = strip_html(text)
-        text = self.pi_unescape(text) #Before adding anything, restore PHP
+        text = self.pi_unescape(text)  # Before adding anything, restore PHP
         text = normalize_html(text)
         if self.has_translatable_content(text):
             unit = self.addsourceunit(text)
@@ -249,9 +249,9 @@ class htmlfile(HTMLParser.HTMLParser, base.TranslationStore):
         if text == '&nbsp;':
             return False
 
-        pattern = '<\?.*?\?>' # Lazily strip all PHP
+        pattern = '<\?.*?\?>'  # Lazily strip all PHP
         result = re.sub(pattern, '', text).strip()
-        pattern = '<[^>]*>' #Strip all HTML tags
+        pattern = '<[^>]*>'  # Strip all HTML tags
         result = re.sub(pattern, '', result).strip()
         if result:
             return True

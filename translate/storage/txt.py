@@ -106,10 +106,10 @@ class TxtFile(base.TranslationStore):
         base.TranslationStore.__init__(self, unitclass=self.UnitClass)
         self.filename = getattr(inputfile, 'name', '')
         self.flavour = flavours.get(flavour, [])
+        self.encoding = encoding
         if inputfile is not None:
             txtsrc = inputfile.readlines()
             self.parse(txtsrc)
-        self.encoding = encoding
 
     def parse(self, lines):
         """Read in text lines and create txtunits from the blocks of text"""

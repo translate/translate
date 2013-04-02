@@ -31,10 +31,12 @@ basicfixtag = ElementTree.fixtag
 
 
 def makefixtagproc(namespacemap):
-    """this constructs an alternative fixtag procedure that will use appropriate names for namespaces..."""
+    """Constructs an alternative fixtag procedure that will use appropriate
+    names for namespaces."""
 
     def fixtag(tag, namespaces):
-        """given a decorated tag (of the form {uri}tag), return prefixed tag and namespace declaration, if any"""
+        """Given a decorated tag (of the form {uri}tag), return prefixed
+        tag and namespace declaration, if any."""
         if isinstance(tag, ElementTree.QName):
             tag = tag.text
         namespace_uri, tag = tag[1:].split("}", 1)
@@ -128,7 +130,7 @@ class XMLWrapper:
 
     def __repr__(self):
         """return a representation of the object"""
-        return self.tag+':'+repr(self.__dict__)
+        return self.tag + ':' + repr(self.__dict__)
 
     def getattr(self, attrname):
         """gets an attribute of the tag"""

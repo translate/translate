@@ -94,12 +94,14 @@ class SimpleDictReader:
                 values[self.fieldnames[fieldnum]] = fields[fieldnum]
         return values
 
+
 class DefaultDialect(csv.excel):
     skipinitialspace = True
     quoting = csv.QUOTE_NONNUMERIC
     escapechar = '\\'
 
 csv.register_dialect('default', DefaultDialect)
+
 
 def from_unicode(text, encoding='utf-8'):
     if encoding == 'auto':
@@ -108,12 +110,14 @@ def from_unicode(text, encoding='utf-8'):
         return text.encode(encoding)
     return text
 
+
 def to_unicode(text, encoding='utf-8'):
     if encoding == 'auto':
         encoding = 'utf-8'
     if isinstance(text, unicode):
         return text
     return text.decode(encoding)
+
 
 class csvunit(base.TranslationUnit):
     spreadsheetescapes = [("+", "\\+"), ("-", "\\-"), ("=", "\\="), ("'", "\\'")]
@@ -133,7 +137,7 @@ class csvunit(base.TranslationUnit):
         if self.id:
             return self.id
 
-        result  = self.source
+        result = self.source
         context = self.context
         if context:
             result = u"%s\04%s" % (context, result)
@@ -177,7 +181,7 @@ class csvunit(base.TranslationUnit):
             if position == 'append' and self.developer_comments:
                 self.developer_comments += '\n' + text
             elif position == 'prepend' and self.developer_comments:
-                self.developer_comments = text + '\n' +  self.developer_comments
+                self.developer_comments = text + '\n' + self.developer_comments
             else:
                 self.developer_comments = text
         else:
@@ -192,7 +196,7 @@ class csvunit(base.TranslationUnit):
         self.translator_comments = u''
 
     def isfuzzy(self):
-        if self.fuzzy.lower() in ('1', 'x', 'true', 'yes','fuzzy'):
+        if self.fuzzy.lower() in ('1', 'x', 'true', 'yes', 'fuzzy'):
             return True
         return False
 
@@ -291,7 +295,10 @@ fieldname_map = {
     'state': 'fuzzy',
 }
 
+
 EXTRA_KEY = '__CSVL10N__EXTRA__'
+
+
 def try_dialects(inputfile, fieldnames, dialect):
     #FIXME: does it verify at all if we don't actually step through the file?
     try:
@@ -306,6 +313,7 @@ def try_dialects(inputfile, fieldnames, dialect):
             reader = csv.DictReader(inputfile, fieldnames=fieldnames, dialect='excel', restkey=EXTRA_KEY)
     return reader
 
+
 def valid_fieldnames(fieldnames):
     """check if fieldnames are valid"""
     for fieldname in fieldnames:
@@ -314,6 +322,7 @@ def valid_fieldnames(fieldnames):
         elif fieldname in fieldname_map and fieldname_map[fieldname] == 'source':
             return True
     return False
+
 
 def detect_header(sample, dialect, fieldnames):
     """Test if file has a header or not, also returns number of columns in first row"""
@@ -333,6 +342,7 @@ def detect_header(sample, dialect, fieldnames):
     if valid_fieldnames(header):
         return header
     return fieldnames[:columncount]
+
 
 class csvfile(base.TranslationStore):
     """This class represents a .csv file with various lines.
@@ -358,7 +368,6 @@ class csvfile(base.TranslationStore):
             csvsrc = inputfile.read()
             inputfile.close()
             self.parse(csvsrc)
-
 
     def parse(self, csvsrc):
         text, encoding = self.detect_encoding(csvsrc, default_encodings=['utf-8', 'utf-16'])

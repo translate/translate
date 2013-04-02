@@ -18,9 +18,9 @@
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, see <http://www.gnu.org/licenses/>.
 
-"""This module represents the Swedish language.
+"""This module represents the the Swedish language.
 
-For more information, see U{http://en.wikipedia.org/wiki/Swedish_language}
+.. seealso:: http://en.wikipedia.org/wiki/Swedish_language
 """
 
 from translate.lang import common

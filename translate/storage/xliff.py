@@ -70,7 +70,7 @@ class xliffunit(lisa.LISAunit):
                 "needs-review-l10n": S_NEEDS_REVIEW + 2,
                 "translated": S_TRANSLATED,
                 "signed-off": S_SIGNED_OFF,
-                "final": S_SIGNED_OFF+1,
+                "final": S_SIGNED_OFF + 1,
                 }
 
     statemap_r = dict((i[1], i[0]) for i in statemap.iteritems())
@@ -93,13 +93,14 @@ class xliffunit(lisa.LISAunit):
     def createlanguageNode(self, lang, text, purpose):
         """Returns an xml Element setup with given parameters."""
 
-        #TODO: for now we do source, but we have to test if it is target, perhaps
-        # with parameter. Alternatively, we can use lang, if supplied, since an xliff
-        #file has to conform to the bilingual nature promised by the header.
+        # TODO: for now we do source, but we have to test if it is target,
+        # perhaps with parameter. Alternatively, we can use lang, if
+        # supplied, since an xliff file has to conform to the bilingual
+        # nature promised by the header.
         assert purpose
         langset = etree.Element(self.namespaced(purpose))
-        #TODO: check language
-#        lisa.setXMLlang(langset, lang)
+        # TODO: check language
+        #lisa.setXMLlang(langset, lang)
 
         langset.text = text
         return langset
@@ -138,7 +139,11 @@ class xliffunit(lisa.LISAunit):
         #logging.debug('rich source: %s' % (repr(rsrc)))
         #from dubulib.debug.misc import print_stack_funcs
         #print_stack_funcs()
-        return [xml_to_strelem(self.source_dom, getXMLspace(self.xmlelement, self._default_xml_space))]
+        return [
+            xml_to_strelem(self.source_dom,
+                           getXMLspace(self.xmlelement,
+                                       self._default_xml_space))
+        ]
     rich_source = property(get_rich_source, set_rich_source)
 
     def set_rich_target(self, value, lang='xx', append=False):
@@ -164,15 +169,19 @@ class xliffunit(lisa.LISAunit):
         """retrieves the "target" text (second entry), or the entry in the
         specified language, if it exists"""
         if self._rich_target is None:
-            self._rich_target = [xml_to_strelem(self.get_target_dom(lang), getXMLspace(self.xmlelement, self._default_xml_space))]
+            self._rich_target = [
+                xml_to_strelem(self.get_target_dom(lang),
+                getXMLspace(self.xmlelement, self._default_xml_space))
+            ]
         return self._rich_target
     rich_target = property(get_rich_target, set_rich_target)
 
-    def addalttrans(self, txt, origin=None, lang=None, sourcetxt=None, matchquality=None):
+    def addalttrans(self, txt, origin=None, lang=None, sourcetxt=None,
+                    matchquality=None):
         """Adds an alt-trans tag and alt-trans components to the unit.
 
-        @type txt: String
-        @param txt: Alternative translation of the source text.
+        :type txt: String
+        :param txt: Alternative translation of the source text.
         """
 
         #TODO: support adding a source tag ad match quality attribute.  At
@@ -208,13 +217,15 @@ class xliffunit(lisa.LISAunit):
                 # the source tag is optional
                 sourcenode = node.iterdescendants(self.namespaced("source"))
                 try:
-                    newunit.source = lisa.getText(sourcenode.next(), getXMLspace(node, self._default_xml_space))
+                    newunit.source = lisa.getText(sourcenode.next(),
+                                                  getXMLspace(node, self._default_xml_space))
                 except StopIteration:
                     pass
 
                 # must have one or more targets
                 targetnode = node.iterdescendants(self.namespaced("target"))
-                newunit.target = lisa.getText(targetnode.next(), getXMLspace(node, self._default_xml_space))
+                newunit.target = lisa.getText(targetnode.next(),
+                                              getXMLspace(node, self._default_xml_space))
                 #TODO: support multiple targets better
                 #TODO: support notes in alt-trans
                 newunit.xmlelement = node
@@ -242,22 +253,28 @@ class xliffunit(lisa.LISAunit):
         if origin:
             note.set("from", origin)
 
-    def getnotelist(self, origin=None):
-        """Private method that returns the text from notes matching 'origin' or all notes."""
-        notenodes = self.xmlelement.iterdescendants(self.namespaced("note"))
+    def _getnotelist(self, origin=None):
+        """Returns the text from notes matching ``origin`` or all notes.
+
+        :param origin: The origin of the note (or note type)
+        :type origin: String
+        :return: The text from notes matching ``origin``
+        :rtype: List
+        """
+        note_nodes = self.xmlelement.iterdescendants(self.namespaced("note"))
         # TODO: consider using xpath to construct initial_list directly
         # or to simply get the correct text from the outset (just remember to
         # check for duplication.
-        initial_list = [lisa.getText(note, getXMLspace(self.xmlelement, self._default_xml_space)) for note in notenodes if self.correctorigin(note, origin)]
+        initial_list = [lisa.getText(note, getXMLspace(self.xmlelement, self._default_xml_space)) for note in note_nodes if self.correctorigin(note, origin)]
 
         # Remove duplicate entries from list:
         dictset = {}
-        notelist = [dictset.setdefault(note, note) for note in initial_list if note not in dictset]
+        note_list = [dictset.setdefault(note, note) for note in initial_list if note not in dictset]
 
-        return notelist
+        return note_list
 
     def getnotes(self, origin=None):
-        return '\n'.join(self.getnotelist(origin=origin))
+        return '\n'.join(self._getnotelist(origin=origin))
 
     def removenotes(self, origin="translator"):
         """Remove all the translator notes."""
@@ -277,7 +294,7 @@ class xliffunit(lisa.LISAunit):
     def geterrors(self):
         """Get all error messages."""
         #TODO: consider factoring out: some duplication between XLIFF and TMX
-        notelist = self.getnotelist(origin="pofilter")
+        notelist = self._getnotelist(origin="pofilter")
         errordict = {}
         for note in notelist:
             errorname, errortext = note.split(': ')
@@ -339,7 +356,9 @@ class xliffunit(lisa.LISAunit):
         return self.get_state_id() == self.S_NEEDS_REVIEW
 
     def markreviewneeded(self, needsreview=True, explanation=None):
-        """Marks the unit to indicate whether it needs review. Adds an optional explanation as a note."""
+        """Marks the unit to indicate whether it needs review.
+
+        Adds an optional explanation as a note."""
         state_id = self.get_state_id()
         if needsreview and state_id != self.S_NEEDS_REVIEW:
             self.set_state_n(self.S_NEEDS_REVIEW)
@@ -452,7 +471,7 @@ class xliffunit(lisa.LISAunit):
                 pairs = []
                 for context in contexts:
                     pairs.append((context.get("context-type"), lisa.getText(context, getXMLspace(self.xmlelement, self._default_xml_space))))
-                groups.append(pairs) #not extend
+                groups.append(pairs)  # not extend
         return groups
 
     def getrestype(self):
@@ -483,8 +502,8 @@ class xliffunit(lisa.LISAunit):
             return False
 
     def multistring_to_rich(cls, mstr):
-        """Override L{TranslationUnit.multistring_to_rich} which is used by the
-            C{rich_source} and C{rich_target} properties."""
+        """Override :meth:`TranslationUnit.multistring_to_rich` which is used
+        by the ``rich_source`` and ``rich_target`` properties."""
         strings = mstr
         if isinstance(mstr, multistring):
             strings = mstr.strings
@@ -495,8 +514,8 @@ class xliffunit(lisa.LISAunit):
     multistring_to_rich = classmethod(multistring_to_rich)
 
     def rich_to_multistring(cls, elem_list):
-        """Override L{TranslationUnit.rich_to_multistring} which is used by the
-            C{rich_source} and C{rich_target} properties."""
+        """Override :meth:`TranslationUnit.rich_to_multistring` which is used
+        by the ``rich_source`` and ``rich_target`` properties."""
         return multistring([unicode(elem) for elem in elem_list])
     rich_to_multistring = classmethod(rich_to_multistring)
 
@@ -538,7 +557,8 @@ class xlifffile(lisa.LISAfile):
         """Initialise the file header."""
         pass
 
-    def createfilenode(self, filename, sourcelanguage=None, targetlanguage=None, datatype='plaintext'):
+    def createfilenode(self, filename, sourcelanguage=None,
+                       targetlanguage=None, datatype='plaintext'):
         """creates a filenode with the given filename. All parameters
         are needed for XLIFF compliance."""
         if sourcelanguage is None:
@@ -639,9 +659,14 @@ class xlifffile(lisa.LISAfile):
         return ""
 
     def getdate(self, filename=None):
-        """Returns the date attribute for the file. If no filename is given,
-        the date of the first file is given. If the date attribute is not
-        specified, None is returned."""
+        """Returns the date attribute for the file.
+
+        If no filename is given, the date of the first file is given.
+        If the date attribute is not specified, None is returned.
+
+        :returns: Date attribute of file
+        :rtype: Date or None
+        """
         if filename:
             node = self.getfilenode(filename)
             if not node is None:
@@ -658,8 +683,8 @@ class xlifffile(lisa.LISAfile):
         filenodes = list(self.document.getroot().iterchildren(self.namespaced("file")))
         if len(filenodes) > 1:
             for filenode in filenodes:
-                if filenode.get("original") == "NoName" and \
-                        not list(filenode.iterdescendants(self.namespaced(self.UnitClass.rootNode))):
+                if (filenode.get("original") == "NoName" and
+                    not list(filenode.iterdescendants(self.namespaced(self.UnitClass.rootNode)))):
                     self.document.getroot().remove(filenode)
                 break
 
@@ -701,7 +726,11 @@ class xlifffile(lisa.LISAfile):
         return unit
 
     def switchfile(self, filename, createifmissing=False):
-        """adds the given trans-unit (will create the nodes required if asked). Returns success"""
+        """Adds the given trans-unit (will create the nodes required if asked).
+
+        :returns: Success
+        :rtype: Boolean
+        """
         self._filename = filename
         filenode = self.getfilenode(filename)
         if filenode is None:

@@ -11,6 +11,19 @@ def strprep(str1, str2, message=None):
     return data.normalized_unicode(str1), data.normalized_unicode(str2), data.normalized_unicode(message)
 
 
+def check_category(filterfunction):
+    """Checks whether ``filterfunction`` has defined a category or not."""
+    has_category = []
+    classes = (checks.TeeChecker, checks.UnitChecker)
+
+    for klass in classes:
+        categories = getattr(klass, 'categories', None)
+        has_category.append(categories is not None and \
+                            filterfunction.__name__ in categories)
+
+    return True in has_category
+
+
 def passes(filterfunction, str1, str2):
     """returns whether the given strings pass on the given test, handling FilterFailures"""
     str1, str2, no_message = strprep(str1, str2)
@@ -18,6 +31,9 @@ def passes(filterfunction, str1, str2):
         filterresult = filterfunction(str1, str2)
     except checks.FilterFailure, e:
         filterresult = False
+
+    filterresult = filterresult and check_category(filterfunction)
+
     return filterresult
 
 
@@ -35,6 +51,9 @@ def fails(filterfunction, str1, str2, message=None):
             print exc_message.encode('utf-8')
         else:
             filterresult = False
+
+    filterresult = filterresult and check_category(filterfunction)
+
     return not filterresult
 
 
@@ -50,6 +69,9 @@ def fails_serious(filterfunction, str1, str2, message=None):
             print exc_message.encode('utf-8')
         else:
             filterresult = False
+
+    filterresult = filterresult and check_category(filterfunction)
+
     return not filterresult
 
 
@@ -503,6 +525,11 @@ def test_printf():
     # checking omitted plural format string placeholder %.0s
     stdchecker.hasplural = 1
     assert passes(stdchecker.printf, "%d plurals", "%.0s plural")
+    # checking Objective-C %@ format specification
+    assert fails(stdchecker.printf, "I am %@", "Ek is @%")  # typo
+    assert fails(stdchecker.printf, "Object %@ and object %@", "String %1$@ en string %3$@")  # out of bounds
+    assert fails(stdchecker.printf, "I am %@", "Ek is %s")  # wrong specification
+    assert passes(stdchecker.printf, "Object %@ and string %s", "Object %1$@ en string %2$s")  # correct sentence
 
 
 def test_puncspacing():
@@ -537,7 +564,7 @@ def test_sentencecount():
     assert passes(stdchecker.sentencecount, "One. Two. Three.", "Een. Twee. Drie.")
     assert passes(stdchecker.sentencecount, "One two three", "Een twee drie.")
     assert fails(stdchecker.sentencecount, "One. Two. Three.", "Een Twee. Drie.")
-    assert passes(stdchecker.sentencecount, "Sentence with i.e. in it.", "Sin met d.w.s. in dit.") # bug 178, description item 8
+    assert passes(stdchecker.sentencecount, "Sentence with i.e. in it.", "Sin met d.w.s. in dit.")  # bug 178, description item 8
     el_checker = checks.StandardChecker(checks.CheckerConfig(targetlanguage='el'))
     assert fails(el_checker.sentencecount, "First sentence. Second sentence.", "Πρώτη πρόταση. δεύτερη πρόταση.")
 
@@ -653,24 +680,27 @@ def test_startcaps():
     # Unicode further down the Unicode tables
     assert passes(stdchecker.startcaps, "A text enclosed...", u"Ḽiṅwalwa ḽo katelwaho...")
     assert fails(stdchecker.startcaps, "A text enclosed...", u"ḽiṅwalwa ḽo katelwaho...")
-
     # Accelerators
     stdchecker = checks.StandardChecker(checks.CheckerConfig(accelmarkers="&"))
     assert passes(stdchecker.startcaps, "&Find", "Vi&nd")
+    # Numbers - we really can't tell what should happen with numbers, so ignore
+    # source or target that start with a number
+    assert passes(stdchecker.startcaps, "360 degrees", "Grade 360")
+    assert passes(stdchecker.startcaps, "360 degrees", "grade 360")
 
     # Language specific stuff
-    stdchecker = checks.StandardChecker(checks.CheckerConfig(targetlanguage='af'))
-    assert passes(stdchecker.startcaps, "A cow", "'n Koei")
-    assert passes(stdchecker.startcaps, "A list of ", "'n Lys van ")
+    afchecker = checks.StandardChecker(checks.CheckerConfig(targetlanguage='af'))
+    assert passes(afchecker.startcaps, "A cow", "'n Koei")
+    assert passes(afchecker.startcaps, "A list of ", "'n Lys van ")
     # should pass:
-    #assert passes(stdchecker.startcaps, "A 1k file", u"'n 1k-lêer")
-    assert passes(stdchecker.startcaps, "'Do it'", "'Doen dit'")
-    assert fails(stdchecker.startcaps, "'Closer than'", "'nader as'")
-    assert passes(stdchecker.startcaps, "List", "Lys")
-    assert passes(stdchecker.startcaps, "a cow", "'n koei")
-    assert fails(stdchecker.startcaps, "a cow", "'n Koei")
-    assert passes(stdchecker.startcaps, "(A cow)", "('n Koei)")
-    assert fails(stdchecker.startcaps, "(a cow)", "('n Koei)")
+    #assert passes(afchecker.startcaps, "A 1k file", u"'n 1k-lêer")
+    assert passes(afchecker.startcaps, "'Do it'", "'Doen dit'")
+    assert fails(afchecker.startcaps, "'Closer than'", "'nader as'")
+    assert passes(afchecker.startcaps, "List", "Lys")
+    assert passes(afchecker.startcaps, "a cow", "'n koei")
+    assert fails(afchecker.startcaps, "a cow", "'n Koei")
+    assert passes(afchecker.startcaps, "(A cow)", "('n Koei)")
+    assert fails(afchecker.startcaps, "(a cow)", "('n Koei)")
 
 
 def test_startpunc():
@@ -705,12 +735,12 @@ def test_unchanged():
     assert fails(stdchecker.unchanged, "&Unchanged", "Un&changed")
     assert passes(stdchecker.unchanged, "Unchanged", "Changed")
     assert passes(stdchecker.unchanged, "1234", "1234")
-    assert passes(stdchecker.unchanged, "2×2", "2×2") # bug 178, description item 14
+    assert passes(stdchecker.unchanged, "2×2", "2×2")  # bug 178, description item 14
     assert passes(stdchecker.unchanged, "I", "I")
     assert passes(stdchecker.unchanged, "   ", "   ")  # bug 178, description item 5
     assert passes(stdchecker.unchanged, "???", "???")  # bug 178, description item 15
-    assert passes(stdchecker.unchanged, "&ACRONYM", "&ACRONYM") # bug 178, description item 7
-    assert passes(stdchecker.unchanged, "F1", "F1") # bug 178, description item 20
+    assert passes(stdchecker.unchanged, "&ACRONYM", "&ACRONYM")  # bug 178, description item 7
+    assert passes(stdchecker.unchanged, "F1", "F1")  # bug 178, description item 20
     assert fails(stdchecker.unchanged, "Two words", "Two words")
     #TODO: this still fails
 #    assert passes(stdchecker.unchanged, "NOMINAL", "NOMİNAL")
@@ -719,15 +749,18 @@ def test_unchanged():
     # Variable only and variable plus punctuation messages should be ignored
     mozillachecker = checks.MozillaChecker()
     assert passes(mozillachecker.unchanged, "$ProgramName$", "$ProgramName$")
-    assert passes(mozillachecker.unchanged, "$file$ : $dir$", "$file$ : $dir$") # bug 178, description item 13
+    assert passes(mozillachecker.unchanged, "$file$ : $dir$", "$file$ : $dir$")  # bug 178, description item 13
     assert fails(mozillachecker.unchanged, "$file$ in $dir$", "$file$ in $dir$")
     assert passes(mozillachecker.unchanged, "&brandShortName;", "&brandShortName;")
     # Don't translate words should be ignored
     stdchecker = checks.StandardChecker(checks.CheckerConfig(notranslatewords=["Mozilla"]))
-    assert passes(stdchecker.unchanged, "Mozilla", "Mozilla") # bug 178, description item 10
+    assert passes(stdchecker.unchanged, "Mozilla", "Mozilla")  # bug 178, description item 10
     # Don't fail unchanged if the entry is a dialogsize, quite plausible that you won't change it
     mozillachecker = checks.MozillaChecker()
     assert passes(mozillachecker.unchanged, 'width: 12em;', 'width: 12em;')
+    assert fails(stdchecker.unchanged, 'width: 12em;', 'width: 12em;')
+    assert passes(mozillachecker.unchanged, '7em', '7em')
+    assert fails(stdchecker.unchanged, '7em', '7em')
 
 
 def test_untranslated():
@@ -797,6 +830,8 @@ def test_variables_mozilla():
     assert fails_serious(mozillachecker.variables, "About $_CLICK and more", "Oor $_KLIK en meer")
     assert passes(mozillachecker.variables, "About $(^NameDA)", "Oor $(^NameDA)")
     assert fails_serious(mozillachecker.variables, "About $(^NameDA)", "Oor $(^NaamDA)")
+    assert passes(mozillachecker.variables, "Open {{pageCount}} pages", "Make {{pageCount}} bladsye oop")
+    assert fails_serious(mozillachecker.variables, "Open {{pageCount}} pages", "Make {{bladTelling}} bladsye oop")
     # Double variable problem
     assert fails_serious(mozillachecker.variables, "Create In &lt;&lt;", "Etsa ka Ho &lt;lt;")
     # Variables at the end of a sentence
@@ -1087,3 +1122,4 @@ def test_dialogsizes():
     assert passes(mozillachecker.dialogsizes, 'height: 12em;', 'height: 24px;')
     assert fails(mozillachecker.dialogsizes, 'height: 12em;', 'height: 24xx;')
     assert fails(mozillachecker.dialogsizes, 'height: 12.5em;', 'height: 12,5em;')
+    assert fails(mozillachecker.dialogsizes, 'width: 36em; height: 18em;', 'width: 30em; min-height: 20em;')

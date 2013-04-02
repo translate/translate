@@ -18,7 +18,11 @@
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, see <http://www.gnu.org/licenses/>.
 
-"""convert .rc files to Gettext PO localization files"""
+"""Convert Windows RC files to Gettext PO localization files.
+
+See: http://docs.translatehouse.org/projects/translate-toolkit/en/latest/commands/rc2po.html
+for examples and usage instructions.
+"""
 
 import sys
 
@@ -32,7 +36,10 @@ class rc2po:
     def convert_store(self, input_store, duplicatestyle="msgctxt"):
         """converts a .rc file to a .po file..."""
         output_store = po.pofile()
-        output_header = output_store.init_headers(charset="UTF-8", encoding="8bit")
+        output_header = output_store.init_headers(
+                x_accelerator_marker="&",
+                x_merge_on="location",
+        )
         output_header.addnote("extracted from %s" % input_store.filename, "developer")
         for input_unit in input_store.units:
             output_unit = self.convert_unit(input_unit, "developer")
@@ -44,7 +51,10 @@ class rc2po:
     def merge_store(self, template_store, input_store, blankmsgstr=False, duplicatestyle="msgctxt"):
         """converts two .rc files to a .po file..."""
         output_store = po.pofile()
-        output_header = output_store.init_headers(charset="UTF-8", encoding="8bit")
+        output_header = output_store.init_headers(
+                x_accelerator_marker="&",
+                x_merge_on="location",
+        )
         output_header.addnote("extracted from %s, %s" % (template_store.filename, input_store.filename), "developer")
         input_store.makeindex()
         for template_unit in template_store.units:

@@ -18,53 +18,65 @@
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, see <http://www.gnu.org/licenses/>.
 
-"""convert Comma-Separated Value (.csv) files to Gettext PO localization files
+"""Convert Comma-Separated Value (.csv) files to Gettext PO localization files.
 
-See: http://translate.sourceforge.net/wiki/toolkit/csv2po for examples and
-usage instructions
+See: http://docs.translatehouse.org/projects/translate-toolkit/en/latest/commands/csv2po.html
+for examples and usage instructions.
 """
 
 import sys
 
-from translate.misc import sparse
 from translate.storage import po
 from translate.storage import csvl10n
 
 
 def replacestrings(source, *pairs):
+    """Use ``pairs`` of ``(original, replacement)`` to replace text found in
+    ``source``.
+
+    :param source: String to on which ``pairs`` of strings are to be replaced
+    :type source: String
+    :param \*pairs: Strings to be matched and replaced
+    :type \*pairs: One or more tuples of (original, replacement)
+    :return: String with ``*pairs`` of strings replaced
+    """
     for orig, new in pairs:
         source = source.replace(orig, new)
     return source
 
 
 def quotecsvstr(source):
-    return '"' + replacestrings(source, ('\\"', '"'), ('"', '\\"'), ("\\\\'", "\\'"), ('\\\\n', '\\n')) + '"'
+    return '"' + \
+           replacestrings(source,
+                          ('\\"', '"'), ('"', '\\"'),
+                          ("\\\\'", "\\'"), ('\\\\n', '\\n')) + \
+           '"'
 
 
 def simplify(string):
     return filter(type(string).isalnum, string)
-    tokens = sparse.SimpleParser().tokenize(string)
-    return " ".join(tokens)
 
 
 class csv2po:
-    """a class that takes translations from a .csv file and puts them in a .po file"""
+    """a class that takes translations from a .csv file and puts them in a
+    .po file"""
 
     def __init__(self, templatepo=None, charset=None, duplicatestyle="keep"):
         """construct the converter..."""
         self.pofile = templatepo
         self.charset = charset
         self.duplicatestyle = duplicatestyle
+        self.commentindex = {}
+        self.sourceindex = {}
+        self.simpleindex = {}
+        self.csvfile = None
+        self.duplicatecomments = []
         if self.pofile is not None:
             self.unmatched = 0
             self.makeindex()
 
     def makeindex(self):
         """makes indexes required for searching..."""
-        self.commentindex = {}
-        self.sourceindex = {}
-        self.simpleindex = {}
-        self.duplicatecomments = []
         for pounit in self.pofile.units:
             joinedcomment = " ".join(pounit.getlocations())
             source = pounit.source
@@ -77,7 +89,8 @@ class csv2po:
             # do simpler matching in case things have been mangled...
             simpleid = simplify(source)
             # but check for duplicates
-            if simpleid in self.simpleindex and not (source in self.sourceindex):
+            if (simpleid in self.simpleindex and
+                not (source in self.sourceindex)):
                 # keep a list of them...
                 self.simpleindex[simpleid].append(pounit)
             else:
@@ -99,7 +112,8 @@ class csv2po:
 
     def handlecsvunit(self, csvunit):
         """handles reintegrating a csv unit into the .po file"""
-        if len(csvunit.location.strip()) > 0 and csvunit.location in self.commentindex:
+        if (len(csvunit.location.strip()) > 0 and
+            csvunit.location in self.commentindex):
             pounit = self.commentindex[csvunit.location]
         elif csvunit.source in self.sourceindex:
             pounit = self.sourceindex[csvunit.source]
@@ -108,13 +122,17 @@ class csv2po:
             if len(thepolist) > 1:
                 csvfilename = getattr(self.csvfile, "filename", "(unknown)")
                 matches = "\n  ".join(["possible match: " + pounit.source for pounit in thepolist])
-                print >> sys.stderr, "%s - csv entry not found in pofile, multiple matches found:\n  location\t%s\n  original\t%s\n  translation\t%s\n  %s" % (csvfilename, csvunit.location, csvunit.source, csvunit.target, matches)
+                print >> sys.stderr, "%s - csv entry not found in pofile, multiple matches found:\n  location\t%s\n  original\t%s\n  translation\t%s\n  %s" % \
+                                     (csvfilename, csvunit.location,
+                                      csvunit.source, csvunit.target, matches)
                 self.unmatched += 1
                 return
             pounit = thepolist[0]
         else:
             csvfilename = getattr(self.csvfile, "filename", "(unknown)")
-            print >> sys.stderr, "%s - csv entry not found in pofile:\n  location\t%s\n  original\t%s\n  translation\t%s" % (csvfilename, csvunit.location, csvunit.source, csvunit.target)
+            print >> sys.stderr, "%s - csv entry not found in pofile:\n  location\t%s\n  original\t%s\n  translation\t%s" % \
+                                 (csvfilename, csvunit.location,
+                                  csvunit.source, csvunit.target)
             self.unmatched += 1
             return
         if pounit.hasplural():
@@ -130,7 +148,7 @@ class csv2po:
             elif simplify(csvunit.source) == simplify(pluralid):
                 pounit.msgstr[1] = csvunit.target
             else:
-                print >> sys.stderr, "couldn't work out singular or plural: %r, %r, %r" %  \
+                print >> sys.stderr, "couldn't work out singular or plural: %r, %r, %r" % \
                     (csvunit.source, singularid, pluralid)
                 self.unmatched += 1
                 return
@@ -138,7 +156,8 @@ class csv2po:
             pounit.target = csvunit.target
 
     def convertstore(self, thecsvfile):
-        """converts a csvfile to a pofile, and returns it. uses templatepo if given at construction"""
+        """converts a csvfile to a pofile, and returns it. uses templatepo if
+        given at construction"""
         self.csvfile = thecsvfile
         if self.pofile is None:
             self.pofile = po.pofile()
@@ -147,10 +166,13 @@ class csv2po:
             mergemode = True
         if self.pofile.units and self.pofile.units[0].isheader():
             targetheader = self.pofile.units[0]
-            self.pofile.updateheader(content_type="text/plain; charset=UTF-8", content_transfer_encoding="8bit")
+            self.pofile.updateheader(content_type="text/plain; charset=UTF-8",
+                                     content_transfer_encoding="8bit")
         else:
-            targetheader = self.pofile.makeheader(charset="UTF-8", encoding="8bit")
-        targetheader.addnote("extracted from %s" % self.csvfile.filename, "developer")
+            targetheader = self.pofile.makeheader(charset="UTF-8",
+                                                  encoding="8bit")
+        targetheader.addnote("extracted from %s" % self.csvfile.filename,
+                             "developer")
         mightbeheader = True
         for csvunit in self.csvfile.units:
             #if self.charset is not None:
@@ -161,7 +183,8 @@ class csv2po:
                 mightbeheader = False
                 if csvunit.match_header():
                     continue
-                if len(csvunit.location.strip()) == 0 and csvunit.source.find("Content-Type:") != -1:
+                if (len(csvunit.location.strip()) == 0 and
+                    csvunit.source.find("Content-Type:") != -1):
                     continue
             if mergemode:
                 self.handlecsvunit(csvunit)
@@ -172,14 +195,17 @@ class csv2po:
         return self.pofile
 
 
-def convertcsv(inputfile, outputfile, templatefile, charset=None, columnorder=None, duplicatestyle="msgctxt"):
-    """reads in inputfile using csvl10n, converts using csv2po, writes to outputfile"""
+def convertcsv(inputfile, outputfile, templatefile, charset=None,
+               columnorder=None, duplicatestyle="msgctxt"):
+    """reads in inputfile using csvl10n, converts using csv2po, writes to
+    outputfile"""
     inputstore = csvl10n.csvfile(inputfile, fieldnames=columnorder)
     if templatefile is None:
         convertor = csv2po(charset=charset, duplicatestyle=duplicatestyle)
     else:
         templatestore = po.pofile(templatefile)
-        convertor = csv2po(templatestore, charset=charset, duplicatestyle=duplicatestyle)
+        convertor = csv2po(templatestore, charset=charset,
+                           duplicatestyle=duplicatestyle)
     outputstore = convertor.convertstore(inputstore)
     if outputstore.isempty():
         return 0
@@ -189,13 +215,20 @@ def convertcsv(inputfile, outputfile, templatefile, charset=None, columnorder=No
 
 def main(argv=None):
     from translate.convert import convert
-    formats = {("csv", "po"): ("po", convertcsv), ("csv", "pot"): ("po", convertcsv),
-            ("csv", None): ("po", convertcsv)}
-    parser = convert.ConvertOptionParser(formats, usetemplates=True, description=__doc__)
+    formats = {
+        ("csv", "po"): ("po", convertcsv),
+        ("csv", "pot"): ("po", convertcsv),
+        ("csv", None): ("po", convertcsv),
+    }
+    parser = convert.ConvertOptionParser(formats, usetemplates=True,
+                                         usepots=True,
+                                         description=__doc__)
     parser.add_option("", "--charset", dest="charset", default=None,
-        help="set charset to decode from csv files", metavar="CHARSET")
+        help="set charset to decode from csv files", metavar="CHARSET"
+    )
     parser.add_option("", "--columnorder", dest="columnorder", default=None,
-        help="specify the order and position of columns (location,source,target)")
+        help="specify the order and position of columns (location,source,target)"
+    )
     parser.add_duplicates_option()
     parser.passthrough.append("charset")
     parser.passthrough.append("columnorder")

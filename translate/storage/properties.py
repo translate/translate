@@ -19,102 +19,94 @@
 # along with this program; if not, see <http://www.gnu.org/licenses/>.
 
 """Classes that hold units of .properties, and similar, files that are used in
-   translating Java, Mozilla, MacOS and other software.
+translating Java, Mozilla, MacOS and other software.
 
-   The L{propfile} class is a monolingual class with L{propunit} providing unit
-   level access.
+The :class:`propfile` class is a monolingual class with :class:`propunit`
+providing unit level access.
 
-   The .properties store has become a general key value pair class with
-   L{Dialect} providing the ability to change the behaviour of the parsing
-   and handling of the various dialects.
+The .properties store has become a general key value pair class with
+:class:`Dialect` providing the ability to change the behaviour of the
+parsing and handling of the various dialects.
 
-   Currently we support::
-     * Java .properties
-     * Mozilla .properties
-     * Adobe Flex files
-     * MacOS X .strings files
-     * Skype .lang files
+Currently we support:
 
+    - Java .properties
+    - Mozilla .properties
+    - Adobe Flex files
+    - MacOS X .strings files
+    - Skype .lang files
 
-   Dialects
-   ========
-   The following provides references and descriptions of the various dialects supported::
+The following provides references and descriptions of the various
+dialects supported:
 
-   Java
-   ----
-   Java .properties are supported completely except for the ability to drop
-   pairs that are not translated.
+Java
+    Java .properties are supported completely except for the ability to drop
+    pairs that are not translated.
 
-   The following U{.properties file
-   description<http://java.sun.com/j2se/1.4.2/docs/api/java/util/Properties.html#load(java.io.InputStream)>}
-   and U{example <http://www.exampledepot.com/egs/java.util/Props.html>} give
-   some good references to the .properties specification.
+    The following `.properties file description
+    <http://docs.oracle.com/javase/1.4.2/docs/api/java/util/Properties.html#load(java.io.InputStream)>`_
+    gives a good references to the .properties specification.
 
-   Properties file may also hold Java
-   U{MessageFormat<http://java.sun.com/j2se/1.4.2/docs/api/java/text/MessageFormat.html>}
-   messages.  No special handling is provided in this storage class for
-   MessageFormat, but this may be implemented in future.
+    Properties file may also hold Java `MessageFormat
+    <http://docs.oracle.com/javase/1.4.2/docs/api/java/text/MessageFormat.html>`_
+    messages.  No special handling is provided in this storage class for
+    MessageFormat, but this may be implemented in future.
 
-   All delimiter types, comments, line continuations and spaces handling in
-   delimeters are supported.
+    All delimiter types, comments, line continuations and spaces handling in
+    delimeters are supported.
 
-   Mozilla
-   -------
-   Mozilla files use '=' as a delimiter, are UTF-8 encoded and thus don't need \\u
-   escaping.  Any \\U values will be converted to correct Unicode characters.
-`
-   Strings
-   -------
-   Mac OS X strings files are implemented using
-   U{these<http://developer.apple.com/mac/library/documentation/MacOSX/Conceptual/BPInternational/Articles/StringsFiles.html>}
-   U{two<http://developer.apple.com/mac/library/documentation/Cocoa/Conceptual/LoadingResources/Strings/Strings.html>}
-   articles as references.
+Mozilla
+    Mozilla files use '=' as a delimiter, are UTF-8 encoded and thus don't
+    need \\u escaping.  Any \\U values will be converted to correct Unicode
+    characters.
 
-   Flex
-   ----
-   Adobe Flex files seem to be normal .properties files but in UTF-8 just like
-   Mozilla files. This
-   U{page<http://livedocs.adobe.com/flex/3/html/help.html?content=l10n_3.html>}
-   provides the information used to implement the dialect.
+Strings
+    Mac OS X strings files are implemented using
+    `these <https://developer.apple.com/library/mac/#documentation/MacOSX/Conceptual/BPInternational/Articles/StringsFiles.html>`_
+    `two <https://developer.apple.com/library/mac/#documentation/Cocoa/Conceptual/LoadingResources/Strings/Strings.html>`_
+    articles as references.
 
-   Skype
-   -----
-   Skype .lang files seem to be UTF-16 encoded .properties files.
+Flex
+    Adobe Flex files seem to be normal .properties files but in UTF-8 just like
+    Mozilla files. This
+    `page <http://livedocs.adobe.com/flex/3/html/help.html?content=l10n_3.html>`_
+    provides the information used to implement the dialect.
 
-   Implementation
-   ==============
+Skype
+    Skype .lang files seem to be UTF-16 encoded .properties files.
 
-   A simple summary of what is permissible follows.
+A simple summary of what is permissible follows.
 
-   Comments supported::
-     # a comment
-     ! a comment
-     // a comment (only at the beginning of a line)
-     /* a comment (not across multiple lines) */
+Comments supported::
 
-   Name and Value pairs::
-     # Delimiters
-     key = value
-     key : value
-     key value
+    # a comment
+    ! a comment
+    // a comment (only at the beginning of a line)
+    /* a comment (not across multiple lines) */
 
-     # Space in key and around value
-     \ key\ = \ value
+Name and Value pairs::
 
-     # Note that the b and c are escaped for epydoc rendering
-     b = a string with escape sequences \\t \\n \\r \\\\ \\" \\' \\ (space) \u0123
-     c = a string with a continuation line \\
-         continuation line
+    # Delimiters
+    key = value
+    key : value
+    key value
 
-     # Special cases
-     # key with no value
-     key
-     # value no key (extractable in prop2po but not mergeable in po2prop)
-     =value
+    # Space in key and around value
+    \ key\ = \ value
 
-     # .strings specific
-     "key" = "value";
-'"
+    # Note that the b and c are escaped for reST rendering
+    b = a string with escape sequences \\t \\n \\r \\\\ \\" \\' \\ (space) \u0123
+    c = a string with a continuation line \\
+        continuation line
+
+    # Special cases
+    # key with no value
+    key
+    # value no key (extractable in prop2po but not mergeable in po2prop)
+    =value
+
+    # .strings specific
+    "key" = "value";
 """
 
 import re
@@ -141,12 +133,12 @@ def _find_delimiter(line, delimiters):
     We find the position of each delimiter, then find the one that appears
     first.
 
-    @param line: A properties line
-    @type line: str
-    @param delimiters: valid delimiters
-    @type delimiters: list
-    @return: delimiter character and offset within L{line}
-    @rtype: Tuple (delimiter char, Offset Integer)
+    :param line: A properties line
+    :type line: str
+    :param delimiters: valid delimiters
+    :type delimiters: list
+    :return: delimiter character and offset within *line*
+    :rtype: Tuple (delimiter char, Offset Integer)
     """
     delimiter_dict = {}
     for delimiter in delimiters:
@@ -173,7 +165,9 @@ def _find_delimiter(line, delimiters):
     if mindelimiter is None and delimiters.get(u" ", -1) != -1:
         # Use space delimiter if we found nothing else
         return (u" ", delimiters[" "])
-    if mindelimiter is not None and u" " in delimiters and delimiters[u" "] < delimiters[mindelimiter]:
+    if (mindelimiter is not None and
+        u" " in delimiters and
+        delimiters[u" "] < delimiters[mindelimiter]):
         # If space delimiter occurs earlier than ":" or "=" then it is the
         # delimiter only if there are non-whitespace characters between it and
         # the other detected delimiter.
@@ -186,24 +180,25 @@ def find_delimeter(line):
     """Spelling error that is kept around for in case someone relies on it.
 
     Deprecated."""
-    warnings.warn("deprecated use Dialect.find_delimiter instead", DeprecationWarning)
+    warnings.warn("deprecated use Dialect.find_delimiter instead",
+                  DeprecationWarning)
     return _find_delimiter(line, DialectJava.delimiters)
 
 
 @accepts(unicode)
 @returns(bool)
 def is_line_continuation(line):
-    """Determine whether L{line} has a line continuation marker.
+    """Determine whether *line* has a line continuation marker.
 
     .properties files can be terminated with a backslash (\\) indicating
     that the 'value' continues on the next line.  Continuation is only
     valid if there are an odd number of backslashses (an even number
     would result in a set of N/2 slashes not an escape)
 
-    @param line: A properties line
-    @type line: str
-    @return: Does L{line} end with a line continuation
-    @rtype: Boolean
+    :param line: A properties line
+    :type line: str
+    :return: Does *line* end with a line continuation
+    :rtype: Boolean
     """
     pos = -1
     count = 0
@@ -216,16 +211,63 @@ def is_line_continuation(line):
         count += 1
     return (count % 2) == 1  # Odd is a line continuation, even is not
 
+@accepts(unicode)
+@returns(bool)
+def is_comment_one_line(line):
+    """Determine whether a *line* is a one-line comment.
+
+    :param line: A properties line
+    :type line: unicode
+    :return: True if line is a one-line comment
+    :rtype: bool
+    """
+    stripped = line.strip()
+    line_starters = (u'#', u'!', u'//', )
+    for starter in line_starters:
+        if stripped.startswith(starter):
+            return True
+    if stripped.startswith(u'/*') and stripped.endswith(u'*/'):
+        return True
+    return False
+
+
+@accepts(unicode)
+@returns(bool)
+def is_comment_start(line):
+    """Determine whether a *line* starts a new multi-line comment.
+
+    :param line: A properties line
+    :type line: unicode
+    :return: True if line starts a new multi-line comment
+    :rtype: bool
+    """
+    stripped = line.strip()
+    return stripped.startswith('/*') and not stripped.endswith('*/')
+
+
+@accepts(unicode)
+@returns(bool)
+def is_comment_end(line):
+    """Determine whether a *line* ends a new multi-line comment.
+
+    :param line: A properties line
+    :type line: unicode
+    :return: True if line ends a new multi-line comment
+    :rtype: bool
+    """
+    stripped = line.strip()
+    return not stripped.startswith('/*') and stripped.endswith('*/')
+
 
 @accepts(unicode)
 @returns(unicode)
 def _key_strip(key):
     """Cleanup whitespace found around a key
 
-    @param key: A properties key
-    @type key: str
-    @return: Key without any uneeded whitespace
-    @rtype: str
+    :param key: A properties key
+    :type key: str
+    :return: Key without any uneeded whitespace
+    :rtype: str
     """
     newkey = key.rstrip()
     # If line now end in \ we put back the whitespace that was escaped
@@ -257,7 +299,8 @@ class Dialect(object):
 
     def encode(cls, string, encoding=None):
         """Encode the string"""
-        #FIXME: dialects are a bad idea, not possible for subclasses to override key methods
+        # FIXME: dialects are a bad idea, not possible for subclasses
+        # to override key methods
         if encoding != "utf-8":
             return quote.javapropertiesencode(string or u"")
         return string or u""
@@ -309,6 +352,12 @@ class DialectMozilla(DialectJavaUtf8):
 register_dialect(DialectMozilla)
 
 
+class DialectGaia(DialectMozilla):
+    name = "gaia"
+    delimiters = [u"="]
+register_dialect(DialectGaia)
+
+
 class DialectSkype(Dialect):
     name = "skype"
     default_encoding = "utf-16"
@@ -327,15 +376,18 @@ class DialectStrings(Dialect):
     pair_terminator = u";"
     key_wrap_char = u'"'
     value_wrap_char = u'"'
+    out_ending = u';'
+    out_delimiter_wrappers = u' '
     drop_comments = ["/* No comment provided by engineer. */"]
 
     def key_strip(cls, key):
-        """Strip uneeded characters from the key"""
+        """Strip unneeded characters from the key"""
         newkey = key.rstrip().rstrip('"')
         # If line now end in \ we put back the char that was escaped
         if newkey[-1:] == "\\":
             newkey += key[len(newkey):len(newkey)+1]
-        return newkey.lstrip().lstrip('"')
+        ret = newkey.lstrip().lstrip('"')
+        return ret.replace('\\"', '"')
     key_strip = classmethod(key_strip)
 
     def value_strip(cls, value):
@@ -344,18 +396,19 @@ class DialectStrings(Dialect):
         # If line now end in \ we put back the char that was escaped
         if newvalue[-1:] == "\\":
             newvalue += value[len(newvalue):len(newvalue)+1]
-        return newvalue.lstrip().lstrip('"')
+        ret = newvalue.lstrip().lstrip('"')
+        return ret.replace('\\"', '"')
     value_strip = classmethod(value_strip)
 
     def encode(cls, string, encoding=None):
-        return string.replace('"', '\\"').replace("\n", r"\n").replace("\t", r"\t")
+        return string.replace("\n", r"\n").replace("\t", r"\t")
     encode = classmethod(encode)
 register_dialect(DialectStrings)
 
 
 class propunit(base.TranslationUnit):
-    """an element of a properties file i.e. a name and value, and any comments
-    associated"""
+    """An element of a properties file i.e. a name and value, and any
+    comments associated."""
 
     def __init__(self, source="", personality="java"):
         """construct a blank propunit"""
@@ -367,6 +420,12 @@ class propunit(base.TranslationUnit):
         self.delimiter = u"="
         self.comments = []
         self.source = source
+        # a pair of symbols to enclose delimiter on the output
+        # (a " " can be used for the sake of convenience)
+        self.out_delimiter_wrappers = getattr(self.personality, 'out_delimiter_wrappers', u'')
+        # symbol which should ends every property sentence (";" is required for
+        # Mac OS X strings
+        self.out_ending = getattr(self.personality, 'out_ending', u'')
 
     def setsource(self, source):
         self._rich_source = None
@@ -399,15 +458,15 @@ class propunit(base.TranslationUnit):
     encoding = property(_get_encoding)
 
     def __str__(self):
-        """convert to a string. double check that unicode is handled somehow
-        here"""
+        """Convert to a string. double check that unicode is handled
+        somehow here."""
         source = self.getoutput()
         assert isinstance(source, unicode)
         return source.encode(self.encoding)
 
     def getoutput(self):
-        """convert the element back into formatted lines for a .properties
-        file"""
+        """Convert the element back into formatted lines for a
+        .properties file"""
         notes = self.getnotes()
         if notes:
             notes += u"\n"
@@ -416,11 +475,26 @@ class propunit(base.TranslationUnit):
         else:
             self.value = self.personality.encode(self.source, self.encoding)
             self.translation = self.personality.encode(self.target, self.encoding)
+            # encode key, if needed
+            key = self.name
+            kwc = self.personality.key_wrap_char
+            if kwc:
+                key = key.replace(kwc, '\\%s' % kwc)
+                key = '%s%s%s' % (kwc, key, kwc)
+            # encode value, if needed
             value = self.translation or self.value
-            return u"%(notes)s%(key)s%(del)s%(value)s\n" % {"notes": notes,
-                                                            "key": self.name,
-                                                            "del": self.delimiter,
-                                                            "value": value}
+            vwc = self.personality.value_wrap_char
+            if vwc:
+                value = value.replace(vwc, '\\%s' % vwc)
+                value = '%s%s%s' % (vwc, value, vwc)
+            wrappers = self.out_delimiter_wrappers
+            delimiter = '%s%s%s' % (wrappers, self.delimiter, wrappers)
+            ending = self.out_ending
+            return u"%(notes)s%(key)s%(del)s%(value)s%(ending)s\n" % {"notes": notes,
+                                                            "key": key,
+                                                            "del": delimiter,
+                                                            "value": value,
+                                                            "ending": ending}
 
     def getlocations(self):
         return [self.name]
@@ -473,13 +547,15 @@ class propfile(base.TranslationStore):
             self.parse(propsrc)
 
     def parse(self, propsrc):
-        """read the source of a properties file in and include them as units"""
+        """Read the source of a properties file in and include them
+        as units."""
         text, encoding = self.detect_encoding(propsrc, default_encodings=[self.personality.default_encoding, 'utf-8', 'utf-16'])
         self.encoding = encoding
         propsrc = text
 
         newunit = propunit("", self.personality.name)
         inmultilinevalue = False
+        inmultilinecomment = False
 
         for line in propsrc.split(u"\n"):
             # handle multiline value if we're in one
@@ -497,12 +573,16 @@ class propfile(base.TranslationStore):
                     self.addunit(newunit)
                     newunit = propunit("", self.personality.name)
             # otherwise, this could be a comment
-            # FIXME handle /* */ in a more reliable way
             # FIXME handle // inline comments
-            elif line.strip()[:1] in (u'#', u'!') or line.strip()[:2] in (u"/*", u"//") or line.strip()[:-2] == "*/":
+            elif (inmultilinecomment or is_comment_one_line(line) or
+                  is_comment_start(line) or is_comment_end(line)):
                 # add a comment
                 if line not in self.personality.drop_comments:
                     newunit.comments.append(line)
+                if is_comment_start(line):
+                    inmultilinecomment = True
+                elif is_comment_end(line):
+                    inmultilinecomment = False
             elif not line.strip():
                 # this is a blank line...
                 if str(newunit).strip():
@@ -529,16 +609,17 @@ class propfile(base.TranslationStore):
             self.addunit(newunit)
 
     def __str__(self):
-        """convert the units back to lines"""
+        """Convert the units back to lines."""
         lines = []
         for unit in self.units:
-            lines.append(str(unit))
-        return "".join(lines)
+            lines.append(unit.getoutput())
+        uret = u"".join(lines)
+        return uret.encode(self.encoding)
 
 
 class javafile(propfile):
     Name = _("Java Properties")
-    Exensions = ['properties']
+    Extensions = ['properties']
 
     def __init__(self, *args, **kwargs):
         kwargs['personality'] = "java"
@@ -548,7 +629,7 @@ class javafile(propfile):
 
 class javautf8file(propfile):
     Name = _("Java Properties (UTF-8)")
-    Exensions = ['properties']
+    Extensions = ['properties']
 
     def __init__(self, *args, **kwargs):
         kwargs['personality'] = "java-utf8"

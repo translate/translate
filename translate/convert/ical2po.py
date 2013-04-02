@@ -18,7 +18,11 @@
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, see <http://www.gnu.org/licenses/>.
 
-"""convert iCal files to Gettext PO localization files"""
+"""Convert iCal files to Gettext PO localization files.
+
+See: http://docs.translatehouse.org/projects/translate-toolkit/en/latest/commands/ical2po.html
+for examples and usage instructions.
+"""
 
 import sys
 
@@ -32,7 +36,7 @@ class ical2po:
     def convert_store(self, input_store, duplicatestyle="msgctxt"):
         """converts a iCal file to a .po file..."""
         output_store = po.pofile()
-        output_header = output_store.init_headers(charset="UTF-8", encoding="8bit")
+        output_header = output_store.header()
         output_header.addnote("extracted from %s" % input_store.filename, "developer")
         for input_unit in input_store.units:
             output_unit = self.convert_unit(input_unit, "developer")
@@ -44,7 +48,7 @@ class ical2po:
     def merge_store(self, template_store, input_store, blankmsgstr=False, duplicatestyle="msgctxt"):
         """converts two iCal files to a .po file..."""
         output_store = po.pofile()
-        output_header = output_store.init_headers(charset="UTF-8", encoding="8bit")
+        output_header = output_store.header()
         output_header.addnote("extracted from %s, %s" % (template_store.filename, input_store.filename), "developer")
 
         input_store.makeindex()
@@ -82,7 +86,8 @@ class ical2po:
 
 
 def convertical(input_file, output_file, template_file, pot=False, duplicatestyle="msgctxt"):
-    """Reads in L{input_file} using iCal, converts using L{ical2po}, writes to L{output_file}"""
+    """Reads in *input_file* using iCal, converts using :class:`ical2po`,
+    writes to *output_file*."""
     input_store = ical.icalfile(input_file)
     convertor = ical2po()
     if template_file is None:

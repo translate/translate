@@ -19,9 +19,10 @@
 # along with this program; if not, see <http://www.gnu.org/licenses/>.
 #
 
-"""convert an OpenOffice.org (SDF) localization file to XLIFF localization files
+"""Convert an OpenOffice.org (SDF) localization file to XLIFF localization files.
 
-User documentation: http://translate.sourceforge.net/wiki/toolkit/oo2po
+See: http://docs.translatehouse.org/projects/translate-toolkit/en/latest/commands/oo2po.html
+for examples and usage instructions.
 """
 
 import sys
@@ -136,7 +137,7 @@ def convertoo(inputfile, outputfile, templates, pot=False, sourcelanguage=None, 
         print >> sys.stderr, "Warning: sourcelanguage '%s' not found in inputfile '%s' (contains %s)" % (sourcelanguage, inputfilename, ", ".join(inputstore.languages))
     if not pot and targetlanguage and targetlanguage not in inputstore.languages:
         print >> sys.stderr, "Warning: targetlanguage '%s' not found in inputfile '%s' (contains %s)" % (targetlanguage, inputfilename, ", ".join(inputstore.languages))
-    convertor = oo2xliff(sourcelanguage, targetlanguage, blankmsgstr=pot, long_keys=multifilestyle!="single")
+    convertor = oo2xliff(sourcelanguage, targetlanguage, blankmsgstr=pot, long_keys=(multifilestyle != "single"))
     outputstore = convertor.convertstore(inputstore, duplicatestyle)
     if outputstore.isempty():
         return 0
@@ -146,15 +147,23 @@ def convertoo(inputfile, outputfile, templates, pot=False, sourcelanguage=None, 
 
 def main(argv=None):
     from translate.convert import convert
-    formats = {"oo": ("xlf", convertoo), "sdf": ("xlf", convertoo)}
+    formats = {
+                "oo": ("xlf", convertoo),
+                "sdf": ("xlf", convertoo),
+              }
     # always treat the input as an archive unless it is a directory
     archiveformats = {(None, "input"): oo.oomultifile}
-    parser = convert.ArchiveConvertOptionParser(formats, usepots=False, description=__doc__, archiveformats=archiveformats)
+    parser = convert.ArchiveConvertOptionParser(formats, usepots=False,
+                                                description=__doc__,
+                                                archiveformats=archiveformats)
     parser.add_option("-l", "--language", dest="targetlanguage", default=None,
-            help="set target language to extract from oo file (e.g. af-ZA)", metavar="LANG")
+                      help="set target language to extract from oo file (e.g. af-ZA)",
+                      metavar="LANG")
     parser.add_option("", "--source-language", dest="sourcelanguage", default=None,
             help="set source language code (default en-US)", metavar="LANG")
-    parser.add_option("", "--nonrecursiveinput", dest="allowrecursiveinput", default=True, action="store_false", help="don't treat the input oo as a recursive store")
+    parser.add_option("", "--nonrecursiveinput", dest="allowrecursiveinput",
+                      default=True, action="store_false",
+                      help="don't treat the input oo as a recursive store")
     parser.add_duplicates_option()
     parser.add_multifile_option()
     parser.passthrough.append("sourcelanguage")

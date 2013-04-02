@@ -18,11 +18,12 @@
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, see <http://www.gnu.org/licenses/>.
 
-"""Restructure Gettxt PO files produced by poconflicts into the original
-directory tree for merging using pomerge
+"""Restructure Gettxt PO files produced by
+:doc:`poconflicts </commands/poconflicts>` into the original directory tree
+for merging using :doc:`pomerge </commands/pomerge>`.
 
-See: http://translate.sourceforge.net/wiki/toolkit/porestructure for examples and
-usage instructions
+See: http://docs.translatehouse.org/projects/translate-toolkit/en/latest/commands/pomerge.html
+for examples and usage instructions.
 """
 
 import os
@@ -88,7 +89,7 @@ class SplitOptionParser(optrecurse.RecursiveOptionParser):
         inputfile = self.openinputfile(options, fullinputpath)
         inputpofile = po.pofile(inputfile)
         for pounit in inputpofile.units:
-            if not (pounit.isheader() or pounit.hasplural()): #XXX
+            if not (pounit.isheader() or pounit.hasplural()):  # XXX
                 if pounit.hasmarkedcomment("poconflicts"):
                     for comment in pounit.othercomments:
                         if comment.find("# (poconflicts)") == 0:
@@ -103,7 +104,7 @@ class SplitOptionParser(optrecurse.RecursiveOptionParser):
                         outputpofile = po.pofile(outputfile)
                     else:
                         outputpofile = po.pofile()
-                    outputpofile.units.append(pounit)   #TODO:perhaps check to see if it's already there...
+                    outputpofile.units.append(pounit)   # TODO:perhaps check to see if it's already there...
                     outputfile = open(fulloutputpath, 'w')
                     outputfile.write(str(outputpofile))
 

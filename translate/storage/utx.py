@@ -24,26 +24,24 @@ UTX is a format for terminology exchange, designed it seems with Machine
 Translation (MT) as it's primary consumer.  The format is created by
 the Asia-Pacific Association for Machine Translation (AAMT).
 
-It is a bilingual base class derived format with L{UtxFile}
-and L{UtxUnit} providing file and unit level access.
+It is a bilingual base class derived format with :class:`UtxFile`
+and :class:`UtxUnit` providing file and unit level access.
 
 The format can manage monolingual dictionaries but these classes don't
 implement that.
 
 Specification
-=============
-The format is implemented according to the v1.0 UTX
-L{specification<http://www.aamt.info/english/utx/utx-simple-1.00-specification-e.pdf>}
+    The format is implemented according to UTX v1.0 (No longer available from
+    their website. The current `UTX version
+    <http://www.aamt.info/english/utx/#Download>`_ may be downloaded instead).
 
 Format Implementation
-=====================
-The UTX format is a Tab Seperated Value (TSV) file in UTF-8.  The
-first two lines are headers with subsequent lines containing a
-single source target definition.
+    The UTX format is a Tab Seperated Value (TSV) file in UTF-8.  The
+    first two lines are headers with subsequent lines containing a
+    single source target definition.
 
 Encoding
---------
-The files are UTF-8 encoded with no BOM and CR+LF line terminators.
+    The files are UTF-8 encoded with no BOM and CR+LF line terminators.
 """
 
 import csv
@@ -106,8 +104,8 @@ class UtxUnit(base.TranslationUnit):
     def setdict(self, newdict):
         """Set the dictionary of values for a UTX line
 
-        @param newdict: a new dictionary with UTX line elements
-        @type newdict: Dict
+        :param newdict: a new dictionary with UTX line elements
+        :type newdict: Dict
         """
         # TODO First check that the values are OK
         self._dict = newdict

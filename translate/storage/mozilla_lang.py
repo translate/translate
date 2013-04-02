@@ -39,7 +39,14 @@ class LangUnit(base.TranslationUnit):
             unchanged = " {ok}"
         else:
             unchanged = ""
-        return u";%s\n%s%s" % (self.source, self.target, unchanged)
+        if self.target == "" or self.target is None:
+            target = self.source
+        else:
+            target = self.target
+        if self.getnotes():
+            notes = ('\n').join(["# %s" % note for note in self.getnotes('developer').split("\n")])
+            return u"%s\n;%s\n%s%s" % (notes, self.source, target, unchanged)
+        return u";%s\n%s%s" % (self.source, target, unchanged)
 
     def getlocations(self):
         return self.locations
@@ -52,27 +59,52 @@ class LangStore(txt.TxtFile):
     """We extend TxtFile, since that has a lot of useful stuff for encoding"""
     UnitClass = LangUnit
 
+    Name = _("Mozilla .lang")
+    Extensions = ['lang']
+
+    def __init__(self, inputfile=None, flavour=None, encoding="utf-8", mark_active=True):
+        self.is_active = False
+        self.mark_active = mark_active
+        super(LangStore, self).__init__(inputfile, flavour, encoding)
+
     def parse(self, lines):
         #Have we just seen a ';' line, and so are ready for a translation
         readyTrans = False
+        comment = ""
 
         if not isinstance(lines, list):
             lines = lines.split("\n")
         for lineoffset, line in enumerate(lines):
-            line = line.rstrip("\n").rstrip("\r")
+            line = line.decode(self.encoding).rstrip("\n").rstrip("\r")
 
-            if len(line) == 0: #Skip blank lines
+            if lineoffset == 0 and line == "## active ##":
+                self.is_active = True
                 continue
 
-            if readyTrans: #If we are expecting a translation, set the target
-                u.target = line.replace(" {ok}", "")
-                readyTrans = False #We already have our translation
+            if len(line) == 0:  # Skip blank lines
                 continue
+
+            if readyTrans:  # If we are expecting a translation, set the target
+                if line != u.source:
+                    u.target = line.replace(" {ok}", "")
+                readyTrans = False  # We already have our translation
+                continue
+
+            if line.startswith('#'): # A comment
+                comment += line[1:].strip() + "\n"
 
             if line.startswith(';'):
                 u = self.addsourceunit(line[1:])
-                readyTrans = True # Now expecting a translation on the next line
+                readyTrans = True  # Now expecting a translation on the next line
                 u.addlocation("%s:%d" % (self.filename, lineoffset + 1))
+                if comment is not None:
+                    u.addnote(comment[:-1], 'developer')
+                    comment = ""
 
     def __str__(self):
-        return u"\n\n".join([unicode(unit) for unit in self.units]).encode('utf-8')
+        ret_string = ""
+        if self.is_active or self.mark_active:
+            ret_string += "## active ##\n"
+        ret_string += u"\n\n\n".join([unicode(unit) for unit in self.units]).encode('utf-8')
+        ret_string += "\n"
+        return ret_string

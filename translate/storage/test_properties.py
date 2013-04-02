@@ -72,6 +72,26 @@ def test_key_strip():
     assert properties._key_strip(u"key\ ") == "key\ "
 
 
+def test_is_comment_one_line():
+    assert properties.is_comment_one_line("# comment")
+    assert properties.is_comment_one_line("! comment")
+    assert properties.is_comment_one_line("// comment")
+    assert properties.is_comment_one_line("  # comment")
+    assert properties.is_comment_one_line("/* comment */")
+    assert not properties.is_comment_one_line("not = comment_line /* comment */")
+    assert not properties.is_comment_one_line("/* comment ")
+
+
+def test_is_comment_start():
+    assert properties.is_comment_start("/* comment")
+    assert not properties.is_comment_start("/* comment */")
+
+
+def test_is_comment_end():
+    assert properties.is_comment_end(" comment */")
+    assert not properties.is_comment_end("/* comment */")
+
+
 class TestPropUnit(test_monolingual.TestMonolingualUnit):
     UnitClass = properties.propunit
 
@@ -133,8 +153,8 @@ class TestProp(test_monolingual.TestMonolingualStore):
         """check that we remove extra whitespace around property"""
         whitespaces = (('key = value', 'key', 'value'),      # Standard for baseline
                        (' key =  value', 'key', 'value'),    # Extra \s before key and value
-                       ('\ key\ = value', '\ key\ ', 'value'), # extra space at start and end of key
-                       ('key = \ value ', 'key', ' value '), # extra space at start end end of value
+                       ('\ key\ = value', '\ key\ ', 'value'),  # extra space at start and end of key
+                       ('key = \ value ', 'key', ' value '),  # extra space at start end end of value
                       )
         for propsource, key, value in whitespaces:
             propfile = self.propparse(propsource)
@@ -233,7 +253,7 @@ key=value
         propfile = self.propparse(propsource, personality="strings")
         assert len(propfile.units) == 1
         propunit = propfile.units[0]
-        assert propunit.name == ur'I am a \"key\"'
+        assert propunit.name == ur'I am a "key"'
         assert propunit.source.encode('utf-8') == u'I am a "value"'
 
     def test_mac_strings_unicode(self):
@@ -267,6 +287,19 @@ key=value
         assert propunit.source.encode('utf-8') == u'value'
         assert propunit.getnotes() == u"/* Comment */\n// Comment"
 
+    def test_mac_strings_multilines_comments(self):
+        """test .string multiline comments"""
+        propsource = (u'/* Foo\n'
+                      u'Bar\n'
+                      u'Baz */\n'
+                      u'"key" = "value"').encode('utf-16')
+        propfile = self.propparse(propsource, personality="strings")
+        assert len(propfile.units) == 1
+        propunit = propfile.units[0]
+        assert propunit.name == u'key'
+        assert propunit.source.encode('utf-8') == u'value'
+        assert propunit.getnotes() == u"/* Foo\nBar\nBaz */"
+
     def test_mac_strings_comments_dropping(self):
         """.string generic (and unuseful) comments should be dropped"""
         propsource = ur'''/* No comment provided by engineer. */
@@ -277,6 +310,27 @@ key=value
         assert propunit.name == u'key'
         assert propunit.source.encode('utf-8') == u'value'
         assert propunit.getnotes() == u""
+
+    def test_mac_strings_quotes(self):
+        """test that parser unescapes characters used as wrappers"""
+        propsource = ur'"key with \"quotes\"" = "value with \"quotes\"";'.encode('utf-16')
+        propfile = self.propparse(propsource, personality="strings")
+        propunit = propfile.units[0]
+        assert propunit.name == ur'key with "quotes"'
+        assert propunit.value == ur'value with "quotes"'
+
+    def test_mac_strings_serialization(self):
+        """test that serializer quotes mac strings properly"""
+        propsource = ur'"key with \"quotes\"" = "value with \"quotes\"";'.encode('utf-16')
+        propfile = self.propparse(propsource, personality="strings")
+        # we don't care about leading and tralinig newlines and zero bytes
+        # in the assert, we just want to make sure that
+        # - all quotes are in place
+        # - quotes inside are escaped
+        # - for the sake of beauty a pair of spaces encloses the equal mark
+        # - every line ends with ";"
+        assert str(propfile.units[0]).strip('\n\x00') == propsource.strip('\n\x00')
+        assert str(propfile).strip('\n\x00') == propsource.strip('\n\x00')
 
     def test_override_encoding(self):
         """test that we can override the encoding of a properties file"""
@@ -296,3 +350,12 @@ key=value
         assert propunit.name == u''
         assert propunit.source == u''
         assert propunit.getnotes() == u"# END"
+
+    def test_utf16_byte_order_mark(self):
+        """test that BOM appears in the resulting text once only"""
+        propsource = u"key1 = value1\nkey2 = value2\n".encode('utf-16')
+        propfile = self.propparse(propsource, encoding='utf-16')
+        result = str(propfile)
+        bom = propsource[:2]
+        assert result.startswith(bom)
+        assert bom not in result[2:]

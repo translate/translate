@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 #
-# Copyright 2008-2010 Zuza Software Foundation
+# Copyright 2008-2012 Zuza Software Foundation
 #
 # This file is part of the Translate Toolkit.
 #
@@ -18,21 +18,28 @@
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, see <http://www.gnu.org/licenses/>.
 
-"""The Translate Toolkit is a Python package that assists in localization of software.
+"""Tools and API for translation and localization engineering.
 
-See U{http://translate.sourceforge.net/wiki/toolkit/index} or U{http://translate.org.za} for more information.
+The `Translate Toolkit <http://toolkit.translatehouse.org/>`_ is created by
+localizers for localizers. It contains several utilities, as well as an API for
+building localization tools.
 
-@organization: Zuza Software Foundation
-@copyright: 2002-2010 Zuza Software Foundation
-@license: U{GPL <http://www.fsf.org/licensing/licenses/gpl.html>}
+Some of the **tools** include:
 
-@group Localization and Localizable File Formats: storage
-@group Format Converters: convert
-@group Localisation File Checker: filters
-@group Localization File Manipulation Tools: tools
-@group Language Specifications: lang
-@group Search and String Matching: search
-@group Services: services
-@group Miscellaneous: misc source_tree_infrastructure __version__ i18n
+- File format `converters
+  <http://docs.translatehouse.org/projects/translate-toolkit/en/latest/commands/index.html#converters>`_
+- `Quality checking
+  <http://docs.translatehouse.org/projects/translate-toolkit/en/latest/commands/index.html#quality-assurance>`_
+  tools
+- Tools for counting, grepping, terminology extraction, and pseudo-localization
+
+Apart from the code for the tools above, some features of the **API** include:
+
+- Support for multiple `file formats
+  <http://docs.translatehouse.org/projects/translate-toolkit/en/latest/formats/index.html>`_
+- Language information and language support code (including language detection)
+- Code for translation memory, terminology matching and indexed search
+- Several helper classes and functions for tools built on the Translate
+  Toolkit.
 
 """

@@ -21,9 +21,6 @@
 
 """Module to provide a cache of statistics in a database.
 
-@organization: Zuza Software Foundation
-@copyright: 2007 Zuza Software Foundation
-@license: U{GPL <http://www.fsf.org/licensing/licenses/gpl.html>}
 """
 
 try:
@@ -646,10 +643,10 @@ class StatsCache(object):
         for value in values:
             if value[1] == -1:
                 continue
-            checkkey = 'check-' + value[0]      #value[0] is the error name
+            checkkey = 'check-' + value[0]      # value[0] is the error name
             if not checkkey in errors:
                 errors[checkkey] = []
-            errors[checkkey].append(value[1])   #value[1] is the unitindex
+            errors[checkkey].append(value[1])   # value[1] is the unitindex
 
         return errors
 

@@ -41,7 +41,7 @@ class TestMonolingualStore(test_base.TestTranslationStore):
             store2unit = store2.units[n]
             match = str(store1unit) == str(store2unit)
             if not match:
-                print "match failed between elements %d of %d" % (n+1, len(store1.units))
+                print "match failed between elements %d of %d" % ((n + 1), len(store1.units))
                 print "store1:"
                 print str(store1)
                 print "store2:"

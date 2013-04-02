@@ -18,13 +18,13 @@
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, see <http://www.gnu.org/licenses/>.
 
-"""Merges XLIFF and Gettext PO localization files
+"""Merges XLIFF and Gettext PO localization files.
 
-Snippet file produced by pogrep or updated by a translator can be merged into
-existing files
+Snippet file produced by e.g. :doc:`pogrep </commands/pogrep>` and updated by a
+translator can be merged back into the original files.
 
-See: http://translate.sourceforge.net/wiki/toolkit/pomerge for examples and
-usage instructions
+See: http://docs.translatehouse.org/projects/translate-toolkit/en/latest/commands/pomerge.html
+for examples and usage instructions.
 """
 
 import logging
@@ -35,7 +35,6 @@ from translate.storage.poheader import poheader
 
 def mergestores(store1, store2, mergeblanks, mergefuzzy, mergecomments):
     """Take any new translations in store2 and write them into store1."""
-    print mergefuzzy
 
     for unit2 in store2.units:
         if unit2.isheader():
@@ -62,9 +61,9 @@ def mergestores(store1, store2, mergeblanks, mergefuzzy, mergecomments):
 def str2bool(option):
     """Convert a string value to boolean
 
-    @param option: yes, true, 1, no, false, 0
-    @type option: String
-    @rtype: Boolean
+    :param option: yes, true, 1, no, false, 0
+    :type option: String
+    :rtype: Boolean
 
     """
     option = option.lower()
@@ -96,7 +95,7 @@ def mergestore(inputfile, outputfile, templatefile, mergeblanks="no", mergefuzzy
         templatestore = type(inputstore)()
     else:
         templatestore = factory.getobject(templatefile)
-    outputstore = mergestores(templatestore, inputstore, mergeblanks, 
+    outputstore = mergestores(templatestore, inputstore, mergeblanks,
                     mergefuzzy, mergecomments)
     if outputstore.isempty():
         return 0

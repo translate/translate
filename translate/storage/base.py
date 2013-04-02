@@ -18,12 +18,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, see <http://www.gnu.org/licenses/>.
 
-"""Base classes for storage interfaces.
-
-@organization: Zuza Software Foundation
-@copyright: 2006-2009 Zuza Software Foundation
-@license: U{GPL <http://www.fsf.org/licensing/licenses/gpl.html>}
-"""
+"""Base classes for storage interfaces."""
 
 import logging
 try:
@@ -65,28 +60,25 @@ class ParseError(Exception):
 class TranslationUnit(object):
     """Base class for translation units.
 
-    Our concept of a I{translation unit} is influenced heavily by XLIFF:
-    U{http://www.oasis-open.org/committees/xliff/documents/xliff-specification.htm}
+    Our concept of a *translation unit* is influenced heavily by `XLIFF
+    <http://docs.oasis-open.org/xliff/xliff-core/xliff-core.html>`_.
 
     As such most of the method- and variable names borrows from XLIFF
     terminology.
 
     A translation unit consists of the following:
-      - A I{source} string. This is the original translatable text.
-      - A I{target} string. This is the translation of the I{source}.
-      - Zero or more I{notes} on the unit. Notes would typically be some
+
+      - A *source* string. This is the original translatable text.
+      - A *target* string. This is the translation of the *source*.
+      - Zero or more *notes* on the unit. Notes would typically be some
         comments from a translator on the unit, or some comments originating
         from the source code.
-      - Zero or more I{locations}. Locations indicate where in the original
+      - Zero or more *locations*. Locations indicate where in the original
         source code this unit came from.
-      - Zero or more I{errors}. Some tools (eg. L{pofilter<filters.pofilter>})
+      - Zero or more *errors*. Some tools (eg.
+        :mod:`~translate.filters.pofilter`)
         can run checks on translations and produce error messages.
 
-    @group Source: *source*
-    @group Target: *target*
-    @group Notes: *note*
-    @group Locations: *location*
-    @group Errors: *error*
     """
 
     rich_parsers = []
@@ -142,16 +134,17 @@ class TranslationUnit(object):
     def __eq__(self, other):
         """Compares two TranslationUnits.
 
-        @type other: L{TranslationUnit}
-        @param other: Another L{TranslationUnit}
-        @rtype: Boolean
-        @return: Returns True if the supplied TranslationUnit equals this unit.
+        :type other: :class:`TranslationUnit`
+        :param other: Another :class:`TranslationUnit`
+        :rtype: Boolean
+        :return: Returns *True* if the supplied :class:`TranslationUnit`
+                 equals this unit.
         """
         return self.source == other.source and self.target == other.target
 
     def __str__(self):
         """Converts to a string representation that can be parsed back using
-        L{parsestring()}."""
+        :meth:`~.TranslationStore.parsestring`."""
         # no point in pickling store object, so let's hide it for a while.
         store = getattr(self, "_store", None)
         self._store = None
@@ -160,7 +153,7 @@ class TranslationUnit(object):
         return dump
 
     def rich_to_multistring(cls, elem_list):
-        """Convert a "rich" string tree to a C{multistring}:
+        """Convert a "rich" string tree to a ``multistring``:
 
            >>> from translate.storage.placeables.interfaces import X
            >>> rich = [StringElem(['foo', X(id='xxx', sub=[' ']), 'bar'])]
@@ -212,8 +205,9 @@ class TranslationUnit(object):
         if self.source != multi:
             self.source = multi
     rich_source = property(_get_rich_source, _set_rich_source)
-    """ @see: rich_to_multistring
-        @see: multistring_to_rich"""
+    """
+    .. seealso:: :meth:`.rich_to_multistring`, :meth:`multistring_to_rich`
+    """
 
     def _get_rich_target(self):
         if self._rich_target is None:
@@ -230,14 +224,18 @@ class TranslationUnit(object):
         self._rich_target = list(value)
         self.target = self.rich_to_multistring(value)
     rich_target = property(_get_rich_target, _set_rich_target)
-    """ @see: rich_to_multistring
-        @see: multistring_to_rich"""
+    """
+    .. seealso:: :meth:`.rich_to_multistring`, :meth:`.multistring_to_rich`
+    """
 
     def gettargetlen(self):
         """Returns the length of the target string.
 
-        @note: Plural forms might be combined.
-        @rtype: Integer
+        :rtype: Integer
+
+        .. note::
+
+           Plural forms might be combined.
         """
         length = len(self.target or "")
         strings = getattr(self.target, "strings", [])
@@ -248,8 +246,8 @@ class TranslationUnit(object):
     def getid(self):
         """A unique identifier for this unit.
 
-        @rtype: string
-        @return: an identifier for this unit that is unique in the store
+        :rtype: string
+        :return: an identifier for this unit that is unique in the store
 
         Derived classes should override this in a way that guarantees a unique
         identifier for each unit in the store.
@@ -266,24 +264,34 @@ class TranslationUnit(object):
     def getlocations(self):
         """A list of source code locations.
 
-        @note: Shouldn't be implemented if the format doesn't support it.
-        @rtype: List
+        :rtype: List
+
+        .. note::
+
+           Shouldn't be implemented if the format doesn't support it.
         """
         return []
 
     def addlocation(self, location):
         """Add one location to the list of locations.
 
-        @note: Shouldn't be implemented if the format doesn't support it.
+        .. note::
+
+           Shouldn't be implemented if the format doesn't support it.
         """
         pass
 
     def addlocations(self, location):
         """Add a location or a list of locations.
 
-        @note: Most classes shouldn't need to implement this,
-               but should rather implement L{addlocation()}.
-        @warning: This method might be removed in future.
+        .. note::
+
+           Most classes shouldn't need to implement this, but should rather
+           implement :meth:`TranslationUnit.addlocation`.
+
+        .. warning::
+
+           This method might be removed in future.
         """
         if isinstance(location, list):
             for item in location:
@@ -304,20 +312,21 @@ class TranslationUnit(object):
 
         It will probably be freeform text or something reasonable that can be
         synthesised by the format.
-        It should not include location comments (see L{getlocations()}).
+        It should not include location comments (see
+        :meth:`~.TranslationUnit.getlocations`).
         """
         return getattr(self, "notes", "")
 
     def addnote(self, text, origin=None, position="append"):
         """Adds a note (comment).
 
-        @type text: string
-        @param text: Usually just a sentence or two.
-        @type origin: string
-        @param origin: Specifies who/where the comment comes from.
+        :type text: string
+        :param text: Usually just a sentence or two.
+        :type origin: string
+        :param origin: Specifies who/where the comment comes from.
                        Origin can be one of the following text strings:
-                         - 'translator'
-                         - 'developer', 'programmer', 'source code' (synonyms)
+                       - 'translator'
+                       - 'developer', 'programmer', 'source code' (synonyms)
         """
         if position == "append" and getattr(self, "notes", None):
             self.notes += '\n' + text
@@ -331,25 +340,25 @@ class TranslationUnit(object):
     def adderror(self, errorname, errortext):
         """Adds an error message to this unit.
 
-        @type errorname: string
-        @param errorname: A single word to id the error.
-        @type errortext: string
-        @param errortext: The text describing the error.
+        :type errorname: string
+        :param errorname: A single word to id the error.
+        :type errortext: string
+        :param errortext: The text describing the error.
         """
         pass
 
     def geterrors(self):
         """Get all error messages.
 
-        @rtype: Dictionary
+        :rtype: Dictionary
         """
         return {}
 
     def markreviewneeded(self, needsreview=True, explanation=None):
         """Marks the unit to indicate whether it needs review.
 
-        @keyword needsreview: Defaults to True.
-        @keyword explanation: Adds an optional explanation as a note.
+        :keyword needsreview: Defaults to True.
+        :keyword explanation: Adds an optional explanation as a note.
         """
         pass
 
@@ -397,8 +406,11 @@ class TranslationUnit(object):
     def isblank(self):
         """Used to see if this unit has no source or target string.
 
-        @note: This is probably used more to find translatable units,
-        and we might want to move in that direction rather and get rid of this.
+        .. note::
+
+           This is probably used more to find translatable units,
+           and we might want to move in that direction rather and
+           get rid of this.
         """
         return not (self.source or self.target)
 
@@ -539,8 +551,8 @@ class TranslationStore(object):
         This method should always be used rather than trying to modify the
         list manually.
 
-        @type unit: L{TranslationUnit}
-        @param unit: The unit that will be added.
+        :type unit: :class:`TranslationUnit`
+        :param unit: The unit that will be added.
         """
         unit._store = self
         self.units.append(unit)
@@ -548,7 +560,7 @@ class TranslationStore(object):
     def addsourceunit(self, source):
         """Adds and returns a new unit with the given source string.
 
-        @rtype: L{TranslationUnit}
+        :rtype: :class:`TranslationUnit`
         """
         unit = self.UnitClass(source)
         self.addunit(unit)
@@ -562,7 +574,7 @@ class TranslationStore(object):
     def findunit(self, source):
         """Finds the unit with the given source string.
 
-        @rtype: L{TranslationUnit} or None
+        :rtype: :class:`TranslationUnit` or None
         """
         if len(getattr(self, "sourceindex", [])):
             if source in self.sourceindex:
@@ -576,7 +588,7 @@ class TranslationStore(object):
     def findunits(self, source):
         """Finds the units with the given source string.
 
-        @rtype: L{TranslationUnit} or None
+        :rtype: :class:`TranslationUnit` or None
         """
         if len(getattr(self, "sourceindex", [])):
             if source in self.sourceindex:
@@ -594,7 +606,7 @@ class TranslationStore(object):
     def translate(self, source):
         """Returns the translated string for a given source string.
 
-        @rtype: String or None
+        :rtype: String or None
         """
         unit = self.findunit(source)
         if unit and unit.target:
@@ -652,7 +664,7 @@ class TranslationStore(object):
 
     def makeindex(self):
         """Indexes the items in this store. At least .sourceindex should be
-        usefull."""
+        useful."""
         self.locationindex = {}
         self.sourceindex = {}
         self.id_index = {}
@@ -683,7 +695,7 @@ class TranslationStore(object):
 
     def __str__(self):
         """Converts to a string representation that can be parsed back using
-        L{parsestring()}."""
+        :meth:`~.TranslationStore.parsestring`."""
         # We can't pickle fileobj if it is there, so let's hide it for a while.
         fileobj = getattr(self, "fileobj", None)
         self.fileobj = None
@@ -815,3 +827,12 @@ class TranslationStore(object):
         newstore._assignname()
         return newstore
     parsefile = classmethod(parsefile)
+
+    @property
+    def merge_on(self):
+        """The matching criterion to use when merging on.
+
+        :return: The default matching criterion for all the subclasses.
+        :rtype: string
+        """
+        return "id"

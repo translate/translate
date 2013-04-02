@@ -348,7 +348,7 @@ msgstr "POT-Creation-Date: 2006-03-08 17:30+0200\n"
 
         posource = '#, fuzzy, python-format\nmsgid "ball"\nmsgstr "bal"\n'
         expectednonfuzzy = '#, python-format\nmsgid "ball"\nmsgstr "bal"\n'
-        expectedfuzzyagain = '#, fuzzy, python-format\nmsgid "ball"\nmsgstr "bal"\n' # must be sorted
+        expectedfuzzyagain = '#, fuzzy, python-format\nmsgid "ball"\nmsgstr "bal"\n'  # must be sorted
         pofile = self.poparse(posource)
         print pofile
         assert pofile.units[0].isfuzzy()
@@ -362,7 +362,7 @@ msgstr "POT-Creation-Date: 2006-03-08 17:30+0200\n"
         # test the same, but with flags in a different order
         posource = '#, python-format, fuzzy\nmsgid "ball"\nmsgstr "bal"\n'
         expectednonfuzzy = '#, python-format\nmsgid "ball"\nmsgstr "bal"\n'
-        expectedfuzzyagain = '#, fuzzy, python-format\nmsgid "ball"\nmsgstr "bal"\n' # must be sorted
+        expectedfuzzyagain = '#, fuzzy, python-format\nmsgid "ball"\nmsgstr "bal"\n'  # must be sorted
         pofile = self.poparse(posource)
         print pofile
         assert pofile.units[0].isfuzzy()
@@ -398,7 +398,7 @@ msgstr "POT-Creation-Date: 2006-03-08 17:30+0200\n"
         posource = 'msgid "thing\nmsgstr "ding"\nmsgid "Second thing"\nmsgstr "Tweede ding"\n'
         pofile = self.poparse(posource)
         assert len(pofile.units) == 2
-        print `pofile.units[0].source`
+        print repr(pofile.units[0].source)
         assert pofile.units[0].source == u"thing"
 
     def test_malformed_obsolete_units(self):
@@ -760,6 +760,48 @@ msgstr "b"
         for line in pofile.units[0].getnotes():
             assert isinstance(line, unicode)
 
+    def test_non_ascii_header_comments(self):
+        posource = r'''
+# Copyright bla.
+msgid ""
+msgstr ""
+"PO-Revision-Date: 2006-02-09 23:33+0200\n"
+"MIME-Version: 1.0\n"
+"Last-Translator: Tránslátór\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8-bit\n"
+
+msgid "a"
+msgstr "b"
+'''
+        pofile = self.poparse(posource)
+        assert u"Tránslátór" in pofile.units[0].target
+        header_dict = pofile.parseheader()
+        assert u"Last-Translator" in header_dict
+        assert header_dict[u"Last-Translator"] == u"Tránslátór"
+
+
+        # let's test the same with latin-1:
+        posource = r'''
+# Copyright bla.
+msgid ""
+msgstr ""
+"PO-Revision-Date: 2006-02-09 23:33+0200\n"
+"MIME-Version: 1.0\n"
+"Last-Translator: Tránslátór\n"
+"Content-Type: text/plain; charset=ISO-8859-1\n"
+"Content-Transfer-Encoding: 8-bit\n"
+
+msgid "a"
+msgstr "b"
+'''.decode('utf-8').encode('ISO-8859-1')
+
+        pofile = self.poparse(posource)
+        assert u"Tránslátór" in pofile.units[0].target
+        header_dict = pofile.parseheader()
+        assert u"Last-Translator" in header_dict
+        assert header_dict[u"Last-Translator"] == u"Tránslátór"
+
     def test_final_slash(self):
         """Test that \ as last character is correcly interpreted (bug 960)."""
         posource = r'''
@@ -791,7 +833,7 @@ msgstr "start thing dingis fish"
 "
 '''
         pofile1 = self.poparse(posource)
-        print `pofile1.units[1].target`
+        print repr(pofile1.units[1].target)
         assert pofile1.units[1].target == u"start thing dingis fish"
         pofile2 = self.poparse(str(pofile1))
         assert pofile2.units[1].target == u"start thing dingis fish"
@@ -837,5 +879,3 @@ msgstr[0] ""
         assert "msgid_plural" in str(unit)
         assert not unit.istranslated()
         assert unit.get_state_n() == 0
-
-

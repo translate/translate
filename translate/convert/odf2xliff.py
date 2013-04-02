@@ -19,7 +19,11 @@
 # along with this program; if not, see <http://www.gnu.org/licenses/>.
 #
 
-"""convert OpenDocument (ODF) files to XLIFF localization files"""
+"""Convert OpenDocument (ODF) files to XLIFF localization files.
+
+See: http://docs.translatehouse.org/projects/translate-toolkit/en/latest/commands/odf2xliff.html
+for examples and usage instructions.
+"""
 
 from translate.storage import factory
 from translate.misc.contextlib import contextmanager
@@ -92,22 +96,22 @@ def convertodf(inputfile, outputfile, templates, engine='toolkit'):
 # For formats see OpenDocument 1.2 draft 7 Appendix C
 formats = {
     "sxw": ("xlf", convertodf),
-    "odt": ("xlf", convertodf), # Text
-    "ods": ("xlf", convertodf), # Spreadsheet
-    "odp": ("xlf", convertodf), # Presentation
-    "odg": ("xlf", convertodf), # Drawing
-    "odc": ("xlf", convertodf), # Chart
-    "odf": ("xlf", convertodf), # Formula
-    "odi": ("xlf", convertodf), # Image
-    "odm": ("xlf", convertodf), # Master Document
-    "ott": ("xlf", convertodf), # Text template
-    "ots": ("xlf", convertodf), # Spreadsheet template
-    "otp": ("xlf", convertodf), # Presentation template
-    "otg": ("xlf", convertodf), # Drawing template
-    "otc": ("xlf", convertodf), # Chart template
-    "otf": ("xlf", convertodf), # Formula template
-    "oti": ("xlf", convertodf), # Image template
-    "oth": ("xlf", convertodf), # Web page template
+    "odt": ("xlf", convertodf),  # Text
+    "ods": ("xlf", convertodf),  # Spreadsheet
+    "odp": ("xlf", convertodf),  # Presentation
+    "odg": ("xlf", convertodf),  # Drawing
+    "odc": ("xlf", convertodf),  # Chart
+    "odf": ("xlf", convertodf),  # Formula
+    "odi": ("xlf", convertodf),  # Image
+    "odm": ("xlf", convertodf),  # Master Document
+    "ott": ("xlf", convertodf),  # Text template
+    "ots": ("xlf", convertodf),  # Spreadsheet template
+    "otp": ("xlf", convertodf),  # Presentation template
+    "otg": ("xlf", convertodf),  # Drawing template
+    "otc": ("xlf", convertodf),  # Chart template
+    "otf": ("xlf", convertodf),  # Formula template
+    "oti": ("xlf", convertodf),  # Image template
+    "oth": ("xlf", convertodf),  # Web page template
 }
 
 

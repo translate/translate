@@ -20,40 +20,44 @@
 
 """This module contains all the common features for languages.
 
-   Supported features
-   ==================
-     - language code (km, af)
-     - language name (Khmer, Afrikaans)
-     - Plurals
-       - Number of plurals (nplurals)
-       - Plural equation
-     - pofilter tests to ignore
+Supported features:
 
-   Segmentation
-   ------------
-     - characters
-     - words
-     - sentences
+- language code (km, af)
+- language name (Khmer, Afrikaans)
+- Plurals
 
-   TODOs and Ideas for possible features
-   =====================================
-     - Language-Team information
-     - Segmentation
-       - phrases
+  - Number of plurals (nplurals)
+  - Plural equation
 
-   Punctuation
-   -----------
-     - End of sentence
-     - Start of sentence
-     - Middle of sentence
-     - Quotes
-       - single
-       - double
+- pofilter tests to ignore
 
-     - Valid characters
-     - Accelerator characters
-     - Special characters
-     - Direction (rtl or ltr)
+Segmentation:
+
+- characters
+- words
+- sentences
+
+Punctuation:
+
+- End of sentence
+- Start of sentence
+- Middle of sentence
+- Quotes
+
+  - single
+  - double
+
+- Valid characters
+- Accelerator characters
+- Special characters
+- Direction (rtl or ltr)
+
+TODOs and Ideas for possible features:
+
+- Language-Team information
+- Segmentation
+
+  - phrases
 """
 
 import re
@@ -69,6 +73,7 @@ class Common(object):
     modifier.
 
     Examples::
+
         km
         pt_BR
         sr_YU@Latn
@@ -77,10 +82,11 @@ class Common(object):
     fullname = ""
     """The full (English) name of this language.
 
-       Dialect codes should have the form of
-         - Khmer
-         - Portugese (Brazil)
-         - TODO: sr_YU@Latn?
+    Dialect codes should have the form of:
+
+    - Khmer
+    - Portugese (Brazil)
+    - TODO: sr_YU@Latn?
     """
 
     nplurals = 0
@@ -88,15 +94,18 @@ class Common(object):
 
     0 is not a valid value - it must be overridden.
     Any positive integer is valid (it should probably be between 1 and 6)
-    @see: L{data}
+
+    .. seealso:: :mod:`translate.lang.data`
     """
 
     pluralequation = "0"
     """The plural equation for selection of plural forms.
 
     This is used for PO files to fill into the header.
-    @see: U{Gettext manual<http://www.gnu.org/software/gettext/manual/html_node/gettext_150.html#Plural-forms>}
-    @see: L{data}
+
+    .. seealso::
+
+       `Gettext manual <http://www.gnu.org/software/gettext/manual/html_node/gettext_150.html#Plural-forms>`_, :mod:`translate.lang.data`
     """
     # Don't change these defaults of nplurals or pluralequation willy-nilly:
     # some code probably depends on these for unrecognised languages
@@ -114,7 +123,7 @@ class Common(object):
     """These are different quotation marks used by various languages."""
 
     invertedpunc = u"¿¡"
-    """Inveted punctuation sometimes used at the beginning of sentences in
+    """Inverted punctuation sometimes used at the beginning of sentences in
     Spanish, Asturian, Galician, and Catalan."""
 
     rtlpunc = u"،؟؛÷"
@@ -140,7 +149,7 @@ class Common(object):
     languages which might not be represented with modules. Most languages won't
     need to override this."""
 
-    sentenceend = u".!?…։؟।。！？።"
+    sentenceend = u".!?…։؟।。！？።\u06d4"
     """These marks can indicate a sentence end. Once again we try to account
     for many languages. Most langauges won't need to override this."""
 
@@ -148,12 +157,14 @@ class Common(object):
     #what works, see test_common.py. We try to ignore abbreviations, for
     #example, by checking that the following sentence doesn't start with lower
     #case or numbers.
-    sentencere = re.compile(ur"""(?s)   #make . also match newlines
-                            .*?         #anything, but match non-greedy
-                            [%s]        #the puntuation for sentence ending
-                            \s+         #the spacing after the puntuation
-                            (?=[^a-zа-џ\d])#lookahead that next part starts with caps
-                            """ % sentenceend, re.VERBOSE | re.UNICODE)
+    sentencere = re.compile(ur"""
+        (?s)        # make . also match newlines
+        .*?         # anything, but match non-greedy
+        [%s]        # the puntuation for sentence ending
+        \s+         # the spacing after the puntuation
+        (?=[^a-zа-џ\d])  # lookahead that next part starts with caps
+        """ % sentenceend, re.VERBOSE | re.UNICODE
+    )
 
     puncdict = {}
     """A dictionary of punctuation transformation rules that can be used by
@@ -194,11 +205,13 @@ class Common(object):
         while code:
             langdata = data.languages.get(code, None)
             if langdata:
-                language.fullname, language.nplurals, language.pluralequation = langdata
+                language.fullname, language.nplurals, \
+                    language.pluralequation = langdata
                 break
             code = data.simplercode(code)
         if not code:
-#            print >> sys.stderr, "Warning: No information found about language code %s" % code
+            #print >> sys.stderr, \
+            #         "Warning: No information found about language code %s" % code
             pass
         return language
 
@@ -235,7 +248,8 @@ class Common(object):
         # As a simple improvement for messages ending in ellipses (...), we
         # test that the last character is different from the second last
         # This is only relevant if the string has two characters or more
-        if (text[-1] + u" " in cls.puncdict) and (len(text) < 2 or text[-2] != text[-1]):
+        if ((text[-1] + u" " in cls.puncdict) and
+            (len(text) < 2 or text[-2] != text[-1])):
             text = text[:-1] + cls.puncdict[text[-1] + u" "].rstrip()
         return text
     punctranslate = classmethod(punctranslate)
@@ -253,8 +267,8 @@ class Common(object):
                 break
             code = data.simplercode(code)
         else:
-            expansion_factor = 0.1 # default
-        constant = max(5, int(40*expansion_factor))
+            expansion_factor = 0.1  # default
+        constant = max(5, int(40 * expansion_factor))
         # The default: return 5 + length/10
         return constant + int(expansion_factor * length)
     length_difference = classmethod(length_difference)
@@ -339,3 +353,9 @@ class Common(object):
         stripped = text.lstrip().lstrip(cls.punctuation)
         return stripped and stripped[0].isupper()
     capsstart = classmethod(capsstart)
+
+    def numstart(cls, text):
+        """Determines whether the text starts with a mumeric value."""
+        stripped = text.lstrip().lstrip(cls.punctuation)
+        return stripped and stripped[0].isnumeric()
+    numstart = classmethod(numstart)

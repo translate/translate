@@ -45,9 +45,9 @@ def getText(node, xml_space="preserve"):
     an optional default to use in case nothing is specified in this node."""
     xml_space = getXMLspace(node, xml_space)
     if xml_space == "default":
-        return unicode(string_xpath_normalized(node)) # specific to lxml.etree
+        return unicode(string_xpath_normalized(node))  # specific to lxml.etree
     else:
-        return unicode(string_xpath(node)) # specific to lxml.etree
+        return unicode(string_xpath(node))  # specific to lxml.etree
 
     # If we want to normalise space and only preserve it when the directive
     # xml:space="preserve" is given in node or in parents, consider this code:
@@ -89,6 +89,7 @@ def namespaced(namespace, name):
 
        For example namespaced("source") in an XLIFF document might return::
            {urn:oasis:names:tc:xliff:document:1.1}source
+
        This is needed throughout lxml.
     """
     if namespace:
@@ -101,7 +102,8 @@ MULTIWHITESPACE_RE = re.compile(MULTIWHITESPACE_PATTERN, re.MULTILINE)
 
 
 def normalize_space(text):
-    """Normalize the given text for implimentation of xml:space="default"."""
+    """Normalize the given text for implementation of
+    ``xml:space="default"``."""
     text = MULTIWHITESPACE_RE.sub(u" ", text)
     return text
 

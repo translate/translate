@@ -18,7 +18,11 @@
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, see <http://www.gnu.org/licenses/>.
 
-"""Convert JSON files to Gettext PO localization files"""
+"""Convert JSON files to Gettext PO localization files.
+
+See: http://docs.translatehouse.org/projects/translate-toolkit/en/latest/commands/json2po.html
+for examples and usage instructions.
+"""
 
 import sys
 
@@ -31,8 +35,7 @@ class json2po:
     def convert_store(self, input_store, duplicatestyle="msgctxt"):
         """Converts a JSON file to a PO file"""
         output_store = po.pofile()
-        output_header = output_store.init_headers(charset="UTF-8",
-                                                  encoding="8bit")
+        output_header = output_store.header()
         output_header.addnote("extracted from %s" % input_store.filename,
                               "developer")
         for input_unit in input_store.units:
@@ -46,8 +49,7 @@ class json2po:
                     duplicatestyle="msgctxt"):
         """Converts two JSON files to a PO file"""
         output_store = po.pofile()
-        output_header = output_store.init_headers(charset="UTF-8",
-                                                  encoding="8bit")
+        output_header = output_store.header()
         output_header.addnote("extracted from %s, %s" % (template_store.filename,
                                                          input_store.filename),
                               "developer")
@@ -75,7 +77,7 @@ class json2po:
     def convert_unit(self, input_unit, commenttype):
         """Converts a JSON unit to a PO unit
 
-        @return: None if empty or not for translation
+        :return: None if empty or not for translation
         """
         if input_unit is None:
             return None
@@ -89,8 +91,8 @@ class json2po:
 
 def convertjson(input_file, output_file, template_file, pot=False,
                 duplicatestyle="msgctxt", dialect="default", filter=None):
-    """Reads in L{input_file} using jsonl10n, converts using L{json2po},
-    writes to L{output_file}"""
+    """Reads in *input_file* using jsonl10n, converts using :class:`json2po`,
+    writes to *output_file*."""
     from translate.storage import jsonl10n
     if filter is not None:
         filter = filter.split(',')
@@ -100,7 +102,7 @@ def convertjson(input_file, output_file, template_file, pot=False,
         output_store = convertor.convert_store(input_store,
                                                duplicatestyle=duplicatestyle)
     else:
-        template_store = jsonl10n.JsonFile(template_file, dialect=dialect)
+        template_store = jsonl10n.JsonFile(template_file)
         output_store = convertor.merge_store(template_store, input_store,
                                              blankmsgstr=pot,
                                              duplicatestyle=duplicatestyle)

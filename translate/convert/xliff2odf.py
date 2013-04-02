@@ -19,7 +19,11 @@
 # along with this program; if not, see <http://www.gnu.org/licenses/>.
 #
 
-"""convert OpenDocument (ODF) files to Gettext PO localization files"""
+"""Convert XLIFF translation files to OpenDocument (ODF) files.
+
+See: http://docs.translatehouse.org/projects/translate-toolkit/en/latest/commands/odf2xliff.html
+for examples and usage instructions.
+"""
 
 import cStringIO
 import zipfile
@@ -111,22 +115,22 @@ def convertxliff(input_file, output_file, template):
     return True
 
 formats = {
-    ('xlf', 'odt'): ("odt", convertxliff), # Text
-    ('xlf', 'ods'): ("ods", convertxliff), # Spreadsheet
-    ('xlf', 'odp'): ("odp", convertxliff), # Presentation
-    ('xlf', 'odg'): ("odg", convertxliff), # Drawing
-    ('xlf', 'odc'): ("odc", convertxliff), # Chart
-    ('xlf', 'odf'): ("odf", convertxliff), # Formula
-    ('xlf', 'odi'): ("odi", convertxliff), # Image
-    ('xlf', 'odm'): ("odm", convertxliff), # Master Document
-    ('xlf', 'ott'): ("ott", convertxliff), # Text template
-    ('xlf', 'ots'): ("ots", convertxliff), # Spreadsheet template
-    ('xlf', 'otp'): ("otp", convertxliff), # Presentation template
-    ('xlf', 'otg'): ("otg", convertxliff), # Drawing template
-    ('xlf', 'otc'): ("otc", convertxliff), # Chart template
-    ('xlf', 'otf'): ("otf", convertxliff), # Formula template
-    ('xlf', 'oti'): ("oti", convertxliff), # Image template
-    ('xlf', 'oth'): ("oth", convertxliff), # Web page template
+    ('xlf', 'odt'): ("odt", convertxliff),  # Text
+    ('xlf', 'ods'): ("ods", convertxliff),  # Spreadsheet
+    ('xlf', 'odp'): ("odp", convertxliff),  # Presentation
+    ('xlf', 'odg'): ("odg", convertxliff),  # Drawing
+    ('xlf', 'odc'): ("odc", convertxliff),  # Chart
+    ('xlf', 'odf'): ("odf", convertxliff),  # Formula
+    ('xlf', 'odi'): ("odi", convertxliff),  # Image
+    ('xlf', 'odm'): ("odm", convertxliff),  # Master Document
+    ('xlf', 'ott'): ("ott", convertxliff),  # Text template
+    ('xlf', 'ots'): ("ots", convertxliff),  # Spreadsheet template
+    ('xlf', 'otp'): ("otp", convertxliff),  # Presentation template
+    ('xlf', 'otg'): ("otg", convertxliff),  # Drawing template
+    ('xlf', 'otc'): ("otc", convertxliff),  # Chart template
+    ('xlf', 'otf'): ("otf", convertxliff),  # Formula template
+    ('xlf', 'oti'): ("oti", convertxliff),  # Image template
+    ('xlf', 'oth'): ("oth", convertxliff),  # Web page template
 }
 
 

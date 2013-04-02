@@ -162,7 +162,6 @@ def test_header_blank():
         assert headeritems["Content-Transfer-Encoding"] == "8bit"
         assert headeritems["Plural-Forms"] == "nplurals=INTEGER; plural=EXPRESSION;"
 
-
     """test header functionality"""
     posource = r'''# other comment\n
 msgid ""
@@ -295,6 +294,7 @@ msgstr ""
     posource += '"Language: fr_CA\\n"\n'
     pofile = poparse(posource)
     assert pofile.gettargetlanguage() == 'fr_CA'
+
 
 def test_project():
     """Test that we can get a project from the relevant headers."""

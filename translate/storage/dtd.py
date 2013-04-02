@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 #
-# Copyright 2002-2006 Zuza Software Foundation
+# Copyright 2002-2013 Zuza Software Foundation
 #
 # This file is part of translate.
 #
@@ -18,23 +18,70 @@
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, see <http://www.gnu.org/licenses/>.
 
-"""classes that hold units of .dtd files (dtdunit) or entire files (dtdfile)
-these are specific .dtd files for localisation used by mozilla
+"""Classes that hold units of .dtd files (:class:`dtdunit`) or entire files
+(:class:`dtdfile`).
+
+These are specific .dtd files for localisation used by mozilla.
 
 Specifications
-==============
-The following information is provided by Mozilla::
+    The following information is provided by Mozilla:
 
-*  U{Specification<http://www.w3.org/TR/REC-xml/#sec-entexpand>}
+    `Specification <http://www.w3.org/TR/REC-xml/#sec-entexpand>`_
 
-There is a grammar for entity definitions, which isn't really precise,
-as the spec says.  There's no formal specification for DTD files, it's
-just "whatever makes this work" basically. The whole piece is clearly not
-the strongest point of the xml spec
+    There is a grammar for entity definitions, which isn't really precise,
+    as the spec says.  There's no formal specification for DTD files, it's
+    just "whatever makes this work" basically. The whole piece is clearly not
+    the strongest point of the xml spec
 
-XML elements are allowed in entity values. A number of things that are
-allowed will just break the resulting document, Mozilla forbids these
-in their DTD parser.
+    XML elements are allowed in entity values. A number of things that are
+    allowed will just break the resulting document, Mozilla forbids these
+    in their DTD parser.
+
+Dialects
+    There are two dialects:
+
+    - Regular DTD
+    - Android DTD
+
+    Both dialects are similar, but the Android DTD uses some particular escapes
+    that regular DTDs don't have.
+
+Escaping in regular DTD
+    In DTD usually there are characters escaped in the entities. In order to
+    ease the translation some of those escaped characters are unescaped when
+    reading from, or converting, the DTD, and that are escaped again when
+    saving, or converting to a DTD.
+
+    In regular DTD the following characters are usually or sometimes escaped:
+
+    - The % character is escaped using &#037; or &#37; or &#x25;
+    - The " character is escaped using &quot;
+    - The ' character is escaped using &apos; (partial roundtrip)
+    - The & character is escaped using &amp; (not yet implemented)
+    - The < character is escaped using &lt; (not yet implemented)
+    - The > character is escaped using &gt; (not yet implemented)
+
+    Besides the previous ones there are a lot of escapes for a huge number of
+    characters. This escapes usually have the form of &#NUMBER; where NUMBER
+    represents the numerical code for the character.
+
+    There are a few particularities in DTD escaping. Some of the escapes are
+    not yet implemented since they are not really necessary, or because its
+    implementation is too hard.
+
+    A special case is the ' escaping using &apos; which doesn't provide a full
+    roundtrip conversion in order to support some special Mozilla DTD files.
+
+    Also the " character is never escaped in the case that the previous
+    character is = (the sequence =" is present on the string) in order to avoid
+    escaping the " character indicating an attribute assignment, for example in
+    a href attribute for an a tag in HTML (anchor tag).
+
+Escaping in Android DTD
+    It has the sames escapes as in regular DTD, plus this ones:
+
+    - The ' character is escaped using \&apos; or \' or \u0027
+    - The " character is escaped using \&quot;
 """
 
 from translate.storage import base
@@ -50,22 +97,47 @@ except ImportError:
 
 labelsuffixes = (".label", ".title")
 """Label suffixes: entries with this suffix are able to be comibed with accesskeys
-found in in entries ending with L{accesskeysuffixes}"""
+found in in entries ending with :attr:`.accesskeysuffixes`"""
 accesskeysuffixes = (".accesskey", ".accessKey", ".akey")
 """Accesskey Suffixes: entries with this suffix may be combined with labels
-ending in L{labelsuffixes} into accelerator notation"""
+ending in :attr:`.labelsuffixes` into accelerator notation"""
+
+
+def quoteforandroid(source):
+    """Escapes a line for Android DTD files. """
+    # Replace "'" character with the \u0027 escape. Other possible replaces are
+    # "\\&apos;" or "\\'".
+    source = source.replace(u"'", u"\\u0027")
+    source = source.replace(u"\"", u"\\&quot;")
+    value = quotefordtd(source)  # value is an UTF-8 encoded string.
+    return value
+
+
+def unquotefromandroid(source):
+    """Unquotes a quoted Android DTD definition."""
+    value = unquotefromdtd(source)  # value is an UTF-8 encoded string.
+    value = value.replace(u"\\&apos;", u"'")
+    value = value.replace(u"\\'", u"'")
+    value = value.replace(u"\\u0027", u"'")
+    value = value.replace("\\\"", "\"")  # This converts \&quot; to ".
+    return value
 
 
 def quotefordtd(source):
-    if '%' in source:
-        source = source.replace("%", "&#x25;")
+    """Quotes and escapes a line for regular DTD files."""
+    source = source.replace("%", "&#037;")  # Always escape % sign as &#037;.
+    #source = source.replace("<", "&lt;")  # Not really so useful.
+    #source = source.replace(">", "&gt;")  # Not really so useful.
     if '"' in source:
-        if "'" in source:
-            return "'" + source.replace("'", '&apos;') + "'"
+        source = source.replace("'", "&apos;")  # This seems not to runned.
+        if '="' not in source:  # Avoid escaping " chars in href attributes.
+            source = source.replace("\"", "&quot;")
+            value = "\"" + source + "\""  # Quote using double quotes.
         else:
-            return quote.singlequotestr(source)
+            value = "'" + source + "'"  # Quote using single quotes.
     else:
-        return quote.quotestr(source)
+        value = "\"" + source + "\""  # Quote using double quotes.
+    return value.encode('utf-8')
 
 
 def unquotefromdtd(source):
@@ -73,35 +145,41 @@ def unquotefromdtd(source):
     # extract the string, get rid of quoting
     if len(source) == 0:
         source = '""'
+    # The quote characters should be the first and last characters in the
+    # string. Of course there could also be quote characters within the string.
     quotechar = source[0]
     extracted, quotefinished = quote.extractwithoutquotes(source, quotechar, quotechar, allowreentry=False)
-    if quotechar == "'" and "&apos;" in extracted:
+    if quotechar == "'":
         extracted = extracted.replace("&apos;", "'")
+    extracted = extracted.replace("&quot;", "\"")
+    extracted = extracted.replace("&#037;", "%")
+    extracted = extracted.replace("&#37;", "%")
     extracted = extracted.replace("&#x25;", "%")
-    # the quote characters should be the first and last characters in the string
-    # of course there could also be quote characters within the string; not handled here
-    return extracted
+    #extracted = extracted.replace("&lt;", "<")  # Not really so useful.
+    #extracted = extracted.replace("&gt;", ">")  # Not really so useful.
+    return extracted.decode('utf-8')
 
 
 def removeinvalidamps(name, value):
     """Find and remove ampersands that are not part of an entity definition.
 
-    A stray & in a DTD file can break an applications ability to parse the file.  In Mozilla
-    localisation this is very important and these can break the parsing of files used in XUL
-    and thus break interface rendering.  Tracking down the problem is very difficult,
-    thus by removing potential broken & and warning the users we can ensure that the output
-    DTD will always be parsable.
+    A stray & in a DTD file can break an application's ability to parse the
+    file. In Mozilla localisation this is very important and these can break the
+    parsing of files used in XUL and thus break interface rendering. Tracking
+    down the problem is very difficult, thus by removing potential broken
+    ampersand and warning the users we can ensure that the output DTD will
+    always be parsable.
 
-    @type name: String
-    @param name: Entity name
-    @type value: String
-    @param value: Entity text value
-    @rtype: String
-    @return: Entity value without bad ampersands
+    :type name: String
+    :param name: Entity name
+    :type value: String
+    :param value: Entity text value
+    :rtype: String
+    :return: Entity value without bad ampersands
     """
 
     def is_valid_entity_name(name):
-        """Check that supplied L{name} is a valid entity name"""
+        """Check that supplied *name* is a valid entity name."""
         if name.replace('.', '').isalnum():
             return True
         elif name[0] == '#' and name[1:].isalnum():
@@ -118,7 +196,7 @@ def removeinvalidamps(name, value):
             if semipos != -1:
                 if is_valid_entity_name(value[amppos:semipos]):
                     continue
-            invalid_amps.append(amppos-1)
+            invalid_amps.append(amppos - 1)
     if len(invalid_amps) > 0:
         warnings.warn("invalid ampersands in dtd entity %s" % (name))
         adjustment = 0
@@ -129,10 +207,12 @@ def removeinvalidamps(name, value):
 
 
 class dtdunit(base.TranslationUnit):
-    """this class represents an entity definition from a dtd file (and possibly associated comments)"""
+    """An entity definition from a DTD file (and any associated comments)."""
 
-    def __init__(self, source=""):
+    def __init__(self, source="", android=False):
         """construct the dtdunit, prepare it for parsing"""
+        self.android = android
+
         super(dtdunit, self).__init__(source)
         self.comments = []
         self.unparsedlines = []
@@ -147,25 +227,52 @@ class dtdunit(base.TranslationUnit):
     # Note that source and target are equivalent for monolingual units
     def setsource(self, source):
         """Sets the definition to the quoted value of source"""
-        self.definition = quotefordtd(source)
+        if self.android:
+            self.definition = quoteforandroid(source)
+        else:
+            self.definition = quotefordtd(source)
         self._rich_source = None
 
     def getsource(self):
         """gets the unquoted source string"""
-        return unquotefromdtd(self.definition)
+        if self.android:
+            return unquotefromandroid(self.definition)
+        else:
+            return unquotefromdtd(self.definition)
     source = property(getsource, setsource)
 
     def settarget(self, target):
         """Sets the definition to the quoted value of target"""
         if target is None:
             target = ""
-        self.definition = quotefordtd(target)
+        if self.android:
+            self.definition = quoteforandroid(target)
+        else:
+            self.definition = quotefordtd(target)
         self._rich_target = None
 
     def gettarget(self):
         """gets the unquoted target string"""
-        return unquotefromdtd(self.definition)
+        if self.android:
+            return unquotefromandroid(self.definition)
+        else:
+            return unquotefromdtd(self.definition)
     target = property(gettarget, settarget)
+
+    def getid(self):
+        return self.entity
+
+    def setid(self, new_id):
+        self.entity = new_id
+
+    def getlocations(self):
+        """Return the entity as location (identifier)."""
+        assert quote.rstripeol(self.entity) == self.entity
+        return [self.entity]
+
+    def addlocation(self, location):
+        """Set the entity to the given "location"."""
+        self.entity = location
 
     def isnull(self):
         """returns whether this dtdunit doesn't actually have an entity definition"""
@@ -173,18 +280,23 @@ class dtdunit(base.TranslationUnit):
         # TODO: this needs to work better with base class expectations
         return self.entity is None
 
+    def istranslatable(self):
+        if getattr(self, "entityparameter", None) == "SYSTEM" or self.isnull():
+            return False
+        return True
+
     def parse(self, dtdsrc):
         """read the first dtd element from the source code into this object, return linesprocessed"""
         self.comments = []
         # make all the lists the same
-        self.locfilenotes = self.comments
-        self.locgroupstarts = self.comments
-        self.locgroupends = self.comments
-        self.locnotes = self.comments
-        # self.locfilenotes = []
-        # self.locgroupstarts = []
-        # self.locgroupends = []
-        # self.locnotes = []
+        self._locfilenotes = self.comments
+        self._locgroupstarts = self.comments
+        self._locgroupends = self.comments
+        self._locnotes = self.comments
+        # self._locfilenotes = []
+        # self._locgroupstarts = []
+        # self._locgroupends = []
+        # self._locnotes = []
         # self.comments = []
         self.entity = None
         self.definition = ''
@@ -248,13 +360,13 @@ class dtdunit(base.TranslationUnit):
                 # make it record the comment and type as a tuple
                 commentpair = (self.commenttype, comment)
                 if self.commenttype == "locfile":
-                    self.locfilenotes.append(commentpair)
+                    self._locfilenotes.append(commentpair)
                 elif self.commenttype == "locgroupstart":
-                    self.locgroupstarts.append(commentpair)
+                    self._locgroupstarts.append(commentpair)
                 elif self.commenttype == "locgroupend":
-                    self.locgroupends.append(commentpair)
+                    self._locgroupends.append(commentpair)
                 elif self.commenttype == "locnote":
-                    self.locnotes.append(commentpair)
+                    self._locnotes.append(commentpair)
                 elif self.commenttype == "comment":
                     self.comments.append(commentpair)
 
@@ -294,6 +406,8 @@ class dtdunit(base.TranslationUnit):
                         self.entity += line[e]
                         e += 1
                     s = e
+
+                    assert quote.rstripeol(self.entity) == self.entity
                     while (e < len(line) and line[e].isspace()):
                         e += 1
                     self.space_pre_definition = ' ' * (e - s)
@@ -376,10 +490,10 @@ class dtdunit(base.TranslationUnit):
         if self.isnull():
             result = "".join(lines)
             return result.rstrip() + "\n"
-        # for f in self.locfilenotes: yield f
-        # for ge in self.locgroupends: yield ge
-        # for gs in self.locgroupstarts: yield gs
-        # for n in self.locnotes: yield n
+        # for f in self._locfilenotes: yield f
+        # for ge in self._locgroupends: yield ge
+        # for gs in self._locgroupstarts: yield gs
+        # for n in self._locnotes: yield n
         if len(self.entity) > 0:
             if getattr(self, 'entitytype', None) == 'external':
                 entityline = '<!ENTITY % ' + self.entity + ' ' + self.entityparameter + ' ' + self.definition + self.closing
@@ -394,13 +508,14 @@ class dtdunit(base.TranslationUnit):
 
 
 class dtdfile(base.TranslationStore):
-    """this class represents a .dtd file, made up of dtdunits"""
+    """A .dtd file made up of dtdunits."""
     UnitClass = dtdunit
 
-    def __init__(self, inputfile=None):
+    def __init__(self, inputfile=None, android=False):
         """construct a dtdfile, optionally reading in from inputfile"""
         base.TranslationStore.__init__(self, unitclass=self.UnitClass)
         self.filename = getattr(inputfile, 'name', '')
+        self.android = android
         if inputfile is not None:
             dtdsrc = inputfile.read()
             self.parse(dtdsrc)
@@ -426,15 +541,15 @@ class dtdfile(base.TranslationStore):
                 end += 1
             # print "processing from %d to %d" % (start,end)
 
-            linesprocessed = 1 # to initialise loop
+            linesprocessed = 1  # to initialise loop
             while linesprocessed >= 1:
-                newdtd = dtdunit()
+                newdtd = dtdunit(android=self.android)
                 try:
                     linesprocessed = newdtd.parse("\n".join(lines[start:end]))
                     if linesprocessed >= 1 and (not newdtd.isnull() or newdtd.unparsedlines):
                         self.units.append(newdtd)
                 except Exception, e:
-                    warnings.warn("%s\nError occured between lines %d and %d:\n%s" % (e, start+1, end, "\n".join(lines[start:end])))
+                    warnings.warn("%s\nError occured between lines %d and %d:\n%s" % (e, start + 1, end, "\n".join(lines[start:end])))
                 start += linesprocessed
 
     def __str__(self):
@@ -464,14 +579,15 @@ class dtdfile(base.TranslationStore):
 
         This uses ElementTree to parse the DTD
 
-        @return: If the store passes validation
-        @rtype: Boolean
+        :return: If the store passes validation
+        :rtype: Boolean
         """
-        if etree is not None:
+        # Android files are invalid DTDs
+        if etree is not None and not self.android:
             try:
                 # #expand is a Mozilla hack and are removed as they are not valid in DTDs
                 dtd = etree.DTD(StringIO.StringIO(re.sub("#expand", "", self.getoutput())))
-            except etree.DTDParseError as e:
+            except etree.DTDParseError, e:
                 warnings.warn("DTD parse error: %s" % e.error_log)
                 return False
         return True
