@@ -1,0 +1,16 @@
+-r recommended.txt
+
+##################
+# Format support #
+##################
+# ini2po
+iniparse
+
+# ical2po
+vobject>=0.6.5
+
+# Trados TM
+BeautifulSoup
+
+# sub2po
+aeidon>=0.14

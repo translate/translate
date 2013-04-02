@@ -1,0 +1,4 @@
+-r optional.txt
+
+pytest
+Sphinx

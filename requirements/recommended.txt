@@ -1,0 +1,16 @@
+###############
+# Recommended #
+###############
+
+# lxml - for XML processing (XLIFF, TMX, TBX)
+lxml>=2.1.0  # >=1.3.4 should work
+
+# Faster matching in e.g. pot2po
+python-Levenshtein
+
+##########################
+# Legacy Python versions #
+##########################
+# If Python <= 2.4
+#pysqlite2
+

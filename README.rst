@@ -74,6 +74,14 @@ software.
 
 Requirements
 ------------
+
+.. note:: Please check ``requirements/*.txt``::
+
+       pip install -r requirements/recommended.txt
+
+   Will install all recommended requirements, while ``optional.txt`` will also
+   install support for all other formats.
+
 Python 2.4 or later is recommended.
 
 The Toolkit should still work with Python 2.4 but is now most extensively
