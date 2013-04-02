@@ -108,10 +108,6 @@ use libgettextpo from the gettext-tools package (it might have a slightly
 different name on your distribution). This can greatly speed up access to PO
 files, but has not yet been tested as extensively. Feedback is most welcome.
 
-Psyco can help to speed up several of the programs in the toolkit. It is
-optional, but highly recommended.
-<http://psyco.sourceforge.net/>
-
 The python wrapper to htmltidy is needed for po2html.
 http://utidylib.berlios.de/
 

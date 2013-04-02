@@ -39,8 +39,6 @@ Options (php2po):
 -x EXCLUDE, --exclude=EXCLUDE  exclude names matching EXCLUDE from input paths
 -o OUTPUT, --output=OUTPUT     write to OUTPUT in po, pot formats
 -t TEMPLATE, --template=TEMPLATE  read from TEMPLATE in php format
---psyco=MODE          use psyco to speed up the operation, modes: :doc:`none,
-                      full, profile <option_psyco>`
 -P, --pot    output PO Templates (.pot) rather than PO files (.po)
 --duplicates=DUPLICATESTYLE
                       what to do with duplicate strings (identical source
@@ -60,8 +58,6 @@ Options (po2php):
 -x EXCLUDE, --exclude=EXCLUDE   exclude names matching EXCLUDE from input paths
 -o OUTPUT, --output=OUTPUT      write to OUTPUT in php format
 -t TEMPLATE, --template=TEMPLATE  read from TEMPLATE in php format
---psyco=MODE          use psyco to speed up the operation, modes: :doc:`none,
-                      full, profile <option_psyco>`
 --fuzzy              use translations marked fuzzy
 --nofuzzy            don't use translations marked fuzzy (default)
 

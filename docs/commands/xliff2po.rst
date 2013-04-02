@@ -42,8 +42,6 @@ Options (xliff2po):
 -iINPUT, --input=INPUT   read from INPUT in xliff format
 -xEXCLUDE, --exclude=EXCLUDE  exclude names matching EXCLUDE from input paths
 -oOUTPUT, --output=OUTPUT     write to OUTPUT in po, pot formats
---psyco=MODE          use psyco to speed up the operation, modes: :doc:`none,
-                      full, profile <option_psyco>`
 -P, --pot            output PO Templates (.pot) rather than PO files (.po)
 --duplicates=DUPLICATESTYLE
                       what to do with duplicate strings (identical source
@@ -63,8 +61,6 @@ Options (po2xliff):
 -xEXCLUDE, --exclude=EXCLUDE   exclude names matching EXCLUDE from input paths
 -oOUTPUT, --output=OUTPUT  write to OUTPUT in xliff format
 -tTEMPLATE, --template=TEMPLATE   read from TEMPLATE in xliff format
---psyco=MODE          use psyco to speed up the operation, modes: :doc:`none,
-                      full, profile <option_psyco>`
 -P, --pot            output PO Templates (.pot) rather than PO files (.po)
 
 .. _xliff2po#examples:

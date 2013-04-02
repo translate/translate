@@ -43,8 +43,6 @@ Options:
 -xEXCLUDE, --exclude=EXCLUDE  exclude names matching EXCLUDE from input paths
 -oOUTPUT, --output=OUTPUT     write to OUTPUT in po, pot formats
 -tTEMPLATE, --template=TEMPLATE   read old translations from TEMPLATE
---psyco=MODE          use psyco to speed up the operation, modes: :doc:`none,
-                      full, profile <option_psyco>`
 --tm=TM              The file to use as translation memory when fuzzy matching
 -sMIN_SIMILARITY, --similarity=MIN_SIMILARITY   The minimum similarity for inclusion (default: 75%)
 --nofuzzymatching    Disable all fuzzy matching
@@ -90,6 +88,3 @@ Fuzzy matches are usually of good quality. Installation of the
 <https://pypi.python.org/pypi/python-Levenshtein>`_
 package will speed up fuzzy matching. Without this a Python based matcher is
 used which is considerably slower.
-
-Install psyco for additional speedup (it is used by most toolkit tools if it is
-installed.)

@@ -43,8 +43,6 @@ Options (txt2po):
 -iINPUT, --input=INPUT    read from INPUT in \*, txt formats
 -xEXCLUDE, --exclude=EXCLUDE   exclude names matching EXCLUDE from input paths
 -oOUTPUT, --output=OUTPUT  write to OUTPUT in po, pot formats
---psyco=MODE          use psyco to speed up the operation, modes: :doc:`none,
-                      full, profile <option_psyco>`
 -P, --pot            output PO Templates (.pot) rather than PO files (.po)
 --encoding=ENCODING    The encoding of the input file (default: UTF-8)
 --flavour=FLAVOUR      The flavour of text file: plain (default), dokuwiki, mediawiki
@@ -66,8 +64,6 @@ Options (po2txt):
 -xEXCLUDE, --exclude=EXCLUDE   exclude names matching EXCLUDE from input paths
 -oOUTPUT, --output=OUTPUT   write to OUTPUT in txt format
 -tTEMPLATE, --template=TEMPLATE   read from TEMPLATE in txt format
---psyco=MODE          use psyco to speed up the operation, modes: :doc:`none,
-                      full, profile <option_psyco>`
 -wWRAP, --wrap=WRAP  set number of columns to wrap text at
 --fuzzy              use translations marked fuzzy
 --nofuzzy            don't use translations marked fuzzy (default)

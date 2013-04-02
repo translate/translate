@@ -42,7 +42,6 @@ Converters
    option_progress
    option_filteraction
    option_multifile
-   option_psyco
    option_personality
    option_accelerator
 

@@ -52,8 +52,6 @@ Options (odf2xliff):
                       traceback <option_errorlevel>`
 -i INPUT, --input=INPUT   read from INPUT in ODF format
 -o OUTPUT, --output=OUTPUT     write to OUTPUT in XLIFF format
---psyco=MODE          use psyco to speed up the operation, modes: :doc:`none,
-                      full, profile <option_psyco>`
 
 Options (xliff2odf):
 
@@ -67,8 +65,6 @@ Options (xliff2odf):
 -i INPUT, --input=INPUT     read from INPUT in XLIFF formats
 -o OUTPUT, --output=OUTPUT  write to OUTPUT in ODF format
 -t TEMPLATE, --template=TEMPLATE   read from TEMPLATE in ODF format
---psyco=MODE          use psyco to speed up the operation, modes: :doc:`none,
-                      full, profile <option_psyco>`
 
 .. _odf2xliff#examples:
 

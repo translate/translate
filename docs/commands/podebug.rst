@@ -56,8 +56,6 @@ Options:
                        exclude names matching EXCLUDE from input paths
 -oOUTPUT, --output=OUTPUT
                        write to OUTPUT in po, pot formats
---psyco=MODE           use psyco to speed up the operation, modes: :doc:`none,
-                       full, profile <option_psyco>`
 -P, --pot              output PO Templates (.pot) rather than PO files (.po)
 -fFORMAT, --format=FORMAT     specify format string
 --rewrite=STYLE        the translation rewrite style: :doc:`xxx, en, blank,

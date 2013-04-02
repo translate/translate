@@ -336,7 +336,7 @@ class TranslateDistribution(Distribution):
         ]
         version = attrs.get("version", translateversion)
         py2exeoptions["dist_dir"] = "translate-toolkit-%s" % version
-        py2exeoptions["includes"] = ["lxml", "lxml._elementpath", "psyco"]
+        py2exeoptions["includes"] = ["lxml", "lxml._elementpath"]
         options = {"py2exe": py2exeoptions}
         baseattrs['options'] = options
         if py2exe:

@@ -46,8 +46,6 @@ Options:
 -iINPUT, --input=INPUT   read from INPUT in po format
 -xEXCLUDE, --exclude=EXCLUDE  exclude names matching EXCLUDE from input paths
 -oOUTPUT, --output=OUTPUT  write to OUTPUT in po format
---psyco=MODE          use psyco to speed up the operation, modes: :doc:`none,
-                      full, profile <option_psyco>`
 -I, --ignore-case    ignore case distinctions
 -v, --invert         invert the conflicts thus extracting conflicting destination words
 --accelerator=ACCELERATORS

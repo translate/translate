@@ -395,7 +395,6 @@ class TerminologyOptionParser(optrecurse.RecursiveOptionParser):
         (options, args) = self.parse_args()
         options.inputformats = self.inputformats
         options.outputoptions = self.outputoptions
-        self.usepsyco(options)
         self.extractor = TerminologyExtractor(foldtitle=options.foldtitle, ignorecase=options.ignorecase,
                                               accelchars=options.accelchars, termlength=options.termlength,
                                               sourcelanguage=options.sourcelanguage,

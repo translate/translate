@@ -144,7 +144,6 @@ class ConvertOptionParser(optrecurse.RecursiveOptionParser, object):
         (options, args) = self.parse_args(argv)
         options.inputformats = self.filterinputformats(options)
         options.outputoptions = self.filteroutputoptions(options)
-        self.usepsyco(options)
         try:
             self.verifyoptions(options)
         except Exception, e:

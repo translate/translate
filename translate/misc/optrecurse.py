@@ -91,7 +91,6 @@ class RecursiveOptionParser(optparse.OptionParser, object):
         self.setprogressoptions()
         self.seterrorleveloptions()
         self.setformats(formats, usetemplates)
-        self.setpsycooption()
         self.passthrough = []
         self.allowmissingtemplate = allowmissingtemplate
 
@@ -143,39 +142,6 @@ class RecursiveOptionParser(optparse.OptionParser, object):
         if file is None:
             file = sys.stdout
         file.write(self.format_manpage())
-
-    def setpsycooption(self):
-        try:
-            import psyco  # pylint: disable=W0612
-        except ImportError:
-            return
-        psycomodes = ["none", "full", "profile"]
-        psycooption = optparse.Option(None, "--psyco", dest="psyco",
-            default=None, choices=psycomodes, metavar="MODE",
-            help="use psyco to speed up the operation, modes: %s" % (", ".join(psycomodes)))
-        self.define_option(psycooption)
-
-    def usepsyco(self, options):
-        # options.psyco == None means the default, which is "full", but don't
-        #                       give a warning...
-        # options.psyco == "none" means don't use psyco at all...
-        if getattr(options, "psyco", "none") == "none":
-            return
-        try:
-            import psyco
-        except ImportError:
-            if options.psyco is not None:
-                self.warning("psyco unavailable", options, sys.exc_info())
-            return
-        if options.psyco is None:
-            options.psyco = "full"
-        if options.psyco == "full":
-            psyco.full()
-        elif options.psyco == "profile":
-            psyco.profile()
-        # tell psyco the functions it cannot compile, to prevent warnings
-        import encodings
-        psyco.cannotcompile(encodings.search_function)
 
     def set_usage(self, usage=None):
         """sets the usage string - if usage not given, uses getusagestring for
@@ -484,7 +450,6 @@ class RecursiveOptionParser(optparse.OptionParser, object):
         # the options
         options.inputformats = self.inputformats
         options.outputoptions = self.outputoptions
-        self.usepsyco(options)
         self.recursiveprocess(options)
 
     def recursiveprocess(self, options):

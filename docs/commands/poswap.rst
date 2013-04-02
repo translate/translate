@@ -49,8 +49,6 @@ Options:
 -xEXCLUDE, --exclude=EXCLUDE  exclude names matching EXCLUDE from input paths
 -oOUTPUT, --output=OUTPUT     write to OUTPUT in po, pot formats
 -tTEMPLATE, --template=TEMPLATE   read from TEMPLATE in po, pot formats
---psyco=MODE          use psyco to speed up the operation, modes: :doc:`none,
-                      full, profile <option_psyco>`
 --reverse  Do the inverse operation (converting back to a normal English based file). See the examples.
 
 .. _poswap#examples:

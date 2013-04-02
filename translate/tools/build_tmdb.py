@@ -75,11 +75,6 @@ class Builder:
 
 
 def main():
-    try:
-        import psyco
-        psyco.full()
-    except Exception:
-        pass
     parser = OptionParser(usage="%prog [options] <input files>")
     parser.add_option(
         "-d", "--tmdb", dest="tmdb_file", default="tm.db",

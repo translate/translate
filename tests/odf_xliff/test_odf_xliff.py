@@ -36,11 +36,6 @@ def setup_module(module):
 
 def args(src, tgt, **kwargs):
     arg_list = []
-    try:
-        import psyco
-        arg_list.append(u'--psyco=none')
-    except ImportError, e:
-        pass
     arg_list.extend([u'--errorlevel=traceback', src, tgt])
     for flag, value in kwargs.iteritems():
         value = unicode(value)

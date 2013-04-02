@@ -51,8 +51,6 @@ Options:
 -x EXCLUDE, --exclude=EXCLUDE  exclude names matching EXCLUDE from input paths
 -o OUTPUT, --output=OUTPUT     write to OUTPUT in po, pot formats
 -u UPDATEFILE, --update=UPDATEFILE  update terminology in UPDATEFILE
---psyco=MODE          use psyco to speed up the operation, modes: :doc:`none,
-                      full, profile <option_psyco>`
 -S STOPFILE, --stopword-list=STOPFILE  read stopword (term exclusion) list from STOPFILE (default site-packages/translate/share/stoplist-en)
 -F, --fold-titlecase  fold "Title Case" to lowercase (default)
 -C, --preserve-case   preserve all uppercase/lowercase

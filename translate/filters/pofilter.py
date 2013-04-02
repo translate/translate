@@ -202,8 +202,6 @@ class FilterOptionParser(optrecurse.RecursiveOptionParser):
         options.inputformats = self.inputformats
         options.outputoptions = self.outputoptions
 
-        self.usepsyco(options)
-
         if options.listfilters:
             print options.checkfilter.getfilterdocs()
         else:

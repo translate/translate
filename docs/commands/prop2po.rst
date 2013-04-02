@@ -55,8 +55,6 @@ Options (prop2po):
 -xEXCLUDE, --exclude=EXCLUDE  exclude names matching EXCLUDE from input paths
 -oOUTPUT, --output=OUTPUT  write to OUTPUT in po, pot formats
 -tTEMPLATE, --template=TEMPLATE   read from TEMPLATE in properties format
---psyco=MODE          use psyco to speed up the operation, modes: :doc:`none,
-                      full, profile <option_psyco>`
 -P, --pot            output PO Templates (.pot) rather than PO files (.po)
 --personality=TYPE    override the input file format: :doc:`flex, java, mozilla,
                       java-utf8, skype, gaia, strings <option_personality>`
@@ -80,8 +78,6 @@ Options (po2prop):
 -xEXCLUDE, --exclude=EXCLUDE  exclude names matching EXCLUDE from input paths
 -oOUTPUT, --output=OUTPUT  write to OUTPUT in properties format
 -tTEMPLATE, --template=TEMPLATE  read from TEMPLATE in properties format
---psyco=MODE          use psyco to speed up the operation, modes: :doc:`none,
-                      full, profile <option_psyco>`
 --personality=TYPE    override the input file format: :doc:`flex, java, mozilla,
                       java-utf8, skype, gaia, strings <option_personality>`
                       (for .properties files, default: java)

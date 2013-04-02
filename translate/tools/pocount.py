@@ -303,12 +303,6 @@ def main():
     if options.style_short_words:
         style = style_short_words
 
-    try:
-        import psyco
-        psyco.full()
-    except Exception:
-        pass
-
     summarizer(args, style, options.incomplete_only)
 
 if __name__ == '__main__':
