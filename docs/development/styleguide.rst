@@ -16,7 +16,7 @@ General
 -------
 
 Indentation:
-  4 real spaces, no tabs. Exceptions, modules that have copied into
+  4 real spaces, no tabs. Exceptions: modules that have been copied into
   the source that don't follow this guideline.
 
 Maximum line length:
@@ -126,7 +126,7 @@ Slice notation:
 
 .. note::
 
-   String slice formating is still under discussion.
+   String slice formatting is still under discussion.
 
 Comparisons:
   - against arbitrary types: ``==`` and ``!=``
@@ -148,8 +148,8 @@ If statements:
   - Wrap between ``and``, ``or``, etc.
   - Keep ``not`` with the expression
   - Use ``()`` alignment between expressions 
-  - Use extra ``()`` to eliminate abiguity, don't rely on an understanding of
-    Python operator precedent rules.
+  - Use extra ``()`` to eliminate ambiguity, don't rely on an understanding of
+    Python operator precedence rules.
 
   Good::
 
@@ -219,12 +219,12 @@ We introduce a number of special roles for documentation:
 * ``:opt:`` -- mark command options and command values.
 
   * ``:opt:`-P``` gives :opt:`-P`
-  * ``:opt:`--progress=dots``` gives :opt:`--proress=dots`
+  * ``:opt:`--progress=dots``` gives :opt:`--progress=dots`
   * ``:opt:`dots``` gives :opt:`dots`
 
 * ``:man:`` -- link to a Linux man page.
 
-  * ``:man:`msgfmt``` gives :man:msgfmt
+  * ``:man:`msgfmt``` gives :man:`msgfmt`
 
 Docstrings
 ----------
@@ -252,7 +252,7 @@ the important parts though are:
 
 - A docstring should have a brief one-line summary, ending with a period.
 - If there are more details there should be a blank line between the one-line
-  summary and the rest of the text.  Use pragraphs and formating as needed.
+  summary and the rest of the text.  Use paragraphs and formatting as needed.
 - Use `reST field lists`_ to describe the input parameters and/or return types
   as the last part of the docstring.
 - Use proper capitalisation and punctuation.
@@ -293,7 +293,7 @@ Parameter documentation:
         :rtype: Return type 
         """
 
-Cross refencing code:
+Cross referencing code:
    When talking about other objects, methods, functions and variables
    it is good practice to cross-reference them with Sphinx's `Python
    cross-referencing`_.
@@ -303,8 +303,8 @@ Other directives:
 
 .. note::
 
-   We still Need to gather the useful ones that we want you to use and how to use
-   then.  E.g. how to talk about a paramter in the docstring.  How to reference
+   We still need to gather the useful ones that we want you to use and how to use
+   them.  E.g. how to talk about a parameter in the docstring.  How to reference
    classes in the module.  How to reference other modules, etc.
 
 
@@ -336,7 +336,7 @@ General:
   - The ``#`` symbol (pound or hash) is used to start comments.
   - A space must follow the ``#`` between any written text.
   - Line length must be observed.
-  - Inline comments are preceeded by two spaces.
+  - Inline comments are preceded by two spaces.
   - Write sentences correctly: proper capitalisation and punctuation.
 
   Good::
