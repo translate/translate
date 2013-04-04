@@ -25,6 +25,10 @@ import zipfile
 
 from lxml import etree
 
+import sys
+dir = path.dirname(path.abspath(__file__))
+sys.path.insert(0, path.dirname(path.dirname(dir)))  # relative to tests/*
+
 from translate.convert import odf2xliff
 from translate.convert import xliff2odf
 from translate.storage import factory, xliff
