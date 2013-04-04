@@ -27,6 +27,18 @@ import shutil
 import __init__ as indexing
 import CommonIndexer
 
+noindexer = True
+for indexer in [ "lucene", "PyLucene", "xapian" ]:
+    try:
+        __import__(indexer)
+    except ImportError:
+        continue
+    noindexer = False
+    break
+
+import pytest
+pytestmark = pytest.mark.skipif("noindexer")
+
 DATABASE = "tmp-index"
 
 # overwrite this value to change the preferred indexing engine
