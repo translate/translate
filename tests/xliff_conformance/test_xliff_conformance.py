@@ -24,6 +24,15 @@ import os.path as path
 from lxml import etree
 from subprocess import call
 
+import sys
+dir = path.dirname(path.abspath(__file__))
+dir = path.dirname(path.dirname(dir))  # top-level (translate)
+sys.path.insert(0, dir)  # relative to tests/*
+os.environ["PYTHONPATH"] = os.pathsep.join(sys.path)
+os.environ["PATH"] = (dir + os.path.sep + "translate" +
+                      os.path.sep + "convert" +
+                      os.pathsep + os.environ["PATH"]) 
+
 schema = None
 
 

@@ -16,3 +16,4 @@
 /dist/
 MANIFEST
 MANIFEST.in
+tests/xliff_conformance/af-pootle.xlf
