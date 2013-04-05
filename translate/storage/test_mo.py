@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 
-import os.path
+import os
+import sys
 import StringIO
 import subprocess
 
@@ -8,6 +9,13 @@ from translate.storage import factory
 from translate.storage import mo
 from translate.storage import test_base
 
+dir = os.path.dirname(os.path.abspath(__file__))
+dir = os.path.dirname(os.path.dirname(dir))  # top-level (translate)
+sys.path.insert(0, dir)  # relative to translate/storage
+os.environ["PYTHONPATH"] = os.pathsep.join(sys.path)
+os.environ["PATH"] = (dir + os.path.sep + "translate" +
+                      os.path.sep + "tools" +
+                      os.pathsep + os.environ["PATH"])
 
 class TestMOUnit(test_base.TestTranslationUnit):
     UnitClass = mo.mounit
