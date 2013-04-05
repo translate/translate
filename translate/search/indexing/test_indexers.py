@@ -23,9 +23,28 @@
 import os
 import sys
 import shutil
+import pytest
 
 import __init__ as indexing
 import CommonIndexer
+
+# following block only needs running under py.test; unclear how to detect it?
+
+# check whether any indexer is present at all
+noindexer = True
+for indexer in [ "lucene", "PyLucene", "xapian" ]:
+    try:
+        __import__(indexer)
+    except ImportError:
+        continue
+    noindexer = False
+    break
+# mark entire module as skipped for py.test if no indexer available
+pytestmark = pytest.mark.skipif("noindexer")
+
+# FIXME (bug 2819) need to rename most test_* functions, add new "parametrized"
+# test_indexer function to normalize operation whether run directly as script
+# or via py.test
 
 DATABASE = "tmp-index"
 

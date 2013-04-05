@@ -1,12 +1,12 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-from py.test import raises, mark
+from py.test import raises, mark, importorskip
 
 from translate.misc import wStringIO
 from translate.misc.multistring import multistring
 from translate.storage import test_po
-from translate.storage import cpo
+cpo = importorskip("translate.storage.cpo")
 
 
 class TestCPOUnit(test_po.TestPOUnit):
