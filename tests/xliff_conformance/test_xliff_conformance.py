@@ -20,9 +20,23 @@
 
 import os
 import os.path as path
+import sys
 
 from lxml import etree
 from subprocess import call
+
+# get directory of this test
+dir = os.path.dirname(os.path.abspath(__file__))
+# get top-level directory (moral equivalent of ../..)
+dir = os.path.dirname(os.path.dirname(dir))
+# load python modules from top-level
+sys.path.insert(0, dir)
+# add top-level to PYTHONPATH for subprocesses
+os.environ["PYTHONPATH"] = os.pathsep.join(sys.path)
+# add {top-level}/translate/convert to PATH for [po]o2xliff
+os.environ["PATH"] = (dir + os.path.sep + "translate" +
+                      os.path.sep + "convert" +
+                      os.pathsep + os.environ["PATH"])
 
 schema = None
 
