@@ -99,6 +99,8 @@ translatebashscripts = [
     apply(join, ('tools', ) + script) for script in [
                   ('junitmsgfmt', ),
                   ('mozilla', 'build_firefox.sh'),
+                  ('mozilla', 'buildxpi.py'),
+                  ('mozilla', 'get_moz_enUS.py'),
                   ('pocommentclean', ),
                   ('pocompendium', ),
                   ('pomigrate2', ),
