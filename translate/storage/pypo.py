@@ -35,7 +35,7 @@ from translate.storage import pocommon, base, poparser
 from translate.storage.pocommon import encodingToUse
 
 lsep = "\n#: "
-"""Seperator for #: entries"""
+"""Separator for #: entries"""
 
 # general functions for quoting / unquoting po strings
 

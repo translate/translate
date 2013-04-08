@@ -44,7 +44,7 @@ from translate.storage import pypo
 from translate.storage.pocommon import encodingToUse
 
 lsep = " "
-"""Seperator for #: entries"""
+"""Separator for #: entries"""
 
 STRING = c_char_p
 
@@ -112,7 +112,7 @@ else:
     except OSError, e:
         raise ImportError("gettext PO library not found")
 
-# Setup return and paramater types
+# Setup return and parameter types
 # File access
 gpo.po_file_read_v3.argtypes = [STRING, POINTER(po_xerror_handler)]
 gpo.po_file_write_v2.argtypes = [c_int, STRING, POINTER(po_xerror_handler)]
@@ -320,7 +320,7 @@ class pounit(pocommon.pounit):
     target = property(gettarget, settarget)
 
     def getid(self):
-        """The unique identifier for this unit according to the convensions in
+        """The unique identifier for this unit according to the conventions in
         .mo files."""
         id = (gpo.po_message_msgid(self._gpo_message) or "").decode(self._encoding)
         # Gettext does not consider the plural to determine duplicates, only
