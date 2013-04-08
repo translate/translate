@@ -177,7 +177,7 @@ def get_libgettextpo_version():
     """
     libversion = c_long.in_dll(gpo, 'libgettextpo_version')
     major = libversion.value >> 16
-    minor = libversion.value >> 8
+    minor = (libversion.value >> 8) & 0xff
     subminor = libversion.value - (major << 16) - (minor << 8)
     return major, minor, subminor
 
