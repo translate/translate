@@ -135,8 +135,8 @@ class RecursiveOptionParser(optparse.OptionParser, object):
         result.append('.PP\n')
         for option in self.option_list:
             result.append('.TP\n')
-            result.append('%s\n' % option)
-            result.append('%s\n' % option.help)
+            result.append('%s\n' % str(option).replace('-', '\-'))
+            result.append('%s\n' % option.help.replace('-', '\-'))
         return "".join(result)
 
     def print_manpage(self, file=None):
