@@ -17,7 +17,7 @@ Translate Toolkit.
 Developer's Guide
 -----------------
 
-If you are a developer and are willing to use the Translate Toolkit for
+If you are a developer interested in using the Translate Toolkit for
 building new tools, make sure to read through this part.
 
 .. toctree::
@@ -25,6 +25,7 @@ building new tools, make sure to read through this part.
 
    development/styleguide
    development/building
+   development/testing
    development/contributing
    development/developers
 
