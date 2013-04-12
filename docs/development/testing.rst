@@ -35,7 +35,7 @@ importorskip
 
 .. the ~ in this :func: reference suppresses all but the last component
 
-The builtin :func:`~pytest:_pytest.runner.importorskip` function can be used
+Use the builtin :func:`~pytest:_pytest.runner.importorskip` function
 to skip a test module if a dependency cannot be imported:
 
 .. code-block:: python
@@ -49,10 +49,8 @@ that causes pytest to skip the entire module rather than failing.
 skipif
 ^^^^^^
 
-.. skipif ref = "Marking a test function to be skipped"
-
-:ref:`pytest:skipif` if certain criteria are not met is done with the
-``skipif`` decorator.  The following will skip a test if the version of
+Use the ``skipif`` decorator to :ref:`mark tests to be skipped <pytest:skipif>`
+unless certain criteria are met.  The following skips a test if the version of
 *mymodule* is too old:
 
 .. code-block:: python
@@ -77,10 +75,8 @@ static variable in the module:
 xfail
 ^^^^^
 
-.. xfail ref = "Mark a test function as expected to fail"
-
-:ref:`pytest:xfail` with the ``xfail`` decorator. This allows you to do the
-following:
+Use the ``xfail`` decorator to :ref:`mark tests as expected to fail
+<pytest:xfail>`. This allows you to do the following:
 
 * Build tests for functionality that we haven't implemented yet
 * Mark tests that will fail on certain platforms or Python versions
