@@ -43,7 +43,9 @@ are valid. Check the `TBXChecker explanation
 Conformance
 ===========
 
-* Basic file creation
+Translate Toolkit TBX format support allows:
+
+* Basic TBX file creation
 * Creating a bilingual TBX from CSV using :doc:`/commands/csv2tbx`
 * Using ``<tig>`` tags only
 
@@ -52,6 +54,8 @@ Conformance
 
 Non-Conformance
 ===============
+
+The following are not yet supported:
 
 * ``id`` attribute for ``<termEntry>`` tags
 * Definitions
