@@ -88,7 +88,7 @@ Test Description
 accelerators
 ------------
 
-Checks whether :wiki:`guide/translation/accelerators` are consistent between
+Checks whether :ref:`accelerators <guide:accelerators>` are consistent between
 the two strings.
 
 Make sure you use the :opt:`--mozilla`, :opt:`--kde`, etc options so that

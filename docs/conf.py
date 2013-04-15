@@ -321,6 +321,7 @@ intersphinx_mapping = {
     'django': ('http://django.readthedocs.org/en/latest/', None),
     'pootle': ('http://docs.translatehouse.org/projects/pootle/en/latest/', None),
     'virtaal': ('http://docs.translatehouse.org/projects/virtaal/en/latest/', None),
+    'guide': ('http://docs.translatehouse.org/projects/localization-guide/en/latest/', None),
 }
 
 
