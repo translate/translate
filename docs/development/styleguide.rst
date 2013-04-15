@@ -259,11 +259,11 @@ With bash *command line examples*, to improve readability use::
 Add ``$`` command prompt markers and ``#`` comments as required, as shown in
 this example:
 
-  .. code-block:: bash
+.. code-block:: bash
 
-     $ cd docs
-     $ make html  # Build all Sphinx documentation
-     $ make linkcheck  # Report broken links
+   $ cd docs
+   $ make html  # Build all Sphinx documentation
+   $ make linkcheck  # Report broken links
 
 
 
