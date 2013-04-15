@@ -226,6 +226,55 @@ We introduce a number of special roles for documentation:
 
   * ``:man:`msgfmt``` gives :man:`msgfmt`
 
+
+Code and command line highlighting
+----------------------------------
+All code examples and format snippets should be highlighted to make them easier
+to read.  By default Sphinx uses Python highlighting of code snippets (but it
+doesn't always work).  You will want to change that in these situations:
+
+* The examples are not Python e.g. talking about INI file parsing.  In which
+  case set the file level highlighting using::
+
+     .. highlight:: ini
+
+* There are multiple different code examples in the document, then use::
+
+    .. code-block:: ruby
+
+  before each code block.
+
+* Python code highlighting isn't working, then force Python highlighting using::
+
+    .. code-block:: python
+
+.. note:: Generally we prefer explicit markup as this makes it easier for those
+   following you to know what you intended.  So use ``.. code-block:: python``
+   even though in some cases this is not required.
+
+With bash *command line examples*, to improve readability use::
+
+    .. code-block:: bash
+
+Add ``$`` command prompt markers and ``#`` comments as required, as shown in
+this example:
+
+  .. code-block:: bash
+
+     $ cd docs
+     $ make html  # Build all Sphinx documentation
+     $ make linkcheck  # Report broken links
+
+
+
+User documentation
+------------------
+
+This is documentation found in ``docs/`` and that is published on Read the
+Docs. The target is the end user so our primary objective is to make accesible,
+readable and beautiful documents for them.
+
+
 Docstrings
 ----------
 
