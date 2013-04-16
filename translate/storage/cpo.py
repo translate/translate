@@ -29,8 +29,6 @@ to have a look at gettext-tools/libgettextpo/gettext-po.h from the gettext
 package for the public API of the library.
 """
 
-from __future__ import with_statement
-
 from ctypes import c_size_t, c_int, c_uint, c_char_p, c_long, CFUNCTYPE, POINTER
 from ctypes import Structure, cdll
 import ctypes.util
@@ -684,8 +682,10 @@ class pofile(pocommon.pofile):
 
         def writefile(filename):
             self._gpo_memory_file = gpo.po_file_write_v2(self._gpo_memory_file, filename, xerror_handler)
-            with open(filename) as tfile:
-                return tfile.read()
+            tfile = open(filename)
+            out = tfile.read()
+            tfile.close()
+            return out
 
         outputstring = ""
         if self._gpo_memory_file:
