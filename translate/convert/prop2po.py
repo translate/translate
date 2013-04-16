@@ -25,10 +25,12 @@ for examples and usage instructions.
 """
 
 import sys
+import logging
 
 from translate.storage import po
 from translate.storage import properties
 
+logger = logging.getLogger(__name__)
 
 def _collapse(store, units):
     sources = [u.source for u in units]
@@ -139,7 +141,8 @@ class prop2po:
                 waitingcomments = []
                 thetargetfile.addunit(origpo)
             elif translatedpo is not None:
-                print >> sys.stderr, "error converting original properties definition %s" % origprop.name
+                logger.error("error converting original properties definition %s",
+                             origprop.name)
         if self.personality == "gaia":
             thetargetfile = self.fold_gaia_plurals(thetargetfile)
         thetargetfile.removeduplicates(duplicatestyle)
@@ -186,8 +189,8 @@ class prop2po:
 
         # if everything went well, there should be nothing left in plurals
         if len(plurals) != 0:
-            print >> sys.stderr, "Not all plural units converted correctly:"
-            print >> sys.stderr, "\n".join(plurals.keys())
+            logger.warning("Not all plural units converted correctly:" +
+                           "\n".join(plurals.keys()))
         return new_store
 
     def convertunit(self, propunit, commenttype):

@@ -25,10 +25,12 @@ for examples and usage instructions.
 """
 
 import sys
+import logging
 
 from translate.storage import po
 from translate.storage import php
 
+logger = logging.getLogger(__name__)
 
 class php2po:
     """convert a .php file to a .po file for handling the translation..."""
@@ -69,7 +71,8 @@ class php2po:
                     outputunit.target = translatedoutputunit.source
                 outputstore.addunit(outputunit)
             elif translatedoutputunit is not None:
-                print >> sys.stderr, "error converting original properties definition %s" % templateunit.name
+                logger("error converting original properties definition %s",
+                       templateunit.name)
         outputstore.removeduplicates(duplicatestyle)
         return outputstore
 

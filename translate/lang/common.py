@@ -61,9 +61,11 @@ TODOs and Ideas for possible features:
 """
 
 import re
+import logging
 
 from translate.lang import data
 
+logger = logging.getLogger(__name__)
 
 class Common(object):
     """This class is the common parent class for all language classes."""
@@ -210,8 +212,8 @@ class Common(object):
                 break
             code = data.simplercode(code)
         if not code:
-            #print >> sys.stderr, \
-            #         "Warning: No information found about language code %s" % code
+            # message suppressed by default at level info
+            logger.info("No information found about language code %s", code)
             pass
         return language
 

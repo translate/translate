@@ -25,9 +25,11 @@ for examples and usage instructions.
 """
 
 import sys
+import logging
 
 from translate.storage import po
 
+logger = logging.getLogger(__name__)
 
 class ini2po:
     """convert a .ini file to a .po file for handling the translation..."""
@@ -67,7 +69,8 @@ class ini2po:
                     origpo.target = translatedpo.source
                 output_store.addunit(origpo)
             elif translatedpo is not None:
-                print >> sys.stderr, "error converting original ini definition %s" % origpo.name
+                logger.error("error converting original ini definition %s",
+                             origpo.name)
         output_store.removeduplicates(duplicatestyle)
         return output_store
 

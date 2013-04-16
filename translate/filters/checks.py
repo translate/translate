@@ -30,6 +30,7 @@ When adding a new test here, please document and explain their behaviour on the
 """
 
 import re
+import logging
 
 from translate.filters import decoration
 from translate.filters import helpers
@@ -39,6 +40,8 @@ from translate.filters.decorators import (critical, functional, cosmetic,
                                           extraction)
 from translate.lang import factory
 from translate.lang import data
+
+logger = logging.getLogger(__name__)
 
 # These are some regular expressions that are compiled for use in some tests
 
@@ -578,8 +581,7 @@ class TeeChecker:
             for filtername in limitfilters:
 
                 if not filtername in self.combinedfilters:
-                    import sys
-                    print >> sys.stderr, "warning: could not find filter %s" % filtername
+                    logger.warning("could not find filter %s", filtername)
 
         return self.combinedfilters
 

@@ -21,6 +21,7 @@
 import sys
 import os.path
 import fnmatch
+import logging
 import traceback
 import optparse
 try:
@@ -93,6 +94,7 @@ class RecursiveOptionParser(optparse.OptionParser, object):
         self.setformats(formats, usetemplates)
         self.passthrough = []
         self.allowmissingtemplate = allowmissingtemplate
+        logging.basicConfig()
 
     def get_prog_name(self):
         return os.path.basename(sys.argv[0])
@@ -165,7 +167,7 @@ class RecursiveOptionParser(optparse.OptionParser, object):
                 errorinfo = ""
             if errorinfo:
                 msg += ": " + errorinfo
-        print >> sys.stderr, "\n%s: warning: %s" % (self.get_prog_name(), msg)
+        logging.getLogger(self.get_prog_name()).warning(msg)
 
     def getusagestring(self, option):
         """returns the usage string for the given option"""
@@ -414,7 +416,10 @@ class RecursiveOptionParser(optparse.OptionParser, object):
         """Sets up a progress bar appropriate to the options and files."""
         if options.progress in ('bar', 'verbose'):
             self.progressbar = self.progresstypes[options.progress](0, len(allfiles))
-            print >> sys.stderr, "processing %d files..." % len(allfiles)
+            # should use .getChild("progress") but that is only in 2.7
+            logger = logging.getLogger(self.get_prog_name() + ".progress")
+            logger.setLevel(logging.INFO)
+            logger.info("processing %d files...", len(allfiles))
         else:
             self.progressbar = self.progresstypes[options.progress]()
 

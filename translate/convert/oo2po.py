@@ -26,6 +26,7 @@ for examples and usage instructions.
 """
 
 import sys
+import logging
 from urllib import urlencode
 
 from translate.storage import po
@@ -33,6 +34,7 @@ from translate.storage import oo
 
 # TODO: support using one GSI file as template, another as input (for when English is in one and translation in another)
 
+logger = logging.getLogger(__name__)
 
 class oo2po:
 
@@ -63,7 +65,8 @@ class oo2po:
         if self.sourcelanguage in theoo.languages:
             part1 = theoo.languages[self.sourcelanguage]
         else:
-            print >> sys.stderr, "/".join(theoo.lines[0].getkey()), "language not found: %s" % (self.sourcelanguage)
+            logger.error("/".join(theoo.lines[0].getkey()) +
+                         "language not found: %s", self.sourcelanguage)
             return []
         if self.blankmsgstr:
             # use a blank part2
@@ -139,9 +142,13 @@ def convertoo(inputfile, outputfile, templates, pot=False, sourcelanguage=None, 
         else:
             sourcelanguage = "en-US"
     if not sourcelanguage in inputstore.languages:
-        print >> sys.stderr, "Warning: sourcelanguage '%s' not found in inputfile '%s' (contains %s)" % (sourcelanguage, inputfilename, ", ".join(inputstore.languages))
+        logger.warning("sourcelanguage '%s' not found in inputfile '%s' (contains %s)",
+                       sourcelanguage, inputfilename,
+                       ", ".join(inputstore.languages))
     if targetlanguage and targetlanguage not in inputstore.languages:
-        print >> sys.stderr, "Warning: targetlanguage '%s' not found in inputfile '%s' (contains %s)" % (targetlanguage, inputfilename, ", ".join(inputstore.languages))
+        logger.warning("targetlanguage '%s' not found in inputfile '%s' (contains %s)",
+                       targetlanguage, inputfilename,
+                       ", ".join(inputstore.languages))
     convertor = oo2po(sourcelanguage, targetlanguage, blankmsgstr=pot, long_keys=multifilestyle != "single")
     outputstore = convertor.convertstore(inputstore, duplicatestyle)
     if outputstore.isempty():

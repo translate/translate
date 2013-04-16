@@ -32,6 +32,7 @@ from translate.storage import po
 from translate.storage import factory
 from translate.misc import file_discovery
 
+logger = logging.getLogger(__name__)
 
 def create_termunit(term, unit, targets, locations, sourcenotes, transnotes, filecounts):
     termunit = po.pounit(term)
@@ -118,14 +119,14 @@ class TerminologyExtractor(object):
                     elif stopline[1] == 'I':
                         self.stopignorecase = True
                     else:
-                        logging.warning("%s line %d - bad case mapping directive", (self.stopfile, line))
+                        logger.warning("%s line %d - bad case mapping directive", (self.stopfile, line))
                 elif stoptype == '/':
                     self.stoprelist.append(re.compile(stopline[1:-1] + '$'))
                 else:
                     self.stopwords[stopline[1:-1]] = actions[stoptype]
         except KeyError, character:
-            logging.warning("%s line %d - bad stopword entry starts with", (self.stopfile, line))
-            logging.warning("%s line %d all lines after error ignored", (self.stopfile, line + 1))
+            logger.warning("%s line %d - bad stopword entry starts with", (self.stopfile, line))
+            logger.warning("%s line %d all lines after error ignored", (self.stopfile, line + 1))
         stopfile.close()
 
     def clean(self, string):
@@ -235,8 +236,7 @@ class TerminologyExtractor(object):
     def extract_terms(self, create_termunit=create_termunit, inputmin=1, fullmsgmin=1, substrmin=2, locmin=2):
         terms = {}
         locre = re.compile(r":[0-9]+$")
-        print >> sys.stderr, ("%d terms from %d units" %
-                              (len(self.glossary), self.units))
+        logger.info("%d terms from %d units", len(self.glossary), self.units)
         for term, translations in self.glossary.iteritems():
             if len(translations) <= 1:
                 continue
@@ -297,7 +297,7 @@ class TerminologyExtractor(object):
         """reduce subphrases from extracted terms"""
         # reduce subphrase
         termlist = terms.keys()
-        print >> sys.stderr, "%d terms after thresholding" % len(termlist)
+        logger.info("%d terms after thresholding", len(termlist))
         termlist.sort(lambda x, y: cmp(len(x), len(y)))
         for term in termlist:
             words = term.split()
@@ -316,7 +316,7 @@ class TerminologyExtractor(object):
                 words.pop(0)
                 if terms[term][0] == terms.get(' '.join(words), [0])[0]:
                     del terms[' '.join(words)]
-        print >> sys.stderr, "%d terms after subphrase reduction" % len(terms.keys())
+        logger.info("%d terms after subphrase reduction", len(terms.keys()))
         termitems = terms.values()
         if sortorders is None:
             sortorders = self.sortorders_default
@@ -329,7 +329,7 @@ class TerminologyExtractor(object):
             elif order == "length":
                 termitems.sort(lambda x, y: cmp(len(x[1].source), len(y[1].source)))
             else:
-                logging.warning("unknown sort order %s", order)
+                logger.warning("unknown sort order %s", order)
         return termitems
 
 
@@ -442,7 +442,7 @@ class TerminologyOptionParser(optrecurse.RecursiveOptionParser):
     def outputterminology(self, options):
         """saves the generated terminology glossary"""
         termfile = po.pofile()
-        print >> sys.stderr, ("scanned %d files" % self.files)
+        logger.info("scanned %d files", self.files)
         terms = self.extractor.extract_terms(inputmin=options.inputmin, fullmsgmin=options.fullmsgmin,
                                    substrmin=options.substrmin, locmin=options.locmin)
         termitems = self.extractor.filter_terms(terms, nonstopmin=options.nonstopmin, sortorders=options.sortorders)

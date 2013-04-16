@@ -35,6 +35,7 @@ import ctypes.util
 import os
 import re
 import sys
+import logging
 import tempfile
 
 from translate.lang import data
@@ -42,6 +43,8 @@ from translate.misc.multistring import multistring
 from translate.storage import base, pocommon
 from translate.storage import pypo
 from translate.storage.pocommon import encodingToUse
+
+logger = logging.getLogger(__name__)
 
 lsep = " "
 """Separator for #: entries"""
@@ -78,9 +81,10 @@ class po_error_handler(Structure):
 
 
 # Callback functions for po_xerror_handler
-def xerror_cb(severity, message, filename, lineno, column, multilint_p,
+def xerror_cb(severity, message, filename, lineno, column, multiline_p,
               message_text):
-    print >> sys.stderr, "xerror_cb", severity, message, filename, lineno, column, multilint_p, message_text
+    logger.error("xerror_cb" + severity + message +
+                 filename + lineno + column + multiline_p + message_text)
     if severity >= 1:
         raise ValueError(message_text)
 
@@ -88,7 +92,10 @@ def xerror_cb(severity, message, filename, lineno, column, multilint_p,
 def xerror2_cb(severity, message1, filename1, lineno1, column1, multiline_p1,
                message_text1, message2, filename2, lineno2, column2,
                multiline_p2, message_text2):
-    print >> sys.stderr, "xerror2_cb", severity, message1, filename1, lineno1, column1, multiline_p1, message_text1, message2, filename2, lineno2, column2, multiline_p2, message_text2
+    logger.error("xerror2_cb" + severity +
+                 message1 +
+                 filename1 + lineno1 + column1 + multiline_p1 + message_text1,
+                 filename2 + lineno2 + column2 + multiline_p2 + message_text2)
     if severity >= 1:
         raise ValueError(message_text1)
 
@@ -749,7 +756,7 @@ class pofile(pocommon.pofile):
 
         self._gpo_memory_file = gpo.po_file_read_v3(input, xerror_handler)
         if self._gpo_memory_file is None:
-            print >> sys.stderr, "Error:"
+            logger.error("Error:")
 
         if needtmpfile:
             os.remove(input)
