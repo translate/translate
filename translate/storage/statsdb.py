@@ -556,8 +556,8 @@ class StatsCache(object):
         if result is not None:
             return result
         else:
-            logger.warning("""WARNING: Database in inconsistent state.
-            fileid %d and unitid %s have no entries in the table units.""",
+            logger.warning("Database in inconsistent state - fileid %d and "
+                           "unitid %s have no entries in the table units.",
                            fileid, unitid)
             # If values.fetchone() is None, then we return an empty list,
             # to make FileTotals.new_record(*self.get_unit_stats(fileid, unitid))
