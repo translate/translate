@@ -7,7 +7,7 @@ Subtitles
 .. versionadded:: 1.4
 
 The translation of subtitles are supported in the toolkit with the commands
-:doc:`suc2po </commands/sub2po>` and po2sub.
+:doc:`sub2po </commands/sub2po>` and po2sub.
 
 The following formats are supported for subtitles:
 

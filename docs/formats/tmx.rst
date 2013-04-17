@@ -16,7 +16,7 @@ Summary: `TMX version 1.4
 Level 1, except that no markup is stripped.
 
 * All required header fields are supplied.
-* The adminlang field in the header is always English.
+* The ``adminlang`` field in the header is always English.
 * None of the optional header fields are supplied.
 * We assume that only two languages are used (source and single target
   language).

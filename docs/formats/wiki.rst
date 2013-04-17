@@ -25,7 +25,7 @@ Supported Wiki Formats
 The following is a list of the wikis supported together with a list of the
 items that we can process:
 
-* `docuwiki <http://wiki.splitbrain.org/wiki:dokuwiki>`_ -- heading, bullet,
+* `dokuwiki <http://wiki.splitbrain.org/wiki:dokuwiki>`_ -- heading, bullet,
   numbered list
 * `MediaWiki <http://www.mediawiki.org/wiki/MediaWiki>`_ -- heading, bullet,
   numbered list
