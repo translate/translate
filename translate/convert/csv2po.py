@@ -123,8 +123,14 @@ class csv2po:
             thepolist = self.simpleindex[simplify(csvunit.source)]
             if len(thepolist) > 1:
                 csvfilename = getattr(self.csvfile, "filename", "(unknown)")
-                matches = "\n  ".join(["possible match: " + pounit.source for pounit in thepolist])
-                logger.warning("%s - csv entry not found in pofile, multiple matches found:\n  location\t%s\n  original\t%s\n  translation\t%s\n  %s",
+                matches = "\n  ".join(["possible match: " +
+                                       pounit.source for pounit in thepolist])
+                logger.warning("%s - csv entry not unique in pofile, "
+                               "multiple matches found:\n"
+                               "  location\t%s\n"
+                               "  original\t%s\n"
+                               "  translation\t%s\n"
+                               "  %s",
                                csvfilename, csvunit.location,
                                csvunit.source, csvunit.target, matches)
                 self.unmatched += 1
@@ -132,7 +138,10 @@ class csv2po:
             pounit = thepolist[0]
         else:
             csvfilename = getattr(self.csvfile, "filename", "(unknown)")
-            logger.warning("%s - csv entry not found in pofile:\n  location\t%s\n  original\t%s\n  translation\t%s",
+            logger.warning("%s - csv entry not found in pofile:\n"
+                           "  location\t%s\n"
+                           "  original\t%s\n"
+                           "  translation\t%s",
                            csvfilename, csvunit.location,
                            csvunit.source, csvunit.target)
             self.unmatched += 1
@@ -150,7 +159,7 @@ class csv2po:
             elif simplify(csvunit.source) == simplify(pluralid):
                 pounit.msgstr[1] = csvunit.target
             else:
-                logger.warning("couldn't work out singular or plural: %r, %r, %r", 
+                logger.warning("couldn't work out singular/plural: %r, %r, %r", 
                                csvunit.source, singularid, pluralid)
                 self.unmatched += 1
                 return

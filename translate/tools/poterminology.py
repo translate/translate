@@ -119,14 +119,17 @@ class TerminologyExtractor(object):
                     elif stopline[1] == 'I':
                         self.stopignorecase = True
                     else:
-                        logger.warning("%s line %d - bad case mapping directive", (self.stopfile, line))
+                        logger.warning("%s:%d - bad case mapping directive",
+                                       self.stopfile, line)
                 elif stoptype == '/':
                     self.stoprelist.append(re.compile(stopline[1:-1] + '$'))
                 else:
                     self.stopwords[stopline[1:-1]] = actions[stoptype]
         except KeyError, character:
-            logger.warning("%s line %d - bad stopword entry starts with", (self.stopfile, line))
-            logger.warning("%s line %d all lines after error ignored", (self.stopfile, line + 1))
+            logger.warning("%s:%d - bad stopword entry starts with '%s'",
+                           self.stopfile, line, str(character))
+            logger.warning("%s:%d all lines after error ignored",
+                           self.stopfile, line + 1)
         stopfile.close()
 
     def clean(self, string):

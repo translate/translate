@@ -141,7 +141,7 @@ class prop2po:
                 waitingcomments = []
                 thetargetfile.addunit(origpo)
             elif translatedpo is not None:
-                logger.error("error converting original properties definition %s",
+                logger.error("didn't convert original property definition '%s'",
                              origprop.name)
         if self.personality == "gaia":
             thetargetfile = self.fold_gaia_plurals(thetargetfile)
