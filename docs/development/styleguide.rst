@@ -46,6 +46,19 @@ Continuing long statements:
     this_is_a_very_long(function_call, 'with many parameters',
                         23, 42, 'and even more')
 
+  If you need to break long strings, on function calls or when assigning to
+  variables, try to use implicit string continuation:
+
+  .. code-block:: python
+
+    this_holds_a_very_long_string("Very long string with a lot of characters "
+                                  "and words on it, so many that it is "
+                                  "necessary to break it in several lines to "
+                                  "improve readability.")
+    long_string_var = ("Very long string with a lot of characters and words on "
+                       "it, so many that it is necessary to break it in "
+                       "several lines to improve readability.")
+
   For lists or tuples with many items, break immediately after the
   opening brace::
 
