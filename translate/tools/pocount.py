@@ -306,6 +306,8 @@ def main():
     if options.style_short_words:
         style = style_short_words
 
+    logging.basicConfig(format="%(name)s: %(levelname)s: %(message)s")
+
     summarizer(args, style, options.incomplete_only)
 
 if __name__ == '__main__':

@@ -94,7 +94,7 @@ class RecursiveOptionParser(optparse.OptionParser, object):
         self.setformats(formats, usetemplates)
         self.passthrough = []
         self.allowmissingtemplate = allowmissingtemplate
-        logging.basicConfig()
+        logging.basicConfig(format="%(name)s: %(levelname)s: %(message)s")
 
     def get_prog_name(self):
         return os.path.basename(sys.argv[0])
@@ -415,10 +415,16 @@ class RecursiveOptionParser(optparse.OptionParser, object):
     def initprogressbar(self, allfiles, options):
         """Sets up a progress bar appropriate to the options and files."""
         if options.progress in ('bar', 'verbose'):
-            self.progressbar = self.progresstypes[options.progress](0, len(allfiles))
+            self.progressbar = \
+                self.progresstypes[options.progress](0, len(allfiles))
             # should use .getChild("progress") but that is only in 2.7
             logger = logging.getLogger(self.get_prog_name() + ".progress")
             logger.setLevel(logging.INFO)
+            logger.propagate = False
+            handler = logging.StreamHandler()
+            handler.setLevel(logging.INFO)
+            handler.setFormatter(logging.Formatter())
+            logger.addHandler(handler)
             logger.info("processing %d files...", len(allfiles))
         else:
             self.progressbar = self.progresstypes[options.progress]()

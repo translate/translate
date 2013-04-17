@@ -96,6 +96,8 @@ def main():
     if len(args) < 1:
         parser.error('No input file(s) specified.')
 
+    logging.basicConfig(format="%(name)s: %(levelname)s: %(message)s")
+
     Builder(options.tmdb_file, options.source_lang, options.target_lang, args)
 
 if __name__ == '__main__':
