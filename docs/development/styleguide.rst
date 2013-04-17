@@ -89,6 +89,33 @@ Blank lines:
         def get_annoying_name(self):
             return self.name.upper() + '!!!!111'
 
+Imports:
+  Like in :pep:`8`, but:
+
+  * A blank line must be present between each group of imports (like in PEP8).
+  * Imports on each group must be arranged alphabetically by module name:
+
+    * Shortest module names must be before longer ones:
+      ``from django.db import ...`` before ``from django.db.models import ...``.
+
+  * ``import ...`` calls must precede ``from ... import`` ones on each group:
+
+    * On each of these subgroups the entries should be alphabetically arranged.
+    * No blank lines between subgroups.
+
+  .. code-block:: python
+
+    import re
+    import sys.path as sys_path
+    import time
+    from datetime import timedelta
+    from os import path
+
+    from lxml.html import fromstring
+
+    from translate.filters import checks
+    from translate.storage import versioncontrol
+
 Expressions and Statements
 --------------------------
 
