@@ -83,7 +83,7 @@ def build_xpi(l10nbase, srcdir, outputdir, lang, product, delete_dest=False):
     try:
         # Create new .mozconfig
         content = """
-ac_add_options --disable-compile-environment
+#ac_add_options --disable-compile-environment # currently broken
 ac_add_options --disable-ogg
 mk_add_options MOZ_OBJDIR=%(builddir)s
 ac_add_options --with-l10n-base=%(l10nbase)s
@@ -104,8 +104,8 @@ ac_add_options --enable-application=%(product)s""" % \
         if run(['make', '-f', 'client.mk', 'configure']):
             raise Exception('^^ Fix the errors above and try again.')
 
-        os.chdir(os.path.join(builddir, product, 'locales'))
-        if run(['make', 'langpack-%s' % (lang)]):
+        os.chdir(builddir)
+        if run(['make', '-C', 'config']) or run(['make', '-C', os.path.join(product, 'locales'), 'langpack-%s' % (lang)]):
             raise Exception('Unable to successfully build XPI!')
 
         xpiglob = glob(
