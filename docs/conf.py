@@ -116,7 +116,7 @@ class Mock(object):
         if name in ('__file__', '__path__'):
             return '/dev/null'
         elif name[0] == name[0].upper():
-            mockType = type(name, (), {})
+            mockType = type(name, (), {'fixtag': None})
             mockType.__module__ = __name__
             return mockType
         else:
@@ -133,7 +133,7 @@ MOCK_MODULES = [
     'gtk',
     'iniparse',
     'lucene',
-    #'PyLucene',
+    'PyLucene',
     'vobject',
     'xapian',
     'xml',
@@ -144,7 +144,9 @@ MOCK_MODULES = [
 for mod_name in MOCK_MODULES:
     sys.modules[mod_name] = Mock()
 
+# Needed for _get_pylucene_version() used by translate.search.indexing.__init__
 sys.modules['lucene'].VERSION = "2.3.0"
+sys.modules['PyLucene'].VERSION = "2.2.0"
 
 # -- Options for HTML output --------------------------------------------------
 

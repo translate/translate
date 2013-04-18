@@ -92,6 +92,44 @@ def xerror2_cb(severity, message1, filename1, lineno1, column1, multiline_p1,
     if severity >= 1:
         raise ValueError(message_text1)
 
+# Setup return and parameter types
+def setup_call_types(gpo):
+    # File access
+    gpo.po_file_read_v3.argtypes = [STRING, POINTER(po_xerror_handler)]
+    gpo.po_file_write_v2.argtypes = [c_int, STRING, POINTER(po_xerror_handler)]
+    gpo.po_file_write_v2.retype = c_int
+
+    # Header
+    gpo.po_file_domain_header.restype = STRING
+    gpo.po_header_field.restype = STRING
+    gpo.po_header_field.argtypes = [STRING, STRING]
+
+    # Locations (filepos)
+    gpo.po_filepos_file.restype = STRING
+    gpo.po_message_filepos.restype = c_int
+    gpo.po_message_filepos.argtypes = [c_int, c_int]
+    gpo.po_message_add_filepos.argtypes = [c_int, STRING, c_size_t]
+
+    # Message (get methods)
+    gpo.po_message_comments.restype = STRING
+    gpo.po_message_extracted_comments.restype = STRING
+    gpo.po_message_prev_msgctxt.restype = STRING
+    gpo.po_message_prev_msgid.restype = STRING
+    gpo.po_message_prev_msgid_plural.restype = STRING
+    gpo.po_message_is_format.restype = c_int
+    gpo.po_message_is_format.argtypes = [c_int, STRING]
+    gpo.po_message_set_format.argtypes = [c_int, STRING, c_int]
+    gpo.po_message_msgctxt.restype = STRING
+    gpo.po_message_msgid.restype = STRING
+    gpo.po_message_msgid_plural.restype = STRING
+    gpo.po_message_msgstr.restype = STRING
+    gpo.po_message_msgstr_plural.restype = STRING
+
+    # Message (set methods)
+    gpo.po_message_set_comments.argtypes = [c_int, STRING]
+    gpo.po_message_set_extracted_comments.argtypes = [c_int, STRING]
+    gpo.po_message_set_fuzzy.argtypes = [c_int, c_int]
+    gpo.po_message_set_msgctxt.argtypes = [c_int, STRING]
 
 # Load libgettextpo
 gpo = None
@@ -105,51 +143,22 @@ for name in names:
         if gpo:
             break
 else:
-    # Now we are getting desperate, so let's guess a unix type DLL that might
-    # be in LD_LIBRARY_PATH or loaded with LD_PRELOAD
-    try:
-        gpo = cdll.LoadLibrary('libgettextpo.so')
-    except OSError:
-        raise ImportError("gettext PO library not found")
+    # Don't raise exception in Sphinx autodoc [where xml is Mock()ed]. There is
+    # nothing special about use of xml here - any of the Mock classes set up
+    # in docs/conf.py would work as well, but xml is likely always to be there.
+    gpo = None
+    if 'xml' not in sys.modules or sys.modules['xml'].__path__ != '/dev/null':
 
-# Setup return and parameter types
-# File access
-gpo.po_file_read_v3.argtypes = [STRING, POINTER(po_xerror_handler)]
-gpo.po_file_write_v2.argtypes = [c_int, STRING, POINTER(po_xerror_handler)]
-gpo.po_file_write_v2.retype = c_int
+        # Now we are getting desperate, so let's guess a unix type DLL that
+        # might be in LD_LIBRARY_PATH or loaded with LD_PRELOAD
+        try:
+            gpo = cdll.LoadLibrary('libgettextpo.so')
+        except OSError:
+            raise ImportError("gettext PO library not found")
 
-# Header
-gpo.po_file_domain_header.restype = STRING
-gpo.po_header_field.restype = STRING
-gpo.po_header_field.argtypes = [STRING, STRING]
-
-# Locations (filepos)
-gpo.po_filepos_file.restype = STRING
-gpo.po_message_filepos.restype = c_int
-gpo.po_message_filepos.argtypes = [c_int, c_int]
-gpo.po_message_add_filepos.argtypes = [c_int, STRING, c_size_t]
-
-# Message (get methods)
-gpo.po_message_comments.restype = STRING
-gpo.po_message_extracted_comments.restype = STRING
-gpo.po_message_prev_msgctxt.restype = STRING
-gpo.po_message_prev_msgid.restype = STRING
-gpo.po_message_prev_msgid_plural.restype = STRING
-gpo.po_message_is_format.restype = c_int
-gpo.po_message_is_format.argtypes = [c_int, STRING]
-gpo.po_message_set_format.argtypes = [c_int, STRING, c_int]
-gpo.po_message_msgctxt.restype = STRING
-gpo.po_message_msgid.restype = STRING
-gpo.po_message_msgid_plural.restype = STRING
-gpo.po_message_msgstr.restype = STRING
-gpo.po_message_msgstr_plural.restype = STRING
-
-# Message (set methods)
-gpo.po_message_set_comments.argtypes = [c_int, STRING]
-gpo.po_message_set_extracted_comments.argtypes = [c_int, STRING]
-gpo.po_message_set_fuzzy.argtypes = [c_int, c_int]
-gpo.po_message_set_msgctxt.argtypes = [c_int, STRING]
-
+if gpo:
+    setup_call_types(gpo)
+    
 # Setup the po_xerror_handler
 xerror_handler = po_xerror_handler()
 xerror_handler.xerror = xerror_prototype(xerror_cb)
