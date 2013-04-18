@@ -20,14 +20,21 @@
 
 """simpler wrapper to the elementtree XML parser"""
 
+import sys
 try:
     from xml.etree import ElementTree
 except ImportError:
     from elementtree import ElementTree
+    elementmod = 'elementtree'
+else:
+    elementmod = 'xml.etree'
+
 # this is needed to prevent expat-version conflicts with wx >= 2.5.2.2
 from xml.parsers import expat
 
-basicfixtag = ElementTree.fixtag
+# don't try this in Sphinx autodoc as xml.etree is Mock()ed
+if sys.modules[elementmod].__path__ != '/dev/null':
+    basicfixtag = ElementTree.fixtag
 
 
 def makefixtagproc(namespacemap):
