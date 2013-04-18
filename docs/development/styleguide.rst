@@ -46,6 +46,19 @@ Continuing long statements:
     this_is_a_very_long(function_call, 'with many parameters',
                         23, 42, 'and even more')
 
+  If you need to break long strings, on function calls or when assigning to
+  variables, try to use implicit string continuation:
+
+  .. code-block:: python
+
+    this_holds_a_very_long_string("Very long string with a lot of characters "
+                                  "and words on it, so many that it is "
+                                  "necessary to break it in several lines to "
+                                  "improve readability.")
+    long_string_var = ("Very long string with a lot of characters and words on "
+                       "it, so many that it is necessary to break it in "
+                       "several lines to improve readability.")
+
   For lists or tuples with many items, break immediately after the
   opening brace::
 
@@ -75,6 +88,33 @@ Blank lines:
 
         def get_annoying_name(self):
             return self.name.upper() + '!!!!111'
+
+Imports:
+  Like in :pep:`8`, but:
+
+  * A blank line must be present between each group of imports (like in PEP8).
+  * Imports on each group must be arranged alphabetically by module name:
+
+    * Shortest module names must be before longer ones:
+      ``from django.db import ...`` before ``from django.db.models import ...``.
+
+  * ``import ...`` calls must precede ``from ... import`` ones on each group:
+
+    * On each of these subgroups the entries should be alphabetically arranged.
+    * No blank lines between subgroups.
+
+  .. code-block:: python
+
+    import re
+    import sys.path as sys_path
+    import time
+    from datetime import timedelta
+    from os import path
+
+    from lxml.html import fromstring
+
+    from translate.filters import checks
+    from translate.storage import versioncontrol
 
 Expressions and Statements
 --------------------------
