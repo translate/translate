@@ -89,6 +89,9 @@ Blank lines:
         def get_annoying_name(self):
             return self.name.upper() + '!!!!111'
 
+
+.. _styleguide-imports:
+
 Imports:
   Like in :pep:`8`, but:
 
