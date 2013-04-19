@@ -32,6 +32,7 @@ import re
 import sys
 import stat
 import thread
+import logging
 from UserDict import UserDict
 
 from translate import __version__ as toolkitversion
@@ -39,6 +40,8 @@ from translate.lang.common import Common
 from translate.misc.multistring import multistring
 from translate.storage import factory
 from translate.storage.workflow import StateEnum
+
+logger = logging.getLogger(__name__)
 
 #kdepluralre = re.compile("^_n: ") #Restore this if you really need support for old kdeplurals
 brtagre = re.compile("<br\s*?/?>")
@@ -553,8 +556,9 @@ class StatsCache(object):
         if result is not None:
             return result
         else:
-            print >> sys.stderr, """WARNING: Database in inconsistent state.
-            fileid %d and unitid %s have no entries in the table units.""" % (fileid, unitid)
+            logger.warning("Database in inconsistent state - fileid %d and "
+                           "unitid %s have no entries in the table units.",
+                           fileid, unitid)
             # If values.fetchone() is None, then we return an empty list,
             # to make FileTotals.new_record(*self.get_unit_stats(fileid, unitid))
             # do the right thing.

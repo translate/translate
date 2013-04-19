@@ -25,9 +25,11 @@ for examples and usage instructions.
 """
 
 import sys
+import logging
 
 from translate.storage import po
 
+logger = logging.getLogger(__name__)
 
 class json2po:
     """Convert a JSON file to a PO file"""
@@ -70,7 +72,8 @@ class json2po:
                     origpo.target = translatedpo.source
                 output_store.addunit(origpo)
             elif translatedpo is not None:
-                print >> sys.stderr, "Error converting original JSON definition %s" % origpo.name
+                logger.error("error converting original JSON definition %s",
+                             origpo.name)
         output_store.removeduplicates(duplicatestyle)
         return output_store
 

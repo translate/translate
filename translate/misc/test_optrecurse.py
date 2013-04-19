@@ -7,11 +7,9 @@ from translate.misc import optrecurse
 
 class TestRecursiveOptionParser:
 
-    def __init__(self):
-        self.parser = optrecurse.RecursiveOptionParser({"txt": ("po", None)})
-
     def test_splitext(self):
         """test the ``optrecurse.splitext`` function"""
+        self.parser = optrecurse.RecursiveOptionParser({"txt": ("po", None)})
         name = "name"
         extension = "ext"
         filename = name + os.extsep + extension

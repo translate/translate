@@ -27,6 +27,7 @@ for examples and usage instructions.
 import os
 import sys
 import time
+import logging
 
 from translate.storage import oo
 from translate.storage import factory
@@ -34,6 +35,7 @@ from translate.filters import pofilter
 from translate.filters import checks
 from translate.filters import autocorrect
 
+logger = logging.getLogger(__name__)
 
 class reoo:
 
@@ -87,14 +89,15 @@ class reoo:
                 theoo = self.index[key]  # find the oo
                 self.applytranslation(key, subkey, theoo, unit)
             else:
-                print >> sys.stderr, "couldn't find key %s from po in %d keys" % (key, len(self.index))
+                logger.warning("couldn't find key %s from po in %d keys",
+                               key, len(self.index))
                 try:
                     sourceunitlines = str(unit)
                     if isinstance(sourceunitlines, unicode):
                         sourceunitlines = sourceunitlines.encode("utf-8")
-                    print >> sys.stderr, sourceunitlines
+                    logger.warning(sourceunitlines)
                 except:
-                    print >> sys.stderr, "error outputting source unit %r" % (str(unit),)
+                    logger.warning("error outputting source unit %r", str(unit))
 
     def applytranslation(self, key, subkey, theoo, unit):
         """applies the translation from the source unit to the oo unit"""
@@ -160,10 +163,12 @@ class oocheckfilter(pofilter.pocheckfilter):
                 for filtername, filtermessage in filterresult.iteritems():
                     location = unit.getlocations()[0].encode('utf-8')
                     if filtername in self.options.error:
-                        print >> sys.stderr, "Error at %s::%s: %s" % (filename, location, filtermessage)
+                        logger.error("Error at %s::%s: %s",
+                                     filename, location, filtermessage)
                         return not filteraction in ["exclude-all", "exclude-serious"]
                     if filtername in self.options.warning or self.options.alwayswarn:
-                        print >> sys.stderr, "Warning at %s::%s: %s" % (filename, location, filtermessage)
+                        logger.warning("Warning at %s::%s: %s",
+                                       filename, location, filtermessage)
                         return not filteraction in ["exclude-all"]
         return True
 
