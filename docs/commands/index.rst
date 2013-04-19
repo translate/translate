@@ -38,6 +38,7 @@ Converters
    sub2po
    symb2po
    tbx2po
+   tbx2tmx
    tiki2po
    toml2po
    ts2po
@@ -100,6 +101,7 @@ understanding that will make the converters much easier to use and understand.
 * :doc:`resx2po <resx2po>` -- .Net Resource (.resx) file converter
 * :doc:`sub2po <sub2po>` -- Converter for various subtitle files
 * :doc:`symb2po <symb2po>` -- Symbian-style translation to PO converter
+* :doc:`tbx2tmx` -- TBX glossary to TMX translation memory converter
 * :doc:`tiki2po <tiki2po>` -- `TikiWiki <https://tiki.org/Facts>`_ language.php
   converter
 * :doc:`toml2po <toml2po>` -- TOML converter
