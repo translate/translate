@@ -386,6 +386,13 @@ symb2po
    :inherited-members:
 
 
+tbx2tmx
+-------
+
+.. automodule:: translate.convert.tbx2tmx
+   :members:
+
+
 tiki2po
 -------
 
