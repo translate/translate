@@ -198,7 +198,7 @@ _fixed_names = {
     u"Sinhala; Sinhalese": u"Sinhala",
     u"Sotho, Southern": u"Sotho",
     u"Spanish; Castilian": u"Spanish",
-    u"Uighur; Uyghur": u"Uighur",
+    u"Uighur; Uyghur": u"Uyghur",
 }
 
 
