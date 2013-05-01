@@ -1,12 +1,18 @@
 #!/usr/bin/env python
 
+from translate.convert import po2xliff
 from translate.convert import test_convert
 from translate.convert import xliff2po
 from translate.misc import wStringIO
+from translate.misc import wStringIO
+from translate.storage import po
+from translate.storage import xliff
+from translate.storage.poheader import poheader
 from translate.storage.test_base import headerless_len, first_translatable
 
 
 class TestXLIFF2PO:
+    target_filetype = po.pofile
     xliffskeleton = '''<?xml version="1.0" ?>
 <xliff version="1.1" xmlns="urn:oasis:names:tc:xliff:document:1.1">
   <file original="filename.po" source-language="en-US" datatype="po">
@@ -232,3 +238,78 @@ class TestBasicXLIFF2PO(test_convert.TestConvertCommand, TestXLIFF2PO):
                              """)
         self.run_command(i="simple_convert.xlf", o="simple_convert.po")
         assert 'msgstr "Een"' in self.read_testfile("simple_convert.po")
+
+
+class TestXLIFF2POCommand(test_convert.TestConvertCommand, TestXLIFF2PO):
+    """Tests running actual xliff2po commands on files"""
+    convertmodule = xliff2po
+
+    def singleelement(self, pofile):
+        """checks that the pofile contains a single non-header element, and returns it"""
+        if isinstance(pofile, poheader):
+            assert len(pofile.units) == 2
+            assert pofile.units[0].isheader()
+            return pofile.units[1]
+        else:
+            assert len(pofile.units) == 1
+            return pofile.units[0]
+
+    def test_help(self):
+        """tests getting help"""
+        options = test_convert.TestConvertCommand.test_help(self)
+        options = self.help_check(options, "-P, --pot")
+        options = self.help_check(options, "--duplicates=DUPLICATESTYLE")
+
+    def test_preserve_filename(self):
+        """Ensures that the filename is preserved."""
+        xliffsource = self.xliffskeleton % '''<trans-unit xml:space="preserve">
+        <source>nonsense</source>
+        <target>matlhapolosa</target>
+</trans-unit>'''
+        self.create_testfile("snippet.xlf", xliffsource)
+        xlifffile = xliff.xlifffile(self.open_testfile("snippet.xlf"))
+        assert xlifffile.filename.endswith("snippet.xlf")
+        xlifffile.parse(xliffsource)
+        assert xlifffile.filename.endswith("snippet.xlf")
+
+    def test_simple_pot(self):
+        """tests the simplest possible conversion to a pot file"""
+        xliffsource = self.xliffskeleton % '''<trans-unit xml:space="preserve">
+        <source>nonsense</source>
+        <target></target>
+</trans-unit>'''
+        self.create_testfile("simple.xlf", xliffsource)
+        self.run_command("simple.xlf", "simple.pot", pot=True)
+        pofile = po.pofile(self.open_testfile("simple.pot"))
+        poelement = self.singleelement(pofile)
+        assert poelement.source == "nonsense"
+        assert poelement.target == ""
+
+    def test_simple_po(self):
+        """tests the simplest possible conversion to a po file"""
+        xliffsource = self.xliffskeleton % '''<trans-unit xml:space="preserve">
+        <source>nonsense</source>
+        <target>matlhapolosa</target>
+</trans-unit>'''
+        self.create_testfile("simple.xlf", xliffsource)
+        self.run_command("simple.xlf", "simple.po")
+        pofile = po.pofile(self.open_testfile("simple.po"))
+        poelement = self.singleelement(pofile)
+        assert poelement.source == "nonsense"
+        assert poelement.target == "matlhapolosa"
+
+    def test_remove_duplicates(self):
+        """test that removing of duplicates works correctly"""
+        xliffsource = self.xliffskeleton % '''<trans-unit xml:space="preserve">
+        <source>nonsense</source>
+        <target>matlhapolosa</target>
+</trans-unit>
+<trans-unit xml:space="preserve">
+        <source>nonsense</source>
+        <target>matlhapolosa</target>
+</trans-unit>'''
+        self.create_testfile("simple.xlf", xliffsource)
+        self.run_command("simple.xlf", "simple.po", error="traceback", duplicates="merge")
+        pofile = self.target_filetype(self.open_testfile("simple.po"))
+        assert len(pofile.units) == 2
+        assert pofile.units[1].target == u"matlhapolosa"
