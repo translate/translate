@@ -50,6 +50,8 @@ class reprop:
         self.inputstore.makeindex()
         if self.personality.name == "gaia":
             self._explode_gaia_plurals()
+        if self.personality.name == "mozilla":
+            self._explode_mozilla_plurals()
         outputlines = []
         # Readlines doesn't work for UTF-16, we read() and splitlines(keepends) instead
         content = self.templatefile.read().decode(self.encoding)
@@ -83,6 +85,17 @@ class reprop:
 
             # We don't want the plural marker to be translated:
             del self.inputstore.locationindex[location]
+
+    def _explode_mozilla_plurals(self):
+        """Explode the Mozilla plurals."""
+        for unit in self.inputstore.units:
+            if not unit.hasplural():
+                continue
+            if unit.isfuzzy() and not self.includefuzzy or not unit.istranslated():
+                continue
+
+            unit.setsource(u";".join(unit.source.strings))
+            unit.settarget(u";".join(unit.target.strings))
 
     def convertline(self, line):
         returnline = u""

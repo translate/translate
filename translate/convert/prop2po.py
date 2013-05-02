@@ -26,11 +26,14 @@ for examples and usage instructions.
 
 import sys
 import logging
+import re
 
 from translate.storage import po
 from translate.storage import properties
 
 logger = logging.getLogger(__name__)
+
+moz_plural_note_re = re.compile("LOCALIZATION NOTE \((.*?.)\)")
 
 def _collapse(store, units):
     sources = [u.source for u in units]
@@ -84,6 +87,8 @@ class prop2po:
                 thetargetfile.addunit(pounit)
         if self.personality == "gaia":
             thetargetfile = self.fold_gaia_plurals(thetargetfile)
+        if self.personality == "mozilla":
+            thetargetfile = self._fold_mozilla_plurals(thetargetfile)
         thetargetfile.removeduplicates(duplicatestyle)
         return thetargetfile
 
@@ -145,6 +150,8 @@ class prop2po:
                              origprop.name)
         if self.personality == "gaia":
             thetargetfile = self.fold_gaia_plurals(thetargetfile)
+        if self.personality == "mozilla":
+            thetargetfile = self._fold_mozilla_plurals(thetargetfile)
         thetargetfile.removeduplicates(duplicatestyle)
         return thetargetfile
 
@@ -186,6 +193,30 @@ class prop2po:
             new_unit.addlocation(current_plural)
             del plurals[current_plural]
             current_plural = u""
+
+    def _fold_mozilla_plurals(self, postore):
+        plurals = []
+        for unit in postore.units:
+            if u"Localization_and_Plurals" in unit.getnotes():
+                # find all the keys listed in the comment, in the form of:
+                # "LOCALIZATION NOTE (key_1, … , key_n)"
+                results = moz_plural_note_re.findall(unit.getnotes())
+                for result in results:
+                    plurals.extend(result.split(u", "))
+                if u";" in unit.source:
+                    # if the current unit looks like a plural unit, append it
+                    # anyway, to work around comments not listing the full key
+                    plurals.append(unit.getlocations()[0])
+
+        if plurals:
+            for unit in postore.units:
+                if u";" in unit.source:
+                    if unit.getlocations()[0] in plurals:
+                        sources = unit.source.split(u";")
+                        targets = unit.target.split(u";")
+                        unit.setsource(sources)
+                        unit.settarget(targets)
+        return postore
 
         # if everything went well, there should be nothing left in plurals
         if len(plurals) != 0:
