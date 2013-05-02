@@ -197,6 +197,10 @@ class prop2po:
             current_plural = u""
 
     def _fold_mozilla_plurals(self, postore, targetlanguage):
+        from translate.lang import factory
+        lang = factory.getlanguage(targetlanguage)
+        postore.updateheaderplural(lang.nplurals, lang.pluralequation)
+        postore.settargetlanguage(targetlanguage)
         plurals = []
         for unit in postore.units:
             if u"Localization_and_Plurals" in unit.getnotes():
