@@ -61,7 +61,7 @@ def main(argv=None):
                                                 description=__doc__,
                                                 archiveformats={"xpi": xpi.XpiFile})
     parser.add_option("-l", "--language", dest="targetlanguage", default=None,
-                      help="set target language to extract from oo file (e.g. af-ZA)",
+                      help="set target language to extract from Mozilla file (e.g. af-ZA)",
                       metavar="LANG")
     parser.add_duplicates_option()
     parser.passthrough.append("pot")
