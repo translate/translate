@@ -252,6 +252,27 @@ message-multiedit-header[other]={{ n }} selected
         assert not zero_unit.hasplural()
         assert zero_unit.source == u"Edit"
 
+    def test_mozilla_plurals(self):
+        """Test conversion of gaia plural units."""
+        propsource = '''
+# LOCALIZATION NOTE (addonDownloading, addonDownloadCancelled, addonDownloadRestart):
+# Semi-colon list of plural forms. See:
+# http://developer.mozilla.org/en/docs/Localization_and_Plurals
+# Also see https://bugzilla.mozilla.org/show_bug.cgi?id=570012 for mockups
+addonDownloading=Add-on downloading;Add-ons downloading
+addonDownloadCancelled=Add-on download cancelled.;Add-on downloads cancelled.
+addonDownloadRestart=Restart Download;Restart Downloads
+'''
+        convertor = prop2po.prop2po()
+        inputfile = wStringIO.StringIO(propsource)
+        inputprop = properties.propfile(inputfile, personality="mozilla")
+        outputpo = convertor.convertstore(inputprop, personality="mozilla")
+        assert outputpo.units[1].hasplural()
+        assert outputpo.units[2].hasplural()
+        assert outputpo.units[3].hasplural()
+
+        print outputpo
+
 class TestProp2POCommand(test_convert.TestConvertCommand, TestProp2PO):
     """Tests running actual prop2po commands on files"""
     convertmodule = prop2po
