@@ -187,7 +187,7 @@ Instance checks:
 
 If statements:
   - Use ``()`` brackets around complex if statements to allow easy wrapping,
-    don't use backslash to wrap an if statements.
+    don't use backslash to wrap an if statement.
   - Wrap between ``and``, ``or``, etc.
   - Keep ``not`` with the expression
   - Use ``()`` alignment between expressions 
@@ -229,10 +229,12 @@ Naming Conventions
 Protected members are prefixed with a single underscore.  Double underscores
 are reserved for mixin classes.
 
-On classes with keywords, trailing underscores are appended.  Clashes with
-builtins are allowed and **must not** be resolved by appending an underline to
-the variable name.  If the function needs to access a shadowed builtin, rebind
-the builtin to a different name instead.
+To prevent name clashes with keywords, one trailing underscore may be appended.
+Clashes with builtins are allowed and **must not** be resolved by appending an
+underline to the name.  If your code needs to access a shadowed builtin, rebind
+the builtin to a different name instead.  Consider using a different name to
+avoid having to deal with either type of name clash, but don't complicate names
+with prefixes or suffixes.
 
 Function and method arguments:
   - class methods: ``cls`` as first parameter
@@ -381,7 +383,7 @@ Parameter documentation:
   Document parameters using `reST field lists`_ as follows::
 
     def foo(bar):
-        """Simple docstring
+        """Simple docstring.
 
         :param bar: Something
         :type bar: Some type
