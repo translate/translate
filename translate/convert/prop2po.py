@@ -49,7 +49,8 @@ class prop2po:
     translation."""
 
     def convertstore(self, thepropfile, personality="java",
-                     duplicatestyle="msgctxt"):
+                     duplicatestyle="msgctxt",
+                     targetlanguage=None):
         """converts a .properties file to a .po file..."""
         self.personality = personality
         thetargetfile = po.pofile()
@@ -88,12 +89,13 @@ class prop2po:
         if self.personality == "gaia":
             thetargetfile = self.fold_gaia_plurals(thetargetfile)
         if self.personality == "mozilla":
-            thetargetfile = self._fold_mozilla_plurals(thetargetfile)
+            thetargetfile = self._fold_mozilla_plurals(thetargetfile, targetlanguage)
         thetargetfile.removeduplicates(duplicatestyle)
         return thetargetfile
 
     def mergestore(self, origpropfile, translatedpropfile, personality="java",
-                   blankmsgstr=False, duplicatestyle="msgctxt"):
+                   blankmsgstr=False, duplicatestyle="msgctxt",
+                   targetlanguage=None):
         """converts two .properties files to a .po file..."""
         self.personality = personality
         thetargetfile = po.pofile()
@@ -151,7 +153,7 @@ class prop2po:
         if self.personality == "gaia":
             thetargetfile = self.fold_gaia_plurals(thetargetfile)
         if self.personality == "mozilla":
-            thetargetfile = self._fold_mozilla_plurals(thetargetfile)
+            thetargetfile = self._fold_mozilla_plurals(thetargetfile, targetlanguage)
         thetargetfile.removeduplicates(duplicatestyle)
         return thetargetfile
 
@@ -194,7 +196,7 @@ class prop2po:
             del plurals[current_plural]
             current_plural = u""
 
-    def _fold_mozilla_plurals(self, postore):
+    def _fold_mozilla_plurals(self, postore, targetlanguage):
         plurals = []
         for unit in postore.units:
             if u"Localization_and_Plurals" in unit.getnotes():
@@ -254,27 +256,32 @@ def convertstrings(inputfile, outputfile, templatefile, personality="strings",
 
 
 def convertmozillaprop(inputfile, outputfile, templatefile, pot=False,
-                       duplicatestyle="msgctxt"):
+                       duplicatestyle="msgctxt",
+                       targetlanguage=None):
     """Mozilla specific convertor function"""
     return convertprop(inputfile, outputfile, templatefile,
                        personality="mozilla", pot=pot,
-                       duplicatestyle=duplicatestyle)
+                       duplicatestyle=duplicatestyle,
+                       targetlanguage=targetlanguage)
 
 
 def convertprop(inputfile, outputfile, templatefile, personality="java",
-                pot=False, duplicatestyle="msgctxt", encoding=None):
+                pot=False, duplicatestyle="msgctxt", encoding=None,
+                targetlanguage=None):
     """reads in inputfile using properties, converts using prop2po, writes
     to outputfile"""
     inputstore = properties.propfile(inputfile, personality, encoding)
     convertor = prop2po()
     if templatefile is None:
         outputstore = convertor.convertstore(inputstore, personality,
-                                             duplicatestyle=duplicatestyle)
+                                             duplicatestyle=duplicatestyle,
+                                             targetlanguage=targetlanguage)
     else:
         templatestore = properties.propfile(templatefile, personality, encoding)
         outputstore = convertor.mergestore(templatestore, inputstore,
                                            personality, blankmsgstr=pot,
-                                           duplicatestyle=duplicatestyle)
+                                           duplicatestyle=duplicatestyle,
+                                           targetlanguage=targetlanguage)
     if outputstore.isempty():
         return 0
     outputfile.write(str(outputstore))
