@@ -212,18 +212,25 @@ class prop2po:
             del plurals[current_plural]
             current_plural = u""
 
+        # if everything went well, there should be nothing left in plurals
+        if len(plurals) != 0:
+            logger.warning("Not all plural units converted correctly:" +
+                           "\n".join(plurals.keys()))
+        return new_store
+
     def _fold_mozilla_plurals(self, postore, targetlanguage):
         from translate.lang import factory
         nplurals = None
         pluralequation = None
-        if targetlanguage in moz_override_plural_rules.keys():
-            nplurals, pluralequation = moz_override_plural_rules[targetlanguage]
-        else:
-            lang = factory.getlanguage(targetlanguage)
-            nplurals = lang.nplurals
-            pluralequation = lang.pluralequation
-        postore.updateheaderplural(nplurals, pluralequation)
-        postore.settargetlanguage(targetlanguage)
+        if targetlanguage:
+            if targetlanguage in moz_override_plural_rules.keys():
+                nplurals, pluralequation = moz_override_plural_rules[targetlanguage]
+            else:
+                lang = factory.getlanguage(targetlanguage)
+                nplurals = lang.nplurals
+                pluralequation = lang.pluralequation
+            postore.updateheaderplural(nplurals, pluralequation)
+            postore.settargetlanguage(targetlanguage)
 
         plurals = []
         for unit in postore.units:
@@ -247,12 +254,6 @@ class prop2po:
                         unit.setsource(sources)
                         unit.settarget(targets)
         return postore
-
-        # if everything went well, there should be nothing left in plurals
-        if len(plurals) != 0:
-            logger.warning("Not all plural units converted correctly:" +
-                           "\n".join(plurals.keys()))
-        return new_store
 
     def convertunit(self, propunit, commenttype):
         """Converts a .properties unit to a .po unit. Returns None if empty

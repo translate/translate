@@ -18,4 +18,5 @@ class TestMoz2POCommand(test_convert.TestConvertCommand, TestMoz2PO):
         options = test_convert.TestConvertCommand.test_help(self)
         options = self.help_check(options, "--duplicates=DUPLICATESTYLE")
         options = self.help_check(options, "-P, --pot")
+        options = self.help_check(options, "--language=LANG")
         options = self.help_check(options, "-t TEMPLATE, --template=TEMPLATE", last=True)
