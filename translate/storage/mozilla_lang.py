@@ -62,7 +62,7 @@ class LangStore(txt.TxtFile):
     Name = _("Mozilla .lang")
     Extensions = ['lang']
 
-    def __init__(self, inputfile=None, flavour=None, encoding="utf-8", mark_active=True):
+    def __init__(self, inputfile=None, flavour=None, encoding="utf-8", mark_active=False):
         self.is_active = False
         self.mark_active = mark_active
         super(LangStore, self).__init__(inputfile, flavour, encoding)
