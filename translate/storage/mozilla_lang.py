@@ -81,7 +81,7 @@ class LangStore(txt.TxtFile):
                 self.is_active = True
                 continue
 
-            if len(line) == 0:  # Skip blank lines
+            if len(line) == 0 and not readyTrans:  # Skip blank lines
                 continue
 
             if readyTrans:  # If we are expecting a translation, set the target

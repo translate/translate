@@ -80,3 +80,21 @@ class TestMozLangFile(test_base.TestTranslationStore):
                 "Target\n")
         store = self.StoreClass.parsestring(lang)
         assert str(store) == lang
+
+    def test_template(self):
+        """A template should have source == target, though it could be blank"""
+        lang = (";Source\n"
+                "Source\n")
+        store = self.StoreClass.parsestring(lang)
+        unit = store.units[0]
+        assert unit.source == "Source"
+        assert unit.target == ""
+        assert str(store) == lang
+        lang2 = (";Source\n"
+                "\n"
+                ";Source2\n")
+        store2 = self.StoreClass.parsestring(lang2)
+        assert store2.units[0].source == "Source"
+        assert store2.units[0].target == ""
+        assert store2.units[1].source == "Source2"
+        assert store2.units[1].target == ""
