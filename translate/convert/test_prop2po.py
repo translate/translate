@@ -253,23 +253,62 @@ message-multiedit-header[other]={{ n }} selected
         assert zero_unit.source == u"Edit"
 
     def test_mozilla_plurals(self):
+        from translate.lang import factory
         """Test conversion of gaia plural units."""
         propsource = '''
 # LOCALIZATION NOTE (addonDownloading, addonDownloadCancelled, addonDownloadRestart):
 # Semi-colon list of plural forms. See:
 # http://developer.mozilla.org/en/docs/Localization_and_Plurals
-# Also see https://bugzilla.mozilla.org/show_bug.cgi?id=570012 for mockups
 addonDownloading=Add-on downloading;Add-ons downloading
+someStringNotPlural1=We have a semicolon here; but not a plural
 addonDownloadCancelled=Add-on download cancelled.;Add-on downloads cancelled.
 addonDownloadRestart=Restart Download;Restart Downloads
+someStringNotPlural2=We have a semicolon here too; but still not a plural
+# LOCALIZATION NOTE (stringWithPlural):
+# Semi-colon list of plural forms. See:
+# http://developer.mozilla.org/en/docs/Localization_and_Plurals
+# but we are soo smart and using a short key above
+foo.stringWithPlural=Singular string;Plural string
+# LOCALIZATION NOTE (anotherStringWithPlural):
+# Semi-colon list of plural forms. See:
+# http://developer.mozilla.org/en/docs/Localization_and_Plurals
+# but we are soo smart so placing the comment above unrelated string
+someStringNotPlural3=We are not a plural
+anotherStringWithPlural=Singular;Plural
 '''
+        targetlanguage = u"ar"
         convertor = prop2po.prop2po()
         inputfile = wStringIO.StringIO(propsource)
         inputprop = properties.propfile(inputfile, personality="mozilla")
-        outputpo = convertor.convertstore(inputprop, personality="mozilla")
+        outputpo = convertor.convertstore(inputprop, personality="mozilla", targetlanguage=targetlanguage)
+        lang = factory.getlanguage(targetlanguage)
+
         assert outputpo.units[1].hasplural()
-        assert outputpo.units[2].hasplural()
+        assert outputpo.units[1].source.strings == ["Add-on downloading", "Add-ons downloading"]
+
+        assert not outputpo.units[2].hasplural()
+        assert outputpo.units[2].source == "We have a semicolon here; but not a plural"
+
         assert outputpo.units[3].hasplural()
+        assert outputpo.units[3].source.strings == ["Add-on download cancelled.", "Add-on downloads cancelled."]
+
+        assert outputpo.units[4].hasplural()
+        assert outputpo.units[4].source.strings == ["Restart Download", "Restart Downloads"]
+
+        assert not outputpo.units[5].hasplural()
+        assert outputpo.units[5].source == "We have a semicolon here too; but still not a plural"
+
+        assert outputpo.units[6].hasplural()
+        assert outputpo.units[6].source.strings == ["Singular string", "Plural string"]
+
+        assert not outputpo.units[7].hasplural()
+        assert outputpo.units[7].source == "We are not a plural"
+
+        assert outputpo.units[8].hasplural()
+        assert outputpo.units[8].source.strings == ["Singular", "Plural"]
+
+        assert outputpo.gettargetlanguage() == targetlanguage
+        assert outputpo.getheaderplural() == (u"%s" % lang.nplurals, lang.pluralequation)
 
         print outputpo
 
