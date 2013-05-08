@@ -4,8 +4,9 @@
 # /docs/
 /docs/_build/
 
-# General
-*.pyc
+# Python
+*.py[cod]
+*.egg-info
 
 # vim
 .*.swp
@@ -16,4 +17,6 @@
 /dist/
 MANIFEST
 MANIFEST.in
+
+# other
 tests/xliff_conformance/af-pootle.xlf
