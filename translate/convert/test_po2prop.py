@@ -218,6 +218,94 @@ message-multiedit-header[other]={{ n }} gekies
         propfile = self.merge2prop(proptemplate, posource, personality="gaia")
         assert propfile == propexpected
 
+    def test_mozilla_plurals(self):
+        """Test back conversion of mozilla plural units."""
+        proptemplate = '''# LOCALIZATION NOTE (addonDownloading, addonDownloadCancelled, addonDownloadRestart):
+# Semi-colon list of plural forms. See:
+# http://developer.mozilla.org/en/docs/Localization_and_Plurals
+addonDownloading=Add-on downloading;Add-ons downloading
+someStringNotPlural1=We have a semicolon here; but not a plural
+addonDownloadCancelled=Add-on download cancelled.;Add-on downloads cancelled.
+addonDownloadRestart=Restart Download;Restart Downloads
+someStringNotPlural2=We have a semicolon here too; but still not a plural
+# LOCALIZATION NOTE (stringWithPlural):
+# Semi-colon list of plural forms. See:
+# http://developer.mozilla.org/en/docs/Localization_and_Plurals
+# but we are soo smart and using a short key above
+foo.stringWithPlural=Singular string;Plural string
+# LOCALIZATION NOTE (anotherStringWithPlural):
+# Semi-colon list of plural forms. See:
+# http://developer.mozilla.org/en/docs/Localization_and_Plurals
+# but we are soo smart so placing the comment above unrelated string
+someStringNotPlural3=We are not a plural
+anotherStringWithPlural=Singular;Plural
+'''
+        posource = r'''
+#: addonDownloading
+msgid "Add-on downloading"
+msgid_plural "Add-ons downloading"
+msgstr[0] "Singular 1"
+msgstr[1] "Plural 1"
+
+#: someStringNotPlural1
+msgid "We have a semicolon here; but not a plural"
+msgstr "Non plural 1"
+
+#: addonDownloadCancelled
+msgid "Add-on download cancelled."
+msgid_plural "Add-on downloads cancelled."
+msgstr[0] "Singular 2"
+msgstr[1] "Plural 2"
+
+#: addonDownloadRestart
+msgid "Restart Download"
+msgid_plural "Restart Downloads"
+msgstr[0] "Singular 3"
+msgstr[1] "Plural 3"
+
+#: someStringNotPlural2
+msgid "We have a semicolon here too; but still not a plural"
+msgstr "Non plural 2"
+
+#: foo.stringWithPlural
+msgid "Singular string"
+msgid_plural "Plural string"
+msgstr[0] "Singular 4"
+msgstr[1] "Plural 4"
+
+#: someStringNotPlural3
+msgid "We are not a plural"
+msgstr "Non plural 3"
+
+#: anotherStringWithPlural
+msgid "Singular"
+msgid_plural "Plural"
+msgstr[0] "Singular 5"
+msgstr[1] "Plural 5"
+'''
+        propexpected = '''# LOCALIZATION NOTE (addonDownloading, addonDownloadCancelled, addonDownloadRestart):
+# Semi-colon list of plural forms. See:
+# http://developer.mozilla.org/en/docs/Localization_and_Plurals
+addonDownloading=Singular 1;Plural 1
+someStringNotPlural1=Non plural 1
+addonDownloadCancelled=Singular 2;Plural 2
+addonDownloadRestart=Singular 3;Plural 3
+someStringNotPlural2=Non plural 2
+# LOCALIZATION NOTE (stringWithPlural):
+# Semi-colon list of plural forms. See:
+# http://developer.mozilla.org/en/docs/Localization_and_Plurals
+# but we are soo smart and using a short key above
+foo.stringWithPlural=Singular 4;Plural 4
+# LOCALIZATION NOTE (anotherStringWithPlural):
+# Semi-colon list of plural forms. See:
+# http://developer.mozilla.org/en/docs/Localization_and_Plurals
+# but we are soo smart so placing the comment above unrelated string
+someStringNotPlural3=Non plural 3
+anotherStringWithPlural=Singular 5;Plural 5
+'''
+        propfile = self.merge2prop(proptemplate, posource, personality="mozilla")
+        assert propfile == propexpected
+
 
 class TestPO2PropCommand(test_convert.TestConvertCommand, TestPO2Prop):
     """Tests running actual po2prop commands on files"""
