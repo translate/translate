@@ -254,7 +254,7 @@ message-multiedit-header[other]={{ n }} selected
 
     def test_mozilla_plurals(self):
         from translate.lang import factory
-        """Test conversion of gaia plural units."""
+        """Test conversion of mozilla plural units."""
         propsource = '''
 # LOCALIZATION NOTE (addonDownloading, addonDownloadCancelled, addonDownloadRestart):
 # Semi-colon list of plural forms. See:
@@ -310,7 +310,15 @@ anotherStringWithPlural=Singular;Plural
         assert outputpo.gettargetlanguage() == targetlanguage
         assert outputpo.getheaderplural() == (u"%s" % lang.nplurals, lang.pluralequation)
 
-        print outputpo
+    def test_mozilla_plurals2(self):
+        """Test conversion of mozilla plural units of an unknown language."""
+        targetlanguage = u"xx"
+        propsource = "someKey=Some text"
+        convertor = prop2po.prop2po()
+        inputfile = wStringIO.StringIO(propsource)
+        inputprop = properties.propfile(inputfile, personality="mozilla")
+        outputpo = convertor.convertstore(inputprop, personality="mozilla", targetlanguage=targetlanguage)
+        assert outputpo.getheaderplural() == (u"2", u"(n != 1)")
 
 class TestProp2POCommand(test_convert.TestConvertCommand, TestProp2PO):
     """Tests running actual prop2po commands on files"""

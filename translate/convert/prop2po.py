@@ -229,6 +229,11 @@ class prop2po:
                 lang = factory.getlanguage(targetlanguage)
                 nplurals = lang.nplurals
                 pluralequation = lang.pluralequation
+                # if we don't know about that language, just use Mozilla's default
+                if nplurals == 0:
+                    nplurals = 2
+                    pluralequation = "(n != 1)"
+
             postore.updateheaderplural(nplurals, pluralequation)
             postore.settargetlanguage(targetlanguage)
 
