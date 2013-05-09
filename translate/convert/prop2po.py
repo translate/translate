@@ -35,22 +35,6 @@ logger = logging.getLogger(__name__)
 
 moz_plural_note_re = re.compile("LOCALIZATION NOTE \((.*?.)\)")
 
-# languages where Mozilla is using a different nplurals
-# XXX this list need to be examined, most of those entries are likely have
-# never been properly set and are just using the default
-moz_override_plural_rules = {
-    "az": (1, "0"),
-    "bo": (2, "n!=1 ? 1 : 0"),
-    "dz": (2, "n!=1 ? 1 : 0"),
-    "hy-AM": (2, "n!=1 ? 1 : 0"),
-    "km": (2, "n!=1 ? 1 : 0"),
-    "kw": (2, "n!=1 ? 1 : 0"),
-    "lo": (2, "n!=1 ? 1 : 0"),
-    "ms": (2, "n!=1 ? 1 : 0"),
-    "su": (2, "n!=1 ? 1 : 0"),
-    "vi": (2, "n!=1 ? 1 : 0"),
-}
-
 def _collapse(store, units):
     sources = [u.source for u in units]
     targets = [u.target for u in units]
@@ -223,16 +207,17 @@ class prop2po:
         nplurals = None
         pluralequation = None
         if targetlanguage:
-            if targetlanguage in moz_override_plural_rules.keys():
-                nplurals, pluralequation = moz_override_plural_rules[targetlanguage]
-            else:
-                lang = factory.getlanguage(targetlanguage)
+            lang = factory.getlanguage(targetlanguage)
+            if lang.mozilla_nplurals:
+                nplurals = lang.mozilla_nplurals
+                pluralequation = lang.mozilla_pluralequation
+            elif lang.nplurals:
                 nplurals = lang.nplurals
                 pluralequation = lang.pluralequation
+            else:
                 # if we don't know about that language, just use Mozilla's default
-                if nplurals == 0:
-                    nplurals = 2
-                    pluralequation = "(n != 1)"
+                nplurals = 2
+                pluralequation = "(n != 1)"
 
             postore.updateheaderplural(nplurals, pluralequation)
             postore.settargetlanguage(targetlanguage)
