@@ -103,7 +103,7 @@ class prop2po:
                 waitingcomments = []
                 thetargetfile.addunit(pounit)
         if self.personality == "gaia":
-            thetargetfile = self.fold_gaia_plurals(thetargetfile)
+            thetargetfile = self._fold_gaia_plurals(thetargetfile)
         if self.personality == "mozilla":
             thetargetfile = self._fold_mozilla_plurals(thetargetfile, targetlanguage)
         thetargetfile.removeduplicates(duplicatestyle)
@@ -167,13 +167,13 @@ class prop2po:
                 logger.error("didn't convert original property definition '%s'",
                              origprop.name)
         if self.personality == "gaia":
-            thetargetfile = self.fold_gaia_plurals(thetargetfile)
+            thetargetfile = self._fold_gaia_plurals(thetargetfile)
         if self.personality == "mozilla":
             thetargetfile = self._fold_mozilla_plurals(thetargetfile, targetlanguage)
         thetargetfile.removeduplicates(duplicatestyle)
         return thetargetfile
 
-    def fold_gaia_plurals(self, postore):
+    def _fold_gaia_plurals(self, postore):
         """Fold the multiple plural units of a gaia file into a gettext plural."""
         new_store = type(postore)()
         plurals = {}
