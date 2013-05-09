@@ -66,7 +66,7 @@ class xliff2po:
 
         return thepo
 
-    def convertstore(self, inputfile):
+    def convertstore(self, inputfile, duplicatestyle="msgctxt"):
         """Converts a .xliff file to .po format"""
         # XXX: The inputfile is converted to string because Pootle supplies
         # XXX: a PootleFile object as input which cannot be sent to PoXliffFile
@@ -92,14 +92,15 @@ class xliff2po:
                 continue
             thepo = self.converttransunit(transunit)
             thetargetfile.addunit(thepo)
+        thetargetfile.removeduplicates(duplicatestyle)
         return thetargetfile
 
 
-def convertxliff(inputfile, outputfile, templates):
+def convertxliff(inputfile, outputfile, templates, duplicatestyle="msgctxt"):
     """reads in stdin using fromfileclass, converts using convertorclass,
     writes to stdout"""
     convertor = xliff2po()
-    outputstore = convertor.convertstore(inputfile)
+    outputstore = convertor.convertstore(inputfile, duplicatestyle)
     if outputstore.isempty():
         return 0
     outputfile.write(str(outputstore))

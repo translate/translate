@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 
+from translate.convert import test_convert
 from translate.convert import xliff2po
 from translate.misc import wStringIO
 from translate.storage.test_base import headerless_len, first_translatable
@@ -209,8 +210,9 @@ garbage</note>
         assert potext.index('msgstr[1] "iinkomo"')
 
 
-class TestBasicXLIFF2PO(TestXLIFF2PO):
+class TestBasicXLIFF2PO(test_convert.TestConvertCommand, TestXLIFF2PO):
     """This tests a basic XLIFF file without xmlns attribute"""
+    convertmodule = xliff2po
 
     xliffskeleton = '''<?xml version="1.0" ?>
 <xliff version="1.1">
@@ -220,3 +222,13 @@ class TestBasicXLIFF2PO(TestXLIFF2PO):
     </body>
   </file>
 </xliff>'''
+
+    def test_simple_convert(self):
+        self.create_testfile("simple_convert.xlf", self.xliffskeleton % """
+                             <trans-unit xml:space="preserve" id="1" approved="yes">
+                               <source>One</source>
+                               <target state="translated">Een</target>
+                             </trans-unit>
+                             """)
+        self.run_command(i="simple_convert.xlf", o="simple_convert.po")
+        assert 'msgstr "Een"' in self.read_testfile("simple_convert.po")
