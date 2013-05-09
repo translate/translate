@@ -310,6 +310,8 @@ anotherStringWithPlural=Singular;Plural
         assert outputpo.gettargetlanguage() == targetlanguage
         assert outputpo.getheaderplural() == (u"%s" % lang.nplurals, lang.pluralequation)
 
+        assert outputpo.getprojectstyle() == u"mozilla"
+
     def test_mozilla_plurals2(self):
         """Test conversion of mozilla plural units of an unknown language."""
         targetlanguage = u"xx"

@@ -258,6 +258,9 @@ class prop2po:
                         targets = unit.target.split(u";")
                         unit.setsource(sources)
                         unit.settarget(targets)
+
+        postore.setprojectstyle("mozilla")
+
         return postore
 
     def convertunit(self, propunit, commenttype):
