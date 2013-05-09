@@ -117,6 +117,10 @@ class Common(object):
     languages probably can stick with the default comma, but Arabic and some
     Asian languages might want to override this."""
 
+    specialchars = u""
+    """Characters used by the language that might not be easy to input with
+    common keyboard layouts"""
+
     commonpunc = u".,;:!?-@#$%^*_()[]{}/\\'`\"<>"
     """These punctuation marks are common in English and most languages that
     use latin script."""
@@ -205,7 +209,7 @@ class Common(object):
 
         language.code = code
         while code:
-            langdata = data.languages.get(code, None)
+            langdata = data.get_language(code)
             if langdata:
                 language.fullname, language.nplurals, \
                     language.pluralequation = langdata

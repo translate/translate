@@ -75,6 +75,7 @@ languages = {
 'hi': (u'Hindi', 2, '(n != 1)'),
 'hy': (u'Armenian', 1, '0'),
 'hr': (u'Croatian', 3, '(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2)'),
+'ht': (u'Haitian; Haitian Creole', 2, '(n != 1)'),
 'hu': (u'Hungarian', 2, '(n != 1)'),
 'ia': (u"Interlingua (International Auxiliary Language Association)", 2, '(n != 1)'),
 'id': (u'Indonesian', 1, '0'),
@@ -153,7 +154,9 @@ languages = {
 'uk': (u'Ukrainian', 3,
        '(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2)'),
 'vi': (u'Vietnamese', 1, '0'),
+'ve': (u'Venda', 2, '(n != 1)'),
 'wa': (u'Walloon', 2, '(n > 1)'),
+'wo': (u'Wolof', 2, '(n != 1)'),
 'yo': (u'Yoruba', 2, '(n != 1)'),
 # Chinese is difficult because the main divide is on script, not really
 # country. Simplified Chinese is used mostly in China, Singapore and Malaysia.
@@ -408,3 +411,10 @@ def simplify_to_common(language_code, languages=languages):
         return language_code
     else:
         return simplify_to_common(simpler)
+
+def get_language(code):
+    code = code.replace("-", "_").replace("@", "_").lower()
+    if "_" in code:
+        # convert ab_cd → ab_CD
+        code = "%s_%s" %(code.split("_")[0], code.split("_", 1)[1].upper())
+    return languages.get(code, None)

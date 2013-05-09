@@ -47,6 +47,8 @@ class af(common.Common):
         """ % sentenceend, re.VERBOSE
     )
 
+    specialchars = u"ëïêôûáéíóúý"
+
     def capsstart(cls, text):
         """Modify this for the indefinite article ('n)."""
         match = articlere.search(text, 0, 20)
