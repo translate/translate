@@ -112,6 +112,11 @@ class Common(object):
     # Don't change these defaults of nplurals or pluralequation willy-nilly:
     # some code probably depends on these for unrecognised languages
 
+    mozilla_nplurals = 0
+    mozilla_pluralequation = "0"
+    """This of languages that has different plural formula in Mozilla than the
+    standard one in Gettext."""
+
     listseperator = u", "
     """This string is used to separate lists of textual elements. Most
     languages probably can stick with the default comma, but Arabic and some
