@@ -113,6 +113,7 @@ languages = {
 'ne': (u'Nepali', 2, '(n != 1)'),
 'nl': (u'Dutch; Flemish', 2, '(n != 1)'),
 'nn': (u'Norwegian Nynorsk; Nynorsk, Norwegian', 2, '(n != 1)'),
+'nqo': (u"N'Ko", 2, '(n > 1)'),
 'nso': (u'Pedi; Sepedi; Northern Sotho', 2, '(n != 1)'),
 'oc': (u'Occitan (post 1500)', 2, '(n > 1)'),
 'or': (u'Oriya', 2, '(n != 1)'),
