@@ -18,6 +18,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, see <http://www.gnu.org/licenses/>.
 
+import re
 import sys
 import os.path
 import fnmatch
@@ -129,14 +130,15 @@ class RecursiveOptionParser(optparse.OptionParser, object):
         description_lines = self.description.split('\n\n')[1:]
         if description_lines:
             result.append('.SH DESCRIPTION\n')
-            result.append('\n'.join(description_lines))
+            result.append('\n\n'.join([re.sub('\.\. note::', 'Note:', l)
+                                              for l in description_lines]))
         result.append('.SH OPTIONS\n')
         ManHelpFormatter().store_option_strings(self)
         result.append('.PP\n')
         for option in self.option_list:
             result.append('.TP\n')
-            result.append('%s\n' % option)
-            result.append('%s\n' % option.help)
+            result.append('%s\n' % str(option).replace('-', '\-'))
+            result.append('%s\n' % option.help.replace('-', '\-'))
         return "".join(result)
 
     def print_manpage(self, file=None):
