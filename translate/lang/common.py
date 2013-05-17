@@ -241,7 +241,7 @@ class Common(object):
     def punctranslate(cls, text):
         """Converts the punctuation in a string according to the rules of the
         language."""
-#        TODO: look at po::escapeforpo() for performance idea
+        #TODO: look at po::escapeforpo() for performance idea
         if not text:
             return text
         ellipses_end = text.endswith(u"...")
@@ -355,7 +355,7 @@ class Common(object):
     sentence_iter = classmethod(sentence_iter)
 
     def sentences(cls, text, strip=True):
-        """Returns a list of senteces in text."""
+        """Returns a list of sentences in text."""
         return [s for s in cls.sentence_iter(text, strip=strip)]
     sentences = classmethod(sentences)
 
@@ -366,7 +366,7 @@ class Common(object):
     capsstart = classmethod(capsstart)
 
     def numstart(cls, text):
-        """Determines whether the text starts with a mumeric value."""
+        """Determines whether the text starts with a numeric value."""
         stripped = text.lstrip().lstrip(cls.punctuation)
         return stripped and stripped[0].isnumeric()
     numstart = classmethod(numstart)
