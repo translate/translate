@@ -18,7 +18,7 @@ def test_find_delimiter_pos_simple():
 
 
 def test_find_delimiter_pos_multiple():
-    """Find delimiters when multiple potential delimietes are involved"""
+    """Find delimiters when multiple potential delimiters are involved"""
     assert properties._find_delimiter(u"key=value:value", [u"=", u":", u" "]) == ('=', 3)
     assert properties._find_delimiter(u"key:value=value", [u"=", u":", u" "]) == (':', 3)
     assert properties._find_delimiter(u"key value=value", [u"=", u":", u" "]) == (' ', 3)
@@ -130,7 +130,7 @@ class TestProp(test_monolingual.TestMonolingualStore):
         assert propsource + '\n' == propregen
 
     def test_unicode_escaping(self):
-        """check that escapes unicode is converted properly"""
+        """check that escaped unicode is converted properly"""
         propsource = "unicode=\u0411\u0416\u0419\u0428"
         messagevalue = u'\u0411\u0416\u0419\u0428'.encode("UTF-8")
         propfile = self.propparse(propsource, personality="mozilla")
@@ -322,7 +322,7 @@ key=value
         """test that serializer quotes mac strings properly"""
         propsource = ur'"key with \"quotes\"" = "value with \"quotes\"";'.encode('utf-16')
         propfile = self.propparse(propsource, personality="strings")
-        # we don't care about leading and tralinig newlines and zero bytes
+        # we don't care about leading and trailing newlines and zero bytes
         # in the assert, we just want to make sure that
         # - all quotes are in place
         # - quotes inside are escaped
