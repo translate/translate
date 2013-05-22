@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-from py import test
+import pytest
 
 from translate.misc import multistring
 from translate.misc import test_autoencode
@@ -20,7 +20,7 @@ class TestMultistring(test_autoencode.TestAutoencode):
         assert s2 == "test"
         assert s2.strings == ["test", "me"]
         assert s2 != s1
-        test.raises(ValueError, t, [])
+        pytest.raises(ValueError, t, [])
 
     def test_replace(self):
         t = self.type2test

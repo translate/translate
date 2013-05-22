@@ -3,7 +3,7 @@
 
 from translate.lang import common
 
-from py.test import mark
+from pytest import mark
 
 
 def test_characters():

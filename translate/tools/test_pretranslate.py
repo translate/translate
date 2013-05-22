@@ -3,7 +3,7 @@
 
 import warnings
 
-from py.test import mark
+from pytest import mark
 
 from translate.tools import pretranslate
 from translate.convert import test_convert

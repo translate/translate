@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-from py.test import mark
+from pytest import mark
 
 from translate.storage import php
 from translate.storage import test_monolingual

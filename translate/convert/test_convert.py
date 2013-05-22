@@ -4,7 +4,7 @@
 import os
 import sys
 
-from py import test
+import pytest
 
 from translate.convert import convert
 
@@ -102,7 +102,7 @@ class TestConvertCommand:
         helpfile = self.open_testfile("help.txt", "w")
         sys.stdout = helpfile
         try:
-            test.raises(SystemExit, self.run_command, help=True)
+            pytest.raises(SystemExit, self.run_command, help=True)
         finally:
             sys.stdout = stdout
         helpfile.close()

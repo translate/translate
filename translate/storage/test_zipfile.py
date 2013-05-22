@@ -7,7 +7,7 @@ import zlib  # implied prerequisite
 import zipfile
 
 from test.test_support import TestFailed
-from py import test
+import pytest
 
 from translate.misc import zipfileext
 
@@ -124,14 +124,14 @@ class TestZipFiles:
         fp = open(self.srcname, "w")
         fp.write("this is not a legal zip file\n")
         fp.close()
-        assert test.raises(zipfile.BadZipfile, zipfile.ZipFile, self.srcname)
+        assert pytest.raises(zipfile.BadZipfile, zipfile.ZipFile, self.srcname)
         os.unlink(self.srcname)
 
     def test_finalize(self):
         """make sure we don't raise an AttributeError when a partially-constructed"""
         """ZipFile instance is finalized; this tests for regression on SF tracker"""
         """bug #403871."""
-        assert test.raises(IOError, zipfile.ZipFile, self.srcname)
+        assert pytest.raises(IOError, zipfile.ZipFile, self.srcname)
         # The bug we're testing for caused an AttributeError to be raised
         # when a ZipFile instance was created for a file that did not
         # exist; the .fp member was not initialized but was needed by the
@@ -152,5 +152,5 @@ class TestZipFiles:
         # a RuntimeError, and so should calling .testzip.  An earlier
         # version of .testzip would swallow this exception (and any other)
         # and report that the first file in the archive was corrupt.
-        assert test.raises(RuntimeError, zipf.testzip)
+        assert pytest.raises(RuntimeError, zipf.testzip)
         del data, zipf

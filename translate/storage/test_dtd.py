@@ -20,8 +20,7 @@
 
 import warnings
 
-from py import test
-from py.test import mark
+from pytest import mark
 
 from translate.misc import wStringIO
 from translate.storage import dtd

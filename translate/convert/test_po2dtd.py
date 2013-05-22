@@ -3,8 +3,7 @@
 
 import warnings
 
-from py import test
-from py.test import mark
+import pytest
 
 from translate.convert import po2dtd
 from translate.convert import dtd2po
@@ -109,7 +108,7 @@ class TestPO2DTD:
         simplepo = '''#: simple.label\n#: simple.accesskey\nmsgid "Simple &String"\nmsgstr "Dimpled Ring"\n'''
         simpledtd = '''<!ENTITY simple.label "Simple String">\n<!ENTITY simple.accesskey "S">'''
         warnings.simplefilter("error")
-        assert test.raises(Warning, self.merge2dtd, simpledtd, simplepo)
+        assert pytest.raises(Warning, self.merge2dtd, simpledtd, simplepo)
 
     def test_accesskeycase(self):
         """tests that access keys come out with the same case as the original, regardless"""

@@ -1,8 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-from py import test
-from py.test import deprecated_call
+from pytest import deprecated_call
 
 from translate.misc import wStringIO
 from translate.storage import properties

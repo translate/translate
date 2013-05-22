@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: UTF-8 -*-
 
-from py.test import raises
+from pytest import raises
 
 from translate.lang.identify import LanguageIdentifier
 from translate.storage.base import TranslationUnit

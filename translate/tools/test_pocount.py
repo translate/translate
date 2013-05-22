@@ -4,7 +4,7 @@
 import StringIO
 from translate.tools import pocount
 
-from py.test import mark
+from pytest import mark
 
 from translate.storage import po
 from translate.storage import statsdb

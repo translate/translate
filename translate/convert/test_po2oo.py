@@ -3,7 +3,7 @@
 import os
 import warnings
 
-from py.test import mark
+from pytest import mark
 
 from translate.convert import po2oo
 from translate.convert import oo2po

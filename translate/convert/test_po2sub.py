@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-from py.test import importorskip
+from pytest import importorskip
 
 from translate.convert import po2sub
 from translate.convert import test_convert

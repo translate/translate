@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from py.test import mark
+from pytest import mark
 
 from translate.filters import checks
 from translate.lang import data
