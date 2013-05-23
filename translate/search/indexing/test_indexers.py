@@ -300,6 +300,27 @@ def test_or_queries():
     # clean up
     clean_database()
 
+def test_string_queries():
+    """test if string queries work as expected"""
+    # clean up everything first
+    clean_database()
+    # initialize the database with example content
+    new_db = _get_indexer(DATABASE)
+    create_example_content(new_db)
+    # do string query
+    q_string1 = new_db.make_query("foo bar")
+    r_string1 = new_db.get_query_result(q_string1).get_matches(0, 10)
+    assert r_string1[0] == 3
+    # do string query with non contagious words
+    q_string2 = new_db.make_query("foo HELO")
+    r_string2 = new_db.get_query_result(q_string2).get_matches(0, 10)
+    assert r_string2[0] == 3
+    # do string query with a named field
+    q_string3 = new_db.make_query({"multiple": "foo bar"})
+    r_string3 = new_db.get_query_result(q_string3).get_matches(0, 10)
+    assert r_string3[0] == 1
+    # clean up
+    clean_database()
 
 def test_lower_upper_case():
     """test if case is ignored for queries and for indexed terms"""
@@ -510,6 +531,7 @@ if __name__ == "__main__":
         test_field_analyzers()
         test_and_queries()
         test_or_queries()
+        test_string_queries()
         test_lower_upper_case()
         test_tokenizing()
         test_searching()
