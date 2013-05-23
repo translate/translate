@@ -197,6 +197,9 @@ class PyLuceneDatabase(CommonIndexer.CommonDatabase):
 
     def _escape_term_value(self, value):
         """Escapes special :param:`value` characters."""
+        # The indexer seems to strip hyphens, but not the analyzer. If we
+        # didn't replace it with space, searching for words with hyphen fails
+        value = value.replace("-", " ")
         return PyLucene.QueryParser.escape(value)
 
     def _create_query_for_string(self, text, require_all=True,
