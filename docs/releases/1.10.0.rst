@@ -7,6 +7,8 @@
 Translate Toolkit 1.10.0
 ************************
 
+*Released on 12 March 2013*
+
 This release contains many improvements and bug fixes. While it contains many
 general improvements, it also specifically contains needed changes for the
 upcoming `Pootle <http://pootle.translatehouse.org/>`_ 2.5.0.

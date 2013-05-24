@@ -1,8 +1,7 @@
 Translate Toolkit 1.9.0 Released
 ********************************
 
-2011-04-12
-==========
+*Released on 12 April 2011*
 
 This release contains many improvements and bug fixes. While it contains many
 general improvements, it also specifically contains needed changes for the

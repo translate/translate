@@ -1,8 +1,7 @@
 Translate Toolkit 1.8.1
 ***********************
 
-2010-11-19
-==========
+*Released on 19 Novermber 2010*
 
 Today the Translate team released version 1.8.1 of the Translate Toolkit.  The
 Translate Toolkit contains many useful tools for translation, management, and
