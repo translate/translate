@@ -10,3 +10,4 @@ Pootle releases.
    :maxdepth: 1
 
    1.10.0 <1.10.0>
+   1.8.1 <1.8.1>
