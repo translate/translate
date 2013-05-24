@@ -31,19 +31,6 @@ building new tools, make sure to read through this part.
    development/releasing
 
 
-API Reference
--------------
-
-This part covers any function, class or method included within the
-Translate Toolkit that you can use to programatically build new
-localization tools.
-
-.. toctree::
-   :maxdepth: 2
-
-   api/index
-
-
 Additional Notes
 ----------------
 
@@ -56,3 +43,17 @@ Changelog and legal information are included here.
    releases/index
    history
    license
+
+
+API Reference
+-------------
+
+This part covers any function, class or method included within the
+Translate Toolkit that you can use to programatically build new
+localization tools.
+
+.. toctree::
+   :maxdepth: 2
+
+   api/index
+
