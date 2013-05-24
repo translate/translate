@@ -54,7 +54,7 @@ and since it can be rendered well in some of our key sites.
 
 First we need to create a log of changes in the Toolkit::
 
-    git diff N-1 HEAD > release/RELEASE-NOTES-$version.rst
+    git diff N-1 HEAD > docs/releases/$version.rst
 
 Edit this file.  You can use the commits as a guide to build up the release
 notes.  You should remove all log messages before the release.

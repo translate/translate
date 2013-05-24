@@ -28,6 +28,7 @@ building new tools, make sure to read through this part.
    development/testing
    development/contributing
    development/developers
+   development/releasing
 
 
 API Reference
@@ -52,5 +53,6 @@ Changelog and legal information are included here.
    :maxdepth: 1
 
    changelog
+   releases/index
    history
    license

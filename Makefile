@@ -20,7 +20,7 @@ test-publish-pypi:
 publish-sourceforge:
 	@echo "We don't trust automation that much.  The following is the command you need to run"
 	@echo 'scp -p ${FULLNAME}.tar.bz2 jsmith@frs.sourceforge.net:"/home/frs/project/translate/Translate\ Toolkit/${VERSION}/"'
-	@echo 'scp -p release/RELEASE-NOTES-${VERSION}.rst jsmith@frs.sourceforge.net:"/home/frs/project/translate/Translate\ Toolkit/${VERSION}/README.rst"'
+	@echo 'scp -p docs/releases/${VERSION}.rst jsmith@frs.sourceforge.net:"/home/frs/project/translate/Translate\ Toolkit/${VERSION}/README.rst"'
 
 publish: publish-pypi publish-sourceforge
 
