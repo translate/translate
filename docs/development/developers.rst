@@ -56,9 +56,9 @@ Bugzilla
 Communication
 -------------
 
-* IRC channel -- irc://irc.freenode.net/#pootle Developers mailing list --
-* https://lists.sourceforge.net/lists/listinfo/translate-devel Commits to
-* version control -- https://lists.sourceforge.net/lists/listinfo/translate-cvs
+* `IRC channel <irc://irc.freenode.net/#pootle>`_
+* `Developers mailing list <https://lists.sourceforge.net/lists/listinfo/translate-devel>`_
+* `Commits to version control <https://lists.sourceforge.net/lists/listinfo/translate-cvs>`_
 
 .. _developers#working_with_bugzilla:
 
