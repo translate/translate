@@ -60,6 +60,36 @@ Communication
 * https://lists.sourceforge.net/lists/listinfo/translate-devel Commits to
 * version control -- https://lists.sourceforge.net/lists/listinfo/translate-cvs
 
+.. _developers#working_with_bugzilla:
+
+Working with Bugzilla
+=====================
+When you close bugs ensure that you give a description and hash for the fix so
+that the reporter or reviewer can see your work and has some idea of what
+caused the bug to be fixed.  This is made easier by GitHub Bugzilla integration.
+
+Automated Bugzilla update from commits
+--------------------------------------
+
+Github posts comments on Bugzilla bugs when commit messages references a bug by
+bug number number.
+
+Bugs are recognised by the following format, which are case-insensitive::
+
+  Bug 123
+
+Multiple bugs can also be specified by separating them with a comma,
+apersand, plus or "and"::
+
+  Bug 123, 124 and 125
+
+Commits to all branches will be processed.
+
+If there is a "fix", "close", or "address" before the bug then that bug is
+closed. ::
+
+  Fix bug 123
+
 .. _developers#source_code_map:
 
 Source code map
