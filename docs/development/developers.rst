@@ -64,31 +64,31 @@ Communication
 
 Working with Bugzilla
 =====================
-When you close bugs ensure that you give a description and hash for the fix so
-that the reporter or reviewer can see your work and has some idea of what
-caused the bug to be fixed.  This is made easier by GitHub Bugzilla integration.
+When you close bugs ensure that you give a description and git hash for the
+fix.  This ensures that the reporter or code reviewer can see your work and has
+an easy method of finding your fix.  This is made easier by GitHub's Bugzilla
+integration.
 
 Automated Bugzilla update from commits
 --------------------------------------
 
-Github posts comments on Bugzilla bugs when commit messages references a bug by
-bug number number.
+Github will post comments on Bugzilla bugs when the commit messages make
+references to the bug by its bug number.
 
-Bugs are recognised by the following format, which are case-insensitive::
+- Bugs are recognised by the following format (which are case-insensitive)::
 
-  Bug 123
+    Bug 123
 
-Multiple bugs can also be specified by separating them with a comma,
-apersand, plus or "and"::
+- Multiple bugs can be specified by separating them with a comma, apersand,
+  plus or "and"::
 
-  Bug 123, 124 and 125
+    Bug 123, 124 and 125
 
-Commits to all branches will be processed.
+- Commits to all branches will be processed.
+- If there is a "fix", "close", or "address" before the bug then that bug is
+  closed. ::
 
-If there is a "fix", "close", or "address" before the bug then that bug is
-closed. ::
-
-  Fix bug 123
+    Fix bug 123
 
 .. _developers#source_code_map:
 
