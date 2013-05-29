@@ -28,13 +28,13 @@ Most important for Pootle
 
 Formats and Converters
 ----------------------
-* Android format support [Michal Čihař]
+* Android format support \[Michal Čihař\]
 * Mozilla .lang, many improvements
 * PHP support for defintions, // comments and improved whitespace preservation
 * PO: X-Merge-On header to explicitly demand a conversion strategy instead of
   guessing
-* .properties: BOMs in messages and C style comments [Roman Imankulov]
-* Mac OS String formatting imporved [Roman Imankulov]
+* .properties: BOMs in messages and C style comments \[Roman Imankulov\]
+* Mac OS String formatting imporved \[Roman Imankulov\]
 
 
 Version Control improvements
@@ -50,7 +50,7 @@ Version Control improvements
 Checks
 ------
 * New OpenOffice variables style used in extensions
-* Check for self-closing tags in the xmltags test [Seb M].
+* Check for self-closing tags in the xmltags test \[Seb M\].
 * GConf test fixes
 * Terminology checker type for future terminology features
 * Categorize pofilter checks into critical, functional, cosmetic, etc
