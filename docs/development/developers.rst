@@ -79,7 +79,7 @@ references to the bug by its bug number.
 
     Bug 123
 
-- Multiple bugs can be specified by separating them with a comma, apersand,
+- Multiple bugs can be specified by separating them with a comma, ampersand,
   plus or "and"::
 
     Bug 123, 124 and 125
