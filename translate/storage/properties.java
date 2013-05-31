@@ -25,6 +25,6 @@ class properties{
 		} catch (IOException e) {
 			System.out.println("Some error occured");
 		}
-}
+	}
 }
 

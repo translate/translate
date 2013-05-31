@@ -129,7 +129,7 @@ eol = "\n"
 def _find_delimiter(line, delimiters):
     """Find the type and position of the delimiter in a property line.
 
-    Property files can be delimeted by "=", ":" or whitespace (space for now).
+    Property files can be delimited by "=", ":" or whitespace (space for now).
     We find the position of each delimiter, then find the one that appears
     first.
 
@@ -177,7 +177,7 @@ def _find_delimiter(line, delimiters):
 
 
 def find_delimeter(line):
-    """Spelling error that is kept around for in case someone relies on it.
+    """Misspelled function that is kept around in case someone relies on it.
 
     Deprecated."""
     warnings.warn("deprecated use Dialect.find_delimiter instead",
@@ -266,11 +266,11 @@ def _key_strip(key):
 
     :param key: A properties key
     :type key: str
-    :return: Key without any uneeded whitespace
+    :return: Key without any unneeded whitespace
     :rtype: str
     """
     newkey = key.rstrip()
-    # If line now end in \ we put back the whitespace that was escaped
+    # If string now ends in \ we put back the whitespace that was escaped
     if newkey[-1:] == "\\":
         newkey += key[len(newkey):len(newkey)+1]
     return newkey.lstrip()
@@ -307,17 +307,17 @@ class Dialect(object):
     encode = classmethod(encode)
 
     def find_delimiter(cls, line):
-        """Find the delimeter"""
+        """Find the delimiter"""
         return _find_delimiter(line, cls.delimiters)
     find_delimiter = classmethod(find_delimiter)
 
     def key_strip(cls, key):
-        """Strip uneeded characters from the key"""
+        """Strip unneeded characters from the key"""
         return _key_strip(key)
     key_strip = classmethod(key_strip)
 
     def value_strip(cls, value):
-        """Strip uneeded characters from the value"""
+        """Strip unneeded characters from the value"""
         return value.lstrip()
     value_strip = classmethod(value_strip)
 
@@ -383,7 +383,7 @@ class DialectStrings(Dialect):
     def key_strip(cls, key):
         """Strip unneeded characters from the key"""
         newkey = key.rstrip().rstrip('"')
-        # If line now end in \ we put back the char that was escaped
+        # If string now ends in \ we put back the char that was escaped
         if newkey[-1:] == "\\":
             newkey += key[len(newkey):len(newkey)+1]
         ret = newkey.lstrip().lstrip('"')
@@ -391,9 +391,9 @@ class DialectStrings(Dialect):
     key_strip = classmethod(key_strip)
 
     def value_strip(cls, value):
-        """Strip uneeded characters from the value"""
+        """Strip unneeded characters from the value"""
         newvalue = value.rstrip().rstrip(';').rstrip('"')
-        # If line now end in \ we put back the char that was escaped
+        # If string now ends in \ we put back the char that was escaped
         if newvalue[-1:] == "\\":
             newvalue += value[len(newvalue):len(newvalue)+1]
         ret = newvalue.lstrip().lstrip('"')
@@ -423,8 +423,8 @@ class propunit(base.TranslationUnit):
         # a pair of symbols to enclose delimiter on the output
         # (a " " can be used for the sake of convenience)
         self.out_delimiter_wrappers = getattr(self.personality, 'out_delimiter_wrappers', u'')
-        # symbol which should ends every property sentence (";" is required for
-        # Mac OS X strings
+        # symbol that should end every property sentence
+        # (e.g. ";" is required for Mac OS X strings)
         self.out_ending = getattr(self.personality, 'out_ending', u'')
 
     def setsource(self, source):
@@ -458,7 +458,7 @@ class propunit(base.TranslationUnit):
     encoding = property(_get_encoding)
 
     def __str__(self):
-        """Convert to a string. double check that unicode is handled
+        """Convert to a string. Double check that unicode is handled
         somehow here."""
         source = self.getoutput()
         assert isinstance(source, unicode)
