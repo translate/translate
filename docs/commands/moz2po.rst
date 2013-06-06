@@ -74,6 +74,7 @@ Options (po2moz):
 -tTEMPLATE, --template=TEMPLATE  read from TEMPLATE in dtd, \*, inc, it, properties formats
 -lLOCALE, --locale=LOCALE  set output locale (required as this sets the directory names)
 --clonexpi=CLONEXPI  clone xpi structure from the given xpi file
+--removeuntranslated  remove untranslated strings from output
 --fuzzy              use translations marked fuzzy
 --nofuzzy            don't use translations marked fuzzy (default)
 
