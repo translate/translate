@@ -145,7 +145,7 @@ buildxpi.py
 
 Description
 -----------
-Creats a XPI language pack from Mozilla sources and translated l10n files. This
+Creates XPI language packs from Mozilla sources and translated l10n files. This
 script has only been tested with Firefox 3.1 beta sources.
 
 It is basically the scripted version of the process described on Mozilla's
@@ -165,11 +165,11 @@ Usage
 -----
 ::
 
-  buildxpi.py [<options>] <lang>
+  buildxpi.py [<options>] <lang> [<lang2> ...]
 
 Example::
 
-  buildxpi.py -L /path/to/l10n -s /path/to/mozilla-central -o /path/to/xpi_output af
+  buildxpi.py -L /path/to/l10n -s /path/to/mozilla-central -o /path/to/xpi_output af ar
 
 Options:
 

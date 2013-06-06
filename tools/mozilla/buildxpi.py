@@ -26,17 +26,18 @@ https://developer.mozilla.org/en/Creating_a_Language_Pack)
 
 Example usage::
 
-    buildxpi.py -L /path/to/l10n -s /path/to/mozilla-central -o /path/to/xpi_output af
+    buildxpi.py -L /path/to/l10n -s /path/to/mozilla-central -o /path/to/xpi_output af ar
 
-- "/path/to/l10n" is the path to a the parent directory of the "af" directory
-  containing the Afrikaans translated files.
+- "/path/to/l10n" is the path to a the parent directory of the "af" and "ar"
+  directories containing the Afrikaans and Arabic translated files.
 - "/path/to/mozilla-central" is the path to the Firefox sources checked out
   from Mercurial. Note that --mozproduct is not specified, because the default
   is "browser". For Thunderbird (>=3.0) it should be "/path/to/comm-central"
   and "--mozproduct mail" should be specified, although this is not yet
   working.
 - "/path/to/xpi_output" is the path to the output directory.
-- "af" is the language (Afrikaans in this case) to build a language pack for.
+- "af ar" are the languages (Afrikaans and Arabic in this case) to build
+  language packs for.
 
 NOTE: The .mozconfig in Firefox source directory gets backed up,
 overwritten and replaced.
@@ -105,7 +106,7 @@ def run(cmd, expected_status=0, fail_msg=None, stdout=-1, stderr=-1):
     return cmd_status
 
 
-def build_xpi(l10nbase, srcdir, outputdir, lang, product, delete_dest=False):
+def build_xpi(l10nbase, srcdir, outputdir, langs, product, delete_dest=False):
     MOZCONFIG = os.path.join(srcdir, '.mozconfig')
     # Backup existing .mozconfig if it exists
     backup_name = ''
@@ -160,26 +161,30 @@ ac_add_options --enable-application=%(product)s
         os.chdir(builddir)
         run(['make', '-C', 'config'],
             fail_msg="Unable to successfully configure build for XPI!")
-        run(['make', '-C', os.path.join(product, 'locales'),
-             'langpack-%s' % (lang)],
+
+        run(['make', '-C', os.path.join(product, 'locales')] +
+            ['langpack-%s' % lang for lang in langs],
             fail_msg="Unable to successfully build XPI!")
 
-        xpiglob = glob(
-            os.path.join(
-                builddir,
-                product == 'mail' and 'mozilla' or '',
-                'dist',
-                '*',
-                'xpi',
-                '*.%s.langpack.xpi' % lang
-            )
-        )[0]
-        filename = os.path.split(xpiglob)[1]
-        destfile = os.path.join(outputdir, filename)
-        if delete_dest:
-            if os.path.isfile(destfile):
-                os.unlink(destfile)
-        move(xpiglob, outputdir)
+        destfiles = []
+        for lang in langs:
+            xpiglob = glob(
+                os.path.join(
+                    builddir,
+                    product == 'mail' and 'mozilla' or '',
+                    'dist',
+                    '*',
+                    'xpi',
+                    '*.%s.langpack.xpi' % lang
+                )
+            )[0]
+            filename = os.path.split(xpiglob)[1]
+            destfile = os.path.join(outputdir, filename)
+            destfiles.append(destfile)
+            if delete_dest:
+                if os.path.isfile(destfile):
+                    os.unlink(destfile)
+            move(xpiglob, outputdir)
 
     finally:
         os.chdir(olddir)
@@ -189,12 +194,12 @@ ac_add_options --enable-application=%(product)s
             os.remove(MOZCONFIG)
             os.rename(backup_name, MOZCONFIG)
 
-    return destfile
+    return destfiles
 
 
 def create_option_parser():
     from optparse import OptionParser
-    usage = 'Usage: buildxpi.py [<options>] <lang>'
+    usage = 'Usage: buildxpi.py [<options>] <lang> [<lang2> ...]'
     p = OptionParser(usage=usage)
 
     p.add_option(
@@ -253,7 +258,7 @@ if __name__ == '__main__':
         l10nbase=os.path.abspath(options.l10nbase),
         srcdir=os.path.abspath(options.srcdir),
         outputdir=os.path.abspath(options.outputdir),
-        lang=args[0],
+        langs=args,
         product=options.mozproduct,
         delete_dest=options.delete_dest
     )
