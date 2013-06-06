@@ -21,11 +21,11 @@ class TestPO2DTD:
     def teardown_method(self, method):
         warnings.resetwarnings()
 
-    def po2dtd(self, posource):
+    def po2dtd(self, posource, remove_untranslated=False):
         """helper that converts po source to dtd source without requiring files"""
         inputfile = wStringIO.StringIO(posource)
         inputpo = po.pofile(inputfile)
-        convertor = po2dtd.po2dtd()
+        convertor = po2dtd.po2dtd(remove_untranslated=remove_untranslated)
         outputdtd = convertor.convertstore(inputpo)
         return outputdtd
 
@@ -39,12 +39,13 @@ class TestPO2DTD:
         outputdtd = convertor.convertstore(inputpo)
         return outputdtd
 
-    def convertdtd(self, posource, dtdtemplate):
+    def convertdtd(self, posource, dtdtemplate, remove_untranslated=False):
         """helper to exercise the command line function"""
         inputfile = wStringIO.StringIO(posource)
         outputfile = wStringIO.StringIO()
         templatefile = wStringIO.StringIO(dtdtemplate)
-        assert po2dtd.convertdtd(inputfile, outputfile, templatefile)
+        assert po2dtd.convertdtd(inputfile, outputfile, templatefile,
+                                 remove_untranslated=remove_untranslated)
         return outputfile.getvalue()
 
     def roundtripsource(self, dtdsource):
@@ -203,6 +204,53 @@ msgstr "&searchIntegration.engineName; &ileti aramasına izin ver"
         print newdtd
         assert newdtd == dtdexpected
 
+    def test_untranslated(self):
+        """test removing of untranslated entries in redtd"""
+        posource = '''#: simple.label
+msgid "Simple string"
+msgstr "Dimpled ring"
+
+#: simple.label2
+msgid "Simple string 2"
+msgstr ""
+
+#: simple.label3
+msgid "Simple string 3"
+msgstr "Simple string 3"
+'''
+        dtdtemplate = '''<!ENTITY simple.label "Simple string">
+<!ENTITY simple.label2 "Simple string 2">
+<!ENTITY simple.label3 "Simple string 3">
+'''
+        dtdexpected = '''<!ENTITY simple.label "Dimpled ring">
+
+<!ENTITY simple.label3 "Simple string 3">
+'''
+        newdtd = self.convertdtd(posource, dtdtemplate, remove_untranslated=True)
+        print newdtd
+        assert newdtd == dtdexpected
+
+    def test_untranslated(self):
+        """test removing of untranslated entries in po2dtd"""
+        posource = '''#: simple.label
+msgid "Simple string"
+msgstr "Dimpled ring"
+
+#: simple.label2
+msgid "Simple string 2"
+msgstr ""
+
+#: simple.label3
+msgid "Simple string 3"
+msgstr "Simple string 3"
+'''
+        dtdexpected = '''<!ENTITY simple.label "Dimpled ring">
+<!ENTITY simple.label3 "Simple string 3">
+'''
+        newdtd = self.po2dtd(posource, remove_untranslated=True)
+        print newdtd
+        assert str(newdtd) == dtdexpected
+
     def test_newlines_escapes(self):
         """check that we can handle a \n in the PO file"""
         posource = '''#: simple.label\n#: simple.accesskey\nmsgid "A hard coded newline.\\n"\nmsgstr "Hart gekoeerde nuwe lyne\\n"\n'''
@@ -360,4 +408,5 @@ class TestPO2DTDCommand(test_convert.TestConvertCommand, TestPO2DTD):
         options = test_convert.TestConvertCommand.test_help(self)
         options = self.help_check(options, "-t TEMPLATE, --template=TEMPLATE")
         options = self.help_check(options, "--fuzzy")
+        options = self.help_check(options, "--removeuntranslated")
         options = self.help_check(options, "--nofuzzy", last=True)
