@@ -115,8 +115,7 @@ class reprop:
                 delimiter = prespace + delimiter_char + postspace
             if key in self.inputstore.locationindex:
                 unit = self.inputstore.locationindex[key]
-                if self.remove_untranslated and (unit.source == unit.target or
-                                                 unit.isfuzzy() or
+                if self.remove_untranslated and (unit.isfuzzy() or
                                                  len(unit.target) == 0):
                     returnline = u""
                 else:
