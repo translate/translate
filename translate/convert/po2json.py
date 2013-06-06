@@ -50,8 +50,15 @@ class rejson:
         return str(self.templatestore)
 
 
-def convertjson(inputfile, outputfile, templatefile, includefuzzy=False):
+def convertjson(inputfile, outputfile, templatefile, includefuzzy=False,
+                outputthreshold=None):
     inputstore = factory.getobject(inputfile)
+
+    if outputthreshold:
+        from translate.convert import convert
+        if not convert.should_output_store(inputstore, outputthreshold):
+            return False
+
     if templatefile is None:
         raise ValueError("Must have template file for JSON files")
     else:
@@ -69,6 +76,7 @@ def main(argv=None):
               }
     parser = convert.ConvertOptionParser(formats, usetemplates=True,
                                          description=__doc__)
+    parser.add_threshold_option()
     parser.add_fuzzy_option()
     parser.run(argv)
 

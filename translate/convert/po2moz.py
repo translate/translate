@@ -122,6 +122,7 @@ def main(argv=None):
         metavar="LOCALE")
     parser.add_option("", "--clonexpi", dest="clonexpi", default=None,
         help="clone xpi structure from the given xpi file")
+    parser.add_threshold_option()
     parser.add_fuzzy_option()
     parser.replacer = replacer
     parser.run(argv)

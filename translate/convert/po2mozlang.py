@@ -52,10 +52,17 @@ class po2lang:
         return thetargetfile
 
 
-def convertlang(inputfile, outputfile, templates, includefuzzy=False, mark_active=True):
+def convertlang(inputfile, outputfile, templates, includefuzzy=False, mark_active=True,
+                outputthreshold=None):
     """reads in stdin using fromfileclass, converts using convertorclass,
     writes to stdout"""
     inputstore = po.pofile(inputfile)
+
+    if outputthreshold:
+        from translate.convert import convert
+        if not convert.should_output_store(inputstore, outputthreshold):
+            return False
+
     if inputstore.isempty():
         return 0
     convertor = po2lang(mark_active=mark_active)
@@ -79,6 +86,7 @@ def main(argv=None):
                                            description=__doc__)
     parser.add_option("", "--mark-active", dest="mark_active", default=False,
             action="store_true", help="mark the file as active")
+    parser.add_threshold_option()
     parser.add_fuzzy_option()
     parser.passthrough.append("mark_active")
     parser.run(argv)

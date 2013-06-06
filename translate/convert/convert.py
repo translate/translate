@@ -59,6 +59,13 @@ class ConvertOptionParser(optrecurse.RecursiveOptionParser, object):
                         action="store_false", default=default, help=nofuzzyhelp)
         self.passthrough.append("includefuzzy")
 
+    def add_threshold_option(self, default=None):
+        """Adds an option to output translation of exceeding certain threshold."""
+        self.add_option("", "--threshold", dest="outputthreshold", default=default,
+                        metavar="PERCENT", type="int",
+                        help="the percent of translated words below it no output is produced")
+        self.passthrough.append("outputthreshold")
+
     def add_duplicates_option(self, default="msgctxt"):
         """Adds an option to say what to do with duplicate strings."""
         self.add_option(
@@ -420,6 +427,24 @@ class ArchiveConvertOptionParser(ConvertOptionParser):
                         self).processfile(fileprocessor, options,
                                           fullinputpath, fulloutputpath,
                                           fulltemplatepath)
+
+def should_output_store(store, threshold):
+    """Check if the percent of translated source words more than or equal to
+    the given threshold."""
+    from translate.storage import statsdb
+
+    units = filter(lambda unit: unit.istranslatable(), store.units)
+    translated = filter(lambda unit: unit.istranslated(), units)
+    wordcounts = dict(map(lambda unit: (unit, statsdb.wordsinunit(unit)), units))
+    sourcewords = lambda elementlist: sum(map(lambda unit: wordcounts[unit][0], elementlist))
+    tranlated_cound = sourcewords(translated)
+    total_count = sourcewords(units)
+    percent = tranlated_cound * 100 / total_count
+
+    if percent < threshold:
+        return False
+    else:
+        return True
 
 
 def main(argv=None):

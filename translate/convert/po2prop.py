@@ -144,26 +144,35 @@ class reprop:
 
 
 def convertstrings(inputfile, outputfile, templatefile, personality="strings",
-                   includefuzzy=False, encoding=None,
+                   includefuzzy=False, encoding=None, outputthreshold=None,
                    remove_untranslated=False):
     """.strings specific convertor function"""
     return convertprop(inputfile, outputfile, templatefile,
                        personality="strings", includefuzzy=includefuzzy,
-                       encoding=encoding,
+                       encoding=encoding, outputthreshold=outputthreshold,
                        remove_untranslated=remove_untranslated)
 
 
 def convertmozillaprop(inputfile, outputfile, templatefile,
-                       includefuzzy=False, remove_untranslated=False):
+                       includefuzzy=False, remove_untranslated=False,
+                       outputthreshold=None):
     """Mozilla specific convertor function"""
     return convertprop(inputfile, outputfile, templatefile,
                        personality="mozilla", includefuzzy=includefuzzy,
-                       remove_untranslated=remove_untranslated)
+                       remove_untranslated=remove_untranslated,
+                       outputthreshold=outputthreshold)
 
 
 def convertprop(inputfile, outputfile, templatefile, personality="java",
-                includefuzzy=False, encoding=None, remove_untranslated=False):
+                includefuzzy=False, encoding=None, remove_untranslated=False,
+                outputthreshold=None):
     inputstore = po.pofile(inputfile)
+
+    if outputthreshold:
+        from translate.convert import convert
+        if not convert.should_output_store(inputstore, outputthreshold):
+            return False
+
     if templatefile is None:
         raise ValueError("must have template file for properties files")
         # convertor = po2prop()
@@ -199,6 +208,7 @@ def main(argv=None):
     parser.add_option("", "--removeuntranslated", dest="remove_untranslated",
             default=False, action="store_true",
             help="remove key value from output if it is untranslated")
+    parser.add_threshold_option()
     parser.add_fuzzy_option()
     parser.passthrough.append("personality")
     parser.passthrough.append("encoding")

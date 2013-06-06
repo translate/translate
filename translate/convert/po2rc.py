@@ -77,8 +77,14 @@ class rerc:
 
 
 def convertrc(inputfile, outputfile, templatefile, includefuzzy=False,
-              charset=None, lang=None, sublang=None):
+              charset=None, lang=None, sublang=None, outputthreshold=None):
     inputstore = po.pofile(inputfile)
+
+    if outputthreshold:
+        from translate.convert import convert
+        if not convert.should_output_store(inputstore, outputthreshold):
+            return False
+
     if not lang:
         raise ValueError("must specify a target language")
     if templatefile is None:
@@ -109,6 +115,7 @@ def main(argv=None):
     parser.passthrough.append("charset")
     parser.passthrough.append("lang")
     parser.passthrough.append("sublang")
+    parser.add_threshold_option()
     parser.add_fuzzy_option()
     parser.run(argv)
 

@@ -72,9 +72,16 @@ class po2txt:
         return txtresult
 
 
-def converttxt(inputfile, outputfile, templatefile, wrap=None, includefuzzy=False, encoding='utf-8'):
+def converttxt(inputfile, outputfile, templatefile, wrap=None, includefuzzy=False, encoding='utf-8',
+               outputthreshold=None):
     """reads in stdin using fromfileclass, converts using convertorclass, writes to stdout"""
     inputstore = factory.getobject(inputfile)
+
+    if outputthreshold:
+        from translate.convert import convert
+        if not convert.should_output_store(inputstore, outputthreshold):
+            return False
+
     convertor = po2txt(wrap=wrap)
     if templatefile is None:
         outputstring = convertor.convertstore(inputstore, includefuzzy)
@@ -99,6 +106,7 @@ def main(argv=None):
         parser.add_option("-w", "--wrap", dest="wrap", default=None, type="int",
                 help="set number of columns to wrap text at", metavar="WRAP")
         parser.passthrough.append("wrap")
+    parser.add_threshold_option()
     parser.add_fuzzy_option()
     parser.run(argv)
 

@@ -140,8 +140,15 @@ class rephp:
         return returnline
 
 
-def convertphp(inputfile, outputfile, templatefile, includefuzzy=False):
+def convertphp(inputfile, outputfile, templatefile, includefuzzy=False,
+               outputthreshold=None):
     inputstore = po.pofile(inputfile)
+
+    if outputthreshold:
+        from translate.convert import convert
+        if not convert.should_output_store(inputstore, outputthreshold):
+            return False
+
     if templatefile is None:
         raise ValueError("must have template file for php files")
         # convertor = po2php()
@@ -161,6 +168,7 @@ def main(argv=None):
     }
     parser = convert.ConvertOptionParser(formats, usetemplates=True,
                                          description=__doc__)
+    parser.add_threshold_option()
     parser.add_fuzzy_option()
     parser.run(argv)
 

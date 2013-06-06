@@ -51,10 +51,17 @@ class po2html:
         return output_store.filesrc
 
 
-def converthtml(inputfile, outputfile, templatefile, includefuzzy=False):
+def converthtml(inputfile, outputfile, templatefile, includefuzzy=False,
+                outputthreshold=None):
     """reads in stdin using fromfileclass, converts using convertorclass,
     writes to stdout"""
     inputstore = po.pofile(inputfile)
+
+    if outputthreshold:
+        from translate.convert import convert
+        if not convert.should_output_store(inputstore, outputthreshold):
+            return False
+
     convertor = po2html()
     if templatefile is None:
         raise ValueError("must have template file for HTML files")
@@ -78,6 +85,7 @@ def main(argv=None):
               }
     parser = convert.ConvertOptionParser(formats, usetemplates=True,
                                          description=__doc__)
+    parser.add_threshold_option()
     parser.add_fuzzy_option()
     parser.run(argv)
 

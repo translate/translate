@@ -57,8 +57,15 @@ class po2pydict:
         return str_obj
 
 
-def convertpy(inputfile, outputfile, templatefile=None, includefuzzy=False):
+def convertpy(inputfile, outputfile, templatefile=None, includefuzzy=False,
+              outputthreshold=None):
     inputstore = factory.getobject(inputfile)
+
+    if outputthreshold:
+        from translate.convert import convert
+        if not convert.should_output_store(inputstore, outputthreshold):
+            return False
+
     convertor = po2pydict()
     outputstring = convertor.convertstore(inputstore, includefuzzy)
     outputfile.write(outputstring.read())
@@ -72,6 +79,7 @@ def main(argv=None):
     sys.stdout = stdiotell.StdIOWrapper(sys.stdout)
     formats = {("po", "py"): ("py", convertpy), ("po"): ("py", convertpy)}
     parser = convert.ConvertOptionParser(formats, usetemplates=False, description=__doc__)
+    parser.add_threshold_option()
     parser.add_fuzzy_option()
     parser.run(argv)
 

@@ -51,8 +51,15 @@ class resub:
         return str(self.templatestore)
 
 
-def convertsub(inputfile, outputfile, templatefile, includefuzzy=False):
+def convertsub(inputfile, outputfile, templatefile, includefuzzy=False,
+               outputthreshold=None):
     inputstore = factory.getobject(inputfile)
+
+    if outputthreshold:
+        from translate.convert import convert
+        if not convert.should_output_store(inputstore, outputthreshold):
+            return False
+
     if templatefile is None:
         raise ValueError("must have template file for subtitle files")
     else:
@@ -73,6 +80,7 @@ def main(argv=None):
     }
     parser = convert.ConvertOptionParser(formats, usetemplates=True,
                                          description=__doc__)
+    parser.add_threshold_option()
     parser.add_fuzzy_option()
     parser.run(argv)
 
