@@ -24,6 +24,7 @@
 """Convert Gettext PO localization files to Mozilla .lang files.
 """
 
+from translate.convert import convert
 from translate.storage import mozilla_lang as lang
 from translate.storage import po
 
@@ -58,10 +59,8 @@ def convertlang(inputfile, outputfile, templates, includefuzzy=False, mark_activ
     writes to stdout"""
     inputstore = po.pofile(inputfile)
 
-    if outputthreshold:
-        from translate.convert import convert
-        if not convert.should_output_store(inputstore, outputthreshold):
-            return False
+    if not convert.should_output_store(inputstore, outputthreshold):
+        return False
 
     if inputstore.isempty():
         return 0
@@ -78,7 +77,6 @@ formats = {
 
 
 def main(argv=None):
-    from translate.convert import convert
     from translate.misc import stdiotell
     import sys
     sys.stdout = stdiotell.StdIOWrapper(sys.stdout)

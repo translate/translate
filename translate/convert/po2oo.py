@@ -29,6 +29,7 @@ import sys
 import time
 import logging
 
+from translate.convert import convert
 from translate.storage import oo
 from translate.storage import factory
 from translate.filters import pofilter
@@ -197,10 +198,8 @@ def convertoo(inputfile, outputfile, templatefile, sourcelanguage=None,
               outputthreshold=None):
     inputstore = factory.getobject(inputfile)
 
-    if outputthreshold:
-        from translate.convert import convert
-        if not convert.should_output_store(inputstore, outputthreshold):
-            return False
+    if not convert.should_output_store(inputstore, outputthreshold):
+        return False
 
     inputstore.filename = getattr(inputfile, 'name', '')
     if not targetlanguage:
@@ -225,7 +224,6 @@ def convertoo(inputfile, outputfile, templatefile, sourcelanguage=None,
 
 
 def main(argv=None):
-    from translate.convert import convert
     formats = {
                 ("po", "oo"): ("oo", convertoo),
                 ("xlf", "oo"): ("oo", convertoo),

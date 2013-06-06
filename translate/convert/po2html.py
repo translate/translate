@@ -24,6 +24,7 @@ See: http://docs.translatehouse.org/projects/translate-toolkit/en/latest/command
 for examples and usage instructions.
 """
 
+from translate.convert import convert
 from translate.storage import html
 from translate.storage import po
 
@@ -57,10 +58,8 @@ def converthtml(inputfile, outputfile, templatefile, includefuzzy=False,
     writes to stdout"""
     inputstore = po.pofile(inputfile)
 
-    if outputthreshold:
-        from translate.convert import convert
-        if not convert.should_output_store(inputstore, outputthreshold):
-            return False
+    if not convert.should_output_store(inputstore, outputthreshold):
+        return False
 
     convertor = po2html()
     if templatefile is None:
@@ -74,7 +73,6 @@ def converthtml(inputfile, outputfile, templatefile, includefuzzy=False,
 
 
 def main(argv=None):
-    from translate.convert import convert
     from translate.misc import stdiotell
     import sys
     sys.stdout = stdiotell.StdIOWrapper(sys.stdout)

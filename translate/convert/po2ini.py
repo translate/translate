@@ -24,6 +24,7 @@ See: http://docs.translatehouse.org/projects/translate-toolkit/en/latest/command
 for examples and usage instructions.
 """
 
+from translate.convert import convert
 from translate.storage import factory
 
 
@@ -55,10 +56,8 @@ def convertini(inputfile, outputfile, templatefile, includefuzzy=False, dialect=
                outputthreshold=None):
     inputstore = factory.getobject(inputfile)
 
-    if outputthreshold:
-        from translate.convert import convert
-        if not convert.should_output_store(inputstore, outputthreshold):
-            return False
+    if not convert.should_output_store(inputstore, outputthreshold):
+        return False
 
     if templatefile is None:
         raise ValueError("must have template file for ini files")
@@ -77,7 +76,6 @@ def convertisl(inputfile, outputfile, templatefile, includefuzzy=False, dialect=
 
 def main(argv=None):
     # handle command line options
-    from translate.convert import convert
     formats = {
                ("po", "ini"): ("ini", convertini),
                ("po", "isl"): ("isl", convertisl),

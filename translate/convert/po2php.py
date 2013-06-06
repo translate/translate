@@ -24,6 +24,7 @@ See: http://docs.translatehouse.org/projects/translate-toolkit/en/latest/command
 for examples and usage instructions.
 """
 
+from translate.convert import convert
 from translate.misc import quote
 from translate.storage import po
 from translate.storage import php
@@ -144,10 +145,8 @@ def convertphp(inputfile, outputfile, templatefile, includefuzzy=False,
                outputthreshold=None):
     inputstore = po.pofile(inputfile)
 
-    if outputthreshold:
-        from translate.convert import convert
-        if not convert.should_output_store(inputstore, outputthreshold):
-            return False
+    if not convert.should_output_store(inputstore, outputthreshold):
+        return False
 
     if templatefile is None:
         raise ValueError("must have template file for php files")
@@ -161,7 +160,6 @@ def convertphp(inputfile, outputfile, templatefile, includefuzzy=False,
 
 def main(argv=None):
     # handle command line options
-    from translate.convert import convert
     formats = {
             ("po", "php"): ("php", convertphp),
             ("po", "html"): ("html", convertphp),

@@ -29,6 +29,7 @@ try:
 except ImportError:
     textwrap = None
 
+from translate.convert import convert
 from translate.storage import factory
 
 
@@ -77,10 +78,8 @@ def converttxt(inputfile, outputfile, templatefile, wrap=None, includefuzzy=Fals
     """reads in stdin using fromfileclass, converts using convertorclass, writes to stdout"""
     inputstore = factory.getobject(inputfile)
 
-    if outputthreshold:
-        from translate.convert import convert
-        if not convert.should_output_store(inputstore, outputthreshold):
-            return False
+    if not convert.should_output_store(inputstore, outputthreshold):
+        return False
 
     convertor = po2txt(wrap=wrap)
     if templatefile is None:
@@ -93,7 +92,6 @@ def converttxt(inputfile, outputfile, templatefile, wrap=None, includefuzzy=Fals
 
 
 def main(argv=None):
-    from translate.convert import convert
     from translate.misc import stdiotell
     import sys
     sys.stdout = stdiotell.StdIOWrapper(sys.stdout)

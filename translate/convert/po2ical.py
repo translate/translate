@@ -24,6 +24,7 @@ See: http://docs.translatehouse.org/projects/translate-toolkit/en/latest/command
 for examples and usage instructions.
 """
 
+from translate.convert import convert
 from translate.storage import factory
 from translate.storage import ical
 
@@ -55,10 +56,8 @@ def convertical(inputfile, outputfile, templatefile, includefuzzy=False,
                 outputthreshold=None):
     inputstore = factory.getobject(inputfile)
 
-    if outputthreshold:
-        from translate.convert import convert
-        if not convert.should_output_store(inputstore, outputthreshold):
-            return False
+    if not convert.should_output_store(inputstore, outputthreshold):
+        return False
 
     if templatefile is None:
         raise ValueError("must have template file for iCal files")
@@ -71,7 +70,6 @@ def convertical(inputfile, outputfile, templatefile, includefuzzy=False,
 
 def main(argv=None):
     # handle command line options
-    from translate.convert import convert
     formats = {("po", "ics"): ("ics", convertical)}
     parser = convert.ConvertOptionParser(formats, usetemplates=True, description=__doc__)
     parser.add_threshold_option()

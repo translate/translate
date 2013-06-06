@@ -24,6 +24,7 @@ See: http://docs.translatehouse.org/projects/translate-toolkit/en/latest/command
 for examples and usage instructions.
 """
 
+from translate.convert import convert
 from translate.storage import po
 from translate.storage import rc
 
@@ -80,10 +81,8 @@ def convertrc(inputfile, outputfile, templatefile, includefuzzy=False,
               charset=None, lang=None, sublang=None, outputthreshold=None):
     inputstore = po.pofile(inputfile)
 
-    if outputthreshold:
-        from translate.convert import convert
-        if not convert.should_output_store(inputstore, outputthreshold):
-            return False
+    if not convert.should_output_store(inputstore, outputthreshold):
+        return False
 
     if not lang:
         raise ValueError("must specify a target language")
@@ -99,7 +98,6 @@ def convertrc(inputfile, outputfile, templatefile, includefuzzy=False,
 
 def main(argv=None):
     # handle command line options
-    from translate.convert import convert
     formats = {("po", "rc"): ("rc", convertrc)}
     parser = convert.ConvertOptionParser(formats, usetemplates=True,
                                          description=__doc__)

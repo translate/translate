@@ -24,6 +24,7 @@ See: http://docs.translatehouse.org/projects/translate-toolkit/en/latest/command
 for examples and usage instructions.
 """
 
+from translate.convert import convert
 from translate.storage import factory
 
 
@@ -54,10 +55,8 @@ def convertjson(inputfile, outputfile, templatefile, includefuzzy=False,
                 outputthreshold=None):
     inputstore = factory.getobject(inputfile)
 
-    if outputthreshold:
-        from translate.convert import convert
-        if not convert.should_output_store(inputstore, outputthreshold):
-            return False
+    if not convert.should_output_store(inputstore, outputthreshold):
+        return False
 
     if templatefile is None:
         raise ValueError("Must have template file for JSON files")
@@ -70,7 +69,6 @@ def convertjson(inputfile, outputfile, templatefile, includefuzzy=False,
 
 def main(argv=None):
     # handle command line options
-    from translate.convert import convert
     formats = {
                ("po", "json"): ("json", convertjson),
               }

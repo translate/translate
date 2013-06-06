@@ -431,6 +431,10 @@ class ArchiveConvertOptionParser(ConvertOptionParser):
 def should_output_store(store, threshold):
     """Check if the percent of translated source words more than or equal to
     the given threshold."""
+
+    if not threshold:
+        return True
+
     from translate.storage import statsdb
 
     units = filter(lambda unit: unit.istranslatable(), store.units)
