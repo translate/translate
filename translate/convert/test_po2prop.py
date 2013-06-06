@@ -179,6 +179,25 @@ msgstr "translated"
         # FIXME ideally we should drop the comment as well as the unit
         assert propfile == '# A comment\n'  # We drop the key
 
+    def test_merging_untranslated_unchanged(self):
+        """check removing untranslated entries but keeping unchanged ones"""
+        posource = '''#: prop
+msgid "value"
+msgstr ""
+
+#: prop2
+msgid "value2"
+msgstr "value2"
+'''
+        proptemplate = '''prop=value
+prop2=value2
+'''
+
+        propexpected = '''prop2=value2\n'''
+        propfile = self.merge2prop(proptemplate, posource, remove_untranslated=True)
+        print propfile
+        assert propfile == propexpected
+
     def test_gaia_plurals(self):
         """Test back conversion of gaia plural units."""
         proptemplate = '''
