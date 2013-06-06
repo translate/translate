@@ -75,6 +75,7 @@ Options (po2moz):
 -lLOCALE, --locale=LOCALE  set output locale (required as this sets the directory names)
 --clonexpi=CLONEXPI  clone xpi structure from the given xpi file
 --removeuntranslated  remove untranslated strings from output
+--threshold=PERCENT  only convert files where the translation completion is above PERCENT
 --fuzzy              use translations marked fuzzy
 --nofuzzy            don't use translations marked fuzzy (default)
 

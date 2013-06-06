@@ -24,6 +24,7 @@ See: http://docs.translatehouse.org/projects/translate-toolkit/en/latest/command
 for examples and usage instructions.
 """
 
+from translate.convert import convert
 from translate.storage import html
 from translate.storage import po
 
@@ -51,10 +52,15 @@ class po2html:
         return output_store.filesrc
 
 
-def converthtml(inputfile, outputfile, templatefile, includefuzzy=False):
+def converthtml(inputfile, outputfile, templatefile, includefuzzy=False,
+                outputthreshold=None):
     """reads in stdin using fromfileclass, converts using convertorclass,
     writes to stdout"""
     inputstore = po.pofile(inputfile)
+
+    if not convert.should_output_store(inputstore, outputthreshold):
+        return False
+
     convertor = po2html()
     if templatefile is None:
         raise ValueError("must have template file for HTML files")
@@ -67,7 +73,6 @@ def converthtml(inputfile, outputfile, templatefile, includefuzzy=False):
 
 
 def main(argv=None):
-    from translate.convert import convert
     from translate.misc import stdiotell
     import sys
     sys.stdout = stdiotell.StdIOWrapper(sys.stdout)
@@ -78,6 +83,7 @@ def main(argv=None):
               }
     parser = convert.ConvertOptionParser(formats, usetemplates=True,
                                          description=__doc__)
+    parser.add_threshold_option()
     parser.add_fuzzy_option()
     parser.run(argv)
 

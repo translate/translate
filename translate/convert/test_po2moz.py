@@ -20,5 +20,6 @@ class TestPO2MozCommand(test_convert.TestConvertCommand, TestPO2Moz):
         options = self.help_check(options, "-l LOCALE, --locale=LOCALE")
         options = self.help_check(options, "--clonexpi=CLONEXPI")
         options = self.help_check(options, "--removeuntranslated")
+        options = self.help_check(options, "--threshold=PERCENT")
         options = self.help_check(options, "--fuzzy")
         options = self.help_check(options, "--nofuzzy", last=True)

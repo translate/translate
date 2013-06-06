@@ -30,6 +30,7 @@ from translate.storage import dtd
 from translate.storage import po
 from translate.misc import quote
 from translate.convert import accesskey
+from translate.convert import convert
 
 
 def dtdwarning(message, category, filename, lineno, line=None):
@@ -160,8 +161,11 @@ class po2dtd:
 
 
 def convertdtd(inputfile, outputfile, templatefile, includefuzzy=False,
-               remove_untranslated=False):
+               remove_untranslated=False, outputthreshold=None):
     inputstore = po.pofile(inputfile)
+
+    if not convert.should_output_store(inputstore, outputthreshold):
+        return False
 
     # Some of the DTD files used for Firefox Mobile are actually completely
     # different with different escaping and quoting rules. The best way to
@@ -189,12 +193,12 @@ def convertdtd(inputfile, outputfile, templatefile, includefuzzy=False,
 
 def main(argv=None):
     # handle command line options
-    from translate.convert import convert
     formats = {"po": ("dtd", convertdtd), ("po", "dtd"): ("dtd", convertdtd)}
     parser = convert.ConvertOptionParser(formats, usetemplates=True, description=__doc__)
     parser.add_option("", "--removeuntranslated", dest="remove_untranslated",
             default=False, action="store_true",
             help="remove untranslated strings from output")
+    parser.add_threshold_option()
     parser.add_fuzzy_option()
     parser.passthrough.append("remove_untranslated")
     parser.run(argv)

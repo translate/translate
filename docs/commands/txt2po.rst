@@ -65,6 +65,7 @@ Options (po2txt):
 -oOUTPUT, --output=OUTPUT   write to OUTPUT in txt format
 -tTEMPLATE, --template=TEMPLATE   read from TEMPLATE in txt format
 -wWRAP, --wrap=WRAP  set number of columns to wrap text at
+--threshold=PERCENT  only convert files where the translation completion is above PERCENT
 --fuzzy              use translations marked fuzzy
 --nofuzzy            don't use translations marked fuzzy (default)
 --encoding           encoding of the template file

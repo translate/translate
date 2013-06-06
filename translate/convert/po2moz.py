@@ -125,6 +125,7 @@ def main(argv=None):
     parser.add_option("", "--removeuntranslated", dest="remove_untranslated",
             default=False, action="store_true",
             help="remove untranslated strings from output")
+    parser.add_threshold_option()
     parser.add_fuzzy_option()
     parser.passthrough.append("remove_untranslated")
     parser.replacer = replacer

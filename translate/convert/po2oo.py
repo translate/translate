@@ -29,6 +29,7 @@ import sys
 import time
 import logging
 
+from translate.convert import convert
 from translate.storage import oo
 from translate.storage import factory
 from translate.filters import pofilter
@@ -193,8 +194,13 @@ filter = oocheckfilter(options, [checks.OpenOfficeChecker, checks.StandardUnitCh
 
 def convertoo(inputfile, outputfile, templatefile, sourcelanguage=None,
               targetlanguage=None, timestamp=None, includefuzzy=False,
-              multifilestyle="single", skip_source=False, filteraction=None):
+              multifilestyle="single", skip_source=False, filteraction=None,
+              outputthreshold=None):
     inputstore = factory.getobject(inputfile)
+
+    if not convert.should_output_store(inputstore, outputthreshold):
+        return False
+
     inputstore.filename = getattr(inputfile, 'name', '')
     if not targetlanguage:
         raise ValueError("You must specify the target language")
@@ -218,7 +224,6 @@ def convertoo(inputfile, outputfile, templatefile, sourcelanguage=None,
 
 
 def main(argv=None):
-    from translate.convert import convert
     formats = {
                 ("po", "oo"): ("oo", convertoo),
                 ("xlf", "oo"): ("oo", convertoo),
@@ -249,6 +254,7 @@ def main(argv=None):
                       help="don't output the source language, but fallback to it where needed")
     parser.add_option("", "--filteraction", dest="filteraction", default="none", metavar="ACTION",
                       help="action on pofilter failure: none (default), warn, exclude-serious, exclude-all")
+    parser.add_threshold_option()
     parser.add_fuzzy_option()
     parser.add_multifile_option()
     parser.passthrough.append("sourcelanguage")

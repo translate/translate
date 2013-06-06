@@ -86,6 +86,7 @@ Options (po2oo and xliff2oo):
 --filteraction=ACTION
                       action on pofilter failure: :doc:`none (default), warn,
                       exclude-serious, exclude-all <option_filteraction>`
+--threshold=PERCENT      only convert files where the translation completion is above PERCENT
 --fuzzy                  use translations marked fuzzy
 --nofuzzy                don't use translations marked fuzzy (default)
 --multifile=MULTIFILESTYLE

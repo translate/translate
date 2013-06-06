@@ -59,6 +59,7 @@ Options (po2html):
 -tTEMPLATE, --template=TEMPLATE   read from TEMPLATE in htm, html formats
 -wWRAP, --wrap=WRAP  set number of columns to wrap html at
 --notidy             don't use tidy to clean up HTML, even if installed (new in version 1.2.1)
+--threshold=PERCENT  only convert files where the translation completion is above PERCENT
 --fuzzy              use translations marked fuzzy
 --nofuzzy            don't use translations marked fuzzy (default)
 
