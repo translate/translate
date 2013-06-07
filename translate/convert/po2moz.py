@@ -122,8 +122,12 @@ def main(argv=None):
         metavar="LOCALE")
     parser.add_option("", "--clonexpi", dest="clonexpi", default=None,
         help="clone xpi structure from the given xpi file")
+    parser.add_option("", "--removeuntranslated", dest="remove_untranslated",
+            default=False, action="store_true",
+            help="remove key value from output if it is untranslated")
     parser.add_threshold_option()
     parser.add_fuzzy_option()
+    parser.passthrough.append("remove_untranslated")
     parser.replacer = replacer
     parser.run(argv)
 
