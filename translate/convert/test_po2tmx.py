@@ -150,4 +150,5 @@ class TestPO2TMXCommand(test_convert.TestConvertCommand, TestPO2TMX):
         """tests getting help"""
         options = test_convert.TestConvertCommand.test_help(self)
         options = self.help_check(options, "-l LANG, --language=LANG")
+        options = self.help_check(options, "-S, --timestamp")
         options = self.help_check(options, "--source-language=LANG", last=True)
