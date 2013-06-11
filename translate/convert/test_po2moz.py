@@ -17,6 +17,7 @@ class TestPO2MozCommand(test_convert.TestConvertCommand, TestPO2Moz):
         """tests getting help"""
         options = test_convert.TestConvertCommand.test_help(self)
         options = self.help_check(options, "-t TEMPLATE, --template=TEMPLATE")
+        options = self.help_check(options, "-S, --timestamp")
         options = self.help_check(options, "-l LOCALE, --locale=LOCALE")
         options = self.help_check(options, "--clonexpi=CLONEXPI")
         options = self.help_check(options, "--removeuntranslated")

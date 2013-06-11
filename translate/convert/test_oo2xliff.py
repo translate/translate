@@ -28,6 +28,7 @@ class TestOO2POCommand(test_convert.TestConvertCommand, TestOO2XLIFF):
     def test_help(self):
         """tests getting help"""
         options = test_convert.TestConvertCommand.test_help(self)
+        options = self.help_check(options, "-S, --timestamp")
         options = self.help_check(options, "--source-language=LANG")
         options = self.help_check(options, "--language=LANG")
         options = self.help_check(options, "--duplicates=DUPLICATESTYLE")
