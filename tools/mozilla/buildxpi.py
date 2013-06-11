@@ -166,6 +166,7 @@ ac_add_options --enable-application=%(product)s
             ['langpack-%s' % lang for lang in langs],
             fail_msg="Unable to successfully build XPI!")
 
+        destfiles = []
         for lang in langs:
             xpiglob = glob(
                 os.path.join(
@@ -179,6 +180,7 @@ ac_add_options --enable-application=%(product)s
             )[0]
             filename = os.path.split(xpiglob)[1]
             destfile = os.path.join(outputdir, filename)
+            destfiles.append(destfile)
             if delete_dest:
                 if os.path.isfile(destfile):
                     os.unlink(destfile)
@@ -192,7 +194,7 @@ ac_add_options --enable-application=%(product)s
             os.remove(MOZCONFIG)
             os.rename(backup_name, MOZCONFIG)
 
-    return destfile
+    return destfiles
 
 
 def create_option_parser():
