@@ -162,11 +162,11 @@ ac_add_options --enable-application=%(product)s
         run(['make', '-C', 'config'],
             fail_msg="Unable to successfully configure build for XPI!")
 
-        for lang in langs:
-            run(['make', '-C', os.path.join(product, 'locales'),
-                 'langpack-%s' % (lang)],
-                fail_msg="Unable to successfully build XPI!")
+        run(['make', '-C', os.path.join(product, 'locales')] +
+            ['langpack-%s' % lang for lang in langs],
+            fail_msg="Unable to successfully build XPI!")
 
+        for lang in langs:
             xpiglob = glob(
                 os.path.join(
                     builddir,
