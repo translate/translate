@@ -58,6 +58,7 @@ Options (po2rc):
 -x EXCLUDE, --exclude=EXCLUDE   exclude names matching EXCLUDE from input paths
 -o OUTPUT, --output=OUTPUT      write to OUTPUT in rc format
 -t TEMPLATE, --template=TEMPLATE  read from TEMPLATE in rc format
+-S, --timestamp      skip conversion if the output file has newer timestamp
 --charset=CHARSET    charset to use to decode the RC files (default: utf-8)
 -l LANG, --lang=LANG  LANG entry
 --sublang=SUBLANG     SUBLANG entry (default: SUBLANG_DEFAULT)

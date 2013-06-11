@@ -51,6 +51,7 @@ Options (web2py2po):
 -i INPUT, --input=INPUT      read from INPUT in php format
 -x EXCLUDE, --exclude=EXCLUDE  exclude names matching EXCLUDE from input paths
 -o OUTPUT, --output=OUTPUT     write to OUTPUT in po, pot formats
+-S, --timestamp       skip conversion if the output file has newer timestamp
 --duplicates=DUPLICATESTYLE
                       what to do with duplicate strings (identical source
                       text): :doc:`merge, msgctxt <option_duplicates>`
@@ -68,6 +69,7 @@ Options (po2web2py):
 -i INPUT, --input=INPUT  read from INPUT in po, pot formats
 -x EXCLUDE, --exclude=EXCLUDE   exclude names matching EXCLUDE from input paths
 -o OUTPUT, --output=OUTPUT      write to OUTPUT in php format
+-S, --timestamp      skip conversion if the output file has newer timestamp
 --threshold=PERCENT  only convert files where the translation completion is above PERCENT
 --fuzzy              use translations marked fuzzy
 --nofuzzy            don't use translations marked fuzzy (default)

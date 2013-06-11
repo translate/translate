@@ -37,6 +37,7 @@ Options:
 -iINPUT, --input=INPUT   read from INPUT in po, pot formats
 -xEXCLUDE, --exclude=EXCLUDE  exclude names matching EXCLUDE from input paths
 -oOUTPUT, --output=OUTPUT     write to OUTPUT in tmx format
+-S, --timestamp      skip conversion if the output file has newer timestamp
 -lLANG, --language=LANG  set target language code (e.g. af-ZA) [required]
 --source-language=LANG   set source language code (default: en)
 

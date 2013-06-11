@@ -53,6 +53,7 @@ Options (moz2po):
 -xEXCLUDE, --exclude=EXCLUDE   exclude names matching EXCLUDE from input paths
 -oOUTPUT, --output=OUTPUT   write to OUTPUT in it.po, it.pot, manifest, xhtml.po, xhtml.pot, ini.po, ini.pot, rdf, js, \*, html.po, html.pot, inc.po, inc.pot, dtd.po, dtd.pot, properties.po, properties.pot formats
 -tTEMPLATE, --template=TEMPLATE   read from TEMPLATE in it, \*, properties, dtd, inc formats
+-S, --timestamp       skip conversion if the output file has newer timestamp
 -P, --pot            output PO Templates (.pot) rather than PO files (.po)
 --duplicates=DUPLICATESTYLE
                       what to do with duplicate strings (identical source
@@ -72,6 +73,7 @@ Options (po2moz):
 -xEXCLUDE, --exclude=EXCLUDE  exclude names matching EXCLUDE from input paths
 -oOUTPUT, --output=OUTPUT     write to OUTPUT in dtd, \*, inc, it, properties formats
 -tTEMPLATE, --template=TEMPLATE  read from TEMPLATE in dtd, \*, inc, it, properties formats
+-S, --timestamp       skip conversion if the output file has newer timestamp
 -lLOCALE, --locale=LOCALE  set output locale (required as this sets the directory names)
 --clonexpi=CLONEXPI  clone xpi structure from the given xpi file
 --removeuntranslated  remove untranslated strings from output

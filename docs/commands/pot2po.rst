@@ -39,6 +39,7 @@ Options:
 -xEXCLUDE, --exclude=EXCLUDE  exclude names matching EXCLUDE from input paths
 -oOUTPUT, --output=OUTPUT     write to OUTPUT in po, pot formats
 -tTEMPLATE, --template=TEMPLATE   read from TEMPLATE in po, pot formats (old translations)
+-S, --timestamp      skip conversion if the output file has newer timestamp
 -P, --pot            output PO Templates (.pot) rather than PO files (.po)
 --tm=TM              The file to use as translation memory when fuzzy matching
 -sMIN_SIMILARITY, --similarity=MIN_SIMILARITY   The minimum similarity for inclusion (default: 75%)

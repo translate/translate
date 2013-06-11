@@ -36,6 +36,7 @@ Options (csv2tbx):
 -iINPUT, --input=INPUT    read from INPUT in csv format
 -xEXCLUDE, --exclude=EXCLUDE    exclude names matching EXCLUDE from input paths
 -oOUTPUT, --output=OUTPUT   write to OUTPUT in tbx format
+-S, --timestamp      skip conversion if the output file has newer timestamp
 --charset=CHARSET    set charset to decode from csv files
 --columnorder=COLUMNORDER   specify the order and position of columns (comment,source,target)
 

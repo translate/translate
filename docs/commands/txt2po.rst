@@ -43,6 +43,7 @@ Options (txt2po):
 -iINPUT, --input=INPUT    read from INPUT in \*, txt formats
 -xEXCLUDE, --exclude=EXCLUDE   exclude names matching EXCLUDE from input paths
 -oOUTPUT, --output=OUTPUT  write to OUTPUT in po, pot formats
+-S, --timestamp       skip conversion if the output file has newer timestamp
 -P, --pot            output PO Templates (.pot) rather than PO files (.po)
 --encoding=ENCODING    The encoding of the input file (default: UTF-8)
 --flavour=FLAVOUR      The flavour of text file: plain (default), dokuwiki, mediawiki
@@ -64,6 +65,7 @@ Options (po2txt):
 -xEXCLUDE, --exclude=EXCLUDE   exclude names matching EXCLUDE from input paths
 -oOUTPUT, --output=OUTPUT   write to OUTPUT in txt format
 -tTEMPLATE, --template=TEMPLATE   read from TEMPLATE in txt format
+-S, --timestamp      skip conversion if the output file has newer timestamp
 -wWRAP, --wrap=WRAP  set number of columns to wrap text at
 --threshold=PERCENT  only convert files where the translation completion is above PERCENT
 --fuzzy              use translations marked fuzzy

@@ -53,6 +53,7 @@ Options (oo2po and oo2xliff):
 -iINPUT, --input=INPUT   read from INPUT in oo format
 -xEXCLUDE, --exclude=EXCLUDE  exclude names matching EXCLUDE from input paths
 -oOUTPUT, --output=OUTPUT  write to OUTPUT in po, pot formats
+-S, --timestamp      skip conversion if the output file has newer timestamp
 -P, --pot            output PO Templates (.pot) rather than PO files (.po) (only available in oo2po
 -lLANG, --language=LANG  set target language to extract from oo file (e.g. af-ZA) (required for oo2xliff)
 --source-language=LANG   set source language code (default en-US)
@@ -78,6 +79,7 @@ Options (po2oo and xliff2oo):
 -xEXCLUDE, --exclude=EXCLUDE  exclude names matching EXCLUDE from input paths
 -oOUTPUT, --output=OUTPUT  write to OUTPUT in oo format
 -tTEMPLATE, --template=TEMPLATE  read from TEMPLATE in oo format
+-S, --timestamp          skip conversion if the output file has newer timestamp
 -lLANG, --language=LANG  set target language code (e.g. af-ZA) [required]
 --source-language=LANG   set source language code (default en-US)
 -T, --keeptimestamp      don't change the timestamps of the strings

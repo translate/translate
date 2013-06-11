@@ -38,6 +38,7 @@ Options (tiki2po):
 -i INPUT, --input=INPUT      read from INPUT in php format
 -x EXCLUDE, --exclude=EXCLUDE  exclude names matching EXCLUDE from input paths
 -o OUTPUT, --output=OUTPUT     write to OUTPUT in po, pot formats
+-S, --timestamp       skip conversion if the output file has newer timestamp
 --include-unused      When converting, include strings in the "unused" section?
 
 Options (po2tiki):
@@ -52,6 +53,7 @@ Options (po2tiki):
 -i INPUT, --input=INPUT  read from INPUT in po, pot formats
 -x EXCLUDE, --exclude=EXCLUDE   exclude names matching EXCLUDE from input paths
 -o OUTPUT, --output=OUTPUT      write to OUTPUT in php format
+-S, --timestamp      skip conversion if the output file has newer timestamp
 
 .. _tiki2po#examples:
 

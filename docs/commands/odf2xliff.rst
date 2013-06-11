@@ -52,6 +52,7 @@ Options (odf2xliff):
                       traceback <option_errorlevel>`
 -i INPUT, --input=INPUT   read from INPUT in ODF format
 -o OUTPUT, --output=OUTPUT     write to OUTPUT in XLIFF format
+-S, --timestamp      skip conversion if the output file has newer timestamp
 
 Options (xliff2odf):
 
@@ -65,6 +66,7 @@ Options (xliff2odf):
 -i INPUT, --input=INPUT     read from INPUT in XLIFF formats
 -o OUTPUT, --output=OUTPUT  write to OUTPUT in ODF format
 -t TEMPLATE, --template=TEMPLATE   read from TEMPLATE in ODF format
+-S, --timestamp      skip conversion if the output file has newer timestamp
 
 .. _odf2xliff#examples:
 

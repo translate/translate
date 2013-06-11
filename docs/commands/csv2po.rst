@@ -45,6 +45,7 @@ Options (csv2po):
 -xEXCLUDE, --exclude=EXCLUDE    exclude names matching EXCLUDE from input paths
 -oOUTPUT, --output=OUTPUT   write to OUTPUT in po, pot formats
 -tTEMPLATE, --template=TEMPLATE   read from TEMPLATE in pot, po, pot formats
+-S, --timestamp       skip conversion if the output file has newer timestamp
 --charset=CHARSET     set charset to decode from csv files
 --columnorder=COLUMNORDER   specify the order and position of columns (location,source,target)
 --duplicates=DUPLICATESTYLE
@@ -64,6 +65,7 @@ Options (po2csv):
 -iINPUT, --input=INPUT    read from INPUT in po, pot formats
 -xEXCLUDE, --exclude=EXCLUDE   exclude names matching EXCLUDE from input paths
 -oOUTPUT, --output=OUTPUT   write to OUTPUT in csv format
+-S, --timestamp       skip conversion if the output file has newer timestamp
 -P, --pot             output PO Templates (.pot) rather than PO files (.po)
 --columnorder=COLUMNORDER    specify the order and position of columns (location,source,target)
 
