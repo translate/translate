@@ -61,6 +61,7 @@ Options (po2rc):
 --charset=CHARSET    charset to use to decode the RC files (default: utf-8)
 -l LANG, --lang=LANG  LANG entry
 --sublang=SUBLANG     SUBLANG entry (default: SUBLANG_DEFAULT)
+--threshold=PERCENT  only convert files where the translation completion is above PERCENT
 --fuzzy              use translations marked fuzzy
 --nofuzzy            don't use translations marked fuzzy (default)
 
