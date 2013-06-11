@@ -42,6 +42,7 @@ class ConvertOptionParser(optrecurse.RecursiveOptionParser, object):
                                                   allowmissingtemplate=allowmissingtemplate,
                                                   description=description)
         self.usepots = usepots
+        self.settimestampoption()
         self.setpotoption()
         self.set_usage()
 
@@ -143,6 +144,15 @@ class ConvertOptionParser(optrecurse.RecursiveOptionParser, object):
             )
             self.define_option(potoption)
 
+    def settimestampoption(self):
+        """Sets ``-S``/``--timestamp`` option."""
+        timestampopt = optparse.Option(
+                "-S", "--timestamp",
+                action="store_true", dest="timestamp", default=False,
+                help="skip conversion if the output file has newer timestamp"
+        )
+        self.define_option(timestampopt)
+
     def verifyoptions(self, options):
         """Verifies that the options are valid (required options are
         present, etc)."""
@@ -159,6 +169,15 @@ class ConvertOptionParser(optrecurse.RecursiveOptionParser, object):
             self.error(str(e))
         self.recursiveprocess(options)
 
+    def processfile(self, fileprocessor, options, fullinputpath,
+                    fulloutputpath, fulltemplatepath):
+        if options.timestamp and _output_is_newer(fullinputpath, fulloutputpath):
+            return False
+
+        return super(ConvertOptionParser,
+                    self).processfile(fileprocessor, options,
+                                      fullinputpath, fulloutputpath,
+                                      fulltemplatepath)
 
 def copyinput(inputfile, outputfile, templatefile, **kwargs):
     """Copies the input file to the output file."""
@@ -408,6 +427,9 @@ class ArchiveConvertOptionParser(ConvertOptionParser):
     def processfile(self, fileprocessor, options, fullinputpath,
                     fulloutputpath, fulltemplatepath):
         """Run an invidividual conversion."""
+        if options.timestamp and _output_is_newer(fullinputpath, fulloutputpath):
+            return False
+
         if self.isarchive(options.output, 'output'):
             inputfile = self.openinputfile(options, fullinputpath)
             # TODO: handle writing back to same archive as input/template
@@ -429,6 +451,21 @@ class ArchiveConvertOptionParser(ConvertOptionParser):
                         self).processfile(fileprocessor, options,
                                           fullinputpath, fulloutputpath,
                                           fulltemplatepath)
+
+def _output_is_newer(input_path, output_path):
+    if not input_path or not output_path:
+        return False
+
+    if not os.path.exists(input_path) or not os.path.exists(output_path):
+        return False
+
+    input_mtime = os.path.getmtime(input_path)
+    output_mtime = os.path.getmtime(output_path)
+
+    if output_mtime > input_mtime:
+        return True
+    else:
+        return False
 
 def should_output_store(store, threshold):
     """Check if the percent of translated source words more than or equal to
