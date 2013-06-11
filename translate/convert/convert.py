@@ -60,10 +60,12 @@ class ConvertOptionParser(optrecurse.RecursiveOptionParser, object):
         self.passthrough.append("includefuzzy")
 
     def add_threshold_option(self, default=None):
-        """Adds an option to output translation of exceeding certain threshold."""
+        """Adds an option to output only stores where translation percentage
+        exceeds the threshold.
+        """
         self.add_option("", "--threshold", dest="outputthreshold", default=default,
                         metavar="PERCENT", type="int",
-                        help="the percent of translated words below it no output is produced")
+                        help="only convert files where the translation completion is above PERCENT")
         self.passthrough.append("outputthreshold")
 
     def add_duplicates_option(self, default="msgctxt"):
