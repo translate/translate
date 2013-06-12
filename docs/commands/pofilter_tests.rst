@@ -43,7 +43,7 @@ you determine which to run first.
 
 * Critical -- can break a program
 
-  * :ref:`pofilter_tests#accelerators`, :ref:`pofilter_tests#escapes`,
+  * :ref:`pofilter_tests#escapes`,
     :ref:`pofilter_tests#newlines`, :ref:`pofilter_tests#nplurals`,
     :ref:`pofilter_tests#printf`, :ref:`pofilter_tests#tabs`,
     :ref:`pofilter_tests#variables`, :ref:`pofilter_tests#xmltags`,
@@ -60,7 +60,7 @@ you determine which to run first.
     :ref:`pofilter_tests#options`, :ref:`pofilter_tests#purepunc`,
     :ref:`pofilter_tests#sentencecount`, :ref:`pofilter_tests#short`,
     :ref:`pofilter_tests#spellcheck`, :ref:`pofilter_tests#urls`,
-    :ref:`pofilter_tests#unchanged`
+    :ref:`pofilter_tests#unchanged`, :ref:`pofilter_tests#accelerators`
 
 * Cosmetic -- make it look better
 
