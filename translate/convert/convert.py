@@ -469,7 +469,8 @@ def _output_is_newer(input_path, output_path):
 
 def should_output_store(store, threshold):
     """Check if the percent of translated source words more than or equal to
-    the given threshold."""
+    the given threshold.
+    """
 
     if not threshold:
         return True
