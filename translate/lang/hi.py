@@ -29,4 +29,4 @@ from translate.lang import common
 class hi(common.Common):
     """This class represents Hindi."""
 
-    ignoretests = ["startcaps", "simplecaps"]
+    ignoretests = ["startcaps", "simplecaps", "accelerators"]
