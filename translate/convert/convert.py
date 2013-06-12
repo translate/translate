@@ -453,6 +453,8 @@ class ArchiveConvertOptionParser(ConvertOptionParser):
                                           fulltemplatepath)
 
 def _output_is_newer(input_path, output_path):
+    """Check if input_path was not modified since output_path was generated,
+    used to avoid needless regeneration of output."""
     if not input_path or not output_path:
         return False
 
@@ -462,10 +464,7 @@ def _output_is_newer(input_path, output_path):
     input_mtime = os.path.getmtime(input_path)
     output_mtime = os.path.getmtime(output_path)
 
-    if output_mtime > input_mtime:
-        return True
-    else:
-        return False
+    return output_mtime > input_mtime
 
 def should_output_store(store, threshold):
     """Check if the percent of translated source words more than or equal to
