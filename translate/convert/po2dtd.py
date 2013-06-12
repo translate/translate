@@ -152,7 +152,8 @@ class po2dtd:
         outputstore = dtd.dtdfile(android=self.android)
         self.currentgroups = []
         for inputunit in inputstore.units:
-            if (includefuzzy or not inputunit.isfuzzy()) and (inputunit.istranslated() or not self.remove_untranslated):
+            if ((includefuzzy or not inputunit.isfuzzy()) and
+                (inputunit.istranslated() or not self.remove_untranslated)):
                 dtdunit = self.convertunit(inputunit)
                 if dtdunit is not None:
                     outputstore.addunit(dtdunit)
