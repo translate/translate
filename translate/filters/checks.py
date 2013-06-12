@@ -887,7 +887,7 @@ class StandardChecker(TranslationChecker):
         return 1
 
 
-    @critical
+    @functional
     def accelerators(self, str1, str2):
         """Checks whether accelerators are consistent between the
         two strings.
@@ -1674,6 +1674,14 @@ class MozillaChecker(StandardChecker):
 
         return super(MozillaChecker, self).unchanged(str1, str2)
 
+    @cosmetic
+    def accelerators(self, str1, str2):
+        """Checks whether accelerators are consistent between the
+        two strings.
+
+        For Mozilla we lower the severity to cosmetic.
+        """
+        return super(MozillaChecker, self).accelerators(str1, str2)
 
 drupalconfig = CheckerConfig(
     varmatches=[("%", None), ("@", None), ("!", None)],

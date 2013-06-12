@@ -43,7 +43,7 @@ you determine which to run first.
 
 * Critical -- can break a program
 
-  * :ref:`pofilter_tests#accelerators`, :ref:`pofilter_tests#escapes`,
+  * :ref:`pofilter_tests#escapes`,
     :ref:`pofilter_tests#newlines`, :ref:`pofilter_tests#nplurals`,
     :ref:`pofilter_tests#printf`, :ref:`pofilter_tests#tabs`,
     :ref:`pofilter_tests#variables`, :ref:`pofilter_tests#xmltags`,
@@ -51,7 +51,8 @@ you determine which to run first.
 
 * Functional -- may confuse the user
 
-  * :ref:`pofilter_tests#acronyms`, :ref:`pofilter_tests#blank`,
+  * :ref:`pofilter_tests#accelerators`,
+    :ref:`pofilter_tests#acronyms`, :ref:`pofilter_tests#blank`,
     :ref:`pofilter_tests#emails`, :ref:`pofilter_tests#filepaths`,
     :ref:`pofilter_tests#functions`, :ref:`pofilter_tests#gconf`,
     :ref:`pofilter_tests#kdecomments`, :ref:`pofilter_tests#long`,
