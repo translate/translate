@@ -83,7 +83,6 @@ class TestJson2POCommand(test_convert.TestConvertCommand, TestJson2PO):
     def test_help(self):
         """tests getting help"""
         options = test_convert.TestConvertCommand.test_help(self)
-        options = self.help_check(options, "-S, --timestamp")
         options = self.help_check(options, "-P, --pot")
         options = self.help_check(options, "--duplicates")
         options = self.help_check(options, "-t TEMPLATE, --template=TEMPLATE")

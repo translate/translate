@@ -143,5 +143,4 @@ class TestPO2CSVCommand(test_convert.TestConvertCommand, TestPO2CSV):
     def test_help(self):
         """tests getting help"""
         options = test_convert.TestConvertCommand.test_help(self)
-        options = self.help_check(options, "-S, --timestamp")
         options = self.help_check(options, "--columnorder=COLUMNORDER", last=True)
