@@ -147,9 +147,9 @@ class ConvertOptionParser(optrecurse.RecursiveOptionParser, object):
     def settimestampoption(self):
         """Sets ``-S``/``--timestamp`` option."""
         timestampopt = optparse.Option(
-                "-S", "--timestamp",
-                action="store_true", dest="timestamp", default=False,
-                help="skip conversion if the output file has newer timestamp"
+            "-S", "--timestamp",
+            action="store_true", dest="timestamp", default=False,
+            help="skip conversion if the output file has newer timestamp"
         )
         self.define_option(timestampopt)
 
