@@ -454,7 +454,8 @@ class ArchiveConvertOptionParser(ConvertOptionParser):
 
 def _output_is_newer(input_path, output_path):
     """Check if input_path was not modified since output_path was generated,
-    used to avoid needless regeneration of output."""
+    used to avoid needless regeneration of output.
+    """
     if not input_path or not output_path:
         return False
 
