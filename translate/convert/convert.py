@@ -479,15 +479,11 @@ def should_output_store(store, threshold):
     translated = filter(lambda unit: unit.istranslated(), units)
     wordcounts = dict(map(lambda unit: (unit, statsdb.wordsinunit(unit)), units))
     sourcewords = lambda elementlist: sum(map(lambda unit: wordcounts[unit][0], elementlist))
-    tranlated_cound = sourcewords(translated)
+    tranlated_count = sourcewords(translated)
     total_count = sourcewords(units)
-    percent = tranlated_cound * 100 / total_count
+    percent = tranlated_count * 100 / total_count
 
-    if percent < threshold:
-        return False
-    else:
-        return True
-
+    return percent >= threshold
 
 def main(argv=None):
     parser = ArchiveConvertOptionParser({}, description=__doc__)
