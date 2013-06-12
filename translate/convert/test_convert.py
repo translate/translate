@@ -127,4 +127,5 @@ class TestConvertCommand:
         options = self.help_check(options, "-i INPUT, --input=INPUT")
         options = self.help_check(options, "-x EXCLUDE, --exclude=EXCLUDE")
         options = self.help_check(options, "-o OUTPUT, --output=OUTPUT")
+        options = self.help_check(options, "-S, --timestamp")
         return options
