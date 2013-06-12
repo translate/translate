@@ -183,7 +183,6 @@ class TestOO2POCommand(test_convert.TestConvertCommand, TestOO2PO):
         options = test_convert.TestConvertCommand.test_help(self)
         options = self.help_check(options, "--source-language=LANG")
         options = self.help_check(options, "--language=LANG")
-        options = self.help_check(options, "-S, --timestamp")
         options = self.help_check(options, "-P, --pot")
         options = self.help_check(options, "--duplicates=DUPLICATESTYLE")
         options = self.help_check(options, "--multifile=MULTIFILESTYLE")

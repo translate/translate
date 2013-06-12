@@ -90,5 +90,4 @@ class TestPO2TSCommand(test_convert.TestConvertCommand, TestPO2TS):
         """tests getting help"""
         options = test_convert.TestConvertCommand.test_help(self)
         options = self.help_check(options, "-c CONTEXT, --context=CONTEXT")
-        options = self.help_check(options, "-S, --timestamp")
         options = self.help_check(options, "-t TEMPLATE, --template=TEMPLATE", last=True)
