@@ -73,6 +73,22 @@ class TestXLIFFfile(test_base.TestTranslationStore):
         assert newfile.findunit("Bla").source == "Bla"
         assert newfile.findunit("dit") is None
 
+    def test_namespace(self):
+        """Check that we handle namespaces other than the default correctly."""
+        xlfsource = '''<?xml version="1.0" encoding="utf-8"?>
+<xliff:xliff version="1.2" xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+    <xliff:file original="doc.txt" source-language="en-US">
+        <xliff:body>
+            <xliff:trans-unit id="1">
+                <xliff:source>File 1</xliff:source>
+            </xliff:trans-unit>
+        </xliff:body>
+    </xliff:file>
+</xliff:xliff>'''
+        xlifffile = xliff.xlifffile.parsestring(xlfsource)
+        print str(xlifffile)
+        assert xlifffile.units[0].source == "File 1"
+
     def test_rich_source(self):
         xlifffile = xliff.xlifffile()
         xliffunit = xlifffile.addsourceunit(u'')
