@@ -18,14 +18,14 @@
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, see <http://www.gnu.org/licenses/>.
 
-"""This module represents the Finish language.
+"""This module represents the Finnish language.
 """
 
 from translate.lang import common
 
 
 class fi(common.Common):
-    """This class represents Finish."""
+    """This class represents Finnish."""
 
     validaccel = u"abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ" + \
                  u"1234567890" + \
