@@ -45,4 +45,4 @@ class bn(common.Common):
         u".\n": u"।\n",
     }
 
-    ignoretests = ["startcaps", "simplecaps", "accelerators"]
+    ignoretests = ["startcaps", "simplecaps"]
