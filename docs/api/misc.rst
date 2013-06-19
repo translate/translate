@@ -218,11 +218,3 @@ xmlwrapper
 .. automodule:: translate.misc.xmlwrapper
    :members:
    :inherited-members:
-
-
-zipfileext
-----------
-
-.. automodule:: translate.misc.zipfileext
-   :members:
-.. :inherited-members: DON'T USE - broken Sphinx from inherited
