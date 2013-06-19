@@ -403,15 +403,9 @@ class RecursiveOptionParser(optparse.OptionParser, object):
                 outputformat = None
             else:
                 if self.usetemplates:
-                    if templateext is None:
-                        raise ValueError("don't know what to do with input format %s, no template file" %
-                                         (os.extsep + inputext))
-                    else:
-                        raise ValueError("don't know what to do with input format %s, template format %s" %
-                                         (os.extsep + inputext, os.extsep + templateext))
+                    raise ValueError("don't know what to do with input format (no file extension), no template file")
                 else:
-                    raise ValueError("don't know what to do with input format %s" %
-                                     (os.extsep + inputext))
+                    raise ValueError("don't know what to do with input format (no file extension)")
         return outputformat, fileprocessor
 
     def initprogressbar(self, allfiles, options):
