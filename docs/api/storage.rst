@@ -596,14 +596,6 @@ xml_name
    :inherited-members:
 
 
-xpi
----
-
-.. automodule:: translate.storage.xpi
-   :members:
-.. :inherited-members: DON'T USE - broken Sphinx from inherited
-
-
 zip
 ---
 
