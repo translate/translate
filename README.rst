@@ -228,8 +228,7 @@ Use ``--help`` to find the syntax and options for all programs.
 
         oo2po    - convert between OpenOffice.org GSI files and PO
         oo2xliff - convert between OpenOffice.org GSI files and XLIFF
-        moz2po   - convert from a Mozilla XPI file and PO.  Including
-                   unpacking and building a translated XPI.
+        moz2po   - convert between Mozilla files and PO
         csv2po   - convert PO format to CSV for editing in a spreadsheet program
         php2po   - PHP localisable string arrays converter.
         ts2po    - convert Qt Linguist (.ts) files to PO

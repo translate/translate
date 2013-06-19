@@ -6,8 +6,8 @@ moz2po
 ******
 
 moz2po converts Mozilla files to PO files.  It wraps converters that handle
-.properties, .dtd and some strange Mozilla files.  The tool can extract from an
-XPI file or work with files from Mozilla's Mercurial repository.  The tools
+.properties, .dtd and some strange Mozilla files.  The tool can work with files
+from Mozilla's Mercurial repository.  The tools
 thus provides a complete roundtrip for Mozilla localisation using PO files and
 PO editors.
 
@@ -16,10 +16,6 @@ PO editors.
    and PO files for translating Mozilla products, please see the page on
    :doc:`mozilla_l10n_scripts`.
 
-.. warning:: The conversion to and from XPI files is no longer actively
-   supported.  The preffered method is to work directly with files in Mozilla's
-   Mercurial version control system.
-
 .. _moz2po#usage:
 
 Usage
@@ -27,13 +23,11 @@ Usage
 
 ::
 
-  moz2po [options] <xpi|dir> <po>
-  po2moz [options] <po> <xpi|dir>
+  moz2po [options] <dir> <po>
+  po2moz [options] <po> <dir>
 
 Where:
 
-+---------+---------------------------------------------------+
-| <xpi>   | is a Mozilla language pack                        |
 +---------+---------------------------------------------------+
 | <dir>   | is a directory containing valid Mozilla files     |
 +---------+---------------------------------------------------+
@@ -75,7 +69,6 @@ Options (po2moz):
 -tTEMPLATE, --template=TEMPLATE  read from TEMPLATE in dtd, \*, inc, it, properties formats
 -S, --timestamp       skip conversion if the output file has newer timestamp
 -lLOCALE, --locale=LOCALE  set output locale (required as this sets the directory names)
---clonexpi=CLONEXPI  clone xpi structure from the given xpi file
 --removeuntranslated  remove untranslated strings from output
 --threshold=PERCENT  only convert files where the translation completion is above PERCENT
 --fuzzy              use translations marked fuzzy
@@ -99,17 +92,12 @@ After extracting the en-US l10n files, you can run the following command::
   moz2po -P l10n/en-US pot
 
 This creates a set of POT (:opt:`-P`) files in the ``pot`` directory from the
-Mozilla files in ``l10n/en-US``. ::
-
-  moz2po -P en-US.xpi pot
-
-Creating set of POT (:opt:`-P`) files from the American English XPI
-(``en-US.xpi``) and placing them in ``pot`` for use as PO Templates.
+Mozilla files in ``l10n/en-US`` for use as PO Templates.
 
 If you want to create a set of POT files with another base language try the
 following::
 
-  moz2po -P fr-FR.xpi fr-pot
+  moz2po -P l10n/fr-FR fr-pot
 
 This will create a set of POT files in ``fr-pot`` that have French as your
 source language.
@@ -138,18 +126,12 @@ languages is not English but French, Spanish or Portuguese.  Please make sure
 that the source languages i.e. the ``msgid`` language is fully translated as
 against en-US.
 
-.. _moz2po#creating_an_xpi_or_cvs_ready_translations:
+.. _moz2po#creating_mercurial_ready_translations:
 
-Creating an XPI or CVS ready translations
+Creating Mercurial ready translations
 -----------------------------------------
 
 ::
-
-  po2moz -lzu-ZA -t en-US.xpi zu zu-ZA.xpi
-
-Create a Zulu language (:opt:`-lzu-ZA`) XPI called ``zu-ZA.xpi`` from translations
-found in ``zu`` using ``en-US.xpi`` as a template.  We use a template to ensure
-that our DTD and .properties files appear exactly as those in en-US::
 
   po2moz -t l10n/en-US po/xh l10n/xh
 
