@@ -22,6 +22,7 @@ import os
 import pstats
 import random
 import sys
+import argparse
 
 from translate.storage import factory
 from translate.storage import placeables
@@ -74,11 +75,13 @@ class TranslateBenchmarker:
                     sample_unit.target = " ".join(["drow%d" % (random.randint(0, strings_per_file) * i) for i in range(target_words_per_string)])
                 sample_file.savefile(os.path.join(dirname, "file_%d.%s" % (filenum, self.extension)))
 
-    def parse_files(self):
+    def parse_files(self, file_dir=None):
         """parses all the files in the test directory into memory"""
         count = 0
         self.parsedfiles = []
-        for dirpath, subdirs, filenames in os.walk(self.file_dir, topdown=False):
+        if file_dir is None:
+            file_dir = self.file_dir
+        for dirpath, subdirs, filenames in os.walk(file_dir, topdown=False):
             for name in filenames:
                 pofilename = os.path.join(dirpath, name)
                 parsedfile = self.StoreClass(open(pofilename, 'r'))
@@ -98,9 +101,22 @@ class TranslateBenchmarker:
 
 
 if __name__ == "__main__":
-    storetype = "po"
-    if len(sys.argv) > 1:
-        storetype = sys.argv[1]
+    parser = argparse.ArgumentParser(description='Process some integers.')
+    parser.add_argument('podir', metavar='DIR', type=str, nargs='?',
+                        help='PO dir to use (default: create sample files)')
+    parser.add_argument('--store-type', dest='storetype',
+                        action='store_const', const='po', default="po",
+                        help='type of the store to benchmark (default: po)')
+    parser.add_argument('--check-parsing', dest='check_parsing',
+                        action='store_true',
+                        help='benchmark parsing files')
+    parser.add_argument('--check-placeables', dest='check_placeables',
+                        action='store_true',
+                        help='benchmark placeables')
+    args = parser.parse_args()
+
+    storetype = args.storetype
+
     if storetype in factory.classes_str:
         _module, _class = factory.classes_str[storetype]
         module = __import__("translate.storage.%s" % _module,
@@ -109,7 +125,8 @@ if __name__ == "__main__":
     else:
         print "StoreClass: '%s' is not a base class that the class factory can load" % storetype
         sys.exit()
-    for sample_file_sizes in [
+
+    sample_files = [
       # num_dirs, files_per_dir, strings_per_file, source_words_per_string, target_words_per_string
       # (1, 1, 2, 2, 2),
       (1, 1, 10000, 5, 10),   # Creat 1 very large file with German like ratios or source to target
@@ -121,16 +138,24 @@ if __name__ == "__main__":
       # (10, 20, 100, 10, 10),
       # (10, 20, 100, 10, 10),
       # (100, 2, 140, 3, 3),  # OpenOffice.org approximate ratios
-      ]:
+    ]
+
+    for sample_file_sizes in sample_files:
         benchmarker = TranslateBenchmarker("BenchmarkDir", storeclass)
         benchmarker.clear_test_dir()
-        benchmarker.create_sample_files(*sample_file_sizes)
-        benchmarker.parse_files()
-        methods = [("create_sample_files", "*sample_file_sizes"),
-                   ("parse_files", ""),
-                   ("parse_placeables", "")]
+        if args.podir is None:
+            benchmarker.create_sample_files(*sample_file_sizes)
+        benchmarker.parse_files(file_dir=args.podir)
+        methods = [] # [("create_sample_files", "*sample_file_sizes")]
+
+        if args.check_parsing:
+            methods.append(("parse_files", ""))
+
+        if args.check_placeables:
+            methods.append(("parse_placeables", ""))
+
         for methodname, methodparam in methods:
-            print methodname, "%d dirs, %d files, %d strings, %d/%d words" % sample_file_sizes
+            #print methodname, "%d dirs, %d files, %d strings, %d/%d words" % sample_file_sizes
             print "_______________________________________________________"
             statsfile = "%s_%s" % (methodname, storetype) + '_%d_%d_%d_%d_%d.stats' % sample_file_sizes
             cProfile.run('benchmarker.%s(%s)' % (methodname, methodparam), statsfile)
