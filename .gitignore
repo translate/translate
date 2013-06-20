@@ -20,3 +20,6 @@ MANIFEST.in
 
 # other
 tests/xliff_conformance/af-pootle.xlf
+
+# Requirements generation
+.reqs

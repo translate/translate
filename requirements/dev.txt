@@ -1,4 +1,4 @@
 -r optional.txt
 
-pytest
-Sphinx
+pytest>=2.2
+Sphinx>=1.1
