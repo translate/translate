@@ -24,6 +24,7 @@ import random
 import sys
 
 from translate.storage import factory
+from translate.storage import placeables
 
 
 class TranslateBenchmarker:
@@ -85,6 +86,17 @@ class TranslateBenchmarker:
                 self.parsedfiles.append(parsedfile)
         print "counted %d units" % count
 
+    def parse_placeables(self):
+        """parses placeables"""
+        count = 0
+        for parsedfile in self.parsedfiles:
+            for unit in parsedfile.units:
+                placeables.parse(unit.source, placeables.general.parsers)
+                placeables.parse(unit.target, placeables.general.parsers)
+            count += len(parsedfile.units)
+        print "counted %d units" % count
+
+
 if __name__ == "__main__":
     storetype = "po"
     if len(sys.argv) > 1:
@@ -113,7 +125,10 @@ if __name__ == "__main__":
         benchmarker = TranslateBenchmarker("BenchmarkDir", storeclass)
         benchmarker.clear_test_dir()
         benchmarker.create_sample_files(*sample_file_sizes)
-        methods = [("create_sample_files", "*sample_file_sizes"), ("parse_file", ""), ]
+        benchmarker.parse_files()
+        methods = [("create_sample_files", "*sample_file_sizes"),
+                   ("parse_files", ""),
+                   ("parse_placeables", "")]
         for methodname, methodparam in methods:
             print methodname, "%d dirs, %d files, %d strings, %d/%d words" % sample_file_sizes
             print "_______________________________________________________"
