@@ -86,8 +86,11 @@ if __name__ == "__main__":
     storetype = "po"
     if len(sys.argv) > 1:
         storetype = sys.argv[1]
-    if storetype in factory.classes:
-        storeclass = factory.classes[storetype]
+    if storetype in factory.classes_str:
+        _module, _class = factory.classes_str[storetype]
+        module = __import__("translate.storage.%s" % _module,
+                            globals(), fromlist=_module)
+        storeclass = getattr(module, _class)
     else:
         print "StoreClass: '%s' is not a base class that the class factory can load" % storetype
         sys.exit()
