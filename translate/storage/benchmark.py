@@ -160,6 +160,6 @@ if __name__ == "__main__":
             statsfile = "%s_%s" % (methodname, storetype) + '_%d_%d_%d_%d_%d.stats' % sample_file_sizes
             cProfile.run('benchmarker.%s(%s)' % (methodname, methodparam), statsfile)
             stats = pstats.Stats(statsfile)
-            stats.sort_stats('cumulative').print_stats(20)
+            stats.sort_stats('time').print_stats(20)
             print "_______________________________________________________"
         benchmarker.clear_test_dir()
