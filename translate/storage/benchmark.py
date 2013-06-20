@@ -137,4 +137,4 @@ if __name__ == "__main__":
             stats = pstats.Stats(statsfile)
             stats.sort_stats('cumulative').print_stats(20)
             print "_______________________________________________________"
-        #benchmarker.clear_test_dir()
+        benchmarker.clear_test_dir()
