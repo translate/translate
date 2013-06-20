@@ -36,6 +36,7 @@ class TranslateBenchmarker:
         self.extension = self.StoreClass.Extensions[0]
         self.project_dir = os.path.join(self.test_dir, "benchmark")
         self.file_dir = os.path.join(self.project_dir, "zxx")
+        self.parsedfiles = []
 
     def clear_test_dir(self):
         """removes the given directory"""
@@ -72,14 +73,16 @@ class TranslateBenchmarker:
                     sample_unit.target = " ".join(["drow%d" % (random.randint(0, strings_per_file) * i) for i in range(target_words_per_string)])
                 sample_file.savefile(os.path.join(dirname, "file_%d.%s" % (filenum, self.extension)))
 
-    def parse_file(self):
+    def parse_files(self):
         """parses all the files in the test directory into memory"""
         count = 0
+        self.parsedfiles = []
         for dirpath, subdirs, filenames in os.walk(self.file_dir, topdown=False):
             for name in filenames:
                 pofilename = os.path.join(dirpath, name)
                 parsedfile = self.StoreClass(open(pofilename, 'r'))
                 count += len(parsedfile.units)
+                self.parsedfiles.append(parsedfile)
         print "counted %d units" % count
 
 if __name__ == "__main__":
