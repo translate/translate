@@ -327,7 +327,7 @@ def get_versioned_object(
             continue
     # if we find any RCS, return the one with shorted rel path
     if len(possible_ver_objs):
-        possible_ver_objs.sort(key=lambda ver_obj: ver_obj.location_rel)
+        possible_ver_objs.sort(key=lambda ver_obj: len(ver_obj.location_rel))
         return possible_ver_objs[0]
     # if 'location' is a symlink, then we should try the original file
     if follow_symlinks and os.path.islink(location):
