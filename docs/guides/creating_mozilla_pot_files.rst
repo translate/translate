@@ -16,7 +16,7 @@ for version control. See the Mozilla's `L10n on Mercurial
 <https://developer.mozilla.org/docs/Localizing_with_Mercurial>`_ page for
 instructions on how to checkout and update your Mozilla sources and l10n files.
 
-You can use :ref:`get_moz_enUS.py <mozilla_l10n_scripts#get_moz_enus.py>` to
+You can use :ref:`get_moz_enUS.py <get_moz_enus.py>` to
 extract an en-US directory from the source tree:
 
 ::
