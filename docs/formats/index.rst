@@ -103,6 +103,7 @@ Formats of translatable documents
 
    html
    ical
+   json
    odf
    text
    wiki
@@ -110,7 +111,7 @@ Formats of translatable documents
 
 * :doc:`html`
 * :doc:`ical`
-* :wp:`JSON` (from v1.9.0)
+* :doc:`json`
 * :wp:`OpenDocument` -- all ODF file types
 * :doc:`Text <text>` -- plain text with blocks separated by whitespace
 * :doc:`Wiki <wiki>` -- :wp:`DokuWiki` and :wp:`MediaWiki` supported
