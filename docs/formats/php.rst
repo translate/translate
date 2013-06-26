@@ -16,6 +16,20 @@ Conformance
 
 Our format support allows:
 
+* `Single
+  <http://www.php.net/manual/en/language.types.string.php#language.types.string.syntax.single>`_
+  and `double
+  <http://www.php.net/manual/en/language.types.string.php#language.types.string.syntax.double>`_
+  quoted strings (both for keys and values)
+
+  .. code-block:: php
+
+      <?php
+      $variable = 'string';
+      $messages["language"] = 'Language';
+      define('item', "another string");
+
+
 * PHP simple variable syntax
 
   .. code-block:: php
@@ -32,6 +46,8 @@ Our format support allows:
       <?php
       $messages['language'] = 'Language';
       $messages['file'] = "File";
+      $messages["window"] = 'Window';
+      $messages["firewall"] = "Firewall";
 
 
 * PHP array syntax
@@ -45,6 +61,8 @@ Our format support allows:
       $lang = array(
          'name' => 'value',
          'name2' => "value2",
+         "key1" => 'value3',
+         "key2" => "value4",
       );
 
 
@@ -56,10 +74,12 @@ Our format support allows:
 
       <?php
       define('item', 'string');
-      define("another_item", "another string");
+      define('another_item', "another string");
+      define("key", 'and another string');
+      define("another_key", "yet another string");
 
 
-* PHP escaping (both for `single
+* Escape sequences (both for `single
   <http://www.php.net/manual/en/language.types.string.php#language.types.string.syntax.single>`_
   and `double
   <http://www.php.net/manual/en/language.types.string.php#language.types.string.syntax.double>`_
@@ -68,8 +88,9 @@ Our format support allows:
   .. code-block:: php
 
       <?php
-      $variable = 'string';
-      $another_variable = "another string";
+      $variable = 'He said: "I\'ll be back"';
+      $another_variable = "First line \n second line";
+      $key = "\tIndented string";
 
 
 * Multiline entries
