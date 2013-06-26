@@ -54,7 +54,7 @@ class po2lang:
 
 
 def convertlang(inputfile, outputfile, templates, includefuzzy=False, mark_active=True,
-                outputthreshold=None):
+                outputthreshold=None, remove_untranslated=None):
     """reads in stdin using fromfileclass, converts using convertorclass,
     writes to stdout"""
     inputstore = po.pofile(inputfile)
