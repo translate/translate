@@ -204,7 +204,7 @@ msgstr "&searchIntegration.engineName; &ileti aramasına izin ver"
         print newdtd
         assert newdtd == dtdexpected
 
-    def test_untranslated(self):
+    def test_untranslated_with_template(self):
         """test removing of untranslated entries in redtd"""
         posource = '''#: simple.label
 msgid "Simple string"
@@ -230,7 +230,7 @@ msgstr "Simple string 3"
         print newdtd
         assert newdtd == dtdexpected
 
-    def test_untranslated(self):
+    def test_untranslated_without_template(self):
         """test removing of untranslated entries in po2dtd"""
         posource = '''#: simple.label
 msgid "Simple string"
