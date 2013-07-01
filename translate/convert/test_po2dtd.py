@@ -251,6 +251,39 @@ msgstr "Simple string 3"
         print newdtd
         assert str(newdtd) == dtdexpected
 
+    def test_blank_source(self):
+        """test removing of untranslated entries where source is blank"""
+        posource = '''#: simple.label
+msgid "Simple string"
+msgstr "Dimpled ring"
+
+#: simple.label2
+msgid ""
+msgstr ""
+
+#: simple.label3
+msgid "Simple string 3"
+msgstr "Simple string 3"
+'''
+        dtdtemplate = '''<!ENTITY simple.label "Simple string">
+<!ENTITY simple.label2 "">
+<!ENTITY simple.label3 "Simple string 3">
+'''
+        dtdexpected_with_template = '''<!ENTITY simple.label "Dimpled ring">
+<!ENTITY simple.label2 "">
+<!ENTITY simple.label3 "Simple string 3">
+'''
+
+        dtdexpected_no_template = '''<!ENTITY simple.label "Dimpled ring">
+<!ENTITY simple.label3 "Simple string 3">
+'''
+        newdtd_with_template = self.convertdtd(posource, dtdtemplate, remove_untranslated=True)
+        print newdtd_with_template
+        assert newdtd_with_template == dtdexpected_with_template
+        newdtd_no_template = self.po2dtd(posource, remove_untranslated=True)
+        print newdtd_no_template
+        assert str(newdtd_no_template) == dtdexpected_no_template
+
     def test_newlines_escapes(self):
         """check that we can handle a \n in the PO file"""
         posource = '''#: simple.label\n#: simple.accesskey\nmsgid "A hard coded newline.\\n"\nmsgstr "Hart gekoeerde nuwe lyne\\n"\n'''

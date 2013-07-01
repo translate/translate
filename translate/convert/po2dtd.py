@@ -96,10 +96,12 @@ class redtd:
             if entity in self.dtdfile.index:
                 # now we need to replace the definition of entity with msgstr
                 dtdunit = self.dtdfile.index[entity]  # find the dtd
-                if inunit.istranslated() or not self.remove_untranslated:
+                if inunit.istranslated() or not bool(inunit.source):
                     applytranslation(entity, dtdunit, inunit, mixedentities)
-                else:
+                elif self.remove_untranslated:
                     dtdunit.entity = None
+                else:
+                    applytranslation(entity, dtdunit, inunit, mixedentities)
 
 
 class po2dtd:
@@ -136,8 +138,10 @@ class po2dtd:
             dtdunit.comments.append(("locnote", locnote))
 
     def convertstrings(self, inputunit, dtdunit):
-        if inputunit.istranslated():
+        if inputunit.istranslated() or not bool(inputunit.source):
             unquoted = inputunit.target
+        elif self.remove_untranslated:
+            unquoted = None
         else:
             unquoted = inputunit.source
         dtdunit.source = dtd.removeinvalidamps(dtdunit.entity, unquoted)

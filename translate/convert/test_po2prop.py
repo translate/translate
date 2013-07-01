@@ -198,6 +198,33 @@ prop2=value2
         print propfile
         assert propfile == propexpected
 
+    def test_merging_blank(self):
+        """We always merge in a blank translation for a blank source"""
+        posource = '''#: prop
+msgctxt "prop"
+msgid ""
+msgstr "value"
+
+#: prop2
+msgctxt "prop2"
+msgid ""
+msgstr ""
+'''
+        proptemplate = '''prop=
+prop2=
+'''
+
+        propexpected = '''prop=value
+prop2=
+'''
+
+        propfile = self.merge2prop(proptemplate, posource, remove_untranslated=False)
+        print propfile
+        assert propfile == propexpected
+        propfile = self.merge2prop(proptemplate, posource, remove_untranslated=True)
+        print propfile
+        assert propfile == propexpected
+
     def test_gaia_plurals(self):
         """Test back conversion of gaia plural units."""
         proptemplate = '''
