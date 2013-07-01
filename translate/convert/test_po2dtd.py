@@ -217,14 +217,21 @@ msgstr ""
 #: simple.label3
 msgid "Simple string 3"
 msgstr "Simple string 3"
+
+#: simple.label4
+#, fuzzy
+msgid "Simple string 4"
+msgstr "simple string four"
 '''
         dtdtemplate = '''<!ENTITY simple.label "Simple string">
 <!ENTITY simple.label2 "Simple string 2">
 <!ENTITY simple.label3 "Simple string 3">
+<!ENTITY simple.label4 "Simple string 4">
 '''
         dtdexpected = '''<!ENTITY simple.label "Dimpled ring">
 
 <!ENTITY simple.label3 "Simple string 3">
+
 '''
         newdtd = self.convertdtd(posource, dtdtemplate, remove_untranslated=True)
         print newdtd
@@ -243,6 +250,11 @@ msgstr ""
 #: simple.label3
 msgid "Simple string 3"
 msgstr "Simple string 3"
+
+#: simple.label4
+#, fuzzy
+msgid "Simple string 4"
+msgstr "simple string four"
 '''
         dtdexpected = '''<!ENTITY simple.label "Dimpled ring">
 <!ENTITY simple.label3 "Simple string 3">

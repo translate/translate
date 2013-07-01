@@ -82,14 +82,11 @@ class redtd:
         self.remove_untranslated = remove_untranslated
 
     def convertstore(self, inputstore, includefuzzy=False):
-        # translate the strings
         for inunit in inputstore.units:
-            # there may be more than one entity due to msguniq merge
-            if includefuzzy or not inunit.isfuzzy():
-                self.handleinunit(inunit)
+            self.handleinunit(inunit, includefuzzy)
         return self.dtdfile
 
-    def handleinunit(self, inunit):
+    def handleinunit(self, inunit, includefuzzy):
         entities = inunit.getlocations()
         mixedentities = self.mixer.match_entities(entities)
         for entity in entities:
@@ -98,7 +95,7 @@ class redtd:
                 dtdunit = self.dtdfile.index[entity]  # find the dtd
                 if inunit.istranslated() or not bool(inunit.source):
                     applytranslation(entity, dtdunit, inunit, mixedentities)
-                elif self.remove_untranslated:
+                elif self.remove_untranslated and not (includefuzzy and inunit.isfuzzy()):
                     dtdunit.entity = None
                 else:
                     applytranslation(entity, dtdunit, inunit, mixedentities)
