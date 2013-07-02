@@ -22,6 +22,7 @@ class TestPropUnit(test_monolingual.TestMonolingualUnit):
         ('<<< arrow', '<string name="Test String">&lt;&lt;&lt; arrow</string>\n\n'),
         ('<a href="http://example.net">link</a>', '<string name="Test String"><a href="http://example.net">link</a></string>\n\n'),
         ('<a href="http://example.net">link</a> and text', '<string name="Test String"><a href="http://example.net">link</a> and text</string>\n\n'),
+        ('', '<string name="Test String"></string>\n\n'),
     ]
 
     parse_test_data = escape_data + [
@@ -29,6 +30,9 @@ class TestPropUnit(test_monolingual.TestMonolingualUnit):
         ('double quoted text', '<string name="Test String">"double quoted text"</string>\n\n'),
         # Check that newline is read as space (at least it seems to be what Android does)
         ('newline in string', '<string name="Test String">newline\nin string</string>\n\n'),
+        # Check not translatable string
+        ('string', '<string name="Test String" translatable="false">string</string>\n\n'),
+        ('', '<string name="Test String"/>\n\n'),
     ]
 
     def test_escape(self):
@@ -48,11 +52,14 @@ class TestPropUnit(test_monolingual.TestMonolingualUnit):
         else:
             parser = etree.XMLParser()
         for string, xml in self.parse_test_data:
+            translatable = 'translatable="false"' not in xml
             et = etree.fromstring(xml, parser)
             unit = self.UnitClass.createfromxmlElement(et)
             print "unit.target:", repr(unit.target)
             print "string:", string
+            print 'translatable:', repr(unit.istranslatable())
             assert unit.target == string
+            assert unit.istranslatable() == translatable
 
 
 class TestProp(test_monolingual.TestMonolingualStore):

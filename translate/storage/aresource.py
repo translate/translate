@@ -47,6 +47,15 @@ class AndroidResourceUnit(base.TranslationUnit):
             self.setid(source)
         super(AndroidResourceUnit, self).__init__(source)
 
+    def istranslatable(self):
+        return (
+            bool(self.getid())
+            and self.xmlelement.get('translatable') != 'false'
+        )
+
+    def isblank(self):
+        return not bool(self.getid())
+
     def getid(self):
         return self.xmlelement.get("name")
 
