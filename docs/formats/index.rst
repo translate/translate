@@ -43,6 +43,7 @@ Other translation formats
    strings
    flex
    catkeys
+   android
 
 * :doc:`csv`
 * :doc:`ini` (including Inno Setup .isl dialect)
@@ -56,6 +57,7 @@ Other translation formats
 * Mac OSX :doc:`strings` files (also used on the iPhone) (from version 1.8)
 * Adobe :doc:`flex` files (from version 1.8)
 * Haiku :doc:`catkeys` (from version 1.8)
+* :doc:`android` (supports storage, not conversion)
 
 .. _formats#translation_memory_formats:
 
@@ -190,12 +192,6 @@ Formats that we would like to support but don't currently support:
   * Generic XML
   * :wp:`DocBook` (can be handled by KDE's :man:`xml2pot`)
   * `SVG <http://www.w3.org/TR/SVG/>`_
-  * :wp:`Android <Android_%28operating_system%29>`
-    `resource files
-    <http://developer.android.com/guide/topics/resources/resources-i18n.html>`_ specifically
-    `string resources
-    <http://developer.android.com/guide/topics/resources/available-resources.html#stringresources>`_
-    (`more background <http://www.linux-mag.com/id/7794>`_)
 
 * :wp:`DITA <Darwin_Information_Typing_Architecture>`
 * :wp:`PDF <Portable_Document_Format>` see `spec
