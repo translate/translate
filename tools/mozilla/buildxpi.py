@@ -45,6 +45,7 @@ overwritten and replaced.
 
 import logging
 import os
+import re
 from glob       import glob
 from shutil     import move, rmtree
 from subprocess import Popen, PIPE, CalledProcessError
@@ -106,7 +107,8 @@ def run(cmd, expected_status=0, fail_msg=None, stdout=-1, stderr=-1):
     return cmd_status
 
 
-def build_xpi(l10nbase, srcdir, outputdir, langs, product, delete_dest=False):
+def build_xpi(l10nbase, srcdir, outputdir, langs, product, delete_dest=False,
+              soft_max_version=False):
     MOZCONFIG = os.path.join(srcdir, '.mozconfig')
     # Backup existing .mozconfig if it exists
     backup_name = ''
@@ -163,8 +165,13 @@ ac_add_options --enable-application=%(product)s
         run(['make', '-C', 'config'],
             fail_msg="Unable to successfully configure build for XPI!")
 
+	moz_app_version=[]
+	if soft_max_version:
+	    version = open(os.path.join(srcdir, product, 'config', 'version.txt')).read().strip()
+	    version = re.sub(r'(^[0-9]*\.[0-9]*).*', r'\1.*', version)
+	    moz_app_version = ['MOZ_APP_MAXVERSION=%s' % version]
         run(['make', '-C', os.path.join(product, 'locales')] +
-            ['langpack-%s' % lang for lang in langs],
+            ['langpack-%s' % lang for lang in langs] + moz_app_version,
             fail_msg="Unable to successfully build XPI!")
 
         destfiles = []
@@ -243,6 +250,15 @@ def create_option_parser():
         help='Be more noisy'
     )
 
+    p.add_option(
+        '', '--soft-max-version',
+        dest='soft_max_version',
+        action='store_true',
+        default=False,
+	help='Override a fixed max version with one to cover the whole cycle '
+	     'e.g. 24.0a1 becomes 24.0.*'
+    )
+
     return p
 
 if __name__ == '__main__':
@@ -261,5 +277,6 @@ if __name__ == '__main__':
         outputdir=os.path.abspath(options.outputdir),
         langs=args,
         product=options.mozproduct,
-        delete_dest=options.delete_dest
+        delete_dest=options.delete_dest,
+        soft_max_version=options.soft_max_version
     )
