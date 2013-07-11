@@ -127,6 +127,7 @@ def build_xpi(l10nbase, srcdir, outputdir, langs, product, delete_dest=False):
     try:
         # Create new .mozconfig
         content = """
+ac_add_options --disable-gstreamer
 ac_add_options --disable-ogg
 ac_add_options --disable-wave
 ac_add_options --disable-webm
