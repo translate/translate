@@ -180,6 +180,25 @@ The following are not yet supported:
       );
 
 
+* Nested arrays without key for a nested array:
+
+  .. code-block:: php
+
+      <?php
+      $lang = array(array("key" => "value"));
+
+
+* Array entries without ending comma:
+
+  .. code-block:: php
+
+      <?php
+      $variable = array(
+         "one" => "this",
+         "two" => "that"
+      );
+
+
 * `Heredoc
   <http://www.php.net/manual/en/language.types.string.php#language.types.string.syntax.heredoc>`_
 * `Nowdoc
