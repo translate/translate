@@ -240,6 +240,7 @@ class phpfile(base.TranslationStore):
                 equaldel = "="
                 enddel = ";"
                 inarray = False
+                prename = ""
                 continue
             # If the current line hosts a define syntax translation.
             if line.lstrip().startswith("define("):
