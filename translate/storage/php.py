@@ -49,6 +49,7 @@ implemented as outlined in the PHP documentation for the
 `String type <http://www.php.net/language.types.string>`_.
 """
 
+import logging
 import re
 
 from translate.storage import base
@@ -212,9 +213,12 @@ class phpfile(base.TranslationStore):
         equaldel = "="
         enddel = ";"
         prename = ""
+        keys_dict = {}
+        line_number = 0
 
         # For each line in the PHP translation file.
         for line in phpsrc.decode(self._encoding).split("\n"):
+            line_number += 1
             commentstartpos = line.find("/*")
             commentendpos = line.rfind("*/")
 
@@ -295,6 +299,17 @@ class phpfile(base.TranslationStore):
                     # array name, or blank if no array is present. The line
                     # (until the equal delimiter) is appended to the location.
                     location = prename + line[:equalpos].strip()
+
+                    # Check for duplicate entries.
+                    if location in keys_dict.keys():
+                        # TODO Get the logger from the code that is calling
+                        # this class.
+                        logging.error("Duplicate key %s in %s:%d, first "
+                                      "occurrence in line %d", location,
+                                      self.filename, line_number,
+                                      keys_dict[location])
+                    else:
+                        keys_dict[location] = line_number
 
                     # Add the location to the translation unit.
                     newunit.addlocation(location)
