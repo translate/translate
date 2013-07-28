@@ -507,33 +507,33 @@ class TranslationStore(object):
     targetlanguage = None
 
     def __init__(self, unitclass=None):
-        """Constructs a blank TranslationStore."""
+        """Construct a blank TranslationStore."""
         self.units = []
         if unitclass:
             self.UnitClass = unitclass
 
     def getsourcelanguage(self):
-        """Gets the source language for this store"""
+        """Get the source language for this store."""
         return self.sourcelanguage
 
     def setsourcelanguage(self, sourcelanguage):
-        """Sets the source language for this store"""
+        """Set the source language for this store."""
         self.sourcelanguage = sourcelanguage
 
     def gettargetlanguage(self):
-        """Gets the target language for this store"""
+        """Get the target language for this store."""
         return self.targetlanguage
 
     def settargetlanguage(self, targetlanguage):
-        """Sets the target language for this store"""
+        """Set the target language for this store."""
         self.targetlanguage = targetlanguage
 
     def getprojectstyle(self):
-        """Gets the project type for this store"""
+        """Get the project type for this store."""
         return getattr(self, '_project_style', None)
 
     def setprojectstyle(self, project_style):
-        """Sets the project type for this store"""
+        """Set the project type for this store."""
         self._project_style = project_style
 
     def unit_iter(self):
@@ -546,7 +546,7 @@ class TranslationStore(object):
         return [unit for unit in self.unit_iter()]
 
     def addunit(self, unit):
-        """Appends the given unit to the object's list of units.
+        """Append the given unit to the object's list of units.
 
         This method should always be used rather than trying to modify the
         list manually.
@@ -558,7 +558,7 @@ class TranslationStore(object):
         self.units.append(unit)
 
     def addsourceunit(self, source):
-        """Adds and returns a new unit with the given source string.
+        """Add and returns a new unit with the given source string.
 
         :rtype: :class:`TranslationUnit`
         """
@@ -572,7 +572,7 @@ class TranslationStore(object):
         return self.id_index.get(id, None)
 
     def findunit(self, source):
-        """Finds the unit with the given source string.
+        """Find the unit with the given source string.
 
         :rtype: :class:`TranslationUnit` or None
         """
@@ -586,7 +586,7 @@ class TranslationStore(object):
         return None
 
     def findunits(self, source):
-        """Finds the units with the given source string.
+        """Find the units with the given source string.
 
         :rtype: :class:`TranslationUnit` or None
         """
@@ -604,7 +604,7 @@ class TranslationStore(object):
         return None
 
     def translate(self, source):
-        """Returns the translated string for a given source string.
+        """Return the translated string for a given source string.
 
         :rtype: String or None
         """
@@ -704,7 +704,7 @@ class TranslationStore(object):
         return dump
 
     def isempty(self):
-        """Returns True if the object doesn't contain any translation units."""
+        """Return True if the object doesn't contain any translation units."""
         if len(self.units) == 0:
             return True
         for unit in self.units:
@@ -723,7 +723,7 @@ class TranslationStore(object):
                 self.filename = filename
 
     def parsestring(cls, storestring):
-        """Converts the string representation back to an object."""
+        """Convert the string representation back to an object."""
         newstore = cls()
         if storestring:
             newstore.parse(storestring)
@@ -754,8 +754,11 @@ class TranslationStore(object):
         else:
             encodings.append(self.encoding)
             if detected_encoding and detected_encoding['encoding'] != self.encoding:
-                logging.warn("trying to parse %s with encoding: %s but detected encoding is %s (confidence: %s)",
-                             self.filename, self.encoding, detected_encoding['encoding'], detected_encoding['confidence'])
+                logging.warn("trying to parse %s with encoding: %s but "
+                             "detected encoding is %s (confidence: %s)",
+                             self.filename, self.encoding,
+                             detected_encoding['encoding'],
+                             detected_encoding['confidence'])
             encodings.append(self.encoding)
 
         for encoding in encodings:
@@ -775,7 +778,7 @@ class TranslationStore(object):
         self.units = pickle.loads(data).units
 
     def savefile(self, storefile):
-        """Writes the string representation to the given file (or filename)."""
+        """Write the string representation to the given file (or filename)."""
         storestring = str(self)
         if isinstance(storefile, basestring):
             mode = 'w'

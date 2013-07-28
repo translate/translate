@@ -48,7 +48,7 @@ from translate.storage import base
 
 
 def phpencode(text, quotechar="'"):
-    """convert Python string to PHP escaping
+    """Convert Python string to PHP escaping.
 
     The encoding is implemented for
     `'single quote' <http://www.php.net/manual/en/language.types.string.php#language.types.string.syntax.single>`_
@@ -77,7 +77,7 @@ def phpencode(text, quotechar="'"):
 
 
 def phpdecode(text, quotechar="'"):
-    """convert PHP escaped string to a Python string"""
+    """Convert PHP escaped string to a Python string."""
 
     def decode_octal_hex(match):
         """decode Octal \NNN and Hex values"""
@@ -106,11 +106,10 @@ def phpdecode(text, quotechar="'"):
 
 
 class phpunit(base.TranslationUnit):
-    """a unit of a PHP file i.e. a name and value, and any comments
-    associated"""
+    """A unit of a PHP file: a name, a value, and any comments associated."""
 
     def __init__(self, source=""):
-        """construct a blank phpunit"""
+        """Construct a blank phpunit."""
         self.escape_type = None
         super(phpunit, self).__init__(source)
         self.name = ""
@@ -120,7 +119,7 @@ class phpunit(base.TranslationUnit):
         self.source = source
 
     def setsource(self, source):
-        """Sets the source AND the target to be equal"""
+        """Set the source AND the target to be equal."""
         self._rich_source = None
         self.value = phpencode(source, self.escape_type)
 
@@ -137,15 +136,14 @@ class phpunit(base.TranslationUnit):
     target = property(gettarget, settarget)
 
     def __str__(self):
-        """convert to a string. double check that unicode is handled somehow
-        here"""
+        """Convert to a string. Double check that unicode is handled somehow."""
         source = self.getoutput()
         if isinstance(source, unicode):
             return source.encode(getattr(self, "encoding", "UTF-8"))
         return source
 
     def getoutput(self):
-        """convert the unit back into formatted lines for a php file"""
+        """Convert the unit back into formatted lines for a php file."""
         return "\n".join(self._comments + ["%s='%s';\n" % (self.name, self.translation or self.value)])
 
     def addlocation(self, location):
@@ -174,8 +172,7 @@ class phpunit(base.TranslationUnit):
         self._comments = []
 
     def isblank(self):
-        """Returns whether this is a blank element, containing only comments.
-        """
+        """Return whether this is a blank element, containing only comments."""
         return not (self.name or self.value)
 
     def getid(self):
@@ -183,11 +180,11 @@ class phpunit(base.TranslationUnit):
 
 
 class phpfile(base.TranslationStore):
-    """This class represents a PHP file, made up of phpunits"""
+    """This class represents a PHP file, made up of phpunits."""
     UnitClass = phpunit
 
     def __init__(self, inputfile=None, encoding='utf-8'):
-        """construct a phpfile, optionally reading in from inputfile"""
+        """Construct a phpfile, optionally reading in from inputfile."""
         super(phpfile, self).__init__(unitclass=self.UnitClass)
         self.filename = getattr(inputfile, 'name', '')
         self._encoding = encoding
@@ -197,75 +194,94 @@ class phpfile(base.TranslationStore):
             self.parse(phpsrc)
 
     def parse(self, phpsrc):
-        """Read the source of a PHP file in and include them as units"""
+        """Read the source of a PHP file in and include them as units."""
         newunit = phpunit()
         lastvalue = ""
         value = ""
         invalue = False
         incomment = False
         inarray = False
-        valuequote = ""  # either ' or "
+        valuequote = ""  # Either ' or ".
         equaldel = "="
         enddel = ";"
         prename = ""
+
         # For each line in the PHP translation file.
         for line in phpsrc.decode(self._encoding).split("\n"):
             commentstartpos = line.find("/*")
             commentendpos = line.rfind("*/")
+
             # If a multiline comment starts in the current line.
             if commentstartpos != -1:
                 incomment = True
+
+                # If a comment ends in the current line.
                 if commentendpos != -1:
                     newunit.addnote(line[commentstartpos:commentendpos+2],
                                     "developer")
                     incomment = False
                 else:
-                    newunit.addnote(line[commentstartpos:],
-                                    "developer")
+                    newunit.addnote(line[commentstartpos:], "developer")
+
             # If this a multiline comment that ends in the current line.
             if commentendpos != -1 and incomment:
                 newunit.addnote(line[:commentendpos+2], "developer")
                 incomment = False
+
             # If this is a multiline comment which started in a previous line.
             if incomment and commentstartpos == -1:
                 newunit.addnote(line, "developer")
                 continue
+
+            # If an array starts in the current line.
             if line.lower().find('array(') != -1:
                 equaldel = "=>"
                 enddel = ","
                 inarray = True
                 prename = line[:line.find('=')].strip() + "->"
                 continue
+
+            # If an array ends in the current line, reset variables to default
+            # values.
             if inarray and line.find(');') != -1:
                 equaldel = "="
                 enddel = ";"
                 inarray = False
                 prename = ""
                 continue
+
             # If the current line hosts a define syntax translation.
             if line.lstrip().startswith("define("):
                 equaldel = ","
                 enddel = ");"
+
             equalpos = line.find(equaldel)
             hashpos = line.find("#")
             doubleslashpos = line.lstrip().find("//")
+
             # If this is a '#' comment line or a '//' comment that starts at
             # the line begining.
             if 0 <= hashpos < equalpos or doubleslashpos == 0:
                 # Assume that this is a '#' comment line
                 newunit.addnote(line.strip(), "developer")
                 continue
+
             # If equalpos is present in the current line and this line is not
             # part of a multiline translation.
             if equalpos != -1 and not invalue:
                 # Get the quoting character which encloses the translation
                 # (either ' or ").
                 valuequote = line[equalpos+len(equaldel):].lstrip()[0]
+
                 if valuequote in ['"', "'"]:
-                    # Add the location to the translation unit. prename is the
+                    # Get the location for the translation unit. prename is the
                     # array name, or blank if no array is present. The line
                     # (until the equal delimiter) is appended to the location.
-                    newunit.addlocation(prename + line[:equalpos].strip())
+                    location = prename + line[:equalpos].strip()
+
+                    # Add the location to the translation unit.
+                    newunit.addlocation(location)
+
                     # Save the translation in the value variable.
                     value = line[equalpos+len(equaldel):].lstrip()[1:]
                     lastvalue = ""
@@ -275,8 +291,10 @@ class phpfile(base.TranslationStore):
                 # multiline translation.
                 if invalue:
                     value = line
+
             # Get the end delimiter position (colonpos)
             colonpos = value.rfind(enddel)
+
             while colonpos != -1:
                 # Check if the latest non-whitespace character before the end
                 # delimiter is the valuequote
@@ -287,21 +305,25 @@ class phpfile(base.TranslationStore):
                     newunit.escape_type = valuequote
                     lastvalue = ""
                     invalue = False
+
                 # If there is more text (a comment) after the translation.
                 if not invalue and colonpos != (len(value) - 1):
                     commentinlinepos = value.find("//", colonpos)
                     if commentinlinepos != -1:
                         newunit.addnote(value[commentinlinepos+2:].strip(),
                                         "developer")
+
                 # If the translation is already parsed, save it and initialize
                 # a new translation unit.
                 if not invalue:
                     self.addunit(newunit)
                     value = ""
                     newunit = phpunit()
+
                 # Update end delimiter position (colonpos) to the previous last
                 # appearance of end delimiter.
                 colonpos = value.rfind(enddel, 0, colonpos)
+
             # If this is part of a multiline translation, just append it to the
             # previous translation lines.
             if invalue:
