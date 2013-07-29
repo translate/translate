@@ -601,3 +601,17 @@ $month_mar = 'Mar';
         phpunit = phpfile.units[3]
         assert phpunit.name == '$month_mar'
         assert phpunit.source == "Mar"
+
+    def test_simpledefinition_after_define(self):
+        """Check that a simple definition after define is parsed correctly."""
+        phpsource = """define("_FINISH", "Rematar");
+$lang['mediaselect'] = 'Bestand selectie';"""        
+        phpfile = self.phpparse(phpsource)
+        print(len(phpfile.units))
+        assert len(phpfile.units) == 2
+        phpunit = phpfile.units[0]
+        assert phpunit.name == 'define("_FINISH"'
+        assert phpunit.source == "Rematar"
+        phpunit = phpfile.units[1]
+        assert phpunit.name == "$lang['mediaselect']"
+        assert phpunit.source == "Bestand selectie"

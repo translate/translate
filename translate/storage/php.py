@@ -366,6 +366,12 @@ class phpfile(base.TranslationStore):
                 # of the end delimiter, because it might be several entries in
                 # the same line.
                 enddelpos = value.rfind(enddel, 0, enddelpos)
+            else:
+                # After processing current line, if we are not in an array,
+                # fall back to default dialect (PHP simple variable syntax).
+                if not inarray:
+                    equaldel = "="
+                    enddel = ";"
 
             # If this is part of a multiline translation, just append it to the
             # previous translation lines.
