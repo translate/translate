@@ -336,12 +336,13 @@ class phpfile(base.TranslationStore):
             # Get the end delimiter position (colonpos)
             colonpos = value.rfind(enddel)
 
+            # Process the current line until all entries on it are parsed.
             while colonpos != -1:
                 # Check if the latest non-whitespace character before the end
-                # delimiter is the valuequote
+                # delimiter is the valuequote.
                 if value[:colonpos].rstrip()[-1] == valuequote:
                     # Save the value string without trailing whitespaces and
-                    # without the ending quotes
+                    # without the ending quotes.
                     newunit.value = lastvalue + value[:colonpos].rstrip()[:-1]
                     newunit.escape_type = valuequote
                     lastvalue = ""
@@ -362,7 +363,8 @@ class phpfile(base.TranslationStore):
                     newunit = phpunit()
 
                 # Update end delimiter position (colonpos) to the previous last
-                # appearance of end delimiter.
+                # appearance of the end delimiter, because it might be several
+                # entries in the same line.
                 colonpos = value.rfind(enddel, 0, colonpos)
 
             # If this is part of a multiline translation, just append it to the
