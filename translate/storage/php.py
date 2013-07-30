@@ -333,24 +333,24 @@ class phpfile(base.TranslationStore):
                 if invalue:
                     value = line
 
-            # Get the end delimiter position (colonpos)
-            colonpos = value.rfind(enddel)
+            # Get the end delimiter position.
+            enddelpos = value.rfind(enddel)
 
             # Process the current line until all entries on it are parsed.
-            while colonpos != -1:
+            while enddelpos != -1:
                 # Check if the latest non-whitespace character before the end
                 # delimiter is the valuequote.
-                if value[:colonpos].rstrip()[-1] == valuequote:
+                if value[:enddelpos].rstrip()[-1] == valuequote:
                     # Save the value string without trailing whitespaces and
                     # without the ending quotes.
-                    newunit.value = lastvalue + value[:colonpos].rstrip()[:-1]
+                    newunit.value = lastvalue + value[:enddelpos].rstrip()[:-1]
                     newunit.escape_type = valuequote
                     lastvalue = ""
                     invalue = False
 
                 # If there is more text (a comment) after the translation.
-                if not invalue and colonpos != (len(value) - 1):
-                    commentinlinepos = value.find("//", colonpos)
+                if not invalue and enddelpos != (len(value) - 1):
+                    commentinlinepos = value.find("//", enddelpos)
                     if commentinlinepos != -1:
                         newunit.addnote(value[commentinlinepos+2:].strip(),
                                         "developer")
@@ -362,10 +362,10 @@ class phpfile(base.TranslationStore):
                     value = ""
                     newunit = phpunit()
 
-                # Update end delimiter position (colonpos) to the previous last
-                # appearance of the end delimiter, because it might be several
-                # entries in the same line.
-                colonpos = value.rfind(enddel, 0, colonpos)
+                # Update end delimiter position to the previous last appearance
+                # of the end delimiter, because it might be several entries in
+                # the same line.
+                enddelpos = value.rfind(enddel, 0, enddelpos)
 
             # If this is part of a multiline translation, just append it to the
             # previous translation lines.
