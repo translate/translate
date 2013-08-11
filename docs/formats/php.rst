@@ -180,6 +180,16 @@ The following are not yet supported:
       );
 
 
+* Keyless arrays:
+
+  .. code-block:: php
+
+      <?php
+      $days = array('Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday');
+
+      $messages['days_short'] = array('Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat');
+
+
 * Nested arrays without key for a nested array:
 
   .. code-block:: php
@@ -197,6 +207,26 @@ The following are not yet supported:
          "one" => "this",
          "two" => "that"
       );
+
+
+* String concatenation:
+
+  .. code-block:: php
+
+      <?php
+      $messages['welcome'] = 'Welcome ' . $name . '!';
+      $messages['greeting'] = 'Hi ' . $name;
+
+
+* Assignment in the same line a multiline comment ends:
+
+  .. code-block:: php
+
+      <?php
+      /*
+         Multi-line
+         comment
+      */ $messages['help'] = 'Help';
 
 
 * `Heredoc
