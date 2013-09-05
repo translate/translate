@@ -141,10 +141,13 @@ class tmxfile(lisa.LISAfile):
         #headernode.set("creationdate", "YYYYMMDDTHHMMSSZ"
         #headernode.set("creationid", "CodeSyntax"
 
-    def addtranslation(self, source, srclang, translation, translang):
+    def addtranslation(self, source, srclang, translation, translang, comment=None):
         """addtranslation method for testing old unit tests"""
         unit = self.addsourceunit(source)
         unit.target = translation
+        if comment is not None and len(comment) > 0:
+            unit.addnote(comment)            
+        
         tuvs = unit.xmlelement.iterdescendants(self.namespaced('tuv'))
         lisa.setXMLlang(tuvs.next(), srclang)
         lisa.setXMLlang(tuvs.next(), translang)

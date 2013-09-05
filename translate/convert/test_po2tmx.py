@@ -10,12 +10,12 @@ from translate.misc.xml_helpers import XML_NS
 
 class TestPO2TMX:
 
-    def po2tmx(self, posource, sourcelanguage='en', targetlanguage='af'):
+    def po2tmx(self, posource, sourcelanguage='en', targetlanguage='af', comment=None):
         """helper that converts po source to tmx source without requiring files"""
         inputfile = wStringIO.StringIO(posource)
         outputfile = wStringIO.StringIO()
         outputfile.tmxfile = tmx.tmxfile(inputfile=None, sourcelanguage=sourcelanguage)
-        po2tmx.convertpo(inputfile, outputfile, templatefile=None, sourcelanguage=sourcelanguage, targetlanguage=targetlanguage)
+        po2tmx.convertpo(inputfile, outputfile, templatefile=None, sourcelanguage=sourcelanguage, targetlanguage=targetlanguage, comment=comment)
         return outputfile.tmxfile
 
     def test_basic(self):
@@ -141,6 +141,49 @@ msgstr "Bézier-kurwe"
         print str(tmx)
         assert tmx.translate(u"Bézier curve") == u"Bézier-kurwe"
 
+    def test_nonecomments(self):
+        """Tests that none comments are imported."""
+        minipo = r'''#My comment rules
+msgid "Bézier curve"
+msgstr "Bézier-kurwe"
+'''
+        tmx = self.po2tmx(minipo)
+        print str(tmx)
+        unit = tmx.findunits(u"Bézier curve")
+        assert (len(unit[0].getnotes()) == 0)
+
+    def test_otherscomments(self):
+        """Tests that others comments are imported."""
+        minipo = r'''#My comment rules
+msgid "Bézier curve"
+msgstr "Bézier-kurwe"
+'''
+        tmx = self.po2tmx(minipo, comment='others')
+        print str(tmx)
+        unit = tmx.findunits(u"Bézier curve")
+        assert unit[0].getnotes() == u"My comment rules"
+
+    def test_sourcecomments(self):
+        """Tests that source comments are imported."""
+        minipo = r'''#: ../PuzzleFourSided.h:45
+msgid "Bézier curve"
+msgstr "Bézier-kurwe"
+'''
+        tmx = self.po2tmx(minipo, comment='source')
+        print str(tmx)
+        unit = tmx.findunits(u"Bézier curve")
+        assert unit[0].getnotes() == u": ../PuzzleFourSided.h:45"
+
+    def test_typecomments(self):
+        """Tests that others comments are imported."""
+        minipo = r'''#, csharp-format
+msgid "Bézier curve"
+msgstr "Bézier-kurwe"
+'''
+        tmx = self.po2tmx(minipo, comment='type')
+        print str(tmx)
+        unit = tmx.findunits(u"Bézier curve")
+        assert unit[0].getnotes() == u", csharp-format"
 
 class TestPO2TMXCommand(test_convert.TestConvertCommand, TestPO2TMX):
     """Tests running actual po2tmx commands on files"""
@@ -150,4 +193,5 @@ class TestPO2TMXCommand(test_convert.TestConvertCommand, TestPO2TMX):
         """tests getting help"""
         options = test_convert.TestConvertCommand.test_help(self)
         options = self.help_check(options, "-l LANG, --language=LANG")
-        options = self.help_check(options, "--source-language=LANG", last=True)
+        options = self.help_check(options, "--source-language=LANG")
+        options = self.help_check(options, "--comments", last=True)
