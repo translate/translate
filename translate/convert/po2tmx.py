@@ -34,19 +34,6 @@ from translate.misc import wStringIO
 
 class po2tmx:
 
-    def convertfile(self, inputfile, sourcelanguage='en', targetlanguage=None):
-        """converts a .po file to TMX file"""
-        # TODO: This seems to not be used... remove it
-        inputstore = inputfile
-        for inunit in inputstore.units:
-            if inunit.isheader() or inunit.isblank() or not inunit.istranslated() or inunit.isfuzzy():
-                continue
-            source = inunit.source
-            translation = inunit.target
-            # TODO place source location in comments
-            tmxfile.addtranslation(source, sourcelanguage, translation, targetlanguage)
-        return str(tmxfile)
-
     def convertfiles(self, inputfile, tmxfile, sourcelanguage='en', targetlanguage=None):
         """converts a .po file (possibly many) to TMX file"""
         inputstore = po.pofile(inputfile)
