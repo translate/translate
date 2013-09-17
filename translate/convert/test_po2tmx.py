@@ -10,12 +10,15 @@ from translate.misc.xml_helpers import XML_NS
 
 class TestPO2TMX:
 
-    def po2tmx(self, posource, sourcelanguage='en', targetlanguage='af', comment=None):
+    def po2tmx(self, posource, sourcelanguage='en', targetlanguage='af',
+               comment=None):
         """helper that converts po source to tmx source without requiring files"""
         inputfile = wStringIO.StringIO(posource)
         outputfile = wStringIO.StringIO()
         outputfile.tmxfile = tmx.tmxfile(inputfile=None, sourcelanguage=sourcelanguage)
-        po2tmx.convertpo(inputfile, outputfile, templatefile=None, sourcelanguage=sourcelanguage, targetlanguage=targetlanguage, comment=comment)
+        po2tmx.convertpo(inputfile, outputfile, templatefile=None,
+                         sourcelanguage=sourcelanguage,
+                         targetlanguage=targetlanguage, comment=comment)
         return outputfile.tmxfile
 
     def test_basic(self):
