@@ -35,7 +35,7 @@ from translate.misc import wStringIO
 class po2tmx:
 
     def cleancomments(self, comments):
-        """Removes the comment marks from the PO strings"""
+        """Removes the comment marks from the PO strings."""
         for index, comment in enumerate(comments):
             if comment.startswith("#"):
                 comments[index] = comment[1:].rstrip()
@@ -64,10 +64,7 @@ class po2tmx:
 
 def convertpo(inputfile, outputfile, templatefile, sourcelanguage='en',
               targetlanguage=None, comment=None):
-    """
-    reads in stdin using fromfileclass, converts using convertorclass,
-    writes to stdout
-    """
+    """reads in stdin using fromfileclass, converts using convertorclass, writes to stdout"""
     convertor = po2tmx()
     convertor.convertfiles(inputfile, outputfile.tmxfile, sourcelanguage,
                            targetlanguage, comment)
