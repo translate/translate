@@ -52,6 +52,15 @@ class TestTMXfile(test_base.TestTranslationStore):
         newfile = self.tmxparse(str(tmxfile))
         print str(tmxfile)
         assert newfile.translate("A string of characters") == "'n String karakters"
+        
+    def test_withcomment(self):
+        """tests that addtranslation() stores string's comments correctly"""
+        tmxfile = tmx.tmxfile()
+        tmxfile.addtranslation("A string of chars",
+                               "en", "'n String karakters", "af", "comment")
+        newfile = self.tmxparse(str(tmxfile))
+        print str(tmxfile)
+        assert newfile.findunit("A string of chars").getnotes() == "comment"
 
     def test_withnewlines(self):
         """test addtranslation() with newlines"""
