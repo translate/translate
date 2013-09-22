@@ -118,6 +118,15 @@ Imports
 
 Like in :pep:`8`, but:
 
+- Imports should be grouped in the following order:
+
+  1) __future__ library imports
+  2) Python standard library imports
+  3) Third party libraries imports
+  4) Translate Toolkit imports
+  5) Current package imports, using explicit relative imports (See `PEP 328
+     <http://www.python.org/dev/peps/pep-0328/#guido-s-decision>`_)
+
 - A blank line must be present between each group of imports (like in PEP8).
 - Imports on each group must be arranged alphabetically by module name:
 
@@ -131,6 +140,8 @@ Like in :pep:`8`, but:
 
 .. code-block:: python
 
+    from __future__ import absolute_import
+
     import re
     import sys.path as sys_path
     import time
@@ -141,6 +152,8 @@ Like in :pep:`8`, but:
 
     from translate.filters import checks
     from translate.storage import versioncontrol
+
+    from . import php2po
 
 
 Expressions and Statements
