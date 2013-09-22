@@ -168,6 +168,93 @@ Like in :pep:`8`, but:
     from . import php2po
 
 
+Properties
+^^^^^^^^^^
+
+- Never use ``lambda`` functions:
+
+  .. code-block:: python
+
+    # Good.
+    @property
+    def stores(self):
+      return self.child.stores
+
+
+    # Bad.
+    stores = property(lambda self: self.child.stores)
+
+
+- Try to use ``@property`` instead of ``get_*`` or ``is_*`` methods that don't
+  require passing any parameter:
+
+  .. code-block:: python
+
+    # Good.
+    @property
+    def terminology(self):
+      ...
+
+    @property
+    def is_monolingual(self):
+      ...
+
+
+    # Also good.
+    def get_stores_for_language(self, language):
+      ...
+
+
+    # Bad.
+    def get_terminology(self):
+      ...
+
+    def is_monolingual(self):
+      ...
+
+
+- Always use ``@property`` instead of ``property(...)``, even for properties
+  that also have a setter or a deleter:
+
+  .. code-block:: python
+
+    # Good.
+    @property
+    def units(self):
+      ...
+
+
+    # Also good.
+    @property
+    def x(self):
+      """I'm the 'x' property."""
+      return self._x
+
+    @x.setter
+    def x(self, value):  # Note: Method must be named 'x' too.
+      self._x = value
+
+    @x.deleter
+    def x(self):  # Note: Method must be named 'x' too.
+      del self._x
+
+
+    # Bad.
+    def _get_units(self):
+      ...
+    units = property(_get_units)
+
+
+    # Also bad.
+    def getx(self):
+      return self._x
+    def setx(self, value):
+      self._x = value
+    def delx(self):
+      del self._x
+    x = property(getx, setx, delx, "I'm the 'x' property.")
+
+
 Expressions and Statements
 --------------------------
 
@@ -311,8 +398,6 @@ Function and method arguments
 
 - Class methods: ``cls`` as first parameter
 - Instance methods: ``self`` as first parameter
-- lambdas for properties might have the first parameter replaced with ``x``
-  like in ``display_name = property(lambda x: x.real_name or x.username)``
 
 
 .. _styleguide-docs:
