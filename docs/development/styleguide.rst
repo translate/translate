@@ -370,7 +370,8 @@ Docstring conventions:
 Please read :pep:`257` (Docstring Conventions) for a general overview,
 the important parts though are:
 
-- A docstring should have a brief one-line summary, ending with a period.
+- A docstring should have a brief one-line summary, ending with a period. Use
+  ``Do this``, ``Return that`` rather than ``Does ...``, ``Returns ...``.
 - If there are more details there should be a blank line between the one-line
   summary and the rest of the text.  Use paragraphs and formatting as needed.
 - Use `reST field lists`_ to describe the input parameters and/or return types
@@ -381,7 +382,7 @@ the important parts though are:
 .. code-block:: python
 
     def addunit(self, unit):
-        """Appends the given unit to the object's list of units.
+        """Append the given unit to the object's list of units.
 
         This method should always be used rather than trying to modify the
         list manually.
