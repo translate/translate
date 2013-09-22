@@ -360,16 +360,6 @@ the important parts though are:
 
 ::
 
-    def foo(bar):
-        """One line description.
-
-        Further explanations that might be needed.
-
-        :param bar: Parameter descriptions.
-        """
-
-::
-
     def addunit(self, unit):
         """Appends the given unit to the object's list of units.
 
