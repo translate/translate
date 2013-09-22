@@ -196,7 +196,8 @@ If statements:
 
   Good::
 
-    if length >= (upper + 2)
+    if length >= (upper + 2):
+        ...
 
     if (length >= 25 and
         string != "Something" and
@@ -206,6 +207,7 @@ If statements:
   Bad::
 
     if length >= upper + 2:
+        ...
 
     if (length...
         and string !=...
