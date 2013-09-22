@@ -138,6 +138,15 @@ Like in :pep:`8`, but:
   - On each of these subgroups the entries should be alphabetically arranged.
   - No blank lines between subgroups.
 
+- On ``from ... import``
+
+  - Use a ``CONSTANT``, ``Class``, ``function`` order, where the constants,
+    classes and functions are in alphabetical order inside of its respective
+    groups.
+  - If the import line exceeds the 80 chars, then split it using parentheses to
+    continue the import on the next line (aligning the imported items with the
+    opening parenthesis).
+
 .. code-block:: python
 
     from __future__ import absolute_import
@@ -152,6 +161,9 @@ Like in :pep:`8`, but:
 
     from translate.filters import checks
     from translate.storage import versioncontrol
+    from translate.storage.aresource import (EOF, WHITESPACE, AndroidFile,
+                                             AndroidUnit, android_encode,
+                                             android_decode)
 
     from . import php2po
 
