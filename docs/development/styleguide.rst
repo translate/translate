@@ -27,7 +27,9 @@ Maximum line length:
 Continuing long statements:
   To continue a statement you can use backslashes (preceeded by a space)
   in which case you should align the next line with the last dot or
-  equal sign, or indent four spaces::
+  equal sign, or indent four spaces:
+
+  .. code-block:: python
 
     MyModel.query.filter(MyModel.scalar > 120) \
                  .order_by(MyModel.name.desc()) \
@@ -40,11 +42,15 @@ Continuing long statements:
     this_is_a_very_long(function_call, 'with many parameters') \
         .that_returns_an_object_with_an_attribute
 
+
   If you break in a statement with parentheses or braces, align to the
-  braces::
+  braces:
+
+  .. code-block:: python
 
     this_is_a_very_long(function_call, 'with many parameters',
                         23, 42, 'and even more')
+
 
   If you need to break long strings, on function calls or when assigning to
   variables, try to use implicit string continuation:
@@ -59,18 +65,24 @@ Continuing long statements:
                        "it, so many that it is necessary to break it in "
                        "several lines to improve readability.")
 
+
   For lists or tuples with many items, break immediately after the
-  opening brace::
+  opening brace:
+
+  .. code-block:: python
 
     items = [
         'this is the first', 'set of items', 'with more items',
         'to come in this line', 'like this'
     ]
 
+
 Blank lines:
   Top level functions and classes are separated by two lines, everything
   else by one.  Do not use too many blank lines to separate logical
-  segments in code.  Example::
+  segments in code.  Example:
+
+  .. code-block:: python
 
     def hello(name):
         print 'Hello %s!' % name
@@ -119,6 +131,7 @@ Imports:
     from translate.filters import checks
     from translate.storage import versioncontrol
 
+
 Expressions and Statements
 --------------------------
 
@@ -127,21 +140,23 @@ General whitespace rules:
     (e.g.: ``-``, ``~`` etc.) as well on the inner side of parentheses.
   - Whitespace is placed between binary operators.
 
-  Good::
+  .. code-block:: python
 
+    # Good.
     exp = -1.05
     value = (item_value / item_count) * offset / exp
     value = my_list[index]
     value = my_dict['key']
 
-  Bad::
 
+    # Bad.
     exp = - 1.05
     value = ( item_value / item_count ) * offset / exp
     value = (item_value/item_count)*offset/exp
     value=( item_value/item_count ) * offset/exp
     value = my_list[ index ]
     value = my_dict ['key']
+
 
 Slice notation:
   While :pep:`8` calls for spaces around operators ``a = b + c`` this
@@ -152,15 +167,16 @@ Slice notation:
   - Don't use spaces with simple variables or numbers
   - Use brackets for expressions with spaces between binary operators
 
-  Good::
+  .. code-block:: python
 
+    # Good.
     a[1:2]
     a[start:end]
     a[(start - 1):(end + var + 2)]  # Brackets help group things and don't hide the slice
     a[-1:(end + 1)]
 
-  Bad::
 
+    # Bad.
     a[start: end]  # No spaces around :
     a[start-1:end+var+2]  # Insanely hard to read, especially when your expressions are more complex
     a[start - 1:end + 2]  # You lose sight of the fact that it is a slice
@@ -194,8 +210,9 @@ If statements:
   - Use extra ``()`` to eliminate ambiguity, don't rely on an understanding of
     Python operator precedence rules.
 
-  Good::
+  .. code-block:: python
 
+    # Good.
     if length >= (upper + 2):
         ...
 
@@ -204,8 +221,8 @@ If statements:
         not careful):
         do_something()
 
-  Bad::
 
+    # Bad.
     if length >= upper + 2:
         ...
 
@@ -335,7 +352,9 @@ Docstring conventions:
   laid out differently.  If it's just one line, the closing triple
   quote is on the same line as the opening, otherwise the text is on
   the same line as the opening quote and the triple quote that closes
-  the string on its own line::
+  the string on its own line:
+
+  .. code-block:: python
 
     def foo():
         """This is a simple docstring."""
@@ -346,6 +365,7 @@ Docstring conventions:
         that it spans three lines.  In this case the closing triple quote
         is on its own line.
         """
+
 
 Please read :pep:`257` (Docstring Conventions) for a general overview,
 the important parts though are:
@@ -358,7 +378,7 @@ the important parts though are:
 - Use proper capitalisation and punctuation.
 - Don't restate things that would appear in parameter descriptions.
 
-::
+.. code-block:: python
 
     def addunit(self, unit):
         """Appends the given unit to the object's list of units.
@@ -371,8 +391,11 @@ the important parts though are:
         """
         self.units.append(unit)
 
+
 Parameter documentation:
-  Document parameters using `reST field lists`_ as follows::
+  Document parameters using `reST field lists`_ as follows:
+
+  .. code-block:: python
 
     def foo(bar):
         """Simple docstring.
@@ -382,6 +405,7 @@ Parameter documentation:
         :return: Returns something
         :rtype: Return type 
         """
+
 
 Cross referencing code:
    When talking about other objects, methods, functions and variables
@@ -400,7 +424,9 @@ Other directives:
 
 Module header:
   The module header consists of an utf-8 encoding declaration, copyright
-  attribution, license block and a standard docstring::
+  attribution, license block and a standard docstring:
+
+  .. code-block:: python
 
     # -*- coding: utf-8 -*-
     #
@@ -429,20 +455,22 @@ General:
   - Inline comments are preceded by two spaces.
   - Write sentences correctly: proper capitalisation and punctuation.
 
-  Good::
+  .. code-block:: python
 
     # Good comment with space before and full sentence.
     statement  # Good comment with two spaces
 
-  Bad::
 
     #Bad comment no space before
     statement # Bad comment, needs two spaces
 
+
 Docstring comments:
   Rules for comments are similar to docstrings.  Both are formatted with
   reStructuredText.  If a comment is used to document an attribute, put a
-  colon after the opening pound sign (``#``)::
+  colon after the opening pound sign (``#``):
+
+  .. code-block:: python
 
     class User(object):
         #: the name of the user as unicode string
