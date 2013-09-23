@@ -10,6 +10,15 @@ This page lists what has changed, how it might affect you and how to work
 around the change either to bring your files in line or to use the old
 behaviour if required.
 
+.. _changelog#1.11:
+
+1.11
+====
+
+- Dropped support for Python 2.5 since it is no longer supported by the Python
+  Foundation. Also sticking to it was preventing us from using features that
+  are not supported on Python 2.5 but they are on later versions.
+
 .. _changelog#1.10:
 
 1.10
