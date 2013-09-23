@@ -60,14 +60,6 @@ class UtxDialect(csv.Dialect):
     # differences
     lineterminator = "\r\n"
     quoting = csv.QUOTE_NONE
-    if sys.version_info < (2, 5, 0):
-        # We need to define the following items for csv in Python < 2.5
-        # UTX does not quote anything FIXME So why MINIMAL?
-        quoting = csv.QUOTE_MINIMAL
-        doublequote = False
-        skipinitialspace = False
-        escapechar = None
-        quotechar = '"'
 csv.register_dialect("utx", UtxDialect)
 
 
