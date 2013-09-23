@@ -10,26 +10,35 @@ to follow these guidelines.
 This Styleguide follows :pep:`8` with some clarifications. It is based almost
 verbatim on the `Flask Styleguide`_.
 
+
 .. _styleguide-general:
 
 General
 -------
 
-Indentation:
-  4 real spaces, no tabs. Exceptions: modules that have been copied into
-  the source that don't follow this guideline.
+Indentation
+^^^^^^^^^^^
 
-Maximum line length:
-  79 characters with a soft limit for 84 if absolutely necessary.  Try
-  to avoid too nested code by cleverly placing `break`, `continue` and
-  `return` statements.
+4 real spaces, no tabs. Exceptions: modules that have been copied into the
+source that don't follow this guideline.
 
-Continuing long statements:
-  To continue a statement you can use backslashes (preceeded by a space)
-  in which case you should align the next line with the last dot or
-  equal sign, or indent four spaces:
 
-  .. code-block:: python
+Maximum line length
+^^^^^^^^^^^^^^^^^^^
+
+79 characters with a soft limit for 84 if absolutely necessary. Try to avoid
+too nested code by cleverly placing `break`, `continue` and `return`
+statements.
+
+
+Continuing long statements
+^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+To continue a statement you can use backslashes (preceeded by a space) in which
+case you should align the next line with the last dot or equal sign, or indent
+four spaces:
+
+.. code-block:: python
 
     MyModel.query.filter(MyModel.scalar > 120) \
                  .order_by(MyModel.name.desc()) \
@@ -43,19 +52,18 @@ Continuing long statements:
         .that_returns_an_object_with_an_attribute
 
 
-  If you break in a statement with parentheses or braces, align to the
-  braces:
+If you break in a statement with parentheses or braces, align to the braces:
 
-  .. code-block:: python
+.. code-block:: python
 
     this_is_a_very_long(function_call, 'with many parameters',
                         23, 42, 'and even more')
 
 
-  If you need to break long strings, on function calls or when assigning to
-  variables, try to use implicit string continuation:
+If you need to break long strings, on function calls or when assigning to
+variables, try to use implicit string continuation:
 
-  .. code-block:: python
+.. code-block:: python
 
     this_holds_a_very_long_string("Very long string with a lot of characters "
                                   "and words on it, so many that it is "
@@ -66,10 +74,9 @@ Continuing long statements:
                        "several lines to improve readability.")
 
 
-  For lists or tuples with many items, break immediately after the
-  opening brace:
+For lists or tuples with many items, break immediately after the opening brace:
 
-  .. code-block:: python
+.. code-block:: python
 
     items = [
         'this is the first', 'set of items', 'with more items',
@@ -77,12 +84,14 @@ Continuing long statements:
     ]
 
 
-Blank lines:
-  Top level functions and classes are separated by two lines, everything
-  else by one.  Do not use too many blank lines to separate logical
-  segments in code.  Example:
+Blank lines
+^^^^^^^^^^^
 
-  .. code-block:: python
+Top level functions and classes are separated by two lines, everything else
+by one. Do not use too many blank lines to separate logical segments in code.
+Example:
+
+.. code-block:: python
 
     def hello(name):
         print 'Hello %s!' % name
@@ -104,21 +113,43 @@ Blank lines:
 
 .. _styleguide-imports:
 
-Imports:
-  Like in :pep:`8`, but:
+Imports
+^^^^^^^
 
-  * A blank line must be present between each group of imports (like in PEP8).
-  * Imports on each group must be arranged alphabetically by module name:
+Like in :pep:`8`, but:
 
-    * Shortest module names must be before longer ones:
-      ``from django.db import ...`` before ``from django.db.models import ...``.
+- Imports should be grouped in the following order:
 
-  * ``import ...`` calls must precede ``from ... import`` ones on each group:
+  1) __future__ library imports
+  2) Python standard library imports
+  3) Third party libraries imports
+  4) Translate Toolkit imports
+  5) Current package imports, using explicit relative imports (See `PEP 328
+     <http://www.python.org/dev/peps/pep-0328/#guido-s-decision>`_)
 
-    * On each of these subgroups the entries should be alphabetically arranged.
-    * No blank lines between subgroups.
+- A blank line must be present between each group of imports (like in PEP8).
+- Imports on each group must be arranged alphabetically by module name:
 
-  .. code-block:: python
+  - Shortest module names must be before longer ones:
+    ``from django.db import ...`` before ``from django.db.models import ...``.
+
+- ``import ...`` calls must precede ``from ... import`` ones on each group:
+
+  - On each of these subgroups the entries should be alphabetically arranged.
+  - No blank lines between subgroups.
+
+- On ``from ... import``
+
+  - Use a ``CONSTANT``, ``Class``, ``function`` order, where the constants,
+    classes and functions are in alphabetical order inside of its respective
+    groups.
+  - If the import line exceeds the 80 chars, then split it using parentheses to
+    continue the import on the next line (aligning the imported items with the
+    opening parenthesis).
+
+.. code-block:: python
+
+    from __future__ import absolute_import
 
     import re
     import sys.path as sys_path
@@ -130,17 +161,111 @@ Imports:
 
     from translate.filters import checks
     from translate.storage import versioncontrol
+    from translate.storage.aresource import (EOF, WHITESPACE, AndroidFile,
+                                             AndroidUnit, android_encode,
+                                             android_decode)
+
+    from . import php2po
+
+
+Properties
+^^^^^^^^^^
+
+- Never use ``lambda`` functions:
+
+  .. code-block:: python
+
+    # Good.
+    @property
+    def stores(self):
+      return self.child.stores
+
+
+    # Bad.
+    stores = property(lambda self: self.child.stores)
+
+
+- Try to use ``@property`` instead of ``get_*`` or ``is_*`` methods that don't
+  require passing any parameter:
+
+  .. code-block:: python
+
+    # Good.
+    @property
+    def terminology(self):
+      ...
+
+    @property
+    def is_monolingual(self):
+      ...
+
+
+    # Also good.
+    def get_stores_for_language(self, language):
+      ...
+
+
+    # Bad.
+    def get_terminology(self):
+      ...
+
+    def is_monolingual(self):
+      ...
+
+
+- Always use ``@property`` instead of ``property(...)``, even for properties
+  that also have a setter or a deleter:
+
+  .. code-block:: python
+
+    # Good.
+    @property
+    def units(self):
+      ...
+
+
+    # Also good.
+    @property
+    def x(self):
+      """I'm the 'x' property."""
+      return self._x
+
+    @x.setter
+    def x(self, value):  # Note: Method must be named 'x' too.
+      self._x = value
+
+    @x.deleter
+    def x(self):  # Note: Method must be named 'x' too.
+      del self._x
+
+
+    # Bad.
+    def _get_units(self):
+      ...
+    units = property(_get_units)
+
+
+    # Also bad.
+    def getx(self):
+      return self._x
+    def setx(self, value):
+      self._x = value
+    def delx(self):
+      del self._x
+    x = property(getx, setx, delx, "I'm the 'x' property.")
 
 
 Expressions and Statements
 --------------------------
 
-General whitespace rules:
-  - No whitespace for unary operators that are not words
-    (e.g.: ``-``, ``~`` etc.) as well on the inner side of parentheses.
-  - Whitespace is placed between binary operators.
+General whitespace rules
+^^^^^^^^^^^^^^^^^^^^^^^^
 
-  .. code-block:: python
+- No whitespace for unary operators that are not words (e.g.: ``-``, ``~``
+  etc.) as well on the inner side of parentheses.
+- Whitespace is placed between binary operators.
+
+.. code-block:: python
 
     # Good.
     exp = -1.05
@@ -158,14 +283,15 @@ General whitespace rules:
     value = my_dict ['key']
 
 
-Slice notation:
-  While :pep:`8` calls for spaces around operators ``a = b + c`` this
-  results in flags when you use ``a[b+1:c-1]`` but would allow
-  the rather unreadable ``a[b + 1:c - 1]`` to pass. :pep:`8` is
-  rather quiet on slice notation.
+Slice notation
+^^^^^^^^^^^^^^
 
-  - Don't use spaces with simple variables or numbers
-  - Use brackets for expressions with spaces between binary operators
+While :pep:`8` calls for spaces around operators ``a = b + c`` this results in
+flags when you use ``a[b+1:c-1]`` but would allow the rather unreadable
+``a[b + 1:c - 1]`` to pass. :pep:`8` is rather quiet on slice notation.
+
+- Don't use spaces with simple variables or numbers
+- Use brackets for expressions with spaces between binary operators
 
   .. code-block:: python
 
@@ -187,28 +313,38 @@ Slice notation:
 
    String slice formatting is still under discussion.
 
-Comparisons:
-  - against arbitrary types: ``==`` and ``!=``
-  - against singletons with ``is`` and ``is not`` (eg: ``foo is not
-    None``)
-  - never compare something with `True` or `False` (for example never
-    do ``foo == False``, do ``not foo`` instead)
+Comparisons
+^^^^^^^^^^^
 
-Negated containment checks:
-  use ``foo not in bar`` instead of ``not foo in bar``
+- Against arbitrary types: ``==`` and ``!=``
+- Against singletons with ``is`` and ``is not`` (e.g.: ``foo is not None``)
+- Never compare something with `True` or `False` (for example never do ``foo ==
+  False``, do ``not foo`` instead)
 
-Instance checks:
-  ``isinstance(a, C)`` instead of ``type(A) is C``, but try to avoid
-  instance checks in general.  Check for features.
 
-If statements:
-  - Use ``()`` brackets around complex if statements to allow easy wrapping,
-    don't use backslash to wrap an if statement.
-  - Wrap between ``and``, ``or``, etc.
-  - Keep ``not`` with the expression
-  - Use ``()`` alignment between expressions 
-  - Use extra ``()`` to eliminate ambiguity, don't rely on an understanding of
-    Python operator precedence rules.
+Negated containment checks
+^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+- Use ``foo not in bar`` instead of ``not foo in bar``
+
+
+Instance checks
+^^^^^^^^^^^^^^^
+
+- ``isinstance(a, C)`` instead of ``type(A) is C``, but try to avoid instance
+  checks in general.  Check for features.
+
+
+If statements
+^^^^^^^^^^^^^
+
+- Use ``()`` brackets around complex if statements to allow easy wrapping,
+  don't use backslash to wrap an if statement.
+- Wrap between ``and``, ``or``, etc.
+- Keep ``not`` with the expression
+- Use ``()`` alignment between expressions
+- Use extra ``()`` to eliminate ambiguity, don't rely on an understanding of
+  Python operator precedence rules.
 
   .. code-block:: python
 
@@ -238,6 +374,7 @@ Naming Conventions
    This has not been implemented or discussed.  The Translate code 
    is not at all consistent with these conventions.
 
+
 - Class names: ``CamelCase``, with acronyms kept uppercase (``HTTPWriter`` and
   not ``HttpWriter``)
 - Variable names: ``lowercase_with_underscores``
@@ -255,11 +392,12 @@ the builtin to a different name instead.  Consider using a different name to
 avoid having to deal with either type of name clash, but don't complicate names
 with prefixes or suffixes.
 
-Function and method arguments:
-  - class methods: ``cls`` as first parameter
-  - instance methods: ``self`` as first parameter
-  - lambdas for properties might have the first parameter replaced with ``x``
-    like in ``display_name = property(lambda x: x.real_name or x.username)``
+
+Function and method arguments
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+- Class methods: ``cls`` as first parameter
+- Instance methods: ``self`` as first parameter
 
 
 .. _styleguide-docs:
@@ -269,6 +407,7 @@ Documentation
 
 We use Sphinx_ to generate our API and user documentation. Read the
 `reStructuredText primer`_ and `Sphinx documentation`_ as needed.
+
 
 Special roles
 -------------
@@ -293,6 +432,7 @@ We introduce a number of special roles for documentation:
 
 Code and command line highlighting
 ----------------------------------
+
 All code examples and format snippets should be highlighted to make them easier
 to read.  By default Sphinx uses Python highlighting of code snippets (but it
 doesn't always work).  You will want to change that in these situations:
@@ -370,7 +510,8 @@ Docstring conventions:
 Please read :pep:`257` (Docstring Conventions) for a general overview,
 the important parts though are:
 
-- A docstring should have a brief one-line summary, ending with a period.
+- A docstring should have a brief one-line summary, ending with a period. Use
+  ``Do this``, ``Return that`` rather than ``Does ...``, ``Returns ...``.
 - If there are more details there should be a blank line between the one-line
   summary and the rest of the text.  Use paragraphs and formatting as needed.
 - Use `reST field lists`_ to describe the input parameters and/or return types
@@ -381,7 +522,7 @@ the important parts though are:
 .. code-block:: python
 
     def addunit(self, unit):
-        """Appends the given unit to the object's list of units.
+        """Append the given unit to the object's list of units.
 
         This method should always be used rather than trying to modify the
         list manually.
