@@ -107,10 +107,6 @@ site for the recommended versions of these libraries if you need to install
 them separately at all. Most packaged versions of lxml will already contain
 these dependencies.
 
-Python 2.5 includes pysqlite, but pysqlite2 needs to be installed if you are
-using an older version of Python.
-<http://trac.edgewall.org/wiki/PySqlite>
-
 When the environment variable USECPO is set to 1, the toolkit will attempt to
 use libgettextpo from the gettext-tools package (it might have a slightly
 different name on your distribution). This can greatly speed up access to PO
