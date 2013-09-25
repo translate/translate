@@ -5,8 +5,11 @@ import distutils.sysconfig
 import sys
 import os
 import os.path
+import site
 from translate import __version__
 from translate import __doc__
+
+
 try:
     import py2exe
     build_exe = py2exe.build_exe.py2exe
@@ -29,8 +32,12 @@ join = os.path.join
 PRETTY_NAME = 'Translate Toolkit'
 translateversion = __version__.sver
 
-packagesdir = distutils.sysconfig.get_python_lib()
-sitepackages = packagesdir.replace(sys.prefix + os.sep, '')
+
+if sys.version_info >= (2, 6, 0) and site.ENABLE_USER_SITE:
+  sitepackages = site.USER_SITE
+else:
+  packagesdir = distutils.sysconfig.get_python_lib()
+  sitepackages = packagesdir.replace(sys.prefix + os.sep, '')
 
 infofiles = [(join(sitepackages, 'translate'),
              [filename for filename in 'COPYING', 'README.rst'])]
