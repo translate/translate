@@ -753,7 +753,9 @@ class TranslationStore(object):
                     encodings.append(encoding)
         else:
             encodings.append(self.encoding)
-            if detected_encoding and detected_encoding['encoding'] != self.encoding:
+            if (detected_encoding
+                    and detected_encoding['encoding'] != self.encoding
+                    and detected_encoding['confidence'] != 1.0):
                 logging.warn("trying to parse %s with encoding: %s but "
                              "detected encoding is %s (confidence: %s)",
                              self.filename, self.encoding,
