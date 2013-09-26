@@ -1,14 +1,28 @@
 #!/usr/bin/env python
+# -*- coding: utf-8 -*-
+#
+# Copyright 2006-2013 Zuza Software Foundation
+#
+# This file is part of Translate.
+#
+# Translate is free software; you can redistribute it and/or modify it under
+# the terms of the GNU General Public License as published by the Free Software
+# Foundation; either version 2 of the License, or (at your option) any later
+# version.
+#
+# Translate is distributed in the hope that it will be useful, but WITHOUT ANY
+# WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR
+# A PARTICULAR PURPOSE. See the GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License along with
+# Translate; if not, see <http://www.gnu.org/licenses/>.
 
-from distutils.core import setup, Extension, Distribution, Command
 import distutils.sysconfig
-import sys
 import os
 import os.path
 import site
-from translate import __version__
-from translate import __doc__
-
+import sys
+from distutils.core import setup, Extension, Distribution, Command
 
 try:
     import py2exe
@@ -24,6 +38,8 @@ try:
 except ImportError:
     cmdclass = {}
 
+from translate import __doc__, __version__
+
 
 # TODO: check out installing into a different path with --prefix/--home
 
@@ -32,12 +48,11 @@ join = os.path.join
 PRETTY_NAME = 'Translate Toolkit'
 translateversion = __version__.sver
 
-
 if sys.version_info >= (2, 6, 0) and site.ENABLE_USER_SITE:
-  sitepackages = site.USER_SITE
+    sitepackages = site.USER_SITE
 else:
-  packagesdir = distutils.sysconfig.get_python_lib()
-  sitepackages = packagesdir.replace(sys.prefix + os.sep, '')
+    packagesdir = distutils.sysconfig.get_python_lib()
+    sitepackages = packagesdir.replace(sys.prefix + os.sep, '')
 
 infofiles = [(join(sitepackages, 'translate'),
              [filename for filename in 'COPYING', 'README.rst'])]
@@ -387,7 +402,7 @@ classifiers = [
   "Operating System :: OS Independent",
   "Operating System :: Microsoft :: Windows",
   "Operating System :: Unix"
-  ]
+]
 
 
 def dosetup(name, version, packages, datafiles, scripts, ext_modules=[]):
