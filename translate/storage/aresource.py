@@ -438,15 +438,16 @@ class AndroidResourceUnit(base.TranslationUnit):
                 newstring = etree.fromstring('<string>%s</string>' % target)
             # Update text
             if newstring.text is None:
-                self.xmlelement.text = ''
+                xmltarget.text = ''
             else:
-                self.xmlelement.text = newstring.text
+                # If the text is valid, Android characters must be escaped
+                xmltarget.text = self.escape(newstring.text)
             # Remove old elements
-            for x in self.xmlelement.iterchildren():
-                self.xmlelement.remove(x)
+            for x in xmltarget.iterchildren():
+                xmltarget.remove(x)
             # Add new elements
             for x in newstring.iterchildren():
-                self.xmlelement.append(x)
+                xmltarget.append(x)
         else:
             # Handle text only
             xmltarget.text = self.escape(target)
@@ -506,9 +507,9 @@ class AndroidResourceUnit(base.TranslationUnit):
 
     def getXmlTextValue(self, xmltarget):
         # Grab inner text
-        target = self.unescape(self.xmlelement.text or u'')
+        target = self.unescape(xmltarget.text or u'')
         # Include markup as well
-        target += u''.join([data.forceunicode(etree.tostring(child, encoding='utf-8')) for child in self.xmlelement.iterchildren()])
+        target += u''.join([data.forceunicode(etree.tostring(child, encoding='utf-8')) for child in xmltarget.iterchildren()])
         return target
 
     def gettarget(self, lang=None):
