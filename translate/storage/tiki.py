@@ -28,15 +28,15 @@ sections identified by comments.  Example current as of 2008-12-01::
     // ### Start of unused words
     "aaa" => "zzz",
     // ### end of unused words
-    
+
     // ### start of untranslated words
     // "bbb" => "yyy",
     // ### end of untranslated words
-    
+
     // ### start of possibly untranslated words
     "ccc" => "xxx",
     // ### end of possibly untranslated words
-    
+
     "ddd" => "www",
     "###end###"=>"###end###");
   ?>

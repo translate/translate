@@ -5,17 +5,22 @@ python:
   - 2.6
   - 2.7
   #- pypy - nice to try once lxml is supported or we can switch lxml off
+env:
+  - USECPO=0
+  #- USECPO=1
+  #- USECPO=2
 install:
   - pip install --use-mirrors lxml
   - pip install --use-mirrors iniparse
   - pip install --use-mirrors python-Levenshtein
   - pip install --use-mirrors BeautifulSoup
+  - pip install --use-mirrors Sphinx
   - if [[ $TRAVIS_PYTHON_VERSION == '2.5' ]]; then pip install --use-mirrors simplejson; fi
   - if [[ $TRAVIS_PYTHON_VERSION == '2.6' ]]; then sudo apt-get install python-aeidon; fi
   - if [[ $TRAVIS_PYTHON_VERSION == '2.7' ]]; then sudo apt-get install python-aeidon; fi
   # Still need to handle with indexing engines and aeidon
-script: py.test
+script: py.test -r EfsxX
 notifications:
   email:
-    on_failure: change
+    on_failure: always
     on_success: change

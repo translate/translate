@@ -10,6 +10,15 @@ This page lists what has changed, how it might affect you and how to work
 around the change either to bring your files in line or to use the old
 behaviour if required.
 
+.. _changelog#1.11:
+
+1.11
+====
+
+- Dropped support for Python 2.5 since it is no longer supported by the Python
+  Foundation. Also sticking to it was preventing us from using features that
+  are not supported on Python 2.5 but they are on later versions.
+
 .. _changelog#1.10:
 
 1.10
@@ -142,7 +151,7 @@ Valid accelerators
 The :doc:`/commands/pofilter` accelerator test is now able to make use of a
 list of valid accelerators.  This allows translators to control the behaviour
 of the test for their language and add or remove characters that can be used as
-accelerators.  Please define :doc:`l10n/valid accelerators` for your language
+accelerators.  Please define :wiki:`l10n/valid_accelerators` for your language
 and these will then be included in future releases of the toolkit.  By default
 the old process if followed so if you take no action then this check will
 continue to work as expected.

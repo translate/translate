@@ -52,8 +52,6 @@ Options:
 -xEXCLUDE, --exclude=EXCLUDE   exclude names matching EXCLUDE from input paths
 -oOUTPUT, --output=OUTPUT   write to OUTPUT in po, pot, xlf, tmx formats
 -tTEMPLATE, --template=TEMPLATE   read from TEMPLATE in po, pot, xlf, tmx formats
---psyco=MODE          use psyco to speed up the operation, modes: :doc:`none,
-                      full, profile <option_psyco>`
 --mergeblanks=MERGEBLANKS  whether to overwrite existing translations with blank translations (yes/no). Default is yes.
 --mergefuzzy=MERGEFUZZY  whether to overwrite existing translations with fuzzy translations (yes/no). Default is yes. (new in version 1.9)
 --mergecomments=MERGECOMMENTS  whether to merge comments as well as translations (yes/no). Default is yes.

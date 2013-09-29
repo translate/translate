@@ -21,12 +21,15 @@
 """Import units from translations files into tmdb."""
 
 import os
-from optparse import OptionParser
 import sys
+import logging
+
+from optparse import OptionParser
 
 from translate.storage import factory
 from translate.storage import tmdb
 
+logger = logging.getLogger(__name__)
 
 class Builder:
 
@@ -37,7 +40,7 @@ class Builder:
 
         for filename in filenames:
             if not os.path.exists(filename):
-                print >> sys.stderr, "cannot process %s: does not exist" % filename
+                logger.error("cannot process %s: does not exist", filename)
                 continue
             elif os.path.isdir(filename):
                 self.handledir(filename)
@@ -49,7 +52,7 @@ class Builder:
         try:
             store = factory.getobject(filename)
         except Exception, e:
-            print >> sys.stderr, str(e)
+            logger.error(str(e))
             return
         # do something useful with the store and db
         try:
@@ -75,11 +78,6 @@ class Builder:
 
 
 def main():
-    try:
-        import psyco
-        psyco.full()
-    except Exception:
-        pass
     parser = OptionParser(usage="%prog [options] <input files>")
     parser.add_option(
         "-d", "--tmdb", dest="tmdb_file", default="tm.db",
@@ -97,6 +95,8 @@ def main():
 
     if len(args) < 1:
         parser.error('No input file(s) specified.')
+
+    logging.basicConfig(format="%(name)s: %(levelname)s: %(message)s")
 
     Builder(options.tmdb_file, options.source_lang, options.target_lang, args)
 

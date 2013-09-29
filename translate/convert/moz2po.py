@@ -28,7 +28,6 @@ from translate.convert import dtd2po
 from translate.convert import prop2po
 from translate.convert import mozfunny2prop
 from translate.convert import mozlang2po
-from translate.storage import xpi
 from translate.convert import convert
 
 
@@ -56,10 +55,9 @@ def main(argv=None):
         formats[(replaceformat, replaceformat)] = (replaceformat,
                                                    replacer.searchreplaceinput)
         formats[replaceformat] = (replaceformat, replacer.searchreplaceinput)
-    parser = convert.ArchiveConvertOptionParser(formats, usetemplates=True,
-                                                usepots=True,
-                                                description=__doc__,
-                                                archiveformats={"xpi": xpi.XpiFile})
+    parser = convert.ConvertOptionParser(formats, usetemplates=True,
+                                         usepots=True,
+                                         description=__doc__)
     parser.add_duplicates_option()
     parser.passthrough.append("pot")
     parser.run(argv)

@@ -4,7 +4,7 @@ import os
 import os.path
 import warnings
 
-import py.test
+import pytest
 
 from translate import storage
 from translate.storage import statsdb, factory

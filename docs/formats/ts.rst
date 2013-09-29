@@ -13,12 +13,12 @@ traditionally edited using Qt Linguist.
 References
 ==========
 
-The format is XML and seems to only have been documented properly in Qt 4.3
+The format is XML and seems to only have been documented properly since Qt 4.3
 
 * `Current DTD Specification
-  <http://doc.trolltech.com/4.5/linguist-ts-file-format.html>`_ for Qt 4.5,
+  <http://qt-project.org/doc/qt-5.0/qtlinguist/linguist-ts-file-format.html>`_ for Wt 5.0,
   older versions; `Qt 4.3
-  <http://doc.trolltech.com/4.3/linguist-ts-file-format.html>`_
+  <http://doc.qt.digia.com/4.3/linguist-ts-file-format.html>`_
 * http://svn.ez.no/svn/ezcomponents/trunk/Translation/docs/linguist-format.txt
 
 .. _ts#complete:

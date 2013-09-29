@@ -30,6 +30,7 @@ from translate.storage import dtd
 from translate.storage import po
 from translate.misc import quote
 from translate.convert import accesskey
+from translate.convert import convert
 
 
 def dtdwarning(message, category, filename, lineno, line=None):
@@ -74,34 +75,38 @@ def applytranslation(entity, dtdunit, inputunit, mixedentities):
 class redtd:
     """this is a convertor class that creates a new dtd based on a template using translations in a po"""
 
-    def __init__(self, dtdfile, android=False):
+    def __init__(self, dtdfile, android=False, remove_untranslated=False):
         self.dtdfile = dtdfile
         self.mixer = accesskey.UnitMixer(dtd.labelsuffixes, dtd.accesskeysuffixes)
         self.android = False
+        self.remove_untranslated = remove_untranslated
 
     def convertstore(self, inputstore, includefuzzy=False):
-        # translate the strings
         for inunit in inputstore.units:
-            # there may be more than one entity due to msguniq merge
-            if includefuzzy or not inunit.isfuzzy():
-                self.handleinunit(inunit)
+            self.handleinunit(inunit, includefuzzy)
         return self.dtdfile
 
-    def handleinunit(self, inunit):
+    def handleinunit(self, inunit, includefuzzy):
         entities = inunit.getlocations()
         mixedentities = self.mixer.match_entities(entities)
         for entity in entities:
             if entity in self.dtdfile.index:
                 # now we need to replace the definition of entity with msgstr
                 dtdunit = self.dtdfile.index[entity]  # find the dtd
-                applytranslation(entity, dtdunit, inunit, mixedentities)
+                if inunit.istranslated() or not bool(inunit.source):
+                    applytranslation(entity, dtdunit, inunit, mixedentities)
+                elif self.remove_untranslated and not (includefuzzy and inunit.isfuzzy()):
+                    dtdunit.entity = None
+                else:
+                    applytranslation(entity, dtdunit, inunit, mixedentities)
 
 
 class po2dtd:
     """this is a convertor class that creates a new dtd file based on a po file without a template"""
 
-    def __init__(self, android=False):
+    def __init__(self, android=False, remove_untranslated=False):
         self.android = android
+        self.remove_untranslated = remove_untranslated
 
     def convertcomments(self, inputunit, dtdunit):
         entities = inputunit.getlocations()
@@ -130,8 +135,10 @@ class po2dtd:
             dtdunit.comments.append(("locnote", locnote))
 
     def convertstrings(self, inputunit, dtdunit):
-        if inputunit.istranslated():
+        if inputunit.istranslated() or not bool(inputunit.source):
             unquoted = inputunit.target
+        elif self.remove_untranslated:
+            unquoted = None
         else:
             unquoted = inputunit.source
         dtdunit.source = dtd.removeinvalidamps(dtdunit.entity, unquoted)
@@ -146,15 +153,20 @@ class po2dtd:
         outputstore = dtd.dtdfile(android=self.android)
         self.currentgroups = []
         for inputunit in inputstore.units:
-            if includefuzzy or not inputunit.isfuzzy():
+            if ((includefuzzy or not inputunit.isfuzzy()) and
+                (inputunit.istranslated() or not self.remove_untranslated)):
                 dtdunit = self.convertunit(inputunit)
                 if dtdunit is not None:
                     outputstore.addunit(dtdunit)
         return outputstore
 
 
-def convertdtd(inputfile, outputfile, templatefile, includefuzzy=False):
+def convertdtd(inputfile, outputfile, templatefile, includefuzzy=False,
+               remove_untranslated=False, outputthreshold=None):
     inputstore = po.pofile(inputfile)
+
+    if not convert.should_output_store(inputstore, outputthreshold):
+        return False
 
     # Some of the DTD files used for Firefox Mobile are actually completely
     # different with different escaping and quoting rules. The best way to
@@ -169,10 +181,12 @@ def convertdtd(inputfile, outputfile, templatefile, includefuzzy=False):
             android_dtd = True
 
     if templatefile is None:
-        convertor = po2dtd(android=android_dtd)
+        convertor = po2dtd(android=android_dtd,
+                           remove_untranslated=remove_untranslated)
     else:
         templatestore = dtd.dtdfile(templatefile, android=android_dtd)
-        convertor = redtd(templatestore, android=android_dtd)
+        convertor = redtd(templatestore, android=android_dtd,
+                          remove_untranslated=remove_untranslated)
     outputstore = convertor.convertstore(inputstore, includefuzzy)
     outputfile.write(str(outputstore))
     return 1
@@ -180,10 +194,14 @@ def convertdtd(inputfile, outputfile, templatefile, includefuzzy=False):
 
 def main(argv=None):
     # handle command line options
-    from translate.convert import convert
     formats = {"po": ("dtd", convertdtd), ("po", "dtd"): ("dtd", convertdtd)}
     parser = convert.ConvertOptionParser(formats, usetemplates=True, description=__doc__)
+    parser.add_option("", "--removeuntranslated", dest="remove_untranslated",
+            default=False, action="store_true",
+            help="remove untranslated strings from output")
+    parser.add_threshold_option()
     parser.add_fuzzy_option()
+    parser.passthrough.append("remove_untranslated")
     parser.run(argv)
 
 

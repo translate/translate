@@ -23,8 +23,8 @@ Dialects
 
 The format supports two dialects:
 
-* default: standard iniparse handling of INI files
-* inno: follows `Inno <http://www.innosetup.com/files/istrans/>`_ escaping
+- default: standard iniparse handling of INI files
+- inno: follows `Inno <http://www.innosetup.com/files/istrans/>`_ escaping
   conventions
 
 .. _ini#references:
@@ -34,5 +34,5 @@ References
 
 Further information is available on .ini files:
 
-* Wikipedia `INI file format <https://en.wikipedia.org/wiki/INI_file>`_ article
-* `Unofficial specification <http://www.cloanto.com/specs/ini.html>`_
+- Wikipedia :wp:`INI file format <INI_file>` article
+- `Unofficial specification <http://www.cloanto.com/specs/ini/>`_

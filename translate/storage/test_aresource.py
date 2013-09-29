@@ -19,6 +19,9 @@ class TestPropUnit(test_monolingual.TestMonolingualUnit):
         (' leading space', '<string name="Test String">" leading space"</string>\n\n'),
         ('>xml&entities', '<string name="Test String">&gt;xml&amp;entities</string>\n\n'),
         ('some <b>html code</b> here', '<string name="Test String">some <b>html code</b> here</string>\n\n'),
+        ('<<< arrow', '<string name="Test String">&lt;&lt;&lt; arrow</string>\n\n'),
+        ('<a href="http://example.net">link</a>', '<string name="Test String"><a href="http://example.net">link</a></string>\n\n'),
+        ('<a href="http://example.net">link</a> and text', '<string name="Test String"><a href="http://example.net">link</a> and text</string>\n\n'),
     ]
 
     parse_test_data = escape_data + [

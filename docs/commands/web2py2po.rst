@@ -7,9 +7,9 @@ web2py2po
 
 Converts web2py translation files to PO files and vice versa.
 
-`Web2py <http://mdp.cti.depaul.edu>`_, formerly known as Gluon) is an
-open-source, Python-based web application framework by Massimo Di Pierro
-(inspired by Django and Rails).
+`Web2py <http://web2py.com/>`_, formerly known as Gluon) is an open-source,
+Python-based web application framework by Massimo Di Pierro (inspired by Django
+and Rails).
 
 Web2py uses an internal localization engine based on Python dictionaries, which
 is applied with the T() lookup function. Web2py provides a built-in translation
@@ -51,8 +51,7 @@ Options (web2py2po):
 -i INPUT, --input=INPUT      read from INPUT in php format
 -x EXCLUDE, --exclude=EXCLUDE  exclude names matching EXCLUDE from input paths
 -o OUTPUT, --output=OUTPUT     write to OUTPUT in po, pot formats
---psyco=MODE          use psyco to speed up the operation, modes: :doc:`none,
-                      full, profile <option_psyco>`
+-S, --timestamp       skip conversion if the output file has newer timestamp
 --duplicates=DUPLICATESTYLE
                       what to do with duplicate strings (identical source
                       text): :doc:`merge, msgctxt <option_duplicates>`
@@ -70,8 +69,8 @@ Options (po2web2py):
 -i INPUT, --input=INPUT  read from INPUT in po, pot formats
 -x EXCLUDE, --exclude=EXCLUDE   exclude names matching EXCLUDE from input paths
 -o OUTPUT, --output=OUTPUT      write to OUTPUT in php format
---psyco=MODE          use psyco to speed up the operation, modes: :doc:`none,
-                      full, profile <option_psyco>`
+-S, --timestamp      skip conversion if the output file has newer timestamp
+--threshold=PERCENT  only convert files where the translation completion is above PERCENT
 --fuzzy              use translations marked fuzzy
 --nofuzzy            don't use translations marked fuzzy (default)
 

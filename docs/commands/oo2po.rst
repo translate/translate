@@ -37,8 +37,8 @@ Where:
 +--------------+-----------------------------------------------------------+
 | <input>      | is a directory of translated PO/XLIFF files               |
 +--------------+-----------------------------------------------------------+
-| <targetlang> | is the `ISO 639 <https://en.wikipedia.org/wiki/ISO_639>`_ |
-|              | language code used in the sdf file, e.g. af               |
+| <targetlang> | is the :wp:`ISO 639 <ISO_639>` language code used in the  |
+|              | sdf file, e.g. af                                         |
 +--------------+-----------------------------------------------------------+
 
 Options (oo2po and oo2xliff):
@@ -53,8 +53,7 @@ Options (oo2po and oo2xliff):
 -iINPUT, --input=INPUT   read from INPUT in oo format
 -xEXCLUDE, --exclude=EXCLUDE  exclude names matching EXCLUDE from input paths
 -oOUTPUT, --output=OUTPUT  write to OUTPUT in po, pot formats
---psyco=MODE          use psyco to speed up the operation, modes: :doc:`none,
-                      full, profile <option_psyco>`
+-S, --timestamp      skip conversion if the output file has newer timestamp
 -P, --pot            output PO Templates (.pot) rather than PO files (.po) (only available in oo2po
 -lLANG, --language=LANG  set target language to extract from oo file (e.g. af-ZA) (required for oo2xliff)
 --source-language=LANG   set source language code (default en-US)
@@ -80,8 +79,7 @@ Options (po2oo and xliff2oo):
 -xEXCLUDE, --exclude=EXCLUDE  exclude names matching EXCLUDE from input paths
 -oOUTPUT, --output=OUTPUT  write to OUTPUT in oo format
 -tTEMPLATE, --template=TEMPLATE  read from TEMPLATE in oo format
---psyco=MODE          use psyco to speed up the operation, modes: :doc:`none,
-                      full, profile <option_psyco>`
+-S, --timestamp          skip conversion if the output file has newer timestamp
 -lLANG, --language=LANG  set target language code (e.g. af-ZA) [required]
 --source-language=LANG   set source language code (default en-US)
 -T, --keeptimestamp      don't change the timestamps of the strings
@@ -90,6 +88,7 @@ Options (po2oo and xliff2oo):
 --filteraction=ACTION
                       action on pofilter failure: :doc:`none (default), warn,
                       exclude-serious, exclude-all <option_filteraction>`
+--threshold=PERCENT      only convert files where the translation completion is above PERCENT
 --fuzzy                  use translations marked fuzzy
 --nofuzzy                don't use translations marked fuzzy (default)
 --multifile=MULTIFILESTYLE
@@ -137,8 +136,8 @@ them into a single message (This is the default behaviour for traditional PO
 files).  You might want to use :doc:`pomigrate2` to ensure that your PO files
 match the latest POT files.::
 
-  cat GSI_af.sdf GSI_xh.sdf > GSI_af-xh.sdf oo2po --source-language=af -l xh
-GSI_af-xh.sdf af-xh-po
+  cat GSI_af.sdf GSI_xh.sdf > GSI_af-xh.sdf
+  oo2po --source-language=af -l xh GSI_af-xh.sdf af-xh-po
 
 Here we are creating PO files with your existing translations but a different
 source language.  Firstly we combine the two SDF files.  Then oo2po creates a

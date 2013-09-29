@@ -71,8 +71,8 @@ ur"\_": u"‑",  # Nonbreaking hyphen \U2011
 # identify 8-bit values).
 #ur"\'hh": "",
 }
-"""RTF control to Unicode map
-<http://msdn.microsoft.com/en-us/library/aa140283%28v=office.10%29.aspx#rtfspec_specialchar>
+"""RTF control to Unicode map. See
+http://msdn.microsoft.com/en-us/library/aa140283(v=office.10).aspx
 """
 
 

@@ -9,14 +9,14 @@ migrate them to the latest Mozilla source, building XPIs and repackaging hte
 Windows .exe file as needed.
 
 Please also check the page on `creating a language pack
-<http://developer.mozilla.org/en/docs/Creating_a_Language_Pack>`_ on the
+<https://developer.mozilla.org/en/docs/Creating_a_Language_Pack>`_ on the
 Mozilla wiki, to stay abreast of the latest Mozilla way of doing things.
 
 .. note:: This page is only applicable to Mozilla products with its source
    hosted in CVS. This includes Firefox versions before 3.1 and Thunderbird
-    versions before 3.0.
+   versions before 3.0.
 
-    For information about working with the new source trees in Mercurial, see the :doc:`mozilla_l10n_scripts` page.
+   For information about working with the new source trees in Mercurial, see the :doc:`mozilla_l10n_scripts` page.
 
 .. _moz-l10n-builder#prerequisites:
 
@@ -28,9 +28,9 @@ Prerequisites
   * :doc:`Translate Toolkit </installation>`
   * Existing Mozilla translations in PO format
   * A checkout of `Mozilla sources
-    <http://developer.mozilla.org/en/docs/Mozilla_Source_Code_Via_CVS>`_
+    <https://developer.mozilla.org/en-US/docs/Developer_Guide/Source_Code/CVS>`_
     updated to the correct `BRANCH or RELEASE
-    <http://developer.mozilla.org/en/docs/CVS_Tags>`_
+    <https://developer.mozilla.org/en/docs/CVS_Tags>`_
 
 * Building Windows executables
 
@@ -42,7 +42,7 @@ Prerequisites
   * `Nullsoft installer <http://nsis.sourceforge.net/Main_Page>`_ to package
     the installer.
   * `7zip <http://www.7-zip.org/>`_ for various compression
-  * Linux: `WINE <http://winehq.com/>`_ to run the Nullsoft installer
+  * Linux: `WINE <http://www.winehq.org/>`_ to run the Nullsoft installer
 
 * Directory structure under the directory you want to run moz-l10n-builder in:
 

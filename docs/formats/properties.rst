@@ -47,8 +47,8 @@ Examples
 References
 ==========
 
-* Java Properties Class `load method
-  <http://java.sun.com/j2se/1.5.0/docs/api/java/util/Properties.html#load(java.io.InputStream)>`_
+- Java Properties Class's `load()
+  <http://docs.oracle.com/javase/1.5.0/docs/api/java/util/Properties.html#load(java.io.InputStream)>`_
   describes the properties format.
-* http://java.sun.com/dtd/properties.dtd -- alternate XML based property
-  representation
+- http://www.oracle.com/webfolder/technetwork/jsc/dtd/properties.dtd --
+  alternate XML based property representation

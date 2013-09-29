@@ -3,7 +3,7 @@
 
 import warnings
 
-from py.test import mark
+from pytest import mark
 
 from translate.convert import pot2po
 from translate.convert import test_convert

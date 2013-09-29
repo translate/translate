@@ -14,13 +14,13 @@ might wish to standardise on one localization tool.  ts2po allows you to
 standardise on the PO format and PO related tools.
 
 .. note:: `Virtaal <http://virtaal.org>`_ and `Pootle
-   <http://pootle.tramslatehouse.org>`_ can edit .ts files directly without the
+   <http://pootle.translatehouse.org>`_ can edit .ts files directly without the
    need for any conversion.
 
 .. warning:: po2ts uses our older .ts support.  Thus many of the newer features
    in .ts are not supported.  To support those features rather edit directly in
    `Virtaal <http://virtaal.org>`_ or `Pootle
-   <http://pootle.tramslatehouse.org>`_.
+   <http://pootle.translatehouse.org>`_.
 
 .. _ts2po#usage:
 
@@ -52,8 +52,7 @@ Options (ts2po):
 -iINPUT, --input=INPUT   read from INPUT in ts format
 -xEXCLUDE, --exclude=EXCLUDE  exclude names matching EXCLUDE from input paths
 -oOUTPUT, --output=OUTPUT   write to OUTPUT in po, pot formats
---psyco=MODE          use psyco to speed up the operation, modes: :doc:`none,
-                      full, profile <option_psyco>`
+-S, --timestamp       skip conversion if the output file has newer timestamp
 -P, --pot            output PO Templates (.pot) rather than PO files (.po)
 --duplicates=DUPLICATESTYLE
                       what to do with duplicate strings (identical source
@@ -73,8 +72,7 @@ Options (po2ts):
 -xEXCLUDE, --exclude=EXCLUDE   exclude names matching EXCLUDE from input paths
 -oOUTPUT, --output=OUTPUT  write to OUTPUT in ts format
 -tTEMPLATE, --template=TEMPLATE   read from TEMPLATE in ts format
---psyco=MODE          use psyco to speed up the operation, modes: :doc:`none,
-                      full, profile <option_psyco>`
+-S, --timestamp       skip conversion if the output file has newer timestamp
 
 .. _ts2po#examples:
 

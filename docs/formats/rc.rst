@@ -17,9 +17,9 @@ Conformance
 ===========
 
 The actual specification of .rc files is hard to come by.  The parser was built
-using `WINE <https://en.wikipedia.org/wiki/Wine_%28software%29>`_ .rc files as
-a reference.  This was done as WINE is a good target for .rc translations.  We
-are confident though that the extraction will prove robust for all .rc files.
+using :wp:`WINE <Wine_%28software%29>` .rc files as a reference.  This was done
+as WINE is a good target for .rc translations.  We are confident though that
+the extraction will prove robust for all .rc files.
 
 .. _rc#useful_resource:
 

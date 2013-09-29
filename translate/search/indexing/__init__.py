@@ -113,7 +113,7 @@ def _sort_indexers_by_preference(indexer_classes, pref_order):
     for choice in pref_order:
         # find matching indexers
         matches = [indexer for indexer in avail_indexers
-                if get_indexer_name(indexer) == choice]
+                   if get_indexer_name(indexer) == choice]
         # move all matching items to the 'result' queue
         for match_item in matches:
             result.append(match_item)
@@ -155,7 +155,7 @@ def get_indexer(basedir, preference=None):
         preference = []
     # sort available indexers by preference
     preferred_indexers = _sort_indexers_by_preference(_AVAILABLE_INDEXERS,
-            preference)
+                                                      preference)
     if os.path.exists(basedir):
         for index_class in preferred_indexers:
             try:
@@ -170,6 +170,7 @@ def get_indexer(basedir, preference=None):
         # class that can handle it - so we remove the whole base directory
         shutil.rmtree(basedir, ignore_errors=True)
         logging.info("Deleting invalid indexing directory '%s'", basedir)
+
     # the database does not exist or it was deleted (see above)
     # we choose the first available indexing engine
     return preferred_indexers[0](basedir)

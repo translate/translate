@@ -1,11 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-try:
-    # bz2 is not available on python 2.3
-    from bz2 import BZ2File
-except ImportError:
-    BZ2File = None
+from bz2 import BZ2File
 from gzip import GzipFile
 import os
 

@@ -442,6 +442,7 @@ ts
 .. automodule:: translate.storage.ts
    :members:
    :inherited-members:
+   :deprecated:
 
 
 txt
@@ -591,14 +592,6 @@ xml_name
 --------
 
 .. automodule:: translate.storage.xml_name
-   :members:
-   :inherited-members:
-
-
-xpi
----
-
-.. automodule:: translate.storage.xpi
    :members:
    :inherited-members:
 

@@ -1,12 +1,29 @@
 #!/usr/bin/env python
+# -*- coding: utf-8 -*-
+#
+# Copyright 2006-2013 Zuza Software Foundation
+#
+# This file is part of Translate.
+#
+# Translate is free software; you can redistribute it and/or modify it under
+# the terms of the GNU General Public License as published by the Free Software
+# Foundation; either version 2 of the License, or (at your option) any later
+# version.
+#
+# Translate is distributed in the hope that it will be useful, but WITHOUT ANY
+# WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR
+# A PARTICULAR PURPOSE. See the GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License along with
+# Translate; if not, see <http://www.gnu.org/licenses/>.
 
-from distutils.core import setup, Extension, Distribution, Command
 import distutils.sysconfig
-import sys
 import os
 import os.path
-from translate import __version__
-from translate import __doc__
+import site
+import sys
+from distutils.core import setup, Extension, Distribution, Command
+
 try:
     import py2exe
     build_exe = py2exe.build_exe.py2exe
@@ -21,6 +38,8 @@ try:
 except ImportError:
     cmdclass = {}
 
+from translate import __doc__, __version__
+
 
 # TODO: check out installing into a different path with --prefix/--home
 
@@ -29,8 +48,11 @@ join = os.path.join
 PRETTY_NAME = 'Translate Toolkit'
 translateversion = __version__.sver
 
-packagesdir = distutils.sysconfig.get_python_lib()
-sitepackages = packagesdir.replace(sys.prefix + os.sep, '')
+if sys.version_info >= (2, 6, 0) and site.ENABLE_USER_SITE:
+    sitepackages = site.USER_SITE
+else:
+    packagesdir = distutils.sysconfig.get_python_lib()
+    sitepackages = packagesdir.replace(sys.prefix + os.sep, '')
 
 infofiles = [(join(sitepackages, 'translate'),
              [filename for filename in 'COPYING', 'README.rst'])]
@@ -95,11 +117,20 @@ translatescripts = [apply(join, ('translate', ) + script) for script in
                   ('services', 'tmserver'),
                   ('tools', 'build_tmdb')]
 
-translatebashscripts = [apply(join, ('tools', ) + (script, )) for script in [
-                  'pomigrate2', 'pocompendium',
-                  'posplit', 'popuretext', 'poreencode', 'pocommentclean',
-                  'junitmsgfmt',
-                  ]]
+translatebashscripts = [
+    apply(join, ('tools', ) + script) for script in [
+                  ('junitmsgfmt', ),
+                  ('mozilla', 'build_firefox.sh'),
+                  ('mozilla', 'buildxpi.py'),
+                  ('mozilla', 'get_moz_enUS.py'),
+                  ('pocommentclean', ),
+                  ('pocompendium', ),
+                  ('pomigrate2', ),
+                  ('popuretext', ),
+                  ('poreencode', ),
+                  ('posplit', ),
+    ]
+]
 
 
 def addsubpackages(subpackages):
@@ -329,7 +360,7 @@ class TranslateDistribution(Distribution):
         ]
         version = attrs.get("version", translateversion)
         py2exeoptions["dist_dir"] = "translate-toolkit-%s" % version
-        py2exeoptions["includes"] = ["lxml", "lxml._elementpath", "psyco"]
+        py2exeoptions["includes"] = ["lxml", "lxml._elementpath"]
         options = {"py2exe": py2exeoptions}
         baseattrs['options'] = options
         if py2exe:
@@ -371,21 +402,20 @@ classifiers = [
   "Operating System :: OS Independent",
   "Operating System :: Microsoft :: Windows",
   "Operating System :: Unix"
-  ]
+]
 
 
 def dosetup(name, version, packages, datafiles, scripts, ext_modules=[]):
-    long_description = __doc__
-    description = __doc__.split("\n", 1)[0]
+    description, long_description = __doc__.split("\n", 1)
     setup(name=name,
           version=version,
           license="GNU General Public License (GPL)",
           description=description,
           long_description=long_description,
-          author="Translate.org.za",
+          author="Translate",
           author_email="translate-devel@lists.sourceforge.net",
-          url="http://translate.sourceforge.net/wiki/toolkit/index",
-          download_url="http://sourceforge.net/project/showfiles.php?group_id=91920&package_id=97082",
+          url="http://toolkit.translatehouse.org/",
+          download_url="http://sourceforge.net/projects/translate/files/Translate Toolkit/" + version,
           platforms=["any"],
           classifiers=classifiers,
           packages=packages,

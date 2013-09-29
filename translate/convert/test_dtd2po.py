@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-from py.test import mark
+from pytest import mark
 
 from translate.convert import dtd2po
 from translate.convert import test_convert

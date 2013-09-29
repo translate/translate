@@ -25,9 +25,11 @@ for examples and usage instructions.
 """
 
 import sys
+import logging
 
 from translate.storage import po
 
+logger = logging.getLogger(__name__)
 
 def convert_store(input_store, duplicatestyle="msgctxt"):
     """converts a subtitle file to a .po file..."""
@@ -69,7 +71,8 @@ def merge_store(template_store, input_store, blankmsgstr=False,
                 origpo.target = translatedpo.source
             output_store.addunit(origpo)
         elif translatedpo is not None:
-            print >> sys.stderr, "error converting original subtitle definition %s" % origini.name
+            logger.error("error converting original subtitle definition %s",
+                         origini.name)
     output_store.removeduplicates(duplicatestyle)
     return output_store
 

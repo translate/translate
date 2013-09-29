@@ -4,11 +4,7 @@
 import os
 import sys
 
-try:
-    import psyco
-except Exception:
-    psyco = None
-from py import test
+import pytest
 
 from translate.convert import convert
 
@@ -17,8 +13,6 @@ class TestConvertCommand:
     """Tests running actual commands on files"""
     convertmodule = convert
     defaultoptions = {"progress": "none"}
-    if psyco:
-        defaultoptions["psyco"] = "none"
 
     def setup_method(self, method):
         """creates a clean test directory for the given method"""
@@ -108,7 +102,7 @@ class TestConvertCommand:
         helpfile = self.open_testfile("help.txt", "w")
         sys.stdout = helpfile
         try:
-            test.raises(SystemExit, self.run_command, help=True)
+            pytest.raises(SystemExit, self.run_command, help=True)
         finally:
             sys.stdout = stdout
         helpfile.close()
@@ -130,9 +124,8 @@ class TestConvertCommand:
         options = self.help_check(options, "-h, --help")
         options = self.help_check(options, "--manpage")
         options = self.help_check(options, "--errorlevel=ERRORLEVEL")
-        if psyco:
-            options = self.help_check(options, "--psyco=MODE")
         options = self.help_check(options, "-i INPUT, --input=INPUT")
         options = self.help_check(options, "-x EXCLUDE, --exclude=EXCLUDE")
         options = self.help_check(options, "-o OUTPUT, --output=OUTPUT")
+        options = self.help_check(options, "-S, --timestamp")
         return options

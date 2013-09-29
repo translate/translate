@@ -25,10 +25,12 @@ for examples and usage instructions.
 """
 
 import sys
+import logging
 
 from translate.storage import po
 from translate.storage import csvl10n
 
+logger = logging.getLogger(__name__)
 
 def replacestrings(source, *pairs):
     """Use ``pairs`` of ``(original, replacement)`` to replace text found in
@@ -121,18 +123,27 @@ class csv2po:
             thepolist = self.simpleindex[simplify(csvunit.source)]
             if len(thepolist) > 1:
                 csvfilename = getattr(self.csvfile, "filename", "(unknown)")
-                matches = "\n  ".join(["possible match: " + pounit.source for pounit in thepolist])
-                print >> sys.stderr, "%s - csv entry not found in pofile, multiple matches found:\n  location\t%s\n  original\t%s\n  translation\t%s\n  %s" % \
-                                     (csvfilename, csvunit.location,
-                                      csvunit.source, csvunit.target, matches)
+                matches = "\n  ".join(["possible match: " +
+                                       pounit.source for pounit in thepolist])
+                logger.warning("%s - csv entry not unique in pofile, "
+                               "multiple matches found:\n"
+                               "  location\t%s\n"
+                               "  original\t%s\n"
+                               "  translation\t%s\n"
+                               "  %s",
+                               csvfilename, csvunit.location,
+                               csvunit.source, csvunit.target, matches)
                 self.unmatched += 1
                 return
             pounit = thepolist[0]
         else:
             csvfilename = getattr(self.csvfile, "filename", "(unknown)")
-            print >> sys.stderr, "%s - csv entry not found in pofile:\n  location\t%s\n  original\t%s\n  translation\t%s" % \
-                                 (csvfilename, csvunit.location,
-                                  csvunit.source, csvunit.target)
+            logger.warning("%s - csv entry not found in pofile:\n"
+                           "  location\t%s\n"
+                           "  original\t%s\n"
+                           "  translation\t%s",
+                           csvfilename, csvunit.location,
+                           csvunit.source, csvunit.target)
             self.unmatched += 1
             return
         if pounit.hasplural():
@@ -148,8 +159,8 @@ class csv2po:
             elif simplify(csvunit.source) == simplify(pluralid):
                 pounit.msgstr[1] = csvunit.target
             else:
-                print >> sys.stderr, "couldn't work out singular or plural: %r, %r, %r" % \
-                    (csvunit.source, singularid, pluralid)
+                logger.warning("couldn't work out singular/plural: %r, %r, %r", 
+                               csvunit.source, singularid, pluralid)
                 self.unmatched += 1
                 return
         else:

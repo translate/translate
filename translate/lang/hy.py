@@ -55,3 +55,6 @@ class hy(common.Common):
     }
 
     ignoretests = ["startcaps", "simplecaps"]
+
+    mozilla_nplurals = 2
+    mozilla_pluralequation = "n!=1 ? 1 : 0"

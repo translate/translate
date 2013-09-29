@@ -74,6 +74,14 @@ software.
 
 Requirements
 ------------
+
+.. note:: Please check ``requirements/*.txt``::
+
+       pip install -r requirements/recommended.txt
+
+   Will install all recommended requirements, while ``optional.txt`` will also
+   install support for all other formats.
+
 Python 2.4 or later is recommended.
 
 The Toolkit should still work with Python 2.4 but is now most extensively
@@ -99,21 +107,10 @@ site for the recommended versions of these libraries if you need to install
 them separately at all. Most packaged versions of lxml will already contain
 these dependencies.
 
-Python 2.5 includes pysqlite, but pysqlite2 needs to be installed if you are
-using an older version of Python.
-<http://trac.edgewall.org/wiki/PySqlite>
-
 When the environment variable USECPO is set to 1, the toolkit will attempt to
 use libgettextpo from the gettext-tools package (it might have a slightly
 different name on your distribution). This can greatly speed up access to PO
 files, but has not yet been tested as extensively. Feedback is most welcome.
-
-Psyco can help to speed up several of the programs in the toolkit. It is
-optional, but highly recommended.
-<http://psyco.sourceforge.net/>
-
-The python wrapper to htmltidy is needed for po2html.
-http://utidylib.berlios.de/
 
 The package iniparse is necessary for ini2po and po2ini.
 http://code.google.com/p/iniparse/
@@ -227,8 +224,7 @@ Use ``--help`` to find the syntax and options for all programs.
 
         oo2po    - convert between OpenOffice.org GSI files and PO
         oo2xliff - convert between OpenOffice.org GSI files and XLIFF
-        moz2po   - convert from a Mozilla XPI file and PO.  Including
-                   unpacking and building a translated XPI.
+        moz2po   - convert between Mozilla files and PO
         csv2po   - convert PO format to CSV for editing in a spreadsheet program
         php2po   - PHP localisable string arrays converter.
         ts2po    - convert Qt Linguist (.ts) files to PO

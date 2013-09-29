@@ -1,0 +1,19 @@
+-r recommended.txt
+
+##################
+# Format support #
+##################
+# ini2po
+iniparse>=0.3.1
+
+# ical2po
+vobject>=0.6.6
+
+# Trados TM
+BeautifulSoup>=3.2
+
+# sub2po
+#aeidon>=0.14
+
+# aeidon not available through pip/PyPI,
+# so recording this dependency here is pointless except as a comment

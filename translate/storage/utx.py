@@ -31,7 +31,9 @@ The format can manage monolingual dictionaries but these classes don't
 implement that.
 
 Specification
-    The format is implemented according to the `v1.0 UTX <http://www.aamt.info/english/utx/utx-simple-1.00-specification-e.pdf>`_
+    The format is implemented according to UTX v1.0 (No longer available from
+    their website. The current `UTX version
+    <http://www.aamt.info/english/utx/#Download>`_ may be downloaded instead).
 
 Format Implementation
     The UTX format is a Tab Seperated Value (TSV) file in UTF-8.  The
@@ -58,14 +60,6 @@ class UtxDialect(csv.Dialect):
     # differences
     lineterminator = "\r\n"
     quoting = csv.QUOTE_NONE
-    if sys.version_info < (2, 5, 0):
-        # We need to define the following items for csv in Python < 2.5
-        # UTX does not quote anything FIXME So why MINIMAL?
-        quoting = csv.QUOTE_MINIMAL
-        doublequote = False
-        skipinitialspace = False
-        escapechar = None
-        quotechar = '"'
 csv.register_dialect("utx", UtxDialect)
 
 

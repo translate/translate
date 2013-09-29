@@ -34,20 +34,16 @@ from translate.misc import wStringIO
 
 class po2tmx:
 
-    def convertfile(self, inputfile, sourcelanguage='en', targetlanguage=None):
-        """converts a .po file to TMX file"""
-        # TODO: This seems to not be used... remove it
-        inputstore = inputfile
-        for inunit in inputstore.units:
-            if inunit.isheader() or inunit.isblank() or not inunit.istranslated() or inunit.isfuzzy():
-                continue
-            source = inunit.source
-            translation = inunit.target
-            # TODO place source location in comments
-            tmxfile.addtranslation(source, sourcelanguage, translation, targetlanguage)
-        return str(tmxfile)
+    def cleancomments(self, comments):
+        """Removes the comment marks from the PO strings."""
+        for index, comment in enumerate(comments):
+            if comment.startswith("#"):
+                comments[index] = comment[1:].rstrip()
 
-    def convertfiles(self, inputfile, tmxfile, sourcelanguage='en', targetlanguage=None):
+        return ''.join(comments)
+
+    def convertfiles(self, inputfile, tmxfile, sourcelanguage='en',
+                     targetlanguage=None, comment=None):
         """converts a .po file (possibly many) to TMX file"""
         inputstore = po.pofile(inputfile)
         for inunit in inputstore.units:
@@ -55,14 +51,23 @@ class po2tmx:
                 continue
             source = inunit.source
             translation = inunit.target
-            # TODO place source location in comments
-            tmxfile.addtranslation(source, sourcelanguage, translation, targetlanguage)
+
+            commenttext = {
+                'source': self.cleancomments(inunit.sourcecomments),
+                'type': self.cleancomments(inunit.typecomments),
+                'others': self.cleancomments(inunit.othercomments),
+            }.get(comment, None)
+
+            tmxfile.addtranslation(source, sourcelanguage, translation,
+                                   targetlanguage, commenttext)
 
 
-def convertpo(inputfile, outputfile, templatefile, sourcelanguage='en', targetlanguage=None):
+def convertpo(inputfile, outputfile, templatefile, sourcelanguage='en',
+              targetlanguage=None, comment=None):
     """reads in stdin using fromfileclass, converts using convertorclass, writes to stdout"""
     convertor = po2tmx()
-    convertor.convertfiles(inputfile, outputfile.tmxfile, sourcelanguage, targetlanguage)
+    convertor.convertfiles(inputfile, outputfile.tmxfile, sourcelanguage,
+                           targetlanguage, comment)
     return 1
 
 
@@ -113,8 +118,14 @@ def main(argv=None):
             help="set target language code (e.g. af-ZA) [required]", metavar="LANG")
     parser.add_option("", "--source-language", dest="sourcelanguage", default='en',
             help="set source language code (default: en)", metavar="LANG")
+    comments = ['source', 'type', 'others', 'none']
+    comments_help = ("set default comment import: none, source, type or "
+                     "others (default: none)")
+    parser.add_option("", "--comments", dest="comment", default="none",
+                      type="choice", choices=comments, help=comments_help)
     parser.passthrough.append("sourcelanguage")
     parser.passthrough.append("targetlanguage")
+    parser.passthrough.append("comment")
     parser.run(argv)
 
 

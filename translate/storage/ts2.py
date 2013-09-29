@@ -24,13 +24,13 @@ This will eventually replace the older ts.py which only supports the older
 format. While converters haven't been updated to use this module, we retain
 both.
 
-`TS file format 4.3 <http://doc.trolltech.com/4.3/linguist-ts-file-format.html>`_,
-`4.5 <http://doc.trolltech.com/4.5/linguist-ts-file-format.html>`_,
-`Example <http://svn.ez.no/svn/ezcomponents/trunk/Translation/docs/linguist-format.txt>`_,
-`Plurals forms <http://www.koders.com/cpp/fidE7B7E83C54B9036EB7FA0F27BC56BCCFC4B9DF34.aspx#L200>`_
+`TS file format 4.3 <http://doc.qt.digia.com/4.3/linguist-ts-file-format.html>`_,
+`4.8 <http://qt-project.org/doc/qt-4.8/linguist-ts-file-format.html>`_,
+`5.0 <http://qt-project.org/doc/qt-5.0/qtlinguist/linguist-ts-file-format.html>`_.
+`Example <http://svn.ez.no/svn/ezcomponents/trunk/Translation/docs/linguist-format.txt>`_.
 
-`Specification of the valid variable entries  <http://doc.trolltech.com/4.3/qstring.html#arg>`_,
-`2  <http://doc.trolltech.com/4.3/qstring.html#arg-2>`_
+`Specification of the valid variable entries <http://qt-project.org/doc/qt-5.0/qtcore/qstring.html#arg>`_,
+`2 <http://qt-project.org/doc/qt-5.0/qtcore/qstring.html#arg-2>`_
 """
 
 from lxml import etree

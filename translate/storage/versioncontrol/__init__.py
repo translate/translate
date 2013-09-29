@@ -313,13 +313,22 @@ def get_versioned_object(
     if versioning_systems is None:
         versioning_systems = DEFAULT_RCS[:]
     # go through all RCS and return a versioned object if possible
+    possible_ver_objs = []
     for vers_sys in versioning_systems:
         try:
             vers_sys_class = __get_rcs_class(vers_sys)
-            if not vers_sys_class is None:
-                return vers_sys_class(location, oldest_parent)
+            if vers_sys_class is None:
+                continue
+            ver_obj = vers_sys_class(location, oldest_parent)
+            if not ver_obj.SCAN_PARENTS:
+                return ver_obj
+            possible_ver_objs.append(ver_obj)
         except IOError:
             continue
+    # if we find any RCS, return the one with shorted rel path
+    if len(possible_ver_objs):
+        possible_ver_objs.sort(key=lambda ver_obj: len(ver_obj.location_rel))
+        return possible_ver_objs[0]
     # if 'location' is a symlink, then we should try the original file
     if follow_symlinks and os.path.islink(location):
         return get_versioned_object(os.path.realpath(location),

@@ -38,8 +38,6 @@ Options (rc2po):
 -x EXCLUDE, --exclude=EXCLUDE  exclude names matching EXCLUDE from input paths
 -o OUTPUT, --output=OUTPUT     write to OUTPUT in po, pot formats
 -t TEMPLATE, --template=TEMPLATE  read from TEMPLATE in rc format
---psyco=MODE          use psyco to speed up the operation, modes: :doc:`none,
-                      full, profile <option_psyco>`
 -P, --pot    output PO Templates (.pot) rather than PO files (.po)
 --charset=CHARSET    charset to use to decode the RC files (default:                        cp1252)
 --duplicates=DUPLICATESTYLE
@@ -60,11 +58,11 @@ Options (po2rc):
 -x EXCLUDE, --exclude=EXCLUDE   exclude names matching EXCLUDE from input paths
 -o OUTPUT, --output=OUTPUT      write to OUTPUT in rc format
 -t TEMPLATE, --template=TEMPLATE  read from TEMPLATE in rc format
---psyco=MODE          use psyco to speed up the operation, modes: :doc:`none,
-                      full, profile <option_psyco>`
+-S, --timestamp      skip conversion if the output file has newer timestamp
 --charset=CHARSET    charset to use to decode the RC files (default: utf-8)
 -l LANG, --lang=LANG  LANG entry
 --sublang=SUBLANG     SUBLANG entry (default: SUBLANG_DEFAULT)
+--threshold=PERCENT  only convert files where the translation completion is above PERCENT
 --fuzzy              use translations marked fuzzy
 --nofuzzy            don't use translations marked fuzzy (default)
 

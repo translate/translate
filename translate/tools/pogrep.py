@@ -323,7 +323,6 @@ class GrepOptionParser(optrecurse.RecursiveOptionParser):
                                          options.keeptranslations,
                                          options.accelchar,
                                          locale.getpreferredencoding())
-        self.usepsyco(options)
         self.recursiveprocess(options)
 
 

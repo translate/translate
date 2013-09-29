@@ -4,8 +4,16 @@
 XLIFF
 *****
 
-XLIFF is the OASIS standard for translation. See
-http://www.oasis-open.org/committees/xliff/documents/xliff-specification.htm.
+XLIFF[*] is the `OASIS <https://www.oasis-open.org/>`_ standard for translation.
+
+.. [*] XML Localization Interchange File Format
+
+References
+----------
+- `XLIFF Standard
+  <http://docs.oasis-open.org/xliff/xliff-core/xliff-core.html>`_
+- `OASIS XLIFF Technical Committee
+  <https://www.oasis-open.org/committees/tc_home.php?wg_abbrev=xliff>`_ website
 
 .. _xliff#flavours:
 
@@ -63,5 +71,5 @@ Done
 XLIFF and other tools
 =====================
 
-Here is a small report on the :doc:`guide/tools/xliff support by ms windows
-programs`.
+Here is a small report on :wiki:`XLIFF support by Windows programs
+<guide/tools/xliff_support_by_ms_windows_programs>`.

@@ -27,13 +27,16 @@ for examples and usage instructions.
 import os
 import sys
 import time
+import logging
 
+from translate.convert import convert
 from translate.storage import oo
 from translate.storage import factory
 from translate.filters import pofilter
 from translate.filters import checks
 from translate.filters import autocorrect
 
+logger = logging.getLogger(__name__)
 
 class reoo:
 
@@ -87,14 +90,15 @@ class reoo:
                 theoo = self.index[key]  # find the oo
                 self.applytranslation(key, subkey, theoo, unit)
             else:
-                print >> sys.stderr, "couldn't find key %s from po in %d keys" % (key, len(self.index))
+                logger.warning("couldn't find key %s from po in %d keys",
+                               key, len(self.index))
                 try:
                     sourceunitlines = str(unit)
                     if isinstance(sourceunitlines, unicode):
                         sourceunitlines = sourceunitlines.encode("utf-8")
-                    print >> sys.stderr, sourceunitlines
+                    logger.warning(sourceunitlines)
                 except:
-                    print >> sys.stderr, "error outputting source unit %r" % (str(unit),)
+                    logger.warning("error outputting source unit %r", str(unit))
 
     def applytranslation(self, key, subkey, theoo, unit):
         """applies the translation from the source unit to the oo unit"""
@@ -160,10 +164,12 @@ class oocheckfilter(pofilter.pocheckfilter):
                 for filtername, filtermessage in filterresult.iteritems():
                     location = unit.getlocations()[0].encode('utf-8')
                     if filtername in self.options.error:
-                        print >> sys.stderr, "Error at %s::%s: %s" % (filename, location, filtermessage)
+                        logger.error("Error at %s::%s: %s",
+                                     filename, location, filtermessage)
                         return not filteraction in ["exclude-all", "exclude-serious"]
                     if filtername in self.options.warning or self.options.alwayswarn:
-                        print >> sys.stderr, "Warning at %s::%s: %s" % (filename, location, filtermessage)
+                        logger.warning("Warning at %s::%s: %s",
+                                       filename, location, filtermessage)
                         return not filteraction in ["exclude-all"]
         return True
 
@@ -188,8 +194,13 @@ filter = oocheckfilter(options, [checks.OpenOfficeChecker, checks.StandardUnitCh
 
 def convertoo(inputfile, outputfile, templatefile, sourcelanguage=None,
               targetlanguage=None, timestamp=None, includefuzzy=False,
-              multifilestyle="single", skip_source=False, filteraction=None):
+              multifilestyle="single", skip_source=False, filteraction=None,
+              outputthreshold=None):
     inputstore = factory.getobject(inputfile)
+
+    if not convert.should_output_store(inputstore, outputthreshold):
+        return False
+
     inputstore.filename = getattr(inputfile, 'name', '')
     if not targetlanguage:
         raise ValueError("You must specify the target language")
@@ -213,7 +224,6 @@ def convertoo(inputfile, outputfile, templatefile, sourcelanguage=None,
 
 
 def main(argv=None):
-    from translate.convert import convert
     formats = {
                 ("po", "oo"): ("oo", convertoo),
                 ("xlf", "oo"): ("oo", convertoo),
@@ -244,6 +254,7 @@ def main(argv=None):
                       help="don't output the source language, but fallback to it where needed")
     parser.add_option("", "--filteraction", dest="filteraction", default="none", metavar="ACTION",
                       help="action on pofilter failure: none (default), warn, exclude-serious, exclude-all")
+    parser.add_threshold_option()
     parser.add_fuzzy_option()
     parser.add_multifile_option()
     parser.passthrough.append("sourcelanguage")

@@ -5,7 +5,10 @@ tmserver
 ********
 tmserver is a Translation Memory service that can be queried via HTTP using a
 simple REST like URL/http and data is exchanged between server and client
-encoded in JSON
+encoded in JSON.
+
+.. note:: If you are searching for an enterprise Translation Memory server then
+   rather use `amaGama <http://amagama.translatehouse.org/>`_.
 
 .. _tmserver#usage:
 

@@ -4,10 +4,7 @@
 Creating Mozilla POT files
 **************************
 
-You can do this two ways:
-
-- Using Mozilla source (from CVS or Mercurial)
-- Using an en-US XPI file
+You can do this using Mozilla source from CVS or Mercurial
 
 .. _creating_mozilla_pot_files#using_mercurial:
 
@@ -16,10 +13,10 @@ Using Mercurial
 
 Since Firefox 3.1 and Thunderbird 3.0, Mozilla has switched to using Mercurial
 for version control. See the Mozilla's `L10n on Mercurial
-<https://developer.mozilla.org/en/l10n_on_mercurial>`_ page for instructions on
-how to checkout and update your Mozilla sources and l10n files.
+<https://developer.mozilla.org/docs/Localizing_with_Mercurial>`_ page for
+instructions on how to checkout and update your Mozilla sources and l10n files.
 
-You can use :ref:`get_moz_enUS.py <mozilla_l10n_scripts#get_moz_enus.py>` to
+You can use :ref:`get_moz_enUS.py <get_moz_enus.py>` to
 extract an en-US directory from the source tree:
 
 ::
@@ -68,14 +65,3 @@ POT files as follows::
 This will create the POT files in ``l10n/pot`` using the American English files
 from ``en-US``.  You now have a set of POT files that you can use for
 translation or updating your existing PO files.
-
-.. _creating_mozilla_pot_files#using_an_en-us_xpi_file:
-
-Using an en-US XPI file
-=======================
-
-Download an XPI file and run the following::
-
-  moz2po -P en-US.xpi pot
-
-You now have a set of POT files in ``pot``.

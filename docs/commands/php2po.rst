@@ -39,8 +39,7 @@ Options (php2po):
 -x EXCLUDE, --exclude=EXCLUDE  exclude names matching EXCLUDE from input paths
 -o OUTPUT, --output=OUTPUT     write to OUTPUT in po, pot formats
 -t TEMPLATE, --template=TEMPLATE  read from TEMPLATE in php format
---psyco=MODE          use psyco to speed up the operation, modes: :doc:`none,
-                      full, profile <option_psyco>`
+-S, --timestamp       skip conversion if the output file has newer timestamp
 -P, --pot    output PO Templates (.pot) rather than PO files (.po)
 --duplicates=DUPLICATESTYLE
                       what to do with duplicate strings (identical source
@@ -60,8 +59,8 @@ Options (po2php):
 -x EXCLUDE, --exclude=EXCLUDE   exclude names matching EXCLUDE from input paths
 -o OUTPUT, --output=OUTPUT      write to OUTPUT in php format
 -t TEMPLATE, --template=TEMPLATE  read from TEMPLATE in php format
---psyco=MODE          use psyco to speed up the operation, modes: :doc:`none,
-                      full, profile <option_psyco>`
+-S, --timestamp      skip conversion if the output file has newer timestamp
+--threshold=PERCENT  only convert files where the translation completion is above PERCENT
 --fuzzy              use translations marked fuzzy
 --nofuzzy            don't use translations marked fuzzy (default)
 
@@ -70,45 +69,8 @@ Options (po2php):
 Formats Supported
 =================
 
-PHP files need to be organized into separate languages per file and in the
-following format:
-
-.. code-block:: php
-
-    $variable = 'string';
-    $another_variable = "another string";
-
-If $variable is an array it can be declared with the square bracket syntax:
-
-.. code-block:: php
-
-    $lang['item'] = 'string';
-    $lang['another_item'] = "another string";
-
-The converter also supports arrays in the form:
-
-.. code-block:: php
-
-    $variable = array(
-       name => 'value',
-       other => "other value",
-    )
-
-Finally, the converter also supports the define syntax:
-
-.. code-block:: php
-
-    define('item', 'string');
-    define("another_item", "another string");
-
-Gettext notations are also not supported, use the Gettext tools for those
-files.
-
-.. note:: Nested arrays are not supported:
-
-.. code-block:: php
-
-    $lang = array(array('key' => 'value')); #NOT SUPPORTED
+Check :doc:`PHP format </formats/php>` document to see to which extent the PHP
+format is supported.
 
 .. _php2po#examples:
 

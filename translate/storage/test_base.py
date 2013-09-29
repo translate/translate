@@ -23,7 +23,7 @@
 import os
 import warnings
 
-from py import test
+import pytest
 
 from translate.misc.multistring import multistring
 from translate.storage import base, factory
@@ -64,8 +64,8 @@ def test_force_override():
     assert baseobject.test()
     assert baseobject.classtest()
     derivedobject = DerivedClass()
-    assert test.raises(NotImplementedError, derivedobject.test)
-    assert test.raises(NotImplementedError, derivedobject.classtest)
+    assert pytest.raises(NotImplementedError, derivedobject.test)
+    assert pytest.raises(NotImplementedError, derivedobject.classtest)
 
 
 class TestTranslationUnit:

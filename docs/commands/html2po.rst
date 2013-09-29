@@ -37,8 +37,7 @@ Options (html2po):
 -iINPUT, --input=INPUT   read from INPUT in htm, html, xhtml formats
 -xEXCLUDE, --exclude=EXCLUDE  exclude names matching EXCLUDE from input paths
 -oOUTPUT, --output=OUTPUT  write to OUTPUT in po, pot formats
---psyco=MODE          use psyco to speed up the operation, modes: :doc:`none,
-                      full, profile <option_psyco>`
+-S, --timestamp      skip conversion if the output file has newer timestamp
 -P, --pot            output PO Templates (.pot) rather than PO files (.po)
 -u, --untagged       include untagged sections
 --duplicates=DUPLICATESTYLE
@@ -59,10 +58,10 @@ Options (po2html):
 -xEXCLUDE, --exclude=EXCLUDE   exclude names matching EXCLUDE from input paths
 -oOUTPUT, --output=OUTPUT  write to OUTPUT in htm, html formats
 -tTEMPLATE, --template=TEMPLATE   read from TEMPLATE in htm, html formats
---psyco=MODE          use psyco to speed up the operation, modes: :doc:`none,
-                      full, profile <option_psyco>`
+-S, --timestamp      skip conversion if the output file has newer timestamp
 -wWRAP, --wrap=WRAP  set number of columns to wrap html at
 --notidy             don't use tidy to clean up HTML, even if installed (new in version 1.2.1)
+--threshold=PERCENT  only convert files where the translation completion is above PERCENT
 --fuzzy              use translations marked fuzzy
 --nofuzzy            don't use translations marked fuzzy (default)
 

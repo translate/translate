@@ -44,8 +44,6 @@ Options:
 -iINPUT, --input=INPUT   read from INPUT in pot, po, xlf, tmx formats
 -xEXCLUDE, --exclude=EXCLUDE  exclude names matching EXCLUDE from input paths
 -oOUTPUT, --output=OUTPUT  write to OUTPUT in po, pot, xlf, tmx formats
---psyco=MODE          use psyco to speed up the operation, modes: :doc:`none,
-                      full, profile <option_psyco>`
 -l, --listfilters    list filters available
 --review             include elements marked for review (default)
 --noreview           exclude elements marked for review

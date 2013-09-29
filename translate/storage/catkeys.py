@@ -94,14 +94,6 @@ class CatkeysDialect(csv.Dialect):
     delimiter = "\t"
     lineterminator = "\n"
     quoting = csv.QUOTE_NONE
-    if sys.version_info < (2, 5, 0):
-        # We need to define the following items for csv in Python < 2.5
-        quoting = csv.QUOTE_MINIMAL   # catkeys does not quote anything, since we escape
-                                      # \t anyway in _escape this should not be a problem
-        doublequote = False
-        skipinitialspace = False
-        escapechar = None
-        quotechar = '"'
 csv.register_dialect("catkeys", CatkeysDialect)
 
 

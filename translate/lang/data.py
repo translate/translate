@@ -75,6 +75,7 @@ languages = {
 'hi': (u'Hindi', 2, '(n != 1)'),
 'hy': (u'Armenian', 1, '0'),
 'hr': (u'Croatian', 3, '(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2)'),
+'ht': (u'Haitian; Haitian Creole', 2, '(n != 1)'),
 'hu': (u'Hungarian', 2, '(n != 1)'),
 'ia': (u"Interlingua (International Auxiliary Language Association)", 2, '(n != 1)'),
 'id': (u'Indonesian', 1, '0'),
@@ -112,6 +113,7 @@ languages = {
 'ne': (u'Nepali', 2, '(n != 1)'),
 'nl': (u'Dutch; Flemish', 2, '(n != 1)'),
 'nn': (u'Norwegian Nynorsk; Nynorsk, Norwegian', 2, '(n != 1)'),
+'nqo': (u"N'Ko", 2, '(n > 1)'),
 'nso': (u'Pedi; Sepedi; Northern Sotho', 2, '(n != 1)'),
 'oc': (u'Occitan (post 1500)', 2, '(n > 1)'),
 'or': (u'Oriya', 2, '(n != 1)'),
@@ -127,6 +129,7 @@ languages = {
 'ro': (u'Romanian', 3, '(n==1 ? 0 : (n==0 || (n%100 > 0 && n%100 < 20)) ? 1 : 2);'),
 'ru': (u'Russian', 3,
       '(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2)'),
+'sah': (u'Yakut', 1, '0'),
 'sco': (u'Scots', 2, '(n != 1)'),
 'si': (u'Sinhala; Sinhalese', 2, '(n != 1)'),
 'sk': (u'Slovak', 3, '(n==1) ? 0 : (n>=2 && n<=4) ? 1 : 2'),
@@ -152,7 +155,9 @@ languages = {
 'uk': (u'Ukrainian', 3,
        '(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2)'),
 'vi': (u'Vietnamese', 1, '0'),
+'ve': (u'Venda', 2, '(n != 1)'),
 'wa': (u'Walloon', 2, '(n > 1)'),
+'wo': (u'Wolof', 2, '(n != 1)'),
 'yo': (u'Yoruba', 2, '(n != 1)'),
 # Chinese is difficult because the main divide is on script, not really
 # country. Simplified Chinese is used mostly in China, Singapore and Malaysia.
@@ -197,7 +202,7 @@ _fixed_names = {
     u"Sinhala; Sinhalese": u"Sinhala",
     u"Sotho, Southern": u"Sotho",
     u"Spanish; Castilian": u"Spanish",
-    u"Uighur; Uyghur": u"Uighur",
+    u"Uighur; Uyghur": u"Uyghur",
 }
 
 
@@ -407,3 +412,10 @@ def simplify_to_common(language_code, languages=languages):
         return language_code
     else:
         return simplify_to_common(simpler)
+
+def get_language(code):
+    code = code.replace("-", "_").replace("@", "_").lower()
+    if "_" in code:
+        # convert ab_cd → ab_CD
+        code = "%s_%s" %(code.split("_")[0], code.split("_", 1)[1].upper())
+    return languages.get(code, None)

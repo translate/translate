@@ -387,21 +387,27 @@ class XapianDatabase(CommonIndexer.CommonDatabase):
         if isinstance(fieldnames, basestring):
             fieldnames = [fieldnames]
         try:
-            self._walk_matches(query, _extract_fieldvalues, (result, fieldnames))
+            self._walk_matches(query, _extract_fieldvalues,
+                               (result, fieldnames))
         except xapian.DatabaseModifiedError:
             self._index_refresh()
-            self._walk_matches(query, _extract_fieldvalues, (result, fieldnames))
+            self._walk_matches(query, _extract_fieldvalues,
+                               (result, fieldnames))
         return result
 
     def _delete_stale_lock(self):
         if not self._writer_is_open():
             lockfile = os.path.join(self.location, 'flintlock')
-            if os.path.exists(lockfile) and (time.time() - os.path.getmtime(lockfile)) / 60 > 15:
-                logging.warning("stale lock found in %s, removing.", self.location)
+            if (os.path.exists(lockfile) and
+                (time.time() - os.path.getmtime(lockfile)) / 60 > 15):
+                logging.warning("Stale lock found in %s, removing.",
+                                self.location)
                 os.remove(lockfile)
 
     def _writer_open(self):
-        """open write access for the indexing database and acquire an exclusive lock"""
+        """Open write access for the indexing database and acquire an
+        exclusive lock.
+        """
         if not self._writer_is_open():
             self._delete_stale_lock()
             try:
@@ -484,10 +490,11 @@ def _truncate_term_length(term, taken=0):
 
 
 def _extract_fieldvalues(match, (result, fieldnames)):
-    """add a dict of field values to a list
+    """Add a dict of field values to a list.
 
-    usually this function should be used together with '_walk_matches'
-    for traversing a list of matches
+    Usually this function should be used together with :func:`_walk_matches`
+    for traversing a list of matches.
+
     :param match: a single match object
     :type match: xapian.MSet
     :param result: the resulting dict will be added to this list

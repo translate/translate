@@ -61,9 +61,11 @@ TODOs and Ideas for possible features:
 """
 
 import re
+import logging
 
 from translate.lang import data
 
+logger = logging.getLogger(__name__)
 
 class Common(object):
     """This class is the common parent class for all language classes."""
@@ -110,10 +112,19 @@ class Common(object):
     # Don't change these defaults of nplurals or pluralequation willy-nilly:
     # some code probably depends on these for unrecognised languages
 
+    mozilla_nplurals = 0
+    mozilla_pluralequation = "0"
+    """This of languages that has different plural formula in Mozilla than the
+    standard one in Gettext."""
+
     listseperator = u", "
     """This string is used to separate lists of textual elements. Most
     languages probably can stick with the default comma, but Arabic and some
     Asian languages might want to override this."""
+
+    specialchars = u""
+    """Characters used by the language that might not be easy to input with
+    common keyboard layouts"""
 
     commonpunc = u".,;:!?-@#$%^*_()[]{}/\\'`\"<>"
     """These punctuation marks are common in English and most languages that
@@ -203,15 +214,15 @@ class Common(object):
 
         language.code = code
         while code:
-            langdata = data.languages.get(code, None)
+            langdata = data.get_language(code)
             if langdata:
                 language.fullname, language.nplurals, \
                     language.pluralequation = langdata
                 break
             code = data.simplercode(code)
         if not code:
-            #print >> sys.stderr, \
-            #         "Warning: No information found about language code %s" % code
+            # message suppressed by default at level info
+            logger.info("No information found about language code %s", code)
             pass
         return language
 
@@ -230,7 +241,7 @@ class Common(object):
     def punctranslate(cls, text):
         """Converts the punctuation in a string according to the rules of the
         language."""
-#        TODO: look at po::escapeforpo() for performance idea
+        #TODO: look at po::escapeforpo() for performance idea
         if not text:
             return text
         ellipses_end = text.endswith(u"...")
@@ -344,7 +355,7 @@ class Common(object):
     sentence_iter = classmethod(sentence_iter)
 
     def sentences(cls, text, strip=True):
-        """Returns a list of senteces in text."""
+        """Returns a list of sentences in text."""
         return [s for s in cls.sentence_iter(text, strip=strip)]
     sentences = classmethod(sentences)
 
@@ -355,7 +366,7 @@ class Common(object):
     capsstart = classmethod(capsstart)
 
     def numstart(cls, text):
-        """Determines whether the text starts with a mumeric value."""
+        """Determines whether the text starts with a numeric value."""
         stripped = text.lstrip().lstrip(cls.punctuation)
         return stripped and stripped[0].isnumeric()
     numstart = classmethod(numstart)

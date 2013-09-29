@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-from py import test
+import pytest
 
 from translate.misc import autoencode
 
@@ -33,4 +33,4 @@ class TestAutoencode:
 
     def test_bad_encoding(self):
         """tests that we throw an exception if we don't know the encoding"""
-        assert test.raises(ValueError, self.type2test, 'text', 'some-encoding')
+        assert pytest.raises(ValueError, self.type2test, 'text', 'some-encoding')

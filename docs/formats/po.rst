@@ -5,8 +5,8 @@ PO Files
 ********
 PO files use the file format of the Gettext tools.
 
-.. seealso:: `Gettext manual <http://www.gnu.org/software/gettext/>`_ and `KDE
-   style PO files <http://public.planetmirror.com/pub/kde/devel/gettext-kde/>`_
+.. seealso:: `Gettext manual <http://www.gnu.org/software/gettext/>`_
+
 
 .. _po#supported_features:
 
@@ -14,68 +14,67 @@ Supported Features
 ==================
 
 * Headers
-* Plural forms and plural form handling
-* Obsolete messages
-* Message Context (msgctxt)
 * Language header (since gettext version 0.17)
-* Previous message ID and context (#| msgid and #| msgctxt)
+* Plural forms and plural form handling
+* Message context
 
-.. _po#supported_comments:
+  .. code-block:: po
 
-Supported comments
-==================
+    msgctxt "noun"
+    msgid "View"
+    msgstr ""
 
-* normal comments
+* Normal comments
 
-.. code-block:: po
+  .. code-block:: po
 
     # this is another comment
 
-* automatic comments
+* Automatic comments
 
-.. code-block:: po
+  .. code-block:: po
 
     #. comment extracted from the source code
 
-* source location comments
+* Source location comments
 
-.. code-block:: po
+  .. code-block:: po
 
     #: sourcefile.xxx:35
 
-* typecomments
+* Typecomments
 
-.. code-block:: po
+  .. code-block:: po
 
     #, fuzzy
 
-* msgidcomments
+* Msgidcomments, also known as KDE style comments as they are used by KDE for
+  message disambiguation and comments to translators.
 
-.. code-block:: po
+  .. note:: Support for this is being phased out in favor of ``msgctxt``.
+
+  .. code-block:: po
 
     msgid "_: comment\n"
     "translation"
 
-Also know as KDE style comments as they are used by KDE for message
-disambiguation and comments to translators. (support for this is being phased
-out)
+* Obsolete messages
 
-* obsolete messages
-
-.. code-block:: po
+  .. code-block:: po
 
     #~ msgid "Blah"
     #~ msgstr "Bleeh"
 
-* previous msgid and msgctxt
+* Previous msgid
 
-.. code-block:: po
+  .. code-block:: po
 
     #| msgid "previous message"
 
-.. _po#unsupported_features:
+* Previous msgctxt
 
-Unsupported Features
-====================
+  .. code-block:: po
 
-None
+    #| msgctxt "previous context"
+
+

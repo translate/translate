@@ -106,10 +106,11 @@ class UnknownXML(StringElem):
 
     # METHODS #
     def copy(self):
-        """Returns a copy of the sub-tree.
-            This should be overridden in sub-classes with more data.
+	"""Returns a copy of the sub-tree.  This should be overridden in
+	sub-classes with more data.
 
-            .. note:: ``self.renderer`` is **not** copied."""
+        .. note:: ``self.renderer`` is **not** copied.
+        """
         from copy import copy
         cp = self.__class__(id=self.id, rid=self.rid, xid=self.xid,
                             xml_node=copy(self.xml_node))

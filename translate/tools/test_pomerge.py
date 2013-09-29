@@ -1,8 +1,8 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-from py import test
-from py.test import mark
+import pytest
+from pytest import mark
 
 from translate.tools import pomerge
 from translate.storage import factory
@@ -19,7 +19,7 @@ def test_str2bool():
     assert not pomerge.str2bool("no")
     assert not pomerge.str2bool("false")
     assert not pomerge.str2bool("0")
-    test.raises(ValueError, pomerge.str2bool, "2")
+    pytest.raises(ValueError, pomerge.str2bool, "2")
 
 
 class TestPOMerge:
@@ -85,9 +85,9 @@ class TestPOMerge:
         templatefile = wStringIO.StringIO("")
         inputfile = wStringIO.StringIO("")
         outputfile = wStringIO.StringIO()
-        test.raises(ValueError, pomerge.mergestore, inputfile, outputfile,
+        pytest.raises(ValueError, pomerge.mergestore, inputfile, outputfile,
                     templatefile, mergeblanks="yay")
-        test.raises(ValueError, pomerge.mergestore, inputfile, outputfile,
+        pytest.raises(ValueError, pomerge.mergestore, inputfile, outputfile,
                     templatefile, mergecomments="yay")
 
     def test_simplemerge(self):

@@ -3,19 +3,20 @@
 
 TMX
 ***
-TMX is the LISA standard for translation memories. See
-http://www.lisa.org/standards/tmx.
+TMX is the `LISA OSCAR standard
+<http://www.gala-global.org/lisa-oscar-standards>`_ for translation memories.
 
 .. _tmx#standard_conformance:
 
 Standard conformance
 ====================
 
-Summary: TMX version 1.4 conformance to Level 1, except that no markup is
-stripped.
+Summary: `TMX version 1.4
+<http://www.gala-global.org/oscarStandards/tmx/tmx14b.html>`_ conformance to
+Level 1, except that no markup is stripped.
 
 * All required header fields are supplied.
-* The adminlang field in the header is always English.
+* The ``adminlang`` field in the header is always English.
 * None of the optional header fields are supplied.
 * We assume that only two languages are used (source and single target
   language).

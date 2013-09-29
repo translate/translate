@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
-from py.test import mark
+from pytest import mark, importorskip
+importorskip("BeautifulSoup")
 
 from translate.storage import test_base
 from translate.storage import trados

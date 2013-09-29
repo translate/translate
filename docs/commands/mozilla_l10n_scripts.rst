@@ -34,12 +34,12 @@ Requirements
 * All scripts in the ``tools/mozilla`` directory (from the project sources)
   should be executable and in your ``PATH``.
 
-.. _mozilla_l10n_scripts#build_ff3.1_langs.sh:
+.. _build_ff3.1_langs.sh:
 
 build_ff3.1_langs.sh
 ====================
 
-.. _mozilla_l10n_scripts#description:
+.. _build_ff3.1_langs.sh#description:
 
 Description
 -----------
@@ -51,7 +51,7 @@ does the following:
    <http://hg.mozilla.org/l10n-central>`_ Mercurial repository.
 #. Replace old l10n en-US files with a fresh copy from the updated source tree.
 #. :doc:`Create new POT files </guides/creating_mozilla_pot_files>` from the
-   :ref:`en-US <mozilla_l10n_scripts#get_moz_enus.py>` l10n files.
+   :ref:`en-US <get_moz_enus.py>` l10n files.
 #. Create archives of the POT files.
 #. For each language:
 
@@ -62,7 +62,7 @@ does the following:
    #. :doc:`Create Mozilla l10n files <moz2po>` for the language based on the
       migrated PO files.
    #. Create archives of the PO files.
-   #. :ref:`Build langpack <mozilla_l10n_scripts#buildxpi.py>` for the
+   #. :ref:`Build langpack <buildxpi.py>` for the
       language.
 
 This script is used on the l10n.mozilla.org server to create most (if not all)
@@ -71,7 +71,7 @@ written as a stable way to provide these files and as such making it as general
 as possible was not the biggest requirement. This is evident in the script's
 very narrow focus.
 
-.. _mozilla_l10n_scripts#usage:
+.. _build_ff3.1_langs.sh#usage:
 
 Usage
 -----
@@ -127,7 +127,7 @@ The variables are used in the following ways:
    ``popacks``, ``potpacks``, ``po-updated`` and ``xpi`` (if used). This way
    the only variable that need to be changed is ``BUILD_DIR``.
 
-.. _mozilla_l10n_scripts#build_tb3_langs.sh:
+.. _build_tb3_langs.sh:
 
 build_tb3_langs.sh
 ==================
@@ -136,21 +136,21 @@ adapted from. It is 90% similar with the obvious exception that it is aimed at
 building Thunderbird 3.0 packages in stead of Firefox 3.1. Also note that this
 script uses the comm-central repository in stead of mozilla-central.
 
-.. _mozilla_l10n_scripts#buildxpi.py:
+.. _buildxpi.py:
 
 buildxpi.py
 ===========
 
-.. _mozilla_l10n_scripts#description:
+.. _buildxpi.py#description:
 
 Description
 -----------
-Creats a XPI language pack from Mozilla sources and translated l10n files. This
+Creates XPI language packs from Mozilla sources and translated l10n files. This
 script has only been tested with Firefox 3.1 beta sources.
 
 It is basically the scripted version of the process described on Mozilla's
 `"Creating a language pack"
-<https://developer.mozilla.org/en/creating_a_language_pack>`_ page.
+<https://developer.mozilla.org/en-US/docs/Creating_a_Language_Pack>`_ page.
 
 This script is used by ``build_ff3.1_langs.sh`` to build language packs in its
 final step.
@@ -159,17 +159,17 @@ final step.
    existing ``.mozconfig`` is renamed to ``.mozconfig.bak`` during operation
    and copied back afterwards.
 
-.. _mozilla_l10n_scripts#usage:
+.. _buildxpi.py#usage:
 
 Usage
 -----
 ::
 
-  buildxpi.py [<options>] <lang>
+  buildxpi.py [<options>] <lang> [<lang2> ...]
 
 Example::
 
-  buildxpi.py -L /path/to/l10n -s /path/to/mozilla-central -o /path/to/xpi_output af
+  buildxpi.py -L /path/to/l10n -s /path/to/mozilla-central -o /path/to/xpi_output af ar
 
 Options:
 
@@ -186,12 +186,12 @@ Options:
 -d, --delete-dest     Delete output XPI if it already exists.
 -v, --verbose         Be more noisy
 
-.. _mozilla_l10n_scripts#get_moz_enus.py:
+.. _get_moz_enus.py:
 
 get_moz_enUS.py
 ===============
 
-.. _mozilla_l10n_scripts#description:
+.. _get_moz_enus.py#description:
 
 Description
 -----------
@@ -199,7 +199,7 @@ A simple script to collect the en-US l10n files from a Mozilla source tree
 (``'comm-central``' or ``'mozilla-central``') by traversing the product's
 ``l10n.ini`` file.
 
-.. _mozilla_l10n_scripts#usage:
+.. _get_moz_enus.py#usage:
 
 Usage
 -----
@@ -221,7 +221,7 @@ Options:
 --delete-dest         Delete the destination directory (if it exists).
 -v, --verbose         Be more noisy
 
-.. _mozilla_l10n_scripts#moz-l10n-builder:
+.. _moz-l10n-builder#deprecated:
 
 moz-l10n-builder
 ================
@@ -234,7 +234,7 @@ Mozilla l10n.
 For more information about this script see its :doc:`dedicated page
 <moz-l10n-builder>`.
 
-.. _mozilla_l10n_scripts#moz_l10n_builder.py:
+.. _moz_l10n_builder.py:
 
 moz_l10n_builder.py
 ===================

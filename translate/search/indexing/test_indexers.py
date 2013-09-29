@@ -23,9 +23,28 @@
 import os
 import sys
 import shutil
+import pytest
 
 import __init__ as indexing
 import CommonIndexer
+
+# following block only needs running under pytest; unclear how to detect it?
+
+# check whether any indexer is present at all
+noindexer = True
+for indexer in [ "lucene", "PyLucene", "xapian" ]:
+    try:
+        __import__(indexer)
+    except ImportError:
+        continue
+    noindexer = False
+    break
+# mark entire module as skipped for pytest if no indexer available
+pytestmark = pytest.mark.skipif("noindexer")
+
+# FIXME (bug 2819) need to rename most test_* functions, add new "parametrized"
+# test_indexer function to normalize operation whether run directly as script
+# or via pytest
 
 DATABASE = "tmp-index"
 
@@ -281,6 +300,27 @@ def test_or_queries():
     # clean up
     clean_database()
 
+def test_string_queries():
+    """test if string queries work as expected"""
+    # clean up everything first
+    clean_database()
+    # initialize the database with example content
+    new_db = _get_indexer(DATABASE)
+    create_example_content(new_db)
+    # do string query
+    q_string1 = new_db.make_query("foo bar")
+    r_string1 = new_db.get_query_result(q_string1).get_matches(0, 10)
+    assert r_string1[0] == 3
+    # do string query with non contagious words
+    q_string2 = new_db.make_query("foo HELO")
+    r_string2 = new_db.get_query_result(q_string2).get_matches(0, 10)
+    assert r_string2[0] == 3
+    # do string query with a named field
+    q_string3 = new_db.make_query({"multiple": "foo bar"})
+    r_string3 = new_db.get_query_result(q_string3).get_matches(0, 10)
+    assert r_string3[0] == 1
+    # clean up
+    clean_database()
 
 def test_lower_upper_case():
     """test if case is ignored for queries and for indexed terms"""
@@ -491,6 +531,7 @@ if __name__ == "__main__":
         test_field_analyzers()
         test_and_queries()
         test_or_queries()
+        test_string_queries()
         test_lower_upper_case()
         test_tokenizing()
         test_searching()

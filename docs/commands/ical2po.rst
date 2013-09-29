@@ -40,8 +40,7 @@ Options (ical2po):
 -x EXCLUDE, --exclude=EXCLUDE  exclude names matching EXCLUDE from input paths
 -o OUTPUT, --output=OUTPUT     write to OUTPUT in po, pot formats
 -t TEMPLATE, --template=TEMPLATE  read from TEMPLATE in php format
---psyco=MODE          use psyco to speed up the operation, modes: :doc:`none,
-                      full, profile <option_psyco>`
+-S, --timestamp       skip conversion if the output file has newer timestamp
 -P, --pot    output PO Templates (.pot) rather than PO files (.po)
 --duplicates=DUPLICATESTYLE
                       what to do with duplicate strings (identical source
@@ -61,8 +60,8 @@ Options (po2ical):
 -x EXCLUDE, --exclude=EXCLUDE   exclude names matching EXCLUDE from input paths
 -o OUTPUT, --output=OUTPUT      write to OUTPUT in php format
 -t TEMPLATE, --template=TEMPLATE  read from TEMPLATE in php format
---psyco=MODE          use psyco to speed up the operation, modes: :doc:`none,
-                      full, profile <option_psyco>`
+-S, --timestamp      skip conversion if the output file has newer timestamp
+--threshold=PERCENT  only convert files where the translation completion is above PERCENT
 --fuzzy              use translations marked fuzzy
 --nofuzzy            don't use translations marked fuzzy (default)
 
@@ -112,7 +111,6 @@ The converter does not make use of the LANGUAGE attribute which is permitted in
 the format.  The LANGUAGE attribute does not aid multilingualism in this
 context so is ignored.
 
-The converter could conceivably also process `vCard
-<https://en.wikipedia.org/wiki/Vcard>`_ files, but this has not been
-implemented for lack of a clear need.  Please raise a bug with an example if
-you have such a file that could benefit from localisation.
+The converter could conceivably also process :wp:`vCard <Vcard>` files, but
+this has not been implemented for lack of a clear need.  Please raise a bug
+with an example if you have such a file that could benefit from localisation.

@@ -3,8 +3,7 @@
 
 import warnings
 
-from py import test
-from py.test import mark
+import pytest
 
 from translate.convert import po2dtd
 from translate.convert import dtd2po
@@ -22,11 +21,11 @@ class TestPO2DTD:
     def teardown_method(self, method):
         warnings.resetwarnings()
 
-    def po2dtd(self, posource):
+    def po2dtd(self, posource, remove_untranslated=False):
         """helper that converts po source to dtd source without requiring files"""
         inputfile = wStringIO.StringIO(posource)
         inputpo = po.pofile(inputfile)
-        convertor = po2dtd.po2dtd()
+        convertor = po2dtd.po2dtd(remove_untranslated=remove_untranslated)
         outputdtd = convertor.convertstore(inputpo)
         return outputdtd
 
@@ -40,12 +39,13 @@ class TestPO2DTD:
         outputdtd = convertor.convertstore(inputpo)
         return outputdtd
 
-    def convertdtd(self, posource, dtdtemplate):
+    def convertdtd(self, posource, dtdtemplate, remove_untranslated=False):
         """helper to exercise the command line function"""
         inputfile = wStringIO.StringIO(posource)
         outputfile = wStringIO.StringIO()
         templatefile = wStringIO.StringIO(dtdtemplate)
-        assert po2dtd.convertdtd(inputfile, outputfile, templatefile)
+        assert po2dtd.convertdtd(inputfile, outputfile, templatefile,
+                                 remove_untranslated=remove_untranslated)
         return outputfile.getvalue()
 
     def roundtripsource(self, dtdsource):
@@ -60,7 +60,9 @@ class TestPO2DTD:
         dtdoutputfile = wStringIO.StringIO()
         po2dtd.convertdtd(poinputfile, dtdoutputfile, dtdtemplatefile)
         dtdresult = dtdoutputfile.getvalue()
-        print "original dtd:\n", dtdsource, "po version:\n", posource, "output dtd:\n", dtdresult
+        print_string = "Original DTD:\n%s\n\nPO version:\n%s\n\n"
+        print_string = print_string + "Output DTD:\n%s\n################"
+        print print_string % (dtdsource, posource, dtdresult)
         return dtdresult
 
     def roundtripstring(self, entitystring):
@@ -71,9 +73,22 @@ class TestPO2DTD:
         assert dtdresult.startswith(dtdintro) and dtdresult.endswith(dtdoutro)
         return dtdresult[len(dtdintro):-len(dtdoutro)]
 
-    def check_roundtrip(self, dtdsource):
-        """Checks that the round-tripped string is the same as the original"""
-        assert self.roundtripstring(dtdsource) == dtdsource
+    def check_roundtrip(self, dtdsource, dtdcompare=None):
+        """Checks that the round-tripped string is the same as dtdcompare.
+
+        If no dtdcompare string is provided then the round-tripped string is
+        compared with the original string.
+
+        The reason why sometimes another string is provided to compare with the
+        resulting string from the roundtrip is that if the original string
+        contains some characters, like " character, or escapes like &quot;,
+        then when the roundtrip is performed those characters or escapes are
+        escaped, rendering a round-tripped string which differs from the
+        original one.
+        """
+        if not dtdcompare:
+            dtdcompare = dtdsource
+        assert self.roundtripstring(dtdsource) == dtdcompare
 
     def test_joinlines(self):
         """tests that po lines are joined seamlessly (bug 16)"""
@@ -94,7 +109,7 @@ class TestPO2DTD:
         simplepo = '''#: simple.label\n#: simple.accesskey\nmsgid "Simple &String"\nmsgstr "Dimpled Ring"\n'''
         simpledtd = '''<!ENTITY simple.label "Simple String">\n<!ENTITY simple.accesskey "S">'''
         warnings.simplefilter("error")
-        assert test.raises(Warning, self.merge2dtd, simpledtd, simplepo)
+        assert pytest.raises(Warning, self.merge2dtd, simpledtd, simplepo)
 
     def test_accesskeycase(self):
         """tests that access keys come out with the same case as the original, regardless"""
@@ -189,6 +204,98 @@ msgstr "&searchIntegration.engineName; &ileti aramasına izin ver"
         print newdtd
         assert newdtd == dtdexpected
 
+    def test_untranslated_with_template(self):
+        """test removing of untranslated entries in redtd"""
+        posource = '''#: simple.label
+msgid "Simple string"
+msgstr "Dimpled ring"
+
+#: simple.label2
+msgid "Simple string 2"
+msgstr ""
+
+#: simple.label3
+msgid "Simple string 3"
+msgstr "Simple string 3"
+
+#: simple.label4
+#, fuzzy
+msgid "Simple string 4"
+msgstr "simple string four"
+'''
+        dtdtemplate = '''<!ENTITY simple.label "Simple string">
+<!ENTITY simple.label2 "Simple string 2">
+<!ENTITY simple.label3 "Simple string 3">
+<!ENTITY simple.label4 "Simple string 4">
+'''
+        dtdexpected = '''<!ENTITY simple.label "Dimpled ring">
+
+<!ENTITY simple.label3 "Simple string 3">
+
+'''
+        newdtd = self.convertdtd(posource, dtdtemplate, remove_untranslated=True)
+        print newdtd
+        assert newdtd == dtdexpected
+
+    def test_untranslated_without_template(self):
+        """test removing of untranslated entries in po2dtd"""
+        posource = '''#: simple.label
+msgid "Simple string"
+msgstr "Dimpled ring"
+
+#: simple.label2
+msgid "Simple string 2"
+msgstr ""
+
+#: simple.label3
+msgid "Simple string 3"
+msgstr "Simple string 3"
+
+#: simple.label4
+#, fuzzy
+msgid "Simple string 4"
+msgstr "simple string four"
+'''
+        dtdexpected = '''<!ENTITY simple.label "Dimpled ring">
+<!ENTITY simple.label3 "Simple string 3">
+'''
+        newdtd = self.po2dtd(posource, remove_untranslated=True)
+        print newdtd
+        assert str(newdtd) == dtdexpected
+
+    def test_blank_source(self):
+        """test removing of untranslated entries where source is blank"""
+        posource = '''#: simple.label
+msgid "Simple string"
+msgstr "Dimpled ring"
+
+#: simple.label2
+msgid ""
+msgstr ""
+
+#: simple.label3
+msgid "Simple string 3"
+msgstr "Simple string 3"
+'''
+        dtdtemplate = '''<!ENTITY simple.label "Simple string">
+<!ENTITY simple.label2 "">
+<!ENTITY simple.label3 "Simple string 3">
+'''
+        dtdexpected_with_template = '''<!ENTITY simple.label "Dimpled ring">
+<!ENTITY simple.label2 "">
+<!ENTITY simple.label3 "Simple string 3">
+'''
+
+        dtdexpected_no_template = '''<!ENTITY simple.label "Dimpled ring">
+<!ENTITY simple.label3 "Simple string 3">
+'''
+        newdtd_with_template = self.convertdtd(posource, dtdtemplate, remove_untranslated=True)
+        print newdtd_with_template
+        assert newdtd_with_template == dtdexpected_with_template
+        newdtd_no_template = self.po2dtd(posource, remove_untranslated=True)
+        print newdtd_no_template
+        assert str(newdtd_no_template) == dtdexpected_no_template
+
     def test_newlines_escapes(self):
         """check that we can handle a \n in the PO file"""
         posource = '''#: simple.label\n#: simple.accesskey\nmsgid "A hard coded newline.\\n"\nmsgstr "Hart gekoeerde nuwe lyne\\n"\n'''
@@ -209,12 +316,45 @@ msgstr "&searchIntegration.engineName; &ileti aramasına izin ver"
         self.check_roundtrip(r'"End Line Escape \"')
 
     def test_roundtrip_quotes(self):
-        """checks that (escaped) quotes in strings make it through a dtd->po->dtd roundtrip"""
-        self.check_roundtrip(r"""'Quote Escape "" '""")
+        """Checks that quotes make it through a DTD->PO->DTD roundtrip.
+
+        Quotes may be escaped or not.
+        """
+        # NOTE: during the roundtrip, if " quote mark is present, then it is
+        # converted to &quot; and the resulting string is always enclosed
+        # between " characters independently of which quotation marks the
+        # original string is enclosed between. Thus the string cannot be
+        # compared with itself and therefore other string should be provided to
+        # compare with the result.
+        #
+        # Thus the string cannot be compared with itself and therefore another
+        # string should be provided to compare with the roundtrip result.
+        self.check_roundtrip(r"""'Quote Escape "" '""",
+                             r'''"Quote Escape &quot;&quot; "''')
+        self.check_roundtrip(r'''"Double-Quote Escape &quot;&quot; "''')
         self.check_roundtrip(r'''"Single-Quote ' "''')
         self.check_roundtrip(r'''"Single-Quote Escape \' "''')
-        # NOTE: if both quote marks are present, than ' is converted to &apos;
-        self.check_roundtrip(r"""'Both Quotes "" &apos;&apos; '""")
+        # NOTE: during the roundtrip, if " quote mark is present, then ' is
+        # converted to &apos; and " is converted to &quot; Also the resulting
+        # string is always enclosed between " characters independently of which
+        # quotation marks the original string is enclosed between. Thus the
+        # string cannot be compared with itself and therefore another string
+        # should be provided to compare with the result.
+        #
+        # Thus the string cannot be compared with itself and therefore another
+        # string should be provided to compare with the roundtrip result.
+        self.check_roundtrip(r"""'Both Quotes "" &apos;&apos; '""",
+                             r'''"Both Quotes &quot;&quot; &apos;&apos; "''')
+        self.check_roundtrip(r'''"Both Quotes &quot;&quot; &apos;&apos; "''')
+        # NOTE: during the roundtrip, if &quot; is present, then ' is converted
+        # to &apos; Also the resulting string is always enclosed between "
+        # characters independently of which quotation marks the original string
+        # is enclosed between.
+        #
+        # Thus the string cannot be compared with itself and therefore another
+        # string should be provided to compare with the roundtrip result.
+        self.check_roundtrip(r'''"Both Quotes &quot;&quot; '' "''',
+                             r'''"Both Quotes &quot;&quot; &apos;&apos; "''')
 
     def test_merging_entries_with_spaces_removed(self):
         """dtd2po removes pretty printed spaces, this tests that we can merge this back into the pretty printed dtd"""
@@ -313,4 +453,6 @@ class TestPO2DTDCommand(test_convert.TestConvertCommand, TestPO2DTD):
         options = test_convert.TestConvertCommand.test_help(self)
         options = self.help_check(options, "-t TEMPLATE, --template=TEMPLATE")
         options = self.help_check(options, "--fuzzy")
+        options = self.help_check(options, "--threshold=PERCENT")
+        options = self.help_check(options, "--removeuntranslated")
         options = self.help_check(options, "--nofuzzy", last=True)

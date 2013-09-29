@@ -14,7 +14,8 @@ Resources
 =========
 
 * `UTX site <http://www.aamt.info/english/utx/index.htm>`_
-* `Specification <http://www.aamt.info/english/utx/utx-simple-1.00-specification-e.pdf>`_ (v1.0)
+* `Current Specification <http://www.aamt.info/english/utx/#Download>`_
+  (implementation is based on UTX 1.0 which is no longer available)
 
 .. _utx#conformance:
 

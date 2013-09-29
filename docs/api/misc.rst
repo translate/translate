@@ -125,14 +125,6 @@ quote
    :inherited-members:
 
 
-selector
---------
-
-.. automodule:: translate.misc.selector
-   :members:
-   :inherited-members:
-
-
 sparse
 ------
 
@@ -224,13 +216,5 @@ xmlwrapper
 ----------
 
 .. automodule:: translate.misc.xmlwrapper
-   :members:
-   :inherited-members:
-
-
-zipfileext
-----------
-
-.. automodule:: translate.misc.zipfileext
    :members:
    :inherited-members:

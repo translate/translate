@@ -42,6 +42,7 @@ class ConvertOptionParser(optrecurse.RecursiveOptionParser, object):
                                                   allowmissingtemplate=allowmissingtemplate,
                                                   description=description)
         self.usepots = usepots
+        self.settimestampoption()
         self.setpotoption()
         self.set_usage()
 
@@ -58,6 +59,15 @@ class ConvertOptionParser(optrecurse.RecursiveOptionParser, object):
         self.add_option("", "--nofuzzy", dest="includefuzzy",
                         action="store_false", default=default, help=nofuzzyhelp)
         self.passthrough.append("includefuzzy")
+
+    def add_threshold_option(self, default=None):
+        """Adds an option to output only stores where translation percentage
+        exceeds the threshold.
+        """
+        self.add_option("", "--threshold", dest="outputthreshold", default=default,
+                        metavar="PERCENT", type="int",
+                        help="only convert files where the translation completion is above PERCENT")
+        self.passthrough.append("outputthreshold")
 
     def add_duplicates_option(self, default="msgctxt"):
         """Adds an option to say what to do with duplicate strings."""
@@ -134,6 +144,15 @@ class ConvertOptionParser(optrecurse.RecursiveOptionParser, object):
             )
             self.define_option(potoption)
 
+    def settimestampoption(self):
+        """Sets ``-S``/``--timestamp`` option."""
+        timestampopt = optparse.Option(
+            "-S", "--timestamp",
+            action="store_true", dest="timestamp", default=False,
+            help="skip conversion if the output file has newer timestamp"
+        )
+        self.define_option(timestampopt)
+
     def verifyoptions(self, options):
         """Verifies that the options are valid (required options are
         present, etc)."""
@@ -144,13 +163,21 @@ class ConvertOptionParser(optrecurse.RecursiveOptionParser, object):
         (options, args) = self.parse_args(argv)
         options.inputformats = self.filterinputformats(options)
         options.outputoptions = self.filteroutputoptions(options)
-        self.usepsyco(options)
         try:
             self.verifyoptions(options)
         except Exception, e:
             self.error(str(e))
         self.recursiveprocess(options)
 
+    def processfile(self, fileprocessor, options, fullinputpath,
+                    fulloutputpath, fulltemplatepath):
+        if options.timestamp and _output_is_newer(fullinputpath, fulloutputpath):
+            return False
+
+        return super(ConvertOptionParser,
+                    self).processfile(fileprocessor, options,
+                                      fullinputpath, fulloutputpath,
+                                      fulltemplatepath)
 
 def copyinput(inputfile, outputfile, templatefile, **kwargs):
     """Copies the input file to the output file."""
@@ -400,6 +427,9 @@ class ArchiveConvertOptionParser(ConvertOptionParser):
     def processfile(self, fileprocessor, options, fullinputpath,
                     fulloutputpath, fulltemplatepath):
         """Run an invidividual conversion."""
+        if options.timestamp and _output_is_newer(fullinputpath, fulloutputpath):
+            return False
+
         if self.isarchive(options.output, 'output'):
             inputfile = self.openinputfile(options, fullinputpath)
             # TODO: handle writing back to same archive as input/template
@@ -422,6 +452,40 @@ class ArchiveConvertOptionParser(ConvertOptionParser):
                                           fullinputpath, fulloutputpath,
                                           fulltemplatepath)
 
+def _output_is_newer(input_path, output_path):
+    """Check if input_path was not modified since output_path was generated,
+    used to avoid needless regeneration of output.
+    """
+    if not input_path or not output_path:
+        return False
+
+    if not os.path.exists(input_path) or not os.path.exists(output_path):
+        return False
+
+    input_mtime = os.path.getmtime(input_path)
+    output_mtime = os.path.getmtime(output_path)
+
+    return output_mtime > input_mtime
+
+def should_output_store(store, threshold):
+    """Check if the percent of translated source words more than or equal to
+    the given threshold.
+    """
+
+    if not threshold:
+        return True
+
+    from translate.storage import statsdb
+
+    units = filter(lambda unit: unit.istranslatable(), store.units)
+    translated = filter(lambda unit: unit.istranslated(), units)
+    wordcounts = dict(map(lambda unit: (unit, statsdb.wordsinunit(unit)), units))
+    sourcewords = lambda elementlist: sum(map(lambda unit: wordcounts[unit][0], elementlist))
+    tranlated_count = sourcewords(translated)
+    total_count = sourcewords(units)
+    percent = tranlated_count * 100 / total_count
+
+    return percent >= threshold
 
 def main(argv=None):
     parser = ArchiveConvertOptionParser({}, description=__doc__)

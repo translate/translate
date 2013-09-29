@@ -22,7 +22,7 @@
 
 """Convert GNU/gettext PO files to web2py translation dictionaries (.py).
 
-See: http://docs.translatehouse.org/projects/translate-toolkit/en/latest/commands/py2web2po.html
+See: http://docs.translatehouse.org/projects/translate-toolkit/en/latest/commands/web2py2po.html
 for examples and usage instructions.
 """
 
@@ -57,8 +57,13 @@ class po2pydict:
         return str_obj
 
 
-def convertpy(inputfile, outputfile, templatefile=None, includefuzzy=False):
+def convertpy(inputfile, outputfile, templatefile=None, includefuzzy=False,
+              outputthreshold=None):
     inputstore = factory.getobject(inputfile)
+
+    if not convert.should_output_store(inputstore, outputthreshold):
+        return False
+
     convertor = po2pydict()
     outputstring = convertor.convertstore(inputstore, includefuzzy)
     outputfile.write(outputstring.read())
@@ -66,12 +71,12 @@ def convertpy(inputfile, outputfile, templatefile=None, includefuzzy=False):
 
 
 def main(argv=None):
-    from translate.convert import convert
     from translate.misc import stdiotell
     import sys
     sys.stdout = stdiotell.StdIOWrapper(sys.stdout)
     formats = {("po", "py"): ("py", convertpy), ("po"): ("py", convertpy)}
     parser = convert.ConvertOptionParser(formats, usetemplates=False, description=__doc__)
+    parser.add_threshold_option()
     parser.add_fuzzy_option()
     parser.run(argv)
 

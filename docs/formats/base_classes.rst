@@ -3,8 +3,9 @@
 
 Base classes
 ************
-NOTE: This page is mostly useful for :doc:`developers` as it describes some
-programming detail of the :doc:`toolkit <index>`.
+NOTE: This page is mostly useful for :doc:`developers
+</development/developers>` as it describes some programming detail of the
+:doc:`toolkit <index>`.
 
 For the implementation of the different storage classes that the toolkit
 supports, we want to define a set of base classes to form a common API for all
@@ -37,7 +38,7 @@ Other possibilities:
 * Support for variable number of languages in the format. Examples: .txt and
   .properties support one language, PO supports two, :doc:`tmx` supports many.
 * Support for "multifiles", in other words a file that contain other entities
-  that corresponds to files in other formats. Examples: ZIP, XPI and
+  that corresponds to files in other formats. Examples: ZIP and
   :doc:`xliff`. In reality this is only used by some of the converters. This
   isn't present in the base class yet.
 
@@ -118,7 +119,7 @@ Multifile
 This abstraction is only used by a few converters.
 
 This class represents a storage format that contains other files or file like
-objects. Examples include ZIP, XPI and XLIFF, and OpenOffice SDF files. It must
+objects. Examples include ZIP, XLIFF, and OpenOffice SDF files. It must
 give access to the contained files, and possibly give access to the translation
 units contained in those files, as if they are contained natively.
 

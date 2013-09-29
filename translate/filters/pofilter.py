@@ -19,11 +19,13 @@
 
 """Perform quality checks on Gettext PO, XLIFF and TMX localization files.
 
-Snippet files whenever a test fails.  These can be examined, corrected and
-merged back into the originals using pomerge.
+Snippet files are created whenever a test fails.  These can be examined,
+corrected and merged back into the originals using pomerge.
 
-See: http://translate.sourceforge.net/wiki/toolkit/pofilter for examples and
-usage instructions and http://translate.sourceforge.net/wiki/toolkit/pofilter_tests
+See:
+http://docs.translatehouse.org/projects/translate-toolkit/en/latest/commands/pofilter.html
+for examples and usage instructions and
+http://docs.translatehouse.org/projects/translate-toolkit/en/latest/commands/pofilter_tests.html
 for full descriptions of all tests.
 """
 
@@ -199,8 +201,6 @@ class FilterOptionParser(optrecurse.RecursiveOptionParser):
 
         options.inputformats = self.inputformats
         options.outputoptions = self.outputoptions
-
-        self.usepsyco(options)
 
         if options.listfilters:
             print options.checkfilter.getfilterdocs()

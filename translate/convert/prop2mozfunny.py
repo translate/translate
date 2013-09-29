@@ -92,7 +92,8 @@ def prop2funny(src, itencoding="cp1252"):
             yield line.decode("utf-8").encode(itencoding) + "\n"
 
 
-def po2inc(inputfile, outputfile, templatefile, encoding=None, includefuzzy=False):
+def po2inc(inputfile, outputfile, templatefile, encoding=None, includefuzzy=False,
+           remove_untranslated=False, outputthreshold=None):
     """wraps po2prop but converts outputfile to properties first"""
     outputpropfile = StringIO()
     if templatefile is not None:
@@ -101,7 +102,11 @@ def po2inc(inputfile, outputfile, templatefile, encoding=None, includefuzzy=Fals
         templatepropfile = StringIO("".join(templateproplines))
     else:
         templatepropfile = None
-    result = po2prop.convertmozillaprop(inputfile, outputpropfile, templatepropfile, includefuzzy=includefuzzy)
+    result = po2prop.convertmozillaprop(inputfile, outputpropfile,
+                                        templatepropfile,
+                                        includefuzzy=includefuzzy,
+                                        remove_untranslated=remove_untranslated,
+                                        outputthreshold=outputthreshold)
     if result:
         outputpropfile.seek(0)
         pf = properties.propfile(outputpropfile, personality="mozilla")
@@ -110,7 +115,8 @@ def po2inc(inputfile, outputfile, templatefile, encoding=None, includefuzzy=Fals
     return result
 
 
-def po2it(inputfile, outputfile, templatefile, encoding="cp1252", includefuzzy=False):
+def po2it(inputfile, outputfile, templatefile, encoding="cp1252", includefuzzy=False,
+          remove_untranslated=False, outputthreshold=None):
     """wraps po2prop but converts outputfile to properties first"""
     outputpropfile = StringIO()
     if templatefile is not None:
@@ -119,7 +125,11 @@ def po2it(inputfile, outputfile, templatefile, encoding="cp1252", includefuzzy=F
         templatepropfile = StringIO("".join(templateproplines))
     else:
         templatepropfile = None
-    result = po2prop.convertmozillaprop(inputfile, outputpropfile, templatepropfile, includefuzzy=includefuzzy)
+    result = po2prop.convertmozillaprop(inputfile, outputpropfile,
+                                        templatepropfile,
+                                        includefuzzy=includefuzzy,
+                                        remove_untranslated=remove_untranslated,
+                                        outputthreshold=outputthreshold)
     if result:
         outputpropfile.seek(0)
         pf = properties.propfile(outputpropfile, personality="mozilla")
@@ -130,9 +140,14 @@ def po2it(inputfile, outputfile, templatefile, encoding="cp1252", includefuzzy=F
     return result
 
 
-def po2ini(inputfile, outputfile, templatefile, encoding="UTF-8", includefuzzy=False):
+def po2ini(inputfile, outputfile, templatefile, encoding="UTF-8", includefuzzy=False,
+           remove_untranslated=False, outputthreshold=None):
     """wraps po2prop but converts outputfile to properties first using UTF-8 encoding"""
-    return po2it(inputfile=inputfile, outputfile=outputfile, templatefile=templatefile, encoding=encoding, includefuzzy=includefuzzy)
+    return po2it(inputfile=inputfile, outputfile=outputfile,
+                 templatefile=templatefile, encoding=encoding,
+                 includefuzzy=includefuzzy,
+                 remove_untranslated=remove_untranslated,
+                 outputthreshold=outputthreshold)
 
 
 def main(argv=None):

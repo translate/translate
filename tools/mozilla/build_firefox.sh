@@ -114,10 +114,13 @@ MOZ_DIR="mozilla-aurora"
 MOZCENTRAL_DIR="${BUILD_DIR}/${MOZ_DIR}"
 L10N_DIR="${BUILD_DIR}/l10n"
 PO_DIR="${BUILD_DIR}/po"
+L10N_ENUS="${PO_DIR}/templates-en-US"
 POT_DIR="${PO_DIR}/templates"
 TOOLS_DIR="${BUILD_DIR}/tools"
 # FIXME we should build this from the get_moz_enUS script
 PRODUCT_DIRS="browser dom netwerk security services/sync toolkit mobile embedding" # Directories in language repositories to clear before running po2moz
+# Directories in language repositories to clear before running po2moz
+RETIRED_PRODUCT_DIRS="other-licenses/branding/firefox extensions/reporter"
 LANGPACK_DIR="${BUILD_DIR}/xpi"
 
 # Include current dir in path (for buildxpi and others)
@@ -126,12 +129,6 @@ if [ "$CURDIR" == "" -o  "$CURDIR" == '.' ]; then
     CURDIR=$(pwd)
 fi
 PATH=${CURDIR}:${PATH}
-
-# Make sure all directories exist
-for dir in ${L10N_DIR} ${LANGPACK_DIR}
-do
-	[ ! -d ${dir} ] && mkdir -p ${dir}
-done
 
 if [ $opt_vc ]; then
 	verbose "Translate Toolkit - update/pull using Git"
@@ -170,7 +167,7 @@ if [ $opt_vc ]; then
 	fi
 fi
 
-if [ $opt_vc ]; then
+if [ "$opt_vc" -o ! -d "${PO_DIR}" ]; then
 	verbose "Translations - prepare the parent directory po/"
 	for trans_repo in ${PO_DIR}
 	do
@@ -187,6 +184,7 @@ if [ $opt_vc ]; then
 fi
 
 verbose "Localisations - update Mercurial-managed languages in l10n/"
+mkdir -p ${L10N_DIR}
 cd ${L10N_DIR}
 for lang in ${HG_LANGS}
 do
@@ -210,13 +208,25 @@ done
 if [ $opt_vc ]; then
 	[ -d ${POT_DIR} ] && rm -rf ${POT_DIR}/
 	
-	verbose "Extract the en-US source files from the repo into localisation structure in l10n/en-US"
-	rm -rf ${L10N_DIR}/en-US
-	get_moz_enUS.py $get_moz_enUS_verbosity -s ../${MOZ_DIR} -d . -p browser
-	get_moz_enUS.py $get_moz_enUS_verbosity -s ../${MOZ_DIR} -d . -p mobile
+	verbose "Extract the en-US source files from the repo into localisation structure"
+	rm -rf ${L10N_ENUS} ${PO_DIR}/en-US
+	get_moz_enUS.py $get_moz_enUS_verbosity -s ../${MOZ_DIR} -d ${PO_DIR} -p browser
+	get_moz_enUS.py $get_moz_enUS_verbosity -s ../${MOZ_DIR} -d ${PO_DIR} -p mobile
+	mv ${PO_DIR}/en-US ${L10N_ENUS}
 	
-	verbose "moz2po - Create POT files from l10n/en-US"
-	moz2po --errorlevel=$errorlevel --progress=$progress -P --duplicates=msgctxt --exclude '.hg' en-US ${POT_DIR}
+	verbose "moz2po - Create POT files from n-US"
+	(cd ${L10N_ENUS}
+	moz2po --errorlevel=$errorlevel --progress=$progress -P --duplicates=msgctxt --exclude '.hg'  . ${POT_DIR}
+	)
+	if [ $USECPO -eq 0 ]; then
+		verbose "Cleanup - fix POT files using msgcat"
+		(cd ${POT_DIR}
+		for po in $(find ${PRODUCT_DIRS} -regex ".*\.po[t]?$")
+		do
+			msgcat -o $po.2 $po 2> >(egrep -v "warning: internationali[zs]ed messages should not contain the .* escape sequence" >&2) && mv $po.2 $po # parallel?
+		done
+		)
+	fi
 	pot_dir=$(basename ${POT_DIR})
 	(cd ${POT_DIR}/..
 	[ "$(git status --porcelain ${pot_dir})" != "?? ${pot_dir}/" ] && git checkout $gitverbosity -- $(git difftool -y -x 'diff --unified=3 --ignore-matching-lines=POT-Creation --ignore-matching-lines=X-Generator -s' ${pot_dir} |
@@ -230,9 +240,9 @@ function copyfile {
 	filename=$1
 	language=$2
 	directory=$(dirname $filename)
-	if [ -f ${L10N_DIR}/en-US/$filename ]; then
+	if [ -f ${L10N_ENUS}/$filename ]; then
 		mkdir -p ${L10N_DIR}/$language/$directory
-		cp -p ${L10N_DIR}/en-US/$filename ${L10N_DIR}/$language/$directory
+		cp -p ${L10N_ENUS}/$filename ${L10N_DIR}/$language/$directory
 	fi
 }
 
@@ -247,7 +257,7 @@ function copyfileifmissing {
 function copyfiletype {
 	filetype=$1
 	language=$2
-	files=$(cd ${L10N_DIR}/en-US; find . -name "$filetype")
+	files=$(cd ${L10N_ENUS}; find . -name "$filetype")
 	for file in $files
 	do
 		copyfile $file $language
@@ -257,14 +267,21 @@ function copyfiletype {
 function copydir {
 	dir=$1
 	language=$2
-	if [ -d ${L10N_DIR}/en-US/$dir ]; then
-		files=$(cd ${L10N_DIR}/en-US/$dir && find . -type f)
+	if [ -d ${L10N_ENUS}/$dir ]; then
+		files=$(cd ${L10N_ENUS}/$dir && find . -type f)
 		for file in $files
 		do
 			copyfile $dir/$file $language
 		done
 	fi
 }
+
+verbose "Update ${PO_DIR} in case any changes are in version control"
+(cd ${PO_DIR};
+git stash $gitverbosity
+git pull $gitverbosity --rebase
+git checkout $gitverbosity
+git stash pop $gitverbosity || true)
 
 verbose "Translations - build l10n/ files"
 for lang in ${HG_LANGS}
@@ -274,16 +291,12 @@ do
 	fi
 	[ $COUNT_LANGS -gt 1 ] && echo "Language: $lang"
         polang=$(echo $lang|sed "s/-/_/g")
-	verbose "Update existing po/$lang in case any changes are in version control"
-	(cd ${PO_DIR};
-		git stash $gitverbosity
-		git pull $gitverbosity --rebase
-		git checkout $gitverbosity
-		git stash pop $gitverbosity || true)
-
 	verbose "Migrate - update PO files to new POT files"
 	tempdir=`mktemp -d tmp.XXXXXXXXXX`
-	[ -d ${PO_DIR}/${polang} ] && cp -R ${PO_DIR}/${polang} ${tempdir}/${polang}
+	if [ -d ${PO_DIR}/${polang} ]; then
+		cp -R ${PO_DIR}/${polang} ${tempdir}/${polang}
+		(cd ${PO_DIR}/${polang}; rm $(find ${PRODUCT_DIRS} ${RETIRED_PRODUCT_DIR} -type f -name "*.po"))
+	fi
 	pomigrate2 --use-compendium --pot2po $pomigrate2verbosity ${tempdir}/${polang} ${PO_DIR}/${polang} ${POT_DIR}
 	rm -rf ${tempdir}
 
@@ -291,7 +304,7 @@ do
 	if [ $USECPO -eq 0 ]; then
 		verbose "Migration cleanup - fix migrated PO files using msgcat"
 		(cd ${polang}
-		for po in $(find ${PRODUCT_DIRS} -name "*.po")
+		for po in $(find ${PRODUCT_DIRS} -regex ".*\.po[t]?$")
 		do
 			msgcat -o $po.2 $po 2> >(egrep -v "warning: internationali[zs]ed messages should not contain the .* escape sequence" >&2) && mv $po.2 $po # parallel?
 		done
@@ -309,19 +322,25 @@ do
 		git add ${polang}/\*.po
 	else
 		(cd ${polang}
-		for newfile in $(git status --porcelain $PRODUCT_DIRS | egrep "^\?\?" | sed "s/^??\w*//")
+		for newfile in $(git status --porcelain $PRODUCT_DIRS | egrep "^\?\?" | sed "s/^??\w*[^\/]*\///")
 		do
-			[ -f $newfile -a "$(echo $newfile | cut -d"." -f3)" = "po" ] && git add $newfile
+			if [ -f $newfile -a "$(basename $newfile | cut -d"." -f3)" = "po" ]; then
+				git add $newfile
+			elif [ -d $newfile -a "$(find $newfiles -name '*.po')" ]; then
+				git add $newfile
+			fi
 		done
 
-		for oldfile in $(git status --porcelain $PRODUCT_DIRS | egrep "^ D" | sed "s/^ D\w*//")
+		for oldfile in $(git status --porcelain $PRODUCT_DIRS $RETIRED_PRODUCT_DIRS | egrep "^ D" | sed "s/^ D\w*[^\/]*\///")
 		do
-			if [ -f $newfile -a "$(echo $newfile | cut -d"." -f3)" = "po" ]; then
+			# FIXME - allow POT files also
+			if [ "$(basename $oldfile | cut -d'.' -f3)" = "po" ]; then
 				git checkout $gitverbosity -- $oldfile
 				mkdir -p obsolete/$(dirname $oldfile)
 				git mv $oldfile obsolete/$oldfile
 			fi
 		done
+		# FIXME - do a PO cleanup here
 		)
 	fi
 	)
@@ -335,8 +354,13 @@ do
 	done
 
 	verbose "po2moz - Create Mozilla l10n layout from migrated PO files."
-	po2moz --progress=$progress --errorlevel=$errorlevel --exclude=".git" --exclude=".hg" --exclude="obsolete" --exclude="editor" --exclude="mail" --exclude="thunderbird" --exclude="chat" --exclude="*~" \
-		-t ${L10N_DIR}/en-US -i ${PO_DIR}/${polang} -o ${L10N_DIR}/${lang}
+	for exclude in $RETIRED_PRODUCT_DIR
+	do
+		excludes=$(echo '$excludes --exclude="$exclude"')
+	done
+	echo $excludes
+	po2moz --progress=$progress --errorlevel=$errorlevel --exclude=".git" --exclude=".hg" --exclude=".hgtags" --exclude="obsolete" --exclude="editor" --exclude="mail" --exclude="thunderbird" --exclude="chat" --exclude="*~" $excludes \
+		-t ${L10N_ENUS} -i ${PO_DIR}/${polang} -o ${L10N_DIR}/${lang}
 
 	if [ $opt_copyfiles ]; then
 		verbose "Copy files not handled by moz2po/po2moz"
@@ -358,6 +382,7 @@ do
 
 	## CREATE XPI LANGPACK
 	if [ $opt_build_xpi ]; then
+		mkdir -p ${LANGPACK_DIR}
 		verbose "Language Pack - create an XPI"
 		buildxpi.py -d -L ${L10N_DIR} -s ${MOZCENTRAL_DIR} -o ${LANGPACK_DIR} ${lang}
 	fi
@@ -365,8 +390,12 @@ do
 	# COMPARE LOCALES
 	if [ $opt_compare_locales ]; then
 		verbose "Compare-Locales - to find errors"
-		compare-locales ${MOZCENTRAL_DIR}/browser/locales/l10n.ini ${L10N_DIR} $lang
-		compare-locales ${MOZCENTRAL_DIR}/mobile/locales/l10n.ini ${L10N_DIR} $lang
+		if [ -f ${MOZCENTRAL_DIR}/browser/locales/l10n.ini ]; then
+			compare-locales ${MOZCENTRAL_DIR}/browser/locales/l10n.ini ${L10N_DIR} $lang
+			compare-locales ${MOZCENTRAL_DIR}/mobile/locales/l10n.ini ${L10N_DIR} $lang
+		else
+			echo "Can't run compare-locales without ${MOZCENTRAL_DIR} checkout"
+		fi
 	fi
 
 done

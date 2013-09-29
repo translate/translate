@@ -24,6 +24,7 @@ See: http://docs.translatehouse.org/projects/translate-toolkit/en/latest/command
 for examples and usage instructions.
 """
 
+from translate.convert import convert
 from translate.storage import factory
 
 
@@ -51,8 +52,13 @@ class resub:
         return str(self.templatestore)
 
 
-def convertsub(inputfile, outputfile, templatefile, includefuzzy=False):
+def convertsub(inputfile, outputfile, templatefile, includefuzzy=False,
+               outputthreshold=None):
     inputstore = factory.getobject(inputfile)
+
+    if not convert.should_output_store(inputstore, outputthreshold):
+        return False
+
     if templatefile is None:
         raise ValueError("must have template file for subtitle files")
     else:
@@ -64,7 +70,6 @@ def convertsub(inputfile, outputfile, templatefile, includefuzzy=False):
 
 def main(argv=None):
     # handle command line options
-    from translate.convert import convert
     formats = {
          ("po", "srt"): ("srt", convertsub),
          ("po", "sub"): ("sub", convertsub),
@@ -73,6 +78,7 @@ def main(argv=None):
     }
     parser = convert.ConvertOptionParser(formats, usetemplates=True,
                                          description=__doc__)
+    parser.add_threshold_option()
     parser.add_fuzzy_option()
     parser.run(argv)
 

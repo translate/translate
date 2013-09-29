@@ -1,12 +1,15 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-from py.test import mark
+from pytest import importorskip
 
 from translate.convert import po2ini
 from translate.convert import test_convert
 from translate.misc import wStringIO
 from translate.storage import po
+
+
+importorskip("iniparse")
 
 
 class TestPO2Ini:
@@ -113,5 +116,6 @@ class TestPO2IniCommand(test_convert.TestConvertCommand, TestPO2Ini):
         """tests getting help"""
         options = test_convert.TestConvertCommand.test_help(self)
         options = self.help_check(options, "-t TEMPLATE, --template=TEMPLATE")
+        options = self.help_check(options, "--threshold=PERCENT")
         options = self.help_check(options, "--fuzzy")
         options = self.help_check(options, "--nofuzzy", last=True)

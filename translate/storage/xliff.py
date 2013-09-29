@@ -536,6 +536,8 @@ class xlifffile(lisa.LISAfile):
 </file>
 </xliff>'''
     namespace = 'urn:oasis:names:tc:xliff:document:1.1'
+    unversioned_namespace = 'urn:oasis:names:tc:xliff:document:'
+
     suggestions_in_format = True
     """xliff units have alttrans tags which can be used to store suggestions"""
 
@@ -545,7 +547,15 @@ class xlifffile(lisa.LISAfile):
         self._messagenum = 0
 
     def initbody(self):
-        self.namespace = self.document.getroot().nsmap.get(None, None)
+        # detect the xliff namespace, handle both 1.1 and 1.2
+        for prefix, ns in self.document.getroot().nsmap.items():
+            if ns and ns.startswith(self.unversioned_namespace):
+                self.namespace = ns
+                break
+        else:
+            # handle crappy xliff docs without proper namespace declaration
+            # by simply using the xmlns default namespace
+            self.namespace = self.document.getroot().nsmap.get(None, None)
 
         if self._filename:
             filenode = self.getfilenode(self._filename, createifmissing=True)

@@ -25,10 +25,12 @@ for examples and usage instructions.
 """
 
 import sys
+import logging
 
 from translate.storage import po
 from translate.storage import rc
 
+logger = logging.getLogger(__name__)
 
 class rc2po:
     """Convert a .rc file to a .po file for handling the translation."""
@@ -72,7 +74,8 @@ class rc2po:
                     origpo.target = translatedpo.source
                 output_store.addunit(origpo)
             elif translatedpo is not None:
-                print >> sys.stderr, "error converting original rc definition %s" % template_unit.name
+                logging.error("error converting original rc definition %s",
+                              template_unit.name)
         output_store.removeduplicates(duplicatestyle)
         return output_store
 

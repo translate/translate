@@ -286,10 +286,11 @@ def convertdtd(inputfile, outputfile, templatefile, pot=False,
     """reads in inputfile and templatefile using dtd, converts using dtd2po,
     writes to outputfile"""
     android_dtd = False
-    # Check if it is an Android DTD file.
-    if ("embedding/android" in inputfile.name or
-        "mobile/android/base" in inputfile.name):
-        android_dtd = True
+    if hasattr(inputfile, "name"):
+        # Check if it is an Android DTD file.
+        if ("embedding/android" in inputfile.name or
+            "mobile/android/base" in inputfile.name):
+            android_dtd = True
     inputstore = dtd.dtdfile(inputfile, android=android_dtd)
     convertor = dtd2po(blankmsgstr=pot, duplicatestyle=duplicatestyle)
     if templatefile is None:

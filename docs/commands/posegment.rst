@@ -47,8 +47,6 @@ Options:
 -iINPUT, --input=INPUT   read from INPUT in pot format
 -xEXCLUDE, --exclude=EXCLUDE  exclude names matching EXCLUDE from input paths
 -oOUTPUT, --output=OUTPUT     write to OUTPUT in po, pot formats
---psyco=MODE          use psyco to speed up the operation, modes: :doc:`none,
-                      full, profile <option_psyco>`
 -P, --pot             output PO Templates (.pot) rather than PO files (.po)
 -l LANG, --language=LANG
                       the target language code

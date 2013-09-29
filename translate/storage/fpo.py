@@ -38,7 +38,7 @@ from translate.storage import pocommon, base, cpo, poparser
 from translate.storage.pocommon import encodingToUse
 
 lsep = " "
-"""Seperator for #: entries"""
+"""Separator for #: entries"""
 
 basic_header = r'''msgid ""
 msgstr ""

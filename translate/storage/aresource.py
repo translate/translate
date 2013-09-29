@@ -32,7 +32,6 @@ from translate.lang import data
 EOF = None
 WHITESPACE = ' \n\t' # Whitespace that we collapse
 MULTIWHITESPACE = re.compile('[ \n\t]{2}')
-OPEN_TAG_TO_ESCAPE = re.compile('<(?!/?\S*>)')
 
 class AndroidResourceUnit(base.TranslationUnit):
     """A single term in the Android resource file."""
@@ -420,13 +419,24 @@ class AndroidResourceUnit(base.TranslationUnit):
 
     def setXmlTextValue(self, target, xmltarget):
         if '<' in target:
-            # Handle text with markup
-            target = self.escape(target).replace('&', '&amp;')
-            target = OPEN_TAG_TO_ESCAPE.sub('&lt;', target)
-            # Parse new XML
-            newstring = etree.fromstring('<string>%s</string>' % target)
+            # Handle text with possible markup
+            target = target.replace('&', '&amp;')
+            try:
+                # Try as XML
+                newstring = etree.fromstring('<string>%s</string>' % target)
+            except:
+                # Fallback to string with XML escaping
+                target = target.replace('<', '&lt;')
+                newstring = etree.fromstring('<string>%s</string>' % target)
             # Update text
+<<<<<<< HEAD
             xmltarget.text = newstring.text
+=======
+            if newstring.text is None:
+                self.xmlelement.text = ''
+            else:
+                self.xmlelement.text = newstring.text
+>>>>>>> upstream/master
             # Remove old elements
             for x in xmltarget.iterchildren():
                 xmltarget.remove(x)
@@ -492,10 +502,17 @@ class AndroidResourceUnit(base.TranslationUnit):
 
     def getXmlTextValue(self, xmltarget):
         # Grab inner text
+<<<<<<< HEAD
         target = (xmltarget.text or u'')
         # Include markup as well
         target += u''.join([data.forceunicode(etree.tostring(child, encoding='utf-8')) for child in xmltarget.iterchildren()])
         return self.unescape(target)
+=======
+        target = self.unescape(self.xmlelement.text or u'')
+        # Include markup as well
+        target += u''.join([data.forceunicode(etree.tostring(child, encoding='utf-8')) for child in self.xmlelement.iterchildren()])
+        return target
+>>>>>>> upstream/master
 
     def gettarget(self, lang=None):
         if (self.xmlelement.tag == "plurals"):
@@ -569,7 +586,7 @@ class AndroidResourceUnit(base.TranslationUnit):
 class AndroidResourceFile(lisa.LISAfile):
     """Class representing a Android resource file store."""
     UnitClass = AndroidResourceUnit
-    Name = _("Android Resource")
+    Name = _("Android String Resource")
     Mimetypes = ["application/xml"]
     Extensions = ["xml"]
     rootNode = "resources"

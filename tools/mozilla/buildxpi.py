@@ -26,50 +26,89 @@ https://developer.mozilla.org/en/Creating_a_Language_Pack)
 
 Example usage::
 
-    buildxpi.py -L /path/to/l10n -s /path/to/mozilla-central -o /path/to/xpi_output af
+    buildxpi.py -L /path/to/l10n -s /path/to/mozilla-central -o /path/to/xpi_output af ar
 
-- "/path/to/l10n" is the path to a the parent directory of the "af" directory
-  containing the Afrikaans translated files.
+- "/path/to/l10n" is the path to a the parent directory of the "af" and "ar"
+  directories containing the Afrikaans and Arabic translated files.
 - "/path/to/mozilla-central" is the path to the Firefox sources checked out
   from Mercurial. Note that --mozproduct is not specified, because the default
   is "browser". For Thunderbird (>=3.0) it should be "/path/to/comm-central"
   and "--mozproduct mail" should be specified, although this is not yet
   working.
 - "/path/to/xpi_output" is the path to the output directory.
-- "af" is the language (Afrikaans in this case) to build a language pack for.
+- "af ar" are the languages (Afrikaans and Arabic in this case) to build
+  language packs for.
 
-NOTE: The .mozconfig in the process owner's home directory gets backed up,
+NOTE: The .mozconfig in Firefox source directory gets backed up,
 overwritten and replaced.
 """
 
+import logging
 import os
+import re
 from glob       import glob
 from shutil     import move, rmtree
-from subprocess import Popen, PIPE
+from subprocess import Popen, PIPE, CalledProcessError
 from tempfile   import mkdtemp
 
+logger = logging.getLogger(__name__)
 
-HOMEDIR = os.getenv('HOME', '~')
 
+class RunProcessError(CalledProcessError):
+    """Subclass of CalledProcessError exception with custom message strings
+    """
+    _default_message = "Command '%s' returned exit status %d"
 
-def run(cmd, expected_status=0, stdout=None, stderr=None, shell=False):
-    if VERBOSE:
-        print '>>> %s $ %s' % (os.getcwd(), ' '.join(cmd))
-    p = Popen(cmd, stdout=stdout, stderr=stderr, shell=shell)
+    def __init__(self, message=None, **kwargs):
+        """Use and strip string message='' from kwargs"""
+        self._message = message or self._default_message
+        super(RunProcessError, self).__init__(**kwargs)
+
+    def __str__(self):
+        """Format exception message string (avoiding TypeErrors)"""
+        output = ''
+        message = self._message
+        if message.count('%') != 2:
+            output += message + '\n'
+            message = self._default_message
+            
+        output += message % (self.cmd, self.returncode)
+        return output
+
+def run(cmd, expected_status=0, fail_msg=None, stdout=-1, stderr=-1):
+    """Run a command
+    """
+    # Default is to capture (and log) std{out,error} unless run as script
+    if __name__ == '__main__' or logger.getEffectiveLevel() == logging.DEBUG:
+        std = None
+    else:
+        std = PIPE
+
+    if stdout == -1:
+        stdout = std
+    if stderr == -1:
+        stderr = std
+
+    cmdstring = isinstance(str, basestring) and cmd or ' '.join(cmd)
+    logger.debug('>>> %s $ %s', os.getcwd(), cmdstring)
+    p = Popen(cmd, stdout=stdout, stderr=stderr)
+    (output, error) = p.communicate()
     cmd_status = p.wait()
 
     if stdout == PIPE:
-        print p.stdout.read()
+        if cmd_status != expected_status:
+            logger.info('%s', output)
     elif stderr == PIPE:
-        print p.stderr.read()
+        logger.warning('%s', error)
 
     if cmd_status != expected_status:
-        print '!!! "%s" returned unexpected status %d' % \
-              (' '.join(cmd), cmd_status)
+        raise RunProcessError(returncode=cmd_status, cmd=cmdstring,
+                              message=fail_msg)
     return cmd_status
 
 
-def build_xpi(l10nbase, srcdir, outputdir, lang, product, delete_dest=False):
+def build_xpi(l10nbase, srcdir, outputdir, langs, product, delete_dest=False,
+              soft_max_version=False):
     MOZCONFIG = os.path.join(srcdir, '.mozconfig')
     # Backup existing .mozconfig if it exists
     backup_name = ''
@@ -80,14 +119,25 @@ def build_xpi(l10nbase, srcdir, outputdir, lang, product, delete_dest=False):
     # Create a temporary directory for building
     builddir = mkdtemp('', 'buildxpi')
 
+    # Per the original instructions, it should be possible to configure the
+    # Mozilla build so that it doesn't require compiler toolchains or
+    # development include/library files - however it is currently broken for
+    # Aurora 22-23; # see https://bugzilla.mozilla.org/show_bug.cgi?id=862770
+    # in case it has been fixed and you can put back:
+    #ac_add_options --disable-compile-environment
+
     try:
         # Create new .mozconfig
         content = """
-ac_add_options --disable-compile-environment
+ac_add_options --disable-gstreamer
 ac_add_options --disable-ogg
+ac_add_options --disable-wave
+ac_add_options --disable-webm
+ac_add_options --disable-libjpeg-turbo
 mk_add_options MOZ_OBJDIR=%(builddir)s
 ac_add_options --with-l10n-base=%(l10nbase)s
-ac_add_options --enable-application=%(product)s""" % \
+ac_add_options --enable-application=%(product)s
+""" % \
             {
                 'builddir': builddir,
                 'l10nbase': l10nbase,
@@ -96,48 +146,68 @@ ac_add_options --enable-application=%(product)s""" % \
 
         mozconf = open(MOZCONFIG, 'w').write(content)
 
+	# Try to make sure that "environment shell" is defined
+        # (python/mach/mach/mixin/process.py)
+        if not any (var in os.environ
+                    for var in ('SHELL', 'MOZILLABUILD', 'COMSPEC')):
+            os.environ['SHELL'] = '/bin/sh'
+
         # Start building process.
         # See https://developer.mozilla.org/en/Creating_a_Language_Pack for
         # more details.
         olddir = os.getcwd()
         os.chdir(srcdir)
-        if run(['make', '-f', 'client.mk', 'configure']):
-            raise Exception('^^ Fix the errors above and try again.')
+        run(['make', '-f', 'client.mk', 'configure'],
+            fail_msg="Build environment error - "
+                     "check logs, fix errors, and try again")
 
-        os.chdir(os.path.join(builddir, product, 'locales'))
-        if run(['make', 'langpack-%s' % (lang)]):
-            raise Exception('Unable to successfully build XPI!')
+        os.chdir(builddir)
+        run(['make', '-C', 'config'],
+            fail_msg="Unable to successfully configure build for XPI!")
 
-        xpiglob = glob(
-            os.path.join(
-                builddir,
-                product == 'mail' and 'mozilla' or '',
-                'dist',
-                '*',
-                'xpi',
-                '*.%s.langpack.xpi' % lang
-            )
-        )[0]
-        if delete_dest:
+	moz_app_version=[]
+	if soft_max_version:
+	    version = open(os.path.join(srcdir, product, 'config', 'version.txt')).read().strip()
+	    version = re.sub(r'(^[0-9]*\.[0-9]*).*', r'\1.*', version)
+	    moz_app_version = ['MOZ_APP_MAXVERSION=%s' % version]
+        run(['make', '-C', os.path.join(product, 'locales')] +
+            ['langpack-%s' % lang for lang in langs] + moz_app_version,
+            fail_msg="Unable to successfully build XPI!")
+
+        destfiles = []
+        for lang in langs:
+            xpiglob = glob(
+                os.path.join(
+                    builddir,
+                    product == 'mail' and 'mozilla' or '',
+                    'dist',
+                    '*',
+                    'xpi',
+                    '*.%s.langpack.xpi' % lang
+                )
+            )[0]
             filename = os.path.split(xpiglob)[1]
             destfile = os.path.join(outputdir, filename)
-            if os.path.isfile(destfile):
-                os.unlink(destfile)
-        move(xpiglob, outputdir)
-
-        os.chdir(olddir)
+            destfiles.append(destfile)
+            if delete_dest:
+                if os.path.isfile(destfile):
+                    os.unlink(destfile)
+            move(xpiglob, outputdir)
 
     finally:
+        os.chdir(olddir)
         # Clean-up
         rmtree(builddir)
         if backup_name:
             os.remove(MOZCONFIG)
             os.rename(backup_name, MOZCONFIG)
 
+    return destfiles
+
 
 def create_option_parser():
     from optparse import OptionParser
-    usage = 'Usage: buildxpi.py [<options>] <lang>'
+    usage = 'Usage: buildxpi.py [<options>] <lang> [<lang2> ...]'
     p = OptionParser(usage=usage)
 
     p.add_option(
@@ -180,21 +250,33 @@ def create_option_parser():
         help='Be more noisy'
     )
 
+    p.add_option(
+        '', '--soft-max-version',
+        dest='soft_max_version',
+        action='store_true',
+        default=False,
+	help='Override a fixed max version with one to cover the whole cycle '
+	     'e.g. 24.0a1 becomes 24.0.*'
+    )
+
     return p
 
 if __name__ == '__main__':
     options, args = create_option_parser().parse_args()
 
     if len(args) < 1:
-        raise ArgumentError('You need to specify at least a language!')
+        from argparse import ArgumentError
+        raise ArgumentError(None, 'You need to specify at least a language!')
 
-    VERBOSE = options.verbose
+    if options.verbose:
+        logging.basicConfig(level=logging.DEBUG)
 
     build_xpi(
         l10nbase=os.path.abspath(options.l10nbase),
         srcdir=os.path.abspath(options.srcdir),
         outputdir=os.path.abspath(options.outputdir),
-        lang=args[0],
+        langs=args,
         product=options.mozproduct,
-        delete_dest=options.delete_dest
+        delete_dest=options.delete_dest,
+        soft_max_version=options.soft_max_version
     )

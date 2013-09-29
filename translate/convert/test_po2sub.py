@@ -1,10 +1,16 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
+from pytest import importorskip
+
 from translate.convert import po2sub
 from translate.convert import test_convert
 from translate.misc import wStringIO
 from translate.storage import po
+
+
+# Technically subtitles can also use an older gaupol
+importorskip("aeidon")
 
 
 class TestPO2Sub:
@@ -69,5 +75,6 @@ class TestPO2SubCommand(test_convert.TestConvertCommand, TestPO2Sub):
         """tests getting help"""
         options = test_convert.TestConvertCommand.test_help(self)
         options = self.help_check(options, "-t TEMPLATE, --template=TEMPLATE")
+        options = self.help_check(options, "--threshold=PERCENT")
         options = self.help_check(options, "--fuzzy")
         options = self.help_check(options, "--nofuzzy", last=True)

@@ -4,8 +4,7 @@
 podebug
 *******
 
-Insert `pseudo translations
-<https://en.wikipedia.org/wiki/Pseudolocalization>`_ or debug markers into
+Insert :wp:`pseudo translations <Pseudolocalization>` or debug markers into
 target text in XLIFF, Gettex PO and other localization files.
 
 The pseudo translation or debug markers make it easy to reference and locate
@@ -56,8 +55,6 @@ Options:
                        exclude names matching EXCLUDE from input paths
 -oOUTPUT, --output=OUTPUT
                        write to OUTPUT in po, pot formats
---psyco=MODE           use psyco to speed up the operation, modes: :doc:`none,
-                       full, profile <option_psyco>`
 -P, --pot              output PO Templates (.pot) rather than PO files (.po)
 -fFORMAT, --format=FORMAT     specify format string
 --rewrite=STYLE        the translation rewrite style: :doc:`xxx, en, blank,

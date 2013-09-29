@@ -29,9 +29,12 @@ for examples and usage instructions.
 from optparse import OptionParser
 import os
 import sys
+import logging
 
 from translate.storage import factory
 from translate.storage import statsdb
+
+logger = logging.getLogger(__name__)
 
 # define style constants
 style_full, style_csv, style_short_strings, style_short_words = range(4)
@@ -47,7 +50,7 @@ def calcstats_old(filename):
     try:
         store = factory.getobject(filename)
     except ValueError, e:
-        print str(e)
+        logger.warning(e)
         return {}
     units = filter(lambda unit: unit.istranslatable(), store.units)
     translated = translatedmessages(units)
@@ -204,7 +207,7 @@ Review Messages, Review Source Words"
                     self.longestfilename = len(filename)
         for filename in filenames:
             if not os.path.exists(filename):
-                print >> sys.stderr, "cannot process %s: does not exist" % filename
+                logger.error("cannot process %s: does not exist", filename)
                 continue
             elif os.path.isdir(filename):
                 self.handledir(filename)
@@ -239,7 +242,7 @@ Review Messages, Review Source Words"
                                              self.incomplete_only)
             self.filecount += 1
         except:  # This happens if we have a broken file.
-            print >> sys.stderr, sys.exc_info()[1]
+            logger.error(sys.exc_info()[1])
 
     def handlefiles(self, dirname, filenames):
         for filename in filenames:
@@ -303,11 +306,7 @@ def main():
     if options.style_short_words:
         style = style_short_words
 
-    try:
-        import psyco
-        psyco.full()
-    except Exception:
-        pass
+    logging.basicConfig(format="%(name)s: %(levelname)s: %(message)s")
 
     summarizer(args, style, options.incomplete_only)
 

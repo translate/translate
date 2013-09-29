@@ -6,8 +6,7 @@ po2wordfast
 
 Convert Gettext PO files to a :doc:`/formats/wordfast` translation memory file.
 
-`Wordfast <https://en.wikipedia.org/wiki/Wordfast>`_ is a popular Windows based
-computer-assisted translation tool.
+:wp:`Wordfast` is a popular Windows based computer-assisted translation tool.
 
 .. _po2wordfast#usage:
 
@@ -38,8 +37,7 @@ Options:
 -iINPUT, --input=INPUT   read from INPUT in po, pot formats
 -xEXCLUDE, --exclude=EXCLUDE  exclude names matching EXCLUDE from input paths
 -oOUTPUT, --output=OUTPUT     write to OUTPUT in tmx format
---psyco=MODE          use psyco to speed up the operation, modes: :doc:`none,
-                      full, profile <option_psyco>`
+-S, --timestamp      skip conversion if the output file has newer timestamp
 -lLANG, --language=LANG  set target language code (e.g. af-ZA) [required]
 --source-language=LANG   set source language code (default: en)
 

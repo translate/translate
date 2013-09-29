@@ -62,7 +62,7 @@ class LangStore(txt.TxtFile):
     Name = _("Mozilla .lang")
     Extensions = ['lang']
 
-    def __init__(self, inputfile=None, flavour=None, encoding="utf-8", mark_active=True):
+    def __init__(self, inputfile=None, flavour=None, encoding="utf-8", mark_active=False):
         self.is_active = False
         self.mark_active = mark_active
         super(LangStore, self).__init__(inputfile, flavour, encoding)
@@ -81,12 +81,14 @@ class LangStore(txt.TxtFile):
                 self.is_active = True
                 continue
 
-            if len(line) == 0:  # Skip blank lines
+            if len(line) == 0 and not readyTrans:  # Skip blank lines
                 continue
 
             if readyTrans:  # If we are expecting a translation, set the target
                 if line != u.source:
                     u.target = line.replace(" {ok}", "")
+                else:
+                    u.target = ""
                 readyTrans = False  # We already have our translation
                 continue
 

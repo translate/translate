@@ -31,7 +31,7 @@ Building Python packages with C extensions under Windows
 
 In order to build modules which have C extensions, you will need either the
 Visual Studio C++ compiler or `MinGW
-<http://sourceforge.net/project/showfiles.php?group_id=2435&package_id=240780>`_.
+<http://sourceforge.net/projects/mingw/files/MSYS/Extension/>`_.
 
 Make sure that your Visual Studio C++ or MinGW program path is part of your
 system's program path, since the Python build system requires this.

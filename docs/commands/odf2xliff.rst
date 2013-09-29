@@ -10,7 +10,7 @@ ODF files by combining the original ODF files with XLIFF files containing
 translations of strings in the original document.
 
 XLIFF is the XML Localization Interchange File Format developed by `OASIS
-<http://www.oasis-open.org/committees/tc_home.php?wg_abbrev=xliff>`_ (The
+<https://www.oasis-open.org/committees/tc_home.php?wg_abbrev=xliff>`_ (The
 Organization for the Advancement of Structured Information Standards) to allow
 translation work to be standardised no matter what the source format and to
 allow the work to be freely moved from tool to tool.
@@ -52,8 +52,7 @@ Options (odf2xliff):
                       traceback <option_errorlevel>`
 -i INPUT, --input=INPUT   read from INPUT in ODF format
 -o OUTPUT, --output=OUTPUT     write to OUTPUT in XLIFF format
---psyco=MODE          use psyco to speed up the operation, modes: :doc:`none,
-                      full, profile <option_psyco>`
+-S, --timestamp      skip conversion if the output file has newer timestamp
 
 Options (xliff2odf):
 
@@ -67,8 +66,7 @@ Options (xliff2odf):
 -i INPUT, --input=INPUT     read from INPUT in XLIFF formats
 -o OUTPUT, --output=OUTPUT  write to OUTPUT in ODF format
 -t TEMPLATE, --template=TEMPLATE   read from TEMPLATE in ODF format
---psyco=MODE          use psyco to speed up the operation, modes: :doc:`none,
-                      full, profile <option_psyco>`
+-S, --timestamp      skip conversion if the output file has newer timestamp
 
 .. _odf2xliff#examples:
 

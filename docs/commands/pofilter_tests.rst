@@ -43,7 +43,7 @@ you determine which to run first.
 
 * Critical -- can break a program
 
-  * :ref:`pofilter_tests#accelerators`, :ref:`pofilter_tests#escapes`,
+  * :ref:`pofilter_tests#escapes`,
     :ref:`pofilter_tests#newlines`, :ref:`pofilter_tests#nplurals`,
     :ref:`pofilter_tests#printf`, :ref:`pofilter_tests#tabs`,
     :ref:`pofilter_tests#variables`, :ref:`pofilter_tests#xmltags`,
@@ -51,7 +51,8 @@ you determine which to run first.
 
 * Functional -- may confuse the user
 
-  * :ref:`pofilter_tests#acronyms`, :ref:`pofilter_tests#blank`,
+  * :ref:`pofilter_tests#accelerators`,
+    :ref:`pofilter_tests#acronyms`, :ref:`pofilter_tests#blank`,
     :ref:`pofilter_tests#emails`, :ref:`pofilter_tests#filepaths`,
     :ref:`pofilter_tests#functions`, :ref:`pofilter_tests#gconf`,
     :ref:`pofilter_tests#kdecomments`, :ref:`pofilter_tests#long`,
@@ -88,8 +89,8 @@ Test Description
 accelerators
 ------------
 
-Checks whether :doc:`guide/translation/accelerators` are consistent between the
-two strings.
+Checks whether :ref:`accelerators <guide:accelerators>` are consistent between
+the two strings.
 
 Make sure you use the :opt:`--mozilla`, :opt:`--kde`, etc options so that
 pofilter knows which type of accelerator it is looking for.  The test will pick
@@ -126,17 +127,17 @@ brackets
 
 Checks that the number of brackets in both strings match.
 
-If ([{ or }]) appear in the original this will check that the same number
-appear in the translation.
+If ``([{`` or ``}])`` appear in the original this will check that the same
+number appear in the translation.
 
 .. _pofilter_tests#compendiumconflicts:
 
 compendiumconflicts
 -------------------
 
-Checks for Gettext compendium conflicts (#-#-#-#-#).
+Checks for Gettext compendium conflicts (``#-#-#-#-#``).
 
-When you use msgcat to create a PO compendium it will insert #-#-#-#-# into
+When you use msgcat to create a PO compendium it will insert ``#-#-#-#-#`` into
 entries that are not consistent.  If the compendium is used later in a message
 merge then these conflicts will appear in your translations.  This test quickly
 extracts those for correction.
@@ -178,9 +179,10 @@ doublequoting
 
 Checks whether doublequoting is consistent between the two strings.
 
-Checks on double quotes " to ensure that you have the same number in both the
-original and the translated string. This tests takes into account that several
-languages use different quoting characters, and will test for them instead.
+Checks on double quotes ``"`` to ensure that you have the same number in both
+the original and the translated string. This tests takes into account that
+several languages use different quoting characters, and will test for them
+instead.
 
 .. _pofilter_tests#doublespacing:
 
@@ -453,7 +455,7 @@ test can also manage variables-reordering using the ``%1$s`` syntax.  The
 variables' type and details following data are tested to ensure that they are
 strictly identical, but they may be reordered.
 
-.. seealso:: `printf Format String <https://en.wikipedia.org/wiki/Printf_format_string>`_
+.. seealso:: :wp:`printf Format String <Printf_format_string>`
 
 .. _pofilter_tests#puncspacing:
 
@@ -544,11 +546,11 @@ singlequoting
 
 Checks whether singlequoting is consistent between the two strings.
 
-The same as doublequoting but checks for the ' character.  Because this is used
-in contractions like it's and in possessive forms like user's, this test can
-output spurious errors if your language doesn't use such forms.  If a quote
-appears at the end of a sentence in the translation, i.e. '[full-stop], this
-might not be detected properly by the check.
+The same as doublequoting but checks for the ``'`` character.  Because this is
+used in contractions like it's and in possessive forms like user's, this test
+can output spurious errors if your language doesn't use such forms.  If a quote
+appears at the end of a sentence in the translation, i.e. ``'.``, this might
+not be detected properly by the check.
 
 .. _pofilter_tests#spellcheck:
 
@@ -563,12 +565,11 @@ those to an exclusion list. The advantage of this exclusion is that many words
 that are specific to the application will not raise errors e.g. program names,
 brand names, function names.
 
-The checker works with `PyEnchant <http://pyenchant.sourceforge.net/>`_. You
+The checker works with `PyEnchant <http://pythonhosted.org/pyenchant/>`_. You
 need to have PyEnchant installed as well as a dictionary for your language (for
-example, one of the `Hunspell
-<http://wiki.services.openoffice.org/wiki/Dictionaries>`_ or `aspell
-<http://ftp.gnu.org/gnu/aspell/dict/>`_ dictionaries).  This test will only
-work if you have specified the :opt:`--language` option.
+example, one of the `Hunspell <http://wiki.openoffice.org/wiki/Dictionaries>`_
+or `aspell <http://ftp.gnu.org/gnu/aspell/dict/>`_ dictionaries).  This test
+will only work if you have specified the :opt:`--language` option.
 
 The pofilter error that is created, lists the misspelled word, plus
 suggestions returned from the spell checker.  That makes it easy for you to
@@ -688,7 +689,7 @@ files.
 xmltags
 -------
 
-Checks that :doc:`XML/HTML <guide/translation/html>` tags have not been
+Checks that :wiki:`XML/HTML <guide/translation/html>` tags have not been
 translated.
 
 This check finds the number of tags in the source string and checks that the

@@ -93,7 +93,7 @@ class hg(GenericRevisionControlSystem):
     def add(self, files, message=None, author=None):
         """Add and commit the new files."""
         files = prepare_filelist(files)
-        command = ["hg", "add", "-q", "--parents"] + files
+        command = ["hg", "add", "-q"] + files
         exitcode, output, error = run_command(command)
         if exitcode != 0:
             raise IOError("[Mercurial] Error running '%s': %s" %

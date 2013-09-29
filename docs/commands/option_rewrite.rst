@@ -80,8 +80,8 @@ chef
 
 .. versionadded:: 1.2
 
-Rewrites the source text using mock Swedish as popularised by the `Swedish Chef
-<https://en.wikipedia.org/wiki/Swedish_Chef>`_.
+Rewrites the source text using mock Swedish as popularised by the :wp:`Swedish
+Chef <Swedish_Chef>`.
 
 .. code-block:: po
 

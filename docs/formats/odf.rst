@@ -4,10 +4,9 @@
 
 OpenDocument Format
 *******************
-This page summarises the support for the `OpenDocument format
-<http://en.wikipedia.org/wiki/OpenDocument>`_ (ODF) in the Translate Toolkit.
-This currently involves only the :doc:`odf2xliff </commands/odf2xliff>` and
-xliff2odf converters.
+This page summarises the support for the :wp:`OpenDocument` format (ODF) in the
+Translate Toolkit.  This currently involves only the :doc:`odf2xliff
+</commands/odf2xliff>` and xliff2odf converters.
 
 The Translate Toolkit aims to support version 1.1 of the ODF standard, although
 it should work reasonably well with older or newer files to the extent that
@@ -23,5 +22,5 @@ released versions of the Translate Toolkit are not aware of their existence.
   <https://github.com/translate/translate/blob/master/translate/storage/odf_shared.py#L23>`_
 
 More complex tag uses are still needed to extract 100% correctly in some
-complex cases. For more information, see the list of :doc:`issues from testing
+complex cases. For more information, see the list of :wiki:`issues from testing
 <odf/testing>`.

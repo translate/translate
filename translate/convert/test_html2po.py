@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-from py.test import mark
+from pytest import mark
 
 from translate.convert import html2po
 from translate.convert import po2html

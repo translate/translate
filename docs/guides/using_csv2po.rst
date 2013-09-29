@@ -135,7 +135,7 @@ You can, and should, keep your files as CSV files.  However, many translators
 are not the best wizzes at using their spreadsheet.  In this case many files
 will have been changed to XLS files.  To convert them by hand is tedious and
 error prone.  Rather make use of `xlHtml
-<http://freshmeat.net/projects/xlhtml/>`_ which can do all the work for you.
+<http://freecode.com/projects/xlhtml/>`_ which can do all the work for you.
 
 ::
 

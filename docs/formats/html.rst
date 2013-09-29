@@ -15,7 +15,7 @@ Conformance
 ===========
 
 * Can identify almost all tags and attributes that are localisable.
-* Does not convert HTML entities (e.g. &copy;) to normal strings
+* Does not convert HTML entities (e.g. ``&copy;``) to normal strings
 * It does not handle inline elements well and will drop them, so complicated
   HTML might not make it through the filter
 

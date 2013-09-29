@@ -56,9 +56,39 @@ Bugzilla
 Communication
 -------------
 
-* IRC channel -- irc://irc.freenode.net/#pootle Developers mailing list --
-* https://lists.sourceforge.net/lists/listinfo/translate-devel Commits to
-* version control -- https://lists.sourceforge.net/lists/listinfo/translate-cvs
+* `IRC channel <irc://irc.freenode.net/#pootle>`_
+* `Developers mailing list <https://lists.sourceforge.net/lists/listinfo/translate-devel>`_
+* `Commits to version control <https://lists.sourceforge.net/lists/listinfo/translate-cvs>`_
+
+.. _developers#working_with_bugzilla:
+
+Working with Bugzilla
+=====================
+When you close bugs ensure that you give a description and git hash for the
+fix.  This ensures that the reporter or code reviewer can see your work and has
+an easy method of finding your fix.  This is made easier by GitHub's Bugzilla
+integration.
+
+Automated Bugzilla update from commits
+--------------------------------------
+
+Github will post comments on Bugzilla bugs when the commit messages make
+references to the bug by its bug number.
+
+- Bugs are recognised by the following format (which are case-insensitive)::
+
+    Bug 123
+
+- Multiple bugs can be specified by separating them with a comma, ampersand,
+  plus or "and"::
+
+    Bug 123, 124 and 125
+
+- Commits to all branches will be processed.
+- If there is a "fix", "close", or "address" before the bug then that bug is
+  closed. ::
+
+    Fix bug 123
 
 .. _developers#source_code_map:
 
@@ -93,10 +123,6 @@ The toolkit is installed by running::
 As root
 
 The various setup options are yours to explore
-
-To run / test things without installing, see the :doc:`instructions for Pootle
-<pootle:no_install>`. Those instructions sets your environment for both Pootle
-and the toolkit
 
 .. _developers#general_overview_of_the_programs:
 
@@ -217,6 +243,7 @@ defined:
   e.g. PO message, CSV records, DTD elements
 * XXfile -- handles the document or file level of the format.  Eg a PO file, a
   CSV file a DTD file
+
   * fromlines -- read in a file and initialise the various elements
   * tolines -- convert the elements stored in XXelements and portions in XXfile
     to a raw file in that format

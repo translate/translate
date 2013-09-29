@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 
-import os.path
+import os
+import sys
 import StringIO
 import subprocess
 
@@ -8,6 +9,17 @@ from translate.storage import factory
 from translate.storage import mo
 from translate.storage import test_base
 
+# get directory of this test
+dir = os.path.dirname(os.path.abspath(__file__))
+# get top-level directory (moral equivalent of ../..)
+dir = os.path.dirname(os.path.dirname(dir))
+# load python modules from top-level
+sys.path.insert(0, dir)
+# add top-level to PYTHONPATH for subprocesses
+os.environ["PYTHONPATH"] = os.pathsep.join(sys.path)
+# add {top-level}/translate/tools to PATH for pocompile
+os.environ["PATH"] = os.pathsep.join([os.path.join(dir, "translate", "tools"),
+                                      os.environ["PATH"]])
 
 class TestMOUnit(test_base.TestTranslationUnit):
     UnitClass = mo.mounit

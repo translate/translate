@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-from py import test
+import pytest
 
 from translate.storage import test_base
 from translate.storage import qm
@@ -21,20 +21,20 @@ class TestQtFile(test_base.TestTranslationStore):
 
     def test_save(self):
         # QM does not implement saving
-        assert test.raises(Exception, self.StoreClass.savefile,
+        assert pytest.raises(Exception, self.StoreClass.savefile,
                            self.StoreClass())
 
     def test_files(self):
         # QM does not implement saving
-        assert test.raises(Exception, self.StoreClass.savefile,
+        assert pytest.raises(Exception, self.StoreClass.savefile,
                            self.StoreClass())
 
     def test_nonascii(self):
         # QM does not implement serialising
-        assert test.raises(Exception, self.StoreClass.__str__,
+        assert pytest.raises(Exception, self.StoreClass.__str__,
                            self.StoreClass())
 
     def test_add(self):
         # QM does not implement serialising
-        assert test.raises(Exception, self.StoreClass.__str__,
+        assert pytest.raises(Exception, self.StoreClass.__str__,
                            self.StoreClass())

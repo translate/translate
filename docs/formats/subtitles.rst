@@ -7,21 +7,21 @@ Subtitles
 .. versionadded:: 1.4
 
 The translation of subtitles are supported in the toolkit with the commands
-:doc:`suc2po </commands/sub2po>` and po2sub.
+:doc:`sub2po </commands/sub2po>` and po2sub.
 
 The following formats are supported for subtitles:
 
 * MicroDVD
 * MPL2
 * MPsub
-* `SubRip <https://en.wikipedia.org/wiki/SubRip>`_ (.srt)
-* `SubViewer <https://en.wikipedia.org/wiki/SubViewer>`_ 2.0 (.sub)
+* :wp:`SubRip` (.srt)
+* :wp:`SubViewer` 2.0 (.sub)
 * TMPlayer
 * Sub Station Alpha
 * Advanced Sub Station Alpha
 
-Both .sub and .srt are the main formats `supported by YouTube
-<http://help.youtube.com/support/youtube/bin/answer.py?answer=100077>`_
+YouTube supports `a number of formats
+<http://support.google.com/youtube/bin/static.py?hl=en&topic=2734694&guide=2734661&page=guide.cs>`_
 
 .. _subtitles#implementation_details:
 

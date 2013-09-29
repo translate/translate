@@ -21,9 +21,17 @@
 import difflib
 import os
 import os.path as path
+import sys
 import zipfile
 
 from lxml import etree
+
+# get directory of this test
+dir = os.path.dirname(os.path.abspath(__file__))
+# get top-level directory (moral equivalent of ../..)
+dir = os.path.dirname(os.path.dirname(dir))
+# load python modules from top-level
+sys.path.insert(0, dir)
 
 from translate.convert import odf2xliff
 from translate.convert import xliff2odf
@@ -36,11 +44,6 @@ def setup_module(module):
 
 def args(src, tgt, **kwargs):
     arg_list = []
-    try:
-        import psyco
-        arg_list.append(u'--psyco=none')
-    except ImportError, e:
-        pass
     arg_list.extend([u'--errorlevel=traceback', src, tgt])
     for flag, value in kwargs.iteritems():
         value = unicode(value)

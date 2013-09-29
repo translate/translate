@@ -5,8 +5,8 @@
 iCalendar
 *********
 
-Support for `iCalendar <https://en.wikipedia.org/wiki/ICalendar>`_ (\*.ics)
-files.  This allows calendars to be localised.
+Support for :wp:`iCalendar <ICalendar>` (\*.ics) files.  This allows calendars
+to be localised.
 
 The format extracts certain properties from VEVENT objects.  The properties are
 limited to textual entries that would need to be localised, it does not include
@@ -25,9 +25,9 @@ Resources
 * `VObject <http://vobject.skyhouseconsulting.com/>`_ -- the python library
   used to read the iCal file.
 * `iCalender validator <http://severinghaus.org/projects/icv/>`_
-* `iCalendar <https://en.wikipedia.org/wiki/ICalendar>`_
+* :wp:`iCalendar <ICalendar>`
 * `Components and their properties
-  <http://upload.wikimedia.org/wikipedia/en/c/c0/ICalendarSpecification.png>`_
+  <https://upload.wikimedia.org/wikipedia/commons/c/c0/ICalendarSpecification.png>`_
 
 .. _ical#conformance:
 

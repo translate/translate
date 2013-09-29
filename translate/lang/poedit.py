@@ -21,8 +21,9 @@
 """Functions to manage Poedit's language features.
 
 .. note:: The ISO 639 maps are from Poedit's
-`isocode.cpp <https://github.com/vslavik/poedit/blob/v1.4.2/src/isocodes.cpp#L36-227>`_ (v1.4.2)
-to ensure that we match currently released versions of Poedit.
+   `isocode.cpp
+   <https://github.com/vslavik/poedit/blob/v1.4.2/src/isocodes.cpp#L36-227>`_
+   (v1.4.2) to ensure that we match currently released versions of Poedit.
 """
 
 lang_codes = {

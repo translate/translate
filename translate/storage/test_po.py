@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-from py.test import raises, mark
+from pytest import raises, mark
 
 from translate.misc import wStringIO
 from translate.misc.multistring import multistring

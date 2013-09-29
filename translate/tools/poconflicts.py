@@ -70,7 +70,6 @@ class ConflictOptionParser(optrecurse.RecursiveOptionParser):
         (options, args) = self.parse_args()
         options.inputformats = self.inputformats
         options.outputoptions = self.outputoptions
-        self.usepsyco(options)
         self.recursiveprocess(options)
 
     def recursiveprocess(self, options):

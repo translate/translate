@@ -25,11 +25,12 @@ Derivatives of UnitChecker (like StandardUnitChecker) check translation units,
 and derivatives of TranslationChecker (like StandardChecker) check
 (source, target) translation pairs.
 
-When adding a new test here, please document and explain the behaviour on the
-`wiki <http://translate.sourceforge.net/wiki/toolkit/pofilter_tests>`_.
+When adding a new test here, please document and explain their behaviour on the
+:doc:`pofilter tests </commands/pofilter_tests>` page.
 """
 
 import re
+import logging
 
 from translate.filters import decoration
 from translate.filters import helpers
@@ -39,6 +40,8 @@ from translate.filters.decorators import (critical, functional, cosmetic,
                                           extraction)
 from translate.lang import factory
 from translate.lang import data
+
+logger = logging.getLogger(__name__)
 
 # These are some regular expressions that are compiled for use in some tests
 
@@ -289,7 +292,7 @@ class UnitChecker(object):
 
     #: Categories where each checking function falls into
     #: Function names are used as keys, categories are the values
-    categories =  {}
+    categories = {}
 
 
     def __init__(self, checkerconfig=None, excludefilters=None,
@@ -528,7 +531,7 @@ class TeeChecker:
 
     #: Categories where each checking function falls into
     #: Function names are used as keys, categories are the values
-    categories =  {}
+    categories = {}
 
 
     def __init__(self, checkerconfig=None, excludefilters=None,
@@ -578,8 +581,7 @@ class TeeChecker:
             for filtername in limitfilters:
 
                 if not filtername in self.combinedfilters:
-                    import sys
-                    print >> sys.stderr, "warning: could not find filter %s" % filtername
+                    logger.warning("could not find filter %s", filtername)
 
         return self.combinedfilters
 
@@ -885,7 +887,7 @@ class StandardChecker(TranslationChecker):
         return 1
 
 
-    @critical
+    @functional
     def accelerators(self, str1, str2):
         """Checks whether accelerators are consistent between the
         two strings.
@@ -1672,6 +1674,14 @@ class MozillaChecker(StandardChecker):
 
         return super(MozillaChecker, self).unchanged(str1, str2)
 
+    @cosmetic
+    def accelerators(self, str1, str2):
+        """Checks whether accelerators are consistent between the
+        two strings.
+
+        For Mozilla we lower the severity to cosmetic.
+        """
+        return super(MozillaChecker, self).accelerators(str1, str2)
 
 drupalconfig = CheckerConfig(
     varmatches=[("%", None), ("@", None), ("!", None)],

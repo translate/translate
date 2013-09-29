@@ -25,8 +25,6 @@
 
 #TODO: consider also providing directories as we currently provide files
 
-#TODO: refactor with existing zip code (xpi.py, etc.)
-
 from os import path
 from zipfile import ZipFile
 

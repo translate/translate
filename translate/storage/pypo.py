@@ -35,7 +35,7 @@ from translate.storage import pocommon, base, poparser
 from translate.storage.pocommon import encodingToUse
 
 lsep = "\n#: "
-"""Seperator for #: entries"""
+"""Separator for #: entries"""
 
 # general functions for quoting / unquoting po strings
 
@@ -99,8 +99,7 @@ def quoteforpo(text):
             if len(lns) > 0:
                 for ln in lns[:-1]:
                     polines.extend(['"' + escapeforpo(ln) + '"'])
-                if lns[-1]:
-                    polines.extend(['"' + escapeforpo(lns[-1]) + '\\n"'])
+                polines.extend(['"' + escapeforpo(lns[-1]) + '\\n"'])
             else:
                 polines.extend(['"\\n"'])
     if lines[-1]:

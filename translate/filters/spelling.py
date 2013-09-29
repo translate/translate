@@ -21,6 +21,9 @@
 """An API to provide spell checking for use in checks or elsewhere."""
 
 import sys
+import logging
+
+logger = logging.getLogger(__name__)
 
 available = False
 
@@ -38,7 +41,7 @@ try:
                 checkers[lang].check(u'bla')
             except EnchantError, e:
                 # sometimes this is raised instead of DictNotFoundError
-                print >> sys.stderr, str(e)
+                logger.error(str(e))
                 checkers[lang] = None
 
         if not checkers[lang]:

@@ -30,49 +30,15 @@ from translate.convert import po2dtd
 from translate.convert import po2prop
 from translate.convert import po2mozlang
 from translate.convert import prop2mozfunny
-from translate.storage import xpi
 from translate.convert import convert
 
 
-class MozConvertOptionParser(convert.ArchiveConvertOptionParser):
+class MozConvertOptionParser(convert.ConvertOptionParser):
 
     def __init__(self, formats, usetemplates=False, usepots=False,
                  description=None):
-        convert.ArchiveConvertOptionParser.__init__(self, formats, usetemplates, usepots,
-                                                    description=description,
-                                                    archiveformats={"xpi": xpi.XpiFile})
-
-    def initoutputarchive(self, options):
-        """creates an outputarchive if required"""
-        if options.output and self.isarchive(options.output, 'output'):
-            newlang = None
-            newregion = None
-            if options.locale is not None:
-                if options.locale.count("-") > 1:
-                    raise ValueError("Invalid locale: %s - should be of the form xx-YY" % options.locale)
-                elif "-" in options.locale:
-                    newlang, newregion = options.locale.split("-")
-                else:
-                    newlang, newregion = options.locale, ""
-            if options.clonexpi is not None:
-                originalxpi = xpi.XpiFile(options.clonexpi, "r")
-                options.outputarchive = originalxpi.clone(options.output, "w",
-                                                          newlang=newlang,
-                                                          newregion=newregion)
-            elif self.isarchive(options.template, 'template'):
-                options.outputarchive = options.templatearchive.clone(options.output, "a",
-                                                                      newlang=newlang,
-                                                                      newregion=newregion)
-            else:
-                if os.path.exists(options.output):
-                    options.outputarchive = xpi.XpiFile(options.output, "a",
-                                                        locale=newlang,
-                                                        region=newregion)
-                else:
-                    # FIXME: this is unlikely to work because it has no jar files
-                    options.outputarchive = xpi.XpiFile(options.output, "w",
-                                                        locale=newlang,
-                                                        region=newregion)
+        convert.ConvertOptionParser.__init__(self, formats, usetemplates, usepots,
+                                             description=description)
 
     def splitinputext(self, inputpath):
         """splits a inputpath into name and extension"""
@@ -89,10 +55,6 @@ class MozConvertOptionParser(convert.ArchiveConvertOptionParser):
         """recurse through directories and convert files"""
         self.replacer.replacestring = options.locale
         result = super(MozConvertOptionParser, self).recursiveprocess(options)
-        if self.isarchive(options.output, 'output'):
-            if options.progress in ('console', 'verbose'):
-                print "writing xpi file..."
-            options.outputarchive.close()
         return result
 
 
@@ -120,9 +82,12 @@ def main(argv=None):
     parser.add_option("-l", "--locale", dest="locale", default=None,
         help="set output locale (required as this sets the directory names)",
         metavar="LOCALE")
-    parser.add_option("", "--clonexpi", dest="clonexpi", default=None,
-        help="clone xpi structure from the given xpi file")
+    parser.add_option("", "--removeuntranslated", dest="remove_untranslated",
+            default=False, action="store_true",
+            help="remove untranslated strings from output")
+    parser.add_threshold_option()
     parser.add_fuzzy_option()
+    parser.passthrough.append("remove_untranslated")
     parser.replacer = replacer
     parser.run(argv)
 

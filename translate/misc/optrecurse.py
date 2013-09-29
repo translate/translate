@@ -18,9 +18,11 @@
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, see <http://www.gnu.org/licenses/>.
 
+import re
 import sys
 import os.path
 import fnmatch
+import logging
 import traceback
 import optparse
 try:
@@ -91,9 +93,9 @@ class RecursiveOptionParser(optparse.OptionParser, object):
         self.setprogressoptions()
         self.seterrorleveloptions()
         self.setformats(formats, usetemplates)
-        self.setpsycooption()
         self.passthrough = []
         self.allowmissingtemplate = allowmissingtemplate
+        logging.basicConfig(format="%(name)s: %(levelname)s: %(message)s")
 
     def get_prog_name(self):
         return os.path.basename(sys.argv[0])
@@ -128,14 +130,15 @@ class RecursiveOptionParser(optparse.OptionParser, object):
         description_lines = self.description.split('\n\n')[1:]
         if description_lines:
             result.append('.SH DESCRIPTION\n')
-            result.append('\n'.join(description_lines))
+            result.append('\n\n'.join([re.sub('\.\. note::', 'Note:', l)
+                                              for l in description_lines]))
         result.append('.SH OPTIONS\n')
         ManHelpFormatter().store_option_strings(self)
         result.append('.PP\n')
         for option in self.option_list:
             result.append('.TP\n')
-            result.append('%s\n' % option)
-            result.append('%s\n' % option.help)
+            result.append('%s\n' % str(option).replace('-', '\-'))
+            result.append('%s\n' % option.help.replace('-', '\-'))
         return "".join(result)
 
     def print_manpage(self, file=None):
@@ -143,39 +146,6 @@ class RecursiveOptionParser(optparse.OptionParser, object):
         if file is None:
             file = sys.stdout
         file.write(self.format_manpage())
-
-    def setpsycooption(self):
-        try:
-            import psyco  # pylint: disable=W0612
-        except ImportError:
-            return
-        psycomodes = ["none", "full", "profile"]
-        psycooption = optparse.Option(None, "--psyco", dest="psyco",
-            default=None, choices=psycomodes, metavar="MODE",
-            help="use psyco to speed up the operation, modes: %s" % (", ".join(psycomodes)))
-        self.define_option(psycooption)
-
-    def usepsyco(self, options):
-        # options.psyco == None means the default, which is "full", but don't
-        #                       give a warning...
-        # options.psyco == "none" means don't use psyco at all...
-        if getattr(options, "psyco", "none") == "none":
-            return
-        try:
-            import psyco
-        except ImportError:
-            if options.psyco is not None:
-                self.warning("psyco unavailable", options, sys.exc_info())
-            return
-        if options.psyco is None:
-            options.psyco = "full"
-        if options.psyco == "full":
-            psyco.full()
-        elif options.psyco == "profile":
-            psyco.profile()
-        # tell psyco the functions it cannot compile, to prevent warnings
-        import encodings
-        psyco.cannotcompile(encodings.search_function)
 
     def set_usage(self, usage=None):
         """sets the usage string - if usage not given, uses getusagestring for
@@ -199,7 +169,7 @@ class RecursiveOptionParser(optparse.OptionParser, object):
                 errorinfo = ""
             if errorinfo:
                 msg += ": " + errorinfo
-        print >> sys.stderr, "\n%s: warning: %s" % (self.get_prog_name(), msg)
+        logging.getLogger(self.get_prog_name()).warning(msg)
 
     def getusagestring(self, option):
         """returns the usage string for the given option"""
@@ -433,22 +403,25 @@ class RecursiveOptionParser(optparse.OptionParser, object):
                 outputformat = None
             else:
                 if self.usetemplates:
-                    if templateext is None:
-                        raise ValueError("don't know what to do with input format %s, no template file" %
-                                         (os.extsep + inputext))
-                    else:
-                        raise ValueError("don't know what to do with input format %s, template format %s" %
-                                         (os.extsep + inputext, os.extsep + templateext))
+                    raise ValueError("don't know what to do with input format (no file extension), no template file")
                 else:
-                    raise ValueError("don't know what to do with input format %s" %
-                                     (os.extsep + inputext))
+                    raise ValueError("don't know what to do with input format (no file extension)")
         return outputformat, fileprocessor
 
     def initprogressbar(self, allfiles, options):
         """Sets up a progress bar appropriate to the options and files."""
         if options.progress in ('bar', 'verbose'):
-            self.progressbar = self.progresstypes[options.progress](0, len(allfiles))
-            print >> sys.stderr, "processing %d files..." % len(allfiles)
+            self.progressbar = \
+                self.progresstypes[options.progress](0, len(allfiles))
+            # should use .getChild("progress") but that is only in 2.7
+            logger = logging.getLogger(self.get_prog_name() + ".progress")
+            logger.setLevel(logging.INFO)
+            logger.propagate = False
+            handler = logging.StreamHandler()
+            handler.setLevel(logging.INFO)
+            handler.setFormatter(logging.Formatter())
+            logger.addHandler(handler)
+            logger.info("processing %d files...", len(allfiles))
         else:
             self.progressbar = self.progresstypes[options.progress]()
 
@@ -484,7 +457,6 @@ class RecursiveOptionParser(optparse.OptionParser, object):
         # the options
         options.inputformats = self.inputformats
         options.outputoptions = self.outputoptions
-        self.usepsyco(options)
         self.recursiveprocess(options)
 
     def recursiveprocess(self, options):

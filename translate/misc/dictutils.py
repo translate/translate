@@ -82,7 +82,7 @@ class cidict(dict):
         return self.__contains__(key)
 
     def get(self, key, default=None):
-        if self.has_key(key):
+        if key in self:
             return self[key]
         else:
             return default

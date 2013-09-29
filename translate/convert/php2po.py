@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 #
-# Copyright 2002-2006 Zuza Software Foundation
+# Copyright 2002-2013 Zuza Software Foundation
 #
 # This file is part of translate.
 #
@@ -25,19 +25,24 @@ for examples and usage instructions.
 """
 
 import sys
+import logging
 
-from translate.storage import po
-from translate.storage import php
+from translate.convert import convert
+from translate.storage import php, po
+
+
+logger = logging.getLogger(__name__)
 
 
 class php2po:
-    """convert a .php file to a .po file for handling the translation..."""
+    """Convert a .php file to a .po file for handling the translation."""
 
     def convertstore(self, inputstore, duplicatestyle="msgctxt"):
-        """converts a .php file to a .po file..."""
+        """Convert a .php file to a .po file."""
         outputstore = po.pofile()
         outputheader = outputstore.header()
-        outputheader.addnote("extracted from %s" % inputstore.filename, "developer")
+        outputheader.addnote("extracted from %s" % inputstore.filename,
+                             "developer")
 
         for inputunit in inputstore.units:
             outputunit = self.convertunit(inputunit, "developer")
@@ -46,35 +51,41 @@ class php2po:
         outputstore.removeduplicates(duplicatestyle)
         return outputstore
 
-    def mergestore(self, templatestore, inputstore, blankmsgstr=False, duplicatestyle="msgctxt"):
-        """converts two .php files to a .po file..."""
+    def mergestore(self, templatestore, inputstore, blankmsgstr=False,
+                   duplicatestyle="msgctxt"):
+        """Convert two .php files to a .po file."""
         outputstore = po.pofile()
         outputheader = outputstore.header()
-        outputheader.addnote("extracted from %s, %s" % (templatestore.filename, inputstore.filename), "developer")
+        outputheader.addnote("extracted from %s, %s" % (templatestore.filename,
+                                                        inputstore.filename),
+                             "developer")
 
         inputstore.makeindex()
-        # loop through the original file, looking at units one by one
+        # Loop through the original file, looking at units one by one.
         for templateunit in templatestore.units:
             outputunit = self.convertunit(templateunit, "developer")
-            # try and find a translation of the same name...
+            # Try and find a translation of the same name.
             if templateunit.name in inputstore.locationindex:
                 translatedinputunit = inputstore.locationindex[templateunit.name]
-                # Need to check that this comment is not a copy of the developer comments
-                translatedoutputunit = self.convertunit(translatedinputunit, "translator")
+                # Need to check that this comment is not a copy of the
+                # developer comments.
+                translatedoutputunit = self.convertunit(translatedinputunit,
+                                                        "translator")
             else:
                 translatedoutputunit = None
-            # if we have a valid po unit, get the translation and add it...
+            # If we have a valid po unit, get the translation and add it.
             if outputunit is not None:
                 if translatedoutputunit is not None and not blankmsgstr:
                     outputunit.target = translatedoutputunit.source
                 outputstore.addunit(outputunit)
             elif translatedoutputunit is not None:
-                print >> sys.stderr, "error converting original properties definition %s" % templateunit.name
+                logger("error converting original properties definition %s",
+                       templateunit.name)
         outputstore.removeduplicates(duplicatestyle)
         return outputstore
 
     def convertunit(self, inputunit, origin):
-        """Converts a .php unit to a .po unit"""
+        """Convert a .php unit to a .po unit."""
         outputunit = po.pounit(encoding="UTF-8")
         outputunit.addnote(inputunit.getnotes(origin), origin)
         outputunit.addlocation("".join(inputunit.getlocations()))
@@ -83,15 +94,19 @@ class php2po:
         return outputunit
 
 
-def convertphp(inputfile, outputfile, templatefile, pot=False, duplicatestyle="msgctxt"):
-    """reads in inputfile using php, converts using php2po, writes to outputfile"""
+def convertphp(inputfile, outputfile, templatefile, pot=False,
+               duplicatestyle="msgctxt"):
+    """Read inputfile using php, convert using php2po, write to outputfile."""
     inputstore = php.phpfile(inputfile)
     convertor = php2po()
     if templatefile is None:
-        outputstore = convertor.convertstore(inputstore, duplicatestyle=duplicatestyle)
+        outputstore = convertor.convertstore(inputstore,
+                                             duplicatestyle=duplicatestyle)
     else:
         templatestore = php.phpfile(templatefile)
-        outputstore = convertor.mergestore(templatestore, inputstore, blankmsgstr=pot, duplicatestyle=duplicatestyle)
+        outputstore = convertor.mergestore(templatestore, inputstore,
+                                           blankmsgstr=pot,
+                                           duplicatestyle=duplicatestyle)
     if outputstore.isempty():
         return 0
     outputfile.write(str(outputstore))
@@ -99,12 +114,12 @@ def convertphp(inputfile, outputfile, templatefile, pot=False, duplicatestyle="m
 
 
 def main(argv=None):
-    from translate.convert import convert
     formats = {
             "php": ("po", convertphp), ("php", "php"): ("po", convertphp),
             "html": ("po", convertphp), ("html", "html"): ("po", convertphp),
     }
-    parser = convert.ConvertOptionParser(formats, usetemplates=True, usepots=True, description=__doc__)
+    parser = convert.ConvertOptionParser(formats, usetemplates=True,
+                                         usepots=True, description=__doc__)
     parser.add_duplicates_option()
     parser.passthrough.append("pot")
     parser.run(argv)

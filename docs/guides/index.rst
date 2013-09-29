@@ -17,7 +17,6 @@ Use Cases
    running_the_tools_on_microsoft_windows
    cleanup_translator_comments
    creating_mozilla_pot_files
-   migrating_to_firefox
    document_translation
 
 * :doc:`Migrating an older version of your translations to the latest templates
@@ -35,6 +34,4 @@ Use Cases
 * Using ``phase`` for the complete translation roundtrip
 * :doc:`Cleanup translator comments <cleanup_translator_comments>`
 * :doc:`Creating Mozilla POT files <creating_mozilla_pot_files>`
-* :doc:`Migrating older Mozilla XPI based translations to Firefox
-  <migrating_to_firefox>`
 * :doc:`Document translation <document_translation>`
