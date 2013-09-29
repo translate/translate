@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 #
-# Copyright 2012 Michal Čihař
+# Copyright 2012 Michal ÄŒihaÅ™
 #
 # This file is part of the Translate Toolkit.
 #
@@ -17,8 +17,6 @@
 #
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, see <http://www.gnu.org/licenses/>.
-import types
-
 """module for handling Android resource files"""
 
 import re
@@ -240,6 +238,16 @@ class AndroidResourceUnit(base.TranslationUnit):
             self.setid(source)
         super(AndroidResourceUnit, self).__init__(source)
 
+    def istranslatable(self):
+        return (
+            self.xmlelement.tag == "string"
+            and bool(self.getid())
+            and self.xmlelement.get('translatable') != 'false'
+        )
+
+    def isblank(self):
+        return not bool(self.getid())
+
     def getid(self):
         return self.xmlelement.get("name")
 
@@ -393,7 +401,7 @@ class AndroidResourceUnit(base.TranslationUnit):
         text = text.replace('\n', '\\n')
         # This will add non intrusive real newlines to
         # ones in translation improving readability of result
-        text = text.replace(' \\n', '\n\\n')
+        text = text.replace('\\n', '\n\\n')
         text = text.replace('\t', '\\t')
         text = text.replace('\'', '\\\'')
         text = text.replace('"', '\\"')
@@ -429,26 +437,22 @@ class AndroidResourceUnit(base.TranslationUnit):
                 target = target.replace('<', '&lt;')
                 newstring = etree.fromstring('<string>%s</string>' % target)
             # Update text
-<<<<<<< HEAD
-            xmltarget.text = newstring.text
-=======
             if newstring.text is None:
                 self.xmlelement.text = ''
             else:
                 self.xmlelement.text = newstring.text
->>>>>>> upstream/master
             # Remove old elements
-            for x in xmltarget.iterchildren():
-                xmltarget.remove(x)
+            for x in self.xmlelement.iterchildren():
+                self.xmlelement.remove(x)
             # Add new elements
             for x in newstring.iterchildren():
-                xmltarget.append(x)
+                self.xmlelement.append(x)
         else:
             # Handle text only
             xmltarget.text = self.escape(target)
 
     def settarget(self, target):
-        if (self.hasplurals(self.source)):
+        if (self.hasplurals(self.source) or self.hasplurals(target)):
             targetLang = self.gettargetlanguage();
             
             # If target language isn't set on the store, we try to extract it from the file path
@@ -502,17 +506,10 @@ class AndroidResourceUnit(base.TranslationUnit):
 
     def getXmlTextValue(self, xmltarget):
         # Grab inner text
-<<<<<<< HEAD
-        target = (xmltarget.text or u'')
-        # Include markup as well
-        target += u''.join([data.forceunicode(etree.tostring(child, encoding='utf-8')) for child in xmltarget.iterchildren()])
-        return self.unescape(target)
-=======
         target = self.unescape(self.xmlelement.text or u'')
         # Include markup as well
         target += u''.join([data.forceunicode(etree.tostring(child, encoding='utf-8')) for child in self.xmlelement.iterchildren()])
         return target
->>>>>>> upstream/master
 
     def gettarget(self, lang=None):
         if (self.xmlelement.tag == "plurals"):
@@ -576,11 +573,10 @@ class AndroidResourceUnit(base.TranslationUnit):
         return (str(self) == str(other))
     
     def hasplurals(self, thing):
-        if not isinstance(thing, multistring):
-            return False
-        elif isinstance(thing, types.ListType):
+        if isinstance(thing, multistring):
             return True
-        return len(thing.strings) > 1
+        return False
+
 
 
 class AndroidResourceFile(lisa.LISAfile):
