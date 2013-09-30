@@ -427,8 +427,9 @@ class AndroidResourceUnit(base.TranslationUnit):
 
     def setXmlTextValue(self, target, xmltarget):
         if '<' in target:
-            # Handle text with possible markup
-            target = target.replace('&', '&amp;')
+            # Handle text with possible markup and escape Android characters that must be escaped
+            target = self.escape(target.replace('&', '&amp;'))
+            
             try:
                 # Try as XML
                 newstring = etree.fromstring('<string>%s</string>' % target)
@@ -440,8 +441,7 @@ class AndroidResourceUnit(base.TranslationUnit):
             if newstring.text is None:
                 xmltarget.text = ''
             else:
-                # If the text is valid, Android characters must be escaped
-                xmltarget.text = self.escape(newstring.text)
+                xmltarget.text = newstring.text
             # Remove old elements
             for x in xmltarget.iterchildren():
                 xmltarget.remove(x)
