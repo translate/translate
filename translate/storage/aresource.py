@@ -20,6 +20,7 @@
 """module for handling Android resource files"""
 
 import re
+import copy
 
 from lxml import etree
 from translate.misc.multistring import multistring
@@ -278,7 +279,7 @@ class AndroidResourceUnit(base.TranslationUnit):
         text = list(text) + [EOF]
         while i < len(text):
             c = text[i]
-
+            
             # Handle whitespace collapsing
             if c is not EOF and c in WHITESPACE:
                 space_count += 1
@@ -389,7 +390,7 @@ class AndroidResourceUnit(base.TranslationUnit):
         # Join the string together again, but w/o EOF marker
         return "".join(text[:-1])
 
-    def escape(self, text):
+    def escape(self, text, quoteStartingWhitespace=True, quoteEndingWhitespace=True):
         '''
         Escape all the characters which need to be escaped in an Android XML file.
         '''
@@ -401,7 +402,7 @@ class AndroidResourceUnit(base.TranslationUnit):
         text = text.replace('\n', '\\n')
         # This will add non intrusive real newlines to
         # ones in translation improving readability of result
-        text = text.replace('\\n', '\n\\n')
+        text = text.replace(' \\n', '\n\\n')
         text = text.replace('\t', '\\t')
         text = text.replace('\'', '\\\'')
         text = text.replace('"', '\\"')
@@ -410,7 +411,9 @@ class AndroidResourceUnit(base.TranslationUnit):
         if text.startswith('@'):
             text = '\\@' + text[1:]
         # Quote strings with more whitespace
-        if text[0] in WHITESPACE or text[-1] in WHITESPACE or len(MULTIWHITESPACE.findall(text)) > 0:
+        if ((quoteStartingWhitespace and (text[0] in WHITESPACE)) 
+                or (quoteEndingWhitespace and (text[-1] in WHITESPACE)) 
+                or len(MULTIWHITESPACE.findall(text))) > 0:
             return '"%s"' % text
         return text
 
@@ -427,8 +430,8 @@ class AndroidResourceUnit(base.TranslationUnit):
 
     def setXmlTextValue(self, target, xmltarget):
         if '<' in target:
-            # Handle text with possible markup and escape Android characters that must be escaped
-            target = self.escape(target.replace('&', '&amp;'))
+            # Handle text with possible markup
+            target = target.replace('&', '&amp;')
             
             try:
                 # Try as XML
@@ -448,6 +451,15 @@ class AndroidResourceUnit(base.TranslationUnit):
             # Add new elements
             for x in newstring.iterchildren():
                 xmltarget.append(x)
+                
+            
+            # Escape all text elements inside the xml tree.
+            # Starting single whitespace must be escaped only for the root tag 
+            xmltarget.text = self.escape(xmltarget.text, True, False)
+            for x in xmltarget.iterdescendants():
+                x.text = self.escape(x.text, False, False)
+                # Ending single whitespace must be escaped only for tail of the last child
+                x.tail = self.escape(x.tail, False, (x == list(xmltarget)[-1]))
         else:
             # Handle text only
             xmltarget.text = self.escape(target)
@@ -506,10 +518,20 @@ class AndroidResourceUnit(base.TranslationUnit):
         super(AndroidResourceUnit, self).settarget(target)
 
     def getXmlTextValue(self, xmltarget):
+        # Cloning xml tree to perform unescaping on all the structure (including nested tags text) 
+        clonedTarget = copy.deepcopy(xmltarget)
+        
+        # Unescaping the text for the complete xml tree
+        clonedTarget.text = self.unescape(clonedTarget.text);
+        for x in clonedTarget.iterdescendants():
+            x.text = self.unescape(x.text)
+            x.tail = self.unescape(x.tail)
+               
         # Grab inner text
-        target = self.unescape(xmltarget.text or u'')
+        target = clonedTarget.text or u''
         # Include markup as well
-        target += u''.join([data.forceunicode(etree.tostring(child, encoding='utf-8')) for child in xmltarget.iterchildren()])
+        target += u''.join([data.forceunicode(etree.tostring(child, encoding='utf-8')) for child in clonedTarget.iterchildren()])
+        
         return target
 
     def gettarget(self, lang=None):

@@ -22,6 +22,10 @@ class TestPropUnit(test_monolingual.TestMonolingualUnit):
         ('<<< arrow', '<string name="Test String">&lt;&lt;&lt; arrow</string>\n\n'),
         ('<a href="http://example.net">link</a>', '<string name="Test String"><a href="http://example.net">link</a></string>\n\n'),
         ('<a href="http://example.net">link</a> and text', '<string name="Test String"><a href="http://example.net">link</a> and text</string>\n\n'),
+        ('<a href="http://example.net">link\nwith new line</a> and text', '<string name="Test String"><a href="http://example.net">link\\nwith new line</a> and text</string>\n\n'),
+        ('<a href="http://example.net"><b>link\nwith inner</b> tag new line</a> and text', '<string name="Test String"><a href="http://example.net"><b>link\\nwith inner</b> tag new line</a> and text</string>\n\n'),
+        (' leading space<a href="http://example.net"><b>link\nwith  inner multiple space</b> tag new line</a> and trailing space ', 
+            '<string name="Test String">" leading space"<a href="http://example.net"><b>"link\\nwith  inner multiple space"</b> tag new line</a>" and trailing space "</string>\n\n'),
     ]
 
     parse_test_data = escape_data + [
@@ -30,13 +34,15 @@ class TestPropUnit(test_monolingual.TestMonolingualUnit):
         # Check that newline is read as space (at least it seems to be what Android does)
         ('newline in string', '<string name="Test String">newline\nin string</string>\n\n'),
     ]
-
+    
     def test_escape(self):
         unit = self.unit
         for string, xml in self.escape_data:
             unit = self.UnitClass("Test String")
             unit.target = string
+            print
             print "unit.target:", repr(unit.target)
+            print "unit:", repr(str(unit))
             print "xml:", repr(xml)
             assert str(unit) == xml
 
@@ -50,6 +56,7 @@ class TestPropUnit(test_monolingual.TestMonolingualUnit):
         for string, xml in self.parse_test_data:
             et = etree.fromstring(xml, parser)
             unit = self.UnitClass.createfromxmlElement(et)
+            print
             print "unit.target:", repr(unit.target)
             print "string:", string
             assert unit.target == string
