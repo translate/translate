@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 #
-# Copyright 2012 Michal Čihař
+# Copyright 2012 Michal ÄŒihaÅ™
 #
 # This file is part of the Translate Toolkit.
 #
@@ -17,13 +17,13 @@
 #
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, see <http://www.gnu.org/licenses/>.
-
 """module for handling Android resource files"""
 
-from lxml import etree
-
 import re
+import copy
 
+from lxml import etree
+from translate.misc.multistring import multistring
 from translate.storage import lisa
 from translate.storage import base
 from translate.lang import data
@@ -34,18 +34,218 @@ MULTIWHITESPACE = re.compile('[ \n\t]{2}')
 
 class AndroidResourceUnit(base.TranslationUnit):
     """A single term in the Android resource file."""
-    rootNode = "string"
-    languageNode = "string"
-
+    """<string-array> <item> """
+    """ <plurals> <item quantity=""> """
+    
+    """List built from Unicode plural rules page:"""
+    """http://www.unicode.org/cldr/charts/supplemental/language_plural_rules.html"""
+    unicodePlurals = {
+            'af': ('one','other'),
+            'ak': ('one','other'),
+            'sq': ('one','other'),
+            'am': ('one','other'),
+            'ar': ('zero','one','two','few','many','other'),
+            'ast': ('one','other'),
+            'asa': ('one','other'),
+            'az': ('other'),
+            'bm': ('other'),
+            'eu': ('one','other'),
+            'be': ('one','few','many','other'),
+            'bem': ('one','other'),
+            'bez': ('one','other'),
+            'bn': ('one','other'),
+            'bh': ('one','other'),
+            'brx': ('one','other'),
+            'bs': ('one','few','many','other'),
+            'br': ('one','two','few','other'),
+            'bg': ('one','other'),
+            'my': ('other'),
+            'ca': ('one','other'),
+            'tzm': ('one','other'),
+            'chr': ('one','other'),
+            'cgg': ('one','other'),
+            'zh': ('other'),
+            'ksh': ('zero','one','other'),
+            'kw': ('one','two','other'),
+            'hr': ('one','few','many','other'),
+            'cs': ('one','few','other'),
+            'da': ('one','other'),
+            'dv': ('one','other'),
+            'nl': ('one','other'),
+            'dz': ('other'),
+            'en': ('one','other'),
+            'eo': ('one','other'),
+            'et': ('one','other'),
+            'ee': ('one','other'),
+            'fo': ('one','other'),
+            'fil': ('one','other'),
+            'fi': ('one','other'),
+            'fr': ('one','other'),
+            'fur': ('one','other'),
+            'ff': ('one','other'),
+            'gl': ('one','other'),
+            'lg': ('one','other'),
+            'ka': ('other'),
+            'de': ('one','other'),
+            'el': ('one','other'),
+            'gu': ('one','other'),
+            'guw': ('one','other'),
+            'ha': ('one','other'),
+            'haw': ('one','other'),
+            'he': ('one','two','many','other'),
+            'hi': ('one','other'),
+            'hu': ('other'),
+            'is': ('one','other'),
+            'ig': ('other'),
+            'smn': ('one','two','other'),
+            'id': ('other'),
+            'iu': ('one','two','other'),
+            'ga': ('one','two','few','many','other'),
+            'it': ('one','other'),
+            'ja': ('other'),
+            'jv': ('other'),
+            'kaj': ('one','other'),
+            'kea': ('other'),
+            'kab': ('one','other'),
+            'kkj': ('one','other'),
+            'kl': ('one','other'),
+            'kn': ('other'),
+            'ks': ('one','other'),
+            'kk': ('one','other'),
+            'km': ('other'),
+            'ky': ('one','other'),
+            'ko': ('other'),
+            'ses': ('other'),
+            'ku': ('one','other'),
+            'lag': ('zero','one','other'),
+            'lo': ('other'),
+            'lv': ('zero','one','other'),
+            'ln': ('one','other'),
+            'lt': ('one','few','other'),
+            'smj': ('one','two','other'),
+            'lb': ('one','other'),
+            'mk': ('one','other'),
+            'jmc': ('one','other'),
+            'kde': ('other'),
+            'mg': ('one','other'),
+            'ms': ('other'),
+            'ml': ('one','other'),
+            'mt': ('one','few','many','other'),
+            'gv': ('one','other'),
+            'mr': ('one','other'),
+            'mas': ('one','other'),
+            'mgo': ('one','other'),
+            'mo': ('one','few','other'),
+            'mn': ('one','other'),
+            'nah': ('one','other'),
+            'naq': ('one','two','other'),
+            'ne': ('one','other'),
+            'nnh': ('one','other'),
+            'jgo': ('one','other'),
+            'nd': ('one','other'),
+            'se': ('one','two','other'),
+            'nso': ('one','other'),
+            'no': ('one','other'),
+            'nb': ('one','other'),
+            'nn': ('one','other'),
+            'ny': ('one','other'),
+            'nyn': ('one','other'),
+            'or': ('one','other'),
+            'om': ('one','other'),
+            'os': ('one','other'),
+            'pap': ('one','other'),
+            'ps': ('one','other'),
+            'fa': ('other'),
+            'pl': ('one','few','many','other'),
+            'pt': ('one','other'),
+            'pa': ('one','other'),
+            'ro': ('one','few','other'),
+            'rm': ('one','other'),
+            'rof': ('one','other'),
+            'root': ('other'),
+            'ru': ('one','few','many','other'),
+            'rwk': ('one','other'),
+            'ssy': ('one','other'),
+            'sah': ('other'),
+            'saq': ('one','other'),
+            'smi': ('one','two','other'),
+            'sg': ('other'),
+            'gd': ('one','two','few','other'),
+            'seh': ('one','other'),
+            'sr': ('one','few','many','other'),
+            'sh': ('one','few','many','other'),
+            'ksb': ('one','other'),
+            'sn': ('one','other'),
+            'ii': ('other'),
+            'sms': ('one','two','other'),
+            'sk': ('one','few','other'),
+            'sl': ('one','two','few','other'),
+            'xog': ('one','other'),
+            'so': ('one','other'),
+            'ckb': ('one','other'),
+            'nr': ('one','other'),
+            'sma': ('one','two','other'),
+            'st': ('one','other'),
+            'es': ('one','other'),
+            'sw': ('one','other'),
+            'ss': ('one','other'),
+            'sv': ('one','other'),
+            'gsw': ('one','other'),
+            'syr': ('one','other'),
+            'shi': ('one','few','other'),
+            'tl': ('one','other'),
+            'ta': ('one','other'),
+            'te': ('one','other'),
+            'teo': ('one','other'),
+            'th': ('other'),
+            'bo': ('other'),
+            'tig': ('one','other'),
+            'ti': ('one','other'),
+            'to': ('other'),
+            'ts': ('one','other'),
+            'tn': ('one','other'),
+            'tr': ('other'),
+            'tk': ('one','other'),
+            'kcg': ('one','other'),
+            'uk': ('one','few','many','other'),
+            'ur': ('one','other'),
+            've': ('one','other'),
+            'vi': ('other'),
+            'vo': ('one','other'),
+            'vun': ('one','other'),
+            'wa': ('one','other'),
+            'wae': ('one','other'),
+            'cy': ('zero','one','two','few','many','other'),
+            'fy': ('one','other'),
+            'wo': ('other'),
+            'xh': ('one','other'),
+            'yo': ('other'),
+            'zu': ('one','other'),
+        }
+    
+    xmlelement = None
+    
     def __init__(self, source, empty=False, xmlelement=None, **kwargs):
         if xmlelement is not None:
             self.xmlelement = xmlelement
         else:
-            self.xmlelement = etree.Element(self.rootNode)
+            if self.hasplurals(source):
+                self.xmlelement = etree.Element("plurals")
+            else:
+                self.xmlelement = etree.Element("string")
+            
             self.xmlelement.tail = '\n'
-        if source is not None:
-            self.setid(source)
+            
         super(AndroidResourceUnit, self).__init__(source)
+
+    def istranslatable(self):
+        return (
+            bool(self.getid())
+            and self.xmlelement.get('translatable') != 'false'
+        )
+
+    def isblank(self):
+        return not bool(self.getid())
 
     def getid(self):
         return self.xmlelement.get("name")
@@ -55,6 +255,9 @@ class AndroidResourceUnit(base.TranslationUnit):
 
     def setid(self, newid):
         return self.xmlelement.set("name", newid)
+
+    def setcontext(self, context):
+        return self.xmlelement.set("name", context)
 
     def unescape(self, text):
         '''
@@ -73,12 +276,11 @@ class AndroidResourceUnit(base.TranslationUnit):
         active_quote = False
         active_percent = False
         active_escape = False
-        formatted = False
         i = 0
         text = list(text) + [EOF]
         while i < len(text):
             c = text[i]
-
+            
             # Handle whitespace collapsing
             if c is not EOF and c in WHITESPACE:
                 space_count += 1
@@ -118,7 +320,6 @@ class AndroidResourceUnit(base.TranslationUnit):
             if c == '%' and not active_escape:
                 active_percent = not active_percent
             elif not active_escape and active_percent:
-                formatted = True
                 active_percent = False
 
             # Handle escapes
@@ -190,7 +391,7 @@ class AndroidResourceUnit(base.TranslationUnit):
         # Join the string together again, but w/o EOF marker
         return "".join(text[:-1])
 
-    def escape(self, text):
+    def escape(self, text, quoteStartingWhitespace=True, quoteEndingWhitespace=True):
         '''
         Escape all the characters which need to be escaped in an Android XML file.
         '''
@@ -211,7 +412,9 @@ class AndroidResourceUnit(base.TranslationUnit):
         if text.startswith('@'):
             text = '\\@' + text[1:]
         # Quote strings with more whitespace
-        if text[0] in WHITESPACE or text[-1] in WHITESPACE or len(MULTIWHITESPACE.findall(text)) > 0:
+        if ((quoteStartingWhitespace and (text[0] in WHITESPACE)) 
+                or (quoteEndingWhitespace and (text[-1] in WHITESPACE)) 
+                or len(MULTIWHITESPACE.findall(text))) > 0:
             return '"%s"' % text
         return text
 
@@ -226,10 +429,11 @@ class AndroidResourceUnit(base.TranslationUnit):
 
     source = property(getsource, setsource)
 
-    def settarget(self, target):
+    def setXmlTextValue(self, target, xmltarget):
         if '<' in target:
             # Handle text with possible markup
             target = target.replace('&', '&amp;')
+            
             try:
                 # Try as XML
                 newstring = etree.fromstring('<string>%s</string>' % target)
@@ -239,26 +443,128 @@ class AndroidResourceUnit(base.TranslationUnit):
                 newstring = etree.fromstring('<string>%s</string>' % target)
             # Update text
             if newstring.text is None:
-                self.xmlelement.text = ''
+                xmltarget.text = ''
             else:
-                self.xmlelement.text = newstring.text
+                xmltarget.text = newstring.text
             # Remove old elements
-            for x in self.xmlelement.iterchildren():
-                self.xmlelement.remove(x)
+            for x in xmltarget.iterchildren():
+                xmltarget.remove(x)
             # Add new elements
             for x in newstring.iterchildren():
-                self.xmlelement.append(x)
+                xmltarget.append(x)
+                
+            
+            # Escape all text elements inside the xml tree.
+            # Starting single whitespace must be escaped only for the root tag 
+            xmltarget.text = self.escape(xmltarget.text, True, False)
+            for x in xmltarget.iterdescendants():
+                x.text = self.escape(x.text, False, False)
+                # Ending single whitespace must be escaped only for tail of the last child
+                x.tail = self.escape(x.tail, False, (x == list(xmltarget)[-1]))
         else:
             # Handle text only
-            self.xmlelement.text = self.escape(target)
+            xmltarget.text = self.escape(target)
+
+    def settarget(self, target):
+        if (self.hasplurals(self.source) or self.hasplurals(target)):
+            # Replace the root tag if non matching
+            if self.xmlelement.tag != "plurals":
+                oldId = self.getid()
+                self.xmlelement = etree.Element("plurals")
+                self.setid(oldId)
+        
+            targetLang = self.gettargetlanguage();
+            
+            # If target language isn't set on the store, we try to extract it from the file path
+            if (targetLang is None):
+                # Android standard expect the folder to be in format "values-{lang}"
+                match = re.search('values-(\w*)', self._store.filename);
+                if (match is not None):
+                    targetLang = re.search('values-(\w*)', self._store.filename).group(1);
+                else:
+                    # If the store is using the "values" folder, than it is the default language. 
+                    targetLang = self._store.sourcelanguage
+            
+            if (targetLang in self.unicodePlurals):
+                targetPlurals = self.unicodePlurals[targetLang]
+            else:
+                # If we don't know the language, we will use only the general plural form.
+                targetPlurals = ("other")
+            
+            for entry in self.xmlelement.iterchildren():
+                self.xmlelement.remove(entry)
+                
+            self.xmlelement.text = "\n\t"
+            
+            
+            # Getting the string list to handle, wrapping non multistring or list targets into a list.
+            if isinstance(target, multistring):
+                targetStrings = target.strings
+            elif isinstance(target, list):
+                targetStrings = target
+            else:
+                targetStrings = [target]
+            
+            
+            i = 0 
+            while i < len(targetPlurals):
+                item = etree.Element("item")
+                item.set("quantity", targetPlurals[i])
+                
+                # Safety check: for some language, Unicode rules are more than gettext rules, because Unicode handle 
+                # also a different plural for fractional numbers (not support in gettext). 
+                # In this case, we use the last gettext plural for both general and fractional numbers.
+                if i < len(targetStrings):
+                    currentTarget = targetStrings[i];
+                else:
+                    currentTarget = targetStrings[-1];
+                    
+                self.setXmlTextValue(currentTarget, item)
+                
+                item.tail = "\n\t"
+                
+                self.xmlelement.append(item)
+                
+                i += 1
+            
+            # Remove the tab from last item
+            item.tail = "\n"
+        else:
+            # Replace the root tag if wrong
+            if self.xmlelement.tag != "string":
+                oldId = self.getid()
+                self.xmlelement = etree.Element("string")
+                self.setid(oldId)
+                
+            self.setXmlTextValue(target, self.xmlelement)
+        
         super(AndroidResourceUnit, self).settarget(target)
 
-    def gettarget(self, lang=None):
+    def getXmlTextValue(self, xmltarget):
+        # Cloning xml tree to perform unescaping on all the structure (including nested tags text) 
+        clonedTarget = copy.deepcopy(xmltarget)
+        
+        # Unescaping the text for the complete xml tree
+        clonedTarget.text = self.unescape(clonedTarget.text);
+        for x in clonedTarget.iterdescendants():
+            x.text = self.unescape(x.text)
+            x.tail = self.unescape(x.tail)
+               
         # Grab inner text
-        target = self.unescape(self.xmlelement.text or u'')
+        target = clonedTarget.text or u''
         # Include markup as well
-        target += u''.join([data.forceunicode(etree.tostring(child, encoding='utf-8')) for child in self.xmlelement.iterchildren()])
+        target += u''.join([data.forceunicode(etree.tostring(child, encoding='utf-8')) for child in clonedTarget.iterchildren()])
+        
         return target
+
+    def gettarget(self, lang=None):
+        if (self.xmlelement.tag == "plurals"):
+            target = []
+            for entry in self.xmlelement.iterchildren():
+                target.append(self.getXmlTextValue(entry))
+            return multistring(target, self._store._encoding)
+        else:
+            return self.getXmlTextValue(self.xmlelement)
 
     target = property(gettarget, settarget)
 
@@ -266,8 +572,13 @@ class AndroidResourceUnit(base.TranslationUnit):
         return self.xmlelement
 
     def createfromxmlElement(cls, element):
-        term = cls(None, xmlelement = element)
+        term = None
+        # Actaully this class supports only plurals and string tags 
+        if ((element.tag == "plurals") or (element.tag == "string")):
+            term = cls(None, xmlelement = element)
+            
         return term
+    
     createfromxmlElement = classmethod(createfromxmlElement)
 
     # Notes are handled as previous sibling comments.
@@ -306,6 +617,14 @@ class AndroidResourceUnit(base.TranslationUnit):
 
     def __eq__(self, other):
         return (str(self) == str(other))
+    
+    def hasplurals(self, thing):
+        if isinstance(thing, multistring):
+            return True
+        elif isinstance(thing, list):
+            return True
+        return False
+
 
 
 class AndroidResourceFile(lisa.LISAfile):
@@ -324,3 +643,28 @@ class AndroidResourceFile(lisa.LISAfile):
         XML again."""
         self.namespace = self.document.getroot().nsmap.get(None, None)
         self.body = self.document.getroot()
+
+    def parse(self, xml):
+        """Populates this object from the given xml string"""
+        if not hasattr(self, 'filename'):
+            self.filename = getattr(xml, 'name', '')
+        if hasattr(xml, "read"):
+            xml.seek(0)
+            posrc = xml.read()
+            xml = posrc
+        if etree.LXML_VERSION >= (2, 1, 0):
+            #Since version 2.1.0 we can pass the strip_cdata parameter to
+            #indicate that we don't want cdata to be converted to raw XML
+            parser = etree.XMLParser(strip_cdata=False)
+        else:
+            parser = etree.XMLParser()
+        self.document = etree.fromstring(xml, parser).getroottree()
+        self._encoding = self.document.docinfo.encoding
+        self.initbody()
+        assert self.document.getroot().tag == self.namespaced(self.rootNode)
+
+        for entry in self.document.getroot().iterchildren():
+            term = self.UnitClass.createfromxmlElement(entry)
+            if term is not None:
+                self.addunit(term, new=False)
+            
