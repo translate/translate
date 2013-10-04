@@ -235,8 +235,7 @@ class AndroidResourceUnit(base.TranslationUnit):
                 self.xmlelement = etree.Element("string")
             
             self.xmlelement.tail = '\n'
-        if source is not None:
-            self.setid(source)
+            
         super(AndroidResourceUnit, self).__init__(source)
 
     def istranslatable(self):
@@ -257,6 +256,9 @@ class AndroidResourceUnit(base.TranslationUnit):
 
     def setid(self, newid):
         return self.xmlelement.set("name", newid)
+
+    def setcontext(self, context):
+        return self.xmlelement.set("name", context)
 
     def unescape(self, text):
         '''
@@ -466,6 +468,12 @@ class AndroidResourceUnit(base.TranslationUnit):
 
     def settarget(self, target):
         if (self.hasplurals(self.source) or self.hasplurals(target)):
+            # Replace the root tag if non matching
+            if self.xmlelement.tag != "plurals":
+                oldId = self.getid()
+                self.xmlelement = etree.Element("plurals")
+                self.setid(oldId)
+        
             targetLang = self.gettargetlanguage();
             
             # If target language isn't set on the store, we try to extract it from the file path
@@ -489,19 +497,27 @@ class AndroidResourceUnit(base.TranslationUnit):
                 
             self.xmlelement.text = "\n\t"
             
+            
+            # Getting the string list to handle, wrapping non multistring target into a list.
+            if isinstance(target, multistring):
+                targetStrings = target.strings
+            else:
+                targetStrings = [target]
+            
+            
             i = 0 
             while i < len(targetPlurals):
                 item = etree.Element("item")
                 item.set("quantity", targetPlurals[i])
                 
-                # For some language, Unicode rules are more than gettext rules, because Unicode handle also a different
-                # plural for fractional numbers (not support in gettext). 
-                # In this case, we use the last gettext plural for both general and fractional numbers Unicode plurals.
-                if i < len(target):
-                    currentTarget = target[i];
+                # Safety check: for some language, Unicode rules are more than gettext rules, because Unicode handle 
+                # also a different plural for fractional numbers (not support in gettext). 
+                # In this case, we use the last gettext plural for both general and fractional numbers.
+                if i < len(targetStrings):
+                    currentTarget = targetStrings[i];
                 else:
-                    currentTarget = target[len(target) - 1];
-                
+                    currentTarget = targetStrings[-1];
+                    
                 self.setXmlTextValue(currentTarget, item)
                 
                 item.tail = "\n\t"
@@ -513,6 +529,12 @@ class AndroidResourceUnit(base.TranslationUnit):
             # Remove the tab from last item
             item.tail = "\n"
         else:
+            # Replace the root tag if wrong
+            if self.xmlelement.tag != "string":
+                oldId = self.getid()
+                self.xmlelement = etree.Element("string")
+                self.setid(oldId)
+                
             self.setXmlTextValue(target, self.xmlelement)
         
         super(AndroidResourceUnit, self).settarget(target)
