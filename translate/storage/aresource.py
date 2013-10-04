@@ -240,8 +240,7 @@ class AndroidResourceUnit(base.TranslationUnit):
 
     def istranslatable(self):
         return (
-            self.xmlelement.tag == "string"
-            and bool(self.getid())
+            bool(self.getid())
             and self.xmlelement.get('translatable') != 'false'
         )
 
@@ -498,9 +497,11 @@ class AndroidResourceUnit(base.TranslationUnit):
             self.xmlelement.text = "\n\t"
             
             
-            # Getting the string list to handle, wrapping non multistring target into a list.
+            # Getting the string list to handle, wrapping non multistring or list targets into a list.
             if isinstance(target, multistring):
                 targetStrings = target.strings
+            elif isinstance(target, list):
+                targetStrings = target
             else:
                 targetStrings = [target]
             
@@ -619,6 +620,8 @@ class AndroidResourceUnit(base.TranslationUnit):
     
     def hasplurals(self, thing):
         if isinstance(thing, multistring):
+            return True
+        elif isinstance(thing, list):
             return True
         return False
 
