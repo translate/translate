@@ -315,7 +315,6 @@ class LISAfile(base.TranslationStore):
         self.body = self.document.find('//%s' % self.namespaced(self.bodyNode))
 
     def addsourceunit(self, source):
-        #TODO: miskien moet hierdie eerder addsourcestring of iets genoem word?
         """Adds and returns a new unit with the given string as first entry."""
         newunit = self.UnitClass(source)
         self.addunit(newunit)
