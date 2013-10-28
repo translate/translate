@@ -1453,9 +1453,9 @@ class StandardChecker(TranslationChecker):
             return True
 
         # TODO: filterxml?
-        str1 = self.filteraccelerators_by_list(self.filtervariables(str1),
+        str1 = self.filteraccelerators_by_list(self.removevariables(str1),
                                                self.config.sourcelang.validaccel)
-        str2 = self.filteraccelerators_by_list(self.filtervariables(str2),
+        str2 = self.filteraccelerators_by_list(self.removevariables(str2),
                                                self.config.lang.validaccel)
         ignore1 = []
         messages = []

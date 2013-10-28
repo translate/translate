@@ -668,6 +668,9 @@ def test_spellcheck():
     assert passes(stdchecker.spellcheck, "Mozilla is wonderful", "Mozilla is wonderlik")
     stdchecker = checks.StandardChecker(checks.CheckerConfig(targetlanguage="af", notranslatewords=["Mozilla"]))
     assert passes(stdchecker.spellcheck, "Mozilla is wonderful", "Mozilla is wonderlik")
+    # Some variables were still being spell checked
+    mozillachecker = checks.MozillaChecker(checkerconfig=checks.CheckerConfig(targetlanguage="af"))
+    assert passes(mozillachecker.spellcheck, "&brandShortName.labels; is wonderful", "&brandShortName.label; is wonderlik")
 
 
 def test_startcaps():
