@@ -20,7 +20,6 @@
 
 """An API to provide spell checking for use in checks or elsewhere."""
 
-import sys
 import logging
 
 logger = logging.getLogger(__name__)
