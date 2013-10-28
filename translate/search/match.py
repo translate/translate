@@ -266,7 +266,9 @@ class terminologymatcher(matcher):
             source = unit.source = context_re.sub("", unit.source).lower()
             for ignorepattern_re, replacement in ignorepatterns_re:
                 (newterm, occurrences) = ignorepattern_re.subn(replacement, source)
-                if occurrences:
+                # we'll add it as long as we only replaced one thing, but not
+                # something like "are-you-sure-you-want-to" due to (" ", "-")
+                if occurrences == 1:
                     new_unit = type(unit).buildfromunit(unit)
                     new_unit.source = newterm
                     # We mark it fuzzy to indicate that it isn't pristine
