@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 #
 # Copyright 2004-2011 Zuza Software Foundation
+# 2013 F Wolff
 #
 # This file is part of translate.
 #
@@ -40,6 +41,8 @@ from translate.filters.decorators import (critical, functional, cosmetic,
                                           extraction)
 from translate.lang import factory
 from translate.lang import data
+
+from translate.misc import lru
 
 logger = logging.getLogger(__name__)
 
@@ -487,6 +490,9 @@ class TranslationChecker(UnitChecker):
         super(TranslationChecker, self).__init__(checkerconfig, excludefilters,
                                                  limitfilters, errorhandler)
 
+        # caches for spell checking results across units/runs
+        self.source_spell_cache = lru.LRUCachingDict(256, cullsize=5, aggressive_gc=False)
+        self.target_spell_cache = lru.LRUCachingDict(512, cullsize=5, aggressive_gc=False)
 
     def run_test(self, test, unit):
         """Runs the given test on the given unit.
@@ -1457,27 +1463,29 @@ class StandardChecker(TranslationChecker):
                                                self.config.sourcelang.validaccel)
         str2 = self.filteraccelerators_by_list(self.removevariables(str2),
                                                self.config.lang.validaccel)
-        ignore1 = []
-        messages = []
+        errors = set()
 
-        for word, index, suggestions in spelling.check(str1, lang="en"):
-            ignore1.append(word)
+        # We cache spelling results of source texts:
+        ignore1 = self.source_spell_cache.get(str1, None)
+        if ignore1 is None:
+            ignore1 = set(spelling.simple_check(str1, lang=self.config.sourcelang.code))
+            self.source_spell_cache[str1] = ignore1
 
-        for word, index, suggestions in spelling.check(str2, lang=self.config.targetlanguage):
-            if word in self.config.notranslatewords:
-                continue
+        # We cache spelling results of target texts sentence-by-sentence. This
+        # way we can reuse most of the results while someone is typing a long
+        # segment in Virtaal.
+        sentences2 = self.config.lang.sentences(str2)
+        for sentence in sentences2:
+            sentence_errors = self.target_spell_cache.get(sentence, None)
+            if sentence_errors is None:
+                sentence_errors = spelling.simple_check(sentence, lang=self.config.targetlanguage)
+                self.target_spell_cache[sentence] = sentence_errors
+            errors.update(sentence_errors)
 
-            if word in ignore1:
-                continue
+        errors.difference_update(ignore1, self.config.notranslatewords)
 
-            # hack to ignore hyphenisation rules
-            if word in suggestions:
-                continue
-
-            messages.append(u"Check the spelling of %s (could be %s)" %
-                            (word, u" / ".join(suggestions[:5])))
-
-        if messages:
+        if errors:
+            messages = [u"Check the spelling of: %s" % u", ".join(errors)]
             raise FilterFailure(messages)
 
         return True
