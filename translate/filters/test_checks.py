@@ -665,7 +665,7 @@ def test_spellcheck():
     stdchecker = checks.StandardChecker(checks.CheckerConfig(targetlanguage="af"))
     assert fails(stdchecker.spellcheck, "Mozilla is wonderful", "Mozillaaa is wonderlik")
     # We should pass the test if the "error" occurs in the English
-    assert passes(stdchecker.spellcheck, "Mozilla is wonderful", "Mozilla is wonderlik")
+    assert passes(stdchecker.spellcheck, "Mozillaxxx is wonderful", "Mozillaxxx is wonderlik")
     stdchecker = checks.StandardChecker(checks.CheckerConfig(targetlanguage="af", notranslatewords=["Mozilla"]))
     assert passes(stdchecker.spellcheck, "Mozilla is wonderful", "Mozilla is wonderlik")
     # Some variables were still being spell checked
