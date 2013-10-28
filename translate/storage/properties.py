@@ -411,7 +411,7 @@ class propunit(base.TranslationUnit):
     comments associated."""
 
     def __init__(self, source="", personality="java"):
-        """construct a blank propunit"""
+        """Construct a blank propunit."""
         self.personality = get_dialect(personality)
         super(propunit, self).__init__(source)
         self.name = u""
@@ -422,40 +422,42 @@ class propunit(base.TranslationUnit):
         self.source = source
         # a pair of symbols to enclose delimiter on the output
         # (a " " can be used for the sake of convenience)
-        self.out_delimiter_wrappers = getattr(self.personality, 'out_delimiter_wrappers', u'')
+        self.out_delimiter_wrappers = getattr(self.personality,
+                                              'out_delimiter_wrappers', u'')
         # symbol that should end every property sentence
         # (e.g. ";" is required for Mac OS X strings)
         self.out_ending = getattr(self.personality, 'out_ending', u'')
+
+    def getsource(self):
+        value = quote.propertiesdecode(self.value)
+        return value
 
     def setsource(self, source):
         self._rich_source = None
         source = data.forceunicode(source)
         self.value = self.personality.encode(source or u"", self.encoding)
 
-    def getsource(self):
-        value = quote.propertiesdecode(self.value)
-        return value
-
     source = property(getsource, setsource)
-
-    def settarget(self, target):
-        self._rich_target = None
-        target = data.forceunicode(target)
-        self.translation = self.personality.encode(target or u"", self.encoding)
 
     def gettarget(self):
         translation = quote.propertiesdecode(self.translation)
         translation = re.sub(u"\\\\ ", u" ", translation)
         return translation
 
+    def settarget(self, target):
+        self._rich_target = None
+        target = data.forceunicode(target)
+        self.translation = self.personality.encode(target or u"",
+                                                   self.encoding)
+
     target = property(gettarget, settarget)
 
-    def _get_encoding(self):
+    @property
+    def encoding(self):
         if self._store:
             return self._store.encoding
         else:
             return self.personality.default_encoding
-    encoding = property(_get_encoding)
 
     def __str__(self):
         """Convert to a string. Double check that unicode is handled
@@ -490,11 +492,14 @@ class propunit(base.TranslationUnit):
             wrappers = self.out_delimiter_wrappers
             delimiter = '%s%s%s' % (wrappers, self.delimiter, wrappers)
             ending = self.out_ending
-            return u"%(notes)s%(key)s%(del)s%(value)s%(ending)s\n" % {"notes": notes,
-                                                            "key": key,
-                                                            "del": delimiter,
-                                                            "value": value,
-                                                            "ending": ending}
+            out_dict = {
+                "notes": notes,
+                "key": key,
+                "del": delimiter,
+                "value": value,
+                "ending": ending,
+            }
+            return u"%(notes)s%(key)s%(del)s%(value)s%(ending)s\n" % out_dict
 
     def getlocations(self):
         return [self.name]
@@ -549,7 +554,9 @@ class propfile(base.TranslationStore):
     def parse(self, propsrc):
         """Read the source of a properties file in and include them
         as units."""
-        text, encoding = self.detect_encoding(propsrc, default_encodings=[self.personality.default_encoding, 'utf-8', 'utf-16'])
+        text, encoding = self.detect_encoding(propsrc,
+            default_encodings=[self.personality.default_encoding, 'utf-8',
+                               'utf-16'])
         self.encoding = encoding
         propsrc = text
 
