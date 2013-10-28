@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 #
 # Copyright 2009 Zuza Software Foundation
+# Copyright 2013 F Wolff
 #
 # This file is part of translate.
 #
@@ -310,12 +311,13 @@ DROP TRIGGER IF EXISTS sources_delete_trig;
 
         results = []
         for row in self.cursor:
-            result = {}
-            result['source'] = row[0]
-            result['target'] = row[1]
-            result['context'] = row[2]
-            result['quality'] = self.comparer.similarity(unit_source, result['source'], self.min_similarity)
-            if result['quality'] >= self.min_similarity:
+            quality = self.comparer.similarity(unit_source, row[0], self.min_similarity)
+            if quality >= self.min_similarity:
+                result = {}
+                result['source'] = row[0]
+                result['target'] = row[1]
+                result['context'] = row[2]
+                result['quality'] = quality
                 results.append(result)
         results.sort(key=lambda match: match['quality'], reverse=True)
         results = results[:self.max_candidates]
