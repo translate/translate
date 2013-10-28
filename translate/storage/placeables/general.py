@@ -187,7 +187,7 @@ class FilePlaceable(Ph):
     istranslatable = False
     regex = re.compile(r"(~/|/|\./)([-A-Za-z0-9_\$\.\+\!\*\(\),;:@&=\?/~\#\%]|\\){3,}")
     #TODO: Handle Windows drive letters. Some common Windows paths won't be
-    # handled correctly while note allowing spaces, such as
+    # handled correctly while not allowing spaces, such as
     #     "C:\Documents and Settings"
     #     "C:\Program Files"
     parse = classmethod(regex_parse)
