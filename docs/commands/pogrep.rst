@@ -43,6 +43,8 @@ Options:
 -v, --invert-match   select non-matching lines
 --accelerator=ACCELERATORS
                       ignores the given :doc:`accelerator characters <option_accelerator>` when matching
+-k, --keep-translations
+                      always extract units with translations
 
 .. _pogrep#example:
 
