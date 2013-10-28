@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 #
 # Copyright 2007 Zuza Software Foundation
+# 2013 F Wolff
 #
 # This file is part of translate.
 #
@@ -32,7 +33,7 @@ try:
     available = True
     checkers = {}
 
-    def check(text, lang):
+    def _get_checker(lang):
         if not lang in checkers:
             try:
                 checkers[lang] = checker.SpellChecker(lang)
@@ -43,14 +44,29 @@ try:
                 logger.error(str(e))
                 checkers[lang] = None
 
-        if not checkers[lang]:
+        return checkers[lang]
+
+    def check(text, lang):
+        spellchecker = _get_checker(lang)
+        if not spellchecker:
             return
-        spellchecker = checkers[lang]
         spellchecker.set_text(unicode(text))
         for err in spellchecker:
             yield err.word, err.wordpos, err.suggest()
 
+    def simple_check(text, lang):
+        spellchecker = _get_checker(lang)
+        if not spellchecker:
+            return
+        spellchecker.set_text(unicode(text))
+        for err in spellchecker:
+            yield err.word
+
+
 except ImportError:
 
     def check(text, lang):
+        return []
+
+    def simple_check(text, lang):
         return []
