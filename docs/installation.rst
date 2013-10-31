@@ -38,7 +38,7 @@ The dollowing advice only applies to manual installation from tar ball.
 Building
 ========
 
-For build instructions, see the :doc:`development/building` page.
+For build instructions, see the :doc:`developers/building` page.
 
 .. _installation#download:
 

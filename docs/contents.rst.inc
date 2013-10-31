@@ -23,12 +23,12 @@ building new tools, make sure to read through this part.
 .. toctree::
    :maxdepth: 1
 
-   development/styleguide
-   development/building
-   development/testing
-   development/contributing
-   development/developers
-   development/releasing
+   developers/styleguide
+   developers/building
+   developers/testing
+   developers/contributing
+   developers/developers
+   developers/releasing
 
 
 Additional Notes

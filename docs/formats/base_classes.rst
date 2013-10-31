@@ -4,7 +4,7 @@
 Base classes
 ************
 NOTE: This page is mostly useful for :doc:`developers
-</development/developers>` as it describes some programming detail of the
+</developers/developers>` as it describes some programming detail of the
 :doc:`toolkit <index>`.
 
 For the implementation of the different storage classes that the toolkit
