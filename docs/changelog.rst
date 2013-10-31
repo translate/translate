@@ -1,9 +1,8 @@
 
 .. _changelog:
-.. _important_changes:
 
-Important Changes
-*****************
+Changelog
+*********
 
 The Translate Toolkit might have changed how it functions in certain cases.
 This page lists what has changed, how it might affect you and how to work
