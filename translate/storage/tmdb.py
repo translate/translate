@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 #
-# Copyright 2009 Zuza Software Foundation
+# Copyright 2009, 2013 Zuza Software Foundation
 # Copyright 2013 F Wolff
 #
 # This file is part of translate.
@@ -31,8 +31,8 @@ try:
 except ImportError:
     from pysqlite2 import dbapi2
 
-from translate.search.lshtein import LevenshteinComparer
 from translate.lang import data
+from translate.search.lshtein import LevenshteinComparer
 
 
 STRIP_REGEXP = re.compile("\W", re.UNICODE)
@@ -50,7 +50,8 @@ class LanguageError(Exception):
 class TMDB(object):
     _tm_dbs = {}
 
-    def __init__(self, db_file, max_candidates=3, min_similarity=75, max_length=1000):
+    def __init__(self, db_file, max_candidates=3, min_similarity=75,
+                 max_length=1000):
 
         self.max_candidates = max_candidates
         self.min_similarity = min_similarity
@@ -124,7 +125,8 @@ CREATE UNIQUE INDEX IF NOT EXISTS targets_uniq_idx ON targets (sid, text, lang);
     def init_fulltext(self):
         """detects if fts3 fulltext indexing module exists, initializes fulltext table if it does"""
 
-        #HACKISH: no better way to detect fts3 support except trying to construct a dummy table?!
+        #HACKISH: no better way to detect fts3 support except trying to
+        # construct a dummy table?!
         try:
             script = """
 DROP TABLE IF EXISTS test_for_fts3;
@@ -133,8 +135,8 @@ DROP TABLE test_for_fts3;
 """
             self.cursor.executescript(script)
             logging.debug("fts3 supported")
-            # for some reason CREATE VIRTUAL TABLE doesn't support IF NOT EXISTS syntax
-            # check if fulltext index table exists manually
+            # for some reason CREATE VIRTUAL TABLE doesn't support IF NOT
+            # EXISTS syntax check if fulltext index table exists manually
             self.cursor.execute("SELECT name FROM sqlite_master WHERE name = 'fulltext'")
             if not self.cursor.fetchone():
                 # create fulltext index table, and index all strings in sources
@@ -288,7 +290,8 @@ DROP TRIGGER IF EXISTS sources_delete_trig;
             target_langs = data.normalize_code(target_langs)
 
         minlen = min_levenshtein_length(len(unit_source), self.min_similarity)
-        maxlen = max_levenshtein_length(len(unit_source), self.min_similarity, self.max_length)
+        maxlen = max_levenshtein_length(len(unit_source), self.min_similarity,
+                                        self.max_length)
 
         # split source into words, remove punctuation and special
         # chars, keep words that are at least 3 chars long
@@ -301,24 +304,27 @@ DROP TRIGGER IF EXISTS sources_delete_trig;
                        WHERE s.lang IN (?) AND t.lang IN (?) AND s.length BETWEEN ? AND ?
                        AND fulltext MATCH ?"""
             search_str = " OR ".join(unit_words)
-            self.cursor.execute(query, (source_langs, target_langs, minlen, maxlen, search_str))
+            self.cursor.execute(query, (source_langs, target_langs, minlen,
+                                maxlen, search_str))
         else:
             logging.debug("nonfulltext matching")
             query = """SELECT s.text, t.text, s.context, s.lang, t.lang FROM sources s JOIN targets t ON s.sid = t.sid
             WHERE s.lang IN (?) AND t.lang IN (?)
             AND s.length >= ? AND s.length <= ?"""
-            self.cursor.execute(query, (source_langs, target_langs, minlen, maxlen))
+            self.cursor.execute(query, (source_langs, target_langs, minlen,
+                                        maxlen))
 
         results = []
         for row in self.cursor:
-            quality = self.comparer.similarity(unit_source, row[0], self.min_similarity)
+            quality = self.comparer.similarity(unit_source, row[0],
+                                               self.min_similarity)
             if quality >= self.min_similarity:
-                result = {}
-                result['source'] = row[0]
-                result['target'] = row[1]
-                result['context'] = row[2]
-                result['quality'] = quality
-                results.append(result)
+                results.append({
+                    'source': row[0],
+                    'target': row[1],
+                    'context': row[2],
+                    'quality': quality,
+                })
         results.sort(key=lambda match: match['quality'], reverse=True)
         results = results[:self.max_candidates]
         logging.debug("results: %s", unicode(results))
