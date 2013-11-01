@@ -384,6 +384,7 @@ def test_filepaths():
     stdchecker = checks.StandardChecker()
     assert passes(stdchecker.filepaths, "%s to the file /etc/hosts on your system.", "%s na die leer /etc/hosts op jou systeem.")
     assert fails(stdchecker.filepaths, "%s to the file /etc/hosts on your system.", "%s na die leer /etc/gasheer op jou systeem.")
+    assert passes(stdchecker.filepaths, "Text with <br />line break", "Teks met <br /> lynbreuk")
 
 
 def test_kdecomments():
