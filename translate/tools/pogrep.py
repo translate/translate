@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 #
 # Copyright 2002-2011 Zuza Software Foundation
+# Copyright 2013 F Wolff
 #
 # This file is part of translate.
 #
@@ -120,9 +121,13 @@ def find_matches(unit, part, strings, re_search):
         if not string:
             continue
         normalized = data.normalize(string)
+        if normalized == string:
+            index_func = lambda s, i: i
+        else:
+            index_func = real_index
         for matchobj in re_search.finditer(normalized):
-            start = real_index(string, matchobj.start())
-            end = real_index(string, matchobj.end())
+            start = index_func(string, matchobj.start())
+            end = index_func(string, matchobj.end())
             matches.append(GrepMatch(unit, part=part, part_n=n, start=start, end=end))
     return matches
 
