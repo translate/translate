@@ -18,8 +18,8 @@
 # along with this program; if not, see <http://www.gnu.org/licenses/>.
 #
 
-"""Converts Gettext .po files to Qt .ts localization files
-You can convert from .ts to .po using po2ts"""
+"""Converts Gettext .po files to TMX (Translation Memory eXchange) localization
+files"""
 
 from translate.convert import po2tmx
 
