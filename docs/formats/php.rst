@@ -155,14 +155,9 @@ Our format support allows:
       define('item', 'string'    );
 
 
-.. _php#non-conformance:
+* Nested arrays with any number of nesting levels
 
-Non-Conformance
-===============
-
-The following are not yet supported:
-
-* Nested arrays
+  .. versionadded:: 1.11.0
 
   .. code-block:: php
 
@@ -176,9 +171,31 @@ The following are not yet supported:
                 0 => 'less than a minute ago',
                 2 => '%d minutes ago',
                 60 => '1 hour ago',
+            ),
+            'Converted' => 'Converted',
+            'LAST' => 'last',
          ),
       );
 
+* Whitespace in the array declaration
+
+  .. versionadded:: 1.11.0
+
+  .. code-block:: php
+
+      <?php
+      $variable = array    (
+         "one" => "this",
+         "two" => "that",
+      );
+
+
+.. _php#non-conformance:
+
+Non-Conformance
+===============
+
+The following are not yet supported:
 
 * Keyless arrays:
 

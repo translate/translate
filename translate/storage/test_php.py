@@ -438,7 +438,6 @@ $month_mar = 'Mar';"""
         assert phpunit.name == "$lang->'item2'"
         assert phpunit.source == "value2"
 
-    @mark.xfail(reason="Bug #2646")
     def test_parsing_arrays_with_space_before_array_declaration(self):
         """parse the array syntax with spaces before the array declaration.
         Bug #2646"""
@@ -455,12 +454,41 @@ $month_mar = 'Mar';"""
         assert phpunit.name == "$lang->'item2'"
         assert phpunit.source == "value2"
 
-    @mark.xfail(reason="Bug #2240")
     def test_parsing_nested_arrays(self):
         """parse the nested array syntax. Bug #2240"""
         phpsource = '''$app_list_strings = array(
             'Mailbox' => 'Mailbox',
             'moduleList' => array(
+                'Home' => 'Home',
+                'Contacts' => 'Contacts',
+                'Accounts' => 'Accounts',
+            ),
+            'FAQ' => 'FAQ',
+        );'''
+        phpfile = self.phpparse(phpsource)
+        assert len(phpfile.units) == 5
+        phpunit = phpfile.units[0]
+        assert phpunit.name == "$app_list_strings->'Mailbox'"
+        assert phpunit.source == "Mailbox"
+        phpunit = phpfile.units[1]
+        assert phpunit.name == "$app_list_strings->'moduleList'->'Home'"
+        assert phpunit.source == "Home"
+        phpunit = phpfile.units[2]
+        assert phpunit.name == "$app_list_strings->'moduleList'->'Contacts'"
+        assert phpunit.source == "Contacts"
+        phpunit = phpfile.units[3]
+        assert phpunit.name == "$app_list_strings->'moduleList'->'Accounts'"
+        assert phpunit.source == "Accounts"
+        phpunit = phpfile.units[4]
+        assert phpunit.name == "$app_list_strings->'FAQ'"
+        assert phpunit.source == "FAQ"
+
+    def test_parsing_nested_arrays_with_space_before_array_declaration(self):
+        """parse the nested array syntax with whitespace before the array
+        declaration."""
+        phpsource = '''$app_list_strings = array  (
+            'Mailbox' => 'Mailbox',
+            'moduleList' => array  (
                 'Home' => 'Home',
                 'Contacts' => 'Contacts',
                 'Accounts' => 'Accounts',

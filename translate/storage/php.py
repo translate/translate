@@ -28,11 +28,18 @@ Only PHP files written with these conventions are supported::
   $some_entity = "value";  # Named variables
   define("ENTITY", "value");
   $lang = array(
-     'item1' => 'value1',
+     'item1' => 'value1'    ,   #Supports space before comma
      'item2' => 'value2',
   );
+  $lang = array(    # Nested arrays
+     'item1' => 'value1',
+     'item2' => array(
+        'key' => 'value'    ,   #Supports space before comma
+        'key2' => 'value2',
+     ),
+  );
 
-Nested arrays are not supported::
+Nested arrays without key for nested array are not supported::
 
   $lang = array(array('key' => 'value'));
 
@@ -42,6 +49,7 @@ implemented as outlined in the PHP documentation for the
 `String type <http://www.php.net/language.types.string>`_.
 """
 
+import logging
 import re
 
 from translate.storage import base
@@ -205,9 +213,12 @@ class phpfile(base.TranslationStore):
         equaldel = "="
         enddel = ";"
         prename = ""
+        keys_dict = {}
+        line_number = 0
 
         # For each line in the PHP translation file.
         for line in phpsrc.decode(self._encoding).split("\n"):
+            line_number += 1
             commentstartpos = line.find("/*")
             commentendpos = line.rfind("*/")
 
@@ -234,11 +245,15 @@ class phpfile(base.TranslationStore):
                 continue
 
             # If an array starts in the current line.
-            if line.lower().find('array(') != -1:
-                equaldel = "=>"
-                enddel = ","
-                inarray = True
-                prename = line[:line.find('=')].strip() + "->"
+            if line.lower().replace(" ", "").find('array(') != -1:
+                # If this is a nested array.
+                if inarray:
+                    prename = prename + line[:line.find('=')].strip() + "->"
+                else:
+                    equaldel = "=>"
+                    enddel = ","
+                    inarray = True
+                    prename = line[:line.find('=')].strip() + "->"
                 continue
 
             # If an array ends in the current line, reset variables to default
@@ -248,6 +263,12 @@ class phpfile(base.TranslationStore):
                 enddel = ";"
                 inarray = False
                 prename = ""
+                continue
+
+            # If a nested array ends in the current line, reset prename to its
+            # parent array default value by stripping out the last part.
+            if inarray and line.find('),') != -1:
+                prename = prename[:prename.find("->")+2]
                 continue
 
             # If the current line hosts a define syntax translation.
@@ -278,6 +299,17 @@ class phpfile(base.TranslationStore):
                     # array name, or blank if no array is present. The line
                     # (until the equal delimiter) is appended to the location.
                     location = prename + line[:equalpos].strip()
+
+                    # Check for duplicate entries.
+                    if location in keys_dict.keys():
+                        # TODO Get the logger from the code that is calling
+                        # this class.
+                        logging.error("Duplicate key %s in %s:%d, first "
+                                      "occurrence in line %d", location,
+                                      self.filename, line_number,
+                                      keys_dict[location])
+                    else:
+                        keys_dict[location] = line_number
 
                     # Add the location to the translation unit.
                     newunit.addlocation(location)
