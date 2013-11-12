@@ -3,11 +3,10 @@
 
 from lxml import etree
 
-from translate.storage import aresource
-from translate.storage import test_monolingual
+from translate.storage import aresource, test_monolingual
 
 
-class TestPropUnit(test_monolingual.TestMonolingualUnit):
+class TestAndroidResourceUnit(test_monolingual.TestMonolingualUnit):
     UnitClass = aresource.AndroidResourceUnit
 
     escape_data = [
@@ -62,5 +61,5 @@ class TestPropUnit(test_monolingual.TestMonolingualUnit):
             assert unit.istranslatable() == translatable
 
 
-class TestProp(test_monolingual.TestMonolingualStore):
+class TestAndroidResourceFile(test_monolingual.TestMonolingualStore):
     StoreClass = aresource.AndroidResourceFile

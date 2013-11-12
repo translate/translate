@@ -476,7 +476,8 @@ class propunit(base.TranslationUnit):
             return notes + u"\n"
         else:
             self.value = self.personality.encode(self.source, self.encoding)
-            self.translation = self.personality.encode(self.target, self.encoding)
+            self.translation = self.personality.encode(self.target,
+                                                       self.encoding)
             # encode key, if needed
             key = self.name
             kwc = self.personality.key_wrap_char

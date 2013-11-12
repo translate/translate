@@ -30,7 +30,8 @@ from exceptions import NotImplementedError
 import translate.i18n
 from translate.misc.multistring import multistring
 from translate.misc.typecheck import accepts, Self, IsOneOf
-from translate.storage.placeables import StringElem, general, parse as rich_parse
+from translate.storage.placeables import (StringElem, general,
+                                          parse as rich_parse)
 from translate.storage.workflow import StateEnum as states
 
 
@@ -152,6 +153,7 @@ class TranslationUnit(object):
         self._store = store
         return dump
 
+    @classmethod
     def rich_to_multistring(cls, elem_list):
         """Convert a "rich" string tree to a ``multistring``:
 
@@ -161,7 +163,6 @@ class TranslationUnit(object):
            multistring(u'foo bar')
         """
         return multistring([unicode(elem) for elem in elem_list])
-    rich_to_multistring = classmethod(rich_to_multistring)
 
     def multistring_to_rich(self, mulstring):
         """Convert a multistring to a list of "rich" string trees:
@@ -177,13 +178,13 @@ class TranslationUnit(object):
         return [rich_parse(mulstring, self.rich_parsers)]
 
     def setsource(self, source):
-        """Sets the source string to the given value."""
+        """Set the source string to the given value."""
         self._rich_source = None
         self._source = source
     source = property(lambda self: self._source, setsource)
 
     def settarget(self, target):
-        """Sets the target string to the given value."""
+        """Set the target string to the given value."""
         self._rich_target = None
         self._target = target
     target = property(lambda self: self._target, settarget)
@@ -439,6 +440,7 @@ class TranslationUnit(object):
         """This unit in a list."""
         return [self]
 
+    @classmethod
     def buildfromunit(cls, unit):
         """Build a native unit from a foreign unit, preserving as much
         information as possible."""
@@ -454,7 +456,6 @@ class TranslationUnit(object):
         if notes:
             newunit.addnote(notes)
         return newunit
-    buildfromunit = classmethod(buildfromunit)
 
     xid = property(lambda self: None, lambda self, value: None)
     rid = property(lambda self: None, lambda self, value: None)
@@ -722,13 +723,13 @@ class TranslationStore(object):
             if filename:
                 self.filename = filename
 
+    @classmethod
     def parsestring(cls, storestring):
         """Convert the string representation back to an object."""
         newstore = cls()
         if storestring:
             newstore.parse(storestring)
         return newstore
-    parsestring = classmethod(parsestring)
 
     def detect_encoding(self, text, default_encodings=None):
         if not default_encodings:
@@ -812,6 +813,7 @@ class TranslationStore(object):
             fileobj = fileobj.__class__(filename, mode)
         self.savefile(fileobj)
 
+    @classmethod
     def parsefile(cls, storefile):
         """Reads the given file (or opens the given filename) and parses back
         to an object."""
@@ -831,7 +833,6 @@ class TranslationStore(object):
         newstore.fileobj = storefile
         newstore._assignname()
         return newstore
-    parsefile = classmethod(parsefile)
 
     @property
     def merge_on(self):

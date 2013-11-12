@@ -24,13 +24,14 @@ See: http://docs.translatehouse.org/projects/translate-toolkit/en/latest/command
 for examples and usage instructions.
 """
 
-import sys
 import logging
+import sys
 
-from translate.storage import po
-from translate.storage import properties
+from translate.storage import po, properties
+
 
 logger = logging.getLogger(__name__)
+
 
 def _collapse(store, units):
     sources = [u.source for u in units]
@@ -249,6 +250,7 @@ def convertprop(inputfile, outputfile, templatefile, personality="java",
     outputfile.write(str(outputstore))
     return 1
 
+
 formats = {
     "properties": ("po", convertprop),
     ("properties", "properties"): ("po", convertprop),
@@ -280,6 +282,7 @@ def main(argv=None):
     parser.passthrough.append("personality")
     parser.passthrough.append("encoding")
     parser.run(argv)
+
 
 if __name__ == '__main__':
     main()
