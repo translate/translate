@@ -70,7 +70,7 @@ def unescapehandler(escape):
 
 def wrapline(line):
     """Wrap text for po files."""
-    wrappedlines = textwrap.wrap(line, 76, replace_whitespace=False, expand_tabs=False, drop_whitespace=False)
+    wrappedlines = textwrap.wrap(line, 77, replace_whitespace=False, expand_tabs=False, drop_whitespace=False)
 
     # Lines should not start with a space...
     if len(wrappedlines) > 1:
