@@ -41,7 +41,7 @@ class TestHelpers():
                                '"A very long sentence. A very long sentence. A very long sentence. A very"']
         # Long line with a newline
         assert pypo.quoteforpo("A very long sentence. A very long sentence. A very long sentence. A very lon\n") == \
-                             ['"A very long sentence. A very long sentence. A very long sentence. A very lon\\n"']
+                             ['""', '"A very long sentence. A very long sentence. A very long sentence. A very "', '"lon\\n"']
         # Special 77 char failure.
         assert pypo.quoteforpo("Ukuba uyayiqonda into eyenzekayo, \nungaxelela i-&brandShortName; ukuba iqalise ukuthemba ufaniso lwale sayithi. \n<b>Nokuba uyayithemba isayithi, le mposiso isenokuthetha ukuba   kukho umntu \nobhucabhuca ukudibanisa kwakho.</b>") == \
                              ['""',
