@@ -195,6 +195,15 @@ class TestPOFile(test_base.TestTranslationStore):
         print oldunit
         return str(oldunit)
 
+    def poreflow(self, posource):
+        """Helper to parse and reflow all text according to our code."""
+        pofile = self.poparse(posource)
+        for u in pofile.units:
+            # force rewrapping:
+            u.source = u.source
+            u.target = u.target
+        return str(pofile)
+
     def test_context_only(self):
         """Checks that an empty msgid with msgctxt is handled correctly."""
         posource = '''msgctxt "CONTEXT"
@@ -879,3 +888,78 @@ msgstr[0] ""
         assert "msgid_plural" in str(unit)
         assert not unit.istranslated()
         assert unit.get_state_n() == 0
+
+    def test_wrapping(self):
+        """This tests that we wrap like gettext."""
+        posource = r'''#: file.h:1
+msgid "bla\t12345 12345 12345 12345 12345 12345 12345 12345 12345 12345 12345"
+msgstr "bla\t12345 12345 12345 12345 12345 12345 12345 12345 12345 12345 12345"
+'''
+        # should be unchanged:
+        assert self.poreflow(posource) == posource
+
+        posource = r'''#: 2
+msgid "bla\t12345 12345 12345 12345 12345 12345 12345 12345 12345 12345 12345 1"
+msgstr "bla\t12345 12345 12345 12345 12345 12345 12345 12345 12345 12345 12345 1"
+'''
+        posource_wanted = r'''#: 2
+msgid ""
+"bla\t12345 12345 12345 12345 12345 12345 12345 12345 12345 12345 12345 1"
+msgstr ""
+"bla\t12345 12345 12345 12345 12345 12345 12345 12345 12345 12345 12345 1"
+'''
+        assert self.poreflow(posource) == posource_wanted
+
+        posource = r'''#: 7
+msgid "bla\t12345 12345 12345 12345 12345 12 12345 12345 12345 12345 12345 12345 123"
+msgstr "bla\t12345 12345 12345 12345 12345 15 12345 12345 12345 12345 12345 12345 123"
+'''
+        posource_wanted =r'''#: 7
+msgid ""
+"bla\t12345 12345 12345 12345 12345 12 12345 12345 12345 12345 12345 12345 123"
+msgstr ""
+"bla\t12345 12345 12345 12345 12345 15 12345 12345 12345 12345 12345 12345 123"
+'''
+        assert self.poreflow(posource) == posource_wanted
+
+        posource = r'''#: 7
+msgid "bla\t12345 12345 12345 12345 12345 12345 12345 12345 12345 12345 12345 12345 1"
+msgstr "bla\t12345 12345 12345 12345 12345 12345 12345 12345 12345 12345 12345 12345 1"
+'''
+        posource_wanted = r'''#: 7
+msgid ""
+"bla\t12345 12345 12345 12345 12345 12345 12345 12345 12345 12345 12345 12345 "
+"1"
+msgstr ""
+"bla\t12345 12345 12345 12345 12345 12345 12345 12345 12345 12345 12345 12345 "
+"1"
+'''
+        assert self.poreflow(posource) == posource_wanted
+
+        posource = r'''#: 8
+msgid "bla\t12345 12345 12345 12345 12345 12345 12345 12345 12345 12345 12345 1234\n1234"
+msgstr "bla\t12345 12345 12345 12345 12345 12345 12345 12345 12345 12345 12345 1234\n1234"
+
+#: 9
+msgid "bla\t12345 12345 12345 12345 12345 12345 12345 12345 12345 12345 12345 12345\n12345"
+msgstr "bla\t12345 12345 12345 12345 12345 12345 12345 12345 12345 12345 12345 12345\n12345"
+'''
+        posource_wanted = r'''#: 8
+msgid ""
+"bla\t12345 12345 12345 12345 12345 12345 12345 12345 12345 12345 12345 1234\n"
+"1234"
+msgstr ""
+"bla\t12345 12345 12345 12345 12345 12345 12345 12345 12345 12345 12345 1234\n"
+"1234"
+
+#: 9
+msgid ""
+"bla\t12345 12345 12345 12345 12345 12345 12345 12345 12345 12345 12345 "
+"12345\n"
+"12345"
+msgstr ""
+"bla\t12345 12345 12345 12345 12345 12345 12345 12345 12345 12345 12345 "
+"12345\n"
+"12345"
+'''
+        assert self.poreflow(posource) == posource_wanted
