@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 #
 # Copyright 2002-2009 Zuza Software Foundation
+# Copyright 2013 F Wolff
 #
 # This file is part of the Translate Toolkit.
 #
@@ -86,24 +87,28 @@ def wrapline(line):
 def quoteforpo(text):
     """Quotes the given text for a PO file, returning quoted and
     escaped lines"""
-    polines = []
     if text is None:
-        return polines
-    lines = text.split("\n")
-    if len(lines) > 1 or (len(lines) == 1 and len(lines[0]) > 71):
-        if len(lines) != 2 or lines[1]:
-            polines.extend(['""'])
+        return []
+    text = escapeforpo(text)
+    lines = text.split(u"\\n")
+    for i, l in enumerate(lines[:-1]):
+        lines[i] = l + u"\\n"
+
+    polines = []
+    len_lines = len(lines)
+    if len_lines > 1 or (len_lines == 1 and len(lines[0]) > 71):
+        if len_lines != 2 or lines[1]:
+            polines.append(u'""')
         for line in lines[:-1]:
-            #TODO: We should only wrap after escaping
             lns = wrapline(line)
-            if len(lns) > 0:
+            if lns:
                 for ln in lns[:-1]:
-                    polines.extend(['"' + escapeforpo(ln) + '"'])
-                polines.extend(['"' + escapeforpo(lns[-1]) + '\\n"'])
+                    polines.append(u'"%s"' % ln)
+                polines.append(u'"%s"' % lns[-1])
             else:
-                polines.extend(['"\\n"'])
+                polines.append(u'""')
     if lines[-1]:
-        polines.extend(['"' + escapeforpo(line) + '"' for line in wrapline(lines[-1])])
+        polines.extend([u'"%s"' % line for line in wrapline(lines[-1])])
     return polines
 
 
