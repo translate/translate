@@ -97,8 +97,7 @@ def quoteforpo(text):
     polines = []
     len_lines = len(lines)
     if len_lines > 1 or (len_lines == 1 and len(lines[0]) > 71):
-        if len_lines != 2 or lines[1]:
-            polines.append(u'""')
+        polines.append(u'""')
         for line in lines[:-1]:
             lns = wrapline(line)
             if lns:
