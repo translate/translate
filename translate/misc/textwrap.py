@@ -18,15 +18,6 @@ except NameError:
 
 __all__ = ['TextWrapper', 'wrap', 'fill']
 
-# Hardcode the recognized whitespace characters to the US-ASCII
-# whitespace characters.  The main reason for doing this is that in
-# ISO-8859-1, 0xa0 is non-breaking whitespace, so in certain locales
-# that character winds up in string.whitespace.  Respecting
-# string.whitespace in those cases would 1) make textwrap treat 0xa0 the
-# same as any other whitespace char, which is clearly wrong (it's a
-# *non-breaking* space), 2) possibly cause problems with Unicode,
-# since 0xa0 is not in range(128).
-_whitespace = '\t\n\x0b\x0c\r '
 
 class TextWrapper:
     """
@@ -40,28 +31,10 @@ class TextWrapper:
       width (default: 70)
         the maximum width of wrapped lines (unless break_long_words
         is false)
-      expand_tabs (default: true)
-        Expand tabs in input text to spaces before further processing.
-        Each tab will become 1 .. 8 spaces, depending on its position in
-        its line.  If false, each tab is treated as a single character.
-      drop_whitespace (default: true)
-        Drop leading and trailing whitespace from lines.
-      replace_whitespace (default: true)
-        Replace all whitespace characters in the input text by spaces
-        after tab expansion.  Note that if expand_tabs is false and
-        replace_whitespace is true, every tab will be converted to a
-        single space!
       break_long_words (default: true)
         Break words longer than 'width'.  If false, those words will not
         be broken, and some lines might be longer than 'width'.
     """
-
-    whitespace_trans = string.maketrans(_whitespace, ' ' * len(_whitespace))
-
-    unicode_whitespace_trans = {}
-    uspace = ord(u' ')
-    for x in map(ord, _whitespace):
-        unicode_whitespace_trans[x] = uspace
 
     # This funky little regex is just the trick for splitting
     # text up into word-wrappable chunks.  E.g.
@@ -77,36 +50,13 @@ class TextWrapper:
 
     def __init__(self,
                  width=70,
-                 expand_tabs=True,
-                 drop_whitespace=True,
-                 replace_whitespace=True,
                  break_long_words=True):
         self.width = width
-        self.expand_tabs = expand_tabs
-        self.drop_whitespace = drop_whitespace
-        self.replace_whitespace = replace_whitespace
         self.break_long_words = break_long_words
 
 
     # -- Private methods -----------------------------------------------
     # (possibly useful for subclasses to override)
-
-    def _munge_whitespace(self, text):
-        """_munge_whitespace(text : string) -> string
-
-        Munge whitespace in text: expand tabs and convert all other
-        whitespace characters to spaces.  Eg. " foo\tbar\n\nbaz"
-        becomes " foo    bar  baz".
-        """
-        if self.expand_tabs:
-            text = text.expandtabs()
-        if self.replace_whitespace:
-            if isinstance(text, str):
-                text = text.translate(self.whitespace_trans)
-            elif isinstance(text, unicode):
-                text = text.translate(self.unicode_whitespace_trans)
-        return text
-
 
     def _split(self, text):
         """_split(text : string) -> [string]
@@ -182,11 +132,6 @@ class TextWrapper:
             # Maximum width for this line.
             width = self.width
 
-            # First chunk on line is whitespace -- drop it, unless this
-            # is the very beginning of the text (ie. no lines started yet).
-            if self.drop_whitespace and chunks[-1].strip() == '' and lines:
-                del chunks[-1]
-
             while chunks:
                 l = len(chunks[-1])
 
@@ -203,10 +148,6 @@ class TextWrapper:
             # fit on *any* line (not just this one).
             if chunks and len(chunks[-1]) > width:
                 self._handle_long_word(chunks, cur_line, cur_len, width)
-
-            # If the last chunk on this line is all whitespace, drop it.
-            if self.drop_whitespace and cur_line and cur_line[-1].strip() == '':
-                del cur_line[-1]
 
             # Convert current line back to a string and store it in list
             # of all lines (return value).
@@ -227,7 +168,6 @@ class TextWrapper:
         and all other whitespace characters (including newline) are
         converted to space.
         """
-        text = self._munge_whitespace(text)
         chunks = self._split(text)
         return self._wrap_chunks(chunks)
 
@@ -267,62 +207,3 @@ def fill(text, width=70, **kwargs):
     """
     w = TextWrapper(width=width, **kwargs)
     return w.fill(text)
-
-
-# -- Loosely related functionality -------------------------------------
-
-_whitespace_only_re = re.compile('^[ \t]+$', re.MULTILINE)
-_leading_whitespace_re = re.compile('(^[ \t]*)(?:[^ \t\n])', re.MULTILINE)
-
-def dedent(text):
-    """Remove any common leading whitespace from every line in `text`.
-
-    This can be used to make triple-quoted strings line up with the left
-    edge of the display, while still presenting them in the source code
-    in indented form.
-
-    Note that tabs and spaces are both treated as whitespace, but they
-    are not equal: the lines "  hello" and "\thello" are
-    considered to have no common leading whitespace.  (This behaviour is
-    new in Python 2.5; older versions of this module incorrectly
-    expanded tabs before searching for common leading whitespace.)
-    """
-    # Look for the longest leading string of spaces and tabs common to
-    # all lines.
-    margin = None
-    text = _whitespace_only_re.sub('', text)
-    indents = _leading_whitespace_re.findall(text)
-    for indent in indents:
-        if margin is None:
-            margin = indent
-
-        # Current line more deeply indented than previous winner:
-        # no change (previous winner is still on top).
-        elif indent.startswith(margin):
-            pass
-
-        # Current line consistent with and no deeper than previous winner:
-        # it's the new winner.
-        elif margin.startswith(indent):
-            margin = indent
-
-        # Current line and previous winner have no common whitespace:
-        # there is no margin.
-        else:
-            margin = ""
-            break
-
-    # sanity check (testing/debugging only)
-    if 0 and margin:
-        for line in text.split("\n"):
-            assert not line or line.startswith(margin), \
-                   "line = %r, margin = %r" % (line, margin)
-
-    if margin:
-        text = re.sub(r'(?m)^' + margin, '', text)
-    return text
-
-if __name__ == "__main__":
-    #print dedent("\tfoo\n\tbar")
-    #print dedent("  \thello there\n  \t  how are you?")
-    print dedent("Hello there.\n  This is indented.")
