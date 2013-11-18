@@ -40,12 +40,6 @@ class TextWrapper:
       width (default: 70)
         the maximum width of wrapped lines (unless break_long_words
         is false)
-      initial_indent (default: "")
-        string that will be prepended to the first line of wrapped
-        output.  Counts towards the line's width.
-      subsequent_indent (default: "")
-        string that will be prepended to all lines save the first
-        of wrapped output; also counts towards each line's width.
       expand_tabs (default: true)
         Expand tabs in input text to spaces before further processing.
         Each tab will become 1 .. 8 spaces, depending on its position in
@@ -57,10 +51,6 @@ class TextWrapper:
         after tab expansion.  Note that if expand_tabs is false and
         replace_whitespace is true, every tab will be converted to a
         single space!
-      fix_sentence_endings (default: false)
-        Ensure that sentence-ending punctuation is always followed
-        by two spaces.  Off by default because the algorithm is
-        (unavoidably) imperfect.
       break_long_words (default: true)
         Break words longer than 'width'.  If false, those words will not
         be broken, and some lines might be longer than 'width'.
@@ -85,30 +75,16 @@ class TextWrapper:
         r'[^\s\w]*\w+[a-zA-Z]-(?=\w+[a-zA-Z])|'   # hyphenated words
         r'(?<=[\w\!\"\'\&\.\,\?])-{2,}(?=\w))')   # em-dash
 
-    # XXX this is not locale- or charset-aware -- string.lowercase
-    # is US-ASCII only (and therefore English-only)
-    sentence_end_re = re.compile(r'[%s]'              # lowercase letter
-                                 r'[\.\!\?]'          # sentence-ending punct.
-                                 r'[\"\']?'           # optional end-of-quote
-                                 % string.lowercase)
-
-
     def __init__(self,
                  width=70,
-                 initial_indent="",
-                 subsequent_indent="",
                  expand_tabs=True,
                  drop_whitespace=True,
                  replace_whitespace=True,
-                 fix_sentence_endings=False,
                  break_long_words=True):
         self.width = width
-        self.initial_indent = initial_indent
-        self.subsequent_indent = subsequent_indent
         self.expand_tabs = expand_tabs
         self.drop_whitespace = drop_whitespace
         self.replace_whitespace = replace_whitespace
-        self.fix_sentence_endings = fix_sentence_endings
         self.break_long_words = break_long_words
 
 
@@ -146,24 +122,6 @@ class TextWrapper:
         chunks = self.wordsep_re.split(text)
         chunks = filter(None, chunks)
         return chunks
-
-    def _fix_sentence_endings(self, chunks):
-        """_fix_sentence_endings(chunks : [string])
-
-        Correct for sentence endings buried in 'chunks'.  Eg. when the
-        original text contains "... foo.\nBar ...", munge_whitespace()
-        and split() will convert that to [..., "foo.", " ", "Bar", ...]
-        which has one too few spaces; this method simply changes the one
-        space to two.
-        """
-        i = 0
-        pat = self.sentence_end_re
-        while i < len(chunks)-1:
-            if chunks[i+1] == " " and pat.search(chunks[i]):
-                chunks[i+1] = "  "
-                i += 2
-            else:
-                i += 1
 
     def _handle_long_word(self, reversed_chunks, cur_line, cur_len, width):
         """_handle_long_word(chunks : [string],
@@ -221,14 +179,8 @@ class TextWrapper:
             cur_line = []
             cur_len = 0
 
-            # Figure out which static string will prefix this line.
-            if lines:
-                indent = self.subsequent_indent
-            else:
-                indent = self.initial_indent
-
             # Maximum width for this line.
-            width = self.width - len(indent)
+            width = self.width
 
             # First chunk on line is whitespace -- drop it, unless this
             # is the very beginning of the text (ie. no lines started yet).
@@ -259,7 +211,7 @@ class TextWrapper:
             # Convert current line back to a string and store it in list
             # of all lines (return value).
             if cur_line:
-                lines.append(indent + ''.join(cur_line))
+                lines.append(''.join(cur_line))
 
         return lines
 
@@ -277,8 +229,6 @@ class TextWrapper:
         """
         text = self._munge_whitespace(text)
         chunks = self._split(text)
-        if self.fix_sentence_endings:
-            self._fix_sentence_endings(chunks)
         return self._wrap_chunks(chunks)
 
     def fill(self, text):
