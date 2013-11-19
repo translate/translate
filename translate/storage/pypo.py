@@ -70,18 +70,7 @@ def unescapehandler(escape):
 
 def wrapline(line):
     """Wrap text for po files."""
-    wrappedlines = textwrap.wrap(line, 77, replace_whitespace=False, expand_tabs=False, drop_whitespace=False)
-
-    # Lines should not start with a space...
-    if len(wrappedlines) > 1:
-        for index, line in enumerate(wrappedlines[1:]):
-            if line.startswith(' '):
-                # Remove the space at the beginning of the line:
-                wrappedlines[index+1] = line[1:]
-
-                # Append a space to the previous line:
-                wrappedlines[index] += ' '
-    return wrappedlines
+    return textwrap.wrap(line, 77)
 
 
 def quoteforpo(text):
