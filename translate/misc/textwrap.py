@@ -33,10 +33,11 @@ class TextWrapper:
     # text up into word-wrappable chunks.  E.g.
     #   "Hello there -- you goof-ball, use the -b option!"
     # splits into
-    #   Hello/ /there/ /--/ /you/ /goof-/ball,/ /use/ /the/ /-b/ /option!
+    #   Hello /there /--/ /you /goof-/ball,/ /use/ /the /-b/ /option!
     # (after stripping out empty strings).
     wordsep_re = re.compile(
         r'(\s+|'                                  # any whitespace
+        r'[\w\!"\'\&\.\,\?]+\s+|'                 # space should go with a word
         r'[^\s\w]*\w+[a-zA-Z]-(?=\w+[a-zA-Z])|'   # hyphenated words
         r'(?<=[\w\!\"\'\&\.\,\?])-{2,}(?=\w))')   # em-dash
 
