@@ -27,11 +27,11 @@ from __future__ import generators
 import copy
 import cStringIO
 import re
+import textwrap
 
 from translate.lang import data
 from translate.misc.multistring import multistring
 from translate.misc import quote
-from translate.misc import textwrap
 from translate.storage import pocommon, base, poparser
 from translate.storage.pocommon import encodingToUse
 
@@ -68,9 +68,17 @@ def unescapehandler(escape):
     return po_unescape_map.get(escape, escape)
 
 
-def wrapline(line):
-    """Wrap text for po files."""
-    return textwrap.wrap(line, 77)
+textwrap.TextWrapper.wordsep_re = re.compile(
+    r'(\s+|'                                  # any whitespace
+    r'[\w\!"\'\&\.\,\?]+\s+|'                 # space should go with a word
+    r'[^\s\w]*\w+[a-zA-Z]-(?=\w+[a-zA-Z])|'   # hyphenated words
+    r'(?<=[\w\!\"\'\&\.\,\?])-{2,}(?=\w))')   # em-dash
+wrapper = textwrap.TextWrapper(
+        width=77,
+        replace_whitespace=False,
+        expand_tabs=False,
+        drop_whitespace=False
+)
 
 
 def quoteforpo(text):
@@ -88,7 +96,7 @@ def quoteforpo(text):
     if len_lines > 1 or (len_lines == 1 and len(lines[0]) > 71):
         polines.append(u'""')
         for line in lines[:-1]:
-            lns = wrapline(line)
+            lns = wrapper.wrap(line)
             if lns:
                 for ln in lns[:-1]:
                     polines.append(u'"%s"' % ln)
@@ -96,7 +104,7 @@ def quoteforpo(text):
             else:
                 polines.append(u'""')
     if lines[-1]:
-        polines.extend([u'"%s"' % line for line in wrapline(lines[-1])])
+        polines.extend([u'"%s"' % line for line in wrapper.wrap(lines[-1])])
     return polines
 
 
