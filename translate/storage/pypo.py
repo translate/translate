@@ -68,17 +68,18 @@ def unescapehandler(escape):
     return po_unescape_map.get(escape, escape)
 
 
-textwrap.TextWrapper.wordsep_re = re.compile(
-    r'(\s+|'                                  # any whitespace
-    r'[\w\!"\'\&\.\,\?]+\s+|'                 # space should go with a word
-    r'[^\s\w]*\w+[a-zA-Z]-(?=\w+[a-zA-Z])|'   # hyphenated words
-    r'(?<=[\w\!\"\'\&\.\,\?])-{2,}(?=\w))')   # em-dash
 wrapper = textwrap.TextWrapper(
         width=77,
         replace_whitespace=False,
         expand_tabs=False,
         drop_whitespace=False
 )
+wrapper.wordsep_re = re.compile(
+    r'(\s+|'                                  # any whitespace
+    r'[\w\!"\'\&\.\,\?]+\s+|'                 # space should go with a word
+    r'[^\s\w]*\w+[a-zA-Z]-(?=\w+[a-zA-Z])|'   # hyphenated words
+    r'(?<=[\w\!\"\'\&\.\,\?])-{2,}(?=\w))')   # em-dash
+wrapper.wordsep_re_uni = re.compile(wrapper.wordsep_re.pattern, re.UNICODE)
 
 
 def quoteforpo(text):
