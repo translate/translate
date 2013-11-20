@@ -25,7 +25,6 @@ See: http://docs.translatehouse.org/projects/translate-toolkit/en/latest/command
 for examples and usage instructions.
 """
 
-import sys
 import logging
 from urllib import urlencode
 
