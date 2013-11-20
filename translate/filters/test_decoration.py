@@ -57,6 +57,7 @@ def test_getnumbers():
     #assert decoration.getnumbers(u"R5,99") == ["5.99"]
     #assert decoration.getnumbers(u"1\u00a0000,99") == ["1000.99"]
     assert decoration.getnumbers(u"36°") == [u"36°"]
+    assert decoration.getnumbers(u"English 123, Bengali \u09e7\u09e8\u09e9") == [u"123", u"\u09e7\u09e8\u09e9"]
 
 
 def test_getfunctions():
