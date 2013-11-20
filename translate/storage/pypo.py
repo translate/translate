@@ -68,12 +68,21 @@ def unescapehandler(escape):
     return po_unescape_map.get(escape, escape)
 
 
-wrapper = textwrap.TextWrapper(
-        width=77,
-        replace_whitespace=False,
-        expand_tabs=False,
-        drop_whitespace=False
-)
+try:
+    wrapper = textwrap.TextWrapper(
+            width=77,
+            replace_whitespace=False,
+            expand_tabs=False,
+            drop_whitespace=False
+    )
+except TypeError:
+    # Python < 2.6 didn't support drop_whitespace
+    wrapper = textwrap.TextWrapper(
+            width=77,
+            replace_whitespace=False,
+            expand_tabs=False
+    )
+
 wrapper.wordsep_re = re.compile(
     r'(\s+|'                                  # any whitespace
     r'[\w\!"\'\&\.\,\?]+\s+|'                 # space should go with a word
