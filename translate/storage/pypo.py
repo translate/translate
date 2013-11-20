@@ -77,11 +77,8 @@ try:
     )
 except TypeError:
     # Python < 2.6 didn't support drop_whitespace
-    wrapper = textwrap.TextWrapper(
-            width=77,
-            replace_whitespace=False,
-            expand_tabs=False
-    )
+    from translate.misc import textwrap
+    wrapper = textwrap.TextWrapper(width=77)
 
 wrapper.wordsep_re = re.compile(
     r'(\s+|'                                  # any whitespace
