@@ -14,8 +14,7 @@ install:
   - pip install --use-mirrors python-Levenshtein
   - pip install --use-mirrors BeautifulSoup
   - pip install --use-mirrors Sphinx
-  - if [[ $TRAVIS_PYTHON_VERSION == '2.6' ]]; then sudo apt-get install python-aeidon; fi
-  - if [[ $TRAVIS_PYTHON_VERSION == '2.7' ]]; then sudo apt-get install python-aeidon; fi
+  - sudo apt-get install python-aeidon
   # Still need to handle with indexing engines and aeidon
 script: py.test -r EfsxX
 notifications:
