@@ -94,18 +94,12 @@ def quoteforpo(text):
 
     polines = []
     len_lines = len(lines)
-    if len_lines > 1 or (len_lines == 1 and len(lines[0]) > 71):
+    if len_lines > 2 or (len_lines == 2 and lines[1]) or len(lines[0]) > 71:
         polines.append(u'""')
-        for line in lines[:-1]:
-            lns = wrapper.wrap(line)
-            if lns:
-                for ln in lns[:-1]:
-                    polines.append(u'"%s"' % ln)
-                polines.append(u'"%s"' % lns[-1])
-            else:
-                polines.append(u'""')
-    if lines[-1]:
-        polines.extend([u'"%s"' % line for line in wrapper.wrap(lines[-1])])
+    for line in lines:
+        lns = wrapper.wrap(line)
+        for ln in lns:
+            polines.append(u'"%s"' % ln)
     return polines
 
 
