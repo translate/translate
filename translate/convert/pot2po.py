@@ -226,8 +226,8 @@ def _do_poheaders(input_store, output_store, template_store):
 
     inputheadervalues = input_store.parseheader()
     for key, value in inputheadervalues.iteritems():
-        if key in ("Project-Id-Version", "Last-Translator", "Language-Team", \
-                   "PO-Revision-Date", "Content-Type", \
+        if key in ("Project-Id-Version", "Last-Translator", "Language-Team",
+                   "PO-Revision-Date", "Content-Type",
                    "Content-Transfer-Encoding", "Plural-Forms"):
             # want to carry these from the template so we ignore them
             pass

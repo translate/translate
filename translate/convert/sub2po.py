@@ -52,7 +52,7 @@ def merge_store(template_store, input_store, blankmsgstr=False,
     """converts two subtitle files to a .po file..."""
     output_store = po.pofile()
     output_header = output_store.headers()
-    output_header.addnote("extracted from %s, %s" % \
+    output_header.addnote("extracted from %s, %s" %
                           (template_store.filename, input_store.filename),
                           "developer")
 

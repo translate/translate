@@ -183,9 +183,9 @@ class JsonFile(base.TranslationStore):
                                                           i, name_node, data):
                     yield x
         # apply filter
-        elif (stop is None \
-            or (isinstance(last_node, dict) and name_node in stop) \
-            or (isinstance(last_node, list) and name_last_node in stop)):
+        elif (stop is None or
+              (isinstance(last_node, dict) and name_node in stop) or
+              (isinstance(last_node, list) and name_last_node in stop)):
 
             if isinstance(data, str) or isinstance(data, unicode):
                 yield (prev, data, last_node, name_node)

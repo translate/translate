@@ -97,7 +97,7 @@ class oo2po:
         bug_url = 'http://qa.openoffice.org/issues/enter_bug.cgi?%s' % \
                   urlencode({"subcomponent": "ui",
                              "comment": "",
-                             "short_desc": "Localization issue in file: %s" % \
+                             "short_desc": "Localization issue in file: %s" %
                                            theoofile.filename,
                              "component": "l10n",
                              "form_name": "enter_issue",

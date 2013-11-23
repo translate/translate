@@ -446,11 +446,11 @@ class StatsCache(object):
                     index = unitindex
                 # what about plurals in .source and .target?
                 unit_state_for_db = statefordb(unit)
-                unitvalues.append((unit.getid(), fileid, index, \
-                                unit.source, unit.target, \
-                                sourcewords, targetwords, \
-                                unit_state_for_db,
-                                unit.get_state_id()))
+                unitvalues.append((unit.getid(), fileid, index,
+                                   unit.source, unit.target,
+                                   sourcewords, targetwords,
+                                   unit_state_for_db,
+                                   unit.get_state_id()))
                 file_totals_record = file_totals_record + FileTotals.new_record(unit_state_for_db, sourcewords, targetwords)
         # XXX: executemany is non-standard
         self.cur.executemany("""INSERT INTO units

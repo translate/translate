@@ -45,7 +45,7 @@ def force_override(method, baseclass):
         actualclass = method.im_class
     if actualclass != baseclass:
         raise NotImplementedError(
-            "%s does not reimplement %s as required by %s" % \
+            "%s does not reimplement %s as required by %s" %
             (actualclass.__name__, method.__name__, baseclass.__name__))
 
 

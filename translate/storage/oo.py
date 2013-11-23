@@ -182,8 +182,8 @@ class ooline(object):
     def setparts(self, parts):
         """create a line from its tab-delimited parts"""
         if len(parts) != 15:
-            warnings.warn("oo line contains %d parts, it should contain 15: %r" % \
-                    (len(parts), parts))
+            warnings.warn("oo line contains %d parts, it should contain 15: %r" %
+                          (len(parts), parts))
             newparts = list(parts)
             if len(newparts) < 15:
                 newparts = newparts + [""] * (15 - len(newparts))

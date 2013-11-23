@@ -92,8 +92,8 @@ class dtd2po:
         # quotes have been escaped already by escapeforpo, so just add the
         # start and end quotes
         if len(lines) > 1:
-            po_unit.source = "\n".join([lines[0].rstrip() + ' '] + \
-                    [line.strip() + ' ' for line in lines[1:-1]] + \
+            po_unit.source = "\n".join([lines[0].rstrip() + ' '] +
+                    [line.strip() + ' ' for line in lines[1:-1]] +
                     [lines[-1].lstrip()])
         elif lines:
             po_unit.source = lines[0]
@@ -230,7 +230,7 @@ class dtd2po:
                 x_accelerator_marker="&",
                 x_merge_on="location",
         )
-        targetheader.addnote("extracted from %s, %s" % \
+        targetheader.addnote("extracted from %s, %s" %
                              (origdtdfile.filename,
                               translateddtdfile.filename),
                              "developer")
