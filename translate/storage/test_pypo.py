@@ -57,8 +57,8 @@ class TestHelpers():
     def test_quoteforpo_escaped_quotes(self):
         """Ensure that we don't break \" in two when wrapping
 
-	See :bug:`3140`
-	"""
+        See :bug:`3140`
+        """
         assert pypo.quoteforpo('''You can get a copy of your Recovery Key by going to &syncBrand.shortName.label; Options on your other device, and selecting  "My Recovery Key" under "Manage Account".''') == [u'""', u'"You can get a copy of your Recovery Key by going to "', u'"&syncBrand.shortName.label; Options on your other device, and selecting  \\""', u'"My Recovery Key\\" under \\"Manage Account\\"."']
 
 

@@ -185,10 +185,10 @@ class StringElem(object):
                     elem.sub[i] = f(elem.sub[i])
 
     def copy(self):
-	"""Returns a copy of the sub-tree.  This should be overridden in
-	sub-classes with more data.
+        """Returns a copy of the sub-tree.  This should be overridden in
+        sub-classes with more data.
 
-	.. note:: ``self.renderer`` is **not** copied."""
+        .. note:: ``self.renderer`` is **not** copied."""
         #logging.debug('Copying instance of class %s' % (self.__class__.__name__))
         cp = self.__class__(id=self.id, xid=self.xid, rid=self.rid)
         for sub in self.sub:

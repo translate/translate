@@ -68,7 +68,7 @@ def filteraccelerators(accelmarker):
         accelmarkerlen = len(accelmarker)
 
     def filtermarkedaccelerators(str1, acceptlist=None):
-	"""Modifies the accelerators in *str1* marked with the given
+        """Modifies the accelerators in *str1* marked with the given
         *accelmarker*, using a given *acceptlist* filter.
         """
         acclocs, badlocs = decoration.findaccelerators(str1, accelmarker, acceptlist)
@@ -134,7 +134,7 @@ def filtervariables(startmarker, endmarker, varfilter):
         endmarkerlen = len(endmarker)
 
     def filtermarkedvariables(str1):
-	"""Modifies the variables in *str1* marked with a given *\*marker*,
+        """Modifies the variables in *str1* marked with a given *\*marker*,
         using a given filter."""
         varlocs = decoration.findmarkedvariables(str1, startmarker, endmarker)
         fstr1, pos = "", 0
