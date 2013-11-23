@@ -189,7 +189,7 @@ def pretranslate_store(input_store, template_store, tm=None,
 
     # Main loop
     for input_unit in input_store.units:
-        if  input_unit.istranslatable():
+        if input_unit.istranslatable():
             input_unit = pretranslate_unit(input_unit, template_store,
                                            matchers,
                                            merge_on=input_store.merge_on)

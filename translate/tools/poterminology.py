@@ -305,7 +305,7 @@ class TerminologyExtractor(object):
         for term in termlist:
             words = term.split()
             nonstop = [word for word in words if not self.stopword(word)]
-            if len(nonstop) < nonstopmin and  len(nonstop) != len(words):
+            if len(nonstop) < nonstopmin and len(nonstop) != len(words):
                 del terms[term]
                 continue
             if len(words) <= 2:

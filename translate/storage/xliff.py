@@ -321,7 +321,7 @@ class xliffunit(lisa.LISAunit):
         if not self.isapproved() and state_n > self.S_UNREVIEWED:
             state_n = self.S_UNREVIEWED
 
-        return  state_n
+        return state_n
 
     def set_state_n(self, value):
         if value not in self.statemap_r:
