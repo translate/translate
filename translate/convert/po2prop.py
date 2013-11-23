@@ -76,7 +76,7 @@ class reprop:
                 if category == 'zero':
                     # [zero] cases are translated as separate units
                     continue
-                new_unit = self.inputstore.addsourceunit(u"fish") # not used
+                new_unit = self.inputstore.addsourceunit(u"fish")  # not used
                 new_location = '%s[%s]' % (location, category)
                 new_unit.addlocation(new_location)
                 new_unit.target = text

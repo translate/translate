@@ -92,7 +92,7 @@ class LangStore(txt.TxtFile):
                 readyTrans = False  # We already have our translation
                 continue
 
-            if line.startswith('#'): # A comment
+            if line.startswith('#'):  # A comment
                 comment += line[1:].strip() + "\n"
 
             if line.startswith(';'):

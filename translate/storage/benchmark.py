@@ -146,7 +146,7 @@ if __name__ == "__main__":
         if args.podir is None:
             benchmarker.create_sample_files(*sample_file_sizes)
         benchmarker.parse_files(file_dir=args.podir)
-        methods = [] # [("create_sample_files", "*sample_file_sizes")]
+        methods = []  # [("create_sample_files", "*sample_file_sizes")]
 
         if args.check_parsing:
             methods.append(("parse_files", ""))
