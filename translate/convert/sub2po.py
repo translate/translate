@@ -31,6 +31,7 @@ from translate.storage import po
 
 logger = logging.getLogger(__name__)
 
+
 def convert_store(input_store, duplicatestyle="msgctxt"):
     """converts a subtitle file to a .po file..."""
     output_store = po.pofile()

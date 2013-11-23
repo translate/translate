@@ -23,6 +23,7 @@
 
 from translate.lang import common
 
+
 class tr(common.Common):
     """This class represents Turkish."""
 

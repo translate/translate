@@ -107,6 +107,7 @@ def prepare_filelist(files):
 def youngest_ancestor(files):
     return os.path.commonprefix([os.path.dirname(f) for f in files])
 
+
 class GenericRevisionControlSystem(object):
     """The super class for all version control classes.
 

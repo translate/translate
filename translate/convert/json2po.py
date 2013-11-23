@@ -31,6 +31,7 @@ from translate.storage import po
 
 logger = logging.getLogger(__name__)
 
+
 class json2po:
     """Convert a JSON file to a PO file"""
 

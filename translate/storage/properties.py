@@ -211,6 +211,7 @@ def is_line_continuation(line):
         count += 1
     return (count % 2) == 1  # Odd is a line continuation, even is not
 
+
 @accepts(unicode)
 @returns(bool)
 def is_comment_one_line(line):

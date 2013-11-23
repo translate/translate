@@ -34,6 +34,7 @@ from translate.misc import file_discovery
 
 logger = logging.getLogger(__name__)
 
+
 def create_termunit(term, unit, targets, locations, sourcenotes, transnotes, filecounts):
     termunit = po.pounit(term)
     if unit is not None:

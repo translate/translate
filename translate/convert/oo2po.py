@@ -35,6 +35,7 @@ from translate.storage import oo
 
 logger = logging.getLogger(__name__)
 
+
 class oo2po:
 
     def __init__(self, sourcelanguage, targetlanguage, blankmsgstr=False, long_keys=False):

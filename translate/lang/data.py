@@ -413,6 +413,7 @@ def simplify_to_common(language_code, languages=languages):
     else:
         return simplify_to_common(simpler)
 
+
 def get_language(code):
     code = code.replace("-", "_").replace("@", "_").lower()
     if "_" in code:

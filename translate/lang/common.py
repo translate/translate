@@ -67,6 +67,7 @@ from translate.lang import data
 
 logger = logging.getLogger(__name__)
 
+
 class Common(object):
     """This class is the common parent class for all language classes."""
 

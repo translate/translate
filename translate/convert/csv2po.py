@@ -32,6 +32,7 @@ from translate.storage import csvl10n
 
 logger = logging.getLogger(__name__)
 
+
 def replacestrings(source, *pairs):
     """Use ``pairs`` of ``(original, replacement)`` to replace text found in
     ``source``.

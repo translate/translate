@@ -37,6 +37,7 @@ from translate.filters import autocorrect
 
 logger = logging.getLogger(__name__)
 
+
 class reoo:
 
     def __init__(self, templatefile, languages=None, timestamp=None, includefuzzy=False, long_keys=False, filteraction="exclude"):

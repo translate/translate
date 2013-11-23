@@ -101,6 +101,7 @@ def xerror2_cb(severity, message1, filename1, lineno1, column1, multiline_p1,
     if severity >= 1:
         raise ValueError(message_text1)
 
+
 # Setup return and parameter types
 def setup_call_types(gpo):
     # File access
