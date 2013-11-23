@@ -167,7 +167,7 @@ else:
 
 if gpo:
     setup_call_types(gpo)
-    
+
 # Setup the po_xerror_handler
 xerror_handler = po_xerror_handler()
 xerror_handler.xerror = xerror_prototype(xerror_cb)

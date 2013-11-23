@@ -29,10 +29,10 @@ from translate.misc import quote
 
 def removekdecomments(str1):
     r"""Remove KDE-style PO comments.
-    
+
     KDE comments start with ``_:[space]`` and end with a literal ``\n``.
     Example::
-    
+
       "_: comment\n"
     """
     assert isinstance(str1, unicode)
