@@ -417,5 +417,5 @@ def get_language(code):
     code = code.replace("-", "_").replace("@", "_").lower()
     if "_" in code:
         # convert ab_cd → ab_CD
-        code = "%s_%s" %(code.split("_")[0], code.split("_", 1)[1].upper())
+        code = "%s_%s" % (code.split("_")[0], code.split("_", 1)[1].upper())
     return languages.get(code, None)
