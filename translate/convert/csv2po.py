@@ -159,7 +159,7 @@ class csv2po:
             elif simplify(csvunit.source) == simplify(pluralid):
                 pounit.msgstr[1] = csvunit.target
             else:
-                logger.warning("couldn't work out singular/plural: %r, %r, %r", 
+                logger.warning("couldn't work out singular/plural: %r, %r, %r",
                                csvunit.source, singularid, pluralid)
                 self.unmatched += 1
                 return
