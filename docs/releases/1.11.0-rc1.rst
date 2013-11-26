@@ -12,7 +12,7 @@ Translate Toolkit 1.11.0-rc1
 This release contains many improvements and bug fixes. While it contains many
 general improvements, it also specifically contains needed changes and
 optimizations for the upcoming `Pootle <http://pootle.translatehouse.org/>`_
-2.5.1 and `Virtaal <http://virtaal.translatehouse.org`_ releases.
+2.5.1 and `Virtaal <http://virtaal.translatehouse.org>`_ releases.
 
 It is just over a eight months since the last release and there are many
 improvements across the board.  A number of people contributed to this release
@@ -40,33 +40,40 @@ Formats and Converters
   - Line wrapping improvement allow PO files to more closely match Gettext
   - Optimization to increase improve performance
 
-- PHP format:
+- PHP:
 
   - Warn about duplicate entries
   - Allow blank spaces in array declaration (Bug #2646)
   - Support nested arrays (Bug #2240)
 
-- XLIFF: Correctly parse XLIFF 1.2
+- XLIFF:
+
+  - Correctly parse XLIFF 1.2
+
 - Properties
   
   - Blank source text is now always translated
   - Fuzzy units are discarded with --remove-untranslated
   - prop2po no longer drops entries that are translated the same as the source
 
-- TMX: po2tmx support comments
+- TMX:
+
+  - po2tmx support comments
+
 - Android:
 
   - Detect untranslatable resource strings
   - Various format improvements
 
 - New conversion options:
+
   - --timestamp -- skip conversion if the output file has a newer timestamp
     (Makefile-alike)
   - --threshold -- in po2* converters this allows you to specify a percentage
     complete threshold.  If the PO files passes this theshold then the file is
-    output (bug 2998)
+    output (bug #2998)
   - --removeuntranslated -- Extend this option to po2dtd and thus po2moz --
-    don't output untranslated text (bug 1718)
+    don't output untranslated text (bug #1718)
 
 Language specific fixes
 -----------------------
@@ -89,7 +96,7 @@ Mozilla tooling fixes
 - .lang -- Improved support for untranslated entries
 - ``buildxpi``:
 
-  - Can now build multiple languages at once (bug 2999)
+  - Can now build multiple languages at once (bug #2999)
   - Set a max product version to allow the language pack to continue to work
     once the browser version has moved out of Aurora channel
 
@@ -100,10 +107,10 @@ General
 -------
 - Dropped support for Python 2.5 -- 2.5 has reached end-of-life
 - Dropped psyco support -- it is no longer maintained
-- Use logging throught instead of sys.stderr
-- Docs lots of cleanups: TBX, PHP, Added Android and JSON docs
-- Requirements files document all requirements for the Translate Toolkit and
-  make it easy to install using ``pip``
+- Use logging throught instead of ``sys.stderr``
+- Lots of cleanups on docs: TBX, PHP, added Android and JSON docs
+- Use requirements files for documenting all requirements and make it easy to
+  install Translate Toolkit using ``pip``
 - Added some functional tests
 - Improve searching to find words with hyphens
 - Choose the closest repo in nested VCS
