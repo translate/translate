@@ -51,7 +51,7 @@ Formats and Converters
 * PO: X-Merge-On header to explicitly demand a conversion strategy instead of
   guessing
 * .properties: BOMs in messages and C style comments [Roman Imankulov]
-* Mac OS String formatting imporved [Roman Imankulov]
+* Mac OS String formatting improved [Roman Imankulov]
 
 
 Version Control improvements
@@ -102,7 +102,7 @@ Mozilla tooling fixes
 * Support new {{xx}} variable style introduced in PDF viewer
 
 
-...and refactoring, PEP8, test coverage and of couese many many bugfixes.
+...and refactoring, PEP8, test coverage and of course many many bugfixes.
 
 
 Contributors
