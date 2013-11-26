@@ -52,9 +52,14 @@ The release notes will be used in these places:
 We create our release notes in reStructured Text, since we use that elsewhere
 and since it can be rendered well in some of our key sites.
 
-First we need to create a log of changes in the Toolkit::
+First we need to create a log of changes in the Translate Toolkit, which is
+done generically like this::
 
-    git diff N-1 HEAD > docs/releases/$version.rst
+    git log $version-1..HEAD > docs/release/$version.rst
+
+Or a more specific example::
+
+    git log 1.10.0..HEAD > docs/releases/1.10.0.rst
 
 Edit this file.  You can use the commits as a guide to build up the release
 notes.  You should remove all log messages before the release.
@@ -74,6 +79,10 @@ Read for grammar and spelling errors.
    #. The connection to the users is human not distant.
    #. We speak in familiar terms e.g. "I know you've been waiting for this
       release" instead of formal.
+
+We create a list of contributors using this command::
+
+   git log 1.10.0..HEAD --format='%aN, ' | awk '{arr[$0]++} END{for (i in arr){print arr[i], i;}}' | sort -rn | cut -d\  -f2-
 
 
 Up version numbers
