@@ -220,10 +220,6 @@ class Common(object):
                     language.pluralequation = langdata
                 break
             code = data.simplercode(code)
-        if not code:
-            # message suppressed by default at level info
-            logger.info("No information found about language code %s", code)
-            pass
         return language
 
     def __deepcopy__(self, memo={}):
