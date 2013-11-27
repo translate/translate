@@ -201,8 +201,8 @@ You will need:
 #. Create a new folder in the `Translate Toolkit
    <https://sourceforge.net/projects/translate/files/Translate%20Toolkit/>`_
    release folder using the 'Add Folder' button.  The folder must have the same
-   as the release name e.g.  ``1.10.0-rc1``.  Mark this as being for staging
-   for the moment.
+   name as the release version e.g.  ``1.10.0-rc1``.  Mark this as being for
+   staging for the moment.
 #. ``make publish-sourceforge`` will give you the command to upload your
    tarball and ``README.rst``.
 
