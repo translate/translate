@@ -1567,7 +1567,7 @@ openofficeconfig = CheckerConfig(
     ignoretags=[("alt", "xml-lang", None), ("ahelp", "visibility", "visible"),
                 ("img", "width", None), ("img", "height", None)],
     canchangetags=[("link", "name", None)],
-    )
+)
 
 
 class OpenOfficeChecker(StandardChecker):
@@ -1588,7 +1588,7 @@ mozillaconfig = CheckerConfig(
     varmatches=[("&", ";"), ("%", "%"), ("%", 1), ("$", "$"), ("$", None),
                 ("#", 1), ("${", "}"), ("$(^", ")"), ("{{", "}}"), ],
     criticaltests=["accelerators"],
-    )
+)
 
 
 class MozillaChecker(StandardChecker):
@@ -1693,7 +1693,7 @@ class MozillaChecker(StandardChecker):
 
 drupalconfig = CheckerConfig(
     varmatches=[("%", None), ("@", None), ("!", None)],
-    )
+)
 
 
 class DrupalChecker(StandardChecker):
@@ -1713,7 +1713,7 @@ gnomeconfig = CheckerConfig(
     accelmarkers=["_"],
     varmatches=[("%", 1), ("$(", ")")],
     credit_sources=[u"translator-credits"],
-    )
+)
 
 
 class GnomeChecker(StandardChecker):
@@ -1751,7 +1751,7 @@ kdeconfig = CheckerConfig(
     accelmarkers=["&"],
     varmatches=[("%", 1)],
     credit_sources=[u"Your names", u"Your emails", u"ROLES_OF_TRANSLATORS"],
-    )
+)
 
 
 class KdeChecker(StandardChecker):
@@ -1810,7 +1810,7 @@ projectcheckers = {
     "creativecommons": CCLicenseChecker,
     "drupal": DrupalChecker,
     "terminology": TermChecker,
-    }
+}
 
 
 class StandardUnitChecker(UnitChecker):

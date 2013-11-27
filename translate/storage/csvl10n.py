@@ -273,7 +273,7 @@ class csvunit(base.TranslationUnit):
             'context': from_unicode(self.context, encoding),
             'translator_comments': from_unicode(self.translator_comments, encoding),
             'developer_comments': from_unicode(self.developer_comments, encoding),
-            }
+        }
 
         return output
 

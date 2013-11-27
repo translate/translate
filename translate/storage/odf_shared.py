@@ -42,7 +42,8 @@ def define_tables():
         (text_uri, 'ruby-base'),
         (text_uri, 's'),
         (text_uri, 'span'),
-        (text_uri, 'tab')]
+        (text_uri, 'tab')
+    ]
 
     no_translate_content_elements = [
 
@@ -173,7 +174,7 @@ def define_tables():
 
         # From translate
         (text_uri, 'tracked-changes'),
-        ]
+    ]
 
     globals()['inline_elements'] = inline_elements
     globals()['no_translate_content_elements'] = no_translate_content_elements

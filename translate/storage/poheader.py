@@ -34,7 +34,7 @@ default_header = {
     "Last-Translator": "FULL NAME <EMAIL@ADDRESS>",
     "Language-Team": "LANGUAGE <LL@li.org>",
     "Plural-Forms": "nplurals=INTEGER; plural=EXPRESSION;",
-    }
+}
 
 
 def parseheaderstring(input):
@@ -120,7 +120,7 @@ class poheader(object):
         "Content-Transfer-Encoding",
         "Plural-Forms",
         "X-Generator",
-        ]
+    ]
 
     def init_headers(self, charset='UTF-8', encoding='8bit', **kwargs):
         """sets default values for po headers"""

@@ -84,7 +84,7 @@ def build_output(units, template_header, template_dict):
         'Language-Team': template_dict.get('r_string_languagegroup_name', ''),
         'Content-Transfer-Encoding': '8bit',
         'Content-Type': 'text/plain; charset=UTF-8',
-        }
+    }
     output_store.updateheader(add=True, **header_entries)
     for id, source in units:
         if id in ignore:

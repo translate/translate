@@ -384,20 +384,18 @@ def post_po2moz_hacks(lang, buildlang):
     for ft in ('.xhtml', '.html', '.rdf'):
         copyfiletype(ft, buildlang)
 
-    for f in (
-            join('browser', 'extra-jar.mn'),
-            join('browser', 'firefox-l10n.js'),
-            join('browser', 'README.txt'),
-            join('browser', 'microsummary-generators', 'list.txt'),
-            join('browser', 'profile', 'chrome', 'userChrome-example.css'),
-            join('browser', 'profile', 'chrome', 'userContent-example.css'),
-            join('browser', 'searchplugins', 'list.txt'),
-            join('extensions', 'reporter', 'chrome',
-                 'reporterOverlay.properties'),
-            join('mail', 'all-l10n.js'),
-            join('toolkit', 'chrome', 'global', 'intl.css'),
-            join('toolkit', 'installer', 'windows', 'charset.mk')
-        ):
+    for f in (join('browser', 'extra-jar.mn'),
+              join('browser', 'firefox-l10n.js'),
+              join('browser', 'README.txt'),
+              join('browser', 'microsummary-generators', 'list.txt'),
+              join('browser', 'profile', 'chrome', 'userChrome-example.css'),
+              join('browser', 'profile', 'chrome', 'userContent-example.css'),
+              join('browser', 'searchplugins', 'list.txt'),
+              join('extensions', 'reporter', 'chrome',
+                   'reporterOverlay.properties'),
+              join('mail', 'all-l10n.js'),
+              join('toolkit', 'chrome', 'global', 'intl.css'),
+              join('toolkit', 'installer', 'windows', 'charset.mk')):
         copyfile(f, buildlang)
 
 
@@ -619,12 +617,10 @@ def create_option_parser():
     return parser
 
 
-def main(
-        langs=['ALL'], mozproduct='browser', mozcheckout=False, moztag='-A',
-        recover=False, potpack=False, potincl=[], migrate=True, popack=False,
-        update_trans=False, debug=False, diff=False, langpack=False,
-        verbose=True
-        ):
+def main(langs=['ALL'], mozproduct='browser', mozcheckout=False, moztag='-A',
+         recover=False, potpack=False, potincl=[], migrate=True, popack=False,
+         update_trans=False, debug=False, diff=False, langpack=False,
+         verbose=True):
     global options
     options['verbose'] = verbose
     targetapp = mozproduct

@@ -273,13 +273,13 @@ propertyescapes = {
     "\\": "\\", "'": "'", '"': '"',
     # control characters that we keep
     "f": "\f", "n": "\n", "r": "\r", "t": "\t",
-    }
+}
 
 controlchars = {
     # the reverse of the above...
     "\\": "\\\\",
     "\f": "\\f", "\n": "\\n", "\r": "\\r", "\t": "\\t",
-    }
+}
 
 
 def escapecontrols(source):

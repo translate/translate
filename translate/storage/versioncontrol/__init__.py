@@ -308,8 +308,7 @@ def get_versioned_object(
         location,
         versioning_systems=None,
         follow_symlinks=True,
-        oldest_parent=None,
-    ):
+        oldest_parent=None):
     """return a versioned object for the given file"""
     if versioning_systems is None:
         versioning_systems = DEFAULT_RCS[:]

@@ -55,7 +55,7 @@ extended_state_strings = {
     StateEnum.NEEDS_REVIEW: "needs-review",
     StateEnum.UNREVIEWED: "unreviewed",
     StateEnum.FINAL: "final",
-    }
+}
 
 UNTRANSLATED = StateEnum.EMPTY
 FUZZY = StateEnum.NEEDS_WORK
@@ -491,7 +491,7 @@ class StatsCache(object):
                 "units": value[1],
                 "sourcewords": value[2],
                 "targetwords": value[3],
-                }
+            }
         return stats
 
     def filetotals(self, filename, store=None, extended=False):
