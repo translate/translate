@@ -40,7 +40,7 @@ class AndroidResourceUnit(base.TranslationUnit):
 
     @classmethod
     def createfromxmlElement(cls, element):
-        term = cls(None, xmlelement = element)
+        term = cls(None, xmlelement=element)
         return term
 
     def __init__(self, source, empty=False, xmlelement=None, **kwargs):
