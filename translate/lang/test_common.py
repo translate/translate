@@ -37,8 +37,8 @@ def test_words():
 
 @mark.xfail("sys.version_info >= (2, 6)",
             reason="ZWS "
-	    "is not considered a space in Python 2.6+. Khmer should extend "
-	    "words() to include \\u200b in addition to other word breakers.")
+                   "is not considered a space in Python 2.6+. Khmer should extend "
+                   "words() to include \\u200b in addition to other word breakers.")
 def test_word_khmer():
     language = common.Common
     # Let's test Khmer with zero width space (\u200b)

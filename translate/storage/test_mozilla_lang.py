@@ -17,7 +17,7 @@ class TestMozLangUnit(test_base.TestTranslationUnit):
         assert str(unit).endswith(" {ok}")
 
     def test_untranslated(self):
-	"""The target is always written to files and is never blank. If it is
+        """The target is always written to files and is never blank. If it is
         truly untranslated then it won't end with '{ok}."""
         unit = self.UnitClass("Open")
         assert unit.target is None

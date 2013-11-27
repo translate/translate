@@ -150,7 +150,7 @@ ac_add_options --enable-application=%(product)s
 
         mozconf = open(MOZCONFIG, 'w').write(content)
 
-	# Try to make sure that "environment shell" is defined
+        # Try to make sure that "environment shell" is defined
         # (python/mach/mach/mixin/process.py)
         if not any (var in os.environ
                     for var in ('SHELL', 'MOZILLABUILD', 'COMSPEC')):
@@ -169,11 +169,11 @@ ac_add_options --enable-application=%(product)s
         run(['make', '-C', 'config'],
             fail_msg="Unable to successfully configure build for XPI!")
 
-	moz_app_version=[]
-	if soft_max_version:
-	    version = open(os.path.join(srcdir, product, 'config', 'version.txt')).read().strip()
-	    version = re.sub(r'(^[0-9]*\.[0-9]*).*', r'\1.*', version)
-	    moz_app_version = ['MOZ_APP_MAXVERSION=%s' % version]
+        moz_app_version=[]
+        if soft_max_version:
+            version = open(os.path.join(srcdir, product, 'config', 'version.txt')).read().strip()
+            version = re.sub(r'(^[0-9]*\.[0-9]*).*', r'\1.*', version)
+            moz_app_version = ['MOZ_APP_MAXVERSION=%s' % version]
         run(['make', '-C', os.path.join(product, 'locales')] +
             ['langpack-%s' % lang for lang in langs] + moz_app_version,
             fail_msg="Unable to successfully build XPI!")
@@ -259,8 +259,8 @@ def create_option_parser():
         dest='soft_max_version',
         action='store_true',
         default=False,
-	help='Override a fixed max version with one to cover the whole cycle '
-	     'e.g. 24.0a1 becomes 24.0.*'
+        help='Override a fixed max version with one to cover the whole cycle '
+             'e.g. 24.0a1 becomes 24.0.*'
     )
 
     return p
