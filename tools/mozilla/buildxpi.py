@@ -169,7 +169,7 @@ ac_add_options --enable-application=%(product)s
         run(['make', '-C', 'config'],
             fail_msg="Unable to successfully configure build for XPI!")
 
-        moz_app_version=[]
+        moz_app_version = []
         if soft_max_version:
             version = open(os.path.join(srcdir, product, 'config', 'version.txt')).read().strip()
             version = re.sub(r'(^[0-9]*\.[0-9]*).*', r'\1.*', version)
