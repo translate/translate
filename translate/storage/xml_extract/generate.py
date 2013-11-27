@@ -67,7 +67,7 @@ def apply_translations(dom_node, unit_node, do_translate):
         except IndexError:
             pass
     # If there is a translation unit associated with this unit_node...
-    if unit_node.unit != None:
+    if unit_node.unit is not None:
         # The invoke do_translate on the dom_node and the unit; do_translate
         # should replace the text in dom_node with the text in unit_node.
         do_translate(dom_node, unit_node.unit)

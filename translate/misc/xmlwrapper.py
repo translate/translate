@@ -120,13 +120,13 @@ class XMLWrapper:
 
     def getplaintext(self, excludetags=[]):
         text = ""
-        if self.obj.text != None:
+        if self.obj.text is not None:
             text += self.obj.text
         for child in self.obj._children:
             simplechild = XMLWrapper(child)
             if simplechild.tag not in excludetags:
                 text += simplechild.getplaintext(excludetags)
-        if self.obj.tail != None:
+        if self.obj.tail is not None:
             text += self.obj.tail
         return text
 

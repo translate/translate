@@ -197,7 +197,7 @@ class TerminologyExtractor(object):
                         ignore = self.stopwords[stword]
                     else:
                         for stopre in self.stoprelist:
-                            if stopre.match(stword) != None:
+                            if stopre.match(stword) is not None:
                                 ignore = rematchignore
                                 break
                     translation = (source, target, unit, fullinputpath)
@@ -366,12 +366,12 @@ class TerminologyOptionParser(optrecurse.RecursiveOptionParser):
             self.error("No input file or directory was specified")
         if isinstance(options.input, list) and len(options.input) == 1:
             options.input = options.input[0]
-            if options.inputmin == None:
+            if options.inputmin is None:
                 options.inputmin = 1
         elif not isinstance(options.input, list) and not os.path.isdir(options.input):
-            if options.inputmin == None:
+            if options.inputmin is None:
                 options.inputmin = 1
-        elif options.inputmin == None:
+        elif options.inputmin is None:
             options.inputmin = 2
         if options.update:
             options.output = options.update

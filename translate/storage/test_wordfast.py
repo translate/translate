@@ -10,14 +10,14 @@ class TestWFTime(object):
     def test_timestring(self):
         """Setting and getting times set using a timestring"""
         wftime = wf.WordfastTime()
-        assert wftime.timestring == None
+        assert wftime.timestring is None
         wftime.timestring = "19710820~050000"
         assert wftime.time[:6] == (1971, 8, 20, 5, 0, 0)
 
     def test_time(self):
         """Setting and getting times set using time tuple"""
         wftime = wf.WordfastTime()
-        assert wftime.time == None
+        assert wftime.time is None
         wftime.time = (1999, 3, 27)
         wftime.timestring = "19990327~000000"
 

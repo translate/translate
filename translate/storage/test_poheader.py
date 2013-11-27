@@ -281,7 +281,7 @@ msgstr ""
 '''
 
     pofile = poparse(posource)
-    assert pofile.gettargetlanguage() == None
+    assert pofile.gettargetlanguage() is None
 
     posource += '"Language-Team: translate-discuss-af@lists.sourceforge.net\\n"\n'
     pofile = poparse(posource)
@@ -304,7 +304,7 @@ msgstr ""
 '''
 
     pofile = poparse(posource)
-    assert pofile.getprojectstyle() == None
+    assert pofile.getprojectstyle() is None
 
     posource += '"X-Accelerator-Marker: ~\\n"\n'
     pofile = poparse(posource)

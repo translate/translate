@@ -36,7 +36,7 @@ class es(common.Common):
         text = super(cls, cls).punctranslate(text)
         # If the first sentence ends with ? or !, prepend inverted ¿ or ¡
         firstmatch = cls.sentencere.match(text)
-        if firstmatch == None:
+        if firstmatch is None:
             # only one sentence (if any) - use entire string
             first = text
         else:

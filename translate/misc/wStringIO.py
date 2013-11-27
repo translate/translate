@@ -75,7 +75,7 @@ class StringIO:
     def read(self, n=None):
         if self.closed:
             raise ValueError("I/O operation on closed file")
-        if n == None:
+        if n is None:
             r = self.buf.read()
         else:
             r = self.buf.read(n)

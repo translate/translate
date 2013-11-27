@@ -106,7 +106,7 @@ class ODF(object):
         return etree.tostring(etree.fromstring(self._get_data(filename)), pretty_print=True)
 
     def __eq__(self, other):
-        if other == None:
+        if other is None:
             return False
         l1 = sorted(zi.filename for zi in self.odf.infolist())
         l2 = sorted(zi.filename for zi in other.odf.infolist())

@@ -170,7 +170,7 @@ class rcfile(base.TranslationStore):
             #print block.split("\n")[0]
             processblock = None
             if block.startswith("LANGUAGE"):
-                if self.lang == None or self.sublang == None or re.match("LANGUAGE\s+%s,\s*%s\s*$" % (self.lang, self.sublang), block) is not None:
+                if self.lang is None or self.sublang is None or re.match("LANGUAGE\s+%s,\s*%s\s*$" % (self.lang, self.sublang), block) is not None:
                     processsection = True
                 else:
                     processsection = False

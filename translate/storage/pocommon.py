@@ -185,7 +185,7 @@ class pounit(base.TranslationUnit):
 def encodingToUse(encoding):
     """Tests whether the given encoding is known in the python runtime, or returns utf-8.
     This function is used to ensure that a valid encoding is always used."""
-    if encoding == "CHARSET" or encoding == None:
+    if encoding == "CHARSET" or encoding is None:
         return 'utf-8'
     return encoding
 #    if encoding is None: return False

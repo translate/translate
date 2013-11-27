@@ -10,11 +10,11 @@ def test_simple():
     # standard regex guess
     assert guess_language(u"ab@li.org") == "ab"
     # We never suggest 'en', it's always a mistake
-    assert guess_language(u"en@li.org") == None
+    assert guess_language(u"en@li.org") is None
     # We can't have a single char language code
-    assert guess_language(u"C@li.org") == None
+    assert guess_language(u"C@li.org") is None
     # Testing regex postfilter
-    assert guess_language(u"LL@li.org") == None
+    assert guess_language(u"LL@li.org") is None
 
     # snippet guess based on contact info
     assert guess_language(u"assam@mm.assam-glug.org") == "as"

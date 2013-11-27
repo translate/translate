@@ -124,7 +124,7 @@ class pounit(pocommon.pounit):
 
     def getnotes(self, origin=None):
         """Return comments based on origin value (programmer, developer, source code and translator)"""
-        if origin == None:
+        if origin is None:
             comments = u"\n".join(self.othercomments)
             comments += u"\n".join(self.automaticcomments)
         elif origin == "translator":

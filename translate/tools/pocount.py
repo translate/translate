@@ -284,7 +284,7 @@ def main():
 
     (options, args) = parser.parse_args()
 
-    if (options.incomplete_only == None):
+    if (options.incomplete_only is None):
         options.incomplete_only = False
 
     if (options.style_full and options.style_csv) or \

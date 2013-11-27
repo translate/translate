@@ -325,7 +325,7 @@ class pounit(pocommon.pounit):
 
         :param origin: programmer, developer, source code, translator or None
         """
-        if origin == None:
+        if origin is None:
             comments = u"".join([comment[2:] for comment in self.othercomments])
             comments += u"".join([comment[3:] for comment in self.automaticcomments])
         elif origin == "translator":

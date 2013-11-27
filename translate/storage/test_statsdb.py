@@ -140,12 +140,12 @@ class TestStatsDb:
     def test_if_cached_after_filestats(self):
         f, cache = self.setup_file_and_db(jtoolkit_extract)
         cache.filestats(f.filename, checks.UnitChecker())
-        assert self.make_file_and_return_id(cache, f.filename) != None
+        assert self.make_file_and_return_id(cache, f.filename) is not None
 
     def test_if_cached_after_unitstats(self):
         f, cache = self.setup_file_and_db(jtoolkit_extract)
         cache.unitstats(f.filename, checks.UnitChecker())
-        assert self.make_file_and_return_id(cache, f.filename) != None
+        assert self.make_file_and_return_id(cache, f.filename) is not None
 
     def test_singletonness(self):
         f1, cache1 = self.setup_file_and_db(jtoolkit_extract)

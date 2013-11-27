@@ -492,7 +492,7 @@ class xliffunit(lisa.LISAunit):
 
     def correctorigin(self, node, origin):
         """Check against node tag's origin (e.g note or alt-trans)"""
-        if origin == None:
+        if origin is None:
             return True
         elif origin in node.get("from", ""):
             return True

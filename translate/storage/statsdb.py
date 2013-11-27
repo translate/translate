@@ -103,7 +103,7 @@ def wordsinunit(unit):
 class Record(UserDict):
 
     def __init__(self, record_keys, record_values=None, compute_derived_values=lambda x: x):
-        if record_values == None:
+        if record_values is None:
             record_values = (0 for _i in record_keys)
         self.record_keys = record_keys
         self.data = dict(zip(record_keys, record_values))

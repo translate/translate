@@ -369,7 +369,7 @@ class pounit(pocommon.pounit):
         return id
 
     def getnotes(self, origin=None):
-        if origin == None:
+        if origin is None:
             comments = gpo.po_message_comments(self._gpo_message) + \
                        gpo.po_message_extracted_comments(self._gpo_message)
         elif origin == "translator":

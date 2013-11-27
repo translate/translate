@@ -850,7 +850,7 @@ class StandardChecker(TranslationChecker):
                         if match2.group('fullvar') != match1.group('fullvar'):
                             raise FilterFailure(u"Different printf variable: %s" % match2.group())
 
-                if str1ord == None:
+                if str1ord is None:
                     raise FilterFailure(u"Added printf variable: %s" % match2.group())
             elif str2key:
                 str1key = None
@@ -868,7 +868,7 @@ class StandardChecker(TranslationChecker):
                         if match1.group('fullvar') != match2.group('fullvar'):
                             raise FilterFailure(u"Different printf variable: %s" % match2.group())
 
-                if str1key == None:
+                if str1key is None:
                     raise FilterFailure(u"Added printf variable: %s" % match2.group())
             else:
                 for var_num1, match1 in enumerate(printf_pat.finditer(str1)):
