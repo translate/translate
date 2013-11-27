@@ -165,7 +165,7 @@ Doing away with native2ascii
 ============================
 
 The `native2ascii
-<http://docs.oracle.com/javase/1.4.2/docs/tooldocs/windows/native2ascii.html>`_
+<http://docs.oracle.com/javase/7/docs/technotes/tools/windows/native2ascii.html>`_
 command is the traditional tool of property file localisers.  With prop2po
 there is no need to use this command or to ever work directly with the escaped
 Unicode.

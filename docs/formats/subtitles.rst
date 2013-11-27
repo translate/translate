@@ -21,7 +21,7 @@ The following formats are supported for subtitles:
 * Advanced Sub Station Alpha
 
 YouTube supports `a number of formats
-<http://support.google.com/youtube/bin/static.py?hl=en&topic=2734694&guide=2734661&page=guide.cs>`_
+<https://support.google.com/youtube/answer/2734698?hl=en&ref_topic=2734694>`_
 
 .. _subtitles#implementation_details:
 

@@ -530,11 +530,11 @@ Checks for English style plural(s) for you to review.
 
 This test will extract any message that contains words with a final "(s)" in
 the source text.  You can then inspect the message, to check that the correct
-`plural form <http://qooxdoo.org/l10n/pluralforms>`_ has been used for your
-language.  In some languages, plurals are made by adding text at the beginning
-of words, making the English style messy.  In this case, they often revert to
-the plural form.  This test allows an editor to check that the plurals used are
-correct.  Be aware that this test may create a number of false positives.
+plural form has been used for your language.  In some languages, plurals are
+made by adding text at the beginning of words, making the English style messy.
+In this case, they often revert to the plural form.  This test allows an editor
+to check that the plurals used are correct.  Be aware that this test may create
+a number of false positives.
 
 For languages with no plural forms (only one noun form) this test will simply
 test that nothing like "(s)" was used in the translation.
@@ -567,7 +567,7 @@ brand names, function names.
 
 The checker works with `PyEnchant <http://pythonhosted.org/pyenchant/>`_. You
 need to have PyEnchant installed as well as a dictionary for your language (for
-example, one of the `Hunspell <http://wiki.openoffice.org/wiki/Dictionaries>`_
+example, one of the `Hunspell <https://wiki.openoffice.org/wiki/Dictionaries>`_
 or `aspell <http://ftp.gnu.org/gnu/aspell/dict/>`_ dictionaries).  This test
 will only work if you have specified the :opt:`--language` option.
 

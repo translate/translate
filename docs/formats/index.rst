@@ -200,7 +200,7 @@ Formats that we would like to support but don't currently support:
 * :wp:`LaTeX` -- see `plasTeX
   <http://plastex.sourceforge.net/plastex/index.html>`_, a Python framework for
   processing LaTeX documents
-* `unoconv <http://dag.wieers.com/home-made/unoconv/>`_ -- Python bindings to
+* `unoconv <http://dag.wiee.rs/home-made/unoconv/>`_ -- Python bindings to
   OpenOffice.org UNO which could allow manipulation of all formats understood
   by OpenOffice.org.
 * Trados:
