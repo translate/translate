@@ -7,9 +7,3 @@ lxml>=2.1.0  # >=1.3.4 should work
 
 # Faster matching in e.g. pot2po
 python-Levenshtein>=0.10.2
-
-##########################
-# Legacy Python versions #
-##########################
-# If Python <= 2.4
-#pysqlite2
