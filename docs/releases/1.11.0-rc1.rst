@@ -43,8 +43,8 @@ Formats and Converters
 - PHP:
 
   - Warn about duplicate entries
-  - Allow blank spaces in array declaration (Bug #2646)
-  - Support nested arrays (Bug #2240)
+  - Allow blank spaces in array declaration (:bug:`2646`)
+  - Support nested arrays (:bug:`2240`)
 
 - XLIFF:
 
@@ -71,9 +71,9 @@ Formats and Converters
     (Makefile-alike)
   - --threshold -- in po2* converters this allows you to specify a percentage
     complete threshold.  If the PO files passes this theshold then the file is
-    output (bug #2998)
+    output (:bug:`2998`)
   - --removeuntranslated -- Extend this option to po2dtd and thus po2moz --
-    don't output untranslated text (bug #1718)
+    don't output untranslated text (:bug:`1718`)
 
 Language specific fixes
 -----------------------
@@ -96,7 +96,7 @@ Mozilla tooling fixes
 - .lang -- Improved support for untranslated entries
 - ``buildxpi``:
 
-  - Can now build multiple languages at once (bug #2999)
+  - Can now build multiple languages at once (:bug:`2999`)
   - Set a max product version to allow the language pack to continue to work
     once the browser version has moved out of Aurora channel
 
