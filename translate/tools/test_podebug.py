@@ -31,7 +31,7 @@ class TestPODebug:
     def test_ignore_gtk(self):
         """Test operation of GTK message ignoring"""
         unit = base.TranslationUnit("default:LTR")
-        assert self.debug.ignore_gtk(unit) == True
+        assert self.debug.ignore_gtk(unit)
 
     def test_keep_target(self):
         """Test that we use the target for rewriting if it exists."""

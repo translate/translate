@@ -230,8 +230,8 @@ class TestXLIFFfile(test_base.TestTranslationStore):
         assert not notenodes[2].get("from") == "Mom"
         assert not "from" in notenodes[0].attrib
         assert unit.getnotes() == "Please buy bread\nPlease buy milk\nDon't forget the beer"
-        assert unit.correctorigin(notenodes[2], "ad") == True
-        assert unit.correctorigin(notenodes[2], "om") == False
+        assert unit.correctorigin(notenodes[2], "ad")
+        assert not unit.correctorigin(notenodes[2], "om")
 
     def test_alttrans(self):
         """Test xliff <alt-trans> accessors"""

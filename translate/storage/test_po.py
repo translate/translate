@@ -119,7 +119,7 @@ class TestPOUnit(test_base.TestTranslationUnit):
         # plain text, no plural test
         unit = self.UnitClass("Tree")
         unit.target = "ki"
-        assert unit.hasplural() == False
+        assert not unit.hasplural()
 
         # plural test with multistring
         unit.setsource(["Tree", "Trees"])
@@ -131,7 +131,7 @@ class TestPOUnit(test_base.TestTranslationUnit):
         # test of msgid with no plural and msgstr with plural
         unit = self.UnitClass("Tree")
         assert raises(ValueError, unit.settarget, [u"ki", u"ni ki"])
-        assert unit.hasplural() == False
+        assert not unit.hasplural()
 
     def test_wrapping_bug(self):
         """This tests for a wrapping bug that existed at some stage."""
@@ -321,7 +321,7 @@ msgstr "Een\\n"
         pofile = self.poparse(posource)
         assert len(pofile.units) == 1
         unit = pofile.units[0]
-        assert unit.hasplural() == True
+        assert unit.hasplural()
         assert isinstance(unit.source, multistring)
         print unit.source.strings
         assert unit.source == "Singular"

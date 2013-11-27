@@ -145,7 +145,7 @@ msgstr "Dimpled Ring"'''
         pounit = self.singleunit(pofile)
         assert pounit.source == "Simple String"
         assert pounit.target == "Dimpled Ring"
-        assert pounit.isfuzzy() == False
+        assert not pounit.isfuzzy()
 
     def test_merging_locations(self):
         """check that locations on separate lines are output in Gettext form

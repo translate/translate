@@ -183,5 +183,5 @@ class TestTSfile(test_base.TestTranslationStore):
 
         tsfile2.units[0].merge(tsfile.units[0]) #fuzzy
         tsfile2.units[1].merge(tsfile.units[1]) #not fuzzy
-        assert tsfile2.units[0].isfuzzy() == True
-        assert tsfile2.units[1].isfuzzy() == False
+        assert tsfile2.units[0].isfuzzy()
+        assert not tsfile2.units[1].isfuzzy()

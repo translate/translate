@@ -536,11 +536,11 @@ class PyLuceneHits(CommonIndexer.CommonEnquire):
 
 
 def _occur(required, prohibited):
-    if required == True and prohibited == False:
+    if required and not prohibited:
         return PyLucene.BooleanClause.Occur.MUST
-    elif required == False and prohibited == False:
+    elif not required and not prohibited:
         return PyLucene.BooleanClause.Occur.SHOULD
-    elif required == False and prohibited == True:
+    elif not required and prohibited:
         return PyLucene.BooleanClause.Occur.MUST_NOT
     else:
         # It is an error to specify a clause as both required

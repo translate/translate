@@ -18,14 +18,14 @@ def test_spacestart():
 def test_isvalidaccelerator():
     """test the isvalidaccelerator() function"""
     # Mostly this tests the old code path where acceptlist is None
-    assert decoration.isvalidaccelerator(u"") == False
-    assert decoration.isvalidaccelerator(u"a") == True
-    assert decoration.isvalidaccelerator(u"1") == True
-    assert decoration.isvalidaccelerator(u"ḽ") == False
+    assert not decoration.isvalidaccelerator(u"")
+    assert decoration.isvalidaccelerator(u"a")
+    assert decoration.isvalidaccelerator(u"1")
+    assert not decoration.isvalidaccelerator(u"ḽ")
     # Test new code path where we actually have an acceptlist
-    assert decoration.isvalidaccelerator(u"a", u"aeiou") == True
-    assert decoration.isvalidaccelerator(u"ḽ", u"ḓṱḽṋṅ") == True
-    assert decoration.isvalidaccelerator(u"a", u"ḓṱḽṋṅ") == False
+    assert decoration.isvalidaccelerator(u"a", u"aeiou")
+    assert decoration.isvalidaccelerator(u"ḽ", u"ḓṱḽṋṅ")
+    assert not decoration.isvalidaccelerator(u"a", u"ḓṱḽṋṅ")
 
 
 def test_find_marked_variables():

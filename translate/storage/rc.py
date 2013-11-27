@@ -181,7 +181,7 @@ class rcfile(base.TranslationStore):
                     else:
                         processblock = False
 
-            if not (processblock == True or (processsection == True and processblock != False)):
+            if not (processblock or (processsection and processblock)):
                 continue
 
             if block.startswith("STRINGTABLE"):

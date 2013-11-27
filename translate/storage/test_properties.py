@@ -55,12 +55,12 @@ def test_find_delimiter_deprecated_fn():
 
 
 def test_is_line_continuation():
-    assert properties.is_line_continuation(u"") == False
-    assert properties.is_line_continuation(u"some text") == False
-    assert properties.is_line_continuation(u"""some text\\""") == True
-    assert properties.is_line_continuation(u"""some text\\\\""") == False  # Escaped \
-    assert properties.is_line_continuation(u"""some text\\\\\\""") == True  # Odd num. \ is line continuation
-    assert properties.is_line_continuation(u"""\\\\\\""") == True
+    assert not properties.is_line_continuation(u"")
+    assert not properties.is_line_continuation(u"some text")
+    assert properties.is_line_continuation(u"""some text\\""")
+    assert not properties.is_line_continuation(u"""some text\\\\""")  # Escaped \
+    assert properties.is_line_continuation(u"""some text\\\\\\""")  # Odd num. \ is line continuation
+    assert properties.is_line_continuation(u"""\\\\\\""")
 
 
 def test_key_strip():
