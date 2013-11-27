@@ -73,10 +73,11 @@ def phpencode(text, quotechar="'"):
         # pretty layout that might have appeared in muliline entries we might
         # lose some "blah\nblah" layouts but that's probably not the most
         # frequent use case. See bug 588
-        escapes = [("\\", "\\\\"), ("\r", "\\r"), ("\t", "\\t"),
-                   ("\v", "\\v"), ("\f", "\\f"), ("\\\\$", "\\$"),
-                   ('"', '\\"'), ("\\\\", "\\"),
-                  ]
+        escapes = [
+            ("\\", "\\\\"), ("\r", "\\r"), ("\t", "\\t"),
+            ("\v", "\\v"), ("\f", "\\f"), ("\\\\$", "\\$"),
+            ('"', '\\"'), ("\\\\", "\\"),
+        ]
         for a, b in escapes:
             text = text.replace(a, b)
         return text
@@ -101,9 +102,10 @@ def phpdecode(text, quotechar="'"):
     if quotechar == '"':
         # We do not escape \$ as it is used by variables and we can't
         # roundtrip that item.
-        escapes = [('\\"', '"'), ("\\\\", "\\"), ("\\n", "\n"), ("\\r", "\r"),
-                   ("\\t", "\t"), ("\\v", "\v"), ("\\f", "\f"),
-                  ]
+        escapes = [
+            ('\\"', '"'), ("\\\\", "\\"), ("\\n", "\n"), ("\\r", "\r"),
+            ("\\t", "\t"), ("\\v", "\v"), ("\\f", "\f"),
+        ]
         for a, b in escapes:
             text = text.replace(a, b)
         text = re.sub(r"(?P<octal>\\[0-7]{1,3})", decode_octal_hex, text)
