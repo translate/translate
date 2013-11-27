@@ -131,6 +131,8 @@ def build_xpi(l10nbase, srcdir, outputdir, langs, product, delete_dest=False,
         content = """
 ac_add_options --disable-gstreamer
 ac_add_options --disable-ogg
+ac_add_options --disable-opus
+ac_add_options --disable-webrtc
 ac_add_options --disable-wave
 ac_add_options --disable-webm
 ac_add_options --disable-libjpeg-turbo
