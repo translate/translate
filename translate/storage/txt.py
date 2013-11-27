@@ -42,10 +42,10 @@ mediawiki.append(("MediaWiki bullet", re.compile(r"(\*+[\s]*)(.+)"), re.compile(
 mediawiki.append(("MediaWiki numbered item", re.compile(r"(#+[\s]*)(.+)"), re.compile("[\s]+$")))
 
 flavours = {
-"dokuwiki": dokuwiki,
-"mediawiki": mediawiki,
-None: [],
-"plain": [],
+    "dokuwiki": dokuwiki,
+    "mediawiki": mediawiki,
+    None: [],
+    "plain": [],
 }
 
 

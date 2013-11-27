@@ -44,22 +44,22 @@ from translate.storage.workflow import StateEnum as state
 # TODO: handle translation types
 
 NPLURALS = {
-'jp': 1,
-'en': 2,
-'fr': 2,
-'lv': 3,
-'ga': 3,
-'cs': 3,
-'sk': 3,
-'mk': 3,
-'lt': 3,
-'ru': 3,
-'pl': 3,
-'ro': 3,
-'sl': 4,
-'mt': 4,
-'cy': 5,
-'ar': 6,
+    'jp': 1,
+    'en': 2,
+    'fr': 2,
+    'lv': 3,
+    'ga': 3,
+    'cs': 3,
+    'sk': 3,
+    'mk': 3,
+    'lt': 3,
+    'ru': 3,
+    'pl': 3,
+    'ro': 3,
+    'sl': 4,
+    'mt': 4,
+    'cy': 5,
+    'ar': 6,
 }
 
 

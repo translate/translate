@@ -75,11 +75,11 @@ class po_xerror_handler(Structure):
 
 class po_error_handler(Structure):
     _fields_ = [
-    ('error', CFUNCTYPE(None, c_int, c_int, STRING)),
-    ('error_at_line', CFUNCTYPE(None, c_int, c_int, STRING, c_uint, STRING)),
-    ('multiline_warning', CFUNCTYPE(None, STRING, STRING)),
-    ('multiline_error', CFUNCTYPE(None, STRING, STRING)),
-]
+        ('error', CFUNCTYPE(None, c_int, c_int, STRING)),
+        ('error_at_line', CFUNCTYPE(None, c_int, c_int, STRING, c_uint, STRING)),
+        ('multiline_warning', CFUNCTYPE(None, STRING, STRING)),
+        ('multiline_error', CFUNCTYPE(None, STRING, STRING)),
+    ]
 
 
 # Callback functions for po_xerror_handler

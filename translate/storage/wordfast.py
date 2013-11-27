@@ -99,17 +99,18 @@ WF_FIELDNAMES = ["date", "user", "reuse", "src-lang", "source", "target-lang",
 """Field names for a Wordfast TU"""
 
 WF_FIELDNAMES_HEADER_DEFAULTS = {
-"date": "%19000101~121212",
-"userlist": "%User ID,TT,TT Translate-Toolkit",
-"tucount": "%TU=00000001",
-"src-lang": "%EN-US",
-"version": "%Wordfast TM v.5.51w9/00",
-"target-lang": "",
-"license": "%---00000001",
-"attr1list": "",
-"attr2list": "",
-"attr3list": "",
-"attr4list": ""}
+    "date": "%19000101~121212",
+    "userlist": "%User ID,TT,TT Translate-Toolkit",
+    "tucount": "%TU=00000001",
+    "src-lang": "%EN-US",
+    "version": "%Wordfast TM v.5.51w9/00",
+    "target-lang": "",
+    "license": "%---00000001",
+    "attr1list": "",
+    "attr2list": "",
+    "attr3list": "",
+    "attr4list": "",
+}
 """Default or minimum header entries for a Wordfast file"""
 
 # TODO Needs validation.  The following need to be checked against a WF TM file

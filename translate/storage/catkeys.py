@@ -63,10 +63,10 @@ FIELDNAMES = ["source", "context", "comment", "target"]
 """Field names for a catkeys TU"""
 
 FIELDNAMES_HEADER_DEFAULTS = {
-"version": "1",
-"language": "",
-"mimetype": "",
-"checksum": "",
+    "version": "1",
+    "language": "",
+    "mimetype": "",
+    "checksum": "",
 }
 """Default or minimum header entries for a catkeys file"""
 
