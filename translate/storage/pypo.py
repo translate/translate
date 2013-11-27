@@ -82,7 +82,7 @@ except TypeError:
 
 wrapper.wordsep_re = re.compile(
     r'(\s+|'                                  # any whitespace
-    r'[\w\!"\'\&\.\,\?]+\s+|'                 # space should go with a word
+    r'[\w\!\'\&\.\,\?]+\s+|'                  # space should go with a word
     r'[^\s\w]*\w+[a-zA-Z]-(?=\w+[a-zA-Z])|'   # hyphenated words
     r'(?<=[\w\!\"\'\&\.\,\?])-{2,}(?=\w))')   # em-dash
 wrapper.wordsep_re_uni = re.compile(wrapper.wordsep_re.pattern, re.UNICODE)
