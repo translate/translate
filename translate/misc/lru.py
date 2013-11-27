@@ -92,7 +92,7 @@ class LRUCachingDict(WeakValueDictionary):
     def __getitem__(self, key):
         value = WeakValueDictionary.__getitem__(self, key)
         # check boundaries to minimiza duplicate references
-        while len(self.queue) > 0  and self.queue[0][0] == key:
+        while len(self.queue) > 0 and self.queue[0][0] == key:
             # item at left end of queue pop it since it'll be appended
             # to right
             self.queue.popleft()

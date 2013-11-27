@@ -46,10 +46,10 @@ overwritten and replaced.
 import logging
 import os
 import re
-from glob       import glob
-from shutil     import move, rmtree
+from glob import glob
+from shutil import move, rmtree
 from subprocess import Popen, PIPE, CalledProcessError
-from tempfile   import mkdtemp
+from tempfile import mkdtemp
 
 logger = logging.getLogger(__name__)
 
