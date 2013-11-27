@@ -32,13 +32,19 @@ you).
 Highlighted improvements
 ========================
 
+Major changes
+-------------
+- The PO format now matches Gettext more closely
+- PHP format adds a number of new features
+- Support for Python 2.5 has been dropped
+
 Formats and Converters
 ----------------------
 - Gettext PO:
 
   - cPO now handles fuzzy obsolete messages correctly
   - Line wrapping improvement allow PO files to more closely match Gettext
-  - Optimization to increase improve performance
+  - Optimization to increase performance
 
 - PHP:
 
