@@ -157,16 +157,16 @@ class AndroidResourceUnit(base.TranslationUnit):
                         # in the clauses below without issue.
                         pass
                     elif c == 'n' or c == 'N':
-                        text[i-1 : i+1] = '\n' # an actual newline
+                        text[i-1 : i+1] = '\n'  # an actual newline
                         i -= 1
                     elif c == 't' or c == 'T':
-                        text[i-1 : i+1] = '\t' # an actual tab
+                        text[i-1 : i+1] = '\t'  # an actual tab
                         i -= 1
                     elif c == ' ':
-                        text[i-1 : i+1] = ' ' # an actual space
+                        text[i-1 : i+1] = ' '  # an actual space
                         i -= 1
                     elif c in '"\'@':
-                        text[i-1 : i] = '' # remove the backslash
+                        text[i-1 : i] = ''  # remove the backslash
                         i -= 1
                     elif c == 'u':
                         # Unicode sequence. Android is nice enough to deal
