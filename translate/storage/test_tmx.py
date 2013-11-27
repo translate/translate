@@ -52,7 +52,7 @@ class TestTMXfile(test_base.TestTranslationStore):
         newfile = self.tmxparse(str(tmxfile))
         print str(tmxfile)
         assert newfile.translate("A string of characters") == "'n String karakters"
-        
+
     def test_withcomment(self):
         """tests that addtranslation() stores string's comments correctly"""
         tmxfile = tmx.tmxfile()

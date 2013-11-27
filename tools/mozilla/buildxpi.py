@@ -71,7 +71,7 @@ class RunProcessError(CalledProcessError):
         if message.count('%') != 2:
             output += message + '\n'
             message = self._default_message
-            
+
         output += message % (self.cmd, self.returncode)
         return output
 
