@@ -17,7 +17,8 @@ behaviour if required.
 - Dropped support for Python 2.5 since it is no longer supported by the Python
   Foundation. Also sticking to it was preventing us from using features that
   are not supported on Python 2.5 but they are on later versions.
-- PHP format: Added support nested arrays and several other improvements.
+- Properties will no longer drop entries where source and translation are
+  identical.
 
 .. _changelog#1.10:
 
