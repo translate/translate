@@ -19,7 +19,7 @@ test-publish-pypi:
 #scp translate-toolkit-1.10.0.tar.bz2 jsmith@frs.sourceforge.net:/home/frs/project/translate/Translate\ Toolkit/1.10.0/
 publish-sourceforge:
 	@echo "We don't trust automation that much.  The following is the command you need to run"
-	@echo 'scp -p ${FULLNAME}.tar.bz2 jsmith@frs.sourceforge.net:"/home/frs/project/translate/Translate\ Toolkit/${VERSION}/"'
+	@echo 'scp -p dist/${FULLNAME}.tar.bz2 jsmith@frs.sourceforge.net:"/home/frs/project/translate/Translate\ Toolkit/${VERSION}/"'
 	@echo 'scp -p docs/releases/${VERSION}.rst jsmith@frs.sourceforge.net:"/home/frs/project/translate/Translate\ Toolkit/${VERSION}/README.rst"'
 
 publish: publish-pypi publish-sourceforge
