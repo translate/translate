@@ -32,7 +32,7 @@ import CommonIndexer
 
 # check whether any indexer is present at all
 noindexer = True
-for indexer in [ "lucene", "PyLucene", "xapian" ]:
+for indexer in ["lucene", "PyLucene", "xapian"]:
     try:
         __import__(indexer)
     except ImportError:
