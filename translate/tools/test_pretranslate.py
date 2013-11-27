@@ -57,7 +57,7 @@ class TestPretranslate:
     def singleunit(self, pofile):
         """checks that the pofile contains a single non-header unit, and
         returns it"""
-        if len(pofile.units) == 2 and  pofile.units[0].isheader():
+        if len(pofile.units) == 2 and pofile.units[0].isheader():
             print pofile.units[1]
             return pofile.units[1]
         else:
