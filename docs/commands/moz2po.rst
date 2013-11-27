@@ -34,6 +34,8 @@ Where:
 | <po>    | is a directory of PO or POT files                 |
 +---------+---------------------------------------------------+
 
+.. program:: moz2po
+
 Options (moz2po):
 
 --version            show program's version number and exit
@@ -53,6 +55,8 @@ Options (moz2po):
                       what to do with duplicate strings (identical source
                       text): :doc:`merge, msgctxt <option_duplicates>`
                       (default: 'msgctxt')
+
+.. program:: po2moz
 
 Options (po2moz):
 
