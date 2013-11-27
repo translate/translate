@@ -99,7 +99,7 @@ Pootle, to regenerate the stats and checks.
 
 For ``conf.py`` change ``version`` and ``release``
 
-.. note:: FIXME - We might want to automate the version and release info so
+.. note:: FIXME - We might want to consolidate the version and release info so
    that we can update it in one place.
 
 The version string should follow the pattern::
