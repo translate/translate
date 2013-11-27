@@ -3,11 +3,14 @@ language: python
 python:
   - 2.6
   - 2.7
-  #- pypy - nice to try once lxml is supported or we can switch lxml off
+  - pypy
 env:
   - USECPO=0
   #- USECPO=1
   #- USECPO=2
+matrix:
+  allow_failures:
+    - python: pypy
 install:
   - sudo apt-get install python-aeidon
   - pip install --use-mirrors -r requirements/dev.txt
