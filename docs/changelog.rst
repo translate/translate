@@ -663,8 +663,3 @@ use Unicode in UTF-8 encoding for these files.  Thus in 0.9 of the Toolkit we
 now output UTF-8 encoded properties files. :bug:`Bug 114 <114>` tracks the
 status of this and we hope to add a feature to prop2po to restore the correct
 Java convention as an option.
-
-.. _changelog#0.8:
-
-0.8
-===
