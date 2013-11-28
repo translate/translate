@@ -68,15 +68,15 @@ class bzr(GenericRevisionControlSystem):
             command = ["bzr", "revert", self.location_abs]
             exitcode, output_revert, error = run_command(command)
             if exitcode != 0:
-                raise IOError("[BZR] revert of '%s' failed: %s" \
-                        % (self.location_abs, error))
+                raise IOError("[BZR] revert of '%s' failed: %s" % (
+                              self.location_abs, error))
 
         # bzr pull
         command = ["bzr", "pull"]
         exitcode, output_pull, error = run_command(command)
         if exitcode != 0:
-            raise IOError("[BZR] pull of '%s' failed: %s" \
-                    % (self.location_abs, error))
+            raise IOError("[BZR] pull of '%s' failed: %s" % (
+                          self.location_abs, error))
         return output_revert + output_pull
 
     def add(self, files, message=None, author=None):
@@ -85,8 +85,8 @@ class bzr(GenericRevisionControlSystem):
         command = ["bzr", "add"] + files
         exitcode, output, error = run_command(command)
         if exitcode != 0:
-            raise IOError("[BZR] add in '%s' failed: %s" \
-                    % (self.location_abs, error))
+            raise IOError("[BZR] add in '%s' failed: %s" % (
+                          self.location_abs, error))
 
         # go down as deep as possible in the tree to avoid accidental commits
         # TODO: explicitly commit files by name
@@ -106,14 +106,14 @@ class bzr(GenericRevisionControlSystem):
         command.append(self.location_abs)
         exitcode, output_commit, error = run_command(command)
         if exitcode != 0:
-            raise IOError("[BZR] commit of '%s' failed: %s" \
-                    % (self.location_abs, error))
+            raise IOError("[BZR] commit of '%s' failed: %s" % (
+                          self.location_abs, error))
         # bzr push
         command = ["bzr", "push"]
         exitcode, output_push, error = run_command(command)
         if exitcode != 0:
-            raise IOError("[BZR] push of '%s' failed: %s" \
-                    % (self.location_abs, error))
+            raise IOError("[BZR] push of '%s' failed: %s" % (
+                          self.location_abs, error))
         return output_commit + output_push
 
     def getcleanfile(self, revision=None):
@@ -122,6 +122,6 @@ class bzr(GenericRevisionControlSystem):
         command = ["bzr", "cat", self.location_abs]
         exitcode, output, error = run_command(command)
         if exitcode != 0:
-            raise IOError("[BZR] cat failed for '%s': %s" \
-                    % (self.location_abs, error))
+            raise IOError("[BZR] cat failed for '%s': %s" % (
+                          self.location_abs, error))
         return output

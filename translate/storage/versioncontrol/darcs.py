@@ -64,8 +64,8 @@ class darcs(GenericRevisionControlSystem):
         command = ["darcs", "add", "--repodir", self.root_dir] + files
         exitcode, output, error = run_command(command)
         if exitcode != 0:
-            raise IOError("[Darcs] Error running darcs command '%s': %s" \
-                    % (command, error))
+            raise IOError("[Darcs] Error running darcs command '%s': %s" % (
+                          command, error))
 
         # go down as deep as possible in the tree to avoid accidental commits
         # TODO: explicitly commit files by name
@@ -86,14 +86,14 @@ class darcs(GenericRevisionControlSystem):
         command.append(self.location_rel)
         exitcode, output_record, error = run_command(command)
         if exitcode != 0:
-            raise IOError("[Darcs] Error running darcs command '%s': %s" \
-                    % (command, error))
+            raise IOError("[Darcs] Error running darcs command '%s': %s" % (
+                          command, error))
         # push changes
         command = ["darcs", "push", "-a", "--repodir", self.root_dir]
         exitcode, output_push, error = run_command(command)
         if exitcode != 0:
-            raise IOError("[Darcs] Error running darcs command '%s': %s" \
-                    % (command, error))
+            raise IOError("[Darcs] Error running darcs command '%s': %s" % (
+                          command, error))
         return output_record + output_push
 
     def getcleanfile(self, revision=None):
@@ -109,6 +109,6 @@ class darcs(GenericRevisionControlSystem):
             output = darcs_file.read()
             darcs_file.close()
         except IOError, error:
-            raise IOError("[Darcs] error reading original file '%s': %s" % \
-                    (filename, error))
+            raise IOError("[Darcs] error reading original file '%s': %s" % (
+                          filename, error))
         return output

@@ -107,16 +107,16 @@ class PyLuceneDatabase(CommonIndexer.CommonDatabase):
                     # recursively create all directories up to parent_path
                     os.makedirs(parent_path)
             except IOError, err_msg:
-                raise OSError("Indexer: failed to create the parent " \
-                        + "directory (%s) of the indexing database: %s" \
-                        % (parent_path, err_msg))
+                raise OSError("Indexer: failed to create the parent "
+                              "directory (%s) of the indexing database: %s" % (
+                              parent_path, err_msg))
             try:
                 tempwriter = PyLucene.IndexWriter(self.location,
                         self.pyl_analyzer, True)
                 tempwriter.close()
             except PyLucene.JavaError, err_msg:
-                raise OSError("Indexer: failed to open or create a Lucene" \
-                        + " database (%s): %s" % (self.location, err_msg))
+                raise OSError("Indexer: failed to open or create a Lucene"
+                              " database (%s): %s" % (self.location, err_msg))
         # the indexer is initialized - now we prepare the searcher
         # windows file locking seems inconsistent, so we try 10 times
         numtries = 0
@@ -137,8 +137,8 @@ class PyLuceneDatabase(CommonIndexer.CommonDatabase):
                     numtries += 1
             else:
                 # locking failed for 10 times
-                raise OSError("Indexer: failed to lock index database" \
-                              + " (%s)" % lock_error_msg)
+                raise OSError("Indexer: failed to lock index database"
+                              " (%s)" % lock_error_msg)
         finally:
             pass
         #    self.dir_lock.release()
@@ -486,8 +486,8 @@ class PyLuceneDatabase(CommonIndexer.CommonDatabase):
             if self.reader is None or self.searcher is None:
                 self.reader = PyLucene.IndexReader.open(self.location)
                 self.searcher = PyLucene.IndexSearcher(self.reader)
-            elif self.index_version != self.reader.getCurrentVersion( \
-                    self.location):
+            elif (self.index_version !=
+                      self.reader.getCurrentVersion(self.location)):
                 self.searcher.close()
                 self.reader.close()
                 self.reader = PyLucene.IndexReader.open(self.location)

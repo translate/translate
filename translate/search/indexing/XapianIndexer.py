@@ -105,9 +105,9 @@ class XapianDatabase(CommonIndexer.CommonDatabase):
             try:
                 self.reader = xapian.Database(self.location)
             except xapian.DatabaseOpeningError, err_msg:
-                raise ValueError("Indexer: failed to open xapian database " \
-                        + "(%s) - maybe it is not a xapian database: %s" \
-                        % (self.location, str(err_msg)))
+                raise ValueError("Indexer: failed to open xapian database "
+                                 "(%s) - maybe it is not a xapian database: %s" % (
+                                 self.location, str(err_msg)))
         else:
             # create a new database
             if not create_allowed:
@@ -119,16 +119,16 @@ class XapianDatabase(CommonIndexer.CommonDatabase):
                     # recursively create all directories up to parent_path
                     os.makedirs(parent_path)
             except IOError, err_msg:
-                raise OSError("Indexer: failed to create the parent " \
-                        + "directory (%s) of the indexing database: %s" \
-                        % (parent_path, str(err_msg)))
+                raise OSError("Indexer: failed to create the parent "
+                              "directory (%s) of the indexing database: %s" % (
+                              parent_path, str(err_msg)))
             try:
                 self.writer = xapian.WritableDatabase(self.location,
                         xapian.DB_CREATE_OR_OPEN)
                 self.flush()
             except xapian.DatabaseOpeningError, err_msg:
-                raise OSError("Indexer: failed to open or create a xapian " \
-                        + "database (%s): %s" % (self.location, str(err_msg)))
+                raise OSError("Indexer: failed to open or create a xapian "
+                              "database (%s): %s" % (self.location, str(err_msg)))
 
     def __del__(self):
         self.reader = None
@@ -307,8 +307,7 @@ class XapianDatabase(CommonIndexer.CommonDatabase):
             term_gen.set_document(document)
             term_gen.index_text(term, 1, field.upper())
         else:
-            document.add_term(_truncate_term_length("%s%s" % \
-                        (field.upper(), term)))
+            document.add_term(_truncate_term_length("%s%s" % (field.upper(), term)))
 
     def _add_document_to_index(self, document):
         """add a prepared document to the index database
@@ -414,9 +413,9 @@ class XapianDatabase(CommonIndexer.CommonDatabase):
                 self.writer = xapian.WritableDatabase(self.location, xapian.DB_OPEN)
             except xapian.DatabaseOpeningError, err_msg:
 
-                raise ValueError("Indexer: failed to open xapian database " \
-                                 + "(%s) - maybe it is not a xapian database: %s" \
-                                 % (self.location, str(err_msg)))
+                raise ValueError("Indexer: failed to open xapian database "
+                                 "(%s) - maybe it is not a xapian database: %s" % (
+                                 self.location, str(err_msg)))
 
     def _writer_close(self):
         """close indexing write access and remove database lock"""
@@ -436,9 +435,9 @@ class XapianDatabase(CommonIndexer.CommonDatabase):
             else:
                 self.reader.reopen()
         except xapian.DatabaseOpeningError, err_msg:
-            raise ValueError("Indexer: failed to open xapian database " \
-                             + "(%s) - maybe it is not a xapian database: %s" \
-                             % (self.location, str(err_msg)))
+            raise ValueError("Indexer: failed to open xapian database "
+                             "(%s) - maybe it is not a xapian database: %s" % (
+                             self.location, str(err_msg)))
 
 
 class XapianEnquire(CommonIndexer.CommonEnquire):

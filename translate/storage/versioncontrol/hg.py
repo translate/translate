@@ -118,14 +118,14 @@ class hg(GenericRevisionControlSystem):
         command.append(self.location_abs)
         exitcode, output_commit, error = run_command(command)
         if exitcode != 0:
-            raise IOError("[Mercurial] Error running '%s': %s" \
-                    % (command, error))
+            raise IOError("[Mercurial] Error running '%s': %s" % (
+                          command, error))
         # push changes
         command = ["hg", "-R", self.root_dir, "push"]
         exitcode, output_push, error = run_command(command)
         if exitcode != 0:
-            raise IOError("[Mercurial] Error running '%s': %s" \
-                    % (command, error))
+            raise IOError("[Mercurial] Error running '%s': %s" % (
+                          command, error))
         return output_commit + output_push
 
     def getcleanfile(self, revision=None):
@@ -135,6 +135,6 @@ class hg(GenericRevisionControlSystem):
                 self.location_abs]
         exitcode, output, error = run_command(command)
         if exitcode != 0:
-            raise IOError("[Mercurial] Error running '%s': %s" \
-                    % (command, error))
+            raise IOError("[Mercurial] Error running '%s': %s" % (
+                          command, error))
         return output

@@ -124,52 +124,54 @@ def summarize(title, stats, style=style_full, indent=8, incomplete_only=False):
         print
     elif (style == style_short_strings):
         spaces = " " * (indent - len(title))
-        print "%s%s strings: total: %d\t| %dt\t%df\t%du\t| %d%%t\t%d%%f\t%d%%u" % (title, spaces, \
-              stats["total"], stats["translated"], stats["fuzzy"], stats["untranslated"], \
-              percent(stats["translated"], stats["total"]), \
-              percent(stats["fuzzy"], stats["total"]), \
+        print "%s%s strings: total: %d\t| %dt\t%df\t%du\t| %d%%t\t%d%%f\t%d%%u" % (
+              title, spaces,
+              stats["total"], stats["translated"], stats["fuzzy"], stats["untranslated"],
+              percent(stats["translated"], stats["total"]),
+              percent(stats["fuzzy"], stats["total"]),
               percent(stats["untranslated"], stats["total"]))
     elif (style == style_short_words):
         spaces = " " * (indent - len(title))
-        print "%s%s source words: total: %d\t| %dt\t%df\t%du\t| %d%%t\t%d%%f\t%d%%u" % (title, spaces, \
-              stats["totalsourcewords"], stats["translatedsourcewords"], stats["fuzzysourcewords"], stats["untranslatedsourcewords"], \
-              percent(stats["translatedsourcewords"], stats["totalsourcewords"]), \
-              percent(stats["fuzzysourcewords"], stats["totalsourcewords"]), \
+        print "%s%s source words: total: %d\t| %dt\t%df\t%du\t| %d%%t\t%d%%f\t%d%%u" % (
+              title, spaces,
+              stats["totalsourcewords"], stats["translatedsourcewords"], stats["fuzzysourcewords"], stats["untranslatedsourcewords"],
+              percent(stats["translatedsourcewords"], stats["totalsourcewords"]),
+              percent(stats["fuzzysourcewords"], stats["totalsourcewords"]),
               percent(stats["untranslatedsourcewords"], stats["totalsourcewords"]))
     else:  # style == style_full
         print title
         print "type              strings      words (source)    words (translation)"
-        print "translated:   %5d (%3d%%) %10d (%3d%%) %15d" % \
-                (stats["translated"], \
-                percent(stats["translated"], stats["total"]), \
-                stats["translatedsourcewords"], \
-                percent(stats["translatedsourcewords"], stats["totalsourcewords"]), \
-                stats["translatedtargetwords"])
-        print "fuzzy:        %5d (%3d%%) %10d (%3d%%)             n/a" % \
-                (stats["fuzzy"], \
-                percent(stats["fuzzy"], stats["total"]), \
-                stats["fuzzysourcewords"], \
-                percent(stats["fuzzysourcewords"], stats["totalsourcewords"]))
-        print "untranslated: %5d (%3d%%) %10d (%3d%%)             n/a" % \
-                (stats["untranslated"], \
-                percent(stats["untranslated"], stats["total"]), \
-                stats["untranslatedsourcewords"], \
-                percent(stats["untranslatedsourcewords"], stats["totalsourcewords"]))
-        print "Total:        %5d %17d %22d" % \
-                (stats["total"], \
-                stats["totalsourcewords"], \
-                stats["translatedtargetwords"])
+        print "translated:   %5d (%3d%%) %10d (%3d%%) %15d" % (
+              stats["translated"],
+              percent(stats["translated"], stats["total"]),
+              stats["translatedsourcewords"],
+              percent(stats["translatedsourcewords"], stats["totalsourcewords"]),
+              stats["translatedtargetwords"])
+        print "fuzzy:        %5d (%3d%%) %10d (%3d%%)             n/a" % (
+              stats["fuzzy"],
+              percent(stats["fuzzy"], stats["total"]),
+              stats["fuzzysourcewords"],
+              percent(stats["fuzzysourcewords"], stats["totalsourcewords"]))
+        print "untranslated: %5d (%3d%%) %10d (%3d%%)             n/a" % (
+              stats["untranslated"],
+              percent(stats["untranslated"], stats["total"]),
+              stats["untranslatedsourcewords"],
+              percent(stats["untranslatedsourcewords"], stats["totalsourcewords"]))
+        print "Total:        %5d %17d %22d" % (
+              stats["total"],
+              stats["totalsourcewords"],
+              stats["translatedtargetwords"])
         if "extended" in stats:
             print ""
             for state, e_stats in stats["extended"].iteritems():
                 print "%s:    %5d (%3d%%) %10d (%3d%%) %15d" % (
-                    state, e_stats["units"], percent(e_stats["units"], stats["total"]),
-                    e_stats["sourcewords"], percent(e_stats["sourcewords"], stats["totalsourcewords"]),
-                    e_stats["targetwords"])
+                      state, e_stats["units"], percent(e_stats["units"], stats["total"]),
+                      e_stats["sourcewords"], percent(e_stats["sourcewords"], stats["totalsourcewords"]),
+                      e_stats["targetwords"])
 
         if stats["review"] > 0:
-            print "review:       %5d %17d                    n/a" % \
-                    (stats["review"], stats["reviewsourcewords"])
+            print "review:       %5d %17d                    n/a" % (
+                  stats["review"], stats["reviewsourcewords"])
         print
     return 0
 

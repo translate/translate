@@ -297,7 +297,7 @@ class RecursiveOptionParser(optparse.OptionParser, object):
         errorleveloption = optparse.Option(None, "--errorlevel",
                 dest="errorlevel", default="message",
                 choices=self.errorleveltypes, metavar="ERRORLEVEL",
-                help="show errorlevel as: %s" % \
+                help="show errorlevel as: %s" %
                      (", ".join(self.errorleveltypes)))
         self.define_option(errorleveloption)
 

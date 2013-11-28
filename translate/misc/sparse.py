@@ -54,8 +54,8 @@ class ParserError(ValueError):
         """takes a message and the number of the token that caused the error"""
         tokenpos = parser.findtokenpos(tokennum)
         line, charpos = parser.getlinepos(tokenpos)
-        ValueError.__init__(self, "%s at line %d, char %d (token %r)" % \
-            (message, line, charpos, parser.tokens[tokennum]))
+        ValueError.__init__(self, "%s at line %d, char %d (token %r)" %
+                                  (message, line, charpos, parser.tokens[tokennum]))
         self.parser = parser
         self.tokennum = tokennum
 

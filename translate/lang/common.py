@@ -154,8 +154,8 @@ class Common(object):
     miscpunc = u"…±°¹²³·©®×£¥€"
     """The middle dot (·) is used by Greek and Georgian."""
 
-    punctuation = u"".join([commonpunc, quotes, invertedpunc, rtlpunc, CJKpunc,\
-            indicpunc, ethiopicpunc, miscpunc])
+    punctuation = u"".join([commonpunc, quotes, invertedpunc, rtlpunc, CJKpunc,
+                            indicpunc, ethiopicpunc, miscpunc])
     """We include many types of punctuation here, simply since this is only
     meant to determine if something is punctuation. Hopefully we catch some
     languages which might not be represented with modules. Most languages won't

@@ -54,9 +54,9 @@ def __get_rcs_class(name):
             module = __import__("translate.storage.versioncontrol.%s" % name,
                     globals(), {}, name)
             # the module function "is_available" must return "True"
-            if (hasattr(module, "is_available") and \
-                    callable(module.is_available) and \
-                    module.is_available()):
+            if (hasattr(module, "is_available") and
+                callable(module.is_available) and
+                module.is_available()):
                 # we found an appropriate module
                 rcs_class = getattr(module, name)
             else:
@@ -159,8 +159,8 @@ class GenericRevisionControlSystem(object):
         location = os.path.normpath(location)
         result = self._find_rcs_directory(location, oldest_parent)
         if result is None:
-            raise IOError("Could not find revision control information: %s" \
-                    % location)
+            raise IOError("Could not find revision control information: %s" %
+                          location)
 
         self.root_dir, self.location_abs, self.location_rel = result
         if not os.path.isdir(location):
@@ -244,11 +244,11 @@ class GenericRevisionControlSystem(object):
         something like :attr:`RCS_METADIR`
         """
         if self.RCS_METADIR is None:
-            raise IOError("Incomplete RCS interface implementation: " \
-                    + "self.RCS_METADIR is None")
+            raise IOError("Incomplete RCS interface implementation: "
+                          "self.RCS_METADIR is None")
         if self.SCAN_PARENTS is None:
-            raise IOError("Incomplete RCS interface implementation: " \
-                    + "self.SCAN_PARENTS is None")
+            raise IOError("Incomplete RCS interface implementation: "
+                          "self.SCAN_PARENTS is None")
         # we do not check for implemented functions - they raise
         # NotImplementedError exceptions anyway
         return True
@@ -261,23 +261,23 @@ class GenericRevisionControlSystem(object):
 
     def getcleanfile(self, revision=None):
         """Dummy to be overridden by real implementations"""
-        raise NotImplementedError("Incomplete RCS interface implementation:" \
-                + " 'getcleanfile' is missing")
+        raise NotImplementedError("Incomplete RCS interface implementation:"
+                                  " 'getcleanfile' is missing")
 
     def commit(self, message=None, author=None):
         """Dummy to be overridden by real implementations"""
-        raise NotImplementedError("Incomplete RCS interface implementation:" \
-                + " 'commit' is missing")
+        raise NotImplementedError("Incomplete RCS interface implementation:"
+                                  " 'commit' is missing")
 
     def add(self, files, message=None, author=None):
         """Dummy to be overridden by real implementations"""
-        raise NotImplementedError("Incomplete RCS interface implementation:" \
-                + " 'add' is missing")
+        raise NotImplementedError("Incomplete RCS interface implementation:"
+                                  " 'add' is missing")
 
     def update(self, revision=None, needs_revert=True):
         """Dummy to be overridden by real implementations"""
-        raise NotImplementedError("Incomplete RCS interface implementation:" \
-                + " 'update' is missing")
+        raise NotImplementedError("Incomplete RCS interface implementation:"
+                                  " 'update' is missing")
 
 
 def get_versioned_objects_recursive(

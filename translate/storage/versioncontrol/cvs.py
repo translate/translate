@@ -52,8 +52,8 @@ class cvs(GenericRevisionControlSystem):
         command.append(path)
         exitcode, output, error = run_command(command)
         if exitcode != 0:
-            raise IOError("[CVS] Could not read '%s' from '%s': %s / %s" % \
-                    (path, cvsroot, output, error))
+            raise IOError("[CVS] Could not read '%s' from '%s': %s / %s" % (
+                          path, cvsroot, output, error))
         return output
 
     def getcleanfile(self, revision=None):
@@ -81,8 +81,8 @@ class cvs(GenericRevisionControlSystem):
         try:
             os.rename(filename, filename_backup)
         except OSError, error:
-            raise IOError("[CVS] could not move the file '%s' to '%s': %s" % \
-                    (filename, filename_backup, error))
+            raise IOError("[CVS] could not move the file '%s' to '%s': %s" % (
+                          filename, filename_backup, error))
         command = ["cvs", "-Q", "update", "-C"]
         if revision:
             command.extend(["-r", revision])

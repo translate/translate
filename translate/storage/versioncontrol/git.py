@@ -80,8 +80,8 @@ class git(GenericRevisionControlSystem):
         command = self._get_git_command(args)
         exitcode, output, error = run_command(command, self.root_dir)
         if exitcode != 0:
-            raise IOError("[GIT] add of files in '%s') failed: %s" \
-                    % (self.root_dir, error))
+            raise IOError("[GIT] add of files in '%s') failed: %s" % (
+                          self.root_dir, error))
 
         return output + self.commit(message, author, add=False)
 
@@ -93,8 +93,8 @@ class git(GenericRevisionControlSystem):
             command = self._get_git_command(["add", self.location_rel])
             exitcode, output_add, error = run_command(command, self.root_dir)
             if exitcode != 0:
-                raise IOError("[GIT] add of ('%s', '%s') failed: %s" \
-                        % (self.root_dir, self.location_rel, error))
+                raise IOError("[GIT] add of ('%s', '%s') failed: %s" % (
+                              self.root_dir, self.location_rel, error))
 
         if not self._has_changes():
             raise IOError("[GIT] no changes to commit")
@@ -111,14 +111,14 @@ class git(GenericRevisionControlSystem):
                 msg = error
             else:
                 msg = output_commit
-            raise IOError("[GIT] commit of ('%s', '%s') failed: %s" \
-                    % (self.root_dir, self.location_rel, msg))
+            raise IOError("[GIT] commit of ('%s', '%s') failed: %s" % (
+                          self.root_dir, self.location_rel, msg))
         # push changes
         command = self._get_git_command(["push"])
         exitcode, output_push, error = run_command(command, self.root_dir)
         if exitcode != 0:
-            raise IOError("[GIT] push of ('%s', '%s') failed: %s" \
-                    % (self.root_dir, self.location_rel, error))
+            raise IOError("[GIT] push of ('%s', '%s') failed: %s" % (
+                          self.root_dir, self.location_rel, error))
         return output_add + output_commit + output_push
 
     def getcleanfile(self, revision=None):
@@ -127,6 +127,6 @@ class git(GenericRevisionControlSystem):
         command = self._get_git_command(["show", "HEAD:%s" % self.location_rel])
         exitcode, output, error = run_command(command, self.root_dir)
         if exitcode != 0:
-            raise IOError("[GIT] 'show' failed for ('%s', %s): %s" \
-                    % (self.root_dir, self.location_rel, error))
+            raise IOError("[GIT] 'show' failed for ('%s', %s): %s" % (
+                          self.root_dir, self.location_rel, error))
         return output

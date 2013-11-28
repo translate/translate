@@ -98,15 +98,15 @@ class CommonDatabase(object):
         """
         # just do some checks
         if self.QUERY_TYPE is None:
-            raise NotImplementedError("Incomplete indexer implementation: " \
-                    + "'QUERY_TYPE' is undefined")
+            raise NotImplementedError("Incomplete indexer implementation: "
+                                      "'QUERY_TYPE' is undefined")
         if self.INDEX_DIRECTORY_NAME is None:
-            raise NotImplementedError("Incomplete indexer implementation: " \
-                    + "'INDEX_DIRECTORY_NAME' is undefined")
+            raise NotImplementedError("Incomplete indexer implementation: "
+                                      "'INDEX_DIRECTORY_NAME' is undefined")
         self.location = os.path.join(basedir, self.INDEX_DIRECTORY_NAME)
         if (not create_allowed) and (not os.path.exists(self.location)):
-            raise OSError("Indexer: the database does not exist - and I am" \
-                    + " not configured to create it.")
+            raise OSError("Indexer: the database does not exist - and I am"
+                          " not configured to create it.")
         if analyzer is None:
             self.analyzer = self.ANALYZER_DEFAULT
         else:
@@ -122,8 +122,8 @@ class CommonDatabase(object):
         :param optimize: should the index be optimized if possible?
         :type optimize: bool
         """
-        raise NotImplementedError("Incomplete indexer implementation: " \
-                + "'flush' is missing")
+        raise NotImplementedError("Incomplete indexer implementation: "
+                                  "'flush' is missing")
 
     def make_query(self, args, require_all=True, analyzer=None):
         """Create simple queries (strings or field searches) or
@@ -193,8 +193,8 @@ class CommonDatabase(object):
                         require_all=require_all, analyzer=analyzer))
             else:
                 # other types of queries are not supported
-                raise ValueError("Unable to handle query type: %s" \
-                        % str(type(query)))
+                raise ValueError("Unable to handle query type: %s" %
+                                 str(type(query)))
         # return the combined query
         return self._create_query_combined(result, require_all)
 
@@ -208,8 +208,8 @@ class CommonDatabase(object):
         :return: the resulting query object
         :rtype: ``xapian.Query`` | ``PyLucene.Query``
         """
-        raise NotImplementedError("Incomplete indexer implementation: " \
-                + "'_create_query_for_query' is missing")
+        raise NotImplementedError("Incomplete indexer implementation: "
+                                  "'_create_query_for_query' is missing")
 
     def _create_query_for_string(self, text, require_all=True,
             analyzer=None):
@@ -234,8 +234,8 @@ class CommonDatabase(object):
         :return: resulting query object
         :rtype: xapian.Query | PyLucene.Query
         """
-        raise NotImplementedError("Incomplete indexer implementation: " \
-                + "'_create_query_for_string' is missing")
+        raise NotImplementedError("Incomplete indexer implementation: "
+                                  "'_create_query_for_string' is missing")
 
     def _create_query_for_field(self, field, value, analyzer=None):
         """Generate a field query.
@@ -257,8 +257,8 @@ class CommonDatabase(object):
         :return: resulting query object
         :rtype: ``xapian.Query`` | ``PyLucene.Query``
         """
-        raise NotImplementedError("Incomplete indexer implementation: " \
-                + "'_create_query_for_field' is missing")
+        raise NotImplementedError("Incomplete indexer implementation: "
+                                  "'_create_query_for_field' is missing")
 
     def _create_query_combined(self, queries, require_all=True):
         """generate a combined query
@@ -271,8 +271,8 @@ class CommonDatabase(object):
         :return: the resulting combined query object
         :rtype: ``xapian.Query`` | ``PyLucene.Query``
         """
-        raise NotImplementedError("Incomplete indexer implementation: " \
-                + "'_create_query_combined' is missing")
+        raise NotImplementedError("Incomplete indexer implementation: "
+                                  "'_create_query_combined' is missing")
 
     def index_document(self, data):
         """Add the given data to the database.
@@ -300,8 +300,8 @@ class CommonDatabase(object):
                     elif isinstance(value, basestring):
                         terms = [value]
                     else:
-                        raise ValueError("Invalid data type to be indexed: %s" \
-                                % str(type(data)))
+                        raise ValueError("Invalid data type to be indexed: %s" %
+                                         str(type(data)))
                     for one_term in terms:
                         self._add_plain_term(doc, self._decode(one_term),
                                 (self.ANALYZER_DEFAULT & self.ANALYZER_TOKENIZE > 0))
@@ -317,8 +317,8 @@ class CommonDatabase(object):
                 self._add_plain_term(doc, self._decode(dataset),
                         (self.ANALYZER_DEFAULT & self.ANALYZER_TOKENIZE > 0))
             else:
-                raise ValueError("Invalid data type to be indexed: %s" \
-                        % str(type(data)))
+                raise ValueError("Invalid data type to be indexed: %s" %
+                                 str(type(data)))
         self._add_document_to_index(doc)
 
     def _create_empty_document(self):
@@ -327,8 +327,8 @@ class CommonDatabase(object):
         :return: the new document object
         :rtype: ``xapian.Document`` | ``PyLucene.Document``
         """
-        raise NotImplementedError("Incomplete indexer implementation: " \
-                + "'_create_empty_document' is missing")
+        raise NotImplementedError("Incomplete indexer implementation: "
+                                  "'_create_empty_document' is missing")
 
     def _add_plain_term(self, document, term, tokenize=True):
         """Add a term to a document.
@@ -340,8 +340,8 @@ class CommonDatabase(object):
         :param tokenize: should the term be tokenized automatically
         :type tokenize: bool
         """
-        raise NotImplementedError("Incomplete indexer implementation: " \
-                + "'_add_plain_term' is missing")
+        raise NotImplementedError("Incomplete indexer implementation: "
+                                  "'_add_plain_term' is missing")
 
     def _add_field_term(self, document, field, term, tokenize=True):
         """Add a field term to a document.
@@ -355,8 +355,8 @@ class CommonDatabase(object):
         :param tokenize: should the term be tokenized automatically
         :type tokenize: bool
         """
-        raise NotImplementedError("Incomplete indexer implementation: " \
-                + "'_add_field_term' is missing")
+        raise NotImplementedError("Incomplete indexer implementation: "
+                                  "'_add_field_term' is missing")
 
     def _add_document_to_index(self, document):
         """Add a prepared document to the index database.
@@ -364,8 +364,8 @@ class CommonDatabase(object):
         :param document: the document to be added
         :type document: xapian.Document | PyLucene.Document
         """
-        raise NotImplementedError("Incomplete indexer implementation: " \
-                + "'_add_document_to_index' is missing")
+        raise NotImplementedError("Incomplete indexer implementation: "
+                                  "'_add_document_to_index' is missing")
 
     def begin_transaction(self):
         """begin a transaction
@@ -378,24 +378,24 @@ class CommonDatabase(object):
 
         Database types that do not support transactions may silently ignore it.
         """
-        raise NotImplementedError("Incomplete indexer implementation: " \
-                + "'begin_transaction' is missing")
+        raise NotImplementedError("Incomplete indexer implementation: "
+                                  "'begin_transaction' is missing")
 
     def cancel_transaction(self):
         """cancel an ongoing transaction
 
         See 'start_transaction' for details.
         """
-        raise NotImplementedError("Incomplete indexer implementation: " \
-                + "'cancel_transaction' is missing")
+        raise NotImplementedError("Incomplete indexer implementation: "
+                                  "'cancel_transaction' is missing")
 
     def commit_transaction(self):
         """Submit the currently ongoing transaction and write changes to disk.
 
         See 'start_transaction' for details.
         """
-        raise NotImplementedError("Incomplete indexer implementation: " \
-                + "'commit_transaction' is missing")
+        raise NotImplementedError("Incomplete indexer implementation: "
+                                  "'commit_transaction' is missing")
 
     def get_query_result(self, query):
         """return an object containing the results of a query
@@ -405,8 +405,8 @@ class CommonDatabase(object):
         :return: an object that allows access to the results
         :rtype: subclass of CommonEnquire
         """
-        raise NotImplementedError("Incomplete indexer implementation: " \
-                + "'get_query_result' is missing")
+        raise NotImplementedError("Incomplete indexer implementation: "
+                                  "'get_query_result' is missing")
 
     def delete_document_by_id(self, docid):
         """Delete a specified document.
@@ -414,8 +414,8 @@ class CommonDatabase(object):
         :param docid: the document ID to be deleted
         :type docid: int
         """
-        raise NotImplementedError("Incomplete indexer implementation: " \
-                + "'delete_document_by_id' is missing")
+        raise NotImplementedError("Incomplete indexer implementation: "
+                                  "'delete_document_by_id' is missing")
 
     def search(self, query, fieldnames):
         """Return a list of the contents of specified fields for all
@@ -428,8 +428,8 @@ class CommonDatabase(object):
         :return: a list of dicts containing the specified field(s)
         :rtype: list of dicts
         """
-        raise NotImplementedError("Incomplete indexer implementation: " \
-                + "'search' is missing")
+        raise NotImplementedError("Incomplete indexer implementation: "
+                                  "'search' is missing")
 
     def delete_doc(self, ident):
         """Delete the documents returned by a query.
@@ -464,8 +464,8 @@ class CommonDatabase(object):
         else:
             # invalid element type in list (not necessarily caught in the
             # lines above)
-            raise TypeError("description of documents to-be-deleted is not " \
-                    + "supported: list of %s" % type(ident_list[0]))
+            raise TypeError("description of documents to-be-deleted is not "
+                            "supported: list of %s" % type(ident_list[0]))
         # we successfully created a query - now iterate through the result
         # no documents deleted so far ...
         remove_list = []
@@ -603,8 +603,8 @@ class CommonEnquire(object):
                     ["rank", "percent", "document", "docid"]
 
         """
-        raise NotImplementedError("Incomplete indexing implementation: " \
-                + "'get_matches' for the 'Enquire' class is missing")
+        raise NotImplementedError("Incomplete indexing implementation: "
+                                  "'get_matches' for the 'Enquire' class is missing")
 
     def get_matches_count(self):
         """Return the estimated number of matches.

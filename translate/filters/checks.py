@@ -451,8 +451,8 @@ class UnitChecker(object):
                 filtermessage = unicode(e)
             except Exception, e:
                 if self.errorhandler is None:
-                    raise ValueError("error in filter %s: %r, %r, %s" % \
-                            (functionname, unit.source, unit.target, e))
+                    raise ValueError("error in filter %s: %r, %r, %s" %
+                                     (functionname, unit.source, unit.target, e))
                 else:
                     filterresult = self.errorhandler(functionname, unit.source,
                                                      unit.target, e)

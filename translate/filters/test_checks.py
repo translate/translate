@@ -18,7 +18,7 @@ def check_category(filterfunction):
 
     for klass in classes:
         categories = getattr(klass, 'categories', None)
-        has_category.append(categories is not None and \
+        has_category.append(categories is not None and
                             filterfunction.__name__ in categories)
 
     return True in has_category

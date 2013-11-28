@@ -110,9 +110,11 @@ class TestPOGrep:
         # é, e + '
         # Ḽ, L + ^
         # Ṏ
-        groups = [(u"\u00e9", u"\u0065\u0301"), \
-                  (u"\u1e3c", u"\u004c\u032d"), \
-                  (u"\u1e4e", u"\u004f\u0303\u0308", u"\u00d5\u0308")]
+        groups = [
+            (u"\u00e9", u"\u0065\u0301"),
+            (u"\u1e3c", u"\u004c\u032d"),
+            (u"\u1e4e", u"\u004f\u0303\u0308", u"\u00d5\u0308")
+        ]
         for letters in groups:
             for source_letter in letters:
                 source = source_template % source_letter
