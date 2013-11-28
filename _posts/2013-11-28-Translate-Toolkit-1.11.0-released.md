@@ -37,7 +37,7 @@ Formats and Converters
   * Optimization to increase performance
 * PHP:
   * Warn about duplicate entries
-  * Allow blank spaces in array declaration ([bug 2646](http://bugs.locamotion.org/show_bug.cgi?id=2646)
+  * Allow blank spaces in array declaration ([bug 2646](http://bugs.locamotion.org/show_bug.cgi?id=2646))
   * Support nested arrays ([bug 2240](http://bugs.locamotion.org/show_bug.cgi?id=2240))
 * XLIFF:
   * Correctly parse XLIFF 1.2
@@ -51,12 +51,12 @@ Formats and Converters
   * Detect untranslatable resource strings
   * Various format improvements
 * New conversion options:
-  * :option:`--timestamp` -- skip conversion if the output file has a newer
+  * ``--timestamp`` -- skip conversion if the output file has a newer
     timestamp (Makefile-alike)
-  * :option:`--threshold` -- in po2\* converters this allows you to specify a
+  * ``--threshold`` -- in po2\* converters this allows you to specify a
     percentage complete threshold.  If the PO files passes this theshold then
     the file is output ([bug 2998](http://bugs.locamotion.org/show_bug.cgi?id=2998))
-  * :option:`--removeuntranslated` -- Extend this option to po2dtd and thus
+  * ``--removeuntranslated`` -- Extend this option to po2dtd and thus
     po2moz -- don't output untranslated text ([bug 1718](http://bugs.locamotion.org/show_bug.cgi?id=1718))
 
 Language specific fixes
