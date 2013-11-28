@@ -105,6 +105,7 @@ import sys
 
 class Mock(object):
     VERSION = None
+
     def __init__(self, *args, **kwargs):
         pass
 
