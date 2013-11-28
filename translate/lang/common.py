@@ -175,8 +175,7 @@ class Common(object):
         [%s]        # the puntuation for sentence ending
         \s+         # the spacing after the puntuation
         (?=[^a-zа-џ\d])  # lookahead that next part starts with caps
-        """ % sentenceend, re.VERBOSE | re.UNICODE
-    )
+        """ % sentenceend, re.VERBOSE | re.UNICODE)
 
     puncdict = {}
     """A dictionary of punctuation transformation rules that can be used by

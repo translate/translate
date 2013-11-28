@@ -167,11 +167,12 @@ class SeriousFilterFailure(FilterFailure):
 #the property/tag that is specified as None. A non-None value of "value"
 #indicates that the value of the attribute must be taken into account.
 common_ignoretags = [(None, "xml-lang", None)]
-common_canchangetags = [("img", "alt", None),
-                        (None, "title", None),
-                        (None, "dir", None),
-                        (None, "lang", None),
-                       ]
+common_canchangetags = [
+    ("img", "alt", None),
+    (None, "title", None),
+    (None, "dir", None),
+    (None, "lang", None),
+]
 # Actually the title tag is allowed on many tags in HTML (but probably not all)
 
 

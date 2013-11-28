@@ -108,12 +108,13 @@ def main():
     pooutput = ("po", mergestore)
     potoutput = ("pot", mergestore)
     xliffoutput = ("xlf", mergestore)
-    formats = {("po", "po"): pooutput, ("po", "pot"): pooutput,
-               ("pot", "po"): pooutput, ("pot", "pot"): potoutput,
-               "po": pooutput, "pot": pooutput,
-               ("xlf", "po"): pooutput, ("xlf", "pot"): pooutput,
-               ("xlf", "xlf"): xliffoutput, ("po", "xlf"): xliffoutput,
-              }
+    formats = {
+        ("po", "po"): pooutput, ("po", "pot"): pooutput,
+        ("pot", "po"): pooutput, ("pot", "pot"): potoutput,
+        "po": pooutput, "pot": pooutput,
+        ("xlf", "po"): pooutput, ("xlf", "pot"): pooutput,
+        ("xlf", "xlf"): xliffoutput, ("po", "xlf"): xliffoutput,
+    }
     mergeblanksoption = convert.optparse.Option("", "--mergeblanks",
         dest="mergeblanks", action="store", default="yes",
         help="whether to overwrite existing translations with blank translations (yes/no). Default is yes.")

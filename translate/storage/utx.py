@@ -215,12 +215,12 @@ class UtxFile(base.TranslationStore):
 
     def _write_header(self):
         """Create a UTX header"""
-        header = "#UTX-S %(version)s; %(src)s/%(tgt)s; %(date)s" % \
-                  {"version": self._header["version"],
-                   "src": self._header["source_language"],
-                   "tgt": self._header.get("target_language", ""),
-                   "date": self._header["date_created"],
-                  }
+        header = "#UTX-S %(version)s; %(src)s/%(tgt)s; %(date)s" % {
+                    "version": self._header["version"],
+                    "src": self._header["source_language"],
+                    "tgt": self._header.get("target_language", ""),
+                    "date": self._header["date_created"],
+                 }
         items = []
         for key, value in self._header.iteritems():
             if key in ["version", "source_language",

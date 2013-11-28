@@ -128,11 +128,10 @@ class TestOO2PO:
         print bug_url
         assert bug_url[:3] == ("http", "qa.openoffice.org", "/issues/enter_bug.cgi")
         assert parse_qs(bug_url[4], True) == {u'comment': [u''],
-                                                       u'component': [u'l10n'],
-                                                       u'form_name': [u'enter_issue'],
-                                                       u'short_desc': [u'Localization issue in file: '],
-                                                       u'subcomponent': [u'ui'],
-                                                      }
+                                              u'component': [u'l10n'],
+                                              u'form_name': [u'enter_issue'],
+                                              u'short_desc': [u'Localization issue in file: '],
+                                              u'subcomponent': [u'ui'],}
 
     def test_x_comment_inclusion(self):
         """test that we can merge x-comment language entries into comment sections of the PO file"""

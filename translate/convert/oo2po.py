@@ -95,13 +95,14 @@ class oo2po:
         thetargetfile = po.pofile()
         # create a header for the file
         bug_url = 'http://qa.openoffice.org/issues/enter_bug.cgi?%s' % \
-                  urlencode({"subcomponent": "ui",
-                             "comment": "",
-                             "short_desc": "Localization issue in file: %s" %
-                                           theoofile.filename,
-                             "component": "l10n",
-                             "form_name": "enter_issue",
-                            })
+                  urlencode({
+                      "subcomponent": "ui",
+                      "comment": "",
+                      "short_desc": "Localization issue in file: %s" %
+                                    theoofile.filename,
+                      "component": "l10n",
+                      "form_name": "enter_issue",
+                  })
         targetheader = thetargetfile.init_headers(
                               x_accelerator_marker="~",
                               x_merge_on="location",

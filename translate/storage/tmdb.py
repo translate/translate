@@ -207,10 +207,11 @@ DROP TRIGGER IF EXISTS sources_delete_trig;
         if not target_lang:
             raise LanguageError("undefined target language")
 
-        unitdict = {"source": unit.source,
-                    "target": unit.target,
-                    "context": unit.getcontext(),
-                   }
+        unitdict = {
+            "source": unit.source,
+            "target": unit.target,
+            "context": unit.getcontext(),
+        }
         self.add_dict(unitdict, source_lang, target_lang, commit)
 
     def add_dict(self, unit, source_lang, target_lang, commit=True):

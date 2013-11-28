@@ -40,8 +40,7 @@ class el(common.Common):
         [%s]        # the puntuation for sentence ending
         \s+         # the spacing after the puntuation
         (?=[^a-zά-ώ\d])  # lookahead that next part starts with caps
-        """ % sentenceend, re.VERBOSE | re.UNICODE
-    )
+        """ % sentenceend, re.VERBOSE | re.UNICODE)
 
     puncdict = {
         u"?": u";",

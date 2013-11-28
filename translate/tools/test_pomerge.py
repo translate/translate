@@ -43,8 +43,7 @@ class TestPOMerge:
         assert pomerge.mergestore(inputfile, outputfile, templatefile,
                                   mergeblanks=mergeblanks,
                                   mergefuzzy=mergefuzzy,
-                                  mergecomments=mergecomments,
-        )
+                                  mergecomments=mergecomments,)
         outputpostring = outputfile.getvalue()
         outputpofile = po.pofile(outputpostring)
         return outputpofile

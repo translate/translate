@@ -101,13 +101,14 @@ class oo2xliff:
         thetargetfile.settargetlanguage(self.targetlanguage)
         # create a header for the file
         bug_url = 'http://qa.openoffice.org/issues/enter_bug.cgi?%s' % \
-                  urlencode({"subcomponent": "ui",
-                             "comment": "",
-                             "short_desc": "Localization issue in file: %s" %
-                                           theoofile.filename,
-                             "component": "l10n",
-                             "form_name": "enter_issue",
-                            })
+                  urlencode({
+                      "subcomponent": "ui",
+                      "comment": "",
+                      "short_desc": "Localization issue in file: %s" %
+                                    theoofile.filename,
+                      "component": "l10n",
+                      "form_name": "enter_issue",
+                  })
         # go through the oo and convert each element
         for theoo in theoofile.units:
             unitlist = self.convertelement(theoo)

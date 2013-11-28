@@ -228,7 +228,8 @@ class Workflow(object):
         if to_state not in self.states:
             raise StateNotInWorkflowError(to_state)
         if (self._current_state, to_state) not in self.edges:
-            raise TransitionError('No edge between edges %s and %s' % (self._current_state, to_state))
+            raise TransitionError('No edge between edges %s and %s' % (
+                                  self._current_state, to_state))
         self._current_state.leave(self._workflow_obj)
         self._current_state = to_state
         self._current_state.enter(self._workflow_obj)

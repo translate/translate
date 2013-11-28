@@ -423,8 +423,7 @@ def dosetup(name, version, packages, datafiles, scripts, ext_modules=[]):
           scripts=scripts,
           ext_modules=ext_modules,
           distclass=TranslateDistribution,
-          cmdclass=cmdclass
-         )
+          cmdclass=cmdclass,)
 
 if __name__ == "__main__":
     standardsetup("translate-toolkit", translateversion)

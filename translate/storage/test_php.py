@@ -143,8 +143,7 @@ $foo = "bar";
         assert phpunit._comments == ["""/*""",
                                      """ * Comment line 1""",
                                      """ * Comment line 2""",
-                                     """ */"""
-                                    ]
+                                     """ */"""]
 
     def test_comment_blocks(self):
         """check that we don't process name value pairs in comment blocks"""
@@ -366,8 +365,7 @@ define('_CM_POSTED', 'Enviado');"""
         assert phpunit.name == "define('_CM_POSTED'"
         assert phpunit.source == "Enviado"
         assert phpunit._comments == ["// This means it was published",
-                                     "// It appears besides posts"
-                                    ]
+                                     "// It appears besides posts"]
 
     def test_parsing_define_spaces_before_end_delimiter(self):
         """Parse define syntax with spaces before the end delimiter"""

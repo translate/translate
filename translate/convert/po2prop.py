@@ -125,17 +125,17 @@ class reprop:
                         value = unit.target
                     self.inecho = False
                     assert isinstance(value, unicode)
-                    returnline = "%(key)s%(del)s%(value)s%(term)s%(eol)s" % \
-                         {"key": "%s%s%s" % (self.personality.key_wrap_char,
-                                             key,
-                                             self.personality.key_wrap_char),
-                          "del": delimiter,
-                          "value": "%s%s%s" % (self.personality.value_wrap_char,
-                                               self.personality.encode(value),
-                                               self.personality.value_wrap_char),
-                          "term": self.personality.pair_terminator,
-                          "eol": eol,
-                         }
+                    returnline = "%(key)s%(del)s%(value)s%(term)s%(eol)s" % {
+                        "key": "%s%s%s" % (self.personality.key_wrap_char,
+                                           key,
+                                           self.personality.key_wrap_char),
+                        "del": delimiter,
+                        "value": "%s%s%s" % (self.personality.value_wrap_char,
+                                             self.personality.encode(value),
+                                             self.personality.value_wrap_char),
+                        "term": self.personality.pair_terminator,
+                        "eol": eol,
+                    }
             else:
                 self.inecho = True
                 returnline = line + eol

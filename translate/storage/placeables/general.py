@@ -309,8 +309,7 @@ def to_general_placeables(tree, classmap={
                                          FilePlaceable,
                                          EmailPlaceable,
                                          OptionPlaceable,
-                                         PunctuationPlaceable,
-                                    ),
+                                         PunctuationPlaceable,),
                                 }):
     if not isinstance(tree, StringElem):
         return tree

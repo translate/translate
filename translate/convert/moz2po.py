@@ -32,18 +32,20 @@ from translate.convert import convert
 
 
 def main(argv=None):
-    formats = {(None, "*"): ("*", convert.copytemplate),
-               ("*", "*"): ("*", convert.copyinput),
-               "*": ("*", convert.copyinput),
-              }
+    formats = {
+        (None, "*"): ("*", convert.copytemplate),
+        ("*", "*"): ("*", convert.copyinput),
+        "*": ("*", convert.copyinput),
+    }
     # handle formats that convert to .po files
-    converters = [("dtd", dtd2po.convertdtd),
-                  ("properties", prop2po.convertmozillaprop),
-                  ("it", mozfunny2prop.it2po),
-                  ("ini", mozfunny2prop.ini2po),
-                  ("inc", mozfunny2prop.inc2po),
-                  ("lang", mozlang2po.convertlang),
-                 ]
+    converters = [
+        ("dtd", dtd2po.convertdtd),
+        ("properties", prop2po.convertmozillaprop),
+        ("it", mozfunny2prop.it2po),
+        ("ini", mozfunny2prop.ini2po),
+        ("inc", mozfunny2prop.inc2po),
+        ("lang", mozlang2po.convertlang),
+    ]
     for format, converter in converters:
         formats[(format, format)] = (format + ".po", converter)
         formats[format] = (format + ".po", converter)

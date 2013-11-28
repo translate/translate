@@ -76,11 +76,12 @@ def main(argv=None):
     from translate.misc import stdiotell
     import sys
     sys.stdout = stdiotell.StdIOWrapper(sys.stdout)
-    formats = {("po", "htm"): ("htm", converthtml),
-               ("po", "html"): ("html", converthtml),
-               ("po", "xhtml"): ("xhtml", converthtml),
-               ("po"): ("html", converthtml),
-              }
+    formats = {
+        ("po", "htm"): ("htm", converthtml),
+        ("po", "html"): ("html", converthtml),
+        ("po", "xhtml"): ("xhtml", converthtml),
+        ("po"): ("html", converthtml),
+    }
     parser = convert.ConvertOptionParser(formats, usetemplates=True,
                                          description=__doc__)
     parser.add_threshold_option()
