@@ -300,6 +300,7 @@ def test_or_queries():
     # clean up
     clean_database()
 
+
 def test_string_queries():
     """test if string queries work as expected"""
     # clean up everything first
@@ -321,6 +322,7 @@ def test_string_queries():
     assert r_string3[0] == 1
     # clean up
     clean_database()
+
 
 def test_lower_upper_case():
     """test if case is ignored for queries and for indexed terms"""

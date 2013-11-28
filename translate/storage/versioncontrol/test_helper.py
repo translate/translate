@@ -5,6 +5,7 @@ import shutil
 
 from translate.storage.versioncontrol import run_command, get_versioned_object
 
+
 class HelperTest(object):
 
     def remove_dirs(self, path):

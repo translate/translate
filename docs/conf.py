@@ -103,6 +103,7 @@ pygments_style = 'sphinx'
 # -- Missing modules --------------------------------------------------
 import sys
 
+
 class Mock(object):
     VERSION = None
 

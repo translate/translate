@@ -6,6 +6,7 @@ from translate.storage.versioncontrol.test_helper import HelperTest
 from translate.storage.versioncontrol import svn
 from translate.storage.versioncontrol import run_command, get_versioned_object
 
+
 class TestSVN(HelperTest):
 
     def setup_repo_and_checkout(self):

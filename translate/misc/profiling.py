@@ -18,6 +18,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, see <http://www.gnu.org/licenses/>.
 
+
 def label(code):
     if isinstance(code, str):
         return ('~', 0, code)    # built-in functions ('~' sorts at the end)

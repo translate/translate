@@ -252,6 +252,7 @@ message-multiedit-header[other]={{ n }} selected
         assert not zero_unit.hasplural()
         assert zero_unit.source == u"Edit"
 
+
 class TestProp2POCommand(test_convert.TestConvertCommand, TestProp2PO):
     """Tests running actual prop2po commands on files"""
     convertmodule = prop2po

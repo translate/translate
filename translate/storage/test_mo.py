@@ -21,6 +21,7 @@ os.environ["PYTHONPATH"] = os.pathsep.join(sys.path)
 os.environ["PATH"] = os.pathsep.join([os.path.join(dir, "translate", "tools"),
                                       os.environ["PATH"]])
 
+
 class TestMOUnit(test_base.TestTranslationUnit):
     UnitClass = mo.mounit
 

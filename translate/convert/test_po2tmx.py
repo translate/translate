@@ -188,6 +188,7 @@ msgstr "Bézier-kurwe"
         unit = tmx.findunits(u"Bézier curve")
         assert unit[0].getnotes() == u"csharp-format"
 
+
 class TestPO2TMXCommand(test_convert.TestConvertCommand, TestPO2TMX):
     """Tests running actual po2tmx commands on files"""
     convertmodule = po2tmx

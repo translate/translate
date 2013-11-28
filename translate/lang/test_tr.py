@@ -3,6 +3,7 @@
 
 from translate.lang import factory
 
+
 def test_sentences():
     """Tests basic functionality of sentence segmentation."""
     language = factory.getlanguage('tr')

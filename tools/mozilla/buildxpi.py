@@ -75,6 +75,7 @@ class RunProcessError(CalledProcessError):
         output += message % (self.cmd, self.returncode)
         return output
 
+
 def run(cmd, expected_status=0, fail_msg=None, stdout=-1, stderr=-1):
     """Run a command
     """
