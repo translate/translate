@@ -32,9 +32,9 @@ Major changes
 Formats and Converters
 ----------------------
 * Gettext PO:
-    * cPO now handles fuzzy obsolete messages correctly
-    * Line wrapping improvement allow PO files to more closely match Gettext
-    * Optimization to increase performance
+  * cPO now handles fuzzy obsolete messages correctly
+  * Line wrapping improvement allow PO files to more closely match Gettext
+  * Optimization to increase performance
 * PHP:
     * Warn about duplicate entries
     * Allow blank spaces in array declaration ([bug 2646](http://bugs.locamotion.org/show_bug.cgi?id=2646)
