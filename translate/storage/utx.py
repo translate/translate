@@ -125,7 +125,9 @@ class UtxUnit(base.TranslationUnit):
 
     def addnote(self, text, origin=None, position="append"):
         currentnote = self._get_field('comment')
-        if position == "append" and currentnote is not None and currentnote != u'':
+        if (position == "append" and
+            currentnote is not None and
+            currentnote != u''):
             self._set_field('comment', currentnote + '\n' + text)
         else:
             self._set_field('comment', text)
@@ -174,9 +176,12 @@ class UtxFile(base.TranslationStore):
         self.filename = ''
         self.extension = ''
         self._fieldnames = ['src', 'tgt', 'src:pos']
-        self._header = {"version": "1.00",
-                        "source_language": "en",
-                        "date_created": time.strftime("%FT%TZ%z", time.localtime(time.time()))}
+        self._header = {
+            "version": "1.00",
+             "source_language": "en",
+             "date_created": time.strftime("%FT%TZ%z",
+                                           time.localtime(time.time()))
+        }
         if inputfile is not None:
             self.parse(inputfile)
 
@@ -218,7 +223,8 @@ class UtxFile(base.TranslationStore):
                   }
         items = []
         for key, value in self._header.iteritems():
-            if key in ["version", "source_language", "target_language", "date_created"]:
+            if key in ["version", "source_language",
+                       "target_language", "date_created"]:
                 continue
             items.append("%s: %s" % (key, value))
         if len(items):
@@ -254,9 +260,10 @@ class UtxFile(base.TranslationStore):
             header_length = self._read_header(input)
         except:
             raise base.ParseError("Cannot parse header")
-        lines = csv.DictReader(input.split(UtxDialect.lineterminator)[header_length:],
-                               fieldnames=self._fieldnames,
-                               dialect="utx")
+        lines = csv.DictReader(
+                    input.split(UtxDialect.lineterminator)[header_length:],
+                    fieldnames=self._fieldnames,
+                    dialect="utx")
         for line in lines:
             newunit = UtxUnit()
             newunit.dict = line
