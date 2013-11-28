@@ -36,28 +36,28 @@ Formats and Converters
   * Line wrapping improvement allow PO files to more closely match Gettext
   * Optimization to increase performance
 * PHP:
-    * Warn about duplicate entries
-    * Allow blank spaces in array declaration ([bug 2646](http://bugs.locamotion.org/show_bug.cgi?id=2646)
-    * Support nested arrays ([bug 2240](http://bugs.locamotion.org/show_bug.cgi?id=2240))
+  * Warn about duplicate entries
+  * Allow blank spaces in array declaration ([bug 2646](http://bugs.locamotion.org/show_bug.cgi?id=2646)
+  * Support nested arrays ([bug 2240](http://bugs.locamotion.org/show_bug.cgi?id=2240))
 * XLIFF:
-    * Correctly parse XLIFF 1.2
+  * Correctly parse XLIFF 1.2
 * Properties
-    * Blank source text is now always translated
-    * Fuzzy units are discarded with --remove-untranslated
-    * prop2po no longer drops entries that are translated the same as the source
+  * Blank source text is now always translated
+  * Fuzzy units are discarded with --remove-untranslated
+  * prop2po no longer drops entries that are translated the same as the source
 * TMX:
-    * po2tmx support comments
+  * po2tmx support comments
 * Android:
-    * Detect untranslatable resource strings
-    * Various format improvements
+  * Detect untranslatable resource strings
+  * Various format improvements
 * New conversion options:
-    * :option:`--timestamp` -- skip conversion if the output file has a newer
-      timestamp (Makefile-alike)
-    * :option:`--threshold` -- in po2\* converters this allows you to specify a
-      percentage complete threshold.  If the PO files passes this theshold then
-      the file is output (:bug:`2998`)
-    * :option:`--removeuntranslated` -- Extend this option to po2dtd and thus
-      po2moz -- don't output untranslated text ([bug 1718](http://bugs.locamotion.org/show_bug.cgi?id=1718))
+  * :option:`--timestamp` -- skip conversion if the output file has a newer
+    timestamp (Makefile-alike)
+  * :option:`--threshold` -- in po2\* converters this allows you to specify a
+    percentage complete threshold.  If the PO files passes this theshold then
+    the file is output (:bug:`2998`)
+  * :option:`--removeuntranslated` -- Extend this option to po2dtd and thus
+    po2moz -- don't output untranslated text ([bug 1718](http://bugs.locamotion.org/show_bug.cgi?id=1718))
 
 Language specific fixes
 -----------------------
@@ -79,9 +79,9 @@ Mozilla tooling fixes
 * Better decoding of some characters in DTD e.g » and &x0022 (")
 * .lang -- Improved support for untranslated entries
 * ``buildxpi``:
-    * Can now build multiple languages at once ([bug 2999](http://bugs.locamotion.org/show_bug.cgi?id=2999))
-    * Set a max product version to allow the language pack to continue to work
-      once the browser version has moved out of Aurora channel
+  * Can now build multiple languages at once ([bug 2999](http://bugs.locamotion.org/show_bug.cgi?id=2999))
+  * Set a max product version to allow the language pack to continue to work
+    once the browser version has moved out of Aurora channel
 * Dropped native XPI building support (untested and no longer used)
 * Add Mozilla plural formulas, in time we'll handle Mozilla plurals correctly
 
