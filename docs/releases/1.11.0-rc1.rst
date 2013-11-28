@@ -7,7 +7,7 @@
 Translate Toolkit 1.11.0-rc1
 ****************************
 
-*Released on 26 November 2013*
+*Released on 28 November 2013*
 
 This release contains many improvements and bug fixes. While it contains many
 general improvements, it also specifically contains needed changes and
