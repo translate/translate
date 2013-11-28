@@ -41,23 +41,21 @@ Formats and Converters
   * Support nested arrays ([bug 2240](http://bugs.locamotion.org/show_bug.cgi?id=2240))
 * XLIFF:
   * Correctly parse XLIFF 1.2
+
 * Properties
   * Blank source text is now always translated
   * Fuzzy units are discarded with --remove-untranslated
   * prop2po no longer drops entries that are translated the same as the source
 * TMX:
   * po2tmx support comments
+
 * Android:
   * Detect untranslatable resource strings
   * Various format improvements
 * New conversion options:
-  * ``--timestamp`` -- skip conversion if the output file has a newer
-    timestamp (Makefile-alike)
-  * ``--threshold`` -- in po2\* converters this allows you to specify a
-    percentage complete threshold.  If the PO files passes this theshold then
-    the file is output ([bug 2998](http://bugs.locamotion.org/show_bug.cgi?id=2998))
-  * ``--removeuntranslated`` -- Extend this option to po2dtd and thus
-    po2moz -- don't output untranslated text ([bug 1718](http://bugs.locamotion.org/show_bug.cgi?id=1718))
+  * ``--timestamp`` -- skip conversion if the output file has a newer timestamp (Makefile-alike)
+  * ``--threshold`` -- in po2\* converters this allows you to specify a percentage complete threshold.  If the PO files passes this theshold then the file is output ([bug 2998](http://bugs.locamotion.org/show_bug.cgi?id=2998))
+  * ``--removeuntranslated`` -- Extend this option to po2dtd and thus po2moz -- don't output untranslated text ([bug 1718](http://bugs.locamotion.org/show_bug.cgi?id=1718))
 
 Language specific fixes
 -----------------------
