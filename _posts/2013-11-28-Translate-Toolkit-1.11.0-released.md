@@ -55,7 +55,7 @@ Formats and Converters
     timestamp (Makefile-alike)
   * :option:`--threshold` -- in po2\* converters this allows you to specify a
     percentage complete threshold.  If the PO files passes this theshold then
-    the file is output (:bug:`2998`)
+    the file is output ([bug 2998](http://bugs.locamotion.org/show_bug.cgi?id=2998))
   * :option:`--removeuntranslated` -- Extend this option to po2dtd and thus
     po2moz -- don't output untranslated text ([bug 1718](http://bugs.locamotion.org/show_bug.cgi?id=1718))
 
