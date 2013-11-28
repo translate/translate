@@ -50,7 +50,6 @@ class UnitMixer(object):
                     # ".accesskey")
         return mixedentities
 
-
     def mix_units(self, label_unit, accesskey_unit, target_unit):
         """Mix the given units into the given target_unit if possible.
 

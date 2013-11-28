@@ -295,7 +295,6 @@ define('_UPGRADE_CHARSET','Upgrade charset');"""
         assert phpunit.name == "define('_UPGRADE_CHARSET'"
         assert phpunit.source == "Upgrade charset"
 
-
     def test_parsing_define_no_spaces_after_equaldel_but_before_key(self):
         """Parse define syntax without spaces after the equal delimiter but
         with spaces before the key

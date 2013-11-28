@@ -19,7 +19,6 @@ class TestSVN(HelperTest):
         assert isinstance(o, svn.svn)
         assert o.location_abs == self.co_path
 
-
     def test_add(self):
         o = get_versioned_object(self.co_path)
         self.create_files({

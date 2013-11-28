@@ -31,7 +31,7 @@ fi
 
 if [ "$1" == "travis" ]; then
 	# For codes see http://pep8.readthedocs.org/en/latest/intro.html#error-codes
-	select="--select=E10,E11,E26,E27,E401,E70,E711,E721,W191,W292,W293,W391,W60"
+	select="--select=E10,E11,E26,E27,E401,E70,E711,E721,W191,W291,W292,W293,W391,W60"
 	count="--count"
 elif [ $1 ]; then
 	select="--select=$1"
