@@ -17,7 +17,7 @@ Getting it and sharing it
 =========================
 * pip install translate-toolkit
 * [Sourceforge download](https://sourceforge.net/projects/translate/files/Translate%20Toolkit/1.11.0-rc1)
-* Please share this URL [http://toolkit.translatehouse.org/download.html] if
+* Please share this URL [http://toolkit.translatehouse.org/download.html](http://toolkit.translatehouse.org/download.html) if
   you'd like to tweet or post about the release.
 
 Highlighted improvements
