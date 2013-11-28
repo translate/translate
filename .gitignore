@@ -1,7 +1,11 @@
 # Stuff from the master branch
 *.pyc
 translate/
+translate_toolkit.egg-info/
 docs/
+dist/
+MANIFEST
+MANIFEST.in
 
 # LESS
 assets/less/bootstrap
