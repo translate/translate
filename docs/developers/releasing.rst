@@ -267,6 +267,6 @@ Cleanup
 Some possible cleanup tasks:
 
 - Remove any RC builds from the sourceforge download pages (maybe?).
-- Check any release notes and such (or maybe do that before tagging).
+- Commit any release notes and such (or maybe do that before tagging).
 - Remove your translate-release checkout.
 - Update and fix these release notes.
