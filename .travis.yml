@@ -9,13 +9,9 @@ env:
   #- USECPO=1
   #- USECPO=2
 install:
-  - pip install --use-mirrors lxml
-  - pip install --use-mirrors iniparse
-  - pip install --use-mirrors python-Levenshtein
-  - pip install --use-mirrors BeautifulSoup
-  - pip install --use-mirrors Sphinx
   - sudo apt-get install python-aeidon
-  # Still need to handle with indexing engines and aeidon
+  - pip install --use-mirrors -r requirements/optional.txt
+  # Still need to handle with indexing engines
 script: py.test -r EfsxX
 notifications:
   email:
