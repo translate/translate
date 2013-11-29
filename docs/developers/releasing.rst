@@ -161,7 +161,7 @@ Publish the package on the `Python Package Index
 <https://pypi.python.org/pypi>`_ (PyPI)
 
 - `Submitting Packages to the Package Index
-  <http://wiki.python.org/moin/CheeseShopTutorial#Submitting_Packages_to_the_Package_Index>`
+  <http://wiki.python.org/moin/CheeseShopTutorial#Submitting_Packages_to_the_Package_Index>`_
 
 .. note:: You need a username and password on https://pypi.python.org and have
    rights to the project before you can proceed with this step.
@@ -238,10 +238,11 @@ We use github pages for the website. First we need to checkout the pages::
 
 #. In ``_posts/`` add a new release posting.  This is in Markdown format (for
    now), so we need to change the release notes .rst to .md, which mostly means
-   changing URL links from '```xxx <link>`_``' to ``[xxx](link)``.
+   changing URL links from ```xxx <link>`_`` to ``[xxx](link)``.
 #. Change $version as needed. See ``download.html``, ``_config.yml`` and
    ``egrep -r $old_release *``
-#. ``git commit`` and ``git push`` - changes are quite quick so easy to review.
+#. :command:`git commit` and :command:`git push` - changes are quite quick so
+   easy to review.
 
 
 Unstage on sourceforge
@@ -266,6 +267,6 @@ Cleanup
 Some possible cleanup tasks:
 
 - Remove any RC builds from the sourceforge download pages (maybe?).
-- Checkin any release notes and such (or maybe do that before tagging).
+- Check any release notes and such (or maybe do that before tagging).
 - Remove your translate-release checkout.
 - Update and fix these release notes.
