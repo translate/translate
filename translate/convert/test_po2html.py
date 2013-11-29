@@ -86,6 +86,19 @@ sin.
         htmlexpected = '<p>"ek is dom"</p>'
         assert htmlexpected in self.converthtml(posource, htmlsource)
 
+    def test_fuzzy_strings(self):
+        """Test that we use source when a string is fuzzy
+
+        This fixes :bug:`3145`
+        """
+        htmlsource = '<div>aaa</div>'
+        posource = '#: html:3\nmsgid "aaa"\nmsgstr "bbb"\n'
+        posource_fuzzy = '#: html:3\n#, fuzzy\nmsgid "aaa"\nmsgstr "bbb"\n'
+        htmlexpected = '<div>bbb</div>'
+        assert htmlexpected in self.converthtml(posource, htmlsource)
+        assert htmlexpected not in self.converthtml(posource_fuzzy, htmlsource)
+        assert htmlsource in self.converthtml(posource_fuzzy, htmlsource)
+
 
 class TestPO2HtmlCommand(test_convert.TestConvertCommand, TestPO2Html):
     """Tests running actual po2oo commands on files"""

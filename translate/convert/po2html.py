@@ -41,7 +41,7 @@ class po2html:
         if self.includefuzzy or not unit.isfuzzy():
             return unit.target
         else:
-            return None
+            return unit.source
 
     def mergestore(self, inputstore, templatetext, includefuzzy):
         """converts a file to .po format"""
