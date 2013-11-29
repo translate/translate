@@ -26,20 +26,25 @@ This file contains abstract (semantic) interfaces for placeable
 from translate.storage.placeables.strelem import StringElem
 
 
-class InvisiblePlaceable(StringElem):
+class BasePlaceable(StringElem):
+    """Base class for all placeables."""
     parse = None
 
 
-class MaskingPlaceable(StringElem):
-    parse = None
+class InvisiblePlaceable(BasePlaceable):
+    pass
 
 
-class ReplacementPlaceable(StringElem):
-    parse = None
+class MaskingPlaceable(BasePlaceable):
+    pass
 
 
-class SubflowPlaceable(StringElem):
-    parse = None
+class ReplacementPlaceable(BasePlaceable):
+    pass
+
+
+class SubflowPlaceable(BasePlaceable):
+    pass
 
 
 class Delimiter(object):
