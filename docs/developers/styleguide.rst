@@ -162,8 +162,8 @@ Like in :pep:`8`, but:
     from translate.filters import checks
     from translate.storage import versioncontrol
     from translate.storage.aresource import (EOF, WHITESPACE, AndroidFile,
-                                             AndroidUnit, android_encode,
-                                             android_decode)
+                                             AndroidUnit, android_decode,
+                                             android_encode)
 
     from . import php2po
 
