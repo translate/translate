@@ -107,7 +107,8 @@ Example:
         def __init__(self, name):
             self.name = name
 
-        def get_annoying_name(self):
+        @property
+        def annoying_name(self):
             return self.name.upper() + '!!!!111'
 
 
