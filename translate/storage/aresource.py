@@ -213,7 +213,7 @@ class AndroidResourceUnit(base.TranslationUnit):
         # Join the string together again, but w/o EOF marker
         return "".join(text[:-1])
 
-    def escape(self, text):
+    def escape(self, text, add_quote=True):
         '''
         Escape all the characters which need to be escaped in an Android XML file.
         '''
@@ -234,7 +234,7 @@ class AndroidResourceUnit(base.TranslationUnit):
         if text.startswith('@'):
             text = '\\@' + text[1:]
         # Quote strings with more whitespace
-        if text[0] in WHITESPACE or text[-1] in WHITESPACE or len(MULTIWHITESPACE.findall(text)) > 0:
+        if add_quote and (text[0] in WHITESPACE or text[-1] in WHITESPACE or len(MULTIWHITESPACE.findall(text)) > 0):
             return '"%s"' % text
         return text
 
@@ -268,6 +268,13 @@ class AndroidResourceUnit(base.TranslationUnit):
             # Remove old elements
             for x in xmltarget.iterchildren():
                 xmltarget.remove(x)
+            # Escape all text parts
+            for x in newstring.iter():
+                x.text = self.escape(x.text, False)
+                if x.prefix is not None:
+                    x.prefix = self.escape(x.prefix, False)
+                if x.tail is not None:
+                    x.tail = self.escape(x.tail, False)
             # Add new elements
             for x in newstring.iterchildren():
                 xmltarget.append(x)

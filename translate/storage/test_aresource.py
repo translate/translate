@@ -86,6 +86,12 @@ class TestAndroidResourceUnit(test_monolingual.TestMonolingualUnit):
                '</string>\n\n')
         self.__check_escape(string, xml)
 
+    def test_escape_html_code_quote(self):
+        string = 'some <b>html code</b> \'here\''
+        xml = ('<string name="Test String">some <b>html code</b> \\\'here\\\''
+               '</string>\n\n')
+        self.__check_escape(string, xml)
+
     def test_escape_arrows(self):
         string = '<<< arrow'
         xml = '<string name="Test String">&lt;&lt;&lt; arrow</string>\n\n'
