@@ -82,6 +82,7 @@ except TypeError:
 
 wrapper.wordsep_re = re.compile(
     r'(\s+|'                                  # any whitespace
+    r'\w*\\.|'                                # any escape should not be split
     r'[\w\!\'\&\.\,\?]+\s+|'                  # space should go with a word
     r'[^\s\w]*\w+[a-zA-Z]-(?=\w+[a-zA-Z])|'   # hyphenated words
     r'(?<=[\w\!\"\'\&\.\,\?])-{2,}(?=\w))')   # em-dash
