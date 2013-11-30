@@ -10,7 +10,7 @@ env:
   #- USECPO=2
 install:
   - sudo apt-get install python-aeidon
-  - pip install --use-mirrors -r requirements/optional.txt
+  - pip install --use-mirrors -r requirements/dev.txt
   # Still need to handle with indexing engines
 script: py.test -r EfsxX
 notifications:
