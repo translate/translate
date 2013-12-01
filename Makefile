@@ -2,6 +2,7 @@ SRC_DIR = translate
 FORMATS=--formats=bztar
 VERSION=$(shell python setup.py --version)
 FULLNAME=$(shell python setup.py --fullname)
+SFUSERNAME=$(shell egrep -A5 sourceforge ~/.ssh/config | egrep -m1 User | cut -d" " -f2)
 
 .PHONY: all build requirements help publish test-publish
 
@@ -19,8 +20,8 @@ test-publish-pypi:
 #scp translate-toolkit-1.10.0.tar.bz2 jsmith@frs.sourceforge.net:/home/frs/project/translate/Translate\ Toolkit/1.10.0/
 publish-sourceforge:
 	@echo "We don't trust automation that much.  The following is the command you need to run"
-	@echo 'scp -p dist/${FULLNAME}.tar.bz2 jsmith@frs.sourceforge.net:"/home/frs/project/translate/Translate\ Toolkit/${VERSION}/"'
-	@echo 'scp -p docs/releases/${VERSION}.rst jsmith@frs.sourceforge.net:"/home/frs/project/translate/Translate\ Toolkit/${VERSION}/README.rst"'
+	@echo 'scp -p dist/${FULLNAME}.tar.bz2 ${SFUSERNAME}@frs.sourceforge.net:"/home/frs/project/translate/Translate\ Toolkit/${VERSION}/"'
+	@echo 'scp -p docs/releases/${VERSION}.rst ${SFUSERNAME}@frs.sourceforge.net:"/home/frs/project/translate/Translate\ Toolkit/${VERSION}/README.rst"'
 
 publish: publish-pypi publish-sourceforge
 
