@@ -12,7 +12,8 @@ install:
   - sudo apt-get install python-aeidon
   - pip install --use-mirrors -r requirements/dev.txt
   # Still need to handle with indexing engines
-script: py.test -r EfsxX
+script:
+  - py.test -r EfsxX
 notifications:
   email:
     on_failure: always
