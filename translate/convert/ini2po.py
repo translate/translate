@@ -24,21 +24,24 @@ See: http://docs.translatehouse.org/projects/translate-toolkit/en/latest/command
 for examples and usage instructions.
 """
 
-import sys
 import logging
+import sys
 
 from translate.storage import po
 
+
 logger = logging.getLogger(__name__)
 
+
 class ini2po:
-    """convert a .ini file to a .po file for handling the translation..."""
+    """Convert a .ini file to a .po file for handling the translation..."""
 
     def convert_store(self, input_store, duplicatestyle="msgctxt"):
-        """converts a .ini file to a .po file..."""
+        """Convert a .ini file to a .po file..."""
         output_store = po.pofile()
         output_header = output_store.header()
-        output_header.addnote("extracted from %s" % input_store.filename, "developer")
+        output_header.addnote("extracted from %s" % input_store.filename,
+                              "developer")
 
         for input_unit in input_store.units:
             output_unit = self.convert_unit(input_unit, "developer")
@@ -47,23 +50,26 @@ class ini2po:
         output_store.removeduplicates(duplicatestyle)
         return output_store
 
-    def merge_store(self, template_store, input_store, blankmsgstr=False, duplicatestyle="msgctxt"):
-        """converts two .ini files to a .po file..."""
+    def merge_store(self, template_store, input_store, blankmsgstr=False,
+                    duplicatestyle="msgctxt"):
+        """Convert two .ini files to a .po file..."""
         output_store = po.pofile()
         output_header = output_store.header()
-        output_header.addnote("extracted from %s, %s" % (template_store.filename, input_store.filename), "developer")
+        note = "extracted from %s, %s" % (template_store.filename,
+                                          input_store.filename)
+        output_header.addnote(note, "developer")
 
         input_store.makeindex()
         for template_unit in template_store.units:
             origpo = self.convert_unit(template_unit, "developer")
-            # try and find a translation of the same name...
+            # Try and find a translation of the same name...
             template_unit_name = "".join(template_unit.getlocations())
             if template_unit_name in input_store.locationindex:
                 translatedini = input_store.locationindex[template_unit_name]
                 translatedpo = self.convert_unit(translatedini, "translator")
             else:
                 translatedpo = None
-            # if we have a valid po unit, get the translation and add it...
+            # If we have a valid po unit, get the translation and add it...
             if origpo is not None:
                 if translatedpo is not None and not blankmsgstr:
                     origpo.target = translatedpo.source
@@ -75,11 +81,12 @@ class ini2po:
         return output_store
 
     def convert_unit(self, input_unit, commenttype):
-        """Converts a .ini unit to a .po unit. Returns None if empty
-        or not for translation."""
+        """Convert a .ini unit to a .po unit. Returns None if empty or not for
+        translation.
+        """
         if input_unit is None:
             return None
-        # escape unicode
+        # Escape unicode.
         output_unit = po.pounit(encoding="UTF-8")
         output_unit.addlocation("".join(input_unit.getlocations()))
         output_unit.source = input_unit.source
@@ -87,35 +94,43 @@ class ini2po:
         return output_unit
 
 
-def convertini(input_file, output_file, template_file, pot=False, duplicatestyle="msgctxt", dialect="default"):
-    """Reads in *input_file* using ini, converts using :class:`ini2po`,
-    writes to *output_file*."""
+def convertini(input_file, output_file, template_file, pot=False,
+               duplicatestyle="msgctxt", dialect="default"):
+    """Read in *input_file* using ini, converts using :class:`ini2po`, writes
+    to *output_file*.
+    """
     from translate.storage import ini
     input_store = ini.inifile(input_file, dialect=dialect)
     convertor = ini2po()
     if template_file is None:
-        output_store = convertor.convert_store(input_store, duplicatestyle=duplicatestyle)
+        output_store = convertor.convert_store(input_store,
+                                               duplicatestyle=duplicatestyle)
     else:
         template_store = ini.inifile(template_file, dialect=dialect)
-        output_store = convertor.merge_store(template_store, input_store, blankmsgstr=pot, duplicatestyle=duplicatestyle)
+        output_store = convertor.merge_store(template_store, input_store,
+                                             blankmsgstr=pot,
+                                             duplicatestyle=duplicatestyle)
     if output_store.isempty():
         return 0
     output_file.write(str(output_store))
     return 1
 
 
-def convertisl(input_file, output_file, template_file, pot=False, duplicatestyle="msgctxt", dialect="inno"):
-    return convertini(input_file, output_file, template_file, pot=False, duplicatestyle="msgctxt", dialect=dialect)
+def convertisl(input_file, output_file, template_file, pot=False,
+               duplicatestyle="msgctxt", dialect="inno"):
+    return convertini(input_file, output_file, template_file, pot=False,
+                      duplicatestyle="msgctxt", dialect=dialect)
 
 
 def main(argv=None):
     from translate.convert import convert
     formats = {
-               "ini": ("po", convertini), ("ini", "ini"): ("po", convertini),
-               "isl": ("po", convertisl), ("isl", "isl"): ("po", convertisl),
-               "iss": ("po", convertisl), ("iss", "iss"): ("po", convertisl),
-              }
-    parser = convert.ConvertOptionParser(formats, usetemplates=True, usepots=True, description=__doc__)
+        "ini": ("po", convertini), ("ini", "ini"): ("po", convertini),
+        "isl": ("po", convertisl), ("isl", "isl"): ("po", convertisl),
+        "iss": ("po", convertisl), ("iss", "iss"): ("po", convertisl),
+    }
+    parser = convert.ConvertOptionParser(formats, usetemplates=True,
+                                         usepots=True, description=__doc__)
     parser.add_duplicates_option()
     parser.passthrough.append("pot")
     parser.run(argv)

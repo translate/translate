@@ -36,6 +36,7 @@ from StringIO import StringIO
 from translate.misc.ini import INIConfig
 from translate.storage import base
 
+
 _dialects = {}
 
 
