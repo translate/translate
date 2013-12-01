@@ -28,7 +28,9 @@ except ImportError:
     from StringIO import StringIO
 
 from translate.misc import optrecurse
-# don't import optparse ourselves, get the version from optrecurse
+
+
+# Don't import optparse ourselves, get the version from optrecurse.
 optparse = optrecurse.optparse
 
 
@@ -178,6 +180,7 @@ class ConvertOptionParser(optrecurse.RecursiveOptionParser, object):
                     self).processfile(fileprocessor, options,
                                       fullinputpath, fulloutputpath,
                                       fulltemplatepath)
+
 
 def copyinput(inputfile, outputfile, templatefile, **kwargs):
     """Copies the input file to the output file."""
@@ -389,7 +392,8 @@ class ArchiveConvertOptionParser(ConvertOptionParser):
         if self.isarchive(options.output, 'output'):
             outputstream = options.outputarchive.openoutputfile(fulloutputpath)
             if outputstream is None:
-                self.warning("Could not find where to put %s in output archive; writing to tmp" % fulloutputpath)
+                self.warning("Could not find where to put %s in output "
+                             "archive; writing to tmp" % fulloutputpath)
                 return StringIO()
             return outputstream
         else:
@@ -452,6 +456,7 @@ class ArchiveConvertOptionParser(ConvertOptionParser):
                                           fullinputpath, fulloutputpath,
                                           fulltemplatepath)
 
+
 def _output_is_newer(input_path, output_path):
     """Check if input_path was not modified since output_path was generated,
     used to avoid needless regeneration of output.
@@ -466,6 +471,7 @@ def _output_is_newer(input_path, output_path):
     output_mtime = os.path.getmtime(output_path)
 
     return output_mtime > input_mtime
+
 
 def should_output_store(store, threshold):
     """Check if the percent of translated source words more than or equal to
@@ -486,6 +492,7 @@ def should_output_store(store, threshold):
     percent = tranlated_count * 100 / total_count
 
     return percent >= threshold
+
 
 def main(argv=None):
     parser = ArchiveConvertOptionParser({}, description=__doc__)
