@@ -175,7 +175,7 @@ msgstr "Bézier-kurwe"
         tmx = self.po2tmx(minipo, comment='source')
         print str(tmx)
         unit = tmx.findunits(u"Bézier curve")
-        assert unit[0].getnotes() == u": ../PuzzleFourSided.h:45"
+        assert unit[0].getnotes() == u"../PuzzleFourSided.h:45"
 
     def test_typecomments(self):
         """Tests that others comments are imported."""
@@ -186,7 +186,7 @@ msgstr "Bézier-kurwe"
         tmx = self.po2tmx(minipo, comment='type')
         print str(tmx)
         unit = tmx.findunits(u"Bézier curve")
-        assert unit[0].getnotes() == u", csharp-format"
+        assert unit[0].getnotes() == u"csharp-format"
 
 class TestPO2TMXCommand(test_convert.TestConvertCommand, TestPO2TMX):
     """Tests running actual po2tmx commands on files"""

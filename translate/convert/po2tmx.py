@@ -34,11 +34,15 @@ from translate.misc import wStringIO
 
 class po2tmx:
 
-    def cleancomments(self, comments):
+    def cleancomments(self, comments, comment_type=None):
         """Removes the comment marks from the PO strings."""
+	# FIXME this is a bit hacky, needs some fixes in the PO classes
         for index, comment in enumerate(comments):
             if comment.startswith("#"):
-                comments[index] = comment[1:].rstrip()
+		if comment_type is None:
+                    comments[index] = comment[1:].rstrip()
+		else:
+                    comments[index] = comment[2:].strip()
 
         return ''.join(comments)
 
@@ -53,8 +57,8 @@ class po2tmx:
             translation = inunit.target
 
             commenttext = {
-                'source': self.cleancomments(inunit.sourcecomments),
-                'type': self.cleancomments(inunit.typecomments),
+                'source': self.cleancomments(inunit.sourcecomments, "source"),
+                'type': self.cleancomments(inunit.typecomments, "type"),
                 'others': self.cleancomments(inunit.othercomments),
             }.get(comment, None)
 
