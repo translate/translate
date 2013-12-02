@@ -36,12 +36,12 @@ class po2tmx:
 
     def cleancomments(self, comments, comment_type=None):
         """Removes the comment marks from the PO strings."""
-	# FIXME this is a bit hacky, needs some fixes in the PO classes
+        # FIXME this is a bit hacky, needs some fixes in the PO classes
         for index, comment in enumerate(comments):
             if comment.startswith("#"):
-		if comment_type is None:
+                if comment_type is None:
                     comments[index] = comment[1:].rstrip()
-		else:
+                else:
                     comments[index] = comment[2:].strip()
 
         return ''.join(comments)
