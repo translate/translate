@@ -255,8 +255,8 @@ class InnoScript:
         compilecommand = shellcompilecommand.replace('"%1"', self.pathname)
         result = os.system(compilecommand)
         if result:
-            print "Error compiling iss file"
-            print "Opening iss file, use InnoSetup GUI to compile manually"
+            print("Error compiling iss file")
+            print("Opening iss file, use InnoSetup GUI to compile manually")
             os.startfile(self.pathname)
 
 
@@ -286,9 +286,9 @@ class build_installer(build_exe_map):
                             self.lib_files,
                             version=self.distribution.metadata.version,
                             install_scripts=install_scripts)
-        print "*** creating the inno setup script***"
+        print("*** creating the inno setup script***")
         script.create()
-        print "*** compiling the inno setup script***"
+        print("*** compiling the inno setup script***")
         script.compile()
         # Note: By default the final setup.exe will be in an Output
         # subdirectory.
@@ -385,7 +385,7 @@ def standardsetup(name, version, custompackages=[], customdatafiles=[]):
         manifest_in = open("MANIFEST.in", "w")
         buildmanifest_in(manifest_in, translatescripts + translatebashscripts)
         manifest_in.close()
-    except IOError, e:
+    except IOError as e:
         print >> sys.stderr, "warning: could not recreate MANIFEST.in, continuing anyway. Error was %s" % e
     addsubpackages(subpackages)
     datafiles = getdatafiles()
