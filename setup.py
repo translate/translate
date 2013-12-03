@@ -77,7 +77,8 @@ subpackages = [
 # TODO: elementtree doesn't work in sdist, fix this
 packages = ["translate"]
 
-translatescripts = [apply(join, ('translate', ) + script) for script in
+translatescripts = [
+    apply(join, ('translate', ) + script) for script in [
                   ('convert', 'pot2po'),
                   ('convert', 'moz2po'), ('convert', 'po2moz'),
                   ('convert', 'oo2po'), ('convert', 'po2oo'),
@@ -115,7 +116,9 @@ translatescripts = [apply(join, ('translate', ) + script) for script in
                   ('tools', 'poterminology'),
                   ('tools', 'pretranslate'),
                   ('services', 'tmserver'),
-                  ('tools', 'build_tmdb')]
+                  ('tools', 'build_tmdb')
+    ]
+]
 
 translatebashscripts = [
     apply(join, ('tools', ) + script) for script in [
