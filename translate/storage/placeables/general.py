@@ -57,12 +57,12 @@ class AltAttrPlaceable(G):
 
 
 class NewlinePlaceable(Ph):
-    """Matches new-lines."""
+    """Placeable for new-lines."""
 
     iseditable = False
     isfragile = True
     istranslatable = False
-    regex = re.compile(r'\n')
+    regex = re.compile(r'\r\n|\n|\r')
     parse = classmethod(regex_parse)
 
 
