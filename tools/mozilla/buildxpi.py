@@ -135,6 +135,7 @@ ac_add_options --disable-opus
 ac_add_options --disable-webrtc
 ac_add_options --disable-wave
 ac_add_options --disable-webm
+ac_add_options --disable-pulseaudio
 ac_add_options --disable-libjpeg-turbo
 mk_add_options MOZ_OBJDIR=%(builddir)s
 ac_add_options --with-l10n-base=%(l10nbase)s
