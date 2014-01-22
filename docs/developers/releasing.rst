@@ -22,7 +22,7 @@ Other possible steps
 --------------------
 We need to check and document these if needed:
 
-- Build docs: we need to check if e need to build the docs for the release
+- Build docs: we need to check if we need to build the docs for the release
 - Change URLs to point to the correct docs: do we want to change URLs to point
   to the $version docs rather then 'latest'
 - Building on Windows, building for other Linux distros. We have produced 
@@ -34,9 +34,9 @@ Detailed instructions
 
 Get a clean checkout
 --------------------
-We work from a clean checkout to esnure that everything you are adding to the
+We work from a clean checkout to ensure that everything you are adding to the
 build is what is in VC and doesn't contain any of your uncommitted changes.  It
-also ensure that someone else could relicate your process. ::
+also ensure that someone else could replicate your process. ::
 
     git clone git@github.com:translate/translate.git translate-release
 
@@ -142,15 +142,17 @@ You can then proceed with other tests such as checking
 
 #. Documentation is available
 #. Converters and scripts are installed and run correctly
-#. Meta information about the package is correct. See pypy section of reviewing
+#. Meta information about the package is correct. See PyPI section of reviewing
    meta data.
 
 
-Tag the release
----------------
+Tag and branch the release
+--------------------------
 You should only tag once you are happy with your release as there are some
-things that we can't undo. ::
+things that we can't undo. You can safely branch for a ``stable/`` branch
+before you tag. ::
 
+    git checkout -b stable/1.10.0
     git tag -a 1.10.0 -m "Tag version 1.10.0"
     git push --tags
 
@@ -172,8 +174,8 @@ Publish the package on the `Python Package Index
    actually ready.
 
 Review the meta data. This is stored in ``setup.py``, use ``./setup.py --help``
-to se some options to display meta-data. The actual descriptions are taken from
-``translate/__init__.py``.
+to see some options to display meta-data. The actual descriptions are taken
+from ``translate/__init__.py``.
 
 To test before publishing run::
 
@@ -241,7 +243,7 @@ We use github pages for the website. First we need to checkout the pages::
    changing URL links from ```xxx <link>`_`` to ``[xxx](link)``.
 #. Change $version as needed. See ``download.html``, ``_config.yml`` and
    ``egrep -r $old_release *``
-#. :command:`git commit` and :command:`git push` - changes are quite quick so
+#. :command:`git commit` and :command:`git push` -- changes are quite quick, so
    easy to review.
 
 
