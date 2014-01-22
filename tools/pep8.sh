@@ -5,7 +5,7 @@
 # check numbers - run that specific test
 # travis - run a set of checks that should always pass
 
-exclude=\
+exclude_toolkit=\
 typecheck,\
 diff_match_patch.py,\
 selector.py,\
@@ -13,6 +13,14 @@ wsgiserver,\
 ini.py,\
 textwrap.py,\
 build
+
+exclude_pootle=\
+djblets,\
+_site
+
+exclude=\
+$exclude_toolkit,\
+$exclude_pootle
 
 if [ -f "$1" -o -d "$1" ]; then
 	files=$1
