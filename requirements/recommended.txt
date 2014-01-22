@@ -6,4 +6,5 @@
 lxml>=2.1.0  # >=1.3.4 should work
 
 # Faster matching in e.g. pot2po
-python-Levenshtein>=0.11.1
+# 0.11.0 is broken using pip, later versions are fixed
+python-Levenshtein>=0.10.2,!=0.11.0
