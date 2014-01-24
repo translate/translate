@@ -11,20 +11,25 @@ This Styleguide follows :pep:`8` with some clarifications. It is based almost
 verbatim on the `Flask Styleguide`_.
 
 
-.. _styleguide-general:
+.. _styleguide-python:
+
+Python
+------
+
+These are the Translate conventions for Python coding style.
 
 General
--------
+^^^^^^^
 
 Indentation
-^^^^^^^^^^^
+~~~~~~~~~~~
 
 4 real spaces, no tabs. Exceptions: modules that have been copied into the
 source that don't follow this guideline.
 
 
 Maximum line length
-^^^^^^^^^^^^^^^^^^^
+~~~~~~~~~~~~~~~~~~~
 
 79 characters with a soft limit for 84 if absolutely necessary. Try to avoid
 too nested code by cleverly placing `break`, `continue` and `return`
@@ -32,7 +37,7 @@ statements.
 
 
 Continuing long statements
-^^^^^^^^^^^^^^^^^^^^^^^^^^
+~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 To continue a statement you can use backslashes (preceeded by a space) in which
 case you should align the next line with the last dot or equal sign, or indent
@@ -85,7 +90,7 @@ For lists or tuples with many items, break immediately after the opening brace:
 
 
 Blank lines
-^^^^^^^^^^^
+~~~~~~~~~~~
 
 Top level functions and classes are separated by two lines, everything else
 by one. Do not use too many blank lines to separate logical segments in code.
@@ -115,7 +120,7 @@ Example:
 .. _styleguide-imports:
 
 Imports
-^^^^^^^
+~~~~~~~
 
 Like in :pep:`8`, but:
 
@@ -170,7 +175,7 @@ Like in :pep:`8`, but:
 
 
 Properties
-^^^^^^^^^^
+~~~~~~~~~~
 
 - Never use ``lambda`` functions:
 
@@ -257,10 +262,10 @@ Properties
 
 
 Expressions and Statements
---------------------------
+^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 General whitespace rules
-^^^^^^^^^^^^^^^^^^^^^^^^
+~~~~~~~~~~~~~~~~~~~~~~~~
 
 - No whitespace for unary operators that are not words (e.g.: ``-``, ``~``
   etc.) as well on the inner side of parentheses.
@@ -285,7 +290,7 @@ General whitespace rules
 
 
 Slice notation
-^^^^^^^^^^^^^^
+~~~~~~~~~~~~~~
 
 While :pep:`8` calls for spaces around operators ``a = b + c`` this results in
 flags when you use ``a[b+1:c-1]`` but would allow the rather unreadable
@@ -315,7 +320,7 @@ flags when you use ``a[b+1:c-1]`` but would allow the rather unreadable
    String slice formatting is still under discussion.
 
 Comparisons
-^^^^^^^^^^^
+~~~~~~~~~~~
 
 - Against arbitrary types: ``==`` and ``!=``
 - Against singletons with ``is`` and ``is not`` (e.g.: ``foo is not None``)
@@ -324,20 +329,20 @@ Comparisons
 
 
 Negated containment checks
-^^^^^^^^^^^^^^^^^^^^^^^^^^
+~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 - Use ``foo not in bar`` instead of ``not foo in bar``
 
 
 Instance checks
-^^^^^^^^^^^^^^^
+~~~~~~~~~~~~~~~
 
 - ``isinstance(a, C)`` instead of ``type(A) is C``, but try to avoid instance
   checks in general.  Check for features.
 
 
 If statements
-^^^^^^^^^^^^^
+~~~~~~~~~~~~~
 
 - Use ``()`` brackets around complex if statements to allow easy wrapping,
   don't use backslash to wrap an if statement.
@@ -368,7 +373,7 @@ If statements
 
 
 Naming Conventions
-------------------
+^^^^^^^^^^^^^^^^^^
 
 .. note::
 
@@ -395,7 +400,7 @@ with prefixes or suffixes.
 
 
 Function and method arguments
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 - Class methods: ``cls`` as first parameter
 - Instance methods: ``self`` as first parameter
