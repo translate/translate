@@ -23,7 +23,6 @@
 files (pofile).
 """
 
-from __future__ import generators
 import copy
 import cStringIO
 import re

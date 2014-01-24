@@ -29,8 +29,6 @@ to have a look at gettext-tools/libgettextpo/gettext-po.h from the gettext
 package for the public API of the library.
 """
 
-from __future__ import with_statement
-
 from ctypes import c_size_t, c_int, c_uint, c_char_p, c_long, CFUNCTYPE, POINTER
 from ctypes import Structure, cdll
 import ctypes.util
