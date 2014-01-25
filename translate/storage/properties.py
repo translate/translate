@@ -298,6 +298,7 @@ class Dialect(object):
     value_wrap_char = u""
     drop_comments = []
 
+    @classmethod
     def encode(cls, string, encoding=None):
         """Encode the string"""
         # FIXME: dialects are a bad idea, not possible for subclasses
@@ -305,22 +306,21 @@ class Dialect(object):
         if encoding != "utf-8":
             return quote.javapropertiesencode(string or u"")
         return string or u""
-    encode = classmethod(encode)
 
+    @classmethod
     def find_delimiter(cls, line):
         """Find the delimiter"""
         return _find_delimiter(line, cls.delimiters)
-    find_delimiter = classmethod(find_delimiter)
 
+    @classmethod
     def key_strip(cls, key):
         """Strip unneeded characters from the key"""
         return _key_strip(key)
-    key_strip = classmethod(key_strip)
 
+    @classmethod
     def value_strip(cls, value):
         """Strip unneeded characters from the value"""
         return value.lstrip()
-    value_strip = classmethod(value_strip)
 
 
 class DialectJava(Dialect):
@@ -335,9 +335,9 @@ class DialectJavaUtf8(DialectJava):
     default_encoding = "utf-8"
     delimiters = [u"=", u":", u" "]
 
+    @classmethod
     def encode(cls, string, encoding=None):
         return quote.mozillapropertiesencode(string or u"")
-    encode = classmethod(encode)
 register_dialect(DialectJavaUtf8)
 
 
@@ -364,9 +364,9 @@ class DialectSkype(Dialect):
     default_encoding = "utf-16"
     delimiters = [u"="]
 
+    @classmethod
     def encode(cls, string, encoding=None):
         return quote.mozillapropertiesencode(string or u"")
-    encode = classmethod(encode)
 register_dialect(DialectSkype)
 
 
@@ -381,6 +381,7 @@ class DialectStrings(Dialect):
     out_delimiter_wrappers = u' '
     drop_comments = ["/* No comment provided by engineer. */"]
 
+    @classmethod
     def key_strip(cls, key):
         """Strip unneeded characters from the key"""
         newkey = key.rstrip().rstrip('"')
@@ -389,8 +390,8 @@ class DialectStrings(Dialect):
             newkey += key[len(newkey):len(newkey)+1]
         ret = newkey.lstrip().lstrip('"')
         return ret.replace('\\"', '"')
-    key_strip = classmethod(key_strip)
 
+    @classmethod
     def value_strip(cls, value):
         """Strip unneeded characters from the value"""
         newvalue = value.rstrip().rstrip(';').rstrip('"')
@@ -399,11 +400,10 @@ class DialectStrings(Dialect):
             newvalue += value[len(newvalue):len(newvalue)+1]
         ret = newvalue.lstrip().lstrip('"')
         return ret.replace('\\"', '"')
-    value_strip = classmethod(value_strip)
 
+    @classmethod
     def encode(cls, string, encoding=None):
         return string.replace("\n", r"\n").replace("\t", r"\t")
-    encode = classmethod(encode)
 register_dialect(DialectStrings)
 
 

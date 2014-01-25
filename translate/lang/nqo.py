@@ -48,7 +48,7 @@ class nqo(common.Common):
 
     ignoretests = ["startcaps", "simplecaps", "acronyms"]
 
+    @classmethod
     def punctranslate(cls, text):
         text = super(cls, cls).punctranslate(text)
         return reverse_quotes(text)
-    punctranslate = classmethod(punctranslate)

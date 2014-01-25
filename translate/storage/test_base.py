@@ -52,10 +52,10 @@ def test_force_override():
             base.force_override(self.test, BaseClass)
             return True
 
+        @classmethod
         def classtest(cls):
             base.force_override(cls.classtest, BaseClass)
             return True
-        classtest = classmethod(classtest)
 
     class DerivedClass(BaseClass):
         pass

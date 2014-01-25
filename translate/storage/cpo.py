@@ -565,6 +565,7 @@ class pounit(pocommon.pounit):
         context = data.forceunicode(context)
         gpo.po_message_set_msgctxt(self._gpo_message, context.encode(self.CPO_ENC))
 
+    @classmethod
     def buildfromunit(cls, unit, encoding=None):
         """Build a native unit from a foreign unit, preserving as much
         information as possible."""
@@ -599,7 +600,6 @@ class pounit(pocommon.pounit):
             return newunit
         else:
             return base.TranslationUnit.buildfromunit(unit)
-    buildfromunit = classmethod(buildfromunit)
 
 
 class pofile(pocommon.pofile):

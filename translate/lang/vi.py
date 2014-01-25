@@ -36,6 +36,7 @@ class vi(common.Common):
     for c in u":;!#":
         puncdict[c] = u" %s" % c
 
+    @classmethod
     def punctranslate(cls, text):
         """Implement some extra features for quotation marks.
 
@@ -45,7 +46,6 @@ class vi(common.Common):
         """
         text = super(cls, cls).punctranslate(text)
         return fr.guillemets(text)
-    punctranslate = classmethod(punctranslate)
 
     mozilla_nplurals = 2
     mozilla_pluralequation = "n!=1 ? 1 : 0"

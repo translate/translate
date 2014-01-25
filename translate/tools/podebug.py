@@ -63,9 +63,9 @@ class podebug:
             lambda e: e.apply_to_strings(func),
             lambda e: e.isleaf() and e.istranslatable)
 
+    @classmethod
     def rewritelist(cls):
         return [rewrite.replace("rewrite_", "") for rewrite in dir(cls) if rewrite.startswith("rewrite_")]
-    rewritelist = classmethod(rewritelist)
 
     def _rewrite_prepend_append(self, string, prepend, append=None):
         if append is None:
@@ -186,9 +186,9 @@ class podebug:
         self.apply_to_translatables(string, transformer)
         return string
 
+    @classmethod
     def ignorelist(cls):
         return [ignore.replace("ignore_", "") for ignore in dir(cls) if ignore.startswith("ignore_")]
-    ignorelist = classmethod(ignorelist)
 
     def ignore_openoffice(self, unit):
         for location in unit.getlocations():

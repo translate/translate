@@ -63,8 +63,8 @@ class zh(common.Common):
         u"% ": u"%",
     }
 
+    @classmethod
     def length_difference(cls, length):
         return 10 - length / 2
-    length_difference = classmethod(length_difference)
 
     ignoretests = ["startcaps", "simplecaps"]

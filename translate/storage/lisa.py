@@ -258,11 +258,11 @@ class LISAunit(base.TranslationUnit):
     rid = property(lambda self: self.xmlelement.attrib[self.namespaced('rid')],
                    lambda self, value: self._set_property(self.namespaced('rid'), value))
 
+    @classmethod
     def createfromxmlElement(cls, element):
         term = cls(None, empty=True)
         term.xmlelement = element
         return term
-    createfromxmlElement = classmethod(createfromxmlElement)
 
 
 class LISAfile(base.TranslationStore):

@@ -185,6 +185,7 @@ class FileTotals(object):
                 untranslated            INTEGER NOT NULL,
                 translatedtargetwords   INTEGER NOT NULL);""")
 
+    @classmethod
     def new_record(cls, state_for_db=None, sourcewords=None, targetwords=None):
         record = Record(cls.keys, compute_derived_values=cls._compute_derived_values)
         if state_for_db is not None:
@@ -200,8 +201,7 @@ class FileTotals(object):
                 record['fuzzysourcewords'] = sourcewords
         return record
 
-    new_record = classmethod(new_record)
-
+    @classmethod
     def _compute_derived_values(cls, record):
         record["total"] = record["untranslated"] + \
                           record["translated"] + \
@@ -210,7 +210,6 @@ class FileTotals(object):
                                      record["translatedsourcewords"] + \
                                      record["fuzzysourcewords"]
         record["review"] = 0
-    _compute_derived_values = classmethod(_compute_derived_values)
 
     def __getitem__(self, fileid):
         result = self.cur.execute("""

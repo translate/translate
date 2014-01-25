@@ -261,6 +261,7 @@ class PoXliffUnit(xliff.xliffunit):
     def istranslatable(self):
         return super(PoXliffUnit, self).istranslatable() and not self.isheader()
 
+    @classmethod
     def createfromxmlElement(cls, element, namespace=None):
         if element.tag.endswith("trans-unit"):
             object = cls(None, empty=True)
@@ -277,7 +278,6 @@ class PoXliffUnit(xliff.xliffunit):
             subunit.namespace = namespace
             group.units.append(subunit)
         return group
-    createfromxmlElement = classmethod(createfromxmlElement)
 
     def hasplural(self):
         return self.xmlelement.tag == self.namespaced("group")

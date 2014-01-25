@@ -69,8 +69,8 @@ class fa(common.Common):
     #TODO: check persian numerics
     #TODO: zwj and zwnj?
 
+    @classmethod
     def punctranslate(cls, text):
         """Implement "French" quotation marks."""
         text = super(cls, cls).punctranslate(text)
         return guillemets(text)
-    punctranslate = classmethod(punctranslate)

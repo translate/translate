@@ -35,6 +35,7 @@ class BaseTestFactory:
         """removes the attributes set up by setup_method"""
         self.cleardir(self.testdir)
 
+    @classmethod
     def cleardir(self, dirname):
         """removes the given directory"""
         if os.path.exists(dirname):
@@ -46,7 +47,6 @@ class BaseTestFactory:
         if os.path.exists(dirname):
             os.rmdir(dirname)
         assert not os.path.exists(dirname)
-    cleardir = classmethod(cleardir)
 
     def test_getclass(self):
         assert classname("file.po") == "pofile"

@@ -501,6 +501,7 @@ class xliffunit(lisa.LISAunit):
         else:
             return False
 
+    @classmethod
     def multistring_to_rich(cls, mstr):
         """Override :meth:`TranslationUnit.multistring_to_rich` which is used
         by the ``rich_source`` and ``rich_target`` properties."""
@@ -511,13 +512,12 @@ class xliffunit(lisa.LISAunit):
             strings = [mstr]
 
         return [xml_to_strelem(s) for s in strings]
-    multistring_to_rich = classmethod(multistring_to_rich)
 
+    @classmethod
     def rich_to_multistring(cls, elem_list):
         """Override :meth:`TranslationUnit.rich_to_multistring` which is used
         by the ``rich_source`` and ``rich_target`` properties."""
         return multistring([unicode(elem) for elem in elem_list])
-    rich_to_multistring = classmethod(rich_to_multistring)
 
 
 class xlifffile(lisa.LISAfile):
@@ -774,6 +774,7 @@ class xlifffile(lisa.LISAfile):
         self.removedefaultfile()
         return super(xlifffile, self).__str__()
 
+    @classmethod
     def parsestring(cls, storestring):
         """Parses the string to return the correct file object"""
         xliff = super(xlifffile, cls).parsestring(storestring)
@@ -785,4 +786,3 @@ class xlifffile(lisa.LISAfile):
                 from translate.storage import poxliff
                 xliff = poxliff.PoXliffFile.parsestring(storestring)
         return xliff
-    parsestring = classmethod(parsestring)

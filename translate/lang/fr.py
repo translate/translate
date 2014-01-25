@@ -68,6 +68,7 @@ class fr(common.Common):
     # TODO: consider adding % and $, but think about the consequences of how
     # they could be part of variables
 
+    @classmethod
     def punctranslate(cls, text):
         """Implement some extra features for quotation marks.
 
@@ -80,4 +81,3 @@ class fr(common.Common):
         # http ://
         text = text.replace(u"\u00a0://", "://")
         return guillemets(text)
-    punctranslate = classmethod(punctranslate)

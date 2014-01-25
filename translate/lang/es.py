@@ -30,6 +30,7 @@ from translate.lang import common
 class es(common.Common):
     """This class represents Spanish."""
 
+    @classmethod
     def punctranslate(cls, text):
         """Implement some extra features for inverted punctuation.
         """
@@ -51,4 +52,3 @@ class es(common.Common):
         elif first[-1] == '!':
             text = u"¡" + text
         return text
-    punctranslate = classmethod(punctranslate)

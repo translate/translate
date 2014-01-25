@@ -388,6 +388,7 @@ class pounit(pocommon.pounit):
             id = u"%s\04%s" % (context, id)
         return id
 
+    @classmethod
     def buildfromunit(cls, unit):
         """Build a native unit from a foreign unit, preserving as much
         information as possible."""
@@ -420,7 +421,6 @@ class pounit(pocommon.pounit):
             return newunit
         else:
             return base.TranslationUnit.buildfromunit(unit)
-    buildfromunit = classmethod(buildfromunit)
 
 
 class pofile(pocommon.pofile):

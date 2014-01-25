@@ -48,6 +48,7 @@ class af(common.Common):
 
     specialchars = u"ëïêôûáéíóúý"
 
+    @classmethod
     def capsstart(cls, text):
         """Modify this for the indefinite article ('n)."""
         match = articlere.search(text, 0, 20)
@@ -59,7 +60,6 @@ class af(common.Common):
             if match:
                 return common.Common.capsstart(stripped[match.end():])
         return common.Common.capsstart(text)
-    capsstart = classmethod(capsstart)
 
 cyr2lat = {
    u"А": "A", u"а": "a",

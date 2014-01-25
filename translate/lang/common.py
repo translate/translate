@@ -234,6 +234,7 @@ class Common(object):
             detail = "(%s)" % self.code
         return "<class 'translate.lang.common.Common%s'>" % detail
 
+    @classmethod
     def punctranslate(cls, text):
         """Converts the punctuation in a string according to the rules of the
         language."""
@@ -259,8 +260,8 @@ class Common(object):
             (len(text) < 2 or text[-2] != text[-1])):
             text = text[:-1] + cls.puncdict[text[-1] + u" "].rstrip()
         return text
-    punctranslate = classmethod(punctranslate)
 
+    @classmethod
     def length_difference(cls, length):
         """Returns an estimate to a likely change in length relative to an
         English string of length length."""
@@ -278,8 +279,8 @@ class Common(object):
         constant = max(5, int(40 * expansion_factor))
         # The default: return 5 + length/10
         return constant + int(expansion_factor * length)
-    length_difference = classmethod(length_difference)
 
+    @classmethod
     def alter_length(cls, text):
         """Converts the given string by adding or removing characters as an
         estimation of translation length (with English assumed as source
@@ -299,8 +300,8 @@ class Common(object):
             expanded.append(alter_it(subtext))
         text = u"\n\n".join(expanded)
         return text
-    alter_length = classmethod(alter_length)
 
+    @classmethod
     def character_iter(cls, text):
         """Returns an iterator over the characters in text."""
         #We don't return more than one consecutive whitespace character
@@ -311,13 +312,13 @@ class Common(object):
             prev = c
             if not (c in cls.punctuation):
                 yield c
-    character_iter = classmethod(character_iter)
 
+    @classmethod
     def characters(cls, text):
         """Returns a list of characters in text."""
         return [c for c in cls.character_iter(text)]
-    characters = classmethod(characters)
 
+    @classmethod
     def word_iter(cls, text):
         """Returns an iterator over the words in text."""
         #TODO: Consider replacing puctuation with space before split()
@@ -325,13 +326,13 @@ class Common(object):
             word = w.strip(cls.punctuation)
             if word:
                 yield word
-    word_iter = classmethod(word_iter)
 
+    @classmethod
     def words(cls, text):
         """Returns a list of words in text."""
         return [w for w in cls.word_iter(text)]
-    words = classmethod(words)
 
+    @classmethod
     def sentence_iter(cls, text, strip=True):
         """Returns an iterator over the sentences in text."""
         lastmatch = 0
@@ -348,21 +349,20 @@ class Common(object):
             remainder = remainder.strip()
         if remainder:
             yield remainder
-    sentence_iter = classmethod(sentence_iter)
 
+    @classmethod
     def sentences(cls, text, strip=True):
         """Returns a list of sentences in text."""
         return [s for s in cls.sentence_iter(text, strip=strip)]
-    sentences = classmethod(sentences)
 
+    @classmethod
     def capsstart(cls, text):
         """Determines whether the text starts with a capital letter."""
         stripped = text.lstrip().lstrip(cls.punctuation)
         return stripped and stripped[0].isupper()
-    capsstart = classmethod(capsstart)
 
+    @classmethod
     def numstart(cls, text):
         """Determines whether the text starts with a numeric value."""
         stripped = text.lstrip().lstrip(cls.punctuation)
         return stripped and stripped[0].isnumeric()
-    numstart = classmethod(numstart)
