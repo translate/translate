@@ -261,6 +261,43 @@ Properties
     x = property(getx, setx, delx, "I'm the 'x' property.")
 
 
+Single vs double quoted strings
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+There is no preference on using single or double quotes for strings, except in
+some specific cases:
+
+- Always use single quotes for string dictionary keys:
+
+  .. code-block:: python
+
+    # Good.
+    demo = {
+        'language': language,
+    }
+
+
+    # Bad.
+    demo = {
+        "language": language,
+    }
+
+
+- When a single or double quote character needs to be escaped it is recommended
+  to instead enclose the string using the other quoting:
+
+  .. code-block:: python
+
+    # Good.
+    str1 = "Sauron's eye"
+    str2 = 'Its name is "Virtaal".'
+
+
+    # Bad.
+    str3 = 'Sauron\'s eye'
+    str4 = "Its name is \"Virtaal\"."
+
+
 Expressions and Statements
 ^^^^^^^^^^^^^^^^^^^^^^^^^^
 
