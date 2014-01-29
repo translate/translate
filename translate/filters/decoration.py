@@ -21,6 +21,7 @@
 """functions to get decorative/informative text out of strings..."""
 
 import re
+import six
 import unicodedata
 
 from translate.lang import data
@@ -93,8 +94,8 @@ def isvalidaccelerator(accelerator, acceptlist=None):
     :rtype: Boolean
     :return: True if the supplied character is an acceptable accelerator
     """
-    assert isinstance(accelerator, unicode)
-    assert isinstance(acceptlist, unicode) or acceptlist is None
+    assert isinstance(accelerator, six.text_type)
+    assert isinstance(acceptlist, six.text_type) or acceptlist is None
     if len(accelerator) == 0:
         return False
     if acceptlist is not None:
@@ -225,7 +226,7 @@ def getvariables(startmarker, endmarker):
 def getnumbers(str1):
     """returns any numbers that are in the string"""
     # TODO: handle locale-based periods e.g. 2,5 for Afrikaans
-    assert isinstance(str1, unicode)
+    assert isinstance(str1, six.text_type)
     numbers = []
     innumber = False
     degreesign = u'\xb0'

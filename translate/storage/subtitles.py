@@ -125,7 +125,7 @@ class SubtitleFile(base.TranslationStore):
         elif hasattr(storefile, 'filename'):
             self.filename = storefile.filename
             storefile.close()
-        elif isinstance(storefile, basestring):
+        elif isinstance(storefile, six.string_types):
             self.filename = storefile
 
         if self.filename and os.path.exists(self.filename):
@@ -141,7 +141,7 @@ class SubtitleFile(base.TranslationStore):
         return newstore
 
     def parse(self, input):
-        if isinstance(input, basestring):
+        if isinstance(input, six.string_types):
             # Gaupol does not allow parsing from strings
             if self.filename:
                 tmpfile, tmpfilename = tempfile.mkstemp(suffix=self.filename)

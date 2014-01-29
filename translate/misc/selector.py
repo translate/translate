@@ -25,6 +25,7 @@ Luke Arno can be found at http://lukearno.com/
 """
 
 import re
+import six
 from itertools import starmap
 from wsgiref.util import shift_path_info
 
@@ -214,7 +215,7 @@ class Selector(object):
         ``@prefix`` and ``@parser`` directives take effect 
         until the end of the file or until changed.
         """
-        if isinstance(the_file, str):
+        if isinstance(the_file, six.binary_type):
             the_file = open(the_file)
         oldprefix = self.prefix
         if prefix is not None:

@@ -28,6 +28,7 @@ Supported formats are
 """
 
 import re
+import six
 
 from translate.storage import base
 
@@ -64,14 +65,14 @@ class TxtUnit(base.TranslationUnit):
     def __str__(self):
         """Convert a txt unit to a string"""
         string = u"".join([self.pretext, self.source, self.posttext])
-        if isinstance(string, unicode):
+        if isinstance(string, six.text_type):
             return string.encode(self.encoding)
         return string
 
     # Note that source and target are equivalent for monolingual units
     def setsource(self, source):
         """Sets the definition to the quoted value of source"""
-        if isinstance(source, str):
+        if isinstance(source, six.binary_type):
             source = source.decode(self.encoding)
         self._rich_source = None
         self._source = source
@@ -152,7 +153,7 @@ class TxtFile(base.TranslationStore):
 
     def __str__(self):
         source = self.getoutput()
-        if isinstance(source, unicode):
+        if isinstance(source, six.text_type):
             return source.encode(getattr(self, "encoding", "UTF-8"))
         return source
 

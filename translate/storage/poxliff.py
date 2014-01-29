@@ -26,6 +26,7 @@ This way the API supports plurals as if it was a PO file, for example.
 
 from lxml import etree
 import re
+import six
 
 from translate.misc.multistring import multistring
 from translate.storage import base, lisa, poheader, xliff
@@ -160,7 +161,7 @@ class PoXliffUnit(xliff.xliffunit):
 
     def addnote(self, text, origin=None, position="append"):
         """Add a note specifically in a "note" tag"""
-        if isinstance(text, str):
+        if isinstance(text, six.binary_type):
             text = text.decode("utf-8")
         note = etree.SubElement(self.xmlelement, self.namespaced("note"))
         note.text = text

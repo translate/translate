@@ -73,6 +73,7 @@ try:
     import json as json  # available since Python 2.6
 except ImportError:
     import simplejson as json  # API compatible with the json module
+import six
 
 from translate.storage import base
 
@@ -187,7 +188,7 @@ class JsonFile(base.TranslationStore):
               (isinstance(last_node, dict) and name_node in stop) or
               (isinstance(last_node, list) and name_last_node in stop)):
 
-            if isinstance(data, str) or isinstance(data, unicode):
+            if isinstance(data, six.binary_type) or isinstance(data, six.text_type):
                 yield (prev, data, last_node, name_node)
             elif isinstance(data, bool):
                 yield (prev, str(data), last_node, name_node)
@@ -209,7 +210,7 @@ class JsonFile(base.TranslationStore):
             src = input.read()
             input.close()
             input = src
-        if isinstance(input, str):
+        if isinstance(input, six.binary_type):
             input = StringIO(input)
         try:
             self._file = json.load(input)

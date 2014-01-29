@@ -19,6 +19,7 @@
 # along with this program; if not, see <http://www.gnu.org/licenses/>.
 
 from lxml import etree
+import six
 
 from translate.storage import base
 from translate.misc.typecheck import accepts, Self, IsCallable, IsOneOf, Any, Class
@@ -192,7 +193,7 @@ class IdMaker(object):
 def _to_placeables(parent_translatable, translatable, id_maker):
     result = []
     for chunk in translatable.source:
-        if isinstance(chunk, unicode):
+        if isinstance(chunk, six.text_type):
             result.append(chunk)
         else:
             id = unicode(id_maker.get_id(chunk))
@@ -221,7 +222,7 @@ def _contains_translatable_text(translatable):
 
     If not, then there's nothing to translate."""
     for chunk in translatable.source:
-        if isinstance(chunk, unicode):
+        if isinstance(chunk, six.text_type):
             if chunk.strip() != u"":
                 return True
     return False

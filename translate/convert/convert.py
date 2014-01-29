@@ -26,6 +26,7 @@ try:
     from cStringIO import StringIO
 except ImportError:
     from StringIO import StringIO
+import six
 
 from translate.misc import optrecurse
 
@@ -269,7 +270,7 @@ class ArchiveConvertOptionParser(ConvertOptionParser):
 
     def isarchive(self, fileoption, filepurpose='input'):
         """Returns whether the file option is an archive file."""
-        if not isinstance(fileoption, (str, unicode)):
+        if not isinstance(fileoption, (six.binary_type, six.text_type)):
             return False
         mustexist = (filepurpose != 'output')
         if mustexist and not os.path.isfile(fileoption):

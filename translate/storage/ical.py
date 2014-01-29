@@ -53,6 +53,7 @@ Future Format Support
     this format to understand those if needed.
 """
 import re
+import six
 from StringIO import StringIO
 
 import vobject
@@ -119,7 +120,7 @@ class icalfile(base.TranslationStore):
             inisrc = input.read()
             input.close()
             input = inisrc
-        if isinstance(input, str):
+        if isinstance(input, six.binary_type):
             input = StringIO(input)
             self._icalfile = vobject.readComponents(input).next()
         else:

@@ -23,6 +23,7 @@ of delimiters"""
 
 import logging
 import htmlentitydefs
+import six
 
 from translate.misc.typecheck import accepts, returns
 
@@ -153,7 +154,7 @@ def extractwithoutquotes(source, startdelim, enddelim, escape=None,
                         replace_escape = includeescapes(section[epos:epos + lenescape + 1])
                         # TODO: deprecate old method of returning boolean from
                         # includeescape, by removing this if block
-                        if not isinstance(replace_escape, basestring):
+                        if not isinstance(replace_escape, six.string_types):
                             if replace_escape:
                                 replace_escape = section[epos:epos + lenescape + 1]
                             else:

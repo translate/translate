@@ -22,6 +22,7 @@
 """
 
 import re
+import six
 
 from translate.filters import decoration
 from translate.misc import quote
@@ -35,7 +36,7 @@ def removekdecomments(str1):
 
       "_: comment\n"
     """
-    assert isinstance(str1, unicode)
+    assert isinstance(str1, six.text_type)
     iskdecomment = False
     lines = str1.split("\n")
     removelines = []

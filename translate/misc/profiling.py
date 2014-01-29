@@ -18,9 +18,11 @@
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, see <http://www.gnu.org/licenses/>.
 
+import six
+
 
 def label(code):
-    if isinstance(code, str):
+    if isinstance(code, six.binary_type):
         return ('~', 0, code)    # built-in functions ('~' sorts at the end)
     else:
         return '%s %s:%d' % (code.co_name, code.co_filename, code.co_firstlineno)
@@ -50,12 +52,12 @@ class KCacheGrind(object):
         code = entry.code
         inlinetime = int(entry.inlinetime * 1000)
         #print >> out_file, 'ob=%s' % (code.co_filename,)
-        if isinstance(code, str):
+        if isinstance(code, six.binary_type):
             print >> out_file, 'fi=~'
         else:
             print >> out_file, 'fi=%s' % (code.co_filename,)
         print >> out_file, 'fn=%s' % (label(code),)
-        if isinstance(code, str):
+        if isinstance(code, six.binary_type):
             print >> out_file, '0 ', inlinetime
         else:
             print >> out_file, '%d %d' % (code.co_firstlineno, inlinetime)
@@ -64,7 +66,7 @@ class KCacheGrind(object):
             calls = entry.calls
         else:
             calls = []
-        if isinstance(code, str):
+        if isinstance(code, six.binary_type):
             lineno = 0
         else:
             lineno = code.co_firstlineno
@@ -78,7 +80,7 @@ class KCacheGrind(object):
         totaltime = int(subentry.totaltime * 1000)
         #print >> out_file, 'cob=%s' % (code.co_filename,)
         print >> out_file, 'cfn=%s' % (label(code),)
-        if isinstance(code, str):
+        if isinstance(code, six.binary_type):
             print >> out_file, 'cfi=~'
             print >> out_file, 'calls=%d 0' % (subentry.callcount,)
         else:

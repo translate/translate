@@ -21,6 +21,7 @@ import distutils.sysconfig
 import os
 import os.path
 import site
+import six
 import sys
 from distutils.core import setup, Extension, Distribution, Command
 
@@ -277,7 +278,7 @@ class build_installer(build_exe_map):
         # create the Installer, using the files py2exe has created.
         exe_files = self.windows_exe_files + self.console_exe_files
         install_scripts = self.install_script
-        if isinstance(install_scripts, (str, unicode)):
+        if isinstance(install_scripts, (six.binary_type, six.test_type)):
             install_scripts = [install_scripts]
         script = InnoScript(PRETTY_NAME, lib_dir, dist_dir, exe_files,
                             self.lib_files,

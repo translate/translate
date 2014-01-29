@@ -30,6 +30,7 @@ except ImportError:
 import os.path
 import re
 import sys
+import six
 import stat
 import thread
 import logging
@@ -398,7 +399,7 @@ class StatsCache(object):
 
         store can be a TranslationFile object or a callback that returns one.
         """
-        if isinstance(filename, str):
+        if isinstance(filename, six.binary_type):
             filename = unicode(filename, sys.getfilesystemencoding())
         realpath = os.path.realpath(filename)
         self.cur.execute("""SELECT fileid, st_mtime, st_size FROM files

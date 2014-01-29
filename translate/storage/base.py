@@ -26,6 +26,7 @@ try:
 except ImportError:
     import pickle
 from exceptions import NotImplementedError
+import six
 
 import translate.i18n
 from translate.misc.multistring import multistring
@@ -783,7 +784,7 @@ class TranslationStore(object):
     def savefile(self, storefile):
         """Write the string representation to the given file (or filename)."""
         storestring = str(self)
-        if isinstance(storefile, basestring):
+        if isinstance(storefile, six.string_types):
             mode = 'w'
             if self._binary:
                 mode = 'wb'
@@ -820,7 +821,7 @@ class TranslationStore(object):
         mode = 'r'
         if cls._binary:
             mode = 'rb'
-        if isinstance(storefile, basestring):
+        if isinstance(storefile, six.string_types):
             storefile = open(storefile, mode)
         mode = getattr(storefile, "mode", mode)
         #For some reason GzipFile returns 1, so we have to test for that here

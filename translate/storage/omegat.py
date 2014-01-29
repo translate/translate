@@ -42,6 +42,7 @@ Encoding
 import csv
 import locale
 import sys
+import six
 
 from translate.storage import base
 
@@ -92,7 +93,7 @@ class OmegaTUnit(base.TranslationUnit):
     def _set_field(self, key, newvalue):
         if newvalue is None:
             self._dict[key] = None
-        if isinstance(newvalue, unicode):
+        if isinstance(newvalue, six.text_type):
             newvalue = newvalue.encode('utf-8')
         if not key in self._dict or newvalue != self._dict[key]:
             self._dict[key] = newvalue

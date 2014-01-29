@@ -21,6 +21,7 @@
 """module for parsing TMX translation memeory files"""
 
 from lxml import etree
+import six
 
 from translate import __version__
 from translate.storage import lisa
@@ -34,7 +35,7 @@ class tmxunit(lisa.LISAunit):
 
     def createlanguageNode(self, lang, text, purpose):
         """returns a langset xml Element setup with given parameters"""
-        if isinstance(text, str):
+        if isinstance(text, six.binary_type):
             text = text.decode("utf-8")
         langset = etree.Element(self.languageNode)
         lisa.setXMLlang(langset, lang)
@@ -58,7 +59,7 @@ class tmxunit(lisa.LISAunit):
         """Add a note specifically in a "note" tag.
 
         The origin parameter is ignored"""
-        if isinstance(text, str):
+        if isinstance(text, six.binary_type):
             text = text.decode("utf-8")
         note = etree.SubElement(self.xmlelement, self.namespaced("note"))
         note.text = text.strip()

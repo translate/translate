@@ -1,6 +1,8 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
+import six
+
 from pytest import raises, mark
 
 from translate.misc import wStringIO
@@ -295,7 +297,7 @@ msgstr[1] "Kóeie"
         pofile = self.poparse(posource)
         unit = pofile.units[0]
         assert isinstance(unit.source, multistring)
-        assert isinstance(unit.source.strings[1], unicode)
+        assert isinstance(unit.source.strings[1], six.text_type)
 
     def test_nongettext_location(self):
         """test that we correctly handle a non-gettext (file:linenumber) location"""
@@ -307,7 +309,7 @@ msgstr[1] "Kóeie"
         print locations
         assert len(locations) == 1
         assert locations[0] == u"programming/C/programming.xml:44(para)"
-        assert isinstance(locations[0], unicode)
+        assert isinstance(locations[0], six.text_type)
 
     @mark.xfail(reason="Not Implemented")
     def test_kde_plurals(self):
@@ -767,7 +769,7 @@ msgstr "b"
 '''
         pofile = self.poparse(posource)
         for line in pofile.units[0].getnotes():
-            assert isinstance(line, unicode)
+            assert isinstance(line, six.text_type)
 
     def test_non_ascii_header_comments(self):
         posource = r'''

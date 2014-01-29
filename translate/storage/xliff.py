@@ -24,6 +24,7 @@ The official recommendation is to use the extention .xlf for XLIFF files.
 """
 
 from lxml import etree
+import six
 
 from translate.misc.multistring import multistring
 from translate.storage import base, lisa
@@ -186,12 +187,12 @@ class xliffunit(lisa.LISAunit):
 
         #TODO: support adding a source tag ad match quality attribute.  At
         # the source tag is needed to inject fuzzy matches from a TM.
-        if isinstance(txt, str):
+        if isinstance(txt, six.binary_type):
             txt = txt.decode("utf-8")
         alttrans = etree.SubElement(self.xmlelement, self.namespaced("alt-trans"))
         lisa.setXMLspace(alttrans, "preserve")
         if sourcetxt:
-            if isinstance(sourcetxt, str):
+            if isinstance(sourcetxt, six.binary_type):
                 sourcetxt = sourcetxt.decode("utf-8")
             altsource = etree.SubElement(alttrans, self.namespaced("source"))
             altsource.text = sourcetxt
@@ -246,7 +247,7 @@ class xliffunit(lisa.LISAunit):
             text = text.strip()
         if not text:
             return
-        if isinstance(text, str):
+        if isinstance(text, six.binary_type):
             text = text.decode("utf-8")
         note = etree.SubElement(self.xmlelement, self.namespaced("note"))
         note.text = text
@@ -454,7 +455,7 @@ class xliffunit(lisa.LISAunit):
         if purpose:
             group.set("purpose", purpose)
         for type, text in contexts:
-            if isinstance(text, str):
+            if isinstance(text, six.binary_type):
                 text = text.decode("utf-8")
             context = etree.SubElement(group, self.namespaced("context"))
             context.text = text
@@ -507,7 +508,7 @@ class xliffunit(lisa.LISAunit):
         strings = mstr
         if isinstance(mstr, multistring):
             strings = mstr.strings
-        elif isinstance(mstr, basestring):
+        elif isinstance(mstr, six.string_types):
             strings = [mstr]
 
         return [xml_to_strelem(s) for s in strings]

@@ -20,6 +20,7 @@
 
 """This module stores information and functionality that relates to plurals."""
 
+import six
 
 languages = {
     'af': (u'Afrikaans', 2, '(n != 1)'),
@@ -378,7 +379,7 @@ def forceunicode(string):
     if string is None:
         return None
     from translate.storage.placeables import StringElem
-    if isinstance(string, str):
+    if isinstance(string, six.binary_type):
         encoding = getattr(string, "encoding", "utf-8")
         string = string.decode(encoding)
     elif isinstance(string, StringElem):

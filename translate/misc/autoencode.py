@@ -21,11 +21,13 @@
 """Supports a hybrid Unicode string that knows which encoding is preferable,
 and uses this when converting to a string."""
 
+import six
+
 
 class autoencode(unicode):
 
     def __new__(newtype, string=u"", encoding=None, errors=None):
-        if isinstance(string, unicode):
+        if isinstance(string, six.text_type):
             if errors is None:
                 newstring = unicode.__new__(newtype, string)
             else:

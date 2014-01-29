@@ -31,6 +31,7 @@ use the newer .ts format which are documented here:
 """
 
 from translate.misc import ourdom
+import six
 
 
 class QtTsParser:
@@ -111,7 +112,7 @@ class QtTsParser:
         if context is None:
             return self.document.searchElementsByTagName("message", self.messageancestors)
         else:
-            if isinstance(context, (str, unicode)):
+            if isinstance(context, (six.binary_type, six.text_type)):
                 # look up the context node by name
                 context = self.getcontextnode(context)
                 if context is None:

@@ -24,6 +24,8 @@ See: http://docs.translatehouse.org/projects/translate-toolkit/en/latest/command
 for examples and usage instructions.
 """
 
+import six
+
 from translate.storage import po
 from translate.storage import ts
 
@@ -47,9 +49,9 @@ class po2ts:
                 transtype = "unfinished"
             elif inputunit.getnotes("developer") == "(obsolete)":
                 transtype = "obsolete"
-            if isinstance(source, str):
+            if isinstance(source, six.string_types):
                 source = source.decode("utf-8")
-            if isinstance(translation, str):
+            if isinstance(translation, six.string_types):
                 translation = translation.decode("utf-8")
             for sourcelocation in inputunit.getlocations():
                 if context is None:

@@ -122,7 +122,7 @@ def get_langs(lang_args):
 
     langs = []
 
-    if isinstance(lang_args, str):
+    if isinstance(lang_args, six.binary_type):
         if lang_args == 'ALL':
             lang_args = ['ALL']
         elif lang_args == 'ZA':

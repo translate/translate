@@ -34,6 +34,7 @@ comments.
 
 import os
 import re
+import six
 import warnings
 
 from translate.misc import quote
@@ -65,7 +66,7 @@ unormalizetable = unormalizechar(normalfilenamechars.decode("ascii"))
 
 def normalizefilename(filename):
     """converts any non-alphanumeric (standard roman) characters to _"""
-    if isinstance(filename, str):
+    if isinstance(filename, six.binary_type):
         return filename.translate(normalizetable)
     else:
         return filename.translate(unormalizetable)
@@ -161,7 +162,7 @@ def unescape_help_text(text):
 
 def encode_if_needed_utf8(text):
     """Encode a Unicode string the the specified encoding"""
-    if isinstance(text, unicode):
+    if isinstance(text, six.text_type):
         return text.encode('UTF-8')
     return text
 

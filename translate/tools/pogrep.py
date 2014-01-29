@@ -30,6 +30,7 @@ for examples and usage instructions.
 
 import re
 import locale
+import six
 
 from translate.storage import factory
 from translate.storage.poheader import poheader
@@ -138,7 +139,7 @@ class GrepFilter:
             invertmatch=False, keeptranslations=False, accelchar=None, encoding='utf-8',
             max_matches=0):
         """builds a checkfilter using the given checker"""
-        if isinstance(searchstring, unicode):
+        if isinstance(searchstring, six.text_type):
             self.searchstring = searchstring
         else:
             self.searchstring = searchstring.decode(encoding)

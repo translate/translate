@@ -19,6 +19,7 @@
 # along with this program; if not, see <http://www.gnu.org/licenses/>.
 
 import re
+import six
 import sys
 import os.path
 import fnmatch
@@ -229,7 +230,7 @@ class RecursiveOptionParser(optparse.OptionParser, object):
         self.outputoptions = {}
         self.usetemplates = usetemplates
         for formatgroup, outputoptions in formats.iteritems():
-            if isinstance(formatgroup, (str, unicode)) or formatgroup is None:
+            if isinstance(formatgroup, (six.string_types, six.text_type)) or formatgroup is None:
                 formatgroup = (formatgroup, )
             if not isinstance(formatgroup, tuple):
                 raise ValueError("formatgroups must be tuples or None/str/unicode")

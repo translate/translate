@@ -26,6 +26,7 @@ for examples and usage instructions.
 
 import os
 import re
+import six
 
 from translate.misc import hash
 from translate.storage import factory
@@ -77,7 +78,7 @@ class podebug:
             # Try and remove the last character from the tree
             try:
                 lastnode = string.flatten()[-1]
-                if isinstance(lastnode.sub[-1], unicode):
+                if isinstance(lastnode.sub[-1], six.text_type):
                     lastnode.sub[-1] = lastnode.sub[-1].rstrip(u'\n')
             except IndexError:
                 pass

@@ -28,6 +28,7 @@
 
 import sys
 import re
+import six
 from os import path
 import glob
 
@@ -39,7 +40,7 @@ white_space_re = re.compile('\s+')
 class _NGram:
 
     def __init__(self, arg=None):
-        if isinstance(arg, basestring):
+        if isinstance(arg, six.string_types):
             self.addText(arg)
             self.normalise()
         elif isinstance(arg, dict):
@@ -49,7 +50,7 @@ class _NGram:
             self.ngrams = dict()
 
     def addText(self, text):
-        if isinstance(text, str):
+        if isinstance(text, six.binary_type):
             text = text.decode('utf-8')
 
         ngrams = dict()

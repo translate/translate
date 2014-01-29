@@ -185,7 +185,7 @@ class PyLuceneDatabase(PyLuceneIndexer.PyLuceneDatabase):
         :return: a list of dicts containing the specified field(s)
         :rtype: list of dicts
         """
-        if isinstance(fieldnames, basestring):
+        if isinstance(fieldnames, six.string_types):
             fieldnames = [fieldnames]
         hits = PyLucene.indexSearcher.search(query)
         result = []

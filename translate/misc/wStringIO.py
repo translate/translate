@@ -22,14 +22,15 @@
 StringIO at the speed of cStringIO"""
 
 import cStringIO
+import six
 
 
 class StringIO:
 
     def __init__(self, buf=''):
-        if not isinstance(buf, (str, unicode)):
+        if not isinstance(buf, (six.binary_type, six.text_type)):
             buf = str(buf)
-        if isinstance(buf, unicode):
+        if isinstance(buf, six.text_type):
             buf = buf.encode('utf-8')
         self.len = len(buf)
         self.buf = cStringIO.StringIO()

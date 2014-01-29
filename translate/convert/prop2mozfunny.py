@@ -21,6 +21,8 @@
 """Converts properties files to additional Mozilla format files.
 """
 
+import six
+
 from translate.storage import properties
 from translate.convert import po2prop
 from translate.convert import mozfunny2prop
@@ -44,7 +46,7 @@ def prop2inc(pf):
             pendingblanks.append("\n")
         else:
             definition = "#define %s %s\n" % (unit.name, unit.value.replace("\n", "\\n"))
-            if isinstance(definition, unicode):
+            if isinstance(definition, six.text_type):
                 definition = definition.encode("UTF-8")
             for blank in pendingblanks:
                 yield blank
@@ -65,7 +67,7 @@ def prop2it(pf):
             yield ""
         else:
             definition = "%s=%s\n" % (unit.name, unit.value)
-            if isinstance(definition, unicode):
+            if isinstance(definition, six.text_type):
                 definition = definition.encode("UTF-8")
             yield definition
 

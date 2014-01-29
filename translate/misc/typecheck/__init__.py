@@ -6,6 +6,7 @@ __all__ = ['accepts', 'returns', 'yields', 'TypeCheckError', 'Length', 'Empty'
           ,'Function']
 
 import inspect
+import six
 import types
 
 from types import GeneratorType, FunctionType, MethodType, ClassType, TypeType
@@ -645,7 +646,7 @@ class TypeVariables(CheckType):
 
     @classmethod
     def __typesig__(cls, obj):
-        if isinstance(obj, basestring):
+        if isinstance(obj, six.string_types):
             return cls(obj)
 
     @classmethod

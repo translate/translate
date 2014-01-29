@@ -31,6 +31,7 @@ b : a string
 """
 
 import re
+import six
 try:
     from cStringIO import StringIO
 except ImportError:
@@ -126,7 +127,7 @@ class inifile(base.TranslationStore):
             input.close()
             input = inisrc
 
-        if isinstance(input, str):
+        if isinstance(input, six.binary_type):
             input = StringIO(input)
             self._inifile = INIConfig(input, optionxformvalue=None)
         else:

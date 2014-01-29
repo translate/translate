@@ -51,6 +51,7 @@ implemented as outlined in the PHP documentation for the
 
 import logging
 import re
+import six
 
 from translate.storage import base
 
@@ -148,7 +149,7 @@ class phpunit(base.TranslationUnit):
     def __str__(self):
         """Convert to a string. Double check that unicode is handled somehow."""
         source = self.getoutput()
-        if isinstance(source, unicode):
+        if isinstance(source, six.text_type):
             return source.encode(getattr(self, "encoding", "UTF-8"))
         return source
 

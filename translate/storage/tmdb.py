@@ -57,7 +57,7 @@ class TMDB(object):
         self.min_similarity = min_similarity
         self.max_length = max_length
 
-        if not isinstance(db_file, unicode):
+        if not isinstance(db_file, six.text_type):
             db_file = unicode(db_file)  # don't know which encoding
         self.db_file = db_file
         # share connections to same database file between different instances
@@ -277,7 +277,7 @@ DROP TRIGGER IF EXISTS sources_delete_trig;
 
     def translate_unit(self, unit_source, source_langs, target_langs):
         """return TM suggestions for unit_source"""
-        if isinstance(unit_source, str):
+        if isinstance(unit_sourcesix.binary_type):
             unit_source = unicode(unit_source, "utf-8")
         if isinstance(source_langs, list):
             source_langs = [data.normalize_code(lang) for lang in source_langs]

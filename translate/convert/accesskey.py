@@ -19,6 +19,8 @@
 
 """functions used to manipulate access keys in strings"""
 
+import six
+
 from translate.storage.placeables.general import XMLEntityPlaceable
 
 DEFAULT_ACCESSKEY_MARKER = u"&"
@@ -115,8 +117,8 @@ def extract(string, accesskey_marker=DEFAULT_ACCESSKEY_MARKER):
     :type accesskey_marker: Char
     :param accesskey_marker: The character that is used to prefix an access key
     """
-    assert isinstance(string, unicode)
-    assert isinstance(accesskey_marker, unicode)
+    assert isinstance(string, six.text_type)
+    assert isinstance(accesskey_marker, six.text_type)
     assert len(accesskey_marker) == 1
     if string == u"":
         return u"", u""
@@ -152,8 +154,8 @@ def combine(label, accesskey,
     :rtype: unicode or None
     :return: label+accesskey string or None if uncombineable
     """
-    assert isinstance(label, unicode)
-    assert isinstance(accesskey, unicode)
+    assert isinstance(label, six.text_type)
+    assert isinstance(accesskey, six.text_type)
     if len(accesskey) == 0:
         return None
     searchpos = 0

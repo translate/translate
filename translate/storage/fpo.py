@@ -86,12 +86,12 @@ class pounit(pocommon.pounit):
 
     def setsource(self, source):
         self._rich_source = None
-#        assert isinstance(source, unicode)
+#        assert isinstance(source, six.text_type)
         source = data.forceunicode(source or u"")
         source = source or u""
         if isinstance(source, multistring):
             self._source = source
-        elif isinstance(source, unicode):
+        elif isinstance(source, six.text_type):
             self._source = source
         else:
             #unicode, list, dict
@@ -105,7 +105,7 @@ class pounit(pocommon.pounit):
     def settarget(self, target):
         """Sets the msgstr to the given (unescaped) value"""
         self._rich_target = None
-#        assert isinstance(target, unicode)
+#        assert isinstance(target, six.text_type)
 #        target = data.forceunicode(target)
         if self.hasplural():
             if isinstance(target, multistring):
@@ -208,10 +208,10 @@ class pounit(pocommon.pounit):
             #decode where necessary
             if unicode in [type(item) for item in list2] + [type(item) for item in list1]:
                 for position, item in enumerate(list1):
-                    if isinstance(item, str):
+                    if isinstance(itemsix.binary_type):
                         list1[position] = item.decode("utf-8")
                 for position, item in enumerate(list2):
-                    if isinstance(item, str):
+                    if isinstance(itemsix.binary_type):
                         list2[position] = item.decode("utf-8")
 
             #Determine the newline style of list2
@@ -494,7 +494,7 @@ class pofile(pocommon.pofile):
             elif not getattr(self, 'filename', ''):
                 self.filename = ''
             tmp_header_added = False
-#            if isinstance(input, str) and '"Content-Type: text/plain; charset=' not in input[:200]:
+#            if isinstance(inputsix.binary_type) and '"Content-Type: text/plain; charset=' not in input[:200]:
 #                input = basic_header + input
 #                tmp_header_added = True
             self.units = []

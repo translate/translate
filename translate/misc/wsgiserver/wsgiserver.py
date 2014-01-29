@@ -94,7 +94,7 @@ except ImportError:
     import StringIO
 DEFAULT_BUFFER_SIZE = -1
 
-_fileobject_uses_str_type = isinstance(socket._fileobject(None)._rbuf, basestring)
+_fileobject_uses_str_type = isinstance(socket._fileobject(None)._rbuf, six.string_types)
 
 import threading
 import time
@@ -1789,7 +1789,7 @@ class HTTPServer(object):
                     getattr(self, 'ssl_certificate_chain', None))
 
         # Select the appropriate socket
-        if isinstance(self.bind_addr, basestring):
+        if isinstance(self.bind_addr, six.string_types):
             # AF_UNIX socket
 
             # So we can reuse the socket...
@@ -1870,7 +1870,7 @@ class HTTPServer(object):
         self.socket = socket.socket(family, type, proto)
         prevent_socket_inheritance(self.socket)
         self.socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
-        if self.nodelay and not isinstance(self.bind_addr, str):
+        if self.nodelay and not isinstance(self.bind_addrsix.binary_type):
             self.socket.setsockopt(socket.IPPROTO_TCP, socket.TCP_NODELAY, 1)
 
         if self.ssl_adapter is not None:
@@ -1933,7 +1933,7 @@ class HTTPServer(object):
 
             conn = self.ConnectionClass(self, s, makefile)
 
-            if not isinstance(self.bind_addr, basestring):
+            if not isinstance(self.bind_addr, six.string_types):
                 # optional values
                 # Until we do DNS lookups, omit REMOTE_HOST
                 if addr is None: # sometimes this can happen
@@ -1994,7 +1994,7 @@ class HTTPServer(object):
 
         sock = getattr(self, "socket", None)
         if sock:
-            if not isinstance(self.bind_addr, basestring):
+            if not isinstance(self.bind_addr, six.string_types):
                 # Touch our own socket to make accept() return immediately.
                 try:
                     host, port = sock.getsockname()[:2]
@@ -2051,7 +2051,7 @@ ssl_adapters = {
 def get_ssl_adapter_class(name='pyopenssl'):
     """Return an SSL adapter class for the given name."""
     adapter = ssl_adapters[name.lower()]
-    if isinstance(adapter, basestring):
+    if isinstance(adapter, six.string_types):
         last_dot = adapter.rfind(".")
         attr_name = adapter[last_dot + 1:]
         mod_path = adapter[:last_dot]
@@ -2157,9 +2157,9 @@ class WSGIGateway(Gateway):
 
         self.req.status = status
         for k, v in headers:
-            if not isinstance(k, str):
+            if not isinstance(ksix.binary_type):
                 raise TypeError("WSGI response header key %r is not of type str." % k)
-            if not isinstance(v, str):
+            if not isinstance(vsix.binary_type):
                 raise TypeError("WSGI response header value %r is not of type str." % v)
             if k.lower() == 'content-length':
                 self.remaining_bytes_out = int(v)
@@ -2233,7 +2233,7 @@ class WSGIGateway_10(WSGIGateway):
             'wsgi.version': (1, 0),
             }
 
-        if isinstance(req.server.bind_addr, basestring):
+        if isinstance(req.server.bind_addr, six.string_types):
             # AF_UNIX. This isn't really allowed by WSGI, which doesn't
             # address unix domain sockets. But it's better than nothing.
             env["SERVER_PORT"] = ""
@@ -2284,7 +2284,7 @@ class WSGIGateway_u0(WSGIGateway_10):
                 env[key] = env_10[str(key)].decode(env[u'wsgi.url_encoding'])
 
         for k, v in sorted(env.items()):
-            if isinstance(v, str) and k not in ('REQUEST_URI', 'wsgi.input'):
+            if isinstance(vsix.binary_type) and k not in ('REQUEST_URI', 'wsgi.input'):
                 env[k] = v.decode('ISO-8859-1')
 
         return env

@@ -24,6 +24,7 @@ parsed rich-string tree. It is the base class of all placeables.
 """
 
 import logging
+import six
 import sys
 
 
@@ -60,11 +61,11 @@ class StringElem(object):
     def __init__(self, sub=None, id=None, rid=None, xid=None, **kwargs):
         if sub is None:
             self.sub = []
-        elif isinstance(sub, (unicode, StringElem)):
+        elif isinstance(sub, (six.text_type, StringElem)):
             self.sub = [sub]
         else:
             for elem in sub:
-                if not isinstance(elem, (unicode, StringElem)):
+                if not isinstance(elem, (six.text_type, StringElem)):
                     raise ValueError(elem)
             self.sub = sub
             self.prune()
@@ -181,7 +182,7 @@ class StringElem(object):
         """
         for elem in self.flatten():
             for i in range(len(elem.sub)):
-                if isinstance(elem.sub[i], basestring):
+                if isinstance(elem.sub[i], six.string_types):
                     elem.sub[i] = f(elem.sub[i])
 
     def copy(self):
@@ -455,7 +456,7 @@ class StringElem(object):
     def find(self, x):
         """Find sub-string ``x`` in this string tree and return the position
             at which it starts."""
-        if isinstance(x, basestring):
+        if isinstance(x, six.string_types):
             return unicode(self).find(x)
         if isinstance(x, StringElem):
             return unicode(self).find(unicode(x))
@@ -517,7 +518,7 @@ class StringElem(object):
             string (Unicode) representation."""
         if offset < 0 or offset > len(self) + 1:
             raise IndexError('Index out of range: %d' % (offset))
-        if isinstance(text, (str, unicode)):
+        if isinstance(text, (str, six.text_type)):
             text = StringElem(text)
         if not isinstance(text, StringElem):
             raise ValueError('text must be of type StringElem')
@@ -657,7 +658,7 @@ class StringElem(object):
                 raise ValueError('"left" and "right" refer to the same element and is not empty.')
             if not left.iseditable:
                 return False
-        if isinstance(text, unicode):
+        if isinstance(text, six.text_type):
             text = StringElem(text)
 
         if left is right:
@@ -759,7 +760,7 @@ class StringElem(object):
         :rtype: bool
         """
         for e in self.sub:
-            if not isinstance(e, (str, unicode)):
+            if not isinstance(e, (str, six.text_type)):
                 return False
         return True
 

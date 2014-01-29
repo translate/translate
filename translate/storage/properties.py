@@ -112,6 +112,7 @@ Name and Value pairs::
 import re
 import warnings
 import logging
+import six
 
 from translate.lang import data
 from translate.misc import quote
@@ -464,7 +465,7 @@ class propunit(base.TranslationUnit):
         """Convert to a string. Double check that unicode is handled
         somehow here."""
         source = self.getoutput()
-        assert isinstance(source, unicode)
+        assert isinstance(source, six.text_type)
         return source.encode(self.encoding)
 
     def getoutput(self):

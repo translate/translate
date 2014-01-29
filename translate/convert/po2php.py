@@ -24,6 +24,8 @@ See: http://docs.translatehouse.org/projects/translate-toolkit/en/latest/command
 for examples and usage instructions.
 """
 
+import six
+
 from translate.convert import convert
 from translate.misc import quote
 from translate.storage import po
@@ -117,7 +119,7 @@ class rephp:
                         value = unit.target
                     value = php.phpencode(value, self.quotechar)
                     self.inecho = False
-                    if isinstance(value, str):
+                    if isinstance(value, six.string_types):
                         value = value.decode('utf8')
                     returnline = "%(key)s%(pre)s%(del)s%(post)s%(quote)s%(value)s%(quote)s%(enddel)s%(comment)s%(eol)s" % {
                                      "key": key,
@@ -136,7 +138,7 @@ class rephp:
                 # continue
                 if endpos == -1 or line[endpos-1] == '\\':
                     self.inmultilinemsgid = True
-        if isinstance(returnline, unicode):
+        if isinstance(returnline, six.text_type):
             returnline = returnline.encode('utf-8')
         return returnline
 

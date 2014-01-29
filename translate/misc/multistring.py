@@ -21,6 +21,8 @@
 """Supports a hybrid Unicode string that can also have a list of alternate
 strings in the strings attribute"""
 
+import six
+
 from translate.misc import autoencode
 
 
@@ -54,9 +56,9 @@ class multistring(autoencode.autoencode):
                 return cmp(self.strings[1:], otherstring.strings[1:])
         elif isinstance(otherstring, autoencode.autoencode):
             return cmp(autoencode.autoencode(self), otherstring)
-        elif isinstance(otherstring, unicode):
+        elif isinstance(otherstring, six.text_type):
             return cmp(unicode(self), otherstring)
-        elif isinstance(otherstring, str):
+        elif isinstance(otherstring, six.binary_type):
             return cmp(str(self), otherstring)
         elif isinstance(otherstring, list) and otherstring:
             return cmp(self, multistring(otherstring))

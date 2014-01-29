@@ -34,6 +34,7 @@ both.
 """
 
 from lxml import etree
+import six
 
 from translate.lang import data
 from translate.misc.multistring import multistring
@@ -181,7 +182,7 @@ class tsunit(lisa.LISAunit):
 
     def addnote(self, text, origin=None, position="append"):
         """Add a note specifically in the appropriate *comment* tag"""
-        if isinstance(text, str):
+        if isinstance(text, six.binary_type):
             text = text.decode("utf-8")
         current_notes = self.getnotes(origin)
         self.removenotes(origin)
@@ -284,7 +285,7 @@ class tsunit(lisa.LISAunit):
         return '\n'.join(contexts)
 
     def addlocation(self, location):
-        if isinstance(location, str):
+        if isinstance(location, six.binary_type):
             location = location.decode("utf-8")
         newlocation = etree.SubElement(self.xmlelement, self.namespaced("location"))
         try:

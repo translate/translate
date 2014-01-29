@@ -21,6 +21,7 @@
 """module for handling TBX glossary files"""
 
 from lxml import etree
+import six
 
 from translate.storage import lisa
 
@@ -34,7 +35,7 @@ Provisional work is done to make several languages possible."""
 
     def createlanguageNode(self, lang, text, purpose):
         """returns a langset xml Element setup with given parameters"""
-        if isinstance(text, str):
+        if isinstance(text, six.binary_type):
             text = text.decode("utf-8")
         langset = etree.Element(self.languageNode)
         lisa.setXMLlang(langset, lang)

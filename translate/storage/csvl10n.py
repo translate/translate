@@ -24,6 +24,7 @@ or entire files (csvfile) for use with localisation
 
 import csv
 import codecs
+import six
 try:
     import cStringIO as StringIO
 except:
@@ -106,7 +107,7 @@ csv.register_dialect('default', DefaultDialect)
 def from_unicode(text, encoding='utf-8'):
     if encoding == 'auto':
         encoding = 'utf-8'
-    if isinstance(text, unicode):
+    if isinstance(text, six.text_type):
         return text.encode(encoding)
     return text
 
@@ -114,7 +115,7 @@ def from_unicode(text, encoding='utf-8'):
 def to_unicode(text, encoding='utf-8'):
     if encoding == 'auto':
         encoding = 'utf-8'
-    if isinstance(text, unicode):
+    if isinstance(text, six.text_type):
         return text
     return text.decode(encoding)
 
@@ -359,7 +360,7 @@ class csvfile(base.TranslationStore):
         if not fieldnames:
             self.fieldnames = ['location', 'source', 'target', 'id', 'fuzzy', 'context', 'translator_comments', 'developer_comments']
         else:
-            if isinstance(fieldnames, basestring):
+            if isinstance(fieldnames, six.string_types):
                 fieldnames = [fieldname.strip() for fieldname in fieldnames.split(",")]
             self.fieldnames = fieldnames
         self.filename = getattr(inputfile, 'name', '')
@@ -379,7 +380,7 @@ class csvfile(base.TranslationStore):
         sniffer = csv.Sniffer()
         # FIXME: maybe we should sniff a smaller sample
         sample = csvsrc[:1024]
-        if isinstance(sample, unicode):
+        if isinstance(sample, six.text_type):
             sample = sample.encode('utf-8')
 
         try:
@@ -414,7 +415,7 @@ class csvfile(base.TranslationStore):
     def __str__(self):
         """convert to a string. double check that unicode is handled somehow here"""
         source = self.getoutput()
-        if not isinstance(source, unicode):
+        if not isinstance(source, six.text_type):
             source = source.decode('utf-8')
         if not self.encoding or self.encoding == 'auto':
             encoding = 'utf-8'

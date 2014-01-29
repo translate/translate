@@ -31,6 +31,7 @@ When adding a new test here, please document and explain their behaviour on the
 """
 
 import re
+import six
 import logging
 
 from translate.filters import decoration
@@ -143,7 +144,7 @@ class FilterFailure(Exception):
         if not isinstance(messages, list):
             messages = [messages]
 
-        assert isinstance(messages[0], unicode)  # Assumption: all of same type
+        assert isinstance(messages[0], six.text_type)  # Assumption: all of same type
 
         self.messages = messages
 
@@ -968,7 +969,7 @@ class StandardChecker(TranslationChecker):
             varchecker = decoration.getvariables(startmarker, endmarker)
 
             if startmarker and endmarker:
-                if isinstance(endmarker, int):
+                if isinstance(endmarker, six.integer_types):
                     redecorate = lambda var: startmarker + var
                 else:
                     redecorate = lambda var: startmarker + var + endmarker

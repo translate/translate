@@ -383,7 +383,7 @@ class XapianDatabase(CommonIndexer.CommonDatabase):
         :rtype: list of dicts
         """
         result = []
-        if isinstance(fieldnames, basestring):
+        if isinstance(fieldnames, six.string_types):
             fieldnames = [fieldnames]
         try:
             self._walk_matches(query, _extract_fieldvalues,

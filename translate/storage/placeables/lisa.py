@@ -19,6 +19,7 @@
 # along with this program; if not, see <http://www.gnu.org/licenses/>.
 
 from lxml import etree
+import six
 
 from translate.misc.xml_helpers import normalize_xml_space
 from translate.storage.placeables import base, xliff, StringElem
@@ -87,7 +88,7 @@ def make_placeable(node, xml_space):
 
 
 def as_unicode(string):
-    if isinstance(string, unicode):
+    if isinstance(string, six.text_type):
         return string
     elif isinstance(string, StringElem):
         return unicode(string)
@@ -98,7 +99,7 @@ def as_unicode(string):
 def xml_to_strelem(dom_node, xml_space="preserve"):
     if dom_node is None:
         return StringElem()
-    if isinstance(dom_node, basestring):
+    if isinstance(dom_node, six.string_types):
         dom_node = etree.fromstring(dom_node)
     normalize_xml_space(dom_node, xml_space, remove_start=True)
     result = StringElem()
@@ -188,7 +189,7 @@ def xml_append_string(node, string):
 
 
 def strelem_to_xml(parent_node, elem):
-    if isinstance(elem, unicode):
+    if isinstance(elem, six.text_type):
         return xml_append_string(parent_node, elem)
     if not isinstance(elem, StringElem):
         return parent_node

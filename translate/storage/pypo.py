@@ -26,6 +26,7 @@ files (pofile).
 import copy
 import cStringIO
 import re
+import six
 import textwrap
 
 from translate.lang import data
@@ -230,7 +231,7 @@ class pounit(pocommon.pounit):
     def _set_source_vars(self, source):
         msgid = None
         msgid_plural = None
-        if isinstance(source, str):
+        if isinstance(source, six.binary_type):
             source = source.decode(self._encoding)
         if isinstance(source, multistring):
             source = source.strings
@@ -280,12 +281,12 @@ class pounit(pocommon.pounit):
     def settarget(self, target):
         """Sets the msgstr to the given (unescaped) value"""
         self._rich_target = None
-        if isinstance(target, str):
+        if isinstance(target, six.binary_type):
             target = target.decode(self._encoding)
         if self.hasplural():
             if isinstance(target, multistring):
                 target = target.strings
-            elif isinstance(target, basestring):
+            elif isinstance(target, six.string_types):
                 target = [target]
         elif isinstance(target, (dict, list)):
             if len(target) == 1:
@@ -414,10 +415,10 @@ class pounit(pocommon.pounit):
             #decode where necessary
             if unicode in [type(item) for item in list2] + [type(item) for item in list1]:
                 for position, item in enumerate(list1):
-                    if isinstance(item, str):
+                    if isinstance(item, six.binary_type):
                         list1[position] = item.decode("utf-8")
                 for position, item in enumerate(list2):
-                    if isinstance(item, str):
+                    if isinstance(item, six.binary_type):
                         list2[position] = item.decode("utf-8")
 
             #Determine the newline style of list1
@@ -623,7 +624,7 @@ class pounit(pocommon.pounit):
 
     def _encodeifneccessary(self, output):
         """Encodes unicode strings and returns other strings unchanged"""
-        if isinstance(output, unicode):
+        if isinstance(output, six.text_type):
             encoding = encodingToUse(getattr(self, "_encoding", "UTF-8"))
             return output.encode(encoding)
         return output
@@ -765,7 +766,7 @@ class pofile(pocommon.pofile):
                 self.filename = input.name
             elif not getattr(self, 'filename', ''):
                 self.filename = ''
-            if isinstance(input, str):
+            if isinstance(input, six.binary_type):
                 input = cStringIO.StringIO(input)
             # clear units to get rid of automatically generated headers before parsing
             self.units = []
@@ -821,7 +822,7 @@ class pofile(pocommon.pofile):
         """Convert to a string. Double check that unicode is handled somehow
         here"""
         output = self._getoutput()
-        if isinstance(output, unicode):
+        if isinstance(output, six.text_type):
             try:
                 return output.encode(getattr(self, "_encoding", "UTF-8"))
             except UnicodeEncodeError, e:
@@ -852,7 +853,7 @@ class pofile(pocommon.pofile):
         if encoding is None or encoding.lower() == "charset":
             encoding = 'UTF-8'
         for line in lines:
-            if isinstance(line, unicode):
+            if isinstance(line, six.text_type):
                 line = line.encode(encoding)
             newlines.append(line)
         return newlines
@@ -861,7 +862,7 @@ class pofile(pocommon.pofile):
         """decode any non-unicode strings in lines with self._encoding"""
         newlines = []
         for line in lines:
-            if (isinstance(line, str) and self._encoding is not None and
+            if (isinstance(line, six.binary_type) and self._encoding is not None and
                 self._encoding.lower() != "charset"):
                 try:
                     line = line.decode(self._encoding)

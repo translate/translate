@@ -24,6 +24,8 @@ See: http://docs.translatehouse.org/projects/translate-toolkit/en/latest/command
 for examples and usage instructions.
 """
 
+import six
+
 from translate.convert import convert
 from translate.storage import po
 from translate.storage import rc
@@ -61,7 +63,7 @@ class rerc:
 
     def convertblock(self, block):
         newblock = block
-        if isinstance(newblock, unicode):
+        if isinstance(newblock, six.text_type):
             newblock = newblock.encode('utf-8')
         if newblock.startswith("LANGUAGE"):
             return "LANGUAGE %s, %s" % (self.lang, self.sublang)
@@ -72,7 +74,7 @@ class rerc:
                     newmatch = unit.match.group().replace(unit.match.groupdict()['value'],
                                                           self.inputdict[location])
                     newblock = newblock.replace(unit.match.group(), newmatch)
-        if isinstance(newblock, unicode):
+        if isinstance(newblock, six.text_type):
             newblock = newblock.encode(self.charset)
         return newblock
 

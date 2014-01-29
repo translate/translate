@@ -26,6 +26,7 @@ for examples and usage instructions.
 
 import os
 import sys
+import six
 import time
 import logging
 
@@ -95,7 +96,7 @@ class reoo:
                                key, len(self.index))
                 try:
                     sourceunitlines = str(unit)
-                    if isinstance(sourceunitlines, unicode):
+                    if isinstance(sourceunitlines, six.text_type):
                         sourceunitlines = sourceunitlines.encode("utf-8")
                     logger.warning(sourceunitlines)
                 except:
@@ -125,7 +126,7 @@ class reoo:
         # If there is no translation, we don't want to add a line
         if len(unquotedstr) == 0:
             return
-        if isinstance(unquotedstr, unicode):
+        if isinstance(unquotedstr, six.text_type):
             unquotedstr = unquotedstr.encode("UTF-8")
         # finally set the new definition in the oo, but not if its empty
         if len(unquotedstr) > 0:

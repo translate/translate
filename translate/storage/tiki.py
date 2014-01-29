@@ -52,6 +52,7 @@ As far as I know no detailed documentation exists for the tiki language.php file
 
 import datetime
 import re
+import six
 
 from translate.misc import wStringIO
 from translate.storage import base
@@ -153,7 +154,7 @@ class TikiStore(base.TranslationStore):
         if hasattr(input, "name"):
             self.filename = input.name
 
-        if isinstance(input, str):
+        if isinstance(input, six.binary_type):
             input = wStringIO.StringIO(input)
 
         _split_regex = re.compile(r"^(?:// )?\"(.*)\" => \"(.*)\",$", re.UNICODE)
