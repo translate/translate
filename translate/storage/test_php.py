@@ -197,6 +197,18 @@ $foo='bar';
             assert phpunit.name == "$lang->'item1'"
             assert phpunit.source == "value1"
 
+    def test_parsing_array_no_array_syntax(self):
+        """parse the array syntax"""
+        phpsource = '''global $_LANGPDF;
+        $_LANGPDF = array();
+        $_LANGPDF['PDF065ab3a28ca4f16f55f103adc7d0226f'] = 'Delivery';
+        '''
+        phpfile = self.phpparse(phpsource)
+        assert len(phpfile.units) == 1
+        phpunit = phpfile.units[0]
+        assert phpunit.name == "$_LANGPDF['PDF065ab3a28ca4f16f55f103adc7d0226f']"
+        assert phpunit.source == "Delivery"
+
     def test_parsing_arrays_keys_with_spaces(self):
         """Ensure that our identifiers can have spaces. Bug #1683"""
         phpsource = '''$lang = array(

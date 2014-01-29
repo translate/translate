@@ -246,8 +246,9 @@ class phpfile(base.TranslationStore):
                 newunit.addnote(line, "developer")
                 continue
 
-            # If an array starts in the current line.
-            if line.lower().replace(" ", "").find('array(') != -1:
+            # If an array starts in the current line and is using array syntax
+            if (line.lower().replace(" ", "").find('array(') != -1 and
+                line.lower().replace(" ", "").find('array()') == -1):
                 # If this is a nested array.
                 if inarray:
                     prename = prename + line[:line.find('=')].strip() + "->"
