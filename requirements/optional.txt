@@ -6,9 +6,6 @@
 # ini2po
 iniparse>=0.3.1
 
-# Trados TM
-BeautifulSoup>=3.2
-
 # sub2po
 #aeidon>=0.14
 
