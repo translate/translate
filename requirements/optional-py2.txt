@@ -3,6 +3,9 @@
 ##########################################
 # Format support - only available in Py2 #
 ##########################################
+# ini2po
+iniparse>=0.3.1
+
 # ical2po
 vobject>=0.6.6
 
