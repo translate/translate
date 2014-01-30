@@ -25,10 +25,7 @@ with clients using JSON over HTTP."""
 import logging
 from urlparse import parse_qs
 from optparse import OptionParser
-try:
-    import json  # available since Python 2.6
-except ImportError:
-    import simplejson as json  # API compatible with the json module
+import json
 
 from translate.misc import selector
 from translate.misc import wsgi
