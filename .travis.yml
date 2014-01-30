@@ -16,6 +16,7 @@ matrix:
 install:
   - sudo apt-get install python-aeidon
   - pip install --use-mirrors -r requirements/dev.txt
+  - if [[ $TRAVIS_PYTHON_VERSION == 2* ]]; then pip install --use-mirrors -r requirements/optional-py2.txt; fi
   # Still need to handle with indexing engines
   # docs
   - pip install --use-mirrors Sphinx

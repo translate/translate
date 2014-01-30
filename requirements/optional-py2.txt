@@ -1,0 +1,7 @@
+-r optional.txt
+
+##########################################
+# Format support - only available in Py2 #
+##########################################
+# ical2po
+vobject>=0.6.6
