@@ -80,7 +80,7 @@ class cvs(GenericRevisionControlSystem):
         # rename the file to be updated
         try:
             os.rename(filename, filename_backup)
-        except OSError, error:
+        except OSError as error:
             raise IOError("[CVS] could not move the file '%s' to '%s': %s" % (
                           filename, filename_backup, error))
         command = ["cvs", "-Q", "update", "-C"]

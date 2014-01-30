@@ -236,7 +236,7 @@ class Selector(object):
                     path, methods = self._parse_line(line, path, methods)
                 if path and methods:
                     self.add(path, methods)
-            #except Exception, e:
+            #except Exception as e:
             #    raise MappingFileError("Mapping line %s: %s" % (lineno, e))
         finally:
             the_file.close()

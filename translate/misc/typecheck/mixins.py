@@ -38,7 +38,7 @@ class _UnorderedIteratorMixin(object):
         for i, item in enumerate(to_check):
             try:
                 check_type(self._type, func, item)
-            except _TC_Exception, e:
+            except _TC_Exception as e:
                 raise _TC_IterationError(i, item, e)
 
     @classmethod    

@@ -771,7 +771,7 @@ class pofile(pocommon.pofile):
             # clear units to get rid of automatically generated headers before parsing
             self.units = []
             poparser.parse_units(poparser.ParseState(input, pounit), self)
-#        except Exception, e:
+#        except Exception as e:
 #            raise base.ParseError(e)
 
     def removeduplicates(self, duplicatestyle="merge"):
@@ -825,7 +825,7 @@ class pofile(pocommon.pofile):
         if isinstance(output, six.text_type):
             try:
                 return output.encode(getattr(self, "_encoding", "UTF-8"))
-            except UnicodeEncodeError, e:
+            except UnicodeEncodeError as e:
                 self.updateheader(add=True, Content_Type="text/plain; charset=UTF-8")
                 self._encoding = "UTF-8"
                 for unit in self.units:
@@ -866,7 +866,7 @@ class pofile(pocommon.pofile):
                 self._encoding.lower() != "charset"):
                 try:
                     line = line.decode(self._encoding)
-                except UnicodeError, e:
+                except UnicodeError as e:
                     raise UnicodeError("Error decoding line with encoding %r: %s. Line is %r" %
                                        (self._encoding, e, line))
             newlines.append(line)

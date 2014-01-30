@@ -39,7 +39,7 @@ try:
                 checkers[lang] = checker.SpellChecker(lang)
                 # some versions only report an error when checking something
                 checkers[lang].check(u'bla')
-            except EnchantError, e:
+            except EnchantError as e:
                 # sometimes this is raised instead of DictNotFoundError
                 logger.error(str(e))
                 checkers[lang] = None

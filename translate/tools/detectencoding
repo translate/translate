@@ -215,7 +215,7 @@ class detector:
         decoded = translation.decode(encoding)
       except UnicodeDecodeError:
         raise
-      except Exception, e:
+      except Exception as e:
         raise UnicodeDecodeError(encoding, translation, 0, 0, str(e))
       if self.options.ignorecase:
         decoded = decoded.lower()

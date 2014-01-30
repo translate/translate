@@ -37,5 +37,5 @@ import ts2
 import xliff
 try:
     import trados
-except ImportError, e:
+except ImportError as e:
     pass

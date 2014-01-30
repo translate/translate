@@ -44,7 +44,7 @@ def getlanguage(code):
                             internal_code)
         langclass = getattr(module, internal_code)
         return langclass(code)
-    except ImportError, e:
+    except ImportError as e:
         simplercode = data.simplercode(code)
         if simplercode:
             relatedlanguage = getlanguage(simplercode)

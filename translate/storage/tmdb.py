@@ -170,7 +170,7 @@ END;
             logging.debug("created fulltext triggers")
             self.fulltext = True
 
-        except dbapi2.OperationalError, e:
+        except dbapi2.OperationalError as e:
             self.fulltext = False
             logging.debug("failed to initialize fts3 support: " + str(e))
             script = """

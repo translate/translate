@@ -212,7 +212,7 @@ def strelem_to_xml(parent_node, elem):
 def parse_xliff(pstr):
     try:
         return xml_to_strelem(etree.fromstring('<source>%s</source>' % (pstr)))
-    except Exception, exc:
+    except Exception as exc:
         raise
         return None
 xliff.parsers = [parse_xliff]

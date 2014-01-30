@@ -197,7 +197,7 @@ def checkout(cvstag, langs):
     for rmdir in ('en-US', 'pot'):
         try:
             shutil.rmtree(join(l10ndir, rmdir))
-        except OSError, oe:
+        except OSError as oe:
             # "No such file or directory" errors are fine.
             # The rest we raise again.
             if oe.errno != 2:
@@ -218,7 +218,7 @@ def checkout(cvstag, langs):
     # Delete the help-related POT-files, seeing as Firefox help is now on-line.
     try:
         shutil.rmtree(join('pot', 'browser', 'chrome', 'help'))
-    except OSError, oe:
+    except OSError as oe:
         # "No such file or directory" errors are fine. The rest we raise again.
         if oe.errno != 2:
             raise oe
@@ -406,7 +406,7 @@ def migrate_lang(lang, buildlang, recover, update_transl, debug):
         # directory, we use the recovered .po files
         try:
             os.mkdir(podir)
-        except OSError, oe:
+        except OSError as oe:
             # "File exists" errors are fine. The rest we raise again.
             if oe.errno != 17:
                 raise oe

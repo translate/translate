@@ -448,10 +448,10 @@ class UnitChecker(object):
 
             try:
                 filterresult = self.run_test(filterfunction, unit)
-            except FilterFailure, e:
+            except FilterFailure as e:
                 filterresult = False
                 filtermessage = unicode(e)
-            except Exception, e:
+            except Exception as e:
                 if self.errorhandler is None:
                     raise ValueError("error in filter %s: %r, %r, %s" %
                                      (functionname, unit.source, unit.target, e))
@@ -510,7 +510,7 @@ class TranslationChecker(UnitChecker):
                 try:
                     if not test(self.str1, unicode(pluralform)):
                         filterresult = False
-                except FilterFailure, e:
+                except FilterFailure as e:
                     filterresult = False
                     filtermessages.extend(e.messages)
 

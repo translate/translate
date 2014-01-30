@@ -478,13 +478,13 @@ class Dict(CheckType):
             # Check the key
             try:
                 check_type(self.__check_key, func, k)
-            except _TC_Exception, inner:
+            except _TC_Exception as inner:
                 raise _TC_KeyError(k, inner)
 
             # Check the value
             try:
                 check_type(self.__check_val, func, v)
-            except _TC_Exception, inner:
+            except _TC_Exception as inner:
                 raise _TC_KeyValError(k, v, inner)
         
     def __eq__(self, other):
@@ -540,7 +540,7 @@ class List(CheckType):
         for (i, val, type) in type_tuples:
             try:
                 check_type(type, func, val)
-            except _TC_Exception, e:
+            except _TC_Exception as e:
                 raise _TC_IndexError(i, e)
         
     def __eq__(self, other):
@@ -586,7 +586,7 @@ class Tuple(List):
         for (i, (val, type)) in enumerate(zip(to_check, self._types)):
             try:
                 check_type(type, func, val)
-            except _TC_Exception, inner:
+            except _TC_Exception as inner:
                 raise _TC_IndexError(i, inner)
         
     @classmethod
@@ -790,7 +790,7 @@ class And(_Boolean):
         for type in self._types:
             try:
                 check_type(type, func, to_check)
-            except _TC_Exception, e:
+            except _TC_Exception as e:
                 raise _TC_TypeError(to_check, self)
 
 class Not(Or):
@@ -874,7 +874,7 @@ class HasAttr(CheckType):
                 
             try:
                 check_type(typ, func, getattr(to_check, attr))
-            except _TC_Exception, e:
+            except _TC_Exception as e:
                 raise _TC_AttrError(attr, e)
                 
     def __eq__(self, other):
@@ -1384,7 +1384,7 @@ def typecheck_args(*v_sig, **kw_sig):
 
         try:        
             param_types = _param_to_type((param_list, varg_name, kwarg_name), v_sig, kw_sig)
-        except _TS_Exception, e:
+        except _TS_Exception as e:
             raise TypeSignatureError(e)
         
         ### We need to fix-up the types of the *vargs and **kwargs parameters
@@ -1415,7 +1415,7 @@ def typecheck_args(*v_sig, **kw_sig):
                 try:
                     for name, val in arg_dict.items():
                         check_type(check_param_types[name], wrapped_func, val)
-                except _TC_Exception, e:
+                except _TC_Exception as e:
                     str_name = _rec_tuple_str(name)
                     raise TypeCheckError("Argument %s: " % str_name, val, e)
 
@@ -1465,7 +1465,7 @@ def typecheck_return(*signature):
         if enable_checking:
             try:
                 check_type(sig_types, func, return_vals)
-            except _TC_Exception, e:
+            except _TC_Exception as e:
                 stop_checking(func)
                 raise TypeCheckError("Return value: ", return_vals, e)
 
@@ -1502,7 +1502,7 @@ class Fake_generator(object):
         if enable_checking:
             try:
                 check_type(self.__sig_types, gen, return_vals)
-            except _TC_Exception, e:
+            except _TC_Exception as e:
                 # Insert this error into the chain so we can know
                 # which yield the error occurred at
                 middle_exc = _TC_GeneratorError(self.__yield_no, e)

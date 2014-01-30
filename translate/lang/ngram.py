@@ -119,12 +119,12 @@ class NGram:
                     for i, line in enumerate(lines):
                         ngram, _t, _f = line.partition(u'\t')
                         ngrams[ngram] = i
-                except AttributeError, e:
+                except AttributeError as e:
                     # Python2.4 doesn't have unicode.partition()
                     for i, line in enumerate(lines):
                         ngram = line.split(u'\t')[0]
                         ngrams[ngram] = i
-            except UnicodeDecodeError, e:
+            except UnicodeDecodeError as e:
                 continue
 
             if ngrams:

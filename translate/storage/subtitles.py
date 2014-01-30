@@ -115,7 +115,7 @@ class SubtitleFile(base.TranslationStore):
                 newunit._start = subtitle.start
                 newunit._end = subtitle.end
                 newunit._duration = subtitle.duration_seconds
-        except Exception, e:
+        except Exception as e:
             raise base.ParseError(e)
 
     def _parsefile(self, storefile):

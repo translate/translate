@@ -93,7 +93,7 @@ class PyLuceneDatabase(CommonIndexer.CommonDatabase):
             # try to open an existing database
             tempreader = PyLucene.IndexReader.open(self.location)
             tempreader.close()
-        except PyLucene.JavaError, err_msg:
+        except PyLucene.JavaError as err_msg:
             # Write an error out, in case this is a real problem instead of an absence of an index
             # TODO: turn the following two lines into debug output
             #errorstr = str(e).strip() + "\n" + self.errorhandler.traceback_str()
@@ -107,7 +107,7 @@ class PyLuceneDatabase(CommonIndexer.CommonDatabase):
                 if not os.path.isdir(parent_path):
                     # recursively create all directories up to parent_path
                     os.makedirs(parent_path)
-            except IOError, err_msg:
+            except IOError as err_msg:
                 raise OSError("Indexer: failed to create the parent "
                               "directory (%s) of the indexing database: %s" % (
                               parent_path, err_msg))
@@ -115,7 +115,7 @@ class PyLuceneDatabase(CommonIndexer.CommonDatabase):
                 tempwriter = PyLucene.IndexWriter(self.location,
                         self.pyl_analyzer, True)
                 tempwriter.close()
-            except PyLucene.JavaError, err_msg:
+            except PyLucene.JavaError as err_msg:
                 raise OSError("Indexer: failed to open or create a Lucene"
                               " database (%s): %s" % (self.location, err_msg))
         # the indexer is initialized - now we prepare the searcher
@@ -131,7 +131,7 @@ class PyLuceneDatabase(CommonIndexer.CommonDatabase):
                         self.location)
                     self.searcher = PyLucene.IndexSearcher(self.reader)
                     break
-                except PyLucene.JavaError, e:
+                except PyLucene.JavaError as e:
                     # store error message for possible later re-raise (below)
                     lock_error_msg = e
                     time.sleep(0.01)
@@ -494,7 +494,7 @@ class PyLuceneDatabase(CommonIndexer.CommonDatabase):
                 self.reader = PyLucene.IndexReader.open(self.location)
                 self.searcher = PyLucene.IndexSearcher(self.reader)
                 self.index_version = self.reader.getCurrentVersion(self.location)
-        except PyLucene.JavaError, e:
+        except PyLucene.JavaError as e:
             # TODO: add some debugging output?
             #self.errorhandler.logerror("Error attempting to read index - try reindexing: "+str(e))
             pass

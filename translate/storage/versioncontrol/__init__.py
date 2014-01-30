@@ -93,7 +93,7 @@ def run_command(command, cwd=None):
         (output, error) = proc.communicate()
         ret = proc.returncode
         return ret, output, error
-    except OSError, err_msg:
+    except OSError as err_msg:
         # failed to run the program (e.g. the executable was not found)
         return -1, "", err_msg
 

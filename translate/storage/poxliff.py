@@ -395,7 +395,7 @@ class PoXliffFile(xliff.xlifffile, poheader.poheader):
                 self.addunit(nextplural, new=False)
                 try:
                     nextplural = pluralunit_iter.next()
-                except StopIteration, i:
+                except StopIteration as i:
                     nextplural = None
             else:
                 self.addunit(term, new=False)
