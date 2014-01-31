@@ -31,11 +31,10 @@ for full descriptions of all tests.
 
 import os
 
+from translate.filters import autocorrect, checks
+from translate.misc import optrecurse
 from translate.storage import factory
 from translate.storage.poheader import poheader
-from translate.filters import checks
-from translate.filters import autocorrect
-from translate.misc import optrecurse
 
 
 def build_checkerconfig(options):

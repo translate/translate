@@ -30,19 +30,15 @@ When adding a new test here, please document and explain their behaviour on the
 :doc:`pofilter tests </commands/pofilter_tests>` page.
 """
 
-import re
 import logging
+import re
 
-from translate.filters import decoration
-from translate.filters import helpers
-from translate.filters import prefilters
-from translate.filters import spelling
-from translate.filters.decorators import (critical, functional, cosmetic,
-                                          extraction)
-from translate.lang import factory
-from translate.lang import data
-
+from translate.filters import decoration, helpers, prefilters, spelling
+from translate.filters.decorators import (cosmetic, critical, extraction,
+                                          functional)
+from translate.lang import data, factory
 from translate.misc import lru
+
 
 logger = logging.getLogger(__name__)
 
