@@ -21,12 +21,14 @@
 
 
 import os
-import sys
 import shutil
+import sys
+
 import pytest
 
 import __init__ as indexing
 import CommonIndexer
+
 
 # following block only needs running under pytest; unclear how to detect it?
 

@@ -25,9 +25,9 @@ interface for the PyLucene (v2.x) indexing engine
 take a look at PyLuceneIndexer1.py for the PyLucene v1.x interface
 """
 
+import logging
 import os
 import time
-import logging
 
 # try to import the PyLucene package (with the two possible names)
 # remember the type of the detected package (compiled with jcc (>=v2.3) or

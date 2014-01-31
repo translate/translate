@@ -21,11 +21,12 @@
 
 """Interface for differrent indexing engines for the Translate Toolkit."""
 
+import logging
 import os
 import shutil
-import logging
 
 import CommonIndexer
+
 
 """ TODO for indexing engines:
     * get rid of jToolkit.glock dependency
