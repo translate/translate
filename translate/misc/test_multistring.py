@@ -2,8 +2,7 @@
 
 import pytest
 
-from translate.misc import multistring
-from translate.misc import test_autoencode
+from translate.misc import multistring, test_autoencode
 
 
 class TestMultistring(test_autoencode.TestAutoencode):
