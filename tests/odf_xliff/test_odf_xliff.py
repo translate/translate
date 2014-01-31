@@ -33,8 +33,7 @@ dir = os.path.dirname(os.path.dirname(dir))
 # load python modules from top-level
 sys.path.insert(0, dir)
 
-from translate.convert import odf2xliff
-from translate.convert import xliff2odf
+from translate.convert import odf2xliff, xliff2odf
 from translate.storage import factory, xliff
 
 

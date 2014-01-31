@@ -21,9 +21,9 @@
 import os
 import os.path as path
 import sys
+from subprocess import call
 
 from lxml import etree
-from subprocess import call
 
 # get directory of this test
 dir = os.path.dirname(os.path.abspath(__file__))
