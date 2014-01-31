@@ -25,9 +25,9 @@ models.
 
 from os import extsep, path
 
+from translate.lang.ngram import NGram
 from translate.misc.file_discovery import get_abs_data_filename
 from translate.storage.base import TranslationStore
-from translate.lang.ngram import NGram
 
 
 class LanguageIdentifier(object):

@@ -1,9 +1,9 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-from translate.lang import common
-
 from pytest import mark
+
+from translate.lang import common
 
 
 def test_characters():

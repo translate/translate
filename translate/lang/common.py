@@ -60,10 +60,11 @@ TODOs and Ideas for possible features:
   - phrases
 """
 
-import re
 import logging
+import re
 
 from translate.lang import data
+
 
 logger = logging.getLogger(__name__)
 
