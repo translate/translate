@@ -24,10 +24,10 @@ See: http://docs.translatehouse.org/projects/translate-toolkit/en/latest/command
 for examples and usage instructions.
 """
 
+from hashlib import md5
 import os
 import re
 
-from translate.misc import hash
 from translate.storage import factory
 from translate.storage.placeables import StringElem, general
 from translate.storage.placeables import parse as rich_parse
@@ -232,7 +232,7 @@ class podebug:
                 hashable = unit.getlocations()[0]
             else:
                 hashable = unit.source
-            prefix = prefix.replace("@hash_placeholder@", hash.md5_f(hashable).hexdigest()[:self.hash_len])
+            prefix = prefix.replace("@hash_placeholder@", md5(hashable).hexdigest()[:self.hash_len])
         if unit.istranslated():
             rich_string = unit.rich_target
         else:
