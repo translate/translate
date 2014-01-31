@@ -27,8 +27,9 @@ with only the target text in from a text version of the RTF.
 
 import re
 
-from translate.storage import factory
 from translate.misc.multistring import multistring
+from translate.storage import factory
+
 
 tw4winre = re.compile(r"\{0>.*?<\}\d{1,3}\{>(.*?)<0\}", re.M | re.S)
 

@@ -29,8 +29,8 @@ for examples and usage instructions.
 import os
 import sys
 
-from translate.storage import po
 from translate.misc import optrecurse
+from translate.storage import po
 
 
 class SplitOptionParser(optrecurse.RecursiveOptionParser):

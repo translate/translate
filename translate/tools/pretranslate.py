@@ -25,9 +25,9 @@ See: http://docs.translatehouse.org/projects/translate-toolkit/en/latest/command
 for examples and usage instructions.
 """
 
-from translate.storage import factory
-from translate.storage import xliff
 from translate.search import match
+from translate.storage import factory, xliff
+
 
 # We don't want to reinitialise the TM each time, so let's store it here.
 tmmatcher = None

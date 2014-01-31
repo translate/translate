@@ -22,11 +22,12 @@
 that are useful in dealing with PO files"""
 
 import difflib
-import time
+import fnmatch
 import os
 import sys
-import fnmatch
+import time
 from argparse import ArgumentParser
+
 
 lineterm = "\n"
 

@@ -24,12 +24,11 @@ See: http://docs.translatehouse.org/projects/translate-toolkit/en/latest/command
 for examples and usage instructions.
 """
 
-import sys
 import os
+import sys
 
-from translate.storage import factory
-from translate.storage import po
 from translate.misc import optrecurse
+from translate.storage import factory, po
 
 
 class ConflictOptionParser(optrecurse.RecursiveOptionParser):

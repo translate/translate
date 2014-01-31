@@ -21,16 +21,15 @@
 See: http://docs.translatehouse.org/projects/translate-toolkit/en/latest/commands/poterminology.html
 for examples and usage instructions.
 """
+import logging
 import os
 import re
 import sys
-import logging
 
 from translate.lang import factory as lang_factory
-from translate.misc import optrecurse
-from translate.storage import po
-from translate.storage import factory
-from translate.misc import file_discovery
+from translate.misc import file_discovery, optrecurse
+from translate.storage import factory, po
+
 
 logger = logging.getLogger(__name__)
 
