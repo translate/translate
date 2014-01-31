@@ -26,10 +26,8 @@ import logging
 from argparse import ArgumentParser
 from urlparse import parse_qs
 
-from translate.misc import selector
-from translate.misc import wsgi
-from translate.storage import base
-from translate.storage import tmdb
+from translate.misc import selector, wsgi
+from translate.storage import base, tmdb
 
 
 class TMServer(object):
