@@ -21,15 +21,13 @@
 """Class to perform translation memory matching from a store of
 translation units."""
 
-import itertools
 import heapq
+import itertools
 import re
 
-from translate.search import lshtein
-from translate.search import terminology
-from translate.storage import base
-from translate.storage import po
 from translate.misc.multistring import multistring
+from translate.search import lshtein, terminology
+from translate.storage import base, po
 
 
 def sourcelen(unit):
