@@ -1,15 +1,21 @@
 SRC_DIR = translate
+DOCS_DIR = docs
 FORMATS=--formats=bztar
 VERSION=$(shell python setup.py --version)
 FULLNAME=$(shell python setup.py --fullname)
 SFUSERNAME=$(shell egrep -A5 sourceforge ~/.ssh/config | egrep -m1 User | cut -d" " -f2)
 
-.PHONY: all build requirements help publish test-publish
+.PHONY: all build docs requirements help publish test-publish
 
 all: help
 
-build:
+build: docs
 	python setup.py sdist ${FORMATS}
+
+docs:
+	# The following creates the HTML docs.
+	# NOTE: cd and make must be in the same line.
+	cd ${DOCS_DIR}; make html ${TAIL}
 
 publish-pypi:
 	python setup.py sdist ${FORMATS} upload
