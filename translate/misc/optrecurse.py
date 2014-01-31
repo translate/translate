@@ -18,17 +18,17 @@
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, see <http://www.gnu.org/licenses/>.
 
-import re
-import sys
-import os.path
 import fnmatch
 import logging
-import traceback
 import optparse
+import os.path
+import re
+import sys
+import traceback
 from cStringIO import StringIO
 
-from translate.misc import progressbar
 from translate import __version__
+from translate.misc import progressbar
 
 
 class ManPageOption(optparse.Option, object):

@@ -21,8 +21,8 @@
 
 __all__ = ['get_abs_data_filename']
 
-import sys
 import os
+import sys
 
 
 def get_abs_data_filename(path_parts, basedirs=None):

@@ -21,8 +21,8 @@
 """String processing utilities for extracting strings with various kinds
 of delimiters"""
 
-import logging
 import htmlentitydefs
+import logging
 
 
 def find_all(searchin, substr):

@@ -27,8 +27,7 @@ as minidom.parseString, since the functionality provided here will not be in
 those objects.
 """
 
-from xml.dom import minidom
-from xml.dom import expatbuilder
+from xml.dom import expatbuilder, minidom
 
 # helper functions we use to do xml the way we want, used by modified
 # classes below
