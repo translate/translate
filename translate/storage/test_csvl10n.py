@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 
-from translate.storage import csvl10n
-from translate.storage import test_base
+from translate.storage import csvl10n, test_base
 
 
 class TestCSVUnit(test_base.TestTranslationUnit):

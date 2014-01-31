@@ -3,8 +3,7 @@
 
 import pytest
 
-from translate.storage import test_base
-from translate.storage import qm
+from translate.storage import qm, test_base
 
 
 class TestQtUnit(test_base.TestTranslationUnit):

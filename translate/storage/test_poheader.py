@@ -4,12 +4,10 @@
 import os
 import time
 
-from translate.storage import po
-from translate.storage import poxliff
-from translate.storage import poheader
-from translate.misc.dictutils import ordereddict
-from translate.misc import wStringIO
 from translate.lang.team import guess_language
+from translate.misc import wStringIO
+from translate.misc.dictutils import ordereddict
+from translate.storage import po, poheader, poxliff
 
 
 def test_parseheaderstring():

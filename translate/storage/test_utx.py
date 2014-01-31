@@ -1,8 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-from translate.storage import utx
-from translate.storage import test_base
+from translate.storage import test_base, utx
 
 
 class TestUtxUnit(test_base.TestTranslationUnit):

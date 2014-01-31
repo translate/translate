@@ -4,8 +4,7 @@
 from pytest import deprecated_call, raises
 
 from translate.misc import wStringIO
-from translate.storage import properties
-from translate.storage import test_monolingual
+from translate.storage import properties, test_monolingual
 
 
 def test_find_delimiter_pos_simple():

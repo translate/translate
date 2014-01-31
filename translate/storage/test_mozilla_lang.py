@@ -1,8 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-from translate.storage import mozilla_lang
-from translate.storage import test_base
+from translate.storage import mozilla_lang, test_base
 
 
 class TestMozLangUnit(test_base.TestTranslationUnit):

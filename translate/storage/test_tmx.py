@@ -1,8 +1,7 @@
 #!/usr/bin/env python
 
-from translate.storage import tmx
-from translate.storage import test_base
 from translate.misc import wStringIO
+from translate.storage import test_base, tmx
 
 
 class TestTMXUnit(test_base.TestTranslationUnit):

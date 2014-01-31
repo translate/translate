@@ -20,10 +20,8 @@
 
 """Tests for Qt Linguist phase book storage class"""
 
-from translate.storage import qph
-from translate.storage import test_base
-from translate.storage.placeables import parse
-from translate.storage.placeables import xliff
+from translate.storage import qph, test_base
+from translate.storage.placeables import parse, xliff
 
 
 xliffparsers = []

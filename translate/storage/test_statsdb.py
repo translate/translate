@@ -3,8 +3,8 @@
 import os
 import os.path
 
-from translate.storage import statsdb, factory
 from translate.filters import checks
+from translate.storage import factory, statsdb
 
 
 fr_terminology_extract = r"""

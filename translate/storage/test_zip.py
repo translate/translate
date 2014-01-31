@@ -5,8 +5,7 @@
 import os
 from zipfile import ZipFile
 
-from translate.storage import directory
-from translate.storage import zip
+from translate.storage import directory, zip
 
 
 class TestZIPFile(object):

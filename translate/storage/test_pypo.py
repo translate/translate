@@ -5,8 +5,7 @@ from pytest import raises
 
 from translate.misc import wStringIO
 from translate.misc.multistring import multistring
-from translate.storage import pypo
-from translate.storage import test_po
+from translate.storage import pypo, test_po
 
 
 class TestHelpers():
