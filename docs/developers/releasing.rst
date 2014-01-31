@@ -39,6 +39,8 @@ build is what is in VC and doesn't contain any of your uncommitted changes.  It
 also ensure that someone else could relicate your process. ::
 
     git clone git@github.com:translate/translate.git translate-release
+    cd translate-release
+    git submodule update --init
 
 Create release notes
 --------------------
