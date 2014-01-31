@@ -21,7 +21,9 @@
 """Internationalization functions and functionality
 """
 
-import gettext
 import __builtin__
+import gettext
+
+
 if not '_' in __builtin__.__dict__:
     gettext.install("translate-toolkit", unicode=1)
