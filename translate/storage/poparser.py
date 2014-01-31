@@ -20,6 +20,7 @@
 
 import re
 
+
 """
 From the GNU gettext manual:
      WHITE-SPACE

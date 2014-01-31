@@ -45,9 +45,8 @@ import re
 import struct
 
 from translate.misc.multistring import multistring
-from translate.storage import base
-from translate.storage import po
-from translate.storage import poheader
+from translate.storage import base, po, poheader
+
 
 MO_MAGIC_NUMBER = 0x950412de
 

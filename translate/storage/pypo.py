@@ -24,15 +24,16 @@ files (pofile).
 """
 
 import copy
-from cStringIO import StringIO
 import re
 import textwrap
+from cStringIO import StringIO
 
 from translate.lang import data
-from translate.misc.multistring import multistring
 from translate.misc import quote
-from translate.storage import pocommon, base, poparser
+from translate.misc.multistring import multistring
+from translate.storage import base, pocommon, poparser
 from translate.storage.pocommon import encodingToUse
+
 
 lsep = "\n#: "
 """Separator for #: entries"""

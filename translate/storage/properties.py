@@ -121,6 +121,7 @@ from translate.lang import data
 from translate.misc import quote
 from translate.storage import base
 
+
 # the rstripeols convert dos <-> unix nicely as well
 # output will be appropriate for the platform
 

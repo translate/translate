@@ -25,6 +25,7 @@ from zipfile import ZipFile
 
 from translate.storage.projstore import *
 
+
 __all__ = ['BundleProjectStore', 'InvalidBundleError']
 
 

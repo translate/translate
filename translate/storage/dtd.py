@@ -84,9 +84,6 @@ Escaping in Android DTD
     - The " character is escaped using \&quot;
 """
 
-from translate.storage import base
-from translate.misc import quote
-
 import re
 import warnings
 from cStringIO import StringIO
@@ -94,6 +91,10 @@ try:
     from lxml import etree
 except ImportError:
     etree = None
+
+from translate.misc import quote
+from translate.storage import base
+
 
 labelsuffixes = (".label", ".title")
 """Label suffixes: entries with this suffix are able to be comibed with accesskeys

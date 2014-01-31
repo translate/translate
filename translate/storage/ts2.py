@@ -41,6 +41,7 @@ from translate.storage import base, lisa
 from translate.storage.placeables import general
 from translate.storage.workflow import StateEnum as state
 
+
 # TODO: handle translation types
 
 NPLURALS = {

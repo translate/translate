@@ -23,8 +23,7 @@
 
 """A class to manage Mozilla .lang files."""
 
-from translate.storage import base
-from translate.storage import txt
+from translate.storage import base, txt
 
 
 class LangUnit(base.TranslationUnit):

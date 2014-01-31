@@ -17,15 +17,14 @@
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, see <http://www.gnu.org/licenses/>.
 
+import argparse
 import cProfile
 import os
 import pstats
 import random
 import sys
-import argparse
 
-from translate.storage import factory
-from translate.storage import placeables
+from translate.storage import factory, placeables
 
 
 class TranslateBenchmarker:

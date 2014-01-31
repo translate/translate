@@ -20,6 +20,7 @@
 
 import re
 
+
 charset_re = re.compile('CHARACTER_SET[ ]+(?P<charset>.*)')
 header_item_or_end_re = re.compile('(((?P<key>[^ ]+)(?P<space>[ ]*:[ ]*)(?P<value>.*))|(?P<end_comment>[*]/))')
 header_item_re = re.compile('(?P<key>[^ ]+)(?P<space>[ ]*:[ ]*)(?P<value>.*)')

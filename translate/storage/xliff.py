@@ -28,8 +28,9 @@ from lxml import etree
 from translate.misc.multistring import multistring
 from translate.storage import base, lisa
 from translate.storage.lisa import getXMLspace
-from translate.storage.placeables.lisa import xml_to_strelem, strelem_to_xml
+from translate.storage.placeables.lisa import strelem_to_xml, xml_to_strelem
 from translate.storage.workflow import StateEnum as state
+
 
 # TODO: handle translation types
 
