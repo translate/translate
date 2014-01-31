@@ -24,9 +24,8 @@ See: http://docs.translatehouse.org/projects/translate-toolkit/en/latest/command
 for examples and usage instructions.
 """
 
-from translate.storage import factory
-from translate.storage import mo
 from translate.misc.multistring import multistring
+from translate.storage import factory, mo
 
 
 def _do_msgidcomment(string):

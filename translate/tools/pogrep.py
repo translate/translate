@@ -28,14 +28,14 @@ See: http://docs.translatehouse.org/projects/translate-toolkit/en/latest/command
 for examples and usage instructions.
 """
 
-import re
 import locale
+import re
 
-from translate.storage import factory
-from translate.storage.poheader import poheader
+from translate.lang import data
 from translate.misc import optrecurse
 from translate.misc.multistring import multistring
-from translate.lang import data
+from translate.storage import factory
+from translate.storage.poheader import poheader
 
 
 class GrepMatch(object):

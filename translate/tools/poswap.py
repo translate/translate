@@ -36,8 +36,8 @@ See: http://docs.translatehouse.org/projects/translate-toolkit/en/latest/command
 for examples and usage instructions.
 """
 
-from translate.storage import po
 from translate.convert import convert
+from translate.storage import po
 
 
 def swapdir(store):

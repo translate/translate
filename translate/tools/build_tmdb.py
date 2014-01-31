@@ -20,12 +20,12 @@
 
 """Import units from translations files into tmdb."""
 
-import os
 import logging
+import os
 from argparse import ArgumentParser
 
-from translate.storage import factory
-from translate.storage import tmdb
+from translate.storage import factory, tmdb
+
 
 logger = logging.getLogger(__name__)
 

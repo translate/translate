@@ -27,13 +27,14 @@ for examples and usage instructions.
 """
 
 from __future__ import print_function
-from argparse import ArgumentParser
+
+import logging
 import os
 import sys
-import logging
+from argparse import ArgumentParser
 
-from translate.storage import factory
-from translate.storage import statsdb
+from translate.storage import factory, statsdb
+
 
 logger = logging.getLogger(__name__)
 

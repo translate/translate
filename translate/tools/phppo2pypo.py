@@ -23,8 +23,8 @@
 
 import re
 
-from translate.storage import po
 from translate.misc.multistring import multistring
+from translate.storage import po
 
 
 class phppo2pypo:

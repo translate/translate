@@ -24,8 +24,8 @@ See: http://docs.translatehouse.org/projects/translate-toolkit/en/latest/command
 for examples and usage instructions.
 """
 
-from translate.storage import factory
 from translate.lang import factory as lang_factory
+from translate.storage import factory
 
 
 class segment:
