@@ -1,12 +1,10 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-from translate.storage import factory
-from translate.storage import xliff
-from translate.storage.test_base import headerless_len, first_translatable
-from translate.filters import pofilter
-from translate.filters import checks
+from translate.filters import checks, pofilter
 from translate.misc import wStringIO
+from translate.storage import factory, xliff
+from translate.storage.test_base import first_translatable, headerless_len
 
 
 class BaseTestFilter(object):
