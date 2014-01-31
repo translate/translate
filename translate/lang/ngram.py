@@ -26,10 +26,10 @@
 .. note:: Orignal code from http://thomas.mangin.me.uk/data/source/ngram.py
 """
 
-import sys
-import re
-from os import path
 import glob
+import re
+import sys
+from os import path
 
 
 nb_ngrams = 400

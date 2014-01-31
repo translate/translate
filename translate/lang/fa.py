@@ -23,9 +23,9 @@
 .. seealso:: http://en.wikipedia.org/wiki/Persian_language
 """
 
-from translate.lang import common
-
 import re
+
+from translate.lang import common
 
 
 def guillemets(text):

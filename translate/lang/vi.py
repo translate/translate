@@ -23,8 +23,7 @@
 .. seealso:: http://en.wikipedia.org/wiki/Vietnamese_language
 """
 
-from translate.lang import common
-from translate.lang import fr
+from translate.lang import common, fr
 
 
 class vi(common.Common):

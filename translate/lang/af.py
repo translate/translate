@@ -27,6 +27,7 @@ import re
 
 from translate.lang import common
 
+
 articlere = re.compile(r"'n\b")
 
 

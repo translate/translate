@@ -20,8 +20,8 @@
 
 """This module provides a factory to instantiate language classes."""
 
-from translate.lang import common
-from translate.lang import data
+from translate.lang import common, data
+
 
 prefix = "code_"
 

@@ -1,8 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-from translate.lang import factory
-from translate.lang import af
+from translate.lang import af, factory
 
 
 def test_sentences():
