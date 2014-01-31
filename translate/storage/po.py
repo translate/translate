@@ -29,6 +29,7 @@ import logging
 import os
 import platform
 
+
 usecpo = os.getenv('USECPO')
 
 if platform.python_implementation() == "CPython":

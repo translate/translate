@@ -36,8 +36,8 @@ import os
 import re
 import warnings
 
-from translate.misc import quote
-from translate.misc import wStringIO
+from translate.misc import quote, wStringIO
+
 
 # File normalisation
 

@@ -22,8 +22,8 @@
 or entire files (csvfile) for use with localisation
 """
 
-import csv
 import codecs
+import csv
 from cStringIO import StringIO
 
 from translate.misc import sparse

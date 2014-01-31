@@ -59,11 +59,12 @@ http://qt.gitorious.org/+kde-developers/qt/kde-qt/blobs/master/tools/linguist/sh
 """
 
 import codecs
-import struct
 import logging
+import struct
 
 from translate.misc.multistring import multistring
 from translate.storage import base
+
 
 logger = logging.getLogger(__name__)
 

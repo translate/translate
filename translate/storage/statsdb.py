@@ -23,20 +23,21 @@
 
 """
 
+import logging
 import os.path
 import re
-import sys
 import stat
+import sys
 import thread
-import logging
-from sqlite3 import dbapi2
 from UserDict import UserDict
+from sqlite3 import dbapi2
 
 from translate import __version__ as toolkitversion
 from translate.lang.common import Common
 from translate.misc.multistring import multistring
 from translate.storage import factory
 from translate.storage.workflow import StateEnum
+
 
 logger = logging.getLogger(__name__)
 

@@ -52,6 +52,7 @@ except ImportError:
 
 from translate.storage import base
 
+
 TRADOS_TIMEFORMAT = "%d%m%Y, %H:%M:%S"
 """Time format used by Trados .txt"""
 

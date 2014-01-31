@@ -32,6 +32,7 @@ b : a string
 
 import re
 from cStringIO import StringIO
+
 from iniparse import INIConfig
 
 from translate.storage import base

@@ -69,9 +69,9 @@ TODO:
 
 """
 
+import json
 import os
 from StringIO import StringIO
-import json
 
 from translate.storage import base
 

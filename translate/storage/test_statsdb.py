@@ -6,6 +6,7 @@ import os.path
 from translate.storage import statsdb, factory
 from translate.filters import checks
 
+
 fr_terminology_extract = r"""
 msgid ""
 msgstr ""

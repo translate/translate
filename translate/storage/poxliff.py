@@ -24,8 +24,9 @@ XLIFF.
 This way the API supports plurals as if it was a PO file, for example.
 """
 
-from lxml import etree
 import re
+
+from lxml import etree
 
 from translate.misc.multistring import multistring
 from translate.storage import base, lisa, poheader, xliff

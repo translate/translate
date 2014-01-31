@@ -28,27 +28,25 @@
 """
 
 import os
-from StringIO import StringIO
 import tempfile
+from StringIO import StringIO
 
 try:
-    from aeidon import Subtitle
-    from aeidon import documents
+    from aeidon import Subtitle, documents, newlines
     from aeidon.encodings import detect
+    from aeidon.files import (AdvSubStationAlpha, MicroDVD, SubRip,
+                              SubStationAlpha, new)
     from aeidon.util import detect_format as determine
-    from aeidon.files import new
-    from aeidon.files import MicroDVD, SubStationAlpha, AdvSubStationAlpha, SubRip
-    from aeidon import newlines
 except ImportError:
-    from gaupol.subtitle import Subtitle
-    from gaupol import documents
+    from gaupol import FormatDeterminer, documents
     from gaupol.encodings import detect
-    from gaupol import FormatDeterminer
+    from gaupol.files import (AdvSubStationAlpha, MicroDVD, SubRip,
+                              SubStationAlpha, new)
+    from gaupol.newlines import newlines
+    from gaupol.subtitle import Subtitle
+    from translate.storage import base
     _determiner = FormatDeterminer()
     determine = _determiner.determine
-    from gaupol.files import new
-    from gaupol.files import MicroDVD, SubStationAlpha, AdvSubStationAlpha, SubRip
-    from gaupol.newlines import newlines
 
 from translate.storage import base
 

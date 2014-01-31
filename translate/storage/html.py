@@ -21,12 +21,13 @@
 
 """module for parsing html files for translation"""
 
+import HTMLParser
 import re
 from htmlentitydefs import name2codepoint
-import HTMLParser
 
 from translate.storage import base
 from translate.storage.base import ParseError
+
 
 # Override the piclose tag from simple > to ?> otherwise we consume HTML
 # within the processing instructions

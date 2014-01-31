@@ -31,6 +31,7 @@ import re
 
 from translate.storage import base
 
+
 dokuwiki = []
 dokuwiki.append(("Dokuwiki heading", re.compile(r"( ?={2,6}[\s]*)(.+)"), re.compile("([\s]*={2,6}[\s]*)$")))
 dokuwiki.append(("Dokuwiki bullet", re.compile(r"([\s]{2,}\*[\s]*)(.+)"), re.compile("[\s]+$")))

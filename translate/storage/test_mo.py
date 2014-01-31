@@ -7,6 +7,7 @@ from cStringIO import StringIO
 
 from translate.storage import factory, mo, test_base
 
+
 # get directory of this test
 dir = os.path.dirname(os.path.abspath(__file__))
 # get top-level directory (moral equivalent of ../..)

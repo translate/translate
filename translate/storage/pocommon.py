@@ -21,9 +21,9 @@
 import re
 import urllib
 
-from translate.storage import base
-from translate.storage import poheader
+from translate.storage import base, poheader
 from translate.storage.workflow import StateEnum as state
+
 
 msgid_comment_re = re.compile("_: (.*?)\n")
 

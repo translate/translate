@@ -9,6 +9,8 @@ cpo = importorskip("os.platform == 'darwin'")
 from translate.misc import wStringIO
 from translate.misc.multistring import multistring
 from translate.storage import test_po
+
+
 cpo = importorskip("translate.storage.cpo")
 
 

@@ -28,9 +28,8 @@
 from os import path
 from zipfile import ZipFile
 
-from translate.storage import factory
-from translate.storage import directory
 from translate.misc import wStringIO
+from translate.storage import directory, factory
 
 
 class ZIPFile(directory.Directory):

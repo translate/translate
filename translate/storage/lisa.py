@@ -22,13 +22,13 @@
 
 try:
     from lxml import etree
-    from translate.misc.xml_helpers import getText, getXMLlang, setXMLlang, \
-                                           getXMLspace, setXMLspace, namespaced
+    from translate.misc.xml_helpers import (getText, getXMLlang, getXMLspace,
+                                            namespaced, setXMLlang, setXMLspace)
 except ImportError as e:
     raise ImportError("lxml is not installed. It might be possible to continue without support for XML formats.")
 
-from translate.storage import base
 from translate.lang import data
+from translate.storage import base
 
 
 class LISAunit(base.TranslationUnit):
