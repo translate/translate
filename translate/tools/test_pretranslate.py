@@ -5,11 +5,10 @@ import warnings
 
 from pytest import mark
 
-from translate.tools import pretranslate
 from translate.convert import test_convert
 from translate.misc import wStringIO
-from translate.storage import po
-from translate.storage import xliff
+from translate.storage import po, xliff
+from translate.tools import pretranslate
 
 
 class TestPretranslate:

@@ -2,11 +2,11 @@
 # -*- coding: utf-8 -*-
 
 from cStringIO import StringIO
+
 from pytest import mark
 
+from translate.storage import po, statsdb
 from translate.tools import pocount
-from translate.storage import po
-from translate.storage import statsdb
 
 
 class TestCount:
