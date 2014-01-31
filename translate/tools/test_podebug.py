@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
-from translate.tools import podebug
 from translate.storage import base, po, xliff
+from translate.tools import podebug
 
 
 PO_DOC = """

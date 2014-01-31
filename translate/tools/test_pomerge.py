@@ -4,10 +4,9 @@
 import pytest
 from pytest import mark
 
-from translate.tools import pomerge
-from translate.storage import po
-from translate.storage import xliff
 from translate.misc import wStringIO
+from translate.storage import po, xliff
+from translate.tools import pomerge
 
 
 def test_str2bool():

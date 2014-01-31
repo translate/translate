@@ -5,9 +5,9 @@
 # Author: Wil Clouser <wclouser@mozilla.com>
 # Date: 2009-12-03
 
-from translate.tools import pypo2phppo
 from translate.convert import test_convert
 from translate.misc import wStringIO
+from translate.tools import pypo2phppo
 
 
 class TestPyPo2PhpPo:

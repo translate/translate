@@ -1,11 +1,10 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-from translate.storage import po
-from translate.storage import xliff
+from translate.misc import wStringIO
+from translate.storage import po, xliff
 from translate.storage.test_base import first_translatable, headerless_len
 from translate.tools import pogrep
-from translate.misc import wStringIO
 
 
 class TestPOGrep:
