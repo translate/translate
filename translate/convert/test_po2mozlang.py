@@ -1,8 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-from translate.convert import po2mozlang
-from translate.convert import test_convert
+from translate.convert import po2mozlang, test_convert
 from translate.misc import wStringIO
 from translate.storage import po
 

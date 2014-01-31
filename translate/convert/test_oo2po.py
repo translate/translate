@@ -5,13 +5,10 @@ import os
 import urlparse
 from urlparse import parse_qs
 
-from translate.convert import oo2po
-from translate.convert import po2oo
-from translate.convert import test_convert
+from translate.convert import oo2po, po2oo, test_convert
 from translate.misc import wStringIO
-from translate.storage import po
+from translate.storage import oo, po
 from translate.storage.poheader import poheader
-from translate.storage import oo
 
 
 class TestOO2PO:

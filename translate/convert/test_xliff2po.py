@@ -1,12 +1,10 @@
 #!/usr/bin/env python
 
-from translate.convert import test_convert
-from translate.convert import xliff2po
+from translate.convert import test_convert, xliff2po
 from translate.misc import wStringIO
-from translate.storage import po
-from translate.storage import xliff
+from translate.storage import po, xliff
 from translate.storage.poheader import poheader
-from translate.storage.test_base import headerless_len, first_translatable
+from translate.storage.test_base import first_translatable, headerless_len
 
 
 class TestXLIFF2PO:

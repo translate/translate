@@ -4,10 +4,10 @@
 import pytest
 pytest.importorskip("vobject")
 
-from translate.convert import po2ical
-from translate.convert import test_convert
+from translate.convert import po2ical, test_convert
 from translate.misc import wStringIO
 from translate.storage import po
+
 
 icalboiler = '''BEGIN:VCALENDAR
 VERSION:2.0

@@ -5,9 +5,7 @@ import warnings
 
 from pytest import mark
 
-from translate.convert import po2oo
-from translate.convert import oo2po
-from translate.convert import test_convert
+from translate.convert import oo2po, po2oo, test_convert
 from translate.misc import wStringIO
 from translate.storage import po
 

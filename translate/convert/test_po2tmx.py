@@ -1,11 +1,10 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-from translate.convert import po2tmx
-from translate.convert import test_convert
+from translate.convert import po2tmx, test_convert
 from translate.misc import wStringIO
-from translate.storage import tmx
 from translate.misc.xml_helpers import XML_NS
+from translate.storage import tmx
 
 
 class TestPO2TMX:

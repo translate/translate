@@ -3,8 +3,7 @@
 
 from pytest import mark
 
-from translate.convert import po2php
-from translate.convert import test_convert
+from translate.convert import po2php, test_convert
 from translate.misc import wStringIO
 from translate.storage import po
 

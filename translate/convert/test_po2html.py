@@ -2,8 +2,7 @@
 
 from pytest import mark
 
-from translate.convert import po2html
-from translate.convert import test_convert
+from translate.convert import po2html, test_convert
 from translate.misc import wStringIO
 
 
