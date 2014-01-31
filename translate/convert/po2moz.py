@@ -26,11 +26,8 @@ for examples and usage instructions.
 
 import os.path
 
-from translate.convert import po2dtd
-from translate.convert import po2prop
-from translate.convert import po2mozlang
-from translate.convert import prop2mozfunny
-from translate.convert import convert
+from translate.convert import (convert, po2dtd, po2mozlang, po2prop,
+                               prop2mozfunny)
 
 
 class MozConvertOptionParser(convert.ConvertOptionParser):

@@ -25,8 +25,7 @@ See: http://docs.translatehouse.org/projects/translate-toolkit/en/latest/command
 for examples and usage instructions
 """
 
-from translate.storage import tbx
-from translate.storage import csvl10n
+from translate.storage import csvl10n, tbx
 
 
 class csv2tbx:

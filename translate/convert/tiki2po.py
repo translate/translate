@@ -26,8 +26,7 @@ for examples and usage instructions.
 
 import sys
 
-from translate.storage import tiki
-from translate.storage import po
+from translate.storage import po, tiki
 
 
 class tiki2po:

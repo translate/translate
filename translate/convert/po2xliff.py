@@ -24,8 +24,7 @@ See: http://docs.translatehouse.org/projects/translate-toolkit/en/latest/command
 for examples and usage instructions.
 """
 
-from translate.storage import po
-from translate.storage import poxliff
+from translate.storage import po, poxliff
 
 
 class po2xliff:

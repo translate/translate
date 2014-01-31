@@ -24,15 +24,13 @@
 See: http://docs.translatehouse.org/projects/translate-toolkit/en/latest/commands/odf2xliff.html
 for examples and usage instructions.
 """
-from cStringIO import StringIO
 import zipfile
+from cStringIO import StringIO
+
 import lxml.etree as etree
 
-from translate.storage import factory
-from translate.storage.xml_extract import unit_tree
-from translate.storage.xml_extract import extract
-from translate.storage.xml_extract import generate
-from translate.storage import odf_shared, odf_io
+from translate.storage import factory, odf_io, odf_shared
+from translate.storage.xml_extract import extract, generate, unit_tree
 
 
 def first_child(unit_node):
