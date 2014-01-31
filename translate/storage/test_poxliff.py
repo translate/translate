@@ -1,8 +1,7 @@
 #!/usr/bin/env python
 
 from translate.misc.multistring import multistring
-from translate.storage import poxliff
-from translate.storage import test_xliff
+from translate.storage import poxliff, test_xliff
 
 
 class TestPOXLIFFUnit(test_xliff.TestXLIFFUnit):

@@ -29,10 +29,8 @@ from lxml import etree
 from translate.misc.multistring import multistring
 from translate.storage import ts2 as ts
 from translate.storage import test_base
-from translate.storage.placeables import parse
-from translate.storage.placeables import xliff
+from translate.storage.placeables import parse, xliff
 from translate.storage.placeables.lisa import xml_to_strelem
-
 
 xliffparsers = []
 for attrname in dir(xliff):

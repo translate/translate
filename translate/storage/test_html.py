@@ -20,10 +20,9 @@
 
 """Tests for the HTML classes"""
 
-from pytest import raises, mark
+from pytest import mark, raises
 
-from translate.storage import base
-from translate.storage import html
+from translate.storage import base, html
 
 
 def test_guess_encoding():

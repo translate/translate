@@ -3,7 +3,7 @@
 
 import os
 
-from pytest import raises, mark, importorskip
+from pytest import importorskip, mark, raises
 cpo = importorskip("os.platform == 'darwin'")
 
 from translate.misc import wStringIO

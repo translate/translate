@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 
-from translate.storage import tbx
-from translate.storage import test_base
+from translate.storage import tbx, test_base
 
 
 class TestTBXUnit(test_base.TestTranslationUnit):

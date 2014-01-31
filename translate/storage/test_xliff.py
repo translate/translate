@@ -2,10 +2,9 @@
 
 from lxml import etree
 
-from translate.storage import xliff, lisa
-from translate.storage import test_base
+from translate.storage import lisa, test_base, xliff
 from translate.storage.placeables import StringElem
-from translate.storage.placeables.xliff import X, G
+from translate.storage.placeables.xliff import G, X
 
 
 class TestXLIFFUnit(test_base.TestTranslationUnit):

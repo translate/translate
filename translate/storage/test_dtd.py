@@ -21,8 +21,7 @@
 from pytest import mark
 
 from translate.misc import wStringIO
-from translate.storage import dtd
-from translate.storage import test_monolingual
+from translate.storage import dtd, test_monolingual
 
 
 def test_roundtrip_quoting():

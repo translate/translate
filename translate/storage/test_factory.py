@@ -1,9 +1,9 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
+import os
 from bz2 import BZ2File
 from gzip import GzipFile
-import os
 
 from translate.misc import wStringIO
 from translate.storage import factory

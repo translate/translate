@@ -3,9 +3,8 @@
 
 from pytest import mark
 
-from translate.storage import php
-from translate.storage import test_monolingual
 from translate.misc import wStringIO
+from translate.storage import php, test_monolingual
 
 
 def test_php_escaping_single_quote():

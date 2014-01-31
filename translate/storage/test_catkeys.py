@@ -1,8 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-from translate.storage import test_base
-from translate.storage import catkeys
+from translate.storage import catkeys, test_base
 
 
 class TestCatkeysUnit(test_base.TestTranslationUnit):
