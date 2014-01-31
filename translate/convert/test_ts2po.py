@@ -1,8 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-from translate.convert import ts2po
-from translate.convert import test_convert
+from translate.convert import test_convert, ts2po
 from translate.misc import wStringIO
 
 

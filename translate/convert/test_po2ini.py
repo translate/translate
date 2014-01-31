@@ -3,8 +3,7 @@
 
 from pytest import importorskip
 
-from translate.convert import po2ini
-from translate.convert import test_convert
+from translate.convert import po2ini, test_convert
 from translate.misc import wStringIO
 from translate.storage import po
 

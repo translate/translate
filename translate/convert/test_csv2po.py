@@ -1,11 +1,9 @@
 #!/usr/bin/env python
 
-from translate.convert import csv2po
-from translate.convert import test_convert
+from translate.convert import csv2po, test_convert
 from translate.misc import wStringIO
-from translate.storage import po
-from translate.storage import csvl10n
-from translate.storage.test_base import headerless_len, first_translatable
+from translate.storage import csvl10n, po
+from translate.storage.test_base import first_translatable, headerless_len
 
 
 def test_replacestrings():

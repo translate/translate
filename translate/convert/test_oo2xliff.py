@@ -3,11 +3,8 @@
 
 import os
 
-from translate.convert import test_oo2po
-from translate.convert import oo2xliff
-from translate.convert import test_convert
-from translate.storage import xliff
-from translate.storage import oo
+from translate.convert import oo2xliff, test_convert, test_oo2po
+from translate.storage import oo, xliff
 
 
 class TestOO2XLIFF(test_oo2po.TestOO2PO):

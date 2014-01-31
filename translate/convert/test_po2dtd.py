@@ -5,12 +5,9 @@ import warnings
 
 import pytest
 
-from translate.convert import po2dtd
-from translate.convert import dtd2po
-from translate.convert import test_convert
+from translate.convert import dtd2po, po2dtd, test_convert
 from translate.misc import wStringIO
-from translate.storage import po
-from translate.storage import dtd
+from translate.storage import dtd, po
 
 
 class TestPO2DTD:

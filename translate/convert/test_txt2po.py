@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 
-from translate.convert import txt2po
-from translate.convert import test_convert
+from translate.convert import test_convert, txt2po
 from translate.misc import wStringIO
 from translate.storage import txt
 

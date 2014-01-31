@@ -3,11 +3,9 @@
 
 from pytest import mark
 
-from translate.convert import prop2po
-from translate.convert import test_convert
+from translate.convert import prop2po, test_convert
 from translate.misc import wStringIO
-from translate.storage import po
-from translate.storage import properties
+from translate.storage import po, properties
 
 
 class TestProp2PO:

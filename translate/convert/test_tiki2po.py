@@ -5,8 +5,7 @@
 # Author: Wil Clouser <wclouser@mozilla.com>
 # Date: 2008-12-01
 
-from translate.convert import tiki2po
-from translate.convert import test_convert
+from translate.convert import test_convert, tiki2po
 from translate.misc import wStringIO
 
 

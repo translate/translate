@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 
-from translate.convert import moz2po
-from translate.convert import test_convert
+from translate.convert import moz2po, test_convert
 
 
 class TestMoz2PO:

@@ -1,11 +1,9 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-from translate.convert import php2po
-from translate.convert import test_convert
+from translate.convert import php2po, test_convert
 from translate.misc import wStringIO
-from translate.storage import po
-from translate.storage import php
+from translate.storage import php, po
 
 
 class TestPhp2PO:
