@@ -25,12 +25,10 @@ See: http://docs.translatehouse.org/projects/translate-toolkit/en/latest/command
 for examples and usage instructions.
 """
 
-from translate.storage import factory
-from translate.search import match
 from translate.misc.multistring import multistring
+from translate.search import match
+from translate.storage import catkeys, factory, poheader
 from translate.tools import pretranslate
-from translate.storage import poheader
-from translate.storage import catkeys
 
 
 def convertpot(input_file, output_file, template_file, tm=None,

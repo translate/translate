@@ -26,8 +26,8 @@ for examples and usage instructions.
 
 import logging
 
-from translate.storage import po
-from translate.storage import rc
+from translate.storage import po, rc
+
 
 logger = logging.getLogger(__name__)
 

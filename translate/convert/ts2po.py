@@ -25,8 +25,7 @@ for examples and usage instructions.
 """
 
 
-from translate.storage import po
-from translate.storage import ts
+from translate.storage import po, ts
 
 
 class ts2po:

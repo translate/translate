@@ -24,15 +24,13 @@ See: http://docs.translatehouse.org/projects/translate-toolkit/en/latest/command
 for examples and usage instructions.
 """
 
+import logging
 import os
 import time
-import logging
 
-from translate.storage import oo
-from translate.storage import factory
-from translate.filters import pofilter
-from translate.filters import checks
-from translate.filters import autocorrect
+from translate.filters import autocorrect, checks, pofilter
+from translate.storage import factory, oo
+
 
 logger = logging.getLogger(__name__)
 

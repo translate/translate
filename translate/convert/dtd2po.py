@@ -26,10 +26,9 @@ dtd2po convertor class which is in this module
 You can convert back to .dtd using po2dtd.py.
 """
 
-from translate.storage import po
-from translate.storage import dtd
-from translate.misc import quote
 from translate.convert.accesskey import UnitMixer
+from translate.misc import quote
+from translate.storage import dtd, po
 
 
 def is_css_entity(entity):

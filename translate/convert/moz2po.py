@@ -24,11 +24,8 @@ See: http://docs.translatehouse.org/projects/translate-toolkit/en/latest/command
 for examples and usage instructions.
 """
 
-from translate.convert import dtd2po
-from translate.convert import prop2po
-from translate.convert import mozfunny2prop
-from translate.convert import mozlang2po
-from translate.convert import convert
+from translate.convert import (convert, dtd2po, mozfunny2prop, mozlang2po,
+                               prop2po)
 
 
 def main(argv=None):

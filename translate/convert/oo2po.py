@@ -28,8 +28,8 @@ for examples and usage instructions.
 import logging
 from urllib import urlencode
 
-from translate.storage import po
-from translate.storage import oo
+from translate.storage import oo, po
+
 
 # TODO: support using one GSI file as template, another as input (for when English is in one and translation in another)
 

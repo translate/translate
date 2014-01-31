@@ -26,8 +26,8 @@ for examples and usage instructions.
 
 from translate.convert import convert
 from translate.misc import quote
-from translate.storage import po
-from translate.storage import properties
+from translate.storage import po, properties
+
 
 eol = u"\n"
 

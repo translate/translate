@@ -21,6 +21,7 @@
 
 from translate.storage.placeables.general import XMLEntityPlaceable
 
+
 DEFAULT_ACCESSKEY_MARKER = u"&"
 
 

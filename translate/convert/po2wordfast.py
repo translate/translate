@@ -26,10 +26,9 @@ for examples and usage instructions.
 
 import os
 
-from translate.storage import po
-from translate.storage import wordfast
 from translate.convert import convert
 from translate.misc import wStringIO
+from translate.storage import po, wordfast
 
 
 class po2wordfast:

@@ -21,10 +21,9 @@
 """Converts properties files to additional Mozilla format files.
 """
 
-from translate.storage import properties
-from translate.convert import po2prop
-from translate.convert import mozfunny2prop
+from translate.convert import mozfunny2prop, po2prop
 from translate.misc.wStringIO import StringIO
+from translate.storage import properties
 
 
 def prop2inc(pf):

@@ -1,9 +1,8 @@
 #!/usr/bin/env python
 
 from translate.convert import po2xliff
-from translate.storage import po
-from translate.storage import poxliff
 from translate.misc.xml_helpers import XML_NS, getText
+from translate.storage import po, poxliff
 
 
 class TestPO2XLIFF:

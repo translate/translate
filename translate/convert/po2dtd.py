@@ -26,11 +26,9 @@
 
 import warnings
 
-from translate.storage import dtd
-from translate.storage import po
+from translate.convert import accesskey, convert
 from translate.misc import quote
-from translate.convert import accesskey
-from translate.convert import convert
+from translate.storage import dtd, po
 
 
 def dtdwarning(message, category, filename, lineno, line=None):

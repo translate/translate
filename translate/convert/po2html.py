@@ -25,8 +25,7 @@ for examples and usage instructions.
 """
 
 from translate.convert import convert
-from translate.storage import html
-from translate.storage import po
+from translate.storage import html, po
 
 
 class po2html:
