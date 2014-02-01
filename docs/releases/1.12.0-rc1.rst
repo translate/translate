@@ -1,0 +1,67 @@
+.. These notes are used in:
+   1. Our email announcements
+   2. The Translate Tools download page at toolkit.translatehouse.org
+   3. Sourceforge download page in
+      http://sourceforge.net/projects/translate/files/Translate%20Toolkit/1.12.0-rc1/README.rst/download
+
+Translate Toolkit 1.12.0-rc1
+****************************
+
+*Not yet released*
+
+This release contains many improvements and bug fixes. While it contains many
+general improvements, it also specifically contains needed changes and
+optimizations for the upcoming `Pootle <http://pootle.translatehouse.org/>`_
+2.5.2 and `Virtaal <http://virtaal.translatehouse.org>`_ releases.
+
+It is just over a X months since the last release and there are many
+improvements across the board.  A number of people contributed to this release
+and we've tried to credit them wherever possible (sorry if somehow we missed
+you).
+
+..
+  This is used for the email and other release notifications
+  Getting it and sharing it
+  =========================
+  * pip install translate-toolkit
+  * `Sourceforge download
+    <https://sourceforge.net/projects/translate/files/Translate%20Toolkit/1.12.0-rc1/>`_
+  * Please share this URL http://toolkit.translatehouse.org/download.html if
+    you'd like to tweet or post about the release.
+
+Highlighted improvements
+========================
+
+Major changes
+-------------
+- PHP format adds a number of new features
+
+Formats and Converters
+----------------------
+
+- PHP:
+
+  - Warn about duplicate entries
+  - Allow blank spaces in array declaration (:bug:`2646`)
+  - Support nested arrays (:bug:`2240`)
+
+General
+-------
+- Added some functional tests
+
+...and loads of internal changes to improve maintainability, remove unused
+imports, remove unused code and general code cleanups, some changes to ensure
+future Python 3 portability and of course many many bugfixes.
+
+
+Contributors
+------------
+This release was made possible by the following people:
+
+Dwayne Bailey, Leandro Regueiro, Alexander Dupuy, Friedel Wolff, Khaled Hosny,
+Michal Čihař, Jordi Mas, Stuart Prescott, Trung Ngo, Ronald Sterckx, Rail
+Aliev, Michael Schlenker, Martin-Zack Mekkaoui, Iskren Chernev, Luiz Fernando
+Ranghetti & Christian Hitz
+
+And to all our bug finders, testers and `localisers
+<http://pootle.locamotion.org/projects/pootle/>`_, a Very BIG Thank You.

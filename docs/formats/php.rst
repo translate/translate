@@ -189,6 +189,19 @@ Our format support allows:
          "two" => "that",
       );
 
+* Blank array declaration, then square bracket syntax to fill that array
+
+  .. versionadded:: 1.12.0
+
+  .. code-block:: php
+
+      <?php
+      global $messages;
+      $messages = array();
+
+      $messages['language'] = 'Language';
+      $messages['file'] = 'File';
+
 
 .. _php#non-conformance:
 
