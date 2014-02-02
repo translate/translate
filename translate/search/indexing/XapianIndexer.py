@@ -104,7 +104,7 @@ class XapianDatabase(CommonIndexer.CommonDatabase):
             # try to open an existing database
             try:
                 self.reader = xapian.Database(self.location)
-            except xapian.DatabaseOpeningError, err_msg:
+            except xapian.DatabaseOpeningError as err_msg:
                 raise ValueError("Indexer: failed to open xapian database "
                                  "(%s) - maybe it is not a xapian database: %s" % (
                                  self.location, str(err_msg)))
@@ -118,7 +118,7 @@ class XapianDatabase(CommonIndexer.CommonDatabase):
                 if not os.path.isdir(parent_path):
                     # recursively create all directories up to parent_path
                     os.makedirs(parent_path)
-            except IOError, err_msg:
+            except IOError as err_msg:
                 raise OSError("Indexer: failed to create the parent "
                               "directory (%s) of the indexing database: %s" % (
                               parent_path, str(err_msg)))
@@ -126,7 +126,7 @@ class XapianDatabase(CommonIndexer.CommonDatabase):
                 self.writer = xapian.WritableDatabase(self.location,
                         xapian.DB_CREATE_OR_OPEN)
                 self.flush()
-            except xapian.DatabaseOpeningError, err_msg:
+            except xapian.DatabaseOpeningError as err_msg:
                 raise OSError("Indexer: failed to open or create a xapian "
                               "database (%s): %s" % (self.location, str(err_msg)))
 
@@ -411,7 +411,7 @@ class XapianDatabase(CommonIndexer.CommonDatabase):
             self._delete_stale_lock()
             try:
                 self.writer = xapian.WritableDatabase(self.location, xapian.DB_OPEN)
-            except xapian.DatabaseOpeningError, err_msg:
+            except xapian.DatabaseOpeningError as err_msg:
 
                 raise ValueError("Indexer: failed to open xapian database "
                                  "(%s) - maybe it is not a xapian database: %s" % (
@@ -434,7 +434,7 @@ class XapianDatabase(CommonIndexer.CommonDatabase):
                 self.reader = xapian.Database(self.location)
             else:
                 self.reader.reopen()
-        except xapian.DatabaseOpeningError, err_msg:
+        except xapian.DatabaseOpeningError as err_msg:
             raise ValueError("Indexer: failed to open xapian database "
                              "(%s) - maybe it is not a xapian database: %s" % (
                              self.location, str(err_msg)))

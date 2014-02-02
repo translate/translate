@@ -70,7 +70,7 @@ class GeneratorContextManager(object):
                     import traceback
                     traceback.print_exception(type, value, tb)
                     raise value
-            except StopIteration, exc:
+            except StopIteration as exc:
                 # Suppress the exception *unless* it's the same exception that
                 # was passed to throw().  This prevents a StopIteration
                 # raised inside the "with" statement from being suppressed

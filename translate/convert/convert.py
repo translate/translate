@@ -167,7 +167,7 @@ class ConvertOptionParser(optrecurse.RecursiveOptionParser, object):
         options.outputoptions = self.filteroutputoptions(options)
         try:
             self.verifyoptions(options)
-        except Exception, e:
+        except Exception as e:
             self.error(str(e))
         self.recursiveprocess(options)
 

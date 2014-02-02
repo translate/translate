@@ -468,7 +468,7 @@ class RecursiveOptionParser(optparse.OptionParser, object):
                 try:
                     self.warning("Output directory does not exist. Attempting to create")
                     os.mkdir(options.output)
-                except IOError, e:
+                except IOError as e:
                     self.error(optparse.OptionValueError("Output directory does not exist, attempt to create failed"))
             if isinstance(options.input, list):
                 inputfiles = self.recurseinputfilelist(options)
@@ -504,7 +504,7 @@ class RecursiveOptionParser(optparse.OptionParser, object):
                 fulloutputpath = self.getfulloutputpath(options, outputpath)
                 if options.recursiveoutput and outputpath:
                     self.checkoutputsubdir(options, os.path.dirname(outputpath))
-            except Exception, error:
+            except Exception as error:
                 if isinstance(error, KeyboardInterrupt):
                     raise
                 self.warning("Couldn't handle input file %s" %
@@ -514,7 +514,7 @@ class RecursiveOptionParser(optparse.OptionParser, object):
                 success = self.processfile(fileprocessor, options,
                                            fullinputpath, fulloutputpath,
                                            fulltemplatepath)
-            except Exception, error:
+            except Exception as error:
                 if isinstance(error, KeyboardInterrupt):
                     raise
                 self.warning("Error processing: input %s, output %s, template %s" %

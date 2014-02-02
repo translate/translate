@@ -382,7 +382,7 @@ def standardsetup(name, version, custompackages=[], customdatafiles=[]):
         manifest_in = open("MANIFEST.in", "w")
         buildmanifest_in(manifest_in, translatescripts + translatebashscripts)
         manifest_in.close()
-    except IOError, e:
+    except IOError as e:
         print >> sys.stderr, "warning: could not recreate MANIFEST.in, continuing anyway. Error was %s" % e
     addsubpackages(subpackages)
     datafiles = getdatafiles()

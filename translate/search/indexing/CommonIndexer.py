@@ -567,7 +567,7 @@ class CommonDatabase(object):
         if isinstance(text, str):
             try:
                 result = unicode(text.decode("UTF-8"))
-            except UnicodeEncodeError, e:
+            except UnicodeEncodeError as e:
                 result = unicode(text.decode("charmap"))
         elif not isinstance(text, unicode):
             result = unicode(text)

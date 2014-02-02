@@ -53,7 +53,7 @@ def unquote_plus(text):
         if isinstance(text, unicode):
             text = text.encode('utf-8')
         return urllib.unquote_plus(text).decode('utf-8')
-    except UnicodeEncodeError, e:
+    except UnicodeEncodeError as e:
         # for some reason there is a non-ascii character here. Let's assume it
         # is already unicode (because of originally decoding the file)
         return text

@@ -49,7 +49,7 @@ def calcstats_old(filename):
     # ignore totally blank or header units
     try:
         store = factory.getobject(filename)
-    except ValueError, e:
+    except ValueError as e:
         logger.warning(e)
         return {}
     units = filter(lambda unit: unit.istranslatable(), store.units)

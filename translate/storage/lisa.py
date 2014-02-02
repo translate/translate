@@ -26,7 +26,7 @@ try:
     from lxml import etree
     from translate.misc.xml_helpers import getText, getXMLlang, setXMLlang, \
                                            getXMLspace, setXMLspace, namespaced
-except ImportError, e:
+except ImportError as e:
     raise ImportError("lxml is not installed. It might be possible to continue without support for XML formats.")
 
 from translate.storage import base
@@ -160,7 +160,7 @@ class LISAunit(base.TranslationUnit):
                     terms = languageNode.iter(self.namespaced(self.textNode))
                     try:
                         languageNode = terms.next()
-                    except StopIteration, e:
+                    except StopIteration as e:
                         pass
                 languageNode.text = text
         else:

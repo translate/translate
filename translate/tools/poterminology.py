@@ -126,7 +126,7 @@ class TerminologyExtractor(object):
                     self.stoprelist.append(re.compile(stopline[1:-1] + '$'))
                 else:
                     self.stopwords[stopline[1:-1]] = actions[stoptype]
-        except KeyError, character:
+        except KeyError as character:
             logger.warning("%s:%d - bad stopword entry starts with '%s'",
                            self.stopfile, line, str(character))
             logger.warning("%s:%d all lines after error ignored",
@@ -428,7 +428,7 @@ class TerminologyOptionParser(optrecurse.RecursiveOptionParser):
             success = True
             try:
                 self.processfile(None, options, fullinputpath)
-            except Exception, error:
+            except Exception as error:
                 if isinstance(error, KeyboardInterrupt):
                     raise
                 self.warning("Error processing: input %s" % (fullinputpath), options, sys.exc_info())

@@ -40,7 +40,7 @@ class autoencode(unicode):
             elif errors is None:
                 try:
                     newstring = unicode.__new__(newtype, string, encoding)
-                except LookupError, e:
+                except LookupError as e:
                     raise ValueError(str(e))
             elif encoding is None:
                 newstring = unicode.__new__(newtype, string, errors)

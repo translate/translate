@@ -29,7 +29,7 @@ def passes(filterfunction, str1, str2):
     str1, str2, no_message = strprep(str1, str2)
     try:
         filterresult = filterfunction(str1, str2)
-    except checks.FilterFailure, e:
+    except checks.FilterFailure as e:
         filterresult = False
 
     filterresult = filterresult and check_category(filterfunction)
@@ -42,9 +42,9 @@ def fails(filterfunction, str1, str2, message=None):
     str1, str2, message = strprep(str1, str2, message)
     try:
         filterresult = filterfunction(str1, str2)
-    except checks.SeriousFilterFailure, e:
+    except checks.SeriousFilterFailure as e:
         filterresult = True
-    except checks.FilterFailure, e:
+    except checks.FilterFailure as e:
         if message:
             exc_message = e.messages[0]
             filterresult = exc_message != message
@@ -62,7 +62,7 @@ def fails_serious(filterfunction, str1, str2, message=None):
     str1, str2, message = strprep(str1, str2, message)
     try:
         filterresult = filterfunction(str1, str2)
-    except checks.SeriousFilterFailure, e:
+    except checks.SeriousFilterFailure as e:
         if message:
             exc_message = e.messages[0]
             filterresult = exc_message != message

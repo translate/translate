@@ -503,7 +503,7 @@ class pofile(pocommon.pofile):
             del self._cpo_store
             if tmp_header_added:
                 self.units = self.units[1:]
-        except Exception, e:
+        except Exception as e:
             raise base.ParseError(e)
 
     def removeduplicates(self, duplicatestyle="merge"):
@@ -554,7 +554,7 @@ class pofile(pocommon.pofile):
         self._cpo_store = cpo.pofile(encoding=self._encoding, noheader=True)
         try:
             self._build_cpo_from_self()
-        except UnicodeEncodeError, e:
+        except UnicodeEncodeError as e:
             self._encoding = "utf-8"
             self.updateheader(add=True, Content_Type="text/plain; charset=UTF-8")
             self._build_cpo_from_self()

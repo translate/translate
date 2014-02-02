@@ -108,7 +108,7 @@ class darcs(GenericRevisionControlSystem):
             darcs_file = open(filename)
             output = darcs_file.read()
             darcs_file.close()
-        except IOError, error:
+        except IOError as error:
             raise IOError("[Darcs] error reading original file '%s': %s" % (
                           filename, error))
         return output

@@ -213,7 +213,7 @@ class JsonFile(base.TranslationStore):
             input = StringIO(input)
         try:
             self._file = json.load(input)
-        except ValueError, e:
+        except ValueError as e:
             raise base.ParseError(e.message)
 
         for k, data, ref, item in self._extract_translatables(self._file,
