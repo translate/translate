@@ -23,7 +23,7 @@ with clients using JSON over HTTP."""
 
 #import urllib
 import logging
-from cgi import parse_qs
+from urlparse import parse_qs
 from optparse import OptionParser
 try:
     import json  # available since Python 2.6
