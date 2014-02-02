@@ -3,10 +3,7 @@
 
 import os
 import urlparse
-try:
-    from urlparse import parse_qs
-except ImportError:
-    from cgi import parse_qs
+from urlparse import parse_qs
 
 from translate.convert import oo2po
 from translate.convert import po2oo
