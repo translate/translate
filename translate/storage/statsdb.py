@@ -23,16 +23,13 @@
 
 """
 
-try:
-    from sqlite3 import dbapi2
-except ImportError:
-    from pysqlite2 import dbapi2
 import os.path
 import re
 import sys
 import stat
 import thread
 import logging
+from sqlite3 import dbapi2
 from UserDict import UserDict
 
 from translate import __version__ as toolkitversion
