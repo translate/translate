@@ -27,16 +27,22 @@ Python based parser is used (slower but very well tested)."""
 
 import logging
 import os
+import platform
 
-if os.getenv('USECPO'):
-    if os.getenv('USECPO') == "1":
+usecpo = os.getenv('USECPO')
+
+if platform.python_implementation == "CPython":
+    if usecpo == "1":
         logging.info("Using cPO")
         from translate.storage.cpo import *  # pylint: disable=W0401,W0614
-    elif os.getenv('USECPO') == "2":
-        logging.info("Using new cPO")
+    elif usecpo == "2":
+        logging.info("Using new fPO")
         from translate.storage.fpo import *  # pylint: disable=W0401,W0614
     else:
         logging.info("Using Python PO")
         from translate.storage.pypo import *  # pylint: disable=W0401,W0614
 else:
+    if usecpo:
+        logging.error("cPO and fPO do not work on %s defaulting to PyPO" %
+                      platform.python_implementation)
     from translate.storage.pypo import *  # pylint: disable=W0401
