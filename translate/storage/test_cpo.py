@@ -1,7 +1,10 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
+import os
+
 from pytest import raises, mark, importorskip
+cpo = importorskip("os.platform == 'darwin'")
 
 from translate.misc import wStringIO
 from translate.misc.multistring import multistring
