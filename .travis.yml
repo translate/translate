@@ -22,6 +22,8 @@ install:
   # pep8 checks
   - pip install pep8
 script:
+  # Compile all the files
+  - python -m compileall -x '[.]py$' -q -f .
   - py.test -r EfsxX
   - ./tools/pep8.sh travis
   - cd docs; make html
