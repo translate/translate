@@ -8,6 +8,9 @@
 *.py[cod]
 *.egg-info
 
+# pytest
+.cache/
+
 # vim
 .*.swp
 *~
