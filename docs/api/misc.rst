@@ -53,14 +53,6 @@ file_discovery
    :inherited-members:
 
 
-hash
-----
-
-.. automodule:: translate.misc.hash
-   :members:
-   :inherited-members:
-
-
 ini
 ---
 
