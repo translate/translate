@@ -22,10 +22,7 @@
 import lxml.etree as etree
 
 from translate.storage import base
-
-from translate.storage.xml_extract import misc
-from translate.storage.xml_extract import extract
-from translate.storage.xml_extract import unit_tree
+from translate.storage.xml_extract import extract, misc, unit_tree
 from translate.storage.xml_name import XmlNamer
 
 
