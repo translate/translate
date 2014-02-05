@@ -19,8 +19,8 @@
 # along with this program; if not, see <http://www.gnu.org/licenses/>.
 #
 
-from translate.storage.xml_extract import unit_tree
 from translate.storage import factory
+from translate.storage.xml_extract import unit_tree
 
 # _split_xpath_component
 
