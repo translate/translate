@@ -149,45 +149,6 @@ textwrap
    :inherited-members:
 
 
-typecheck
----------
-
-.. automodule:: translate.misc.typecheck
-   :show-inheritance:
-
-
-doctest_support
-~~~~~~~~~~~~~~~
-
-.. automodule:: translate.misc.typecheck.doctest_support
-   :members:
-   :inherited-members:
-
-
-mixins
-~~~~~~
-
-.. automodule:: translate.misc.typecheck.mixins
-   :members:
-   :inherited-members:
-
-
-sets
-~~~~
-
-.. automodule:: translate.misc.typecheck.sets
-   :members:
-   :inherited-members:
-
-
-typeclasses
-~~~~~~~~~~~
-
-.. automodule:: translate.misc.typecheck.typeclasses
-   :members:
-   :inherited-members:
-
-
 wsgi
 ----
 

@@ -22,13 +22,10 @@
 from lxml import etree
 
 from translate.storage import base, xliff
-from translate.misc.typecheck import accepts, Self, IsOneOf
-from translate.misc.typecheck.typeclasses import Number
 
 
 class XPathTree(object):
 
-    @accepts(Self(), IsOneOf(base.TranslationUnit, type(None)))
     def __init__(self, unit=None):
         self.unit = unit
         self.children = {}
@@ -39,7 +36,6 @@ class XPathTree(object):
             self.children == other.children
 
 
-@accepts(unicode)
 def _split_xpath_component(xpath_component):
     """Split an xpath component into a tag-index tuple.
 
@@ -53,7 +49,6 @@ def _split_xpath_component(xpath_component):
     return tag, index
 
 
-@accepts(unicode)
 def _split_xpath(xpath):
     """Split an 'xpath' string separated by / into a reversed list of its components. Thus:
 
@@ -70,7 +65,6 @@ def _split_xpath(xpath):
     return list(reversed(components))
 
 
-@accepts(IsOneOf(etree._Element, XPathTree), [(unicode, Number)], base.TranslationUnit)
 def _add_unit_to_tree(node, xpath_components, unit):
     """Walk down the tree rooted a node, and follow nodes which correspond to the
     components of xpath_components. When reaching the end of xpath_components,
@@ -101,7 +95,6 @@ def _add_unit_to_tree(node, xpath_components, unit):
         node.unit = unit
 
 
-@accepts(base.TranslationStore)
 def build_unit_tree(store):
     """Enumerate a translation store and build a tree with XPath components as nodes
     and where a node contains a unit if a path from the root of the tree to the node

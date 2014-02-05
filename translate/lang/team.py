@@ -24,8 +24,6 @@ the header of a Gettext PO file.
 
 import re
 
-from translate.misc.typecheck import accepts, returns, IsOneOf
-from translate.misc.typecheck.typeclasses import String
 
 __all__ = ['LANG_TEAM_CONTACT_SNIPPETS', 'guess_language']
 
@@ -411,8 +409,6 @@ def _snippet_guesser(snippets_dict, string, filter_=_nofilter):
     return None
 
 
-@accepts(unicode)
-@returns(IsOneOf(String, type(None)))
 def guess_language(team_string):
     """Gueses the language of a PO file based on the Language-Team entry"""
 

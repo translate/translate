@@ -21,8 +21,6 @@
 from lxml import etree
 
 from translate.storage import base
-from translate.misc.typecheck import accepts, Self, IsCallable, IsOneOf, Any, Class
-from translate.misc.typecheck.typeclasses import Number
 from translate.misc.contextlib import contextmanager, nested
 from translate.misc.context import with_
 from translate.storage.xml_extract import xpath_breadcrumb
@@ -30,17 +28,10 @@ from translate.storage.xml_extract import misc
 from translate.storage.placeables import xliff, StringElem
 
 
-def Nullable(t):
-    return IsOneOf(t, type(None))
-
-TranslatableClass = Class('Translatable')
-
-
 class Translatable(object):
     """A node corresponds to a translatable element. A node may
        have children, which correspond to placeables."""
 
-    @accepts(Self(), unicode, unicode, etree._Element, [IsOneOf(TranslatableClass, unicode)])
     def __init__(self, placeable_name, xpath, dom_node, source):
         self.placeable_name = placeable_name
         self.source = source
@@ -54,7 +45,6 @@ class Translatable(object):
     placeables = property(_get_placeables)
 
 
-@accepts(IsCallable(), Translatable, state=[Any()])
 def reduce_unit_tree(f, unit_node, *state):
     return misc.reduce_tree(f, unit_node, unit_node, lambda unit_node: unit_node.placeables, *state)
 
@@ -72,7 +62,6 @@ class ParseState(object):
         self.nsmap = nsmap
 
 
-@accepts(etree._Element, ParseState)
 def _process_placeable(dom_node, state):
     """Run find_translatable_dom_nodes on the current dom_node"""
     placeable = find_translatable_dom_nodes(dom_node, state)
@@ -89,7 +78,6 @@ def _process_placeable(dom_node, state):
         raise Exception("BUG: find_translatable_dom_nodes should never return more than a single translatable")
 
 
-@accepts(etree._Element, ParseState)
 def _process_placeables(dom_node, state):
     """Return a list of placeables and list with
     alternating string-placeable objects. The former is
@@ -102,7 +90,6 @@ def _process_placeables(dom_node, state):
     return source
 
 
-@accepts(etree._Element, ParseState)
 def _process_translatable(dom_node, state):
     source = [unicode(dom_node.text or u"")] + _process_placeables(dom_node, state)
     translatable = Translatable(state.placeable_name, state.xpath_breadcrumb.xpath, dom_node, source)
@@ -110,7 +97,6 @@ def _process_translatable(dom_node, state):
     return [translatable]
 
 
-@accepts(etree._Element, ParseState)
 def _process_children(dom_node, state):
     _namespace, tag = misc.parse_tag(dom_node.tag)
     children = [find_translatable_dom_nodes(child, state) for child in dom_node]
@@ -130,7 +116,6 @@ def compact_tag(nsmap, namespace, tag):
         return u'{%s}%s' % (namespace, tag)
 
 
-@accepts(etree._Element, ParseState)
 def find_translatable_dom_nodes(dom_node, state):
     # For now, we only want to deal with XML elements.
     # And we want to avoid processing instructions, which
@@ -188,7 +173,6 @@ class IdMaker(object):
         return obj in self._obj_id_map
 
 
-@accepts(Nullable(Translatable), Translatable, IdMaker)
 def _to_placeables(parent_translatable, translatable, id_maker):
     result = []
     for chunk in translatable.source:
@@ -203,7 +187,6 @@ def _to_placeables(parent_translatable, translatable, id_maker):
     return result
 
 
-@accepts(base.TranslationStore, Nullable(Translatable), Translatable, IdMaker)
 def _add_translatable_to_store(store, parent_translatable, translatable, id_maker):
     """Construct a new translation unit, set its source and location
     information and add it to 'store'.
@@ -214,7 +197,6 @@ def _add_translatable_to_store(store, parent_translatable, translatable, id_make
     store.addunit(unit)
 
 
-@accepts(Translatable)
 def _contains_translatable_text(translatable):
     """Checks whether translatable contains any chunks of text which contain
     more than whitespace.
@@ -227,7 +209,6 @@ def _contains_translatable_text(translatable):
     return False
 
 
-@accepts(base.TranslationStore)
 def _make_store_adder(store):
     """Return a function which, when called with a Translatable will add
     a unit to 'store'. The placeables will represented as strings according
@@ -240,7 +221,6 @@ def _make_store_adder(store):
     return add_to_store
 
 
-@accepts([Translatable], IsCallable(), Nullable(Translatable), Number)
 def _walk_translatable_tree(translatables, f, parent_translatable, rid):
     for translatable in translatables:
         if _contains_translatable_text(translatable) and not translatable.is_inline:
@@ -257,7 +237,6 @@ def reverse_map(a_map):
     return dict((value, key) for key, value in a_map.iteritems())
 
 
-@accepts(lambda obj: hasattr(obj, "read"), base.TranslationStore, ParseState, Nullable(IsCallable()))
 def build_store(odf_file, store, parse_state, store_adder=None):
     """Utility function for loading xml_filename"""
     store_adder = store_adder or _make_store_adder(store)

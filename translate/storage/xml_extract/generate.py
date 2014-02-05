@@ -23,15 +23,12 @@ import lxml.etree as etree
 
 from translate.storage import base
 
-from translate.misc.typecheck import accepts, IsCallable
-from translate.misc.typecheck.typeclasses import Number
 from translate.storage.xml_extract import misc
 from translate.storage.xml_extract import extract
 from translate.storage.xml_extract import unit_tree
 from translate.storage.xml_name import XmlNamer
 
 
-@accepts(etree._Element)
 def _get_tag_arrays(dom_node):
     """Return a dictionary indexed by child tag names, where each tag is associated with an array
     of all the child nodes with matching the tag name, in the order in which they appear as children
@@ -50,7 +47,6 @@ def _get_tag_arrays(dom_node):
     return child_dict
 
 
-@accepts(etree._Element, unit_tree.XPathTree, IsCallable())
 def apply_translations(dom_node, unit_node, do_translate):
     tag_array = _get_tag_arrays(dom_node)
     for unit_child_index, unit_child in unit_node.children.iteritems():
@@ -73,12 +69,10 @@ def apply_translations(dom_node, unit_node, do_translate):
         do_translate(dom_node, unit_node.unit)
 
 
-@accepts(IsCallable(), etree._Element, state=[Number])
 def reduce_dom_tree(f, dom_node, *state):
     return misc.reduce_tree(f, dom_node, dom_node, lambda dom_node: dom_node, *state)
 
 
-@accepts(etree._Element, etree._Element)
 def find_dom_root(parent_dom_node, dom_node):
     """
     .. seealso:: :meth:`find_placeable_dom_tree_roots`
@@ -93,7 +87,6 @@ def find_dom_root(parent_dom_node, dom_node):
         return find_dom_root(parent_dom_node, dom_node.getparent())
 
 
-@accepts(extract.Translatable)
 def find_placeable_dom_tree_roots(unit_node):
     """For an inline placeable, find the root DOM node for the placeable in its
     parent.
@@ -117,7 +110,6 @@ def find_placeable_dom_tree_roots(unit_node):
     return extract.reduce_unit_tree(set_dom_root_for_unit_node, unit_node, {})
 
 
-@accepts(extract.Translatable, etree._Element)
 def _map_source_dom_to_doc_dom(unit_node, source_dom_node):
     """Creating a mapping from the DOM nodes in source_dom_node which correspond to
     placeables, with DOM nodes in the XML document template (this information is obtained
@@ -148,7 +140,6 @@ def _map_source_dom_to_doc_dom(unit_node, source_dom_node):
     return source_dom_to_doc_dom
 
 
-@accepts(etree._Element, etree._Element)
 def _map_target_dom_to_source_dom(source_dom_node, target_dom_node):
     """Associate placeables in source_dom_node and target_dom_node which
     have the same 'id' attributes.
@@ -192,7 +183,6 @@ def _build_target_dom_to_doc_dom(unit_node, source_dom, target_dom):
     return misc.compose_mappings(target_dom_to_source_dom, source_dom_to_doc_dom)
 
 
-@accepts(etree._Element, {etree._Element: etree._Element})
 def _get_translated_node(target_node, target_dom_to_doc_dom):
     """Convenience function to get node corresponding to 'target_node'
     and to assign the tail text of 'target_node' to this node."""
@@ -201,7 +191,6 @@ def _get_translated_node(target_node, target_dom_to_doc_dom):
     return dom_node
 
 
-@accepts(etree._Element, etree._Element, {etree._Element: etree._Element})
 def _build_translated_dom(dom_node, target_node, target_dom_to_doc_dom):
     """Use the "shape" of 'target_node' (which is a DOM tree) to insert nodes
     into the DOM tree rooted at 'dom_node'.
@@ -224,7 +213,6 @@ def _build_translated_dom(dom_node, target_node, target_dom_to_doc_dom):
         _build_translated_dom(dom_child, target_child, target_dom_to_doc_dom)
 
 
-@accepts(IsCallable())
 def replace_dom_text(make_parse_state):
     """Return a function::
 
@@ -235,7 +223,6 @@ def replace_dom_text(make_parse_state):
       positions in unit.source).
     """
 
-    @accepts(etree._Element, base.TranslationUnit)
     def action(dom_node, unit):
         """Use the unit's target (or source in the case where there is no translation)
         to update the text in the dom_node and at the tails of its children."""

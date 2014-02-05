@@ -24,8 +24,6 @@ of delimiters"""
 import logging
 import htmlentitydefs
 
-from translate.misc.typecheck import accepts, returns
-
 
 def find_all(searchin, substr):
     """Returns a list of locations where substr occurs in searchin
@@ -190,8 +188,6 @@ def extractwithoutquotes(source, startdelim, enddelim, escape=None,
     return (extracted, instring)
 
 
-@accepts(unicode)
-@returns(unicode)
 def htmlentityencode(source):
     """encodes source using HTML entities e.g. © -> &copy;"""
     output = u""
@@ -204,8 +200,6 @@ def htmlentityencode(source):
     return output
 
 
-@accepts(unicode)
-@returns(unicode)
 def htmlentitydecode(source):
     """decodes source using HTML entities e.g. &copy; -> ©"""
     output = u""
@@ -234,8 +228,6 @@ def htmlentitydecode(source):
     return output
 
 
-@accepts(unicode)
-@returns(unicode)
 def javapropertiesencode(source):
     """Encodes source in the escaped-unicode encoding used by Java
     .properties files
@@ -254,8 +246,6 @@ def javapropertiesencode(source):
     return output
 
 
-@accepts(unicode)
-@returns(unicode)
 def mozillapropertiesencode(source):
     """Encodes source in the escaped-unicode encoding used by Mozilla
     .properties files.
@@ -289,8 +279,6 @@ def escapecontrols(source):
     return source
 
 
-@accepts(unicode)
-@returns(unicode)
 def propertiesdecode(source):
     """Decodes source from the escaped-unicode encoding used by .properties
     files.

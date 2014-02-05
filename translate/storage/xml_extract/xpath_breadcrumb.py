@@ -19,8 +19,6 @@
 # along with this program; if not, see <http://www.gnu.org/licenses/>.
 #
 
-from translate.misc.typecheck import accepts, Self
-
 
 class XPathBreadcrumb(object):
     """A class which is used to build XPath-like paths as a DOM tree is
@@ -59,7 +57,6 @@ class XPathBreadcrumb(object):
         self._xpath = []
         self._tagtally = [{}]
 
-    @accepts(Self(), unicode)
     def start_tag(self, tag):
         tally_dict = self._tagtally[-1]
         tally = tally_dict.get(tag, -1) + 1

@@ -35,8 +35,6 @@ provides the reference implementation for the Qt Linguist product.
 from lxml import etree
 
 from translate.lang import data
-from translate.misc.typecheck import accepts, Self, IsOneOf
-from translate.misc.typecheck.typeclasses import String
 from translate.storage import lisa
 
 
@@ -69,7 +67,6 @@ class QphUnit(lisa.LISAunit):
 
         return filter(not_none, [self._getsourcenode(), self._gettargetnode()])
 
-    @accepts(Self(), unicode, IsOneOf(String, type(None)), String)
     def addnote(self, text, origin=None, position="append"):
         """Add a note specifically in a "definition" tag"""
         current_notes = self.getnotes(origin)

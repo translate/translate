@@ -24,7 +24,6 @@ import urllib
 from translate.storage import base
 from translate.storage import poheader
 from translate.storage.workflow import StateEnum as state
-from translate.misc.typecheck import accepts, returns
 
 msgid_comment_re = re.compile("_: (.*?)\n")
 
@@ -45,8 +44,6 @@ def quote_plus(text):
     return urllib.quote_plus(text.encode("utf-8"))
 
 
-@accepts(unicode)
-@returns(unicode)
 def unquote_plus(text):
     """unquote('%7e/abc+def') -> '~/abc def'"""
     try:

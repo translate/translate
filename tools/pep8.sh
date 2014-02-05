@@ -6,7 +6,6 @@
 # travis - run a set of checks that should always pass
 
 exclude_toolkit=\
-typecheck,\
 diff_match_patch.py,\
 selector.py,\
 wsgiserver,\

@@ -115,7 +115,6 @@ import logging
 
 from translate.lang import data
 from translate.misc import quote
-from translate.misc.typecheck import accepts, returns, IsOneOf
 from translate.storage import base
 
 # the rstripeols convert dos <-> unix nicely as well
@@ -124,8 +123,6 @@ from translate.storage import base
 eol = "\n"
 
 
-@accepts(unicode, [unicode])
-@returns(IsOneOf(type(None), unicode), int)
 def _find_delimiter(line, delimiters):
     """Find the type and position of the delimiter in a property line.
 
@@ -185,8 +182,6 @@ def find_delimeter(line):
     return _find_delimiter(line, DialectJava.delimiters)
 
 
-@accepts(unicode)
-@returns(bool)
 def is_line_continuation(line):
     """Determine whether *line* has a line continuation marker.
 
@@ -212,8 +207,6 @@ def is_line_continuation(line):
     return (count % 2) == 1  # Odd is a line continuation, even is not
 
 
-@accepts(unicode)
-@returns(bool)
 def is_comment_one_line(line):
     """Determine whether a *line* is a one-line comment.
 
@@ -232,8 +225,6 @@ def is_comment_one_line(line):
     return False
 
 
-@accepts(unicode)
-@returns(bool)
 def is_comment_start(line):
     """Determine whether a *line* starts a new multi-line comment.
 
@@ -246,8 +237,6 @@ def is_comment_start(line):
     return stripped.startswith('/*') and not stripped.endswith('*/')
 
 
-@accepts(unicode)
-@returns(bool)
 def is_comment_end(line):
     """Determine whether a *line* ends a new multi-line comment.
 
@@ -260,8 +249,6 @@ def is_comment_end(line):
     return not stripped.startswith('/*') and stripped.endswith('*/')
 
 
-@accepts(unicode)
-@returns(unicode)
 def _key_strip(key):
     """Cleanup whitespace found around a key
 
