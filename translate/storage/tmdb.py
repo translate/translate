@@ -26,14 +26,10 @@ import math
 import re
 import threading
 import time
-try:
-    from sqlite3 import dbapi2
-except ImportError:
-    from pysqlite2 import dbapi2
+from sqlite3 import dbapi2
 
 from translate.lang import data
 from translate.search.lshtein import LevenshteinComparer
-
 
 STRIP_REGEXP = re.compile("\W", re.UNICODE)
 
