@@ -11,8 +11,9 @@ env:
 matrix:
   allow_failures:
     - python: pypy
-install:
+before_install:
   - sudo apt-get install python-aeidon
+install:
   - pip install --use-mirrors -r requirements/dev.txt
   - if [[ $TRAVIS_PYTHON_VERSION == 'pypy' ]]; then pip install --use-mirrors --upgrade --pre lxml; fi
   # Still need to handle with indexing engines
