@@ -81,7 +81,7 @@ def rm_rf(path):
     for dirpath, _, filenames in os.walk(path):
         for filename in filenames:
             os.remove(os.path.join(dirpath, filename))
-    os.removedirs(path)
+    os.rmdir(dirpath)
 
 
 class TestStatsDb:
