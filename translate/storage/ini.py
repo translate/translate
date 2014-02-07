@@ -36,7 +36,8 @@ try:
 except ImportError:
     from StringIO import StringIO
 
-from translate.misc.ini import INIConfig
+from iniparse import INIConfig
+
 from translate.storage import base
 
 
