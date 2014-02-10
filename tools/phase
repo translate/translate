@@ -587,7 +587,7 @@ function cvsadd {
 function makephaselist {
 	templatedir=$1
 	newphaselist=$2
-	(cd $templatedir; find . -name "*.pot") | sed "s/\.pot$/.po/" | sed "s/\(^.*$\)/1	\\1/" | sort > $newphaselist
+	(cd $templatedir; find . -name "*.pot") | sed "s/\.pot$/.po/" | sed "s/\(^.*$\)/1	\\1/" | LC_ALL="C" sort > $newphaselist
 }
 
 function listphases {
