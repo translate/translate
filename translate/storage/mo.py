@@ -49,7 +49,7 @@ from translate.storage import base
 from translate.storage import po
 from translate.storage import poheader
 
-MO_MAGIC_NUMBER = 0x950412deL
+MO_MAGIC_NUMBER = 0x950412de
 
 
 def mounpack(filename='messages.mo'):

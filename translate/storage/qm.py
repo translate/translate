@@ -68,7 +68,7 @@ from translate.storage import base
 
 logger = logging.getLogger(__name__)
 
-QM_MAGIC_NUMBER = (0x3CB86418L, 0xCAEF9C95L, 0xCD211CBFL, 0x60A1BDDDL)
+QM_MAGIC_NUMBER = (0x3CB86418, 0xCAEF9C95, 0xCD211CBF, 0x60A1BDDD)
 
 
 def qmunpack(file_='messages.qm'):
