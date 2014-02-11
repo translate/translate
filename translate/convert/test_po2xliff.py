@@ -24,8 +24,8 @@ class TestPO2XLIFF:
     def test_minimal(self):
         minipo = '''msgid "red"\nmsgstr "rooi"\n'''
         xliff = self.po2xliff(minipo)
-        print "The generated xml:"
-        print str(xliff)
+        print("The generated xml:")
+        print(str(xliff))
         assert len(xliff.units) == 1
         assert xliff.translate("red") == "rooi"
         assert xliff.translate("bla") is None
@@ -51,8 +51,8 @@ msgid "Applications"
 msgstr "Toepassings"
 """
         xliff = self.po2xliff(minipo)
-        print "The generated xml:"
-        print str(xliff)
+        print("The generated xml:")
+        print(str(xliff))
         assert xliff.translate("Applications") == "Toepassings"
         assert xliff.translate("bla") is None
         xmltext = str(xliff)
@@ -69,8 +69,8 @@ msgstr "Toepassings"
 msgstr "Eerste deel "
 "en ekstra"'''
         xliff = self.po2xliff(minipo)
-        print "The generated xml:"
-        print str(xliff)
+        print("The generated xml:")
+        print(str(xliff))
         assert xliff.translate('First part and extra') == 'Eerste deel en ekstra'
 
     def test_escapednewlines(self):
@@ -79,9 +79,9 @@ msgstr "Eerste deel "
 msgstr "Eerste lyn\nTweede lyn"
 '''
         xliff = self.po2xliff(minipo)
-        print "The generated xml:"
+        print("The generated xml:")
         xmltext = str(xliff)
-        print xmltext
+        print(xmltext)
         assert xliff.translate("First line\nSecond line") == "Eerste lyn\nTweede lyn"
         assert xliff.translate("First line\\nSecond line") is None
         assert xmltext.find("line\\nSecond") == -1
@@ -95,9 +95,9 @@ msgstr "Eerste lyn\nTweede lyn"
 msgstr "Eerste kolom\tTweede kolom"
 '''
         xliff = self.po2xliff(minipo)
-        print "The generated xml:"
+        print("The generated xml:")
         xmltext = str(xliff)
-        print xmltext
+        print(xmltext)
         assert xliff.translate("First column\tSecond column") == "Eerste kolom\tTweede kolom"
         assert xliff.translate("First column\\tSecond column") is None
         assert xmltext.find("column\\tSecond") == -1
@@ -114,9 +114,9 @@ msgid "Use \\\"."
 msgstr "Gebruik \\\"."
 '''
         xliff = self.po2xliff(minipo)
-        print "The generated xml:"
+        print("The generated xml:")
         xmltext = str(xliff)
-        print xmltext
+        print(xmltext)
         assert xliff.translate('Hello "Everyone"') == 'Good day "All"'
         assert xliff.translate(r'Use \".') == r'Gebruik \".'
         assert xmltext.find(r'\&quot;') > 0 or xmltext.find(r'\"') > 0
@@ -134,9 +134,9 @@ msgid "one"
 msgstr "kunye"
 '''
         xliff = self.po2xliff(minipo)
-        print "The generated xml:"
+        print("The generated xml:")
         xmltext = str(xliff)
-        print xmltext
+        print(xmltext)
         assert xliff.translate("one") == "kunye"
         assert len(xliff.units) == 1
         node = xliff.units[0].xmlelement
@@ -155,9 +155,9 @@ msgid "one"
 msgstr "kunye"
 '''
         xliff = self.po2xliff(minipo)
-        print "The generated xml:"
+        print("The generated xml:")
         xmltext = str(xliff)
-        print xmltext
+        print(xmltext)
         assert xliff.translate("one") == "kunye"
         assert len(xliff.units) == 1
         node = xliff.units[0].xmlelement
@@ -178,9 +178,9 @@ msgid "one"
 msgstr "kunye"
 '''
         xliff = self.po2xliff(minipo)
-        print "The generated xml:"
+        print("The generated xml:")
         xmltext = str(xliff)
-        print xmltext
+        print(xmltext)
         assert xliff.translate("one") == "kunye"
         assert len(xliff.units) == 1
         node = xliff.units[0].xmlelement
@@ -201,9 +201,9 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 '''
         xliff = self.po2xliff(minipo)
-        print "The generated xml:"
+        print("The generated xml:")
         xmltext = str(xliff)
-        print xmltext
+        print(xmltext)
         assert len(xliff.units) == 1
         unit = xliff.units[0]
         assert unit.source == unit.target == "Content-Type: text/plain; charset=UTF-8\n"
@@ -221,9 +221,9 @@ msgid "three"
 msgstr "raro"
 '''
         xliff = self.po2xliff(minipo)
-        print "The generated xml:"
+        print("The generated xml:")
         xmltext = str(xliff)
-        print xmltext
+        print(xmltext)
         assert len(xliff.units) == 2
         assert xliff.units[0].isfuzzy()
         assert not xliff.units[1].isfuzzy()
@@ -235,9 +235,9 @@ msgstr[0] "inkomo"
 msgstr[1] "iinkomo"
 '''
         xliff = self.po2xliff(minipo)
-        print "The generated xml:"
+        print("The generated xml:")
         xmltext = str(xliff)
-        print xmltext
+        print(xmltext)
         assert len(xliff.units) == 1
         assert xliff.translate("cow") == "inkomo"
 
@@ -249,9 +249,9 @@ msgstr[1] "iinkomo"
 msgstr[2] "iiinkomo"
 '''
         xliff = self.po2xliff(minipo)
-        print "The generated xml:"
+        print("The generated xml:")
         xmltext = str(xliff)
-        print xmltext
+        print(xmltext)
         assert len(xliff.units) == 1
         assert xliff.translate("cow") == "inkomo"
 
@@ -267,7 +267,7 @@ msgstr "Uno"
         minipo = r'''msgid "%s%s%s%s has made %s his or her buddy%s%s"
 msgstr "%s%s%s%s het %s sy/haar vriend/vriendin gemaak%s%s"'''
         xliff = self.po2xliff(minipo)
-        print xliff.units[0].source
+        print(xliff.units[0].source)
         assert xliff.units[0].source == "%s%s%s%s has made %s his or her buddy%s%s"
 
     def test_approved(self):
@@ -282,9 +282,9 @@ msgid "four"
 msgstr ""
 '''
         xliff = self.po2xliff(minipo)
-        print "The generated xml:"
+        print("The generated xml:")
         xmltext = str(xliff)
-        print xmltext
+        print(xmltext)
         assert len(xliff.units) == 3
         assert xliff.units[0].xmlelement.get("approved") != "yes"
         assert not xliff.units[0].isapproved()

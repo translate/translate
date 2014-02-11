@@ -25,7 +25,7 @@ class TestPO2Prop:
         #templateprop = properties.propfile(templatefile)
         convertor = po2prop.reprop(templatefile, inputpo, personality=personality, remove_untranslated=remove_untranslated)
         outputprop = convertor.convertstore()
-        print outputprop
+        print(outputprop)
         return outputprop
 
     def test_merging_simple(self):
@@ -34,7 +34,7 @@ class TestPO2Prop:
         proptemplate = '''prop=value\n'''
         propexpected = '''prop=waarde\n'''
         propfile = self.merge2prop(proptemplate, posource)
-        print propfile
+        print(propfile)
         assert propfile == propexpected
 
     def test_merging_untranslated(self):
@@ -43,7 +43,7 @@ class TestPO2Prop:
         proptemplate = '''prop=value\n'''
         propexpected = proptemplate
         propfile = self.merge2prop(proptemplate, posource)
-        print propfile
+        print(propfile)
         assert propfile == propexpected
 
     def test_hard_newlines_preserved(self):
@@ -52,7 +52,7 @@ class TestPO2Prop:
         proptemplate = '''prop=\\nvalue\\n\\n\n'''
         propexpected = '''prop=\\nwaarde\\n\\n\n'''
         propfile = self.merge2prop(proptemplate, posource)
-        print propfile
+        print(propfile)
         assert propfile == propexpected
 
     def test_space_preservation(self):
@@ -61,7 +61,7 @@ class TestPO2Prop:
         proptemplate = '''prop  =  value\n'''
         propexpected = '''prop  =  waarde\n'''
         propfile = self.merge2prop(proptemplate, posource)
-        print propfile
+        print(propfile)
         assert propfile == propexpected
 
     def test_merging_blank_entries(self):
@@ -74,7 +74,7 @@ msgstr ""'''
         proptemplate = 'accesskey-accept=\n'
         propexpected = 'accesskey-accept=\n'
         propfile = self.merge2prop(proptemplate, posource)
-        print propfile
+        print(propfile)
         assert propfile == propexpected
 
     def test_merging_fuzzy(self):
@@ -83,7 +83,7 @@ msgstr ""'''
         proptemplate = '''prop=value\n'''
         propexpected = '''prop=value\n'''
         propfile = self.merge2prop(proptemplate, posource)
-        print propfile
+        print(propfile)
         assert propfile == propexpected
 
     def test_merging_propertyless_template(self):
@@ -92,7 +92,7 @@ msgstr ""'''
         proptemplate = "# A comment\n"
         propexpected = proptemplate
         propfile = self.merge2prop(proptemplate, posource)
-        print propfile
+        print(propfile)
         assert propfile == propexpected
 
     def test_delimiters(self):
@@ -101,9 +101,9 @@ msgstr ""'''
         proptemplate = '''prop %s value\n'''
         propexpected = '''prop %s translated\n'''
         for delim in ['=', ':', '']:
-            print "testing '%s' as delimiter" % delim
+            print("testing '%s' as delimiter" % delim)
             propfile = self.merge2prop(proptemplate % delim, posource)
-            print propfile
+            print(propfile)
             assert propfile == propexpected % delim
 
     def test_empty_value(self):
@@ -116,7 +116,7 @@ msgstr "translated"
         proptemplate = '''key\n'''
         propexpected = '''key = translated\n'''
         propfile = self.merge2prop(proptemplate, posource)
-        print propfile
+        print(propfile)
         assert propfile == propexpected
 
     def test_personalities(self):
@@ -146,10 +146,10 @@ msgstr "translated"
         posource = '''#: prop\nmsgid "value"\nmsgstr ""\n'''
         proptemplate = '''prop = value\n'''
         propfile = self.merge2prop(proptemplate, posource)
-        print propfile
+        print(propfile)
         assert propfile == proptemplate  # We use the existing values
         propfile = self.merge2prop(proptemplate, posource, remove_untranslated=True)
-        print propfile
+        print(propfile)
         assert propfile == ''  # We drop the key
 
     def test_merging_untranslated_multiline(self):
@@ -160,10 +160,10 @@ msgstr "translated"
 '''
         propexpected = '''prop = value1 value2\n'''
         propfile = self.merge2prop(proptemplate, posource)
-        print propfile
+        print(propfile)
         assert propfile == propexpected  # We use the existing values
         propfile = self.merge2prop(proptemplate, posource, remove_untranslated=True)
-        print propfile
+        print(propfile)
         assert propfile == ''  # We drop the key
 
     def test_merging_untranslated_comments(self):
@@ -172,10 +172,10 @@ msgstr "translated"
         proptemplate = '''# A comment\nprop = value\n'''
         propexpected = '# A comment\nprop = value\n'
         propfile = self.merge2prop(proptemplate, posource)
-        print propfile
+        print(propfile)
         assert propfile == propexpected  # We use the existing values
         propfile = self.merge2prop(proptemplate, posource, remove_untranslated=True)
-        print propfile
+        print(propfile)
         # FIXME ideally we should drop the comment as well as the unit
         assert propfile == '# A comment\n'  # We drop the key
 
@@ -195,7 +195,7 @@ prop2=value2
 
         propexpected = '''prop2=value2\n'''
         propfile = self.merge2prop(proptemplate, posource, remove_untranslated=True)
-        print propfile
+        print(propfile)
         assert propfile == propexpected
 
     def test_merging_blank(self):
@@ -219,10 +219,10 @@ prop2=
 '''
 
         propfile = self.merge2prop(proptemplate, posource, remove_untranslated=False)
-        print propfile
+        print(propfile)
         assert propfile == propexpected
         propfile = self.merge2prop(proptemplate, posource, remove_untranslated=True)
-        print propfile
+        print(propfile)
         assert propfile == propexpected
 
     def test_gaia_plurals(self):

@@ -27,9 +27,9 @@ class TestXLIFF2PO:
         inputfile = wStringIO.StringIO(xliffsource)
         convertor = xliff2po.xliff2po()
         outputpo = convertor.convertstore(inputfile)
-        print "The generated po:"
-        print type(outputpo)
-        print str(outputpo)
+        print("The generated po:")
+        print(type(outputpo))
+        print(str(outputpo))
         return outputpo
 
     def test_minimal(self):
@@ -63,7 +63,7 @@ Content-Transfer-Encoding: 8bit'''
     <target>utshani</target>
   </trans-unit>''') % (headertext, headertext)
 
-        print minixlf
+        print(minixlf)
         pofile = self.xliff2po(minixlf)
         assert pofile.translate("gras") == "utshani"
         assert pofile.translate("bla") is None
@@ -208,7 +208,7 @@ garbage</note>
         </trans-unit>
 </group>'''
         pofile = self.xliff2po(minixlf)
-        print str(pofile)
+        print(str(pofile))
         potext = str(pofile)
         assert headerless_len(pofile.units) == 1
         assert potext.index('msgid_plural "cows"')

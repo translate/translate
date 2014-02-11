@@ -32,7 +32,7 @@ class TestPO2Sub:
         templatefile = wStringIO.StringIO(subsource)
         convertor = po2sub.resub(templatefile, inputpo)
         outputsub = convertor.convertstore()
-        print outputsub
+        print(outputsub)
         return outputsub
 
     def test_subrip(self):
@@ -62,7 +62,7 @@ Blah blah blah blah
 Koei koei koei koei
 '''
         subfile = self.merge2sub(subtemplate, posource)
-        print subexpected
+        print(subexpected)
         assert subfile == subexpected
 
 

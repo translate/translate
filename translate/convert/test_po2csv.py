@@ -102,20 +102,20 @@ msgstr "Gebruik \\\"."
 msgstr "Vind\\Opsies"
 '''
         csvfile = self.po2csv(minipo)
-        print minipo
-        print csvfile
+        print(minipo)
+        print(csvfile)
         assert csvfile.findunit(r'Find\Options').target == r'Vind\Opsies'
 
     def test_singlequotes(self):
         """Tests that single quotes are preserved correctly"""
         minipo = '''msgid "source 'source'"\nmsgstr "target 'target'"\n'''
         csvfile = self.po2csv(minipo)
-        print str(csvfile)
+        print(str(csvfile))
         assert csvfile.findunit("source 'source'").target == "target 'target'"
         # Make sure we don't mess with start quotes until writing
         minipo = '''msgid "'source'"\nmsgstr "'target'"\n'''
         csvfile = self.po2csv(minipo)
-        print str(csvfile)
+        print(str(csvfile))
         assert csvfile.findunit(r"'source'").target == r"'target'"
         # TODO check that we escape on writing not in the internal representation
 

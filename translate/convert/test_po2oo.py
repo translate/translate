@@ -41,7 +41,7 @@ class TestPO2OO:
         oooutputfile = wStringIO.StringIO()
         po2oo.convertoo(poinputfile, oooutputfile, ootemplatefile, targetlanguage="en-US")
         ooresult = oooutputfile.getvalue()
-        print "original oo:\n", oosource, "po version:\n", posource, "output oo:\n", ooresult
+        print("original oo:\n", oosource, "po version:\n", posource, "output oo:\n", ooresult)
         assert ooresult.startswith(oointro) and ooresult.endswith(oooutro)
         return ooresult[len(oointro):-len(oooutro)]
 

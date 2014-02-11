@@ -107,7 +107,7 @@ class TestConvertCommand:
             sys.stdout = stdout
         helpfile.close()
         help_string = self.read_testfile("help.txt")
-        print help_string
+        print(help_string)
         convertsummary = self.convertmodule.__doc__.split("\n")[0]
         # the convertsummary might be wrapped. this will probably unwrap it
         assert convertsummary in help_string.replace("\n", " ")

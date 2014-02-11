@@ -18,7 +18,7 @@ class TestJson2PO:
 
     def singleelement(self, storage):
         """checks that the pofile contains a single non-header element, and returns it"""
-        print str(storage)
+        print(str(storage))
         assert len(storage.units) == 1
         return storage.units[0]
 
@@ -71,7 +71,7 @@ msgstr ""
 
         poresult = self.json2po(jsonsource)
         assert poresult.units[0].isheader()
-        print len(poresult.units)
+        print(len(poresult.units))
         assert len(poresult.units) == 11
 
 

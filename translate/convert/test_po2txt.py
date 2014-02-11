@@ -11,14 +11,14 @@ class TestPO2Txt:
     def po2txt(self, posource, txttemplate=None):
         """helper that converts po source to txt source without requiring files"""
         inputfile = wStringIO.StringIO(posource)
-        print inputfile.getvalue()
+        print(inputfile.getvalue())
         outputfile = wStringIO.StringIO()
         if txttemplate:
             templatefile = wStringIO.StringIO(txttemplate)
         else:
             templatefile = None
         assert po2txt.converttxt(inputfile, outputfile, templatefile)
-        print outputfile.getvalue()
+        print(outputfile.getvalue())
         return outputfile.getvalue()
 
     def test_basic(self):

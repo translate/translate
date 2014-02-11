@@ -25,13 +25,13 @@ class TestInc2PO:
         """checks that the pofile contains a single non-header element, and returns it"""
         assert len(pofile.units) == 2
         assert pofile.units[0].isheader()
-        print pofile
+        print(pofile)
         return pofile.units[1]
 
     def countelements(self, pofile):
         """counts the number of non-header entries"""
         assert pofile.units[0].isheader()
-        print pofile
+        print(pofile)
         return len(pofile.units) - 1
 
     def test_simpleentry(self):

@@ -27,7 +27,7 @@ class TestPO2TS:
 msgid "Term"
 msgstr "asdf"'''
         tsfile = self.po2ts(minipo)
-        print tsfile
+        print(tsfile)
         assert "<name>term.cpp</name>" in tsfile
         assert "<source>Term</source>" in tsfile
         assert "<translation>asdf</translation>" in tsfile
@@ -42,7 +42,7 @@ msgid "Source"
 msgstr "Target"
 '''
         tsfile = self.po2ts(posource)
-        print tsfile
+        print(tsfile)
         # The other section are a duplicate of test_simplentry
         # FIXME need to think about auto vs trans comments maybe in TS v1.1
         assert "<comment>Translator comment</comment>" in tsfile
@@ -54,7 +54,7 @@ msgstr "Target"
 msgid "Source"
 msgstr "Target"'''
         tsfile = self.po2ts(posource)
-        print tsfile
+        print(tsfile)
         assert '''<translation type="unfinished">Target</translation>''' in tsfile
 
     def test_obsolete(self):
@@ -64,7 +64,7 @@ msgstr "Target"'''
 msgid "Source"
 msgstr "Target"'''
         tsfile = self.po2ts(posource)
-        print tsfile
+        print(tsfile)
         assert '''<translation type="obsolete">Target</translation>''' in tsfile
 
     def test_duplicates(self):
@@ -78,7 +78,7 @@ msgid "English"
 msgstr "b"
 '''
         tsfile = self.po2ts(posource)
-        print tsfile
+        print(tsfile)
         assert tsfile.find("English") != tsfile.rfind("English")
 
 

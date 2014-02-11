@@ -37,7 +37,7 @@ class TestDTD2PO:
         """checks that the pofile contains a single non-header element, and returns it"""
         assert len(pofile.units) == 2
         assert pofile.units[0].isheader()
-        print pofile.units[1]
+        print(pofile.units[1])
         return pofile.units[1]
 
     def countelements(self, pofile):
@@ -83,7 +83,7 @@ class TestDTD2PO:
         dtdsource = """<!ENTITY test.metoo '"Bananas" for sale'>\n"""
         pofile = self.dtd2po(dtdsource)
         pounit = self.singleelement(pofile)
-        print str(pounit)
+        print(str(pounit))
         assert pounit.source == '"Bananas" for sale'
 
     def test_emptyentity(self):
@@ -107,7 +107,7 @@ class TestDTD2PO:
         dtdsource = '<!ENTITY credit.translation "Translators Names">\n'
         pofile = self.dtd2po(dtdsource, dtdtemplate)
         unit = self.singleelement(pofile)
-        print unit
+        print(unit)
         assert "credit.translation" in str(unit)
         # We don't want this to simply be seen as a header:
         assert len(unit.getid()) != 0
@@ -124,7 +124,7 @@ class TestDTD2PO:
 '''
         pofile = self.dtd2po(dtdsource)
         posource = str(pofile)
-        print posource
+        print(posource)
         assert posource.count('#.') == 5  # 1 Header extracted from, 3 comment lines, 1 autoinserted comment
 
     def test_localisation_note_merge(self):
@@ -134,7 +134,7 @@ class TestDTD2PO:
         dtdsource = dtdtemplate % ("note1.label", "note1.label") + dtdtemplate % ("note2.label", "note2.label")
         pofile = self.dtd2po(dtdsource)
         posource = str(pofile.units[1]) + str(pofile.units[2])
-        print posource
+        print(posource)
         assert posource.count('#.') == 2
         assert posource.count('msgctxt') == 2
 
@@ -258,7 +258,7 @@ Some other text
         dtdsource = '<!ENTITY mainWindow.titlemodifiermenuseparator " - with a newline\n    and more text">'
         pofile = self.dtd2po(dtdsource)
         unit = self.singleelement(pofile)
-        print repr(unit.source)
+        print(repr(unit.source))
         assert unit.source == " - with a newline \nand more text"
 
     def test_escaping_newline_tabs(self):
@@ -269,8 +269,8 @@ Some other text
         thedtd.parse(dtdsource)
         thepo = po.pounit()
         converter.convertstrings(thedtd, thepo)
-        print thedtd
-        print thepo.source
+        print(thedtd)
+        print(thepo.source)
         # \n in a dtd should also appear as \n in the PO file
         assert thepo.source == r"A hard coded newline.\nAnd tab\t and a \r carriage return."
 
@@ -304,7 +304,7 @@ Some other text
 <!ENTITY managecerts.button "ﺇﺩﺍﺭﺓ ﺎﻠﺸﻫﺍﺩﺎﺗ...">
 <!ENTITY managecerts.accesskey "ﺩ">'''
         pofile = self.dtd2po(dtdlanguage, dtdtemplate)
-        print pofile
+        print(pofile)
         assert pofile.units[3].source == "Manage Certificates..."
         assert pofile.units[3].target == u"ﺇﺩﺍﺭﺓ ﺎﻠﺸﻫﺍﺩﺎﺗ..."
         assert pofile.units[4].source == "M"
@@ -318,14 +318,14 @@ Some other text
         dtdlanguage = '''<!ENTITY useAutoScroll.label             "使用自動捲動(Autoscrolling)">
 <!ENTITY useAutoScroll.accesskey         "a">'''
         pofile = self.dtd2po(dtdlanguage, dtdtemplate)
-        print pofile
+        print(pofile)
         assert pofile.units[1].target == "使用自動捲動(&Autoscrolling)"
         # We assume that accesskeys with no associated key should be done as follows "XXXX (&A)"
         # TODO - check that we can unfold this from PO -> DTD
         dtdlanguage = '''<!ENTITY useAutoScroll.label             "使用自動捲動">
 <!ENTITY useAutoScroll.accesskey         "a">'''
         pofile = self.dtd2po(dtdlanguage, dtdtemplate)
-        print pofile
+        print(pofile)
         assert pofile.units[1].target == "使用自動捲動 (&A)"
 
     def test_exclude_entity_includes(self):
@@ -349,7 +349,7 @@ Some other text
         dtdtemplate = '''<!ENTITY unreadFolders.label "Unread">\n<!ENTITY viewPickerUnread.label "Unread">\n<!ENTITY unreadColumn.label "Unread">'''
         dtdlanguage = '''<!ENTITY viewPickerUnread.label "Непрочетени">\n<!ENTITY unreadFolders.label "Непрочетени">'''
         pofile = self.dtd2po(dtdlanguage, dtdtemplate)
-        print pofile
+        print(pofile)
         assert pofile.units[1].source == "Unread"
 
     def test_merge_without_template(self):
@@ -361,7 +361,7 @@ Some other text
         dtdtemplate = ''
         dtdsource = '<!ENTITY no.template "Target">'
         pofile = self.dtd2po(dtdsource, dtdtemplate)
-        print pofile
+        print(pofile)
         assert self.countelements(pofile) == 0
 
 
