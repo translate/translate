@@ -11,8 +11,8 @@ class TestPOXLIFFUnit(test_xliff.TestXLIFFUnit):
     def test_plurals(self):
         """Tests that plurals are handled correctly."""
         unit = self.UnitClass(multistring(["Cow", "Cows"]))
-        print type(unit.source)
-        print repr(unit.source)
+        print(type(unit.source))
+        print(repr(unit.source))
         assert isinstance(unit.source, multistring)
         assert unit.source.strings == ["Cow", "Cows"]
         assert unit.source == "Cow"

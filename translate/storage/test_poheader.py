@@ -20,7 +20,7 @@ this item must get ignored because there is no colon sign in it
 item3: three
 '''
     d = poheader.parseheaderstring(source)
-    print type(d)
+    print(type(d))
     assert type(d) == ordereddict
     assert len(d) == 3
     assert d['item1'] == 'one'
@@ -144,7 +144,7 @@ def test_timezones():
 def test_header_blank():
 
     def compare(pofile):
-        print pofile
+        print(pofile)
         assert len(pofile.units) == 1
         header = pofile.header()
         assert header.isheader()
@@ -220,7 +220,7 @@ msgstr ""
 '''
     for colon in ("", ";"):
         pofile = poparse(posource % colon)
-        print pofile
+        print(pofile)
         assert len(pofile.units) == 1
         header = pofile.units[0]
         assert header.isheader()
@@ -241,7 +241,7 @@ msgstr ""
 "10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
 '''
     pofile = poparse(posource)
-    print pofile
+    print(pofile)
     assert len(pofile.units) == 1
     header = pofile.units[0]
     assert header.isheader()
@@ -269,7 +269,7 @@ msgstr ""
 
     pofile.header().addnote("Khaled Hosny <khaledhosny@domain.org>, 2006, 2007, 2008.")
     pofile.updatecontributor("Khaled Hosny", "khaledhosny@domain.org")
-    print str(pofile)
+    print(str(pofile))
     assert "# Khaled Hosny <khaledhosny@domain.org>, 2006, 2007, 2008, %s." % time.strftime("%Y") in str(pofile)
 
 

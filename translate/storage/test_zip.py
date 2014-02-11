@@ -14,7 +14,7 @@ class TestZIPFile(object):
 
     def setup_method(self, method):
         """sets up a test directory"""
-        print "setup_method called on", self.__class__.__name__
+        print("setup_method called on", self.__class__.__name__)
         self.testzip = "%s_testzip.zip" % (self.__class__.__name__)
         self.cleardir(self.testzip)
         self.zip = ZipFile(self.testzip, mode="w")
@@ -44,7 +44,7 @@ class TestZIPFile(object):
 
     def test_created(self):
         """test that the directory actually exists"""
-        print self.testzip
+        print(self.testzip)
         assert os.path.isfile(self.testzip)
 
     def test_basic(self):

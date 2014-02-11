@@ -53,7 +53,7 @@ class TestQphFile(test_base.TestTranslationStore):
         qphfile.addsourceunit("Bla")
         assert len(qphfile.units) == 1
         newfile = qph.QphFile.parsestring(str(qphfile))
-        print str(qphfile)
+        print(str(qphfile))
         assert len(newfile.units) == 1
         assert newfile.units[0].source == "Bla"
         assert newfile.findunit("Bla").source == "Bla"
@@ -64,7 +64,7 @@ class TestQphFile(test_base.TestTranslationStore):
         qphunit = qphfile.addsourceunit("Concept")
         qphunit.source = "Term"
         newfile = qph.QphFile.parsestring(str(qphfile))
-        print str(qphfile)
+        print(str(qphfile))
         assert newfile.findunit("Concept") is None
         assert newfile.findunit("Term") is not None
 
@@ -73,7 +73,7 @@ class TestQphFile(test_base.TestTranslationStore):
         qphunit = qphfile.addsourceunit("Concept")
         qphunit.target = "Konsep"
         newfile = qph.QphFile.parsestring(str(qphfile))
-        print str(qphfile)
+        print(str(qphfile))
         assert newfile.findunit("Concept").target == "Konsep"
 
     def test_language(self):

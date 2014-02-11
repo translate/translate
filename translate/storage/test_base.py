@@ -86,7 +86,7 @@ class TestTranslationUnit:
     def test_create(self):
         """tests a simple creation with a source string"""
         unit = self.unit
-        print 'unit.source:', unit.source
+        print('unit.source:', unit.source)
         assert unit.source == "Test String"
 
     def test_eq(self):
@@ -129,8 +129,8 @@ class TestTranslationUnit:
                     '\n', '\t', '\r', '\r\n', '\\r', '\\', '\\\r']
         for special in specials:
             unit.source = special
-            print "unit.source:", repr(unit.source)
-            print "special:", repr(special)
+            print("unit.source:", repr(unit.source))
+            print("special:", repr(special))
             assert unit.source == special
 
     def test_difficult_escapes(self):
@@ -143,8 +143,8 @@ class TestTranslationUnit:
                     '\\r\\n', '\\\\r\\n', '\\r\\\\n', '\\\\n\\\\r']
         for special in specials:
             unit.source = special
-            print "unit.source:", repr(unit.source) + '|'
-            print "special:", repr(special) + '|'
+            print("unit.source:", repr(unit.source) + '|')
+            print("special:", repr(special) + '|')
             assert unit.source == special
 
     def test_note_sanity(self):
@@ -234,8 +234,8 @@ class TestTranslationStore(object):
         """Tests adding a new unit with a source string"""
         store = self.StoreClass()
         unit = store.addsourceunit("Test String")
-        print str(unit)
-        print str(store)
+        print(str(unit))
+        print(str(store))
         assert headerless_len(store.units) == 1
         assert unit.source == "Test String"
 
@@ -271,13 +271,13 @@ class TestTranslationStore(object):
             store2unit = store2.units[n]
             match = store1unit == store2unit
             if not match:
-                print "match failed between elements %d of %d" % ((n + 1), headerless_len(store1.units))
-                print "store1:"
-                print str(store1)
-                print "store2:"
-                print str(store2)
-                print "store1.units[%d].__dict__:" % n, store1unit.__dict__
-                print "store2.units[%d].__dict__:" % n, store2unit.__dict__
+                print("match failed between elements %d of %d" % ((n + 1), headerless_len(store1.units)))
+                print("store1:")
+                print(str(store1))
+                print("store2:")
+                print(str(store2))
+                print("store1.units[%d].__dict__:" % n, store1unit.__dict__)
+                print("store2.units[%d].__dict__:" % n, store2unit.__dict__)
                 assert store1unit == store2unit
 
     def test_parse(self):
@@ -340,8 +340,8 @@ class TestTranslationStore(object):
         if not (self.StoreClass.Name and self.StoreClass.Name in supported_dict):
             return
         detail = supported_dict[self.StoreClass.Name]  # will start to get problematic once translated
-        print "Factory:", detail[0]
-        print "StoreClass:", self.StoreClass.Extensions
+        print("Factory:", detail[0])
+        print("StoreClass:", self.StoreClass.Extensions)
         for ext in detail[0]:
             assert ext in self.StoreClass.Extensions
         for ext in self.StoreClass.Extensions:
@@ -354,8 +354,8 @@ class TestTranslationStore(object):
         if not (self.StoreClass.Name and self.StoreClass.Name in supported_dict):
             return
         detail = supported_dict[self.StoreClass.Name]  # will start to get problematic once translated
-        print "Factory:", detail[1]
-        print "StoreClass:", self.StoreClass.Mimetypes
+        print("Factory:", detail[1])
+        print("StoreClass:", self.StoreClass.Mimetypes)
         for ext in detail[1]:
             assert ext in self.StoreClass.Mimetypes
         for ext in self.StoreClass.Mimetypes:

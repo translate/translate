@@ -87,7 +87,7 @@ class TranslateBenchmarker:
                 parsedfile = self.StoreClass(open(pofilename, 'r'))
                 count += len(parsedfile.units)
                 self.parsedfiles.append(parsedfile)
-        print "counted %d units" % count
+        print("counted %d units" % count)
 
     def parse_placeables(self):
         """parses placeables"""
@@ -97,7 +97,7 @@ class TranslateBenchmarker:
                 placeables.parse(unit.source, placeables.general.parsers)
                 placeables.parse(unit.target, placeables.general.parsers)
             count += len(parsedfile.units)
-        print "counted %d units" % count
+        print("counted %d units" % count)
 
 
 if __name__ == "__main__":
@@ -123,7 +123,7 @@ if __name__ == "__main__":
                             globals(), fromlist=_module)
         storeclass = getattr(module, _class)
     else:
-        print "StoreClass: '%s' is not a base class that the class factory can load" % storetype
+        print("StoreClass: '%s' is not a base class that the class factory can load" % storetype)
         sys.exit()
 
     sample_files = [
@@ -156,10 +156,10 @@ if __name__ == "__main__":
 
         for methodname, methodparam in methods:
             #print methodname, "%d dirs, %d files, %d strings, %d/%d words" % sample_file_sizes
-            print "_______________________________________________________"
+            print("_______________________________________________________")
             statsfile = "%s_%s" % (methodname, storetype) + '_%d_%d_%d_%d_%d.stats' % sample_file_sizes
             cProfile.run('benchmarker.%s(%s)' % (methodname, methodparam), statsfile)
             stats = pstats.Stats(statsfile)
             stats.sort_stats('time').print_stats(20)
-            print "_______________________________________________________"
+            print("_______________________________________________________")
         benchmarker.clear_test_dir()

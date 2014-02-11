@@ -67,7 +67,7 @@ class TestXLIFFfile(test_base.TestTranslationStore):
         xlifffile.addsourceunit("Bla")
         assert len(xlifffile.units) == 1
         newfile = xliff.xlifffile.parsestring(str(xlifffile))
-        print str(xlifffile)
+        print(str(xlifffile))
         assert len(newfile.units) == 1
         assert newfile.units[0].source == "Bla"
         assert newfile.findunit("Bla").source == "Bla"
@@ -86,7 +86,7 @@ class TestXLIFFfile(test_base.TestTranslationStore):
     </xliff:file>
 </xliff:xliff>'''
         xlifffile = xliff.xlifffile.parsestring(xlfsource)
-        print str(xlifffile)
+        print(str(xlifffile))
         assert xlifffile.units[0].source == "File 1"
 
     def test_rich_source(self):
@@ -105,7 +105,7 @@ class TestXLIFFfile(test_base.TestTranslationStore):
         assert x_placeable.tail == 'baz'
 
         xliffunit.rich_source[0].print_tree(2)
-        print xliffunit.rich_source
+        print(xliffunit.rich_source)
         assert xliffunit.rich_source == [StringElem([StringElem(u'foo'), X(id='bar'), StringElem(u'baz')])]
 
         # Test 2
@@ -153,7 +153,7 @@ class TestXLIFFfile(test_base.TestTranslationStore):
         assert target_dom_node.text == u'foobaz'
 
         assert g_placeable.tag == u'g'
-        print 'g_placeable.text: %s (%s)' % (g_placeable.text, type(g_placeable.text))
+        print('g_placeable.text: %s (%s)' % (g_placeable.text, type(g_placeable.text)))
         assert g_placeable.text is None
         assert g_placeable.attrib[u'id'] == u'oof'
         assert g_placeable.tail is None
@@ -171,7 +171,7 @@ class TestXLIFFfile(test_base.TestTranslationStore):
         xliffunit = xlifffile.addsourceunit("Concept")
         xliffunit.source = "Term"
         newfile = xliff.xlifffile.parsestring(str(xlifffile))
-        print str(xlifffile)
+        print(str(xlifffile))
         assert newfile.findunit("Concept") is None
         assert newfile.findunit("Term") is not None
 
@@ -180,20 +180,20 @@ class TestXLIFFfile(test_base.TestTranslationStore):
         xliffunit = xlifffile.addsourceunit("Concept")
         xliffunit.target = "Konsep"
         newfile = xliff.xlifffile.parsestring(str(xlifffile))
-        print str(xlifffile)
+        print(str(xlifffile))
         assert newfile.findunit("Concept").target == "Konsep"
 
     def test_sourcelanguage(self):
         xlifffile = xliff.xlifffile(sourcelanguage="xh")
         xmltext = str(xlifffile)
-        print xmltext
+        print(xmltext)
         assert xmltext.find('source-language="xh"') > 0
         #TODO: test that it also works for new files.
 
     def test_targetlanguage(self):
         xlifffile = xliff.xlifffile(sourcelanguage="zu", targetlanguage="af")
         xmltext = str(xlifffile)
-        print xmltext
+        print(xmltext)
         assert xmltext.find('source-language="zu"') > 0
         assert xmltext.find('target-language="af"') > 0
 
@@ -269,13 +269,13 @@ class TestXLIFFfile(test_base.TestTranslationStore):
         # test that the source node is before the target node:
         alt = unit.getalttrans()[0]
         altformat = etree.tostring(alt.xmlelement)
-        print altformat
+        print(altformat)
         assert altformat.find("<source") < altformat.find("<target")
 
         # test that a new target is still before alt-trans (bug 1098)
         unit.target = u"newester target"
         unitformat = str(unit)
-        print unitformat
+        print(unitformat)
         assert unitformat.find("<source") < unitformat.find("<target") < unitformat.find("<alt-trans")
 
     def test_fuzzy(self):
@@ -297,7 +297,7 @@ class TestXLIFFfile(test_base.TestTranslationStore):
         #be uncommented
         unit.target = None
         assert unit.target is None
-        print unit
+        print(unit)
         unit.markfuzzy(True)
         assert 'approved="no"' in str(unit)
         #assert unit.isfuzzy()

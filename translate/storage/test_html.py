@@ -81,5 +81,5 @@ class TestHTMLParsing:
         interpretted as tags"""
         h = html.htmlfile()
         store = h.parsestring("<p>We are here</p><script>Some </tag>like data<script></p>")
-        print store.units[0].source
+        print(store.units[0].source)
         assert len(store.units) == 1

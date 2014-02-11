@@ -57,7 +57,7 @@ class TestTSfile(test_base.TestTranslationStore):
         tsfile.addsourceunit("Bla")
         assert len(tsfile.units) == 1
         newfile = ts.tsfile.parsestring(str(tsfile))
-        print str(tsfile)
+        print(str(tsfile))
         assert len(newfile.units) == 1
         assert newfile.units[0].source == "Bla"
         assert newfile.findunit("Bla").source == "Bla"
@@ -68,7 +68,7 @@ class TestTSfile(test_base.TestTranslationStore):
         tsunit = tsfile.addsourceunit("Concept")
         tsunit.source = "Term"
         newfile = ts.tsfile.parsestring(str(tsfile))
-        print str(tsfile)
+        print(str(tsfile))
         assert newfile.findunit("Concept") is None
         assert newfile.findunit("Term") is not None
 
@@ -77,7 +77,7 @@ class TestTSfile(test_base.TestTranslationStore):
         tsunit = tsfile.addsourceunit("Concept")
         tsunit.target = "Konsep"
         newfile = ts.tsfile.parsestring(str(tsfile))
-        print str(tsfile)
+        print(str(tsfile))
         assert newfile.findunit("Concept").target == "Konsep"
 
     def test_plurals(self):
@@ -86,7 +86,7 @@ class TestTSfile(test_base.TestTranslationStore):
         tsunit = tsfile.addsourceunit("File(s)")
         tsunit.target = [u"Leêr", u"Leêrs"]
         newfile = ts.tsfile.parsestring(str(tsfile))
-        print str(tsfile)
+        print(str(tsfile))
         checkunit = newfile.findunit("File(s)")
         assert checkunit.target == [u"Leêr", u"Leêrs"]
         assert checkunit.hasplural()

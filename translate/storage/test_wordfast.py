@@ -37,8 +37,8 @@ class TestWFUnit(test_base.TestTranslationUnit):
                     '\\\n', '\\\t', '\\\\r', '\\\\"']
         for special in specials:
             unit.source = special
-            print "unit.source:", repr(unit.source) + '|'
-            print "special:", repr(special) + '|'
+            print("unit.source:", repr(unit.source) + '|')
+            print("special:", repr(special) + '|')
             assert unit.source == special
 
     def test_wordfast_escaping(self):
@@ -46,7 +46,7 @@ class TestWFUnit(test_base.TestTranslationUnit):
 
         def compare(real, escaped):
             unit = self.UnitClass(real)
-            print real.encode('utf-8'), unit.source.encode('utf-8')
+            print(real.encode('utf-8'), unit.source.encode('utf-8'))
             assert unit.source == real
             assert unit.dict['source'] == escaped
             unit.target = real
