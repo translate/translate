@@ -6,4 +6,9 @@ __all__ = ['HTTPRequest', 'HTTPConnection', 'HTTPServer',
            'Gateway', 'WSGIGateway', 'WSGIGateway_10', 'WSGIGateway_u0',
            'WSGIPathInfoDispatcher', 'get_ssl_adapter_class']
 
-from wsgiserver import *
+import sys
+if sys.version_info < (3, 0):
+    from wsgiserver2 import *
+else:
+    # Le sigh. Boo for backward-incompatible syntax.
+    exec('from .wsgiserver3 import *')
