@@ -41,7 +41,6 @@ Encoding
 
 import csv
 import locale
-import sys
 
 from translate.storage import base
 

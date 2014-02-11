@@ -2,13 +2,8 @@
 
 import os
 import os.path
-import warnings
 
-import pytest
-
-from translate import storage
 from translate.storage import statsdb, factory
-from translate.misc import wStringIO
 from translate.filters import checks
 
 fr_terminology_extract = r"""

@@ -20,8 +20,6 @@
 
 """Parent class for LISA standards (TMX, TBX, XLIFF)"""
 
-import re
-
 try:
     from lxml import etree
     from translate.misc.xml_helpers import getText, getXMLlang, setXMLlang, \
