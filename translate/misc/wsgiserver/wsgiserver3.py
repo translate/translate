@@ -1761,7 +1761,7 @@ class Gateway(object):
 # These may either be wsgiserver.SSLAdapter subclasses or the string names
 # of such classes (in which case they will be lazily loaded).
 ssl_adapters = {
-    'builtin': 'cherrypy.wsgiserver.ssl_builtin.BuiltinSSLAdapter',
+    'builtin': 'translate.misc.wsgiserver.ssl_builtin.BuiltinSSLAdapter',
     }
 
 def get_ssl_adapter_class(name='builtin'):

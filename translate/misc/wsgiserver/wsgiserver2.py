@@ -1792,7 +1792,7 @@ class HTTPServer(object):
                     DeprecationWarning
                 )
             try:
-                from cherrypy.wsgiserver.ssl_pyopenssl import pyOpenSSLAdapter
+                from translate.misc.wsgiserver.ssl_pyopenssl import pyOpenSSLAdapter
             except ImportError:
                 pass
             else:
@@ -2056,8 +2056,8 @@ class Gateway(object):
 # These may either be wsgiserver.SSLAdapter subclasses or the string names
 # of such classes (in which case they will be lazily loaded).
 ssl_adapters = {
-    'builtin': 'cherrypy.wsgiserver.ssl_builtin.BuiltinSSLAdapter',
-    'pyopenssl': 'cherrypy.wsgiserver.ssl_pyopenssl.pyOpenSSLAdapter',
+    'builtin': 'translate.misc.wsgiserver.ssl_builtin.BuiltinSSLAdapter',
+    'pyopenssl': 'translate.misc.wsgiserver.ssl_pyopenssl.pyOpenSSLAdapter',
     }
 
 def get_ssl_adapter_class(name='pyopenssl'):
