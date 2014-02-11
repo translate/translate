@@ -811,14 +811,14 @@ class StringElem(object):
         if verbose:
             out += u' ' + repr(self)
 
-        print out
+        print(out)
 
         for elem in self.sub:
             if isinstance(elem, StringElem):
                 elem.print_tree(indent + 1, verbose=verbose)
             else:
-                print (u'%s%s[%s]' % (indent_prefix, indent_prefix,
-                                      elem)).encode('utf-8')
+                print((u'%s%s[%s]' % (indent_prefix, indent_prefix,
+                                      elem)).encode('utf-8'))
 
     def prune(self):
         """Remove unnecessary nodes to make the tree optimal."""
