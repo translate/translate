@@ -16,5 +16,5 @@ class TestRecursiveOptionParser:
         dirname = os.path.join("some", "path", "to")
         fullpath = os.path.join(dirname, filename)
         root = os.path.join(dirname, name)
-        print fullpath
+        print(fullpath)
         assert self.parser.splitext(fullpath) == (root, extension)

@@ -97,7 +97,7 @@ class ProgressBar:
     def show(self, verbosemessage):
         """displays the progress bar"""
         # pylint: disable=W0613
-        print self
+        print(self)
 
 
 class MessageProgressBar(ProgressBar):
