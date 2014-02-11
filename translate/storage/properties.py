@@ -111,7 +111,6 @@ Name and Value pairs::
 
 import re
 import warnings
-import logging
 
 from translate.lang import data
 from translate.misc import quote

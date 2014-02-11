@@ -45,7 +45,6 @@ Encoding
 """
 
 import csv
-import sys
 import time
 
 from translate.storage import base

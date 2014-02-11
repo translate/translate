@@ -60,7 +60,6 @@ http://qt.gitorious.org/+kde-developers/qt/kde-qt/blobs/master/tools/linguist/sh
 
 import codecs
 import struct
-import sys
 import logging
 
 from translate.misc.multistring import multistring

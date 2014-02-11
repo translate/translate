@@ -51,7 +51,6 @@ Escaping
 """
 
 import csv
-import sys
 
 from translate.lang import data
 from translate.storage import base
