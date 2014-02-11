@@ -18,6 +18,8 @@
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, see <http://www.gnu.org/licenses/>.
 
+from __future__ import print_function
+
 
 def label(code):
     if isinstance(code, str):
@@ -33,7 +35,7 @@ class KCacheGrind(object):
 
     def output(self, out_file):
         self.out_file = out_file
-        print >> out_file, 'events: Ticks'
+        print('events: Ticks', file=out_file)
         self._print_summary()
         for entry in self.data:
             self._entry(entry)
@@ -43,7 +45,7 @@ class KCacheGrind(object):
         for entry in self.data:
             totaltime = int(entry.totaltime * 1000)
             max_cost = max(max_cost, totaltime)
-        print >> self.out_file, 'summary: %d' % (max_cost,)
+        print('summary: %d' % (max_cost,), file=self.out_file)
 
     def _entry(self, entry):
         out_file = self.out_file
@@ -51,14 +53,14 @@ class KCacheGrind(object):
         inlinetime = int(entry.inlinetime * 1000)
         #print >> out_file, 'ob=%s' % (code.co_filename,)
         if isinstance(code, str):
-            print >> out_file, 'fi=~'
+            print('fi=~', file=out_file)
         else:
-            print >> out_file, 'fi=%s' % (code.co_filename,)
-        print >> out_file, 'fn=%s' % (label(code),)
+            print('fi=%s' % (code.co_filename,), file=out_file)
+        print('fn=%s' % (label(code),), file=out_file)
         if isinstance(code, str):
-            print >> out_file, '0 ', inlinetime
+            print('0 ', inlinetime, file=out_file)
         else:
-            print >> out_file, '%d %d' % (code.co_firstlineno, inlinetime)
+            print('%d %d' % (code.co_firstlineno, inlinetime), file=out_file)
         # recursive calls are counted in entry.calls
         if entry.calls:
             calls = entry.calls
@@ -70,22 +72,22 @@ class KCacheGrind(object):
             lineno = code.co_firstlineno
         for subentry in calls:
             self._subentry(lineno, subentry)
-        print >> out_file
+        print(file=out_file)
 
     def _subentry(self, lineno, subentry):
         out_file = self.out_file
         code = subentry.code
         totaltime = int(subentry.totaltime * 1000)
         #print >> out_file, 'cob=%s' % (code.co_filename,)
-        print >> out_file, 'cfn=%s' % (label(code),)
+        print('cfn=%s' % (label(code),), file=out_file)
         if isinstance(code, str):
-            print >> out_file, 'cfi=~'
-            print >> out_file, 'calls=%d 0' % (subentry.callcount,)
+            print('cfi=~', file=out_file)
+            print('calls=%d 0' % (subentry.callcount,), file=out_file)
         else:
-            print >> out_file, 'cfi=%s' % (code.co_filename,)
-            print >> out_file, 'calls=%d %d' % (
-                subentry.callcount, code.co_firstlineno)
-        print >> out_file, '%d %d' % (lineno, totaltime)
+            print('cfi=%s' % (code.co_filename,), file=out_file)
+            print('calls=%d %d' % (
+                subentry.callcount, code.co_firstlineno), file=out_file)
+        print('%d %d' % (lineno, totaltime), file=out_file)
 
 
 def profile_func(filename=None, mode='w+'):
