@@ -37,8 +37,8 @@ License: Apache v2.0 see header in translate/misc/diff_match_patch.py
 Used in: translate/misc/diff_match_patch.py
 
 From: http://code.google.com/p/google-diff-match-patch/
-Revision: 67 see
-https://code.google.com/p/google-diff-match-patch/source/browse/trunk/python/diff_match_patch.py?r=67
+Revision: 106 see
+https://code.google.com/p/google-diff-match-patch/source/browse/trunk/python2/diff_match_patch.py?r=106
 
 The code has been changed slightly:
   1. Removing unused imports
