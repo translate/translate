@@ -14,7 +14,7 @@ class TestSVN(HelperTest):
         run_command(["svn", "co", "file:///%s/repo" % self.path, "checkout"], cwd=self.path)
 
     def test_detection(self):
-        print self.co_path
+        print(self.co_path)
         o = get_versioned_object(self.co_path)
         assert isinstance(o, svn.svn)
         assert o.location_abs == self.co_path

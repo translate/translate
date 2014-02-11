@@ -411,4 +411,4 @@ if __name__ == "__main__":
         import translate.storage.versioncontrol
         # print the names of locally available version control systems
         for rcs in get_available_version_control_systems():
-            print rcs
+            print(rcs)
