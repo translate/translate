@@ -25,3 +25,22 @@ https://pypi.python.org/packages/source/C/CherryPy/CherryPy-3.2.4.tar.gz#md5=e2c
 
 The code has been changed slightly:
   1. from cherrypy import -> from translate.misc import
+
+
+Diff Match and Patch
+--------------------
+
+This is used by Pootle and Virtaal for speedy diffs.
+
+License: Apache v2.0 see header in translate/misc/diff_match_patch.py
+
+Used in: translate/misc/diff_match_patch.py
+
+From: http://code.google.com/p/google-diff-match-patch/
+Revision: 67 see
+https://code.google.com/p/google-diff-match-patch/source/browse/trunk/python/diff_match_patch.py?r=67
+
+The code has been changed slightly:
+  1. Removing unused imports
+  2. Delaying some imports
+  3. Cleaning up docstrings
