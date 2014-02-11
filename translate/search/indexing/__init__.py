@@ -180,4 +180,4 @@ def get_indexer(basedir, preference=None):
 if __name__ == "__main__":
     # show all supported indexing engines (with fulfilled requirements)
     for ONE_INDEX in _AVAILABLE_INDEXERS:
-        print ONE_INDEX
+        print(ONE_INDEX)

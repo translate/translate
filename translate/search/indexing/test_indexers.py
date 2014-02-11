@@ -438,23 +438,23 @@ def _show_database_pylucene(database):
     database.flush()
     reader = database.reader
     for index in range(reader.maxDoc()):
-        print reader.document(index).toString().encode("charmap")
+        print(reader.document(index).toString().encode("charmap"))
 
 
 def _show_database_xapian(database):
     import xapian
     doccount = database.reader.get_doccount()
     max_doc_index = database.reader.get_lastdocid()
-    print "Database overview: %d items up to index %d" % (doccount, max_doc_index)
+    print("Database overview: %d items up to index %d" % (doccount, max_doc_index))
     for index in range(1, max_doc_index + 1):
         try:
             document = database.reader.get_document(index)
         except xapian.DocNotFoundError:
             continue
         # print the document's terms and their positions
-        print "\tDocument [%d]: %s" % (index,
+        print("\tDocument [%d]: %s" % (index,
                 str([(one_term.term, [posi for posi in one_term.positer])
-                for one_term in document.termlist()]))
+                for one_term in document.termlist()])))
 
 
 def _get_number_of_docs(database):
@@ -477,8 +477,8 @@ def report_whitelisted_success(db, name):
     supposed to fail for a specific indexing engine.
     As this test works now for the engine, the whitelisting should be removed.
     """
-    print "the test '%s' works again for '%s' - please remove the exception" \
-            % (name, get_engine_name(db))
+    print("the test '%s' works again for '%s' - please remove the exception"
+        % (name, get_engine_name(db)))
 
 
 def report_whitelisted_failure(db, name):
@@ -487,8 +487,8 @@ def report_whitelisted_failure(db, name):
     Since the test behaves as expected (it fails), this is just for reminding
     developers on these open issues of the indexing engine support.
     """
-    print "the test '%s' fails - as expected for '%s'" % (name,
-            get_engine_name(db))
+    print("the test '%s' fails - as expected for '%s'" % (name,
+            get_engine_name(db)))
 
 
 def assert_whitelisted(db, assert_value, white_list_engines, name_of_check):
@@ -519,11 +519,9 @@ if __name__ == "__main__":
         clean_database()
         engine_name = get_engine_name(_get_indexer(DATABASE))
         if engine_name == default_engine:
-            print "************ running tests for '%s' *****************" \
-                    % engine_name
+            print("****** running tests for '%s' ******" % engine_name)
         else:
-            print "************ SKIPPING tests for '%s' *****************" \
-                    % default_engine
+            print("****** SKIPPING tests for '%s' ******" % default_engine)
             continue
         test_create_database()
         test_open_database()
