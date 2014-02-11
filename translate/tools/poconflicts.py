@@ -157,7 +157,7 @@ class ConflictOptionParser(optrecurse.RecursiveOptionParser):
 
     def outputconflicts(self, options):
         """saves the result of the conflict match"""
-        print "%d/%d different strings have conflicts" % (len(self.conflictmap), len(self.textmap))
+        print("%d/%d different strings have conflicts" % (len(self.conflictmap), len(self.textmap)))
         reducedmap = {}
 
         def str_len(x):
