@@ -43,9 +43,9 @@ def test_word_khmer():
     language = common.Common
     # Let's test Khmer with zero width space (\u200b)
     words = language.words(u"ផ្ដល់​យោបល់")
-    print u"ផ្ដល់​យោបល់"
-    print language.words(u"ផ្ដល់<200b>យោបល់")
-    print [u"ផ្ដល់", u"យោបល់"]
+    print(u"ផ្ដល់​យោបល់")
+    print(language.words(u"ផ្ដល់<200b>យោបល់"))
+    print([u"ផ្ដល់", u"យោបល់"])
     assert words == [u"ផ្ដល់", u"យោបល់"]
 
 

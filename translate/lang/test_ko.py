@@ -24,5 +24,5 @@ def test_sentences():
     assert sentences == []
 
     sentences = language.sentences(u"이 연락처에 바뀐 부분이 있습니다. 바뀐 사항을 저장하시겠습니까?")
-    print sentences
+    print(sentences)
     assert sentences == [u"이 연락처에 바뀐 부분이 있습니다.", u"바뀐 사항을 저장하시겠습니까?"]

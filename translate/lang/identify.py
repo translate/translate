@@ -128,4 +128,4 @@ if __name__ == "__main__":
     import locale
     encoding = locale.getpreferredencoding()
     text = file(argv[1]).read().decode(encoding)
-    print "Language detected:", identifier.identify_lang(text)
+    print("Language detected:", identifier.identify_lang(text))
