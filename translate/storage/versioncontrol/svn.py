@@ -54,7 +54,7 @@ class svn(GenericRevisionControlSystem):
     """Class to manage items under revision control of Subversion."""
 
     RCS_METADIR = ".svn"
-    SCAN_PARENTS = False
+    SCAN_PARENTS = True
 
     def update(self, revision=None, needs_revert=True):
         """update the working copy - remove local modifications if necessary"""
@@ -83,7 +83,7 @@ class svn(GenericRevisionControlSystem):
     def add(self, files, message=None, author=None):
         """Add and commit the new files."""
         files = prepare_filelist(files)
-        command = ["svn", "add", "-q", "--non-interactive", "--parents"] + files
+        command = ["svn", "add", "-q", "--non-interactive", "--parents", "--force"] + files
         exitcode, output, error = run_command(command)
         if exitcode != 0:
             raise IOError("[SVN] Error running SVN command '%s': %s" %
