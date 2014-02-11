@@ -27,7 +27,7 @@ class TestPO2Php:
         #templatephp = php.phpfile(templatefile)
         convertor = po2php.rephp(templatefile, inputpo)
         outputphp = convertor.convertstore()
-        print outputphp
+        print(outputphp)
         return outputphp
 
     def test_merging_simple(self):
@@ -36,7 +36,7 @@ class TestPO2Php:
         phptemplate = '''$lang['name'] = 'value';\n'''
         phpexpected = '''$lang['name'] = 'waarde';\n'''
         phpfile = self.merge2php(phptemplate, posource)
-        print phpfile
+        print(phpfile)
         assert phpfile == [phpexpected]
 
     def test_space_preservation(self):
@@ -45,7 +45,7 @@ class TestPO2Php:
         phptemplate = '''$lang['name']  =  'value';\n'''
         phpexpected = '''$lang['name']  =  'waarde';\n'''
         phpfile = self.merge2php(phptemplate, posource)
-        print phpfile
+        print(phpfile)
         assert phpfile == [phpexpected]
 
     def test_merging_blank_entries(self):
@@ -58,7 +58,7 @@ msgstr ""'''
         phptemplate = '''$lang['accesskey-accept'] = '';\n'''
         phpexpected = '''$lang['accesskey-accept'] = '';\n'''
         phpfile = self.merge2php(phptemplate, posource)
-        print phpfile
+        print(phpfile)
         assert phpfile == [phpexpected]
 
     def test_merging_fuzzy(self):
@@ -67,7 +67,7 @@ msgstr ""'''
         phptemplate = '''$lang['name']  =  'value';\n'''
         phpexpected = '''$lang['name']  =  'value';\n'''
         phpfile = self.merge2php(phptemplate, posource)
-        print phpfile
+        print(phpfile)
         assert phpfile == [phpexpected]
 
     def test_locations_with_spaces(self):
@@ -76,7 +76,7 @@ msgstr ""'''
         phptemplate = '''$lang[ 'name' ]  =  'value';\n'''
         phpexpected = '''$lang[ 'name' ]  =  'waarde';\n'''
         phpfile = self.merge2php(phptemplate, posource)
-        print phpfile
+        print(phpfile)
         assert phpfile == [phpexpected]
 
     def test_inline_comments(self):
@@ -85,7 +85,7 @@ msgstr ""'''
         phptemplate = '''$lang[ 'name' ]  =  'value'; //inline comment\n'''
         phpexpected = '''$lang[ 'name' ]  =  'waarde'; //inline comment\n'''
         phpfile = self.merge2php(phptemplate, posource)
-        print phpfile
+        print(phpfile)
         assert phpfile == [phpexpected]
 
     def test_named_variables(self):
@@ -97,7 +97,7 @@ msgstr "Jaar"
         phptemplate = '''$dictYear = 'Year';\n'''
         phpexpected = '''$dictYear = 'Jaar';\n'''
         phpfile = self.merge2php(phptemplate, posource)
-        print phpfile
+        print(phpfile)
         assert phpfile == [phpexpected]
 
     def test_multiline(self):
@@ -119,7 +119,7 @@ about to automatically upgrade your server to this version:
 <p>Once you do this you can not go back again.</p>
 <p>Are you sure you want to upgrade this server to this version?</p>';\n'''
         phpfile = self.merge2php(phptemplate, posource)
-        print phpfile[0]
+        print(phpfile[0])
         assert phpfile[0] == phptemplate
 
     def test_hash_comment(self):
@@ -131,7 +131,7 @@ msgstr "stringetjie"
         phptemplate = '''# inside alt= stuffies\n$variable = 'stringy';\n'''
         phpexpected = '''# inside alt= stuffies\n$variable = 'stringetjie';\n'''
         phpfile = self.merge2php(phptemplate, posource)
-        print phpfile
+        print(phpfile)
         assert "".join(phpfile) == phpexpected
 
     def test_arrays(self):
@@ -140,7 +140,7 @@ msgstr "stringetjie"
         phptemplate = '''$lang = array(\n    'name' => 'value',\n);\n'''
         phpexpected = '''$lang = array(\n    'name' => 'waarde',\n);\n'''
         phpfile = self.merge2php(phptemplate, posource)
-        print phpfile
+        print(phpfile)
         assert "".join(phpfile) == phpexpected
 
     @mark.xfail(reason="Need to review if we want this behaviour")
@@ -150,7 +150,7 @@ msgstr "stringetjie"
         proptemplate = "# A comment\n"
         propexpected = proptemplate
         propfile = self.merge2prop(proptemplate, posource)
-        print propfile
+        print(propfile)
         assert propfile == [propexpected]
 
 

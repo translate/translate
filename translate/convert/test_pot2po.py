@@ -35,7 +35,7 @@ class TestPOT2PO:
         """checks that the pofile contains a single non-header unit, and returns it"""
         assert len(pofile.units) == 2
         assert pofile.units[0].isheader()
-        print pofile.units[1]
+        print(pofile.units[1])
         return pofile.units[1]
 
     def test_convertpot_blank(self):
@@ -113,7 +113,7 @@ msgstr[1] "%d handleidings."
         posource = '''#: simple.label\n#: simple.accesskey\nmsgid "A &hard coded newline.\\n"\nmsgstr "&Hart gekoeerde nuwe lyne\\n"\n'''
         poexpected = '''#: simple.label\n#: simple.accesskey\n#, fuzzy\nmsgid "Its &hard coding a newline.\\n"\nmsgstr "&Hart gekoeerde nuwe lyne\\n"\n'''
         newpo = self.convertpot(potsource, posource)
-        print newpo
+        print(newpo)
         assert str(self.singleunit(newpo)) == poexpected
 
     def test_merging_location_change(self):
@@ -122,7 +122,7 @@ msgstr[1] "%d handleidings."
         posource = '''#: simple.label%ssimple.accesskey\nmsgid "A &hard coded newline.\\n"\nmsgstr "&Hart gekoeerde nuwe lyne\\n"\n''' % po.lsep
         poexpected = '''#: new_simple.label%snew_simple.accesskey\nmsgid "A &hard coded newline.\\n"\nmsgstr "&Hart gekoeerde nuwe lyne\\n"\n''' % po.lsep
         newpo = self.convertpot(potsource, posource)
-        print newpo
+        print(newpo)
         assert str(self.singleunit(newpo)) == poexpected
 
     def test_merging_location_and_whitespace_change(self):
@@ -133,7 +133,7 @@ msgstr[1] "%d handleidings."
         posource = '''#: doublespace.label%sdoublespace.accesskey\nmsgid "&We  have  spaces"\nmsgstr "&One  het  spasies"\n''' % po.lsep
         poexpected = '''#: singlespace.label%ssinglespace.accesskey\n#, fuzzy\nmsgid "&We have spaces"\nmsgstr "&One  het  spasies"\n''' % po.lsep
         newpo = self.convertpot(potsource, posource)
-        print newpo
+        print(newpo)
         assert str(self.singleunit(newpo)) == poexpected
 
     def test_merging_location_ambiguous_with_disambiguous(self):
@@ -145,7 +145,7 @@ msgstr[1] "%d handleidings."
         poexpected1 = '''#: location.c:1\n#, fuzzy\nmsgid ""\n"_: location.c:1\\n"\n"Source"\nmsgstr "Target"\n'''
         poexpected2 = '''#: location.c:10\n#, fuzzy\nmsgid ""\n"_: location.c:10\\n"\n"Source"\nmsgstr "Target"\n'''
         newpo = self.convertpot(potsource, posource)
-        print "Expected:\n", poexpected1, "Actual:\n", newpo.units[1]
+        print("Expected:\n", poexpected1, "Actual:\n", newpo.units[1])
         assert str(newpo.units[1]) == poexpected1
         assert str(newpo.units[2]) == poexpected2
 
@@ -156,7 +156,7 @@ msgstr[1] "%d handleidings."
         posource = '''#: someline.c\nmsgid "&About"\nmsgstr "&Info"\n'''
         poexpected = '''#: someline.c\nmsgid "A&bout"\nmsgstr "&Info"\n'''
         newpo = self.convertpot(potsource, posource)
-        print newpo
+        print(newpo)
         assert str(self.singleunit(newpo)) == poexpected
 
     @mark.xfail(reason="Not Implemented - review if this is even correct")
@@ -210,10 +210,10 @@ msgstr "Sekuriteit"
         poexpected = posource
         newpo = self.convertpot(potsource, posource)
         newpounit = self.singleunit(newpo)
-        print "expected"
-        print poexpected
-        print "got:"
-        print str(newpounit)
+        print("expected")
+        print(poexpected)
+        print("got:")
+        print(str(newpounit))
         assert str(newpounit) == poexpected
 
     def test_merging_msgidcomments(self):
@@ -276,7 +276,7 @@ msgstr "Sertifikate"
         potsource = '''msgid "One"\nmsgid_plural "Two"\nmsgstr[0] ""\nmsgstr[1] ""\n'''
         posource = '''msgid "One"\nmsgid_plural "Two"\nmsgstr[0] "Een"\nmsgstr[1] "Twee"\nmsgstr[2] "Drie"\n'''
         newpo = self.convertpot(potsource, posource)
-        print newpo
+        print(newpo)
         newpounit = self.singleunit(newpo)
         assert str(newpounit) == posource
 
@@ -287,7 +287,7 @@ msgstr "Sertifikate"
         posource = '# Some comment\n#. Extracted comment\n#: obsoleteme:10\nmsgid "One"\nmsgstr "Een"\n'
         expected = '# Some comment\n#~ msgid "One"\n#~ msgstr "Een"\n'
         newpo = self.convertpot(potsource, posource)
-        print str(newpo)
+        print(str(newpo))
         newpounit = self.singleunit(newpo)
         assert str(newpounit) == expected
 
@@ -297,7 +297,7 @@ msgstr "Sertifikate"
         potsource = 'msgid ""\nmsgstr ""\n'
         posource = '#: obsoleteme:10\nmsgid "One"\nmsgstr ""\n'
         newpo = self.convertpot(potsource, posource)
-        print str(newpo)
+        print(str(newpo))
         # We should only have the header
         assert len(newpo.units) == 1
 
@@ -327,7 +327,7 @@ msgstr "Sertifikate"
         posource = '''#~ msgid "&About"\n#~ msgstr "&Omtrent"\n'''
         expected = '''#: resurect.c\nmsgid "&About"\nmsgstr "&Omtrent"\n'''
         newpo = self.convertpot(potsource, posource)
-        print newpo
+        print(newpo)
         assert len(newpo.units) == 2
         assert newpo.units[0].isheader()
         newpounit = self.singleunit(newpo)
@@ -341,7 +341,7 @@ msgstr "Sertifikate"
         expected1 = '''#: resurect1.c\nmsgid "About"\nmsgstr "Omtrent"\n'''
         expected2 = '''#: resurect2.c\n#, fuzzy\nmsgid ""\n"_: resurect2.c\\n"\n"About"\nmsgstr "Omtrent"\n'''
         newpo = self.convertpot(potsource, posource)
-        print newpo
+        print(newpo)
         assert len(newpo.units) == 3
         assert newpo.units[0].isheader()
         assert str(newpo.units[1]) == expected1
@@ -393,8 +393,8 @@ msgstr ""
 "X-Generator: Translate Toolkit 0.10rc2\n"
 '''
         newpo = self.convertpot(potsource, posource)
-        print 'Output Header:\n%s' % newpo
-        print 'Expected Header:\n%s' % expected
+        print('Output Header:\n%s' % newpo)
+        print('Expected Header:\n%s' % expected)
         assert str(newpo) == expected
 
     def test_merging_comments(self):
@@ -403,7 +403,7 @@ msgstr ""
         posource = '''#. Don't do it!\n#: file.py:2\nmsgid "One"\nmsgstr "Een"\n'''
         poexpected = '''#. Don't do it!\n#: file.py:1\nmsgid "One"\nmsgstr "Een"\n'''
         newpo = self.convertpot(potsource, posource)
-        print newpo
+        print(newpo)
         newpounit = self.singleunit(newpo)
         assert str(newpounit) == poexpected
 
@@ -414,7 +414,7 @@ msgstr ""
         poexpected = '''#: file.c:1\n#, c-format\nmsgid "%d pipes"\nmsgstr "%d pype"\n'''
         newpo = self.convertpot(potsource, posource)
         newpounit = self.singleunit(newpo)
-        print newpounit
+        print(newpounit)
         assert str(newpounit) == poexpected
 
         potsource = '''#: file.c:1\n#, c-format\nmsgid "%d computers"\nmsgstr ""\n'''
@@ -462,7 +462,7 @@ msgid "text"
 msgstr "teks"
 """
         newpo = self.convertpot(potsource, posource)
-        print newpo
+        print(newpo)
         assert poexpected in str(newpo)
 
     def test_msgctxt_multiline(self):
@@ -636,7 +636,7 @@ msgid ""
 msgstr "trans"
 """
         newpo = self.convertpot(potsource, posource)
-        print newpo
+        print(newpo)
         assert len(newpo.units) == 2
         assert newpo.units[0].isheader()
         unit = newpo.units[1]
@@ -674,7 +674,7 @@ msgid ""
 msgstr "trans"
 '''
         newpo = self.convertpot(potsource, posource)
-        print newpo
+        print(newpo)
         assert len(newpo.units) == 2
         assert newpo.units[0].isheader()
         unit = newpo.units[1]
@@ -703,7 +703,7 @@ msgstr "Eerste eenheid"
 #~ msgstr "Ou eenheid3"
 """
         newpo = self.convertpot(potsource, posource)
-        print newpo
+        print(newpo)
         assert len(newpo.units) == 5
         assert newpo.units[1].getcontext() == 'newContext'
         # Search in unit string, because obsolete units can't return a context
@@ -774,8 +774,8 @@ msgid "R"
 msgstr ""
 '''
         newpo = self.convertpot(potsource, posource)
-        print 'Output:\n%s' % newpo
-        print 'Expected:\n%s' % expected
+        print('Output:\n%s' % newpo)
+        print('Expected:\n%s' % expected)
         assert str(newpo) == expected
 
 

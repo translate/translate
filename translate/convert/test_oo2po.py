@@ -56,7 +56,7 @@ class TestOO2PO:
         oooutputfile = wStringIO.StringIO()
         po2oo.convertoo(poinputfile, oooutputfile, ootemplatefile, targetlanguage="en-US")
         ooresult = oooutputfile.getvalue()
-        print "original oo:\n", oosource, "po version:\n", posource, "output oo:\n", ooresult
+        print("original oo:\n", oosource, "po version:\n", posource, "output oo:\n", ooresult)
         return ooresult.split('\t')[10]
 
     def check_roundtrip(self, filename, text):
@@ -77,7 +77,7 @@ class TestOO2PO:
         pofile = self.convert(oosource)
         pounit = self.singleelement(pofile)
         poelementsrc = str(pounit)
-        print poelementsrc
+        print(poelementsrc)
         assert "Newline \n Newline" in pounit.source
         assert "Tab \t Tab" in pounit.source
         assert "CR \r CR" in pounit.source
@@ -103,7 +103,7 @@ class TestOO2PO:
         pofile = self.convert(oosource)
         pounit = self.singleelement(pofile)
         poelementsrc = str(pounit)
-        print poelementsrc
+        print(poelementsrc)
         assert pounit.source == r"\<"
 
     def test_escapes_helpcontent2(self):
@@ -112,7 +112,7 @@ class TestOO2PO:
         pofile = self.convert(oosource)
         pounit = self.singleelement(pofile)
         poelementsrc = str(pounit)
-        print poelementsrc
+        print(poelementsrc)
         assert pounit.source == r'size *2 \langle x \rangle'
 
     def test_msgid_bug_error_address(self):
@@ -122,7 +122,7 @@ class TestOO2PO:
         assert pofile.units[0].isheader()
         assert pofile.parseheader()["Report-Msgid-Bugs-To"]
         bug_url = urlparse.urlparse(pofile.parseheader()["Report-Msgid-Bugs-To"])
-        print bug_url
+        print(bug_url)
         assert bug_url[:3] == ("http", "qa.openoffice.org", "/issues/enter_bug.cgi")
         assert parse_qs(bug_url[4], True) == {u'comment': [u''],
                                               u'component': [u'l10n'],

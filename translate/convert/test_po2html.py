@@ -12,11 +12,11 @@ class TestPO2Html:
     def converthtml(self, posource, htmltemplate):
         """helper to exercise the command line function"""
         inputfile = wStringIO.StringIO(posource)
-        print inputfile.getvalue()
+        print(inputfile.getvalue())
         outputfile = wStringIO.StringIO()
         templatefile = wStringIO.StringIO(htmltemplate)
         assert po2html.converthtml(inputfile, outputfile, templatefile)
-        print outputfile.getvalue()
+        print(outputfile.getvalue())
         return outputfile.getvalue()
 
     def test_simple(self):

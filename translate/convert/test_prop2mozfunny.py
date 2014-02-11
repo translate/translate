@@ -13,7 +13,7 @@ class TestPO2Prop:
         outputfile = wStringIO.StringIO()
         result = prop2mozfunny.po2inc(inputfile, outputfile, templatefile)
         outputinc = outputfile.getvalue()
-        print outputinc
+        print(outputinc)
         assert result
         return outputinc
 
@@ -23,7 +23,7 @@ class TestPO2Prop:
         inctemplate = '''#define MOZ_LANG_TITLE Deutsch (DE)\n'''
         incexpected = inctemplate
         incfile = self.merge2inc(inctemplate, posource)
-        print incfile
+        print(incfile)
         assert incfile == incexpected
 
     def test_uncomment_contributors(self):
@@ -36,7 +36,7 @@ msgstr "<em:contributor>Mr Fury</em:contributor>"
         inctemplate = '''# #define MOZ_LANGPACK_CONTRIBUTORS <em:contributor>Joe Solon</em:contributor>\n'''
         incexpected = '''#define MOZ_LANGPACK_CONTRIBUTORS <em:contributor>Mr Fury</em:contributor>\n'''
         incfile = self.merge2inc(inctemplate, posource)
-        print incfile
+        print(incfile)
         assert incfile == incexpected
 
     def test_multiline_comment_newlines(self):
@@ -48,5 +48,5 @@ msgstr "<em:contributor>Mr Fury</em:contributor>"
 '''
         incexpected = inctemplate
         incfile = self.merge2inc(inctemplate, None)
-        print incfile
+        print(incfile)
         assert incfile == incexpected

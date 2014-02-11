@@ -35,13 +35,13 @@ class TestPhp2PO:
         """checks that the pofile contains a single non-header element, and returns it"""
         assert len(pofile.units) == 2
         assert pofile.units[0].isheader()
-        print pofile
+        print(pofile)
         return pofile.units[1]
 
     def countelements(self, pofile):
         """counts the number of non-header entries"""
         assert pofile.units[0].isheader()
-        print pofile
+        print(pofile)
         return len(pofile.units) - 1
 
     def test_simpleentry(self):
@@ -67,8 +67,8 @@ class TestPhp2PO:
         phpsource = """$lang['nb'] = '%s';""" % unistring
         pofile = self.php2po(phpsource)
         pounit = self.singleelement(pofile)
-        print repr(pofile.units[0].target)
-        print repr(pounit.source)
+        print(repr(pofile.units[0].target))
+        print(repr(pounit.source))
         assert pounit.source == u'Norsk bokm\u00E5l'
 
     def test_multiline(self):
@@ -77,7 +77,7 @@ class TestPhp2PO:
 of connections to this server. If so, use the Advanced IMAP Server Settings dialog to
 reduce the number of cached connections.';"""
         pofile = self.php2po(phpsource)
-        print repr(pofile.units[1].target)
+        print(repr(pofile.units[1].target))
         assert self.countelements(pofile) == 1
 
     def test_comments_before(self):

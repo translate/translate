@@ -22,7 +22,7 @@ class TestPO2Lang:
         posource = '''#: prop\nmsgid "Source"\nmsgstr "Target"\n'''
         propexpected = ''';Source\nTarget\n'''
         langfile = self.po2lang(posource)
-        print langfile
+        print(langfile)
         assert str(langfile) == propexpected
 
     def test_comment(self):
@@ -30,7 +30,7 @@ class TestPO2Lang:
         posource = '''#. Comment\n#: prop\nmsgid "Source"\nmsgstr "Target"\n'''
         propexpected = '''# Comment\n;Source\nTarget\n'''
         langfile = self.po2lang(posource)
-        print langfile
+        print(langfile)
         assert str(langfile) == propexpected
 
     def test_fuzzy(self):
@@ -38,7 +38,7 @@ class TestPO2Lang:
         posource = '''#. Comment\n#: prop\n#, fuzzy\nmsgid "Source"\nmsgstr "Target"\n'''
         propexpected = '''# Comment\n;Source\nSource\n'''
         langfile = self.po2lang(posource)
-        print langfile
+        print(langfile)
         assert str(langfile) == propexpected
 
     def test_ok_marker(self):
@@ -46,7 +46,7 @@ class TestPO2Lang:
         posource = '''#: prop\nmsgid "Same"\nmsgstr "Same"\n'''
         propexpected = ''';Same\nSame {ok}\n'''
         langfile = self.po2lang(posource)
-        print langfile
+        print(langfile)
         assert str(langfile) == propexpected
 
 

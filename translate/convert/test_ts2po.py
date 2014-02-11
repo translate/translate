@@ -12,8 +12,8 @@ class TestTS2PO:
         converter = ts2po.ts2po()
         tsfile = wStringIO.StringIO(tssource)
         outputpo = converter.convertfile(tsfile)
-        print "The generated po:"
-        print str(outputpo)
+        print("The generated po:")
+        print(str(outputpo))
         return outputpo
 
     def test_blank(self):

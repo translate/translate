@@ -62,7 +62,7 @@ class TestPO2DTD:
         dtdresult = dtdoutputfile.getvalue()
         print_string = "Original DTD:\n%s\n\nPO version:\n%s\n\n"
         print_string = print_string + "Output DTD:\n%s\n################"
-        print print_string % (dtdsource, posource, dtdresult)
+        print(print_string % (dtdsource, posource, dtdresult))
         return dtdresult
 
     def roundtripstring(self, entitystring):
@@ -163,7 +163,7 @@ msgstr "&searchIntegration.engineName; &ileti aramasına izin ver"
 <!ENTITY searchIntegration.label       "Allow &searchIntegration.engineName; to search messages">'''
         dtdfile = self.merge2dtd(dtd_snippet, po_snippet)
         dtdsource = str(dtdfile)
-        print dtdsource
+        print(dtdsource)
         assert '"&searchIntegration.engineName; ileti aramasına izin ver"' in dtdsource
 
     def test_entities_two(self):
@@ -201,7 +201,7 @@ msgstr "&searchIntegration.engineName; &ileti aramasına izin ver"
         dtdtemplate = '''<!ENTITY simple.label "Simple String">\n<!ENTITY simple.accesskey "S">\n'''
         dtdexpected = '''<!ENTITY simple.label "Dimpled Ring">\n<!ENTITY simple.accesskey "R">\n'''
         newdtd = self.convertdtd(posource, dtdtemplate)
-        print newdtd
+        print(newdtd)
         assert newdtd == dtdexpected
 
     def test_untranslated_with_template(self):
@@ -234,7 +234,7 @@ msgstr "simple string four"
 
 '''
         newdtd = self.convertdtd(posource, dtdtemplate, remove_untranslated=True)
-        print newdtd
+        print(newdtd)
         assert newdtd == dtdexpected
 
     def test_untranslated_without_template(self):
@@ -260,7 +260,7 @@ msgstr "simple string four"
 <!ENTITY simple.label3 "Simple string 3">
 '''
         newdtd = self.po2dtd(posource, remove_untranslated=True)
-        print newdtd
+        print(newdtd)
         assert str(newdtd) == dtdexpected
 
     def test_blank_source(self):
@@ -290,10 +290,10 @@ msgstr "Simple string 3"
 <!ENTITY simple.label3 "Simple string 3">
 '''
         newdtd_with_template = self.convertdtd(posource, dtdtemplate, remove_untranslated=True)
-        print newdtd_with_template
+        print(newdtd_with_template)
         assert newdtd_with_template == dtdexpected_with_template
         newdtd_no_template = self.po2dtd(posource, remove_untranslated=True)
-        print newdtd_no_template
+        print(newdtd_no_template)
         assert str(newdtd_no_template) == dtdexpected_no_template
 
     def test_newlines_escapes(self):
@@ -302,7 +302,7 @@ msgstr "Simple string 3"
         dtdtemplate = '<!ENTITY  simple.label "A hard coded newline.\n">\n'
         dtdexpected = '''<!ENTITY  simple.label "Hart gekoeerde nuwe lyne\n">\n'''
         dtdfile = self.merge2dtd(dtdtemplate, posource)
-        print dtdfile
+        print(dtdfile)
         assert str(dtdfile) == dtdexpected
 
     def test_roundtrip_simple(self):
@@ -363,7 +363,7 @@ msgstr "Simple string 3"
           '                                          next lines.">\n'
         dtdexpected = '<!ENTITY simple.label "Eerste lyne en dan volgende lyne.">\n'
         dtdfile = self.merge2dtd(dtdtemplate, posource)
-        print dtdfile
+        print(dtdfile)
         assert str(dtdfile) == dtdexpected
 
     def test_preserving_spaces(self):
@@ -372,7 +372,7 @@ msgstr "Simple string 3"
         dtdtemplate = '<!ENTITY     simple.label         "One">\n'
         dtdexpected = '<!ENTITY     simple.label         "Een">\n'
         dtdfile = self.merge2dtd(dtdtemplate, posource)
-        print dtdfile
+        print(dtdfile)
         assert str(dtdfile) == dtdexpected
 
     def test_preserving_spaces(self):
@@ -382,13 +382,13 @@ msgstr "Simple string 3"
         dtdtemplate = '<!ENTITY simple.label "One" >\n'
         dtdexpected = '<!ENTITY simple.label "Een" >\n'
         dtdfile = self.merge2dtd(dtdtemplate, posource)
-        print dtdfile
+        print(dtdfile)
         assert str(dtdfile) == dtdexpected
         # Space after >
         dtdtemplate = '<!ENTITY simple.label "One"> \n'
         dtdexpected = '<!ENTITY simple.label "Een"> \n'
         dtdfile = self.merge2dtd(dtdtemplate, posource)
-        print dtdfile
+        print(dtdfile)
         assert str(dtdfile) == dtdexpected
 
     def test_comments(self):
@@ -396,7 +396,7 @@ msgstr "Simple string 3"
         posource = '''#: name\nmsgid "Text"\nmsgstr "Teks"'''
         dtdtemplate = '''<!ENTITY name "%s">\n<!-- \n\nexample -->\n'''
         dtdfile = self.merge2dtd(dtdtemplate % "Text", posource)
-        print dtdfile
+        print(dtdfile)
         assert str(dtdfile) == dtdtemplate % "Teks"
 
     def test_duplicates(self):
@@ -427,7 +427,7 @@ msgstr "Dipukutshwayo3"
 <!ENTITY bookmarksButton.label "Dipukutshwayo3">
 '''
         dtdfile = self.merge2dtd(dtdtemplate, posource)
-        print dtdfile
+        print(dtdfile)
         assert str(dtdfile) == dtdexpected
 
 

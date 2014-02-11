@@ -29,7 +29,7 @@ class TestPO2Ini:
         templatefile = wStringIO.StringIO(inisource)
         convertor = po2ini.reini(templatefile, inputpo, dialect=dialect)
         outputini = convertor.convertstore()
-        print outputini
+        print(outputini)
         return outputini
 
     def test_merging_simple(self):
@@ -38,7 +38,7 @@ class TestPO2Ini:
         initemplate = '''[section]\nprop=value\n'''
         iniexpected = '''[section]\nprop=waarde\n'''
         inifile = self.merge2ini(initemplate, posource)
-        print inifile
+        print(inifile)
         assert inifile == iniexpected
 
     def test_space_preservation(self):
@@ -47,7 +47,7 @@ class TestPO2Ini:
         initemplate = '''[section]\nprop  =  value\n'''
         iniexpected = '''[section]\nprop  =  waarde\n'''
         inifile = self.merge2ini(initemplate, posource)
-        print inifile
+        print(inifile)
         assert inifile == iniexpected
 
     def test_merging_blank_entries(self):
@@ -60,7 +60,7 @@ msgstr ""'''
         initemplate = '[section]\naccesskey-accept=\n'
         iniexpected = '[section]\naccesskey-accept=\n'
         inifile = self.merge2ini(initemplate, posource)
-        print inifile
+        print(inifile)
         assert inifile == iniexpected
 
     def test_merging_fuzzy(self):
@@ -69,7 +69,7 @@ msgstr ""'''
         initemplate = '''[section]\nprop=value\n'''
         iniexpected = '''[section]\nprop=value\n'''
         inifile = self.merge2ini(initemplate, posource)
-        print inifile
+        print(inifile)
         assert inifile == iniexpected
 
     def test_merging_propertyless_template(self):
@@ -78,7 +78,7 @@ msgstr ""'''
         initemplate = "# A comment\n"
         iniexpected = initemplate
         inifile = self.merge2ini(initemplate, posource)
-        print inifile
+        print(inifile)
         assert inifile == iniexpected
 
     def test_empty_value(self):
@@ -91,7 +91,7 @@ msgstr "translated"
         initemplate = '''[section]\nkey =\n'''
         iniexpected = '''[section]\nkey =translated\n'''
         inifile = self.merge2ini(initemplate, posource)
-        print inifile
+        print(inifile)
         assert inifile == iniexpected
 
     def test_dialects_inno(self):
@@ -103,7 +103,7 @@ msgstr "ṽḁḽṻḝ\tṽḁḽṻḝ2\n"
         initemplate = '''[section]\nprop  =  value%tvalue%n\n'''
         iniexpected = '''[section]\nprop  =  ṽḁḽṻḝ%tṽḁḽṻḝ2%n\n'''
         inifile = self.merge2ini(initemplate, posource, "inno")
-        print inifile
+        print(inifile)
         assert inifile == iniexpected
 
 

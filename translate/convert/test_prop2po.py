@@ -37,13 +37,13 @@ class TestProp2PO:
         """checks that the pofile contains a single non-header element, and returns it"""
         assert len(pofile.units) == 2
         assert pofile.units[0].isheader()
-        print pofile
+        print(pofile)
         return pofile.units[1]
 
     def countelements(self, pofile):
         """counts the number of non-header entries"""
         assert pofile.units[0].isheader()
-        print pofile
+        print(pofile)
         return len(pofile.units) - 1
 
     def test_simpleentry(self):
@@ -104,8 +104,8 @@ class TestProp2PO:
         propsource = 'nb = %s\n' % unistring
         pofile = self.prop2po(propsource)
         pounit = self.singleelement(pofile)
-        print repr(pofile.units[0].target)
-        print repr(pounit.source)
+        print(repr(pofile.units[0].target))
+        print(repr(pounit.source))
         assert pounit.source == u'Norsk bokm\u00E5l'
 
     def test_multiline_escaping(self):
@@ -114,7 +114,7 @@ class TestProp2PO:
 of connections to this server. If so, use the Advanced IMAP Server Settings dialog to \
 reduce the number of cached connections."""
         pofile = self.prop2po(propsource)
-        print repr(pofile.units[1].target)
+        print(repr(pofile.units[1].target))
         assert self.countelements(pofile) == 1
 
     def test_comments(self):
@@ -135,7 +135,7 @@ prefPanel-smime=Security'''
 prefPanel-smime=
 '''
         pofile = self.prop2po(propsource)
-        print str(pofile)
+        print(str(pofile))
         #header comments:
         assert "#. # Comment\n#. # commenty 2" in str(pofile)
         pounit = self.singleelement(pofile)
@@ -247,7 +247,7 @@ message-multiedit-header[other]={{ n }} selected
         assert pounit.hasplural()
         assert pounit.getlocations() == [u'message-multiedit-header']
 
-        print outputpo
+        print(outputpo)
         zero_unit = outputpo.units[-2]
         assert not zero_unit.hasplural()
         assert zero_unit.source == u"Edit"

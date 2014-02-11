@@ -32,7 +32,7 @@ class TestCSV2PO:
 
     def singleelement(self, storage):
         """checks that the pofile contains a single non-header element, and returns it"""
-        print str(storage)
+        print(str(storage))
         assert headerless_len(storage.units) == 1
         return first_translatable(storage)
 
@@ -74,7 +74,7 @@ wat lank aanhou"
         unit = self.singleelement(pofile)
         assert unit.getlocations() == ['Random comment\nwith continuation']
         assert unit.source == "Original text"
-        print unit.target
+        print(unit.target)
         assert unit.target == "Langdradige teks\nwat lank aanhou"
 
     def test_tabs(self):
@@ -82,7 +82,7 @@ wat lank aanhou"
         minicsv = ',"First column\tSecond column","Twee kolomme gesky met \t"'
         pofile = self.csv2po(minicsv)
         unit = self.singleelement(pofile)
-        print unit.source
+        print(unit.source)
         assert unit.source == "First column\tSecond column"
         assert not pofile.findunit("First column\tSecond column").target == "Twee kolomme gesky met \\t"
 
@@ -90,18 +90,18 @@ wat lank aanhou"
         """Test the escaping of quotes (and slash)"""
         minicsv = r''',"Hello ""Everyone""","Good day ""All"""
 ,"Use \"".","Gebruik \""."'''
-        print minicsv
+        print(minicsv)
         csvfile = csvl10n.csvfile(wStringIO.StringIO(minicsv))
-        print str(csvfile)
+        print(str(csvfile))
         pofile = self.csv2po(minicsv)
         unit = first_translatable(pofile)
         assert unit.source == 'Hello "Everyone"'
         assert pofile.findunit('Hello "Everyone"').target == 'Good day "All"'
-        print str(pofile)
+        print(str(pofile))
         for unit in pofile.units:
-            print unit.source
-            print unit.target
-            print
+            print(unit.source)
+            print(unit.target)
+            print()
 #        assert pofile.findunit('Use \\".').target == 'Gebruik \\".'
 
     def test_empties(self):

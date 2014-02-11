@@ -31,15 +31,15 @@ class TestHTML2PO:
         if actual > 0:
             if pofile.units[0].isheader():
                 actual = actual - 1
-        print pofile
+        print(pofile)
         assert actual == expected
 
     def compareunit(self, pofile, unitnumber, expected):
         """helper to validate a PO message"""
         if not pofile.units[0].isheader():
             unitnumber = unitnumber - 1
-        print 'unit source: ' + pofile.units[unitnumber].source.encode('utf-8') + '|'
-        print 'expected: ' + expected.encode('utf-8') + '|'
+        print('unit source: ' + pofile.units[unitnumber].source.encode('utf-8') + '|')
+        print('expected: ' + expected.encode('utf-8') + '|')
         assert unicode(pofile.units[unitnumber].source) == unicode(expected)
 
     def check_single(self, markup, itemtext):

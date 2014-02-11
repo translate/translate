@@ -74,7 +74,7 @@ def convertodf(inputfile, outputfile, templates, engine='toolkit'):
         try:
             store.setfilename(store.getfilenode('NoName'), inputfile.name)
         except:
-            print "couldn't set origin filename"
+            print("couldn't set origin filename")
         yield store
         store.save()
 
