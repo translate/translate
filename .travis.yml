@@ -14,11 +14,11 @@ matrix:
 before_install:
   - sudo apt-get install python-aeidon
 install:
-  - pip install --use-mirrors -r requirements/dev.txt
-  - if [[ $TRAVIS_PYTHON_VERSION == 'pypy' ]]; then pip install --use-mirrors --upgrade --pre lxml; fi
+  - pip install -r requirements/dev.txt
+  - if [[ $TRAVIS_PYTHON_VERSION == 'pypy' ]]; then pip install --upgrade --pre lxml; fi
   # Still need to handle with indexing engines
   # docs
-  - pip install --use-mirrors Sphinx
+  - pip install Sphinx
   # pep8 checks
   - pip install pep8
 script:
