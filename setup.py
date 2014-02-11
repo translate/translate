@@ -17,6 +17,7 @@
 # You should have received a copy of the GNU General Public License along with
 # Translate; if not, see <http://www.gnu.org/licenses/>.
 
+from __future__ import print_function
 import distutils.sysconfig
 import os
 import os.path
@@ -76,7 +77,7 @@ subpackages = [
 # TODO: elementtree doesn't work in sdist, fix this
 packages = ["translate"]
 
-translatescripts = [apply(join, ('translate', ) + script) for script in
+translatescripts = [join(*('translate', ) + script) for script in [
                   ('convert', 'pot2po'),
                   ('convert', 'moz2po'), ('convert', 'po2moz'),
                   ('convert', 'oo2po'), ('convert', 'po2oo'),
@@ -115,9 +116,9 @@ translatescripts = [apply(join, ('translate', ) + script) for script in
                   ('tools', 'pretranslate'),
                   ('services', 'tmserver'),
                   ('tools', 'build_tmdb')]
+]
 
-translatebashscripts = [
-    apply(join, ('tools', ) + script) for script in [
+translatebashscripts = [join(*('tools', ) + script) for script in [
                   ('junitmsgfmt', ),
                   ('mozilla', 'build_firefox.sh'),
                   ('mozilla', 'buildxpi.py'),
@@ -209,40 +210,39 @@ class InnoScript:
             self.pathname = pathname
 # See http://www.jrsoftware.org/isfaq.php for more InnoSetup config options.
         ofi = self.file = open(self.pathname, "w")
-        print >> ofi, "; WARNING: This script has been created by py2exe. Changes to this script"
-        print >> ofi, "; will be overwritten the next time py2exe is run!"
-        print >> ofi, r"[Setup]"
-        print >> ofi, r"AppName=%s" % self.name
-        print >> ofi, r"AppVerName=%s %s" % (self.name, self.version)
-        print >> ofi, r"DefaultDirName={pf}\%s" % self.name
-        print >> ofi, r"DefaultGroupName=%s" % self.name
-        print >> ofi, r"OutputBaseFilename=%s-%s-setup" % (self.name, self.version)
-        print >> ofi, r"ChangesEnvironment=yes"
-        print >> ofi
-        print >> ofi, r"[Files]"
+        print("; WARNING: This script has been created by py2exe. Changes to this script", file=ofi)
+        print("; will be overwritten the next time py2exe is run!", file=ofi)
+        print(r"[Setup]", file=ofi)
+        print(r"AppName=%s" % self.name, file=ofi)
+        print(r"AppVerName=%s %s" % (self.name, self.version), file=ofi)
+        print(r"DefaultDirName={pf}\%s" % self.name, file=ofi)
+        print(r"DefaultGroupName=%s" % self.name, file=ofi)
+        print(r"OutputBaseFilename=%s-%s-setup" % (self.name, self.version), file=ofi)
+        print(r"ChangesEnvironment=yes", file=ofi)
+        print(file=ofi)
+        print(r"[Files]", file=ofi)
         for path in self.exe_files + self.other_files:
-            print >> ofi, r'Source: "%s"; DestDir: "{app}\%s"; Flags: ignoreversion' % \
-                            (path, os.path.dirname(path))
-        print >> ofi
-        print >> ofi, r"[Icons]"
-        print >> ofi, r'Name: "{group}\Documentation"; Filename: "{app}\docs\index.html";'
-        print >> ofi, r'Name: "{group}\Translate Toolkit Command Prompt"; Filename: "cmd.exe"'
-        print >> ofi, r'Name: "{group}\Uninstall %s"; Filename: "{uninstallexe}"' % self.name
-        print >> ofi
-        print >> ofi, r"[Registry]"
+            print(r'Source: "%s"; DestDir: "{app}\%s"; Flags: ignoreversion' % (path, os.path.dirname(path)), file=ofi)
+        print(file=ofi)
+        print(r"[Icons]", file=ofi)
+        print(r'Name: "{group}\Documentation"; Filename: "{app}\docs\index.html";', file=ofi)
+        print(r'Name: "{group}\Translate Toolkit Command Prompt"; Filename: "cmd.exe"', file=ofi)
+        print(r'Name: "{group}\Uninstall %s"; Filename: "{uninstallexe}"' % self.name, file=ofi)
+        print(file=ofi)
+        print(r"[Registry]", file=ofi)
         # TODO: Move the code to update the Path environment variable to a
         # Python script which will be invoked by the [Run] section (below)
-        print >> ofi, r'Root: HKCU; Subkey: "Environment"; ValueType: expandsz; ValueName: "Path"; ValueData: "{reg:HKCU\Environment,Path|};{app};"'
-        print >> ofi
+        print(r'Root: HKCU; Subkey: "Environment"; ValueType: expandsz; ValueName: "Path"; ValueData: "{reg:HKCU\Environment,Path|};{app};"', file=ofi)
+        print(file=ofi)
         if self.install_scripts:
-            print >> ofi, r"[Run]"
+            print(r"[Run]", file=ofi)
             for path in self.install_scripts:
-                print >> ofi, r'Filename: "{app}\%s"; WorkingDir: "{app}"; Parameters: "-install"' % path
-            print >> ofi
-            print >> ofi, r"[UninstallRun]"
+                print(r'Filename: "{app}\%s"; WorkingDir: "{app}"; Parameters: "-install"' % path, file=ofi)
+            print(file=ofi)
+            print(r"[UninstallRun]", file=ofi)
             for path in self.install_scripts:
-                print >> ofi, r'Filename: "{app}\%s"; WorkingDir: "{app}"; Parameters: "-remove"' % path
-        print >> ofi
+                print(r'Filename: "{app}\%s"; WorkingDir: "{app}"; Parameters: "-remove"' % path, file=ofi)
+        print(file=ofi)
         ofi.close()
 
     def compile(self):
@@ -251,8 +251,8 @@ class InnoScript:
         compilecommand = shellcompilecommand.replace('"%1"', self.pathname)
         result = os.system(compilecommand)
         if result:
-            print "Error compiling iss file"
-            print "Opening iss file, use InnoSetup GUI to compile manually"
+            print("Error compiling iss file")
+            print("Opening iss file, use InnoSetup GUI to compile manually")
             os.startfile(self.pathname)
 
 
@@ -282,9 +282,9 @@ class build_installer(build_exe_map):
                             self.lib_files,
                             version=self.distribution.metadata.version,
                             install_scripts=install_scripts)
-        print "*** creating the inno setup script***"
+        print("*** creating the inno setup script***")
         script.create()
-        print "*** compiling the inno setup script***"
+        print("*** compiling the inno setup script***")
         script.compile()
         # Note: By default the final setup.exe will be in an Output
         # subdirectory.
@@ -326,21 +326,21 @@ def getdatafiles():
 
 def buildmanifest_in(file, scripts):
     """This writes the required files to a MANIFEST.in file"""
-    print >>file, "# MANIFEST.in: the below autogenerated by setup.py from translate %s" % translateversion
-    print >>file, "# things needed by translate setup.py to rebuild"
-    print >>file, "# informational files"
+    print("# MANIFEST.in: the below autogenerated by setup.py from translate %s" % translateversion, file=file)
+    print("# things needed by translate setup.py to rebuild", file=file)
+    print("# informational files", file=file)
     for infofile in ("README.rst", "COPYING", "*.txt"):
-        print >>file, "global-include %s" % infofile
-    print >>file, "# C programs"
-    print >>file, "global-include *.c"
-    print >> file, "# scripts which don't get included by default in sdist"
+        print("global-include %s" % infofile, file=file)
+    print("# C programs", file=file)
+    print("global-include *.c", file=file)
+    print("# scripts which don't get included by default in sdist", file=file)
     for scriptname in scripts:
-        print >>file, "include %s" % scriptname
-    print >> file, "# include our documentation"
-    print >> file, "graft docs"
-    print >> file, "prune docs/doctrees"
-    print >> file, "graft share"
-    print >>file, "# MANIFEST.in: the above autogenerated by setup.py from translate %s" % translateversion
+        print("include %s" % scriptname, file=file)
+    print("# include our documentation", file=file)
+    print("graft docs", file=file)
+    print("prune docs/doctrees", file=file)
+    print("graft share", file=file)
+    print("# MANIFEST.in: the above autogenerated by setup.py from translate %s" % translateversion, file=file)
 
 
 class TranslateDistribution(Distribution):
@@ -382,7 +382,7 @@ def standardsetup(name, version, custompackages=[], customdatafiles=[]):
         buildmanifest_in(manifest_in, translatescripts + translatebashscripts)
         manifest_in.close()
     except IOError as e:
-        print >> sys.stderr, "warning: could not recreate MANIFEST.in, continuing anyway. Error was %s" % e
+        print("warning: could not recreate MANIFEST.in, continuing anyway. Error was %s" % e, file=sys.stderr)
     addsubpackages(subpackages)
     datafiles = getdatafiles()
     ext_modules = []
