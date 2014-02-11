@@ -22,10 +22,10 @@ def test_sentences():
     assert sentences == []
 
     sentences = language.sentences(u"يوجد بالفعل مجلد بالإسم \"%s\". أترغب في استبداله؟")
-    print sentences
+    print(sentences)
     assert sentences == [u"يوجد بالفعل مجلد بالإسم \"%s\".", u"أترغب في استبداله؟"]
     # This probably doesn't make sense: it is just the above reversed, to make sure
     # we test the '؟' as an end of sentence marker.
     sentences = language.sentences(u"أترغب في استبداله؟ يوجد بالفعل مجلد بالإسم \"%s\".")
-    print sentences
+    print(sentences)
     assert sentences == [u"أترغب في استبداله؟", u"يوجد بالفعل مجلد بالإسم \"%s\"."]

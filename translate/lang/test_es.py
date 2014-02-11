@@ -26,5 +26,5 @@ def test_sentences():
     assert sentences == []
 
     sentences = language.sentences(u"El archivo <b>%1</b> ha sido modificado. ¿Desea guardarlo?")
-    print sentences
+    print(sentences)
     assert sentences == [u"El archivo <b>%1</b> ha sido modificado.", u"¿Desea guardarlo?"]

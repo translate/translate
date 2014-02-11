@@ -186,4 +186,4 @@ if __name__ == '__main__':
     text = sys.stdin.readline()
     from translate.misc.file_discovery import get_abs_data_filename
     l = NGram(get_abs_data_filename('langmodels'))
-    print l.classify(text)
+    print(l.classify(text))

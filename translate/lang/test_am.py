@@ -22,5 +22,5 @@ def test_sentences():
     assert sentences == []
 
     sentences = language.sentences(u"ለምልክቱ መግቢያ የተለየ መለያ። ይህ የሚጠቅመው የታሪኩን ዝርዝር ለማስቀመጥ ነው።")
-    print sentences
+    print(sentences)
     assert sentences == [u"ለምልክቱ መግቢያ የተለየ መለያ።", u"ይህ የሚጠቅመው የታሪኩን ዝርዝር ለማስቀመጥ ነው።"]

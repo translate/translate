@@ -436,4 +436,4 @@ if __name__ == "__main__":
     from translate.storage import factory
     for fname in argv[1:]:
         store = factory.getobject(fname)
-        print fname, guess_language(store.parseheader().get('Language-Team', u""))
+        print(fname, guess_language(store.parseheader().get('Language-Team', u"")))
