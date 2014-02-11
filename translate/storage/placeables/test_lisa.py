@@ -46,7 +46,7 @@ def test_xml_to_strelem():
 def test_xml_space():
     source = etree.fromstring(u'<source xml:space="default"> a <x id="foo[1]/bar[1]/baz[1]"/> </source>')
     elem = lisa.xml_to_strelem(source)
-    print elem.sub
+    print(elem.sub)
     assert elem.sub == [StringElem(u'a '), X(id=u'foo[1]/bar[1]/baz[1]'), StringElem(u' ')]
 
 
