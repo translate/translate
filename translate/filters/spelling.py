@@ -29,7 +29,7 @@ available = False
 
 try:
     # Enchant
-    from enchant import checker, DictNotFoundError, Error as EnchantError
+    from enchant import checker, Error as EnchantError
     available = True
     checkers = {}
 
