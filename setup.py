@@ -23,7 +23,7 @@ import os
 import os.path
 import site
 import sys
-from distutils.core import setup, Extension, Distribution, Command
+from distutils.core import setup, Distribution, Command
 
 try:
     import py2exe
