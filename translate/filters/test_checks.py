@@ -48,7 +48,7 @@ def fails(filterfunction, str1, str2, message=None):
         if message:
             exc_message = e.messages[0]
             filterresult = exc_message != message
-            print exc_message.encode('utf-8')
+            print(exc_message.encode('utf-8'))
         else:
             filterresult = False
 
@@ -66,7 +66,7 @@ def fails_serious(filterfunction, str1, str2, message=None):
         if message:
             exc_message = e.messages[0]
             filterresult = exc_message != message
-            print exc_message.encode('utf-8')
+            print(exc_message.encode('utf-8'))
         else:
             filterresult = False
 

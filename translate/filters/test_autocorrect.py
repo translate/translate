@@ -9,11 +9,11 @@ class TestAutocorrect:
     def correct(self, msgid, msgstr, expected):
         """helper to run correct function from autocorrect module"""
         corrected = autocorrect.correct(msgid, msgstr)
-        print repr(msgid)
-        print repr(msgstr)
-        print msgid.encode('utf-8')
-        print msgstr.encode('utf-8')
-        print (corrected or u"").encode('utf-8')
+        print(repr(msgid))
+        print(repr(msgstr))
+        print(msgid.encode('utf-8'))
+        print(msgstr.encode('utf-8'))
+        print((corrected or u"").encode('utf-8'))
         assert corrected == expected
 
     def test_empty_target(self):

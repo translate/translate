@@ -203,7 +203,7 @@ class FilterOptionParser(optrecurse.RecursiveOptionParser):
         options.outputoptions = self.outputoptions
 
         if options.listfilters:
-            print options.checkfilter.getfilterdocs()
+            print(options.checkfilter.getfilterdocs())
         else:
             self.recursiveprocess(options)
 
