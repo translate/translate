@@ -18,10 +18,10 @@ class TestCount:
         if target is not None:
             poelement.target = target
         wordssource, wordstarget = statsdb.wordsinunit(poelement)
-        print 'Source (expected=%d; actual=%d): "%s"' % (expectedsource, wordssource, source)
+        print('Source (expected=%d; actual=%d): "%s"' % (expectedsource, wordssource, source))
         assert wordssource == expectedsource
         if target is not None:
-            print 'Target (expected=%d; actual=%d): "%s"' % (expectedtarget, wordstarget, target)
+            print('Target (expected=%d; actual=%d): "%s"' % (expectedtarget, wordstarget, target))
             assert wordstarget == expectedtarget
 
     def test_simple_count_zero(self):

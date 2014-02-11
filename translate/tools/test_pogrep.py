@@ -23,7 +23,7 @@ class TestPOGrep:
         options, args = pogrep.cmdlineparser().parse_args(["xxx.po"] + cmdlineoptions)
         grepfilter = pogrep.GrepFilter(searchstring, options.searchparts, options.ignorecase, options.useregexp, options.invertmatch, options.keeptranslations, options.accelchar)
         tofile = grepfilter.filterfile(self.poparse(posource))
-        print str(tofile)
+        print(str(tofile))
         return str(tofile)
 
     def test_simplegrep_msgid(self):
@@ -78,7 +78,7 @@ class TestPOGrep:
                                          (poascii, queryunicode, ''),
                                          (pounicode, queryascii, ''),
                                          (pounicode, queryunicode, pounicode)]:
-            print "Source:\n%s\nSearch: %s\n" % (source, search)
+            print("Source:\n%s\nSearch: %s\n" % (source, search))
             poresult = self.pogrep(source, search)
             assert poresult.index(expected) >= 0
 
@@ -92,7 +92,7 @@ class TestPOGrep:
                                          (poascii, queryunicode, ''),
                                          (pounicode, queryascii, ''),
                                          (pounicode, queryunicode, pounicode)]:
-            print "Source:\n%s\nSearch: %s\n" % (source, search)
+            print("Source:\n%s\nSearch: %s\n" % (source, search))
             poresult = self.pogrep(source, search, ["--regexp"])
             assert poresult.index(expected) >= 0
 
@@ -119,7 +119,7 @@ class TestPOGrep:
             for source_letter in letters:
                 source = source_template % source_letter
                 for search_letter in letters:
-                    print search_letter.encode('utf-8')
+                    print(search_letter.encode('utf-8'))
                     poresult = self.pogrep(source, search_letter)
                     assert poresult.index(source.encode('utf-8')) >= 0
 

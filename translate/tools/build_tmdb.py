@@ -59,8 +59,8 @@ class Builder:
         try:
             self.tmdb.add_store(store, self.source_lang, self.target_lang, commit=False)
         except Exception as e:
-            print e
-        print "File added:", filename
+            print(e)
+        print("File added:", filename)
 
     def handlefiles(self, dirname, filenames):
         for filename in filenames:

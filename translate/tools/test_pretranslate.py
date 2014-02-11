@@ -58,10 +58,10 @@ class TestPretranslate:
         """checks that the pofile contains a single non-header unit, and
         returns it"""
         if len(pofile.units) == 2 and pofile.units[0].isheader():
-            print pofile.units[1]
+            print(pofile.units[1])
             return pofile.units[1]
         else:
-            print pofile.units[0]
+            print(pofile.units[0])
             return pofile.units[0]
 
     def test_pretranslatepo_blank(self):
@@ -122,7 +122,7 @@ msgstr[1] "%d handleidings."
         template_source = '''#: simple.label\n#: simple.accesskey\nmsgid "A &hard coded newline.\\n"\nmsgstr "&Hart gekoeerde nuwe lyne\\n"\n'''
         poexpected = '''#: simple.label\n#: simple.accesskey\n#, fuzzy\nmsgid "Its &hard coding a newline.\\n"\nmsgstr "&Hart gekoeerde nuwe lyne\\n"\n'''
         newpo = self.pretranslatepo(input_source, template_source)
-        print newpo
+        print(newpo)
         assert str(newpo) == poexpected
 
     def test_merging_location_change(self):
@@ -132,7 +132,7 @@ msgstr[1] "%d handleidings."
         template_source = '''#: simple.label%ssimple.accesskey\nmsgid "A &hard coded newline.\\n"\nmsgstr "&Hart gekoeerde nuwe lyne\\n"\n''' % po.lsep
         poexpected = '''#: new_simple.label%snew_simple.accesskey\nmsgid "A &hard coded newline.\\n"\nmsgstr "&Hart gekoeerde nuwe lyne\\n"\n''' % po.lsep
         newpo = self.pretranslatepo(input_source, template_source)
-        print newpo
+        print(newpo)
         assert str(newpo) == poexpected
 
     def test_merging_location_and_whitespace_change(self):
@@ -142,7 +142,7 @@ msgstr[1] "%d handleidings."
         template_source = '''#: doublespace.label%sdoublespace.accesskey\nmsgid "&We  have  spaces"\nmsgstr "&One  het  spasies"\n''' % po.lsep
         poexpected = '''#: singlespace.label%ssinglespace.accesskey\n#, fuzzy\nmsgid "&We have spaces"\nmsgstr "&One  het  spasies"\n''' % po.lsep
         newpo = self.pretranslatepo(input_source, template_source)
-        print newpo
+        print(newpo)
         assert str(newpo) == poexpected
 
     @mark.xfail(reason="Not Implemented")
@@ -153,7 +153,7 @@ msgstr[1] "%d handleidings."
         template_source = '''#: someline.c\nmsgid "&About"\nmsgstr "&Info"\n'''
         poexpected = '''#: someline.c\nmsgid "A&bout"\nmsgstr "&Info"\n'''
         newpo = self.pretranslatepo(input_source, template_source)
-        print newpo
+        print(newpo)
         assert str(newpo) == poexpected
 
     @mark.xfail(reason="Not Implemented")
@@ -209,10 +209,10 @@ msgstr "Sekuriteit"
         poexpected = template_source
         newpo = self.pretranslatepo(input_source, template_source)
         newpounit = self.singleunit(newpo)
-        print "expected"
-        print poexpected
-        print "got:"
-        print str(newpounit)
+        print("expected")
+        print(poexpected)
+        print("got:")
+        print(str(newpounit))
         assert str(newpounit) == poexpected
 
     def test_merging_msgidcomments(self):
@@ -238,7 +238,7 @@ msgstr "36em"
         input_source = '''msgid "One"\nmsgid_plural "Two"\nmsgstr[0] ""\nmsgstr[1] ""\n'''
         template_source = '''msgid "One"\nmsgid_plural "Two"\nmsgstr[0] "Een"\nmsgstr[1] "Twee"\nmsgstr[2] "Drie"\n'''
         newpo = self.pretranslatepo(input_source, template_source)
-        print newpo
+        print(newpo)
         newpounit = self.singleunit(newpo)
         assert str(newpounit) == template_source
 
@@ -249,7 +249,7 @@ msgstr "36em"
         template_source = '''#~ msgid "&About"\n#~ msgstr "&Omtrent"\n'''
         expected = '''#: resurect.c\nmsgid "&About"\nmsgstr "&Omtrent"\n'''
         newpo = self.pretranslatepo(input_source, template_source)
-        print newpo
+        print(newpo)
         assert str(newpo) == expected
 
     def test_merging_comments(self):
@@ -258,7 +258,7 @@ msgstr "36em"
         template_source = '''#. Don't do it!\n#: file.py:2\nmsgid "One"\nmsgstr "Een"\n'''
         poexpected = '''#. Don't do it!\n#: file.py:1\nmsgid "One"\nmsgstr "Een"\n'''
         newpo = self.pretranslatepo(input_source, template_source)
-        print newpo
+        print(newpo)
         newpounit = self.singleunit(newpo)
         assert str(newpounit) == poexpected
 
@@ -269,7 +269,7 @@ msgstr "36em"
         poexpected = '''#: file.c:1\n#, c-format\nmsgid "%d pipes"\nmsgstr "%d pype"\n'''
         newpo = self.pretranslatepo(input_source, template_source)
         newpounit = self.singleunit(newpo)
-        print newpounit
+        print(newpounit)
         assert str(newpounit) == poexpected
 
         input_source = '''#: file.c:1\n#, c-format\nmsgid "%d computers"\nmsgstr ""\n'''
@@ -295,9 +295,9 @@ msgstr "36em"
         template = xliff.xlifffile.parsestring(xlf_template)
         old = xliff.xlifffile.parsestring(xlf_old)
         new = self.pretranslatexliff(template, old)
-        print str(old)
-        print '---'
-        print str(new)
+        print(str(old))
+        print('---')
+        print(str(new))
         assert new.units[0].isapproved()
         # Layout might have changed, so we won't compare the serialised
         # versions

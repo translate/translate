@@ -87,7 +87,7 @@ class detector:
     """reads in the filenames given and extracts their translations"""
     for filename in filenames:
       if not os.path.exists(filename):
-        print >>sys.stderr, "cannot process %s: does not exist" % filename
+        print("cannot process %s: does not exist" % filename, file=sys.stderr)
         continue
       elif os.path.isdir(filename):
         self.handledir(filename)
@@ -100,7 +100,7 @@ class detector:
     self.processfile(infile)
     infile.close()
     if self.options.verbose:
-      print "read %s" % filename
+      print("read %s" % filename)
 
   def readfiles(self, arg, dirname, filenames):
     """reads in the given files in the given directory and processes them"""
@@ -188,7 +188,7 @@ class detector:
         encodingdeltas[encoding] = self.getcountmapdelta(dictcountmap, countmap)
     if self.dictstring:
       sortedstring = self.countmaptostring(dictcountmap)
-      print "dict:", self.encodeattempt(sortedstring)
+      print("dict:", self.encodeattempt(sortedstring))
       deltas = [(delta, encoding) for encoding, delta in encodingdeltas.iteritems()]
       deltas.sort()
       validkeys = [encoding for delta, encoding in deltas]
@@ -204,7 +204,7 @@ class detector:
       sortedstring = self.countmaptostring(validencodings[validencoding])
       validencoding = "%s (%d):" % (validencoding, encodingdeltas[validencoding])
       validencoding += " "*(keylen-len(validencoding))
-      print validencoding, self.encodeattempt(sortedstring)
+      print(validencoding, self.encodeattempt(sortedstring))
 
   def findwords(self, dictmap, encoding):
     """finds all words in the translations that when decoded with encoding match in the dictmap"""
@@ -224,7 +224,7 @@ class detector:
         if word in dictmap:
           if self.options.verbose:
             if (not self.options.unique) or (word not in uniquewordsfound):
-              print self.encodeattempt(word)
+              print(self.encodeattempt(word))
           uniquewordsfound[word] = 1
           wordsfound += 1
     if options.unique:
@@ -244,7 +244,7 @@ class detector:
           if self.options.ignorecase:
             dictword = dictword.lower()
           dictmap[dictword] = 0
-    print "%d words in dictionary" % len(dictmap)
+    print("%d words in dictionary" % len(dictmap))
     encodingcounts = {}
     for encoding in self.listencodings():
       try:
@@ -257,7 +257,7 @@ class detector:
     for validencoding in validkeys:
       count = encodingcounts[validencoding]
       if count:
-        print "%s: %d" % (validencoding, count)
+        print("%s: %d" % (validencoding, count))
 
   def fuzzy(self, word, includestring):
     """return a version of word including all the characters in includestring, with sequences of other characters replaced by a space"""
@@ -278,7 +278,7 @@ class detector:
     elif isinstance(dictword, dict):
       if word in dictword: return
       # otherwise check that there is no ambiguity
-      print "multiple matches: not drawing conclusions. %r, %r" % (word, dictword)
+      print("multiple matches: not drawing conclusions. %r, %r" % (word, dictword))
       return
     wordparts = word.translate(ignoremap).split()
     dictparts = dictword.translate(ignoremap).split()
@@ -337,7 +337,7 @@ class detector:
               dictmap[fuzzyword] = {dictmap[fuzzyword]:True, dictword:True}
           else:
             dictmap[self.fuzzy(dictword, self.excludestring)] = dictword
-    print "%d words in dictionary" % len(dictmap)
+    print("%d words in dictionary" % len(dictmap))
     uniquewordsfound = {}
     charmap = {}
     wordsfound = 0
@@ -353,28 +353,28 @@ class detector:
           dictword = dictmap[fuzzyword]
           if self.options.verbose:
             if (not self.options.unique) or (word not in uniquewordsfound):
-              print repr(word), repr(fuzzyword), repr(dictword)
+              print(repr(word), repr(fuzzyword), repr(dictword))
           self.updatecharmap(charmap, word, dictword, ignoremap)
           uniquewordsfound[word] = fuzzyword
     if options.unique:
-      print "fuzzy match on encoding %s produced %d unique words" % (encoding, len(uniquewordsfound))
+      print("fuzzy match on encoding %s produced %d unique words" % (encoding, len(uniquewordsfound)))
     else:
-      print "fuzzy match on encoding %s produced %d words" % (encoding, wordsfound)
+      print("fuzzy match on encoding %s produced %d words" % (encoding, wordsfound))
     if options.outputscript:
       self.writescript(charmap, encoding)
     for wordpart, transmap in charmap.iteritems():
       if len(transmap) == 1:
         dictpart, count = transmap.items()[0]
-        print "char %r in translations always found to match char %r in dict (%d times)" % \
-              (wordpart, dictpart, count)
+        print("char %r in translations always found to match char %r in dict (%d times)" % \
+              (wordpart, dictpart, count))
       else:
         counts = [(count, dictpart) for dictpart, count in transmap.iteritems()]
         counts.sort()
         dictparts = [dictpart for count, dictpart in counts]
-        print "char %r in translations matches to the following characters in dict:" % wordpart
+        print("char %r in translations matches to the following characters in dict:" % wordpart)
         for dictpart in dictparts:
           count = transmap[dictpart]
-          print "  %r: %d" % (dictpart, count)
+          print("  %r: %d" % (dictpart, count))
 
 if __name__ == '__main__':
   try:
