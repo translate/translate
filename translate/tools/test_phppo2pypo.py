@@ -6,7 +6,6 @@
 # Date: 2009-12-03
 
 from translate.tools import phppo2pypo
-from translate.storage import po
 from translate.convert import test_convert
 from translate.misc import wStringIO
 

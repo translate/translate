@@ -5,7 +5,6 @@ import pytest
 from pytest import mark
 
 from translate.tools import pomerge
-from translate.storage import factory
 from translate.storage import po
 from translate.storage import xliff
 from translate.misc import wStringIO

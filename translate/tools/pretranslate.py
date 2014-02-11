@@ -26,7 +26,7 @@ for examples and usage instructions.
 """
 
 from translate.storage import factory
-from translate.storage import xliff, po
+from translate.storage import xliff
 from translate.search import match
 
 # We don't want to reinitialise the TM each time, so let's store it here.

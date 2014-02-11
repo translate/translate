@@ -21,7 +21,6 @@
 """Import units from translations files into tmdb."""
 
 import os
-import sys
 import logging
 
 from optparse import OptionParser
