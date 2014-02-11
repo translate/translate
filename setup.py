@@ -18,12 +18,13 @@
 # Translate; if not, see <http://www.gnu.org/licenses/>.
 
 from __future__ import print_function
+
 import distutils.sysconfig
 import os
 import os.path
 import site
 import sys
-from distutils.core import setup, Distribution, Command
+from distutils.core import Command, Distribution, setup
 
 try:
     import py2exe
