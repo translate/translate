@@ -20,8 +20,8 @@ class TestCatkeysUnit(test_base.TestTranslationUnit):
                     '\\\n', '\\\t', '\\\\r', '\\\\"']
         for special in specials:
             unit.source = special
-            print "unit.source:", repr(unit.source) + '|'
-            print "special:", repr(special) + '|'
+            print("unit.source:", repr(unit.source) + '|')
+            print("special:", repr(special) + '|')
             assert unit.source == special
 
     def test_newlines(self):

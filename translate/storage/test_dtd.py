@@ -62,9 +62,9 @@ def test_roundtrip_quoting():
     for special in specials:
         quoted_special = dtd.quotefordtd(special)
         unquoted_special = dtd.unquotefromdtd(quoted_special)
-        print "special: %r\nquoted: %r\nunquoted: %r\n" % (special,
+        print("special: %r\nquoted: %r\nunquoted: %r\n" % (special,
                                                            quoted_special,
-                                                           unquoted_special)
+                                                           unquoted_special))
         assert special == unquoted_special
 
 
@@ -138,9 +138,9 @@ def test_android_roundtrip_quoting():
     for special in specials:
         quoted_special = dtd.quoteforandroid(special)
         unquoted_special = dtd.unquotefromandroid(quoted_special)
-        print "special: %r\nquoted: %r\nunquoted: %r\n" % (special,
+        print("special: %r\nquoted: %r\nunquoted: %r\n" % (special,
                                                            quoted_special,
-                                                           unquoted_special)
+                                                           unquoted_special))
         assert special == unquoted_special
 
 
@@ -239,7 +239,7 @@ class TestDTD(test_monolingual.TestMonolingualStore):
         dtdfile = self.dtdparse(dtdsource)
         assert len(dtdfile.units) == 1
         dtdunit = dtdfile.units[0]
-        print dtdunit
+        print(dtdunit)
         assert dtdunit.isnull()
 
     def test_newlines_in_entity(self):
@@ -252,16 +252,16 @@ class TestDTD(test_monolingual.TestMonolingualStore):
 ">
 '''
         dtdregen = self.dtdregen(dtdsource)
-        print dtdregen
-        print dtdsource
+        print(dtdregen)
+        print(dtdsource)
         assert dtdsource == dtdregen
 
     def test_conflate_comments(self):
         """Tests that comments don't run onto the same line"""
         dtdsource = '<!-- test comments -->\n<!-- getting conflated -->\n<!ENTITY sample.txt "hello">\n'
         dtdregen = self.dtdregen(dtdsource)
-        print dtdsource
-        print dtdregen
+        print(dtdsource)
+        print(dtdregen)
         assert dtdsource == dtdregen
 
     def test_localisation_notes(self):
@@ -295,8 +295,8 @@ class TestDTD(test_monolingual.TestMonolingualStore):
         # FIXME: The following line is necessary, because of dtdfile's inability to remember the spacing of
         # the source DTD file when converting back to DTD.
         dtdregen = self.dtdregen(dtdsource).replace('realBrandDTD SYSTEM', 'realBrandDTD\n SYSTEM')
-        print dtdsource
-        print dtdregen
+        print(dtdsource)
+        print(dtdregen)
         assert dtdsource == dtdregen
 
     @mark.xfail(reason="Not Implemented")

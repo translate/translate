@@ -35,8 +35,8 @@ class TestTxtFile(test_monolingual.TestMonolingualStore):
         txtsource = '''One\nOne\n\nTwo\n---\n\nThree'''
         txtfile = self.txtparse(txtsource)
         assert len(txtfile.units) == 3
-        print txtsource
-        print str(txtfile)
-        print "*%s*" % txtfile.units[0]
+        print(txtsource)
+        print(str(txtfile))
+        print("*%s*" % txtfile.units[0])
         assert str(txtfile) == txtsource
         assert self.txtregen(txtsource) == txtsource

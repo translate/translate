@@ -35,7 +35,7 @@ class TestTMXfile(test_base.TestTranslationStore):
     def tmxparse(self, tmxsource):
         """helper that parses tmx source without requiring files"""
         dummyfile = wStringIO.StringIO(tmxsource)
-        print tmxsource
+        print(tmxsource)
         tmxfile = tmx.tmxfile(dummyfile)
         return tmxfile
 
@@ -50,7 +50,7 @@ class TestTMXfile(test_base.TestTranslationStore):
         tmxfile = tmx.tmxfile()
         tmxfile.addtranslation("A string of characters", "en", "'n String karakters", "af")
         newfile = self.tmxparse(str(tmxfile))
-        print str(tmxfile)
+        print(str(tmxfile))
         assert newfile.translate("A string of characters") == "'n String karakters"
 
     def test_withcomment(self):
@@ -59,7 +59,7 @@ class TestTMXfile(test_base.TestTranslationStore):
         tmxfile.addtranslation("A string of chars",
                                "en", "'n String karakters", "af", "comment")
         newfile = self.tmxparse(str(tmxfile))
-        print str(tmxfile)
+        print(str(tmxfile))
         assert newfile.findunit("A string of chars").getnotes() == "comment"
 
     def test_withnewlines(self):
@@ -67,7 +67,7 @@ class TestTMXfile(test_base.TestTranslationStore):
         tmxfile = tmx.tmxfile()
         tmxfile.addtranslation("First line\nSecond line", "en", "Eerste lyn\nTweede lyn", "af")
         newfile = self.tmxparse(str(tmxfile))
-        print str(tmxfile)
+        print(str(tmxfile))
         assert newfile.translate("First line\nSecond line") == "Eerste lyn\nTweede lyn"
 
     def test_xmlentities(self):
@@ -76,8 +76,8 @@ class TestTMXfile(test_base.TestTranslationStore):
         tmxfile.addtranslation("Mail & News", "en", "Nuus & pos", "af")
         tmxfile.addtranslation("Five < ten", "en", "Vyf < tien", "af")
         xmltext = str(tmxfile)
-        print "The generated xml:"
-        print xmltext
+        print("The generated xml:")
+        print(xmltext)
         assert tmxfile.translate('Mail & News') == 'Nuus & pos'
         assert xmltext.index('Mail &amp; News')
         assert xmltext.find('Mail & News') == -1

@@ -64,7 +64,7 @@ xliff.xlifffile.__eq__ = xliff___eq__
 
 def print_diff(store1, store2):
     for line in difflib.unified_diff(str(store1).split('\n'), str(store2).split('\n')):
-        print line
+        print(line)
 
 SOURCE_ODF = u'test_2.odt'
 REFERENCE_XLF = u'test_2-test_odf2xliff-reference.xlf'
@@ -111,20 +111,20 @@ class ODF(object):
         l1 = sorted(zi.filename for zi in self.odf.infolist())
         l2 = sorted(zi.filename for zi in other.odf.infolist())
         if l1 != l2:
-            print "File lists don't match:"
-            print l1
-            print l2
+            print("File lists don't match:")
+            print(l1)
+            print(l2)
             return False
         for filename in l1:
             if is_content_file(filename):
                 l = self._get_doc_root(filename)
                 r = other._get_doc_root(filename)
                 if l != r:
-                    print "difference for file named", filename
+                    print("difference for file named", filename)
                     return False
             else:
                 if self._get_data(filename) != other._get_data(filename):
-                    print "difference for file named", filename
+                    print("difference for file named", filename)
                     return False
         return True
 

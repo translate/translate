@@ -140,8 +140,8 @@ class TestMOFile(test_base.TestTranslationStore):
 
     def test_output(self):
         for posource in posources:
-            print "PO source file"
-            print posource
+            print("PO source file")
+            print(posource)
             PO_FILE, MO_MSGFMT, MO_POCOMPILE = self.get_mo_and_po()
 
             out_file = open(PO_FILE, 'w')
@@ -162,11 +162,11 @@ class TestMOFile(test_base.TestTranslationStore):
 
             try:
                 mo_msgfmt = mo_msgfmt_f.read()
-                print "msgfmt output:"
-                print repr(mo_msgfmt)
+                print("msgfmt output:")
+                print(repr(mo_msgfmt))
                 mo_pocompile = mo_pocompile_f.read()
-                print "pocompile output:"
-                print repr(mo_pocompile)
+                print("pocompile output:")
+                print(repr(mo_pocompile))
                 assert mo_msgfmt == mo_pocompile
             finally:
                 mo_msgfmt_f.close()

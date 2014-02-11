@@ -159,7 +159,7 @@ class TestProp(test_monolingual.TestMonolingualStore):
         for propsource, key, value in whitespaces:
             propfile = self.propparse(propsource)
             propunit = propfile.units[0]
-            print repr(propsource), repr(propunit.name), repr(propunit.source)
+            print(repr(propsource), repr(propunit.name), repr(propunit.source))
             assert propunit.name == key
             assert propunit.source == value
             # let's reparse the output to ensure good serialisation->parsing roundtrip:
@@ -174,7 +174,7 @@ class TestProp(test_monolingual.TestMonolingualStore):
         delimiters = [":", "=", " "]
         for delimiter in delimiters:
             propsource = "key%svalue" % delimiter
-            print "source: '%s'\ndelimiter: '%s'" % (propsource, delimiter)
+            print("source: '%s'\ndelimiter: '%s'" % (propsource, delimiter))
             propfile = self.propparse(propsource)
             assert len(propfile.units) == 1
             propunit = propfile.units[0]
@@ -189,8 +189,8 @@ class TestProp(test_monolingual.TestMonolingualStore):
 key=value
 ''' % comment_marker
             propfile = self.propparse(propsource)
-            print repr(propsource)
-            print "Comment marker: '%s'" % comment_marker
+            print(repr(propsource))
+            print("Comment marker: '%s'" % comment_marker)
             assert len(propfile.units) == 1
             propunit = propfile.units[0]
             assert propunit.comments == ['%s A comment' % comment_marker]
@@ -209,7 +209,7 @@ key=value
         for propsource in proplist:
             propfile = self.propparse(propsource)
             propunit = propfile.units[0]
-            print propunit
+            print(propunit)
             assert propunit.name == "Truth"
             assert propunit.source == "Beauty"
 
@@ -219,7 +219,7 @@ key=value
         prop_store = self.propparse(prop_source)
         assert len(prop_store.units) == 1
         unit = prop_store.units[0]
-        print unit
+        print(unit)
         assert unit.name == u"\:\="
 
     def test_fullspec_line_continuation(self):
@@ -229,10 +229,10 @@ key=value
                                   kiwi, mango
 """
         prop_store = self.propparse(prop_source)
-        print prop_store
+        print(prop_store)
         assert len(prop_store.units) == 1
         unit = prop_store.units[0]
-        print unit
+        print(unit)
         assert properties._find_delimiter(prop_source, [u"=", u":", u" "]) == (' ', 6)
         assert unit.name == u"fruits"
         assert unit.source == u"apple, banana, pear, cantaloupe, watermelon, kiwi, mango"
@@ -243,7 +243,7 @@ key=value
         prop_store = self.propparse(prop_source)
         assert len(prop_store.units) == 1
         unit = prop_store.units[0]
-        print unit
+        print(unit)
         assert unit.name == u"cheeses"
         assert unit.source == u""
 

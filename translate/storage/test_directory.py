@@ -12,7 +12,7 @@ class TestDirectory(object):
 
     def setup_method(self, method):
         """sets up a test directory"""
-        print "setup_method called on", self.__class__.__name__
+        print("setup_method called on", self.__class__.__name__)
         self.testdir = "%s_testdir" % (self.__class__.__name__)
         self.cleardir(self.testdir)
         os.mkdir(self.testdir)
@@ -46,7 +46,7 @@ class TestDirectory(object):
 
     def test_created(self):
         """test that the directory actually exists"""
-        print self.testdir
+        print(self.testdir)
         assert os.path.isdir(self.testdir)
 
     def test_basic(self):
