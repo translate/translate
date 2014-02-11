@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-from pytest import deprecated_call
+from pytest import deprecated_call, raises
 
 from translate.misc import wStringIO
 from translate.storage import properties
@@ -359,3 +359,9 @@ key=value
         bom = propsource[:2]
         assert result.startswith(bom)
         assert bom not in result[2:]
+
+    def test_raise_ioerror_if_cannot_detect_encoding(self):
+        """Test that IOError is thrown if file encoding cannot be detected."""
+        propsource = u"key = ąćęłńóśźż".encode("cp1250")
+        with raises(IOError):
+            self.propparse(propsource, personality="strings")
