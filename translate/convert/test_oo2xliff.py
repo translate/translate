@@ -5,9 +5,7 @@ import os
 
 from translate.convert import test_oo2po
 from translate.convert import oo2xliff
-from translate.convert import xliff2oo
 from translate.convert import test_convert
-from translate.misc import wStringIO
 from translate.storage import xliff
 from translate.storage import oo
 

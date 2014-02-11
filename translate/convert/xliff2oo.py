@@ -25,7 +25,6 @@ for examples and usage instructions.
 """
 
 import os
-import sys
 import time
 import logging
 

@@ -1,9 +1,7 @@
 #!/usr/bin/env python
 
-from translate.convert import po2xliff
 from translate.convert import test_convert
 from translate.convert import xliff2po
-from translate.misc import wStringIO
 from translate.misc import wStringIO
 from translate.storage import po
 from translate.storage import xliff

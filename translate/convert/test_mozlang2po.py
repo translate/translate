@@ -1,12 +1,9 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-from pytest import mark
-
 from translate.convert import mozlang2po
 from translate.convert import test_convert
 from translate.misc import wStringIO
-from translate.storage import po
 from translate.storage import mozilla_lang as lang
 
 

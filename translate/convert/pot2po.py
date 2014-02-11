@@ -29,7 +29,7 @@ from translate.storage import factory
 from translate.search import match
 from translate.misc.multistring import multistring
 from translate.tools import pretranslate
-from translate.storage import poheader, po
+from translate.storage import poheader
 from translate.storage import catkeys
 
 

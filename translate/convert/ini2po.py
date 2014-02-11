@@ -25,7 +25,6 @@ for examples and usage instructions.
 """
 
 import logging
-import sys
 
 from translate.storage import po
 

@@ -6,7 +6,6 @@
 # Date: 2008-12-01
 
 from translate.convert import po2tiki
-from translate.storage import tiki
 from translate.convert import test_convert
 from translate.misc import wStringIO
 
