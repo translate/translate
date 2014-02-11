@@ -19,7 +19,6 @@
 # along with this program; if not, see <http://www.gnu.org/licenses/>.
 
 
-import os.path
 from translate.storage.versioncontrol import GenericRevisionControlSystem
 from translate.storage.versioncontrol import run_command, prepare_filelist, youngest_ancestor
 
