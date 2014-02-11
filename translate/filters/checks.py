@@ -1873,8 +1873,8 @@ def runtests(str1, str2, ignorelist=()):
     failures = checker.run_filters(unit)
 
     for test in failures:
-        print "failure: %s: %s\n  %r\n  %r" % \
-              (test, failures[test]['message'], str1, str2)
+        print("failure: %s: %s\n  %r\n  %r" % \
+              (test, failures[test]['message'], str1, str2))
 
     return failures
 
@@ -1887,8 +1887,7 @@ def batchruntests(pairs):
         if runtests(str1, str2):
             passed += 1
 
-    print
-    print "total: %d/%d pairs passed" % (passed, numpairs)
+    print("\ntotal: %d/%d pairs passed" % (passed, numpairs))
 
 
 if __name__ == '__main__':

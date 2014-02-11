@@ -46,8 +46,8 @@ class BaseTestFilter(object):
         """checks that an obviously wrong string fails"""
         self.unit.target = "REST"
         filter_result = self.filter(self.translationstore)
-        print filter_result
-        print filter_result.units
+        print(filter_result)
+        print(filter_result.units)
         assert 'startcaps' in first_translatable(filter_result).geterrors()
 
     def test_variables_across_lines(self):
@@ -217,7 +217,7 @@ msgstr "koei"
         pofile = self.parse_text(posource)
         filter_result = self.filter(pofile)
         if headerless_len(filter_result.units):
-            print first_translatable(filter_result)
+            print(first_translatable(filter_result))
         assert headerless_len(filter_result.units) == 0
 
 
