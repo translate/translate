@@ -13,22 +13,6 @@ autoencode
    :inherited-members:
 
 
-contextlib
-----------
-
-.. automodule:: translate.misc.contextlib
-   :members:
-   :inherited-members:
-
-
-context
--------
-
-.. automodule:: translate.misc.context
-   :members:
-   :inherited-members:
-
-
 dictutils
 ---------
 
@@ -49,14 +33,6 @@ file_discovery
 --------------
 
 .. automodule:: translate.misc.file_discovery
-   :members:
-   :inherited-members:
-
-
-ini
----
-
-.. automodule:: translate.misc.ini
    :members:
    :inherited-members:
 
