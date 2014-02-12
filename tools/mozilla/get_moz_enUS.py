@@ -54,18 +54,18 @@ def process_l10n_ini(inifile):
         topath = os.path.join(l10ncheckout, 'en-US', dir)
         if not os.path.exists(frompath):
             if verbose:
-                print "[Missing source]: %s" % frompath
+                print("[Missing source]: %s" % frompath)
             continue
         if os.path.exists(topath):
             if verbose:
-                print "[Existing target]: %s" % topath
+                print("[Existing target]: %s" % topath)
             continue
         if verbose:
-            print '%s -> %s' % (frompath, topath)
+            print('%s -> %s' % (frompath, topath))
         try:
             shutil.copytree(frompath, topath)
         except OSError as e:
-            print e
+            print(e)
 
     try:
         for include in l10n.options('includes'):
@@ -139,9 +139,9 @@ if __name__ == '__main__':
         os.makedirs(enUS_dir)
 
     if args.verbose:
-        print "%s -s %s -d %s -p %s -v %s" % \
+        print("%s -s %s -d %s -p %s -v %s" %
               (__file__, srccheckout, l10ncheckout, product,
-               options.deletedest and '--delete-dest' or '')
+               options.deletedest and '--delete-dest' or ''))
     product_ini = os.path.join(srccheckout, product, 'locales', 'l10n.ini')
     if not os.path.isfile(product_ini):
         # Done for Fennec
