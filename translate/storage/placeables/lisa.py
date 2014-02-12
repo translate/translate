@@ -21,8 +21,9 @@
 from lxml import etree
 
 from translate.misc.xml_helpers import normalize_xml_space
-from translate.storage.placeables import base, xliff, StringElem
+from translate.storage.placeables import StringElem, base, xliff
 from translate.storage.xml_extract import misc
+
 
 __all__ = ['xml_to_strelem', 'strelem_to_xml']
 # Use the above functions as entry points into this module. The rest are

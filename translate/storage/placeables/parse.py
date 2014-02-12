@@ -23,7 +23,7 @@ Contains the ``parse`` function that parses normal strings into StringElem-
 based "rich" string element trees.
 """
 
-from translate.storage.placeables import base, StringElem
+from translate.storage.placeables import StringElem, base
 
 
 def parse(tree, parse_funcs):
