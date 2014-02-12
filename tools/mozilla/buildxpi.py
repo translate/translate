@@ -211,35 +211,39 @@ ac_add_options --enable-application=%(product)s
 
 
 def create_option_parser():
-    from optparse import OptionParser
+    from argparse import ArgumentParser
     usage = 'Usage: buildxpi.py [<options>] <lang> [<lang2> ...]'
-    p = OptionParser(usage=usage)
+    p = ArgumentParser(usage=usage)
 
-    p.add_option(
+    p.add_argument(
         '-L', '--l10n-base',
+        type=str,
         dest='l10nbase',
         default='l10n',
         help='The directory containing the <lang> subdirectory.'
     )
-    p.add_option(
+    p.add_argument(
         '-o', '--output-dir',
+        type=str,
         dest='outputdir',
         default='.',
         help='The directory to copy the built XPI to (default: current directory).'
     )
-    p.add_option(
+    p.add_argument(
         '-p', '--mozproduct',
+        type=str,
         dest='mozproduct',
         default='browser',
         help='The Mozilla product name (default: "browser").'
     )
-    p.add_option(
+    p.add_argument(
         '-s', '--src',
+        type=str,
         dest='srcdir',
         default='mozilla',
         help='The directory containing the Mozilla l10n sources.'
     )
-    p.add_option(
+    p.add_argument(
         '-d', '--delete-dest',
         dest='delete_dest',
         action='store_true',
@@ -247,7 +251,7 @@ def create_option_parser():
         help='Delete output XPI if it already exists.'
     )
 
-    p.add_option(
+    p.add_argument(
         '-v', '--verbose',
         dest='verbose',
         action='store_true',
@@ -255,8 +259,8 @@ def create_option_parser():
         help='Be more noisy'
     )
 
-    p.add_option(
-        '', '--soft-max-version',
+    p.add_argument(
+        '--soft-max-version',
         dest='soft_max_version',
         action='store_true',
         default=False,
@@ -264,14 +268,16 @@ def create_option_parser():
              'e.g. 24.0a1 becomes 24.0.*'
     )
 
+    p.add_argument(
+        "langs",
+        type=str,
+        nargs="+"
+    )
+
     return p
 
 if __name__ == '__main__':
-    options, args = create_option_parser().parse_args()
-
-    if len(args) < 1:
-        from argparse import ArgumentError
-        raise ArgumentError(None, 'You need to specify at least a language!')
+    args, langs = create_option_parser().parse_known_args()
 
     if options.verbose:
         logging.basicConfig(level=logging.DEBUG)
