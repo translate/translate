@@ -82,37 +82,42 @@ def process_l10n_ini(inifile):
 
 
 def create_option_parser():
-    from optparse import OptionParser
-    p = OptionParser()
+    from argparse import ArgumentParser
+    p = ArgumentParser()
 
     p.add_option(
         '-s', '--src',
+        type=str,
         dest='srcdir',
         default='mozilla',
         help='The directory containing the Mozilla l10n sources.'
     )
-    p.add_option(
+    p.add_argument(
         '-d', '--dest',
+        type=str,
         dest='destdir',
         default='l10n',
         help='The destination directory to copy the en-US locale files to.'
     )
-    p.add_option(
+    p.add_argument(
         '-p', '--mozproduct',
+        type=str,
         dest='mozproduct',
         default='browser',
         help='The Mozilla product name.'
     )
-    p.add_option(
+    p.add_argument(
         '--delete-dest',
+        type=str,
         dest='deletedest',
         default=False,
         action='store_true',
         help='Delete the destination directory (if it exists).'
     )
 
-    p.add_option(
+    p.add_argument(
         '-v', '--verbose',
+        type=str,
         dest='verbose',
         action='store_true',
         default=False,
@@ -122,11 +127,10 @@ def create_option_parser():
     return p
 
 if __name__ == '__main__':
-    options, args = create_option_parser().parse_args()
-    srccheckout = options.srcdir
-    l10ncheckout = options.destdir
-    product = options.mozproduct
-    verbose = options.verbose
+    args = create_option_parser().parse_args()
+    srccheckout = args.srcdir
+    l10ncheckout = args.destdir
+    product = args.mozproduct
 
     enUS_dir = os.path.join(l10ncheckout, 'en-US')
     if options.deletedest and os.path.exists(enUS_dir):
@@ -134,7 +138,7 @@ if __name__ == '__main__':
     if not os.path.exists(enUS_dir):
         os.makedirs(enUS_dir)
 
-    if verbose:
+    if args.verbose:
         print "%s -s %s -d %s -p %s -v %s" % \
               (__file__, srccheckout, l10ncheckout, product,
                options.deletedest and '--delete-dest' or '')
