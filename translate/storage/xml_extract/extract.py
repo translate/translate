@@ -22,7 +22,6 @@ from lxml import etree
 
 from translate.storage import base
 from translate.misc.contextlib import contextmanager, nested
-from translate.misc.context import with_
 from translate.storage.xml_extract import xpath_breadcrumb
 from translate.storage.xml_extract import misc
 from translate.storage.placeables import xliff, StringElem
@@ -149,12 +148,11 @@ def find_translatable_dom_nodes(dom_node, state):
         yield state.is_inline
         state.is_inline = old_inline
 
-    def with_block(xpath_breadcrumb, placeable_name, is_inline):
+    with nested(xpath_set(), placeable_set(), inline_set()):
         if (namespace, tag) not in state.no_translate_content_elements:
             return _process_translatable(dom_node, state)
         else:
             return _process_children(dom_node, state)
-    return with_(nested(xpath_set(), placeable_set(), inline_set()), with_block)
 
 
 class IdMaker(object):
