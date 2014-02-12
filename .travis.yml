@@ -27,7 +27,8 @@ script:
   - python setup.py build
   - py.test -r EfsxX
   - ./tools/pep8.sh travis
-  - cd docs; make html
+  # -W report warnings as errors when building docs
+  - cd docs; make SPHINXOPTS=-W html
 notifications:
   email:
     on_failure: always
