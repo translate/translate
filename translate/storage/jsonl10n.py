@@ -18,7 +18,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, see <http://www.gnu.org/licenses/>.
 
-"""Class that manages JSON data files for translation
+r"""Class that manages JSON data files for translation
 
 JSON is an acronym for JavaScript Object Notation, it is an open standard
 designed for human-readable data interchange.
