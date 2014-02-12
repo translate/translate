@@ -25,10 +25,8 @@ See: http://docs.translatehouse.org/projects/translate-toolkit/en/latest/command
 for examples and usage instructions.
 """
 
-from translate.storage import factory
-from translate.misc.contextlib import contextmanager
-from translate.misc.context import with_
-from translate.storage import odf_io
+from contextlib import contextmanager
+from translate.storage import factory, odf_io
 
 
 def convertodf(inputfile, outputfile, templates, engine='toolkit'):
@@ -78,18 +76,18 @@ def convertodf(inputfile, outputfile, templates, engine='toolkit'):
         yield store
         store.save()
 
-    def with_block(store):
-        if engine == "toolkit":
-            translate_toolkit_implementation(store)
-        else:
-            itools_implementation(store)
-
     # Since the convertoptionsparser will give us an open file, we risk that
     # it could have been opened in non-binary mode on Windows, and then we'll
     # have problems, so let's make sure we have what we want.
     inputfile.close()
     inputfile = file(inputfile.name, mode='rb')
-    with_(store_context(), with_block)
+
+    with store_context() as store:
+        if engine == "toolkit":
+            translate_toolkit_implementation(store)
+        else:
+            itools_implementation(store)
+
     return True
 
 
