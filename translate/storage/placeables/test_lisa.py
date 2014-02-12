@@ -21,7 +21,7 @@
 
 from lxml import etree
 
-from translate.storage.placeables import lisa, StringElem
+from translate.storage.placeables import StringElem, lisa
 from translate.storage.placeables.xliff import Bx, Ex, G, UnknownXML, X
 
 
