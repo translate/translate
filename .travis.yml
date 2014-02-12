@@ -21,7 +21,7 @@ script:
   # Compile all the files
   - python -m compileall -x '[.]py$' -q -f .
   - python setup.py build
-  - py.test -r EfsxX
+  - py.test --boxed -r EfsxX
   - ./tools/pep8.sh travis
   # -W report warnings as errors when building docs
   - cd docs; make SPHINXOPTS=-W html

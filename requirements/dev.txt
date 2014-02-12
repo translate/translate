@@ -1,5 +1,6 @@
 -r optional.txt
 
 pytest>=2.2
+pytest-xdist
 Sphinx>=1.1
 pep8
