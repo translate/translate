@@ -25,9 +25,8 @@ See: http://docs.translatehouse.org/projects/translate-toolkit/en/latest/command
 for examples and usage instructions.
 """
 
-from translate.storage import factory
-from translate.misc.contextlib import contextmanager
-from translate.storage import odf_io
+from contextlib import contextmanager
+from translate.storage import factory, odf_io
 
 
 def convertodf(inputfile, outputfile, templates, engine='toolkit'):

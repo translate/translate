@@ -18,12 +18,11 @@
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, see <http://www.gnu.org/licenses/>.
 
+from contextlib import contextmanager, nested
 from lxml import etree
 
 from translate.storage import base
-from translate.misc.contextlib import contextmanager, nested
-from translate.storage.xml_extract import xpath_breadcrumb
-from translate.storage.xml_extract import misc
+from translate.storage.xml_extract import xpath_breadcrumb, misc
 from translate.storage.placeables import xliff, StringElem
 
 
