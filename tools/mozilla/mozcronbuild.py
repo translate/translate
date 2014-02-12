@@ -62,10 +62,10 @@ USAGE = '%prog [<options>]'
 def create_option_parser():
     """Creates and returns cmd-line option parser."""
 
-    from optparse import OptionParser
+    from argparse import ArgumentParser
 
-    parser = OptionParser(usage=USAGE)
-    parser.add_option(
+    parser = ArgumentParser(usage=USAGE)
+    parser.add_argument(
         '-q', '--quiet',
         dest='verbose',
         action='store_false',
@@ -90,9 +90,9 @@ def main(langs, verbose):
 
 def main_cmd_line():
     """Processes command-line arguments and send them to main()."""
-    options, args = create_option_parser().parse_args()
+    args, langs = create_option_parser().parse_args()
 
-    main(args, options.verbose)  # args == langs to build
+    main(langs, args.verbose)
 
 if __name__ == '__main__':
     main_cmd_line()

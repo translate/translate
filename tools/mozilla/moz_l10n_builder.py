@@ -96,18 +96,18 @@ def delfiles(pattern, path, files):
 def run(cmd, expected_status=0, stdout=None, stderr=None, shell=False):
     global options
     if options['verbose']:
-        print '>>> %s $ %s' % (os.getcwd(), ' '.join(cmd))
+        print('>>> %s $ %s' % (os.getcwd(), ' '.join(cmd)))
     p = Popen(cmd, stdout=stdout, stderr=stderr, shell=shell)
     cmd_status = p.wait()
 
     if stdout == PIPE:
-        print p.stdout.read()
+        print(p.stdout.read())
     elif stderr == PIPE:
-        print p.stderr.read()
+        print(p.stderr.read())
 
     if cmd_status != expected_status:
-        print '!!! "%s" returned unexpected status %d' % (' '.join(cmd),
-                                                          cmd_status)
+        print('!!! "%s" returned unexpected status %d' % (' '.join(cmd),
+                                                          cmd_status))
         #raise CommandError(cmd, cmd_status)
 
 
@@ -131,7 +131,7 @@ def get_langs(lang_args):
             lang_args = []
 
     if not lang_args:
-        print USAGE
+        print(USAGE)
         exit(1)
 
     for lang in lang_args:
@@ -153,7 +153,7 @@ def get_langs(lang_args):
 
     langs = list(set(langs))  # Remove duplicates from langs
 
-    print 'Selected languages: %s' % (' '.join(langs))
+    print('Selected languages: %s' % (' '.join(langs)))
 
     return langs
 #############################
@@ -184,7 +184,7 @@ def checkout(cvstag, langs):
 
     os.chdir(l10ndir)
     for lang in langs:
-        print '    %s' % (lang)
+        print('    %s' % (lang))
         buildlang = lang.replace('_', '-')
         if os.path.isdir(buildlang):
             run(['cvs', 'up', buildlang])
@@ -233,7 +233,7 @@ def checkout(cvstag, langs):
 
 
 def recover_lang(lang, buildlang):
-    print '    %s' % (lang)
+    print('    %s' % (lang))
     if not os.path.isdir(join(podir_recover, buildlang)):
         os.makedirs(join(podir_recover, buildlang))
 
@@ -250,7 +250,7 @@ def pack_pot(includes):
     inc = []
     for fn in includes:
         if not os.path.exists(fn):
-            print '!!! Warning: Path "%s" does not exist. Skipped.' % (fn)
+            print('!!! Warning: Path "%s" does not exist. Skipped.' % (fn))
         else:
             inc.append(fn)
 
@@ -275,7 +275,7 @@ def pack_po(lang, buildlang):
     except OSError:
         pass
 
-    print '    %s' % (lang)
+    print('    %s' % (lang))
     packname = join(popacks, '%s-%s-%s-%s' % (products[targetapp], mozversion,
                                               buildlang, timestamp))
     run(['tar', 'cjf', packname + '.tar.bz2', '--exclude', '.svn',
@@ -399,7 +399,7 @@ def post_po2moz_hacks(lang, buildlang):
 
 
 def migrate_lang(lang, buildlang, recover, update_transl, debug):
-    print '    %s' % (lang)
+    print('    %s' % (lang))
 
     if recover and not os.path.isdir(join(podir, buildlang)):
         # If we recovered the .po files for lang, but there is no other po
@@ -474,7 +474,7 @@ def create_diff(lang, buildlang):
     if not os.path.isdir('diff'):
         os.mkdir('diff')
 
-    print '    %s' % (lang)
+    print('    %s' % (lang))
     olddir = os.getcwd()
 
     os.chdir(l10ndir)
@@ -494,7 +494,7 @@ def create_diff(lang, buildlang):
 def create_langpack(lang, buildlang):
     """Builds a XPI and installers for languages."""
 
-    print '    %s' % (lang)
+    print('    %s' % (lang))
 
     olddir = os.getcwd()
 
@@ -519,93 +519,93 @@ def create_langpack(lang, buildlang):
 def create_option_parser():
     """Creates and returns cmd-line option parser."""
 
-    from optparse import OptionParser
+    from argparse import ArgumentParser
 
-    parser = OptionParser(usage=USAGE)
+    parser = ArgumentParser(usage=USAGE)
 
-    parser.add_option(
+    parser.add_argument(
         '-q', '--quiet',
         dest='verbose',
         action='store_false',
         default=True,
         help='Print as little as possible output.'
     )
-    parser.add_option(
+    parser.add_argument(
         '--mozilla-product',
         dest='mozproduct',
         default=DEFAULT_TARGET_APP,
         help='Which product to build'
     )
-    parser.add_option(
+    parser.add_argument(
         '--mozilla-checkout',
         dest='mozcheckout',
         action='store_true',
         default=False,
         help="Update of the Mozilla l10n files and POT files"
     )
-    parser.add_option(
+    parser.add_argument(
         '--recover',
         dest='recover',
         action='store_true',
         default=False,
         help="build PO files from Mozilla's l10n files"
     )
-    parser.add_option(
+    parser.add_argument(
         '--mozilla-tag',
         dest='moztag',
         default='-A',
         help='The tag to check out of CVS (implies --mozilla-checkout)'
     )
-    parser.add_option(
+    parser.add_argument(
         '--update-translations',
         dest='update_translations',
         action='store_true',
         default=False,
         help="Update translations"
     )
-    parser.add_option(
+    parser.add_argument(
         '--diff',
         dest='diff',
         action='store_true',
         default=False,
         help='Create diffs for migrated translations and localized Mozilla files'
     )
-    parser.add_option(
+    parser.add_argument(
         '--potpack',
         dest='potpack',
         action='store_true',
         default=False,
         help="Create packages of the en-US and POT directories with today's timestamp"
     )
-    parser.add_option(
+    parser.add_argument(
         '--pot-include',
         dest='potincl',
         action='append',
         default=[],
         help='Files to include in the POT pack (only used with --potpack)'
     )
-    parser.add_option(
+    parser.add_argument(
         '--nomigrate',
         dest='migrate',
         action='store_false',
         default=True,
         help="Don't migrate"
     )
-    parser.add_option(
+    parser.add_argument(
         '--popack',
         dest='popack',
         action='store_true',
         default=False,
         help="Create packages of all specified languages' PO-files with today's timestamp"
     )
-    parser.add_option(
+    parser.add_argument(
         '--langpack',
         dest='langpack',
         action='store_true',
         default=False,
         help="Build a langpack"
     )
-    parser.add_option(
+    parser.add_argument(
         '--debug',
         dest='debug',
         action='store_true',
@@ -626,58 +626,58 @@ def main(langs=['ALL'], mozproduct='browser', mozcheckout=False, moztag='-A',
     langs = get_langs(langs)
 
     if mozcheckout:
-        print 'Checking out'
+        print('Checking out')
         checkout(moztag, langs)
 
     if potpack:
-        print 'Packing POT files'
+        print('Packing POT files')
         pack_pot(potincl)
 
     for lang in langs:
         buildlang = lang.replace('_', '-')
 
         if recover:
-            print 'Recovering'
+            print('Recovering')
             recover_lang(lang, buildlang)
 
         if migrate:
-            print 'Migrating'
+            print('Migrating')
             migrate_lang(lang, buildlang, recover, update_trans, debug)
 
         if popack:
-            print 'Creating PO-packs'
+            print('Creating PO-packs')
             pack_po(lang, buildlang)
 
         if diff:
-            print 'Creating diffs'
+            print('Creating diffs')
             create_diff(lang, buildlang)
 
         if langpack:
-            print 'Creating langpacks'
+            print('Creating langpacks')
             create_langpack(lang, buildlang)
 
-    print 'FIN'
+    print('FIN')
     devnull.close()
 
 
 def main_cmd_line():
-    options, args = create_option_parser().parse_args()
+    options, langs = create_option_parser().parse_known_args()
 
     main(
-        langs=args,
+        langs=langs,
         mozproduct=targetapp,
-        mozcheckout=options.mozcheckout,
-        moztag=options.moztag,
-        recover=options.recover,
-        potpack=options.potpack,
-        potincl=options.potincl,
-        migrate=options.migrate,
-        popack=options.popack,
-        update_trans=options.update_translations,
-        debug=options.debug,
-        diff=options.diff,
-        langpack=options.langpack,
-        verbose=options.verbose
+        mozcheckout=args.mozcheckout,
+        moztag=args.moztag,
+        recover=args.recover,
+        potpack=args.potpack,
+        potincl=args.potincl,
+        migrate=args.migrate,
+        popack=args.popack,
+        update_trans=args.update_translations,
+        debug=args.debug,
+        diff=args.diff,
+        langpack=args.langpack,
+        verbose=args.verbose
     )
 
 
