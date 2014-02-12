@@ -519,93 +519,93 @@ def create_langpack(lang, buildlang):
 def create_option_parser():
     """Creates and returns cmd-line option parser."""
 
-    from optparse import OptionParser
+    from argparse import ArgumentParser
 
-    parser = OptionParser(usage=USAGE)
+    parser = ArgumentParser(usage=USAGE)
 
-    parser.add_option(
+    parser.add_argument(
         '-q', '--quiet',
         dest='verbose',
         action='store_false',
         default=True,
         help='Print as little as possible output.'
     )
-    parser.add_option(
+    parser.add_argument(
         '--mozilla-product',
         dest='mozproduct',
         default=DEFAULT_TARGET_APP,
         help='Which product to build'
     )
-    parser.add_option(
+    parser.add_argument(
         '--mozilla-checkout',
         dest='mozcheckout',
         action='store_true',
         default=False,
         help="Update of the Mozilla l10n files and POT files"
     )
-    parser.add_option(
+    parser.add_argument(
         '--recover',
         dest='recover',
         action='store_true',
         default=False,
         help="build PO files from Mozilla's l10n files"
     )
-    parser.add_option(
+    parser.add_argument(
         '--mozilla-tag',
         dest='moztag',
         default='-A',
         help='The tag to check out of CVS (implies --mozilla-checkout)'
     )
-    parser.add_option(
+    parser.add_argument(
         '--update-translations',
         dest='update_translations',
         action='store_true',
         default=False,
         help="Update translations"
     )
-    parser.add_option(
+    parser.add_argument(
         '--diff',
         dest='diff',
         action='store_true',
         default=False,
         help='Create diffs for migrated translations and localized Mozilla files'
     )
-    parser.add_option(
+    parser.add_argument(
         '--potpack',
         dest='potpack',
         action='store_true',
         default=False,
         help="Create packages of the en-US and POT directories with today's timestamp"
     )
-    parser.add_option(
+    parser.add_argument(
         '--pot-include',
         dest='potincl',
         action='append',
         default=[],
         help='Files to include in the POT pack (only used with --potpack)'
     )
-    parser.add_option(
+    parser.add_argument(
         '--nomigrate',
         dest='migrate',
         action='store_false',
         default=True,
         help="Don't migrate"
     )
-    parser.add_option(
+    parser.add_argument(
         '--popack',
         dest='popack',
         action='store_true',
         default=False,
         help="Create packages of all specified languages' PO-files with today's timestamp"
     )
-    parser.add_option(
+    parser.add_argument(
         '--langpack',
         dest='langpack',
         action='store_true',
         default=False,
         help="Build a langpack"
     )
-    parser.add_option(
+    parser.add_argument(
         '--debug',
         dest='debug',
         action='store_true',
@@ -661,23 +661,23 @@ def main(langs=['ALL'], mozproduct='browser', mozcheckout=False, moztag='-A',
 
 
 def main_cmd_line():
-    options, args = create_option_parser().parse_args()
+    options, langs = create_option_parser().parse_known_args()
 
     main(
-        langs=args,
+        langs=langs,
         mozproduct=targetapp,
-        mozcheckout=options.mozcheckout,
-        moztag=options.moztag,
-        recover=options.recover,
-        potpack=options.potpack,
-        potincl=options.potincl,
-        migrate=options.migrate,
-        popack=options.popack,
-        update_trans=options.update_translations,
-        debug=options.debug,
-        diff=options.diff,
-        langpack=options.langpack,
-        verbose=options.verbose
+        mozcheckout=args.mozcheckout,
+        moztag=args.moztag,
+        recover=args.recover,
+        potpack=args.potpack,
+        potincl=args.potincl,
+        migrate=args.migrate,
+        popack=args.popack,
+        update_trans=args.update_translations,
+        debug=args.debug,
+        diff=args.diff,
+        langpack=args.langpack,
+        verbose=args.verbose
     )
 
 
