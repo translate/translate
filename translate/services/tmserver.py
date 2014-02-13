@@ -124,10 +124,10 @@ class TMServer(object):
     @selector.opliant
     def upload_store(self, environ, start_response, sid, slang, tlang):
         """add units from uploaded file to tmdb"""
-        import StringIO
+        from cStringIO import StringIO
         from translate.storage import factory
         start_response("200 OK", [('Content-type', 'text/plain')])
-        data = StringIO.StringIO(environ['wsgi.input'].read(int(environ['CONTENT_LENGTH'])))
+        data = StringIO(environ['wsgi.input'].read(int(environ['CONTENT_LENGTH'])))
         data.name = sid
         store = factory.getobject(data)
         count = self.tmdb.add_store(store, slang, tlang)

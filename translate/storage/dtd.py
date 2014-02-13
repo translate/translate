@@ -89,9 +89,9 @@ from translate.misc import quote
 
 import re
 import warnings
+from cStringIO import StringIO
 try:
     from lxml import etree
-    import StringIO
 except ImportError:
     etree = None
 
@@ -590,7 +590,7 @@ class dtdfile(base.TranslationStore):
         if etree is not None and not self.android:
             try:
                 # #expand is a Mozilla hack and are removed as they are not valid in DTDs
-                dtd = etree.DTD(StringIO.StringIO(re.sub("#expand", "", self.getoutput())))
+                dtd = etree.DTD(StringIO(re.sub("#expand", "", self.getoutput())))
             except etree.DTDParseError as e:
                 warnings.warn("DTD parse error: %s" % e.error_log)
                 return False

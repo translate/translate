@@ -24,10 +24,7 @@ or entire files (csvfile) for use with localisation
 
 import csv
 import codecs
-try:
-    import cStringIO as StringIO
-except:
-    import StringIO
+from cStringIO import StringIO
 
 from translate.misc import sparse
 from translate.storage import base
@@ -326,7 +323,7 @@ def valid_fieldnames(fieldnames):
 
 def detect_header(sample, dialect, fieldnames):
     """Test if file has a header or not, also returns number of columns in first row"""
-    inputfile = StringIO.StringIO(sample)
+    inputfile = StringIO(sample)
     try:
         reader = csv.reader(inputfile, dialect)
     except csv.Error:
@@ -423,7 +420,7 @@ class csvfile(base.TranslationStore):
         return source.encode(encoding)
 
     def getoutput(self):
-        outputfile = StringIO.StringIO()
+        outputfile = StringIO()
         writer = csv.DictWriter(outputfile, self.fieldnames, extrasaction='ignore', dialect=self.dialect)
         # write header
         hdict = dict(map(None, self.fieldnames, self.fieldnames))

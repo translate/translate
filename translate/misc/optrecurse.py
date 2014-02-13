@@ -25,10 +25,7 @@ import fnmatch
 import logging
 import traceback
 import optparse
-try:
-    from cStringIO import StringIO
-except ImportError:
-    from StringIO import StringIO
+from cStringIO import StringIO
 
 from translate.misc import progressbar
 from translate import __version__

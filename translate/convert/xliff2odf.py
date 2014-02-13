@@ -24,10 +24,8 @@
 See: http://docs.translatehouse.org/projects/translate-toolkit/en/latest/commands/odf2xliff.html
 for examples and usage instructions.
 """
-
-import cStringIO
+from cStringIO import StringIO
 import zipfile
-
 import lxml.etree as etree
 
 from translate.storage import factory
@@ -45,7 +43,7 @@ def translate_odf(template, input_file):
 
     def load_dom_trees(template):
         odf_data = odf_io.open_odf(template)
-        return dict((filename, etree.parse(cStringIO.StringIO(data))) for filename, data in odf_data.iteritems())
+        return dict((filename, etree.parse(StringIO(data))) for filename, data in odf_data.iteritems())
 
     def load_unit_tree(input_file, dom_trees):
         store = factory.getobject(input_file)
@@ -109,7 +107,7 @@ def write_odf(xlf_data, template, output_file, dom_trees):
 def convertxliff(input_file, output_file, template):
     """reads in stdin using fromfileclass, converts using convertorclass, writes to stdout"""
     xlf_data = input_file.read()
-    dom_trees = translate_odf(template, cStringIO.StringIO(xlf_data))
+    dom_trees = translate_odf(template, StringIO(xlf_data))
     write_odf(xlf_data, template, output_file, dom_trees)
     output_file.close()
     return True

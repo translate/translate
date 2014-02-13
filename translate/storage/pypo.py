@@ -24,7 +24,7 @@ files (pofile).
 """
 
 import copy
-import cStringIO
+from cStringIO import StringIO
 import re
 import textwrap
 
@@ -576,7 +576,7 @@ class pounit(pocommon.pounit):
         return len(self.msgid_plural) > 0
 
     def parse(self, src):
-        return poparser.parse_unit(poparser.ParseState(cStringIO.StringIO(src), pounit), self)
+        return poparser.parse_unit(poparser.ParseState(StringIO(src), pounit), self)
 
     def _getmsgpartstr(self, partname, partlines, partcomments=""):
         if isinstance(partlines, dict):
@@ -766,7 +766,7 @@ class pofile(pocommon.pofile):
             elif not getattr(self, 'filename', ''):
                 self.filename = ''
             if isinstance(input, str):
-                input = cStringIO.StringIO(input)
+                input = StringIO(input)
             # clear units to get rid of automatically generated headers before parsing
             self.units = []
             poparser.parse_units(poparser.ParseState(input, pounit), self)

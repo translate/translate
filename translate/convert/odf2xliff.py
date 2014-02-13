@@ -25,7 +25,9 @@ See: http://docs.translatehouse.org/projects/translate-toolkit/en/latest/command
 for examples and usage instructions.
 """
 
+from cStringIO import StringIO
 from contextlib import contextmanager
+
 from translate.storage import factory, odf_io
 
 
@@ -35,9 +37,6 @@ def convertodf(inputfile, outputfile, templates, engine='toolkit'):
     """
 
     def translate_toolkit_implementation(store):
-        import cStringIO
-        import zipfile
-
         from translate.storage.xml_extract import extract
         from translate.storage import odf_shared
 
@@ -45,7 +44,7 @@ def convertodf(inputfile, outputfile, templates, engine='toolkit'):
         for data in contents.values():
             parse_state = extract.ParseState(odf_shared.no_translate_content_elements,
                                              odf_shared.inline_elements)
-            extract.build_store(cStringIO.StringIO(data), store, parse_state)
+            extract.build_store(StringIO(data), store, parse_state)
 
     def itools_implementation(store):
         from itools.handlers import get_handler
