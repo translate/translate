@@ -22,64 +22,63 @@
 that are useful in dealing with PO files"""
 
 import difflib
-import optparse
 import time
 import os
 import sys
 import fnmatch
+from argparse import ArgumentParser
 
 lineterm = "\n"
 
 
 def main():
     """main program for pydiff"""
-    usage = "usage: %prog [options] fromfile tofile"
-    parser = optparse.OptionParser(usage)
+    parser = ArgumentParser()
     # GNU diff like options
-    parser.add_option("-i", "--ignore-case", default=False, action="store_true",
-                      help='Ignore case differences in file contents.')
-    parser.add_option("-U", "--unified", type="int", metavar="NUM", default=3,
-                      dest="unified_lines",
-                      help='Output NUM (default 3) lines of unified context')
-    parser.add_option("-r", "--recursive", default=False, action="store_true",
-                      help='Recursively compare any subdirectories found.')
-    parser.add_option("-N", "--new-file", default=False, action="store_true",
-                      help='Treat absent files as empty.')
-    parser.add_option("", "--unidirectional-new-file", default=False,
-                      action="store_true",
-                      help='Treat absent first files as empty.')
-    parser.add_option("-s", "--report-identical-files", default=False,
-                      action="store_true",
-                      help='Report when two files are the same.')
-    parser.add_option("-x", "--exclude", default=["CVS", "*.po~"],
-                      action="append", metavar="PAT",
-                      help='Exclude files that match PAT.')
+    parser.add_argument("-i", "--ignore-case", default=False, action="store_true",
+                        help='Ignore case differences in file contents.')
+    parser.add_argument("-U", "--unified", type=int, metavar="NUM", default=3,
+                        dest="unified_lines",
+                        help='Output NUM (default 3) lines of unified context')
+    parser.add_argument("-r", "--recursive", default=False, action="store_true",
+                        help='Recursively compare any subdirectories found.')
+    parser.add_argument("-N", "--new-file", default=False, action="store_true",
+                        help='Treat absent files as empty.')
+    parser.add_argument("--unidirectional-new-file", default=False,
+                        action="store_true",
+                        help='Treat absent first files as empty.')
+    parser.add_argument("-s", "--report-identical-files", default=False,
+                        action="store_true",
+                        help='Report when two files are the same.')
+    parser.add_argument("-x", "--exclude", default=["CVS", "*.po~"],
+                        action="append", metavar="PAT",
+                        help='Exclude files that match PAT.')
     # our own options
-    parser.add_option("", "--fromcontains", type="string", default=None,
-                      metavar="TEXT",
-                      help='Only show changes where fromfile contains TEXT')
-    parser.add_option("", "--tocontains", type="string", default=None,
-                      metavar="TEXT",
-                      help='Only show changes where tofile contains TEXT')
-    parser.add_option("", "--contains", type="string", default=None,
-                      metavar="TEXT",
-                      help='Only show changes where fromfile or tofile contains TEXT')
-    parser.add_option("-I", "--ignore-case-contains", default=False, action="store_true",
-                      help='Ignore case differences when matching any of the changes')
-    parser.add_option("", "--accelerator", dest="accelchars", default="",
-                      metavar="ACCELERATORS",
-                      help="ignores the given accelerator characters when matching")
-    (options, args) = parser.parse_args()
+    parser.add_argument("--fromcontains", type=str, default=None,
+                        metavar="TEXT",
+                        help='Only show changes where fromfile contains TEXT')
+    parser.add_argument("--tocontains", type=str, default=None,
+                        metavar="TEXT",
+                        help='Only show changes where tofile contains TEXT')
+    parser.add_argument("--contains", type=str, default=None,
+                        metavar="TEXT",
+                        help='Only show changes where fromfile or tofile contains TEXT')
+    parser.add_argument("-I", "--ignore-case-contains", default=False, action="store_true",
+                        help='Ignore case differences when matching any of the changes')
+    parser.add_argument("--accelerator", dest="accelchars", default="",
+                        metavar="ACCELERATORS",
+                        help="ignores the given accelerator characters when matching")
+    parser.add_argument("fromfile", nargs=1)
+    parser.add_argument("tofile", nargs=1)
+    args = parser.parse_args()
 
-    if len(args) != 2:
-        parser.error("fromfile and tofile required")
-    fromfile, tofile = args
+    fromfile, tofile = args.fromfile[0], args.tofile[0]
     if fromfile == "-" and tofile == "-":
         parser.error("Only one of fromfile and tofile can be read from stdin")
 
     if os.path.isdir(fromfile):
         if os.path.isdir(tofile):
-            differ = DirDiffer(fromfile, tofile, options)
+            differ = DirDiffer(fromfile, tofile, args)
         else:
             parser.error("File %s is a directory while file %s is a regular file" %
                          (fromfile, tofile))
@@ -88,7 +87,7 @@ def main():
             parser.error("File %s is a regular file while file %s is a directory" %
                          (fromfile, tofile))
         else:
-            differ = FileDiffer(fromfile, tofile, options)
+            differ = FileDiffer(fromfile, tofile, args)
     differ.writediff(sys.stdout)
 
 
