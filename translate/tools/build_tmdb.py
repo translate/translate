@@ -22,8 +22,7 @@
 
 import os
 import logging
-
-from optparse import OptionParser
+from argparse import ArgumentParser
 
 from translate.storage import factory
 from translate.storage import tmdb
@@ -78,27 +77,24 @@ class Builder:
 
 
 def main():
-    parser = OptionParser(usage="%prog [options] <input files>")
-    parser.add_option(
+    parser = ArgumentParser()
+    parser.add_argument(
         "-d", "--tmdb", dest="tmdb_file", default="tm.db",
         help="translation memory database file (default: tm.db)")
-    parser.add_option(
+    parser.add_argument(
         "-s", "--import-source-lang", dest="source_lang", default="en",
         help="source language of translation files (default: en)")
-    parser.add_option(
+    parser.add_argument(
         "-t", "--import-target-lang", dest="target_lang",
-        help="target language of translation files")
-    (options, args) = parser.parse_args()
-
-    if not options.target_lang:
-        parser.error('No target language specified.')
-
-    if len(args) < 1:
-        parser.error('No input file(s) specified.')
+        help="target language of translation files", required=True)
+    parser.add_argument(
+        "files", metavar="input files", nargs="+"
+    )
+    args = parser.parse_args()
 
     logging.basicConfig(format="%(name)s: %(levelname)s: %(message)s")
 
-    Builder(options.tmdb_file, options.source_lang, options.target_lang, args)
+    Builder(args.tmdb_file, args.source_lang, args.target_lang, args.files)
 
 if __name__ == '__main__':
     main()

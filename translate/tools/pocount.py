@@ -27,7 +27,7 @@ for examples and usage instructions.
 """
 
 from __future__ import print_function
-from optparse import OptionParser
+from argparse import ArgumentParser
 import os
 import sys
 import logging
@@ -244,7 +244,7 @@ Review Messages, Review Source Words""")
                                              self.longestfilename,
                                              self.incomplete_only)
             self.filecount += 1
-        except:  # This happens if we have a broken file.
+        except Exception:  # This happens if we have a broken file.
             logger.error(sys.exc_info()[1])
 
     def handlefiles(self, dirname, filenames):
@@ -264,54 +264,56 @@ Review Messages, Review Source Words""")
 
 
 def main():
-    parser = OptionParser(usage="usage: %prog [options] po-files")
-    parser.add_option("--incomplete", action="store_const", const=True,
-                      dest="incomplete_only",
-                      help="skip 100% translated files.")
-    # options controlling output format:
-    parser.add_option("--full", action="store_const", const=style_csv,
-                      dest="style_full",
-                      help="(default) statistics in full, verbose format")
-    parser.add_option("--csv", action="store_const", const=style_csv,
-                      dest="style_csv",
-                      help="statistics in CSV format")
-    parser.add_option("--short", action="store_const", const=style_csv,
-                      dest="style_short_strings",
-                      help="same as --short-strings")
-    parser.add_option("--short-strings", action="store_const",
-                      const=style_csv, dest="style_short_strings",
-                      help="statistics of strings in short format - one line per file")
-    parser.add_option("--short-words", action="store_const",
-                      const=style_csv, dest="style_short_words",
-                      help="statistics of words in short format - one line per file")
+    parser = ArgumentParser()
+    parser.add_argument("--incomplete", action="store_const", const=True,
+                        dest="incomplete_only",
+                        help="skip 100%% translated files.")
+    # args controlling output format:
+    parser.add_argument("--full", action="store_const", const=style_csv,
+                        dest="style_full",
+                        help="(default) statistics in full, verbose format")
+    parser.add_argument("--csv", action="store_const", const=style_csv,
+                        dest="style_csv",
+                        help="statistics in CSV format")
+    parser.add_argument("--short", action="store_const", const=style_csv,
+                        dest="style_short_strings",
+                        help="same as --short-strings")
+    parser.add_argument("--short-strings", action="store_const",
+                        const=style_csv, dest="style_short_strings",
+                        help="statistics of strings in short format - one line per file")
+    parser.add_argument("--short-words", action="store_const",
+                        const=style_csv, dest="style_short_words",
+                        help="statistics of words in short format - one line per file")
 
-    (options, args) = parser.parse_args()
+    parser.add_argument("files", nargs="+")
 
-    if (options.incomplete_only is None):
-        options.incomplete_only = False
+    args = parser.parse_args()
 
-    if (options.style_full and options.style_csv) or \
-       (options.style_full and options.style_short_strings) or \
-       (options.style_full and options.style_short_words) or \
-       (options.style_csv and options.style_short_strings) or \
-       (options.style_csv and options.style_short_words) or \
-       (options.style_short_strings and options.style_short_words):
-        parser.error("options --full, --csv, --short-strings and --short-words are mutually exclusive")
+    if (args.incomplete_only is None):
+        args.incomplete_only = False
+
+    if (args.style_full and args.style_csv) or \
+       (args.style_full and args.style_short_strings) or \
+       (args.style_full and args.style_short_words) or \
+       (args.style_csv and args.style_short_strings) or \
+       (args.style_csv and args.style_short_words) or \
+       (args.style_short_strings and args.style_short_words):
+        parser.error("args --full, --csv, --short-strings and --short-words are mutually exclusive")
         sys.exit(2)
 
     style = default_style   # default output style
-    if options.style_csv:
+    if args.style_csv:
         style = style_csv
-    if options.style_full:
+    if args.style_full:
         style = style_full
-    if options.style_short_strings:
+    if args.style_short_strings:
         style = style_short_strings
-    if options.style_short_words:
+    if args.style_short_words:
         style = style_short_words
 
     logging.basicConfig(format="%(name)s: %(levelname)s: %(message)s")
 
-    summarizer(args, style, options.incomplete_only)
+    summarizer(args.files, style, args.incomplete_only)
 
 if __name__ == '__main__':
     main()
