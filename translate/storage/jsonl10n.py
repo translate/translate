@@ -25,45 +25,47 @@ designed for human-readable data interchange.
 
 JSON basic types:
 
-  - Number (integer or real)
-  - String (double-quoted Unicode with backslash escaping)
-  - Boolean (true or false)
-  - Array (an ordered sequence of values, comma-separated and enclosed
-    in square brackets)
-  - Object (a collection of key:value pairs, comma-separated and
-    enclosed in curly braces)
-  - null
+- Number (integer or real)
+- String (double-quoted Unicode with backslash escaping)
+- Boolean (true or false)
+- Array (an ordered sequence of values, comma-separated and enclosed in square
+  brackets)
+- Object (a collection of key:value pairs, comma-separated and enclosed in
+  curly braces)
+- null
 
-Example::
+Example:
 
-  {
-       "firstName": "John",
-       "lastName": "Smith",
-       "age": 25,
-       "address": {
-           "streetAddress": "21 2nd Street",
-           "city": "New York",
-           "state": "NY",
-           "postalCode": "10021"
-       },
-       "phoneNumber": [
-           {
-             "type": "home",
-             "number": "212 555-1234"
-           },
-           {
-             "type": "fax",
-             "number": "646 555-4567"
-           }
-       ]
+.. code-block:: json
+
+   {
+        "firstName": "John",
+        "lastName": "Smith",
+        "age": 25,
+        "address": {
+            "streetAddress": "21 2nd Street",
+            "city": "New York",
+            "state": "NY",
+            "postalCode": "10021"
+        },
+        "phoneNumber": [
+            {
+              "type": "home",
+              "number": "212 555-1234"
+            },
+            {
+              "type": "fax",
+              "number": "646 555-4567"
+            }
+        ]
    }
 
 
 TODO:
 
-  - Handle \u and other escapes in Unicode
-  - Manage data type storage and conversion. True -> "True" -> True
-  - Sort the extracted data to the order of the JSON file
+- Handle ``\u`` and other escapes in Unicode
+- Manage data type storage and conversion. True --> "True" --> True
+- Sort the extracted data to the order of the JSON file
 
 """
 
