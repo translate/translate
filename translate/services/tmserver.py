@@ -188,9 +188,6 @@ def main():
     level = options.debug and logging.DEBUG or logging.WARNING
     if options.debug:
         format = '%(levelname)7s %(module)s.%(funcName)s:%(lineno)d: %(message)s'
-        import sys
-        if sys.version_info[:2] < (2, 5):
-            format = '%(levelname)7s %(module)s [%(filename)s:%(lineno)d]: %(message)s'
 
     logging.basicConfig(level=level, format=format)
 
