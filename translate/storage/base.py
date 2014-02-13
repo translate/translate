@@ -25,7 +25,6 @@ try:
     import cPickle as pickle
 except ImportError:
     import pickle
-from exceptions import NotImplementedError
 
 import translate.i18n
 from translate.misc.multistring import multistring
