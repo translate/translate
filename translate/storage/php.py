@@ -22,26 +22,32 @@
 entire files :class:`phpfile`. These files are used in translating many
 PHP based applications.
 
-Only PHP files written with these conventions are supported::
+Only PHP files written with these conventions are supported:
 
-  $lang['item'] = "vale";  # Array of values
-  $some_entity = "value";  # Named variables
-  define("ENTITY", "value");
-  $lang = array(
-     'item1' => 'value1'    ,   #Supports space before comma
-     'item2' => 'value2',
-  );
-  $lang = array(    # Nested arrays
-     'item1' => 'value1',
-     'item2' => array(
-        'key' => 'value'    ,   #Supports space before comma
-        'key2' => 'value2',
-     ),
-  );
+.. code-block:: php
 
-Nested arrays without key for nested array are not supported::
+   <?php
+   $lang['item'] = "vale";  # Array of values
+   $some_entity = "value";  # Named variables
+   define("ENTITY", "value");
+   $lang = array(
+      'item1' => 'value1'    ,   #Supports space before comma
+      'item2' => 'value2',
+   );
+   $lang = array(    # Nested arrays
+      'item1' => 'value1',
+      'item2' => array(
+         'key' => 'value'    ,   #Supports space before comma
+         'key2' => 'value2',
+      ),
+   );
 
-  $lang = array(array('key' => 'value'));
+Nested arrays without key for nested array are not supported:
+
+.. code-block:: php
+
+   <?php
+   $lang = array(array('key' => 'value'));
 
 The working of PHP strings and specifically the escaping conventions which
 differ between single quote (') and double quote (") characters are

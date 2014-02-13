@@ -30,11 +30,11 @@ parsing and handling of the various dialects.
 
 Currently we support:
 
-    - Java .properties
-    - Mozilla .properties
-    - Adobe Flex files
-    - MacOS X .strings files
-    - Skype .lang files
+- Java .properties
+- Mozilla .properties
+- Adobe Flex files
+- MacOS X .strings files
+- Skype .lang files
 
 The following provides references and descriptions of the various
 dialects supported:
@@ -77,36 +77,41 @@ Skype
 
 A simple summary of what is permissible follows.
 
-Comments supported::
+Comments supported:
 
-    # a comment
-    ! a comment
-    // a comment (only at the beginning of a line)
-    /* a comment (not across multiple lines) */
+.. code-block:: properties
 
-Name and Value pairs::
+   # a comment
+   ! a comment
+   // a comment (only at the beginning of a line)
+   /* a comment (not across multiple lines) */
 
-    # Delimiters
-    key = value
-    key : value
-    key value
+Name and Value pairs:
 
-    # Space in key and around value
-    \ key\ = \ value
+.. code-block:: properties
 
-    # Note that the b and c are escaped for reST rendering
-    b = a string with escape sequences \\t \\n \\r \\\\ \\" \\' \\ (space) \u0123
-    c = a string with a continuation line \\
-        continuation line
+   # Delimiters
+   key = value
+   key : value
+   key value
 
-    # Special cases
-    # key with no value
-    key
-    # value no key (extractable in prop2po but not mergeable in po2prop)
-    =value
+   # Space in key and around value
+   \ key\ = \ value
 
-    # .strings specific
-    "key" = "value";
+   # Note that the b and c are escaped for reST rendering
+   b = a string with escape sequences \\t \\n \\r \\\\ \\" \\' \\ (space) \u0123
+   c = a string with a continuation line \\
+       continuation line
+
+   # Special cases
+   # key with no value
+   key
+   # value no key (extractable in prop2po but not mergeable in po2prop)
+   =value
+
+   # .strings specific
+   "key" = "value";
+
 """
 
 import re

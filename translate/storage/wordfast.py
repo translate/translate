@@ -64,16 +64,16 @@ Header
 Escaping
     Wordfast TM implements a form of escaping that covers two aspects:
 
-    1. Placeable: bold, formating, etc.  These are left as is and ignored.
-    It is up to the editor and future placeable implementation to manage these.
+    1. Placeable: bold, formating, etc.  These are left as is and ignored.  It
+       is up to the editor and future placeable implementation to manage these.
 
-    2. Escapes: items that may confuse Excel or translators are
-    escaped as &'XX;. These are fully implemented and are converted to and from
-    Unicode.  By observing behaviour and reading documentation we where able
-    to observe all possible escapes. Unfortunately the escaping differs slightly
-    between Windows and Mac version.  This might cause errors in future.
-    Functions allow for ``<_wf_to_char>`` and back to Wordfast escape
-    (``<_char_to_wf>``).
+    2. Escapes: items that may confuse Excel or translators are escaped as
+       ``&'XX;``. These are fully implemented and are converted to and from
+       Unicode.  By observing behaviour and reading documentation we where able
+       to observe all possible escapes. Unfortunately the escaping differs
+       slightly between Windows and Mac version.  This might cause errors in
+       future.  Functions allow for ``<_wf_to_char>`` and back to Wordfast
+       escape (``<_char_to_wf>``).
 
 Extended Attributes
     The last 4 columns allow users to define and manage extended attributes.

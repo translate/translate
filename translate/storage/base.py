@@ -67,16 +67,16 @@ class TranslationUnit(object):
 
     A translation unit consists of the following:
 
-      - A *source* string. This is the original translatable text.
-      - A *target* string. This is the translation of the *source*.
-      - Zero or more *notes* on the unit. Notes would typically be some
-        comments from a translator on the unit, or some comments originating
-        from the source code.
-      - Zero or more *locations*. Locations indicate where in the original
-        source code this unit came from.
-      - Zero or more *errors*. Some tools (eg.
-        :mod:`~translate.filters.pofilter`)
-        can run checks on translations and produce error messages.
+    - A *source* string. This is the original translatable text.
+    - A *target* string. This is the translation of the *source*.
+    - Zero or more *notes* on the unit. Notes would typically be some comments
+      from a translator on the unit, or some comments originating from the
+      source code.
+    - Zero or more *locations*. Locations indicate where in the original source
+      code this unit came from.
+    - Zero or more *errors*. Some tools (eg.
+      :mod:`~translate.filters.pofilter`) can run checks on translations and
+      produce error messages.
 
     """
 

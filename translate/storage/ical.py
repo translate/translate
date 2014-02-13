@@ -25,14 +25,13 @@ specification.
 
 The iCalendar specification uses the following naming conventions:
 
-    - Component: an event, journal entry, timezone, etc
-    - Property: a property of a component: summary, description, start
-      time, etc
-    - Attribute: an attribute of a property, e.g. language
+- Component: an event, journal entry, timezone, etc
+- Property: a property of a component: summary, description, start time, etc
+- Attribute: an attribute of a property, e.g. language
 
 The following are localisable in this implementation:
 
-    - VEVENT component: SUMMARY, DESCRIPTION, COMMENT and LOCATION properties
+- VEVENT component: SUMMARY, DESCRIPTION, COMMENT and LOCATION properties
 
 While other items could be localised this is not seen as important until use
 cases arise.  In such a case simply adjusting the component.name and
@@ -52,6 +51,7 @@ Future Format Support
     `vCard <http://en.wikipedia.org/wiki/VCard>`_ it is possible to expand
     this format to understand those if needed.
 """
+
 import re
 from StringIO import StringIO
 

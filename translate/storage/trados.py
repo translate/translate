@@ -20,7 +20,10 @@
 
 """Manage the Trados .txt Translation Memory format
 
-A Trados file looks like this::
+A Trados file looks like this:
+
+.. code-block:: xml
+
     <TrU>
     <CrD>18012000, 13:18:35
     <CrU>CAROL-ANN
@@ -35,6 +38,7 @@ A Trados file looks like this::
     <Seg L=EN_GB>Road Safety Education in our Schools
     <Seg L=DE_DE>Verkehrserziehung an Schulen
     </TrU>
+
 """
 
 import re
