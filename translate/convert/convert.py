@@ -22,10 +22,7 @@
 :mod:`translate.convert` tools)."""
 
 import os.path
-try:
-    from cStringIO import StringIO
-except ImportError:
-    from StringIO import StringIO
+from cStringIO import StringIO
 
 from translate.misc import optrecurse
 

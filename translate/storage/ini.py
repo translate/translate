@@ -31,11 +31,7 @@ b : a string
 """
 
 import re
-try:
-    from cStringIO import StringIO
-except ImportError:
-    from StringIO import StringIO
-
+from cStringIO import StringIO
 from iniparse import INIConfig
 
 from translate.storage import base

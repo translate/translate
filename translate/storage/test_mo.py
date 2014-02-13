@@ -1,13 +1,11 @@
 #!/usr/bin/env python
 
 import os
-import sys
-import StringIO
 import subprocess
+import sys
+from cStringIO import StringIO
 
-from translate.storage import factory
-from translate.storage import mo
-from translate.storage import test_base
+from translate.storage import factory, mo, test_base
 
 # get directory of this test
 dir = os.path.dirname(os.path.abspath(__file__))
@@ -151,7 +149,7 @@ class TestMOFile(test_base.TestTranslationStore):
             subprocess.call(['msgfmt', PO_FILE, '-o', MO_MSGFMT])
             subprocess.call(['pocompile', '--errorlevel=traceback', PO_FILE, MO_POCOMPILE])
 
-            store = factory.getobject(StringIO.StringIO(posource))
+            store = factory.getobject(StringIO(posource))
             if store.isempty() and not os.path.exists(MO_POCOMPILE):
                 # pocompile doesn't create MO files for empty PO files, so we
                 # can skip the checks here.

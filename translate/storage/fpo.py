@@ -30,7 +30,7 @@ directly, but can be used once cpo has been established to work."""
 
 import re
 import copy
-import cStringIO
+from cStringIO import StringIO
 
 from translate.lang import data
 from translate.misc.multistring import multistring
@@ -329,7 +329,7 @@ class pounit(pocommon.pounit):
 
     def parse(self, src):
         raise DeprecationWarning("Should not be parsing with a unit")
-        return poparser.parse_unit(poparser.ParseState(cStringIO.StringIO(src), pounit), self)
+        return poparser.parse_unit(poparser.ParseState(StringIO(src), pounit), self)
 
     def __str__(self):
         """convert to a string. double check that unicode is handled somehow here"""
