@@ -244,7 +244,7 @@ Review Messages, Review Source Words""")
                                              self.longestfilename,
                                              self.incomplete_only)
             self.filecount += 1
-        except:  # This happens if we have a broken file.
+        except Exception:  # This happens if we have a broken file.
             logger.error(sys.exc_info()[1])
 
     def handlefiles(self, dirname, filenames):
