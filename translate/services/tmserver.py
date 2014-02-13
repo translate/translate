@@ -21,11 +21,10 @@
 """A translation memory server using tmdb for storage, communicates
 with clients using JSON over HTTP."""
 
-#import urllib
-import logging
-from urlparse import parse_qs
-from optparse import OptionParser
 import json
+import logging
+from argparse import ArgumentParser
+from urlparse import parse_qs
 
 from translate.misc import selector
 from translate.misc import wsgi
@@ -154,34 +153,34 @@ class TMServer(object):
 
 
 def main():
-    parser = OptionParser()
-    parser.add_option("-d", "--tmdb", dest="tmdbfile", default=":memory:",
-                      help="translation memory database file")
-    parser.add_option("-f", "--import-translation-file", dest="tmfiles",
-                      action="append",
-                      help="translation file to import into the database")
-    parser.add_option("-t", "--import-target-lang", dest="target_lang",
-                      help="target language of translation files")
-    parser.add_option("-s", "--import-source-lang", dest="source_lang",
-                      help="source language of translation files")
-    parser.add_option("-b", "--bind", dest="bind", default="localhost",
-                      help="adress to bind server to (default: localhost)")
-    parser.add_option("-p", "--port", dest="port", type="int", default=8888,
-                      help="port to listen on (default: 8888)")
-    parser.add_option("--max-candidates", dest="max_candidates", type="int",
-                      default=3,
-                      help="Maximum number of candidates")
-    parser.add_option("--min-similarity", dest="min_similarity", type="int",
-                      default=75,
-                      help="minimum similarity")
-    parser.add_option("--max-length", dest="max_length", type="int",
-                      default=1000,
-                      help="Maxmimum string length")
-    parser.add_option("--debug", action="store_true", dest="debug",
-                      default=False,
-                      help="enable debugging features")
+    parser = ArgumentParser()
+    parser.add_argument("-d", "--tmdb", dest="tmdbfile", default=":memory:",
+                        help="translation memory database file")
+    parser.add_argument("-f", "--import-translation-file", dest="tmfiles",
+                        action="append",
+                        help="translation file to import into the database")
+    parser.add_argument("-t", "--import-target-lang", dest="target_lang",
+                        help="target language of translation files")
+    parser.add_argument("-s", "--import-source-lang", dest="source_lang",
+                        help="source language of translation files")
+    parser.add_argument("-b", "--bind", dest="bind", default="localhost",
+                        help="adress to bind server to (default: localhost)")
+    parser.add_argument("-p", "--port", dest="port", type=int, default=8888,
+                        help="port to listen on (default: 8888)")
+    parser.add_argument("--max-candidates", dest="max_candidates", type=int,
+                        default=3,
+                        help="Maximum number of candidates")
+    parser.add_argument("--min-similarity", dest="min_similarity", type=int,
+                        default=75,
+                        help="minimum similarity")
+    parser.add_argument("--max-length", dest="max_length", type=int,
+                        default=1000,
+                        help="Maxmimum string length")
+    parser.add_argument("--debug", action="store_true", dest="debug",
+                        default=False,
+                        help="enable debugging features")
 
-    (options, args) = parser.parse_args()
+    args = parser.parse_args()
 
     #setup debugging
     format = '%(asctime)s %(levelname)s %(message)s'
