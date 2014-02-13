@@ -41,6 +41,7 @@ help:
 	@echo "  test-publish-pypi - publish on PyPI testing platform"
 	@echo "  publish-sourceforge - publish on sourceforge"
 	@echo "  publish - publish on PyPI and sourceforge"
+	@echo "  test - run test suite"
 
 # Perform forced build using -W for the (.PHONY) requirements target
 requirements:
@@ -78,3 +79,6 @@ min-required.txt: requirements/*.txt
 	@echo "creating $@"
 	@# uses `ls -r` to alphabetically reverse req files for better ordering
 	@cat `ls -r $^` | sed -n '/=/{s/>=/==/;s/<.*//;p;}' > $@
+
+test:
+	@py.test --boxed -r EfsxX
