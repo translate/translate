@@ -48,7 +48,7 @@ import os
 import re
 from glob import glob
 from shutil import move, rmtree
-from subprocess import Popen, PIPE, CalledProcessError
+from subprocess import PIPE, CalledProcessError, Popen
 from tempfile import mkdtemp
 
 logger = logging.getLogger(__name__)
