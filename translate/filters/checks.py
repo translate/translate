@@ -1579,6 +1579,31 @@ class OpenOfficeChecker(StandardChecker):
         checkerconfig.update(openofficeconfig)
         StandardChecker.__init__(self, **kwargs)
 
+libreofficeconfig = CheckerConfig(
+    accelmarkers=["~"],
+    varmatches=[("&", ";"), ("%", "%"), ("%", None), ("%", 0), ("$(", ")"),
+                ("$", "$"), ("${", "}"), ("#", "#"), ("#", 1), ("#", 0),
+                ("($", ")"), ("$[", "]"), ("[", "]"), ("@", "@"),
+                ("$", None)],
+    ignoretags=[("alt", "xml-lang", None), ("ahelp", "visibility", "visible"),
+                ("img", "width", None), ("img", "height", None)],
+    canchangetags=[("link", "name", None)],
+)
+
+
+class LibreOfficeChecker(StandardChecker):
+
+    def __init__(self, **kwargs):
+        checkerconfig = kwargs.get("checkerconfig", None)
+
+        if checkerconfig is None:
+            checkerconfig = CheckerConfig()
+            kwargs["checkerconfig"] = checkerconfig
+
+        checkerconfig.update(libreofficeconfig)
+        checkerconfig.update(openofficeconfig)
+        StandardChecker.__init__(self, **kwargs)
+
 
 mozillaconfig = CheckerConfig(
     accelmarkers=["&"],
@@ -1800,6 +1825,7 @@ class TermChecker(StandardChecker):
 
 projectcheckers = {
     "openoffice": OpenOfficeChecker,
+    "libreoffice": LibreOfficeChecker,
     "mozilla": MozillaChecker,
     "kde": KdeChecker,
     "wx": KdeChecker,

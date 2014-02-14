@@ -89,6 +89,7 @@ def test_construct():
     stdchecker = checks.StandardChecker()
     mozillachecker = checks.MozillaChecker()
     ooochecker = checks.OpenOfficeChecker()
+    loochecker = checks.LibreOfficeChecker()
     gnomechecker = checks.GnomeChecker()
     kdechecker = checks.KdeChecker()
 
@@ -101,6 +102,8 @@ def test_accelerator_markers():
     assert mozillachecker.config.accelmarkers == ["&"]
     ooochecker = checks.OpenOfficeChecker()
     assert ooochecker.config.accelmarkers == ["~"]
+    lochecker = checks.LibreOfficeChecker()
+    assert lochecker.config.accelmarkers == ["~"]
     gnomechecker = checks.GnomeChecker()
     assert gnomechecker.config.accelmarkers == ["_"]
     kdechecker = checks.KdeChecker()
@@ -149,6 +152,14 @@ def test_accelerators():
 
     # We don't want an accelerator for letters with a diacritic
     assert fails(ooochecker.accelerators, "F~ile", "L~êer")
+    lochecker = checks.LibreOfficeChecker()
+    assert passes(lochecker.accelerators, "~File", "~Fayile")
+    assert fails(lochecker.accelerators, "~File", "Fayile")
+    assert fails(lochecker.accelerators, "File", "~Fayile")
+
+    # We don't want an accelerator for letters with a diacritic
+    assert fails(lochecker.accelerators, "F~ile", "L~êer")
+
     # Bug 289: accept accented accelerator characters
     afchecker = checks.StandardChecker(checks.CheckerConfig(accelmarkers="&", targetlanguage="fi"))
     assert passes(afchecker.accelerators, "&Reload Frame", "P&äivitä kehys")
@@ -181,6 +192,9 @@ def test_acceleratedvariables():
     ooochecker = checks.OpenOfficeChecker()
     assert fails(ooochecker.acceleratedvariables, "%PRODUCTNAME% ~Options", "~%PRODUCTNAME% Ikhetho")
     assert passes(ooochecker.acceleratedvariables, "%PRODUCTNAME% ~Options", "%PRODUCTNAME% ~Ikhetho")
+    lochecker = checks.LibreOfficeChecker()
+    assert fails(lochecker.acceleratedvariables, "%PRODUCTNAME% ~Options", "~%PRODUCTNAME% Ikhetho")
+    assert passes(lochecker.acceleratedvariables, "%PRODUCTNAME% ~Options", "%PRODUCTNAME% ~Ikhetho")
 
 
 def test_acronyms():
@@ -263,6 +277,9 @@ def test_doublespacing():
     ooochecker = checks.OpenOfficeChecker()
     assert passes(ooochecker.doublespacing, "Execute %PROGRAMNAME Calc", "Blah %PROGRAMNAME Calc")
     assert passes(ooochecker.doublespacing, "Execute %PROGRAMNAME Calc", "Blah % PROGRAMNAME Calc")
+    lochecker = checks.LibreOfficeChecker()
+    assert passes(lochecker.doublespacing, "Execute %PROGRAMNAME Calc", "Blah %PROGRAMNAME Calc")
+    assert passes(lochecker.doublespacing, "Execute %PROGRAMNAME Calc", "Blah % PROGRAMNAME Calc")
 
 
 def test_doublewords():
@@ -343,6 +360,8 @@ def test_escapes():
     # Real example
     ooochecker = checks.OpenOfficeChecker()
     assert passes(ooochecker.escapes, ",\t44\t;\t59\t:\t58\t{Tab}\t9\t{space}\t32", ",\t44\t;\t59\t:\t58\t{Tab}\t9\t{space}\t32")
+    lochecker = checks.LibreOfficeChecker()
+    assert passes(lochecker.escapes, ",\t44\t;\t59\t:\t58\t{Tab}\t9\t{space}\t32", ",\t44\t;\t59\t:\t58\t{Tab}\t9\t{space}\t32")
 
 
 def test_newlines():
@@ -365,6 +384,8 @@ def test_newlines():
     # Real example
     ooochecker = checks.OpenOfficeChecker()
     assert fails(ooochecker.newlines, "The arrowhead was modified without saving.\nWould you like to save the arrowhead now?", "Ṱhoho ya musevhe yo khwinifhadzwa hu si na u seiva.Ni khou ṱoda u seiva thoho ya musevhe zwino?")
+    lochecker = checks.LibreOfficeChecker()
+    assert fails(lochecker.newlines, "The arrowhead was modified without saving.\nWould you like to save the arrowhead now?", "Ṱhoho ya musevhe yo khwinifhadzwa hu si na u seiva.Ni khou ṱoda u seiva thoho ya musevhe zwino?")
 
 
 def test_tabs():
@@ -377,6 +398,8 @@ def test_tabs():
     assert fails_serious(stdchecker.tabs, "A file", "'n Leer\t")
     ooochecker = checks.OpenOfficeChecker()
     assert passes(ooochecker.tabs, ",\t44\t;\t59\t:\t58\t{Tab}\t9\t{space}\t32", ",\t44\t;\t59\t:\t58\t{Tab}\t9\t{space}\t32")
+    lochecker = checks.LibreOfficeChecker()
+    assert passes(lochecker.tabs, ",\t44\t;\t59\t:\t58\t{Tab}\t9\t{space}\t32", ",\t44\t;\t59\t:\t58\t{Tab}\t9\t{space}\t32")
 
 
 def test_filepaths():
@@ -621,6 +644,8 @@ def test_singlequoting():
     assert passes(mozillachecker.singlequoting, "&Don't import anything", "&Moenie enigiets invoer nie")
     ooochecker = checks.OpenOfficeChecker()
     assert passes(ooochecker.singlequoting, "~Don't import anything", "~Moenie enigiets invoer nie")
+    lochecker = checks.LibreOfficeChecker()
+    assert passes(lochecker.singlequoting, "~Don't import anything", "~Moenie enigiets invoer nie")
 
     vichecker = checks.StandardChecker(checks.CheckerConfig(targetlanguage="vi"))
     assert passes(vichecker.singlequoting, "Save 'File'", u"Lưu « Tập tin »")
@@ -650,6 +675,9 @@ def test_simplecaps():
     ooochecker = checks.OpenOfficeChecker()
     assert passes(ooochecker.simplecaps, "SOLK (%PRODUCTNAME Link)", "SOLK (%PRODUCTNAME Thumanyo)")
     assert passes(ooochecker.simplecaps, "%STAROFFICE Image", "Tshifanyiso tsha %STAROFFICE")
+    lochecker = checks.LibreOfficeChecker()
+    assert passes(lochecker.simplecaps, "SOLK (%PRODUCTNAME Link)", "SOLK (%PRODUCTNAME Thumanyo)")
+    assert passes(lochecker.simplecaps, "%STAROFFICE Image", "Tshifanyiso tsha %STAROFFICE")
     assert passes(stdchecker.simplecaps, "Flies, flies, everywhere! Ack!", u"Vlieë, oral vlieë! Jig!")
 
 
@@ -872,41 +900,41 @@ def test_variables_mozilla():
 def test_variables_openoffice():
     """tests variables in OpenOffice translations"""
     # OpenOffice.org variables
-    ooochecker = checks.OpenOfficeChecker()
-    assert passes(ooochecker.variables, "Use the &brandShortname; instance.", "Gebruik die &brandShortname; weergawe.")
-    assert fails_serious(ooochecker.variables, "Use the &brandShortname; instance.", "Gebruik die &brandKortnaam; weergawe.")
-    assert passes(ooochecker.variables, "Save %file%", "Stoor %file%")
-    assert fails_serious(ooochecker.variables, "Save %file%", "Stoor %leer%")
-    assert passes(ooochecker.variables, "Save %file", "Stoor %file")
-    assert fails_serious(ooochecker.variables, "Save %file", "Stoor %leer")
-    assert passes(ooochecker.variables, "Save %1", "Stoor %1")
-    assert fails_serious(ooochecker.variables, "Save %1", "Stoor %2")
-    assert passes(ooochecker.variables, "Save %", "Stoor %")
-    assert fails_serious(ooochecker.variables, "Save %", "Stoor")
-    assert passes(ooochecker.variables, "Save $(file)", "Stoor $(file)")
-    assert fails_serious(ooochecker.variables, "Save $(file)", "Stoor $(leer)")
-    assert passes(ooochecker.variables, "Save $file$", "Stoor $file$")
-    assert fails_serious(ooochecker.variables, "Save $file$", "Stoor $leer$")
-    assert passes(ooochecker.variables, "Save ${file}", "Stoor ${file}")
-    assert fails_serious(ooochecker.variables, "Save ${file}", "Stoor ${leer}")
-    assert passes(ooochecker.variables, "Save #file#", "Stoor #file#")
-    assert fails_serious(ooochecker.variables, "Save #file#", "Stoor #leer#")
-    assert passes(ooochecker.variables, "Save #1", "Stoor #1")
-    assert fails_serious(ooochecker.variables, "Save #1", "Stoor #2")
-    assert passes(ooochecker.variables, "Save #", "Stoor #")
-    assert fails_serious(ooochecker.variables, "Save #", "Stoor")
-    assert passes(ooochecker.variables, "Save ($file)", "Stoor ($file)")
-    assert fails_serious(ooochecker.variables, "Save ($file)", "Stoor ($leer)")
-    assert passes(ooochecker.variables, "Save $[file]", "Stoor $[file]")
-    assert fails_serious(ooochecker.variables, "Save $[file]", "Stoor $[leer]")
-    assert passes(ooochecker.variables, "Save [file]", "Stoor [file]")
-    assert fails_serious(ooochecker.variables, "Save [file]", "Stoor [leer]")
-    assert passes(ooochecker.variables, "Save $file", "Stoor $file")
-    assert fails_serious(ooochecker.variables, "Save $file", "Stoor $leer")
-    assert passes(ooochecker.variables, "Use @EXTENSION@", "Gebruik @EXTENSION@")
-    assert fails_serious(ooochecker.variables, "Use @EXTENSUION@", "Gebruik @UITBRUIDING@")
-    # Same variable name twice
-    assert fails_serious(ooochecker.variables, r"""Start %PROGRAMNAME% as %PROGRAMNAME%""", "Begin %PROGRAMNAME%")
+    for ooochecker in (checks.OpenOfficeChecker(), checks.LibreOfficeChecker()):
+        assert passes(ooochecker.variables, "Use the &brandShortname; instance.", "Gebruik die &brandShortname; weergawe.")
+        assert fails_serious(ooochecker.variables, "Use the &brandShortname; instance.", "Gebruik die &brandKortnaam; weergawe.")
+        assert passes(ooochecker.variables, "Save %file%", "Stoor %file%")
+        assert fails_serious(ooochecker.variables, "Save %file%", "Stoor %leer%")
+        assert passes(ooochecker.variables, "Save %file", "Stoor %file")
+        assert fails_serious(ooochecker.variables, "Save %file", "Stoor %leer")
+        assert passes(ooochecker.variables, "Save %1", "Stoor %1")
+        assert fails_serious(ooochecker.variables, "Save %1", "Stoor %2")
+        assert passes(ooochecker.variables, "Save %", "Stoor %")
+        assert fails_serious(ooochecker.variables, "Save %", "Stoor")
+        assert passes(ooochecker.variables, "Save $(file)", "Stoor $(file)")
+        assert fails_serious(ooochecker.variables, "Save $(file)", "Stoor $(leer)")
+        assert passes(ooochecker.variables, "Save $file$", "Stoor $file$")
+        assert fails_serious(ooochecker.variables, "Save $file$", "Stoor $leer$")
+        assert passes(ooochecker.variables, "Save ${file}", "Stoor ${file}")
+        assert fails_serious(ooochecker.variables, "Save ${file}", "Stoor ${leer}")
+        assert passes(ooochecker.variables, "Save #file#", "Stoor #file#")
+        assert fails_serious(ooochecker.variables, "Save #file#", "Stoor #leer#")
+        assert passes(ooochecker.variables, "Save #1", "Stoor #1")
+        assert fails_serious(ooochecker.variables, "Save #1", "Stoor #2")
+        assert passes(ooochecker.variables, "Save #", "Stoor #")
+        assert fails_serious(ooochecker.variables, "Save #", "Stoor")
+        assert passes(ooochecker.variables, "Save ($file)", "Stoor ($file)")
+        assert fails_serious(ooochecker.variables, "Save ($file)", "Stoor ($leer)")
+        assert passes(ooochecker.variables, "Save $[file]", "Stoor $[file]")
+        assert fails_serious(ooochecker.variables, "Save $[file]", "Stoor $[leer]")
+        assert passes(ooochecker.variables, "Save [file]", "Stoor [file]")
+        assert fails_serious(ooochecker.variables, "Save [file]", "Stoor [leer]")
+        assert passes(ooochecker.variables, "Save $file", "Stoor $file")
+        assert fails_serious(ooochecker.variables, "Save $file", "Stoor $leer")
+        assert passes(ooochecker.variables, "Use @EXTENSION@", "Gebruik @EXTENSION@")
+        assert fails_serious(ooochecker.variables, "Use @EXTENSUION@", "Gebruik @UITBRUIDING@")
+        # Same variable name twice
+        assert fails_serious(ooochecker.variables, r"""Start %PROGRAMNAME% as %PROGRAMNAME%""", "Begin %PROGRAMNAME%")
 
 
 def test_variables_cclicense():
@@ -965,24 +993,24 @@ No s'ha pogut crear el servidor
 
 def test_ooxmltags():
     """Tests the xml tags in OpenOffice.org translations for quality as done in gsicheck"""
-    ooochecker = checks.OpenOfficeChecker()
-    #some attributes can be changed or removed
-    assert fails(ooochecker.xmltags, "<img src=\"a.jpg\" width=\"400\">", "<img src=\"b.jpg\" width=\"500\">")
-    assert passes(ooochecker.xmltags, "<img src=\"a.jpg\" width=\"400\">", "<img src=\"a.jpg\" width=\"500\">")
-    assert passes(ooochecker.xmltags, "<img src=\"a.jpg\" width=\"400\">", "<img src=\"a.jpg\">")
-    assert passes(ooochecker.xmltags, "<img src=\"a.jpg\">", "<img src=\"a.jpg\" width=\"400\">")
-    assert passes(ooochecker.xmltags, "<alt xml-lang=\"ab\">text</alt>", "<alt>teks</alt>")
-    assert passes(ooochecker.xmltags, "<ahelp visibility=\"visible\">bla</ahelp>", "<ahelp>blu</ahelp>")
-    assert fails(ooochecker.xmltags, "<ahelp visibility=\"visible\">bla</ahelp>", "<ahelp visibility=\"invisible\">blu</ahelp>")
-    assert fails(ooochecker.xmltags, "<ahelp visibility=\"invisible\">bla</ahelp>", "<ahelp>blu</ahelp>")
-    #some attributes can be changed, but not removed
-    assert passes(ooochecker.xmltags, "<link name=\"John\">", "<link name=\"Jan\">")
-    assert fails(ooochecker.xmltags, "<link name=\"John\">", "<link naam=\"Jan\">")
+    for ooochecker in (checks.OpenOfficeChecker(), checks.LibreOfficeChecker()):
+        #some attributes can be changed or removed
+        assert fails(ooochecker.xmltags, "<img src=\"a.jpg\" width=\"400\">", "<img src=\"b.jpg\" width=\"500\">")
+        assert passes(ooochecker.xmltags, "<img src=\"a.jpg\" width=\"400\">", "<img src=\"a.jpg\" width=\"500\">")
+        assert passes(ooochecker.xmltags, "<img src=\"a.jpg\" width=\"400\">", "<img src=\"a.jpg\">")
+        assert passes(ooochecker.xmltags, "<img src=\"a.jpg\">", "<img src=\"a.jpg\" width=\"400\">")
+        assert passes(ooochecker.xmltags, "<alt xml-lang=\"ab\">text</alt>", "<alt>teks</alt>")
+        assert passes(ooochecker.xmltags, "<ahelp visibility=\"visible\">bla</ahelp>", "<ahelp>blu</ahelp>")
+        assert fails(ooochecker.xmltags, "<ahelp visibility=\"visible\">bla</ahelp>", "<ahelp visibility=\"invisible\">blu</ahelp>")
+        assert fails(ooochecker.xmltags, "<ahelp visibility=\"invisible\">bla</ahelp>", "<ahelp>blu</ahelp>")
+        #some attributes can be changed, but not removed
+        assert passes(ooochecker.xmltags, "<link name=\"John\">", "<link name=\"Jan\">")
+        assert fails(ooochecker.xmltags, "<link name=\"John\">", "<link naam=\"Jan\">")
 
-    # Reported OOo error
-    ## Bug 1910
-    assert fails(ooochecker.xmltags, u"""<variable id="FehlendesElement">In a database file window, click the <emph>Queries</emph> icon, then choose <emph>Edit - Edit</emph>. When referenced fields no longer exist, you see this dialog</variable>""", u"""<variable id="FehlendesElement">Dans  une fenêtre de fichier de base de données, cliquez sur l'icône <emph>Requêtes</emph>, puis choisissez <emph>Éditer - Éditer</emp>. Lorsque les champs de référence n'existent plus, vous voyez cette boîte de dialogue</variable>""")
-    assert fails(ooochecker.xmltags, "<variable> <emph></emph> <emph></emph> </variable>", "<variable> <emph></emph> <emph></emp> </variable>")
+        # Reported OOo error
+        ## Bug 1910
+        assert fails(ooochecker.xmltags, u"""<variable id="FehlendesElement">In a database file window, click the <emph>Queries</emph> icon, then choose <emph>Edit - Edit</emph>. When referenced fields no longer exist, you see this dialog</variable>""", u"""<variable id="FehlendesElement">Dans  une fenêtre de fichier de base de données, cliquez sur l'icône <emph>Requêtes</emph>, puis choisissez <emph>Éditer - Éditer</emp>. Lorsque les champs de référence n'existent plus, vous voyez cette boîte de dialogue</variable>""")
+        assert fails(ooochecker.xmltags, "<variable> <emph></emph> <emph></emph> </variable>", "<variable> <emph></emph> <emph></emp> </variable>")
 
 
 def test_functions():

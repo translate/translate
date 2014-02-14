@@ -54,6 +54,7 @@ Options:
 --autocorrect        output automatic corrections where possible rather than describing issues
 --language=LANG      set target language code (e.g. af-ZA) [required for spell check]. This will help to make pofilter aware of the conventions of your language
 --openoffice         use the standard checks for OpenOffice translations
+--libreoffice        use the standard checks for LibreOffice translations
 --mozilla            use the standard checks for Mozilla translations
 --drupal            use the standard checks for Drupal translations
 --gnome              use the standard checks for Gnome translations

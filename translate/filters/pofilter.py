@@ -251,6 +251,9 @@ def cmdlineparser():
     parser.add_option("", "--openoffice", dest="filterclass",
         action="store_const", default=None, const=checks.OpenOfficeChecker,
         help="use the standard checks for OpenOffice translations")
+    parser.add_option("", "--libreoffice", dest="filterclass",
+        action="store_const", default=None, const=checks.LibreOfficeChecker,
+        help="use the standard checks for LibreOffice translations")
     parser.add_option("", "--mozilla", dest="filterclass",
         action="store_const", default=None, const=checks.MozillaChecker,
         help="use the standard checks for Mozilla translations")

@@ -200,6 +200,9 @@ class podebug:
                 return True
         return False
 
+    def ignore_libreoffice(self, unit):
+        return ignore_openoffice(unit)
+
     def ignore_mozilla(self, unit):
         locations = unit.getlocations()
         if len(locations) == 1 and locations[0].lower().endswith(".accesskey"):
