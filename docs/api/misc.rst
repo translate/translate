@@ -101,14 +101,6 @@ stdiotell
    :inherited-members:
 
 
-textwrap
---------
-
-.. automodule:: translate.misc.textwrap
-   :members:
-   :inherited-members:
-
-
 wsgi
 ----
 
