@@ -139,11 +139,3 @@ xml_helpers
 .. automodule:: translate.misc.xml_helpers
    :members:
    :inherited-members:
-
-
-xmlwrapper
-----------
-
-.. automodule:: translate.misc.xmlwrapper
-   :members:
-   :inherited-members:
