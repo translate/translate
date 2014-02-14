@@ -19,8 +19,9 @@
 # along with this program; if not, see <http://www.gnu.org/licenses/>.
 
 
-from translate.storage.versioncontrol import GenericRevisionControlSystem
-from translate.storage.versioncontrol import run_command, prepare_filelist, youngest_ancestor
+from translate.storage.versioncontrol import (GenericRevisionControlSystem,
+                                              prepare_filelist, run_command,
+                                              youngest_ancestor)
 
 
 def is_available():

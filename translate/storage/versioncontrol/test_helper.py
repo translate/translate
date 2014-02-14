@@ -3,7 +3,7 @@
 import os.path
 import shutil
 
-from translate.storage.versioncontrol import run_command, get_versioned_object
+from translate.storage.versioncontrol import get_versioned_object, run_command
 
 
 class HelperTest(object):
