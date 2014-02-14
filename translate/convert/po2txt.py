@@ -24,10 +24,7 @@ See: http://docs.translatehouse.org/projects/translate-toolkit/en/latest/command
 for examples and usage instructions.
 """
 
-try:
-    import textwrap
-except ImportError:
-    textwrap = None
+import textwrap
 
 from translate.convert import convert
 from translate.storage import factory
@@ -100,10 +97,9 @@ def main(argv=None):
     parser.add_option("", "--encoding", dest="encoding", default='utf-8', type="string",
             help="The encoding of the template file (default: UTF-8)")
     parser.passthrough.append("encoding")
-    if textwrap is not None:
-        parser.add_option("-w", "--wrap", dest="wrap", default=None, type="int",
-                help="set number of columns to wrap text at", metavar="WRAP")
-        parser.passthrough.append("wrap")
+    parser.add_option("-w", "--wrap", dest="wrap", default=None, type="int",
+            help="set number of columns to wrap text at", metavar="WRAP")
+    parser.passthrough.append("wrap")
     parser.add_threshold_option()
     parser.add_fuzzy_option()
     parser.run(argv)
