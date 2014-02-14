@@ -24,8 +24,8 @@
 
 import os
 
-from translate.storage.versioncontrol import GenericRevisionControlSystem
-from translate.storage.versioncontrol import run_command, prepare_filelist
+from translate.storage.versioncontrol import (GenericRevisionControlSystem,
+                                              prepare_filelist, run_command)
 
 
 def is_available():

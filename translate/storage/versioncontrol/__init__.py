@@ -35,6 +35,7 @@ import os
 import re
 import subprocess
 
+
 DEFAULT_RCS = ["svn", "cvs", "darcs", "git", "bzr", "hg"]
 """the names of all supported revision control systems
 
