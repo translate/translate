@@ -67,18 +67,12 @@ def unescapehandler(escape):
     return po_unescape_map.get(escape, escape)
 
 
-try:
-    wrapper = textwrap.TextWrapper(
-            width=77,
-            replace_whitespace=False,
-            expand_tabs=False,
-            drop_whitespace=False
-    )
-except TypeError:
-    # Python < 2.6 didn't support drop_whitespace
-    from translate.misc import textwrap
-    wrapper = textwrap.TextWrapper(width=77)
-
+wrapper = textwrap.TextWrapper(
+        width=77,
+        replace_whitespace=False,
+        expand_tabs=False,
+        drop_whitespace=False
+)
 wrapper.wordsep_re = re.compile(
     r'(\s+|'                                  # any whitespace
     r'\w*\\.|'                                # any escape should not be split
