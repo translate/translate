@@ -20,7 +20,7 @@ install:
 script:
   # Compile all the files
   - python -m compileall -x '[.]py$' -q -f .
-  - python setup.py build
+  - python setup.py --quiet build
   - py.test --boxed -r EfsxX
   - ./tools/pep8.sh travis
   # -W report warnings as errors when building docs
