@@ -270,24 +270,23 @@ def create_option_parser():
 
     p.add_argument(
         "langs",
-        type=str,
         nargs="+"
     )
 
     return p
 
 if __name__ == '__main__':
-    args, langs = create_option_parser().parse_known_args()
+    args = create_option_parser().parse_args()
 
-    if options.verbose:
+    if args.verbose:
         logging.basicConfig(level=logging.DEBUG)
 
     build_xpi(
-        l10nbase=os.path.abspath(options.l10nbase),
-        srcdir=os.path.abspath(options.srcdir),
-        outputdir=os.path.abspath(options.outputdir),
-        langs=args,
-        product=options.mozproduct,
-        delete_dest=options.delete_dest,
-        soft_max_version=options.soft_max_version
+        l10nbase=os.path.abspath(args.l10nbase),
+        srcdir=os.path.abspath(args.srcdir),
+        outputdir=os.path.abspath(args.outputdir),
+        langs=args.langs,
+        product=args.mozproduct,
+        delete_dest=args.delete_dest,
+        soft_max_version=args.soft_max_version
     )
