@@ -85,7 +85,7 @@ def create_option_parser():
     from argparse import ArgumentParser
     p = ArgumentParser()
 
-    p.add_option(
+    p.add_argument(
         '-s', '--src',
         type=str,
         dest='srcdir',
@@ -108,7 +108,6 @@ def create_option_parser():
     )
     p.add_argument(
         '--delete-dest',
-        type=str,
         dest='deletedest',
         default=False,
         action='store_true',
@@ -117,7 +116,6 @@ def create_option_parser():
 
     p.add_argument(
         '-v', '--verbose',
-        type=str,
         dest='verbose',
         action='store_true',
         default=False,
@@ -133,7 +131,7 @@ if __name__ == '__main__':
     product = args.mozproduct
 
     enUS_dir = os.path.join(l10ncheckout, 'en-US')
-    if options.deletedest and os.path.exists(enUS_dir):
+    if args.deletedest and os.path.exists(enUS_dir):
         shutil.rmtree(enUS_dir)
     if not os.path.exists(enUS_dir):
         os.makedirs(enUS_dir)
@@ -141,7 +139,7 @@ if __name__ == '__main__':
     if args.verbose:
         print("%s -s %s -d %s -p %s -v %s" %
               (__file__, srccheckout, l10ncheckout, product,
-               options.deletedest and '--delete-dest' or ''))
+               args.deletedest and '--delete-dest' or ''))
     product_ini = os.path.join(srccheckout, product, 'locales', 'l10n.ini')
     if not os.path.isfile(product_ini):
         # Done for Fennec
