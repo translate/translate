@@ -69,14 +69,6 @@ ourdom
    :inherited-members:
 
 
-profiling
----------
-
-.. automodule:: translate.misc.profiling
-   :members:
-   :inherited-members:
-
-
 progressbar
 -----------
 
