@@ -42,7 +42,7 @@ class ManPageAction(argparse.Action):
         sys.exit(0)
 
 
-class ManHelpFormatter(optparse.HelpFormatter):
+class ManHelpFormatter(argparse.HelpFormatter):
 
     def __init__(self,
             indent_increment=0,
