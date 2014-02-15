@@ -28,8 +28,8 @@ from io import BytesIO
 from translate.misc import optrecurse
 
 
-# Don't import optparse ourselves, get the version from optrecurse.
-optparse = optrecurse.optparse
+# Don't import argparse ourselves, get the version from optrecurse.
+argparse = optrecurse.argparse
 
 
 class ConvertOptionParser(optrecurse.RecursiveOptionParser, object):
@@ -137,7 +137,7 @@ class ConvertOptionParser(optrecurse.RecursiveOptionParser, object):
         """Sets the ``-P``/``--pot`` option depending on input/output
         formats etc."""
         if self.usepots:
-            potoption = optparse.Option(
+            potoption = argparse.Option(
                 "-P", "--pot",
                 action="store_true", dest="pot", default=False,
                 help="output PO Templates (.pot) rather than PO files (.po)"
@@ -146,7 +146,7 @@ class ConvertOptionParser(optrecurse.RecursiveOptionParser, object):
 
     def settimestampoption(self):
         """Sets ``-S``/``--timestamp`` option."""
-        timestampopt = optparse.Option(
+        timestampopt = argparse.Option(
             "-S", "--timestamp",
             action="store_true", dest="timestamp", default=False,
             help="skip conversion if the output file has newer timestamp"
