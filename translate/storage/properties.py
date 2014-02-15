@@ -273,7 +273,9 @@ default_dialect = "java"
 
 
 def register_dialect(dialect):
+    """Decorator that registers the dialect."""
     dialects[dialect.name] = dialect
+    return dialect
 
 
 def get_dialect(dialect=default_dialect):
@@ -315,13 +317,14 @@ class Dialect(object):
         return value.lstrip()
 
 
+@register_dialect
 class DialectJava(Dialect):
     name = "java"
     default_encoding = "iso-8859-1"
     delimiters = [u"=", u":", u" "]
-register_dialect(DialectJava)
 
 
+@register_dialect
 class DialectJavaUtf8(DialectJava):
     name = "java-utf8"
     default_encoding = "utf-8"
@@ -330,27 +333,27 @@ class DialectJavaUtf8(DialectJava):
     @classmethod
     def encode(cls, string, encoding=None):
         return quote.mozillapropertiesencode(string or u"")
-register_dialect(DialectJavaUtf8)
 
 
+@register_dialect
 class DialectFlex(DialectJava):
     name = "flex"
     default_encoding = "utf-8"
-register_dialect(DialectFlex)
 
 
+@register_dialect
 class DialectMozilla(DialectJavaUtf8):
     name = "mozilla"
     delimiters = [u"="]
-register_dialect(DialectMozilla)
 
 
+@register_dialect
 class DialectGaia(DialectMozilla):
     name = "gaia"
     delimiters = [u"="]
-register_dialect(DialectGaia)
 
 
+@register_dialect
 class DialectSkype(Dialect):
     name = "skype"
     default_encoding = "utf-16"
@@ -359,9 +362,9 @@ class DialectSkype(Dialect):
     @classmethod
     def encode(cls, string, encoding=None):
         return quote.mozillapropertiesencode(string or u"")
-register_dialect(DialectSkype)
 
 
+@register_dialect
 class DialectStrings(Dialect):
     name = "strings"
     default_encoding = "utf-16"
@@ -396,7 +399,6 @@ class DialectStrings(Dialect):
     @classmethod
     def encode(cls, string, encoding=None):
         return string.replace("\n", r"\n").replace("\t", r"\t")
-register_dialect(DialectStrings)
 
 
 class propunit(base.TranslationUnit):
