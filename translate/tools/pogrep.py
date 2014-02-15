@@ -342,7 +342,7 @@ def cmdlineparser():
             None: ("po", rungrep)}
     parser = GrepOptionParser(formats)
     parser.add_argument("--search", dest="searchparts",
-        action="append", type="choice", choices=["source", "target", "notes", "locations", "msgid", "msgstr", "comment"],
+        action="append", type=str, choices=["source", "target", "notes", "locations", "msgid", "msgstr", "comment"],
         metavar="SEARCHPARTS", help="searches the given parts (source, target, notes and locations)")
     parser.add_argument("-I", "--ignore-case", dest="ignorecase",
         action="store_true", default=False, help="ignore case distinctions")
@@ -351,7 +351,7 @@ def cmdlineparser():
     parser.add_argument("-v", "--invert-match", dest="invertmatch",
         action="store_true", default=False, help="select non-matching lines")
     parser.add_argument("--accelerator", dest="accelchar",
-        action="store", type="choice", choices=["&", "_", "~"],
+        action="store", type=str, choices=["&", "_", "~"],
         metavar="ACCELERATOR", help="ignores the given accelerator when matching")
     parser.add_argument("-k", "--keep-translations", dest="keeptranslations",
         action="store_true", default=False, help="always extract units with translations")

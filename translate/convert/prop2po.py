@@ -337,7 +337,7 @@ def main(argv=None):
                                          description=__doc__)
     parser.add_argument("--personality", dest="personality",
             default=properties.default_dialect,
-            type="choice",
+            type=str,
             choices=properties.dialects.keys(),
             help="override the input file format: %s (for .properties files, default: %s)" %
                  (", ".join(properties.dialects.iterkeys()),

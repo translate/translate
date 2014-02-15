@@ -63,7 +63,7 @@ class ConvertOptionParser(optrecurse.RecursiveOptionParser, object):
         exceeds the threshold.
         """
         self.add_argument("--threshold", dest="outputthreshold", default=default,
-                        metavar="PERCENT", type="int",
+                        metavar="PERCENT", type=int,
                         help="only convert files where the translation completion is above PERCENT")
         self.passthrough.append("outputthreshold")
 
@@ -71,7 +71,7 @@ class ConvertOptionParser(optrecurse.RecursiveOptionParser, object):
         """Adds an option to say what to do with duplicate strings."""
         self.add_argument(
             "--duplicates", dest="duplicatestyle", default=default,
-            type="choice", choices=["msgctxt", "merge"],
+            type=str, choices=["msgctxt", "merge"],
             help="what to do with duplicate strings (identical source text): merge, msgctxt (default: '%s')" %
                  default,
             metavar="DUPLICATESTYLE"
@@ -83,7 +83,7 @@ class ConvertOptionParser(optrecurse.RecursiveOptionParser, object):
         self.add_argument(
             "--multifile",
             dest="multifilestyle", default=default,
-            type="choice", choices=["single", "toplevel", "onefile"],
+            type=str, choices=["single", "toplevel", "onefile"],
             help="how to split po/pot files (single, toplevel or onefile)",
             metavar="MULTIFILESTYLE"
         )

@@ -125,7 +125,7 @@ def main(argv=None):
     comments_help = ("set default comment import: none, source, type or "
                      "others (default: none)")
     parser.add_argument("--comments", dest="comment", default="none",
-                      type="choice", choices=comments, help=comments_help)
+                      type=str, choices=comments, help=comments_help)
     parser.passthrough.append("sourcelanguage")
     parser.passthrough.append("targetlanguage")
     parser.passthrough.append("comment")

@@ -116,7 +116,7 @@ def main(argv=None):
 
     def add_arguments(parser):
         parser.add_argument("--engine", dest="engine", default="toolkit",
-                          type="choice", choices=["toolkit", "itools"],
+                          type=str, choices=["toolkit", "itools"],
                           help="""Choose whether itools (--engine=itools) or the translate toolkit (--engine=toolkit)
                           should be used as the engine to convert an ODF file to an XLIFF file.""")
         parser.passthrough = ['engine']
