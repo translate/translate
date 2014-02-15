@@ -102,11 +102,11 @@ def main(argv=None):
         ("xlf"): ("txt", converttxt),
     }
     parser = convert.ConvertOptionParser(formats, usetemplates=True, description=__doc__)
-    parser.add_option(
-        "", "--encoding", dest="encoding", default='utf-8', type="string",
+    parser.add_argument(
+        "--encoding", dest="encoding", default='utf-8', type="string",
         help="The encoding of the template file (default: UTF-8)")
     parser.passthrough.append("encoding")
-    parser.add_option(
+    parser.add_argument(
         "-w", "--wrap", dest="wrap", default=None, type="int",
         help="set number of columns to wrap text at", metavar="WRAP")
     parser.passthrough.append("wrap")

@@ -65,11 +65,11 @@ def main(argv=None):
     formats = {"txt": ("po", converttxt), "*": ("po", converttxt)}
     parser = convert.ConvertOptionParser(formats, usepots=True,
                                          description=__doc__)
-    parser.add_option("", "--encoding", dest="encoding", default='utf-8',
+    parser.add_argument("--encoding", dest="encoding", default='utf-8',
                       type="string",
                       help="The encoding of the input file (default: UTF-8)")
     parser.passthrough.append("encoding")
-    parser.add_option("", "--flavour", dest="flavour", default="plain",
+    parser.add_argument("--flavour", dest="flavour", default="plain",
                       type="choice",
                       choices=["plain", "dokuwiki", "mediawiki"],
                       help="The flavour of text file: plain (default), dokuwiki, mediawiki",

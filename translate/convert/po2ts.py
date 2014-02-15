@@ -77,7 +77,7 @@ def main(argv=None):
     from translate.convert import convert
     formats = {"po": ("ts", convertpo), ("po", "ts"): ("ts", convertpo)}
     parser = convert.ConvertOptionParser(formats, usepots=False, usetemplates=True, description=__doc__)
-    parser.add_option("-c", "--context", dest="context", default=None,
+    parser.add_argument("-c", "--context", dest="context", default=None,
                       help="use supplied context instead of the one in the .po file comment")
     parser.passthrough.append("context")
     parser.run(argv)

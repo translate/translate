@@ -116,16 +116,16 @@ def main(argv=None):
     formats = {"po": ("tmx", convertpo), ("po", "tmx"): ("tmx", convertpo)}
     archiveformats = {(None, "output"): tmxmultifile, (None, "template"): tmxmultifile}
     parser = TmxOptionParser(formats, usepots=False, usetemplates=False, description=__doc__, archiveformats=archiveformats)
-    parser.add_option(
+    parser.add_argument(
         "-l", "--language", dest="targetlanguage", default=None,
         help="set target language code (e.g. af-ZA) [required]", metavar="LANG")
-    parser.add_option(
-        "", "--source-language", dest="sourcelanguage", default='en',
+    parser.add_argument(
+        "--source-language", dest="sourcelanguage", default='en',
         help="set source language code (default: en)", metavar="LANG")
     comments = ['source', 'type', 'others', 'none']
     comments_help = ("set default comment import: none, source, type or "
                      "others (default: none)")
-    parser.add_option("", "--comments", dest="comment", default="none",
+    parser.add_argument("--comments", dest="comment", default="none",
                       type="choice", choices=comments, help=comments_help)
     parser.passthrough.append("sourcelanguage")
     parser.passthrough.append("targetlanguage")

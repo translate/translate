@@ -54,9 +54,9 @@ class ConvertOptionParser(optrecurse.RecursiveOptionParser, object):
             fuzzyhelp += " (default)"
         else:
             nofuzzyhelp += " (default)"
-        self.add_option("", "--fuzzy", dest="includefuzzy",
+        self.add_argument("--fuzzy", dest="includefuzzy",
                         action="store_true", default=default, help=fuzzyhelp)
-        self.add_option("", "--nofuzzy", dest="includefuzzy",
+        self.add_argument("--nofuzzy", dest="includefuzzy",
                         action="store_false", default=default, help=nofuzzyhelp)
         self.passthrough.append("includefuzzy")
 
@@ -64,15 +64,15 @@ class ConvertOptionParser(optrecurse.RecursiveOptionParser, object):
         """Adds an option to output only stores where translation percentage
         exceeds the threshold.
         """
-        self.add_option("", "--threshold", dest="outputthreshold", default=default,
+        self.add_argument("--threshold", dest="outputthreshold", default=default,
                         metavar="PERCENT", type="int",
                         help="only convert files where the translation completion is above PERCENT")
         self.passthrough.append("outputthreshold")
 
     def add_duplicates_option(self, default="msgctxt"):
         """Adds an option to say what to do with duplicate strings."""
-        self.add_option(
-            "", "--duplicates", dest="duplicatestyle", default=default,
+        self.add_argument(
+            "--duplicates", dest="duplicatestyle", default=default,
             type="choice", choices=["msgctxt", "merge"],
             help="what to do with duplicate strings (identical source text): merge, msgctxt (default: '%s')" %
                  default,
@@ -82,8 +82,8 @@ class ConvertOptionParser(optrecurse.RecursiveOptionParser, object):
 
     def add_multifile_option(self, default="single"):
         """Adds an option to say how to split the po/pot files."""
-        self.add_option(
-            "", "--multifile",
+        self.add_argument(
+            "--multifile",
             dest="multifilestyle", default=default,
             type="choice", choices=["single", "toplevel", "onefile"],
             help="how to split po/pot files (single, toplevel or onefile)",

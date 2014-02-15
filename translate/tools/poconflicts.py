@@ -172,15 +172,16 @@ class ConflictOptionParser(optrecurse.RecursiveOptionParser):
 def main():
     formats = {"po": ("po", None), None: ("po", None)}
     parser = ConflictOptionParser(formats)
-    parser.add_option(
+    parser.add_argument(
         "-I", "--ignore-case", dest="ignorecase",
         action="store_true", default=False, help="ignore case distinctions")
-    parser.add_option(
+    parser.add_argument(
         "-v", "--invert", dest="invert",
-        action="store_true", default=False, help="invert the conflicts thus extracting conflicting destination words")
-    parser.add_option(
-        "", "--accelerator", dest="accelchars", default="",
-        metavar="ACCELERATORS", help="ignores the given accelerator characters when matching")
+        action="store_true", default=False,
+        help="invert the conflicts thus extracting conflicting destination words")
+    parser.add_argument(
+        "--accelerator", dest="accelchars", default="", metavar="ACCELERATORS",
+        help="ignores the given accelerator characters when matching")
     parser.description = __doc__
     parser.run()
 
