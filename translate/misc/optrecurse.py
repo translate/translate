@@ -33,8 +33,8 @@ from translate.misc import progressbar
 
 class ManPageAction(argparse.Action):
 
-    def __init__(self, foo, **kwargs):
-        super(FooAction, self).__init__(**kwargs)
+    def __init__(self, **kwargs):
+        super(ManPageAction, self).__init__(**kwargs)
 
     def __call__(self, parser, namespace, value, option_string=None):
         """handle manpage output"""
