@@ -18,7 +18,6 @@
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, see <http://www.gnu.org/licenses/>.
 #
-# (c) 2009 Dominic König (dominic@nursix.org)
 
 """Convert GNU/gettext PO files to web2py translation dictionaries (.py).
 
