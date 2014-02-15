@@ -309,7 +309,7 @@ class RecursiveOptionParser(argparse.ArgumentParser, object):
     def parse_args(self, args=None, values=None):
         """Parses the command line options, handling implicit input/output
         args."""
-        (options, args) = super(RecursiveOptionParser, self).parse_args(args, values)
+        args = super(RecursiveOptionParser, self).parse_args(args, values)
         # some intelligent as to what reasonable people might give on the
         # command line
         if args and not options.input:
@@ -330,7 +330,7 @@ class RecursiveOptionParser(argparse.ArgumentParser, object):
             self.error("You need to give an inputfile or use - for stdin ; use --help for full usage instructions")
         elif options.input == '-':
             options.input = None
-        return (options, args)
+        return args
 
     def getpassthroughoptions(self, options):
         """Get the options required to pass to the filtermethod..."""
