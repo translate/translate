@@ -94,9 +94,9 @@ def main(argv=None):
     formats = {"po": ("txt", convertpo), ("po", "txt"): ("txt", convertpo)}
     archiveformats = {(None, "output"): wfmultifile, (None, "template"): wfmultifile}
     parser = WfOptionParser(formats, usepots=False, usetemplates=False, description=__doc__, archiveformats=archiveformats)
-    parser.add_option("-l", "--language", dest="targetlanguage", default=None,
+    parser.add_argument("-l", "--language", dest="targetlanguage", default=None,
                       help="set target language code (e.g. af-ZA) [required]", metavar="LANG")
-    parser.add_option("", "--source-language", dest="sourcelanguage", default='en',
+    parser.add_argument("--source-language", dest="sourcelanguage", default='en',
                       help="set source language code (default: en)", metavar="LANG")
     parser.passthrough.append("sourcelanguage")
     parser.passthrough.append("targetlanguage")
