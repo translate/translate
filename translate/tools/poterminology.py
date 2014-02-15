@@ -341,7 +341,7 @@ class TerminologyOptionParser(optrecurse.RecursiveOptionParser):
 
     def parse_args(self, args=None, values=None):
         """parses the command line options, handling implicit input/output args"""
-        (options, args) = optrecurse.optparse.OptionParser.parse_args(self, args, values)
+        args = optrecurse.argparse.ArgumentParser.parse_args(self, args, values)
         # some intelligence as to what reasonable people might give on the command line
         if args and not options.input:
             if not options.output and not options.update and len(args) > 1:
@@ -382,7 +382,7 @@ class TerminologyOptionParser(optrecurse.RecursiveOptionParser):
                 options.input = options.update
         if not options.output:
             options.output = "pootle-terminology.pot"
-        return (options, args)
+        return args
 
     def run(self):
         """parses the arguments, and runs recursiveprocess with the resulting options"""

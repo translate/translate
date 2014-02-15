@@ -37,7 +37,7 @@ class ConflictOptionParser(optrecurse.RecursiveOptionParser):
 
     def parse_args(self, args=None, values=None):
         """parses the command line options, handling implicit input/output args"""
-        (options, args) = optrecurse.optparse.OptionParser.parse_args(self, args, values)
+        args = optrecurse.argparse.argumentParser.parse_args(self, args, values)
         # some intelligence as to what reasonable people might give on the command line
         if args and not options.input:
             if not options.output:
@@ -55,7 +55,7 @@ class ConflictOptionParser(optrecurse.RecursiveOptionParser):
             self.error("You have used an invalid combination of --input, --output and freestanding args")
         if isinstance(options.input, list) and len(options.input) == 1:
             options.input = options.input[0]
-        return (options, args)
+        return args
 
     def recursiveprocess(self, options):
         """recurse through directories and process files"""
@@ -65,7 +65,7 @@ class ConflictOptionParser(optrecurse.RecursiveOptionParser):
                     self.warning("Output directory does not exist. Attempting to create")
                     os.mkdir(options.output)
                 except:
-                    self.error(optrecurse.optparse.OptionValueError("Output directory does not exist, attempt to create failed"))
+                    self.error(optrecurse.argparse.ArgumentError("Output directory does not exist, attempt to create failed"))
             if isinstance(options.input, list):
                 inputfiles = self.recurseinputfilelist(options)
             else:
