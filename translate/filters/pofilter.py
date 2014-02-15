@@ -274,19 +274,19 @@ def cmdlineparser():
         action="store_const", default=None, const=checks.KdeChecker,
         help="use the standard checks for wxWidgets translations")
     parser.add_argument("--excludefilter", dest="excludefilters",
-        action="append", default=[], type="string", metavar="FILTER",
+        action="append", default=[], type=str, metavar="FILTER",
         help="don't use FILTER when filtering")
     parser.add_argument("-t", "--test", dest="limitfilters",
-        action="append", default=None, type="string", metavar="FILTER",
+        action="append", default=None, type=str, metavar="FILTER",
         help="only use test FILTERs specified with this option when filtering")
     parser.add_argument("--notranslatefile", dest="notranslatefile",
-        default=None, type="string", metavar="FILE",
+        default=None, type=str, metavar="FILE",
         help="read list of untranslatable words from FILE (must not be translated)")
     parser.add_argument("--musttranslatefile", dest="musttranslatefile",
-        default=None, type="string", metavar="FILE",
+        default=None, type=str, metavar="FILE",
         help="read list of translatable words from FILE (must be translated)")
     parser.add_argument("--validcharsfile", dest="validcharsfile",
-        default=None, type="string", metavar="FILE",
+        default=None, type=str, metavar="FILE",
         help="read list of all valid characters from FILE (must be in UTF-8)")
 
     parser.passthrough.append('checkfilter')
