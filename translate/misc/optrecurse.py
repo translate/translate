@@ -63,8 +63,8 @@ class ProgressBar(object):
         self._progressbar.show(filename)
 
 
-class ManPageOption(optparse.Option, object):
-    ACTIONS = optparse.Option.ACTIONS + ("manpage",)
+class ManPageOption(argparse.Action, object):
+    ACTIONS = argparse.Action.ACTIONS + ("manpage",)
 
     def take_action(self, action, dest, opt, value, values, parser):
         """take_action that can handle manpage as well as standard actions"""
@@ -130,9 +130,9 @@ class RecursiveOptionParser(argparse.ArgumentParser, object):
         """creates a manpage option that allows the optionparser to generate a
         manpage
         """
-        manpageoption = ManPageOption(
-            None, "--manpage", dest="manpage",
-            default=False, action="manpage",
+        manpageoption = argparse.Action(
+            ["--manpage"], dest="manpage",
+            default=False, action=ManPageAction,
             help="output a manpage based on the help")
         self.define_option(manpageoption)
 
@@ -278,22 +278,22 @@ class RecursiveOptionParser(argparse.ArgumentParser, object):
                 templateformats.append(templateformat)
             self.outputoptions[(inputformat, templateformat)] = (outputformat, processor)
         inputformathelp = self.getformathelp(self.inputformats)
-        inputoption = optparse.Option(
-            "-i", "--input", dest="input",
+        inputoption = argparse.Action(
+            ["-i", "--input"], dest="input",
             default=None, metavar="INPUT",
             help="read from INPUT in %s" % (inputformathelp))
         inputoption.optionalswitch = True
         inputoption.required = True
         self.define_option(inputoption)
-        excludeoption = optparse.Option(
-            "-x", "--exclude", dest="exclude",
+        excludeoption = argparse.Action(
+            ["-x", "--exclude"], dest="exclude",
             action="append", type="string", metavar="EXCLUDE",
             default=["CVS", ".svn", "_darcs", ".git", ".hg", ".bzr"],
             help="exclude names matching EXCLUDE from input paths")
         self.define_option(excludeoption)
         outputformathelp = self.getformathelp(outputformats)
-        outputoption = optparse.Option(
-            "-o", "--output", dest="output",
+        outputoption = argparse.Action(
+            ["-o", "--output"], dest="output",
             default=None, metavar="OUTPUT",
             help="write to OUTPUT in %s" % (outputformathelp))
         outputoption.optionalswitch = True
@@ -302,16 +302,17 @@ class RecursiveOptionParser(argparse.ArgumentParser, object):
         if self.usetemplates:
             self.templateformats = templateformats
             templateformathelp = self.getformathelp(self.templateformats)
-            templateoption = optparse.Option(
-                "-t", "--template",
+            templateoption = argparse.Action(
+                ["-t", "--template"],
                 dest="template", default=None, metavar="TEMPLATE",
                 help="read from TEMPLATE in %s" % (templateformathelp))
             self.define_option(templateoption)
 
     def setprogressoptions(self):
         """Sets the progress options."""
-        progressoption = optparse.Option(
-            None, "--progress", dest="progress", default="bar",
+        progressoption = argparse.Action(
+            ["--progress"], dest="progress",
+            default="bar",
             choices=list(ProgressBar.progress_types.keys()), metavar="PROGRESS",
             help="show progress as: %s" % (", ".join(ProgressBar.progress_types)))
         self.define_option(progressoption)
@@ -319,8 +320,8 @@ class RecursiveOptionParser(argparse.ArgumentParser, object):
     def seterrorleveloptions(self):
         """Sets the errorlevel options."""
         self.errorleveltypes = ["none", "message", "exception", "traceback"]
-        errorleveloption = optparse.Option(
-            None, "--errorlevel",
+        errorleveloption = argparse.Action(
+            ["--errorlevel"],
             dest="errorlevel", default="message",
             choices=self.errorleveltypes, metavar="ERRORLEVEL",
             help="show errorlevel as: %s" % (
