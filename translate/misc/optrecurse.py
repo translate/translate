@@ -275,7 +275,7 @@ class RecursiveOptionParser(argparse.ArgumentParser, object):
         progressoption = argparse._StoreAction(["--progress"], dest="progress",
                 default="bar",
                 choices=list(self.progresstypes.keys()), metavar="PROGRESS",
-                help="show progress as: %s" % (", ".join(self.progresstypes)))
+                help="show progress as: %(choices)s")
         self.define_option(progressoption)
 
     def seterrorleveloptions(self):
@@ -284,8 +284,7 @@ class RecursiveOptionParser(argparse.ArgumentParser, object):
         errorleveloption = argparse._StoreAction(["--errorlevel"],
                 dest="errorlevel", default="message",
                 choices=self.errorleveltypes, metavar="ERRORLEVEL",
-                help="show errorlevel as: %s" %
-                     (", ".join(self.errorleveltypes)))
+                help="show errorlevel as: %(choices)s")
         self.define_option(errorleveloption)
 
     def getformathelp(self, formats):

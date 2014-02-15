@@ -97,7 +97,7 @@ def main(argv=None):
     parser.add_argument("-l", "--language", dest="targetlanguage", default=None,
                       help="set target language code (e.g. af-ZA) [required]", metavar="LANG")
     parser.add_argument("--source-language", dest="sourcelanguage", default='en',
-                      help="set source language code (default: en)", metavar="LANG")
+                      help="set source language code (default: %(default)s)", metavar="LANG")
     parser.passthrough.append("sourcelanguage")
     parser.passthrough.append("targetlanguage")
     parser.run(argv)

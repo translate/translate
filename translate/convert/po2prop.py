@@ -247,9 +247,7 @@ def main(argv=None):
     parser.add_argument("--personality", dest="personality",
             default=properties.default_dialect, type=str,
             choices=list(properties.dialects.keys()),
-            help="override the input file format: %s (for .properties files, default: %s)" %
-                 (", ".join(six.iterkeys(properties.dialects)),
-                  properties.default_dialect),
+            help="override the input file format: %(choices)s (for .properties files, default: %(default)s)",
             metavar="TYPE")
     parser.add_argument("--encoding", dest="encoding", default=None,
             help="override the encoding set by the personality",

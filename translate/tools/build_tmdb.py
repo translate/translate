@@ -80,10 +80,10 @@ def main():
     parser = ArgumentParser()
     parser.add_argument(
         "-d", "--tmdb", dest="tmdb_file", default="tm.db",
-        help="translation memory database file (default: tm.db)")
+        help="translation memory database file (default: %(default)s)")
     parser.add_argument(
         "-s", "--import-source-lang", dest="source_lang", default="en",
-        help="source language of translation files (default: en)")
+        help="source language of translation files (default: %(default))")
     parser.add_argument(
         "-t", "--import-target-lang", dest="target_lang",
         help="target language of translation files", required=True)
