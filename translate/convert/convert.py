@@ -159,8 +159,8 @@ class ConvertOptionParser(optrecurse.RecursiveOptionParser, object):
     def run(self, argv=None):
         """Parses the command line options and runs the conversion."""
         args = self.parse_args(argv)
-        args.inputformats = self.filterinputformats(options)
-        args.outputoptions = self.filteroutputoptions(options)
+        args.inputformats = self.filterinputformats(args)
+        args.outputoptions = self.filteroutputoptions(args)
         try:
             self.verifyoptions(args)
         except Exception as e:
