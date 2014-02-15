@@ -192,10 +192,10 @@ class RecursiveOptionParser(argparse.ArgumentParser, object):
         else:
             return "\\fR[\\fP%s\\fR]\\fP" % optionstring
 
-    def define_option(self, option):
+    def define_option(self, action):
         """Defines the given option, replacing an existing one of the same short
         name if neccessary..."""
-        self.add_option(option)
+        self.add_action(action)
 
     def setformats(self, formats, usetemplates):
         """Sets the format options using the given format dictionary.
