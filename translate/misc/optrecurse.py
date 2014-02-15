@@ -49,7 +49,7 @@ class ManHelpFormatter(argparse.HelpFormatter):
             max_help_position=0,
             width=80,
             short_first=1):
-        optparse.HelpFormatter.__init__(
+        argparse.HelpFormatter.__init__(
             self, indent_increment, max_help_position, width, short_first)
 
     def format_option_strings(self, option):
