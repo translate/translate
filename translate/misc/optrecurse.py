@@ -18,9 +18,9 @@
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, see <http://www.gnu.org/licenses/>.
 
+import argparse
 import fnmatch
 import logging
-import optparse
 import os.path
 import re
 import sys
@@ -72,8 +72,8 @@ class ManHelpFormatter(optparse.HelpFormatter):
         return '\\fB%s\\fP' % ("\\fR, \\fP".join(opts))
 
 
-class RecursiveOptionParser(optparse.OptionParser, object):
-    """A specialized Option Parser for recursing through directories."""
+class RecursiveOptionParser(argparse.ArgumentParser, object):
+    """A specialized Argument Parser for recursing through directories."""
 
     def __init__(self, formats, usetemplates=False, allowmissingtemplate=False,
                  description=None):
@@ -84,7 +84,7 @@ class RecursiveOptionParser(optparse.OptionParser, object):
         for an explanation of the formats parameter.
         """
 
-        optparse.OptionParser.__init__(self, version="%prog " + __version__.sver,
+        argparse.ArgumentParser.__init__(self, version="%prog " + __version__.sver,
                                        description=description)
         self.setmanpageoption()
         self.setprogressoptions()
