@@ -341,19 +341,19 @@ def cmdlineparser():
             "xliff": ("xliff", rungrep), "xlf": ("xlf", rungrep), "xlff": ("xlff", rungrep),
             None: ("po", rungrep)}
     parser = GrepOptionParser(formats)
-    parser.add_option("", "--search", dest="searchparts",
+    parser.add_argument("--search", dest="searchparts",
         action="append", type="choice", choices=["source", "target", "notes", "locations", "msgid", "msgstr", "comment"],
         metavar="SEARCHPARTS", help="searches the given parts (source, target, notes and locations)")
-    parser.add_option("-I", "--ignore-case", dest="ignorecase",
+    parser.add_argument("-I", "--ignore-case", dest="ignorecase",
         action="store_true", default=False, help="ignore case distinctions")
-    parser.add_option("-e", "--regexp", dest="useregexp",
+    parser.add_argument("-e", "--regexp", dest="useregexp",
         action="store_true", default=False, help="use regular expression matching")
-    parser.add_option("-v", "--invert-match", dest="invertmatch",
+    parser.add_argument("-v", "--invert-match", dest="invertmatch",
         action="store_true", default=False, help="select non-matching lines")
-    parser.add_option("", "--accelerator", dest="accelchar",
+    parser.add_argument("--accelerator", dest="accelchar",
         action="store", type="choice", choices=["&", "_", "~"],
         metavar="ACCELERATOR", help="ignores the given accelerator when matching")
-    parser.add_option("-k", "--keep-translations", dest="keeptranslations",
+    parser.add_argument("-k", "--keep-translations", dest="keeptranslations",
         action="store_true", default=False, help="always extract units with translations")
     parser.passthrough.append('checkfilter')
     parser.description = __doc__

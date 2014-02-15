@@ -459,44 +459,44 @@ def main():
     formats = {"po": ("po", None), "pot": ("pot", None), None: ("po", None)}
     parser = TerminologyOptionParser(formats)
 
-    parser.add_option("-u", "--update", type="string", dest="update",
+    parser.add_argument("-u", "--update", type="string", dest="update",
         metavar="UPDATEFILE", help="update terminology in UPDATEFILE")
 
-    parser.add_option("-S", "--stopword-list", type="string", metavar="STOPFILE", dest="stopfile",
+    parser.add_argument("-S", "--stopword-list", type="string", metavar="STOPFILE", dest="stopfile",
                       help="read stopword (term exclusion) list from STOPFILE (default %s)" %
                       file_discovery.get_abs_data_filename('stoplist-en'))
 
     parser.set_defaults(foldtitle=True, ignorecase=False)
-    parser.add_option("-F", "--fold-titlecase", callback=fold_case_option,
+    parser.add_argument("-F", "--fold-titlecase", callback=fold_case_option,
         action="callback", help="fold \"Title Case\" to lowercase (default)")
-    parser.add_option("-C", "--preserve-case", callback=preserve_case_option,
+    parser.add_argument("-C", "--preserve-case", callback=preserve_case_option,
         action="callback", help="preserve all uppercase/lowercase")
-    parser.add_option("-I", "--ignore-case", dest="ignorecase",
+    parser.add_argument("-I", "--ignore-case", dest="ignorecase",
         action="store_true", help="make all terms lowercase")
 
-    parser.add_option("", "--accelerator", dest="accelchars", default="",
+    parser.add_argument("--accelerator", dest="accelchars", default="",
         metavar="ACCELERATORS", help="ignore the given accelerator characters when matching")
 
-    parser.add_option("-t", "--term-words", type="int", dest="termlength", default="3",
+    parser.add_argument("-t", "--term-words", type="int", dest="termlength", default="3",
         help="generate terms of up to LENGTH words (default 3)", metavar="LENGTH")
-    parser.add_option("", "--nonstop-needed", type="int", dest="nonstopmin", default="1",
+    parser.add_argument("--nonstop-needed", type="int", dest="nonstopmin", default="1",
         help="omit terms with less than MIN nonstop words (default 1)", metavar="MIN")
-    parser.add_option("", "--inputs-needed", type="int", dest="inputmin",
+    parser.add_argument("--inputs-needed", type="int", dest="inputmin",
         help="omit terms appearing in less than MIN input files (default 2, or 1 if only one input file)", metavar="MIN")
-    parser.add_option("", "--fullmsg-needed", type="int", dest="fullmsgmin", default="1",
+    parser.add_argument("--fullmsg-needed", type="int", dest="fullmsgmin", default="1",
         help="omit full message terms appearing in less than MIN different messages (default 1)", metavar="MIN")
-    parser.add_option("", "--substr-needed", type="int", dest="substrmin", default="2",
+    parser.add_argument("--substr-needed", type="int", dest="substrmin", default="2",
         help="omit substring-only terms appearing in less than MIN different messages (default 2)", metavar="MIN")
-    parser.add_option("", "--locs-needed", type="int", dest="locmin", default="2",
+    parser.add_argument("--locs-needed", type="int", dest="locmin", default="2",
         help="omit terms appearing in less than MIN different original source files (default 2)", metavar="MIN")
 
-    parser.add_option("", "--sort", dest="sortorders", action="append",
+    parser.add_argument("--sort", dest="sortorders", action="append",
         type="choice", choices=TerminologyExtractor.sortorders_default, metavar="ORDER",
         help="output sort order(s): %s (may repeat option, default is all in above order)" % ', '.join(TerminologyExtractor.sortorders_default))
 
-    parser.add_option("", "--source-language", dest="sourcelanguage", default="en",
+    parser.add_argument("--source-language", dest="sourcelanguage", default="en",
         help="the source language code (default 'en')", metavar="LANG")
-    parser.add_option("-v", "--invert", dest="invert",
+    parser.add_argument("-v", "--invert", dest="invert",
         action="store_true", default=False, help="invert the source and target languages for terminology")
     parser.description = __doc__
     parser.run()

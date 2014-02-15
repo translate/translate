@@ -81,7 +81,7 @@ def main(argv=None):
     sys.stdout = stdiotell.StdIOWrapper(sys.stdout)
     parser = convert.ConvertOptionParser(formats, usetemplates=True,
                                            description=__doc__)
-    parser.add_option("", "--mark-active", dest="mark_active", default=False,
+    parser.add_argument("--mark-active", dest="mark_active", default=False,
             action="store_true", help="mark the file as active")
     parser.add_threshold_option()
     parser.add_fuzzy_option()

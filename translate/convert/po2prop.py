@@ -240,17 +240,17 @@ def main(argv=None):
     # handle command line options
     parser = convert.ConvertOptionParser(formats, usetemplates=True,
                                          description=__doc__)
-    parser.add_option("", "--personality", dest="personality",
+    parser.add_argument("--personality", dest="personality",
             default=properties.default_dialect, type="choice",
             choices=properties.dialects.keys(),
             help="override the input file format: %s (for .properties files, default: %s)" %
                  (", ".join(properties.dialects.iterkeys()),
                   properties.default_dialect),
             metavar="TYPE")
-    parser.add_option("", "--encoding", dest="encoding", default=None,
+    parser.add_argument("--encoding", dest="encoding", default=None,
             help="override the encoding set by the personality",
             metavar="ENCODING")
-    parser.add_option("", "--removeuntranslated", dest="remove_untranslated",
+    parser.add_argument("--removeuntranslated", dest="remove_untranslated",
             default=False, action="store_true",
             help="remove key value from output if it is untranslated")
     parser.add_threshold_option()

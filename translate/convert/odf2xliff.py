@@ -114,8 +114,8 @@ formats = {
 
 def main(argv=None):
 
-    def add_options(parser):
-        parser.add_option("", "--engine", dest="engine", default="toolkit",
+    def add_arguments(parser):
+        parser.add_argument("--engine", dest="engine", default="toolkit",
                           type="choice", choices=["toolkit", "itools"],
                           help="""Choose whether itools (--engine=itools) or the translate toolkit (--engine=toolkit)
                           should be used as the engine to convert an ODF file to an XLIFF file.""")
@@ -124,7 +124,7 @@ def main(argv=None):
 
     from translate.convert import convert
     parser = convert.ConvertOptionParser(formats, description=__doc__)
-    add_options(parser)
+    add_arguments(parser)
     parser.run(argv)
 
 

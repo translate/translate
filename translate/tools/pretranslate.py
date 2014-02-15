@@ -210,15 +210,15 @@ def main(argv=None):
     parser = convert.ConvertOptionParser(formats, usetemplates=True,
                                          allowmissingtemplate=True,
                                          description=__doc__)
-    parser.add_option("", "--tm", dest="tm", default=None,
+    parser.add_argument("--tm", dest="tm", default=None,
                       help="The file to use as translation memory when fuzzy matching")
     parser.passthrough.append("tm")
     defaultsimilarity = 75
-    parser.add_option("-s", "--similarity", dest="min_similarity",
+    parser.add_argument("-s", "--similarity", dest="min_similarity",
                       default=defaultsimilarity, type="float",
                       help="The minimum similarity for inclusion (default: %d%%)" % defaultsimilarity)
     parser.passthrough.append("min_similarity")
-    parser.add_option("--nofuzzymatching", dest="fuzzymatching",
+    parser.add_argument("--nofuzzymatching", dest="fuzzymatching",
                       action="store_false", default=True,
                       help="Disable fuzzy matching")
     parser.passthrough.append("fuzzymatching")
