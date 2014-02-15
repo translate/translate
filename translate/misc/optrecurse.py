@@ -449,12 +449,12 @@ class RecursiveOptionParser(argparse.ArgumentParser, object):
         if self.isrecursive(options.input, 'input') and getattr(options, "allowrecursiveinput", True):
             if not self.isrecursive(options.output, 'output'):
                 if not options.output:
-                    self.error(optparse.OptionValueError("No output directory given"))
+                    self.error(argparse.ArgumentError("No output directory given"))
                 try:
                     self.warning("Output directory does not exist. Attempting to create")
                     os.mkdir(options.output)
                 except IOError as e:
-                    self.error(optparse.OptionValueError("Output directory does not exist, attempt to create failed"))
+                    self.error(argparse.ArgumentError("Output directory does not exist, attempt to create failed"))
             if isinstance(options.input, list):
                 inputfiles = self.recurseinputfilelist(options)
             else:
