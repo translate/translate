@@ -194,12 +194,6 @@ class RecursiveOptionParser(argparse.ArgumentParser, object):
     def define_option(self, option):
         """Defines the given option, replacing an existing one of the same short
         name if neccessary..."""
-        for short_opt in option._short_opts:
-            if self.has_option(short_opt):
-                self.remove_option(short_opt)
-        for long_opt in option._long_opts:
-            if self.has_option(long_opt):
-                self.remove_option(long_opt)
         self.add_option(option)
 
     def setformats(self, formats, usetemplates):
