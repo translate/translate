@@ -217,7 +217,7 @@ def main(argv=None):
     defaultsimilarity = 75
     parser.add_argument("-s", "--similarity", dest="min_similarity",
                       default=defaultsimilarity, type=float,
-                      help="The minimum similarity for inclusion (default: %d%%)" % defaultsimilarity)
+                      help="The minimum similarity for inclusion (default: %(default)s)")
     parser.passthrough.append("min_similarity")
     parser.add_argument("--nofuzzymatching", dest="fuzzymatching",
                       action="store_false", default=True,

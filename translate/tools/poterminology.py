@@ -484,22 +484,22 @@ def main():
 
     parser.add_argument(
         "-t", "--term-words", type=int, dest="termlength", default="3",
-        help="generate terms of up to LENGTH words (default 3)", metavar="LENGTH")
+        help="generate terms of up to LENGTH words (default %(default)s)", metavar="LENGTH")
     parser.add_argument(
         "--nonstop-needed", type=int, dest="nonstopmin", default="1",
-        help="omit terms with less than MIN nonstop words (default 1)", metavar="MIN")
+        help="omit terms with less than MIN nonstop words (default %(default)s)", metavar="MIN")
     parser.add_argument(
         "--inputs-needed", type=int, dest="inputmin",
         help="omit terms appearing in less than MIN input files (default 2, or 1 if only one input file)", metavar="MIN")
     parser.add_argument(
         "--fullmsg-needed", type=int, dest="fullmsgmin", default="1",
-        help="omit full message terms appearing in less than MIN different messages (default 1)", metavar="MIN")
+        help="omit full message terms appearing in less than MIN different messages (default %(default)s)", metavar="MIN")
     parser.add_argument(
         "--substr-needed", type=int, dest="substrmin", default="2",
-        help="omit substring-only terms appearing in less than MIN different messages (default 2)", metavar="MIN")
+        help="omit substring-only terms appearing in less than MIN different messages (default %(default)s)", metavar="MIN")
     parser.add_argument(
         "--locs-needed", type=int, dest="locmin", default="2",
-        help="omit terms appearing in less than MIN different original source files (default 2)", metavar="MIN")
+        help="omit terms appearing in less than MIN different original source files (default %(default)s)", metavar="MIN")
 
     parser.add_argument(
         "--sort", dest="sortorders", action="append",
@@ -508,7 +508,7 @@ def main():
 
     parser.add_argument(
         "--source-language", dest="sourcelanguage", default="en",
-        help="the source language code (default 'en')", metavar="LANG")
+        help="the source language code (default '%(default)s')", metavar="LANG")
     parser.add_argument(
         "-v", "--invert", dest="invert",
         action="store_true", default=False,

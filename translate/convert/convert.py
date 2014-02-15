@@ -74,8 +74,7 @@ class ConvertOptionParser(optrecurse.RecursiveOptionParser, object):
         self.add_argument(
             "--duplicates", dest="duplicatestyle", default=default,
             type=str, choices=["msgctxt", "merge"],
-            help="what to do with duplicate strings (identical source text): merge, msgctxt (default: '%s')" %
-                 default,
+            help="what to do with duplicate strings (identical source text): merge, msgctxt (default: '%(default)s')",
             metavar="DUPLICATESTYLE"
         )
         self.passthrough.append("duplicatestyle")

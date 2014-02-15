@@ -105,7 +105,7 @@ if __name__ == "__main__":
                         help='PO dir to use (default: create sample files)')
     parser.add_argument('--store-type', dest='storetype',
                         action='store_const', const='po', default="po",
-                        help='type of the store to benchmark (default: po)')
+                        help='type of the store to benchmark (default: %(default)s)')
     parser.add_argument('--check-parsing', dest='check_parsing',
                         action='store_true',
                         help='benchmark parsing files')

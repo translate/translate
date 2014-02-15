@@ -105,7 +105,7 @@ def main(argv=None):
     defaultcharset = "utf-8"
     parser.add_argument(
         "--charset", dest="charset", default=defaultcharset,
-        help="charset to use to decode the RC files (default: %s)" % defaultcharset,
+        help="charset to use to decode the RC files (default: %(default)s)",
         metavar="CHARSET")
     parser.add_argument(
         "-l", "--lang", dest="lang", default=None,
@@ -113,7 +113,7 @@ def main(argv=None):
     defaultsublang = "SUBLANG_DEFAULT"
     parser.add_argument(
         "--sublang", dest="sublang", default=defaultsublang,
-        help="SUBLANG entry (default: %s)" % defaultsublang, metavar="SUBLANG")
+        help="SUBLANG entry (default: %(default)s)", metavar="SUBLANG")
     parser.passthrough.append("charset")
     parser.passthrough.append("lang")
     parser.passthrough.append("sublang")

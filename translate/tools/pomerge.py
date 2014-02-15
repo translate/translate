@@ -119,13 +119,13 @@ def main():
                                          description=__doc__)
     parser.add_argument(
         "--mergeblanks", dest="mergeblanks", action="store", default="yes",
-        help="whether to overwrite existing translations with blank translations (yes/no). Default is yes.")
+        help="whether to overwrite existing translations with blank translations (yes/no). Default is %(default)s.")
     parser.add_argument(
         "--mergefuzzy", dest="mergefuzzy", action="store", default="yes",
-        help="whether to consider fuzzy translations from input (yes/no). Default is yes.")
+        help="whether to consider fuzzy translations from input (yes/no). Default is %(default)s.")
     parser.add_argument(
         "--mergecomments", dest="mergecomments", action="store", default="yes",
-        help="whether to merge comments as well as translations (yes/no). Default is yes.")
+        help="whether to merge comments as well as translations (yes/no). Default is %(default)s.")
     parser.passthrough.append("mergeblanks")
     parser.passthrough.append("mergefuzzy")
     parser.passthrough.append("mergecomments")

@@ -25,7 +25,6 @@ for examples and usage instructions.
 """
 
 import logging
-import six
 
 from translate.convert.accesskey import UnitMixer
 from translate.storage import po, properties
@@ -345,8 +344,7 @@ def main(argv=None):
         default=properties.default_dialect,
         type=str,
         choices=list(properties.dialects.keys()),
-        help="override the input file format: %s (for .properties files, default: %s)" % (
-            ", ".join(six.iterkeys(properties.dialects)), properties.default_dialect),
+        help="override the input file format: %(choices)s (for .properties files, default: %(default)s)",
         metavar="TYPE")
     parser.add_argument(
         "--encoding", dest="encoding", default=None,
