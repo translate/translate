@@ -83,8 +83,8 @@ class RecursiveOptionParser(argparse.ArgumentParser, object):
         for an explanation of the formats parameter.
         """
 
-        argparse.ArgumentParser.__init__(self, version="%prog " + __version__.sver,
-                                       description=description)
+        argparse.ArgumentParser.__init__(self, description=description)
+        self.set_version_argument()
         self.setmanpageoption()
         self.setprogressoptions()
         self.seterrorleveloptions()
@@ -95,6 +95,10 @@ class RecursiveOptionParser(argparse.ArgumentParser, object):
 
     def get_prog_name(self):
         return os.path.basename(sys.argv[0])
+
+    def set_version_argument(self):
+        """Add the version info"""
+        self.add_argument('--version', action='version', version=__version__.sver)
 
     def setmanpageoption(self):
         """creates a manpage option that allows the optionparser to generate a
