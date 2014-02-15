@@ -278,9 +278,9 @@ class RecursiveOptionParser(argparse.ArgumentParser, object):
         inputoption.optionalswitch = True
         inputoption.required = True
         self.define_option(inputoption)
-        excludeoption = argparse.Action(
+        excludeoption = argparse._AppendAction(
             ["-x", "--exclude"], dest="exclude",
-            action="append", type="string", metavar="EXCLUDE",
+            type=str, metavar="EXCLUDE",
             default=["CVS", ".svn", "_darcs", ".git", ".hg", ".bzr"],
             help="exclude names matching EXCLUDE from input paths")
         self.define_option(excludeoption)
