@@ -43,15 +43,6 @@ class SplitOptionParser(optrecurse.RecursiveOptionParser):
             self.error("Output file is rquired")
         return (options, args)
 
-    def set_usage(self, usage=None):
-        """sets the usage string - if usage not given, uses getusagestring for each option"""
-        if usage is None:
-            self.usage = "%prog " + " ".join([self.getusagestring(option) for option in self.option_list]) + \
-                         "\n  " + \
-                         "input directory is searched for PO files with (poconflicts) comments, all entries are written to files in a directory structure for pomerge"
-        else:
-            super(SplitOptionParser, self).set_usage(usage)
-
     def recursiveprocess(self, options):
         """recurse through directories and process files"""
         if not self.isrecursive(options.output, 'output'):
@@ -115,7 +106,6 @@ def main():
     pooutput = ("po", None)
     formats = {(None, None): pooutput, ("po", "po"): pooutput, "po": pooutput}
     parser = SplitOptionParser(formats, description=__doc__)
-    parser.set_usage()
     parser.run()
 
 

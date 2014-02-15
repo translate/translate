@@ -308,13 +308,6 @@ class GrepOptionParser(optrecurse.RecursiveOptionParser):
             options.input = options.input[0]
         return (options, args)
 
-    def set_usage(self, usage=None):
-        """sets the usage string - if usage not given, uses getusagestring for each option"""
-        if usage is None:
-            self.usage = "%prog searchstring " + " ".join([self.getusagestring(option) for option in self.option_list])
-        else:
-            super(GrepOptionParser, self).set_usage(usage)
-
     def run(self):
         """parses the arguments, and runs recursiveprocess with the resulting options"""
         (options, args) = self.parse_args()
@@ -362,7 +355,6 @@ def cmdlineparser():
         metavar="ACCELERATOR", help="ignores the given accelerator when matching")
     parser.add_option("-k", "--keep-translations", dest="keeptranslations",
         action="store_true", default=False, help="always extract units with translations")
-    parser.set_usage()
     parser.passthrough.append('checkfilter')
     parser.description = __doc__
     return parser

@@ -56,14 +56,6 @@ class ConflictOptionParser(optrecurse.RecursiveOptionParser):
             options.input = options.input[0]
         return (options, args)
 
-    def set_usage(self, usage=None):
-        """sets the usage string - if usage not given, uses getusagestring for each option"""
-        if usage is None:
-            self.usage = "%prog " + " ".join([self.getusagestring(option) for option in self.option_list]) + \
-                    "\n  input directory is searched for PO files, PO files with name of conflicting string are output in output directory"
-        else:
-            super(ConflictOptionParser, self).set_usage(usage)
-
     def run(self):
         """parses the arguments, and runs recursiveprocess with the resulting options"""
         (options, args) = self.parse_args()
@@ -193,7 +185,6 @@ def main():
         action="store_true", default=False, help="invert the conflicts thus extracting conflicting destination words")
     parser.add_option("", "--accelerator", dest="accelchars", default="",
         metavar="ACCELERATORS", help="ignores the given accelerator characters when matching")
-    parser.set_usage()
     parser.description = __doc__
     parser.run()
 
