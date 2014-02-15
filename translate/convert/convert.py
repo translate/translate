@@ -45,7 +45,6 @@ class ConvertOptionParser(optrecurse.RecursiveOptionParser, object):
         self.usepots = usepots
         self.settimestampoption()
         self.setpotoption()
-        self.set_usage()
 
     def add_fuzzy_option(self, default=False):
         """Adds an option to include / exclude fuzzy translations."""

@@ -384,14 +384,6 @@ class TerminologyOptionParser(optrecurse.RecursiveOptionParser):
             options.output = "pootle-terminology.pot"
         return (options, args)
 
-    def set_usage(self, usage=None):
-        """sets the usage string - if usage not given, uses getusagestring for each option"""
-        if usage is None:
-            self.usage = "%prog " + " ".join([self.getusagestring(option) for option in self.option_list]) + \
-                "\n  input directory is searched for PO files, terminology PO file is output file"
-        else:
-            super(TerminologyOptionParser, self).set_usage(usage)
-
     def run(self):
         """parses the arguments, and runs recursiveprocess with the resulting options"""
         self.files = 0
@@ -519,7 +511,6 @@ def main():
     parser.add_option(
         "-v", "--invert", dest="invert",
         action="store_true", default=False, help="invert the source and target languages for terminology")
-    parser.set_usage()
     parser.description = __doc__
     parser.run()
 
