@@ -237,7 +237,7 @@ class RecursiveOptionParser(argparse.ArgumentParser, object):
             self.outputoptions[(inputformat, templateformat)] = (outputformat, processor)
         self.inputformats = inputformats
         inputformathelp = self.getformathelp(inputformats)
-        inputoption = argparse._StoreAction(["-i", "--input"], dest="input",
+        inputoption = argparse._StoreAction([], dest="input",
                 default=None, metavar="INPUT",
                 help="read from INPUT in %s" % (inputformathelp))
         inputoption.optionalswitch = True
@@ -249,7 +249,7 @@ class RecursiveOptionParser(argparse.ArgumentParser, object):
                 help="exclude names matching EXCLUDE from input paths")
         self.define_option(excludeoption)
         outputformathelp = self.getformathelp(outputformats)
-        outputoption = argparse._StoreAction(["-o", "--output"], dest="output",
+        outputoption = argparse._StoreAction([], dest="output",
                 default=None, metavar="OUTPUT",
                 help="write to OUTPUT in %s" % (outputformathelp))
         outputoption.optionalswitch = True
