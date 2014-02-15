@@ -174,7 +174,6 @@ class FilterOptionParser(optrecurse.RecursiveOptionParser):
         """Construct the specialized Option Parser."""
         optrecurse.RecursiveOptionParser.__init__(self, formats)
 
-        self.set_usage()
         self.add_option("-l", "--listfilters", action="callback", dest='listfilters',
             default=False, callback_kwargs={'dest_value': True},
             callback=self.parse_noinput, help="list filters available")

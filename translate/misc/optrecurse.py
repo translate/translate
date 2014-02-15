@@ -144,14 +144,6 @@ class RecursiveOptionParser(argparse.ArgumentParser, object):
             file = sys.stdout
         file.write(self.format_manpage())
 
-    def set_usage(self, usage=None):
-        """sets the usage string - if usage not given, uses getusagestring for
-        each option"""
-        if usage is None:
-            self.usage = "%prog " + " ".join([self.getusagestring(option) for option in self.option_list])
-        else:
-            super(RecursiveOptionParser, self).set_usage(usage)
-
     def warning(self, msg, options=None, exc_info=None):
         """Print a warning message incorporating 'msg' to stderr and exit."""
         if options:
