@@ -22,10 +22,10 @@ class TestOO2POCommand(test_convert.TestConvertCommand, TestOO2XLIFF):
     def test_help(self):
         """tests getting help"""
         options = test_convert.TestConvertCommand.test_help(self)
-        options = self.help_check(options, "--source-language=LANG")
-        options = self.help_check(options, "--language=LANG")
-        options = self.help_check(options, "--duplicates=DUPLICATESTYLE")
-        options = self.help_check(options, "--multifile=MULTIFILESTYLE")
+        options = self.help_check(options, "--source-language LANG")
+        options = self.help_check(options, "--language LANG")
+        options = self.help_check(options, "--duplicates DUPLICATESTYLE")
+        options = self.help_check(options, "--multifile MULTIFILESTYLE")
         options = self.help_check(options, "--nonrecursiveinput", last=True)
 
     def test_preserve_filename(self):
