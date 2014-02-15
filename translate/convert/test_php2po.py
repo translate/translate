@@ -146,5 +146,5 @@ class TestPhp2POCommand(test_convert.TestConvertCommand, TestPhp2PO):
         """tests getting help"""
         options = test_convert.TestConvertCommand.test_help(self)
         options = self.help_check(options, "-P, --pot")
-        options = self.help_check(options, "-t TEMPLATE, --template=TEMPLATE")
-        options = self.help_check(options, "--duplicates=DUPLICATESTYLE", last=True)
+        options = self.help_check(options, "-t TEMPLATE, --template TEMPLATE")
+        options = self.help_check(options, "--duplicates DUPLICATESTYLE", last=True)

@@ -252,7 +252,7 @@ class TestXLIFF2POCommand(test_convert.TestConvertCommand, TestXLIFF2PO):
         """tests getting help"""
         options = test_convert.TestConvertCommand.test_help(self)
         options = self.help_check(options, "-P, --pot")
-        options = self.help_check(options, "--duplicates=DUPLICATESTYLE")
+        options = self.help_check(options, "--duplicates DUPLICATESTYLE")
 
     def test_preserve_filename(self):
         """Ensures that the filename is preserved."""
