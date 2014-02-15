@@ -107,7 +107,7 @@ class inifile(base.TranslationStore):
         for unit in self.units:
             for location in unit.getlocations():
                 match = re.match('\\[(?P<section>.+)\\](?P<entry>.+)', location)
-                _outinifile[match.groupdict()['section']][match.groupdict()['entry']] = self._dialect.escape(unit.target)
+                _outinifile[match.groupdict()['section']][match.groupdict()['entry']] = self._dialect.escape(unit.source)
         if _outinifile:
             out.write(str(_outinifile))
 
