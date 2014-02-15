@@ -233,7 +233,7 @@ class RecursiveOptionParser(argparse.ArgumentParser, object):
             self.outputoptions[(inputformat, templateformat)] = (outputformat, processor)
         self.inputformats = inputformats
         inputformathelp = self.getformathelp(inputformats)
-        inputoption = argparse.Action(["-i", "--input"], dest="input",
+        inputoption = argparse._StoreAction(["-i", "--input"], dest="input",
                 default=None, metavar="INPUT",
                 help="read from INPUT in %s" % (inputformathelp))
         inputoption.optionalswitch = True
@@ -245,7 +245,7 @@ class RecursiveOptionParser(argparse.ArgumentParser, object):
                 help="exclude names matching EXCLUDE from input paths")
         self.define_option(excludeoption)
         outputformathelp = self.getformathelp(outputformats)
-        outputoption = argparse.Action(["-o", "--output"], dest="output",
+        outputoption = argparse._StoreAction(["-o", "--output"], dest="output",
                 default=None, metavar="OUTPUT",
                 help="write to OUTPUT in %s" % (outputformathelp))
         outputoption.optionalswitch = True
@@ -254,7 +254,7 @@ class RecursiveOptionParser(argparse.ArgumentParser, object):
         if self.usetemplates:
             self.templateformats = templateformats
             templateformathelp = self.getformathelp(self.templateformats)
-            templateoption = argparse.Action(["-t", "--template"],
+            templateoption = argparse._StoreAction(["-t", "--template"],
                 dest="template", default=None, metavar="TEMPLATE",
                 help="read from TEMPLATE in %s" % (templateformathelp))
             self.define_option(templateoption)
@@ -268,7 +268,7 @@ class RecursiveOptionParser(argparse.ArgumentParser, object):
             ("names", progressbar.MessageProgressBar),
             ("verbose", progressbar.VerboseProgressBar),
         ])
-        progressoption = argparse.Action(["--progress"], dest="progress",
+        progressoption = argparse._StoreAction(["--progress"], dest="progress",
                 default="bar",
                 choices=list(self.progresstypes.keys()), metavar="PROGRESS",
                 help="show progress as: %s" % (", ".join(self.progresstypes)))
@@ -277,7 +277,7 @@ class RecursiveOptionParser(argparse.ArgumentParser, object):
     def seterrorleveloptions(self):
         """Sets the errorlevel options."""
         self.errorleveltypes = ["none", "message", "exception", "traceback"]
-        errorleveloption = argparse.Action(["--errorlevel"],
+        errorleveloption = argparse._StoreAction(["--errorlevel"],
                 dest="errorlevel", default="message",
                 choices=self.errorleveltypes, metavar="ERRORLEVEL",
                 help="show errorlevel as: %s" %
