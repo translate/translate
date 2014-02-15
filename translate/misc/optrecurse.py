@@ -17,9 +17,9 @@
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, see <http://www.gnu.org/licenses/>.
 
+import argparse
 import fnmatch
 import logging
-import optparse
 import os.path
 import re
 import six
@@ -75,11 +75,11 @@ class ManPageOption(optparse.Option, object):
                                                       values, parser)
 
 
-class ManHelpFormatter(optparse.HelpFormatter):
+class ManHelpFormatter(argparse.HelpFormatter):
 
     def __init__(self, indent_increment=0, max_help_position=0, width=80,
                  short_first=1):
-        optparse.HelpFormatter.__init__(
+        argparse.HelpFormatter.__init__(
             self, indent_increment, max_help_position, width, short_first)
 
     def format_option_strings(self, option):
@@ -101,8 +101,8 @@ class ManHelpFormatter(optparse.HelpFormatter):
         return '\\fB%s\\fP' % ("\\fR, \\fP".join(opts))
 
 
-class RecursiveOptionParser(optparse.OptionParser, object):
-    """A specialized Option Parser for recursing through directories."""
+class RecursiveOptionParser(argparse.ArgumentParser, object):
+    """A specialized Argument Parser for recursing through directories."""
 
     def __init__(self, formats, usetemplates=False, allowmissingtemplate=False,
                  description=None):
@@ -113,7 +113,7 @@ class RecursiveOptionParser(optparse.OptionParser, object):
         for an explanation of the formats parameter.
         """
 
-        optparse.OptionParser.__init__(self, version="%prog " + __version__.sver,
+        argparse.ArgumentParser.__init__(self, version="%prog " + __version__.sver,
                                        description=description)
         self.setmanpageoption()
         self.setprogressoptions()
