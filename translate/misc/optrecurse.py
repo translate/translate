@@ -437,12 +437,12 @@ class RecursiveOptionParser(argparse.ArgumentParser, object):
     def run(self):
         """Parses the arguments, and runs recursiveprocess with the resulting
         options..."""
-        (options, args) = self.parse_args()
+        args = self.parse_args()
         # this is so derived classes can modify the inputformats etc based on
         # the options
-        options.inputformats = self.inputformats
-        options.outputoptions = self.outputoptions
-        self.recursiveprocess(options)
+        args.inputformats = self.inputformats
+        args.outputoptions = self.outputoptions
+        self.recursiveprocess(args)
 
     def recursiveprocess(self, options):
         """Recurse through directories and process files."""
