@@ -103,11 +103,11 @@ def main(argv=None):
     }
     parser = convert.ConvertOptionParser(formats, usetemplates=True, description=__doc__)
     parser.add_argument(
-        "--encoding", dest="encoding", default='utf-8', type="string",
+        "--encoding", dest="encoding", default='utf-8', type=str,
         help="The encoding of the template file (default: UTF-8)")
     parser.passthrough.append("encoding")
     parser.add_argument(
-        "-w", "--wrap", dest="wrap", default=None, type="int",
+        "-w", "--wrap", dest="wrap", default=None, type=int,
         help="set number of columns to wrap text at", metavar="WRAP")
     parser.passthrough.append("wrap")
     parser.add_threshold_option()

@@ -459,11 +459,11 @@ def main():
     parser = TerminologyOptionParser(formats)
 
     parser.add_argument(
-        "-u", "--update", type="string", dest="update",
+        "-u", "--update", type=str, dest="update",
         metavar="UPDATEFILE", help="update terminology in UPDATEFILE")
 
     parser.add_argument(
-        "-S", "--stopword-list", type="string", metavar="STOPFILE", dest="stopfile",
+        "-S", "--stopword-list", type=str, metavar="STOPFILE", dest="stopfile",
         help="read stopword (term exclusion) list from STOPFILE (default %s)" %
         file_discovery.get_abs_data_filename('stoplist-en'))
 
@@ -483,27 +483,27 @@ def main():
         metavar="ACCELERATORS", help="ignore the given accelerator characters when matching")
 
     parser.add_argument(
-        "-t", "--term-words", type="int", dest="termlength", default="3",
+        "-t", "--term-words", type=int, dest="termlength", default="3",
         help="generate terms of up to LENGTH words (default 3)", metavar="LENGTH")
     parser.add_argument(
-        "--nonstop-needed", type="int", dest="nonstopmin", default="1",
+        "--nonstop-needed", type=int, dest="nonstopmin", default="1",
         help="omit terms with less than MIN nonstop words (default 1)", metavar="MIN")
     parser.add_argument(
-        "--inputs-needed", type="int", dest="inputmin",
+        "--inputs-needed", type=int, dest="inputmin",
         help="omit terms appearing in less than MIN input files (default 2, or 1 if only one input file)", metavar="MIN")
     parser.add_argument(
-        "--fullmsg-needed", type="int", dest="fullmsgmin", default="1",
+        "--fullmsg-needed", type=int, dest="fullmsgmin", default="1",
         help="omit full message terms appearing in less than MIN different messages (default 1)", metavar="MIN")
     parser.add_argument(
-        "--substr-needed", type="int", dest="substrmin", default="2",
+        "--substr-needed", type=int, dest="substrmin", default="2",
         help="omit substring-only terms appearing in less than MIN different messages (default 2)", metavar="MIN")
     parser.add_argument(
-        "--locs-needed", type="int", dest="locmin", default="2",
+        "--locs-needed", type=int, dest="locmin", default="2",
         help="omit terms appearing in less than MIN different original source files (default 2)", metavar="MIN")
 
     parser.add_argument(
         "--sort", dest="sortorders", action="append",
-        type="choice", choices=TerminologyExtractor.sortorders_default, metavar="ORDER",
+        type=str, choices=TerminologyExtractor.sortorders_default, metavar="ORDER",
         help="output sort order(s): %s (may repeat option, default is all in above order)" % ', '.join(TerminologyExtractor.sortorders_default))
 
     parser.add_argument(
