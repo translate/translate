@@ -226,7 +226,7 @@ class RecursiveOptionParser(argparse.ArgumentParser, object):
         """Defines the given option, replacing an existing one of the same
         short name if neccessary...
         """
-        self.add_action(action)
+        self._add_action(action)
 
     def setformats(self, formats, usetemplates):
         """Sets the format options using the given format dictionary.
