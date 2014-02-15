@@ -31,16 +31,15 @@ from translate import __version__
 from translate.misc import progressbar
 
 
-class ManPageOption(argparse.Action, object):
-    ACTIONS = argparse.Action.ACTIONS + ("manpage",)
+class ManPageAction(argparse.Action):
 
-    def take_action(self, action, dest, opt, value, values, parser):
-        """take_action that can handle manpage as well as standard actions"""
-        if action == "manpage":
-            parser.print_manpage()
-            sys.exit(0)
-        return super(ManPageOption, self).take_action(action, dest, opt, value,
-                                                      values, parser)
+    def __init__(self, foo, **kwargs):
+        super(FooAction, self).__init__(**kwargs)
+
+    def __call__(self, parser, namespace, value, option_string=None):
+        """handle manpage output"""
+        parser.print_manpage()
+        sys.exit(0)
 
 
 class ManHelpFormatter(optparse.HelpFormatter):
