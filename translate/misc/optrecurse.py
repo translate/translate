@@ -63,10 +63,14 @@ class ProgressBar(object):
         self._progressbar.show(filename)
 
 
-class ManPageAction(argparse.Action):
 
-    def __init__(self, **kwargs):
-        super(ManPageAction, self).__init__(**kwargs)
+class ManPageAction(argparse._StoreTrueAction):
+
+    def __init__(self,
+                 option_strings,
+                 dest,
+                 help=None):
+        super(ManPageAction, self).__init__(option_strings, dest, help=help)
 
     def __call__(self, parser, namespace, value, option_string=None):
         """handle manpage output"""
@@ -133,9 +137,8 @@ class RecursiveOptionParser(argparse.ArgumentParser, object):
         """creates a manpage option that allows the optionparser to generate a
         manpage
         """
-        manpageoption = argparse.Action(
+        manpageoption = ManPageAction(
             ["--manpage"], dest="manpage",
-            default=False, action=ManPageAction,
             help="output a manpage based on the help")
         self.define_option(manpageoption)
 
