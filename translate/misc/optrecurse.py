@@ -32,10 +32,13 @@ from translate.misc import progressbar
 from translate.misc.dictutils import ordereddict as OrderedDict
 
 
-class ManPageAction(argparse.Action):
+class ManPageAction(argparse._StoreTrueAction):
 
-    def __init__(self, **kwargs):
-        super(ManPageAction, self).__init__(**kwargs)
+    def __init__(self,
+                 option_strings,
+                 dest,
+                 help=None):
+        super(ManPageAction, self).__init__(option_strings, dest, help=help)
 
     def __call__(self, parser, namespace, value, option_string=None):
         """handle manpage output"""
@@ -104,8 +107,7 @@ class RecursiveOptionParser(argparse.ArgumentParser, object):
     def setmanpageoption(self):
         """creates a manpage option that allows the optionparser to generate a
         manpage"""
-        manpageoption = argparse.Action(["--manpage"], dest="manpage",
-                                      default=False, action=ManPageAction,
+        manpageoption = ManPageAction(["--manpage"], dest="manpage",
             help="output a manpage based on the help")
         self.define_option(manpageoption)
 
