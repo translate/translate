@@ -310,16 +310,16 @@ class GrepOptionParser(optrecurse.RecursiveOptionParser):
 
     def run(self):
         """parses the arguments, and runs recursiveprocess with the resulting options"""
-        (options, args) = self.parse_args()
-        options.inputformats = self.inputformats
-        options.outputoptions = self.outputoptions
-        options.checkfilter = GrepFilter(options.searchstring,
-                                         options.searchparts,
-                                         options.ignorecase,
-                                         options.useregexp,
-                                         options.invertmatch,
-                                         options.keeptranslations,
-                                         options.accelchar,
+        args = self.parse_args()
+        args.inputformats = self.inputformats
+        args.outputoptions = self.outputoptions
+        args.checkfilter = GrepFilter(args.searchstring,
+                                         args.searchparts,
+                                         args.ignorecase,
+                                         args.useregexp,
+                                         args.invertmatch,
+                                         args.keeptranslations,
+                                         args.accelchar,
                                          locale.getpreferredencoding())
         self.recursiveprocess(options)
 
