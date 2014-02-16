@@ -267,7 +267,7 @@ class RecursiveOptionParser(argparse.ArgumentParser, object):
             self.outputoptions[(inputformat, templateformat)] = (outputformat, processor)
         inputformathelp = self.getformathelp(self.inputformats)
         inputoption = argparse._StoreAction(
-            [], dest="input",
+            [], dest="input", nargs="?",
             default=None, metavar="INPUT",
             help="read from INPUT in %s" % (inputformathelp))
         inputoption.optionalswitch = True
@@ -282,7 +282,7 @@ class RecursiveOptionParser(argparse.ArgumentParser, object):
         outputformathelp = self.getformathelp(outputformats)
         outputoption = argparse._StoreAction(
             [], dest="output",
-            default=None, metavar="OUTPUT",
+            default=None, metavar="OUTPUT", nargs="?",
             help="write to OUTPUT in %s" % (outputformathelp))
         outputoption.optionalswitch = True
         outputoption.required = True
@@ -339,26 +339,10 @@ class RecursiveOptionParser(argparse.ArgumentParser, object):
         args.
         """
         args = super(RecursiveOptionParser, self).parse_args(args, values)
-        # some intelligent as to what reasonable people might give on the
-        # command line
-        if args and not options.input:
-            if len(args) > 1:
-                options.input = args[:-1]
-                args = args[-1:]
-            else:
-                options.input = args[0]
-                args = []
-        if args and not options.output:
-            options.output = args[-1]
-            args = args[:-1]
-        if args:
-            self.error("You have used an invalid combination of --input, --output and freestanding args")
-        if isinstance(options.input, list) and len(options.input) == 1:
-            options.input = options.input[0]
-        if options.input is None:
+        if args.input is None:
             self.error("You need to give an inputfile or use - for stdin ; use --help for full usage instructions")
-        elif options.input == '-':
-            options.input = None
+        elif args.input == '-':
+            args.input = None
         return args
 
     def getpassthroughoptions(self, options):
