@@ -170,7 +170,7 @@ $foo='bar';
         phpfile = self.phpparse(phpsource)
         assert len(phpfile.units) == 1
         phpunit = phpfile.units[0]
-        assert phpunit.getoutput() == phpsource
+        assert str(phpunit) == phpsource
 
     def test_multiline(self):
         """check that we preserve newlines in a multiline message"""
