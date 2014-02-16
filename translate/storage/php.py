@@ -210,6 +210,13 @@ class phpfile(base.TranslationStore):
             inputfile.close()
             self.parse(phpsrc)
 
+    def __str__(self):
+        """Convert the units back to lines."""
+        lines = []
+        for unit in self.units:
+            lines.append(str(unit))
+        return "".join(lines)
+
     def parse(self, phpsrc):
         """Read the source of a PHP file in and include them as units."""
         newunit = phpunit()
@@ -378,10 +385,3 @@ class phpfile(base.TranslationStore):
             # previous translation lines.
             if invalue:
                 lastvalue = lastvalue + value + "\n"
-
-    def __str__(self):
-        """Convert the units back to lines."""
-        lines = []
-        for unit in self.units:
-            lines.append(str(unit))
-        return "".join(lines)
