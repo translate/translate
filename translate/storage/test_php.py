@@ -605,7 +605,7 @@ $month_mar = 'Mar';
     def test_simpledefinition_after_define(self):
         """Check that a simple definition after define is parsed correctly."""
         phpsource = """define("_FINISH", "Rematar");
-$lang['mediaselect'] = 'Bestand selectie';"""        
+$lang['mediaselect'] = 'Bestand selectie';"""
         phpfile = self.phpparse(phpsource)
         print(len(phpfile.units))
         assert len(phpfile.units) == 2
