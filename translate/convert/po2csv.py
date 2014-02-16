@@ -39,7 +39,7 @@ class po2csv:
             #csvunit.location = "location"
             #csvunit.source = "source"
             #csvunit.target = "target"
-        elif inputunit.isblank():
+        elif inputunit.is_blank:
             return None
         else:
             csvunit.location = self.convertcomments(inputunit)

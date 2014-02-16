@@ -93,7 +93,7 @@ class TestPO2OO:
 
     @mark.xfail(reason="this test fails because the resultant PO file returns as po.isempty since...")
     def test_roundtrip_spaces(self):
-        # FIXME: this test fails because the resultant PO file returns as po.isempty since .isblank returns true
+        # FIXME: this test fails because the resultant PO file returns as po.isempty since .is_blank returns true
         # which is caused by isblankmsgtr returning True.  Its a complete mess which would mean unravelling lots
         # of yuch in pypo.  Until we have time to do that unravelling we're diabling this test.  You can reenable
         # once we've fixed that.

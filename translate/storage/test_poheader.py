@@ -146,7 +146,7 @@ def test_header_blank():
         assert len(pofile.units) == 1
         header = pofile.header()
         assert header.isheader()
-        assert not header.isblank()
+        assert not header.is_blank
 
         headeritems = pofile.parseheader()
         assert headeritems["Project-Id-Version"] == "PACKAGE VERSION"
@@ -222,7 +222,7 @@ msgstr ""
         assert len(pofile.units) == 1
         header = pofile.units[0]
         assert header.isheader()
-        assert not header.isblank()
+        assert not header.is_blank
 
         headeritems = pofile.parseheader()
         nplural, plural = pofile.getheaderplural()
@@ -243,7 +243,7 @@ msgstr ""
     assert len(pofile.units) == 1
     header = pofile.units[0]
     assert header.isheader()
-    assert not header.isblank()
+    assert not header.is_blank
 
     headeritems = pofile.parseheader()
     nplural, plural = pofile.getheaderplural()

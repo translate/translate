@@ -91,7 +91,7 @@ class rcunit(base.TranslationUnit):
 
     def getoutput(self):
         """Convert the element back into formatted lines for a .rc file."""
-        if self.isblank():
+        if self.is_blank:
             return "".join(self.comments + ["\n"])
         else:
             return "".join(self.comments + ["%s=%s\n" % (self.name, self.value)])
@@ -108,8 +108,9 @@ class rcunit(base.TranslationUnit):
     def removenotes(self):
         self.comments = []
 
-    def isblank(self):
-        """Returns whether this is a blank element, containing only comments."""
+    @property
+    def is_blank(self):
+        """Return whether this is a blank unit, containing only comments."""
         return not (self.name or self.value)
 
 
