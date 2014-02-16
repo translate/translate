@@ -205,27 +205,30 @@ class WordfastTime(object):
         elif isinstance(newtime, time.struct_time):
             self.time = newtime
 
-    def get_timestring(self):
+    @property
+    def timestring(self):
         """Get the time in the Wordfast time format"""
         if not self._time:
             return None
         else:
             return time.strftime(WF_TIMEFORMAT, self._time)
 
-    def set_timestring(self, timestring):
+    @timestring.setter
+    def timestring(self, timestring):
         """Set the time_sturct object using a Wordfast time formated string
 
         :param timestring: A Wordfast time string (YYYMMDD~hhmmss)
         :type timestring: String
         """
         self._time = time.strptime(timestring, WF_TIMEFORMAT)
-    timestring = property(get_timestring, set_timestring)
 
-    def get_time(self):
+    @property
+    def time(self):
         """Get the time_struct object"""
         return self._time
 
-    def set_time(self, newtime):
+    @time.setter
+    def time(self, newtime):
         """Set the time_struct object
 
         :param newtime: a new time object
@@ -235,7 +238,6 @@ class WordfastTime(object):
             self._time = newtime
         else:
             self._time = None
-    time = property(get_time, set_time)
 
     def __str__(self):
         if not self.timestring:
@@ -261,13 +263,14 @@ class WordfastHeader(object):
         defaultheader['date'] = '%%%s' % WordfastTime(time.localtime()).timestring
         return defaultheader
 
-    def getheader(self):
+    @property
+    def header(self):
         """Get the header dictionary"""
         return self._header_dict
 
-    def setheader(self, newheader):
+    @header.setter
+    def header(self, newheader):
         self._header_dict = newheader
-    header = property(getheader, setheader)
 
     def settargetlang(self, newlang):
         self._header_dict['target-lang'] = '%%%s' % newlang
