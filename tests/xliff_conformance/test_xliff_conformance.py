@@ -62,7 +62,7 @@ def find_files(base, check_ext):
 
 
 def test_open_office_to_xliff():
-    assert call(['oo2xliff', 'en-US.sdf', '-l', 'fr', 'fr']) == 0
+    assert call(['oo2xliff', '-l', 'fr', 'en-US.sdf', 'fr']) == 0
     for filepath in find_files('fr', '.xlf'):
         assert xmllint(filepath)
     cleardir('fr')
