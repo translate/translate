@@ -148,8 +148,10 @@ class TestXLiffGrep:
         """helper that parses xliff text and passes it through a filter"""
         if cmdlineoptions is None:
             cmdlineoptions = []
-        options, args = pogrep.cmdlineparser().parse_args(["xxx.xliff"] + cmdlineoptions)
-        grepfilter = pogrep.GrepFilter(searchstring, options.searchparts, options.ignorecase, options.useregexp, options.invertmatch, options.accelchar)
+        args = pogrep.cmdlineparser().parse_args(["xxx.xliff"] + cmdlineoptions)
+        grepfilter = pogrep.GrepFilter(searchstring, args.searchparts,
+                                       args.ignorecase, args.useregexp,
+                                       args.invertmatch, args.accelchar)
         tofile = grepfilter.filterfile(self.xliff_parse(xliff_text))
         return str(tofile)
 
