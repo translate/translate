@@ -288,25 +288,6 @@ class GrepOptionParser(optrecurse.RecursiveOptionParser):
         """parses the command line options, handling implicit input/output args"""
         args = optrecurse.argparse.ArgumentParser.parse_args(self, args, values)
         # some intelligence as to what reasonable people might give on the command line
-        if args:
-            options.searchstring = args[0]
-            args = args[1:]
-        else:
-            self.error("At least one argument must be given for the search string")
-        if args and not options.input:
-            if not options.output:
-                options.input = args[:-1]
-                args = args[-1:]
-            else:
-                options.input = args
-                args = []
-        if args and not options.output:
-            options.output = args[-1]
-            args = args[:-1]
-        if args:
-            self.error("You have used an invalid combination of --input, --output and freestanding args")
-        if isinstance(options.input, list) and len(options.input) == 1:
-            options.input = options.input[0]
         return args
 
     def run(self):
@@ -356,6 +337,8 @@ def cmdlineparser():
         metavar="ACCELERATOR", help="ignores the given accelerator when matching")
     parser.add_argument("-k", "--keep-translations", dest="keeptranslations",
         action="store_true", default=False, help="always extract units with translations")
+    parser.add_argument("searchstring",
+        help="string to find")
     parser.passthrough.append('checkfilter')
     parser.description = __doc__
     return parser
