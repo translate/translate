@@ -173,16 +173,9 @@ class FilterOptionParser(optrecurse.RecursiveOptionParser):
         optrecurse.RecursiveOptionParser.__init__(self, formats)
 
         self.add_argument(
-            "-l", "--listfilters", action="callback", dest='listfilters',
-            default=False, callback_kwargs={'dest_value': True},
-            callback=self.parse_noinput, help="list filters available")
-
-    def parse_noinput(self, option, opt, value, parser, *args, **kwargs):
-        """This sets an option to *True*, but also sets input to *-* to prevent
-        an error.
-        """
-        setattr(parser.values, option.dest, kwargs['dest_value'])
-        parser.values.input = "-"
+            "-l", "--listfilters", action="store_true", dest='listfilters',
+            default=False,
+            help="list filters available")
 
     def run(self):
         """Parses the arguments, and runs recursiveprocess with the resulting
