@@ -188,23 +188,23 @@ class FilterOptionParser(optrecurse.RecursiveOptionParser):
         """Parses the arguments, and runs recursiveprocess with the resulting
         options.
         """
-        (options, args) = self.parse_args()
+        args = self.parse_args()
 
-        if options.filterclass is None:
+        if args.filterclass is None:
             checkerclasses = [checks.StandardChecker, checks.StandardUnitChecker]
         else:
-            checkerclasses = [options.filterclass, checks.StandardUnitChecker]
+            checkerclasses = [args.filterclass, checks.StandardUnitChecker]
 
-        checkerconfig = build_checkerconfig(options)
-        options.checkfilter = pocheckfilter(options, checkerclasses, checkerconfig)
+        checkerconfig = build_checkerconfig(args)
+        args.checkfilter = pocheckfilter(args, checkerclasses, checkerconfig)
 
-        if not options.checkfilter.checker.combinedfilters:
+        if not args.checkfilter.checker.combinedfilters:
             self.error("No valid filters were specified")
 
-        if options.listfilters:
-            print(options.checkfilter.getfilterdocs())
+        if args.listfilters:
+            print(args.checkfilter.getfilterdocs())
         else:
-            self.recursiveprocess(options)
+            self.recursiveprocess(args)
 
 
 def runfilter(inputfile, outputfile, templatefile, checkfilter=None):

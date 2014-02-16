@@ -18,8 +18,8 @@ class TestPOGrep:
         """helper that parses po source and passes it through a filter"""
         if cmdlineoptions is None:
             cmdlineoptions = []
-        options, args = pogrep.cmdlineparser().parse_args(["xxx.po"] + cmdlineoptions)
-        grepfilter = pogrep.GrepFilter(searchstring, options.searchparts, options.ignorecase, options.useregexp, options.invertmatch, options.keeptranslations, options.accelchar)
+        args = pogrep.cmdlineparser().parse_args(["xxx.po"] + cmdlineoptions)
+        grepfilter = pogrep.GrepFilter(searchstring, args.searchparts, args.ignorecase, args.useregexp, args.invertmatch, args.keeptranslations, args.accelchar)
         tofile = grepfilter.filterfile(self.poparse(posource))
         print(bytes(tofile))
         return bytes(tofile)

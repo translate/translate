@@ -387,12 +387,12 @@ class TerminologyOptionParser(optrecurse.RecursiveOptionParser):
     def run(self):
         """parses the arguments, and runs recursiveprocess with the resulting options"""
         self.files = 0
-        (options, args) = self.parse_args()
-        self.extractor = TerminologyExtractor(foldtitle=options.foldtitle, ignorecase=options.ignorecase,
-                                              accelchars=options.accelchars, termlength=options.termlength,
-                                              sourcelanguage=options.sourcelanguage,
-                                              invert=options.invert, stopfile=options.stopfile)
-        self.recursiveprocess(options)
+        args = self.parse_args()
+        self.extractor = TerminologyExtractor(foldtitle=args.foldtitle, ignorecase=args.ignorecase,
+                                              accelchars=args.accelchars, termlength=args.termlength,
+                                              sourcelanguage=args.sourcelanguage,
+                                              invert=args.invert, stopfile=args.stopfile)
+        self.recursiveprocess(args)
 
     def recursiveprocess(self, options):
         """recurse through directories and process files"""
