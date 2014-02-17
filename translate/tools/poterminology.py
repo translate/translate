@@ -342,46 +342,38 @@ class TerminologyOptionParser(optrecurse.RecursiveOptionParser):
     def parse_args(self, args=None, values=None):
         """parses the command line options, handling implicit input/output args"""
         args = optrecurse.argparse.ArgumentParser.parse_args(self, args, values)
-        # some intelligence as to what reasonable people might give on the command line
-        if args and not options.input:
-            if not options.output and not options.update and len(args) > 1:
-                options.input = args[:-1]
-                args = args[-1:]
-            else:
-                options.input = args
-                args = []
         # don't overwrite last freestanding argument file, to avoid accidents
         # due to shell wildcard expansion
-        if args and not options.output and not options.update:
+        if args and not args.output and not args.update:
             if os.path.lexists(args[-1]) and not os.path.isdir(args[-1]):
                 self.error("To overwrite %s, specify it with -o/--output or -u/--update" % (args[-1]))
-            options.output = args[-1]
+            args.output = args[-1]
             args = args[:-1]
-        if options.output and options.update:
+        if args.output and args.update:
             self.error("You cannot use both -u/--update and -o/--output")
         if args:
             self.error("You have used an invalid combination of -i/--input, -o/--output, -u/--update and freestanding args")
-        if not options.input:
+        if not args.input:
             self.error("No input file or directory was specified")
-        if isinstance(options.input, list) and len(options.input) == 1:
-            options.input = options.input[0]
-            if options.inputmin is None:
-                options.inputmin = 1
-        elif not isinstance(options.input, list) and not os.path.isdir(options.input):
-            if options.inputmin is None:
-                options.inputmin = 1
-        elif options.inputmin is None:
-            options.inputmin = 2
-        if options.update:
-            options.output = options.update
-            if isinstance(options.input, list):
-                options.input.append(options.update)
-            elif options.input:
-                options.input = [options.input, options.update]
+        if isinstance(args.input, list) and len(args.input) == 1:
+            args.input = args.input[0]
+            if args.inputmin is None:
+                args.inputmin = 1
+        elif not isinstance(args.input, list) and not os.path.isdir(args.input):
+            if args.inputmin is None:
+                args.inputmin = 1
+        elif args.inputmin is None:
+            args.inputmin = 2
+        if args.update:
+            args.output = args.update
+            if isinstance(args.input, list):
+                args.input.append(args.update)
+            elif args.input:
+                args.input = [args.input, args.update]
             else:
-                options.input = options.update
-        if not options.output:
-            options.output = "pootle-terminology.pot"
+                args.input = args.update
+        if not args.output:
+            args.output = "pootle-terminology.pot"
         return args
 
     def run(self):
