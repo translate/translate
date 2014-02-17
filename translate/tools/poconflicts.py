@@ -37,24 +37,8 @@ class ConflictOptionParser(optrecurse.RecursiveOptionParser):
 
     def parse_args(self, args=None, values=None):
         """parses the command line options, handling implicit input/output args"""
-        args = optrecurse.argparse.argumentParser.parse_args(self, args, values)
+        args = optrecurse.argparse.ArgumentParser.parse_args(self, args, values)
         # some intelligence as to what reasonable people might give on the command line
-        if args and not options.input:
-            if not options.output:
-                options.input = args[:-1]
-                args = args[-1:]
-            else:
-                options.input = args
-                args = []
-        if args and not options.output:
-            options.output = args[-1]
-            args = args[:-1]
-        if not options.output:
-            self.error("output file is required")
-        if args:
-            self.error("You have used an invalid combination of --input, --output and freestanding args")
-        if isinstance(options.input, list) and len(options.input) == 1:
-            options.input = options.input[0]
         return args
 
     def recursiveprocess(self, options):
