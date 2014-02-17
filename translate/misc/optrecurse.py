@@ -313,22 +313,6 @@ class RecursiveOptionParser(argparse.ArgumentParser, object):
         """Parses the command line options, handling implicit input/output
         args."""
         args = super(RecursiveOptionParser, self).parse_args(args, values)
-        # some intelligent as to what reasonable people might give on the
-        # command line
-        #if args and not args.input:
-        #    if len(args) > 1:
-        #        args.input = args[:-1]
-        #        args = args[-1:]
-        #    else:
-        #        args.input = args[0]
-        #        args = []
-        #if args and not args.output:
-        #    args.output = args[-1]
-        #    args = args[:-1]
-        #if args:
-        #    self.error("You have used an invalid combination of --input, --output and freestanding args")
-        #if isinstance(args.input, list) and len(args.input) == 1:
-        #    args.input = args.input[0]
         if args.input is None:
             self.error("You need to give an inputfile or use - for stdin ; use --help for full usage instructions")
         elif args.input == '-':
