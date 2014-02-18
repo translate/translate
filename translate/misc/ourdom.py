@@ -29,6 +29,7 @@ those objects.
 
 from xml.dom import expatbuilder, minidom
 
+
 # helper functions we use to do xml the way we want, used by modified
 # classes below
 
