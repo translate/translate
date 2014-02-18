@@ -25,8 +25,8 @@ See: http://docs.translatehouse.org/projects/translate-toolkit/en/latest/command
 for examples and usage instructions.
 """
 
-from cStringIO import StringIO
 from contextlib import contextmanager
+from cStringIO import StringIO
 
 from translate.storage import factory, odf_io
 
