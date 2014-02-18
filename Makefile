@@ -5,7 +5,7 @@ VERSION=$(shell python setup.py --version)
 FULLNAME=$(shell python setup.py --fullname)
 SFUSERNAME=$(shell egrep -A5 sourceforge ~/.ssh/config | egrep -m1 User | cut -d" " -f2)
 
-.PHONY: all build docs requirements help publish test-publish
+.PHONY: all build docs requirements help publish sort-imports test-publish
 
 all: help
 
@@ -19,6 +19,9 @@ docs:
 
 publish-pypi:
 	python setup.py sdist ${FORMATS} upload
+
+sort-imports:
+	isort -rc .
 
 test-publish-pypi:
 	 python setup.py sdist ${FORMATS} upload -r https://testpypi.python.org/pypi
@@ -37,6 +40,7 @@ help:
 	@echo
 	@echo "  build - create sdist with required prep"
 	@echo "  requirements - (re)generate pinned and minimum requirements"
+	@echo "  sort-imports - sort Python imports"
 	@echo "  publish-pypi - publish on PyPI"
 	@echo "  test-publish-pypi - publish on PyPI testing platform"
 	@echo "  publish-sourceforge - publish on sourceforge"

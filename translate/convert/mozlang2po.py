@@ -24,8 +24,7 @@
 """Convert Mozilla .lang files to Gettext PO localization files.
 """
 
-from translate.storage import mozilla_lang as lang
-from translate.storage import po
+from translate.storage import mozilla_lang as lang, po
 
 
 class lang2po:

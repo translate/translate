@@ -3,8 +3,7 @@
 
 from pytest import mark
 
-from translate.storage import omegat as ot
-from translate.storage import test_base
+from translate.storage import omegat as ot, test_base
 
 
 class TestOtUnit(test_base.TestTranslationUnit):
