@@ -4,6 +4,7 @@
 import sys
 
 from pytest import importorskip, mark, raises
+cpo = importorskip("not sys.platform.startswith('linux')")
 
 from translate.misc import wStringIO
 from translate.misc.multistring import multistring
@@ -13,8 +14,6 @@ from translate.storage import test_po
 cpo = importorskip("translate.storage.cpo")
 
 
-@mark.skipif(not sys.platform.startswith('linux'),
-             reason="cPO only works on Linux")
 class TestCPOUnit(test_po.TestPOUnit):
     UnitClass = cpo.pounit
 
@@ -81,8 +80,6 @@ class TestCPOUnit(test_po.TestPOUnit):
         assert unit.getnotes() == "# Double commented comment"
 
 
-@mark.skipif(not sys.platform.startswith('linux'),
-             reason="cPO only works on Linux")
 class TestCPOFile(test_po.TestPOFile):
     StoreClass = cpo.pofile
 
