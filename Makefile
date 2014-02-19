@@ -82,7 +82,7 @@ min-required.txt: requirements/*.txt
 	 fi
 	@echo "creating $@"
 	@# uses `ls -r` to alphabetically reverse req files for better ordering
-	@cat `ls -r $^` | sed -n '/=/{s/>=/==/;s/,<.*//;s/,!=.*//;p;}' > $@
+	@cat `ls -r $^` | sed -n '/=/{s/>=/==/;s/,<.*//;s/,!=.*//;p;};/^[-#]/d;/^$$/d;/=/d;p;' > $@
 
 test:
 	@py.test --boxed -r EfsxX
