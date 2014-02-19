@@ -187,8 +187,9 @@ class phpunit(base.TranslationUnit):
     def removenotes(self):
         self._comments = []
 
-    def isblank(self):
-        """Return whether this is a blank element, containing only comments."""
+    @property
+    def is_blank(self):
+        """Return whether this is a blank unit, containing only comments."""
         return not (self.name or self.value)
 
     def getid(self):
@@ -208,6 +209,13 @@ class phpfile(base.TranslationStore):
             phpsrc = inputfile.read()
             inputfile.close()
             self.parse(phpsrc)
+
+    def __str__(self):
+        """Convert the units back to lines."""
+        lines = []
+        for unit in self.units:
+            lines.append(str(unit))
+        return "".join(lines)
 
     def parse(self, phpsrc):
         """Read the source of a PHP file in and include them as units."""
@@ -377,10 +385,3 @@ class phpfile(base.TranslationStore):
             # previous translation lines.
             if invalue:
                 lastvalue = lastvalue + value + "\n"
-
-    def __str__(self):
-        """Convert the units back to lines."""
-        lines = []
-        for unit in self.units:
-            lines.append(str(unit))
-        return "".join(lines)

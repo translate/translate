@@ -174,7 +174,7 @@ def _store_post_merge_pofile(input_store, output_store, template_store):
     if template_store:
         newlyobsoleted = []
         for unit in template_store.units:
-            if unit.isheader() or unit.isblank():
+            if unit.isheader() or unit.is_blank:
                 continue
             if (unit.target and not (input_store.findid(unit.getid()) or
                 hasattr(unit, "reused"))):

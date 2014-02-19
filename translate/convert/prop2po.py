@@ -71,7 +71,7 @@ class prop2po:
             if pounit is "discard":
                 continue
             if not appendedheader:
-                if propunit.isblank():
+                if propunit.is_blank:
                     targetheader.addnote("\n".join(waitingcomments).rstrip(),
                                          "developer", position="prepend")
                     waitingcomments = []
@@ -116,7 +116,7 @@ class prop2po:
                 continue
             # handle the header case specially...
             if not appendedheader:
-                if origprop.isblank():
+                if origprop.is_blank:
                     targetheader.addnote(u"".join(waitingcomments).rstrip(),
                                          "developer", position="prepend")
                     waitingcomments = []
@@ -206,7 +206,7 @@ class prop2po:
                     return "discard"
             pounit.addnote(u"".join(propunit.getnotes()).rstrip(), commenttype)
         # TODO: handle multiline msgid
-        if propunit.isblank():
+        if propunit.is_blank:
             return None
         pounit.addlocation(propunit.name)
         pounit.source = propunit.source
