@@ -2,6 +2,6 @@
 
 pytest>=2.2
 pytest-xdist
-Sphinx>=1.1
+Sphinx>=1.2.0
 pep8
 isort>=3.5.0
