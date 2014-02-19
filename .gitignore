@@ -26,3 +26,6 @@ tests/xliff_conformance/af-pootle.xlf
 
 # Requirements generation
 .reqs
+
+# Coverage
+.coverage*

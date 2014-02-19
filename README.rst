@@ -4,6 +4,9 @@ Translate Toolkit
 .. image:: https://travis-ci.org/translate/translate.png
     :alt: Build Status
     :target: https://travis-ci.org/translate/translate
+.. image:: https://coveralls.io/repos/translate/translate/badge.png?branch=master
+    :alt: Coverage Status
+    :target: https://coveralls.io/r/translate/translate?branch=master
 
 The Translate Toolkit is a set of software and documentation designed to help
 make the lives of localizers both more productive and less frustrating.
