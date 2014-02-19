@@ -25,6 +25,7 @@ install:
   - if [[ ! $MINVERSION ]]; then pip install -r requirements/dev.txt; fi
   - if [[ $TRAVIS_PYTHON_VERSION == 'pypy' ]]; then pip install --upgrade --pre lxml; fi
   # Still need to handle with indexing engines
+  - pip freeze
 script:
   # Compile all the files
   - python -m compileall -x '[.]py$' -q -f .
