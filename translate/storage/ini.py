@@ -38,37 +38,40 @@ from iniparse import INIConfig
 from translate.storage import base
 
 
-_dialects = {}
+dialects = {}
 
 
-def register_dialect(name, dialect):
-    """Register the dialect"""
-    _dialects[name] = dialect
+def register_dialect(dialect):
+    """Decorator that registers the dialect."""
+    dialects[dialect.name] = dialect
+    return dialect
 
 
 class Dialect(object):
     """Base class for differentiating dialect options and functions"""
-    pass
+    name = None
 
 
+@register_dialect
 class DialectDefault(Dialect):
+    name = 'default'
 
     def unescape(self, text):
         return text
 
     def escape(self, text):
         return text.encode('utf-8')
-register_dialect("default", DialectDefault)
 
 
+@register_dialect
 class DialectInno(DialectDefault):
+    name = 'inno'
 
     def unescape(self, text):
         return text.replace("%n", "\n").replace("%t", "\t")
 
     def escape(self, text):
         return text.replace("\t", "%t").replace("\n", "%n").encode('utf-8')
-register_dialect("inno", DialectInno)
 
 
 class iniunit(base.TranslationUnit):
@@ -94,7 +97,7 @@ class inifile(base.TranslationStore):
     def __init__(self, inputfile=None, unitclass=iniunit, dialect="default"):
         """construct an INI file, optionally reading in from inputfile."""
         self.UnitClass = unitclass
-        self._dialect = _dialects.get(dialect, DialectDefault)()  # fail correctly/use getattr/
+        self._dialect = dialects.get(dialect, DialectDefault)()  # fail correctly/use getattr/
         base.TranslationStore.__init__(self, unitclass=unitclass)
         self.units = []
         self.filename = ''
