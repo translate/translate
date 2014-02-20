@@ -182,20 +182,20 @@ def main():
 
     #setup debugging
     format = '%(asctime)s %(levelname)s %(message)s'
-    level = options.debug and logging.DEBUG or logging.WARNING
-    if options.debug:
+    level = args.debug and logging.DEBUG or logging.WARNING
+    if args.debug:
         format = '%(levelname)7s %(module)s.%(funcName)s:%(lineno)d: %(message)s'
 
     logging.basicConfig(level=level, format=format)
 
-    application = TMServer(options.tmdbfile, options.tmfiles,
-                           max_candidates=options.max_candidates,
-                           min_similarity=options.min_similarity,
-                           max_length=options.max_length,
+    application = TMServer(args.tmdbfile, args.tmfiles,
+                           max_candidates=args.max_candidates,
+                           min_similarity=args.min_similarity,
+                           max_length=args.max_length,
                            prefix="/tmserver",
-                           source_lang=options.source_lang,
-                           target_lang=options.target_lang)
-    wsgi.launch_server(options.bind, options.port, application.rest)
+                           source_lang=args.source_lang,
+                           target_lang=args.target_lang)
+    wsgi.launch_server(args.bind, args.port, application.rest)
 
 
 if __name__ == '__main__':
