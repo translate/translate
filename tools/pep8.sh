@@ -9,7 +9,6 @@ exclude_toolkit=\
 diff_match_patch.py,\
 selector.py,\
 wsgiserver,\
-ini.py,\
 build
 
 exclude_pootle=\
