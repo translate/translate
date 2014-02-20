@@ -21,6 +21,7 @@ matrix:
 before_install:
   - sudo apt-get install python-aeidon
 install:
+  - pip install coveralls
   - if [[ $MINVERSION ]]; then rm min-required.txt; make min-required.txt; pip install -r min-required.txt; pip install --upgrade pytest; fi
   - if [[ ! $MINVERSION ]]; then pip install -r requirements/dev.txt; fi
   - if [[ $TRAVIS_PYTHON_VERSION == 'pypy' ]]; then pip install --upgrade --pre lxml; fi
@@ -30,10 +31,13 @@ script:
   # Compile all the files
   - python -m compileall -q -f .
   - python setup.py --quiet build
-  - py.test --boxed -r EfsxX
+  - if [[ $TRAVIS_PYTHON_VERSION != 'pypy' ]]; then py.test --cov=. -r EfsxX; fi
+  - if [[ $TRAVIS_PYTHON_VERSION == 'pypy' ]]; then py.test --boxed -r EfsxX; fi
   - ./tools/pep8.sh travis
   # -W report warnings as errors when building docs
-  - cd docs; make SPHINXOPTS=-W html
+  - cd docs; make SPHINXOPTS=-W html; cd ..
+after_success:
+  coveralls
 notifications:
   email:
     on_failure: always
