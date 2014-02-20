@@ -10,7 +10,6 @@ diff_match_patch.py,\
 selector.py,\
 wsgiserver,\
 ini.py,\
-textwrap.py,\
 build
 
 exclude_pootle=\
