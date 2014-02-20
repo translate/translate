@@ -115,10 +115,10 @@ Name and Value pairs:
 """
 
 import re
-import warnings
 
 from translate.lang import data
 from translate.misc import quote
+from translate.misc.deprecation import deprecated
 from translate.storage import base
 
 
@@ -186,12 +186,11 @@ def _find_delimiter(line, delimiters):
     return (mindelimiter, minpos)
 
 
+@deprecated("Use Dialect.find_delimiter instead")
 def find_delimeter(line):
     """Misspelled function that is kept around in case someone relies on it.
 
     Deprecated."""
-    warnings.warn("deprecated use Dialect.find_delimiter instead",
-                  DeprecationWarning)
     return _find_delimiter(line, DialectJava.delimiters)
 
 
