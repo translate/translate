@@ -28,7 +28,7 @@ install:
   - pip freeze
 script:
   # Compile all the files
-  - python -m compileall -x '[.]py$' -q -f .
+  - python -m compileall -q -f .
   - python setup.py --quiet build
   - py.test --boxed -r EfsxX
   - ./tools/pep8.sh travis
