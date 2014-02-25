@@ -9,9 +9,6 @@ moz2po
 headers
   charset=UTF-8
 
-copyright
-  need to insert the standard copyright text unitialised
-
 csv2po
   * change order of columns: original, translation, other stuff
   * It does not currently reflow text to create a newline around literal \n
