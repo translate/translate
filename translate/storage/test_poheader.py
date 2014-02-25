@@ -4,9 +4,14 @@
 import os
 import time
 
+try:
+    from collections import OrderedDict
+except ImportError:
+    # Python <= 2.6 fallback
+    from translate.misc.dictutils import ordereddict as OrderedDict
+
 from translate.lang.team import guess_language
 from translate.misc import wStringIO
-from translate.misc.dictutils import ordereddict
 from translate.storage import po, poheader, poxliff
 
 
@@ -19,7 +24,6 @@ item3: three
 '''
     d = poheader.parseheaderstring(source)
     print(type(d))
-    assert type(d) == ordereddict
     assert len(d) == 3
     assert d['item1'] == 'one'
     assert d['item2'] == 'two:two'
@@ -43,7 +47,7 @@ def test_update():
     d = poheader.update({}, add=True, test_me='hello')
     assert d['Test-Me'] == 'hello'
     # is the order correct ?
-    d = ordereddict()
+    d = OrderedDict()
     d['Project-Id-Version'] = 'abc'
     d['POT-Creation-Date'] = 'now'
     d = poheader.update(d, add=True, Test='hello', Report_Msgid_Bugs_To='bugs@list.org')
