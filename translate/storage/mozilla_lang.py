@@ -58,7 +58,7 @@ class LangStore(txt.TxtFile):
     """We extend TxtFile, since that has a lot of useful stuff for encoding"""
     UnitClass = LangUnit
 
-    Name = _("Mozilla .lang")
+    Name = "Mozilla .lang"
     Extensions = ['lang']
 
     def __init__(self, inputfile=None, flavour=None, encoding="utf-8", mark_active=False):

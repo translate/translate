@@ -139,7 +139,7 @@ class OmegaTUnit(base.TranslationUnit):
 
 class OmegaTFile(base.TranslationStore):
     """An OmegaT glossary file"""
-    Name = _("OmegaT Glossary")
+    Name = "OmegaT Glossary"
     Mimetypes = ["application/x-omegat-glossary"]
     Extensions = ["utf8"]
 
@@ -199,7 +199,7 @@ class OmegaTFile(base.TranslationStore):
 
 class OmegaTFileTab(OmegaTFile):
     """An OmegaT glossary file in the default system encoding"""
-    Name = _("OmegaT Glossary")
+    Name = "OmegaT Glossary"
     Mimetypes = ["application/x-omegat-glossary"]
     Extensions = ["tab"]
 

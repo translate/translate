@@ -345,7 +345,7 @@ class csvfile(base.TranslationStore):
     """This class represents a .csv file with various lines.
     The default format contains three columns: location, source, target"""
     UnitClass = csvunit
-    Name = _("Comma Separated Value")
+    Name = "Comma Separated Value"
     Mimetypes = ['text/comma-separated-values', 'text/csv']
     Extensions = ["csv"]
 

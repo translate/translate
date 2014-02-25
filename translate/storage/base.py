@@ -26,7 +26,6 @@ try:
 except ImportError:
     import pickle
 
-import translate.i18n
 from translate.misc.multistring import multistring
 from translate.storage.placeables import (StringElem, general,
                                           parse as rich_parse)

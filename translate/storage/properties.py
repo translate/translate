@@ -623,7 +623,7 @@ class propfile(base.TranslationStore):
 
 
 class javafile(propfile):
-    Name = _("Java Properties")
+    Name = "Java Properties"
     Extensions = ['properties']
 
     def __init__(self, *args, **kwargs):
@@ -633,7 +633,7 @@ class javafile(propfile):
 
 
 class javautf8file(propfile):
-    Name = _("Java Properties (UTF-8)")
+    Name = "Java Properties (UTF-8)"
     Extensions = ['properties']
 
     def __init__(self, *args, **kwargs):
@@ -643,7 +643,7 @@ class javautf8file(propfile):
 
 
 class stringsfile(propfile):
-    Name = _("OS X Strings")
+    Name = "OS X Strings"
     Extensions = ['strings']
 
     def __init__(self, *args, **kwargs):
