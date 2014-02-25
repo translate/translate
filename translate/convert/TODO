@@ -17,10 +17,6 @@ csv2po
   translators segmentation tools.
   * We do not handle languages with N != 2 plural forms
 
-oo2po / po2oo
-  fix problem with OOO_VENDOR and \" quoting in offmgr.po (see help - about)
-  make oo output order the same as in input file...
-
 pot2po discussion with pavel:
   pot2po should be as simple as using pot as one arg and po as the second ;-)
   pot2po pot po -t po warns me for every file: pot2po: warning: writing to temporary output...
