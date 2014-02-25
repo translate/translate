@@ -21,6 +21,13 @@
 import re
 
 
+# Python 3 compatibility
+try:
+    unicode
+except NameError:
+    unicode = str
+
+
 def reduce_tree(f, parent_unit_node, unit_node, get_children, *state):
     """Enumerate a tree, applying f to in a pre-order fashion to each node.
 
@@ -69,6 +76,13 @@ def parse_tag(full_tag):
     """
     match = tag_pattern.match(full_tag)
     if match is not None:
-        return unicode(match.groupdict()['namespace']), unicode(match.groupdict()['tag'])
+        # Slightly hacky way of supporting 2+3
+        ret = []
+        for k in ("namespace", "tag"):
+            value = match.groupdict()[k] or ""
+            if not isinstance(value, unicode):
+                value = unicode(value, encoding="utf-8")
+            ret.append(value)
+        return ret[0], ret[1]
     else:
         raise Exception('Passed an invalid tag')
