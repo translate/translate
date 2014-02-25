@@ -31,12 +31,6 @@ pot2po discussion with pavel:
   pot2po pot po -t po warns me for every file: pot2po: warning: writing to temporary output...
   pot2po pot po -t po does not merge existing translations from old POs that have more then one comment and thus are duplicated in the new POs
 
-docs
-  not sure where else to put this!
-    docs are installed in /usr/lib/python2.3/site-packages/translate/doc
-    should be /usr/share/docs/translate-toolkit-0.8
-    Not sure what's needed on Windows - non critical
-
 po2dtd
   when reporting ampersand check failures should tell you the file not just the
     name of the bad PO file not just the command line output name
