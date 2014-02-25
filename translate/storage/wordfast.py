@@ -357,7 +357,7 @@ class WordfastUnit(base.TranslationUnit):
 
 class WordfastTMFile(base.TranslationStore):
     """A Wordfast translation memory file"""
-    Name = _("Wordfast Translation Memory")
+    Name = "Wordfast Translation Memory"
     Mimetypes = ["application/x-wordfast"]
     Extensions = ["txt"]
 

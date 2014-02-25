@@ -46,9 +46,9 @@ import time
 
 try:
     # FIXME see if we can't use lxml
-    from BeautifulSoup import BeautifulStoneSoup
+    from bs4 import BeautifulSoup
 except ImportError:
-    raise ImportError("BeautifulSoup is not installed. Support for Trados txt is disabled.")
+    raise ImportError("BeautifulSoup 4 is not installed. Support for Trados txt is disabled.")
 
 from translate.storage import base
 
@@ -57,24 +57,24 @@ TRADOS_TIMEFORMAT = "%d%m%Y, %H:%M:%S"
 """Time format used by Trados .txt"""
 
 RTF_ESCAPES = {
-    ur"\emdash": u"—",
-    ur"\endash": u"–",
+    u"\\emdash": u"—",
+    u"\\endash": u"–",
     # Nonbreaking space equal to width of character "m" in current font.
-    ur"\emspace": u"\u2003",
+    u"\\emspace": u"\u2003",
     # Nonbreaking space equal to width of character "n" in current font.
-    ur"\enspace": u"\u2002",
-    #ur"\qmspace": "",    # One-quarter em space.
-    ur"\bullet": u"•",     # Bullet character.
-    ur"\lquote": u"‘",     # Left single quotation mark. \u2018
-    ur"\rquote": u"’",     # Right single quotation mark. \u2019
-    ur"\ldblquote": u"“",  # Left double quotation mark. \u201C
-    ur"\rdblquote": u"”",  # Right double quotation mark. \u201D
-    ur"\~": u"\u00a0",  # Nonbreaking space
-    ur"\-": u"\u00ad",  # Optional hyphen.
-    ur"\_": u"‑",  # Nonbreaking hyphen \U2011
+    u"\\enspace": u"\u2002",
+    #u"\\qmspace": "",    # One-quarter em space.
+    u"\\bullet": u"•",     # Bullet character.
+    u"\\lquote": u"‘",     # Left single quotation mark. \u2018
+    u"\\rquote": u"’",     # Right single quotation mark. \u2019
+    u"\\ldblquote": u"“",  # Left double quotation mark. \u201C
+    u"\\rdblquote": u"”",  # Right double quotation mark. \u201D
+    u"\\~": u"\u00a0",  # Nonbreaking space
+    u"\\-": u"\u00ad",  # Optional hyphen.
+    u"\\_": u"‑",  # Nonbreaking hyphen \U2011
     # A hexadecimal value, based on the specified character set (may be used to
     # identify 8-bit values).
-    #ur"\'hh": "",
+    #u"\\'hh": "",
 }
 """RTF control to Unicode map. See
 http://msdn.microsoft.com/en-us/library/aa140283(v=office.10).aspx
@@ -162,7 +162,7 @@ class TradosUnit(base.TranslationUnit):
     target = property(gettarget, None)
 
 
-class TradosSoup(BeautifulStoneSoup):
+class TradosSoup(BeautifulSoup):
 
     MARKUP_MASSAGE = [
         (re.compile('<(?P<fulltag>(?P<tag>[^\s\/]+).*?)>(?P<content>.+)\r'),
@@ -172,7 +172,7 @@ class TradosSoup(BeautifulStoneSoup):
 
 class TradosTxtTmFile(base.TranslationStore):
     """A Trados translation memory file"""
-    Name = _("Trados Translation Memory")
+    Name = "Trados Translation Memory"
     Mimetypes = ["application/x-trados-tm"]
     Extensions = ["txt"]
 

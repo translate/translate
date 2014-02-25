@@ -163,7 +163,7 @@ class UtxUnit(base.TranslationUnit):
 
 class UtxFile(base.TranslationStore):
     """A UTX dictionary file"""
-    Name = _("UTX Dictionary")
+    Name = "UTX Dictionary"
     Mimetypes = ["text/x-utx"]
     Extensions = ["utx"]
 

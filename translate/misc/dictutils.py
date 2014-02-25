@@ -22,13 +22,6 @@ order-sensitive dictionary"""
 # along with this program; if not, see <http://www.gnu.org/licenses/>.
 
 
-def generalupper(str):
-    """this uses the object's upper method - works with string and unicode"""
-    if str is None:
-        return str
-    return str.upper()
-
-
 class cidict(dict):
 
     def __init__(self, fromdict=None):
@@ -40,7 +33,7 @@ class cidict(dict):
         if type(key) != str and type(key) != unicode:
             raise TypeError("cidict can only have str or unicode as key (got %r)" %
                             type(key))
-        for akey in self.iterkeys():
+        for akey in self.keys():
             if akey.lower() == key.lower():
                 return dict.__getitem__(self, akey)
         raise IndexError
@@ -49,7 +42,7 @@ class cidict(dict):
         if type(key) != str and type(key) != unicode:
             raise TypeError("cidict can only have str or unicode as key (got %r)" %
                             type(key))
-        for akey in self.iterkeys():
+        for akey in self.keys():
             if akey.lower() == key.lower():
                 return dict.__setitem__(self, akey, value)
         return dict.__setitem__(self, key, value)
@@ -64,7 +57,7 @@ class cidict(dict):
         if type(key) != str and type(key) != unicode:
             raise TypeError("cidict can only have str or unicode as key (got %r)" %
                             type(key))
-        for akey in self.iterkeys():
+        for akey in self.keys():
             if akey.lower() == key.lower():
                 return dict.__delitem__(self, akey)
         raise IndexError
@@ -73,7 +66,7 @@ class cidict(dict):
         if type(key) != str and type(key) != unicode:
             raise TypeError("cidict can only have str or unicode as key (got %r)" %
                             type(key))
-        for akey in self.iterkeys():
+        for akey in self.keys():
             if akey.lower() == key.lower():
                 return 1
         return 0

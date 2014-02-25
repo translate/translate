@@ -92,7 +92,7 @@ class QphUnit(lisa.LISAunit):
 class QphFile(lisa.LISAfile):
     """Class representing a QPH file store."""
     UnitClass = QphUnit
-    Name = _("Qt Phrase Book")
+    Name = "Qt Phrase Book"
     Mimetypes = ["application/x-qph"]
     Extensions = ["qph"]
     rootNode = "QPH"

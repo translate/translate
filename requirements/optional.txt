@@ -10,7 +10,7 @@ iniparse>=0.3.1
 vobject>=0.6.6
 
 # Trados TM
-BeautifulSoup>=3.2
+BeautifulSoup4>=4.3
 
 # sub2po
 #aeidon>=0.14

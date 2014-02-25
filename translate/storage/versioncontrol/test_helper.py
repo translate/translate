@@ -39,7 +39,7 @@ class HelperTest(object):
     def create_files(self, files_dict):
         """Creates file(s) named after the keys, with contents from the values
         of the dictionary."""
-        for name, content in files_dict.iteritems():
+        for name, content in files_dict.items():
             assert not os.path.isabs(name)
             dirs = os.path.dirname(name)
             if dirs:

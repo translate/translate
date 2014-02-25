@@ -53,7 +53,7 @@ Future Format Support
 """
 
 import re
-from StringIO import StringIO
+from cStringIO import StringIO
 
 import vobject
 

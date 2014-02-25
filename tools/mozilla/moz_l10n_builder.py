@@ -84,7 +84,7 @@ def delfiles(pattern, path, files):
     """Delete files with names in C{files} matching glob-pattern C{glob} in the
         directory specified by C{path}.
 
-        This function is meant to be used with C{os.path.walk}
+        This function is meant to be used with C{os.walk}
         """
     path = os.path.abspath(path)
     match_files = glob.glob(join(path, pattern))
@@ -306,8 +306,9 @@ def pre_po2moz_hacks(lang, buildlang, debug):
     run(['pomigrate2', '--use-compendium', '--quiet', '--pot2po',
          old, new, templates])
 
-    os.path.walk(join(podir_updated, buildlang), delfiles, '*.html.po')
-    os.path.walk(join(podir_updated, buildlang), delfiles, '*.xhtml.po')
+    for dirpath, dirnames, filenames in os.walk(join(podir_updated, buildlang)):
+        delfiles("*.html.po", dirpath, dirnames + filenames)
+        delfiles("*.xhtml.po", dirpath, dirnames + filenames)
 
     if debug:
         olddir = os.getcwd()
@@ -319,8 +320,9 @@ def pre_po2moz_hacks(lang, buildlang, debug):
 
     # Create l10n related files
     if os.path.isdir(join(l10ndir, buildlang)):
-        os.path.walk(join(l10ndir, buildlang), delfiles, '*.dtd')
-        os.path.walk(join(l10ndir, buildlang), delfiles, '*.properties')
+        for dirpath, dirnames, filenames in os.walk(join(l10ndir, buildlang)):
+            delfiles("*.dtd", dirpath, dirnames + filenames)
+            delfiles("*.properties", dirpath, dirnames + filenames)
 
     shutil.rmtree(temp_po)
 
@@ -372,12 +374,10 @@ def post_po2moz_hacks(lang, buildlang):
             )
 
     def copyfiletype(filetype, language):
-        def checkfiles(filetype, dir, files):
-            for f in files:
+        for dirpath, dirnames, filenames in os.walk(join(l10ndir, "en-US")):
+            for f in dirnames + filenames:
                 if f.endswith(filetype):
-                    copyfile(join(dir, f), language)
-
-        os.path.walk(join(l10ndir, 'en-US'), checkfiles, filetype)
+                    copyfile(join(dirpath, f), language)
 
     # Copy and update non-translatable files
     for ft in ('.xhtml', '.html', '.rdf'):
@@ -430,7 +430,9 @@ def migrate_lang(lang, buildlang, recover, update_transl, debug):
     if os.path.isdir(join(podir_updated, buildlang)):
         shutil.rmtree(join(podir_updated, buildlang))
     shutil.copytree(join(podir, buildlang), join(podir_updated, buildlang))
-    os.path.walk(join(podir_updated, buildlang), delfiles, '*.po')
+
+    for dirpath, dirnames, filenames in os.walk(join(podir_updated, buildlang)):
+        delfiles("*.po", dirpath, dirnames + filenames)
 
     pre_po2moz_hacks(lang, buildlang, debug)
 

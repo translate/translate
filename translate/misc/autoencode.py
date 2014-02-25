@@ -22,6 +22,13 @@
 and uses this when converting to a string."""
 
 
+# Python 3 compatibility
+try:
+    unicode
+except NameError:
+    unicode = str
+
+
 class autoencode(unicode):
 
     def __new__(newtype, string=u"", encoding=None, errors=None):
