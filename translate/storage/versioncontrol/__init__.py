@@ -291,17 +291,16 @@ def get_versioned_objects_recursive(
     if versioning_systems is None:
         versioning_systems = DEFAULT_RCS[:]
 
-    def scan_directory(arg, dirname, fnames):
+    for dirpath, dirnames, filenames in os.walk(location):
+        fnames = dirnames + filenames
         for fname in fnames:
-            full_fname = os.path.join(dirname, fname)
+            full_fname = os.path.join(dirpath, fname)
             if os.path.isfile(full_fname):
                 try:
                     rcs_objs.append(get_versioned_object(full_fname,
                             versioning_systems, follow_symlinks))
                 except IOError:
                     pass
-
-    os.path.walk(location, scan_directory, None)
     return rcs_objs
 
 
