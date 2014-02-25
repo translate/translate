@@ -22,13 +22,6 @@ order-sensitive dictionary"""
 # along with this program; if not, see <http://www.gnu.org/licenses/>.
 
 
-def generalupper(str):
-    """this uses the object's upper method - works with string and unicode"""
-    if str is None:
-        return str
-    return str.upper()
-
-
 class cidict(dict):
 
     def __init__(self, fromdict=None):
