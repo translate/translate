@@ -1,5 +1,3 @@
---update option
-  make recursive methods only run if input is newer than output
 --force option
   only overwrite files if this is given (work out which tools its applicable to)
 
