@@ -29,7 +29,7 @@
 
 import os
 import tempfile
-from StringIO import StringIO
+from cStringIO import StringIO
 
 try:
     from aeidon import Subtitle, documents, newlines

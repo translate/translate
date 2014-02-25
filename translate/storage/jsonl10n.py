@@ -71,7 +71,7 @@ TODO:
 
 import json
 import os
-from StringIO import StringIO
+from cStringIO import StringIO
 
 from translate.storage import base
 
