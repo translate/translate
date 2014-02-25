@@ -59,7 +59,7 @@ def compose_mappings(left, right):
     which have corresponding keys in right will have their keys mapped
     to values in right. """
     result_map = {}
-    for left_key, left_val in left.iteritems():
+    for left_key, left_val in left.items():
         try:
             result_map[left_key] = right[left_val]
         except KeyError:
