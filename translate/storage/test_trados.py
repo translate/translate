@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from pytest import importorskip
-importorskip("BeautifulSoup")
+importorskip("bs4")
 
 from translate.storage import trados
 

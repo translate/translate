@@ -46,9 +46,9 @@ import time
 
 try:
     # FIXME see if we can't use lxml
-    from BeautifulSoup import BeautifulStoneSoup
+    from bs4 import BeautifulSoup
 except ImportError:
-    raise ImportError("BeautifulSoup is not installed. Support for Trados txt is disabled.")
+    raise ImportError("BeautifulSoup 4 is not installed. Support for Trados txt is disabled.")
 
 from translate.storage import base
 
@@ -162,7 +162,7 @@ class TradosUnit(base.TranslationUnit):
     target = property(gettarget, None)
 
 
-class TradosSoup(BeautifulStoneSoup):
+class TradosSoup(BeautifulSoup):
 
     MARKUP_MASSAGE = [
         (re.compile('<(?P<fulltag>(?P<tag>[^\s\/]+).*?)>(?P<content>.+)\r'),
