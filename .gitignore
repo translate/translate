@@ -29,3 +29,9 @@ tests/xliff_conformance/af-pootle.xlf
 
 # Coverage
 .coverage*
+
+##############################
+# translate/ specific excludes
+##############################
+
+translate/storage/properties.class
