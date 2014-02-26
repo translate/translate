@@ -272,39 +272,29 @@ def main():
     # args controlling output format:
     output_group = parser.add_argument_group("Output format")
     megroup = output_group.add_mutually_exclusive_group()
-    megroup.add_argument("--full", action="store_const", const=style_csv,
-                        dest="style_full",
+    megroup.add_argument("--full", action="store_const", const=style_full,
+                        dest="style", default=style_full,
                         help="(default) statistics in full, verbose format")
     megroup.add_argument("--csv", action="store_const", const=style_csv,
-                        dest="style_csv",
+                        dest="style",
                         help="statistics in CSV format")
-    megroup.add_argument("--short", action="store_const", const=style_csv,
-                        dest="style_short_strings",
+    megroup.add_argument("--short", action="store_const", const=style_short_strings,
+                        dest="style",
                         help="same as --short-strings")
     megroup.add_argument("--short-strings", action="store_const",
-                        const=style_csv, dest="style_short_strings",
+                        const=style_short_strings, dest="style",
                         help="statistics of strings in short format - one line per file")
     megroup.add_argument("--short-words", action="store_const",
-                        const=style_csv, dest="style_short_words",
+                        const=style_short_words, dest="style",
                         help="statistics of words in short format - one line per file")
 
     parser.add_argument("files", nargs="+")
 
     args = parser.parse_args()
 
-    style = default_style   # default output style
-    if args.style_csv:
-        style = style_csv
-    if args.style_full:
-        style = style_full
-    if args.style_short_strings:
-        style = style_short_strings
-    if args.style_short_words:
-        style = style_short_words
-
     logging.basicConfig(format="%(name)s: %(levelname)s: %(message)s")
 
-    summarizer(args.files, style, args.incomplete_only)
+    summarizer(args.files, args.style, args.incomplete_only)
 
 if __name__ == '__main__':
     main()
