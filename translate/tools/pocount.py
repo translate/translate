@@ -270,19 +270,21 @@ def main():
                         dest="incomplete_only",
                         help="skip 100%% translated files.")
     # args controlling output format:
-    parser.add_argument("--full", action="store_const", const=style_csv,
+    output_group = parser.add_argument_group("Output format")
+    megroup = output_group.add_mutually_exclusive_group()
+    megroup.add_argument("--full", action="store_const", const=style_csv,
                         dest="style_full",
                         help="(default) statistics in full, verbose format")
-    parser.add_argument("--csv", action="store_const", const=style_csv,
+    megroup.add_argument("--csv", action="store_const", const=style_csv,
                         dest="style_csv",
                         help="statistics in CSV format")
-    parser.add_argument("--short", action="store_const", const=style_csv,
+    megroup.add_argument("--short", action="store_const", const=style_csv,
                         dest="style_short_strings",
                         help="same as --short-strings")
-    parser.add_argument("--short-strings", action="store_const",
+    megroup.add_argument("--short-strings", action="store_const",
                         const=style_csv, dest="style_short_strings",
                         help="statistics of strings in short format - one line per file")
-    parser.add_argument("--short-words", action="store_const",
+    megroup.add_argument("--short-words", action="store_const",
                         const=style_csv, dest="style_short_words",
                         help="statistics of words in short format - one line per file")
 
@@ -292,15 +294,6 @@ def main():
 
     if (args.incomplete_only is None):
         args.incomplete_only = False
-
-    if (args.style_full and args.style_csv) or \
-       (args.style_full and args.style_short_strings) or \
-       (args.style_full and args.style_short_words) or \
-       (args.style_csv and args.style_short_strings) or \
-       (args.style_csv and args.style_short_words) or \
-       (args.style_short_strings and args.style_short_words):
-        parser.error("args --full, --csv, --short-strings and --short-words are mutually exclusive")
-        sys.exit(2)
 
     style = default_style   # default output style
     if args.style_csv:
