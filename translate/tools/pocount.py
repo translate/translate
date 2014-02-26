@@ -266,7 +266,7 @@ Review Messages, Review Source Words""")
 
 def main():
     parser = ArgumentParser()
-    parser.add_argument("--incomplete", action="store_const", const=True,
+    parser.add_argument("--incomplete", action="store_true", default=False,
                         dest="incomplete_only",
                         help="skip 100%% translated files.")
     # args controlling output format:
@@ -291,9 +291,6 @@ def main():
     parser.add_argument("files", nargs="+")
 
     args = parser.parse_args()
-
-    if (args.incomplete_only is None):
-        args.incomplete_only = False
 
     style = default_style   # default output style
     if args.style_csv:
