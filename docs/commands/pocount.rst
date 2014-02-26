@@ -37,6 +37,9 @@ Options:
 
 -h, --help       show this help message and exit
 --incomplete     skip 100% translated files
+
+Output format:
+
 --full           (default) statistics in full, verbose format
 --csv            statistics in CSV format
 --short          same as --short-strings
