@@ -570,6 +570,16 @@ class StringElem(object):
             parent = self.get_ancestor_where(last, lambda x: x.iseditable)
             if parent is None:
                 parent = self
+            preferred_type = type(preferred_parent)
+            oelem_type = type(oelem)
+            len_oelem = len(oelem)
+            if preferred_parent is oelem:
+                # The preferred parent is still in this StringElem
+                return oelem.insert(len_oelem, text)
+            elif oelem_type == preferred_type:
+                # oelem has the right type
+                return oelem.insert(len_oelem, text)
+
             parent.sub.append(checkleaf(parent, text))
             return True
 
