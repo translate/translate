@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 #
 # Copyright 2009 Zuza Software Foundation
+# Copyright 2013-2014 F Wolff
 #
 # This file is part of the Translate Toolkit.
 #
@@ -601,7 +602,15 @@ class StringElem(object):
             bparent = self.get_parent_elem(before)
             # bparent cannot be a leaf (because it has before as a child), so
             # we insert the text as StringElem(text)
-            bindex = bparent.sub.index(before)
+            # We need the index of `before`, but can't use .index(), since we
+            # need to test identity, otherwise we might hit an earlier
+            # occurrence of an identical string (likely with lots of newlines,
+            # for example).
+            bindex = 0
+            for child in bparent.sub:
+                if child is before:
+                    break
+                bindex += 1
             bparent.sub.insert(bindex + 1, text)
             return True
 
@@ -624,7 +633,12 @@ class StringElem(object):
                 # Both are the wrong type, so we add it as if neither were
                 # editable
                 bparent = self.get_parent_elem(before)
-                bindex = bparent.sub.index(before)
+                # As above, we can't use .index()
+                bindex = 0
+                for child in bparent.sub:
+                    if child is before:
+                        break
+                    bindex += 1
                 bparent.sub.insert(bindex + 1, text)
                 return True
 
