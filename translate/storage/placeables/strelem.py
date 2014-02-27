@@ -642,12 +642,12 @@ class StringElem(object):
                 bparent.sub.insert(bindex + 1, text)
                 return True
 
-            return before.insert(len(before) + 1, text)  # Reinterpret as a case 2
+            return before.insert(len(before), text)  # Reinterpret as a case 2
 
         # 4.3 #
         elif before.iseditable and not oelem.iseditable:
             #logging.debug('Case 4.3')
-            return before.insert(len(before) + 1, text)  # Reinterpret as a case 2
+            return before.insert(len(before), text)  # Reinterpret as a case 2
 
         # 4.4 #
         elif not before.iseditable and oelem.iseditable:
