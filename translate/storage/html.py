@@ -21,9 +21,10 @@
 
 """module for parsing html files for translation"""
 
-import HTMLParser
 import re
-from htmlentitydefs import name2codepoint
+
+from six.moves import html_parser
+from six.moves.html_entities import name2codepoint
 
 from translate.storage import base
 from translate.storage.base import ParseError
@@ -31,7 +32,7 @@ from translate.storage.base import ParseError
 
 # Override the piclose tag from simple > to ?> otherwise we consume HTML
 # within the processing instructions
-HTMLParser.piclose = re.compile('\?>')
+html_parser.piclose = re.compile('\?>')
 
 
 strip_html_re = re.compile(r'''
@@ -117,7 +118,7 @@ class htmlunit(base.TranslationUnit):
         return self.locations
 
 
-class htmlfile(HTMLParser.HTMLParser, base.TranslationStore):
+class htmlfile(html_parser.HTMLParser, base.TranslationStore):
     UnitClass = htmlunit
 
     MARKINGTAGS = ["p", "title", "h1", "h2", "h3", "h4", "h5", "h6", "th",
@@ -155,7 +156,7 @@ class htmlfile(HTMLParser.HTMLParser, base.TranslationStore):
         else:
             self.callback = callback
         self.includeuntaggeddata = includeuntaggeddata
-        HTMLParser.HTMLParser.__init__(self)
+        html_parser.HTMLParser.__init__(self)
 
         if inputfile is not None:
             htmlsrc = inputfile.read()

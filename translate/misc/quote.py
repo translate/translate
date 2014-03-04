@@ -21,8 +21,9 @@
 """String processing utilities for extracting strings with various kinds
 of delimiters"""
 
-import htmlentitydefs
 import logging
+
+from six.moves.html_entities import codepoint2name, name2codepoint
 
 
 def find_all(searchin, substr):
@@ -193,8 +194,8 @@ def htmlentityencode(source):
     output = u""
     for char in source:
         charnum = ord(char)
-        if charnum in htmlentitydefs.codepoint2name:
-            output += u"&%s;" % htmlentitydefs.codepoint2name[charnum]
+        if charnum in codepoint2name:
+            output += u"&%s;" % codepoint2name[charnum]
         else:
             output += str(char)
     return output
@@ -212,8 +213,8 @@ def htmlentitydecode(source):
         if inentity:
             if char == ";":
                 if (len(possibleentity) > 0 and
-                    possibleentity in htmlentitydefs.name2codepoint):
-                    output += unichr(htmlentitydefs.name2codepoint[possibleentity])
+                    possibleentity in name2codepoint):
+                    output += unichr(name2codepoint[possibleentity])
                     inentity = False
                 else:
                     output += "&" + possibleentity + ";"
