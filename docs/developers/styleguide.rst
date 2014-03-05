@@ -18,6 +18,8 @@ Python
 
 These are the Translate conventions for Python coding style.
 
+.. _styleguide-general:
+
 General
 ^^^^^^^
 
