@@ -24,12 +24,44 @@ See: http://docs.translatehouse.org/projects/translate-toolkit/en/latest/command
 for examples and usage instructions.
 """
 
-from translate.convert import convert
+import warnings
+
+from translate.convert import accesskey, convert
 from translate.misc import quote
 from translate.storage import po, properties
 
 
 eol = u"\n"
+
+
+def applytranslation(key, propunit, inunit, mixedkeys):
+    """applies the translation for key in the po unit to the prop unit"""
+    # this converts the po-style string to a prop-style string
+    value = inunit.target
+    # handle mixed keys
+    for labelsuffix in properties.labelsuffixes:
+        if key.endswith(labelsuffix):
+            if key in mixedkeys:
+                value, akey = accesskey.extract(value)
+                break
+    else:
+        for akeysuffix in properties.accesskeysuffixes:
+            if key.endswith(akeysuffix):
+                if key in mixedkeys:
+                    label, value = accesskey.extract(value)
+                    if not value:
+                        warnings.warn("Could not find accesskey for %s" % key)
+                    else:
+                        original = propunit.source
+                        # For the sake of diffs we keep the case of the
+                        # accesskey the same if we know the translation didn't
+                        # change. Casing matters in XUL.
+                        if value == propunit.source and original.lower() == value.lower():
+                            if original.isupper():
+                                value = value.upper()
+                            elif original.islower():
+                                value = value.lower()
+    return value
 
 
 class reprop:
@@ -43,6 +75,8 @@ class reprop:
         if self.encoding is None:
             self.encoding = self.personality.default_encoding
         self.remove_untranslated = remove_untranslated
+        self.mixer = accesskey.UnitMixer(properties.labelsuffixes,
+                                         properties.accesskeysuffixes)
 
     def convertstore(self, includefuzzy=False):
         self.includefuzzy = includefuzzy
@@ -58,6 +92,20 @@ class reprop:
             outputstr = self.convertline(line)
             outputlines.append(outputstr)
         return u"".join(outputlines).encode(self.encoding)
+
+
+    def _handle_accesskeys(self, inunit, currkey):
+        value = inunit.target
+        if self.personality.name == "mozilla":
+            keys = inunit.getlocations()
+            mixedkeys = self.mixer.match_entities(keys)
+            for key in keys:
+                if key == currkey and key in self.inputstore.locationindex:
+                    propunit = self.inputstore.locationindex[key]  # find the prop
+                    value = applytranslation(key, propunit, inunit, mixedkeys)
+                    break
+
+        return value
 
     def _explode_gaia_plurals(self):
         """Explode the gaia plurals."""
@@ -122,7 +170,7 @@ class reprop:
                     if unit.isfuzzy() and not self.includefuzzy or len(unit.target) == 0:
                         value = unit.source
                     else:
-                        value = unit.target
+                        value = self._handle_accesskeys(unit, key)
                     self.inecho = False
                     assert isinstance(value, unicode)
                     returnline = "%(key)s%(del)s%(value)s%(term)s%(eol)s" % {

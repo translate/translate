@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 #
-# Copyright 2004-2006 Zuza Software Foundation
+# Copyright 2004-2014 Zuza Software Foundation
 #
 # This file is part of translate.
 #
@@ -120,6 +120,14 @@ import warnings
 from translate.lang import data
 from translate.misc import quote
 from translate.storage import base
+
+
+labelsuffixes = (".label", ".title")
+"""Label suffixes: entries with this suffix are able to be comibed with accesskeys
+found in in entries ending with :attr:`.accesskeysuffixes`"""
+accesskeysuffixes = (".accesskey", ".accessKey", ".akey")
+"""Accesskey Suffixes: entries with this suffix may be combined with labels
+ending in :attr:`.labelsuffixes` into accelerator notation"""
 
 
 # the rstripeols convert dos <-> unix nicely as well
@@ -546,6 +554,7 @@ class propfile(base.TranslationStore):
             propsrc = inputfile.read()
             inputfile.close()
             self.parse(propsrc)
+            self.makeindex()
 
     def parse(self, propsrc):
         """Read the source of a properties file in and include them
@@ -621,6 +630,10 @@ class propfile(base.TranslationStore):
         uret = u"".join(lines)
         return uret.encode(self.encoding)
 
+    def makeindex(self):
+        super(propfile, self).makeindex()
+        # XXX: Hack to keep translate.convert.accesskey happy
+        self.index = self.id_index
 
 class javafile(propfile):
     Name = "Java Properties"
