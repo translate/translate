@@ -185,9 +185,7 @@ def combine(label, accesskey,
         accesskeypos = accesskeyaltcasepos
     # now we want to handle whatever we found...
     if accesskeypos >= 0:
-        string = label[:accesskeypos] + accesskey_marker + label[accesskeypos:]
-        string = string.encode("UTF-8", "replace")
-        return string
+        return label[:accesskeypos] + accesskey_marker + label[accesskeypos:]
     else:
         # can't currently mix accesskey if it's not in label
         return None
