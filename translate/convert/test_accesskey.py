@@ -56,6 +56,12 @@ def test_unicode():
     assert isinstance(label, unicode) and isinstance(akey, unicode)
 
 
+def test_numeric():
+    """test combining and extracting numeric markers"""
+    assert accesskey.extract(u"&100%") == (u"100%", u"1")
+    assert accesskey.combine(u"100%", u"1") == u"&100%"
+
+
 def test_empty_string():
     """test that we can handle and empty label+accesskey string"""
     assert accesskey.extract(u"") == (u"", u"")
