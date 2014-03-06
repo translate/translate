@@ -210,19 +210,13 @@ do=translate me
         """
         propsource = '''prop=value\n'''
 
-        convertor = prop2po.prop2po(personality="mozilla")
-        inputfile = wStringIO.StringIO(propsource)
-        inputprop = properties.propfile(inputfile, personality="mozilla")
-        outputpo = convertor.convertstore(inputprop)
+        outputpo = self.prop2po(propsource, personality="mozilla")
         assert "X-Accelerator-Marker" in str(outputpo)
         assert "X-Merge-On" in str(outputpo)
 
         # Even though the gaia flavour inherrits from mozilla, it should not
         # get the header
-        convertor = prop2po.prop2po(personality="gaia")
-        inputfile = wStringIO.StringIO(propsource)
-        inputprop = properties.propfile(inputfile, personality="gaia")
-        outputpo = convertor.convertstore(inputprop)
+        outputpo = self.prop2po(propsource, personality="gaia")
         assert "X-Accelerator-Marker" not in str(outputpo)
         assert "X-Merge-On" not in str(outputpo)
 
@@ -237,10 +231,7 @@ message-multiedit-header[few]={{ n }} selected
 message-multiedit-header[many]={{ n }} selected
 message-multiedit-header[other]={{ n }} selected
 '''
-        convertor = prop2po.prop2po(personality="gaia")
-        inputfile = wStringIO.StringIO(propsource)
-        inputprop = properties.propfile(inputfile, personality="gaia")
-        outputpo = convertor.convertstore(inputprop)
+        outputpo = self.prop2po(propsource, personality="gaia")
         pounit = outputpo.units[-1]
         assert pounit.hasplural()
         assert pounit.getlocations() == [u'message-multiedit-header']
