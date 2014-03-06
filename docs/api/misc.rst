@@ -21,14 +21,6 @@ dictutils
    :inherited-members:
 
 
-diff_match_patch
-----------------
-
-.. automodule:: translate.misc.diff_match_patch
-   :members:
-   :inherited-members:
-
-
 file_discovery
 --------------
 

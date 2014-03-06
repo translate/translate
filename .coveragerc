@@ -4,6 +4,5 @@ omit =
     translate/test_*
     translate/*/test_*
     translate/*/*/test_*
-    translate/misc/diff_match_patch.py
     translate/misc/selector.py
     translate/misc/wsgiserver/*
