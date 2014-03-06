@@ -158,16 +158,20 @@ def test_unquotefromandroid():
 def test_removeinvalidamp(recwarn):
     """tests the the removeinvalidamps function"""
 
-    def tester(actual, expected):
+    def tester(actual, expected=None):
+        if expected is None:
+            expected = actual
         assert dtd.removeinvalidamps("test.name", actual) == expected
-    tester("Valid &entity; included", "Valid &entity; included")
-    tester("Valid &entity.name; included", "Valid &entity.name; included")
-    tester("Valid &#1234; included", "Valid &#1234; included")
+    # No errors
+    tester("Valid &entity; included")
+    tester("Valid &entity.name; included")
+    tester("Valid &#1234; included")
+    tester("Valid &entity_name;")
+    # Errors that require & removal
     tester("This &amp is broken", "This amp is broken")
     tester("Mad & &amp &amp;", "Mad  amp &amp;")
     dtd.removeinvalidamps("simple.warningtest", "Dimpled &Ring")
     assert recwarn.pop(UserWarning)
-    tester("Valid &entity_name;", "Valid &entity_name;")
 
 
 class TestDTDUnit(test_monolingual.TestMonolingualUnit):
