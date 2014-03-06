@@ -3,17 +3,10 @@
 ##################
 # Format support #
 ##################
-# ini2po
-iniparse>=0.3.1
+BeautifulSoup4>=4.3  # Trados TM
+iniparse>=0.3.1      # INI (ini2po)
+vobject>=0.6.6       # iCal (ical2po)
 
-# ical2po
-vobject>=0.6.6
-
-# Trados TM
-BeautifulSoup4>=4.3
-
-# sub2po
-#aeidon>=0.14
-
+#aeidon>=0.14        # Subtitles (sub2po)
 # aeidon not available through pip/PyPI,
 # so recording this dependency here is pointless except as a comment
