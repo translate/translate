@@ -155,12 +155,15 @@ def combine(label, accesskey,
     """
     assert isinstance(label, unicode)
     assert isinstance(accesskey, unicode)
+
     if len(accesskey) == 0:
         return None
+
     searchpos = 0
     accesskeypos = -1
     in_entity = False
     accesskeyaltcasepos = -1
+
     while (accesskeypos < 0) and searchpos < len(label):
         searchchar = label[searchpos]
         if searchchar == '&':
@@ -180,12 +183,13 @@ def combine(label, accesskey,
                         # note: we keep on looping through in hope
                         # of exact match
         searchpos += 1
+
     # if we didn't find an exact case match, use an alternate one if available
     if accesskeypos == -1:
         accesskeypos = accesskeyaltcasepos
+
     # now we want to handle whatever we found...
     if accesskeypos >= 0:
         return label[:accesskeypos] + accesskey_marker + label[accesskeypos:]
-    else:
-        # can't currently mix accesskey if it's not in label
-        return None
+    # can't currently mix accesskey if it's not in label
+    return None
