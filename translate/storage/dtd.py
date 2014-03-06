@@ -185,7 +185,7 @@ def removeinvalidamps(name, value):
 
     def is_valid_entity_name(name):
         """Check that supplied *name* is a valid entity name."""
-        if name.replace('.', '').isalnum():
+        if name.replace('.', '').replace('_', '').isalnum():
             return True
         elif name[0] == '#' and name[1:].isalnum():
             return True
