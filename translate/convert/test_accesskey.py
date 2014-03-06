@@ -81,6 +81,18 @@ def test_combine_label_accesskey():
     assert accesskey.combine(u"File", u"F", u"~") == u"~File"
 
 
+def test_combine_label_accesskey_different_capitals():
+    """test that we can combine accesskey and label to create a label+accesskey
+    string when we have more then one case or case is wrong."""
+    # Prefer the correct case, even when an alternate case occurs first
+    assert accesskey.combine(u"Close Other Tabs", u"o") == u"Cl&ose Other Tabs"
+    assert accesskey.combine(u"Other Closed Tab", u"o") == u"Other Cl&osed Tab"
+    assert accesskey.combine(u"Close Other Tabs", u"O") == u"Close &Other Tabs"
+    # Correct case is missing from string, so use alternate case
+    assert accesskey.combine(u"Close Tabs", u"O") == u"Cl&ose Tabs"
+    assert accesskey.combine(u"Other Tabs", u"o") == u"&Other Tabs"
+
+
 def test_uncombinable():
     """test our behaviour when we cannot combine label and accesskey"""
     assert accesskey.combine(u"File", u"D") is None

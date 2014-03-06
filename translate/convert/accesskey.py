@@ -146,6 +146,9 @@ def combine(label, accesskey,
     We place an accesskey marker before the accesskey in the label and this
     creates a string with the two combined e.g. "File" + "F" = "&File"
 
+    The case of the accesskey is preferred unless no match is found, in which
+    case the alternate case is used.
+
     :type label: unicode
     :param label: a label
     :type accesskey: unicode char
@@ -164,6 +167,11 @@ def combine(label, accesskey,
     in_entity = False
     accesskeyaltcasepos = -1
 
+    if accesskey.isupper():
+        accesskey_alt_case = accesskey.lower()
+    else:
+        accesskey_alt_case = accesskey.upper()
+
     while (accesskeypos < 0) and searchpos < len(label):
         searchchar = label[searchpos]
         if searchchar == '&':
@@ -172,11 +180,9 @@ def combine(label, accesskey,
             in_entity = False
         else:
             if not in_entity:
-                if searchchar == accesskey.upper():
-                    # always prefer uppercase
+                if searchchar == accesskey:  # Prefer supplied case
                     accesskeypos = searchpos
-                if searchchar == accesskey.lower():
-                    # take lower case otherwise...
+                elif searchchar == accesskey_alt_case:  # Other case otherwise
                     if accesskeyaltcasepos == -1:
                         # only want to remember first altcasepos
                         accesskeyaltcasepos = searchpos
