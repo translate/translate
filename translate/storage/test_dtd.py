@@ -167,6 +167,7 @@ def test_removeinvalidamp(recwarn):
     tester("Mad & &amp &amp;", "Mad  amp &amp;")
     dtd.removeinvalidamps("simple.warningtest", "Dimpled &Ring")
     assert recwarn.pop(UserWarning)
+    tester("Valid &entity_name;", "Valid &entity_name;")
 
 
 class TestDTDUnit(test_monolingual.TestMonolingualUnit):
