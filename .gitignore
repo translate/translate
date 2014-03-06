@@ -26,6 +26,7 @@ tests/xliff_conformance/af-pootle.xlf
 
 # Requirements generation
 .reqs
+requirements/min-versions.txt
 
 # Coverage
 .coverage*
