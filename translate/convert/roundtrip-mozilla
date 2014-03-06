@@ -50,9 +50,9 @@ rm -rf $REWRITTEN_DIR*
 rm -rf $RESULTS_DIR*
 
 # Run the tools for the roundtrip.
-moz2po $TEMPLATES_DIR $PO_DIR
-podebug --rewrite=en $PO_DIR $REWRITTEN_DIR
-po2moz -t $TEMPLATES_DIR $REWRITTEN_DIR $RESULTS_DIR
+moz2po --progress=none $TEMPLATES_DIR $PO_DIR
+podebug --progress=none --rewrite=en $PO_DIR $REWRITTEN_DIR
+po2moz --progress=none -t $TEMPLATES_DIR $REWRITTEN_DIR $RESULTS_DIR
 
 # Diff the resulting templates against the original ones.
 diff -u -r $TEMPLATES_DIR $RESULTS_DIR > diff_$(date -u +%F_%T).diff
