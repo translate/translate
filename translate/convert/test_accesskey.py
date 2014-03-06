@@ -54,6 +54,7 @@ def test_unicode():
     label, akey = accesskey.extract(u"E&ḓiṱ")
     assert label, akey == (u"Eḓiṱ", u"ḓ")
     assert isinstance(label, unicode) and isinstance(akey, unicode)
+    assert accesskey.combine(u"Eḓiṱ", u"ḓ") == (u"E&ḓiṱ")
 
 
 def test_numeric():
