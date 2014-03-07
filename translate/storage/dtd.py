@@ -57,7 +57,7 @@ Escaping in regular DTD
     - The % character is escaped using &#037; or &#37; or &#x25;
     - The " character is escaped using &quot;
     - The ' character is escaped using &apos; (partial roundtrip)
-    - The & character is escaped using &amp; (not yet implemented)
+    - The & character is escaped using &amp;
     - The < character is escaped using &lt; (not yet implemented)
     - The > character is escaped using &gt; (not yet implemented)
 
@@ -126,6 +126,7 @@ def unquotefromandroid(source):
 
 _DTD_CODEPOINT2NAME = {
     ord("%"): "#037",  # Always escape % sign as &#037;.
+    ord("&"): "amp",
    #ord("<"): "lt",  # Not really so useful.
    #ord(">"): "gt",  # Not really so useful.
 }
@@ -147,6 +148,7 @@ def quotefordtd(source):
 
 _DTD_NAME2CODEPOINT = {
     "quot":   ord('"'),
+    "amp":    ord("&"),
    #"lt":     ord("<"),  # Not really so useful.
    #"gt":     ord(">"),  # Not really so useful.
    # FIXME these should probably be handled in a more general way
