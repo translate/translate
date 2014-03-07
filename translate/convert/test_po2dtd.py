@@ -129,7 +129,7 @@ class TestPO2DTD:
             simpledtd = simpledtd_template % (en_label, en_akey)
             dtdfile = self.merge2dtd(simpledtd, simplepo)
             dtdfile.makeindex()
-            accel = dtd.unquotefromdtd(dtdfile.index["simple.accesskey"].definition)
+            accel = dtd.unquotefromdtd(dtdfile.id_index["simple.accesskey"].definition)
             assert accel == target_akey
 
     def test_accesskey_types(self):
@@ -142,7 +142,7 @@ class TestPO2DTD:
                 simpledtd = simpledtd_template % (label, accesskey)
                 dtdfile = self.merge2dtd(simpledtd, simplepo)
                 dtdfile.makeindex()
-                assert dtd.unquotefromdtd(dtdfile.index["simple.%s" % accesskey].definition) == "a"
+                assert dtd.unquotefromdtd(dtdfile.id_index["simple.%s" % accesskey].definition) == "a"
 
     def test_ampersandfix(self):
         """tests that invalid ampersands are fixed in the dtd"""

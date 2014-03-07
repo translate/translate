@@ -630,11 +630,6 @@ class propfile(base.TranslationStore):
         uret = u"".join(lines)
         return uret.encode(self.encoding)
 
-    def makeindex(self):
-        super(propfile, self).makeindex()
-        # XXX: Hack to keep translate.convert.accesskey happy
-        self.index = self.id_index
-
 class javafile(propfile):
     Name = "Java Properties"
     Extensions = ['properties']
