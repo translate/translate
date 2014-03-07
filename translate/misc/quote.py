@@ -23,7 +23,7 @@ of delimiters"""
 
 import logging
 
-from six.moves.html_entities import codepoint2name, name2codepoint
+from six.moves import html_entities
 
 
 def find_all(searchin, substr):
@@ -189,8 +189,13 @@ def extractwithoutquotes(source, startdelim, enddelim, escape=None,
     return (extracted, instring)
 
 
-def htmlentityencode(source):
-    """encodes source using HTML entities e.g. © -> &copy;"""
+def entityencode(source, codepoint2name):
+    """Encode ``source`` using entities from ``codepoint2name``.
+
+    :param unicode source: Source string to encode
+    :param dict codepoint2name: Dictionary mapping code points to entity names
+           (without the the leading ``&`` or the trailing ``;``)
+    """
     output = u""
     for char in source:
         charnum = ord(char)
@@ -201,8 +206,13 @@ def htmlentityencode(source):
     return output
 
 
-def htmlentitydecode(source):
-    """decodes source using HTML entities e.g. &copy; -> ©"""
+def entitydecode(source, name2codepoint):
+    """Decode ``source`` using entities from ``name2codepoint``.
+
+    :param unicode source: Source string to decode
+    :param dict name2codepoint: Dictionary mapping entity names (without the
+           the leading ``&`` or the trailing ``;``) to code points
+    """
     output = u""
     inentity = False
     for char in source:
@@ -227,6 +237,22 @@ def htmlentitydecode(source):
         else:
             output += char
     return output
+
+
+def htmlentityencode(source):
+    """Encode ``source`` using HTML entities e.g. © -> ``&copy;``
+
+    :param unicode source: Source string to encode
+    """
+    return entityencode(source, html_entities.codepoint2name)
+
+
+def htmlentitydecode(source):
+    """Decode source using HTML entities e.g. ``&copy;`` -> ©.
+
+    :param unicode source: Source string to decode
+    """
+    return entitydecode(source, html_entities.name2codepoint)
 
 
 def javapropertiesencode(source):
