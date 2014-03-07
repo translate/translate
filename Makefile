@@ -45,7 +45,8 @@ help:
 	@echo "  test-publish-pypi - publish on PyPI testing platform"
 	@echo "  publish-sourceforge - publish on sourceforge"
 	@echo "  publish - publish on PyPI and sourceforge"
-	@echo "  test - run test suite"
+	@echo "  test - run unit test suite"
+	@echo "  test-functional - run the functional test suite"
 
 # Perform forced build using -W for the (.PHONY) requirements target
 requirements:
@@ -97,3 +98,6 @@ requirements/min-versions.txt: requirements/*.txt
 
 test:
 	@py.test --boxed -r EfsxX
+
+test-functional:
+	@tests/cli/run_tests.sh
