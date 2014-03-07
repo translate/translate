@@ -1,0 +1,3 @@
+WARNING:prop2po:Output directory does not exist. Attempting to create
+processing 1 files...
+[###########################################] 100%
