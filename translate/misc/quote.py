@@ -189,6 +189,13 @@ def extractwithoutquotes(source, startdelim, enddelim, escape=None,
     return (extracted, instring)
 
 
+def _encode_entity_char(char, codepoint2name):
+    charnum = ord(char)
+    if charnum in codepoint2name:
+        return u"&%s;" % codepoint2name[charnum]
+    else:
+        return char
+
 def entityencode(source, codepoint2name):
     """Encode ``source`` using entities from ``codepoint2name``.
 
@@ -197,12 +204,29 @@ def entityencode(source, codepoint2name):
            (without the the leading ``&`` or the trailing ``;``)
     """
     output = u""
+    inentity = False
     for char in source:
-        charnum = ord(char)
-        if charnum in codepoint2name:
-            output += u"&%s;" % codepoint2name[charnum]
+        if char == "&":
+            inentity = True
+            possibleentity = ""
+            continue
+        if inentity:
+            if char == ";":
+                output += "&" + possibleentity + ";"
+                inentity = False
+            elif char == " ":
+                output += _encode_entity_char("&", codepoint2name) + \
+                          entityencode(possibleentity + char, codepoint2name)
+                inentity = False
+            else:
+                possibleentity += char
         else:
-            output += str(char)
+            output += _encode_entity_char(char, codepoint2name)
+    if inentity:
+        # Handle nonentities at end of string.
+        output += _encode_entity_char("&", codepoint2name) + \
+                  entityencode(possibleentity, codepoint2name)
+
     return output
 
 
