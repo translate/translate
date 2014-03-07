@@ -107,5 +107,6 @@ class TestEncoding:
         """tests to give us full coverage"""
         for encoded, real in [(u"Some &; text", u"Some &; text"),
                               (u"&copy ", u"&copy "),
+                              (u"&copy", u"&copy"),
                               (u"&rogerrabbit;", u"&rogerrabbit;"),]:
             assert quote.htmlentitydecode(encoded) == real

@@ -236,6 +236,9 @@ def entitydecode(source, name2codepoint):
                 possibleentity += char
         else:
             output += char
+    if inentity:
+        # Handle nonentities at end of string.
+        output += "&" + possibleentity
     return output
 
 
