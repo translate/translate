@@ -30,8 +30,6 @@
 #  * Missing .label entry
 #  * Strangely named accesskeys
 #
-#  TODO
-#  * Include .properties files
 
 function header()
 {
@@ -39,7 +37,7 @@ function header()
     echo "### $1 ###"
 }
 
-header "Find .accesskey items and report those which don't have a corresponding .label"
+header "Find .acecsskey items and report those which don't have a corresponding .label in DTD"
 for accesskeysuffix in accesskey accessKey akey
 do
     for d in `find . -name "*.dtd"`
@@ -52,7 +50,7 @@ do
     done
 done
 
-header "Report all non-standard .akey, etc suffixes"
+header "Report all non-standard .akey, etc suffixes in DTD"
 for accesskeysuffix in akey access
 do
     for d in `find . -name "*.dtd"`
@@ -65,3 +63,28 @@ do
     done
 done
 
+header "Find .accesskey items and report those which don't have a corresponding .label in .properties"
+for accesskeysuffix in accesskey accessKey akey
+do
+    for d in `find . -name "*.properties"`
+    do
+        for accesskeyprefix in `grep "[._]${accesskeysuffix}.*=" $d | sed 's/^[ ]*\([^ ]*\)[._]'"${accesskeysuffix}"'.*$/\1/'`
+        do
+            otheroptions=`grep "^[ ]*${accesskeyprefix}[._]" $d | sed 's/^[ ]*'"${accesskeyprefix}"'[._]\([^= ]*\).*$/\1/'`
+            echo $d $accesskeyprefix: $otheroptions | egrep -v '\<(label|title)\>'
+        done
+    done
+done
+
+header "Report all non-standard .akey, etc suffixes in .properties"
+for accesskeysuffix in akey access
+do
+    for d in `find . -name "*.properties§"`
+    do
+        for accesskeyprefix in `grep "[._]${accesskeysuffix}.*=" $d | sed 's/^[ ]*\([^ ]*\)[._]'"${accesskeysuffix}"'.*$/\1/'`
+        do
+            otheroptions=`grep "^[ ]*${accesskeyprefix}[._]" $d | sed 's/^[ ]*'"${accesskeyprefix}"'[._]\([^= ]*\).*$/\1/'`
+            echo $d $accesskeyprefix: $otheroptions
+        done
+    done
+done
