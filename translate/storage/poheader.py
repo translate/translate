@@ -23,8 +23,14 @@
 import re
 import time
 
+try:
+    from collections import OrderedDict
+except ImportError:
+    # Python <= 2.6 fallback
+    from translate.misc.dictutils import ordereddict as OrderedDict
+
 from translate import __version__
-from translate.misc import dictutils
+from translate.misc.dictutils import cidict
 
 
 author_re = re.compile(r".*<\S+@\S+>.*\d{4,4}")
@@ -41,7 +47,7 @@ default_header = {
 def parseheaderstring(input):
     """Parses an input string with the definition of a PO header and returns
     the interpreted values as a dictionary."""
-    headervalues = dictutils.ordereddict()
+    headervalues = OrderedDict()
     for line in input.split("\n"):
         if not line or ":" not in line:
             continue
@@ -75,8 +81,8 @@ def update(existing, add=False, **kwargs):
     :return: Updated dictionary of header entries
     :rtype: dict
     """
-    headerargs = dictutils.ordereddict()
-    fixedargs = dictutils.cidict()
+    headerargs = OrderedDict()
+    fixedargs = cidict()
     for key, value in kwargs.items():
         key = key.replace("_", "-")
         if key.islower():
@@ -174,7 +180,7 @@ class poheader(object):
         if report_msgid_bugs_to is None:
             report_msgid_bugs_to = ""
 
-        defaultargs = dictutils.ordereddict()
+        defaultargs = OrderedDict()
         defaultargs["Project-Id-Version"] = project_id_version
         defaultargs["Report-Msgid-Bugs-To"] = report_msgid_bugs_to
         defaultargs["POT-Creation-Date"] = pot_creation_date
