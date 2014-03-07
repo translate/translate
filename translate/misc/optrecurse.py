@@ -300,6 +300,7 @@ class RecursiveOptionParser(optparse.OptionParser, object):
 
     def getformathelp(self, formats):
         """Make a nice help string for describing formats..."""
+        formats = sorted(formats)
         if None in formats:
             formats = filter(lambda format: format is not None, formats)
         if len(formats) == 0:
