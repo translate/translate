@@ -36,3 +36,9 @@ requirements/min-versions.txt
 ##############################
 
 translate/storage/properties.class
+
+# Roundtrip noise
+translate/convert/diff_*.diff
+translate/convert/mozilla-l10n/
+translate/convert/rewritten-po/
+translate/convert/templates-recreated/
