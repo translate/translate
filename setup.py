@@ -22,6 +22,7 @@ from __future__ import print_function
 import distutils.sysconfig
 import os
 import os.path
+import re
 import site
 import sys
 from distutils.core import Command, Distribution, setup
@@ -139,6 +140,26 @@ def addsubpackages(subpackages):
         initfiles.append((join(sitepackages, 'translate', subpackage),
                           [join('translate', subpackage, '__init__.py')]))
         packages.append("translate.%s" % subpackage)
+
+
+def parse_requirements(file_name):
+    """Parses a pip requirements file and returns a list of packages.
+
+    Use the result of this function in the ``install_requires`` field.
+    Copied from cburgmer/pdfserver.
+    """
+    requirements = []
+    for line in open(file_name, 'r').read().split('\n'):
+        # Ignore comments, blank lines and included requirements files
+        if re.match(r'(\s*#)|(\s*$)|(-r .*$)', line):
+            continue
+
+        if re.match(r'\s*-e\s+', line):
+            requirements.append(re.sub(r'\s*-e\s+.*#egg=(.*)$', r'\1', line))
+        elif re.match(r'\s*-f\s+', line):
+            pass
+        else:
+            requirements.append(line)
 
 
 class build_exe_map(build_exe):
@@ -416,6 +437,9 @@ def dosetup(name, version, packages, datafiles, scripts, ext_modules=[]):
           author_email="translate-devel@lists.sourceforge.net",
           url="http://toolkit.translatehouse.org/",
           download_url="http://sourceforge.net/projects/translate/files/Translate Toolkit/" + version,
+
+          install_requires=parse_requirements('requirements/required.txt'),
+
           platforms=["any"],
           classifiers=classifiers,
           packages=packages,
