@@ -230,6 +230,14 @@ def entityencode(source, codepoint2name):
     return output
 
 
+def _has_entity_end(source):
+    for char in source:
+        if char == ";":
+            return True
+        elif char == " ":
+            return False
+    return False
+
 def entitydecode(source, name2codepoint):
     """Decode ``source`` using entities from ``name2codepoint``.
 
@@ -239,7 +247,8 @@ def entitydecode(source, name2codepoint):
     """
     output = u""
     inentity = False
-    for char in source:
+    for i, char in enumerate(source):
+        char = source[i]
         if char == "&":
             inentity = True
             possibleentity = ""
@@ -248,7 +257,11 @@ def entitydecode(source, name2codepoint):
             if char == ";":
                 if (len(possibleentity) > 0 and
                     possibleentity in name2codepoint):
-                    output += unichr(name2codepoint[possibleentity])
+                    entchar = unichr(name2codepoint[possibleentity])
+                    if entchar == u'&' and _has_entity_end(source[i+1:]):
+                        output += "&" + possibleentity + ";"
+                    else:
+                        output += entchar
                     inentity = False
                 else:
                     output += "&" + possibleentity + ";"
