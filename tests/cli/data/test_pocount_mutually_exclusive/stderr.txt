@@ -1,0 +1,4 @@
+usage: pocount [-h] [--incomplete]
+               [--full | --csv | --short | --short-strings | --short-words]
+               files [files ...]
+pocount: error: argument --csv: not allowed with argument --short
