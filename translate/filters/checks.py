@@ -74,8 +74,8 @@ tag_re = re.compile("<[^>]+>")
 
 gconf_attribute_re = re.compile('"[a-z_]+?"')
 
-# xml/html tags in OpenOffice help and readme, exclude short tags
-oo_tag_re = re.compile('''<[/]??[a-z][a-z_\-]+?(?:| +[a-z]+?=".*?") *>''')
+# XML/HTML tags in LibreOffice help and readme, exclude short tags
+lo_tag_re = re.compile('''<[/]??[a-z][a-z_\-]+?(?:| +[a-z]+?=".*?") *>''')
 
 def tagname(string):
     """Returns the name of the XML/HTML tag in string"""
@@ -1611,24 +1611,25 @@ class LibreOfficeChecker(StandardChecker):
 
     @critical
     def validxml(self, str1, str2):
-        """checks that all XML/HTML open/close tag has close/open
-        pair in the trasnlation"""
+        """Check that all XML/HTML open/close tags has close/open
+        pair in the translation."""
         for location in self.locations:
             if location.endswith(".xrm") or location.endswith(".xhp"):
                 opentags = []
-                match = re.search(oo_tag_re,str2)
+                match = re.search(lo_tag_re, str2)
                 while match:
-                    acttag = match.group(0);
+                    acttag = match.group(0)
                     if acttag.startswith("</"):
                         if len(opentags) == 0:
                             raise FilterFailure(u"There is no open tag for %s" % (acttag))
                         opentag = opentags.pop()
                         if tagname(acttag) != "/" + tagname(opentag):
-                            raise FilterFailure(u"Not match open tag %s with close tag %s" % (opentag,acttag))
+                            raise FilterFailure(u"Open tag %s and close tag %s "
+                                                 "don't match" % (opentag, acttag))
                     else:
-                       opentags.append(acttag)
+                        opentags.append(acttag)
                     str2 = str2[match.end(0):]
-                    match = re.search(oo_tag_re,str2)
+                    match = re.search(lo_tag_re, str2)
                 if len(opentags) != 0:
                     raise FilterFailure(u"There is no close tag for %s" % (opentags.pop()))
         return True
