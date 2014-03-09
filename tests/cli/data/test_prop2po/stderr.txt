@@ -1,0 +1,3 @@
+Usage: prop2po [--version] [-h|--help] [--manpage] [--progress PROGRESS] [--errorlevel ERRORLEVEL] [-i|--input] INPUT [-x|--exclude EXCLUDE] [-o|--output] OUTPUT [-t|--template TEMPLATE] [-S|--timestamp] [-P|--pot]
+
+prop2po: error: You need to give an inputfile or use - for stdin ; use --help for full usage instructions
