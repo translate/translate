@@ -58,6 +58,9 @@ Formats and Converters
 General
 -------
 - Added some functional tests
+- Removed the translate.misc.diff_match_patch module, in favour of the one
+  hosted on PyPI.
+- The `Six <https://pythonhosted.org/six/>`_ module is now a required dependency.
 
 ...and loads of internal changes to improve maintainability, remove unused
 imports, remove unused code and general code cleanups, some changes to ensure
