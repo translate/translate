@@ -58,10 +58,7 @@ Contributors
 ------------
 This release was made possible by the following people:
 
-Dwayne Bailey, Leandro Regueiro, Alexander Dupuy, Friedel Wolff, Khaled Hosny,
-Michal Čihař, Jordi Mas, Stuart Prescott, Trung Ngo, Ronald Sterckx, Rail
-Aliev, Michael Schlenker, Martin-Zack Mekkaoui, Iskren Chernev, Luiz Fernando
-Ranghetti & Christian Hitz
+%CONTRIBUTORS%
 
 And to all our bug finders, testers and `localisers
 <http://pootle.locamotion.org/projects/pootle/>`_, a Very BIG Thank You.
