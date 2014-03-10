@@ -20,12 +20,12 @@
 from __future__ import print_function
 
 import os
-import os.path
 import re
 import site
 import sys
 from distutils.core import Command, Distribution, setup
 from distutils.sysconfig import get_python_lib
+from os.path import dirname, isfile, join
 
 try:
     import py2exe
@@ -45,8 +45,6 @@ from translate import __doc__, __version__
 
 
 # TODO: check out installing into a different path with --prefix/--home
-
-join = os.path.join
 
 PRETTY_NAME = 'Translate Toolkit'
 translateversion = __version__.sver
@@ -226,11 +224,12 @@ class InnoScript:
     def create(self, pathname=None):
         """creates the InnoSetup script"""
         if pathname is None:
-            self.pathname = os.path.join(self.dist_dir,
-                                         self.name + os.extsep + "iss").replace(' ', '_')
+            _name = self.name + os.extsep + "iss"
+            self.pathname = join(self.dist_dir, _name).replace(" ", "_")
         else:
             self.pathname = pathname
-# See http://www.jrsoftware.org/isfaq.php for more InnoSetup config options.
+
+        # See http://www.jrsoftware.org/isfaq.php for more InnoSetup config options.
         ofi = self.file = open(self.pathname, "w")
         print("; WARNING: This script has been created by py2exe. Changes to this script", file=ofi)
         print("; will be overwritten the next time py2exe is run!", file=ofi)
@@ -244,7 +243,7 @@ class InnoScript:
         print(file=ofi)
         print(r"[Files]", file=ofi)
         for path in self.exe_files + self.other_files:
-            print(r'Source: "%s"; DestDir: "{app}\%s"; Flags: ignoreversion' % (path, os.path.dirname(path)), file=ofi)
+            print(r'Source: "%s"; DestDir: "{app}\%s"; Flags: ignoreversion' % (path, dirname(path)), file=ofi)
         print(file=ofi)
         print(r"[Icons]", file=ofi)
         print(r'Name: "{group}\Documentation"; Filename: "{app}\docs\index.html";', file=ofi)
@@ -319,13 +318,13 @@ def map_data_file(data_file):
     if data_parts[:2] == ["Lib", "site-packages"]:
         data_parts = data_parts[2:]
         if data_parts:
-            data_file = os.path.join(*data_parts)
+            data_file = join(*data_parts)
         else:
             data_file = ""
     if data_parts[:1] == ["translate"]:
         data_parts = data_parts[1:]
         if data_parts:
-            data_file = os.path.join(*data_parts)
+            data_file = join(*data_parts)
         else:
             data_file = ""
     return data_file
@@ -335,7 +334,7 @@ def getdatafiles():
     datafiles = initfiles + infofiles
 
     def listfiles(srcdir):
-        return join(sitepackages, srcdir), [join(srcdir, f) for f in os.listdir(srcdir) if os.path.isfile(join(srcdir, f))]
+        return join(sitepackages, srcdir), [join(srcdir, f) for f in os.listdir(srcdir) if isfile(join(srcdir, f))]
 
     docfiles = []
     for subdir in ['docs', 'share']:
