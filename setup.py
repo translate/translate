@@ -17,8 +17,6 @@
 # You should have received a copy of the GNU General Public License along with
 # Translate; if not, see <http://www.gnu.org/licenses/>.
 
-from __future__ import print_function
-
 import os
 import re
 import site
@@ -231,39 +229,40 @@ class InnoScript:
 
         # See http://www.jrsoftware.org/isfaq.php for more InnoSetup config options.
         ofi = self.file = open(self.pathname, "w")
-        print("; WARNING: This script has been created by py2exe. Changes to this script", file=ofi)
-        print("; will be overwritten the next time py2exe is run!", file=ofi)
-        print(r"[Setup]", file=ofi)
-        print(r"AppName=%s" % self.name, file=ofi)
-        print(r"AppVerName=%s %s" % (self.name, self.version), file=ofi)
-        print(r"DefaultDirName={pf}\%s" % self.name, file=ofi)
-        print(r"DefaultGroupName=%s" % self.name, file=ofi)
-        print(r"OutputBaseFilename=%s-%s-setup" % (self.name, self.version), file=ofi)
-        print(r"ChangesEnvironment=yes", file=ofi)
-        print(file=ofi)
-        print(r"[Files]", file=ofi)
+        ofi.write("; WARNING: This script has been created by py2exe. Changes to this script\n")
+        ofi.write("; will be overwritten the next time py2exe is run!\n")
+        ofi.write("[Setup]\n")
+        ofi.write("AppName=%s\n" % self.name)
+        ofi.write("AppVerName=%s %s\n" % (self.name, self.version))
+        ofi.write("DefaultDirName={pf}\\%s\n" % self.name)
+        ofi.write("DefaultGroupName=%s\n" % self.name)
+        ofi.write("OutputBaseFilename=%s-%s-setup\n" % (self.name, self.version))
+        ofi.write("ChangesEnvironment=yes\n")
+        ofi.write("\n")
+        ofi.write("[Files]\n")
         for path in self.exe_files + self.other_files:
-            print(r'Source: "%s"; DestDir: "{app}\%s"; Flags: ignoreversion' % (path, dirname(path)), file=ofi)
-        print(file=ofi)
-        print(r"[Icons]", file=ofi)
-        print(r'Name: "{group}\Documentation"; Filename: "{app}\docs\index.html";', file=ofi)
-        print(r'Name: "{group}\Translate Toolkit Command Prompt"; Filename: "cmd.exe"', file=ofi)
-        print(r'Name: "{group}\Uninstall %s"; Filename: "{uninstallexe}"' % self.name, file=ofi)
-        print(file=ofi)
-        print(r"[Registry]", file=ofi)
+            ofi.write('Source: "%s"; DestDir: "{app}\\%s"; Flags: ignoreversion\n' % (path, dirname(path)))
+        ofi.write("\n")
+        ofi.write("[Icons]\n")
+        ofi.write('Name: "{group}\\Documentation"; Filename: "{app}\\docs\\index.html";\n')
+        ofi.write('Name: "{group}\\Translate Toolkit Command Prompt"; Filename: "cmd.exe"\n')
+        ofi.write('Name: "{group}\\Uninstall %s"; Filename: "{uninstallexe}"\n' % self.name)
+        ofi.write("\n")
+        ofi.write("[Registry]\n")
         # TODO: Move the code to update the Path environment variable to a
         # Python script which will be invoked by the [Run] section (below)
-        print(r'Root: HKCU; Subkey: "Environment"; ValueType: expandsz; ValueName: "Path"; ValueData: "{reg:HKCU\Environment,Path|};{app};"', file=ofi)
-        print(file=ofi)
+        ofi.write('Root: HKCU; Subkey: "Environment"; ValueType: expandsz; '
+                  'ValueName: "Path"; ValueData: "{reg:HKCU\\Environment,Path|};{app};"\n')
+        ofi.write("\n")
         if self.install_scripts:
-            print(r"[Run]", file=ofi)
+            ofi.write("[Run]\n")
             for path in self.install_scripts:
-                print(r'Filename: "{app}\%s"; WorkingDir: "{app}"; Parameters: "-install"' % path, file=ofi)
-            print(file=ofi)
-            print(r"[UninstallRun]", file=ofi)
+                ofi.write('Filename: "{app}\\%s"; WorkingDir: "{app}"; Parameters: "-install"\n' % path)
+            ofi.write("\n")
+            ofi.write("[UninstallRun]\n")
             for path in self.install_scripts:
-                print(r'Filename: "{app}\%s"; WorkingDir: "{app}"; Parameters: "-remove"' % path, file=ofi)
-        print(file=ofi)
+                ofi.write('Filename: "{app}\\%s"; WorkingDir: "{app}"; Parameters: "-remove"\n' % path)
+        ofi.write("\n")
         ofi.close()
 
     def compile(self):
@@ -403,7 +402,7 @@ def standardsetup(name, version, custompackages=[], customdatafiles=[]):
         buildmanifest_in(manifest_in, translatescripts + translatebashscripts)
         manifest_in.close()
     except IOError as e:
-        print("warning: could not recreate MANIFEST.in, continuing anyway. Error was %s" % e, file=sys.stderr)
+        sys.stderr.write("warning: could not recreate MANIFEST.in, continuing anyway. (%s)\n" % e)
     addsubpackages(subpackages)
     datafiles = getdatafiles()
     ext_modules = []
