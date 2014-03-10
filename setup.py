@@ -19,13 +19,13 @@
 
 from __future__ import print_function
 
-import distutils.sysconfig
 import os
 import os.path
 import re
 import site
 import sys
 from distutils.core import Command, Distribution, setup
+from distutils.sysconfig import get_python_lib
 
 try:
     import py2exe
@@ -51,10 +51,10 @@ join = os.path.join
 PRETTY_NAME = 'Translate Toolkit'
 translateversion = __version__.sver
 
-if sys.version_info >= (2, 6, 0) and site.ENABLE_USER_SITE:
+if site.ENABLE_USER_SITE:
     sitepackages = site.USER_SITE
 else:
-    packagesdir = distutils.sysconfig.get_python_lib()
+    packagesdir = get_python_lib()
     sitepackages = packagesdir.replace(sys.prefix + os.sep, '')
 
 infofiles = [(join(sitepackages, 'translate'),
