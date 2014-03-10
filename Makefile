@@ -15,7 +15,7 @@ build: docs
 docs:
 	# The following creates the HTML docs.
 	# NOTE: cd and make must be in the same line.
-	cd ${DOCS_DIR}; make SPHINXOPTIONS=-W html ${TAIL}
+	cd ${DOCS_DIR}; make SPHINXOPTS="-W -q" html ${TAIL}
 
 publish-pypi:
 	python setup.py sdist ${FORMATS} upload
