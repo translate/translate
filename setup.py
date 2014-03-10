@@ -368,6 +368,8 @@ def parse_requirements(file_name):
         else:
             requirements.append(line)
 
+    return requirements
+
 
 def getdatafiles():
     datafiles = initfiles + infofiles
