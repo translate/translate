@@ -34,8 +34,7 @@ script:
   - if [[ $TRAVIS_PYTHON_VERSION != 'pypy' ]]; then py.test --cov=. -r EfsxX; fi
   - if [[ $TRAVIS_PYTHON_VERSION == 'pypy' ]]; then py.test --boxed -r EfsxX; fi
   - ./tools/pep8.sh travis
-  # -W report warnings as errors when building docs
-  - cd docs; make SPHINXOPTS=-W html; cd ..
+  - make docs
 after_success:
   coveralls
 notifications:
