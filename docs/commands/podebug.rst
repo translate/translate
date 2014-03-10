@@ -60,7 +60,7 @@ Options:
 --rewrite=STYLE        the translation rewrite style: :doc:`xxx, en, blank,
                        chef  (v1.2), unicode (v1.2) <option_rewrite>`
 --ignore=APPLICATION   apply tagging ignore rules for the given application:
-                       kde, gtk, openoffice, mozilla
+                       kde, gtk, openoffice, libreoffice, mozilla
 --hash=LENGTH          add an md5 hash to translations (only until version
                        1.3.0 -- see %h below)
 

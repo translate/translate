@@ -74,6 +74,8 @@ tag_re = re.compile("<[^>]+>")
 
 gconf_attribute_re = re.compile('"[a-z_]+?"')
 
+# XML/HTML tags in LibreOffice help and readme, exclude short tags
+lo_tag_re = re.compile('''<[/]??[a-z][a-z_\-]+?(?:| +[a-z]+?=".*?") *>''')
 
 def tagname(string):
     """Returns the name of the XML/HTML tag in string"""
@@ -1511,7 +1513,8 @@ class StandardChecker(TranslationChecker):
                          "isreview", "notranslatewords", "musttranslatewords",
                          "emails", "simpleplurals", "urls", "printf",
                          "tabs", "newlines", "functions", "options",
-                         "blank", "nplurals", "gconf", "dialogsizes"),
+                         "blank", "nplurals", "gconf", "dialogsizes",
+                         "validxml"),
           "blank": ("simplecaps", "variables", "startcaps",
                     "accelerators", "brackets", "endpunc",
                     "acronyms", "xmltags", "startpunc",
@@ -1522,7 +1525,7 @@ class StandardChecker(TranslationChecker):
                     "isreview", "notranslatewords", "musttranslatewords",
                     "emails", "simpleplurals", "urls", "printf",
                     "tabs", "newlines", "functions", "options",
-                    "gconf", "dialogsizes"),
+                    "gconf", "dialogsizes", "validxml"),
           "credits": ("simplecaps", "variables", "startcaps",
                       "accelerators", "brackets", "endpunc",
                       "acronyms", "xmltags", "startpunc",
@@ -1530,7 +1533,8 @@ class StandardChecker(TranslationChecker):
                       "filepaths", "doublespacing",
                       "sentencecount", "numbers",
                       "emails", "simpleplurals", "urls", "printf",
-                      "tabs", "newlines", "functions", "options"),
+                      "tabs", "newlines", "functions", "options",
+                      "validxml"),
          "purepunc": ("startcaps", "options"),
          # This is causing some problems since Python 2.6, as
          # startcaps is now seen as an important one to always execute
@@ -1550,7 +1554,7 @@ class StandardChecker(TranslationChecker):
                           "startwhitespace", "endwhitespace",
                           "singlequoting", "doublequoting",
                           "filepaths", "purepunc", "doublewords", "printf",
-                          "newlines"),
+                          "newlines", "validxml"),
          }
 
 # code to actually run the tests (use unittest?)
@@ -1578,6 +1582,57 @@ class OpenOfficeChecker(StandardChecker):
 
         checkerconfig.update(openofficeconfig)
         StandardChecker.__init__(self, **kwargs)
+
+libreofficeconfig = CheckerConfig(
+    accelmarkers=["~"],
+    varmatches=[("&", ";"), ("%", "%"), ("%", None), ("%", 0), ("$(", ")"),
+                ("$", "$"), ("${", "}"), ("#", "#"), ("#", 1), ("#", 0),
+                ("($", ")"), ("$[", "]"), ("[", "]"), ("@", "@"),
+                ("$", None)],
+    ignoretags=[("alt", "xml-lang", None), ("ahelp", "visibility", "visible"),
+                ("img", "width", None), ("img", "height", None)],
+    canchangetags=[("link", "name", None)],
+)
+
+
+class LibreOfficeChecker(StandardChecker):
+
+    def __init__(self, **kwargs):
+        checkerconfig = kwargs.get("checkerconfig", None)
+
+        if checkerconfig is None:
+            checkerconfig = CheckerConfig()
+            kwargs["checkerconfig"] = checkerconfig
+
+        checkerconfig.update(libreofficeconfig)
+        checkerconfig.update(openofficeconfig)
+        StandardChecker.__init__(self, **kwargs)
+
+
+    @critical
+    def validxml(self, str1, str2):
+        """Check that all XML/HTML open/close tags has close/open
+        pair in the translation."""
+        for location in self.locations:
+            if location.endswith(".xrm") or location.endswith(".xhp"):
+                opentags = []
+                match = re.search(lo_tag_re, str2)
+                while match:
+                    acttag = match.group(0)
+                    if acttag.startswith("</"):
+                        if len(opentags) == 0:
+                            raise FilterFailure(u"There is no open tag for %s" % (acttag))
+                        opentag = opentags.pop()
+                        if tagname(acttag) != "/" + tagname(opentag):
+                            raise FilterFailure(u"Open tag %s and close tag %s "
+                                                 "don't match" % (opentag, acttag))
+                    else:
+                        opentags.append(acttag)
+                    str2 = str2[match.end(0):]
+                    match = re.search(lo_tag_re, str2)
+                if len(opentags) != 0:
+                    raise FilterFailure(u"There is no close tag for %s" % (opentags.pop()))
+        return True
 
 
 mozillaconfig = CheckerConfig(
@@ -1800,6 +1855,7 @@ class TermChecker(StandardChecker):
 
 projectcheckers = {
     "openoffice": OpenOfficeChecker,
+    "libreoffice": LibreOfficeChecker,
     "mozilla": MozillaChecker,
     "kde": KdeChecker,
     "wx": KdeChecker,
