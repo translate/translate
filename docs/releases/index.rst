@@ -4,7 +4,7 @@ Release Notes
 *************
 
 The following are release notes used on PyPI, Sourceforge and mailing lists for
-Pootle releases.
+Translate Toolkit releases.
 
 .. toctree::
    :maxdepth: 1
