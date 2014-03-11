@@ -268,10 +268,18 @@ Let people know that there is a new version:
 
 
 Cleanup
--------
+=======
 Some possible cleanup tasks:
 
 - Remove any RC builds from the sourceforge download pages (maybe?).
 - Commit any release notes and such (or maybe do that before tagging).
 - Remove your translate-release checkout.
 - Update and fix these release notes.
+
+Bump version to N+1-alpha1
+--------------------------
+
+Now that we've release lets make sure that master reflect the current state
+which would be ``{N+1}-alpha1``. This prevents anyone using master being
+confused with a stable release and we can easily check if they are using master
+or stable.
