@@ -24,11 +24,14 @@ Features
   combined into a single unit
 * Translator directive -- all LOCALIZATION NOTE items such as DONT_TRANSLATE
   are handled and such items are discarded
+* Entities -- some entities such as ``&amp;`` or ``&quot;`` are expanded when
+  reading DTD files and escaped when writing them, so that translator see and
+  type ``&`` and ``"`` directly
 
 .. _dtd#issues:
 
 Issues
 ======
 
-* We don't escape character entities like ``&lt;``, ``&#38;`` -- this doesn't
-  break anything but it would be nicer to see © rather than &copy;
+* We don't expand some character entities like ``&lt;``, ``&#38;`` -- this
+  doesn't break anything but it would be nicer to see © rather than ``&copy;``
