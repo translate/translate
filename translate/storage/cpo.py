@@ -468,8 +468,7 @@ class pounit(pocommon.pounit):
         # we really want to make sure that there is no msgidcomment or msgctxt
         return self.getid() == "" and len(self.target) > 0
 
-    @property
-    def is_blank(self):
+    def isblank(self):
         return len(self.source) == len(self.target) == len(self.getcontext()) == 0
 
     def hastypecomment(self, typecomment):
@@ -731,7 +730,7 @@ class pofile(pocommon.pofile):
             units = self.units
 
         for unit in units:
-            if not unit.is_blank and not unit.isobsolete():
+            if not unit.isblank() and not unit.isobsolete():
                 return False
         return True
 

@@ -36,7 +36,7 @@ class po2ts:
         else:
             tsfile = ts.QtTsParser(templatefile)
         for inputunit in inputstore.units:
-            if inputunit.isheader() or inputunit.is_blank:
+            if inputunit.isheader() or inputunit.isblank():
                 continue
             source = inputunit.source
             translation = inputunit.target

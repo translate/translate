@@ -37,7 +37,7 @@ class po2wordfast:
         """converts a .po file (possibly many) to a Wordfast TM file"""
         inputstore = po.pofile(inputfile)
         for inunit in inputstore.units:
-            if inunit.isheader() or inunit.is_blank or not inunit.istranslated():
+            if inunit.isheader() or inunit.isblank() or not inunit.istranslated():
                 continue
             source = inunit.source
             target = inunit.target

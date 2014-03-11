@@ -187,9 +187,8 @@ class phpunit(base.TranslationUnit):
     def removenotes(self):
         self._comments = []
 
-    @property
-    def is_blank(self):
-        """Return whether this is a blank unit, containing only comments."""
+    def isblank(self):
+        """Return whether this is a blank element, containing only comments."""
         return not (self.name or self.value)
 
     def getid(self):
