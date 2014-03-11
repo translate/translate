@@ -106,30 +106,27 @@ class TradosTxtDate(object):
             elif isinstance(newtime, time.struct_time):
                 self.time = newtime
 
-    @property
-    def timestring(self):
+    def get_timestring(self):
         """Get the time in the Trados time format"""
         if not self._time:
             return None
         else:
             return time.strftime(TRADOS_TIMEFORMAT, self._time)
 
-    @timestring.setter
-    def timestring(self, timestring):
+    def set_timestring(self, timestring):
         """Set the time_struct object using a Trados time formated string
 
         :param timestring: A Trados time string (DDMMYYYY, hh:mm:ss)
         :type timestring: String
         """
         self._time = time.strptime(timestring, TRADOS_TIMEFORMAT)
+    timestring = property(get_timestring, set_timestring)
 
-    @property
-    def time(self):
+    def get_time(self):
         """Get the time_struct object"""
         return self._time
 
-    @time.setter
-    def time(self, newtime):
+    def set_time(self, newtime):
         """Set the time_struct object
 
         :param newtime: a new time object
@@ -139,6 +136,7 @@ class TradosTxtDate(object):
             self._time = newtime
         else:
             self._time = None
+    time = property(get_time, set_time)
 
     def __str__(self):
         if not self.timestring:
