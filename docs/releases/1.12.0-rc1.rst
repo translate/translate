@@ -45,6 +45,11 @@ Formats and Converters
   - Allow blank spaces in array declaration (:bug:`2646`)
   - Support nested arrays (:bug:`2240`)
 
+- Mozilla properties
+
+  - If a unit has an associated access key entry then these are combined into a
+    single unit, as done in the :doc:`Mozilla DTD </formats/dtd>` format
+
 General
 -------
 - Added some functional tests
