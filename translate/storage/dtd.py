@@ -573,11 +573,11 @@ class dtdfile(base.TranslationStore):
         return "".join(sources)
 
     def makeindex(self):
-        """makes self.index dictionary keyed on entities"""
-        self.index = {}
+        """makes self.id_index dictionary keyed on entities"""
+        self.id_index = {}
         for dtd in self.units:
             if not dtd.isnull():
-                self.index[dtd.entity] = dtd
+                self.id_index[dtd.entity] = dtd
 
     def _valid_store(self):
         """Validate the store to determine if it is valid

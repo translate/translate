@@ -10,11 +10,11 @@ from translate.storage import po, properties
 
 class TestProp2PO:
 
-    def prop2po(self, propsource, proptemplate=None):
+    def prop2po(self, propsource, proptemplate=None, personality="java"):
         """helper that converts .properties source to po source without requiring files"""
         inputfile = wStringIO.StringIO(propsource)
-        inputprop = properties.propfile(inputfile)
-        convertor = prop2po.prop2po()
+        inputprop = properties.propfile(inputfile, personality=personality)
+        convertor = prop2po.prop2po(personality=personality)
         if proptemplate:
             templatefile = wStringIO.StringIO(proptemplate)
             templateprop = properties.propfile(templatefile)
@@ -139,14 +139,13 @@ prefPanel-smime=
         pounit = self.singleelement(pofile)
         assert pounit.getnotes("developer") == "## @name GENERIC_ERROR\n## @loc none"
 
-    @mark.xfail(reason="Not Implemented")
     def test_folding_accesskeys(self):
         """check that we can fold various accesskeys into their associated label (bug #115)"""
-        propsource = r'''cmd_addEngine = Add Engines...
-cmd_addEngine_accesskey = A'''
-        pofile = self.prop2po(propsource)
+        propsource = r'''cmd_addEngine.label = Add Engines...
+cmd_addEngine.accesskey = A'''
+        pofile = self.prop2po(propsource, personality="mozilla")
         pounit = self.singleelement(pofile)
-        assert pounit.target == "&Add Engines..."
+        assert pounit.source == "&Add Engines..."
 
     def test_dont_translate(self):
         """check that we know how to ignore don't translate instructions in properties files (bug #116)"""
@@ -210,19 +209,14 @@ do=translate me
         (accelerators, merge criterion).
         """
         propsource = '''prop=value\n'''
-        convertor = prop2po.prop2po()
 
-        inputfile = wStringIO.StringIO(propsource)
-        inputprop = properties.propfile(inputfile, personality="mozilla")
-        outputpo = convertor.convertstore(inputprop, personality="mozilla")
+        outputpo = self.prop2po(propsource, personality="mozilla")
         assert "X-Accelerator-Marker" in str(outputpo)
         assert "X-Merge-On" in str(outputpo)
 
         # Even though the gaia flavour inherrits from mozilla, it should not
         # get the header
-        inputfile = wStringIO.StringIO(propsource)
-        inputprop = properties.propfile(inputfile, personality="gaia")
-        outputpo = convertor.convertstore(inputprop, personality="gaia")
+        outputpo = self.prop2po(propsource, personality="gaia")
         assert "X-Accelerator-Marker" not in str(outputpo)
         assert "X-Merge-On" not in str(outputpo)
 
@@ -237,10 +231,7 @@ message-multiedit-header[few]={{ n }} selected
 message-multiedit-header[many]={{ n }} selected
 message-multiedit-header[other]={{ n }} selected
 '''
-        convertor = prop2po.prop2po()
-        inputfile = wStringIO.StringIO(propsource)
-        inputprop = properties.propfile(inputfile, personality="gaia")
-        outputpo = convertor.convertstore(inputprop, personality="gaia")
+        outputpo = self.prop2po(propsource, personality="gaia")
         pounit = outputpo.units[-1]
         assert pounit.hasplural()
         assert pounit.getlocations() == [u'message-multiedit-header']

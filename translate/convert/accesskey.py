@@ -87,7 +87,7 @@ class UnitMixer(object):
             if entity.endswith(labelsuffix):
                 entitybase = entity[:entity.rfind(labelsuffix)]
                 for akeytype in self.accesskeysuffixes:
-                    if (entitybase + akeytype) in store.index:
+                    if (entitybase + akeytype) in store.id_index:
                         labelentity = entity
                         accesskeyentity = labelentity[:labelentity.rfind(labelsuffix)] + akeytype
                         break
@@ -97,7 +97,7 @@ class UnitMixer(object):
                     accesskeyentity = entity
                     for labelsuffix in self.labelsuffixes:
                         labelentity = accesskeyentity[:accesskeyentity.rfind(akeytype)] + labelsuffix
-                        if labelentity in store.index:
+                        if labelentity in store.id_index:
                             break
                     else:
                         labelentity = None

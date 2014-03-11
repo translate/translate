@@ -21,13 +21,16 @@ Features
 * Fully manage Java escaping (Mozilla non-escaped form is also handled)
 * Preserves the layout of the original source file in the translated version
 
+.. versionadded:: 1.12.0
+
+* Mozilla accelerators -- if a unit has an associated access key entry then
+  these are combined into a single unit
+
 .. _properties#not_implemented:
 
 Not implemented
 ===============
 
-* Does not fold access keys together as done in the :doc:`Mozilla DTD <dtd>`
-  format.
 * We don't allow filtering of unchanged values.  In Java you can inherit
   translations, if the key is missing from a file then Java will look to other
   files in the hierarchy to determine the translation.

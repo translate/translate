@@ -183,8 +183,8 @@ class dtd2po:
 
         #assert alreadymixed is None
         labelentity, accesskeyentity = self.mixer.find_mixed_pair(self.mixedentities, store, unit)
-        labeldtd = store.index.get(labelentity, None)
-        accesskeydtd = store.index.get(accesskeyentity, None)
+        labeldtd = store.id_index.get(labelentity, None)
+        accesskeydtd = store.id_index.get(accesskeyentity, None)
         po_unit = self.convertmixedunit(labeldtd, accesskeydtd)
         if po_unit is not None:
             if accesskeyentity is not None:
@@ -212,7 +212,7 @@ class dtd2po:
                              "developer")
 
         dtd_store.makeindex()
-        self.mixedentities = self.mixer.match_entities(dtd_store.index)
+        self.mixedentities = self.mixer.match_entities(dtd_store.id_index)
         # go through the dtd and convert each unit
         for dtd_unit in dtd_store.units:
             if not dtd_unit.istranslatable():
@@ -236,9 +236,9 @@ class dtd2po:
 
         origdtdfile.makeindex()
         #TODO: self.mixedentities is overwritten below, so this is useless:
-        self.mixedentities = self.mixer.match_entities(origdtdfile.index)
+        self.mixedentities = self.mixer.match_entities(origdtdfile.id_index)
         translateddtdfile.makeindex()
-        self.mixedentities = self.mixer.match_entities(translateddtdfile.index)
+        self.mixedentities = self.mixer.match_entities(translateddtdfile.id_index)
         # go through the dtd files and convert each unit
         for origdtd in origdtdfile.units:
             if not origdtd.istranslatable():
@@ -265,8 +265,8 @@ class dtd2po:
                 # this means its a mixed entity (with accesskey) that's
                 # already been dealt with)
                 continue
-            if orig_entity in translateddtdfile.index:
-                translateddtd = translateddtdfile.index[orig_entity]
+            if orig_entity in translateddtdfile.id_index:
+                translateddtd = translateddtdfile.id_index[orig_entity]
                 translatedpo = self.convertdtdunit(translateddtdfile,
                                                    translateddtd,
                                                    mixbucket=mixbucket)

@@ -85,6 +85,15 @@ msgstr ""'''
         print(propfile)
         assert propfile == propexpected
 
+    def test_mozilla_accesskeys(self):
+        """check merging a fuzzy translation"""
+        posource = '''#: prop.label\n#: prop.accesskey\nmsgid "&Value"\nmsgstr "&Waarde"\n'''
+        proptemplate = '''prop.label=Value\nprop.accesskey=V\n'''
+        propexpected = '''prop.label=Waarde\nprop.accesskey=W\n'''
+        propfile = self.merge2prop(proptemplate, posource, personality="mozilla")
+        print(propfile)
+        assert propfile == propexpected
+
     def test_merging_propertyless_template(self):
         """check that when merging with a template with no property values that we copy the template"""
         posource = ""

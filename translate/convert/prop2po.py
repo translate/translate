@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 #
-# Copyright 2002-2010,2012 Zuza Software Foundation
+# Copyright 2002-2014 Zuza Software Foundation
 #
 # This file is part of translate.
 #
@@ -26,6 +26,7 @@ for examples and usage instructions.
 
 import logging
 
+from translate.convert.accesskey import UnitMixer
 from translate.storage import po, properties
 
 
@@ -45,10 +46,17 @@ class prop2po:
     """convert a .properties file to a .po file for handling the
     translation."""
 
-    def convertstore(self, thepropfile, personality="java",
-                     duplicatestyle="msgctxt"):
-        """converts a .properties file to a .po file..."""
+    def __init__(self, personality="java", blankmsgstr=False,
+                 duplicatestyle="msgctxt"):
         self.personality = personality
+        self.blankmsgstr = blankmsgstr
+        self.duplicatestyle = duplicatestyle
+        self.mixedkeys = {}
+        self.mixer = UnitMixer(properties.labelsuffixes,
+                               properties.accesskeysuffixes)
+
+    def convertstore(self, thepropfile):
+        """converts a .properties file to a .po file..."""
         thetargetfile = po.pofile()
         if self.personality in ("mozilla", "skype"):
             targetheader = thetargetfile.init_headers(
@@ -59,12 +67,15 @@ class prop2po:
             targetheader = thetargetfile.header()
         targetheader.addnote("extracted from %s" % thepropfile.filename,
                              "developer")
+
+        thepropfile.makeindex()
+        self.mixedkeys = self.mixer.match_entities(thepropfile.id_index)
         # we try and merge the header po with any comments at the start of the
         # properties file
         appendedheader = False
         waitingcomments = []
         for propunit in thepropfile.units:
-            pounit = self.convertunit(propunit, "developer")
+            pounit = self.convertpropunit(thepropfile, propunit, "developer")
             if pounit is None:
                 waitingcomments.extend(propunit.comments)
             # FIXME the storage class should not be creating blank units
@@ -84,13 +95,11 @@ class prop2po:
                 thetargetfile.addunit(pounit)
         if self.personality == "gaia":
             thetargetfile = self.fold_gaia_plurals(thetargetfile)
-        thetargetfile.removeduplicates(duplicatestyle)
+        thetargetfile.removeduplicates(self.duplicatestyle)
         return thetargetfile
 
-    def mergestore(self, origpropfile, translatedpropfile, personality="java",
-                   blankmsgstr=False, duplicatestyle="msgctxt"):
+    def mergestore(self, origpropfile, translatedpropfile):
         """converts two .properties files to a .po file..."""
-        self.personality = personality
         thetargetfile = po.pofile()
         if self.personality in ("mozilla", "skype"):
             targetheader = thetargetfile.init_headers(
@@ -101,14 +110,18 @@ class prop2po:
             targetheader = thetargetfile.header()
         targetheader.addnote("extracted from %s, %s" % (origpropfile.filename, translatedpropfile.filename),
                              "developer")
+        origpropfile.makeindex()
+        #TODO: self.mixedkeys is overwritten below, so this is useless:
+        self.mixedkeys = self.mixer.match_entities(origpropfile.id_index)
         translatedpropfile.makeindex()
+        self.mixedkeys = self.mixer.match_entities(translatedpropfile.id_index)
         # we try and merge the header po with any comments at the start of
         # the properties file
         appendedheader = False
         waitingcomments = []
         # loop through the original file, looking at units one by one
         for origprop in origpropfile.units:
-            origpo = self.convertunit(origprop, "developer")
+            origpo = self.convertpropunit(origpropfile, origprop, "developer")
             if origpo is None:
                 waitingcomments.extend(origprop.comments)
             # FIXME the storage class should not be creating blank units
@@ -127,14 +140,16 @@ class prop2po:
                 translatedprop = translatedpropfile.locationindex[origprop.name]
                 # Need to check that this comment is not a copy of the
                 # developer comments
-                translatedpo = self.convertunit(translatedprop, "translator")
+                translatedpo = self.convertpropunit(translatedpropfile,
+                                                    translatedprop,
+                                                    "translator")
                 if translatedpo is "discard":
                     continue
             else:
                 translatedpo = None
             # if we have a valid po unit, get the translation and add it...
             if origpo is not None:
-                if translatedpo is not None and not blankmsgstr:
+                if translatedpo is not None and not self.blankmsgstr:
                     origpo.target = translatedpo.source
                 origpo.addnote(u"".join(waitingcomments).rstrip(),
                                "developer", position="prepend")
@@ -145,7 +160,7 @@ class prop2po:
                              origprop.name)
         if self.personality == "gaia":
             thetargetfile = self.fold_gaia_plurals(thetargetfile)
-        thetargetfile.removeduplicates(duplicatestyle)
+        thetargetfile.removeduplicates(self.duplicatestyle)
         return thetargetfile
 
     def fold_gaia_plurals(self, postore):
@@ -213,6 +228,63 @@ class prop2po:
         pounit.target = u""
         return pounit
 
+    def convertmixedunit(self, labelprop, accesskeyprop, commenttype):
+        label_unit = self.convertunit(labelprop, commenttype)
+        accesskey_unit = self.convertunit(accesskeyprop, commenttype)
+        if label_unit is None:
+            return accesskey_unit
+        if accesskey_unit is None:
+            return label_unit
+        target_unit = po.pounit(encoding="UTF-8")
+        return self.mixer.mix_units(label_unit, accesskey_unit, target_unit)
+
+    def convertpropunit(self, store, unit, commenttype, mixbucket="dtd"):
+        """Converts a unit from store to a po unit, keeping track of mixed
+        names along the way.
+
+        ``mixbucket`` can be specified to indicate if the given unit is part of
+        the template or the translated file.
+        """
+        if self.personality != "mozilla":
+            # XXX should we enable unit mixing for other personalities?
+            return self.convertunit(unit, commenttype)
+
+        # keep track of whether accesskey and label were combined
+        key = unit.getid()
+        if key not in self.mixedkeys:
+            return self.convertunit(unit, commenttype)
+
+        # use special convertmixed unit which produces one pounit with
+        # both combined for the label and None for the accesskey
+        alreadymixed = self.mixedkeys[key].get(mixbucket, None)
+        if alreadymixed:
+            # we are successfully throwing this away...
+            return None
+        elif alreadymixed is False:
+            # The mix failed before
+            return self.convertunit(unit, commenttype)
+
+        #assert alreadymixed is None
+        labelkey, accesskeykey = self.mixer.find_mixed_pair(self.mixedkeys, store, unit)
+        labelprop = store.id_index.get(labelkey, None)
+        accesskeyprop = store.id_index.get(accesskeykey, None)
+        po_unit = self.convertmixedunit(labelprop, accesskeyprop, commenttype)
+        if po_unit is not None:
+            if accesskeykey is not None:
+                self.mixedkeys[accesskeykey][mixbucket] = True
+            if labelkey is not None:
+                self.mixedkeys[labelkey][mixbucket] = True
+            return po_unit
+        else:
+            # otherwise the mix failed. add each one separately and
+            # remember they weren't mixed
+            if accesskeykey is not None:
+                self.mixedkeys[accesskeykey][mixbucket] = False
+            if labelkey is not None:
+                self.mixedkeys[labelkey][mixbucket] = False
+
+        return self.convertunit(unit, commenttype)
+
 
 def convertstrings(inputfile, outputfile, templatefile, personality="strings",
                    pot=False, duplicatestyle="msgctxt", encoding=None):
@@ -235,15 +307,13 @@ def convertprop(inputfile, outputfile, templatefile, personality="java",
     """reads in inputfile using properties, converts using prop2po, writes
     to outputfile"""
     inputstore = properties.propfile(inputfile, personality, encoding)
-    convertor = prop2po()
+    convertor = prop2po(personality=personality, blankmsgstr=pot,
+                        duplicatestyle=duplicatestyle)
     if templatefile is None:
-        outputstore = convertor.convertstore(inputstore, personality,
-                                             duplicatestyle=duplicatestyle)
+        outputstore = convertor.convertstore(inputstore)
     else:
         templatestore = properties.propfile(templatefile, personality, encoding)
-        outputstore = convertor.mergestore(templatestore, inputstore,
-                                           personality, blankmsgstr=pot,
-                                           duplicatestyle=duplicatestyle)
+        outputstore = convertor.mergestore(templatestore, inputstore)
     if outputstore.isempty():
         return 0
     outputfile.write(str(outputstore))

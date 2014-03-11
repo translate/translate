@@ -88,9 +88,9 @@ class redtd:
         entities = inunit.getlocations()
         mixedentities = self.mixer.match_entities(entities)
         for entity in entities:
-            if entity in self.dtdfile.index:
+            if entity in self.dtdfile.id_index:
                 # now we need to replace the definition of entity with msgstr
-                dtdunit = self.dtdfile.index[entity]  # find the dtd
+                dtdunit = self.dtdfile.id_index[entity]  # find the dtd
                 if inunit.istranslated() or not bool(inunit.source):
                     applytranslation(entity, dtdunit, inunit, mixedentities)
                 elif self.remove_untranslated and not (includefuzzy and inunit.isfuzzy()):
