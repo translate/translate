@@ -23,7 +23,7 @@ of delimiters"""
 
 import logging
 
-from six.moves.html_entities import codepoint2name, name2codepoint
+from six.moves import html_entities
 
 
 def find_all(searchin, substr):
@@ -189,20 +189,20 @@ def extractwithoutquotes(source, startdelim, enddelim, escape=None,
     return (extracted, instring)
 
 
-def htmlentityencode(source):
-    """encodes source using HTML entities e.g. © -> &copy;"""
-    output = u""
-    for char in source:
-        charnum = ord(char)
-        if charnum in codepoint2name:
-            output += u"&%s;" % codepoint2name[charnum]
-        else:
-            output += str(char)
-    return output
+def _encode_entity_char(char, codepoint2name):
+    charnum = ord(char)
+    if charnum in codepoint2name:
+        return u"&%s;" % codepoint2name[charnum]
+    else:
+        return char
 
+def entityencode(source, codepoint2name):
+    """Encode ``source`` using entities from ``codepoint2name``.
 
-def htmlentitydecode(source):
-    """decodes source using HTML entities e.g. &copy; -> ©"""
+    :param unicode source: Source string to encode
+    :param dict codepoint2name: Dictionary mapping code points to entity names
+           (without the the leading ``&`` or the trailing ``;``)
+    """
     output = u""
     inentity = False
     for char in source:
@@ -212,9 +212,56 @@ def htmlentitydecode(source):
             continue
         if inentity:
             if char == ";":
+                output += "&" + possibleentity + ";"
+                inentity = False
+            elif char == " ":
+                output += _encode_entity_char("&", codepoint2name) + \
+                          entityencode(possibleentity + char, codepoint2name)
+                inentity = False
+            else:
+                possibleentity += char
+        else:
+            output += _encode_entity_char(char, codepoint2name)
+    if inentity:
+        # Handle nonentities at end of string.
+        output += _encode_entity_char("&", codepoint2name) + \
+                  entityencode(possibleentity, codepoint2name)
+
+    return output
+
+
+def _has_entity_end(source):
+    for char in source:
+        if char == ";":
+            return True
+        elif char == " ":
+            return False
+    return False
+
+def entitydecode(source, name2codepoint):
+    """Decode ``source`` using entities from ``name2codepoint``.
+
+    :param unicode source: Source string to decode
+    :param dict name2codepoint: Dictionary mapping entity names (without the
+           the leading ``&`` or the trailing ``;``) to code points
+    """
+    output = u""
+    inentity = False
+    for i, char in enumerate(source):
+        char = source[i]
+        if char == "&":
+            inentity = True
+            possibleentity = ""
+            continue
+        if inentity:
+            if char == ";":
                 if (len(possibleentity) > 0 and
                     possibleentity in name2codepoint):
-                    output += unichr(name2codepoint[possibleentity])
+                    entchar = unichr(name2codepoint[possibleentity])
+                    if entchar == u'&' and _has_entity_end(source[i+1:]):
+                        output += "&" + possibleentity + ";"
+                    else:
+                        output += entchar
                     inentity = False
                 else:
                     output += "&" + possibleentity + ";"
@@ -226,7 +273,26 @@ def htmlentitydecode(source):
                 possibleentity += char
         else:
             output += char
+    if inentity:
+        # Handle nonentities at end of string.
+        output += "&" + possibleentity
     return output
+
+
+def htmlentityencode(source):
+    """Encode ``source`` using HTML entities e.g. © -> ``&copy;``
+
+    :param unicode source: Source string to encode
+    """
+    return entityencode(source, html_entities.codepoint2name)
+
+
+def htmlentitydecode(source):
+    """Decode source using HTML entities e.g. ``&copy;`` -> ©.
+
+    :param unicode source: Source string to decode
+    """
+    return entitydecode(source, html_entities.name2codepoint)
 
 
 def javapropertiesencode(source):

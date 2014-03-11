@@ -57,7 +57,7 @@ Escaping in regular DTD
     - The % character is escaped using &#037; or &#37; or &#x25;
     - The " character is escaped using &quot;
     - The ' character is escaped using &apos; (partial roundtrip)
-    - The & character is escaped using &amp; (not yet implemented)
+    - The & character is escaped using &amp;
     - The < character is escaped using &lt; (not yet implemented)
     - The > character is escaped using &gt; (not yet implemented)
 
@@ -124,11 +124,16 @@ def unquotefromandroid(source):
     return value
 
 
+_DTD_CODEPOINT2NAME = {
+    ord("%"): "#037",  # Always escape % sign as &#037;.
+    ord("&"): "amp",
+   #ord("<"): "lt",  # Not really so useful.
+   #ord(">"): "gt",  # Not really so useful.
+}
+
 def quotefordtd(source):
     """Quotes and escapes a line for regular DTD files."""
-    source = source.replace("%", "&#037;")  # Always escape % sign as &#037;.
-    #source = source.replace("<", "&lt;")  # Not really so useful.
-    #source = source.replace(">", "&gt;")  # Not really so useful.
+    source = quote.entityencode(source, _DTD_CODEPOINT2NAME)
     if '"' in source:
         source = source.replace("'", "&apos;")  # This seems not to runned.
         if '="' not in source:  # Avoid escaping " chars in href attributes.
@@ -140,6 +145,19 @@ def quotefordtd(source):
         value = "\"" + source + "\""  # Quote using double quotes.
     return value.encode('utf-8')
 
+
+_DTD_NAME2CODEPOINT = {
+    "quot":   ord('"'),
+    "amp":    ord("&"),
+   #"lt":     ord("<"),  # Not really so useful.
+   #"gt":     ord(">"),  # Not really so useful.
+   # FIXME these should probably be handled in a more general way
+    "#x0022": ord('"'),
+    "#187":   ord(u"»"),
+    "#037":   ord("%"),
+    "#37":    ord("%"),
+    "#x25":   ord("%"),
+}
 
 def unquotefromdtd(source):
     """unquotes a quoted dtd definition"""
@@ -153,15 +171,7 @@ def unquotefromdtd(source):
     extracted = extracted.decode('utf-8')
     if quotechar == "'":
         extracted = extracted.replace("&apos;", "'")
-    extracted = extracted.replace("&quot;", "\"")
-    extracted = extracted.replace("&#x0022;", "\"")
-    # FIXME these should probably be handled with a lookup
-    extracted = extracted.replace("&#187;", u"»")
-    extracted = extracted.replace("&#037;", "%")
-    extracted = extracted.replace("&#37;", "%")
-    extracted = extracted.replace("&#x25;", "%")
-    #extracted = extracted.replace("&lt;", "<")  # Not really so useful.
-    #extracted = extracted.replace("&gt;", ">")  # Not really so useful.
+    extracted = quote.entitydecode(extracted, _DTD_NAME2CODEPOINT)
     return extracted
 
 

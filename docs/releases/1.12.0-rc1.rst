@@ -50,6 +50,11 @@ Formats and Converters
   - If a unit has an associated access key entry then these are combined into a
     single unit, as done in the :doc:`Mozilla DTD </formats/dtd>` format
 
+- DTD
+
+  - The ``&amp;`` entity is automatically expanded when reading DTD files, and
+    escaped back when writing them
+
 General
 -------
 - Added some functional tests
