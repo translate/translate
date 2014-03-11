@@ -572,8 +572,7 @@ the important parts though are:
         This method should always be used rather than trying to modify the
         list manually.
 
-        :type unit: TranslationUnit
-        :param unit: Any object that inherits from :class:`TranslationUnit`.
+        :param Unit unit: Any object that inherits from :class:`Unit`.
         """
         self.units.append(unit)
 
@@ -586,8 +585,7 @@ Parameter documentation:
     def foo(bar):
         """Simple docstring.
 
-        :param bar: Something
-        :type bar: Some type
+        :param SomeType bar: Something
         :return: Returns something
         :rtype: Return type 
         """
