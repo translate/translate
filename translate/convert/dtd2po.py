@@ -144,7 +144,7 @@ class dtd2po:
         # do a standard translation
         self.convertcomments(dtd_unit, po_unit)
         self.convertstrings(dtd_unit, po_unit)
-        if po_unit.is_blank and not po_unit.getlocations():
+        if po_unit.isblank() and not po_unit.getlocations():
             return None
         else:
             return po_unit

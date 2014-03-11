@@ -484,8 +484,7 @@ class pounit(pocommon.pounit):
                         and self.msgidcomments == []
                         and is_null(self.msgctxt))
 
-    @property
-    def is_blank(self):
+    def isblank(self):
         if self.isheader() or len(self.msgidcomments):
             return False
         if (self._msgidlen() == 0) and (self._msgstrlen() == 0) and (is_null(self.msgctxt)):

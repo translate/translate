@@ -401,8 +401,7 @@ class TranslationUnit(object):
         """Indicates whether this unit needs review."""
         return False
 
-    @property
-    def is_blank(self):
+    def isblank(self):
         """Used to see if this unit has no source or target string.
 
         .. note::
@@ -669,7 +668,7 @@ class TranslationStore(object):
         self.id_index = {}
         for index, unit in enumerate(self.units):
             unit.index = index
-            if not (unit.isheader() or unit.is_blank):
+            if not (unit.isheader() or unit.isblank()):
                 self.add_unit_to_index(unit)
 
     def require_index(self):

@@ -112,7 +112,7 @@ class pounit(base.TranslationUnit):
         return super(pounit, self).istranslated() and not self.isobsolete() and not self.isheader()
 
     def istranslatable(self):
-        return not (self.isheader() or self.is_blank or self.isobsolete())
+        return not (self.isheader() or self.isblank() or self.isobsolete())
 
     def hasmarkedcomment(self, commentmarker):
         raise NotImplementedError

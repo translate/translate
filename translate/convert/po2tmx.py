@@ -50,7 +50,7 @@ class po2tmx:
         """converts a .po file (possibly many) to TMX file"""
         inputstore = po.pofile(inputfile)
         for inunit in inputstore.units:
-            if inunit.isheader() or inunit.is_blank or not inunit.istranslated() or inunit.isfuzzy():
+            if inunit.isheader() or inunit.isblank() or not inunit.istranslated() or inunit.isfuzzy():
                 continue
             source = inunit.source
             translation = inunit.target

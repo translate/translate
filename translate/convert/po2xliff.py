@@ -84,7 +84,7 @@ class po2xliff:
             outputstore = poxliff.PoXliffFile(templatefile, **kwargs)
         filename = inputstore.filename
         for inputunit in inputstore.units:
-            if inputunit.is_blank:
+            if inputunit.isblank():
                 continue
             transunitnode = self.convertunit(outputstore, inputunit, filename)
         return str(outputstore)
