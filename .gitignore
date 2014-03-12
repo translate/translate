@@ -21,6 +21,8 @@
 MANIFEST
 MANIFEST.in
 
+# other
+tests/xliff_conformance/af-pootle.xlf
 
 # Requirements generation
 .reqs
@@ -48,3 +50,6 @@ tests/xliff_conformance/af-pootle.xlf
 
 # cli testing
 tests/cli/results
+
+# IDE project/temporary files:
+.idea/*
