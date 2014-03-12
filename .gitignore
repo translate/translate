@@ -42,3 +42,6 @@ translate/convert/diff_*.diff
 translate/convert/mozilla-l10n/
 translate/convert/rewritten-po/
 translate/convert/templates-recreated/
+
+# IDE project/temporary files:
+.idea/*
