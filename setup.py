@@ -42,11 +42,8 @@ from translate import __doc__, __version__  # pylint: disable=redefined-builtin
 PRETTY_NAME = 'Translate Toolkit'
 translateversion = __version__.sver
 
-if site.ENABLE_USER_SITE:
-    sitepackages = site.USER_SITE
-else:
-    packagesdir = get_python_lib()
-    sitepackages = packagesdir.replace(sys.prefix + os.sep, '')
+packagesdir = get_python_lib()
+sitepackages = packagesdir.replace(sys.prefix + os.sep, '')
 
 infofiles = [(join(sitepackages, 'translate'),
               [filename for filename in ('COPYING', 'README.rst')])]
