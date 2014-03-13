@@ -183,26 +183,27 @@ test_moz2po_help/stdout.txt     Output         $stdout     ${testname}/${variabl
 test_moz2po_help/stderr.txt     Output         $stderr     ${testname}/${variable}.${extension}
 ===========================    ============   =========   ===================
 
-.. note:: Tests must start with ``test_`` and end in ``.sh`` and the rest must
-   use only ASCII.
+.. note:: A test filename must start with ``test_`` and end in ``.sh``.  The
+   rest of the name may only use ASCII alphanumeric characters and underscore
+   ``_``.
 
 The test file is placed in the ``tests/`` directory while data files are placed
 in the ``tests/data/${testname}`` directory.
 
 There are three standard output files:
 
-1. ``$out`` - the output from the commnd
+1. ``$out`` - the output from the command
 2. ``$stdout`` - any output given to the user
 3. ``$stderr`` - any error output
 
-The output files are available for checking at the end of the test exection and
-a test will fail if their are differences betwee the reference output and that
-achieved in the test run.
+The output files are available for checking at the end of the test execution
+and a test will fail if there are differences between the reference output and
+that achieved in the test run.
 
 You do not need to define reference output for all three, if one is missing
 then checks will be against ``/dev/null``.
 
-There can be any number of input files.  They need to be named using only ascii
+There can be any number of input files.  They need to be named using only ASCII
 characters without any punctuation.  While you can give them any name we
 recommend using numbered positions such as one, two, three.  These are
 converted into variables in the test framework so ensure that none of your
