@@ -37,8 +37,6 @@ except ImportError:
 from translate import __doc__, __version__  # pylint: disable=redefined-builtin
 
 
-# TODO: check out installing into a different path with --prefix/--home
-
 PRETTY_NAME = 'Translate Toolkit'
 translateversion = __version__.sver
 
