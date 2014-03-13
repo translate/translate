@@ -41,7 +41,8 @@ PRETTY_NAME = 'Translate Toolkit'
 translateversion = __version__.sver
 
 packagesdir = get_python_lib()
-sitepackages = packagesdir.replace(sys.prefix + os.sep, '')
+sitepackages = os.path.join(packagesdir.replace(sys.prefix + os.sep, ''),
+                            'translate')
 
 infofiles = [(join(sitepackages, 'translate'),
               [filename for filename in ('COPYING', 'README.rst')])]
