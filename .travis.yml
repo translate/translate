@@ -22,10 +22,11 @@ install:
   # Still need to handle with indexing engines
   - pip freeze
 script:
-  # Compile all the files
-  - python -m compileall -q -f .
+  - python -m compileall -q -f .     # Compile all the files
   - python setup.py --quiet build
   - py.test --cov=. -r EfsxX
+  - pip install .
+  - make test-functional
   - ./tools/pep8.sh travis
   - make docs
 after_success:

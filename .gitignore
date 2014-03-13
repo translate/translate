@@ -21,8 +21,6 @@
 MANIFEST
 MANIFEST.in
 
-# other
-tests/xliff_conformance/af-pootle.xlf
 
 # Requirements generation
 .reqs
@@ -37,8 +35,16 @@ requirements/min-versions.txt
 
 translate/storage/properties.class
 
-# Roundtrip noise
+# Testing
+# #######
+# Roundtrip testing noise
 translate/convert/diff_*.diff
 translate/convert/mozilla-l10n/
 translate/convert/rewritten-po/
 translate/convert/templates-recreated/
+
+# other
+tests/xliff_conformance/af-pootle.xlf
+
+# cli testing
+tests/cli/results
