@@ -82,3 +82,17 @@ class TestHTMLParsing:
         store = h.parsestring("<p>We are here</p><script>Some </tag>like data<script></p>")
         print(store.units[0].source)
         assert len(store.units) == 1
+
+    def test_extraction_figcaption(self):
+        """Check that we can extract the units we claim"""
+        h = html.htmlfile()
+        # Example form http://www.w3schools.com/tags/tag_figcaption.asp
+        store = h.parsestring("""
+               <figure>
+                   <img src="img_pulpit.jpg" alt="The Pulpit Rock" width="304" height="228">
+                   <figcaption>Fig1. - A view of the pulpit rock in Norway.</figcaption>
+               </figure>""")
+        print(store.units[0].source)
+        assert len(store.units) == 2
+        assert store.units[0].source == "The Pulpit Rock"
+        assert store.units[1].source == "Fig1. - A view of the pulpit rock in Norway."
