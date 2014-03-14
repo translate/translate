@@ -122,7 +122,8 @@ class htmlfile(html_parser.HTMLParser, base.TranslationStore):
     UnitClass = htmlunit
 
     MARKINGTAGS = ["p", "title", "h1", "h2", "h3", "h4", "h5", "h6", "th",
-                   "td", "div", "li", "dt", "dd", "address", "caption", "pre"]
+                   "td", "div", "li", "dt", "dd", "address", "caption", "pre",
+                   "figcaption"]
     """Text in these tags that will be extracted from the HTML document"""
 
     MARKINGATTRS = []
