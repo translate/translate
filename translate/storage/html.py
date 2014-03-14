@@ -121,21 +121,48 @@ class htmlunit(base.TranslationUnit):
 class htmlfile(html_parser.HTMLParser, base.TranslationStore):
     UnitClass = htmlunit
 
-    MARKINGTAGS = ["p", "title", "h1", "h2", "h3", "h4", "h5", "h6", "th",
-                   "td", "div", "li", "dt", "dd", "address", "caption", "pre",
-                   "figcaption"]
+    MARKINGTAGS = [
+        "address",
+        "caption",
+        "div",
+        "dt", "dd",
+        "figcaption",
+        "h1", "h2", "h3", "h4", "h5", "h6",
+        "li",
+        "p",
+        "pre",
+        "title",
+        "th", "td",
+    ]
     """Text in these tags that will be extracted from the HTML document"""
 
     MARKINGATTRS = []
     """Text from tags with these attributes will be extracted from the HTML
     document"""
 
-    INCLUDEATTRS = ["alt", "summary", "standby", "abbr", "content"]
+    INCLUDEATTRS = [
+        "alt",
+        "abbr",
+        "content",
+        "standby",
+        "summary",
+    ]
     """Text from these attributes are extracted"""
 
-    SELF_CLOSING_TAGS = [u"area", u"base", u"basefont", u"br", u"col",
-                         u"frame", u"hr", u"img", u"input", u"link", u"meta",
-                         u"param"]
+    SELF_CLOSING_TAGS = [
+        u"area",
+        u"base",
+        u"basefont",
+        u"br",
+        u"col",
+        u"frame",
+        u"hr",
+        u"img",
+        u"input",
+        u"link",
+        u"meta",
+        u"param",
+    ]
     """HTML self-closing tags.  Tags that should be specified as <img /> but
     might be <img>.
     `Reference <http://learnwebsitemaking.com/htmlselfclosingtags.html>`_"""
