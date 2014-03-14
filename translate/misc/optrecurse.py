@@ -138,9 +138,15 @@ class RecursiveOptionParser(argparse.ArgumentParser, object):
         #ManHelpFormatter().store_option_strings(self)
         result.append('.PP\n')
         for option in self._get_optional_actions():
+            # FIXME surely we can get the human readable versions through argparse?
+            options_human = {}
+            for key, value in option.__dict__.iteritems():
+                if isinstance(value, list):
+                    value = ", ".join(value)
+                options_human[key] = value
             result.append('.TP\n')
-            result.append('%s\n' % option.option_strings[0].replace('-', '\-'))
-            result.append('%s\n' % option.help.replace('-', '\-'))
+            result.append('%s\n' % "/".join(option.option_strings).replace('-', '\-'))
+            result.append('%s\n' % option.help.replace('-', '\-') % options_human)
         return "".join(result)
 
     def print_manpage(self, file=None):
