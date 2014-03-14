@@ -37,6 +37,8 @@ class po2html:
         if unit is None:
             return string
         unit = unit[0]
+        if unit.target == "":
+            return unit.source
         if self.includefuzzy or not unit.isfuzzy():
             return unit.target
         else:
