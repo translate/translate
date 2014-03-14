@@ -84,7 +84,7 @@ class TestHTMLParsing:
         assert len(store.units) == 1
 
     def test_extraction_figcaption(self):
-        """Check that we can extract the units we claim"""
+        """Check that we can extract figcaption"""
         h = html.htmlfile()
         # Example form http://www.w3schools.com/tags/tag_figcaption.asp
         store = h.parsestring("""
@@ -96,3 +96,27 @@ class TestHTMLParsing:
         assert len(store.units) == 2
         assert store.units[0].source == "The Pulpit Rock"
         assert store.units[1].source == "Fig1. - A view of the pulpit rock in Norway."
+
+    def test_extraction_caption_td_th(self):
+        """Check that we can extract table related translatable: th, td and caption"""
+        h = html.htmlfile()
+        # Example form http://www.w3schools.com/tags/tag_caption.asp
+        store = h.parsestring("""
+            <table>
+                <caption>Monthly savings</caption>
+                <tr>
+                    <th>Month</th>
+                    <th>Savings</th>
+                </tr>
+                <tr>
+                    <td>January</td>
+                    <td>$100</td>
+                </tr>
+            </table>""")
+        print(store.units[0].source)
+        assert len(store.units) == 5
+        assert store.units[0].source == "Monthly savings"
+        assert store.units[1].source == "Month"
+        assert store.units[2].source == "Savings"
+        assert store.units[3].source == "January"
+        assert store.units[4].source == "$100"
