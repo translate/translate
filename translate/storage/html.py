@@ -146,6 +146,7 @@ class htmlfile(html_parser.HTMLParser, base.TranslationStore):
         "content",
         "standby",
         "summary",
+        "title"
     ]
     """Text from these attributes are extracted"""
 
