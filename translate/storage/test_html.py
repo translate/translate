@@ -135,3 +135,40 @@ class TestHTMLExtraction(object):
         """)
         assert len(store.units) == 1
         assert store.units[0].source == "UAHC campers enjoy a meal in the camp cafeteria"
+
+
+    def test_extraction_attr_title(self):
+        """Check that we can extract title attribute"""
+        h = html.htmlfile()
+
+        # Example form http://www.w3schools.com/tags/att_global_title.asp
+        store = h.parsestring("""
+            <p><abbr title="World Health Organization">WHO</abbr> was founded in 1948.</p>
+            <p title="Free Web tutorials">W3Schools.com</p>""")
+        print(store.units[0].source)
+        assert len(store.units) == 4
+        assert store.units[0].source == "World Health Organization"
+        # FIXME this is not ideal we need to either drop title= as we've
+        # extracted it already or not extract it earlier
+        assert store.units[1].source == '<abbr title="World Health Organization">WHO</abbr> was founded in 1948.'
+        assert store.units[2].source == "Free Web tutorials"
+        assert store.units[3].source == "W3Schools.com"
+
+        # Example from http://www.netmechanic.com/news/vol6/html_no1.htm
+        store = h.parsestring("""
+            <table width="100" border="2" title="Henry Jacobs Camp summer 2003 schedule">
+        """)
+        assert len(store.units) == 1
+        assert store.units[0].source == "Henry Jacobs Camp summer 2003 schedule"
+        # FIXME this doesn't extract as I'd have expected
+        #store = h.parsestring("""
+        #    <a href="page1.html" title="HS Jacobs - a UAHC camp in Utica, MS">Henry S. Jacobs Camp</a>
+        #""")
+        #assert len(store.units) == 2
+        #assert store.units[0].source == "HS Jacobs - a UAHC camp in Utica, MS"
+        #assert store.units[1].source == "Henry S. Jacobs Camp"
+        store = h.parsestring("""
+            <form name="application" title="Henry Jacobs camper application" method="  " action="  ">
+        """)
+        assert len(store.units) == 1
+        assert store.units[0].source == "Henry Jacobs camper application"
