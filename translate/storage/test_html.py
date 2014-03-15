@@ -83,7 +83,12 @@ class TestHTMLParsing:
         print(store.units[0].source)
         assert len(store.units) == 1
 
-    def test_extraction_figcaption(self):
+
+class TestHTMLExtraction(object):
+
+    h = html.htmlfile
+
+    def test_extraction_tag_figcaption(self):
         """Check that we can extract figcaption"""
         h = html.htmlfile()
         # Example form http://www.w3schools.com/tags/tag_figcaption.asp
@@ -97,7 +102,7 @@ class TestHTMLParsing:
         assert store.units[0].source == "The Pulpit Rock"
         assert store.units[1].source == "Fig1. - A view of the pulpit rock in Norway."
 
-    def test_extraction_caption_td_th(self):
+    def test_extraction_tag_caption_td_th(self):
         """Check that we can extract table related translatable: th, td and caption"""
         h = html.htmlfile()
         # Example form http://www.w3schools.com/tags/tag_caption.asp
