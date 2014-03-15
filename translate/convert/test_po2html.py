@@ -98,6 +98,13 @@ sin.
         assert htmlexpected not in self.converthtml(posource_fuzzy, htmlsource)
         assert htmlsource in self.converthtml(posource_fuzzy, htmlsource)
 
+    def test_untranslated_attributes(self):
+        """Verify that untranslated attributes are output as source, not dropped."""
+        htmlsource = '<meta name="keywords" content="life, the universe, everything" />'
+        posource = '#: test.html+:-1\nmsgid "life, the universe, everything"\nmsgstr ""'
+        expected = '<meta name="keywords" content="life, the universe, everything" />'
+        assert expected in self.converthtml(posource, htmlsource)
+
 
 class TestPO2HtmlCommand(test_convert.TestConvertCommand, TestPO2Html):
     """Tests running actual po2oo commands on files"""
