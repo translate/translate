@@ -125,3 +125,13 @@ class TestHTMLExtraction(object):
         assert store.units[2].source == "Savings"
         assert store.units[3].source == "January"
         assert store.units[4].source == "$100"
+
+    def test_extraction_attr_alt(self):
+        """Check that we can extract title attribute"""
+        h = html.htmlfile()
+        # Example from http://www.netmechanic.com/news/vol6/html_no1.htm
+        store = h.parsestring("""
+            <img src="cafeteria.jpg" height="200" width="200" alt="UAHC campers enjoy a meal in the camp cafeteria">
+        """)
+        assert len(store.units) == 1
+        assert store.units[0].source == "UAHC campers enjoy a meal in the camp cafeteria"
