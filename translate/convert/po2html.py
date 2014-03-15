@@ -37,10 +37,11 @@ class po2html:
         if unit is None:
             return string
         unit = unit[0]
-        if unit.istranslated() and (self.includefuzzy or not unit.isfuzzy()):
+        if unit.istranslated():
             return unit.target
-        else:
-            return unit.source
+        if self.includefuzzy and unit.isfuzzy():
+            return unit.target
+        return unit.source
 
     def mergestore(self, inputstore, templatetext, includefuzzy):
         """converts a file to .po format"""
