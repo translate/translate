@@ -38,7 +38,7 @@ class LangUnit(base.TranslationUnit):
             unchanged = " {ok}"
         else:
             unchanged = ""
-        if self.target == "" or self.target is None:
+        if not self.istranslated():
             target = self.source
         else:
             target = self.target
