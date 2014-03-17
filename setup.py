@@ -33,16 +33,11 @@ except ImportError:
 from translate import __doc__, __version__
 
 
-# TODO: check out installing into a different path with --prefix/--home
-
 PRETTY_NAME = 'Translate Toolkit'
 translateversion = __version__.sver
 
-if site.ENABLE_USER_SITE:
-    sitepackages = site.USER_SITE
-else:
-    packagesdir = get_python_lib()
-    sitepackages = packagesdir.replace(sys.prefix + os.sep, '')
+packagesdir = get_python_lib()
+sitepackages = packagesdir.replace(sys.prefix + os.sep, '')
 
 infofiles = [(join(sitepackages, 'translate'),
              [filename for filename in ('COPYING', 'README.rst')])]
@@ -375,7 +370,10 @@ def getdatafiles():
     datafiles = initfiles + infofiles
 
     def listfiles(srcdir):
-        return join(sitepackages, srcdir), [join(srcdir, f) for f in os.listdir(srcdir) if isfile(join(srcdir, f))]
+        return (
+            join(sitepackages, 'translate', srcdir),
+            [join(srcdir, f)
+             for f in os.listdir(srcdir) if isfile(join(srcdir, f))])
 
     docfiles = []
     for subdir in ['docs', 'share']:
