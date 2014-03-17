@@ -266,31 +266,14 @@ Properties
 Single vs double quoted strings
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-There is no preference on using single or double quotes for strings, except in
-some specific cases:
+Always use single quotes for strings, unless when a single quote character
+needs to be escaped. In this case it is recommended to instead enclose the
+string using the double quotes:
 
-- Always use single quotes for string dictionary keys:
-
-  .. code-block:: python
-
-    # Good.
-    demo = {
-        'language': language,
-    }
-
-
-    # Bad.
-    demo = {
-        "language": language,
-    }
-
-
-- When a single or double quote character needs to be escaped it is recommended
-  to instead enclose the string using the other quoting:
-
-  .. code-block:: python
+.. code-block:: python
 
     # Good.
+    str0 = 'I am very pretty'
     str1 = "Sauron's eye"
     str2 = 'Its name is "Virtaal".'
 
@@ -298,6 +281,7 @@ some specific cases:
     # Bad.
     str3 = 'Sauron\'s eye'
     str4 = "Its name is \"Virtaal\"."
+    str5 = "I am wrong"
 
 
 Expressions and Statements
