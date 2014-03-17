@@ -8,13 +8,13 @@ from translate.misc import wStringIO
 
 class TestPO2Html:
 
-    def converthtml(self, posource, htmltemplate):
+    def converthtml(self, posource, htmltemplate, includefuzzy=False):
         """helper to exercise the command line function"""
         inputfile = wStringIO.StringIO(posource)
         print(inputfile.getvalue())
         outputfile = wStringIO.StringIO()
         templatefile = wStringIO.StringIO(htmltemplate)
-        assert po2html.converthtml(inputfile, outputfile, templatefile)
+        assert po2html.converthtml(inputfile, outputfile, templatefile, includefuzzy)
         print(outputfile.getvalue())
         return outputfile.getvalue()
 
@@ -85,18 +85,35 @@ sin.
         htmlexpected = '<p>"ek is dom"</p>'
         assert htmlexpected in self.converthtml(posource, htmlsource)
 
-    def test_fuzzy_strings(self):
+    def test_states_translated(self):
+        """Test that we use target when translated"""
+        htmlsource = '<div>aaa</div>'
+        posource = 'msgid "aaa"\nmsgstr "bbb"\n'
+        htmltarget = '<div>bbb</div>'
+        assert htmltarget in self.converthtml(posource, htmlsource)
+        assert htmlsource not in self.converthtml(posource, htmlsource)
+
+    def test_states_untranslated(self):
+        """Test that we use source when a string is untranslated"""
+        htmlsource = '<div>aaa</div>'
+        posource = 'msgid "aaa"\nmsgstr ""\n'
+        htmltarget = htmlsource
+        assert htmltarget in self.converthtml(posource, htmlsource)
+
+    def test_states_fuzzy(self):
         """Test that we use source when a string is fuzzy
 
         This fixes :bug:`3145`
         """
         htmlsource = '<div>aaa</div>'
-        posource = '#: html:3\nmsgid "aaa"\nmsgstr "bbb"\n'
-        posource_fuzzy = '#: html:3\n#, fuzzy\nmsgid "aaa"\nmsgstr "bbb"\n'
-        htmlexpected = '<div>bbb</div>'
-        assert htmlexpected in self.converthtml(posource, htmlsource)
-        assert htmlexpected not in self.converthtml(posource_fuzzy, htmlsource)
-        assert htmlsource in self.converthtml(posource_fuzzy, htmlsource)
+        posource = '#: html:3\n#, fuzzy\nmsgid "aaa"\nmsgstr "bbb"\n'
+        htmltarget = '<div>bbb</div>'
+        # Don't use fuzzies
+        assert htmltarget not in self.converthtml(posource, htmlsource, includefuzzy=False)
+        assert htmlsource in self.converthtml(posource, htmlsource, includefuzzy=False)
+        # Use fuzzies
+        assert htmltarget in self.converthtml(posource, htmlsource, includefuzzy=True)
+        assert htmlsource not in self.converthtml(posource, htmlsource, includefuzzy=True)
 
     def test_untranslated_attributes(self):
         """Verify that untranslated attributes are output as source, not dropped."""
