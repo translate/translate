@@ -176,18 +176,17 @@ def combine(label, accesskey,
         searchchar = label[searchpos]
         if searchchar == '&':
             in_entity = True
-        elif searchchar == ';':
+        elif searchchar == ';' or searchchar == " ":
             in_entity = False
-        else:
-            if not in_entity:
-                if searchchar == accesskey:  # Prefer supplied case
-                    accesskeypos = searchpos
-                elif searchchar == accesskey_alt_case:  # Other case otherwise
-                    if accesskeyaltcasepos == -1:
-                        # only want to remember first altcasepos
-                        accesskeyaltcasepos = searchpos
-                        # note: we keep on looping through in hope
-                        # of exact match
+        if not in_entity:
+            if searchchar == accesskey:  # Prefer supplied case
+                accesskeypos = searchpos
+            elif searchchar == accesskey_alt_case:  # Other case otherwise
+                if accesskeyaltcasepos == -1:
+                    # only want to remember first altcasepos
+                    accesskeyaltcasepos = searchpos
+                    # note: we keep on looping through in hope
+                    # of exact match
         searchpos += 1
 
     # if we didn't find an exact case match, use an alternate one if available
