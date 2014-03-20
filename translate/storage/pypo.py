@@ -30,6 +30,7 @@ from cStringIO import StringIO
 
 from translate.lang import data
 from translate.misc import quote
+from translate.misc.deprecation import deprecated
 from translate.misc.multistring import multistring
 from translate.storage import base, pocommon, poparser
 from translate.storage.pocommon import encodingToUse
@@ -104,12 +105,15 @@ def quoteforpo(text):
     return polines
 
 
+@deprecated("Use pypo.unescape() instead")
 def extractpoline(line):
     """Remove quote and unescape line from po file.
 
     :param line: a quoted line from a po file (msgid or msgstr)
 
     .. deprecated:: 1.10
+       Replaced by :func:`unescape`. :func:`extractpoline` is kept to allow
+       tests of correctness, and in case of external users.
     """
     extracted = quote.extractwithoutquotes(line, '"', '"', '\\', includeescapes=unescapehandler)[0]
     return extracted
