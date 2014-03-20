@@ -26,11 +26,11 @@ source language.
 
 To translate Kurdish (ku) through French::
 
-    po2swap -i fr/ -t ku -o fr-ku
+    poswap -i fr/ -t ku -o fr-ku
 
 To convert the fr-ku files back to en-ku::
 
-    po2swap --reverse -i fr/ -t fr-ku -o en-ku
+    poswap --reverse -i fr/ -t fr-ku -o en-ku
 
 See: http://docs.translatehouse.org/projects/translate-toolkit/en/latest/commands/poswap.html
 for examples and usage instructions.
