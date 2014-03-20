@@ -1,0 +1,5 @@
+msgid "Un"
+msgstr "Een"
+
+msgid "Trois"
+msgstr ""
