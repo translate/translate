@@ -44,7 +44,7 @@ function make_data_dir {
 
 # Create automatic variables
 # Find files in $datadir that match the test name
-# Create a variable name after $test-$var.ext
+# Create a variable name after $test/$var.ext
 # For results files e.g. stdout, stderr and out we create those in the $results
 # dir and create a $var_expected for the $data dir
 # So you can diff $out $out_expected etc
