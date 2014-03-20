@@ -541,6 +541,7 @@ class pounit(pocommon.pounit):
             self.set_state_n(self.STATE[self.S_UNTRANSLATED][0])
         else:
             self.set_state_n(self.STATE[self.S_TRANSLATED][0])
+        self._domarkfuzzy(present)
 
     def _domarkfuzzy(self, present=True):
         self.settypecomment("fuzzy", present)
