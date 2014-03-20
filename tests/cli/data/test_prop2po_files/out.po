@@ -1,4 +1,5 @@
 #. extracted from ./data/test_prop2po_files/one.properties
+#, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
