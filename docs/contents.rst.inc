@@ -29,6 +29,7 @@ building new tools, make sure to read through this part.
    developers/contributing
    developers/developers
    developers/releasing
+   developers/deprecation
 
 
 Additional Notes
