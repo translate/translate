@@ -1,0 +1,11 @@
+#: location.cpp
+msgid "Un"
+msgstr "Een"
+
+#. Developer
+msgid "Duex"
+msgstr "Twee"
+
+# Translator Afrikaans
+msgid "Trois"
+msgstr "Drie"
