@@ -1,4 +1,4 @@
 # argparse is required for Python 2.6, it is a
 # standard library in Python >= 2.7
 argparse
-six==1.5.2
+six
