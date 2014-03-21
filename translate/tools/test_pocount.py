@@ -48,6 +48,8 @@ class TestCount:
         self.count("A word<br />Another word", 4)
         # \n is a word break
         self.count("<p>A word</p>\n<p>Another word</p>", 4)
+        # Not really an XML tag
+        self.count("<no label>", 2)
 
     def test_newlines(self):
         """test to see that newlines divide words"""

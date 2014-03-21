@@ -43,7 +43,15 @@ logger = logging.getLogger(__name__)
 
 #kdepluralre = re.compile("^_n: ") #Restore this if you really need support for old kdeplurals
 brtagre = re.compile("<br\s*?/?>")
-xmltagre = re.compile("<[^>]+>")
+# xmltagre is a direct copy of the from placeables/general.py
+xmltagre = re.compile(r'''
+        <                         # start of opening tag
+        ([\w.:]+)                 # tag name, possibly namespaced
+        (\s([\w.:]+=              # space and attribute name followed by =
+            ((".*?")|('.*?'))     # attribute value, single or double quoted
+        )?)*/?>                   # end of opening tag, possibly self closing
+        |</([\w.]+)>              # or a closing tag
+        ''', re.VERBOSE)
 numberre = re.compile("\\D\\.\\D")
 
 extended_state_strings = {
