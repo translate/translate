@@ -86,7 +86,7 @@ msgstr ""'''
         assert propfile == propexpected
 
     def test_mozilla_accesskeys(self):
-        """check merging a fuzzy translation"""
+        """check merging Mozilla accesskeys"""
         posource = '''#: prop.label\n#: prop.accesskey\nmsgid "&Value"\nmsgstr "&Waarde"\n'''
         proptemplate = '''prop.label=Value\nprop.accesskey=V\n'''
         propexpected = '''prop.label=Waarde\nprop.accesskey=W\n'''
