@@ -628,6 +628,21 @@ Module header:
         :license: LICENSE_NAME, see LICENSE_FILE for more details.
     """
 
+Deprecation:
+  Document the deprecation and version when deprecating features:
+
+  .. code-block:: python
+
+     @deprecated("Use util.run_fast() instead.")
+     def run_slow():
+         """Run fast
+
+         .. deprecated:: 1.5
+            Use :func:`run_fast` instead.
+         """
+         run_fast()
+
+
 
 Comments
 --------

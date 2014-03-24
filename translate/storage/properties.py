@@ -190,7 +190,9 @@ def _find_delimiter(line, delimiters):
 def find_delimeter(line):
     """Misspelled function that is kept around in case someone relies on it.
 
-    Deprecated."""
+    .. deprecated:: 1.7.0
+       Use :func:`find_delimiter` instead
+    """
     return _find_delimiter(line, DialectJava.delimiters)
 
 
