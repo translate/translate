@@ -633,6 +633,9 @@ Deprecation:
 
   .. code-block:: python
 
+     from translate.misc.deprecation import deprecated
+
+
      @deprecated("Use util.run_fast() instead.")
      def run_slow():
          """Run fast
