@@ -64,7 +64,7 @@ def calcstats_old(filename):
     targetwords = lambda elementlist: sum(map(lambda unit: wordcounts[unit][1], elementlist))
     stats = {}
 
-    #units
+    # units
     stats["translated"] = len(translated)
     stats["fuzzy"] = len(fuzzy)
     stats["untranslated"] = len(untranslated)
@@ -73,7 +73,7 @@ def calcstats_old(filename):
                      stats["fuzzy"] + \
                      stats["untranslated"]
 
-    #words
+    # words
     stats["translatedsourcewords"] = sourcewords(translated)
     stats["translatedtargetwords"] = targetwords(translated)
     stats["fuzzysourcewords"] = sourcewords(fuzzy)
@@ -231,7 +231,7 @@ Review Messages, Review Source Words""")
         """Update self.totals with the statistics in stats."""
         for key in stats.keys():
             if key == "extended":
-                #FIXME: calculate extended totals
+                # FIXME: calculate extended totals
                 continue
             if not key in self.totals:
                 self.totals[key] = 0

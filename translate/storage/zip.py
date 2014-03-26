@@ -23,7 +23,7 @@
 # Perhaps all methods should work with a wildcard to limit searches in some
 # way (examples: *.po, base.xlf, pootle-terminology.tbx)
 
-#TODO: consider also providing directories as we currently provide files
+# TODO: consider also providing directories as we currently provide files
 
 from os import path
 from zipfile import ZipFile
@@ -45,7 +45,7 @@ class ZIPFile(directory.Directory):
             strfile = wStringIO.StringIO(self.archive.read(path.join(dirname, filename)))
             strfile.filename = filename
             store = factory.getobject(strfile)
-            #TODO: don't regenerate all the storage objects
+            # TODO: don't regenerate all the storage objects
             for unit in store.unit_iter():
                 yield unit
 

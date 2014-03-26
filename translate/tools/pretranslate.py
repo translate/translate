@@ -134,20 +134,20 @@ def pretranslate_unit(input_unit, template_store, matchers=None,
         matching_unit = match_source(input_unit, template_store)
 
         if not matching_unit or not matching_unit.gettargetlen():
-            #do fuzzy matching
+            # do fuzzy matching
             matching_unit = match_fuzzy(input_unit, matchers)
 
         if matching_unit and matching_unit.gettargetlen() > 0:
-            #FIXME: should we dispatch here instead of this crude type check
+            # FIXME: should we dispatch here instead of this crude type check
             if isinstance(input_unit, xliff.xliffunit):
-                #FIXME: what about origin, lang and matchquality
+                # FIXME: what about origin, lang and matchquality
                 input_unit.addalttrans(matching_unit.target, origin="fish",
                                        sourcetxt=matching_unit.source)
             else:
                 input_unit.merge(matching_unit, authoritative=True)
 
-    #FIXME: ugly hack required by pot2po to mark old
-    #translations reused for new file. loops over
+    # FIXME: ugly hack required by pot2po to mark old
+    # translations reused for new file. loops over
     if mark_reused and matching_unit and template_store:
         original_unit = template_store.findunit(matching_unit.source)
         if original_unit is not None:
@@ -159,29 +159,29 @@ def pretranslate_unit(input_unit, template_store, matchers=None,
 def pretranslate_store(input_store, template_store, tm=None,
                        min_similarity=75, fuzzymatching=True):
     """Do the actual pretranslation of a whole store."""
-    #preperation
+    # preperation
     matchers = []
-    #prepare template
+    # prepare template
     if template_store is not None:
         template_store.makeindex()
-        #template preparation based on type
+        # template preparation based on type
         prepare_template = "prepare_template_%s" % template_store.__class__.__name__
         if prepare_template in globals():
             globals()[prepare_template](template_store)
 
         if fuzzymatching:
-            #create template matcher
-            #FIXME: max_length hardcoded
+            # create template matcher
+            # FIXME: max_length hardcoded
             matcher = match.matcher(template_store, max_candidates=1,
                                     min_similarity=min_similarity,
                                     max_length=3000, usefuzzy=True)
             matcher.addpercentage = False
             matchers.append(matcher)
 
-    #prepare tm
-    #create tm matcher
+    # prepare tm
+    # create tm matcher
     if tm and fuzzymatching:
-        #FIXME: max_length hardcoded
+        # FIXME: max_length hardcoded
         matcher = memory(tm, max_candidates=1, min_similarity=min_similarity,
                          max_length=1000)
         matcher.addpercentage = False

@@ -254,7 +254,7 @@ class TerminologyExtractor(object):
             for source, target, unit, filename in translations:
                 sources.add(source)
                 filecounts[filename] = filecounts.setdefault(filename, 0) + 1
-                #FIXME: why reclean source and target?!
+                # FIXME: why reclean source and target?!
                 if term.lower() == self.clean(unit.source).lower():
                     fullmsg = True
                     target = self.clean(unit.target)
@@ -268,8 +268,8 @@ class TerminologyExtractor(object):
                         transnotes.add(unit.getnotes("translator"))
                     unit.source = term
                     bestunit = unit
-                #FIXME: figure out why we did a merge to begin with
-                #termunit.merge(unit, overwrite=False, comments=False)
+                # FIXME: figure out why we did a merge to begin with
+                # termunit.merge(unit, overwrite=False, comments=False)
                 for loc in unit.getlocations():
                     locations.add(locre.sub("", loc))
 

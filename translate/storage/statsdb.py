@@ -80,8 +80,8 @@ def wordcount(string):
     string = brtagre.sub("\n", string)
     string = xmltagre.sub("", string)
     string = numberre.sub(" ", string)
-    #TODO: This should still use the correct language to count in the target
-    #language
+    # TODO: This should still use the correct language to count in the target
+    # language
     return len(Common.words(string))
 
 

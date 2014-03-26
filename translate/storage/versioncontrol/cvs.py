@@ -74,7 +74,7 @@ class cvs(GenericRevisionControlSystem):
 
     def update(self, revision=None, needs_revert=True):
         """Does a clean update of the given path"""
-        #TODO: take needs_revert parameter into account
+        # TODO: take needs_revert parameter into account
         working_dir = os.path.dirname(self.location_abs)
         filename = self.location_abs
         filename_backup = filename + os.path.extsep + "bak"

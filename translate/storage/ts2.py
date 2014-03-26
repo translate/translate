@@ -102,8 +102,8 @@ class tsunit(lisa.LISAunit):
         if purpose == "target":
             purpose = "translation"
         langset = etree.Element(self.namespaced(purpose))
-        #TODO: check language
-#        lisa.setXMLlang(langset, lang)
+        # TODO: check language
+        #lisa.setXMLlang(langset, lang)
 
         langset.text = text
         return langset
@@ -196,7 +196,7 @@ class tsunit(lisa.LISAunit):
             note.text = text.strip()
 
     def getnotes(self, origin=None):
-        #TODO: consider only responding when origin has certain values
+        # TODO: consider only responding when origin has certain values
         comments = []
         if origin in ["programmer", "developer", "source code", None]:
             notenode = self.xmlelement.find(self.namespaced("extracomment"))
@@ -253,7 +253,7 @@ class tsunit(lisa.LISAunit):
         if self.source is None and context_name is None:
             return None
 
-        #XXX: context_name is not supposed to be able to be None (the <name>
+        # XXX: context_name is not supposed to be able to be None (the <name>
         # tag is compulsary in the <context> tag)
         if context_name is not None:
             if self.source:
@@ -320,7 +320,7 @@ class tsunit(lisa.LISAunit):
 
     def merge(self, otherunit, overwrite=False, comments=True, authoritative=False):
         super(tsunit, self).merge(otherunit, overwrite, comments)
-        #TODO: check if this is necessary:
+        # TODO: check if this is necessary:
         if otherunit.isfuzzy():
             self.markfuzzy()
         else:

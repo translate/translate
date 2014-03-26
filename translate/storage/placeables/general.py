@@ -149,8 +149,8 @@ class JavaMessageFormatPlaceable(Ph):
 
 class FormattingPlaceable(Ph):
     """Placeable representing string formatting variables."""
-    #For more information, see  man 3 printf
-    #We probably don't want to support absolutely everything
+    # For more information, see  man 3 printf
+    # We probably don't want to support absolutely everything
 
     iseditable = False
     istranslatable = False
@@ -187,7 +187,7 @@ class FilePlaceable(Ph):
 
     istranslatable = False
     regex = re.compile(r"(~/|/|\./)([-A-Za-z0-9_\$\.\+\!\*\(\),;:@&=\?/~\#\%]|\\){3,}")
-    #TODO: Handle Windows drive letters. Some common Windows paths won't be
+    # TODO: Handle Windows drive letters. Some common Windows paths won't be
     # handled correctly while not allowing spaces, such as
     #     "C:\Documents and Settings"
     #     "C:\Program Files"

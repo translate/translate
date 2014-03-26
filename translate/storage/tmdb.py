@@ -62,7 +62,7 @@ class TMDB(object):
             self._tm_dbs[db_file] = {}
         self._tm_db = self._tm_dbs[db_file]
 
-        #FIXME: do we want to do any checks before we initialize the DB?
+        # FIXME: do we want to do any checks before we initialize the DB?
         self.init_database()
         self.fulltext = False
         self.init_fulltext()
@@ -122,7 +122,7 @@ CREATE UNIQUE INDEX IF NOT EXISTS targets_uniq_idx ON targets (sid, text, lang);
     def init_fulltext(self):
         """detects if fts3 fulltext indexing module exists, initializes fulltext table if it does"""
 
-        #HACKISH: no better way to detect fts3 support except trying to
+        # HACKISH: no better way to detect fts3 support except trying to
         # construct a dummy table?!
         try:
             script = """
@@ -191,7 +191,7 @@ DROP TRIGGER IF EXISTS sources_delete_trig;
 
     def add_unit(self, unit, source_lang=None, target_lang=None, commit=True):
         """inserts unit in the database"""
-        #TODO: is that really the best way to handle unspecified
+        # TODO: is that really the best way to handle unspecified
         # source and target languages? what about conflicts between
         # unit attributes and passed arguments
         if unit.getsourcelanguage():
@@ -232,8 +232,8 @@ DROP TRIGGER IF EXISTS sources_delete_trig;
                 sid = self.cursor.fetchone()
                 (sid,) = sid
             try:
-                #FIXME: get time info from translation store
-                #FIXME: do we need so store target length?
+                # FIXME: get time info from translation store
+                # FIXME: do we need so store target length?
                 self.cursor.execute("INSERT INTO targets (sid, text, lang, time) VALUES (?, ?, ?, ?)",
                                     (sid,
                                      unit["target"],

@@ -57,7 +57,8 @@ class SplitOptionParser(optrecurse.RecursiveOptionParser):
         if not self.isrecursive(options.output, 'output'):
             try:
                 self.warning("Output directory does not exist. Attempting to create")
-                #TODO: maybe we should only allow it to be created, otherwise we mess up an existing tree...
+                # TODO: maybe we should only allow it to be created, otherwise
+                # we mess up an existing tree.
                 os.mkdir(options.output)
             except:
                 self.error(optrecurse.optparse.OptionValueError("Output directory does not exist, attempt to create failed"))
@@ -96,7 +97,7 @@ class SplitOptionParser(optrecurse.RecursiveOptionParser):
                         if comment.find("# (poconflicts)") == 0:
                             pounit.othercomments.remove(comment)
                             break
-                    #TODO: refactor writing out
+                    # TODO: refactor writing out
                     outputpath = comment[comment.find(")") + 2:].strip()
                     self.checkoutputsubdir(options, os.path.dirname(outputpath))
                     fulloutputpath = os.path.join(options.output, outputpath)
@@ -111,7 +112,8 @@ class SplitOptionParser(optrecurse.RecursiveOptionParser):
 
 
 def main():
-    #outputfile extentions will actually be determined by the comments in the po files
+    # outputfile extentions will actually be determined by the comments in the
+    # po files
     pooutput = ("po", None)
     formats = {(None, None): pooutput, ("po", "po"): pooutput, "po": pooutput}
     parser = SplitOptionParser(formats, description=__doc__)

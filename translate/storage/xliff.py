@@ -53,7 +53,7 @@ class xliffunit(lisa.LISAunit):
 
     _default_xml_space = "default"
 
-    #TODO: id and all the trans-unit level stuff
+    # TODO: id and all the trans-unit level stuff
 
     S_UNTRANSLATED = state.EMPTY
     S_NEEDS_TRANSLATION = state.NEEDS_WORK
@@ -185,8 +185,8 @@ class xliffunit(lisa.LISAunit):
         :param txt: Alternative translation of the source text.
         """
 
-        #TODO: support adding a source tag ad match quality attribute.  At
-        # the source tag is needed to inject fuzzy matches from a TM.
+        # TODO: support adding a source tag ad match quality attribute.  At the
+        # source tag is needed to inject fuzzy matches from a TM.
         if isinstance(txt, str):
             txt = txt.decode("utf-8")
         alttrans = etree.SubElement(self.xmlelement, self.namespaced("alt-trans"))
@@ -227,8 +227,8 @@ class xliffunit(lisa.LISAunit):
                 targetnode = node.iterdescendants(self.namespaced("target"))
                 newunit.target = lisa.getText(targetnode.next(),
                                               getXMLspace(node, self._default_xml_space))
-                #TODO: support multiple targets better
-                #TODO: support notes in alt-trans
+                # TODO: support multiple targets better
+                # TODO: support notes in alt-trans
                 newunit.xmlelement = node
 
                 translist.append(newunit)
@@ -286,7 +286,7 @@ class xliffunit(lisa.LISAunit):
 
     def adderror(self, errorname, errortext):
         """Adds an error message to this unit."""
-        #TODO: consider factoring out: some duplication between XLIFF and TMX
+        # TODO: consider factoring out: some duplication between XLIFF and TMX
         text = errorname
         if errortext:
             text += ': ' + errortext
@@ -294,7 +294,7 @@ class xliffunit(lisa.LISAunit):
 
     def geterrors(self):
         """Get all error messages."""
-        #TODO: consider factoring out: some duplication between XLIFF and TMX
+        # TODO: consider factoring out: some duplication between XLIFF and TMX
         notelist = self._getnotelist(origin="pofilter")
         errordict = {}
         for note in notelist:
@@ -330,7 +330,7 @@ class xliffunit(lisa.LISAunit):
 
         targetnode = self.getlanguageNode(lang=None, index=1)
 
-        #FIXME: handle state qualifiers
+        # FIXME: handle state qualifiers
         if value == self.S_UNTRANSLATED:
             if targetnode is not None and "state" in targetnode.attrib:
                 del targetnode.attrib["state"]
@@ -465,7 +465,7 @@ class xliffunit(lisa.LISAunit):
         """Returns the contexts in the context groups with the specified name"""
         groups = []
         grouptags = self.xmlelement.iterdescendants(self.namespaced("context-group"))
-        #TODO: conbine name in query
+        # TODO: conbine name in query
         for group in grouptags:
             if group.get("name") == name:
                 contexts = group.iterdescendants(self.namespaced("context"))
@@ -480,7 +480,7 @@ class xliffunit(lisa.LISAunit):
         return self.xmlelement.get("restype")
 
     def merge(self, otherunit, overwrite=False, comments=True, authoritative=False):
-        #TODO: consider other attributes like "approved"
+        # TODO: consider other attributes like "approved"
         super(xliffunit, self).merge(otherunit, overwrite, comments)
         if self.target:
             self.marktranslated()
@@ -754,11 +754,11 @@ class xlifffile(lisa.LISAfile):
         if self.body is None:
             return False
         self._messagenum = len(list(self.body.iterdescendants(self.namespaced("trans-unit"))))
-        #TODO: was 0 based before - consider
+        # TODO: was 0 based before - consider
     #    messagenum = len(self.units)
-        #TODO: we want to number them consecutively inside a body/file tag
-        #instead of globally in the whole XLIFF file, but using len(self.units)
-        #will be much faster
+        # TODO: we want to number them consecutively inside a body/file tag
+        # instead of globally in the whole XLIFF file, but using
+        # len(self.units) will be much faster
         return True
 
     def creategroup(self, filename="NoName", createifmissing=False, restype=None):

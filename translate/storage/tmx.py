@@ -86,7 +86,7 @@ class tmxunit(lisa.LISAunit):
 
     def adderror(self, errorname, errortext):
         """Adds an error message to this unit."""
-        #TODO: consider factoring out: some duplication between XLIFF and TMX
+        # TODO: consider factoring out: some duplication between XLIFF and TMX
         text = errorname
         if errortext:
             text += ': ' + errortext
@@ -94,7 +94,7 @@ class tmxunit(lisa.LISAunit):
 
     def geterrors(self):
         """Get all error messages."""
-        #TODO: consider factoring out: some duplication between XLIFF and TMX
+        # TODO: consider factoring out: some duplication between XLIFF and TMX
         notelist = self._getnotelist(origin="pofilter")
         errordict = {}
         for note in notelist:
@@ -107,7 +107,7 @@ class tmxunit(lisa.LISAunit):
 
         We don't want to make a deep copy - this could duplicate the whole XML
         tree. For now we just serialise and reparse the unit's XML."""
-        #TODO: check performance
+        # TODO: check performance
         new_unit = self.__class__(None, empty=True)
         new_unit.xmlelement = etree.fromstring(etree.tostring(self.xmlelement))
         return new_unit
@@ -135,7 +135,8 @@ class tmxfile(lisa.LISAfile):
         headernode.set("segtype", "sentence")
         headernode.set("o-tmf", "UTF-8")
         headernode.set("adminlang", "en")
-        #TODO: consider adminlang. Used for notes, etc. Possibly same as targetlanguage
+        # TODO: consider adminlang. Used for notes, etc. Possibly same as
+        # targetlanguage
         headernode.set("srclang", self.sourcelanguage)
         headernode.set("datatype", "PlainText")
         #headernode.set("creationdate", "YYYYMMDDTHHMMSSZ"
