@@ -641,9 +641,9 @@ class StandardChecker(TranslationChecker):
         if self.config.notranslatewords:
             words1 = str1.split()
             if len(words1) == 1 and [word for word in words1 if word in self.config.notranslatewords]:
-            #currently equivalent to:
-            #   if len(words1) == 1 and words1[0] in self.config.notranslatewords:
-            #why do we only test for one notranslate word?
+                #currently equivalent to:
+                #   if len(words1) == 1 and words1[0] in self.config.notranslatewords:
+                #why do we only test for one notranslate word?
                 return True
 
         # we could also check for things like str1.isnumeric(), but the test

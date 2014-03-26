@@ -760,7 +760,6 @@ class pofile(pocommon.pofile):
     def parse(self, input):
         """Parses the given file or file source string."""
         if True:
-#        try:
             if hasattr(input, 'name'):
                 self.filename = input.name
             elif not getattr(self, 'filename', ''):
@@ -770,8 +769,6 @@ class pofile(pocommon.pofile):
             # clear units to get rid of automatically generated headers before parsing
             self.units = []
             poparser.parse_units(poparser.ParseState(input, pounit), self)
-#        except Exception as e:
-#            raise base.ParseError(e)
 
     def removeduplicates(self, duplicatestyle="merge"):
         """Make sure each msgid is unique ; merge comments etc from

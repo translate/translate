@@ -369,10 +369,10 @@ class xliffunit(lisa.LISAunit):
             self.set_state_n(self.S_UNREVIEWED)
 
     def isfuzzy(self):
-#        targetnode = self.getlanguageNode(lang=None, index=1)
-#        return not targetnode is None and \
-#                (targetnode.get("state-qualifier") == "fuzzy-match" or \
-#                targetnode.get("state") == "needs-review-translation")
+        # targetnode = self.getlanguageNode(lang=None, index=1)
+        # return not targetnode is None and \
+        #         (targetnode.get("state-qualifier") == "fuzzy-match" or \
+        #         targetnode.get("state") == "needs-review-translation")
         return not self.isapproved() and bool(self.target)
 
     def markfuzzy(self, value=True):
