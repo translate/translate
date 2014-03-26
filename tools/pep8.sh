@@ -8,6 +8,7 @@
 exclude_toolkit=\
 selector.py,\
 wsgiserver,\
+mozilla-l10n,\
 build
 
 exclude_pootle=\
