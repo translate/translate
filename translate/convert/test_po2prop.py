@@ -109,6 +109,23 @@ key.accesskey=S
         print(propfile)
         assert propfile == propexpected
 
+    def test_mozilla_accesskeys_missing_accesskey(self):
+        """check merging Mozilla accesskeys"""
+        posource = '''#: prop.label prop.accesskey
+# No accesskey because we forgot or language doesn't do accesskeys
+msgid "&Value"
+msgstr "Waarde"
+'''
+        proptemplate = '''prop.label=Value
+prop.accesskey=V
+'''
+        propexpected = '''prop.label=Waarde
+prop.accesskey=V
+'''
+        propfile = self.merge2prop(proptemplate, posource, personality="mozilla")
+        print(propfile)
+        assert propfile == propexpected
+
     def test_merging_propertyless_template(self):
         """check that when merging with a template with no property values that we copy the template"""
         posource = ""
