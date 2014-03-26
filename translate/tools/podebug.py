@@ -158,15 +158,15 @@ class podebug:
     REWRITE_FLIPPED_MAP = u"¡„#$%⅋,()⁎+´-˙/012Ɛᔭ59Ƚ86:;<=>¿@" + \
             u"∀ԐↃᗡƎℲ⅁HIſӼ⅂WNOԀÒᴚS⊥∩ɅＭX⅄Z" + u"[\\]ᵥ_," + \
             u"ɐqɔpǝɟƃɥıɾʞʅɯuodbɹsʇnʌʍxʎz"
-        # Brackets should be swapped if the string will be reversed in memory.
-        # If a right-to-left override is used, the brackets should be
-        # unchanged.
-        #Some alternatives:
-        # D: ᗡ◖
-        # K: Ж⋊Ӽ
-        # @: Ҩ - Seems only related in Dejavu Sans
-        # Q: Ὄ Ό Ὀ Ὃ Ὄ Ṑ Ò Ỏ
-        # _: ‾ - left out for now for the sake of GTK accelerators
+    # Brackets should be swapped if the string will be reversed in memory.
+    # If a right-to-left override is used, the brackets should be
+    # unchanged.
+    # Some alternatives:
+    #  D: ᗡ◖
+    #  K: Ж⋊Ӽ
+    #  @: Ҩ - Seems only related in Dejavu Sans
+    #  Q: Ὄ Ό Ὀ Ὃ Ὄ Ṑ Ò Ỏ
+    #  _: ‾ - left out for now for the sake of GTK accelerators
 
     def rewrite_flipped(self, string):
         """Convert the string to look flipped upside down."""

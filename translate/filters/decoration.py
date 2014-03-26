@@ -262,9 +262,10 @@ _function_re = re.compile(r'''((?:
     \(\)                 # Must close with ()
 )+)
 ''', re.VERBOSE)  # shouldn't be locale aware
-    # pam_*_item() IO::String NULL() POE::Component::Client::LDAP->new()
-    # POE::Wheel::Null mechanize.UserAgent POSIX::sigaction()
-    # window.resizeBy() @fptr()
+# Reference functions:
+#   pam_*_item() IO::String NULL() POE::Component::Client::LDAP->new()
+#   POE::Wheel::Null mechanize.UserAgent POSIX::sigaction()
+#   window.resizeBy() @fptr()
 
 
 def getfunctions(str1):
