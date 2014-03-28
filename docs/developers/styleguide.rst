@@ -416,7 +416,7 @@ Naming Conventions
 
 .. note::
 
-   This has not been implemented or discussed.  The Translate code 
+   This has not been implemented or discussed.  The Translate code
    is not at all consistent with these conventions.
 
 
@@ -587,7 +587,7 @@ Parameter documentation:
 
         :param SomeType bar: Something
         :return: Returns something
-        :rtype: Return type 
+        :rtype: Return type
         """
 
 
