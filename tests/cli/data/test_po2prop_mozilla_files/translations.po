@@ -1,0 +1,8 @@
+#: buddy.authRequest.allow.label buddy.authRequest.allow.accesskey
+msgid "&Allow"
+msgstr "&Baimendu"
+
+#: buddy.authRequest.deny.label buddy.authRequest.deny.accesskey
+msgid "&Deny"
+msgstr "&Ukatu"
+

@@ -51,6 +51,8 @@ def applytranslation(key, propunit, inunit, mixedkeys):
                     label, value = accesskey.extract(value)
                     if not value:
                         warnings.warn("Could not find accesskey for %s" % key)
+                        # Use the source language accesskey
+                        label, value = accesskey.extract(inunit.source)
                     else:
                         original = propunit.source
                         # For the sake of diffs we keep the case of the

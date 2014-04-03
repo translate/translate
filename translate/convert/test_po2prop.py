@@ -87,9 +87,41 @@ msgstr ""'''
 
     def test_mozilla_accesskeys(self):
         """check merging Mozilla accesskeys"""
-        posource = '''#: prop.label\n#: prop.accesskey\nmsgid "&Value"\nmsgstr "&Waarde"\n'''
-        proptemplate = '''prop.label=Value\nprop.accesskey=V\n'''
-        propexpected = '''prop.label=Waarde\nprop.accesskey=W\n'''
+        posource = '''#: prop.label prop.accesskey
+msgid "&Value"
+msgstr "&Waarde"
+
+#: key.label key.accesskey
+msgid "&Key"
+msgstr "&Sleutel"
+'''
+        proptemplate = '''prop.label=Value
+prop.accesskey=V
+key.label=Key
+key.accesskey=K
+'''
+        propexpected = '''prop.label=Waarde
+prop.accesskey=W
+key.label=Sleutel
+key.accesskey=S
+'''
+        propfile = self.merge2prop(proptemplate, posource, personality="mozilla")
+        print(propfile)
+        assert propfile == propexpected
+
+    def test_mozilla_accesskeys_missing_accesskey(self):
+        """check merging Mozilla accesskeys"""
+        posource = '''#: prop.label prop.accesskey
+# No accesskey because we forgot or language doesn't do accesskeys
+msgid "&Value"
+msgstr "Waarde"
+'''
+        proptemplate = '''prop.label=Value
+prop.accesskey=V
+'''
+        propexpected = '''prop.label=Waarde
+prop.accesskey=V
+'''
         propfile = self.merge2prop(proptemplate, posource, personality="mozilla")
         print(propfile)
         assert propfile == propexpected

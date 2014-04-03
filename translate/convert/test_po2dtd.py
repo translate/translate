@@ -103,8 +103,13 @@ class TestPO2DTD:
 
     def test_missingaccesskey(self):
         """tests that proper warnings are given if access key is missing"""
-        simplepo = '''#: simple.label\n#: simple.accesskey\nmsgid "Simple &String"\nmsgstr "Dimpled Ring"\n'''
-        simpledtd = '''<!ENTITY simple.label "Simple String">\n<!ENTITY simple.accesskey "S">'''
+        simplepo = '''#: simple.label
+#: simple.accesskey
+msgid "Simple &String"
+msgstr "Dimpled Ring"
+'''
+        simpledtd = '''<!ENTITY simple.label "Simple String">
+<!ENTITY simple.accesskey "S">'''
         warnings.simplefilter("error")
         assert pytest.raises(Warning, self.merge2dtd, simpledtd, simplepo)
 
