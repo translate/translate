@@ -4,14 +4,22 @@
 from lxml import etree
 
 from translate.storage import aresource, test_monolingual
+from translate.misc.multistring import multistring
+from translate.storage.base import TranslationStore
 
 
 class TestAndroidResourceUnit(test_monolingual.TestMonolingualUnit):
     UnitClass = aresource.AndroidResourceUnit
 
-    def __check_escape(self, string, xml):
+    def __check_escape(self, string, xml, target_language=None):
         """Helper that checks that a string is output with the right escape."""
         unit = self.UnitClass("Test String")
+
+        if (target_language is not None):
+            store = TranslationStore()
+            store.settargetlanguage(target_language)
+            unit._store = store
+
         unit.target = string
 
         print("unit.target:", repr(unit.target))
@@ -105,6 +113,14 @@ class TestAndroidResourceUnit(test_monolingual.TestMonolingualUnit):
         xml = '<string name="Test String"></string>\n\n'
         self.__check_escape(string, xml)
 
+    def test_plural_escape_message_with_newline(self):
+        mString = multistring(['one message\nwith newline', 'other message\nwith newline'])
+        xml = ('<plurals name="Test String">\n\t'
+                 '<item quantity="one">one message\\nwith newline</item>\n\t'
+                 '<item quantity="other">other message\\nwith newline</item>\n'
+               '</plurals>\n')
+        self.__check_escape(mString, xml, 'en')
+
     ############################ Check string parse ###########################
 
     def test_parse_message_with_newline(self):
@@ -197,6 +213,59 @@ class TestAndroidResourceUnit(test_monolingual.TestMonolingualUnit):
                '</string>\n\n')
         self.__check_parse(string, xml)
 
+    def test_plural_parse_message_with_newline(self):
+        mString = multistring(['one message\nwith newline', 'other message\nwith newline'])
+        xml = ('<plurals name="Test String">\n\t'
+                 '<item quantity="one">one message\\nwith newline</item>\n\t'
+                 '<item quantity="other">other message\\nwith newline</item>\n'
+               '</plurals>\n')
+        self.__check_parse(mString, xml)
+
 
 class TestAndroidResourceFile(test_monolingual.TestMonolingualStore):
     StoreClass = aresource.AndroidResourceFile
+
+    def test_targetlanguage_default_handlings(self):
+        store = self.StoreClass()
+
+        # Initial value is None
+        assert store.gettargetlanguage() is None
+
+        # sourcelanguage shouldn't change the targetlanguage
+        store.setsourcelanguage('en')
+        assert store.gettargetlanguage() is None
+
+        # targetlanguage setter works correctly
+        store.settargetlanguage('de')
+        assert store.gettargetlanguage() == 'de'
+
+        # explicit targetlanguage wins over filename
+        store.filename = 'dommy/values-it/res.xml'
+        assert store.gettargetlanguage() == 'de'
+
+    def test_targetlanguage_auto_detection_filename(self):
+        store = self.StoreClass()
+
+        # Check language auto_detection
+        store.filename = 'project/values-it/res.xml'
+        assert store.gettargetlanguage() == 'it'
+
+    def test_targetlanguage_auto_detection_filename_default_language(self):
+        store = self.StoreClass()
+
+        store.setsourcelanguage('en')
+
+        # Check language auto_detection
+        store.filename = 'project/values/res.xml'
+        assert store.gettargetlanguage() == 'en'
+
+    def test_targetlanguage_auto_detection_invalid_filename(self):
+        store = self.StoreClass()
+
+        store.setsourcelanguage('en')
+
+        store.filename = 'project/invalid_directory/res.xml'
+        assert store.gettargetlanguage() is None
+
+        store.filename = 'invalid_directory'
+        assert store.gettargetlanguage() is None
