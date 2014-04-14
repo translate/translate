@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 #
 # Copyright 2012 Michal Čihař
+# Copyright 2014 Luca De Petrillo
 #
 # This file is part of the Translate Toolkit.
 #
@@ -18,15 +19,18 @@
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, see <http://www.gnu.org/licenses/>.
 
-"""Module for handling Android String resource files."""
+"""Module for handling Android String and Plurals resource files."""
 
 import re
+import os
 
 from lxml import etree
 
 from translate.lang import data
 from translate.storage import base, lisa
+from translate.misc.multistring import multistring
 
+from babel.core import Locale
 
 EOF = None
 WHITESPACE = ' \n\t'  # Whitespace that we collapse.
@@ -35,19 +39,23 @@ MULTIWHITESPACE = re.compile('[ \n\t]{2}')
 
 class AndroidResourceUnit(base.TranslationUnit):
     """A single entry in the Android String resource file."""
-    rootNode = "string"
-    languageNode = "string"
 
     @classmethod
     def createfromxmlElement(cls, element):
-        term = cls(None, xmlelement=element)
+        term = None
+        # Actually this class supports only plurals and string tags
+        if ((element.tag == "plurals") or (element.tag == "string")):
+            term = cls(None, xmlelement=element)
         return term
 
     def __init__(self, source, empty=False, xmlelement=None, **kwargs):
         if xmlelement is not None:
             self.xmlelement = xmlelement
         else:
-            self.xmlelement = etree.Element(self.rootNode)
+            if self.hasplurals(source):
+                self.xmlelement = etree.Element("plurals")
+            else:
+                self.xmlelement = etree.Element("string")
             self.xmlelement.tail = '\n'
         if source is not None:
             self.setid(source)
@@ -241,7 +249,7 @@ class AndroidResourceUnit(base.TranslationUnit):
 
     source = property(getsource, setsource)
 
-    def settarget(self, target):
+    def set_xml_text_value(self, target, xmltarget):
         if '<' in target:
             # Handle text with possible markup
             target = target.replace('&', '&amp;')
@@ -254,26 +262,87 @@ class AndroidResourceUnit(base.TranslationUnit):
                 newstring = etree.fromstring('<string>%s</string>' % target)
             # Update text
             if newstring.text is None:
-                self.xmlelement.text = ''
+                xmltarget.text = ''
             else:
-                self.xmlelement.text = newstring.text
+                xmltarget.text = newstring.text
             # Remove old elements
-            for x in self.xmlelement.iterchildren():
-                self.xmlelement.remove(x)
+            for x in xmltarget.iterchildren():
+                xmltarget.remove(x)
             # Add new elements
             for x in newstring.iterchildren():
-                self.xmlelement.append(x)
+                xmltarget.append(x)
         else:
             # Handle text only
-            self.xmlelement.text = self.escape(target)
+            xmltarget.text = self.escape(target)
+
+    def settarget(self, target):
+        if (self.hasplurals(self.source) or self.hasplurals(target)):
+            # Fix the root tag if mismatching
+            if self.xmlelement.tag != "plurals":
+                old_id = self.getid()
+                self.xmlelement = etree.Element("plurals")
+                self.setid(old_id)
+
+            lang_tags = set(Locale(self.gettargetlanguage()).plural_form.tags)
+            # Ensure that the implicit default "other" rule is present (usually omitted by Babel)
+            lang_tags.add('other')
+
+            # Get plural tags in the right order.
+            plural_tags = [tag for tag in ['zero', 'one', 'two', 'few', 'many', 'other'] if tag in lang_tags]
+
+            # Get string list to handle, wrapping non multistring/list targets into a list.
+            if isinstance(target, multistring):
+                plural_strings = target.strings
+            elif isinstance(target, list):
+                plural_strings = target
+            else:
+                plural_strings = [target]
+
+            # Sync plural_strings elements to plural_tags count.
+            if len(plural_strings) < len(plural_tags):
+                plural_strings += [''] * (len(plural_tags) - len(plural_strings))
+            plural_strings = plural_strings[:len(plural_tags)]
+
+            # Rebuild plurals.
+            for entry in self.xmlelement.iterchildren():
+                self.xmlelement.remove(entry)
+
+            self.xmlelement.text = "\n\t"
+
+            for plural_tag, plural_string in zip(plural_tags, plural_strings):
+                item = etree.Element("item")
+                item.set("quantity", plural_tag)
+                self.set_xml_text_value(plural_string, item)
+                item.tail = "\n\t"
+                self.xmlelement.append(item)
+            # Remove the tab from last item
+            item.tail = "\n"
+        else:
+            # Fix the root tag if mismatching
+            if self.xmlelement.tag != "string":
+                old_id = self.getid()
+                self.xmlelement = etree.Element("string")
+                self.setid(old_id)
+
+            self.set_xml_text_value(target, self.xmlelement)
+
         super(AndroidResourceUnit, self).settarget(target)
 
-    def gettarget(self, lang=None):
+    def get_xml_text_value(self, xmltarget):
         # Grab inner text
-        target = self.unescape(self.xmlelement.text or u'')
+        target = self.unescape(xmltarget.text or u'')
         # Include markup as well
-        target += u''.join([data.forceunicode(etree.tostring(child, encoding='utf-8')) for child in self.xmlelement.iterchildren()])
+        target += u''.join([data.forceunicode(etree.tostring(child, encoding='utf-8')) for child in xmltarget.iterchildren()])
         return target
+
+    def gettarget(self, lang=None):
+        if (self.xmlelement.tag == "plurals"):
+            target = []
+            for entry in self.xmlelement.iterchildren():
+                target.append(self.get_xml_text_value(entry))
+            return multistring(target)
+        else:
+            return self.get_xml_text_value(self.xmlelement)
 
     target = property(gettarget, settarget)
 
@@ -317,6 +386,13 @@ class AndroidResourceUnit(base.TranslationUnit):
     def __eq__(self, other):
         return (str(self) == str(other))
 
+    def hasplurals(self, thing):
+        if isinstance(thing, multistring):
+            return True
+        elif isinstance(thing, list):
+            return True
+        return False
+
 
 class AndroidResourceFile(lisa.LISAfile):
     """Class representing an Android String resource file store."""
@@ -334,3 +410,41 @@ class AndroidResourceFile(lisa.LISAfile):
         XML again."""
         self.namespace = self.document.getroot().nsmap.get(None, None)
         self.body = self.document.getroot()
+
+    def parse(self, xml):
+        """Populates this object from the given xml string"""
+        if not hasattr(self, 'filename'):
+            self.filename = getattr(xml, 'name', '')
+        if hasattr(xml, "read"):
+            xml.seek(0)
+            posrc = xml.read()
+            xml = posrc
+        parser = etree.XMLParser(strip_cdata=False)
+        self.document = etree.fromstring(xml, parser).getroottree()
+        self._encoding = self.document.docinfo.encoding
+        self.initbody()
+        assert self.document.getroot().tag == self.namespaced(self.rootNode)
+
+        for entry in self.document.getroot().iterchildren():
+            term = self.UnitClass.createfromxmlElement(entry)
+            if term is not None:
+                self.addunit(term, new=False)
+
+    def gettargetlanguage(self):
+        target_lang = super(AndroidResourceFile, self).gettargetlanguage()
+
+        # If targetlanguage isn't set, we try to extract it from the filename path (if any).
+        if (target_lang is None) and hasattr(self, 'filename') and self.filename:
+            # Android standards expect resource files to be in a directory named "values[-<lang>[-r<region>]]".
+            parent_dir = os.path.split(os.path.dirname(self.filename))[1]
+            match = re.search('^values-(\w*)', parent_dir)
+            if (match is not None):
+                target_lang = match.group(1)
+            elif (parent_dir == 'values'):
+                # If the resource file is inside the "values" directory, then it is the default/source language.
+                target_lang = self.sourcelanguage
+
+            # Cache it
+            self.settargetlanguage(target_lang)
+
+        return target_lang
