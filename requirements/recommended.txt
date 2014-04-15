@@ -3,7 +3,7 @@
 ###############
 
 # lxml - for XML processing (XLIFF, TMX, TBX)
-lxml>=2.1.0  # >=1.3.4 should work
+lxml>=2.1.0
 
 # Faster matching in e.g. pot2po
 # 0.11.0 is broken using pip, later versions are fixed
