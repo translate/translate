@@ -337,12 +337,7 @@ class LISAfile(base.TranslationStore):
             xml.seek(0)
             posrc = xml.read()
             xml = posrc
-        if etree.LXML_VERSION >= (2, 1, 0):
-            #Since version 2.1.0 we can pass the strip_cdata parameter to
-            #indicate that we don't want cdata to be converted to raw XML
-            parser = etree.XMLParser(strip_cdata=False)
-        else:
-            parser = etree.XMLParser()
+        parser = etree.XMLParser(strip_cdata=False)
         self.document = etree.fromstring(xml, parser).getroottree()
         self._encoding = self.document.docinfo.encoding
         self.initbody()

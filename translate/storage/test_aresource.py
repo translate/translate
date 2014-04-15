@@ -21,12 +21,7 @@ class TestAndroidResourceUnit(test_monolingual.TestMonolingualUnit):
 
     def __check_parse(self, string, xml):
         """Helper that checks that a string is parsed correctly."""
-        if etree.LXML_VERSION >= (2, 1, 0):
-            # Since version 2.1.0 we can pass the strip_cdata parameter to
-            # indicate that we don't want cdata to be converted to raw XML.
-            parser = etree.XMLParser(strip_cdata=False)
-        else:
-            parser = etree.XMLParser()
+        parser = etree.XMLParser(strip_cdata=False)
 
         translatable = 'translatable="false"' not in xml
         et = etree.fromstring(xml, parser)
