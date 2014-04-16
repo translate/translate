@@ -332,6 +332,20 @@ key2=value
         assert po_unit.source == u"value"
         assert po_unit.getlocations() == [u'key2']
 
+    def test_gwt_plurals(self):
+        """Test conversion of gwt plural units."""
+        propsource = '''
+message-multiedit-header={0,number} selected
+message-multiedit-header[none]=Edit
+message-multiedit-header[one]={0,number} selected
+message-multiedit-header[two]={0,number} selected
+message-multiedit-header[few]={0,number} selected
+message-multiedit-header[many]={0,number} selected
+'''
+        outputpo = self.prop2po(propsource, personality="gwt")
+        pounit = outputpo.units[-1]
+        assert pounit.getlocations() == [u'message-multiedit-header']
+
 
 class TestProp2POCommand(test_convert.TestConvertCommand, TestProp2PO):
     """Tests running actual prop2po commands on files"""

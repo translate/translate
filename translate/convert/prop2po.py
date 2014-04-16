@@ -86,6 +86,8 @@ class prop2po(object):
                 thetargetfile.addunit(pounit)
         if self.personality == "gaia":
             thetargetfile = self.fold_gaia_plurals(thetargetfile)
+        elif self.personality == "gwt":
+            thetargetfile = self.fold_gwt_plurals(thetargetfile)
         thetargetfile.removeduplicates(self.duplicatestyle)
         return thetargetfile
 
@@ -151,8 +153,96 @@ class prop2po(object):
                              origprop.name)
         if self.personality == "gaia":
             thetargetfile = self.fold_gaia_plurals(thetargetfile)
+        elif self.personality == "gwt":
+            thetargetfile = self.fold_gwt_plurals(thetargetfile)
         thetargetfile.removeduplicates(self.duplicatestyle)
         return thetargetfile
+
+    def fold_gwt_plurals(self, postore):
+        """Fold the multiple plural units of a gwt file into a gettext plural."""
+
+        def _append_plural_unit(plural_unit, units):
+            sources = [u.source for u in units]
+            targets = [u.target for u in units]
+            # TODO: only consider the right ones for sources and targets
+            plural_unit.source = sources
+            plural_unit.target = targets
+            plural_unit.addlocation(key)
+
+        # Map GWT variants to cldr names
+        gwt2cldr = {
+            'none': 'zero',
+            'one': 'one',
+            'two': 'two',
+            'few': 'few',
+            'many': 'many',
+            '': 'other',
+        }
+
+        class Variants(object):
+            def __init__(self, unit):
+                self.unit = unit
+                self.variants = {}
+
+        from translate.lang import data
+        import re
+        regex = re.compile(r'([^\[\]]*)(?:\[(.*)\])?')
+        names = data.cldr_plural_categories
+        new_store = type(postore)()
+        plurals = {}
+        for unit in postore.units:
+            if not unit.istranslatable():
+                #TODO: reconsider: we could lose header comments here
+                continue
+            string = unit.getlocations()[0]
+            match = regex.match(string)
+            if not match:
+                logger.warn("Invalid key: %s" % (string))
+                continue
+            key = match.group(1)
+            variant = match.group(2)
+            if key not in plurals:
+                # Generate fake unit for each keys
+                new_unit = new_store.addsourceunit(u"fish")
+                plurals[key] = Variants(new_unit)
+
+            # No variant => other
+            if not variant:
+                variant = ""
+
+            # Translate gwt variants to cldr names
+            old_variant = variant
+            variant = gwt2cldr.get(variant)
+
+            # Some sanity checks
+            if not variant:
+                raise Exception("Variant invalid: %s" % (old_variant))
+            if variant in plurals[key].variants:
+                logger.warn("Override %s[%s]: %s by %s" % (key, variant, str(plurals[key].variants[variant]), str(unit)))
+
+            # Put the unit
+            plurals[key].variants[variant] = unit
+
+        # Rework the set
+        for key, plural in six.iteritems(plurals):
+            # We should have at least "other" (no variant in GWT)
+            if "other" not in plural.variants:
+                raise Exception("Should have property %s without any variant" % (key))
+            units = []
+            for name in names:
+                if name in plural.variants:
+                    unit = plural.variants[name]
+                    unit.target = unit.source
+                    units.append(unit)
+            # Replace the sources by good ones
+            if "one" in plural.variants and len(units) > 0:
+                units[0].source = plural.variants["one"].source
+            if "other" in plural.variants and len(units) > 1:
+                units[1].source = plural.variants["other"].source
+
+            # Create the plural unit
+            _append_plural_unit(plural.unit, units)
+        return new_store
 
     def fold_gaia_plurals(self, postore):
         """Fold the multiple plural units of a gaia file into a gettext plural."""
@@ -248,7 +338,7 @@ class prop2po(object):
         ``mixbucket`` can be specified to indicate if the given unit is part of
         the template or the translated file.
         """
-        if self.personality != "mozilla":
+        if self.personality != "mozilla" and self.personality != "gwt":
             # XXX should we enable unit mixing for other personalities?
             return self.convertunit(unit, commenttype)
 
