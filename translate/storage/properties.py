@@ -120,6 +120,7 @@ Name and Value pairs:
 """
 
 import re
+import collections
 from codecs import iterencode
 
 from translate.lang import data
@@ -343,10 +344,6 @@ class Dialect:
     def get_cldr_names_order(cls):
         return ["other"]
 
-    @classmethod
-    def get_key(cls, key, variant):
-        return u"%s[%s]" % (key, variant)
-
 
 @register_dialect
 class DialectJava(Dialect):
@@ -400,6 +397,57 @@ class DialectMozilla(DialectJavaUtf8):
 class DialectGaia(DialectMozilla):
     name = "gaia"
     delimiters = [u"="]
+
+
+@register_dialect
+class DialectGwt(DialectJava):
+    plural_regex = re.compile(r'([^\[\]]*)(?:\[(.*)\])?')
+    name = "gwt"
+    default_encoding = "utf-8"
+    delimiters = [u"="]
+
+    gwt_plural_categories = [
+        ('', "other"),
+        ('none', "zero"),
+        ('one', 'one'),
+        ('two', 'two'),
+        ('few', 'few'),
+        ('many', 'many'),
+    ]
+
+    gwt2cldr = collections.OrderedDict(gwt_plural_categories)
+    cldr2gwt = collections.OrderedDict([(b, a) for a, b in gwt_plural_categories])
+
+    @classmethod
+    def get_key_cldr_name(cls, key):
+        match = cls.plural_regex.match(key)
+        key = match.group(1)
+        variant = match.group(2)
+        if not variant:
+            variant = ""
+
+        variant = cls.gwt2cldr.get(variant)
+        # Some sanity checks
+        if not variant:
+            raise Exception("Key \"%s\" variant \"%s\" is invalid" % (key, variant))
+        return (key, variant)
+
+    @classmethod
+    def get_cldr_names_order(cls):
+        return [y for x, y in cls.gwt_plural_categories]
+
+    @classmethod
+    def get_key(cls, key, variant):
+        variant = cls.cldr2gwt.get(variant)
+
+        # Some sanity checks
+        if not variant:
+            raise Exception("Key \"%s\" variant \"%s\" is invalid" % (key, variant))
+        return u"%s[%s]" % (key, variant)
+
+    @classmethod
+    def encode(cls, string, encoding=None):
+        return quote.java_utf8_properties_encode(string or u"")
 
 
 @register_dialect
@@ -548,15 +596,20 @@ class proppluralunit(base.TranslationUnit):
             return key in self.units
 
     def settarget(self, text):
+        mapping = None
         if isinstance(text, multistring):
             strings = text.strings
         elif isinstance(text, list):
             strings = text
+        elif isinstance(text, dict):
+            mapping, strings = tuple(map(list, zip(*six.iteritems(text))))
         else:
             strings = [text]
+        if mapping is None:
+            mapping = self._get_target_mapping()
 
-        strings = self._get_strings(strings, self._get_target_mapping())
-        units = self._get_units(self._get_target_mapping())
+        strings = self._get_strings(strings, mapping)
+        units = self._get_units(mapping)
         if len(strings) != len(units):
             raise Exception('Not same plural counts between "%s" and "%s"' % (str(strings), str(units)))
 
@@ -573,17 +626,32 @@ class proppluralunit(base.TranslationUnit):
     target = property(gettarget, settarget)
 
     def getsource(self):
-        source = self._get_source_unit().source
-        return multistring(source) if source is not None else None
+        ll = [x.source for x in self._get_units(self._get_source_mapping())]
+        if len(ll) > 1:
+            return multistring(ll)
+        else:
+            return ll[0]
 
     def setsource(self, source):
-        if isinstance(source, multistring):
-            strings = source.strings
-        elif isinstance(source, list):
-            strings = source
+        mapping = None
+        if isinstance(text, multistring):
+            strings = text.strings
+        elif isinstance(text, list):
+            strings = text
+        elif isinstance(text, dict):
+            mapping, strings = tuple(map(list, zip(*six.iteritems(text))))
         else:
-            strings = [source]
-        self._get_source_unit().source = strings[0]
+            strings = [text]
+        if mapping is None:
+            mapping = self._get_source_mapping()
+
+        strings = self._get_strings(strings, mapping)
+        units = self._get_units(mapping)
+        if len(strings) != len(units):
+            raise Exception('Not same plural counts between "%s" and "%s"' % (str(strings), str(units)))
+
+        for a, b in zip(strings, units):
+            b.source = a
 
     source = property(getsource, setsource)
 
@@ -970,6 +1038,16 @@ class javautf16file(propfile):
         kwargs['personality'] = "java-utf16"
         kwargs['encoding'] = "utf-16"
         super().__init__(*args, **kwargs)
+
+
+class gwtfile(propfile):
+    Name = "Gwt Properties"
+    Extensions = ['properties']
+
+    def __init__(self, *args, **kwargs):
+        kwargs['personality'] = "gwt"
+        kwargs['encoding'] = "utf-8"
+        super(gwtfile, self).__init__(*args, **kwargs)
 
 
 class stringsfile(propfile):
