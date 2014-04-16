@@ -459,6 +459,38 @@ key2=Waarde
         propfile = self.merge2prop(proptemplate, posource, personality="mozilla")
         assert propfile == propexpected
 
+    def test_gwt_plurals(self):
+        """Test back conversion of gwt plural units."""
+        proptemplate = '''
+message-multiedit-header={0,number} selected
+message-multiedit-header[none]=Edit
+message-multiedit-header[one]={0,number} selected
+message-multiedit-header[two]={0,number} selected
+message-multiedit-header[few]={0,number} selected
+message-multiedit-header[many]={0,number} selected
+'''
+        posource = r'''#: message-multiedit-header
+msgctxt "message-multiedit-header"
+msgid "Edit"
+msgid_plural "{0,number} selected"
+msgstr[0] "Redigeer"
+msgstr[1] "{0,number} gekies"
+msgstr[2] "{0,number} gekies"
+msgstr[3] "{0,number} gekies"
+msgstr[4] "{0,number} gekies"
+msgstr[5] "{0,number} gekies"
+'''
+        propexpected = '''
+message-multiedit-header={0,number} gekies
+message-multiedit-header[none]=Redigeer
+message-multiedit-header[one]={0,number} gekies
+message-multiedit-header[two]={0,number} gekies
+message-multiedit-header[few]={0,number} gekies
+message-multiedit-header[many]={0,number} gekies
+'''
+        propfile = self.merge2prop(proptemplate, posource, personality="gwt")
+        assert propfile == propexpected
+
 
 class TestPO2PropCommand(test_convert.TestConvertCommand, TestPO2Prop):
     """Tests running actual po2prop commands on files"""
