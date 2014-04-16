@@ -87,6 +87,8 @@ class reprop:
         self.inputstore.makeindex()
         if self.personality.name == "gaia":
             self._explode_gaia_plurals()
+        if self.personality.name == "gwt":
+            self._explode_gwt_plurals()
         outputlines = []
         # Readlines doesn't work for UTF-16, we read() and splitlines(keepends) instead
         content = self.templatefile.read().decode(self.encoding)
@@ -134,6 +136,37 @@ class reprop:
 
             # We don't want the plural marker to be translated:
             del self.inputstore.locationindex[location]
+
+    def _explode_gwt_plurals(self):
+        """Explode the gwt plurals."""
+        # cldr names to GWT variants
+        cldr2gwt = {
+            'zero': 'none',
+            'one': 'one',
+            'two': 'two',
+            'few': 'few',
+            'many': 'many',
+            'other': '',
+        }
+        from translate.lang import data
+        for unit in self.inputstore.units:
+            if not unit.hasplural():
+                continue
+            if unit.isfuzzy() and not self.includefuzzy or not unit.istranslated():
+                continue
+
+            names = data.cldr_plural_categories
+            names = [cldr2gwt.get(name) for name in names]
+            location = unit.getlocations()[0]
+            for category, text in zip(names, unit.target.strings):
+                new_unit = self.inputstore.addsourceunit(u"fish")  # not used
+                if category != '':
+                    new_location = '%s[%s]' % (location, category)
+                else:
+                    new_location = '%s' % (location)
+                new_unit.addlocation(new_location)
+                new_unit.target = text
+                self.inputstore.locationindex[new_location] = new_unit
 
     def convertline(self, line):
         returnline = u""
