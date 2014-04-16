@@ -114,6 +114,31 @@ class TestTSfile(test_base.TestTranslationStore):
         tsfile = ts.tsfile.parsestring(tsstr)
         assert tsfile.getsourcelanguage() == 'en'
 
+    def test_edit(self):
+        """test editing works well"""
+        tsstr = '''<!DOCTYPE TS>
+<TS version="2.0" language="hu">
+<context>
+    <name>MainWindow</name>
+    <message>
+        <source>ObsoleteString</source>
+        <translation type="obsolete">Groepen</translation>
+    </message>
+    <message>
+        <source>SourceString</source>
+        <translation>TargetString</translation>
+    </message>
+</context>
+</TS>
+'''
+        tsfile = ts.tsfile.parsestring(tsstr)
+        tsfile.units[1].settarget('TestTarget')
+        tsfile.units[1].markfuzzy(True)
+        newtsstr = tsstr.decode('utf-8').replace(
+            '>TargetString', ' type="unfinished">TestTarget'
+        ).encode('utf-8')
+        assert newtsstr == str(tsfile)
+
     def test_locations(self):
         """test that locations work well"""
         tsstr = '''<?xml version="1.0" encoding="utf-8"?>
