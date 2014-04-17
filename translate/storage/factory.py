@@ -127,28 +127,31 @@ def _getname(storefile):
     return storefilename
 
 
-def getclass(storefile, ignore=None, classes=None, classes_str=classes_str, hiddenclasses=hiddenclasses):
+def getclass(storefile, localfiletype=None, ignore=None, classes=None, classes_str=classes_str, hiddenclasses=hiddenclasses):
     """Factory that returns the applicable class for the type of file presented.
     Specify ignore to ignore some part at the back of the name (like .gz). """
     storefilename = _getname(storefile)
     if ignore and storefilename.endswith(ignore):
         storefilename = storefilename[:-len(ignore)]
-    root, ext = os.path.splitext(storefilename)
-    ext = ext[len(os.path.extsep):].lower()
-    decomp = None
-    if ext in decompressclass:
-        decomp = ext
-        root, ext = os.path.splitext(root)
+    if localfiletype:
+        ext = localfiletype
+    else:
+        root, ext = os.path.splitext(storefilename)
         ext = ext[len(os.path.extsep):].lower()
-    if ext in hiddenclasses:
-        guesserfn = hiddenclasses[ext]
-        if decomp:
-            _module, _class = decompressclass[decomp]
-            module = __import__(_module, globals(), {}, [])
-            _file = getattr(module, _class)
-            ext = guesserfn(_file(storefile))
-        else:
-            ext = guesserfn(storefile)
+        decomp = None
+        if ext in decompressclass:
+            decomp = ext
+            root, ext = os.path.splitext(root)
+            ext = ext[len(os.path.extsep):].lower()
+        if ext in hiddenclasses:
+            guesserfn = hiddenclasses[ext]
+            if decomp:
+                _module, _class = decompressclass[decomp]
+                module = __import__(_module, globals(), {}, [])
+                _file = getattr(module, _class)
+                ext = guesserfn(_file(storefile))
+            else:
+                ext = guesserfn(storefile)
     try:
         # we prefer classes (if given) since that is the older API that Pootle uses
         if classes:
@@ -162,7 +165,7 @@ def getclass(storefile, ignore=None, classes=None, classes_str=classes_str, hidd
     return storeclass
 
 
-def getobject(storefile, ignore=None, classes=None, classes_str=classes_str, hiddenclasses=hiddenclasses):
+def getobject(storefile, localfiletype=None, ignore=None, classes=None, classes_str=classes_str, hiddenclasses=hiddenclasses):
     """Factory that returns a usable object for the type of file presented.
 
     :type storefile: file or str
@@ -176,7 +179,7 @@ def getobject(storefile, ignore=None, classes=None, classes_str=classes_str, hid
             from translate.storage import directory
             return directory.Directory(storefile)
     storefilename = _getname(storefile)
-    storeclass = getclass(storefile, ignore, classes=classes, classes_str=classes_str, hiddenclasses=hiddenclasses)
+    storeclass = getclass(storefile, localfiletype, ignore, classes=classes, classes_str=classes_str, hiddenclasses=hiddenclasses)
     if os.path.exists(storefilename) or not getattr(storefile, "closed", True):
         name, ext = os.path.splitext(storefilename)
         ext = ext[len(os.path.extsep):].lower()
