@@ -416,7 +416,7 @@ Naming Conventions
 
 .. note::
 
-   This has not been implemented or discussed.  The Translate code 
+   This has not been implemented or discussed.  The Translate code
    is not at all consistent with these conventions.
 
 
@@ -587,7 +587,7 @@ Parameter documentation:
 
         :param SomeType bar: Something
         :return: Returns something
-        :rtype: Return type 
+        :rtype: Return type
         """
 
 
@@ -688,3 +688,26 @@ Docstring comments:
 .. _reStructuredText primer: http://sphinx-doc.org/rest.html
 .. _Sphinx documentation: http://sphinx-doc.org/contents.html
 .. _paragraph-level markup: http://sphinx-doc.org/markup/para.html#paragraph-level-markup
+
+
+String formatting
+-----------------
+
+While str.format() is more powerful than %-formatting, the latter has been the
+canonical way of formatting strings in Python for a long time and the Python
+core team has shown no desire to settle on one syntax over the other.
+For simple, serial positional cases (non-translatable strings), the old "%s"
+way of formatting is preferred.
+For anything more complex, including translatable strings, str.format is
+preferred as it is significantly more powerful and often cleaner.
+
+.. code-block:: python
+
+    # Good
+    print("Hello, {thing}".format(thing="world"))
+    print("%s=%r" % ("hello", "world"))  # non-translatable strings
+
+    # Bad
+    print("%s, %s" % ("Hello", "world"))  # Translatable string.
+    print("Hello, %(thing)s" % {"thing": "world"})  # Use {thing}.
+    print("Hello, {}".format("world"))  # Incompatible with Python 2.6. Use %s.
