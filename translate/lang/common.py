@@ -114,6 +114,10 @@ class Common(object):
     # Don't change these defaults of nplurals or pluralequation willy-nilly:
     # some code probably depends on these for unrecognised languages
 
+    cldr_mapping = []
+    """The plural mapping between gettext plural forms and cldr plural forms
+    """
+
     mozilla_nplurals = 0
     mozilla_pluralequation = "0"
     """This of languages that has different plural formula in Mozilla than the
@@ -218,7 +222,7 @@ class Common(object):
             langdata = data.get_language(code)
             if langdata:
                 language.fullname, language.nplurals, \
-                    language.pluralequation = langdata
+                    language.pluralequation, language.cldr_mapping = langdata
                 break
             code = data.simplercode(code)
         return language
