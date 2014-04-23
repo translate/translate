@@ -241,6 +241,43 @@ message-multiedit-header[other]={{ n }} selected
         assert not zero_unit.hasplural()
         assert zero_unit.source == u"Edit"
 
+    def test_successive_gaia_plurals(self):
+        """Test conversion of two successive gaia plural units."""
+        propsource = '''
+message-multiedit-header={[ plural(n) ]}
+message-multiedit-header[zero]=Edit
+message-multiedit-header[one]={{ n }} selected
+message-multiedit-header[two]={{ n }} selected
+message-multiedit-header[few]={{ n }} selected
+message-multiedit-header[many]={{ n }} selected
+message-multiedit-header[other]={{ n }} selected
+
+message-multiedit-header2={[ plural(n) ]}
+message-multiedit-header2[zero]=Edit 2
+message-multiedit-header2[one]={{ n }} selected 2
+message-multiedit-header2[two]={{ n }} selected 2
+message-multiedit-header2[few]={{ n }} selected 2
+message-multiedit-header2[many]={{ n }} selected 2
+message-multiedit-header2[other]={{ n }} selected 2
+'''
+        outputpo = self.prop2po(propsource, personality="gaia")
+        pounit = outputpo.units[-1]
+        assert pounit.hasplural()
+        assert pounit.getlocations() == [u'message-multiedit-header2']
+
+        pounit = outputpo.units[-3]
+        assert pounit.hasplural()
+        assert pounit.getlocations() == [u'message-multiedit-header']
+
+        print(outputpo)
+        zero_unit = outputpo.units[-2]
+        assert not zero_unit.hasplural()
+        assert zero_unit.source == u"Edit 2"
+
+        zero_unit = outputpo.units[-4]
+        assert not zero_unit.hasplural()
+        assert zero_unit.source == u"Edit"
+
 
 class TestProp2POCommand(test_convert.TestConvertCommand, TestProp2PO):
     """Tests running actual prop2po commands on files"""

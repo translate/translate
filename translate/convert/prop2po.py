@@ -173,6 +173,12 @@ class prop2po:
                 #TODO: reconsider: we could lose header comments here
                 continue
             if u"plural(n)" in unit.source:
+                if current_plural:
+                    # End of a set of plural units
+                    new_unit = _collapse(new_store, plurals[current_plural])
+                    new_unit.addlocation(current_plural)
+                    del plurals[current_plural]
+                    current_plural = u""
                 # start of a set of plural units
                 location = unit.getlocations()[0]
                 current_plural = location
