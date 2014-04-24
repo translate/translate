@@ -64,15 +64,15 @@ def test_stripcomment():
 
 class TestEncoding:
 
-    def test_javepropertiesencode(self):
+    def test_javapropertiesencode(self):
         assert quote.javapropertiesencode(u"abc") == u"abc"
         assert quote.javapropertiesencode(u"abcḓ") == "abc\u1E13"
         assert quote.javapropertiesencode(u"abc\n") == u"abc\\n"
 
-    def test_mozillapropertiesencode(self):
-        assert quote.mozillapropertiesencode(u"abc") == u"abc"
-        assert quote.mozillapropertiesencode(u"abcḓ") == u"abcḓ"
-        assert quote.mozillapropertiesencode(u"abc\n") == u"abc\\n"
+    def test_javautf8propertiesencode(self):
+        assert quote.javautf8propertiesencode(u"abc") == u"abc"
+        assert quote.javautf8propertiesencode(u"abcḓ") == u"abcḓ"
+        assert quote.javautf8propertiesencode(u"abc\n") == u"abc\\n"
 
     def test_escapespace(self):
         assert quote.escapespace(u" ") == u"\\u0020"

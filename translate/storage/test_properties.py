@@ -117,9 +117,9 @@ class TestGwtProp(test_monolingual.TestMonolingualStore):
         propfile.makeindex()
         return propfile
 
-    def propregen(self, propsource):
+    def propregen(self, propsource, encoding=None):
         """helper that converts properties source to propfile object and back"""
-        return str(self.propparse(propsource))
+        return str(self.propparse(propsource, encoding=encoding))
 
     def test_simpledefinition(self):
         """checks that a simple properties definition is parsed correctly"""
@@ -167,9 +167,9 @@ class TestProp(test_monolingual.TestMonolingualStore):
         propfile = properties.propfile(dummyfile, personality, encoding)
         return propfile
 
-    def propregen(self, propsource):
+    def propregen(self, propsource, encoding=None):
         """helper that converts properties source to propfile object and back"""
-        return str(self.propparse(propsource))
+        return str(self.propparse(propsource, encoding=encoding))
 
     def test_simpledefinition(self):
         """checks that a simple properties definition is parsed correctly"""
@@ -183,6 +183,18 @@ class TestProp(test_monolingual.TestMonolingualStore):
     def test_simpledefinition_source(self):
         """checks that a simple properties definition can be regenerated as source"""
         propsource = 'test_me=I can code!'
+        propregen = self.propregen(propsource)
+        assert propsource + '\n' == propregen
+
+    def test_controlutf8_source(self):
+        """checks that a control characters are parsed correctly"""
+        propsource = u'test_me=\\\\\\n'
+        propregen = self.propregen(propsource, encoding='utf-8')
+        assert propsource + '\n' == propregen
+
+    def test_control_source(self):
+        """checks that a control characters are parsed correctly"""
+        propsource = 'test_me=\\\\\\n'
         propregen = self.propregen(propsource)
         assert propsource + '\n' == propregen
 

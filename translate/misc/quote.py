@@ -314,9 +314,8 @@ def javapropertiesencode(source):
             output += u"\\u%04X" % charnum
     return output
 
-
-def mozillapropertiesencode(source):
-    """Encodes source in the escaped-unicode encoding used by Mozilla
+def javautf8propertiesencode(source):
+    """Encodes source in the escaped-unicode encoding used by java utf-8
     .properties files.
     """
     output = u""
