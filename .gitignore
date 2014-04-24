@@ -40,6 +40,7 @@ translate/storage/properties.class
 # Roundtrip testing noise
 translate/convert/diff_*.diff
 translate/convert/mozilla-l10n/
+translate/convert/mozilla-gaia/
 translate/convert/rewritten-po/
 translate/convert/templates-recreated/
 

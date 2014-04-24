@@ -33,15 +33,6 @@ from translate.storage import po, properties
 logger = logging.getLogger(__name__)
 
 
-def _collapse(store, units):
-    sources = [u.source for u in units]
-    targets = [u.target for u in units]
-    # TODO: only consider the right ones for sources and targets
-    plural_unit = store.addsourceunit(sources)
-    plural_unit.target = targets
-    return plural_unit
-
-
 class prop2po:
     """convert a .properties file to a .po file for handling the
     translation."""
@@ -165,6 +156,17 @@ class prop2po:
 
     def fold_gaia_plurals(self, postore):
         """Fold the multiple plural units of a gaia file into a gettext plural."""
+
+        def _append_plural_unit(store, plurals, plural):
+            units = plurals[plural]
+            sources = [u.source for u in units]
+            targets = [u.target for u in units]
+            # TODO: only consider the right ones for sources and targets
+            plural_unit = store.addsourceunit(sources)
+            plural_unit.target = targets
+            plural_unit.addlocation(plural)
+            del plurals[plural]
+
         new_store = type(postore)()
         plurals = {}
         current_plural = u""
@@ -173,6 +175,10 @@ class prop2po:
                 #TODO: reconsider: we could lose header comments here
                 continue
             if u"plural(n)" in unit.source:
+                if current_plural:
+                    # End of a set of plural units
+                    _append_plural_unit(new_store, plurals, current_plural)
+                    current_plural = u""
                 # start of a set of plural units
                 location = unit.getlocations()[0]
                 current_plural = location
@@ -188,18 +194,14 @@ class prop2po:
                         continue
                 elif current_plural:
                     # End of a set of plural units
-                    new_unit = _collapse(new_store, plurals[current_plural])
-                    new_unit.addlocation(current_plural)
-                    del plurals[current_plural]
+                    _append_plural_unit(new_store, plurals, current_plural)
                     current_plural = u""
 
                 new_store.addunit(unit)
 
         if current_plural:
             # The file ended with a set of plural units
-            new_unit = _collapse(new_store, plurals[current_plural])
-            new_unit.addlocation(current_plural)
-            del plurals[current_plural]
+            _append_plural_unit(new_store, plurals, current_plural)
             current_plural = u""
 
         # if everything went well, there should be nothing left in plurals
