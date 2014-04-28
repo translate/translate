@@ -184,6 +184,58 @@ msgstr "Ileti"
         assert '""' not in dtdsource
         assert '"S"' in dtdsource
 
+    def test_accesskey_and_amp_case_no_accesskey(self):
+        """tests that accesskey and &amp; can work together
+
+	If missing we use the source accesskey"""
+        po_snippet = r'''#: key.label
+#: key.accesskey
+msgid "Colour & &Light"
+msgstr "Lig en Kleur"
+'''
+        dtd_snippet = r'''<!ENTITY key.accesskey      "L">
+<!ENTITY key.label       "Colour &amp; Light">'''
+        dtdfile = self.merge2dtd(dtd_snippet, po_snippet)
+        dtdsource = str(dtdfile)
+        print(dtdsource)
+        assert '"Lig en Kleur"' in dtdsource
+        assert '"L"' in dtdsource
+
+    def test_accesskey_and_amp_case_no_amp(self):
+        """tests that accesskey and &amp; can work together
+
+	If present we use the target accesskey"""
+        po_snippet = r'''#: key.label
+#: key.accesskey
+msgid "Colour & &Light"
+msgstr "Lig en &Kleur"
+'''
+        dtd_snippet = r'''<!ENTITY key.accesskey      "L">
+<!ENTITY key.label       "Colour &amp; Light">'''
+        dtdfile = self.merge2dtd(dtd_snippet, po_snippet)
+        dtdsource = str(dtdfile)
+        print(dtdsource)
+        assert '"Lig en Kleur"' in dtdsource
+        assert '"K"' in dtdsource
+
+    def test_accesskey_and_amp_case_both_amp_and_accesskey(self):
+        """tests that accesskey and &amp; can work together
+
+	If present both & (and) and a marker then we use the correct source
+	accesskey"""
+        po_snippet = r'''#: key.label
+#: key.accesskey
+msgid "Colour & &Light"
+msgstr "Lig & &Kleur"
+'''
+        dtd_snippet = r'''<!ENTITY key.accesskey      "L">
+<!ENTITY key.label       "Colour &amp; Light">'''
+        dtdfile = self.merge2dtd(dtd_snippet, po_snippet)
+        dtdsource = str(dtdfile)
+        print(dtdsource)
+        assert '"Lig &amp; Kleur"' in dtdsource
+        assert '"K"' in dtdsource
+
     def test_entities_two(self):
         """test the error ouput when we find two entities"""
         simplestring = '''#: simple.string second.string\nmsgid "Simple String"\nmsgstr "Dimpled Ring"\n'''

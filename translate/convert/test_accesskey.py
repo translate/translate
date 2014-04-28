@@ -103,3 +103,4 @@ def test_uncombinable():
 def test_accesskey_already_in_text():
     """test that we can combine if the accesskey is already in the text"""
     assert accesskey.combine(u"Mail & Newsgroups", u"N") == u"Mail & &Newsgroups"
+    assert accesskey.extract(u"Mail & &Newsgroups") == (u"Mail & Newsgroups", u"N")
