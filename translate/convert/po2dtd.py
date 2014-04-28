@@ -68,8 +68,7 @@ def applytranslation(entity, dtdunit, inputunit, mixedentities):
                                 unquotedstr = unquotedstr.upper()
                             elif original.islower():
                                 unquotedstr = unquotedstr.lower()
-    if len(unquotedstr) > 0:
-        dtdunit.source = dtd.removeinvalidamps(entity, unquotedstr)
+    dtdunit.source = unquotedstr
 
 
 class redtd:

@@ -374,6 +374,13 @@ msgstr "Simple string 3"
         self.check_roundtrip(r'''"Both Quotes &quot;&quot; '' "''',
                              r'''"Both Quotes &quot;&quot; &apos;&apos; "''')
 
+    def test_roundtrip_amp(self):
+        """Checks that quotes make it through a DTD->PO->DTD roundtrip.
+
+        Quotes may be escaped or not.
+        """
+	self.check_roundtrip('"Colour &amp; Light"')
+
     def test_merging_entries_with_spaces_removed(self):
         """dtd2po removes pretty printed spaces, this tests that we can merge this back into the pretty printed dtd"""
         posource = '''#: simple.label\nmsgid "First line then "\n"next lines."\nmsgstr "Eerste lyne en dan volgende lyne."\n'''
