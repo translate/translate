@@ -168,6 +168,22 @@ msgstr "&searchIntegration.engineName; &ileti aramasına izin ver"
         print(dtdsource)
         assert '"&searchIntegration.engineName; ileti aramasına izin ver"' in dtdsource
 
+    def test_accesskey_missing(self):
+        """tests that missing ampersands use the source accesskey"""
+        po_snippet = r'''#: key.label
+#: key.accesskey
+msgid "&Search"
+msgstr "Ileti"
+'''
+        dtd_snippet = r'''<!ENTITY key.accesskey      "S">
+<!ENTITY key.label       "Ileti">'''
+        dtdfile = self.merge2dtd(dtd_snippet, po_snippet)
+        dtdsource = str(dtdfile)
+        print(dtdsource)
+        assert '"Ileti"' in dtdsource
+        assert '""' not in dtdsource
+        assert '"S"' in dtdsource
+
     def test_entities_two(self):
         """test the error ouput when we find two entities"""
         simplestring = '''#: simple.string second.string\nmsgid "Simple String"\nmsgstr "Dimpled Ring"\n'''

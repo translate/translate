@@ -56,6 +56,8 @@ def applytranslation(entity, dtdunit, inputunit, mixedentities):
                     label, unquotedstr = accesskey.extract(unquotedstr)
                     if not unquotedstr:
                         warnings.warn("Could not find accesskey for %s" % entity)
+                        # Use the source language accesskey
+                        label, unquotedstr = accesskey.extract(inputunit.source)
                     else:
                         original = dtdunit.source
                         # For the sake of diffs we keep the case of the
