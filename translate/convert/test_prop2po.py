@@ -224,12 +224,12 @@ do=translate me
         """Test conversion of gaia plural units."""
         propsource = '''
 message-multiedit-header={[ plural(n) ]}
-message-multiedit-header[zero]=Edit
-message-multiedit-header[one]={{ n }} selected
-message-multiedit-header[two]={{ n }} selected
-message-multiedit-header[few]={{ n }} selected
-message-multiedit-header[many]={{ n }} selected
-message-multiedit-header[other]={{ n }} selected
+message-multiedit-header[zero]=Edit zero
+message-multiedit-header[one]={{ n }} selected one
+message-multiedit-header[two]={{ n }} selected two
+message-multiedit-header[few]={{ n }} selected few
+message-multiedit-header[many]={{ n }} selected many
+message-multiedit-header[other]={{ n }} selected other
 '''
         outputpo = self.prop2po(propsource, personality="gaia")
         pounit = outputpo.units[-1]
@@ -237,18 +237,26 @@ message-multiedit-header[other]={{ n }} selected
         assert pounit.getlocations() == [u'message-multiedit-header']
 
         print(outputpo)
-        zero_unit = outputpo.units[-2]
+        two_unit = outputpo.units[-2]
+        assert not two_unit.hasplural()
+        assert two_unit.source == u"{{ n }} selected two"
+
+        one_unit = outputpo.units[-3]
+        assert not one_unit.hasplural()
+        assert one_unit.source == u"{{ n }} selected one"
+
+        zero_unit = outputpo.units[-4]
         assert not zero_unit.hasplural()
-        assert zero_unit.source == u"Edit"
+        assert zero_unit.source == u"Edit zero"
 
         propsource = '''
 message-multiedit-header={[ plural(value) ]}
-message-multiedit-header[zero]=Edit
-message-multiedit-header[one]={{ value }} selected
-message-multiedit-header[two]={{ value }} selected
-message-multiedit-header[few]={{ value }} selected
-message-multiedit-header[many]={{ value }} selected
-message-multiedit-header[other]={{ value }} selected
+message-multiedit-header[zero]=Edit zero
+message-multiedit-header[one]={{ value }} selected one
+message-multiedit-header[two]={{ value }} selected two
+message-multiedit-header[few]={{ value }} selected few
+message-multiedit-header[many]={{ value }} selected many
+message-multiedit-header[other]={{ value }} selected other
 '''
         outputpo = self.prop2po(propsource, personality="gaia")
         pounit = outputpo.units[-1]
@@ -256,9 +264,17 @@ message-multiedit-header[other]={{ value }} selected
         assert pounit.getlocations() == [u'message-multiedit-header']
 
         print(outputpo)
-        zero_unit = outputpo.units[-2]
+        two_unit = outputpo.units[-2]
+        assert not two_unit.hasplural()
+        assert two_unit.source == u"{{ value }} selected two"
+
+        one_unit = outputpo.units[-3]
+        assert not one_unit.hasplural()
+        assert one_unit.source == u"{{ value }} selected one"
+
+        zero_unit = outputpo.units[-4]
         assert not zero_unit.hasplural()
-        assert zero_unit.source == u"Edit"
+        assert zero_unit.source == u"Edit zero"
 
     def test_successive_gaia_plurals(self):
         """Test conversion of two successive gaia plural units."""
@@ -284,16 +300,16 @@ message-multiedit-header2[other]={{ n }} selected 2
         assert pounit.hasplural()
         assert pounit.getlocations() == [u'message-multiedit-header2']
 
-        pounit = outputpo.units[-3]
+        pounit = outputpo.units[-5]
         assert pounit.hasplural()
         assert pounit.getlocations() == [u'message-multiedit-header']
 
         print(outputpo)
-        zero_unit = outputpo.units[-2]
+        zero_unit = outputpo.units[-4]
         assert not zero_unit.hasplural()
         assert zero_unit.source == u"Edit 2"
 
-        zero_unit = outputpo.units[-4]
+        zero_unit = outputpo.units[-8]
         assert not zero_unit.hasplural()
         assert zero_unit.source == u"Edit"
 

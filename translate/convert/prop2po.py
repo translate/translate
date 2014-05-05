@@ -37,6 +37,10 @@ logger = logging.getLogger(__name__)
 # something like "{[ plural(value) ]}" or "{[ plural(n) ]}".
 gaia_plural_key_re = re.compile(u"\{\[ plural\(.*?.\) \]\}")
 
+# Gaia will use [zero], [one] and [two] cases for all locales, regardless of
+# the locale's plural rule, so we need to be able to translate them separately.
+gaia_plural_specials_re = re.compile(u"(\[zero\]|\[one\]|\[two\])")
+
 
 class prop2po:
     """convert a .properties file to a .po file for handling the
@@ -194,8 +198,8 @@ class prop2po:
                 location = unit.getlocations()[0]
                 if current_plural and location.startswith(current_plural):
                     plurals[current_plural].append(unit)
-                    if not '[zero]' in location:
-                        # We want to keep [zero] cases separately translatable
+                    if not gaia_plural_specials_re.search(location):
+                        # We want to keep special cases separately translatable
                         continue
                 elif current_plural:
                     # End of a set of plural units

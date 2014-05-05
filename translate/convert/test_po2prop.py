@@ -270,16 +270,26 @@ prop2=
         proptemplate = '''
 message-multiedit-header={[ plural(n) ]}
 message-multiedit-header[zero]=Edit
-message-multiedit-header[one]={{ n }} selected
-message-multiedit-header[two]={{ n }} selected
-message-multiedit-header[few]={{ n }} selected
-message-multiedit-header[many]={{ n }} selected
-message-multiedit-header[other]={{ n }} selected
+message-multiedit-header[one]={{ n }} selected one
+message-multiedit-header[two]={{ n }} selected two
+message-multiedit-header[few]={{ n }} selected few
+message-multiedit-header[many]={{ n }} selected many
+message-multiedit-header[other]={{ n }} selected other
 '''
         posource = r'''#: message-multiedit-header[zero]
 msgctxt "message-multiedit-header[zero]"
 msgid "Edit"
 msgstr "Redigeer"
+
+#: message-multiedit-header[one]
+msgctxt "message-multiedit-header[one]"
+msgid "{{ n }} selected one"
+msgstr "{{ n }} gekies one"
+
+#: message-multiedit-header[two]
+msgctxt "message-multiedit-header[two]"
+msgid "{{ n }} selected two"
+msgstr "{{ n }} gekies two"
 
 #: message-multiedit-header
 msgctxt "message-multiedit-header"
@@ -295,8 +305,8 @@ msgstr[5] "{{ n }} gekies"
         propexpected = '''
 message-multiedit-header={[ plural(n) ]}
 message-multiedit-header[zero]=Redigeer
-message-multiedit-header[one]={{ n }} gekies
-message-multiedit-header[two]={{ n }} gekies
+message-multiedit-header[one]={{ n }} gekies one
+message-multiedit-header[two]={{ n }} gekies two
 message-multiedit-header[few]={{ n }} gekies
 message-multiedit-header[many]={{ n }} gekies
 message-multiedit-header[other]={{ n }} gekies

@@ -123,8 +123,9 @@ class reprop:
             for category, text in zip(names, unit.target.strings):
                 # TODO: for now we assume all forms are present. We need to
                 # fill in the rest after mapping things to the proper CLDR names.
-                if category == 'zero':
-                    # [zero] cases are translated as separate units
+                if category == 'zero' or category == 'one' or category == 'two':
+                    # [zero], [one] and [two] cases are translated as separate
+                    # units.
                     continue
                 new_unit = self.inputstore.addsourceunit(u"fish")  # not used
                 new_location = '%s[%s]' % (location, category)
