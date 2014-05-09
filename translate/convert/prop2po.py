@@ -197,7 +197,8 @@ class prop2po:
             else:
                 location = unit.getlocations()[0]
                 if current_plural and location.startswith(current_plural):
-                    plurals[current_plural].append(unit)
+                    if unit.target != "Not used by this language":
+                        plurals[current_plural].append(unit)
                     if not gaia_plural_specials_re.search(location):
                         # We want to keep special cases separately translatable
                         continue

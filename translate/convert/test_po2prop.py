@@ -276,7 +276,11 @@ message-multiedit-header[few]={{ n }} selected few
 message-multiedit-header[many]={{ n }} selected many
 message-multiedit-header[other]={{ n }} selected other
 '''
-        posource = r'''#: message-multiedit-header[zero]
+        posource = r'''
+msgid ""
+msgstr "Language: ar\n"
+
+#: message-multiedit-header[zero]
 msgctxt "message-multiedit-header[zero]"
 msgid "Edit"
 msgstr "Redigeer"
