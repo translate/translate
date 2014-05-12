@@ -134,7 +134,7 @@ def extract(string, accesskey_marker=DEFAULT_ACCESSKEY_MARKER):
                 XMLEntityPlaceable.regex.match(string[marker_pos-1:])):
                 continue
             label = string[:marker_pos-1] + string[marker_pos:]
-	    if string[marker_pos] != " ":  # FIXME week filtering
+            if string[marker_pos] != " ":  # FIXME week filtering
                 accesskey = string[marker_pos]
     return label, accesskey
 

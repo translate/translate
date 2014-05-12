@@ -187,7 +187,7 @@ msgstr "Ileti"
     def test_accesskey_and_amp_case_no_accesskey(self):
         """tests that accesskey and &amp; can work together
 
-	If missing we use the source accesskey"""
+        If missing we use the source accesskey"""
         po_snippet = r'''#: key.label
 #: key.accesskey
 msgid "Colour & &Light"
@@ -204,7 +204,7 @@ msgstr "Lig en Kleur"
     def test_accesskey_and_amp_case_no_amp(self):
         """tests that accesskey and &amp; can work together
 
-	If present we use the target accesskey"""
+        If present we use the target accesskey"""
         po_snippet = r'''#: key.label
 #: key.accesskey
 msgid "Colour & &Light"
@@ -221,8 +221,8 @@ msgstr "Lig en &Kleur"
     def test_accesskey_and_amp_case_both_amp_and_accesskey(self):
         """tests that accesskey and &amp; can work together
 
-	If present both & (and) and a marker then we use the correct source
-	accesskey"""
+        If present both & (and) and a marker then we use the correct source
+        accesskey"""
         po_snippet = r'''#: key.label
 #: key.accesskey
 msgid "Colour & &Light"
@@ -431,7 +431,7 @@ msgstr "Simple string 3"
 
         Quotes may be escaped or not.
         """
-	self.check_roundtrip('"Colour &amp; Light"')
+        self.check_roundtrip('"Colour &amp; Light"')
 
     def test_merging_entries_with_spaces_removed(self):
         """dtd2po removes pretty printed spaces, this tests that we can merge this back into the pretty printed dtd"""
