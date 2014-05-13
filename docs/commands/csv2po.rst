@@ -112,6 +112,14 @@ to UTF-8 and place the correctly encoded files in *po*.  We use the templates
 found in *pot* to ensure that we preserve formatting and other data.  Note that
 UTF-8 is the only available destination encoding.
 
+::
+
+  csv2po --columnorder=location,target,source fr.csv fr.po
+
+In case the CSV file has the columns in a different order you may use
+:option:`--columnorder`.
+
+
 .. _csv2po#bugs:
 
 Bugs
