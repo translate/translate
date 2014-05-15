@@ -121,16 +121,10 @@ def build_xpi(l10nbase, srcdir, outputdir, langs, product, delete_dest=False,
     # Create a temporary directory for building
     builddir = mkdtemp('', 'buildxpi')
 
-    # Per the original instructions, it should be possible to configure the
-    # Mozilla build so that it doesn't require compiler toolchains or
-    # development include/library files - however it is currently broken for
-    # Aurora 22-23; # see https://bugzilla.mozilla.org/show_bug.cgi?id=862770
-    # in case it has been fixed and you can put back:
-    #ac_add_options --disable-compile-environment
-
     try:
         # Create new .mozconfig
         content = """
+ac_add_options --disable-compile-environment
 ac_add_options --disable-gstreamer
 ac_add_options --disable-ogg
 ac_add_options --disable-opus
