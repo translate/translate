@@ -355,6 +355,13 @@ class DialectMozilla(DialectJavaUtf8):
     name = "mozilla"
     delimiters = [u"="]
 
+    @classmethod
+    def encode(cls, string, encoding=None):
+        """Encode the string"""
+        string = quote.mozillapropertiesencode(string or u"")
+        string = quote.mozillaescapemarginspaces(string or u"")
+        return string
+
 
 @register_dialect
 class DialectGaia(DialectMozilla):

@@ -325,6 +325,28 @@ def mozillapropertiesencode(source):
             output += char
     return output
 
+def escapespace(char):
+    assert(len(char) == 1)
+    if char.isspace():
+        return u"\\u%04X" %(ord(char))
+    return char
+
+def mozillaescapemarginspaces(source):
+    """Escape leading and trailing spaces for Mozilla .properties files."""
+    if not source:
+        return u""
+
+    if len(source) == 1 and source.isspace():
+        # FIXME: This is hack for people using white-space to mark empty
+        # Mozilla strings translated, drop this once we have better way to
+        # handle this in Pootle.
+        return u""
+
+    if len(source) == 1:
+        return escapespace(source)
+    else:
+        return escapespace(source[0]) + source[1:-1] + escapespace(source[-1])
+
 propertyescapes = {
     # escapes that are self-escaping
     "\\": "\\", "'": "'", '"': '"',

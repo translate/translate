@@ -126,6 +126,48 @@ prop.accesskey=V
         print(propfile)
         assert propfile == propexpected
 
+    def test_mozilla_margin_whitespace(self):
+        """Check handling of Mozilla leading and trailing spaces"""
+        posource = '''#: sepAnd
+msgid " and "
+msgstr " و "
+
+#: sepComma
+msgid ", "
+msgstr "، "
+'''
+        proptemplate = r'''sepAnd = \u0020and\u0020
+sepComma = ,\u20
+'''
+        propexpected = r'''sepAnd = \u0020و\u0020
+sepComma = ،\u0020
+'''
+        propfile = self.merge2prop(proptemplate, posource, personality="mozilla")
+        print(propfile)
+        assert propfile == propexpected
+
+    def test_mozilla_all_whitespace(self):
+        """Check for all white-space Mozilla hack, remove when the
+        corresponding code is removed."""
+        posource = '''#: accesskey-accept
+msgctxt "accesskey-accept"
+msgid ""
+msgstr " "
+
+#: accesskey-help
+msgid "H"
+msgstr "م"
+'''
+        proptemplate = '''accesskey-accept=
+accesskey-help=H
+'''
+        propexpected = '''accesskey-accept=
+accesskey-help=م
+'''
+        propfile = self.merge2prop(proptemplate, posource, personality="mozilla")
+        print(propfile)
+        assert propfile == propexpected
+
     def test_merging_propertyless_template(self):
         """check that when merging with a template with no property values that we copy the template"""
         posource = ""
