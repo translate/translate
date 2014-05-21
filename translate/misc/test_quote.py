@@ -87,6 +87,14 @@ class TestEncoding:
         assert quote.propertiesdecode(u"abc\u1E13") == u"abcḓ"
         assert quote.propertiesdecode(u"abc\N{LEFT CURLY BRACKET}") == u"abc{"
         assert quote.propertiesdecode(u"abc\\") == u"abc\\"
+        assert quote.propertiesdecode(u"abc\\") == u"abc\\"
+
+    def test_properties_decode_slashu(self):
+        assert quote.propertiesdecode(u"abc\u1e13") == u"abcḓ"
+        assert quote.propertiesdecode(u"abc\u0020") == u"abc "
+        # NOTE Java only accepts 4 digit unicode, Mozilla accepts two
+        # unfortunately, but it seems harmless to accept both.
+        assert quote.propertiesdecode("abc\u20") == u"abc "
 
     def _html_encoding_helper(self, pairs):
         for from_, to in pairs:

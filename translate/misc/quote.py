@@ -369,8 +369,7 @@ def propertiesdecode(source):
             # we just return the character, unescaped
             # if people want to escape them they can use escapecontrols
             return unichr(i)
-        else:
-            return "\\u%04x" % i
+        return "\\u%04x" % i
 
     while s < len(source):
         c = source[s]
@@ -397,16 +396,18 @@ def propertiesdecode(source):
             digits = 4
             x = 0
             for digit in range(digits):
-                x <<= 4
                 if s + digit >= len(source):
                     digits = digit
                     break
                 c = source[s + digit].lower()
-                if c.isdigit():
-                    x += ord(c) - ord('0')
-                elif c in "abcdef":
-                    x += ord(c) - ord('a') + 10
+                if c.isdigit() or c in "abcdef":
+                    x <<= 4
+                    if c.isdigit():
+                        x += ord(c) - ord('0')
+                    else:
+                        x += ord(c) - ord('a') + 10
                 else:
+                    digits = digit
                     break
             s += digits
             output += unichr2(x)
