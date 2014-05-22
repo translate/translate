@@ -74,6 +74,16 @@ class TestEncoding:
         assert quote.mozillapropertiesencode(u"abcḓ") == u"abcḓ"
         assert quote.mozillapropertiesencode(u"abc\n") == u"abc\\n"
 
+    def test_escapespace(self):
+        assert quote.escapespace(u" ") == u"\\u0020"
+        assert quote.escapespace(u"\t") == u"\\u0009"
+
+    def test_mozillaescapemarginspaces(self):
+        assert quote.mozillaescapemarginspaces(u" ") == u""
+        assert quote.mozillaescapemarginspaces(u"A") == u"A"
+        assert quote.mozillaescapemarginspaces(u" abc ") == u"\\u0020abc\\u0020"
+        assert quote.mozillaescapemarginspaces(u"  abc ") == u"\\u0020 abc\\u0020"
+
     def test_mozilla_control_escapes(self):
         r"""test that we do \uNNNN escapes for certain control characters instead of converting to UTF-8 characters"""
         prefix, suffix = "bling", "blang"
