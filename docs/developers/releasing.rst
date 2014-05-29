@@ -265,6 +265,8 @@ Let people know that there is a new version:
 #. Adjust the #pootle channel notice. Use ``/topic`` to change the topic.
 #. Email important users
 #. Tweet about it
+#. Update `Toolkit's Wikipedia page
+   <http://en.wikipedia.org/wiki/Translate_Toolkit>`_
 
 
 Cleanup
