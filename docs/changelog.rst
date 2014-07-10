@@ -14,17 +14,6 @@ behaviour if required.
    :doc:`Release notes <releases/index>`.
 
 
-.. _changelog#1.11:
-
-1.11
-====
-
-- Dropped support for Python 2.5 since it is no longer supported by the Python
-  Foundation. Also sticking to it was preventing us from using features that
-  are not supported on Python 2.5 but they are on later versions.
-- Properties will no longer drop entries where source and translation are
-  identical.
-
 .. _changelog#1.10:
 
 1.10

@@ -119,7 +119,9 @@ Mozilla tooling fixes
 
 General
 -------
-- Dropped support for Python 2.5 -- 2.5 has reached end-of-life
+- Dropped support for Python 2.5 since it is no longer supported by the Python
+  Foundation. Also sticking to it was preventing us from using features that
+  are not supported on Python 2.5 but they are on later versions.
 - Dropped psyco support -- it is no longer maintained
 - Use logging throught instead of ``sys.stderr``
 - Lots of cleanups on docs: TBX, PHP, added Android and JSON docs
