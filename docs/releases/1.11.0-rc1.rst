@@ -136,5 +136,4 @@ Michal Čihař, Jordi Mas, Stuart Prescott, Trung Ngo, Ronald Sterckx, Rail
 Aliev, Michael Schlenker, Martin-Zack Mekkaoui, Iskren Chernev, Luiz Fernando
 Ranghetti & Christian Hitz
 
-And to all our bug finders, testers and `localisers
-<http://pootle.locamotion.org/projects/pootle/>`_, a Very BIG Thank You.
+And to all our bug finders and testers, a Very BIG Thank You.

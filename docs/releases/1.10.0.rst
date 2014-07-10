@@ -114,5 +114,4 @@ Michal Čihař, Roman Imankulov, Alexander Dupuy, Frank Tetzel,
 Luiz Fernando Ranghetti, Laurette Pretorius, Jiro Matsuzawa, Henrik Saari,
 Luca De Petrillo, Khaled Hosny, Dave Dash & Chris Oelmueller.
 
-And to all our bug finder, testers and `localisers
-<http://pootle.locamotion.org/projects/pootle/>`_, a Very BIG Thank You.
+And to all our bug finders and testers, a Very BIG Thank You.
