@@ -14,32 +14,6 @@ behaviour if required.
    :doc:`Release notes <releases/index>`.
 
 
-.. _changelog#1.10:
-
-1.10
-====
-
-- The matching criterion when merging units can now be specified with the
-  ``X-Merge-On`` header. Available values for this header are `location` and
-  `id`. By default merges will be done by matching IDs. This supersedes the
-  effects of the ``X-Accelerator`` header when merging and establishes an
-  explicit way to set the desired matching criterion.
-
-
-.. _changelog#mozilla_dtd_files_change:
-
-Mozilla DTD files change
-------------------------
-
-We now preserve spaces in DTD files i.e.::
-
-  <!ENTITY          some.label          "definition">
-
-Will preserve the spaces around the entity name ``some.lable``
-
-You probably want to run po2moz once to isolate the space changes from real
-translations.
-
 .. _changelog#1.6.0:
 
 1.6.0

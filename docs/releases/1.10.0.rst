@@ -52,6 +52,14 @@ Formats and Converters
   guessing
 * .properties: BOMs in messages and C style comments [Roman Imankulov]
 * Mac OS String formatting improved [Roman Imankulov]
+* The spaces in DTD files are now preserved. For example the spaces in
+  ``<!ENTITY          some.label          "definition">`` around the entity
+  name ``some.label`` are now kept.
+* The matching criterion when merging units can now be specified with the
+  ``X-Merge-On`` header. Available values for this header are `location` and
+  `id`. By default merges will be done by matching IDs. This supersedes the
+  effects of the ``X-Accelerator`` header when merging and establishes an
+  explicit way to set the desired matching criterion.
 
 
 Version Control improvements
