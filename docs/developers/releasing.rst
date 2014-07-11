@@ -143,7 +143,8 @@ the new toolkit using:
 
 .. code-block:: bash
 
-  $ pip install path/to/dist/translate-toolkit-$version.tar.bz2
+  $ mkvirtualenv releasing
+  (releasing)$ pip install path/to/dist/translate-toolkit-$version.tar.bz2
 
 
 You can then proceed with other tests such as checking:
@@ -153,8 +154,10 @@ You can then proceed with other tests such as checking:
 
    .. code-block:: bash
 
-     $ moz2po --help
-     $ php2po --version
+     (releasing)$ moz2po --help
+     (releasing)$ php2po --version
+     (releasing)$ deactivate
+     $ rmvirtualenv releasing
 
 #. Meta information about the package is correct. This is stored in
    :file:`setup.py`, to see some options to display meta-data use:
