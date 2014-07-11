@@ -37,11 +37,14 @@ Get a clean checkout
 --------------------
 We work from a clean checkout to ensure that everything you are adding to the
 build is what is in VC and doesn't contain any of your uncommitted changes.  It
-also ensure that someone else could replicate your process. ::
+also ensure that someone else could replicate your process.
 
-    git clone git@github.com:translate/translate.git translate-release
-    cd translate-release
-    git submodule update --init
+.. code-block:: bash
+
+  $ git clone git@github.com:translate/translate.git translate-release
+  $ cd translate-release
+  $ git submodule update --init
+
 
 Create release notes
 --------------------
@@ -56,13 +59,19 @@ We create our release notes in reStructured Text, since we use that elsewhere
 and since it can be rendered well in some of our key sites.
 
 First we need to create a log of changes in the Translate Toolkit, which is
-done generically like this::
+done generically like this:
 
-    git log $version-1..HEAD > docs/release/$version.rst
+.. code-block:: bash
 
-Or a more specific example::
+  $ git log $version-1..HEAD > docs/release/$version.rst
 
-    git log 1.10.0..HEAD > docs/releases/1.10.0.rst
+
+Or a more specific example:
+
+.. code-block:: bash
+
+  $ git log 1.10.0..HEAD > docs/releases/1.10.0.rst
+
 
 Edit this file.  You can use the commits as a guide to build up the release
 notes.  You should remove all log messages before the release.
@@ -83,9 +92,11 @@ Read for grammar and spelling errors.
    #. We speak in familiar terms e.g. "I know you've been waiting for this
       release" instead of formal.
 
-We create a list of contributors using this command::
+We create a list of contributors using this command:
 
-   git log 1.10.0..HEAD --format='%aN, ' | awk '{arr[$0]++} END{for (i in arr){print arr[i], i;}}' | sort -rn | cut -d\  -f2-
+.. code-block:: bash
+
+  $ git log 1.10.0..HEAD --format='%aN, ' | awk '{arr[$0]++} END{for (i in arr){print arr[i], i;}}' | sort -rn | cut -d\  -f2-
 
 
 Up version numbers
@@ -122,9 +133,12 @@ release of a ``$MINOR`` version will always have a ``$MICRO`` of ``.0``. So
 Build the package
 -----------------
 Building is the first step to testing that things work.  From your clean
-checkout run::
+checkout run:
 
-    make build
+.. code-block:: bash
+
+  $ make build
+
 
 This will create a tarball in ``dist/`` which you can use for further testing.
 
@@ -135,9 +149,12 @@ This will create a tarball in ``dist/`` which you can use for further testing.
 Test install and other tests
 ----------------------------
 The easiest way to test is in a virtualenv.  You can install the new toolkit
-using::
+using:
 
-    pip install path/to/dist/translate-toolkit-$version.tar.bz2
+.. code-block:: bash
+
+  $ pip install path/to/dist/translate-toolkit-$version.tar.bz2
+
 
 This will allow you test installation of the software.
 
@@ -153,11 +170,13 @@ Tag and branch the release
 --------------------------
 You should only tag once you are happy with your release as there are some
 things that we can't undo. You can safely branch for a ``stable/`` branch
-before you tag. ::
+before you tag.
 
-    git checkout -b stable/1.10.0
-    git tag -a 1.10.0 -m "Tag version 1.10.0"
-    git push --tags
+.. code-block:: bash
+
+  $ git checkout -b stable/1.10.0
+  $ git tag -a 1.10.0 -m "Tag version 1.10.0"
+  $ git push --tags
 
 
 Publish on PyPI
@@ -180,13 +199,18 @@ Review the meta data. This is stored in ``setup.py``, use ``./setup.py --help``
 to see some options to display meta-data. The actual descriptions are taken
 from ``translate/__init__.py``.
 
-To test before publishing run::
+To test before publishing run:
 
-    make test-publish-pypi
+.. code-block:: bash
 
-Then to actually publish::
+  $ make test-publish-pypi
 
-    make publish-pypi
+
+Then to actually publish:
+
+.. code-block:: bash
+
+  $ make publish-pypi
 
 
 Copy files to sourceforge
@@ -237,9 +261,12 @@ Use the admin pages to flag a version that should be published
 
 Update translate website
 ------------------------
-We use github pages for the website. First we need to checkout the pages::
+We use github pages for the website. First we need to checkout the pages:
 
-    git checkout gh-pages
+.. code-block:: bash
+
+  $ git checkout gh-pages
+
 
 #. In ``_posts/`` add a new release posting.  This is in Markdown format (for
    now), so we need to change the release notes .rst to .md, which mostly means
@@ -277,6 +304,7 @@ Some possible cleanup tasks:
 - Commit any release notes and such (or maybe do that before tagging).
 - Remove your translate-release checkout.
 - Update and fix these release notes.
+
 
 Bump version to N+1-alpha1
 --------------------------
