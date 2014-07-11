@@ -17,17 +17,7 @@ Summary
 #. Unstage sourceforge
 #. Announce to the world
 #. Cleanup
-
-Other possible steps
---------------------
-We need to check and document these if needed:
-
-- Build docs: we need to check if we need to build the docs for the release
-- Change URLs to point to the correct docs: do we want to change URLs to point
-  to the $version docs rather then 'latest'
-- Building on Windows, building for other Linux distros. We have produced
-  Windows builds in the past.
-- Communicating to upstream packagers
+#. Other possible steps
 
 
 Detailed instructions
@@ -298,13 +288,8 @@ Let people know that there is a new version:
 
 Cleanup
 =======
-Some possible cleanup tasks:
-
-- Remove any RC builds from the sourceforge download pages (maybe?).
-- Commit any release notes and such (or maybe do that before tagging).
-- Remove your translate-release checkout.
-- Update and fix these release notes.
-
+These are tasks not directly related to the releasing, but that are
+nevertheless completely necessary.
 
 Bump version to N+1-alpha1
 --------------------------
@@ -313,3 +298,23 @@ Now that we've release lets make sure that master reflect the current state
 which would be ``{N+1}-alpha1``. This prevents anyone using master being
 confused with a stable release and we can easily check if they are using master
 or stable.
+
+
+Other possible steps
+====================
+Some possible cleanup tasks:
+
+- Remove any RC builds from the sourceforge download pages (maybe?).
+- Commit any release notes and such (or maybe do that before tagging).
+- Remove your translate-release checkout.
+- Update and fix these release notes.
+
+
+We also need to check and document these if needed:
+
+- Build docs: we need to check if we need to build the docs for the release
+- Change URLs to point to the correct docs: do we want to change URLs to point
+  to the $version docs rather then 'latest'
+- Building on Windows, building for other Linux distros. We have produced
+  Windows builds in the past.
+- Communicating to upstream packagers
