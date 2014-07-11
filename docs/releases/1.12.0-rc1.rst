@@ -159,7 +159,7 @@ This release was made possible by the following people:
 
 Dwayne Bailey, Jerome Leclanche, Leandro Regueiro, Khaled Hosny, Friedel Wolff,
 Heiki Ojasild, Julen Ruiz Aizpuru, damian.golda, Zolnai Tamás,
-Vladimir Rusinov, Stuart Prescott, Luca De Petrillo, Kevin KIN-FOO,
-Henrik Saari, Dominic König.
+Vladimir Rusinov, Stuart Prescott, Michal Čihař, Luca De Petrillo,
+Kevin KIN-FOO, Henrik Saari, Dominic König.
 
 And to all our bug finders and testers, a Very BIG Thank You.
