@@ -199,19 +199,24 @@ before you tag.
 
 Publish on PyPI
 ---------------
-Publish the package on the `Python Package Index
-<https://pypi.python.org/pypi>`_ (PyPI)
 
-- `Submitting Packages to the Package Index
+.. - `Submitting Packages to the Package Index
   <http://wiki.python.org/moin/CheeseShopTutorial#Submitting_Packages_to_the_Package_Index>`_
 
-.. note:: You need a username and password on https://pypi.python.org and have
-   rights to the project before you can proceed with this step.
 
-   These can be stored in ``$HOME/.pypirc`` and will contain your username and
-   password. A first run of ``./setup.py register`` will create such a file.
-   It will also actually publish the meta-data so only do it when you are
-   actually ready.
+.. note:: You need a username and password on `Python Package Index (PyPI)
+   <https://pypi.python.org>`_ and have rights to the project before you can
+   proceed with this step.
+
+   These can be stored in :file:`$HOME/.pypirc` and will contain your username
+   and password. A first run of:
+
+   .. code-block:: bash
+
+     $ ./setup.py register
+
+   will create such file. It will also actually publish the meta-data so only
+   do it when you are actually ready.
 
 To test before publishing run:
 
@@ -229,7 +234,6 @@ Then to actually publish:
 
 Copy files to sourceforge
 -------------------------
-Publishing files to the Translate Sourceforge project.
 
 .. note:: You need to have release permissions on sourceforge to perform this
    step.
@@ -240,6 +244,9 @@ You will need:
 
 - Tarball of the release
 - Release notes in reStructured Text
+
+
+These are the steps to perform:
 
 #. Create a new folder in the `Translate Toolkit
    <https://sourceforge.net/projects/translate/files/Translate%20Toolkit/>`_
@@ -252,7 +259,7 @@ You will need:
    #. Upload tarball for release.
    #. Upload release notes as ``README.rst``.
    #. Click on the info icon for ``README.rst`` and tick "Exclude Stats" to
-      exlude the README from stats counting.
+      exclude the README from stats counting.
 
 #. Check that the README.rst for the parent ``Translate Toolkit`` folder is
    still appropriate, this is the text from ``translate/__info__.py``.
