@@ -14,10 +14,9 @@ general improvements, it also specifically contains needed changes and
 optimizations for the upcoming `Pootle <http://pootle.translatehouse.org/>`_
 2.6.0 and `Virtaal <http://virtaal.translatehouse.org>`_ releases.
 
-It is just over a 6 months since the last release and there are many
-improvements across the board.  A number of people contributed to this release
-and we've tried to credit them wherever possible (sorry if somehow we missed
-you).
+It is just over 6 months since the last release and there are many improvements
+across the board.  A number of people contributed to this release and we've
+tried to credit them wherever possible (sorry if somehow we missed you).
 
 ..
   This is used for the email and other release notifications
@@ -86,6 +85,7 @@ Formats and Converters
 - Android
 
   - Added support for plurals
+  - Text is now properly escaped when using markup
 
 - TS
 
@@ -102,6 +102,7 @@ Checks
 ------
 
 - Added specific checks for LibreOffice
+
 
 Tools
 -----
