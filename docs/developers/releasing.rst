@@ -63,14 +63,14 @@ done generically like this:
 
 .. code-block:: bash
 
-  $ git log $version-1..HEAD > docs/release/$version.rst
+  $ git log $previous_version..HEAD > docs/release/$version.rst
 
 
 Or a more specific example:
 
 .. code-block:: bash
 
-  $ git log 1.10.0..HEAD > docs/releases/1.10.0.rst
+  $ git log 1.10.0..HEAD > docs/releases/1.11.0-rc1.rst
 
 
 Edit this file.  You can use the commits as a guide to build up the release
