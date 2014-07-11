@@ -103,7 +103,7 @@ Pootle, to regenerate the stats and checks.
 
 For ``conf.py`` change ``version`` and ``release``
 
-.. note:: FIXME - We might want to consolidate the version and release info so
+.. todo:: FIXME - We might want to consolidate the version and release info so
    that we can update it in one place.
 
 The version string should follow the pattern::
@@ -267,7 +267,7 @@ The Docs.
 
 Use the admin pages to flag a version that should be published
 
-.. note:: FIXME we might need to do this before publishing so that we can
+.. todo:: FIXME we might need to do this before publishing so that we can
    update doc references to point to the tagged version as apposed to the
    latest version.
 

@@ -38,7 +38,11 @@ extensions = [
     'sphinx.ext.coverage',
     'sphinx.ext.extlinks',
     'sphinx.ext.intersphinx',
+    'sphinx.ext.todo',
 ]
+
+# Display todo notes. See http://sphinx-doc.org/ext/todo.html#directive-todo
+todo_include_todos=True
 
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ['_templates']
