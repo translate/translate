@@ -45,8 +45,7 @@ Formats and Converters
 - Mozilla properties
 
   - If a unit has an associated access key entry then these are combined into a
-    single unit, as done in the :doc:`Mozilla DTD </formats/dtd>` format
-    (:bug:`115`)
+    single unit
   - Encoding errors are now reported early to prevent them being masked by
     subsequent errors
   - Leading and trailing spaces are escaped in order to avoid losing them when
@@ -72,7 +71,7 @@ Formats and Converters
   - The ``title`` attribute is now localizable
   - po2html now retains the untranslated attributes
 
- - Accesskeys
+- Accesskeys
 
   - Now accesskeys are combined using the correct case
   - Added support for accesskey after ampersand and space
@@ -89,7 +88,7 @@ Formats and Converters
 
 - TS
 
-  - The message id attribute is added to contextname (:bug:`2901`)
+  - The message id attribute is added to contextname
 
 
 Version Control improvements
@@ -107,8 +106,8 @@ Checks
 Tools
 -----
 
-- The :command:`pocount` tool has now a better counting algorithm for things
-  that look like XML
+- The ``pocount`` tool has now a better counting algorithm for things that look
+  like XML
 
 
 Mozilla tooling fixes
@@ -117,8 +116,8 @@ Mozilla tooling fixes
 - Added support to check for bad accesskeys in .properties files
 - Now the Mozilla roundtrip script can be silently run
 - Added a new Gaia roundtrip script
-- The :command:`buildxpi` :option:`--disable-compile-environment` option has
-  been restored, resulting in huge speed improvements
+- The ``buildxpi`` ``--disable-compile-environment`` option has been restored,
+  resulting in huge speed improvements
 
 
 General
