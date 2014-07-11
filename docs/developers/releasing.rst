@@ -138,22 +138,46 @@ This will create a tarball in ``dist/`` which you can use for further testing.
 
 Test install and other tests
 ----------------------------
-The easiest way to test is in a virtualenv.  You can install the new toolkit
-using:
+The easiest way to test is in a virtualenv. You can test the installation of
+the new toolkit using:
 
 .. code-block:: bash
 
   $ pip install path/to/dist/translate-toolkit-$version.tar.bz2
 
 
-This will allow you test installation of the software.
+You can then proceed with other tests such as checking:
 
-You can then proceed with other tests such as checking
+#. Documentation is available in the package
+#. Converters and scripts are installed and run correctly:
 
-#. Documentation is available
-#. Converters and scripts are installed and run correctly
-#. Meta information about the package is correct. See PyPI section of reviewing
-   meta data.
+   .. code-block:: bash
+
+     $ moz2po --help
+     $ php2po --version
+
+#. Meta information about the package is correct. This is stored in
+   :file:`setup.py`, to see some options to display meta-data use:
+
+   .. code-block:: bash
+
+     $ ./setup.py --help
+
+   Now you can try some options like:
+
+   .. code-block:: bash
+
+     $ ./setup.py --name
+     $ ./setup.py --version
+     $ ./setup.py --author
+     $ ./setup.py --author-email
+     $ ./setup.py --url
+     $ ./setup.py --license
+     $ ./setup.py --description
+     $ ./setup.py --long-description
+     $ ./setup.py --classifiers
+
+   The actual descriptions are taken from :file:`translate/__init__.py`.
 
 
 Tag and branch the release
@@ -184,10 +208,6 @@ Publish the package on the `Python Package Index
    password. A first run of ``./setup.py register`` will create such a file.
    It will also actually publish the meta-data so only do it when you are
    actually ready.
-
-Review the meta data. This is stored in ``setup.py``, use ``./setup.py --help``
-to see some options to display meta-data. The actual descriptions are taken
-from ``translate/__init__.py``.
 
 To test before publishing run:
 
