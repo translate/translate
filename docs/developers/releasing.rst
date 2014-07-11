@@ -192,6 +192,7 @@ before you tag.
 .. code-block:: bash
 
   $ git checkout -b stable/1.10.0
+  $ git push origin stable/1.10.0
   $ git tag -a 1.10.0 -m "Tag version 1.10.0"
   $ git push --tags
 
