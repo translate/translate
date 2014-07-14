@@ -571,6 +571,23 @@ def test_printf():
     assert fails(stdchecker.printf, "I am %@", "Ek is %s")  # wrong specification
     assert passes(stdchecker.printf, "Object %@ and string %s", "Object %1$@ en string %2$s")  # correct sentence
 
+def test_pythonbraceformat():
+    """Tests python brace format placeholds"""
+    stdchecker = checks.StandardChecker()
+    # anonymous formats
+    assert passes(stdchecker.pythonbraceformat,   "String {} and number {}",     "String {} en nommer {}")
+    assert passes(stdchecker.pythonbraceformat,   "String {1}",                  "Nommer {} en string {}")
+    assert passes(stdchecker.pythonbraceformat,   "String {1} and number {0}",   "Nommer {0} en string {1}")
+    assert fails_serious(stdchecker.pythonbraceformat,    "String {}",                   "Nommer {} en string {}")
+    assert fails_serious(stdchecker.pythonbraceformat,    "String {}",                   "Nommer {1}")
+    assert fails_serious(stdchecker.pythonbraceformat,    "String {0}",                  "Nommer {1}")
+
+    # Named formats
+    assert passes(stdchecker.pythonbraceformat, "String {str} and number {num}", "Nommer {num} en string {str}")
+    assert passes(stdchecker.pythonbraceformat, "String {str} and number {num}", "Nommer {num} en string %s")
+    assert fails_serious(stdchecker.pythonbraceformat, "String {str} and number {num}", "Nommer {nommer} en string {str}")
+
+
 
 def test_puncspacing():
     """tests spacing after punctuation"""
