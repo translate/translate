@@ -350,7 +350,6 @@ Some possible cleanup tasks:
 
 We also need to check and document these if needed:
 
-- Build docs: we need to check if we need to build the docs for the release
 - Change URLs to point to the correct docs: do we want to change URLs to point
   to the $version docs rather then 'latest'
 - Building on Windows, building for other Linux distros. We have produced
