@@ -2,7 +2,7 @@ auto: true
 
 name: Translate Toolkit
 description: A collection of useful tools for localization, and a powerful API for programmers of localization tools.
-latest_version: 1.11.0
+latest_version: 1.12.0-rc1
 author: Translate House
 
 about_url: http://translatehouse.org/about.html
