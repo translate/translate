@@ -981,60 +981,109 @@ class StandardChecker(TranslationChecker):
     @critical
     def pythonbraceformat(self, str1, str2):
         """Checks whether python brace format strings match."""
-        count1 = count2 = plural = None
 
-        pythonbraceformat_pat = re.compile('{[^}]*}')
-
-        # self.hasplural only set by run_filters, not always available
-        if 'hasplural' in self.__dict__:
-            plural = self.hasplural
-
-        # Remove all escaped braces {{ and }}
-        str1_clean = re.sub('{{|}}', '', str1)
-        str2_clean = re.sub('{{|}}', '', str2)
-
-        str1_variables = pythonbraceformat_pat.findall(str1_clean)
-        str2_variables = pythonbraceformat_pat.findall(str2_clean)
-
-        def highest_anon_variable(str_variables):
+        # Helper function
+        def max_anons(anons):
             """
-            Takes a list of python brace format placeholder variables.
+            Takes a list of anonymous placeholder variables, e.g.
+            ['', '1', ...]
             Determines how many anonymous formatting args the string
             they come from requires. Motivation for this function:
-              * highest_anon_variable(vars_from_original) tells us how many
+              * max_anons(vars_from_original) tells us how many
                 anonymous placeholders are supported (at least).
-              * highest_anon_variable(vars_from_translation) should not
+              * max_anons(vars_from_translation) should not
                 exceed it.
             """
 
-            implicit_n = str_variables.count('{}')
-            # The '{99}'-style placeholder with the largest number
+            # implicit_n: you need at least as many anonymous args as
+            # there are anonymous placeholders.
+            implicit_n = anons.count('')
+            # explicit_n: you need at least as many anonymous args as
+            # the highest '{99}'-style placeholder. (The `+ 1` is to
+            # correct for 0-indexing)
             try:
                 explicit_n = max([
-                    # lop off the { and }, correct for 0-indexing
-                    int(var[1:-1]) + 1
-                    for var in str_variables
-                    if re.match("^{[0-9]+}$", var) is not None
+                    int(numbered_anon) + 1
+                    for numbered_anon in anons
+                    if len(numbered_anon) >= 1
                 ])
             except ValueError:
                 explicit_n = 0
-
-            print(max(implicit_n, explicit_n))
 
             highest_n = max(implicit_n, explicit_n)
 
             return highest_n
 
-        if (highest_anon_variable(str1_variables) <
-                highest_anon_variable(str2_variables)):
-            raise SeriousFilterFailure(
-                u"Translation requires more anonymous formatting args than original"
+        messages = []
+        # Possible failure states: 0 = ok, 1 = mild, 2 = serious
+        STATE_OK, STATE_MILD, STATE_SERIOUS = 0, 1, 2
+        failure_state = STATE_OK
+        pythonbraceformat_pat = re.compile('{[^}]*}')
+        data1 = {}
+        data2 = {}
+
+        # Populate the data1 and data2 dicts.
+        for data_, str_ in [(data1, str1),
+                            (data2, str2)]:
+            # Remove all escaped braces {{ and }}
+            data_['strclean'] = re.sub('{{|}}', '', str_)
+            data_['allvars'] = pythonbraceformat_pat.findall(data_['strclean'])
+            data_['anonvars'] = [
+                var[1:-1]
+                for var in data_['allvars']
+                if re.match(r'^{[0-9]*}$', var)
+            ]
+            data_['namedvars'] = [
+                var
+                for var in data_['allvars']
+                if not re.match(r'^{[0-9]*}$', var)
+            ]
+
+        max1 = max_anons(data1['anonvars'])
+        max2 = max_anons(data2['anonvars'])
+
+        if max1 == max2:
+            pass
+        elif max1 < max2:
+            failure_state = max(failure_state, STATE_SERIOUS)
+            messages.append(
+                u"Translation requires %s anonymous formatting args, original only %s." %
+                    (max2, max1)
+            )
+        else:
+            failure_state = max(failure_state, STATE_MILD)
+            messages.append(
+                u"Highest anonymous placeholder in original is %s, in translation %s" %
+                    (max1, max2)
             )
 
-        if not set(str2_variables).issubset(set(str1_variables)):
-            raise SeriousFilterFailure(u"Unknown placeholders in translation")
+        if set(data1['namedvars']) == set(data2['namedvars']):
+            pass
 
-        return 1
+        extra_in_2 = set(data2['namedvars']).difference(set(data1['namedvars']))
+        if 0 < len(extra_in_2):
+            failure_state = max(failure_state, STATE_SERIOUS)
+            messages.append(
+                u"Unknown named placeholders in translation: %s\n" %
+                    ', '.join(extra_in_2)
+            )
+
+        extra_in_1 = set(data1['namedvars']).difference(set(data2['namedvars']))
+        if 0 < len(extra_in_1):
+            failure_state = max(failure_state, STATE_MILD)
+            messages.append(
+                u"Named placeholders absent in translation: %s" %
+                    ', '.join(extra_in_1)
+            )
+
+        if failure_state == STATE_OK:
+            return 1
+        elif failure_state == STATE_MILD:
+            raise FilterFailure(messages)
+        elif failure_state == STATE_SERIOUS:
+            raise SeriousFilterFailure(messages)
+        else:
+            raise ValueError(u"Something wrong in python brace checks: unreachable state reached.")
 
 
     @functional
