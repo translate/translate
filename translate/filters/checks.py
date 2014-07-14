@@ -978,6 +978,65 @@ class StandardChecker(TranslationChecker):
         return 1
 
 
+    @critical
+    def pythonbraceformat(self, str1, str2):
+        """Checks whether python brace format strings match."""
+        count1 = count2 = plural = None
+
+        pythonbraceformat_pat = re.compile('{[^}]*}')
+
+        # self.hasplural only set by run_filters, not always available
+        if 'hasplural' in self.__dict__:
+            plural = self.hasplural
+
+        # Remove all escaped braces {{ and }}
+        str1_clean = re.sub('{{|}}', '', str1)
+        str2_clean = re.sub('{{|}}', '', str2)
+
+        str1_variables = pythonbraceformat_pat.findall(str1_clean)
+        str2_variables = pythonbraceformat_pat.findall(str2_clean)
+
+        def highest_anon_variable(str_variables):
+            """
+            Takes a list of python brace format placeholder variables.
+            Determines how many anonymous formatting args the string
+            they come from requires. Motivation for this function:
+              * highest_anon_variable(vars_from_original) tells us how many
+                anonymous placeholders are supported (at least).
+              * highest_anon_variable(vars_from_translation) should not
+                exceed it.
+            """
+
+            implicit_n = str_variables.count('{}')
+            # The '{99}'-style placeholder with the largest number
+            try:
+                explicit_n = max([
+                    # lop off the { and }, correct for 0-indexing
+                    int(var[1:-1]) + 1
+                    for var in str_variables
+                    if re.match("^{[0-9]+}$", var) is not None
+                ])
+            except ValueError:
+                explicit_n = 0
+
+            print(max(implicit_n, explicit_n))
+
+            highest_n = max(implicit_n, explicit_n)
+
+            return highest_n
+
+        if (highest_anon_variable(str1_variables) <
+                highest_anon_variable(str2_variables)):
+            raise SeriousFilterFailure(
+                u"Translation requires more anonymous formatting args than original"
+            )
+
+        if not set(str2_variables).issubset(set(str1_variables)):
+            raise SeriousFilterFailure(u"Unknown placeholders in translation")
+
+        return 1
+
+
     @functional
     def accelerators(self, str1, str2):
         """Checks whether accelerators are consistent between the two strings.
