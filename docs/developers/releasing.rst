@@ -89,6 +89,13 @@ We create a list of contributors using this command:
   $ git log 1.10.0..HEAD --format='%aN, ' | awk '{arr[$0]++} END{for (i in arr){print arr[i], i;}}' | sort -rn | cut -d\  -f2-
 
 
+Add release notes for dev
+-------------------------
+
+After updating the release notes for the about to be released version, it is
+necessary to add new release notes for the next release, tagged as ``dev``.
+
+
 Up version numbers
 ------------------
 Update the version number in:
