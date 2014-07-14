@@ -4,6 +4,7 @@ translate/
 translate_toolkit.egg-info/
 docs/
 dist/
+tests/
 MANIFEST
 MANIFEST.in
 
