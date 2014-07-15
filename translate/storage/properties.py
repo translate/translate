@@ -417,6 +417,12 @@ class DialectStrings(Dialect):
         return string.replace("\n", r"\n").replace("\t", r"\t")
 
 
+@register_dialect
+class DialectStringsUtf8(DialectStrings):
+    name = "strings-utf8"
+    default_encoding = "utf-8"
+
+
 class propunit(base.TranslationUnit):
     """An element of a properties file i.e. a name and value, and any
     comments associated."""
@@ -666,3 +672,13 @@ class stringsfile(propfile):
     def __init__(self, *args, **kwargs):
         kwargs['personality'] = "strings"
         super(stringsfile, self).__init__(*args, **kwargs)
+
+
+class stringsutf8file(propfile):
+    Name = "OS X Strings (UTF-8)"
+    Extensions = ['strings']
+
+    def __init__(self, *args, **kwargs):
+        kwargs['personality'] = "strings-utf8"
+        kwargs['encoding'] = "utf-8"
+        super(stringsutf8file, self).__init__(*args, **kwargs)
