@@ -14,7 +14,7 @@ limitations of each test.
 Keep in mind that the software might point to errors which are not necessarily
 wrong (false positives).
 
-Currently there are 47 tests.  You can always get a list of the currently
+Currently there are 48 tests.  You can always get a list of the currently
 available tests by running::
 
   pofilter -l
@@ -48,6 +48,7 @@ you determine which to run first.
     :ref:`pofilter_tests#newlines`,
     :ref:`pofilter_tests#nplurals`,
     :ref:`pofilter_tests#printf`,
+    :ref:`pofilter_tests#pythonbraceformat`,
     :ref:`pofilter_tests#tabs`,
     :ref:`pofilter_tests#variables`,
     :ref:`pofilter_tests#xmltags`
@@ -476,6 +477,7 @@ test can also manage variables-reordering using the ``%1$s`` syntax.  The
 variables' type and details following data are tested to ensure that they are
 strictly identical, but they may be reordered.
 
+.. seealso:: :ref:`pofilter_tests#pythonbraceformat`
 .. seealso:: :wp:`printf Format String <Printf_format_string>`
 
 .. _pofilter_tests#puncspacing:
@@ -501,6 +503,36 @@ purepunc
 Checks that strings that are purely punctuation are not changed.
 
 This extracts strings like "+" or "-" as these usually should not be changed.
+
+.. _pofilter_tests#pythonbraceformat:
+
+pythonbraceformat
+-----------------
+
+Checks whether Python brace format strings match.
+
+Python supports both a variant of the :ref:`pofilter_tests#printf`
+formatting system, and its own formatting language which uses
+placeholders enclosed in braces. The placeholders can be named,
+numbered, or anonymous; the former two are filled in from positional
+args, the latter from keyword arguments. Example:: 
+
+    'the {} {0} hungry {insect}'.format('very', insect='caterpiller')
+    # --> 'the very very hungry caterpiller'
+
+The ``pythonbraceformat`` filter checks for the following problems:
+
+* named placeholders that are present in the original, but missing in
+  the translation, and vice versa.
+* originals and translations that require different numbers of
+  positional args.
+
+When the translation has variables not in the original, this can lead to
+program crashes. The translation not using all variables the original
+uses is safe. Nonetheless, this filter triggers in both cases.
+
+
+.. seealso:: `PEP 3101 -- Advanced String Formatting <http://legacy.python.org/dev/peps/pep-3101/>`_
 
 .. _pofilter_tests#sentencecount:
 
