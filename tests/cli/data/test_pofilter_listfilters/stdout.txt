@@ -45,6 +45,7 @@ options	Checks that options are not translated.
 printf	Checks whether printf format strings match.
 puncspacing	Checks for bad spacing after punctuation.
 purepunc	Checks that strings that are purely punctuation are not changed.
+pythonbraceformat	Checks whether python brace format strings match
 sentencecount	Checks that the number of sentences in both strings match.
 short	Checks whether a translation is much shorter than the original
         string.

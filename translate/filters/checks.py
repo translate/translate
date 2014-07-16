@@ -908,9 +908,12 @@ class StandardChecker(TranslationChecker):
                 exceed it.
             """
 
+            # implicit_n: you need at least as many anonymous args as
+            # there are anonymous placeholders.
             implicit_n = anons.count('')
-            # For explicit_n, find the '{99}'-style placeholder with the
-            # highest number and correct for 0-indexing.
+            # explicit_n: you need at least as many anonymous args as
+            # the highest '{99}'-style placeholder. (The `+ 1` is to
+            # correct for 0-indexing)
             try:
                 explicit_n = max([
                     int(numbered_anon) + 1
@@ -926,8 +929,8 @@ class StandardChecker(TranslationChecker):
 
         messages = []
         # Possible failure states: 0 = ok, 1 = mild, 2 = serious
-        state_OK, state_MILD, state_SERIOUS = 0, 1, 2
-        failure_state = state_OK
+        STATE_OK, STATE_MILD, STATE_SERIOUS = 0, 1, 2
+        failure_state = STATE_OK
         pythonbraceformat_pat = re.compile('{[^}]*}')
         data1 = {}
         data2 = {}
@@ -953,18 +956,15 @@ class StandardChecker(TranslationChecker):
         max2 = max_anons(data2['anonvars'])
 
         if max1 == max2:
-            print("anon sets equal")
             pass
         elif max1 < max2:
-            print("anon set 2 bigger")
-            failure_state = max(failure_state, state_SERIOUS)
+            failure_state = max(failure_state, STATE_SERIOUS)
             messages.append(
                 u"Translation requires %s anonymous formatting args, original only %s." %
                     (max2, max1)
             )
         else:
-            print("anon set 1 bigger")
-            failure_state = max(failure_state, state_MILD)
+            failure_state = max(failure_state, STATE_MILD)
             messages.append(
                 u"Highest anonymous placeholder in original is %s, in translation %s" %
                     (max1, max2)
@@ -975,28 +975,28 @@ class StandardChecker(TranslationChecker):
 
         extra_in_2 = set(data2['namedvars']).difference(set(data1['namedvars']))
         if 0 < len(extra_in_2):
-            failure_state = max(failure_state, state_SERIOUS)
+            failure_state = max(failure_state, STATE_SERIOUS)
             messages.append(
-                u"Unknown named placeholders in translation: %s" %
-                    ', '.join(map(lambda x: '{' + x + '}', extra_in_2))
+                u"Unknown named placeholders in translation: %s\n" %
+                    ', '.join(extra_in_2)
             )
 
         extra_in_1 = set(data1['namedvars']).difference(set(data2['namedvars']))
         if 0 < len(extra_in_1):
-            failure_state = max(failure_state, state_MILD)
+            failure_state = max(failure_state, STATE_MILD)
             messages.append(
                 u"Named placeholders absent in translation: %s" %
-                    ', '.join(map(lambda x: '{' + x + '}', extra_in_2))
+                    ', '.join(extra_in_1)
             )
 
-        if failure_state == 0:
+        if failure_state == STATE_OK:
             return 1
-        elif failure_state == 1:
+        elif failure_state == STATE_MILD:
             raise FilterFailure(messages)
-        elif failure_state == 2:
+        elif failure_state == STATE_SERIOUS:
             raise SeriousFilterFailure(messages)
         else:
-            raise ValueError("Something wrong in python brace checks: unreachable state reached.")
+            raise ValueError(u"Something wrong in python brace checks: unreachable state reached.")
 
 
     @functional
