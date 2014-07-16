@@ -493,7 +493,7 @@ pythonbraceformat
 
 Checks whether Python brace format strings match.
 
-Python supports both a variant of the :ref:`printf`_ formatting system,
+Python supports both a variant of the :ref:`printf` formatting system,
 and its own formatting language which uses placeholders enclosed in
 braces. The placeholders can be named, numbered, or anonymous; the
 former two are filled in from positional args, the latter from keyword
