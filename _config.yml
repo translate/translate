@@ -1,4 +1,5 @@
 auto: true
+markdown: kramdown
 
 name: Translate Toolkit
 description: A collection of useful tools for localization, and a powerful API for programmers of localization tools.
