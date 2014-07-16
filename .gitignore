@@ -3,10 +3,12 @@
 translate/
 translate_toolkit.egg-info/
 docs/
+build/
 dist/
 tests/
 MANIFEST
 MANIFEST.in
+.coverage*
 
 # LESS
 assets/less/bootstrap
