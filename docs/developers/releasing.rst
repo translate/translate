@@ -11,6 +11,7 @@ Summary
 #. Test install and other tests
 #. Tag the release
 #. Publish on PyPI
+#. Upload to Github
 #. Upload to Sourceforge
 #. Release documentation
 #. Update translate website
@@ -237,6 +238,23 @@ Then to actually publish:
 .. code-block:: bash
 
   $ make publish-pypi
+
+
+Create a release on Github
+--------------------------
+
+- https://github.com/translate/translate/releases/new
+
+You will need:
+
+- Tarball of the release
+- Release notes in Markdown
+
+#. Draft a new release with the corresponding tag version
+#. Convert the release notes to Markdown with `Pandoc
+   <http://johnmacfarlane.net/pandoc/>`_ and add those to the release
+#. Attach the tarball to the release
+#. Mark it as pre-release if it's a release candidate.
 
 
 Copy files to sourceforge
