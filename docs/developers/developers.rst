@@ -56,7 +56,11 @@ Bugzilla
 Communication
 -------------
 
-* `IRC channel <irc://irc.freenode.net/#pootle>`_
+* IRC channels:
+
+  * `Development <irc://irc.freenode.net/#pootle-dev>`_ - no support related questions.
+  * `Help <irc://irc.freenode.net/#pootle>`_
+
 * `Developers mailing list <https://lists.sourceforge.net/lists/listinfo/translate-devel>`_
 * `Commits to version control <https://lists.sourceforge.net/lists/listinfo/translate-cvs>`_
 
