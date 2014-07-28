@@ -164,7 +164,7 @@ Formats that we would like to support but don't currently support:
 
   * `AppleGlot <ftp://ftp.apple.com/developer/tool_chest/localization_tools/appleglot/appleglot_3.2_usersguide.pdf>`_
   * .plist -- see :issue:`633` and `plistlib
-    <http://docs.python.org/2/library/plistlib.html>`_ for Python
+    <https://docs.python.org/2/library/plistlib.html>`_ for Python
 
 * Adobe:
 
