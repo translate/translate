@@ -156,7 +156,7 @@ Premature termination of DTD entities
 -------------------------------------
 
 Although this does not occur frequently a case emerged where some DTD entities
-where not fully extracted from the DTD source.  This was fixed in :bug:`331`.
+where not fully extracted from the DTD source.  This was fixed in :issue:`331`.
 
 We expect this change to create a few new fuzzy entries.  There is no action
 required from the user as the next update of your PO files will bring the

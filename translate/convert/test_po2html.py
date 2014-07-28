@@ -103,7 +103,7 @@ sin.
     def test_states_fuzzy(self):
         """Test that we use source when a string is fuzzy
 
-        This fixes :bug:`3145`
+        This fixes :issue:`3145`
         """
         htmlsource = '<div>aaa</div>'
         posource = '#: html:3\n#, fuzzy\nmsgid "aaa"\nmsgstr "bbb"\n'

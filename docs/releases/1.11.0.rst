@@ -38,7 +38,7 @@ Changes since 1.11.0 RC1:
 
 - Improve handling of escapes in wrapping
 - Handle a broken version of python-Levenshtein 
-- Output HTML source in po2html when a unit is fuzzy (:bug:`3145`)
+- Output HTML source in po2html when a unit is fuzzy (:issue:`3145`)
 
 Major changes
 -------------
@@ -57,8 +57,8 @@ Formats and Converters
 - PHP:
 
   - Warn about duplicate entries
-  - Allow blank spaces in array declaration (:bug:`2646`)
-  - Support nested arrays (:bug:`2240`)
+  - Allow blank spaces in array declaration (:issue:`2646`)
+  - Support nested arrays (:issue:`2240`)
 
 - XLIFF:
 
@@ -85,9 +85,9 @@ Formats and Converters
     timestamp (Makefile-alike)
   - :option:`--threshold` -- in po2* converters this allows you to specify a
     percentage complete threshold.  If the PO files passes this theshold then
-    the file is output (:bug:`2998`)
+    the file is output (:issue:`2998`)
   - :option:`--removeuntranslated` -- Extend this option to po2dtd and thus
-    po2moz -- don't output untranslated text (:bug:`1718`)
+    po2moz -- don't output untranslated text (:issue:`1718`)
 
 Language specific fixes
 -----------------------
@@ -110,7 +110,7 @@ Mozilla tooling fixes
 - .lang -- Improved support for untranslated entries
 - ``buildxpi``:
 
-  - Can now build multiple languages at once (:bug:`2999`)
+  - Can now build multiple languages at once (:issue:`2999`)
   - Set a max product version to allow the language pack to continue to work
     once the browser version has moved out of Aurora channel
 
