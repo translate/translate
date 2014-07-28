@@ -71,4 +71,4 @@ The Translate team
 .. _pot2po: http://docs.translatehouse.org/projects/translate-toolkit/en/latest/commands/pot2po.html
 .. _Full feature list: http://docs.translatehouse.org/projects/translate-toolkit/en/latest/features.html
 .. _Download: http://sourceforge.net/projects/translate/files/Translate%20Toolkit/1.8.1/
-.. _Bugs: http://bugs.locamotion.org/
+.. _Bugs: https://github.com/translate/translate/issues

@@ -191,8 +191,7 @@ We think there might be some :)
 
 Please send your bug reports to:
 translate-devel at lists.sourceforge.net
-or report them at our bugzilla server at
-<http://bugs.locamotion.org/>
+or report them at <https://github.com/translate/translate/issues>
 
 Some help in writing useful bug reports are mentioned here:
 <http://translate.sourceforge.net/wiki/developers/reporting_bugs>

@@ -46,10 +46,10 @@ the translate repository or fork it at GitHub.
 
 .. _developers#bugzilla:
 
-Bugzilla
---------
+Issues
+------
 
-* http://bugs.locamotion.org/
+* https://github.com/translate/translate/issues
 
 .. _developers#communication:
 

@@ -51,8 +51,8 @@ Debugging
 
 - Make sure your familiar with the :wiki:`bug reporting guidelines
   <developers/reporting_bugs>`.
-- Create a login for yourself at http://bugs.locamotion.org
-- Then choose a bug
+- Create a login for yourself at https://github.com
+- Then choose an `issue <https://github.com/translate/translate/issues>`_
 
 Now you need to try and validate the bug.  Your aim is to confirm that the bug
 is either fixed, is invalid or still exists.
