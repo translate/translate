@@ -134,8 +134,9 @@ class rcfile(base.TranslationStore):
         BLOCKS_RE = re.compile("""
                          (?:
                          LANGUAGE\s+[^\n]*|                              # Language details
-                         /\*.*?\*/[^\n]*|                                      # Comments
-                         (?:[0-9A-Z_]+\s+(?:MENU|DIALOG|DIALOGEX)|STRINGTABLE)\s  # Translatable section
+                         /\*.*?\*/[^\n]*|                                # Comments
+                         \/\/[^\n\r]*|                                  # One line comments
+                         (?:[0-9A-Z_]+\s+(?:MENU|DIALOG|DIALOGEX|TEXTINCLUDE)|STRINGTABLE)\s  # Translatable section or include text (visual studio)
                          .*?
                          (?:
                          BEGIN(?:\s*?POPUP.*?BEGIN.*?END\s*?)+?END|BEGIN.*?END|  # FIXME Need a much better approach to nesting menus
@@ -167,7 +168,6 @@ class rcfile(base.TranslationStore):
         processsection = False
         self.blocks = BLOCKS_RE.findall(rcsrc)
         for blocknum, block in enumerate(self.blocks):
-            #print block.split("\n")[0]
             processblock = None
             if block.startswith("LANGUAGE"):
                 if self.lang is None or self.sublang is None or re.match("LANGUAGE\s+%s,\s*%s\s*$" % (self.lang, self.sublang), block) is not None:
@@ -185,7 +185,6 @@ class rcfile(base.TranslationStore):
                 continue
 
             if block.startswith("STRINGTABLE"):
-                #print "stringtable:\n %s------\n" % block
                 for match in STRINGTABLE_RE.finditer(block):
                     if not match.groupdict()['value']:
                         continue
@@ -194,13 +193,15 @@ class rcfile(base.TranslationStore):
                     newunit.match = match
                     self.addunit(newunit)
             if block.startswith("/*"):  # Comments
-                #print "comment"
-                pass
+                continue
+            if block.startswith("//"):  # One line comments
+                continue
+            if re.match("[0-9A-Z_]+\s+TEXTINCLUDE", block) is not None:  # TEXTINCLUDE is editor specific, not part of the app.
+                continue
             if re.match("[0-9A-Z_]+\s+DIALOG", block) is not None:
                 dialog = re.match("(?P<dialogname>[0-9A-Z_]+)\s+(?P<dialogtype>DIALOGEX|DIALOG)", block).groupdict()
                 dialogname = dialog["dialogname"]
                 dialogtype = dialog["dialogtype"]
-                #print "dialog: %s" % dialogname
                 for match in DIALOG_RE.finditer(block):
                     if not match.groupdict()['value']:
                         continue
@@ -218,7 +219,6 @@ class rcfile(base.TranslationStore):
                     self.addunit(newunit)
             if re.match("[0-9A-Z_]+\s+MENU", block) is not None:
                 menuname = re.match("(?P<menuname>[0-9A-Z_]+)\s+MENU", block).groupdict()["menuname"]
-                #print "menu: %s" % menuname
                 for match in MENU_RE.finditer(block):
                     if not match.groupdict()['value']:
                         continue
