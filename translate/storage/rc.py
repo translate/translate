@@ -195,7 +195,7 @@ class rcfile(base.TranslationStore):
                     self.addunit(newunit)
             if block.startswith("/*"):  # Comments
                 #print "comment"
-                pass
+                continue
             if re.match("[0-9A-Z_]+\s+DIALOG", block) is not None:
                 dialog = re.match("(?P<dialogname>[0-9A-Z_]+)\s+(?P<dialogtype>DIALOGEX|DIALOG)", block).groupdict()
                 dialogname = dialog["dialogname"]
