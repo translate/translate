@@ -100,7 +100,7 @@ class rcunit(base.TranslationUnit):
         return [self.name]
 
     def addnote(self, text, origin=None, position="append"):
-        self.comments.append(note)
+        self.comments.append(text)
 
     def getnotes(self, origin=None):
         return '\n'.join(self.comments)
