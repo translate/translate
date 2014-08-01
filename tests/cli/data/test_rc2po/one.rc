@@ -1,0 +1,119 @@
+
+/*
+ * Mini test file.
+ * Multiline comments.
+ */
+
+// Test file, one line comment. //
+
+#include "other_file.h" // This must be ignored
+
+LANGUAGE LANG_ENGLISH, SUBLANG_DEFAULT
+
+#ifdef APSTUDIO_INVOKED
+/////////////////////////////////////////////////////////////////////////////
+//
+// TEXTINCLUDE
+//
+
+1 TEXTINCLUDE 
+BEGIN
+    "resource.h\0"
+END
+
+2 TEXTINCLUDE 
+BEGIN
+    "#include ""afxres.h""\r\n"
+    "\0"
+END
+
+3 TEXTINCLUDE 
+BEGIN
+    "#define _AFX_NO_SPLITTER_RESOURCES\r\n"
+    "#define _AFX_NO_OLE_RESOURCES\r\n"
+    "#define _AFX_NO_TRACKER_RESOURCES\r\n"
+    "#define _AFX_NO_PROPERTY_RESOURCES\r\n"
+    "\r\n"
+    "#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_ESN)\r\n"
+    "LANGUAGE 10, 3\r\n"  // This language must be ignored, is a string.
+    "#pragma code_page(1252)\r\n"
+    "#include ""res\\regGHC.rc2""
+    "#include ""afxres.rc""
+    "#endif\r\n"
+    "\0"
+END
+
+#endif    // APSTUDIO_INVOKED
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Icon
+//
+
+// Icon with lowest ID value placed first to ensure application icon
+// remains consistent on all systems.
+IDR_MAINFRAME           ICON                    "res\\ico00007.ico"
+IDR_MAINFRAME1          ICON                    "res\\idr_main.ico"
+IDR_MAINFRAME2          ICON                    "res\\ico00006.ico"
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Dialog
+//
+
+IDD_REGGHC_DIALOG DIALOGEX 0, 0, 211, 191
+STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_VISIBLE | WS_CAPTION | WS_SYSMENU
+EXSTYLE WS_EX_APPWINDOW
+CAPTION "License dialog"
+FONT 8, "MS Shell Dlg", 0, 0, 0x1
+BEGIN
+    PUSHBUTTON      "Help",ID_HELP,99,162,48,15
+    PUSHBUTTON      "Close",IDCANCEL,151,162,48,15
+    PUSHBUTTON      "Activate instalation",IDC_BUTTON1,74,76,76,18
+    CTEXT           "My very good program",IDC_STATIC1,56,21,109,19,SS_SUNKEN
+    CTEXT           "You can use it without registering it",IDC_STATIC,35,131,128,19,SS_SUNKEN
+    PUSHBUTTON      "Offline",IDC_OFFLINE,149,108,42,13
+    PUSHBUTTON      "See license",IDC_LICENCIA,10,162,85,15
+    RTEXT           "If you don't have internet, please use magic.",IDC_STATIC,23,105,120,18
+    ICON            IDR_MAINFRAME,IDC_STATIC,44,74,20,20
+    CTEXT           "Use your finger to activate the program.",IDC_ACTIVADA,17,50,175,17
+    ICON            IDR_MAINFRAME1,IDC_STATIC6,18,19,20,20
+END
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// String Table
+//
+
+STRINGTABLE
+BEGIN
+    IDP_REGISTRONOV         "Data isn't valid"
+    IDS_ACTIVARINSTALACION  "You need to try again and again."
+    IDS_NOREGISTRADO        "Error when making something important"
+    IDS_REGISTRADO          "All done correctly.\nThank you very much."
+    IDS_ACTIVADA            "This is what you do:\n%s"
+    IDS_ERRORACTIV          "Error doing things"
+END
+
+
+#ifndef APSTUDIO_INVOKED
+/////////////////////////////////////////////////////////////////////////////
+//
+// Generated from the TEXTINCLUDE 3 resource.
+//
+#define _AFX_NO_SPLITTER_RESOURCES
+#define _AFX_NO_OLE_RESOURCES
+#define _AFX_NO_TRACKER_RESOURCES
+#define _AFX_NO_PROPERTY_RESOURCES
+
+#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_ESN)
+// This will change the default language
+LANGUAGE 10, 3
+#pragma code_page(1252)
+#include "res\regGHC.rc2"  // Recursos editados que no son de Microsoft Visual C++
+#include "afxres.rc"         // Standar components
+#endif
+
+/////////////////////////////////////////////////////////////////////////////
+#endif    // not APSTUDIO_INVOKED
