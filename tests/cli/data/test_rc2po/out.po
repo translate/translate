@@ -1,0 +1,83 @@
+#. extracted from ./data/test_rc2po/one.rc
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2014-08-01 12:00+0200\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Translate Toolkit 1.12.0\n"
+"X-Accelerator-Marker: &\n"
+"X-Merge-On: location\n"
+
+#: DIALOGEX.IDD_REGGHC_DIALOG.CAPTION
+msgid "License dialog"
+msgstr ""
+
+#: DIALOGEX.IDD_REGGHC_DIALOG.PUSHBUTTON.ID_HELP
+msgid "Help"
+msgstr ""
+
+#: DIALOGEX.IDD_REGGHC_DIALOG.PUSHBUTTON.IDCANCEL
+msgid "Close"
+msgstr ""
+
+#: DIALOGEX.IDD_REGGHC_DIALOG.PUSHBUTTON.IDC_BUTTON1
+msgid "Activate instalation"
+msgstr ""
+
+#: DIALOGEX.IDD_REGGHC_DIALOG.CTEXT.IDC_STATIC1
+msgid "My very good program"
+msgstr ""
+
+#: DIALOGEX.IDD_REGGHC_DIALOG.CTEXT.IDC_STATIC
+msgid "You can use it without registering it"
+msgstr ""
+
+#: DIALOGEX.IDD_REGGHC_DIALOG.PUSHBUTTON.IDC_OFFLINE
+msgid "Offline"
+msgstr ""
+
+#: DIALOGEX.IDD_REGGHC_DIALOG.PUSHBUTTON.IDC_LICENCIA
+msgid "See license"
+msgstr ""
+
+#: DIALOGEX.IDD_REGGHC_DIALOG.RTEXT.IDC_STATIC
+msgid "If you don't have internet, please use magic."
+msgstr ""
+
+#: DIALOGEX.IDD_REGGHC_DIALOG.CTEXT.IDC_ACTIVADA
+msgid "Use your finger to activate the program."
+msgstr ""
+
+#: STRINGTABLE.IDP_REGISTRONOV
+msgid "Data isn't valid"
+msgstr ""
+
+#: STRINGTABLE.IDS_ACTIVARINSTALACION
+msgid "You need to try again and again."
+msgstr ""
+
+#: STRINGTABLE.IDS_NOREGISTRADO
+msgid "Error when making something important"
+msgstr ""
+
+#: STRINGTABLE.IDS_REGISTRADO
+msgid ""
+"All done correctly.\n"
+"Thank you very much."
+msgstr ""
+
+#: STRINGTABLE.IDS_ACTIVADA
+msgid ""
+"This is what you do:\n"
+"%s"
+msgstr ""
+
+#: STRINGTABLE.IDS_ERRORACTIV
+msgid "Error doing things"
+msgstr ""
