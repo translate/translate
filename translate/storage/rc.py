@@ -135,6 +135,7 @@ class rcfile(base.TranslationStore):
                          (?:
                          LANGUAGE\s+[^\n]*|                              # Language details
                          /\*.*?\*/[^\n]*|                                      # Comments
+                         \/\/[^\n\r]*|                                  # One line comments
                          (?:[0-9A-Z_]+\s+(?:MENU|DIALOG|DIALOGEX)|STRINGTABLE)\s  # Translatable section
                          .*?
                          (?:
@@ -195,6 +196,8 @@ class rcfile(base.TranslationStore):
                     self.addunit(newunit)
             if block.startswith("/*"):  # Comments
                 #print "comment"
+                continue
+            if block.startswith("//"):  # One line comments
                 continue
             if re.match("[0-9A-Z_]+\s+DIALOG", block) is not None:
                 dialog = re.match("(?P<dialogname>[0-9A-Z_]+)\s+(?P<dialogtype>DIALOGEX|DIALOG)", block).groupdict()
