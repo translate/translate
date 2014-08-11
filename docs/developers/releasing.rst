@@ -135,7 +135,11 @@ checkout run:
 
 .. code-block:: bash
 
-  $ make build
+  $ mkvirtualenv build-ttk-release
+  (build-ttk-release)$ pip install -r requirements/dev.txt
+  (build-ttk-release)$ make build
+  (build-ttk-release)$ deactivate
+  $ rmvirtualenv build-ttk-release
 
 
 This will create a tarball in ``dist/`` which you can use for further testing.
@@ -151,7 +155,7 @@ the new toolkit using:
 
 .. code-block:: bash
 
-  $ mkvirtualenv releasing
+  $ mkvirtualenv test-ttk-release
   (releasing)$ pip install path/to/dist/translate-toolkit-$version.tar.bz2
 
 
@@ -162,10 +166,10 @@ You can then proceed with other tests such as checking:
 
    .. code-block:: bash
 
-     (releasing)$ moz2po --help
-     (releasing)$ php2po --version
-     (releasing)$ deactivate
-     $ rmvirtualenv releasing
+     (test-ttk-release)$ moz2po --help
+     (test-ttk-release)$ php2po --version
+     (test-ttk-release)$ deactivate
+     $ rmvirtualenv test-ttk-release
 
 #. Meta information about the package is correct. This is stored in
    :file:`setup.py`, to see some options to display meta-data use:
