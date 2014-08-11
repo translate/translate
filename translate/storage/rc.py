@@ -136,7 +136,7 @@ class rcfile(base.TranslationStore):
                          LANGUAGE\s+[^\n]*|                              # Language details
                          /\*.*?\*/[^\n]*|                                      # Comments
                          \/\/[^\n\r]*|                                  # One line comments
-                         (?:[0-9A-Z_]+\s+(?:MENU|DIALOG|DIALOGEX)|STRINGTABLE)\s  # Translatable section
+                         (?:[0-9A-Z_]+\s+(?:MENU|DIALOG|DIALOGEX|TEXTINCLUDE)|STRINGTABLE)\s  # Translatable section or include text (visual studio)
                          .*?
                          (?:
                          BEGIN(?:\s*?POPUP.*?BEGIN.*?END\s*?)+?END|BEGIN.*?END|  # FIXME Need a much better approach to nesting menus
@@ -198,6 +198,8 @@ class rcfile(base.TranslationStore):
                 #print "comment"
                 continue
             if block.startswith("//"):  # One line comments
+                continue
+            if re.match("[0-9A-Z_]+\s+TEXTINCLUDE", block) is not None:  # TEXTINCLUDE is editor specific, not part of the app.
                 continue
             if re.match("[0-9A-Z_]+\s+DIALOG", block) is not None:
                 dialog = re.match("(?P<dialogname>[0-9A-Z_]+)\s+(?P<dialogtype>DIALOGEX|DIALOG)", block).groupdict()
