@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 #
 # Copyright 2008 Zuza Software Foundation
+# Copyright 2014 F Wolff
 #
 # This file is part of translate.
 #
@@ -32,16 +33,21 @@ def get_abs_data_filename(path_parts, basedirs=None):
     :type  path_parts: list
     :param path_parts: The path parts that can be joined by ``os.path.join()``.
     """
-    if basedirs is None:
-        basedirs = []
-
     if isinstance(path_parts, str):
         path_parts = [path_parts]
 
-    BASE_DIRS = basedirs + [
-        os.path.dirname(unicode(__file__, sys.getfilesystemencoding())),
-        os.path.dirname(unicode(sys.executable, sys.getfilesystemencoding())),
+    DATA_DIRS = [
+        ["..", "share"],
     ]
+
+    BASE_DIRS = basedirs
+    if not basedirs:
+        # Useful for running from checkout or similar layout. This will find
+        # Toolkit's data files
+        base = os.path.dirname(unicode(__file__, sys.getfilesystemencoding()))
+        BASE_DIRS = [
+                os.path.join(base, os.path.pardir),
+        ]
 
     # Freedesktop standard
     if 'XDG_DATA_HOME' in os.environ:
@@ -53,10 +59,15 @@ def get_abs_data_filename(path_parts, basedirs=None):
     if 'RESOURCEPATH' in os.environ:
         BASE_DIRS += os.environ['RESOURCEPATH'].split(os.path.pathsep)
 
-    DATA_DIRS = [
-        ["..", "..", "share"],
-        ["..", "share"],
-        ["share"],
+    if getattr(sys, 'frozen', False):
+        # We know exactly what the layout is when we package for Windows, so
+        # let's avoid unnecessary paths
+        DATA_DIRS = [["share"]]
+        BASE_DIRS = []
+
+    BASE_DIRS += [
+            # installed linux (/usr/bin) as well as Windows
+            os.path.dirname(unicode(sys.executable, sys.getfilesystemencoding())),
     ]
 
     for basepath, data_dir in ((x, y) for x in BASE_DIRS for y in DATA_DIRS):
