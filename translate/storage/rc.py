@@ -168,7 +168,6 @@ class rcfile(base.TranslationStore):
         processsection = False
         self.blocks = BLOCKS_RE.findall(rcsrc)
         for blocknum, block in enumerate(self.blocks):
-            #print block.split("\n")[0]
             processblock = None
             if block.startswith("LANGUAGE"):
                 if self.lang is None or self.sublang is None or re.match("LANGUAGE\s+%s,\s*%s\s*$" % (self.lang, self.sublang), block) is not None:
@@ -186,7 +185,6 @@ class rcfile(base.TranslationStore):
                 continue
 
             if block.startswith("STRINGTABLE"):
-                #print "stringtable:\n %s------\n" % block
                 for match in STRINGTABLE_RE.finditer(block):
                     if not match.groupdict()['value']:
                         continue
@@ -195,7 +193,6 @@ class rcfile(base.TranslationStore):
                     newunit.match = match
                     self.addunit(newunit)
             if block.startswith("/*"):  # Comments
-                #print "comment"
                 continue
             if block.startswith("//"):  # One line comments
                 continue
@@ -205,7 +202,6 @@ class rcfile(base.TranslationStore):
                 dialog = re.match("(?P<dialogname>[0-9A-Z_]+)\s+(?P<dialogtype>DIALOGEX|DIALOG)", block).groupdict()
                 dialogname = dialog["dialogname"]
                 dialogtype = dialog["dialogtype"]
-                #print "dialog: %s" % dialogname
                 for match in DIALOG_RE.finditer(block):
                     if not match.groupdict()['value']:
                         continue
@@ -223,7 +219,6 @@ class rcfile(base.TranslationStore):
                     self.addunit(newunit)
             if re.match("[0-9A-Z_]+\s+MENU", block) is not None:
                 menuname = re.match("(?P<menuname>[0-9A-Z_]+)\s+MENU", block).groupdict()["menuname"]
-                #print "menu: %s" % menuname
                 for match in MENU_RE.finditer(block):
                     if not match.groupdict()['value']:
                         continue
