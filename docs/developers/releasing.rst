@@ -156,7 +156,7 @@ the new toolkit using:
 .. code-block:: bash
 
   $ mkvirtualenv test-ttk-release
-  (releasing)$ pip install path/to/dist/translate-toolkit-$version.tar.bz2
+  (test-ttk-release)$ pip install path/to/dist/translate-toolkit-$version.tar.bz2
 
 
 You can then proceed with other tests such as checking:
