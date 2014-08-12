@@ -359,6 +359,9 @@ which would be ``{N+1}-alpha1``. This prevents anyone using master being
 confused with a stable release and we can easily check if they are using master
 or stable.
 
+.. note:: You probably will have to adjust the output of some of the functional
+   tests, specifically the manpage ones, to use the right new version.
+
 
 Other possible steps
 ====================
