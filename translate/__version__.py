@@ -27,7 +27,7 @@ code touching stats or quality checks.  An increased build number will force a
 toolkit user, like Pootle, to regenerate it's stored stats and check
 results."""
 
-sver = "1.13.0"
+sver = "1.13.0-alpha1"
 """Human readable version number. Used for version number display."""
 
 ver = (1, 13, 0)
