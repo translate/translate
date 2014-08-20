@@ -15,9 +15,9 @@ class TestPO2MozCommand(test_convert.TestConvertCommand, TestPO2Moz):
     def test_help(self):
         """tests getting help"""
         options = test_convert.TestConvertCommand.test_help(self)
-        options = self.help_check(options, "-t TEMPLATE, --template=TEMPLATE")
-        options = self.help_check(options, "-l LOCALE, --locale=LOCALE")
+        options = self.help_check(options, "-t TEMPLATE, --template TEMPLATE")
+        options = self.help_check(options, "-l LOCALE, --locale LOCALE")
         options = self.help_check(options, "--removeuntranslated")
-        options = self.help_check(options, "--threshold=PERCENT")
+        options = self.help_check(options, "--threshold PERCENT")
         options = self.help_check(options, "--fuzzy")
         options = self.help_check(options, "--nofuzzy", last=True)

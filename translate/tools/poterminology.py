@@ -341,68 +341,52 @@ class TerminologyOptionParser(optrecurse.RecursiveOptionParser):
 
     def parse_args(self, args=None, values=None):
         """parses the command line options, handling implicit input/output args"""
-        (options, args) = optrecurse.optparse.OptionParser.parse_args(self, args, values)
-        # some intelligence as to what reasonable people might give on the command line
-        if args and not options.input:
-            if not options.output and not options.update and len(args) > 1:
-                options.input = args[:-1]
-                args = args[-1:]
-            else:
-                options.input = args
-                args = []
+        args = optrecurse.argparse.ArgumentParser.parse_args(self, args, values)
         # don't overwrite last freestanding argument file, to avoid accidents
         # due to shell wildcard expansion
-        if args and not options.output and not options.update:
+        if args and not args.output and not args.update:
             if os.path.lexists(args[-1]) and not os.path.isdir(args[-1]):
                 self.error("To overwrite %s, specify it with -o/--output or -u/--update" % (args[-1]))
-            options.output = args[-1]
+            args.output = args[-1]
             args = args[:-1]
-        if options.output and options.update:
+        if args.output and args.update:
             self.error("You cannot use both -u/--update and -o/--output")
         if args:
             self.error("You have used an invalid combination of -i/--input, -o/--output, -u/--update and freestanding args")
-        if not options.input:
+        if not args.input:
             self.error("No input file or directory was specified")
-        if isinstance(options.input, list) and len(options.input) == 1:
-            options.input = options.input[0]
-            if options.inputmin is None:
-                options.inputmin = 1
-        elif not isinstance(options.input, list) and not os.path.isdir(options.input):
-            if options.inputmin is None:
-                options.inputmin = 1
-        elif options.inputmin is None:
-            options.inputmin = 2
-        if options.update:
-            options.output = options.update
-            if isinstance(options.input, list):
-                options.input.append(options.update)
-            elif options.input:
-                options.input = [options.input, options.update]
+        if isinstance(args.input, list) and len(args.input) == 1:
+            args.input = args.input[0]
+            if args.inputmin is None:
+                args.inputmin = 1
+        elif not isinstance(args.input, list) and not os.path.isdir(args.input):
+            if args.inputmin is None:
+                args.inputmin = 1
+        elif args.inputmin is None:
+            args.inputmin = 2
+        if args.update:
+            args.output = args.update
+            if isinstance(args.input, list):
+                args.input.append(args.update)
+            elif args.input:
+                args.input = [args.input, args.update]
             else:
-                options.input = options.update
-        if not options.output:
-            options.output = "pootle-terminology.pot"
-        return (options, args)
-
-    def set_usage(self, usage=None):
-        """sets the usage string - if usage not given, uses getusagestring for each option"""
-        if usage is None:
-            self.usage = "%prog " + " ".join([self.getusagestring(option) for option in self.option_list]) + \
-                    "\n  input directory is searched for PO files, terminology PO file is output file"
-        else:
-            super(TerminologyOptionParser, self).set_usage(usage)
+                args.input = args.update
+        if not args.output:
+            args.output = "pootle-terminology.pot"
+        return args
 
     def run(self):
         """parses the arguments, and runs recursiveprocess with the resulting options"""
         self.files = 0
-        (options, args) = self.parse_args()
-        options.inputformats = self.inputformats
-        options.outputoptions = self.outputoptions
-        self.extractor = TerminologyExtractor(foldtitle=options.foldtitle, ignorecase=options.ignorecase,
-                                              accelchars=options.accelchars, termlength=options.termlength,
-                                              sourcelanguage=options.sourcelanguage,
-                                              invert=options.invert, stopfile=options.stopfile)
-        self.recursiveprocess(options)
+        args = self.parse_args()
+        args.inputformats = self.inputformats
+        args.outputoptions = self.outputoptions
+        self.extractor = TerminologyExtractor(foldtitle=args.foldtitle, ignorecase=args.ignorecase,
+                                              accelchars=args.accelchars, termlength=args.termlength,
+                                              sourcelanguage=args.sourcelanguage,
+                                              invert=args.invert, stopfile=args.stopfile)
+        self.recursiveprocess(args)
 
     def recursiveprocess(self, options):
         """recurse through directories and process files"""
@@ -467,46 +451,45 @@ def main():
     formats = {"po": ("po", None), "pot": ("pot", None), None: ("po", None)}
     parser = TerminologyOptionParser(formats)
 
-    parser.add_option("-u", "--update", type="string", dest="update",
+    parser.add_argument("-u", "--update", type=str, dest="update",
         metavar="UPDATEFILE", help="update terminology in UPDATEFILE")
 
-    parser.add_option("-S", "--stopword-list", type="string", metavar="STOPFILE", dest="stopfile",
+    parser.add_argument("-S", "--stopword-list", type=str, metavar="STOPFILE", dest="stopfile",
                       help="read stopword (term exclusion) list from STOPFILE (default %s)" %
                       file_discovery.get_abs_data_filename('stoplist-en'))
 
     parser.set_defaults(foldtitle=True, ignorecase=False)
-    parser.add_option("-F", "--fold-titlecase", callback=fold_case_option,
+    parser.add_argument("-F", "--fold-titlecase", callback=fold_case_option,
         action="callback", help="fold \"Title Case\" to lowercase (default)")
-    parser.add_option("-C", "--preserve-case", callback=preserve_case_option,
+    parser.add_argument("-C", "--preserve-case", callback=preserve_case_option,
         action="callback", help="preserve all uppercase/lowercase")
-    parser.add_option("-I", "--ignore-case", dest="ignorecase",
+    parser.add_argument("-I", "--ignore-case", dest="ignorecase",
         action="store_true", help="make all terms lowercase")
 
-    parser.add_option("", "--accelerator", dest="accelchars", default="",
+    parser.add_argument("--accelerator", dest="accelchars", default="",
         metavar="ACCELERATORS", help="ignore the given accelerator characters when matching")
 
-    parser.add_option("-t", "--term-words", type="int", dest="termlength", default="3",
-        help="generate terms of up to LENGTH words (default 3)", metavar="LENGTH")
-    parser.add_option("", "--nonstop-needed", type="int", dest="nonstopmin", default="1",
-        help="omit terms with less than MIN nonstop words (default 1)", metavar="MIN")
-    parser.add_option("", "--inputs-needed", type="int", dest="inputmin",
+    parser.add_argument("-t", "--term-words", type=int, dest="termlength", default="3",
+        help="generate terms of up to LENGTH words (default %(default)s)", metavar="LENGTH")
+    parser.add_argument("--nonstop-needed", type=int, dest="nonstopmin", default="1",
+        help="omit terms with less than MIN nonstop words (default %(default)s)", metavar="MIN")
+    parser.add_argument("--inputs-needed", type=int, dest="inputmin",
         help="omit terms appearing in less than MIN input files (default 2, or 1 if only one input file)", metavar="MIN")
-    parser.add_option("", "--fullmsg-needed", type="int", dest="fullmsgmin", default="1",
-        help="omit full message terms appearing in less than MIN different messages (default 1)", metavar="MIN")
-    parser.add_option("", "--substr-needed", type="int", dest="substrmin", default="2",
-        help="omit substring-only terms appearing in less than MIN different messages (default 2)", metavar="MIN")
-    parser.add_option("", "--locs-needed", type="int", dest="locmin", default="2",
-        help="omit terms appearing in less than MIN different original source files (default 2)", metavar="MIN")
+    parser.add_argument("--fullmsg-needed", type=int, dest="fullmsgmin", default="1",
+        help="omit full message terms appearing in less than MIN different messages (default %(default)s)", metavar="MIN")
+    parser.add_argument("--substr-needed", type=int, dest="substrmin", default="2",
+        help="omit substring-only terms appearing in less than MIN different messages (default %(default)s)", metavar="MIN")
+    parser.add_argument("--locs-needed", type=int, dest="locmin", default="2",
+        help="omit terms appearing in less than MIN different original source files (default %(default)s)", metavar="MIN")
 
-    parser.add_option("", "--sort", dest="sortorders", action="append",
-        type="choice", choices=TerminologyExtractor.sortorders_default, metavar="ORDER",
+    parser.add_argument("--sort", dest="sortorders", action="append",
+        type=str, choices=TerminologyExtractor.sortorders_default, metavar="ORDER",
         help="output sort order(s): %s (may repeat option, default is all in above order)" % ', '.join(TerminologyExtractor.sortorders_default))
 
-    parser.add_option("", "--source-language", dest="sourcelanguage", default="en",
-        help="the source language code (default 'en')", metavar="LANG")
-    parser.add_option("-v", "--invert", dest="invert",
+    parser.add_argument("--source-language", dest="sourcelanguage", default="en",
+        help="the source language code (default '%(default)s')", metavar="LANG")
+    parser.add_argument("-v", "--invert", dest="invert",
         action="store_true", default=False, help="invert the source and target languages for terminology")
-    parser.set_usage()
     parser.description = __doc__
     parser.run()
 

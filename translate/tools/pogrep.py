@@ -285,48 +285,22 @@ class GrepOptionParser(optrecurse.RecursiveOptionParser):
 
     def parse_args(self, args=None, values=None):
         """parses the command line options, handling implicit input/output args"""
-        (options, args) = optrecurse.optparse.OptionParser.parse_args(self, args, values)
+        args = optrecurse.argparse.ArgumentParser.parse_args(self, args, values)
         # some intelligence as to what reasonable people might give on the command line
-        if args:
-            options.searchstring = args[0]
-            args = args[1:]
-        else:
-            self.error("At least one argument must be given for the search string")
-        if args and not options.input:
-            if not options.output:
-                options.input = args[:-1]
-                args = args[-1:]
-            else:
-                options.input = args
-                args = []
-        if args and not options.output:
-            options.output = args[-1]
-            args = args[:-1]
-        if args:
-            self.error("You have used an invalid combination of --input, --output and freestanding args")
-        if isinstance(options.input, list) and len(options.input) == 1:
-            options.input = options.input[0]
-        return (options, args)
-
-    def set_usage(self, usage=None):
-        """sets the usage string - if usage not given, uses getusagestring for each option"""
-        if usage is None:
-            self.usage = "%prog searchstring " + " ".join([self.getusagestring(option) for option in self.option_list])
-        else:
-            super(GrepOptionParser, self).set_usage(usage)
+        return args
 
     def run(self):
         """parses the arguments, and runs recursiveprocess with the resulting options"""
-        (options, args) = self.parse_args()
-        options.inputformats = self.inputformats
-        options.outputoptions = self.outputoptions
-        options.checkfilter = GrepFilter(options.searchstring,
-                                         options.searchparts,
-                                         options.ignorecase,
-                                         options.useregexp,
-                                         options.invertmatch,
-                                         options.keeptranslations,
-                                         options.accelchar,
+        args = self.parse_args()
+        args.inputformats = self.inputformats
+        args.outputoptions = self.outputoptions
+        args.checkfilter = GrepFilter(args.searchstring,
+                                         args.searchparts,
+                                         args.ignorecase,
+                                         args.useregexp,
+                                         args.invertmatch,
+                                         args.keeptranslations,
+                                         args.accelchar,
                                          locale.getpreferredencoding())
         self.recursiveprocess(options)
 
@@ -348,21 +322,22 @@ def cmdlineparser():
             "xliff": ("xliff", rungrep), "xlf": ("xlf", rungrep), "xlff": ("xlff", rungrep),
             None: ("po", rungrep)}
     parser = GrepOptionParser(formats)
-    parser.add_option("", "--search", dest="searchparts",
-        action="append", type="choice", choices=["source", "target", "notes", "locations", "msgid", "msgstr", "comment"],
+    parser.add_argument("--search", dest="searchparts",
+        action="append", type=str, choices=["source", "target", "notes", "locations", "msgid", "msgstr", "comment"],
         metavar="SEARCHPARTS", help="searches the given parts (source, target, notes and locations)")
-    parser.add_option("-I", "--ignore-case", dest="ignorecase",
+    parser.add_argument("-I", "--ignore-case", dest="ignorecase",
         action="store_true", default=False, help="ignore case distinctions")
-    parser.add_option("-e", "--regexp", dest="useregexp",
+    parser.add_argument("-e", "--regexp", dest="useregexp",
         action="store_true", default=False, help="use regular expression matching")
-    parser.add_option("-v", "--invert-match", dest="invertmatch",
+    parser.add_argument("-v", "--invert-match", dest="invertmatch",
         action="store_true", default=False, help="select non-matching lines")
-    parser.add_option("", "--accelerator", dest="accelchar",
-        action="store", type="choice", choices=["&", "_", "~"],
+    parser.add_argument("--accelerator", dest="accelchar",
+        action="store", type=str, choices=["&", "_", "~"],
         metavar="ACCELERATOR", help="ignores the given accelerator when matching")
-    parser.add_option("-k", "--keep-translations", dest="keeptranslations",
+    parser.add_argument("-k", "--keep-translations", dest="keeptranslations",
         action="store_true", default=False, help="always extract units with translations")
-    parser.set_usage()
+    parser.add_argument("searchstring",
+        help="string to find")
     parser.passthrough.append('checkfilter')
     parser.description = __doc__
     return parser

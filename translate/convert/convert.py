@@ -27,8 +27,8 @@ from cStringIO import StringIO
 from translate.misc import optrecurse
 
 
-# Don't import optparse ourselves, get the version from optrecurse.
-optparse = optrecurse.optparse
+# Don't import argparse ourselves, get the version from optrecurse.
+argparse = optrecurse.argparse
 
 
 class ConvertOptionParser(optrecurse.RecursiveOptionParser, object):
@@ -43,7 +43,6 @@ class ConvertOptionParser(optrecurse.RecursiveOptionParser, object):
         self.usepots = usepots
         self.settimestampoption()
         self.setpotoption()
-        self.set_usage()
 
     def add_fuzzy_option(self, default=False):
         """Adds an option to include / exclude fuzzy translations."""
@@ -53,9 +52,9 @@ class ConvertOptionParser(optrecurse.RecursiveOptionParser, object):
             fuzzyhelp += " (default)"
         else:
             nofuzzyhelp += " (default)"
-        self.add_option("", "--fuzzy", dest="includefuzzy",
+        self.add_argument("--fuzzy", dest="includefuzzy",
                         action="store_true", default=default, help=fuzzyhelp)
-        self.add_option("", "--nofuzzy", dest="includefuzzy",
+        self.add_argument("--nofuzzy", dest="includefuzzy",
                         action="store_false", default=default, help=nofuzzyhelp)
         self.passthrough.append("includefuzzy")
 
@@ -63,28 +62,27 @@ class ConvertOptionParser(optrecurse.RecursiveOptionParser, object):
         """Adds an option to output only stores where translation percentage
         exceeds the threshold.
         """
-        self.add_option("", "--threshold", dest="outputthreshold", default=default,
-                        metavar="PERCENT", type="int",
+        self.add_argument("--threshold", dest="outputthreshold", default=default,
+                        metavar="PERCENT", type=int,
                         help="only convert files where the translation completion is above PERCENT")
         self.passthrough.append("outputthreshold")
 
     def add_duplicates_option(self, default="msgctxt"):
         """Adds an option to say what to do with duplicate strings."""
-        self.add_option(
-            "", "--duplicates", dest="duplicatestyle", default=default,
-            type="choice", choices=["msgctxt", "merge"],
-            help="what to do with duplicate strings (identical source text): merge, msgctxt (default: '%s')" %
-                 default,
+        self.add_argument(
+            "--duplicates", dest="duplicatestyle", default=default,
+            type=str, choices=["msgctxt", "merge"],
+            help="what to do with duplicate strings (identical source text): merge, msgctxt (default: '%(default)s')",
             metavar="DUPLICATESTYLE"
         )
         self.passthrough.append("duplicatestyle")
 
     def add_multifile_option(self, default="single"):
         """Adds an option to say how to split the po/pot files."""
-        self.add_option(
-            "", "--multifile",
+        self.add_argument(
+            "--multifile",
             dest="multifilestyle", default=default,
-            type="choice", choices=["single", "toplevel", "onefile"],
+            type=str, choices=["single", "toplevel", "onefile"],
             help="how to split po/pot files (single, toplevel or onefile)",
             metavar="MULTIFILESTYLE"
         )
@@ -136,18 +134,18 @@ class ConvertOptionParser(optrecurse.RecursiveOptionParser, object):
         """Sets the ``-P``/``--pot`` option depending on input/output
         formats etc."""
         if self.usepots:
-            potoption = optparse.Option(
-                "-P", "--pot",
-                action="store_true", dest="pot", default=False,
+            potoption = argparse._StoreTrueAction(
+                ["-P", "--pot"],
+                dest="pot", default=False,
                 help="output PO Templates (.pot) rather than PO files (.po)"
             )
             self.define_option(potoption)
 
     def settimestampoption(self):
         """Sets ``-S``/``--timestamp`` option."""
-        timestampopt = optparse.Option(
-            "-S", "--timestamp",
-            action="store_true", dest="timestamp", default=False,
+        timestampopt = argparse._StoreTrueAction(
+            ["-S", "--timestamp"],
+            dest="timestamp", default=False,
             help="skip conversion if the output file has newer timestamp"
         )
         self.define_option(timestampopt)
@@ -159,14 +157,14 @@ class ConvertOptionParser(optrecurse.RecursiveOptionParser, object):
 
     def run(self, argv=None):
         """Parses the command line options and runs the conversion."""
-        (options, args) = self.parse_args(argv)
-        options.inputformats = self.filterinputformats(options)
-        options.outputoptions = self.filteroutputoptions(options)
+        args = self.parse_args(argv)
+        args.inputformats = self.filterinputformats(args)
+        args.outputoptions = self.filteroutputoptions(args)
         try:
-            self.verifyoptions(options)
+            self.verifyoptions(args)
         except Exception as e:
             self.error(str(e))
-        self.recursiveprocess(options)
+        self.recursiveprocess(args)
 
     def processfile(self, fileprocessor, options, fullinputpath,
                     fulloutputpath, fulltemplatepath):

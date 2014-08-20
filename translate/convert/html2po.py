@@ -73,11 +73,11 @@ def main(argv=None):
     }
     parser = convert.ConvertOptionParser(formats, usepots=True,
                                          description=__doc__)
-    parser.add_option("-u", "--untagged", dest="includeuntagged",
+    parser.add_argument("-u", "--untagged", dest="includeuntagged",
                       default=False, action="store_true",
                       help="include untagged sections")
     parser.passthrough.append("includeuntagged")
-    parser.add_option("--keepcomments", dest="keepcomments", default=False,
+    parser.add_argument("--keepcomments", dest="keepcomments", default=False,
                       action="store_true",
                       help="preserve html comments as translation notes in the output")
     parser.passthrough.append("keepcomments")

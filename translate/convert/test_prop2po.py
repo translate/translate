@@ -288,7 +288,7 @@ class TestProp2POCommand(test_convert.TestConvertCommand, TestProp2PO):
         """tests getting help"""
         options = test_convert.TestConvertCommand.test_help(self)
         options = self.help_check(options, "-P, --pot")
-        options = self.help_check(options, "-t TEMPLATE, --template=TEMPLATE")
-        options = self.help_check(options, "--personality=TYPE")
-        options = self.help_check(options, "--encoding=ENCODING")
-        options = self.help_check(options, "--duplicates=DUPLICATESTYLE", last=True)
+        options = self.help_check(options, "-t TEMPLATE, --template TEMPLATE")
+        options = self.help_check(options, "--personality TYPE")
+        options = self.help_check(options, "--encoding ENCODING")
+        options = self.help_check(options, "--duplicates DUPLICATESTYLE", last=True)

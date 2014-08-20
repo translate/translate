@@ -327,13 +327,13 @@ def main():
     }
     parser = convert.ConvertOptionParser(formats, description=__doc__)
     # TODO: add documentation on format strings...
-    parser.add_option("-f", "--format", dest="format", default="",
+    parser.add_argument("-f", "--format", dest="format", default="",
         help="specify format string")
-    parser.add_option("", "--rewrite", dest="rewritestyle",
-        type="choice", choices=podebug.rewritelist(), metavar="STYLE",
+    parser.add_argument("--rewrite", dest="rewritestyle",
+        type=str, choices=podebug.rewritelist(), metavar="STYLE",
         help="the translation rewrite style: %s" % ", ".join(podebug.rewritelist()))
-    parser.add_option("", "--ignore", dest="ignoreoption",
-        type="choice", choices=podebug.ignorelist(), metavar="APPLICATION",
+    parser.add_argument("--ignore", dest="ignoreoption",
+        type=str, choices=podebug.ignorelist(), metavar="APPLICATION",
         help="apply tagging ignore rules for the given application: %s" % ", ".join(podebug.ignorelist()))
     parser.passthrough.append("format")
     parser.passthrough.append("rewritestyle")

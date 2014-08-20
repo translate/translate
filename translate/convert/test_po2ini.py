@@ -114,7 +114,7 @@ class TestPO2IniCommand(test_convert.TestConvertCommand, TestPO2Ini):
     def test_help(self):
         """tests getting help"""
         options = test_convert.TestConvertCommand.test_help(self)
-        options = self.help_check(options, "-t TEMPLATE, --template=TEMPLATE")
-        options = self.help_check(options, "--threshold=PERCENT")
+        options = self.help_check(options, "-t TEMPLATE, --template TEMPLATE")
+        options = self.help_check(options, "--threshold PERCENT")
         options = self.help_check(options, "--fuzzy")
         options = self.help_check(options, "--nofuzzy", last=True)
