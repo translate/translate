@@ -28,7 +28,7 @@ class TestRcFile:
 
     def test_parse_only_comments(self):
         """Test parsing a RC string with only comments."""
-        rc_source = """
+        rc_source = r"""
 /*
  * Mini test file.
  * Multiline comments.
@@ -95,7 +95,7 @@ LANGUAGE 10, 3
 
     def test_parse_only_textinclude(self):
         """Test parsing a RC string with TEXTINCLUDE blocks and comments."""
-        rc_source = """
+        rc_source = r"""
 #include "other_file.h" // This must be ignored
 
 LANGUAGE LANG_ENGLISH, SUBLANG_DEFAULT
@@ -130,7 +130,7 @@ END
 
     def test_parse_dialog(self):
         """Test parsing a RC string with a DIALOG block."""
-        rc_source = """
+        rc_source = r"""
 #include "other_file.h" // This must be ignored
 
 LANGUAGE LANG_ENGLISH, SUBLANG_DEFAULT
@@ -194,7 +194,7 @@ END
 
     def test_parse_stringtable(self):
         """Test parsing a RC string with a STRINGTABLE block."""
-        rc_source = """
+        rc_source = r"""
 #include "other_file.h" // This must be ignored
 
 LANGUAGE LANG_ENGLISH, SUBLANG_DEFAULT
