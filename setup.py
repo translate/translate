@@ -379,7 +379,9 @@ def getdatafiles():
     for subdir in ['docs', 'share']:
         docwalk = os.walk(subdir)
         for docs in docwalk:
-            docfiles.append(listfiles(docs[0]))
+            files = listfiles(docs[0])
+            if files[1]:
+                docfiles.append(files)
         datafiles += docfiles
     return datafiles
 
