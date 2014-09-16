@@ -29,6 +29,7 @@ from cStringIO import StringIO
 
 import lxml.etree as etree
 
+from translate.convert import convert
 from translate.storage import factory, odf_io, odf_shared
 from translate.storage.xml_extract import extract, generate, unit_tree
 
@@ -131,8 +132,6 @@ formats = {
 
 
 def main(argv=None):
-    from translate.convert import convert
-
     parser = convert.ConvertOptionParser(formats, usetemplates=True, description=__doc__)
     parser.run(argv)
 

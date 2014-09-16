@@ -28,7 +28,9 @@ for examples and usage instructions.
 from contextlib import contextmanager
 from cStringIO import StringIO
 
-from translate.storage import factory, odf_io
+from translate.convert import convert
+from translate.storage import factory, odf_io, odf_shared
+from translate.storage.xml_extract import extract
 
 
 def convertodf(inputfile, outputfile, templates, engine='toolkit'):
@@ -37,9 +39,6 @@ def convertodf(inputfile, outputfile, templates, engine='toolkit'):
     """
 
     def translate_toolkit_implementation(store):
-        from translate.storage.xml_extract import extract
-        from translate.storage import odf_shared
-
         contents = odf_io.open_odf(inputfile)
         for data in contents.values():
             parse_state = extract.ParseState(odf_shared.no_translate_content_elements,
@@ -122,7 +121,6 @@ def main(argv=None):
         parser.passthrough = ['engine']
         return parser
 
-    from translate.convert import convert
     parser = convert.ConvertOptionParser(formats, description=__doc__)
     add_options(parser)
     parser.run(argv)
