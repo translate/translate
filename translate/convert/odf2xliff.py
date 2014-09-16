@@ -89,28 +89,6 @@ def convertodf(inputfile, outputfile, templates, engine='toolkit'):
     return True
 
 
-# For formats see OpenDocument 1.2 draft 7 Appendix C
-formats = {
-    "sxw": ("xlf", convertodf),
-    "odt": ("xlf", convertodf),  # Text
-    "ods": ("xlf", convertodf),  # Spreadsheet
-    "odp": ("xlf", convertodf),  # Presentation
-    "odg": ("xlf", convertodf),  # Drawing
-    "odc": ("xlf", convertodf),  # Chart
-    "odf": ("xlf", convertodf),  # Formula
-    "odi": ("xlf", convertodf),  # Image
-    "odm": ("xlf", convertodf),  # Master Document
-    "ott": ("xlf", convertodf),  # Text template
-    "ots": ("xlf", convertodf),  # Spreadsheet template
-    "otp": ("xlf", convertodf),  # Presentation template
-    "otg": ("xlf", convertodf),  # Drawing template
-    "otc": ("xlf", convertodf),  # Chart template
-    "otf": ("xlf", convertodf),  # Formula template
-    "oti": ("xlf", convertodf),  # Image template
-    "oth": ("xlf", convertodf),  # Web page template
-}
-
-
 def main(argv=None):
 
     def add_options(parser):
@@ -121,6 +99,26 @@ def main(argv=None):
         parser.passthrough = ['engine']
         return parser
 
+    # For formats see OpenDocument 1.2 draft 7 Appendix C
+    formats = {
+        "sxw": ("xlf", convertodf),
+        "odt": ("xlf", convertodf),  # Text
+        "ods": ("xlf", convertodf),  # Spreadsheet
+        "odp": ("xlf", convertodf),  # Presentation
+        "odg": ("xlf", convertodf),  # Drawing
+        "odc": ("xlf", convertodf),  # Chart
+        "odf": ("xlf", convertodf),  # Formula
+        "odi": ("xlf", convertodf),  # Image
+        "odm": ("xlf", convertodf),  # Master Document
+        "ott": ("xlf", convertodf),  # Text template
+        "ots": ("xlf", convertodf),  # Spreadsheet template
+        "otp": ("xlf", convertodf),  # Presentation template
+        "otg": ("xlf", convertodf),  # Drawing template
+        "otc": ("xlf", convertodf),  # Chart template
+        "otf": ("xlf", convertodf),  # Formula template
+        "oti": ("xlf", convertodf),  # Image template
+        "oth": ("xlf", convertodf),  # Web page template
+    }
     parser = convert.ConvertOptionParser(formats, description=__doc__)
     add_options(parser)
     parser.run(argv)
