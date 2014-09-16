@@ -34,22 +34,15 @@ Highlighted improvements
 Major changes
 -------------
 
-- Properties and DTD formats fix a number of issues
-- Massive code cleanup looking forward Python 3 compatibility
-- Important changes in development process to ease testing
+- Code cleanup looking forward Python 3 compatibility
 
 
 Formats and Converters
 ----------------------
 
-- Mozilla properties
-
-  - The ``\uNN`` characters are now properly handled
-  - Fixed conversion of successive Gaia plural units in prop2po
-
-- DTD
-
-  - Underscore character is now a valid character in entity names
+- Removed the :option:`--engine` option from the :command:`odf2xliff` command.
+  This is a consequence of stop using the `itools` third party library in favor
+  of custom code.
 
 
 General

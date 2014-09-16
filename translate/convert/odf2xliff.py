@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 #
-# Copyright 2004-2006 Zuza Software Foundation
+# Copyright 2004-2014 Zuza Software Foundation
 #
 # This file is part of translate.
 #
@@ -33,7 +33,7 @@ from translate.storage import factory, odf_io, odf_shared
 from translate.storage.xml_extract import extract
 
 
-def convertodf(inputfile, outputfile, templates, engine='toolkit'):
+def convertodf(inputfile, outputfile, templates):
     """reads in stdin using fromfileclass, converts using convertorclass,
        writes to stdout
     """
@@ -44,25 +44,6 @@ def convertodf(inputfile, outputfile, templates, engine='toolkit'):
             parse_state = extract.ParseState(odf_shared.no_translate_content_elements,
                                              odf_shared.inline_elements)
             extract.build_store(StringIO(data), store, parse_state)
-
-    def itools_implementation(store):
-        from itools.handlers import get_handler
-        from itools.gettext.po import encode_source
-        import itools.odf
-
-        filename = getattr(inputfile, 'name', 'unkown')
-        handler = get_handler(filename)
-
-        try:
-            get_units = handler.get_units
-        except AttributeError:
-            raise AttributeError('error: the file "%s" could not be processed' % filename)
-
-        # Make the XLIFF file
-        for source, context, line in get_units():
-            source = encode_source(source)
-            unit = store.UnitClass(source)
-            store.addunit(unit)
 
     @contextmanager
     def store_context():
@@ -81,24 +62,12 @@ def convertodf(inputfile, outputfile, templates, engine='toolkit'):
     inputfile = file(inputfile.name, mode='rb')
 
     with store_context() as store:
-        if engine == "toolkit":
-            translate_toolkit_implementation(store)
-        else:
-            itools_implementation(store)
+        translate_toolkit_implementation(store)
 
     return True
 
 
 def main(argv=None):
-
-    def add_options(parser):
-        parser.add_option("", "--engine", dest="engine", default="toolkit",
-                          type="choice", choices=["toolkit", "itools"],
-                          help="""Choose whether itools (--engine=itools) or the translate toolkit (--engine=toolkit)
-                          should be used as the engine to convert an ODF file to an XLIFF file.""")
-        parser.passthrough = ['engine']
-        return parser
-
     # For formats see OpenDocument 1.2 draft 7 Appendix C
     formats = {
         "sxw": ("xlf", convertodf),
@@ -120,7 +89,6 @@ def main(argv=None):
         "oth": ("xlf", convertodf),  # Web page template
     }
     parser = convert.ConvertOptionParser(formats, description=__doc__)
-    add_options(parser)
     parser.run(argv)
 
 
