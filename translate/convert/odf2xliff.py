@@ -37,14 +37,6 @@ def convertodf(inputfile, outputfile, templates):
     """reads in stdin using fromfileclass, converts using convertorclass,
        writes to stdout
     """
-
-    def translate_toolkit_implementation(store):
-        contents = odf_io.open_odf(inputfile)
-        for data in contents.values():
-            parse_state = extract.ParseState(odf_shared.no_translate_content_elements,
-                                             odf_shared.inline_elements)
-            extract.build_store(StringIO(data), store, parse_state)
-
     @contextmanager
     def store_context():
         store = factory.getobject(outputfile)
@@ -62,7 +54,11 @@ def convertodf(inputfile, outputfile, templates):
     inputfile = file(inputfile.name, mode='rb')
 
     with store_context() as store:
-        translate_toolkit_implementation(store)
+        contents = odf_io.open_odf(inputfile)
+        for data in contents.values():
+            parse_state = extract.ParseState(odf_shared.no_translate_content_elements,
+                                             odf_shared.inline_elements)
+            extract.build_store(StringIO(data), store, parse_state)
 
     return True
 
