@@ -90,6 +90,7 @@ def write_odf(xlf_data, template, output_file, dom_trees):
     output_file.close()
     output_file = file(output_file.name, mode='wb')
     output_zip = zipfile.ZipFile(output_file, 'w', compression=zipfile.ZIP_DEFLATED)
+
     # Let's keep the XLIFF file out of the generated ODF for now. Note the
     # weird handling of the manifest since it can only be written to the ZIP
     # file once.
