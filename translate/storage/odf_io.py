@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 #
-# Copyright 2008 Zuza Software Foundation
+# Copyright 2008, 2014 Zuza Software Foundation
 #
 # This file is part of translate.
 #
@@ -17,7 +17,6 @@
 #
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, see <http://www.gnu.org/licenses/>.
-#
 
 import zipfile
 
@@ -37,10 +36,6 @@ def copy_odf(input_zip, output_zip, exclusion_list):
     for name in [name for name in input_zip.namelist() if name not in exclusion_list]:
         output_zip.writestr(name, input_zip.read(name))
     return output_zip
-
-
-def namespaced(nsmap, short_namespace, tag):
-    return '{%s}%s' % (nsmap[short_namespace], tag)
 
 
 def add_file(output_zip, manifest_data, new_filename, new_data):

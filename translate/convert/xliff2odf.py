@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 #
-# Copyright 2004-2006 Zuza Software Foundation
+# Copyright 2004-2014 Zuza Software Foundation
 #
 # This file is part of translate.
 #
@@ -17,13 +17,13 @@
 #
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, see <http://www.gnu.org/licenses/>.
-#
 
 """Convert XLIFF translation files to OpenDocument (ODF) files.
 
 See: http://docs.translatehouse.org/projects/translate-toolkit/en/latest/commands/odf2xliff.html
 for examples and usage instructions.
 """
+
 import zipfile
 from cStringIO import StringIO
 
@@ -32,10 +32,6 @@ import lxml.etree as etree
 from translate.convert import convert
 from translate.storage import factory, odf_io, odf_shared
 from translate.storage.xml_extract import extract, generate, unit_tree
-
-
-def first_child(unit_node):
-    return unit_node.children.values()[0]
 
 
 def translate_odf(template, input_file):
