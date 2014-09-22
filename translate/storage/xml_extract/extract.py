@@ -184,16 +184,6 @@ def _to_placeables(parent_translatable, translatable, id_maker):
     return result
 
 
-def _add_translatable_to_store(store, parent_translatable, translatable, id_maker):
-    """Construct a new translation unit, set its source and location
-    information and add it to 'store'.
-    """
-    unit = store.UnitClass(u'')
-    unit.rich_source = [StringElem(_to_placeables(parent_translatable, translatable, id_maker))]
-    unit.addlocation(translatable.xpath)
-    store.addunit(unit)
-
-
 def _contains_translatable_text(translatable):
     """Checks whether translatable contains any chunks of text which contain
     more than whitespace.
@@ -214,10 +204,16 @@ def _make_store_adder(store):
     """
     id_maker = IdMaker()
 
-    def add_to_store(parent_translatable, translatable, rid):
-        _add_translatable_to_store(store, parent_translatable, translatable, id_maker)
+    def add_translatable_to_store(parent_translatable, translatable, rid):
+        """Construct a new translation unit, set its source and location
+        information and add it to 'store'.
+        """
+        unit = store.UnitClass(u'')
+        unit.rich_source = [StringElem(_to_placeables(parent_translatable, translatable, id_maker))]
+        unit.addlocation(translatable.xpath)
+        store.addunit(unit)
 
-    return add_to_store
+    return add_translatable_to_store
 
 
 def _walk_translatable_tree(translatables, f, parent_translatable, rid):
