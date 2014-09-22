@@ -31,6 +31,52 @@ NO_TRANSLATE_ELEMENTS = [
     ('http://ns.adobe.com/AdobeInDesign/idml/1.0/packaging', 'Story'),
 
     ('', 'Story'),  # This is a different Story tag than the one above.
+    ('', 'StoryPreference'),
+    ('', 'InCopyExportOption'),
+    ('', 'ParagraphStyleRange'),
+    ('', 'CharacterStyleRange'),
+
+    ('', 'MetadataPacketPreference'),
+
+    ('', 'Contents'),  # Don't confuse with Content tag. This tag contains a
+    # lot of CDATA we don't want to parse.
+
+    ('', 'Properties'),
+    ('', 'Leading'),
+    ('', 'AppliedFont'),
+
+    ('', 'TextFrame'),
+    ('', 'PathGeometry'),
+    ('', 'GeometryPathType'),
+    ('', 'PathPointArray'),
+    ('', 'PathPointType'),
+
+    ('', 'AnchoredObjectSetting'),
+    ('', 'TextFramePreference'),
+    ('', 'TextWrapPreference'),
+    ('', 'TextWrapOffset'),
+    ('', 'ContourOption'),
+
+    ('', 'EPS'),
+    ('', 'GraphicBounds'),
+    ('', 'Link'),
+    ('', 'ClippingPathSettings'),
+    ('', 'FrameFittingOption'),
+
+    ('', 'ObjectExportOption'),
+    ('', 'AltMetadataProperty'),
+    ('', 'ActualMetadataProperty'),
+
+
+    ('', 'TabList'),
+    ('', 'ListItem'),
+    ('', 'Alignment'),
+    ('', 'AlignmentCharacter'),
+    ('', 'Leader'),
+    ('', 'Position'),
+
+    ('', 'Rectangle'),
+    ('', 'Br'),
 ]
 
 
