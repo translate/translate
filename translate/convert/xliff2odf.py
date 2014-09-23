@@ -65,11 +65,6 @@ def translate_odf(template, input_file):
             generate.apply_translations(dom_tree.getroot(), file_unit_tree, generate.replace_dom_text(make_parse_state))
         return dom_trees
 
-    # Since the convertoptionsparser will give us an open file, we risk that
-    # it could have been opened in non-binary mode on Windows, and then we'll
-    # have problems, so let's make sure we have what we want.
-    template.close()
-    template = file(template.name, mode='rb')
     dom_trees = load_dom_trees(template)
     unit_trees = load_unit_tree(input_file, dom_trees)
     return translate_dom_trees(unit_trees, dom_trees)
@@ -81,14 +76,7 @@ def write_odf(xlf_data, template, output_file, dom_trees):
         for filename, dom_tree in dom_trees.iteritems():
             output_zip.writestr(filename, etree.tostring(dom_tree, encoding='UTF-8', xml_declaration=True))
 
-    # Since the convertoptionsparser will give us an open file, we risk that
-    # it could have been opened in non-binary mode on Windows, and then we'll
-    # have problems, so let's make sure we have what we want.
-    template.close()
-    template = file(template.name, mode='rb')
     template_zip = zipfile.ZipFile(template, 'r')
-    output_file.close()
-    output_file = file(output_file.name, mode='wb')
     output_zip = zipfile.ZipFile(output_file, 'w', compression=zipfile.ZIP_DEFLATED)
 
     # Let's keep the XLIFF file out of the generated ODF for now. Note the
@@ -102,6 +90,14 @@ def write_odf(xlf_data, template, output_file, dom_trees):
 
 def convertxliff(input_file, output_file, template):
     """reads in stdin using fromfileclass, converts using convertorclass, writes to stdout"""
+    # Since the convertoptionsparser will give us an open file, we risk that
+    # it could have been opened in non-binary mode on Windows, and then we'll
+    # have problems, so let's make sure we have what we want.
+    template.close()
+    template = file(template.name, mode='rb')
+    output_file.close()
+    output_file = file(output_file.name, mode='wb')
+
     xlf_data = input_file.read()
     dom_trees = translate_odf(template, StringIO(xlf_data))
     write_odf(xlf_data, template, output_file, dom_trees)
