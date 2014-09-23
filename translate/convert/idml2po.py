@@ -30,7 +30,7 @@ from translate.storage.xml_extract.extract import ParseState, build_store
 
 
 def convert_idml(inputfile, outputfile, template):
-    """Convert an IDML package to XLIFF."""
+    """Convert an IDML package to PO."""
     # Since the convertoptionsparser will give us an open file, we risk that
     # it could have been opened in non-binary mode on Windows, and then we'll
     # have problems, so let's make sure we have what we want.
@@ -38,10 +38,6 @@ def convert_idml(inputfile, outputfile, template):
     inputfile = file(inputfile.name, mode='rb')
 
     store = factory.getobject(outputfile)
-    try:
-        store.setfilename(store.getfilenode('NoName'), inputfile.name)
-    except Exception:
-        print("Couldn't set origin filename")
 
     contents = open_idml(inputfile)
 
@@ -55,7 +51,7 @@ def convert_idml(inputfile, outputfile, template):
 
 def main(argv=None):
     formats = {
-        "idml": ("xlf", convert_idml),
+        "idml": ("po", convert_idml),
     }
     parser = convert.ConvertOptionParser(formats, description=__doc__)
     parser.run(argv)
