@@ -1,0 +1,140 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+#
+# Copyright 2014 Zuza Software Foundation
+#
+# This file is part of translate.
+#
+# translate is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
+#
+# translate is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program; if not, see <http://www.gnu.org/licenses/>.
+
+"""Takes an IDML template file and a PO file containing translations of
+strings in the IDML template. It creates a new IDML file using the translations
+of the PO file.
+"""
+
+from cStringIO import StringIO
+from zipfile import ZIP_DEFLATED, ZipFile
+
+import lxml.etree as etree
+
+from translate.convert import convert
+from translate.storage import factory
+from translate.storage.idml import (NO_TRANSLATE_ELEMENTS,
+                                    INLINE_ELEMENTS, copy_idml, open_idml)
+from translate.storage.xml_extract.extract import ParseState
+from translate.storage.xml_extract.generate import (apply_translations,
+                                                    replace_dom_text)
+from translate.storage.xml_extract.unit_tree import XPathTree, build_unit_tree
+
+
+def translate_idml(template, input_file):
+
+    def load_dom_trees(template):
+        """Return a dict with translatable files in the template IDML package.
+
+        The keys are the filenames inside the IDML package, and the values are
+        the etrees for each of those translatable files.
+        """
+        idml_data = open_idml(template)
+        return dict((filename, etree.parse(StringIO(data)))
+                    for filename, data in idml_data.iteritems())
+
+    def load_unit_tree(input_file):
+        """Return a dict with the translations grouped by files IDML package.
+
+        The keys are the filenames inside the template IDML package, and the
+        values are XPathTree instances for each of those files.
+        """
+        store = factory.getobject(input_file)
+        tree = build_unit_tree(store)
+
+        def extract_unit_tree(filename, root_dom_element_name):
+            """Find the subtree in 'tree' which corresponds to the data in XML
+            file 'filename'
+            """
+            try:
+                file_tree = tree.children[root_dom_element_name, 0]
+            except KeyError:
+                file_tree = XPathTree()
+
+            return (filename, file_tree)
+
+        return dict(extract_unit_tree(filename, 'idPkg:Story')
+                    for filename in z.namelist()
+                    if filename.startswith('Stories/'))
+
+    def translate_dom_trees(unit_trees, dom_trees):
+        """Return a dict with the translated files for the IDML package.
+
+        The keys are the filenames for the translatable files inside the
+        template IDML package, and the values are etree ElementTree instances
+        for each of those files.
+        """
+        make_parse_state = lambda: ParseState(NO_TRANSLATE_ELEMENTS,
+                                              INLINE_ELEMENTS)
+        for filename, dom_tree in dom_trees.iteritems():
+            file_unit_tree = unit_trees[filename]
+            apply_translations(dom_tree.getroot(), file_unit_tree,
+                               replace_dom_text(make_parse_state))
+        return dom_trees
+
+    dom_trees = load_dom_trees(template)
+    unit_trees = load_unit_tree(input_file)
+    return translate_dom_trees(unit_trees, dom_trees)
+
+
+def write_idml(template, output_file, dom_trees):
+    """Write the translated IDML package."""
+    template_zip = ZipFile(template, 'r')
+    output_zip = ZipFile(output_file, 'w', compression=ZIP_DEFLATED)
+
+    # Copy the IDML package.
+    output_zip = copy_idml(template_zip, output_zip, dom_trees.keys())
+
+    # Replace the translated files in the IDML package.
+    for filename, dom_tree in dom_trees.iteritems():
+        output_zip.writestr(filename, etree.tostring(dom_tree,
+                                                     encoding='UTF-8',
+                                                     xml_declaration=True))
+
+
+def convertpo(input_file, output_file, template):
+    """Create a translated IDML using an IDML template and a PO file."""
+    # Since the convertoptionsparser will give us a open files, we risk that
+    # they could have been opened in non-binary mode on Windows, and then we'll
+    # have problems, so let's make sure we have what we want.
+    template.close()
+    template = file(template.name, mode='rb')
+    output_file.close()
+    output_file = file(output_file.name, mode='wb')
+
+    po_data = input_file.read()
+    dom_trees = translate_idml(template, StringIO(po_data))
+
+    write_idml(template, output_file, dom_trees)
+    output_file.close()
+    return True
+
+
+def main(argv=None):
+    formats = {
+        ('po', 'idml'): ("idml", convertpo),
+    }
+    parser = convert.ConvertOptionParser(formats, usetemplates=True,
+                                         description=__doc__)
+    parser.run(argv)
+
+
+if __name__ == '__main__':
+    main()
