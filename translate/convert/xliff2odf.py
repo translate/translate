@@ -70,7 +70,7 @@ def translate_odf(template, input_file):
     return translate_dom_trees(unit_trees, dom_trees)
 
 
-def write_odf(xlf_data, template, output_file, dom_trees):
+def write_odf(template, output_file, dom_trees):
 
     def write_content_to_odf(output_zip, dom_trees):
         for filename, dom_tree in dom_trees.iteritems():
@@ -95,7 +95,7 @@ def convertxliff(input_file, output_file, template):
 
     xlf_data = input_file.read()
     dom_trees = translate_odf(template, StringIO(xlf_data))
-    write_odf(xlf_data, template, output_file, dom_trees)
+    write_odf(template, output_file, dom_trees)
     output_file.close()
     return True
 
