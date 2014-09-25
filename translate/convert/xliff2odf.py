@@ -37,26 +37,39 @@ from translate.storage.xml_extract import extract, generate, unit_tree
 def translate_odf(template, input_file):
 
     def load_dom_trees(template):
+        """Return a dict with translatable files in the template ODF package.
+
+        The keys are the filenames inside the ODF package, and the values are
+        the etrees for each of those translatable files.
+        """
         odf_data = odf_io.open_odf(template)
-        return dict((filename, etree.parse(StringIO(data))) for filename, data in odf_data.iteritems())
+        return dict((filename, etree.parse(StringIO(data)))
+                    for filename, data in odf_data.iteritems())
 
     def load_unit_tree(input_file):
+        """Return a dict with the translations grouped by files ODF package.
+
+        The keys are the filenames inside the template ODF package, and the
+        values are XPathTree instances for each of those files.
+        """
         store = factory.getobject(input_file)
         tree = unit_tree.build_unit_tree(store)
 
         def extract_unit_tree(filename, root_dom_element_name):
-            """Find the subtree in 'tree' which corresponds to the data in XML file 'filename'"""
-
+            """Find the subtree in 'tree' which corresponds to the data in XML
+            file 'filename'.
+            """
             def get_tree():
                 try:
-                    return tree.children['office:%s' % root_dom_element_name, 0]
+                    return tree.children[root_dom_element_name, 0]
                 except KeyError:
                     return unit_tree.XPathTree()
+
             return (filename, get_tree())
 
-        return dict([extract_unit_tree('content.xml', 'document-content'),
-                     extract_unit_tree('meta.xml', 'document-meta'),
-                     extract_unit_tree('styles.xml', 'document-styles')])
+        return dict([extract_unit_tree('content.xml', 'office:document-content'),
+                     extract_unit_tree('meta.xml', 'office:document-meta'),
+                     extract_unit_tree('styles.xml', 'office:document-styles')])
 
     def translate_dom_trees(unit_trees, dom_trees):
         make_parse_state = lambda: extract.ParseState(odf_shared.no_translate_content_elements, odf_shared.inline_elements)
@@ -73,18 +86,22 @@ def translate_odf(template, input_file):
 def write_odf(template, output_file, dom_trees):
 
     def write_content_to_odf(output_zip, dom_trees):
+        """Overwrite the translated files to the ODF package."""
         for filename, dom_tree in dom_trees.iteritems():
-            output_zip.writestr(filename, etree.tostring(dom_tree, encoding='UTF-8', xml_declaration=True))
+            output_zip.writestr(filename, etree.tostring(dom_tree,
+                                                         encoding='UTF-8',
+                                                         xml_declaration=True))
 
     template_zip = zipfile.ZipFile(template, 'r')
-    output_zip = zipfile.ZipFile(output_file, 'w', compression=zipfile.ZIP_DEFLATED)
+    output_zip = zipfile.ZipFile(output_file, 'w',
+                                 compression=zipfile.ZIP_DEFLATED)
 
     output_zip = odf_io.copy_odf(template_zip, output_zip, dom_trees.keys())
     write_content_to_odf(output_zip, dom_trees)
 
 
 def convertxliff(input_file, output_file, template):
-    """reads in stdin using fromfileclass, converts using convertorclass, writes to stdout"""
+    """Create a translated ODF using an ODF template and a XLIFF file."""
     # Since the convertoptionsparser will give us an open file, we risk that
     # it could have been opened in non-binary mode on Windows, and then we'll
     # have problems, so let's make sure we have what we want.
