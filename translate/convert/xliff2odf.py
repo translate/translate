@@ -40,7 +40,7 @@ def translate_odf(template, input_file):
         odf_data = odf_io.open_odf(template)
         return dict((filename, etree.parse(StringIO(data))) for filename, data in odf_data.iteritems())
 
-    def load_unit_tree(input_file, dom_trees):
+    def load_unit_tree(input_file):
         store = factory.getobject(input_file)
         tree = unit_tree.build_unit_tree(store)
 
@@ -66,7 +66,7 @@ def translate_odf(template, input_file):
         return dom_trees
 
     dom_trees = load_dom_trees(template)
-    unit_trees = load_unit_tree(input_file, dom_trees)
+    unit_trees = load_unit_tree(input_file)
     return translate_dom_trees(unit_trees, dom_trees)
 
 
