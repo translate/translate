@@ -27,14 +27,15 @@ for examples and usage instructions.
 from cStringIO import StringIO
 
 from translate.convert import convert
-from translate.storage import factory, odf_io, odf_shared
-from translate.storage.xml_extract import extract
+from translate.storage import factory
+from translate.storage.odf_io import open_odf
+from translate.storage.odf_shared import (inline_elements,
+                                          no_translate_content_elements)
+from translate.storage.xml_extract.extract import ParseState, build_store
 
 
 def convertodf(inputfile, outputfile, templates):
-    """reads in stdin using fromfileclass, converts using convertorclass,
-       writes to stdout
-    """
+    """Convert an ODF package to XLIFF."""
     # Since the convertoptionsparser will give us an open file, we risk that
     # it could have been opened in non-binary mode on Windows, and then we'll
     # have problems, so let's make sure we have what we want.
@@ -48,11 +49,10 @@ def convertodf(inputfile, outputfile, templates):
     except:
         print("couldn't set origin filename")
 
-    contents = odf_io.open_odf(inputfile)
+    contents = open_odf(inputfile)
     for data in contents.values():
-        parse_state = extract.ParseState(odf_shared.no_translate_content_elements,
-                                         odf_shared.inline_elements)
-        extract.build_store(StringIO(data), store, parse_state)
+        parse_state = ParseState(no_translate_content_elements, inline_elements)
+        build_store(StringIO(data), store, parse_state)
 
     store.save()
     return True
