@@ -24,7 +24,6 @@ See: http://docs.translatehouse.org/projects/translate-toolkit/en/latest/command
 for examples and usage instructions.
 """
 
-from contextlib import contextmanager
 from cStringIO import StringIO
 
 from translate.convert import convert
@@ -36,29 +35,26 @@ def convertodf(inputfile, outputfile, templates):
     """reads in stdin using fromfileclass, converts using convertorclass,
        writes to stdout
     """
-    @contextmanager
-    def store_context():
-        store = factory.getobject(outputfile)
-        try:
-            store.setfilename(store.getfilenode('NoName'), inputfile.name)
-        except:
-            print("couldn't set origin filename")
-        yield store
-        store.save()
-
     # Since the convertoptionsparser will give us an open file, we risk that
     # it could have been opened in non-binary mode on Windows, and then we'll
     # have problems, so let's make sure we have what we want.
     inputfile.close()
     inputfile = file(inputfile.name, mode='rb')
 
-    with store_context() as store:
-        contents = odf_io.open_odf(inputfile)
-        for data in contents.values():
-            parse_state = extract.ParseState(odf_shared.no_translate_content_elements,
-                                             odf_shared.inline_elements)
-            extract.build_store(StringIO(data), store, parse_state)
+    store = factory.getobject(outputfile)
 
+    try:
+        store.setfilename(store.getfilenode('NoName'), inputfile.name)
+    except:
+        print("couldn't set origin filename")
+
+    contents = odf_io.open_odf(inputfile)
+    for data in contents.values():
+        parse_state = extract.ParseState(odf_shared.no_translate_content_elements,
+                                         odf_shared.inline_elements)
+        extract.build_store(StringIO(data), store, parse_state)
+
+    store.save()
     return True
 
 
