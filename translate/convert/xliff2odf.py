@@ -59,13 +59,12 @@ def translate_odf(template, input_file):
             """Find the subtree in 'tree' which corresponds to the data in XML
             file 'filename'.
             """
-            def get_tree():
-                try:
-                    return tree.children[root_dom_element_name, 0]
-                except KeyError:
-                    return unit_tree.XPathTree()
+            try:
+                file_tree = tree.children[root_dom_element_name, 0]
+            except KeyError:
+                file_tree = unit_tree.XPathTree()
 
-            return (filename, get_tree())
+            return (filename, file_tree)
 
         return dict([extract_unit_tree('content.xml', 'office:document-content'),
                      extract_unit_tree('meta.xml', 'office:document-meta'),
