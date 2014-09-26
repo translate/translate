@@ -116,7 +116,7 @@ def build_unit_tree(store):
     """
     tree = XPathTree()
     for unit in store.units:
-        if not unit.isfuzzy():
+        if unit.source and not unit.isfuzzy():
             location = _split_xpath(unit.getlocations()[0])
             _add_unit_to_tree(tree, location, unit)
     return tree
