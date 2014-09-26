@@ -30,8 +30,14 @@ from cStringIO import StringIO
 import lxml.etree as etree
 
 from translate.convert import convert
-from translate.storage import factory, odf_io, odf_shared
-from translate.storage.xml_extract import extract, generate, unit_tree
+from translate.storage import factory
+from translate.storage.odf_io import copy_odf, open_odf
+from translate.storage.odf_shared import (inline_elements,
+                                          no_translate_content_elements)
+from translate.storage.xml_extract.extract import ParseState
+from translate.storage.xml_extract.generate import (apply_translations,
+                                                    replace_dom_text)
+from translate.storage.xml_extract.unit_tree import XPathTree, build_unit_tree
 
 
 def translate_odf(template, input_file):
@@ -42,7 +48,7 @@ def translate_odf(template, input_file):
         The keys are the filenames inside the ODF package, and the values are
         the etrees for each of those translatable files.
         """
-        odf_data = odf_io.open_odf(template)
+        odf_data = open_odf(template)
         return dict((filename, etree.parse(StringIO(data)))
                     for filename, data in odf_data.iteritems())
 
@@ -53,7 +59,7 @@ def translate_odf(template, input_file):
         values are XPathTree instances for each of those files.
         """
         store = factory.getobject(input_file)
-        tree = unit_tree.build_unit_tree(store)
+        tree = build_unit_tree(store)
 
         def extract_unit_tree(filename, root_dom_element_name):
             """Find the subtree in 'tree' which corresponds to the data in XML
@@ -62,7 +68,7 @@ def translate_odf(template, input_file):
             try:
                 file_tree = tree.children[root_dom_element_name, 0]
             except KeyError:
-                file_tree = unit_tree.XPathTree()
+                file_tree = XPathTree()
 
             return (filename, file_tree)
 
@@ -71,10 +77,18 @@ def translate_odf(template, input_file):
                      extract_unit_tree('styles.xml', 'office:document-styles')])
 
     def translate_dom_trees(unit_trees, dom_trees):
-        make_parse_state = lambda: extract.ParseState(odf_shared.no_translate_content_elements, odf_shared.inline_elements)
+        """Return a dict with the translated files for the ODF package.
+
+        The keys are the filenames for the translatable files inside the
+        template ODF package, and the values are etree ElementTree instances
+        for each of those files.
+        """
+        make_parse_state = lambda: ParseState(no_translate_content_elements,
+                                              inline_elements)
         for filename, dom_tree in dom_trees.iteritems():
             file_unit_tree = unit_trees[filename]
-            generate.apply_translations(dom_tree.getroot(), file_unit_tree, generate.replace_dom_text(make_parse_state))
+            apply_translations(dom_tree.getroot(), file_unit_tree,
+                               replace_dom_text(make_parse_state))
         return dom_trees
 
     dom_trees = load_dom_trees(template)
@@ -83,13 +97,17 @@ def translate_odf(template, input_file):
 
 
 def write_odf(template, output_file, dom_trees):
-    """Write the translated ODF package."""
+    """Write the translated ODF package.
+
+    The resulting ODF package is a copy of the template ODF package, with the
+    translatable files replaced by their translated versions.
+    """
     template_zip = zipfile.ZipFile(template, 'r')
     output_zip = zipfile.ZipFile(output_file, 'w',
                                  compression=zipfile.ZIP_DEFLATED)
 
     # Copy the ODF package.
-    output_zip = odf_io.copy_odf(template_zip, output_zip, dom_trees.keys())
+    output_zip = copy_odf(template_zip, output_zip, dom_trees.keys())
 
     # Overwrite the translated files to the ODF package.
     for filename, dom_tree in dom_trees.iteritems():

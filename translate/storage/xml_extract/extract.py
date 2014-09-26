@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 #
-# Copyright 2008-2009 Zuza Software Foundation
+# Copyright 2008-2014 Zuza Software Foundation
 #
 # This file is part of the Translate Toolkit.
 #
@@ -40,11 +40,13 @@ class Translatable(object):
 
     @property
     def placeables(self):
-        return [placeable for placeable in self.source if isinstance(placeable, Translatable)]
+        return [placeable for placeable in self.source
+                if isinstance(placeable, Translatable)]
 
 
 def reduce_unit_tree(f, unit_node, *state):
-    return misc.reduce_tree(f, unit_node, unit_node, lambda unit_node: unit_node.placeables, *state)
+    return misc.reduce_tree(f, unit_node, unit_node,
+                            lambda unit_node: unit_node.placeables, *state)
 
 
 class ParseState(object):
@@ -73,7 +75,8 @@ def _process_placeable(dom_node, state):
     elif len(placeable) == 1:
         return placeable[0]
     else:
-        raise Exception("BUG: find_translatable_dom_nodes should never return more than a single translatable")
+        raise Exception("BUG: find_translatable_dom_nodes should never return "
+                        "more than a single translatable")
 
 
 def _process_placeables(dom_node, state):
