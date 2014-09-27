@@ -83,20 +83,19 @@ def translate_odf(template, input_file):
 
 
 def write_odf(template, output_file, dom_trees):
-
-    def write_content_to_odf(output_zip, dom_trees):
-        """Overwrite the translated files to the ODF package."""
-        for filename, dom_tree in dom_trees.iteritems():
-            output_zip.writestr(filename, etree.tostring(dom_tree,
-                                                         encoding='UTF-8',
-                                                         xml_declaration=True))
-
+    """Write the translated ODF package."""
     template_zip = zipfile.ZipFile(template, 'r')
     output_zip = zipfile.ZipFile(output_file, 'w',
                                  compression=zipfile.ZIP_DEFLATED)
 
+    # Copy the ODF package.
     output_zip = odf_io.copy_odf(template_zip, output_zip, dom_trees.keys())
-    write_content_to_odf(output_zip, dom_trees)
+
+    # Overwrite the translated files to the ODF package.
+    for filename, dom_tree in dom_trees.iteritems():
+        output_zip.writestr(filename, etree.tostring(dom_tree,
+                                                     encoding='UTF-8',
+                                                     xml_declaration=True))
 
 
 def convertxliff(input_file, output_file, template):
