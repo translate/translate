@@ -220,7 +220,7 @@ def _to_placeables(parent_translatable, translatable, id_maker):
     return result
 
 
-def _make_store_adder(store):
+def _make_store_adder(store, filename=None):
     """Return a function which, when called with a Translatable will add
     a unit to 'store'. The placeables will be represented as strings according
     to 'placeable_quoter'.
@@ -235,6 +235,8 @@ def _make_store_adder(store):
         unit.rich_source = [StringElem(_to_placeables(parent_translatable,
                                                       translatable, id_maker))]
         unit.addlocation(translatable.xpath)
+        if filename is not None:
+            unit.addlocation(filename)
         store.addunit(unit)
 
     return add_translatable_to_store
@@ -260,9 +262,9 @@ def reverse_map(a_map):
     return dict((value, key) for key, value in a_map.iteritems())
 
 
-def build_store(odf_file, store, parse_state, store_adder=None):
+def build_store(odf_file, store, parse_state, store_adder=None, filename=None):
     """Build a store for the given XML file."""
-    store_adder = store_adder or _make_store_adder(store)
+    store_adder = store_adder or _make_store_adder(store, filename)
     tree = etree.parse(odf_file)
     root = tree.getroot()
     parse_state.nsmap = reverse_map(root.nsmap)

@@ -41,9 +41,10 @@ def convert_idml(inputfile, outputfile, template):
 
     contents = open_idml(inputfile)
 
-    for translatable_file in contents.values():
+    for filename, translatable_file in contents.iteritems():
         parse_state = ParseState(NO_TRANSLATE_ELEMENTS, INLINE_ELEMENTS)
-        build_store(StringIO(translatable_file), store, parse_state)
+        build_store(StringIO(translatable_file), store, parse_state,
+                    filename=filename)
 
     store.save()
     return True
