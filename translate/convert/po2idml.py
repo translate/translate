@@ -38,7 +38,7 @@ from translate.storage.xml_extract.generate import (apply_translations,
 from translate.storage.xml_extract.unit_tree import XPathTree, build_unit_tree
 
 
-def translate_idml(template, input_file):
+def translate_idml(template, input_file, translatable_files):
 
     def load_dom_trees(template):
         """Return a dict with translatable files in the template IDML package.
@@ -57,12 +57,13 @@ def translate_idml(template, input_file):
         values are XPathTree instances for each of those files.
         """
         store = factory.getobject(input_file)
-        tree = build_unit_tree(store)
 
         def extract_unit_tree(filename, root_dom_element_name):
             """Find the subtree in 'tree' which corresponds to the data in XML
             file 'filename'
             """
+            tree = build_unit_tree(store, filename)
+
             try:
                 file_tree = tree.children[root_dom_element_name, 0]
             except KeyError:
@@ -71,8 +72,7 @@ def translate_idml(template, input_file):
             return (filename, file_tree)
 
         return dict(extract_unit_tree(filename, 'idPkg:Story')
-                    for filename in z.namelist()
-                    if filename.startswith('Stories/'))
+                    for filename in translatable_files)
 
     def translate_dom_trees(unit_trees, dom_trees):
         """Return a dict with the translated files for the IDML package.
@@ -121,8 +121,11 @@ def convertpo(input_file, output_file, template):
     # Now proceed with the conversion.
     template_zip = ZipFile(template, 'r')
 
+    translatable_files = [filename for filename in template_zip.namelist()
+                          if filename.startswith('Stories/')]
+
     po_data = input_file.read()
-    dom_trees = translate_idml(template, StringIO(po_data))
+    dom_trees = translate_idml(template, StringIO(po_data), translatable_files)
 
     write_idml(template_zip, output_file, dom_trees)
     output_file.close()
