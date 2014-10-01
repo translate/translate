@@ -47,7 +47,8 @@ def translate_idml(template, input_file, translatable_files):
         the etrees for each of those translatable files.
         """
         idml_data = open_idml(template)
-        return dict((filename, etree.parse(StringIO(data)))
+        parser = etree.XMLParser(strip_cdata=False)
+        return dict((filename, etree.fromstring(data, parser).getroottree())
                     for filename, data in idml_data.iteritems())
 
     def load_unit_tree(input_file):
