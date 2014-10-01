@@ -106,7 +106,8 @@ def write_idml(template_zip, output_file, dom_trees):
     for filename, dom_tree in dom_trees.iteritems():
         output_zip.writestr(filename, etree.tostring(dom_tree,
                                                      encoding='UTF-8',
-                                                     xml_declaration=True))
+                                                     xml_declaration=True,
+                                                     standalone='yes'))
 
 
 def convertpo(input_file, output_file, template):
