@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 #
-# Copyright 2002-2006 Zuza Software Foundation
+# Copyright 2002-2014 Zuza Software Foundation
 #
 # This file is part of translate.
 #
@@ -209,7 +209,19 @@ def _build_translated_dom(dom_node, target_node, target_dom_to_doc_dom):
         _build_translated_dom(dom_child, target_child, target_dom_to_doc_dom)
 
 
-def replace_dom_text(make_parse_state):
+def get_xliff_source_target_doms(unit):
+    """Return a tuple with unit source and target DOM objects.
+
+    This method is method is meant to provide a way to retrieve the DOM objects
+    for the unit source and target for XLIFF stores.
+    """
+    if unit.target_dom is not None:
+        return (unit.source_dom, unit.target_dom)
+
+    return (unit.source_dom, unit.source_dom)
+
+
+def replace_dom_text(make_parse_state, dom_retriever=get_xliff_source_target_doms):
     """Return a function::
 
           action: etree_Element x base.TranslationUnit -> None
@@ -223,11 +235,7 @@ def replace_dom_text(make_parse_state):
         translation) to update the text in the dom_node and at the tails of its
         children.
         """
-        source_dom = unit.source_dom
-        if unit.target_dom is not None:
-            target_dom = unit.target_dom
-        else:
-            target_dom = unit.source_dom
+        source_dom, target_dom = dom_retriever(unit)
 
         # Build a tree of (non-DOM) nodes which correspond to the translatable DOM nodes in 'dom_node'.
         # Pass in a fresh parse_state every time, so as avoid working with stale parse state info.

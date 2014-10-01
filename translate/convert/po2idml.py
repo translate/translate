@@ -82,12 +82,33 @@ def translate_idml(template, input_file, translatable_files):
         template IDML package, and the values are etree ElementTree instances
         for each of those files.
         """
+        def get_po_doms(unit):
+            """Return a tuple with unit source and target DOM objects.
+
+            This method is method is meant to provide a way to retrieve the DOM
+            objects for the unit source and target for PO stores.
+
+            Since POunit doesn't have any source_dom nor target_dom attributes,
+            it is necessary to craft those objects.
+            """
+            source_dom = etree.Element("source")
+            source_dom.text = unit.source
+            target_dom = etree.Element("target")
+
+            if unit.target:
+                target_dom.text = unit.target
+            else:
+                target_dom.text = unit.source
+
+            return (source_dom, target_dom)
+
         make_parse_state = lambda: ParseState(NO_TRANSLATE_ELEMENTS,
                                               INLINE_ELEMENTS)
         for filename, dom_tree in dom_trees.iteritems():
             file_unit_tree = unit_trees[filename]
             apply_translations(dom_tree.getroot(), file_unit_tree,
-                               replace_dom_text(make_parse_state))
+                               replace_dom_text(make_parse_state,
+                                                dom_retriever=get_po_doms))
         return dom_trees
 
     dom_trees = load_dom_trees(template)
