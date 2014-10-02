@@ -22,7 +22,11 @@ import zipfile
 
 
 # Tags to be extracted as placeables (tags that are within translatable texts).
-INLINE_ELEMENTS = []
+INLINE_ELEMENTS = [
+    ('', 'CharacterStyleRange'),
+    ('', 'Content'),
+#    ('', 'Br'),
+]
 
 
 # Skipping one of these tags doesn't imply nested acceptable tags are not
@@ -33,8 +37,8 @@ NO_TRANSLATE_ELEMENTS = [
     ('', 'Story'),  # This is a different Story tag than the one above.
     ('', 'StoryPreference'),
     ('', 'InCopyExportOption'),
-    ('', 'ParagraphStyleRange'),
-    ('', 'CharacterStyleRange'),
+    #('', 'ParagraphStyleRange'),
+    #('', 'CharacterStyleRange'),
 
     ('', 'MetadataPacketPreference'),
 
@@ -76,7 +80,7 @@ NO_TRANSLATE_ELEMENTS = [
     ('', 'Position'),
 
     ('', 'Rectangle'),
-    ('', 'Br'),
+    #('', 'Br'),
 ]
 
 

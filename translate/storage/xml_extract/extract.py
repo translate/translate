@@ -117,6 +117,69 @@ def _process_translatable(dom_node, state):
     return [translatable]
 
 
+def _has_idml_translatable_content(dom_node):
+    has_translatable_content = True
+    if dom_node.tag == 'ParagraphStyleRange':
+        has_translatable_content = False
+
+        for content_node in dom_node.findall('.//Content'):
+            # Iterate over all the Content tags in this ParagraphStyleRange tag.
+            if content_node.text is not None and content_node.text.strip():
+                has_translatable_content = True
+                break
+
+    return has_translatable_content
+
+
+def _retrieve_idml_placeables(dom_node, state):
+    source = []
+    for child in dom_node:
+        if not isinstance(child, etree._Element):
+            continue
+
+        if isinstance(child, etree._ProcessingInstruction):
+            #TODO this probably won't be using the right xpath.
+            source.append(Translatable(u"placeable",
+                                       state.xpath_breadcrumb.xpath, child, [],
+                                       False))
+            continue
+
+        namespace, tag = misc.parse_tag(child.tag)
+
+        with parse_status_set(namespace, tag, state):
+            # Ensure we extract all the tags below ParagraphStyleRange as
+            # placeables, independently of them being translatable or not.
+            #state.is_inline = True
+
+            nested_stuff = []
+
+            if child.text is not None and child.text.strip():
+                nested_stuff = [unicode(child.text)]
+
+            nested_stuff.extend(_retrieve_idml_placeables(child, state))
+
+            source.append(Translatable(u"placeable",
+                                       state.xpath_breadcrumb.xpath, child,
+                                       nested_stuff, state.is_inline))
+
+            if child.tail is not None and child.tail.strip():
+                source.append(unicode(child.tail))
+
+    return source
+
+
+def _process_idml_translatable(dom_node, state):
+    if _has_idml_translatable_content(dom_node):
+        source = _retrieve_idml_placeables(dom_node, state)
+
+        translatable = Translatable(state.placeable_name,
+                                    state.xpath_breadcrumb.xpath, dom_node,
+                                    source, state.is_inline)
+        return [translatable]
+
+    return []
+
+
 def _process_children(dom_node, state):
     """Process an untranslatable DOM node.
 
@@ -181,7 +244,7 @@ def find_translatable_dom_nodes(dom_node, state):
 
     with parse_status_set(namespace, tag, state):
         if (namespace, tag) not in state.no_translate_content_elements:
-            return _process_translatable(dom_node, state)
+            return _process_idml_translatable(dom_node, state)
         else:
             return _process_children(dom_node, state)
 
@@ -220,7 +283,7 @@ def _to_placeables(parent_translatable, translatable, id_maker):
     return result
 
 
-def _make_store_adder(store, filename=None):
+def _make_store_adder(store):
     """Return a function which, when called with a Translatable will add
     a unit to 'store'. The placeables will be represented as strings according
     to 'placeable_quoter'.
@@ -235,8 +298,6 @@ def _make_store_adder(store, filename=None):
         unit.rich_source = [StringElem(_to_placeables(parent_translatable,
                                                       translatable, id_maker))]
         unit.addlocation(translatable.xpath)
-        if filename is not None:
-            unit.addlocation(filename)
         store.addunit(unit)
 
     return add_translatable_to_store
@@ -248,9 +309,9 @@ def _walk_translatable_tree(translatables, store_adder, parent_translatable):
     Inline translatables are not added to the Store.
     """
     for translatable in translatables:
-        if translatable.has_translatable_text and not translatable.is_inline:
+        if translatable.dom_node.tag == "ParagraphStyleRange":
             store_adder(parent_translatable, translatable)
-            new_parent_translatable = translatable
+            continue
         else:
             new_parent_translatable = parent_translatable
 
@@ -262,9 +323,9 @@ def reverse_map(a_map):
     return dict((value, key) for key, value in a_map.iteritems())
 
 
-def build_store(odf_file, store, parse_state, store_adder=None, filename=None):
+def build_store(odf_file, store, parse_state, store_adder=None):
     """Build a store for the given XML file."""
-    store_adder = store_adder or _make_store_adder(store, filename)
+    store_adder = store_adder or _make_store_adder(store)
     tree = etree.parse(odf_file)
     root = tree.getroot()
     parse_state.nsmap = reverse_map(root.nsmap)
