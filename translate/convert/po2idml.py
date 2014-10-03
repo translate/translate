@@ -91,14 +91,31 @@ def translate_idml(template, input_file, translatable_files):
             Since POunit doesn't have any source_dom nor target_dom attributes,
             it is necessary to craft those objects.
             """
+            def add_node_content(string, node):
+                """Append the translatable content to the node.
+
+                The string is going to have XLIFF placeables, so we have to
+                parse it as XML in order to get the right nodes to append to
+                the node.
+                """
+                # Add a wrapper "whatever" tag to avoid problems when parsing
+                # several sibling tags at the root level.
+                fake_string = "<whatever>" + string + "</whatever>"
+
+                # Copy the children to the XLIFF unit's source or target node.
+                fake_node = etree.fromstring(fake_string)
+                node.extend(fake_node.getchildren())
+
+                return node
+
             source_dom = etree.Element("source")
-            source_dom.text = unit.source
+            source_dom = add_node_content(unit.source, source_dom)
             target_dom = etree.Element("target")
 
             if unit.target:
-                target_dom.text = unit.target
+                target_dom = add_node_content(unit.target, target_dom)
             else:
-                target_dom.text = unit.source
+                target_dom = add_node_content(unit.source, target_dom)
 
             return (source_dom, target_dom)
 
