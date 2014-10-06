@@ -108,7 +108,10 @@ def convertxliff(inputfile, outputfile, templates, duplicatestyle="msgctxt"):
 
 def main(argv=None):
     from translate.convert import convert
-    formats = {"xlf": ("po", convertxliff)}
+    formats = {
+        "xlf": ("po", convertxliff),
+        "xliff": ("po", convertxliff),
+    }
     parser = convert.ConvertOptionParser(formats, usepots=True,
                                          description=__doc__)
     parser.add_duplicates_option()

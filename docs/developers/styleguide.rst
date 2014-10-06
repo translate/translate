@@ -459,10 +459,10 @@ Special roles
 
 We introduce a number of special roles for documentation:
 
-* ``:bug:`` -- links to a bug in Translate's Bugzilla.
+* ``:issue:`` -- links to a toolkit issue Github.
 
-  * ``:bug:`123``` gives: :bug:`123`
-  * ``:bug:`broken <123>``` gives: :bug:`broken <123>`
+  * ``:issue:`234``` gives: :issue:`234`
+  * ``:issue:`broken <234>``` gives: :issue:`broken <234>`
 
 * ``:opt:`` -- mark command options and command values.
 

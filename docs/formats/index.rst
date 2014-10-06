@@ -163,8 +163,8 @@ Formats that we would like to support but don't currently support:
 * Apple:
 
   * `AppleGlot <ftp://ftp.apple.com/developer/tool_chest/localization_tools/appleglot/appleglot_3.2_usersguide.pdf>`_
-  * .plist -- see :bug:`633` and `plistlib
-    <http://docs.python.org/2/library/plistlib.html>`_ for Python
+  * .plist -- see :issue:`633` and `plistlib
+    <https://docs.python.org/2/library/plistlib.html>`_ for Python
 
 * Adobe:
 
@@ -185,7 +185,7 @@ Formats that we would like to support but don't currently support:
   * :wp:`Rich Text Format <Rich_Text_Format>` (RTF) see also `pyrtf-ng
     <http://code.google.com/p/pyrtf-ng/>`_
   * :wp:`Open XML Paper Specification <Open_XML_Paper_Specification>`
-  * .NET Resource files (.resx) -- :bug:`Bug 396 <396>`
+  * .NET Resource files (.resx) -- :issue:`Issue 396 <396>`
 
 * XML related
 

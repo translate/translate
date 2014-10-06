@@ -39,5 +39,5 @@ Bugs
 ====
 
 * Some relative path bugs thus the need for ./ before file.po.
-* Until version 1.9.1, the original input file was removed, :bug:`2006`.
+* Until version 1.9.1, the original input file was removed, :issue:`2006`.
 

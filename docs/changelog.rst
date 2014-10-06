@@ -156,7 +156,7 @@ Premature termination of DTD entities
 -------------------------------------
 
 Although this does not occur frequently a case emerged where some DTD entities
-where not fully extracted from the DTD source.  This was fixed in :bug:`331`.
+where not fully extracted from the DTD source.  This was fixed in :issue:`331`.
 
 We expect this change to create a few new fuzzy entries.  There is no action
 required from the user as the next update of your PO files will bring the
@@ -628,6 +628,6 @@ although .properties files are actually a Java standard.  The old Mozilla way,
 and still the Java way, of working with .properties files is to escape any
 Unicode characters using the ``\uNNNN`` convention.  Mozilla now allows you to
 use Unicode in UTF-8 encoding for these files.  Thus in 0.9 of the Toolkit we
-now output UTF-8 encoded properties files. :bug:`Bug 114 <114>` tracks the
+now output UTF-8 encoded properties files. :issue:`Issue 193 <193>` tracks the
 status of this and we hope to add a feature to prop2po to restore the correct
 Java convention as an option.

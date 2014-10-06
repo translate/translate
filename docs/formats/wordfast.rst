@@ -21,4 +21,4 @@ Conformance
 * Header -- Only basic updating and reading of the header is implemented
 * Tab-separated value (TSV) -- the format correctly handles the TSV format used
   by Wordfast.  There is no quoting, Windows newlines are used and the ``\t``
-  is used as a delimiter (see :bug:`472`)
+  is used as a delimiter (see :issue:`472`)

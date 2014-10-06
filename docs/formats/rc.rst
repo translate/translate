@@ -48,5 +48,5 @@ Bugs
 
 * There may be problems with very deeply nested MENU's
 * LANGUAGE elements cannot yet be updated in :doc:`po2rc </commands/rc2po>`
-  (:bug:`Bug 360 <360>`)
+  (:issue:`Issue 360 <360>`)
 

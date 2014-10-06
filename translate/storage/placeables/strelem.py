@@ -516,7 +516,7 @@ class StringElem(object):
     def insert(self, offset, text, preferred_parent=None):
         """Insert the given text at the specified offset of this string-tree's
             string (Unicode) representation."""
-        if offset < 0 or offset > len(self) + 1:
+        if offset < 0 or offset > len(self):
             raise IndexError('Index out of range: %d' % (offset))
         if isinstance(text, (str, unicode)):
             text = StringElem(text)
@@ -564,12 +564,22 @@ class StringElem(object):
             return False
 
         # Case 2 #
-        if offset >= len(self):
+        if offset == len(self):
             #logging.debug('Case 2')
             last = self.flatten()[-1]
             parent = self.get_ancestor_where(last, lambda x: x.iseditable)
             if parent is None:
                 parent = self
+            preferred_type = type(preferred_parent)
+            oelem_type = type(oelem)
+            len_oelem = len(oelem)
+            if preferred_parent is oelem:
+                # The preferred parent is still in this StringElem
+                return oelem.insert(len_oelem, text)
+            elif oelem_type == preferred_type:
+                # oelem has the right type
+                return oelem.insert(len_oelem, text)
+
             parent.sub.append(checkleaf(parent, text))
             return True
 

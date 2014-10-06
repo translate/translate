@@ -31,9 +31,8 @@ class XPathTree(object):
         self.children = {}
 
     def __eq__(self, other):
-        return isinstance(other, XPathTree) and \
-            self.unit == other.unit and \
-            self.children == other.children
+        return (isinstance(other, XPathTree) and self.unit == other.unit and
+                self.children == other.children)
 
 
 def _split_xpath_component(xpath_component):

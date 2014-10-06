@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 #
-# Copyright 2008-2009 Zuza Software Foundation
+# Copyright 2008-2014 Zuza Software Foundation
 #
 # This file is part of the Translate Toolkit.
 #
@@ -38,14 +38,15 @@ class Translatable(object):
         self.is_inline = False
         self.dom_node = dom_node
 
-    def _get_placeables(self):
-        return [placeable for placeable in self.source if isinstance(placeable, Translatable)]
-
-    placeables = property(_get_placeables)
+    @property
+    def placeables(self):
+        return [placeable for placeable in self.source
+                if isinstance(placeable, Translatable)]
 
 
 def reduce_unit_tree(f, unit_node, *state):
-    return misc.reduce_tree(f, unit_node, unit_node, lambda unit_node: unit_node.placeables, *state)
+    return misc.reduce_tree(f, unit_node, unit_node,
+                            lambda unit_node: unit_node.placeables, *state)
 
 
 class ParseState(object):
@@ -74,7 +75,8 @@ def _process_placeable(dom_node, state):
     elif len(placeable) == 1:
         return placeable[0]
     else:
-        raise Exception("BUG: find_translatable_dom_nodes should never return more than a single translatable")
+        raise Exception("BUG: find_translatable_dom_nodes should never return "
+                        "more than a single translatable")
 
 
 def _process_placeables(dom_node, state):
@@ -185,21 +187,12 @@ def _to_placeables(parent_translatable, translatable, id_maker):
     return result
 
 
-def _add_translatable_to_store(store, parent_translatable, translatable, id_maker):
-    """Construct a new translation unit, set its source and location
-    information and add it to 'store'.
-    """
-    unit = store.UnitClass(u'')
-    unit.rich_source = [StringElem(_to_placeables(parent_translatable, translatable, id_maker))]
-    unit.addlocation(translatable.xpath)
-    store.addunit(unit)
-
-
 def _contains_translatable_text(translatable):
     """Checks whether translatable contains any chunks of text which contain
     more than whitespace.
 
-    If not, then there's nothing to translate."""
+    If not, then there's nothing to translate.
+    """
     for chunk in translatable.source:
         if isinstance(chunk, unicode):
             if chunk.strip() != u"":
@@ -210,16 +203,27 @@ def _contains_translatable_text(translatable):
 def _make_store_adder(store):
     """Return a function which, when called with a Translatable will add
     a unit to 'store'. The placeables will represented as strings according
-    to 'placeable_quoter'."""
+    to 'placeable_quoter'.
+    """
     id_maker = IdMaker()
 
-    def add_to_store(parent_translatable, translatable, rid):
-        _add_translatable_to_store(store, parent_translatable, translatable, id_maker)
+    def add_translatable_to_store(parent_translatable, translatable, rid):
+        """Construct a new translation unit, set its source and location
+        information and add it to 'store'.
+        """
+        unit = store.UnitClass(u'')
+        unit.rich_source = [StringElem(_to_placeables(parent_translatable, translatable, id_maker))]
+        unit.addlocation(translatable.xpath)
+        store.addunit(unit)
 
-    return add_to_store
+    return add_translatable_to_store
 
 
 def _walk_translatable_tree(translatables, f, parent_translatable, rid):
+    """Traverse all the found translatables and add them to the Store.
+
+    Inline translatables are not added to the Store.
+    """
     for translatable in translatables:
         if _contains_translatable_text(translatable) and not translatable.is_inline:
             rid = rid + 1

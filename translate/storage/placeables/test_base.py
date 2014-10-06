@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 #
 # Copyright 2009 Zuza Software Foundation
+# Copyright 2014 F Wolff
 #
 # This file is part of the Translate Toolkit.
 #
@@ -147,8 +148,14 @@ class TestStringElem:
 
         # Test inserting at the end
         elem = self.elem.copy()
-        elem.insert(len(elem) + 1, u'xxx')
+        elem.insert(len(elem), u'xxx')
         assert elem.flatten()[-1] == StringElem(u'xxx')
+        assert unicode(elem).endswith('&brandLong;</a>xxx')
+
+        elem = self.elem.copy()
+        elem.insert(len(elem), u">>>", preferred_parent=elem.sub[-1])
+        assert unicode(elem.flatten()[-1]) == u'</a>>>>'
+        assert unicode(elem).endswith('&brandLong;</a>>>>')
 
         # Test inserting in the middle of an existing string
         elem = self.elem.copy()

@@ -154,9 +154,9 @@ You can perform the bulk of your work (99%) with moz2po.
 Localisation of XHTML is not yet perfect, you might want to work with the files
 directly.
 
-:bug:`Bug 129 <129>` tracks the outstanding features which would allow complete
-localisation of Mozilla including; all help, start pages, rdf files, etc. It
-also tracks some bugs.
+:issue:`Issue 203 <203>` tracks the outstanding features which would allow
+complete localisation of Mozilla including; all help, start pages, rdf files,
+etc. It also tracks some bugs.
 
 Accesskeys don't yet work in .properties files and in several cases where the
 Mozilla .dtd files don't follow the normal conventions, for example in

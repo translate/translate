@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 #
-# Copyright 2008, 2014 Zuza Software Foundation
+# Copyright 2014 Zuza Software Foundation
 #
 # This file is part of translate.
 #
@@ -18,21 +18,12 @@
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, see <http://www.gnu.org/licenses/>.
 
-import zipfile
+"""Module for providing backwards compatible diff-match-patch.
 
-from lxml import etree
+Some old third-party apps, like Virtaal, rely on diff-match-patch being
+provided by Translate Toolkit.
+"""
 
-from translate.storage.xml_name import XmlNamer
+from __future__ import absolute_import  # Needed because of cyclic self-import.
 
-
-def open_odf(filename):
-    z = zipfile.ZipFile(filename, 'r')
-    return {'content.xml': z.read("content.xml"),
-            'meta.xml': z.read("meta.xml"),
-            'styles.xml': z.read("styles.xml")}
-
-
-def copy_odf(input_zip, output_zip, exclusion_list):
-    for name in [name for name in input_zip.namelist() if name not in exclusion_list]:
-        output_zip.writestr(name, input_zip.read(name))
-    return output_zip
+from diff_match_patch import diff_match_patch

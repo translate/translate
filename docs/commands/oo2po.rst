@@ -175,7 +175,7 @@ variables failures and translated XML will be excluded from the final SDF.
 helpcontent2
 ============
 
-The escaping of ``helpcontent2`` from SDF files was very confusing, :bug:`295`
-implemented a fix that appeared in version 1.1.0 (All known issues were fixed
-in 1.1.1).  Translators are now able to translate helpcontent2 with clean
-escaping.
+The escaping of ``helpcontent2`` from SDF files was very confusing,
+:issue:`295` implemented a fix that appeared in version 1.1.0 (All known issues
+were fixed in 1.1.1).  Translators are now able to translate helpcontent2 with
+clean escaping.

@@ -7,14 +7,14 @@
 Translate Toolkit 1.12.0
 ************************
 
-*Not yet released*
+*Released on 12 August 2014*
 
 This release contains many improvements and bug fixes. While it contains many
 general improvements, it also specifically contains needed changes and
 optimizations for the upcoming `Pootle <http://pootle.translatehouse.org/>`_
 2.6.0 and `Virtaal <http://virtaal.translatehouse.org>`_ releases.
 
-It is just over X months since the last release and there are many improvements
+It is just over 6 months since the last release and there are many improvements
 across the board.  A number of people contributed to this release and we've
 tried to credit them wherever possible (sorry if somehow we missed you).
 
@@ -31,6 +31,23 @@ tried to credit them wherever possible (sorry if somehow we missed you).
 
 Highlighted improvements
 ========================
+
+1.12.0 vs 1.12.0-rc1
+--------------------
+
+Changes since 1.12.0 RC1:
+
+- Added support for UTF-8 encoded OS X strings
+- RC format received some bugfixes and now ignores ``TEXTINCLUDE`` sections and
+  one line comments (``//``)
+- Qt Linguist files now output the XML declaration (:issue:`3198`)
+- ``xliff2po`` now supports files with ``.xliff`` extension
+- Minor change in placeables to correctly insert at an existing parent if
+  appropriate
+- Recovered diff-match-patch to provide support for old third party consumers
+- Added new tests for the UTF-8 encoded OS X strings, Qt linguist and RC
+  formats and the ``rc2po`` converter
+
 
 Major changes
 -------------
@@ -157,6 +174,9 @@ Contributors
 
 This release was made possible by the following people:
 
-%CONTRIBUTORS%
+Dwayne Bailey, Jerome Leclanche, Leandro Regueiro, Khaled Hosny,
+Javier Alfonso, Friedel Wolff, Michal Čihař, Heiki Ojasild, Julen Ruiz Aizpuru,
+Florian Preinstorfer, damian.golda, Zolnai Tamás, Vladimir Rusinov,
+Stuart Prescott, Luca De Petrillo, Kevin KIN-FOO, Henrik Saari, Dominic König.
 
 And to all our bug finders and testers, a Very BIG Thank You.

@@ -11,6 +11,7 @@ Summary
 #. Test install and other tests
 #. Tag the release
 #. Publish on PyPI
+#. Upload to Github
 #. Upload to Sourceforge
 #. Release documentation
 #. Update translate website
@@ -134,7 +135,11 @@ checkout run:
 
 .. code-block:: bash
 
-  $ make build
+  $ mkvirtualenv build-ttk-release
+  (build-ttk-release)$ pip install -r requirements/dev.txt
+  (build-ttk-release)$ make build
+  (build-ttk-release)$ deactivate
+  $ rmvirtualenv build-ttk-release
 
 
 This will create a tarball in ``dist/`` which you can use for further testing.
@@ -150,8 +155,8 @@ the new toolkit using:
 
 .. code-block:: bash
 
-  $ mkvirtualenv releasing
-  (releasing)$ pip install path/to/dist/translate-toolkit-$version.tar.bz2
+  $ mkvirtualenv test-ttk-release
+  (test-ttk-release)$ pip install path/to/dist/translate-toolkit-$version.tar.bz2
 
 
 You can then proceed with other tests such as checking:
@@ -161,10 +166,10 @@ You can then proceed with other tests such as checking:
 
    .. code-block:: bash
 
-     (releasing)$ moz2po --help
-     (releasing)$ php2po --version
-     (releasing)$ deactivate
-     $ rmvirtualenv releasing
+     (test-ttk-release)$ moz2po --help
+     (test-ttk-release)$ php2po --version
+     (test-ttk-release)$ deactivate
+     $ rmvirtualenv test-ttk-release
 
 #. Meta information about the package is correct. This is stored in
    :file:`setup.py`, to see some options to display meta-data use:
@@ -237,6 +242,23 @@ Then to actually publish:
 .. code-block:: bash
 
   $ make publish-pypi
+
+
+Create a release on Github
+--------------------------
+
+- https://github.com/translate/translate/releases/new
+
+You will need:
+
+- Tarball of the release
+- Release notes in Markdown
+
+#. Draft a new release with the corresponding tag version
+#. Convert the release notes to Markdown with `Pandoc
+   <http://johnmacfarlane.net/pandoc/>`_ and add those to the release
+#. Attach the tarball to the release
+#. Mark it as pre-release if it's a release candidate.
 
 
 Copy files to sourceforge
@@ -336,6 +358,9 @@ Now that we've release lets make sure that master reflect the current state
 which would be ``{N+1}-alpha1``. This prevents anyone using master being
 confused with a stable release and we can easily check if they are using master
 or stable.
+
+.. note:: You probably will have to adjust the output of some of the functional
+   tests, specifically the manpage ones, to use the right new version.
 
 
 Other possible steps
