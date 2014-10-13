@@ -53,7 +53,8 @@ class ParseState(object):
     """Maintain constants and variables used during the walking of a
     DOM tree (via the function apply)."""
 
-    def __init__(self, no_translate_content_elements, inline_elements={}, nsmap={}):
+    def __init__(self, no_translate_content_elements, inline_elements={},
+                 nsmap={}):
         self.no_translate_content_elements = no_translate_content_elements
         self.inline_elements = inline_elements
         self.is_inline = False
@@ -69,7 +70,8 @@ def _process_placeable(dom_node, state):
     # no translatable is returned. Make a placeable with the name
     # "placeable"
     if len(placeable) == 0:
-        return Translatable(u"placeable", state.xpath_breadcrumb.xpath, dom_node, [])
+        return Translatable(u"placeable", state.xpath_breadcrumb.xpath,
+                            dom_node, [])
     # The ideal situation: we got exactly one translateable back
     # when processing this tree.
     elif len(placeable) == 1:
@@ -80,31 +82,37 @@ def _process_placeable(dom_node, state):
 
 
 def _process_placeables(dom_node, state):
-    """Return a list of placeables and list with
-    alternating string-placeable objects. The former is
-    useful for directly working with placeables and the latter
-    is what will be used to build the final translatable string."""
+    """Return a list of placeables and list with alternating string-placeable objects.
 
+    The former is useful for directly working with placeables and the latter is
+    what will be used to build the final translatable string.
+    """
     source = []
     for child in dom_node:
-        source.extend([_process_placeable(child, state), unicode(child.tail or u"")])
+        source.extend([_process_placeable(child, state),
+                       unicode(child.tail or u"")])
     return source
 
 
 def _process_translatable(dom_node, state):
-    source = [unicode(dom_node.text or u"")] + _process_placeables(dom_node, state)
-    translatable = Translatable(state.placeable_name, state.xpath_breadcrumb.xpath, dom_node, source)
+    source = ([unicode(dom_node.text or u"")] +
+              _process_placeables(dom_node, state))
+    translatable = Translatable(state.placeable_name,
+                                state.xpath_breadcrumb.xpath, dom_node, source)
     translatable.is_inline = state.is_inline
     return [translatable]
 
 
 def _process_children(dom_node, state):
     _namespace, tag = misc.parse_tag(dom_node.tag)
-    children = [find_translatable_dom_nodes(child, state) for child in dom_node]
+    children = [find_translatable_dom_nodes(child, state)
+                for child in dom_node]
     # Flatten a list of lists into a list of elements
     children = [child for child_list in children for child in child_list]
     if len(children) > 1:
-        intermediate_translatable = Translatable(tag, state.xpath_breadcrumb.xpath, dom_node, children)
+        intermediate_translatable = Translatable(tag,
+                                                 state.xpath_breadcrumb.xpath,
+                                                 dom_node, children)
         return [intermediate_translatable]
     else:
         return children
@@ -121,15 +129,16 @@ def find_translatable_dom_nodes(dom_node, state):
     # For now, we only want to deal with XML elements.
     # And we want to avoid processing instructions, which
     # are XML elements (in the inheritance hierarchy).
-    if not isinstance(dom_node, etree._Element) or \
-           isinstance(dom_node, etree._ProcessingInstruction):
+    if (not isinstance(dom_node, etree._Element) or
+        isinstance(dom_node, etree._ProcessingInstruction)):
         return []
 
     namespace, tag = misc.parse_tag(dom_node.tag)
 
     @contextmanager
     def xpath_set():
-        state.xpath_breadcrumb.start_tag(compact_tag(state.nsmap, namespace, tag))
+        state.xpath_breadcrumb.start_tag(compact_tag(state.nsmap, namespace,
+                                                     tag))
         yield state.xpath_breadcrumb
         state.xpath_breadcrumb.end_tag()
 
@@ -143,10 +152,7 @@ def find_translatable_dom_nodes(dom_node, state):
     @contextmanager
     def inline_set():
         old_inline = state.is_inline
-        if (namespace, tag) in state.inline_elements:
-            state.is_inline = True
-        else:
-            state.is_inline = False
+        state.is_inline = (namespace, tag) in state.inline_elements
         yield state.is_inline
         state.is_inline = old_inline
 
@@ -181,7 +187,9 @@ def _to_placeables(parent_translatable, translatable, id_maker):
         else:
             id = unicode(id_maker.get_id(chunk))
             if chunk.is_inline:
-                result.append(xliff.G(sub=_to_placeables(parent_translatable, chunk, id_maker), id=id))
+                result.append(xliff.G(sub=_to_placeables(parent_translatable,
+                                                         chunk, id_maker),
+                                                         id=id))
             else:
                 result.append(xliff.X(id=id, xid=chunk.xpath))
     return result
@@ -194,9 +202,8 @@ def _contains_translatable_text(translatable):
     If not, then there's nothing to translate.
     """
     for chunk in translatable.source:
-        if isinstance(chunk, unicode):
-            if chunk.strip() != u"":
-                return True
+        if isinstance(chunk, unicode) and chunk.strip() != u"":
+            return True
     return False
 
 
@@ -212,7 +219,8 @@ def _make_store_adder(store):
         information and add it to 'store'.
         """
         unit = store.UnitClass(u'')
-        unit.rich_source = [StringElem(_to_placeables(parent_translatable, translatable, id_maker))]
+        unit.rich_source = [StringElem(_to_placeables(parent_translatable,
+                                                      translatable, id_maker))]
         unit.addlocation(translatable.xpath)
         store.addunit(unit)
 
@@ -225,14 +233,16 @@ def _walk_translatable_tree(translatables, f, parent_translatable, rid):
     Inline translatables are not added to the Store.
     """
     for translatable in translatables:
-        if _contains_translatable_text(translatable) and not translatable.is_inline:
+        if (_contains_translatable_text(translatable) and
+            not translatable.is_inline):
             rid = rid + 1
             new_parent_translatable = translatable
             f(parent_translatable, translatable, rid)
         else:
             new_parent_translatable = parent_translatable
 
-        _walk_translatable_tree(translatable.placeables, f, new_parent_translatable, rid)
+        _walk_translatable_tree(translatable.placeables, f,
+                                new_parent_translatable, rid)
 
 
 def reverse_map(a_map):
