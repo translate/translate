@@ -41,9 +41,13 @@ class MozConvertOptionParser(convert.ConvertOptionParser):
         """splits a inputpath into name and extension"""
         # TODO: not sure if this should be here, was in po2moz
         d, n = os.path.dirname(inputpath), os.path.basename(inputpath)
-        s = n.find(".")
+        s = n.rfind(".")
         if s == -1:
             return (inputpath, "")
+        if n[s+1:].lower() == "po":
+            s = n.rfind(".", 0, s)
+            if s == -1:
+                s = n.rfind(".")
         root = os.path.join(d, n[:s])
         ext = n[s+1:]
         return (root, ext)
