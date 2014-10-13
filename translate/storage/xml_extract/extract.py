@@ -214,7 +214,7 @@ def _make_store_adder(store):
     """
     id_maker = IdMaker()
 
-    def add_translatable_to_store(parent_translatable, translatable, rid):
+    def add_translatable_to_store(parent_translatable, translatable):
         """Construct a new translation unit, set its source and location
         information and add it to 'store'.
         """
@@ -227,21 +227,20 @@ def _make_store_adder(store):
     return add_translatable_to_store
 
 
-def _walk_translatable_tree(translatables, f, parent_translatable, rid):
+def _walk_translatable_tree(translatables, f, parent_translatable):
     """Traverse all the found translatables and add them to the Store.
 
     Inline translatables are not added to the Store.
     """
     for translatable in translatables:
         if translatable.has_translatable_text and not translatable.is_inline:
-            rid = rid + 1
             new_parent_translatable = translatable
-            f(parent_translatable, translatable, rid)
+            f(parent_translatable, translatable)
         else:
             new_parent_translatable = parent_translatable
 
         _walk_translatable_tree(translatable.placeables, f,
-                                new_parent_translatable, rid)
+                                new_parent_translatable)
 
 
 def reverse_map(a_map):
@@ -255,5 +254,5 @@ def build_store(odf_file, store, parse_state, store_adder=None):
     root = tree.getroot()
     parse_state.nsmap = reverse_map(root.nsmap)
     translatables = find_translatable_dom_nodes(root, parse_state)
-    _walk_translatable_tree(translatables, store_adder, None, 0)
+    _walk_translatable_tree(translatables, store_adder, None)
     return tree
