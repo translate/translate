@@ -82,7 +82,7 @@ def _process_placeable(dom_node, state):
                         "more than a single translatable")
 
 
-def _process_placeables(dom_node, state):
+def _retrieve_placeables(dom_node, state):
     """Return a list of placeables and list with alternating string-placeable objects.
 
     The former is useful for directly working with placeables and the latter is
@@ -97,7 +97,7 @@ def _process_placeables(dom_node, state):
 
 def _process_translatable(dom_node, state):
     source = ([unicode(dom_node.text or u"")] +
-              _process_placeables(dom_node, state))
+              _retrieve_placeables(dom_node, state))
     translatable = Translatable(state.placeable_name,
                                 state.xpath_breadcrumb.xpath, dom_node, source,
                                 state.is_inline)
