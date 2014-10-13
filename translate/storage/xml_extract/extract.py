@@ -44,6 +44,17 @@ class Translatable(object):
         return [placeable for placeable in self.source
                 if isinstance(placeable, Translatable)]
 
+    @property
+    def has_translatable_text(self):
+        """Check if it contains any chunk of text with more than whitespace.
+
+        If not, then there's nothing to translate.
+        """
+        for chunk in self.source:
+            if isinstance(chunk, unicode) and chunk.strip() != u"":
+                return True
+        return False
+
 
 def reduce_unit_tree(f, unit_node, *state):
     return misc.reduce_tree(f, unit_node, unit_node,
@@ -196,18 +207,6 @@ def _to_placeables(parent_translatable, translatable, id_maker):
     return result
 
 
-def _contains_translatable_text(translatable):
-    """Checks whether translatable contains any chunks of text which contain
-    more than whitespace.
-
-    If not, then there's nothing to translate.
-    """
-    for chunk in translatable.source:
-        if isinstance(chunk, unicode) and chunk.strip() != u"":
-            return True
-    return False
-
-
 def _make_store_adder(store):
     """Return a function which, when called with a Translatable will add
     a unit to 'store'. The placeables will represented as strings according
@@ -234,8 +233,7 @@ def _walk_translatable_tree(translatables, f, parent_translatable, rid):
     Inline translatables are not added to the Store.
     """
     for translatable in translatables:
-        if (_contains_translatable_text(translatable) and
-            not translatable.is_inline):
+        if translatable.has_translatable_text and not translatable.is_inline:
             rid = rid + 1
             new_parent_translatable = translatable
             f(parent_translatable, translatable, rid)
