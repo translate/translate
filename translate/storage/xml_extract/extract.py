@@ -31,11 +31,12 @@ class Translatable(object):
     """A node corresponds to a translatable element. A node may
        have children, which correspond to placeables."""
 
-    def __init__(self, placeable_name, xpath, dom_node, source):
+    def __init__(self, placeable_name, xpath, dom_node, source,
+                 is_inline=False):
         self.placeable_name = placeable_name
         self.source = source
         self.xpath = xpath
-        self.is_inline = False
+        self.is_inline = is_inline
         self.dom_node = dom_node
 
     @property
@@ -98,8 +99,8 @@ def _process_translatable(dom_node, state):
     source = ([unicode(dom_node.text or u"")] +
               _process_placeables(dom_node, state))
     translatable = Translatable(state.placeable_name,
-                                state.xpath_breadcrumb.xpath, dom_node, source)
-    translatable.is_inline = state.is_inline
+                                state.xpath_breadcrumb.xpath, dom_node, source,
+                                state.is_inline)
     return [translatable]
 
 
