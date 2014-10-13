@@ -227,7 +227,7 @@ def _make_store_adder(store):
     return add_translatable_to_store
 
 
-def _walk_translatable_tree(translatables, f, parent_translatable):
+def _walk_translatable_tree(translatables, store_adder, parent_translatable):
     """Traverse all the found translatables and add them to the Store.
 
     Inline translatables are not added to the Store.
@@ -235,11 +235,11 @@ def _walk_translatable_tree(translatables, f, parent_translatable):
     for translatable in translatables:
         if translatable.has_translatable_text and not translatable.is_inline:
             new_parent_translatable = translatable
-            f(parent_translatable, translatable)
+            store_adder(parent_translatable, translatable)
         else:
             new_parent_translatable = parent_translatable
 
-        _walk_translatable_tree(translatable.placeables, f,
+        _walk_translatable_tree(translatable.placeables, store_adder,
                                 new_parent_translatable)
 
 
