@@ -18,7 +18,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, see <http://www.gnu.org/licenses/>.
 
-from contextlib import contextmanager, nested
+from contextlib import contextmanager
 
 from lxml import etree
 
@@ -137,6 +137,29 @@ def compact_tag(nsmap, namespace, tag):
         return u'{%s}%s' % (namespace, tag)
 
 
+@contextmanager
+def parse_status_set(namespace, tag, state):
+    # Set XPath breadcrumb item for the current node.
+    xpath_item = compact_tag(state.nsmap, namespace, tag)
+    state.xpath_breadcrumb.start_tag(xpath_item)
+
+    # Set the placeable name for the current node.
+    old_placeable_name = state.placeable_name
+    state.placeable_name = tag
+
+    # Set the inline status for the current node.
+    old_inline = state.is_inline
+    state.is_inline = (namespace, tag) in state.inline_elements
+
+    yield state
+
+    # Reset inline status, placeable name and XPath breadcrumb to the
+    # previous values.
+    state.is_inline = old_inline
+    state.placeable_name = old_placeable_name
+    state.xpath_breadcrumb.end_tag()
+
+
 def find_translatable_dom_nodes(dom_node, state):
     # For now, we only want to deal with XML elements.
     # And we want to avoid processing instructions, which
@@ -147,28 +170,7 @@ def find_translatable_dom_nodes(dom_node, state):
 
     namespace, tag = misc.parse_tag(dom_node.tag)
 
-    @contextmanager
-    def xpath_set():
-        state.xpath_breadcrumb.start_tag(compact_tag(state.nsmap, namespace,
-                                                     tag))
-        yield state.xpath_breadcrumb
-        state.xpath_breadcrumb.end_tag()
-
-    @contextmanager
-    def placeable_set():
-        old_placeable_name = state.placeable_name
-        state.placeable_name = tag
-        yield state.placeable_name
-        state.placeable_name = old_placeable_name
-
-    @contextmanager
-    def inline_set():
-        old_inline = state.is_inline
-        state.is_inline = (namespace, tag) in state.inline_elements
-        yield state.is_inline
-        state.is_inline = old_inline
-
-    with nested(xpath_set(), placeable_set(), inline_set()):
+    with parse_status_set(namespace, tag, state):
         if (namespace, tag) not in state.no_translate_content_elements:
             return _process_translatable(dom_node, state)
         else:
