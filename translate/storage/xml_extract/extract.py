@@ -98,27 +98,19 @@ def _process_placeable(dom_node, state):
                         "more than a single Translatable object")
 
 
-def _retrieve_placeables(dom_node, state):
-    """Return a list of placeables and list with alternating string-placeable
-    objects.
-
-    The former is useful for directly working with placeables and the latter is
-    what will be used to build the final translatable string.
-    """
-    source = []
-    for child in dom_node:
-        source.extend([_process_placeable(child, state),
-                       unicode(child.tail or u"")])
-    return source
-
-
 def _process_translatable(dom_node, state):
     """Process a translatable DOM node.
 
     Any translatable content present in a child node is treated as a placeable.
     """
-    source = ([unicode(dom_node.text or u"")] +
-              _retrieve_placeables(dom_node, state))
+    source = [unicode(dom_node.text or u"")]
+
+    # Append Translatable objects and unicode strings for the translatable
+    # content for all the children.
+    for child in dom_node:
+        source.append(_process_placeable(child, state))
+        source.append(unicode(child.tail or u""))
+
     translatable = Translatable(state.placeable_name,
                                 state.xpath_breadcrumb.xpath, dom_node, source,
                                 state.is_inline)
