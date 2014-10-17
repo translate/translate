@@ -76,25 +76,31 @@ class ParseState(object):
 
 
 def _process_placeable(dom_node, state):
-    """Run find_translatable_dom_nodes on the current dom_node"""
+    """Process current placeable.
+
+    This returns all nested translatable content for this placeable as a single
+    Translatable object, or just returns an empty Translatable object for this
+    placeable if there is no nested translatable content.
+    """
     placeable = find_translatable_dom_nodes(dom_node, state)
-    # This happens if there were no recognized child tags and thus
-    # no translatable is returned. Make a placeable with the name
-    # "placeable"
+
     if len(placeable) == 0:
+        # There are no recognized child tags and thus no Translatable object is
+        # returned. So create a Translatable with the name "placeable".
         return Translatable(u"placeable", state.xpath_breadcrumb.xpath,
                             dom_node, [])
-    # The ideal situation: we got exactly one translateable back
-    # when processing this tree.
     elif len(placeable) == 1:
+        # The ideal situation: we got exactly one Translatable back when
+        # processing this tree.
         return placeable[0]
     else:
         raise Exception("BUG: find_translatable_dom_nodes should never return "
-                        "more than a single translatable")
+                        "more than a single Translatable object")
 
 
 def _retrieve_placeables(dom_node, state):
-    """Return a list of placeables and list with alternating string-placeable objects.
+    """Return a list of placeables and list with alternating string-placeable
+    objects.
 
     The former is useful for directly working with placeables and the latter is
     what will be used to build the final translatable string.
@@ -107,6 +113,10 @@ def _retrieve_placeables(dom_node, state):
 
 
 def _process_translatable(dom_node, state):
+    """Process a translatable DOM node.
+
+    Any translatable content present in a child node is treated as a placeable.
+    """
     source = ([unicode(dom_node.text or u"")] +
               _retrieve_placeables(dom_node, state))
     translatable = Translatable(state.placeable_name,
@@ -116,12 +126,19 @@ def _process_translatable(dom_node, state):
 
 
 def _process_children(dom_node, state):
-    _namespace, tag = misc.parse_tag(dom_node.tag)
+    """Process an untranslatable DOM node.
+
+    Since the node is untranslatable it just returns any translatable content
+    present in its child nodes.
+    """
     children = [find_translatable_dom_nodes(child, state)
                 for child in dom_node]
+
     # Flatten a list of lists into a list of elements
     children = [child for child_list in children for child in child_list]
+
     if len(children) > 1:
+        _namespace, tag = misc.parse_tag(dom_node.tag)
         intermediate_translatable = Translatable(tag,
                                                  state.xpath_breadcrumb.xpath,
                                                  dom_node, children)
@@ -194,6 +211,9 @@ class IdMaker(object):
 
 
 def _to_placeables(parent_translatable, translatable, id_maker):
+    """Convert the translatable object to a list of strings and XLIFF
+    placeables.
+    """
     result = []
     for chunk in translatable.source:
         if isinstance(chunk, unicode):
@@ -201,9 +221,8 @@ def _to_placeables(parent_translatable, translatable, id_maker):
         else:
             id = unicode(id_maker.get_id(chunk))
             if chunk.is_inline:
-                result.append(xliff.G(sub=_to_placeables(parent_translatable,
-                                                         chunk, id_maker),
-                                                         id=id))
+                sub = _to_placeables(parent_translatable, chunk, id_maker)
+                result.append(xliff.G(id=id, sub=sub))
             else:
                 result.append(xliff.X(id=id, xid=chunk.xpath))
     return result
@@ -250,7 +269,7 @@ def reverse_map(a_map):
 
 
 def build_store(odf_file, store, parse_state, store_adder=None):
-    """Utility function for loading xml_filename"""
+    """Build a store for the given XML file."""
     store_adder = store_adder or _make_store_adder(store)
     tree = etree.parse(odf_file)
     root = tree.getroot()
