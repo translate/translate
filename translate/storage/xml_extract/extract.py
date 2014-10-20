@@ -125,8 +125,18 @@ def _has_idml_translatable_content(dom_node):
         for content_node in dom_node.findall('.//Content'):
             # Iterate over all the Content tags in this ParagraphStyleRange tag.
             if content_node.text is not None and content_node.text.strip():
-                has_translatable_content = True
-                break
+                return True
+
+            for child in content_node.iterdescendants():
+                # The Content node can just have a child before any nested
+                # text, and therefore its text is None, so we have to check if
+                # it has children, and if any of its children has text.
+                if (not isinstance(child, etree._ProcessingInstruction) and
+                    child.text is not None and child.text.strip()):
+                    return True
+
+                if child.tail is not None and child.tail.strip():
+                    return True
 
     return has_translatable_content
 
@@ -142,6 +152,10 @@ def _retrieve_idml_placeables(dom_node, state):
             source.append(Translatable(u"placeable",
                                        state.xpath_breadcrumb.xpath, child, [],
                                        False))
+
+            if child.tail is not None and child.tail.strip():
+                source.append(unicode(child.tail))
+
             continue
 
         namespace, tag = misc.parse_tag(child.tag)
