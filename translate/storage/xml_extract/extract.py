@@ -317,14 +317,12 @@ def _make_store_adder(store):
     return add_translatable_to_store
 
 
-def make_postore_adder(store, filename):
+def make_postore_adder(store, id_maker, filename):
     """Return a function which, when called with a Translatable will add
     a unit to 'store'. The placeables will be represented as strings according
     to 'placeable_quoter'.
     """
     from translate.storage.xliff import xliffunit
-
-    id_maker = IdMaker()
 
     def add_translatable_to_store(parent_translatable, translatable):
         """Construct a new translation unit, set its source and location
