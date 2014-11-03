@@ -193,6 +193,11 @@ def _build_translated_dom(dom_node, target_node, target_dom_to_doc_dom):
     The mapping 'target_dom_to_doc_dom' is used to map nodes from 'target_node'
     to nodes which much be inserted into dom_node.
     """
+    if isinstance(dom_node, etree._ProcessingInstruction):
+        # If the DOM node is a processing instruction we can safely skip it,
+        # because we don't want to change it and it has no children.
+        return
+
     dom_node.text = target_node.text
     # 1. Find all child nodes of target_node.
     # 2. Filter out the children which map to None.
