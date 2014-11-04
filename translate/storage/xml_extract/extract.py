@@ -317,6 +317,38 @@ def _make_store_adder(store):
     return add_translatable_to_store
 
 
+def make_postore_adder(store, filename):
+    """Return a function which, when called with a Translatable will add
+    a unit to 'store'. The placeables will be represented as strings according
+    to 'placeable_quoter'.
+    """
+    from translate.storage.xliff import xliffunit
+
+    id_maker = IdMaker()
+
+    def add_translatable_to_store(parent_translatable, translatable):
+        """Construct a new translation unit, set its source and location
+        information and add it to 'store'.
+        """
+        xliff_unit = xliffunit(u'')
+        placeables = _to_placeables(parent_translatable, translatable, id_maker)
+        xliff_unit.rich_source = [StringElem(placeables)]
+
+        # Get the plain text for the unit source. The output is enclosed within
+        # XLIFF source tags we don't want, so strip them.
+        unit_source = etree.tostring(xliff_unit.source_dom)
+        unit_source = unit_source[unit_source.find(">", 1) + 1:]
+        unit_source = unit_source[:unit_source.rfind("<", 1)]
+
+        # Create the PO unit and add it to the PO store.
+        po_unit = store.UnitClass(unit_source)
+        po_unit.addlocation(translatable.xpath)
+        po_unit.addlocation(filename)
+        store.addunit(po_unit)
+
+    return add_translatable_to_store
+
+
 def _walk_translatable_tree(translatables, store_adder, parent_translatable):
     """Traverse all the found translatables and add them to the Store.
 

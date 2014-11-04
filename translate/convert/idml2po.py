@@ -26,7 +26,8 @@ from translate.convert import convert
 from translate.storage import factory
 from translate.storage.idml import (INLINE_ELEMENTS, NO_TRANSLATE_ELEMENTS,
                                     open_idml)
-from translate.storage.xml_extract.extract import ParseState, build_store
+from translate.storage.xml_extract.extract import (ParseState, build_store,
+                                                   make_postore_adder)
 
 
 def convert_idml(inputfile, outputfile, template):
@@ -43,7 +44,9 @@ def convert_idml(inputfile, outputfile, template):
 
     for filename, translatable_file in contents.iteritems():
         parse_state = ParseState(NO_TRANSLATE_ELEMENTS, INLINE_ELEMENTS)
-        build_store(StringIO(translatable_file), store, parse_state)
+        po_store_adder = make_postore_adder(store, filename)
+        build_store(StringIO(translatable_file), store, parse_state,
+                    store_adder=po_store_adder)
 
     store.save()
     return True
