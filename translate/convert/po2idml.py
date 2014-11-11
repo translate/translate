@@ -32,7 +32,8 @@ from translate.convert import convert
 from translate.storage import factory
 from translate.storage.idml import (NO_TRANSLATE_ELEMENTS,
                                     INLINE_ELEMENTS, copy_idml, open_idml)
-from translate.storage.xml_extract.extract import ParseState
+from translate.storage.xml_extract.extract import (ParseState,
+                                                   process_idml_translatable)
 from translate.storage.xml_extract.generate import (apply_translations,
                                                     replace_dom_text)
 from translate.storage.xml_extract.unit_tree import XPathTree, build_unit_tree
@@ -125,7 +126,8 @@ def translate_idml(template, input_file, translatable_files):
             file_unit_tree = unit_trees[filename]
             apply_translations(dom_tree.getroot(), file_unit_tree,
                                replace_dom_text(make_parse_state,
-                                                dom_retriever=get_po_doms))
+                                                dom_retriever=get_po_doms,
+                                                process_translatable=process_idml_translatable))
         return dom_trees
 
     dom_trees = load_dom_trees(template)

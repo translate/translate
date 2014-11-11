@@ -226,7 +226,9 @@ def get_xliff_source_target_doms(unit):
     return (unit.source_dom, unit.source_dom)
 
 
-def replace_dom_text(make_parse_state, dom_retriever=get_xliff_source_target_doms):
+def replace_dom_text(make_parse_state,
+                     dom_retriever=get_xliff_source_target_doms,
+                     process_translatable=extract.process_translatable):
     """Return a function::
 
           action: etree_Element x base.TranslationUnit -> None
@@ -244,7 +246,9 @@ def replace_dom_text(make_parse_state, dom_retriever=get_xliff_source_target_dom
 
         # Build a tree of (non-DOM) nodes which correspond to the translatable DOM nodes in 'dom_node'.
         # Pass in a fresh parse_state every time, so as avoid working with stale parse state info.
-        unit_node = extract.find_translatable_dom_nodes(dom_node, make_parse_state())[0]
+        unit_node = extract.find_translatable_dom_nodes(dom_node,
+                                                        make_parse_state(),
+                                                        process_translatable)[0]
         target_dom_to_doc_dom = _build_target_dom_to_doc_dom(unit_node, source_dom, target_dom)
         # Before we start reconstructing the sub-tree rooted at dom_node, we must clear out its children
         dom_node[:] = []
