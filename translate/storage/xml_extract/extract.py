@@ -247,8 +247,8 @@ def _walk_translatable_tree(translatables, store_adder, parent_translatable):
     """
     for translatable in translatables:
         if translatable.has_translatable_text and not translatable.is_inline:
-            new_parent_translatable = translatable
             store_adder(parent_translatable, translatable)
+            new_parent_translatable = translatable
         else:
             new_parent_translatable = parent_translatable
 
