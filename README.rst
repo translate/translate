@@ -4,9 +4,26 @@ Translate Toolkit
 .. image:: https://travis-ci.org/translate/translate.png
     :alt: Build Status
     :target: https://travis-ci.org/translate/translate
+
 .. image:: https://coveralls.io/repos/translate/translate/badge.png?branch=master
     :alt: Coverage Status
     :target: https://coveralls.io/r/translate/translate?branch=master
+
+.. image:: https://pypip.in/download/translate-toolkit/badge.png
+    :alt: Downloads
+    :target: https://pypi.python.org/pypi/translate-toolkit/
+
+.. image:: https://pypip.in/py_versions/translate-toolkit/badge.png
+    :alt: Supported Python versions
+    :target: https://pypi.python.org/pypi/translate-toolkit/
+
+.. image:: https://pypip.in/status/translate-toolkit/badge.png
+    :alt: Development Status
+    :target: https://pypi.python.org/pypi/translate-toolkit/
+
+.. image:: https://pypip.in/license/translate-toolkit/badge.svg
+    :target: https://pypi.python.org/pypi/translate-toolkit/
+    :alt: License
 
 The Translate Toolkit is a set of software and documentation designed to help
 make the lives of localizers both more productive and less frustrating.
