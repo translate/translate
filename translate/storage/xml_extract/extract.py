@@ -222,7 +222,7 @@ def _to_placeables(parent_translatable, translatable, id_maker):
 
 def _make_store_adder(store):
     """Return a function which, when called with a Translatable will add
-    a unit to 'store'. The placeables will represented as strings according
+    a unit to 'store'. The placeables will be represented as strings according
     to 'placeable_quoter'.
     """
     id_maker = IdMaker()
