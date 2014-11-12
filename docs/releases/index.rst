@@ -3,10 +3,9 @@
 Release Notes
 *************
 
-The following are release notes used on `PyPI
-<https://pypi.python.org/pypi/translate-toolkit>`_, `Sourceforge
-<http://sourceforge.net/projects/translate/files/Translate%20Toolkit/>`_ and
-mailing lists for Translate Toolkit releases.
+The following are release notes used on `PyPI 
+<https://pypi.python.org/pypi/translate-toolkit>`_ and mailing lists for
+Translate Toolkit releases.
 
 .. toctree::
    :maxdepth: 1
@@ -19,3 +18,5 @@ mailing lists for Translate Toolkit releases.
    1.10.0 <1.10.0>
    1.9.0 <1.9.0>
    1.8.1 <1.8.1>
+
+Check the :doc:`Changelog </changelog>` for older releases.
