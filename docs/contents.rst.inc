@@ -40,8 +40,8 @@ Changelog and legal information are included here.
 .. toctree::
    :maxdepth: 1
 
-   changelog
    releases/index
+   changelog
    history
    license
 
