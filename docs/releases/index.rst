@@ -11,7 +11,7 @@ mailing lists for Translate Toolkit releases.
 .. toctree::
    :maxdepth: 1
 
-   dev <dev>
+   1.13.0-rc1 <1.13.0-rc1>
    1.12.0 <1.12.0>
    1.12.0-rc1 <1.12.0-rc1>
    1.11.0 <1.11.0>
