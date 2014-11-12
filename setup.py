@@ -116,8 +116,14 @@ translatebashscripts = [join(*('tools', ) + script) for script in [
     ]
 ]
 
+devel_status = "Development Status :: 5 - Production/Stable"
+
+if "-" in __version__.sver:
+    # If this is an RC or alpha release.
+    devel_status = "Development Status :: 4 - Beta"
+
 classifiers = [
-    "Development Status :: 5 - Production/Stable",
+    devel_status,
     "Environment :: Console",
     "Intended Audience :: Developers",
     "License :: OSI Approved :: GNU General Public License (GPL)",
