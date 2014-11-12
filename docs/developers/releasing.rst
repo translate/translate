@@ -94,18 +94,19 @@ Up version numbers
 ------------------
 Update the version number in:
 
-- ``translate/__version__.py``
-- ``docs/conf.py``
+- :file:`translate/__version__.py`
+- :file:`docs/conf.py`
 
-In ``__version__.py``, bump the build number if anybody used the toolkit with
-the previous number, and there have been any changes to code touching stats or
-quality checks.  An increased build number will force a toolkit user, like
-Pootle, to regenerate the stats and checks.
+In :file:`translate/__version__.py`, bump the build number if anybody used the
+toolkit with the previous number, and there have been any changes to code
+touching stats or quality checks.  An increased build number will force a
+toolkit user, like Pootle, to regenerate the stats and checks.
 
-For ``conf.py`` change ``version`` and ``release``
+For :file:`docs/conf.py` change ``version`` and ``release``.
 
 .. todo:: FIXME - We might want to consolidate the version and release info so
    that we can update it in one place.
+
 
 The version string should follow the pattern::
 
@@ -123,7 +124,7 @@ release of a ``$MINOR`` version will always have a ``$MICRO`` of ``.0``. So
 
 Build the package
 -----------------
-Building is the first step to testing that things work.  From your clean
+Building is the first step to testing that things work. From your clean
 checkout run:
 
 .. code-block:: bash
@@ -135,7 +136,8 @@ checkout run:
   $ rmvirtualenv build-ttk-release
 
 
-This will create a tarball in ``dist/`` which you can use for further testing.
+This will create a tarball in :file:`dist/` which you can use for further
+testing.
 
 .. note:: We use a clean checkout just to make sure that no inadvertant changes
    make it into the release.
@@ -277,16 +279,16 @@ These are the steps to perform:
    name as the release version e.g.  ``1.10.0-rc1``.  Mark this as being for
    staging for the moment.
 #. ``make publish-sourceforge`` will give you the command to upload your
-   tarball and ``README.rst``.
+   tarball and :file:`README.rst`.
 
    #. Upload tarball for release.
-   #. Upload release notes as ``README.rst``.
-   #. Click on the info icon for ``README.rst`` and tick "Exclude Stats" to
+   #. Upload release notes as :file:`README.rst`.
+   #. Click on the info icon for :file:`README.rst` and tick "Exclude Stats" to
       exclude the README from stats counting.
 
 #. Check that the README.rst for the parent ``Translate Toolkit`` folder is
-   still appropriate, this is the text from ``translate/__info__.py``.
-#. Check all links for ``README.rst`` files, new release and parent.
+   still appropriate, this is the text from :file:`translate/__info__.py`.
+#. Check all links for :file:`README.rst` files, new release and parent.
 
 
 Release documentation
@@ -312,11 +314,11 @@ We use github pages for the website. First we need to checkout the pages:
   $ git checkout gh-pages
 
 
-#. In ``_posts/`` add a new release posting.  This is in Markdown format (for
-   now), so we need to change the release notes .rst to .md, which mostly means
-   changing URL links from ```xxx <link>`_`` to ``[xxx](link)``.
-#. Change $version as needed. See ``download.html``, ``_config.yml`` and
-   ``egrep -r $old_release *``
+#. In :file:`_posts/` add a new release posting.  This is in Markdown format
+   (for now), so we need to change the release notes .rst to .md, which mostly
+   means changing URL links from ```xxx <link>`_`` to ``[xxx](link)``.
+#. Change $version as needed. See :file:`download.html`, :file:`_config.yml`
+   and :command:`egrep -r $old_release *`
 #. :command:`git commit` and :command:`git push` -- changes are quite quick, so
    easy to review.
 
