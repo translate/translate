@@ -226,13 +226,6 @@ Publish on PyPI
    do it when you are actually ready.
 
 
-To test before publishing run:
-
-.. code-block:: bash
-
-  $ make test-publish-pypi
-
-
 Then to actually publish:
 
 .. code-block:: bash

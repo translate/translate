@@ -26,9 +26,6 @@ publish-pypi:
 sort-imports:
 	isort -rc .
 
-test-publish-pypi:
-	 python setup.py sdist ${FORMATS} upload -r https://testpypi.python.org/pypi
-
 #scp translate-toolkit-1.10.0.tar.bz2 jsmith@frs.sourceforge.net:/home/frs/project/translate/Translate\ Toolkit/1.10.0/
 publish-sourceforge:
 	@echo "We don't trust automation that much.  The following is the command you need to run"
