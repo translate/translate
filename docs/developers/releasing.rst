@@ -1,31 +1,25 @@
-==================================
+
 Making a Translate Toolkit Release
-==================================
+**********************************
 
-Summary
-=======
-#. Git clone git@github.com:translate/translate.git translate-release
-#. Create release notes
-#. Up version number
-#. make build
-#. Test install and other tests
-#. Tag the release
-#. Publish on PyPI
-#. Upload to Github
-#. Upload to Sourceforge
-#. Release documentation
-#. Update translate website
-#. Unstage sourceforge
-#. Announce to the world
-#. Cleanup
-#. Other possible steps
+This page is divided in three sections. The first one lists the tasks that must
+be performed to get a valid package. The second section includes a list of
+tasks to get the package published and the release announced. The third one
+lists and suggests some possible cleanup tasks to be done after releasing.
+
+.. note:: Please note that this is not a complete list of tasks. Please feel
+   free to improve it.
 
 
-Detailed instructions
-=====================
+Create the package
+==================
+
+The first steps are to create and validate a package for the next release.
+
 
 Get a clean checkout
 --------------------
+
 We work from a clean checkout to ensure that everything you are adding to the
 build is what is in VC and doesn't contain any of your uncommitted changes.  It
 also ensure that someone else could replicate your process.
@@ -39,11 +33,11 @@ also ensure that someone else could replicate your process.
 
 Create release notes
 --------------------
+
 The release notes will be used in these places:
 
 - Toolkit website - `download page
   <http://toolkit.translatehouse.org/download.html>`_ (used in gh-pages)
-- Sourceforge download - README.rst (used to give user info)
 - Email announcements - text version
 
 We create our release notes in reStructured Text, since we use that elsewhere
@@ -92,6 +86,7 @@ We create a list of contributors using this command:
 
 Up version numbers
 ------------------
+
 Update the version number in:
 
 - :file:`translate/__version__.py`
@@ -121,9 +116,13 @@ E.g. ::
 release of a ``$MINOR`` version will always have a ``$MICRO`` of ``.0``. So
 ``1.10.0`` and never just ``1.10``.
 
+.. note:: You probably will have to adjust the output of some of the functional
+   tests, specifically the manpage ones, to use the right new version.
+
 
 Build the package
 -----------------
+
 Building is the first step to testing that things work. From your clean
 checkout run:
 
@@ -145,6 +144,7 @@ testing.
 
 Test install and other tests
 ----------------------------
+
 The easiest way to test is in a virtualenv. You can test the installation of
 the new toolkit using:
 
@@ -190,8 +190,16 @@ You can then proceed with other tests such as checking:
    The actual descriptions are taken from :file:`translate/__init__.py`.
 
 
+Publish the new release
+=======================
+
+Once we have a valid package it is necessary to publish it and announce the
+release.
+
+
 Tag and branch the release
 --------------------------
+
 You should only tag once you are happy with your release as there are some
 things that we can't undo. You can safely branch for a ``stable/`` branch
 before you tag.
@@ -202,6 +210,17 @@ before you tag.
   $ git push origin stable/1.10.0
   $ git tag -a 1.10.0 -m "Tag version 1.10.0"
   $ git push --tags
+
+
+Release documentation
+---------------------
+
+We need a tagged release before we can do this. The docs are published on Read
+The Docs.
+
+- https://readthedocs.org/dashboard/translate-toolkit/versions/
+
+Use the admin pages to flag a version that should be published.
 
 
 Publish on PyPI
@@ -226,7 +245,7 @@ Publish on PyPI
    do it when you are actually ready.
 
 
-Then to actually publish:
+Run the following to publish the package on PyPI:
 
 .. code-block:: bash
 
@@ -243,63 +262,20 @@ You will need:
 - Tarball of the release
 - Release notes in Markdown
 
+
+Do the following to create the release:
+
 #. Draft a new release with the corresponding tag version
-#. Convert the release notes to Markdown with `Pandoc
+#. Convert the major changes in the release notes to Markdown with `Pandoc
    <http://johnmacfarlane.net/pandoc/>`_ and add those to the release
+#. Include a link to the full release notes in the description
 #. Attach the tarball to the release
 #. Mark it as pre-release if it's a release candidate.
 
 
-Copy files to sourceforge
--------------------------
-
-.. note:: You need to have release permissions on sourceforge to perform this
-   step.
-
-- http://sourceforge.net/projects/translate/files/Translate%20Toolkit/
-
-You will need:
-
-- Tarball of the release
-- Release notes in reStructured Text
-
-
-These are the steps to perform:
-
-#. Create a new folder in the `Translate Toolkit
-   <https://sourceforge.net/projects/translate/files/Translate%20Toolkit/>`_
-   release folder using the 'Add Folder' button.  The folder must have the same
-   name as the release version e.g.  ``1.10.0-rc1``.  Mark this as being for
-   staging for the moment.
-#. ``make publish-sourceforge`` will give you the command to upload your
-   tarball and :file:`README.rst`.
-
-   #. Upload tarball for release.
-   #. Upload release notes as :file:`README.rst`.
-   #. Click on the info icon for :file:`README.rst` and tick "Exclude Stats" to
-      exclude the README from stats counting.
-
-#. Check that the README.rst for the parent ``Translate Toolkit`` folder is
-   still appropriate, this is the text from :file:`translate/__info__.py`.
-#. Check all links for :file:`README.rst` files, new release and parent.
-
-
-Release documentation
----------------------
-We need a tagged release before we can do this.  The docs are published on Read
-The Docs.
-
-- https://readthedocs.org/dashboard/translate-toolkit/versions/
-
-Use the admin pages to flag a version that should be published
-
-.. todo:: FIXME we might need to do this before publishing so that we can
-   update doc references to point to the tagged version as apposed to the
-   latest version.
-
-
 Update translate website
 ------------------------
+
 We use github pages for the website. First we need to checkout the pages:
 
 .. code-block:: bash
@@ -316,13 +292,9 @@ We use github pages for the website. First we need to checkout the pages:
    easy to review.
 
 
-Unstage on sourceforge
-----------------------
-If you have created a staged release folder, then unstage it now.
-
-
 Announce to the world
 ---------------------
+
 Let people know that there is a new version:
 
 #. Announce on mailing lists:
@@ -335,10 +307,12 @@ Let people know that there is a new version:
    <http://en.wikipedia.org/wiki/Translate_Toolkit>`_
 
 
-Cleanup
-=======
+Post-Releasing Tasks
+====================
+
 These are tasks not directly related to the releasing, but that are
 nevertheless completely necessary.
+
 
 Bump version to N+1-alpha1
 --------------------------
@@ -360,10 +334,10 @@ necessary to add new release notes for the next release, tagged as ``dev``.
 
 
 Other possible steps
-====================
+--------------------
+
 Some possible cleanup tasks:
 
-- Remove any RC builds from the sourceforge download pages (maybe?).
 - Commit any release notes and such (or maybe do that before tagging).
 - Remove your translate-release checkout.
 - Update and fix these release notes.
