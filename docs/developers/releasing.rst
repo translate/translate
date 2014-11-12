@@ -90,13 +90,6 @@ We create a list of contributors using this command:
   $ git log 1.10.0..HEAD --format='%aN, ' | awk '{arr[$0]++} END{for (i in arr){print arr[i], i;}}' | sort -rn | cut -d\  -f2-
 
 
-Add release notes for dev
--------------------------
-
-After updating the release notes for the about to be released version, it is
-necessary to add new release notes for the next release, tagged as ``dev``.
-
-
 Up version numbers
 ------------------
 Update the version number in:
@@ -230,6 +223,7 @@ Publish on PyPI
    will create such file. It will also actually publish the meta-data so only
    do it when you are actually ready.
 
+
 To test before publishing run:
 
 .. code-block:: bash
@@ -361,6 +355,13 @@ or stable.
 
 .. note:: You probably will have to adjust the output of some of the functional
    tests, specifically the manpage ones, to use the right new version.
+
+
+Add release notes for dev
+-------------------------
+
+After updating the release notes for the about to be released version, it is
+necessary to add new release notes for the next release, tagged as ``dev``.
 
 
 Other possible steps
