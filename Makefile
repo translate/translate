@@ -1,11 +1,7 @@
-SRC_DIR = translate
 DOCS_DIR = docs
 FORMATS=--formats=bztar
-VERSION=$(shell python setup.py --version)
-FULLNAME=$(shell python setup.py --fullname)
-SFUSERNAME=$(shell egrep -A5 sourceforge ~/.ssh/config | egrep -m1 User | cut -d" " -f2)
 
-.PHONY: all build docs requirements help publish sort-imports test-publish
+.PHONY: all build docs requirements help publish-pypi sort-imports
 
 all: help
 
@@ -26,14 +22,6 @@ publish-pypi:
 sort-imports:
 	isort -rc .
 
-#scp translate-toolkit-1.10.0.tar.bz2 jsmith@frs.sourceforge.net:/home/frs/project/translate/Translate\ Toolkit/1.10.0/
-publish-sourceforge:
-	@echo "We don't trust automation that much.  The following is the command you need to run"
-	@echo 'scp -p dist/${FULLNAME}.tar.bz2 ${SFUSERNAME}@frs.sourceforge.net:"/home/frs/project/translate/Translate\ Toolkit/${VERSION}/"'
-	@echo 'scp -p docs/releases/${VERSION}.rst ${SFUSERNAME}@frs.sourceforge.net:"/home/frs/project/translate/Translate\ Toolkit/${VERSION}/README.rst"'
-
-publish: publish-pypi publish-sourceforge
-
 help:
 	@echo "Help"
 	@echo "----"
@@ -44,9 +32,6 @@ help:
 	@echo "  requirements - (re)generate pinned and minimum requirements"
 	@echo "  sort-imports - sort Python imports"
 	@echo "  publish-pypi - publish on PyPI"
-	@echo "  test-publish-pypi - publish on PyPI testing platform"
-	@echo "  publish-sourceforge - publish on sourceforge"
-	@echo "  publish - publish on PyPI and sourceforge"
 	@echo "  test - run unit test suite"
 	@echo "  test-functional - run the functional test suite"
 
