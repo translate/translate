@@ -73,7 +73,7 @@ class rephp:
         # otherwise, this could be a comment
         elif line.strip()[:2] == '//' or line.strip()[:2] == '/*':
             returnline = quote.rstripeol(line) + eol
-        elif line.find('array(') != -1:
+        elif line.lower().replace(" ", "").find('array(') != -1:
             self.inarray = True
             self.prename = line[:line.find('=')].strip() + "->"
             self.equaldel = "=>"
