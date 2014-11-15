@@ -1,4 +1,4 @@
--.. These notes are used in:
+.. These notes are used in:
    1. Our email announcements
    2. The Translate Tools download page at toolkit.translatehouse.org
 
