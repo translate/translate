@@ -79,7 +79,8 @@ class AndroidResourceUnit(base.TranslationUnit):
     def getcontext(self):
         return self.xmlelement.get("name")
 
-    def unescape(self, text):
+    @staticmethod
+    def unescape(text):
         '''
         Remove escaping from Android resource.
 
@@ -214,7 +215,8 @@ class AndroidResourceUnit(base.TranslationUnit):
         # Join the string together again, but w/o EOF marker
         return "".join(text[:-1])
 
-    def escape(self, text, add_quote=True):
+    @staticmethod
+    def escape(text, add_quote=True):
         '''
         Escape all the characters which need to be escaped in an Android XML file.
         '''
