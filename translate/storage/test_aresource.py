@@ -130,8 +130,8 @@ class TestAndroidResourceUnit(test_monolingual.TestMonolingualUnit):
         self.__check_parse(string, xml)
 
     def test_parse_message_with_newline_in_xml(self):
-        string = 'message \nwith newline in xml'
-        xml = ('<string name="Test String">message\n\\nwith newline in xml'
+        string = 'message \nwith\n newline\nin xml'
+        xml = ('<string name="Test String">message\n\\nwith\\n\nnewline\\n\\\nin xml'
                '</string>\n\n')
         self.__check_parse(string, xml)
 

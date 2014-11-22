@@ -102,33 +102,34 @@ class AndroidResourceUnit(base.TranslationUnit):
         while i < len(text):
             c = text[i]
 
-            # Handle whitespace collapsing
-            if c is not EOF and c in WHITESPACE:
-                space_count += 1
-            elif space_count > 1:
-                # Remove duplicate whitespace; Pay attention: We
-                # don't do this if we are currently inside a quote,
-                # except for one special case: If we have unbalanced
-                # quotes, e.g. we reach eof while a quote is still
-                # open, we *do* collapse that trailing part; this is
-                # how Android does it, for some reason.
-                if not active_quote or c is EOF:
-                    # Replace by a single space, will get rid of
-                    # non-significant newlines/tabs etc.
-                    text[i-space_count : i] = ' '
-                    i -= space_count - 1
-                space_count = 0
-            elif space_count == 1:
-                # At this point we have a single whitespace character,
-                # but it might be a newline or tab. If we write this
-                # kind of insignificant whitespace into the .po file,
-                # it will be considered significant on import. So,
-                # make sure that this kind of whitespace is always a
-                # standard space.
-                text[i-1] = ' '
-                space_count = 0
-            else:
-                space_count = 0
+            if not active_escape:
+                # Handle whitespace collapsing
+                if c is not EOF and c in WHITESPACE:
+                    space_count += 1
+                elif space_count > 1:
+                    # Remove duplicate whitespace; Pay attention: We
+                    # don't do this if we are currently inside a quote,
+                    # except for one special case: If we have unbalanced
+                    # quotes, e.g. we reach eof while a quote is still
+                    # open, we *do* collapse that trailing part; this is
+                    # how Android does it, for some reason.
+                    if not active_quote or c is EOF:
+                        # Replace by a single space, will get rid of
+                        # non-significant newlines/tabs etc.
+                        text[i-space_count : i] = ' '
+                        i -= space_count - 1
+                    space_count = 0
+                elif space_count == 1:
+                    # At this point we have a single whitespace character,
+                    # but it might be a newline or tab. If we write this
+                    # kind of insignificant whitespace into the .po file,
+                    # it will be considered significant on import. So,
+                    # make sure that this kind of whitespace is always a
+                    # standard space.
+                    text[i-1] = ' '
+                    space_count = 0
+                else:
+                    space_count = 0
 
             # Handle quotes
             if c == '"' and not active_escape:
