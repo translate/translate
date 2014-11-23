@@ -162,7 +162,7 @@ the new Translate Toolkit using:
 .. code-block:: bash
 
     $ mkvirtualenv test-ttk-release
-    (test-ttk-release)$ pip install $path-to-dist/translate-toolkit-$version.tar.bz2
+    (test-ttk-release)$ pip install $path_to_dist/translate-toolkit-$version.tar.bz2
 
 
 You can then proceed with other tests such as checking:
@@ -297,8 +297,8 @@ We use github pages for the website. First we need to checkout the pages:
 #. In :file:`_posts/` add a new release posting.  This is in Markdown format
    (for now), so we need to change the release notes .rst to .md, which mostly
    means changing URL links from ```xxx <link>`_`` to ``[xxx](link)``.
-#. Change $version as needed. See :file:`download.html`, :file:`_config.yml`
-   and :command:`egrep -r $old_release *`
+#. Change ``$version`` as needed. See :file:`download.html`,
+   :file:`_config.yml` and :command:`egrep -r $old_release *`
 #. :command:`git commit` and :command:`git push` -- changes are quite quick, so
    easy to review.
 
