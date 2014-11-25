@@ -440,7 +440,6 @@ def dosetup(name, version, packages, datafiles, scripts, ext_modules=[]):
           author_email="translate-devel@lists.sourceforge.net",
           url="http://toolkit.translatehouse.org/",
           download_url="http://sourceforge.net/projects/translate/files/Translate Toolkit/" + version,
-          download_url="https://pypi.python.org/pypi/translate-toolkit/" + version,
           platforms=["any"],
           classifiers=classifiers,
           packages=packages,
