@@ -45,7 +45,7 @@ class TestLang2PO:
         assert pounit.source == "One"
         assert pounit.target == "Een"
 
-    def test_simpleentry(self):
+    def test_simplecomment(self):
         """Handle simple comments"""
         source = '# Comment\n;One\nEen\n'
         pofile = self.lang2po(source)
