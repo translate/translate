@@ -411,8 +411,8 @@ def simplify_to_common(language_code, languages=languages):
 
     if (normalize_code(language_code) in __normalised_languages):
         return language_code
-    else:
-        return simplify_to_common(simpler)
+
+    return simplify_to_common(simpler)
 
 
 def get_language(code):
