@@ -401,7 +401,7 @@ def normalize_code(code):
 __normalised_languages = set(normalize_code(key) for key in languages.keys())
 
 
-def simplify_to_common(language_code, languages=languages):
+def simplify_to_common(language_code):
     """Simplify language code to the most commonly used form for the
     language, stripping country information for languages that tend
     not to be localized differently for different countries"""
