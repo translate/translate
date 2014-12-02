@@ -107,7 +107,6 @@ class JsonUnit(base.TranslationUnit):
                 return str(value)
             return value
 
-            return newvalue
         if isinstance(self._ref, list):
             return change_type(self._ref[self._item])
         elif isinstance(self._ref, dict):
