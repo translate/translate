@@ -200,6 +200,7 @@ _fixed_names = {
     u"Pedi; Sepedi; Northern Sotho": u"Northern Sotho",
     u"Pushto; Pashto": u"Pashto",
     u"Sinhala; Sinhalese": u"Sinhala",
+    u"Songhai languages": u"Songhay",
     u"Sotho, Southern": u"Sotho",
     u"Spanish; Castilian": u"Spanish",
     u"Uighur; Uyghur": u"Uyghur",
