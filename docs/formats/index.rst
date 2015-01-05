@@ -44,6 +44,7 @@ Other translation formats
    flex
    catkeys
    android
+   resx
 
 * :doc:`csv`
 * :doc:`ini` (including Inno Setup .isl dialect)
@@ -58,6 +59,7 @@ Other translation formats
 * Adobe :doc:`flex` files (from version 1.8)
 * Haiku :doc:`catkeys` (from version 1.8)
 * :doc:`android` (supports storage, not conversion)
+* :doc:`resx` .NET Resource files (.resx)
 
 .. _formats#translation_memory_formats:
 
@@ -185,7 +187,6 @@ Formats that we would like to support but don't currently support:
   * :wp:`Rich Text Format <Rich_Text_Format>` (RTF) see also `pyrtf-ng
     <http://code.google.com/p/pyrtf-ng/>`_
   * :wp:`Open XML Paper Specification <Open_XML_Paper_Specification>`
-  * .NET Resource files (.resx) -- :issue:`Issue 396 <396>`
 
 * XML related
 
