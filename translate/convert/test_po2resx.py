@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-# coding=utf-8
+# -*- coding: utf-8 -*-
 
 from translate.convert import po2resx, test_convert
 from translate.storage import po

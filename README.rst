@@ -259,6 +259,7 @@ Use ``--help`` to find the syntax and options for all programs.
         ini2po   - convert .ini files to to PO
         ical2po  - Convert iCalendar files (*.ics) to PO
         sub2po   - Convert many subtitle files to PO
+        resx2po  - convert .Net Resource (.resx) files to PO
 
 * Tools (Quality Assurance)::
 
