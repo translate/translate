@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 #
 # Copyright 2015 Zuza Software Foundation
+# Copyright 2015 Sarah Hale (sjhale892@gmail.com)
 #
 # This file is part of translate.
 #
