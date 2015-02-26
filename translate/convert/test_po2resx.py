@@ -285,6 +285,23 @@ msgstr "Bézier-kurwe"
         resx_file = self.po2resx(resx_template, po_source)
         assert resx_file == expected_output
 
+    def test_automaticcomments_existingduplicatecommentwithwhitespace(self):
+        """ Tests there is no duplication of automatic comments if it already exists, hasn't changed but has leading or
+        trailing whitespaces """
+        po_source = r'''#.  This is an existing comment with leading and trailing spaces
+#: ResourceKey
+msgid "Bézier curve"
+msgstr "Bézier-kurwe"
+'''
+        resx_template = self.XMLskeleton % '''<data name="ResourceKey" xml:space="preserve">
+        <value></value>
+        <comment> This is an existing comment with leading and trailing spaces </comment></data>'''
+        expected_output = self.XMLskeleton % '''<data name="ResourceKey" xml:space="preserve">
+        <value>Bézier-kurwe</value>
+    <comment>This is an existing comment with leading and trailing spaces</comment></data>'''
+        resx_file = self.po2resx(resx_template, po_source)
+        assert resx_file == expected_output
+
     def test_translatorcomments(self):
         """ Tests that translator comments are imported """
         po_source = r'''# This is a translator comment : 22.12.14
@@ -409,6 +426,7 @@ msgstr "Bézier-kurwe"
 [Translator Comment: This is an existing translator comment : 22.12.14]</comment></data>'''
         resx_file = self.po2resx(resx_template, po_source)
         assert resx_file == expected_output
+
 
 class TestPO2TSCommand(test_convert.TestConvertCommand, TestPO2RESX):
     """ Tests running actual po2ts commands on files """
