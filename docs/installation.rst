@@ -24,7 +24,7 @@ Prerequisites
 
 * Remove old versions of toolkit on Debian
 
-The dollowing advice only applies to manual installation from tar ball.
+The following advice only applies to manual installation from tar ball.
 
 #. Find location of your python packages:
 
@@ -109,7 +109,7 @@ To install a tar.bz2:
    $ su
    $ ./setup.py install
 
- 
+
 On Windows simply click on the .exe file and follow the instructions.
 
 On Debian (if you are on etch), just type the following command:
