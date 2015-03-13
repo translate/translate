@@ -9,9 +9,11 @@ build: docs
 	python setup.py sdist ${FORMATS}
 
 docs:
+	# Make sure that the submodule with docs theme is pulled and up-to-date.
+	git submodule update --init
 	# The following creates the HTML docs.
 	# NOTE: cd and make must be in the same line.
-	cd ${DOCS_DIR}; make SPHINXOPTS="-W -q -j 15" html ${TAIL}
+	cd ${DOCS_DIR}; make SPHINXOPTS="-W -q" html ${TAIL}
 
 docs-review: docs
 	python -mwebbrowser file://$(shell pwd)/${DOCS_DIR}/_build/html/index.html
