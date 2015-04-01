@@ -29,3 +29,5 @@ def setup(app):
         name="opt",
         nodeclass=docutils.nodes.literal
     )
+
+    return {"parallel_read_safe": True}

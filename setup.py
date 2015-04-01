@@ -77,6 +77,7 @@ translatescripts = [join(*('translate', ) + script) for script in [
                   ('convert', 'tiki2po'), ('convert', 'po2tiki'),
                   ('convert', 'php2po'), ('convert', 'po2php'),
                   ('convert', 'rc2po'), ('convert', 'po2rc'),
+                  ('convert', 'resx2po'), ('convert', 'po2resx'),
                   ('convert', 'xliff2po'), ('convert', 'po2xliff'),
                   ('convert', 'sub2po'), ('convert', 'po2sub'),
                   ('convert', 'symb2po'), ('convert', 'po2symb'),

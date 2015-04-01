@@ -28,6 +28,7 @@ Converters
    json2po
    web2py2po
    rc2po
+   resx2po
    symb2po
    tiki2po
    ts2po
@@ -74,6 +75,7 @@ understanding that will make the converters much easier to use and understand.
 * :doc:`web2py2po` -- web2py translation to PO converter
 * :doc:`rc2po <rc2po>` -- Windows Resource .rc (C++ Resource Compiler)
   converter
+* :doc:`resx2po <resx2po>` -- .Net Resource (.resx) file converter
 * :doc:`symb2po <symb2po>` -- Symbian-style translation to PO converter
 * :doc:`tiki2po <tiki2po>` -- `TikiWiki <http://tikiwiki.org/>`_ language.php
   converter

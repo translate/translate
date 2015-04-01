@@ -1,4 +1,3 @@
-
 Making a Translate Toolkit Release
 **********************************
 
@@ -21,14 +20,25 @@ Get a clean checkout
 --------------------
 
 We work from a clean checkout to ensure that everything you are adding to the
-build is what is in VC and doesn't contain any of your uncommitted changes.  It
-also ensure that someone else could replicate your process.
+build is what is in the repository and doesn't contain any of your uncommitted
+changes. It also ensures that someone else could replicate your process.
 
 .. code-block:: bash
 
-  $ git clone git@github.com:translate/translate.git translate-release
-  $ cd translate-release
-  $ git submodule update --init
+    $ git clone git@github.com:translate/translate.git translate-release
+    $ cd translate-release
+    $ git submodule update --init
+
+
+Check copyright dates
+---------------------
+
+Update any copyright dates in :file:`docs/conf.py:copyright` and anywhere else
+that needs fixing.
+
+.. code-block:: bash
+
+    $ git grep 2013  # Should pick up anything that should be examined
 
 
 Create release notes
@@ -36,7 +46,7 @@ Create release notes
 
 The release notes will be used in these places:
 
-- Toolkit website - `download page
+- Translate Toolkit website - `download page
   <http://toolkit.translatehouse.org/download.html>`_ (used in gh-pages)
 - Email announcements - text version
 
@@ -48,14 +58,14 @@ done generically like this:
 
 .. code-block:: bash
 
-  $ git log $previous_version..HEAD > docs/release/$version.rst
+    $ git log $previous_version..HEAD > docs/release/$version.rst
 
 
 Or a more specific example:
 
 .. code-block:: bash
 
-  $ git log 1.10.0..HEAD > docs/releases/1.11.0-rc1.rst
+    $ git log 1.10.0..HEAD > docs/releases/1.11.0-rc1.rst
 
 
 Edit this file.  You can use the commits as a guide to build up the release
@@ -72,7 +82,8 @@ Read for grammar and spelling errors.
 .. note:: When writing the notes please remember:
 
    #. The voice is active. 'Translate has released a new version of the
-      toolkit', not 'A new version of the toolkit was release by Translate'.
+      Translate Toolkit', not 'A new version of the Translate Toolkit was
+      released by Translate'.
    #. The connection to the users is human not distant.
    #. We speak in familiar terms e.g. "I know you've been waiting for this
       release" instead of formal.
@@ -81,7 +92,7 @@ We create a list of contributors using this command:
 
 .. code-block:: bash
 
-  $ git log 1.10.0..HEAD --format='%aN, ' | awk '{arr[$0]++} END{for (i in arr){print arr[i], i;}}' | sort -rn | cut -d\  -f2-
+    $ git log 1.10.0..HEAD --format='%aN, ' | awk '{arr[$0]++} END{for (i in arr){print arr[i], i;}}' | sort -rn | cut -d\  -f2-
 
 
 Up version numbers
@@ -93,9 +104,9 @@ Update the version number in:
 - :file:`docs/conf.py`
 
 In :file:`translate/__version__.py`, bump the build number if anybody used the
-toolkit with the previous number, and there have been any changes to code
-touching stats or quality checks.  An increased build number will force a
-toolkit user, like Pootle, to regenerate the stats and checks.
+Translate Toolkit with the previous number, and there have been any changes to
+code touching stats or quality checks.  An increased build number will force a
+Translate Toolkit user, like Pootle, to regenerate the stats and checks.
 
 For :file:`docs/conf.py` change ``version`` and ``release``.
 
@@ -128,11 +139,11 @@ checkout run:
 
 .. code-block:: bash
 
-  $ mkvirtualenv build-ttk-release
-  (build-ttk-release)$ pip install -r requirements/dev.txt
-  (build-ttk-release)$ make build
-  (build-ttk-release)$ deactivate
-  $ rmvirtualenv build-ttk-release
+    $ mkvirtualenv build-ttk-release
+    (build-ttk-release)$ pip install -r requirements/dev.txt
+    (build-ttk-release)$ make build
+    (build-ttk-release)$ deactivate
+    $ rmvirtualenv build-ttk-release
 
 
 This will create a tarball in :file:`dist/` which you can use for further
@@ -146,12 +157,12 @@ Test install and other tests
 ----------------------------
 
 The easiest way to test is in a virtualenv. You can test the installation of
-the new toolkit using:
+the new Translate Toolkit using:
 
 .. code-block:: bash
 
-  $ mkvirtualenv test-ttk-release
-  (test-ttk-release)$ pip install path/to/dist/translate-toolkit-$version.tar.bz2
+    $ mkvirtualenv test-ttk-release
+    (test-ttk-release)$ pip install $path_to_dist/translate-toolkit-$version.tar.bz2
 
 
 You can then proceed with other tests such as checking:
@@ -161,31 +172,31 @@ You can then proceed with other tests such as checking:
 
    .. code-block:: bash
 
-     (test-ttk-release)$ moz2po --help
-     (test-ttk-release)$ php2po --version
-     (test-ttk-release)$ deactivate
-     $ rmvirtualenv test-ttk-release
+       (test-ttk-release)$ moz2po --help
+       (test-ttk-release)$ php2po --version
+       (test-ttk-release)$ deactivate
+       $ rmvirtualenv test-ttk-release
 
 #. Meta information about the package is correct. This is stored in
    :file:`setup.py`, to see some options to display meta-data use:
 
    .. code-block:: bash
 
-     $ ./setup.py --help
+       $ ./setup.py --help
 
    Now you can try some options like:
 
    .. code-block:: bash
 
-     $ ./setup.py --name
-     $ ./setup.py --version
-     $ ./setup.py --author
-     $ ./setup.py --author-email
-     $ ./setup.py --url
-     $ ./setup.py --license
-     $ ./setup.py --description
-     $ ./setup.py --long-description
-     $ ./setup.py --classifiers
+       $ ./setup.py --name
+       $ ./setup.py --version
+       $ ./setup.py --author
+       $ ./setup.py --author-email
+       $ ./setup.py --url
+       $ ./setup.py --license
+       $ ./setup.py --description
+       $ ./setup.py --long-description
+       $ ./setup.py --classifiers
 
    The actual descriptions are taken from :file:`translate/__init__.py`.
 
@@ -206,10 +217,10 @@ before you tag.
 
 .. code-block:: bash
 
-  $ git checkout -b stable/1.10.0
-  $ git push origin stable/1.10.0
-  $ git tag -a 1.10.0 -m "Tag version 1.10.0"
-  $ git push --tags
+    $ git checkout -b stable/1.10.0
+    $ git push origin stable/1.10.0
+    $ git tag -a 1.10.0 -m "Tag version 1.10.0"
+    $ git push --tags
 
 
 Release documentation
@@ -239,7 +250,7 @@ Publish on PyPI
 
    .. code-block:: bash
 
-     $ ./setup.py register
+       $ ./setup.py register
 
    will create such file. It will also actually publish the meta-data so only
    do it when you are actually ready.
@@ -249,7 +260,7 @@ Run the following to publish the package on PyPI:
 
 .. code-block:: bash
 
-  $ make publish-pypi
+    $ make publish-pypi
 
 
 Create a release on Github
@@ -273,21 +284,21 @@ Do the following to create the release:
 #. Mark it as pre-release if it's a release candidate.
 
 
-Update translate website
-------------------------
+Update Translate Toolkit website
+--------------------------------
 
 We use github pages for the website. First we need to checkout the pages:
 
 .. code-block:: bash
 
-  $ git checkout gh-pages
+    $ git checkout gh-pages
 
 
 #. In :file:`_posts/` add a new release posting.  This is in Markdown format
    (for now), so we need to change the release notes .rst to .md, which mostly
    means changing URL links from ```xxx <link>`_`` to ``[xxx](link)``.
-#. Change $version as needed. See :file:`download.html`, :file:`_config.yml`
-   and :command:`egrep -r $old_release *`
+#. Change ``$version`` as needed. See :file:`download.html`,
+   :file:`_config.yml` and :command:`egrep -r $old_release *`
 #. :command:`git commit` and :command:`git push` -- changes are quite quick, so
    easy to review.
 
@@ -298,12 +309,14 @@ Announce to the world
 Let people know that there is a new version:
 
 #. Announce on mailing lists:
-   Send the announcement to the translate-announce mailing lists on
-   translate-announce@lists.sourceforge.net
+
+   - translate-announce@lists.sourceforge.net
+   - translate-pootle@lists.sourceforge.net
+
 #. Adjust the #pootle channel notice. Use ``/topic`` to change the topic.
 #. Email important users
 #. Tweet about it
-#. Update `Toolkit's Wikipedia page
+#. Update `Translate Toolkit's Wikipedia page
    <http://en.wikipedia.org/wiki/Translate_Toolkit>`_
 
 
@@ -317,10 +330,10 @@ nevertheless completely necessary.
 Bump version to N+1-alpha1
 --------------------------
 
-Now that we've release lets make sure that master reflect the current state
-which would be ``{N+1}-alpha1``. This prevents anyone using master being
-confused with a stable release and we can easily check if they are using master
-or stable.
+If this new release is a stable one bump the version in ``master`` to
+``{N+1}-alpha1``. This prevents anyone using ``master`` being confused with a
+stable release and we can easily check if they are using ``master`` or
+``stable``.
 
 .. note:: You probably will have to adjust the output of some of the functional
    tests, specifically the manpage ones, to use the right new version.
@@ -338,15 +351,17 @@ Other possible steps
 
 Some possible cleanup tasks:
 
-- Commit any release notes and such (or maybe do that before tagging).
-- Remove your translate-release checkout.
-- Update and fix these release notes.
+- Remove your ``translate-release`` checkout.
+- Update and fix these releasing notes:
+
+  - Make sure these releasing notes are updated on ``master``.
+  - Discuss any changes that should be made or new things that could be added.
+  - Add automation if you can.
 
 
 We also need to check and document these if needed:
 
 - Change URLs to point to the correct docs: do we want to change URLs to point
-  to the $version docs rather then 'latest'
-- Building on Windows, building for other Linux distros. We have produced
-  Windows builds in the past.
-- Communicating to upstream packagers
+  to the ``$version`` docs rather then ``latest``?
+- Building on Windows, building for other Linux distros.
+- Communicating to upstream packagers.

@@ -119,6 +119,48 @@ Example:
             return self.name.upper() + '!!!!111'
 
 
+Strings
+~~~~~~~
+
+- Double quotes are suggested over single quotes, but always try to respect the
+  surrounding coding style. This is overruled by escaping which you should always
+  try to avoid.
+
+  .. code-block:: python
+
+    # Good.
+    str1 = "Sauron's eye"
+    str2 = 'Its name is "Virtaal".'
+
+
+    # Bad.
+    str3 = 'Sauron\'s eye'
+    str4 = "Its name is \"Virtaal\"."
+
+
+String formatting
+~~~~~~~~~~~~~~~~~
+
+While str.format() is more powerful than %-formatting, the latter has been the
+canonical way of formatting strings in Python for a long time and the Python
+core team has shown no desire to settle on one syntax over the other.
+For simple, serial positional cases (non-translatable strings), the old "%s"
+way of formatting is preferred.
+For anything more complex, including translatable strings, str.format is
+preferred as it is significantly more powerful and often cleaner.
+
+.. code-block:: python
+
+    # Good
+    print("Hello, {thing}".format(thing="world"))
+    print("%s=%r" % ("hello", "world"))  # non-translatable strings
+
+    # Bad
+    print("%s, %s" % ("Hello", "world"))  # Translatable string.
+    print("Hello, %(thing)s" % {"thing": "world"})  # Use {thing}.
+    print("Hello, {}".format("world"))  # Incompatible with Python 2.6. Use %s.
+
+
 .. _styleguide-imports:
 
 Imports
@@ -261,43 +303,6 @@ Properties
     def delx(self):
       del self._x
     x = property(getx, setx, delx, "I'm the 'x' property.")
-
-
-Single vs double quoted strings
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-There is no preference on using single or double quotes for strings, except in
-some specific cases:
-
-- Always use single quotes for string dictionary keys:
-
-  .. code-block:: python
-
-    # Good.
-    demo = {
-        'language': language,
-    }
-
-
-    # Bad.
-    demo = {
-        "language": language,
-    }
-
-
-- When a single or double quote character needs to be escaped it is recommended
-  to instead enclose the string using the other quoting:
-
-  .. code-block:: python
-
-    # Good.
-    str1 = "Sauron's eye"
-    str2 = 'Its name is "Virtaal".'
-
-
-    # Bad.
-    str3 = 'Sauron\'s eye'
-    str4 = "Its name is \"Virtaal\"."
 
 
 Expressions and Statements
@@ -688,26 +693,3 @@ Docstring comments:
 .. _reStructuredText primer: http://sphinx-doc.org/rest.html
 .. _Sphinx documentation: http://sphinx-doc.org/contents.html
 .. _paragraph-level markup: http://sphinx-doc.org/markup/para.html#paragraph-level-markup
-
-
-String formatting
------------------
-
-While str.format() is more powerful than %-formatting, the latter has been the
-canonical way of formatting strings in Python for a long time and the Python
-core team has shown no desire to settle on one syntax over the other.
-For simple, serial positional cases (non-translatable strings), the old "%s"
-way of formatting is preferred.
-For anything more complex, including translatable strings, str.format is
-preferred as it is significantly more powerful and often cleaner.
-
-.. code-block:: python
-
-    # Good
-    print("Hello, {thing}".format(thing="world"))
-    print("%s=%r" % ("hello", "world"))  # non-translatable strings
-
-    # Bad
-    print("%s, %s" % ("Hello", "world"))  # Translatable string.
-    print("Hello, %(thing)s" % {"thing": "world"})  # Use {thing}.
-    print("Hello, {}".format("world"))  # Incompatible with Python 2.6. Use %s.
