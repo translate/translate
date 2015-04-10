@@ -1,0 +1,8 @@
+#!/usr/bin/env python
+
+"""simple script to convert a .l20n file to a gettext .po localization file"""
+
+from translate.convert import l20n2po
+
+if __name__ == '__main__':
+    l20n2po.main()
