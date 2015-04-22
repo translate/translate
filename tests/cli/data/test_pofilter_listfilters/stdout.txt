@@ -1,16 +1,11 @@
-accelerators	Checks whether accelerators are consistent between the
-        two strings.
-        
+accelerators	Checks whether accelerators are consistent between the two strings.
 acronyms	Checks that acronyms that appear are unchanged.
-blank	Checks whether a translation only contains spaces.
+blank	Checks whether a translation is totally blank.
 brackets	Checks that the number of brackets in both strings match.
 compendiumconflicts	Checks for Gettext compendium conflicts (#-#-#-#-#).
 credits	Checks for messages containing translation credits instead of
         normal translations.
-        
-doublequoting	Checks whether doublequoting is consistent between the
-        two strings.
-        
+doublequoting	Checks whether doublequoting is consistent between the two strings.
 doublespacing	Checks for bad double-spaces by comparing to original.
 doublewords	Checks for repeated words in the translation.
 emails	Checks that emails are not translated.
@@ -19,55 +14,42 @@ endwhitespace	Checks whether whitespace at the end of the strings matches.
 escapes	Checks whether escaping is consistent between the two strings.
 filepaths	Checks that file paths have not been translated.
 functions	Checks that function names are not translated.
-hassuggestion	Checks if there is at least one suggested translation for this
-        unit.
-        
+hassuggestion	Checks if there is at least one suggested translation for this unit.
 isfuzzy	Check if the unit has been marked fuzzy.
 isreview	Check if the unit has been marked review.
 kdecomments	Checks to ensure that no KDE style comments appear in the
         translation.
-        
 long	Checks whether a translation is much longer than the original
         string.
-        
 musttranslatewords	Checks that words configured as definitely translatable don't appear
         in the translation.
 newlines	Checks whether newlines are consistent between the two strings.
 notranslatewords	Checks that words configured as untranslatable appear in the
         translation too.
-nplurals	Checks for the correct number of noun forms for plural
-        translations.
-        
+nplurals	Checks for the correct number of noun forms for plural translations.
 numbers	Checks whether numbers of various forms are consistent between the
         two strings.
-        
-options	Checks that options are not translated.
+options	Checks that command line options are not translated.
 printf	Checks whether printf format strings match.
 puncspacing	Checks for bad spacing after punctuation.
 purepunc	Checks that strings that are purely punctuation are not changed.
 sentencecount	Checks that the number of sentences in both strings match.
 short	Checks whether a translation is much shorter than the original
         string.
-        
 simplecaps	Checks the capitalisation of two strings isn't wildly different.
 simpleplurals	Checks for English style plural(s) for you to review.
 singlequoting	Checks whether singlequoting is consistent between the two strings.
 spellcheck	Checks words that don't pass a spell check.
 startcaps	Checks that the message starts with the correct capitalisation.
 startpunc	Checks whether punctuation at the beginning of the strings match.
-startwhitespace	Checks whether whitespace at the beginning of the strings
-        matches.
-        
+startwhitespace	Checks whether whitespace at the beginning of the strings matches.
 tabs	Checks whether tabs are consistent between the two strings.
 unchanged	Checks whether a translation is basically identical to the original
         string.
-        
 untranslated	Checks whether a string has been translated at all.
 urls	Checks that URLs are not translated.
 validchars	Checks that only characters specified as valid appear in the
         translation.
-        
 variables	Checks whether variables of various forms are consistent between the
         two strings.
-        
 xmltags	Checks that XML/HTML tags have not been translated.
