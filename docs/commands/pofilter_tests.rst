@@ -147,7 +147,7 @@ extracts those for correction.
 credits
 -------
 
-Checks for messages containing translation credits instead of normal.
+Checks for messages containing translation credits instead of normal
 translations.
 
 Some projects have consistent ways of giving credit to translators by having a
@@ -271,8 +271,8 @@ escapes
 
 Checks whether escaping is consistent between the two strings.
 
-Checks escapes such as ``\n`` ``\uNNNN`` to ensure that if they exist in the.
-original that you have them in the translation.
+Checks escapes such as ``\n`` ``\uNNNN`` to ensure that if they exist in the
+original string you also have them in the translation.
 
 .. _pofilter_tests#filepaths:
 
