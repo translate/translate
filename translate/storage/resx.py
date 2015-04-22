@@ -82,14 +82,15 @@ class RESXUnit(lisa.LISAunit):
         current_notes = self.getnotes(origin)
         self.removenotes(origin)
         note = etree.SubElement(self.xmlelement, self.namespaced("comment"))
+        text_stripped = text.strip()
         if position == "append":
-            if current_notes in text:
+            if current_notes.strip() in text_stripped:
                 # Don't add duplicate comments
-                note.text = text.strip()
+                note.text = text_stripped
             else:
-                note.text = "\n".join(filter(None, [current_notes, text.strip()]))
+                note.text = "\n".join(filter(None, [current_notes, text_stripped]))
         else:
-            note.text = text.strip()
+            note.text = text_stripped
 
     def getnotes(self, origin=None):
         comments = []
