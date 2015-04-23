@@ -124,7 +124,7 @@ languages = {
     'pms': (u'Piemontese', 2, '(n != 1)'),
     'ps': (u'Pushto; Pashto', 2, '(n != 1)'),
     'pt': (u'Portuguese', 2, '(n != 1)'),
-    'pt_BR': (u'Portuguese (Brazil)', 2, '(n != 1)'),
+    'pt_BR': (u'Portuguese (Brazil)', 2, '(n > 1)'),
     'rm': (u'Romansh', 2, '(n != 1)'),
     'ro': (u'Romanian', 3, '(n==1 ? 0 : (n==0 || (n%100 > 0 && n%100 < 20)) ? 1 : 2);'),
     'ru': (u'Russian', 3,
