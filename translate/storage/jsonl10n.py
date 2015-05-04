@@ -154,7 +154,7 @@ class JsonFile(base.TranslationStore):
             self.parse(inputfile)
 
     def __str__(self):
-        return json.dumps(self._file, sort_keys=True,
+        return json.dumps(self._file, sort_keys=True, separators=(',', ': '),
                           indent=4, ensure_ascii=False).encode('utf-8')
 
     def _extract_translatables(self, data, stop=None, prev="", name_node=None,
