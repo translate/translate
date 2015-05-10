@@ -59,6 +59,15 @@ class ConvertOptionParser(optrecurse.RecursiveOptionParser, object):
                         action="store_false", default=default, help=nofuzzyhelp)
         self.passthrough.append("includefuzzy")
 
+    def add_remove_translated_option(self, default=False):
+        """Adds an option to remove key value from output if it is
+        untranslated.
+        """
+        self.add_option("", "--removeuntranslated", dest="remove_untranslated",
+                        default=False, action="store_true",
+                        help="remove key value from output if it is untranslated")
+        self.passthrough.append("remove_untranslated")
+
     def add_threshold_option(self, default=None):
         """Adds an option to output only stores where translation percentage
         exceeds the threshold.

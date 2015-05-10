@@ -253,14 +253,11 @@ def main(argv=None):
     parser.add_option("", "--encoding", dest="encoding", default=None,
             help="override the encoding set by the personality",
             metavar="ENCODING")
-    parser.add_option("", "--removeuntranslated", dest="remove_untranslated",
-            default=False, action="store_true",
-            help="remove key value from output if it is untranslated")
     parser.add_threshold_option()
     parser.add_fuzzy_option()
+    parser.add_remove_translated_option()
     parser.passthrough.append("personality")
     parser.passthrough.append("encoding")
-    parser.passthrough.append("remove_untranslated")
     parser.run(argv)
 
 if __name__ == '__main__':
