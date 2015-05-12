@@ -96,6 +96,7 @@ def main(argv=None):
     }
     parser = convert.ConvertOptionParser(formats, usetemplates=True,
                                          description=__doc__)
+    parser.add_fuzzy_option()
     parser.run(argv)
 
 
