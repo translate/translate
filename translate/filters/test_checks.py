@@ -583,7 +583,7 @@ def test_printf():
     assert passes(stdchecker.printf, "(x,y) = (%1$+5d,%2$+5d)", "(x,y) = (%1$+5d,%2$+5d)")
     assert passes(stdchecker.printf, "(x,y) = (%|1$+5|,%|2$+5|)", "(x,y) = (%|1$+5|,%|2$+5|)")
     # Boost using manipulators.
-    #assert passes(stdchecker.printf, "_%1$+5d_ %1$d", "_%1$+5d_ %1$d")  # This is failing.
+    assert passes(stdchecker.printf, "_%1$+5d_ %1$d", "_%1$+5d_ %1$d")  # This is failing.
     assert passes(stdchecker.printf, "_%1%_ %1%", "_%1%_ %1%")
     # Boost absolute tabulations.
     assert passes(stdchecker.printf, "%1%, %2%, %|40t|%3%", "%1%, %2%, %|40t|%3%")
