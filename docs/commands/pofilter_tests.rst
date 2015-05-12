@@ -43,41 +43,62 @@ you determine which to run first.
 
 * Critical -- can break a program
 
-  * :ref:`pofilter_tests#escapes`,
-    :ref:`pofilter_tests#newlines`, :ref:`pofilter_tests#nplurals`,
-    :ref:`pofilter_tests#printf`, :ref:`pofilter_tests#tabs`,
-    :ref:`pofilter_tests#variables`, :ref:`pofilter_tests#xmltags`,
-    :ref:`pofilter_tests#dialogsizes`
+  * :ref:`pofilter_tests#dialogsizes`,
+    :ref:`pofilter_tests#escapes`,
+    :ref:`pofilter_tests#newlines`,
+    :ref:`pofilter_tests#nplurals`,
+    :ref:`pofilter_tests#printf`,
+    :ref:`pofilter_tests#tabs`,
+    :ref:`pofilter_tests#variables`,
+    :ref:`pofilter_tests#xmltags`
 
 * Functional -- may confuse the user
 
   * :ref:`pofilter_tests#accelerators`,
-    :ref:`pofilter_tests#acronyms`, :ref:`pofilter_tests#blank`,
-    :ref:`pofilter_tests#emails`, :ref:`pofilter_tests#filepaths`,
-    :ref:`pofilter_tests#functions`, :ref:`pofilter_tests#gconf`,
-    :ref:`pofilter_tests#kdecomments`, :ref:`pofilter_tests#long`,
+    :ref:`pofilter_tests#acronyms`,
+    :ref:`pofilter_tests#blank`,
+    :ref:`pofilter_tests#emails`,
+    :ref:`pofilter_tests#filepaths`,
+    :ref:`pofilter_tests#functions`,
+    :ref:`pofilter_tests#gconf`,
+    :ref:`pofilter_tests#kdecomments`,
+    :ref:`pofilter_tests#long`,
     :ref:`pofilter_tests#musttranslatewords`,
-    :ref:`pofilter_tests#notranslatewords`, :ref:`pofilter_tests#numbers`,
-    :ref:`pofilter_tests#options`, :ref:`pofilter_tests#purepunc`,
-    :ref:`pofilter_tests#sentencecount`, :ref:`pofilter_tests#short`,
-    :ref:`pofilter_tests#spellcheck`, :ref:`pofilter_tests#urls`,
+    :ref:`pofilter_tests#notranslatewords`,
+    :ref:`pofilter_tests#numbers`,
+    :ref:`pofilter_tests#options`,
+    :ref:`pofilter_tests#purepunc`,
+    :ref:`pofilter_tests#sentencecount`,
+    :ref:`pofilter_tests#short`,
+    :ref:`pofilter_tests#spellcheck`,
+    :ref:`pofilter_tests#urls`,
     :ref:`pofilter_tests#unchanged`
 
 * Cosmetic -- make it look better
 
-  * :ref:`pofilter_tests#brackets`, :ref:`pofilter_tests#doublequoting`,
-    :ref:`pofilter_tests#doublespacing`, :ref:`pofilter_tests#doublewords`,
-    :ref:`pofilter_tests#endpunc`, :ref:`pofilter_tests#endwhitespace`,
-    :ref:`pofilter_tests#puncspacing`, :ref:`pofilter_tests#simplecaps`,
-    :ref:`pofilter_tests#simpleplurals`, :ref:`pofilter_tests#startcaps`,
-    :ref:`pofilter_tests#singlequoting`, :ref:`pofilter_tests#startpunc`,
-    :ref:`pofilter_tests#startwhitespace`, :ref:`pofilter_tests#validchars`
+  * :ref:`pofilter_tests#brackets`,
+    :ref:`pofilter_tests#doublequoting`,
+    :ref:`pofilter_tests#doublespacing`,
+    :ref:`pofilter_tests#doublewords`,
+    :ref:`pofilter_tests#endpunc`,
+    :ref:`pofilter_tests#endwhitespace`,
+    :ref:`pofilter_tests#puncspacing`,
+    :ref:`pofilter_tests#simplecaps`,
+    :ref:`pofilter_tests#simpleplurals`,
+    :ref:`pofilter_tests#startcaps`,
+    :ref:`pofilter_tests#singlequoting`,
+    :ref:`pofilter_tests#startpunc`,
+    :ref:`pofilter_tests#startwhitespace`,
+    :ref:`pofilter_tests#validchars`
 
 * Extraction -- useful mainly for extracting certain types of string
 
-  * :ref:`pofilter_tests#compendiumconflicts`, :ref:`pofilter_tests#credits`,
-    :ref:`pofilter_tests#hassuggestion`, :ref:`pofilter_tests#isfuzzy`,
-    :ref:`pofilter_tests#isreview`, :ref:`pofilter_tests#untranslated`
+  * :ref:`pofilter_tests#compendiumconflicts`,
+    :ref:`pofilter_tests#credits`,
+    :ref:`pofilter_tests#hassuggestion`,
+    :ref:`pofilter_tests#isfuzzy`,
+    :ref:`pofilter_tests#isreview`,
+    :ref:`pofilter_tests#untranslated`
 
 .. _test_description:
 
