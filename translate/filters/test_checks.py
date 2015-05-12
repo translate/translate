@@ -570,6 +570,23 @@ def test_printf():
     assert fails(stdchecker.printf, "Object %@ and object %@", "String %1$@ en string %3$@")  # out of bounds
     assert fails(stdchecker.printf, "I am %@", "Ek is %s")  # wrong specification
     assert passes(stdchecker.printf, "Object %@ and string %s", "Object %1$@ en string %2$s")  # correct sentence
+    # Checking boost format.
+    # Boost classic printf.
+    assert passes(stdchecker.printf, "writing %1%,  x=%2% : %3%-th try", "escribindo %1%,  x=%2% : %3%-esimo intento")
+    # Reordering boost.
+    assert passes(stdchecker.printf, "%1% %2% %3% %2% %1%", "%1% %2% %3% %2% %1%")
+    # Boost posix format.
+    assert passes(stdchecker.printf, "(x,y) = (%1$+5d,%2$+5d)", "(x,y) = (%1$+5d,%2$+5d)")
+    # Boost several ways to express the same.
+    assert passes(stdchecker.printf, "(x,y) = (%+5d,%+5d)", "(x,y) = (%+5d,%+5d)")
+    assert passes(stdchecker.printf, "(x,y) = (%|+5|,%|+5|)", "(x,y) = (%|+5|,%|+5|)")
+    assert passes(stdchecker.printf, "(x,y) = (%1$+5d,%2$+5d)", "(x,y) = (%1$+5d,%2$+5d)")
+    assert passes(stdchecker.printf, "(x,y) = (%|1$+5|,%|2$+5|)", "(x,y) = (%|1$+5|,%|2$+5|)")
+    # Boost using manipulators.
+    #assert passes(stdchecker.printf, "_%1$+5d_ %1$d", "_%1$+5d_ %1$d")  # This is failing.
+    assert passes(stdchecker.printf, "_%1%_ %1%", "_%1%_ %1%")
+    # Boost absolute tabulations.
+    assert passes(stdchecker.printf, "%1%, %2%, %|40t|%3%", "%1%, %2%, %|40t|%3%")
 
 
 def test_puncspacing():
