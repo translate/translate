@@ -52,6 +52,8 @@ logger = logging.getLogger(__name__)
 # (see https://developer.apple.com/library/mac/documentation/Cocoa/Conceptual/Strings/Articles/formatSpecifiers.html)
 printf_pat = re.compile('''
         %(                          # initial %
+        (?P<boost_ord>\d+)%         # boost::format style variable order, like %1%
+        |
               (?:(?P<ord>\d+)\$|    # variable order, like %1$s
               \((?P<key>\w+)\))?    # Python style variables, like %(var)s
         (?P<fullvar>
@@ -59,7 +61,7 @@ printf_pat = re.compile('''
             (?:\d+)?                # width
             (?:\.\d+)?              # precision
             (hh\|h\|l\|ll)?         # length formatting
-            (?P<type>[\w%@]))       # type (%s, %d, etc.)
+            (?P<type>[\w@]))        # type (%s, %d, etc.)
         )''', re.VERBOSE)
 
 # The name of the XML tag
@@ -906,25 +908,29 @@ class StandardChecker(TranslationChecker):
 
         for var_num2, match2 in enumerate(printf_pat.finditer(str2)):
             count2 = var_num2 + 1
-            str2ord = match2.group('ord')
+            str2ord = match2.group('ord') if not match2.group('boost_ord') else match2.group('boost_ord')
             str2key = match2.group('key')
+            str2fullvar = match2.group('fullvar') if not match2.group('boost_ord') else '%'
 
             if str2ord:
                 str1ord = None
 
                 for var_num1, match1 in enumerate(printf_pat.finditer(str1)):
                     count1 = var_num1 + 1
+                    localstr1ord = match1.group('ord') if not match1.group('boost_ord') else match1.group('boost_ord')
 
-                    if match1.group('ord'):
-                        if str2ord == match1.group('ord'):
+                    if localstr1ord:
+                        if str2ord == localstr1ord:
                             str1ord = str2ord
+                            str1fullvar = match1.group('fullvar') if not match1.group('boost_ord') else '%'
 
-                            if match2.group('fullvar') != match1.group('fullvar'):
+                            if str2fullvar != str1fullvar:
                                 raise FilterFailure(u"Different printf variable: %s" % match2.group())
                     elif int(str2ord) == var_num1 + 1:
                         str1ord = str2ord
+                        str1fullvar = match1.group('fullvar') if not match1.group('boost_ord') else '%'
 
-                        if match2.group('fullvar') != match1.group('fullvar'):
+                        if str2fullvar != str1fullvar:
                             raise FilterFailure(u"Different printf variable: %s" % match2.group())
 
                 if str1ord is None:
@@ -934,15 +940,16 @@ class StandardChecker(TranslationChecker):
 
                 for var_num1, match1 in enumerate(printf_pat.finditer(str1)):
                     count1 = var_num1 + 1
+                    str1fullvar = match1.group('fullvar') if not match1.group('boost_ord') else '%'
 
                     if match1.group('key') and str2key == match1.group('key'):
                         str1key = match1.group('key')
 
                         # '%.0s' "placeholder" in plural will match anything
-                        if plural and match2.group('fullvar') == '.0s':
+                        if plural and str2fullvar == '.0s':
                             continue
 
-                        if match1.group('fullvar') != match2.group('fullvar'):
+                        if str1fullvar != str2fullvar:
                             raise FilterFailure(u"Different printf variable: %s" % match2.group())
 
                 if str1key is None:
@@ -950,12 +957,13 @@ class StandardChecker(TranslationChecker):
             else:
                 for var_num1, match1 in enumerate(printf_pat.finditer(str1)):
                     count1 = var_num1 + 1
+                    str1fullvar = match1.group('fullvar') if not match1.group('boost_ord') else '%'
 
                     # '%.0s' "placeholder" in plural will match anything
-                    if plural and match2.group('fullvar') == '.0s':
+                    if plural and str2fullvar == '.0s':
                         continue
 
-                    if (var_num1 == var_num2) and (match1.group('fullvar') != match2.group('fullvar')):
+                    if (var_num1 == var_num2) and (str1fullvar != str2fullvar):
                         raise FilterFailure(u"Different printf variable: %s" % match2.group())
 
         if count2 is None:
