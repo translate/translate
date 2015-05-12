@@ -977,6 +977,113 @@ class StandardChecker(TranslationChecker):
 
         return 1
 
+    @critical
+    def pythonbraceformat(self, str1, str2):
+        """Checks whether python brace format strings match."""
+
+        # Helper function
+        def max_anons(anons):
+            """
+            Takes a list of anonymous placeholder variables, e.g.
+            ['', '1', ...]
+            Determines how many anonymous formatting args the string
+            they come from requires. Motivation for this function:
+              * max_anons(vars_from_original) tells us how many
+                anonymous placeholders are supported (at least).
+              * max_anons(vars_from_translation) should not
+                exceed it.
+            """
+
+            # implicit_n: you need at least as many anonymous args as
+            # there are anonymous placeholders.
+            implicit_n = anons.count('')
+            # explicit_n: you need at least as many anonymous args as
+            # the highest '{99}'-style placeholder. (The `+ 1` is to
+            # correct for 0-indexing)
+            try:
+                explicit_n = max([
+                    int(numbered_anon) + 1
+                    for numbered_anon in anons
+                    if len(numbered_anon) >= 1
+                ])
+            except ValueError:
+                explicit_n = 0
+
+            highest_n = max(implicit_n, explicit_n)
+
+            return highest_n
+
+        messages = []
+        # Possible failure states: 0 = ok, 1 = mild, 2 = serious
+        STATE_OK, STATE_MILD, STATE_SERIOUS = 0, 1, 2
+        failure_state = STATE_OK
+        pythonbraceformat_pat = re.compile('{[^}]*}')
+        data1 = {}
+        data2 = {}
+
+        # Populate the data1 and data2 dicts.
+        for data_, str_ in [(data1, str1),
+                            (data2, str2)]:
+            # Remove all escaped braces {{ and }}
+            data_['strclean'] = re.sub('{{|}}', '', str_)
+            data_['allvars'] = pythonbraceformat_pat.findall(data_['strclean'])
+            data_['anonvars'] = [
+                var[1:-1]
+                for var in data_['allvars']
+                if re.match(r'^{[0-9]*}$', var)
+            ]
+            data_['namedvars'] = [
+                var
+                for var in data_['allvars']
+                if not re.match(r'^{[0-9]*}$', var)
+            ]
+
+        max1 = max_anons(data1['anonvars'])
+        max2 = max_anons(data2['anonvars'])
+
+        if max1 == max2:
+            pass
+        elif max1 < max2:
+            failure_state = max(failure_state, STATE_SERIOUS)
+            messages.append(
+                u"Translation requires %s anonymous formatting args, original only %s." %
+                    (max2, max1)
+            )
+        else:
+            failure_state = max(failure_state, STATE_MILD)
+            messages.append(
+                u"Highest anonymous placeholder in original is %s, in translation %s" %
+                    (max1, max2)
+            )
+
+        if set(data1['namedvars']) == set(data2['namedvars']):
+            pass
+
+        extra_in_2 = set(data2['namedvars']).difference(set(data1['namedvars']))
+        if 0 < len(extra_in_2):
+            failure_state = max(failure_state, STATE_SERIOUS)
+            messages.append(
+                u"Unknown named placeholders in translation: %s\n" %
+                    ', '.join(extra_in_2)
+            )
+
+        extra_in_1 = set(data1['namedvars']).difference(set(data2['namedvars']))
+        if 0 < len(extra_in_1):
+            failure_state = max(failure_state, STATE_MILD)
+            messages.append(
+                u"Named placeholders absent in translation: %s" %
+                    ', '.join(extra_in_1)
+            )
+
+        if failure_state == STATE_OK:
+            return 1
+        elif failure_state == STATE_MILD:
+            raise FilterFailure(messages)
+        elif failure_state == STATE_SERIOUS:
+            raise SeriousFilterFailure(messages)
+        else:
+            raise ValueError(u"Something wrong in python brace checks: unreachable state reached.")
+
 
     @functional
     def accelerators(self, str1, str2):
@@ -1822,6 +1929,7 @@ class StandardChecker(TranslationChecker):
                          "sentencecount", "numbers", "isfuzzy",
                          "isreview", "notranslatewords", "musttranslatewords",
                          "emails", "simpleplurals", "urls", "printf",
+                         "pythonbraceformat",
                          "tabs", "newlines", "functions", "options",
                          "blank", "nplurals", "gconf", "dialogsizes",
                          "validxml"),
@@ -1834,6 +1942,7 @@ class StandardChecker(TranslationChecker):
                     "sentencecount", "numbers", "isfuzzy",
                     "isreview", "notranslatewords", "musttranslatewords",
                     "emails", "simpleplurals", "urls", "printf",
+                    "pythonbraceformat",
                     "tabs", "newlines", "functions", "options",
                     "gconf", "dialogsizes", "validxml"),
           "credits": ("simplecaps", "variables", "startcaps",
@@ -1843,6 +1952,7 @@ class StandardChecker(TranslationChecker):
                       "filepaths", "doublespacing",
                       "sentencecount", "numbers",
                       "emails", "simpleplurals", "urls", "printf",
+                      "pythonbraceformat",
                       "tabs", "newlines", "functions", "options",
                       "validxml"),
          "purepunc": ("startcaps", "options"),

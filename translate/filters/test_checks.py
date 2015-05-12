@@ -588,6 +588,26 @@ def test_printf():
     # Boost absolute tabulations.
     assert passes(stdchecker.printf, "%1%, %2%, %|40t|%3%", "%1%, %2%, %|40t|%3%")
 
+def test_pythonbraceformat():
+    """Tests python brace format placeholds"""
+    stdchecker = checks.StandardChecker()
+    # anonymous formats
+    assert passes(stdchecker.pythonbraceformat,   "String {} and number {}",     "String {} en nommer {}")
+    assert passes(stdchecker.pythonbraceformat,   "String {1}",                  "Nommer {} en string {}")
+    assert passes(stdchecker.pythonbraceformat,   "String {1} and number {0}",   "Nommer {0} en string {1}")
+    assert fails(stdchecker.pythonbraceformat,            "String {}, {}",       "String {}")
+    assert fails_serious(stdchecker.pythonbraceformat,    "String {}",           "String {} en nommer {}")
+    assert fails_serious(stdchecker.pythonbraceformat,    "String {}",           "Nommer {1}")
+    assert fails_serious(stdchecker.pythonbraceformat,    "String {0}",          "Nommer {1}")
+    assert fails_serious(stdchecker.pythonbraceformat,    "String {0} {}",       "Nommer {1}")
+
+    # Named formats
+    assert passes(stdchecker.pythonbraceformat, "String {str} and number {num}", "Nommer {num} en string {str}")
+    # TODO: check for a mixture of substitution techniques
+    assert fails(stdchecker.pythonbraceformat, "String {str} and number {num}", "Nommer {num} en string %s")
+    assert fails_serious(stdchecker.pythonbraceformat, "String {str} and number {num}", "Nommer {onbekend} en string {str}")
+
+
 
 def test_puncspacing():
     """tests spacing after punctuation"""
