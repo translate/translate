@@ -914,6 +914,7 @@ class StandardChecker(TranslationChecker):
 
             if str2ord:
                 str1ord = None
+                gotmatch = False
 
                 for var_num1, match1 in enumerate(printf_pat.finditer(str1)):
                     count1 = var_num1 + 1
@@ -924,17 +925,20 @@ class StandardChecker(TranslationChecker):
                             str1ord = str2ord
                             str1fullvar = match1.group('fullvar') if not match1.group('boost_ord') else '%'
 
-                            if str2fullvar != str1fullvar:
-                                raise FilterFailure(u"Different printf variable: %s" % match2.group())
+                            if str2fullvar == str1fullvar:
+                                gotmatch = True
                     elif int(str2ord) == var_num1 + 1:
                         str1ord = str2ord
                         str1fullvar = match1.group('fullvar') if not match1.group('boost_ord') else '%'
 
-                        if str2fullvar != str1fullvar:
-                            raise FilterFailure(u"Different printf variable: %s" % match2.group())
+                        if str2fullvar == str1fullvar:
+                            gotmatch = True
 
                 if str1ord is None:
                     raise FilterFailure(u"Added printf variable: %s" % match2.group())
+
+                if not gotmatch:
+                    raise FilterFailure(u"Different printf variable: %s" % match2.group())
             elif str2key:
                 str1key = None
 
