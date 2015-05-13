@@ -1,7 +1,5 @@
 .. This is the text from translate/__init__.py
-   It is used in:
-   1. http://sourceforge.net/projects/translate/files/Translate%20Toolkit/README.rst
-   2. https://pypi.python.org/pypi/translate-toolkit/
+   It is used in https://pypi.python.org/pypi/translate-toolkit/
 
 Tools and API for translation and localization engineering
 ==========================================================
