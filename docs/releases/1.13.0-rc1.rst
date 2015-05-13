@@ -57,11 +57,11 @@ Formats and Converters
   - Pretty print output the same as Qt Linguist (:issue:`1420`)
 
 
-Checks
-------
+Quality Checks
+--------------
 
-- Added the ability to skip some checks for the he, ug, zh_CN, zh_HK and zh_TW
-  languages.
+- Added the ability to skip some quality checks for the he, ug, zh_CN, zh_HK
+  and zh_TW languages.
 
 
 Tools
