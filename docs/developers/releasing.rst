@@ -313,7 +313,13 @@ Let people know that there is a new version:
    - translate-announce@lists.sourceforge.net
    - translate-pootle@lists.sourceforge.net
 
-#. Adjust the #pootle channel notice. Use ``/topic`` to change the topic.
+#. Adjust the #pootle channel notice. Use ``/topic [new topic]`` to change the
+   topic. It is easier if you copy the previous topic and adjust it.
+
+   .. note:: You might need to identify yourself by using
+      ``/msg nickserv identify [password]`` so the IRC server knows you in
+      order to check if you have enough permissions.
+
 #. Email important users
 #. Tweet about it
 #. Update `Translate Toolkit's Wikipedia page
