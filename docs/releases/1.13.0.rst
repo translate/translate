@@ -1,0 +1,184 @@
+.. These notes are used in:
+   1. Our email announcements
+   2. The Translate Tools download page at toolkit.translatehouse.org
+   3. Sourceforge download page in
+      http://sourceforge.net/projects/translate/files/Translate%20Toolkit/1.13.0/README.rst/download
+
+Translate Toolkit 1.13.0
+************************
+
+*Released on 13 May 2015*
+
+This release contains many improvements and bug fixes. While it contains many
+general improvements, it also specifically contains needed changes for the
+upcoming `Pootle <http://pootle.translatehouse.org/>`_ 2.6.0 and 2.7.0 and
+`Virtaal <http://virtaal.translatehouse.org>`_ releases.
+
+It is just over 6 months since the last release and there are many improvements
+across the board. A number of people contributed to this release and we've
+tried to credit them wherever possible (sorry if somehow we missed you).
+
+..
+  This is used for the email and other release notifications
+  Getting it and sharing it
+  =========================
+  * pip install translate-toolkit
+  * `Sourceforge download
+    <https://sourceforge.net/projects/translate/files/Translate%20Toolkit/1.13.0/>`_
+  * Please share this URL http://toolkit.translatehouse.org/download.html if
+    you'd like to tweet or post about the release.
+
+
+Highlighted improvements
+========================
+
+1.13.0 vs 1.13.0-rc1
+--------------------
+
+Changes since 1.13.0 RC1:
+
+- Support for new .Net Resource (.resx) format
+- Fixes in Android format
+- Correctly dump JSON file
+- Correctly roundtrip PHP with spaces after array
+- Import only real comments in Mozilla lang format
+
+- XLIFF
+
+  - Mark units as needing attention if sources don't match when merging units
+  - ``pot2po`` now also accepts files with .xliff extension
+
+- po2moz now correctly handles files with fullstop in filename
+- Added new quality check for Python brace format
+- Expanded printf quality check to support boost::format
+- Added new language plural forms, fixed a couple of plural forms, and other
+  minor changes in languages
+
+
+Major changes
+-------------
+
+- New converters for IDML format
+- Support for new .Net Resource (.resx) format
+- Extensive cleanup on ODF converters
+- New quality checks
+
+
+Formats and Converters
+----------------------
+
+- IDML
+
+  - Added the ``idml2po`` and ``po2idml`` converters.
+
+- .Net Resource (.resx)
+
+  - Added store to represent the format and the ``resx2po`` and ``po2resx``
+    converters.
+
+- Android
+
+  - Improved escape and unescape of Android resources with HTML markup.
+  - Fixed bug in canceling whitespaces with backslash when unescaping.
+
+- ODF
+
+  - Removed the ``--engine`` option in ``odf2xliff`` because the ``itools``
+    third party library is no longer used.
+
+- TS
+
+  - Pretty print output the same as Qt Linguist (:issue:`1420`)
+
+- JSON
+
+  - Dump content on memory instead of copy of parsed file (:issue:`3249`).
+
+- PHP
+
+  - Correctly roundtrip PHP with spaces after array (:issue:`3231`).
+
+- Mozilla lang
+
+  - Import only real comments (starting with #), not meta tags (starting with
+    ##).
+
+- XLIFF
+
+  - Mark units as needing attention if sources don't match when merging units.
+  - ``pot2po`` now also accepts files with .xliff extension
+
+- po2moz
+
+  - Fixed handling of files with fullstop in filename
+
+
+Quality Checks
+--------------
+
+- Added quality check for Python brace format.
+- Added the ability to skip some quality checks for the he, ug, zh_CN, zh_HK
+  and zh_TW languages.
+- Expanded printf quality check to support reordering `boost::format
+  <http://www.boost.org/doc/libs/1_55_0/libs/format/doc/format.html>`_
+  positional directives.
+- Expanded docstrings to include fully detailed descriptions in order to
+  display them on Pootle.
+
+
+Tools
+-----
+
+- Removed the unnecessary dependency on ``lxml`` in ``pretranslate``
+  (:issue:`1909`)
+
+
+Languages
+---------
+
+- Language plurals:
+
+  - Fixed plural forms for ga and pt_BR languages
+  - Added new plural forms for new languages
+
+- Adjusted punctuation for zh
+- Corrected "Songhay" language name
+
+
+
+General
+-------
+
+- Fixed bug in file discovery that prevented Pootle Pootle's terminology
+  feature from working properly in some scenarios.
+- Docs:
+
+  - Major rewrite of releasing instructions
+  - Reorganized string-related guidelines on styleguide
+  - Other minor docs cleanups
+
+- ODF code extensive cleanups:
+
+  - Applied tons of PEP8 and style guide cleanups
+  - Removed unused code
+  - Removed unused test ODT file
+  - Added lots of docstrings
+  - Simplified code to ease maintainability and improve readability
+
+- Dropped no longer working automatic publishing in PyPI and SourceForge
+- Several changes to speed up Travis builds
+- Unhid some tests
+
+...and loads of general code cleanups and of course many many bugfixes.
+
+
+Contributors
+------------
+
+This release was made possible by the following people:
+
+Leandro Regueiro, Dwayne Bailey, Yaron Shahrabani, Sarah Hale, Sietse Brouwer,
+Jerome Leclanche, Julen Ruiz Aizpuru, Michael Andres, William Grzybowski,
+SirAnthony, Rafael Ferreira, Luka Kama, Francesco Lodolo, Buganini, babycaseny.
+
+And to all our bug finders and testers, a Very BIG Thank You.
