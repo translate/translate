@@ -95,6 +95,8 @@ We create a list of contributors using this command:
     $ git log 1.10.0..HEAD --format='%aN, ' | awk '{arr[$0]++} END{for (i in arr){print arr[i], i;}}' | sort -rn | cut -d\  -f2-
 
 
+.. _releasing#up-version-numbers:
+
 Up version numbers
 ------------------
 
@@ -337,10 +339,11 @@ nevertheless completely necessary.
 Bump version to N+1-alpha1
 --------------------------
 
-If this new release is a stable one bump the version in ``master`` to
-``{N+1}-alpha1``. This prevents anyone using ``master`` being confused with a
-stable release and we can easily check if they are using ``master`` or
-``stable``.
+If this new release is a stable one, bump the version in ``master`` to
+``{N+1}-alpha1``. The places to be changed are the same ones listed in
+:ref:`Up version numbers <releasing#up-version-numbers>`. This prevents anyone
+using ``master`` being confused with a stable release and we can easily check
+if they are using ``master`` or ``stable``.
 
 .. note:: You probably will have to adjust the output of some of the functional
    tests, specifically the manpage ones, to use the right new version.
