@@ -36,7 +36,18 @@ class l20nunit(base.TranslationUnit):
         self.id = new_id
 
     def getoutput(self):
-        return "%(key)s = %(value)s" % {
+        if self.value_index:
+            values = []
+            for k in ['zero', 'one', 'two', 'few', 'many', 'other']:
+                if k in self.value:
+                    values.append("  %s: '%s'" % (k, self.value[k]))
+
+            return '''<%(key)s[@cldr.plural($%(extra)s)] {\n%(values)s\n}>''' % {
+                'values': "\n".join(values),
+                'extra': self.value_index[1],
+                'key': self.id
+            }
+        return '''<%(key)s "%(value)s">''' % {
             'value': self.value,
             'key': self.id
         }
@@ -79,5 +90,5 @@ class l20nfile(base.TranslationStore):
         lines = []
         for unit in self.units:
             lines.append(unit.getoutput())
-        uret = u"".join(lines)
+        uret = u"\n".join(lines)
         return uret
