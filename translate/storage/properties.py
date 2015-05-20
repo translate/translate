@@ -248,7 +248,7 @@ class Dialect(object):
         # to override key methods
         if encoding != "utf-8":
             return quote.javapropertiesencode(string or u"")
-        return string or u""
+        return quote.java_utf8_properties_encode(string or u"")
 
     @classmethod
     def find_delimiter(cls, line):
@@ -331,7 +331,7 @@ class DialectJavaUtf8(DialectJava):
 
     @classmethod
     def encode(cls, string, encoding=None):
-        return quote.mozillapropertiesencode(string or u"")
+        return quote.java_utf8_properties_encode(string or u"")
 
 
 @register_dialect
@@ -348,7 +348,7 @@ class DialectMozilla(DialectJavaUtf8):
     @classmethod
     def encode(cls, string, encoding=None):
         """Encode the string"""
-        string = quote.mozillapropertiesencode(string or u"")
+        string = quote.java_utf8_properties_encode(string or u"")
         string = quote.mozillaescapemarginspaces(string or u"")
         return string
 
@@ -367,7 +367,7 @@ class DialectSkype(Dialect):
 
     @classmethod
     def encode(cls, string, encoding=None):
-        return quote.mozillapropertiesencode(string or u"")
+        return quote.java_utf8_properties_encode(string or u"")
 
 
 @register_dialect

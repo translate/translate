@@ -40,6 +40,7 @@ Formats and Converters
 - Properties
 
    - keys can contain delimiters if they are properly wrapped (:issue:`3275`).
+   - Fix control characters escaping for utf-8 encoding
 
 
 Filters and Checks

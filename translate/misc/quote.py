@@ -315,8 +315,8 @@ def javapropertiesencode(source):
     return output
 
 
-def mozillapropertiesencode(source):
-    """Encodes source in the escaped-unicode encoding used by Mozilla
+def java_utf8_properties_encode(source):
+    """Encodes source in the escaped-unicode encoding used by java utf-8
     .properties files.
     """
     output = u""
