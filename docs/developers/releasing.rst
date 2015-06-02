@@ -44,12 +44,6 @@ that needs fixing.
 Create release notes
 --------------------
 
-The release notes will be used in these places:
-
-- Translate Toolkit website - `download page
-  <http://toolkit.translatehouse.org/download.html>`_ (used in gh-pages)
-- Email announcements - text version
-
 We create our release notes in reStructured Text, since we use that elsewhere
 and since it can be rendered well in some of our key sites.
 
@@ -159,12 +153,12 @@ Test install and other tests
 ----------------------------
 
 The easiest way to test is in a virtualenv. You can test the installation of
-the new Translate Toolkit using:
+the new release using:
 
 .. code-block:: bash
 
     $ mkvirtualenv test-ttk-release
-    (test-ttk-release)$ pip install $path_to_dist/translate-toolkit-$version.tar.bz2
+    (test-ttk-release)$ pip install dist/translate-toolkit-$version.tar.bz2
 
 
 You can then proceed with other tests such as checking:
@@ -244,8 +238,8 @@ Publish on PyPI
 
 
 .. note:: You need a username and password on `Python Package Index (PyPI)
-   <https://pypi.python.org>`_ and have rights to the project before you can
-   proceed with this step.
+   <https://pypi.python.org/pypi>`_ and have rights to the project before you
+   can proceed with this step.
 
    These can be stored in :file:`$HOME/.pypirc` and will contain your username
    and password. A first run of:
@@ -265,6 +259,8 @@ Run the following to publish the package on PyPI:
     $ make publish-pypi
 
 
+.. _releasing#create-github-release:
+
 Create a release on Github
 --------------------------
 
@@ -279,11 +275,14 @@ You will need:
 Do the following to create the release:
 
 #. Draft a new release with the corresponding tag version
-#. Convert the major changes in the release notes to Markdown with `Pandoc
-   <http://johnmacfarlane.net/pandoc/>`_ and add those to the release
-#. Include a link to the full release notes in the description
+#. Convert the major changes (no more than five) in the release notes to
+   Markdown with `Pandoc <http://pandoc.org/>`_. Bugfix releases can replace
+   the major changes with *This is a bugfix release for the X.X.X branch.*
+#. Add the converted major changes to the release description
+#. Include at the bottom of the release description a link to the full release
+   notes at Read The Docs
 #. Attach the tarball to the release
-#. Mark it as pre-release if it's a release candidate.
+#. Mark it as pre-release if it's a release candidate
 
 
 Update Translate Toolkit website
@@ -310,7 +309,9 @@ Announce to the world
 
 Let people know that there is a new version:
 
-#. Announce on mailing lists **using plain text** emails:
+#. Announce on mailing lists **using plain text** emails using the same text
+   (adjusting what needs to be adjusted) used for the :ref:`Create a release on
+   Github <releasing#create-github-release>` description:
 
    - translate-announce@lists.sourceforge.net
    - translate-pootle@lists.sourceforge.net
