@@ -112,19 +112,40 @@ class reprop:
     def _explode_gaia_plurals(self):
         """Explode the gaia plurals."""
         from translate.lang import data
+
+        def _use_from_separate_unit(category, cases):
+            """Return True if the translation of this category should be used
+            from its separate unit not from the plural one."""
+            cases = (c[0] for c in cases if c[1] == True)
+            for c in ("zero", "one", "two"):
+                if category == c and category not in cases:
+                    return True
+            return False
+
         for unit in self.inputstore.units:
             if not unit.hasplural():
                 continue
             if unit.isfuzzy() and not self.includefuzzy or not unit.istranslated():
                 continue
 
+            lang = self.inputstore.gettargetlanguage()
+            cases = []
+            if lang in data.gaia_plural_cases:
+                cases = data.gaia_plural_cases[lang]
             names = data.cldr_plural_categories
             location = unit.getlocations()[0]
-            for category, text in zip(names, unit.target.strings):
-                # TODO: for now we assume all forms are present. We need to
-                # fill in the rest after mapping things to the proper CLDR names.
-                if category == 'zero':
-                    # [zero] cases are translated as separate units
+
+            for category in names:
+                if _use_from_separate_unit(category, cases):
+                    continue
+                new_unit = self.inputstore.addsourceunit(u"fish")  # not used
+                new_location = '%s[%s]' % (location, category)
+                new_unit.addlocation(new_location)
+                new_unit.target = "Not used by this language"
+                self.inputstore.locationindex[new_location] = new_unit
+
+            for category, text in zip((c[0] for c in cases), unit.target.strings):
+                if _use_from_separate_unit(category, cases):
                     continue
                 new_unit = self.inputstore.addsourceunit(u"fish")  # not used
                 new_location = '%s[%s]' % (location, category)

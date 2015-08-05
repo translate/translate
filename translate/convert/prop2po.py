@@ -25,12 +25,21 @@ for examples and usage instructions.
 """
 
 import logging
+import re
 
 from translate.convert.accesskey import UnitMixer
 from translate.storage import po, properties
 
 
 logger = logging.getLogger(__name__)
+
+# A set of Gaia plural units starts with a unit whose source string is
+# something like "{[ plural(value) ]}" or "{[ plural(n) ]}".
+gaia_plural_key_re = re.compile(u"\{\[ plural\(.*?.\) \]\}")
+
+# Gaia will use [zero], [one] and [two] cases for all locales, regardless of
+# the locale's plural rule, so we need to be able to translate them separately.
+gaia_plural_specials_re = re.compile(u"(\[zero\]|\[one\]|\[two\])")
 
 
 class prop2po:
@@ -174,7 +183,7 @@ class prop2po:
             if not unit.istranslatable():
                 #TODO: reconsider: we could lose header comments here
                 continue
-            if u"plural(n)" in unit.source:
+            if gaia_plural_key_re.match(unit.source):
                 if current_plural:
                     # End of a set of plural units
                     _append_plural_unit(new_store, plurals, current_plural)
@@ -188,9 +197,10 @@ class prop2po:
             else:
                 location = unit.getlocations()[0]
                 if current_plural and location.startswith(current_plural):
-                    plurals[current_plural].append(unit)
-                    if not '[zero]' in location:
-                        # We want to keep [zero] cases separately translatable
+                    if unit.target != "Not used by this language":
+                        plurals[current_plural].append(unit)
+                    if not gaia_plural_specials_re.search(location):
+                        # We want to keep special cases separately translatable
                         continue
                 elif current_plural:
                     # End of a set of plural units
