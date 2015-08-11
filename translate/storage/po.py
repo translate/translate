@@ -36,13 +36,10 @@ usecpo = os.getenv('USECPO')
 
 if platform.python_implementation() == "CPython":
     if usecpo == "1":
-        logging.info("Using cPO")
         from translate.storage.cpo import *  # pylint: disable=W0401,W0614
     elif usecpo == "2":
-        logging.info("Using new fPO")
         from translate.storage.fpo import *  # pylint: disable=W0401,W0614
     else:
-        logging.info("Using Python PO")
         from translate.storage.pypo import *  # pylint: disable=W0401,W0614
 else:
     if usecpo:
