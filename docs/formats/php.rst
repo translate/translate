@@ -210,6 +210,15 @@ Non-Conformance
 
 The following are not yet supported:
 
+* Returning arrays:
+
+  .. code-block:: php
+
+      <?php
+      return array(
+         "one" => "this",
+      );
+
 * Keyless arrays:
 
   .. code-block:: php
