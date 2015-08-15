@@ -112,8 +112,8 @@ class xliffunit(lisa.LISAunit):
         target = None
         nodes = []
         try:
-            source = self.xmlelement.iterchildren(self.namespaced(self.languageNode)).next()
-            target = self.xmlelement.iterchildren(self.namespaced('target')).next()
+            source = next(self.xmlelement.iterchildren(self.namespaced(self.languageNode)))
+            target = next(self.xmlelement.iterchildren(self.namespaced('target')))
             nodes = [source, target]
         except StopIteration:
             if source is not None:
@@ -218,14 +218,14 @@ class xliffunit(lisa.LISAunit):
                 # the source tag is optional
                 sourcenode = node.iterdescendants(self.namespaced("source"))
                 try:
-                    newunit.source = lisa.getText(sourcenode.next(),
+                    newunit.source = lisa.getText(next(sourcenode),
                                                   getXMLspace(node, self._default_xml_space))
                 except StopIteration:
                     pass
 
                 # must have one or more targets
                 targetnode = node.iterdescendants(self.namespaced("target"))
-                newunit.target = lisa.getText(targetnode.next(),
+                newunit.target = lisa.getText(next(targetnode),
                                               getXMLspace(node, self._default_xml_space))
                 # TODO: support multiple targets better
                 # TODO: support notes in alt-trans
@@ -417,7 +417,7 @@ class xliffunit(lisa.LISAunit):
     def getid(self):
         uid = u""
         try:
-            filename = self.xmlelement.iterancestors(self.namespaced('file')).next().get('original')
+            filename = next(self.xmlelement.iterancestors(self.namespaced('file'))).get('original')
             if filename:
                 uid = filename + ID_SEPARATOR
         except StopIteration:
@@ -563,7 +563,7 @@ class xlifffile(lisa.LISAfile):
         if self._filename:
             filenode = self.getfilenode(self._filename, createifmissing=True)
         else:
-            filenode = self.document.getroot().iterchildren(self.namespaced('file')).next()
+            filenode = next(self.document.getroot().iterchildren(self.namespaced('file')))
         self.body = self.getbodynode(filenode, createifmissing=True)
 
     def addheader(self):
@@ -639,22 +639,22 @@ class xlifffile(lisa.LISAfile):
     def setsourcelanguage(self, language):
         if not language:
             return
-        filenode = self.document.getroot().iterchildren(self.namespaced('file')).next()
+        filenode = next(self.document.getroot().iterchildren(self.namespaced('file')))
         filenode.set("source-language", language)
 
     def getsourcelanguage(self):
-        filenode = self.document.getroot().iterchildren(self.namespaced('file')).next()
+        filenode = next(self.document.getroot().iterchildren(self.namespaced('file')))
         return filenode.get("source-language")
     sourcelanguage = property(getsourcelanguage, setsourcelanguage)
 
     def settargetlanguage(self, language):
         if not language:
             return
-        filenode = self.document.getroot().iterchildren(self.namespaced('file')).next()
+        filenode = next(self.document.getroot().iterchildren(self.namespaced('file')))
         filenode.set("target-language", language)
 
     def gettargetlanguage(self):
-        filenode = self.document.getroot().iterchildren(self.namespaced('file')).next()
+        filenode = next(self.document.getroot().iterchildren(self.namespaced('file')))
         return filenode.get("target-language")
     targetlanguage = property(gettargetlanguage, settargetlanguage)
 
@@ -706,7 +706,7 @@ class xlifffile(lisa.LISAfile):
         # TODO: Deprecated?
         headernode = filenode.iterchildren(self.namespaced("header"))
         try:
-            return headernode.next()
+            return next(headernode)
         except StopIteration:
             pass
         if not createifmissing:
@@ -718,7 +718,7 @@ class xlifffile(lisa.LISAfile):
         """finds the body node for the given filenode"""
         bodynode = filenode.iterchildren(self.namespaced("body"))
         try:
-            return bodynode.next()
+            return next(bodynode)
         except StopIteration:
             pass
         if not createifmissing:

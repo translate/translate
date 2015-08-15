@@ -43,7 +43,7 @@ class ParseState(object):
     def read_line(self):
         current_line = self.current_line
         self.read_hook(current_line)
-        self.current_line = self.f.next().decode(self.charset)
+        self.current_line = next(self.f).decode(self.charset)
         return current_line
 
 

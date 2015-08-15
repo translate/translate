@@ -334,7 +334,7 @@ def detect_header(sample, dialect, fieldnames):
             inputfile.seek(0)
             reader = csv.reader(inputfile, 'excel')
 
-    header = reader.next()
+    header = next(reader)
     columncount = max(len(header), 3)
     if valid_fieldnames(header):
         return header

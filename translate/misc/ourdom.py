@@ -108,16 +108,7 @@ def searchElementsByTagName_helper(parent, name, onlysearch):
 
 def getFirstElementByTagName(node, name):
     results = node.yieldElementsByTagName(name)
-#  if isinstance(results, list):
-#    if len(results) == 0:
-#      return None
-#    else:
-#      return results[0]
-    try:
-        result = results.next()
-        return result
-    except StopIteration:
-        return None
+    return next(results, None)
 
 
 def getnodetext(node):

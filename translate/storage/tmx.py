@@ -129,7 +129,7 @@ class tmxfile(lisa.LISAfile):
 </tmx>'''
 
     def addheader(self):
-        headernode = self.document.getroot().iterchildren(self.namespaced("header")).next()
+        headernode = next(self.document.getroot().iterchildren(self.namespaced("header")))
         headernode.set("creationtool", "Translate Toolkit - po2tmx")
         headernode.set("creationtoolversion", __version__.sver)
         headernode.set("segtype", "sentence")
@@ -151,8 +151,8 @@ class tmxfile(lisa.LISAfile):
             unit.addnote(comment)
 
         tuvs = unit.xmlelement.iterdescendants(self.namespaced('tuv'))
-        lisa.setXMLlang(tuvs.next(), srclang)
-        lisa.setXMLlang(tuvs.next(), translang)
+        lisa.setXMLlang(next(tuvs), srclang)
+        lisa.setXMLlang(next(tuvs), translang)
 
     def translate(self, sourcetext, sourcelang=None, targetlang=None):
         """method to test old unit tests"""

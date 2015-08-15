@@ -384,18 +384,12 @@ class PoXliffFile(xliff.xlifffile, poheader.poheader):
         if len(singularunits) == 0:
             return
         pluralunit_iter = pluralunits(pluralgroups)
-        try:
-            nextplural = pluralunit_iter.next()
-        except StopIteration:
-            nextplural = None
+        nextplural = next(pluralunit_iter, None)
 
         for entry in singularunits:
             term = self.UnitClass.createfromxmlElement(entry, namespace=self.namespace)
             if nextplural and unicode(term.getid()) == ("%s[0]" % nextplural.getid()):
                 self.addunit(nextplural, new=False)
-                try:
-                    nextplural = pluralunit_iter.next()
-                except StopIteration as i:
-                    nextplural = None
+                nextplural = next(pluralunit_iter, None)
             else:
                 self.addunit(term, new=False)

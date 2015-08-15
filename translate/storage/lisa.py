@@ -157,7 +157,7 @@ class LISAunit(base.TranslationUnit):
                 if self.textNode:
                     terms = languageNode.iter(self.namespaced(self.textNode))
                     try:
-                        languageNode = terms.next()
+                        languageNode = next(terms)
                     except StopIteration as e:
                         pass
                 languageNode.text = text
@@ -235,11 +235,11 @@ class LISAunit(base.TranslationUnit):
             terms = languageNode.iterdescendants(self.namespaced(self.textNode))
             if terms is None:
                 return None
-            try:
-                return getText(terms.next(), xml_space)
-            except StopIteration:
-                # didn't have the structure we expected
-                return None
+            node = next(terms, None)
+            if node is not None:
+                return getText(node, xml_space)
+            # didn't have the structure we expected
+            return None
         else:
             return getText(languageNode, xml_space)
 

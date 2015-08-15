@@ -63,9 +63,9 @@ class ParseState(object):
         if self.eof:
             return current
         try:
-            self.next_line = self._input_iterator.next()
+            self.next_line = next(self._input_iterator)
             while not self.eof and isspace(self.next_line):
-                self.next_line = self._input_iterator.next()
+                self.next_line = next(self._input_iterator)
         except StopIteration:
             self.next_line = ''
             self.eof = True
