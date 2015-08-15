@@ -24,6 +24,7 @@ See: http://docs.translatehouse.org/projects/translate-toolkit/en/latest/command
 for examples and usage instructions.
 """
 
+import six
 import zipfile
 from io import BytesIO
 
@@ -50,7 +51,7 @@ def translate_odf(template, input_file):
         """
         odf_data = open_odf(template)
         return dict((filename, etree.parse(BytesIO(data)))
-                    for filename, data in odf_data.iteritems())
+                    for filename, data in six.iteritems(odf_data))
 
     def load_unit_tree(input_file):
         """Return a dict with the translations grouped by files ODF package.
@@ -85,7 +86,7 @@ def translate_odf(template, input_file):
         """
         make_parse_state = lambda: ParseState(no_translate_content_elements,
                                               inline_elements)
-        for filename, dom_tree in dom_trees.iteritems():
+        for filename, dom_tree in six.iteritems(dom_trees):
             file_unit_tree = unit_trees[filename]
             apply_translations(dom_tree.getroot(), file_unit_tree,
                                replace_dom_text(make_parse_state))
@@ -110,7 +111,7 @@ def write_odf(template, output_file, dom_trees):
     output_zip = copy_odf(template_zip, output_zip, dom_trees.keys())
 
     # Overwrite the translated files to the ODF package.
-    for filename, dom_tree in dom_trees.iteritems():
+    for filename, dom_tree in six.iteritems(dom_trees):
         output_zip.writestr(filename, etree.tostring(dom_tree,
                                                      encoding='UTF-8',
                                                      xml_declaration=True))

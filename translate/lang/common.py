@@ -62,6 +62,7 @@ TODOs and Ideas for possible features:
 
 import logging
 import re
+import six
 
 from translate.lang import data
 
@@ -245,7 +246,7 @@ class Common(object):
         ellipses_end = text.endswith(u"...")
         if ellipses_end:
             text = text[:-3]
-        for source, target in cls.puncdict.iteritems():
+        for source, target in six.iteritems(cls.puncdict):
             text = text.replace(source, target)
         if ellipses_end:
             if u"..." in cls.puncdict:

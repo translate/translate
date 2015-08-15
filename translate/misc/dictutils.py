@@ -21,6 +21,8 @@ order-sensitive dictionary"""
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, see <http://www.gnu.org/licenses/>.
 
+import six
+
 
 class cidict(dict):
 
@@ -50,7 +52,7 @@ class cidict(dict):
     def update(self, updatedict):
         """D.update(E) -> None.
            Update D from E: for k in E.keys(): D[k] = E[k]"""
-        for key, value in updatedict.iteritems():
+        for key, value in six.iteritems(updatedict):
             self[key] = value
 
     def __delitem__(self, key):
@@ -116,7 +118,7 @@ class ordereddict(dict):
     def update(self, updatedict):
         """D.update(E) -> None.
         Update D from E: for k in E.keys(): D[k] = E[k]"""
-        for key, value in updatedict.iteritems():
+        for key, value in six.iteritems(updatedict):
             self[key] = value
 
     def __delitem__(self, key):

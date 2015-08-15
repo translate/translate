@@ -23,6 +23,7 @@ the header of a Gettext PO file.
 """
 
 import re
+import six
 
 
 __all__ = ['LANG_TEAM_CONTACT_SNIPPETS', 'guess_language']
@@ -402,7 +403,7 @@ def _snippet_guesser(snippets_dict, string, filter_=_nofilter):
     before examination
     """
     string = filter_(string)
-    for possible_lang, snippets in snippets_dict.iteritems():
+    for possible_lang, snippets in six.iteritems(snippets_dict):
         for snippet in snippets:
             if filter_(snippet) in string:
                 return possible_lang

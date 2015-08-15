@@ -22,6 +22,8 @@
 
 """
 
+import six
+
 from translate import lang
 from translate.lang import factory
 
@@ -144,7 +146,7 @@ class Statistics(object):
         #TODO: decoding should not be done here
 #        checkresult = self.checker.run_filters(unit, source, target)
         checkresult = {}
-        for checkname, checkmessage in checkresult.iteritems():
+        for checkname, checkmessage in six.iteritems(checkresult):
             classes.append("check-" + checkname)
         return classes
 

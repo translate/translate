@@ -22,6 +22,7 @@
 of delimiters"""
 
 import logging
+import six
 
 from six.moves import html_entities
 
@@ -365,7 +366,7 @@ controlchars = {
 
 def escapecontrols(source):
     """escape control characters in the given string"""
-    for key, value in controlchars.iteritems():
+    for key, value in six.iteritems(controlchars):
         source = source.replace(key, value)
     return source
 

@@ -33,6 +33,7 @@ both.
 `2 <http://qt-project.org/doc/qt-5.0/qtcore/qstring.html#arg-2>`_
 """
 
+import six
 from lxml import etree
 
 from translate.lang import data
@@ -93,7 +94,7 @@ class tsunit(lisa.LISAunit):
         S_TRANSLATED: (state.UNREVIEWED, state.MAX),
     }
 
-    statemap_r = dict((i[1], i[0]) for i in statemap.iteritems())
+    statemap_r = dict((i[1], i[0]) for i in six.iteritems(statemap))
 
     def createlanguageNode(self, lang, text, purpose):
         """Returns an xml Element setup with given parameters."""

@@ -33,6 +33,7 @@ import ctypes.util
 import logging
 import os
 import re
+import six
 import sys
 import tempfile
 from ctypes import (CFUNCTYPE, POINTER, Structure, c_char_p, c_int, c_long,
@@ -338,7 +339,7 @@ class pounit(pocommon.pounit):
                 gpo.po_message_set_msgstr_plural(self._gpo_message, i, targetstring)
         # add the values of a dict
         elif isinstance(target, dict):
-            for i, targetstring in enumerate(target.itervalues()):
+            for i, targetstring in enumerate(six.itervalues(target)):
                 gpo.po_message_set_msgstr_plural(self._gpo_message, i, targetstring)
         # add a single string
         else:

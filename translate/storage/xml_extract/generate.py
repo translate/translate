@@ -18,6 +18,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, see <http://www.gnu.org/licenses/>.
 
+import six
 import lxml.etree as etree
 
 from translate.storage import base
@@ -45,7 +46,7 @@ def _get_tag_arrays(dom_node):
 
 def apply_translations(dom_node, unit_node, do_translate):
     tag_array = _get_tag_arrays(dom_node)
-    for unit_child_index, unit_child in unit_node.children.iteritems():
+    for unit_child_index, unit_child in six.iteritems(unit_node.children):
         tag, index = unit_child_index
         try:
             dom_child = tag_array[XmlNamer(dom_node).name(tag)][index]

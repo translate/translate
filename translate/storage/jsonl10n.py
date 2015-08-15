@@ -71,6 +71,7 @@ TODO:
 
 import json
 import os
+import six
 from io import BytesIO
 
 from translate.storage import base
@@ -173,7 +174,7 @@ class JsonFile(base.TranslationStore):
         :param last_node: the last list or dict
         """
         if isinstance(data, dict):
-            for k, v in data.iteritems():
+            for k, v in six.iteritems(data):
                 for x in self._extract_translatables(v, stop,
                                                           "%s.%s" % (prev, k),
                                                           k, None, data):

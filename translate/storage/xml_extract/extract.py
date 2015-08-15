@@ -18,6 +18,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, see <http://www.gnu.org/licenses/>.
 
+import six
 from contextlib import contextmanager
 
 from lxml import etree
@@ -382,7 +383,7 @@ def _walk_translatable_tree(translatables, store_adder, parent_translatable):
 
 
 def reverse_map(a_map):
-    return dict((value, key) for key, value in a_map.iteritems())
+    return dict((value, key) for key, value in six.iteritems(a_map))
 
 
 def build_idml_store(odf_file, store, parse_state, store_adder=None):

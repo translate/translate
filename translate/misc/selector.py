@@ -25,6 +25,7 @@ Luke Arno can be found at http://lukearno.com/
 """
 
 import re
+import six
 from itertools import starmap
 from wsgiref.util import shift_path_info
 
@@ -144,7 +145,7 @@ class Selector(object):
         app, svars, methods, matched = \
             self.select(environ['PATH_INFO'], environ['REQUEST_METHOD'])
         unnamed, named = [], {}
-        for k, v in svars.iteritems():
+        for k, v in six.iteritems(svars):
             if k.startswith('__pos'):
                 k = k[5:]
             named[k] = v

@@ -24,6 +24,7 @@ See: http://docs.translatehouse.org/projects/translate-toolkit/en/latest/command
 for examples and usage instructions.
 """
 
+import six
 
 from translate.storage import po, ts
 
@@ -56,7 +57,7 @@ class ts2po:
         tsfile = ts.QtTsParser(inputfile)
         thetargetfile = po.pofile()
 
-        for contextname, messages in tsfile.iteritems():
+        for contextname, messages in six.iteritems(tsfile):
             messagenum = 0
             for message in messages:
                 messagenum += 1

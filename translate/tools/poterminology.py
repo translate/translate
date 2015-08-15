@@ -24,6 +24,7 @@ for examples and usage instructions.
 import logging
 import os
 import re
+import six
 import sys
 
 from translate.lang import factory as lang_factory
@@ -40,7 +41,7 @@ def create_termunit(term, unit, targets, locations, sourcenotes, transnotes, fil
         termunit.merge(unit, overwrite=False, comments=False)
     if len(targets.keys()) > 1:
         txt = '; '.join(["%s {%s}" % (target, ', '.join(files))
-                         for target, files in targets.iteritems()])
+                         for target, files in six.iteritems(targets)])
         if termunit.target.find('};') < 0:
             termunit.target = txt
             termunit.markfuzzy()
@@ -53,7 +54,7 @@ def create_termunit(term, unit, targets, locations, sourcenotes, transnotes, fil
         termunit.addnote(sourcenote, "developer")
     for transnote in transnotes:
         termunit.addnote(transnote, "translator")
-    for filename, count in filecounts.iteritems():
+    for filename, count in six.iteritems(filecounts):
         termunit.addnote("(poterminology) %s (%d)\n" % (filename, count), 'translator')
     return termunit
 
@@ -240,7 +241,7 @@ class TerminologyExtractor(object):
         terms = {}
         locre = re.compile(r":[0-9]+$")
         logger.info("%d terms from %d units", len(self.glossary), self.units)
-        for term, translations in self.glossary.iteritems():
+        for term, translations in six.iteritems(self.glossary):
             if len(translations) <= 1:
                 continue
             filecounts = {}

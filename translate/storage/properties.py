@@ -115,6 +115,7 @@ Name and Value pairs:
 """
 
 import re
+import six
 
 from translate.lang import data
 from translate.misc import quote
@@ -155,7 +156,7 @@ def _find_delimiter(line, delimiters):
         delimiter_dict[delimiter] = -1
     delimiters = delimiter_dict
     # Find the position of each delimiter type
-    for delimiter, pos in delimiters.iteritems():
+    for delimiter, pos in six.iteritems(delimiters):
         prewhitespace = len(line) - len(line.lstrip())
         pos = line.find(delimiter, prewhitespace)
         while pos != -1:
@@ -166,7 +167,7 @@ def _find_delimiter(line, delimiters):
     # Find the first delimiter
     mindelimiter = None
     minpos = -1
-    for delimiter, pos in delimiters.iteritems():
+    for delimiter, pos in six.iteritems(delimiters):
         if pos == -1 or delimiter == u" ":
             continue
         if minpos == -1 or pos < minpos:

@@ -24,13 +24,15 @@ See: http://docs.translatehouse.org/projects/translate-toolkit/en/latest/command
 for examples and usage instructions.
 """
 
+import six
+
 from translate.storage import factory
 from translate.storage.pypo import po_escape_map
 from translate.storage.symbian import *
 
 
 def escape(text):
-    for key, val in po_escape_map.iteritems():
+    for key, val in six.iteritems(po_escape_map):
         text = text.replace(key, val)
     return '"%s"' % text
 

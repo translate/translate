@@ -20,6 +20,7 @@
 
 """Convert IDML files to PO localization files."""
 
+import six
 from io import BytesIO
 
 from translate.convert import convert
@@ -45,7 +46,7 @@ def convert_idml(inputfile, outputfile, template):
 
     id_maker = IdMaker()  # Create it here to avoid having repeated ids.
 
-    for filename, translatable_file in contents.iteritems():
+    for filename, translatable_file in six.iteritems(contents):
         parse_state = ParseState(NO_TRANSLATE_ELEMENTS, INLINE_ELEMENTS)
         po_store_adder = make_postore_adder(store, id_maker, filename)
         build_idml_store(BytesIO(translatable_file), store, parse_state,

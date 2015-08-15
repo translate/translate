@@ -24,6 +24,7 @@ See: http://docs.translatehouse.org/projects/translate-toolkit/en/latest/command
 for examples and usage instructions.
 """
 
+import six
 import warnings
 
 from translate.convert import accesskey, convert
@@ -247,7 +248,7 @@ def main(argv=None):
             default=properties.default_dialect, type="choice",
             choices=properties.dialects.keys(),
             help="override the input file format: %s (for .properties files, default: %s)" %
-                 (", ".join(properties.dialects.iterkeys()),
+                 (", ".join(six.iterkeys(properties.dialects)),
                   properties.default_dialect),
             metavar="TYPE")
     parser.add_option("", "--encoding", dest="encoding", default=None,

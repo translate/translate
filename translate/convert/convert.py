@@ -22,6 +22,7 @@
 :mod:`translate.convert` tools)."""
 
 import os.path
+import six
 from io import BytesIO
 
 from translate.misc import optrecurse
@@ -123,7 +124,7 @@ class ConvertOptionParser(optrecurse.RecursiveOptionParser, object):
         """Filters output options, processing relevant switches in options."""
         if self.usepots and options.pot:
             outputoptions = {}
-            for (inputformat, templateformat), (outputformat, convertor) in self.outputoptions.iteritems():
+            for (inputformat, templateformat), (outputformat, convertor) in six.iteritems(self.outputoptions):
                 inputformat = self.potifyformat(inputformat)
                 templateformat = self.potifyformat(templateformat)
                 outputformat = self.potifyformat(outputformat)

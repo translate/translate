@@ -30,6 +30,7 @@ from __future__ import print_function
 
 import logging
 import os
+import six
 import sys
 from argparse import ArgumentParser
 
@@ -165,7 +166,7 @@ def summarize(title, stats, style=style_full, indent=8, incomplete_only=False):
               stats["translatedtargetwords"]))
         if "extended" in stats:
             print("")
-            for state, e_stats in stats["extended"].iteritems():
+            for state, e_stats in six.iteritems(stats["extended"]):
                 print("%s:    %5d (%3d%%) %10d (%3d%%) %15d" % (
                       state, e_stats["units"], percent(e_stats["units"], stats["total"]),
                       e_stats["sourcewords"], percent(e_stats["sourcewords"], stats["totalsourcewords"]),

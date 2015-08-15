@@ -19,6 +19,7 @@
 # along with this program; if not, see <http://www.gnu.org/licenses/>.
 
 import os
+import six
 
 from lxml import etree
 
@@ -299,7 +300,7 @@ class ProjectStore(object):
         # Add conversion mappings
         if self.convert_map:
             conversions_el = etree.Element('conversions')
-            for in_fname, (out_fname, templ_fname) in self.convert_map.iteritems():
+            for in_fname, (out_fname, templ_fname) in six.iteritems(self.convert_map):
                 if in_fname not in self._files or out_fname not in self._files:
                     continue
                 conv_el = etree.Element('conv')

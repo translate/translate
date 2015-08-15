@@ -45,6 +45,7 @@ Encoding
 """
 
 import csv
+import six
 import time
 
 from translate.storage import base
@@ -221,7 +222,7 @@ class UtxFile(base.TranslationStore):
                     "date": self._header["date_created"],
                  }
         items = []
-        for key, value in self._header.iteritems():
+        for key, value in six.iteritems(self._header):
             if key in ["version", "source_language",
                        "target_language", "date_created"]:
                 continue

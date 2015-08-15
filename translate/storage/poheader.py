@@ -21,6 +21,7 @@
 """class that handles all header functions for a header in a po file"""
 
 import re
+import six
 import time
 
 try:
@@ -98,7 +99,7 @@ def update(existing, add=False, **kwargs):
             removed.append(key)
         elif add and key in fixedargs:
             headerargs[key] = fixedargs.pop(key)
-    for key, value in existing.iteritems():
+    for key, value in six.iteritems(existing):
         if not key in removed:
             headerargs[key] = value
     if add:

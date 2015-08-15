@@ -25,6 +25,7 @@ files (pofile).
 
 import copy
 import re
+import six
 import textwrap
 from io import BytesIO
 
@@ -297,7 +298,7 @@ class pounit(pocommon.pounit):
         if isinstance(target, list):
             self.msgstr = dict([(i, quoteforpo(target[i])) for i in range(len(target))])
         elif isinstance(target, dict):
-            self.msgstr = dict([(i, quoteforpo(targetstring)) for i, targetstring in target.iteritems()])
+            self.msgstr = dict([(i, quoteforpo(targetstring)) for i, targetstring in six.iteritems(target)])
         else:
             self.msgstr = quoteforpo(target)
     target = property(gettarget, settarget)
@@ -374,7 +375,7 @@ class pounit(pocommon.pounit):
         # self.__shallow__
         shallow = set(self.__shallow__)
         # Make deep copies of all members which are not in shallow
-        for key, value in self.__dict__.iteritems():
+        for key, value in six.iteritems(self.__dict__):
             if key not in shallow:
                 setattr(new_unit, key, copy.deepcopy(value))
         # Make shallow copies of all members which are in shallow
@@ -397,7 +398,7 @@ class pounit(pocommon.pounit):
 
     def _msgstrlen(self):
         if isinstance(self.msgstr, dict):
-            combinedstr = "\n".join(filter(None, [unquotefrompo(msgstr) for msgstr in self.msgstr.itervalues()]))
+            combinedstr = "\n".join(filter(None, [unquotefrompo(msgstr) for msgstr in six.itervalues(self.msgstr)]))
             return len(combinedstr)
         else:
             return len(unquotefrompo(self.msgstr))

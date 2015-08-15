@@ -22,6 +22,7 @@
 """
 
 import re
+import six
 
 from translate.filters import decoration
 from translate.misc import quote
@@ -162,7 +163,7 @@ def filterwordswithpunctuation(str1):
     if u"'" not in str1:
         return str1
     occurrences = []
-    for word, replacement in wordswithpunctuation.iteritems():
+    for word, replacement in six.iteritems(wordswithpunctuation):
         occurrences.extend([(pos, word, replacement) for pos in quote.find_all(str1, word)])
     for match in word_with_apos_re.finditer(str1):
         word = match.group()

@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 
 import os
+import six
 import sys
 
 import pytest
@@ -44,7 +45,7 @@ class TestConvertCommand:
         argv = list(argv)
         kwoptions = getattr(self, "defaultoptions", {}).copy()
         kwoptions.update(kwargs)
-        for key, value in kwoptions.iteritems():
+        for key, value in six.iteritems(kwoptions):
             if value is True:
                 argv.append("--%s" % key)
             else:

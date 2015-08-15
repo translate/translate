@@ -23,6 +23,7 @@
 The official recommendation is to use the extention .xlf for XLIFF files.
 """
 
+import six
 from lxml import etree
 
 from translate.misc.multistring import multistring
@@ -74,7 +75,7 @@ class xliffunit(lisa.LISAunit):
                 "final": S_SIGNED_OFF + 1,
                 }
 
-    statemap_r = dict((i[1], i[0]) for i in statemap.iteritems())
+    statemap_r = dict((i[1], i[0]) for i in six.iteritems(statemap))
 
     STATE = {
         S_UNTRANSLATED: (state.EMPTY, state.NEEDS_WORK),

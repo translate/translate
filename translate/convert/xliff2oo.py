@@ -26,6 +26,7 @@ for examples and usage instructions.
 
 import logging
 import os
+import six
 import time
 
 from translate.filters import autocorrect, checks, pofilter
@@ -57,7 +58,7 @@ class reoo:
     def makeindex(self):
         """makes an index of the oo keys that are used in the source file"""
         self.index = {}
-        for ookey, theoo in self.o.ookeys.iteritems():
+        for ookey, theoo in six.iteritems(self.o.ookeys):
             sourcekey = oo.makekey(ookey, self.long_keys)
             self.index[sourcekey] = theoo
 
@@ -160,7 +161,7 @@ class oocheckfilter(pofilter.pocheckfilter):
         filterresult = self.filterunit(unit)
         if filterresult:
             if filterresult != autocorrect:
-                for filtername, filtermessage in filterresult.iteritems():
+                for filtername, filtermessage in six.iteritems(filterresult):
                     location = unit.getlocations()[0]
                     if filtername in self.options.error:
                         logger.error("Error at %s::%s: %s",

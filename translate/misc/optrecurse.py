@@ -23,6 +23,7 @@ import logging
 import optparse
 import os.path
 import re
+import six
 import sys
 import traceback
 from io import BytesIO
@@ -225,7 +226,7 @@ class RecursiveOptionParser(optparse.OptionParser, object):
         templateformats = []
         self.outputoptions = {}
         self.usetemplates = usetemplates
-        for formatgroup, outputoptions in formats.iteritems():
+        for formatgroup, outputoptions in six.iteritems(formats):
             if isinstance(formatgroup, (str, unicode)) or formatgroup is None:
                 formatgroup = (formatgroup, )
             if not isinstance(formatgroup, tuple):

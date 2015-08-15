@@ -32,6 +32,7 @@ When adding a new test here, please document and explain their behaviour on the
 
 import logging
 import re
+import six
 
 from translate.filters import decoration, helpers, prefilters, spelling
 from translate.filters.decorators import (cosmetic, critical, extraction,
@@ -474,7 +475,7 @@ class UnitChecker(object):
         self.results_cache = {}
 
         if not categorised:
-            for name, info in failures.iteritems():
+            for name, info in six.iteritems(failures):
                 failures[name] = info['message']
         return failures
 
