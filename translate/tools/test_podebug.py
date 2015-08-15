@@ -1,5 +1,7 @@
 # -*- coding: utf-8 -*-
 
+import six
+
 from translate.storage import base, po, xliff
 from translate.tools import podebug
 
@@ -68,16 +70,16 @@ class TestPODebug:
 
     def test_rewrite_unicode(self):
         """Test the unicode rewrite function"""
-        assert unicode(self.debug.rewrite_unicode(u"Test")) == u"Ŧḗşŧ"
+        assert six.text_type(self.debug.rewrite_unicode(u"Test")) == u"Ŧḗşŧ"
 
     def test_rewrite_flipped(self):
         """Test the unicode rewrite function"""
-        assert unicode(self.debug.rewrite_flipped(u"Test")) == u"\u202e⊥ǝsʇ"
+        assert six.text_type(self.debug.rewrite_flipped(u"Test")) == u"\u202e⊥ǝsʇ"
         # alternative with reversed string and no RTL override:
         #assert unicode(self.debug.rewrite_flipped("Test")) == u"ʇsǝ⊥"
         # Chars < ! and > z are returned as is
-        assert unicode(self.debug.rewrite_flipped(u" ")) == u"\u202e "
-        assert unicode(self.debug.rewrite_flipped(u"©")) == u"\u202e©"
+        assert six.text_type(self.debug.rewrite_flipped(u" ")) == u"\u202e "
+        assert six.text_type(self.debug.rewrite_flipped(u"©")) == u"\u202e©"
 
     def test_rewrite_chef(self):
         """Test the chef rewrite function

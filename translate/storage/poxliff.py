@@ -25,6 +25,7 @@ This way the API supports plurals as if it was a PO file, for example.
 """
 
 import re
+import six
 
 from lxml import etree
 
@@ -388,7 +389,7 @@ class PoXliffFile(xliff.xlifffile, poheader.poheader):
 
         for entry in singularunits:
             term = self.UnitClass.createfromxmlElement(entry, namespace=self.namespace)
-            if nextplural and unicode(term.getid()) == ("%s[0]" % nextplural.getid()):
+            if nextplural and six.text_type(term.getid()) == ("%s[0]" % nextplural.getid()):
                 self.addunit(nextplural, new=False)
                 nextplural = next(pluralunit_iter, None)
             else:

@@ -18,8 +18,8 @@ class TestAutoencode:
 
     def test_uniqueness(self):
         """tests constructor creates unique objects"""
-        s1 = unicode(u'unicode string')
-        s2 = unicode(u'unicode string')
+        s1 = u'unicode string'
+        s2 = u'unicode string'
         assert s1 == s2
         assert s1 is s2
         s1 = self.type2test(u'unicode string', 'utf-8')

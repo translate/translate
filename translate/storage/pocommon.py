@@ -19,6 +19,7 @@
 # along with this program; if not, see <http://www.gnu.org/licenses/>.
 
 import re
+import six
 from six.moves.urllib import parse
 
 from translate.storage import base, poheader
@@ -47,7 +48,7 @@ def quote_plus(text):
 def unquote_plus(text):
     """unquote('%7e/abc+def') -> '~/abc def'"""
     try:
-        if isinstance(text, unicode):
+        if isinstance(text, six.text_type):
             text = text.encode('utf-8')
         return parse.unquote_plus(text).decode('utf-8')
     except UnicodeEncodeError as e:

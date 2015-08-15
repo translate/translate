@@ -404,7 +404,7 @@ class StatsCache(object):
         store can be a TranslationFile object or a callback that returns one.
         """
         if isinstance(filename, str):
-            filename = unicode(filename, sys.getfilesystemencoding())
+            filename = six.text_type(filename, sys.getfilesystemencoding())
         realpath = os.path.realpath(filename)
         self.cur.execute("""SELECT fileid, st_mtime, st_size FROM files
                 WHERE path=?;""", (realpath,))

@@ -85,6 +85,7 @@ Escaping in Android DTD
 """
 
 import re
+import six
 import warnings
 from io import BytesIO
 try:
@@ -491,7 +492,7 @@ class dtdunit(base.TranslationUnit):
     def __str__(self):
         """convert to a string. double check that unicode is handled somehow here"""
         source = self.getoutput()
-        if isinstance(source, unicode):
+        if isinstance(source, six.text_type):
             return source.encode(getattr(self, "encoding", "UTF-8"))
         return source
 
@@ -514,7 +515,7 @@ class dtdunit(base.TranslationUnit):
                 entityline = '<!ENTITY' + self.space_pre_entity + self.entity + self.space_pre_definition + self.definition + self.closing
             if getattr(self, 'hashprefix', None):
                 entityline = self.hashprefix + " " + entityline
-            if isinstance(entityline, unicode):
+            if isinstance(entityline, six.text_type):
                 entityline = entityline.encode('UTF-8')
             lines.append(entityline + '\n')
         return "".join(lines)
@@ -570,7 +571,7 @@ class dtdfile(base.TranslationStore):
         if not self._valid_store():
             warnings.warn("DTD file '%s' does not validate" % self.filename)
             return None
-        if isinstance(source, unicode):
+        if isinstance(source, six.text_type):
             return source.encode(getattr(self, "encoding", "UTF-8"))
         return source
 

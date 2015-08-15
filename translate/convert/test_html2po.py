@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 
+import six
 from pytest import mark
 
 from translate.convert import html2po, po2html, test_convert
@@ -38,7 +39,7 @@ class TestHTML2PO:
             unitnumber = unitnumber - 1
         print('unit source: ' + pofile.units[unitnumber].source.encode('utf-8') + '|')
         print('expected: ' + expected.encode('utf-8') + '|')
-        assert unicode(pofile.units[unitnumber].source) == unicode(expected)
+        assert six.text_type(pofile.units[unitnumber].source) == six.text_type(expected)
 
     def check_single(self, markup, itemtext):
         """checks that converting this markup produces a single element with value itemtext"""
@@ -420,7 +421,7 @@ ghi ?>'''
         pofile = self.html2po('<!-- comment outside block --><p><!-- a comment -->A paragraph<!-- with another comment -->.</p>', keepcomments=True)
         self.compareunit(pofile, 1, 'A paragraph.')
         notes = pofile.getunits()[-1].getnotes()
-        assert unicode(notes) == ' a comment \n with another comment '
+        assert six.text_type(notes) == ' a comment \n with another comment '
 
 
 class TestHTML2POCommand(test_convert.TestConvertCommand, TestHTML2PO):

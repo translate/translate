@@ -24,6 +24,8 @@ See: http://docs.translatehouse.org/projects/translate-toolkit/en/latest/command
 for examples and usage instructions.
 """
 
+import six
+
 from translate.convert import convert
 from translate.misc import quote
 from translate.storage import php, po
@@ -57,7 +59,7 @@ class rephp:
         return outputlines
 
     def convertline(self, line):
-        line = unicode(line, 'utf-8')
+        line = six.text_type(line, 'utf-8')
         returnline = ""
 
         # handle multiline msgid if we're in one
@@ -153,7 +155,7 @@ class rephp:
                 if endpos == -1 or line[endpos-1] == '\\':
                     self.inmultilinemsgid = True
 
-        if isinstance(returnline, unicode):
+        if isinstance(returnline, six.text_type):
             returnline = returnline.encode('utf-8')
 
         return returnline

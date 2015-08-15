@@ -54,11 +54,13 @@ As far as I know no detailed documentation exists for the tiki language.php file
 
 import datetime
 import re
+import six
 
 from translate.misc import wStringIO
 from translate.storage import base
 
 
+@six.python_2_unicode_compatible
 class TikiUnit(base.TranslationUnit):
     """A tiki unit entry."""
 
@@ -66,7 +68,7 @@ class TikiUnit(base.TranslationUnit):
         self.location = []
         super(TikiUnit, self).__init__(source)
 
-    def __unicode__(self):
+    def __str__(self):
         """Returns a string formatted to be inserted into a tiki language.php file."""
         ret = u'"%s" => "%s",' % (self.source, self.target)
         if self.location == ["untranslated"]:
@@ -123,18 +125,18 @@ class TikiStore(base.TranslationStore):
 
         output += "// ### Start of unused words\n"
         for unit in _unused:
-            output += unicode(unit)
+            output += six.text_type(unit)
         output += "// ### end of unused words\n\n"
         output += "// ### start of untranslated words\n"
         for unit in _untranslated:
-            output += unicode(unit)
+            output += six.text_type(unit)
         output += "// ### end of untranslated words\n\n"
         output += "// ### start of possibly untranslated words\n"
         for unit in _possiblyuntranslated:
-            output += unicode(unit)
+            output += six.text_type(unit)
         output += "// ### end of possibly untranslated words\n\n"
         for unit in _translated:
-            output += unicode(unit)
+            output += six.text_type(unit)
 
         output += self._tiki_footer()
         return output.encode('UTF-8')

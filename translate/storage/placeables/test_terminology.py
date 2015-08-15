@@ -18,6 +18,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, see <http://www.gnu.org/licenses/>.
 
+import six
 from io import BytesIO
 
 from translate.search.match import terminologymatcher
@@ -58,8 +59,8 @@ msgstr "lêernaam"
         term = tree.sub[3].sub[1]
 
         assert isinstance(term, TerminologyPlaceable)
-        assert unicode(term) == self.term_po.getunits()[2].source
-        assert term.translate() == unicode(self.term_po.getunits()[2].target)
+        assert six.text_type(term) == self.term_po.getunits()[2].source
+        assert term.translate() == six.text_type(self.term_po.getunits()[2].target)
 
 
 if __name__ == '__main__':

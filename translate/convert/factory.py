@@ -21,6 +21,7 @@
 """Factory methods to convert supported input files to supported translatable files."""
 
 import os
+import six
 
 
 #from translate.convert import prop2po, po2prop, odf2xliff, xliff2odf
@@ -39,6 +40,7 @@ converters = {}
 #        converters[extension].append(module.formats[extension])
 
 
+@six.python_2_unicode_compatible
 class UnknownExtensionError(Exception):
 
     def __init__(self, afile):
@@ -47,10 +49,8 @@ class UnknownExtensionError(Exception):
     def __str__(self):
         return 'Unable to find extension for file: %s' % (self.file)
 
-    def __unicode__(self):
-        return unicode(str(self))
 
-
+@six.python_2_unicode_compatible
 class UnsupportedConversionError(Exception):
 
     def __init__(self, in_ext=None, out_ext=None, templ_ext=None):
@@ -63,9 +63,6 @@ class UnsupportedConversionError(Exception):
         if self.templ_ext:
             msg += ' with template %s' % (self.templ_ext)
         return msg
-
-    def __unicode__(self):
-        return unicode(str(self))
 
 
 def get_extension(filename):

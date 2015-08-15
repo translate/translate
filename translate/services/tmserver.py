@@ -23,6 +23,7 @@ with clients using JSON over HTTP."""
 
 import json
 import logging
+import six
 from argparse import ArgumentParser
 from io import BytesIO
 from urlparse import parse_qs
@@ -36,7 +37,7 @@ class TMServer(object):
 
     def __init__(self, tmdbfile, tmfiles, max_candidates=3, min_similarity=75,
             max_length=1000, prefix="", source_lang=None, target_lang=None):
-        if not isinstance(tmdbfile, unicode):
+        if not isinstance(tmdbfile, six.text_type):
             import sys
             tmdbfile = tmdbfile.decode(sys.getfilesystemencoding())
 
@@ -74,7 +75,7 @@ class TMServer(object):
     def translate_unit(self, environ, start_response, uid, slang, tlang):
         start_response("200 OK", [('Content-type', 'text/plain')])
         candidates = self.tmdb.translate_unit(uid, slang, tlang)
-        logging.debug("candidates: %s", unicode(candidates))
+        logging.debug("candidates: %s", six.text_type(candidates))
         response = json.dumps(candidates, indent=4)
         params = parse_qs(environ.get('QUERY_STRING', ''))
         try:

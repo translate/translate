@@ -162,7 +162,7 @@ def unescape_help_text(text):
 
 def encode_if_needed_utf8(text):
     """Encode a Unicode string the the specified encoding"""
-    if isinstance(text, unicode):
+    if isinstance(text, six.text_type):
         return text.encode('UTF-8')
     return text
 

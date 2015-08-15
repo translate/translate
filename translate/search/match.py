@@ -23,6 +23,7 @@ translation units."""
 
 import heapq
 import re
+import six
 from six.moves import filter as ifilter
 
 from translate.misc.multistring import multistring
@@ -111,8 +112,8 @@ class matcher(object):
                 if len(candidate.source.strings) > 1:
                     simpleunit.orig_source = candidate.source
                     simpleunit.orig_target = candidate.target
-                simpleunit.source = unicode(candidate.source)
-                simpleunit.target = unicode(candidate.target)
+                simpleunit.source = six.text_type(candidate.source)
+                simpleunit.target = six.text_type(candidate.target)
             else:
                 simpleunit.source = candidate.source
                 simpleunit.target = candidate.target

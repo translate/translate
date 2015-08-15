@@ -21,6 +21,7 @@
 """tests for storage base classes"""
 
 import os
+import six
 import warnings
 
 import pytest
@@ -181,15 +182,15 @@ class TestTranslationUnit:
             assert len(elems[0].sub) == 1
             assert len(elems[1].sub) == 3
 
-            assert unicode(elems[0]) == target_mstr.strings[0]
-            assert unicode(elems[1]) == target_mstr.strings[1]
+            assert six.text_type(elems[0]) == target_mstr.strings[0]
+            assert six.text_type(elems[1]) == target_mstr.strings[1]
 
-            assert unicode(elems[1].sub[0]) == u'<b>'
-            assert unicode(elems[1].sub[1]) == u'string'
-            assert unicode(elems[1].sub[2]) == u'</b>'
+            assert six.text_type(elems[1].sub[0]) == u'<b>'
+            assert six.text_type(elems[1].sub[1]) == u'string'
+            assert six.text_type(elems[1].sub[2]) == u'</b>'
         else:
             assert len(elems[0].sub) == 1
-            assert unicode(elems[0]) == target_mstr.strings[0]
+            assert six.text_type(elems[0]) == target_mstr.strings[0]
 
     def test_rich_set(self):
         """Basic test for converting from multistrings to StringElem trees."""

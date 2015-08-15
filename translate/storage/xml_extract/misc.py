@@ -19,13 +19,7 @@
 # along with this program; if not, see <http://www.gnu.org/licenses/>.
 
 import re
-
-
-# Python 3 compatibility
-try:
-    unicode
-except NameError:
-    unicode = str
+import six
 
 
 def reduce_tree(f, parent_unit_node, unit_node, get_children, *state):
@@ -83,8 +77,8 @@ def parse_tag(full_tag):
         ret = []
         for k in ("namespace", "tag"):
             value = match.groupdict()[k] or ""
-            if not isinstance(value, unicode):
-                value = unicode(value, encoding="utf-8")
+            if not isinstance(value, six.text_type):
+                value = six.text_type(value, encoding="utf-8")
             ret.append(value)
         return ret[0], ret[1]
     else:

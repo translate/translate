@@ -414,8 +414,8 @@ class pounit(pocommon.pounit):
         """
 
         def mergelists(list1, list2, split=False):
-            #decode where necessary
-            if unicode in [type(item) for item in list2] + [type(item) for item in list1]:
+            # Decode where necessary (either all bytestrings or all unicode)
+            if six.text_type in [type(item) for item in list2] + [type(item) for item in list1]:
                 for position, item in enumerate(list1):
                     if isinstance(item, str):
                         list1[position] = item.decode("utf-8")
@@ -627,7 +627,7 @@ class pounit(pocommon.pounit):
 
     def _encodeifneccessary(self, output):
         """Encodes unicode strings and returns other strings unchanged"""
-        if isinstance(output, unicode):
+        if isinstance(output, six.text_type):
             encoding = encodingToUse(getattr(self, "_encoding", "UTF-8"))
             return output.encode(encoding)
         return output
@@ -839,7 +839,7 @@ class pofile(pocommon.pofile):
         """Convert to a string. Double check that unicode is handled somehow
         here"""
         output = self._getoutput()
-        if isinstance(output, unicode):
+        if isinstance(output, six.text_type):
             try:
                 return output.encode(getattr(self, "_encoding", "UTF-8"))
             except UnicodeEncodeError as e:
@@ -870,7 +870,7 @@ class pofile(pocommon.pofile):
         if encoding is None or encoding.lower() == "charset":
             encoding = 'UTF-8'
         for line in lines:
-            if isinstance(line, unicode):
+            if isinstance(line, six.text_type):
                 line = line.encode(encoding)
             newlines.append(line)
         return newlines

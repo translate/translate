@@ -42,6 +42,7 @@ in very small files.
 
 import array
 import re
+import six
 import struct
 
 from translate.misc.multistring import multistring
@@ -202,7 +203,7 @@ class mofile(poheader.poheader, base.TranslationStore):
             # TODO: We don't do any encoding detection from the PO Header
             add_to_hash_table(id, i)
             string = MESSAGES[id]  # id already encoded for use as dictionary key
-            if isinstance(string, unicode):
+            if isinstance(string, six.text_type):
                 string = string.encode('utf-8')
             offsets.append((len(ids), len(id), len(strs), len(string)))
             ids = ids + id + '\0'

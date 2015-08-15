@@ -22,6 +22,7 @@
 """An API to provide spell checking for use in checks or elsewhere."""
 
 import logging
+import six
 
 
 logger = logging.getLogger(__name__)
@@ -51,7 +52,7 @@ try:
         spellchecker = _get_checker(lang)
         if not spellchecker:
             return
-        spellchecker.set_text(unicode(text))
+        spellchecker.set_text(six.text_type(text))
         for err in spellchecker:
             yield err.word, err.wordpos, err.suggest()
 
@@ -59,7 +60,7 @@ try:
         spellchecker = _get_checker(lang)
         if not spellchecker:
             return
-        spellchecker.set_text(unicode(text))
+        spellchecker.set_text(six.text_type(text))
         for err in spellchecker:
             yield err.word
 

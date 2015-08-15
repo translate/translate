@@ -89,12 +89,12 @@ def make_placeable(node, xml_space):
 
 
 def as_unicode(string):
-    if isinstance(string, unicode):
+    if isinstance(string, six.text_type):
         return string
     elif isinstance(string, StringElem):
-        return unicode(string)
+        return six.text_type(string)
     else:
-        return unicode(string.decode('utf-8'))
+        return string.decode('utf-8')
 
 
 def xml_to_strelem(dom_node, xml_space="preserve"):
@@ -110,15 +110,15 @@ def xml_to_strelem(dom_node, xml_space="preserve"):
             continue
         sub.append(make_placeable(child_dom_node, xml_space))
         if child_dom_node.tail:
-            sub.append(StringElem(unicode(child_dom_node.tail)))
+            sub.append(StringElem(six.text_type(child_dom_node.tail)))
 
     # This is just a strange way of inserting the first text and avoiding a
     # call to .prune() which is very expensive. We assume the tree is optimal.
     node_text = dom_node.text
     if sub and node_text:
-        sub.insert(0, StringElem(unicode(node_text)))
+        sub.insert(0, StringElem(six.text_type(node_text)))
     elif node_text:
-        sub.append(unicode(node_text))
+        sub.append(six.text_type(node_text))
     return result
 
 # ==========================================================
@@ -178,19 +178,19 @@ _placeable_dictionary = {
 def xml_append_string(node, string):
     if not len(node):
         if not node.text:
-            node.text = unicode(string)
+            node.text = six.text_type(string)
         else:
-            node.text += unicode(string)
+            node.text += six.text_type(string)
     else:
         lastchild = node.getchildren()[-1]
         if lastchild.tail is None:
             lastchild.tail = ''
-        lastchild.tail += unicode(string)
+        lastchild.tail += six.text_type(string)
     return node
 
 
 def strelem_to_xml(parent_node, elem):
-    if isinstance(elem, unicode):
+    if isinstance(elem, six.text_type):
         return xml_append_string(parent_node, elem)
     if not isinstance(elem, StringElem):
         return parent_node

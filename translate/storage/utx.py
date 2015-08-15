@@ -115,7 +115,7 @@ class UtxUnit(base.TranslationUnit):
         # FIXME update the header date
         if newvalue is None:
             self._dict[key] = None
-        if isinstance(newvalue, unicode):
+        if isinstance(newvalue, six.text_type):
             newvalue = newvalue.encode('utf-8')
         if not key in self._dict or newvalue != self._dict[key]:
             self._dict[key] = newvalue

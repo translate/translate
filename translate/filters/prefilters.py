@@ -36,7 +36,7 @@ def removekdecomments(str1):
 
       "_: comment\n"
     """
-    assert isinstance(str1, unicode)
+    assert isinstance(str1, six.text_type)
     iskdecomment = False
     lines = str1.split("\n")
     removelines = []
@@ -167,7 +167,7 @@ def filterwordswithpunctuation(str1):
         occurrences.extend([(pos, word, replacement) for pos in quote.find_all(str1, word)])
     for match in word_with_apos_re.finditer(str1):
         word = match.group()
-        replacement = filter(unicode.isalnum, word)
+        replacement = filter(six.text_type.isalnum, word)
         occurrences.append((match.start(), word, replacement))
     occurrences.sort()
     if occurrences:

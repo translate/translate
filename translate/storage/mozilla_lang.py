@@ -23,6 +23,8 @@
 
 """A class to manage Mozilla .lang files."""
 
+import six
+
 from translate.storage import base, txt
 
 
@@ -107,6 +109,6 @@ class LangStore(txt.TxtFile):
         ret_string = ""
         if self.is_active or self.mark_active:
             ret_string += "## active ##\n"
-        ret_string += u"\n\n\n".join([unicode(unit) for unit in self.units]).encode('utf-8')
+        ret_string += u"\n\n\n".join([six.text_type(unit) for unit in self.units]).encode('utf-8')
         ret_string += "\n"
         return ret_string

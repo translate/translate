@@ -279,7 +279,7 @@ class pounit(pocommon.pounit):
     def setsource(self, source):
         if isinstance(source, multistring):
             source = source.strings
-        if isinstance(source, unicode):
+        if isinstance(source, six.text_type):
             source = source.encode(self.CPO_ENC)
         if isinstance(source, list):
             gpo.po_message_set_msgid(self._gpo_message, source[0].encode(self.CPO_ENC))
@@ -336,7 +336,7 @@ class pounit(pocommon.pounit):
         if isinstance(target, list):
             for i in range(len(target)):
                 targetstring = target[i]
-                if isinstance(targetstring, unicode):
+                if isinstance(targetstring, six.text_type):
                     targetstring = targetstring.encode(self.CPO_ENC)
                 gpo.po_message_set_msgstr_plural(self._gpo_message, i, targetstring)
         # add the values of a dict
@@ -345,7 +345,7 @@ class pounit(pocommon.pounit):
                 gpo.po_message_set_msgstr_plural(self._gpo_message, i, targetstring)
         # add a single string
         else:
-            if isinstance(target, unicode):
+            if isinstance(target, six.text_type):
                 target = target.encode(self.CPO_ENC)
             if target is None:
                 gpo.po_message_set_msgstr(self._gpo_message, "")
@@ -538,7 +538,7 @@ class pounit(pocommon.pounit):
             if locline == -1:
                 locstring = locname
             else:
-                locstring = locname + u":" + unicode(locline)
+                locstring = locname + u":" + six.text_type(locline)
             locations.append(pocommon.unquote_plus(locstring))
             i += 1
             location = gpo.po_message_filepos(self._gpo_message, i)

@@ -135,6 +135,7 @@ def tagproperties(strings, ignore):
     return properties
 
 
+@six.python_2_unicode_compatible
 class FilterFailure(Exception):
     """This exception signals that a Filter didn't pass, and gives an
     explanation or a comment.
@@ -144,15 +145,12 @@ class FilterFailure(Exception):
         if not isinstance(messages, list):
             messages = [messages]
 
-        assert isinstance(messages[0], unicode)  # Assumption: all of same type
+        assert isinstance(messages[0], six.text_type)  # Assumption: all of same type
 
         self.messages = messages
 
-    def __unicode__(self):
-        return unicode(u", ".join(self.messages))
-
     def __str__(self):
-        return str(u", ".join(self.messages))
+        return u", ".join(self.messages)
 
 
 class SeriousFilterFailure(FilterFailure):
@@ -450,7 +448,7 @@ class UnitChecker(object):
                 filterresult = self.run_test(filterfunction, unit)
             except FilterFailure as e:
                 filterresult = False
-                filtermessage = unicode(e)
+                filtermessage = six.text_type(e)
             except Exception as e:
                 if self.errorhandler is None:
                     raise ValueError("error in filter %s: %r, %r, %s" %
@@ -508,7 +506,7 @@ class TranslationChecker(UnitChecker):
 
             for pluralform in unit.target.strings:
                 try:
-                    if not test(self.str1, unicode(pluralform)):
+                    if not test(self.str1, six.text_type(pluralform)):
                         filterresult = False
                 except FilterFailure as e:
                     filterresult = False
@@ -1526,11 +1524,11 @@ class StandardChecker(TranslationChecker):
         # serves no purpose to get sourcelang.sentenceend
         str1 = re.sub(u"[^%s]( I )" % self.config.sourcelang.sentenceend, u" i ", str1)
 
-        capitals1 = helpers.filtercount(str1, unicode.isupper)
-        capitals2 = helpers.filtercount(str2, unicode.isupper)
+        capitals1 = helpers.filtercount(str1, six.text_type.isupper)
+        capitals2 = helpers.filtercount(str2, six.text_type.isupper)
 
-        alpha1 = helpers.filtercount(str1, unicode.isalpha)
-        alpha2 = helpers.filtercount(str2, unicode.isalpha)
+        alpha1 = helpers.filtercount(str1, six.text_type.isalpha)
+        alpha2 = helpers.filtercount(str2, six.text_type.isalpha)
 
         # Capture the all caps case
         if capitals1 == alpha1:

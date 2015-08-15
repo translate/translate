@@ -19,6 +19,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, see <http://www.gnu.org/licenses/>.
 
+import six
 from pytest import mark
 
 from translate.storage.placeables import StringElem, base, general, parse, xliff
@@ -31,14 +32,14 @@ class TestStringElem:
         self.elem = parse(self.ORIGSTR, general.parsers)
 
     def test_parse(self):
-        assert unicode(self.elem) == self.ORIGSTR
+        assert six.text_type(self.elem) == self.ORIGSTR
 
     def test_tree(self):
         assert len(self.elem.sub) == 4
-        assert unicode(self.elem.sub[0]) == u'Ģët '
-        assert unicode(self.elem.sub[1]) == u'<a href="http://www.example.com" alt="Ģët &brand;!">'
-        assert unicode(self.elem.sub[2]) == u'&brandLong;'
-        assert unicode(self.elem.sub[3]) == u'</a>'
+        assert six.text_type(self.elem.sub[0]) == u'Ģët '
+        assert six.text_type(self.elem.sub[1]) == u'<a href="http://www.example.com" alt="Ģët &brand;!">'
+        assert six.text_type(self.elem.sub[2]) == u'&brandLong;'
+        assert six.text_type(self.elem.sub[3]) == u'</a>'
 
         assert len(self.elem.sub[0].sub) == 1 and self.elem.sub[0].sub[0] == u'Ģët '
         assert len(self.elem.sub[1].sub) == 1 and self.elem.sub[1].sub[0] == u'<a href="http://www.example.com" alt="Ģët &brand;!">'
@@ -92,7 +93,7 @@ class TestStringElem:
         assert len(self.elem.find_elems_with('a')) == 3
 
     def test_flatten(self):
-        assert u''.join([unicode(i) for i in self.elem.flatten()]) == self.ORIGSTR
+        assert u''.join([six.text_type(i) for i in self.elem.flatten()]) == self.ORIGSTR
 
     def test_delete_range_case1(self):
         # Case 1: Entire string #
@@ -127,7 +128,7 @@ class TestStringElem:
         assert parent is None
         assert offset is None
         assert len(elem.sub) == 2
-        assert unicode(elem) == u'Ģët <a href="http://www.example.com" alt="Ģët &brand;!">'
+        assert six.text_type(elem) == u'Ģët <a href="http://www.example.com" alt="Ģët &brand;!">'
 
         # A separate test case where the delete range include elements between
         # the start- and end elements.
@@ -138,34 +139,34 @@ class TestStringElem:
         assert deleted == origelem
         assert parent is None
         assert offset is None
-        assert unicode(elem) == 'foobar'
+        assert six.text_type(elem) == 'foobar'
 
     def test_insert(self):
         # Test inserting at the beginning
         elem = self.elem.copy()
         elem.insert(0, u'xxx')
-        assert unicode(elem.sub[0]) == u'xxx' + unicode(self.elem.sub[0])
+        assert six.text_type(elem.sub[0]) == u'xxx' + six.text_type(self.elem.sub[0])
 
         # Test inserting at the end
         elem = self.elem.copy()
         elem.insert(len(elem), u'xxx')
         assert elem.flatten()[-1] == StringElem(u'xxx')
-        assert unicode(elem).endswith('&brandLong;</a>xxx')
+        assert six.text_type(elem).endswith('&brandLong;</a>xxx')
 
         elem = self.elem.copy()
         elem.insert(len(elem), u">>>", preferred_parent=elem.sub[-1])
-        assert unicode(elem.flatten()[-1]) == u'</a>>>>'
-        assert unicode(elem).endswith('&brandLong;</a>>>>')
+        assert six.text_type(elem.flatten()[-1]) == u'</a>>>>'
+        assert six.text_type(elem).endswith('&brandLong;</a>>>>')
 
         # Test inserting in the middle of an existing string
         elem = self.elem.copy()
         elem.insert(2, u'xxx')
-        assert unicode(elem.sub[0]) == u'Ģëxxxt '
+        assert six.text_type(elem.sub[0]) == u'Ģëxxxt '
 
         # Test inserting between elements
         elem = self.elem.copy()
         elem.insert(56, u'xxx')
-        assert unicode(elem)[56:59] == u'xxx'
+        assert six.text_type(elem)[56:59] == u'xxx'
 
     def test_isleaf(self):
         for child in self.elem.sub:
@@ -189,7 +190,7 @@ class TestConverters:
         # The following asserts say that, even though tree and newtree represent the same string
         # (the unicode() results are the same), they are composed of different classes (and so
         # their repr()s are different
-        assert unicode(self.elem) == unicode(basetree)
+        assert six.text_type(self.elem) == six.text_type(basetree)
         assert repr(self.elem) != repr(basetree)
 
     @mark.xfail(reason="Test needs fixing, disabled for now")
@@ -202,14 +203,14 @@ class TestConverters:
     def test_to_xliff_placeables(self):
         basetree = base.to_base_placeables(self.elem)
         xliff_from_base = xliff.to_xliff_placeables(basetree)
-        assert unicode(xliff_from_base) != unicode(self.elem)
+        assert six.text_type(xliff_from_base) != six.text_type(self.elem)
         assert repr(xliff_from_base) != repr(self.elem)
 
         xliff_from_gen = xliff.to_xliff_placeables(self.elem)
-        assert unicode(xliff_from_gen) != unicode(self.elem)
+        assert six.text_type(xliff_from_gen) != six.text_type(self.elem)
         assert repr(xliff_from_gen) != repr(self.elem)
 
-        assert unicode(xliff_from_base) == unicode(xliff_from_gen)
+        assert six.text_type(xliff_from_base) == six.text_type(xliff_from_gen)
         assert repr(xliff_from_base) == repr(xliff_from_gen)
 
 

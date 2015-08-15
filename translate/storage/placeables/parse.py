@@ -23,6 +23,8 @@ Contains the ``parse`` function that parses normal strings into StringElem-
 based "rich" string element trees.
 """
 
+import six
+
 from translate.storage.placeables import StringElem, base
 
 
@@ -47,7 +49,7 @@ def parse(tree, parse_funcs):
                         form the original string. If nothing could be
                         parsed, it should return ``None``.
     """
-    if isinstance(tree, unicode):
+    if isinstance(tree, six.text_type):
         tree = StringElem(tree)
     if not parse_funcs:
         return tree
@@ -60,7 +62,7 @@ def parse(tree, parse_funcs):
         if not leaf.istranslatable:
             continue
 
-        unileaf = unicode(leaf)
+        unileaf = six.text_type(leaf)
         if not unileaf:
             continue
 
@@ -69,7 +71,7 @@ def parse(tree, parse_funcs):
             if (len(subleaves) == 1 and isinstance(subleaves[0], type(leaf)) and
                 leaf == subleaves[0]):
                 pass
-            elif isinstance(leaf, unicode):
+            elif isinstance(leaf, six.text_type):
                 parent = tree.get_parent_elem(leaf)
                 if parent is not None:
                     if len(parent.sub) == 1:

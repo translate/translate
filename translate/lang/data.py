@@ -272,6 +272,7 @@ import gettext
 import locale
 import os
 import re
+import six
 
 
 iso639 = {}
@@ -404,7 +405,7 @@ def forceunicode(string):
         encoding = getattr(string, "encoding", "utf-8")
         string = string.decode(encoding)
     elif isinstance(string, StringElem):
-        string = unicode(string)
+        string = six.text_type(string)
     return string
 
 

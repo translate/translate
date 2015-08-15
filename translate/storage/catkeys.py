@@ -51,6 +51,7 @@ Escaping
 """
 
 import csv
+import six
 
 from translate.lang import data
 from translate.storage import base
@@ -155,7 +156,7 @@ class CatkeysUnit(base.TranslationUnit):
     def _set_source_or_target(self, key, newvalue):
         if newvalue is None:
             self._dict[key] = None
-        if isinstance(newvalue, unicode):
+        if isinstance(newvalue, six.text_type):
             newvalue = newvalue.encode('utf-8')
         newvalue = _escape(newvalue)
         if not key in self._dict or newvalue != self._dict[key]:

@@ -425,14 +425,14 @@ class xliffunit(lisa.LISAunit):
             # unit has no proper file ancestor, probably newly created
             pass
         # hide the fact that we sanitize ID_SEPERATOR
-        uid += unicode(self.xmlelement.get("id") or u"").replace(ID_SEPARATOR_SAFE, ID_SEPARATOR)
+        uid += six.text_type(self.xmlelement.get("id") or u"").replace(ID_SEPARATOR_SAFE, ID_SEPARATOR)
         return uid
 
     def addlocation(self, location):
         self.setid(location)
 
     def getlocations(self):
-        id_attr = unicode(self.xmlelement.get("id") or u"")
+        id_attr = six.text_type(self.xmlelement.get("id") or u"")
         # XLIFF files downloaded from PO projects in Pootle
         # might have id equal to .source, so let's avoid
         # that:
@@ -521,7 +521,7 @@ class xliffunit(lisa.LISAunit):
     def rich_to_multistring(cls, elem_list):
         """Override :meth:`TranslationUnit.rich_to_multistring` which is used
         by the ``rich_source`` and ``rich_target`` properties."""
-        return multistring([unicode(elem) for elem in elem_list])
+        return multistring([six.text_type(elem) for elem in elem_list])
 
 
 class xlifffile(lisa.LISAfile):

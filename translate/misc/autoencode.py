@@ -21,38 +21,33 @@
 """Supports a hybrid Unicode string that knows which encoding is preferable,
 and uses this when converting to a string."""
 
-
-# Python 3 compatibility
-try:
-    unicode
-except NameError:
-    unicode = str
+import six
 
 
-class autoencode(unicode):
+class autoencode(six.text_type):
 
     def __new__(newtype, string=u"", encoding=None, errors=None):
-        if isinstance(string, unicode):
+        if isinstance(string, six.text_type):
             if errors is None:
-                newstring = unicode.__new__(newtype, string)
+                newstring = six.text_type.__new__(newtype, string)
             else:
-                newstring = unicode.__new__(newtype, string, errors=errors)
+                newstring = six.text_type.__new__(newtype, string, errors=errors)
             if encoding is None and isinstance(string, autoencode):
                 newstring.encoding = string.encoding
             else:
                 newstring.encoding = encoding
         else:
             if errors is None and encoding is None:
-                newstring = unicode.__new__(newtype, string)
+                newstring = six.text_type.__new__(newtype, string)
             elif errors is None:
                 try:
-                    newstring = unicode.__new__(newtype, string, encoding)
+                    newstring = six.text_type.__new__(newtype, string, encoding)
                 except LookupError as e:
                     raise ValueError(str(e))
             elif encoding is None:
-                newstring = unicode.__new__(newtype, string, errors)
+                newstring = six.text_type.__new__(newtype, string, errors)
             else:
-                newstring = unicode.__new__(newtype, string, encoding, errors)
+                newstring = six.text_type.__new__(newtype, string, encoding, errors)
             newstring.encoding = encoding
         return newstring
 

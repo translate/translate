@@ -46,7 +46,7 @@ def args(src, tgt, **kwargs):
     arg_list = []
     arg_list.extend([u'--errorlevel=traceback', src, tgt])
     for flag, value in six.iteritems(kwargs):
-        value = unicode(value)
+        value = six.text_type(value)
         if len(flag) == 1:
             arg_list.append(u'-%s' % flag)
         else:
