@@ -288,7 +288,7 @@ class pounit(pocommon.pounit):
         if self.hasplural():
             if isinstance(target, multistring):
                 target = target.strings
-            elif isinstance(target, basestring):
+            elif isinstance(target, six.string_types):
                 target = [target]
         elif isinstance(target, (dict, list)):
             if len(target) == 1:

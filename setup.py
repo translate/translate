@@ -33,6 +33,12 @@ except ImportError:
 from translate import __doc__, __version__
 
 
+# Alias copied from six
+if sys.version_info[0] == 2:
+    string_types = basestring,
+else:
+    string_types = str,
+
 PRETTY_NAME = 'Translate Toolkit'
 translateversion = __version__.sver
 
@@ -246,7 +252,7 @@ else:
             map_data_file function"""
             new_data_files = []
             for f in data_files:
-                if type(f) in (str, unicode):
+                if isinstance(f, string_types):
                     f = map_data_file(f)
                 else:
                     datadir, files = f
@@ -280,7 +286,7 @@ else:
             # create the Installer, using the files py2exe has created.
             exe_files = self.windows_exe_files + self.console_exe_files
             install_scripts = self.install_script
-            if isinstance(install_scripts, (str, unicode)):
+            if isinstance(install_scripts, string_types):
                 install_scripts = [install_scripts]
             script = InnoScript(PRETTY_NAME, lib_dir, dist_dir, exe_files,
                                 self.lib_files,

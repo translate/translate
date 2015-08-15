@@ -30,6 +30,8 @@ use the newer .ts format which are documented here:
 `2 <http://qt-project.org/doc/qt-5.0/qtcore/qstring.html#arg-2>`_
 """
 
+import six
+
 from translate.misc import ourdom
 
 
@@ -112,7 +114,7 @@ class QtTsParser:
         if context is None:
             return self.document.searchElementsByTagName("message", self.messageancestors)
         else:
-            if isinstance(context, (str, unicode)):
+            if isinstance(context, six.string_types):
                 # look up the context node by name
                 context = self.getcontextnode(context)
                 if context is None:

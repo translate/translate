@@ -357,7 +357,7 @@ class csvfile(base.TranslationStore):
         if not fieldnames:
             self.fieldnames = ['location', 'source', 'target', 'id', 'fuzzy', 'context', 'translator_comments', 'developer_comments']
         else:
-            if isinstance(fieldnames, basestring):
+            if isinstance(fieldnames, six.string_types):
                 fieldnames = [fieldname.strip() for fieldname in fieldnames.split(",")]
             self.fieldnames = fieldnames
         self.filename = getattr(inputfile, 'name', '')

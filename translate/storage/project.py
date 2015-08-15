@@ -19,6 +19,7 @@
 # along with this program; if not, see <http://www.gnu.org/licenses/>.
 
 import os
+import six
 
 from translate.convert import factory as convert_factory
 from translate.storage.projstore import ProjectStore
@@ -101,7 +102,7 @@ class Project(object):
             raise ValueError('Cannot convert a target document further: %s' % (input_fname))
 
         templ_fname = None
-        if isinstance(template, basestring):
+        if isinstance(template, six.string_types):
             template, templ_fname = self.get_file(template)
 
         if template and not templ_fname:

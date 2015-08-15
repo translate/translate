@@ -267,7 +267,7 @@ class ArchiveConvertOptionParser(ConvertOptionParser):
 
     def isarchive(self, fileoption, filepurpose='input'):
         """Returns whether the file option is an archive file."""
-        if not isinstance(fileoption, (str, unicode)):
+        if not isinstance(fileoption, six.string_types):
             return False
         mustexist = (filepurpose != 'output')
         if mustexist and not os.path.isfile(fileoption):

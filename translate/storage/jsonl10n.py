@@ -190,7 +190,7 @@ class JsonFile(base.TranslationStore):
               (isinstance(last_node, dict) and name_node in stop) or
               (isinstance(last_node, list) and name_last_node in stop)):
 
-            if isinstance(data, str) or isinstance(data, unicode):
+            if isinstance(data, six.string_types):
                 yield (prev, data, last_node, name_node)
             elif isinstance(data, bool):
                 yield (prev, str(data), last_node, name_node)

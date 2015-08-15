@@ -30,6 +30,7 @@
 import glob
 import os
 import shutil
+import six
 import StringIO
 import tempfile
 import time
@@ -122,7 +123,7 @@ def get_langs(lang_args):
 
     langs = []
 
-    if isinstance(lang_args, str):
+    if isinstance(lang_args, six.string_types):
         if lang_args == 'ALL':
             lang_args = ['ALL']
         elif lang_args == 'ZA':

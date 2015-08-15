@@ -18,6 +18,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, see <http://www.gnu.org/licenses/>.
 
+import six
 from lxml import etree
 
 from translate.misc.xml_helpers import normalize_xml_space
@@ -99,7 +100,7 @@ def as_unicode(string):
 def xml_to_strelem(dom_node, xml_space="preserve"):
     if dom_node is None:
         return StringElem()
-    if isinstance(dom_node, basestring):
+    if isinstance(dom_node, six.string_types):
         dom_node = etree.fromstring(dom_node)
     normalize_xml_space(dom_node, xml_space, remove_start=True)
     result = StringElem()

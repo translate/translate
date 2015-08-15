@@ -27,6 +27,7 @@ as minidom.parseString, since the functionality provided here will not be in
 those objects.
 """
 
+import six
 from xml.dom import expatbuilder, minidom
 
 
@@ -258,7 +259,7 @@ class ExpatBuilderNS(expatbuilder.ExpatBuilderNS):
 def parse(file, parser=None, bufsize=None):
     """Parse a file into a DOM by filename or file object."""
     builder = ExpatBuilderNS()
-    if isinstance(file, basestring):
+    if isinstance(file, six.string_types):
         fp = open(file, 'rb')
         try:
             result = builder.parseFile(fp)

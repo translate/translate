@@ -25,6 +25,8 @@ interface for the pylucene (v1.x) indexing engine
 take a look at PyLuceneIndexer.py for PyLucene v2.x support
 """
 
+import six
+
 # this module is based on PyLuceneIndexer (for PyLucene v2.x)
 import PyLuceneIndexer
 import PyLucene
@@ -185,7 +187,7 @@ class PyLuceneDatabase(PyLuceneIndexer.PyLuceneDatabase):
         :return: a list of dicts containing the specified field(s)
         :rtype: list of dicts
         """
-        if isinstance(fieldnames, basestring):
+        if isinstance(fieldnames, six.string_types):
             fieldnames = [fieldnames]
         hits = PyLucene.indexSearcher.search(query)
         result = []

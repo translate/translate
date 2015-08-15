@@ -19,6 +19,7 @@
 # along with this program; if not, see <http://www.gnu.org/licenses/>.
 
 import re
+import six
 
 
 """
@@ -308,7 +309,7 @@ def parse_unit(parse_state, unit=None):
 
 def set_encoding(parse_state, store, unit):
     charset = None
-    if isinstance(unit.msgstr, list) and len(unit.msgstr) > 0 and isinstance(unit.msgstr[0], str):
+    if isinstance(unit.msgstr, list) and len(unit.msgstr) and isinstance(unit.msgstr[0], six.string_types):
         charset = re.search("charset=([^\\s\\\\n]+)", "".join(unit.msgstr))
     if charset:
         encoding = charset.group(1)

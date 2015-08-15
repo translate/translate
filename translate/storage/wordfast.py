@@ -81,6 +81,7 @@ Extended Attributes
 """
 
 import csv
+import six
 import time
 
 from translate.storage import base
@@ -200,7 +201,7 @@ class WordfastTime(object):
         self._time = None
         if not newtime:
             self.time = None
-        elif isinstance(newtime, basestring):
+        elif isinstance(newtime, six.string_types):
             self.timestring = newtime
         elif isinstance(newtime, time.struct_time):
             self.time = newtime

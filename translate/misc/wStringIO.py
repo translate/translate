@@ -20,13 +20,14 @@
 
 """A thin wrapper around BytesIO that accepts and auto-convert non bytes input"""
 
+import six
 from io import BytesIO
 
 
 class StringIO(BytesIO):
 
     def __init__(self, buf=''):
-        if not isinstance(buf, (str, unicode)):
+        if not isinstance(buf, six.string_types):
             buf = str(buf)
         if isinstance(buf, unicode):
             buf = buf.encode('utf-8')

@@ -28,6 +28,7 @@
 
 import glob
 import re
+import six
 import sys
 from os import path
 
@@ -39,7 +40,7 @@ white_space_re = re.compile('\s+')
 class _NGram:
 
     def __init__(self, arg=None):
-        if isinstance(arg, basestring):
+        if isinstance(arg, six.string_types):
             self.addText(arg)
             self.normalise()
         elif isinstance(arg, dict):

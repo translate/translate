@@ -46,6 +46,7 @@ overwritten and replaced.
 import logging
 import os
 import re
+import six
 from glob import glob
 from shutil import move, rmtree
 from subprocess import PIPE, CalledProcessError, Popen
@@ -91,7 +92,7 @@ def run(cmd, expected_status=0, fail_msg=None, stdout=-1, stderr=-1):
     if stderr == -1:
         stderr = std
 
-    cmdstring = isinstance(str, basestring) and cmd or ' '.join(cmd)
+    cmdstring = cmd if isinstance(cmd, six.string_types) else ' '.join(cmd)
     logger.debug('>>> %s $ %s', os.getcwd(), cmdstring)
     p = Popen(cmd, stdout=stdout, stderr=stderr)
     (output, error) = p.communicate()

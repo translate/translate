@@ -33,8 +33,9 @@ It is not completely working, but it should give you a good start.
 """
 
 # xapian module versions before 1.0.13 hangs apache under mod_python
-import sys
 import re
+import six
+import sys
 
 # detect if running under apache
 if 'apache' in sys.modules or '_apache' in sys.modules or 'mod_wsgi' in sys.modules:
@@ -383,7 +384,7 @@ class XapianDatabase(CommonIndexer.CommonDatabase):
         :rtype: list of dicts
         """
         result = []
-        if isinstance(fieldnames, basestring):
+        if isinstance(fieldnames, six.string_types):
             fieldnames = [fieldnames]
         try:
             self._walk_matches(query, _extract_fieldvalues,

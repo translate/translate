@@ -25,6 +25,7 @@ parsed rich-string tree. It is the base class of all placeables.
 """
 
 import logging
+import six
 import sys
 
 
@@ -182,7 +183,7 @@ class StringElem(object):
         """
         for elem in self.flatten():
             for i in range(len(elem.sub)):
-                if isinstance(elem.sub[i], basestring):
+                if isinstance(elem.sub[i], six.string_types):
                     elem.sub[i] = f(elem.sub[i])
 
     def copy(self):
@@ -456,7 +457,7 @@ class StringElem(object):
     def find(self, x):
         """Find sub-string ``x`` in this string tree and return the position
             at which it starts."""
-        if isinstance(x, basestring):
+        if isinstance(x, six.string_types):
             return unicode(self).find(x)
         if isinstance(x, StringElem):
             return unicode(self).find(unicode(x))
@@ -518,7 +519,7 @@ class StringElem(object):
             string (Unicode) representation."""
         if offset < 0 or offset > len(self):
             raise IndexError('Index out of range: %d' % (offset))
-        if isinstance(text, (str, unicode)):
+        if isinstance(text, six.string_types):
             text = StringElem(text)
         if not isinstance(text, StringElem):
             raise ValueError('text must be of type StringElem')
@@ -783,7 +784,7 @@ class StringElem(object):
         :rtype: bool
         """
         for e in self.sub:
-            if not isinstance(e, (str, unicode)):
+            if not isinstance(e, six.string_types):
                 return False
         return True
 
@@ -881,12 +882,12 @@ class StringElem(object):
                 # Remove empty strings or StringElem nodes
                 # (but not StringElem sub-class instances, because they
                 # might contain important (non-rendered) data.
-                if (type(elem.sub[i]) in (StringElem, str, unicode) and
+                if ((type(elem.sub[i]) == StringElem or isinstance(elem.sub[i], six.string_types)) and
                     len(elem.sub[i]) == 0):
                     del elem.sub[i]
                     continue
 
-                if type(elem.sub[i]) in (str, unicode) and not elem.isleaf():
+                if isinstance(elem.sub[i], six.string_types) and not elem.isleaf():
                     elem.sub[i] = StringElem(elem.sub[i])
                     changed = True
 

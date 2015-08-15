@@ -512,7 +512,7 @@ class xliffunit(lisa.LISAunit):
         strings = mstr
         if isinstance(mstr, multistring):
             strings = mstr.strings
-        elif isinstance(mstr, basestring):
+        elif isinstance(mstr, six.string_types):
             strings = [mstr]
 
         return [xml_to_strelem(s) for s in strings]

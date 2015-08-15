@@ -81,7 +81,7 @@ class BundleProjectStore(ProjectStore):
             """
         if fname and fname in self.zip.namelist():
             raise ValueError("File already in bundle archive: %s" % (fname))
-        if not fname and isinstance(afile, basestring) and afile in self.zip.namelist():
+        if not fname and isinstance(afile, six.string_types) and afile in self.zip.namelist():
             raise ValueError("File already in bundle archive: %s" % (afile))
 
         afile, fname = super(BundleProjectStore, self).append_file(afile, fname, ftype)

@@ -27,6 +27,7 @@ take a look at PyLuceneIndexer1.py for the PyLucene v1.x interface
 
 import logging
 import os
+import six
 import time
 
 # try to import the PyLucene package (with the two possible names)
@@ -421,7 +422,7 @@ class PyLuceneDatabase(CommonIndexer.CommonDatabase):
         :return: a list of dicts containing the specified field(s)
         :rtype: list of dicts
         """
-        if isinstance(fieldnames, basestring):
+        if isinstance(fieldnames, six.string_types):
             fieldnames = [fieldnames]
         hits = self.searcher.search(query)
         if _COMPILER == 'jcc':

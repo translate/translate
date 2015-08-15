@@ -215,7 +215,7 @@ class Selector(object):
         ``@prefix`` and ``@parser`` directives take effect 
         until the end of the file or until changed.
         """
-        if isinstance(the_file, str):
+        if isinstance(the_file, six.string_types):
             the_file = open(the_file)
         oldprefix = self.prefix
         if prefix is not None:

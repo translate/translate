@@ -24,6 +24,7 @@ base class for interfaces to indexing engines for pootle
 """
 
 import os
+import six
 
 import translate.lang.data
 
@@ -184,7 +185,7 @@ class CommonDatabase(object):
                 result.append(self._create_query_for_field(field, value,
                         analyzer=analyzer))
             # parse plaintext queries
-            elif isinstance(query, basestring):
+            elif isinstance(query, six.string_types):
                 if analyzer is None:
                     analyzer = self.analyzer
                 # perform unicode normalization
@@ -297,7 +298,7 @@ class CommonDatabase(object):
                 if key is None:
                     if isinstance(value, list):
                         terms = value[:]
-                    elif isinstance(value, basestring):
+                    elif isinstance(value, six.string_types):
                         terms = [value]
                     else:
                         raise ValueError("Invalid data type to be indexed: %s" %
@@ -313,7 +314,7 @@ class CommonDatabase(object):
                     for one_term in value:
                         self._add_field_term(doc, key, self._decode(one_term),
                                 (analyze_settings & self.ANALYZER_TOKENIZE > 0))
-            elif isinstance(dataset, basestring):
+            elif isinstance(dataset, six.string_types):
                 self._add_plain_term(doc, self._decode(dataset),
                         (self.ANALYZER_DEFAULT & self.ANALYZER_TOKENIZE > 0))
             else:
@@ -522,7 +523,7 @@ class CommonDatabase(object):
         """
         for field, analyzer in field_analyzers.items():
             # check for invald input types
-            if not isinstance(field, (str, unicode)):
+            if not isinstance(field, six.string_types):
                 raise TypeError("field name must be a string")
             if not isinstance(analyzer, int):
                 raise TypeError("the analyzer must be a whole number (int)")
@@ -548,7 +549,7 @@ class CommonDatabase(object):
             # return a copy
             return dict(self.field_analyzers)
         # one field is requested
-        if isinstance(fieldnames, (str, unicode)):
+        if isinstance(fieldnames, six.string_types):
             if fieldnames in self.field_analyzers:
                 return self.field_analyzers[fieldnames]
             else:

@@ -227,7 +227,7 @@ class RecursiveOptionParser(optparse.OptionParser, object):
         self.outputoptions = {}
         self.usetemplates = usetemplates
         for formatgroup, outputoptions in six.iteritems(formats):
-            if isinstance(formatgroup, (str, unicode)) or formatgroup is None:
+            if isinstance(formatgroup, six.string_types) or formatgroup is None:
                 formatgroup = (formatgroup, )
             if not isinstance(formatgroup, tuple):
                 raise ValueError("formatgroups must be tuples or None/str/unicode")
