@@ -25,7 +25,7 @@ import logging
 import os
 import shutil
 
-import CommonIndexer
+from . import CommonIndexer
 
 
 """ TODO for indexing engines:

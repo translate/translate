@@ -19,7 +19,7 @@
 # along with this program; if not, see <http://www.gnu.org/licenses/>.
 #
 
-import xpath_breadcrumb
+from . import xpath_breadcrumb
 
 
 def test_breadcrumb():
