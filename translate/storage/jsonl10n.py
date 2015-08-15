@@ -212,7 +212,7 @@ class JsonFile(base.TranslationStore):
             src = input.read()
             input.close()
             input = src
-        if isinstance(input, str):
+        if isinstance(input, bytes):
             input = BytesIO(input)
         try:
             self._file = json.load(input)

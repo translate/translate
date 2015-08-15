@@ -157,7 +157,7 @@ class TikiStore(base.TranslationStore):
         if hasattr(input, "name"):
             self.filename = input.name
 
-        if isinstance(input, str):
+        if isinstance(input, bytes):
             input = wStringIO.StringIO(input)
 
         _split_regex = re.compile(r"^(?:// )?\"(.*)\" => \"(.*)\",$", re.UNICODE)

@@ -73,7 +73,7 @@ class TxtUnit(base.TranslationUnit):
     # Note that source and target are equivalent for monolingual units
     def setsource(self, source):
         """Sets the definition to the quoted value of source"""
-        if isinstance(source, str):
+        if isinstance(source, bytes):
             source = source.decode(self.encoding)
         self._rich_source = None
         self._source = source

@@ -141,7 +141,7 @@ class Statistics(object):
         #TODO: we don't handle checking plurals at all yet, as this is tricky...
         source = unit.source
         target = unit.target
-        if isinstance(source, str) and isinstance(target, six.text_type):
+        if isinstance(source, bytes) and isinstance(target, six.text_type):
             source = source.decode(getattr(unit, "encoding", "utf-8"))
         #TODO: decoding should not be done here
 #        checkresult = self.checker.run_filters(unit, source, target)

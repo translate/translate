@@ -46,9 +46,9 @@ class po2ts:
                 transtype = "unfinished"
             elif inputunit.getnotes("developer") == "(obsolete)":
                 transtype = "obsolete"
-            if isinstance(source, str):
+            if isinstance(source, bytes):
                 source = source.decode("utf-8")
-            if isinstance(translation, str):
+            if isinstance(translation, bytes):
                 translation = translation.decode("utf-8")
             for sourcelocation in inputunit.getlocations():
                 if context is None:

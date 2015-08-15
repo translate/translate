@@ -119,7 +119,7 @@ class icalfile(base.TranslationStore):
             inisrc = input.read()
             input.close()
             input = inisrc
-        if isinstance(input, str):
+        if isinstance(input, bytes):
             input = BytesIO(input)
             self._icalfile = next(vobject.readComponents(input))
         else:

@@ -162,7 +162,7 @@ class PoXliffUnit(xliff.xliffunit):
 
     def addnote(self, text, origin=None, position="append"):
         """Add a note specifically in a "note" tag"""
-        if isinstance(text, str):
+        if isinstance(text, bytes):
             text = text.decode("utf-8")
         note = etree.SubElement(self.xmlelement, self.namespaced("note"))
         note.text = text

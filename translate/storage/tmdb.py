@@ -275,8 +275,8 @@ DROP TRIGGER IF EXISTS sources_delete_trig;
 
     def translate_unit(self, unit_source, source_langs, target_langs):
         """return TM suggestions for unit_source"""
-        if isinstance(unit_source, str):
-            unit_source = six.text_type(unit_source, "utf-8")
+        if isinstance(unit_source, bytes):
+            unit_source = unit_source.decode("utf-8")
         if isinstance(source_langs, list):
             source_langs = [data.normalize_code(lang) for lang in source_langs]
             source_langs = ','.join(source_langs)

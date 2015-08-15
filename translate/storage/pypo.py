@@ -233,7 +233,7 @@ class pounit(pocommon.pounit):
     def _set_source_vars(self, source):
         msgid = None
         msgid_plural = None
-        if isinstance(source, str):
+        if isinstance(source, bytes):
             source = source.decode(self._encoding)
         if isinstance(source, multistring):
             source = source.strings
@@ -283,7 +283,7 @@ class pounit(pocommon.pounit):
     def settarget(self, target):
         """Sets the msgstr to the given (unescaped) value"""
         self._rich_target = None
-        if isinstance(target, str):
+        if isinstance(target, bytes):
             target = target.decode(self._encoding)
         if self.hasplural():
             if isinstance(target, multistring):
@@ -417,10 +417,10 @@ class pounit(pocommon.pounit):
             # Decode where necessary (either all bytestrings or all unicode)
             if six.text_type in [type(item) for item in list2] + [type(item) for item in list1]:
                 for position, item in enumerate(list1):
-                    if isinstance(item, str):
+                    if isinstance(item, bytes):
                         list1[position] = item.decode("utf-8")
                 for position, item in enumerate(list2):
-                    if isinstance(item, str):
+                    if isinstance(item, bytes):
                         list2[position] = item.decode("utf-8")
 
             #Determine the newline style of list1
@@ -767,7 +767,7 @@ class pofile(pocommon.pofile):
             self.filename = input.name
         elif not getattr(self, 'filename', ''):
             self.filename = ''
-        if isinstance(input, str):
+        if isinstance(input, bytes):
             input = BytesIO(input)
         # clear units to get rid of automatically generated headers before parsing
         self.units = []
@@ -879,7 +879,7 @@ class pofile(pocommon.pofile):
         """decode any non-unicode strings in lines with self._encoding"""
         newlines = []
         for line in lines:
-            if (isinstance(line, str) and self._encoding is not None and
+            if (isinstance(line, bytes) and self._encoding is not None and
                 self._encoding.lower() != "charset"):
                 try:
                     line = line.decode(self._encoding)

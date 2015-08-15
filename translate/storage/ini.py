@@ -127,7 +127,7 @@ class inifile(base.TranslationStore):
             input.close()
             input = inisrc
 
-        if isinstance(input, str):
+        if isinstance(input, bytes):
             input = BytesIO(input)
             self._inifile = INIConfig(input, optionxformvalue=None)
         else:

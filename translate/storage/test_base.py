@@ -328,7 +328,7 @@ class TestTranslationStore(object):
         string = u"Beziér-kurwe"
         unit.target = string.encode("utf-8")
         answer = store.translate(u"Beziér curve")
-        if isinstance(answer, str):
+        if isinstance(answer, bytes):
             answer = answer.decode("utf-8")
         assert answer == u"Beziér-kurwe"
         #Just test that __str__ doesn't raise exception:

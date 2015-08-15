@@ -565,7 +565,7 @@ class CommonDatabase(object):
     def _decode(self, text):
         """Decode the string from utf-8 or charmap perform
         unicode normalization."""
-        if isinstance(text, str):
+        if isinstance(text, bytes):
             try:
                 result = text.decode("UTF-8")
             except UnicodeDecodeError:

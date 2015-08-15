@@ -34,7 +34,7 @@ Provisional work is done to make several languages possible."""
 
     def createlanguageNode(self, lang, text, purpose):
         """returns a langset xml Element setup with given parameters"""
-        if isinstance(text, str):
+        if isinstance(text, bytes):
             text = text.decode("utf-8")
         langset = etree.Element(self.languageNode)
         lisa.setXMLlang(langset, lang)

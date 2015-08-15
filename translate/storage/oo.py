@@ -66,7 +66,7 @@ unormalizetable = unormalizechar(normalfilenamechars.decode("ascii"))
 
 def normalizefilename(filename):
     """converts any non-alphanumeric (standard roman) characters to _"""
-    if isinstance(filename, str):
+    if isinstance(filename, bytes):
         return filename.translate(normalizetable)
     else:
         return filename.translate(unormalizetable)

@@ -127,7 +127,7 @@ class rephp:
                     value = php.phpencode(value, self.quotechar)
                     self.inecho = False
 
-                    if isinstance(value, str):
+                    if isinstance(value, bytes):
                         value = value.decode('utf8')
 
                     params = {

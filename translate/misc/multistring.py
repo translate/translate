@@ -58,8 +58,8 @@ class multistring(autoencode.autoencode):
             return cmp(autoencode.autoencode(self), otherstring)
         elif isinstance(otherstring, six.text_type):
             return cmp(six.text_type(self), otherstring)
-        elif isinstance(otherstring, str):
-            return cmp(str(self), otherstring)
+        elif isinstance(otherstring, bytes):
+            return cmp(bytes(self), otherstring)
         elif isinstance(otherstring, list) and otherstring:
             return cmp(self, multistring(otherstring))
         else:
