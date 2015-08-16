@@ -24,6 +24,7 @@ with clients using JSON over HTTP."""
 import json
 import logging
 from argparse import ArgumentParser
+from io import BytesIO
 from urlparse import parse_qs
 
 from translate.misc import selector, wsgi
@@ -122,10 +123,9 @@ class TMServer(object):
     @selector.opliant
     def upload_store(self, environ, start_response, sid, slang, tlang):
         """add units from uploaded file to tmdb"""
-        from cStringIO import StringIO
         from translate.storage import factory
         start_response("200 OK", [('Content-type', 'text/plain')])
-        data = StringIO(environ['wsgi.input'].read(int(environ['CONTENT_LENGTH'])))
+        data = BytesIO(environ['wsgi.input'].read(int(environ['CONTENT_LENGTH'])))
         data.name = sid
         store = factory.getobject(data)
         count = self.tmdb.add_store(store, slang, tlang)

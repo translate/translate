@@ -24,7 +24,7 @@ See: http://docs.translatehouse.org/projects/translate-toolkit/en/latest/command
 for examples and usage instructions.
 """
 
-from cStringIO import StringIO
+from io import BytesIO
 
 from translate.convert import convert
 from translate.storage import factory
@@ -52,7 +52,7 @@ def convertodf(inputfile, outputfile, templates):
     contents = open_odf(inputfile)
     for data in contents.values():
         parse_state = ParseState(no_translate_content_elements, inline_elements)
-        build_store(StringIO(data), store, parse_state)
+        build_store(BytesIO(data), store, parse_state)
 
     store.save()
     return True

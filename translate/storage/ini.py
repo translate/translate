@@ -31,7 +31,7 @@ b : a string
 """
 
 import re
-from cStringIO import StringIO
+from io import BytesIO
 
 from iniparse import INIConfig
 
@@ -128,7 +128,7 @@ class inifile(base.TranslationStore):
             input = inisrc
 
         if isinstance(input, str):
-            input = StringIO(input)
+            input = BytesIO(input)
             self._inifile = INIConfig(input, optionxformvalue=None)
         else:
             self._inifile = INIConfig(file(input), optionxformvalue=None)

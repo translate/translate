@@ -71,7 +71,7 @@ TODO:
 
 import json
 import os
-from cStringIO import StringIO
+from io import BytesIO
 
 from translate.storage import base
 
@@ -212,7 +212,7 @@ class JsonFile(base.TranslationStore):
             input.close()
             input = src
         if isinstance(input, str):
-            input = StringIO(input)
+            input = BytesIO(input)
         try:
             self._file = json.load(input)
         except ValueError as e:

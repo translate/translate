@@ -25,7 +25,7 @@ for examples and usage instructions.
 """
 
 import zipfile
-from cStringIO import StringIO
+from io import BytesIO
 
 import lxml.etree as etree
 
@@ -49,7 +49,7 @@ def translate_odf(template, input_file):
         the etrees for each of those translatable files.
         """
         odf_data = open_odf(template)
-        return dict((filename, etree.parse(StringIO(data)))
+        return dict((filename, etree.parse(BytesIO(data)))
                     for filename, data in odf_data.iteritems())
 
     def load_unit_tree(input_file):
@@ -127,7 +127,7 @@ def convertxliff(input_file, output_file, template):
     output_file = file(output_file.name, mode='wb')
 
     xlf_data = input_file.read()
-    dom_trees = translate_odf(template, StringIO(xlf_data))
+    dom_trees = translate_odf(template, BytesIO(xlf_data))
     write_odf(template, output_file, dom_trees)
     output_file.close()
     return True

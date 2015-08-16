@@ -3,7 +3,7 @@
 import os
 import subprocess
 import sys
-from cStringIO import StringIO
+from io import BytesIO
 
 from translate.storage import factory, mo, test_base
 
@@ -150,7 +150,7 @@ class TestMOFile(test_base.TestTranslationStore):
             subprocess.call(['msgfmt', PO_FILE, '-o', MO_MSGFMT])
             subprocess.call(['pocompile', '--errorlevel=traceback', PO_FILE, MO_POCOMPILE])
 
-            store = factory.getobject(StringIO(posource))
+            store = factory.getobject(BytesIO(posource))
             if store.isempty() and not os.path.exists(MO_POCOMPILE):
                 # pocompile doesn't create MO files for empty PO files, so we
                 # can skip the checks here.

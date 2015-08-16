@@ -22,7 +22,7 @@
 :mod:`translate.convert` tools)."""
 
 import os.path
-from cStringIO import StringIO
+from io import BytesIO
 
 from translate.misc import optrecurse
 
@@ -391,7 +391,7 @@ class ArchiveConvertOptionParser(ConvertOptionParser):
             if outputstream is None:
                 self.warning("Could not find where to put %s in output "
                              "archive; writing to tmp" % fulloutputpath)
-                return StringIO()
+                return BytesIO()
             return outputstream
         else:
             return super(ArchiveConvertOptionParser, self).openoutputfile(options, fulloutputpath)

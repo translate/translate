@@ -20,7 +20,7 @@
 
 """Convert IDML files to PO localization files."""
 
-from cStringIO import StringIO
+from io import BytesIO
 
 from translate.convert import convert
 from translate.storage import factory
@@ -48,7 +48,7 @@ def convert_idml(inputfile, outputfile, template):
     for filename, translatable_file in contents.iteritems():
         parse_state = ParseState(NO_TRANSLATE_ELEMENTS, INLINE_ELEMENTS)
         po_store_adder = make_postore_adder(store, id_maker, filename)
-        build_idml_store(StringIO(translatable_file), store, parse_state,
+        build_idml_store(BytesIO(translatable_file), store, parse_state,
                          store_adder=po_store_adder)
 
     store.save()

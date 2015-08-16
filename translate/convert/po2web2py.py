@@ -25,6 +25,8 @@ See: http://docs.translatehouse.org/projects/translate-toolkit/en/latest/command
 for examples and usage instructions.
 """
 
+from io import BytesIO
+
 from translate.convert import convert
 from translate.storage import factory
 
@@ -35,8 +37,7 @@ class po2pydict:
         return
 
     def convertstore(self, inputstore, includefuzzy):
-        from cStringIO import StringIO
-        str_obj = StringIO()
+        str_obj = BytesIO()
 
         mydict = dict()
         for unit in inputstore.units:

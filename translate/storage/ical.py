@@ -53,7 +53,7 @@ Future Format Support
 """
 
 import re
-from cStringIO import StringIO
+from io import BytesIO
 
 import vobject
 
@@ -120,7 +120,7 @@ class icalfile(base.TranslationStore):
             input.close()
             input = inisrc
         if isinstance(input, str):
-            input = StringIO(input)
+            input = BytesIO(input)
             self._icalfile = vobject.readComponents(input).next()
         else:
             self._icalfile = vobject.readComponents(open(input)).next()

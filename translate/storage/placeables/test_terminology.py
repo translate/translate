@@ -18,7 +18,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, see <http://www.gnu.org/licenses/>.
 
-from cStringIO import StringIO
+from io import BytesIO
 
 from translate.search.match import terminologymatcher
 from translate.storage.placeables import StringElem, base, general, parse
@@ -43,7 +43,7 @@ msgstr "lêernaam"
 """
 
     def setup_method(self, method):
-        self.term_po = pofile(StringIO(self.TERMINOLOGY))
+        self.term_po = pofile(BytesIO(self.TERMINOLOGY))
         self.matcher = terminologymatcher(self.term_po)
         self.test_string = u'<b>Inpüt</b> file name thingy.'
 

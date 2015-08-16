@@ -23,7 +23,7 @@ strings in the IDML template. It creates a new IDML file using the translations
 of the PO file.
 """
 
-from cStringIO import StringIO
+from io import BytesIO
 from zipfile import ZIP_DEFLATED, ZipFile
 
 import lxml.etree as etree
@@ -167,7 +167,7 @@ def convertpo(input_file, output_file, template):
                           if filename.startswith('Stories/')]
 
     po_data = input_file.read()
-    dom_trees = translate_idml(template, StringIO(po_data), translatable_files)
+    dom_trees = translate_idml(template, BytesIO(po_data), translatable_files)
 
     write_idml(template_zip, output_file, dom_trees)
     output_file.close()

@@ -29,7 +29,7 @@
 
 import os
 import tempfile
-from cStringIO import StringIO
+from io import BytesIO
 
 try:
     from aeidon import Subtitle, documents, newlines
@@ -97,7 +97,7 @@ class SubtitleFile(base.TranslationStore):
             subtitle.start = unit._start
             subtitle.end = unit._end
             subtitles.append(subtitle)
-        output = StringIO()
+        output = BytesIO()
         self._subtitlefile.write_to_file(subtitles, documents.MAIN, output)
         return output.getvalue().encode(self._subtitlefile.encoding)
 

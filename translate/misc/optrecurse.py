@@ -25,7 +25,7 @@ import os.path
 import re
 import sys
 import traceback
-from cStringIO import StringIO
+from io import BytesIO
 
 from translate import __version__
 from translate.misc import progressbar
@@ -536,7 +536,7 @@ class RecursiveOptionParser(optparse.OptionParser, object):
 
     def opentempoutputfile(self, options, fulloutputpath):
         """Opens a temporary output file."""
-        return StringIO()
+        return BytesIO()
 
     def finalizetempoutputfile(self, options, outputfile, fulloutputpath):
         """Write the temp outputfile to its final destination."""

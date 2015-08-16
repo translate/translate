@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-from cStringIO import StringIO
+from io import BytesIO
 
 from pytest import mark
 
@@ -120,41 +120,41 @@ msgstr ""
 '''
 
     def test_translated(self):
-        pofile = StringIO(self.inputdata)
+        pofile = BytesIO(self.inputdata)
         stats = pocount.calcstats_old(pofile)
         assert stats['translated'] == 1
 
     def test_fuzzy(self):
-        pofile = StringIO(self.inputdata)
+        pofile = BytesIO(self.inputdata)
         stats = pocount.calcstats_old(pofile)
         assert stats['fuzzy'] == 1
 
     def test_untranslated(self):
-        pofile = StringIO(self.inputdata)
+        pofile = BytesIO(self.inputdata)
         stats = pocount.calcstats_old(pofile)
         assert stats['untranslated'] == 1
 
     def test_total(self):
-        pofile = StringIO(self.inputdata)
+        pofile = BytesIO(self.inputdata)
         stats = pocount.calcstats_old(pofile)
         assert stats['total'] == 3
 
     def test_translatedsourcewords(self):
-        pofile = StringIO(self.inputdata)
+        pofile = BytesIO(self.inputdata)
         stats = pocount.calcstats_old(pofile)
         assert stats['translatedsourcewords'] == 2
 
     def test_fuzzysourcewords(self):
-        pofile = StringIO(self.inputdata)
+        pofile = BytesIO(self.inputdata)
         stats = pocount.calcstats_old(pofile)
         assert stats['fuzzysourcewords'] == 2
 
     def test_untranslatedsourcewords(self):
-        pofile = StringIO(self.inputdata)
+        pofile = BytesIO(self.inputdata)
         stats = pocount.calcstats_old(pofile)
         assert stats['untranslatedsourcewords'] == 2
 
     def test_totalsourcewords(self):
-        pofile = StringIO(self.inputdata)
+        pofile = BytesIO(self.inputdata)
         stats = pocount.calcstats_old(pofile)
         assert stats['totalsourcewords'] == 6
