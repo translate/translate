@@ -26,7 +26,8 @@ for examples and usage instructions.
 """
 
 import logging
-from urllib import urlencode
+from six.moves.urllib import parse
+
 
 from translate.storage import oo, xliff
 
@@ -100,7 +101,7 @@ class oo2xliff:
         thetargetfile.settargetlanguage(self.targetlanguage)
         # create a header for the file
         bug_url = 'http://qa.openoffice.org/issues/enter_bug.cgi?%s' % \
-                  urlencode({
+                  parse.urlencode({
                       "subcomponent": "ui",
                       "comment": "",
                       "short_desc": "Localization issue in file: %s" %

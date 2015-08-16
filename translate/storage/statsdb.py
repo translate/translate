@@ -28,9 +28,8 @@ import os.path
 import re
 import stat
 import sys
-import thread
+from six.moves import _thread, UserDict
 from sqlite3 import dbapi2
-from UserDict import UserDict
 
 from translate import __version__ as toolkitversion
 from translate.lang.common import Common
@@ -291,7 +290,7 @@ class StatsCache(object):
     """The current cursor"""
 
     def __new__(cls, statsfile=None):
-        current_thread = thread.get_ident()
+        current_thread = _thread.get_ident()
 
         def make_database(statsfile):
 

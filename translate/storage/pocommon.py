@@ -19,7 +19,7 @@
 # along with this program; if not, see <http://www.gnu.org/licenses/>.
 
 import re
-import urllib
+from six.moves.urllib import parse
 
 from translate.storage import base, poheader
 from translate.storage.workflow import StateEnum as state
@@ -41,7 +41,7 @@ def extract_msgid_comment(text):
 
 def quote_plus(text):
     """Quote the query fragment of a URL; replacing ' ' with '+'"""
-    return urllib.quote_plus(text.encode("utf-8"))
+    return parse.quote_plus(text.encode("utf-8"))
 
 
 def unquote_plus(text):
@@ -49,7 +49,7 @@ def unquote_plus(text):
     try:
         if isinstance(text, unicode):
             text = text.encode('utf-8')
-        return urllib.unquote_plus(text).decode('utf-8')
+        return parse.unquote_plus(text).decode('utf-8')
     except UnicodeEncodeError as e:
         # for some reason there is a non-ascii character here. Let's assume it
         # is already unicode (because of originally decoding the file)

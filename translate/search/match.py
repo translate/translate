@@ -22,8 +22,8 @@
 translation units."""
 
 import heapq
-import itertools
 import re
+from six.moves import filter as ifilter
 
 from translate.misc.multistring import multistring
 from translate.search import lshtein, terminology
@@ -103,7 +103,7 @@ class matcher(object):
         """
         if isinstance(units, base.TranslationUnit):
             units = [units]
-        for candidate in itertools.ifilter(self.usable, units):
+        for candidate in ifilter(self.usable, units):
             simpleunit = base.TranslationUnit("")
             # We need to ensure that we don't pass multistrings futher, since
             # some modules (like the native Levenshtein) can't use it.
