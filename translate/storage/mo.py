@@ -55,7 +55,7 @@ def mounpack(filename='messages.mo'):
     """Helper to unpack Gettext MO files into a Python string"""
     f = open(filename)
     s = f.read()
-    print "\\x%02x" * len(s) % tuple(map(ord, s))
+    print("\\x%02x" * len(s) % tuple(map(ord, s)))
     f.close()
 
 

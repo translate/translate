@@ -101,11 +101,11 @@ Example:
 .. code-block:: python
 
     def hello(name):
-        print 'Hello %s!' % name
+        print('Hello %s!' % name)
 
 
     def goodbye(name):
-        print 'See you %s.' % name
+        print('See you %s.' % name)
 
 
     class MyClass(object):

@@ -75,7 +75,7 @@ def qmunpack(file_='messages.qm'):
     """Helper to unpack Qt .qm files into a Python string"""
     f = open(file_)
     s = f.read()
-    print "\\x%02x" * len(s) % tuple(map(ord, s))
+    print("\\x%02x" * len(s) % tuple(map(ord, s)))
     f.close()
 
 
@@ -125,7 +125,7 @@ class qmfile(base.TranslationStore):
         sectionheader = 5
 
         def section_debug(name, section_type, startsection, length):
-            print "Section: %s (type: %#x, offset: %#x, length: %d)" % (name, section_type, startsection, length)
+            print("Section: %s (type: %#x, offset: %#x, length: %d)" % (name, section_type, startsection, length))
             return
 
         while startsection < len(input):
