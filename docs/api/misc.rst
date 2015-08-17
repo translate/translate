@@ -106,7 +106,6 @@ wStringIO
 
 .. automodule:: translate.misc.wStringIO
    :members:
-   :inherited-members:
 
 
 xml_helpers

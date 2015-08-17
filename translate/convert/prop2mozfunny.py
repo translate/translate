@@ -37,6 +37,8 @@ def prop2inc(pf):
             else:
                 for blank in pendingblanks:
                     yield blank
+                if isinstance(comment, unicode):
+                    comment = comment.encode("UTF-8")
                 # TODO: could convert commented # x=y back to # #define x y
                 yield comment + "\n"
         if unit.isblank():
