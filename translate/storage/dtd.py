@@ -323,7 +323,6 @@ class dtdunit(base.TranslationUnit):
         for line in lines:
             line += "\n"
             linesprocessed += 1
-            # print "line(%d,%d): " % (self.incomment,self.inentity),line[:-1]
             if not self.incomment:
                 if (line.find('<!--') != -1):
                     self.incomment = True
@@ -355,7 +354,6 @@ class dtdunit(base.TranslationUnit):
             if self.incomment:
                 # some kind of comment
                 (comment, self.incomment) = quote.extract(line, "<!--", "-->", None, self.continuecomment)
-                # print "comment(%d,%d): " % (self.incomment,self.continuecomment),comment
                 self.continuecomment = self.incomment
                 # strip the comment out of what will be parsed
                 line = line.replace(comment, "", 1)
@@ -554,7 +552,6 @@ class dtdfile(base.TranslationStore):
                     end += 1
                     break
                 end += 1
-            # print "processing from %d to %d" % (start,end)
 
             linesprocessed = 1  # to initialise loop
             while linesprocessed >= 1:

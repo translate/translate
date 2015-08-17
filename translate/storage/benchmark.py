@@ -154,7 +154,6 @@ if __name__ == "__main__":
             methods.append(("parse_placeables", ""))
 
         for methodname, methodparam in methods:
-            #print methodname, "%d dirs, %d files, %d strings, %d/%d words" % sample_file_sizes
             print("_______________________________________________________")
             statsfile = "%s_%s" % (methodname, storetype) + '_%d_%d_%d_%d_%d.stats' % sample_file_sizes
             cProfile.run('benchmarker.%s(%s)' % (methodname, methodparam), statsfile)

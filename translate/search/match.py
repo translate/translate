@@ -90,8 +90,6 @@ class matcher(object):
         for store in stores:
             self.extendtm(store.units, store=store, sort=False)
         self.candidates.units.sort(key=sourcelen, reverse=self.sort_reverse)
-        # print "TM initialised with %d candidates (%d to %d characters long)" % \
-        #        (len(self.candidates.units), len(self.candidates.units[0].source), len(self.candidates.units[-1].source))
 
     def extendtm(self, units, store=None, sort=True):
         """Extends the memory with extra unit(s).
