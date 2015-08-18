@@ -223,7 +223,7 @@ key=value
 
     def test_fullspec_line_continuation(self):
         """Whitespace delimiter and pre whitespace in line continuation are dropped"""
-        prop_source = ur"""fruits                           apple, banana, pear, \
+        prop_source = r"""fruits                           apple, banana, pear, \
                                   cantaloupe, watermelon, \
                                   kiwi, mango
 """
@@ -248,44 +248,44 @@ key=value
 
     def test_mac_strings(self):
         """test various items used in Mac OS X strings files"""
-        propsource = ur'''"I am a \"key\"" = "I am a \"value\"";'''.encode('utf-16')
+        propsource = r'''"I am a \"key\"" = "I am a \"value\"";'''.decode().encode('utf-16')
         propfile = self.propparse(propsource, personality="strings")
         assert len(propfile.units) == 1
         propunit = propfile.units[0]
-        assert propunit.name == ur'I am a "key"'
+        assert propunit.name == u'I am a "key"'
         assert propunit.source.encode('utf-8') == u'I am a "value"'
 
     def test_mac_strings_unicode(self):
         """Ensure we can handle Unicode"""
-        propsource = ur'''"I am a “key”" = "I am a “value”";'''.encode('utf-16')
+        propsource = u'''"I am a “key”" = "I am a “value”";'''.encode('utf-16')
         propfile = self.propparse(propsource, personality="strings")
         assert len(propfile.units) == 1
         propunit = propfile.units[0]
-        assert propunit.name == ur'I am a “key”'
+        assert propunit.name == u'I am a “key”'
         assert propfile.personality.encode(propunit.source) == u'I am a “value”'
 
     def test_mac_strings_utf8(self):
         """Ensure we can handle Unicode"""
-        propsource = ur'''"I am a “key”" = "I am a “value”";'''.encode('utf-8')
+        propsource = u'''"I am a “key”" = "I am a “value”";'''.encode('utf-8')
         propfile = self.propparse(propsource, personality="strings-utf8")
         assert len(propfile.units) == 1
         propunit = propfile.units[0]
-        assert propunit.name == ur'I am a “key”'
+        assert propunit.name == u'I am a “key”'
         assert propfile.personality.encode(propunit.source) == u'I am a “value”'
 
     def test_mac_strings_newlines(self):
         """test newlines \n within a strings files"""
-        propsource = ur'''"key" = "value\nvalue";'''.encode('utf-16')
+        propsource = r'''"key" = "value\nvalue";'''.decode().encode('utf-16')
         propfile = self.propparse(propsource, personality="strings")
         assert len(propfile.units) == 1
         propunit = propfile.units[0]
         assert propunit.name == u'key'
         assert propunit.source.encode('utf-8') == u'value\nvalue'
-        assert propfile.personality.encode(propunit.source) == ur'value\nvalue'
+        assert propfile.personality.encode(propunit.source) == r'value\nvalue'
 
     def test_mac_strings_comments(self):
         """test .string comment types"""
-        propsource = ur'''/* Comment */
+        propsource = u'''/* Comment */
 // Comment
 "key" = "value";'''.encode('utf-16')
         propfile = self.propparse(propsource, personality="strings")
@@ -310,7 +310,7 @@ key=value
 
     def test_mac_strings_comments_dropping(self):
         """.string generic (and unuseful) comments should be dropped"""
-        propsource = ur'''/* No comment provided by engineer. */
+        propsource = u'''/* No comment provided by engineer. */
 "key" = "value";'''.encode('utf-16')
         propfile = self.propparse(propsource, personality="strings")
         assert len(propfile.units) == 1
@@ -321,15 +321,15 @@ key=value
 
     def test_mac_strings_quotes(self):
         """test that parser unescapes characters used as wrappers"""
-        propsource = ur'"key with \"quotes\"" = "value with \"quotes\"";'.encode('utf-16')
+        propsource = r'"key with \"quotes\"" = "value with \"quotes\"";'.decode().encode('utf-16')
         propfile = self.propparse(propsource, personality="strings")
         propunit = propfile.units[0]
-        assert propunit.name == ur'key with "quotes"'
-        assert propunit.value == ur'value with "quotes"'
+        assert propunit.name == u'key with "quotes"'
+        assert propunit.value == u'value with "quotes"'
 
     def test_mac_strings_serialization(self):
         """test that serializer quotes mac strings properly"""
-        propsource = ur'"key with \"quotes\"" = "value with \"quotes\"";'.encode('utf-16')
+        propsource = r'"key with \"quotes\"" = "value with \"quotes\"";'.decode().encode('utf-16')
         propfile = self.propparse(propsource, personality="strings")
         # we don't care about leading and trailing newlines and zero bytes
         # in the assert, we just want to make sure that

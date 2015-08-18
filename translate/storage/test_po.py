@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
+import six
 from pytest import mark, raises
 
 from translate.misc import wStringIO
@@ -848,7 +849,7 @@ msgstr "start thing dingis fish"
         assert str(pofile1) == str(pofile2)
 
     def test_encoding_change(self):
-        posource = ur'''
+        posource = r'''
 msgid ""
 msgstr ""
 "PO-Revision-Date: 2006-02-09 23:33+0200\n"
@@ -858,7 +859,9 @@ msgstr ""
 
 msgid "a"
 msgstr "d"
-'''.encode('iso-8859-1')
+'''
+        if six.PY3:
+            posource = posource.encode()
         pofile = self.poparse(posource)
         unit = pofile.units[1]
         unit.target = u"ḓ"
@@ -868,7 +871,7 @@ msgstr "d"
 
     def test_istranslated(self):
         """checks that istranslated works ok."""
-        posource = ur'''
+        posource = r'''
 msgid ""
 msgstr ""
 "PO-Revision-Date: 2006-02-09 23:33+0200\n"
@@ -880,6 +883,8 @@ msgid "a"
 msgid_plural "aa"
 msgstr[0] ""
 '''
+        if six.PY2:
+            posource = posource.decode()
         pofile = self.poparse(posource)
         unit = pofile.units[1]
         print(str(unit))

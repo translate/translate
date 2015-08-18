@@ -49,7 +49,7 @@ class TestPO2Ical:
 
     def test_simple_summary(self):
         """test that we output correctly for Inno files."""
-        posource = ur'''#: [uid1@example.com]SUMMARY
+        posource = u'''#: [uid1@example.com]SUMMARY
 msgid "Value"
 msgstr "Waarde"
 '''

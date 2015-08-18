@@ -60,6 +60,8 @@ TODOs and Ideas for possible features:
   - phrases
 """
 
+from __future__ import unicode_literals
+
 import logging
 import re
 import six
@@ -120,50 +122,50 @@ class Common(object):
     """This of languages that has different plural formula in Mozilla than the
     standard one in Gettext."""
 
-    listseperator = u", "
+    listseperator = ", "
     """This string is used to separate lists of textual elements. Most
     languages probably can stick with the default comma, but Arabic and some
     Asian languages might want to override this."""
 
-    specialchars = u""
+    specialchars = ""
     """Characters used by the language that might not be easy to input with
     common keyboard layouts"""
 
-    commonpunc = u".,;:!?-@#$%^*_()[]{}/\\'`\"<>"
+    commonpunc = ".,;:!?-@#$%^*_()[]{}/\\'`\"<>"
     """These punctuation marks are common in English and most languages that
     use latin script."""
 
-    quotes = u"‘’‛“”„‟′″‴‵‶‷‹›«»"
+    quotes = "‘’‛“”„‟′″‴‵‶‷‹›«»"
     """These are different quotation marks used by various languages."""
 
-    invertedpunc = u"¿¡"
+    invertedpunc = "¿¡"
     """Inverted punctuation sometimes used at the beginning of sentences in
     Spanish, Asturian, Galician, and Catalan."""
 
-    rtlpunc = u"،؟؛÷"
+    rtlpunc = "،؟؛÷"
     """These punctuation marks are used by Arabic and Persian, for example."""
 
-    CJKpunc = u"。、，；！？「」『』【】"
+    CJKpunc = "。、，；！？「」『』【】"
     """These punctuation marks are used in certain circumstances with CJK
     languages."""
 
-    indicpunc = u"।॥॰"
+    indicpunc = "।॥॰"
     """These punctuation marks are used by several Indic languages."""
 
-    ethiopicpunc = u"።፤፣"
+    ethiopicpunc = "።፤፣"
     """These punctuation marks are used by several Ethiopic languages."""
 
-    miscpunc = u"…±°¹²³·©®×£¥€"
+    miscpunc = "…±°¹²³·©®×£¥€"
     """The middle dot (·) is used by Greek and Georgian."""
 
-    punctuation = u"".join([commonpunc, quotes, invertedpunc, rtlpunc, CJKpunc,
-                            indicpunc, ethiopicpunc, miscpunc])
+    punctuation = "".join([commonpunc, quotes, invertedpunc, rtlpunc, CJKpunc,
+                           indicpunc, ethiopicpunc, miscpunc])
     """We include many types of punctuation here, simply since this is only
     meant to determine if something is punctuation. Hopefully we catch some
     languages which might not be represented with modules. Most languages won't
     need to override this."""
 
-    sentenceend = u".!?…։؟।。！？።\u06d4"
+    sentenceend = ".!?…։؟।。！？።\u06d4"
     """These marks can indicate a sentence end. Once again we try to account
     for many languages. Most langauges won't need to override this."""
 
@@ -171,7 +173,7 @@ class Common(object):
     #what works, see test_common.py. We try to ignore abbreviations, for
     #example, by checking that the following sentence doesn't start with lower
     #case or numbers.
-    sentencere = re.compile(ur"""
+    sentencere = re.compile(r"""
         (?s)        # make . also match newlines
         .*?         # anything, but match non-greedy
         [%s]        # the puntuation for sentence ending
@@ -243,24 +245,24 @@ class Common(object):
         #TODO: look at po::escapeforpo() for performance idea
         if not text:
             return text
-        ellipses_end = text.endswith(u"...")
+        ellipses_end = text.endswith("...")
         if ellipses_end:
             text = text[:-3]
         for source, target in six.iteritems(cls.puncdict):
             text = text.replace(source, target)
         if ellipses_end:
-            if u"..." in cls.puncdict:
-                text += cls.puncdict[u"..."]
+            if "..." in cls.puncdict:
+                text += cls.puncdict["..."]
             else:
-                text += u"..."
+                text += "..."
         # Let's account for cases where a punctuation symbol plus a space is
         # replaced, but the space won't exist at the end of the source message.
         # As a simple improvement for messages ending in ellipses (...), we
         # test that the last character is different from the second last
         # This is only relevant if the string has two characters or more
-        if ((text[-1] + u" " in cls.puncdict) and
+        if ((text[-1] + " " in cls.puncdict) and
             (len(text) < 2 or text[-2] != text[-1])):
-            text = text[:-1] + cls.puncdict[text[-1] + u" "].rstrip()
+            text = text[:-1] + cls.puncdict[text[-1] + " "].rstrip()
         return text
 
     @classmethod
@@ -293,14 +295,14 @@ class Common(object):
             if l > 9:
                 extra = cls.length_difference(l)
                 if extra > 0:
-                    text = text[:extra].replace(u'\n', u'') + text
+                    text = text[:extra].replace('\n', '') + text
                 else:
                     text = text[-extra:]
             return text
         expanded = []
-        for subtext in text.split(u"\n\n"):
+        for subtext in text.split("\n\n"):
             expanded.append(alter_it(subtext))
-        text = u"\n\n".join(expanded)
+        text = "\n\n".join(expanded)
         return text
 
     @classmethod

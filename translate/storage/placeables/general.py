@@ -71,7 +71,7 @@ class NumberPlaceable(Ph):
     """Placeable for numbers."""
 
     istranslatable = False
-    regex = re.compile(ur"[-+]?[0-9]+([\u00a0.,][0-9]+)*")
+    regex = re.compile(u"[-+]?[0-9]+([\u00a0.,][0-9]+)*")
     parse = classmethod(regex_parse)
 
 
@@ -211,17 +211,20 @@ class PunctuationPlaceable(Ph):
     # FIXME this should really be a list created as being the inverse of what
     # is available on the translators keyboard.  Or easily expanded by their
     # configuration.
-    regex = re.compile(ur'''([™©®]|          # Marks
-                             [℃℉°]|          # Degree related
-                             [±πθ×÷−√∞∆Σ′″]| # Maths
-                             [‘’ʼ‚‛“”„‟]|    # Quote characters
-                             [«»]|           # Guillemets
-                             [£¥€]|          # Currencies
-                             …|              # U2026 - horizontal ellipsis
-                             —|              # U2014 - em dash
-                             –|              # U2013 - en dash
-                             [ ]             # U202F - narrow no-break space
-                            )+''', re.VERBOSE)
+    regex = re.compile(
+        u'''([™©®]|          # Marks
+             [℃℉°]|          # Degree related
+             [±πθ×÷−√∞∆Σ′″]| # Maths
+             [‘’ʼ‚‛“”„‟]|    # Quote characters
+             [«»]|           # Guillemets
+             [£¥€]|          # Currencies
+             …|              # U2026 - horizontal ellipsis
+             —|              # U2014 - em dash
+             –|              # U2013 - en dash
+             [ ]             # U202F - narrow no-break space
+            )+''',
+        re.VERBOSE
+    )
     parse = classmethod(regex_parse)
 
 

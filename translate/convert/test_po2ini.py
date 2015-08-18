@@ -1,6 +1,8 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
+from __future__ import unicode_literals
+
 from pytest import importorskip
 
 from translate.convert import po2ini, test_convert
@@ -95,13 +97,13 @@ msgstr "translated"
 
     def test_dialects_inno(self):
         """test that we output correctly for Inno files."""
-        posource = ur'''#: [section]prop
+        posource = r'''#: [section]prop
 msgid "value\tvalue2\n"
 msgstr "ṽḁḽṻḝ\tṽḁḽṻḝ2\n"
 '''
         initemplate = '''[section]\nprop  =  value%tvalue%n\n'''
         iniexpected = '''[section]\nprop  =  ṽḁḽṻḝ%tṽḁḽṻḝ2%n\n'''
-        inifile = self.merge2ini(initemplate, posource, "inno")
+        inifile = self.merge2ini(initemplate, posource, "inno").decode('utf-8')
         print(inifile)
         assert inifile == iniexpected
 

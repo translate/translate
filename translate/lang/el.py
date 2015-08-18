@@ -23,6 +23,8 @@
 .. seealso:: http://en.wikipedia.org/wiki/Greek_language
 """
 
+from __future__ import unicode_literals
+
 import re
 
 from translate.lang import common
@@ -32,9 +34,9 @@ class el(common.Common):
     """This class represents Greek."""
 
     # Greek uses ; as question mark and the middot instead
-    sentenceend = u".!;…"
+    sentenceend = ".!;…"
 
-    sentencere = re.compile(ur"""
+    sentencere = re.compile(r"""
         (?s)        # make . also match newlines
         .*?         # anything, but match non-greedy
         [%s]        # the puntuation for sentence ending
@@ -43,19 +45,19 @@ class el(common.Common):
         """ % sentenceend, re.VERBOSE | re.UNICODE)
 
     puncdict = {
-        u"?": u";",
-        u";": u"·",
+        "?": ";",
+        ";": "·",
     }
 
     # Valid latin characters for use as accelerators
-    valid_latin_accel = u"abcdefghijklmnopqrstuvwxyz" + \
-                        u"ABCDEFGHIJKLMNOPQRSTUVWXYZ" + \
-                        u"1234567890"
+    valid_latin_accel = ("abcdefghijklmnopqrstuvwxyz"
+                         "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+                         "1234567890")
 
     # Valid greek characters for use as accelerators (accented characters
     # and "ς" omitted)
-    valid_greek_accel = u"αβγδεζηθικλμνξοπρστυφχψω" + \
-                        u"ΑΒΓΔΕΖΗΘΙΚΛΜΝΞΟΠΡΣΤΥΦΧΨΩ"
+    valid_greek_accel = ("αβγδεζηθικλμνξοπρστυφχψω"
+                         "ΑΒΓΔΕΖΗΘΙΚΛΜΝΞΟΠΡΣΤΥΦΧΨΩ")
 
     # Valid accelerators
-    validaccel = u"".join([valid_latin_accel, valid_greek_accel])
+    validaccel = "".join([valid_latin_accel, valid_greek_accel])

@@ -23,6 +23,8 @@
 .. seealso:: http://en.wikipedia.org/wiki/Armenian_language
 """
 
+from __future__ import unicode_literals
+
 import re
 
 from translate.lang import common
@@ -31,14 +33,14 @@ from translate.lang import common
 class hy(common.Common):
     """This class represents Armenian."""
 
-    armenianpunc = u"։՝՜՞"
+    armenianpunc = "։՝՜՞"
 
-    punctuation = u"".join([common.Common.commonpunc, common.Common.quotes,
-                            common.Common.miscpunc, armenianpunc])
+    punctuation = "".join([common.Common.commonpunc, common.Common.quotes,
+                           common.Common.miscpunc, armenianpunc])
 
-    sentenceend = u"։՝՜…"
+    sentenceend = "։՝՜…"
 
-    sentencere = re.compile(ur"""
+    sentencere = re.compile(r"""
         (?s)        # make . also match newlines
         .*?         # anything, but match non-greedy
         [%s]        # the puntuation for sentence ending
@@ -47,10 +49,10 @@ class hy(common.Common):
         """ % sentenceend, re.VERBOSE | re.UNICODE)
 
     puncdict = {
-        u".": u"։",
-        u":": u"՝",
-        u"!": u"՜",
-        u"?": u"՞",
+        ".": "։",
+        ":": "՝",
+        "!": "՜",
+        "?": "՞",
     }
 
     ignoretests = ["startcaps", "simplecaps"]
