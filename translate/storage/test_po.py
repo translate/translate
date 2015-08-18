@@ -171,11 +171,10 @@ class TestPOUnit(test_base.TestTranslationUnit):
 class TestPOFile(test_base.TestTranslationStore):
     StoreClass = po.pofile
 
-    def poparse(self, posource):
+    def poparse(self, posource, duplicatestyle=None):
         """helper that parses po source without requiring files"""
-        dummyfile = wStringIO.StringIO(posource)
-        pofile = self.StoreClass(dummyfile)
-        return pofile
+        return self.StoreClass(wStringIO.StringIO(posource),
+                               duplicatestyle=duplicatestyle)
 
     def poregen(self, posource):
         """helper that converts po source to pofile object and back"""
@@ -589,8 +588,7 @@ msgstr[1] "Koeie"
     def test_merge_duplicates(self):
         """checks that merging duplicates works"""
         posource = '#: source1\nmsgid "test me"\nmsgstr ""\n\n#: source2\nmsgid "test me"\nmsgstr ""\n'
-        pofile = self.poparse(posource)
-        #assert len(pofile.units) == 2
+        pofile = self.poparse(posource, duplicatestyle="allow")
         pofile.removeduplicates("merge")
         assert len(pofile.units) == 1
         assert pofile.units[0].getlocations() == ["source1", "source2"]
@@ -608,7 +606,7 @@ msgstr ""
 msgid "test"
 msgstr ""
 '''
-        pofile = self.poparse(posource)
+        pofile = self.poparse(posource, duplicatestyle="allow")
         print(str(pofile))
         pofile.removeduplicates("merge")
         print(str(pofile))

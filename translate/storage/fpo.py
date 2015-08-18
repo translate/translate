@@ -29,6 +29,7 @@ directly, but can be used once cpo has been established to work."""
 # - accept only unicodes everywhere
 
 import copy
+import logging
 import re
 import six
 from io import BytesIO
@@ -38,6 +39,8 @@ from translate.misc.multistring import multistring
 from translate.storage import base, cpo, pocommon, poparser
 from translate.storage.pocommon import encodingToUse
 
+
+logger = logging.getLogger(__name__)
 
 lsep = " "
 """Separator for #: entries"""
@@ -488,7 +491,7 @@ class pofile(pocommon.pofile):
             #only add a temporary header
             self._cpo_store.makeheader(charset=self._encoding, encoding="8bit")
 
-    def parse(self, input):
+    def parse(self, input, duplicatestyle="merge"):
         """Parses the given file or file source string."""
         try:
             if hasattr(input, 'name'):
@@ -507,6 +510,9 @@ class pofile(pocommon.pofile):
                 self.units = self.units[1:]
         except Exception as e:
             raise base.ParseError(e)
+        # duplicates are now removed by default unless duplicatestyle=allow
+        if duplicatestyle != "allow":
+            self.removeduplicates(duplicatestyle=duplicatestyle)
 
     def removeduplicates(self, duplicatestyle="merge"):
         """Make sure each msgid is unique ; merge comments etc from duplicates into original"""
@@ -541,11 +547,17 @@ class pofile(pocommon.pofile):
                         markedpos.append(thepo)
                     thepo._msgctxt += " ".join(thepo.getlocations())
                     uniqueunits.append(thepo)
+                else:
+                    if self.filename:
+                        logger.warning("Duplicate message ignored "
+                                       "in '%s': '%s'" % (self.filename, id))
+                    else:
+                        logger.warning("Duplicate message ignored: '%s'" % id)
             else:
                 if not id:
                     if duplicatestyle == "merge":
                         addcomment(thepo)
-                    else:
+                    elif duplicatestyle == "msgctxt":
                         thepo._msgctxt += u" ".join(thepo.getlocations())
                 id_dict[id] = thepo
                 uniqueunits.append(thepo)

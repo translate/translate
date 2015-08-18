@@ -209,11 +209,32 @@ class TestPYPOFile(test_po.TestPOFile):
         regenposource = str(pofile)
         assert regenposource.count("_:") == 1
 
+    def test_duplicates_default(self):
+        """checks that duplicates are ignored by default"""
+        posource = '#: source1\nmsgid "test me"\nmsgstr ""\n\n#: source2\nmsgid "test me"\nmsgstr ""\n'
+        pofile = self.poparse(posource)
+        assert len(pofile.units) == 1
+        assert str(pofile.units[0]).count("source1") == 1
+        assert str(pofile.units[0]).count("source2") == 0
+
+    def test_duplicates_allow(self):
+        """
+        checks that you can create a pofile with duplicates - this is useful
+        or converting to other formats
+        """
+        posource = ('#: source1\nmsgid "test me"\nmsgstr ""\n\n'
+                    '#: source2\nmsgid "test me"\nmsgstr ""\n')
+        pofile = self.poparse(posource, duplicatestyle="allow")
+        assert len(pofile.units) == 2
+        assert str(pofile.units[0]).count("source1") == 1
+        assert str(pofile.units[0]).count("source2") == 0
+        assert str(pofile.units[1]).count("source1") == 0
+        assert str(pofile.units[1]).count("source2") == 1
+
     def test_merge_duplicates_msgctxt(self):
         """checks that merging duplicates works for msgctxt"""
         posource = '#: source1\nmsgid "test me"\nmsgstr ""\n\n#: source2\nmsgid "test me"\nmsgstr ""\n'
-        pofile = self.poparse(posource)
-        assert len(pofile.units) == 2
+        pofile = self.poparse(posource, duplicatestyle="allow")
         pofile.removeduplicates("msgctxt")
         print(pofile)
         assert len(pofile.units) == 2
@@ -223,8 +244,7 @@ class TestPYPOFile(test_po.TestPOFile):
     def test_merge_blanks(self):
         """checks that merging adds msgid_comments to blanks"""
         posource = '#: source1\nmsgid ""\nmsgstr ""\n\n#: source2\nmsgid ""\nmsgstr ""\n'
-        pofile = self.poparse(posource)
-        assert len(pofile.units) == 2
+        pofile = self.poparse(posource, duplicatestyle="allow")
         pofile.removeduplicates("merge")
         assert len(pofile.units) == 2
         print(pofile.units[0].msgidcomments)
@@ -307,7 +327,7 @@ msgstr[0] "toet"
 msgstr[1] "toetse"
 '''
 
-        pofile = self.poparse(posource)
+        pofile = self.poparse(posource, duplicatestyle="allow")
 
         assert pofile.units[1].prev_msgctxt == []
         assert pofile.units[1].prev_source == multistring([u"trea"])
