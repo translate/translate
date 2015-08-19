@@ -146,9 +146,8 @@ class SubtitleFile(base.TranslationStore):
                 tmpfile, tmpfilename = tempfile.mkstemp(suffix=self.filename)
             else:
                 tmpfile, tmpfilename = tempfile.mkstemp()
-            tmpfile = open(tmpfilename, 'w')
-            tmpfile.write(input)
-            tmpfile.close()
+            with open(tmpfilename, 'w') as fh:
+                fh.write(input)
             self._parsefile(tmpfilename)
             os.remove(tmpfilename)
         else:

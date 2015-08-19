@@ -102,7 +102,8 @@ class TestStatsDb:
     def setup_file_and_db(self, file_contents=fr_terminology_extract):
         cache = statsdb.StatsCache(os.path.join(self.path, "stats.db"))
         filename = os.path.join(self.path, "test.po")
-        open(filename, "w").write(file_contents)
+        with open(filename, "w") as fh:
+            fh.write(file_contents)
         f = factory.getobject(filename)
         return f, cache
 

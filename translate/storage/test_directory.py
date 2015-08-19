@@ -35,10 +35,9 @@ class TestDirectory(object):
 
     def touchfiles(self, dir, filenames, content=None):
         for filename in filenames:
-            f = open(os.path.join(dir, filename), "w")
-            if content:
-                f.write(content)
-            f.close()
+            with open(os.path.join(dir, filename), "w") as fh:
+                if content:
+                    fh.write(content)
 
     def mkdir(self, dir):
         """Makes a directory inside self.testdir."""

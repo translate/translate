@@ -143,9 +143,8 @@ class TestMOFile(test_base.TestTranslationStore):
             print(posource)
             PO_FILE, MO_MSGFMT, MO_POCOMPILE = self.get_mo_and_po()
 
-            out_file = open(PO_FILE, 'w')
-            out_file.write(posource)
-            out_file.close()
+            with open(PO_FILE, 'w') as out_file:
+                out_file.write(posource)
 
             subprocess.call(['msgfmt', PO_FILE, '-o', MO_MSGFMT])
             subprocess.call(['pocompile', '--errorlevel=traceback', PO_FILE, MO_POCOMPILE])
@@ -156,17 +155,14 @@ class TestMOFile(test_base.TestTranslationStore):
                 # can skip the checks here.
                 continue
 
-            mo_msgfmt_f = open(MO_MSGFMT)
-            mo_pocompile_f = open(MO_POCOMPILE)
-
-            try:
+            with open(MO_MSGFMT, 'rb') as mo_msgfmt_f:
                 mo_msgfmt = mo_msgfmt_f.read()
-                print("msgfmt output:")
-                print(repr(mo_msgfmt))
+            print("msgfmt output:")
+            print(repr(mo_msgfmt))
+
+            with open(MO_POCOMPILE, 'rb') as mo_pocompile_f:
                 mo_pocompile = mo_pocompile_f.read()
-                print("pocompile output:")
-                print(repr(mo_pocompile))
-                assert mo_msgfmt == mo_pocompile
-            finally:
-                mo_msgfmt_f.close()
-                mo_pocompile_f.close()
+            print("pocompile output:")
+            print(repr(mo_pocompile))
+
+            assert mo_msgfmt == mo_pocompile

@@ -162,7 +162,8 @@ class FileDiffer:
         """writes the actual diff to the given file"""
         validfiles = True
         if os.path.exists(self.fromfile):
-            self.from_lines = open(self.fromfile, 'U').readlines()
+            with open(self.fromfile, 'U') as fh:
+                self.from_lines = fh.readlines()
             fromfiledate = os.stat(self.fromfile).st_mtime
         elif self.fromfile == "-":
             self.from_lines = sys.stdin.readlines()
@@ -174,7 +175,8 @@ class FileDiffer:
             outfile.write("%s: No such file or directory\n" % self.fromfile)
             validfiles = False
         if os.path.exists(self.tofile):
-            self.to_lines = open(self.tofile, 'U').readlines()
+            with open(self.tofile, 'U') as fh:
+                self.to_lines = fh.readlines()
             tofiledate = os.stat(self.tofile).st_mtime
         elif self.tofile == "-":
             self.to_lines = sys.stdin.readlines()

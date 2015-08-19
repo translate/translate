@@ -358,17 +358,16 @@ def parse_requirements(file_name):
     Copied from cburgmer/pdfserver.
     """
     requirements = []
-    for line in open(file_name, 'r').read().split('\n'):
-        # Ignore comments, blank lines and included requirements files
-        if re.match(r'(\s*#)|(\s*$)|(-r .*$)', line):
-            continue
+    with open(file_name, 'r') as fh:
+        for line in fh:
+            # Ignore comments, blank lines and included requirements files
+            if re.match(r'(\s*#)|(\s*$)|(-r .*$)', line):
+                continue
 
-        if re.match(r'\s*-e\s+', line):
-            requirements.append(re.sub(r'\s*-e\s+.*#egg=(.*)$', r'\1', line))
-        elif re.match(r'\s*-f\s+', line):
-            pass
-        else:
-            requirements.append(line)
+            if re.match(r'\s*-e\s+', line):
+                requirements.append(re.sub(r'\s*-e\s+.*#egg=(.*)$', r'\1', line))
+            elif not re.match(r'\s*-f\s+', line):
+                requirements.append(line.rstrip('\n'))
 
     return requirements
 
@@ -419,9 +418,8 @@ def buildmanifest_in(f, scripts):
 def standardsetup(name, version, custompackages=[], customdatafiles=[]):
     # TODO: make these end with .py ending on Windows...
     try:
-        manifest_in = open("MANIFEST.in", "w")
-        buildmanifest_in(manifest_in, translatescripts + translatebashscripts)
-        manifest_in.close()
+        with open("MANIFEST.in", "w") as manifest_in:
+            buildmanifest_in(manifest_in, translatescripts + translatebashscripts)
     except IOError as e:
         sys.stderr.write("warning: could not recreate MANIFEST.in, continuing anyway. (%s)\n" % e)
 

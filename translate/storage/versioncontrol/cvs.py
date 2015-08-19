@@ -61,14 +61,18 @@ class cvs(GenericRevisionControlSystem):
         """Get the content of the file for the given revision"""
         parentdir = os.path.dirname(self.location_abs)
         cvsdir = os.path.join(parentdir, "CVS")
-        cvsroot = open(os.path.join(cvsdir, "Root"), "r").read().strip()
-        cvspath = open(os.path.join(cvsdir, "Repository"), "r").read().strip()
+        with open(os.path.join(cvsdir, "Root"), "r") as fh:
+            cvsroot = fh.read().strip()
+        with open(os.path.join(cvsdir, "Repository"), "r") as fh:
+            cvspath = fh.read().strip()
         cvsfilename = os.path.join(cvspath, os.path.basename(self.location_abs))
         if revision is None:
-            cvsentries = open(os.path.join(cvsdir, "Entries"), "r").readlines()
+            with open(os.path.join(cvsdir, "Entries"), "r") as fh:
+                cvsentries = fh.readlines()
             revision = self._getcvstag(cvsentries)
         if revision == "BASE":
-            cvsentries = open(os.path.join(cvsdir, "Entries"), "r").readlines()
+            with open(os.path.join(cvsdir, "Entries"), "r") as fh:
+                cvsentries = fh.readlines()
             revision = self._getcvsrevision(cvsentries)
         return self._readfile(cvsroot, cvsfilename, revision)
 

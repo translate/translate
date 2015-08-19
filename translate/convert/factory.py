@@ -195,11 +195,9 @@ def convert(inputfile, template=None, options=None, convert_options=None):
     import tempfile
     tempfd, tempfname = tempfile.mkstemp(prefix='ttk_convert', suffix=os.extsep + out_ext)
     os.close(tempfd)
-    outputfile = open(tempfname, 'w')
 
     if convert_options is None:
         convert_options = {}
-    get_converter(in_ext, out_ext, templ_ext)(inputfile, outputfile, template, **convert_options)
-    if hasattr(outputfile, 'closed') and hasattr(outputfile, 'close') and not outputfile.closed:
-        outputfile.close()
+    with open(tempfname, 'w') as output_file:
+        get_converter(in_ext, out_ext, templ_ext)(inputfile, outputfile, template, **convert_options)
     return outputfile, out_ext

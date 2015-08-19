@@ -213,7 +213,8 @@ class pyOpenSSLAdapter(wsgiserver.SSLAdapter):
 
         if self.certificate:
             # Server certificate attributes
-            cert = open(self.certificate, 'rb').read()
+            with open(self.certificate, 'rb') as fp:
+                cert = fp.read()
             cert = crypto.load_certificate(crypto.FILETYPE_PEM, cert)
             ssl_environ.update({
                 'SSL_SERVER_M_VERSION': cert.get_version(),

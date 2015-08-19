@@ -717,8 +717,9 @@ class pofile(pocommon.pofile):
 
         def writefile(filename):
             self._gpo_memory_file = gpo.po_file_write_v2(self._gpo_memory_file, filename, xerror_handler)
-            with open(filename) as tfile:
-                return tfile.read()
+            with open(filename, 'rb') as tfile:
+                content = tfile.read()
+            return content
 
         outputstring = ""
         if self._gpo_memory_file:

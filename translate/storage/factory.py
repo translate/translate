@@ -63,14 +63,14 @@ _ext is a pseudo extension, that is their is no real extension by that name.
 def _examine_txt(storefile):
     """Determine the true filetype for a .txt file"""
     if isinstance(storefile, six.string_types) and os.path.exists(storefile):
-        storefile = open(storefile)
+        storefile = open(storefile, 'rb')
     try:
         start = storefile.read(600).strip()
     except AttributeError:
         raise ValueError("Need to read object to determine type")
     # Some encoding magic for Wordfast
     from translate.storage import wordfast
-    if wordfast.TAB_UTF16 in start.split("\n")[0]:
+    if wordfast.TAB_UTF16 in start.split(b"\n")[0]:
         encoding = 'utf-16'
     else:
         encoding = 'iso-8859-1'

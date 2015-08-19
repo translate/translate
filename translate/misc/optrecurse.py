@@ -523,13 +523,13 @@ class RecursiveOptionParser(optparse.OptionParser, object):
         """Opens the input file."""
         if fullinputpath is None:
             return sys.stdin
-        return open(fullinputpath, 'r')
+        return open(fullinputpath, 'rb')
 
     def openoutputfile(self, options, fulloutputpath):
         """Opens the output file."""
         if fulloutputpath is None:
             return sys.stdout
-        return open(fulloutputpath, 'w')
+        return open(fulloutputpath, 'wb')
 
     def opentempoutputfile(self, options, fulloutputpath):
         """Opens a temporary output file."""

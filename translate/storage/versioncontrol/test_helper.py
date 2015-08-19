@@ -44,6 +44,5 @@ class HelperTest(object):
             dirs = os.path.dirname(name)
             if dirs:
                 os.path.makedirs(os.path.join(self.co_path, dirs))
-            f = open(os.path.join(self.co_path, dirs, name), 'w')
-            f.write(content)
-            f.close()
+            with open(os.path.join(self.co_path, dirs, name), 'w') as fh:
+                fh.write(content)

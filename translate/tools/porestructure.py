@@ -101,13 +101,13 @@ class SplitOptionParser(optrecurse.RecursiveOptionParser):
                     self.checkoutputsubdir(options, os.path.dirname(outputpath))
                     fulloutputpath = os.path.join(options.output, outputpath)
                     if os.path.isfile(fulloutputpath):
-                        outputfile = open(fulloutputpath, 'r')
+                        outputfile = open(fulloutputpath, 'rb')
                         outputpofile = po.pofile(outputfile)
                     else:
                         outputpofile = po.pofile()
                     outputpofile.units.append(pounit)   # TODO:perhaps check to see if it's already there...
-                    outputfile = open(fulloutputpath, 'w')
-                    outputfile.write(str(outputpofile))
+                    with open(fulloutputpath, 'wb') as fh:
+                        fh.write(str(outputpofile))
 
 
 def main():

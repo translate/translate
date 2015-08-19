@@ -58,25 +58,25 @@ class LanguageIdentifier(object):
     def _load_config(self, conf_file):
         """Load the mapping of language names to language codes as given in the
             configuration file."""
-        lines = open(conf_file).read().splitlines()
-        for line in lines:
-            parts = line.split()
-            if not parts or line.startswith('#'):
-                continue  # Skip comment- and empty lines
-            lname, lcode = parts[0], parts[1]
+        with open(conf_file, 'r') as fp:
+            for line in fp:
+                parts = line.split()
+                if not parts or line.startswith('#'):
+                    continue  # Skip comment- and empty lines
+                lname, lcode = parts[0], parts[1]
 
-            # Make sure lname is not prefixed by directory names
-            lname = path.split(lname)[-1]
-            if extsep in lname:
-                lname = lname[:lname.rindex(extsep)]  # Remove extension if it has
+                # Make sure lname is not prefixed by directory names
+                lname = path.split(lname)[-1]
+                if extsep in lname:
+                    lname = lname[:lname.rindex(extsep)]  # Remove extension if it has
 
-            # Remove trailing '[_-]-utf8' from code
-            if lcode.endswith('-utf8'):
-                lcode = lcode[:-len('-utf8')]
-            if lcode.endswith('-') or lcode.endswith('_'):
-                lcode = lcode[:-1]
+                # Remove trailing '[_-]-utf8' from code
+                if lcode.endswith('-utf8'):
+                    lcode = lcode[:-len('-utf8')]
+                if lcode.endswith('-') or lcode.endswith('_'):
+                    lcode = lcode[:-1]
 
-            self._lang_codes[lname] = lcode
+                self._lang_codes[lname] = lcode
 
     def identify_lang(self, text):
         """Identify the language of the text in the given string."""

@@ -80,9 +80,8 @@ class TestConvertCommand:
 
     def read_testfile(self, filename):
         """reads the given file in the testdirectory and returns the contents"""
-        testfile = open(self.get_testfilename(filename))
-        content = testfile.read()
-        testfile.close()
+        with open(self.get_testfilename(filename), 'r') as testfile:
+            content = testfile.read()
         return content
 
     def help_check(self, options, option, last=False):

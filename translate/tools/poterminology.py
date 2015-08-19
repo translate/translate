@@ -102,36 +102,35 @@ class TerminologyExtractor(object):
                    '>': frozenset(['word', 'skip']),
                    '@': frozenset(['word', 'phrase'])}
 
-        stopfile = open(self.stopfile, "r")
-        line = 0
-        try:
-            for stopline in stopfile:
-                line += 1
-                stoptype = stopline[0]
-                if stoptype == '#' or stoptype == "\n":
-                    continue
-                elif stoptype == '!':
-                    if stopline[1] == 'C':
-                        self.stopfoldtitle = False
-                        self.stopignorecase = False
-                    elif stopline[1] == 'F':
-                        self.stopfoldtitle = True
-                        self.stopignorecase = False
-                    elif stopline[1] == 'I':
-                        self.stopignorecase = True
+        with open(self.stopfile, "r") as stopfile:
+            line = 0
+            try:
+                for stopline in stopfile:
+                    line += 1
+                    stoptype = stopline[0]
+                    if stoptype == '#' or stoptype == "\n":
+                        continue
+                    elif stoptype == '!':
+                        if stopline[1] == 'C':
+                            self.stopfoldtitle = False
+                            self.stopignorecase = False
+                        elif stopline[1] == 'F':
+                            self.stopfoldtitle = True
+                            self.stopignorecase = False
+                        elif stopline[1] == 'I':
+                            self.stopignorecase = True
+                        else:
+                            logger.warning("%s:%d - bad case mapping directive",
+                                           self.stopfile, line)
+                    elif stoptype == '/':
+                        self.stoprelist.append(re.compile(stopline[1:-1] + '$'))
                     else:
-                        logger.warning("%s:%d - bad case mapping directive",
-                                       self.stopfile, line)
-                elif stoptype == '/':
-                    self.stoprelist.append(re.compile(stopline[1:-1] + '$'))
-                else:
-                    self.stopwords[stopline[1:-1]] = actions[stoptype]
-        except KeyError as character:
-            logger.warning("%s:%d - bad stopword entry starts with '%s'",
-                           self.stopfile, line, str(character))
-            logger.warning("%s:%d all lines after error ignored",
-                           self.stopfile, line + 1)
-        stopfile.close()
+                        self.stopwords[stopline[1:-1]] = actions[stoptype]
+            except KeyError as character:
+                logger.warning("%s:%d - bad stopword entry starts with '%s'",
+                               self.stopfile, line, str(character))
+                logger.warning("%s:%d all lines after error ignored",
+                               self.stopfile, line + 1)
 
     def clean(self, string):
         """returns the cleaned string that contains the text to be matched"""
@@ -450,7 +449,8 @@ class TerminologyOptionParser(optrecurse.RecursiveOptionParser):
         termitems = self.extractor.filter_terms(terms, nonstopmin=options.nonstopmin, sortorders=options.sortorders)
         for count, unit in termitems:
             termfile.units.append(unit)
-        open(options.output, "w").write(str(termfile))
+        with open(options.output, "wb") as fh:
+            fh.write(str(termfile))
 
 
 def fold_case_option(option, opt_str, value, parser):

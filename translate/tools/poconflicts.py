@@ -180,7 +180,8 @@ class ConflictOptionParser(optrecurse.RecursiveOptionParser):
             for target, unit, filename in translations:
                 unit.othercomments.append("# (poconflicts) %s\n" % filename)
                 conflictfile.units.append(unit)
-            open(fulloutputpath, "w").write(str(conflictfile))
+            with open(fulloutputpath, "wb") as fh:
+                fh.write(str(conflictfile))
 
 
 def main():

@@ -49,7 +49,8 @@ def build_checkerconfig(options):
         if not os.path.exists(options.notranslatefile):
             self.error("notranslatefile %r does not exist" % options.notranslatefile)
 
-        notranslatewords = [line.strip() for line in open(options.notranslatefile).readlines()]
+        with open(options.notranslatefile, 'r') as fp:
+            notranslatewords = [line.strip() for line in fp.readlines()]
         notranslatewords = dict.fromkeys([key for key in notranslatewords])
 
         checkerconfig.notranslatewords.update(notranslatewords)
@@ -60,7 +61,8 @@ def build_checkerconfig(options):
         if not os.path.exists(options.musttranslatefile):
             self.error("musttranslatefile %r does not exist" % options.musttranslatefile)
 
-        musttranslatewords = [line.strip() for line in open(options.musttranslatefile).readlines()]
+        with open(options.musttranslatefile, 'r') as fp:
+            musttranslatewords = [line.strip() for line in fp.readlines()]
         musttranslatewords = dict.fromkeys([key for key in musttranslatewords])
 
         checkerconfig.musttranslatewords.update(musttranslatewords)
@@ -71,7 +73,8 @@ def build_checkerconfig(options):
         if not os.path.exists(options.validcharsfile):
             self.error("validcharsfile %r does not exist" % options.validcharsfile)
 
-        validchars = open(options.validcharsfile).read()
+        with open(options.validcharsfile, 'r') as fp:
+            validchars = fp.read()
 
         checkerconfig.updatevalidchars(validchars)
 

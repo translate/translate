@@ -140,10 +140,11 @@ def get_langs(lang_args):
             # Get all available languages from the locales file
             locales_filename = join(mozilladir, targetapp,
                                     'locales', 'shipped-locales')
-            for line in open(locales_filename).readlines():
-                langcode = line.split()[0]
-                if langcode != 'en-US':
-                    langs.append(langcode)
+            with open(locales_filename, 'r') as fh:
+                for line in fh:
+                    langcode = line.split()[0]
+                    if langcode != 'en-US':
+                        langs.append(langcode)
 
         elif lang == 'ZA':
             # South African languages
@@ -482,15 +483,17 @@ def create_diff(lang, buildlang):
 
     os.chdir(l10ndir)
     outfile = join(os.pardir, 'diff', buildlang + '-l10n.diff')
-    run(['cvs', 'diff', '--newfile', buildlang], stdout=open(outfile, 'w'))
+    with open(outfile, 'w') as fh:
+        run(['cvs', 'diff', '--newfile', buildlang], stdout=fh)
     os.chdir(olddir)
 
     os.chdir(join(podir_updated, buildlang))
     outfile = join(os.pardir, os.pardir, 'diff', buildlang + '-po.diff')
-    run(['svn', 'diff',
-         '--diff-cmd',
-         'diff -x "-u --ignore-matching-lines=^\"POT\|^\"X-Gene"'],
-         stdout=open(outfile, 'w'))
+    with open(outfile, 'w') as fh:
+        run(['svn', 'diff',
+             '--diff-cmd',
+             'diff -x "-u --ignore-matching-lines=^\"POT\|^\"X-Gene"'],
+             stdout=fh)
     os.chdir(olddir)
 
 

@@ -104,9 +104,8 @@ class darcs(GenericRevisionControlSystem):
         filename = os.path.join(self.root_dir, self.RCS_METADIR, 'pristine',
                 self.location_rel)
         try:
-            darcs_file = open(filename)
-            output = darcs_file.read()
-            darcs_file.close()
+            with open(filename, 'r') as darcs_file:
+                output = darcs_file.read()
         except IOError as error:
             raise IOError("[Darcs] error reading original file '%s': %s" % (
                           filename, error))

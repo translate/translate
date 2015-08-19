@@ -73,10 +73,9 @@ QM_MAGIC_NUMBER = (0x3CB86418, 0xCAEF9C95, 0xCD211CBF, 0x60A1BDDD)
 
 def qmunpack(file_='messages.qm'):
     """Helper to unpack Qt .qm files into a Python string"""
-    f = open(file_)
-    s = f.read()
-    print("\\x%02x" * len(s) % tuple(map(ord, s)))
-    f.close()
+    with open(file_, 'rb') as fh:
+        s = fh.read()
+        print("\\x%02x" * len(s) % tuple(map(ord, s)))
 
 
 class qmunit(base.TranslationUnit):

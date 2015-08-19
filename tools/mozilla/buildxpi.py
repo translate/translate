@@ -145,7 +145,8 @@ ac_add_options --enable-application=%(product)s
                 'product': product
             }
 
-        mozconf = open(MOZCONFIG, 'w').write(content)
+        with open(MOZCONFIG, 'w') as mozconf:
+            mozconf.write(content)
 
         # Try to make sure that "environment shell" is defined
         # (python/mach/mach/mixin/process.py)
@@ -168,7 +169,8 @@ ac_add_options --enable-application=%(product)s
 
         moz_app_version = []
         if soft_max_version:
-            version = open(os.path.join(srcdir, product, 'config', 'version.txt')).read().strip()
+            with open(os.path.join(srcdir, product, 'config', 'version.txt'), 'r') as fh:
+                version = fh.read().strip()
             version = re.sub(r'(^[0-9]*\.[0-9]*).*', r'\1.*', version)
             moz_app_version = ['MOZ_APP_MAXVERSION=%s' % version]
         run(['make', '-C', os.path.join(product, 'locales')] +

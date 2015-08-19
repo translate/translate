@@ -260,11 +260,8 @@ def parse(file, parser=None, bufsize=None):
     """Parse a file into a DOM by filename or file object."""
     builder = ExpatBuilderNS()
     if isinstance(file, six.string_types):
-        fp = open(file, 'rb')
-        try:
+        with open(file, 'rb') as fp:
             result = builder.parseFile(fp)
-        finally:
-            fp.close()
     else:
         result = builder.parseFile(file)
     return result

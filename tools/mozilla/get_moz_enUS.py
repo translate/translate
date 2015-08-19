@@ -45,7 +45,8 @@ def process_l10n_ini(inifile):
     files needed by a project"""
 
     l10n = ConfigParser()
-    l10n.readfp(open(path_neutral(inifile)))
+    with open(path_neutral(inifile), 'r') as fh:
+        l10n.readfp(fh)
     l10n_ini_path = os.path.dirname(inifile)
 
     for dir in l10n.get('compare', 'dirs').split():

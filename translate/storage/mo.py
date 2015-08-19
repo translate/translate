@@ -54,10 +54,9 @@ MO_MAGIC_NUMBER = 0x950412de
 
 def mounpack(filename='messages.mo'):
     """Helper to unpack Gettext MO files into a Python string"""
-    f = open(filename)
-    s = f.read()
-    print("\\x%02x" * len(s) % tuple(map(ord, s)))
-    f.close()
+    with open(filename, 'rb') as fh:
+        s = fh.read()
+        print("\\x%02x" * len(s) % tuple(map(ord, s)))
 
 
 def my_swap4(result):

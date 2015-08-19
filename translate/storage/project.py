@@ -186,7 +186,8 @@ class Project(object):
             via the call to
             :meth:`~translate.storage.projstore.ProjectStore.get_file`
             if *fname* is not found in the project."""
-        open(destfname, 'w').write(self.store.get_file(fname).read())
+        with open(destfname, 'wb') as fp:
+            fp.write(self.store.get_file(fname).read())
 
     def get_file(self, fname):
         """Proxy for ``self.store.get_file()``."""

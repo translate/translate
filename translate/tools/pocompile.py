@@ -67,8 +67,8 @@ def convertmo(inputfile, outputfile, templatefile, includefuzzy=False):
     # We have to make sure that we write the files in binary mode, therefore we
     # reopen the file accordingly
     outputfile.close()
-    outputfile = open(outputfile.name, 'wb')
-    outputfile.write(outputmo)
+    with open(outputfile.name, 'wb') as fh:
+        fh.write(outputmo)
     return 1
 
 
