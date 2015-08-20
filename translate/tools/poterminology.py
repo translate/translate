@@ -428,9 +428,7 @@ class TerminologyOptionParser(optrecurse.RecursiveOptionParser):
             success = True
             try:
                 self.processfile(None, options, fullinputpath)
-            except Exception as error:
-                if isinstance(error, KeyboardInterrupt):
-                    raise
+            except Exception:
                 self.warning("Error processing: input %s" % (fullinputpath), options, sys.exc_info())
                 success = False
             self.reportprogress(inputpath, success)

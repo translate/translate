@@ -79,9 +79,8 @@ class SplitOptionParser(optrecurse.RecursiveOptionParser):
             fullinputpath = self.getfullinputpath(options, inputpath)
             try:
                 success = self.processfile(options, fullinputpath)
-            except Exception as error:
-                if isinstance(error, KeyboardInterrupt):
-                    raise self.warning("Error processing: input %s" % (fullinputpath), options, sys.exc_info())
+            except Exception:
+                self.warning("Error processing: input %s" % (fullinputpath), options, sys.exc_info())
                 success = False
             self.reportprogress(inputpath, success)
         del self.progressbar
