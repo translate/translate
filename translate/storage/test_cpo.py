@@ -100,6 +100,7 @@ class TestCPOFile(test_po.TestPOFile):
         """checks that merging duplicates works for msgctxt"""
         posource = '#: source1\nmsgid "test me"\nmsgstr ""\n\n#: source2\nmsgid "test me"\nmsgstr ""\n'
         pofile = self.poparse(posource, duplicatestyle="allow")
+        assert len(pofile.units) == 2
         pofile.removeduplicates("msgctxt")
         print(pofile)
         assert len(pofile.units) == 2
@@ -111,6 +112,7 @@ class TestCPOFile(test_po.TestPOFile):
         """checks that merging adds msgid_comments to blanks"""
         posource = '#: source1\nmsgid ""\nmsgstr ""\n\n#: source2\nmsgid ""\nmsgstr ""\n'
         pofile = self.poparse(posource, duplicatestyle="allow")
+        assert len(pofile.units) == 2
         pofile.removeduplicates("merge")
         assert len(pofile.units) == 2
         print(pofile.units[0].msgidcomments)
@@ -123,6 +125,7 @@ class TestCPOFile(test_po.TestPOFile):
         """checks that when adding msgid_comments we place them on a newline"""
         posource = '#: source0\nmsgid "Same"\nmsgstr ""\n\n#: source1\nmsgid "Same"\nmsgstr ""\n'
         pofile = self.poparse(posource, duplicatestyle="allow")
+        assert len(pofile.units) == 2
         pofile.removeduplicates("msgid_comment")
         assert len(pofile.units) == 2
         assert po.unquotefrompo(pofile.units[0].msgidcomments) == "_: source0\n"
@@ -137,6 +140,7 @@ class TestCPOFile(test_po.TestPOFile):
         """checks that keeping keeps blanks and doesn't add msgid_comments"""
         posource = '#: source1\nmsgid ""\nmsgstr ""\n\n#: source2\nmsgid ""\nmsgstr ""\n'
         pofile = self.poparse(posource, duplicatestyle="allow")
+        assert len(pofile.units) == 2
         pofile.removeduplicates("keep")
         assert len(pofile.units) == 2
         # check we don't add msgidcomments
