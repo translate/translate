@@ -35,17 +35,22 @@ From the GNU gettext manual:
      msgstr TRANSLATED-STRING
 """
 
-isspace = str.isspace
-find = str.find
-rfind = str.rfind
-startswith = str.startswith
+SINGLE_BYTE_ENCODING = 'iso-8859-1'
+isspace = six.text_type.isspace
+find = six.text_type.find
+rfind = six.text_type.rfind
+startswith = six.text_type.startswith
 append = list.append
 decode = bytes.decode
 
 
 class ParseState(object):
 
-    def __init__(self, input_iterator, UnitClass, encoding=None):
+    def __init__(self, input_iterator, UnitClass, encoding=SINGLE_BYTE_ENCODING):
+        # A single-byte encoding is first defined to be able to read the header
+        # without risking UnicodeDecodeErrors. As soon as the header is parsed,
+        # the encoding defined in the header is used for re-encoding the header
+        # and for decoding all further strings.
         self._input_iterator = input_iterator
         self.next_line = ''
         self.eof = False
@@ -65,11 +70,14 @@ class ParseState(object):
             return current
         try:
             self.next_line = next(self._input_iterator)
-            while not self.eof and isspace(self.next_line):
+            while not self.eof and self.next_line.isspace():
                 self.next_line = next(self._input_iterator)
         except StopIteration:
-            self.next_line = ''
+            self.next_line = u''
             self.eof = True
+        else:
+            if isinstance(self.next_line, bytes) and self.encoding is not None:
+                self.next_line = decode(self.next_line, self.encoding)
         return current
 
     def new_input(self, _input):
@@ -111,7 +119,7 @@ def parse_comment(parse_state, unit):
     if len(next_line) > 0 and next_line[0] in ('#', '|'):
         next_char = next_line[1]
         if next_char == '.':
-            append(unit.automaticcomments, parse_state.decode(next_line))
+            append(unit.automaticcomments, next_line)
         elif next_line[0] == '|' or next_char == '|':
             # Read all the lines starting with #|
             prevmsgid_lines = read_prevmsgid_lines(parse_state)
@@ -125,15 +133,15 @@ def parse_comment(parse_state, unit):
             parse_prev_msgid_plural(ps, unit)
             return parse_state.next_line
         elif next_char == ':':
-            append(unit.sourcecomments, parse_state.decode(next_line))
+            append(unit.sourcecomments, next_line)
         elif next_char == ',':
-            append(unit.typecomments, parse_state.decode(next_line))
+            append(unit.typecomments, next_line)
         elif next_char == '~':
             # Special case: we refuse to parse obsoletes: they are done
             # elsewhere to ensure we reuse the normal unit parsing code
             return None
         else:
-            append(unit.othercomments, parse_state.decode(next_line))
+            append(unit.othercomments, next_line)
         return parse_state.read_line()
     else:
         return None
@@ -193,7 +201,7 @@ def parse_quoted(parse_state, start_pos=0):
 
 def parse_msg_comment(parse_state, msg_comment_list, string):
     while string is not None:
-        append(msg_comment_list, parse_state.decode(string))
+        append(msg_comment_list, string)
         if find(string, '\\n') > -1:
             return parse_quoted(parse_state)
         string = parse_quoted(parse_state)
@@ -204,7 +212,7 @@ def parse_multiple_quoted(parse_state, msg_list, msg_comment_list, first_start_p
     string = parse_quoted(parse_state, first_start_pos)
     while string is not None:
         if not startswith(string, '"_:'):
-            append(msg_list, parse_state.decode(string))
+            append(msg_list, string)
             string = parse_quoted(parse_state)
         else:
             string = parse_msg_comment(parse_state, msg_comment_list, string)
@@ -323,10 +331,15 @@ def set_encoding(parse_state, store, unit):
 
 
 def decode_list(lst, decode):
-    return [decode(item) for item in lst]
+    return [decode(item.encode(SINGLE_BYTE_ENCODING)) for item in lst]
 
 
 def decode_header(unit, decode):
+    """
+    The header has been arbitrarily decoded with a single-byte encoding. We
+    re-encode it to decode values with the proper encoding defined in the header
+    (using decode_list above).
+    """
     for attr in ('msgctxt', 'msgid', 'msgid_pluralcomments',
                  'msgid_plural', 'msgstr',
                  'othercomments', 'automaticcomments', 'sourcecomments',
