@@ -643,7 +643,6 @@ class pofile(pocommon.pofile):
 
             merge - Duplicate entries are merged together,
             allow - Duplicate entries are kept as is,
-            keep - Same as allow,
             msgctxt - A msgctxt is added to ensure duplicate entries
                 are different.
         """
