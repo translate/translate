@@ -32,11 +32,10 @@ import copy
 import logging
 import re
 import six
-from io import BytesIO
 
 from translate.lang import data
 from translate.misc.multistring import multistring
-from translate.storage import base, cpo, pocommon, poparser
+from translate.storage import base, cpo, pocommon
 from translate.storage.pocommon import encodingToUse
 
 
@@ -292,7 +291,6 @@ class pounit(pocommon.pounit):
 
     def hasmarkedcomment(self, commentmarker):
         """Check whether the given comment marker is present as # (commentmarker) ..."""
-#        raise DeprecationWarning
         commentmarker = "(%s)" % commentmarker
         for comment in self.othercomments:
             if comment.startswith(commentmarker):
@@ -331,10 +329,6 @@ class pounit(pocommon.pounit):
         """returns whether this pounit contains plural strings..."""
         source = self.source
         return isinstance(source, multistring) and len(source.strings) > 1
-
-    def parse(self, src):
-        raise DeprecationWarning("Should not be parsing with a unit")
-        return poparser.parse_unit(poparser.ParseState(BytesIO(src), pounit), self)
 
     def __str__(self):
         """convert to a string. double check that unicode is handled somehow here"""
@@ -432,43 +426,6 @@ class pofile(pocommon.pofile):
     """A .po file containing various units"""
     UnitClass = pounit
 
-    def changeencoding(self, newencoding):
-        """Deprecated: changes the encoding on the file."""
-        # This should not be here but in poheader. It also shouldn't mangle the
-        # header itself, but use poheader methods. All users are removed, so
-        # we can deprecate after one release.
-        raise DeprecationWarning
-
-        self._encoding = encodingToUse(newencoding)
-        if not self.units:
-            return
-        header = self.header()
-        if not header or header.isblank():
-            return
-        charsetline = None
-        headerstr = header.target
-        for line in headerstr.split("\n"):
-            if not ":" in line:
-                continue
-            key, value = line.strip().split(":", 1)
-            if key.strip() != "Content-Type":
-                continue
-            charsetline = line
-        if charsetline is None:
-            headerstr += "Content-Type: text/plain; charset=%s" % self._encoding
-        else:
-            charset = re.search("charset=([^ ]*)", charsetline)
-            if charset is None:
-                newcharsetline = charsetline
-                if not newcharsetline.strip().endswith(";"):
-                    newcharsetline += ";"
-                newcharsetline += " charset=%s" % self._encoding
-            else:
-                charset = charset.group(1)
-                newcharsetline = charsetline.replace("charset=%s" % charset, "charset=%s" % self._encoding, 1)
-            headerstr = headerstr.replace(charsetline, newcharsetline, 1)
-        header.target = headerstr
-
     def _build_self_from_cpo(self):
         """Builds up this store from the internal cpo store.
 
@@ -498,16 +455,10 @@ class pofile(pocommon.pofile):
                 self.filename = input.name
             elif not getattr(self, 'filename', ''):
                 self.filename = ''
-            tmp_header_added = False
-#            if isinstance(input, str) and '"Content-Type: text/plain; charset=' not in input[:200]:
-#                input = basic_header + input
-#                tmp_header_added = True
             self.units = []
             self._cpo_store = cpo.pofile(input, noheader=True)
             self._build_self_from_cpo()
             del self._cpo_store
-            if tmp_header_added:
-                self.units = self.units[1:]
         except Exception as e:
             raise base.ParseError(e)
         # duplicates are now removed by default unless duplicatestyle=allow
