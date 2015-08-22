@@ -4,7 +4,11 @@
 import sys
 
 from pytest import importorskip, mark, raises
-cpo = importorskip("not sys.platform.startswith('linux')")
+
+pytestmark = mark.skipif(
+    not sys.platform.startswith('linux'),
+    reason="cpo is only available on Linux"
+)
 
 from translate.misc import wStringIO
 from translate.misc.multistring import multistring
