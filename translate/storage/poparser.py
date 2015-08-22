@@ -40,7 +40,7 @@ find = str.find
 rfind = str.rfind
 startswith = str.startswith
 append = list.append
-decode = str.decode
+decode = bytes.decode
 
 
 class ParseState(object):

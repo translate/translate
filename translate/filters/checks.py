@@ -726,7 +726,7 @@ class StandardChecker(TranslationChecker):
     def escapes(self, str1, str2):
         """Checks whether escaping is consistent between the two strings.
 
-        Checks escapes such as ``\\n`` ``\uNNNN`` to ensure that if they exist
+        Checks escapes such as ``\\n`` ``\u0000`` to ensure that if they exist
         in the original string you also have them in the translation.
         """
         if not helpers.countsmatch(str1, str2, (u"\\", u"\\\\")):

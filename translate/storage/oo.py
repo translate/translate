@@ -34,6 +34,7 @@ comments.
 
 import os
 import re
+import six
 import warnings
 
 from translate.misc import quote, wStringIO
@@ -41,13 +42,13 @@ from translate.misc import quote, wStringIO
 
 # File normalisation
 
-normalfilenamechars = "/#.0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
-normalizetable = ""
-for i in map(chr, range(256)):
+normalfilenamechars = b"/#.0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
+normalizetable = b""
+for i in map(six.int2byte, range(256)):
     if i in normalfilenamechars:
         normalizetable += i
     else:
-        normalizetable += "_"
+        normalizetable += b"_"
 
 
 class unormalizechar(dict):
