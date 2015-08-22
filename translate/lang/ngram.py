@@ -27,6 +27,7 @@
 """
 
 import glob
+import io
 import re
 import six
 import sys
@@ -50,7 +51,7 @@ class _NGram:
             self.ngrams = dict()
 
     def addText(self, text):
-        if isinstance(text, str):
+        if isinstance(text, bytes):
             text = text.decode('utf-8')
 
         ngrams = dict()
@@ -105,7 +106,7 @@ class _NGram:
 class NGram:
 
     def __init__(self, folder, ext='.lm'):
-        self.ngrams = dict()
+        self.ngrams = {}
         folder = path.join(folder, '*' + ext)
         size = len(ext)
 
@@ -113,18 +114,11 @@ class NGram:
             lang = path.split(fname)[-1][:-size]
             ngrams = {}
             try:
-                f = open(fname, 'r')
-                lines = f.read().decode('utf-8').splitlines()
-                try:
-                    for i, line in enumerate(lines):
+                with io.open(fname, encoding='utf-8') as fp:
+                    for i, line in enumerate(fp):
                         ngram, _t, _f = line.partition(u'\t')
                         ngrams[ngram] = i
-                except AttributeError as e:
-                    # Python2.4 doesn't have unicode.partition()
-                    for i, line in enumerate(lines):
-                        ngram = line.split(u'\t')[0]
-                        ngrams[ngram] = i
-            except UnicodeDecodeError as e:
+            except UnicodeDecodeError:
                 continue
 
             if ngrams:
@@ -161,10 +155,9 @@ class Generate:
             lang = path.split(fname)[-1][:-size]
             n = _NGram()
 
-            file = open(fname, 'r')
-            for line in file.readlines():
-                n.addText(line)
-            file.close()
+            with io.open(fname, encoding='utf-8') as fp:
+                for line in fp:
+                    n.addText(line)
 
             n.normalise()
             self.ngrams[lang] = n
@@ -172,10 +165,9 @@ class Generate:
     def save(self, folder, ext='.lm'):
         for lang in self.ngrams.keys():
             fname = path.join(folder, lang + ext)
-            file = open(fname, 'w')
-            for v, k in self.ngrams[lang].sorted_by_score():
-                file.write("%s\t %d\n" % (k, v))
-            file.close()
+            with io.open(fname, mode='w', encoding='utf-8') as fp:
+                for v, k in self.ngrams[lang].sorted_by_score():
+                    fp.write("%s\t %d\n" % (k, v))
 
 if __name__ == '__main__':
     import sys
