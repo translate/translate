@@ -608,7 +608,7 @@ class pounit(pocommon.pounit):
 class pofile(pocommon.pofile):
     UnitClass = pounit
 
-    def __init__(self, inputfile=None, encoding=None, unitclass=pounit, noheader=False):
+    def __init__(self, inputfile=None, encoding=None, unitclass=pounit, noheader=False, **kwargs):
         self._gpo_memory_file = None
         self._gpo_message_iterator = None
         self.units = []
@@ -621,7 +621,7 @@ class pofile(pocommon.pofile):
             if not noheader:
                 self.init_headers()
         else:
-            super(pofile, self).__init__(inputfile=inputfile, encoding=encoding)
+            super(pofile, self).__init__(inputfile=inputfile, encoding=encoding, **kwargs)
 
     def addunit(self, unit, new=True):
         if new:
