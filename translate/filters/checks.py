@@ -2058,6 +2058,11 @@ class LibreOfficeChecker(StandardChecker):
                     raise FilterFailure(u"There is no close tag for %s" % (opentags.pop()))
         return True
 
+    @critical
+    def pythonbraceformat(self, str1, str2):
+        """Not used in LibreOffice"""
+        return True
+
 
 mozillaconfig = CheckerConfig(
     accelmarkers=["&"],

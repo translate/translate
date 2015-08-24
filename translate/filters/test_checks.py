@@ -601,6 +601,8 @@ def test_pythonbraceformat():
     assert fails_serious(stdchecker.pythonbraceformat,    "String {}",           "Nommer {1}")
     assert fails_serious(stdchecker.pythonbraceformat,    "String {0}",          "Nommer {1}")
     assert fails_serious(stdchecker.pythonbraceformat,    "String {0} {}",       "Nommer {1}")
+    lochecker = checks.LibreOfficeChecker()
+    assert passes(lochecker.pythonbraceformat, "Time remaining: {[1] minutes }{[2] seconds}", "Tenpo che'l resta: {[1] minuti}{[2] secondi}")
 
     # Named formats
     assert passes(stdchecker.pythonbraceformat, "String {str} and number {num}", "Nommer {num} en string {str}")
