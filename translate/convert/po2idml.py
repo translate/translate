@@ -153,14 +153,6 @@ def write_idml(template_zip, output_file, dom_trees):
 
 def convertpo(input_file, output_file, template):
     """Create a translated IDML using an IDML template and a PO file."""
-    # Since the convertoptionsparser will give us a open files, we risk that
-    # they could have been opened in non-binary mode on Windows, and then we'll
-    # have problems, so let's make sure we have what we want.
-    template.close()
-    template = file(template.name, mode='rb')
-    output_file.close()
-    output_file = file(output_file.name, mode='wb')
-
     # Now proceed with the conversion.
     template_zip = ZipFile(template, 'r')
 

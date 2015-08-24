@@ -119,14 +119,6 @@ def write_odf(template, output_file, dom_trees):
 
 def convertxliff(input_file, output_file, template):
     """Create a translated ODF using an ODF template and a XLIFF file."""
-    # Since the convertoptionsparser will give us an open file, we risk that
-    # it could have been opened in non-binary mode on Windows, and then we'll
-    # have problems, so let's make sure we have what we want.
-    template.close()
-    template = file(template.name, mode='rb')
-    output_file.close()
-    output_file = file(output_file.name, mode='wb')
-
     xlf_data = input_file.read()
     dom_trees = translate_odf(template, BytesIO(xlf_data))
     write_odf(template, output_file, dom_trees)
