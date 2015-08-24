@@ -156,7 +156,7 @@ msgstr "Dimpled Ring"
         dtdsource = str(dtdfile)
         assert "Dimpled Ring" in dtdsource
 
-        po_snippet = r'''#: searchIntegration.label
+        po_snippet = u'''#: searchIntegration.label
 #: searchIntegration.accesskey
 msgid "Allow &searchIntegration.engineName; to &search messages"
 msgstr "&searchIntegration.engineName; &ileti aramasına izin ver"

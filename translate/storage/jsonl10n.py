@@ -80,7 +80,7 @@ from translate.storage import base
 class JsonUnit(base.TranslationUnit):
     """A JSON entry"""
 
-    def __init__(self, source=None, ref=None, item=None, encoding="UTF-8"):
+    def __init__(self, source=None, ref=None, item=None, **kwargs):
         self._id = None
         self._item = str(os.urandom(30))
         if item is not None:

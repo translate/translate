@@ -424,6 +424,7 @@ class DialectStringsUtf8(DialectStrings):
     default_encoding = "utf-8"
 
 
+@six.python_2_unicode_compatible
 class propunit(base.TranslationUnit):
     """An element of a properties file i.e. a name and value, and any
     comments associated."""
@@ -478,11 +479,8 @@ class propunit(base.TranslationUnit):
             return self.personality.default_encoding
 
     def __str__(self):
-        """Convert to a string. Double check that unicode is handled
-        somehow here."""
-        source = self.getoutput()
-        assert isinstance(source, six.text_type)
-        return source.encode(self.encoding)
+        """Convert to a string."""
+        return self.getoutput()
 
     def getoutput(self):
         """Convert the element back into formatted lines for a

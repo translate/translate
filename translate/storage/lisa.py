@@ -20,6 +20,8 @@
 
 """Parent class for LISA standards (TMX, TBX, XLIFF)"""
 
+import six
+
 try:
     from lxml import etree
     from translate.misc.xml_helpers import (getText, getXMLlang, getXMLspace,
@@ -31,6 +33,7 @@ from translate.lang import data
 from translate.storage import base
 
 
+@six.python_2_unicode_compatible
 class LISAunit(base.TranslationUnit):
     """
     A single unit in the file.  Provisional work is done to make several
@@ -244,8 +247,9 @@ class LISAunit(base.TranslationUnit):
             return getText(languageNode, xml_space)
 
     def __str__(self):
+        # 'unicode' encoding keeps the unicode status of the output
         return etree.tostring(self.xmlelement, pretty_print=True,
-                              encoding='utf-8')
+                              encoding='unicode')
 
     def _set_property(self, name, value):
         self.xmlelement.attrib[name] = value

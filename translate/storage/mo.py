@@ -107,8 +107,7 @@ def get_next_prime_number(start):
 class mounit(base.TranslationUnit):
     """A class representing a .mo translation message."""
 
-    def __init__(self, source=None, encoding=None):
-        #Since the units are really dumb, we ignore encoding for now
+    def __init__(self, source=None, **kwargs):
         self.msgctxt = []
         self.msgidcomments = []
         super(mounit, self).__init__(source)

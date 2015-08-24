@@ -59,6 +59,7 @@ class OmegaTDialect(csv.Dialect):
 csv.register_dialect("omegat", OmegaTDialect)
 
 
+@six.python_2_unicode_compatible
 class OmegaTUnit(base.TranslationUnit):
     """An OmegaT glossary unit"""
 

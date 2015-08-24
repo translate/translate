@@ -63,7 +63,7 @@ from translate.storage import base
 class icalunit(base.TranslationUnit):
     """An ical entry that is translatable"""
 
-    def __init__(self, source=None, encoding="UTF-8"):
+    def __init__(self, source=None, **kwargs):
         self.location = ""
         if source:
             self.source = source

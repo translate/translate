@@ -144,7 +144,7 @@ def quotefordtd(source):
             value = "'" + source + "'"  # Quote using single quotes.
     else:
         value = "\"" + source + "\""  # Quote using double quotes.
-    return value.encode('utf-8')
+    return value
 
 
 _DTD_NAME2CODEPOINT = {
@@ -169,7 +169,8 @@ def unquotefromdtd(source):
     # string. Of course there could also be quote characters within the string.
     quotechar = source[0]
     extracted, quotefinished = quote.extractwithoutquotes(source, quotechar, quotechar, allowreentry=False)
-    extracted = extracted.decode('utf-8')
+    if isinstance(extracted, bytes):
+        extracted = extracted.decode('utf-8')
     if quotechar == "'":
         extracted = extracted.replace("&apos;", "'")
     extracted = quote.entitydecode(extracted, _DTD_NAME2CODEPOINT)
@@ -222,6 +223,7 @@ def removeinvalidamps(name, value):
     return value
 
 
+@six.python_2_unicode_compatible
 class dtdunit(base.TranslationUnit):
     """An entity definition from a DTD file (and any associated comments)."""
 
@@ -490,11 +492,8 @@ class dtdunit(base.TranslationUnit):
         return linesprocessed
 
     def __str__(self):
-        """convert to a string. double check that unicode is handled somehow here"""
-        source = self.getoutput()
-        if isinstance(source, six.text_type):
-            return source.encode(getattr(self, "encoding", "UTF-8"))
-        return source
+        """convert to a string."""
+        return self.getoutput()
 
     def getoutput(self):
         """convert the dtd entity back to string form"""
@@ -515,8 +514,6 @@ class dtdunit(base.TranslationUnit):
                 entityline = '<!ENTITY' + self.space_pre_entity + self.entity + self.space_pre_definition + self.definition + self.closing
             if getattr(self, 'hashprefix', None):
                 entityline = self.hashprefix + " " + entityline
-            if isinstance(entityline, six.text_type):
-                entityline = entityline.encode('UTF-8')
             lines.append(entityline + '\n')
         return "".join(lines)
 

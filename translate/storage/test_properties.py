@@ -337,7 +337,6 @@ key=value
         # - quotes inside are escaped
         # - for the sake of beauty a pair of spaces encloses the equal mark
         # - every line ends with ";"
-        assert str(propfile.units[0]).strip('\n\x00') == propsource.strip('\n\x00')
         assert str(propfile).strip('\n\x00') == propsource.strip('\n\x00')
 
     def test_override_encoding(self):

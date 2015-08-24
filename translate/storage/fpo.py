@@ -36,7 +36,6 @@ import six
 from translate.lang import data
 from translate.misc.multistring import multistring
 from translate.storage import base, cpo, pocommon
-from translate.storage.pocommon import encodingToUse
 
 
 logger = logging.getLogger(__name__)
@@ -51,6 +50,7 @@ msgstr ""
 '''
 
 
+@six.python_2_unicode_compatible
 class pounit(pocommon.pounit):
     # othercomments = []      #   # this is another comment
     # automaticcomments = []  #   #. comment extracted from the source code
@@ -68,9 +68,8 @@ class pounit(pocommon.pounit):
     # fashion
     __shallow__ = ['_store']
 
-    def __init__(self, source=None, encoding="UTF-8"):
+    def __init__(self, source=None, **kwargs):
         pocommon.pounit.__init__(self, source)
-        self._encoding = encodingToUse(encoding)
         self._initallcomments(blankall=True)
         self._msgctxt = u""
 

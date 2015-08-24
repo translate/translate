@@ -51,12 +51,12 @@ flavours = {
 }
 
 
+@six.python_2_unicode_compatible
 class TxtUnit(base.TranslationUnit):
     """This class represents a block of text from a text file"""
 
-    def __init__(self, source="", encoding="utf-8"):
+    def __init__(self, source="", **kwargs):
         """Construct the txtunit"""
-        self.encoding = encoding
         super(TxtUnit, self).__init__(source)
         self.source = source
         self.pretext = ""
@@ -65,16 +65,11 @@ class TxtUnit(base.TranslationUnit):
 
     def __str__(self):
         """Convert a txt unit to a string"""
-        string = u"".join([self.pretext, self.source, self.posttext])
-        if isinstance(string, six.text_type):
-            return string.encode(self.encoding)
-        return string
+        return u"".join([self.pretext, self.source, self.posttext])
 
     # Note that source and target are equivalent for monolingual units
     def setsource(self, source):
         """Sets the definition to the quoted value of source"""
-        if isinstance(source, bytes):
-            source = source.decode(self.encoding)
         self._rich_source = None
         self._source = source
 

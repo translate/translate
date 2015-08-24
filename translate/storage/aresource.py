@@ -39,6 +39,7 @@ WHITESPACE = ' \n\t'  # Whitespace that we collapse.
 MULTIWHITESPACE = re.compile('[ \n\t]{2}')
 
 
+@six.python_2_unicode_compatible
 class AndroidResourceUnit(base.TranslationUnit):
     """A single entry in the Android String resource file."""
 
@@ -420,7 +421,7 @@ class AndroidResourceUnit(base.TranslationUnit):
 
     def __str__(self):
         return etree.tostring(self.xmlelement, pretty_print=True,
-                              encoding='utf-8')
+                              encoding='unicode')
 
     def __eq__(self, other):
         return (str(self) == str(other))

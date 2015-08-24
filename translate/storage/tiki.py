@@ -64,7 +64,7 @@ from translate.storage import base
 class TikiUnit(base.TranslationUnit):
     """A tiki unit entry."""
 
-    def __init__(self, source=None, encoding="UTF-8"):
+    def __init__(self, source=None, **kwargs):
         self.location = []
         super(TikiUnit, self).__init__(source)
 

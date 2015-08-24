@@ -51,10 +51,11 @@ def escape_to_rc(string):
     return rcstring
 
 
+@six.python_2_unicode_compatible
 class rcunit(base.TranslationUnit):
     """A unit of an rc file"""
 
-    def __init__(self, source="", encoding="cp1252"):
+    def __init__(self, source="", **kwargs):
         """Construct a blank rcunit."""
         super(rcunit, self).__init__(source)
         self.name = ""
@@ -62,7 +63,6 @@ class rcunit(base.TranslationUnit):
         self.comments = []
         self.source = source
         self.match = None
-        self.encoding = encoding
 
     def setsource(self, source):
         """Sets the source AND the target to be equal"""
@@ -84,11 +84,8 @@ class rcunit(base.TranslationUnit):
     target = property(gettarget, settarget)
 
     def __str__(self):
-        """Convert to a string. Double check that unicode is handled somehow here."""
-        source = self.getoutput()
-        if isinstance(source, six.text_type):
-            return source.encode(getattr(self, "encoding", "UTF-8"))
-        return source
+        """Convert to a string."""
+        return self.getoutput()
 
     def getoutput(self):
         """Convert the element back into formatted lines for a .rc file."""

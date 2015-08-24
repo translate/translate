@@ -80,6 +80,7 @@ class UtxHeader:
     """
 
 
+@six.python_2_unicode_compatible
 class UtxUnit(base.TranslationUnit):
     """A UTX dictionary unit"""
 

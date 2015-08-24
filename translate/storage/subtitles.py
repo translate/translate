@@ -55,7 +55,7 @@ from translate.storage import base
 class SubtitleUnit(base.TranslationUnit):
     """A subtitle entry that is translatable"""
 
-    def __init__(self, source=None, encoding="utf_8"):
+    def __init__(self, source=None, **kwargs):
         self._start = None
         self._end = None
         if source:

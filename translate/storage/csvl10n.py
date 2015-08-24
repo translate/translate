@@ -117,6 +117,7 @@ def to_unicode(text, encoding='utf-8'):
     return text.decode(encoding)
 
 
+@six.python_2_unicode_compatible
 class csvunit(base.TranslationUnit):
     spreadsheetescapes = [("+", "\\+"), ("-", "\\-"), ("=", "\\="), ("'", "\\'")]
 
@@ -257,20 +258,20 @@ class csvunit(base.TranslationUnit):
 
         #self.source, self.target = self.remove_spreadsheet_escapes(self.source, self.target)
 
-    def todict(self, encoding='utf-8'):
+    def todict(self, **kwargs):
         #FIXME: use apis?
         #source, target = self.add_spreadsheet_escapes(self.source, self.target)
         source = self.source
         target = self.target
         output = {
-            'location': from_unicode(self.location, encoding),
-            'source': from_unicode(source, encoding),
-            'target': from_unicode(target, encoding),
-            'id': from_unicode(self.id, encoding),
+            'location': self.location,
+            'source': source,
+            'target': target,
+            'id': self.id,
             'fuzzy': str(self.fuzzy),
-            'context': from_unicode(self.context, encoding),
-            'translator_comments': from_unicode(self.translator_comments, encoding),
-            'developer_comments': from_unicode(self.developer_comments, encoding),
+            'context': self.context,
+            'translator_comments': self.translator_comments,
+            'developer_comments': self.developer_comments,
         }
 
         return output
@@ -427,6 +428,6 @@ class csvfile(base.TranslationStore):
         hdict = dict(map(None, self.fieldnames, self.fieldnames))
         writer.writerow(hdict)
         for ce in self.units:
-            cedict = ce.todict()
+            cedict = dict((k, from_unicode(v, 'utf-8')) for k, v in ce.todict().items())
             writer.writerow(cedict)
         return outputfile.getvalue()

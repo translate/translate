@@ -279,6 +279,7 @@ class WordfastHeader(object):
     tucount = property(None, settucount)
 
 
+@six.python_2_unicode_compatible
 class WordfastUnit(base.TranslationUnit):
     """A Wordfast translation memory unit"""
 

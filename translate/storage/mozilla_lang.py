@@ -28,6 +28,7 @@ import six
 from translate.storage import base, txt
 
 
+@six.python_2_unicode_compatible
 class LangUnit(base.TranslationUnit):
     """This is just a normal unit with a weird string output"""
 

@@ -122,6 +122,7 @@ def phpdecode(text, quotechar="'"):
         return text.replace("\\'", "'").replace("\\\\", "\\")
 
 
+@six.python_2_unicode_compatible
 class phpunit(base.TranslationUnit):
     """A unit of a PHP file: a name, a value, and any comments associated."""
 
@@ -153,11 +154,8 @@ class phpunit(base.TranslationUnit):
     target = property(gettarget, settarget)
 
     def __str__(self):
-        """Convert to a string. Double check that unicode is handled somehow."""
-        source = self.getoutput()
-        if isinstance(source, six.text_type):
-            return source.encode(getattr(self, "encoding", "UTF-8"))
-        return source
+        """Convert to a string."""
+        return self.getoutput()
 
     def getoutput(self):
         """Convert the unit back into formatted lines for a php file."""

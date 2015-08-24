@@ -122,6 +122,7 @@ class CatkeysHeader(object):
     targetlanguage = property(None, settargetlanguage)
 
 
+@six.python_2_unicode_compatible
 class CatkeysUnit(base.TranslationUnit):
     """A catkeys translation memory unit"""
 
