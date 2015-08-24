@@ -22,8 +22,9 @@
 """Module for handling Android String and Plurals resource files."""
 
 import copy
-import re
 import os
+import re
+import six
 
 from lxml import etree
 
@@ -198,7 +199,7 @@ class AndroidResourceUnit(base.TranslationUnit):
                             # it will ignore leading/trailing whitespace.
                             if not codepoint_str.isalnum():
                                 raise ValueError(codepoint_str)
-                            codepoint = unichr(int(codepoint_str, 16))
+                            codepoint = six.unichr(int(codepoint_str, 16))
                         except ValueError:
                             raise ValueError('bad unicode escape sequence')
 

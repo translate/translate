@@ -32,6 +32,7 @@ import re
 import six
 import sys
 from os import path
+from six.moves import range
 
 
 nb_ngrams = 400
@@ -59,7 +60,7 @@ class _NGram:
         for word in white_space_re.split(text):
             word = '_%s_' % word
             size = len(word)
-            for i in xrange(size - 1):
+            for i in range(size - 1):
                 for s in (1, 2, 3, 4):
                     end = i + s
                     if end >= size:
@@ -131,7 +132,7 @@ class NGram:
         ngram = _NGram(text)
         r = 'guess'
 
-        min = sys.maxint
+        min = six.MAXSIZE
 
         for lang in self.ngrams:
             d = self.ngrams[lang].compare(ngram)

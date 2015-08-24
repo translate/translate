@@ -260,7 +260,7 @@ def entitydecode(source, name2codepoint):
             if char == ";":
                 if (len(possibleentity) > 0 and
                     possibleentity in name2codepoint):
-                    entchar = unichr(name2codepoint[possibleentity])
+                    entchar = six.unichr(name2codepoint[possibleentity])
                     if entchar == u'&' and _has_entity_end(source[i+1:]):
                         output += "&" + possibleentity + ";"
                     else:
@@ -389,11 +389,11 @@ def propertiesdecode(source):
         otherwise an escaped control character.
         """
         if 32 <= i:
-            return unichr(i)
-        elif unichr(i) in controlchars:
+            return six.unichr(i)
+        elif six.unichr(i) in controlchars:
             # we just return the character, unescaped
             # if people want to escape them they can use escapecontrols
-            return unichr(i)
+            return six.unichr(i)
         return "\\u%04x" % i
 
     while s < len(source):
