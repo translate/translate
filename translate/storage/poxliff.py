@@ -381,7 +381,7 @@ class PoXliffFile(xliff.xlifffile, poheader.poheader):
         pluralgroups = filter(ispluralgroup, groups)
         termEntries = root_node.iterdescendants(self.namespaced(self.UnitClass.rootNode))
 
-        singularunits = filter(isnonpluralunit, termEntries)
+        singularunits = list(filter(isnonpluralunit, termEntries))
         if len(singularunits) == 0:
             return
         pluralunit_iter = pluralunits(pluralgroups)

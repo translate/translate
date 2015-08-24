@@ -431,7 +431,7 @@ class UnitChecker(object):
         priorityfunctionnames = self.preconditions.keys()
         otherfunctionnames = filter(lambda functionname: functionname not in self.preconditions, functionnames)
 
-        for functionname in priorityfunctionnames + otherfunctionnames:
+        for functionname in list(priorityfunctionnames) + list(otherfunctionnames):
             if functionname in ignores:
                 continue
 
@@ -2366,7 +2366,7 @@ class StandardUnitChecker(UnitChecker):
             nplurals = self.config.lang.nplurals
 
             if nplurals > 0:
-                return len(filter(None, unit.target.strings)) == nplurals
+                return len(list(filter(None, unit.target.strings))) == nplurals
 
         return True
 

@@ -33,7 +33,7 @@ from translate.storage.placeables import general, parse as rich_parse
 
 def headerless_len(units):
     """return count of translatable (non header) units"""
-    return len(filter(lambda x: not x.isheader(), units))
+    return len(list(filter(lambda x: not x.isheader(), units)))
 
 
 def first_translatable(store):

@@ -151,7 +151,7 @@ def filtervariables(startmarker, endmarker, varfilter):
 # all apostrophes in the middle of the word are handled already
 wordswithpunctuation = ["'n", "'t",]  # Afrikaans
 # map all the words to their non-punctified equivalent
-wordswithpunctuation = dict([(word, filter(str.isalnum, word)) for word in wordswithpunctuation])
+wordswithpunctuation = dict([(word, ''.join(filter(str.isalnum, word))) for word in wordswithpunctuation])
 
 word_with_apos_re = re.compile("(?u)\w+'\w+")
 
@@ -167,7 +167,7 @@ def filterwordswithpunctuation(str1):
         occurrences.extend([(pos, word, replacement) for pos in quote.find_all(str1, word)])
     for match in word_with_apos_re.finditer(str1):
         word = match.group()
-        replacement = filter(six.text_type.isalnum, word)
+        replacement = ''.join(filter(six.text_type.isalnum, word))
         occurrences.append((match.start(), word, replacement))
     occurrences.sort()
     if occurrences:

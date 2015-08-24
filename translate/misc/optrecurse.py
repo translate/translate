@@ -285,7 +285,7 @@ class RecursiveOptionParser(optparse.OptionParser, object):
         }
         progressoption = optparse.Option(None, "--progress", dest="progress",
                 default="bar",
-                choices=self.progresstypes.keys(), metavar="PROGRESS",
+                choices=list(self.progresstypes.keys()), metavar="PROGRESS",
                 help="show progress as: %s" % (", ".join(self.progresstypes)))
         self.define_option(progressoption)
 
@@ -301,9 +301,7 @@ class RecursiveOptionParser(optparse.OptionParser, object):
 
     def getformathelp(self, formats):
         """Make a nice help string for describing formats..."""
-        formats = sorted(formats)
-        if None in formats:
-            formats = filter(lambda format: format is not None, formats)
+        formats = sorted([f for f in formats if f is not None])
         if len(formats) == 0:
             return ""
         elif len(formats) == 1:

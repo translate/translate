@@ -57,8 +57,7 @@ def escapeforpo(line):
     special_locations = []
     for special_key in po_escape_map:
         special_locations.extend(quote.find_all(line, special_key))
-    special_locations = dict.fromkeys(special_locations).keys()
-    special_locations.sort()
+    special_locations = sorted(dict.fromkeys(special_locations).keys())
     escaped_line = ""
     last_location = 0
     for location in special_locations:
@@ -276,7 +275,7 @@ class pounit(pocommon.pounit):
     def gettarget(self):
         """Returns the unescaped msgstr"""
         if isinstance(self.msgstr, dict):
-            return multistring(map(unquotefrompo, self.msgstr.values()), self._encoding)
+            return multistring(list(map(unquotefrompo, self.msgstr.values())), self._encoding)
         else:
             return unquotefrompo(self.msgstr)
 
@@ -584,8 +583,7 @@ class pounit(pocommon.pounit):
 
     def _getmsgpartstr(self, partname, partlines, partcomments=""):
         if isinstance(partlines, dict):
-            partkeys = partlines.keys()
-            partkeys.sort()
+            partkeys = sorted(partlines.keys())
             return "".join([self._getmsgpartstr("%s[%d]" % (partname, partkey), partlines[partkey], partcomments) for partkey in partkeys])
         partstr = partname + " "
         partstartline = 0

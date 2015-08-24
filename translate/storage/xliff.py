@@ -610,7 +610,7 @@ class xlifffile(lisa.LISAfile):
         """returns all filenames in this XLIFF file"""
         filenodes = self.document.getroot().iterchildren(self.namespaced("file"))
         filenames = [self.getfilename(filenode) for filenode in filenodes]
-        filenames = filter(None, filenames)
+        filenames = list(filter(None, filenames))
         if len(filenames) == 1 and filenames[0] == '':
             filenames = []
         return filenames

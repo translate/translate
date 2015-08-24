@@ -197,10 +197,7 @@ class matcher(object):
                     stoplength = self.getstoplength(min_similarity, text)
 
         #Remove the empty ones:
-        def notzero(item):
-            score = item[0]
-            return score != 0
-        bestcandidates = filter(notzero, bestcandidates)
+        bestcandidates = [item for item in bestcandidates if item[0] != 0]
         #Sort for use as a general list, and reverse so the best one is at index 0
         bestcandidates.sort(reverse=True)
         return self.buildunits(bestcandidates)

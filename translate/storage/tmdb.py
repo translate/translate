@@ -295,7 +295,7 @@ DROP TRIGGER IF EXISTS sources_delete_trig;
         # split source into words, remove punctuation and special
         # chars, keep words that are at least 3 chars long
         unit_words = STRIP_REGEXP.sub(' ', unit_source).split()
-        unit_words = filter(lambda word: len(word) > 2, unit_words)
+        unit_words = list(filter(lambda word: len(word) > 2, unit_words))
 
         if self.fulltext and len(unit_words) > 3:
             logging.debug("fulltext matching")

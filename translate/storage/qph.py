@@ -61,11 +61,7 @@ class QphUnit(lisa.LISAunit):
 
     def getlanguageNodes(self):
         """We override this to get source and target nodes."""
-
-        def not_none(node):
-            return not node is None
-
-        return filter(not_none, [self._getsourcenode(), self._gettargetnode()])
+        return [n for n in [self._getsourcenode(), self._gettargetnode()] if n is not None]
 
     def addnote(self, text, origin=None, position="append"):
         """Add a note specifically in a "definition" tag"""
