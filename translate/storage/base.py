@@ -801,7 +801,7 @@ class TranslationStore(object):
         if not fileobj:
             filename = getattr(self, "filename", None)
             if filename:
-                fileobj = file(filename, mode)
+                fileobj = open(filename, mode)
         else:
             fileobj.close()
             filename = getattr(fileobj, "name",
