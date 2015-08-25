@@ -48,22 +48,28 @@ class multistring(autoencode.autoencode):
             self.strings = []
 
     def __cmp__(self, otherstring):
+        def cmp_compat(s1, s2):
+            # Python 3 compatible cmp() equivalent
+            return (s1 > s2) - (s1 < s2)
         if isinstance(otherstring, multistring):
-            parentcompare = cmp(autoencode.autoencode(self), otherstring)
+            parentcompare = cmp_compat(autoencode.autoencode(self), otherstring)
             if parentcompare:
                 return parentcompare
             else:
-                return cmp(self.strings[1:], otherstring.strings[1:])
+                return cmp_compat(self.strings[1:], otherstring.strings[1:])
         elif isinstance(otherstring, autoencode.autoencode):
-            return cmp(autoencode.autoencode(self), otherstring)
+            return cmp_compat(autoencode.autoencode(self), otherstring)
         elif isinstance(otherstring, six.text_type):
-            return cmp(six.text_type(self), otherstring)
+            return cmp_compat(six.text_type(self), otherstring)
         elif isinstance(otherstring, bytes):
-            return cmp(bytes(self), otherstring)
+            return cmp_compat(bytes(self), otherstring)
         elif isinstance(otherstring, list) and otherstring:
-            return cmp(self, multistring(otherstring))
+            return cmp_compat(self, multistring(otherstring))
         else:
-            return cmp(type(self), type(otherstring))
+            return cmp_compat(str(type(self)), str(type(otherstring)))
+
+    def __hash__(self):
+        return hash(''.join(self.strings))
 
     def __ne__(self, otherstring):
         return self.__cmp__(otherstring) != 0

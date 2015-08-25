@@ -53,13 +53,11 @@ class TerminologyPlaceable(base.Ph):
 
         lastend = 0
 
-        def sort_matches(x, y):
-            # This function will sort a list of matches according to the
-            #  match's starting position, putting the one with the longer
-            # source text first, if two are the same.
-            c = cmp(match_info[x.source]['pos'], match_info[y.source]['pos'])
-            return c and c or cmp(len(y.source), len(x.source))
-        matches.sort(sort_matches)
+        # This function will sort a list of matches according to the
+        # match's starting position, putting the one with the longer
+        # source text first, if two are the same.
+        matches.sort(key=lambda x: len(x.source), reverse=True)
+        matches.sort(key=lambda x: match_info[x.source]['pos'])
 
         for match in matches:
             info = match_info[match.source]

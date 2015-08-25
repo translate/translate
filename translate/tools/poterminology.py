@@ -26,6 +26,7 @@ import os
 import re
 import six
 import sys
+from operator import itemgetter
 
 from translate.lang import factory as lang_factory
 from translate.misc import file_discovery, optrecurse
@@ -299,9 +300,8 @@ class TerminologyExtractor(object):
     def filter_terms(self, terms, nonstopmin=1, sortorders=sortorders_default):
         """reduce subphrases from extracted terms"""
         # reduce subphrase
-        termlist = terms.keys()
+        termlist = sorted(terms.keys(), key=len)
         logger.info("%d terms after thresholding", len(termlist))
-        termlist.sort(lambda x, y: cmp(len(x), len(y)))
         for term in termlist:
             words = term.split()
             nonstop = [word for word in words if not self.stopword(word)]
@@ -320,17 +320,17 @@ class TerminologyExtractor(object):
                 if terms[term][0] == terms.get(' '.join(words), [0])[0]:
                     del terms[' '.join(words)]
         logger.info("%d terms after subphrase reduction", len(terms.keys()))
-        termitems = terms.values()
+        termitems = list(terms.values())
         if sortorders is None:
             sortorders = self.sortorders_default
         while len(sortorders) > 0:
             order = sortorders.pop()
             if order == "frequency":
-                termitems.sort(lambda x, y: cmp(y[0], x[0]))
+                termitems.sort(key=itemgetter(0), reverse=True)
             elif order == "dictionary":
-                termitems.sort(lambda x, y: cmp(x[1].source.lower(), y[1].source.lower()))
+                termitems.sort(key=lambda x: x[1].source.lower())
             elif order == "length":
-                termitems.sort(lambda x, y: cmp(len(x[1].source), len(y[1].source)))
+                termitems.sort(key=lambda x: x[1].source)
             else:
                 logger.warning("unknown sort order %s", order)
         return termitems
