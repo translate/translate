@@ -28,6 +28,7 @@ from __future__ import unicode_literals
 import re
 
 from translate.lang import common
+from translate.misc.dictutils import ordereddict
 
 
 class el(common.Common):
@@ -44,10 +45,10 @@ class el(common.Common):
         (?=[^a-zά-ώ\d])  # lookahead that next part starts with caps
         """ % sentenceend, re.VERBOSE | re.UNICODE)
 
-    puncdict = {
-        "?": ";",
-        ";": "·",
-    }
+    puncdict = ordereddict([
+        (";", "·"),
+        ("?", ";"),
+    ])
 
     # Valid latin characters for use as accelerators
     valid_latin_accel = ("abcdefghijklmnopqrstuvwxyz"

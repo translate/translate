@@ -96,7 +96,7 @@ class ordereddict(dict):
                             len(args))
         else:
             initarg = args[0]
-            apply(super(ordereddict, self).__init__, args)
+            super(ordereddict, self).__init__(*args)
             if hasattr(initarg, "keys"):
                 self.order = initarg.keys()
             else:
