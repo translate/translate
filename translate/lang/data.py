@@ -20,6 +20,8 @@
 
 """This module stores information and functionality that relates to plurals."""
 
+import six
+
 
 languages = {
     'ach': (u'Acholi', 2, 'n > 1'),
@@ -352,7 +354,7 @@ def gettext_lang(langcode=None):
         else:
             t = gettext.translation('iso_639', languages=[langcode],
                                     fallback=True)
-        iso639[langcode] = t.ugettext
+        iso639[langcode] = t.ugettext if six.PY2 else t.gettext
     return iso639[langcode]
 
 
@@ -372,7 +374,7 @@ def gettext_country(langcode=None):
         else:
             t = gettext.translation('iso_3166', languages=[langcode],
                                     fallback=True)
-        iso3166[langcode] = t.ugettext
+        iso3166[langcode] = t.ugettext if six.PY2 else t.gettext
     return iso3166[langcode]
 
 
