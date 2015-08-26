@@ -833,8 +833,8 @@ class pofile(pocommon.pofile):
                 uniqueunits.append(thepo)
         self.units = uniqueunits
 
-    def __str__(self):
-        """Convert to a string. Double check that unicode is handled somehow
+    def serialize(self):
+        """Convert to bytes. Double check that unicode is handled somehow
         here"""
         output = self._getoutput()
         if isinstance(output, six.text_type):

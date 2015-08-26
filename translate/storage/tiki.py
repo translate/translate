@@ -103,7 +103,7 @@ class TikiStore(base.TranslationStore):
         if inputfile is not None:
             self.parse(inputfile)
 
-    def __str__(self):
+    def serialize(self):
         """Will return a formatted tiki-style language.php file."""
         _unused = []
         _untranslated = []

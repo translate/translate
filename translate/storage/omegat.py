@@ -180,7 +180,7 @@ class OmegaTFile(base.TranslationStore):
             newunit.dict = line
             self.addunit(newunit)
 
-    def __str__(self):
+    def serialize(self):
         output = csv.StringIO()
         writer = csv.DictWriter(output, fieldnames=OMEGAT_FIELDNAMES,
                                 dialect="omegat")

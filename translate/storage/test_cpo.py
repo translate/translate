@@ -193,6 +193,6 @@ class TestCPOFile(test_po.TestPOFile):
         """tests behaviour of unassociated comments."""
         oldsource = '# old lonesome comment\n\nmsgid "one"\nmsgstr "een"\n'
         oldfile = self.poparse(oldsource)
-        print("__str__", str(oldfile))
+        print("serialize", oldfile.serialize())
         assert len(oldfile.units) == 1
         assert str(oldfile).find("# old lonesome comment\nmsgid") >= 0

@@ -138,7 +138,7 @@ class QphFile(lisa.LISAfile):
         if targetlanguage:
             self.header.set('language', targetlanguage)
 
-    def __str__(self):
+    def serialize(self):
         """Converts to a string containing the file's XML.
 
         We have to override this to ensure mimic the Qt convention:

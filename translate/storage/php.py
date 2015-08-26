@@ -208,12 +208,12 @@ class phpfile(base.TranslationStore):
             inputfile.close()
             self.parse(phpsrc)
 
-    def __str__(self):
+    def serialize(self):
         """Convert the units back to lines."""
         lines = []
         for unit in self.units:
             lines.append(str(unit))
-        return "".join(lines)
+        return ("".join(lines)).encode(self._encoding)
 
     def parse(self, phpsrc):
         """Read the source of a PHP file in and include them as units."""

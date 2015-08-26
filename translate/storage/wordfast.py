@@ -400,7 +400,7 @@ class WordfastTMFile(base.TranslationStore):
             newunit.dict = line
             self.addunit(newunit)
 
-    def __str__(self):
+    def serialize(self):
         output = csv.StringIO()
         header_output = csv.StringIO()
         writer = csv.DictWriter(output, fieldnames=WF_FIELDNAMES,

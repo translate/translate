@@ -562,8 +562,8 @@ class dtdfile(base.TranslationStore):
                     warnings.warn("%s\nError occured between lines %d and %d:\n%s" % (e, start + 1, end, "\n".join(lines[start:end])))
                 start += linesprocessed
 
-    def __str__(self):
-        """convert to a string. double check that unicode is handled somehow here"""
+    def serialize(self):
+        """convert to bytes. double check that unicode is handled somehow here"""
         source = self.getoutput()
         if not self._valid_store():
             warnings.warn("DTD file '%s' does not validate" % self.filename)

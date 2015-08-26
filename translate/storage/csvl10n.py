@@ -410,8 +410,8 @@ class csvfile(base.TranslationStore):
                 self.addunit(newce)
             first_row = False
 
-    def __str__(self):
-        """convert to a string. double check that unicode is handled somehow here"""
+    def serialize(self):
+        """convert to bytes. double check that unicode is handled somehow here"""
         source = self.getoutput()
         if not isinstance(source, six.text_type):
             source = source.decode('utf-8')

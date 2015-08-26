@@ -147,7 +147,7 @@ class TxtFile(base.TranslationStore):
             unit = self.addsourceunit("\n".join(block))
             unit.addlocation("%s:%d" % (self.filename, startline + 1))
 
-    def __str__(self):
+    def serialize(self):
         source = self.getoutput()
         if isinstance(source, six.text_type):
             return source.encode(getattr(self, "encoding", "UTF-8"))

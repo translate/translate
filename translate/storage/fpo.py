@@ -522,8 +522,8 @@ class pofile(pocommon.pofile):
                 uniqueunits.append(thepo)
         self.units = uniqueunits
 
-    def __str__(self):
-        """Convert to a string. double check that unicode is handled somehow here"""
+    def serialize(self):
+        """Convert to bytes. double check that unicode is handled somehow here"""
         self._cpo_store = cpo.pofile(encoding=self._encoding, noheader=True)
         try:
             self._build_cpo_from_self()
@@ -531,6 +531,6 @@ class pofile(pocommon.pofile):
             self._encoding = "utf-8"
             self.updateheader(add=True, Content_Type="text/plain; charset=UTF-8")
             self._build_cpo_from_self()
-        output = str(self._cpo_store)
+        output = self._cpo_store.serialize()
         del self._cpo_store
         return output

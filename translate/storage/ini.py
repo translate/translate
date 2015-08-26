@@ -105,7 +105,7 @@ class inifile(base.TranslationStore):
         if inputfile is not None:
             self.parse(inputfile)
 
-    def __str__(self):
+    def serialize(self):
         _outinifile = self._inifile
         for unit in self.units:
             for location in unit.getlocations():
@@ -114,7 +114,7 @@ class inifile(base.TranslationStore):
         if _outinifile:
             return str(_outinifile)
         else:
-            return ""
+            return b""
 
     def parse(self, input):
         """Parse the given file or file source string."""

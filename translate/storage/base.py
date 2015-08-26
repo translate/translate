@@ -693,7 +693,17 @@ class TranslationStore(object):
             self.fileobj = open(self.filename)
 
     def __str__(self):
-        """Converts to a string representation that can be parsed back using
+        # This allows the old str(store) method for serialization to be kept
+        # for compatibility purpose.
+        if six.PY2:
+            return self.serialize()
+        return super(TranslationStore, self).__str__()
+
+    def __bytes__(self):
+        return self.serialize()
+
+    def serialize(self):
+        """Converts to a bytes representation that can be parsed back using
         :meth:`~.TranslationStore.parsestring`."""
         # We can't pickle fileobj if it is there, so let's hide it for a while.
         fileobj = getattr(self, "fileobj", None)

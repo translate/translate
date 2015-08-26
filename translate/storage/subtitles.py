@@ -90,7 +90,7 @@ class SubtitleFile(base.TranslationStore):
         if inputfile is not None:
             self._parsefile(inputfile)
 
-    def __str__(self):
+    def serialize(self):
         subtitles = []
         for unit in self.units:
             subtitle = Subtitle()

@@ -15,7 +15,7 @@ class TestQtFile(test_base.TestTranslationStore):
 
     def test_parse(self):
         # self.reparse relies on __str__ to be output and then parsed
-        # qm.py does not implement __str__ but returns u''
+        # qm.py does not implement serialization
         pass
 
     def test_save(self):
@@ -30,10 +30,10 @@ class TestQtFile(test_base.TestTranslationStore):
 
     def test_nonascii(self):
         # QM does not implement serialising
-        assert pytest.raises(Exception, self.StoreClass.__str__,
+        assert pytest.raises(Exception, self.StoreClass.serialize,
                            self.StoreClass())
 
     def test_add(self):
         # QM does not implement serialising
-        assert pytest.raises(Exception, self.StoreClass.__str__,
+        assert pytest.raises(Exception, self.StoreClass.serialize,
                            self.StoreClass())

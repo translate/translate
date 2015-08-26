@@ -233,6 +233,6 @@ class rcfile(base.TranslationStore):
                     newunit.match = match
                     self.addunit(newunit)
 
-    def __str__(self):
+    def serialize(self):
         """Convert the units back to lines."""
-        return "".join(self.blocks)
+        return ("".join(self.blocks)).encode(self.encoding)

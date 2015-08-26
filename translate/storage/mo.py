@@ -3,7 +3,7 @@
 #
 # Copyright 2007 Zuza Software Foundation
 #
-# the function "__str__" was derived from Python v2.4
+# the function "serialize" was derived from Python v2.4
 #       (Tools/i18n/msgfmt.py - function "generate"):
 #   Written by Martin v. Löwis <loewis@informatik.hu-berlin.de>
 #   Copyright (c) 2001, 2002, 2003, 2004, 2005, 2006 Python Software Foundation.
@@ -144,7 +144,7 @@ class mofile(poheader.poheader, base.TranslationStore):
         if inputfile is not None:
             self.parsestring(inputfile)
 
-    def __str__(self):
+    def serialize(self):
         """Output a string representation of the MO data file"""
         # check the header of this file for the copyright note of this function
 

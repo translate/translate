@@ -308,7 +308,12 @@ class oofile:
             thisline = ooline(parts)
             self.addline(thisline)
 
-    def __str__(self, skip_source=False, fallback_lang=None):
+    def __str__(self, *args, **kwargs):
+        if six.PY2:
+            return self.serialize(*args, **kwargs)
+        return super(oofile, self).__str__()
+
+    def serialize(self, skip_source=False, fallback_lang=None):
         """convert to a string. double check that unicode is handled"""
         return encode_if_needed_utf8(self.getoutput(skip_source, fallback_lang))
 

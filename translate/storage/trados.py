@@ -199,6 +199,6 @@ class TradosTxtTmFile(base.TranslationStore):
             unit._soup = TradosSoup(str(tu))
             self.addunit(unit)
 
-    def __str__(self):
+    def serialize(self):
         # FIXME turn the lowercased tags back into mixed case
         return self._soup.prettify()

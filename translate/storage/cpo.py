@@ -701,7 +701,7 @@ class pofile(pocommon.pofile):
         self._gpo_memory_file = new_gpo_memory_file
         self.units = uniqueunits
 
-    def __str__(self):
+    def serialize(self):
 
         def obsolete_workaround():
             # Remove all items that are not output by msgmerge when a unit is obsolete.  This is a work

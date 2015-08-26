@@ -636,13 +636,14 @@ class propfile(base.TranslationStore):
         if inmultilinevalue or len(newunit.comments) > 0:
             self.addunit(newunit)
 
-    def __str__(self):
+    def serialize(self):
         """Convert the units back to lines."""
         lines = []
         for unit in self.units:
             lines.append(unit.getoutput())
         uret = u"".join(lines)
         return uret.encode(self.encoding)
+
 
 class javafile(propfile):
     Name = "Java Properties"

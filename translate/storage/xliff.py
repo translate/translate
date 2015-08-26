@@ -774,9 +774,9 @@ class xlifffile(lisa.LISAfile):
             group.set("restype", restype)
         return group
 
-    def __str__(self):
+    def serialize(self):
         self.removedefaultfile()
-        return super(xlifffile, self).__str__()
+        return super(xlifffile, self).serialize()
 
     @classmethod
     def parsestring(cls, storestring):

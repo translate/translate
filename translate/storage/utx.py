@@ -270,7 +270,7 @@ class UtxFile(base.TranslationStore):
             newunit.dict = line
             self.addunit(newunit)
 
-    def __str__(self):
+    def serialize(self):
         output = csv.StringIO()
         writer = csv.DictWriter(output, fieldnames=self._fieldnames,
                                 dialect="utx")
@@ -282,4 +282,4 @@ class UtxFile(base.TranslationStore):
         if unit_count == 0:
             return ""
         output.reset()
-        return self._write_header() + "".join(output.readlines())
+        return self._write_header() + b"".join(output.readlines())

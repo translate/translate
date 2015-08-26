@@ -154,7 +154,7 @@ class JsonFile(base.TranslationStore):
         if inputfile is not None:
             self.parse(inputfile)
 
-    def __str__(self):
+    def serialize(self):
         units = {}
         for unit in self.unit_iter():
             path = unit.getid().lstrip('.')

@@ -477,7 +477,7 @@ class tsfile(lisa.LISAfile):
         else:
             return 1
 
-    def __str__(self):
+    def serialize(self):
         """Converts to a string containing the file's XML."""
         root = self.document.getroot()
         doctype = self.document.docinfo.doctype
