@@ -236,7 +236,7 @@ class TestTranslationStore(object):
         store = self.StoreClass()
         unit = store.addsourceunit("Test String")
         print(str(unit))
-        print(str(store))
+        print(store.serialize())
         assert headerless_len(store.units) == 1
         assert unit.source == "Test String"
 
@@ -261,7 +261,7 @@ class TestTranslationStore(object):
 
     def reparse(self, store):
         """converts the store to a string and back to a store again"""
-        storestring = str(store)
+        storestring = store.serialize()
         newstore = self.StoreClass.parsestring(storestring)
         return newstore
 
@@ -274,9 +274,9 @@ class TestTranslationStore(object):
             if not match:
                 print("match failed between elements %d of %d" % ((n + 1), headerless_len(store1.units)))
                 print("store1:")
-                print(str(store1))
+                print(store1.serialize())
                 print("store2:")
-                print(str(store2))
+                print(store2.serialize())
                 print("store1.units[%d].__dict__:" % n, store1unit.__dict__)
                 print("store2.units[%d].__dict__:" % n, store2unit.__dict__)
                 assert store1unit == store2unit
@@ -332,7 +332,7 @@ class TestTranslationStore(object):
             answer = answer.decode("utf-8")
         assert answer == u"Beziér-kurwe"
         #Just test that __str__ doesn't raise exception:
-        src = str(store)
+        src = store.serialize()
 
     def test_extensions(self):
         """Test that the factory knows the extensions for this class."""

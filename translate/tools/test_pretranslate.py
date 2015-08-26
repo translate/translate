@@ -121,8 +121,8 @@ msgstr[1] "%d handleidings."
         template_source = '''#: simple.label\n#: simple.accesskey\nmsgid "A &hard coded newline.\\n"\nmsgstr "&Hart gekoeerde nuwe lyne\\n"\n'''
         poexpected = '''#: simple.label\n#: simple.accesskey\n#, fuzzy\nmsgid "Its &hard coding a newline.\\n"\nmsgstr "&Hart gekoeerde nuwe lyne\\n"\n'''
         newpo = self.pretranslatepo(input_source, template_source)
-        print(newpo)
-        assert str(newpo) == poexpected
+        print(newpo.serialize())
+        assert newpo.serialize() == poexpected
 
     def test_merging_location_change(self):
         """tests that if the location changes but the msgid stays the same that
@@ -131,8 +131,8 @@ msgstr[1] "%d handleidings."
         template_source = '''#: simple.label%ssimple.accesskey\nmsgid "A &hard coded newline.\\n"\nmsgstr "&Hart gekoeerde nuwe lyne\\n"\n''' % po.lsep
         poexpected = '''#: new_simple.label%snew_simple.accesskey\nmsgid "A &hard coded newline.\\n"\nmsgstr "&Hart gekoeerde nuwe lyne\\n"\n''' % po.lsep
         newpo = self.pretranslatepo(input_source, template_source)
-        print(newpo)
-        assert str(newpo) == poexpected
+        print(newpo.serialize())
+        assert newpo.serialize() == poexpected
 
     def test_merging_location_and_whitespace_change(self):
         """test that even if the location changes that if the msgid only has
@@ -141,8 +141,8 @@ msgstr[1] "%d handleidings."
         template_source = '''#: doublespace.label%sdoublespace.accesskey\nmsgid "&We  have  spaces"\nmsgstr "&One  het  spasies"\n''' % po.lsep
         poexpected = '''#: singlespace.label%ssinglespace.accesskey\n#, fuzzy\nmsgid "&We have spaces"\nmsgstr "&One  het  spasies"\n''' % po.lsep
         newpo = self.pretranslatepo(input_source, template_source)
-        print(newpo)
-        assert str(newpo) == poexpected
+        print(newpo.serialize())
+        assert newpo.serialize() == poexpected
 
     @mark.xfail(reason="Not Implemented")
     def test_merging_accelerator_changes(self):
@@ -152,8 +152,8 @@ msgstr[1] "%d handleidings."
         template_source = '''#: someline.c\nmsgid "&About"\nmsgstr "&Info"\n'''
         poexpected = '''#: someline.c\nmsgid "A&bout"\nmsgstr "&Info"\n'''
         newpo = self.pretranslatepo(input_source, template_source)
-        print(newpo)
-        assert str(newpo) == poexpected
+        print(newpo.serialize())
+        assert newpo.serialize() == poexpected
 
     @mark.xfail(reason="Not Implemented")
     def test_lines_cut_differently(self):
@@ -248,8 +248,8 @@ msgstr "36em"
         template_source = '''#~ msgid "&About"\n#~ msgstr "&Omtrent"\n'''
         expected = '''#: resurect.c\nmsgid "&About"\nmsgstr "&Omtrent"\n'''
         newpo = self.pretranslatepo(input_source, template_source)
-        print(newpo)
-        assert str(newpo) == expected
+        print(newpo.serialize())
+        assert newpo.serialize() == expected
 
     def test_merging_comments(self):
         """Test that we can merge comments correctly"""
@@ -294,9 +294,9 @@ msgstr "36em"
         template = xliff.xlifffile.parsestring(xlf_template)
         old = xliff.xlifffile.parsestring(xlf_old)
         new = self.pretranslatexliff(template, old)
-        print(str(old))
+        print(old.serialize())
         print('---')
-        print(str(new))
+        print(new.serialize())
         assert new.units[0].isapproved()
         # Layout might have changed, so we won't compare the serialised
         # versions

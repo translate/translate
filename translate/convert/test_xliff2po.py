@@ -25,7 +25,7 @@ class TestXLIFF2PO:
         outputpo = convertor.convertstore(inputfile)
         print("The generated po:")
         print(type(outputpo))
-        print(str(outputpo))
+        print(outputpo.serialize())
         return outputpo
 
     def test_minimal(self):
@@ -63,7 +63,7 @@ Content-Transfer-Encoding: 8bit'''
         pofile = self.xliff2po(minixlf)
         assert pofile.translate("gras") == "utshani"
         assert pofile.translate("bla") is None
-        potext = str(pofile)
+        potext = pofile.serialize()
         assert potext.index('# Zulu translation of program ABC') == 0
         assert potext.index('msgid "gras"\n')
         assert potext.index('msgstr "utshani"\n')
@@ -86,7 +86,7 @@ it</note>
         assert pofile.translate("bla") is None
         unit = first_translatable(pofile)
         assert unit.getnotes("translator") == "Couldn't do it"
-        potext = str(pofile)
+        potext = pofile.serialize()
         assert potext.index("# Couldn't do it\n") >= 0
 
         minixlf = self.xliffskeleton % '''<trans-unit xml:space="preserve">
@@ -104,7 +104,7 @@ it</note>
         assert pofile.translate("bla") is None
         unit = first_translatable(pofile)
         assert unit.getnotes("translator") == "Couldn't do\nit"
-        potext = str(pofile)
+        potext = pofile.serialize()
         assert potext.index("# Couldn't do\n# it\n") >= 0
 
     def test_autocomment(self):
@@ -124,7 +124,7 @@ garbage</note>
         assert pofile.translate("bla") is None
         unit = first_translatable(pofile)
         assert unit.getnotes("developer") == "Note that this is garbage"
-        potext = str(pofile)
+        potext = pofile.serialize()
         assert potext.index("#. Note that this is garbage\n") >= 0
 
         minixlf = self.xliffskeleton % '''<trans-unit xml:space="preserve">
@@ -142,7 +142,7 @@ garbage</note>
         assert pofile.translate("bla") is None
         unit = first_translatable(pofile)
         assert unit.getnotes("developer") == "Note that this is\ngarbage"
-        potext = str(pofile)
+        potext = pofile.serialize()
         assert potext.index("#. Note that this is\n#. garbage\n") >= 0
 
     def test_locations(self):
@@ -204,8 +204,8 @@ garbage</note>
         </trans-unit>
 </group>'''
         pofile = self.xliff2po(minixlf)
-        print(str(pofile))
-        potext = str(pofile)
+        print(pofile.serialize())
+        potext = pofile.serialize()
         assert headerless_len(pofile.units) == 1
         assert potext.index('msgid_plural "cows"')
         assert potext.index('msgstr[0] "inkomo"')

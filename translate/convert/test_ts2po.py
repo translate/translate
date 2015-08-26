@@ -12,7 +12,7 @@ class TestTS2PO:
         tsfile = wStringIO.StringIO(tssource)
         outputpo = converter.convertfile(tsfile)
         print("The generated po:")
-        print(str(outputpo))
+        print(outputpo.serialize())
         return outputpo
 
     def test_blank(self):

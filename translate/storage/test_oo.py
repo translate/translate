@@ -44,7 +44,7 @@ class TestOO:
 
     def ooregen(self, oosource):
         """helper that converts oo source to oofile object and back"""
-        return str(self.ooparse(oosource))
+        return self.ooparse(oosource).serialize()
 
     def test_simpleentry(self):
         """checks that a simple oo entry is parsed correctly"""

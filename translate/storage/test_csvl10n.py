@@ -20,4 +20,4 @@ class TestCSV(test_base.TestTranslationStore):
         newstore = self.reparse(store)
         self.check_equality(store, newstore)
         assert store.units[2] == newstore.units[2]
-        assert str(store) == str(newstore)
+        assert store.serialize() == newstore.serialize()

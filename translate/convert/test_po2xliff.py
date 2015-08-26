@@ -24,7 +24,7 @@ class TestPO2XLIFF:
         minipo = '''msgid "red"\nmsgstr "rooi"\n'''
         xliff = self.po2xliff(minipo)
         print("The generated xml:")
-        print(str(xliff))
+        print(xliff.serialize())
         assert len(xliff.units) == 1
         assert xliff.translate("red") == "rooi"
         assert xliff.translate("bla") is None
@@ -51,10 +51,10 @@ msgstr "Toepassings"
 """
         xliff = self.po2xliff(minipo)
         print("The generated xml:")
-        print(str(xliff))
+        print(xliff.serialize())
         assert xliff.translate("Applications") == "Toepassings"
         assert xliff.translate("bla") is None
-        xmltext = str(xliff)
+        xmltext = xliff.serialize()
         assert xmltext.index('<xliff ') >= 0
         assert xmltext.index(' version="1.1"') >= 0
         assert xmltext.index('<file')
@@ -69,7 +69,7 @@ msgstr "Eerste deel "
 "en ekstra"'''
         xliff = self.po2xliff(minipo)
         print("The generated xml:")
-        print(str(xliff))
+        print(xliff.serialize())
         assert xliff.translate('First part and extra') == 'Eerste deel en ekstra'
 
     def test_escapednewlines(self):
@@ -79,7 +79,7 @@ msgstr "Eerste lyn\nTweede lyn"
 '''
         xliff = self.po2xliff(minipo)
         print("The generated xml:")
-        xmltext = str(xliff)
+        xmltext = xliff.serialize()
         print(xmltext)
         assert xliff.translate("First line\nSecond line") == "Eerste lyn\nTweede lyn"
         assert xliff.translate("First line\\nSecond line") is None
@@ -95,7 +95,7 @@ msgstr "Eerste kolom\tTweede kolom"
 '''
         xliff = self.po2xliff(minipo)
         print("The generated xml:")
-        xmltext = str(xliff)
+        xmltext = xliff.serialize()
         print(xmltext)
         assert xliff.translate("First column\tSecond column") == "Eerste kolom\tTweede kolom"
         assert xliff.translate("First column\\tSecond column") is None
@@ -114,7 +114,7 @@ msgstr "Gebruik \\\"."
 '''
         xliff = self.po2xliff(minipo)
         print("The generated xml:")
-        xmltext = str(xliff)
+        xmltext = xliff.serialize()
         print(xmltext)
         assert xliff.translate('Hello "Everyone"') == 'Good day "All"'
         assert xliff.translate(r'Use \".') == r'Gebruik \".'
@@ -134,7 +134,7 @@ msgstr "kunye"
 '''
         xliff = self.po2xliff(minipo)
         print("The generated xml:")
-        xmltext = str(xliff)
+        xmltext = xliff.serialize()
         print(xmltext)
         assert xliff.translate("one") == "kunye"
         assert len(xliff.units) == 1
@@ -155,7 +155,7 @@ msgstr "kunye"
 '''
         xliff = self.po2xliff(minipo)
         print("The generated xml:")
-        xmltext = str(xliff)
+        xmltext = xliff.serialize()
         print(xmltext)
         assert xliff.translate("one") == "kunye"
         assert len(xliff.units) == 1
@@ -178,7 +178,7 @@ msgstr "kunye"
 '''
         xliff = self.po2xliff(minipo)
         print("The generated xml:")
-        xmltext = str(xliff)
+        xmltext = xliff.serialize()
         print(xmltext)
         assert xliff.translate("one") == "kunye"
         assert len(xliff.units) == 1
@@ -201,7 +201,7 @@ msgstr ""
 '''
         xliff = self.po2xliff(minipo)
         print("The generated xml:")
-        xmltext = str(xliff)
+        xmltext = xliff.serialize()
         print(xmltext)
         assert len(xliff.units) == 1
         unit = xliff.units[0]
@@ -221,7 +221,7 @@ msgstr "raro"
 '''
         xliff = self.po2xliff(minipo)
         print("The generated xml:")
-        xmltext = str(xliff)
+        xmltext = xliff.serialize()
         print(xmltext)
         assert len(xliff.units) == 2
         assert xliff.units[0].isfuzzy()
@@ -235,7 +235,7 @@ msgstr[1] "iinkomo"
 '''
         xliff = self.po2xliff(minipo)
         print("The generated xml:")
-        xmltext = str(xliff)
+        xmltext = xliff.serialize()
         print(xmltext)
         assert len(xliff.units) == 1
         assert xliff.translate("cow") == "inkomo"
@@ -249,7 +249,7 @@ msgstr[2] "iiinkomo"
 '''
         xliff = self.po2xliff(minipo)
         print("The generated xml:")
-        xmltext = str(xliff)
+        xmltext = xliff.serialize()
         print(xmltext)
         assert len(xliff.units) == 1
         assert xliff.translate("cow") == "inkomo"
@@ -282,7 +282,7 @@ msgstr ""
 '''
         xliff = self.po2xliff(minipo)
         print("The generated xml:")
-        xmltext = str(xliff)
+        xmltext = xliff.serialize()
         print(xmltext)
         assert len(xliff.units) == 3
         assert xliff.units[0].xmlelement.get("approved") != "yes"

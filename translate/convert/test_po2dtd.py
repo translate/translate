@@ -91,14 +91,14 @@ class TestPO2DTD:
         """tests that po lines are joined seamlessly (bug 16)"""
         multilinepo = '''#: pref.menuPath\nmsgid ""\n"<span>Tools &gt; Options</"\n"span>"\nmsgstr ""\n'''
         dtdfile = self.po2dtd(multilinepo)
-        dtdsource = str(dtdfile)
+        dtdsource = dtdfile.serialize()
         assert "</span>" in dtdsource
 
     def test_escapedstr(self):
         """tests that \n in msgstr is escaped correctly in dtd"""
         multilinepo = '''#: pref.menuPath\nmsgid "Hello\\nEveryone"\nmsgstr "Good day\\nAll"\n'''
         dtdfile = self.po2dtd(multilinepo)
-        dtdsource = str(dtdfile)
+        dtdsource = dtdfile.serialize()
         assert "Good day\nAll" in dtdsource
 
     def test_missingaccesskey(self):
@@ -153,7 +153,7 @@ msgstr "Dimpled Ring"
         """tests that invalid ampersands are fixed in the dtd"""
         simplestring = '''#: simple.string\nmsgid "Simple String"\nmsgstr "Dimpled &Ring"\n'''
         dtdfile = self.po2dtd(simplestring)
-        dtdsource = str(dtdfile)
+        dtdsource = dtdfile.serialize()
         assert "Dimpled Ring" in dtdsource
 
         po_snippet = u'''#: searchIntegration.label
@@ -164,7 +164,7 @@ msgstr "&searchIntegration.engineName; &ileti aramasına izin ver"
         dtd_snippet = r'''<!ENTITY searchIntegration.accesskey      "s">
 <!ENTITY searchIntegration.label       "Allow &searchIntegration.engineName; to search messages">'''
         dtdfile = self.merge2dtd(dtd_snippet, po_snippet)
-        dtdsource = str(dtdfile)
+        dtdsource = dtdfile.serialize()
         print(dtdsource)
         assert '"&searchIntegration.engineName; ileti aramasına izin ver"' in dtdsource
 
@@ -178,7 +178,7 @@ msgstr "Ileti"
         dtd_snippet = r'''<!ENTITY key.accesskey      "S">
 <!ENTITY key.label       "Ileti">'''
         dtdfile = self.merge2dtd(dtd_snippet, po_snippet)
-        dtdsource = str(dtdfile)
+        dtdsource = dtdfile.serialize()
         print(dtdsource)
         assert '"Ileti"' in dtdsource
         assert '""' not in dtdsource
@@ -196,7 +196,7 @@ msgstr "Lig en Kleur"
         dtd_snippet = r'''<!ENTITY key.accesskey      "L">
 <!ENTITY key.label       "Colour &amp; Light">'''
         dtdfile = self.merge2dtd(dtd_snippet, po_snippet)
-        dtdsource = str(dtdfile)
+        dtdsource = dtdfile.serialize()
         print(dtdsource)
         assert '"Lig en Kleur"' in dtdsource
         assert '"L"' in dtdsource
@@ -213,7 +213,7 @@ msgstr "Lig en &Kleur"
         dtd_snippet = r'''<!ENTITY key.accesskey      "L">
 <!ENTITY key.label       "Colour &amp; Light">'''
         dtdfile = self.merge2dtd(dtd_snippet, po_snippet)
-        dtdsource = str(dtdfile)
+        dtdsource = dtdfile.serialize()
         print(dtdsource)
         assert '"Lig en Kleur"' in dtdsource
         assert '"K"' in dtdsource
@@ -231,7 +231,7 @@ msgstr "Lig & &Kleur"
         dtd_snippet = r'''<!ENTITY key.accesskey      "L">
 <!ENTITY key.label       "Colour &amp; Light">'''
         dtdfile = self.merge2dtd(dtd_snippet, po_snippet)
-        dtdsource = str(dtdfile)
+        dtdsource = dtdfile.serialize()
         print(dtdsource)
         assert '"Lig &amp; Kleur"' in dtdsource
         assert '"K"' in dtdsource
@@ -240,21 +240,21 @@ msgstr "Lig & &Kleur"
         """test the error ouput when we find two entities"""
         simplestring = '''#: simple.string second.string\nmsgid "Simple String"\nmsgstr "Dimpled Ring"\n'''
         dtdfile = self.po2dtd(simplestring)
-        dtdsource = str(dtdfile)
+        dtdsource = dtdfile.serialize()
         assert "CONVERSION NOTE - multiple entities" in dtdsource
 
     def test_entities(self):
         """tests that entities are correctly idnetified in the dtd"""
         simplestring = '''#: simple.string\nmsgid "Simple String"\nmsgstr "Dimpled Ring"\n'''
         dtdfile = self.po2dtd(simplestring)
-        dtdsource = str(dtdfile)
+        dtdsource = dtdfile.serialize()
         assert dtdsource.startswith("<!ENTITY simple.string")
 
     def test_comments_translator(self):
         """tests for translator comments"""
         simplestring = '''# Comment1\n# Comment2\n#: simple.string\nmsgid "Simple String"\nmsgstr "Dimpled Ring"\n'''
         dtdfile = self.po2dtd(simplestring)
-        dtdsource = str(dtdfile)
+        dtdsource = dtdfile.serialize()
         assert dtdsource.startswith("<!-- Comment1 -->")
 
     def test_retains_hashprefix(self):
@@ -262,7 +262,7 @@ msgstr "Lig & &Kleur"
         hashpo = '''#: lang.version\nmsgid "__MOZILLA_LOCALE_VERSION__"\nmsgstr "__MOZILLA_LOCALE_VERSION__"\n'''
         hashdtd = '#expand <!ENTITY lang.version "__MOZILLA_LOCALE_VERSION__">\n'
         dtdfile = self.merge2dtd(hashdtd, hashpo)
-        regendtd = str(dtdfile)
+        regendtd = dtdfile.serialize()
         assert regendtd == hashdtd
 
     def test_convertdtd(self):
@@ -330,8 +330,8 @@ msgstr "simple string four"
 <!ENTITY simple.label3 "Simple string 3">
 '''
         newdtd = self.po2dtd(posource, remove_untranslated=True)
-        print(newdtd)
-        assert str(newdtd) == dtdexpected
+        print(newdtd.serialize())
+        assert newdtd.serialize() == dtdexpected
 
     def test_blank_source(self):
         """test removing of untranslated entries where source is blank"""
@@ -363,8 +363,8 @@ msgstr "Simple string 3"
         print(newdtd_with_template)
         assert newdtd_with_template == dtdexpected_with_template
         newdtd_no_template = self.po2dtd(posource, remove_untranslated=True)
-        print(newdtd_no_template)
-        assert str(newdtd_no_template) == dtdexpected_no_template
+        print(newdtd_no_template.serialize())
+        assert newdtd_no_template.serialize() == dtdexpected_no_template
 
     def test_newlines_escapes(self):
         """check that we can handle a \n in the PO file"""
@@ -372,8 +372,8 @@ msgstr "Simple string 3"
         dtdtemplate = '<!ENTITY  simple.label "A hard coded newline.\n">\n'
         dtdexpected = '''<!ENTITY  simple.label "Hart gekoeerde nuwe lyne\n">\n'''
         dtdfile = self.merge2dtd(dtdtemplate, posource)
-        print(dtdfile)
-        assert str(dtdfile) == dtdexpected
+        print(dtdfile.serialize())
+        assert dtdfile.serialize() == dtdexpected
 
     def test_roundtrip_simple(self):
         """checks that simple strings make it through a dtd->po->dtd roundtrip"""
@@ -440,8 +440,8 @@ msgstr "Simple string 3"
           '                                          next lines.">\n'
         dtdexpected = '<!ENTITY simple.label "Eerste lyne en dan volgende lyne.">\n'
         dtdfile = self.merge2dtd(dtdtemplate, posource)
-        print(dtdfile)
-        assert str(dtdfile) == dtdexpected
+        print(dtdfile.serialize())
+        assert dtdfile.serialize() == dtdexpected
 
     def test_preserving_spaces(self):
         """ensure that we preseve spaces between entity and value. Bug 1662"""
@@ -449,8 +449,8 @@ msgstr "Simple string 3"
         dtdtemplate = '<!ENTITY     simple.label         "One">\n'
         dtdexpected = '<!ENTITY     simple.label         "Een">\n'
         dtdfile = self.merge2dtd(dtdtemplate, posource)
-        print(dtdfile)
-        assert str(dtdfile) == dtdexpected
+        print(dtdfile.serialize())
+        assert dtdfile.serialize() == dtdexpected
 
     def test_preserving_spaces_after_value(self):
         """Preseve spaces after value. Bug 1662"""
@@ -459,22 +459,22 @@ msgstr "Simple string 3"
         dtdtemplate = '<!ENTITY simple.label "One" >\n'
         dtdexpected = '<!ENTITY simple.label "Een" >\n'
         dtdfile = self.merge2dtd(dtdtemplate, posource)
-        print(dtdfile)
-        assert str(dtdfile) == dtdexpected
+        print(dtdfile.serialize())
+        assert dtdfile.serialize() == dtdexpected
         # Space after >
         dtdtemplate = '<!ENTITY simple.label "One"> \n'
         dtdexpected = '<!ENTITY simple.label "Een"> \n'
         dtdfile = self.merge2dtd(dtdtemplate, posource)
         print(dtdfile)
-        assert str(dtdfile) == dtdexpected
+        assert dtdfile.serialize() == dtdexpected
 
     def test_comments(self):
         """test that we preserve comments, bug 351"""
         posource = '''#: name\nmsgid "Text"\nmsgstr "Teks"'''
         dtdtemplate = '''<!ENTITY name "%s">\n<!-- \n\nexample -->\n'''
         dtdfile = self.merge2dtd(dtdtemplate % "Text", posource)
-        print(dtdfile)
-        assert str(dtdfile) == dtdtemplate % "Teks"
+        print(dtdfile.serialize())
+        assert dtdfile.serialize() == dtdtemplate % "Teks"
 
     def test_duplicates(self):
         """test that we convert duplicates back correctly to their respective entries."""
@@ -504,8 +504,8 @@ msgstr "Dipukutshwayo3"
 <!ENTITY bookmarksButton.label "Dipukutshwayo3">
 '''
         dtdfile = self.merge2dtd(dtdtemplate, posource)
-        print(dtdfile)
-        assert str(dtdfile) == dtdexpected
+        print(dtdfile.serialize())
+        assert dtdfile.serialize() == dtdexpected
 
 
 class TestPO2DTDCommand(test_convert.TestConvertCommand, TestPO2DTD):

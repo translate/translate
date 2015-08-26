@@ -58,7 +58,7 @@ class TestMozLangFile(test_base.TestTranslationStore):
         assert unit.source == "Source"
         assert unit.target == "Target"
         assert "Comment" in unit.getnotes()
-        assert str(store) == lang
+        assert store.serialize() == lang
 
     def test_active_flag(self):
         """Test the ## active ## flag"""
@@ -67,7 +67,7 @@ class TestMozLangFile(test_base.TestTranslationStore):
                 "Target\n")
         store = self.StoreClass.parsestring(lang)
         assert store.is_active
-        assert str(store) == lang
+        assert store.serialize() == lang
 
     def test_multiline_comments(self):
         """Ensure we can handle and preserve miltiline comments"""
@@ -78,7 +78,7 @@ class TestMozLangFile(test_base.TestTranslationStore):
                 ";Source\n"
                 "Target\n")
         store = self.StoreClass.parsestring(lang)
-        assert str(store) == lang
+        assert store.serialize() == lang
 
     def test_template(self):
         """A template should have source == target, though it could be blank"""
@@ -88,7 +88,7 @@ class TestMozLangFile(test_base.TestTranslationStore):
         unit = store.units[0]
         assert unit.source == "Source"
         assert unit.target == ""
-        assert str(store) == lang
+        assert store.serialize() == lang
         lang2 = (";Source\n"
                 "\n"
                 ";Source2\n")

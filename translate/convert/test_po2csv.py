@@ -65,7 +65,7 @@ msgstr "Eerste lyn\nTweede lyn"
         unit = self.singleelement(csvfile)
         assert unit.source == "First line\nSecond line"
         assert unit.target == "Eerste lyn\nTweede lyn"
-        pofile = self.csv2po(str(csvfile))
+        pofile = self.csv2po(csvfile.serialize())
         unit = self.singleelement(pofile)
         assert unit.source == "First line\nSecond line"
         assert unit.target == "Eerste lyn\nTweede lyn"
@@ -107,12 +107,12 @@ msgstr "Vind\\Opsies"
         """Tests that single quotes are preserved correctly"""
         minipo = '''msgid "source 'source'"\nmsgstr "target 'target'"\n'''
         csvfile = self.po2csv(minipo)
-        print(str(csvfile))
+        print(csvfile.serialize())
         assert csvfile.findunit("source 'source'").target == "target 'target'"
         # Make sure we don't mess with start quotes until writing
         minipo = '''msgid "'source'"\nmsgstr "'target'"\n'''
         csvfile = self.po2csv(minipo)
-        print(str(csvfile))
+        print(csvfile.serialize())
         assert csvfile.findunit(r"'source'").target == r"'target'"
         # TODO check that we escape on writing not in the internal representation
 

@@ -206,7 +206,7 @@ class TestPYPOFile(test_po.TestPOFile):
         thepo = pofile.units[0]
         thepo.msgidcomments.append('"_: first comment\\n"')
         thepo.msgidcomments.append('"_: second comment\\n"')
-        regenposource = str(pofile)
+        regenposource = pofile.serialize()
         assert regenposource.count("_:") == 1
 
     def test_duplicates_default(self):
@@ -259,7 +259,7 @@ class TestPYPOFile(test_po.TestPOFile):
         posource = u'''#: nb\nmsgid "Norwegian Bokm\xe5l"\nmsgstr ""\n'''
         pofile = self.StoreClass(wStringIO.StringIO(posource.encode("UTF-8")), encoding="UTF-8")
         assert len(pofile.units) == 1
-        print(str(pofile))
+        print(pofile.serialize())
         thepo = pofile.units[0]
         assert str(thepo) == posource.encode("UTF-8")
         # extra test: what if we set the msgid to a unicode? this happens in prop2po etc
@@ -279,7 +279,7 @@ class TestPYPOFile(test_po.TestPOFile):
         pofile = self.poparse(posource)
         print(pofile)
         assert len(pofile.units) == 1
-        assert str(pofile) == posource
+        assert pofile.serialize() == posource
         assert pofile.units[0].othercomments == ["# other comment\n"]
         assert pofile.units[0].automaticcomments == ["#. automatic comment\n"]
         assert pofile.units[0].sourcecomments == ["#: source comment\n"]
@@ -289,7 +289,7 @@ class TestPYPOFile(test_po.TestPOFile):
         """tests behaviour of unassociated comments."""
         oldsource = '# old lonesome comment\n\nmsgid "one"\nmsgstr "een"\n'
         oldfile = self.poparse(oldsource)
-        print(str(oldfile))
+        print(oldfile.serialize())
         assert len(oldfile.units) == 1
 
     def test_prevmsgid_parse(self):
@@ -343,4 +343,4 @@ msgstr[1] "toetse"
         assert pofile.units[4].prev_msgctxt == [u'"context 2"']
         assert pofile.units[4].prev_source == multistring([u"tast", u"tasts"])
 
-        assert str(pofile) == posource
+        assert pofile.serialize() == posource

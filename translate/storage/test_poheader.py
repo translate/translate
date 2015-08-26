@@ -264,15 +264,15 @@ msgstr ""
 '''
     pofile = poparse(posource)
     pofile.updatecontributor("Grasvreter")
-    assert "# Grasvreter, 20" in str(pofile)
+    assert "# Grasvreter, 20" in pofile.serialize()
 
     pofile.updatecontributor("Koeivreter", "monster@grasveld.moe")
-    assert "# Koeivreter <monster@grasveld.moe>, 20" in str(pofile)
+    assert "# Koeivreter <monster@grasveld.moe>, 20" in pofile.serialize()
 
     pofile.header().addnote("Khaled Hosny <khaledhosny@domain.org>, 2006, 2007, 2008.")
     pofile.updatecontributor("Khaled Hosny", "khaledhosny@domain.org")
-    print(str(pofile))
-    assert "# Khaled Hosny <khaledhosny@domain.org>, 2006, 2007, 2008, %s." % time.strftime("%Y") in str(pofile)
+    print(pofile.serialize())
+    assert "# Khaled Hosny <khaledhosny@domain.org>, 2006, 2007, 2008, %s." % time.strftime("%Y") in pofile.serialize()
 
 
 def test_language():

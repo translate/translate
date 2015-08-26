@@ -30,7 +30,7 @@ class TestCSV2PO:
 
     def singleelement(self, storage):
         """checks that the pofile contains a single non-header element, and returns it"""
-        print(str(storage))
+        print(storage.serialize())
         assert headerless_len(storage.units) == 1
         return first_translatable(storage)
 
@@ -90,12 +90,12 @@ wat lank aanhou"
 ,"Use \"".","Gebruik \""."'''
         print(minicsv)
         csvfile = csvl10n.csvfile(wStringIO.StringIO(minicsv))
-        print(str(csvfile))
+        print(csvfile.serialize())
         pofile = self.csv2po(minicsv)
         unit = first_translatable(pofile)
         assert unit.source == 'Hello "Everyone"'
         assert pofile.findunit('Hello "Everyone"').target == 'Good day "All"'
-        print(str(pofile))
+        print(pofile.serialize())
         for unit in pofile.units:
             print(unit.source)
             print(unit.target)

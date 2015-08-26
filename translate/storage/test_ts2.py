@@ -87,8 +87,8 @@ class TestTSfile(test_base.TestTranslationStore):
         assert tsfile.units == []
         tsfile.addsourceunit("Bla")
         assert len(tsfile.units) == 1
-        newfile = ts.tsfile.parsestring(str(tsfile))
-        print(str(tsfile))
+        newfile = ts.tsfile.parsestring(tsfile.serialize())
+        print(tsfile.serialize())
         assert len(newfile.units) == 1
         assert newfile.units[0].source == "Bla"
         assert newfile.findunit("Bla").source == "Bla"
@@ -98,8 +98,8 @@ class TestTSfile(test_base.TestTranslationStore):
         tsfile = ts.tsfile()
         tsunit = tsfile.addsourceunit("Concept")
         tsunit.source = "Term"
-        newfile = ts.tsfile.parsestring(str(tsfile))
-        print(str(tsfile))
+        newfile = ts.tsfile.parsestring(tsfile.serialize())
+        print(tsfile.serialize())
         assert newfile.findunit("Concept") is None
         assert newfile.findunit("Term") is not None
 
@@ -107,8 +107,8 @@ class TestTSfile(test_base.TestTranslationStore):
         tsfile = ts.tsfile()
         tsunit = tsfile.addsourceunit("Concept")
         tsunit.target = "Konsep"
-        newfile = ts.tsfile.parsestring(str(tsfile))
-        print(str(tsfile))
+        newfile = ts.tsfile.parsestring(tsfile.serialize())
+        print(tsfile.serialize())
         assert newfile.findunit("Concept").target == "Konsep"
 
     def test_plurals(self):
@@ -116,8 +116,8 @@ class TestTSfile(test_base.TestTranslationStore):
         tsfile = ts.tsfile()
         tsunit = tsfile.addsourceunit("File(s)")
         tsunit.target = [u"Leêr", u"Leêrs"]
-        newfile = ts.tsfile.parsestring(str(tsfile))
-        print(str(tsfile))
+        newfile = ts.tsfile.parsestring(tsfile.serialize())
+        print(tsfile.serialize())
         checkunit = newfile.findunit("File(s)")
         assert checkunit.target == [u"Leêr", u"Leêrs"]
         assert checkunit.hasplural()
@@ -133,7 +133,7 @@ class TestTSfile(test_base.TestTranslationStore):
         assert tsfile.gettargetlanguage() == 'fr'
         assert tsfile.getsourcelanguage() == 'de'
         tsfile.settargetlanguage('pt_BR')
-        assert 'pt_BR' in str(tsfile)
+        assert 'pt_BR' in tsfile.serialize()
         assert tsfile.gettargetlanguage() == 'pt-br'
         # We convert en_US to en
         tsstr = '''<!DOCTYPE TS>
@@ -167,7 +167,7 @@ class TestTSfile(test_base.TestTranslationStore):
         newtsstr = tsstr.decode('utf-8').replace(
             '>TargetString', ' type="unfinished">TestTarget'
         ).encode('utf-8')
-        assert newtsstr == str(tsfile)
+        assert newtsstr == tsfile.serialize()
 
     def test_locations(self):
         """test that locations work well"""
@@ -253,4 +253,4 @@ class TestTSfile(test_base.TestTranslationStore):
     def test_backnforth(self):
         """test that ts files are read and output properly"""
         tsfile = ts.tsfile.parsestring(TS_NUMERUS)
-        assert str(tsfile) == TS_NUMERUS
+        assert tsfile.serialize() == TS_NUMERUS

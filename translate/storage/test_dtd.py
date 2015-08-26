@@ -197,7 +197,7 @@ class TestDTD(test_monolingual.TestMonolingualStore):
 
     def dtdregen(self, dtdsource):
         """helper that converts dtd source to dtdfile object and back"""
-        return str(self.dtdparse(dtdsource))
+        return self.dtdparse(dtdsource).serialize()
 
     def test_simpleentity(self):
         """checks that a simple dtd entity definition is parsed correctly"""
@@ -326,7 +326,7 @@ class TestDTD(test_monolingual.TestMonolingualStore):
         assert len(dtdfile.units) == 1
         dtdunit = dtdfile.units[0]
         assert dtdunit.definition == '"bananas for sale"'
-        assert str(dtdfile) == '<!ENTITY test.me "bananas for sale">\n'
+        assert dtdfile.serialize() == '<!ENTITY test.me "bananas for sale">\n'
 
     def test_missing_quotes(self, recwarn):
         """test that we fail graacefully when a message without quotes is found (bug #161)"""
@@ -408,7 +408,7 @@ class TestAndroidDTD(test_monolingual.TestMonolingualStore):
         in-memory store and writing back to an Android DTD file without really
         having a real file.
         """
-        return str(self.dtdparse(dtdsource))
+        return self.dtdparse(dtdsource).serialize()
 
     # Test for bug #2480
     def test_android_single_quote_escape(self):

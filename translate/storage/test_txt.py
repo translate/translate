@@ -19,7 +19,7 @@ class TestTxtFile(test_monolingual.TestMonolingualStore):
 
     def txtregen(self, txtsource):
         """helper that converts txt source to txtfile object and back"""
-        return str(self.txtparse(txtsource))
+        return self.txtparse(txtsource).serialize()
 
     def test_simpleblock(self):
         """checks that a simple txt block is parsed correctly"""
@@ -35,7 +35,7 @@ class TestTxtFile(test_monolingual.TestMonolingualStore):
         txtfile = self.txtparse(txtsource)
         assert len(txtfile.units) == 3
         print(txtsource)
-        print(str(txtfile))
+        print(txtfile.serialize())
         print("*%s*" % txtfile.units[0])
-        assert str(txtfile) == txtsource
+        assert txtfile.serialize() == txtsource
         assert self.txtregen(txtsource) == txtsource

@@ -24,7 +24,7 @@ class TestRcFile(object):
 
     def source_regenerate(self, source):
         """Helper that converts source to store object and back."""
-        return str(self.source_parse(source))
+        return self.source_parse(source).serialize()
 
     def test_parse_only_comments(self):
         """Test parsing a RC string with only comments."""

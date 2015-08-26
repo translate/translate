@@ -121,7 +121,7 @@ class TestDTD2PO:
 <!ENTITY alwaysCheckDefault.height  "3em">
 '''
         pofile = self.dtd2po(dtdsource)
-        posource = str(pofile)
+        posource = pofile.serialize()
         print(posource)
         assert posource.count('#.') == 5  # 1 Header extracted from, 3 comment lines, 1 autoinserted comment
 
@@ -156,7 +156,7 @@ class TestDTD2PO:
         dtdsource = '<!--LOCALIZATION NOTE (editorCheck.label): DONT_TRANSLATE -->\n' + \
             '<!ENTITY editorCheck.label "Composer">\n<!ENTITY editorCheck.accesskey "c">\n'
         pofile = self.dtd2po(dtdsource)
-        posource = str(pofile)
+        posource = pofile.serialize()
         # we need to decided what we're going to do here - see the comments in bug 30
         # this tests the current implementation which is that the DONT_TRANSLATE string is removed, but the other remains
         assert 'editorCheck.label' not in posource

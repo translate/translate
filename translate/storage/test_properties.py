@@ -111,7 +111,7 @@ class TestProp(test_monolingual.TestMonolingualStore):
 
     def propregen(self, propsource):
         """helper that converts properties source to propfile object and back"""
-        return str(self.propparse(propsource))
+        return self.propparse(propsource).serialize()
 
     def test_simpledefinition(self):
         """checks that a simple properties definition is parsed correctly"""
@@ -137,7 +137,7 @@ class TestProp(test_monolingual.TestMonolingualStore):
         propunit = propfile.units[0]
         assert propunit.name == "unicode"
         assert propunit.source.encode("UTF-8") == "БЖЙШ"
-        regensource = str(propfile)
+        regensource = propfile.serialize()
         assert messagevalue in regensource
         assert "\\u" not in regensource
 
@@ -337,7 +337,7 @@ key=value
         # - quotes inside are escaped
         # - for the sake of beauty a pair of spaces encloses the equal mark
         # - every line ends with ";"
-        assert str(propfile).strip('\n\x00') == propsource.strip('\n\x00')
+        assert propfile.serialize().strip('\n\x00') == propsource.strip('\n\x00')
 
     def test_override_encoding(self):
         """test that we can override the encoding of a properties file"""
@@ -362,7 +362,7 @@ key=value
         """test that BOM appears in the resulting text once only"""
         propsource = u"key1 = value1\nkey2 = value2\n".encode('utf-16')
         propfile = self.propparse(propsource, encoding='utf-16')
-        result = str(propfile)
+        result = propfile.serialize()
         bom = propsource[:2]
         assert result.startswith(bom)
         assert bom not in result[2:]

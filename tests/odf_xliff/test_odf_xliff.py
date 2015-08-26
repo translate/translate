@@ -63,7 +63,7 @@ xliff.xlifffile.__eq__ = xliff___eq__
 
 
 def print_diff(store1, store2):
-    for line in difflib.unified_diff(str(store1).split('\n'), str(store2).split('\n')):
+    for line in difflib.unified_diff(store1.serialize().split('\n'), store2.serialize().split('\n')):
         print(line)
 
 SOURCE_ODF = u'test_2.odt'
@@ -128,7 +128,7 @@ class ODF(object):
                     return False
         return True
 
-    def __str__(self):
+    def serialize(self):
         return self._get_doc_root('content.xml')
 
 

@@ -50,8 +50,8 @@ class TestQphFile(test_base.TestTranslationStore):
         assert qphfile.units == []
         qphfile.addsourceunit("Bla")
         assert len(qphfile.units) == 1
-        newfile = qph.QphFile.parsestring(str(qphfile))
-        print(str(qphfile))
+        newfile = qph.QphFile.parsestring(qphfile.serialize())
+        print(qphfile.serialize())
         assert len(newfile.units) == 1
         assert newfile.units[0].source == "Bla"
         assert newfile.findunit("Bla").source == "Bla"
@@ -61,8 +61,8 @@ class TestQphFile(test_base.TestTranslationStore):
         qphfile = qph.QphFile()
         qphunit = qphfile.addsourceunit("Concept")
         qphunit.source = "Term"
-        newfile = qph.QphFile.parsestring(str(qphfile))
-        print(str(qphfile))
+        newfile = qph.QphFile.parsestring(qphfile.serialize())
+        print(qphfile.serialize())
         assert newfile.findunit("Concept") is None
         assert newfile.findunit("Term") is not None
 
@@ -70,8 +70,8 @@ class TestQphFile(test_base.TestTranslationStore):
         qphfile = qph.QphFile()
         qphunit = qphfile.addsourceunit("Concept")
         qphunit.target = "Konsep"
-        newfile = qph.QphFile.parsestring(str(qphfile))
-        print(str(qphfile))
+        newfile = qph.QphFile.parsestring(qphfile.serialize())
+        print(qphfile.serialize())
         assert newfile.findunit("Concept").target == "Konsep"
 
     def test_language(self):
@@ -85,7 +85,7 @@ class TestQphFile(test_base.TestTranslationStore):
         assert qphfile.gettargetlanguage() == 'fr'
         assert qphfile.getsourcelanguage() == 'de'
         qphfile.settargetlanguage('pt_BR')
-        assert 'pt_BR' in str(qphfile)
+        assert 'pt_BR' in qphfile.serialize()
         assert qphfile.gettargetlanguage() == 'pt-br'
         # We convert en_US to en
         qphstr = '''<!DOCTYPE QPH>

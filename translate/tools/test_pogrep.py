@@ -22,8 +22,8 @@ class TestPOGrep:
         options, args = pogrep.cmdlineparser().parse_args(["xxx.po"] + cmdlineoptions)
         grepfilter = pogrep.GrepFilter(searchstring, options.searchparts, options.ignorecase, options.useregexp, options.invertmatch, options.keeptranslations, options.accelchar)
         tofile = grepfilter.filterfile(self.poparse(posource))
-        print(str(tofile))
-        return str(tofile)
+        print(tofile.serialize())
+        return tofile.serialize()
 
     def test_simplegrep_msgid(self):
         """grep for a string in the source"""
@@ -151,7 +151,7 @@ class TestXLiffGrep:
         options, args = pogrep.cmdlineparser().parse_args(["xxx.xliff"] + cmdlineoptions)
         grepfilter = pogrep.GrepFilter(searchstring, options.searchparts, options.ignorecase, options.useregexp, options.invertmatch, options.accelchar)
         tofile = grepfilter.filterfile(self.xliff_parse(xliff_text))
-        return str(tofile)
+        return tofile.serialize()
 
     def test_simplegrep(self):
         """grep for a simple string."""
