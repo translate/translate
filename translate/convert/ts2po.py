@@ -77,7 +77,7 @@ def convertts(inputfile, outputfile, templates, pot=False, duplicatestyle="msgct
     outputstore = convertor.convertfile(inputfile)
     if outputstore.isempty():
         return 0
-    outputfile.write(str(outputstore))
+    outputfile.write(outputstore.serialize())
     return 1
 
 

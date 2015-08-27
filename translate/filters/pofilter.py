@@ -220,7 +220,7 @@ def runfilter(inputfile, outputfile, templatefile, checkfilter=None):
     if tofile.isempty():
         return 0
 
-    outputfile.write(str(tofile))
+    outputfile.write(tofile.serialize())
 
     return 1
 

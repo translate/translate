@@ -73,7 +73,7 @@ def converttiki(inputfile, outputfile, template=None, includeunused=False):
     outputstore = convertor.convertstore(inputstore)
     if outputstore.isempty():
         return False
-    outputfile.write(str(outputstore))
+    outputfile.write(outputstore.serialize())
     return True
 
 

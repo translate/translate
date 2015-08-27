@@ -49,7 +49,7 @@ class reini:
                         unit.target = inputunit.target
                 else:
                     unit.target = unit.source
-        return str(self.templatestore)
+        return self.templatestore.serialize()
 
 
 def convertini(inputfile, outputfile, templatefile, includefuzzy=False,

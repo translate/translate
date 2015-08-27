@@ -59,7 +59,7 @@ def pretranslate_file(input_file, output_file, template_file, tm=None,
 
     output = pretranslate_store(input_store, template_store, tm,
                                 min_similarity, fuzzymatching)
-    output_file.write(str(output))
+    output_file.write(output.serialize())
     return 1
 
 

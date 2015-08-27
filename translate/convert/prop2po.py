@@ -319,7 +319,7 @@ def convertprop(inputfile, outputfile, templatefile, personality="java",
         outputstore = convertor.mergestore(templatestore, inputstore)
     if outputstore.isempty():
         return 0
-    outputfile.write(str(outputstore))
+    outputfile.write(outputstore.serialize())
     return 1
 
 

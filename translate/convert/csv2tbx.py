@@ -66,7 +66,7 @@ def convertcsv(inputfile, outputfile, templatefile, charset=None,
     outputstore = convertor.convertfile(inputstore)
     if len(outputstore.units) == 0:
         return 0
-    outputfile.write(str(outputstore))
+    outputfile.write(outputstore.serialize())
     return 1
 
 

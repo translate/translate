@@ -790,7 +790,7 @@ class TranslationStore(object):
 
     def savefile(self, storefile):
         """Write the string representation to the given file (or filename)."""
-        storestring = str(self)
+        storestring = self.serialize()
         if isinstance(storefile, six.string_types):
             storefile = open(storefile, 'wb')
         self.fileobj = storefile

@@ -102,7 +102,7 @@ def convertxliff(inputfile, outputfile, templates, duplicatestyle="msgctxt"):
     outputstore = convertor.convertstore(inputfile, duplicatestyle)
     if outputstore.isempty():
         return 0
-    outputfile.write(str(outputstore))
+    outputfile.write(outputstore.serialize())
     return 1
 
 

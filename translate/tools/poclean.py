@@ -63,7 +63,7 @@ def runclean(inputfile, outputfile, templatefile):
     cleanfile(fromfile)
 #    if fromfile.isempty():
 #        return False
-    outputfile.write(str(fromfile))
+    outputfile.write(fromfile.serialize())
     return True
 
 

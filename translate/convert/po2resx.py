@@ -53,7 +53,7 @@ class po2resx:
             if inputunit is not None:
                 self.addcomments(inputunit, unit)
 
-        return str(self.templatestore)
+        return self.templatestore.serialize()
 
     def addcomments(self, inputunit, unit):
         comments = []

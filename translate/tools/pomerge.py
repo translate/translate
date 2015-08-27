@@ -99,7 +99,7 @@ def mergestore(inputfile, outputfile, templatefile, mergeblanks="no", mergefuzzy
                     mergefuzzy, mergecomments)
     if outputstore.isempty():
         return 0
-    outputfile.write(str(outputstore))
+    outputfile.write(outputstore.serialize())
     return 1
 
 

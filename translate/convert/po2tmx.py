@@ -109,7 +109,7 @@ class TmxOptionParser(convert.ArchiveConvertOptionParser):
         super(TmxOptionParser, self).recursiveprocess(options)
         with open(options.output, 'wb') as self.output:
             options.outputarchive.tmxfile.setsourcelanguage(options.sourcelanguage)
-            self.output.write(str(options.outputarchive.tmxfile))
+            self.output.write(options.outputarchive.tmxfile.serialize())
 
 
 def main(argv=None):

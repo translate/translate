@@ -52,7 +52,7 @@ def convertpot(input_file, output_file, template_file, tm=None,
 
     output_store = convert_stores(input_store, template_store, temp_store, tm,
                                   min_similarity, fuzzymatching, **kwargs)
-    output_file.write(str(output_store))
+    output_file.write(output_store.serialize())
 
     return 1
 

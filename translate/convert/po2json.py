@@ -47,7 +47,7 @@ class rejson:
                     unit.target = inputunit.target
             else:
                 unit.target = unit.source
-        return str(self.templatestore)
+        return self.templatestore.serialize()
 
 
 def convertjson(inputfile, outputfile, templatefile, includefuzzy=False,

@@ -108,7 +108,7 @@ def convertsub(input_file, output_file, template_file=None, pot=False,
                                    duplicatestyle=duplicatestyle)
     if output_store.isempty():
         return 0
-    output_file.write(str(output_store))
+    output_file.write(output_store.serialize())
     return 1
 
 

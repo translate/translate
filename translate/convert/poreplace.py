@@ -47,7 +47,7 @@ class poreplace:
         outputstore = self.convertfile(inputstore)
         if outputstore.isempty():
             return 0
-        outputfile.write(str(outputstore))
+        outputfile.write(outputstore.serialize())
         return 1
 
 

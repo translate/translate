@@ -53,7 +53,7 @@ class POCompile:
                         mounit.msgctxt = [context]
                 mounit.target = unit.target
                 outputfile.addunit(mounit)
-        return str(outputfile)
+        return outputfile.serialize()
 
 
 def convertmo(inputfile, outputfile, templatefile, includefuzzy=False):

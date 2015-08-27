@@ -315,7 +315,7 @@ def convertpo(inputfile, outputfile, templatefile, format=None, rewritestyle=Non
         return 0
     convertor = podebug(format=format, rewritestyle=rewritestyle, ignoreoption=ignoreoption)
     outputstore = convertor.convertstore(inputstore)
-    outputfile.write(str(outputstore))
+    outputfile.write(outputstore.serialize())
     return 1
 
 

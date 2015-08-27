@@ -66,7 +66,7 @@ def convertlang(inputfile, outputfile, templates, includefuzzy=False, mark_activ
 
     convertor = po2lang(mark_active=mark_active)
     outputstore = convertor.convertstore(inputstore, includefuzzy)
-    outputfile.write(str(outputstore))
+    outputfile.write(outputstore.serialize())
     return True
 
 
