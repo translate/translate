@@ -5,14 +5,6 @@ misc
    :show-inheritance:
 
 
-autoencode
-----------
-
-.. automodule:: translate.misc.autoencode
-   :members:
-   :inherited-members:
-
-
 dictutils
 ---------
 

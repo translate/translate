@@ -2,10 +2,10 @@
 
 import pytest
 
-from translate.misc import multistring, test_autoencode
+from translate.misc import multistring
 
 
-class TestMultistring(test_autoencode.TestAutoencode):
+class TestMultistring:
     type2test = multistring.multistring
 
     def test_constructor(self):
@@ -16,6 +16,7 @@ class TestMultistring(test_autoencode.TestAutoencode):
         assert s1.strings == ["test"]
         s2 = t(["test", "me"])
         assert type(s2) == t
+        assert repr(s2) == 'multistring([test,me])'
         assert s2 == "test"
         assert s2.strings == ["test", "me"]
         assert s2 != s1

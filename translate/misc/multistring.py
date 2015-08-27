@@ -23,22 +23,18 @@ strings in the strings attribute"""
 
 import six
 
-from translate.misc import autoencode
 
+class multistring(six.text_type):
 
-class multistring(autoencode.autoencode):
-
-    def __new__(newtype, string=u"", encoding=None, errors=None):
+    def __new__(newtype, string=u"", *args, **kwargs):
         if isinstance(string, list):
             if not string:
                 raise ValueError("multistring must contain at least one string")
             mainstring = string[0]
-            newstring = multistring.__new__(newtype, string[0],
-                                            encoding, errors)
-            newstring.strings = [newstring] + [autoencode.autoencode.__new__(autoencode.autoencode, altstring, encoding, errors) for altstring in string[1:]]
+            newstring = multistring.__new__(newtype, string[0])
+            newstring.strings = [newstring] + [multistring.__new__(newtype, altstring) for altstring in string[1:]]
         else:
-            newstring = autoencode.autoencode.__new__(newtype, string,
-                                                      encoding, errors)
+            newstring = six.text_type.__new__(newtype, string)
             newstring.strings = [newstring]
         return newstring
 
@@ -52,13 +48,11 @@ class multistring(autoencode.autoencode):
             # Python 3 compatible cmp() equivalent
             return (s1 > s2) - (s1 < s2)
         if isinstance(otherstring, multistring):
-            parentcompare = cmp_compat(autoencode.autoencode(self), otherstring)
+            parentcompare = cmp_compat(six.text_type(self), otherstring)
             if parentcompare:
                 return parentcompare
             else:
                 return cmp_compat(self.strings[1:], otherstring.strings[1:])
-        elif isinstance(otherstring, autoencode.autoencode):
-            return cmp_compat(autoencode.autoencode(self), otherstring)
         elif isinstance(otherstring, six.text_type):
             return cmp_compat(six.text_type(self), otherstring)
         elif isinstance(otherstring, bytes):
@@ -78,17 +72,13 @@ class multistring(autoencode.autoencode):
         return self.__cmp__(otherstring) == 0
 
     def __repr__(self):
-        parts = [autoencode.autoencode.__repr__(self)] + \
-                [repr(a) for a in self.strings[1:]]
-        return "multistring([" + ",".join(parts) + "])"
+        return "multistring([" + ",".join(self.strings) + "])"
 
     def replace(self, old, new, count=None):
         if count is None:
-            newstr = multistring(super(multistring, self) \
-                   .replace(old, new), self.encoding)
+            newstr = multistring(super(multistring, self).replace(old, new))
         else:
-            newstr = multistring(super(multistring, self) \
-                   .replace(old, new, count), self.encoding)
+            newstr = multistring(super(multistring, self).replace(old, new, count))
         for s in self.strings[1:]:
             if count is None:
                 newstr.strings.append(s.replace(old, new))

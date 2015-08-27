@@ -226,7 +226,7 @@ class pounit(pocommon.pounit):
         singular = unquotefrompo(msgid)
         if self.hasplural():
             pluralform = unquotefrompo(msgid_plural)
-            return multistring([singular, pluralform], self._encoding)
+            return multistring([singular, pluralform])
         return singular
 
     def _set_source_vars(self, source):
@@ -275,7 +275,7 @@ class pounit(pocommon.pounit):
     def gettarget(self):
         """Returns the unescaped msgstr"""
         if isinstance(self.msgstr, dict):
-            return multistring(list(map(unquotefrompo, self.msgstr.values())), self._encoding)
+            return multistring(list(map(unquotefrompo, self.msgstr.values())))
         else:
             return unquotefrompo(self.msgstr)
 

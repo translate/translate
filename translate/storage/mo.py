@@ -269,14 +269,13 @@ class mofile(poheader.poheader, base.TranslationStore):
             if "\x04" in source:
                 context, source = source.split("\x04")
             # Still need to handle KDE comments
-            source = multistring(source.split("\0"), encoding=self._encoding)
+            source = multistring(source.split("\0"))
             if source == "":
                 charset = re.search("charset=([^\\s]+)",
                                     input[voffset:voffset + vlength])
                 if charset:
                     self._encoding = po.encodingToUse(charset.group(1))
-            target = multistring(input[voffset:voffset + vlength].split("\0"),
-                                 encoding=self._encoding)
+            target = multistring(input[voffset:voffset + vlength].split("\0"))
             newunit = mounit(source)
             newunit.settarget(target)
             if context is not None:
