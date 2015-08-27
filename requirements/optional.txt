@@ -4,8 +4,8 @@
 # Format support #
 ##################
 BeautifulSoup4>=4.3  # Trados TM
-iniparse>=0.3.1      # INI (ini2po)
-vobject>=0.6.6       # iCal (ical2po)
+iniparse>=0.3.1 ;python_version < '3.0'      # INI (ini2po)
+vobject>=0.6.6 ;python_version < '3.0'       # iCal (ical2po)
 
 #aeidon>=0.14        # Subtitles (sub2po)
 # aeidon not available through pip/PyPI,
