@@ -48,9 +48,12 @@ def quote_plus(text):
 def unquote_plus(text):
     """unquote('%7e/abc+def') -> '~/abc def'"""
     try:
-        if isinstance(text, six.text_type):
+        if six.PY2 and isinstance(text, six.text_type):
             text = text.encode('utf-8')
-        return parse.unquote_plus(text).decode('utf-8')
+        result = parse.unquote_plus(text)
+        if six.PY2:
+            result = result.decode('utf-8')
+        return result
     except UnicodeEncodeError as e:
         # for some reason there is a non-ascii character here. Let's assume it
         # is already unicode (because of originally decoding the file)
