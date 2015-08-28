@@ -74,7 +74,7 @@ def _examine_txt(storefile):
         encoding = 'utf-16'
     else:
         encoding = 'iso-8859-1'
-    start = start.decode(encoding).encode('utf-8')
+    start = start.decode(encoding)
     if '%Wordfast TM' in start:
         pseudo_extension = '_wftm'
     elif '<RTF Preamble>' in start:
@@ -91,17 +91,17 @@ def _guessextention(storefile):
     """Guesses the type of a file object by looking at the first few characters.
     The return value is a file extention ."""
     start = storefile.read(300).strip()
-    if '<xliff ' in start:
+    if b'<xliff ' in start:
         extention = 'xlf'
-    elif 'msgid "' in start:
+    elif b'msgid "' in start:
         extention = 'po'
-    elif '%Wordfast TM' in start:
+    elif b'%Wordfast TM' in start:
         extention = 'txt'
-    elif '<!DOCTYPE TS>' in start:
+    elif b'<!DOCTYPE TS>' in start:
         extention = 'ts'
-    elif '<tmx ' in start:
+    elif b'<tmx ' in start:
         extention = 'tmx'
-    elif '#UTX' in start:
+    elif b'#UTX' in start:
         extention = 'utx'
     else:
         raise ValueError("Failed to guess file type.")

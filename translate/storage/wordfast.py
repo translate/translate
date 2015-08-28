@@ -159,7 +159,7 @@ WF_ESCAPE_MAP = (
              )
 """Mapping of Wordfast &'XX; escapes to correct Unicode characters"""
 
-TAB_UTF16 = "\x00\x09"
+TAB_UTF16 = b"\x00\x09"
 """The tab \\t character as it would appear in UTF-16 encoding"""
 
 
@@ -380,7 +380,7 @@ class WordfastTMFile(base.TranslationStore):
             tmsrc = input.read()
             input.close()
             input = tmsrc
-        if TAB_UTF16 in input.split("\n")[0]:
+        if TAB_UTF16 in input.split(b"\n")[0]:
             self._encoding = 'utf-16'
         else:
             self._encoding = 'iso-8859-1'

@@ -28,7 +28,7 @@ class StringIO(BytesIO):
 
     def __init__(self, buf=''):
         if not isinstance(buf, six.string_types):
-            buf = str(buf)
+            buf = bytes(buf)
         if isinstance(buf, six.text_type):
             buf = buf.encode('utf-8')
         super(StringIO, self).__init__(buf)
