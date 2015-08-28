@@ -128,6 +128,9 @@ class TranslationUnit(object):
         """
         return self.source == other.source and self.target == other.target
 
+    def __hash__(self):
+        return None
+
     def __str__(self):
         """Converts to a string representation. Most often overriden by subclasses."""
         # no point in showing store object.

@@ -55,14 +55,14 @@ def calcstats_old(filename):
     except ValueError as e:
         logger.warning(e)
         return {}
-    units = filter(lambda unit: unit.istranslatable(), store.units)
+    units = [unit for unit in store.units if unit.istranslatable()]
     translated = translatedmessages(units)
     fuzzy = fuzzymessages(units)
-    review = filter(lambda unit: unit.isreview(), units)
+    review = [unit for unit in units if unit.isreview()]
     untranslated = untranslatedmessages(units)
-    wordcounts = dict(map(lambda unit: (unit, statsdb.wordsinunit(unit)), units))
-    sourcewords = lambda elementlist: sum(map(lambda unit: wordcounts[unit][0], elementlist))
-    targetwords = lambda elementlist: sum(map(lambda unit: wordcounts[unit][1], elementlist))
+    wordcounts = dict((id(unit), statsdb.wordsinunit(unit)) for unit in units)
+    sourcewords = lambda elementlist: sum(wordcounts[id(unit)][0] for unit in elementlist)
+    targetwords = lambda elementlist: sum(wordcounts[id(unit)][1] for unit in elementlist)
     stats = {}
 
     # units
@@ -180,15 +180,15 @@ def summarize(title, stats, style=style_full, indent=8, incomplete_only=False):
 
 
 def fuzzymessages(units):
-    return filter(lambda unit: unit.isfuzzy() and unit.target, units)
+    return [unit for unit in units if unit.isfuzzy() and unit.target]
 
 
 def translatedmessages(units):
-    return filter(lambda unit: unit.istranslated(), units)
+    return [unit for unit in units if unit.istranslated()]
 
 
 def untranslatedmessages(units):
-    return filter(lambda unit: not (unit.istranslated() or unit.isfuzzy()) and unit.source, units)
+    return [unit for unit in units if not (unit.istranslated() or unit.isfuzzy()) and unit.source]
 
 
 class summarizer:

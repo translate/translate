@@ -94,7 +94,7 @@ class TestPOCount:
     """This only tests the old (memory-based) pocount method, not the current
     code based on statsdb."""
 
-    inputdata = r'''
+    inputdata = br'''
 msgid "translated unit"
 msgstr "translated unit"
 
