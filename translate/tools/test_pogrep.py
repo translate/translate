@@ -29,7 +29,7 @@ class TestPOGrep:
         """grep for a string in the source"""
         posource = '#: test.c\nmsgid "test"\nmsgstr "rest"\n'
         poresult = self.pogrep(posource, "test", ["--search=msgid"])
-        assert poresult.index(posource) >= 0
+        assert poresult.decode('utf-8').index(posource) >= 0
         poresult = self.pogrep(posource, "rest", ["--search=msgid"])
         assert headerless_len(po.pofile(poresult).units) == 0
 
@@ -37,7 +37,7 @@ class TestPOGrep:
         """grep for a string in the target"""
         posource = '#: test.c\nmsgid "test"\nmsgstr "rest"\n'
         poresult = self.pogrep(posource, "rest", ["--search=msgstr"])
-        assert poresult.index(posource) >= 0
+        assert poresult.decode('utf-8').index(posource) >= 0
         poresult = self.pogrep(posource, "test", ["--search=msgstr"])
         assert headerless_len(po.pofile(poresult).units) == 0
 
@@ -45,7 +45,7 @@ class TestPOGrep:
         """grep for a string in the location comments"""
         posource = '#: test.c\nmsgid "test"\nmsgstr "rest"\n'
         poresult = self.pogrep(posource, "test.c", ["--search=locations"])
-        assert poresult.index(posource) >= 0
+        assert poresult.decode('utf-8').index(posource) >= 0
         poresult = self.pogrep(posource, "rest.c", ["--search=locations"])
         assert headerless_len(po.pofile(poresult).units) == 0
 
@@ -53,7 +53,7 @@ class TestPOGrep:
         """grep for a string in the comments"""
         posource = '# (review) comment\n#: test.c\nmsgid "test"\nmsgstr "rest"\n'
         poresult = self.pogrep(posource, "review", ["--search=comment"])
-        assert poresult.index(posource) >= 0
+        assert poresult.decode('utf-8').index(posource) >= 0
         poresult = self.pogrep(posource, "test", ["--search=comment"])
         assert headerless_len(po.pofile(poresult).units) == 0
 
@@ -63,43 +63,43 @@ class TestPOGrep:
         """
         posource = '# (review) comment\n#: test.c\nmsgid "test"\nmsgstr "rest"\n'
         poresult = self.pogrep(posource, "test", ["--search=comment", "--search=locations"])
-        assert poresult.index(posource) >= 0
+        assert poresult.decode('utf-8').index(posource) >= 0
         poresult = self.pogrep(posource, "rest", ["--search=comment", "--search=locations"])
         assert headerless_len(po.pofile(poresult).units) == 0
 
     def test_unicode_message_searchstring(self):
         """check that we can grep unicode messages and use unicode search strings"""
         poascii = '# comment\n#: test.c\nmsgid "test"\nmsgstr "rest"\n'
-        pounicode = '# comment\n#: test.c\nmsgid "test"\nmsgstr "rešṱ"\n'
+        pounicode = u'# comment\n#: test.c\nmsgid "test"\nmsgstr "rešṱ"\n'
         queryascii = 'rest'
-        queryunicode = 'rešṱ'
+        queryunicode = u'rešṱ'
         for source, search, expected in [(poascii, queryascii, poascii),
                                          (poascii, queryunicode, ''),
                                          (pounicode, queryascii, ''),
                                          (pounicode, queryunicode, pounicode)]:
             print("Source:\n%s\nSearch: %s\n" % (source, search))
-            poresult = self.pogrep(source, search)
+            poresult = self.pogrep(source, search).decode('utf-8')
             assert poresult.index(expected) >= 0
 
     def test_unicode_message_regex_searchstring(self):
         """check that we can grep unicode messages and use unicode regex search strings"""
         poascii = '# comment\n#: test.c\nmsgid "test"\nmsgstr "rest"\n'
-        pounicode = '# comment\n#: test.c\nmsgid "test"\nmsgstr "rešṱ"\n'
+        pounicode = u'# comment\n#: test.c\nmsgid "test"\nmsgstr "rešṱ"\n'
         queryascii = 'rest'
-        queryunicode = 'rešṱ'
+        queryunicode = u'rešṱ'
         for source, search, expected in [(poascii, queryascii, poascii),
                                          (poascii, queryunicode, ''),
                                          (pounicode, queryascii, ''),
                                          (pounicode, queryunicode, pounicode)]:
             print("Source:\n%s\nSearch: %s\n" % (source, search))
-            poresult = self.pogrep(source, search, ["--regexp"])
+            poresult = self.pogrep(source, search, ["--regexp"]).decode('utf-8')
             assert poresult.index(expected) >= 0
 
     def test_keep_translations(self):
         """check that we can grep unicode messages and use unicode regex search strings"""
         posource = '#: schemas.in\nmsgid "test"\nmsgstr "rest"\n'
         poresult = self.pogrep(posource, "schemas.in", ["--invert-match", "--keep-translations", "--search=locations"])
-        assert poresult.index(posource) >= 0
+        assert poresult.decode('utf-8').index(posource) >= 0
         poresult = self.pogrep(posource, "schemas.in", ["--invert-match", "--search=locations"])
         assert headerless_len(po.pofile(poresult).units) == 0
 
