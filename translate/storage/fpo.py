@@ -432,7 +432,7 @@ class pofile(pocommon.pofile):
         deleted afterwards."""
         for unit in self._cpo_store.units:
             self.addunit(self.UnitClass.buildfromunit(unit))
-        self._encoding = self._cpo_store._encoding
+        self.encoding = self._cpo_store.encoding
 
     def _build_cpo_from_self(self):
         """Builds the internal cpo store from the data in self.
@@ -442,10 +442,10 @@ class pofile(pocommon.pofile):
         self._cpo_store = cpo.pofile(noheader=True)
         for unit in self.units:
             if not unit.isblank():
-                self._cpo_store.addunit(cpo.pofile.UnitClass.buildfromunit(unit, self._encoding))
+                self._cpo_store.addunit(cpo.pofile.UnitClass.buildfromunit(unit, self.encoding))
         if not self._cpo_store.header():
             #only add a temporary header
-            self._cpo_store.makeheader(charset=self._encoding, encoding="8bit")
+            self._cpo_store.makeheader(charset=self.encoding, encoding="8bit")
 
     def parse(self, input, duplicatestyle="merge"):
         """Parses the given file or file source string."""
@@ -524,11 +524,11 @@ class pofile(pocommon.pofile):
 
     def serialize(self):
         """Convert to bytes. double check that unicode is handled somehow here"""
-        self._cpo_store = cpo.pofile(encoding=self._encoding, noheader=True)
+        self._cpo_store = cpo.pofile(encoding=self.encoding, noheader=True)
         try:
             self._build_cpo_from_self()
         except UnicodeEncodeError as e:
-            self._encoding = "utf-8"
+            self.encoding = "utf-8"
             self.updateheader(add=True, Content_Type="text/plain; charset=UTF-8")
             self._build_cpo_from_self()
         output = self._cpo_store.serialize()

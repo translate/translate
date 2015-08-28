@@ -235,7 +235,6 @@ class CatkeysFile(base.TranslationStore):
         base.TranslationStore.__init__(self, unitclass=unitclass)
         self.filename = ''
         self.header = CatkeysHeader()
-        self._encoding = 'utf-8'
         if inputfile is not None:
             self.parse(inputfile)
 

@@ -86,7 +86,6 @@ class SubtitleFile(base.TranslationStore):
         self.units = []
         self.filename = None
         self._subtitlefile = None
-        self._encoding = 'utf_8'
         if inputfile is not None:
             self._parsefile(inputfile)
 
@@ -104,11 +103,9 @@ class SubtitleFile(base.TranslationStore):
 
     def _parse(self):
         try:
-            self._encoding = detect(self.filename)
-            if self._encoding == 'ascii':
-                self._encoding = 'utf_8'
-            self._format = determine(self.filename, self._encoding)
-            self._subtitlefile = new(self._format, self.filename, self._encoding)
+            self.encoding = detect(self.filename)
+            self._format = determine(self.filename, self.encoding)
+            self._subtitlefile = new(self._format, self.filename, self.encoding)
             for subtitle in self._subtitlefile.read():
                 newunit = self.addsourceunit(subtitle.main_text)
                 newunit._start = subtitle.start
@@ -168,7 +165,7 @@ class SubRipFile(SubtitleFile):
     def __init__(self, *args, **kwargs):
         super(SubRipFile, self).__init__(*args, **kwargs)
         if self._subtitlefile is None:
-            self._subtitlefile = SubRip(self.filename or '', self._encoding)
+            self._subtitlefile = SubRip(self.filename or '', self.encoding)
         if self._subtitlefile.newline is None:
             self._subtitlefile.newline = newlines.UNIX
 
@@ -181,7 +178,7 @@ class MicroDVDFile(SubtitleFile):
     def __init__(self, *args, **kwargs):
         super(SubRipFile, self).__init__(*args, **kwargs)
         if self._subtitlefile is None:
-            self._subtitlefile = MicroDVD(self.filename or '', self._encoding)
+            self._subtitlefile = MicroDVD(self.filename or '', self.encoding)
         if self._subtitlefile.newline is None:
             self._subtitlefile.newline = newlines.UNIX
 
@@ -194,7 +191,7 @@ class AdvSubStationAlphaFile(SubtitleFile):
     def __init__(self, *args, **kwargs):
         super(SubRipFile, self).__init__(*args, **kwargs)
         if self._subtitlefile is None:
-            self._subtitlefile = AdvSubStationAlpha(self.filename or '', self._encoding)
+            self._subtitlefile = AdvSubStationAlpha(self.filename or '', self.encoding)
         if self._subtitlefile.newline is None:
             self._subtitlefile.newline = newlines.UNIX
 
@@ -207,6 +204,6 @@ class SubStationAlphaFile(SubtitleFile):
     def __init__(self, *args, **kwargs):
         super(SubRipFile, self).__init__(*args, **kwargs)
         if self._subtitlefile is None:
-            self._subtitlefile = SubStationAlpha(self.filename or '', self._encoding)
+            self._subtitlefile = SubStationAlpha(self.filename or '', self.encoding)
         if self._subtitlefile.newline is None:
             self._subtitlefile.newline = newlines.UNIX

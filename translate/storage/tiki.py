@@ -139,7 +139,7 @@ class TikiStore(base.TranslationStore):
             output += six.text_type(unit)
 
         output += self._tiki_footer()
-        return output.encode('UTF-8')
+        return output.encode(self.encoding)
 
     def _tiki_header(self):
         """Returns a tiki-file header string."""

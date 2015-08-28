@@ -502,14 +502,31 @@ class TranslationStore(object):
     """Indicates if format can store suggestions and alternative translation
     for a unit"""
 
+    default_encoding = 'utf-8'
     sourcelanguage = None
     targetlanguage = None
 
-    def __init__(self, unitclass=None):
+    def __init__(self, unitclass=None, encoding=None):
         """Construct a blank TranslationStore."""
         self.units = []
         if unitclass:
             self.UnitClass = unitclass
+        self._encoding = encoding
+
+    @property
+    def encoding(self):
+        # self._encoding is either defined by __init__ or auto-detected from parsed file
+        if self._encoding == 'auto':
+            return 'utf-8'
+        return self._encoding or self.default_encoding
+
+    @encoding.setter
+    def encoding(self, value):
+        if value == "CHARSET" or value is None:
+            return
+        if value == 'ascii':
+            value = 'utf-8'
+        self._encoding = value
 
     def getsourcelanguage(self):
         """Get the source language for this store."""
@@ -740,6 +757,10 @@ class TranslationStore(object):
         return newstore
 
     def detect_encoding(self, text, default_encodings=None):
+        """
+        Try to detect a file encoding from `text`, using either the chardet lib
+        or by trying to decode the file.
+        """
         if not default_encodings:
             default_encodings = ['utf-8']
         try:
@@ -754,7 +775,8 @@ class TranslationStore(object):
             detected_encoding = None
 
         encodings = []
-        if self.encoding == 'auto':
+        # Purposefully accessed the internal _encoding, as encoding is never 'auto'
+        if self._encoding == 'auto':
             if detected_encoding and detected_encoding['encoding'] not in encodings:
                 encodings.append(detected_encoding['encoding'])
             for encoding in default_encodings:

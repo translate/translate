@@ -198,11 +198,10 @@ class phpfile(base.TranslationStore):
     """This class represents a PHP file, made up of phpunits."""
     UnitClass = phpunit
 
-    def __init__(self, inputfile=None, encoding='utf-8'):
+    def __init__(self, inputfile=None, **kwargs):
         """Construct a phpfile, optionally reading in from inputfile."""
-        super(phpfile, self).__init__(unitclass=self.UnitClass)
+        super(phpfile, self).__init__(unitclass=self.UnitClass, **kwargs)
         self.filename = getattr(inputfile, 'name', '')
-        self._encoding = encoding
         if inputfile is not None:
             phpsrc = inputfile.read()
             inputfile.close()
@@ -213,7 +212,7 @@ class phpfile(base.TranslationStore):
         lines = []
         for unit in self.units:
             lines.append(str(unit))
-        return ("".join(lines)).encode(self._encoding)
+        return ("".join(lines)).encode(self.encoding)
 
     def parse(self, phpsrc):
         """Read the source of a PHP file in and include them as units."""
@@ -231,7 +230,7 @@ class phpfile(base.TranslationStore):
         line_number = 0
 
         # For each line in the PHP translation file.
-        for line in phpsrc.decode(self._encoding).split("\n"):
+        for line in phpsrc.decode(self.encoding).split("\n"):
             line_number += 1
             commentstartpos = line.find("/*")
             commentendpos = line.rfind("*/")

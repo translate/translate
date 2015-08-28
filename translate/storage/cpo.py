@@ -42,7 +42,6 @@ from ctypes import (CFUNCTYPE, POINTER, Structure, c_char_p, c_int, c_long,
 from translate.lang import data
 from translate.misc.multistring import multistring
 from translate.storage import base, pocommon, pypo
-from translate.storage.pocommon import encodingToUse
 
 
 logger = logging.getLogger(__name__)
@@ -608,20 +607,20 @@ class pounit(pocommon.pounit):
 class pofile(pocommon.pofile):
     UnitClass = pounit
 
-    def __init__(self, inputfile=None, encoding=None, unitclass=pounit, noheader=False, **kwargs):
+    def __init__(self, inputfile=None, unitclass=pounit, noheader=False, **kwargs):
         self._gpo_memory_file = None
         self._gpo_message_iterator = None
         self.units = []
         self.sourcelanguage = None
         self.targetlanguage = None
-        self._encoding = 'utf-8'
         if inputfile is None:
+            self._encoding = kwargs.get('encoding')
             self._gpo_memory_file = gpo.po_file_create()
             self._gpo_message_iterator = gpo.po_message_iterator(self._gpo_memory_file, None)
             if not noheader:
                 self.init_headers()
         else:
-            super(pofile, self).__init__(inputfile=inputfile, encoding=encoding, **kwargs)
+            super(pofile, self).__init__(inputfile=inputfile, **kwargs)
 
     def addunit(self, unit, new=True):
         if new:
@@ -727,11 +726,11 @@ class pofile(pocommon.pofile):
             f, fname = tempfile.mkstemp(prefix='translate', suffix='.po')
             os.close(f)
             outputstring = writefile(fname)
-            if self._encoding != pounit.CPO_ENC:
+            if self.encoding != pounit.CPO_ENC:
                 try:
-                    outputstring = outputstring.decode(pounit.CPO_ENC).encode(self._encoding)
+                    outputstring = outputstring.decode(pounit.CPO_ENC).encode(self.encoding)
                 except UnicodeEncodeError:
-                    self._encoding = pounit.CPO_ENC
+                    self.encoding = pounit.CPO_ENC
                     self.updateheader(content_type="text/plain; charset=UTF-8",
                                       content_transfer_encoding="8bit")
                     outputstring = writefile(fname)
@@ -786,11 +785,11 @@ class pofile(pocommon.pofile):
             charset = gpo.po_header_field(self._header, "Content-Type")
             if charset:
                 charset = re.search("charset=([^\\s]+)", charset).group(1)
-            self._encoding = encodingToUse(charset)
+            self.encoding = charset
         self._gpo_message_iterator = gpo.po_message_iterator(self._gpo_memory_file, None)
         newmessage = gpo.po_next_message(self._gpo_message_iterator)
         while newmessage:
-            newunit = pounit(gpo_message=newmessage, encoding=self._encoding)
+            newunit = pounit(gpo_message=newmessage, encoding=self.encoding)
             self.addunit(newunit, new=False)
             newmessage = gpo.po_next_message(self._gpo_message_iterator)
         self._free_iterator()

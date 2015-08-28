@@ -839,13 +839,11 @@ class pofile(pocommon.pofile):
         output = self._getoutput()
         if isinstance(output, six.text_type):
             try:
-                return output.encode(getattr(self, "_encoding", "UTF-8"))
+                return output.encode(self.encoding)
             except UnicodeEncodeError as e:
                 self.updateheader(add=True, Content_Type="text/plain; charset=UTF-8")
-                self._encoding = "UTF-8"
-                for unit in self.units:
-                    unit._encoding = "UTF-8"
-                return self._getoutput().encode("UTF-8")
+                self.encoding = "utf-8"
+                return self._getoutput().encode("utf-8")
 
         return output
 
@@ -862,28 +860,24 @@ class pofile(pocommon.pofile):
         return lines
 
     def encode(self, lines):
-        """encode any unicode strings in lines in self._encoding"""
+        """encode any unicode strings in lines in self.encoding"""
         newlines = []
-        encoding = self._encoding
-        if encoding is None or encoding.lower() == "charset":
-            encoding = 'UTF-8'
         for line in lines:
             if isinstance(line, six.text_type):
-                line = line.encode(encoding)
+                line = line.encode(self.encoding)
             newlines.append(line)
         return newlines
 
     def decode(self, lines):
-        """decode any non-unicode strings in lines with self._encoding"""
+        """decode any non-unicode strings in lines with self.encoding"""
         newlines = []
         for line in lines:
-            if (isinstance(line, bytes) and self._encoding is not None and
-                self._encoding.lower() != "charset"):
+            if isinstance(line, bytes):
                 try:
-                    line = line.decode(self._encoding)
-                except UnicodeError as e:
-                    raise UnicodeError("Error decoding line with encoding %r: %s. Line is %r" %
-                                       (self._encoding, e, line))
+                    line = line.decode(self.encoding)
+                except UnicodeDecodeError as e:
+                    raise UnicodeDecodeError("Error decoding line with encoding %r: %s. Line is %r" %
+                                       (self.encoding, e, line))
             newlines.append(line)
         return newlines
 

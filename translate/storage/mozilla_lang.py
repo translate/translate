@@ -64,10 +64,10 @@ class LangStore(txt.TxtFile):
     Name = "Mozilla .lang"
     Extensions = ['lang']
 
-    def __init__(self, inputfile=None, flavour=None, encoding="utf-8", mark_active=False):
+    def __init__(self, inputfile=None, mark_active=False, **kwargs):
         self.is_active = False
         self.mark_active = mark_active
-        super(LangStore, self).__init__(inputfile, flavour, encoding)
+        super(LangStore, self).__init__(inputfile, **kwargs)
 
     def parse(self, lines):
         # Have we just seen a ';' line, and so are ready for a translation

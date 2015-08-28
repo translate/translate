@@ -205,11 +205,10 @@ class pofile(poheader.poheader, base.TranslationStore):
     # We don't want windows line endings on Windows:
     _binary = True
 
-    def __init__(self, inputfile=None, encoding=None, duplicatestyle=None):
-        super(pofile, self).__init__(unitclass=self.UnitClass)
+    def __init__(self, inputfile=None, duplicatestyle=None, **kwargs):
+        super(pofile, self).__init__(unitclass=self.UnitClass, **kwargs)
         self.units = []
         self.filename = ''
-        self._encoding = encodingToUse(encoding)
         if inputfile is not None:
             self.parse(inputfile, duplicatestyle)
         else:

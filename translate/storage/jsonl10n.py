@@ -160,7 +160,7 @@ class JsonFile(base.TranslationStore):
             path = unit.getid().lstrip('.')
             units[path] = unit.target
         return json.dumps(units, sort_keys=True, separators=(',', ': '),
-                          indent=4, ensure_ascii=False).encode('utf-8')
+                          indent=4, ensure_ascii=False).encode(self.encoding)
 
     def _extract_translatables(self, data, stop=None, prev="", name_node=None,
                                name_last_node=None, last_node=None):

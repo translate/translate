@@ -171,7 +171,7 @@ class htmlfile(html_parser.HTMLParser, base.TranslationStore):
 
     def __init__(self, includeuntaggeddata=None, inputfile=None,
                  callback=None):
-        self.units = []
+        base.TranslationStore.__init__(self)
         self.filename = getattr(inputfile, 'name', None)
         self.currentblock = u""
         self.currentcomment = u""
@@ -209,18 +209,14 @@ class htmlfile(html_parser.HTMLParser, base.TranslationStore):
         """
 
         result = self.ENCODING_RE.findall(htmlsrc)
-        encoding = None
         if result:
-            encoding = result[0]
-        return encoding
+            self.encoding = result[0]
+        return self.encoding
 
     def do_encoding(self, htmlsrc):
         """Return the html text properly encoded based on a charset."""
-        charset = self.guess_encoding(htmlsrc)
-        if charset:
-            return htmlsrc.decode(charset)
-        else:
-            return htmlsrc.decode('utf-8')
+        self.guess_encoding(htmlsrc)
+        return htmlsrc.decode(self.encoding)
 
     def pi_escape(self, text):
         """Replaces all instances of process instruction with placeholders,

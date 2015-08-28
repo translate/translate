@@ -569,7 +569,7 @@ class dtdfile(base.TranslationStore):
             warnings.warn("DTD file '%s' does not validate" % self.filename)
             return None
         if isinstance(source, six.text_type):
-            return source.encode(getattr(self, "encoding", "UTF-8"))
+            return source.encode(self.encoding)
         return source
 
     def getoutput(self):

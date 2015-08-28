@@ -45,7 +45,7 @@ class PoXliffUnit(xliff.xliffunit):
 
     rich_parsers = general.parsers
 
-    def __init__(self, source=None, empty=False, encoding="UTF-8"):
+    def __init__(self, source=None, empty=False, **kwargs):
         self._rich_source = None
         self._rich_target = None
         self._state_n = 0

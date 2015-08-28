@@ -152,12 +152,8 @@ class OmegaTFile(base.TranslationStore):
         base.TranslationStore.__init__(self, unitclass=unitclass)
         self.filename = ''
         self.extension = ''
-        self._encoding = self._get_encoding()
         if inputfile is not None:
             self.parse(inputfile)
-
-    def _get_encoding(self):
-        return 'utf-8'
 
     def parse(self, input):
         """parsese the given file or file source string"""
@@ -170,7 +166,7 @@ class OmegaTFile(base.TranslationStore):
             input.close()
             input = tmsrc
         try:
-            input = input.decode(self._encoding).encode('utf-8')
+            input = input.decode(self.encoding).encode('utf-8')
         except:
             raise ValueError("OmegaT files are either UTF-8 encoded or use the default system encoding")
         lines = csv.DictReader(input.split("\n"), fieldnames=OMEGAT_FIELDNAMES,
@@ -194,7 +190,7 @@ class OmegaTFile(base.TranslationStore):
         output.reset()
         decoded = "".join(output.readlines()).decode('utf-8')
         try:
-            return decoded.encode(self._encoding)
+            return decoded.encode(self.encoding)
         except UnicodeEncodeError:
             return decoded.encode('utf-8')
 
@@ -205,5 +201,6 @@ class OmegaTFileTab(OmegaTFile):
     Mimetypes = ["application/x-omegat-glossary"]
     Extensions = ["tab"]
 
-    def _get_encoding(self):
+    @property
+    def encoding(self):
         return locale.getdefaultlocale()[1]

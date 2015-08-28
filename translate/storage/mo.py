@@ -46,7 +46,7 @@ import six
 import struct
 
 from translate.misc.multistring import multistring
-from translate.storage import base, po, poheader
+from translate.storage import base, poheader
 
 
 MO_MAGIC_NUMBER = 0x950412de
@@ -140,7 +140,6 @@ class mofile(poheader.poheader, base.TranslationStore):
         self.UnitClass = unitclass
         base.TranslationStore.__init__(self, unitclass=unitclass)
         self.filename = ''
-        self._encoding = "UTF-8"
         if inputfile is not None:
             self.parsestring(inputfile)
 
@@ -274,7 +273,7 @@ class mofile(poheader.poheader, base.TranslationStore):
                 charset = re.search("charset=([^\\s]+)",
                                     input[voffset:voffset + vlength])
                 if charset:
-                    self._encoding = po.encodingToUse(charset.group(1))
+                    self.encoding = charset.group(1)
             target = multistring(input[voffset:voffset + vlength].split("\0"))
             newunit = mounit(source)
             newunit.settarget(target)

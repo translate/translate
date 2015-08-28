@@ -114,16 +114,16 @@ class rcunit(base.TranslationUnit):
 class rcfile(base.TranslationStore):
     """This class represents a .rc file, made up of rcunits."""
     UnitClass = rcunit
+    default_encoding = "cp1252"
 
-    def __init__(self, inputfile=None, lang=None, sublang=None, encoding="cp1252"):
+    def __init__(self, inputfile=None, lang=None, sublang=None, **kwargs):
         """Construct an rcfile, optionally reading in from inputfile."""
-        self.encoding = encoding
-        super(rcfile, self).__init__(unitclass=self.UnitClass)
+        super(rcfile, self).__init__(unitclass=self.UnitClass, **kwargs)
         self.filename = getattr(inputfile, 'name', '')
         self.lang = lang
         self.sublang = sublang
         if inputfile is not None:
-            rcsrc = inputfile.read().decode(encoding)
+            rcsrc = inputfile.read().decode(self.encoding)
             inputfile.close()
             self.parse(rcsrc)
 

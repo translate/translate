@@ -359,6 +359,7 @@ class WordfastTMFile(base.TranslationStore):
     Name = "Wordfast Translation Memory"
     Mimetypes = ["application/x-wordfast"]
     Extensions = ["txt"]
+    default_encoding = 'iso-8859-1'
 
     def __init__(self, inputfile=None, unitclass=WordfastUnit):
         """construct a Wordfast TM, optionally reading in from inputfile."""
@@ -366,7 +367,6 @@ class WordfastTMFile(base.TranslationStore):
         base.TranslationStore.__init__(self, unitclass=unitclass)
         self.filename = ''
         self.header = WordfastHeader()
-        self._encoding = 'iso-8859-1'
         if inputfile is not None:
             self.parse(inputfile)
 
@@ -381,11 +381,11 @@ class WordfastTMFile(base.TranslationStore):
             input.close()
             input = tmsrc
         if TAB_UTF16 in input.split(b"\n")[0]:
-            self._encoding = 'utf-16'
+            self.encoding = 'utf-16'
         else:
-            self._encoding = 'iso-8859-1'
+            self.encoding = 'iso-8859-1'
         try:
-            input = input.decode(self._encoding).encode('utf-8')
+            input = input.decode(self.encoding).encode('utf-8')
         except:
             raise ValueError("Wordfast files are either UTF-16 (UCS2) or ISO-8859-1 encoded")
         for header in csv.DictReader(input.split("\n")[:1],
@@ -421,6 +421,6 @@ class WordfastTMFile(base.TranslationStore):
         header_output.reset()
         decoded = "".join(header_output.readlines() + output.readlines()).decode('utf-8')
         try:
-            return decoded.encode(self._encoding)
+            return decoded.encode(self.encoding)
         except UnicodeEncodeError:
             return decoded.encode('utf-16')

@@ -351,10 +351,10 @@ class csvfile(base.TranslationStore):
     Mimetypes = ['text/comma-separated-values', 'text/csv']
     Extensions = ["csv"]
 
-    def __init__(self, inputfile=None, fieldnames=None, encoding="auto"):
+    def __init__(self, inputfile=None, fieldnames=None, encoding=None):
         base.TranslationStore.__init__(self, unitclass=self.UnitClass)
         self.units = []
-        self.encoding = encoding or 'utf-8'
+        self.encoding = encoding or 'auto'
         if not fieldnames:
             self.fieldnames = ['location', 'source', 'target', 'id', 'fuzzy', 'context', 'translator_comments', 'developer_comments']
         else:
@@ -415,11 +415,7 @@ class csvfile(base.TranslationStore):
         source = self.getoutput()
         if not isinstance(source, six.text_type):
             source = source.decode('utf-8')
-        if not self.encoding or self.encoding == 'auto':
-            encoding = 'utf-8'
-        else:
-            encoding = self.encoding
-        return source.encode(encoding)
+        return source.encode(self.encoding)
 
     def getoutput(self):
         outputfile = BytesIO()

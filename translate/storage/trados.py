@@ -174,13 +174,13 @@ class TradosTxtTmFile(base.TranslationStore):
     Name = "Trados Translation Memory"
     Mimetypes = ["application/x-trados-tm"]
     Extensions = ["txt"]
+    default_encoding = 'iso-8859-1'
 
     def __init__(self, inputfile=None, unitclass=TradosUnit):
         """construct a Wordfast TM, optionally reading in from inputfile."""
         self.UnitClass = unitclass
         base.TranslationStore.__init__(self, unitclass=unitclass)
         self.filename = ''
-        self._encoding = 'iso-8859-1'
         if inputfile is not None:
             self.parse(inputfile)
 

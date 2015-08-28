@@ -292,7 +292,6 @@ class LISAfile(base.TranslationStore):
             self.setsourcelanguage(sourcelanguage)
             self.settargetlanguage(targetlanguage)
             self.addheader()
-        self._encoding = "UTF-8"
 
     def addheader(self):
         """Method to be overridden to initialise headers, etc."""
@@ -343,7 +342,7 @@ class LISAfile(base.TranslationStore):
             xml = posrc
         parser = etree.XMLParser(strip_cdata=False)
         self.document = etree.fromstring(xml, parser).getroottree()
-        self._encoding = self.document.docinfo.encoding
+        self.encoding = self.document.docinfo.encoding
         self.initbody()
         assert self.document.getroot().tag == self.namespaced(self.rootNode)
         for entry in self.document.getroot().iterdescendants(self.namespaced(self.UnitClass.rootNode)):
