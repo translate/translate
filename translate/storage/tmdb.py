@@ -75,7 +75,7 @@ class TMDB(object):
     def _get_connection(self, index):
         current_thread = threading.currentThread()
         if current_thread not in self._tm_db:
-            connection = dbapi2.connect(self.db_file.encode('utf-8'))
+            connection = dbapi2.connect(self.db_file.encode('utf-8') if six.PY2 else self.db_file)
             cursor = connection.cursor()
             self._tm_db[current_thread] = (connection, cursor)
         return self._tm_db[current_thread][index]
