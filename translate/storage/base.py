@@ -782,10 +782,7 @@ class TranslationStore(object):
         """Write the string representation to the given file (or filename)."""
         storestring = str(self)
         if isinstance(storefile, six.string_types):
-            mode = 'w'
-            if self._binary:
-                mode = 'wb'
-            storefile = open(storefile, mode)
+            storefile = open(storefile, 'wb')
         self.fileobj = storefile
         self._assignname()
         storefile.write(storestring)
@@ -795,32 +792,25 @@ class TranslationStore(object):
         """Save to the file that data was originally read from, if
         available."""
         fileobj = getattr(self, "fileobj", None)
-        mode = 'w'
-        if self._binary:
-            mode = 'wb'
         if not fileobj:
-            filename = getattr(self, "filename", None)
-            if filename:
-                fileobj = open(filename, mode)
+            if hasattr(self, "filename"):
+                fileobj = open(self.filename, 'wb')
         else:
             fileobj.close()
             filename = getattr(fileobj, "name",
                                getattr(fileobj, "filename", None))
             if not filename:
                 raise ValueError("No file or filename to save to")
-            fileobj = fileobj.__class__(filename, mode)
+            fileobj = fileobj.__class__(filename, 'wb')
         self.savefile(fileobj)
 
     @classmethod
     def parsefile(cls, storefile):
         """Reads the given file (or opens the given filename) and parses back
         to an object."""
-        mode = 'r'
-        if cls._binary:
-            mode = 'rb'
         if isinstance(storefile, six.string_types):
-            storefile = open(storefile, mode)
-        mode = getattr(storefile, "mode", mode)
+            storefile = open(storefile, 'rb')
+        mode = getattr(storefile, "mode", 'rb')
         #For some reason GzipFile returns 1, so we have to test for that here
         if mode == 1 or "r" in mode:
             storestring = storefile.read()
