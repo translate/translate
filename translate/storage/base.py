@@ -753,6 +753,9 @@ class TranslationStore(object):
         """Convert the string representation back to an object."""
         newstore = cls()
         if storestring:
+            if isinstance(storestring, six.text_type):
+                # parse() is expecting bytes
+                storestring = storestring.encode(cls.default_encoding)
             newstore.parse(storestring)
         return newstore
 
