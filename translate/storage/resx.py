@@ -29,6 +29,7 @@ from translate.storage.placeables import general
 class RESXUnit(lisa.LISAunit):
     """A single term in the RESX file."""
 
+    monolingual = True
     rootNode = "data"
     languageNode = "value"
     textNode = ""
