@@ -236,7 +236,7 @@ class podebug:
                 hashable = unit.getlocations()[0]
             else:
                 hashable = unit.source
-            prefix = prefix.replace("@hash_placeholder@", md5(hashable).hexdigest()[:self.hash_len])
+            prefix = prefix.replace("@hash_placeholder@", md5(hashable.encode('utf-8')).hexdigest()[:self.hash_len])
         if unit.istranslated():
             rich_string = unit.rich_target
         else:
@@ -270,7 +270,7 @@ class podebug:
                 formatted = os.path.dirname(store.filename)
             elif formatstr.endswith("h"):
                 try:
-                    self.hash_len = int(filter(str.isdigit, formatstr[1:-1]))
+                    self.hash_len = int(''.join([c for c in formatstr[1:-1] if c.isdigit()]))
                 except ValueError:
                     self.hash_len = 4
                 formatted = "@hash_placeholder@"
@@ -279,8 +279,8 @@ class podebug:
             formatoptions = formatstr[1:-1]
             if formatoptions and not formatstr.endswith("h"):
                 if "c" in formatoptions and formatted:
-                    formatted = formatted[0] + filter(lambda x: x.lower() not in "aeiou", formatted[1:])
-                length = filter(str.isdigit, formatoptions)
+                    formatted = formatted[0] + ''.join([c for c in formatted[1:] if c.lower() not in "aeiou"])
+                length = ''.join([c for c in formatoptions if c.isdigit()])
                 if length:
                     formatted = formatted[:int(length)]
             prefix = prefix.replace(formatstr, formatted)

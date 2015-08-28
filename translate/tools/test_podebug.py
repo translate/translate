@@ -28,8 +28,8 @@ class TestPODebug:
     debug = podebug.podebug()
 
     def setup_method(self, method):
-        self.postore = po.pofile(PO_DOC)
-        self.xliffstore = xliff.xlifffile(XLIFF_DOC)
+        self.postore = po.pofile(PO_DOC.encode('utf-8'))
+        self.xliffstore = xliff.xlifffile(XLIFF_DOC.encode('utf-8'))
 
     def test_ignore_gtk(self):
         """Test operation of GTK message ignoring"""
@@ -155,7 +155,7 @@ msgstr "Test msgstr 3"
 
         for debug in debugs:
             for po_doc in po_docs:
-                postore = po.pofile(po_doc)
+                postore = po.pofile(po_doc.encode('utf-8'))
                 postore.filename = "fullpath/to/fakefile.po"
                 po_out = debug.convertstore(postore)
                 in_unit = postore.units[0]
