@@ -811,7 +811,7 @@ class TranslationStore(object):
                                getattr(fileobj, "filename", None))
             if not filename:
                 raise ValueError("No file or filename to save to")
-            fileobj = fileobj.__class__(filename, 'wb')
+            fileobj = open(filename, 'wb')
         self.savefile(fileobj)
 
     @classmethod
