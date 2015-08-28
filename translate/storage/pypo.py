@@ -35,7 +35,6 @@ from translate.misc import quote
 from translate.misc.deprecation import deprecated
 from translate.misc.multistring import multistring
 from translate.storage import base, pocommon, poparser
-from translate.storage.pocommon import encodingToUse
 
 
 logger = logging.getLogger(__name__)
@@ -172,6 +171,7 @@ def extractstr(string):
         return string[left:] + '"'
 
 
+@six.python_2_unicode_compatible
 class pounit(pocommon.pounit):
     # othercomments = []      #   # this is another comment
     # automaticcomments = []  #   #. comment extracted from the source code
@@ -189,8 +189,7 @@ class pounit(pocommon.pounit):
     # fashion
     __shallow__ = ['_store']
 
-    def __init__(self, source=None, encoding="UTF-8"):
-        self._encoding = encodingToUse(encoding)
+    def __init__(self, source=None, **kwargs):
         self.obsolete = False
         self._initallcomments(blankall=True)
         self.prev_msgctxt = []
@@ -233,7 +232,8 @@ class pounit(pocommon.pounit):
         msgid = None
         msgid_plural = None
         if isinstance(source, bytes):
-            source = source.decode(self._encoding)
+            # Guessing utf-8, non-ascii encoded content should not reach this point
+            source = source.decode('utf-8')
         if isinstance(source, multistring):
             source = source.strings
         if isinstance(source, list):
@@ -283,7 +283,8 @@ class pounit(pocommon.pounit):
         """Sets the msgstr to the given (unescaped) value"""
         self._rich_target = None
         if isinstance(target, bytes):
-            target = target.decode(self._encoding)
+            # Guessing utf-8, non-ascii encoded content should not reach this point
+            target = target.decode('utf-8')
         if self.hasplural():
             if isinstance(target, multistring):
                 target = target.strings
@@ -623,18 +624,9 @@ class pounit(pocommon.pounit):
             partstr += partline + '\n'
         return partstr
 
-    def _encodeifneccessary(self, output):
-        """Encodes unicode strings and returns other strings unchanged"""
-        if isinstance(output, six.text_type):
-            encoding = encodingToUse(getattr(self, "_encoding", "UTF-8"))
-            return output.encode(encoding)
-        return output
-
     def __str__(self):
-        """Convert to a string. Double check that unicode is handled
-        somehow here"""
-        output = self._getoutput()
-        return self._encodeifneccessary(output)
+        """Convert to a string."""
+        return self._getoutput()
 
     def _getoutput(self):
         """return this po element as a string"""

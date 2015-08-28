@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
+import six
 from pytest import raises
 
 from translate.misc import wStringIO
@@ -261,17 +262,17 @@ class TestPYPOFile(test_po.TestPOFile):
         assert len(pofile.units) == 1
         print(pofile.serialize())
         thepo = pofile.units[0]
-        assert str(thepo) == posource.encode("UTF-8")
-        # extra test: what if we set the msgid to a unicode? this happens in prop2po etc
-        thepo.source = u"Norwegian Bokm\xe5l"
-        assert str(thepo) == posource.encode("UTF-8")
+        # On Python 2, str() returns bytestrings while on Python 3, str() returns unicode
+        assert str(thepo) == posource if six.PY3 else posource.encode("UTF-8")
+        assert six.text_type(thepo) == posource
         # Now if we set the msgstr to Unicode
         # this is an escaped half character (1/2)
-        halfstr = "\xbd ...".decode("latin-1")
+        halfstr = b"\xbd ...".decode("latin-1")
         thepo.target = halfstr
-        assert halfstr in str(thepo).decode("UTF-8")
+        assert halfstr in six.text_type(thepo)
         thepo.target = halfstr.encode("UTF-8")
-        assert halfstr.encode("UTF-8") in str(thepo)
+        if six.PY2:
+            assert halfstr.encode("UTF-8") in str(thepo)
 
     def test_posections(self):
         """checks the content of all the expected sections of a PO message"""
