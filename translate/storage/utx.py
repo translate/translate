@@ -90,11 +90,13 @@ class UtxUnit(base.TranslationUnit):
             self.source = source
         super(UtxUnit, self).__init__(source)
 
-    def getdict(self):
+    @property
+    def dict(self):
         """Get the dictionary of values for a UTX line"""
         return self._dict
 
-    def setdict(self, newdict):
+    @dict.setter
+    def dict(self, newdict):
         """Set the dictionary of values for a UTX line
 
         :param newdict: a new dictionary with UTX line elements
@@ -102,7 +104,6 @@ class UtxUnit(base.TranslationUnit):
         """
         # TODO First check that the values are OK
         self._dict = newdict
-    dict = property(getdict, setdict)
 
     def _get_field(self, key):
         if key not in self._dict:
@@ -134,21 +135,23 @@ class UtxUnit(base.TranslationUnit):
     def removenotes(self):
         self._set_field('comment', u'')
 
-    def getsource(self):
+    @property
+    def source(self):
         return self._get_field('src')
 
-    def setsource(self, newsource):
+    @source.setter
+    def source(self, newsource):
         self._rich_source = None
-        return self._set_field('src', newsource)
-    source = property(getsource, setsource)
+        self._set_field('src', newsource)
 
-    def gettarget(self):
+    @property
+    def target(self):
         return self._get_field('tgt')
 
-    def settarget(self, newtarget):
+    @target.setter
+    def target(self, newtarget):
         self._rich_target = None
-        return self._set_field('tgt', newtarget)
-    target = property(gettarget, settarget)
+        self._set_field('tgt', newtarget)
 
     def settargetlang(self, newlang):
         self._dict['target-lang'] = newlang

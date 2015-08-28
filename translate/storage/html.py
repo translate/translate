@@ -98,18 +98,19 @@ class htmlunit(base.TranslationUnit):
 
     def __init__(self, source=None):
         self.locations = []
-        self.setsource(source)
+        self.source = source
 
-    def getsource(self):
+    @property
+    def source(self):
         #TODO: Rethink how clever we should try to be with html entities.
         text = self._text.replace("&amp;", "&")
         text = text.replace("\r\n", " ").replace("\n", " ").replace("\r", " ")
         return text
 
-    def setsource(self, source):
+    @source.setter
+    def source(self, source):
         self._rich_source = None
         self._text = safe_escape(source)
-    source = property(getsource, setsource)
 
     def addlocation(self, location):
         self.locations.append(location)

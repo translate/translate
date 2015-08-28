@@ -207,27 +207,30 @@ class WordfastTime(object):
         elif isinstance(newtime, time.struct_time):
             self.time = newtime
 
-    def get_timestring(self):
+    @property
+    def timestring(self):
         """Get the time in the Wordfast time format"""
         if not self._time:
             return None
         else:
             return time.strftime(WF_TIMEFORMAT, self._time)
 
-    def set_timestring(self, timestring):
+    @timestring.setter
+    def timestring(self, timestring):
         """Set the time_sturct object using a Wordfast time formated string
 
         :param timestring: A Wordfast time string (YYYMMDD~hhmmss)
         :type timestring: String
         """
         self._time = time.strptime(timestring, WF_TIMEFORMAT)
-    timestring = property(get_timestring, set_timestring)
 
-    def get_time(self):
+    @property
+    def time(self):
         """Get the time_struct object"""
         return self._time
 
-    def set_time(self, newtime):
+    @time.setter
+    def time(self, newtime):
         """Set the time_struct object
 
         :param newtime: a new time object
@@ -237,7 +240,6 @@ class WordfastTime(object):
             self._time = newtime
         else:
             self._time = None
-    time = property(get_time, set_time)
 
     def __str__(self):
         if not self.timestring:
@@ -263,13 +265,14 @@ class WordfastHeader(object):
         defaultheader['date'] = '%%%s' % WordfastTime(time.localtime()).timestring
         return defaultheader
 
-    def getheader(self):
+    @property
+    def header(self):
         """Get the header dictionary"""
         return self._header_dict
 
-    def setheader(self, newheader):
+    @header.setter
+    def header(self, newheader):
         self._header_dict = newheader
-    header = property(getheader, setheader)
 
     def settargetlang(self, newlang):
         self._header_dict['target-lang'] = '%%%s' % newlang
@@ -294,11 +297,13 @@ class WordfastUnit(base.TranslationUnit):
         """Refresh the timestamp for the unit"""
         self._dict['date'] = WordfastTime(time.localtime()).timestring
 
-    def getdict(self):
+    @property
+    def dict(self):
         """Get the dictionary of values for a Wordfast line"""
         return self._dict
 
-    def setdict(self, newdict):
+    @dict.setter
+    def dict(self, newdict):
         """Set the dictionary of values for a Wordfast line
 
         :param newdict: a new dictionary with Wordfast line elements
@@ -306,7 +311,6 @@ class WordfastUnit(base.TranslationUnit):
         """
         # TODO First check that the values are OK
         self._dict = newdict
-    dict = property(getdict, setdict)
 
     def _get_source_or_target(self, key):
         if self._dict.get(key, None) is None:
@@ -324,21 +328,23 @@ class WordfastUnit(base.TranslationUnit):
             self._dict[key] = newvalue
             self._update_timestamp()
 
-    def getsource(self):
+    @property
+    def source(self):
         return self._get_source_or_target('source')
 
-    def setsource(self, newsource):
+    @source.setter
+    def source(self, newsource):
         self._rich_source = None
-        return self._set_source_or_target('source', newsource)
-    source = property(getsource, setsource)
+        self._set_source_or_target('source', newsource)
 
-    def gettarget(self):
+    @property
+    def target(self):
         return self._get_source_or_target('target')
 
-    def settarget(self, newtarget):
+    @target.setter
+    def target(self, newtarget):
         self._rich_target = None
-        return self._set_source_or_target('target', newtarget)
-    target = property(gettarget, settarget)
+        self._set_source_or_target('target', newtarget)
 
     def settargetlang(self, newlang):
         self._dict['target-lang'] = newlang

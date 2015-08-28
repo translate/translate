@@ -247,16 +247,16 @@ class AndroidResourceUnit(base.TranslationUnit):
             return '"%s"' % text
         return text
 
-    def setsource(self, source):
-        super(AndroidResourceUnit, self).setsource(source)
-
-    def getsource(self, lang=None):
+    @property
+    def source(self):
         if (super(AndroidResourceUnit, self).source is None):
             return self.target
         else:
             return super(AndroidResourceUnit, self).source
 
-    source = property(getsource, setsource)
+    @source.setter
+    def source(self, source):
+        base.TranslationUnit.source.__set__(self, source)
 
     def set_xml_text_value(self, target, xmltarget):
         if '<' in target:
@@ -289,7 +289,18 @@ class AndroidResourceUnit(base.TranslationUnit):
             # Handle text only
             xmltarget.text = self.escape(target)
 
-    def settarget(self, target):
+    @property
+    def target(self):
+        if (self.xmlelement.tag == "plurals"):
+            target = []
+            for entry in self.xmlelement.iterchildren():
+                target.append(self.get_xml_text_value(entry))
+            return multistring(target)
+        else:
+            return self.get_xml_text_value(self.xmlelement)
+
+    @target.setter
+    def target(self, target):
         if (self.hasplurals(self.source) or self.hasplurals(target)):
             # Fix the root tag if mismatching
             if self.xmlelement.tag != "plurals":
@@ -342,7 +353,7 @@ class AndroidResourceUnit(base.TranslationUnit):
 
             self.set_xml_text_value(target, self.xmlelement)
 
-        super(AndroidResourceUnit, self).settarget(target)
+        super(AndroidResourceUnit, AndroidResourceUnit).target.__set__(self, target)
 
     def get_xml_text_value(self, xmltarget):
         if (len(xmltarget) == 0):
@@ -373,17 +384,6 @@ class AndroidResourceUnit(base.TranslationUnit):
             target += u''.join([data.forceunicode(etree.tostring(child, encoding='utf-8'))
                                 for child in cloned_target.iterchildren()])
             return target
-
-    def gettarget(self, lang=None):
-        if (self.xmlelement.tag == "plurals"):
-            target = []
-            for entry in self.xmlelement.iterchildren():
-                target.append(self.get_xml_text_value(entry))
-            return multistring(target)
-        else:
-            return self.get_xml_text_value(self.xmlelement)
-
-    target = property(gettarget, settarget)
 
     def getlanguageNode(self, lang=None, index=None):
         return self.xmlelement

@@ -89,20 +89,20 @@ class ProjectStore(object):
             pass
 
     # ACCESSORS #
-    def _get_sourcefiles(self):
+    @property
+    def sourcefiles(self):
         """Read-only access to ``self._sourcefiles``."""
         return tuple(self._sourcefiles)
-    sourcefiles = property(_get_sourcefiles)
 
-    def _get_targetfiles(self):
+    @property
+    def targetfiles(self):
         """Read-only access to ``self._targetfiles``."""
         return tuple(self._targetfiles)
-    targetfiles = property(_get_targetfiles)
 
-    def _get_transfiles(self):
+    @property
+    def transfiles(self):
         """Read-only access to ``self._transfiles``."""
         return tuple(self._transfiles)
-    transfiles = property(_get_transfiles)
 
     # SPECIAL METHODS #
     def __in__(self, lhs):

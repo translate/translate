@@ -246,39 +246,43 @@ class pounit(pocommon.pounit):
             msgid_plural = []
         return msgid, msgid_plural
 
-    def getsource(self):
+    @property
+    def source(self):
         """Returns the unescaped msgid"""
         return self._get_source_vars(self.msgid, self.msgid_plural)
 
-    def setsource(self, source):
+    @source.setter
+    def source(self, source):
         """Sets the msgid to the given (unescaped) value.
 
         :param source: an unescaped source string.
         """
         self._rich_source = None
         self.msgid, self.msgid_plural = self._set_source_vars(source)
-    source = property(getsource, setsource)
 
-    def _get_prev_source(self):
+    @property
+    def prev_source(self):
         """Returns the unescaped msgid"""
         return self._get_source_vars(self.prev_msgid, self.prev_msgid_plural)
 
-    def _set_prev_source(self, source):
+    @prev_source.setter
+    def prev_source(self, source):
         """Sets the msgid to the given (unescaped) value.
 
         :param source: an unescaped source string.
         """
         self.prev_msgid, self.prev_msgid_plural = self._set_source_vars(source)
-    prev_source = property(_get_prev_source, _set_prev_source)
 
-    def gettarget(self):
+    @property
+    def target(self):
         """Returns the unescaped msgstr"""
         if isinstance(self.msgstr, dict):
             return multistring(list(map(unquotefrompo, self.msgstr.values())))
         else:
             return unquotefrompo(self.msgstr)
 
-    def settarget(self, target):
+    @target.setter
+    def target(self, target):
         """Sets the msgstr to the given (unescaped) value"""
         self._rich_target = None
         if isinstance(target, bytes):
@@ -303,7 +307,6 @@ class pounit(pocommon.pounit):
             self.msgstr = dict([(i, quoteforpo(targetstring)) for i, targetstring in six.iteritems(target)])
         else:
             self.msgstr = quoteforpo(target)
-    target = property(gettarget, settarget)
 
     def getalttrans(self):
         """Return a list of alternate units.

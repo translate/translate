@@ -123,7 +123,7 @@ class xliffunit(lisa.LISAunit):
         return nodes
 
     def set_rich_source(self, value, sourcelang='en'):
-        sourcelanguageNode = self.get_source_dom()
+        sourcelanguageNode = self.source_dom
         if sourcelanguageNode is None:
             sourcelanguageNode = self.createlanguageNode(sourcelang, u'', "source")
             self.set_source_dom(sourcelanguageNode)
@@ -636,27 +636,29 @@ class xlifffile(lisa.LISAfile):
             self.id_index[unit.getid()[len(prefix):]] = unit
         return self.id_index.keys()
 
-    def setsourcelanguage(self, language):
+    @property
+    def sourcelanguage(self):
+        filenode = next(self.document.getroot().iterchildren(self.namespaced('file')))
+        return filenode.get("source-language")
+
+    @sourcelanguage.setter
+    def sourcelanguage(self, language):
         if not language:
             return
         filenode = next(self.document.getroot().iterchildren(self.namespaced('file')))
         filenode.set("source-language", language)
 
-    def getsourcelanguage(self):
+    @property
+    def targetlanguage(self):
         filenode = next(self.document.getroot().iterchildren(self.namespaced('file')))
-        return filenode.get("source-language")
-    sourcelanguage = property(getsourcelanguage, setsourcelanguage)
+        return filenode.get("target-language")
 
-    def settargetlanguage(self, language):
+    @targetlanguage.setter
+    def targetlanguage(self, language):
         if not language:
             return
         filenode = next(self.document.getroot().iterchildren(self.namespaced('file')))
         filenode.set("target-language", language)
-
-    def gettargetlanguage(self):
-        filenode = next(self.document.getroot().iterchildren(self.namespaced('file')))
-        return filenode.get("target-language")
-    targetlanguage = property(gettargetlanguage, settargetlanguage)
 
     def getdatatype(self, filename=None):
         """Returns the datatype of the stored file. If no filename is given,

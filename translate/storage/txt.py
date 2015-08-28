@@ -67,25 +67,27 @@ class TxtUnit(base.TranslationUnit):
         return u"".join([self.pretext, self.source, self.posttext])
 
     # Note that source and target are equivalent for monolingual units
-    def setsource(self, source):
+    @property
+    def source(self):
+        """gets the unquoted source string"""
+        return self._source
+
+    @source.setter
+    def source(self, source):
         """Sets the definition to the quoted value of source"""
         self._rich_source = None
         self._source = source
 
-    def getsource(self):
-        """gets the unquoted source string"""
-        return self._source
-    source = property(getsource, setsource)
+    @property
+    def target(self):
+        """gets the unquoted target string"""
+        return self.source
 
-    def settarget(self, target):
+    @target.setter
+    def target(self, target):
         """Sets the definition to the quoted value of target"""
         self._rich_target = None
         self.source = target
-
-    def gettarget(self):
-        """gets the unquoted target string"""
-        return self.source
-    target = property(gettarget, settarget)
 
     def addlocation(self, location):
         self.location.append(location)

@@ -123,7 +123,7 @@ class PoXliffUnit(xliff.xliffunit):
 
     def settarget(self, text, lang='xx', append=False):
         self._rich_target = None
-        if self.gettarget() == text:
+        if self.target == text:
             return
         if not self.hasplural():
             super(PoXliffUnit, self).settarget(text, lang, append)

@@ -132,11 +132,13 @@ class CatkeysUnit(base.TranslationUnit):
             self.source = source
         super(CatkeysUnit, self).__init__(source)
 
-    def getdict(self):
+    @property
+    def dict(self):
         """Get the dictionary of values for a catkeys line"""
         return self._dict
 
-    def setdict(self, newdict):
+    @dict.setter
+    def dict(self, newdict):
         """Set the dictionary of values for a catkeys line
 
         :param newdict: a new dictionary with catkeys line elements
@@ -144,7 +146,6 @@ class CatkeysUnit(base.TranslationUnit):
         """
         # TODO First check that the values are OK
         self._dict = newdict
-    dict = property(getdict, setdict)
 
     def _get_source_or_target(self, key):
         if self._dict.get(key, None) is None:
@@ -161,21 +162,23 @@ class CatkeysUnit(base.TranslationUnit):
         if not key in self._dict or newvalue != self._dict[key]:
             self._dict[key] = newvalue
 
-    def getsource(self):
+    @property
+    def source(self):
         return self._get_source_or_target('source')
 
-    def setsource(self, newsource):
+    @source.setter
+    def source(self, newsource):
         self._rich_source = None
-        return self._set_source_or_target('source', newsource)
-    source = property(getsource, setsource)
+        self._set_source_or_target('source', newsource)
 
-    def gettarget(self):
+    @property
+    def target(self):
         return self._get_source_or_target('target')
 
-    def settarget(self, newtarget):
+    @target.setter
+    def target(self, newtarget):
         self._rich_target = None
-        return self._set_source_or_target('target', newtarget)
-    target = property(gettarget, settarget)
+        self._set_source_or_target('target', newtarget)
 
     def getnotes(self, origin=None):
         if not origin or origin in ["programmer", "developer", "source code"]:

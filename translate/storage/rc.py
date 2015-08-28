@@ -63,24 +63,25 @@ class rcunit(base.TranslationUnit):
         self.source = source
         self.match = None
 
-    def setsource(self, source):
+    @property
+    def source(self):
+        return self._value
+
+    @source.setter
+    def source(self, source):
         """Sets the source AND the target to be equal"""
         self._rich_source = None
         self._value = source or ""
 
-    def getsource(self):
-        return self._value
+    @property
+    def target(self):
+        return self.source
 
-    source = property(getsource, setsource)
-
-    def settarget(self, target):
+    @target.setter
+    def target(self, target):
         """.. note:: This also sets the ``.source`` attribute!"""
         self._rich_target = None
         self.source = target
-
-    def gettarget(self):
-        return self.source
-    target = property(gettarget, settarget)
 
     def __str__(self):
         """Convert to a string."""

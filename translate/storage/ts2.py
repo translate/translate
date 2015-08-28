@@ -126,7 +126,6 @@ class tsunit(lisa.LISAunit):
         else:
             return data.forceunicode(sourcenode.text)
     source = property(getsource, lisa.LISAunit.setsource)
-    rich_source = property(base.TranslationUnit._get_rich_source, base.TranslationUnit._set_rich_source)
 
     def settarget(self, text):
         # This is a fairly destructive implementation. Don't assume that this
@@ -136,7 +135,7 @@ class tsunit(lisa.LISAunit):
         # Firstly deal with reinitialising to None or setting to identical
         # string.
         self._rich_target = None
-        if self.gettarget() == text:
+        if self.target == text:
             return
         strings = []
         if isinstance(text, multistring):
@@ -172,7 +171,7 @@ class tsunit(lisa.LISAunit):
         else:
             return data.forceunicode(targetnode.text) or u""
     target = property(gettarget, settarget)
-    rich_target = property(base.TranslationUnit._get_rich_target, base.TranslationUnit._set_rich_target)
+    rich_target = base.TranslationUnit.rich_target
 
     def hasplural(self):
         return self.xmlelement.get("numerus") == "yes"

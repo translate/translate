@@ -122,7 +122,7 @@ class TestPOUnit(test_base.TestTranslationUnit):
         assert not unit.hasplural()
 
         # plural test with multistring
-        unit.setsource(["Tree", "Trees"])
+        unit.source = ["Tree", "Trees"]
         assert unit.source.strings == ["Tree", "Trees"]
         assert unit.hasplural()
         unit.target = multistring(["ki", "ni ki"])
@@ -130,7 +130,8 @@ class TestPOUnit(test_base.TestTranslationUnit):
 
         # test of msgid with no plural and msgstr with plural
         unit = self.UnitClass("Tree")
-        assert raises(ValueError, unit.settarget, [u"ki", u"ni ki"])
+        with raises(ValueError):
+            unit.target = [u"ki", u"ni ki"]
         assert not unit.hasplural()
 
     def test_wrapping_bug(self):

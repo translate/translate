@@ -145,7 +145,7 @@ class pounit(base.TranslationUnit):
 
     def resurrect(self):
         self.set_state_n(self.STATE[self.S_TRANSLATED][0])
-        if not self.gettarget():
+        if not self.target:
             self.set_state_n(self.STATE[self.S_UNTRANSLATED][0])
 
     def _domarkfuzzy(self, present=True):

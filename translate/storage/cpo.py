@@ -251,7 +251,7 @@ class pounit(pocommon.pounit):
                 self.set_state_n(self.STATE[self.S_OBSOLETE][0])
         elif gpo.po_message_is_fuzzy(self._gpo_message):
             self.set_state_n(self.STATE[self.S_FUZZY][0])
-        elif self.gettarget():
+        elif self.target:
             self.set_state_n(self.STATE[self.S_TRANSLATED][0])
         else:
             self.set_state_n(self.STATE[self.S_UNTRANSLATED][0])
@@ -262,7 +262,8 @@ class pounit(pocommon.pounit):
         gpo.po_message_set_msgid_plural(self._gpo_message, gpo_encode(msgid_plural))
     msgid_plural = property(None, setmsgid_plural)
 
-    def getsource(self):
+    @property
+    def source(self):
 
         def remove_msgid_comments(text):
             if not text:
@@ -287,7 +288,8 @@ class pounit(pocommon.pounit):
         else:
             return u""
 
-    def setsource(self, source):
+    @source.setter
+    def source(self, source):
         if isinstance(source, multistring):
             source = source.strings
         if isinstance(source, list):
@@ -297,9 +299,9 @@ class pounit(pocommon.pounit):
         else:
             gpo.po_message_set_msgid(self._gpo_message, gpo_encode(source))
             gpo.po_message_set_msgid_plural(self._gpo_message, None)
-    source = property(getsource, setsource)
 
-    def gettarget(self):
+    @property
+    def target(self):
         if self.hasplural():
             plurals = []
             nplural = 0
@@ -316,7 +318,8 @@ class pounit(pocommon.pounit):
             multi = gpo_decode(gpo.po_message_msgstr(self._gpo_message)) or ""
         return multi
 
-    def settarget(self, target):
+    @target.setter
+    def target(self, target):
         # for plural strings: convert 'target' into a list
         if self.hasplural():
             if isinstance(target, multistring):
@@ -355,7 +358,6 @@ class pounit(pocommon.pounit):
                 gpo.po_message_set_msgstr(self._gpo_message, gpo_encode(""))
             else:
                 gpo.po_message_set_msgstr(self._gpo_message, gpo_encode(target))
-    target = property(gettarget, settarget)
 
     def getid(self):
         """The unique identifier for this unit according to the conventions in

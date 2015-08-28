@@ -83,10 +83,12 @@ class pounit(pocommon.pounit):
             self.typecomments = []
             self.msgidcomment = u""
 
-    def getsource(self):
+    @property
+    def source(self):
         return self._source
 
-    def setsource(self, source):
+    @source.setter
+    def source(self, source):
         self._rich_source = None
 #        assert isinstance(source, unicode)
         source = data.forceunicode(source or u"")
@@ -98,13 +100,14 @@ class pounit(pocommon.pounit):
         else:
             #unicode, list, dict
             self._source = multistring(source)
-    source = property(getsource, setsource)
 
-    def gettarget(self):
+    @property
+    def target(self):
         """Returns the unescaped msgstr"""
         return self._target
 
-    def settarget(self, target):
+    @target.setter
+    def target(self, target):
         """Sets the msgstr to the given (unescaped) value"""
         self._rich_target = None
 #        assert isinstance(target, unicode)
@@ -122,7 +125,6 @@ class pounit(pocommon.pounit):
                 raise ValueError("po msgid element has no plural but msgstr has %d elements (%s)" % (len(target), target))
         else:
             self._target = target
-    target = property(gettarget, settarget)
 
     def getnotes(self, origin=None):
         """Return comments based on origin value (programmer, developer, source code and translator)"""

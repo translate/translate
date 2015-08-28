@@ -93,14 +93,16 @@ class JsonUnit(base.TranslationUnit):
             self.source = source
         super(JsonUnit, self).__init__(source)
 
-    def getsource(self):
-        return self.gettarget()
+    @property
+    def source(self):
+        return self.target
 
-    def setsource(self, source):
-        self.settarget(source)
-    source = property(getsource, setsource)
+    @source.setter
+    def source(self, source):
+        self.target = source
 
-    def gettarget(self):
+    @property
+    def target(self):
 
         def change_type(value):
             if isinstance(value, bool):
@@ -112,7 +114,8 @@ class JsonUnit(base.TranslationUnit):
         elif isinstance(self._ref, dict):
             return change_type(self._ref[self._item])
 
-    def settarget(self, target):
+    @target.setter
+    def target(self, target):
 
         def change_type(oldvalue, newvalue):
             if isinstance(oldvalue, bool):
@@ -128,7 +131,6 @@ class JsonUnit(base.TranslationUnit):
             raise ValueError("We don't know how to handle:\n"
                              "Type: %s\n"
                              "Value: %s" % (type(self._ref), target))
-    target = property(gettarget, settarget)
 
     def setid(self, value):
         self._id = value

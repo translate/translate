@@ -72,7 +72,6 @@ class RESXUnit(lisa.LISAunit):
             return None
         return data.forceunicode(targetnode.text) or u""
     target = property(gettarget, settarget)
-    rich_target = property(base.TranslationUnit._get_rich_target, base.TranslationUnit._set_rich_target)
 
     def addnote(self, text, origin=None, position="append"):
         """Add a note specifically in the appropriate "comment" tag"""

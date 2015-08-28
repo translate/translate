@@ -97,16 +97,17 @@ class LISAunit(base.TranslationUnit):
         """
         return namespaced(self.namespace, name)
 
-    def set_source_dom(self, dom_node):
+    @property
+    def source_dom(self):
+        return self.getlanguageNode(lang=None, index=0)
+
+    @source_dom.setter
+    def source_dom(self, dom_node):
         languageNodes = self.getlanguageNodes()
         if len(languageNodes) > 0:
             self.xmlelement.replace(languageNodes[0], dom_node)
         else:
             self.xmlelement.append(dom_node)
-
-    def get_source_dom(self):
-        return self.getlanguageNode(lang=None, index=0)
-    source_dom = property(get_source_dom, set_source_dom)
 
     def setsource(self, text, sourcelang='en'):
         if self._rich_source is not None:
@@ -120,6 +121,12 @@ class LISAunit(base.TranslationUnit):
                                             self._default_xml_space))
     source = property(getsource, setsource)
 
+    def get_target_dom(self, lang=None):
+        if lang:
+            return self.getlanguageNode(lang=lang)
+        else:
+            return self.getlanguageNode(lang=None, index=1)
+
     def set_target_dom(self, dom_node, append=False):
         languageNodes = self.getlanguageNodes()
         assert len(languageNodes) > 0
@@ -131,11 +138,6 @@ class LISAunit(base.TranslationUnit):
         if not append and len(languageNodes) > 1:
             self.xmlelement.remove(languageNodes[1])
 
-    def get_target_dom(self, lang=None):
-        if lang:
-            return self.getlanguageNode(lang=lang)
-        else:
-            return self.getlanguageNode(lang=None, index=1)
     target_dom = property(get_target_dom)
 
     def settarget(self, text, lang='xx', append=False):
@@ -148,9 +150,9 @@ class LISAunit(base.TranslationUnit):
         text = data.forceunicode(text)
         # Firstly deal with reinitialising to None or setting to identical
         # string
-        if self.gettarget() == text:
+        if self.target == text:
             return
-        languageNode = self.get_target_dom(None)
+        languageNode = self.target_dom
         if not text is None:
             if languageNode is None:
                 languageNode = self.createlanguageNode(lang, text, "target")

@@ -195,20 +195,21 @@ class ooline(object):
                 self.width, self.languageid, self._text, self.helptext,
                 self.quickhelptext, self.title, self.timestamp)
 
-    def gettext(self):
+    @property
+    def text(self):
         """Obtains the text column and handle escaping."""
         if self.sourcefile.endswith(".xhp"):
             return unescape_help_text(self._text)
         else:
             return unescape_text(self._text)
 
-    def settext(self, text):
+    @text.setter
+    def text(self, text):
         """Sets the text column and handle escaping."""
         if self.sourcefile.endswith(".xhp"):
             self._text = escape_help_text(text)
         else:
             self._text = escape_text(text)
-    text = property(gettext, settext)
 
     def __str__(self):
         """convert to a string."""

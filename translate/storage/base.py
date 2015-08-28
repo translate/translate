@@ -176,24 +176,34 @@ class TranslationUnit(object):
             return [rich_parse(s, self.rich_parsers) for s in mulstring.strings]
         return [rich_parse(mulstring, self.rich_parsers)]
 
-    def setsource(self, source):
+    @property
+    def source(self):
+        return self._source
+
+    @source.setter
+    def source(self, source):
         """Set the source string to the given value."""
         self._rich_source = None
         self._source = source
-    source = property(lambda self: self._source, setsource)
 
-    def settarget(self, target):
+    @property
+    def target(self):
+        return self._target
+
+    @target.setter
+    def target(self, target):
         """Set the target string to the given value."""
         self._rich_target = None
         self._target = target
-    target = property(lambda self: self._target, settarget)
 
-    def _get_rich_source(self):
+    @property
+    def rich_source(self):
         if self._rich_source is None:
             self._rich_source = self.multistring_to_rich(self.source)
         return self._rich_source
 
-    def _set_rich_source(self, value):
+    @rich_source.setter
+    def rich_source(self, value):
         if not hasattr(value, '__iter__'):
             raise ValueError('value must be iterable')
         if len(value) < 1:
@@ -204,17 +214,18 @@ class TranslationUnit(object):
         multi = self.rich_to_multistring(value)
         if self.source != multi:
             self.source = multi
-    rich_source = property(_get_rich_source, _set_rich_source)
     """
     .. seealso:: :meth:`.rich_to_multistring`, :meth:`multistring_to_rich`
     """
 
-    def _get_rich_target(self):
+    @property
+    def rich_target(self):
         if self._rich_target is None:
             self._rich_target = self.multistring_to_rich(self.target)
         return self._rich_target
 
-    def _set_rich_target(self, value):
+    @rich_target.setter
+    def rich_target(self, value):
         if not hasattr(value, '__iter__'):
             raise ValueError('value must be iterable')
         if len(value) < 1:
@@ -223,7 +234,6 @@ class TranslationUnit(object):
             raise ValueError('value[0] must be of type StringElem.')
         self._rich_target = list(value)
         self.target = self.rich_to_multistring(value)
-    rich_target = property(_get_rich_target, _set_rich_target)
     """
     .. seealso:: :meth:`.rich_to_multistring`, :meth:`.multistring_to_rich`
     """
