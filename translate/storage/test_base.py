@@ -109,6 +109,7 @@ class TestTranslationUnit:
         assert unit1 != unit3
         assert unit4 != unit5
         assert unit1 != unit6
+        assert not(unit1 == unit6)
 
     def test_target(self):
         unit = self.unit
