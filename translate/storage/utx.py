@@ -168,12 +168,12 @@ class UtxFile(base.TranslationStore):
     Name = "UTX Dictionary"
     Mimetypes = ["text/x-utx"]
     Extensions = ["utx"]
+    UnitClass = UtxUnit
 
-    def __init__(self, inputfile=None, unitclass=UtxUnit):
+    def __init__(self, inputfile=None, **kwargs):
         """Construct an UTX dictionary, optionally reading in from
         inputfile."""
-        self.UnitClass = unitclass
-        base.TranslationStore.__init__(self, unitclass=unitclass)
+        super(UtxFile, self).__init__(**kwargs)
         self.filename = ''
         self.extension = ''
         self._fieldnames = ['src', 'tgt', 'src:pos']

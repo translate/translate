@@ -145,9 +145,9 @@ class JsonFile(base.TranslationStore):
     """A JSON file"""
     UnitClass = JsonUnit
 
-    def __init__(self, inputfile=None, unitclass=UnitClass, filter=None):
+    def __init__(self, inputfile=None, filter=None, **kwargs):
         """construct a JSON file, optionally reading in from inputfile."""
-        base.TranslationStore.__init__(self, unitclass=unitclass)
+        super(JsonFile, self).__init__(**kwargs)
         self._filter = filter
         self.filename = ''
         self._file = u''

@@ -200,7 +200,7 @@ class phpfile(base.TranslationStore):
 
     def __init__(self, inputfile=None, **kwargs):
         """Construct a phpfile, optionally reading in from inputfile."""
-        super(phpfile, self).__init__(unitclass=self.UnitClass, **kwargs)
+        super(phpfile, self).__init__(**kwargs)
         self.filename = getattr(inputfile, 'name', '')
         if inputfile is not None:
             phpsrc = inputfile.read()

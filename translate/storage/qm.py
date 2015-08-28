@@ -93,10 +93,8 @@ class qmfile(base.TranslationStore):
     Extensions = ["qm"]
     _binary = True
 
-    def __init__(self, inputfile=None, unitclass=qmunit):
-        self.UnitClass = unitclass
-        base.TranslationStore.__init__(self, unitclass=unitclass)
-        self.units = []
+    def __init__(self, inputfile=None, **kwargs):
+        super(qmfile, self).__init__(**kwargs)
         self.filename = ''
         if inputfile is not None:
             self.parsestring(inputfile)

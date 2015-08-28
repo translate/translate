@@ -80,11 +80,9 @@ class icalfile(base.TranslationStore):
     """An ical file"""
     UnitClass = icalunit
 
-    def __init__(self, inputfile=None, unitclass=icalunit):
+    def __init__(self, inputfile=None, **kwargs):
         """construct an ical file, optionally reading in from inputfile."""
-        self.UnitClass = unitclass
-        base.TranslationStore.__init__(self, unitclass=unitclass)
-        self.units = []
+        super(icalfile, self).__init__(**kwargs)
         self.filename = ''
         self._icalfile = None
         if inputfile is not None:

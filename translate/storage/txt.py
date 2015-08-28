@@ -100,7 +100,7 @@ class TxtFile(base.TranslationStore):
     UnitClass = TxtUnit
 
     def __init__(self, inputfile=None, flavour=None, **kwargs):
-        base.TranslationStore.__init__(self, unitclass=self.UnitClass, **kwargs)
+        super(TxtFile, self).__init__(**kwargs)
         self.filename = getattr(inputfile, 'name', '')
         self.flavour = flavours.get(flavour, [])
         if inputfile is not None:

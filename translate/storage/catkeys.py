@@ -228,11 +228,11 @@ class CatkeysFile(base.TranslationStore):
     Name = "Haiku catkeys file"
     Mimetypes = ["application/x-catkeys"]
     Extensions = ["catkeys"]
+    UnitClass = CatkeysUnit
 
-    def __init__(self, inputfile=None, unitclass=CatkeysUnit):
+    def __init__(self, inputfile=None, **kwargs):
         """Construct a catkeys store, optionally reading in from inputfile."""
-        self.UnitClass = unitclass
-        base.TranslationStore.__init__(self, unitclass=unitclass)
+        super(CatkeysFile, self).__init__(**kwargs)
         self.filename = ''
         self.header = CatkeysHeader()
         if inputfile is not None:

@@ -524,7 +524,7 @@ class dtdfile(base.TranslationStore):
 
     def __init__(self, inputfile=None, android=False):
         """construct a dtdfile, optionally reading in from inputfile"""
-        base.TranslationStore.__init__(self, unitclass=self.UnitClass)
+        super(dtdfile, self).__init__()
         self.filename = getattr(inputfile, 'name', '')
         self.android = android
         if inputfile is not None:

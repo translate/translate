@@ -79,11 +79,9 @@ class SubtitleFile(base.TranslationStore):
     """A subtitle file"""
     UnitClass = SubtitleUnit
 
-    def __init__(self, inputfile=None, unitclass=UnitClass):
+    def __init__(self, inputfile=None, **kwargs):
         """construct an Subtitle file, optionally reading in from inputfile."""
-        self.UnitClass = unitclass
-        base.TranslationStore.__init__(self, unitclass=unitclass)
-        self.units = []
+        super(SubtitleFile, self).__init__(**kwargs)
         self.filename = None
         self._subtitlefile = None
         if inputfile is not None:

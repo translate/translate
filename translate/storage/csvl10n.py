@@ -351,10 +351,8 @@ class csvfile(base.TranslationStore):
     Mimetypes = ['text/comma-separated-values', 'text/csv']
     Extensions = ["csv"]
 
-    def __init__(self, inputfile=None, fieldnames=None, encoding=None):
-        base.TranslationStore.__init__(self, unitclass=self.UnitClass)
-        self.units = []
-        self.encoding = encoding or 'auto'
+    def __init__(self, inputfile=None, fieldnames=None, encoding='auto'):
+        super(csvfile, self).__init__(encoding=encoding)
         if not fieldnames:
             self.fieldnames = ['location', 'source', 'target', 'id', 'fuzzy', 'context', 'translator_comments', 'developer_comments']
         else:

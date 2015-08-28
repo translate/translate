@@ -280,8 +280,8 @@ class LISAfile(base.TranslationStore):
     namespace = None
 
     def __init__(self, inputfile=None, sourcelanguage='en',
-                 targetlanguage=None, unitclass=None):
-        super(LISAfile, self).__init__(unitclass=unitclass)
+                 targetlanguage=None, **kwargs):
+        super(LISAfile, self).__init__(**kwargs)
         if inputfile is not None:
             self.parse(inputfile)
             assert self.document.getroot().tag == self.namespaced(self.rootNode)

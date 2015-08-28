@@ -136,9 +136,8 @@ class mofile(poheader.poheader, base.TranslationStore):
     Extensions = ["mo", "gmo"]
     _binary = True
 
-    def __init__(self, inputfile=None, unitclass=mounit):
-        self.UnitClass = unitclass
-        base.TranslationStore.__init__(self, unitclass=unitclass)
+    def __init__(self, inputfile=None, **kwargs):
+        super(mofile, self).__init__(**kwargs)
         self.filename = ''
         if inputfile is not None:
             self.parsestring(inputfile)

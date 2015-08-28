@@ -607,13 +607,13 @@ class pounit(pocommon.pounit):
 class pofile(pocommon.pofile):
     UnitClass = pounit
 
-    def __init__(self, inputfile=None, unitclass=pounit, noheader=False, **kwargs):
+    def __init__(self, inputfile=None, noheader=False, **kwargs):
         self._gpo_memory_file = None
         self._gpo_message_iterator = None
-        self.units = []
         self.sourcelanguage = None
         self.targetlanguage = None
         if inputfile is None:
+            self.units = []
             self._encoding = kwargs.get('encoding')
             self._gpo_memory_file = gpo.po_file_create()
             self._gpo_message_iterator = gpo.po_message_iterator(self._gpo_memory_file, None)

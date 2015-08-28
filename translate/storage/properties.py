@@ -559,7 +559,7 @@ class propfile(base.TranslationStore):
 
     def __init__(self, inputfile=None, personality="java", encoding=None):
         """construct a propfile, optionally reading in from inputfile"""
-        super(propfile, self).__init__(unitclass=self.UnitClass)
+        super(propfile, self).__init__()
         self.personality = get_dialect(personality)
         self.encoding = encoding or self.personality.default_encoding
         self.filename = getattr(inputfile, 'name', '')

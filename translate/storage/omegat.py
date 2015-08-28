@@ -144,12 +144,12 @@ class OmegaTFile(base.TranslationStore):
     Name = "OmegaT Glossary"
     Mimetypes = ["application/x-omegat-glossary"]
     Extensions = ["utf8"]
+    UnitClass = OmegaTUnit
 
-    def __init__(self, inputfile=None, unitclass=OmegaTUnit):
+    def __init__(self, inputfile=None, **kwargs):
         """Construct an OmegaT glossary, optionally reading in from
         inputfile."""
-        self.UnitClass = unitclass
-        base.TranslationStore.__init__(self, unitclass=unitclass)
+        super(OmegaTFile, self).__init__(**kwargs)
         self.filename = ''
         self.extension = ''
         if inputfile is not None:

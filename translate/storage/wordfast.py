@@ -359,12 +359,12 @@ class WordfastTMFile(base.TranslationStore):
     Name = "Wordfast Translation Memory"
     Mimetypes = ["application/x-wordfast"]
     Extensions = ["txt"]
+    UnitClass = WordfastUnit
     default_encoding = 'iso-8859-1'
 
-    def __init__(self, inputfile=None, unitclass=WordfastUnit):
+    def __init__(self, inputfile=None, **kwargs):
         """construct a Wordfast TM, optionally reading in from inputfile."""
-        self.UnitClass = unitclass
-        base.TranslationStore.__init__(self, unitclass=unitclass)
+        super(WordfastTMFile, self).__init__(**kwargs)
         self.filename = ''
         self.header = WordfastHeader()
         if inputfile is not None:

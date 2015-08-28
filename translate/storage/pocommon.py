@@ -206,8 +206,7 @@ class pofile(poheader.poheader, base.TranslationStore):
     _binary = True
 
     def __init__(self, inputfile=None, duplicatestyle=None, **kwargs):
-        super(pofile, self).__init__(unitclass=self.UnitClass, **kwargs)
-        self.units = []
+        super(pofile, self).__init__(**kwargs)
         self.filename = ''
         if inputfile is not None:
             self.parse(inputfile, duplicatestyle)

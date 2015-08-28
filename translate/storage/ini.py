@@ -94,12 +94,10 @@ class inifile(base.TranslationStore):
     """An INI file"""
     UnitClass = iniunit
 
-    def __init__(self, inputfile=None, unitclass=iniunit, dialect="default"):
+    def __init__(self, inputfile=None, dialect="default", **kwargs):
         """construct an INI file, optionally reading in from inputfile."""
-        self.UnitClass = unitclass
         self._dialect = dialects.get(dialect, DialectDefault)()  # fail correctly/use getattr/
-        base.TranslationStore.__init__(self, unitclass=unitclass)
-        self.units = []
+        super(inifile, self).__init__(**kwargs)
         self.filename = ''
         self._inifile = None
         if inputfile is not None:
