@@ -45,7 +45,7 @@ class pypo2phppo:
         This method ignores strings with %s as both languages will recognize
         that.
         """
-        thetargetfile = po.pofile(inputfile="")
+        thetargetfile = po.pofile()
 
         for unit in inputstore.units:
             newunit = self.convertunit(unit)
