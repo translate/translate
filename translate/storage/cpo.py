@@ -103,6 +103,7 @@ def xerror2_cb(severity, message1, filename1, lineno1, column1, multiline_p1,
 
 
 # Setup return and parameter types
+# See also http://git.savannah.gnu.org/cgit/gettext.git/tree/gettext-tools/libgettextpo/gettext-po.in.h
 def setup_call_types(gpo):
     # File access
     gpo.po_file_read_v3.argtypes = [STRING, POINTER(po_xerror_handler)]
@@ -201,6 +202,18 @@ def get_libgettextpo_version():
     return major, minor, subminor
 
 
+def gpo_encode(value):
+    return value.encode('utf-8') if isinstance(value, six.text_type) else value
+
+
+def gpo_decode(value):
+    if isinstance(value, six.text_type):
+        return value
+    elif isinstance(value, bytes):
+        return value.decode('utf-8')
+    return value
+
+
 class pounit(pocommon.pounit):
 
     #: fixed encoding that is always used for cPO structure (self._gpo_message)
@@ -247,7 +260,7 @@ class pounit(pocommon.pounit):
     def setmsgid_plural(self, msgid_plural):
         if isinstance(msgid_plural, list):
             msgid_plural = "".join(msgid_plural)
-        gpo.po_message_set_msgid_plural(self._gpo_message, msgid_plural)
+        gpo.po_message_set_msgid_plural(self._gpo_message, gpo_encode(msgid_plural))
     msgid_plural = property(None, setmsgid_plural)
 
     def getsource(self):
@@ -263,11 +276,11 @@ class pounit(pocommon.pounit):
                     return u""
             else:
                 return text
-        singular = remove_msgid_comments((gpo.po_message_msgid(self._gpo_message) or "").decode(self.CPO_ENC))
+        singular = remove_msgid_comments(gpo_decode(gpo.po_message_msgid(self._gpo_message)) or "")
         if singular:
             if self.hasplural():
                 multi = multistring(singular)
-                pluralform = (gpo.po_message_msgid_plural(self._gpo_message) or "").decode(self.CPO_ENC)
+                pluralform = gpo_decode(gpo.po_message_msgid_plural(self._gpo_message)) or ""
                 multi.strings.append(pluralform)
                 return multi
             else:
@@ -278,14 +291,12 @@ class pounit(pocommon.pounit):
     def setsource(self, source):
         if isinstance(source, multistring):
             source = source.strings
-        if isinstance(source, six.text_type):
-            source = source.encode(self.CPO_ENC)
         if isinstance(source, list):
-            gpo.po_message_set_msgid(self._gpo_message, source[0].encode(self.CPO_ENC))
+            gpo.po_message_set_msgid(self._gpo_message, gpo_encode(source[0]))
             if len(source) > 1:
-                gpo.po_message_set_msgid_plural(self._gpo_message, source[1].encode(self.CPO_ENC))
+                gpo.po_message_set_msgid_plural(self._gpo_message, gpo_encode(source[1]))
         else:
-            gpo.po_message_set_msgid(self._gpo_message, source)
+            gpo.po_message_set_msgid(self._gpo_message, gpo_encode(source))
             gpo.po_message_set_msgid_plural(self._gpo_message, None)
     source = property(getsource, setsource)
 
@@ -303,7 +314,7 @@ class pounit(pocommon.pounit):
             else:
                 multi = multistring(u"")
         else:
-            multi = (gpo.po_message_msgstr(self._gpo_message) or "").decode(self.CPO_ENC)
+            multi = gpo_decode(gpo.po_message_msgstr(self._gpo_message)) or ""
         return multi
 
     def settarget(self, target):
@@ -333,29 +344,24 @@ class pounit(pocommon.pounit):
                 message = gpo.po_message_msgstr_plural(self._gpo_message, i)
         # add the items of a list
         if isinstance(target, list):
-            for i in range(len(target)):
-                targetstring = target[i]
-                if isinstance(targetstring, six.text_type):
-                    targetstring = targetstring.encode(self.CPO_ENC)
-                gpo.po_message_set_msgstr_plural(self._gpo_message, i, targetstring)
+            for i, targetstring in enumerate(target):
+                gpo.po_message_set_msgstr_plural(self._gpo_message, i, gpo_encode(targetstring))
         # add the values of a dict
         elif isinstance(target, dict):
             for i, targetstring in enumerate(six.itervalues(target)):
-                gpo.po_message_set_msgstr_plural(self._gpo_message, i, targetstring)
+                gpo.po_message_set_msgstr_plural(self._gpo_message, i, gpo_encode(targetstring))
         # add a single string
         else:
-            if isinstance(target, six.text_type):
-                target = target.encode(self.CPO_ENC)
             if target is None:
-                gpo.po_message_set_msgstr(self._gpo_message, "")
+                gpo.po_message_set_msgstr(self._gpo_message, gpo_encode(""))
             else:
-                gpo.po_message_set_msgstr(self._gpo_message, target)
+                gpo.po_message_set_msgstr(self._gpo_message, gpo_encode(target))
     target = property(gettarget, settarget)
 
     def getid(self):
         """The unique identifier for this unit according to the conventions in
         .mo files."""
-        id = (gpo.po_message_msgid(self._gpo_message) or "").decode(self.CPO_ENC)
+        id = gpo_decode(gpo.po_message_msgid(self._gpo_message)) or ""
         # Gettext does not consider the plural to determine duplicates, only
         # the msgid. For generation of .mo files, we might want to use this
         # code to generate the entry for the hash table, but for now, it is
@@ -365,7 +371,7 @@ class pounit(pocommon.pounit):
 #            id = '%s\0%s' % (id, plural)
         context = gpo.po_message_msgctxt(self._gpo_message)
         if context:
-            id = u"%s\04%s" % (context.decode(self.CPO_ENC), id)
+            id = u"%s\04%s" % (gpo_decode(context), id)
         return id
 
     def getnotes(self, origin=None):
@@ -382,7 +388,7 @@ class pounit(pocommon.pounit):
         if comments and get_libgettextpo_version() < (0, 17, 0):
             comments = "\n".join([line for line in comments.split("\n")])
         # Let's drop the last newline
-        return comments[:-1].decode(self.CPO_ENC)
+        return gpo_decode(comments[:-1])
 
     def addnote(self, text, origin=None, position="append"):
         # ignore empty strings and strings without non-space characters
@@ -416,14 +422,14 @@ class pounit(pocommon.pounit):
                     newlines.append(" " + line)
                 else:
                     newlines.append(line)
-            newnotes = "\n".join(newlines).encode(self.CPO_ENC)
+            newnotes = gpo_encode("\n".join(newlines))
             if origin in ["programmer", "developer", "source code"]:
                 gpo.po_message_set_extracted_comments(self._gpo_message, newnotes)
             else:
                 gpo.po_message_set_comments(self._gpo_message, newnotes)
 
     def removenotes(self):
-        gpo.po_message_set_comments(self._gpo_message, "")
+        gpo.po_message_set_comments(self._gpo_message, b"")
 
     def copy(self):
         newpo = self.__class__()
@@ -474,10 +480,10 @@ class pounit(pocommon.pounit):
         return len(self.source) == len(self.target) == len(self.getcontext()) == 0
 
     def hastypecomment(self, typecomment):
-        return gpo.po_message_is_format(self._gpo_message, typecomment)
+        return gpo.po_message_is_format(self._gpo_message, gpo_encode(typecomment))
 
     def settypecomment(self, typecomment, present=True):
-        gpo.po_message_set_format(self._gpo_message, typecomment, present)
+        gpo.po_message_set_format(self._gpo_message, gpo_encode(typecomment), present)
 
     def hasmarkedcomment(self, commentmarker):
         commentmarker = "(%s)" % commentmarker
@@ -512,7 +518,7 @@ class pounit(pocommon.pounit):
         :return: Returns the extracted msgidcomments found in this unit's msgid.
         """
         if not text:
-            text = (gpo.po_message_msgid(self._gpo_message) or "").decode(self.CPO_ENC)
+            text = gpo_decode(gpo.po_message_msgid(self._gpo_message)) or ""
         if text:
             return pocommon.extract_msgid_comment(text)
         return u""
@@ -525,19 +531,19 @@ class pounit(pocommon.pounit):
     def __str__(self):
         pf = pofile(noheader=True)
         pf.addunit(self)
-        return str(pf)
+        return pf.serialize().decode(self.CPO_ENC)
 
     def getlocations(self):
         locations = []
         i = 0
         location = gpo.po_message_filepos(self._gpo_message, i)
         while location:
-            locname = gpo.po_filepos_file(location).decode(self.CPO_ENC)
+            locname = gpo_decode(gpo.po_filepos_file(location))
             locline = gpo.po_filepos_start_line(location)
             if locline == -1:
                 locstring = locname
             else:
-                locstring = locname + u":" + six.text_type(locline)
+                locstring = u":".join([locname, six.text_type(locline)])
             locations.append(pocommon.unquote_plus(locstring))
             i += 1
             location = gpo.po_message_filepos(self._gpo_message, i)
@@ -553,19 +559,19 @@ class pounit(pocommon.pounit):
         else:
             file = location
             line = -1
-        gpo.po_message_add_filepos(self._gpo_message, file, line)
+        gpo.po_message_add_filepos(self._gpo_message, gpo_encode(file), line)
 
     def getcontext(self):
         msgctxt = gpo.po_message_msgctxt(self._gpo_message)
         if msgctxt:
-            return msgctxt.decode(self.CPO_ENC)
+            return gpo_decode(msgctxt)
         else:
             msgidcomment = self._extract_msgidcomments()
             return msgidcomment
 
     def setcontext(self, context):
         context = data.forceunicode(context)
-        gpo.po_message_set_msgctxt(self._gpo_message, context.encode(self.CPO_ENC))
+        gpo.po_message_set_msgctxt(self._gpo_message, gpo_encode(context))
 
     @classmethod
     def buildfromunit(cls, unit, encoding=None):
@@ -708,14 +714,14 @@ class pofile(pocommon.pofile):
             # FIXME Do version test in case they fix this bug
             for unit in self.units:
                 if unit.isobsolete():
-                    gpo.po_message_set_extracted_comments(unit._gpo_message, "")
+                    gpo.po_message_set_extracted_comments(unit._gpo_message, b"")
                     location = gpo.po_message_filepos(unit._gpo_message, 0)
                     while location:
                         gpo.po_message_remove_filepos(unit._gpo_message, 0)
                         location = gpo.po_message_filepos(unit._gpo_message, 0)
 
         def writefile(filename):
-            self._gpo_memory_file = gpo.po_file_write_v2(self._gpo_memory_file, filename, xerror_handler)
+            self._gpo_memory_file = gpo.po_file_write_v2(self._gpo_memory_file, gpo_encode(filename), xerror_handler)
             with open(filename, 'rb') as tfile:
                 content = tfile.read()
             return content
@@ -771,7 +777,7 @@ class pofile(pocommon.pofile):
             input = fname
             os.close(fd)
 
-        self._gpo_memory_file = gpo.po_file_read_v3(input, xerror_handler)
+        self._gpo_memory_file = gpo.po_file_read_v3(gpo_encode(input), xerror_handler)
         if self._gpo_memory_file is None:
             logger.error("Error:")
 
@@ -782,7 +788,7 @@ class pofile(pocommon.pofile):
         # Handle xerrors here
         self._header = gpo.po_file_domain_header(self._gpo_memory_file, None)
         if self._header:
-            charset = gpo.po_header_field(self._header, "Content-Type")
+            charset = gpo_decode(gpo.po_header_field(self._header, gpo_encode("Content-Type")))
             if charset:
                 charset = re.search("charset=([^\\s]+)", charset).group(1)
             self.encoding = charset

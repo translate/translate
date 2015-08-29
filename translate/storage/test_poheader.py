@@ -51,10 +51,10 @@ def test_update():
     d['Project-Id-Version'] = 'abc'
     d['POT-Creation-Date'] = 'now'
     d = poheader.update(d, add=True, Test='hello', Report_Msgid_Bugs_To='bugs@list.org')
-    assert d.keys()[0] == "Project-Id-Version"
-    assert d.keys()[1] == "Report-Msgid-Bugs-To"
-    assert d.keys()[2] == "POT-Creation-Date"
-    assert d.keys()[3] == "Test"
+    assert list(d.keys()) == [
+        "Project-Id-Version", "Report-Msgid-Bugs-To", "POT-Creation-Date",
+        "Test",
+    ]
 
 
 def poparse(posource):
@@ -264,15 +264,15 @@ msgstr ""
 '''
     pofile = poparse(posource)
     pofile.updatecontributor("Grasvreter")
-    assert "# Grasvreter, 20" in pofile.serialize()
+    assert "# Grasvreter, 20" in pofile.serialize().decode('utf-8')
 
     pofile.updatecontributor("Koeivreter", "monster@grasveld.moe")
-    assert "# Koeivreter <monster@grasveld.moe>, 20" in pofile.serialize()
+    assert "# Koeivreter <monster@grasveld.moe>, 20" in pofile.serialize().decode('utf-8')
 
     pofile.header().addnote("Khaled Hosny <khaledhosny@domain.org>, 2006, 2007, 2008.")
     pofile.updatecontributor("Khaled Hosny", "khaledhosny@domain.org")
     print(pofile.serialize())
-    assert "# Khaled Hosny <khaledhosny@domain.org>, 2006, 2007, 2008, %s." % time.strftime("%Y") in pofile.serialize()
+    assert "# Khaled Hosny <khaledhosny@domain.org>, 2006, 2007, 2008, %s." % time.strftime("%Y") in pofile.serialize().decode('utf-8')
 
 
 def test_language():

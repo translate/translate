@@ -1,6 +1,8 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
+from __future__ import unicode_literals
+
 import six
 from pytest import mark, raises
 
@@ -157,6 +159,19 @@ class TestPOUnit(test_base.TestTranslationUnit):
         unit.source = u"Goeiemôre"
         assert not unit.isheader()
 
+    def test_buildfromunit(self):
+        unit = self.UnitClass("test source")
+        unit_copy = self.UnitClass.buildfromunit(unit)
+        assert unit is not unit_copy
+        assert unit == unit_copy
+
+        # Test with a unit without copy() method (will call base.buildfromunit)
+        from translate.storage.php import phpunit
+        unit = phpunit("test source")
+        unit_copy = self.UnitClass.buildfromunit(unit)
+        assert unit is not unit_copy
+        assert unit == unit_copy
+
 #     def test_rich_source(self):
 #         unit = self.unit
 #         unit.rich_source = [['a', X('42'), 'c']]
@@ -200,7 +215,7 @@ class TestPOFile(test_base.TestTranslationStore):
             # force rewrapping:
             u.source = u.source
             u.target = u.target
-        return pofile.serialize()
+        return pofile.serialize().decode('utf-8')
 
     def test_context_only(self):
         """Checks that an empty msgid with msgctxt is handled correctly."""
@@ -310,10 +325,10 @@ msgstr[1] "Kóeie"
     @mark.xfail(reason="Not Implemented")
     def test_kde_plurals(self):
         """Tests kde-style plurals. (Bug: 191)"""
-        posource = '''msgid "_n Singular\\n"
+        posource = r'''msgid "_n Singular\n"
 "Plural"
-msgstr "Een\\n"
-"Twee\\n"
+msgstr "Een\n"
+"Twee\n"
 "Drie"
 '''
         pofile = self.poparse(posource)
@@ -340,7 +355,7 @@ msgid ""
 msgstr "POT-Creation-Date: 2006-03-08 17:30+0200\n"
 '''
         pofile = self.poparse(posource)
-        assert pofile.serialize() == posource
+        assert pofile.serialize().decode('utf-8') == posource
 
     def test_fuzzy(self):
         """checks that fuzzy functionality works as expected"""
@@ -351,7 +366,7 @@ msgstr "POT-Creation-Date: 2006-03-08 17:30+0200\n"
         assert pofile.units[0].isfuzzy()
         pofile.units[0].markfuzzy(False)
         assert not pofile.units[0].isfuzzy()
-        assert pofile.serialize() == expectednonfuzzy
+        assert pofile.serialize().decode('utf-8') == expectednonfuzzy
 
         posource = '#, fuzzy, python-format\nmsgid "ball"\nmsgstr "bal"\n'
         expectednonfuzzy = '#, python-format\nmsgid "ball"\nmsgstr "bal"\n'
@@ -361,10 +376,10 @@ msgstr "POT-Creation-Date: 2006-03-08 17:30+0200\n"
         assert pofile.units[0].isfuzzy()
         pofile.units[0].markfuzzy(False)
         assert not pofile.units[0].isfuzzy()
-        assert pofile.serialize() == expectednonfuzzy
+        assert pofile.serialize().decode('utf-8') == expectednonfuzzy
         pofile.units[0].markfuzzy()
         print(pofile.serialize())
-        assert pofile.serialize() == expectedfuzzyagain
+        assert pofile.serialize().decode('utf-8') == expectedfuzzyagain
 
         # test the same, but with flags in a different order
         posource = '#, python-format, fuzzy\nmsgid "ball"\nmsgstr "bal"\n'
@@ -376,10 +391,10 @@ msgstr "POT-Creation-Date: 2006-03-08 17:30+0200\n"
         pofile.units[0].markfuzzy(False)
         assert not pofile.units[0].isfuzzy()
         print(pofile.serialize())
-        assert pofile.serialize() == expectednonfuzzy
+        assert pofile.serialize().decode('utf-8') == expectednonfuzzy
         pofile.units[0].markfuzzy()
         print(pofile.serialize())
-        assert pofile.serialize() == expectedfuzzyagain
+        assert pofile.serialize().decode('utf-8') == expectedfuzzyagain
 
     @mark.xfail(reason="Check differing behaviours between pypo and cpo")
     def test_makeobsolete_untranslated(self):
@@ -445,7 +460,7 @@ msgstr "tweede"
         assert len(pofile.units) == 1
         unit = pofile.units[0]
         assert unit.isobsolete()
-        assert pofile.serialize() == posource
+        assert pofile.serialize().decode('utf-8') == posource
 
         posource = '''msgid "one"
 msgstr "een"
@@ -463,7 +478,7 @@ msgstr "een"
 
         print(pofile.serialize())
         # Doesn't work with CPO if obsolete units are mixed with non-obsolete units
-        assert pofile.serialize() == posource
+        assert pofile.serialize().decode('utf-8') == posource
         unit.resurrect()
         assert unit.hasplural()
 
@@ -498,12 +513,12 @@ msgstr "een"
 
         print(posource)
         print(pofile.serialize())
-        assert pofile.serialize() == posource
+        assert pofile.serialize().decode('utf-8') == posource
 
     def test_header_escapes(self):
         pofile = self.StoreClass()
         pofile.updateheader(add=True, **{"Report-Msgid-Bugs-To": r"http://qa.openoffice.org/issues/enter_bug.cgi?subcomponent=ui&comment=&short_desc=Localization%20issue%20in%20file%3A%20dbaccess\source\core\resource.oo&component=l10n&form_name=enter_issue"})
-        filecontents = pofile.serialize()
+        filecontents = pofile.serialize().decode('utf-8')
         print(filecontents)
         # We need to make sure that the \r didn't get misrepresented as a
         # carriage return, but as a slash (escaped) followed by a normal 'r'
@@ -583,7 +598,7 @@ msgstr[1] "Koeie"
         assert unit.isobsolete()
         print(pofile.serialize())
         print(posource)
-        assert pofile.serialize() == posource
+        assert pofile.serialize().decode('utf-8') == posource
 
     def test_merge_duplicates(self):
         """checks that merging duplicates works"""
@@ -675,10 +690,10 @@ msgstr "omskakel"
 
     def test_kde_context(self):
         """Tests that kde-style msgid comments can be retrieved via getcontext()."""
-        posource = '''# Test comment
+        posource = r'''# Test comment
 #: source1
 msgid ""
-"_: Noun\\n"
+"_: Noun\n"
 "convert"
 msgstr "bekeerling"
 
@@ -686,7 +701,7 @@ msgstr "bekeerling"
 #: source2
 msgid ""
 "_: Verb. _: "
-"The action of changing.\\n"
+"The action of changing.\n"
 "convert"
 msgstr "omskakel"
 '''
@@ -800,7 +815,7 @@ msgstr ""
 
 msgid "a"
 msgstr "b"
-'''.decode('utf-8').encode('ISO-8859-1')
+'''.encode('ISO-8859-1')
 
         pofile = self.poparse(posource)
         assert u"Tránslátór" in pofile.units[0].target
@@ -859,13 +874,13 @@ msgid "a"
 msgstr "d"
 '''
         if six.PY3:
-            posource = posource.encode()
+            posource = posource.encode('utf-8')
         pofile = self.poparse(posource)
         unit = pofile.units[1]
         unit.target = u"ḓ"
         contents = pofile.serialize()
-        assert 'msgstr "\341\270\223"' in contents
-        assert 'charset=UTF-8' in contents
+        assert b'msgstr "\xe1\xb8\x93"' in contents
+        assert b'charset=UTF-8' in contents
 
     def test_istranslated(self):
         """checks that istranslated works ok."""
@@ -882,7 +897,7 @@ msgid_plural "aa"
 msgstr[0] ""
 '''
         if six.PY2:
-            posource = posource.decode()
+            posource = posource.decode('utf-8')
         pofile = self.poparse(posource)
         unit = pofile.units[1]
         print(str(unit))

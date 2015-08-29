@@ -207,7 +207,7 @@ class TestPYPOFile(test_po.TestPOFile):
         thepo = pofile.units[0]
         thepo.msgidcomments.append('"_: first comment\\n"')
         thepo.msgidcomments.append('"_: second comment\\n"')
-        regenposource = pofile.serialize()
+        regenposource = pofile.serialize().decode('utf-8')
         assert regenposource.count("_:") == 1
 
     def test_duplicates_default(self):
@@ -280,7 +280,7 @@ class TestPYPOFile(test_po.TestPOFile):
         pofile = self.poparse(posource)
         print(pofile)
         assert len(pofile.units) == 1
-        assert pofile.serialize() == posource
+        assert pofile.serialize().decode('utf-8') == posource
         assert pofile.units[0].othercomments == ["# other comment\n"]
         assert pofile.units[0].automaticcomments == ["#. automatic comment\n"]
         assert pofile.units[0].sourcecomments == ["#: source comment\n"]
@@ -344,4 +344,4 @@ msgstr[1] "toetse"
         assert pofile.units[4].prev_msgctxt == [u'"context 2"']
         assert pofile.units[4].prev_source == multistring([u"tast", u"tasts"])
 
-        assert pofile.serialize() == posource
+        assert pofile.serialize().decode('utf-8') == posource

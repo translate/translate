@@ -82,6 +82,7 @@ class TestCPOUnit(test_po.TestPOUnit):
         unit = self.UnitClass("File")
         unit.addnote("# Double commented comment")
         assert unit.getnotes() == "# Double commented comment"
+        assert not unit.hastypecomment('c-format')
 
 
 class TestCPOFile(test_po.TestPOFile):
@@ -97,7 +98,7 @@ class TestCPOFile(test_po.TestPOFile):
         print("Blah", thepo.source)
         assert thepo.source == "test me"
         thepo.msgidcomment = "second comment"
-        assert pofile.serialize().count("_:") == 1
+        assert pofile.serialize().count(b"_:") == 1
 
     @mark.xfail(reason="Were disabled during port of Pypo to cPO - they might work")
     def test_merge_duplicates_msgctxt(self):
@@ -164,7 +165,7 @@ class TestCPOFile(test_po.TestPOFile):
 #        assert str(thepo) == posource.encode("UTF-8")
         # Now if we set the msgstr to Unicode
         # this is an escaped half character (1/2)
-        halfstr = "\xbd ...".decode("latin-1")
+        halfstr = b"\xbd ...".decode("latin-1")
         thepo.target = halfstr
 #        assert halfstr in pofile.serialize().decode("UTF-8")
         thepo.target = halfstr.encode("UTF-8")
@@ -176,7 +177,7 @@ class TestCPOFile(test_po.TestPOFile):
         pofile = self.poparse(posource)
         print(pofile)
         assert len(pofile.units) == 1
-        assert pofile.serialize() == posource
+        assert pofile.serialize().decode('utf-8') == posource
 
     def test_multiline_obsolete(self):
         """Tests for correct output of mulitline obsolete messages"""
@@ -187,7 +188,7 @@ class TestCPOFile(test_po.TestPOFile):
         assert len(pofile.units) == 1
         assert pofile.units[0].isobsolete()
         assert not pofile.units[0].istranslatable()
-        assert pofile.serialize() == posource
+        assert pofile.serialize().decode('utf-8') == posource
 
     def test_unassociated_comments(self):
         """tests behaviour of unassociated comments."""
@@ -195,4 +196,4 @@ class TestCPOFile(test_po.TestPOFile):
         oldfile = self.poparse(oldsource)
         print("serialize", oldfile.serialize())
         assert len(oldfile.units) == 1
-        assert oldfile.serialize().find("# old lonesome comment\nmsgid") >= 0
+        assert "# old lonesome comment\nmsgid" in oldfile.serialize().decode('utf-8')
