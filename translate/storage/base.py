@@ -42,6 +42,7 @@ class ParseError(Exception):
         return repr(self.inner_exc)
 
 
+@six.python_2_unicode_compatible
 class TranslationUnit(object):
     """Base class for translation units.
 
@@ -128,14 +129,11 @@ class TranslationUnit(object):
         return self.source == other.source and self.target == other.target
 
     def __str__(self):
-        """Converts to a string representation that can be parsed back using
-        :meth:`~.TranslationStore.parsestring`."""
-        # no point in pickling store object, so let's hide it for a while.
-        store = getattr(self, "_store", None)
-        self._store = None
-        dump = pickle.dumps(self)
-        self._store = store
-        return dump
+        """Converts to a string representation. Most often overriden by subclasses."""
+        # no point in showing store object.
+        return ", ".join([
+            "%s: %s" % (k, self.__dict__[k]) for k in sorted(self.__dict__.keys()) if k != '_store'
+        ])
 
     @classmethod
     def rich_to_multistring(cls, elem_list):
