@@ -288,7 +288,7 @@ class LISAfile(base.TranslationStore):
         else:
             # We strip out newlines to ensure that spaces in the skeleton
             # doesn't interfere with the the pretty printing of lxml
-            self.parse(self.XMLskeleton.replace("\n", ""))
+            self.parse(self.XMLskeleton.replace("\n", "").encode('utf-8'))
             self.setsourcelanguage(sourcelanguage)
             self.settargetlanguage(targetlanguage)
             self.addheader()
