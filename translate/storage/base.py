@@ -33,20 +33,6 @@ from translate.storage.placeables import (StringElem, general,
 from translate.storage.workflow import StateEnum as states
 
 
-def force_override(method, baseclass):
-    """Forces derived classes to override method."""
-
-    if type(method.im_self) == type(baseclass):
-        # then this is a classmethod and im_self is the actual class
-        actualclass = method.im_self
-    else:
-        actualclass = method.im_class
-    if actualclass != baseclass:
-        raise NotImplementedError(
-            "%s does not reimplement %s as required by %s" %
-            (actualclass.__name__, method.__name__, baseclass.__name__))
-
-
 class ParseError(Exception):
 
     def __init__(self, inner_exc):

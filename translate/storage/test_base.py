@@ -44,31 +44,6 @@ def first_translatable(store):
         return store.units[0]
 
 
-def test_force_override():
-    """Tests that derived classes are not allowed to call certain functions"""
-
-    class BaseClass:
-
-        def test(self):
-            base.force_override(self.test, BaseClass)
-            return True
-
-        @classmethod
-        def classtest(cls):
-            base.force_override(cls.classtest, BaseClass)
-            return True
-
-    class DerivedClass(BaseClass):
-        pass
-
-    baseobject = BaseClass()
-    assert baseobject.test()
-    assert baseobject.classtest()
-    derivedobject = DerivedClass()
-    assert pytest.raises(NotImplementedError, derivedobject.test)
-    assert pytest.raises(NotImplementedError, derivedobject.classtest)
-
-
 class TestTranslationUnit:
     """Tests a TranslationUnit.
     Derived classes can reuse these tests by pointing UnitClass to a derived Unit"""
