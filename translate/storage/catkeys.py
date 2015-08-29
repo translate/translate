@@ -54,6 +54,7 @@ import csv
 import six
 
 from translate.lang import data
+from translate.misc import csv_utils
 from translate.storage import base
 
 
@@ -150,15 +151,13 @@ class CatkeysUnit(base.TranslationUnit):
         if self._dict.get(key, None) is None:
             return None
         elif self._dict[key]:
-            return _unescape(self._dict[key]).decode('utf-8')
+            return _unescape(self._dict[key])
         else:
             return ""
 
     def _set_source_or_target(self, key, newvalue):
         if newvalue is None:
             self._dict[key] = None
-        if isinstance(newvalue, six.text_type):
-            newvalue = newvalue.encode('utf-8')
         newvalue = _escape(newvalue)
         if not key in self._dict or newvalue != self._dict[key]:
             self._dict[key] = newvalue
@@ -181,11 +180,11 @@ class CatkeysUnit(base.TranslationUnit):
 
     def getnotes(self, origin=None):
         if not origin or origin in ["programmer", "developer", "source code"]:
-            return self._dict["comment"].decode('utf-8')
+            return self._dict["comment"]
         return u""
 
     def getcontext(self):
-        return self._dict["context"].decode('utf-8')
+        return self._dict["context"]
 
     def getid(self):
         context = self.getcontext()
@@ -242,7 +241,7 @@ class CatkeysFile(base.TranslationStore):
         self.header.settargetlanguage(newlang)
 
     def parse(self, input):
-        """parsse the given file or file source string"""
+        """parse the given file or file source string"""
         if hasattr(input, 'name'):
             self.filename = input.name
         elif not getattr(self, 'filename', ''):
@@ -251,19 +250,23 @@ class CatkeysFile(base.TranslationStore):
             tmsrc = input.read()
             input.close()
             input = tmsrc
-        for header in csv.DictReader(input.split("\n")[:1], fieldnames=FIELDNAMES_HEADER, dialect="catkeys"):
-            self.header = CatkeysHeader(header)
-        lines = csv.DictReader(input.split("\n")[1:], fieldnames=FIELDNAMES, dialect="catkeys")
-        for line in lines:
+        if six.PY3:
+            input = input.decode(self.encoding)
+        reader = csv.DictReader(input.split("\n"), fieldnames=FIELDNAMES, dialect="catkeys")
+        for idx, line in enumerate(reader):
+            if idx == 0:
+                header = dict(zip(FIELDNAMES_HEADER, [line[key] for key in FIELDNAMES]))
+                self.header = CatkeysHeader(header)
+                continue
             newunit = CatkeysUnit()
             newunit.dict = line
             self.addunit(newunit)
 
     def serialize(self):
         output = csv.StringIO()
-        writer = csv.DictWriter(output, fieldnames=FIELDNAMES_HEADER, dialect="catkeys")
-        writer.writerow(self.header._header_dict)
-        writer = csv.DictWriter(output, fieldnames=FIELDNAMES, dialect="catkeys")
+        writer = csv_utils.UnicodeDictWriter(output, FIELDNAMES, encoding=self.encoding, dialect="catkeys")
+        # No real headers, the first line contains metadata
+        writer.writerow(dict(zip(FIELDNAMES, [self.header._header_dict[key] for key in FIELDNAMES_HEADER])))
         for unit in self.units:
             writer.writerow(unit.dict)
-        return output.getvalue()
+        return output.getvalue() if six.PY2 else output.getvalue().encode(self.encoding)

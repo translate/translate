@@ -300,8 +300,7 @@ class TestTranslationStore(object):
     def test_nonascii(self):
         store = self.StoreClass()
         unit = store.addsourceunit(u"Beziér curve")
-        string = u"Beziér-kurwe"
-        unit.target = string.encode("utf-8")
+        unit.target = u"Beziér-kurwe"
         answer = store.translate(u"Beziér curve")
         if isinstance(answer, bytes):
             answer = answer.decode("utf-8")
