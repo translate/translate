@@ -142,8 +142,9 @@ class TestMOFile(test_base.TestTranslationStore):
             print("PO source file")
             print(posource)
             PO_FILE, MO_MSGFMT, MO_POCOMPILE = self.get_mo_and_po()
+            posource = posource.encode('utf-8')
 
-            with open(PO_FILE, 'w') as out_file:
+            with open(PO_FILE, 'wb') as out_file:
                 out_file.write(posource)
 
             subprocess.call(['msgfmt', PO_FILE, '-o', MO_MSGFMT])

@@ -75,7 +75,7 @@ def hashpjw(str_param):
     s = str_param
     for s in str_param:
         hval = hval << 4
-        hval += ord(s)
+        hval += ord(s) if six.PY2 else s
         g = hval & 0xf << (HASHWORDBITS - 4)
         if (g != 0):
             hval = hval ^ g >> (HASHWORDBITS - 8)
@@ -93,7 +93,7 @@ def get_next_prime_number(start):
         if (num == 2) or (num == 3):
             return True
         # check for numbers > 4
-        for divider in range(2, num / 2):
+        for divider in range(2, num // 2):
             if num % divider == 0:
                 return False
         return True
@@ -162,6 +162,9 @@ class mofile(poheader.poheader, base.TranslationStore):
                 hash_cursor = hash_cursor % S
                 assert (hash_cursor != orig_hash_cursor)
 
+        def lst_encode(lst, join_char=b''):
+            return join_char.join([i.encode('utf-8') for i in lst])
+
         # hash_size should be the smallest prime number that is greater
         # or equal (4 / 3 * N) - where N is the number of keys/units.
         # see gettext-0.17:gettext-tools/src/write-mo.c:406
@@ -174,35 +177,33 @@ class mofile(poheader.poheader, base.TranslationStore):
             if not unit.istranslated():
                 continue
             if isinstance(unit.source, multistring):
-                source = "".join(unit.msgidcomments) + \
-                         "\0".join(unit.source.strings)
+                source = lst_encode(unit.msgidcomments) + \
+                         lst_encode(unit.source.strings, b"\0")
             else:
-                source = "".join(unit.msgidcomments) + unit.source
+                source = lst_encode(unit.msgidcomments) + unit.source.encode('utf-8')
             if unit.msgctxt:
-                source = "".join(unit.msgctxt) + "\x04" + source
+                source = lst_encode(unit.msgctxt) + b"\x04" + source
             if isinstance(unit.target, multistring):
-                target = "\0".join(unit.target.strings)
+                target = lst_encode(unit.target.strings, b"\0")
             else:
-                target = unit.target
+                target = unit.target.encode('utf-8')
             if unit.target:
-                MESSAGES[source.encode("utf-8")] = target
+                MESSAGES[source] = target
         # using "I" works for 32- and 64-bit systems, but not for 16-bit!
         hash_table = array.array("I", [0] * hash_size)
         # the keys are sorted in the .mo file
         keys = sorted(MESSAGES.keys())
         offsets = []
-        ids = strs = ''
+        ids = strs = b''
         for i, id in enumerate(keys):
             # For each string, we need size and file offset.  Each string is
             # NUL terminated; the NUL does not count into the size.
             # TODO: We don't do any encoding detection from the PO Header
             add_to_hash_table(id, i)
             string = MESSAGES[id]  # id already encoded for use as dictionary key
-            if isinstance(string, six.text_type):
-                string = string.encode('utf-8')
             offsets.append((len(ids), len(id), len(strs), len(string)))
-            ids = ids + id + '\0'
-            strs = strs + string + '\0'
+            ids = ids + id + b'\0'
+            strs = strs + string + b'\0'
         output = ''
         # The header is 7 32-bit unsigned integers
         keystart = 7 * 4 + 16 * len(keys) + hash_size * 4
@@ -264,16 +265,18 @@ class mofile(poheader.poheader, base.TranslationStore):
                                              input[nextvalue:nextvalue + (2 * 4)])
             source = input[koffset:koffset + klength]
             context = None
-            if "\x04" in source:
-                context, source = source.split("\x04")
+            if b"\x04" in source:
+                context, source = source.split(b"\x04")
             # Still need to handle KDE comments
-            source = multistring(source.split("\0"))
             if source == "":
-                charset = re.search("charset=([^\\s]+)",
+                charset = re.search(b"charset=([^\\s]+)",
                                     input[voffset:voffset + vlength])
                 if charset:
                     self.encoding = charset.group(1)
-            target = multistring(input[voffset:voffset + vlength].split("\0"))
+            source = multistring([s.decode(self.encoding)
+                                  for s in source.split(b"\0")])
+            target = multistring([s.decode(self.encoding)
+                                  for s in input[voffset:voffset + vlength].split(b"\0")])
             newunit = mounit(source)
             newunit.settarget(target)
             if context is not None:
