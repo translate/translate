@@ -196,7 +196,7 @@ class htmlfile(html_parser.HTMLParser, base.TranslationStore):
     def _simple_callback(self, string):
         return string
 
-    ENCODING_RE = re.compile('''<meta.*
+    ENCODING_RE = re.compile(b'''<meta.*
                                 content.*=.*?charset.*?=\s*?
                                 ([^\s]*)
                                 \s*?["']\s*?>
@@ -210,7 +210,7 @@ class htmlfile(html_parser.HTMLParser, base.TranslationStore):
 
         result = self.ENCODING_RE.findall(htmlsrc)
         if result:
-            self.encoding = result[0]
+            self.encoding = result[0].decode('ascii')
         return self.encoding
 
     def do_encoding(self, htmlsrc):
