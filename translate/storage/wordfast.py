@@ -84,6 +84,7 @@ import csv
 import six
 import time
 
+from translate.misc import csv_utils
 from translate.storage import base
 
 
@@ -111,6 +112,7 @@ WF_FIELDNAMES_HEADER_DEFAULTS = {
     "attr2list": "",
     "attr3list": "",
     "attr4list": "",
+    "attr5list": "",
 }
 """Default or minimum header entries for a Wordfast file"""
 
@@ -172,7 +174,7 @@ def _char_to_wf(string):
     # when running on a Mac
     if string:
         for code, char in WF_ESCAPE_MAP:
-            string = string.replace(char.encode('utf-8'), code)
+            string = string.replace(char, code)
         string = string.replace("\n", "\\n").replace("\t", "\\t")
     return string
 
@@ -181,7 +183,7 @@ def _wf_to_char(string):
     """Wordfast &'XX; escapes -> Char"""
     if string:
         for code, char in WF_ESCAPE_MAP:
-            string = string.replace(code, char.encode('utf-8'))
+            string = string.replace(code, char)
         string = string.replace("\\n", "\n").replace("\\t", "\t")
     return string
 
@@ -311,15 +313,13 @@ class WordfastUnit(base.TranslationUnit):
         if self._dict.get(key, None) is None:
             return None
         elif self._dict[key]:
-            return _wf_to_char(self._dict[key]).decode('utf-8')
+            return _wf_to_char(self._dict[key])
         else:
             return ""
 
     def _set_source_or_target(self, key, newvalue):
         if newvalue is None:
             self._dict[key] = None
-        if isinstance(newvalue, six.text_type):
-            newvalue = newvalue.encode('utf-8')
         newvalue = _char_to_wf(newvalue)
         if not key in self._dict or newvalue != self._dict[key]:
             self._dict[key] = newvalue
@@ -385,42 +385,32 @@ class WordfastTMFile(base.TranslationStore):
         else:
             self.encoding = 'iso-8859-1'
         try:
-            input = input.decode(self.encoding).encode('utf-8')
+            input = input.decode(self.encoding)
         except:
             raise ValueError("Wordfast files are either UTF-16 (UCS2) or ISO-8859-1 encoded")
-        for header in csv.DictReader(input.split("\n")[:1],
-                                    fieldnames=WF_FIELDNAMES_HEADER,
-                                    dialect="wordfast"):
-            self.header = WordfastHeader(header)
-        lines = csv.DictReader(input.split("\n")[1:],
-                                fieldnames=WF_FIELDNAMES,
-                                dialect="wordfast")
-        for line in lines:
+        reader = csv.DictReader(input.split("\n"), fieldnames=WF_FIELDNAMES, dialect="wordfast")
+        for idx, line in enumerate(reader):
+            if idx == 0:
+                header = dict(zip(WF_FIELDNAMES_HEADER, [line[key] for key in WF_FIELDNAMES]))
+                self.header = WordfastHeader(header)
+                continue
             newunit = WordfastUnit()
             newunit.dict = line
             self.addunit(newunit)
 
     def serialize(self):
+        # Check first if there is at least one translated unit
+        translated_units = [u for u in self.units if u.istranslated()]
+        if not translated_units:
+            return b""
+
         output = csv.StringIO()
-        header_output = csv.StringIO()
-        writer = csv.DictWriter(output, fieldnames=WF_FIELDNAMES,
-                                dialect="wordfast")
-        unit_count = 0
-        for unit in self.units:
-            if unit.istranslated():
-                unit_count += 1
-                writer.writerow(unit.dict)
-        if unit_count == 0:
-            return ""
-        output.reset()
-        self.header.tucount = unit_count
-        outheader = csv.DictWriter(header_output,
-                                    fieldnames=WF_FIELDNAMES_HEADER,
-                                    dialect="wordfast")
-        outheader.writerow(self.header.header)
-        header_output.reset()
-        decoded = "".join(header_output.readlines() + output.readlines()).decode('utf-8')
-        try:
-            return decoded.encode(self.encoding)
-        except UnicodeEncodeError:
-            return decoded.encode('utf-16')
+        writer = csv_utils.UnicodeDictWriter(
+            output, fieldnames=WF_FIELDNAMES, encoding=self.encoding, dialect="wordfast")
+        # No real headers, the first line contains metadata
+        self.header.tucount = len(translated_units)
+        writer.writerow(dict(zip(WF_FIELDNAMES, [self.header.header[key] for key in WF_FIELDNAMES_HEADER])))
+
+        for unit in translated_units:
+            writer.writerow(unit.dict)
+        return output.getvalue() if six.PY2 else output.getvalue().encode(self.encoding)
