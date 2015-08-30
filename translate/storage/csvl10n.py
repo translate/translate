@@ -25,8 +25,9 @@ or entire files (csvfile) for use with localisation
 import codecs
 import csv
 import six
-from io import BytesIO
+from io import StringIO
 
+from translate.misc import csv_utils
 from translate.misc import sparse
 from translate.storage import base
 
@@ -325,7 +326,7 @@ def valid_fieldnames(fieldnames):
 
 def detect_header(sample, dialect, fieldnames):
     """Test if file has a header or not, also returns number of columns in first row"""
-    inputfile = BytesIO(sample)
+    inputfile = StringIO(sample)
     try:
         reader = csv.reader(inputfile, dialect)
     except csv.Error:
@@ -369,18 +370,16 @@ class csvfile(base.TranslationStore):
     def parse(self, csvsrc):
         text, encoding = self.detect_encoding(csvsrc, default_encodings=['utf-8', 'utf-16'])
         #FIXME: raise parse error if encoding detection fails?
-        if encoding and encoding.lower() != 'utf-8':
-            csvsrc = text.encode('utf-8').lstrip(codecs.BOM_UTF8)
+        if encoding and encoding.lower() != 'utf-8' and csvsrc.startswith(codecs.BOM_UTF8):
+            csvsrc = csvsrc.lstrip(codecs.BOM_UTF8)
         self.encoding = encoding or 'utf-8'
 
         sniffer = csv.Sniffer()
-        # FIXME: maybe we should sniff a smaller sample
-        sample = csvsrc[:1024]
-        if isinstance(sample, six.text_type):
-            sample = sample.encode('utf-8')
+        sample = text[:1024]
 
         try:
-            self.dialect = sniffer.sniff(sample)
+            # sniff wants bytes on Python 2 but text on Python 3
+            self.dialect = sniffer.sniff(csvsrc[:1024] if six.PY2 else sample)
             if not self.dialect.escapechar:
                 self.dialect.escapechar = '\\'
                 if self.dialect.quoting == csv.QUOTE_MINIMAL:
@@ -396,7 +395,7 @@ class csvfile(base.TranslationStore):
         except csv.Error:
             pass
 
-        inputfile = csv.StringIO(csvsrc)
+        inputfile = csv.StringIO(csvsrc if six.PY2 else text)
         reader = try_dialects(inputfile, self.fieldnames, self.dialect)
 
         #reader = SimpleDictReader(csvfile, fieldnames=fieldnames, dialect=dialect)
@@ -416,12 +415,13 @@ class csvfile(base.TranslationStore):
         return source.encode(self.encoding)
 
     def getoutput(self):
-        outputfile = BytesIO()
-        writer = csv.DictWriter(outputfile, self.fieldnames, extrasaction='ignore', dialect=self.dialect)
-        # write header
-        hdict = dict(map(None, self.fieldnames, self.fieldnames))
-        writer.writerow(hdict)
+        output = csv.StringIO()
+        writer = csv_utils.UnicodeDictWriter(output, self.fieldnames,
+                                             encoding=self.encoding,
+                                             extrasaction='ignore',
+                                             dialect=self.dialect)
+        # writeheader() would need Python 2.7
+        writer.writerow(dict(zip(self.fieldnames, self.fieldnames)))
         for ce in self.units:
-            cedict = dict((k, from_unicode(v, 'utf-8')) for k, v in ce.todict().items())
-            writer.writerow(cedict)
-        return outputfile.getvalue()
+            writer.writerow(ce.todict())
+        return output.getvalue()
