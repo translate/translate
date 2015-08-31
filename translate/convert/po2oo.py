@@ -123,8 +123,6 @@ class reoo:
         # If there is no translation, we don't want to add a line
         if len(unquotedstr) == 0:
             return
-        if isinstance(unquotedstr, six.text_type):
-            unquotedstr = unquotedstr.encode("UTF-8")
         # finally set the new definition in the oo, but not if its empty
         if len(unquotedstr) > 0:
             setattr(part2, subkey, unquotedstr)

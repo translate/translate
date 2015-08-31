@@ -2,10 +2,10 @@
 # -*- coding: utf-8 -*-
 
 import os
+from io import BytesIO
 from six.moves.urllib import parse
 
 from translate.convert import oo2po, po2oo, test_convert
-from translate.misc import wStringIO
 from translate.storage import oo, po
 from translate.storage.poheader import poheader
 
@@ -37,19 +37,19 @@ class TestOO2PO:
 
         Return the string once it has been through all the conversions."""
 
-        ootemplate = r'helpcontent2	%s	0	help	par_id3150670 35				0	en-US	%s				2002-02-02 02:02:02'
+        ootemplate = br'helpcontent2	%s	0	help	par_id3150670 35				0	en-US	%s				2002-02-02 02:02:02'
 
         oosource = ootemplate % (filename, entitystring)
-        ooinputfile = wStringIO.StringIO(oosource)
-        ootemplatefile = wStringIO.StringIO(oosource)
-        pooutputfile = wStringIO.StringIO()
+        ooinputfile = BytesIO(oosource)
+        ootemplatefile = BytesIO(oosource)
+        pooutputfile = BytesIO()
 
         self.conversion_module.convertoo(ooinputfile, pooutputfile, ootemplatefile, targetlanguage='en-US')
         posource = pooutputfile.getvalue()
 
-        poinputfile = wStringIO.StringIO(posource)
-        ootemplatefile = wStringIO.StringIO(oosource)
-        oooutputfile = wStringIO.StringIO()
+        poinputfile = BytesIO(posource)
+        ootemplatefile = BytesIO(oosource)
+        oooutputfile = BytesIO()
         po2oo.convertoo(poinputfile, oooutputfile, ootemplatefile, targetlanguage="en-US")
         ooresult = oooutputfile.getvalue()
         print("original oo:\n", oosource, "po version:\n", posource, "output oo:\n", ooresult)

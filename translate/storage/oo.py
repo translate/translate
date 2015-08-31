@@ -160,13 +160,6 @@ def unescape_help_text(text):
     return text.replace(r"\<", "<").replace(r"\>", ">").replace(r'\"', '"').replace(r"\\", "\\")
 
 
-def encode_if_needed_utf8(text):
-    """Encode a Unicode string the the specified encoding"""
-    if isinstance(text, six.text_type):
-        return text.encode('UTF-8')
-    return text
-
-
 class ooline(object):
     """this represents one line, one translation in an .oo file"""
 
@@ -219,8 +212,8 @@ class ooline(object):
     text = property(gettext, settext)
 
     def __str__(self):
-        """convert to a string. double check that unicode is handled"""
-        return encode_if_needed_utf8(self.getoutput())
+        """convert to a string."""
+        return self.getoutput()
 
     def getoutput(self):
         """return a line in tab-delimited form"""
@@ -233,6 +226,7 @@ class ooline(object):
                 self.localid, self.platform)
 
 
+@six.python_2_unicode_compatible
 class oounit:
     """this represents a number of translations of a resource"""
 
@@ -247,8 +241,8 @@ class oounit:
         self.lines.append(line)
 
     def __str__(self):
-        """convert to a string. double check that unicode is handled"""
-        return encode_if_needed_utf8(self.getoutput())
+        """convert to a string."""
+        return self.getoutput()
 
     def getoutput(self, skip_source=False, fallback_lang=None):
         """return the lines in tab-delimited form"""
@@ -261,12 +255,13 @@ class oounit:
                 lines = [new_line]
         else:
             lines = self.lines
-        return "\r\n".join([str(line) for line in lines])
+        return "\r\n".join([six.text_type(line) for line in lines])
 
 
 class oofile:
     """this represents an entire .oo file"""
     UnitClass = oounit
+    encoding = 'utf-8'
 
     def __init__(self, input=None):
         """constructs the oofile"""
@@ -300,6 +295,7 @@ class oofile:
             input.close()
         else:
             src = input
+        src = src.decode(self.encoding)
         for line in src.split("\n"):
             line = quote.rstripeol(line)
             if not line:
@@ -315,7 +311,7 @@ class oofile:
 
     def serialize(self, skip_source=False, fallback_lang=None):
         """convert to a string. double check that unicode is handled"""
-        return encode_if_needed_utf8(self.getoutput(skip_source, fallback_lang))
+        return self.getoutput(skip_source, fallback_lang).encode(self.encoding)
 
     def getoutput(self, skip_source=False, fallback_lang=None):
         """converts all the lines back to tab-delimited form"""

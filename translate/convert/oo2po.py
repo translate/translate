@@ -53,8 +53,8 @@ class oo2po:
             return None
         text2 = getattr(part2, subkey)
 
-        unit = po.pounit(text1.decode('utf-8'), encoding="UTF-8")
-        unit.target = text2.decode('utf-8')
+        unit = po.pounit(text1, encoding="UTF-8")
+        unit.target = text2
         unit.addlocation(key + "." + subkey)
         if getattr(translators_comment, subkey).strip() != "":
             unit.addnote(getattr(translators_comment, subkey), origin="developer")

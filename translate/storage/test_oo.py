@@ -44,7 +44,7 @@ class TestOO:
 
     def ooregen(self, oosource):
         """helper that converts oo source to oofile object and back"""
-        return self.ooparse(oosource).serialize()
+        return self.ooparse(oosource).serialize().decode('utf-8')
 
     def test_simpleentry(self):
         """checks that a simple oo entry is parsed correctly"""
@@ -52,7 +52,7 @@ class TestOO:
         oofile = self.ooparse(oosource)
         assert len(oofile.units) == 1
         oe = oofile.units[0]
-        assert oe.languages.keys() == ["en-US"]
+        assert list(oe.languages.keys()) == ["en-US"]
         ol = oofile.oolines[0]
         assert ol.getkey() == ('svx', r'source\dialog\numpages.src', 'string', 'RID_SVXPAGE_NUM_OPTIONS', 'STR_BULLET', '')
         assert ol.text == 'Character'
@@ -64,7 +64,7 @@ class TestOO:
         oofile = self.ooparse(oosource)
         assert len(oofile.units) == 1
         oe = oofile.units[0]
-        assert oe.languages.keys() == ["en-US"]
+        assert list(oe.languages.keys()) == ["en-US"]
         ol = oofile.oolines[0]
         assert ol.getkey() == ('sd', r'source\ui\dlg\sdobjpal.src', 'imagebutton', 'FLTWIN_SDOBJPALETTE', 'BTN_SYMSIZE', '')
         assert ol.quickhelptext == 'Toggle Symbol Size'
@@ -76,7 +76,7 @@ class TestOO:
         oofile = self.ooparse(oosource)
         assert len(oofile.units) == 1
         oe = oofile.units[0]
-        assert oe.languages.keys() == ["en-US"]
+        assert list(oe.languages.keys()) == ["en-US"]
         ol = oofile.oolines[0]
         assert ol.getkey() == ('dbaccess', r'source\ui\dlg\indexdialog.src', 'querybox', 'QUERY_SAVE_CURRENT_INDEX', '', '')
         assert ol.title == 'Exit Index Design'
@@ -96,7 +96,7 @@ class TestOO:
         oofile = self.ooparse(oosource)
         assert len(oofile.units) == 1
         oe = oofile.units[0]
-        assert oe.languages.keys() == ["en-US"]
+        assert list(oe.languages.keys()) == ["en-US"]
         ol = oofile.oolines[0]
         assert int(ol.width) == 16
 
