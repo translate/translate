@@ -752,6 +752,8 @@ class TranslationStore(object):
                 detected_encoding = None
             elif detected_encoding['encoding'] == 'ascii':
                 detected_encoding['encoding'] = 'utf-8'
+            else:
+                detected_encoding['encoding'] = detected_encoding['encoding'].lower()
         except ImportError:
             detected_encoding = None
 
