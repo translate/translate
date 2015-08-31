@@ -766,7 +766,16 @@ class TranslationStore(object):
                 if encoding not in encodings:
                     encodings.append(encoding)
         elif detected_encoding:
-            if detected_encoding['encoding'] != self.encoding:
+            if '-' in detected_encoding['encoding']:
+                encoding, suffix = detected_encoding['encoding'].rsplit('-', 1)
+            else:
+                encoding = detected_encoding['encoding']
+                suffix = None
+
+            # Different charset, just with BOM
+            if encoding == self.encoding and suffix == 'sig':
+                encodings.append(detected_encoding['encoding'])
+            elif detected_encoding['encoding'] != self.encoding:
                 logging.warn("trying to parse %s with encoding: %s but "
                              "detected encoding is %s (confidence: %s)",
                              self.filename, self.encoding,
