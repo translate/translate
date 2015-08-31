@@ -91,14 +91,14 @@ class TikiUnit(base.TranslationUnit):
 
 class TikiStore(base.TranslationStore):
     """Represents a tiki language.php file."""
+    UnitClass = TikiUnit
 
     def __init__(self, inputfile=None):
         """If an inputfile is specified it will be parsed.
 
         :param inputfile: Either a string or a filehandle of the source file
         """
-        base.TranslationStore.__init__(self, TikiUnit)
-        self.units = []
+        super(TikiStore, self).__init__()
         self.filename = getattr(inputfile, 'name', '')
         if inputfile is not None:
             self.parse(inputfile)
@@ -166,6 +166,7 @@ class TikiStore(base.TranslationStore):
             _location = "translated"
 
             for line in input:
+                line = line.decode(self.encoding)
                 # The tiki file fails to identify each section so we have to look for start and end
                 # points and if we're outside of them we assume the string is translated
                 if line.count("### Start of unused words"):

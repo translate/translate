@@ -33,7 +33,7 @@ class TestTikiUnit:
 class TestTikiStore:
 
     def test_parse_simple(self):
-        tikisource = r'"Top authors" => "Top autoren",'
+        tikisource = br'"Top authors" => "Top autoren",'
         tikifile = tiki.TikiStore(tikisource)
         assert len(tikifile.units) == 1
         assert tikifile.units[0].source == "Top authors"
@@ -41,7 +41,7 @@ class TestTikiStore:
 
     def test_parse_encode(self):
         """Make sure these tiki special symbols come through correctly"""
-        tikisource = r'"test: |\n \r \t \\ \$ \"|" => "test: |\n \r \t \\ \$ \"|",'
+        tikisource = br'"test: |\n \r \t \\ \$ \"|" => "test: |\n \r \t \\ \$ \"|",'
         tikifile = tiki.TikiStore(tikisource)
         assert tikifile.units[0].source == r"test: |\n \r \t \\ \$ \"|"
         assert tikifile.units[0].target == r"test: |\n \r \t \\ \$ \"|"
@@ -50,7 +50,7 @@ class TestTikiStore:
         """This function will test to make sure the location matching is working.  It
         tests that locations are detected, the default "translated" case, and that
         "unused" lines can start with //"""
-        tikisource = """
+        tikisource = b"""
 "zero_source" => "zero_target",
 // ### Start of unused words
 "one_source" => "one_target",
@@ -77,7 +77,7 @@ class TestTikiStore:
 
     def test_parse_ignore_extras(self):
         """Tests that we ignore extraneous lines"""
-        tikisource = """<?php
+        tikisource = b"""<?php
 $lang = Array(
 "zero_source" => "zero_target",
 // ###
