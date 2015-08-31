@@ -8,3 +8,6 @@ lxml>=2.3.6
 # Faster matching in e.g. pot2po
 # 0.11.0 is broken using pip, later versions are fixed
 python-Levenshtein>=0.10.2,!=0.11.0
+
+# Encoding detection
+chardet
