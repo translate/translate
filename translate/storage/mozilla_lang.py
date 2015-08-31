@@ -75,7 +75,7 @@ class LangStore(txt.TxtFile):
         comment = ""
 
         if not isinstance(lines, list):
-            lines = lines.split("\n")
+            lines = lines.split(b"\n")
         for lineoffset, line in enumerate(lines):
             line = line.decode(self.encoding).rstrip("\n").rstrip("\r")
 
