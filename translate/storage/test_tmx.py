@@ -74,7 +74,7 @@ class TestTMXfile(test_base.TestTranslationStore):
         tmxfile = tmx.tmxfile()
         tmxfile.addtranslation("Mail & News", "en", "Nuus & pos", "af")
         tmxfile.addtranslation("Five < ten", "en", "Vyf < tien", "af")
-        xmltext = tmxfile.serialize()
+        xmltext = tmxfile.serialize().decode('utf-8')
         print("The generated xml:")
         print(xmltext)
         assert tmxfile.translate('Mail & News') == 'Nuus & pos'
