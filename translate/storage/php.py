@@ -95,12 +95,13 @@ def phpencode(text, quotechar="'"):
 def phpdecode(text, quotechar="'"):
     """Convert PHP escaped string to a Python string."""
 
+    escape_encoding = "string_escape" if six.PY2 else "unicode_escape"
     def decode_octal_hex(match):
         r"""decode Octal \NNN and Hex values"""
         if "octal" in match.groupdict():
-            return match.groupdict()['octal'].decode("string_escape")
+            return match.groupdict()['octal'].encode('latin-1').decode(escape_encoding)
         elif "hex" in match.groupdict():
-            return match.groupdict()['hex'].decode("string_escape")
+            return match.groupdict()['hex'].encode('latin-1').decode(escape_encoding)
         else:
             return match.group
 
