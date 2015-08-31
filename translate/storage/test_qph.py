@@ -85,7 +85,7 @@ class TestQphFile(test_base.TestTranslationStore):
         assert qphfile.gettargetlanguage() == 'fr'
         assert qphfile.getsourcelanguage() == 'de'
         qphfile.settargetlanguage('pt_BR')
-        assert 'pt_BR' in qphfile.serialize()
+        assert 'pt_BR' in qphfile.serialize().decode('utf-8')
         assert qphfile.gettargetlanguage() == 'pt-br'
         # We convert en_US to en
         qphstr = '''<!DOCTYPE QPH>
