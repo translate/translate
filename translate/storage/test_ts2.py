@@ -133,7 +133,7 @@ class TestTSfile(test_base.TestTranslationStore):
         assert tsfile.gettargetlanguage() == 'fr'
         assert tsfile.getsourcelanguage() == 'de'
         tsfile.settargetlanguage('pt_BR')
-        assert 'pt_BR' in tsfile.serialize()
+        assert 'pt_BR' in tsfile.serialize().decode('utf-8')
         assert tsfile.gettargetlanguage() == 'pt-br'
         # We convert en_US to en
         tsstr = '''<!DOCTYPE TS>
@@ -164,10 +164,10 @@ class TestTSfile(test_base.TestTranslationStore):
         tsfile = ts.tsfile.parsestring(tsstr)
         tsfile.units[1].settarget('TestTarget')
         tsfile.units[1].markfuzzy(True)
-        newtsstr = tsstr.decode('utf-8').replace(
+        newtsstr = tsstr.replace(
             '>TargetString', ' type="unfinished">TestTarget'
-        ).encode('utf-8')
-        assert newtsstr == tsfile.serialize()
+        )
+        assert newtsstr == tsfile.serialize().decode('utf-8')
 
     def test_locations(self):
         """test that locations work well"""
@@ -253,4 +253,4 @@ class TestTSfile(test_base.TestTranslationStore):
     def test_backnforth(self):
         """test that ts files are read and output properly"""
         tsfile = ts.tsfile.parsestring(TS_NUMERUS)
-        assert tsfile.serialize() == TS_NUMERUS
+        assert tsfile.serialize().decode('utf-8') == TS_NUMERUS
