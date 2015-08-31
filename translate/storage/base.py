@@ -764,7 +764,6 @@ class TranslationStore(object):
                 if encoding not in encodings:
                     encodings.append(encoding)
         else:
-            encodings.append(self.encoding)
             if (detected_encoding and
                     detected_encoding['encoding'] != self.encoding and
                     detected_encoding['confidence'] != 1.0):
