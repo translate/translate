@@ -184,14 +184,14 @@ class TestXLIFFfile(test_base.TestTranslationStore):
 
     def test_sourcelanguage(self):
         xlifffile = xliff.xlifffile(sourcelanguage="xh")
-        xmltext = xlifffile.serialize()
+        xmltext = xlifffile.serialize().decode('utf-8')
         print(xmltext)
         assert xmltext.find('source-language="xh"') > 0
         #TODO: test that it also works for new files.
 
     def test_targetlanguage(self):
         xlifffile = xliff.xlifffile(sourcelanguage="zu", targetlanguage="af")
-        xmltext = xlifffile.serialize()
+        xmltext = xlifffile.serialize().decode('utf-8')
         print(xmltext)
         assert xmltext.find('source-language="zu"') > 0
         assert xmltext.find('target-language="af"') > 0
@@ -200,11 +200,11 @@ class TestXLIFFfile(test_base.TestTranslationStore):
         xlifffile = xliff.xlifffile()
         unit = xlifffile.addsourceunit("Concept")
         # We don't want to add unnecessary notes
-        assert not "note" in xlifffile.serialize()
+        assert not "note" in xlifffile.serialize().decode('utf-8')
         unit.addnote(None)
-        assert not "note" in xlifffile.serialize()
+        assert not "note" in xlifffile.serialize().decode('utf-8')
         unit.addnote("")
-        assert not "note" in xlifffile.serialize()
+        assert not "note" in xlifffile.serialize().decode('utf-8')
 
         unit.addnote("Please buy bread")
         assert unit.getnotes() == "Please buy bread"
@@ -267,7 +267,7 @@ class TestXLIFFfile(test_base.TestTranslationStore):
         unit.addalttrans("targetx", sourcetxt="sourcex")
         # test that the source node is before the target node:
         alt = unit.getalttrans()[0]
-        altformat = etree.tostring(alt.xmlelement)
+        altformat = etree.tostring(alt.xmlelement).decode('utf-8')
         print(altformat)
         assert altformat.find("<source") < altformat.find("<target")
 
