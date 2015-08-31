@@ -111,7 +111,7 @@ class TestProp(test_monolingual.TestMonolingualStore):
 
     def propregen(self, propsource):
         """helper that converts properties source to propfile object and back"""
-        return self.propparse(propsource).serialize()
+        return self.propparse(propsource).serialize().decode('utf-8')
 
     def test_simpledefinition(self):
         """checks that a simple properties definition is parsed correctly"""
@@ -136,10 +136,10 @@ class TestProp(test_monolingual.TestMonolingualStore):
         assert len(propfile.units) == 1
         propunit = propfile.units[0]
         assert propunit.name == "unicode"
-        assert propunit.source.encode("UTF-8") == "БЖЙШ"
+        assert propunit.source == u"БЖЙШ"
         regensource = propfile.serialize()
         assert messagevalue in regensource
-        assert "\\u" not in regensource
+        assert b"\\u" not in regensource
 
     def test_newlines_startend(self):
         """check that we preserve \n that appear at start and end of properties"""
@@ -248,12 +248,12 @@ key=value
 
     def test_mac_strings(self):
         """test various items used in Mac OS X strings files"""
-        propsource = r'''"I am a \"key\"" = "I am a \"value\"";'''.decode().encode('utf-16')
+        propsource = r'''"I am a \"key\"" = "I am a \"value\"";'''.encode('utf-16')
         propfile = self.propparse(propsource, personality="strings")
         assert len(propfile.units) == 1
         propunit = propfile.units[0]
         assert propunit.name == u'I am a "key"'
-        assert propunit.source.encode('utf-8') == u'I am a "value"'
+        assert propunit.source == u'I am a "value"'
 
     def test_mac_strings_unicode(self):
         """Ensure we can handle Unicode"""
@@ -275,12 +275,12 @@ key=value
 
     def test_mac_strings_newlines(self):
         """test newlines \n within a strings files"""
-        propsource = r'''"key" = "value\nvalue";'''.decode().encode('utf-16')
+        propsource = r'''"key" = "value\nvalue";'''.encode('utf-16')
         propfile = self.propparse(propsource, personality="strings")
         assert len(propfile.units) == 1
         propunit = propfile.units[0]
         assert propunit.name == u'key'
-        assert propunit.source.encode('utf-8') == u'value\nvalue'
+        assert propunit.source == u'value\nvalue'
         assert propfile.personality.encode(propunit.source) == r'value\nvalue'
 
     def test_mac_strings_comments(self):
@@ -292,7 +292,7 @@ key=value
         assert len(propfile.units) == 1
         propunit = propfile.units[0]
         assert propunit.name == u'key'
-        assert propunit.source.encode('utf-8') == u'value'
+        assert propunit.source == u'value'
         assert propunit.getnotes() == u"/* Comment */\n// Comment"
 
     def test_mac_strings_multilines_comments(self):
@@ -305,7 +305,7 @@ key=value
         assert len(propfile.units) == 1
         propunit = propfile.units[0]
         assert propunit.name == u'key'
-        assert propunit.source.encode('utf-8') == u'value'
+        assert propunit.source == u'value'
         assert propunit.getnotes() == u"/* Foo\nBar\nBaz */"
 
     def test_mac_strings_comments_dropping(self):
@@ -316,12 +316,12 @@ key=value
         assert len(propfile.units) == 1
         propunit = propfile.units[0]
         assert propunit.name == u'key'
-        assert propunit.source.encode('utf-8') == u'value'
+        assert propunit.source == u'value'
         assert propunit.getnotes() == u""
 
     def test_mac_strings_quotes(self):
         """test that parser unescapes characters used as wrappers"""
-        propsource = r'"key with \"quotes\"" = "value with \"quotes\"";'.decode().encode('utf-16')
+        propsource = r'"key with \"quotes\"" = "value with \"quotes\"";'.encode('utf-16')
         propfile = self.propparse(propsource, personality="strings")
         propunit = propfile.units[0]
         assert propunit.name == u'key with "quotes"'
@@ -329,7 +329,7 @@ key=value
 
     def test_mac_strings_serialization(self):
         """test that serializer quotes mac strings properly"""
-        propsource = r'"key with \"quotes\"" = "value with \"quotes\"";'.decode().encode('utf-16')
+        propsource = r'"key with \"quotes\"" = "value with \"quotes\"";'.encode('utf-16')
         propfile = self.propparse(propsource, personality="strings")
         # we don't care about leading and trailing newlines and zero bytes
         # in the assert, we just want to make sure that
@@ -337,7 +337,7 @@ key=value
         # - quotes inside are escaped
         # - for the sake of beauty a pair of spaces encloses the equal mark
         # - every line ends with ";"
-        assert propfile.serialize().strip('\n\x00') == propsource.strip('\n\x00')
+        assert propfile.serialize().strip(b'\n\x00') == propsource.strip(b'\n\x00')
 
     def test_override_encoding(self):
         """test that we can override the encoding of a properties file"""
