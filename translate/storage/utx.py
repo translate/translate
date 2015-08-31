@@ -48,6 +48,7 @@ import csv
 import six
 import time
 
+from translate.misc import csv_utils
 from translate.storage import base
 
 
@@ -108,7 +109,7 @@ class UtxUnit(base.TranslationUnit):
         if key not in self._dict:
             return None
         elif self._dict[key]:
-            return self._dict[key].decode('utf-8')
+            return self._dict[key]
         else:
             return ""
 
@@ -116,8 +117,6 @@ class UtxUnit(base.TranslationUnit):
         # FIXME update the header date
         if newvalue is None:
             self._dict[key] = None
-        if isinstance(newvalue, six.text_type):
-            newvalue = newvalue.encode('utf-8')
         if not key in self._dict or newvalue != self._dict[key]:
             self._dict[key] = newvalue
 
@@ -257,9 +256,10 @@ class UtxFile(base.TranslationStore):
             tmsrc = input.read()
             input.close()
             input = tmsrc
+        input = input.decode(self.encoding)
         try:
             header_length = self._read_header(input)
-        except:
+        except Exception:
             raise base.ParseError("Cannot parse header")
         lines = csv.DictReader(
                     input.split(UtxDialect.lineterminator)[header_length:],
@@ -271,15 +271,16 @@ class UtxFile(base.TranslationStore):
             self.addunit(newunit)
 
     def serialize(self):
+        # Check first if there is at least one translated unit
+        translated_units = [u for u in self.units if u.istranslated()]
+        if not translated_units:
+            return b""
+
         output = csv.StringIO()
-        writer = csv.DictWriter(output, fieldnames=self._fieldnames,
-                                dialect="utx")
-        unit_count = 0
-        for unit in self.units:
-            if unit.istranslated():
-                unit_count += 1
-                writer.writerow(unit.dict)
-        if unit_count == 0:
-            return ""
-        output.reset()
-        return self._write_header() + b"".join(output.readlines())
+        writer = csv_utils.UnicodeDictWriter(
+            output, fieldnames=self._fieldnames, encoding=self.encoding, dialect="utx")
+        for unit in translated_units:
+            writer.writerow(unit.dict)
+
+        result = output.getvalue() if six.PY2 else output.getvalue().encode(self.encoding)
+        return self._write_header().encode(self.encoding) + result
