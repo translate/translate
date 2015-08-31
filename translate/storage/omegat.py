@@ -43,6 +43,7 @@ import csv
 import locale
 import six
 
+from translate.misc import csv_utils
 from translate.storage import base
 
 
@@ -87,15 +88,13 @@ class OmegaTUnit(base.TranslationUnit):
         if key not in self._dict:
             return None
         elif self._dict[key]:
-            return self._dict[key].decode('utf-8')
+            return self._dict[key]
         else:
             return ""
 
     def _set_field(self, key, newvalue):
         if newvalue is None:
             self._dict[key] = None
-        if isinstance(newvalue, six.text_type):
-            newvalue = newvalue.encode('utf-8')
         if not key in self._dict or newvalue != self._dict[key]:
             self._dict[key] = newvalue
 
@@ -166,7 +165,7 @@ class OmegaTFile(base.TranslationStore):
             input.close()
             input = tmsrc
         try:
-            input = input.decode(self.encoding).encode('utf-8')
+            input = input.decode(self.encoding)
         except:
             raise ValueError("OmegaT files are either UTF-8 encoded or use the default system encoding")
         lines = csv.DictReader(input.split("\n"), fieldnames=OMEGAT_FIELDNAMES,
@@ -177,22 +176,17 @@ class OmegaTFile(base.TranslationStore):
             self.addunit(newunit)
 
     def serialize(self):
+        # Check first if there is at least one translated unit
+        translated_units = [u for u in self.units if u.istranslated()]
+        if not translated_units:
+            return b""
+
         output = csv.StringIO()
-        writer = csv.DictWriter(output, fieldnames=OMEGAT_FIELDNAMES,
-                                dialect="omegat")
-        unit_count = 0
-        for unit in self.units:
-            if unit.istranslated():
-                unit_count += 1
-                writer.writerow(unit.dict)
-        if unit_count == 0:
-            return ""
-        output.reset()
-        decoded = "".join(output.readlines()).decode('utf-8')
-        try:
-            return decoded.encode(self.encoding)
-        except UnicodeEncodeError:
-            return decoded.encode('utf-8')
+        writer = csv_utils.UnicodeDictWriter(
+            output, fieldnames=OMEGAT_FIELDNAMES, encoding=self.encoding, dialect="omegat")
+        for unit in translated_units:
+            writer.writerow(unit.dict)
+        return output.getvalue() if six.PY2 else output.getvalue().encode(self.encoding)
 
 
 class OmegaTFileTab(OmegaTFile):
