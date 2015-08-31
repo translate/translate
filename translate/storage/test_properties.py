@@ -372,3 +372,13 @@ key=value
         propsource = u"key = ąćęłńóśźż".encode("cp1250")
         with raises(IOError):
             self.propparse(propsource, personality="strings")
+
+    def test_utf8_byte_order_mark(self):
+        """test that BOM handling works fine with newlines"""
+        propsource = u"\n\n\nkey1 = value1\n\nkey2 = value2\n".encode('utf-8-sig')
+        propfile = self.propparse(propsource, personality='java-utf8')
+        bom = propsource[:3]
+        result = propfile.serialize()
+        assert result.startswith(bom)
+        assert bom not in result[3:]
+        assert 'None' not in result[3:]
