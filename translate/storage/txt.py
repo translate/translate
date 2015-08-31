@@ -114,9 +114,9 @@ class TxtFile(base.TranslationStore):
         pretext = ""
         posttext = ""
         if not isinstance(lines, list):
-            lines = lines.split("\n")
-        for linenum in range(len(lines)):
-            line = lines[linenum].rstrip("\r\n")
+            lines = lines.split(b"\n")
+        for linenum, line in enumerate(lines):
+            line = line.decode(self.encoding).rstrip("\r\n")
             for rule, prere, postre in self.flavour:
                 match = prere.match(line)
                 if match:
