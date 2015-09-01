@@ -751,7 +751,7 @@ class TranslationStore(object):
             if detected_encoding['confidence'] < 0.48:
                 detected_encoding = None
             elif detected_encoding['encoding'] == 'ascii':
-                detected_encoding['encoding'] = 'utf-8'
+                detected_encoding['encoding'] = self.encoding
             else:
                 detected_encoding['encoding'] = detected_encoding['encoding'].lower()
         except ImportError:
