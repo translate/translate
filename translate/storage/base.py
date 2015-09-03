@@ -691,11 +691,6 @@ class TranslationStore(object):
         odict['fileobj'] = None
         return odict
 
-    def __setstate__(self, dict):
-        self.__dict__.update(dict)
-        if getattr(self, "filename", False):
-            self.fileobj = open(self.filename)
-
     def __str__(self):
         # This allows the old str(store) method for serialization to be kept
         # for compatibility purpose.
