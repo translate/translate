@@ -687,6 +687,7 @@ class TranslationStore(object):
 
     def __getstate__(self):
         odict = self.__dict__.copy()
+        # fileobj is generally not picklable
         odict['fileobj'] = None
         return odict
 
@@ -708,12 +709,7 @@ class TranslationStore(object):
     def serialize(self):
         """Converts to a bytes representation that can be parsed back using
         :meth:`~.TranslationStore.parsestring`."""
-        # We can't pickle fileobj if it is there, so let's hide it for a while.
-        fileobj = getattr(self, "fileobj", None)
-        self.fileobj = None
-        dump = pickle.dumps(self)
-        self.fileobj = fileobj
-        return dump
+        return pickle.dumps(self)
 
     def isempty(self):
         """Return True if the object doesn't contain any translation units."""
