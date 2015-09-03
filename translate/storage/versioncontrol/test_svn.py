@@ -30,4 +30,4 @@ class TestSVN(HelperTest):
         o = get_versioned_object(file_path)
         assert os.path.samefile(o.location_abs, file_path)
 
-        assert o.getcleanfile() == "First file\n"
+        assert o.getcleanfile().decode('utf-8') == "First file\n"

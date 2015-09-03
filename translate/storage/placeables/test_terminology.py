@@ -29,7 +29,7 @@ from translate.storage.pypo import pofile
 
 
 class TestTerminologyPlaceable:
-    TERMINOLOGY = """
+    TERMINOLOGY = u"""
 msgid "name"
 msgstr "naam"
 
@@ -44,7 +44,7 @@ msgstr "lêernaam"
 """
 
     def setup_method(self, method):
-        self.term_po = pofile(BytesIO(self.TERMINOLOGY))
+        self.term_po = pofile(BytesIO(self.TERMINOLOGY.encode('utf-8')))
         self.matcher = terminologymatcher(self.term_po)
         self.test_string = u'<b>Inpüt</b> file name thingy.'
 
