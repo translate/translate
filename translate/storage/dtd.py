@@ -536,7 +536,7 @@ class dtdfile(base.TranslationStore):
         """read the source code of a dtd file in and include them as dtdunits in self.units"""
         start = 0
         end = 0
-        lines = dtdsrc.split("\n")
+        lines = dtdsrc.split(b"\n")
         while end < len(lines):
             if (start == end):
                 end += 1
@@ -544,9 +544,9 @@ class dtdfile(base.TranslationStore):
             while end < len(lines):
                 if end >= len(lines):
                     break
-                if lines[end].find('<!ENTITY') > -1:
+                if lines[end].find(b'<!ENTITY') > -1:
                     foundentity = True
-                if foundentity and re.match("[\"']\s*>", lines[end]):
+                if foundentity and re.match(b"[\"']\s*>", lines[end]):
                     end += 1
                     break
                 end += 1
@@ -555,11 +555,11 @@ class dtdfile(base.TranslationStore):
             while linesprocessed >= 1:
                 newdtd = dtdunit(android=self.android)
                 try:
-                    linesprocessed = newdtd.parse("\n".join(lines[start:end]))
+                    linesprocessed = newdtd.parse((b"\n".join(lines[start:end])).decode(self.encoding))
                     if linesprocessed >= 1 and (not newdtd.isnull() or newdtd.unparsedlines):
                         self.units.append(newdtd)
                 except Exception as e:
-                    warnings.warn("%s\nError occured between lines %d and %d:\n%s" % (e, start + 1, end, "\n".join(lines[start:end])))
+                    warnings.warn("%s\nError occured between lines %d and %d:\n%s" % (e, start + 1, end, b"\n".join(lines[start:end])))
                 start += linesprocessed
 
     def serialize(self):
@@ -574,7 +574,7 @@ class dtdfile(base.TranslationStore):
 
     def getoutput(self):
         """convert the units back to source"""
-        sources = [str(dtd) for dtd in self.units]
+        sources = [six.text_type(dtd) for dtd in self.units]
         return "".join(sources)
 
     def makeindex(self):
@@ -596,7 +596,7 @@ class dtdfile(base.TranslationStore):
         if etree is not None and not self.android:
             try:
                 # #expand is a Mozilla hack and are removed as they are not valid in DTDs
-                dtd = etree.DTD(BytesIO(re.sub("#expand", "", self.getoutput())))
+                dtd = etree.DTD(BytesIO(re.sub("#expand", "", self.getoutput()).encode(self.encoding)))
             except etree.DTDParseError as e:
                 warnings.warn("DTD parse error: %s" % e.error_log)
                 return False

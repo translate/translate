@@ -18,9 +18,9 @@
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, see <http://www.gnu.org/licenses/>.
 
+from io import BytesIO
 from pytest import mark
 
-from translate.misc import wStringIO
 from translate.storage import dtd, test_monolingual
 
 
@@ -191,13 +191,15 @@ class TestDTD(test_monolingual.TestMonolingualStore):
 
     def dtdparse(self, dtdsource):
         """helper that parses dtd source without requiring files"""
-        dummyfile = wStringIO.StringIO(dtdsource)
+        if not isinstance(dtdsource, bytes):
+            dtdsource = dtdsource.encode('utf-8')
+        dummyfile = BytesIO(dtdsource)
         dtdfile = dtd.dtdfile(dummyfile)
         return dtdfile
 
     def dtdregen(self, dtdsource):
         """helper that converts dtd source to dtdfile object and back"""
-        return self.dtdparse(dtdsource).serialize()
+        return self.dtdparse(dtdsource).serialize().decode('utf-8')
 
     def test_simpleentity(self):
         """checks that a simple dtd entity definition is parsed correctly"""
@@ -397,7 +399,9 @@ class TestAndroidDTD(test_monolingual.TestMonolingualStore):
         This allows to simulate reading from Android DTD files without really
         having real Android DTD files.
         """
-        dummyfile = wStringIO.StringIO(dtdsource)
+        if not isinstance(dtdsource, bytes):
+            dtdsource = dtdsource.encode('utf-8')
+        dummyfile = BytesIO(dtdsource)
         dtdfile = dtd.dtdfile(dummyfile, android=True)
         return dtdfile
 
@@ -408,7 +412,7 @@ class TestAndroidDTD(test_monolingual.TestMonolingualStore):
         in-memory store and writing back to an Android DTD file without really
         having a real file.
         """
-        return self.dtdparse(dtdsource).serialize()
+        return self.dtdparse(dtdsource).serialize().decode('utf-8')
 
     # Test for bug #2480
     def test_android_single_quote_escape(self):
