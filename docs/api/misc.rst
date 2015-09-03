@@ -77,14 +77,6 @@ sparse
    :inherited-members:
 
 
-stdiotell
----------
-
-.. automodule:: translate.misc.stdiotell
-   :members:
-   :inherited-members:
-
-
 wsgi
 ----
 

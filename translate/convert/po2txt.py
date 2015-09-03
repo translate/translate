@@ -95,9 +95,6 @@ def converttxt(inputfile, outputfile, templatefile, wrap=None,
 
 
 def main(argv=None):
-    from translate.misc import stdiotell
-    import sys
-    sys.stdout = stdiotell.StdIOWrapper(sys.stdout)
     formats = {
         ("po", "txt"): ("txt", converttxt),
         ("po"): ("txt", converttxt),

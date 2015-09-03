@@ -72,9 +72,6 @@ def convertpy(inputfile, outputfile, templatefile=None, includefuzzy=False,
 
 
 def main(argv=None):
-    from translate.misc import stdiotell
-    import sys
-    sys.stdout = stdiotell.StdIOWrapper(sys.stdout)
     formats = {("po", "py"): ("py", convertpy), ("po"): ("py", convertpy)}
     parser = convert.ConvertOptionParser(formats, usetemplates=False, description=__doc__)
     parser.add_threshold_option()

@@ -72,9 +72,6 @@ def converthtml(inputfile, outputfile, templatefile, includefuzzy=False,
 
 
 def main(argv=None):
-    from translate.misc import stdiotell
-    import sys
-    sys.stdout = stdiotell.StdIOWrapper(sys.stdout)
     formats = {
         ("po", "htm"): ("htm", converthtml),
         ("po", "html"): ("html", converthtml),

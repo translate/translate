@@ -77,9 +77,6 @@ formats = {
 
 
 def main(argv=None):
-    from translate.misc import stdiotell
-    import sys
-    sys.stdout = stdiotell.StdIOWrapper(sys.stdout)
     parser = convert.ConvertOptionParser(formats, usetemplates=True,
                                            description=__doc__)
     parser.add_option("", "--mark-active", dest="mark_active", default=False,

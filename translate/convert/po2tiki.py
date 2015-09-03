@@ -24,8 +24,6 @@ See: http://docs.translatehouse.org/projects/translate-toolkit/en/latest/command
 for examples and usage instructions.
 """
 
-import sys
-
 from translate.storage import po, tiki
 
 
@@ -74,8 +72,6 @@ def convertpo(inputfile, outputfile, template=None):
 def main(argv=None):
     """Will convert from .po to tiki style .php"""
     from translate.convert import convert
-    from translate.misc import stdiotell
-    sys.stdout = stdiotell.StdIOWrapper(sys.stdout)
 
     formats = {"po": ("tiki", convertpo)}
 

@@ -61,9 +61,6 @@ def converttxt(inputfile, outputfile, templates, duplicatestyle="msgctxt",
 
 def main(argv=None):
     from translate.convert import convert
-    from translate.misc import stdiotell
-    import sys
-    sys.stdout = stdiotell.StdIOWrapper(sys.stdout)
     formats = {"txt": ("po", converttxt), "*": ("po", converttxt)}
     parser = convert.ConvertOptionParser(formats, usepots=True,
                                          description=__doc__)
