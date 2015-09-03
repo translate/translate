@@ -20,6 +20,7 @@
 
 """Base classes for storage interfaces."""
 
+import codecs
 import logging
 import six
 try:
@@ -31,6 +32,17 @@ from translate.misc.multistring import multistring
 from translate.storage.placeables import (StringElem, general,
                                           parse as rich_parse)
 from translate.storage.workflow import StateEnum as states
+
+# Simple BOM based encoding detection
+ENCODING_BOMS = (
+    (codecs.BOM_UTF8, 'utf-8-sig'),
+    (codecs.BOM_UTF16, 'utf-16'),
+    (codecs.BOM_UTF16_BE, 'utf-16-be'),
+    (codecs.BOM_UTF16_LE, 'utf-16-le'),
+    (codecs.BOM_UTF32, 'utf-32'),
+    (codecs.BOM_UTF32_BE, 'utf-32-be'),
+    (codecs.BOM_UTF32_LE, 'utf-32-le'),
+)
 
 
 class ParseError(Exception):
@@ -737,6 +749,18 @@ class TranslationStore(object):
             newstore.parse(storestring)
         return newstore
 
+    def fallback_detection(self, text):
+        """
+        Simple detection based on BOM in case chardet is not available.
+        """
+        for bom, encoding in ENCODING_BOMS:
+            if text.startswith(bom):
+                return {
+                    'encoding': encoding,
+                    'confidence': 1.0
+                }
+        return None
+
     def detect_encoding(self, text, default_encodings=None):
         """
         Try to detect a file encoding from `text`, using either the chardet lib
@@ -755,7 +779,7 @@ class TranslationStore(object):
             else:
                 detected_encoding['encoding'] = detected_encoding['encoding'].lower()
         except ImportError:
-            detected_encoding = None
+            detected_encoding = self.fallback_detection(text)
 
         encodings = []
         # Purposefully accessed the internal _encoding, as encoding is never 'auto'
