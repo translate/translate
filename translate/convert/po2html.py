@@ -67,7 +67,6 @@ def converthtml(inputfile, outputfile, templatefile, includefuzzy=False,
     else:
         outputstring = convertor.mergestore(inputstore, templatefile,
                                             includefuzzy)
-    outputfilepos = outputfile.tell()
     outputfile.write(outputstring.encode('utf-8'))
     return 1
 

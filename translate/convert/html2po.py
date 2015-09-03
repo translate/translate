@@ -50,7 +50,6 @@ def converthtml(inputfile, outputfile, templates, includeuntagged=False,
     """reads in stdin using fromfileclass, converts using convertorclass,
     writes to stdout"""
     convertor = html2po()
-    outputfilepos = outputfile.tell()
     outputstore = convertor.convertfile(inputfile, getattr(inputfile, "name",
                                                            "unknown"),
                                         includeuntagged,
