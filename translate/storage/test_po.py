@@ -193,7 +193,7 @@ class TestPOFile(test_base.TestTranslationStore):
 
     def poregen(self, posource):
         """helper that converts po source to pofile object and back"""
-        return self.poparse(posource).serialize()
+        return bytes(self.poparse(posource))
 
     def pomerge(self, oldmessage, newmessage, authoritative):
         """helper that merges two messages"""
@@ -215,7 +215,7 @@ class TestPOFile(test_base.TestTranslationStore):
             # force rewrapping:
             u.source = u.source
             u.target = u.target
-        return pofile.serialize().decode('utf-8')
+        return bytes(pofile).decode('utf-8')
 
     def test_context_only(self):
         """Checks that an empty msgid with msgctxt is handled correctly."""
@@ -227,7 +227,7 @@ msgstr ""
         assert pofile.units[0].istranslatable()
         assert not pofile.units[0].isheader()
         # we were not generating output for thse at some stage
-        assert pofile.serialize()
+        assert bytes(pofile)
 
     def test_simpleentry(self):
         """checks that a simple po entry is parsed correctly"""
@@ -355,7 +355,7 @@ msgid ""
 msgstr "POT-Creation-Date: 2006-03-08 17:30+0200\n"
 '''
         pofile = self.poparse(posource)
-        assert pofile.serialize().decode('utf-8') == posource
+        assert bytes(pofile).decode('utf-8') == posource
 
     def test_fuzzy(self):
         """checks that fuzzy functionality works as expected"""
@@ -366,7 +366,7 @@ msgstr "POT-Creation-Date: 2006-03-08 17:30+0200\n"
         assert pofile.units[0].isfuzzy()
         pofile.units[0].markfuzzy(False)
         assert not pofile.units[0].isfuzzy()
-        assert pofile.serialize().decode('utf-8') == expectednonfuzzy
+        assert bytes(pofile).decode('utf-8') == expectednonfuzzy
 
         posource = '#, fuzzy, python-format\nmsgid "ball"\nmsgstr "bal"\n'
         expectednonfuzzy = '#, python-format\nmsgid "ball"\nmsgstr "bal"\n'
@@ -376,10 +376,10 @@ msgstr "POT-Creation-Date: 2006-03-08 17:30+0200\n"
         assert pofile.units[0].isfuzzy()
         pofile.units[0].markfuzzy(False)
         assert not pofile.units[0].isfuzzy()
-        assert pofile.serialize().decode('utf-8') == expectednonfuzzy
+        assert bytes(pofile).decode('utf-8') == expectednonfuzzy
         pofile.units[0].markfuzzy()
-        print(pofile.serialize())
-        assert pofile.serialize().decode('utf-8') == expectedfuzzyagain
+        print(bytes(pofile))
+        assert bytes(pofile).decode('utf-8') == expectedfuzzyagain
 
         # test the same, but with flags in a different order
         posource = '#, python-format, fuzzy\nmsgid "ball"\nmsgstr "bal"\n'
@@ -390,11 +390,11 @@ msgstr "POT-Creation-Date: 2006-03-08 17:30+0200\n"
         assert pofile.units[0].isfuzzy()
         pofile.units[0].markfuzzy(False)
         assert not pofile.units[0].isfuzzy()
-        print(pofile.serialize())
-        assert pofile.serialize().decode('utf-8') == expectednonfuzzy
+        print(bytes(pofile))
+        assert bytes(pofile).decode('utf-8') == expectednonfuzzy
         pofile.units[0].markfuzzy()
-        print(pofile.serialize())
-        assert pofile.serialize().decode('utf-8') == expectedfuzzyagain
+        print(bytes(pofile))
+        assert bytes(pofile).decode('utf-8') == expectedfuzzyagain
 
     @mark.xfail(reason="Check differing behaviours between pypo and cpo")
     def test_makeobsolete_untranslated(self):
@@ -402,7 +402,7 @@ msgstr "POT-Creation-Date: 2006-03-08 17:30+0200\n"
         posource = '#. The automatic one\n#: test.c\nmsgid "test"\nmsgstr ""\n'
         pofile = self.poparse(posource)
         unit = pofile.units[0]
-        print(pofile.serialize())
+        print(bytes(pofile))
         assert not unit.isobsolete()
         unit.makeobsolete()
         assert str(unit) == ""
@@ -460,7 +460,7 @@ msgstr "tweede"
         assert len(pofile.units) == 1
         unit = pofile.units[0]
         assert unit.isobsolete()
-        assert pofile.serialize().decode('utf-8') == posource
+        assert bytes(pofile).decode('utf-8') == posource
 
         posource = '''msgid "one"
 msgstr "een"
@@ -476,9 +476,9 @@ msgstr "een"
         unit = pofile.units[1]
         assert unit.isobsolete()
 
-        print(pofile.serialize())
+        print(bytes(pofile))
         # Doesn't work with CPO if obsolete units are mixed with non-obsolete units
-        assert pofile.serialize().decode('utf-8') == posource
+        assert bytes(pofile).decode('utf-8') == posource
         unit.resurrect()
         assert unit.hasplural()
 
@@ -512,13 +512,13 @@ msgstr "een"
         assert not unit.istranslatable()
 
         print(posource)
-        print(pofile.serialize())
-        assert pofile.serialize().decode('utf-8') == posource
+        print(bytes(pofile))
+        assert bytes(pofile).decode('utf-8') == posource
 
     def test_header_escapes(self):
         pofile = self.StoreClass()
         pofile.updateheader(add=True, **{"Report-Msgid-Bugs-To": r"http://qa.openoffice.org/issues/enter_bug.cgi?subcomponent=ui&comment=&short_desc=Localization%20issue%20in%20file%3A%20dbaccess\source\core\resource.oo&component=l10n&form_name=enter_issue"})
-        filecontents = pofile.serialize().decode('utf-8')
+        filecontents = bytes(pofile).decode('utf-8')
         print(filecontents)
         # We need to make sure that the \r didn't get misrepresented as a
         # carriage return, but as a slash (escaped) followed by a normal 'r'
@@ -596,9 +596,9 @@ msgstr[1] "Koeie"
         assert len(pofile.units) == 1
         unit = pofile.units[0]
         assert unit.isobsolete()
-        print(pofile.serialize())
+        print(bytes(pofile))
         print(posource)
-        assert pofile.serialize().decode('utf-8') == posource
+        assert bytes(pofile).decode('utf-8') == posource
 
     def test_merge_duplicates(self):
         """checks that merging duplicates works"""
@@ -622,9 +622,9 @@ msgid "test"
 msgstr ""
 '''
         pofile = self.poparse(posource, duplicatestyle="allow")
-        print(pofile.serialize())
+        print(bytes(pofile))
         pofile.removeduplicates("merge")
-        print(pofile.serialize())
+        print(bytes(pofile))
         assert len(pofile.units) == 1
         assert pofile.units[0].getlocations() == ["source1", "source2"]
 
@@ -837,9 +837,9 @@ msgstr "プロジェクトが見つかりませんでした"
         pofile1 = self.poparse(posource)
         print(pofile1.units[1].source)
         assert pofile1.units[1].source == u"I cannot locate the project\\"
-        pofile2 = self.poparse(pofile1.serialize())
-        print(pofile2.serialize())
-        assert pofile1.serialize() == pofile2.serialize()
+        pofile2 = self.poparse(bytes(pofile1))
+        print(bytes(pofile2))
+        assert bytes(pofile1) == bytes(pofile2)
 
     def test_unfinished_lines(self):
         """Test that we reasonably handle lines with a single quote."""
@@ -856,10 +856,10 @@ msgstr "start thing dingis fish"
         pofile1 = self.poparse(posource)
         print(repr(pofile1.units[1].target))
         assert pofile1.units[1].target == u"start thing dingis fish"
-        pofile2 = self.poparse(pofile1.serialize())
+        pofile2 = self.poparse(bytes(pofile1))
         assert pofile2.units[1].target == u"start thing dingis fish"
-        print(pofile2.serialize())
-        assert pofile1.serialize() == pofile2.serialize()
+        print(bytes(pofile2))
+        assert bytes(pofile1) == bytes(pofile2)
 
     def test_encoding_change(self):
         posource = r'''
@@ -878,7 +878,7 @@ msgstr "d"
         pofile = self.poparse(posource)
         unit = pofile.units[1]
         unit.target = u"ḓ"
-        contents = pofile.serialize()
+        contents = bytes(pofile)
         assert b'msgstr "\xe1\xb8\x93"' in contents
         assert b'charset=UTF-8' in contents
 

@@ -55,7 +55,7 @@ def converthtml(inputfile, outputfile, templates, includeuntagged=False,
                                         includeuntagged,
                                         duplicatestyle=duplicatestyle,
                                         keepcomments=keepcomments)
-    outputfile.write(outputstore.serialize())
+    outputstore.serialize(outputfile)
     return 1
 
 

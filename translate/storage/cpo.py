@@ -530,7 +530,7 @@ class pounit(pocommon.pounit):
     def __str__(self):
         pf = pofile(noheader=True)
         pf.addunit(self)
-        return pf.serialize().decode(self.CPO_ENC)
+        return bytes(pf).decode(self.CPO_ENC)
 
     def getlocations(self):
         locations = []

@@ -41,9 +41,9 @@ class TestMonolingualStore(test_base.TestTranslationStore):
             if str(store1unit) != str(store2unit):
                 print("match failed between elements %d of %d" % (n+1, len(store1.units)))
                 print("store1:")
-                print(store1.serialize())
+                print(bytes(store1))
                 print("store2:")
-                print(store2.serialize())
+                print(bytes(store2))
                 print("store1.units[%d].__dict__:" % n, store1unit.__dict__)
                 print("store2.units[%d].__dict__:" % n, store2unit.__dict__)
                 assert str(store1unit) == str(store2unit)

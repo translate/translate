@@ -711,7 +711,7 @@ class TranslationStore(object):
         # This allows the old str(store) method for serialization to be kept
         # for compatibility purpose.
         if six.PY2:
-            return self.serialize()
+            return self.__bytes__()
         return super(TranslationStore, self).__str__()
 
     def __bytes__(self):
@@ -835,12 +835,11 @@ class TranslationStore(object):
 
     def savefile(self, storefile):
         """Write the string representation to the given file (or filename)."""
-        storestring = self.serialize()
         if isinstance(storefile, six.string_types):
             storefile = open(storefile, 'wb')
         self.fileobj = storefile
         self._assignname()
-        storefile.write(storestring)
+        self.serialize(storefile)
         storefile.close()
 
     def save(self):

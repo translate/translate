@@ -285,7 +285,7 @@ msgstr "Sertifikate"
         posource = '# Some comment\n#. Extracted comment\n#: obsoleteme:10\nmsgid "One"\nmsgstr "Een"\n'
         expected = '# Some comment\n#~ msgid "One"\n#~ msgstr "Een"\n'
         newpo = self.convertpot(potsource, posource)
-        print(newpo.serialize())
+        print(bytes(newpo))
         newpounit = self.singleunit(newpo)
         assert str(newpounit) == expected
 
@@ -295,7 +295,7 @@ msgstr "Sertifikate"
         potsource = 'msgid ""\nmsgstr ""\n'
         posource = '#: obsoleteme:10\nmsgid "One"\nmsgstr ""\n'
         newpo = self.convertpot(potsource, posource)
-        print(newpo.serialize())
+        print(bytes(newpo))
         # We should only have the header
         assert len(newpo.units) == 1
 
@@ -393,7 +393,7 @@ msgstr ""
         newpo = self.convertpot(potsource, posource)
         print('Output Header:\n%s' % newpo)
         print('Expected Header:\n%s' % expected)
-        assert newpo.serialize().decode('utf-8') == expected
+        assert bytes(newpo).decode('utf-8') == expected
 
     def test_merging_comments(self):
         """Test that we can merge comments correctly"""
@@ -461,7 +461,7 @@ msgstr "teks"
 """
         newpo = self.convertpot(potsource, posource)
         print(newpo)
-        assert poexpected in newpo.serialize().decode('utf-8')
+        assert poexpected in bytes(newpo).decode('utf-8')
 
     def test_msgctxt_multiline(self):
         """Test multiline msgctxt fields."""
@@ -774,7 +774,7 @@ msgstr ""
         newpo = self.convertpot(potsource, posource)
         print('Output:\n%s' % newpo)
         print('Expected:\n%s' % expected)
-        assert newpo.serialize().decode('utf-8') == expected
+        assert bytes(newpo).decode('utf-8') == expected
 
 
 class TestPOT2POCommand(test_convert.TestConvertCommand, TestPOT2PO):

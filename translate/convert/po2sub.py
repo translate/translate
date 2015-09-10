@@ -49,7 +49,7 @@ class resub:
                         unit.target = inputunit.target
                 else:
                     unit.target = unit.source
-        return self.templatestore.serialize()
+        return bytes(self.templatestore)
 
 
 def convertsub(inputfile, outputfile, templatefile, includefuzzy=False,

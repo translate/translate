@@ -22,6 +22,7 @@
 import os
 import six
 import warnings
+from io import BytesIO
 
 import pytest
 
@@ -222,7 +223,7 @@ class TestTranslationStore(object):
         store = self.StoreClass()
         unit = store.addsourceunit("Test String")
         print(str(unit))
-        print(store.serialize())
+        print(bytes(store))
         assert headerless_len(store.units) == 1
         assert unit.source == "Test String"
 
@@ -247,7 +248,7 @@ class TestTranslationStore(object):
 
     def reparse(self, store):
         """converts the store to a string and back to a store again"""
-        storestring = store.serialize()
+        storestring = bytes(store)
         newstore = self.StoreClass.parsestring(storestring)
         return newstore
 
@@ -260,9 +261,9 @@ class TestTranslationStore(object):
             if not match:
                 print("match failed between elements %d of %d" % ((n + 1), headerless_len(store1.units)))
                 print("store1:")
-                print(store1.serialize())
+                print(bytes(store1))
                 print("store2:")
-                print(store2.serialize())
+                print(bytes(store2))
                 print("store1.units[%d].__dict__:" % n, store1unit.__dict__)
                 print("store2.units[%d].__dict__:" % n, store2unit.__dict__)
                 assert store1unit == store2unit
@@ -317,7 +318,7 @@ class TestTranslationStore(object):
             answer = answer.decode("utf-8")
         assert answer == u"Beziér-kurwe"
         #Just test that __str__ doesn't raise exception:
-        src = store.serialize()
+        src = store.serialize(BytesIO())
 
     def test_extensions(self):
         """Test that the factory knows the extensions for this class."""

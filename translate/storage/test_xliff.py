@@ -63,8 +63,8 @@ class TestXLIFFfile(test_base.TestTranslationStore):
         assert xlifffile.units == []
         xlifffile.addsourceunit("Bla")
         assert len(xlifffile.units) == 1
-        newfile = xliff.xlifffile.parsestring(xlifffile.serialize())
-        print(xlifffile.serialize())
+        newfile = xliff.xlifffile.parsestring(bytes(xlifffile))
+        print(bytes(xlifffile))
         assert len(newfile.units) == 1
         assert newfile.units[0].source == "Bla"
         assert newfile.findunit("Bla").source == "Bla"
@@ -83,7 +83,7 @@ class TestXLIFFfile(test_base.TestTranslationStore):
     </xliff:file>
 </xliff:xliff>'''
         xlifffile = xliff.xlifffile.parsestring(xlfsource)
-        print(xlifffile.serialize())
+        print(bytes(xlifffile))
         assert xlifffile.units[0].source == "File 1"
 
     def test_rich_source(self):
@@ -167,8 +167,8 @@ class TestXLIFFfile(test_base.TestTranslationStore):
         xlifffile = xliff.xlifffile()
         xliffunit = xlifffile.addsourceunit("Concept")
         xliffunit.source = "Term"
-        newfile = xliff.xlifffile.parsestring(xlifffile.serialize())
-        print(xlifffile.serialize())
+        newfile = xliff.xlifffile.parsestring(bytes(xlifffile))
+        print(bytes(xlifffile))
         assert newfile.findunit("Concept") is None
         assert newfile.findunit("Term") is not None
 
@@ -176,20 +176,20 @@ class TestXLIFFfile(test_base.TestTranslationStore):
         xlifffile = xliff.xlifffile()
         xliffunit = xlifffile.addsourceunit("Concept")
         xliffunit.target = "Konsep"
-        newfile = xliff.xlifffile.parsestring(xlifffile.serialize())
-        print(xlifffile.serialize())
+        newfile = xliff.xlifffile.parsestring(bytes(xlifffile))
+        print(bytes(xlifffile))
         assert newfile.findunit("Concept").target == "Konsep"
 
     def test_sourcelanguage(self):
         xlifffile = xliff.xlifffile(sourcelanguage="xh")
-        xmltext = xlifffile.serialize().decode('utf-8')
+        xmltext = bytes(xlifffile).decode('utf-8')
         print(xmltext)
         assert xmltext.find('source-language="xh"') > 0
         #TODO: test that it also works for new files.
 
     def test_targetlanguage(self):
         xlifffile = xliff.xlifffile(sourcelanguage="zu", targetlanguage="af")
-        xmltext = xlifffile.serialize().decode('utf-8')
+        xmltext = bytes(xlifffile).decode('utf-8')
         print(xmltext)
         assert xmltext.find('source-language="zu"') > 0
         assert xmltext.find('target-language="af"') > 0
@@ -198,11 +198,11 @@ class TestXLIFFfile(test_base.TestTranslationStore):
         xlifffile = xliff.xlifffile()
         unit = xlifffile.addsourceunit("Concept")
         # We don't want to add unnecessary notes
-        assert not "note" in xlifffile.serialize().decode('utf-8')
+        assert not "note" in bytes(xlifffile).decode('utf-8')
         unit.addnote(None)
-        assert not "note" in xlifffile.serialize().decode('utf-8')
+        assert not "note" in bytes(xlifffile).decode('utf-8')
         unit.addnote("")
-        assert not "note" in xlifffile.serialize().decode('utf-8')
+        assert not "note" in bytes(xlifffile).decode('utf-8')
 
         unit.addnote("Please buy bread")
         assert unit.getnotes() == "Please buy bread"

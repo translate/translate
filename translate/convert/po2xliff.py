@@ -87,7 +87,7 @@ class po2xliff:
             if inputunit.isblank():
                 continue
             transunitnode = self.convertunit(outputstore, inputunit, filename)
-        return outputstore.serialize()
+        return bytes(outputstore)
 
 
 def convertpo(inputfile, outputfile, templatefile):

@@ -80,7 +80,7 @@ def segmentfile(inputfile, outputfile, templatefile, sourcelanguage="en", target
     targetlang = lang_factory.getlanguage(targetlanguage)
     convertor = segment(sourcelang, targetlang, stripspaces=stripspaces, onlyaligned=onlyaligned)
     outputstore = convertor.convertstore(inputstore)
-    outputfile.write(outputstore.serialize())
+    outputstore.serialize(outputfile)
     return 1
 
 

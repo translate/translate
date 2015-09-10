@@ -43,7 +43,8 @@ class TestOO:
 
     def ooregen(self, oosource):
         """helper that converts oo source to oofile object and back"""
-        return self.ooparse(oosource).serialize().decode('utf-8')
+        oofile = self.ooparse(oosource)
+        return bytes(oofile).decode('utf-8')
 
     def test_simpleentry(self):
         """checks that a simple oo entry is parsed correctly"""

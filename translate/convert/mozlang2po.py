@@ -62,7 +62,7 @@ def convertlang(inputfile, outputfile, templates, pot=False,
     outputstore = convertor.convertstore(inputstore)
     if outputstore.isempty():
         return 0
-    outputfile.write(outputstore.serialize())
+    outputstore.serialize(outputfile)
     return 1
 
 

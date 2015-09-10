@@ -73,7 +73,7 @@ def convertpy(inputfile, outputfile, encoding="UTF-8"):
     if outputstore.isempty():
         return 0
 
-    outputfile.write(outputstore.serialize())
+    outputstore.serialize(outputfile)
     return 1
 
 

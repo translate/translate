@@ -13,7 +13,7 @@ class TestPO2Lang:
         inputpo = po.pofile(inputfile)
         convertor = po2mozlang.po2lang(mark_active=False)
         outputlang = convertor.convertstore(inputpo)
-        return outputlang.serialize().decode('utf-8')
+        return bytes(outputlang).decode('utf-8')
 
     def test_simple(self):
         """check the simplest case of merging a translation"""

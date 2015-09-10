@@ -97,7 +97,7 @@ class TestCPOFile(test_po.TestPOFile):
         print("Blah", thepo.source)
         assert thepo.source == "test me"
         thepo.msgidcomment = "second comment"
-        assert pofile.serialize().count(b"_:") == 1
+        assert bytes(pofile).count(b"_:") == 1
 
     @mark.xfail(reason="Were disabled during port of Pypo to cPO - they might work")
     def test_merge_duplicates_msgctxt(self):
@@ -156,9 +156,9 @@ class TestCPOFile(test_po.TestPOFile):
         posource = u'''#: nb\nmsgid "Norwegian Bokm\xe5l"\nmsgstr ""\n'''
         pofile = self.StoreClass(wStringIO.StringIO(posource.encode("UTF-8")), encoding="UTF-8")
         assert len(pofile.units) == 1
-        print(pofile.serialize())
+        print(bytes(pofile))
         thepo = pofile.units[0]
-#        assert pofile.serialize() == posource.encode("UTF-8")
+#        assert bytes(pofile) == posource.encode("UTF-8")
         # extra test: what if we set the msgid to a unicode? this happens in prop2po etc
         thepo.source = u"Norwegian Bokm\xe5l"
 #        assert str(thepo) == posource.encode("UTF-8")
@@ -166,9 +166,9 @@ class TestCPOFile(test_po.TestPOFile):
         # this is an escaped half character (1/2)
         halfstr = b"\xbd ...".decode("latin-1")
         thepo.target = halfstr
-#        assert halfstr in pofile.serialize().decode("UTF-8")
+#        assert halfstr in bytes(pofile).decode("UTF-8")
         thepo.target = halfstr.encode("UTF-8")
-#        assert halfstr.encode("UTF-8") in pofile.serialize()
+#        assert halfstr.encode("UTF-8") in bytes(pofile)
 
     def test_posections(self):
         """checks the content of all the expected sections of a PO message"""
@@ -176,23 +176,23 @@ class TestCPOFile(test_po.TestPOFile):
         pofile = self.poparse(posource)
         print(pofile)
         assert len(pofile.units) == 1
-        assert pofile.serialize().decode('utf-8') == posource
+        assert bytes(pofile).decode('utf-8') == posource
 
     def test_multiline_obsolete(self):
         """Tests for correct output of mulitline obsolete messages"""
         posource = '#~ msgid ""\n#~ "Old thing\\n"\n#~ "Second old thing"\n#~ msgstr ""\n#~ "Ou ding\\n"\n#~ "Tweede ou ding"\n'
         pofile = self.poparse(posource)
         print("Source:\n%s" % posource)
-        print("Output:\n%s" % pofile.serialize())
+        print("Output:\n%s" % bytes(pofile))
         assert len(pofile.units) == 1
         assert pofile.units[0].isobsolete()
         assert not pofile.units[0].istranslatable()
-        assert pofile.serialize().decode('utf-8') == posource
+        assert bytes(pofile).decode('utf-8') == posource
 
     def test_unassociated_comments(self):
         """tests behaviour of unassociated comments."""
         oldsource = '# old lonesome comment\n\nmsgid "one"\nmsgstr "een"\n'
         oldfile = self.poparse(oldsource)
-        print("serialize", oldfile.serialize())
+        print("serialize", bytes(oldfile))
         assert len(oldfile.units) == 1
-        assert "# old lonesome comment\nmsgid" in oldfile.serialize().decode('utf-8')
+        assert "# old lonesome comment\nmsgid" in bytes(oldfile).decode('utf-8')

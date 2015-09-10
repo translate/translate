@@ -154,7 +154,7 @@ def convertoo(inputfile, outputfile, templates, pot=False, sourcelanguage=None, 
     outputstore = convertor.convertstore(inputstore, duplicatestyle)
     if outputstore.isempty():
         return 0
-    outputfile.write(outputstore.serialize())
+    outputstore.serialize(outputfile)
     return 1
 
 

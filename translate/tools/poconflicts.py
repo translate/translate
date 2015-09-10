@@ -181,7 +181,7 @@ class ConflictOptionParser(optrecurse.RecursiveOptionParser):
                 unit.othercomments.append("# (poconflicts) %s\n" % filename)
                 conflictfile.units.append(unit)
             with open(fulloutputpath, "wb") as fh:
-                fh.write(conflictfile.serialize())
+                conflictfile.serialize(fh)
 
 
 def main():

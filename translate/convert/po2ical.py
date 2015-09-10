@@ -48,7 +48,7 @@ class reical:
                         unit.target = inputunit.target
                 else:
                     unit.target = unit.source
-        return self.templatestore.serialize()
+        return bytes(self.templatestore)
 
 
 def convertical(inputfile, outputfile, templatefile, includefuzzy=False,

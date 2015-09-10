@@ -85,7 +85,7 @@ def convertcsv(inputfile, outputfile, templatefile, columnorder=None):
         return 0
     convertor = po2csv()
     outputstore = convertor.convertstore(inputstore, columnorder)
-    outputfile.write(outputstore.serialize())
+    outputstore.serialize(outputfile)
     return 1
 
 

@@ -15,7 +15,7 @@ class TestTxt2PO:
 
     def singleelement(self, storage):
         """checks that the pofile contains a single non-header element, and returns it"""
-        print(storage.serialize())
+        print(bytes(storage))
         assert len(storage.units) == 1
         return storage.units[0]
 
@@ -70,7 +70,7 @@ class TestDoku2po:
 
     def singleelement(self, storage):
         """checks that the pofile contains a single non-header element, and returns it"""
-        print(storage.serialize())
+        print(bytes(storage))
         assert len(storage.units) == 1
         return storage.units[0]
 

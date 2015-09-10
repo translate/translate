@@ -25,7 +25,7 @@ class TestCSV(test_base.TestTranslationStore):
         newstore = self.reparse(store)
         self.check_equality(store, newstore)
         assert store.units[2] == newstore.units[2]
-        assert store.serialize() == newstore.serialize()
+        assert bytes(store) == bytes(newstore)
 
     @mark.xfail(reason="Bug #3356")
     def test_context_is_parsed(self):

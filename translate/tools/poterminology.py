@@ -450,7 +450,7 @@ class TerminologyOptionParser(optrecurse.RecursiveOptionParser):
         for count, unit in termitems:
             termfile.units.append(unit)
         with open(options.output, "wb") as fh:
-            fh.write(termfile.serialize())
+            termfile.serialize(fh)
 
 
 def fold_case_option(option, opt_str, value, parser):

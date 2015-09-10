@@ -87,7 +87,7 @@ class WfOptionParser(convert.ArchiveConvertOptionParser):
         super(WfOptionParser, self).recursiveprocess(options)
         with open(options.output, 'wb') as self.output:
             #options.outputarchive.wffile.setsourcelanguage(options.sourcelanguage)
-            self.output.write(options.outputarchive.wffile.serialize())
+            options.outputarchive.wffile.serialize(self.output)
 
 
 def main(argv=None):

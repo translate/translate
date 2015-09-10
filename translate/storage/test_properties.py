@@ -106,7 +106,7 @@ class TestProp(test_monolingual.TestMonolingualStore):
 
     def propregen(self, propsource):
         """helper that converts properties source to propfile object and back"""
-        return self.propparse(propsource).serialize().decode('utf-8')
+        return bytes(self.propparse(propsource)).decode('utf-8')
 
     def test_simpledefinition(self):
         """checks that a simple properties definition is parsed correctly"""
@@ -132,7 +132,7 @@ class TestProp(test_monolingual.TestMonolingualStore):
         propunit = propfile.units[0]
         assert propunit.name == "unicode"
         assert propunit.source == u"БЖЙШ"
-        regensource = propfile.serialize()
+        regensource = bytes(propfile)
         assert messagevalue in regensource
         assert b"\\u" not in regensource
 
@@ -340,7 +340,7 @@ key=value
         # - quotes inside are escaped
         # - for the sake of beauty a pair of spaces encloses the equal mark
         # - every line ends with ";"
-        assert propfile.serialize().strip(b'\n\x00') == propsource.strip(b'\n\x00')
+        assert bytes(propfile).strip(b'\n\x00') == propsource.strip(b'\n\x00')
 
     def test_override_encoding(self):
         """test that we can override the encoding of a properties file"""
@@ -365,7 +365,7 @@ key=value
         """test that BOM appears in the resulting text once only"""
         propsource = u"key1 = value1\nkey2 = value2\n".encode('utf-16')
         propfile = self.propparse(propsource, encoding='utf-16')
-        result = propfile.serialize()
+        result = bytes(propfile)
         bom = propsource[:2]
         assert result.startswith(bom)
         assert bom not in result[2:]
@@ -381,7 +381,7 @@ key=value
         propsource = u"\n\n\nkey1 = value1\n\nkey2 = value2\n".encode('utf-8-sig')
         propfile = self.propparse(propsource, personality='java-utf8')
         bom = propsource[:3]
-        result = propfile.serialize()
+        result = bytes(propfile)
         assert result.startswith(bom)
         assert bom not in result[3:]
         assert b'None' not in result[3:]

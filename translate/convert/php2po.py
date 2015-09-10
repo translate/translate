@@ -108,7 +108,7 @@ def convertphp(inputfile, outputfile, templatefile, pot=False,
                                            duplicatestyle=duplicatestyle)
     if outputstore.isempty():
         return 0
-    outputfile.write(outputstore.serialize())
+    outputstore.serialize(outputfile)
     return 1
 
 

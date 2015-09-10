@@ -338,7 +338,7 @@ def rungrep(inputfile, outputfile, templatefile, checkfilter):
     tofile = checkfilter.filterfile(fromfile)
     if tofile.isempty():
         return False
-    outputfile.write(tofile.serialize())
+    tofile.serialize(outputfile)
     return True
 
 

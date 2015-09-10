@@ -93,7 +93,7 @@ $lang['prefPanel-smime'] = 'Security';'''
         pounit = self.singleelement(pofile)
         assert pounit.getlocations() == ["$lang['credit']"]
         assert pounit.getcontext() == "$lang['credit']"
-        assert b"#. /* comment" in pofile.serialize()
+        assert b"#. /* comment" in bytes(pofile)
         assert pounit.source == ""
 
     def test_hash_comment_with_equals(self):
@@ -102,7 +102,7 @@ $lang['prefPanel-smime'] = 'Security';'''
         pofile = self.php2po(phpsource)
         pounit = self.singleelement(pofile)
         assert pounit.getlocations() == ["$variable"]
-        assert b"#. # inside alt= stuffies" in pofile.serialize()
+        assert b"#. # inside alt= stuffies" in bytes(pofile)
         assert pounit.source == "stringy"
 
     def test_emptyentry_translated(self):

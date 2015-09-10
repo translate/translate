@@ -99,7 +99,7 @@ class TestPhpFile(test_monolingual.TestMonolingualStore):
 
     def phpregen(self, phpsource):
         """helper that converts php source to phpfile object and back"""
-        return self.phpparse(phpsource).serialize().decode('utf-8')
+        return bytes(self.phpparse(phpsource)).decode('utf-8')
 
     def test_simpledefinition(self):
         """checks that a simple php definition is parsed correctly"""

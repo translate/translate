@@ -98,7 +98,7 @@ class TestPODebug:
 
         assert in_unit.source == out_unit.source
         print(out_unit.target)
-        print(po_out.serialize())
+        print(bytes(po_out))
         rewrite_func = self.debug.rewrite_unicode
         assert out_unit.target == u"%s%%s%s" % (rewrite_func(u'This is a '), rewrite_func(u' test, hooray.'))
 
@@ -111,7 +111,7 @@ class TestPODebug:
 
         assert in_unit.source == out_unit.source
         print(out_unit.target)
-        print(xliff_out.serialize())
+        print(bytes(xliff_out))
         assert out_unit.target == u'xxx%sxxx' % (in_unit.source)
 
     def test_hash(self):

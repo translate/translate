@@ -86,7 +86,7 @@ def convertpo(inputpofile, outputpotfile, template, reverse=False):
             unit.target = templateunit.target
         if unit.isobsolete():
             del inputpo.units[i]
-    outputpotfile.write(inputpo.serialize())
+    inputpo.serialize(outputpotfile)
     return 1
 
 

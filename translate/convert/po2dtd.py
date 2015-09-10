@@ -187,7 +187,7 @@ def convertdtd(inputfile, outputfile, templatefile, includefuzzy=False,
         convertor = redtd(templatestore, android=android_dtd,
                           remove_untranslated=remove_untranslated)
     outputstore = convertor.convertstore(inputstore, includefuzzy)
-    outputfile.write(outputstore.serialize())
+    outputstore.serialize(outputfile)
     return 1
 
 

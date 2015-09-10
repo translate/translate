@@ -65,7 +65,7 @@ def convertpo(inputfile, outputfile, template=None):
         return False
     convertor = po2tiki()
     outputstore = convertor.convertstore(inputstore)
-    outputfile.write(outputstore.serialize())
+    outputstore.serialize(outputfile)
     return True
 
 

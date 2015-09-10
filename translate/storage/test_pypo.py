@@ -206,7 +206,7 @@ class TestPYPOFile(test_po.TestPOFile):
         thepo = pofile.units[0]
         thepo.msgidcomments.append('"_: first comment\\n"')
         thepo.msgidcomments.append('"_: second comment\\n"')
-        regenposource = pofile.serialize().decode('utf-8')
+        regenposource = bytes(pofile).decode('utf-8')
         assert regenposource.count("_:") == 1
 
     def test_duplicates_default(self):
@@ -259,7 +259,7 @@ class TestPYPOFile(test_po.TestPOFile):
         posource = u'''#: nb\nmsgid "Norwegian Bokm\xe5l"\nmsgstr ""\n'''
         pofile = self.StoreClass(wStringIO.StringIO(posource.encode("UTF-8")), encoding="UTF-8")
         assert len(pofile.units) == 1
-        print(pofile.serialize())
+        print(bytes(pofile))
         thepo = pofile.units[0]
         # On Python 2, str() returns bytestrings while on Python 3, str() returns unicode
         assert str(thepo) == posource if six.PY3 else posource.encode("UTF-8")
@@ -279,7 +279,7 @@ class TestPYPOFile(test_po.TestPOFile):
         pofile = self.poparse(posource)
         print(pofile)
         assert len(pofile.units) == 1
-        assert pofile.serialize().decode('utf-8') == posource
+        assert bytes(pofile).decode('utf-8') == posource
         assert pofile.units[0].othercomments == ["# other comment\n"]
         assert pofile.units[0].automaticcomments == ["#. automatic comment\n"]
         assert pofile.units[0].sourcecomments == ["#: source comment\n"]
@@ -289,7 +289,7 @@ class TestPYPOFile(test_po.TestPOFile):
         """tests behaviour of unassociated comments."""
         oldsource = '# old lonesome comment\n\nmsgid "one"\nmsgstr "een"\n'
         oldfile = self.poparse(oldsource)
-        print(oldfile.serialize())
+        print(bytes(oldfile))
         assert len(oldfile.units) == 1
 
     def test_prevmsgid_parse(self):
@@ -343,4 +343,4 @@ msgstr[1] "toetse"
         assert pofile.units[4].prev_msgctxt == [u'"context 2"']
         assert pofile.units[4].prev_source == multistring([u"tast", u"tasts"])
 
-        assert pofile.serialize().decode('utf-8') == posource
+        assert bytes(pofile).decode('utf-8') == posource

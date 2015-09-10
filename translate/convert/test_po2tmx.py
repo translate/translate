@@ -42,10 +42,10 @@ msgstr "Toepassings"
 """
         tmx = self.po2tmx(minipo)
         print("The generated xml:")
-        print(tmx.serialize())
+        print(bytes(tmx))
         assert tmx.translate("Applications") == "Toepassings"
         assert tmx.translate("bla") is None
-        xmltext = tmx.serialize().decode('utf-8')
+        xmltext = bytes(tmx).decode('utf-8')
         assert xmltext.index('creationtool="Translate Toolkit - po2tmx"')
         assert xmltext.index('adminlang')
         assert xmltext.index('creationtoolversion')
@@ -58,7 +58,7 @@ msgstr "Toepassings"
         minipo = 'msgid "String"\nmsgstr "String"\n'
         tmx = self.po2tmx(minipo, sourcelanguage="xh")
         print("The generated xml:")
-        print(tmx.serialize())
+        print(bytes(tmx))
         header = tmx.document.find("header")
         assert header.get("srclang") == "xh"
 
@@ -66,7 +66,7 @@ msgstr "Toepassings"
         minipo = 'msgid "String"\nmsgstr "String"\n'
         tmx = self.po2tmx(minipo, targetlanguage="xh")
         print("The generated xml:")
-        print(tmx.serialize())
+        print(bytes(tmx))
         tuv = tmx.document.findall(".//%s" % tmx.namespaced("tuv"))[1]
         #tag[0] will be the source, we want the target tuv
         assert tuv.get("{%s}lang" % XML_NS) == "xh"
@@ -79,7 +79,7 @@ msgstr "Eerste deel "
 "en ekstra"'''
         tmx = self.po2tmx(minipo)
         print("The generated xml:")
-        print(tmx.serialize())
+        print(bytes(tmx))
         assert tmx.translate('First part and extra') == 'Eerste deel en ekstra'
 
     def test_escapednewlines(self):
@@ -89,7 +89,7 @@ msgstr "Eerste lyn\nTweede lyn"
 '''
         tmx = self.po2tmx(minipo)
         print("The generated xml:")
-        print(tmx.serialize())
+        print(bytes(tmx))
         assert tmx.translate("First line\nSecond line") == "Eerste lyn\nTweede lyn"
 
     def test_escapedtabs(self):
@@ -99,7 +99,7 @@ msgstr "Eerste kolom\tTweede kolom"
 '''
         tmx = self.po2tmx(minipo)
         print("The generated xml:")
-        print(tmx.serialize())
+        print(bytes(tmx))
         assert tmx.translate("First column\tSecond column") == "Eerste kolom\tTweede kolom"
 
     def test_escapedquotes(self):
@@ -112,7 +112,7 @@ msgstr "Gebruik \\\"."
 '''
         tmx = self.po2tmx(minipo)
         print("The generated xml:")
-        print(tmx.serialize())
+        print(bytes(tmx))
         assert tmx.translate('Hello "Everyone"') == 'Good day "All"'
         assert tmx.translate(r'Use \".') == r'Gebruik \".'
 
@@ -130,8 +130,8 @@ msgstr "Drie"
 '''
         tmx = self.po2tmx(minipo)
         print("The generated xml:")
-        print(tmx.serialize())
-        assert b"<tu" not in tmx.serialize()
+        print(bytes(tmx))
+        assert b"<tu" not in bytes(tmx)
         assert len(tmx.units) == 0
 
     def test_nonascii(self):
@@ -140,7 +140,7 @@ msgstr "Drie"
 msgstr "Bézier-kurwe"
 '''
         tmx = self.po2tmx(minipo)
-        print(tmx.serialize())
+        print(bytes(tmx))
         assert tmx.translate(u"Bézier curve") == u"Bézier-kurwe"
 
     def test_nonecomments(self):
@@ -150,7 +150,7 @@ msgid "Bézier curve"
 msgstr "Bézier-kurwe"
 '''
         tmx = self.po2tmx(minipo)
-        print(tmx.serialize())
+        print(bytes(tmx))
         unit = tmx.findunits(u"Bézier curve")
         assert len(unit[0].getnotes()) == 0
 
@@ -161,7 +161,7 @@ msgid "Bézier curve"
 msgstr "Bézier-kurwe"
 '''
         tmx = self.po2tmx(minipo, comment='others')
-        print(tmx.serialize())
+        print(bytes(tmx))
         unit = tmx.findunits(u"Bézier curve")
         assert unit[0].getnotes() == u"My comment rules"
 
@@ -172,7 +172,7 @@ msgid "Bézier curve"
 msgstr "Bézier-kurwe"
 '''
         tmx = self.po2tmx(minipo, comment='source')
-        print(tmx.serialize())
+        print(bytes(tmx))
         unit = tmx.findunits(u"Bézier curve")
         assert unit[0].getnotes() == u"../PuzzleFourSided.h:45"
 
@@ -183,7 +183,7 @@ msgid "Bézier curve"
 msgstr "Bézier-kurwe"
 '''
         tmx = self.po2tmx(minipo, comment='type')
-        print(tmx.serialize())
+        print(bytes(tmx))
         unit = tmx.findunits(u"Bézier curve")
         assert unit[0].getnotes() == u"csharp-format"
 

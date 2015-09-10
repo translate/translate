@@ -158,12 +158,12 @@ what we discussed is related to the above.  A quick summary:
     of duplicate code in them). Ideally conversion should be as simple as::
 
       >>> po_store = POStore(filecontent)
-      >>> print(po_store.serialize())
+      >>> print(bytes(po_store))
       msgid "bleep"
       msgstr "blorp"
        
       >>> xliff_store = XliffStore(po_store)
-      >>> print(xliff_store.serialize())
+      >>> print(bytes(xliff_store))
       <xliff>
         <file>
           <trans-unit>

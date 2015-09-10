@@ -82,7 +82,7 @@ def convertphp2py(inputfile, outputfile, template=None):
     outputstore = convertor.convertstore(inputstore)
     if outputstore.isempty():
         return False
-    outputfile.write(outputstore.serialize())
+    outputstore.serialize(outputfile)
     return True
 
 
