@@ -60,12 +60,3 @@ msgstr "lêernaam"
         assert isinstance(term, TerminologyPlaceable)
         assert six.text_type(term) == self.term_po.getunits()[2].source
         assert term.translate() == six.text_type(self.term_po.getunits()[2].target)
-
-
-if __name__ == '__main__':
-    for test in [TestTerminologyPlaceable()]:
-        for method in dir(test):
-            if method.startswith('test_') and callable(getattr(test, method)):
-                if hasattr(test, 'setup_method'):
-                    getattr(test, 'setup_method')(getattr(test, method))
-                getattr(test, method)()

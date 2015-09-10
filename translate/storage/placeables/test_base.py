@@ -211,12 +211,3 @@ class TestConverters:
 
         assert six.text_type(xliff_from_base) == six.text_type(xliff_from_gen)
         assert repr(xliff_from_base) == repr(xliff_from_gen)
-
-
-if __name__ == '__main__':
-    for test in [TestStringElem(), TestConverters()]:
-        for method in dir(test):
-            if method.startswith('test_') and callable(getattr(test, method)):
-                getattr(test, method)()
-
-    test.elem.print_tree()

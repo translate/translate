@@ -154,9 +154,3 @@ def teardown_module(module):
     remove(GENERATED_ODF)
     remove(GENERATED_XLF_ITOOLS)
     remove(TARGET_XLF)
-
-
-if __name__ == '__main__':
-    setup_module(None)
-    test_roundtrip()
-    teardown_module(None)

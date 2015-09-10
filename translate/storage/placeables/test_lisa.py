@@ -126,10 +126,3 @@ def test_unknown_xml_placeable():
     xml.tail = None
     lisa.strelem_to_xml(xml, elem)
     assert etree.tostring(xml) == etree.tostring(source)
-
-
-if __name__ == '__main__':
-    test_chunk_list()
-    test_xml_to_strelem()
-    test_set_strelem_to_xml()
-    test_unknown_xml_placeable()
