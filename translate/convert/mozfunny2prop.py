@@ -40,7 +40,7 @@ def inc2prop(lines):
         if not line.strip():
             yield line
         elif line.startswith("#define"):
-            parts = string.split(line.replace("#define", "", 1).strip(), maxsplit=1)
+            parts = line.replace("#define", "", 1).strip().split(None, 1)
             if not parts:
                 continue
             if len(parts) == 1:

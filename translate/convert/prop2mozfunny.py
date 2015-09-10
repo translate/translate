@@ -22,6 +22,7 @@
 """
 
 import six
+import sys
 
 from translate.convert import mozfunny2prop, po2prop
 from translate.misc.wStringIO import StringIO
@@ -39,16 +40,12 @@ def prop2inc(pf):
             else:
                 for blank in pendingblanks:
                     yield blank
-                if isinstance(comment, six.text_type):
-                    comment = comment.encode("UTF-8")
                 # TODO: could convert commented # x=y back to # #define x y
                 yield comment + "\n"
         if unit.isblank():
             pendingblanks.append("\n")
         else:
             definition = "#define %s %s\n" % (unit.name, unit.value.replace("\n", "\\n"))
-            if isinstance(definition, six.text_type):
-                definition = definition.encode("UTF-8")
             for blank in pendingblanks:
                 yield blank
             yield definition
@@ -68,8 +65,6 @@ def prop2it(pf):
             yield ""
         else:
             definition = "%s=%s\n" % (unit.name, unit.value)
-            if isinstance(definition, six.text_type):
-                definition = definition.encode("UTF-8")
             yield definition
 
 
@@ -92,7 +87,7 @@ def prop2funny(src, itencoding="cp1252"):
             yield line + "\n"
     elif waspseudoprops:
         for line in prop2it(pf):
-            yield line.decode("utf-8").encode(itencoding) + "\n"
+            yield (line + "\n").encode(itencoding)
 
 
 def po2inc(inputfile, outputfile, templatefile, encoding=None, includefuzzy=False,
@@ -114,7 +109,7 @@ def po2inc(inputfile, outputfile, templatefile, encoding=None, includefuzzy=Fals
         outputpropfile.seek(0)
         pf = properties.propfile(outputpropfile, personality="mozilla")
         outputlines = prop2inc(pf)
-        outputfile.writelines(outputlines)
+        outputfile.writelines([line.encode('utf-8') for line in outputlines])
     return result
 
 
@@ -138,7 +133,7 @@ def po2it(inputfile, outputfile, templatefile, encoding="cp1252", includefuzzy=F
         pf = properties.propfile(outputpropfile, personality="mozilla")
         outputlines = prop2it(pf)
         for line in outputlines:
-            line = line.decode("utf-8").encode(encoding)
+            line = line.encode(encoding)
             outputfile.write(line)
     return result
 
@@ -154,7 +149,6 @@ def po2ini(inputfile, outputfile, templatefile, encoding="UTF-8", includefuzzy=F
 
 
 def main(argv=None):
-    import sys
     # TODO: get encoding from charset.mk, using parameter
     src = sys.stdin.read()
     for line in prop2funny(src):

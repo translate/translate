@@ -1,16 +1,17 @@
+from io import BytesIO
+
 from translate.convert import prop2mozfunny
-from translate.misc import wStringIO
 
 
 class TestPO2Prop:
 
     def merge2inc(self, incsource, posource):
         """helper that merges po translations to .inc source without requiring files"""
-        inputfile = wStringIO.StringIO(posource)
-        templatefile = wStringIO.StringIO(incsource)
-        outputfile = wStringIO.StringIO()
+        inputfile = BytesIO(posource.encode('utf-8') if posource else None)
+        templatefile = BytesIO(incsource.encode('utf-8'))
+        outputfile = BytesIO()
         result = prop2mozfunny.po2inc(inputfile, outputfile, templatefile)
-        outputinc = outputfile.getvalue()
+        outputinc = outputfile.getvalue().decode('utf-8')
         print(outputinc)
         assert result
         return outputinc
