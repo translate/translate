@@ -58,7 +58,7 @@ class TestConvertCommand:
         """gets the path to the test file"""
         return os.path.join(self.testdir, filename)
 
-    def open_testfile(self, filename, mode="r"):
+    def open_testfile(self, filename, mode="rb"):
         """opens the given filename in the testdirectory in the given mode"""
         filename = self.get_testfilename(filename)
         if not mode.startswith("r"):
@@ -73,13 +73,15 @@ class TestConvertCommand:
 
     def create_testfile(self, filename, contents):
         """creates the given file in the testdirectory with the given contents"""
-        testfile = self.open_testfile(filename, "w")
+        if isinstance(contents, six.text_type):
+            contents = contents.encode('utf-8')
+        testfile = self.open_testfile(filename, "wb")
         testfile.write(contents)
         testfile.close()
 
     def read_testfile(self, filename):
         """reads the given file in the testdirectory and returns the contents"""
-        with open(self.get_testfilename(filename), 'r') as testfile:
+        with open(self.get_testfilename(filename), 'rb') as testfile:
             content = testfile.read()
         return content
 
@@ -105,7 +107,7 @@ class TestConvertCommand:
         finally:
             sys.stdout = stdout
         helpfile.close()
-        help_string = self.read_testfile("help.txt")
+        help_string = self.read_testfile("help.txt").decode('utf-8')
         print(help_string)
         convertsummary = self.convertmodule.__doc__.split("\n")[0]
         # the convertsummary might be wrapped. this will probably unwrap it

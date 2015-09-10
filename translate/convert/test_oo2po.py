@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
 import os
+import six
 from io import BytesIO
 from six.moves.urllib import parse
 
@@ -16,6 +17,8 @@ class TestOO2PO:
 
     def convert(self, oosource, sourcelanguage='en-US', targetlanguage='af-ZA'):
         """helper that converts oo source to po source without requiring files"""
+        if isinstance(oosource, six.text_type):
+            oosource = oosource.encode('utf-8')
         inputoo = oo.oofile(oosource)
         convertor = self.conversion_class(sourcelanguage, targetlanguage)
         outputpo = convertor.convertstore(inputoo)
@@ -36,9 +39,9 @@ class TestOO2PO:
 
         Return the string once it has been through all the conversions."""
 
-        ootemplate = br'helpcontent2	%s	0	help	par_id3150670 35				0	en-US	%s				2002-02-02 02:02:02'
+        ootemplate = r'helpcontent2	%s	0	help	par_id3150670 35				0	en-US	%s				2002-02-02 02:02:02'
 
-        oosource = ootemplate % (filename, entitystring)
+        oosource = (ootemplate % (filename, entitystring)).encode('utf-8')
         ooinputfile = BytesIO(oosource)
         ootemplatefile = BytesIO(oosource)
         pooutputfile = BytesIO()
@@ -50,7 +53,7 @@ class TestOO2PO:
         ootemplatefile = BytesIO(oosource)
         oooutputfile = BytesIO()
         po2oo.convertoo(poinputfile, oooutputfile, ootemplatefile, targetlanguage="en-US")
-        ooresult = oooutputfile.getvalue()
+        ooresult = oooutputfile.getvalue().decode('utf-8')
         print("original oo:\n", oosource, "po version:\n", posource, "output oo:\n", ooresult)
         return ooresult.split('\t')[10]
 
@@ -91,7 +94,7 @@ class TestOO2PO:
     def test_roundtrip_whitespaceonly(self):
         """check items that are only special instances of whitespce"""
         self.check_roundtrip('choose_chart_type.xhp', r' ')
-        self.check_roundtrip('choose_chart_type.xhp', '\xc2\xa0')
+        self.check_roundtrip('choose_chart_type.xhp', b'\xc2\xa0'.decode('utf-8'))
 
     def test_double_escapes(self):
         oosource = r"helpcontent2	source\text\shared\01\02100001.xhp	0	help	par_id3150670 35				0	en-US	\\<				2002-02-02 02:02:02"
@@ -183,7 +186,7 @@ class TestOO2POCommand(test_convert.TestConvertCommand, TestOO2PO):
 
     def test_preserve_filename(self):
         """Ensures that the filename is preserved."""
-        oosource = r'svx	source\dialog\numpages.src	0	string	RID_SVXPAGE_NUM_OPTIONS	STR_BULLET			0	en-US	Character				20050924 09:13:58'
+        oosource = br'svx	source\dialog\numpages.src	0	string	RID_SVXPAGE_NUM_OPTIONS	STR_BULLET			0	en-US	Character				20050924 09:13:58'
         self.create_testfile("snippet.sdf", oosource)
         oofile = oo.oofile(self.open_testfile("snippet.sdf"))
         assert oofile.filename.endswith("snippet.sdf")

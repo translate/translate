@@ -216,7 +216,7 @@ def convertoo(inputfile, outputfile, templatefile, sourcelanguage=None,
                          filteraction=filteraction)
     outputstore = convertor.convertstore(inputstore)
     # TODO: check if we need to manually delete missing items
-    outputfile.write(outputstore.__str__(skip_source, targetlanguage))
+    outputfile.write(outputstore.serialize(skip_source, targetlanguage))
     return True
 
 
