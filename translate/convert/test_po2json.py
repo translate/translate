@@ -13,7 +13,7 @@ class TestPO2JSON(object):
         input_po = po.pofile(input_file)
         convertor = po2json.rejson(json_template, input_po)
         output_json = convertor.convertstore()
-        return output_json
+        return output_json.decode('utf-8')
 
     def test_basic(self):
         """test a basic po to json conversion"""

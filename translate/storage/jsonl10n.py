@@ -212,9 +212,9 @@ class JsonFile(base.TranslationStore):
             input.close()
             input = src
         if isinstance(input, bytes):
-            input = BytesIO(input)
+            input = input.decode('utf-8')
         try:
-            self._file = json.load(input)
+            self._file = json.loads(input)
         except ValueError as e:
             raise base.ParseError(e.message)
 
