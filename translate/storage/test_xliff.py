@@ -1,5 +1,3 @@
-#!/usr/bin/env python
-
 from lxml import etree
 
 from translate.storage import lisa, test_base, xliff

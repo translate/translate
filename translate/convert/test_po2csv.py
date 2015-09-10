@@ -1,5 +1,3 @@
-#!/usr/bin/env python
-
 from translate.convert import csv2po, po2csv, test_convert
 from translate.misc import wStringIO
 from translate.storage import csvl10n, po

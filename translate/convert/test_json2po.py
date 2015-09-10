@@ -1,5 +1,3 @@
-#!/usr/bin/env python
-
 from translate.convert import json2po, test_convert
 from translate.misc import wStringIO
 from translate.storage import jsonl10n

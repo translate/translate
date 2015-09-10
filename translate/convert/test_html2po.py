@@ -1,5 +1,3 @@
-#!/usr/bin/env python
-
 import six
 from pytest import mark
 

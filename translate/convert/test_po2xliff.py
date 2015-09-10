@@ -1,5 +1,3 @@
-#!/usr/bin/env python
-
 from translate.convert import po2xliff
 from translate.misc.xml_helpers import XML_NS, getText
 from translate.storage import po, poxliff

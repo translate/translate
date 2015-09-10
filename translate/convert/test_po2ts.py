@@ -1,5 +1,3 @@
-#!/usr/bin/env python
-
 from translate.convert import po2ts, test_convert
 from translate.misc import wStringIO
 from translate.storage import po

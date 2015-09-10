@@ -1,5 +1,3 @@
-#!/usr/bin/env python
-
 from translate.convert import prop2mozfunny
 from translate.misc import wStringIO
 

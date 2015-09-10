@@ -1,5 +1,3 @@
-#!/usr/bin/env python
-
 from translate.misc import dictutils
 
 

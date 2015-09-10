@@ -1,5 +1,3 @@
-#!/usr/bin/env python
-
 from translate.convert import po2moz, test_convert
 
 

@@ -1,5 +1,3 @@
-#!/usr/bin/env python
-
 """Tests for the zip storage module"""
 
 import os

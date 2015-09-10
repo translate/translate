@@ -1,6 +1,4 @@
-#!/usr/bin/env python
 # -*- coding: utf-8 -*-
-
 from translate.storage import test_base, wordfast as wf
 
 

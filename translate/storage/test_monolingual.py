@@ -1,5 +1,3 @@
-#!/usr/bin/env python
-#
 # -*- coding: utf-8 -*-
 #
 # These test classes should be used as super class of test classes for the
