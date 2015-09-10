@@ -269,11 +269,11 @@ class UtxFile(base.TranslationStore):
             newunit.dict = line
             self.addunit(newunit)
 
-    def serialize(self):
+    def serialize(self, out):
         # Check first if there is at least one translated unit
         translated_units = [u for u in self.units if u.istranslated()]
         if not translated_units:
-            return b""
+            return
 
         output = csv.StringIO()
         writer = csv_utils.UnicodeDictWriter(
@@ -282,4 +282,5 @@ class UtxFile(base.TranslationStore):
             writer.writerow(unit.dict)
 
         result = output.getvalue() if six.PY2 else output.getvalue().encode(self.encoding)
-        return self._write_header().encode(self.encoding) + result
+        out.write(self._write_header().encode(self.encoding))
+        out.write(result)

@@ -137,11 +137,11 @@ class QphFile(lisa.LISAfile):
         if targetlanguage:
             self.header.set('language', targetlanguage)
 
-    def serialize(self):
-        """Converts to a string containing the file's XML.
+    def serialize(self, out):
+        """Write the XML document to the file `out`.
 
         We have to override this to ensure mimic the Qt convention:
-            - no XML decleration
+            - no XML declaration
         """
-        return etree.tostring(self.document, pretty_print=True,
-                              xml_declaration=False, encoding='utf-8')
+        self.document.write(out, pretty_print=True, xml_declaration=False,
+                            encoding='utf-8')

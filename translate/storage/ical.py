@@ -87,7 +87,7 @@ class icalfile(base.TranslationStore):
         if inputfile is not None:
             self.parse(inputfile)
 
-    def serialize(self):
+    def serialize(self, out):
         _outicalfile = self._icalfile
         for unit in self.units:
             for location in unit.getlocations():
@@ -102,9 +102,7 @@ class icalfile(base.TranslationStore):
                             property.value = unit.target
 
         if _outicalfile:
-            return str(_outicalfile.serialize())
-        else:
-            return ""
+            _outicalfile.serialize(out)
 
     def parse(self, input):
         """parse the given file or file source string"""

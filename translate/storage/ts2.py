@@ -476,13 +476,13 @@ class tsfile(lisa.LISAfile):
         else:
             return 1
 
-    def serialize(self):
-        """Converts to a string containing the file's XML."""
+    def serialize(self, out):
+        """Write the XML document to a file."""
         root = self.document.getroot()
         doctype = self.document.docinfo.doctype
         # Iterate over empty tags without children and force empty text
         # This will prevent self-closing tags in pretty_print mode
         for e in root.xpath("//*[not(./node()) and not(text())]"):
             e.text = ""
-        return etree.tostring(root, doctype=doctype, pretty_print=True,
-                              xml_declaration=True, encoding='utf-8')
+        out.write(etree.tostring(root, doctype=doctype, pretty_print=True,
+                                 xml_declaration=True, encoding='utf-8'))

@@ -207,12 +207,10 @@ class phpfile(base.TranslationStore):
             inputfile.close()
             self.parse(phpsrc)
 
-    def serialize(self):
+    def serialize(self, out):
         """Convert the units back to lines."""
-        lines = []
         for unit in self.units:
-            lines.append(str(unit))
-        return ("".join(lines)).encode(self.encoding)
+            out.write(six.text_type(unit).encode(self.encoding))
 
     def parse(self, phpsrc):
         """Read the source of a PHP file in and include them as units."""

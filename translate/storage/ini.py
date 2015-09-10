@@ -102,16 +102,14 @@ class inifile(base.TranslationStore):
         if inputfile is not None:
             self.parse(inputfile)
 
-    def serialize(self):
+    def serialize(self, out):
         _outinifile = self._inifile
         for unit in self.units:
             for location in unit.getlocations():
                 match = re.match('\\[(?P<section>.+)\\](?P<entry>.+)', location)
                 _outinifile[match.groupdict()['section']][match.groupdict()['entry']] = self._dialect.escape(unit.target)
         if _outinifile:
-            return str(_outinifile)
-        else:
-            return b""
+            out.write(str(_outinifile))
 
     def parse(self, input):
         """Parse the given file or file source string."""

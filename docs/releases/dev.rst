@@ -42,12 +42,17 @@ Formats and Converters
    - keys can contain delimiters if they are properly wrapped (:issue:`3275`).
 
 
-Dropped deprecated API
-----------------------
+API deprecation
+---------------
 
 - The deprecated ``translate.storage.properties.find_delimiter()`` was removed
   and replace by the ``translate.storage.properties.Dialect.find_delimiter()``
   class method.
+
+- ``TxtFile.getoutput()`` and ``dtdfile.getoutput()`` have been deprecated.
+  Either call ``bytes(<file_instance>)`` or use the
+  ``file_instance.serialize()`` API if you need to get the serialized store
+  content of a ``TxtFile`` or ``dtdfile`` instance.
 
 
 General

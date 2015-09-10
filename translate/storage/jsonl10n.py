@@ -153,13 +153,13 @@ class JsonFile(base.TranslationStore):
         if inputfile is not None:
             self.parse(inputfile)
 
-    def serialize(self):
+    def serialize(self, out):
         units = {}
         for unit in self.unit_iter():
             path = unit.getid().lstrip('.')
             units[path] = unit.target
-        return json.dumps(units, sort_keys=True, separators=(',', ': '),
-                          indent=4, ensure_ascii=False).encode(self.encoding)
+        out.write(json.dumps(units, sort_keys=True, separators=(',', ': '),
+                             indent=4, ensure_ascii=False).encode(self.encoding))
 
     def _extract_translatables(self, data, stop=None, prev="", name_node=None,
                                name_last_node=None, last_node=None):

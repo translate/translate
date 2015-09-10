@@ -705,7 +705,7 @@ class pofile(pocommon.pofile):
         self._gpo_memory_file = new_gpo_memory_file
         self.units = uniqueunits
 
-    def serialize(self):
+    def serialize(self, out):
 
         def obsolete_workaround():
             # Remove all items that are not output by msgmerge when a unit is obsolete.  This is a work
@@ -740,7 +740,7 @@ class pofile(pocommon.pofile):
                                       content_transfer_encoding="8bit")
                     outputstring = writefile(fname)
             os.remove(fname)
-        return outputstring
+        out.write(outputstring)
 
     def isempty(self):
         """Returns True if the object doesn't contain any translation units."""

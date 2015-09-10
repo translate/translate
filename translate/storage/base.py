@@ -26,6 +26,7 @@ try:
     import cPickle as pickle
 except ImportError:
     import pickle
+from io import BytesIO
 
 from translate.misc.multistring import multistring
 from translate.storage.placeables import (StringElem, general,
@@ -714,12 +715,16 @@ class TranslationStore(object):
         return super(TranslationStore, self).__str__()
 
     def __bytes__(self):
-        return self.serialize()
+        out = BytesIO()
+        self.serialize(out)
+        return out.getvalue()
 
-    def serialize(self):
+    def serialize(self, out):
         """Converts to a bytes representation that can be parsed back using
-        :meth:`~.TranslationStore.parsestring`."""
-        return pickle.dumps(self)
+        :meth:`~.TranslationStore.parsestring`.
+        `out` should be an open file-like objects to write to.
+        """
+        out.write(pickle.dumps(self))
 
     def isempty(self):
         """Return True if the object doesn't contain any translation units."""

@@ -115,6 +115,7 @@ Name and Value pairs:
 
 import re
 import six
+from codecs import iterencode
 
 from translate.lang import data
 from translate.misc import quote
@@ -625,13 +626,11 @@ class propfile(base.TranslationStore):
         if inmultilinevalue or len(newunit.comments) > 0:
             self.addunit(newunit)
 
-    def serialize(self):
-        """Convert the units back to lines."""
-        lines = []
-        for unit in self.units:
-            lines.append(unit.getoutput())
-        uret = u"".join(lines)
-        return uret.encode(self.encoding)
+    def serialize(self, out):
+        """Write the units back to file."""
+        # Thanks to iterencode, a possible BOM is written only once
+        for chunk in iterencode((unit.getoutput() for unit in self.units), self.encoding):
+            out.write(chunk)
 
 
 class javafile(propfile):

@@ -174,18 +174,18 @@ class OmegaTFile(base.TranslationStore):
             newunit.dict = line
             self.addunit(newunit)
 
-    def serialize(self):
+    def serialize(self, out):
         # Check first if there is at least one translated unit
         translated_units = [u for u in self.units if u.istranslated()]
         if not translated_units:
-            return b""
+            return
 
         output = csv.StringIO()
         writer = csv_utils.UnicodeDictWriter(
             output, fieldnames=OMEGAT_FIELDNAMES, encoding=self.encoding, dialect="omegat")
         for unit in translated_units:
             writer.writerow(unit.dict)
-        return output.getvalue() if six.PY2 else output.getvalue().encode(self.encoding)
+        out.write(output.getvalue() if six.PY2 else output.getvalue().encode(self.encoding))
 
 
 class OmegaTFileTab(OmegaTFile):

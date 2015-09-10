@@ -102,14 +102,14 @@ class TikiStore(base.TranslationStore):
         if inputfile is not None:
             self.parse(inputfile)
 
-    def serialize(self):
+    def serialize(self, out):
         """Will return a formatted tiki-style language.php file."""
         _unused = []
         _untranslated = []
         _possiblyuntranslated = []
         _translated = []
 
-        output = self._tiki_header()
+        out.write(self._tiki_header().encode(self.encoding))
 
         # Reorder all the units into their groups
         for unit in self.units:
@@ -122,23 +122,22 @@ class TikiStore(base.TranslationStore):
             else:
                 _translated.append(unit)
 
-        output += "// ### Start of unused words\n"
+        out.write(b"// ### Start of unused words\n")
         for unit in _unused:
-            output += six.text_type(unit)
-        output += "// ### end of unused words\n\n"
-        output += "// ### start of untranslated words\n"
+            out.write(six.text_type(unit).encode(self.encoding))
+        out.write(b"// ### end of unused words\n\n"
+                  b"// ### start of untranslated words\n")
         for unit in _untranslated:
-            output += six.text_type(unit)
-        output += "// ### end of untranslated words\n\n"
-        output += "// ### start of possibly untranslated words\n"
+            out.write(six.text_type(unit).encode(self.encoding))
+        out.write(b"// ### end of untranslated words\n\n"
+                  b"// ### start of possibly untranslated words\n")
         for unit in _possiblyuntranslated:
-            output += six.text_type(unit)
-        output += "// ### end of possibly untranslated words\n\n"
+            out.write(six.text_type(unit).encode(self.encoding))
+        out.write(b"// ### end of possibly untranslated words\n\n")
         for unit in _translated:
-            output += six.text_type(unit)
+            out.write(six.text_type(unit).encode(self.encoding))
 
-        output += self._tiki_footer()
-        return output.encode(self.encoding)
+        out.write(self._tiki_footer().encode(self.encoding))
 
     def _tiki_header(self):
         """Returns a tiki-file header string."""

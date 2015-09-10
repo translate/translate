@@ -141,7 +141,7 @@ class mofile(poheader.poheader, base.TranslationStore):
         if inputfile is not None:
             self.parsestring(inputfile)
 
-    def serialize(self):
+    def serialize(self, out):
         """Output a string representation of the MO data file"""
         # check the header of this file for the copyright note of this function
 
@@ -230,7 +230,7 @@ class mofile(poheader.poheader, base.TranslationStore):
             output = output + hash_table.tostring()
             output = output + ids
             output = output + strs
-        return output
+        return out.write(output)
 
     def parse(self, input):
         """parses the given file or file source string"""

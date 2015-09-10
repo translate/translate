@@ -105,10 +105,11 @@ class LangStore(txt.TxtFile):
                     u.addnote(comment[:-1], 'developer')
                     comment = ""
 
-    def serialize(self):
-        ret_string = b""
+    def serialize(self, out):
         if self.is_active or self.mark_active:
-            ret_string += b"## active ##\n"
-        ret_string += u"\n\n\n".join([six.text_type(unit) for unit in self.units]).encode('utf-8')
-        ret_string += b"\n"
-        return ret_string
+            out.write(b"## active ##\n")
+        for idx, unit in enumerate(self.units):
+            if idx > 0:
+                out.write(b"\n\n\n")
+            out.write(six.text_type(unit).encode('utf-8'))
+        out.write(b"\n")

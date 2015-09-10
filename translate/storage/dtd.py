@@ -93,6 +93,7 @@ except ImportError:
     etree = None
 
 from translate.misc import quote
+from translate.misc.deprecation import deprecated
 from translate.storage import base
 
 
@@ -561,20 +562,21 @@ class dtdfile(base.TranslationStore):
                     warnings.warn("%s\nError occured between lines %d and %d:\n%s" % (e, start + 1, end, b"\n".join(lines[start:end])))
                 start += linesprocessed
 
-    def serialize(self):
-        """convert to bytes. double check that unicode is handled somehow here"""
-        source = self.getoutput()
-        if not self._valid_store():
+    def serialize(self, out):
+        """Write content to file"""
+        content = b''
+        for dtd in self.units:
+            unit_str = six.text_type(dtd).encode(self.encoding)
+            out.write(unit_str)
+            content += unit_str
+        if not self._valid_store(content):
             warnings.warn("DTD file '%s' does not validate" % self.filename)
-            return None
-        if isinstance(source, six.text_type):
-            return source.encode(self.encoding)
-        return source
+            out.truncate(0)
 
+    # Deprecated on 1.14
+    @deprecated("Use bytes(dtdfile) instead")
     def getoutput(self):
-        """convert the units back to source"""
-        sources = [six.text_type(dtd) for dtd in self.units]
-        return "".join(sources)
+        return bytes(self)
 
     def makeindex(self):
         """makes self.id_index dictionary keyed on entities"""
@@ -583,7 +585,7 @@ class dtdfile(base.TranslationStore):
             if not dtd.isnull():
                 self.id_index[dtd.entity] = dtd
 
-    def _valid_store(self):
+    def _valid_store(self, content):
         """Validate the store to determine if it is valid
 
         This uses ElementTree to parse the DTD
@@ -593,9 +595,10 @@ class dtdfile(base.TranslationStore):
         """
         # Android files are invalid DTDs
         if etree is not None and not self.android:
+            # #expand is a Mozilla hack and are removed as they are not valid in DTDs
+            _input = re.sub(b"#expand", b"", content)
             try:
-                # #expand is a Mozilla hack and are removed as they are not valid in DTDs
-                dtd = etree.DTD(BytesIO(re.sub("#expand", "", self.getoutput()).encode(self.encoding)))
+                dtd = etree.DTD(BytesIO(_input))
             except etree.DTDParseError as e:
                 warnings.warn("DTD parse error: %s" % e.error_log)
                 return False

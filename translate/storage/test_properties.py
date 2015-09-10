@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from pytest import deprecated_call, raises
+from pytest import raises
 
 from translate.misc import wStringIO
 from translate.storage import properties, test_monolingual

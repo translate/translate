@@ -261,11 +261,11 @@ class CatkeysFile(base.TranslationStore):
             newunit.dict = line
             self.addunit(newunit)
 
-    def serialize(self):
+    def serialize(self, out):
         output = csv.StringIO()
         writer = csv_utils.UnicodeDictWriter(output, FIELDNAMES, encoding=self.encoding, dialect="catkeys")
         # No real headers, the first line contains metadata
         writer.writerow(dict(zip(FIELDNAMES, [self.header._header_dict[key] for key in FIELDNAMES_HEADER])))
         for unit in self.units:
             writer.writerow(unit.dict)
-        return output.getvalue() if six.PY2 else output.getvalue().encode(self.encoding)
+        out.write(output.getvalue() if six.PY2 else output.getvalue().encode(self.encoding))

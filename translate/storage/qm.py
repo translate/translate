@@ -98,7 +98,7 @@ class qmfile(base.TranslationStore):
         if inputfile is not None:
             self.parsestring(inputfile)
 
-    def serialize(self):
+    def serialize(self, out):
         """Output a string representation of the .qm data file"""
         raise Exception("Writing of .qm files is not supported yet")
 

@@ -326,10 +326,10 @@ class LISAfile(base.TranslationStore):
         if new:
             self.body.append(unit.xmlelement)
 
-    def serialize(self):
+    def serialize(self, out=None):
         """Converts to a string containing the file's XML"""
-        return etree.tostring(self.document, pretty_print=True,
-                              xml_declaration=True, encoding='utf-8')
+        self.document.write(out, pretty_print=True, xml_declaration=True,
+                            encoding='utf-8')
 
     def parse(self, xml):
         """Populates this object from the given xml string"""

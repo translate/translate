@@ -29,6 +29,7 @@ Supported formats are
 import re
 import six
 
+from translate.misc.deprecation import deprecated
 from translate.storage import base
 
 
@@ -145,14 +146,13 @@ class TxtFile(base.TranslationStore):
             unit = self.addsourceunit("\n".join(block))
             unit.addlocation("%s:%d" % (self.filename, startline + 1))
 
-    def serialize(self):
-        source = self.getoutput()
-        if isinstance(source, six.text_type):
-            return source.encode(self.encoding)
-        return source
+    def serialize(self, out):
+        for idx, unit in enumerate(self.units):
+            if idx > 0:
+                out.write(b'\n\n')
+            out.write(six.text_type(unit).encode(self.encoding))
 
+    # Deprecated on 1.14
+    @deprecated("Use bytes(TxtFile) instead")
     def getoutput(self):
-        """Convert the units back to blocks"""
-        blocks = [str(unit) for unit in self.units]
-        string = "\n\n".join(blocks)
-        return string
+        return bytes(self)

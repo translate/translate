@@ -86,7 +86,7 @@ class SubtitleFile(base.TranslationStore):
         if inputfile is not None:
             self._parsefile(inputfile)
 
-    def serialize(self):
+    def serialize(self, out):
         subtitles = []
         for unit in self.units:
             subtitle = Subtitle()
@@ -94,9 +94,11 @@ class SubtitleFile(base.TranslationStore):
             subtitle.start = unit._start
             subtitle.end = unit._end
             subtitles.append(subtitle)
+        # Using transient output might be dropped if/when we have more control
+        # over the open mode of out files.
         output = StringIO()
         self._subtitlefile.write_to_file(subtitles, documents.MAIN, output)
-        return output.getvalue().encode(self._subtitlefile.encoding)
+        out.write(output.getvalue().encode(self._subtitlefile.encoding))
 
     def _parse(self):
         try:

@@ -824,31 +824,23 @@ class pofile(pocommon.pofile):
                 uniqueunits.append(thepo)
         self.units = uniqueunits
 
-    def serialize(self):
-        """Convert to bytes. Double check that unicode is handled somehow
-        here"""
-        output = self._getoutput()
-        if isinstance(output, six.text_type):
-            try:
-                return output.encode(self.encoding)
-            except UnicodeEncodeError as e:
-                self.updateheader(add=True, Content_Type="text/plain; charset=UTF-8")
-                self.encoding = "utf-8"
-                return self._getoutput().encode("utf-8")
-
-        return output
-
-    def _getoutput(self):
-        """convert the units back to lines"""
-        lines = []
-        for unit in self.units:
-            unitsrc = unit._getoutput() + u"\n"
-            lines.append(unitsrc)
-        lines = u"".join(lines).rstrip()
-        #After the last pounit we will have \n\n and we only want to end in \n:
-        if lines:
-            lines += u"\n"
-        return lines
+    def serialize(self, out):
+        """Write to file"""
+        at_start = True
+        try:
+            for unit in self.units:
+                if not at_start:
+                    out.write(b'\n')
+                else:
+                    at_start = False
+                out.write(unit._getoutput().encode(self.encoding))
+        except UnicodeEncodeError as e:
+            if self.encoding == 'utf-8':
+                raise
+            self.updateheader(add=True, Content_Type="text/plain; charset=UTF-8")
+            self.encoding = "utf-8"
+            out.seek(0)
+            self.serialize(out)
 
     def encode(self, lines):
         """encode any unicode strings in lines in self.encoding"""

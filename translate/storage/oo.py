@@ -35,6 +35,7 @@ import os
 import re
 import six
 import warnings
+from io import BytesIO
 
 from translate.misc import quote, wStringIO
 
@@ -305,12 +306,19 @@ class oofile:
 
     def __str__(self, *args, **kwargs):
         if six.PY2:
-            return self.serialize(*args, **kwargs)
+            out = BytesIO()
+            self.serialize(out, **kwargs)
+            return out.getvalue()
         return super(oofile, self).__str__()
 
-    def serialize(self, skip_source=False, fallback_lang=None):
+    def __bytes__(self):
+        out = BytesIO()
+        self.serialize(out)
+        return out.getvalue()
+
+    def serialize(self, out, skip_source=False, fallback_lang=None):
         """convert to a string. double check that unicode is handled"""
-        return self.getoutput(skip_source, fallback_lang).encode(self.encoding)
+        out.write(self.getoutput(skip_source, fallback_lang).encode(self.encoding))
 
     def getoutput(self, skip_source=False, fallback_lang=None):
         """converts all the lines back to tab-delimited form"""

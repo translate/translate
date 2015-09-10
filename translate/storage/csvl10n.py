@@ -408,12 +408,12 @@ class csvfile(base.TranslationStore):
                 self.addunit(newce)
             first_row = False
 
-    def serialize(self):
-        """convert to bytes. double check that unicode is handled somehow here"""
+    def serialize(self, out):
+        """Write to file"""
         source = self.getoutput()
         if not isinstance(source, six.text_type):
             source = source.decode('utf-8')
-        return source.encode(self.encoding)
+        out.write(source.encode(self.encoding))
 
     def getoutput(self):
         output = csv.StringIO()
