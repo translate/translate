@@ -20,7 +20,7 @@ class TestHTML2PO:
         outputfile = wStringIO.StringIO()
         templatefile = wStringIO.StringIO(htmltemplate)
         assert po2html.converthtml(inputfile, outputfile, templatefile)
-        return outputfile.getvalue()
+        return outputfile.getvalue().decode('utf-8')
 
     def countunits(self, pofile, expected):
         """helper to check that we got the expected number of messages"""
@@ -35,8 +35,8 @@ class TestHTML2PO:
         """helper to validate a PO message"""
         if not pofile.units[0].isheader():
             unitnumber = unitnumber - 1
-        print('unit source: ' + pofile.units[unitnumber].source.encode('utf-8') + '|')
-        print('expected: ' + expected.encode('utf-8') + '|')
+        print('unit source: ' + pofile.units[unitnumber].source + '|')
+        print('expected: ' + expected + '|')
         assert six.text_type(pofile.units[unitnumber].source) == six.text_type(expected)
 
     def check_single(self, markup, itemtext):
@@ -297,7 +297,7 @@ years has helped to bridge the digital divide to a limited extent.</p> \r
 
     def test_encoding_latin1(self):
         """Convert HTML input in iso-8859-1 correctly to unicode."""
-        htmlsource = '''<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+        htmlsource = b'''<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
 <html><!-- InstanceBegin template="/Templates/masterpage.dwt" codeOutsideHTMLIsLocked="false" -->
 <head>
 <!-- InstanceBeginEditable name="doctitle" -->

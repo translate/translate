@@ -14,7 +14,7 @@ class TestPO2Html:
         templatefile = wStringIO.StringIO(htmltemplate)
         assert po2html.converthtml(inputfile, outputfile, templatefile, includefuzzy)
         print(outputfile.getvalue())
-        return outputfile.getvalue()
+        return outputfile.getvalue().decode('utf-8')
 
     def test_simple(self):
         """simple po to html test"""
