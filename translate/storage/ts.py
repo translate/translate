@@ -85,7 +85,7 @@ class QtTsParser:
 
     def getxml(self):
         """return the ts file as xml"""
-        xml = self.document.toprettyxml(indent="    ", encoding="utf-8")
+        xml = self.document.toprettyxml(indent="    ", encoding="utf-8").decode('utf-8')
         # This line causes empty lines in the translation text to be removed
         # (when there are two newlines)
         xml = "\n".join([line for line in xml.split("\n") if line.strip()])
