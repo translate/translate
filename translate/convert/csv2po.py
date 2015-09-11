@@ -56,7 +56,7 @@ def quotecsvstr(source):
 
 
 def simplify(string):
-    return filter(type(string).isalnum, string)
+    return ''.join(filter(type(string).isalnum, string))
 
 
 class csv2po:

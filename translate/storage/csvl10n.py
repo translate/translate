@@ -279,7 +279,7 @@ class csvunit(base.TranslationUnit):
     def __str__(self):
         return str(self.todict())
 
-canonical_field_names = ('location', 'source', 'target', 'id', 'fuzzy', 'context', 'translator_comments', 'developer_comments')
+
 fieldname_map = {
     'original': 'source',
     'untranslated': 'source',
@@ -314,9 +314,11 @@ def try_dialects(inputfile, fieldnames, dialect):
 
 
 def valid_fieldnames(fieldnames):
-    """check if fieldnames are valid"""
+    """Check if fieldnames are valid, that is at least one field is identified
+       as the source.
+    """
     for fieldname in fieldnames:
-        if fieldname in canonical_field_names and fieldname == 'source':
+        if fieldname == 'source':
             return True
         elif fieldname in fieldname_map and fieldname_map[fieldname] == 'source':
             return True

@@ -48,7 +48,7 @@ class TestCSV2PO:
 
     def test_simpleentity_with_template(self):
         """checks that a simple csv entry definition converts properly to a po entry"""
-        csvsource = '''source,original,translation
+        csvsource = '''location,original,translation
 intl.charset.default,ISO-8859-1,UTF-16'''
         potsource = '''#: intl.charset.default
 msgid "ISO-8859-1"
