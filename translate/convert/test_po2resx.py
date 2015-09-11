@@ -86,11 +86,11 @@ class TestPO2RESX:
 
     def po2resx(self, resxsource, po_source):
         """ Helper that merges po translations to .resx source without requiring files """
-        po_store = po.pofile(po_source)
+        po_store = po.pofile(po_source.encode('utf-8'))
         template_file = wStringIO.StringIO(resxsource)
         convertor = po2resx.po2resx(template_file, po_store)
         output_resx = convertor.convertstore()
-        return output_resx
+        return output_resx.decode('utf-8')
 
     def test_simpleunit(self):
         """ Checks that a simple po entry definition converts properly to a resx entry """
@@ -237,7 +237,7 @@ msgstr "Drie"
 
     def test_automaticcomments(self):
         """ Tests that automatic comments are imported """
-        po_source = r'''#. This is a comment
+        po_source = u'''#. This is a comment
 #: ResourceKey
 msgid "Bézier curve"
 msgstr "Bézier-kurwe"
@@ -245,7 +245,7 @@ msgstr "Bézier-kurwe"
         resx_template = self.XMLskeleton % '''<data name="ResourceKey" xml:space="preserve">
         <value></value>
         </data>'''
-        expected_output = self.XMLskeleton % '''<data name="ResourceKey" xml:space="preserve">
+        expected_output = self.XMLskeleton % u'''<data name="ResourceKey" xml:space="preserve">
         <value>Bézier-kurwe</value>
     <comment>This is a comment</comment></data>'''
         resx_file = self.po2resx(resx_template, po_source)
@@ -253,7 +253,7 @@ msgstr "Bézier-kurwe"
 
     def test_automaticcomments_existingcomment(self):
         """ Tests a differing automatic comment is added if there is an existing automatic comment """
-        po_source = r'''#. This is a new comment
+        po_source = u'''#. This is a new comment
 #: ResourceKey
 msgid "Bézier curve"
 msgstr "Bézier-kurwe"
@@ -261,7 +261,7 @@ msgstr "Bézier-kurwe"
         resx_template = self.XMLskeleton % '''<data name="ResourceKey" xml:space="preserve">
         <value></value>
         <comment>This is an existing comment</comment></data>'''
-        expected_output = self.XMLskeleton % '''<data name="ResourceKey" xml:space="preserve">
+        expected_output = self.XMLskeleton % u'''<data name="ResourceKey" xml:space="preserve">
         <value>Bézier-kurwe</value>
     <comment>This is an existing comment
 This is a new comment</comment></data>'''
@@ -270,7 +270,7 @@ This is a new comment</comment></data>'''
 
     def test_automaticcomments_existingduplicatecomment(self):
         """ Tests there is no duplication of automatic comments if it already exists and hasn't changed """
-        po_source = r'''#. This is an existing comment
+        po_source = u'''#. This is an existing comment
 #: ResourceKey
 msgid "Bézier curve"
 msgstr "Bézier-kurwe"
@@ -278,7 +278,7 @@ msgstr "Bézier-kurwe"
         resx_template = self.XMLskeleton % '''<data name="ResourceKey" xml:space="preserve">
         <value></value>
         <comment>This is an existing comment</comment></data>'''
-        expected_output = self.XMLskeleton % '''<data name="ResourceKey" xml:space="preserve">
+        expected_output = self.XMLskeleton % u'''<data name="ResourceKey" xml:space="preserve">
         <value>Bézier-kurwe</value>
     <comment>This is an existing comment</comment></data>'''
         resx_file = self.po2resx(resx_template, po_source)
@@ -287,7 +287,7 @@ msgstr "Bézier-kurwe"
     def test_automaticcomments_existingduplicatecommentwithwhitespace(self):
         """ Tests there is no duplication of automatic comments if it already exists, hasn't changed but has leading or
         trailing whitespaces """
-        po_source = r'''#.  This is an existing comment with leading and trailing spaces
+        po_source = u'''#.  This is an existing comment with leading and trailing spaces
 #: ResourceKey
 msgid "Bézier curve"
 msgstr "Bézier-kurwe"
@@ -295,7 +295,7 @@ msgstr "Bézier-kurwe"
         resx_template = self.XMLskeleton % '''<data name="ResourceKey" xml:space="preserve">
         <value></value>
         <comment> This is an existing comment with leading and trailing spaces </comment></data>'''
-        expected_output = self.XMLskeleton % '''<data name="ResourceKey" xml:space="preserve">
+        expected_output = self.XMLskeleton % u'''<data name="ResourceKey" xml:space="preserve">
         <value>Bézier-kurwe</value>
     <comment>This is an existing comment with leading and trailing spaces</comment></data>'''
         resx_file = self.po2resx(resx_template, po_source)
@@ -303,7 +303,7 @@ msgstr "Bézier-kurwe"
 
     def test_translatorcomments(self):
         """ Tests that translator comments are imported """
-        po_source = r'''# This is a translator comment : 22.12.14
+        po_source = u'''# This is a translator comment : 22.12.14
 #: ResourceKey
 msgid "Bézier curve"
 msgstr "Bézier-kurwe"
@@ -311,7 +311,7 @@ msgstr "Bézier-kurwe"
         resx_template = self.XMLskeleton % '''<data name="ResourceKey" xml:space="preserve">
         <value></value>
         </data>'''
-        expected_output = self.XMLskeleton % '''<data name="ResourceKey" xml:space="preserve">
+        expected_output = self.XMLskeleton % u'''<data name="ResourceKey" xml:space="preserve">
         <value>Bézier-kurwe</value>
     <comment>[Translator Comment: This is a translator comment : 22.12.14]</comment></data>'''
         resx_file = self.po2resx(resx_template, po_source)
@@ -319,7 +319,7 @@ msgstr "Bézier-kurwe"
 
     def test_translatorcomments_existingcomment(self):
         """ Tests a differing translator comment is added if there is an existing translator comment """
-        po_source = r'''# This is a new translator comment
+        po_source = u'''# This is a new translator comment
 #: ResourceKey
 msgid "Bézier curve"
 msgstr "Bézier-kurwe"
@@ -327,7 +327,7 @@ msgstr "Bézier-kurwe"
         resx_template = self.XMLskeleton % '''<data name="ResourceKey" xml:space="preserve">
         <value></value>
         <comment>[Translator Comment: This is an existing comment]</comment></data>'''
-        expected_output = self.XMLskeleton % '''<data name="ResourceKey" xml:space="preserve">
+        expected_output = self.XMLskeleton % u'''<data name="ResourceKey" xml:space="preserve">
         <value>Bézier-kurwe</value>
     <comment>[Translator Comment: This is an existing comment]
 [Translator Comment: This is a new translator comment]</comment></data>'''
@@ -336,7 +336,7 @@ msgstr "Bézier-kurwe"
 
     def test_translatorcomments_existingduplicatecomment(self):
         """ Tests there is no duplication of translator comments if it already exists and hasn't changed """
-        po_source = r'''# This is an existing translator comment
+        po_source = u'''# This is an existing translator comment
 #: ResourceKey
 msgid "Bézier curve"
 msgstr "Bézier-kurwe"
@@ -344,7 +344,7 @@ msgstr "Bézier-kurwe"
         resx_template = self.XMLskeleton % '''<data name="ResourceKey" xml:space="preserve">
         <value></value>
         <comment>[Translator Comment: This is an existing translator comment]</comment></data>'''
-        expected_output = self.XMLskeleton % '''<data name="ResourceKey" xml:space="preserve">
+        expected_output = self.XMLskeleton % u'''<data name="ResourceKey" xml:space="preserve">
         <value>Bézier-kurwe</value>
     <comment>[Translator Comment: This is an existing translator comment]</comment></data>'''
         resx_file = self.po2resx(resx_template, po_source)
@@ -352,7 +352,7 @@ msgstr "Bézier-kurwe"
 
     def test_combocomments(self):
         """ Tests that translator comments and automatic comments are imported """
-        po_source = r'''#. This is a developer comment
+        po_source = u'''#. This is a developer comment
 # This is a translator comment : 22.12.14
 #: ResourceKey
 msgid "Bézier curve"
@@ -361,7 +361,7 @@ msgstr "Bézier-kurwe"
         resx_template = self.XMLskeleton % '''<data name="ResourceKey" xml:space="preserve">
         <value></value>
         </data>'''
-        expected_output = self.XMLskeleton % '''<data name="ResourceKey" xml:space="preserve">
+        expected_output = self.XMLskeleton % u'''<data name="ResourceKey" xml:space="preserve">
         <value>Bézier-kurwe</value>
     <comment>This is a developer comment
 [Translator Comment: This is a translator comment : 22.12.14]</comment></data>'''
@@ -371,7 +371,7 @@ msgstr "Bézier-kurwe"
     def test_combocomments_existingduplicatecomment(self):
         """ Tests there is no duplication of automatic comment if it already exists and hasn't changed, but still adds
         the translator comment """
-        po_source = r'''#. This is an existing comment
+        po_source = u'''#. This is an existing comment
 # This is a translator comment : 22.12.14
 #: ResourceKey
 msgid "Bézier curve"
@@ -380,7 +380,7 @@ msgstr "Bézier-kurwe"
         resx_template = self.XMLskeleton % '''<data name="ResourceKey" xml:space="preserve">
         <value></value>
         <comment>This is an existing comment</comment></data>'''
-        expected_output = self.XMLskeleton % '''<data name="ResourceKey" xml:space="preserve">
+        expected_output = self.XMLskeleton % u'''<data name="ResourceKey" xml:space="preserve">
         <value>Bézier-kurwe</value>
     <comment>This is an existing comment
 [Translator Comment: This is a translator comment : 22.12.14]</comment></data>'''
@@ -390,7 +390,7 @@ msgstr "Bézier-kurwe"
     def test_combocomments_existingcomment(self):
         """ Tests a differing automatic comment is added if there is an existing automatic comment, but still adds
         the translator comment """
-        po_source = r'''#. This is a new comment
+        po_source = u'''#. This is a new comment
 # This is a translator comment : 22.12.14
 #: ResourceKey
 msgid "Bézier curve"
@@ -399,7 +399,7 @@ msgstr "Bézier-kurwe"
         resx_template = self.XMLskeleton % '''<data name="ResourceKey" xml:space="preserve">
         <value></value>
         <comment>This is an existing comment</comment></data>'''
-        expected_output = self.XMLskeleton % '''<data name="ResourceKey" xml:space="preserve">
+        expected_output = self.XMLskeleton % u'''<data name="ResourceKey" xml:space="preserve">
         <value>Bézier-kurwe</value>
     <comment>This is an existing comment
 This is a new comment
@@ -409,7 +409,7 @@ This is a new comment
 
     def test_existingcomments(self):
         """ Tests that no extra space is added when there are no changes to existing comments"""
-        po_source = r'''#. This is an existing comment
+        po_source = u'''#. This is an existing comment
 # This is an existing translator comment : 22.12.14
 #: ResourceKey
 msgid "Bézier curve"
@@ -419,7 +419,7 @@ msgstr "Bézier-kurwe"
         <value></value>
         <comment>This is an existing comment
 [Translator Comment: This is an existing translator comment : 22.12.14]</comment></data>'''
-        expected_output = self.XMLskeleton % '''<data name="ResourceKey" xml:space="preserve">
+        expected_output = self.XMLskeleton % u'''<data name="ResourceKey" xml:space="preserve">
         <value>Bézier-kurwe</value>
     <comment>This is an existing comment
 [Translator Comment: This is an existing translator comment : 22.12.14]</comment></data>'''
