@@ -24,7 +24,7 @@ class TestPO2Php:
         templatefile = wStringIO.StringIO(phpsource)
         #templatephp = php.phpfile(templatefile)
         convertor = po2php.rephp(templatefile, inputpo)
-        outputphp = convertor.convertstore()
+        outputphp = [line.decode('utf-8') for line in convertor.convertstore()]
         print(outputphp)
         return outputphp
 
