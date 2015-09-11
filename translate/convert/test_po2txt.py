@@ -17,7 +17,7 @@ class TestPO2Txt:
             templatefile = None
         assert po2txt.converttxt(inputfile, outputfile, templatefile)
         print(outputfile.getvalue())
-        return outputfile.getvalue()
+        return outputfile.getvalue().decode('utf-8')
 
     def test_basic(self):
         """test basic conversion"""
@@ -28,8 +28,8 @@ class TestPO2Txt:
     def test_nonascii(self):
         """test conversion with non-ascii text"""
         txttemplate = "Heading\n\nFile content"
-        posource = 'msgid "Heading"\nmsgstr "Opskrif"\n\nmsgid "File content"\nmsgstr "Lêerinhoud"\n'
-        assert self.po2txt(posource, txttemplate) == "Opskrif\n\nLêerinhoud"
+        posource = u'msgid "Heading"\nmsgstr "Opskrif"\n\nmsgid "File content"\nmsgstr "Lêerinhoud"\n'
+        assert self.po2txt(posource, txttemplate) == u"Opskrif\n\nLêerinhoud"
 
     def test_blank_handling(self):
         """check that we discard blank messages"""
