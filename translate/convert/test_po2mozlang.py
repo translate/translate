@@ -13,39 +13,39 @@ class TestPO2Lang:
         inputpo = po.pofile(inputfile)
         convertor = po2mozlang.po2lang(mark_active=False)
         outputlang = convertor.convertstore(inputpo)
-        return outputlang
+        return outputlang.serialize().decode('utf-8')
 
     def test_simple(self):
         """check the simplest case of merging a translation"""
         posource = '''#: prop\nmsgid "Source"\nmsgstr "Target"\n'''
-        propexpected = ''';Source\nTarget\n'''
-        langfile = self.po2lang(posource)
-        print(langfile.serialize())
-        assert langfile.serialize() == propexpected
+        prop_expected = ''';Source\nTarget\n'''
+        prop_result = self.po2lang(posource)
+        print(prop_result)
+        assert prop_result == prop_expected
 
     def test_comment(self):
         """Simple # comments"""
         posource = '''#. Comment\n#: prop\nmsgid "Source"\nmsgstr "Target"\n'''
-        propexpected = '''# Comment\n;Source\nTarget\n'''
-        langfile = self.po2lang(posource)
-        print(langfile.serialize())
-        assert langfile.serialize() == propexpected
+        prop_expected = '''# Comment\n;Source\nTarget\n'''
+        prop_result = self.po2lang(posource)
+        print(prop_result)
+        assert prop_result == prop_expected
 
     def test_fuzzy(self):
         """What happens with a fuzzy string"""
         posource = '''#. Comment\n#: prop\n#, fuzzy\nmsgid "Source"\nmsgstr "Target"\n'''
-        propexpected = '''# Comment\n;Source\nSource\n'''
-        langfile = self.po2lang(posource)
-        print(langfile.serialize())
-        assert langfile.serialize() == propexpected
+        prop_expected = '''# Comment\n;Source\nSource\n'''
+        prop_result = self.po2lang(posource)
+        print(prop_result)
+        assert prop_result == prop_expected
 
     def test_ok_marker(self):
         """The {ok} marker"""
         posource = '''#: prop\nmsgid "Same"\nmsgstr "Same"\n'''
-        propexpected = ''';Same\nSame {ok}\n'''
-        langfile = self.po2lang(posource)
-        print(langfile.serialize())
-        assert langfile.serialize() == propexpected
+        prop_expected = ''';Same\nSame {ok}\n'''
+        prop_result = self.po2lang(posource)
+        print(prop_result)
+        assert prop_result == prop_expected
 
 
 class TestPO2LangCommand(test_convert.TestConvertCommand, TestPO2Lang):
