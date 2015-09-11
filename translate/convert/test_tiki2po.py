@@ -4,39 +4,40 @@
 # Author: Wil Clouser <wclouser@mozilla.com>
 # Date: 2008-12-01
 
+from io import BytesIO
+
 from translate.convert import test_convert, tiki2po
-from translate.misc import wStringIO
 
 
 class TestTiki2Po:
 
     def test_converttiki_defaults(self):
-        inputfile = """
+        inputfile = b"""
 "zero_source" => "zero_target",
 // ### Start of unused words
 "one_source" => "one_target",
 // ### end of unused words
         """
-        outputfile = wStringIO.StringIO()
+        outputfile = BytesIO()
         tiki2po.converttiki(inputfile, outputfile)
 
-        output = outputfile.getvalue()
+        output = outputfile.getvalue().decode('utf-8')
 
         assert '#: translated' in output
         assert 'msgid "zero_source"' in output
         assert "one_source" not in output
 
     def test_converttiki_includeunused(self):
-        inputfile = """
+        inputfile = b"""
 "zero_source" => "zero_target",
 // ### Start of unused words
 "one_source" => "one_target",
 // ### end of unused words
         """
-        outputfile = wStringIO.StringIO()
+        outputfile = BytesIO()
         tiki2po.converttiki(inputfile, outputfile, includeunused=True)
 
-        output = outputfile.getvalue()
+        output = outputfile.getvalue().decode('utf-8')
 
         assert '#: translated' in output
         assert 'msgid "zero_source"' in output

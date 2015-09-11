@@ -4,14 +4,15 @@
 # Author: Wil Clouser <wclouser@mozilla.com>
 # Date: 2008-12-01
 
+from io import BytesIO
+
 from translate.convert import po2tiki, test_convert
-from translate.misc import wStringIO
 
 
 class TestPo2Tiki:
 
     def test_convertpo(self):
-        inputfile = """
+        inputfile = b"""
 #: translated
 msgid "zero_source"
 msgstr "zero_target"
@@ -20,10 +21,10 @@ msgstr "zero_target"
 msgid "one_source"
 msgstr "one_target"
         """
-        outputfile = wStringIO.StringIO()
+        outputfile = BytesIO()
         po2tiki.convertpo(inputfile, outputfile)
 
-        output = outputfile.getvalue()
+        output = outputfile.getvalue().decode('utf-8')
 
         assert '"one_source" => "one_target",' in output
         assert '"zero_source" => "zero_target",' in output
