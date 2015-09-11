@@ -36,7 +36,7 @@ class TestPO2OO:
         ootemplatefile = wStringIO.StringIO(oosource)
         oooutputfile = wStringIO.StringIO()
         po2oo.convertoo(poinputfile, oooutputfile, ootemplatefile, targetlanguage="en-US")
-        ooresult = oooutputfile.getvalue()
+        ooresult = oooutputfile.getvalue().decode('utf-8')
         print("original oo:\n", oosource, "po version:\n", posource, "output oo:\n", ooresult)
         assert ooresult.startswith(oointro) and ooresult.endswith(oooutro)
         return ooresult[len(oointro):-len(oooutro)]
@@ -52,12 +52,12 @@ class TestPO2OO:
         ootemplate = oobase % ('en-US', 'Simple String')
         ooexpected = oobase % ('zu', 'Dimpled Ring')
         newoo = self.convertoo(posource, ootemplate, language="zu")
-        assert newoo == ootemplate + ooexpected
+        assert newoo.decode('utf-8') == ootemplate + ooexpected
 
     def test_pofilter(self):
         """Tests integration with pofilter"""
         #Some bad po with a few errors:
-        posource = '#: sourcefile.bla#ID_NUMBER.txet.gnirts\nmsgid "<tag cow=\\"3\\">Mistake."\nmsgstr "  <etiket koei=\\"3\\">(fout) "'
+        posource = b'#: sourcefile.bla#ID_NUMBER.txet.gnirts\nmsgid "<tag cow=\\"3\\">Mistake."\nmsgstr "  <etiket koei=\\"3\\">(fout) "'
         filter = po2oo.filter
         pofile = po.pofile()
         pofile.parse(posource)
@@ -107,7 +107,7 @@ class TestPO2OO:
         outputfile = wStringIO.StringIO()
         templatefile = wStringIO.StringIO(oointro + '20050924 09:13:58' + oooutro)
         assert po2oo.convertoo(inputfile, outputfile, templatefile, targetlanguage="en-US")
-        assert outputfile.getvalue() == oointro + '2002-02-02 02:02:02' + oooutro
+        assert outputfile.getvalue().decode('utf-8') == oointro + '2002-02-02 02:02:02' + oooutro
 
     def test_escape_conversion(self):
         """test to ensure that we convert escapes correctly"""
@@ -117,7 +117,7 @@ class TestPO2OO:
         outputfile = wStringIO.StringIO()
         templatefile = wStringIO.StringIO(oosource)
         assert po2oo.convertoo(inputfile, outputfile, templatefile, targetlanguage="af-ZA")
-        assert "\tKolom1\\tKolom2\\r\\n\t" in outputfile.getvalue()
+        assert b"\tKolom1\\tKolom2\\r\\n\t" in outputfile.getvalue()
 
     def test_helpcontent_escapes(self):
         """test to ensure that we convert helpcontent escapes correctly"""
@@ -137,7 +137,7 @@ msgstr ""
         outputfile = wStringIO.StringIO()
         templatefile = wStringIO.StringIO(oosource)
         assert po2oo.convertoo(inputfile, outputfile, templatefile, targetlanguage="af-ZA")
-        assert r"\<ahelp  hid=\".\" \>Zeee 3DDDD-Settings toolbar controls properties of selected 3D objects.\</ahelp\>" in outputfile.getvalue()
+        assert br"\<ahelp  hid=\".\" \>Zeee 3DDDD-Settings toolbar controls properties of selected 3D objects.\</ahelp\>" in outputfile.getvalue()
 
     def test_helpcontent_escapes2(self):
         """test to ensure that we convert helpcontent escapes correctly"""
@@ -150,7 +150,7 @@ msgstr "Aa1: <empty>"
         outputfile = wStringIO.StringIO()
         templatefile = wStringIO.StringIO(oosource)
         assert po2oo.convertoo(inputfile, outputfile, templatefile, targetlanguage="af-ZA")
-        assert r"Aa1: <empty>" in outputfile.getvalue()
+        assert b"Aa1: <empty>" in outputfile.getvalue()
 
 
 class TestPO2OOCommand(test_convert.TestConvertCommand, TestPO2OO):

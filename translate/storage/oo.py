@@ -327,6 +327,7 @@ class oofile:
 
 class oomultifile:
     """this takes a huge GSI file and represents it as multiple smaller files..."""
+    encoding = 'utf-8'
 
     def __init__(self, filename, mode=None, multifilestyle="single"):
         """initialises oomultifile from a seekable inputfile or writable outputfile"""
@@ -341,7 +342,7 @@ class oomultifile:
         self.multifilename = os.path.splitext(filename)[0]
         self.multifile = open(filename, mode)
         self.subfilelines = {}
-        if mode == "r":
+        if mode.startswith("r"):
             self.createsubfileindex()
 
     def createsubfileindex(self):
@@ -406,6 +407,8 @@ class oomultifile:
         """returns a pseudo-file object for the given subfile"""
 
         def onclose(contents):
+            if isinstance(contents, bytes):
+                contents = contents.decode(self.encoding)
             self.multifile.write(contents)
             self.multifile.flush()
         outputfile = wStringIO.CatchStringOutput(onclose)
