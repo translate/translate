@@ -246,7 +246,7 @@ def main(argv=None):
                                          description=__doc__)
     parser.add_option("", "--personality", dest="personality",
             default=properties.default_dialect, type="choice",
-            choices=properties.dialects.keys(),
+            choices=list(properties.dialects.keys()),
             help="override the input file format: %s (for .properties files, default: %s)" %
                  (", ".join(six.iterkeys(properties.dialects)),
                   properties.default_dialect),

@@ -15,7 +15,7 @@ class TestPO2Prop:
         outputprop = convertor.convertstore(inputpo)
         return outputprop
 
-    def merge2prop(self, propsource, posource, personality="java", remove_untranslated=False):
+    def merge2prop(self, propsource, posource, personality="java", remove_untranslated=False, encoding='utf-8'):
         """helper that merges po translations to .properties source without requiring files"""
         inputfile = wStringIO.StringIO(posource)
         inputpo = po.pofile(inputfile)
@@ -24,7 +24,7 @@ class TestPO2Prop:
         convertor = po2prop.reprop(templatefile, inputpo, personality=personality, remove_untranslated=remove_untranslated)
         outputprop = convertor.convertstore()
         print(outputprop)
-        return outputprop
+        return outputprop.decode(encoding)
 
     def test_merging_simple(self):
         """check the simplest case of merging a translation"""
@@ -127,7 +127,7 @@ prop.accesskey=V
 
     def test_mozilla_margin_whitespace(self):
         """Check handling of Mozilla leading and trailing spaces"""
-        posource = '''#: sepAnd
+        posource = u'''#: sepAnd
 msgid " and "
 msgstr " و "
 
@@ -138,8 +138,8 @@ msgstr "، "
         proptemplate = r'''sepAnd = \u0020and\u0020
 sepComma = ,\u20
 '''
-        propexpected = r'''sepAnd = \u0020و\u0020
-sepComma = ،\u0020
+        propexpected = u'''sepAnd = \\u0020و\\u0020
+sepComma = ،\\u0020
 '''
         propfile = self.merge2prop(proptemplate, posource, personality="mozilla")
         print(propfile)
@@ -148,7 +148,7 @@ sepComma = ،\u0020
     def test_mozilla_all_whitespace(self):
         """Check for all white-space Mozilla hack, remove when the
         corresponding code is removed."""
-        posource = '''#: accesskey-accept
+        posource = u'''#: accesskey-accept
 msgctxt "accesskey-accept"
 msgid ""
 msgstr " "
@@ -160,7 +160,7 @@ msgstr "م"
         proptemplate = '''accesskey-accept=
 accesskey-help=H
 '''
-        propexpected = '''accesskey-accept=
+        propexpected = u'''accesskey-accept=
 accesskey-help=م
 '''
         propfile = self.merge2prop(proptemplate, posource, personality="mozilla")
@@ -208,18 +208,18 @@ msgstr "translated"
         propfile = self.merge2prop(proptemplate, posource)
         assert propfile == propexpectedjava
 
-        propexpectedmozilla = u'''prop  =  ṽḁḽṻḝ\n'''.encode('utf-8')
+        propexpectedmozilla = u'''prop  =  ṽḁḽṻḝ\n'''
         propfile = self.merge2prop(proptemplate, posource, personality="mozilla")
         assert propfile == propexpectedmozilla
 
         proptemplate = u'''prop  =  value\n'''.encode('utf-16')
-        propexpectedskype = u'''prop  =  ṽḁḽṻḝ\n'''.encode('utf-16')
-        propfile = self.merge2prop(proptemplate, posource, personality="skype")
+        propexpectedskype = u'''prop  =  ṽḁḽṻḝ\n'''
+        propfile = self.merge2prop(proptemplate, posource, personality="skype", encoding='utf-16')
         assert propfile == propexpectedskype
 
         proptemplate = u'''"prop" = "value";\n'''.encode('utf-16')
-        propexpectedstrings = u'''"prop" = "ṽḁḽṻḝ";\n'''.encode('utf-16')
-        propfile = self.merge2prop(proptemplate, posource, personality="strings")
+        propexpectedstrings = u'''"prop" = "ṽḁḽṻḝ";\n'''
+        propfile = self.merge2prop(proptemplate, posource, personality="strings", encoding='utf-16')
         assert propfile == propexpectedstrings
 
     def test_merging_untranslated_simple(self):

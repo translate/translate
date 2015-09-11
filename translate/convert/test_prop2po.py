@@ -134,7 +134,7 @@ prefPanel-smime=
         pofile = self.prop2po(propsource)
         print(pofile.serialize())
         #header comments:
-        assert "#. # Comment\n#. # commenty 2" in pofile.serialize()
+        assert b"#. # Comment\n#. # commenty 2" in pofile.serialize()
         pounit = self.singleelement(pofile)
         assert pounit.getnotes("developer") == "## @name GENERIC_ERROR\n## @loc none"
 
@@ -164,7 +164,7 @@ do=translate me
             assert pounit.getlocations() == ["credit"]
             assert pounit.getcontext() == "credit"
             assert 'msgctxt "credit"' in str(pounit)
-            assert "#. # comment" in pofile.serialize()
+            assert b"#. # comment" in pofile.serialize()
             assert pounit.source == ""
 
     def test_emptyproperty_translated(self):
@@ -210,14 +210,14 @@ do=translate me
         propsource = '''prop=value\n'''
 
         outputpo = self.prop2po(propsource, personality="mozilla")
-        assert "X-Accelerator-Marker" in outputpo.serialize()
-        assert "X-Merge-On" in outputpo.serialize()
+        assert b"X-Accelerator-Marker" in outputpo.serialize()
+        assert b"X-Merge-On" in outputpo.serialize()
 
         # Even though the gaia flavour inherrits from mozilla, it should not
         # get the header
         outputpo = self.prop2po(propsource, personality="gaia")
-        assert "X-Accelerator-Marker" not in outputpo.serialize()
-        assert "X-Merge-On" not in outputpo.serialize()
+        assert b"X-Accelerator-Marker" not in outputpo.serialize()
+        assert b"X-Merge-On" not in outputpo.serialize()
 
     def test_gaia_plurals(self):
         """Test conversion of gaia plural units."""
