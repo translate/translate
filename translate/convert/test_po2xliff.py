@@ -7,7 +7,7 @@ class TestPO2XLIFF:
 
     def po2xliff(self, posource, sourcelanguage='en', targetlanguage=None):
         """helper that converts po source to xliff source without requiring files"""
-        postore = po.pofile(posource)
+        postore = po.pofile(posource.encode('utf-8'))
         convertor = po2xliff.po2xliff()
         outputxliff = convertor.convertstore(postore, None, sourcelanguage=sourcelanguage, targetlanguage=targetlanguage)
         return poxliff.PoXliffFile(outputxliff)
@@ -52,7 +52,7 @@ msgstr "Toepassings"
         print(xliff.serialize())
         assert xliff.translate("Applications") == "Toepassings"
         assert xliff.translate("bla") is None
-        xmltext = xliff.serialize()
+        xmltext = xliff.serialize().decode('utf-8')
         assert xmltext.index('<xliff ') >= 0
         assert xmltext.index(' version="1.1"') >= 0
         assert xmltext.index('<file')
@@ -77,7 +77,7 @@ msgstr "Eerste lyn\nTweede lyn"
 '''
         xliff = self.po2xliff(minipo)
         print("The generated xml:")
-        xmltext = xliff.serialize()
+        xmltext = xliff.serialize().decode('utf-8')
         print(xmltext)
         assert xliff.translate("First line\nSecond line") == "Eerste lyn\nTweede lyn"
         assert xliff.translate("First line\\nSecond line") is None
@@ -93,7 +93,7 @@ msgstr "Eerste kolom\tTweede kolom"
 '''
         xliff = self.po2xliff(minipo)
         print("The generated xml:")
-        xmltext = xliff.serialize()
+        xmltext = xliff.serialize().decode('utf-8')
         print(xmltext)
         assert xliff.translate("First column\tSecond column") == "Eerste kolom\tTweede kolom"
         assert xliff.translate("First column\\tSecond column") is None
@@ -112,7 +112,7 @@ msgstr "Gebruik \\\"."
 '''
         xliff = self.po2xliff(minipo)
         print("The generated xml:")
-        xmltext = xliff.serialize()
+        xmltext = xliff.serialize().decode('utf-8')
         print(xmltext)
         assert xliff.translate('Hello "Everyone"') == 'Good day "All"'
         assert xliff.translate(r'Use \".') == r'Gebruik \".'
@@ -132,7 +132,7 @@ msgstr "kunye"
 '''
         xliff = self.po2xliff(minipo)
         print("The generated xml:")
-        xmltext = xliff.serialize()
+        xmltext = xliff.serialize().decode('utf-8')
         print(xmltext)
         assert xliff.translate("one") == "kunye"
         assert len(xliff.units) == 1
