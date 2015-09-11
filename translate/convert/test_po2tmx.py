@@ -1,7 +1,8 @@
 # -*- coding: utf-8 -*-
 
+from io import BytesIO
+
 from translate.convert import po2tmx, test_convert
-from translate.misc import wStringIO
 from translate.misc.xml_helpers import XML_NS
 from translate.storage import tmx
 
@@ -11,8 +12,8 @@ class TestPO2TMX:
     def po2tmx(self, posource, sourcelanguage='en', targetlanguage='af',
                comment=None):
         """helper that converts po source to tmx source without requiring files"""
-        inputfile = wStringIO.StringIO(posource)
-        outputfile = wStringIO.StringIO()
+        inputfile = BytesIO(posource.encode('utf-8'))
+        outputfile = BytesIO()
         outputfile.tmxfile = tmx.tmxfile(inputfile=None, sourcelanguage=sourcelanguage)
         po2tmx.convertpo(inputfile, outputfile, templatefile=None,
                          sourcelanguage=sourcelanguage,
@@ -44,7 +45,7 @@ msgstr "Toepassings"
         print(tmx.serialize())
         assert tmx.translate("Applications") == "Toepassings"
         assert tmx.translate("bla") is None
-        xmltext = tmx.serialize()
+        xmltext = tmx.serialize().decode('utf-8')
         assert xmltext.index('creationtool="Translate Toolkit - po2tmx"')
         assert xmltext.index('adminlang')
         assert xmltext.index('creationtoolversion')
@@ -130,12 +131,12 @@ msgstr "Drie"
         tmx = self.po2tmx(minipo)
         print("The generated xml:")
         print(tmx.serialize())
-        assert "<tu" not in tmx.serialize()
+        assert b"<tu" not in tmx.serialize()
         assert len(tmx.units) == 0
 
     def test_nonascii(self):
         """Tests that non-ascii conversion works."""
-        minipo = r'''msgid "Bézier curve"
+        minipo = u'''msgid "Bézier curve"
 msgstr "Bézier-kurwe"
 '''
         tmx = self.po2tmx(minipo)
@@ -144,7 +145,7 @@ msgstr "Bézier-kurwe"
 
     def test_nonecomments(self):
         """Tests that none comments are imported."""
-        minipo = r'''#My comment rules
+        minipo = u'''#My comment rules
 msgid "Bézier curve"
 msgstr "Bézier-kurwe"
 '''
@@ -155,7 +156,7 @@ msgstr "Bézier-kurwe"
 
     def test_otherscomments(self):
         """Tests that others comments are imported."""
-        minipo = r'''#My comment rules
+        minipo = u'''#My comment rules
 msgid "Bézier curve"
 msgstr "Bézier-kurwe"
 '''
@@ -166,7 +167,7 @@ msgstr "Bézier-kurwe"
 
     def test_sourcecomments(self):
         """Tests that source comments are imported."""
-        minipo = r'''#: ../PuzzleFourSided.h:45
+        minipo = u'''#: ../PuzzleFourSided.h:45
 msgid "Bézier curve"
 msgstr "Bézier-kurwe"
 '''
@@ -177,7 +178,7 @@ msgstr "Bézier-kurwe"
 
     def test_typecomments(self):
         """Tests that others comments are imported."""
-        minipo = r'''#, csharp-format
+        minipo = u'''#, csharp-format
 msgid "Bézier curve"
 msgstr "Bézier-kurwe"
 '''
