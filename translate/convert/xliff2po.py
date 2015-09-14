@@ -24,7 +24,6 @@ See: http://docs.translatehouse.org/projects/translate-toolkit/en/latest/command
 for examples and usage instructions.
 """
 
-from translate.misc import wStringIO
 from translate.storage import po, xliff
 
 
@@ -67,11 +66,6 @@ class xliff2po:
 
     def convertstore(self, inputfile, duplicatestyle="msgctxt"):
         """Converts a .xliff file to .po format"""
-        # XXX: The inputfile is converted to string because Pootle supplies
-        # XXX: a PootleFile object as input which cannot be sent to PoXliffFile
-        # XXX: The better way would be to have a consistent conversion API.
-        if not isinstance(inputfile, (file, wStringIO.StringIO)):
-            inputfile = str(inputfile)
         XliffFile = xliff.xlifffile.parsestring(inputfile)
         thetargetfile = po.pofile()
         targetheader = thetargetfile.header()
