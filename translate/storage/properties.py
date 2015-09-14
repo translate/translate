@@ -43,11 +43,11 @@ Java
     pairs that are not translated.
 
     The following `.properties file description
-    <http://docs.oracle.com/javase/1.4.2/docs/api/java/util/Properties.html#load(java.io.InputStream)>`_
+    <http://docs.oracle.com/javase/7/docs/api/java/util/Properties.html#load(java.io.Reader)>`_
     gives a good references to the .properties specification.
 
     Properties file may also hold Java `MessageFormat
-    <http://docs.oracle.com/javase/1.4.2/docs/api/java/text/MessageFormat.html>`_
+    <http://docs.oracle.com/javase/7/docs/api/java/text/MessageFormat.html>`_
     messages.  No special handling is provided in this storage class for
     MessageFormat, but this may be implemented in future.
 
