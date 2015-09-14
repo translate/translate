@@ -380,4 +380,4 @@ key=value
         result = propfile.serialize()
         assert result.startswith(bom)
         assert bom not in result[3:]
-        assert 'None' not in result[3:]
+        assert b'None' not in result[3:]

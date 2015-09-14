@@ -119,8 +119,7 @@ def write_odf(template, output_file, dom_trees):
 
 def convertxliff(input_file, output_file, template):
     """Create a translated ODF using an ODF template and a XLIFF file."""
-    xlf_data = input_file.read()
-    dom_trees = translate_odf(template, BytesIO(xlf_data))
+    dom_trees = translate_odf(template, input_file)
     write_odf(template, output_file, dom_trees)
     output_file.close()
     return True

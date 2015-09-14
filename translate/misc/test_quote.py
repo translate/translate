@@ -65,7 +65,7 @@ class TestEncoding:
 
     def test_javepropertiesencode(self):
         assert quote.javapropertiesencode(u"abc") == u"abc"
-        assert quote.javapropertiesencode(u"abcḓ") == "abc\u1E13"
+        assert quote.javapropertiesencode(u"abcḓ") == r"abc\u1E13"
         assert quote.javapropertiesencode(u"abc\n") == u"abc\\n"
 
     def test_mozillapropertiesencode(self):

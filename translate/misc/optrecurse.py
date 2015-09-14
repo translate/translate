@@ -544,7 +544,7 @@ class RecursiveOptionParser(optparse.OptionParser, object):
         """Opens the template file (if required)."""
         if fulltemplatepath is not None:
             if os.path.isfile(fulltemplatepath):
-                return open(fulltemplatepath, 'r')
+                return open(fulltemplatepath, 'rb')
             else:
                 self.warning("missing template file %s" % fulltemplatepath)
         return None

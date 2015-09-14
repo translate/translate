@@ -62,7 +62,7 @@ xliff.xlifffile.__eq__ = xliff___eq__
 
 
 def print_diff(store1, store2):
-    for line in difflib.unified_diff(store1.serialize().split('\n'), store2.serialize().split('\n')):
+    for line in difflib.unified_diff(store1.serialize().split(b'\n'), store2.serialize().split(b'\n')):
         print(line)
 
 SOURCE_ODF = u'test_2.odt'
