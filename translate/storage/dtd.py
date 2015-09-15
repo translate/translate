@@ -225,6 +225,7 @@ def removeinvalidamps(name, value):
 @six.python_2_unicode_compatible
 class dtdunit(base.TranslationUnit):
     """An entity definition from a DTD file (and any associated comments)."""
+    monolingual = True
 
     def __init__(self, source="", android=False):
         """construct the dtdunit, prepare it for parsing"""

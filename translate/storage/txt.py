@@ -53,6 +53,7 @@ flavours = {
 @six.python_2_unicode_compatible
 class TxtUnit(base.TranslationUnit):
     """This class represents a block of text from a text file"""
+    monolingual = True
 
     def __init__(self, source="", **kwargs):
         """Construct the txtunit"""

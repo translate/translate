@@ -78,6 +78,7 @@ class TranslationUnit(object):
 
     """
 
+    monolingual = False
     rich_parsers = []
     """A list of functions to use for parsing a string into a rich string
     tree."""
@@ -138,6 +139,9 @@ class TranslationUnit(object):
                  equals this unit.
         """
         return self.source == other.source and self.target == other.target
+
+    def __ne__(self, other):
+        return not self.__eq__(other)
 
     def __hash__(self):
         return None

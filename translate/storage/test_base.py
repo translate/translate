@@ -82,7 +82,12 @@ class TestTranslationUnit:
         assert unit1 == unit2
         assert unit1 != unit3
         assert unit4 != unit5
-        assert unit1 != unit6
+        if unit1.monolingual:
+            assert unit1 == unit6
+            assert not(unit1 != unit6)
+        else:
+            assert unit1 != unit6
+            assert not(unit1 == unit6)
 
     def test_target(self):
         unit = self.unit
