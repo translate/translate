@@ -488,7 +488,7 @@ def _truncate_term_length(term, taken=0):
         return term
 
 
-def _extract_fieldvalues(match, (result, fieldnames)):
+def _extract_fieldvalues(match, result_and_fieldnames):
     """Add a dict of field values to a list.
 
     Usually this function should be used together with :func:`_walk_matches`
@@ -501,6 +501,7 @@ def _extract_fieldvalues(match, (result, fieldnames)):
     :param fieldnames: the names of the fields to be added to the dict
     :type fieldnames: list of str
     """
+    result, fieldnames = result_and_fieldnames
     # prepare empty dict
     item_fields = {}
     # fill the dict
