@@ -32,8 +32,7 @@ from . import CommonIndexer
     * get rid of jToolkit.glock dependency
     * add partial matching at the beginning of a term
     * do a proper cleanup - e.g.: the pylucene lockfiles remain in /tmp/
-    * do unittests for PyLucene v1.x
-    """
+"""
 
 
 def _get_available_indexers():

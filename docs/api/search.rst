@@ -20,14 +20,6 @@ CommonIndexer
    :inherited-members:
 
 
-PyLuceneIndexer1
-~~~~~~~~~~~~~~~~
-
-.. automodule:: translate.search.indexing.PyLuceneIndexer1
-   :members:
-   :inherited-members:
-
-
 PyLuceneIndexer
 ~~~~~~~~~~~~~~~
 
