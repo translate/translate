@@ -43,7 +43,7 @@ except ImportError:
     PyLucene.initVM(PyLucene.CLASSPATH)
     _COMPILER = 'jcc'
 
-import CommonIndexer
+from . import CommonIndexer
 
 
 UNNAMED_FIELD_NAME = "FieldWithoutAName"

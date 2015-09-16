@@ -26,7 +26,7 @@ import logging
 import six
 from argparse import ArgumentParser
 from io import BytesIO
-from urlparse import parse_qs
+from six.moves.urllib import parse
 
 from translate.misc import selector, wsgi
 from translate.storage import base, tmdb
@@ -77,7 +77,7 @@ class TMServer(object):
         candidates = self.tmdb.translate_unit(uid, slang, tlang)
         logging.debug("candidates: %s", six.text_type(candidates))
         response = json.dumps(candidates, indent=4)
-        params = parse_qs(environ.get('QUERY_STRING', ''))
+        params = parse.parse_qs(environ.get('QUERY_STRING', ''))
         try:
             callback = params.get('callback', [])[0]
             response = "%s(%s)" % (callback, response)

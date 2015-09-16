@@ -53,7 +53,7 @@ if 'apache' in sys.modules or '_apache' in sys.modules or 'mod_wsgi' in sys.modu
         #FIXME: report is xapian-check command is missing?
         raise ImportError("Running under apache, can't load xapian")
 
-import CommonIndexer
+from . import CommonIndexer
 import xapian
 import os
 import time
