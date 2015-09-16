@@ -29,6 +29,7 @@ from io import BytesIO
 
 from translate import __version__
 from translate.misc import progressbar
+from translate.misc.dictutils import ordereddict as OrderedDict
 
 
 class ManPageOption(optparse.Option, object):
@@ -275,13 +276,13 @@ class RecursiveOptionParser(optparse.OptionParser, object):
 
     def setprogressoptions(self):
         """Sets the progress options."""
-        self.progresstypes = {
-                "none": progressbar.NoProgressBar,
-                "bar": progressbar.HashProgressBar,
-                "dots": progressbar.DotsProgressBar,
-                "names": progressbar.MessageProgressBar,
-                "verbose": progressbar.VerboseProgressBar,
-        }
+        self.progresstypes = OrderedDict([
+            ("dots", progressbar.DotsProgressBar),
+            ("none", progressbar.NoProgressBar),
+            ("bar", progressbar.HashProgressBar),
+            ("names", progressbar.MessageProgressBar),
+            ("verbose", progressbar.VerboseProgressBar),
+        ])
         progressoption = optparse.Option(None, "--progress", dest="progress",
                 default="bar",
                 choices=list(self.progresstypes.keys()), metavar="PROGRESS",
