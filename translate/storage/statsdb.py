@@ -331,7 +331,8 @@ class StatsCache(object):
                     cachedir = os.path.join(userdir, ".translate_toolkit")
                 if not os.path.exists(cachedir):
                     os.mkdir(cachedir)
-                cachedir = cachedir.decode(sys.getfilesystemencoding())
+                if isinstance(cachedir, bytes):
+                    cachedir = six.text_type(cachedir, sys.getfilesystemencoding())
                 cls.defaultfile = os.path.realpath(os.path.join(cachedir, u"stats.db"))
             statsfile = cls.defaultfile
         else:
