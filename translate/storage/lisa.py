@@ -109,38 +109,45 @@ class LISAunit(base.TranslationUnit):
         else:
             self.xmlelement.append(dom_node)
 
-    def setsource(self, text, sourcelang='en'):
-        if self._rich_source is not None:
-            self._rich_source = None
-        text = data.forceunicode(text)
-        self.source_dom = self.createlanguageNode(sourcelang, text, "source")
+    @property
+    def target_dom(self):
+        return self.getlanguageNode(lang=None, index=1)
 
-    def getsource(self):
-        return self.getNodeText(self.source_dom,
-                                getXMLspace(self.xmlelement,
-                                            self._default_xml_space))
-    source = property(getsource, setsource)
-
-    def get_target_dom(self, lang=None):
-        if lang:
-            return self.getlanguageNode(lang=lang)
-        else:
-            return self.getlanguageNode(lang=None, index=1)
-
-    def set_target_dom(self, dom_node, append=False):
+    @target_dom.setter
+    def target_dom(self, dom_node):
         languageNodes = self.getlanguageNodes()
         assert len(languageNodes) > 0
         if dom_node is not None:
-            if append or len(languageNodes) == 0:
+            if len(languageNodes) == 0:
                 self.xmlelement.append(dom_node)
             else:
                 self.xmlelement.insert(1, dom_node)
-        if not append and len(languageNodes) > 1:
+        if len(languageNodes) > 1:
             self.xmlelement.remove(languageNodes[1])
 
-    target_dom = property(get_target_dom)
+    @property
+    def source(self):
+        return self.getNodeText(self.source_dom,
+                                getXMLspace(self.xmlelement,
+                                            self._default_xml_space))
 
-    def settarget(self, text, lang='xx', append=False):
+    @source.setter
+    def source(self, text):
+        if self._rich_source is not None:
+            self._rich_source = None
+        text = data.forceunicode(text)
+        self.source_dom = self.createlanguageNode('en', text, "source")
+
+    @property
+    def target(self):
+        """retrieves the "target" text (second entry), or the entry in the
+        specified language, if it exists"""
+        return self.getNodeText(self.target_dom,
+                                getXMLspace(self.xmlelement,
+                                            self._default_xml_space))
+
+    @target.setter
+    def target(self, text):
         """Sets the "target" string (second language), or alternatively
         appends to the list"""
         #XXX: we really need the language - can't really be optional, and we
@@ -155,8 +162,8 @@ class LISAunit(base.TranslationUnit):
         languageNode = self.target_dom
         if not text is None:
             if languageNode is None:
-                languageNode = self.createlanguageNode(lang, text, "target")
-                self.set_target_dom(languageNode, append)
+                languageNode = self.createlanguageNode('xx', text, "target")
+                self.target_dom = languageNode
             else:
                 if self.textNode:
                     terms = languageNode.iter(self.namespaced(self.textNode))
@@ -166,15 +173,7 @@ class LISAunit(base.TranslationUnit):
                         pass
                 languageNode.text = text
         else:
-            self.set_target_dom(None, False)
-
-    def gettarget(self, lang=None):
-        """retrieves the "target" text (second entry), or the entry in the
-        specified language, if it exists"""
-        return self.getNodeText(self.get_target_dom(lang),
-                                getXMLspace(self.xmlelement,
-                                            self._default_xml_space))
-    target = property(gettarget, settarget)
+            self.target_dom = None
 
     def createlanguageNode(self, lang, text, purpose=None):
         """Returns a xml Element setup with given parameters to represent a

@@ -46,14 +46,28 @@ class RESXUnit(lisa.LISAunit):
     def _gettargetnode(self):
         return self.xmlelement.find(self.namespaced(self.languageNode))
 
-    def getsource(self):
-        return self.gettarget()
+    @property
+    def source(self):
+        return self.target
 
-    def settarget(self, text, lang='xx', append=False):
+    @source.setter
+    def source(self, value):
+        super(RESXUnit, RESXUnit).source.__set__(self, value)
+
+    @property
+    def target(self):
+        targetnode = self._gettargetnode()
+        if targetnode is None:
+            etree.SubElement(self.xmlelement, self.namespaced("value"))
+            return None
+        return data.forceunicode(targetnode.text) or u""
+
+    @target.setter
+    def target(self, text):
         # Firstly deal with reinitialising to None or setting to identical
         # string.
         self._rich_target = None
-        if self.gettarget() == text:
+        if self.target == text:
             return
         strings = []
         if isinstance(text, list):
@@ -64,14 +78,6 @@ class RESXUnit(lisa.LISAunit):
         targetnode.clear()
         targetnode.text = data.forceunicode(text) or u""
         targetnode.tail = u"\n    "
-
-    def gettarget(self, lang=None):
-        targetnode = self._gettargetnode()
-        if targetnode is None:
-            etree.SubElement(self.xmlelement, self.namespaced("value"))
-            return None
-        return data.forceunicode(targetnode.text) or u""
-    target = property(gettarget, settarget)
 
     def addnote(self, text, origin=None, position="append"):
         """Add a note specifically in the appropriate "comment" tag"""

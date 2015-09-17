@@ -210,15 +210,14 @@ class pounit(pocommon.pounit):
             self.typecomments = []
             self.msgidcomments = []
 
-    def _get_all_comments(self):
+    @property
+    def allcomments(self):
         return [self.othercomments,
                 self.automaticcomments,
                 self.sourcecomments,
                 self.typecomments,
                 self.msgidcomments,
                 ]
-
-    allcomments = property(_get_all_comments)
 
     def _get_source_vars(self, msgid, msgid_plural):
         singular = unquotefrompo(msgid)

@@ -118,16 +118,33 @@ class tsunit(lisa.LISAunit):
         """We override this to get source and target nodes."""
         return [n for n in [self._getsourcenode(), self._gettargetnode()] if n is not None]
 
-    def getsource(self):
+    @property
+    def source(self):
         # TODO: support <byte>. See bug 528.
         sourcenode = self._getsourcenode()
         if self.hasplural():
             return multistring([sourcenode.text])
         else:
             return data.forceunicode(sourcenode.text)
-    source = property(getsource, lisa.LISAunit.setsource)
 
-    def settarget(self, text):
+    @source.setter
+    def source(self, value):
+        super(tsunit, tsunit).source.__set__(self, value)
+
+    @property
+    def target(self):
+        targetnode = self._gettargetnode()
+        if targetnode is None:
+            etree.SubElement(self.xmlelement, self.namespaced("translation"))
+            return None
+        if self.hasplural():
+            numerus_nodes = targetnode.findall(self.namespaced("numerusform"))
+            return multistring([node.text or u"" for node in numerus_nodes])
+        else:
+            return data.forceunicode(targetnode.text) or u""
+
+    @target.setter
+    def target(self, text):
         # This is a fairly destructive implementation. Don't assume that this
         # is necessarily correct in all regards, but it does deal with a lot of
         # cases. It is hard to deal with plurals.
@@ -159,19 +176,6 @@ class tsunit(lisa.LISAunit):
         else:
             targetnode.text = data.forceunicode(text) or u""
             targetnode.tail = u"\n    "
-
-    def gettarget(self):
-        targetnode = self._gettargetnode()
-        if targetnode is None:
-            etree.SubElement(self.xmlelement, self.namespaced("translation"))
-            return None
-        if self.hasplural():
-            numerus_nodes = targetnode.findall(self.namespaced("numerusform"))
-            return multistring([node.text or u"" for node in numerus_nodes])
-        else:
-            return data.forceunicode(targetnode.text) or u""
-    target = property(gettarget, settarget)
-    rich_target = base.TranslationUnit.rich_target
 
     def hasplural(self):
         return self.xmlelement.get("numerus") == "yes"

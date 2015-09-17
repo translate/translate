@@ -59,7 +59,7 @@ class PoXliffUnit(xliff.xliffunit):
 
         self.xmlelement = etree.Element(self.namespaced("group"))
         self.xmlelement.set("restype", "x-gettext-plurals")
-        self.setsource(source)
+        self.source = source
 
     def __eq__(self, other):
         if isinstance(other, PoXliffUnit):
@@ -85,11 +85,21 @@ class PoXliffUnit(xliff.xliffunit):
 #        else:
 #            return self.units[0].getlanguageNodes()
 
-    def setsource(self, source, sourcelang="en"):
+    @property
+    def source(self):
+        if not self.hasplural():
+            return super(PoXliffUnit, self).source
+        else:
+            strings = []
+            strings.extend([unit.source for unit in self.units])
+            return multistring(strings)
+
+    @source.setter
+    def source(self, source):
         # TODO: consider changing from plural to singular, etc.
         self._rich_source = None
         if not hasplurals(source):
-            super(PoXliffUnit, self).setsource(source, sourcelang)
+            super(PoXliffUnit, PoXliffUnit).source.__set__(self, source)
         else:
             target = self.target
             for unit in self.units:
@@ -112,21 +122,24 @@ class PoXliffUnit(xliff.xliffunit):
     rich_source = base.TranslationUnit.rich_source
     rich_target = base.TranslationUnit.rich_target
 
-    def getsource(self):
-        if not self.hasplural():
-            return super(PoXliffUnit, self).getsource()
+    @property
+    def target(self):
+        if self.hasplural():
+            strings = [unit.target for unit in self.units]
+            if strings:
+                return multistring(strings)
+            else:
+                return None
         else:
-            strings = []
-            strings.extend([unit.source for unit in self.units])
-            return multistring(strings)
-    source = property(getsource, setsource)
+            return super(PoXliffUnit, self).target
 
-    def settarget(self, text, lang='xx', append=False):
+    @target.setter
+    def target(self, text):
         self._rich_target = None
         if self.target == text:
             return
         if not self.hasplural():
-            super(PoXliffUnit, self).settarget(text, lang, append)
+            super(PoXliffUnit, PoXliffUnit).target.__set__(self, text)
             return
         if not isinstance(text, multistring):
             text = multistring(text)
@@ -146,18 +159,6 @@ class PoXliffUnit(xliff.xliffunit):
 
         for i in range(len(self.units)):
             self.units[i].target = targets[i]
-
-    def gettarget(self):
-        if self.hasplural():
-            strings = [unit.target for unit in self.units]
-            if strings:
-                return multistring(strings)
-            else:
-                return None
-        else:
-            return super(PoXliffUnit, self).gettarget()
-
-    target = property(gettarget, settarget)
 
     def addnote(self, text, origin=None, position="append"):
         """Add a note specifically in a "note" tag"""

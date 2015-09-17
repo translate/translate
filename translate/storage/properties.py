@@ -446,29 +446,29 @@ class propunit(base.TranslationUnit):
         # (e.g. ";" is required for Mac OS X strings)
         self.out_ending = getattr(self.personality, 'out_ending', u'')
 
-    def getsource(self):
+    @property
+    def source(self):
         value = quote.propertiesdecode(self.value)
         return value
 
-    def setsource(self, source):
+    @source.setter
+    def source(self, source):
         self._rich_source = None
         source = data.forceunicode(source)
         self.value = self.personality.encode(source or u"", self.encoding)
 
-    source = property(getsource, setsource)
-
-    def gettarget(self):
+    @property
+    def target(self):
         translation = quote.propertiesdecode(self.translation)
         translation = re.sub(u"\\\\ ", u" ", translation)
         return translation
 
-    def settarget(self, target):
+    @target.setter
+    def target(self, target):
         self._rich_target = None
         target = data.forceunicode(target)
         self.translation = self.personality.encode(target or u"",
                                                    self.encoding)
-
-    target = property(gettarget, settarget)
 
     @property
     def encoding(self):

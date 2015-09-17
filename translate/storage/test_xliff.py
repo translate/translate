@@ -132,7 +132,7 @@ class TestXLIFFfile(test_base.TestTranslationStore):
         xliffunit = xlifffile.addsourceunit(u'')
 
         # Test 1
-        xliffunit.set_rich_target([StringElem([u'foo', X(id='bar'), u'baz'])], u'fr')
+        xliffunit.rich_target = [StringElem([u'foo', X(id='bar'), u'baz'])]
         target_dom_node = xliffunit.getlanguageNode(None, 1)
         x_placeable = target_dom_node[0]
 
@@ -142,7 +142,7 @@ class TestXLIFFfile(test_base.TestTranslationStore):
         assert x_placeable.tail == 'baz'
 
         # Test 2
-        xliffunit.set_rich_target([StringElem([u'foo', u'baz', G(id='oof', sub=[G(id='zab', sub=[u'bar', u'rab'])])])], u'fr')
+        xliffunit.rich_target = [StringElem([u'foo', u'baz', G(id='oof', sub=[G(id='zab', sub=[u'bar', u'rab'])])])]
         target_dom_node = xliffunit.getlanguageNode(None, 1)
         g_placeable = target_dom_node[0]
         nested_g_placeable = g_placeable[0]
@@ -281,7 +281,7 @@ class TestXLIFFfile(test_base.TestTranslationStore):
         unit.markfuzzy()
         assert not unit.isfuzzy()  # untranslated
         unit.target = "Konsep"
-        assert unit.isfuzzy()
+        assert not unit.isfuzzy()  # translated
         unit.markfuzzy()
         assert unit.isfuzzy()
         unit.markfuzzy(False)

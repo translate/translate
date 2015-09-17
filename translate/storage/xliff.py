@@ -122,20 +122,8 @@ class xliffunit(lisa.LISAunit):
                 nodes.append(target)
         return nodes
 
-    def set_rich_source(self, value, sourcelang='en'):
-        sourcelanguageNode = self.source_dom
-        if sourcelanguageNode is None:
-            sourcelanguageNode = self.createlanguageNode(sourcelang, u'', "source")
-            self.set_source_dom(sourcelanguageNode)
-
-        # Clear sourcelanguageNode first
-        for i in range(len(sourcelanguageNode)):
-            del sourcelanguageNode[0]
-        sourcelanguageNode.text = None
-
-        strelem_to_xml(sourcelanguageNode, value[0])
-
-    def get_rich_source(self):
+    @property
+    def rich_source(self):
         #rsrc = xml_to_strelem(self.source_dom)
         #logging.debug('rich source: %s' % (repr(rsrc)))
         #from dubulib.debug.misc import print_stack_funcs
@@ -145,18 +133,43 @@ class xliffunit(lisa.LISAunit):
                            getXMLspace(self.xmlelement,
                                        self._default_xml_space))
         ]
-    rich_source = property(get_rich_source, set_rich_source)
 
-    def set_rich_target(self, value, lang='xx', append=False):
+    @rich_source.setter
+    def rich_source(self, value):
+        sourcelanguageNode = self.source_dom
+        if sourcelanguageNode is None:
+            sourcelanguageNode = self.createlanguageNode('en', u'', "source")
+            self.set_source_dom(sourcelanguageNode)
+
+        # Clear sourcelanguageNode first
+        for i in range(len(sourcelanguageNode)):
+            del sourcelanguageNode[0]
+        sourcelanguageNode.text = None
+
+        strelem_to_xml(sourcelanguageNode, value[0])
+
+    @property
+    def rich_target(self):
+        """retrieves the "target" text (second entry), or the entry in the
+        specified language, if it exists"""
+        if self._rich_target is None:
+            self._rich_target = [
+                xml_to_strelem(self.target_dom,
+                getXMLspace(self.xmlelement, self._default_xml_space))
+            ]
+        return self._rich_target
+
+    @rich_target.setter
+    def rich_target(self, value, lang='xx'):
         self._rich_target = None
         if value is None:
-            self.set_target_dom(self.createlanguageNode(lang, u'', "target"))
+            self.target_dom = self.createlanguageNode('xx', u'', "target")
             return
 
-        languageNode = self.get_target_dom()
+        languageNode = self.target_dom
         if languageNode is None:
-            languageNode = self.createlanguageNode(lang, u'', "target")
-            self.set_target_dom(languageNode, append)
+            languageNode = self.createlanguageNode('xx', u'', "target")
+            self.target_dom = languageNode
 
         # Clear languageNode first
         for i in range(len(languageNode)):
@@ -165,17 +178,6 @@ class xliffunit(lisa.LISAunit):
 
         strelem_to_xml(languageNode, value[0])
         ### currently giving some issues in Virtaal: self._rich_target = value
-
-    def get_rich_target(self, lang=None):
-        """retrieves the "target" text (second entry), or the entry in the
-        specified language, if it exists"""
-        if self._rich_target is None:
-            self._rich_target = [
-                xml_to_strelem(self.get_target_dom(lang),
-                getXMLspace(self.xmlelement, self._default_xml_space))
-            ]
-        return self._rich_target
-    rich_target = property(get_rich_target, set_rich_target)
 
     def addalttrans(self, txt, origin=None, lang=None, sourcetxt=None,
                     matchquality=None):
@@ -386,9 +388,14 @@ class xliffunit(lisa.LISAunit):
             if state_id < self.S_UNREVIEWED:
                 self.set_state_n(self.S_UNREVIEWED)
 
-    def settarget(self, text, lang='xx', append=False):
+    @property
+    def target(self):
+        return super(xliffunit, self).target
+
+    @target.setter
+    def target(self, text):
         """Sets the target string to the given value."""
-        super(xliffunit, self).settarget(text, lang, append)
+        super(xliffunit, xliffunit).target.__set__(self, text)
         if text:
             self.marktranslated()
 
