@@ -17,6 +17,13 @@ Major changes
 
 - Python 3 support
 
+Dropped API
+===========
+
+- The deprecated ``translate.storage.properties.find_delimiter()`` was removed
+  and replace by the ``translate.storage.properties.Dialect.find_delimiter()``
+  class method.
+
 Contributors
 ------------
 

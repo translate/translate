@@ -6,50 +6,46 @@ from translate.misc import wStringIO
 from translate.storage import properties, test_monolingual
 
 
+# Note that DialectJava delimitors are [u"=", u":", u" "]
+
 def test_find_delimiter_pos_simple():
     """Simple tests to find the various delimiters"""
-    assert properties._find_delimiter(u"key=value", [u"=", u":", u" "]) == ('=', 3)
-    assert properties._find_delimiter(u"key:value", [u"=", u":", u" "]) == (':', 3)
-    assert properties._find_delimiter(u"key value", [u"=", u":", u" "]) == (' ', 3)
+    assert properties.DialectJava.find_delimiter(u"key=value") == ('=', 3)
+    assert properties.DialectJava.find_delimiter(u"key:value") == (':', 3)
+    assert properties.DialectJava.find_delimiter(u"key value") == (' ', 3)
     # NOTE this is valid in Java properties, the key is then the empty string
-    assert properties._find_delimiter(u"= value", [u"=", u":", u" "]) == ('=', 0)
+    assert properties.DialectJava.find_delimiter(u"= value") == ('=', 0)
 
 
 def test_find_delimiter_pos_multiple():
     """Find delimiters when multiple potential delimiters are involved"""
-    assert properties._find_delimiter(u"key=value:value", [u"=", u":", u" "]) == ('=', 3)
-    assert properties._find_delimiter(u"key:value=value", [u"=", u":", u" "]) == (':', 3)
-    assert properties._find_delimiter(u"key value=value", [u"=", u":", u" "]) == (' ', 3)
+    assert properties.DialectJava.find_delimiter(u"key=value:value") == ('=', 3)
+    assert properties.DialectJava.find_delimiter(u"key:value=value") == (':', 3)
+    assert properties.DialectJava.find_delimiter(u"key value=value") == (' ', 3)
 
 
 def test_find_delimiter_pos_none():
     """Find delimiters when there isn't one"""
-    assert properties._find_delimiter(u"key", [u"=", u":", u" "]) == (None, -1)
-    assert properties._find_delimiter(u"key\=\:\ ", [u"=", u":", u" "]) == (None, -1)
+    assert properties.DialectJava.find_delimiter(u"key") == (None, -1)
+    assert properties.DialectJava.find_delimiter(u"key\=\:\ ") == (None, -1)
 
 
 def test_find_delimiter_pos_whitespace():
     """Find delimiters when whitespace is involved"""
-    assert properties._find_delimiter(u"key = value", [u"=", u":", u" "]) == ('=', 4)
-    assert properties._find_delimiter(u"key : value", [u"=", u":", u" "]) == (':', 4)
-    assert properties._find_delimiter(u"key   value", [u"=", u":", u" "]) == (' ', 3)
-    assert properties._find_delimiter(u"key value = value", [u"=", u":", u" "]) == (' ', 3)
-    assert properties._find_delimiter(u"key value value", [u"=", u":", u" "]) == (' ', 3)
-    assert properties._find_delimiter(u" key = value", [u"=", u":", u" "]) == ('=', 5)
+    assert properties.DialectJava.find_delimiter(u"key = value") == ('=', 4)
+    assert properties.DialectJava.find_delimiter(u"key : value") == (':', 4)
+    assert properties.DialectJava.find_delimiter(u"key   value") == (' ', 3)
+    assert properties.DialectJava.find_delimiter(u"key value = value") == (' ', 3)
+    assert properties.DialectJava.find_delimiter(u"key value value") == (' ', 3)
+    assert properties.DialectJava.find_delimiter(u" key = value") == ('=', 5)
 
 
 def test_find_delimiter_pos_escapes():
     """Find delimiters when potential earlier delimiters are escaped"""
-    assert properties._find_delimiter(u"key\:=value", [u"=", u":", u" "]) == ('=', 5)
-    assert properties._find_delimiter(u"key\=: value", [u"=", u":", u" "]) == (':', 5)
-    assert properties._find_delimiter(u"key\   value", [u"=", u":", u" "]) == (' ', 5)
-    assert properties._find_delimiter(u"key\ key\ key\: = value", [u"=", u":", u" "]) == ('=', 16)
-
-
-def test_find_delimiter_deprecated_fn():
-    """Test that the deprecated function still actually works"""
-    assert properties.find_delimeter(u"key=value") == ('=', 3)
-    deprecated_call(properties.find_delimeter, u"key=value")
+    assert properties.DialectJava.find_delimiter(u"key\:=value") == ('=', 5)
+    assert properties.DialectJava.find_delimiter(u"key\=: value") == (':', 5)
+    assert properties.DialectJava.find_delimiter(u"key\   value") == (' ', 5)
+    assert properties.DialectJava.find_delimiter(u"key\ key\ key\: = value") == ('=', 16)
 
 
 def test_is_line_continuation():
@@ -231,7 +227,7 @@ key=value
         assert len(prop_store.units) == 1
         unit = prop_store.units[0]
         print(unit)
-        assert properties._find_delimiter(prop_source, [u"=", u":", u" "]) == (' ', 6)
+        assert properties.DialectJava.find_delimiter(prop_source) == (' ', 6)
         assert unit.name == u"fruits"
         assert unit.source == u"apple, banana, pear, cantaloupe, watermelon, kiwi, mango"
 

@@ -136,66 +136,6 @@ ending in :attr:`.labelsuffixes` into accelerator notation"""
 eol = "\n"
 
 
-def _find_delimiter(line, delimiters):
-    """Find the type and position of the delimiter in a property line.
-
-    Property files can be delimited by "=", ":" or whitespace (space for now).
-    We find the position of each delimiter, then find the one that appears
-    first.
-
-    :param line: A properties line
-    :type line: str
-    :param delimiters: valid delimiters
-    :type delimiters: list
-    :return: delimiter character and offset within *line*
-    :rtype: Tuple (delimiter char, Offset Integer)
-    """
-    delimiter_dict = {}
-    for delimiter in delimiters:
-        delimiter_dict[delimiter] = -1
-    delimiters = delimiter_dict
-    # Find the position of each delimiter type
-    for delimiter, pos in six.iteritems(delimiters):
-        prewhitespace = len(line) - len(line.lstrip())
-        pos = line.find(delimiter, prewhitespace)
-        while pos != -1:
-            if delimiters[delimiter] == -1 and line[pos-1] != u"\\":
-                delimiters[delimiter] = pos
-                break
-            pos = line.find(delimiter, pos + 1)
-    # Find the first delimiter
-    mindelimiter = None
-    minpos = -1
-    for delimiter, pos in six.iteritems(delimiters):
-        if pos == -1 or delimiter == u" ":
-            continue
-        if minpos == -1 or pos < minpos:
-            minpos = pos
-            mindelimiter = delimiter
-    if mindelimiter is None and delimiters.get(u" ", -1) != -1:
-        # Use space delimiter if we found nothing else
-        return (u" ", delimiters[" "])
-    if (mindelimiter is not None and
-        u" " in delimiters and
-        delimiters[u" "] < delimiters[mindelimiter]):
-        # If space delimiter occurs earlier than ":" or "=" then it is the
-        # delimiter only if there are non-whitespace characters between it and
-        # the other detected delimiter.
-        if len(line[delimiters[u" "]:delimiters[mindelimiter]].strip()) > 0:
-            return (u" ", delimiters[u" "])
-    return (mindelimiter, minpos)
-
-
-@deprecated("Use Dialect.find_delimiter instead")
-def find_delimeter(line):
-    """Misspelled function that is kept around in case someone relies on it.
-
-    .. deprecated:: 1.7.0
-       Use :func:`find_delimiter` instead
-    """
-    return _find_delimiter(line, DialectJava.delimiters)
-
-
 def is_line_continuation(line):
     """Determine whether *line* has a line continuation marker.
 
@@ -312,8 +252,53 @@ class Dialect(object):
 
     @classmethod
     def find_delimiter(cls, line):
-        """Find the delimiter"""
-        return _find_delimiter(line, cls.delimiters)
+        """Find the type and position of the delimiter in a property line.
+
+        Property files can be delimited by "=", ":" or whitespace (space for now).
+        We find the position of each delimiter, then find the one that appears
+        first.
+
+        :param line: A properties line
+        :type line: str
+        :param delimiters: valid delimiters
+        :type delimiters: list
+        :return: delimiter character and offset within *line*
+        :rtype: Tuple (delimiter char, Offset Integer)
+        """
+        delimiter_dict = {}
+        for delimiter in cls.delimiters:
+            delimiter_dict[delimiter] = -1
+        delimiters = delimiter_dict
+        # Find the position of each delimiter type
+        for delimiter, pos in six.iteritems(delimiters):
+            prewhitespace = len(line) - len(line.lstrip())
+            pos = line.find(delimiter, prewhitespace)
+            while pos != -1:
+                if delimiters[delimiter] == -1 and line[pos-1] != u"\\":
+                    delimiters[delimiter] = pos
+                    break
+                pos = line.find(delimiter, pos + 1)
+        # Find the first delimiter
+        mindelimiter = None
+        minpos = -1
+        for delimiter, pos in six.iteritems(delimiters):
+            if pos == -1 or delimiter == u" ":
+                continue
+            if minpos == -1 or pos < minpos:
+                minpos = pos
+                mindelimiter = delimiter
+        if mindelimiter is None and delimiters.get(u" ", -1) != -1:
+            # Use space delimiter if we found nothing else
+            return (u" ", delimiters[" "])
+        if (mindelimiter is not None and
+            u" " in delimiters and
+            delimiters[u" "] < delimiters[mindelimiter]):
+            # If space delimiter occurs earlier than ":" or "=" then it is the
+            # delimiter only if there are non-whitespace characters between it and
+            # the other detected delimiter.
+            if len(line[delimiters[u" "]:delimiters[mindelimiter]].strip()) > 0:
+                return (u" ", delimiters[u" "])
+        return (mindelimiter, minpos)
 
     @classmethod
     def key_strip(cls, key):
