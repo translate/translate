@@ -17,6 +17,13 @@ Major changes
 
 - Python 3 support
 
+Formats and Converters
+----------------------
+
+- Properties
+
+   - keys can contain delimiters if they are properly wrapped (:issue:`3275`).
+
 Dropped API
 ===========
 

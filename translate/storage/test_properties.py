@@ -322,6 +322,14 @@ key=value
         assert propunit.name == u'key with "quotes"'
         assert propunit.value == u'value with "quotes"'
 
+    def test_mac_strings_equals(self):
+        """test that equal signs inside keys/values are not mixed with delimiter"""
+        propsource = '"key with = sign" = "value with = sign";'.encode('utf-16')
+        propfile = self.propparse(propsource, personality="strings")
+        propunit = propfile.units[0]
+        assert propunit.name == u'key with = sign'
+        assert propunit.value == u'value with = sign'
+
     def test_mac_strings_serialization(self):
         """test that serializer quotes mac strings properly"""
         propsource = r'"key with \"quotes\"" = "value with \"quotes\"";'.encode('utf-16')
