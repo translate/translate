@@ -780,7 +780,7 @@ msgstr "b"
         for line in pofile.units[0].getnotes():
             assert isinstance(line, six.text_type)
 
-    def test_non_ascii_header_comments(self):
+    def test_non_ascii_header_comments_2(self):
         posource = r'''
 # Copyright bla.
 msgid ""
