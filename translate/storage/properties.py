@@ -423,6 +423,12 @@ class DialectStringsUtf8(DialectStrings):
     default_encoding = "utf-8"
 
 
+@register_dialect
+class DialectStringsUtf16(DialectStrings):
+    name = "strings-utf16"
+    default_encoding = "utf-16"
+
+
 @six.python_2_unicode_compatible
 class propunit(base.TranslationUnit):
     """An element of a properties file i.e. a name and value, and any
@@ -681,3 +687,13 @@ class stringsutf8file(propfile):
         kwargs['personality'] = "strings-utf8"
         kwargs['encoding'] = "utf-8"
         super(stringsutf8file, self).__init__(*args, **kwargs)
+
+
+class stringsutf16file(propfile):
+    Name = "OS X Strings (UTF-16)"
+    Extensions = ['strings']
+
+    def __init__(self, *args, **kwargs):
+        kwargs['personality'] = "strings-utf16"
+        kwargs['encoding'] = "utf-16"
+        super(stringsutf16file, self).__init__(*args, **kwargs)
