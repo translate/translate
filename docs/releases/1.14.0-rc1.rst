@@ -1,0 +1,25 @@
+.. These notes are used in:
+   1. Our email announcements
+   2. The Translate Tools download page at toolkit.translatehouse.org
+
+Translate Toolkit 1.14.0-rc1
+****************************
+
+*Released on <to be completed>*
+
+This release contains many improvements and bug fixes. 
+
+Highlighted improvements
+========================
+
+Major changes
+-------------
+
+- Python 3 support
+
+Contributors
+------------
+
+This release was made possible by the following people:
+
+<to be completed>
