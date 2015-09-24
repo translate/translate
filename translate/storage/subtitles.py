@@ -29,7 +29,7 @@
 import os
 import six
 import tempfile
-from io import BytesIO
+from io import StringIO
 
 try:
     from aeidon import Subtitle, documents, newlines
@@ -94,7 +94,7 @@ class SubtitleFile(base.TranslationStore):
             subtitle.start = unit._start
             subtitle.end = unit._end
             subtitles.append(subtitle)
-        output = BytesIO()
+        output = StringIO()
         self._subtitlefile.write_to_file(subtitles, documents.MAIN, output)
         return output.getvalue().encode(self._subtitlefile.encoding)
 
@@ -134,13 +134,13 @@ class SubtitleFile(base.TranslationStore):
         return newstore
 
     def parse(self, input):
-        if isinstance(input, six.string_types):
+        if isinstance(input, bytes):
             # Gaupol does not allow parsing from strings
             if self.filename:
                 tmpfile, tmpfilename = tempfile.mkstemp(suffix=self.filename)
             else:
                 tmpfile, tmpfilename = tempfile.mkstemp()
-            with open(tmpfilename, 'w') as fh:
+            with open(tmpfilename, 'wb') as fh:
                 fh.write(input)
             self._parsefile(tmpfilename)
             os.remove(tmpfilename)

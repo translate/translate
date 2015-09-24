@@ -20,7 +20,7 @@ class TestPO2Sub:
         inputpo = po.pofile(inputfile)
         convertor = po2sub.resub()
         outputsub = convertor.convertstore(inputpo)
-        return outputsub
+        return outputsub.decode('utf-8')
 
     def merge2sub(self, subsource, posource):
         """helper that merges po translations to subtitle source without
@@ -31,7 +31,7 @@ class TestPO2Sub:
         convertor = po2sub.resub(templatefile, inputpo)
         outputsub = convertor.convertstore()
         print(outputsub)
-        return outputsub
+        return outputsub.decode('utf-8')
 
     def test_subrip(self):
         """test SubRip or .srt files."""
