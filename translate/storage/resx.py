@@ -47,13 +47,13 @@ class RESXUnit(lisa.LISAunit):
         return self.xmlelement.find(self.namespaced(self.languageNode))
 
     def getsource(self):
-        return self.gettarget()
+        return self.target
 
     def settarget(self, text, lang='xx', append=False):
         # Firstly deal with reinitialising to None or setting to identical
         # string.
         self._rich_target = None
-        if self.gettarget() == text:
+        if self.target == text:
             return
         strings = []
         if isinstance(text, list):

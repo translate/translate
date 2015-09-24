@@ -44,9 +44,9 @@ class po2lang:
                 continue
             newunit = thetargetfile.addsourceunit(pounit.source)
             if includefuzzy or not pounit.isfuzzy():
-                newunit.settarget(pounit.target)
+                newunit.target = pounit.target
             else:
-                newunit.settarget("")
+                newunit.target = ""
             if pounit.getnotes('developer'):
                 newunit.addnote(pounit.getnotes('developer'), 'developer')
         return thetargetfile

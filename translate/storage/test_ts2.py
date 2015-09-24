@@ -161,7 +161,7 @@ class TestTSfile(test_base.TestTranslationStore):
 </TS>
 '''
         tsfile = ts.tsfile.parsestring(tsstr)
-        tsfile.units[1].settarget('TestTarget')
+        tsfile.units[1].target = 'TestTarget'
         tsfile.units[1].markfuzzy(True)
         newtsstr = tsstr.replace(
             '>TargetString', ' type="unfinished">TestTarget'

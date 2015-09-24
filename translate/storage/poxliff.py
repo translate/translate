@@ -59,7 +59,7 @@ class PoXliffUnit(xliff.xliffunit):
 
         self.xmlelement = etree.Element(self.namespaced("group"))
         self.xmlelement.set("restype", "x-gettext-plurals")
-        self.setsource(source)
+        self.source = source
 
     def __eq__(self, other):
         if isinstance(other, PoXliffUnit):
@@ -123,7 +123,7 @@ class PoXliffUnit(xliff.xliffunit):
 
     def settarget(self, text, lang='xx', append=False):
         self._rich_target = None
-        if self.gettarget() == text:
+        if self.target == text:
             return
         if not self.hasplural():
             super(PoXliffUnit, self).settarget(text, lang, append)

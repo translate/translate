@@ -55,7 +55,7 @@ helped to bridge the digital divide to a limited extent.'''
 
         poresult = self.txt2po(txtsource)
         pounit = poresult.units[1]
-        assert str(pounit.getsource()) == txtexpected
+        assert str(pounit.source) == txtexpected
 
 
 class TestDoku2po:

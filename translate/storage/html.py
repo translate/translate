@@ -98,7 +98,7 @@ class htmlunit(base.TranslationUnit):
 
     def __init__(self, source=None):
         self.locations = []
-        self.setsource(source)
+        self.source = source
 
     def getsource(self):
         #TODO: Rethink how clever we should try to be with html entities.

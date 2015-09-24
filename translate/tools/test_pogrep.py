@@ -157,8 +157,8 @@ class TestXLiffGrep:
         xliff_text = self.xliff_text
         xliff_file = self.xliff_parse(xliff_text)
         xliff_result = self.xliff_parse(self.xliff_grep(xliff_text, "rêd"))
-        assert first_translatable(xliff_result).getsource() == u"rêd"
-        assert first_translatable(xliff_result).gettarget() == u"rooi"
+        assert first_translatable(xliff_result).source == u"rêd"
+        assert first_translatable(xliff_result).target == u"rooi"
 
         xliff_result = self.xliff_parse(self.xliff_grep(xliff_text, "unavailable string"))
         assert xliff_result.isempty()

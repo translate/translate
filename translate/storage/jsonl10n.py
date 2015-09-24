@@ -94,10 +94,10 @@ class JsonUnit(base.TranslationUnit):
         super(JsonUnit, self).__init__(source)
 
     def getsource(self):
-        return self.gettarget()
+        return self.target
 
     def setsource(self, source):
-        self.settarget(source)
+        self.target = source
     source = property(getsource, setsource)
 
     def gettarget(self):

@@ -251,7 +251,7 @@ class pounit(pocommon.pounit):
                 self.set_state_n(self.STATE[self.S_OBSOLETE][0])
         elif gpo.po_message_is_fuzzy(self._gpo_message):
             self.set_state_n(self.STATE[self.S_FUZZY][0])
-        elif self.gettarget():
+        elif self.target:
             self.set_state_n(self.STATE[self.S_TRANSLATED][0])
         else:
             self.set_state_n(self.STATE[self.S_UNTRANSLATED][0])

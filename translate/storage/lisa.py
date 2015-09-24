@@ -148,9 +148,9 @@ class LISAunit(base.TranslationUnit):
         text = data.forceunicode(text)
         # Firstly deal with reinitialising to None or setting to identical
         # string
-        if self.gettarget() == text:
+        if self.target == text:
             return
-        languageNode = self.get_target_dom(None)
+        languageNode = self.target_dom
         if not text is None:
             if languageNode is None:
                 languageNode = self.createlanguageNode(lang, text, "target")

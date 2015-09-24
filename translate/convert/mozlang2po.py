@@ -44,7 +44,7 @@ class lang2po:
         # For each lang unit, make the new po unit accordingly
         for langunit in thelangfile.units:
             newunit = thetargetfile.addsourceunit(langunit.source)
-            newunit.settarget(langunit.target)
+            newunit.target = langunit.target
             newunit.addlocations(langunit.getlocations())
             newunit.addnote(langunit.getnotes(), 'developer')
 

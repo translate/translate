@@ -136,7 +136,7 @@ class tsunit(lisa.LISAunit):
         # Firstly deal with reinitialising to None or setting to identical
         # string.
         self._rich_target = None
-        if self.gettarget() == text:
+        if self.target == text:
             return
         strings = []
         if isinstance(text, multistring):

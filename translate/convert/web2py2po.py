@@ -35,9 +35,9 @@ class web2py2po:
 
     def convertunit(self, source_str, target_str):
         pounit = po.pounit(encoding="UTF-8")
-        pounit.setsource(source_str)
+        pounit.source = source_str
         if target_str:
-            pounit.settarget(target_str)
+            pounit.target = target_str
         return pounit
 
     def convertstore(self, mydict):

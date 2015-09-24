@@ -187,7 +187,7 @@ class TikiStore(base.TranslationStore):
                     unit = self.addsourceunit("".join(match.group(1)))
                     # Untranslated words get an empty msgstr
                     if not _location == "untranslated":
-                        unit.settarget(match.group(2))
+                        unit.target = match.group(2)
                     unit.addlocation(_location)
         finally:
             input.close()
