@@ -42,4 +42,4 @@ class TestCSV(test_base.TestTranslationStore):
         assert unit2.context == "65067"
         assert unit2.source == "Ogre"
         assert unit2.target == "Ogros"
-        assert unit2.getid() != unit2.getid()
+        assert unit1.getid() != unit2.getid()
