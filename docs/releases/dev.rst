@@ -31,13 +31,23 @@ Highlighted improvements
 Major changes
 -------------
 
-- Code cleanup looking forward Python 3 compatibility
+- Python 3 support
 
 
 Formats and Converters
 ----------------------
 
-- Improved format X
+- Properties
+
+   - keys can contain delimiters if they are properly wrapped (:issue:`3275`).
+
+
+Dropped deprecated API
+----------------------
+
+- The deprecated ``translate.storage.properties.find_delimiter()`` was removed
+  and replace by the ``translate.storage.properties.Dialect.find_delimiter()``
+  class method.
 
 
 General
