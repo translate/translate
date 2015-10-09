@@ -1,3 +1,6 @@
+# -*- coding: utf-8 -*-
+from __future__ import unicode_literals
+
 from pytest import mark
 
 from translate.misc import wStringIO
@@ -26,6 +29,12 @@ class TestCSV(test_base.TestTranslationStore):
         self.check_equality(store, newstore)
         assert store.units[2] == newstore.units[2]
         assert bytes(store) == bytes(newstore)
+
+    def test_utf_8(self):
+        store = self.parse_store('foo.c:1;test;zkouška sirén'.encode('utf-8'))
+        assert len(store.units) == 1
+        assert store.units[0].source == 'test'
+        assert store.units[0].target == 'zkouška sirén'
 
     @mark.xfail(reason="Bug #3356")
     def test_context_is_parsed(self):
