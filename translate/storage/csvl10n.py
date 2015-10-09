@@ -21,7 +21,6 @@
 or entire files (csvfile) for use with localisation
 """
 
-import codecs
 import csv
 import six
 from io import StringIO
@@ -371,8 +370,6 @@ class csvfile(base.TranslationStore):
     def parse(self, csvsrc):
         text, encoding = self.detect_encoding(csvsrc, default_encodings=['utf-8', 'utf-16'])
         #FIXME: raise parse error if encoding detection fails?
-        if encoding and encoding.lower() != 'utf-8' and csvsrc.startswith(codecs.BOM_UTF8):
-            csvsrc = csvsrc.lstrip(codecs.BOM_UTF8)
         self.encoding = encoding or 'utf-8'
 
         sniffer = csv.Sniffer()
