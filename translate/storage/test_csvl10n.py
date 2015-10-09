@@ -36,6 +36,12 @@ class TestCSV(test_base.TestTranslationStore):
         assert store.units[0].source == 'test'
         assert store.units[0].target == 'zkouška sirén'
 
+    def test_utf_8_sig(self):
+        store = self.parse_store('foo.c:1;test;zkouška sirén'.encode('utf-8-sig'))
+        assert len(store.units) == 1
+        assert store.units[0].source == 'test'
+        assert store.units[0].target == 'zkouška sirén'
+
     @mark.xfail(reason="Bug #3356")
     def test_context_is_parsed(self):
         """Tests that units with the same source are different based on context."""
