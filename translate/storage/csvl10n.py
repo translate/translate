@@ -23,7 +23,6 @@ or entire files (csvfile) for use with localisation
 
 import csv
 import six
-from io import StringIO
 
 from translate.misc import csv_utils
 from translate.misc import sparse
@@ -326,7 +325,7 @@ def valid_fieldnames(fieldnames):
 
 def detect_header(sample, dialect, fieldnames):
     """Test if file has a header or not, also returns number of columns in first row"""
-    inputfile = StringIO(sample)
+    inputfile = csv.StringIO(sample)
     try:
         reader = csv.reader(inputfile, dialect)
     except csv.Error:
@@ -373,11 +372,14 @@ class csvfile(base.TranslationStore):
         self.encoding = encoding or 'utf-8'
 
         sniffer = csv.Sniffer()
-        sample = text[:1024]
+        # sniff and detect_header want bytes on Python 2 but text on Python 3
+        if six.PY2:
+            sample = csvsrc[:1024]
+        else:
+            sample = text[:1024]
 
         try:
-            # sniff wants bytes on Python 2 but text on Python 3
-            self.dialect = sniffer.sniff(csvsrc[:1024] if six.PY2 else sample)
+            self.dialect = sniffer.sniff(sample)
             if not self.dialect.escapechar:
                 self.dialect.escapechar = '\\'
                 if self.dialect.quoting == csv.QUOTE_MINIMAL:
