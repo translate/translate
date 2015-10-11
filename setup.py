@@ -19,7 +19,6 @@
 
 import os
 import re
-import site
 import sys
 from distutils.sysconfig import get_python_lib
 from os.path import dirname, isfile, join

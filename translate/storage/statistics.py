@@ -23,7 +23,6 @@
 
 import six
 
-from translate import lang
 from translate.lang import factory
 
 
@@ -45,7 +44,7 @@ class Statistics(object):
     def __init__(self, sourcelanguage='en', targetlanguage='en', checkerstyle=None):
         self.sourcelanguage = sourcelanguage
         self.targetlanguage = targetlanguage
-        self.language = lang.factory.getlanguage(self.sourcelanguage)
+        self.language = factory.getlanguage(self.sourcelanguage)
 #        self.init_checker(checkerstyle)
 
         self.classification = {}

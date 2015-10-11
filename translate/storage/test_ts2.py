@@ -23,12 +23,8 @@ Reference implementation & tests:
 gitorious:qt5-tools/src/qttools/tests/auto/linguist/lconvert/data
 """
 
-from lxml import etree
-
-from translate.misc.multistring import multistring
 from translate.storage import test_base, ts2 as ts
 from translate.storage.placeables import parse, xliff
-from translate.storage.placeables.lisa import xml_to_strelem
 
 
 TS_NUMERUS = """<?xml version='1.0' encoding='utf-8'?>

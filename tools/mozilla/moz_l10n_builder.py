@@ -31,10 +31,9 @@ import glob
 import os
 import shutil
 import six
-import StringIO
 import tempfile
 import time
-from subprocess import Popen, PIPE, STDOUT
+from subprocess import Popen, PIPE
 
 join = os.path.join
 

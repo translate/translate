@@ -33,7 +33,7 @@ from translate.lang import data
 from translate.misc import quote
 from translate.misc.deprecation import deprecated
 from translate.misc.multistring import multistring
-from translate.storage import base, pocommon, poparser
+from translate.storage import pocommon, poparser
 
 
 logger = logging.getLogger(__name__)

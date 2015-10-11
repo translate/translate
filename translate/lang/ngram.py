@@ -170,8 +170,6 @@ class Generate:
                     fp.write("%s\t %d\n" % (k, v))
 
 if __name__ == '__main__':
-    import sys
-
     # Should you want to generate your own .lm files
     #conf = Generate('/tmp')
     #conf.save('/tmp')

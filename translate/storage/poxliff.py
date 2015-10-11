@@ -29,6 +29,7 @@ import six
 from lxml import etree
 
 from translate.misc.multistring import multistring
+from translate.misc.xml_helpers import setXMLspace
 from translate.storage import base, lisa, poheader, xliff
 from translate.storage.placeables import general
 
@@ -301,7 +302,7 @@ class PoXliffFile(xliff.xlifffile, poheader.poheader):
     def _insert_header(self, header):
         header.xmlelement.set("restype", "x-gettext-domain-header")
         header.xmlelement.set("approved", "no")
-        lisa.setXMLspace(header.xmlelement, "preserve")
+        setXMLspace(header.xmlelement, "preserve")
         self.addunit(header)
 
     def addheaderunit(self, target, filename):
@@ -309,7 +310,7 @@ class PoXliffFile(xliff.xlifffile, poheader.poheader):
         unit.target = target
         unit.xmlelement.set("restype", "x-gettext-domain-header")
         unit.xmlelement.set("approved", "no")
-        lisa.setXMLspace(unit.xmlelement, "preserve")
+        setXMLspace(unit.xmlelement, "preserve")
         return unit
 
     def addplural(self, source, target, filename, createifmissing=False):

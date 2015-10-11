@@ -71,7 +71,6 @@ TODO:
 import json
 import os
 import six
-from io import BytesIO
 
 from translate.storage import base
 

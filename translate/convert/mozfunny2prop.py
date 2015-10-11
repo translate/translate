@@ -21,8 +21,6 @@
 """Converts additional Mozilla files to properties files.
 """
 
-import string
-
 from translate.convert import prop2po
 from translate.misc.wStringIO import StringIO
 

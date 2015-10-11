@@ -24,8 +24,6 @@ import six
 import warnings
 from io import BytesIO
 
-import pytest
-
 from translate.misc.multistring import multistring
 from translate.storage import base, factory
 from translate.storage.placeables import general, parse as rich_parse

@@ -24,7 +24,7 @@ import six
 try:
     from lxml import etree
     from translate.misc.xml_helpers import (getText, getXMLlang, getXMLspace,
-                                            namespaced, setXMLlang, setXMLspace)
+                                            namespaced)
 except ImportError as e:
     raise ImportError("lxml is not installed. It might be possible to continue without support for XML formats.")
 

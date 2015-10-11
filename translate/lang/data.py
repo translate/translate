@@ -19,6 +19,10 @@
 
 """This module stores information and functionality that relates to plurals."""
 
+import gettext
+import locale
+import os
+import re
 import six
 
 
@@ -268,13 +272,6 @@ expansion_factors = {
         'it': 0.2,
 }
 """Source to target string length expansion factors."""
-
-import gettext
-import locale
-import os
-import re
-import six
-
 
 iso639 = {}
 """ISO 639 language codes"""

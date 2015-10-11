@@ -3,7 +3,7 @@
 import os
 from zipfile import ZipFile
 
-from translate.storage import directory, zip
+from translate.storage import zip
 
 
 class TestZIPFile(object):

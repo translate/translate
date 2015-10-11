@@ -1,5 +1,5 @@
 from translate.misc import wStringIO
-from translate.storage import rc, test_monolingual
+from translate.storage import rc
 
 
 def test_escaping():

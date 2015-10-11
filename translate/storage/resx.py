@@ -23,6 +23,7 @@
 from lxml import etree
 
 from translate.lang import data
+from translate.misc.xml_helpers import setXMLspace
 from translate.storage import base, lisa
 from translate.storage.placeables import general
 
@@ -201,7 +202,7 @@ class RESXFile(lisa.LISAfile):
     def addunit(self, unit, new=True):
         """Adds the given unit to the body node."""
         super(RESXFile, self).addunit(unit, new)
-        lisa.setXMLspace(unit.xmlelement, "preserve")
+        setXMLspace(unit.xmlelement, "preserve")
         if unit.getid() is None:
             self._messagenum += 1
             unit.setid(u"%s" % unit.source.strip(' '))

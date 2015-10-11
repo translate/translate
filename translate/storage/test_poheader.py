@@ -9,7 +9,6 @@ except ImportError:
     # Python <= 2.6 fallback
     from translate.misc.dictutils import ordereddict as OrderedDict
 
-from translate.lang.team import guess_language
 from translate.misc import wStringIO
 from translate.storage import po, poheader, poxliff
 

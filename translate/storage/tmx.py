@@ -22,6 +22,7 @@
 from lxml import etree
 
 from translate import __version__
+from translate.misc.xml_helpers import setXMLlang
 from translate.storage import lisa
 
 
@@ -36,10 +37,10 @@ class tmxunit(lisa.LISAunit):
         if isinstance(text, bytes):
             text = text.decode("utf-8")
         langset = etree.Element(self.languageNode)
-        lisa.setXMLlang(langset, lang)
+        setXMLlang(langset, lang)
         seg = etree.SubElement(langset, self.textNode)
         # implied by the standard:
-        # lisa.setXMLspace(seg, "preserve")
+        # setXMLspace(seg, "preserve")
         seg.text = text
         return langset
 
@@ -150,8 +151,8 @@ class tmxfile(lisa.LISAfile):
             unit.addnote(comment)
 
         tuvs = unit.xmlelement.iterdescendants(self.namespaced('tuv'))
-        lisa.setXMLlang(next(tuvs), srclang)
-        lisa.setXMLlang(next(tuvs), translang)
+        setXMLlang(next(tuvs), srclang)
+        setXMLlang(next(tuvs), translang)
 
     def translate(self, sourcetext, sourcelang=None, targetlang=None):
         """method to test old unit tests"""

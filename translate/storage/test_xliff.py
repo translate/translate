@@ -1,6 +1,7 @@
 from lxml import etree
 
-from translate.storage import lisa, test_base, xliff
+from translate.misc.xml_helpers import setXMLspace
+from translate.storage import test_base, xliff
 from translate.storage.placeables import StringElem
 from translate.storage.placeables.xliff import G, X
 
@@ -308,9 +309,9 @@ class TestXLIFFfile(test_base.TestTranslationStore):
         xlifffile = xliff.xlifffile.parsestring(xlfsource)
         assert xlifffile.units[0].source == " File  1 "
         root_node = xlifffile.document.getroot()
-        lisa.setXMLspace(root_node, "preserve")
+        setXMLspace(root_node, "preserve")
         assert xlifffile.units[0].source == " File  1 "
-        lisa.setXMLspace(root_node, "default")
+        setXMLspace(root_node, "default")
         assert xlifffile.units[0].source == " File  1 "
 
         xlfsource = self.skeleton \
@@ -320,9 +321,9 @@ class TestXLIFFfile(test_base.TestTranslationStore):
         xlifffile = xliff.xlifffile.parsestring(xlfsource)
         assert xlifffile.units[0].source == "File 1"
         root_node = xlifffile.document.getroot()
-        lisa.setXMLspace(root_node, "preserve")
+        setXMLspace(root_node, "preserve")
         assert xlifffile.units[0].source == "File 1"
-        lisa.setXMLspace(root_node, "default")
+        setXMLspace(root_node, "default")
         assert xlifffile.units[0].source == "File 1"
 
         xlfsource = self.skeleton \
@@ -333,9 +334,9 @@ class TestXLIFFfile(test_base.TestTranslationStore):
         xlifffile = xliff.xlifffile.parsestring(xlfsource)
         assert xlifffile.units[0].source == "File 1"
         root_node = xlifffile.document.getroot()
-        lisa.setXMLspace(root_node, "preserve")
+        setXMLspace(root_node, "preserve")
         assert xlifffile.units[0].source == "File 1"
-        lisa.setXMLspace(root_node, "default")
+        setXMLspace(root_node, "default")
         assert xlifffile.units[0].source == "File 1"
 
         xlfsource = self.skeleton \
@@ -347,9 +348,9 @@ class TestXLIFFfile(test_base.TestTranslationStore):
         xlifffile = xliff.xlifffile.parsestring(xlfsource)
         assert xlifffile.units[0].source == "File 1"
         root_node = xlifffile.document.getroot()
-        lisa.setXMLspace(root_node, "preserve")
+        setXMLspace(root_node, "preserve")
         assert xlifffile.units[0].source == "File 1"
-        lisa.setXMLspace(root_node, "default")
+        setXMLspace(root_node, "default")
         assert xlifffile.units[0].source == "File 1"
 
     def test_parsing(self):

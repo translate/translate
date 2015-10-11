@@ -1,9 +1,7 @@
 # -*- coding: utf-8 -*-
 
-import os.path
+import os
 import shutil
-
-from translate.storage.versioncontrol import get_versioned_object, run_command
 
 
 class HelperTest(object):

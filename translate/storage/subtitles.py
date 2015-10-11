@@ -44,7 +44,6 @@ except ImportError:
                               SubStationAlpha, new)
     from gaupol.newlines import newlines
     from gaupol.subtitle import Subtitle
-    from translate.storage import base
     _determiner = FormatDeterminer()
     determine = _determiner.determine
 

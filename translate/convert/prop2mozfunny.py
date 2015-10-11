@@ -21,7 +21,6 @@
 """Converts properties files to additional Mozilla format files.
 """
 
-import six
 import sys
 
 from translate.convert import mozfunny2prop, po2prop

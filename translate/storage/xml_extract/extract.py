@@ -22,7 +22,6 @@ from contextlib import contextmanager
 
 from lxml import etree
 
-from translate.storage import base
 from translate.storage.placeables import StringElem, xliff
 from translate.storage.xml_extract import misc, xpath_breadcrumb
 

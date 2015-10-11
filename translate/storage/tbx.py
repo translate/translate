@@ -21,6 +21,7 @@
 
 from lxml import etree
 
+from translate.misc.xml_helpers import setXMLlang
 from translate.storage import lisa
 
 
@@ -36,7 +37,7 @@ Provisional work is done to make several languages possible."""
         if isinstance(text, bytes):
             text = text.decode("utf-8")
         langset = etree.Element(self.languageNode)
-        lisa.setXMLlang(langset, lang)
+        setXMLlang(langset, lang)
         tig = etree.SubElement(langset, "tig")  # or ntig with termGrp inside
         term = etree.SubElement(tig, self.textNode)
         # probably not what we want:
@@ -70,4 +71,4 @@ class tbxfile(lisa.LISAfile):
 
     def addheader(self):
         """Initialise headers with TBX specific things."""
-        lisa.setXMLlang(self.document.getroot(), self.sourcelanguage)
+        setXMLlang(self.document.getroot(), self.sourcelanguage)

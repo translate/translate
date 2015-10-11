@@ -19,10 +19,6 @@
 
 import zipfile
 
-from lxml import etree
-
-from translate.storage.xml_name import XmlNamer
-
 
 def open_odf(filename):
     z = zipfile.ZipFile(filename, 'r')

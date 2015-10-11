@@ -24,7 +24,7 @@ based "rich" string element trees.
 
 import six
 
-from translate.storage.placeables import StringElem, base
+from translate.storage.placeables import StringElem
 
 
 def parse(tree, parse_funcs):

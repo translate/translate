@@ -119,7 +119,6 @@ from codecs import iterencode
 
 from translate.lang import data
 from translate.misc import quote
-from translate.misc.deprecation import deprecated
 from translate.storage import base
 
 

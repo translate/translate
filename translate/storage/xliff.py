@@ -26,8 +26,8 @@ import six
 from lxml import etree
 
 from translate.misc.multistring import multistring
+from translate.misc.xml_helpers import getXMLspace, setXMLlang, setXMLspace
 from translate.storage import base, lisa
-from translate.storage.lisa import getXMLspace
 from translate.storage.placeables.lisa import strelem_to_xml, xml_to_strelem
 from translate.storage.workflow import StateEnum as state
 
@@ -89,7 +89,7 @@ class xliffunit(lisa.LISAunit):
         super(xliffunit, self).__init__(source, empty, **kwargs)
         if empty:
             return
-        lisa.setXMLspace(self.xmlelement, "preserve")
+        setXMLspace(self.xmlelement, "preserve")
 
     def createlanguageNode(self, lang, text, purpose):
         """Returns an xml Element setup with given parameters."""
@@ -101,7 +101,7 @@ class xliffunit(lisa.LISAunit):
         assert purpose
         langset = etree.Element(self.namespaced(purpose))
         # TODO: check language
-        #lisa.setXMLlang(langset, lang)
+        #setXMLlang(langset, lang)
 
         langset.text = text
         return langset
@@ -190,7 +190,7 @@ class xliffunit(lisa.LISAunit):
         if isinstance(txt, bytes):
             txt = txt.decode("utf-8")
         alttrans = etree.SubElement(self.xmlelement, self.namespaced("alt-trans"))
-        lisa.setXMLspace(alttrans, "preserve")
+        setXMLspace(alttrans, "preserve")
         if sourcetxt:
             if isinstance(sourcetxt, bytes):
                 sourcetxt = sourcetxt.decode("utf-8")
@@ -203,7 +203,7 @@ class xliffunit(lisa.LISAunit):
         if origin:
             alttrans.set("origin", origin)
         if lang:
-            lisa.setXMLlang(alttrans, lang)
+            setXMLlang(alttrans, lang)
 
     def getalttrans(self, origin=None):
         """Returns <alt-trans> for the given origin as a list of units. No

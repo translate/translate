@@ -18,9 +18,7 @@
 # along with this program; if not, see <http://www.gnu.org/licenses/>.
 #
 
-from lxml import etree
-
-from translate.storage import base, xliff
+from translate.storage import xliff
 
 
 class XPathTree(object):
