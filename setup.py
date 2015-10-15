@@ -66,46 +66,77 @@ subpackages = [
 # TODO: elementtree doesn't work in sdist, fix this
 packages = ["translate"]
 
-translatescripts = [join(*('translate', ) + script) for script in [
-                  ('convert', 'pot2po'),
-                  ('convert', 'moz2po'), ('convert', 'po2moz'),
-                  ('convert', 'oo2po'), ('convert', 'po2oo'),
-                  ('convert', 'oo2xliff'), ('convert', 'xliff2oo'),
-                  ('convert', 'prop2po'), ('convert', 'po2prop'),
-                  ('convert', 'csv2po'), ('convert', 'po2csv'),
-                  ('convert', 'txt2po'), ('convert', 'po2txt'),
-                  ('convert', 'ts2po'), ('convert', 'po2ts'),
-                  ('convert', 'html2po'), ('convert', 'po2html'),
-                  ('convert', 'ical2po'), ('convert', 'po2ical'),
-                  ('convert', 'ini2po'), ('convert', 'po2ini'),
-                  ('convert', 'json2po'), ('convert', 'po2json'),
-                  ('convert', 'tiki2po'), ('convert', 'po2tiki'),
-                  ('convert', 'php2po'), ('convert', 'po2php'),
-                  ('convert', 'rc2po'), ('convert', 'po2rc'),
-                  ('convert', 'resx2po'), ('convert', 'po2resx'),
-                  ('convert', 'xliff2po'), ('convert', 'po2xliff'),
-                  ('convert', 'sub2po'), ('convert', 'po2sub'),
-                  ('convert', 'symb2po'), ('convert', 'po2symb'),
-                  ('convert', 'po2tmx'),
-                  ('convert', 'po2wordfast'),
-                  ('convert', 'csv2tbx'),
-                  ('convert', 'odf2xliff'), ('convert', 'xliff2odf'),
-                  ('convert', 'web2py2po'), ('convert', 'po2web2py'),
-                  ('filters', 'pofilter'),
-                  ('tools', 'pocompile'),
-                  ('tools', 'poconflicts'),
-                  ('tools', 'pocount'),
-                  ('tools', 'podebug'),
-                  ('tools', 'pogrep'),
-                  ('tools', 'pomerge'),
-                  ('tools', 'porestructure'),
-                  ('tools', 'posegment'),
-                  ('tools', 'poswap'),
-                  ('tools', 'poclean'),
-                  ('tools', 'poterminology'),
-                  ('tools', 'pretranslate'),
-                  ('services', 'tmserver'),
-                  ('tools', 'build_tmdb')]
+# This builds console scripts list. More detail please see:
+# http://python-packaging.readthedocs.org/en/latest/command-line-scripts.html#the-console-scripts-entry-point
+translatescripts = [
+    '{name}={entry}'.format(name=name, entry=entry) for name, entry in [
+        ('csv2po', 'translate.convert.csv2po:main'),
+        ('csv2tbx', 'translate.convert.csv2tbx:main'),
+        ('html2po', 'translate.convert.html2po:main'),
+        ('ical2po', 'translate.convert.ical2po:main'),
+        ('idml2po', 'translate.convert.idml2po:main'),
+        ('ini2po', 'translate.convert.ini2po:main'),
+        ('json2po', 'translate.convert.json2po:main'),
+        ('moz2po', 'translate.convert.moz2po:main'),
+        ('mozlang2po', 'translate.convert.mozlang2po:main'),
+        ('odf2xliff', 'translate.convert.odf2xliff:main'),
+        ('oo2po', 'translate.convert.oo2po:main'),
+        ('oo2xliff', 'translate.convert.oo2xliff:main'),
+        ('php2po', 'translate.convert.php2po:main'),
+        ('po2csv', 'translate.convert.po2csv:main'),
+        ('po2html', 'translate.convert.po2html:main'),
+        ('po2ical', 'translate.convert.po2ical:main'),
+        ('po2idml', 'translate.convert.po2idml:main'),
+        ('po2ini', 'translate.convert.po2ini:main'),
+        ('po2json', 'translate.convert.po2json:main'),
+        ('po2moz', 'translate.convert.po2moz:main'),
+        ('po2mozlang', 'translate.convert.po2mozlang:main'),
+        ('po2oo', 'translate.convert.po2oo:main'),
+        ('po2php', 'translate.convert.po2php:main'),
+        ('po2prop', 'translate.convert.po2prop:main'),
+        ('po2rc', 'translate.convert.po2rc:main'),
+        ('po2resx', 'translate.convert.po2resx:main'),
+        ('po2sub', 'translate.convert.po2sub:main'),
+        ('po2symb', 'translate.convert.po2symb:main'),
+        ('po2tiki', 'translate.convert.po2tiki:main'),
+        ('po2tmx', 'translate.convert.po2tmx:main'),
+        ('po2ts', 'translate.convert.po2ts:main'),
+        ('po2txt', 'translate.convert.po2txt:main'),
+        ('po2web2py', 'translate.convert.po2web2py:main'),
+        ('po2wordfast', 'translate.convert.po2wordfast:main'),
+        ('po2xliff', 'translate.convert.po2xliff:main'),
+        ('pot2po', 'translate.convert.pot2po:main'),
+        ('prop2po', 'translate.convert.prop2po:main'),
+        ('rc2po', 'translate.convert.rc2po:main'),
+        ('resx2po', 'translate.convert.resx2po:main'),
+        ('sub2po', 'translate.convert.sub2po:main'),
+        ('symb2po', 'translate.convert.symb2po:main'),
+        ('tiki2po', 'translate.convert.tiki2po:main'),
+        ('ts2po', 'translate.convert.ts2po:main'),
+        ('txt2po', 'translate.convert.txt2po:main'),
+        ('web2py2po', 'translate.convert.web2py2po:main'),
+        ('xliff2odf', 'translate.convert.xliff2odf:main'),
+        ('xliff2oo', 'translate.convert.xliff2oo:main'),
+        ('xliff2po', 'translate.convert.xliff2po:main'),
+        ('pofilter', 'translate.filters.pofilter:main'),
+        ('tmserver', 'translate.services.tmserver:main'),
+        ('build_tmdb', 'translate.tools.build_tmdb:main'),
+        ('phppo2pypo', 'translate.tools.phppo2pypo:main'),
+        ('poclean', 'translate.tools.poclean:main'),
+        ('pocompile', 'translate.tools.pocompile:main'),
+        ('poconflicts', 'translate.tools.poconflicts:main'),
+        ('pocount', 'translate.tools.pocount:main'),
+        ('podebug', 'translate.tools.podebug:main'),
+        ('pogrep', 'translate.tools.pogrep:main'),
+        ('pomerge', 'translate.tools.pomerge:main'),
+        ('porestructure', 'translate.tools.porestructure:main'),
+        ('posegment', 'translate.tools.posegment:main'),
+        ('poswap', 'translate.tools.poswap:main'),
+        ('poterminology', 'translate.tools.poterminology:main'),
+        ('pretranslate', 'translate.tools.pretranslate:main'),
+        ('pydiff', 'translate.tools.pydiff:main'),
+        ('pypo2phppo', 'translate.tools.pypo2phppo:main'),
+    ]
 ]
 
 translatebashscripts = [join(*('tools', ) + script) for script in [
@@ -418,7 +449,7 @@ def standardsetup(name, version, custompackages=[], customdatafiles=[]):
     # TODO: make these end with .py ending on Windows...
     try:
         with open("MANIFEST.in", "w") as manifest_in:
-            buildmanifest_in(manifest_in, translatescripts + translatebashscripts)
+            buildmanifest_in(manifest_in, translatebashscripts)
     except IOError as e:
         sys.stderr.write("warning: could not recreate MANIFEST.in, continuing anyway. (%s)\n" % e)
 
@@ -429,7 +460,7 @@ def standardsetup(name, version, custompackages=[], customdatafiles=[]):
 
     datafiles = getdatafiles()
     dosetup(name, version, packages + custompackages, datafiles + customdatafiles,
-            translatescripts + translatebashscripts)
+            translatebashscripts)
 
 
 def dosetup(name, version, packages, datafiles, scripts, ext_modules=[]):
@@ -452,12 +483,16 @@ def dosetup(name, version, packages, datafiles, scripts, ext_modules=[]):
           classifiers=classifiers,
           packages=packages,
           data_files=datafiles,
+          entry_points = {
+              'console_scripts': translatescripts,
+          },
           scripts=scripts,
           ext_modules=ext_modules,
           cmdclass=cmdclass,
           install_requires=parse_requirements('requirements/required.txt'),
           **kwargs
     )
+
 
 if __name__ == "__main__":
     standardsetup("translate-toolkit", translateversion)
