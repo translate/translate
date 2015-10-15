@@ -24,8 +24,8 @@ install:
 script:
   - python -m compileall -q -f .     # Compile all the files
   - python setup.py --quiet build
-  - py.test --cov=. -r EfsxX
   - pip install .
+  - py.test --cov=. -r EfsxX
   - make test-functional
   - ./tools/pep8.sh travis
   - make docs
