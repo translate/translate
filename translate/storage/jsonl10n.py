@@ -159,6 +159,7 @@ class JsonFile(base.TranslationStore):
             units[path] = unit.target
         out.write(json.dumps(units, sort_keys=True, separators=(',', ': '),
                              indent=4, ensure_ascii=False).encode(self.encoding))
+        out.write(b'\n')
 
     def _extract_translatables(self, data, stop=None, prev="", name_node=None,
                                name_last_node=None, last_node=None):
