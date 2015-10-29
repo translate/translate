@@ -24,6 +24,7 @@ msgstr "Du texte simple"
 '''
         expected_json = '''{
     "text": "Du texte simple"
-}'''
+}
+'''
         json_out = self.po2json(input_po, json_template)
         assert json_out == expected_json

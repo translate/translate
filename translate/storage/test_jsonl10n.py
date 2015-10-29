@@ -17,4 +17,4 @@ class TestJSONResourceStore(test_monolingual.TestMonolingualUnit):
         out = BytesIO()
         src = store.serialize(out)
 
-        assert out.getvalue() == b'{\n    "key": "value"\n}'
+        assert out.getvalue() == b'{\n    "key": "value"\n}\n'
