@@ -521,6 +521,34 @@ def test_numbers():
     assert passes(mozillachecker.numbers, 'width: 12em;', 'width: 20em;')
 
 
+def test_persian_numbers():
+    """test non latin numbers for Persian (RTL)"""
+    fa_checker = checks.StandardChecker(checks.CheckerConfig(targetlanguage='fa'))
+    assert passes(fa_checker.numbers, u"&حرکت آهسته (۰.۵×)", u"&Slow Motion (0.5×)")
+    assert passes(fa_checker.numbers, u"&حرکت آهسته (0.5×)", u"&Slow Motion (0.5×)")
+    assert passes(fa_checker.numbers, u'<img alt="١۰" width="10" />', u'<img alt="10" width="10" />')
+    assert passes(fa_checker.numbers, u'<img alt="10" width="10" />', u'<img alt="10" width="10" />')
+    assert passes(fa_checker.numbers, u"دسترسی مسدود شده است (۴۰۳)", u"Access denied (403)")
+    assert passes(fa_checker.numbers, u"کتاب موزیلا، ۱۵:۱", u"The Book of Mozilla, 15:1")
+    assert passes(fa_checker.numbers, u"<p>نشانی درخواست مشخصا(به عنوان مثال<q>mozilla.org:80</q>برای درگاه ۸۰ بر روی  mozilla.org)  ازدرگاهی استفاده می کندکه در حالت عادی به عنوان کاربردی <em>به غیر</em> از وبگردی استفاده می شود.مرورگر برای حفاظت و امنیت شما این درخواست را لغوکرد.</p>", u"<p>The requested address specified a port (e.g. <q>mozilla.org:80</q> for port 80 on mozilla.org) normally used for purposes <em>other</em> than Web browsing. The browser has canceled the request for your protection and security.</p>")
+    assert passes(fa_checker.numbers, u"دستور پردازشی <?%1$S?> دیگر تأثیری خارج از prolog ندارد (برای اطلاعات بیشتر، اشکال ۳۶۰۱۱۹ را مشاهده کنید).", u"<?%1$S?> processing instruction does not have any effect outside the prolog anymore (see bug 360119).")
+    assert passes(fa_checker.numbers, u"encoding حروف این سند بسیار دیرتر از آنکه مورد اثر واقع شود شناسایی شد.encoding فایل برای شناسایی باید به ۱۰۲۴ بایت اول فایل برای شناسایی منتقل شود.", u"The character encoding declaration of document was found too late for it to take effect. The encoding declaration needs to be moved to be within the first 1024 bytes of the file.")
+    assert passes(fa_checker.numbers, u"ویدئو یا صدا در این صفحه نرم‌افزار DRMای احتیاج دارد که نسخه ۶۴ بیتی از %1$S از آن پیشتیبانی نمی‌کند. %2$S", u"The audio or video on this page requires DRM software that this 64-bit build of %1$S does not support. %2$S")
+    assert passes(fa_checker.numbers, u"شما اندازه خیلی بزرگی برای حداقل اندازه قلم انتخاب کرده‌اید (بیش از ۲۴ پیکسل). این ممکن است باعث شود پیکربندی صفحاتی مانند این سخت یا غیرممکن بشود.", u"You have selected a very large minimum font size (more than 24 pixels). This may make it difficult or impossible to use some important configuration pages like this one.")
+
+
+def test_bengali_numbers():
+    """test non latin numbers for Bengali (LTR)"""
+    bn_checker = checks.StandardChecker(checks.CheckerConfig(targetlanguage='bn'))
+    assert passes(bn_checker.numbers, u"উচ্চ গতি (১.৫ গুন)", u"&High Speed (1.5×)")
+    assert passes(bn_checker.numbers, u"উচ্চ গতি (0.5 গুন)", u"&Slow Motion (0.5×)")
+    assert passes(bn_checker.numbers, u'<img alt="১০" width="10" />', u'<img alt="10" width="10" />')
+    assert passes(bn_checker.numbers, u'<img alt="10" width="10" />', u'<img alt="10" width="10" />')
+    assert passes(bn_checker.numbers, u"<strong>Mozilla-র বই</strong>১৫: ১ পাতা থেকে সংগৃহীত", u"from <strong>The Book of Mozilla,</strong> 15:1")
+    assert passes(bn_checker.numbers, u"ট্যাগ গুলি ২৫ টি অক্ষরের মধ্যে সীমাবদ্ধ", u"Tags are limited to 25 characters")
+    assert passes(bn_checker.numbers, u"পাসওয়ার্ড অন্তত ৮-টি অক্ষর বিশিষ্ট হওয়া আবশ্যক এবং এই ক্ষেত্রে ব্যবহারকারী অ্যাকাউন্টের নাম অথবা পুনরুদ্ধারের (key) পাসওয়ার্ড রূপে ব্যবহার করা যাবে না।", u"Your password must be at least 8 characters long.  It cannot be the same as either your user name or your Recovery Key.")
+
+
 def test_options():
     """tests command line options e.g. --option"""
     stdchecker = checks.StandardChecker()
