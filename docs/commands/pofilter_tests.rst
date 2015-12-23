@@ -448,6 +448,10 @@ You will see some errors where you have either written the number in full or
 converted it to the digit in your translation.  Also changes in order will
 trigger this error.
 
+Some languages don't use latin numbers but instead use different numbers. This
+check will take that into account.
+
+
 .. _pofilter_tests#options:
 
 options

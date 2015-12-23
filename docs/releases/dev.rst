@@ -42,6 +42,12 @@ Formats and Converters
    - keys can contain delimiters if they are properly wrapped (:issue:`3275`).
 
 
+Filters and Checks
+------------------
+
+- Numbers check now handles non latin numbers.
+
+
 API deprecation
 ---------------
 

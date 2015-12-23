@@ -44,4 +44,17 @@ class bn(common.Common):
         u".\n": u"।\n",
     }
 
+    numbertuple = (
+        (u"0", u"০"),  # U+09E6 Bengali digit zero.
+        (u"1", u"১"),  # U+09E7 Bengali digit one.
+        (u"2", u"২"),  # U+09E8 Bengali digit two.
+        (u"3", u"৩"),  # U+09E9 Bengali digit three.
+        (u"4", u"৪"),  # U+09EA Bengali digit four.
+        (u"5", u"৫"),  # U+09EB Bengali digit five.
+        (u"6", u"৬"),  # U+09EC Bengali digit six.
+        (u"7", u"৭"),  # U+09ED Bengali digit seven.
+        (u"8", u"৮"),  # U+09EE Bengali digit eight.
+        (u"9", u"৯"),  # U+09EF Bengali digit nine.
+    )
+
     ignoretests = ["startcaps", "simplecaps"]

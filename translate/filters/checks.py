@@ -1270,6 +1270,8 @@ class StandardChecker(TranslationChecker):
         full or converted it to the digit in your translation. Also changes in
         order will trigger this error.
         """
+        str1 = self.config.lang.numbertranslate(str1)
+
         if helpers.countsmatch(str1, str2, decoration.getnumbers(str1)):
             return True
         else:

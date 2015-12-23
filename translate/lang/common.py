@@ -184,6 +184,10 @@ class Common(object):
     """A dictionary of punctuation transformation rules that can be used by
     punctranslate()."""
 
+    numbertuple = ()
+    """A tuple of number transformation rules that can be used by
+    numbertranslate()."""
+
     ignoretests = []
     """List of pofilter tests for this language that must be ignored."""
 
@@ -236,6 +240,15 @@ class Common(object):
         if self.code:
             detail = "(%s)" % self.code
         return "<class 'translate.lang.common.Common%s'>" % detail
+
+    @classmethod
+    def numbertranslate(cls, text):
+        """Converts the numbers in a string according to the rules of the
+        language."""
+        if text:
+            for latin_number, native_number in cls.numbertuple:
+                text = text.replace(native_number, latin_number)
+        return text
 
     @classmethod
     def punctranslate(cls, text):
