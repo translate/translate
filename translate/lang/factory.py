@@ -35,7 +35,7 @@ def getlanguage(code):
     try:
         if code is None:
             raise ImportError("Can't determine language code")
-        if code in ('or', 'is'):
+        if code in ('or', 'is', 'as'):
             internal_code = prefix + code
         else:
             internal_code = code

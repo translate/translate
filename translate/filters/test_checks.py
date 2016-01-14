@@ -559,6 +559,15 @@ def test_arabic_numbers():
     assert passes(ar_checker.numbers, u"١٧٥٪", u"175%")
 
 
+def test_assamese_numbers():
+    """test non latin numbers for Assamese"""
+    as_checker = checks.StandardChecker(checks.CheckerConfig(targetlanguage='as'))
+    assert passes(as_checker.numbers, u"প্ৰতি ৩ ছেকেণ্ডত স্বচালিতভাৱে সতেজ কৰক", u"Autorefresh every 3 seconds")
+    assert passes(as_checker.numbers, u"পৃষ্ঠা পুনৰ ল'ড কৰা হৈছিল, কাৰণ HTML দস্তাবেজৰ আখৰ এনক'ডিং যোষণা ফাইলৰ প্ৰথম ১০২৪ বাইট পূৰ্বস্কেন কৰোতে পোৱা নগল। এনক'ডিং ঘোষণাক ফাইলৰ প্ৰথম ১০২৪ বাইটৰ মাজত স্থানান্তৰ কৰিব লাগিব।", u"The page was reloaded, because the character encoding declaration of the HTML document was not found when prescanning the first 1024 bytes of the file. The encoding declaration needs to be moved to be within the first 1024 bytes of the file.")
+    assert passes(as_checker.numbers, u"সংস্কৰণ ৩", u"Version 3")
+    assert passes(as_checker.numbers, u"১৭৫%", u"175%")
+
+
 def test_options():
     """tests command line options e.g. --option"""
     stdchecker = checks.StandardChecker()
