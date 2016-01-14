@@ -13,8 +13,9 @@ matrix:
   exclude:
     - python: 2.6
       env: USECPO=0 MINVERSION=1
-before_install:
-  - sudo apt-get install python-aeidon
+#before_install:
+#  # Ubuntu used by Travis only supports python3-aeidon.
+#  - sudo apt-get install python-aeidon
 install:
   - pip install coveralls
   - if [[ $MINVERSION ]]; then make requirements/min-versions.txt; cat requirements/min-versions.txt;  CFLAGS="-O0" pip install -r requirements/min-versions.txt; pip install --upgrade pytest; fi
