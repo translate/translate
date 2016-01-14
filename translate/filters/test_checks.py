@@ -549,6 +549,16 @@ def test_bengali_numbers():
     assert passes(bn_checker.numbers, u"পাসওয়ার্ড অন্তত ৮-টি অক্ষর বিশিষ্ট হওয়া আবশ্যক এবং এই ক্ষেত্রে ব্যবহারকারী অ্যাকাউন্টের নাম অথবা পুনরুদ্ধারের (key) পাসওয়ার্ড রূপে ব্যবহার করা যাবে না।", u"Your password must be at least 8 characters long.  It cannot be the same as either your user name or your Recovery Key.")
 
 
+def test_arabic_numbers():
+    """test non latin numbers for Arabic"""
+    ar_checker = checks.StandardChecker(checks.CheckerConfig(targetlanguage='ar'))
+    assert passes(ar_checker.numbers, u"أقصى طول للوسم ٢٥ حرفًا", u"Tags are limited to 25 characters")
+    assert passes(ar_checker.numbers, u"حركة ب&طيئة (٠٫٥×)", u"&Slow Motion (0.5×)")
+    assert passes(ar_checker.numbers, u"متصفح &٣٦٠ الآمن", u"&360 Secure Browser")
+    assert passes(ar_checker.numbers, u"من <strong>كتاب موزيلا،</strong> ١٥‏:١", u"from <strong>The Book of Mozilla,</strong> 15:1")
+    assert passes(ar_checker.numbers, u"١٧٥٪", u"175%")
+
+
 def test_options():
     """tests command line options e.g. --option"""
     stdchecker = checks.StandardChecker()

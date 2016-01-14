@@ -46,6 +46,19 @@ class ar(common.Common):
         #u"%": u"٪",
     }
 
+    numbertuple = (
+        (u"0", u"٠"),  # U+0660 Arabic-Indic digit zero.
+        (u"1", u"١"),  # U+0661 Arabic-Indic digit one.
+        (u"2", u"٢"),  # U+0662 Arabic-Indic digit two.
+        (u"3", u"٣"),  # U+0663 Arabic-Indic digit three.
+        (u"4", u"٤"),  # U+0664 Arabic-Indic digit four.
+        (u"5", u"٥"),  # U+0665 Arabic-Indic digit five.
+        (u"6", u"٦"),  # U+0666 Arabic-Indic digit six.
+        (u"7", u"٧"),  # U+0667 Arabic-Indic digit seven.
+        (u"8", u"٨"),  # U+0668 Arabic-Indic digit eight.
+        (u"9", u"٩"),  # U+0669 Arabic-Indic digit nine.
+    )
+
     ignoretests = ["startcaps", "simplecaps", "acronyms"]
 
     @classmethod
