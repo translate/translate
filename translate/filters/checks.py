@@ -34,7 +34,6 @@ import logging
 import re
 import six
 
-from itertools import izip_longest
 from translate.filters import decoration, helpers, prefilters, spelling
 from translate.filters.decorators import (cosmetic, critical, extraction,
                                           functional)
