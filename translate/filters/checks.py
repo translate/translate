@@ -34,6 +34,7 @@ import logging
 import re
 import six
 
+from itertools import izip_longest
 from translate.filters import decoration, helpers, prefilters, spelling
 from translate.filters.decorators import (cosmetic, critical, extraction,
                                           functional)
@@ -55,14 +56,16 @@ printf_pat = re.compile('''
         %(                          # initial %
         (?P<boost_ord>\d+)%         # boost::format style variable order, like %1%
         |
+        \|?                         # boost allows to enclose params in pipes, %|spec|
               (?:(?P<ord>\d+)\$|    # variable order, like %1$s
               \((?P<key>\w+)\))?    # Python style variables, like %(var)s
         (?P<fullvar>
-            [+#-]*                  # flags
+            [+#\- ]*                # flags
             (?:\d+)?                # width
             (?:\.\d+)?              # precision
             (hh\|h\|l\|ll)?         # length formatting
             (?P<type>[\w@]))        # type (%s, %d, etc.)
+        \|?
         )''', re.VERBOSE)
 
 # The name of the XML tag
@@ -977,6 +980,48 @@ class StandardChecker(TranslationChecker):
 
         if (count1 or count2) and (count1 != count2):
             raise FilterFailure(u"Different number of printf variables")
+
+        # Find percent signs that are not followed by even number of percent signs
+        def find_lone_percents(string):
+            count_signs = 0
+            for pos, c in enumerate(string):
+                if not c == '%':
+                    continue
+
+                if pos + 1 >= len(string) or string[pos + 1] != '%':
+                    if count_signs % 2 == 0:
+                        yield pos
+                    count_signs = 0
+                else:
+                    count_signs += 1
+
+        # check that all odd percent signs are parts of placeholders
+        def has_unmatched_percents(string):
+            lone_signs = find_lone_percents(string)
+            placeholders = [m.span() for m in printf_pat.finditer(string)]
+            ph_ind = 0
+            ph = placeholders[0] if placeholders else None
+            for sign_pos in lone_signs:
+                if not placeholders:
+                    return True
+
+                if ph[0] <= sign_pos < ph[1]:
+                    continue
+
+                while sign_pos > ph[0]:
+                    ph_ind += 1
+                    if ph_ind >= len(placeholders):
+                        return True
+
+                    ph = placeholders[ph_ind]
+
+                if not (ph[0] <= sign_pos < ph[1]):
+                    return True
+
+            return False
+
+        if has_unmatched_percents(str1) or has_unmatched_percents(str2):
+            raise FilterFailure(u"One of the strings contains percent sign that is neither part of placeholder or %% literal")
 
         return 1
 
