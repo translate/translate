@@ -55,7 +55,7 @@ printf_pat = re.compile('''
         %(                          # initial %
         (?P<boost_ord>\d+)%         # boost::format style variable order, like %1%
         |
-        \|?                         # boost allows to enclose params in pipes, %|spec|
+        \|?                         # boost::format allows to enclose params in pipes, %|spec|
               (?:(?P<ord>\d+)\$|    # variable order, like %1$s
               \((?P<key>\w+)\))?    # Python style variables, like %(var)s
         (?P<fullvar>
@@ -984,7 +984,7 @@ class StandardChecker(TranslationChecker):
         def find_lone_percents(string):
             count_signs = 0
             for pos, c in enumerate(string):
-                if not c == '%':
+                if c != '%':
                     continue
 
                 if pos + 1 >= len(string) or string[pos + 1] != '%':
