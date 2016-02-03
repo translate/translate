@@ -64,7 +64,7 @@ printf_pat = re.compile('''
             (?:\.\d+)?              # precision
             (hh\|h\|l\|ll)?         # length formatting
             (?P<type>[\w@]))        # type (%s, %d, etc.)
-        \|?
+        \|?                         # closing pipe bracket to comply with boost::format (see above)
         )''', re.VERBOSE)
 
 # The name of the XML tag
