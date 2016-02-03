@@ -631,6 +631,7 @@ def test_printf():
     # Boost several ways to express the same.
     assert passes(stdchecker.printf, "(x,y) = (%+5d,%+5d)", "(x,y) = (%+5d,%+5d)")
     assert passes(stdchecker.printf, "(x,y) = (%|+5|,%|+5|)", "(x,y) = (%|+5|,%|+5|)")
+    assert passes(stdchecker.printf, "(x,y) = (%|+5|,%|+5|)", "(x,y) = (%+5,%+5)")
     assert passes(stdchecker.printf, "(x,y) = (%1$+5d,%2$+5d)", "(x,y) = (%1$+5d,%2$+5d)")
     assert passes(stdchecker.printf, "(x,y) = (%|1$+5|,%|2$+5|)", "(x,y) = (%|1$+5|,%|2$+5|)")
     # Boost using manipulators.
