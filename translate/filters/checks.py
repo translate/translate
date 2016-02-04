@@ -1020,7 +1020,10 @@ class StandardChecker(TranslationChecker):
             return False
 
         if has_unmatched_percents(str1) or has_unmatched_percents(str2):
-            raise FilterFailure(u"One of the strings contains percent sign that is neither part of placeholder or %% literal")
+            raise FilterFailure(
+                u"One of the strings contains percent sign "
+                u"that is neither part of placeholder or %% literal"
+            )
 
         return 1
 
