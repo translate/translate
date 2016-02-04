@@ -127,6 +127,14 @@ class TestAndroidResourceUnit(test_monolingual.TestMonolingualUnit):
                '</plurals>\n\n')
         self.__check_escape(mString, xml, 'en')
 
+    def test_plural_invalid_lang(self):
+        mString = multistring(['one message', 'other message'])
+        xml = ('<plurals name="Test String">\n\t'
+                 '<item quantity="one">one message</item>\n\t'
+                 '<item quantity="other">other message</item>\n'
+               '</plurals>\n\n')
+        self.__check_escape(mString, xml, 'invalid')
+
     def test_escape_html_quote(self):
         string = 'start \'here\' <b>html code \'to escape\'</b> also \'here\''
         xml = ('<string name="Test String">start \\\'here\\\' <b>html code \\\'to escape\\\'</b> also \\\'here\\\''
