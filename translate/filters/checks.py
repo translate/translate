@@ -2309,6 +2309,7 @@ class TermChecker(StandardChecker):
 
 
 projectcheckers = {
+    "standard": StandardChecker,
     "openoffice": OpenOfficeChecker,
     "libreoffice": LibreOfficeChecker,
     "mozilla": MozillaChecker,
