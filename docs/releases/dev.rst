@@ -46,6 +46,8 @@ Filters and Checks
 ------------------
 
 - Numbers check now handles non latin numbers.
+- Added a fix that prevented standard checks from being used in Pootle with
+  default settings.
 
 
 API deprecation
