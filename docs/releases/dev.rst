@@ -50,6 +50,13 @@ Filters and Checks
   default settings.
 
 
+Tools
+-----
+
+- posegment now correctly segments Japanese strings with half width punctuation
+  sign (:issue:`3280`).
+
+
 API deprecation
 ---------------
 
