@@ -71,6 +71,7 @@ TODO:
 import json
 import os
 import six
+import re
 
 from translate.storage import base
 
@@ -214,6 +215,7 @@ class JsonFile(base.TranslationStore):
         if isinstance(input, bytes):
             input = input.decode('utf-8')
         try:
+            input = re.sub(r"^\s*?export default\s*?\{", "{", input)
             self._file = json.loads(input)
         except ValueError as e:
             raise base.ParseError(e.message)
