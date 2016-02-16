@@ -20,6 +20,7 @@
 import os
 import re
 import sys
+from setuptools import setup
 from distutils.sysconfig import get_python_lib
 from os.path import dirname, isfile, join
 
@@ -464,7 +465,6 @@ def standardsetup(name, version, custompackages=[], customdatafiles=[]):
 
 
 def dosetup(name, version, packages, datafiles, scripts, ext_modules=[]):
-    from setuptools import setup
     description, long_description = __doc__.split("\n", 1)
     kwargs = {}
     if py2exe:
@@ -490,6 +490,11 @@ def dosetup(name, version, packages, datafiles, scripts, ext_modules=[]):
           ext_modules=ext_modules,
           cmdclass=cmdclass,
           install_requires=parse_requirements('requirements/required.txt'),
+          entry_points={
+              'console_scripts': [
+                  os.path.basename(x) + ' = ' + x.replace(os.path.sep, '.') + ':main' for x in translatescripts
+              ]
+          },
           **kwargs
     )
 
