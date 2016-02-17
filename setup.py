@@ -350,7 +350,13 @@ else:
             options = {"py2exe": py2exeoptions}
             baseattrs['options'] = options
             if py2exe:
-                baseattrs['console'] = translatescripts
+                # http://www.py2exe.org/index.cgi/ListOfOptions
+                consolescripts = []
+                for entry_point in translatescripts:
+                    module = entry_point.partition('=')[2].rpartition(':')[0]
+                    script_path = module.replace('.', os.sep) + '.py'
+                    consolescripts.append(script_path)
+                baseattrs['console'] = consolescripts
                 baseattrs['zipfile'] = "translate.zip"
                 baseattrs['cmdclass'] = cmdclass.update({
                     "py2exe": build_exe_map,
