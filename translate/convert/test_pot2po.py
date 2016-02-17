@@ -650,8 +650,8 @@ msgstr "trans"
         potsource = r'''
 msgid ""
 msgstr ""
-"X-Merge-On: location\n"
 "X-Accelerator-Marker: &\n"
+"X-Merge-On: location\n"
 
 
 #: bla
@@ -724,9 +724,9 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=INTEGER; plural=EXPRESSION;\n"
+"X-Accelerator-Marker: &\n"
 "X-Generator: Translate Toolkit 0.10rc2\n"
 "X-Merge-On: location\n"
-"X-Accelerator-Marker: &\n"
 
 #: new_disassociated_mozilla_accesskey
 msgid "R"
@@ -763,9 +763,9 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Accelerator-Marker: &\n"
 "X-Generator: Translate Toolkit 0.10rc2\n"
 "X-Merge-On: location\n"
-"X-Accelerator-Marker: &\n"
 
 #: new_disassociated_mozilla_accesskey
 msgid "R"

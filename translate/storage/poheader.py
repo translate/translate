@@ -126,9 +126,9 @@ class poheader(object):
         "Content-Type",
         "Content-Transfer-Encoding",
         "Plural-Forms",
+        "X-Accelerator-Marker",
         "X-Generator",
         "X-Merge-On",
-        "X-Accelerator-Marker",
     ]
 
     def init_headers(self, charset='UTF-8', encoding='8bit', **kwargs):
