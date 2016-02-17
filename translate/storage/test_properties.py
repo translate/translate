@@ -106,7 +106,7 @@ class TestProp(test_monolingual.TestMonolingualStore):
 
     def propregen(self, propsource, encoding=None):
         """helper that converts properties source to propfile object and back"""
-        return str(self.propparse(propsource, encoding=encoding))
+        return bytes(self.propparse(propsource, encoding=encoding)).decode('utf-8')
 
     def test_simpledefinition(self):
         """checks that a simple properties definition is parsed correctly"""

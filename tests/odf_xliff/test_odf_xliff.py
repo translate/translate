@@ -127,6 +127,9 @@ class ODF(object):
                     return False
         return True
 
+    def __bytes__(self):
+        return self.serialize()
+
     def serialize(self):
         return self._get_doc_root('content.xml')
 
