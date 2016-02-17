@@ -1,0 +1,4 @@
+#: SampleString
+#, fuzzy
+msgid "Foo Bar"
+msgstr "Bar Foo"
