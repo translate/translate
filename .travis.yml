@@ -6,14 +6,19 @@ python:
   - 2.7
 env:
   matrix:
-    - USECPO=0 MINVERSION=1
-    - USECPO=0 MINVERSION=
+    - USECPO=0 MINVERSION=1 META=
+    - USECPO=0 MINVERSION= META=
+    - USECPO=0 MINVERSION= META=1
     #- USECPO=1
     #- USECPO=2
 matrix:
   exclude:
     - python: 2.6
-      env: USECPO=0 MINVERSION=1
+      env: USECPO=0 MINVERSION=1 META=
+    - python: 2.6
+      env: USECPO=0 MINVERSION=1 META=1
+    - python: 2.6
+      env: USECPO=0 MINVERSION= META=1
 #before_install:
 #  # Ubuntu used by Travis only supports python3-aeidon.
 #  - sudo apt-get install python-aeidon
@@ -24,13 +29,13 @@ install:
   # Still need to handle with indexing engines
   - pip freeze
 script:
-  - python -m compileall -q -f .     # Compile all the files
-  - python setup.py --quiet build
-  - pip install .
-  - py.test --cov=. -r EfsxX
-  - make test-functional
-  - ./tools/pep8.sh travis
-  - make docs
+  - if [[ ! $META ]]; then python -m compileall -q -f .; fi     # Compile all the files
+  - if [[ ! $META ]]; then python setup.py --quiet build; fi
+  - if [[ ! $META ]]; then pip install .; fi
+  - if [[ ! $META ]]; then py.test --cov=. -r EfsxX; fi
+  - if [[ ! $META ]]; then make test-functional; fi
+  - if [[ $META ]]; then ./tools/pep8.sh travis; fi
+  - if [[ $META ]]; then make docs; fi
 after_success:
   coveralls
 notifications:
