@@ -40,7 +40,7 @@ def main():
                         help='Ignore case differences in file contents.')
     parser.add_argument("-U", "--unified", type=int, metavar="NUM", default=3,
                         dest="unified_lines",
-                        help='Output NUM (default 3) lines of unified context')
+                        help='Output NUM (default %(default)s) lines of unified context')
     parser.add_argument("-r", "--recursive", default=False, action="store_true",
                         help='Recursively compare any subdirectories found.')
     parser.add_argument("-N", "--new-file", default=False, action="store_true",

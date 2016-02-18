@@ -229,27 +229,27 @@ def main(argv=None):
     # always treat the input as an archive unless it is a directory
     archiveformats = {(None, "output"): oo.oomultifile, (None, "template"): oo.oomultifile}
     parser = convert.ArchiveConvertOptionParser(formats, usetemplates=True, description=__doc__, archiveformats=archiveformats)
-    parser.add_option("-l", "--language", dest="targetlanguage", default=None,
+    parser.add_argument("-l", "--language", dest="targetlanguage", default=None,
                       help="set target language code (e.g. af-ZA) [required]",
                       metavar="LANG")
-    parser.add_option("", "--source-language", dest="sourcelanguage",
+    parser.add_argument("--source-language", dest="sourcelanguage",
                       default=None,
                       help="set source language code (default en-US)",
                       metavar="LANG")
-    parser.add_option("-T", "--keeptimestamp", dest="timestamp", default=None,
+    parser.add_argument("-T", "--keeptimestamp", dest="timestamp", default=None,
                       action="store_const", const=0,
             help="don't change the timestamps of the strings")
-    parser.add_option("", "--nonrecursiveoutput", dest="allowrecursiveoutput",
+    parser.add_argument("--nonrecursiveoutput", dest="allowrecursiveoutput",
                       default=True, action="store_false",
                       help="don't treat the output oo as a recursive store")
-    parser.add_option("", "--nonrecursivetemplate",
+    parser.add_argument("--nonrecursivetemplate",
                       dest="allowrecursivetemplate", default=True,
                       action="store_false",
                       help="don't treat the template oo as a recursive store")
-    parser.add_option("", "--skipsource", dest="skip_source", default=False,
+    parser.add_argument("--skipsource", dest="skip_source", default=False,
                       action="store_true",
                       help="don't output the source language, but fallback to it where needed")
-    parser.add_option("", "--filteraction", dest="filteraction", default="none", metavar="ACTION",
+    parser.add_argument("--filteraction", dest="filteraction", default="none", metavar="ACTION",
                       help="action on pofilter failure: none (default), warn, exclude-serious, exclude-all")
     parser.add_threshold_option()
     parser.add_fuzzy_option()

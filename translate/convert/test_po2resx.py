@@ -434,4 +434,4 @@ class TestPO2TSCommand(test_convert.TestConvertCommand, TestPO2RESX):
     def test_help(self):
         """ Tests getting help """
         options = test_convert.TestConvertCommand.test_help(self)
-        options = self.help_check(options, "-t TEMPLATE, --template=TEMPLATE")
+        options = self.help_check(options, "-t TEMPLATE, --template TEMPLATE")

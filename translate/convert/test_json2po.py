@@ -82,5 +82,5 @@ class TestJson2POCommand(test_convert.TestConvertCommand, TestJson2PO):
         options = test_convert.TestConvertCommand.test_help(self)
         options = self.help_check(options, "-P, --pot")
         options = self.help_check(options, "--duplicates")
-        options = self.help_check(options, "-t TEMPLATE, --template=TEMPLATE")
+        options = self.help_check(options, "-t TEMPLATE, --template TEMPLATE")
         options = self.help_check(options, "--filter", last=True)

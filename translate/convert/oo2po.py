@@ -171,12 +171,12 @@ def main(argv=None):
     parser = convert.ArchiveConvertOptionParser(formats, usepots=True,
                                                 description=__doc__,
                                                 archiveformats=archiveformats)
-    parser.add_option("-l", "--language", dest="targetlanguage", default=None,
+    parser.add_argument("-l", "--language", dest="targetlanguage", default=None,
                       help="set target language to extract from oo file (e.g. af-ZA)",
                       metavar="LANG")
-    parser.add_option("", "--source-language", dest="sourcelanguage", default=None,
+    parser.add_argument("--source-language", dest="sourcelanguage", default=None,
             help="set source language code (default en-US)", metavar="LANG")
-    parser.add_option("", "--nonrecursiveinput", dest="allowrecursiveinput",
+    parser.add_argument("--nonrecursiveinput", dest="allowrecursiveinput",
                       default=True, action="store_false",
                       help="don't treat the input oo as a recursive store")
     parser.add_duplicates_option()

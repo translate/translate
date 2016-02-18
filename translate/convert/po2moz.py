@@ -80,10 +80,10 @@ def main(argv=None):
                                                    replacer.searchreplaceinput)
         formats[replaceformat] = (replaceformat, replacer.searchreplaceinput)
     parser = MozConvertOptionParser(formats, usetemplates=True, description=__doc__)
-    parser.add_option("-l", "--locale", dest="locale", default=None,
+    parser.add_argument("-l", "--locale", dest="locale", default=None,
         help="set output locale (required as this sets the directory names)",
         metavar="LOCALE")
-    parser.add_option("", "--removeuntranslated", dest="remove_untranslated",
+    parser.add_argument("--removeuntranslated", dest="remove_untranslated",
             default=False, action="store_true",
             help="remove untranslated strings from output")
     parser.add_threshold_option()

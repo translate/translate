@@ -234,9 +234,9 @@ def main(argv=None):
     parser = convert.ConvertOptionParser(formats, usetemplates=True,
                                          usepots=True,
                                          description=__doc__)
-    parser.add_option("", "--charset", dest="charset", default=None,
+    parser.add_argument("--charset", dest="charset", default=None,
         help="set charset to decode from csv files", metavar="CHARSET")
-    parser.add_option("", "--columnorder", dest="columnorder", default=None,
+    parser.add_argument("--columnorder", dest="columnorder", default=None,
         help="specify the order and position of columns (location,source,target)")
     parser.add_duplicates_option()
     parser.passthrough.append("charset")

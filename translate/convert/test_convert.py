@@ -113,20 +113,14 @@ class TestConvertCommand:
         # the convertsummary might be wrapped. this will probably unwrap it
         assert convertsummary in help_string.replace("\n", " ")
         usageline = help_string[:help_string.find("\n")]
-        # Different versions of optparse might contain either upper or
-        # lowercase versions of 'Usage:' and 'Options:', so we need to take
-        # that into account
-        assert (usageline.startswith("Usage: ") or usageline.startswith("usage: ")) \
-            and "[--version] [-h|--help]" in usageline
-        options = help_string[help_string.find("ptions:\n"):]
+        assert usageline.startswith("usage: ")
+        options = help_string[help_string.find("arguments:\n"):]
         options = options[options.find("\n")+1:]
-        options = self.help_check(options, "--progress=PROGRESS")
+        options = self.help_check(options, "--progress PROGRESS")
         options = self.help_check(options, "--version")
         options = self.help_check(options, "-h, --help")
         options = self.help_check(options, "--manpage")
-        options = self.help_check(options, "--errorlevel=ERRORLEVEL")
-        options = self.help_check(options, "-i INPUT, --input=INPUT")
-        options = self.help_check(options, "-x EXCLUDE, --exclude=EXCLUDE")
-        options = self.help_check(options, "-o OUTPUT, --output=OUTPUT")
+        options = self.help_check(options, "--errorlevel ERRORLEVEL")
+        options = self.help_check(options, "-x EXCLUDE, --exclude EXCLUDE")
         options = self.help_check(options, "-S, --timestamp")
         return options

@@ -37,40 +37,16 @@ class ConflictOptionParser(optrecurse.RecursiveOptionParser):
 
     def parse_args(self, args=None, values=None):
         """parses the command line options, handling implicit input/output args"""
-        (options, args) = optrecurse.optparse.OptionParser.parse_args(self, args, values)
+        args = optrecurse.argparse.ArgumentParser.parse_args(self, args, values)
         # some intelligence as to what reasonable people might give on the command line
-        if args and not options.input:
-            if not options.output:
-                options.input = args[:-1]
-                args = args[-1:]
-            else:
-                options.input = args
-                args = []
-        if args and not options.output:
-            options.output = args[-1]
-            args = args[:-1]
-        if not options.output:
-            self.error("output file is required")
-        if args:
-            self.error("You have used an invalid combination of --input, --output and freestanding args")
-        if isinstance(options.input, list) and len(options.input) == 1:
-            options.input = options.input[0]
-        return (options, args)
-
-    def set_usage(self, usage=None):
-        """sets the usage string - if usage not given, uses getusagestring for each option"""
-        if usage is None:
-            self.usage = "%prog " + " ".join([self.getusagestring(option) for option in self.option_list]) + \
-                    "\n  input directory is searched for PO files, PO files with name of conflicting string are output in output directory"
-        else:
-            super(ConflictOptionParser, self).set_usage(usage)
+        return args
 
     def run(self):
         """parses the arguments, and runs recursiveprocess with the resulting options"""
-        (options, args) = self.parse_args()
-        options.inputformats = self.inputformats
-        options.outputoptions = self.outputoptions
-        self.recursiveprocess(options)
+        args = self.parse_args()
+        args.inputformats = self.inputformats
+        args.outputoptions = self.outputoptions
+        self.recursiveprocess(args)
 
     def recursiveprocess(self, options):
         """recurse through directories and process files"""
@@ -80,7 +56,7 @@ class ConflictOptionParser(optrecurse.RecursiveOptionParser):
                     self.warning("Output directory does not exist. Attempting to create")
                     os.mkdir(options.output)
                 except:
-                    self.error(optrecurse.optparse.OptionValueError("Output directory does not exist, attempt to create failed"))
+                    self.error(optrecurse.argparse.ArgumentError("Output directory does not exist, attempt to create failed"))
             if isinstance(options.input, list):
                 inputfiles = self.recurseinputfilelist(options)
             else:
@@ -187,13 +163,12 @@ class ConflictOptionParser(optrecurse.RecursiveOptionParser):
 def main():
     formats = {"po": ("po", None), None: ("po", None)}
     parser = ConflictOptionParser(formats)
-    parser.add_option("-I", "--ignore-case", dest="ignorecase",
+    parser.add_argument("-I", "--ignore-case", dest="ignorecase",
         action="store_true", default=False, help="ignore case distinctions")
-    parser.add_option("-v", "--invert", dest="invert",
+    parser.add_argument("-v", "--invert", dest="invert",
         action="store_true", default=False, help="invert the conflicts thus extracting conflicting destination words")
-    parser.add_option("", "--accelerator", dest="accelchars", default="",
+    parser.add_argument("--accelerator", dest="accelchars", default="",
         metavar="ACCELERATORS", help="ignores the given accelerator characters when matching")
-    parser.set_usage()
     parser.description = __doc__
     parser.run()
 

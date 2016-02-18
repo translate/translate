@@ -308,7 +308,7 @@ class TestPretranslateCommand(test_convert.TestConvertCommand, TestPretranslate)
     def test_help(self):
         """tests getting help"""
         options = test_convert.TestConvertCommand.test_help(self)
-        options = self.help_check(options, "-t TEMPLATE, --template=TEMPLATE")
+        options = self.help_check(options, "-t TEMPLATE, --template TEMPLATE")
         options = self.help_check(options, "--tm")
-        options = self.help_check(options, "-s MIN_SIMILARITY, --similarity=MIN_SIMILARITY")
+        options = self.help_check(options, "-s MIN_SIMILARITY, --similarity MIN_SIMILARITY")
         options = self.help_check(options, "--nofuzzymatching", last=True)
