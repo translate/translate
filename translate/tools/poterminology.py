@@ -396,7 +396,6 @@ class TerminologyOptionParser(optrecurse.RecursiveOptionParser):
         """parses the arguments, and runs recursiveprocess with the resulting options"""
         self.files = 0
         (options, args) = self.parse_args()
-        options.outputoptions = self.outputoptions
         self.extractor = TerminologyExtractor(foldtitle=options.foldtitle, ignorecase=options.ignorecase,
                                               accelchars=options.accelchars, termlength=options.termlength,
                                               sourcelanguage=options.sourcelanguage,

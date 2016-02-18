@@ -203,8 +203,6 @@ class FilterOptionParser(optrecurse.RecursiveOptionParser):
         if not options.checkfilter.checker.combinedfilters:
             self.error("No valid filters were specified")
 
-        options.outputoptions = self.outputoptions
-
         if options.listfilters:
             print(options.checkfilter.getfilterdocs())
         else:

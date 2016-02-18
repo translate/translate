@@ -65,12 +65,6 @@ class ConflictOptionParser(optrecurse.RecursiveOptionParser):
         else:
             super(ConflictOptionParser, self).set_usage(usage)
 
-    def run(self):
-        """parses the arguments, and runs recursiveprocess with the resulting options"""
-        (options, args) = self.parse_args()
-        options.outputoptions = self.outputoptions
-        self.recursiveprocess(options)
-
     def recursiveprocess(self, options):
         """recurse through directories and process files"""
         if self.isrecursive(options.input, 'input') and getattr(options, "allowrecursiveinput", True):

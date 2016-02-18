@@ -361,22 +361,22 @@ class RecursiveOptionParser(optparse.OptionParser, object):
             templatebase, templateext = self.splittemplateext(templatepath)
         else:
             templateext = None
-        if (inputext, templateext) in options.outputoptions:
-            return options.outputoptions[inputext, templateext]
-        elif (inputext, "*") in options.outputoptions:
-            outputformat, fileprocessor = options.outputoptions[inputext, "*"]
-        elif ("*", templateext) in options.outputoptions:
-            outputformat, fileprocessor = options.outputoptions["*", templateext]
-        elif ("*", "*") in options.outputoptions:
-            outputformat, fileprocessor = options.outputoptions["*", "*"]
-        elif (inputext, None) in options.outputoptions:
-            return options.outputoptions[inputext, None]
-        elif (None, templateext) in options.outputoptions:
-            return options.outputoptions[None, templateext]
-        elif ("*", None) in options.outputoptions:
-            outputformat, fileprocessor = options.outputoptions["*", None]
-        elif (None, "*") in options.outputoptions:
-            outputformat, fileprocessor = options.outputoptions[None, "*"]
+        if (inputext, templateext) in self.outputoptions:
+            return self.outputoptions[inputext, templateext]
+        elif (inputext, "*") in self.outputoptions:
+            outputformat, fileprocessor = self.outputoptions[inputext, "*"]
+        elif ("*", templateext) in self.outputoptions:
+            outputformat, fileprocessor = self.outputoptions["*", templateext]
+        elif ("*", "*") in self.outputoptions:
+            outputformat, fileprocessor = self.outputoptions["*", "*"]
+        elif (inputext, None) in self.outputoptions:
+            return self.outputoptions[inputext, None]
+        elif (None, templateext) in self.outputoptions:
+            return self.outputoptions[None, templateext]
+        elif ("*", None) in self.outputoptions:
+            outputformat, fileprocessor = self.outputoptions["*", None]
+        elif (None, "*") in self.outputoptions:
+            outputformat, fileprocessor = self.outputoptions[None, "*"]
         else:
             if self.usetemplates:
                 if inputext is None:
@@ -395,7 +395,7 @@ class RecursiveOptionParser(optparse.OptionParser, object):
                 outputformat = inputext
             elif templateext:
                 outputformat = templateext
-            elif ("*", "*") in options.outputoptions:
+            elif ("*", "*") in self.outputoptions:
                 outputformat = None
             else:
                 if self.usetemplates:
@@ -449,9 +449,6 @@ class RecursiveOptionParser(optparse.OptionParser, object):
         """Parses the arguments, and runs recursiveprocess with the resulting
         options..."""
         (options, args) = self.parse_args()
-        # this is so derived classes can modify the outputoptions based on
-        # the options
-        options.outputoptions = self.outputoptions
         self.recursiveprocess(options)
 
     def recursiveprocess(self, options):
@@ -684,14 +681,14 @@ class RecursiveOptionParser(optparse.OptionParser, object):
             return options.template
         inputbase, inputext = self.splitinputext(inputname)
         if options.template:
-            for inputext1, templateext1 in options.outputoptions:
+            for inputext1, templateext1 in self.outputoptions:
                 if inputext == inputext1:
                     if templateext1:
                         templatepath = inputbase + os.extsep + templateext1
                         if self.templateexists(options, templatepath):
                             return templatepath
             if "*" in self.inputformats:
-                for inputext1, templateext1 in options.outputoptions:
+                for inputext1, templateext1 in self.outputoptions:
                     if (inputext == inputext1) or (inputext1 == "*"):
                         if templateext1 == "*":
                             templatepath = inputname
