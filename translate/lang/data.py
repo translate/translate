@@ -172,7 +172,7 @@ languages = {
     'th': (u'Thai', 1, '0'),
     'ti': (u'Tigrinya', 2, '(n > 1)'),
     'tk': (u'Turkmen', 2, '(n != 1)'),
-    'tr': (u'Turkish', 1, '0'),
+    'tr': (u'Turkish', 2, '(n != 1)'),
     'tt': (u'Tatar', 1, '0'),
     'ug': (u'Uighur; Uyghur', 1, '0'),
     'uk': (u'Ukrainian', 3,
