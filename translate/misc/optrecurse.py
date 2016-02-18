@@ -221,7 +221,7 @@ class RecursiveOptionParser(optparse.OptionParser, object):
                         outputformat (string) and processor method.
         """
 
-        inputformats = []
+        self.inputformats = []
         outputformats = []
         templateformats = []
         self.outputoptions = {}
@@ -239,15 +239,14 @@ class RecursiveOptionParser(optparse.OptionParser, object):
             if not isinstance(outputoptions, tuple) or len(outputoptions) != 2:
                 raise ValueError("output options must be tuples of length 2")
             outputformat, processor = outputoptions
-            if not inputformat in inputformats:
-                inputformats.append(inputformat)
+            if not inputformat in self.inputformats:
+                self.inputformats.append(inputformat)
             if not outputformat in outputformats:
                 outputformats.append(outputformat)
             if not templateformat in templateformats:
                 templateformats.append(templateformat)
             self.outputoptions[(inputformat, templateformat)] = (outputformat, processor)
-        self.inputformats = inputformats
-        inputformathelp = self.getformathelp(inputformats)
+        inputformathelp = self.getformathelp(self.inputformats)
         inputoption = optparse.Option("-i", "--input", dest="input",
                 default=None, metavar="INPUT",
                 help="read from INPUT in %s" % (inputformathelp))
@@ -450,9 +449,8 @@ class RecursiveOptionParser(optparse.OptionParser, object):
         """Parses the arguments, and runs recursiveprocess with the resulting
         options..."""
         (options, args) = self.parse_args()
-        # this is so derived classes can modify the inputformats etc based on
+        # this is so derived classes can modify the outputoptions based on
         # the options
-        options.inputformats = self.inputformats
         options.outputoptions = self.outputoptions
         self.recursiveprocess(options)
 
@@ -692,7 +690,7 @@ class RecursiveOptionParser(optparse.OptionParser, object):
                         templatepath = inputbase + os.extsep + templateext1
                         if self.templateexists(options, templatepath):
                             return templatepath
-            if "*" in options.inputformats:
+            if "*" in self.inputformats:
                 for inputext1, templateext1 in options.outputoptions:
                     if (inputext == inputext1) or (inputext1 == "*"):
                         if templateext1 == "*":
@@ -718,5 +716,5 @@ class RecursiveOptionParser(optparse.OptionParser, object):
     def isvalidinputname(self, options, inputname):
         """Checks if this is a valid input filename."""
         inputbase, inputext = self.splitinputext(inputname)
-        return ((inputext in options.inputformats) or
-                ("*" in options.inputformats))
+        return ((inputext in self.inputformats) or
+                ("*" in self.inputformats))
