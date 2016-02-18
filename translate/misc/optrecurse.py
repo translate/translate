@@ -245,31 +245,27 @@ class RecursiveOptionParser(argparse.ArgumentParser, object):
             self.outputoptions[(inputformat, templateformat)] = (outputformat, processor)
         self.inputformats = inputformats
         inputformathelp = self.getformathelp(inputformats)
-        inputoption = argparse._StoreAction([], dest="input", nargs="?",
-                default=None, metavar="INPUT",
-                help="read from INPUT in %s" % (inputformathelp))
-        inputoption.optionalswitch = True
-        inputoption.required = True
-        self.define_option(inputoption)
-        excludeoption = argparse._AppendAction(["-x", "--exclude"], dest="exclude",
-                type=str, metavar="EXCLUDE",
-                default=["CVS", ".svn", "_darcs", ".git", ".hg", ".bzr"],
-                help="exclude names matching EXCLUDE from input paths")
-        self.define_option(excludeoption)
+        self.add_argument(
+            'input', nargs="?", default=None, metavar="INPUT",
+            help="read from INPUT in %s" % (inputformathelp)
+        )
+        self.add_argument(
+            "-x", "--exclude", type=str, metavar="EXCLUDE",
+            default=["CVS", ".svn", "_darcs", ".git", ".hg", ".bzr"],
+            help="exclude names matching EXCLUDE from input paths"
+        )
         outputformathelp = self.getformathelp(outputformats)
-        outputoption = argparse._StoreAction([], dest="output",
-                default=None, metavar="OUTPUT", nargs="?",
-                help="write to OUTPUT in %s" % (outputformathelp))
-        outputoption.optionalswitch = True
-        outputoption.required = True
-        self.define_option(outputoption)
+        self.add_argument(
+            'output', nargs="?", default=None, metavar="OUTPUT",
+            help="write to OUTPUT in %s" % (outputformathelp)
+        )
         if self.usetemplates:
             self.templateformats = templateformats
             templateformathelp = self.getformathelp(self.templateformats)
-            templateoption = argparse._StoreAction(["-t", "--template"],
-                dest="template", default=None, metavar="TEMPLATE",
-                help="read from TEMPLATE in %s" % (templateformathelp))
-            self.define_option(templateoption)
+            self.add_argument(
+                "-t", "--template", default=None, metavar="TEMPLATE",
+                help="read from TEMPLATE in %s" % (templateformathelp)
+            )
 
     def setprogressoptions(self):
         """Sets the progress options."""
@@ -280,20 +276,20 @@ class RecursiveOptionParser(argparse.ArgumentParser, object):
             ("names", progressbar.MessageProgressBar),
             ("verbose", progressbar.VerboseProgressBar),
         ])
-        progressoption = argparse._StoreAction(["--progress"], dest="progress",
-                default="bar",
-                choices=list(self.progresstypes.keys()), metavar="PROGRESS",
-                help="show progress as: %(choices)s")
-        self.define_option(progressoption)
+        self.add_argument(
+            "--progress", default="bar", metavar="PROGRESS",
+            choices=list(self.progresstypes.keys()),
+            help="show progress as: %(choices)s"
+        )
 
     def seterrorleveloptions(self):
         """Sets the errorlevel options."""
         self.errorleveltypes = ["none", "message", "exception", "traceback"]
-        errorleveloption = argparse._StoreAction(["--errorlevel"],
-                dest="errorlevel", default="message",
-                choices=self.errorleveltypes, metavar="ERRORLEVEL",
-                help="show errorlevel as: %(choices)s")
-        self.define_option(errorleveloption)
+        self.add_argument(
+            "--errorlevel", default="message",
+            choices=self.errorleveltypes, metavar="ERRORLEVEL",
+            help="show errorlevel as: %(choices)s"
+        )
 
     def getformathelp(self, formats):
         """Make a nice help string for describing formats..."""

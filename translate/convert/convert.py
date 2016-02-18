@@ -135,21 +135,17 @@ class ConvertOptionParser(optrecurse.RecursiveOptionParser, object):
         """Sets the ``-P``/``--pot`` option depending on input/output
         formats etc."""
         if self.usepots:
-            potoption = argparse._StoreTrueAction(
-                ["-P", "--pot"],
-                dest="pot", default=False,
+            self.add_argument(
+                "-P", "--pot", action='store_true',
                 help="output PO Templates (.pot) rather than PO files (.po)"
             )
-            self.define_option(potoption)
 
     def settimestampoption(self):
         """Sets ``-S``/``--timestamp`` option."""
-        timestampopt = argparse._StoreTrueAction(
-            ["-S", "--timestamp"],
-            dest="timestamp", default=False,
+        self.add_argument(
+            "-S", "--timestamp", action='store_true',
             help="skip conversion if the output file has newer timestamp"
         )
-        self.define_option(timestampopt)
 
     def verifyoptions(self, options):
         """Verifies that the options are valid (required options are
