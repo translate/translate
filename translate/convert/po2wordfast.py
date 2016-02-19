@@ -86,8 +86,8 @@ class WfOptionParser(convert.ArchiveConvertOptionParser):
             raise ValueError("You must specify the target language")
         super(WfOptionParser, self).recursiveprocess(options)
         with open(options.output, 'wb') as self.output:
-            #options.outputarchive.wffile.setsourcelanguage(options.sourcelanguage)
-            options.outputarchive.wffile.serialize(self.output)
+            #self.outputarchive.wffile.setsourcelanguage(options.sourcelanguage)
+            self.outputarchive.wffile.serialize(self.output)
 
 
 def main(argv=None):

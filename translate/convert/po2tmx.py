@@ -108,8 +108,8 @@ class TmxOptionParser(convert.ArchiveConvertOptionParser):
             raise ValueError("You must specify the target language")
         super(TmxOptionParser, self).recursiveprocess(options)
         with open(options.output, 'wb') as self.output:
-            options.outputarchive.tmxfile.setsourcelanguage(options.sourcelanguage)
-            options.outputarchive.tmxfile.serialize(self.output)
+            self.outputarchive.tmxfile.setsourcelanguage(options.sourcelanguage)
+            self.outputarchive.tmxfile.serialize(self.output)
 
 
 def main(argv=None):
