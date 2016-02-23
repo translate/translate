@@ -490,6 +490,8 @@ class TranslationChecker(UnitChecker):
         super(TranslationChecker, self).__init__(checkerconfig, excludefilters,
                                                  limitfilters, errorhandler)
 
+        self.locations = []
+
         # caches for spell checking results across units/runs
         self.source_spell_cache = lru.LRUCachingDict(256, cullsize=5, aggressive_gc=False)
         self.target_spell_cache = lru.LRUCachingDict(512, cullsize=5, aggressive_gc=False)
