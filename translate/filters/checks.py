@@ -980,7 +980,8 @@ class StandardChecker(TranslationChecker):
         if (count1 or count2) and (count1 != count2):
             raise FilterFailure(u"Different number of printf variables")
 
-        # Find percent signs that are not followed by even number of percent signs
+        # Find percent signs that are not followed by 
+        # even number of percent signs
         def find_lone_percents(string):
             count_signs = 0
             for pos, c in enumerate(string):
@@ -1019,14 +1020,17 @@ class StandardChecker(TranslationChecker):
 
             return False
 
-        if has_unmatched_percents(str1) or has_unmatched_percents(str2):
-            raise FilterFailure(
-                u"One of the strings contains percent sign "
-                u"that is neither part of placeholder or %% literal"
-            )
+        def check_unmatched_percents(string):
+            if has_unmatched_percents(string):
+                raise FilterFailure(
+                    u"One of the strings contains percent sign "
+                    u"that is neither part of placeholder or %% literal"
+                )
+
+        check_unmatched_percents(str1)
+        check_unmatched_percents(str2)
 
         return 1
-
 
     @critical
     def pythonbraceformat(self, str1, str2):
