@@ -322,4 +322,4 @@ msgstr ""
     assert pofile.getprojectstyle() == 'kde'
 
     pofile.setprojectstyle('complete-rubbish')
-    assert pofile.getprojectstyle() == 'kde'
+    assert pofile.getprojectstyle() == 'complete-rubbish'

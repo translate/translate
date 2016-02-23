@@ -352,9 +352,7 @@ class poheader(object):
         :param project_style: the new project
         :type project_style: str
         """
-        from translate.filters.checks import projectcheckers
-        if project_style in projectcheckers:
-            self.updateheader(add=True, X_Project_Style=project_style)
+        self.updateheader(add=True, X_Project_Style=project_style)
 
     def mergeheaders(self, otherstore):
         """Merges another header with this header.
