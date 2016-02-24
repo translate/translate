@@ -1,6 +1,6 @@
 #!/bin/bash -e
 #
-# Copyright 2009 João Miguel Neves <joao.neves@intraneia.com>
+# Copyright 2009 Joao Miguel Neves <joao.neves@intraneia.com>
 # Copyright 2008 Zuza Software Foundation
 #
 # This file is part of Translate.
