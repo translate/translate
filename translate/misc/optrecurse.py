@@ -638,7 +638,7 @@ class RecursiveOptionParser(optparse.OptionParser, object):
                 if os.path.isdir(fullinputpath):
                     dirs.append(inputpath)
                 elif os.path.isfile(fullinputpath):
-                    if not self.isvalidinputname(options, name):
+                    if not self.isvalidinputname(name):
                         # only handle names that match recognized input
                         # file extensions
                         continue
@@ -710,7 +710,7 @@ class RecursiveOptionParser(optparse.OptionParser, object):
             outputname += os.extsep + outputformat
         return outputname
 
-    def isvalidinputname(self, options, inputname):
+    def isvalidinputname(self, inputname):
         """Checks if this is a valid input filename."""
         inputbase, inputext = self.splitinputext(inputname)
         return ((inputext in self.inputformats) or

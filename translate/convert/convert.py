@@ -315,7 +315,7 @@ class ArchiveConvertOptionParser(ConvertOptionParser):
             if self.isexcluded(options, inputpath):
                 continue
             top, name = os.path.split(inputpath)
-            if not self.isvalidinputname(options, name):
+            if not self.isvalidinputname(name):
                 continue
             inputfiles.append(inputpath)
         return inputfiles
