@@ -980,7 +980,7 @@ class StandardChecker(TranslationChecker):
         if (count1 or count2) and (count1 != count2):
             raise FilterFailure(u"Different number of printf variables")
 
-        # Find percent signs that are not followed by 
+        # Find percent signs that are not followed by
         # even number of percent signs
         def find_lone_percents(string):
             count_signs = 0
