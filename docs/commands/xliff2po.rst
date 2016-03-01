@@ -39,9 +39,9 @@ Options (xliff2po):
 --errorlevel=ERRORLEVEL
                       show errorlevel as: :doc:`none, message, exception,
                       traceback <option_errorlevel>`
--iINPUT, --input=INPUT   read from INPUT in xliff format
--xEXCLUDE, --exclude=EXCLUDE  exclude names matching EXCLUDE from input paths
--oOUTPUT, --output=OUTPUT     write to OUTPUT in po, pot formats
+-i INPUT, --input=INPUT   read from INPUT in xliff format
+-x EXCLUDE, --exclude=EXCLUDE  exclude names matching EXCLUDE from input paths
+-o OUTPUT, --output=OUTPUT     write to OUTPUT in po, pot formats
 -S, --timestamp       skip conversion if the output file has newer timestamp
 -P, --pot            output PO Templates (.pot) rather than PO files (.po)
 --duplicates=DUPLICATESTYLE
@@ -58,12 +58,12 @@ Options (po2xliff):
 --errorlevel=ERRORLEVEL
                       show errorlevel as: :doc:`none, message, exception,
                       traceback <option_errorlevel>`
--iINPUT, --input=INPUT     read from INPUT in po, pot formats
--xEXCLUDE, --exclude=EXCLUDE   exclude names matching EXCLUDE from input paths
--oOUTPUT, --output=OUTPUT  write to OUTPUT in xliff format
--tTEMPLATE, --template=TEMPLATE   read from TEMPLATE in xliff format
+-i INPUT, --input=INPUT     read from INPUT in po, pot formats
+-x EXCLUDE, --exclude=EXCLUDE   exclude names matching EXCLUDE from input paths
+-o OUTPUT, --output=OUTPUT  write to OUTPUT in xliff format
+-t TEMPLATE, --template=TEMPLATE   read from TEMPLATE in xliff format
 -S, --timestamp      skip conversion if the output file has newer timestamp
--P, --pot            output PO Templates (.pot) rather than PO files (.po)
+
 
 .. _xliff2po#examples:
 

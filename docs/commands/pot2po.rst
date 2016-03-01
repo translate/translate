@@ -35,14 +35,14 @@ Options:
 --errorlevel=ERRORLEVEL
                       show errorlevel as: :doc:`none, message, exception,
                       traceback <option_errorlevel>`
--iINPUT, --input=INPUT   read from INPUT in pot format
--xEXCLUDE, --exclude=EXCLUDE  exclude names matching EXCLUDE from input paths
--oOUTPUT, --output=OUTPUT     write to OUTPUT in po, pot formats
--tTEMPLATE, --template=TEMPLATE   read from TEMPLATE in po, pot formats (old translations)
+-i INPUT, --input=INPUT   read from INPUT in pot format
+-x EXCLUDE, --exclude=EXCLUDE  exclude names matching EXCLUDE from input paths
+-o OUTPUT, --output=OUTPUT     write to OUTPUT in po, pot formats
+-t TEMPLATE, --template=TEMPLATE   read from TEMPLATE in po, pot formats (old translations)
 -S, --timestamp      skip conversion if the output file has newer timestamp
 -P, --pot            output PO Templates (.pot) rather than PO files (.po)
 --tm=TM              The file to use as translation memory when fuzzy matching
--sMIN_SIMILARITY, --similarity=MIN_SIMILARITY   The minimum similarity for inclusion (default: 75%)
+-s MIN_SIMILARITY, --similarity=MIN_SIMILARITY   The minimum similarity for inclusion (default: 75%)
 --nofuzzymatching    Disable all fuzzy matching
 
 .. _pot2po#examples:

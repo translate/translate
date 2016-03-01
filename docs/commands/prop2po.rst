@@ -51,10 +51,10 @@ Options (prop2po):
 --errorlevel=ERRORLEVEL
                       show errorlevel as: :doc:`none, message, exception,
                       traceback <option_errorlevel>`
--iINPUT, --input=INPUT   read from INPUT in properties format
--xEXCLUDE, --exclude=EXCLUDE  exclude names matching EXCLUDE from input paths
--oOUTPUT, --output=OUTPUT  write to OUTPUT in po, pot formats
--tTEMPLATE, --template=TEMPLATE   read from TEMPLATE in properties format
+-i INPUT, --input=INPUT   read from INPUT in properties format
+-x EXCLUDE, --exclude=EXCLUDE  exclude names matching EXCLUDE from input paths
+-o OUTPUT, --output=OUTPUT  write to OUTPUT in po, pot formats
+-t TEMPLATE, --template=TEMPLATE   read from TEMPLATE in properties format
 -S, --timestamp       skip conversion if the output file has newer timestamp
 -P, --pot            output PO Templates (.pot) rather than PO files (.po)
 --personality=TYPE    override the input file format: :doc:`flex, java, mozilla,
@@ -75,10 +75,10 @@ Options (po2prop):
 --errorlevel=ERRORLEVEL
                       show errorlevel as: :doc:`none, message, exception,
                       traceback <option_errorlevel>`
--iINPUT, --input=INPUT   read from INPUT in po, pot formats
--xEXCLUDE, --exclude=EXCLUDE  exclude names matching EXCLUDE from input paths
--oOUTPUT, --output=OUTPUT  write to OUTPUT in properties format
--tTEMPLATE, --template=TEMPLATE  read from TEMPLATE in properties format
+-i INPUT, --input=INPUT   read from INPUT in po, pot formats
+-x EXCLUDE, --exclude=EXCLUDE  exclude names matching EXCLUDE from input paths
+-o OUTPUT, --output=OUTPUT  write to OUTPUT in properties format
+-t TEMPLATE, --template=TEMPLATE  read from TEMPLATE in properties format
 -S, --timestamp       skip conversion if the output file has newer timestamp
 --personality=TYPE    override the input file format: :doc:`flex, java, mozilla,
                       java-utf8, skype, gaia, strings <option_personality>`

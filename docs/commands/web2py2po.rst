@@ -52,6 +52,7 @@ Options (web2py2po):
 -x EXCLUDE, --exclude=EXCLUDE  exclude names matching EXCLUDE from input paths
 -o OUTPUT, --output=OUTPUT     write to OUTPUT in po, pot formats
 -S, --timestamp       skip conversion if the output file has newer timestamp
+-P, --pot             output PO Templates (.pot) rather than PO files (.po)
 --duplicates=DUPLICATESTYLE
                       what to do with duplicate strings (identical source
                       text): :doc:`merge, msgctxt <option_duplicates>`

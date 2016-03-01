@@ -56,6 +56,7 @@ Options:
 -I, --ignore-case     make all terms lowercase
 --accelerator=ACCELERATORS  ignore the given accelerator characters when matching (accelerator characters probably require quoting)
 -t LENGTH, --term-words=LENGTH  generate terms of up to LENGTH words (default 3)
+--nonstop-needed=MIN  omit terms with less than MIN nonstop words (default 1)
 --inputs-needed=MIN   omit terms appearing in less than MIN input files (default 2, or 1 if only one input file)
 --fullmsg-needed=MIN  omit full message terms appearing in less than MIN different messages (default 1)
 --substr-needed=MIN   omit substring-only terms appearing in less than MIN different messages (default 2)

@@ -34,16 +34,18 @@ Options (html2po):
 --errorlevel=ERRORLEVEL
                       show errorlevel as: :doc:`none, message, exception,
                       traceback <option_errorlevel>`
--iINPUT, --input=INPUT   read from INPUT in htm, html, xhtml formats
--xEXCLUDE, --exclude=EXCLUDE  exclude names matching EXCLUDE from input paths
--oOUTPUT, --output=OUTPUT  write to OUTPUT in po, pot formats
+-i INPUT, --input=INPUT   read from INPUT in htm, html, xhtml formats
+-x EXCLUDE, --exclude=EXCLUDE  exclude names matching EXCLUDE from input paths
+-o OUTPUT, --output=OUTPUT  write to OUTPUT in po, pot formats
 -S, --timestamp      skip conversion if the output file has newer timestamp
 -P, --pot            output PO Templates (.pot) rather than PO files (.po)
 -u, --untagged       include untagged sections
+--keepcomments       preserve html comments as translation notes in the output
 --duplicates=DUPLICATESTYLE
                       what to do with duplicate strings (identical source
                       text): :doc:`merge, msgctxt <option_duplicates>`
                       (default: 'msgctxt')
+
 
 Options (po2html):
 
@@ -54,16 +56,15 @@ Options (po2html):
 --errorlevel=ERRORLEVEL
                       show errorlevel as: :doc:`none, message, exception,
                       traceback <option_errorlevel>`
--iINPUT, --input=INPUT   read from INPUT in po, pot formats
--xEXCLUDE, --exclude=EXCLUDE   exclude names matching EXCLUDE from input paths
--oOUTPUT, --output=OUTPUT  write to OUTPUT in htm, html formats
--tTEMPLATE, --template=TEMPLATE   read from TEMPLATE in htm, html formats
+-i INPUT, --input=INPUT   read from INPUT in po, pot formats
+-x EXCLUDE, --exclude=EXCLUDE   exclude names matching EXCLUDE from input paths
+-o OUTPUT, --output=OUTPUT  write to OUTPUT in htm, html, xhtml formats
+-t TEMPLATE, --template=TEMPLATE   read from TEMPLATE in htm, html, xhtml formats
 -S, --timestamp      skip conversion if the output file has newer timestamp
--wWRAP, --wrap=WRAP  set number of columns to wrap html at
---notidy             don't use tidy to clean up HTML, even if installed (new in version 1.2.1)
 --threshold=PERCENT  only convert files where the translation completion is above PERCENT
 --fuzzy              use translations marked fuzzy
 --nofuzzy            don't use translations marked fuzzy (default)
+
 
 .. _html2po#examples:
 

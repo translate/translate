@@ -41,15 +41,14 @@ Options:
 --errorlevel=ERRORLEVEL
                       show errorlevel as: :doc:`none, message, exception,
                       traceback <option_errorlevel>`
--iINPUT, --input=INPUT   read from INPUT in pot, po, xlf, tmx formats
--xEXCLUDE, --exclude=EXCLUDE  exclude names matching EXCLUDE from input paths
--oOUTPUT, --output=OUTPUT  write to OUTPUT in po, pot, xlf, tmx formats
+-i INPUT, --input=INPUT   read from INPUT in pot, po, xlf, tmx formats
+-x EXCLUDE, --exclude=EXCLUDE  exclude names matching EXCLUDE from input paths
+-o OUTPUT, --output=OUTPUT  write to OUTPUT in po, pot, xlf, tmx formats
 -l, --listfilters    list filters available
 --review             include elements marked for review (default)
 --noreview           exclude elements marked for review
 --fuzzy              include elements marked fuzzy (default)
 --nofuzzy            exclude elements marked fuzzy
---header             include a PO header in the output (always the case since version 1.6)
 --nonotes            don't add notes about the errors (since version 1.3)
 --autocorrect        output automatic corrections where possible rather than describing issues
 --language=LANG      set target language code (e.g. af-ZA) [required for spell check]. This will help to make pofilter aware of the conventions of your language
@@ -61,7 +60,7 @@ Options:
 --kde                use the standard checks for KDE translations
 --wx                 use the standard checks for wxWidgets translations -- identical to --kde
 --excludefilter=FILTER  don't use FILTER when filtering
--tFILTER, --test=FILTER  only use test FILTERs specified with this option when filtering
+-t FILTER, --test=FILTER  only use test FILTERs specified with this option when filtering
 --notranslatefile=FILE   read list of untranslatable words from FILE (must not be translated)
 --musttranslatefile=FILE  read list of translatable words from FILE (must be translated)
 --validcharsfile=FILE  read list of all valid characters from FILE (must be in UTF-8)

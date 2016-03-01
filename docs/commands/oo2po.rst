@@ -50,12 +50,12 @@ Options (oo2po and oo2xliff):
 --errorlevel=ERRORLEVEL
                       show errorlevel as: :doc:`none, message, exception,
                       traceback <option_errorlevel>`
--iINPUT, --input=INPUT   read from INPUT in oo format
--xEXCLUDE, --exclude=EXCLUDE  exclude names matching EXCLUDE from input paths
--oOUTPUT, --output=OUTPUT  write to OUTPUT in po, pot formats
+-i INPUT, --input=INPUT   read from INPUT in oo, sdf formats
+-x EXCLUDE, --exclude=EXCLUDE  exclude names matching EXCLUDE from input paths
+-o OUTPUT, --output=OUTPUT  write to OUTPUT in po, pot, xlf formats
 -S, --timestamp      skip conversion if the output file has newer timestamp
 -P, --pot            output PO Templates (.pot) rather than PO files (.po) (only available in oo2po
--lLANG, --language=LANG  set target language to extract from oo file (e.g. af-ZA) (required for oo2xliff)
+-l LANG, --language=LANG  set target language to extract from oo file (e.g. af-ZA) (required for oo2xliff)
 --source-language=LANG   set source language code (default en-US)
 --nonrecursiveinput      don't treat the input oo as a recursive store
 --duplicates=DUPLICATESTYLE
@@ -75,16 +75,17 @@ Options (po2oo and xliff2oo):
 --errorlevel=ERRORLEVEL
                       show errorlevel as: :doc:`none, message, exception,
                       traceback <option_errorlevel>`
--iINPUT, --input=INPUT   read from INPUT in po, pot formats
--xEXCLUDE, --exclude=EXCLUDE  exclude names matching EXCLUDE from input paths
--oOUTPUT, --output=OUTPUT  write to OUTPUT in oo format
--tTEMPLATE, --template=TEMPLATE  read from TEMPLATE in oo format
+-i INPUT, --input=INPUT   read from INPUT in po, pot, xlf formats
+-x EXCLUDE, --exclude=EXCLUDE  exclude names matching EXCLUDE from input paths
+-o OUTPUT, --output=OUTPUT  write to OUTPUT in oo, sdf formats
+-t TEMPLATE, --template=TEMPLATE  read from TEMPLATE in oo, sdf formats
 -S, --timestamp          skip conversion if the output file has newer timestamp
--lLANG, --language=LANG  set target language code (e.g. af-ZA) [required]
+-l LANG, --language=LANG  set target language code (e.g. af-ZA) [required]
 --source-language=LANG   set source language code (default en-US)
 -T, --keeptimestamp      don't change the timestamps of the strings
 --nonrecursiveoutput     don't treat the output oo as a recursive store
 --nonrecursivetemplate   don't treat the template oo as a recursive store
+--skipsource             don't output the source language, but fallback to it where needed
 --filteraction=ACTION
                       action on pofilter failure: :doc:`none (default), warn,
                       exclude-serious, exclude-all <option_filteraction>`

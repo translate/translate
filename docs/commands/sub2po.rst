@@ -41,9 +41,11 @@ Options (sub2po):
 --errorlevel=ERRORLEVEL
                       show errorlevel as: :doc:`none, message, exception,
                       traceback <option_errorlevel>`
--iINPUT, --input=INPUT    read from INPUT in .srt format
--xEXCLUDE, --exclude=EXCLUDE   exclude names matching EXCLUDE from input paths
--oOUTPUT, --output=OUTPUT  write to OUTPUT in po, pot formats
+-i INPUT, --input=INPUT    read from INPUT in .srt format
+-x EXCLUDE, --exclude=EXCLUDE   exclude names matching EXCLUDE from input paths
+-o OUTPUT, --output=OUTPUT  write to OUTPUT in po, pot formats
+-t TEMPLATE, --template=TEMPLATE
+                        read from TEMPLATE in ass, srt, ssa, sub formats
 -S, --timestamp       skip conversion if the output file has newer timestamp
 -P, --pot            output PO Templates (.pot) rather than PO files (.po)
 --duplicates=DUPLICATESTYLE
@@ -60,10 +62,10 @@ Options (po2sub):
 --errorlevel=ERRORLEVEL
                       show errorlevel as: :doc:`none, message, exception,
                       traceback <option_errorlevel>`
--iINPUT, --input=INPUT    read from INPUT in po, pot formats
--xEXCLUDE, --exclude=EXCLUDE   exclude names matching EXCLUDE from input paths
--oOUTPUT, --output=OUTPUT   write to OUTPUT in srt format
--tTEMPLATE, --template=TEMPLATE   read from TEMPLATE in txt format
+-i INPUT, --input=INPUT    read from INPUT in po, pot formats
+-x EXCLUDE, --exclude=EXCLUDE   exclude names matching EXCLUDE from input paths
+-o OUTPUT, --output=OUTPUT   write to OUTPUT in srt format
+-t TEMPLATE, --template=TEMPLATE   read from TEMPLATE in txt format
 -S, --timestamp      skip conversion if the output file has newer timestamp
 --threshold=PERCENT  only convert files where the translation completion is above PERCENT
 --fuzzy              use translations marked fuzzy

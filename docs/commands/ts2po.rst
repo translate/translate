@@ -49,9 +49,9 @@ Options (ts2po):
 --errorlevel=ERRORLEVEL
                       show errorlevel as: :doc:`none, message, exception,
                       traceback <option_errorlevel>`
--iINPUT, --input=INPUT   read from INPUT in ts format
--xEXCLUDE, --exclude=EXCLUDE  exclude names matching EXCLUDE from input paths
--oOUTPUT, --output=OUTPUT   write to OUTPUT in po, pot formats
+-i INPUT, --input=INPUT   read from INPUT in ts format
+-x EXCLUDE, --exclude=EXCLUDE  exclude names matching EXCLUDE from input paths
+-o OUTPUT, --output=OUTPUT   write to OUTPUT in po, pot formats
 -S, --timestamp       skip conversion if the output file has newer timestamp
 -P, --pot            output PO Templates (.pot) rather than PO files (.po)
 --duplicates=DUPLICATESTYLE
@@ -68,11 +68,14 @@ Options (po2ts):
 --errorlevel=ERRORLEVEL
                       show errorlevel as: :doc:`none, message, exception,
                       traceback <option_errorlevel>`
--iINPUT, --input=INPUT    read from INPUT in po, pot formats
--xEXCLUDE, --exclude=EXCLUDE   exclude names matching EXCLUDE from input paths
--oOUTPUT, --output=OUTPUT  write to OUTPUT in ts format
--tTEMPLATE, --template=TEMPLATE   read from TEMPLATE in ts format
+-i INPUT, --input=INPUT    read from INPUT in po, pot formats
+-x EXCLUDE, --exclude=EXCLUDE   exclude names matching EXCLUDE from input paths
+-o OUTPUT, --output=OUTPUT  write to OUTPUT in ts format
+-t TEMPLATE, --template=TEMPLATE   read from TEMPLATE in ts format
 -S, --timestamp       skip conversion if the output file has newer timestamp
+-c CONTEXT, --context=CONTEXT
+                        use supplied context instead of the one in the .po
+                        file comment
 
 .. _ts2po#examples:
 

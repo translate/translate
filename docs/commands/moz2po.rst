@@ -45,10 +45,10 @@ Options (moz2po):
 --errorlevel=ERRORLEVEL
                       show errorlevel as: :doc:`none, message, exception,
                       traceback <option_errorlevel>`
--iINPUT, --input=INPUT    read from INPUT in inc, it, \*, dtd, properties formats
--xEXCLUDE, --exclude=EXCLUDE   exclude names matching EXCLUDE from input paths
--oOUTPUT, --output=OUTPUT   write to OUTPUT in it.po, it.pot, manifest, xhtml.po, xhtml.pot, ini.po, ini.pot, rdf, js, \*, html.po, html.pot, inc.po, inc.pot, dtd.po, dtd.pot, properties.po, properties.pot formats
--tTEMPLATE, --template=TEMPLATE   read from TEMPLATE in it, \*, properties, dtd, inc formats
+-i INPUT, --input=INPUT    read from INPUT in inc, it, \*, dtd, properties formats
+-x EXCLUDE, --exclude=EXCLUDE   exclude names matching EXCLUDE from input paths
+-o OUTPUT, --output=OUTPUT   write to OUTPUT in it.po, it.pot, manifest, xhtml.po, xhtml.pot, ini.po, ini.pot, rdf, js, \*, html.po, html.pot, inc.po, inc.pot, dtd.po, dtd.pot, properties.po, properties.pot formats
+-t TEMPLATE, --template=TEMPLATE   read from TEMPLATE in it, \*, properties, dtd, inc formats
 -S, --timestamp       skip conversion if the output file has newer timestamp
 -P, --pot            output PO Templates (.pot) rather than PO files (.po)
 --duplicates=DUPLICATESTYLE
@@ -67,16 +67,17 @@ Options (po2moz):
 --errorlevel=ERRORLEVEL
                       show errorlevel as: :doc:`none, message, exception,
                       traceback <option_errorlevel>`
--iINPUT, --input=INPUT   read from INPUT in dtd.po, dtd.pot, ini.po, ini.pot, inc.po, inc.pot, manifest, it.po, it.pot, \*, html.po, html.pot, js, rdf, properties.po, properties.pot, xhtml.po, xhtml.pot formats
--xEXCLUDE, --exclude=EXCLUDE  exclude names matching EXCLUDE from input paths
--oOUTPUT, --output=OUTPUT     write to OUTPUT in dtd, \*, inc, it, properties formats
--tTEMPLATE, --template=TEMPLATE  read from TEMPLATE in dtd, \*, inc, it, properties formats
+-i INPUT, --input=INPUT   read from INPUT in dtd.po, dtd.pot, ini.po, ini.pot, inc.po, inc.pot, manifest, it.po, it.pot, \*, html.po, html.pot, js, rdf, properties.po, properties.pot, xhtml.po, xhtml.pot formats
+-x EXCLUDE, --exclude=EXCLUDE  exclude names matching EXCLUDE from input paths
+-o OUTPUT, --output=OUTPUT     write to OUTPUT in dtd, \*, inc, it, properties formats
+-t TEMPLATE, --template=TEMPLATE  read from TEMPLATE in dtd, \*, inc, it, properties formats
 -S, --timestamp       skip conversion if the output file has newer timestamp
--lLOCALE, --locale=LOCALE  set output locale (required as this sets the directory names)
+-l LOCALE, --locale=LOCALE  set output locale (required as this sets the directory names)
 --removeuntranslated  remove untranslated strings from output
 --threshold=PERCENT  only convert files where the translation completion is above PERCENT
 --fuzzy              use translations marked fuzzy
 --nofuzzy            don't use translations marked fuzzy (default)
+
 
 .. _moz2po#examples:
 

@@ -34,9 +34,9 @@ Options:
 --errorlevel=ERRORLEVEL
                       show errorlevel as: :doc:`none, message, exception,
                       traceback <option_errorlevel>`
--iINPUT, --input=INPUT   read from INPUT in po, pot, xlf formats (XLIFF since version 1.0)
--xEXCLUDE, --exclude=EXCLUDE  exclude names matching EXCLUDE from input paths
--oOUTPUT, --output=OUTPUT     write to OUTPUT in po, pot, xlf formats (XLIFF since version 1.0)
+-i INPUT, --input=INPUT   read from INPUT in gmo, mo, po, pot, tmx, xlf, xlff, xliff formats
+-x EXCLUDE, --exclude=EXCLUDE  exclude names matching EXCLUDE from input paths
+-o OUTPUT, --output=OUTPUT     write to OUTPUT in gmo, mo, po, pot, tmx, xlf, xlff, xliff formats
 --search=SEARCHPARTS  searches the given parts (source, target, notes, locations)
 -I, --ignore-case    ignore case distinctions
 -e, --regexp         use regular expression matching

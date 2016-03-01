@@ -41,6 +41,12 @@ Options (resx2po):
 -t TEMPLATE, --template=TEMPLATE  read from TEMPLATE in RESX format
 -S, --timestamp       skip conversion if the output file has newer timestamp
 -P, --pot    output PO Templates (.pot) rather than PO files (.po)
+--filter=FILTER       leaves to extract e.g. 'name,desc': (default: extract
+                        everything)
+--duplicates=DUPLICATESTYLE
+                        what to do with duplicate strings (identical source
+                        text): merge, msgctxt (default: 'msgctxt')
+
 
 Options (po2resx):
 
@@ -56,6 +62,9 @@ Options (po2resx):
 -o OUTPUT, --output=OUTPUT      write to OUTPUT in RESX format
 -t TEMPLATE, --template=TEMPLATE  read from TEMPLATE in RESX format
 -S, --timestamp      skip conversion if the output file has newer timestamp
+--fuzzy               use translations marked fuzzy
+--nofuzzy             don't use translations marked fuzzy (default)
+
 
 .. _resx2po#examples:
 

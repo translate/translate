@@ -33,10 +33,11 @@ Options:
 --errorlevel=ERRORLEVEL
                       show errorlevel as: :doc:`none, message, exception,
                       traceback <option_errorlevel>`
--iINPUT, --input=INPUT   read from INPUT in pot format
--xEXCLUDE, --exclude=EXCLUDE  exclude names matching EXCLUDE from input paths
--oOUTPUT, --output=OUTPUT     write to OUTPUT in po, pot formats
--tTEMPLATE, --template=TEMPLATE   read from TEMPLATE in po, pot formats
+-i INPUT, --input=INPUT   read from INPUT in pot format
+-x EXCLUDE, --exclude=EXCLUDE  exclude names matching EXCLUDE from input paths
+-o OUTPUT, --output=OUTPUT     write to OUTPUT in po, pot formats
+-S, --timestamp       skip conversion if the output file has newer timestamp
+
 
 .. _poclean#examples:
 

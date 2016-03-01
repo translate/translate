@@ -50,19 +50,18 @@ Options:
 --errorlevel=ERRORLEVEL
                        show errorlevel as: :doc:`none, message, exception,
                        traceback <option_errorlevel>`
--iINPUT, --input=INPUT  read from INPUT in po, pot formats
--xEXCLUDE, --exclude=EXCLUDE
+-i INPUT, --input=INPUT  read from INPUT in po, pot formats
+-x EXCLUDE, --exclude=EXCLUDE
                        exclude names matching EXCLUDE from input paths
--oOUTPUT, --output=OUTPUT
+-o OUTPUT, --output=OUTPUT
                        write to OUTPUT in po, pot formats
--P, --pot              output PO Templates (.pot) rather than PO files (.po)
--fFORMAT, --format=FORMAT     specify format string
+-S, --timestamp       skip conversion if the output file has newer timestamp
+-f FORMAT, --format=FORMAT     specify format string
 --rewrite=STYLE        the translation rewrite style: :doc:`xxx, en, blank,
                        chef  (v1.2), unicode (v1.2) <option_rewrite>`
 --ignore=APPLICATION   apply tagging ignore rules for the given application:
                        kde, gtk, openoffice, libreoffice, mozilla
---hash=LENGTH          add an md5 hash to translations (only until version
-                       1.3.0 -- see %h below)
+
 
 .. _podebug#formats:
 

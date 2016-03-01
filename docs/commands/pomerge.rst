@@ -48,13 +48,18 @@ Options:
 --errorlevel=ERRORLEVEL
                       show errorlevel as: :doc:`none, message, exception,
                       traceback <option_errorlevel>`
--iINPUT, --input=INPUT   read from INPUT in po, pot, xlf, tmx formats
--xEXCLUDE, --exclude=EXCLUDE   exclude names matching EXCLUDE from input paths
--oOUTPUT, --output=OUTPUT   write to OUTPUT in po, pot, xlf, tmx formats
--tTEMPLATE, --template=TEMPLATE   read from TEMPLATE in po, pot, xlf, tmx formats
---mergeblanks=MERGEBLANKS  whether to overwrite existing translations with blank translations (yes/no). Default is yes.
---mergefuzzy=MERGEFUZZY  whether to overwrite existing translations with fuzzy translations (yes/no). Default is yes. (new in version 1.9)
---mergecomments=MERGECOMMENTS  whether to merge comments as well as translations (yes/no). Default is yes.
+-i INPUT, --input=INPUT   read from INPUT in po, pot, xlf formats
+-x EXCLUDE, --exclude=EXCLUDE   exclude names matching EXCLUDE from input paths
+-o OUTPUT, --output=OUTPUT   write to OUTPUT in po, pot, xlf formats
+-t TEMPLATE, --template=TEMPLATE   read from TEMPLATE in po, pot, xlf formats
+-S, --timestamp       skip conversion if the output file has newer timestamp
+--mergeblanks=MERGEBLANKS  whether to overwrite existing translations with
+                           blank translations (yes/no). Default is yes.
+--mergefuzzy=MERGEFUZZY  whether to overwrite existing translations with fuzzy
+                         translations (yes/no). Default is yes.
+--mergecomments=MERGECOMMENTS  whether to merge comments as well as
+                               translations (yes/no). Default is yes.
+
 
 .. _pomerge#examples:
 

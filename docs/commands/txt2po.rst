@@ -40,9 +40,9 @@ Options (txt2po):
 --errorlevel=ERRORLEVEL
                       show errorlevel as: :doc:`none, message, exception,
                       traceback <option_errorlevel>`
--iINPUT, --input=INPUT    read from INPUT in \*, txt formats
--xEXCLUDE, --exclude=EXCLUDE   exclude names matching EXCLUDE from input paths
--oOUTPUT, --output=OUTPUT  write to OUTPUT in po, pot formats
+-i INPUT, --input=INPUT    read from INPUT in \*, txt formats
+-x EXCLUDE, --exclude=EXCLUDE   exclude names matching EXCLUDE from input paths
+-o OUTPUT, --output=OUTPUT  write to OUTPUT in po, pot formats
 -S, --timestamp       skip conversion if the output file has newer timestamp
 -P, --pot            output PO Templates (.pot) rather than PO files (.po)
 --encoding=ENCODING    The encoding of the input file (default: UTF-8)
@@ -61,16 +61,16 @@ Options (po2txt):
 --errorlevel=ERRORLEVEL
                       show errorlevel as: :doc:`none, message, exception,
                       traceback <option_errorlevel>`
--iINPUT, --input=INPUT    read from INPUT in po, pot formats
--xEXCLUDE, --exclude=EXCLUDE   exclude names matching EXCLUDE from input paths
--oOUTPUT, --output=OUTPUT   write to OUTPUT in txt format
--tTEMPLATE, --template=TEMPLATE   read from TEMPLATE in txt format
+-i INPUT, --input=INPUT    read from INPUT in po, pot formats
+-x EXCLUDE, --exclude=EXCLUDE   exclude names matching EXCLUDE from input paths
+-o OUTPUT, --output=OUTPUT   write to OUTPUT in txt format
+-t TEMPLATE, --template=TEMPLATE   read from TEMPLATE in txt format
 -S, --timestamp      skip conversion if the output file has newer timestamp
--wWRAP, --wrap=WRAP  set number of columns to wrap text at
+--encoding=ENCODING   The encoding of the template file (default: UTF-8)
+-w WRAP, --wrap=WRAP  set number of columns to wrap text at
 --threshold=PERCENT  only convert files where the translation completion is above PERCENT
 --fuzzy              use translations marked fuzzy
 --nofuzzy            don't use translations marked fuzzy (default)
---encoding           encoding of the template file
 
 .. _txt2po#a_roundtrip_example:
 

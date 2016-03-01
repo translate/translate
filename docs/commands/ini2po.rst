@@ -34,16 +34,17 @@ Options (ini2po):
 --errorlevel=ERRORLEVEL
                       show errorlevel as: :doc:`none, message, exception,
                       traceback <option_errorlevel>`
--i INPUT, --input=INPUT      read from INPUT in php format
+-i INPUT, --input=INPUT      read from INPUT in ini, isl, iss formats
 -x EXCLUDE, --exclude=EXCLUDE  exclude names matching EXCLUDE from input paths
 -o OUTPUT, --output=OUTPUT     write to OUTPUT in po, pot formats
--t TEMPLATE, --template=TEMPLATE  read from TEMPLATE in php format
+-t TEMPLATE, --template=TEMPLATE  read from TEMPLATE in ini, isl, iss formats
 -S, --timestamp       skip conversion if the output file has newer timestamp
 -P, --pot    output PO Templates (.pot) rather than PO files (.po)
 --duplicates=DUPLICATESTYLE
                       what to do with duplicate strings (identical source
                       text): :doc:`merge, msgctxt <option_duplicates>`
                       (default: 'msgctxt')
+
 
 Options (po2ini):
 
@@ -56,12 +57,13 @@ Options (po2ini):
                       traceback <option_errorlevel>`
 -i INPUT, --input=INPUT  read from INPUT in po, pot formats
 -x EXCLUDE, --exclude=EXCLUDE   exclude names matching EXCLUDE from input paths
--o OUTPUT, --output=OUTPUT      write to OUTPUT in php format
--t TEMPLATE, --template=TEMPLATE  read from TEMPLATE in php format
+-o OUTPUT, --output=OUTPUT      write to OUTPUT in ini, isl formats
+-t TEMPLATE, --template=TEMPLATE  read from TEMPLATE in ini, isl formats
 -S, --timestamp      skip conversion if the output file has newer timestamp
 --threshold=PERCENT  only convert files where the translation completion is above PERCENT
 --fuzzy              use translations marked fuzzy
 --nofuzzy            don't use translations marked fuzzy (default)
+
 
 .. _ini2po#formats_supported:
 

@@ -38,8 +38,11 @@ Options (rc2po):
 -x EXCLUDE, --exclude=EXCLUDE  exclude names matching EXCLUDE from input paths
 -o OUTPUT, --output=OUTPUT     write to OUTPUT in po, pot formats
 -t TEMPLATE, --template=TEMPLATE  read from TEMPLATE in rc format
+-S, --timestamp       skip conversion if the output file has newer timestamp
 -P, --pot    output PO Templates (.pot) rather than PO files (.po)
---charset=CHARSET    charset to use to decode the RC files (default:                        cp1252)
+--charset=CHARSET    charset to use to decode the RC files (default: cp1252)
+-l LANG, --lang=LANG  LANG entry (default: LANG_ENGLISH)
+--sublang=SUBLANG     SUBLANG entry (default: SUBLANG_DEFAULT)
 --duplicates=DUPLICATESTYLE
                       what to do with duplicate strings (identical source
                       text): :doc:`merge, msgctxt <option_duplicates>`

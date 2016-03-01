@@ -34,9 +34,10 @@ Options:
 --errorlevel=ERRORLEVEL
                       show errorlevel as: :doc:`none, message, exception,
                       traceback <option_errorlevel>`
--iINPUT, --input=INPUT   read from INPUT in xlf, po, pot formats
--xEXCLUDE, --exclude=EXCLUDE   exclude names matching EXCLUDE from input paths
--oOUTPUT, --output=OUTPUT   write to OUTPUT in mo format
+-i INPUT, --input=INPUT   read from INPUT in xlf, po, pot formats
+-x EXCLUDE, --exclude=EXCLUDE   exclude names matching EXCLUDE from input paths
+-o OUTPUT, --output=OUTPUT   write to OUTPUT in mo format
+-S, --timestamp       skip conversion if the output file has newer timestamp
 --fuzzy              use translations marked fuzzy
 --nofuzzy            don't use translations marked fuzzy (default)
 

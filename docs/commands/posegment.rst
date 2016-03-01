@@ -44,9 +44,10 @@ Options:
 --errorlevel=ERRORLEVEL
                       show errorlevel as: :doc:`none, message, exception,
                       traceback <option_errorlevel>`
--iINPUT, --input=INPUT   read from INPUT in pot format
--xEXCLUDE, --exclude=EXCLUDE  exclude names matching EXCLUDE from input paths
--oOUTPUT, --output=OUTPUT     write to OUTPUT in po, pot formats
+-i INPUT, --input=INPUT   read from INPUT in po, pot, tmx, xlf formats
+-x EXCLUDE, --exclude=EXCLUDE  exclude names matching EXCLUDE from input paths
+-o OUTPUT, --output=OUTPUT     write to OUTPUT in po, pot, tmx, xlf formats
+-S, --timestamp       skip conversion if the output file has newer timestamp
 -P, --pot             output PO Templates (.pot) rather than PO files (.po)
 -l LANG, --language=LANG
                       the target language code

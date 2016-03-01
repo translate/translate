@@ -41,17 +41,19 @@ Options (csv2po):
 --errorlevel=ERRORLEVEL
                       show errorlevel as: :doc:`none, message, exception,
                       traceback <option_errorlevel>`
--iINPUT, --input=INPUT     read from INPUT in csv format
--xEXCLUDE, --exclude=EXCLUDE    exclude names matching EXCLUDE from input paths
--oOUTPUT, --output=OUTPUT   write to OUTPUT in po, pot formats
--tTEMPLATE, --template=TEMPLATE   read from TEMPLATE in pot, po, pot formats
+-i INPUT, --input=INPUT     read from INPUT in csv format
+-x EXCLUDE, --exclude=EXCLUDE    exclude names matching EXCLUDE from input paths
+-o OUTPUT, --output=OUTPUT   write to OUTPUT in po, pot formats
+-t TEMPLATE, --template=TEMPLATE   read from TEMPLATE in po, pot, pot formats
 -S, --timestamp       skip conversion if the output file has newer timestamp
+-P, --pot             output PO Templates (.pot) rather than PO files (.po)
 --charset=CHARSET     set charset to decode from csv files
 --columnorder=COLUMNORDER   specify the order and position of columns (location,source,target)
 --duplicates=DUPLICATESTYLE
                       what to do with duplicate strings (identical source
                       text): :doc:`merge, msgctxt <option_duplicates>`
                       (default: 'msgctxt')
+
 
 Options (po2csv):
 
@@ -62,12 +64,12 @@ Options (po2csv):
 --errorlevel=ERRORLEVEL
                       show errorlevel as: :doc:`none, message, exception,
                       traceback <option_errorlevel>`
--iINPUT, --input=INPUT    read from INPUT in po, pot formats
--xEXCLUDE, --exclude=EXCLUDE   exclude names matching EXCLUDE from input paths
--oOUTPUT, --output=OUTPUT   write to OUTPUT in csv format
+-i INPUT, --input=INPUT    read from INPUT in po, pot formats
+-x EXCLUDE, --exclude=EXCLUDE   exclude names matching EXCLUDE from input paths
+-o OUTPUT, --output=OUTPUT   write to OUTPUT in csv format
 -S, --timestamp       skip conversion if the output file has newer timestamp
--P, --pot             output PO Templates (.pot) rather than PO files (.po)
 --columnorder=COLUMNORDER    specify the order and position of columns (location,source,target)
+
 
 .. _csv2po#csv_file_layout:
 
