@@ -1,4 +1,3 @@
-
 .. _po2tmx:
 
 po2tmx
@@ -18,14 +17,16 @@ If you are interested in po2tmx, you might also be interested in
 :doc:`posegment` that can be used to perform some automated segmentation on
 sentence level.
 
+
 .. _po2tmx#usage:
 
 Usage
 =====
 
-::
+.. code-block:: console
 
   po2tmx [options] --language <target> <po> <tmx>
+
 
 Where:
 
@@ -34,6 +35,7 @@ Where:
 +-------+----------------+
 | <tmx> | is a TMX file  |
 +-------+----------------+
+
 
 Options:
 
@@ -58,12 +60,14 @@ Options:
 Examples
 ========
 
-::
+.. code-block:: console
 
   po2tmx -l xh browser.po browser.tmx
 
-Use the Xhosa (*xh*) translations in the PO file *browser.po* to create a TMX
-file called *browser.tmx*
+
+Use the Xhosa (*xh*) translations in the PO file :file:`browser.po` to create a
+TMX file called :file:`browser.tmx`.
+
 
 .. _po2tmx#bugs_and_issues:
 
@@ -79,6 +83,7 @@ po2tmx conforms to TMX v1.4 without stripping markup.  See the
 :doc:`/formats/tmx` conformance page for more details.
 
 It has not been widely tested so your mileage may vary.
+
 
 .. _po2tmx#tmx_and_po_in_omegat:
 
@@ -97,6 +102,7 @@ mismatches if TMXes from po2tmx are used.
 
 There is nothing wrong with po2tmx, but if used in conjunction with tools that
 handle PO files differently, it may lead to less than perfect matching.
+
 
 .. _po2tmx#tips:
 

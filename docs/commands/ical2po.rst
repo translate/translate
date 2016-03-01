@@ -1,4 +1,3 @@
-
 .. _ical2po:
 .. _po2ical:
 
@@ -9,15 +8,17 @@ ical2po
 
 Converts iCalendar (\*.ics) files to Gettext PO format.
 
+
 .. _ical2po#usage:
 
 Usage
 =====
 
-::
+.. code-block:: console
 
   ical2po [options] <ical> <po>
   po2ical [options] -t <ical> <po> <ical>
+
 
 Where:
 
@@ -26,6 +27,7 @@ Where:
 +---------+---------------------------------------------------+
 | <po>    | is a directory of PO or POT files                 |
 +---------+---------------------------------------------------+
+
 
 Options (ical2po):
 
@@ -75,30 +77,41 @@ Examples
 This example looks at roundtrip of iCalendar translations. While you can do
 recovery of translations, its unlikely that you will ever need to do that.
 
-First we need to create a set of POT files. ::
+First we need to create a set of POT files.
+
+.. code-block:: console
 
   ical2po -P ical.ics ical.pot
 
-The ical.ics file is converted to Gettext POT files called ical.pot.
-Directories of iCalendar files can also be processed.
 
-Begin translating the ical.pot file by first copying it to make a PO file. ::
+The :file:`ical.ics` file is converted to Gettext POT files called
+:file:`ical.pot`. Directories of iCalendar files can also be processed.
+
+Begin translating the :file:`ical.pot` file by first copying it to make a PO
+file.
+
+.. code-block:: console
 
   cp ical.pot ical-af.po
 
-You are now in a position to translate the file ical-af.po in your favourite
-translation tool.
 
-Once translated you can convert back as follows::
+You are now in a position to translate the file :file:`ical-af.po` in your
+favourite translation tool.
+
+Once translated you can convert back as follows:
+
+.. code-block:: console
 
   po2ical -t ical.ics ical-af.po ical-af.ics
 
-Your translations found in the Afrikaans PO file, ``ical-af.po``, will be
-converted to .ics using the file ``ical.ics`` as a template and creating your
-newly translated .ics file ``ical-af.ics``.
+
+Your translations found in the Afrikaans PO file, :file:`ical-af.po`, will be
+converted to .ics using the file :file:`ical.ics` as a template and creating
+your newly translated .ics file :file:`ical-af.ics`.
 
 To update your translations simply redo the POT creation step and make use of
 :doc:`pot2po` to bring your translation up-to-date.
+
 
 .. _ical2po#notes:
 

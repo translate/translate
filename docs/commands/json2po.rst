@@ -1,4 +1,3 @@
-
 .. _json2po:
 .. _po2json:
 
@@ -7,15 +6,17 @@ json2po
 
 Converts .json files to Gettext PO format.
 
+
 .. _json2po#usage:
 
 Usage
 =====
 
-::
+.. code-block:: console
 
   json2po [options] <json> <po>
   po2json [options] -t <json> <po> <json>
+
 
 Where:
 
@@ -24,6 +25,7 @@ Where:
 +---------+---------------------------------------------------+
 | <po>    | is a directory of PO or POT files                 |
 +---------+---------------------------------------------------+
+
 
 Options (json2po):
 
@@ -46,6 +48,7 @@ Options (json2po):
                       text): :doc:`merge, msgctxt <option_duplicates>`
                       (default: 'msgctxt')
 
+
 Options (po2json):
 
 --version            show program's version number and exit
@@ -64,6 +67,7 @@ Options (po2json):
 --fuzzy              use translations marked fuzzy
 --nofuzzy            don't use translations marked fuzzy (default)
 
+
 .. _json2po#examples:
 
 Examples
@@ -72,34 +76,43 @@ Examples
 This example looks at roundtrip of .json translations as well as recovery of
 existing translations.
 
-First we need to create a set of POT files. ::
+First we need to create a set of POT files.
+
+.. code-block:: console
 
   json2po -P json/ pot/
 
-All .json files found in the ``json/`` directory are converted to Gettext POT
-files and placed in the ``pot/`` directory.
+
+All .json files found in the :file:`json/` directory are converted to Gettext
+POT files and placed in the :file:`pot/` directory.
 
 If you are translating for the first time then you can skip the next step.  If
-you need to recover your existing translations then we do the following::
+you need to recover your existing translations then we do the following:
+
+.. code-block:: console
 
   json2po -t lang/ zu/ po-zu/
 
-Using the English .json files found in ``lang/`` and your existing Zulu
-translation in ``zu/`` we create a set of PO files in ``po-zu/``.  These will
-now have your translations.  Please be aware that in order for the to work 100%
-you need to have both English and Zulu at the same revision. If they are not,
-you will have to review all translations.
+
+Using the English .json files found in :file:`lang/` and your existing Zulu
+translation in :file:`zu/` we create a set of PO files in :file:`po-zu/`. These
+will now have your translations.  Please be aware that in order for the to work
+100% you need to have both English and Zulu at the same revision. If they are
+not, you will have to review all translations.
 
 You are now in a position to translate your recovered translations or your new
 POT files.
 
-Once translated you can convert back as follows::
+Once translated you can convert back as follows:
+
+.. code-block:: console
 
   po2json -t lang/ po-zu/ zu/
 
-Your translations found in the Zulu PO directory, ``po-zu/``, will be converted
-to .json using the files in ``lang/`` as templates and placing your newly
-translated .json files in ``zu/``.
+
+Your translations found in the Zulu PO directory, :file:`po-zu/`, will be
+converted to .json using the files in :file:`lang/` as templates and placing
+your newly translated .json files in :file:`zu/`.
 
 To update your translations simply redo the POT creation step and make use of
 :doc:`pot2po` to bring your translation up-to-date.

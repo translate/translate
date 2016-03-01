@@ -1,4 +1,3 @@
-
 .. _junitmsgfmt:
 
 junitmsgfmt
@@ -9,12 +8,13 @@ junitmsgfmt
 Run msgfmt and provide JUnit type output for use in continuous integration
 systems like Hudson and Jenkins.
 
+
 .. _junitmsgfmt#usage:
 
 Usage
 =====
 
-::
+.. code-block:: console
 
   junitmsgfmt po/*.po > msgfmt_junit.xml
 

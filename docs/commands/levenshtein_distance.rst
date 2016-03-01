@@ -16,7 +16,7 @@ strongly recommended to have **python-levenshtein** installed.
 To exercise the code the classfile *"Levenshtein.py"* can be executed directly
 with:
 
-.. code-block:: bash
+.. code-block:: console
 
     $ python Levenshtein.py "The first string." "The second string"
 
