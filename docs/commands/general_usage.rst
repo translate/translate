@@ -16,8 +16,8 @@ files/directories::
 
   moz2po <input> <output>
 
-You can of course still us the :opt:`-i` and :opt:`-o` options which allows you
-to reorder commands ::
+You can of course still use the :opt:`-i` and :opt:`-o` options which allows
+you to reorder commands ::
 
   moz2po -o <output> -i <input>
 

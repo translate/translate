@@ -93,7 +93,7 @@ Once translated you can convert back as follows::
 
   po2ical -t ical.ics ical-af.po ical-af.ics
 
-Your translations found in the Afrikaans PO file, ``ical-ad.po``, will be
+Your translations found in the Afrikaans PO file, ``ical-af.po``, will be
 converted to .ics using the file ``ical.ics`` as a template and creating your
 newly translated .ics file ``ical-af.ics``.
 

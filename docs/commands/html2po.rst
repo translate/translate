@@ -75,7 +75,7 @@ Examples
 
   html2po -P site pot
 
-This will find all HTML files (.htm, .html, .xhtml) in *site* convert them to
+This will find all HTML files (.htm, .html, .xhtml) in *site*, convert them to
 POT files and place them in *pot*::
 
   po2html -t site xh site-xh

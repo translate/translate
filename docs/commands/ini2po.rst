@@ -148,13 +148,17 @@ Once translated you can convert back as follows::
 
   po2ini -t lang/ po-zu/ zu/
 
-Your translations found in the Zulu PO directory, ``po-zu/``, will be converted to .ini using the files in ``lang/`` as templates and placing your newly translated .ini files in ``zu/``.
+Your translations found in the Zulu PO directory, ``po-zu/``, will be
+converted to .ini using the files in ``lang/`` as templates and placing
+your newly translated .ini files in ``zu/``.
 
-To update your translations simply redo the POT creation step and make use of :doc:`pot2po` to bring your translation up-to-date.
+To update your translations simply redo the POT creation step and make use of
+:doc:`pot2po` to bring your translation up-to-date.
 
 .. _ini2po#issues:
 
 Issues
 ======
 
-We do not extract comments from .ini files.  These are sometimes needed as developers provide guidance to translators in these comments.
+We do not extract comments from .ini files.  These are sometimes needed as
+developers provide guidance to translators in these comments.
