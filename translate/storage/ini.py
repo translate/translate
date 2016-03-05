@@ -29,10 +29,12 @@ a = a string
 b : a string
 """
 
+import logging
 import re
 from io import BytesIO
 
 from iniparse import INIConfig
+from six.moves.configparser import MissingSectionHeaderError
 
 from translate.storage import base
 
@@ -107,7 +109,7 @@ class inifile(base.TranslationStore):
         for unit in self.units:
             for location in unit.getlocations():
                 match = re.match('\\[(?P<section>.+)\\](?P<entry>.+)', location)
-                _outinifile[match.groupdict()['section']][match.groupdict()['entry']] = self._dialect.escape(unit.target)
+                _outinifile[match.groupdict()['section']][match.groupdict()['entry']] = self._dialect.escape(unit.source)
         if _outinifile:
             out.write(str(_outinifile))
 
@@ -123,10 +125,29 @@ class inifile(base.TranslationStore):
             input = inisrc
 
         if isinstance(input, bytes):
-            input = BytesIO(input)
-            self._inifile = INIConfig(input, optionxformvalue=None)
+            input_io = BytesIO(input)
+            try:
+                self._inifile = INIConfig(input_io, optionxformvalue=None)
+            except MissingSectionHeaderError:
+                # Dirty workaround to be able to process section-less INI files
+                # that iniparse don't like.
+                logging.error("INI file lacks sections. Trying again "
+                              "injecting a [default] section at the file "
+                              "beginning.")
+                input_io = BytesIO("[default]\n" + input)
+                self._inifile = INIConfig(input_io, optionxformvalue=None)
         else:
-            self._inifile = INIConfig(file(input), optionxformvalue=None)
+            try:
+                self._inifile = INIConfig(file(input), optionxformvalue=None)
+            except MissingSectionHeaderError:
+                # Dirty workaround to be able to process section-less INI files
+                # that iniparse don't like.
+                logging.error("INI file lacks sections. Trying again "
+                              "injecting a [default] section at the file "
+                              "beginning.")
+                f = file(input)
+                input_io = BytesIO("".join(["[default]\n"] + f.readlines()))
+                self._inifile = INIConfig(input_io, optionxformvalue=None)
 
         for section in self._inifile:
             for entry in self._inifile[section]:
