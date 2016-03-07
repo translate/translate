@@ -92,7 +92,7 @@ class dtd2po(object):
         # quotes have been escaped already by escapeforpo, so just add the
         # start and end quotes
         if len(lines) > 1:
-            po_unit.source = "\n".join(
+            po_unit.source = "".join(
                 [lines[0].rstrip() + ' '] +
                 [line.strip() + ' ' for line in lines[1:-1]] +
                 [lines[-1].lstrip()])
