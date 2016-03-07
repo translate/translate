@@ -52,9 +52,13 @@ Future Format Support
 """
 
 import re
+import sys
 from io import BytesIO
 
-import vobject
+if sys.version_info[0] == 2:
+    import vobject
+else:
+    vobject = None
 
 from translate.storage import base
 
@@ -81,6 +85,10 @@ class icalfile(base.TranslationStore):
 
     def __init__(self, inputfile=None, **kwargs):
         """construct an ical file, optionally reading in from inputfile."""
+        if sys.version_info[0] == 3:
+            raise NotImplementedError("Translate Toolkit does not yet provide "
+                                      "support for iCalendar in Python 3.")
+
         super(icalfile, self).__init__(**kwargs)
         self.filename = ''
         self._icalfile = None

@@ -105,6 +105,11 @@ def convertical(input_file, output_file, template_file, pot=False, duplicatestyl
 
 
 def main(argv=None):
+    import sys
+    if sys.version_info[0] == 3:
+        print("Translate Toolkit doesn't yet support converting from iCalendar.")
+        sys.exit()
+
     from translate.convert import convert
     formats = {"ics": ("po", convertical), ("ics", "ics"): ("po", convertical)}
     parser = convert.ConvertOptionParser(formats, usetemplates=True, usepots=True, description=__doc__)

@@ -30,9 +30,13 @@ b : a string
 """
 
 import re
+import sys
 from io import BytesIO
 
-from iniparse import INIConfig
+if sys.version_info[0] == 2:
+    from iniparse import INIConfig
+else:
+    INIConfig = None
 
 from translate.storage import base
 
@@ -95,6 +99,10 @@ class inifile(base.TranslationStore):
 
     def __init__(self, inputfile=None, dialect="default", **kwargs):
         """construct an INI file, optionally reading in from inputfile."""
+        if sys.version_info[0] == 3:
+            raise NotImplementedError("Translate Toolkit does not yet provide "
+                                      "support for INI in Python 3.")
+
         self._dialect = dialects.get(dialect, DialectDefault)()  # fail correctly/use getattr/
         super(inifile, self).__init__(**kwargs)
         self.filename = ''

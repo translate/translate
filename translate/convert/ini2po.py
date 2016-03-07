@@ -122,6 +122,11 @@ def convertisl(input_file, output_file, template_file, pot=False,
 
 
 def main(argv=None):
+    import sys
+    if sys.version_info[0] == 3:
+        print("Translate Toolkit doesn't yet support converting from INI.")
+        sys.exit()
+
     from translate.convert import convert
     formats = {
         "ini": ("po", convertini), ("ini", "ini"): ("po", convertini),
