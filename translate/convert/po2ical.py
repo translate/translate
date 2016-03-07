@@ -70,7 +70,8 @@ def convertical(inputfile, outputfile, templatefile, includefuzzy=False,
 def main(argv=None):
     import sys
     if sys.version_info[0] == 3:
-        print("Translate Toolkit doesn't yet support converting to iCalendar.")
+        print("Translate Toolkit doesn't yet support converting to iCalendar "
+              "in Python 3.")
         sys.exit()
 
     formats = {("po", "ics"): ("ics", convertical)}

@@ -124,7 +124,8 @@ def convertisl(input_file, output_file, template_file, pot=False,
 def main(argv=None):
     import sys
     if sys.version_info[0] == 3:
-        print("Translate Toolkit doesn't yet support converting from INI.")
+        print("Translate Toolkit doesn't yet support converting from INI in "
+              "Python 3.")
         sys.exit()
 
     from translate.convert import convert
