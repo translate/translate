@@ -493,7 +493,7 @@ def dosetup(name, version, packages, datafiles, scripts, ext_modules=[]):
           classifiers=classifiers,
           packages=packages,
           data_files=datafiles,
-          entry_points = {
+          entry_points={
               'console_scripts': translatescripts,
           },
           scripts=scripts,
