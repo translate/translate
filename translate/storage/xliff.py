@@ -118,7 +118,7 @@ class xliffunit(lisa.LISAunit):
         except StopIteration:
             if source is not None:
                 nodes.append(source)
-            if not target is None:
+            if target is not None:
                 nodes.append(target)
         return nodes
 
@@ -666,7 +666,7 @@ class xlifffile(lisa.LISAfile):
         the datatype of the first file is given."""
         if filename:
             node = self.getfilenode(filename)
-            if not node is None:
+            if node is not None:
                 return node.get("datatype")
         else:
             filenames = self.getfilenames()
@@ -685,7 +685,7 @@ class xlifffile(lisa.LISAfile):
         """
         if filename:
             node = self.getfilenode(filename)
-            if not node is None:
+            if node is not None:
                 return node.get("date")
         else:
             filenames = self.getfilenames()

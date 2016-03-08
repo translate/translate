@@ -80,7 +80,7 @@ def _get_available_indexers():
             try:
                 # the class must inherit CommonDatabase (without being the same)
                 if issubclass(element, CommonIndexer.CommonDatabase) \
-                        and not element is CommonIndexer.CommonDatabase:
+                        and element is not CommonIndexer.CommonDatabase:
                     # TODO: debug - "[Indexer]: indexing engine found in '%s': %s" % (mod_path, element)
                     # the interface is ok
                     result.append(element)

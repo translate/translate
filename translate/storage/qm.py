@@ -155,7 +155,7 @@ class qmfile(base.TranslationStore):
             subsection, = struct.unpack(">B", input[pos:pos + 1])
             if subsection == 0x01:  # End
                 pos = pos + 1
-                if not source is None and not target is None:
+                if source is not None and target is not None:
                     newunit = self.addsourceunit(source)
                     newunit.target = target
                     source = target = None

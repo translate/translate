@@ -209,11 +209,11 @@ class tsunit(lisa.LISAunit):
         """Remove all the translator notes."""
         if origin in ["programmer", "developer", "source code", None]:
             note = self.xmlelement.find(self.namespaced("extracomment"))
-            if not note is None:
+            if note is not None:
                 self.xmlelement.remove(note)
         if origin in ["translator", None]:
             note = self.xmlelement.find(self.namespaced("translatorcomment"))
-            if not note is None:
+            if note is not None:
                 self.xmlelement.remove(note)
 
     def _gettype(self):

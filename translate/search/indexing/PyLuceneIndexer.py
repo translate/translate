@@ -478,7 +478,7 @@ class PyLuceneDatabase(CommonIndexer.CommonDatabase):
 
     def _writer_is_open(self):
         """check if the indexing write access is currently open"""
-        return hasattr(self, "writer") and not self.writer is None
+        return hasattr(self, "writer") and self.writer is not None
 
     def _index_refresh(self):
         """re-read the indexer database"""

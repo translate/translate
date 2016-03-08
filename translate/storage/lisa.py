@@ -151,7 +151,7 @@ class LISAunit(base.TranslationUnit):
         if self.target == text:
             return
         languageNode = self.target_dom
-        if not text is None:
+        if text is not None:
             if languageNode is None:
                 languageNode = self.createlanguageNode(lang, text, "target")
                 self.set_target_dom(languageNode, append)

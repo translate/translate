@@ -73,14 +73,14 @@ class QphUnit(lisa.LISAunit):
         #TODO: consider only responding when origin has certain values
         notenode = self.xmlelement.find(self.namespaced("definition"))
         comment = ''
-        if not notenode is None:
+        if notenode is not None:
             comment = notenode.text
         return comment
 
     def removenotes(self):
         """Remove all the translator notes."""
         note = self.xmlelement.find(self.namespaced("definition"))
-        if not note is None:
+        if note is not None:
             self.xmlelement.remove(note)
 
 

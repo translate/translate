@@ -68,7 +68,7 @@ class svn(GenericRevisionControlSystem):
 
         # update the working copy to the given revision
         command = ["svn", "update"]
-        if not revision is None:
+        if revision is not None:
             command.extend(["-r", revision])
         # the filename is the last argument
         command.append(self.location_abs)
@@ -112,7 +112,7 @@ class svn(GenericRevisionControlSystem):
     def getcleanfile(self, revision=None):
         """return the content of the 'head' revision of the file"""
         command = ["svn", "cat"]
-        if not revision is None:
+        if revision is not None:
             command.extend(["-r", revision])
         # the filename is the last argument
         command.append(self.location_abs)

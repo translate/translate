@@ -101,7 +101,7 @@ class RESXUnit(lisa.LISAunit):
 
     def removenotes(self, origin=None):
         note = self.xmlelement.find(self.namespaced("comment"))
-        if not note is None:
+        if note is not None:
             self.xmlelement.remove(note)
 
     def setid(self, value):
