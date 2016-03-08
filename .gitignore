@@ -9,6 +9,7 @@ tests/
 MANIFEST
 MANIFEST.in
 .coverage*
+.cache*
 
 # LESS
 assets/less/bootstrap
