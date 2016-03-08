@@ -72,6 +72,7 @@ translatescripts = [
     '{name}={entry}'.format(name=name, entry=entry) for name, entry in [
         ('csv2po', 'translate.convert.csv2po:main'),
         ('csv2tbx', 'translate.convert.csv2tbx:main'),
+        ('tbx2po', 'translate.convert.tbx2po:main'),
         ('html2po', 'translate.convert.html2po:main'),
         ('ical2po', 'translate.convert.ical2po:main'),
         ('idml2po', 'translate.convert.idml2po:main'),
