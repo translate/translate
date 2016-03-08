@@ -787,8 +787,8 @@ class xlifffile(lisa.LISAfile):
         if xliff.units:
             header = xliff.units[0]
             if (("gettext-domain-header" in (header.getrestype() or "") or
-                 xliff.getdatatype() == "po") and
-                 cls.__name__.lower() != "poxlifffile"):
+                xliff.getdatatype() == "po") and
+                cls.__name__.lower() != "poxlifffile"):
                 from translate.storage import poxliff
                 xliff = poxliff.PoXliffFile.parsestring(storestring)
         return xliff
