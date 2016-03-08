@@ -266,7 +266,10 @@ class xliffunit(lisa.LISAunit):
         # TODO: consider using xpath to construct initial_list directly
         # or to simply get the correct text from the outset (just remember to
         # check for duplication.
-        initial_list = [lisa.getText(note, getXMLspace(self.xmlelement, self._default_xml_space)) for note in note_nodes if self.correctorigin(note, origin)]
+        initial_list = [lisa.getText(note,
+                                     getXMLspace(self.xmlelement,
+                                                 self._default_xml_space))
+                        for note in note_nodes if self.correctorigin(note, origin)]
 
         # Remove duplicate entries from list:
         dictset = {}
