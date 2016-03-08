@@ -62,17 +62,17 @@ class xliffunit(lisa.LISAunit):
     S_SIGNED_OFF = state.FINAL
 
     statemap = {
-                "new": S_UNTRANSLATED + 1,
-                "needs-translation": S_NEEDS_TRANSLATION,
-                "needs-adaptation": S_NEEDS_TRANSLATION + 1,
-                "needs-l10n": S_NEEDS_TRANSLATION + 2,
-                "needs-review-translation": S_NEEDS_REVIEW,
-                "needs-review-adaptation": S_NEEDS_REVIEW + 1,
-                "needs-review-l10n": S_NEEDS_REVIEW + 2,
-                "translated": S_TRANSLATED,
-                "signed-off": S_SIGNED_OFF,
-                "final": S_SIGNED_OFF + 1,
-                }
+        "new": S_UNTRANSLATED + 1,
+        "needs-translation": S_NEEDS_TRANSLATION,
+        "needs-adaptation": S_NEEDS_TRANSLATION + 1,
+        "needs-l10n": S_NEEDS_TRANSLATION + 2,
+        "needs-review-translation": S_NEEDS_REVIEW,
+        "needs-review-adaptation": S_NEEDS_REVIEW + 1,
+        "needs-review-l10n": S_NEEDS_REVIEW + 2,
+        "translated": S_TRANSLATED,
+        "signed-off": S_SIGNED_OFF,
+        "final": S_SIGNED_OFF + 1,
+    }
 
     statemap_r = dict((i[1], i[0]) for i in six.iteritems(statemap))
 

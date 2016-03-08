@@ -117,17 +117,17 @@ msgstr "Dimpled Ring"
         simplepo_template = '''#: simple.label\n#: simple.accesskey\nmsgid "%s"\nmsgstr "%s"\n'''
         simpledtd_template = '''<!ENTITY simple.label "Simple %s">\n<!ENTITY simple.accesskey "%s">'''
         possibilities = [
-                #(en label, en akey, en po, af po, af label, expected af akey)
-                ("Sis", "S", "&Sis", "&Sies", "Sies", "S"),
-                ("Sis", "s", "Si&s", "&Sies", "Sies", "S"),
-                ("Sis", "S", "&Sis", "Sie&s", "Sies", "s"),
-                ("Sis", "s", "Si&s", "Sie&s", "Sies", "s"),
-                # untranslated strings should have the casing of the source
-                ("Sis", "S", "&Sis", "", "Sis", "S"),
-                ("Sis", "s", "Si&s", "", "Sis", "s"),
-                ("Suck", "S", "&Suck", "", "Suck", "S"),
-                ("Suck", "s", "&Suck", "", "Suck", "s"),
-                ]
+            #(en label, en akey, en po, af po, af label, expected af akey)
+            ("Sis", "S", "&Sis", "&Sies", "Sies", "S"),
+            ("Sis", "s", "Si&s", "&Sies", "Sies", "S"),
+            ("Sis", "S", "&Sis", "Sie&s", "Sies", "s"),
+            ("Sis", "s", "Si&s", "Sie&s", "Sies", "s"),
+            # untranslated strings should have the casing of the source
+            ("Sis", "S", "&Sis", "", "Sis", "S"),
+            ("Sis", "s", "Si&s", "", "Sis", "s"),
+            ("Suck", "S", "&Suck", "", "Suck", "S"),
+            ("Suck", "s", "&Suck", "", "Suck", "s"),
+        ]
         for (en_label, en_akey, po_source, po_target, target_label, target_akey) in possibilities:
             simplepo = simplepo_template % (po_source, po_target)
             simpledtd = simpledtd_template % (en_label, en_akey)
