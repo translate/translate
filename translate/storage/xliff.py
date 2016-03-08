@@ -172,7 +172,8 @@ class xliffunit(lisa.LISAunit):
         if self._rich_target is None:
             self._rich_target = [
                 xml_to_strelem(self.get_target_dom(lang),
-                getXMLspace(self.xmlelement, self._default_xml_space))
+                               getXMLspace(self.xmlelement,
+                                           self._default_xml_space))
             ]
         return self._rich_target
     rich_target = property(get_rich_target, set_rich_target)
