@@ -69,6 +69,10 @@ Formats and Converters
   - Output now includes a trailing newline.
   - Unit ordering is maintanned (:issue:`3394`).
 
+- TermBase eXchange (TBX)
+
+  - Added basic support for Parts of Speech and term definitions.
+
 
 Filters and Checks
 ------------------

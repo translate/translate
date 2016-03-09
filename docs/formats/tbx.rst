@@ -48,6 +48,7 @@ Translate Toolkit TBX format support allows:
 * Basic TBX file creation
 * Creating a bilingual TBX from CSV using :doc:`/commands/csv2tbx`
 * Using ``<tig>`` tags only
+* Simple extraction of Parts of Speech and definitions
 
 
 .. _tbx#non-conformance:
@@ -58,9 +59,7 @@ Non-Conformance
 The following are not yet supported:
 
 * ``id`` attribute for ``<termEntry>`` tags
-* Definitions
 * Multiple languages
-* Parts of speech
 * Multiple translations in the same language
 * Cross references
 * Context
