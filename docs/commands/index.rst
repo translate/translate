@@ -22,6 +22,7 @@ Converters
    pot2po
    csv2po
    csv2tbx
+   tbx2po
    html2po
    ical2po
    ini2po

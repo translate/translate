@@ -71,6 +71,7 @@ Formats and Converters
 
 - TermBase eXchange (TBX)
 
+  - :doc:`tbx2po </commands/tbx2po>` converter added
   - Added basic support for Parts of Speech and term definitions.
 
 
