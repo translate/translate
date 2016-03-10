@@ -653,7 +653,7 @@ class StatsCache(object):
             if value[1] == -1:
                 continue
             checkkey = 'check-' + value[0]      # value[0] is the error name
-            if not checkkey in errors:
+            if checkkey not in errors:
                 errors[checkkey] = []
             errors[checkkey].append(value[1])   # value[1] is the unitindex
 

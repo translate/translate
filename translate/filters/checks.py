@@ -240,7 +240,7 @@ class CheckerConfig(object):
         """Combines the info in ``otherconfig`` into this config object."""
         self.targetlanguage = otherconfig.targetlanguage or self.targetlanguage
         self.updatetargetlanguage(self.targetlanguage)
-        self.accelmarkers.extend([c for c in otherconfig.accelmarkers if not c in self.accelmarkers])
+        self.accelmarkers.extend([c for c in otherconfig.accelmarkers if c not in self.accelmarkers])
         self.varmatches.extend(otherconfig.varmatches)
         self.notranslatewords.update(otherconfig.notranslatewords)
         self.musttranslatewords.update(otherconfig.musttranslatewords)
@@ -592,7 +592,7 @@ class TeeChecker:
 
             for filtername in limitfilters:
 
-                if not filtername in self.combinedfilters:
+                if filtername not in self.combinedfilters:
                     logger.warning("could not find filter %s", filtername)
 
         return self.combinedfilters
@@ -1755,7 +1755,7 @@ class StandardChecker(TranslationChecker):
         tags1 = tag_re.findall(str1)
 
         if len(tags1) > 0:
-            if (len(tags1[0]) == len(str1)) and not u"=" in tags1[0]:
+            if (len(tags1[0]) == len(str1)) and u"=" not in tags1[0]:
                 return True
 
             tags2 = tag_re.findall(str2)

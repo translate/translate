@@ -320,7 +320,7 @@ class WordfastUnit(base.TranslationUnit):
         if newvalue is None:
             self._dict[key] = None
         newvalue = _char_to_wf(newvalue)
-        if not key in self._dict or newvalue != self._dict[key]:
+        if key not in self._dict or newvalue != self._dict[key]:
             self._dict[key] = newvalue
             self._update_timestamp()
 

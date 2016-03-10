@@ -660,7 +660,7 @@ class TranslationStore(object):
         self.id_index[unit.getid()] = unit
 
         def insert_unit(source):
-            if not source in self.sourceindex:
+            if source not in self.sourceindex:
                 self.sourceindex[source] = [unit]
             else:
                 self.sourceindex[source].append(unit)

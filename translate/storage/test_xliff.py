@@ -199,11 +199,11 @@ class TestXLIFFfile(test_base.TestTranslationStore):
         xlifffile = xliff.xlifffile()
         unit = xlifffile.addsourceunit("Concept")
         # We don't want to add unnecessary notes
-        assert not "note" in bytes(xlifffile).decode('utf-8')
+        assert "note" not in bytes(xlifffile).decode('utf-8')
         unit.addnote(None)
-        assert not "note" in bytes(xlifffile).decode('utf-8')
+        assert "note" not in bytes(xlifffile).decode('utf-8')
         unit.addnote("")
-        assert not "note" in bytes(xlifffile).decode('utf-8')
+        assert "note" not in bytes(xlifffile).decode('utf-8')
 
         unit.addnote("Please buy bread")
         assert unit.getnotes() == "Please buy bread"
@@ -213,7 +213,7 @@ class TestXLIFFfile(test_base.TestTranslationStore):
         unit.addnote("Please buy milk", origin="Mom")
         notenodes = unit.xmlelement.findall(".//%s" % unit.namespaced("note"))
         assert len(notenodes) == 2
-        assert not "from" in notenodes[0].attrib
+        assert "from" not in notenodes[0].attrib
         assert notenodes[1].get("from") == "Mom"
         assert unit.getnotes(origin="Mom") == "Please buy milk"
 
@@ -226,7 +226,7 @@ class TestXLIFFfile(test_base.TestTranslationStore):
 
         assert not unit.getnotes(origin="Bob") == "Please buy bread\nPlease buy milk\nDon't forget the beer"
         assert not notenodes[2].get("from") == "Mom"
-        assert not "from" in notenodes[0].attrib
+        assert "from" not in notenodes[0].attrib
         assert unit.getnotes() == "Please buy bread\nPlease buy milk\nDon't forget the beer"
         assert unit.correctorigin(notenodes[2], "ad")
         assert not unit.correctorigin(notenodes[2], "om")

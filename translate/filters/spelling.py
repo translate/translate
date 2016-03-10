@@ -35,7 +35,7 @@ try:
     checkers = {}
 
     def _get_checker(lang):
-        if not lang in checkers:
+        if lang not in checkers:
             try:
                 checkers[lang] = checker.SpellChecker(lang)
                 # some versions only report an error when checking something

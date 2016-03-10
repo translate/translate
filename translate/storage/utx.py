@@ -116,7 +116,7 @@ class UtxUnit(base.TranslationUnit):
         # FIXME update the header date
         if newvalue is None:
             self._dict[key] = None
-        if not key in self._dict or newvalue != self._dict[key]:
+        if key not in self._dict or newvalue != self._dict[key]:
             self._dict[key] = newvalue
 
     def getnotes(self, origin=None):

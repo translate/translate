@@ -233,7 +233,7 @@ class pounit(pocommon.pounit):
                     splitlist1.extend(item.split())
                 for item in list2:
                     splitlist2.extend(item.split())
-                list1.extend([item for item in splitlist2 if not item in splitlist1])
+                list1.extend([item for item in splitlist2 if item not in splitlist1])
             else:
                 #Normal merge, but conform to list1 newline style
                 if list1 != list2:

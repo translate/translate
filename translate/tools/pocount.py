@@ -234,7 +234,7 @@ Review Messages, Review Source Words""")
             if key == "extended":
                 # FIXME: calculate extended totals
                 continue
-            if not key in self.totals:
+            if key not in self.totals:
                 self.totals[key] = 0
             self.totals[key] += stats[key]
 

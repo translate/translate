@@ -163,11 +163,11 @@ class oocheckfilter(pofilter.pocheckfilter):
                     if filtername in self.options.error:
                         logger.error("Error at %s::%s: %s",
                                      filename, location, filtermessage)
-                        return not filteraction in ["exclude-all", "exclude-serious"]
+                        return filteraction not in ["exclude-all", "exclude-serious"]
                     if filtername in self.options.warning or self.options.alwayswarn:
                         logger.warning("Warning at %s::%s: %s",
                                        filename, location, filtermessage)
-                        return not filteraction in ["exclude-all"]
+                        return filteraction not in ["exclude-all"]
         return True
 
 

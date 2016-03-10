@@ -99,7 +99,7 @@ def update(existing, add=False, **kwargs):
         elif add and key in fixedargs:
             headerargs[key] = fixedargs.pop(key)
     for key, value in six.iteritems(existing):
-        if not key in removed:
+        if key not in removed:
             headerargs[key] = value
     if add:
         for key in fixedargs:
@@ -230,9 +230,9 @@ class poheader(object):
         else:
             headeritems = update(self.parseheader(), add, **kwargs)
             keys = headeritems.keys()
-            if not "Content-Type" in keys or "charset=CHARSET" in headeritems["Content-Type"]:
+            if "Content-Type" not in keys or "charset=CHARSET" in headeritems["Content-Type"]:
                 headeritems["Content-Type"] = "text/plain; charset=UTF-8"
-            if not "Content-Transfer-Encoding" in keys or "ENCODING" in headeritems["Content-Transfer-Encoding"]:
+            if "Content-Transfer-Encoding" not in keys or "ENCODING" in headeritems["Content-Transfer-Encoding"]:
                 headeritems["Content-Transfer-Encoding"] = "8bit"
             headerString = ""
             for key, value in headeritems.items():

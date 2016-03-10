@@ -138,7 +138,7 @@ def convertoo(inputfile, outputfile, templates, pot=False, sourcelanguage=None, 
             sourcelanguage = "01"
         else:
             sourcelanguage = "en-US"
-    if not sourcelanguage in inputstore.languages:
+    if sourcelanguage not in inputstore.languages:
         logger.warning("sourcelanguage '%s' not found in inputfile '%s' "
                        "(contains %s)",
                        sourcelanguage, inputfilename,

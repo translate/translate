@@ -444,7 +444,7 @@ class pounit(pocommon.pounit):
                 for item in list2:
                     splitlist2.extend(item.split()[1:])
                     prefix = item.split()[0]
-                list1.extend(["%s %s%s" % (prefix, item, lineend) for item in splitlist2 if not item in splitlist1])
+                list1.extend(["%s %s%s" % (prefix, item, lineend) for item in splitlist2 if item not in splitlist1])
             else:
                 #Normal merge, but conform to list1 newline style
                 if list1 != list2:

@@ -66,7 +66,7 @@ class _NGram:
                         break
                     sub = word[i:end]
 
-                    if not sub in ngrams:
+                    if sub not in ngrams:
                         ngrams[sub] = 0
                     ngrams[sub] += 1
 

@@ -158,7 +158,7 @@ class CatkeysUnit(base.TranslationUnit):
         if newvalue is None:
             self._dict[key] = None
         newvalue = _escape(newvalue)
-        if not key in self._dict or newvalue != self._dict[key]:
+        if key not in self._dict or newvalue != self._dict[key]:
             self._dict[key] = newvalue
 
     def getsource(self):

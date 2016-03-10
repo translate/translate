@@ -290,7 +290,7 @@ class PoXliffFile(xliff.xlifffile, poheader.poheader):
     UnitClass = PoXliffUnit
 
     def __init__(self, *args, **kwargs):
-        if not "sourcelanguage" in kwargs:
+        if "sourcelanguage" not in kwargs:
             kwargs["sourcelanguage"] = "en-US"
         xliff.xlifffile.__init__(self, *args, **kwargs)
 

@@ -190,7 +190,7 @@ class prop2po(object):
                 location = unit.getlocations()[0]
                 if current_plural and location.startswith(current_plural):
                     plurals[current_plural].append(unit)
-                    if not '[zero]' in location:
+                    if '[zero]' not in location:
                         # We want to keep [zero] cases separately translatable
                         continue
                 elif current_plural:

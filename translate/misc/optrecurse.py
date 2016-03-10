@@ -239,11 +239,11 @@ class RecursiveOptionParser(optparse.OptionParser, object):
             if not isinstance(outputoptions, tuple) or len(outputoptions) != 2:
                 raise ValueError("output options must be tuples of length 2")
             outputformat, processor = outputoptions
-            if not inputformat in self.inputformats:
+            if inputformat not in self.inputformats:
                 self.inputformats.append(inputformat)
-            if not outputformat in outputformats:
+            if outputformat not in outputformats:
                 outputformats.append(outputformat)
-            if not templateformat in templateformats:
+            if templateformat not in templateformats:
                 templateformats.append(templateformat)
             self.outputoptions[(inputformat, templateformat)] = (outputformat, processor)
         inputformathelp = self.getformathelp(self.inputformats)

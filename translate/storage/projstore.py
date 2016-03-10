@@ -124,7 +124,7 @@ class ProjectStore(object):
                                 ``True`` by
                                 :meth:`~translate.storage.project.convert_forward`
                                 . Not used in this class."""
-        if not ftype in self.TYPE_INFO['f_prefix']:
+        if ftype not in self.TYPE_INFO['f_prefix']:
             raise ValueError('Invalid file type: %s' % (ftype))
 
         if isinstance(afile, six.string_types) and os.path.isfile(afile) and not fname:

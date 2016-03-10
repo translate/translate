@@ -337,7 +337,7 @@ def _fix_language_name(name):
 def gettext_lang(langcode=None):
     """Returns a gettext function to translate language names into the given
     language, or the system language if no language is specified."""
-    if not langcode in iso639:
+    if langcode not in iso639:
         if not langcode:
             langcode = ""
             if os.name == "nt":
@@ -357,7 +357,7 @@ def gettext_lang(langcode=None):
 def gettext_country(langcode=None):
     """Returns a gettext function to translate country names into the given
     language, or the system language if no language is specified."""
-    if not langcode in iso3166:
+    if langcode not in iso3166:
         if not langcode:
             langcode = ""
             if os.name == "nt":

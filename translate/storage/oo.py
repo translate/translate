@@ -358,7 +358,7 @@ class oomultifile:
         linenum = 0
         for line in self.multifile:
             subfile = self.getsubfilename(line)
-            if not subfile in self.subfilelines:
+            if subfile not in self.subfilelines:
                 self.subfilelines[subfile] = []
             self.subfilelines[subfile].append(linenum)
             linenum += 1

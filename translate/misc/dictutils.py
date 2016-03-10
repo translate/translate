@@ -103,7 +103,7 @@ class ordereddict(dict):
                 self.order = []
                 checkduplicates = {}
                 for key, value in initarg:
-                    if not key in checkduplicates:
+                    if key not in checkduplicates:
                         self.order.append(key)
                         checkduplicates[key] = None
 

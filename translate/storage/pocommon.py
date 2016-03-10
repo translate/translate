@@ -105,7 +105,7 @@ class pounit(base.TranslationUnit):
             notes = notestring.split('\n')
             newnotes = []
             for note in notes:
-                if not '(review)' in note:
+                if '(review)' not in note:
                     newnotes.append(note)
             newnotes = '\n'.join(newnotes)
             self.removenotes()

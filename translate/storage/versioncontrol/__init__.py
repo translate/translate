@@ -49,7 +49,7 @@ modules) are cached here for faster access.
 
 
 def __get_rcs_class(name):
-    if not name in __CACHED_RCS_CLASSES:
+    if name not in __CACHED_RCS_CLASSES:
         try:
             module = __import__("translate.storage.versioncontrol.%s" % name,
                     globals(), {}, name)

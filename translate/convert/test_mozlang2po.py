@@ -58,7 +58,7 @@ class TestLang2PO(object):
         source = '## tag\n# Comment\n;One\nEen\n'
         pofile = self.lang2po(source)
         pounit = self.singleelement(pofile)
-        assert not "tag" in pounit.getnotes()
+        assert "tag" not in pounit.getnotes()
 
 
 class TestLang2POCommand(test_convert.TestConvertCommand, TestLang2PO):
