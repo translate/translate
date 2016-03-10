@@ -330,7 +330,7 @@ def java_utf8_properties_encode(source):
 def escapespace(char):
     assert(len(char) == 1)
     if char.isspace():
-        return u"\\u%04X" %(ord(char))
+        return u"\\u%04X" % ord(char)
     return char
 
 def mozillaescapemarginspaces(source):

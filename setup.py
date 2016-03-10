@@ -480,27 +480,28 @@ def dosetup(name, version, packages, datafiles, scripts, ext_modules=[]):
     if py2exe:
         kwargs["distclass"] = TranslateDistribution
 
-    setup(name=name,
-          version=version,
-          license="GNU General Public License (GPL)",
-          description=description,
-          long_description=long_description,
-          author="Translate",
-          author_email="translate-devel@lists.sourceforge.net",
-          url="http://toolkit.translatehouse.org/",
-          download_url="http://sourceforge.net/projects/translate/files/Translate Toolkit/" + version,
-          platforms=["any"],
-          classifiers=classifiers,
-          packages=packages,
-          data_files=datafiles,
-          entry_points={
-              'console_scripts': translatescripts,
-          },
-          scripts=scripts,
-          ext_modules=ext_modules,
-          cmdclass=cmdclass,
-          install_requires=parse_requirements('requirements/required.txt'),
-          **kwargs
+    setup(
+        name=name,
+        version=version,
+        license="GNU General Public License (GPL)",
+        description=description,
+        long_description=long_description,
+        author="Translate",
+        author_email="translate-devel@lists.sourceforge.net",
+        url="http://toolkit.translatehouse.org/",
+        download_url="http://sourceforge.net/projects/translate/files/Translate Toolkit/" + version,
+        platforms=["any"],
+        classifiers=classifiers,
+        packages=packages,
+        data_files=datafiles,
+        entry_points={
+            'console_scripts': translatescripts,
+        },
+        scripts=scripts,
+        ext_modules=ext_modules,
+        cmdclass=cmdclass,
+        install_requires=parse_requirements('requirements/required.txt'),
+        **kwargs
     )
 
 
