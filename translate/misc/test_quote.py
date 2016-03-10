@@ -129,16 +129,18 @@ class TestEncoding:
 
     def test_htmlencoding_nonentities(self):
         """tests to give us full coverage"""
-        for encoded, real in [(u"Some &; text", u"Some &; text"),
-                              (u"&copy ", u"&copy "),
-                              (u"&copy", u"&copy"),
-                              (u"&rogerrabbit;", u"&rogerrabbit;"),
-                             ]:
+        for encoded, real in [
+            (u"Some &; text", u"Some &; text"),
+            (u"&copy ", u"&copy "),
+            (u"&copy", u"&copy"),
+            (u"&rogerrabbit;", u"&rogerrabbit;"),
+        ]:
             assert quote.htmlentitydecode(encoded) == real
 
-        for decoded, real in [(u"Some &; text", u"Some &; text"),
-                              (u"&copy ", u"&amp;copy "),
-                              (u"&copy", u"&amp;copy"),
-                              (u"&rogerrabbit;", u"&rogerrabbit;"),
-                             ]:
+        for decoded, real in [
+            (u"Some &; text", u"Some &; text"),
+            (u"&copy ", u"&amp;copy "),
+            (u"&copy", u"&amp;copy"),
+            (u"&rogerrabbit;", u"&rogerrabbit;"),
+        ]:
             assert quote.htmlentityencode(decoded) == real
