@@ -154,9 +154,9 @@ WF_ESCAPE_MAP = (
               ("&'E2;", u"\u201A"),  # ‚ - Single low-9 quotation mark
               ("&'E3;", u"\u201E"),  # „ - Double low-9 quotation mark
               # Other markers
-              #("&'B;", u"\n"), # Soft-break - XXX creates a problem with
-                                # roundtripping could also be represented
-                                # by \u2028
+              # Soft-break - XXX creates a problem with roundtripping could
+              # also be represented by \u2028
+              #("&'B;", u"\n"),
              )
 """Mapping of Wordfast &'XX; escapes to correct Unicode characters"""
 

@@ -128,8 +128,8 @@ def unquotefromandroid(source):
 _DTD_CODEPOINT2NAME = {
     ord("%"): "#037",  # Always escape % sign as &#037;.
     ord("&"): "amp",
-   #ord("<"): "lt",  # Not really so useful.
-   #ord(">"): "gt",  # Not really so useful.
+    #ord("<"): "lt",  # Not really so useful.
+    #ord(">"): "gt",  # Not really so useful.
 }
 
 
@@ -151,9 +151,9 @@ def quotefordtd(source):
 _DTD_NAME2CODEPOINT = {
     "quot": ord('"'),
     "amp": ord("&"),
-   #"lt": ord("<"),  # Not really so useful.
-   #"gt": ord(">"),  # Not really so useful.
-   # FIXME these should probably be handled in a more general way
+    #"lt": ord("<"),  # Not really so useful.
+    #"gt": ord(">"),  # Not really so useful.
+    # FIXME these should probably be handled in a more general way
     "#x0022": ord('"'),
     "#187": ord(u"»"),
     "#037": ord("%"),

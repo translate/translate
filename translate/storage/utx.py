@@ -177,9 +177,9 @@ class UtxFile(base.TranslationStore):
         self._fieldnames = ['src', 'tgt', 'src:pos']
         self._header = {
             "version": "1.00",
-             "source_language": "en",
-             "date_created": time.strftime("%FT%TZ%z",
-                                           time.localtime(time.time()))
+            "source_language": "en",
+            "date_created": time.strftime("%FT%TZ%z",
+                                          time.localtime(time.time()))
         }
         if inputfile is not None:
             self.parse(inputfile)

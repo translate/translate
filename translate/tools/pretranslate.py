@@ -201,11 +201,11 @@ def main(argv=None):
     from translate.convert import convert
     formats = {
         "pot": ("po", pretranslate_file),
-                ("pot", "po"): ("po", pretranslate_file),
+        ("pot", "po"): ("po", pretranslate_file),
         "po": ("po", pretranslate_file),
-               ("po", "po"): ("po", pretranslate_file),
+        ("po", "po"): ("po", pretranslate_file),
         "xlf": ("xlf", pretranslate_file),
-                ("xlf", "xlf"): ("xlf", pretranslate_file),
+        ("xlf", "xlf"): ("xlf", pretranslate_file),
     }
     parser = convert.ConvertOptionParser(formats, usetemplates=True,
                                          allowmissingtemplate=True,

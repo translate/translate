@@ -1058,13 +1058,13 @@ class StandardChecker(TranslationChecker):
             failure_state = max(failure_state, STATE_SERIOUS)
             messages.append(
                 u"Translation requires %s anonymous formatting args, original only %s" %
-                    (max2, max1)
+                (max2, max1)
             )
         else:
             failure_state = max(failure_state, STATE_MILD)
             messages.append(
                 u"Highest anonymous placeholder in original is %s, in translation %s" %
-                    (max1, max2)
+                (max1, max2)
             )
 
         if set(data1['namedvars']) == set(data2['namedvars']):
@@ -1075,7 +1075,7 @@ class StandardChecker(TranslationChecker):
             failure_state = max(failure_state, STATE_SERIOUS)
             messages.append(
                 u"Unknown named placeholders in translation: %s" %
-                    ', '.join(extra_in_2)
+                ', '.join(extra_in_2)
             )
 
         extra_in_1 = set(data1['namedvars']).difference(set(data2['namedvars']))
@@ -1083,7 +1083,7 @@ class StandardChecker(TranslationChecker):
             failure_state = max(failure_state, STATE_MILD)
             messages.append(
                 u"Named placeholders absent in translation: %s" %
-                    ', '.join(extra_in_1)
+                ', '.join(extra_in_1)
             )
 
         if failure_state == STATE_OK:
@@ -1946,7 +1946,7 @@ class StandardChecker(TranslationChecker):
                          "tabs", "newlines", "functions", "options",
                          "blank", "nplurals", "gconf", "dialogsizes",
                          "validxml"),
-          "blank": ("simplecaps", "variables", "startcaps",
+        "blank": ("simplecaps", "variables", "startcaps",
                     "accelerators", "brackets", "endpunc",
                     "acronyms", "xmltags", "startpunc",
                     "endwhitespace", "startwhitespace",
@@ -1958,7 +1958,7 @@ class StandardChecker(TranslationChecker):
                     "pythonbraceformat",
                     "tabs", "newlines", "functions", "options",
                     "gconf", "dialogsizes", "validxml"),
-          "credits": ("simplecaps", "variables", "startcaps",
+        "credits": ("simplecaps", "variables", "startcaps",
                       "accelerators", "brackets", "endpunc",
                       "acronyms", "xmltags", "startpunc",
                       "escapes", "doublequoting", "singlequoting",
@@ -1968,19 +1968,19 @@ class StandardChecker(TranslationChecker):
                       "pythonbraceformat",
                       "tabs", "newlines", "functions", "options",
                       "validxml"),
-         "purepunc": ("startcaps", "options"),
-         # This is causing some problems since Python 2.6, as
-         # startcaps is now seen as an important one to always execute
-         # and could now be done before it is blocked by a failing
-         # "untranslated" or "blank" test. This is probably happening
-         # due to slightly different implementation of the internal
-         # dict handling since Python 2.6. We should never have relied
-         # on this ordering anyway.
-         #"startcaps": ("simplecaps",),
-         "endwhitespace": ("endpunc",),
-         "startwhitespace": ("startpunc",),
-         "unchanged": ("doublewords",),
-         "compendiumconflicts": ("accelerators", "brackets", "escapes",
+        "purepunc": ("startcaps", "options"),
+        # This is causing some problems since Python 2.6, as
+        # startcaps is now seen as an important one to always execute
+        # and could now be done before it is blocked by a failing
+        # "untranslated" or "blank" test. This is probably happening
+        # due to slightly different implementation of the internal
+        # dict handling since Python 2.6. We should never have relied
+        # on this ordering anyway.
+        #"startcaps": ("simplecaps",),
+        "endwhitespace": ("endpunc",),
+        "startwhitespace": ("startpunc",),
+        "unchanged": ("doublewords",),
+        "compendiumconflicts": ("accelerators", "brackets", "escapes",
                           "numbers", "startpunc", "long", "variables",
                           "startcaps", "sentencecount", "simplecaps",
                           "doublespacing", "endpunc", "xmltags",
@@ -1988,7 +1988,7 @@ class StandardChecker(TranslationChecker):
                           "singlequoting", "doublequoting",
                           "filepaths", "purepunc", "doublewords", "printf",
                           "newlines", "validxml"),
-         }
+    }
 
 # code to actually run the tests (use unittest?)
 
