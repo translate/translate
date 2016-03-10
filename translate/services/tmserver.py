@@ -65,7 +65,7 @@ class TMServer(object):
         from translate.storage import factory
         if isinstance(tmfiles, list):
             [self.tmdb.add_store(factory.getobject(tmfile),
-                                 source_lang, target_lang) \
+                                 source_lang, target_lang)
                     for tmfile in tmfiles]
         elif tmfiles:
             self.tmdb.add_store(factory.getobject(tmfiles), source_lang,

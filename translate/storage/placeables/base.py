@@ -90,7 +90,7 @@ def to_base_placeables(tree):
     if not isinstance(tree, StringElem):
         return tree
 
-    base_class = [klass for klass in tree.__class__.__bases__ \
+    base_class = [klass for klass in tree.__class__.__bases__
                   if klass in [Bpt, Ept, Ph, It, G, Bx, Ex, X, Sub]]
 
     if not base_class:
