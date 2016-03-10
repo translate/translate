@@ -118,7 +118,7 @@ class AndroidResourceUnit(base.TranslationUnit):
                     if not active_quote or c is EOF:
                         # Replace by a single space, will get rid of
                         # non-significant newlines/tabs etc.
-                        text[i-space_count : i] = ' '
+                        text[i-space_count:i] = ' '
                         i -= space_count - 1
                     space_count = 0
                 elif space_count == 1:
@@ -168,16 +168,16 @@ class AndroidResourceUnit(base.TranslationUnit):
                         # in the clauses below without issue.
                         pass
                     elif c == 'n' or c == 'N':
-                        text[i-1 : i+1] = '\n'  # an actual newline
+                        text[i-1:i+1] = '\n'  # an actual newline
                         i -= 1
                     elif c == 't' or c == 'T':
-                        text[i-1 : i+1] = '\t'  # an actual tab
+                        text[i-1:i+1] = '\t'  # an actual tab
                         i -= 1
                     elif c == ' ':
-                        text[i-1 : i+1] = ' '  # an actual space
+                        text[i-1:i+1] = ' '  # an actual space
                         i -= 1
                     elif c in '"\'@':
-                        text[i-1 : i] = ''  # remove the backslash
+                        text[i-1:i] = ''  # remove the backslash
                         i -= 1
                     elif c == 'u':
                         # Unicode sequence. Android is nice enough to deal
@@ -191,7 +191,7 @@ class AndroidResourceUnit(base.TranslationUnit):
                         # Note: max(len()) is needed in the slice due to
                         # trailing ``None`` element.
                         max_slice = min(i+5, len(text)-1)
-                        codepoint_str = "".join(text[i+1 : max_slice])
+                        codepoint_str = "".join(text[i+1:max_slice])
                         if len(codepoint_str) < 4:
                             codepoint_str = u"0" * (4-len(codepoint_str)) + codepoint_str
                         try:
@@ -203,11 +203,11 @@ class AndroidResourceUnit(base.TranslationUnit):
                         except ValueError:
                             raise ValueError('bad unicode escape sequence')
 
-                        text[i-1 : max_slice] = codepoint
+                        text[i-1:max_slice] = codepoint
                         i -= 1
                     else:
                         # All others, remove, like Android does as well.
-                        text[i-1 : i+1] = ''
+                        text[i-1:i+1] = ''
                         i -= 1
                     active_escape = False
 
