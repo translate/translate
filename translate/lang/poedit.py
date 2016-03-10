@@ -199,15 +199,15 @@ lang_names = dict([(value, key) for (key, value) in lang_codes.items()])
 """Reversed :data:`lang_codes`"""
 
 dialects = {
-  "Portuguese": {"PORTUGAL": "pt", "BRAZIL": "pt_BR", "None": "pt"},
-  # We choose not to subtype en_US
-  "English": {
-      "UNITED KINGDOM": "en_GB",
-      "SOUTH AFRICA": "en_ZA",
-      "None": "en",
-  },
-  # zh_CN = Simplified, zh_TW = Traditional
-  "Chinese": {"CHINA": "zh_CN", "TAIWAN": "zh_TW", "None": "zh_CN"},
+    "Portuguese": {"PORTUGAL": "pt", "BRAZIL": "pt_BR", "None": "pt"},
+    # We choose not to subtype en_US
+    "English": {
+        "UNITED KINGDOM": "en_GB",
+        "SOUTH AFRICA": "en_ZA",
+        "None": "en",
+    },
+    # zh_CN = Simplified, zh_TW = Traditional
+    "Chinese": {"CHINA": "zh_CN", "TAIWAN": "zh_TW", "None": "zh_CN"},
 }
 """Language dialects based on ISO 3166 country names, 'None' is the
 default fallback"""

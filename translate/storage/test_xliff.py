@@ -355,25 +355,25 @@ class TestXLIFFfile(test_base.TestTranslationStore):
 
     def test_parsing(self):
         xlfsource = self.skeleton \
-          % '''<trans-unit id="1" xml:space="preserve">
-                   <source>File</source>
-                   <target/>
-               </trans-unit>'''
+            % '''<trans-unit id="1" xml:space="preserve">
+                     <source>File</source>
+                     <target/>
+                 </trans-unit>'''
         xlifffile = xliff.xlifffile.parsestring(xlfsource)
         assert xlifffile.units[0].istranslatable()
 
         xlfsource = self.skeleton \
-          % '''<trans-unit id="1" xml:space="preserve" translate="no">
-                   <source>File</source>
-                   <target/>
-               </trans-unit>'''
+            % '''<trans-unit id="1" xml:space="preserve" translate="no">
+                     <source>File</source>
+                     <target/>
+                 </trans-unit>'''
         xlifffile = xliff.xlifffile.parsestring(xlfsource)
         assert not xlifffile.units[0].istranslatable()
 
         xlfsource = self.skeleton \
-          % '''<trans-unit id="1" xml:space="preserve" translate="yes">
-                   <source>File</source>
-                   <target/>
-               </trans-unit>'''
+            % '''<trans-unit id="1" xml:space="preserve" translate="yes">
+                     <source>File</source>
+                     <target/>
+                 </trans-unit>'''
         xlifffile = xliff.xlifffile.parsestring(xlfsource)
         assert xlifffile.units[0].istranslatable()

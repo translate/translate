@@ -126,17 +126,17 @@ if __name__ == "__main__":
         sys.exit()
 
     sample_files = [
-      # num_dirs, files_per_dir, strings_per_file, source_words_per_string, target_words_per_string
-      # (1, 1, 2, 2, 2),
-      (1, 1, 10000, 5, 10),   # Creat 1 very large file with German like ratios or source to target
-      # (100, 10, 10, 5, 10),   # Create lots of directories and files with smaller then avarage size
-      # (1, 5, 10, 10, 10),
-      # (1, 10, 10, 10, 10),
-      # (5, 10, 10, 10, 10),
-      # (5, 10, 100, 20, 20),
-      # (10, 20, 100, 10, 10),
-      # (10, 20, 100, 10, 10),
-      # (100, 2, 140, 3, 3),  # OpenOffice.org approximate ratios
+        # num_dirs, files_per_dir, strings_per_file, source_words_per_string, target_words_per_string
+        # (1, 1, 2, 2, 2),
+        (1, 1, 10000, 5, 10),   # Creat 1 very large file with German like ratios or source to target
+        # (100, 10, 10, 5, 10),   # Create lots of directories and files with smaller then avarage size
+        # (1, 5, 10, 10, 10),
+        # (1, 10, 10, 10, 10),
+        # (5, 10, 10, 10, 10),
+        # (5, 10, 100, 20, 20),
+        # (10, 20, 100, 10, 10),
+        # (10, 20, 100, 10, 10),
+        # (100, 2, 140, 3, 3),  # OpenOffice.org approximate ratios
     ]
 
     for sample_file_sizes in sample_files:

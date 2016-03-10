@@ -167,7 +167,7 @@ class ExpatBuilderNS(expatbuilder.ExpatBuilderNS):
     def reset(self):
         """Free all data structures used during DOM construction."""
         self.document = theDOMImplementation.createDocument(
-          expatbuilder.EMPTY_NAMESPACE, None, None)
+            expatbuilder.EMPTY_NAMESPACE, None, None)
         self.curNode = self.document
         self._elem_info = self.document._elem_info
         self._cdata = False

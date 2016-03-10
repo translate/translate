@@ -140,17 +140,18 @@ translatescripts = [
     ]
 ]
 
-translatebashscripts = [join(*('tools', ) + script) for script in [
-                  ('junitmsgfmt', ),
-                  ('mozilla', 'build_firefox.sh'),
-                  ('mozilla', 'buildxpi.py'),
-                  ('mozilla', 'get_moz_enUS.py'),
-                  ('pocommentclean', ),
-                  ('pocompendium', ),
-                  ('pomigrate2', ),
-                  ('popuretext', ),
-                  ('poreencode', ),
-                  ('posplit', ),
+translatebashscripts = [
+    join(*('tools', ) + script) for script in [
+        ('junitmsgfmt', ),
+        ('mozilla', 'build_firefox.sh'),
+        ('mozilla', 'buildxpi.py'),
+        ('mozilla', 'get_moz_enUS.py'),
+        ('pocommentclean', ),
+        ('pocompendium', ),
+        ('pomigrate2', ),
+        ('popuretext', ),
+        ('poreencode', ),
+        ('posplit', ),
     ]
 ]
 

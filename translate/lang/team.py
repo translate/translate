@@ -29,17 +29,17 @@ import six
 __all__ = ['LANG_TEAM_CONTACT_SNIPPETS', 'guess_language']
 
 LANG_TEAM_REGEX = (
-   ("@li.org", "([a-z_A-Z]{2,})@li.org", ["LL", "XX", "TEAM"]),
-   ("translation-team",
-    "translation-team-([a-z_A-Z]+)@lists.sourceforge.net", None),
-   ("fedora-trans", "fedora-trans-([a-z_A-Z]+)@redhat.com", ["list"]),
-   ("ubuntu-l10n", "ubuntu-l10n-([a-z_A-Z]+)@lists.ubuntu.com", None),
-   ("translate-discuss",
-    "translate-discuss-([a-z_A-Z]+)@lists.sourceforge.net", None),
-   ("kde-i18n", "kde-i18n-([a-z_A-Z]+)@(?:lists\.|mail\.|)kde.org", ["doc"]),
-   ("kde-l10n", "kde-l10n-([a-z_A-Z]+)@kde.org", None),
-   ("fedoraproject", "trans-([a-z_A-Z]+)@lists.fedoraproject.org", None),
-   ("gnome.org", "gnome-([a-z_A-Z]+)-list@gnome.org", ["latin"]),
+    ("@li.org", "([a-z_A-Z]{2,})@li.org", ["LL", "XX", "TEAM"]),
+    ("translation-team",
+     "translation-team-([a-z_A-Z]+)@lists.sourceforge.net", None),
+    ("fedora-trans", "fedora-trans-([a-z_A-Z]+)@redhat.com", ["list"]),
+    ("ubuntu-l10n", "ubuntu-l10n-([a-z_A-Z]+)@lists.ubuntu.com", None),
+    ("translate-discuss",
+     "translate-discuss-([a-z_A-Z]+)@lists.sourceforge.net", None),
+    ("kde-i18n", "kde-i18n-([a-z_A-Z]+)@(?:lists\.|mail\.|)kde.org", ["doc"]),
+    ("kde-l10n", "kde-l10n-([a-z_A-Z]+)@kde.org", None),
+    ("fedoraproject", "trans-([a-z_A-Z]+)@lists.fedoraproject.org", None),
+    ("gnome.org", "gnome-([a-z_A-Z]+)-list@gnome.org", ["latin"]),
 )
 """Data for regular expression based extraction.  The fieds are: prefilter
 information, regex with single group that contains the language code,
