@@ -222,10 +222,10 @@ def convertoo(inputfile, outputfile, templatefile, sourcelanguage=None,
 
 def main(argv=None):
     formats = {
-                ("po", "oo"): ("oo", convertoo),
-                ("xlf", "oo"): ("oo", convertoo),
-                ("po", "sdf"): ("sdf", convertoo),
-              }
+        ("po", "oo"): ("oo", convertoo),
+        ("xlf", "oo"): ("oo", convertoo),
+        ("po", "sdf"): ("sdf", convertoo),
+    }
     # always treat the input as an archive unless it is a directory
     archiveformats = {(None, "output"): oo.oomultifile, (None, "template"): oo.oomultifile}
     parser = convert.ArchiveConvertOptionParser(formats, usetemplates=True, description=__doc__, archiveformats=archiveformats)

@@ -115,10 +115,10 @@ def convertsub(input_file, output_file, template_file=None, pot=False,
 def main(argv=None):
     from translate.convert import convert
     formats = {
-          "srt": ("po", convertsub), ("srt", "srt"): ("po", convertsub),
-          "sub": ("po", convertsub), ("sub", "sub"): ("po", convertsub),
-          "ssa": ("po", convertsub), ("ssa", "ssa"): ("po", convertsub),
-          "ass": ("po", convertsub), ("ass", "ass"): ("po", convertsub),
+        "srt": ("po", convertsub), ("srt", "srt"): ("po", convertsub),
+        "sub": ("po", convertsub), ("sub", "sub"): ("po", convertsub),
+        "ssa": ("po", convertsub), ("ssa", "ssa"): ("po", convertsub),
+        "ass": ("po", convertsub), ("ass", "ass"): ("po", convertsub),
     }
     parser = convert.ConvertOptionParser(formats, usetemplates=True,
                                          usepots=True, description=__doc__)

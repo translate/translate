@@ -61,7 +61,7 @@ class ConflictOptionParser(optrecurse.RecursiveOptionParser):
         """sets the usage string - if usage not given, uses getusagestring for each option"""
         if usage is None:
             self.usage = "%prog " + " ".join([self.getusagestring(option) for option in self.option_list]) + \
-                    "\n  input directory is searched for PO files, PO files with name of conflicting string are output in output directory"
+                "\n  input directory is searched for PO files, PO files with name of conflicting string are output in output directory"
         else:
             super(ConflictOptionParser, self).set_usage(usage)
 

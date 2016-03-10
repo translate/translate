@@ -101,8 +101,8 @@ def create_example_content(database):
     database.index_document({None: "med"})
     # for tokenizing tests
     database.set_field_analyzers({
-            "fname1": database.ANALYZER_PARTIAL | database.ANALYZER_TOKENIZE,
-            "fname2": database.ANALYZER_EXACT})
+        "fname1": database.ANALYZER_PARTIAL | database.ANALYZER_TOKENIZE,
+        "fname2": database.ANALYZER_EXACT})
     database.index_document({"fname1": "qaz wsx", None: "edc rfv"})
     database.index_document({"fname2": "qaz wsx", None: "edc rfv"})
     # check a filename with the exact analyzer

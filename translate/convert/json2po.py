@@ -119,9 +119,9 @@ def convertjson(input_file, output_file, template_file, pot=False,
 def main(argv=None):
     from translate.convert import convert
     formats = {
-               "json": ("po", convertjson),
-               ("json", "json"): ("po", convertjson),
-              }
+        "json": ("po", convertjson),
+        ("json", "json"): ("po", convertjson),
+    }
     parser = convert.ConvertOptionParser(formats, usetemplates=True,
                                          usepots=True, description=__doc__)
     parser.add_option("", "--filter", dest="filter", default=None,

@@ -256,9 +256,9 @@ class ExpatBuilderNS(expatbuilder.ExpatBuilderNS):
                     "element stack messed up! (namespace)"
             else:
                 assert curNode.nodeName == name, \
-                     "element stack messed up - bad nodeName"
+                    "element stack messed up - bad nodeName"
                 assert curNode.namespaceURI == expatbuilder.EMPTY_NAMESPACE, \
-                     "element stack messed up - bad namespaceURI"
+                    "element stack messed up - bad namespaceURI"
             self.curNode = curNode.parentNode
             self._finish_end_element(curNode)
 

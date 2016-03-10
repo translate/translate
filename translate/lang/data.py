@@ -233,12 +233,12 @@ _fixed_names = {
 
 
 cldr_plural_categories = [
-        'zero',
-        'one',
-        'two',
-        'few',
-        'many',
-        'other',
+    'zero',
+    'one',
+    'two',
+    'few',
+    'many',
+    'other',
 ]
 
 
@@ -265,11 +265,11 @@ def simplercode(code):
 
 
 expansion_factors = {
-        'af': 0.1,
-        'ar': -0.09,
-        'es': 0.21,
-        'fr': 0.28,
-        'it': 0.2,
+    'af': 0.1,
+    'ar': -0.09,
+    'es': 0.21,
+    'fr': 0.28,
+    'it': 0.2,
 }
 """Source to target string length expansion factors."""
 

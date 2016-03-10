@@ -71,11 +71,8 @@ def unescapehandler(escape):
 
 
 wrapper = textwrap.TextWrapper(
-        width=77,
-        replace_whitespace=False,
-        expand_tabs=False,
-        drop_whitespace=False
-)
+    width=77, replace_whitespace=False, expand_tabs=False,
+    drop_whitespace=False)
 wrapper.wordsep_re = re.compile(
     r'(\s+|'                                  # any whitespace
     r'\w*\\.|'                                # any escape should not be split

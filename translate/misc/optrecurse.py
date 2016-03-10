@@ -254,9 +254,9 @@ class RecursiveOptionParser(optparse.OptionParser, object):
         inputoption.required = True
         self.define_option(inputoption)
         excludeoption = optparse.Option("-x", "--exclude", dest="exclude",
-                action="append", type="string", metavar="EXCLUDE",
-                default=["CVS", ".svn", "_darcs", ".git", ".hg", ".bzr"],
-                help="exclude names matching EXCLUDE from input paths")
+            action="append", type="string", metavar="EXCLUDE",
+            default=["CVS", ".svn", "_darcs", ".git", ".hg", ".bzr"],
+            help="exclude names matching EXCLUDE from input paths")
         self.define_option(excludeoption)
         outputformathelp = self.getformathelp(outputformats)
         outputoption = optparse.Option("-o", "--output", dest="output",
@@ -282,10 +282,10 @@ class RecursiveOptionParser(optparse.OptionParser, object):
             ("names", progressbar.MessageProgressBar),
             ("verbose", progressbar.VerboseProgressBar),
         ])
-        progressoption = optparse.Option(None, "--progress", dest="progress",
-                default="bar",
-                choices=list(self.progresstypes.keys()), metavar="PROGRESS",
-                help="show progress as: %s" % (", ".join(self.progresstypes)))
+        progressoption = optparse.Option(
+            None, "--progress", dest="progress", default="bar",
+            choices=list(self.progresstypes.keys()), metavar="PROGRESS",
+            help="show progress as: %s" % (", ".join(self.progresstypes)))
         self.define_option(progressoption)
 
     def seterrorleveloptions(self):

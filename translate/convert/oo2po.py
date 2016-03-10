@@ -104,9 +104,9 @@ class oo2po(object):
                       "form_name": "enter_issue",
                   })
         targetheader = thetargetfile.init_headers(
-                              x_accelerator_marker="~",
-                              x_merge_on="location",
-                              report_msgid_bugs_to=bug_url,
+            x_accelerator_marker="~",
+            x_merge_on="location",
+            report_msgid_bugs_to=bug_url,
         )
         targetheader.addnote("extracted from %s" % theoofile.filename,
                              "developer")
@@ -163,9 +163,9 @@ def convertoo(inputfile, outputfile, templates, pot=False, sourcelanguage=None, 
 def main(argv=None):
     from translate.convert import convert
     formats = {
-                "oo": ("po", convertoo),
-                "sdf": ("po", convertoo),
-              }
+        "oo": ("po", convertoo),
+        "sdf": ("po", convertoo),
+    }
     # always treat the input as an archive unless it is a directory
     archiveformats = {(None, "input"): oo.oomultifile}
     parser = convert.ArchiveConvertOptionParser(formats, usepots=True,

@@ -91,10 +91,9 @@ def convert_stores(input_store, template_store, temp_store=None, tm=None,
     # Do matching
     for input_unit in temp_store.units:
         if input_unit.istranslatable():
-            input_unit = pretranslate \
-                    .pretranslate_unit(input_unit, template_store, matchers,
-                                       mark_reused=True,
-                                       merge_on=input_store.merge_on)
+            input_unit = pretranslate.pretranslate_unit(
+                input_unit, template_store, matchers, mark_reused=True,
+                merge_on=input_store.merge_on)
             _unit_post_merge(input_unit, input_store, temp_store, template_store)
 
     #finalize store

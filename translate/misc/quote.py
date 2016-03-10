@@ -217,8 +217,8 @@ def entityencode(source, codepoint2name):
                 output += "&" + possibleentity + ";"
                 inentity = False
             elif char == " ":
-                output += _encode_entity_char("&", codepoint2name) + \
-                          entityencode(possibleentity + char, codepoint2name)
+                output += (_encode_entity_char("&", codepoint2name) +
+                           entityencode(possibleentity + char, codepoint2name))
                 inentity = False
             else:
                 possibleentity += char
@@ -226,8 +226,8 @@ def entityencode(source, codepoint2name):
             output += _encode_entity_char(char, codepoint2name)
     if inentity:
         # Handle nonentities at end of string.
-        output += _encode_entity_char("&", codepoint2name) + \
-                  entityencode(possibleentity, codepoint2name)
+        output += (_encode_entity_char("&", codepoint2name) +
+                   entityencode(possibleentity, codepoint2name))
 
     return output
 

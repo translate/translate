@@ -114,8 +114,8 @@ def convertphp(inputfile, outputfile, templatefile, pot=False,
 
 def main(argv=None):
     formats = {
-            "php": ("po", convertphp), ("php", "php"): ("po", convertphp),
-            "html": ("po", convertphp), ("html", "html"): ("po", convertphp),
+        "php": ("po", convertphp), ("php", "php"): ("po", convertphp),
+        "html": ("po", convertphp), ("html", "html"): ("po", convertphp),
     }
     parser = convert.ConvertOptionParser(formats, usetemplates=True,
                                          usepots=True, description=__doc__)

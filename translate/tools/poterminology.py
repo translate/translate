@@ -388,7 +388,7 @@ class TerminologyOptionParser(optrecurse.RecursiveOptionParser):
         """sets the usage string - if usage not given, uses getusagestring for each option"""
         if usage is None:
             self.usage = "%prog " + " ".join([self.getusagestring(option) for option in self.option_list]) + \
-                    "\n  input directory is searched for PO files, terminology PO file is output file"
+                "\n  input directory is searched for PO files, terminology PO file is output file"
         else:
             super(TerminologyOptionParser, self).set_usage(usage)
 

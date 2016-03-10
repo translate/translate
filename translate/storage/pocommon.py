@@ -175,7 +175,7 @@ class pounit(base.TranslationUnit):
             has_target = bool(self.target)
         if has_target:
             isfuzzy = self.STATE[self.S_FUZZY][0] <= value < self.STATE[self.S_FUZZY][1] or \
-                    self.STATE[self.S_FUZZY_OBSOLETE][0] <= value < self.STATE[self.S_FUZZY_OBSOLETE][1]
+                self.STATE[self.S_FUZZY_OBSOLETE][0] <= value < self.STATE[self.S_FUZZY_OBSOLETE][1]
             self._domarkfuzzy(isfuzzy)  # Implementation specific fuzzy-marking
         else:
             super(pounit, self).set_state_n(self.S_UNTRANSLATED)

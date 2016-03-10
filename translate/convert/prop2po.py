@@ -52,8 +52,8 @@ class prop2po(object):
         thetargetfile = po.pofile()
         if self.personality in ("mozilla", "skype"):
             targetheader = thetargetfile.init_headers(
-                    x_accelerator_marker="&",
-                    x_merge_on="location",
+                x_accelerator_marker="&",
+                x_merge_on="location",
             )
         else:
             targetheader = thetargetfile.header()
@@ -95,8 +95,8 @@ class prop2po(object):
         thetargetfile = po.pofile()
         if self.personality in ("mozilla", "skype"):
             targetheader = thetargetfile.init_headers(
-                    x_accelerator_marker="&",
-                    x_merge_on="location",
+                x_accelerator_marker="&",
+                x_merge_on="location",
             )
         else:
             targetheader = thetargetfile.header()
@@ -339,16 +339,15 @@ def main(argv=None):
                                          usepots=True,
                                          description=__doc__)
     parser.add_option("", "--personality", dest="personality",
-            default=properties.default_dialect,
-            type="choice",
-            choices=list(properties.dialects.keys()),
-            help="override the input file format: %s (for .properties files, default: %s)" %
-                 (", ".join(six.iterkeys(properties.dialects)),
-                  properties.default_dialect),
-            metavar="TYPE")
+        default=properties.default_dialect,
+        type="choice",
+        choices=list(properties.dialects.keys()),
+        help="override the input file format: %s (for .properties files, default: %s)" % (
+            ", ".join(six.iterkeys(properties.dialects)), properties.default_dialect),
+        metavar="TYPE")
     parser.add_option("", "--encoding", dest="encoding", default=None,
-            help="override the encoding set by the personality",
-            metavar="ENCODING")
+        help="override the encoding set by the personality",
+        metavar="ENCODING")
     parser.add_duplicates_option()
     parser.passthrough.append("pot")
     parser.passthrough.append("personality")

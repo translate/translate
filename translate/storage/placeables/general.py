@@ -304,17 +304,18 @@ class OptionPlaceable(Ph):
     parse = classmethod(regex_parse)
 
 
-def to_general_placeables(tree, classmap={
-                                    G: (AltAttrPlaceable,),
-                                    Ph: (NumberPlaceable,
-                                         XMLEntityPlaceable,
-                                         XMLTagPlaceable,
-                                         UrlPlaceable,
-                                         FilePlaceable,
-                                         EmailPlaceable,
-                                         OptionPlaceable,
-                                         PunctuationPlaceable,),
-                                }):
+def to_general_placeables(tree,
+                          classmap={
+                              G: (AltAttrPlaceable,),
+                              Ph: (NumberPlaceable,
+                                   XMLEntityPlaceable,
+                                   XMLTagPlaceable,
+                                   UrlPlaceable,
+                                   FilePlaceable,
+                                   EmailPlaceable,
+                                   OptionPlaceable,
+                                   PunctuationPlaceable,),
+                          }):
     if not isinstance(tree, StringElem):
         return tree
 

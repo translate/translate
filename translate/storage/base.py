@@ -650,9 +650,9 @@ class TranslationStore(object):
             remove_unit(unit.source)
 
         for location in unit.getlocations():
-            if location in self.locationindex \
-                   and self.locationindex[location] is not None \
-                   and self.locationindex[location] == unit:
+            if (location in self.locationindex and
+                self.locationindex[location] is not None and
+                self.locationindex[location] == unit):
                 del(self.locationindex[location])
 
     def add_unit_to_index(self, unit):

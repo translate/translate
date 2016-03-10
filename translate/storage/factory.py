@@ -32,23 +32,23 @@ decompressclass = {
 
 
 classes_str = {
-           "csv": ("csvl10n", "csvfile"),
-           "tab": ("omegat", "OmegaTFileTab"), "utf8": ("omegat", "OmegaTFile"),
-           "po": ("po", "pofile"), "pot": ("po", "pofile"),
-           "mo": ("mo", "mofile"), "gmo": ("mo", "mofile"),
-           "qm": ("qm", "qmfile"),
-           "lang": ("mozilla_lang", "LangStore"),
-           "utx": ("utx", "UtxFile"),
-           "_wftm": ("wordfast", "WordfastTMFile"),
-           "_trados_txt_tm": ("trados", "TradosTxtTmFile"),
-           "catkeys": ("catkeys", "CatkeysFile"),
+    "csv": ("csvl10n", "csvfile"),
+    "tab": ("omegat", "OmegaTFileTab"), "utf8": ("omegat", "OmegaTFile"),
+    "po": ("po", "pofile"), "pot": ("po", "pofile"),
+    "mo": ("mo", "mofile"), "gmo": ("mo", "mofile"),
+    "qm": ("qm", "qmfile"),
+    "lang": ("mozilla_lang", "LangStore"),
+    "utx": ("utx", "UtxFile"),
+    "_wftm": ("wordfast", "WordfastTMFile"),
+    "_trados_txt_tm": ("trados", "TradosTxtTmFile"),
+    "catkeys": ("catkeys", "CatkeysFile"),
 
-           "qph": ("qph", "QphFile"),
-           "tbx": ("tbx", "tbxfile"),
-           "tmx": ("tmx", "tmxfile"),
-           "ts": ("ts2", "tsfile"),
-           "xliff": ("xliff", "xlifffile"), "xlf": ("xliff", "xlifffile"),
-           "sdlxliff": ("xliff", "xlifffile"),
+    "qph": ("qph", "QphFile"),
+    "tbx": ("tbx", "tbxfile"),
+    "tmx": ("tmx", "tmxfile"),
+    "ts": ("ts2", "tsfile"),
+    "xliff": ("xliff", "xlifffile"), "xlf": ("xliff", "xlifffile"),
+    "sdlxliff": ("xliff", "xlifffile"),
 }
 ###  XXX:  if you add anything here, you must also add it to translate.storage.
 
@@ -198,17 +198,17 @@ def getobject(storefile, localfiletype=None, ignore=None, classes=None,
 
 
 supported = [
-        ('Gettext PO file', ['po', 'pot'], ["text/x-gettext-catalog", "text/x-gettext-translation", "text/x-po", "text/x-pot"]),
-        ('XLIFF Translation File', ['xlf', 'xliff', 'sdlxliff'], ["application/x-xliff", "application/x-xliff+xml"]),
-        ('Gettext MO file', ['mo', 'gmo'], ["application/x-gettext-catalog", "application/x-mo"]),
-        ('Qt .qm file', ['qm'], ["application/x-qm"]),
-        ('TBX Glossary', ['tbx'], ['application/x-tbx']),
-        ('TMX Translation Memory', ['tmx'], ["application/x-tmx"]),
-        ('Qt Linguist Translation File', ['ts'], ["application/x-linguist"]),
-        ('Qt Phrase Book', ['qph'], ["application/x-qph"]),
-        ('OmegaT Glossary', ['utf8', 'tab'], ["application/x-omegat-glossary"]),
-        ('UTX Dictionary', ['utx'], ["text/x-utx"]),
-        ('Haiku catkeys file', ['catkeys'], ["application/x-catkeys"]),
+    ('Gettext PO file', ['po', 'pot'], ["text/x-gettext-catalog", "text/x-gettext-translation", "text/x-po", "text/x-pot"]),
+    ('XLIFF Translation File', ['xlf', 'xliff', 'sdlxliff'], ["application/x-xliff", "application/x-xliff+xml"]),
+    ('Gettext MO file', ['mo', 'gmo'], ["application/x-gettext-catalog", "application/x-mo"]),
+    ('Qt .qm file', ['qm'], ["application/x-qm"]),
+    ('TBX Glossary', ['tbx'], ['application/x-tbx']),
+    ('TMX Translation Memory', ['tmx'], ["application/x-tmx"]),
+    ('Qt Linguist Translation File', ['ts'], ["application/x-linguist"]),
+    ('Qt Phrase Book', ['qph'], ["application/x-qph"]),
+    ('OmegaT Glossary', ['utf8', 'tab'], ["application/x-omegat-glossary"]),
+    ('UTX Dictionary', ['utx'], ["text/x-utx"]),
+    ('Haiku catkeys file', ['catkeys'], ["application/x-catkeys"]),
 ]
 
 

@@ -215,11 +215,11 @@ class UtxFile(base.TranslationStore):
     def _write_header(self):
         """Create a UTX header"""
         header = "#UTX-S %(version)s; %(src)s/%(tgt)s; %(date)s" % {
-                    "version": self._header["version"],
-                    "src": self._header["source_language"],
-                    "tgt": self._header.get("target_language", ""),
-                    "date": self._header["date_created"],
-                 }
+            "version": self._header["version"],
+            "src": self._header["source_language"],
+            "tgt": self._header.get("target_language", ""),
+            "date": self._header["date_created"],
+        }
         items = []
         for key, value in six.iteritems(self._header):
             if key in ["version", "source_language",
@@ -261,9 +261,9 @@ class UtxFile(base.TranslationStore):
         except Exception:
             raise base.ParseError("Cannot parse header")
         lines = csv.DictReader(
-                    input.split(UtxDialect.lineterminator)[header_length:],
-                    fieldnames=self._fieldnames,
-                    dialect="utx")
+            input.split(UtxDialect.lineterminator)[header_length:],
+            fieldnames=self._fieldnames,
+            dialect="utx")
         for line in lines:
             newunit = UtxUnit()
             newunit.dict = line

@@ -52,8 +52,8 @@ def get_abs_data_filename(path_parts, basedirs=None):
         # Toolkit's data files
         base = os.path.dirname(upath(__file__))
         BASE_DIRS = [
-                base,
-                os.path.join(base, os.path.pardir),
+            base,
+            os.path.join(base, os.path.pardir),
         ]
 
     # Freedesktop standard
@@ -73,8 +73,8 @@ def get_abs_data_filename(path_parts, basedirs=None):
         BASE_DIRS = []
 
     BASE_DIRS += [
-            # installed linux (/usr/bin) as well as Windows
-            os.path.dirname(upath(sys.executable)),
+        # installed linux (/usr/bin) as well as Windows
+        os.path.dirname(upath(sys.executable)),
     ]
 
     for basepath, data_dir in ((x, y) for x in BASE_DIRS for y in DATA_DIRS):

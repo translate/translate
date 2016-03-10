@@ -79,10 +79,10 @@ class tsunit(lisa.LISAunit):
     S_TRANSLATED = state.UNREVIEWED
 
     statemap = {
-                "obsolete": S_OBSOLETE,
-                "unfinished": S_FUZZY,
-                "": S_TRANSLATED,
-                None: S_TRANSLATED,
+        "obsolete": S_OBSOLETE,
+        "unfinished": S_FUZZY,
+        "": S_TRANSLATED,
+        None: S_TRANSLATED,
     }
     """This maps the unit "type" attribute to state."""
 

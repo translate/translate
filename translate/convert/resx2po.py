@@ -140,9 +140,9 @@ def convert_resx(input_file, output_file, template_file, pot=False, duplicatesty
 def main(argv=None):
     from translate.convert import convert
     formats = {
-               "resx": ("po", convert_resx),
-               ("resx", "resx"): ("po", convert_resx),
-              }
+        "resx": ("po", convert_resx),
+        ("resx", "resx"): ("po", convert_resx),
+    }
     parser = convert.ConvertOptionParser(formats, usetemplates=True, usepots=True, description=__doc__)
     parser.add_option("", "--filter", dest="filter", default=None,
             help="leaves to extract e.g. 'name,desc': (default: extract everything)",

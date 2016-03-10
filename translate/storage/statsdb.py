@@ -211,12 +211,12 @@ class FileTotals(object):
 
     @classmethod
     def _compute_derived_values(cls, record):
-        record["total"] = record["untranslated"] + \
-                          record["translated"] + \
-                          record["fuzzy"]
-        record["totalsourcewords"] = record["untranslatedsourcewords"] + \
-                                     record["translatedsourcewords"] + \
-                                     record["fuzzysourcewords"]
+        record["total"] = (record["untranslated"] +
+                           record["translated"] +
+                           record["fuzzy"])
+        record["totalsourcewords"] = (record["untranslatedsourcewords"] +
+                                      record["translatedsourcewords"] +
+                                      record["fuzzysourcewords"])
         record["review"] = 0
 
     def __getitem__(self, fileid):

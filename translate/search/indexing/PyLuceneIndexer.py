@@ -291,7 +291,7 @@ class PyLuceneDatabase(CommonIndexer.CommonDatabase):
         combined_query = PyLucene.BooleanQuery()
         for query in queries:
             combined_query.add(
-                    PyLucene.BooleanClause(query, _occur(require_all, False)))
+                PyLucene.BooleanClause(query, _occur(require_all, False)))
         return combined_query
 
     def _create_empty_document(self):

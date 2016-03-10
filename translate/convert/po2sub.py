@@ -71,10 +71,10 @@ def convertsub(inputfile, outputfile, templatefile, includefuzzy=False,
 def main(argv=None):
     # handle command line options
     formats = {
-         ("po", "srt"): ("srt", convertsub),
-         ("po", "sub"): ("sub", convertsub),
-         ("po", "ssa"): ("ssa", convertsub),
-         ("po", "ass"): ("ass", convertsub),
+        ("po", "srt"): ("srt", convertsub),
+        ("po", "sub"): ("sub", convertsub),
+        ("po", "ssa"): ("ssa", convertsub),
+        ("po", "ass"): ("ass", convertsub),
     }
     parser = convert.ConvertOptionParser(formats, usetemplates=True,
                                          description=__doc__)

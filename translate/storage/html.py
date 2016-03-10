@@ -291,10 +291,11 @@ class htmlfile(html_parser.HTMLParser, base.TranslationStore):
         if startend:
             selfclosing = u" /"
         if attrs != [] and attrs is not None:
-            return u"<%(tag)s %(attrs)s%(selfclosing)s>" % \
-                    {"tag": tag,
-                     "attrs": " ".join(['%s="%s"' % pair for pair in attrs]),
-                     "selfclosing": selfclosing}
+            return u"<%(tag)s %(attrs)s%(selfclosing)s>" % {
+                "tag": tag,
+                "attrs": " ".join(['%s="%s"' % pair for pair in attrs]),
+                "selfclosing": selfclosing
+            }
         else:
             return u"<%(tag)s%(selfclosing)s>" % {"tag": tag,
                                                   "selfclosing": selfclosing}
