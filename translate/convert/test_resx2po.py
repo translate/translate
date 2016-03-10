@@ -171,6 +171,7 @@ msgstr ""
         assert po_result.units[1].getlocations()[0].startswith("key")
         assert po_result.units[2].getlocations()[0].startswith("key_two")
 
+
 class TestRESX2POCommand(test_convert.TestConvertCommand, TestRESX2PO):
     """ Tests running actual resx2po commands on files """
     convertmodule = resx2po

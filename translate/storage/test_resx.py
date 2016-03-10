@@ -25,6 +25,7 @@ from translate.storage import test_monolingual, resx
 class TestRESXUnit(test_monolingual.TestMonolingualUnit):
     UnitClass = resx.RESXUnit
 
+
 class TestRESXUnitFromParsedString(TestRESXUnit):
     resxsource = XMLskeleton = '''<?xml version="1.0" encoding="utf-8"?>
 <root>
@@ -89,6 +90,7 @@ class TestRESXUnitFromParsedString(TestRESXUnit):
     def setup_method(self, method):
         store = resx.RESXFile.parsestring(self.resxsource)
         self.unit = store.units[0]
+
 
 class TestRESXfile(test_monolingual.TestMonolingualUnit):
     StoreClass = resx.RESXFile

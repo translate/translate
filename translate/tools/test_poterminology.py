@@ -9,6 +9,7 @@ from translate.tools import poterminology
 base_dir = os.path.dirname(os.path.dirname(os.path.dirname(__file__)))
 sample_po_file = os.path.join(base_dir, 'tests', 'xliff_conformance', 'af-pootle.po')
 
+
 class TestPOTerminology:
 
     def test_term_extraction(self):

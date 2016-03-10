@@ -333,6 +333,7 @@ class TestAndroidResourceUnit(test_monolingual.TestMonolingualUnit):
                '</string>\n\n')
         self.__check_parse(string, xml)
 
+
 class TestAndroidResourceFile(test_monolingual.TestMonolingualStore):
     StoreClass = aresource.AndroidResourceFile
 

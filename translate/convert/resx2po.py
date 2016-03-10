@@ -31,6 +31,7 @@ from translate.storage import po
 
 logger = logging.getLogger(__name__)
 
+
 class resx2po(object):
     """Convert a RESX file to a PO file for handling translation"""
 
@@ -115,6 +116,7 @@ class resx2po(object):
         output_unit.target = ""
 
         return output_unit
+
 
 def convert_resx(input_file, output_file, template_file, pot=False, duplicatestyle="msgctxt", filter=None):
 

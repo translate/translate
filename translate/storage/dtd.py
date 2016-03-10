@@ -132,6 +132,7 @@ _DTD_CODEPOINT2NAME = {
    #ord(">"): "gt",  # Not really so useful.
 }
 
+
 def quotefordtd(source):
     """Quotes and escapes a line for regular DTD files."""
     source = quote.entityencode(source, _DTD_CODEPOINT2NAME)
@@ -159,6 +160,7 @@ _DTD_NAME2CODEPOINT = {
     "#37":    ord("%"),
     "#x25":   ord("%"),
 }
+
 
 def unquotefromdtd(source):
     """unquotes a quoted dtd definition"""

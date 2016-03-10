@@ -80,6 +80,7 @@ gconf_attribute_re = re.compile('"[a-z_]+?"')
 # XML/HTML tags in LibreOffice help and readme, exclude short tags
 lo_tag_re = re.compile('''<[/]??[a-z][a-z_\-]+?(?:| +[a-z]+?=".*?") *>''')
 
+
 def tagname(string):
     """Returns the name of the XML/HTML tag in string"""
     tagname_match = tagname_re.match(string)

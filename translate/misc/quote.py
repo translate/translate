@@ -196,6 +196,7 @@ def _encode_entity_char(char, codepoint2name):
     else:
         return char
 
+
 def entityencode(source, codepoint2name):
     """Encode ``source`` using entities from ``codepoint2name``.
 
@@ -238,6 +239,7 @@ def _has_entity_end(source):
         elif char == " ":
             return False
     return False
+
 
 def entitydecode(source, name2codepoint):
     """Decode ``source`` using entities from ``name2codepoint``.
@@ -327,11 +329,13 @@ def java_utf8_properties_encode(source):
             output += char
     return output
 
+
 def escapespace(char):
     assert(len(char) == 1)
     if char.isspace():
         return u"\\u%04X" % ord(char)
     return char
+
 
 def mozillaescapemarginspaces(source):
     """Escape leading and trailing spaces for Mozilla .properties files."""

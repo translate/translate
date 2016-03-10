@@ -1280,6 +1280,7 @@ def test_gconf():
     assert passes(gnomechecker.gconf, 'Blah "gconf_setting"', 'Bleh "gconf_setting"')
     assert fails(gnomechecker.gconf, 'Blah "gconf_setting"', 'Bleh "gconf_steling"')
 
+
 def test_validxml():
     """test wheather validxml recognize invalid xml/html expressions"""
     lochecker = checks.LibreOfficeChecker()

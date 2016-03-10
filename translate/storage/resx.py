@@ -27,6 +27,7 @@ from translate.misc.xml_helpers import setXMLspace
 from translate.storage import base, lisa
 from translate.storage.placeables import general
 
+
 class RESXUnit(lisa.LISAunit):
     """A single term in the RESX file."""
 
