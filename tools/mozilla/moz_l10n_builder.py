@@ -228,7 +228,8 @@ def checkout(cvstag, langs):
         for f in ['en-US/browser/README.txt pot/browser/README.txt.pot',
                   'en-US/browser/os2/README.txt pot/browser/os2/README.txt.pot',
                   'en-US/mail/README.txt pot/mail/README.txt.pot',
-                  'en-US/mail/os2/README.txt pot/mail/os2/README.txt.pot',]:
+                  'en-US/mail/os2/README.txt pot/mail/os2/README.txt.pot',
+                 ]:
             run(['txt2po', '--progress=none', '-P', f])
     os.chdir(olddir)
 
