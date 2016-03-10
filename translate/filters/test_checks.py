@@ -640,14 +640,14 @@ def test_pythonbraceformat():
     """Tests python brace format placeholds"""
     stdchecker = checks.StandardChecker()
     # anonymous formats
-    assert passes(stdchecker.pythonbraceformat,   "String {} and number {}",     "String {} en nommer {}")
-    assert passes(stdchecker.pythonbraceformat,   "String {1}",                  "Nommer {} en string {}")
-    assert passes(stdchecker.pythonbraceformat,   "String {1} and number {0}",   "Nommer {0} en string {1}")
-    assert fails(stdchecker.pythonbraceformat,            "String {}, {}",       "String {}")
-    assert fails_serious(stdchecker.pythonbraceformat,    "String {}",           "String {} en nommer {}")
-    assert fails_serious(stdchecker.pythonbraceformat,    "String {}",           "Nommer {1}")
-    assert fails_serious(stdchecker.pythonbraceformat,    "String {0}",          "Nommer {1}")
-    assert fails_serious(stdchecker.pythonbraceformat,    "String {0} {}",       "Nommer {1}")
+    assert passes(stdchecker.pythonbraceformat, "String {} and number {}", "String {} en nommer {}")
+    assert passes(stdchecker.pythonbraceformat, "String {1}", "Nommer {} en string {}")
+    assert passes(stdchecker.pythonbraceformat, "String {1} and number {0}", "Nommer {0} en string {1}")
+    assert fails(stdchecker.pythonbraceformat, "String {}, {}", "String {}")
+    assert fails_serious(stdchecker.pythonbraceformat, "String {}", "String {} en nommer {}")
+    assert fails_serious(stdchecker.pythonbraceformat, "String {}", "Nommer {1}")
+    assert fails_serious(stdchecker.pythonbraceformat, "String {0}", "Nommer {1}")
+    assert fails_serious(stdchecker.pythonbraceformat, "String {0} {}", "Nommer {1}")
     lochecker = checks.LibreOfficeChecker()
     assert passes(lochecker.pythonbraceformat, "Time remaining: {[1] minutes }{[2] seconds}", "Tenpo che'l resta: {[1] minuti}{[2] secondi}")
 

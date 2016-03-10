@@ -149,16 +149,16 @@ def quotefordtd(source):
 
 
 _DTD_NAME2CODEPOINT = {
-    "quot":   ord('"'),
-    "amp":    ord("&"),
-   #"lt":     ord("<"),  # Not really so useful.
-   #"gt":     ord(">"),  # Not really so useful.
+    "quot": ord('"'),
+    "amp": ord("&"),
+   #"lt": ord("<"),  # Not really so useful.
+   #"gt": ord(">"),  # Not really so useful.
    # FIXME these should probably be handled in a more general way
     "#x0022": ord('"'),
-    "#187":   ord(u"»"),
-    "#037":   ord("%"),
-    "#37":    ord("%"),
-    "#x25":   ord("%"),
+    "#187": ord(u"»"),
+    "#037": ord("%"),
+    "#37": ord("%"),
+    "#x25": ord("%"),
 }
 
 
