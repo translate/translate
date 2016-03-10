@@ -23,7 +23,7 @@ class TestMOUnit(test_base.TestTranslationUnit):
     UnitClass = mo.mounit
 
 posources = [
-r'''
+    r'''
 msgid ""
 msgstr ""
 "PO-Revision-Date: 2006-02-09 23:33+0200\n"
@@ -31,7 +31,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8-bit\n"
 ''',
-r'''
+    r'''
 msgid ""
 msgstr ""
 "PO-Revision-Date: 2006-02-09 23:33+0200\n"
@@ -42,25 +42,25 @@ msgstr ""
 msgid "plant"
 msgstr ""
 ''',
-# The following test is commented out, because the hash-size is different
-# compared to gettext, since we're not counting untranslated units.
-#r'''
-#msgid ""
-#msgstr ""
-#"PO-Revision-Date: 2006-02-09 23:33+0200\n"
-#"MIME-Version: 1.0\n"
-#"Content-Type: text/plain; charset=UTF-8\n"
-#"Content-Transfer-Encoding: 8-bit\n"
-#
-#msgid "plant"
-#msgstr ""
-#
-#msgid ""
-#"_: Noun\n"
-#"convert"
-#msgstr "bekeerling"
-#''',
-r'''
+    # The following test is commented out, because the hash-size is different
+    # compared to gettext, since we're not counting untranslated units.
+    #r'''
+    #msgid ""
+    #msgstr ""
+    #"PO-Revision-Date: 2006-02-09 23:33+0200\n"
+    #"MIME-Version: 1.0\n"
+    #"Content-Type: text/plain; charset=UTF-8\n"
+    #"Content-Transfer-Encoding: 8-bit\n"
+    #
+    #msgid "plant"
+    #msgstr ""
+    #
+    #msgid ""
+    #"_: Noun\n"
+    #"convert"
+    #msgstr "bekeerling"
+    #''',
+    r'''
 msgid ""
 msgstr ""
 "PO-Revision-Date: 2006-02-09 23:33+0200\n"
@@ -81,7 +81,7 @@ msgid ""
 "convert"
 msgstr "omskakel"
 ''',
-r'''
+    r'''
 msgid ""
 msgstr ""
 "PO-Revision-Date: 2006-02-09 23:33+0200\n"
@@ -105,7 +105,8 @@ msgstr "omskakel"
 msgid "tree"
 msgid_plural "trees"
 msgstr[0] ""
-''']
+''',
+]
 
 
 class TestMOFile(test_base.TestTranslationStore):

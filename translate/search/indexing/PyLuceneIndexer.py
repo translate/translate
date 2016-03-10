@@ -108,8 +108,8 @@ class PyLuceneDatabase(CommonIndexer.CommonDatabase):
                     os.makedirs(parent_path)
             except IOError as err_msg:
                 raise OSError("Indexer: failed to create the parent "
-                              "directory (%s) of the indexing database: %s" % (
-                              parent_path, err_msg))
+                              "directory (%s) of the indexing database: %s" %
+                              (parent_path, err_msg))
             try:
                 tempwriter = PyLucene.IndexWriter(self.location,
                         self.pyl_analyzer, True)

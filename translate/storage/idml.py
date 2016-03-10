@@ -24,7 +24,7 @@ import zipfile
 INLINE_ELEMENTS = [
     ('', 'CharacterStyleRange'),
     ('', 'Content'),
-#    ('', 'Br'),
+    #('', 'Br'),
 ]
 
 
