@@ -95,6 +95,7 @@ def phpdecode(text, quotechar="'"):
     """Convert PHP escaped string to a Python string."""
 
     escape_encoding = "string_escape" if six.PY2 else "unicode_escape"
+
     def decode_octal_hex(match):
         r"""decode Octal \NNN and Hex values"""
         if "octal" in match.groupdict():
