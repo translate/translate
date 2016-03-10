@@ -135,7 +135,6 @@ class TestHTMLExtraction(object):
         assert len(store.units) == 1
         assert store.units[0].source == "UAHC campers enjoy a meal in the camp cafeteria"
 
-
     def test_extraction_attr_title(self):
         """Check that we can extract title attribute"""
         h = html.htmlfile()

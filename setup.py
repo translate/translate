@@ -269,7 +269,6 @@ else:
                 print("Opening iss file, use InnoSetup GUI to compile manually")
                 os.startfile(self.pathname)
 
-
     class build_exe_map(BuildCommand):
         """distutils py2exe-based class that builds the exe file(s) but allows
         mapping data files"""
@@ -299,7 +298,6 @@ else:
                 if f is not None:
                     new_data_files.append(f)
             return new_data_files
-
 
     class BuildInstaller(build_exe_map):
         """distutils class that first builds the exe file(s), then creates a
@@ -333,7 +331,6 @@ else:
             script.compile()
             # Note: By default the final setup.exe will be in an Output
             # subdirectory.
-
 
     class TranslateDistribution(Distribution):
         """a modified distribution class for translate"""
@@ -371,7 +368,6 @@ else:
                 options["innosetup"]["install_script"] = []
             baseattrs.update(attrs)
             Distribution.__init__(self, baseattrs)
-
 
     def map_data_file(data_file):
         """remaps a data_file (could be a directory) to a different location

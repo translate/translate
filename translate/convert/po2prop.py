@@ -96,7 +96,6 @@ class reprop(object):
             outputlines.append(outputstr)
         return u"".join(outputlines).encode(self.encoding)
 
-
     def _handle_accesskeys(self, inunit, currkey):
         value = inunit.target
         if self.personality.name == "mozilla":

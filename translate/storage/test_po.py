@@ -801,7 +801,6 @@ msgstr "b"
         assert u"Last-Translator" in header_dict
         assert header_dict[u"Last-Translator"] == u"Tránslátór"
 
-
         # let's test the same with latin-1:
         posource = r'''
 # Copyright bla.
