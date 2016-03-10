@@ -60,10 +60,10 @@ class UnitMixer(object):
         """
         target_unit.addlocations(label_unit.getlocations())
         target_unit.addlocations(accesskey_unit.getlocations())
-        target_unit.msgidcomment = target_unit._extract_msgidcomments() + \
-                             label_unit._extract_msgidcomments()
-        target_unit.msgidcomment = target_unit._extract_msgidcomments() + \
-                             accesskey_unit._extract_msgidcomments()
+        target_unit.msgidcomment = (target_unit._extract_msgidcomments() +
+                                    label_unit._extract_msgidcomments())
+        target_unit.msgidcomment = (target_unit._extract_msgidcomments() +
+                                    accesskey_unit._extract_msgidcomments())
         target_unit.addnote(label_unit.getnotes("developer"), "developer")
         target_unit.addnote(accesskey_unit.getnotes("developer"), "developer")
         target_unit.addnote(label_unit.getnotes("translator"), "translator")

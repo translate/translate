@@ -487,7 +487,7 @@ class PyLuceneDatabase(CommonIndexer.CommonDatabase):
                 self.reader = PyLucene.IndexReader.open(self.location)
                 self.searcher = PyLucene.IndexSearcher(self.reader)
             elif (self.index_version !=
-                      self.reader.getCurrentVersion(self.location)):
+                  self.reader.getCurrentVersion(self.location)):
                 self.searcher.close()
                 self.reader.close()
                 self.reader = PyLucene.IndexReader.open(self.location)

@@ -409,7 +409,7 @@ class ArchiveConvertOptionParser(ConvertOptionParser):
 
         if options.output and self.isarchive(options.output, 'output'):
             self.outputarchive = self.openarchive(options.output, 'output',
-                                                     mode="w")
+                                                  mode="w")
         return super(ArchiveConvertOptionParser, self).recursiveprocess(options)
 
     def processfile(self, fileprocessor, options, fullinputpath,

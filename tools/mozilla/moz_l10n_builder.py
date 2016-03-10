@@ -494,7 +494,7 @@ def create_diff(lang, buildlang):
         run(['svn', 'diff',
              '--diff-cmd',
              'diff -x "-u --ignore-matching-lines=^\"POT\|^\"X-Gene"'],
-             stdout=fh)
+            stdout=fh)
     os.chdir(olddir)
 
 

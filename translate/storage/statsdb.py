@@ -581,8 +581,9 @@ class StatsCache(object):
         configid = self._get_config_id(fileid, checker)
         unitid = unit.getid()
         # get the unit index
-        totals_without_unit = self.file_totals[fileid] - \
-                                   FileTotals.new_record(*self.get_unit_stats(fileid, unitid))
+        totals_without_unit = (self.file_totals[fileid] -
+                               FileTotals.new_record(*self.get_unit_stats(fileid,
+                                                                          unitid)))
         self.cur.execute("""SELECT unitindex FROM units WHERE
             fileid=? AND unitid=?;""", (fileid, unitid))
         unitindex = self.cur.fetchone()[0]

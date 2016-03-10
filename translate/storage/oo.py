@@ -126,8 +126,8 @@ def escape_text(text):
 
 def unescape_text(text):
     """Unescapes SDF text to be suitable for unit consumption."""
-    return text.replace("\\\\", "\a").replace("\\n", "\n").replace("\\t", "\t").\
-           replace("\\r", "\r").replace("\a", "\\\\")
+    return text.replace("\\\\", "\a").replace("\\n", "\n").replace("\\t", "\t") \
+        .replace("\\r", "\r").replace("\a", "\\\\")
 
 helptagre = re.compile('''<[/]??[a-z_\-]+?(?:| +[a-z]+?=".*?") *[/]??>''')
 

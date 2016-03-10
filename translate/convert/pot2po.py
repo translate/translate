@@ -237,15 +237,17 @@ def _do_poheaders(input_store, output_store, template_store):
         else:
             kwargs[key] = value
 
-    output_header = output_store \
-            .init_headers(charset=charset, encoding=encoding,
-                          project_id_version=project_id_version,
-                          pot_creation_date=pot_creation_date,
-                          po_revision_date=po_revision_date,
-                          last_translator=last_translator,
-                          language_team=language_team,
-                          mime_version=mime_version,
-                          plural_forms=plural_forms, **kwargs)
+    output_header = output_store.init_headers(
+        charset=charset,
+        encoding=encoding,
+        project_id_version=project_id_version,
+        pot_creation_date=pot_creation_date,
+        po_revision_date=po_revision_date,
+        last_translator=last_translator,
+        language_team=language_team,
+        mime_version=mime_version,
+        plural_forms=plural_forms,
+        **kwargs)
 
     # Get the header comments and fuzziness state
     # override some values from input file

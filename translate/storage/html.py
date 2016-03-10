@@ -259,8 +259,8 @@ class htmlfile(html_parser.HTMLParser, base.TranslationStore):
         if self.has_translatable_content(text):
             unit = self.addsourceunit(text)
             unit.addlocation("%s+%s:%d" %
-                              (self.filename, ".".join(self.tag_path),
-                               self.currentpos))
+                             (self.filename, ".".join(self.tag_path),
+                              self.currentpos))
             unit.addnote(self.currentcomment)
 
     def has_translatable_content(self, text):

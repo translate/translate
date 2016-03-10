@@ -129,7 +129,7 @@ class RecursiveOptionParser(optparse.OptionParser, object):
         if description_lines:
             result.append('.SH DESCRIPTION\n')
             result.append('\n\n'.join([re.sub('\.\. note::', 'Note:', l)
-                                              for l in description_lines]))
+                                       for l in description_lines]))
         result.append('.SH OPTIONS\n')
         ManHelpFormatter().store_option_strings(self)
         result.append('.PP\n')

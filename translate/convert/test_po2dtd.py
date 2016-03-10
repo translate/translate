@@ -435,8 +435,8 @@ msgstr "Simple string 3"
     def test_merging_entries_with_spaces_removed(self):
         """dtd2po removes pretty printed spaces, this tests that we can merge this back into the pretty printed dtd"""
         posource = '''#: simple.label\nmsgid "First line then "\n"next lines."\nmsgstr "Eerste lyne en dan volgende lyne."\n'''
-        dtdtemplate = '<!ENTITY simple.label "First line then\n' + \
-          '                                          next lines.">\n'
+        dtdtemplate = ('<!ENTITY simple.label "First line then\n'
+                       '                           next lines.">\n')
         dtdexpected = '<!ENTITY simple.label "Eerste lyne en dan volgende lyne.">\n'
         dtdfile = self.merge2dtd(dtdtemplate, posource)
         print(bytes(dtdfile))

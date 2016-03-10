@@ -288,9 +288,9 @@ def languagematch(languagecode, otherlanguagecode):
     """matches a languagecode to another, ignoring regions in the second"""
     if languagecode is None:
         return langcode_re.match(otherlanguagecode)
-    return languagecode == otherlanguagecode or \
-           (otherlanguagecode.startswith(languagecode) and
-            variant_re.match(otherlanguagecode[len(languagecode):]))
+    return (languagecode == otherlanguagecode or
+            (otherlanguagecode.startswith(languagecode) and
+             variant_re.match(otherlanguagecode[len(languagecode):])))
 
 dialect_name_re = re.compile(r"(.+)\s\(([^)\d]{,25})\)$")
 # The limit of 25 characters on the country name is so that "Interlingua (...)"

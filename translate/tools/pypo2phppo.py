@@ -77,7 +77,7 @@ class pypo2phppo:
         for index, string in enumerate(strings):
             strings[index] = re.sub('\{(\d)\}',
                                     lambda x: "%%%d$s" % (int(x.group(1)) + 1),
-                                                          string)
+                                    string)
         return strings
 
 

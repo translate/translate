@@ -156,9 +156,10 @@ class podebug:
         self.apply_to_translatables(string, transformer)
         return string
 
-    REWRITE_FLIPPED_MAP = u"¡„#$%⅋,()⁎+´-˙/012Ɛᔭ59Ƚ86:;<=>¿@" + \
-            u"∀ԐↃᗡƎℲ⅁HIſӼ⅂WNOԀÒᴚS⊥∩ɅＭX⅄Z" + u"[\\]ᵥ_," + \
-            u"ɐqɔpǝɟƃɥıɾʞʅɯuodbɹsʇnʌʍxʎz"
+    REWRITE_FLIPPED_MAP = (
+        u"¡„#$%⅋,()⁎+´-˙/012Ɛᔭ59Ƚ86:;<=>¿@" +
+        u"∀ԐↃᗡƎℲ⅁HIſӼ⅂WNOԀÒᴚS⊥∩ɅＭX⅄Z" +
+        u"[\\]ᵥ_," + u"ɐqɔpǝɟƃɥıɾʞʅɯuodbɹsʇnʌʍxʎz")
     # Brackets should be swapped if the string will be reversed in memory.
     # If a right-to-left override is used, the brackets should be
     # unchanged.

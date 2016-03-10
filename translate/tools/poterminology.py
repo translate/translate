@@ -288,8 +288,8 @@ class TerminologyExtractor(object):
             locmax = 2 * locmin
             if numlocs > locmax:
                 locations = list(locations)[0:locmax]
-                locations.append("(poterminology) %d more locations"
-                                     % (numlocs - locmax))
+                locations.append("(poterminology) %d more locations" %
+                                 (numlocs - locmax))
 
             termunit = create_termunit(term, bestunit, targets, locations, sourcenotes, transnotes, filecounts)
             terms[term] = ((10 * numfiles) + numsources, termunit)

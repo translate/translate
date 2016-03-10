@@ -302,10 +302,10 @@ class TestXLIFFfile(test_base.TestTranslationStore):
 
     def test_xml_space(self):
         """Test for the correct handling of xml:space attributes."""
-        xlfsource = self.skeleton \
-          % '''<trans-unit id="1" xml:space="preserve">
+        xlfsource = self.skeleton % (
+            '''<trans-unit id="1" xml:space="preserve">
                    <source> File  1 </source>
-               </trans-unit>'''
+               </trans-unit>''')
         xlifffile = xliff.xlifffile.parsestring(xlfsource)
         assert xlifffile.units[0].source == " File  1 "
         root_node = xlifffile.document.getroot()
@@ -314,10 +314,10 @@ class TestXLIFFfile(test_base.TestTranslationStore):
         setXMLspace(root_node, "default")
         assert xlifffile.units[0].source == " File  1 "
 
-        xlfsource = self.skeleton \
-          % '''<trans-unit id="1" xml:space="default">
+        xlfsource = self.skeleton % (
+            '''<trans-unit id="1" xml:space="default">
                    <source> File  1 </source>
-               </trans-unit>'''
+               </trans-unit>''')
         xlifffile = xliff.xlifffile.parsestring(xlfsource)
         assert xlifffile.units[0].source == "File 1"
         root_node = xlifffile.document.getroot()
@@ -326,10 +326,10 @@ class TestXLIFFfile(test_base.TestTranslationStore):
         setXMLspace(root_node, "default")
         assert xlifffile.units[0].source == "File 1"
 
-        xlfsource = self.skeleton \
-          % '''<trans-unit id="1">
+        xlfsource = self.skeleton % (
+            '''<trans-unit id="1">
                    <source> File  1 </source>
-               </trans-unit>'''
+               </trans-unit>''')
         # we currently always normalize as default behaviour for xliff
         xlifffile = xliff.xlifffile.parsestring(xlfsource)
         assert xlifffile.units[0].source == "File 1"
@@ -339,11 +339,11 @@ class TestXLIFFfile(test_base.TestTranslationStore):
         setXMLspace(root_node, "default")
         assert xlifffile.units[0].source == "File 1"
 
-        xlfsource = self.skeleton \
-          % '''<trans-unit id="1">
+        xlfsource = self.skeleton % (
+            '''<trans-unit id="1">
                    <source> File  1
 </source>
-               </trans-unit>'''
+               </trans-unit>''')
         # we currently always normalize as default behaviour for xliff
         xlifffile = xliff.xlifffile.parsestring(xlfsource)
         assert xlifffile.units[0].source == "File 1"

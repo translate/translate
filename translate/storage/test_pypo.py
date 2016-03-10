@@ -33,25 +33,25 @@ class TestHelpers():
         # Newline handling
         assert pypo.quoteforpo("One\nTwo\n") == ['""', '"One\\n"', '"Two\\n"']
         # First line wrapping
-        assert pypo.quoteforpo("A very long sentence. A very long sentence. A very long sentence. A ver") == \
-                             ['"A very long sentence. A very long sentence. A very long sentence. A ver"']
-        assert pypo.quoteforpo("A very long sentence. A very long sentence. A very long sentence. A very") == \
-                              ['""',
-                               '"A very long sentence. A very long sentence. A very long sentence. A very"']
+        assert pypo.quoteforpo("A very long sentence. A very long sentence. A very long sentence. A ver") == [
+            '"A very long sentence. A very long sentence. A very long sentence. A ver"']
+        assert pypo.quoteforpo("A very long sentence. A very long sentence. A very long sentence. A very") == [
+            '""',
+            '"A very long sentence. A very long sentence. A very long sentence. A very"']
         # Long line with a newline
-        assert pypo.quoteforpo("A very long sentence. A very long sentence. A very long sentence. A very lon\n") == \
-                             ['""', '"A very long sentence. A very long sentence. A very long sentence. A very "', '"lon\\n"']
-        assert pypo.quoteforpo("A very long sentence. A very long sentence. A very long sentence. A very 123\n") == \
-                             ['""', '"A very long sentence. A very long sentence. A very long sentence. A very "', '"123\\n"']
+        assert pypo.quoteforpo("A very long sentence. A very long sentence. A very long sentence. A very lon\n") == [
+            '""', '"A very long sentence. A very long sentence. A very long sentence. A very "', '"lon\\n"']
+        assert pypo.quoteforpo("A very long sentence. A very long sentence. A very long sentence. A very 123\n") == [
+            '""', '"A very long sentence. A very long sentence. A very long sentence. A very "', '"123\\n"']
         # Special 77 char failure.
-        assert pypo.quoteforpo("Ukuba uyayiqonda into eyenzekayo, \nungaxelela i-&brandShortName; ukuba iqalise ukuthemba ufaniso lwale sayithi. \n<b>Nokuba uyayithemba isayithi, le mposiso isenokuthetha ukuba   kukho umntu \nobhucabhuca ukudibanisa kwakho.</b>") == \
-                             ['""',
-                              '"Ukuba uyayiqonda into eyenzekayo, \\n"',
-                              '"ungaxelela i-&brandShortName; ukuba iqalise ukuthemba ufaniso lwale sayithi. "',
-                              '"\\n"',
-                              '"<b>Nokuba uyayithemba isayithi, le mposiso isenokuthetha ukuba   kukho umntu "',
-                              '"\\n"',
-                              '"obhucabhuca ukudibanisa kwakho.</b>"']
+        assert pypo.quoteforpo("Ukuba uyayiqonda into eyenzekayo, \nungaxelela i-&brandShortName; ukuba iqalise ukuthemba ufaniso lwale sayithi. \n<b>Nokuba uyayithemba isayithi, le mposiso isenokuthetha ukuba   kukho umntu \nobhucabhuca ukudibanisa kwakho.</b>") == [
+            '""',
+            '"Ukuba uyayiqonda into eyenzekayo, \\n"',
+            '"ungaxelela i-&brandShortName; ukuba iqalise ukuthemba ufaniso lwale sayithi. "',
+            '"\\n"',
+            '"<b>Nokuba uyayithemba isayithi, le mposiso isenokuthetha ukuba   kukho umntu "',
+            '"\\n"',
+            '"obhucabhuca ukudibanisa kwakho.</b>"']
 
     def test_quoteforpo_escaped_quotes(self):
         """Ensure that we don't break \" in two when wrapping

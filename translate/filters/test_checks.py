@@ -1121,13 +1121,14 @@ def test_xmltags():
 
     # This used to cause an error (traceback), because of mismatch between
     # different regular expressions (because of the newlines)
-    assert passes(stdchecker.xmltags, '''<markup>
+    assert passes(stdchecker.xmltags,
+                  '''<markup>
 <span weight="bold" size="large"
 style="oblique">
 Can't create server !
 </span>
 </markup>''',
-                                    '''<markup>
+                  '''<markup>
 <span weight="bold" size="large"
 style="oblique">
 No s'ha pogut crear el servidor

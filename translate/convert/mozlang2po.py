@@ -74,7 +74,7 @@ formats = {
 def main(argv=None):
     from translate.convert import convert
     parser = convert.ConvertOptionParser(formats, usepots=True,
-                                           description=__doc__)
+                                         description=__doc__)
     parser.add_option("", "--encoding", dest="encoding", default='utf-8',
     help="The encoding of the input file (default: UTF-8)")
     parser.passthrough.append("encoding")

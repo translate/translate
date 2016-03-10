@@ -484,9 +484,9 @@ class pounit(pocommon.pounit):
         #return (self._msgidlen() == 0) and (self._msgstrlen() > 0) and (len(self.msgidcomments) == 0)
         #rewritten here for performance:
         return (is_null(self.msgid)
-                        and not is_null(self.msgstr)
-                        and self.msgidcomments == []
-                        and is_null(self.msgctxt))
+                and not is_null(self.msgstr)
+                and self.msgidcomments == []
+                and is_null(self.msgctxt))
 
     def isblank(self):
         if self.isheader() or len(self.msgidcomments):

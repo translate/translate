@@ -106,7 +106,7 @@ def _sort_indexers_by_preference(indexer_classes, pref_order):
     """
     # define useful function for readability
     get_indexer_name = lambda indexer_class: \
-            os.path.basename(indexer_class.__module__).split(".")[-1]
+        os.path.basename(indexer_class.__module__).split(".")[-1]
     # use a copy to avoid side effects
     avail_indexers = indexer_classes[:]
     result = []

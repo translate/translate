@@ -183,14 +183,14 @@ class JsonFile(base.TranslationStore):
         if isinstance(data, dict):
             for k, v in six.iteritems(data):
                 for x in self._extract_translatables(v, stop,
-                                                          "%s.%s" % (prev, k),
-                                                          k, None, data):
+                                                     "%s.%s" % (prev, k),
+                                                     k, None, data):
                     yield x
         elif isinstance(data, list):
             for i, item in enumerate(data):
                 for x in self._extract_translatables(item, stop,
-                                                          "%s[%s]" % (prev, i),
-                                                          i, name_node, data):
+                                                     "%s[%s]" % (prev, i),
+                                                     i, name_node, data):
                     yield x
         # apply filter
         elif (stop is None or

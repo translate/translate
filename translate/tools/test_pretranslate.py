@@ -280,15 +280,15 @@ msgstr "36em"
 
     def test_xliff_states(self):
         """Test correct maintenance of XLIFF states."""
-        xlf_template = self.xliff_skeleton \
-          % '''<trans-unit id="1" xml:space="preserve">
+        xlf_template = self.xliff_skeleton % (
+            '''<trans-unit id="1" xml:space="preserve">
                    <source> File  1 </source>
-               </trans-unit>'''
-        xlf_old = self.xliff_skeleton \
-          % '''<trans-unit id="1" xml:space="preserve" approved="yes">
+               </trans-unit>''')
+        xlf_old = self.xliff_skeleton % (
+            '''<trans-unit id="1" xml:space="preserve" approved="yes">
                    <source> File  1 </source>
                    <target> Lêer 1 </target>
-               </trans-unit>'''
+               </trans-unit>''')
 
         template = xliff.xlifffile.parsestring(xlf_template)
         old = xliff.xlifffile.parsestring(xlf_old)

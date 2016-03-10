@@ -122,16 +122,16 @@ class TestAndroidResourceUnit(test_monolingual.TestMonolingualUnit):
     def test_plural_escape_message_with_newline(self):
         mString = multistring(['one message\nwith newline', 'other message\nwith newline'])
         xml = ('<plurals name="Test String">\n\t'
-                 '<item quantity="one">one message\\nwith newline</item>\n\t'
-                 '<item quantity="other">other message\\nwith newline</item>\n'
+               '<item quantity="one">one message\\nwith newline</item>\n\t'
+               '<item quantity="other">other message\\nwith newline</item>\n'
                '</plurals>\n\n')
         self.__check_escape(mString, xml, 'en')
 
     def test_plural_invalid_lang(self):
         mString = multistring(['one message', 'other message'])
         xml = ('<plurals name="Test String">\n\t'
-                 '<item quantity="one">one message</item>\n\t'
-                 '<item quantity="other">other message</item>\n'
+               '<item quantity="one">one message</item>\n\t'
+               '<item quantity="other">other message</item>\n'
                '</plurals>\n\n')
         self.__check_escape(mString, xml, 'invalid')
 
@@ -273,8 +273,8 @@ class TestAndroidResourceUnit(test_monolingual.TestMonolingualUnit):
     def test_plural_parse_message_with_newline(self):
         mString = multistring(['one message\nwith newline', 'other message\nwith newline'])
         xml = ('<plurals name="Test String">\n\t'
-                 '<item quantity="one">one message\\nwith newline</item>\n\t'
-                 '<item quantity="other">other message\\nwith newline</item>\n\n'
+               '<item quantity="one">one message\\nwith newline</item>\n\t'
+               '<item quantity="other">other message\\nwith newline</item>\n\n'
                '</plurals>\n\n')
         self.__check_parse(mString, xml)
 

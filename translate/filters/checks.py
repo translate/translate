@@ -1475,9 +1475,9 @@ class StandardChecker(TranslationChecker):
 
                 if len(parts) > 1 and parts[1] in str2:
                     raise FilterFailure(u"Consider translating parameter "
-                                        u"'%(param)s' of option '%(option)s'"
-                                                                % {"param": parts[1],
-                                                                "option": parts[0]})
+                                        u"'%(param)s' of option '%(option)s'" %
+                                        {"param": parts[1],
+                                         "option": parts[0]})
 
         return True
 
@@ -1947,27 +1947,27 @@ class StandardChecker(TranslationChecker):
                          "blank", "nplurals", "gconf", "dialogsizes",
                          "validxml"),
         "blank": ("simplecaps", "variables", "startcaps",
+                  "accelerators", "brackets", "endpunc",
+                  "acronyms", "xmltags", "startpunc",
+                  "endwhitespace", "startwhitespace",
+                  "escapes", "doublequoting", "singlequoting",
+                  "filepaths", "purepunc", "doublespacing",
+                  "sentencecount", "numbers", "isfuzzy",
+                  "isreview", "notranslatewords", "musttranslatewords",
+                  "emails", "simpleplurals", "urls", "printf",
+                  "pythonbraceformat",
+                  "tabs", "newlines", "functions", "options",
+                  "gconf", "dialogsizes", "validxml"),
+        "credits": ("simplecaps", "variables", "startcaps",
                     "accelerators", "brackets", "endpunc",
                     "acronyms", "xmltags", "startpunc",
-                    "endwhitespace", "startwhitespace",
                     "escapes", "doublequoting", "singlequoting",
-                    "filepaths", "purepunc", "doublespacing",
-                    "sentencecount", "numbers", "isfuzzy",
-                    "isreview", "notranslatewords", "musttranslatewords",
+                    "filepaths", "doublespacing",
+                    "sentencecount", "numbers",
                     "emails", "simpleplurals", "urls", "printf",
                     "pythonbraceformat",
                     "tabs", "newlines", "functions", "options",
-                    "gconf", "dialogsizes", "validxml"),
-        "credits": ("simplecaps", "variables", "startcaps",
-                      "accelerators", "brackets", "endpunc",
-                      "acronyms", "xmltags", "startpunc",
-                      "escapes", "doublequoting", "singlequoting",
-                      "filepaths", "doublespacing",
-                      "sentencecount", "numbers",
-                      "emails", "simpleplurals", "urls", "printf",
-                      "pythonbraceformat",
-                      "tabs", "newlines", "functions", "options",
-                      "validxml"),
+                    "validxml"),
         "purepunc": ("startcaps", "options"),
         # This is causing some problems since Python 2.6, as
         # startcaps is now seen as an important one to always execute
@@ -2058,7 +2058,7 @@ class LibreOfficeChecker(StandardChecker):
                         opentag = opentags.pop()
                         if tagname(acttag) != "/" + tagname(opentag):
                             raise FilterFailure(u"Open tag %s and close tag %s "
-                                                 "don't match" % (opentag, acttag))
+                                                "don't match" % (opentag, acttag))
                     else:
                         opentags.append(acttag)
                     str2 = str2[match.end(0):]
@@ -2160,7 +2160,7 @@ class MozillaChecker(StandardChecker):
                         # FIXME we could check more carefully for numbers in pair1[2]
                         if pair2[3] not in self.mozilla_dialog_valid_units:
                             raise FilterFailure(u"Units should be one of '%s'. "
-                                                 "The source string uses '%s'" % (", ".join(self.mozilla_dialog_valid_units), pair1[3]))
+                                                "The source string uses '%s'" % (", ".join(self.mozilla_dialog_valid_units), pair1[3]))
 
         return True
 

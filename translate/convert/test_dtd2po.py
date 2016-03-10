@@ -178,16 +178,16 @@ class TestDTD2PO(object):
     def test_spaces_at_start_of_dtd_lines(self):
         """test that pretty print spaces at the start of subsequent DTD element lines are removed from the PO file, bug 79"""
         # Space at the end of the line
-        dtdsource = '<!ENTITY  noupdatesfound.intro "First line then \n' + \
-          '                                          next lines.">\n'
+        dtdsource = ('<!ENTITY  noupdatesfound.intro "First line then \n'
+                     '                                next lines.">\n')
         pofile = self.dtd2po(dtdsource)
         pounit = self.singleelement(pofile)
         # We still need to decide how we handle line line breaks in the DTD entities.  It seems that we should actually
         # drop the line break but this has not been implemented yet.
         assert pounit.source == "First line then \nnext lines."
         # No space at the end of the line
-        dtdsource = '<!ENTITY  noupdatesfound.intro "First line then\n' + \
-          '                                          next lines.">\n'
+        dtdsource = ('<!ENTITY  noupdatesfound.intro "First line then\n'
+                     '                                next lines.">\n')
         pofile = self.dtd2po(dtdsource)
         pounit = self.singleelement(pofile)
         assert pounit.source == "First line then \nnext lines."
@@ -209,15 +209,15 @@ class TestDTD2PO(object):
 
     def test_accesskeys_mismatch(self):
         """check that we can handle accesskeys that don't match and thus can't be folded into the .label entry"""
-        dtdsource = '<!ENTITY  fileSave.label "Save">\n' + \
-           '<!ENTITY  fileSave.accesskey "z">\n'
+        dtdsource = ('<!ENTITY  fileSave.label "Save">\n'
+                     '<!ENTITY  fileSave.accesskey "z">\n')
         pofile = self.dtd2po(dtdsource)
         assert self.countelements(pofile) == 2
 
     def test_carriage_return_in_multiline_dtd(self):
         """test that we create nice PO files when we find a \r\n in a multiline DTD element"""
-        dtdsource = '<!ENTITY  noupdatesfound.intro "First line then \r\n' + \
-          '                                          next lines.">\n'
+        dtdsource = ('<!ENTITY  noupdatesfound.intro "First line then \r\n'
+                     '                                next lines.">\n')
         pofile = self.dtd2po(dtdsource)
         unit = self.singleelement(pofile)
         assert unit.source == "First line then \nnext lines."
