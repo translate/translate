@@ -34,8 +34,8 @@ from translate.tools import pretranslate
 
 
 def convertpot(input_file, output_file, template_file, tm=None,
-        min_similarity=75, fuzzymatching=True, classes=None,
-        classes_str=factory.classes_str, **kwargs):
+               min_similarity=75, fuzzymatching=True, classes=None,
+               classes_str=factory.classes_str, **kwargs):
     """Main conversion function."""
     input_store = factory.getobject(input_file, classes=classes,
                                     classes_str=classes_str)
@@ -58,7 +58,7 @@ def convertpot(input_file, output_file, template_file, tm=None,
 
 
 def convert_stores(input_store, template_store, temp_store=None, tm=None,
-        min_similarity=75, fuzzymatching=True, **kwargs):
+                   min_similarity=75, fuzzymatching=True, **kwargs):
     """Actual conversion function, works on stores not files, returns
     a properly initialized pretranslated output store, with structure
     based on input_store, metadata based on template_store, migrates
@@ -145,7 +145,7 @@ def _store_post_merge(input_store, output_store, template_store, **kwargs):
 
 
 def _unit_post_merge(input_unit, input_store, output_store, template_store,
-        **kwargs):
+                     **kwargs):
     """Handle any unit level cleanup and situations not handled by the merge()
     function.
     """
@@ -158,7 +158,7 @@ def _unit_post_merge(input_unit, input_store, output_store, template_store,
 
 ## Format specific functions
 def _unit_post_merge_pounit(input_unit, input_store, output_store,
-        template_store):
+                            template_store):
     """PO format specific plural string initializtion logic."""
     #FIXME: do we want to do that for poxliff also?
     if input_unit.hasplural() and len(input_unit.target) == 0:
@@ -276,22 +276,26 @@ def main(argv=None):
         "catkeys": ("catkeys", convertpot),
         ("catkeys", "catkeys"): ("catkeys", convertpot),
     }
-    parser = convert.ConvertOptionParser(formats, usepots=True,
-            usetemplates=True, allowmissingtemplate=True, description=__doc__)
+    parser = convert.ConvertOptionParser(
+        formats, usepots=True, usetemplates=True, allowmissingtemplate=True,
+        description=__doc__)
 
-    parser.add_option("", "--tm", dest="tm", default=None,
-            help="The file to use as translation memory when fuzzy matching")
+    parser.add_option(
+        "", "--tm", dest="tm", default=None,
+        help="The file to use as translation memory when fuzzy matching")
     parser.passthrough.append("tm")
 
     defaultsimilarity = 75
-    parser.add_option("-s", "--similarity", dest="min_similarity",
-            default=defaultsimilarity, type="float",
-            help="The minimum similarity for inclusion (default: %d%%)" %
-                    defaultsimilarity)
+    parser.add_option(
+        "-s", "--similarity", dest="min_similarity",
+        default=defaultsimilarity, type="float",
+        help="The minimum similarity for inclusion (default: %d%%)" %
+        defaultsimilarity)
     parser.passthrough.append("min_similarity")
 
-    parser.add_option("--nofuzzymatching", dest="fuzzymatching",
-            action="store_false", default=True, help="Disable fuzzy matching")
+    parser.add_option(
+        "--nofuzzymatching", dest="fuzzymatching",
+        action="store_false", default=True, help="Disable fuzzy matching")
     parser.passthrough.append("fuzzymatching")
 
     parser.run(argv)

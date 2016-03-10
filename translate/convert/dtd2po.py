@@ -72,10 +72,10 @@ class dtd2po(object):
         # handle group stuff
         if self.currentgroup is not None:
             po_unit.addnote(quote.stripcomment(self.currentgroup),
-                          origin="translator")
+                            origin="translator")
         if is_css_entity(entity):
             po_unit.addnote("Do not translate this.  Only change the numeric values if you need this dialogue box to appear bigger",
-                          origin="developer")
+                            origin="developer")
 
     def convertstrings(self, dtd_unit, po_unit):
         # extract the string, get rid of quoting
@@ -91,9 +91,10 @@ class dtd2po(object):
         # quotes have been escaped already by escapeforpo, so just add the
         # start and end quotes
         if len(lines) > 1:
-            po_unit.source = "\n".join([lines[0].rstrip() + ' '] +
-                    [line.strip() + ' ' for line in lines[1:-1]] +
-                    [lines[-1].lstrip()])
+            po_unit.source = "\n".join(
+                [lines[0].rstrip() + ' '] +
+                [line.strip() + ' ' for line in lines[1:-1]] +
+                [lines[-1].lstrip()])
         elif lines:
             po_unit.source = lines[0]
         else:
@@ -140,7 +141,7 @@ class dtd2po(object):
                         # convert it into an automatic comment, to be
                         # processed by convertcomments
                         dtd_unit.comments[commentnum] = ("automaticcomment",
-                                                       actualnote)
+                                                         actualnote)
         # do a standard translation
         self.convertcomments(dtd_unit, po_unit)
         self.convertstrings(dtd_unit, po_unit)

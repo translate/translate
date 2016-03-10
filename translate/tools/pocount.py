@@ -221,7 +221,7 @@ Review Messages, Review Source Words""")
         if self.filecount > 1 and (self.style == style_full):
             if self.incomplete_only:
                 summarize("TOTAL (incomplete only):", self.totals,
-                incomplete_only=True)
+                          incomplete_only=True)
                 print("File count (incomplete):   %5d" % (self.filecount - self.complete_count))
             else:
                 summarize("TOTAL:", self.totals, incomplete_only=False)
@@ -267,9 +267,10 @@ Review Messages, Review Source Words""")
 
 def main():
     parser = ArgumentParser()
-    parser.add_argument("--incomplete", action="store_true", default=False,
-                        dest="incomplete_only",
-                        help="skip 100%% translated files.")
+    parser.add_argument(
+        "--incomplete", action="store_true", default=False,
+        dest="incomplete_only",
+        help="skip 100%% translated files.")
     if sys.version_info[:2] <= (2, 6):
         # Python 2.6 using argparse from PyPI cannot define a mutually
         # exclusive group as a child of a group, but it works if it is a child
@@ -279,21 +280,26 @@ def main():
     else:
         output_group = parser.add_argument_group("Output format")
         megroup = output_group.add_mutually_exclusive_group()
-    megroup.add_argument("--full", action="store_const", const=style_full,
-                        dest="style", default=style_full,
-                        help="(default) statistics in full, verbose format")
-    megroup.add_argument("--csv", action="store_const", const=style_csv,
-                        dest="style",
-                        help="statistics in CSV format")
-    megroup.add_argument("--short", action="store_const", const=style_short_strings,
-                        dest="style",
-                        help="same as --short-strings")
-    megroup.add_argument("--short-strings", action="store_const",
-                        const=style_short_strings, dest="style",
-                        help="statistics of strings in short format - one line per file")
-    megroup.add_argument("--short-words", action="store_const",
-                        const=style_short_words, dest="style",
-                        help="statistics of words in short format - one line per file")
+    megroup.add_argument(
+        "--full", action="store_const", const=style_full,
+        dest="style", default=style_full,
+        help="(default) statistics in full, verbose format")
+    megroup.add_argument(
+        "--csv", action="store_const", const=style_csv,
+        dest="style",
+        help="statistics in CSV format")
+    megroup.add_argument(
+        "--short", action="store_const", const=style_short_strings,
+        dest="style",
+        help="same as --short-strings")
+    megroup.add_argument(
+        "--short-strings", action="store_const",
+        const=style_short_strings, dest="style",
+        help="statistics of strings in short format - one line per file")
+    megroup.add_argument(
+        "--short-words", action="store_const",
+        const=style_short_words, dest="style",
+        help="statistics of words in short format - one line per file")
 
     parser.add_argument("files", nargs="+")
 

@@ -139,17 +139,17 @@ class poheader(object):
         return self.header()
 
     def makeheaderdict(self,
-            charset="CHARSET",
-            encoding="ENCODING",
-            project_id_version=None,
-            pot_creation_date=None,
-            po_revision_date=None,
-            last_translator=None,
-            language_team=None,
-            mime_version=None,
-            plural_forms=None,
-            report_msgid_bugs_to=None,
-            **kwargs):
+                       charset="CHARSET",
+                       encoding="ENCODING",
+                       project_id_version=None,
+                       pot_creation_date=None,
+                       po_revision_date=None,
+                       last_translator=None,
+                       language_team=None,
+                       mime_version=None,
+                       plural_forms=None,
+                       report_msgid_bugs_to=None,
+                       **kwargs):
         """Create a header dictionary with useful defaults.
 
         pot_creation_date can be None (current date) or a value (datetime or string)

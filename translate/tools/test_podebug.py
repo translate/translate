@@ -115,16 +115,17 @@ class TestPODebug:
         assert out_unit.target == u'xxx%sxxx' % (in_unit.source)
 
     def test_hash(self):
-        po_docs = ("""
+        po_docs = (
+            """
 msgid "Test msgid 1"
 msgstr "Test msgstr 1"
 """,
-"""
+            """
 msgctxt "test context"
 msgid "Test msgid 2"
 msgstr "Test msgstr 2"
 """,
-"""
+            """
 # Test comment 3
 msgctxt "test context 3"
 msgid "Test msgid 3"

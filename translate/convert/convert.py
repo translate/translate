@@ -174,10 +174,9 @@ class ConvertOptionParser(optrecurse.RecursiveOptionParser, object):
         if options.timestamp and _output_is_newer(fullinputpath, fulloutputpath):
             return False
 
-        return super(ConvertOptionParser,
-                    self).processfile(fileprocessor, options,
-                                      fullinputpath, fulloutputpath,
-                                      fulltemplatepath)
+        return super(ConvertOptionParser, self).processfile(
+            fileprocessor, options, fullinputpath, fulloutputpath,
+            fulltemplatepath)
 
 
 def copyinput(inputfile, outputfile, templatefile, **kwargs):
@@ -435,10 +434,9 @@ class ArchiveConvertOptionParser(ConvertOptionParser):
                     os.unlink(fulloutputpath)
                 return False
         else:
-            return super(ArchiveConvertOptionParser,
-                        self).processfile(fileprocessor, options,
-                                          fullinputpath, fulloutputpath,
-                                          fulltemplatepath)
+            return super(ArchiveConvertOptionParser, self).processfile(
+                fileprocessor, options, fullinputpath, fulloutputpath,
+                fulltemplatepath)
 
 
 def _output_is_newer(input_path, output_path):

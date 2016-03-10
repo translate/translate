@@ -185,8 +185,8 @@ else:
 
     class InnoScript(object):
         """class that builds an InnoSetup script"""
-        def __init__(self, name, lib_dir, dist_dir, exe_files=[], other_files=[],
-                    install_scripts=[], version="1.0"):
+        def __init__(self, name, lib_dir, dist_dir, exe_files=[],
+                     other_files=[], install_scripts=[], version="1.0"):
             self.lib_dir = lib_dir
             self.dist_dir = dist_dir
             if not self.dist_dir.endswith(os.sep):
@@ -200,8 +200,9 @@ else:
         def getcompilecommand(self):
             try:
                 import _winreg
-                compile_key = _winreg.OpenKey(_winreg.HKEY_CLASSES_ROOT,
-                                            "innosetupscriptfile\\shell\\compile\\command")
+                compile_key = _winreg.OpenKey(
+                    _winreg.HKEY_CLASSES_ROOT,
+                    "innosetupscriptfile\\shell\\compile\\command")
                 compilecommand = _winreg.QueryValue(compile_key, "")
                 compile_key.Close()
             except:
@@ -245,8 +246,9 @@ else:
             ofi.write("[Registry]\n")
             # TODO: Move the code to update the Path environment variable to a
             # Python script which will be invoked by the [Run] section (below)
-            ofi.write('Root: HKCU; Subkey: "Environment"; ValueType: expandsz; '
-                    'ValueName: "Path"; ValueData: "{reg:HKCU\\Environment,Path|};{app};"\n')
+            ofi.write(
+                'Root: HKCU; Subkey: "Environment"; ValueType: expandsz; '
+                'ValueName: "Path"; ValueData: "{reg:HKCU\\Environment,Path|};{app};"\n')
             ofi.write("\n")
             if self.install_scripts:
                 ofi.write("[Run]\n")
@@ -275,8 +277,8 @@ else:
 
         def reinitialize_command(self, command, reinit_subcommands=0):
             if command == "install_data":
-                install_data = BuildCommand.reinitialize_command(self, command,
-                                                            reinit_subcommands)
+                install_data = BuildCommand.reinitialize_command(
+                    self, command, reinit_subcommands)
                 install_data.data_files = self.remap_data_files(install_data.data_files)
                 return install_data
             return BuildCommand.reinitialize_command(self, command, reinit_subcommands)
@@ -303,9 +305,10 @@ else:
         """distutils class that first builds the exe file(s), then creates a
         Windows installer using InnoSetup"""
         description = "create an executable installer for MS Windows using InnoSetup and py2exe"
-        user_options = getattr(BuildCommand, 'user_options', []) + \
-            [('install-script=', None,
-            "basename of installation script to be run after installation or before deinstallation")]
+        user_options = getattr(
+            BuildCommand, 'user_options', []) + [(
+                'install-script=', None,
+                "basename of installation script to be run after installation or before deinstallation")]
 
         def initialize_options(self):
             BuildCommand.initialize_options(self)

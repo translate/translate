@@ -96,8 +96,8 @@ def create_example_content(database):
     database.index_document(["foo", "barr", "med", "HELO"])
     # some field indexed document data
     database.index_document({"fname1": "foo_field1", "fname2": "foo_field2"})
-    database.index_document({"fname1": "bar_field1", "fname2": "foo_field2",
-            None: ["HELO", "foo"]})
+    database.index_document({
+        "fname1": "bar_field1", "fname2": "foo_field2", None: ["HELO", "foo"]})
     database.index_document({None: "med"})
     # for tokenizing tests
     database.set_field_analyzers({
@@ -150,10 +150,11 @@ def test_make_queries():
     q_plain2 = new_db.make_query("foo bar")
     assert str(q_plain1) != str(q_plain2)
     # list 'and/or'
-    q_combined_and = new_db.make_query([new_db.make_query("foo"),
-        new_db.make_query("bar")])
-    q_combined_or = new_db.make_query([new_db.make_query("foo"),
-        new_db.make_query("bar")], require_all=False)
+    q_combined_and = new_db.make_query(
+        [new_db.make_query("foo"), new_db.make_query("bar")])
+    q_combined_or = new_db.make_query(
+        [new_db.make_query("foo"), new_db.make_query("bar")],
+        require_all=False)
     assert str(q_combined_or) != str(q_combined_and)
 
 
@@ -165,8 +166,8 @@ def test_partial_text_matching():
     new_db = _get_indexer(DATABASE)
     create_example_content(new_db)
     # this query should return three matches (disabled partial matching)
-    q_plain_partial1 = new_db.make_query("bar",
-            analyzer=(new_db.analyzer ^ new_db.ANALYZER_PARTIAL))
+    q_plain_partial1 = new_db.make_query(
+        "bar", analyzer=(new_db.analyzer ^ new_db.ANALYZER_PARTIAL))
     r_plain_partial1 = new_db.get_query_result(q_plain_partial1).get_matches(0, 10)
     assert r_plain_partial1[0] == 2
     # this query should return three matches (wildcard works)
@@ -174,8 +175,8 @@ def test_partial_text_matching():
     r_plain_partial2 = new_db.get_query_result(q_plain_partial2).get_matches(0, 10)
     assert r_plain_partial2[0] == 3
     # return two matches (the wildcard is ignored without PARTIAL)
-    q_plain_partial3 = new_db.make_query("bar*",
-            analyzer=(new_db.analyzer ^ new_db.ANALYZER_PARTIAL))
+    q_plain_partial3 = new_db.make_query(
+        "bar*", analyzer=(new_db.analyzer ^ new_db.ANALYZER_PARTIAL))
     r_plain_partial3 = new_db.get_query_result(q_plain_partial3).get_matches(0, 10)
     assert r_plain_partial3[0] == 2
     # partial matching at the start of the string
@@ -261,18 +262,19 @@ def test_and_queries():
     new_db = _get_indexer(DATABASE)
     create_example_content(new_db)
     # do an AND query (partial matching disabled)
-    q_and1 = new_db.make_query("foo bar",
-            analyzer=(new_db.analyzer ^ new_db.ANALYZER_PARTIAL))
+    q_and1 = new_db.make_query(
+        "foo bar", analyzer=(new_db.analyzer ^ new_db.ANALYZER_PARTIAL))
     r_and1 = new_db.get_query_result(q_and1).get_matches(0, 10)
     assert r_and1[0] == 2
     # do the same AND query in a different way
-    q_and2 = new_db.make_query(["foo", "bar"],
-            analyzer=(new_db.analyzer ^ new_db.ANALYZER_PARTIAL))
+    q_and2 = new_db.make_query(
+        ["foo", "bar"], analyzer=(new_db.analyzer ^ new_db.ANALYZER_PARTIAL))
     r_and2 = new_db.get_query_result(q_and2).get_matches(0, 10)
     assert r_and2[0] == 2
     # do an AND query without results
-    q_and3 = new_db.make_query(["HELO", "bar", "med"],
-            analyzer=(new_db.analyzer ^ new_db.ANALYZER_PARTIAL))
+    q_and3 = new_db.make_query(
+        ["HELO", "bar", "med"],
+        analyzer=(new_db.analyzer ^ new_db.ANALYZER_PARTIAL))
     r_and3 = new_db.get_query_result(q_and3).get_matches(0, 10)
     assert r_and3[0] == 0
     # clean up
@@ -333,8 +335,8 @@ def test_lower_upper_case():
     new_db = _get_indexer(DATABASE)
     create_example_content(new_db)
     # use upper case search terms for lower case indexed terms
-    q_case1 = new_db.make_query("BAR",
-            analyzer=(new_db.analyzer ^ new_db.ANALYZER_PARTIAL))
+    q_case1 = new_db.make_query(
+        "BAR", analyzer=(new_db.analyzer ^ new_db.ANALYZER_PARTIAL))
     r_case1 = new_db.get_query_result(q_case1).get_matches(0, 10)
     assert r_case1[0] == 2
     # use lower case search terms for upper case indexed terms
@@ -342,8 +344,8 @@ def test_lower_upper_case():
     r_case2 = new_db.get_query_result(q_case2).get_matches(0, 10)
     assert r_case2[0] == 3
     # use lower case search terms for lower case indexed terms
-    q_case3 = new_db.make_query("bar",
-            analyzer=(new_db.analyzer ^ new_db.ANALYZER_PARTIAL))
+    q_case3 = new_db.make_query(
+        "bar", analyzer=(new_db.analyzer ^ new_db.ANALYZER_PARTIAL))
     r_case3 = new_db.get_query_result(q_case3).get_matches(0, 10)
     assert r_case3[0] == 2
     # use upper case search terms for upper case indexed terms
@@ -416,7 +418,7 @@ def test_multiple_terms():
     create_example_content(new_db)
     # check for the first item ("foo")
     q_multiple1 = new_db.make_query({"multiple": "f"},
-            analyzer=new_db.ANALYZER_PARTIAL)
+                                    analyzer=new_db.ANALYZER_PARTIAL)
     r_multiple1 = new_db.get_query_result(q_multiple1).get_matches(0, 10)
     assert r_multiple1[0] == 1
     # check for the second item ("bar")
@@ -453,9 +455,10 @@ def _show_database_xapian(database):
         except xapian.DocNotFoundError:
             continue
         # print the document's terms and their positions
-        print("\tDocument [%d]: %s" % (index,
-                str([(one_term.term, [posi for posi in one_term.positer])
-                for one_term in document.termlist()])))
+        print("\tDocument [%d]: %s" %
+              (index,
+               str([(one_term.term, [posi for posi in one_term.positer])
+                    for one_term in document.termlist()])))
 
 
 def _get_number_of_docs(database):
@@ -478,8 +481,8 @@ def report_whitelisted_success(db, name):
     supposed to fail for a specific indexing engine.
     As this test works now for the engine, the whitelisting should be removed.
     """
-    print("the test '%s' works again for '%s' - please remove the exception"
-        % (name, get_engine_name(db)))
+    print("the test '%s' works again for '%s' - please remove the exception" %
+          (name, get_engine_name(db)))
 
 
 def report_whitelisted_failure(db, name):
@@ -488,8 +491,8 @@ def report_whitelisted_failure(db, name):
     Since the test behaves as expected (it fails), this is just for reminding
     developers on these open issues of the indexing engine support.
     """
-    print("the test '%s' fails - as expected for '%s'" % (name,
-            get_engine_name(db)))
+    print("the test '%s' fails - as expected for '%s'" %
+          (name, get_engine_name(db)))
 
 
 def assert_whitelisted(db, assert_value, white_list_engines, name_of_check):

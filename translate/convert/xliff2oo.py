@@ -235,9 +235,10 @@ def main(argv=None):
                       default=None,
                       help="set source language code (default en-US)",
                       metavar="LANG")
-    parser.add_option("-T", "--keeptimestamp", dest="timestamp", default=None,
-                      action="store_const", const=0,
-            help="don't change the timestamps of the strings")
+    parser.add_option(
+        "-T", "--keeptimestamp", dest="timestamp", default=None,
+        action="store_const", const=0,
+        help="don't change the timestamps of the strings")
     parser.add_option("", "--nonrecursiveoutput", dest="allowrecursiveoutput",
                       default=True, action="store_false",
                       help="don't treat the output oo as a recursive store")

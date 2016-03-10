@@ -561,9 +561,9 @@ class propfile(base.TranslationStore):
     def parse(self, propsrc):
         """Read the source of a properties file in and include them
         as units."""
-        text, encoding = self.detect_encoding(propsrc,
-            default_encodings=[self.personality.default_encoding, 'utf-8',
-                               'utf-16'])
+        text, encoding = self.detect_encoding(
+            propsrc, default_encodings=[self.personality.default_encoding,
+                                        'utf-8', 'utf-16'])
         if not text:
             raise IOError("Cannot detect encoding for %s." % (self.filename or
                                                               "given string"))

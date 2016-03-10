@@ -350,11 +350,14 @@ class UnitChecker(object):
         """Sets the accelerator list."""
         self.config = config
         self.accfilters = [prefilters.filteraccelerators(accelmarker) for accelmarker in self.config.accelmarkers]
-        self.varfilters = [prefilters.filtervariables(startmatch, endmatch, prefilters.varname)
-                for startmatch, endmatch in self.config.varmatches]
-        self.removevarfilter = [prefilters.filtervariables(startmatch, endmatch,
-                                                           prefilters.varnone)
-                for startmatch, endmatch in self.config.varmatches]
+        self.varfilters = [
+            prefilters.filtervariables(startmatch, endmatch,
+                                       prefilters.varname)
+            for startmatch, endmatch in self.config.varmatches]
+        self.removevarfilter = [
+            prefilters.filtervariables(startmatch, endmatch,
+                                       prefilters.varnone)
+            for startmatch, endmatch in self.config.varmatches]
 
     def setsuggestionstore(self, store):
         """Sets the filename that a checker should use for evaluating
@@ -786,8 +789,8 @@ class StandardChecker(TranslationChecker):
         str2 = self.filteraccelerators(self.filtervariables(str2))
         str2 = self.filterxml(str2)
 
-        if helpers.countsmatch(str1, str2, (u'"', u'""', u'\\"', u"«",
-                                        u"»", u"“", u"”")):
+        if helpers.countsmatch(str1, str2, (u'"', u'""', u'\\"', u"«", u"»",
+                                            u"“", u"”")):
             return True
         else:
             raise FilterFailure(u"Different quotation marks")
@@ -1919,13 +1922,13 @@ class StandardChecker(TranslationChecker):
         "startwhitespace": ("startpunc",),
         "unchanged": ("doublewords",),
         "compendiumconflicts": ("accelerators", "brackets", "escapes",
-                          "numbers", "startpunc", "long", "variables",
-                          "startcaps", "sentencecount", "simplecaps",
-                          "doublespacing", "endpunc", "xmltags",
-                          "startwhitespace", "endwhitespace",
-                          "singlequoting", "doublequoting",
-                          "filepaths", "purepunc", "doublewords", "printf",
-                          "newlines", "validxml"),
+                                "numbers", "startpunc", "long", "variables",
+                                "startcaps", "sentencecount", "simplecaps",
+                                "doublespacing", "endpunc", "xmltags",
+                                "startwhitespace", "endwhitespace",
+                                "singlequoting", "doublequoting", "filepaths",
+                                "purepunc", "doublewords", "printf",
+                                "newlines", "validxml"),
     }
 
 # code to actually run the tests (use unittest?)

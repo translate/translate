@@ -97,7 +97,7 @@ class XapianDatabase(CommonIndexer.CommonDatabase):
         """
         # call the __init__ function of our parent
         super(XapianDatabase, self).__init__(basedir, analyzer=analyzer,
-                create_allowed=create_allowed)
+                                             create_allowed=create_allowed)
         self.reader = None
         self.writer = None
         if os.path.exists(self.location):
@@ -124,7 +124,7 @@ class XapianDatabase(CommonIndexer.CommonDatabase):
                               (parent_path, str(err_msg)))
             try:
                 self.writer = xapian.WritableDatabase(self.location,
-                        xapian.DB_CREATE_OR_OPEN)
+                                                      xapian.DB_CREATE_OR_OPEN)
                 self.flush()
             except xapian.DatabaseOpeningError as err_msg:
                 raise OSError("Indexer: failed to open or create a xapian "
@@ -165,8 +165,7 @@ class XapianDatabase(CommonIndexer.CommonDatabase):
         # create a copy of the original query
         return xapian.Query(query)
 
-    def _create_query_for_string(self, text, require_all=True,
-            analyzer=None):
+    def _create_query_for_string(self, text, require_all=True, analyzer=None):
         """generate a query for a plain term of a string query
 
         basically this function parses the string and returns the resulting

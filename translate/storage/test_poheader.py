@@ -99,7 +99,7 @@ def test_po_dates():
     check_po_date(headerdict["PO-Revision-Date"])
 
     headerdict = pofile.makeheaderdict(pot_creation_date=time.localtime(),
-        po_revision_date=time.localtime())
+                                       po_revision_date=time.localtime())
     check_po_date(headerdict["POT-Creation-Date"])
     check_po_date(headerdict["PO-Revision-Date"])
 

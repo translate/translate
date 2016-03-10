@@ -89,8 +89,8 @@ class TestMozLangFile(test_base.TestTranslationStore):
         assert unit.target == ""
         assert bytes(store).decode('utf-8') == lang
         lang2 = (";Source\n"
-                "\n"
-                ";Source2\n")
+                 "\n"
+                 ";Source2\n")
         store2 = self.StoreClass.parsestring(lang2)
         assert store2.units[0].source == "Source"
         assert store2.units[0].target == ""

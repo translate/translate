@@ -182,16 +182,16 @@ class CommonDatabase(object):
                 # check for the choosen match type
                 if analyzer is None:
                     analyzer = self.get_field_analyzers(field)
-                result.append(self._create_query_for_field(field, value,
-                        analyzer=analyzer))
+                result.append(self._create_query_for_field(
+                    field, value, analyzer=analyzer))
             # parse plaintext queries
             elif isinstance(query, six.string_types):
                 if analyzer is None:
                     analyzer = self.analyzer
                 # perform unicode normalization
                 query = translate.lang.data.normalize(six.text_type(query))
-                result.append(self._create_query_for_string(query,
-                        require_all=require_all, analyzer=analyzer))
+                result.append(self._create_query_for_string(
+                    query, require_all=require_all, analyzer=analyzer))
             else:
                 # other types of queries are not supported
                 raise ValueError("Unable to handle query type: %s" %
@@ -212,8 +212,7 @@ class CommonDatabase(object):
         raise NotImplementedError("Incomplete indexer implementation: "
                                   "'_create_query_for_query' is missing")
 
-    def _create_query_for_string(self, text, require_all=True,
-            analyzer=None):
+    def _create_query_for_string(self, text, require_all=True, analyzer=None):
         """Generate a query for a plain term of a string query.
 
         Basically this function parses the string and returns the resulting
@@ -304,19 +303,22 @@ class CommonDatabase(object):
                         raise ValueError("Invalid data type to be indexed: %s" %
                                          str(type(data)))
                     for one_term in terms:
-                        self._add_plain_term(doc, self._decode(one_term),
-                                (self.ANALYZER_DEFAULT & self.ANALYZER_TOKENIZE > 0))
+                        self._add_plain_term(
+                            doc, self._decode(one_term),
+                            (self.ANALYZER_DEFAULT & self.ANALYZER_TOKENIZE > 0))
                 else:
                     analyze_settings = self.get_field_analyzers(key)
                     # handle multiple terms
                     if not isinstance(value, list):
                         value = [value]
                     for one_term in value:
-                        self._add_field_term(doc, key, self._decode(one_term),
-                                (analyze_settings & self.ANALYZER_TOKENIZE > 0))
+                        self._add_field_term(
+                            doc, key, self._decode(one_term),
+                            (analyze_settings & self.ANALYZER_TOKENIZE > 0))
             elif isinstance(dataset, six.string_types):
-                self._add_plain_term(doc, self._decode(dataset),
-                        (self.ANALYZER_DEFAULT & self.ANALYZER_TOKENIZE > 0))
+                self._add_plain_term(
+                    doc, self._decode(dataset),
+                    (self.ANALYZER_DEFAULT & self.ANALYZER_TOKENIZE > 0))
             else:
                 raise ValueError("Invalid data type to be indexed: %s" %
                                  str(type(data)))
@@ -451,14 +453,15 @@ class CommonDatabase(object):
         if isinstance(ident_list[0], int) or isinstance(ident_list[0], long):
             # create a list of IDs of all successfully removed documents
             success_delete = [match for match in ident_list
-                    if self.delete_document_by_id(match)]
+                              if self.delete_document_by_id(match)]
             return len(success_delete)
         if isinstance(ident_list[0], dict):
             # something like: { "msgid": "foobar" }
             # assemble all queries
-            query = self.make_query([self.make_query(query_dict,
-                    require_all=True) for query_dict in ident_list],
-                    require_all=True)
+            query = self.make_query(
+                [self.make_query(query_dict, require_all=True)
+                 for query_dict in ident_list],
+                require_all=True)
         elif isinstance(ident_list[0], object):
             # assume a query object (with 'AND')
             query = self.make_query(ident_list, require_all=True)

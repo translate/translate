@@ -174,8 +174,9 @@ def main(argv=None):
     parser.add_option("-l", "--language", dest="targetlanguage", default=None,
                       help="set target language to extract from oo file (e.g. af-ZA)",
                       metavar="LANG")
-    parser.add_option("", "--source-language", dest="sourcelanguage", default=None,
-            help="set source language code (default en-US)", metavar="LANG")
+    parser.add_option(
+        "", "--source-language", dest="sourcelanguage", default=None,
+        help="set source language code (default en-US)", metavar="LANG")
     parser.add_option("", "--nonrecursiveinput", dest="allowrecursiveinput",
                       default=True, action="store_false",
                       help="don't treat the input oo as a recursive store")

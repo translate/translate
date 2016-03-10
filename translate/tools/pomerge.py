@@ -96,7 +96,7 @@ def mergestore(inputfile, outputfile, templatefile, mergeblanks="no", mergefuzzy
     else:
         templatestore = factory.getobject(templatefile)
     outputstore = mergestores(templatestore, inputstore, mergeblanks,
-                    mergefuzzy, mergecomments)
+                              mergefuzzy, mergecomments)
     if outputstore.isempty():
         return 0
     outputstore.serialize(outputfile)
@@ -115,13 +115,16 @@ def main():
         ("xlf", "po"): pooutput, ("xlf", "pot"): pooutput,
         ("xlf", "xlf"): xliffoutput, ("po", "xlf"): xliffoutput,
     }
-    mergeblanksoption = convert.optparse.Option("", "--mergeblanks",
+    mergeblanksoption = convert.optparse.Option(
+        "", "--mergeblanks",
         dest="mergeblanks", action="store", default="yes",
         help="whether to overwrite existing translations with blank translations (yes/no). Default is yes.")
-    mergefuzzyoption = convert.optparse.Option("", "--mergefuzzy",
+    mergefuzzyoption = convert.optparse.Option(
+        "", "--mergefuzzy",
         dest="mergefuzzy", action="store", default="yes",
         help="whether to consider fuzzy translations from input (yes/no). Default is yes.")
-    mergecommentsoption = convert.optparse.Option("", "--mergecomments",
+    mergecommentsoption = convert.optparse.Option(
+        "", "--mergecomments",
         dest="mergecomments", action="store", default="yes",
         help="whether to merge comments as well as translations (yes/no). Default is yes.")
     parser = convert.ConvertOptionParser(formats, usetemplates=True,

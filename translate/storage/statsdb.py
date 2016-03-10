@@ -458,7 +458,8 @@ class StatsCache(object):
                                    unit.get_state_id()))
                 file_totals_record = file_totals_record + FileTotals.new_record(unit_state_for_db, sourcewords, targetwords)
         # XXX: executemany is non-standard
-        self.cur.executemany("""INSERT INTO units
+        self.cur.executemany(
+            """INSERT INTO units
             (unitid, fileid, unitindex, source, target, sourcewords, targetwords, state, e_state)
             values (?, ?, ?, ?, ?, ?, ?, ?, ?);""",
             unitvalues)
@@ -473,7 +474,8 @@ class StatsCache(object):
         unconditionally."""
         self.cur.execute("""DELETE FROM files WHERE
             path=?;""", (realpath,))
-        self.cur.execute("""iNSERT INTO files
+        self.cur.execute(
+            """INSERT INTO files
             (fileid, path, st_mtime, st_size, toolkitbuild) values (NULL, ?, ?, ?, ?);""",
             (realpath, mod_info[0], mod_info[1], toolkitversion.build))
         # Unusual capitalisation intended. See bug 2073.
@@ -534,10 +536,10 @@ class StatsCache(object):
             errornames.append("total")
 
         # XXX: executemany is non-standard
-        self.cur.executemany("""INSERT INTO uniterrors
-            (unitindex, fileid, configid, name, message)
-            values (?, ?, ?, ?, ?);""",
-            unitvalues)
+        self.cur.executemany(
+            "INSERT INTO uniterrors "
+            "(unitindex, fileid, configid, name, message) "
+            "values (?, ?, ?, ?, ?);", unitvalues)
         return errornames
 
     @transaction
@@ -636,8 +638,9 @@ class StatsCache(object):
         configid = self._getstoredcheckerconfig(checker)
         if configid:
             return configid
-        self.cur.execute("""iNSERT INTO checkerconfigs
-            (configid, config) values (NULL, ?);""",
+        self.cur.execute(
+            "INSERT INTO checkerconfigs "
+            "(configid, config) values (NULL, ?);",
             (str(checker.config.__dict__),))
         # Unusual capitalisation intended. See bug 2073.
         return self.cur.lastrowid

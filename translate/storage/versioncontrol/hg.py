@@ -68,7 +68,7 @@ class hg(GenericRevisionControlSystem):
         if needs_revert:
             # revert local changes (avoids conflicts)
             command = ["hg", "-R", self.root_dir, "revert",
-                    "--all", self.location_abs]
+                       "--all", self.location_abs]
             exitcode, output_revert, error = run_command(command)
             if exitcode != 0:
                 raise IOError("[Mercurial] error running '%s': %s" %
@@ -130,7 +130,7 @@ class hg(GenericRevisionControlSystem):
         """Get a clean version of a file from the hg repository"""
         # run hg cat
         command = ["hg", "-R", self.root_dir, "cat",
-                self.location_abs]
+                   self.location_abs]
         exitcode, output, error = run_command(command)
         if exitcode != 0:
             raise IOError("[Mercurial] Error running '%s': %s" % (

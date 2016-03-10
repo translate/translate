@@ -135,9 +135,9 @@ def find_matches(unit, part, strings, re_search):
 
 class GrepFilter:
 
-    def __init__(self, searchstring, searchparts, ignorecase=False, useregexp=False,
-            invertmatch=False, keeptranslations=False, accelchar=None, encoding='utf-8',
-            max_matches=0):
+    def __init__(self, searchstring, searchparts, ignorecase=False,
+                 useregexp=False, invertmatch=False, keeptranslations=False,
+                 accelchar=None, encoding='utf-8', max_matches=0):
         """builds a checkfilter using the given checker"""
         if isinstance(searchstring, six.text_type):
             self.searchstring = searchstring
@@ -341,25 +341,33 @@ def rungrep(inputfile, outputfile, templatefile, checkfilter):
 
 
 def cmdlineparser():
-    formats = {"po": ("po", rungrep), "pot": ("pot", rungrep),
-            "mo": ("mo", rungrep), "gmo": ("gmo", rungrep),
-            "tmx": ("tmx", rungrep),
-            "xliff": ("xliff", rungrep), "xlf": ("xlf", rungrep), "xlff": ("xlff", rungrep),
-            None: ("po", rungrep)}
+    formats = {
+        "po": ("po", rungrep), "pot": ("pot", rungrep),
+        "mo": ("mo", rungrep), "gmo": ("gmo", rungrep),
+        "tmx": ("tmx", rungrep),
+        "xliff": ("xliff", rungrep), "xlf": ("xlf", rungrep), "xlff": ("xlff", rungrep),
+        None: ("po", rungrep),
+    }
     parser = GrepOptionParser(formats)
-    parser.add_option("", "--search", dest="searchparts",
+    parser.add_option(
+        "", "--search", dest="searchparts",
         action="append", type="choice", choices=["source", "target", "notes", "locations", "msgid", "msgstr", "comment"],
         metavar="SEARCHPARTS", help="searches the given parts (source, target, notes and locations)")
-    parser.add_option("-I", "--ignore-case", dest="ignorecase",
+    parser.add_option(
+        "-I", "--ignore-case", dest="ignorecase",
         action="store_true", default=False, help="ignore case distinctions")
-    parser.add_option("-e", "--regexp", dest="useregexp",
+    parser.add_option(
+        "-e", "--regexp", dest="useregexp",
         action="store_true", default=False, help="use regular expression matching")
-    parser.add_option("-v", "--invert-match", dest="invertmatch",
+    parser.add_option(
+        "-v", "--invert-match", dest="invertmatch",
         action="store_true", default=False, help="select non-matching lines")
-    parser.add_option("", "--accelerator", dest="accelchar",
+    parser.add_option(
+        "", "--accelerator", dest="accelchar",
         action="store", type="choice", choices=["&", "_", "~"],
         metavar="ACCELERATOR", help="ignores the given accelerator when matching")
-    parser.add_option("-k", "--keep-translations", dest="keeptranslations",
+    parser.add_option(
+        "-k", "--keep-translations", dest="keeptranslations",
         action="store_true", default=False, help="always extract units with translations")
     parser.set_usage()
     parser.passthrough.append('checkfilter')

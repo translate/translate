@@ -231,7 +231,7 @@ class JsonFile(base.TranslationStore):
             raise base.ParseError(e.message)
 
         for k, data, ref, item in self._extract_translatables(self._file,
-                                                stop=self._filter):
+                                                              stop=self._filter):
             unit = self.UnitClass(data, ref, item)
             unit.setid(k)
             self.addunit(unit)

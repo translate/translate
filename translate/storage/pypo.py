@@ -857,7 +857,7 @@ class pofile(pocommon.pofile):
                     line = line.decode(self.encoding)
                 except UnicodeDecodeError as e:
                     raise UnicodeDecodeError("Error decoding line with encoding %r: %s. Line is %r" %
-                                       (self.encoding, e, line))
+                                             (self.encoding, e, line))
             newlines.append(line)
         return newlines
 

@@ -124,9 +124,10 @@ def main(argv=None):
     }
     parser = convert.ConvertOptionParser(formats, usetemplates=True,
                                          usepots=True, description=__doc__)
-    parser.add_option("", "--filter", dest="filter", default=None,
-            help="leaves to extract e.g. 'name,desc': (default: extract everything)",
-            metavar="FILTER")
+    parser.add_option(
+        "", "--filter", dest="filter", default=None,
+        help="leaves to extract e.g. 'name,desc': (default: extract everything)",
+        metavar="FILTER")
     parser.add_duplicates_option()
     parser.passthrough.append("pot")
     parser.passthrough.append("filter")

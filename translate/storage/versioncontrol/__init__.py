@@ -52,7 +52,7 @@ def __get_rcs_class(name):
     if name not in __CACHED_RCS_CLASSES:
         try:
             module = __import__("translate.storage.versioncontrol.%s" % name,
-                    globals(), {}, name)
+                                globals(), {}, name)
             # the module function "is_available" must return "True"
             if (hasattr(module, "is_available") and
                 callable(module.is_available) and
@@ -85,11 +85,12 @@ def run_command(command, cwd=None):
     """
     # ok - we use "subprocess"
     try:
-        proc = subprocess.Popen(args=command,
-                stdout=subprocess.PIPE,
-                stderr=subprocess.PIPE,
-                stdin=subprocess.PIPE,
-                cwd=cwd)
+        proc = subprocess.Popen(
+            args=command,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE,
+            stdin=subprocess.PIPE,
+            cwd=cwd)
         (output, error) = proc.communicate()
         ret = proc.returncode
         return ret, output, error
@@ -296,8 +297,9 @@ def get_versioned_objects_recursive(
             full_fname = os.path.join(dirpath, fname)
             if os.path.isfile(full_fname):
                 try:
-                    rcs_objs.append(get_versioned_object(full_fname,
-                            versioning_systems, follow_symlinks))
+                    rcs_objs.append(
+                        get_versioned_object(full_fname, versioning_systems,
+                                             follow_symlinks))
                 except IOError:
                     pass
     return rcs_objs
@@ -330,9 +332,10 @@ def get_versioned_object(
         return possible_ver_objs[0]
     # if 'location' is a symlink, then we should try the original file
     if follow_symlinks and os.path.islink(location):
-        return get_versioned_object(os.path.realpath(location),
-                versioning_systems=versioning_systems,
-                follow_symlinks=False)
+        return get_versioned_object(
+            os.path.realpath(location),
+            versioning_systems=versioning_systems,
+            follow_symlinks=False)
     # if everything fails:
     raise IOError("Could not find version control information: %s" % location)
 

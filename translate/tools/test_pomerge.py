@@ -85,9 +85,9 @@ class TestPOMerge:
         inputfile = wStringIO.StringIO("")
         outputfile = wStringIO.StringIO()
         pytest.raises(ValueError, pomerge.mergestore, inputfile, outputfile,
-                    templatefile, mergeblanks="yay")
+                      templatefile, mergeblanks="yay")
         pytest.raises(ValueError, pomerge.mergestore, inputfile, outputfile,
-                    templatefile, mergecomments="yay")
+                      templatefile, mergecomments="yay")
 
     def test_simplemerge(self):
         """checks that a simple po entry merges OK"""

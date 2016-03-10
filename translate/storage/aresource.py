@@ -396,8 +396,9 @@ class AndroidResourceUnit(base.TranslationUnit):
         if origin in ['programmer', 'developer', 'source code', None]:
             self.xmlelement.addprevious(etree.Comment(text))
         else:
-            return super(AndroidResourceUnit, self).addnote(text, origin=origin,
-                                                 position=position)
+            return super(AndroidResourceUnit, self).addnote(text,
+                                                            origin=origin,
+                                                            position=position)
 
     def getnotes(self, origin=None):
         if origin in ['programmer', 'developer', 'source code', None]:

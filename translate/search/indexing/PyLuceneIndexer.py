@@ -82,8 +82,8 @@ class PyLuceneDatabase(CommonIndexer.CommonDatabase):
         """
         jvm = PyLucene.getVMEnv()
         jvm.attachCurrentThread()
-        super(PyLuceneDatabase, self).__init__(basedir, analyzer=analyzer,
-                create_allowed=create_allowed)
+        super(PyLuceneDatabase, self).__init__(
+            basedir, analyzer=analyzer, create_allowed=create_allowed)
         self.pyl_analyzer = PyLucene.StandardAnalyzer()
         self.writer = None
         self.reader = None
@@ -111,8 +111,8 @@ class PyLuceneDatabase(CommonIndexer.CommonDatabase):
                               "directory (%s) of the indexing database: %s" %
                               (parent_path, err_msg))
             try:
-                tempwriter = PyLucene.IndexWriter(self.location,
-                        self.pyl_analyzer, True)
+                tempwriter = PyLucene.IndexWriter(
+                    self.location, self.pyl_analyzer, True)
                 tempwriter.close()
             except PyLucene.JavaError as err_msg:
                 raise OSError("Indexer: failed to open or create a Lucene"
@@ -202,8 +202,7 @@ class PyLuceneDatabase(CommonIndexer.CommonDatabase):
         value = value.replace("-", " ")
         return PyLucene.QueryParser.escape(value)
 
-    def _create_query_for_string(self, text, require_all=True,
-            analyzer=None):
+    def _create_query_for_string(self, text, require_all=True, analyzer=None):
         """generate a query for a plain term of a string query
 
         basically this function parses the string and returns the resulting
@@ -316,8 +315,9 @@ class PyLuceneDatabase(CommonIndexer.CommonDatabase):
             token_flag = PyLucene.Field.Index.TOKENIZED
         else:
             token_flag = PyLucene.Field.Index.UN_TOKENIZED
-        document.add(PyLucene.Field(str(UNNAMED_FIELD_NAME), term,
-                PyLucene.Field.Store.YES, token_flag))
+        document.add(PyLucene.Field(
+            str(UNNAMED_FIELD_NAME), term, PyLucene.Field.Store.YES,
+            token_flag))
 
     def _add_field_term(self, document, field, term, tokenize=True):
         """add a field term to a document
@@ -335,8 +335,8 @@ class PyLuceneDatabase(CommonIndexer.CommonDatabase):
             token_flag = PyLucene.Field.Index.TOKENIZED
         else:
             token_flag = PyLucene.Field.Index.UN_TOKENIZED
-        document.add(PyLucene.Field(str(field), term,
-                PyLucene.Field.Store.YES, token_flag))
+        document.add(PyLucene.Field(
+            str(field), term, PyLucene.Field.Store.YES, token_flag))
 
     def _add_document_to_index(self, document):
         """add a prepared document to the index database
@@ -461,8 +461,8 @@ class PyLuceneDatabase(CommonIndexer.CommonDatabase):
         """
         if not self._writer_is_open():
             self._delete_stale_lock()
-            self.writer = PyLucene.IndexWriter(self.location, self.pyl_analyzer,
-                    False)
+            self.writer = PyLucene.IndexWriter(
+                self.location, self.pyl_analyzer, False)
             # "setMaxFieldLength" is available since PyLucene v2
             # we must stay compatible to v1 for the derived class
             # (PyLuceneIndexer1) - thus we make this step optional

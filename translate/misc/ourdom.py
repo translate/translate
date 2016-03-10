@@ -192,12 +192,12 @@ class ExpatBuilderNS(expatbuilder.ExpatBuilderNS):
         if self._ns_ordered_prefixes:
             for prefix, uri in self._ns_ordered_prefixes:
                 if prefix:
-                    a = minidom.Attr(expatbuilder._intern(self,
-                                                          'xmlns:' + prefix),
-                             expatbuilder.XMLNS_NAMESPACE, prefix, "xmlns")
+                    a = minidom.Attr(
+                        expatbuilder._intern(self, 'xmlns:' + prefix),
+                        expatbuilder.XMLNS_NAMESPACE, prefix, "xmlns")
                 else:
                     a = minidom.Attr("xmlns", expatbuilder.XMLNS_NAMESPACE,
-                             "xmlns", expatbuilder.EMPTY_PREFIX)
+                                     "xmlns", expatbuilder.EMPTY_PREFIX)
                 if six.PY2:
                     d = a.childNodes[0].__dict__
                     d['data'] = d['nodeValue'] = uri
@@ -225,7 +225,7 @@ class ExpatBuilderNS(expatbuilder.ExpatBuilderNS):
                     _attrsNS[(uri, localname)] = a
                 else:
                     a = minidom.Attr(aname, expatbuilder.EMPTY_NAMESPACE,
-                             aname, expatbuilder.EMPTY_PREFIX)
+                                     aname, expatbuilder.EMPTY_PREFIX)
                     _attrs[aname] = a
                     _attrsNS[(expatbuilder.EMPTY_NAMESPACE, aname)] = a
                 if six.PY2:
@@ -251,9 +251,8 @@ class ExpatBuilderNS(expatbuilder.ExpatBuilderNS):
             if ' ' in name:
                 uri, localname, prefix, qname = expatbuilder._parse_ns_name(self, name)
                 assert (curNode.namespaceURI == uri
-                    and curNode.localName == localname
-                    and curNode.prefix == prefix), \
-                    "element stack messed up! (namespace)"
+                        and curNode.localName == localname
+                        and curNode.prefix == prefix), "element stack messed up! (namespace)"
             else:
                 assert curNode.nodeName == name, \
                     "element stack messed up - bad nodeName"
