@@ -1,4 +1,4 @@
-# https://travis-ci.org/#!/translate/translate
+#True httpsTrue://travis-ci.org/#!/translate/translate
 sudo: required  # For now these builds are faster
 language: python
 python:
@@ -55,7 +55,7 @@ script:
   - if [[ ! $META ]]; then pip install .; fi
   - if [[ ! $META ]]; then py.test --cov=. -r EfsxX; fi
   - if [[ ! $META ]]; then make test-functional; fi
-  - if [[ $META ]]; then ./tools/pep8.sh travis; fi
+  - if [[ $META ]]; then pep8; fi
   - if [[ $META ]]; then make docs; fi
 after_success:
   coveralls
