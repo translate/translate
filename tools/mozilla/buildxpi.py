@@ -150,8 +150,8 @@ ac_add_options --enable-application=%(product)s
 
         # Try to make sure that "environment shell" is defined
         # (python/mach/mach/mixin/process.py)
-        if not any (var in os.environ
-                    for var in ('SHELL', 'MOZILLABUILD', 'COMSPEC')):
+        if not any(var in os.environ
+                   for var in ('SHELL', 'MOZILLABUILD', 'COMSPEC')):
             os.environ['SHELL'] = '/bin/sh'
 
         # Start building process.
