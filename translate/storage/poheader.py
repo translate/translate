@@ -161,15 +161,15 @@ class poheader(object):
         """
         if project_id_version is None:
             project_id_version = "PACKAGE VERSION"
-        if pot_creation_date is None or pot_creation_date == True:
+        if pot_creation_date is None or pot_creation_date is True:
             pot_creation_date = time.strftime("%Y-%m-%d %H:%M") + tzstring()
         if isinstance(pot_creation_date, time.struct_time):
             pot_creation_date = time.strftime("%Y-%m-%d %H:%M", pot_creation_date) + tzstring()
         if po_revision_date is None:
             po_revision_date = "YEAR-MO-DA HO:MI+ZONE"
-        elif po_revision_date == False:
+        elif po_revision_date is False:
             po_revision_date = pot_creation_date
-        elif po_revision_date == True:
+        elif po_revision_date is True:
             po_revision_date = time.strftime("%Y-%m-%d %H:%M") + tzstring()
         if isinstance(po_revision_date, time.struct_time):
             po_revision_date = time.strftime("%Y-%m-%d %H:%M", po_revision_date) + tzstring()
