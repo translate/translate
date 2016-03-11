@@ -1,6 +1,7 @@
 -r optional.txt
 
 isort>=3.5.0
+pep257
 pep8
 pytest>=2.2
 pytest-cov
