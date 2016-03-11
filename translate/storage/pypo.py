@@ -745,6 +745,7 @@ class pounit(pocommon.pounit):
 
 class pofile(pocommon.pofile):
     """A .po file containing various units"""
+
     UnitClass = pounit
 
     def parse(self, input, duplicatestyle="merge"):

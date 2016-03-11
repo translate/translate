@@ -112,6 +112,7 @@ class rcunit(base.TranslationUnit):
 
 class rcfile(base.TranslationStore):
     """This class represents a .rc file, made up of rcunits."""
+
     UnitClass = rcunit
     default_encoding = "cp1252"
 

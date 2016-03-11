@@ -185,6 +185,7 @@ else:
 
     class InnoScript(object):
         """class that builds an InnoSetup script"""
+
         def __init__(self, name, lib_dir, dist_dir, exe_files=[],
                      other_files=[], install_scripts=[], version="1.0"):
             self.lib_dir = lib_dir
@@ -303,7 +304,9 @@ else:
 
     class BuildInstaller(build_exe_map):
         """distutils class that first builds the exe file(s), then creates a
-        Windows installer using InnoSetup"""
+        Windows installer using InnoSetup
+        """
+
         description = "create an executable installer for MS Windows using InnoSetup and py2exe"
         user_options = getattr(
             BuildCommand, 'user_options', []) + [(
@@ -337,6 +340,7 @@ else:
 
     class TranslateDistribution(Distribution):
         """a modified distribution class for translate"""
+
         def __init__(self, attrs):
             baseattrs = {}
             py2exeoptions = {}

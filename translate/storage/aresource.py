@@ -439,6 +439,7 @@ class AndroidResourceUnit(base.TranslationUnit):
 
 class AndroidResourceFile(lisa.LISAfile):
     """Class representing an Android String resource file store."""
+
     UnitClass = AndroidResourceUnit
     Name = "Android String Resource"
     Mimetypes = ["application/xml"]

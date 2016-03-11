@@ -522,6 +522,7 @@ class dtdunit(base.TranslationUnit):
 
 class dtdfile(base.TranslationStore):
     """A .dtd file made up of dtdunits."""
+
     UnitClass = dtdunit
 
     def __init__(self, inputfile=None, android=False):

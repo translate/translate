@@ -53,7 +53,9 @@ from translate.storage import base
 
 class UtxDialect(csv.Dialect):
     """Describe the properties of an UTX generated TAB-delimited dictionary
-    file."""
+    file.
+    """
+
     delimiter = "\t"
     # The spec says \r\n but there are older version < 1.0 with just \n
     # FIXME if we find older specs then lets see if we can support these
@@ -163,6 +165,7 @@ class UtxUnit(base.TranslationUnit):
 
 class UtxFile(base.TranslationStore):
     """A UTX dictionary file"""
+
     Name = "UTX Dictionary"
     Mimetypes = ["text/x-utx"]
     Extensions = ["utx"]

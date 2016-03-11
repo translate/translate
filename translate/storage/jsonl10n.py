@@ -146,6 +146,7 @@ class JsonUnit(base.TranslationUnit):
 
 class JsonFile(base.TranslationStore):
     """A JSON file"""
+
     UnitClass = JsonUnit
 
     def __init__(self, inputfile=None, filter=None, **kwargs):

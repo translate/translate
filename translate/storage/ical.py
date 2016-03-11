@@ -81,6 +81,7 @@ class icalunit(base.TranslationUnit):
 
 class icalfile(base.TranslationStore):
     """An ical file"""
+
     UnitClass = icalunit
 
     def __init__(self, inputfile=None, **kwargs):

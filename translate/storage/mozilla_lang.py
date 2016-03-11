@@ -58,6 +58,7 @@ class LangUnit(base.TranslationUnit):
 
 class LangStore(txt.TxtFile):
     """We extend TxtFile, since that has a lot of useful stuff for encoding"""
+
     UnitClass = LangUnit
 
     Name = "Mozilla .lang"

@@ -75,6 +75,7 @@ class SubtitleUnit(base.TranslationUnit):
 
 class SubtitleFile(base.TranslationStore):
     """A subtitle file"""
+
     UnitClass = SubtitleUnit
 
     def __init__(self, inputfile=None, **kwargs):
@@ -157,6 +158,7 @@ class SubtitleFile(base.TranslationStore):
 
 class SubRipFile(SubtitleFile):
     """specialized class for SubRipFile's only"""
+
     Name = "SubRip subtitles file"
     Extensions = ['srt']
 
@@ -170,6 +172,7 @@ class SubRipFile(SubtitleFile):
 
 class MicroDVDFile(SubtitleFile):
     """specialized class for SubRipFile's only"""
+
     Name = "MicroDVD subtitles file"
     Extensions = ['sub']
 
@@ -183,6 +186,7 @@ class MicroDVDFile(SubtitleFile):
 
 class AdvSubStationAlphaFile(SubtitleFile):
     """specialized class for SubRipFile's only"""
+
     Name = "Advanced Substation Alpha subtitles file"
     Extensions = ['ass']
 
@@ -196,6 +200,7 @@ class AdvSubStationAlphaFile(SubtitleFile):
 
 class SubStationAlphaFile(SubtitleFile):
     """specialized class for SubRipFile's only"""
+
     Name = "Substation Alpha subtitles file"
     Extensions = ['ssa']
 

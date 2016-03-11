@@ -3,10 +3,10 @@ import six
 
 
 class UnicodeDictWriter(csv.DictWriter):
-    """
-    Utility class to allow writing csv from unicode content on Python 2.
+    """Utility class to allow writing csv from unicode content on Python 2.
     Might probably be dropped once Python 2 support will cease.
     """
+
     def __init__(self, f, fieldnames, encoding='utf-8', **kwargs):
         csv.DictWriter.__init__(self, f, fieldnames, **kwargs)
         self.encoding = encoding

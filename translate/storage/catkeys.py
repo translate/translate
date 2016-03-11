@@ -92,6 +92,7 @@ def _unescape(string):
 
 class CatkeysDialect(csv.Dialect):
     """Describe the properties of a catkeys generated TAB-delimited file."""
+
     delimiter = "\t"
     lineterminator = "\n"
     quoting = csv.QUOTE_NONE
@@ -223,6 +224,7 @@ class CatkeysUnit(base.TranslationUnit):
 
 class CatkeysFile(base.TranslationStore):
     """A catkeys translation memory file"""
+
     Name = "Haiku catkeys file"
     Mimetypes = ["application/x-catkeys"]
     Extensions = ["catkeys"]

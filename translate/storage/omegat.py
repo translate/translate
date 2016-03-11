@@ -53,6 +53,7 @@ OMEGAT_FIELDNAMES = ["source", "target", "comment"]
 class OmegaTDialect(csv.Dialect):
     """Describe the properties of an OmegaT generated TAB-delimited glossary
     file."""
+
     delimiter = "\t"
     lineterminator = "\r\n"
     quoting = csv.QUOTE_NONE
@@ -139,6 +140,7 @@ class OmegaTUnit(base.TranslationUnit):
 
 class OmegaTFile(base.TranslationStore):
     """An OmegaT glossary file"""
+
     Name = "OmegaT Glossary"
     Mimetypes = ["application/x-omegat-glossary"]
     Extensions = ["utf8"]
@@ -190,6 +192,7 @@ class OmegaTFile(base.TranslationStore):
 
 class OmegaTFileTab(OmegaTFile):
     """An OmegaT glossary file in the default system encoding"""
+
     Name = "OmegaT Glossary"
     Mimetypes = ["application/x-omegat-glossary"]
     Extensions = ["tab"]

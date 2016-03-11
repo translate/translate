@@ -155,8 +155,11 @@ class FilterFailure(Exception):
 
 
 class SeriousFilterFailure(FilterFailure):
-    """This exception signals that a Filter didn't pass, and the bad translation
-    might break an application (so the string will be marked fuzzy)"""
+    """This exception signals that a Filter didn't pass, and the bad
+    translation might break an application (so the string will be marked
+    fuzzy)
+    """
+
     pass
 
 #(tag, attribute, value) specifies a certain attribute which can be changed/
@@ -284,9 +287,10 @@ def cache_results(f):
 
 
 class UnitChecker(object):
-    """Parent Checker class which does the checking based on functions available
-    in derived classes.
+    """Parent Checker class which does the checking based on functions
+    available in derived classes.
     """
+
     preconditions = {}
 
     #: Categories where each checking function falls into

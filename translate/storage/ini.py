@@ -52,6 +52,7 @@ def register_dialect(dialect):
 
 class Dialect(object):
     """Base class for differentiating dialect options and functions"""
+
     name = None
 
 
@@ -95,6 +96,7 @@ class iniunit(base.TranslationUnit):
 
 class inifile(base.TranslationStore):
     """An INI file"""
+
     UnitClass = iniunit
 
     def __init__(self, inputfile=None, dialect="default", **kwargs):

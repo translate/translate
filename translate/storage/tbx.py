@@ -29,6 +29,7 @@ class tbxunit(lisa.LISAunit):
     """A single term in the TBX file.  Provisional work is done to make several
     languages possible.
     """
+
     rootNode = "termEntry"
     languageNode = "langSet"
     textNode = "term"
@@ -107,6 +108,7 @@ class tbxunit(lisa.LISAunit):
 
 class tbxfile(lisa.LISAfile):
     """Class representing a TBX file store."""
+
     UnitClass = tbxunit
     Name = "TBX Glossary"
     Mimetypes = ["application/x-tbx"]

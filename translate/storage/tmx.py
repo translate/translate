@@ -28,6 +28,7 @@ from translate.storage import lisa
 
 class tmxunit(lisa.LISAunit):
     """A single unit in the TMX file."""
+
     rootNode = "tu"
     languageNode = "tuv"
     textNode = "seg"
@@ -115,6 +116,7 @@ class tmxunit(lisa.LISAunit):
 
 class tmxfile(lisa.LISAfile):
     """Class representing a TMX file store."""
+
     UnitClass = tmxunit
     Name = "TMX Translation Memory"
     Mimetypes = ["application/x-tmx"]

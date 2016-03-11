@@ -27,6 +27,7 @@ from translate.storage.placeables.strelem import StringElem
 
 class BasePlaceable(StringElem):
     """Base class for all placeables."""
+
     parse = None
 
 

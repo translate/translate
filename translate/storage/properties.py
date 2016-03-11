@@ -233,6 +233,7 @@ def get_dialect(dialect=default_dialect):
 
 class Dialect(object):
     """Settings for the various behaviours in key=value files."""
+
     name = None
     default_encoding = 'iso-8859-1'
     delimiters = None
@@ -544,6 +545,7 @@ class propunit(base.TranslationUnit):
 
 class propfile(base.TranslationStore):
     """this class represents a .properties file, made up of propunits"""
+
     UnitClass = propunit
 
     def __init__(self, inputfile=None, personality="java", encoding=None):

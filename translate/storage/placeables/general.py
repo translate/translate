@@ -88,6 +88,7 @@ class QtFormattingPlaceable(Ph):
       - 'L' use a localised representation e.g. in a number
       - %% some in the wild to escape real %, not documented (not in regex)
     """
+
     iseditable = False
     istranslatable = False
     regex = re.compile(r"""(?x)
@@ -149,6 +150,7 @@ class JavaMessageFormatPlaceable(Ph):
 
 class FormattingPlaceable(Ph):
     """Placeable representing string formatting variables."""
+
     # For more information, see  man 3 printf
     # We probably don't want to support absolutely everything
 

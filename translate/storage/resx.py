@@ -125,6 +125,7 @@ class RESXUnit(lisa.LISAunit):
 
 class RESXFile(lisa.LISAfile):
     """Class representing a RESX file store."""
+
     UnitClass = RESXUnit
     Name = ".NET RESX File"
     Mimetypes = ["text/microsoft-resx"]

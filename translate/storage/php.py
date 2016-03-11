@@ -197,6 +197,7 @@ class phpunit(base.TranslationUnit):
 
 class phpfile(base.TranslationStore):
     """This class represents a PHP file, made up of phpunits."""
+
     UnitClass = phpunit
 
     def __init__(self, inputfile=None, **kwargs):

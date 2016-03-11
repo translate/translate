@@ -57,8 +57,8 @@ logger = logging.getLogger(__name__)
 
 
 class RunProcessError(CalledProcessError):
-    """Subclass of CalledProcessError exception with custom message strings
-    """
+    """Subclass of CalledProcessError exception with custom message strings"""
+
     _default_message = "Command '%s' returned exit status %d"
 
     def __init__(self, message=None, **kwargs):

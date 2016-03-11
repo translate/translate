@@ -129,6 +129,7 @@ class mounit(base.TranslationUnit):
 
 class mofile(poheader.poheader, base.TranslationStore):
     """A class representing a .mo file."""
+
     UnitClass = mounit
     Name = "Gettext MO file"
     Mimetypes = ["application/x-gettext-catalog", "application/x-mo"]

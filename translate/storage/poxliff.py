@@ -287,6 +287,7 @@ class PoXliffUnit(xliff.xliffunit):
 
 class PoXliffFile(xliff.xlifffile, poheader.poheader):
     """a file for the po variant of Xliff files"""
+
     UnitClass = PoXliffUnit
 
     def __init__(self, *args, **kwargs):

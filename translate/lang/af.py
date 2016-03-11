@@ -32,6 +32,7 @@ articlere = re.compile(r"'n\b")
 
 class af(common.Common):
     """This class represents Afrikaans."""
+
     validdoublewords = [u"u"]
 
     punctuation = u"".join([common.Common.commonpunc, common.Common.quotes,

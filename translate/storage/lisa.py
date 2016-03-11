@@ -268,6 +268,7 @@ class LISAunit(base.TranslationUnit):
 
 class LISAfile(base.TranslationStore):
     """A class representing a file store for one of the LISA file formats."""
+
     UnitClass = LISAunit
     #The root node of the XML document:
     rootNode = ""

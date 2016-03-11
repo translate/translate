@@ -350,6 +350,7 @@ class tsunit(lisa.LISAunit):
 
 class tsfile(lisa.LISAfile):
     """Class representing a TS file store."""
+
     UnitClass = tsunit
     Name = "Qt Linguist Translation File"
     Mimetypes = ["application/x-linguist"]

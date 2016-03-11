@@ -90,6 +90,7 @@ class TikiUnit(base.TranslationUnit):
 
 class TikiStore(base.TranslationStore):
     """Represents a tiki language.php file."""
+
     UnitClass = TikiUnit
 
     def __init__(self, inputfile=None):

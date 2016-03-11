@@ -40,6 +40,7 @@ import six
 
 class StateEnum:
     """Only contains the constants for default states."""
+
     MIN = -128
     OBSOLETE = -100
     EMPTY = 0

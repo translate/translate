@@ -50,6 +50,7 @@ class XPathBreadcrumb(object):
     >>> xb.xpath
     foo[0]/bar[1]
     """
+
     def __init__(self):
         self._xpath = []
         self._tagtally = [{}]

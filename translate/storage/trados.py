@@ -170,6 +170,7 @@ class TradosSoup(BeautifulSoup):
 
 class TradosTxtTmFile(base.TranslationStore):
     """A Trados translation memory file"""
+
     Name = "Trados Translation Memory"
     Mimetypes = ["application/x-trados-tm"]
     Extensions = ["txt"]

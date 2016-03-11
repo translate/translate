@@ -97,6 +97,7 @@ class TxtUnit(base.TranslationUnit):
 
 class TxtFile(base.TranslationStore):
     """This class represents a text file, made up of txtunits"""
+
     UnitClass = TxtUnit
 
     def __init__(self, inputfile=None, flavour=None, **kwargs):

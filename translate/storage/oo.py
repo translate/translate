@@ -260,6 +260,7 @@ class oounit:
 
 class oofile:
     """this represents an entire .oo file"""
+
     UnitClass = oounit
     encoding = 'utf-8'
 
@@ -334,7 +335,10 @@ class oofile:
 
 
 class oomultifile:
-    """this takes a huge GSI file and represents it as multiple smaller files..."""
+    """this takes a huge GSI file and represents it as multiple smaller
+    files...
+    """
+
     encoding = 'utf-8'
 
     def __init__(self, filename, mode=None, multifilestyle="single"):

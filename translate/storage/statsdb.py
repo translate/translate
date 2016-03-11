@@ -281,7 +281,9 @@ def suggestion_filename(filename):
 # ALL PUBLICLY ACCESSIBLE METHODS MUST BE DECORATED WITH THE transaction DECORATOR.
 class StatsCache(object):
     """An object instantiated as a singleton for each statsfile that provides
-    access to the database cache from a pool of StatsCache objects."""
+    access to the database cache from a pool of StatsCache objects.
+    """
+
     _caches = {}
     defaultfile = None
     con = None

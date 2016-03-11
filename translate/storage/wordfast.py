@@ -189,6 +189,7 @@ def _wf_to_char(string):
 
 class WordfastDialect(csv.Dialect):
     """Describe the properties of a Wordfast generated TAB-delimited file."""
+
     delimiter = "\t"
     lineterminator = "\r\n"
     quoting = csv.QUOTE_NONE
@@ -355,6 +356,7 @@ class WordfastUnit(base.TranslationUnit):
 
 class WordfastTMFile(base.TranslationStore):
     """A Wordfast translation memory file"""
+
     Name = "Wordfast Translation Memory"
     Mimetypes = ["application/x-wordfast"]
     Extensions = ["txt"]

@@ -66,8 +66,10 @@ class Sub(base.Sub):
 
 
 class UnknownXML(StringElem):
-    """Placeable for unrecognized or umimplemented XML nodes. It's main
-        purpose is to preserve all associated XML data."""
+    """Placeable for unrecognized or umimplemented XML nodes. It's main purpose
+    is to preserve all associated XML data.
+    """
+
     iseditable = True
 
     # INITIALIZERS #
