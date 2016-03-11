@@ -82,12 +82,12 @@ class AndroidResourceUnit(base.TranslationUnit):
         return self.xmlelement.get("name")
 
     def unescape(self, text):
-        '''
+        """
         Remove escaping from Android resource.
 
         Code stolen from android2po
         <https://github.com/miracle2k/android2po>
-        '''
+        """
         # Return text for empty elements
         if text is None:
             return ''

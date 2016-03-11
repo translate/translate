@@ -106,7 +106,7 @@ def find_placeable_dom_tree_roots(unit_node):
 
 
 def _map_source_dom_to_doc_dom(unit_node, source_dom_node):
-    """Creating a mapping from the DOM nodes in source_dom_node which correspond to
+    r"""Creating a mapping from the DOM nodes in source_dom_node which correspond to
     placeables, with DOM nodes in the XML document template (this information is obtained
     from unit_node). We are interested in DOM nodes in the XML document template which
     are the roots of placeables. See the diagram below, as well as
