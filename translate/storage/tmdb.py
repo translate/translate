@@ -178,8 +178,9 @@ DROP TRIGGER IF EXISTS sources_delete_trig;
             self.cursor.executescript(script)
 
     def preload_db(self):
-        """ugly hack to force caching of sqlite db file in memory for
-        improved performance"""
+        """ugly hack to force caching of sqlite db file in memory for improved
+        performance
+        """
         if self.fulltext:
             query = """SELECT COUNT(*) FROM sources s JOIN fulltext f ON s.sid = f.docid JOIN targets t on s.sid = t.sid"""
         else:
@@ -262,8 +263,9 @@ DROP TRIGGER IF EXISTS sources_delete_trig;
         return count
 
     def add_list(self, units, source_lang, target_lang, commit=True):
-        """insert all units in list into the database, units are
-        represented as dictionaries"""
+        """insert all units in list into the database, units are represented as
+        dictionaries
+        """
         count = 0
         for unit in units:
             self.add_dict(unit, source_lang, target_lang, commit=False)

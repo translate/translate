@@ -86,7 +86,8 @@ def wordcount(string):
 
 def wordsinunit(unit):
     """Counts the words in the unit's source and target, taking plurals into
-    account. The target words are only counted if the unit is translated."""
+    account. The target words are only counted if the unit is translated.
+    """
     (sourcewords, targetwords) = (0, 0)
     if isinstance(unit.source, multistring):
         sourcestrings = unit.source.strings
@@ -473,7 +474,8 @@ class StatsCache(object):
     @transaction
     def _cachestore(self, store, realpath, mod_info):
         """Calculates and caches the statistics of the given store
-        unconditionally."""
+        unconditionally.
+        """
         self.cur.execute("""DELETE FROM files WHERE
             path=?;""", (realpath,))
         self.cur.execute(
@@ -505,7 +507,8 @@ class StatsCache(object):
 
     def filetotals(self, filename, store=None, extended=False):
         """Retrieves the statistics for the given file if possible, otherwise
-        delegates to cachestore()."""
+        delegates to cachestore().
+        """
         stats = self.file_totals[self._getfileid(filename, store=store)]
         if extended:
             stats["extended"] = self.file_extended_totals(filename, store=store)
@@ -547,7 +550,8 @@ class StatsCache(object):
     @transaction
     def _cachestorechecks(self, fileid, store, checker, configid):
         """Calculates and caches the error statistics of the given store
-        unconditionally."""
+        unconditionally.
+        """
         # Let's purge all previous failures because they will probably just
         # fill up the database without much use.
         self.cur.execute("""DELETE FROM uniterrors WHERE
@@ -580,7 +584,8 @@ class StatsCache(object):
         for example.
 
         This method assumes that everything was up to date before (file totals,
-        checks, checker config, etc."""
+        checks, checker config, etc.
+        """
         fileid = self._getfileid(filename, check_mod_info=False)
         configid = self._get_config_id(fileid, checker)
         unitid = unit.getid()
@@ -649,7 +654,8 @@ class StatsCache(object):
 
     def filechecks(self, filename, checker, store=None):
         """Retrieves the error statistics for the given file if possible,
-        otherwise delegates to cachestorechecks()."""
+        otherwise delegates to cachestorechecks().
+        """
         fileid = self._getfileid(filename, store=store)
         configid = self._get_config_id(fileid, checker)
         values = self._geterrors(filename, fileid, configid, checker, store)
@@ -677,8 +683,9 @@ class StatsCache(object):
         return self.cur.fetchone() is not None
 
     def filestatestats(self, filename, store=None, extended=False):
-        """Return a dictionary of unit stats mapping sets of unit
-        indices with those states"""
+        """Return a dictionary of unit stats mapping sets of unit indices with
+        those states
+        """
         stats = emptyfilestats()
         if extended:
             stats["extended"] = {}
@@ -699,8 +706,9 @@ class StatsCache(object):
         return stats
 
     def filestats(self, filename, checker, store=None, extended=False):
-        """Return a dictionary of property names mapping sets of unit
-        indices with those properties."""
+        """Return a dictionary of property names mapping sets of unit indices
+        with those properties.
+        """
         stats = emptyfilestats()
         stats.update(self.filechecks(filename, checker, store))
         stats.update(self.filestatestats(filename, store, extended=extended))
@@ -710,12 +718,13 @@ class StatsCache(object):
         # For now, lang and store are unused. lang will allow the user to
         # base stats information on the given language. See the commented
         # line containing stats.update below.
-        """Return a dictionary of property names mapping to arrays which
-        map unit indices to property values.
+        """Return a dictionary of property names mapping to arrays which map
+        unit indices to property values.
 
         Please note that this is different from filestats, since filestats
         supplies sets of unit indices with a given property, whereas this
-        method supplies arrays which map unit indices to given values."""
+        method supplies arrays which map unit indices to given values.
+        """
         stats = emptyunitstats()
 
         #stats.update(self.unitchecks(filename, lang, store))

@@ -91,7 +91,8 @@ class StringElem(object):
 
     def __eq__(self, rhs):
         """:returns: ``True`` if (and only if) all members as well as sub-trees
-        are equal. False otherwise."""
+        are equal. False otherwise.
+        """
         if not isinstance(rhs, StringElem):
             return False
 
@@ -186,7 +187,8 @@ class StringElem(object):
         """Returns a copy of the sub-tree.  This should be overridden in
         sub-classes with more data.
 
-        .. note:: ``self.renderer`` is **not** copied."""
+        .. note:: ``self.renderer`` is **not** copied.
+        """
         #logging.debug('Copying instance of class %s' % (self.__class__.__name__))
         cp = self.__class__(id=self.id, xid=self.xid, rid=self.rid)
         for sub in self.sub:
@@ -468,8 +470,9 @@ class StringElem(object):
         return [elem for elem in self.flatten() if x in six.text_type(elem)]
 
     def flatten(self, filter=None):
-        """Flatten the tree by returning a depth-first search over the
-        tree's leaves."""
+        """Flatten the tree by returning a depth-first search over the tree's
+        leaves.
+        """
         if filter is None or not callable(filter):
             filter = lambda e: True
         return [elem for elem in self.iter_depth_first(lambda e: e.isleaf() and filter(e))]
@@ -505,7 +508,8 @@ class StringElem(object):
 
     def get_parent_elem(self, child):
         """Searches the current sub-tree for and returns the parent of the
-        ``child`` element."""
+        ``child`` element.
+        """
         for elem in self.iter_depth_first():
             if not isinstance(elem, StringElem):
                 continue
@@ -516,7 +520,8 @@ class StringElem(object):
 
     def insert(self, offset, text, preferred_parent=None):
         """Insert the given text at the specified offset of this string-tree's
-        string (Unicode) representation."""
+        string (Unicode) representation.
+        """
         if offset < 0 or offset > len(self):
             raise IndexError('Index out of range: %d' % (offset))
         if isinstance(text, six.string_types):
@@ -805,7 +810,8 @@ class StringElem(object):
 
     def map(self, f, filter=None):
         """Apply ``f`` to all nodes for which ``filter`` returned ``True``
-        (optional)."""
+        (optional).
+        """
         if filter is not None and not callable(filter):
             raise ValueError('filter is not callable or None')
         if filter is None:
@@ -830,7 +836,8 @@ class StringElem(object):
 
     def print_tree(self, indent=0, verbose=False):
         """Print the tree from the current instance's point in an indented
-        manner."""
+        manner.
+        """
         indent_prefix = " " * indent * 2
         out = (u"%s%s [%s]" % (indent_prefix, self.__class__.__name__,
                                six.text_type(self))).encode('utf-8')
@@ -919,8 +926,9 @@ class StringElem(object):
     # TODO: Write unit test for this method
     def remove_type(self, ptype):
         """Replace nodes with type ``ptype`` with base ``StringElem``\s,
-        containing the same sub-elements. This is only applicable to
-        elements below the element tree root node."""
+        containing the same sub-elements. This is only applicable to elements
+        below the element tree root node.
+        """
         for elem in self.iter_depth_first():
             if type(elem) is ptype:
                 parent = self.get_parent_elem(elem)

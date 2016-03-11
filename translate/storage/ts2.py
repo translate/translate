@@ -443,8 +443,9 @@ class tsfile(lisa.LISAfile):
     def addunit(self, unit, new=True, contextname=None, createifmissing=True):
         """Adds the given unit to the last used body node (current context).
 
-        If the contextname is specified, switch to that context (creating it
-        if allowed by createifmissing)."""
+        If the contextname is specified, switch to that context (creating it if
+        allowed by createifmissing).
+        """
         if contextname is None:
             contextname = unit.getcontextname()
 
@@ -457,7 +458,8 @@ class tsfile(lisa.LISAfile):
 
     def _switchcontext(self, contextname, createifmissing=False):
         """Switch the current context to the one named contextname, optionally
-        creating it if it doesn't exist."""
+        creating it if it doesn't exist.
+        """
         self._contextname = contextname
         contextnode = self._getcontextnode(contextname)
         if contextnode is None:

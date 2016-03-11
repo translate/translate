@@ -96,7 +96,8 @@ class json2po(object):
 def convertjson(input_file, output_file, template_file, pot=False,
                 duplicatestyle="msgctxt", dialect="default", filter=None):
     """Reads in *input_file* using jsonl10n, converts using :class:`json2po`,
-    writes to *output_file*."""
+    writes to *output_file*.
+    """
     from translate.storage import jsonl10n
     if filter is not None:
         filter = filter.split(',')

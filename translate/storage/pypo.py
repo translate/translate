@@ -83,8 +83,8 @@ wrapper.wordsep_re_uni = re.compile(wrapper.wordsep_re.pattern, re.UNICODE)
 
 
 def quoteforpo(text):
-    """Quotes the given text for a PO file, returning quoted and
-    escaped lines"""
+    """Quotes the given text for a PO file, returning quoted and escaped lines
+    """
     if text is None:
         return []
     text = escapeforpo(text)
@@ -306,7 +306,8 @@ class pounit(pocommon.pounit):
         """Return a list of alternate units.
 
         Previous msgid and current msgstr is combined to form a single
-        alternative unit."""
+        alternative unit.
+        """
         prev_source = self.prev_source
         if prev_source and self.isfuzzy():
             unit = type(self)(prev_source)

@@ -29,7 +29,8 @@ __all__ = ['TerminologyPlaceable', 'parsers']
 
 class TerminologyPlaceable(base.Ph):
     """Terminology distinguished from the rest of a string by being
-    a placeable."""
+    a placeable.
+    """
 
     matchers = []
     """A list of matcher objects to use to identify terminology."""

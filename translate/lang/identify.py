@@ -58,7 +58,8 @@ class LanguageIdentifier(object):
 
     def _load_config(self, conf_file):
         """Load the mapping of language names to language codes as given in the
-        configuration file."""
+        configuration file.
+        """
         with open(conf_file, 'r') as fp:
             for line in fp:
                 parts = line.split()

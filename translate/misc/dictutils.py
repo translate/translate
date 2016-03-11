@@ -1,8 +1,5 @@
 # -*- coding: utf-8 -*-
 
-"""Implements a case-insensitive (on keys) dictionary and
-order-sensitive dictionary"""
-
 # Copyright 2002, 2003 St James Software
 #
 # This file is part of translate.
@@ -19,6 +16,10 @@ order-sensitive dictionary"""
 #
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, see <http://www.gnu.org/licenses/>.
+
+"""Implements a case-insensitive (on keys) dictionary and order-sensitive
+dictionary
+"""
 
 import six
 
@@ -84,8 +85,9 @@ class cidict(dict):
 
 
 class ordereddict(dict):
-    """a dictionary which remembers its keys in the order in which they
-    were given"""
+    """a dictionary which remembers its keys in the order in which they were
+    given
+    """
 
     def __init__(self, *args):
         if len(args) == 0:
@@ -117,7 +119,8 @@ class ordereddict(dict):
 
     def update(self, updatedict):
         """D.update(E) -> None.
-        Update D from E: for k in E.keys(): D[k] = E[k]"""
+        Update D from E: for k in E.keys(): D[k] = E[k]
+        """
         for key, value in six.iteritems(updatedict):
             self[key] = value
 
@@ -160,8 +163,9 @@ class ordereddict(dict):
         return self.order[:]
 
     def popitem(self):
-        """D.popitem() -> (k, v), remove and return some (key, value) pair
-        as a 2-tuple; but raise KeyError if D is empty"""
+        """D.popitem() -> (k, v), remove and return some (key, value) pair as a
+        2-tuple; but raise KeyError if D is empty
+        """
         if len(self.order) == 0:
             raise KeyError("popitem(): ordered dictionary is empty")
         k = self.order.pop()

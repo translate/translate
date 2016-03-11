@@ -79,8 +79,9 @@ def merge_store(template_store, input_store, blankmsgstr=False,
 
 
 def convert_unit(input_unit, commenttype):
-    """Converts a subtitle unit to a .po unit. Returns None if empty
-    or not for translation."""
+    """Converts a subtitle unit to a .po unit. Returns None if empty or not for
+    translation.
+    """
     if input_unit is None:
         return None
     # escape unicode
@@ -95,7 +96,8 @@ def convert_unit(input_unit, commenttype):
 def convertsub(input_file, output_file, template_file=None, pot=False,
                duplicatestyle="msgctxt"):
     """Reads in *input_file* using translate.subtitles, converts using
-    :class:`sub2po`, writes to *output_file*."""
+    :class:`sub2po`, writes to *output_file*.
+    """
     from translate.storage import subtitles
     input_store = subtitles.SubtitleFile(input_file)
     if template_file is None:

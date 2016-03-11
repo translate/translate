@@ -139,8 +139,9 @@ class LISAunit(base.TranslationUnit):
     target_dom = property(get_target_dom)
 
     def settarget(self, text, lang='xx', append=False):
-        """Sets the "target" string (second language), or alternatively
-        appends to the list"""
+        """Sets the "target" string (second language), or alternatively appends
+        to the list
+        """
         #XXX: we really need the language - can't really be optional, and we
         # need to propagate it
         if self._rich_target is not None:
@@ -168,7 +169,8 @@ class LISAunit(base.TranslationUnit):
 
     def gettarget(self, lang=None):
         """retrieves the "target" text (second entry), or the entry in the
-        specified language, if it exists"""
+        specified language, if it exists
+        """
         return self.getNodeText(self.get_target_dom(lang),
                                 getXMLspace(self.xmlelement,
                                             self._default_xml_space))
@@ -176,7 +178,8 @@ class LISAunit(base.TranslationUnit):
 
     def createlanguageNode(self, lang, text, purpose=None):
         """Returns a xml Element setup with given parameters to represent a
-        single language entry. Has to be overridden."""
+        single language entry. Has to be overridden.
+        """
         return None
 
     def createPHnodes(self, parent, text):
@@ -310,8 +313,9 @@ class LISAfile(base.TranslationStore):
         return namespaced(self.namespace, name)
 
     def initbody(self):
-        """Initialises self.body so it never needs to be retrieved from the
-        XML again."""
+        """Initialises self.body so it never needs to be retrieved from the XML
+        again.
+        """
         self.namespace = self.document.getroot().nsmap.get(None, None)
         self.body = self.document.find('//%s' % self.namespaced(self.bodyNode))
 

@@ -274,7 +274,8 @@ else:
 
     class build_exe_map(BuildCommand):
         """distutils py2exe-based class that builds the exe file(s) but allows
-        mapping data files"""
+        mapping data files
+        """
 
         def reinitialize_command(self, command, reinit_subcommands=0):
             if command == "install_data":
@@ -286,7 +287,8 @@ else:
 
         def remap_data_files(self, data_files):
             """maps the given data files to different locations using external
-            map_data_file function"""
+            map_data_file function
+            """
             new_data_files = []
             for f in data_files:
                 if isinstance(f, string_types):
@@ -378,7 +380,8 @@ else:
 
     def map_data_file(data_file):
         """remaps a data_file (could be a directory) to a different location
-        This version gets rid of Lib\\site-packages, etc"""
+        This version gets rid of Lib\\site-packages, etc
+        """
         data_parts = data_file.split(os.sep)
         if data_parts[:2] == ["Lib", "site-packages"]:
             data_parts = data_parts[2:]

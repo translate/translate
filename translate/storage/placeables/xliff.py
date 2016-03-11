@@ -90,7 +90,8 @@ class UnknownXML(StringElem):
         root.
 
         Copied from :meth:`StringElem.__repr__`, but includes
-        ``self.xml_node.tag``."""
+        ``self.xml_node.tag``.
+        """
         tag = self.xml_node.tag
         if tag.startswith('{'):
             tag = tag[tag.index('}')+1:]

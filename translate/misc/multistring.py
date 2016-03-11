@@ -18,7 +18,8 @@
 # along with this program; if not, see <http://www.gnu.org/licenses/>.
 
 """Supports a hybrid Unicode string that can also have a list of alternate
-strings in the strings attribute"""
+strings in the strings attribute
+"""
 
 import six
 

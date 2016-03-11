@@ -36,8 +36,9 @@ from xml.dom import expatbuilder, minidom
 
 def writexml_helper(self, writer, indent="", addindent="", newl=""):
     """A replacement for writexml that formats it like typical XML files.
-    Nodes are intendented but text nodes, where whitespace can be
-    significant, are not indented."""
+    Nodes are intendented but text nodes, where whitespace can be significant,
+    are not indented.
+    """
     # indent = current indentation
     # addindent = indentation to add to higher levels
     # newl = newline string
@@ -82,8 +83,9 @@ def getElementsByTagName_helper(parent, name, dummy=None):
     """A reimplementation of getElementsByTagName as an iterator.
 
     Note that this is not compatible with getElementsByTagName that returns a
-    list, therefore, the class below exposes this through yieldElementsByTagName"""
-
+    list, therefore, the class below exposes this through
+    yieldElementsByTagName
+    """
     for node in parent.childNodes:
         if (node.nodeType == minidom.Node.ELEMENT_NODE and
             (name == "*" or node.tagName == name)):

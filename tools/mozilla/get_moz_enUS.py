@@ -30,8 +30,8 @@ verbose = False
 
 
 def path_neutral(path):
-    """Convert a path specified using Unix path seperator into a
-    platform path"""
+    """Convert a path specified using Unix path seperator into a platform path
+    """
     newpath = ""
     for seg in path.split("/"):
         if not seg:
@@ -42,7 +42,8 @@ def path_neutral(path):
 
 def process_l10n_ini(inifile):
     """Read a Mozilla l10n.ini file and process it to find the localisation
-    files needed by a project"""
+    files needed by a project
+    """
 
     l10n = ConfigParser()
     with open(path_neutral(inifile), 'r') as fh:

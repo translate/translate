@@ -20,7 +20,8 @@
 """Classes for the support of Gettext .po and .pot files.
 
 This implementation assumes that cpo is working. This should not be used
-directly, but can be used once cpo has been established to work."""
+directly, but can be used once cpo has been established to work.
+"""
 
 #TODO:
 # - handle headerless PO files better
@@ -388,7 +389,8 @@ class pounit(pocommon.pounit):
     @classmethod
     def buildfromunit(cls, unit):
         """Build a native unit from a foreign unit, preserving as much
-        information as possible."""
+        information as possible.
+        """
         if type(unit) == cls and hasattr(unit, "copy") and callable(unit.copy):
             return unit.copy()
         elif isinstance(unit, pocommon.pounit):
@@ -429,7 +431,8 @@ class pofile(pocommon.pofile):
         """Builds up this store from the internal cpo store.
 
         A user must ensure that self._cpo_store already exists, and that it is
-        deleted afterwards."""
+        deleted afterwards.
+        """
         for unit in self._cpo_store.units:
             self.addunit(self.UnitClass.buildfromunit(unit))
         self.encoding = self._cpo_store.encoding
@@ -438,7 +441,8 @@ class pofile(pocommon.pofile):
         """Builds the internal cpo store from the data in self.
 
         A user must ensure that self._cpo_store does not exist, and should
-        delete it after using it."""
+        delete it after using it.
+        """
         self._cpo_store = cpo.pofile(noheader=True)
         for unit in self.units:
             if not unit.isblank():

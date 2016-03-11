@@ -46,7 +46,8 @@ default_header = {
 
 def parseheaderstring(input):
     """Parses an input string with the definition of a PO header and returns
-    the interpreted values as a dictionary."""
+    the interpreted values as a dictionary.
+    """
     headervalues = OrderedDict()
     for line in input.split("\n"):
         if not line or ":" not in line:
@@ -61,7 +62,8 @@ def parseheaderstring(input):
 def tzstring():
     """Returns the timezone as a string in the format [+-]0000, eg +0200.
 
-    :rtype: str"""
+    :rtype: str
+    """
     if time.daylight:
         tzoffset = time.altzone
     else:
@@ -75,8 +77,8 @@ def tzstring():
 
 
 def update(existing, add=False, **kwargs):
-    """Update an existing header dictionary with the values in kwargs, adding new values
-    only if add is true.
+    """Update an existing header dictionary with the values in kwargs, adding
+    new values only if add is true.
 
     :return: Updated dictionary of header entries
     :rtype: dict of strings
@@ -109,8 +111,9 @@ def update(existing, add=False, **kwargs):
 
 class poheader(object):
     """This class implements functionality for manipulation of po file headers.
-    This class is a mix-in class and useless on its own. It must be used from all
-    classes which represent a po file"""
+    This class is a mix-in class and useless on its own. It must be used from
+    all classes which represent a po file
+    """
 
     x_generator = "Translate Toolkit %s" % __version__.sver
 
@@ -199,9 +202,10 @@ class poheader(object):
         return update(defaultargs, add=True, **kwargs)
 
     def header(self):
-        """Returns the header element, or None. Only the first element is allowed
-        to be a header. Note that this could still return an empty header element,
-        if present."""
+        """Returns the header element, or None. Only the first element is
+        allowed to be a header. Note that this could still return an empty
+        header element, if present.
+        """
         if len(self.units) == 0:
             return None
         candidate = self.units[0]
@@ -212,7 +216,8 @@ class poheader(object):
 
     def parseheader(self):
         """Parses the PO header and returns the interpreted values as a
-        dictionary."""
+        dictionary.
+        """
         header = self.header()
         if not header:
             return {}
@@ -221,7 +226,8 @@ class poheader(object):
     def updateheader(self, add=False, **kwargs):
         """Updates the fields in the PO style header.
 
-        This will create a header if add == True."""
+        This will create a header if add == True.
+        """
         header = self.header()
         if not header:
             if add:
@@ -427,7 +433,8 @@ class poheader(object):
     def makeheader(self, **kwargs):
         """Create a header for the given filename.
 
-        Check .makeheaderdict() for information on parameters."""
+        Check .makeheaderdict() for information on parameters.
+        """
         headerpo = self.UnitClass("", encoding=self._encoding)
         headerpo.markfuzzy()
         headeritems = self.makeheaderdict(**kwargs)

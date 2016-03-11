@@ -17,7 +17,9 @@
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, see <http://www.gnu.org/licenses/>.
 
-"""A thin wrapper around BytesIO that accepts and auto-convert non bytes input"""
+"""A thin wrapper around BytesIO that accepts and auto-convert non bytes
+input
+"""
 
 import six
 from io import BytesIO
@@ -34,24 +36,26 @@ class StringIO(BytesIO):
 
 
 class CatchStringOutput(StringIO):
-    """catches the output before it is closed and sends it to an onclose
-    method"""
+    """catches the output before it is closed and sends it to an onclose method
+    """
 
     def __init__(self, onclose):
-        """Set up the output stream, and remember a method to call on
-        closing"""
+        """Set up the output stream, and remember a method to call on closing
+        """
         StringIO.__init__(self)
         self.onclose = onclose
 
     def close(self):
         """wrap the underlying close method, to pass the value to onclose
-        before it goes"""
+        before it goes
+        """
         value = self.getvalue()
         self.onclose(value)
         super(CatchStringOutput, self).close()
 
     def slam(self):
         """use this method to force the closing of the stream if it isn't
-        closed yet"""
+        closed yet
+        """
         if not self.closed:
             self.close()

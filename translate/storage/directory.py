@@ -45,7 +45,8 @@ class Directory:
 
     def getfiles(self):
         """Returns a list of (dir, filename) tuples for all the file names in
-        this directory."""
+        this directory.
+        """
         return [filetuple for filetuple in self.file_iter()]
 
     def unit_iter(self):

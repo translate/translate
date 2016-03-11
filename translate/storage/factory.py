@@ -87,8 +87,9 @@ hiddenclasses = {"txt": _examine_txt}
 
 
 def _guessextention(storefile):
-    """Guesses the type of a file object by looking at the first few characters.
-    The return value is a file extention ."""
+    """Guesses the type of a file object by looking at the first few
+    characters.  The return value is a file extention.
+    """
     start = storefile.read(300).strip()
     if b'<xliff ' in start:
         extention = 'xlf'
@@ -109,7 +110,9 @@ def _guessextention(storefile):
 
 
 def _getdummyname(storefile):
-    """Provides a dummy name for a file object without a name attribute, by guessing the file type."""
+    """Provides a dummy name for a file object without a name attribute, by
+    guessing the file type.
+    """
     return 'dummy.' + _guessextention(storefile)
 
 
@@ -129,8 +132,10 @@ def _getname(storefile):
 
 def getclass(storefile, localfiletype=None, ignore=None, classes=None,
              classes_str=classes_str, hiddenclasses=hiddenclasses):
-    """Factory that returns the applicable class for the type of file presented.
-    Specify ignore to ignore some part at the back of the name (like .gz). """
+    """Factory that returns the applicable class for the type of file
+    presented.  Specify ignore to ignore some part at the back of the name
+    (like .gz).
+    """
     storefilename = _getname(storefile)
     if ignore and storefilename.endswith(ignore):
         storefilename = storefilename[:-len(ignore)]

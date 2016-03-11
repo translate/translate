@@ -48,7 +48,8 @@ class html2po(object):
 def converthtml(inputfile, outputfile, templates, includeuntagged=False,
                 pot=False, duplicatestyle="msgctxt", keepcomments=False):
     """reads in stdin using fromfileclass, converts using convertorclass,
-    writes to stdout"""
+    writes to stdout
+    """
     convertor = html2po()
     outputstore = convertor.convertfile(inputfile, getattr(inputfile, "name",
                                                            "unknown"),

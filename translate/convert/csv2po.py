@@ -60,8 +60,9 @@ def simplify(string):
 
 
 class csv2po(object):
-    """a class that takes translations from a .csv file and puts them in a
-    .po file"""
+    """a class that takes translations from a .csv file and puts them in a .po
+    file
+    """
 
     def __init__(self, templatepo=None, charset=None, duplicatestyle="keep"):
         """construct the converter..."""
@@ -168,7 +169,8 @@ class csv2po(object):
 
     def convertstore(self, thecsvfile):
         """converts a csvfile to a pofile, and returns it. uses templatepo if
-        given at construction"""
+        given at construction
+        """
         self.csvfile = thecsvfile
         if self.pofile is None:
             self.pofile = po.pofile()
@@ -209,7 +211,8 @@ class csv2po(object):
 def convertcsv(inputfile, outputfile, templatefile, charset=None,
                columnorder=None, duplicatestyle="msgctxt"):
     """reads in inputfile using csvl10n, converts using csv2po, writes to
-    outputfile"""
+    outputfile
+    """
     inputstore = csvl10n.csvfile(inputfile, fieldnames=columnorder)
     if templatefile is None:
         convertor = csv2po(charset=charset, duplicatestyle=duplicatestyle)

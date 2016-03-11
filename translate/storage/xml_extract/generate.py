@@ -178,8 +178,9 @@ def _build_target_dom_to_doc_dom(unit_node, source_dom, target_dom):
 
 
 def _get_translated_node(target_node, target_dom_to_doc_dom):
-    """Convenience function to get node corresponding to 'target_node'
-    and to assign the tail text of 'target_node' to this node."""
+    """Convenience function to get node corresponding to 'target_node' and to
+    assign the tail text of 'target_node' to this node.
+    """
     dom_node = target_dom_to_doc_dom[target_node]
     dom_node.tail = target_node.tail
     return dom_node

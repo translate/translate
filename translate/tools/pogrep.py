@@ -105,7 +105,8 @@ class GrepMatch(object):
 
 def real_index(string, nfc_index):
     """Calculate the real index in the unnormalized string that corresponds to
-    the index nfc_index in the normalized string."""
+    the index nfc_index in the normalized string.
+    """
     length = nfc_index
     max_length = len(string)
     while len(data.normalize(string[:length])) <= nfc_index:

@@ -135,7 +135,8 @@ def filtervariables(startmarker, endmarker, varfilter):
 
     def filtermarkedvariables(str1):
         """Modifies the variables in *str1* marked with a given *\*marker*,
-        using a given filter."""
+        using a given filter.
+        """
         varlocs = decoration.findmarkedvariables(str1, startmarker, endmarker)
         fstr1, pos = "", 0
         for varstart, variable in varlocs:

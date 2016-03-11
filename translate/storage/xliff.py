@@ -168,7 +168,8 @@ class xliffunit(lisa.LISAunit):
 
     def get_rich_target(self, lang=None):
         """retrieves the "target" text (second entry), or the entry in the
-        specified language, if it exists"""
+        specified language, if it exists
+        """
         if self._rich_target is None:
             self._rich_target = [
                 xml_to_strelem(self.get_target_dom(lang),
@@ -208,7 +209,8 @@ class xliffunit(lisa.LISAunit):
 
     def getalttrans(self, origin=None):
         """Returns <alt-trans> for the given origin as a list of units. No
-        origin means all alternatives."""
+        origin means all alternatives.
+        """
         translist = []
         for node in self.xmlelement.iterdescendants(self.namespaced("alt-trans")):
             if self.correctorigin(node, origin):
@@ -363,7 +365,8 @@ class xliffunit(lisa.LISAunit):
     def markreviewneeded(self, needsreview=True, explanation=None):
         """Marks the unit to indicate whether it needs review.
 
-        Adds an optional explanation as a note."""
+        Adds an optional explanation as a note.
+        """
         state_id = self.get_state_id()
         if needsreview and state_id != self.S_NEEDS_REVIEW:
             self.set_state_n(self.S_NEEDS_REVIEW)
@@ -445,7 +448,8 @@ class xliffunit(lisa.LISAunit):
 
     def createcontextgroup(self, name, contexts=None, purpose=None):
         """Add the context group to the trans-unit with contexts a list with
-        (type, text) tuples describing each context."""
+        (type, text) tuples describing each context.
+        """
         assert contexts
         group = etree.Element(self.namespaced("context-group"))
         # context-group tags must appear at the start within <group>
@@ -511,7 +515,8 @@ class xliffunit(lisa.LISAunit):
     @classmethod
     def multistring_to_rich(cls, mstr):
         """Override :meth:`TranslationUnit.multistring_to_rich` which is used
-        by the ``rich_source`` and ``rich_target`` properties."""
+        by the ``rich_source`` and ``rich_target`` properties.
+        """
         strings = mstr
         if isinstance(mstr, multistring):
             strings = mstr.strings
@@ -523,7 +528,8 @@ class xliffunit(lisa.LISAunit):
     @classmethod
     def rich_to_multistring(cls, elem_list):
         """Override :meth:`TranslationUnit.rich_to_multistring` which is used
-        by the ``rich_source`` and ``rich_target`` properties."""
+        by the ``rich_source`` and ``rich_target`` properties.
+        """
         return multistring([six.text_type(elem) for elem in elem_list])
 
 
@@ -577,8 +583,9 @@ class xlifffile(lisa.LISAfile):
 
     def createfilenode(self, filename, sourcelanguage=None,
                        targetlanguage=None, datatype='plaintext'):
-        """creates a filenode with the given filename. All parameters
-        are needed for XLIFF compliance."""
+        """creates a filenode with the given filename. All parameters are
+        needed for XLIFF compliance.
+        """
         if sourcelanguage is None:
             sourcelanguage = self.sourcelanguage
         if targetlanguage is None:
@@ -665,7 +672,8 @@ class xlifffile(lisa.LISAfile):
 
     def getdatatype(self, filename=None):
         """Returns the datatype of the stored file. If no filename is given,
-        the datatype of the first file is given."""
+        the datatype of the first file is given.
+        """
         if filename:
             node = self.getfilenode(filename)
             if node is not None:
@@ -697,7 +705,8 @@ class xlifffile(lisa.LISAfile):
 
     def removedefaultfile(self):
         """We want to remove the default file-tag as soon as possible if we
-        know if still present and empty."""
+        know if still present and empty.
+        """
         filenodes = list(self.document.getroot().iterchildren(self.namespaced("file")))
         if len(filenodes) > 1:
             for filenode in filenodes:
@@ -732,9 +741,10 @@ class xlifffile(lisa.LISAfile):
         return bodynode
 
     def addsourceunit(self, source, filename="NoName", createifmissing=False):
-        """adds the given trans-unit to the last used body node if the
-        filename has changed it uses the slow method instead (will
-        create the nodes required if asked). Returns success"""
+        """adds the given trans-unit to the last used body node if the filename
+        has changed it uses the slow method instead (will create the nodes
+        required if asked). Returns success
+        """
         if self._filename != filename:
             if not self.switchfile(filename, createifmissing):
                 return None

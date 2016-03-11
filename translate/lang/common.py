@@ -211,7 +211,8 @@ class Common(object):
 
     def __new__(cls, code):
         """This returns the language class for the given code, following a
-        singleton like approach (only one object per language)."""
+        singleton like approach (only one object per language).
+        """
         code = code or ""
         # First see if a language object for this code already exists
         if code in cls._languages:
@@ -235,7 +236,8 @@ class Common(object):
 
     def __repr__(self):
         """Give a simple string representation without address information to
-        be able to store it in text for comparison later."""
+        be able to store it in text for comparison later.
+        """
         detail = ""
         if self.code:
             detail = "(%s)" % self.code
@@ -244,7 +246,8 @@ class Common(object):
     @classmethod
     def numbertranslate(cls, text):
         """Converts the numbers in a string according to the rules of the
-        language."""
+        language.
+        """
         if text:
             for latin_number, native_number in cls.numbertuple:
                 text = text.replace(native_number, latin_number)
@@ -253,7 +256,8 @@ class Common(object):
     @classmethod
     def punctranslate(cls, text):
         """Converts the punctuation in a string according to the rules of the
-        language."""
+        language.
+        """
         #TODO: look at po::escapeforpo() for performance idea
         if not text:
             return text
@@ -280,7 +284,8 @@ class Common(object):
     @classmethod
     def length_difference(cls, length):
         """Returns an estimate to a likely change in length relative to an
-        English string of length length."""
+        English string of length length.
+        """
         # This is just a rudimentary heuristic guessing that most translations
         # will be somewhat longer than the source language
         expansion_factor = 0
@@ -300,7 +305,8 @@ class Common(object):
     def alter_length(cls, text):
         """Converts the given string by adding or removing characters as an
         estimation of translation length (with English assumed as source
-        language)."""
+        language).
+        """
 
         def alter_it(text):
             l = len(text)

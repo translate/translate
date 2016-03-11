@@ -17,8 +17,9 @@
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, see <http://www.gnu.org/licenses/>.
 
-"""Class to perform translation memory matching from a store of
-translation units."""
+"""Class to perform translation memory matching from a store of translation
+units.
+"""
 
 import heapq
 import re
@@ -47,15 +48,18 @@ def _sort_matches(matches, match_info):
 
 
 class matcher(object):
-    """A class that will do matching and store configuration for the
-    matching process."""
+    """A class that will do matching and store configuration for the matching
+    process.
+    """
 
     sort_reverse = False
 
     def __init__(self, store, max_candidates=10, min_similarity=75, max_length=70, comparer=None, usefuzzy=False):
-        """max_candidates is the maximum number of candidates that should be assembled,
-        min_similarity is the minimum similarity that must be attained to be included in
-        the result, comparer is an optional Comparer with similarity() function"""
+        """max_candidates is the maximum number of candidates that should be
+        assembled, min_similarity is the minimum similarity that must be
+        attained to be included in the result, comparer is an optional Comparer
+        with similarity() function
+        """
         if comparer is None:
             comparer = lshtein.LevenshteinComparer(max_length)
         self.comparer = comparer
@@ -81,7 +85,8 @@ class matcher(object):
 
     def inittm(self, stores, reverse=False):
         """Initialises the memory for later use. We use simple base units for
-        speedup."""
+        speedup.
+        """
         # reverse is deprectated - just use self.sort_reverse
         self.existingunits = {}
         self.candidates = base.TranslationStore()
@@ -128,20 +133,23 @@ class matcher(object):
             self.candidates.units.sort(key=sourcelen, reverse=self.sort_reverse)
 
     def setparameters(self, max_candidates=10, min_similarity=75, max_length=70):
-        """Sets the parameters without reinitialising the tm. If a parameter
-        is not specified, it is set to the default, not ignored"""
+        """Sets the parameters without reinitialising the tm. If a parameter is
+        not specified, it is set to the default, not ignored
+        """
         self.MAX_CANDIDATES = max_candidates
         self.MIN_SIMILARITY = min_similarity
         self.MAX_LENGTH = max_length
 
     def getstoplength(self, min_similarity, text):
-        """Calculates a length beyond which we are not interested.
-        The extra fat is because we don't use plain character distance only."""
+        """Calculates a length beyond which we are not interested.  The extra
+        fat is because we don't use plain character distance only.
+        """
         return min(len(text) / (min_similarity / 100.0), self.MAX_LENGTH)
 
     def getstartlength(self, min_similarity, text):
-        """Calculates the minimum length we are interested in.
-        The extra fat is because we don't use plain character distance only."""
+        """Calculates the minimum length we are interested in.  The extra fat
+        is because we don't use plain character distance only.
+        """
         return max(len(text) * (min_similarity / 100.0), 1)
 
     def matches(self, text):
@@ -204,7 +212,8 @@ class matcher(object):
 
     def buildunits(self, candidates):
         """Builds a list of units conforming to base API, with the score
-        in the comment."""
+        in the comment.
+        """
         units = []
         for score, candidate in candidates:
             if hasattr(candidate, "orig_source"):
@@ -293,7 +302,8 @@ class terminologymatcher(matcher):
 
     def matches(self, text):
         """Normal matching after converting text to lower case. Then replace
-        with the original unit to retain comments, etc."""
+        with the original unit to retain comments, etc.
+        """
         text_l = len(text)
         if text_l < self.getstartlength(0, ''):  # parameters unused
             # impossible to return anything

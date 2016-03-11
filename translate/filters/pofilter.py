@@ -40,7 +40,8 @@ from translate.storage.poheader import poheader
 
 def build_checkerconfig(options):
     """Prepare the checker config from the given options.  This is mainly
-    factored out for the sake of unit tests."""
+    factored out for the sake of unit tests.
+    """
     checkerconfig = checks.CheckerConfig(targetlanguage=options.targetlanguage)
 
     if options.notranslatefile:
@@ -178,14 +179,16 @@ class FilterOptionParser(optrecurse.RecursiveOptionParser):
             callback=self.parse_noinput, help="list filters available")
 
     def parse_noinput(self, option, opt, value, parser, *args, **kwargs):
-        """This sets an option to *True*, but also sets input to *-*
-        to prevent an error."""
+        """This sets an option to *True*, but also sets input to *-* to prevent
+        an error.
+        """
         setattr(parser.values, option.dest, kwargs['dest_value'])
         parser.values.input = "-"
 
     def run(self):
-        """Parses the arguments, and runs recursiveprocess with the
-        resulting options."""
+        """Parses the arguments, and runs recursiveprocess with the resulting
+        options.
+        """
         (options, args) = self.parse_args()
 
         if options.filterclass is None:

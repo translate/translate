@@ -18,12 +18,14 @@
 # along with this program; if not, see <http://www.gnu.org/licenses/>.
 
 """Progress bar utilities for reporting feedback on the progress of an
-application."""
+application.
+"""
 
 
 class DotsProgressBar:
     """An ultra-simple progress indicator that just writes a dot for each
-    action"""
+    action
+    """
 
     def __init__(self):
         import sys
@@ -101,7 +103,8 @@ class ProgressBar:
 
 class MessageProgressBar(ProgressBar):
     """A ProgressBar that just writes out the messages without any progress
-    display"""
+    display
+    """
 
     def __init__(self, *args, **kwargs):
         import sys
@@ -114,8 +117,8 @@ class MessageProgressBar(ProgressBar):
 
 
 class HashProgressBar(ProgressBar):
-    """A ProgressBar which knows how to go back to the beginning of the
-    line."""
+    """A ProgressBar which knows how to go back to the beginning of the line.
+    """
 
     def __init__(self, *args, **kwargs):
         import sys

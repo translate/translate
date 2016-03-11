@@ -80,8 +80,9 @@ class rc2po(object):
         return output_store
 
     def convert_unit(self, input_unit, commenttype):
-        """Converts a .rc unit to a .po unit. Returns None if empty
-        or not for translation."""
+        """Converts a .rc unit to a .po unit. Returns None if empty or not for
+        translation.
+        """
         if input_unit is None:
             return None
         # escape unicode

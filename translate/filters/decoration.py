@@ -120,8 +120,9 @@ def isvalidaccelerator(accelerator, acceptlist=None):
 
 
 def findaccelerators(str1, accelmarker, acceptlist=None):
-    """returns all the accelerators and locations in str1 marked with a
-    given marker"""
+    """returns all the accelerators and locations in str1 marked with a given
+    marker
+    """
     accelerators = []
     badaccelerators = []
     currentpos = 0
@@ -145,7 +146,8 @@ def findaccelerators(str1, accelmarker, acceptlist=None):
 
 def findmarkedvariables(str1, startmarker, endmarker, ignorelist=[]):
     """returns all the variables and locations in str1 marked with a given
-    marker"""
+    marker
+    """
     variables = []
     currentpos = 0
     while currentpos >= 0:
@@ -199,7 +201,8 @@ def findmarkedvariables(str1, startmarker, endmarker, ignorelist=[]):
 
 def getaccelerators(accelmarker, acceptlist=None):
     """returns a function that gets a list of accelerators marked using
-    accelmarker"""
+    accelmarker
+    """
 
     def getmarkedaccelerators(str1):
         """returns all the accelerators in str1 marked with a given marker"""
@@ -212,7 +215,8 @@ def getaccelerators(accelmarker, acceptlist=None):
 
 def getvariables(startmarker, endmarker):
     """returns a function that gets a list of variables marked using
-    startmarker and endmarker"""
+    startmarker and endmarker
+    """
 
     def getmarkedvariables(str1):
         """returns all the variables in str1 marked with a given marker"""
@@ -270,7 +274,8 @@ _function_re = re.compile(r'''((?:
 
 def getfunctions(str1):
     """returns the functions() that are in a string, while ignoring the
-    trailing punctuation in the given parameter"""
+    trailing punctuation in the given parameter
+    """
     if u"()" in str1:
         return _function_re.findall(str1)
     else:
@@ -292,8 +297,9 @@ def geturls(str1):
 
 
 def countaccelerators(accelmarker, acceptlist=None):
-    """returns a function that counts the number of accelerators marked
-    with the given marker"""
+    """returns a function that counts the number of accelerators marked with
+    the given marker
+    """
 
     def countmarkedaccelerators(str1):
         """returns all the variables in str1 marked with a given marker"""

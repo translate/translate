@@ -48,7 +48,8 @@ default_style = style_full
 
 def calcstats_old(filename):
     """This is the previous implementation of calcstats() and is left for
-    comparison and debuging purposes."""
+    comparison and debuging purposes.
+    """
     # ignore totally blank or header units
     try:
         store = factory.getobject(filename)

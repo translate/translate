@@ -56,7 +56,8 @@ class lang2po(object):
 def convertlang(inputfile, outputfile, templates, pot=False,
                 duplicatestyle="msgctxt", encoding="utf-8"):
     """reads in stdin using fromfileclass, converts using convertorclass,
-    writes to stdout"""
+    writes to stdout
+    """
     inputstore = lang.LangStore(inputfile, encoding=encoding)
     convertor = lang2po(duplicatestyle=duplicatestyle)
     outputstore = convertor.convertstore(inputstore)

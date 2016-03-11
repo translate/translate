@@ -416,8 +416,9 @@ class DialectStringsUtf8(DialectStrings):
 
 @six.python_2_unicode_compatible
 class propunit(base.TranslationUnit):
-    """An element of a properties file i.e. a name and value, and any
-    comments associated."""
+    """An element of a properties file i.e. a name and value, and any comments
+    associated.
+    """
 
     def __init__(self, source="", personality="java"):
         """Construct a blank propunit."""
@@ -473,8 +474,8 @@ class propunit(base.TranslationUnit):
         return self.getoutput()
 
     def getoutput(self):
-        """Convert the element back into formatted lines for a
-        .properties file"""
+        """Convert the element back into formatted lines for a .properties file
+        """
         notes = self.getnotes()
         if notes:
             notes += u"\n"
@@ -529,8 +530,8 @@ class propunit(base.TranslationUnit):
         self.comments = []
 
     def isblank(self):
-        """returns whether this is a blank element, containing only
-        comments."""
+        """returns whether this is a blank element, containing only comments.
+        """
         return not (self.name or self.value)
 
     def istranslatable(self):
@@ -561,8 +562,8 @@ class propfile(base.TranslationStore):
             self.makeindex()
 
     def parse(self, propsrc):
-        """Read the source of a properties file in and include them
-        as units."""
+        """Read the source of a properties file in and include them as units.
+        """
         text, encoding = self.detect_encoding(
             propsrc, default_encodings=[self.personality.default_encoding,
                                         'utf-8', 'utf-16'])

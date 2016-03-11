@@ -260,7 +260,8 @@ class WordfastHeader(object):
 
     def _create_default_header(self):
         """Create a default Wordfast header with the date set to the current
-        time"""
+        time
+        """
         defaultheader = WF_FIELDNAMES_HEADER_DEFAULTS
         defaultheader['date'] = '%%%s' % WordfastTime(time.localtime()).timestring
         return defaultheader

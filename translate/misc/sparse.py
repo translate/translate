@@ -25,8 +25,9 @@ a list of tokens.
 
 
 def stringeval(text):
-    """takes away repeated quotes (escapes) and returns the string
-    represented by the text"""
+    """takes away repeated quotes (escapes) and returns the string represented
+    by the text
+    """
     stringchar = text[0]
     if text[-1] != stringchar or stringchar not in ("'", '"'):
         # scratch your head
@@ -35,8 +36,8 @@ def stringeval(text):
 
 
 def stringquote(text):
-    """escapes quotes as neccessary and returns a string representing
-    the text"""
+    """escapes quotes as neccessary and returns a string representing the text
+    """
     if "'" in text:
         if '"' in text:
             return '"' + text.replace('"', '""') + '"'
@@ -144,7 +145,8 @@ class SimpleParser:
 
     def removewhitespace(self, text):
         """this removes whitespace but lets it separate things out into
-        separate tokens"""
+        separate tokens
+        """
         if self.keeptogether(text):
             return [text]
         # loop through and put tokens into a list

@@ -48,7 +48,8 @@ class tmxunit(lisa.LISAunit):
     def getid(self):
         """Returns the identifier for this unit. The optional tuid property is
         used if available, otherwise we inherit .getid(). Note that the tuid
-        property is only mandated to be unique from TMX 2.0."""
+        property is only mandated to be unique from TMX 2.0.
+        """
         id = self.xmlelement.get("tuid", "")
         return id or super(tmxunit, self).getid()
 
@@ -58,7 +59,8 @@ class tmxunit(lisa.LISAunit):
     def addnote(self, text, origin=None, position="append"):
         """Add a note specifically in a "note" tag.
 
-        The origin parameter is ignored"""
+        The origin parameter is ignored
+        """
         if isinstance(text, bytes):
             text = text.decode("utf-8")
         note = etree.SubElement(self.xmlelement, self.namespaced("note"))
@@ -107,7 +109,8 @@ class tmxunit(lisa.LISAunit):
         """Make a copy of the translation unit.
 
         We don't want to make a deep copy - this could duplicate the whole XML
-        tree. For now we just serialise and reparse the unit's XML."""
+        tree. For now we just serialise and reparse the unit's XML.
+        """
         # TODO: check performance
         new_unit = self.__class__(None, empty=True)
         new_unit.xmlelement = etree.fromstring(etree.tostring(self.xmlelement))

@@ -19,7 +19,8 @@
 # along with this program; if not, see <http://www.gnu.org/licenses/>.
 
 """Handles converting of files between formats (used by
-:mod:`translate.convert` tools)."""
+:mod:`translate.convert` tools).
+"""
 
 import os.path
 import six
@@ -134,8 +135,9 @@ class ConvertOptionParser(optrecurse.RecursiveOptionParser, object):
             return self.outputoptions
 
     def setpotoption(self):
-        """Sets the ``-P``/``--pot`` option depending on input/output
-        formats etc."""
+        """Sets the ``-P``/``--pot`` option depending on input/output formats
+        etc.
+        """
         if self.usepots:
             potoption = optparse.Option(
                 "-P", "--pot",
@@ -154,8 +156,9 @@ class ConvertOptionParser(optrecurse.RecursiveOptionParser, object):
         self.define_option(timestampopt)
 
     def verifyoptions(self, options):
-        """Verifies that the options are valid (required options are
-        present, etc)."""
+        """Verifies that the options are valid (required options are present,
+        etc).
+        """
         pass
 
     def run(self, argv=None):
@@ -214,7 +217,8 @@ class Replacer(object):
     def searchreplacetemplate(self, inputfile, outputfile,
                               templatefile, **kwargs):
         """Copies the template file to the output file, searching and
-        replacing."""
+        replacing.
+        """
         outputfile.write(self.doreplace(templatefile.read()))
         return True
 
@@ -240,8 +244,9 @@ class ArchiveConvertOptionParser(ConvertOptionParser):
     ``archiveformats`` maps extension to class. If the extension doesn't
     matter, it can be None.
 
-    If the extension is only valid for input/output/template, it can be
-    given as ``(extension, filepurpose)``."""
+    If the extension is only valid for input/output/template, it can be given
+    as ``(extension, filepurpose)``.
+    """
 
     def __init__(self, formats, usetemplates=False, usepots=False,
                  description=None, archiveformats=None):
@@ -299,8 +304,9 @@ class ArchiveConvertOptionParser(ConvertOptionParser):
         return archiveclass(archivefilename, **archiveoptions)
 
     def recurseinputfiles(self, options):
-        """Recurse through archive file / directories and return files
-        to be converted."""
+        """Recurse through archive file / directories and return files to be
+        converted.
+        """
         if self.isarchive(options.input, 'input'):
             options.inputarchive = self.openarchive(options.input, 'input')
             return self.recursearchivefiles(options)
@@ -376,7 +382,8 @@ class ArchiveConvertOptionParser(ConvertOptionParser):
 
     def checkoutputsubdir(self, options, subdir):
         """Checks to see if subdir under ``options.output`` needs to be
-        created, creates if neccessary."""
+        created, creates if neccessary.
+        """
         if not self.isarchive(options.output, 'output'):
             super(ArchiveConvertOptionParser, self).checkoutputsubdir(options, subdir)
 

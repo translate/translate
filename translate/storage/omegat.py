@@ -52,7 +52,8 @@ OMEGAT_FIELDNAMES = ["source", "target", "comment"]
 
 class OmegaTDialect(csv.Dialect):
     """Describe the properties of an OmegaT generated TAB-delimited glossary
-    file."""
+    file.
+    """
 
     delimiter = "\t"
     lineterminator = "\r\n"
@@ -147,8 +148,8 @@ class OmegaTFile(base.TranslationStore):
     UnitClass = OmegaTUnit
 
     def __init__(self, inputfile=None, **kwargs):
-        """Construct an OmegaT glossary, optionally reading in from
-        inputfile."""
+        """Construct an OmegaT glossary, optionally reading in from inputfile.
+        """
         super(OmegaTFile, self).__init__(**kwargs)
         self.filename = ''
         self.extension = ''

@@ -42,8 +42,9 @@ string_xpath_normalized = etree.XPath("normalize-space()")
 def getText(node, xml_space="preserve"):
     """Extracts the plain text content out of the given node.
 
-    This method checks the xml:space attribute of the given node, and takes
-    an optional default to use in case nothing is specified in this node."""
+    This method checks the xml:space attribute of the given node, and takes an
+    optional default to use in case nothing is specified in this node.
+    """
     xml_space = getXMLspace(node, xml_space)
     if xml_space == "default":
         return six.text_type(string_xpath_normalized(node))  # specific to lxml.etree
@@ -104,15 +105,16 @@ MULTIWHITESPACE_RE = re.compile(MULTIWHITESPACE_PATTERN, re.MULTILINE)
 
 
 def normalize_space(text):
-    """Normalize the given text for implementation of
-    ``xml:space="default"``."""
+    """Normalize the given text for implementation of ``xml:space="default"``.
+    """
     text = MULTIWHITESPACE_RE.sub(u" ", text)
     return text
 
 
 def normalize_xml_space(node, xml_space, remove_start=False):
     """normalize spaces following the nodes xml:space, or alternatively the
-    given xml_space parameter."""
+    given xml_space parameter.
+    """
     xml_space = getXMLspace(node) or xml_space
     if xml_space == 'preserve':
         return

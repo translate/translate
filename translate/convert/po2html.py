@@ -29,8 +29,9 @@ from translate.storage import html, po
 
 
 class po2html(object):
-    """po2html can take a po file and generate html. best to give it a
-    template file otherwise will just concat msgstrs"""
+    """po2html can take a po file and generate html. best to give it a template
+    file otherwise will just concat msgstrs
+    """
 
     def lookup(self, string):
         unit = self.inputstore.sourceindex.get(string, None)
@@ -55,7 +56,8 @@ class po2html(object):
 def converthtml(inputfile, outputfile, templatefile, includefuzzy=False,
                 outputthreshold=None):
     """reads in stdin using fromfileclass, converts using convertorclass,
-    writes to stdout"""
+    writes to stdout
+    """
     inputstore = po.pofile(inputfile)
 
     if not convert.should_output_store(inputstore, outputthreshold):

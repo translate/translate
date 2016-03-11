@@ -49,7 +49,8 @@ class txt2po(object):
 def converttxt(inputfile, outputfile, templates, duplicatestyle="msgctxt",
                encoding="utf-8", flavour=None):
     """reads in stdin using fromfileclass, converts using convertorclass,
-    writes to stdout"""
+    writes to stdout
+    """
     inputstore = txt.TxtFile(inputfile, encoding=encoding, flavour=flavour)
     convertor = txt2po(duplicatestyle=duplicatestyle)
     outputstore = convertor.convertstore(inputstore)

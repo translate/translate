@@ -75,8 +75,9 @@ class ical2po(object):
         return output_store
 
     def convert_unit(self, input_unit, commenttype):
-        """Converts a .ini unit to a .po unit. Returns None if empty
-        or not for translation."""
+        """Converts a .ini unit to a .po unit. Returns None if empty or not for
+        translation.
+        """
         if input_unit is None:
             return None
         # escape unicode
@@ -90,7 +91,8 @@ class ical2po(object):
 
 def convertical(input_file, output_file, template_file, pot=False, duplicatestyle="msgctxt"):
     """Reads in *input_file* using iCal, converts using :class:`ical2po`,
-    writes to *output_file*."""
+    writes to *output_file*.
+    """
     input_store = ical.icalfile(input_file)
     convertor = ical2po()
     if template_file is None:

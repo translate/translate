@@ -104,8 +104,9 @@ class QtFormattingPlaceable(Ph):
 class PythonFormattingPlaceable(Ph):
     """Placeable representing a Python string formatting variable.
 
-    Implemented following Python documentation on
-    `String Formatting Operations <http://docs.python.org/library/stdtypes.html#string-formatting-operations>`_"""
+    Implemented following Python documentation on `String Formatting Operations
+    <http://docs.python.org/library/stdtypes.html#string-formatting-operations>`_
+    """
 
     iseditable = False
     istranslatable = False

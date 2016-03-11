@@ -29,16 +29,18 @@ from translate.storage import csvl10n, tbx
 
 
 class csv2tbx(object):
-    """a class that takes translations from a .csv file and puts them in a
-    .tbx file"""
+    """a class that takes translations from a .csv file and puts them in a .tbx
+    file
+    """
 
     def __init__(self, charset=None):
         """construct the converter..."""
         self.charset = charset
 
     def convertfile(self, csvfile):
-        """converts a csvfile to a tbxfile, and returns it. uses templatepo
-        if given at construction"""
+        """converts a csvfile to a tbxfile, and returns it. uses templatepo if
+        given at construction
+        """
         mightbeheader = True
         self.tbxfile = tbx.tbxfile()
         for csvunit in csvfile.units:
@@ -60,7 +62,8 @@ class csv2tbx(object):
 def convertcsv(inputfile, outputfile, templatefile, charset=None,
                columnorder=None):
     """reads in inputfile using csvl10n, converts using csv2tbx, writes to
-    outputfile"""
+    outputfile
+    """
     inputstore = csvl10n.csvfile(inputfile, fieldnames=columnorder)
     convertor = csv2tbx(charset=charset)
     outputstore = convertor.convertfile(inputstore)

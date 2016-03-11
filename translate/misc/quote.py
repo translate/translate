@@ -17,8 +17,9 @@
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, see <http://www.gnu.org/licenses/>.
 
-"""String processing utilities for extracting strings with various kinds
-of delimiters"""
+"""String processing utilities for extracting strings with various kinds of
+delimiters
+"""
 
 import logging
 import six
@@ -27,8 +28,9 @@ from six.moves import html_entities
 
 
 def find_all(searchin, substr):
-    """Returns a list of locations where substr occurs in searchin
-    locations are not allowed to overlap"""
+    """Returns a list of locations where substr occurs in searchin locations
+    are not allowed to overlap
+    """
     location = 0
     locations = []
     substr_len = len(substr)

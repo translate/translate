@@ -265,8 +265,8 @@ class htmlfile(html_parser.HTMLParser, base.TranslationStore):
 
     def has_translatable_content(self, text):
         """Check if the supplied HTML snippet has any content that needs to be
-        translated."""
-
+        translated.
+        """
         text = text.strip()
         result = re.findall('(?i).*(charset.*=.*)', text)
         if len(result) == 1:

@@ -172,8 +172,8 @@ class UtxFile(base.TranslationStore):
     UnitClass = UtxUnit
 
     def __init__(self, inputfile=None, **kwargs):
-        """Construct an UTX dictionary, optionally reading in from
-        inputfile."""
+        """Construct an UTX dictionary, optionally reading in from inputfile.
+        """
         super(UtxFile, self).__init__(**kwargs)
         self.filename = ''
         self.extension = ''

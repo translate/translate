@@ -18,8 +18,9 @@
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, see <http://www.gnu.org/licenses/>.
 
-"""diff tool like GNU diff, but lets you have special options
-that are useful in dealing with PO files"""
+"""diff tool like GNU diff, but lets you have special options that are useful
+in dealing with PO files
+"""
 
 import difflib
 import fnmatch
@@ -97,7 +98,8 @@ class DirDiffer:
 
     def __init__(self, fromdir, todir, options):
         """Constructs a comparison between the two dirs using the
-        given options"""
+        given options
+        """
         self.fromdir = fromdir
         self.todir = todir
         self.options = options
@@ -153,7 +155,8 @@ class FileDiffer:
 
     def __init__(self, fromfile, tofile, options):
         """Constructs a comparison between the two files using the given
-        options"""
+        options
+        """
         self.fromfile = fromfile
         self.tofile = tofile
         self.options = options
@@ -256,7 +259,8 @@ class FileDiffer:
 
     def unified_diff(self, group):
         """takes the group of opcodes and generates a unified diff line
-        by line"""
+        by line
+        """
         i1, i2, j1, j2 = group[0][1], group[-1][2], group[0][3], group[-1][4]
         yield "@@ -%d,%d +%d,%d @@%s" % (i1 + 1, i2 - i1, j1 + 1, j2 - j1, lineterm)
         for tag, i1, i2, j1, j2 in group:

@@ -32,7 +32,8 @@ import math
 
 def python_distance(a, b, stopvalue=-1):
     """Calculates the distance for use in similarity calculation. Python
-    version."""
+    version.
+    """
     l1 = len(a)
     l2 = len(b)
     if stopvalue == -1:
@@ -59,11 +60,12 @@ def python_distance(a, b, stopvalue=-1):
 
 
 def native_distance(a, b, stopvalue=0):
-    """Same as python_distance in functionality. This uses the fast C
-    version if we detected it earlier.
+    """Same as python_distance in functionality. This uses the fast C version
+    if we detected it earlier.
 
-    Note that this does not support arbitrary sequence types, but only
-    string types."""
+    Note that this does not support arbitrary sequence types, but only string
+    types.
+    """
     return Levenshtein.distance(a, b)
 
 try:

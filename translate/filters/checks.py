@@ -90,7 +90,8 @@ def tagname(string):
 def intuplelist(pair, list):
     """Tests to see if pair == (a,b,c) is in list, but handles None entries in
     list as wildcards (only allowed in positions "a" and "c"). We take a
-    shortcut by only considering "c" if "b" has already matched."""
+    shortcut by only considering "c" if "b" has already matched.
+    """
     a, b, c = pair
 
     if (b, c) == (None, None):
@@ -108,9 +109,10 @@ def intuplelist(pair, list):
 
 
 def tagproperties(strings, ignore):
-    """Returns all the properties in the XML/HTML tag string as
-    (tagname, propertyname, propertyvalue), but ignore those combinations
-    specified in ignore."""
+    """Returns all the properties in the XML/HTML tag string as (tagname,
+    propertyname, propertyvalue), but ignore those combinations specified in
+    ignore.
+    """
     properties = []
 
     for string in strings:
@@ -1988,8 +1990,9 @@ class LibreOfficeChecker(StandardChecker):
 
     @critical
     def validxml(self, str1, str2):
-        """Check that all XML/HTML open/close tags has close/open
-        pair in the translation."""
+        """Check that all XML/HTML open/close tags has close/open pair in the
+        translation.
+        """
         for location in self.locations:
             if location.endswith(".xrm") or location.endswith(".xhp"):
                 opentags = []

@@ -47,10 +47,10 @@ def reduce_tree(f, parent_unit_node, unit_node, get_children, *state):
 
 
 def compose_mappings(left, right):
-    """Given two mappings left: A -> B and right: B -> C, create a
-    hash result_map: A -> C. Only values in left (i.e. things from B)
-    which have corresponding keys in right will have their keys mapped
-    to values in right. """
+    """Given two mappings left: A -> B and right: B -> C, create a hash
+    result_map: A -> C. Only values in left (i.e. things from B) which have
+    corresponding keys in right will have their keys mapped to values in right.
+    """
     result_map = {}
     for left_key, left_val in left.items():
         try:

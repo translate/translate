@@ -75,7 +75,8 @@ class Project(object):
 
     def add_source_convert(self, srcfile, src_fname=None, convert_options=None, extension=None):
         """Convenience method that calls :meth:`~Project.add_source` and
-        :meth:`~Project.convert_forward` and returns the results from both."""
+        :meth:`~Project.convert_forward` and returns the results from both.
+        """
         srcfile, srcfname = self.add_source(srcfile, src_fname)
         transfile, transfname = self.convert_forward(srcfname, convert_options=convert_options)
         return srcfile, srcfname, transfile, transfname
@@ -95,7 +96,8 @@ class Project(object):
         :type  convert_options: dict (optional)
         :param convert_options: Passed as-is to
                                 :meth:`translate.convert.factory.convert`.
-        :returns 2-tuple: the converted file object and its project name."""
+        :returns 2-tuple: the converted file object and its project name.
+        """
         inputfile = self.get_file(input_fname)
         input_type = self.store.get_filename_type(input_fname)
 

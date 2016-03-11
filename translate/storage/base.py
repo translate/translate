@@ -257,8 +257,9 @@ class TranslationUnit(object):
     def setid(self, value):
         """Sets the unique identified for this unit.
 
-        only implemented if format allows ids independant from other
-        unit properties like source or context"""
+        only implemented if format allows ids independant from other unit
+        properties like source or context
+        """
         pass
 
     def getlocations(self):
@@ -442,7 +443,8 @@ class TranslationUnit(object):
     @classmethod
     def buildfromunit(cls, unit):
         """Build a native unit from a foreign unit, preserving as much
-        information as possible."""
+        information as possible.
+        """
         if type(unit) == cls and hasattr(unit, "copy") and callable(unit.copy):
             return unit.copy()
         newunit = cls(unit.source)
@@ -481,13 +483,14 @@ class TranslationUnit(object):
 
     def infer_state(self):
         """Empty method that should be overridden in sub-classes to infer the
-        current state(_n) of the unit from its current state."""
+        current state(_n) of the unit from its current state.
+        """
         pass
 
 
 class TranslationStore(object):
-    """Base class for stores for multiple translation units of type
-    UnitClass."""
+    """Base class for stores for multiple translation units of type UnitClass.
+    """
 
     UnitClass = TranslationUnit
     """The class of units that will be instantiated and used by this class"""
@@ -681,7 +684,8 @@ class TranslationStore(object):
 
     def makeindex(self):
         """Indexes the items in this store. At least .sourceindex should be
-        useful."""
+        useful.
+        """
         self.locationindex = {}
         self.sourceindex = {}
         self.id_index = {}
@@ -736,7 +740,8 @@ class TranslationStore(object):
 
     def _assignname(self):
         """Tries to work out what the name of the filesystem file is and
-        assigns it to .filename."""
+        assigns it to .filename.
+        """
         fileobj = getattr(self, "fileobj", None)
         if fileobj:
             filename = getattr(fileobj, "name",
@@ -842,8 +847,8 @@ class TranslationStore(object):
         storefile.close()
 
     def save(self):
-        """Save to the file that data was originally read from, if
-        available."""
+        """Save to the file that data was originally read from, if available.
+        """
         fileobj = getattr(self, "fileobj", None)
         if not fileobj:
             if hasattr(self, "filename"):
@@ -860,7 +865,8 @@ class TranslationStore(object):
     @classmethod
     def parsefile(cls, storefile):
         """Reads the given file (or opens the given filename) and parses back
-        to an object."""
+        to an object.
+        """
         if isinstance(storefile, six.string_types):
             storefile = open(storefile, 'rb')
         mode = getattr(storefile, "mode", 'rb')

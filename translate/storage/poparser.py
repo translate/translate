@@ -85,9 +85,10 @@ class ParseState(object):
 
 
 def read_prevmsgid_lines(parse_state):
-    """Read all the lines belonging starting with #|. These lines contain
-    the previous msgid and msgctxt info. We strip away the leading '#| '
-    and read until we stop seeing #|."""
+    """Read all the lines belonging starting with #|. These lines contain the
+    previous msgid and msgctxt info. We strip away the leading '#| ' and read
+    until we stop seeing #|.
+    """
     prevmsgid_lines = []
     next_line = parse_state.next_line
     while startswith(next_line, '#| ') or startswith(next_line, '| '):

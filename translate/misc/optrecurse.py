@@ -97,7 +97,8 @@ class RecursiveOptionParser(optparse.OptionParser, object):
 
     def setmanpageoption(self):
         """creates a manpage option that allows the optionparser to generate a
-        manpage"""
+        manpage
+        """
         manpageoption = ManPageOption(
             None, "--manpage", dest="manpage",
             default=False, action="manpage",
@@ -144,7 +145,8 @@ class RecursiveOptionParser(optparse.OptionParser, object):
 
     def set_usage(self, usage=None):
         """sets the usage string - if usage not given, uses getusagestring for
-        each option"""
+        each option
+        """
         if usage is None:
             self.usage = "%prog " + " ".join([self.getusagestring(option) for option in self.option_list])
         else:
@@ -191,8 +193,9 @@ class RecursiveOptionParser(optparse.OptionParser, object):
             return "\\fR[\\fP%s\\fR]\\fP" % optionstring
 
     def define_option(self, option):
-        """Defines the given option, replacing an existing one of the same short
-        name if neccessary..."""
+        """Defines the given option, replacing an existing one of the same
+        short name if neccessary...
+        """
         for short_opt in option._short_opts:
             if self.has_option(short_opt):
                 self.remove_option(short_opt)
@@ -321,7 +324,8 @@ class RecursiveOptionParser(optparse.OptionParser, object):
 
     def parse_args(self, args=None, values=None):
         """Parses the command line options, handling implicit input/output
-        args."""
+        args.
+        """
         (options, args) = super(RecursiveOptionParser, self).parse_args(args, values)
         # some intelligent as to what reasonable people might give on the
         # command line
@@ -449,7 +453,8 @@ class RecursiveOptionParser(optparse.OptionParser, object):
 
     def run(self):
         """Parses the arguments, and runs recursiveprocess with the resulting
-        options..."""
+        options...
+        """
         (options, args) = self.parse_args()
         self.recursiveprocess(options)
 
@@ -593,7 +598,8 @@ class RecursiveOptionParser(optparse.OptionParser, object):
 
     def checkoutputsubdir(self, options, subdir):
         """Checks to see if subdir under options.output needs to be created,
-        creates if neccessary."""
+        creates if neccessary.
+        """
         fullpath = os.path.join(options.output, subdir)
         if not os.path.isdir(fullpath):
             self.mkdir(options.output, subdir)

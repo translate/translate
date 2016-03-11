@@ -450,8 +450,9 @@ class AndroidResourceFile(lisa.LISAfile):
 <resources></resources>'''
 
     def initbody(self):
-        """Initialises self.body so it never needs to be retrieved from the
-        XML again."""
+        """Initialises self.body so it never needs to be retrieved from the XML
+        again.
+        """
         self.namespace = self.document.getroot().nsmap.get(None, None)
         self.body = self.document.getroot()
 

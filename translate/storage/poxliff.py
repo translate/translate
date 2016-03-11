@@ -231,7 +231,8 @@ class PoXliffUnit(xliff.xliffunit):
 
     def getautomaticcomments(self):
         """Returns the automatic comments (x-po-autocomment), which corresponds
-        to the #. style po comments."""
+        to the #. style po comments.
+        """
 
         def hasautocomment(grp):
             return grp[0] == "x-po-autocomment"
@@ -244,8 +245,9 @@ class PoXliffUnit(xliff.xliffunit):
         return "\n".join(comments)
 
     def gettranslatorcomments(self):
-        """Returns the translator comments (x-po-trancomment), which corresponds
-        to the # style po comments."""
+        """Returns the translator comments (x-po-trancomment), which
+        corresponds to the # style po comments.
+        """
 
         def hastrancomment(grp):
             return grp[0] == "x-po-trancomment"

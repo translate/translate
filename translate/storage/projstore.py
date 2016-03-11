@@ -335,9 +335,10 @@ class ProjectStore(object):
         return etree.tostring(xml, pretty_print=True)
 
     def _load_settings(self, settingsxml):
-        """Load project settings from the given XML string.
-        ``settingsxml`` is parsed into a DOM tree (``lxml.etree.fromstring``)
-        which is then inspected."""
+        """Load project settings from the given XML string.  ``settingsxml`` is
+        parsed into a DOM tree (``lxml.etree.fromstring``) which is then
+        inspected.
+        """
         settings = {}
         xml = etree.fromstring(settingsxml)
 

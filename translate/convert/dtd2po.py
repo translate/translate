@@ -33,7 +33,8 @@ from translate.storage import dtd, po
 
 def is_css_entity(entity):
     """Says if the given entity is likely to contain CSS that should not be
-    translated."""
+    translated.
+    """
     if '.' in entity:
         prefix, suffix = entity.rsplit('.', 1)
         if (suffix in ["height", "width", "unixWidth", "macWidth", "size"] or
@@ -284,7 +285,8 @@ class dtd2po(object):
 def convertdtd(inputfile, outputfile, templatefile, pot=False,
                duplicatestyle="msgctxt"):
     """reads in inputfile and templatefile using dtd, converts using dtd2po,
-    writes to outputfile"""
+    writes to outputfile
+    """
     android_dtd = False
     if hasattr(inputfile, "name"):
         # Check if it is an Android DTD file.

@@ -35,8 +35,8 @@ logger = logging.getLogger(__name__)
 
 
 class prop2po(object):
-    """convert a .properties file to a .po file for handling the
-    translation."""
+    """convert a .properties file to a .po file for handling the translation.
+    """
 
     def __init__(self, personality="java", blankmsgstr=False,
                  duplicatestyle="msgctxt"):
@@ -212,8 +212,9 @@ class prop2po(object):
         return new_store
 
     def convertunit(self, propunit, commenttype):
-        """Converts a .properties unit to a .po unit. Returns None if empty
-        or not for translation."""
+        """Converts a .properties unit to a .po unit. Returns None if empty or
+        not for translation.
+        """
         if propunit is None:
             return None
         # escape unicode
@@ -307,8 +308,9 @@ def convertmozillaprop(inputfile, outputfile, templatefile, pot=False,
 
 def convertprop(inputfile, outputfile, templatefile, personality="java",
                 pot=False, duplicatestyle="msgctxt", encoding=None):
-    """reads in inputfile using properties, converts using prop2po, writes
-    to outputfile"""
+    """reads in inputfile using properties, converts using prop2po, writes to
+    outputfile
+    """
     inputstore = properties.propfile(inputfile, personality, encoding)
     convertor = prop2po(personality=personality, blankmsgstr=pot,
                         duplicatestyle=duplicatestyle)

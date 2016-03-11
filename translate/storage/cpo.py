@@ -359,7 +359,8 @@ class pounit(pocommon.pounit):
 
     def getid(self):
         """The unique identifier for this unit according to the conventions in
-        .mo files."""
+        .mo files.
+        """
         id = gpo_decode(gpo.po_message_msgid(self._gpo_message)) or ""
         # Gettext does not consider the plural to determine duplicates, only
         # the msgid. For generation of .mo files, we might want to use this
@@ -575,7 +576,8 @@ class pounit(pocommon.pounit):
     @classmethod
     def buildfromunit(cls, unit, encoding=None):
         """Build a native unit from a foreign unit, preserving as much
-        information as possible."""
+        information as possible.
+        """
         if type(unit) == cls and hasattr(unit, "copy") and callable(unit.copy):
             return unit.copy()
         elif isinstance(unit, pocommon.pounit):

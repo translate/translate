@@ -28,7 +28,8 @@ from translate.storage.xml_extract import misc, xpath_breadcrumb
 
 class Translatable(object):
     """A node corresponds to a translatable element. A node may have children,
-    which correspond to placeables."""
+    which correspond to placeables.
+    """
 
     def __init__(self, placeable_name, xpath, dom_node, source,
                  is_inline=False):
@@ -61,8 +62,9 @@ def reduce_unit_tree(f, unit_node, *state):
 
 
 class ParseState(object):
-    """Maintain constants and variables used during the walking of a
-    DOM tree (via the function apply)."""
+    """Maintain constants and variables used during the walking of a DOM tree
+    (via the function apply).
+    """
 
     def __init__(self, no_translate_content_elements, inline_elements={},
                  nsmap={}):

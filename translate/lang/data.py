@@ -298,9 +298,10 @@ dialect_name_re = re.compile(r"(.+)\s\(([^)\d]{,25})\)$")
 
 
 def tr_lang(langcode=None):
-    """Gives a function that can translate a language name, even in the
-    form ``"language (country)"``, into the language with iso code langcode,
-    or the system language if no language is specified."""
+    """Gives a function that can translate a language name, even in the form
+    ``"language (country)"``, into the language with iso code langcode, or the
+    system language if no language is specified.
+    """
     langfunc = gettext_lang(langcode)
     countryfunc = gettext_country(langcode)
 
@@ -319,10 +320,11 @@ def tr_lang(langcode=None):
 def _fix_language_name(name):
     """Identify and replace some unsightly names present in iso-codes.
 
-    If the name is present in _fixed_names we assume it is untranslated and
-    we replace it with a more usable rendering.  If the remaining part is long
-    and includes a semi-colon, we only take the text up to the semi-colon to
-    keep things neat."""
+    If the name is present in _fixed_names we assume it is untranslated and we
+    replace it with a more usable rendering.  If the remaining part is long and
+    includes a semi-colon, we only take the text up to the semi-colon to keep
+    things neat.
+    """
     if name in _fixed_names:
         return _fixed_names[name]
     elif len(name) > 11:
@@ -336,7 +338,8 @@ def _fix_language_name(name):
 
 def gettext_lang(langcode=None):
     """Returns a gettext function to translate language names into the given
-    language, or the system language if no language is specified."""
+    language, or the system language if no language is specified.
+    """
     if langcode not in iso639:
         if not langcode:
             langcode = ""
@@ -356,7 +359,8 @@ def gettext_lang(langcode=None):
 
 def gettext_country(langcode=None):
     """Returns a gettext function to translate country names into the given
-    language, or the system language if no language is specified."""
+    language, or the system language if no language is specified.
+    """
     if langcode not in iso3166:
         if not langcode:
             langcode = ""
@@ -422,9 +426,10 @@ __normalised_languages = set(normalize_code(key) for key in languages.keys())
 
 
 def simplify_to_common(language_code, languages=languages):
-    """Simplify language code to the most commonly used form for the
-    language, stripping country information for languages that tend
-    not to be localized differently for different countries"""
+    """Simplify language code to the most commonly used form for the language,
+    stripping country information for languages that tend not to be localized
+    differently for different countries
+    """
     simpler = simplercode(language_code)
     if simpler == "":
         return language_code
