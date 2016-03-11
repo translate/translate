@@ -286,7 +286,7 @@ def entitydecode(source, name2codepoint):
 
 
 def htmlentityencode(source):
-    """Encode ``source`` using HTML entities e.g. © -> ``&copy;``
+    u"""Encode ``source`` using HTML entities e.g. © -> ``&copy;``
 
     :param unicode source: Source string to encode
     """
@@ -294,7 +294,7 @@ def htmlentityencode(source):
 
 
 def htmlentitydecode(source):
-    """Decode source using HTML entities e.g. ``&copy;`` -> ©.
+    u"""Decode source using HTML entities e.g. ``&copy;`` -> ©.
 
     :param unicode source: Source string to decode
     """

@@ -17,7 +17,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, see <http://www.gnu.org/licenses/>.
 
-"""Manage the Trados .txt Translation Memory format
+u"""Manage the Trados .txt Translation Memory format
 
 A Trados file looks like this:
 

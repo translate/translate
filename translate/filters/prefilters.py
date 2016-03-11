@@ -83,7 +83,7 @@ def filteraccelerators(accelmarker):
 
 
 def varname(variable, startmarker, endmarker):
-    """Variable filter that returns the variable name without the marking
+    u"""Variable filter that returns the variable name without the marking
     punctuation.
 
     .. note:: Currently this function simply returns *variable* unchanged, no

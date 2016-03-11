@@ -623,7 +623,7 @@ class StandardChecker(TranslationChecker):
 
     @functional
     def unchanged(self, str1, str2):
-        """Checks whether a translation is basically identical to the original
+        u"""Checks whether a translation is basically identical to the original
         string.
 
         This checks to see if the translation isn’t just a copy of the English
@@ -1303,7 +1303,7 @@ class StandardChecker(TranslationChecker):
 
     @cosmetic
     def endpunc(self, str1, str2):
-        """Checks whether punctuation at the end of the strings match.
+        u"""Checks whether punctuation at the end of the strings match.
 
         This will ensure that the ending of your translation has the same
         punctuation as the original. E.g. if it ends in :[space] then so should
