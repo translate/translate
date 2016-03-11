@@ -26,8 +26,9 @@ from translate.storage import lisa
 
 
 class tbxunit(lisa.LISAunit):
-    """A single term in the TBX file.
-Provisional work is done to make several languages possible."""
+    """A single term in the TBX file.  Provisional work is done to make several
+    languages possible.
+    """
     rootNode = "termEntry"
     languageNode = "langSet"
     textNode = "term"

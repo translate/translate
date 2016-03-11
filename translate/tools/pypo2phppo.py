@@ -32,13 +32,13 @@ class pypo2phppo:
     def convertstore(self, inputstore):
         """Converts a given .po file (Python Format) to a PHP format .po file.
 
-       The difference being how variable substitutions work.  PHP uses a %1$s
-       format, and Python uses a {0} format (zero indexed).  This method will
-       convert::
+        The difference being how variable substitutions work.  PHP uses a %1$s
+        format, and Python uses a {0} format (zero indexed).  This method will
+        convert::
 
-                I have {1} apples and {0} oranges
+                 I have {1} apples and {0} oranges
 
-       To::
+        To::
 
                 I have %2$s apples and %1$s oranges
 
