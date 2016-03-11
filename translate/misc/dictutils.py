@@ -50,7 +50,8 @@ class cidict(dict):
 
     def update(self, updatedict):
         """D.update(E) -> None.
-           Update D from E: for k in E.keys(): D[k] = E[k]"""
+        Update D from E: for k in E.keys(): D[k] = E[k]
+        """
         for key, value in six.iteritems(updatedict):
             self[key] = value
 

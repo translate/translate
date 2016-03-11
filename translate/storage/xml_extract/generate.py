@@ -232,9 +232,9 @@ def replace_dom_text(make_parse_state,
 
           action: etree_Element x base.TranslationUnit -> None
 
-      which takes a dom_node and a translation unit. The dom_node is rearranged
-      according to rearrangement of placeables in unit.target (relative to their
-      positions in unit.source).
+    which takes a dom_node and a translation unit. The dom_node is rearranged
+    according to rearrangement of placeables in unit.target (relative to their
+    positions in unit.source).
     """
     def action(dom_node, unit):
         """Use the unit's target (or source in the case where there is no

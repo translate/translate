@@ -116,14 +116,15 @@ class ProjectStore(object):
     # METHODS #
     def append_file(self, afile, fname, ftype='trans', delete_orig=False):
         """Append the given file to the project with the given filename, marked
-            to be of type ``ftype`` ('src', 'trans', 'tgt').
+        to be of type ``ftype`` ('src', 'trans', 'tgt').
 
-            :type  delete_orig: bool
-            :param delete_orig: Whether or not the original (given) file should
-                                be deleted after being appended. This is set to
-                                ``True`` by
-                                :meth:`~translate.storage.project.convert_forward`
-                                . Not used in this class."""
+        :type  delete_orig: bool
+        :param delete_orig: Whether or not the original (given) file should be
+                            deleted after being appended. This is set to
+                            ``True`` by
+                            :meth:`~translate.storage.project.convert_forward`
+                            . Not used in this class.
+        """
         if ftype not in self.TYPE_INFO['f_prefix']:
             raise ValueError('Invalid file type: %s' % (ftype))
 
@@ -171,9 +172,9 @@ class ProjectStore(object):
         return self.append_file(afile, fname, ftype='trans')
 
     def remove_file(self, fname, ftype=None):
-        """Remove the file with the given project name from the project.
-            If the file type ('src', 'trans' or 'tgt') is not given, it is
-            guessed."""
+        """Remove the file with the given project name from the project.  If
+        the file type ('src', 'trans' or 'tgt') is not given, it is guessed.
+        """
         if fname not in self._files:
             raise FileNotInProjectError(fname)
         if not ftype:
@@ -257,9 +258,10 @@ class ProjectStore(object):
 
     def update_file(self, pfname, infile):
         """Remove the project file with name ``pfname`` and add the contents
-            from ``infile`` to the project under the same file name.
+        from ``infile`` to the project under the same file name.
 
-            :returns: the results from :meth:`ProjectStore.append_file`."""
+        :returns: the results from :meth:`ProjectStore.append_file`.
+        """
         ftype = self.get_filename_type(pfname)
         self.remove_file(pfname)
         self.append_file(infile, pfname, ftype)

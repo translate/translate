@@ -117,28 +117,29 @@ def get_output_extensions(ext):
 
 def convert(inputfile, template=None, options=None, convert_options=None):
     """Convert the given input file to an appropriate output format, optionally
-        using the given template file and further options.
+    using the given template file and further options.
 
-        If the output extension (format) cannot be inferred the first converter
-        that can handle the input file (and the format/extension it gives as
-        output) is used.
+    If the output extension (format) cannot be inferred the first converter
+    that can handle the input file (and the format/extension it gives as
+    output) is used.
 
-        :type  inputfile: file
-        :param inputfile: The input file to be converted
-        :type  template: file
-        :param template: Template file to use during conversion
-        :type  options: dict (default: None)
-        :param options: Valid options are:
-            - in_ext: The extension (format) of the input file.
-            - out_ext: The extension (format) to use for the output file.
-            - templ_ext: The extension (format) of the template file.
-            - in_fname: File name of the input file; used only to determine
-              the input file extension (format).
-            - templ_fname: File name of the template file; used only to
-              determine the template file extension (format).
-        :returns: a 2-tuple: The new output file (in a temporary directory) and
-                  the extension (format) of the output file. The caller is
-                  responsible for deleting the (temporary) output file."""
+    :type  inputfile: file
+    :param inputfile: The input file to be converted
+    :type  template: file
+    :param template: Template file to use during conversion
+    :type  options: dict (default: None)
+    :param options: Valid options are:
+        - in_ext: The extension (format) of the input file.
+        - out_ext: The extension (format) to use for the output file.
+        - templ_ext: The extension (format) of the template file.
+        - in_fname: File name of the input file; used only to determine
+          the input file extension (format).
+        - templ_fname: File name of the template file; used only to
+          determine the template file extension (format).
+    :returns: a 2-tuple: The new output file (in a temporary directory) and
+              the extension (format) of the output file. The caller is
+              responsible for deleting the (temporary) output file.
+    """
     in_ext, out_ext, templ_ext = None, None, None
 
     # Get extensions from options

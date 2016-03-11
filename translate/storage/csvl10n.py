@@ -313,7 +313,7 @@ def try_dialects(inputfile, fieldnames, dialect):
 
 def valid_fieldnames(fieldnames):
     """Check if fieldnames are valid, that is at least one field is identified
-       as the source.
+    as the source.
     """
     for fieldname in fieldnames:
         if fieldname == 'source':

@@ -68,16 +68,16 @@ class BundleProjectStore(ProjectStore):
     # METHODS #
     def append_file(self, afile, fname, ftype='trans', delete_orig=False):
         """Append the given file to the project with the given filename, marked
-            to be of type ``ftype`` ('src', 'trans', 'tgt').
+        to be of type ``ftype`` ('src', 'trans', 'tgt').
 
-            :param delete_orig: If ``True``, as set by
-                                :meth:`~translate.storage.Project.convert_forward`,
-                                ``afile`` is deleted after appending, if
-                                possible.
+        :param delete_orig: If ``True``, as set by
+                            :meth:`~translate.storage.Project.convert_forward`,
+                            ``afile`` is deleted after appending, if
+                            possible.
 
-            .. note:: For this implementation, the appended file will be deleted
-                      from disk if ``delete_orig`` is ``True``.
-            """
+        .. note:: For this implementation, the appended file will be deleted
+                  from disk if ``delete_orig`` is ``True``.
+        """
         if fname and fname in self.zip.namelist():
             raise ValueError("File already in bundle archive: %s" % (fname))
         if not fname and isinstance(afile, six.string_types) and afile in self.zip.namelist():
@@ -120,8 +120,9 @@ class BundleProjectStore(ProjectStore):
         self._tempfiles = {}
 
     def get_file(self, fname):
-        """Retrieve a project file (source, translation or target file) from the
-            project archive."""
+        """Retrieve a project file (source, translation or target file) from
+        the project archive.
+        """
         retfile = None
         if fname in self._files or fname in self.zip.namelist():
             # Check if the file has not already been extracted to a temp file
@@ -197,9 +198,10 @@ class BundleProjectStore(ProjectStore):
 
     def update_file(self, pfname, infile):
         """Updates the file with the given project file name with the contents
-            of ``infile``.
+        of ``infile``.
 
-            :returns: the results from :meth:`BundleProjStore.append_file`."""
+        :returns: the results from :meth:`BundleProjStore.append_file`.
+        """
         if pfname not in self._files:
             raise FileNotInProjectError(pfname)
 
@@ -222,8 +224,10 @@ class BundleProjectStore(ProjectStore):
         return ZipFile(newzipfname, 'w')
 
     def _replace_project_zip(self, zfile):
-        """Replace the currently used zip file (``self.zip``) with the given zip
-            file. Basically, ``os.rename(zfile.filename, self.zip.filename)``."""
+        """Replace the currently used zip file (``self.zip``) with the given
+        zip file. Basically, ``os.rename(zfile.filename,
+        self.zip.filename)``.
+        """
         if not zfile.fp.closed:
             zfile.close()
         if not self.zip.fp.closed:

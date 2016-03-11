@@ -377,9 +377,9 @@ def gettext_country(langcode=None):
 def normalize(string, normal_form="NFC"):
     """Return a unicode string in its normalized form
 
-       :param string: The string to be normalized
-       :param normal_form: NFC (default), NFD, NFKC, NFKD
-       :return: Normalized string
+    :param string: The string to be normalized
+    :param normal_form: NFC (default), NFD, NFKC, NFKD
+    :return: Normalized string
     """
     if string is None:
         return None
@@ -391,10 +391,10 @@ def normalize(string, normal_form="NFC"):
 def forceunicode(string):
     """Ensures that the string is in unicode.
 
-       :param string: A text string
-       :type string: Unicode, String
-       :return: String converted to Unicode and normalized as needed.
-       :rtype: Unicode
+    :param string: A text string
+    :type string: Unicode, String
+    :return: String converted to Unicode and normalized as needed.
+    :rtype: Unicode
     """
     if string is None:
         return None

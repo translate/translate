@@ -190,9 +190,9 @@ def unquotefrompo(postr):
 def get_libgettextpo_version():
     """Returns the libgettextpo version
 
-       :rtype: three-value tuple
-       :return: libgettextpo version in the following format::
-           (major version, minor version, subminor version)
+    :rtype: three-value tuple
+    :return: libgettextpo version in the following format::
+        (major version, minor version, subminor version)
     """
     libversion = c_long.in_dll(gpo, 'libgettextpo_version')
     major = libversion.value >> 16

@@ -28,11 +28,12 @@ __all__ = ['Project']
 
 
 def split_extensions(filename):
-    """Split the given filename into a name and extensions part.
-        The extensions part is defined by any sequence of extensions, where an
-        extension is a 3-letter, .-separated string or one of "po" or
-        "properties". If the file name consists entirely out of extensions, the
-        first part is assumed to be the file name and the rest extensions."""
+    """Split the given filename into a name and extensions part.  The
+    extensions part is defined by any sequence of extensions, where an
+    extension is a 3-letter, .-separated string or one of "po" or "properties".
+    If the file name consists entirely out of extensions, the first part is
+    assumed to be the file name and the rest extensions.
+    """
     # FIXME: Isn't there a better place for this function?
     # XXX: Make sure that all extensions supported in translate.convert.factory
     #      that are not 3 letters long are added to the first "if" statement in
@@ -54,7 +55,8 @@ def split_extensions(filename):
 
 class Project(object):
     """Manages a project store as well as the processes involved in a project
-        workflow."""
+    workflow.
+    """
 
     # INITIALIZERS #
     def __init__(self, projstore=None):
@@ -179,12 +181,12 @@ class Project(object):
         return outputfile, output_fname
 
     def export_file(self, fname, destfname):
-        """Export the file with the specified filename to the given destination.
-            This method will raise
-            :exc:`~translate.storage.projstore.FileNotInProjectError`
-            via the call to
-            :meth:`~translate.storage.projstore.ProjectStore.get_file`
-            if *fname* is not found in the project."""
+        """Export the file with the specified filename to the given
+        destination.  This method will raise
+        :exc:`~translate.storage.projstore.FileNotInProjectError` via the call
+        to :meth:`~translate.storage.projstore.ProjectStore.get_file` if
+        *fname* is not found in the project.
+        """
         with open(destfname, 'wb') as fp:
             fp.write(self.store.get_file(fname).read())
 

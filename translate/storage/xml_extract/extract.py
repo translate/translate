@@ -27,8 +27,8 @@ from translate.storage.xml_extract import misc, xpath_breadcrumb
 
 
 class Translatable(object):
-    """A node corresponds to a translatable element. A node may
-       have children, which correspond to placeables."""
+    """A node corresponds to a translatable element. A node may have children,
+    which correspond to placeables."""
 
     def __init__(self, placeable_name, xpath, dom_node, source,
                  is_inline=False):

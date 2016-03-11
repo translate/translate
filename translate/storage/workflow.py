@@ -158,12 +158,14 @@ class Workflow(object):
 
     def get_from_states(self):
         """Returns a list of states that can be transitioned from to the
-            current state."""
+        current state.
+        """
         return [e[0] for e in self.edges if e[1] is self._current_state]
 
     def get_to_states(self):
         """Returns a list of states that can be transitioned to from the
-            current state."""
+        current state.
+        """
         return [e[1] for e in self.edges if e[0] is self._current_state]
 
     def get_state_by_name(self, state_name):
@@ -176,9 +178,10 @@ class Workflow(object):
 
     def set_current_state(self, state):
         """Set the current state. This is absolute and not subject to edge
-            constraints. The current state's ``leave`` and the new state's
-            ``enter`` method is still called. For edge transitions, see the
-            ``trans`` method."""
+        constraints. The current state's ``leave`` and the new state's
+        ``enter`` method is still called. For edge transitions, see the
+        ``trans`` method.
+        """
         if isinstance(state, six.string_types):
             state = self.get_state_by_name(state)
         if state not in self.states:
@@ -217,7 +220,8 @@ class Workflow(object):
 
     def trans(self, to_state=None):
         """Transition to the given state. If no state is given, the first one
-            returned by ``get_to_states`` is used."""
+        returned by ``get_to_states`` is used.
+        """
         if self._current_state is None:
             raise ValueError('No current state set')
         if isinstance(to_state, six.string_types):

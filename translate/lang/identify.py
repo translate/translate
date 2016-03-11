@@ -58,7 +58,7 @@ class LanguageIdentifier(object):
 
     def _load_config(self, conf_file):
         """Load the mapping of language names to language codes as given in the
-            configuration file."""
+        configuration file."""
         with open(conf_file, 'r') as fp:
             for line in fp:
                 parts = line.split()
@@ -90,13 +90,14 @@ class LanguageIdentifier(object):
 
     def identify_source_lang(self, instore):
         """Identify the source language of the given translation store or
-            units.
+        units.
 
-            :type  instore: ``TranslationStore`` or list or tuple of
-                ``TranslationUnit``s.
-            :param instore: The translation store to extract source text from.
-            :returns: The identified language's code or ``None`` if the language
-                could not be identified."""
+        :type  instore: ``TranslationStore`` or list or tuple of
+            ``TranslationUnit``s.
+        :param instore: The translation store to extract source text from.
+        :returns: The identified language's code or ``None`` if the language
+            could not be identified.
+        """
         if not isinstance(instore, (TranslationStore, list, tuple)):
             return None
 
@@ -107,13 +108,14 @@ class LanguageIdentifier(object):
 
     def identify_target_lang(self, instore):
         """Identify the target language of the given translation store or
-            units.
+        units.
 
-            :type  instore: ``TranslationStore`` or list or tuple of
-                ``TranslationUnit``s.
-            :param instore: The translation store to extract target text from.
-            :returns: The identified language's code or ``None`` if the language
-                could not be identified."""
+        :type  instore: ``TranslationStore`` or list or tuple of
+            ``TranslationUnit``s.
+        :param instore: The translation store to extract target text from.
+        :returns: The identified language's code or ``None`` if the language
+            could not be identified.
+        """
         if not isinstance(instore, (TranslationStore, list, tuple)):
             return None
 

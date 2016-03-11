@@ -82,10 +82,10 @@ class CommandError(StandardError):
 
 def delfiles(pattern, path, files):
     """Delete files with names in C{files} matching glob-pattern C{glob} in the
-        directory specified by C{path}.
+    directory specified by C{path}.
 
-        This function is meant to be used with C{os.walk}
-        """
+    This function is meant to be used with C{os.walk}
+    """
     path = os.path.abspath(path)
     match_files = glob.glob(join(path, pattern))
     for f in files:
@@ -113,12 +113,12 @@ def run(cmd, expected_status=0, stdout=None, stderr=None, shell=False):
 
 def get_langs(lang_args):
     """Returns the languages to handle based on the languages specified on the
-        command-line.
+    command-line.
 
-        If "ALL" was specified, the languages are read from the Mozilla
-        product's C{shipped-locales} file. If "ZA" was specified, all South
-        African languages are selected.
-        """
+    If "ALL" was specified, the languages are read from the Mozilla product's
+    C{shipped-locales} file. If "ZA" was specified, all South African languages
+    are selected.
+    """
 
     langs = []
 

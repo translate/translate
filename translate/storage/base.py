@@ -156,21 +156,21 @@ class TranslationUnit(object):
     def rich_to_multistring(cls, elem_list):
         """Convert a "rich" string tree to a ``multistring``:
 
-           >>> from translate.storage.placeables.interfaces import X
-           >>> rich = [StringElem(['foo', X(id='xxx', sub=[' ']), 'bar'])]
-           >>> TranslationUnit.rich_to_multistring(rich)
-           multistring(u'foo bar')
+        >>> from translate.storage.placeables.interfaces import X
+        >>> rich = [StringElem(['foo', X(id='xxx', sub=[' ']), 'bar'])]
+        >>> TranslationUnit.rich_to_multistring(rich)
+        multistring(u'foo bar')
         """
         return multistring([six.text_type(elem) for elem in elem_list])
 
     def multistring_to_rich(self, mulstring):
         """Convert a multistring to a list of "rich" string trees:
 
-           >>> target = multistring([u'foo', u'bar', u'baz'])
-           >>> TranslationUnit.multistring_to_rich(target)
-           [<StringElem([<StringElem([u'foo'])>])>,
-            <StringElem([<StringElem([u'bar'])>])>,
-            <StringElem([<StringElem([u'baz'])>])>]
+        >>> target = multistring([u'foo', u'bar', u'baz'])
+        >>> TranslationUnit.multistring_to_rich(target)
+        [<StringElem([<StringElem([u'foo'])>])>,
+         <StringElem([<StringElem([u'bar'])>])>,
+         <StringElem([<StringElem([u'baz'])>])>]
         """
         if isinstance(mulstring, multistring):
             return [rich_parse(s, self.rich_parsers) for s in mulstring.strings]
@@ -481,7 +481,7 @@ class TranslationUnit(object):
 
     def infer_state(self):
         """Empty method that should be overridden in sub-classes to infer the
-            current state(_n) of the unit from its current state."""
+        current state(_n) of the unit from its current state."""
         pass
 
 

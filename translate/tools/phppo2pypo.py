@@ -30,13 +30,16 @@ from translate.storage import po
 class phppo2pypo:
 
     def convertstore(self, inputstore):
-        """Converts a given .po file (PHP Format) to a Python format .po file, the difference being
-            how variable substitutions work.  PHP uses a %1$s format, and Python uses
-            a {0} format (zero indexed).  This method will convert, e.g.:
+        """Converts a given .po file (PHP Format) to a Python format .po file,
+        the difference being how variable substitutions work.  PHP uses a %1$s
+        format, and Python uses a {0} format (zero indexed).  This method will
+        convert, e.g.:
+
                 I have %2$s apples and %1$s oranges
                     to
                 I have {1} apples and {0} oranges
-            This method ignores strings with %s as both languages will recognize that.
+
+        This method ignores strings with %s as both languages will recognize that.
         """
         thetargetfile = po.pofile()
 

@@ -88,10 +88,11 @@ def setXMLspace(node, value):
 def namespaced(namespace, name):
     """Returns name in Clark notation within the given namespace.
 
-       For example namespaced("source") in an XLIFF document might return::
-           {urn:oasis:names:tc:xliff:document:1.1}source
+    For example namespaced("source") in an XLIFF document might return::
 
-       This is needed throughout lxml.
+      {urn:oasis:names:tc:xliff:document:1.1}source
+
+    This is needed throughout lxml.
     """
     if namespace:
         return "{%s}%s" % (namespace, name)

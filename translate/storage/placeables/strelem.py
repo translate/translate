@@ -91,7 +91,7 @@ class StringElem(object):
 
     def __eq__(self, rhs):
         """:returns: ``True`` if (and only if) all members as well as sub-trees
-            are equal. False otherwise."""
+        are equal. False otherwise."""
         if not isinstance(rhs, StringElem):
             return False
 
@@ -219,11 +219,12 @@ class StringElem(object):
         Partial nodes will only be removed if they are editable.
 
         :returns: A ``StringElem`` representing the removed sub-string, the
-                  parent node from which it was deleted as well as the offset at
-                  which it was deleted from. ``None`` is returned for the parent
-                  value if the root was deleted. If the parent and offset values
-                  are not ``None``, ``parent.insert(offset, deleted)``
-                  effectively undoes the delete."""
+                  parent node from which it was deleted as well as the offset
+                  at which it was deleted from. ``None`` is returned for the
+                  parent value if the root was deleted. If the parent and
+                  offset values are not ``None``, ``parent.insert(offset,
+                  deleted)`` effectively undoes the delete.
+        """
         if start_index == end_index:
             return StringElem(), self, 0
         if start_index > end_index:
@@ -413,7 +414,8 @@ class StringElem(object):
         is used as replacement for this one.
 
         :returns: The string index where element ``e`` starts, or -1 if ``e``
-                  was not found."""
+                  was not found.
+        """
         offset = 0
         for e in self.iter_depth_first():
             if e is elem:
@@ -437,7 +439,8 @@ class StringElem(object):
 
     def elem_at_offset(self, offset):
         """Get the ``StringElem`` in the tree that contains the string rendered
-            at the given offset."""
+        at the given offset.
+        """
         if offset < 0 or offset > len(self):
             return None
 
@@ -451,8 +454,9 @@ class StringElem(object):
         return elem
 
     def find(self, x):
-        """Find sub-string ``x`` in this string tree and return the position
-            at which it starts."""
+        """Find sub-string ``x`` in this string tree and return the position at
+        which it starts.
+        """
         if isinstance(x, six.string_types):
             return six.text_type(self).find(x)
         if isinstance(x, StringElem):
@@ -481,10 +485,10 @@ class StringElem(object):
 
         :returns: A dictionary with the following items:
 
-            * *elem*: The element in which ``index`` resides.
-            * *index*: Copy of the ``index`` parameter
-            * *offset*: The offset of ``index`` into ``'elem'``.
-         """
+           - *elem*: The element in which ``index`` resides.
+           - *index*: Copy of the ``index`` parameter
+           - *offset*: The offset of ``index`` into ``'elem'``.
+        """
         info = {
             'elem': self.elem_at_offset(index),
             'index': index,
@@ -501,7 +505,7 @@ class StringElem(object):
 
     def get_parent_elem(self, child):
         """Searches the current sub-tree for and returns the parent of the
-            ``child`` element."""
+        ``child`` element."""
         for elem in self.iter_depth_first():
             if not isinstance(elem, StringElem):
                 continue
@@ -512,7 +516,7 @@ class StringElem(object):
 
     def insert(self, offset, text, preferred_parent=None):
         """Insert the given text at the specified offset of this string-tree's
-            string (Unicode) representation."""
+        string (Unicode) representation."""
         if offset < 0 or offset > len(self):
             raise IndexError('Index out of range: %d' % (offset))
         if isinstance(text, six.string_types):
@@ -814,18 +818,19 @@ class StringElem(object):
     @classmethod
     def parse(cls, pstr):
         """Parse an instance of this class from the start of the given string.
-            This method should be implemented by any sub-class that wants to
-            parseable by :mod:`translate.storage.placeables.parse`.
+        This method should be implemented by any sub-class that wants to
+        parseable by :mod:`translate.storage.placeables.parse`.
 
-            :type  pstr: unicode
-            :param pstr: The string to parse into an instance of this class.
-            :returns: An instance of the current class, or ``None`` if the
-                string not parseable by this class."""
+        :type  pstr: unicode
+        :param pstr: The string to parse into an instance of this class.
+        :returns: An instance of the current class, or ``None`` if the string
+                  not parseable by this class.
+        """
         return cls(pstr)
 
     def print_tree(self, indent=0, verbose=False):
         """Print the tree from the current instance's point in an indented
-            manner."""
+        manner."""
         indent_prefix = " " * indent * 2
         out = (u"%s%s [%s]" % (indent_prefix, self.__class__.__name__,
                                six.text_type(self))).encode('utf-8')
@@ -928,10 +933,10 @@ class StringElem(object):
                 )
 
     def translate(self):
-        """Transform the sub-tree according to some class-specific needs.
-            This method should be either overridden in implementing sub-classes
-            or dynamically replaced by specific applications.
+        """Transform the sub-tree according to some class-specific needs.  This
+        method should be either overridden in implementing sub-classes or
+        dynamically replaced by specific applications.
 
-            :returns: The transformed Unicode string representing the sub-tree.
-            """
+        :returns: The transformed Unicode string representing the sub-tree.
+        """
         return self.copy()

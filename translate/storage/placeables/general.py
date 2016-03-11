@@ -33,8 +33,9 @@ __all__ = ['AltAttrPlaceable', 'XMLEntityPlaceable', 'XMLTagPlaceable', 'parsers
 
 def regex_parse(cls, pstr):
     """A parser method to extract placeables from a string based on a regular
-        expression. Use this function as the ``@parse()`` method of a placeable
-        class."""
+    expression. Use this function as the ``@parse()`` method of a placeable
+    class.
+    """
     if cls.regex is None:
         return None
     matches = []
