@@ -106,7 +106,7 @@ ending in :attr:`.labelsuffixes` into accelerator notation"""
 
 
 def quoteforandroid(source):
-    """Escapes a line for Android DTD files. """
+    """Escapes a line for Android DTD files."""
     # Replace "'" character with the \u0027 escape. Other possible replaces are
     # "\\&apos;" or "\\'".
     source = source.replace(u"'", u"\\u0027")

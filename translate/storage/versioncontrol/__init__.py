@@ -341,7 +341,7 @@ def get_versioned_object(
 
 
 def get_available_version_control_systems():
-    """ return the class objects of all locally available version control
+    """return the class objects of all locally available version control
     systems
     """
     result = []

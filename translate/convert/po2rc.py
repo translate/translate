@@ -51,7 +51,7 @@ class rerc(object):
         return outputblocks
 
     def makestoredict(self, store, includefuzzy=False):
-        """ make a dictionary of the translations"""
+        """make a dictionary of the translations"""
         for unit in store.units:
             if includefuzzy or not unit.isfuzzy():
                 for location in unit.getlocations():
