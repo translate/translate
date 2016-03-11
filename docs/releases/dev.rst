@@ -67,6 +67,7 @@ Formats and Converters
 - JSON
 
   - Output now includes a trailing newline.
+  - Unit ordering is maintaned (:issue:`3394`).
 
 
 Filters and Checks

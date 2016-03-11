@@ -70,6 +70,12 @@ TODO:
 
 import json
 import os
+try:
+    from collections import OrderedDict
+except ImportError:
+    # Python 2.6 does not have OrderedDict and also can't use it in
+    # json.loads()
+    OrderedDict = None
 import six
 
 from translate.storage import base
@@ -214,7 +220,11 @@ class JsonFile(base.TranslationStore):
         if isinstance(input, bytes):
             input = input.decode('utf-8')
         try:
-            self._file = json.loads(input)
+            if OrderedDict is not None:
+                self._file = json.loads(input, object_pairs_hook=OrderedDict)
+            else:
+                # object_pairs_hook is not present in Python 2.6
+                self._file = json.loads(input)
         except ValueError as e:
             raise base.ParseError(e.message)
 
