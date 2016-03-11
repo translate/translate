@@ -54,6 +54,6 @@ from .strelem import StringElem
 from .parse import parse
 
 
-__all__ = [
+__all__ = (
     'base', 'interfaces', 'general', 'parse', 'StringElem', 'xliff'
-] + all_your_base
+) + all_your_base

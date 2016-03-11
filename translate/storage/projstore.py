@@ -18,12 +18,12 @@
 # along with this program; if not, see <http://www.gnu.org/licenses/>.
 
 import os
-import six
 
+import six
 from lxml import etree
 
 
-__all__ = ['FileExistsInProjectError', 'FileNotInProjectError', 'ProjectStore']
+__all__ = ('FileExistsInProjectError', 'FileNotInProjectError', 'ProjectStore')
 
 
 class FileExistsInProjectError(Exception):

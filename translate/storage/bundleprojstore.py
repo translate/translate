@@ -19,14 +19,15 @@
 
 import os
 import shutil
-import six
 import tempfile
 from zipfile import ZipFile
+
+import six
 
 from translate.storage.projstore import *
 
 
-__all__ = ['BundleProjectStore', 'InvalidBundleError']
+__all__ = ('BundleProjectStore', 'InvalidBundleError')
 
 
 class InvalidBundleError(Exception):

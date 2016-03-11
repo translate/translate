@@ -21,13 +21,14 @@
 """Factory methods to convert supported input files to supported translatable files."""
 
 import os
+
 import six
 
 
 #from translate.convert import prop2po, po2prop, odf2xliff, xliff2odf
 
 
-__all__ = ['converters', 'UnknownExtensionError', 'UnsupportedConversionError']
+__all__ = ('converters', 'UnknownExtensionError', 'UnsupportedConversionError')
 
 # Turn into property to support lazy loading of things?
 converters = {}

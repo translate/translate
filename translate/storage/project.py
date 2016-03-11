@@ -18,13 +18,14 @@
 # along with this program; if not, see <http://www.gnu.org/licenses/>.
 
 import os
+
 import six
 
 from translate.convert import factory as convert_factory
 from translate.storage.projstore import ProjectStore
 
 
-__all__ = ['Project']
+__all__ = ('Project', )
 
 
 def split_extensions(filename):

@@ -19,11 +19,12 @@
 # along with this program; if not, see <http://www.gnu.org/licenses/>.
 #
 
-__all__ = ['get_abs_data_filename']
+__all__ = ('get_abs_data_filename', )
 
 import os
-import six
 import sys
+
+import six
 
 
 def upath(path):
