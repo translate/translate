@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 #
 # Copyright 2002-2007 Zuza Software Foundation
+# Copyright 2016 F Wolff
 #
 # This file is part of translate.
 #
@@ -210,7 +211,7 @@ def parse_msg_comment(parse_state, msg_comment_list, string):
 def parse_multiple_quoted(parse_state, msg_list, msg_comment_list, first_start_pos=0):
     string = parse_quoted(parse_state, first_start_pos)
     while string is not None:
-        if not startswith(string, '"_:'):
+        if msg_comment_list is None or not startswith(string, '"_:'):
             append(msg_list, string)
             string = parse_quoted(parse_state)
         else:
@@ -218,8 +219,6 @@ def parse_multiple_quoted(parse_state, msg_list, msg_comment_list, first_start_p
 
 
 def parse_message(parse_state, start_of_string, start_of_string_len, msg_list, msg_comment_list=None):
-    if msg_comment_list is None:
-        msg_comment_list = []
     if startswith(parse_state.next_line, start_of_string):
         return parse_multiple_quoted(parse_state, msg_list, msg_comment_list, start_of_string_len)
 

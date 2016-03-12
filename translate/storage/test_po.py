@@ -992,3 +992,25 @@ msgstr ""
 "\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\"
 "\\"
 '''
+
+    def test_msgidcomments(self):
+        posource = r'''
+msgid ""
+msgstr ""
+"PO-Revision-Date: 2006-02-09 23:33+0200\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=ISO-8859-1\n"
+"Content-Transfer-Encoding: 8-bit\n"
+
+# the one in the msgid should be "swallowed", but not in msgstr
+msgid ""
+"_: An archaic KDE context comment\n"
+"The actual source text"
+msgstr ""
+"_: I'll be clever and translate in a text editor and duplicate the KDE comment"
+'''
+        posource = posource.decode('utf-8')
+        pofile = self.poparse(posource)
+        unit = pofile.units[1]
+        assert unit.source == u'The actual source text'
+        assert unit.target.startswith(u'_: ')
