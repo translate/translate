@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 #
 # Copyright 2004-2011 Zuza Software Foundation
-# 2013 F Wolff
+# 2013, 2016 F Wolff
 #
 # This file is part of translate.
 #
@@ -1052,7 +1052,7 @@ class StandardChecker(TranslationChecker):
         elif max1 < max2:
             failure_state = max(failure_state, STATE_SERIOUS)
             messages.append(
-                u"Translation requires %s anonymous formatting args, original only %s." %
+                u"Translation requires %s anonymous formatting args, original only %s" %
                     (max2, max1)
             )
         else:
@@ -1069,7 +1069,7 @@ class StandardChecker(TranslationChecker):
         if 0 < len(extra_in_2):
             failure_state = max(failure_state, STATE_SERIOUS)
             messages.append(
-                u"Unknown named placeholders in translation: %s\n" %
+                u"Unknown named placeholders in translation: %s" %
                     ', '.join(extra_in_2)
             )
 
@@ -1088,7 +1088,7 @@ class StandardChecker(TranslationChecker):
         elif failure_state == STATE_SERIOUS:
             raise SeriousFilterFailure(messages)
         else:
-            raise ValueError(u"Something wrong in python brace checks: unreachable state reached.")
+            raise ValueError(u"Something wrong in python brace checks: unreachable state reached")
 
 
     @functional
