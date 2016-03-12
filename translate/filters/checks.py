@@ -442,7 +442,7 @@ class UnitChecker(object):
             if filterfunction is None:
                 continue
 
-            filtermessage = filterfunction.__doc__
+            filtermessage = u""
 
             try:
                 filterresult = self.run_test(filterfunction, unit)
@@ -456,8 +456,12 @@ class UnitChecker(object):
                 else:
                     filterresult = self.errorhandler(functionname, unit.source,
                                                      unit.target, e)
-
             if not filterresult:
+                if not filtermessage:
+                    # Should be quite rare
+                    import pydoc
+                    # Strip out unnecessary whitespace from docstring
+                    filtermessage = pydoc.getdoc(filterfunction)
                 # We test some preconditions that aren't actually a cause for
                 # failure
                 if functionname in self.defaultfilters:
