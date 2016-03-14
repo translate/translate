@@ -1,4 +1,3 @@
-
 .. _pot2po:
 
 pot2po
@@ -8,6 +7,10 @@ Convert a Gettext PO Template file to a PO file and merge in existing
 translations if they are present. A translation memory (compendium) can also be
 used for fuzzy matching. This corresponds to a large extent with the program
 "msgmerge" from the gettext package.
+
+.. note:: This tool also works with translation formats other than Gettext PO,
+   for example ``XLIFF``.
+
 
 .. _pot2po#usage:
 
@@ -35,15 +38,19 @@ Options:
 --errorlevel=ERRORLEVEL
                       show errorlevel as: :doc:`none, message, exception,
                       traceback <option_errorlevel>`
--i INPUT, --input=INPUT   read from INPUT in pot format
+-i INPUT, --input=INPUT   read from INPUT in catkeys, lang, pot, ts, xlf, xliff
+                        formats
 -x EXCLUDE, --exclude=EXCLUDE  exclude names matching EXCLUDE from input paths
--o OUTPUT, --output=OUTPUT     write to OUTPUT in po, pot formats
--t TEMPLATE, --template=TEMPLATE   read from TEMPLATE in po, pot formats (old translations)
+-o OUTPUT, --output=OUTPUT     write to OUTPUT in catkeys, lang, po, pot, ts, xlf,
+                        xliff formats
+-t TEMPLATE, --template=TEMPLATE   read from TEMPLATE in catkeys, lang, po, pot, ts, xlf,
+                        xliff formats (old translations)
 -S, --timestamp      skip conversion if the output file has newer timestamp
 -P, --pot            output PO Templates (.pot) rather than PO files (.po)
 --tm=TM              The file to use as translation memory when fuzzy matching
 -s MIN_SIMILARITY, --similarity=MIN_SIMILARITY   The minimum similarity for inclusion (default: 75%)
 --nofuzzymatching    Disable all fuzzy matching
+
 
 .. _pot2po#examples:
 
@@ -58,16 +65,28 @@ Here we are initialising the PO files in *zu-2.0.2* based on the POT files in
 *pot-2.0.2*.  We are using the old translations in *zu-1.0.1* as templates so
 that we can reuse our existing translations in the new files.
 
+:command:`pot2po` can also be used to update against newer templates an
+existing translation file in a format different than Gettext PO, for example
+``XLIFF``:
+
+::
+
+  pot2po -t af.xlf -i templates.xlf -o updated-af.xlf
+
+
 If the POT files have undergone major reshuffling then you may want to use
 :doc:`pomigrate2` which can now use pot2po as its merging backend.  pomigrate2
 will do its best to migrate your files to the correct locations before merging.
-It will also make make use of a compendium if requested.::
+It will also make make use of a compendium if requested.
+
+::
 
   pot2po --tm=compendium.po --similarity=60 -t xh-old pot xh-new
 
 With this update we are using *compendium.po* as a translations memory (you can
 make use of other files such as TMX, etc).  We will accept any match that
 scores above *60%*.
+
 
 .. _pot2po#merging:
 
@@ -85,6 +104,7 @@ msgmerge's behaviour but we add some extra features with fuzzy matching:
 * Fuzzy matching makes use of the :doc:`/commands/levenshtein_distance`
   algorithm to detect the best matches
 
+
 .. _pot2po#performance:
 
 Performance
@@ -95,10 +115,10 @@ Fuzzy matches are usually of good quality. Installation of the
 will speed up fuzzy matching. Without this a Python based matcher is used which
 is considerably slower.
 
+
 .. _pot2po#bugs:
 
 Bugs
 ====
 
 * :doc:`pomerge` and pot2po should probably become one.
-
