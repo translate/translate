@@ -64,7 +64,6 @@ TODO:
 
 - Handle ``\u`` and other escapes in Unicode
 - Manage data type storage and conversion. True --> "True" --> True
-- Sort the extracted data to the order of the JSON file
 
 """
 
@@ -159,11 +158,14 @@ class JsonFile(base.TranslationStore):
             self.parse(inputfile)
 
     def serialize(self, out):
-        units = {}
+        if OrderedDict is not None:
+            units = OrderedDict()
+        else:
+            units = {}
         for unit in self.unit_iter():
             path = unit.getid().lstrip('.')
             units[path] = unit.target
-        out.write(json.dumps(units, sort_keys=True, separators=(',', ': '),
+        out.write(json.dumps(units, separators=(',', ': '),
                              indent=4, ensure_ascii=False).encode(self.encoding))
         out.write(b'\n')
 
