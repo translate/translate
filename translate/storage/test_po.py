@@ -1009,7 +1009,8 @@ msgid ""
 msgstr ""
 "_: I'll be clever and translate in a text editor and duplicate the KDE comment"
 '''
-        posource = posource.decode('utf-8')
+        if six.PY2:
+            posource = posource.decode('utf-8')
         pofile = self.poparse(posource)
         unit = pofile.units[1]
         assert unit.source == u'The actual source text'
