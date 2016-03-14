@@ -733,6 +733,8 @@ def test_singlequoting():
     lochecker = checks.LibreOfficeChecker()
     assert passes(lochecker.singlequoting, "~Don't import anything", "~Moenie enigiets invoer nie")
 
+
+def test_vietnamese_singlequoting():
     vichecker = checks.StandardChecker(checks.CheckerConfig(targetlanguage="vi"))
     assert passes(vichecker.singlequoting, "Save 'File'", u"Lưu « Tập tin »")
     assert passes(vichecker.singlequoting, "Save `File'", u"Lưu « Tập tin »")
