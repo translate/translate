@@ -8,7 +8,7 @@ from translate.misc import wStringIO
 from translate.storage import po
 
 
-class TestPO2OO:
+class TestPO2OO(object):
 
     def setup_method(self, method):
         warnings.resetwarnings()

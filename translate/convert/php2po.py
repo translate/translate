@@ -33,7 +33,7 @@ from translate.storage import php, po
 logger = logging.getLogger(__name__)
 
 
-class php2po:
+class php2po(object):
     """Convert a .php file to a .po file for handling the translation."""
 
     def convertstore(self, inputstore, duplicatestyle="msgctxt"):

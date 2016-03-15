@@ -4,7 +4,7 @@ from translate.convert import test_convert, ts2po
 from translate.misc import wStringIO
 
 
-class TestTS2PO:
+class TestTS2PO(object):
 
     def ts2po(self, tssource):
         converter = ts2po.ts2po()

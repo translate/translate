@@ -32,7 +32,7 @@ from translate.storage import po
 logger = logging.getLogger(__name__)
 
 
-class json2po:
+class json2po(object):
     """Convert a JSON file to a PO file"""
 
     def convert_store(self, input_store, duplicatestyle="msgctxt"):

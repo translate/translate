@@ -27,7 +27,7 @@ for examples and usage instructions.
 from translate.storage import po, tiki
 
 
-class tiki2po:
+class tiki2po(object):
 
     def __init__(self, includeunused=False):
         """

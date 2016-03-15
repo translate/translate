@@ -27,7 +27,7 @@ for examples and usage instructions.
 from translate.storage import po, xliff
 
 
-class xliff2po:
+class xliff2po(object):
 
     def converttransunit(self, transunit):
         """makes a pounit from the given transunit"""

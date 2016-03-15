@@ -28,7 +28,7 @@ for examples and usage instructions.
 from translate.storage import po
 
 
-class web2py2po:
+class web2py2po(object):
 
     def __init__(self, pofile=None):
         self.mypofile = pofile

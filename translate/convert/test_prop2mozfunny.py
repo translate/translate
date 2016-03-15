@@ -3,7 +3,7 @@ from io import BytesIO
 from translate.convert import prop2mozfunny
 
 
-class TestPO2Prop:
+class TestPO2Prop(object):
 
     def merge2inc(self, incsource, posource):
         """helper that merges po translations to .inc source without requiring files"""

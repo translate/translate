@@ -23,7 +23,7 @@ END:VCALENDAR
 '''.replace("\n", "\r\n")
 
 
-class TestPO2Ical:
+class TestPO2Ical(object):
 
     def po2ical(self, posource):
         """helper that converts po source to .ics source without requiring

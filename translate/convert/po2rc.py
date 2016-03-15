@@ -30,7 +30,7 @@ from translate.convert import convert
 from translate.storage import po, rc
 
 
-class rerc:
+class rerc(object):
 
     def __init__(self, templatefile, charset="utf-8", lang=None, sublang=None):
         self.templatefile = templatefile

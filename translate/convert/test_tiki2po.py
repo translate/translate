@@ -9,7 +9,7 @@ from io import BytesIO
 from translate.convert import test_convert, tiki2po
 
 
-class TestTiki2Po:
+class TestTiki2Po(object):
 
     def test_converttiki_defaults(self):
         inputfile = b"""

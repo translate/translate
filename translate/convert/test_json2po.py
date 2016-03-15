@@ -3,7 +3,7 @@ from translate.misc import wStringIO
 from translate.storage import jsonl10n
 
 
-class TestJson2PO:
+class TestJson2PO(object):
 
     def json2po(self, jsonsource, template=None, filter=None):
         """helper that converts json source to po source without requiring files"""

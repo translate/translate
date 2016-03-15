@@ -5,7 +5,7 @@ from translate.misc import wStringIO
 from translate.storage import po, properties
 
 
-class TestProp2PO:
+class TestProp2PO(object):
 
     def prop2po(self, propsource, proptemplate=None, personality="java"):
         """helper that converts .properties source to po source without requiring files"""

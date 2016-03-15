@@ -67,7 +67,7 @@ def applytranslation(key, propunit, inunit, mixedkeys):
     return value
 
 
-class reprop:
+class reprop(object):
 
     def __init__(self, templatefile, inputstore, personality, encoding=None,
                  remove_untranslated=False):

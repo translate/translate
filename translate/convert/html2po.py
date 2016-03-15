@@ -28,7 +28,7 @@ for examples and usage instructions.
 from translate.storage import html, po
 
 
-class html2po:
+class html2po(object):
 
     def convertfile(self, inputfile, filename, includeuntagged=False,
                     duplicatestyle="msgctxt", keepcomments=False):

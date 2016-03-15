@@ -29,7 +29,7 @@ from translate.convert import convert
 from translate.storage import factory, resx
 
 
-class po2resx:
+class po2resx(object):
     def __init__(self, templatefile, inputstore):
         self.templatefile = templatefile
         self.templatestore = resx.RESXFile(templatefile)

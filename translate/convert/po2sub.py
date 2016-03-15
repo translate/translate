@@ -28,7 +28,7 @@ from translate.convert import convert
 from translate.storage import factory
 
 
-class resub:
+class resub(object):
 
     def __init__(self, templatefile, inputstore):
         from translate.storage import subtitles

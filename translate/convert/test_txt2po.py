@@ -3,7 +3,7 @@ from translate.misc import wStringIO
 from translate.storage import txt
 
 
-class TestTxt2PO:
+class TestTxt2PO(object):
 
     def txt2po(self, txtsource, template=None):
         """helper that converts txt source to po source without requiring files"""
@@ -58,7 +58,7 @@ helped to bridge the digital divide to a limited extent.'''
         assert str(pounit.source) == txtexpected
 
 
-class TestDoku2po:
+class TestDoku2po(object):
 
     def doku2po(self, txtsource, template=None):
         """helper that converts dokuwiki source to po source without requiring files."""

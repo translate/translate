@@ -31,7 +31,7 @@ from translate.misc import wStringIO
 from translate.storage import po, tmx
 
 
-class po2tmx:
+class po2tmx(object):
 
     def cleancomments(self, comments, comment_type=None):
         """Removes the comment marks from the PO strings."""
@@ -74,7 +74,7 @@ def convertpo(inputfile, outputfile, templatefile, sourcelanguage='en',
     return 1
 
 
-class tmxmultifile:
+class tmxmultifile(object):
 
     def __init__(self, filename, mode=None):
         """initialises tmxmultifile from a seekable inputfile or writable outputfile"""

@@ -7,7 +7,7 @@ from translate.misc.xml_helpers import XML_NS
 from translate.storage import tmx
 
 
-class TestPO2TMX:
+class TestPO2TMX(object):
 
     def po2tmx(self, posource, sourcelanguage='en', targetlanguage='af',
                comment=None):

@@ -5,7 +5,7 @@ from translate.misc import wStringIO
 from translate.storage import mozilla_lang as lang
 
 
-class TestLang2PO:
+class TestLang2PO(object):
 
     def lang2po(self, source):
         """helper that converts .lang source to po source without requiring files"""

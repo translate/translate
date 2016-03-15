@@ -1,7 +1,7 @@
 from translate.convert import po2moz, test_convert
 
 
-class TestPO2Moz:
+class TestPO2Moz(object):
     pass
 
 

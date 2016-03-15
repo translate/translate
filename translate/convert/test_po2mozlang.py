@@ -5,7 +5,7 @@ from translate.misc import wStringIO
 from translate.storage import po
 
 
-class TestPO2Lang:
+class TestPO2Lang(object):
 
     def po2lang(self, posource):
         """helper that converts po source to .lang source without requiring files"""

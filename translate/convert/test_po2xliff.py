@@ -3,7 +3,7 @@ from translate.misc.xml_helpers import XML_NS, getText
 from translate.storage import po, poxliff
 
 
-class TestPO2XLIFF:
+class TestPO2XLIFF(object):
 
     def po2xliff(self, posource, sourcelanguage='en', targetlanguage=None):
         """helper that converts po source to xliff source without requiring files"""

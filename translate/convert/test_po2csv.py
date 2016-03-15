@@ -4,7 +4,7 @@ from translate.storage import csvl10n, po
 from translate.storage.test_base import first_translatable, headerless_len
 
 
-class TestPO2CSV:
+class TestPO2CSV(object):
 
     def po2csv(self, posource):
         """helper that converts po source to csv source without requiring files"""

@@ -32,7 +32,7 @@ from translate.storage import po, rc
 logger = logging.getLogger(__name__)
 
 
-class rc2po:
+class rc2po(object):
     """Convert a .rc file to a .po file for handling the translation."""
 
     def convert_store(self, input_store, duplicatestyle="msgctxt"):

@@ -4,7 +4,7 @@ from translate.convert import po2txt, test_convert
 from translate.misc import wStringIO
 
 
-class TestPO2Txt:
+class TestPO2Txt(object):
 
     def po2txt(self, posource, txttemplate=None):
         """helper that converts po source to txt source without requiring files"""

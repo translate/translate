@@ -28,7 +28,7 @@ from translate.convert import convert
 from translate.storage import mozilla_lang, po
 
 
-class po2lang:
+class po2lang(object):
 
     def __init__(self, duplicatestyle="msgctxt", mark_active=True):
         self.duplicatestyle = duplicatestyle

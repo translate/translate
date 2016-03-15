@@ -28,7 +28,7 @@ from translate.convert import convert
 from translate.storage import factory
 
 
-class reini:
+class reini(object):
 
     def __init__(self, templatefile, inputstore, dialect="default"):
         from translate.storage import ini

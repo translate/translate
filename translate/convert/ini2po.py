@@ -32,7 +32,7 @@ from translate.storage import po
 logger = logging.getLogger(__name__)
 
 
-class ini2po:
+class ini2po(object):
     """Convert a .ini file to a .po file for handling the translation..."""
 
     def convert_store(self, input_store, duplicatestyle="msgctxt"):

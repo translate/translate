@@ -34,7 +34,7 @@ from translate.storage import php, po
 eol = "\n"
 
 
-class rephp:
+class rephp(object):
 
     def __init__(self, templatefile, inputstore):
         self.templatefile = templatefile

@@ -28,7 +28,7 @@ from translate.convert import convert
 from translate.storage import factory, jsonl10n
 
 
-class rejson:
+class rejson(object):
 
     def __init__(self, templatefile, inputstore):
         self.templatefile = templatefile

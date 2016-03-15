@@ -31,7 +31,7 @@ from translate.misc import wStringIO
 from translate.storage import po, wordfast
 
 
-class po2wordfast:
+class po2wordfast(object):
 
     def convertfiles(self, inputfile, wffile, sourcelanguage='en', targetlanguage=None):
         """converts a .po file (possibly many) to a Wordfast TM file"""
@@ -54,7 +54,7 @@ def convertpo(inputfile, outputfile, templatefile, sourcelanguage='en', targetla
     return 1
 
 
-class wfmultifile:
+class wfmultifile(object):
 
     def __init__(self, filename, mode=None):
         """initialises wfmultifile from a seekable inputfile or writable outputfile"""

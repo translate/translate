@@ -11,7 +11,7 @@ from translate.storage import po
 importorskip("aeidon")
 
 
-class TestPO2Sub:
+class TestPO2Sub(object):
 
     def po2sub(self, posource):
         """helper that converts po source to subtitle source without requiring

@@ -192,7 +192,7 @@ def copytemplate(inputfile, outputfile, templatefile, **kwargs):
     return True
 
 
-class Replacer:
+class Replacer(object):
     """An object that knows how to replace strings in files."""
 
     def __init__(self, searchstring, replacestring):

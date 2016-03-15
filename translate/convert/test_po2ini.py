@@ -12,7 +12,7 @@ from translate.storage import po
 importorskip("iniparse")
 
 
-class TestPO2Ini:
+class TestPO2Ini(object):
 
     def po2ini(self, posource):
         """helper that converts po source to .ini source without requiring files"""

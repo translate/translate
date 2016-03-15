@@ -32,7 +32,7 @@ from translate.storage import ical, po
 logger = logging.getLogger(__name__)
 
 
-class ical2po:
+class ical2po(object):
     """convert a iCal file to a .po file for handling the translation..."""
 
     def convert_store(self, input_store, duplicatestyle="msgctxt"):

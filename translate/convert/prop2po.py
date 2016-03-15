@@ -34,7 +34,7 @@ from translate.storage import po, properties
 logger = logging.getLogger(__name__)
 
 
-class prop2po:
+class prop2po(object):
     """convert a .properties file to a .po file for handling the
     translation."""
 
