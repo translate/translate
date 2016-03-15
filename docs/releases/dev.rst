@@ -67,7 +67,7 @@ Formats and Converters
 - JSON
 
   - Output now includes a trailing newline.
-  - Unit ordering is maintanned (:issue:`3394`).
+  - Unit ordering is maintained (:issue:`3394`).
 
 - TermBase eXchange (TBX)
 
