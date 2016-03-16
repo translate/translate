@@ -62,7 +62,9 @@ xliff.xlifffile.__eq__ = xliff___eq__
 
 
 def print_diff(store1, store2):
-    for line in difflib.unified_diff(bytes(store1).split(b'\n'), bytes(store2).split(b'\n')):
+    store1_lines = bytes(store1).decode(store1.encoding).split('\n')
+    store2_lines = bytes(store2).decode(store2.encoding).split('\n')
+    for line in difflib.unified_diff(store1_lines, store2_lines):
         print(line)
 
 SOURCE_ODF = u'test_2.odt'
@@ -94,6 +96,8 @@ def is_content_file(filename):
 
 
 class ODF(object):
+
+    encoding = 'utf-8'
 
     def __init__(self, filename):
         self.odf = zipfile.ZipFile(filename)
