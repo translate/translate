@@ -740,6 +740,22 @@ def test_vietnamese_singlequoting():
     assert passes(vichecker.singlequoting, "Save `File'", u"Lưu « Tập tin »")
 
 
+@mark.xfail(reason="Bug #3408")
+def test_persian_singlequoting_quirks():
+    """Test some quirks with single and double quote checks for Persian."""
+    checker = checks.StandardChecker(checks.CheckerConfig(targetlanguage="fa"))
+
+    # With single quote check.
+    assert fails(checker.singlequoting, "Path: '%S'", u"مسیر: '%S'‎")
+    assert fails(checker.singlequoting, "Path: '%S'", u"مسیر: \"%S\"‎")
+    assert passes(checker.singlequoting, "Path: '%S'", u"مسیر: «%S»")
+
+    # With double quote check.
+    assert passes(checker.doublequoting, "Path: '%S'", u"مسیر: '%S'‎")
+    assert passes(checker.doublequoting, "Path: '%S'", u"مسیر: \"%S\"‎")
+    assert passes(checker.doublequoting, "Path: '%S'", u"مسیر: «%S»")
+
+
 def test_persian_quoting():
     """Test single and double quoting for Persian."""
     checker = checks.StandardChecker(checks.CheckerConfig(targetlanguage="fa"))
