@@ -740,6 +740,48 @@ def test_vietnamese_singlequoting():
     assert passes(vichecker.singlequoting, "Save `File'", u"Lưu « Tập tin »")
 
 
+def test_persian_quoting():
+    """Test single and double quoting for Persian."""
+    checker = checks.StandardChecker(checks.CheckerConfig(targetlanguage="fa"))
+
+    # Just double quoting.
+    assert fails(checker.doublequoting, "Path: \"%S\"", u"مسیر: '%S'‎")
+    assert fails(checker.doublequoting, "Path: \"%S\"", u"مسیر: \"%S\"‎")
+    assert passes(checker.doublequoting, "Path: \"%S\"", u"مسیر: «%S»")
+
+    # Just XML quoting.
+    assert passes(checker.singlequoting, "<area shape=\"circle\">", u"<area shape=\"circle\">")
+    assert passes(checker.doublequoting, "<area shape=\"circle\">", u"<area shape=\"circle\">")
+
+    # XML quoting and double quoting.
+    assert passes(checker.singlequoting, "The \"coords\" attribute of the <area shape=\"circle\"> tag has a negative radius.", u"مشخصهٔ «coords» برچسب ‪<area shape=\"circle\">‬ دارای «radius» منفی است.")
+    assert passes(checker.doublequoting, "The \"coords\" attribute of the <area shape=\"circle\"> tag has a negative \"radius\".", u"مشخصهٔ «coords» برچسب ‪<area shape=\"circle\">‬ دارای «radius» منفی است.")
+
+    # Single quotes with variables in source fails both single and double quote
+    # checks.
+    assert fails(checker.singlequoting, "'%1$S' is not a directory", u"'%1$S' یک شاخه نیست")
+    # TODO the following should fail.
+    assert passes(checker.singlequoting, "'%1$S' is not a directory", u"\"%1$S\" یک شاخه نیست")
+    assert fails(checker.doublequoting, "'%1$S' is not a directory", u"'%1$S' یک شاخه نیست")
+    assert fails(checker.doublequoting, "'%1$S' is not a directory", u"\"%1$S\" یک شاخه نیست")
+    # But works when using the right quoting in translation.
+    assert passes(checker.singlequoting, "'%1$S' is not a directory", u"«%1$S» یک شاخه نیست")
+    assert passes(checker.doublequoting, "'%1$S' is not a directory", u"«%1$S» یک شاخه نیست")
+
+    # Mixing single quotes and and single quotes that shouldn't be translated.
+    assert fails(checker.singlequoting, "Can't find property '%S'", u"خاصیت '%S' یافت نشد")
+    assert passes(checker.singlequoting, "Can't find property '%S'", u"خاصیت «%S» یافت نشد")
+
+    # Mixed single quotes do not trigger double quote check.
+    assert passes(checker.doublequoting, "Can't find property '%S'", u"خاصیت '%S' یافت نشد")
+    # TODO the following should pass.
+    assert fails(checker.doublequoting, "Can't find property '%S'", u"خاصیت «%S» یافت نشد")
+
+    # Single quotes that are not errors pass.
+    assert passes(checker.singlequoting, "Request the version of a user's client.", u"درخواست نسخه کلاینت کاربر.")
+    assert passes(checker.doublequoting, "Request the version of a user's client.", u"درخواست نسخه کلاینت کاربر.")
+
+
 def test_simplecaps():
     """tests simple caps"""
     # Simple caps is a very vauge test so the checks here are mostly for obviously fixable problem
