@@ -741,8 +741,8 @@ def test_vietnamese_singlequoting():
 
 
 @mark.xfail(reason="Bug #3408")
-def test_persian_singlequoting_quirks():
-    """Test some quirks with single and double quote checks for Persian."""
+def test_persian_single_and_double_quote_fail_at_the_same_time():
+    """Test Persian single and double quote failures in string with single quotes."""
     checker = checks.StandardChecker(checks.CheckerConfig(targetlanguage="fa"))
 
     # With single quote check.
