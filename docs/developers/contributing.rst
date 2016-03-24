@@ -5,9 +5,8 @@ Contributing
 ************
 
 We could use your help.  If you are interesting in contributing then please
-join us on IRC on `#pootle-dev <irc://irc.freenode.net/#pootle-dev>`_ and on
-the `translate-devel <mailto:translate-devel@lists.sourceforge.net>`_ mailing
-list.
+join us on our `channel <https://gitter.im/translate/pootle>`_ or on the
+`translate-devel <mailto:translate-devel@lists.sourceforge.net>`_ mailing list.
 
 Here are some idea of how you can contribute
 
