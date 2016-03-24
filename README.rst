@@ -21,10 +21,6 @@ Translate Toolkit
     :alt: Supported Python versions
     :target: https://pypi.python.org/pypi/translate-toolkit/
 
-.. image:: https://pypip.in/status/translate-toolkit/badge.png
-    :alt: Development Status
-    :target: https://pypi.python.org/pypi/translate-toolkit/
-
 .. image:: https://pypip.in/license/translate-toolkit/badge.svg
     :target: https://pypi.python.org/pypi/translate-toolkit/
     :alt: License
