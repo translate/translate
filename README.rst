@@ -1,6 +1,10 @@
 Translate Toolkit
 -----------------
 
+.. image:: https://img.shields.io/gitter/room/translate/pootle.svg?style=flat-square
+   :alt: Join the chat at https://gitter.im/translate/pootle
+   :target: https://gitter.im/translate/pootle
+
 .. image:: https://img.shields.io/travis/translate/translate/master.svg?style=flat-square
     :alt: Build Status
     :target: https://travis-ci.org/translate/translate
