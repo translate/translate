@@ -91,10 +91,8 @@ Here are some ideas to get you going:
 * Add more features to help our formats :doc:`conform to the standards
   </formats/conformance>`
 
-You will definitely need to be on the `Development
-<https://lists.sourceforge.net/lists/listinfo/translate-devel>`_ and probably
-on the `Subversion checkin
-<https://lists.sourceforge.net/lists/listinfo/translate-cvs>`_ lists.
+You will definitely need to be on the `Development channel
+<https://gitter.im/translate/dev>`_
 
 Now is the time to familiarise yourself with the :doc:`developers guide
 <developers>`.
