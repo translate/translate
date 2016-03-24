@@ -9,19 +9,19 @@ Translate Toolkit
     :alt: Build Status
     :target: https://travis-ci.org/translate/translate
 
-.. image:: https://coveralls.io/repos/translate/translate/badge.png?branch=master
+.. image:: https://img.shields.io/coveralls/translate/translate/master.svg?style=flat-square
     :alt: Coverage Status
     :target: https://coveralls.io/r/translate/translate?branch=master
 
-.. image:: https://pypip.in/download/translate-toolkit/badge.png
+.. image:: https://img.shields.io/pypi/v/translate-toolkit.svg?style=flat-square
     :alt: Downloads
     :target: https://pypi.python.org/pypi/translate-toolkit/
 
-.. image:: https://pypip.in/py_versions/translate-toolkit/badge.png
+.. image:: https://img.shields.io/pypi/pyversions/translate-toolkit.svg?style=flat-square
     :alt: Supported Python versions
     :target: https://pypi.python.org/pypi/translate-toolkit/
 
-.. image:: https://pypip.in/license/translate-toolkit/badge.svg
+.. image:: https://img.shields.io/pypi/l/translate-toolkit.svg?style=flat-square
     :target: https://pypi.python.org/pypi/translate-toolkit/
     :alt: License
 
