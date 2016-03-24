@@ -1,7 +1,7 @@
 Translate Toolkit
 -----------------
 
-.. image:: https://travis-ci.org/translate/translate.png
+.. image:: https://img.shields.io/travis/translate/translate/master.svg?style=flat-square
     :alt: Build Status
     :target: https://travis-ci.org/translate/translate
 
