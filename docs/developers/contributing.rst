@@ -5,8 +5,7 @@ Contributing
 ************
 
 We could use your help.  If you are interesting in contributing then please
-join us on our `channel <https://gitter.im/translate/pootle>`_ or on the
-`translate-devel <mailto:translate-devel@lists.sourceforge.net>`_ mailing list.
+join us on our `development channel <https://gitter.im/translate/pootle>`_.
 
 Here are some idea of how you can contribute
 
