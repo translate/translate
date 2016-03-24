@@ -5,7 +5,8 @@ Contributing
 ************
 
 We could use your help.  If you are interesting in contributing then please
-join us on our `development channel <https://gitter.im/translate/pootle>`_.
+join us on our `Gitter development channel
+<https://gitter.im/translate/pootle>`_.
 
 Here are some idea of how you can contribute
 
