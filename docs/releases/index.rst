@@ -3,9 +3,7 @@
 Release Notes
 *************
 
-The following are release notes used on `PyPI 
-<https://pypi.python.org/pypi/translate-toolkit>`_ and mailing lists for
-Translate Toolkit releases.
+The following are release notes for Translate Toolkit:
 
 .. toctree::
    :maxdepth: 1
