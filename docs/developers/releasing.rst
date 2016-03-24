@@ -317,7 +317,7 @@ Let people know that there is a new version:
    - translate-pootle@lists.sourceforge.net
    - translate-devel@lists.sourceforge.net
 
-#. Adjust the pootle gitter channel topic. Use ``/topic [new topic]`` to change
+#. Adjust the Pootle gitter channel topic. Use ``/topic [new topic]`` to change
    the topic.
 
 #. Adjust the #pootle channel notice. Use ``/topic [new topic]`` to change the
