@@ -40,7 +40,7 @@ msgstr "Du texte simple"
     "bar": "bar",
     "baz": "baz"
 }'''
-        input_po =  '''
+        input_po = '''
 #: .foo
 msgid "foo"
 msgstr "oof"
