@@ -234,7 +234,7 @@ Some other text
         unit = self.singleelement(pofile)
         assert unit.source == "Some text \n \nSome other text"
 
-    def test_mulitline_closing_quotes(self):
+    def test_multiline_closing_quotes(self):
         """test that we support various styles and spaces after closing quotes on multiline entities"""
         dtdsource = '''
 <!ENTITY pref.plural '<span>opsies</span><span
