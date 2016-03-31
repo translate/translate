@@ -484,13 +484,6 @@ class dtdunit(base.TranslationUnit):
                         self.inentity = False
                         break
 
-        # uncomment this line to debug processing
-        if 0:
-            for attr in dir(self):
-                r = repr(getattr(self, attr))
-                if len(r) > 60:
-                    r = r[:57] + "..."
-                self.comments.append(("comment", "self.%s = %s" % (attr, r)))
         return linesprocessed
 
     def __str__(self):
