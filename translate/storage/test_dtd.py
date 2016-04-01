@@ -267,6 +267,35 @@ class TestDTD(test_monolingual.TestMonolingualStore):
         print(dtdsource)
         assert dtdsource == dtdregen
 
+        dtdsource = """<!ENTITY malformedURI.longDesc "
+<ul>
+  <li>Web addresses are usually written like
+    <strong>http://www.example.com/</strong></li>
+  <li>Make sure that youre using forward slashes (i.e.
+    <strong>/</strong>).</li>
+</ul>
+">
+"""
+        dtdregen = self.dtdregen(dtdsource)
+        assert dtdsource == dtdregen
+
+        dtdsource = """<!ENTITY certerror.whatShouldIDo.badStsCertExplanation "This site uses HTTP
+Strict Transport Security (HSTS) to specify that &brandShortName; only connect
+to it securely. As a result, it is not possible to add an exception for this
+certificate.">
+"""
+        dtdregen = self.dtdregen(dtdsource)
+        print(dtdregen)
+        print(dtdsource)
+        assert dtdsource == dtdregen
+
+        dtdsource = """<!ENTITY pref.categories.overwrite "A category already exists with that name. \\n Do you want to overwrite it?">
+"""
+        dtdregen = self.dtdregen(dtdsource)
+        print(dtdregen)
+        print(dtdsource)
+        assert dtdsource == dtdregen
+
     def test_conflate_comments(self):
         """Tests that comments don't run onto the same line"""
         dtdsource = '<!-- test comments -->\n<!-- getting conflated -->\n<!ENTITY sample.txt "hello">\n'
