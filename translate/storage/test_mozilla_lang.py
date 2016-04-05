@@ -1,5 +1,7 @@
 # -*- coding: utf-8 -*-
 
+import pytest
+
 from translate.storage import mozilla_lang, test_base
 
 
@@ -96,3 +98,21 @@ class TestMozLangFile(test_base.TestTranslationStore):
         assert store2.units[0].target == ""
         assert store2.units[1].source == "Source2"
         assert store2.units[1].target == ""
+
+    @pytest.mark.parametrize(
+        "ok, target, istranslated", [
+            ("", "", False),  # Untranslated, no {ok}
+            (" ", "Source ", True),  # Excess whitespace, translated
+            (" {ok}", "Source", True),  # Valid {ok}
+            (" {ok} ", "Source", True),  # {ok} trailing WS
+            ("{ok}", "Source", True),  # {ok} no WS
+        ])
+    def test_ok_translations(self, ok, target, istranslated):
+        """Various renderings of {ok} to ensure that we parse it correctly"""
+        lang = (";Source\n"
+                "Source%s\n")
+        store = self.StoreClass.parsestring(lang % ok)
+        unit = store.units[0]
+        assert unit.source == "Source"
+        assert unit.target == target
+        assert unit.istranslated() == istranslated

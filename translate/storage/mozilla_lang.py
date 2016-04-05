@@ -88,7 +88,10 @@ class LangStore(txt.TxtFile):
 
             if readyTrans:  # If we are expecting a translation, set the target
                 if line != u.source:
-                    u.target = line.replace(" {ok}", "")
+                    if line.rstrip().endswith("{ok}"):
+                        u.target = line.rstrip()[:-4].rstrip()
+                    else:
+                        u.target = line
                 else:
                     u.target = ""
                 readyTrans = False  # We already have our translation
