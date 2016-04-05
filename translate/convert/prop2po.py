@@ -242,7 +242,7 @@ class prop2po(object):
         target_unit = po.pounit(encoding="UTF-8")
         return self.mixer.mix_units(label_unit, accesskey_unit, target_unit)
 
-    def convertpropunit(self, store, unit, commenttype, mixbucket="dtd"):
+    def convertpropunit(self, store, unit, commenttype, mixbucket="properties"):
         """Converts a unit from store to a po unit, keeping track of mixed
         names along the way.
 
