@@ -200,7 +200,7 @@ msgstr "Lig en Kleur"
         assert '"Lig en Kleur"' in dtdsource
         assert '"L"' in dtdsource
 
-    def test_accesskey_and_amp_case_no_amp(self):
+    def test_accesskey_and_amp_source_no_amp_in_target(self):
         """tests that accesskey and &amp; can work together
 
         If present we use the target accesskey"""
@@ -234,6 +234,24 @@ msgstr "Lig & &Kleur"
         print(dtdsource)
         assert '"Lig &amp; Kleur"' in dtdsource
         assert '"K"' in dtdsource
+
+    def test_accesskey_and_amp_case_amp_no_accesskey(self):
+        """tests that accesskey and &amp; can work together
+
+        If present both & (and) and a no marker then we use the correct source
+        accesskey"""
+        po_snippet = r'''#: key.label
+#: key.accesskey
+msgid "Colour & &Light"
+msgstr "Lig & Kleur"
+'''
+        dtd_snippet = r'''<!ENTITY key.accesskey      "L">
+<!ENTITY key.label       "Colour &amp; Light">'''
+        dtdfile = self.merge2dtd(dtd_snippet, po_snippet)
+        dtdsource = bytes(dtdfile).decode('utf-8')
+        print(dtdsource)
+        assert '"Lig &amp; Kleur"' in dtdsource
+        assert '"L"' in dtdsource
 
     def test_entities_two(self):
         """test the error ouput when we find two entities"""
