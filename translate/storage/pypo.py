@@ -353,7 +353,7 @@ class pounit(pocommon.pounit):
             commentlist = self.automaticcomments
             linestart = "#. "
         text = text.split("\n")
-        newcomments = [linestart + line + "\n" for line in text]
+        newcomments = [linestart + line[:-1] + line[-1:].replace("\\", "\\ ") + "\n" for line in text]
         if position == "append":
             newcomments = commentlist + newcomments
         elif position == "prepend":
