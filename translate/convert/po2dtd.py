@@ -140,7 +140,8 @@ class po2dtd(object):
             unquoted = None
         else:
             unquoted = inputunit.source
-        dtdunit.source = dtd.removeinvalidamps(dtdunit.entity, unquoted)
+        #dtdunit.source = dtd.removeinvalidamps(dtdunit.entity, unquoted)
+        dtdunit.source = unquoted
 
     def convertunit(self, inputunit):
         dtdunit = dtd.dtdunit()

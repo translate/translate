@@ -222,10 +222,13 @@ msgstr "Lig en &Kleur"
 
         If present both & (and) and a marker then we use the correct source
         accesskey"""
+        ##: charsetMenuMore4.label charsetMenuMore4.accesskey
+        #msgid "&SE & SW Asian"
+        #msgstr "SE & SW এছীয়ান"
         po_snippet = r'''#: key.label
 #: key.accesskey
 msgid "Colour & &Light"
-msgstr "Lig & &Kleur"
+msgstr "Lig & Kleur"
 '''
         dtd_snippet = r'''<!ENTITY key.accesskey      "L">
 <!ENTITY key.label       "Colour &amp; Light">'''
