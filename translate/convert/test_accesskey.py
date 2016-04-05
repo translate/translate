@@ -35,6 +35,12 @@ def test_get_label_and_accesskey():
     assert accesskey.extract(u"_File", u"_") == (u"File", u"F")
 
 
+def test_extract_bad_accesskeys():
+    """Test what we do in situations that are bad fof accesskeys"""
+    # Space is not valid accesskey so we don't extract anything
+    assert accesskey.extract(u"More& Whitespace") == (u"More& Whitespace", u"")
+
+
 def test_ignore_entities():
     """test that we don't get confused with entities and a & access key
     marker"""

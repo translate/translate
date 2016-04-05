@@ -135,8 +135,10 @@ def extract(string, accesskey_marker=DEFAULT_ACCESSKEY_MARKER):
             if (accesskey_marker == '&' and
                 XMLEntityPlaceable.regex.match(string[marker_pos-1:])):
                 continue
-            label = string[:marker_pos-1] + string[marker_pos:]
-            if string[marker_pos] != " ":  # FIXME weak filtering
+            # FIXME This is weak filtering, we should have a richer set of
+            # invalid accesskeys, not just space.
+            if string[marker_pos] != " ":
+                label = string[:marker_pos-1] + string[marker_pos:]
                 accesskey = string[marker_pos]
     return label, accesskey
 
