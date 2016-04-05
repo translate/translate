@@ -168,6 +168,7 @@ class reprop(object):
                 unit = self.inputstore.locationindex[key]
                 if not unit.istranslated() and bool(unit.source) and self.remove_untranslated:
                     returnline = u""
+                    self.inecho = False
                 else:
                     if unit.isfuzzy() and not self.includefuzzy or len(unit.target) == 0:
                         value = unit.source

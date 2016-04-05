@@ -236,10 +236,28 @@ msgstr "translated"
     def test_merging_untranslated_multiline(self):
         """check merging untranslated entries with multiline values"""
         posource = '''#: prop\nmsgid "value1 value2"\nmsgstr ""\n'''
-        proptemplate = '''prop = value1 \
+        proptemplate = '''prop = value1 \\
     value2
 '''
         propexpected = '''prop = value1 value2\n'''
+        propfile = self.merge2prop(proptemplate, posource)
+        print(propfile)
+        assert propfile == propexpected  # We use the existing values
+        propfile = self.merge2prop(proptemplate, posource, remove_untranslated=True)
+        print(propfile)
+        assert propfile == ''  # We drop the key
+
+    def test_merging_untranslated_multiline2(self):
+        """check merging untranslated entries with multiline values"""
+        posource = '''
+#: legal_text_and_links3
+msgid "By using {{clientShortname}} you agree to the {{terms_of_use}} and {{privacy_notice}}."
+msgstr ""
+'''
+        proptemplate = r'''legal_text_and_links3=By using {{clientShortname}} you agree to the {{terms_of_use}} \\
+  and {{privacy_notice}}.
+'''
+        propexpected = '''legal_text_and_links3=By using {{clientShortname}} you agree to the {{terms_of_use}} and {{privacy_notice}}.\n'''
         propfile = self.merge2prop(proptemplate, posource)
         print(propfile)
         assert propfile == propexpected  # We use the existing values
