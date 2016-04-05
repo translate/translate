@@ -121,20 +121,21 @@ def build_xpi(l10nbase, srcdir, outputdir, langs, product, delete_dest=False,
 
     # Create a temporary directory for building
     builddir = mkdtemp('', 'buildxpi')
+    mergedir = mkdtemp('', 'mergexpi')
 
     try:
         # Create new .mozconfig
         content = """
 ac_add_options --disable-compile-environment
-ac_add_options --disable-gstreamer
-ac_add_options --disable-ogg
-ac_add_options --disable-opus
-ac_add_options --disable-webrtc
-ac_add_options --disable-wave
-ac_add_options --disable-webm
-ac_add_options --disable-alsa
-ac_add_options --disable-pulseaudio
-ac_add_options --disable-libjpeg-turbo
+#ac_add_options --disable-gstreamer
+#ac_add_options --disable-ogg
+#ac_add_options --disable-opus
+#ac_add_options --disable-webrtc
+#ac_add_options --disable-wave
+#ac_add_options --disable-webm
+#ac_add_options --disable-alsa
+#ac_add_options --disable-pulseaudio
+#ac_add_options --disable-libjpeg-turbo
 mk_add_options MOZ_OBJDIR=%(builddir)s
 ac_add_options --with-l10n-base=%(l10nbase)s
 ac_add_options --enable-application=%(product)s
@@ -164,6 +165,7 @@ ac_add_options --enable-application=%(product)s
                      "check logs, fix errors, and try again")
 
         os.chdir(builddir)
+        # Work around https://bugzilla.mozilla.org/show_bug.cgi?id=1180065
         run(['make', '-C', 'config'],
             fail_msg="Unable to successfully configure build for XPI!")
 
@@ -173,9 +175,16 @@ ac_add_options --enable-application=%(product)s
                 version = fh.read().strip()
             version = re.sub(r'(^[0-9]*\.[0-9]*).*', r'\1.*', version)
             moz_app_version = ['MOZ_APP_MAXVERSION=%s' % version]
-        run(['make', '-C', os.path.join(product, 'locales')] +
-            ['langpack-%s' % lang for lang in langs] + moz_app_version,
-            fail_msg="Unable to successfully build XPI!")
+            locale_mergedir = ['LOCALE_MERGEDIR=$(pwd)/merge-%s']
+        # make merge-cy LOCALE_MERGEDIR=$PWD/merge-cy
+        # make langpack-cy LOCALE_MERGEDIR=$PWD/merge-cy
+        for lang in langs:
+            run(['make', '-C', os.path.join(product, 'locales')] +
+                ['merge-%s' % lang] + ['LOCALE_MERGEDIR=%s/merge-%s' % (mergedir, lang)] + moz_app_version,
+                fail_msg="Unable to merge XPI!")
+            run(['make', '-C', os.path.join(product, 'locales')] +
+                ['langpack-%s' % lang] + ['LOCALE_MERGEDIR=%s/merge-%s' % (mergedir, lang)] + moz_app_version,
+                fail_msg="Unable to successfully build XPI!")
 
         destfiles = []
         for lang in langs:
@@ -201,6 +210,7 @@ ac_add_options --enable-application=%(product)s
         os.chdir(olddir)
         # Clean-up
         rmtree(builddir)
+        rmtree(mergedir)
         if backup_name:
             os.remove(MOZCONFIG)
             os.rename(backup_name, MOZCONFIG)
