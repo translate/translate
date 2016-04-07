@@ -24,13 +24,15 @@ tried to credit them wherever possible (sorry if somehow we missed you).
 1.14.0 vs 1.14.0-rc1
 ====================
 
-- Support for new XXX format
+- Dropped support for Python 2.6.
+- Dropped ``translate.misc.dictutils.ordereddict``.
 
 
 Major changes
 =============
 
 - Python 3 compatibility
+- Dropped support for Python 2.6
 - Translate Toolkit can now easily be installed on Windows
 - Changes in storage API to expose a more standardized API
 
@@ -111,6 +113,8 @@ Setup
 API changes
 -----------
 
+- Dropped ``translate.misc.dictutils.ordereddict`` in favor of
+  ``collections.OrderedDict``.
 - Added encoding handling in base ``TranslationStore`` class exposing a single
   API.
 - Encoding detection in ``TranslationStore`` has been improved.
@@ -129,6 +133,9 @@ API deprecation
 General
 -------
 
+- Dropped support for Python 2.6 since it is no longer supported by the Python
+  Foundation. Sticking to it was making us difficult to maintain code while we
+  move to Python 3.
 - Misc docs cleanups.
 - Added more tests.
 - Legacy, deprecated and unused code cleansing:

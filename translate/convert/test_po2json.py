@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 import sys
-import pytest
 
 from translate.convert import po2json
 from translate.misc import wStringIO
@@ -32,8 +31,6 @@ msgstr "Du texte simple"
         json_out = self.po2json(input_po, json_template)
         assert json_out == expected_json
 
-    @pytest.mark.skipif(sys.version_info < (2, 7),
-                        reason="json.loads() can't order in Python 2.6")
     def test_ordering_serialize(self):
         json_template = '''{
     "foo": "foo",

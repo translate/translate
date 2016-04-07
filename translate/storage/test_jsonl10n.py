@@ -4,8 +4,6 @@ import sys
 from io import BytesIO
 from translate.storage import jsonl10n, test_monolingual
 
-import pytest
-
 
 class TestJSONResourceUnit(test_monolingual.TestMonolingualUnit):
     UnitClass = jsonl10n.JsonUnit
@@ -22,8 +20,6 @@ class TestJSONResourceStore(test_monolingual.TestMonolingualUnit):
 
         assert out.getvalue() == b'{\n    "key": "value"\n}\n'
 
-    @pytest.mark.skipif(sys.version_info < (2, 7),
-                        reason="json.loads() can't order in Python 2.6")
     def test_ordering(self):
         store = jsonl10n.JsonFile()
         store.parse('''{

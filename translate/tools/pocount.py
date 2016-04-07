@@ -272,15 +272,8 @@ def main():
         "--incomplete", action="store_true", default=False,
         dest="incomplete_only",
         help="skip 100%% translated files.")
-    if sys.version_info[:2] <= (2, 6):
-        # Python 2.6 using argparse from PyPI cannot define a mutually
-        # exclusive group as a child of a group, but it works if it is a child
-        # of the parser.  We lose the group title but the functionality works.
-        # See https://code.google.com/p/argparse/issues/detail?id=90
-        megroup = parser.add_mutually_exclusive_group()
-    else:
-        output_group = parser.add_argument_group("Output format")
-        megroup = output_group.add_mutually_exclusive_group()
+    output_group = parser.add_argument_group("Output format")
+    megroup = output_group.add_mutually_exclusive_group()
     megroup.add_argument(
         "--full", action="store_const", const=style_full,
         dest="style", default=style_full,

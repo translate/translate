@@ -69,12 +69,8 @@ TODO:
 
 import json
 import os
-try:
-    from collections import OrderedDict
-except ImportError:
-    # Python 2.6 does not have OrderedDict and also can't use it in
-    # json.loads()
-    OrderedDict = None
+from collections import OrderedDict
+
 import six
 
 from translate.storage import base
@@ -159,10 +155,7 @@ class JsonFile(base.TranslationStore):
             self.parse(inputfile)
 
     def serialize(self, out):
-        if OrderedDict is not None:
-            units = OrderedDict()
-        else:
-            units = {}
+        units = OrderedDict()
         for unit in self.unit_iter():
             path = unit.getid().lstrip('.')
             units[path] = unit.target
@@ -223,11 +216,7 @@ class JsonFile(base.TranslationStore):
         if isinstance(input, bytes):
             input = input.decode('utf-8')
         try:
-            if OrderedDict is not None:
-                self._file = json.loads(input, object_pairs_hook=OrderedDict)
-            else:
-                # object_pairs_hook is not present in Python 2.6
-                self._file = json.loads(input)
+            self._file = json.loads(input, object_pairs_hook=OrderedDict)
         except ValueError as e:
             raise base.ParseError(e.message)
 

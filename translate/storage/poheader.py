@@ -22,12 +22,7 @@
 import re
 import six
 import time
-
-try:
-    from collections import OrderedDict
-except ImportError:
-    # Python <= 2.6 fallback
-    from translate.misc.dictutils import ordereddict as OrderedDict
+from collections import OrderedDict
 
 from translate import __version__
 from translate.misc.dictutils import cidict

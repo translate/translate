@@ -25,11 +25,11 @@ import re
 import six
 import sys
 import traceback
+from collections import OrderedDict
 from io import BytesIO
 
 from translate import __version__
 from translate.misc import progressbar
-from translate.misc.dictutils import ordereddict as OrderedDict
 
 
 class ManPageOption(optparse.Option, object):
