@@ -60,8 +60,7 @@ unless certain criteria are met.  The following skips a test if the version of
     def test_function():
         ...
 
-In Python 2.6 and later, you can apply this decorator to classes as well as
-functions and methods.
+You can apply this decorator to classes as well as functions and methods.
 
 It is also possible to skip an entire test module by creating a ``pytestmark``
 static variable in the module:

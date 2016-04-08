@@ -37,7 +37,7 @@ The following advice only applies to manual installation from tar ball.
 
    .. code-block:: bash
 
-      $ rm -R /usr/local/lib/python2.6/dist-packages/translate
+      $ rm -R /usr/local/lib/python2.7/dist-packages/translate
 
 
 .. _installation#building:

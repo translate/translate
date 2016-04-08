@@ -153,12 +153,12 @@ preferred as it is significantly more powerful and often cleaner.
 
     # Good
     print("Hello, {thing}".format(thing="world"))
+    print("Hello, {}".format("world"))
     print("%s=%r" % ("hello", "world"))  # non-translatable strings
 
     # Bad
     print("%s, %s" % ("Hello", "world"))  # Translatable string.
     print("Hello, %(thing)s" % {"thing": "world"})  # Use {thing}.
-    print("Hello, {}".format("world"))  # Incompatible with Python 2.6. Use %s.
 
 
 .. _styleguide-imports:
