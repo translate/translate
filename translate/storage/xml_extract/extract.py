@@ -364,20 +364,21 @@ def _walk_idml_translatable_tree(translatables, store_adder,
                                      new_parent_translatable)
 
 
-def _walk_translatable_tree(translatables, store_adder, parent_translatable):
+def _walk_translatable_tree(translatables, store_adder, parent_translatable,
+                            stored_by_parent = False):
     """Traverse all the found translatables and add them to the Store.
 
     Inline translatables are not added to the Store.
     """
     for translatable in translatables:
-        if translatable.has_translatable_text and not translatable.is_inline:
+        store_here = (translatable.has_translatable_text and
+                    (not translatable.is_inline or not stored_by_parent))
+        if store_here:
             store_adder(parent_translatable, translatable)
-            new_parent_translatable = parent_translatable
-        else:
-            new_parent_translatable = parent_translatable
-
+        new_parent_translatable = parent_translatable
         _walk_translatable_tree(translatable.placeables, store_adder,
-                                new_parent_translatable)
+                                new_parent_translatable,
+                                store_here or stored_by_parent)
 
 
 def reverse_map(a_map):
