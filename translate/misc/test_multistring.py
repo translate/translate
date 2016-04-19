@@ -59,3 +59,8 @@ class TestMultistring:
         assert t(u"téßt") > "test"
         assert "test" < t(u"téßt")
         assert t(u"téßt").__cmp__("test") > 0
+
+    def test_coercion(self):
+        t = multistring.multistring
+        assert str(t("test")) == "test"
+        assert str(t(u"téßt")) == "téßt"

@@ -75,6 +75,11 @@ class multistring(six.text_type):
         _repr = "multistring([" + u",".join(self.strings) + "])"
         return _repr.encode('utf-8') if six.PY2 else _repr
 
+    def __str__(self):
+        if six.PY2:
+            return self.encode('utf-8')
+        return super(multistring, self).__str__()
+
     def replace(self, old, new, count=None):
         if count is None:
             newstr = multistring(super(multistring, self).replace(old, new))
