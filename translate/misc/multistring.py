@@ -30,7 +30,6 @@ class multistring(six.text_type):
         if isinstance(string, list):
             if not string:
                 raise ValueError("multistring must contain at least one string")
-            mainstring = string[0]
             newstring = multistring.__new__(newtype, string[0])
             newstring.strings = [newstring] + [multistring.__new__(newtype, altstring) for altstring in string[1:]]
         else:
