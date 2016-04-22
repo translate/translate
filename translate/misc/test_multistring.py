@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 import pytest
+import six
 
 from translate.misc import multistring
 
@@ -64,3 +65,12 @@ class TestMultistring:
         t = multistring.multistring
         assert str(t("test")) == "test"
         assert str(t(u"téßt")) == "téßt"
+
+    def test_unicode_coercion(self):
+        t = multistring.multistring
+        assert six.text_type(t("test")) == u"test"
+        assert six.text_type(t(u"test")) == u"test"
+        assert six.text_type(t("téßt")) == u"téßt"
+        assert six.text_type(t(u"téßt")) == u"téßt"
+        assert six.text_type(t(["téßt", "blāh"])) == u"téßt"
+        assert six.text_type(t([u"téßt"])) == u"téßt"

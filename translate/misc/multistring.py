@@ -21,19 +21,39 @@
 strings in the strings attribute
 """
 
+import warnings
+
 import six
+
+from .deprecation import RemovedInTTK2Warning
+
+
+def _create_text_type(newtype, string, encoding):
+    """Helper to construct a text type out of characters or bytes. Required to
+    temporarily preserve backwards compatibility. Must be removed in TTK2.
+    """
+    if isinstance(string, six.text_type):
+        return six.text_type.__new__(newtype, string)
+
+    warnings.warn(
+        'Passing non-ASCII bytes as well as the `encoding` argument to '
+        '`multistring` is deprecated. Always pass unicode characters instead.',
+        RemovedInTTK2Warning, stacklevel=2,
+    )
+    return six.text_type.__new__(newtype, string or six.binary_type(), encoding)
 
 
 class multistring(six.text_type):
 
     def __new__(newtype, string=u"", *args, **kwargs):
+        encoding = kwargs.pop('encoding', 'utf-8')
         if isinstance(string, list):
             if not string:
                 raise ValueError("multistring must contain at least one string")
-            newstring = multistring.__new__(newtype, string[0])
+            newstring = _create_text_type(newtype, string[0], encoding)
             newstring.strings = [newstring] + [multistring.__new__(newtype, altstring) for altstring in string[1:]]
         else:
-            newstring = six.text_type.__new__(newtype, string)
+            newstring = _create_text_type(newtype, string, encoding)
             newstring.strings = [newstring]
         return newstring
 

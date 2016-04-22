@@ -124,6 +124,11 @@ API changes
 API deprecation
 ---------------
 
+- Passing non-ASCII bytes to the ``multistring`` class has been deprecated, as
+  well as the ``encoding`` argument to it.
+  Applications should always construct ``multistring`` objects by passing
+  characters (``unicode`` in Python 2, ``str`` in Python 3), not bytes. Support
+  for passing non-ASCII bytes will be removed in the next version.
 - ``TxtFile.getoutput()`` and ``dtdfile.getoutput()`` have been deprecated.
   Either call ``bytes(<file_instance>)`` or use the
   ``file_instance.serialize()`` API if you need to get the serialized store
