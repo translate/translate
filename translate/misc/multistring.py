@@ -91,7 +91,9 @@ class multistring(six.text_type):
         return self.__cmp__(otherstring) == 0
 
     def __repr__(self):
-        _repr = "multistring([" + u",".join(self.strings) + "])"
+        _repr = u"multistring(%r)" % (
+            [six.text_type(item) for item in self.strings]
+        )
         return _repr.encode('utf-8') if six.PY2 else _repr
 
     def __str__(self):

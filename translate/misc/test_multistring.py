@@ -5,6 +5,9 @@ import six
 from translate.misc import multistring
 
 
+str_prefix = '' if six.PY3 else 'u'
+
+
 class TestMultistring:
 
     def test_constructor(self):
@@ -15,11 +18,23 @@ class TestMultistring:
         assert s1.strings == ["test"]
         s2 = t(["test", u"mé"])
         assert type(s2) == t
-        assert repr(s2) == 'multistring([test,mé])'
         assert s2 == "test"
         assert s2.strings == ["test", u"mé"]
         assert s2 != s1
         pytest.raises(ValueError, t, [])
+
+    def test_repr(self):
+        t = multistring.multistring
+        s1 = t(u"test")
+        assert repr(s1) == "multistring([%s'test'])" % str_prefix
+        assert eval(u'multistring.%s' % repr(s1)) == s1
+
+        s2 = t(["test", u"mé"])
+        if six.PY3:
+            assert repr(s2) == "multistring(['test', 'mé'])"
+        else:
+            assert repr(s2) == "multistring([u'test', u'm\\xe9'])"
+        assert eval(u'multistring.%s' % repr(s2)) == s2
 
     def test_replace(self):
         t = multistring.multistring
@@ -74,3 +89,11 @@ class TestMultistring:
         assert six.text_type(t(u"téßt")) == u"téßt"
         assert six.text_type(t(["téßt", "blāh"])) == u"téßt"
         assert six.text_type(t([u"téßt"])) == u"téßt"
+
+    def test_list_coercion(self):
+        t = multistring.multistring
+        assert six.text_type([t(u"test")]) == u"[multistring([%s'test'])]" % str_prefix
+        if six.PY3:
+            assert six.text_type([t(u"tést")]) == u"[multistring(['tést'])]"
+        else:
+            assert six.text_type([t(u"tést")]) == u"[multistring([u't\\xe9st'])]"
