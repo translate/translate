@@ -82,7 +82,7 @@ class multistring(six.text_type):
             return cmp_compat(str(type(self)), str(type(otherstring)))
 
     def __hash__(self):
-        return hash(''.join(self.strings))
+        return hash(str(self))
 
     def __ne__(self, otherstring):
         return self.__cmp__(otherstring) != 0
