@@ -97,3 +97,12 @@ class TestMultistring:
             assert six.text_type([t(u"tést")]) == u"[multistring(['tést'])]"
         else:
             assert six.text_type([t(u"tést")]) == u"[multistring([u't\\xe9st'])]"
+
+    def test_multistring_hash(self):
+        t = multistring.multistring
+        foo = t([u"foo", u"bar"])
+        foodict = {foo: "baz"}
+        assert u"foo" in foodict
+        foodict2 = {"foo": "baz"}
+        assert foo in foodict2
+        assert hash(str(foo)) == hash(foo)
