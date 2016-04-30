@@ -78,7 +78,8 @@ tag_re = re.compile("<[^>]+>")
 gconf_attribute_re = re.compile('"[a-z_]+?"')
 
 # XML/HTML tags in LibreOffice help and readme, exclude short tags
-lo_tag_re = re.compile('''<[/]??[a-z][a-z_\-]+?(?:| +[a-z]+?=".*?") *>''')
+lo_tag_re = re.compile('''</?(?P<tag>[a-z][a-z_-]+)(?: +[a-z]+="[^"]+")* */?>''')
+lo_emptytags = frozenset(['br', 'embed', 'embedvar', 'object', 'help-id-missing'])
 
 
 def tagname(string):
@@ -2000,18 +2001,25 @@ class LibreOfficeChecker(StandardChecker):
                 while match:
                     acttag = match.group(0)
                     if acttag.startswith("</"):
+                        if match.group('tag') in lo_emptytags:
+                            raise FilterFailure(u"»%s« should be self-closing/empty"
+                                                % acttag)
                         if len(opentags) == 0:
-                            raise FilterFailure(u"There is no open tag for %s" % (acttag))
+                            raise FilterFailure(u"There is no open tag for »%s«" % acttag)
                         opentag = opentags.pop()
                         if tagname(acttag) != "/" + tagname(opentag):
-                            raise FilterFailure(u"Open tag %s and close tag %s "
+                            raise FilterFailure(u"Open tag »%s« and close tag »%s« "
                                                 "don't match" % (opentag, acttag))
+                    elif acttag.endswith("/>"):
+                        if match.group('tag') not in lo_emptytags:
+                            raise FilterFailure(u"»%s« should not be self-closing/empty"
+                                                % acttag)
                     else:
                         opentags.append(acttag)
                     str2 = str2[match.end(0):]
                     match = re.search(lo_tag_re, str2)
                 if len(opentags) != 0:
-                    raise FilterFailure(u"There is no close tag for %s" % (opentags.pop()))
+                    raise FilterFailure(u"There is no close tag for »%s«" % opentags.pop())
         return True
 
     @critical
