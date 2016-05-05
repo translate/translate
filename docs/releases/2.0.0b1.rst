@@ -16,6 +16,11 @@ tried to credit them wherever possible (sorry if somehow we missed you).
 2.0.0b1 vs 1.14.0-rc1
 =====================
 
+.. note:: Given the large number of important changes, mostly Python 3 support,
+   it was decided that the next version will be ``2.0.0`` instead of ``1.14.0``
+   as previously planned. So ``1.14.0-rc1`` could be considered to be
+   ``2.0.0b0``.
+
 - Dropped support for Python 2.6.
 - Dropped ``translate.misc.dictutils.ordereddict``.
 - Expanded Python 3 support to include Python 3.5.

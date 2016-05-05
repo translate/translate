@@ -12,6 +12,10 @@ It is just over 9 months since the last release and there are many improvements
 across the board. A number of people contributed to this release and we've
 tried to credit them wherever possible (sorry if somehow we missed you).
 
+.. note:: With the shift of next version to ``2.0.0b1`` this can be considered
+   to be ``2.0.0b0``.
+
+
 Major changes
 =============
 
