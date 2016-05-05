@@ -74,6 +74,9 @@ TARGET_XLF = u'test_2-test_roundtrip.xlf'
 REFERENCE_ODF = u'test_2.odt'
 GENERATED_ODF = u'test_2-test_roundtrip-generated.odt'
 
+SOURCE_ODF_INLINE = u'test_inline.odt'
+REFERENCE_XLF_INLINE = u'test_inline-test_odf2xliff_inline-reference.xlf'
+GENERATED_XLF_TOOLKIT_INLINE = u'test_inline-test_odf2xliff_inline-toolkit.xlf'
 
 def test_odf2xliff():
     reference_xlf = factory.getobject(REFERENCE_XLF)
@@ -135,7 +138,6 @@ class ODF(object):
 
 
 def test_roundtrip():
-
     odf2xliff.main(args(SOURCE_ODF, TARGET_XLF))
     xliff2odf.main(args(TARGET_XLF, GENERATED_ODF, t=SOURCE_ODF))
 
@@ -146,6 +148,14 @@ def test_roundtrip():
     assert reference_odf == generated_odf
 
 
+def test_odf2xliff2_inline():
+    reference_xlf = factory.getobject(REFERENCE_XLF_INLINE)
+
+    odf2xliff.main(args(SOURCE_ODF_INLINE, GENERATED_XLF_TOOLKIT_INLINE))
+    generated_xlf_toolkit = factory.getobject(GENERATED_XLF_TOOLKIT_INLINE)
+    print_diff(reference_xlf, generated_xlf_toolkit)
+    assert reference_xlf == generated_xlf_toolkit
+
 def remove(filename):
     """Removes the file if it exists."""
     if os.path.exists(filename):
@@ -153,6 +163,7 @@ def remove(filename):
 
 
 def teardown_module(module):
+    remove(GENERATED_XLF_TOOLKIT_INLINE)
     remove(GENERATED_XLF_TOOLKIT)
     remove(GENERATED_ODF)
     remove(GENERATED_XLF_ITOOLS)

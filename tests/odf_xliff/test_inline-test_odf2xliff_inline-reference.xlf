@@ -1,0 +1,23 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<xliff xmlns="urn:oasis:names:tc:xliff:document:1.1" version="1.1">
+  <file original="t.odt" source-language="en" datatype="plaintext">
+    <body>
+      <trans-unit xml:space="preserve" id="office:document-content[0]/office:body[0]/office:text[0]/text:p[0]">
+        <source>A partir de ahora se detallan las actividades llevadas a cabo en 2014, comenzando a describir la nueva dirección del proyecto a la que se hace referencia en la tabla 4. En este 2014
+                <g id="0">
+                    <g id="1"> el trabajo de los investigadores ha sido el siguiente:</g>
+                </g>
+            </source>
+      </trans-unit>
+      <trans-unit xml:space="preserve" id="office:document-content[0]/office:body[0]/office:text[0]/text:p[1]">
+        <source>Partiendo <g id="2"/>del estado actual del proyecto en enero de 2014 (Fin Fase V) comenzar con la Fase VI y Fase VII del proyecto. Estas fases son nuevas, debidas al cambio del proyecto. </source>
+      </trans-unit>
+      <trans-unit xml:space="preserve" id="office:document-content[0]/office:body[0]/office:text[0]/text:h[0]/text:span[0]/text:span[0]">
+        <source>Nueva dirección del proyecto</source>
+      </trans-unit>
+      <trans-unit xml:space="preserve" id="office:document-content[0]/office:body[0]/office:text[0]/text:p[2]">
+        <source>A finales de 2013 el equipo de investigación de X detectó una necesidad de cambio en el prototipo desarrollado, a raíz de la realización de las pruebas de Safe-Health, al probar con personas <g id="3"/>físicas el proyecto (Subfase “pruebas con Personal Hospitalario”), y vio que el proyecto original del test no iba a ser posible porque el nuevo prototipo no encajaba dentro del “Workflow” o sistema de trabajo de un hospital. </source>
+      </trans-unit>
+    </body>
+  </file>
+</xliff>
