@@ -16,7 +16,7 @@ tried to credit them wherever possible (sorry if somehow we missed you).
 dev vs 2.0.0b1
 ==============
 
-- 
+- ``odf2xliff`` now extracts all the text (:issue:`3239`).
 
 
 Major changes
@@ -62,6 +62,10 @@ Formats and Converters
 - Android
 
   - Unknown locales no longer produce failures.
+
+- ODF
+
+  - ``odf2xliff`` now extracts all the text (:issue:`3239`).
 
 - JSON
 
