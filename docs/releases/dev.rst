@@ -17,6 +17,7 @@ dev vs 2.0.0b1
 ==============
 
 - ``odf2xliff`` now extracts all the text (:issue:`3239`).
+- LibreOffice validxml check correctly matches self-closing tags.
 
 
 Major changes
@@ -84,6 +85,7 @@ Filters and Checks
 ------------------
 
 - LibreOffice checker no longer checks for Python brace format (:issue:`3303`).
+- LibreOffice validxml check correctly matches self-closing tags.
 - Numbers check now handles non latin numbers. Support for non latin numbers
   has been added for Arabic, Assamese, Bengali and Persian languages.
 - Fixed issue that prevented standard checks from being used in Pootle with
