@@ -1,20 +1,20 @@
-Translate Toolkit dev
-*********************
+Translate Toolkit 2.0.0b2
+*************************
 
-*Not yet released*
+*Released on 13 May 2016*
 
 This release contains many improvements and bug fixes. While it contains many
 general improvements, it also specifically contains needed changes and
 optimizations for the upcoming `Pootle <http://pootle.translatehouse.org/>`_
 2.8.0 and `Virtaal <http://virtaal.translatehouse.org>`_ releases.
 
-It is just over X months since the last release and there are many improvements
+It is just over 8 days since the last release and there are many improvements
 across the board.  A number of people contributed to this release and we've
 tried to credit them wherever possible (sorry if somehow we missed you).
 
 
-dev vs 2.0.0b1
-==============
+2.0.0b2 vs 2.0.0b1
+==================
 
 - ``odf2xliff`` now extracts all the text (:issue:`3239`).
 - LibreOffice validxml check correctly matches self-closing tags.
@@ -174,6 +174,8 @@ Contributors
 
 This release was made possible by the following people:
 
-%CONTRIBUTORS%
+Claude Paroz, Dwayne Bailey, Leandro Regueiro, Michal Čihař, Ryan Northey,
+Friedel Wolff, Julen Ruiz Aizpuru, Hiroshi Miura, Melvi Ts, Jerome Leclanche,
+Yann Diorcet, yann.diorcet, Nick Shaforostoff, Christian Lohmaier, beernarrd.
 
 And to all our bug finders and testers, a Very BIG Thank You.
