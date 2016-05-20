@@ -136,6 +136,7 @@ checkout run:
 .. code-block:: bash
 
     $ mkvirtualenv build-ttk-release
+    (build-ttk-release)$ pip install --upgrade pip
     (build-ttk-release)$ pip install -r requirements/dev.txt
     (build-ttk-release)$ make build
     (build-ttk-release)$ deactivate
@@ -158,6 +159,7 @@ the new release using:
 .. code-block:: bash
 
     $ mkvirtualenv test-ttk-release
+    (test-ttk-release)$ pip install --upgrade pip
     (test-ttk-release)$ pip install dist/translate-toolkit-$version.tar.bz2
 
 
