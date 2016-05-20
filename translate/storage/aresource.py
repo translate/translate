@@ -34,8 +34,8 @@ from translate.misc.multistring import multistring
 from babel.core import Locale, UnknownLocaleError
 
 EOF = None
-WHITESPACE = ' \n\t'  # Whitespace that we collapse.
-MULTIWHITESPACE = re.compile('[ \n\t]{2}')
+WHITESPACE = ' \t'  # Whitespace that we collapse.
+MULTIWHITESPACE = re.compile('[ \t]{2}')
 
 
 @six.python_2_unicode_compatible
@@ -230,10 +230,6 @@ class AndroidResourceUnit(base.TranslationUnit):
         if len(text) == 0:
             return ''
         text = text.replace('\\', '\\\\')
-        text = text.replace('\n', '\\n')
-        # This will add non intrusive real newlines to
-        # ones in translation improving readability of result
-        text = text.replace(' \\n', '\n\\n')
         text = text.replace('\t', '\\t')
         text = text.replace('\'', '\\\'')
         text = text.replace('"', '\\"')

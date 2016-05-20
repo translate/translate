@@ -45,12 +45,12 @@ class TestAndroidResourceUnit(test_monolingual.TestMonolingualUnit):
 
     def test_escape_message_with_newline(self):
         string = 'message\nwith newline'
-        xml = '<string name="Test String">message\\nwith newline</string>\n\n'
+        xml = '<string name="Test String">message\nwith newline</string>\n\n'
         self.__check_escape(string, xml)
 
     def test_escape_message_with_newline_in_xml(self):
-        string = 'message \nwith newline in xml'
-        xml = ('<string name="Test String">message\n\\nwith newline in xml'
+        string = 'message\n\nwith newline in xml\n'
+        xml = ('<string name="Test String">message\n\nwith newline in xml\n'
                '</string>\n\n')
         self.__check_escape(string, xml)
 
@@ -122,8 +122,8 @@ class TestAndroidResourceUnit(test_monolingual.TestMonolingualUnit):
     def test_plural_escape_message_with_newline(self):
         mString = multistring(['one message\nwith newline', 'other message\nwith newline'])
         xml = ('<plurals name="Test String">\n\t'
-               '<item quantity="one">one message\\nwith newline</item>\n\t'
-               '<item quantity="other">other message\\nwith newline</item>\n'
+               '<item quantity="one">one message\nwith newline</item>\n\t'
+               '<item quantity="other">other message\nwith newline</item>\n'
                '</plurals>\n\n')
         self.__check_escape(mString, xml, 'en')
 
@@ -186,8 +186,8 @@ class TestAndroidResourceUnit(test_monolingual.TestMonolingualUnit):
         self.__check_parse(string, xml)
 
     def test_parse_message_with_newline_in_xml(self):
-        string = 'message \nwith\n newline\nin xml'
-        xml = ('<string name="Test String">message\n\\nwith\\n\nnewline\\n\\\nin xml'
+        string = 'message\n\nwith\n\nnewline\n\nin xml'
+        xml = ('<string name="Test String">message\n\\nwith\\n\nnewline\\n\nin xml'
                '</string>\n\n')
         self.__check_parse(string, xml)
 
@@ -260,7 +260,7 @@ class TestAndroidResourceUnit(test_monolingual.TestMonolingualUnit):
 
         At least it seems to be what Android does.
         """
-        string = 'newline in string'
+        string = 'newline\nin string'
         xml = '<string name="Test String">newline\nin string</string>\n\n'
         self.__check_parse(string, xml)
 
