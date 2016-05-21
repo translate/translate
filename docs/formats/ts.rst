@@ -16,9 +16,9 @@ References
 The format is XML and seems to only have been documented properly since Qt 4.3
 
 * `Current DTD Specification
-  <http://qt-project.org/doc/qt-5.0/qtlinguist/linguist-ts-file-format.html>`_ for Wt 5.0,
+  <http://doc.qt.io/qt-5/linguist-ts-file-format.html>`_ for Qt 5,
   older versions; `Qt 4.3
-  <http://doc.qt.digia.com/4.3/linguist-ts-file-format.html>`_
+  <http://doc.qt.io/archives/4.3/linguist-ts-file-format.html>`_
 * http://svn.ez.no/svn/ezcomponents/trunk/Translation/docs/linguist-format.txt
 
 .. _ts#complete:

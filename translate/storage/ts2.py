@@ -23,13 +23,13 @@ This will eventually replace the older ts.py which only supports the older
 format. While converters haven't been updated to use this module, we retain
 both.
 
-`TS file format 4.3 <http://doc.qt.digia.com/4.3/linguist-ts-file-format.html>`_,
-`4.8 <http://qt-project.org/doc/qt-4.8/linguist-ts-file-format.html>`_,
-`5.0 <http://qt-project.org/doc/qt-5.0/qtlinguist/linguist-ts-file-format.html>`_.
+`TS file format 4.3 <http://doc.qt.io/archives/4.3/linguist-ts-file-format.html>`_,
+`4.8 <http://doc.qt.io/qt-4.8/linguist-ts-file-format.html>`_,
+`5 <http://doc.qt.io/qt-5/linguist-ts-file-format.html>`_.
 `Example <http://svn.ez.no/svn/ezcomponents/trunk/Translation/docs/linguist-format.txt>`_.
 
-`Specification of the valid variable entries <http://qt-project.org/doc/qt-5.0/qtcore/qstring.html#arg>`_,
-`2 <http://qt-project.org/doc/qt-5.0/qtcore/qstring.html#arg-2>`_
+`Specification of the valid variable entries <http://doc.qt.io/qt-5/qstring.html#arg>`_,
+`2 <http://doc.qt.io/qt-5/qstring.html#arg-2>`_
 """
 
 import six
