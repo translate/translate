@@ -485,7 +485,8 @@ class tsfile(lisa.LISAfile):
         doctype = self.document.docinfo.doctype
         # Iterate over empty tags without children and force empty text
         # This will prevent self-closing tags in pretty_print mode
-        for e in root.xpath("//*[not(./node()) and not(text())]"):
+        # Qt Linguist does self-close the "location" elements though
+        for e in root.xpath("//*[not(./node()) and not(text()) and not(name() = 'location')]"):
             e.text = ""
         out.write(etree.tostring(root, doctype=doctype, pretty_print=True,
                                  xml_declaration=True, encoding='utf-8'))
