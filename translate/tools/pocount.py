@@ -203,9 +203,9 @@ class summarizer:
         self.complete_count = 0
 
         if (self.style == style_csv):
-            print("""Filename, Translated Messages, Translated Source Words, Translated
-Target Words, Fuzzy Messages, Fuzzy Source Words, Untranslated Messages,
-Untranslated Source Words, Total Message, Total Source Words,
+            print("""Filename, Translated Messages, Translated Source Words, \
+Translated Target Words, Fuzzy Messages, Fuzzy Source Words, Untranslated Messages, \
+Untranslated Source Words, Total Message, Total Source Words, \
 Review Messages, Review Source Words""")
         if (self.style == style_short_strings or self.style == style_short_words):
             for filename in filenames:  # find longest filename

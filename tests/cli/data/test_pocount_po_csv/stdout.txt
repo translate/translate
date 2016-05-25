@@ -1,0 +1,2 @@
+Filename, Translated Messages, Translated Source Words, Translated Target Words, Fuzzy Messages, Fuzzy Source Words, Untranslated Messages, Untranslated Source Words, Total Message, Total Source Words, Review Messages, Review Source Words
+./data/test_pocount_po_csv/one.po,  1, 3, 3, 0, 0, 0, 0, 1, 3 

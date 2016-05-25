@@ -1,0 +1,2 @@
+msgid "We can count"
+msgstr "Ons kan tell"
