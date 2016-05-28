@@ -119,7 +119,7 @@ UTF-8 is the only available destination encoding.
   csv2po --columnorder=location,target,source fr.csv fr.po
 
 In case the CSV file has the columns in a different order you may use
-:option:`--columnorder`.
+``--columnorder``.
 
 
 .. _csv2po#bugs:

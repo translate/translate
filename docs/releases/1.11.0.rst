@@ -77,13 +77,13 @@ Formats and Converters
 
 - New conversion options:
 
-  - :option:`--timestamp` -- skip conversion if the output file has a newer
-    timestamp (Makefile-alike)
-  - :option:`--threshold` -- in po2* converters this allows you to specify a
+  - ``--timestamp`` -- skip conversion if the output file has a newer timestamp
+    (Makefile-alike)
+  - ``--threshold`` -- in po2* converters this allows you to specify a
     percentage complete threshold.  If the PO files passes this theshold then
     the file is output (:issue:`2998`)
-  - :option:`--removeuntranslated` -- Extend this option to po2dtd and thus
-    po2moz -- don't output untranslated text (:issue:`1718`)
+  - ``--removeuntranslated`` -- Extend this option to po2dtd and thus po2moz --
+    don't output untranslated text (:issue:`1718`)
 
 Language specific fixes
 -----------------------
