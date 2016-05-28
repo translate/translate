@@ -81,9 +81,14 @@ Comments supported:
 .. code-block:: properties
 
    # a comment
-   ! a comment
    // a comment (only at the beginning of a line)
-   /* a comment (not across multiple lines) */
+
+   # The following are # escaped to render in docs
+   # ! is standard but not widely supported
+   #! a comment
+   # /* is non-standard but used on some implementations
+   #/* a comment (not across multiple lines) */
+
 
 Name and Value pairs:
 
@@ -92,7 +97,8 @@ Name and Value pairs:
    # Delimiters
    key = value
    key : value
-   key value
+   # Whitespace delimiter
+   # key[sp]value
 
    # Space in key and around value
    \ key\ = \ value
@@ -104,7 +110,7 @@ Name and Value pairs:
 
    # Special cases
    # key with no value
-   key
+   //key (escaped; doesn't render in docs)
    # value no key (extractable in prop2po but not mergeable in po2prop)
    =value
 
