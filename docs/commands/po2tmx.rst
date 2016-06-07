@@ -12,7 +12,7 @@ developed by OSCAR.
    interest group of the now defunct LISA (Localization Industry Standards
    Association). The Gala `LISA OSCAR Standards
    <http://www.gala-global.org/lisa-oscar-standards>`_ page has more details on
-   the possble future for the standards.
+   the possible future for the standards.
 
 If you are interested in po2tmx, you might also be interested in
 :doc:`posegment` that can be used to perform some automated segmentation on

@@ -59,7 +59,7 @@ Provide a full traceback for debugging purposes
         outputpo = convertor.convertfile(inputcsv)
 
       File "/usr/lib/python2.4/site-packages/translate/convert/csv2po.py", line 159, in convertfile
-        raise ValueError("An error occured processing PO file")
+        raise ValueError("An error occurred processing PO file")
 
     ValueError: An error occurred processing PO file
 

@@ -77,7 +77,7 @@ limited by your ability to build regular expressions but yu could eliminate:
 Create a compendium
 ===================
 
-Now that we have our words we want to create a sinlge files of all terminology.
+Now that we have our words we want to create a single files of all terminology.
 Thus we create a PO compendium::
 
   ~/path/to/pocompendium -i -su zulu-gnome-glossary.po -d zulu-short-clean
@@ -125,7 +125,7 @@ entry that was marked fuzzy with the two options displayed.
 
   pofilter -t compendiumconflicts zulu-gnome-glossary-fuzzy.po zulu-gnome-glossary-conflicts.po
 
-These compedium conflicts are what we are interested in so we use pofilter to
+These compendium conflicts are what we are interested in so we use pofilter to
 filter them from the other fuzzies.
 
 ::

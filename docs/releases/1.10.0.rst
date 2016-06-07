@@ -99,7 +99,7 @@ Mozilla tooling fixes
 ---------------------
 * Mozilla specific test for dialog size settings
 * Gaia properties dialect and plural handling
-* Fixes and imporovement to the Firefox build scripts
+* Fixes and improvement to the Firefox build scripts
 * Improved accesskey detection
 * Improved DTD escaping for &quote, %, etc
 * Improvement of DTD to align with Base classes

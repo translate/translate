@@ -141,7 +141,7 @@ Creating Mercurial ready translations
   po2moz -t l10n/en-US po/xh l10n/xh
 
 Create Mozilla files using the templates files in ``l10n/en-US`` (see above for
-how to create them) with PO translations in ``po/xh`` and ouput them to
+how to create them) with PO translations in ``po/xh`` and output them to
 ``l10n/xh``.  The files now in ``l10n/xh`` are ready for submission to Mozilla
 and can be used to build a language pack or translated version of Mozilla.
 

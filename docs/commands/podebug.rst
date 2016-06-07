@@ -34,7 +34,7 @@ Usage
 Where:
 
 +-------+----------------------------------------------------------------+
-| <in>  | is an input directory or localisation file file                |
+| <in>  | is an input directory or localisation file                     |
 +-------+----------------------------------------------------------------+
 | <out> | is an output directory or localisation file, if missing output |
 |       | will be to standard out.                                       |
@@ -142,7 +142,7 @@ Hashing
 =======
 
 Sometimes you find an error in a string.  But it is difficult to search for the
-occurance of the error.  In order to make it easy to find a string in your
+occurrence of the error.  In order to make it easy to find a string in your
 files we can produce a hash on the strings location and other data.  This
 produces unique alphanumeric sequences which are prepended to the target text.
 Thus now in your application you have your translated text and a alphanumeric

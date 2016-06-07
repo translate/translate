@@ -20,7 +20,7 @@ i.e. it does not imply line breaks in the translated strings.
 
 Escaping is done with a backslash. An escaped double quote (``\"``) corresponds
 to a double quote in the original string. ``\n`` for newline, ``\t`` for tabs
-etc are used. Backslashes can be escaped to to give a native backslash.
+etc are used. Backslashes can be escaped to give a native backslash.
 
 See also :wiki:`escaping <guide/translation/escaping>` in the translation
 guide.
@@ -57,5 +57,5 @@ Note that this section does not describe the Java properties files, even though
 they are quite similar.
 
 It seems that the literal string ``\n`` (a backslash followed by the character
-'n') and ``\t`` and ``\r`` can not be encoded in properties files. This is the
+'n') and ``\t`` and ``\r`` cannot be encoded in properties files. This is the
 assumption of the toolkit.

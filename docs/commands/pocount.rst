@@ -95,7 +95,7 @@ use the :opt:`--incomplete` option.::
   pocount --incomplete --short *.xlf
 
 We are now counting all XLIFF files by using the ``*.xlf`` expansion.  We are
-only counting files that are not 100% complete and we're outputing string
+only counting files that are not 100% complete and we're outputting string
 counts using the :opt:`--short` option.
 
 .. _pocount#output_formats:

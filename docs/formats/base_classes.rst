@@ -86,7 +86,7 @@ translating from one language into another language.
 
 Some future ideas:
 
-As the number of of languages can be seen as one "dimension" of the translation
+As the number of languages can be seen as one "dimension" of the translation
 unit, plurality can be seen as a second dimension. A format can thus be
 classified according to the dimensionality that it supports, as follows:
 

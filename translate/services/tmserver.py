@@ -165,7 +165,7 @@ def main():
     parser.add_argument("-s", "--import-source-lang", dest="source_lang",
                         help="source language of translation files")
     parser.add_argument("-b", "--bind", dest="bind", default="localhost",
-                        help="adress to bind server to (default: localhost)")
+                        help="address to bind server to (default: localhost)")
     parser.add_argument("-p", "--port", dest="port", type=int, default=8888,
                         help="port to listen on (default: 8888)")
     parser.add_argument("--max-candidates", dest="max_candidates", type=int,

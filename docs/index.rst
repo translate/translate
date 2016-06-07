@@ -3,7 +3,7 @@
 Translate Toolkit
 =================
 
-Welcome to Translate Toolkit's documentation. This documenation covers both
+Welcome to Translate Toolkit's documentation. This documentation covers both
 user's and programmer's perspective.
 
 .. toctree::

@@ -41,7 +41,7 @@ Options:
                       target language of translation files
 -s SOURCE_LANG, --import-source-lang=SOURCE_LANG
                       source language of translation files
--b BIND, --bind=BIND  adress to bind server to (default: localhost)
+-b BIND, --bind=BIND  address to bind server to (default: localhost)
 -p PORT, --port=PORT  port to listen on (default: 8888)
 --max-candidates=MAX_CANDIDATES
                       Maximum number of candidates

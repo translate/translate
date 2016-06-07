@@ -146,7 +146,7 @@ checkout run:
 This will create a tarball in :file:`dist/` which you can use for further
 testing.
 
-.. note:: We use a clean checkout just to make sure that no inadvertant changes
+.. note:: We use a clean checkout just to make sure that no inadvertent changes
    make it into the release.
 
 

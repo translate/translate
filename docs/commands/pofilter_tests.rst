@@ -19,7 +19,7 @@ available tests by running::
 
   pofilter -l
 
-To see test specific to a specific targetted application or group of
+To see test specific to a specific targeted application or group of
 applications run::
 
   pofilter --gnome -l
@@ -400,7 +400,7 @@ Checks that words configured as definitely translatable don't appear in the
 translation.
 
 If for instance in your language you decide that you must translate 'OK' then
-this test will flag any occurances of 'OK' in the translation if it appeared in
+this test will flag any occurrences of 'OK' in the translation if it appeared in
 the source string.  You must specify a file containing all of the *must
 translate* words using :opt:`--musttranslatefile`.
 

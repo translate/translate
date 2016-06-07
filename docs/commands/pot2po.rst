@@ -77,7 +77,7 @@ existing translation file in a format different than Gettext PO, for example
 If the POT files have undergone major reshuffling then you may want to use
 :doc:`pomigrate2` which can now use pot2po as its merging backend.  pomigrate2
 will do its best to migrate your files to the correct locations before merging.
-It will also make make use of a compendium if requested.
+It will also make use of a compendium if requested.
 
 ::
 

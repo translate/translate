@@ -14,7 +14,7 @@ uses this file to provide its glossary matches to the OmegaT users.
 Format specifications
 =====================
 
-The glossary files is a tab delimeted files with three columns:
+The glossary files is a tab delimited files with three columns:
 
 #. source
 #. target

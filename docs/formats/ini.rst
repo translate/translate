@@ -4,7 +4,7 @@
 INI Files
 *********
 
-Also know as initialisation files.  These are in some cases used to store
+Also known as initialisation files.  These are in some cases used to store
 translations.
 
 .. _ini#conformance:

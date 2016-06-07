@@ -105,7 +105,7 @@ To update your translations simply redo the POT creation step and make use of
 Notes
 =====
 
-The converter will only process events in the calender file, the file itself
+The converter will only process events in the calendar file, the file itself
 can contain many other things that could be localisable.  Please raise a bug if
 you want to extract additional items.
 

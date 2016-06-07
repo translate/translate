@@ -5,7 +5,7 @@ porestructure
 *************
 
 porestructure takes the PO files output by :doc:`poconflicts` (a flat
-structure), and recreates the directory structure according to the poonflict
+structure), and recreates the directory structure according to the poconflict
 location comments found in each PO message. After being restructured, the
 messages in the resulting directory structure can be merged back using
 :doc:`pomerge`.

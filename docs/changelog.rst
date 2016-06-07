@@ -345,7 +345,7 @@ The changes will affect you as follows:
    * your files will go through a re-layout the first time you use any of the
      tools
    * subsequent usage should continue as normal
-   * any manipulation using Gettext tools will leave your files correctly layed
+   * any manipulation using Gettext tools will leave your files correctly laid
      out.
 
 Our suggestion is that if you are about to suffer a major reflow that your
@@ -587,7 +587,7 @@ as simple as working towards the API exposed in the base class. An unexpected
 side effect will be the Pootle should be able to work directly with any base
 class file (although that will not be the normal Pootle operation)
 
-We have checks in place to ensure the the current operation remains correct.
+We have checks in place to ensure the current operation remains correct.
 However, nothing is perfect and unfortunately the only way to really expose all
 bugs is to release this software.
 

@@ -186,7 +186,7 @@ This is best performed against CVS otherwise who knows what changed.
 
 .. code-block:: bash
 
-    po-in-dir=your-incomming-po-files
+    po-in-dir=your-incoming-po-files
     po-dir=your-existing-po-files
 
     for pofile in `cd $po-in-dir; find . -name "\*.po"`

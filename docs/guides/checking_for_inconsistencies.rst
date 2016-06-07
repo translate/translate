@@ -74,7 +74,7 @@ conflicts. ::
 
 These are normal PO files which you can edit in any PO editor or text editor.
 If we look at the first file ``change.po`` we can see that the source text
-*Change* was translated as *Verander* and *Wysig*.  The translators job is noe
+*Change* was translated as *Verander* and *Wysig*.  The translators job is now
 to correct these PO files, ignoring instances where the difference is in fact
 correct.
 
@@ -92,7 +92,7 @@ into the hierarchy of the existing PO files. ::
   porestructure af-conflicts af-restructured
 
 The entries that where in the files in *af-conflicts* have been placed in
-*af-restrucured*, they now appear in the correct place in the directory
+*af-restructured*, they now appear in the correct place in the directory
 structure and also appear in the correct file.  We are now ready to merge. ::
 
   pomerge -t af -i af-restructure -o af

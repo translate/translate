@@ -41,7 +41,7 @@ statements.
 Continuing long statements
 ~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-To continue a statement you can use backslashes (preceeded by a space) in which
+To continue a statement you can use backslashes (preceded by a space) in which
 case you should align the next line with the last dot or equal sign, or indent
 four spaces:
 
@@ -529,7 +529,7 @@ User documentation
 ------------------
 
 This is documentation found in ``docs/`` and that is published on Read the
-Docs. The target is the end user so our primary objective is to make accesible,
+Docs. The target is the end user so our primary objective is to make accessible,
 readable and beautiful documents for them.
 
 
