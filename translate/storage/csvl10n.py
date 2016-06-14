@@ -286,7 +286,7 @@ fieldname_map = {
     'identified': 'id',
     'key': 'id',
     'label': 'id',
-    'transaltor comments': 'translator_comments',
+    'translator comments': 'translator_comments',
     'notes': 'translator_comments',
     'developer comments': 'developer_comments',
     'state': 'fuzzy',

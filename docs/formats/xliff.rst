@@ -60,7 +60,7 @@ Done
       * fuzzy: isfuzzy() and markfuzzy()
       * translated: marktranslated()
       * approved
-      * needs-review-transaltion: isreview(), markreviewneeded()
+      * needs-review-translation: isreview(), markreviewneeded()
    * id: setid()
    * context-group: createcontextgroup()
 * context groups
