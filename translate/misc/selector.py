@@ -514,7 +514,7 @@ def pliant(func):
         args = list(args)
         args.insert(0, start_response)
         args.insert(0, environ)
-        return apply(func, args, dict(kwargs))
+        return func(*args, **dict(kwargs))
     return wsgi_func
 
         
@@ -534,5 +534,5 @@ def opliant(meth):
         args.insert(0, start_response)
         args.insert(0, environ)
         args.insert(0, self)
-        return apply(meth, args, dict(kwargs))
+        return meth(*args, **dict(kwargs))
     return wsgi_meth
