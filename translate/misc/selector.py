@@ -171,12 +171,12 @@ class Selector(object):
             match = regex.search(path)
             if match:
                 methods = method_dict.keys()
-                if method_dict.has_key(method):
+                if method in method_dict:
                     return (method_dict[method], 
                             match.groupdict(), 
                             methods, 
                             match.group(0))
-                elif method_dict.has_key('_ANY_'):
+                elif '_ANY_' in method_dict:
                     return (method_dict['_ANY_'],
                             match.groupdict(), 
                             methods, 
