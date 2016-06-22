@@ -1014,3 +1014,21 @@ msgstr ""
         unit = pofile.units[1]
         assert unit.source == u'The actual source text'
         assert unit.target.startswith(u'_: ')
+
+    def test_unicode(self):
+        posource = b'''
+msgid ""
+msgstr ""
+"Content-Type: application/x-publican; charset=UTF-8\\n"
+
+msgid "Rapha\xc3\xabl"
+msgstr ""
+
+msgid "Rapha\xc3\xabl2"
+msgstr ""
+'''
+        pofile = self.poparse(posource)
+        unit = pofile.units[2]
+        assert unit.source == u'Raphaël2'
+        unit = pofile.units[1]
+        assert unit.source == u'Raphaël'

@@ -356,6 +356,12 @@ def parse_header(parse_state, store):
         return None
     set_encoding(parse_state, store, first_unit)
     decode_header(first_unit, parse_state.decode)
+    # Fix encoding of next line in parser
+    # It was originally parsed with  SINGLE_BYTE_ENCODING
+    # but we need to convert it to actual encoding
+    parse_state.next_line = parse_state.decode(
+        parse_state.next_line.encode(SINGLE_BYTE_ENCODING)
+    )
     return first_unit
 
 
