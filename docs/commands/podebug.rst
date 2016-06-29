@@ -145,7 +145,7 @@ Sometimes you find an error in a string.  But it is difficult to search for the
 occurrence of the error.  In order to make it easy to find a string in your
 files we can produce a hash on the strings location and other data.  This
 produces unique alphanumeric sequences which are prepended to the target text.
-Thus now in your application you have your translated text and a alphanumeric
+Thus now in your application you have your translated text and an alphanumeric
 value.  Its is then easy to search for that value and find your problem string.
 
 .. _podebug#more_reading:

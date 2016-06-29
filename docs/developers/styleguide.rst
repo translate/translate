@@ -612,7 +612,7 @@ Other directives:
 
 
 Module header:
-  The module header consists of an utf-8 encoding declaration, copyright
+  The module header consists of a utf-8 encoding declaration, copyright
   attribution, license block and a standard docstring:
 
   .. code-block:: python
