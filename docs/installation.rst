@@ -90,6 +90,35 @@ If you are using an old Debian stable system, you might want to install the
 Alternatively newer packages might be in testing.
 
 
+.. _installation#installing_on_windows:
+
+Installing on Windows
+=====================
+
+On Windows we recommend that you install The Translate Toolkit using a vitual
+environment. This makes installation clean and isolated.
+
+Use the latest Python 2.7 (at least Python 2.7.9 or newer as it bundles the pip
+installer).  Install `virtualenvwrapper-win
+<https://pypi.python.org/pypi/virtualenvwrapper-win>`_ to simplify handling of
+virtualenvs.
+
+1. Install latest `Python 2.7 <https://www.python.org/downloads/windows/>`_
+2. Open cmd.exe or similar
+3. `pip install virtualenvwrapper-win`
+4. `mkvirtualenv ttk` where "ttk" is the name for the new virtualenv
+5. `pip install translate-toolkit` to install latest stable or `pip install
+   --pre translate-toolkit` to try a pre-release
+6. `pip install "lxml>=3.0"` to be able to use XLIFF or other XML formats
+7. `po2prop --version` to double check you have the right version
+
+Next times you need to use Translate Toolkit just remember to:
+
+1. Open cmd.exe or similar
+2. `workon ttk` to enable the virtualenv again
+3. Run the Translate Toolkit commands you want
+
+
 .. _installation#installing_from_git:
 
 Installing from Git
