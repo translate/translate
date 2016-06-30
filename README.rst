@@ -46,37 +46,20 @@ Also part of the Toolkit are Python programs to create word counts, merge
 translations and perform various checks on translation files.
 
 
-Download
---------
-The latest version of the Translate Toolkit can be downloaded from:
-<http://sourceforge.net/projects/translate/files/Translate%20Toolkit/>.
+Important Links
+---------------
 
-The latest documentation is always available at
-http://docs.translatehouse.org/projects/translate-toolkit/en/latest/
-(Documentation is also included in the doc directory).
+* `Latest release downloads <https://github.com/translate/translate/releases>`_
+* `Documentation
+  <http://docs.translatehouse.org/projects/translate-toolkit/en/latest/>`_,
+  also use ``--help`` with any of the commands.
+* The Translate Toolkit is released under the `GPL
+  <https://github.com/translate/translate/blob/master/COPYING>`_ with
+  `contributions from many people
+  <https://github.com/translate/translate/blob/master/CREDITS>`_.
+* `Reporting issues <https://github.com/translate/translate/issues>`_
+* `Installation <http://docs.translatehouse.org/projects/translate-toolkit/en/stable/installation.html>`_
 
-
-Copying
--------
-The Translate Toolkit is developed and Copyright::
-
-	Zuza Software Foundation (Translate.org.za), and
-	St James Software
-
-and is released under the GPL license.
-
-The Translate Toolkit Documentation is Copyright::
-
-	Dwayne Bailey
-	Javier SOLA
-	David Fraser
-	Friedel Wolff
-	and others
-
-and is released under the GPL.
-
-Where useful emails have been quoted we have attempted to preserve the authors
-name and assume that their work may be republished.
 
 Joining the Translate Project
 -----------------------------
@@ -165,74 +148,6 @@ Gaupol might need the 'Universal Encoding Detector'
 Trados TXT TM support requires the BeautifulSoup parser
 <http://www.crummy.com/software/BeautifulSoup/>
 
-The programs have been tested on Linux and Windows.
-
-
-Installation
-------------
-
-To install the Translate Toolkit
-
-*   Windows
-
-    Double click on translate-toolkit-N.N-setup.exe (the larger download file).
-    This installer contains all dependencies you will need, including Python. To
-    use any of the command line tools, just type their name in a command window.
-    For example::
-
-        moz2po --version
-
-    Alternatively you can install the smaller translate-toolkit-N.N.N.win32.exe
-    This needs an existing Python installation, and assumes you will install all
-    the dependencies yourself. You will probably need to edit your PATH
-    environment variable to be able to use the tools in any command window.
-
-*   Linux ::
-
-        tar xzf translate-N.N.tar.gz
-        cd translate-N.N
-        su -c ./setup.py install
-
-    If you get an error along the lines of ::
-
-        Unable to open /usr/lib/python2.N/config/Makefile (no such file or directory)
-
-    while running setup.py, you need to install python-dev or libpython2.N-devel
-    package. Try to install python2.N-dev or libpython2.N-devel or something
-    similar with your distribution's package manager.
-
-
-Bugs
-----
-We think there might be some :)
-
-Please send your bug reports to:
-translate-devel at lists.sourceforge.net
-or report them at <https://github.com/translate/translate/issues>
-
-Some help in writing useful bug reports are mentioned here:
-<http://translate.sourceforge.net/wiki/developers/reporting_bugs>
-
-Documentation
--------------
-Please read our documentation online at
-http://docs.translatehouse.org/projects/translate-toolkit/en/latest/.
-There they are constantly being updated. Please feel free to contribute new
-sections and suggest corrections.
-
-Most tools support the options ``--help`` and ``--manpage`` of which the output
-is automatically generated. The output of ``--manpage`` produces output suitable
-for formatting as a standard manpage. This can be viewed on UNIX platforms with
-::
-
-    nroff -Tutf8 -mandoc
-
-With pot2po as example::
-
-    pot2po --manpage | nroff -Tutf8 -mandoc | less
-
-This is probably most useful for packagers to help them generate manual pages
-for the packaged versions.
 
 Program overview
 ----------------
