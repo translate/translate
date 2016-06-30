@@ -14,29 +14,6 @@ If your system already has the toolkit prepackaged, then please let us know
 what steps are required to install it.
 
 
-.. _installation#prerequisites:
-
-Prerequisites
-=============
-
-* Remove old versions of toolkit on Debian
-
-The following advice only applies to manual installation from tar ball.
-
-#. Find location of your python packages:
-
-   .. code-block:: bash
-
-      $ python -c "from distutils.sysconfig import get_python_lib; print(get_python_lib())"
-
-
-#. Delete toolkit package from your Python site-packages directory e.g.:
-
-   .. code-block:: bash
-
-      $ rm -R /usr/local/lib/python2.7/dist-packages/translate
-
-
 .. _installation#building:
 
 Building
@@ -156,3 +133,27 @@ To verify which version of the toolkit you have installed run:
 
    $ moz2po --version
    moz2po 1.1.0
+
+
+.. _installation#cleanup:
+
+Cleaning up existing installation
+=================================
+
+To remove old versions of the toolkit which you might have installed without a
+virtual environment or without your package manager.
+
+The following advice only applies to manual installation from a tarball.
+
+#. Find location of your python packages:
+
+   .. code-block:: bash
+
+      $ python -c "from distutils.sysconfig import get_python_lib; print(get_python_lib())"
+
+
+#. Delete toolkit package from your Python site-packages directory e.g.:
+
+   .. code-block:: bash
+
+      $ rm -R /usr/local/lib/python2.7/dist-packages/translate
