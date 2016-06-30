@@ -79,7 +79,7 @@ Creating the CSV files
   po2csv <po-dir|po-filtered-dir> <csv-out>
 
 This will create a set of CSV files in *csv-out* which you can compress using
-zip (we use zip because most people are Windows users)
+zip.
 
 .. _using_csv2po#creating_a_word_count:
 
