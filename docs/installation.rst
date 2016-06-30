@@ -29,7 +29,7 @@ Download
 
 Download a stable `released version
 <https://github.com/translate/translate/releases>`_.  Or
-if you have a python environment, run `easy_install translate-toolkit`.  For
+if you have a python environment, run `pip install translate-toolkit`.  For
 those who need problems fixed, or who want to work on the bleeding edge, get
 the latest source from :ref:`Git <installation#installing_from_git>`.
 

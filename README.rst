@@ -95,11 +95,9 @@ The package lxml is needed for XML file processing. You should install version
 to install might be through your system's package management. Alternatively you
 can try ::
 
-    easy_install lxml
+    pip install lxml
 
-which should install the newest version from the web. See the easy_install
-documentation for more details on how to force installation of a certain
-version, or to specify upgrade options, etc.
+which should install the newest version from the web.
 
 For Mac OSX, the following pages might be of help:
 <http://lxml.de/build.html#building-lxml-on-macos-x>
