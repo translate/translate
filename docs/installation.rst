@@ -57,14 +57,14 @@ Get the package for your system:
 
 The RPM package can be installed by using the following command:
 
-.. code-block:: bash
+.. code-block:: console
 
    $ rpm -Uvh translate-toolkit-1.0.1.rpm
 
 
 To install a tar.bz2:
 
-.. code-block:: bash
+.. code-block:: console
 
    $ tar xvjf translate-toolkit-1.1.0.tar.bz2
    $ cd translate-toolkit-1.1.0
@@ -74,7 +74,7 @@ To install a tar.bz2:
 
 On Debian (if you are on etch), just type the following command:
 
-.. code-block:: bash
+.. code-block:: console
 
    $ aptitude install translate-toolkit
 
@@ -82,7 +82,7 @@ On Debian (if you are on etch), just type the following command:
 If you are using an old Debian stable system, you might want to install the
 .tar.bz2 version. Be sure to install python and python development first with:
 
-.. code-block:: bash
+.. code-block:: console
 
    $ apt-get install python python-dev
 
@@ -98,7 +98,7 @@ Installing from Git
 If you want to try the bleeding edge, or just want to have the latest fixes
 from a stabilising branch then you need to use Git to get your sources:
 
-.. code-block:: bash
+.. code-block:: console
 
    $ git clone https://github.com/translate/translate.git
 
@@ -108,7 +108,7 @@ This will retrieve the ``master`` branch of the Toolkit.  Further Git
 
 Once you have the sources you have two options, a full install:
 
-.. code-block:: bash
+.. code-block:: console
 
    $ su
    $ ./setup.py install
@@ -116,7 +116,7 @@ Once you have the sources you have two options, a full install:
 
 or, running the tools from the source directory:
 
-.. code-block:: bash
+.. code-block:: console
 
    $ ./setuppath # Only needed the first time
    $ . setpath  # Do this once for a session
@@ -149,13 +149,13 @@ The following advice only applies to manual installation from a tarball.
 
 #. Find location of your python packages:
 
-   .. code-block:: bash
+   .. code-block:: console
 
       $ python -c "from distutils.sysconfig import get_python_lib; print(get_python_lib())"
 
 
 #. Delete toolkit package from your Python site-packages directory e.g.:
 
-   .. code-block:: bash
+   .. code-block:: console
 
       $ rm -R /usr/local/lib/python2.7/dist-packages/translate

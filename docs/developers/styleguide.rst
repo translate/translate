@@ -508,14 +508,14 @@ doesn't always work).  You will want to change that in these situations:
    following you to know what you intended.  So use ``.. code-block:: python``
    even though in some cases this is not required.
 
-With bash *command line examples*, to improve readability use::
+With *command line examples*, to improve readability use::
 
-    .. code-block:: bash
+    .. code-block:: console
 
 Add ``$`` command prompt markers and ``#`` comments as required, as shown in
 this example:
 
-.. code-block:: bash
+.. code-block:: console
 
    $ cd docs
    $ make html  # Build all Sphinx documentation

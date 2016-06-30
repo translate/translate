@@ -11,7 +11,7 @@ We use `py.test`_ for (unit) testing. You need at least pytest >= 2.2.
 
 To run tests in the current directory and its subdirectories:
 
-.. code-block:: bash
+.. code-block:: console
 
     $ py.test  # runs all tests
     $ py.test storage/test_dtd.py  # runs just a single test module
@@ -156,13 +156,13 @@ File name magic
 We use a special naming convention to make writing tests quick and easy.  Thus
 in the case of testing the following command:
 
-.. code-block:: bash
+.. code-block:: console
 
    $ moz2po -t template.dtd translations.po translated.dtd
 
 Our test would be written like this:
 
-.. code-block:: bash
+.. code-block:: console
 
    $ moz2po -t $one $two $out
 

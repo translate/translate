@@ -18,10 +18,10 @@ none
 No visual feedback, this is useful if you want to use any of the scripts as
 part of another script and don't want feedback to interfere with the operation.
 
-.. code-block:: bash
+.. code-block:: console
 
-    [dwayne@laptop OOo20]$ oo2po -P --progress=none en-US.sdf pot
-    [dwayne@laptop OOo20]$
+    $ oo2po -P --progress=none en-US.sdf pot
+    $
 
 .. _option_progress#dots:
 
@@ -31,13 +31,13 @@ dots
 Use visual dots to represent progress.  Each dot represent a file that has been
 processed.
 
-.. code-block:: bash
+.. code-block:: console
 
-    [dwayne@laptop OOo20]$ oo2po -P --progress=dots en-US.sdf pot
+    $ oo2po -P --progress=dots en-US.sdf pot
     .............................................................................................
     .............................................................................................
     .........................................
-    [dwayne@laptop OOo20]$
+    $
 
 .. _option_progress#bar_default:
 
@@ -46,18 +46,18 @@ bar (default)
 
 Use a progress bar consisting of hashes (#) to show progress.
 
-.. code-block:: bash
+.. code-block:: console
 
-    [dwayne@laptop OOo20]$ oo2po -P --progress=bar en-US.sdf pot
+    $ oo2po -P --progress=bar en-US.sdf pot
     processing 227 files...
     [##############################             ]  69%
 
 This is the default mode of operation, therefore this command would create the
 same output.
 
-.. code-block:: bash
+.. code-block:: console
 
-    [dwayne@laptop OOo20]$ oo2po -P en-US.sdf pot
+    $ oo2po -P en-US.sdf pot
 
 .. _option_progress#verbose:
 
@@ -67,9 +67,9 @@ verbose
 Combine the hash (#) progress bar form the *bar* option with the actual names
 of files that have been processed.
 
-.. code-block:: bash
+.. code-block:: console
 
-    [dwayne@laptop OOo20]$ oo2po -P --progress=verbose en-US.sdf pot
+    $ oo2po -P --progress=verbose en-US.sdf pot
     processing 227 files...
     so3/src.oo
     dbaccess/source/ui/uno.oo
@@ -92,9 +92,9 @@ names
 Prints out only the filenames without any other progress indicator.  This is a
 good option when outputting to a log file rather than a terminal.
 
-.. code-block:: bash
+.. code-block:: console
 
-    [dwayne@laptop OOo20]$ oo2po -P --progress=names en-US.sdf pot
+    $ oo2po -P --progress=names en-US.sdf pot
     so3/src.oo
     dbaccess/source/ui/uno.oo
     helpcontent2/source/text/shared.oo

@@ -23,7 +23,7 @@ We work from a clean checkout to ensure that everything you are adding to the
 build is what is in the repository and doesn't contain any of your uncommitted
 changes. It also ensures that someone else could replicate your process.
 
-.. code-block:: bash
+.. code-block:: console
 
     $ git clone git@github.com:translate/translate.git translate-release
     $ cd translate-release
@@ -36,7 +36,7 @@ Check copyright dates
 Update any copyright dates in :file:`docs/conf.py:copyright` and anywhere else
 that needs fixing.
 
-.. code-block:: bash
+.. code-block:: console
 
     $ git grep 2013  # Should pick up anything that should be examined
 
@@ -50,14 +50,14 @@ and since it can be rendered well in some of our key sites.
 First we need to create a log of changes in the Translate Toolkit, which is
 done generically like this:
 
-.. code-block:: bash
+.. code-block:: console
 
     $ git log $previous_version..HEAD > docs/releases/$version.rst
 
 
 Or a more specific example:
 
-.. code-block:: bash
+.. code-block:: console
 
     $ git log 1.10.0..HEAD > docs/releases/1.11.0-rc1.rst
 
@@ -84,7 +84,7 @@ Read for grammar and spelling errors.
 
 We create a list of contributors using this command:
 
-.. code-block:: bash
+.. code-block:: console
 
     $ git log 1.10.0..HEAD --format='%aN, ' | awk '{arr[$0]++} END{for (i in arr){print arr[i], i;}}' | sort -rn | cut -d\  -f2-
 
@@ -133,7 +133,7 @@ Build the package
 Building is the first step to testing that things work. From your clean
 checkout run:
 
-.. code-block:: bash
+.. code-block:: console
 
     $ mkvirtualenv build-ttk-release
     (build-ttk-release)$ pip install --upgrade pip
@@ -156,7 +156,7 @@ Test install and other tests
 The easiest way to test is in a virtualenv. You can test the installation of
 the new release using:
 
-.. code-block:: bash
+.. code-block:: console
 
     $ mkvirtualenv test-ttk-release
     (test-ttk-release)$ pip install --upgrade pip
@@ -168,7 +168,7 @@ You can then proceed with other tests such as checking:
 #. Documentation is available in the package
 #. Converters and scripts are installed and run correctly:
 
-   .. code-block:: bash
+   .. code-block:: console
 
        (test-ttk-release)$ moz2po --help
        (test-ttk-release)$ php2po --version
@@ -178,13 +178,13 @@ You can then proceed with other tests such as checking:
 #. Meta information about the package is correct. This is stored in
    :file:`setup.py`, to see some options to display meta-data use:
 
-   .. code-block:: bash
+   .. code-block:: console
 
        $ ./setup.py --help
 
    Now you can try some options like:
 
-   .. code-block:: bash
+   .. code-block:: console
 
        $ ./setup.py --name
        $ ./setup.py --version
@@ -213,7 +213,7 @@ You should only tag once you are happy with your release as there are some
 things that we can't undo. You can safely branch for a ``stable/`` branch
 before you tag.
 
-.. code-block:: bash
+.. code-block:: console
 
     $ git checkout -b stable/1.10.0
     $ git push origin stable/1.10.0
@@ -246,7 +246,7 @@ Publish on PyPI
    These can be stored in :file:`$HOME/.pypirc` and will contain your username
    and password. A first run of:
 
-   .. code-block:: bash
+   .. code-block:: console
 
        $ ./setup.py register
 
@@ -256,7 +256,7 @@ Publish on PyPI
 
 Run the following to publish the package on PyPI:
 
-.. code-block:: bash
+.. code-block:: console
 
     $ make publish-pypi
 
@@ -292,7 +292,7 @@ Update Translate Toolkit website
 
 We use github pages for the website. First we need to checkout the pages:
 
-.. code-block:: bash
+.. code-block:: console
 
     $ git checkout gh-pages
 
