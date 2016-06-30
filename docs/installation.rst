@@ -131,8 +131,8 @@ To verify which version of the toolkit you have installed run:
 
 .. code-block:: bash
 
-   $ moz2po --version
-   moz2po 1.1.0
+   $ prop2po --version
+   prop2po 1.1.0
 
 
 .. _installation#cleanup:
