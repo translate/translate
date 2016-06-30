@@ -6,12 +6,9 @@ Installation
 
 This is a guide to installing the Translate Toolkit on your system.  If the
 Translate Toolkit is already packaged for your system, this is probably the
-easiest way to install it. For Windows users, we provide installers. For
-several Linux distributions, the package might be available through your
-package manager.
-
-These packages might not be the absolute newest, or you might want to install
-from our packaged releases for some other reason.
+easiest way to install it. For several Linux distributions, the package might
+be available through your package manager.  On Windows, we recommnd using a
+virtual environments.
 
 If your system already has the toolkit prepackaged, then please let us know
 what steps are required to install it.
@@ -59,17 +56,11 @@ if you have a python environment, run `easy_install translate-toolkit`.  For
 those who need problems fixed, or who want to work on the bleeding edge, get
 the latest source from :ref:`Git <installation#installing_from_git>`.
 
-For most Windows users, the file named "translate-toolkit-...-setup.exe" is the
-best choice and contains everything you need if you just want to run Toolkit
-commands.  If you want to use it for development, you will need to install it
-with easy_install or from the source package.
-
-If you install the complete "setup" version in Windows, or if you install
-through your distribution's package manager, you should automatically have all
-the dependencies you need. If you are installing from the Version Control
-System, or from a source release, you should check the README file for
-information on the dependencies that are needed. Some of the dependencies are
-optional. The README file documents this.
+If you install through your distribution's package manager, you should
+automatically have all the dependencies you need. If you are installing a
+version from Version Control, or from a source release, you should check the
+README file for information on the dependencies that are needed. Some of the
+dependencies are optional. The README file documents this.
 
 
 .. _installation#installing_packaged_versions:
@@ -79,12 +70,6 @@ Installing packaged versions
 
 Get the package for your system:
 
-+------------+------------------------------------------------------------+
-| -setup.exe | A complete Windows installer containing all dependencies,  |
-|            | including Python                                           |
-+------------+------------------------------------------------------------+
-| .exe       | An installer for a Windows with Python and other           |
-|            | dependencies already installed                             |
 +------------+------------------------------------------------------------+
 | RPM        | If you want to install easily on an RPM based system       |
 +------------+------------------------------------------------------------+
@@ -109,8 +94,6 @@ To install a tar.bz2:
    $ su
    $ ./setup.py install
 
-
-On Windows simply click on the .exe file and follow the instructions.
 
 On Debian (if you are on etch), just type the following command:
 
