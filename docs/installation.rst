@@ -7,8 +7,8 @@ Installation
 This is a guide to installing the Translate Toolkit on your system.  If the
 Translate Toolkit is already packaged for your system, this is probably the
 easiest way to install it. For several Linux distributions, the package might
-be available through your package manager.  On Windows, we recommnd using a
-virtual environments.
+be available through your package manager.  On Windows, we recommend using a
+virtual environment.
 
 If your system already has the toolkit prepackaged, then please let us know
 what steps are required to install it.
@@ -95,7 +95,7 @@ Alternatively newer packages might be in testing.
 Installing on Windows
 =====================
 
-On Windows we recommend that you install The Translate Toolkit using a vitual
+On Windows we recommend that you install Translate Toolkit using a virtual
 environment. This makes installation clean and isolated.
 
 Use the latest Python 2.7 (at least Python 2.7.9 or newer as it bundles the pip
