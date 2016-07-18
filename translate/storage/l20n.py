@@ -1,23 +1,47 @@
+# -*- coding: utf-8 -*-
+#
+# Copyright 2016 Zuza Software Foundation
+#
+# This file is part of translate.
+#
+# translate is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
+#
+# translate is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program; if not, see <http://www.gnu.org/licenses/>.
+
+from __future__ import absolute_import
+
+from codecs import iterencode
+
+from l20n.format.parser import FTLParser as L20nParser
+from l20n.format.serializer import FTLSerializer as L20nSerializer
+
 from translate.storage import base
-from l20nparser import L20nParser
+
 
 class l20nunit(base.TranslationUnit):
     """Single L20n Entity"""
 
-    def __init__(self, source=''):
+    def __init__(self, source='', id='', comment=''):
         super(l20nunit, self).__init__(source)
-        self.id = ''
-        self.value = ''
-        self.attrs = []
-        self.value_index = None
-        self.source = source
-        pass
+        self.id = id
+        self.value = source
+        self.comment = comment
 
+    # Note that source and target are equivalent for monolingual units
     def getsource(self):
-        return self.id
+        return self.value
 
     def setsource(self, source):
-        self.id = source
+        self.value = source
 
     source = property(getsource, setsource)
 
@@ -36,24 +60,12 @@ class l20nunit(base.TranslationUnit):
         self.id = new_id
 
     def getoutput(self):
-        if self.value_index:
-            values = []
-            for k in ['zero', 'one', 'two', 'few', 'many', 'other']:
-                if k in self.value:
-                    values.append("  %s: '%s'" % (k, self.value[k]))
+        return u"%s = %s\n" % (self.id, self.value)
 
-            return '''<%(key)s[@cldr.plural($%(extra)s)] {\n%(values)s\n}>''' % {
-                'values': "\n".join(values),
-                'extra': self.value_index[1],
-                'key': self.id
-            }
-        return '''<%(key)s "%(value)s">''' % {
-            'value': self.value,
-            'key': self.id
-        }
 
 class l20nfile(base.TranslationStore):
     UnitClass = l20nunit
+    encoding = 'utf8'
 
     def __init__(self, inputfile=None):
         super(l20nfile, self).__init__(unitclass=self.UnitClass)
@@ -64,31 +76,32 @@ class l20nfile(base.TranslationStore):
             self.makeindex()
 
     def parse(self, l20nsrc):
+        text, encoding = self.detect_encoding(
+            l20nsrc, default_encodings=[self.encoding])
+        if not text:
+            raise IOError("Cannot detect encoding for %s." % (self.filename or
+                                                              "given string"))
+        l20nsrc = text
+
         parser = L20nParser()
-        ast = parser.parse(l20nsrc)
+        ast, errors = parser.parseResource(l20nsrc)
 
-        for entry in ast:
-            newl20n = l20nunit()
-            newl20n.id = entry['$i']
-            newl20n.value = entry['$v']
+        for entry in ast['body']:
+            if entry['type'] == 'Entity':
+                translation = L20nSerializer().dumpPattern(entry['value'])
+                comment = ''
+                if entry['comment']:
+                    comment = entry['comment']['content']
 
-            if '$x' in entry:
-                newl20n.value_index = [{
-                    'type': 'idOrVal',
-                    'value': 'plural'
-                }, entry['$x'][1]]
-            self.units.append(newl20n)
+                newl20n = l20nunit(
+                    source=translation,
+                    id=entry['id']['name'],
+                    comment=comment
+                )
+                self.addunit(newl20n)
 
-            for key in entry.keys():
-                if key[0] != '$':
-                    self.add_attr(newl20n, key, entry[key])
-
-    def add_attr(self, unit, id, attr):
-        unit.attrs.append({'id': id, 'value': attr})
-
-    def __str__(self):
-        lines = []
-        for unit in self.units:
-            lines.append(unit.getoutput())
-        uret = u"\n".join(lines)
-        return uret
+    def serialize(self, out):
+        """Write the units back to file."""
+        # Thanks to iterencode, a possible BOM is written only once
+        for chunk in iterencode((unit.getoutput() for unit in self.units), self.encoding):
+            out.write(chunk)

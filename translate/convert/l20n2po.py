@@ -1,4 +1,22 @@
 #!/usr/bin/env python
+# -*- coding: utf-8 -*-
+#
+# Copyright 2016 Zuza Software Foundation
+#
+# This file is part of translate.
+#
+# translate is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
+#
+# translate is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program; if not, see <http://www.gnu.org/licenses/>.
 
 """Convert Mozilla .l20n files to Gettext PO localization files.
 
@@ -6,110 +24,76 @@ See: http://docs.translatehouse.org/projects/translate-toolkit/en/latest/command
 for examples and usage instructions.
 """
 
-from translate.lang import data
-from translate.storage import po, l20n
+from translate.convert import convert
+from translate.storage import l20n, po
 
-class l20n2po:
+
+class l20n2po(object):
     """convert a .l20n file to a .po file for handling the
     translation."""
 
     def __init__(self, blankmsgstr=False, duplicatestyle="msgctxt"):
-        pass
+        self.blankmsgstr = blankmsgstr
+        self.duplicatestyle = duplicatestyle
 
-    def convertl20nunit(self, store, unit):
-        po_units = []
-
+    def convert_l20nunit(self, unit):
         po_unit = po.pounit(encoding="UTF-8")
         po_unit.setid(unit.getid())
         po_unit.addlocation(unit.getid())
-        if unit.value_index:
-            # the value here may be a string or a hash
-            # if it's a hash it will look like this:
-            #
-            # unit.value_index - [{'type': 'idOrVal', 'value': 'plural'}, 'n']
-            # unit.value - {'one': 'value', 'many': 'value2'}
-            if unit.value_index[0]['value'] == 'plural':
-                # While l20n could potentially have N forms we can only handle
-                # and only want two in Gettext. Since Gettext uses English
-                # forms we're using the same: 'one' and 'other'
-                po_unit.addnote("<l20n:plural>@cldr.plural($%s)</l20n>" % unit.value_index[1], "developer")
-                po_unit.source = [unit.value['one'], unit.value['other']]
-                po_unit.target = ["", ""]
-        else:
-            po_unit.source = unit.value
-        po_units.append(po_unit)
+        po_unit.source = unit.value
+        po_unit.addnote(unit.comment, "developer")
 
-        for attr in unit.attrs:
-            po_unit = po.pounit(encoding="UTF-8")
+        return po_unit
 
-            id = '%s.%s' % (unit.getid(), attr['id'])
-            po_unit.addlocation(id)
-            po_unit.setid(id)
-            po_unit.source = attr['value']
-            po_units.append(po_unit)
-        return po_units
-
-    def convertstore(self, l20n_store):
+    def convert_store(self, l20n_store):
         """converts a .l20n file to a .po file..."""
         target_store = po.pofile()
-        targetheader = target_store.header()
-        targetheader.addnote("extracted from %s" % l20n_store.filename,
-                             "developer")
         l20n_store.makeindex()
         for l20nunit in l20n_store.units:
-            pounits = self.convertl20nunit(l20n_store, l20nunit)
-            for pounit in pounits:
-                target_store.addunit(pounit)
+            pounit = self.convert_l20nunit(l20nunit)
+            target_store.addunit(pounit)
+        target_store.removeduplicates(self.duplicatestyle)
         return target_store
 
-    def mergestore(self, origl20nfile, translatedl20nfile):
+    def merge_stores(self, origl20nfile, translatedl20nfile):
         """converts two .l20n files to a .po file..."""
         target_store = po.pofile()
-        targetheader = target_store.header()
-        targetheader.addnote("extracted from %s, %s" % (origl20nfile.filename,
-                                                        translatedl20nfile.filename),
-                             "developer")
         translatedl20nfile.makeindex()
         for l20nunit in origl20nfile.units:
-            pounits = self.convertl20nunit(origl20nfile, l20nunit)
-            for pounit in pounits:
-                newunit = target_store.addunit(pounit)
-                for location in pounit.getlocations():
-                    if location in translatedl20nfile.sourceindex:
-                        if isinstance(translatedl20nfile.sourceindex[location][0].value, dict):
-                            targets = []
-                            for form in data.cldr_plural_categories:
-                                if form in translatedl20nfile.sourceindex[location][0].value:
-                                    targets.append(translatedl20nfile.sourceindex[location][0].value[form])
-                            pounit.target = targets
-                        else:
-                            pounit.target = translatedl20nfile.sourceindex[location][0].value
+            pounit = self.convert_l20nunit(l20nunit)
+            target_store.addunit(pounit)
+            for location in pounit.getlocations():
+                if location in translatedl20nfile.id_index:
+                    l20nunit = translatedl20nfile.id_index[location]
+                    pounit.target = l20nunit.target
+        target_store.removeduplicates(self.duplicatestyle)
         return target_store
 
 
 def convertl20n(inputfile, outputfile, templatefile,
                 pot=False, duplicatestyle="msgctxt"):
     inputstore = l20n.l20nfile(inputfile)
-    convertor = l20n2po(blankmsgstr=pot,
-                        duplicatestyle=duplicatestyle)
+    convertor = l20n2po(blankmsgstr=pot, duplicatestyle=duplicatestyle)
     if templatefile is None:
-        outputstore = convertor.convertstore(inputstore)
+        outputstore = convertor.convert_store(inputstore)
     else:
         templatestore = l20n.l20nfile(templatefile)
-        outputstore = convertor.mergestore(templatestore, inputstore)
+        outputstore = convertor.merge_stores(templatestore, inputstore)
     if outputstore.isempty():
         return 0
-    outputfile.write(str(outputstore))
+    outputstore.serialize(outputfile)
     return 1
 
+
 formats = {
+    "ftl": ("po", convertl20n),
+    ("ftl", "ftl"): ("po", convertl20n),
     "l20n": ("po", convertl20n),
     ("l20n", "l20n"): ("po", convertl20n),
 }
 
-def main(argv=None):
-    from translate.convert import convert
 
+def main(argv=None):
     parser = convert.ConvertOptionParser(formats, usetemplates=True,
                                          usepots=True, description=__doc__)
     parser.add_duplicates_option()
