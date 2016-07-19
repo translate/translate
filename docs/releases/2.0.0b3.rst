@@ -1,22 +1,24 @@
-Translate Toolkit dev
-*********************
+Translate Toolkit 2.0.0b3
+*************************
 
-*Not yet released*
+*Released on 19 July 2016*
 
 This release contains many improvements and bug fixes. While it contains many
 general improvements, it also specifically contains needed changes and
 optimizations for the upcoming `Pootle <http://pootle.translatehouse.org/>`_
 2.8.0 and `Virtaal <http://virtaal.translatehouse.org>`_ releases.
 
-It is just over X months since the last release and there are many improvements
+It is just over 2 months since the last release and there are many improvements
 across the board.  A number of people contributed to this release and we've
 tried to credit them wherever possible (sorry if somehow we missed you).
 
 
-dev vs 2.0.0b2
-==============
+2.0.0b2 vs 2.0.0b3
+==================
 
-- 
+- Updated installation instructions for Windows
+- pocount now outputs csv header in one line
+- Fixed parsing of PO files with first entry in unicode
 
 
 Major changes
@@ -49,6 +51,7 @@ Formats and Converters
   - Duplicate entries are now removed by default if no way to handle
     duplicates is specified. Note that converters still default to `msgctxt`.
   - msgid comments (KDE style) are only parsed from msgid now.
+  - Fixed parsing of PO files with first entry in unicode
 
 - DTD
 
@@ -98,6 +101,7 @@ Tools
 
 - posegment now correctly segments Japanese strings with half width punctuation
   sign (:issue:`3280`).
+- pocount now outputs csv header in one line
 
 
 Languages
@@ -173,6 +177,7 @@ Contributors
 
 This release was made possible by the following people:
 
-%CONTRIBUTORS%
+Dwayne Bailey, Leandro Regueiro, Jakub Wilk, Zdenek Juran, Michal Čihař, Claude
+Paroz.
 
 And to all our bug finders and testers, a Very BIG Thank You.
