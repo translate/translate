@@ -27,7 +27,7 @@ from translate.storage import test_base, ts2 as ts
 from translate.storage.placeables import parse, xliff
 
 
-TS_NUMERUS = """<?xml version='1.0' encoding='utf-8'?>
+TS_NUMERUS = """<?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE TS>
 <TS version="2.1">
 <context>
@@ -142,7 +142,7 @@ class TestTSfile(test_base.TestTranslationStore):
 
     def test_edit(self):
         """test editing works well"""
-        tsstr = '''<?xml version='1.0' encoding='utf-8'?>
+        tsstr = '''<?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE TS>
 <TS version="2.0" language="hu">
 <context>
