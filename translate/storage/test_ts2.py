@@ -20,7 +20,7 @@
 """Tests for Qt Linguist storage class
 
 Reference implementation & tests:
-gitorious:qt5-tools/src/qttools/tests/auto/linguist/lconvert/data
+http://code.qt.io/cgit/qt/qttools.git/tree/tests/auto/linguist/lconvert/data
 """
 
 from translate.storage import test_base, ts2 as ts
