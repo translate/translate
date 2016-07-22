@@ -488,5 +488,6 @@ class tsfile(lisa.LISAfile):
         # Qt Linguist does self-close the "location" elements though
         for e in root.xpath("//*[not(./node()) and not(text()) and not(name() = 'location')]"):
             e.text = ""
+        out.write("<?xml version=\"1.0\" encoding=\"utf-8\"?>\n")
         out.write(etree.tostring(root, doctype=doctype, pretty_print=True,
-                                 xml_declaration=True, encoding='utf-8'))
+                                 xml_declaration=None, encoding='utf-8'))
