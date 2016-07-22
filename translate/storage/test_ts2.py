@@ -33,6 +33,8 @@ TS_NUMERUS = """<?xml version='1.0' encoding='utf-8'?>
 <context>
     <name>Dialog2</name>
     <message numerus="yes">
+        <location filename="../tools/qtconfig/mainwindow.cpp" line="+202"/>
+        <location filename="../somewhere-else.cpp" line="+2"/>
         <source>%n files</source>
         <translation type="unfinished">
             <numerusform></numerusform>
