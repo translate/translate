@@ -23,13 +23,13 @@ This will eventually replace the older ts.py which only supports the older
 format. While converters haven't been updated to use this module, we retain
 both.
 
-`TS file format 4.3 <http://doc.qt.digia.com/4.3/linguist-ts-file-format.html>`_,
-`4.8 <http://qt-project.org/doc/qt-4.8/linguist-ts-file-format.html>`_,
-`5.0 <http://qt-project.org/doc/qt-5.0/qtlinguist/linguist-ts-file-format.html>`_.
+`TS file format 4.3 <http://doc.qt.io/archives/4.3/linguist-ts-file-format.html>`_,
+`4.8 <http://doc.qt.io/qt-4.8/linguist-ts-file-format.html>`_,
+`5 <http://doc.qt.io/qt-5/linguist-ts-file-format.html>`_.
 `Example <http://svn.ez.no/svn/ezcomponents/trunk/Translation/docs/linguist-format.txt>`_.
 
-`Specification of the valid variable entries <http://qt-project.org/doc/qt-5.0/qtcore/qstring.html#arg>`_,
-`2 <http://qt-project.org/doc/qt-5.0/qtcore/qstring.html#arg-2>`_
+`Specification of the valid variable entries <http://doc.qt.io/qt-5/qstring.html#arg>`_,
+`2 <http://doc.qt.io/qt-5/qstring.html#arg-2>`_
 """
 
 import six
@@ -485,7 +485,9 @@ class tsfile(lisa.LISAfile):
         doctype = self.document.docinfo.doctype
         # Iterate over empty tags without children and force empty text
         # This will prevent self-closing tags in pretty_print mode
-        for e in root.xpath("//*[not(./node()) and not(text())]"):
+        # Qt Linguist does self-close the "location" elements though
+        for e in root.xpath("//*[not(./node()) and not(text()) and not(name() = 'location')]"):
             e.text = ""
+        out.write("<?xml version=\"1.0\" encoding=\"utf-8\"?>\n")
         out.write(etree.tostring(root, doctype=doctype, pretty_print=True,
-                                 xml_declaration=True, encoding='utf-8'))
+                                 xml_declaration=None, encoding='utf-8'))
