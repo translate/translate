@@ -322,6 +322,17 @@ msgstr[1] "Kóeie"
         assert locations[0] == u"programming/C/programming.xml:44(para)"
         assert isinstance(locations[0], six.text_type)
 
+    def test_percent_location(self):
+        """test that we correctly handle a location with percent chars"""
+        posource = '#: /foo/bar/%%var%%www%%about.html:44\nmsgid "test"\nmsgstr "rest"\n'
+        pofile = self.poparse(posource)
+        u = pofile.units[-1]
+
+        locations = u.getlocations()
+        print(locations)
+        assert len(locations) == 1
+        assert locations[0] == "/foo/bar/%%var%%www%%about.html:44"
+
     @mark.xfail(reason="Not Implemented")
     def test_kde_plurals(self):
         """Tests kde-style plurals. (Bug: 191)"""

@@ -50,11 +50,13 @@ def unquote_plus(text):
     try:
         if six.PY2 and isinstance(text, six.text_type):
             text = text.encode('utf-8')
-        result = parse.unquote_plus(text)
         if six.PY2:
-            result = result.decode('utf-8')
+            result = parse.unquote_plus(text).decode('utf-8')
+        else:
+            # Enforce utf-8 validation
+            result = parse.unquote_plus(text, errors="strict")
         return result
-    except UnicodeEncodeError as e:
+    except (UnicodeEncodeError, UnicodeDecodeError) as e:
         # for some reason there is a non-ascii character here. Let's assume it
         # is already unicode (because of originally decoding the file)
         return text
