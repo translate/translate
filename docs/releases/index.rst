@@ -8,6 +8,7 @@ The following are release notes for Translate Toolkit:
 .. toctree::
    :maxdepth: 1
 
+   2.0.0b4 <2.0.0b4>
    2.0.0b3 <2.0.0b3>
    2.0.0b2 <2.0.0b2>
    2.0.0b1 <2.0.0b1>
