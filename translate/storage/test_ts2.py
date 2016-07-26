@@ -54,6 +54,12 @@ TS_NUMERUS = """<?xml version="1.0" encoding="utf-8"?>
         <source>func3</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>&quot;Qt Linguist&apos;s&quot; format ain&apos;t that easy.
+The other line&apos;s translation may have quotes, too (&quot;&apos;&quot;,
+&apos;&quot;&apos;)</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 </TS>
 """
