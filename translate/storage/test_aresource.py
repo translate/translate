@@ -381,3 +381,18 @@ class TestAndroidResourceFile(test_monolingual.TestMonolingualStore):
 
         store.filename = 'invalid_directory'
         assert store.gettargetlanguage() is None
+
+    def test_namespaces(self):
+        if etree.LXML_VERSION < (3, 5, 0):
+            # Not supported with older lxml
+            return
+        content = '''<resources xmlns:tools="http://schemas.android.com/tools">
+            <string name="string1" tools:ignore="PluralsCandidate">string1</string>
+            <string name="string2">string2</string>
+        </resources>'''
+        store = self.StoreClass()
+        store.parse(content)
+        newstore = self.StoreClass()
+        newstore.addunit(store.units[0], new=True)
+        print(newstore)
+        assert b'<resources xmlns:tools="http://schemas.android.com/tools">' in bytes(newstore)
