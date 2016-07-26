@@ -34,7 +34,7 @@ def test_getlanguage():
     assert language.fullname == 'Icelandic'
 
     language = factory.getlanguage('or')
-    assert "startcaps" in language.ignoretests
+    assert "startcaps" in language.ignoretests['all']
 
     #Test with a language code contains '@'
     language = factory.getlanguage('ca@valencia')

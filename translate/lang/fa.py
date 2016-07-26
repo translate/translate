@@ -91,7 +91,9 @@ class fa(common.Common):
         (u"9", u"۹"),  # U+06F9 Extended Arabic-Indic digit nine.
     )
 
-    ignoretests = ["startcaps", "simplecaps"]
+    ignoretests = {
+        'all': ["simplecaps", "startcaps"],
+    }
     #TODO: check persian numerics
     #TODO: zwj and zwnj?
 

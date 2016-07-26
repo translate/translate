@@ -45,7 +45,9 @@ class nqo(common.Common):
         u"!": u"߹",
     }
 
-    ignoretests = ["startcaps", "simplecaps", "acronyms"]
+    ignoretests = {
+        'all': ["acronyms", "simplecaps", "startcaps"],
+    }
 
     @classmethod
     def punctranslate(cls, text):

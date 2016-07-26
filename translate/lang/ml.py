@@ -28,4 +28,6 @@ from translate.lang import common
 class ml(common.Common):
     """This class represents Malayalam."""
 
-    ignoretests = ["startcaps", "simplecaps"]
+    ignoretests = {
+        'all': ["simplecaps", "startcaps"],
+    }

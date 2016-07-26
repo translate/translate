@@ -44,4 +44,6 @@ class code_or(common.Common):
         u".\n": u"।\n",
     }
 
-    ignoretests = ["startcaps", "simplecaps"]
+    ignoretests = {
+        'all': ["simplecaps", "startcaps"],
+    }

@@ -188,8 +188,16 @@ class Common(object):
     """A tuple of number transformation rules that can be used by
     numbertranslate()."""
 
-    ignoretests = []
-    """List of pofilter tests for this language that must be ignored."""
+    ignoretests = {}
+    """Dictionary of tests to ignore in some or all checkers.
+
+    Keys are checker names and values are list of names for the ignored tests
+    in the checker. A special 'all' checker name can be used to tell that the
+    tests must be ignored in all the checkers.
+
+    Listed checkers to ignore tests on must be lowercase strings for the
+    checker name, for example "mozilla" for MozillaChecker or "libreoffice" for
+    LibreOfficeChecker."""
 
     checker = None
     """A language specific checker (see filters.checks).

@@ -1351,3 +1351,26 @@ def test_dialogsizes():
     assert fails(mozillachecker.dialogsizes, 'height: 12em;', 'height: 24xx;')
     assert fails(mozillachecker.dialogsizes, 'height: 12.5em;', 'height: 12,5em;')
     assert fails(mozillachecker.dialogsizes, 'width: 36em; height: 18em;', 'width: 30em; min-height: 20em;')
+
+
+def test_skip_checks_per_language_in_some_checkers():
+    """Test some checks are skipped for some languages in Mozilla checker."""
+    from translate.storage import base
+
+    str1, str2, __ = strprep(u"&Check for updates", u"আপডেইটসমূহৰ বাবে নিৰীক্ষণ কৰক")
+    unit = base.TranslationUnit(str1)
+    unit.target = str2
+
+    mozillachecker = checks.MozillaChecker(
+        checkerconfig=checks.CheckerConfig(targetlanguage="as")
+    )
+    failures = mozillachecker.run_filters(unit)
+    # Accelerators check is disabled for Assamese in MozillaChecker.
+    assert 'accelerators' not in failures.keys()
+
+    stdchecker = checks.StandardChecker(
+        checkerconfig=checks.CheckerConfig(accelmarkers="&", targetlanguage="as")
+    )
+    failures = stdchecker.run_filters(unit)
+    # But it is not in StandardChecker.
+    assert 'accelerators' in failures.keys()

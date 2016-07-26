@@ -39,4 +39,6 @@ class ur(common.Common):
         #u"%": u"٪",
     }
 
-    ignoretests = ["startcaps", "simplecaps"]
+    ignoretests = {
+        'all': ["simplecaps", "startcaps"],
+    }

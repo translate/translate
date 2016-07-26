@@ -66,4 +66,6 @@ class zh(common.Common):
     def length_difference(cls, length):
         return 10 - length / 2
 
-    ignoretests = ["startcaps", "simplecaps"]
+    ignoretests = {
+        'all': ["simplecaps", "startcaps"],
+    }

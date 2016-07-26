@@ -28,4 +28,6 @@ from translate.lang import common
 class gu(common.Common):
     """This class represents Gujarati."""
 
-    ignoretests = ["startcaps", "simplecaps"]
+    ignoretests = {
+        'all': ["simplecaps", "startcaps"],
+    }

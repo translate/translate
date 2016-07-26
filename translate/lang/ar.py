@@ -59,7 +59,9 @@ class ar(common.Common):
         (u"9", u"٩"),  # U+0669 Arabic-Indic digit nine.
     )
 
-    ignoretests = ["startcaps", "simplecaps", "acronyms"]
+    ignoretests = {
+        'all': ["acronyms", "simplecaps", "startcaps"],
+    }
 
     @classmethod
     def punctranslate(cls, text):

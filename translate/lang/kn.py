@@ -28,4 +28,6 @@ from translate.lang import common
 class kn(common.Common):
     """This class represents Kannada."""
 
-    ignoretests = ["startcaps", "simplecaps"]
+    ignoretests = {
+        'all': ["simplecaps", "startcaps"],
+    }

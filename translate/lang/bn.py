@@ -57,4 +57,6 @@ class bn(common.Common):
         (u"9", u"৯"),  # U+09EF Bengali digit nine.
     )
 
-    ignoretests = ["startcaps", "simplecaps"]
+    ignoretests = {
+        'all': ["simplecaps", "startcaps"],
+    }

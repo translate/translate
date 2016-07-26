@@ -28,4 +28,6 @@ from translate.lang import common
 class de(common.Common):
     """This class represents German."""
 
-    ignoretests = ["simplecaps"]
+    ignoretests = {
+        'all': ["simplecaps"],
+    }

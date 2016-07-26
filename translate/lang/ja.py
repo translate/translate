@@ -49,4 +49,6 @@ class ja(common.Common):
         u",\n": u"、\n",
     }
 
-    ignoretests = ["startcaps", "simplecaps"]
+    ignoretests = {
+        'all': ["simplecaps", "startcaps"],
+    }
