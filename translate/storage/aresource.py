@@ -489,3 +489,24 @@ class AndroidResourceFile(lisa.LISAfile):
             self.settargetlanguage(target_lang)
 
         return target_lang
+
+    def addunit(self, unit, new=True):
+        """Adds unit to the document
+
+        In addition to the standard addunit, it also tries to move
+        namespace definitions to the top <resources> element.
+        """
+        newns = {}
+        do_cleanup = False
+        if new:
+            newns = self.body.nsmap
+            for ns in unit.xmlelement.nsmap:
+                if ns not in newns:
+                    do_cleanup = True
+                    newns[ns] = unit.xmlelement.nsmap[ns]
+
+        super(AndroidResourceFile, self).addunit(unit, new)
+        # Move aliased namespaces to the <resources> tag
+        # The top_nsmap was introduced in LXML 3.5.0
+        if do_cleanup and etree.LXML_VERSION >= (3, 5, 0):
+            etree.cleanup_namespaces(self.body, top_nsmap=newns)
