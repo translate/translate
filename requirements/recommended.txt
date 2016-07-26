@@ -2,7 +2,7 @@
 # Recommended #
 ###############
 
-# lxml - for XML processing (XLIFF, TMX, TBX, Android)
+# lxml - for XML processing (XLIFF, TMX, TBX, ts, Android)
 lxml>=3.0
 
 # Faster matching in e.g. pot2po

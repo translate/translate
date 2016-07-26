@@ -20,19 +20,21 @@
 """Tests for Qt Linguist storage class
 
 Reference implementation & tests:
-gitorious:qt5-tools/src/qttools/tests/auto/linguist/lconvert/data
+http://code.qt.io/cgit/qt/qttools.git/tree/tests/auto/linguist/lconvert/data
 """
 
 from translate.storage import test_base, ts2 as ts
 from translate.storage.placeables import parse, xliff
 
 
-TS_NUMERUS = """<?xml version='1.0' encoding='utf-8'?>
+TS_NUMERUS = """<?xml version=\"1.0\" encoding=\"utf-8\"?>
 <!DOCTYPE TS>
 <TS version="2.1">
 <context>
     <name>Dialog2</name>
     <message numerus="yes">
+        <location filename="../tools/qtconfig/mainwindow.cpp" line="+202"/>
+        <location filename="../somewhere-else.cpp" line="+2"/>
         <source>%n files</source>
         <translation type="unfinished">
             <numerusform></numerusform>
@@ -140,7 +142,7 @@ class TestTSfile(test_base.TestTranslationStore):
 
     def test_edit(self):
         """test editing works well"""
-        tsstr = '''<?xml version='1.0' encoding='utf-8'?>
+        tsstr = '''<?xml version=\"1.0\" encoding=\"utf-8\"?>
 <!DOCTYPE TS>
 <TS version="2.0" language="hu">
 <context>
