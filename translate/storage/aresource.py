@@ -508,5 +508,5 @@ class AndroidResourceFile(lisa.LISAfile):
         super(AndroidResourceFile, self).addunit(unit, new)
         # Move aliased namespaces to the <resources> tag
         # The top_nsmap was introduced in LXML 3.5.0
-        if do_cleanup and etree.LXML_VERSION >= (3, 5, 0):
+        if do_cleanup:
             etree.cleanup_namespaces(self.body, top_nsmap=newns)

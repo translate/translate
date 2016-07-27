@@ -91,7 +91,7 @@ Python 2.6 is no longer supported by the Python Software Foundation, while the
 Toolkit may work in versions before Python 2.7 this is not supported.
 
 The package lxml is needed for XML file processing. You should install version
-2.2.0 or later. <http://lxml.de/> Depending on your platform, the easiest way
+3.5.0 or later. <http://lxml.de/> Depending on your platform, the easiest way
 to install might be through your system's package management. Alternatively you
 can try ::
 
