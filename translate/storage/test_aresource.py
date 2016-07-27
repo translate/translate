@@ -383,9 +383,6 @@ class TestAndroidResourceFile(test_monolingual.TestMonolingualStore):
         assert store.gettargetlanguage() is None
 
     def test_namespaces(self):
-        if etree.LXML_VERSION < (3, 5, 0):
-            # Not supported with older lxml
-            return
         content = '''<resources xmlns:tools="http://schemas.android.com/tools">
             <string name="string1" tools:ignore="PluralsCandidate">string1</string>
             <string name="string2">string2</string>

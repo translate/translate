@@ -3,7 +3,7 @@
 ###############
 
 # lxml - for XML processing (XLIFF, TMX, TBX, Android)
-lxml>=3.0
+lxml>=3.5
 
 # Faster matching in e.g. pot2po
 python-Levenshtein>=0.11.1
