@@ -166,7 +166,7 @@ class reprop(object):
                 delimiter = prespace + delimiter_char + postspace
             if key in self.inputstore.locationindex:
                 unit = self.inputstore.locationindex[key]
-                if not unit.istranslated() and bool(unit.source) and self.remove_untranslated:
+                if unit is None or not unit.istranslated() and bool(unit.source) and self.remove_untranslated:
                     returnline = u""
                     self.inecho = False
                 else:
