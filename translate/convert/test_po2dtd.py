@@ -148,25 +148,6 @@ msgstr "Dimpled Ring"
                 dtdfile.makeindex()
                 assert dtd.unquotefromdtd(dtdfile.id_index["simple.%s" % accesskey].definition) == "a"
 
-    def test_ampersandfix(self):
-        """tests that invalid ampersands are fixed in the dtd"""
-        simplestring = '''#: simple.string\nmsgid "Simple String"\nmsgstr "Dimpled &Ring"\n'''
-        dtdfile = self.po2dtd(simplestring)
-        dtdsource = bytes(dtdfile).decode('utf-8')
-        assert "Dimpled Ring" in dtdsource
-
-        po_snippet = u'''#: searchIntegration.label
-#: searchIntegration.accesskey
-msgid "Allow &searchIntegration.engineName; to &search messages"
-msgstr "&searchIntegration.engineName; &ileti aramasına izin ver"
-'''
-        dtd_snippet = r'''<!ENTITY searchIntegration.accesskey      "s">
-<!ENTITY searchIntegration.label       "Allow &searchIntegration.engineName; to search messages">'''
-        dtdfile = self.merge2dtd(dtd_snippet, po_snippet)
-        dtdsource = bytes(dtdfile).decode('utf-8')
-        print(dtdsource)
-        assert u'"&searchIntegration.engineName; ileti aramasına izin ver"' in dtdsource
-
     def test_accesskey_missing(self):
         """tests that missing ampersands use the source accesskey"""
         po_snippet = r'''#: key.label
