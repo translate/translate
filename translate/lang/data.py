@@ -122,7 +122,7 @@ languages = {
     'mk': (u'Macedonian', 2, 'n==1 || n%10==1 ? 0 : 1'),
     'ml': (u'Malayalam', 2, '(n != 1)'),
     'mn': (u'Mongolian', 2, '(n != 1)'),
-    'mni': (u'Manipuri', 2, '(n != 1)'),
+    'mni': (u'Meithei (Manipuri)', 2, '(n != 1)'),
     'mnk': (u'Mandinka', 3, '(n==0 ? 0 : n==1 ? 1 : 2)'),
     'mr': (u'Marathi', 2, '(n != 1)'),
     'ms': (u'Malay', 1, '0'),
