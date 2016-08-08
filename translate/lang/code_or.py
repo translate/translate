@@ -17,9 +17,9 @@
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, see <http://www.gnu.org/licenses/>.
 
-"""This module represents the Oriya language.
+"""This module represents the Odia language.
 
-.. seealso:: http://en.wikipedia.org/wiki/Oriya_language
+.. seealso:: https://en.wikipedia.org/wiki/Odia_language
 """
 
 import re
@@ -28,7 +28,7 @@ from translate.lang import common
 
 
 class code_or(common.Common):
-    """This class represents Oriya."""
+    """This class represents Odia."""
 
     sentenceend = u"।!?…"
 

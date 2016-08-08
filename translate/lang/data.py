@@ -138,7 +138,7 @@ languages = {
     'nqo': (u"N'Ko", 2, '(n > 1)'),
     'nso': (u'Pedi; Sepedi; Northern Sotho', 2, '(n != 1)'),
     'oc': (u'Occitan (post 1500)', 2, '(n > 1)'),
-    'or': (u'Oriya', 2, '(n != 1)'),
+    'or': (u'Odia', 2, '(n != 1)'),
     'pa': (u'Panjabi; Punjabi', 2, '(n != 1)'),
     'pap': (u'Papiamento', 2, '(n != 1)'),
     'pl': (u'Polish', 3,

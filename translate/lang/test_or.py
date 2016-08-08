@@ -17,7 +17,7 @@ def test_country_code():
     """Tests that we get the correct one even if a country code is attached to
     a special code being a reserved word in Python (like 'or')."""
     language = factory.getlanguage('or-IN')
-    assert language.fullname == "Oriya"
+    assert language.fullname == "Odia"
 
 
 def test_sentences():
