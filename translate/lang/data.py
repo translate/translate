@@ -44,6 +44,7 @@ languages = {
            'n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2'),
     'bg': (u'Bulgarian', 2, '(n != 1)'),
     'bn': (u'Bengali', 2, '(n != 1)'),
+    'bn_BD': (u'Bengali (Bangladesh)', 2, '(n != 1)'),
     'bn_IN': (u'Bengali (India)', 2, '(n != 1)'),
     'bo': (u'Tibetan', 1, '0'),
     'br': (u'Breton', 2, 'n > 1'),
@@ -104,6 +105,8 @@ languages = {
     'km': (u'Central Khmer', 1, '0'),
     'kn': (u'Kannada', 2, '(n != 1)'),
     'ko': (u'Korean', 1, '0'),
+    'kok': (u'Konkani', 2, '(n != 1)'),
+    'ks': (u'Kashmiri', 2, '(n != 1)'),
     'ku': (u'Kurdish', 2, '(n != 1)'),
     'kw': (u'Cornish', 4, '(n==1) ? 0 : (n==2) ? 1 : (n == 3) ? 2 : 3'),
     'ky': (u'Kirghiz; Kyrgyz', 1, '0'),
@@ -149,6 +152,7 @@ languages = {
     'ru': (u'Russian', 3,
            '(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2)'),
     'rw': (u'Kinyarwanda', 2, '(n != 1)'),
+    'sa': (u'Sanskrit', 3, '(n==1 ? 0 : n==2 ? 1 : 2)'),
     'sah': (u'Yakut', 1, '0'),
     'sat': (u'Santali', 2, '(n != 1)'),
     'sco': (u'Scots', 2, '(n != 1)'),
@@ -184,6 +188,7 @@ languages = {
     'wa': (u'Walloon', 2, '(n > 1)'),
     'wo': (u'Wolof', 2, '(n != 1)'),
     'yo': (u'Yoruba', 2, '(n != 1)'),
+    'yue': (u'Yue', 1, '0'),
     # Chinese is difficult because the main divide is on script, not really
     # country. Simplified Chinese is used mostly in China, Singapore and Malaysia.
     # Traditional Chinese is used mostly in Hong Kong, Taiwan and Macau.
