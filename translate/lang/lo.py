@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #
-# Copyright 2013 Zuza Software Foundation
+# Copyright 2013, 2016 Zuza Software Foundation
 #
 # This file is part of translate.
 #
@@ -27,6 +27,10 @@ from translate.lang import common
 
 class lo(common.Common):
     """This class represents Lao."""
+
+    ignoretests = {
+        'mozilla': ["accelerators"],
+    }
 
     mozilla_nplurals = 2
     mozilla_pluralequation = "n!=1 ? 1 : 0"

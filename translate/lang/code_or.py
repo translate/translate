@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #
-# Copyright 2007 Zuza Software Foundation
+# Copyright 2007, 2016 Zuza Software Foundation
 #
 # This file is part of translate.
 #
@@ -46,4 +46,5 @@ class code_or(common.Common):
 
     ignoretests = {
         'all': ["simplecaps", "startcaps"],
+        'mozilla': ["accelerators"],
     }

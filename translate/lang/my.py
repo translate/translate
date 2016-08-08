@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #
-# Copyright 2013 Zuza Software Foundation
+# Copyright 2013, 2016 Zuza Software Foundation
 #
 # This file is part of the Translate Toolkit.
 #
@@ -34,4 +34,5 @@ class my(common.Common):
 
     ignoretests = {
         'all': ["simplecaps", "startcaps"],
+        'mozilla': ["accelerators"],
     }

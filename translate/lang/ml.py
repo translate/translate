@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #
-# Copyright 2008 Zuza Software Foundation
+# Copyright 2008, 2016 Zuza Software Foundation
 #
 # This file is part of translate.
 #
@@ -30,4 +30,5 @@ class ml(common.Common):
 
     ignoretests = {
         'all': ["simplecaps", "startcaps"],
+        'mozilla': ["accelerators"],
     }

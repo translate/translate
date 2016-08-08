@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #
-# Copyright 2010 Zuza Software Foundation
+# Copyright 2010, 2016 Zuza Software Foundation
 #
 # This file is part of Virtaal.
 #
@@ -30,4 +30,5 @@ class ta(common.Common):
 
     ignoretests = {
         'all': ["simplecaps", "startcaps"],
+        'mozilla': ["accelerators"],
     }
