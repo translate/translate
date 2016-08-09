@@ -127,10 +127,10 @@ Filters and Checks
 Tools
 -----
 
-- posegment now correctly segments Japanese strings with half width punctuation
-  sign (:issue:`3280`).
-- pocount now outputs csv header in one line
-- buildxpi was adjusted to current Mozilla needs
+- ``posegment`` now correctly segments Japanese strings with half width
+  punctuation sign (:issue:`3280`).
+- ``pocount`` now outputs csv header in one line
+- ``buildxpi`` was adjusted to current Mozilla needs
 
 
 Languages
