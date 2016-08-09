@@ -103,7 +103,7 @@ Formats and Converters
   - Moved all namespaces to <resources> element.
   - Simplified newlines handling
 
- - ODF
+- ODF
 
   - `odf2xliff` now extracts all the text (issue 3239).
 
