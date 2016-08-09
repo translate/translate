@@ -1,7 +1,7 @@
 Translate Toolkit 2.0.0b4
 *************************
 
-*Not yet released*
+*Released on 9 August 2016*
 
 This release contains many improvements and bug fixes. While it contains many
 general improvements, it also specifically contains needed changes and
@@ -9,10 +9,16 @@ optimizations for the upcoming `Pootle <http://pootle.translatehouse.org/>`_
 2.8.0 and `Virtaal <http://virtaal.translatehouse.org>`_ releases.
 
 
-2.0.0b3 vs 2.0.0b4
+2.0.0b4 vs 2.0.0b3
 ==================
 
-- Android newline handling :issue:`3262`
+- Raised requirement to lxml 3.5.0
+- ``accelerators`` check is now skipped by several Indic languages in
+  ``MozillaChecker`` checker.
+- Several minor changes in ``po``, ``dtd``, ``properties``, Mozilla's `.lang`,
+  ``android`` and ``ts`` formats.
+- Added plural forms for Bengali (Bangladesh), Konkani, Kashmiri, Sanskrit and
+  Yue (Cantonese) languages.
 
 
 Major changes
@@ -37,6 +43,12 @@ Python 3 support
 - Python 3.3-3.5 is now supported.
 
 
+Requirements
+------------
+
+``lxml`` requirement was raised to 3.5.0 in order to simplify code.
+
+
 Formats and Converters
 ----------------------
 
@@ -46,25 +58,40 @@ Formats and Converters
     duplicates is specified. Note that converters still default to `msgctxt`.
   - msgid comments (KDE style) are only parsed from msgid now.
   - Fixed parsing of PO files with first entry in unicode
+  - Fixed parsing of locations with percent char
 
 - DTD
 
   - Newlines are now skipped when parsing (:issue:`3390`).
+  - Invalid ampersands are not scrubbed anymore.
+  - label+accesskey is now only extracted if it is not followed by space.
 
 - Properties
 
   - Keys can contain delimiters if they are properly wrapped (:issue:`3275`).
   - Fix control characters escaping for utf-8 encoding.
+  - ``po2prop`` removes fully untranslated units if required
+
+- Mozilla .lang
+
+  - ``{ok}`` marker is now more cleanly removed
 
 - Android
 
   - Unknown locales no longer produce failures.
   - Simplify newlines handling as the format now handles \n and newline equally
     (:issue:`3262`)
+  - Moved all namespaces to <resources> element.
+  - Simplified newlines handling
 
 - ODF
 
   - ``odf2xliff`` now extracts all the text (:issue:`3239`).
+
+- ts
+
+  - XML declaration is written with double quotes.
+  - Self-closing for 'location' elements are not output anymore.
 
 - JSON
 
@@ -82,6 +109,11 @@ Formats and Converters
 Filters and Checks
 ------------------
 
+- Added the ability to skip some checks for some languages in specific checkers
+
+  - ``accelerators`` check is now skipped by several Indic languages in
+    ``MozillaChecker`` checker.
+
 - LibreOffice checker no longer checks for Python brace format (:issue:`3303`).
 - LibreOffice validxml check correctly matches self-closing tags.
 - Numbers check now handles non latin numbers. Support for non latin numbers
@@ -98,12 +130,17 @@ Tools
 - posegment now correctly segments Japanese strings with half width punctuation
   sign (:issue:`3280`).
 - pocount now outputs csv header in one line
+- buildxpi was adjusted to current Mozilla needs
 
 
 Languages
 ---------
 
 - Fixed plural form for Slovenian and Turkish.
+- Added plural forms for Bengali (Bangladesh), Konkani, Kashmiri, Sanskrit and
+  Yue (Cantonese).
+- Renamed Oriya to Odia.
+- Altered Manipuri name to include its most common name Meithei.
 - Added language settings for Brazilian Portuguese.
 
 
@@ -173,7 +210,6 @@ Contributors
 
 This release was made possible by the following people:
 
-Dwayne Bailey, Leandro Regueiro, Jakub Wilk, Zdenek Juran, Michal Čihař, Claude
-Paroz.
+Dwayne Bailey, Leandro Regueiro, Michal Čihař, Kai Pastor, Thorbjørn Lindeijer.
 
 And to all our bug finders and testers, a Very BIG Thank You.
