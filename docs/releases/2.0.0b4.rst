@@ -149,6 +149,7 @@ Setup
 
 - Fixed Inno Setup builds allowing to easily install Translate Toolkit on
   Windows using the ``pip`` installer. Commands are compiled to .exe files.
+- Updated installation instructions for Windows
 
 
 API changes
@@ -196,7 +197,7 @@ General
   - Removed unused code from various places across codebase.
   - The legacy ``translate.search.indexing.PyLuceneIndexer1`` was removed.
   - The deprecated ``translate.storage.properties.find_delimiter()`` was
-    removed and replace by the
+    removed and replaced by the
     ``translate.storage.properties.Dialect.find_delimiter()`` class method.
   - Python scripts are now available via `console_scripts` entry point, thus
     allowing to drop dummy files for exposing the scripts.
@@ -210,6 +211,9 @@ Contributors
 
 This release was made possible by the following people:
 
-Dwayne Bailey, Leandro Regueiro, Michal Čihař, Kai Pastor, Thorbjørn Lindeijer.
+Claude Paroz, Dwayne Bailey, Leandro Regueiro, Michal Čihař, Ryan Northey, Kai
+Pastor, Friedel Wolff, Julen Ruiz Aizpuru, Hiroshi Miura, Thorbjørn Lindeijer,
+Melvi Ts, Jerome Leclanche, Jakub Wilk, Zdenek Juran, Yann Diorcet, Nick
+Shaforostoff, Christian Lohmaier, beernarrd.
 
 And to all our bug finders and testers, a Very BIG Thank You.
