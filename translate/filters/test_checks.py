@@ -1374,3 +1374,51 @@ def test_skip_checks_per_language_in_some_checkers():
     failures = stdchecker.run_filters(unit)
     # But it is not in StandardChecker.
     assert 'accelerators' in failures.keys()
+
+
+@mark.xfail(reason="Bug #3479")
+def test_ensure_accelerators_not_in_target_if_not_in_source():
+    """Test some checks are skipped for some languages in Mozilla checker."""
+    from translate.storage import base
+
+    # Set checkers.
+    af_checker_config = checks.CheckerConfig(targetlanguage="af")
+    km_checker_config = checks.CheckerConfig(targetlanguage="km")
+    af_mozilla_checker = checks.MozillaChecker(checkerconfig=af_checker_config)
+    km_mozilla_checker = checks.MozillaChecker(checkerconfig=km_checker_config)
+
+    # Afrikaans passes: Correct use of accesskeys.
+    # Khmer fails: Translation shouldn't have an accesskey.
+    src, tgt, __ = strprep(u"&One", u"&Een")
+    unit = base.TranslationUnit(src)
+    unit.target = tgt
+
+    af_failures = af_mozilla_checker.run_filters(unit)
+    km_failures = km_mozilla_checker.run_filters(unit)
+
+    assert 'accelerators' not in af_failures.keys()
+    assert 'accelerators' in km_failures.keys()
+
+    # Afrikaans fails: Translation is missing the accesskey.
+    # Khmer passes: Translation doesn't need accesskey for this language.
+    src, tgt, __ = strprep(u"&Two", u"Twee")
+    unit = base.TranslationUnit(src)
+    unit.target = tgt
+
+    af_failures = af_mozilla_checker.run_filters(unit)
+    km_failures = km_mozilla_checker.run_filters(unit)
+
+    assert 'accelerators' in af_failures.keys()
+    assert 'accelerators' not in km_failures.keys()
+
+    # Afrikaans fails: No accesskey in the source, but yes on translation.
+    # Khmer fails: Translation doesn't need accesskey, but it has accesskey.
+    src, tgt, __ = strprep(u"Three", u"&Drie")
+    unit = base.TranslationUnit(src)
+    unit.target = tgt
+
+    af_failures = af_mozilla_checker.run_filters(unit)
+    km_failures = km_mozilla_checker.run_filters(unit)
+
+    assert 'accelerators' in af_failures.keys()
+    assert 'accelerators' in km_failures.keys()
