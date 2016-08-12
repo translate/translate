@@ -76,7 +76,7 @@ msgstr "b"
 '''
         tsfile = self.po2ts(posource)
         print(tsfile)
-        assert tsfile.find("English") == tsfile.rfind("English")
+        assert tsfile.find("English") != tsfile.rfind("English")
 
 
 class TestPO2TSCommand(test_convert.TestConvertCommand, TestPO2TS):
