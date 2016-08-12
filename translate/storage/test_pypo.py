@@ -235,7 +235,6 @@ class TestPYPOFile(test_po.TestPOFile):
         """checks that merging duplicates works for msgctxt"""
         posource = '#: source1\nmsgid "test me"\nmsgstr ""\n\n#: source2\nmsgid "test me"\nmsgstr ""\n'
         pofile = self.poparse(posource, duplicatestyle="allow")
-        assert len(pofile.units) == 2
         pofile.removeduplicates("msgctxt")
         print(pofile)
         assert len(pofile.units) == 2
@@ -246,7 +245,6 @@ class TestPYPOFile(test_po.TestPOFile):
         """checks that merging adds msgid_comments to blanks"""
         posource = '#: source1\nmsgid ""\nmsgstr ""\n\n#: source2\nmsgid ""\nmsgstr ""\n'
         pofile = self.poparse(posource, duplicatestyle="allow")
-        assert len(pofile.units) == 2
         pofile.removeduplicates("merge")
         assert len(pofile.units) == 2
         print(pofile.units[0].msgidcomments)

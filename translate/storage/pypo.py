@@ -766,16 +766,8 @@ class pofile(pocommon.pofile):
             self.removeduplicates(duplicatestyle=duplicatestyle)
 
     def removeduplicates(self, duplicatestyle="merge"):
-        """Make sure each msgid is unique.
-
-        The value of duplicatestyle tells which action is performed to
-        deal with duplicate entries. Valid values are:
-
-            merge - Duplicate entries are merged together,
-            allow - Duplicate entries are kept as is,
-            msgctxt - A msgctxt is added to ensure duplicate entries
-                are different.
-        """
+        """Make sure each msgid is unique ; merge comments etc from
+        duplicates into original"""
         # TODO: can we handle consecutive calls to removeduplicates()? What
         # about files already containing msgctxt? - test
         id_dict = {}
