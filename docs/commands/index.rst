@@ -34,6 +34,7 @@ Converters
    tiki2po
    ts2po
    xliff2po
+   l20n2po
 
 .. toctree::
    :maxdepth: 1
