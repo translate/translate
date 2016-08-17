@@ -18,7 +18,7 @@ class TestPO2Lang(object):
     def test_simple(self):
         """check the simplest case of merging a translation"""
         posource = '''#: prop\nmsgid "Source"\nmsgstr "Target"\n'''
-        prop_expected = ''';Source\nTarget\n'''
+        prop_expected = ''';Source\nTarget\n\n\n'''
         prop_result = self.po2lang(posource)
         print(prop_result)
         assert prop_result == prop_expected
@@ -26,7 +26,7 @@ class TestPO2Lang(object):
     def test_comment(self):
         """Simple # comments"""
         posource = '''#. Comment\n#: prop\nmsgid "Source"\nmsgstr "Target"\n'''
-        prop_expected = '''# Comment\n;Source\nTarget\n'''
+        prop_expected = '''# Comment\n;Source\nTarget\n\n\n'''
         prop_result = self.po2lang(posource)
         print(prop_result)
         assert prop_result == prop_expected
@@ -34,7 +34,7 @@ class TestPO2Lang(object):
     def test_fuzzy(self):
         """What happens with a fuzzy string"""
         posource = '''#. Comment\n#: prop\n#, fuzzy\nmsgid "Source"\nmsgstr "Target"\n'''
-        prop_expected = '''# Comment\n;Source\nSource\n'''
+        prop_expected = '''# Comment\n;Source\nSource\n\n\n'''
         prop_result = self.po2lang(posource)
         print(prop_result)
         assert prop_result == prop_expected
@@ -42,7 +42,7 @@ class TestPO2Lang(object):
     def test_ok_marker(self):
         """The {ok} marker"""
         posource = '''#: prop\nmsgid "Same"\nmsgstr "Same"\n'''
-        prop_expected = ''';Same\nSame {ok}\n'''
+        prop_expected = ''';Same\nSame {ok}\n\n\n'''
         prop_result = self.po2lang(posource)
         print(prop_result)
         assert prop_result == prop_expected

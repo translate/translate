@@ -52,7 +52,8 @@ class TestMozLangFile(test_base.TestTranslationStore):
         """General test of layout of the format"""
         lang = ("# Comment\n"
                 ";Source\n"
-                "Target\n")
+                "Target\n"
+                "\n\n")
         store = self.StoreClass.parsestring(lang)
         store.mark_active = False
         unit = store.units[0]
@@ -65,7 +66,8 @@ class TestMozLangFile(test_base.TestTranslationStore):
         """Test the ## active ## flag"""
         lang = ("## active ##\n"
                 ";Source\n"
-                "Target\n")
+                "Target\n"
+                "\n\n")
         store = self.StoreClass.parsestring(lang)
         assert store.is_active
         assert bytes(store).decode('utf-8') == lang
@@ -77,22 +79,25 @@ class TestMozLangFile(test_base.TestTranslationStore):
                 "# Second comment\n"
                 "# Third comment\n"
                 ";Source\n"
-                "Target\n")
+                "Target\n"
+                "\n\n")
         store = self.StoreClass.parsestring(lang)
         assert bytes(store).decode('utf-8') == lang
 
     def test_template(self):
         """A template should have source == target, though it could be blank"""
         lang = (";Source\n"
-                "Source\n")
+                "Source\n"
+                "\n\n")
         store = self.StoreClass.parsestring(lang)
         unit = store.units[0]
         assert unit.source == "Source"
         assert unit.target == ""
         assert bytes(store).decode('utf-8') == lang
         lang2 = (";Source\n"
-                 "\n"
-                 ";Source2\n")
+                 "\n\n"
+                 ";Source2\n"
+                 "\n\n")
         store2 = self.StoreClass.parsestring(lang2)
         assert store2.units[0].source == "Source"
         assert store2.units[0].target == ""

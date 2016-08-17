@@ -112,8 +112,6 @@ class LangStore(txt.TxtFile):
     def serialize(self, out):
         if self.is_active or self.mark_active:
             out.write(b"## active ##\n")
-        for idx, unit in enumerate(self.units):
-            if idx > 0:
-                out.write(b"\n\n\n")
+        for unit in self.units:
             out.write(six.text_type(unit).encode('utf-8'))
-        out.write(b"\n")
+            out.write(b"\n\n\n")
