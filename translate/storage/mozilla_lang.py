@@ -25,9 +25,13 @@
 
 from translate.storage import base, txt
 
+OK_STRING = " {ok}"
+
 
 class LangUnit(base.TranslationUnit):
     """This is just a normal unit with a weird string output"""
+
+    _unit_target = ""
 
     def __init__(self, source=None):
         self.locations = []
@@ -46,6 +50,24 @@ class LangUnit(base.TranslationUnit):
             notes = ('\n').join(["# %s" % note for note in self.getnotes('developer').split("\n")])
             return u"%s\n;%s\n%s%s" % (notes, self.source, target, unchanged)
         return u";%s\n%s%s" % (self.source, target, unchanged)
+
+    def _target(self, v=None):
+        if v is None:
+            return self._unit_target
+        if v.endswith(OK_STRING):
+            self._is_ok = True
+            v = v[:-len(OK_STRING)]
+        else:
+            self._is_ok = False
+        self._unit_target = v
+    target = property(_target, _target)
+
+    def istranslated(self):
+        return (
+            (self.target
+             and self.source != self.target)
+            or (self.source == self.target
+                and self._is_ok))
 
     def getlocations(self):
         return self.locations
