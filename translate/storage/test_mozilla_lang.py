@@ -15,11 +15,26 @@ class TestMozLangUnit(test_base.TestTranslationUnit):
         assert unit.target == "Open"
         assert str(unit).endswith(" {ok}")
 
+    def test_istranslated(self):
+        """The target is always written to files and is never blank. If it is
+        truly untranslated then it won't end with '{ok}."""
+        unit = self.UnitClass("Open")
+        assert not unit.target
+        assert not unit.istranslated()
+        unit.target = "FOO"
+        assert unit.istranslated()
+        unit.target = unit.source
+        assert not unit.istranslated()
+        unit.target = "%s {ok}" % unit.source
+        assert unit.istranslated()
+        assert unit.target == unit.source
+        assert str(unit).endswith(" {ok}")
+
     def test_untranslated(self):
         """The target is always written to files and is never blank. If it is
         truly untranslated then it won't end with '{ok}."""
         unit = self.UnitClass("Open")
-        assert unit.target is None
+        assert not unit.target
         assert str(unit).find("Open") == 1
         assert str(unit).find("Open", 2) == 6
         assert not str(unit).endswith(" {ok}")
