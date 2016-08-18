@@ -45,6 +45,7 @@ Other translation formats
    catkeys
    android
    resx
+   mozilla_lang
 
 * :doc:`csv`
 * :doc:`ini` (including Inno Setup .isl dialect)
@@ -60,6 +61,7 @@ Other translation formats
 * Haiku :doc:`catkeys` (from version 1.8)
 * :doc:`android` (supports storage, not conversion)
 * :doc:`resx` .NET Resource files (.resx)
+* Mozilla :doc:`.lang <mozilla_lang>` files
 
 .. _formats#translation_memory_formats:
 
