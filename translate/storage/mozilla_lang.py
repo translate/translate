@@ -20,7 +20,11 @@
 # Original Author: Dan Schafer <dschafer@mozilla.com>
 # Date: 10 Jun 2008
 
-"""A class to manage Mozilla .lang files."""
+"""A class to manage Mozilla .lang files.
+
+See https://github.com/mozilla-l10n/langchecker/wiki/.lang-files-format for
+specifications on the format.
+"""
 
 import six
 
