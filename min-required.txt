@@ -1,9 +1,0 @@
-lxml==3.5.0
-python-Levenshtein==0.10.2
-# If Python
-iniparse==0.3.1
-vobject==0.6.6
-BeautifulSoup==3.2
-#aeidon==0.14
-pytest==2.2
-Sphinx==1.1
