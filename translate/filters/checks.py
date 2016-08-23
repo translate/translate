@@ -413,12 +413,15 @@ class UnitChecker(object):
         """
         return test(unit)
 
+    @property
+    def checker_name(self):
+        """Extract checker name, for example 'mozilla' from MozillaChecker."""
+        return str(self.__class__.__name__).lower()[:-len("checker")]
+
     def get_ignored_filters(self):
-        """Return checker's ignored filters for current language."""
-        # Extract checker name, for example 'mozilla' from MozillaChecker.
-        checker_name = str(self.__class__.__name__).lower()[:-len("checker")]
-        return list(set(self.config.lang.ignoretests.get(checker_name, []) +
-                        self.config.lang.ignoretests.get('all', [])))
+        """Return checker's additional filters for current language."""
+        return list(set(self.config.lang.ignoretests.get(self.checker_name, [])
+                        + self.config.lang.ignoretests.get('all', [])))
 
     def run_filters(self, unit, categorised=False):
         """Run all the tests in this suite.
