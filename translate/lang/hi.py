@@ -30,5 +30,4 @@ class hi(common.Common):
 
     ignoretests = {
         'all': ["simplecaps", "startcaps"],
-        'mozilla': ["accelerators"],
     }

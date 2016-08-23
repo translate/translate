@@ -267,10 +267,16 @@ class CheckerConfig(object):
 
     def updatetargetlanguage(self, langcode):
         """Updates the target language in the config to the given target
-        language.
+        language and sets its script.
         """
         self.targetlanguage = langcode
         self.lang = factory.getlanguage(langcode)
+        self.language_script = ''
+
+        for script, langs in data.scripts.items():
+            if langcode in langs or data.simplercode(langcode) in langs:
+                self.language_script = script
+                break
 
 
 def cache_results(f):
@@ -2047,6 +2053,24 @@ mozillaconfig = CheckerConfig(
 
 
 class MozillaChecker(StandardChecker):
+    accelerators_skipped_scripts = [
+        'Deva',
+        'Beng',
+        'Tibt',
+        'Orya',
+        'Gujr',
+        'Khmr',
+        'Knda',
+        'Laoo',
+        'Mlym',
+        'Mymr',
+        'Sind',
+        'Taml',
+        'assamese',
+        'perso-arabic',
+        'mon',
+        'chinese',
+    ]
 
     def __init__(self, **kwargs):
         checkerconfig = kwargs.get("checkerconfig", None)
@@ -2155,9 +2179,32 @@ class MozillaChecker(StandardChecker):
         """Checks whether accelerators are consistent between the
         two strings.
 
-        For Mozilla we lower the severity to cosmetic.
+        For Mozilla we lower the severity to cosmetic, and for some languages
+        it also ensures accelerators are absent in the target string since some
+        languages do not use accelerators, for example Indic languages.
         """
+        # Mozilla's specific no-accelerators behavior.
+        if self.config.language_script in self.accelerators_skipped_scripts:
+            str2 = self.filtervariables(str2)
+            messages = []
+
+            for accelmarker in self.config.accelmarkers:
+                counter2 = decoration.countaccelerators(
+                    accelmarker,
+                    self.config.lang.validaccel,
+                )
+                if counter2(str2)[0] > 0:
+                    messages.append(u"Accelerator '%s' should not appear in "
+                                    u"translation" % accelmarker)
+
+            if messages:
+                raise FilterFailure(messages)
+
+            return True
+
+        # Default accelerators behavior.
         return super(MozillaChecker, self).accelerators(str1, str2)
+
 
 drupalconfig = CheckerConfig(
     varmatches=[("%", None), ("@", None), ("!", None)],

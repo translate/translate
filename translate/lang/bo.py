@@ -28,9 +28,5 @@ from translate.lang import common
 class bo(common.Common):
     """This class represents Tibetan."""
 
-    ignoretests = {
-        'mozilla': ["accelerators"],
-    }
-
     mozilla_nplurals = 2
     mozilla_pluralequation = "n!=1 ? 1 : 0"

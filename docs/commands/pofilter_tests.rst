@@ -118,6 +118,13 @@ Make sure you use the :opt:`--mozilla`, :opt:`--kde`, etc options so that
 pofilter knows which type of accelerator it is looking for.  The test will pick
 up accelerators that are missing and ones that shouldn't be there.
 
+This check alters its default behavior in Mozilla checker for some languages so
+it instead checks that accelerators are not present in translation. The purpose
+of this is to ensure that for languages where the accelerators shouldn't be
+used the accelerators are not present in the translations. This is common for
+Indic languages.
+
+
 .. _pofilter_tests#acronyms:
 
 acronyms

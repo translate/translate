@@ -54,7 +54,6 @@ class km(common.Common):
 
     ignoretests = {
         'all': ["simplecaps", "startcaps"],
-        'mozilla': ["accelerators"],
     }
 
     mozilla_nplurals = 2

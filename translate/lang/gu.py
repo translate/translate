@@ -30,5 +30,4 @@ class gu(common.Common):
 
     ignoretests = {
         'all': ["simplecaps", "startcaps"],
-        'mozilla': ["accelerators"],
     }

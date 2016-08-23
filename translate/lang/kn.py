@@ -30,5 +30,4 @@ class kn(common.Common):
 
     ignoretests = {
         'all': ["simplecaps", "startcaps"],
-        'mozilla': ["accelerators"],
     }

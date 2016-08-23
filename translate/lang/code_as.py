@@ -40,7 +40,3 @@ class code_as(common.Common):
         (u"8", u"৮"),  # U+09EE Bengali digit eight.
         (u"9", u"৯"),  # U+09EF Bengali digit nine.
     )
-
-    ignoretests = {
-        'mozilla': ["accelerators"],
-    }

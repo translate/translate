@@ -30,5 +30,4 @@ class ml(common.Common):
 
     ignoretests = {
         'all': ["simplecaps", "startcaps"],
-        'mozilla': ["accelerators"],
     }

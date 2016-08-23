@@ -239,6 +239,79 @@ _fixed_names = {
 }
 
 
+scripts = {
+    # Codes pulled from http://unicode.org/iso15924/iso15924-codes.html
+    # Scripts were figured out from the languages's Wikipedia pages and the
+    # real usage in https://mozilla.locamotion.org/
+    'Deva': [
+        'anp',  # https://en.wikipedia.org/wiki/Angika_language
+        'bho',  # https://en.wikipedia.org/wiki/Bhojpuri_language
+        'brx',  # https://en.wikipedia.org/wiki/Bodo_language
+        'doi',  # https://en.wikipedia.org/wiki/Dogri_language
+        'hi',   # https://en.wikipedia.org/wiki/Hindi
+        'kfy',  # https://en.wikipedia.org/wiki/Kumaoni_language
+        'kok',  # https://en.wikipedia.org/wiki/Konkani_language
+        'mai',  # https://en.wikipedia.org/wiki/Maithili_language
+        'mr',   # https://en.wikipedia.org/wiki/Marathi_language
+        'sa',   # https://en.wikipedia.org/wiki/Sanskrit
+        'sat',  # https://en.wikipedia.org/wiki/Santali_language
+    ],
+    'Beng': [
+        'bn_BD',  # https://en.wikipedia.org/wiki/Bengali_language
+        'bn_IN',  # https://en.wikipedia.org/wiki/Bengali_language
+        'mni',  # https://en.wikipedia.org/wiki/Manipuri_language
+    ],
+    'Tibt': [
+        'bo',  # https://en.wikipedia.org/wiki/Standard_Tibetan
+    ],
+    'Orya': [
+        'or',  # https://en.wikipedia.org/wiki/Odia_language
+    ],
+    'Gujr': [
+        'gu',  # https://en.wikipedia.org/wiki/Gujarati_language
+    ],
+    'Khmr': [
+        'km',  # https://en.wikipedia.org/wiki/Khmer_language
+    ],
+    'Knda': [
+        'kn',  # https://en.wikipedia.org/wiki/Kannada
+    ],
+    'Laoo': [
+        'lo',  # https://en.wikipedia.org/wiki/Lao_language
+    ],
+    'Mlym': [
+        'ml',  # https://en.wikipedia.org/wiki/Malayalam
+    ],
+    'Mymr': [
+        'my',   # https://en.wikipedia.org/wiki/Burmese_language
+        'shn',  # https://en.wikipedia.org/wiki/Shan_language
+    ],
+    'Sind': [
+        'sd',  # https://en.wikipedia.org/wiki/Sindhi_language
+    ],
+    'Taml': [
+        'ta',  # https://en.wikipedia.org/wiki/Tamil_language
+    ],
+    # Unable to find the codes for the following scripts.
+    'assamese': [
+        'as',  # https://en.wikipedia.org/wiki/Assamese_language
+    ],
+    'perso-arabic': [
+        'ks',  # https://en.wikipedia.org/wiki/Kashmiri_language
+    ],
+    'chinese': [
+        'yue',  # https://en.wikipedia.org/wiki/Yue_Chinese
+    ],
+}
+"""Dictionary of scripts data.
+The dictionary keys are ISO 15924 script codes, and script names where scripts
+are missing from standard. The value is a list of codes for languages using
+that script.
+
+This is mainly used to alter the behavior of some checks (the accelerators one
+for example)."""
+
+
 cldr_plural_categories = [
     'zero',
     'one',

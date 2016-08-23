@@ -1365,23 +1365,160 @@ def test_skip_checks_per_language_in_some_checkers():
     """Test some checks are skipped for some languages in Mozilla checker."""
     from translate.storage import base
 
+    # Hijack checker config language ignoretests to test check is skipped.
+    checker_config = checks.CheckerConfig(targetlanguage="gl")
+    previous_ignoretests = checker_config.lang.ignoretests
+    checker_config.lang.ignoretests = {
+        'mozilla': ['accelerators'],
+    }
+
+    # Prepare the checkers and the unit.
+    mozillachecker = checks.MozillaChecker(checkerconfig=checker_config)
+    stdchecker = checks.StandardChecker(
+        checkerconfig=checks.CheckerConfig(accelmarkers="&",
+                                           targetlanguage="gl")
+    )
+
     str1, str2, __ = strprep(u"&Check for updates", u"আপডেইটসমূহৰ বাবে নিৰীক্ষণ কৰক")
     unit = base.TranslationUnit(str1)
     unit.target = str2
 
+    # Accelerators check is disabled for this language in MozillaChecker.
+    assert 'accelerators' not in mozillachecker.run_filters(unit).keys()
+
+    # But it is not in StandardChecker.
+    assert 'accelerators' in stdchecker.run_filters(unit).keys()
+
+    # Undo hijack.
+    checker_config.lang.ignoretests = previous_ignoretests
+
+
+def test_mozilla_no_accelerators_for_indic():
+    """Test accelerators in MozillaChecker fails if accelerator in target.
+
+    No-accelerators is a special behavior of accelerators check in some
+    languages that is present in MozillaChecker.
+    """
     mozillachecker = checks.MozillaChecker(
         checkerconfig=checks.CheckerConfig(targetlanguage="as")
     )
-    failures = mozillachecker.run_filters(unit)
-    # Accelerators check is disabled for Assamese in MozillaChecker.
-    assert 'accelerators' not in failures.keys()
+    assert fails(mozillachecker.accelerators, "&File", "&Fayile")
+    assert fails(mozillachecker.accelerators, "My add&-ons", "&Byvoengs mit")
+    assert passes(mozillachecker.accelerators, "&File", "Fayile")
+    assert fails(mozillachecker.accelerators, "File", "&Fayile")
+    assert passes(mozillachecker.accelerators, "Mail &amp; News", "Po en Nuus")
+    assert fails(mozillachecker.accelerators, "Mail &amp; News", "Po en &Nuus")
+    assert passes(mozillachecker.accelerators, "Mail & News", "Pos & Nuus")
 
-    stdchecker = checks.StandardChecker(
-        checkerconfig=checks.CheckerConfig(accelmarkers="&", targetlanguage="as")
+
+def test_noaccelerators_only_in_mozilla_checker():
+    """Test no-accelerators check is only present in Mozilla checker.
+
+    No-accelerators is a special behavior of accelerators check in some
+    languages that is present in MozillaChecker.
+    """
+    from translate.storage import base
+
+    asmozillachecker = checks.MozillaChecker(
+        checkerconfig=checks.CheckerConfig(targetlanguage="as")
     )
-    failures = stdchecker.run_filters(unit)
-    # But it is not in StandardChecker.
-    assert 'accelerators' in failures.keys()
+    glmozillachecker = checks.MozillaChecker(
+        checkerconfig=checks.CheckerConfig(targetlanguage="gl")
+    )
+    stdchecker = checks.StandardChecker(
+        checkerconfig=checks.CheckerConfig(accelmarkers="&",
+                                           targetlanguage="as")
+    )
+
+    # Accelerators check passes for Assamesse in Mozilla checker. It fails for
+    # Assamesse in Standard checker or for other languages in Mozilla Checker.
+    str1, str2, __ = strprep(u"&Check for updates", u"আপডেইটসমূহৰ বাবে নিৰীক্ষণ কৰক")
+    unit = base.TranslationUnit(str1)
+    unit.target = str2
+
+    gl_failures = glmozillachecker.run_filters(unit)
+    std_failures = stdchecker.run_filters(unit)
+
+    assert 'accelerators' not in asmozillachecker.run_filters(unit)
+    assert 'accelerators' in gl_failures
+    assert 'should not appear' not in gl_failures['accelerators']
+    assert 'accelerators' in std_failures
+    assert 'should not appear' not in std_failures['accelerators']
+
+    # Accelerators check passes. The ampersand should be detected as part of
+    # a variable.
+    str1, str2, __ = strprep(u"About &brandFullName;", u"&brandFullName; ৰ বিষয়ে")
+    unit = base.TranslationUnit(str1)
+    unit.target = str2
+
+    assert 'accelerators' not in asmozillachecker.run_filters(unit)
+    assert 'accelerators' not in glmozillachecker.run_filters(unit)
+    assert 'accelerators' not in stdchecker.run_filters(unit)
+
+    # Accelerators check fails for Assamesse in Mozilla checker since the
+    # accelerator is present in the target. It passes for other languages or
+    # other checkers.
+    str1, str2, __ = strprep(u"&Cancel", u"বাতিল কৰক (&C)")
+    unit = base.TranslationUnit(str1)
+    unit.target = str2
+
+    as_failures = asmozillachecker.run_filters(unit)
+
+    assert asmozillachecker.config.language_script == 'assamese'
+    assert 'accelerators' in as_failures
+    assert 'should not appear' in as_failures['accelerators']
+    assert 'accelerators' not in glmozillachecker.run_filters(unit)
+    assert 'accelerators' not in stdchecker.run_filters(unit)
+
+
+def test_ensure_accelerators_not_in_target_if_not_in_source():
+    """Test accelerators check works different for some languages in Mozilla."""
+    from translate.storage import base
+
+    af_mozilla_checker = checks.MozillaChecker(
+        checkerconfig=checks.CheckerConfig(targetlanguage="af")
+    )
+    km_mozilla_checker = checks.MozillaChecker(
+        checkerconfig=checks.CheckerConfig(targetlanguage="km")
+    )
+
+    # Afrikaans passes: Correct use of accesskeys.
+    # Khmer fails: Translation shouldn't have an accesskey.
+    src, tgt, __ = strprep(u"&One", u"&Een")
+    unit = base.TranslationUnit(src)
+    unit.target = tgt
+
+    km_failures = km_mozilla_checker.run_filters(unit)
+
+    assert 'accelerators' not in af_mozilla_checker.run_filters(unit)
+    assert 'accelerators' in km_failures
+    assert 'should not appear' in km_failures['accelerators']
+
+    # Afrikaans fails: Translation is missing the accesskey.
+    # Khmer passes: Translation doesn't need accesskey for this language.
+    src, tgt, __ = strprep(u"&Two", u"Twee")
+    unit = base.TranslationUnit(src)
+    unit.target = tgt
+
+    af_failures = af_mozilla_checker.run_filters(unit)
+
+    assert 'accelerators' in af_failures
+    assert 'Missing accelerator' in af_failures['accelerators']
+    assert 'accelerators' not in km_mozilla_checker.run_filters(unit)
+
+    # Afrikaans fails: No accesskey in the source, but yes on translation.
+    # Khmer fails: Translation doesn't need accesskey, but it has accesskey.
+    src, tgt, __ = strprep(u"Three", u"&Drie")
+    unit = base.TranslationUnit(src)
+    unit.target = tgt
+
+    af_failures = af_mozilla_checker.run_filters(unit)
+    km_failures = km_mozilla_checker.run_filters(unit)
+
+    assert 'accelerators' in af_failures
+    assert 'Added accelerator' in af_failures['accelerators']
+    assert 'accelerators' in km_failures
+    assert 'should not appear' in km_failures['accelerators']
 
 
 def test_skip_checks_for_l20n_complex_units():
