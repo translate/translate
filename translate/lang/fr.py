@@ -54,9 +54,11 @@ def guillemets(text):
 class fr(common.Common):
     """This class represents French."""
 
-    validaccel = u"abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ" + \
-                 u"1234567890" + \
-                 u"éÉ"
+    validaccel = (u"abcdefghijklmnopqrstuvwxyz"
+                  u"ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+                  u"1234567890"
+                  u"é"
+                  u"É")
 
     # According to http://french.about.com/library/writing/bl-punctuation.htm,
     # in French, a space is required both before and after all two- (or more)
