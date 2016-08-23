@@ -38,7 +38,7 @@ matrix:
 #  - sudo apt-get install python-aeidon
 install:
   - pip install coveralls
-  - if [[ $MINVERSION ]]; then make requirements/min-versions.txt; cat requirements/min-versions.txt;  CFLAGS="-O0" pip install -r requirements/min-versions.txt; pip install --upgrade pytest; fi
+  - if [[ $MINVERSION ]]; then make requirements/min-versions.txt; cat requirements/min-versions.txt;  CFLAGS="-O0" pip install -r requirements/min-versions.txt; fi
   - if [[ ! $MINVERSION ]]; then  CFLAGS="-O0" pip install -r requirements/dev.txt; fi
   # Still need to handle with indexing engines
   - pip freeze
