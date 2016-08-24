@@ -132,9 +132,7 @@ install the iso-codes package for your distribution, but it is optional.
 Alternatively, it is also available from
 http://packages.debian.org/unstable/source/iso-codes
 
-The package vobject is needed for ical2po and po2ical.  Versions from
-0.6.0 have been tested, 0.6.5 is required to fix an issue related to
-Lotus Notes calendars. <http://vobject.skyhouseconsulting.com/>
+The package vobject is needed for ical2po and po2ical.
 
 The aeidon package (or gaupol if aeidon is not available) is needed for sub2po
 and po2sub. Some Unicode encoded files (including most files from

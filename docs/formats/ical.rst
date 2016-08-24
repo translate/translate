@@ -22,7 +22,7 @@ Resources
   Scheduling Core Object Specification (iCalendar)
 * iCal `spec <http://www.kanzaki.com/docs/ical/>`_ in a simple adaptation of
   the rfc that makes it easy to refer to all sections, items and attributes.
-* `VObject <http://vobject.skyhouseconsulting.com/>`_ -- the python library
+* `VObject <http://eventable.github.io/vobject/>`_ -- the python library
   used to read the iCal file.
 * `iCalender validator <http://severinghaus.org/projects/icv/>`_
 * :wp:`iCalendar <ICalendar>`
@@ -67,18 +67,6 @@ specify multiple entries which would allow a single multilingual file.  With
 that in mind it is not clear why the LANGUAGE attribute is allowed, the
 examples they give are for LOCATION entries but that is still not clearly
 useful.
-
-.. _ical#broken_lotus_notes:
-
-Broken Lotus Notes
-------------------
-
-Lotus notes creates broken iCalendar files.  They include _ (underscore) in
-some of the property names, while [A-Z0-9\\-] are the only valid chars.
-Therefore, we require vobject >= v0.6.5 (but there is unfortunately no way to
-check for the version of vobject).  See `vobject bug 12008
-<https://bugzilla.osafoundation.org/show_bug.cgi?id=12008>`_ for further
-details.
 
 .. _ical#development_notes:
 

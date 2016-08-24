@@ -1,8 +1,5 @@
 # -*- coding: utf-8 -*-
 
-import pytest
-pytest.importorskip("vobject")
-
 from translate.convert import po2ical, test_convert
 from translate.misc import wStringIO
 from translate.storage import po
@@ -44,7 +41,7 @@ class TestPO2Ical(object):
         convertor = po2ical.reical(templatefile, inputpo)
         outputical = convertor.convertstore()
         print(outputical)
-        return outputical
+        return outputical.decode('utf-8')
 
     def test_simple_summary(self):
         """test that we output correctly for Inno files."""

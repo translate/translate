@@ -19,7 +19,7 @@
 
 """Class that manages iCalender files for translation.
 
-iCalendar files follow the `RFC2445 <http://tools.ietf.org/html/rfc2445>`_
+iCalendar files follow the `RFC2445 <https://tools.ietf.org/html/rfc2445>`_
 specification.
 
 The iCalendar specification uses the following naming conventions:
@@ -45,7 +45,7 @@ LANGUAGE Attribute
     of a single multilingual iCalendar file.
 
 Future Format Support
-    As this format used `vobject <http://vobject.skyhouseconsulting.com/>`_
+    As this format used `vobject <http://eventable.github.io/vobject/>`_
     which supports various formats including
     `vCard <http://en.wikipedia.org/wiki/VCard>`_ it is possible to expand
     this format to understand those if needed.
@@ -55,10 +55,7 @@ import re
 import sys
 from io import BytesIO
 
-if sys.version_info[0] == 2:
-    import vobject
-else:
-    vobject = None
+import vobject
 
 from translate.storage import base
 
@@ -86,10 +83,6 @@ class icalfile(base.TranslationStore):
 
     def __init__(self, inputfile=None, **kwargs):
         """construct an ical file, optionally reading in from inputfile."""
-        if sys.version_info[0] == 3:
-            raise NotImplementedError("Translate Toolkit does not yet provide "
-                                      "support for iCalendar in Python 3.")
-
         super(icalfile, self).__init__(**kwargs)
         self.filename = ''
         self._icalfile = None
@@ -119,15 +112,16 @@ class icalfile(base.TranslationStore):
             self.filename = input.name
         elif not getattr(self, 'filename', ''):
             self.filename = ''
-        if hasattr(input, "read"):
+        if isinstance(input, BytesIO):
+            input = input.getvalue()
+        elif hasattr(input, "read"):
             inisrc = input.read()
             input.close()
             input = inisrc
         if isinstance(input, bytes):
-            input = BytesIO(input)
-            self._icalfile = next(vobject.readComponents(input))
-        else:
-            self._icalfile = next(vobject.readComponents(open(input)))
+            input = input.decode(self.encoding)
+        self._icalfile = next(vobject.readComponents(input))
+
         for component in self._icalfile.components():
             if component.name == "VEVENT":
                 for property in component.getChildren():
