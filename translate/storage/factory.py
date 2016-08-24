@@ -173,6 +173,25 @@ def getclass(storefile, localfiletype=None, ignore=None, classes=None,
     return storeclass
 
 
+class ClassRegistry(object):
+
+    def __init__(self):
+        self._classes = dict()
+
+    def getclass(self, code):
+        if code in self._classes:
+            return self._classes[code]
+        self._classes[code] = _getclass(code)
+        return self._classes[code]
+
+
+class_registry = ClassRegistry()
+
+
+def _getclass(code):
+    return class_registry.getclass(code)
+
+
 def getobject(storefile, localfiletype=None, ignore=None, classes=None,
               classes_str=classes_str, hiddenclasses=hiddenclasses):
     """Factory that returns a usable object for the type of file presented.
@@ -203,6 +222,25 @@ def getobject(storefile, localfiletype=None, ignore=None, classes=None,
         store = storeclass()
         store.filename = storefilename
     return store
+
+
+class ObjectRegistry(object):
+
+    def __init__(self):
+        self._objects = dict()
+
+    def getobject(self, code):
+        if code in self._objects:
+            return self._objects[code]
+        self._objects[code] = _getobject(code)
+        return self._objects[code]
+
+
+object_registry = ObjectRegistry()
+
+
+def _getobject(code):
+    return object_registry.getobject(code)
 
 
 supported = [

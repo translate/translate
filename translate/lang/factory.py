@@ -25,7 +25,7 @@ from translate.lang import common, data
 prefix = "code_"
 
 
-def getlanguage(code):
+def _getlanguage(code):
     """This returns a language class.
 
     :param code: The ISO 639 language code
@@ -52,3 +52,25 @@ def getlanguage(code):
             return relatedlanguage
         else:
             return common.Common(code)
+
+
+class LanguageRegistry(object):
+
+    def __init__(self):
+        self._languages = dict()
+
+    def getlanguage(self, code):
+        if code in self._languages:
+            return self._languages[code]
+        self._languages[code] = _getlanguage(code)
+        return self._languages[code]
+
+
+lang_registry = LanguageRegistry()
+
+
+def getlanguage(code):
+    return lang_registry.getlanguage(code)
+
+
+
