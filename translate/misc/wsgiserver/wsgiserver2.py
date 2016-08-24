@@ -1621,10 +1621,10 @@ class SSLAdapter(object):
         self.certificate_chain = certificate_chain
 
     def wrap(self, sock):
-        raise NotImplemented
+        raise NotImplementedError
 
     def makefile(self, sock, mode='r', bufsize=DEFAULT_BUFFER_SIZE):
-        raise NotImplemented
+        raise NotImplementedError
 
 
 class HTTPServer(object):
@@ -2051,7 +2051,7 @@ class Gateway(object):
 
     def respond(self):
         """Process the current request. Must be overridden in a subclass."""
-        raise NotImplemented
+        raise NotImplementedError
 
 
 # These may either be wsgiserver.SSLAdapter subclasses or the string names
@@ -2129,7 +2129,7 @@ class WSGIGateway(Gateway):
 
     def get_environ(self):
         """Return a new environ dict targeting the given wsgi.version"""
-        raise NotImplemented
+        raise NotImplementedError
 
     def respond(self):
         """Process the current request."""

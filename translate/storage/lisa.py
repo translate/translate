@@ -182,35 +182,6 @@ class LISAunit(base.TranslationUnit):
         """
         return None
 
-    def createPHnodes(self, parent, text):
-        """Create the text node in parent containing all the ph tags"""
-        matches = _getPhMatches(text)
-        if not matches:
-            parent.text = text
-            return
-
-        # Now we know there will definitely be some ph tags
-        start = matches[0].start()
-        pretext = text[:start]
-        if pretext:
-            parent.text = pretext
-        lasttag = parent
-        for i, m in enumerate(matches):
-            #pretext
-            pretext = text[start:m.start()]
-            # this will never happen with the first ph tag
-            if pretext:
-                lasttag.tail = pretext
-            #ph node
-            phnode = etree.SubElement(parent, self.namespaced("ph"))
-            phnode.set("id", str(i + 1))
-            phnode.text = m.group()
-            lasttag = phnode
-            start = m.end()
-        #post text
-        if text[start:]:
-            lasttag.tail = text[start:]
-
     def getlanguageNodes(self):
         """Returns a list of all nodes that contain per language information.
         """

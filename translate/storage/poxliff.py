@@ -96,7 +96,7 @@ class PoXliffUnit(xliff.xliffunit):
             for unit in self.units:
                 try:
                     self.xmlelement.remove(unit.xmlelement)
-                except xml.dom.NotFoundErr:
+                except ValueError:
                     pass
             self.units = []
             for s in source.strings:

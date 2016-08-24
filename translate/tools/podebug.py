@@ -203,7 +203,7 @@ class podebug:
         return False
 
     def ignore_libreoffice(self, unit):
-        return ignore_openoffice(unit)
+        return self.ignore_openoffice(unit)
 
     def ignore_mozilla(self, unit):
         locations = unit.getlocations()

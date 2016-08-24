@@ -177,7 +177,7 @@ class MicroDVDFile(SubtitleFile):
     Extensions = ['sub']
 
     def __init__(self, *args, **kwargs):
-        super(SubRipFile, self).__init__(*args, **kwargs)
+        super(MicroDVDFile, self).__init__(*args, **kwargs)
         if self._subtitlefile is None:
             self._subtitlefile = MicroDVD(self.filename or '', self.encoding)
         if self._subtitlefile.newline is None:
@@ -191,7 +191,7 @@ class AdvSubStationAlphaFile(SubtitleFile):
     Extensions = ['ass']
 
     def __init__(self, *args, **kwargs):
-        super(SubRipFile, self).__init__(*args, **kwargs)
+        super(AdvSubStationAlphaFile, self).__init__(*args, **kwargs)
         if self._subtitlefile is None:
             self._subtitlefile = AdvSubStationAlpha(self.filename or '', self.encoding)
         if self._subtitlefile.newline is None:
@@ -205,7 +205,7 @@ class SubStationAlphaFile(SubtitleFile):
     Extensions = ['ssa']
 
     def __init__(self, *args, **kwargs):
-        super(SubRipFile, self).__init__(*args, **kwargs)
+        super(SubStationAlphaFile, self).__init__(*args, **kwargs)
         if self._subtitlefile is None:
             self._subtitlefile = SubStationAlpha(self.filename or '', self.encoding)
         if self._subtitlefile.newline is None:

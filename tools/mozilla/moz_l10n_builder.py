@@ -66,7 +66,7 @@ options = {'verbose': True}
 USAGE = 'Usage: %prog [options] <langs...|ALL>'
 
 
-class CommandError(StandardError):
+class CommandError(Exception):
     """Exception raised if a command does not return its expected value."""
 
     def __init__(self, cmd, status):
@@ -94,7 +94,6 @@ def delfiles(pattern, path, files):
 
 
 def run(cmd, expected_status=0, stdout=None, stderr=None, shell=False):
-    global options
     if options['verbose']:
         print('>>> %s $ %s' % (os.getcwd(), ' '.join(cmd)))
     p = Popen(cmd, stdout=stdout, stderr=stderr, shell=shell)
@@ -339,7 +338,7 @@ def post_po2moz_hacks(lang, buildlang):
     if os.path.isfile(inst_inc_po):
         tempdir = tempfile.mkdtemp()
         tmp_po = join(tempdir, 'installer.%s.properties.po' % (lang))
-        shutil.copy2(inst_po, tmp_po)
+        shutil.copy2(inst_inc_po, tmp_po)
 
         inst_inc = join(l10ndir, 'en-US', 'mail', 'installer', 'installer.inc')
         tmp_properties = join(tempdir, 'installer.properties')
@@ -668,7 +667,7 @@ def main(langs=['ALL'], mozproduct='browser', mozcheckout=False, moztag='-A',
 
 
 def main_cmd_line():
-    options, langs = create_option_parser().parse_known_args()
+    args, langs = create_option_parser().parse_known_args()
 
     main(
         langs=langs,

@@ -73,7 +73,7 @@ def merge_store(template_store, input_store, blankmsgstr=False,
             output_store.addunit(origpo)
         elif translatedpo is not None:
             logger.error("error converting original subtitle definition %s",
-                         origini.name)
+                         origpo.name)
     output_store.removeduplicates(duplicatestyle)
     return output_store
 

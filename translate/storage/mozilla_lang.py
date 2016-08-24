@@ -77,9 +77,10 @@ class LangStore(txt.TxtFile):
         # Have we just seen a ';' line, and so are ready for a translation
         readyTrans = False
         comment = ""
-
         if not isinstance(lines, list):
             lines = lines.split(b"\n")
+        unit = None
+
         for lineoffset, line in enumerate(lines):
             line = line.decode(self.encoding).rstrip("\n").rstrip("\r")
 
@@ -91,13 +92,13 @@ class LangStore(txt.TxtFile):
                 continue
 
             if readyTrans:  # If we are expecting a translation, set the target
-                if line != u.source:
+                if line != unit.source:
                     if line.rstrip().endswith("{ok}"):
-                        u.target = line.rstrip()[:-4].rstrip()
+                        unit.target = line.rstrip()[:-4].rstrip()
                     else:
-                        u.target = line
+                        unit.target = line
                 else:
-                    u.target = ""
+                    unit.target = ""
                 readyTrans = False  # We already have our translation
                 continue
 
@@ -106,11 +107,11 @@ class LangStore(txt.TxtFile):
                 comment += line[1:].strip() + "\n"
 
             if line.startswith(';'):
-                u = self.addsourceunit(line[1:])
+                unit = self.addsourceunit(line[1:])
                 readyTrans = True  # Now expecting a translation on the next line
-                u.addlocation("%s:%d" % (self.filename, lineoffset + 1))
+                unit.addlocation("%s:%d" % (self.filename, lineoffset + 1))
                 if comment is not None:
-                    u.addnote(comment[:-1], 'developer')
+                    unit.addnote(comment[:-1], 'developer')
                     comment = ""
 
     def serialize(self, out):

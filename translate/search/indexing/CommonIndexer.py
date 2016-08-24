@@ -450,7 +450,7 @@ class CommonDatabase(object):
         if len(ident_list) == 0:
             # no matching items
             return 0
-        if isinstance(ident_list[0], int) or isinstance(ident_list[0], long):
+        if isinstance(ident_list[0], six.integer_types):
             # create a list of IDs of all successfully removed documents
             success_delete = [match for match in ident_list
                               if self.delete_document_by_id(match)]

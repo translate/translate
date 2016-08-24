@@ -201,5 +201,5 @@ def convert(inputfile, template=None, options=None, convert_options=None):
     if convert_options is None:
         convert_options = {}
     with open(tempfname, 'w') as output_file:
-        get_converter(in_ext, out_ext, templ_ext)(inputfile, outputfile, template, **convert_options)
-    return outputfile, out_ext
+        get_converter(in_ext, out_ext, templ_ext)(inputfile, output_file, template, **convert_options)
+    return output_file, out_ext

@@ -136,7 +136,7 @@ class inifile(base.TranslationStore):
             input = BytesIO(input)
             self._inifile = INIConfig(input, optionxformvalue=None)
         else:
-            self._inifile = INIConfig(file(input), optionxformvalue=None)
+            self._inifile = INIConfig(open(input), optionxformvalue=None)
 
         for section in self._inifile:
             for entry in self._inifile[section]:
