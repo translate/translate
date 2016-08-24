@@ -3,7 +3,7 @@
 isort>=3.5.0
 pep257
 pep8
-pytest==2.9.2
+pytest==3.0.1
 pytest-cov
 pytest-xdist
 Sphinx>=1.2.2
