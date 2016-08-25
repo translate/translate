@@ -85,7 +85,7 @@ class ConflictOptionParser(optrecurse.RecursiveOptionParser):
             else:
                 inputfiles = [options.input]
         self.textmap = {}
-        self.initprogressbar(inputfiles, options)
+        progress_bar = optrecurse.ProgressBar(options.progress, inputfiles)
         for inputpath in inputfiles:
             fullinputpath = self.getfullinputpath(options, inputpath)
             try:
@@ -93,8 +93,8 @@ class ConflictOptionParser(optrecurse.RecursiveOptionParser):
             except Exception:
                 self.warning("Error processing: input %s" % (fullinputpath), options, sys.exc_info())
                 success = False
-            self.reportprogress(inputpath, success)
-        del self.progressbar
+            progress_bar.report_progress(inputpath, success)
+        del progress_bar
         self.buildconflictmap()
         self.outputconflicts(options)
 

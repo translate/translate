@@ -32,6 +32,37 @@ from translate import __version__
 from translate.misc import progressbar
 
 
+class ProgressBar(object):
+    progress_types = OrderedDict([
+        ("dots", progressbar.DotsProgressBar),
+        ("none", progressbar.NoProgressBar),
+        ("bar", progressbar.HashProgressBar),
+        ("names", progressbar.MessageProgressBar),
+        ("verbose", progressbar.VerboseProgressBar),
+    ])
+
+    def __init__(self, progress_type, allfiles):
+        """Set up a progress bar appropriate to the progress_type and files."""
+        if progress_type in ('bar', 'verbose'):
+            files_length = len(allfiles)
+            self._progressbar = self.progress_types[progress_type](0, files_length)
+            logger = logging.getLogger(os.path.basename(sys.argv[0])).getChild("progress")
+            logger.setLevel(logging.INFO)
+            logger.propagate = False
+            handler = logging.StreamHandler()
+            handler.setLevel(logging.INFO)
+            handler.setFormatter(logging.Formatter())
+            logger.addHandler(handler)
+            logger.info("processing %d files...", files_length)
+        else:
+            self._progressbar = self.progress_types[progress_type]()
+
+    def report_progress(self, filename, success):
+        """Show that we are progressing..."""
+        self._progressbar.amount += 1
+        self._progressbar.show(filename)
+
+
 class ManPageOption(optparse.Option, object):
     ACTIONS = optparse.Option.ACTIONS + ("manpage",)
 
@@ -279,17 +310,10 @@ class RecursiveOptionParser(optparse.OptionParser, object):
 
     def setprogressoptions(self):
         """Sets the progress options."""
-        self.progresstypes = OrderedDict([
-            ("dots", progressbar.DotsProgressBar),
-            ("none", progressbar.NoProgressBar),
-            ("bar", progressbar.HashProgressBar),
-            ("names", progressbar.MessageProgressBar),
-            ("verbose", progressbar.VerboseProgressBar),
-        ])
         progressoption = optparse.Option(
             None, "--progress", dest="progress", default="bar",
-            choices=list(self.progresstypes.keys()), metavar="PROGRESS",
-            help="show progress as: %s" % (", ".join(self.progresstypes)))
+            choices=list(ProgressBar.progress_types.keys()), metavar="PROGRESS",
+            help="show progress as: %s" % (", ".join(ProgressBar.progress_types)))
         self.define_option(progressoption)
 
     def seterrorleveloptions(self):
@@ -410,23 +434,6 @@ class RecursiveOptionParser(optparse.OptionParser, object):
                     raise ValueError("don't know what to do with input format (no file extension)")
         return outputformat, fileprocessor
 
-    def initprogressbar(self, allfiles, options):
-        """Sets up a progress bar appropriate to the options and files."""
-        if options.progress in ('bar', 'verbose'):
-            self.progressbar = \
-                self.progresstypes[options.progress](0, len(allfiles))
-            # should use .getChild("progress") but that is only in 2.7
-            logger = logging.getLogger(self.get_prog_name() + ".progress")
-            logger.setLevel(logging.INFO)
-            logger.propagate = False
-            handler = logging.StreamHandler()
-            handler.setLevel(logging.INFO)
-            handler.setFormatter(logging.Formatter())
-            logger.addHandler(handler)
-            logger.info("processing %d files...", len(allfiles))
-        else:
-            self.progressbar = self.progresstypes[options.progress]()
-
     def getfullinputpath(self, options, inputpath):
         """Gets the absolute path to an input file."""
         if options.input:
@@ -484,7 +491,7 @@ class RecursiveOptionParser(optparse.OptionParser, object):
         options.recursivetemplate = (self.usetemplates and
                                      self.isrecursive(options.template, 'template') and
                                      getattr(options, "allowrecursivetemplate", True))
-        self.initprogressbar(inputfiles, options)
+        progress_bar = ProgressBar(options.progress, inputfiles)
         for inputpath in inputfiles:
             try:
                 templatepath = self.gettemplatename(options, inputpath)
@@ -516,8 +523,8 @@ class RecursiveOptionParser(optparse.OptionParser, object):
                              (fullinputpath, fulloutputpath,
                               fulltemplatepath), options, sys.exc_info())
                 success = False
-            self.reportprogress(inputpath, success)
-        del self.progressbar
+            progress_bar.report_progress(inputpath, success)
+        del progress_bar
 
     def openinputfile(self, options, fullinputpath):
         """Opens the input file."""
@@ -578,11 +585,6 @@ class RecursiveOptionParser(optparse.OptionParser, object):
                 outputfile.close()
                 os.unlink(fulloutputpath)
             return False
-
-    def reportprogress(self, filename, success):
-        """Shows that we are progressing..."""
-        self.progressbar.amount += 1
-        self.progressbar.show(filename)
 
     def mkdir(self, parent, subdir):
         """Makes a subdirectory (recursively if neccessary)."""

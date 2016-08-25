@@ -418,7 +418,7 @@ class TerminologyOptionParser(optrecurse.RecursiveOptionParser):
         if os.path.isdir(options.output):
             options.output = os.path.join(options.output, "pootle-terminology.pot")
 
-        self.initprogressbar(inputfiles, options)
+        progress_bar = optrecurse.ProgressBar(options.progress, inputfiles)
         for inputpath in inputfiles:
             self.files += 1
             fullinputpath = self.getfullinputpath(options, inputpath)
@@ -428,8 +428,8 @@ class TerminologyOptionParser(optrecurse.RecursiveOptionParser):
             except Exception:
                 self.warning("Error processing: input %s" % (fullinputpath), options, sys.exc_info())
                 success = False
-            self.reportprogress(inputpath, success)
-        del self.progressbar
+            progress_bar.report_progress(inputpath, success)
+        del progress_bar
         self.outputterminology(options)
 
     def processfile(self, fileprocessor, options, fullinputpath):
