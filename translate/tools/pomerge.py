@@ -115,25 +115,19 @@ def main():
         ("xlf", "po"): pooutput, ("xlf", "pot"): pooutput,
         ("xlf", "xlf"): xliffoutput, ("po", "xlf"): xliffoutput,
     }
-    mergeblanksoption = convert.optparse.Option(
-        "", "--mergeblanks",
-        dest="mergeblanks", action="store", default="yes",
-        help="whether to overwrite existing translations with blank translations (yes/no). Default is yes.")
-    mergefuzzyoption = convert.optparse.Option(
-        "", "--mergefuzzy",
-        dest="mergefuzzy", action="store", default="yes",
-        help="whether to consider fuzzy translations from input (yes/no). Default is yes.")
-    mergecommentsoption = convert.optparse.Option(
-        "", "--mergecomments",
-        dest="mergecomments", action="store", default="yes",
-        help="whether to merge comments as well as translations (yes/no). Default is yes.")
     parser = convert.ConvertOptionParser(formats, usetemplates=True,
                                          description=__doc__)
-    parser.add_option(mergeblanksoption)
+    parser.add_argument(
+        "--mergeblanks", dest="mergeblanks", action="store", default="yes",
+        help="whether to overwrite existing translations with blank translations (yes/no). Default is %(default)s.")
+    parser.add_argument(
+        "--mergefuzzy", dest="mergefuzzy", action="store", default="yes",
+        help="whether to consider fuzzy translations from input (yes/no). Default is %(default)s.")
+    parser.add_argument(
+        "--mergecomments", dest="mergecomments", action="store", default="yes",
+        help="whether to merge comments as well as translations (yes/no). Default is %(default)s.")
     parser.passthrough.append("mergeblanks")
-    parser.add_option(mergefuzzyoption)
     parser.passthrough.append("mergefuzzy")
-    parser.add_option(mergecommentsoption)
     parser.passthrough.append("mergecomments")
     parser.run()
 

@@ -182,7 +182,7 @@ class TestRESX2POCommand(test_convert.TestConvertCommand, TestRESX2PO):
         options = test_convert.TestConvertCommand.test_help(self)
         options = self.help_check(options, "-P, --pot")
         options = self.help_check(options, "--duplicates")
-        options = self.help_check(options, "-t TEMPLATE, --template=TEMPLATE")
+        options = self.help_check(options, "-t TEMPLATE, --template TEMPLATE")
         options = self.help_check(options, "--filter", last=True)
 
     def single_element(self, pofile):

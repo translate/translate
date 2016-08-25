@@ -82,7 +82,7 @@ def main(argv=None):
     formats = {"php": ("po", converttiki)}
 
     parser = convert.ConvertOptionParser(formats, description=__doc__)
-    parser.add_option("", "--include-unused", dest="includeunused",
+    parser.add_argument("--include-unused", dest="includeunused",
                       action="store_true", default=False,
                       help="Include strings in the unused section")
     parser.passthrough.append("includeunused")

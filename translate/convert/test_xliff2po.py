@@ -230,7 +230,7 @@ class TestBasicXLIFF2PO(test_convert.TestConvertCommand, TestXLIFF2PO):
                                <target state="translated">Een</target>
                              </trans-unit>
                              """)
-        self.run_command(i="simple_convert.xlf", o="simple_convert.po")
+        self.run_command("simple_convert.xlf", "simple_convert.po")
         assert b'msgstr "Een"' in self.read_testfile("simple_convert.po")
 
 
@@ -252,7 +252,7 @@ class TestXLIFF2POCommand(test_convert.TestConvertCommand, TestXLIFF2PO):
         """tests getting help"""
         options = test_convert.TestConvertCommand.test_help(self)
         options = self.help_check(options, "-P, --pot")
-        options = self.help_check(options, "--duplicates=DUPLICATESTYLE")
+        options = self.help_check(options, "--duplicates DUPLICATESTYLE")
 
     def test_preserve_filename(self):
         """Ensures that the filename is preserved."""

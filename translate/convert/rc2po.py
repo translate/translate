@@ -114,17 +114,17 @@ def main(argv=None):
                "nls": ("po", convertrc), ("nls", "nls"): ("po", convertrc)}
     parser = convert.ConvertOptionParser(formats, usetemplates=True, usepots=True, description=__doc__)
     DEFAULTCHARSET = "cp1252"
-    parser.add_option(
-        "", "--charset", dest="charset", default=DEFAULTCHARSET,
-        help="charset to use to decode the RC files (default: %s)" % DEFAULTCHARSET, metavar="CHARSET")
+    parser.add_argument(
+        "--charset", dest="charset", default=DEFAULTCHARSET,
+        help="charset to use to decode the RC files (default: %(default)s)", metavar="CHARSET")
     DEFAULTLANG = "LANG_ENGLISH"
-    parser.add_option(
+    parser.add_argument(
         "-l", "--lang", dest="lang", default=DEFAULTLANG,
-        help="LANG entry (default: %s)" % DEFAULTLANG, metavar="LANG")
+        help="LANG entry (default: %(default)s)", metavar="LANG")
     DEFAULTSUBLANG = "SUBLANG_DEFAULT"
-    parser.add_option(
-        "", "--sublang", dest="sublang", default=DEFAULTSUBLANG,
-        help="SUBLANG entry (default: %s)" % DEFAULTSUBLANG, metavar="SUBLANG")
+    parser.add_argument(
+        "--sublang", dest="sublang", default=DEFAULTSUBLANG,
+        help="SUBLANG entry (default: %(default)s)", metavar="SUBLANG")
     parser.add_duplicates_option()
     parser.passthrough.append("pot")
     parser.passthrough.append("charset")

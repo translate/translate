@@ -26,6 +26,7 @@ See: http://docs.translatehouse.org/projects/translate-toolkit/en/latest/command
 for examples and usage instructions.
 """
 
+import argparse
 import os
 import sys
 
@@ -38,19 +39,10 @@ class SplitOptionParser(optrecurse.RecursiveOptionParser):
 
     def parse_args(self, args=None, values=None):
         """parses the command line options, handling implicit input/output args"""
-        (options, args) = optrecurse.RecursiveOptionParser.parse_args(self, args, values)
-        if not options.output:
+        args = optrecurse.RecursiveOptionParser.parse_args(self, args, values)
+        if not args.output:
             self.error("Output file is rquired")
-        return (options, args)
-
-    def set_usage(self, usage=None):
-        """sets the usage string - if usage not given, uses getusagestring for each option"""
-        if usage is None:
-            self.usage = "%prog " + " ".join([self.getusagestring(option) for option in self.option_list]) + \
-                         "\n  " + \
-                         "input directory is searched for PO files with (poconflicts) comments, all entries are written to files in a directory structure for pomerge"
-        else:
-            super(SplitOptionParser, self).set_usage(usage)
+        return args
 
     def recursiveprocess(self, options):
         """recurse through directories and process files"""
@@ -61,7 +53,7 @@ class SplitOptionParser(optrecurse.RecursiveOptionParser):
                 # we mess up an existing tree.
                 os.mkdir(options.output)
             except:
-                self.error(optrecurse.optparse.OptionValueError("Output directory does not exist, attempt to create failed"))
+                self.error(argparse.ArgumentError("Output directory does not exist, attempt to create failed"))
         if self.isrecursive(options.input, 'input') and getattr(options, "allowrecursiveinput", True):
             if isinstance(options.input, list):
                 inputfiles = self.recurseinputfilelist(options)
@@ -116,7 +108,6 @@ def main():
     pooutput = ("po", None)
     formats = {(None, None): pooutput, ("po", "po"): pooutput, "po": pooutput}
     parser = SplitOptionParser(formats, description=__doc__)
-    parser.set_usage()
     parser.run()
 
 

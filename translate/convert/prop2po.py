@@ -25,7 +25,6 @@ for examples and usage instructions.
 """
 
 import logging
-import six
 
 from translate.convert.accesskey import UnitMixer
 from translate.storage import po, properties
@@ -340,16 +339,15 @@ def main(argv=None):
     parser = convert.ConvertOptionParser(formats, usetemplates=True,
                                          usepots=True,
                                          description=__doc__)
-    parser.add_option(
-        "", "--personality", dest="personality",
+    parser.add_argument(
+        "--personality", dest="personality",
         default=properties.default_dialect,
-        type="choice",
+        type=str,
         choices=list(properties.dialects.keys()),
-        help="override the input file format: %s (for .properties files, default: %s)" % (
-            ", ".join(six.iterkeys(properties.dialects)), properties.default_dialect),
+        help="override the input file format: %(choices)s (for .properties files, default: %(default)s)",
         metavar="TYPE")
-    parser.add_option(
-        "", "--encoding", dest="encoding", default=None,
+    parser.add_argument(
+        "--encoding", dest="encoding", default=None,
         help="override the encoding set by the personality",
         metavar="ENCODING")
     parser.add_duplicates_option()

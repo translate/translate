@@ -103,17 +103,17 @@ def main(argv=None):
     parser = convert.ConvertOptionParser(formats, usetemplates=True,
                                          description=__doc__)
     defaultcharset = "utf-8"
-    parser.add_option(
-        "", "--charset", dest="charset", default=defaultcharset,
-        help="charset to use to decode the RC files (default: %s)" % defaultcharset,
+    parser.add_argument(
+        "--charset", dest="charset", default=defaultcharset,
+        help="charset to use to decode the RC files (default: %(default)s)",
         metavar="CHARSET")
-    parser.add_option(
+    parser.add_argument(
         "-l", "--lang", dest="lang", default=None,
         help="LANG entry", metavar="LANG")
     defaultsublang = "SUBLANG_DEFAULT"
-    parser.add_option(
-        "", "--sublang", dest="sublang", default=defaultsublang,
-        help="SUBLANG entry (default: %s)" % defaultsublang, metavar="SUBLANG")
+    parser.add_argument(
+        "--sublang", dest="sublang", default=defaultsublang,
+        help="SUBLANG entry (default: %(default)s)", metavar="SUBLANG")
     parser.passthrough.append("charset")
     parser.passthrough.append("lang")
     parser.passthrough.append("sublang")

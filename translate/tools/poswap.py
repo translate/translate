@@ -93,8 +93,8 @@ def convertpo(inputpofile, outputpotfile, template, reverse=False):
 def main(argv=None):
     formats = {("po", "po"): ("po", convertpo), ("po", "pot"): ("po", convertpo), "po": ("po", convertpo)}
     parser = convert.ConvertOptionParser(formats, usetemplates=True, description=__doc__)
-    parser.add_option(
-        "", "--reverse", dest="reverse", default=False, action="store_true",
+    parser.add_argument(
+        "--reverse", dest="reverse", default=False, action="store_true",
         help="reverse the process of intermediate language conversion")
     parser.passthrough.append("reverse")
     parser.run(argv)
