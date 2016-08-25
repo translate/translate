@@ -44,8 +44,8 @@ class ProgressBar(object):
     def __init__(self, progress_type, allfiles):
         """Set up a progress bar appropriate to the progress_type and files."""
         if progress_type in ('bar', 'verbose'):
-            files_length = len(allfiles)
-            self._progressbar = self.progress_types[progress_type](0, files_length)
+            file_count = len(allfiles)
+            self._progressbar = self.progress_types[progress_type](0, file_count)
             logger = logging.getLogger(os.path.basename(sys.argv[0])).getChild("progress")
             logger.setLevel(logging.INFO)
             logger.propagate = False
@@ -53,7 +53,7 @@ class ProgressBar(object):
             handler.setLevel(logging.INFO)
             handler.setFormatter(logging.Formatter())
             logger.addHandler(handler)
-            logger.info("processing %d files...", files_length)
+            logger.info("processing %d files...", file_count)
         else:
             self._progressbar = self.progress_types[progress_type]()
 
