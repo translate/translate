@@ -1,7 +1,7 @@
 Translate Toolkit 2.0.0b5
 *************************
 
-*Released on 29 August 2016*
+*Released on 30 August 2016*
 
 This release contains many improvements and bug fixes. While it contains many
 general improvements, it also specifically contains needed changes and
@@ -27,6 +27,7 @@ Major changes
 
 - Python 3 compatibility thanks to Claude Paroz
 - Dropped support for Python 2.6
+- Support for new l20n format
 - Translate Toolkit can now easily be installed on Windows
 - Changes in storage API to expose a more standardized API
 
