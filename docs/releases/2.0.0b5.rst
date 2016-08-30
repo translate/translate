@@ -85,7 +85,7 @@ Formats and Converters
 
 - Mozilla's l20n
 
-  - Added this new format storage classe
+  - Added this new format storage class
   - Added new converters :doc:`l20n2po </commands/l20n2po>` and
     :ref:`po2l20n <po2l20n>`
 
