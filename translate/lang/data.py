@@ -170,6 +170,8 @@ languages = {
     'su': (u'Sundanese', 1, '0'),
     'sv': (u'Swedish', 2, '(n != 1)'),
     'sw': (u'Swahili', 2, '(n != 1)'),
+    'szl': (u'Silesian', 3,
+            '(n==1 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2)'),
     'ta': (u'Tamil', 2, '(n != 1)'),
     'te': (u'Telugu', 2, '(n != 1)'),
     'tg': (u'Tajik', 2, '(n != 1)'),
