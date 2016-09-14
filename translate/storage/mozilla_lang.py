@@ -49,7 +49,12 @@ class LangUnit(base.TranslationUnit):
         else:
             target = self.target
         if self.getnotes():
-            notes = ('\n').join(["# %s" % note for note in self.getnotes('developer').split("\n")])
+            notes = ('\n').join(
+                [("#%s" % note
+                  if note.startswith("#")
+                  else "# %s" % note)
+                 for note
+                 in self.getnotes('developer').split("\n")])
             return u"%s\n;%s\n%s%s" % (notes, self.source, target, unchanged)
         return u";%s\n%s%s" % (self.source, target, unchanged)
 
@@ -71,6 +76,7 @@ class LangStore(txt.TxtFile):
     def __init__(self, inputfile=None, mark_active=False, **kwargs):
         self.is_active = False
         self.mark_active = mark_active
+        self._headers = []
         super(LangStore, self).__init__(inputfile, **kwargs)
 
     def parse(self, lines):
@@ -88,6 +94,10 @@ class LangStore(txt.TxtFile):
                 self.is_active = True
                 continue
 
+            if line.startswith("## ") and not line.startswith('## TAG'):
+                self._headers.append(line)
+                continue
+
             if len(line) == 0 and not readyTrans:  # Skip blank lines
                 continue
 
@@ -102,8 +112,12 @@ class LangStore(txt.TxtFile):
                 readyTrans = False  # We already have our translation
                 continue
 
-            if line.startswith('#') and not line.startswith('##'):
-                # Read comments, but not meta tags (e.g. '## TAG')
+            is_comment = (
+                line.startswith('#')
+                and (not line.startswith("##")
+                     or line.startswith('## TAG')))
+            if is_comment:
+                # Read comments, *including* meta tags (i.e. '## TAG')
                 comment += line[1:].strip() + "\n"
 
             if line.startswith(';'):
@@ -117,6 +131,13 @@ class LangStore(txt.TxtFile):
     def serialize(self, out):
         if self.is_active or self.mark_active:
             out.write(b"## active ##\n")
+        for header in self._headers:
+            out.write(six.text_type("%s\n" % header).encode('utf-8'))
+        if self._headers:
+            out.write(b"\n\n")
         for unit in self.units:
             out.write(six.text_type(unit).encode('utf-8'))
             out.write(b"\n\n\n")
+
+    def getlangheaders(self):
+        return self._headers
