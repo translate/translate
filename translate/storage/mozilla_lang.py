@@ -80,12 +80,10 @@ class LangStore(txt.TxtFile):
         super(LangStore, self).__init__(inputfile, **kwargs)
 
     def parse(self, lines):
-        # Have we just seen a ';' line, and so are ready for a translation
-        readyTrans = False
+        source_unit = None
         comment = ""
         if not isinstance(lines, list):
             lines = lines.split(b"\n")
-        unit = None
 
         for lineoffset, line in enumerate(lines):
             line = line.decode(self.encoding).rstrip("\n").rstrip("\r")
@@ -98,18 +96,19 @@ class LangStore(txt.TxtFile):
                 self._headers.append(line)
                 continue
 
-            if len(line) == 0 and not readyTrans:  # Skip blank lines
+            if len(line) == 0 and not source_unit:  # Skip blank lines
                 continue
 
-            if readyTrans:  # If we are expecting a translation, set the target
-                if line != unit.source:
+            if source_unit:
+                # If we have a source_unit get the target
+                if line != source_unit.source:
                     if line.rstrip().endswith("{ok}"):
-                        unit.target = line.rstrip()[:-4].rstrip()
+                        source_unit.target = line.rstrip()[:-4].rstrip()
                     else:
-                        unit.target = line
+                        source_unit.target = line
                 else:
-                    unit.target = ""
-                readyTrans = False  # We already have our translation
+                    source_unit.target = ""
+                source_unit = None
                 continue
 
             is_comment = (
@@ -121,11 +120,11 @@ class LangStore(txt.TxtFile):
                 comment += line[1:].strip() + "\n"
 
             if line.startswith(';'):
-                unit = self.addsourceunit(line[1:])
-                readyTrans = True  # Now expecting a translation on the next line
-                unit.addlocation("%s:%d" % (self.filename, lineoffset + 1))
+                source_unit = self.addsourceunit(line[1:])
+                source_unit.addlocation(
+                    "%s:%d" % (self.filename, lineoffset + 1))
                 if comment is not None:
-                    unit.addnote(comment[:-1], 'developer')
+                    source_unit.addnote(comment[:-1], 'developer')
                     comment = ""
 
     def serialize(self, out):
