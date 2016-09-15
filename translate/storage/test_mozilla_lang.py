@@ -70,6 +70,20 @@ class TestMozLangFile(test_base.TestTranslationStore):
         assert "Comment" in unit.getnotes()
         assert bytes(store).decode('utf-8') == lang
 
+    def test_crlf(self):
+        """While \n is preferred \r\n is allowed"""
+        lang = ("# Comment\r\n"
+                ";Source\r\n"
+                "Target\r\n"
+                "\r\n\r\n")
+        store = self.StoreClass.parsestring(lang)
+        store.mark_active = False
+        unit = store.units[0]
+        assert unit.source == "Source"
+        assert unit.target == "Target"
+        assert "Comment" in unit.getnotes()
+        assert bytes(store).decode('utf-8') == lang
+
     def test_active_flag(self):
         """Test the ## active ## flag"""
         lang = ("## active ##\n"
