@@ -9,6 +9,23 @@ import pytest
 from translate.storage import mozilla_lang, test_base
 
 
+@pytest.mark.parametrize(
+    "orig, stripped", [
+        ("", ""),
+        ("String", "String"),        # No {ok}
+        ("String {ok}", "String"),   # correct form
+        ("String {OK}", "String"),   # capitals
+        ("Şŧřīƞɠ {ok}", "Şŧřīƞɠ"),   # Unicode
+        ("String{ok}", "String"),    # No leading space
+        ("String{OK}", "String"),    # Caps no leading space
+        ("String  {ok}", "String"),  # multispace leading
+        ("String {ok} ", "String"),  # trailing space
+    ])
+def test_strip_ok(orig, stripped):
+    """Test various permutations of {ok} stripping"""
+    assert mozilla_lang.strip_ok(orig) == stripped
+
+
 class TestMozLangUnit(test_base.TestTranslationUnit):
     UnitClass = mozilla_lang.LangUnit
 

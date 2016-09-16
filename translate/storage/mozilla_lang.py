@@ -31,6 +31,13 @@ import six
 from translate.storage import base, txt
 
 
+def strip_ok(string):
+    tmpstring = string.rstrip()
+    if tmpstring.endswith("{ok}") or tmpstring.endswith("{OK}"):
+        return tmpstring[:-4].rstrip()
+    return string
+
+
 @six.python_2_unicode_compatible
 class LangUnit(base.TranslationUnit):
     """This is just a normal unit with a weird string output"""
@@ -111,10 +118,7 @@ class LangStore(txt.TxtFile):
             if source_unit:
                 # If we have a source_unit get the target
                 if line != source_unit.source:
-                    if line.rstrip().endswith("{ok}"):
-                        source_unit.target = line.rstrip()[:-4].rstrip()
-                    else:
-                        source_unit.target = line
+                    source_unit.target = strip_ok(line)
                 else:
                     source_unit.target = ""
                 source_unit = None
