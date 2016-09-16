@@ -150,6 +150,7 @@ class TestMozLangFile(test_base.TestTranslationStore):
                 "## some_tag ##\n"
                 "## another_tag ##\n"
                 "## NOTE: foo\n"
+                "\n\n"
                 ";Source\n"
                 "Target\n"
                 "\n\n")
@@ -158,7 +159,8 @@ class TestMozLangFile(test_base.TestTranslationStore):
             store.getlangheaders()
             == [u'## some_tag ##',
                 u'## another_tag ##',
-                u'## NOTE: foo'])
+                u'## NOTE: foo',
+                u'', u''])
         out = io.BytesIO()
         store.serialize(out)
         out.seek(0)
@@ -186,6 +188,19 @@ class TestMozLangFile(test_base.TestTranslationStore):
                 "\n\n")
         store = self.StoreClass.parsestring(lang)
         assert "## TAG: fooled_you ##" not in store.getlangheaders()
+
+    @pytest.mark.parametrize("nl", [0, 1, 2, 3])
+    def test_header_blanklines(self, nl):
+        """Ensure that blank lines following a header are recorded"""
+        lang_header = ("## active ##\n"
+                       "## some_tag ##\n")
+        lang_unit1 = ("# Comment\n"
+                      ";Source\n"
+                      "Target\n"
+                      "\n\n")
+        lang = lang_header + '\n' * nl + lang_unit1
+        store = self.StoreClass.parsestring(lang)
+        assert bytes(store).decode('utf-8') == lang
 
     def test_tag_comments(self):
         """Ensure we can handle comments and distinguish from headers"""
