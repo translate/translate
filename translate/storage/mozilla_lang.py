@@ -55,6 +55,9 @@ class LangUnit(base.TranslationUnit):
             target = self.source
         if self.source == self.target:
             target = self.target + " {ok}"
+        if (self.rawtarget is not None
+            and self.target == strip_ok(self.rawtarget)):
+            target = self.rawtarget
         if self.getnotes():
             notes = (self.eol).join(
                 [("#%s" % note
@@ -115,6 +118,7 @@ class LangStore(txt.TxtFile):
 
             if source_unit:
                 # If we have a source_unit get the target
+                source_unit.rawtarget = line
                 if line != source_unit.source:
                     source_unit.target = strip_ok(line)
                 else:
