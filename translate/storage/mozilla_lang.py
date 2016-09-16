@@ -49,14 +49,12 @@ class LangUnit(base.TranslationUnit):
         base.TranslationUnit.__init__(self, source)
 
     def __str__(self):
-        if self.source == self.target:
-            unchanged = " {ok}"
-        else:
-            unchanged = ""
-        if not self.istranslated():
-            target = self.source
-        else:
+        if self.istranslated():
             target = self.target
+        else:
+            target = self.source
+        if self.source == self.target:
+            target = self.target + " {ok}"
         if self.getnotes():
             notes = (self.eol).join(
                 [("#%s" % note
@@ -64,9 +62,9 @@ class LangUnit(base.TranslationUnit):
                   else "# %s" % note)
                  for note
                  in self.getnotes('developer').split("\n")])
-            return u"%s%s;%s%s%s%s" % (
-                notes, self.eol, self.source, self.eol, target, unchanged)
-        return u";%s%s%s%s" % (self.source, self.eol, target, unchanged)
+            return u"%s%s;%s%s%s" % (
+                notes, self.eol, self.source, self.eol, target)
+        return u";%s%s%s" % (self.source, self.eol, target)
 
     def getlocations(self):
         return self.locations
