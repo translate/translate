@@ -31,3 +31,6 @@ class bo(common.Common):
     ignoretests = {
         'mozilla': ["accelerators"],
     }
+
+    mozilla_nplurals = 2
+    mozilla_pluralequation = "n!=1 ? 1 : 0"
