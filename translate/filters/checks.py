@@ -2274,6 +2274,57 @@ class TermChecker(StandardChecker):
         StandardChecker.__init__(self, **kwargs)
 
 
+l20nconfig = CheckerConfig(
+    varmatches=[("$", None), ("{", "}"), ],
+)
+
+
+class L20nChecker(MozillaChecker):
+    excluded_filters_for_complex_units = [
+        "escapes",
+        "newlines",
+        "tabs",
+        "singlequoting",
+        "doublequoting",
+        "doublespacing",
+        "brackets",
+        "pythonbraceformat",
+        "sentencecount",
+        "variables",
+    ]
+    complex_unit_pattern = "->"
+
+    def __init__(self, **kwargs):
+        checkerconfig = kwargs.get("checkerconfig", None)
+
+        if checkerconfig is None:
+            checkerconfig = CheckerConfig()
+            kwargs["checkerconfig"] = checkerconfig
+
+        checkerconfig.update(l20nconfig)
+        MozillaChecker.__init__(self, **kwargs)
+
+    def run_filters(self, unit, categorised=False):
+        is_unit_complex = (self.complex_unit_pattern in unit.source
+                           or self.complex_unit_pattern in unit.target)
+
+        saved_default_filters = {}
+        if is_unit_complex:
+            saved_default_filters = self.defaultfilters
+            self.defaultfilters = {
+                key: value for (key, value) in self.defaultfilters.items()
+                if key not in self.excluded_filters_for_complex_units
+            }
+
+        result = MozillaChecker.run_filters(self, unit,
+                                            categorised=categorised)
+
+        if is_unit_complex:
+            self.defaultfilters = saved_default_filters
+
+        return result
+
+
 projectcheckers = {
     "standard": StandardChecker,
     "openoffice": OpenOfficeChecker,
@@ -2285,6 +2336,7 @@ projectcheckers = {
     "creativecommons": CCLicenseChecker,
     "drupal": DrupalChecker,
     "terminology": TermChecker,
+    "l20n": L20nChecker,
 }
 
 
