@@ -2275,7 +2275,7 @@ class TermChecker(StandardChecker):
 
 
 l20nconfig = CheckerConfig(
-    varmatches=[("$", None), ("{", "}"), ],
+    varmatches=[("$", None), ],
 )
 
 

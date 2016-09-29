@@ -1005,6 +1005,14 @@ def test_variables_gnome():
     assert fails_serious(gnomechecker.variables, "Save $(file)", "Stoor $(leer)")
 
 
+def test_variables_l20n():
+    """tests variables in L20n translations"""
+    # L20n variables
+    l20nchecker = checks.L20nChecker()
+    assert passes(l20nchecker.variables, "Welcome { $user }", "Welkom { $user }")
+    assert fails_serious(l20nchecker.variables, "Welcome { $user }", "Welkom { $gebruiker }")
+
+
 def test_variables_mozilla():
     """tests variables in Mozilla translations"""
     # Mozilla variables
@@ -1374,3 +1382,51 @@ def test_skip_checks_per_language_in_some_checkers():
     failures = stdchecker.run_filters(unit)
     # But it is not in StandardChecker.
     assert 'accelerators' in failures.keys()
+
+
+def test_skip_checks_for_l20n_complex_units():
+    """Test some checks are skipped for some languages in L20n checker."""
+    from translate.storage import base
+
+    str1, str2, __ = strprep(
+        u"""{ PLURAL($num) ->
+          [one] { $num } fish.
+         *[other] { $num } fishes.
+        }""",
+        u"""{ PLURAL($num) ->
+         *[other] { $num } balık.
+        }"""
+    )
+    unit = base.TranslationUnit(str1)
+    unit.target = str2
+
+    l20nchecker = checks.L20nChecker()
+    failures = l20nchecker.run_filters(unit)
+    assert 'variables' not in failures.keys()
+    assert 'brackets' not in failures.keys()
+    assert 'newlines' not in failures.keys()
+
+    mozillachecker = checks.MozillaChecker()
+    failures = mozillachecker.run_filters(unit)
+    # But it is not in MozillaChecker.
+    assert 'variables' in failures.keys()
+    assert 'brackets' in failures.keys()
+    assert 'newlines' in failures.keys()
+
+    # Nothing skipped if unit is not complex.
+    str1, str2, __ = strprep(
+        u"""Foo { $num }
+          Bar { $num }
+        """,
+        u"""ooF { $num }
+          raB { $num }
+          Bot { $another }
+        }"""
+    )
+    unit = base.TranslationUnit(str1)
+    unit.target = str2
+
+    failures = l20nchecker.run_filters(unit)
+    assert 'variables' in failures.keys()
+    assert 'brackets' in failures.keys()
+    assert 'newlines' in failures.keys()
