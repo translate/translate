@@ -36,7 +36,7 @@ class TestJSONResourceUnit(test_monolingual.TestMonolingualUnit):
     UnitClass = jsonl10n.JsonUnit
 
 
-class TestJSONResourceStore(test_monolingual.TestMonolingualUnit):
+class TestJSONResourceStore(test_monolingual.TestMonolingualStore):
     StoreClass = jsonl10n.JsonFile
 
     def test_serialize(self):
@@ -86,7 +86,7 @@ class TestWebExtensionUnit(test_monolingual.TestMonolingualUnit):
     UnitClass = jsonl10n.WebExtensionJsonUnit
 
 
-class TestWebExtensionStore(test_monolingual.TestMonolingualUnit):
+class TestWebExtensionStore(test_monolingual.TestMonolingualStore):
     StoreClass = jsonl10n.WebExtensionJsonFile
 
     def test_serialize(self):
@@ -115,7 +115,7 @@ class TestWebExtensionStore(test_monolingual.TestMonolingualUnit):
         assert out.getvalue() == b'{\n    "key": {\n        "message": "another",\n        "description": "note"\n    }\n}\n'
 
 
-class TestI18NextStore(test_monolingual.TestMonolingualUnit):
+class TestI18NextStore(test_monolingual.TestMonolingualStore):
     StoreClass = jsonl10n.I18NextFile
 
     def test_serialize(self):
