@@ -1521,6 +1521,22 @@ def test_ensure_accelerators_not_in_target_if_not_in_source():
     assert 'should not appear' in km_failures['accelerators']
 
 
+def test_ensure_bengali_languages_script_is_correct():
+    """Test script for Bengali languages is correctly set."""
+    bn_BD_mozilla_checker = checks.MozillaChecker(
+        checkerconfig=checks.CheckerConfig(targetlanguage="bn_BD")
+    )
+    bn_IN_mozilla_checker = checks.MozillaChecker(
+        checkerconfig=checks.CheckerConfig(targetlanguage="bn_IN")
+    )
+    bn_mozilla_checker = checks.MozillaChecker(
+        checkerconfig=checks.CheckerConfig(targetlanguage="bn_IN")
+    )
+    assert bn_BD_mozilla_checker.config.language_script == 'Beng'
+    assert bn_IN_mozilla_checker.config.language_script == 'Beng'
+    assert bn_mozilla_checker.config.language_script == 'Beng'
+
+
 def test_skip_checks_for_l20n_complex_units():
     """Test some checks are skipped for some languages in L20n checker."""
     from translate.storage import base

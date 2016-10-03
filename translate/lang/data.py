@@ -257,8 +257,7 @@ scripts = {
         'sat',  # https://en.wikipedia.org/wiki/Santali_language
     ],
     'Beng': [
-        'bn_BD',  # https://en.wikipedia.org/wiki/Bengali_language
-        'bn_IN',  # https://en.wikipedia.org/wiki/Bengali_language
+        'bn',   # https://en.wikipedia.org/wiki/Bengali_language
         'mni',  # https://en.wikipedia.org/wiki/Manipuri_language
     ],
     'Tibt': [
