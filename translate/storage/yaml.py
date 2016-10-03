@@ -22,9 +22,8 @@ r"""Class that manages YAML data files for translation
 
 from __future__ import absolute_import
 
-from collections import OrderedDict
-import os
 import uuid
+from collections import OrderedDict
 
 import six
 import yaml

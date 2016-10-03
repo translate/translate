@@ -13,7 +13,7 @@ class TestJSONResourceStore(test_monolingual.TestMonolingualUnit):
     StoreClass = jsonl10n.JsonFile
 
     def test_serialize(self):
-        store = jsonl10n.JsonFile()
+        store = self.StoreClass()
         store.parse('{"key": "value"}')
         out = BytesIO()
         src = store.serialize(out)
@@ -21,7 +21,7 @@ class TestJSONResourceStore(test_monolingual.TestMonolingualUnit):
         assert out.getvalue() == b'{\n    "key": "value"\n}\n'
 
     def test_ordering(self):
-        store = jsonl10n.JsonFile()
+        store = self.StoreClass()
         store.parse('''{
     "foo": "foo",
     "bar": "bar",

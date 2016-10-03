@@ -169,7 +169,7 @@ class JsonFile(base.TranslationStore):
 
         :param data: the current branch to walk down
         :param stop: a list of leaves to extract or None to extract everything
-        :param prev: the heirarchy of the tree at this iteration
+        :param prev: the hierarchy of the tree at this iteration
         :param name_node:
         :param name_last_node: the name of the last node
         :param last_node: the last list or dict
