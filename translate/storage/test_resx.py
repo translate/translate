@@ -92,7 +92,7 @@ class TestRESXUnitFromParsedString(TestRESXUnit):
         self.unit = store.units[0]
 
 
-class TestRESXfile(test_monolingual.TestMonolingualUnit):
+class TestRESXfile(test_monolingual.TestMonolingualStore):
     StoreClass = resx.RESXFile
 
     def resxparse(self, resxsource):
