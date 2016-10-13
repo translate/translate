@@ -1148,6 +1148,17 @@ No s'ha pogut crear el servidor
     assert fails(frchecker.xmltags, "Click <a href=\"page.html\">", "Klik <a href=« page.html »>")
 
 
+@mark.xfail(reason="Bug #3506")
+def test_bengali_mozilla_inverted_xmltags():
+    """Test Bengali Mozilla XML tags."""
+    bn_mozilla_checker = checks.MozillaChecker(
+        checkerconfig=checks.CheckerConfig(targetlanguage="bn")
+    )
+    str_en = """We <a href="%(cofound_url)s" rel="external">co-founded</a> the <a href="%(whatwg_url)s" rel="external">WHAT-WG</a> to."""
+    str_bn = """এর প্রচলন ঘটাতে আমরা <a href="%(whatwg_url)s" rel="external">WHAT-WG</a> প্রতিষ্ঠায় <a href="%(cofound_url)s" rel="external">সহযোগী</a> ছিলাম।ন।"""
+    assert passes(bn_mozilla_checker.xmltags, str_en, str_bn)
+
+
 def test_ooxmltags():
     """Tests the xml tags in OpenOffice.org translations for quality as done in gsicheck"""
     for ooochecker in (checks.OpenOfficeChecker(), checks.LibreOfficeChecker()):
