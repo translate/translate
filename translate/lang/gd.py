@@ -28,4 +28,4 @@ from translate.lang import common
 class gd(common.Common):
     """This class represents Gaelic."""
 
-    specialchars = u'àòùèìÀÈÌÒÙ'
+    specialchars = u'àòùèìÀÈÌÒÙ⁊┐’…“”»‌‑'
