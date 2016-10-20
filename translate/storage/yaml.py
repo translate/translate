@@ -89,6 +89,25 @@ class YAMLDumper(yaml.SafeDumper):
     def represent_unsorted(self, data):
         return self.represent_dict(data.items())
 
+    def process_scalar(self):
+        # Use double quotes for values
+        value_states = (
+            self.expect_block_mapping_simple_value,
+            self.expect_block_sequence_item,
+            self.expect_first_block_sequence_item
+        )
+        if self.state in value_states:
+            if self.analysis is None:
+                self.analysis = self.analyze_scalar(self.event.value)
+            if self.style is None:
+                self.style = self.choose_scalar_style()
+            split = (not self.simple_key_context)
+            self.write_double_quoted(self.analysis.scalar, split)
+            self.analysis = None
+            self.style = None
+        else:
+            super(YAMLDumper, self).process_scalar()
+
 
 YAMLDumper.add_representer(UnsortableOrderedDict, YAMLDumper.represent_unsorted)
 
@@ -159,7 +178,8 @@ class YAMLFile(base.TranslationStore):
         out.write(yaml.dump_all(
             [self.get_root_node(units)],
             Dumper=YAMLDumper,
-            default_flow_style=False, encoding='utf-8', allow_unicode=True
+            default_flow_style=False, encoding='utf-8', allow_unicode=True,
+            width=1000
         ))
 
     def _flatten(self, data, prev=""):
