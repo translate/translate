@@ -487,10 +487,11 @@ def _extract_fieldvalues(match, result_and_fieldnames):
     # fill the dict
     for term in match["document"].termlist():
         for fname in fieldnames:
-            if ((fname is None) and re.match("[^A-Z]", term.term)):
-                value = term.term
-            elif re.match("%s[^A-Z]" % str(fname).upper(), term.term):
-                value = term.term[len(fname):]
+            termstr = term.term.decode('utf-8')
+            if ((fname is None) and re.match("[^A-Z]", termstr)):
+                value = termstr
+            elif re.match("%s[^A-Z]" % str(fname).upper(), termstr):
+                value = termstr[len(fname):]
             else:
                 continue
             # we found a matching field/term
