@@ -137,14 +137,14 @@ class XapianDatabase(CommonIndexer.CommonDatabase):
         """generate a query based on an existing query object
 
         basically this function should just create a copy of the original
+        Since query objects are immutable, this function is a no-op
 
         :param query: the original query object
         :type query: xapian.Query
         :return: the resulting query object
         :rtype: xapian.Query
         """
-        # create a copy of the original query
-        return xapian.Query(query)
+        return query
 
     def _create_query_for_string(self, text, require_all=True, analyzer=None):
         """generate a query for a plain term of a string query
