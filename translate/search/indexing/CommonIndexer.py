@@ -164,8 +164,8 @@ class CommonDatabase(object):
         # turn a dict into a list if necessary
         if isinstance(args, dict):
             args = args.items()
-        # turn 'args' into a list if necessary
-        if not isinstance(args, list):
+        elif not isinstance(args, list):
+            # turn 'args' into a list if necessary
             args = [args]
         # combine all given queries
         result = []
