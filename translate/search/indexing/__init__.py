@@ -62,7 +62,7 @@ def _get_available_indexers():
         mod_name = mod_file[:-3]
         # TODO - debug: "[Indexer]: trying to import indexing engines from '%s'" % mod_path
         try:
-            module = __import__(mod_name, globals(), {})
+            module = __import__(mod_name, globals(), {}, level=1)
         except ImportError:
             # maybe it is unusable or dependencies are missing
             continue
