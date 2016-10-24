@@ -29,7 +29,6 @@ directly, but can be used once cpo has been established to work.
 # - accept only unicodes everywhere
 
 import copy
-import logging
 import re
 import six
 
@@ -37,8 +36,6 @@ from translate.lang import data
 from translate.misc.multistring import multistring
 from translate.storage import base, cpo, pocommon
 
-
-logger = logging.getLogger(__name__)
 
 lsep = " "
 """Separator for #: entries"""
@@ -451,7 +448,7 @@ class pofile(pocommon.pofile):
             #only add a temporary header
             self._cpo_store.makeheader(charset=self.encoding, encoding="8bit")
 
-    def parse(self, input, duplicatestyle="merge"):
+    def parse(self, input):
         """Parses the given file or file source string."""
         try:
             if hasattr(input, 'name'):
@@ -464,21 +461,9 @@ class pofile(pocommon.pofile):
             del self._cpo_store
         except Exception as e:
             raise base.ParseError(e)
-        # duplicates are now removed by default unless duplicatestyle=allow
-        if duplicatestyle != "allow":
-            self.removeduplicates(duplicatestyle=duplicatestyle)
 
     def removeduplicates(self, duplicatestyle="merge"):
-        """Make sure each msgid is unique.
-
-        The value of duplicatestyle tells which action is performed to
-        deal with duplicate entries. Valid values are:
-
-          - merge -- Duplicate entries are merged together,
-          - allow -- Duplicate entries are kept as is,
-          - msgctxt -- A msgctxt is added to ensure duplicate entries
-                       are different.
-        """
+        """Make sure each msgid is unique ; merge comments etc from duplicates into original"""
         # TODO: can we handle consecutive calls to removeduplicates()? What
         # about files already containing msgctxt? - test
         id_dict = {}
@@ -510,17 +495,11 @@ class pofile(pocommon.pofile):
                         markedpos.append(thepo)
                     thepo._msgctxt += " ".join(thepo.getlocations())
                     uniqueunits.append(thepo)
-                else:
-                    if self.filename:
-                        logger.warning("Duplicate message ignored "
-                                       "in '%s': '%s'" % (self.filename, id))
-                    else:
-                        logger.warning("Duplicate message ignored: '%s'" % id)
             else:
                 if not id:
                     if duplicatestyle == "merge":
                         addcomment(thepo)
-                    elif duplicatestyle == "msgctxt":
+                    else:
                         thepo._msgctxt += u" ".join(thepo.getlocations())
                 id_dict[id] = thepo
                 uniqueunits.append(thepo)
