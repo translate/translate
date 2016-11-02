@@ -23,7 +23,6 @@ files (pofile).
 """
 
 import copy
-import logging
 import re
 import six
 import textwrap
@@ -35,8 +34,6 @@ from translate.misc.deprecation import deprecated
 from translate.misc.multistring import multistring
 from translate.storage import pocommon, poparser
 
-
-logger = logging.getLogger(__name__)
 
 lsep = "\n#: "
 """Separator for #: entries"""
@@ -749,7 +746,7 @@ class pofile(pocommon.pofile):
 
     UnitClass = pounit
 
-    def parse(self, input, duplicatestyle="merge"):
+    def parse(self, input):
         """Parses the given file or file source string."""
         if hasattr(input, 'name'):
             self.filename = input.name
@@ -760,10 +757,6 @@ class pofile(pocommon.pofile):
         # clear units to get rid of automatically generated headers before parsing
         self.units = []
         poparser.parse_units(poparser.ParseState(input, pounit), self)
-
-        # duplicates are now removed by default unless duplicatestyle=allow
-        if duplicatestyle != "allow":
-            self.removeduplicates(duplicatestyle=duplicatestyle)
 
     def removeduplicates(self, duplicatestyle="merge"):
         """Make sure each msgid is unique ; merge comments etc from
@@ -799,17 +792,11 @@ class pofile(pocommon.pofile):
                         markedpos.append(thepo)
                     thepo.msgctxt.append('"%s"' % escapeforpo(" ".join(thepo.getlocations())))
                     uniqueunits.append(thepo)
-                else:
-                    if self.filename:
-                        logger.warning("Duplicate message ignored "
-                                       "in '%s': '%s'" % (self.filename, id))
-                    else:
-                        logger.warning("Duplicate message ignored: '%s'" % id)
             else:
                 if not id:
                     if duplicatestyle == "merge":
                         addcomment(thepo)
-                    elif duplicatestyle == "msgctxt":
+                    else:
                         thepo.msgctxt.append('"%s"' % escapeforpo(" ".join(thepo.getlocations())))
                 id_dict[id] = thepo
                 uniqueunits.append(thepo)

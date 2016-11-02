@@ -675,17 +675,11 @@ class pofile(pocommon.pofile):
                         markedpos.append(thepo)
                     thepo.setcontext(" ".join(thepo.getlocations()))
                     uniqueunits.append(thepo)
-                else:
-                    if self.filename:
-                        logger.warning("Duplicate message ignored "
-                                       "in '%s': '%s'" % (self.filename, id))
-                    else:
-                        logger.warning("Duplicate message ignored: '%s'" % id)
             else:
                 if not id:
                     if duplicatestyle == "merge":
                         addcomment(thepo)
-                    elif duplicatestyle == "msgctxt":
+                    else:
                         thepo.setcontext(" ".join(thepo.getlocations()))
                 id_dict[id] = thepo
                 uniqueunits.append(thepo)
@@ -750,7 +744,7 @@ class pofile(pocommon.pofile):
                 return False
         return True
 
-    def parse(self, input, duplicatestyle="merge"):
+    def parse(self, input):
         if hasattr(input, 'name'):
             self.filename = input.name
         elif not getattr(self, 'filename', ''):
@@ -791,10 +785,6 @@ class pofile(pocommon.pofile):
             self.addunit(newunit, new=False)
             newmessage = gpo.po_next_message(self._gpo_message_iterator)
         self._free_iterator()
-
-        # duplicates are now removed by default unless duplicatestyle=allow
-        if duplicatestyle != "allow":
-            self.removeduplicates(duplicatestyle=duplicatestyle)
 
     def __del__(self):
         # We currently disable this while we still get segmentation faults.
