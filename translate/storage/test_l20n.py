@@ -87,3 +87,21 @@ key = value
         assert len(l20n_file.units) == 1
         l20n_unit = l20n_file.units[0]
         assert l20n_unit.comment == 'A comment'
+
+    def test_source_with_variants(self):
+        """checks that we handle l20n value as variants"""
+        l20n_source = 'test_me = ' + '''
+  [varaint1] I can code!
+  [varaint2] I can't code!
+'''
+        l20n_regen = self.l20n_regen(l20n_source)
+        assert l20n_source == l20n_regen
+
+    def test_source_with_traits(self):
+        """checks that we handle l20n value as variants"""
+        l20n_source = '''test_me = I can code!
+  [attr1] value1
+  [attr2] value2
+'''
+        l20n_regen = self.l20n_regen(l20n_source)
+        assert l20n_source == l20n_regen
