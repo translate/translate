@@ -27,6 +27,17 @@ from l20n.format.serializer import FTLSerializer as L20nSerializer
 from translate.storage import base
 
 
+def dump_l20n_entity_value(entity):
+    serializer = L20nSerializer()
+    value = serializer.dumpPattern(entity['value'])
+
+    if len(entity['traits']):
+        traits = serializer.dumpMembers(entity['traits'], 2)
+        return u'{}\n{}'.format(value, traits)
+
+    return value
+
+
 class l20nunit(base.TranslationUnit):
     """Single L20n Entity"""
 
@@ -75,6 +86,19 @@ class l20nfile(base.TranslationStore):
             self.parse(l20nsrc)
             self.makeindex()
 
+    def parse_entity(self, entity):
+        translation = dump_l20n_entity_value(entity)
+        comment = ''
+        if entity['comment']:
+            comment = entity['comment']['content']
+
+        newl20n = l20nunit(
+            source=translation,
+            id=entity['id']['name'],
+            comment=comment
+        )
+        self.addunit(newl20n)
+
     def parse(self, l20nsrc):
         text, encoding = self.detect_encoding(
             l20nsrc, default_encodings=[self.encoding])
@@ -88,17 +112,7 @@ class l20nfile(base.TranslationStore):
 
         for entry in ast['body']:
             if entry['type'] == 'Entity':
-                translation = L20nSerializer().dumpPattern(entry['value'])
-                comment = ''
-                if entry['comment']:
-                    comment = entry['comment']['content']
-
-                newl20n = l20nunit(
-                    source=translation,
-                    id=entry['id']['name'],
-                    comment=comment
-                )
-                self.addunit(newl20n)
+                self.parse_entity(entry)
 
     def serialize(self, out):
         """Write the units back to file."""
