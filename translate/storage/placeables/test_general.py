@@ -117,4 +117,30 @@ def test_placeable_formatting():
     assert fp.parse(u'There were %1$d cows')[1] == fp([u'%1$d'])
 
 
+def test_placeable_doubleat():
+    dap = general.DoubleAtPlaceable
+    assert dap.parse(u'There were @@number@@ cows')[1] == dap([u'@@number@@'])
+    assert dap.parse(u'There were @@number1@@ cows and @@number2@@ sheep')[1] == dap([u'@@number1@@'])
+    assert dap.parse(u'There were @@number1@@ cows and @@number2@@ sheep')[3] == dap([u'@@number2@@'])
+
+
+def test_placeable_brace():
+    bp = general.BracePlaceable
+    # Double braces
+    assert bp.parse(u'There were {{number}} cows')[1] == bp([u'{{number}}'])
+    assert bp.parse(u'There were {{number1}} cows and {{number2}} sheep')[1] == bp([u'{{number1}}'])
+    assert bp.parse(u'There were {{number1}} cows and {{number2}} sheep')[3] == bp([u'{{number2}}'])
+
+    # Single braces
+    assert bp.parse(u'There were {number} cows')[1] == bp([u'{number}'])
+    assert bp.parse(u'There were {number1} cows and {number2} sheep')[1] == bp([u'{number1}'])
+    assert bp.parse(u'There were {number1} cows and {number2} sheep')[3] == bp([u'{number2}'])
+
+    # Mixed single and double braces
+    assert bp.parse(u'There were {number1} cows and {{number2}} sheep')[1] == bp([u'{number1}'])
+    assert bp.parse(u'There were {number1} cows and {{number2}} sheep')[3] == bp([u'{{number2}}'])
+    assert bp.parse(u'There were {{number1}} cows and {number2} sheep')[1] == bp([u'{{number1}}'])
+    assert bp.parse(u'There were {{number1}} cows and {number2} sheep')[3] == bp([u'{number2}'])
+
+
 # TODO: PythonFormattingPlaceable, JavaMessageFormatPlaceable, UrlPlaceable, XMLTagPlaceable

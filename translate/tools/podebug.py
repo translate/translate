@@ -50,13 +50,14 @@ podebug_parsers.remove(general.CamelCasePlaceable.parse)
 
 class podebug:
 
-    def __init__(self, format=None, rewritestyle=None, ignoreoption=None):
+    def __init__(self, format=None, rewritestyle=None, ignoreoption=None, preserveplaceholders=False):
         if format is None:
             self.format = ""
         else:
             self.format = format
         self.rewritefunc = getattr(self, "rewrite_%s" % rewritestyle, None)
         self.ignorefunc = getattr(self, "ignore_%s" % ignoreoption, None)
+        self.preserveplaceholders = preserveplaceholders
 
     def apply_to_translatables(self, string, func):
         """Applies func to all translatable strings in string."""
@@ -138,6 +139,33 @@ class podebug:
             self.apply_to_translatables(string, lambda s: re.sub(a, b, s))
         return string
 
+    PRESERVE_PLACEABLE_PARSERS = [
+        general.UrlPlaceable.parse,
+        general.EmailPlaceable.parse,
+        general.XMLTagPlaceable.parse,
+        general.DoubleAtPlaceable.parse,
+        general.BracePlaceable.parse,
+        general.PythonFormattingPlaceable.parse
+    ]
+    # These parsers extract placeholders that should NOT be transformed during character-level rewrites
+    # when the preserveplaceholders flag is True. It is not the full set of placeable parsers available
+    # as some of them are not appropriate for this usage.
+
+    def transform_characters_preserving_placeholders(self, s, transform):
+        rich_string = rich_parse(s, self.PRESERVE_PLACEABLE_PARSERS)
+        string_elements = rich_string.depth_first(filter=lambda e: e.isleaf())
+
+        transformed = []
+
+        for element in string_elements:
+            if element.istranslatable:
+                for character in str(element):
+                    transformed.append(transform(character))
+            else:
+                transformed.append(element.sub[0])
+
+        return u''.join(transformed)
+
     REWRITE_UNICODE_MAP = u"ȦƁƇḒḖƑƓĦĪĴĶĿḾȠǾƤɊŘŞŦŬṼẆẊẎẐ" + u"[\\]^_`" + u"ȧƀƈḓḗƒɠħīĵķŀḿƞǿƥɋřşŧŭṽẇẋẏẑ"
 
     def rewrite_unicode(self, string):
@@ -152,7 +180,11 @@ class podebug:
             return self.REWRITE_UNICODE_MAP[loc]
 
         def transformer(s):
-            return ''.join([transpose(c) for c in s])
+            if self.preserveplaceholders:
+                return self.transform_characters_preserving_placeholders(s, transpose)
+            else:
+                return ''.join([transpose(c) for c in s])
+
         self.apply_to_translatables(string, transformer)
         return string
 
@@ -182,7 +214,10 @@ class podebug:
             return self.REWRITE_FLIPPED_MAP[loc]
 
         def transformer(s):
-            return u"\u202e" + u''.join([transpose(c) for c in s])
+            if self.preserveplaceholders:
+                return u"\u202e" + self.transform_characters_preserving_placeholders(s, transpose)
+            else:
+                return u"\u202e" + u''.join([transpose(c) for c in s])
             # To reverse instead of using the RTL override:
             #return u''.join(reversed([transpose(c) for c in s]))
         self.apply_to_translatables(string, transformer)
@@ -308,13 +343,17 @@ class podebug:
         return dirshrunk + baseshrunk
 
 
-def convertpo(inputfile, outputfile, templatefile, format=None, rewritestyle=None, ignoreoption=None):
+def convertpo(inputfile, outputfile, templatefile, format=None, rewritestyle=None, ignoreoption=None,
+              preserveplaceholders=None):
     """Reads in inputfile, changes it to have debug strings, writes to outputfile."""
     # note that templatefile is not used, but it is required by the converter...
     inputstore = factory.getobject(inputfile)
     if inputstore.isempty():
         return 0
-    convertor = podebug(format=format, rewritestyle=rewritestyle, ignoreoption=ignoreoption)
+    convertor = podebug(format=format,
+                        rewritestyle=rewritestyle,
+                        ignoreoption=ignoreoption,
+                        preserveplaceholders=preserveplaceholders)
     outputstore = convertor.convertstore(inputstore)
     outputstore.serialize(outputfile)
     return 1
@@ -340,9 +379,15 @@ def main():
         "", "--ignore", dest="ignoreoption",
         type="choice", choices=podebug.ignorelist(), metavar="APPLICATION",
         help="apply tagging ignore rules for the given application: %s" % ", ".join(podebug.ignorelist()))
+    parser.add_option("", "--preserveplaceholders", dest="preserveplaceholders",
+                      default=False, action="store_true",
+                      help="attempt to exclude characters that are part of placeholders when performing character-level"
+                           " rewrites so that consuming applications can still use the placeholders to generate final "
+                           "output")
     parser.passthrough.append("format")
     parser.passthrough.append("rewritestyle")
     parser.passthrough.append("ignoreoption")
+    parser.passthrough.append("preserveplaceholders")
     parser.run()
 
 
