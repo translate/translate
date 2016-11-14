@@ -171,6 +171,24 @@ class FormattingPlaceable(Ph):
     parse = classmethod(regex_parse)
 
 
+class DoubleAtPlaceable(Ph):
+    istranslatable = False
+    iseditable = False
+    # Matches placeholders that use two at symbols @@placeable@@.
+    regex = re.compile(r"@@.*?@@", re.VERBOSE)
+    parse = classmethod(regex_parse)
+
+
+class BracePlaceable(Ph):
+    istranslatable = False
+    iseditable = False
+    # Matches placeholders that use two braces {{placeable}} or one brace {placeable}.
+    # The negative character groups with closing brace [^}] stop the regex from counting several placeholders
+    # as one (e.g. '{open}something{closed}' should produce two distinct BracePlaceables '{open}' and '{closed}')
+    regex = re.compile(r"{{[^}]*}}|{[^}]*}", re.VERBOSE)
+    parse = classmethod(regex_parse)
+
+
 class UrlPlaceable(Ph):
     """Placeable handling URI."""
 

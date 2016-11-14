@@ -400,7 +400,7 @@ class StringElem(object):
             if sub.isleaf() and filter(sub):
                 elems.append(sub)
             else:
-                elems.extend(sub.depth_first())
+                elems.extend(sub.depth_first(filter))
         return elems
 
     def encode(self, encoding=sys.getdefaultencoding()):

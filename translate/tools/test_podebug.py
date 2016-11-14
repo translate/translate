@@ -72,6 +72,31 @@ class TestPODebug:
         """Test the unicode rewrite function"""
         assert six.text_type(self.debug.rewrite_unicode(u"Test")) == u"Ŧḗşŧ"
 
+    def test_rewrite_unicode_preserves_at_placeholders(self):
+        """Test the unicode rewrite function"""
+        debug = podebug.podebug(preserveplaceholders=True)
+        assert six.text_type(debug.rewrite_unicode(u"@@ph@@Test @@ph@@")) == u"@@ph@@Ŧḗşŧ @@ph@@"
+
+    def test_rewrite_unicode_preserves_single_brace_placeholders(self):
+        """Test the unicode rewrite function"""
+        debug = podebug.podebug(preserveplaceholders=True)
+        assert six.text_type(debug.rewrite_unicode(u"{ph}Test {ph}")) == u"{ph}Ŧḗşŧ {ph}"
+
+    def test_rewrite_unicode_preserves_double_brace_placeholders(self):
+        """Test the unicode rewrite function"""
+        debug = podebug.podebug(preserveplaceholders=True)
+        assert six.text_type(debug.rewrite_unicode(u"{{ph}}Test {{ph}}")) == u"{{ph}}Ŧḗşŧ {{ph}}"
+
+    def test_rewrite_unicode_preserves_html(self):
+        """Test the unicode rewrite function"""
+        debug = podebug.podebug(preserveplaceholders=True)
+        assert six.text_type(debug.rewrite_unicode(u"<style0>Test</style0>")) == u"<style0>Ŧḗşŧ</style0>"
+
+    def test_rewrite_unicode_preserves_multiple_styles_of_placeholder(self):
+        """Test the unicode rewrite function"""
+        debug = podebug.podebug(preserveplaceholders=True)
+        assert six.text_type(debug.rewrite_unicode(u"<b>{{ph}}Test{ph}@@ph@@Test</b>")) == u"<b>{{ph}}Ŧḗşŧ{ph}@@ph@@Ŧḗşŧ</b>"
+
     def test_rewrite_flipped(self):
         """Test the unicode rewrite function"""
         assert six.text_type(self.debug.rewrite_flipped(u"Test")) == u"\u202e⊥ǝsʇ"
@@ -80,6 +105,32 @@ class TestPODebug:
         # Chars < ! and > z are returned as is
         assert six.text_type(self.debug.rewrite_flipped(u" ")) == u"\u202e "
         assert six.text_type(self.debug.rewrite_flipped(u"©")) == u"\u202e©"
+
+    def test_rewrite_flipped_preserves_at_placeholders(self):
+        """Test the unicode rewrite function"""
+        debug = podebug.podebug(preserveplaceholders=True)
+        assert six.text_type(debug.rewrite_flipped(u"@@ph@@Test @@ph@@")) == u"\u202e@@ph@@⊥ǝsʇ @@ph@@"
+
+    def test_rewrite_flipped_preserves_single_brace_placeholders(self):
+        """Test the unicode rewrite function"""
+        debug = podebug.podebug(preserveplaceholders=True)
+        assert six.text_type(debug.rewrite_flipped(u"{ph}Test {ph}")) == u"\u202e{ph}⊥ǝsʇ {ph}"
+
+    def test_rewrite_flipped_preserves_double_brace_placeholders(self):
+        """Test the unicode rewrite function"""
+        debug = podebug.podebug(preserveplaceholders=True)
+        assert six.text_type(debug.rewrite_flipped(u"{{ph}}Test {{ph}}")) == u"\u202e{{ph}}⊥ǝsʇ {{ph}}"
+
+    def test_rewrite_flipped_preserves_html(self):
+        """Test the unicode rewrite function"""
+        debug = podebug.podebug(preserveplaceholders=True)
+        assert six.text_type(debug.rewrite_flipped(u"<style0>Test </style0>")) == u"\u202e<style0>⊥ǝsʇ </style0>"
+
+    def test_rewrite_flipped_multiple_styles_of_placeholder(self):
+        """Test the unicode rewrite function"""
+        debug = podebug.podebug(preserveplaceholders=True)
+        assert six.text_type(
+            debug.rewrite_flipped(u"<b>{{ph}}Test{ph}@@ph@@Test</b>")) == u"\u202e<b>{{ph}}⊥ǝsʇ{ph}@@ph@@⊥ǝsʇ</b>"
 
     def test_rewrite_chef(self):
         """Test the chef rewrite function
