@@ -53,14 +53,40 @@ STRING = c_char_p
 
 # Structures
 class po_message(Structure):
-    _fields_ = []
+    pass
+
+
+class po_file(Structure):
+    pass
+
+
+class po_filepos(Structure):
+    pass
+
+
+class po_iterator(Structure):
+    pass
+
+
+po_message_t = POINTER(po_message)
+"""A po_message_t represents a message in a PO file."""
+
+po_file_t = POINTER(po_file)
+"""A po_file_t represents a PO file."""
+
+po_filepos_t = POINTER(po_filepos)
+"""A po_filepos_t represents the position in a PO file."""
+
+po_iterator_t = POINTER(po_iterator)
+"""A po_iterator_t represents an iterator through a PO file."""
+
 
 # Function prototypes
-xerror_prototype = CFUNCTYPE(None, c_int, POINTER(po_message), STRING, c_uint,
+xerror_prototype = CFUNCTYPE(None, c_int, po_message_t, STRING, c_uint,
                              c_uint, c_int, STRING)
-xerror2_prototype = CFUNCTYPE(None, c_int, POINTER(po_message), STRING,
+xerror2_prototype = CFUNCTYPE(None, c_int, po_message_t, STRING,
                               c_uint, c_uint, c_int, STRING,
-                              POINTER(po_message), STRING, c_uint, c_uint,
+                              po_message_t, STRING, c_uint, c_uint,
                               c_int, STRING)
 
 
@@ -105,41 +131,83 @@ def xerror2_cb(severity, message1, filename1, lineno1, column1, multiline_p1,
 # See also http://git.savannah.gnu.org/cgit/gettext.git/tree/gettext-tools/libgettextpo/gettext-po.in.h
 def setup_call_types(gpo):
     # File access
+    gpo.po_file_create.restype = po_file_t
     gpo.po_file_read_v3.argtypes = [STRING, POINTER(po_xerror_handler)]
-    gpo.po_file_write_v2.argtypes = [c_int, STRING, POINTER(po_xerror_handler)]
-    gpo.po_file_write_v2.retype = c_int
+    gpo.po_file_read_v3.restype = po_file_t
+    gpo.po_file_write_v2.argtypes = [po_file_t, STRING, POINTER(po_xerror_handler)]
+    gpo.po_file_write_v2.restype = po_file_t
+    gpo.po_file_free.argtypes = [po_file_t]
 
     # Header
+    gpo.po_file_domain_header.argtypes = [po_file_t, STRING]
     gpo.po_file_domain_header.restype = STRING
-    gpo.po_header_field.restype = STRING
     gpo.po_header_field.argtypes = [STRING, STRING]
+    gpo.po_header_field.restype = STRING
+    gpo.po_header_set_field.argtypes = [STRING, STRING, STRING]
+    gpo.po_header_set_field.restype = STRING
 
     # Locations (filepos)
+    gpo.po_filepos_file.argtypes = [po_filepos_t]
     gpo.po_filepos_file.restype = STRING
-    gpo.po_message_filepos.restype = c_int
-    gpo.po_message_filepos.argtypes = [c_int, c_int]
-    gpo.po_message_add_filepos.argtypes = [c_int, STRING, c_size_t]
+    gpo.po_filepos_start_line.argtypes = [po_filepos_t]
+    gpo.po_filepos_start_line.restype = c_int  # not strictly true casting
+    gpo.po_message_filepos.argtypes = [po_message_t, c_int]
+    gpo.po_message_filepos.restype = po_filepos_t
+    gpo.po_message_add_filepos.argtypes = [po_message_t, STRING, c_size_t]
+    gpo.po_message_remove_filepos.argtypes = [po_message_t, c_size_t]
+
+    # Iterators
+    gpo.po_message_iterator.argtypes = [po_file_t, STRING]
+    gpo.po_message_iterator.restype = po_iterator_t
+    gpo.po_message_iterator_free.argtypes = [po_iterator_t]
+    gpo.po_next_message.argtypes = [po_iterator_t]
+    gpo.po_next_message.restype = po_message_t
+    gpo.po_message_insert.argtypes = [po_iterator_t, po_message_t]
 
     # Message (get methods)
-    gpo.po_message_comments.restype = STRING
-    gpo.po_message_extracted_comments.restype = STRING
-    gpo.po_message_prev_msgctxt.restype = STRING
-    gpo.po_message_prev_msgid.restype = STRING
-    gpo.po_message_prev_msgid_plural.restype = STRING
-    gpo.po_message_is_format.restype = c_int
-    gpo.po_message_is_format.argtypes = [c_int, STRING]
-    gpo.po_message_set_format.argtypes = [c_int, STRING, c_int]
+    gpo.po_message_create.restype = po_message_t
+    gpo.po_message_msgctxt.argtypes = [po_message_t]
     gpo.po_message_msgctxt.restype = STRING
+    gpo.po_message_comments.argtypes = [po_message_t]
+    gpo.po_message_comments.restype = STRING
+    gpo.po_message_extracted_comments.argtypes = [po_message_t]
+    gpo.po_message_extracted_comments.restype = STRING
+    gpo.po_message_prev_msgctxt.argtypes = [po_message_t]
+    gpo.po_message_prev_msgctxt.restype = STRING
+    gpo.po_message_prev_msgid.argtypes = [po_message_t]
+    gpo.po_message_prev_msgid.restype = STRING
+    gpo.po_message_prev_msgid_plural.argtypes = [po_message_t]
+    gpo.po_message_prev_msgid_plural.restype = STRING
+    gpo.po_message_is_obsolete.argtypes = [po_message_t]
+    gpo.po_message_is_obsolete.restype = c_int
+    gpo.po_message_is_fuzzy.argtypes = [po_message_t]
+    gpo.po_message_is_fuzzy.restype = c_int
+    gpo.po_message_is_format.argtypes = [po_message_t, STRING]
+    gpo.po_message_is_format.restype = c_int
+    gpo.po_message_msgctxt.restype = STRING
+    gpo.po_message_msgid.argtypes = [po_message_t]
     gpo.po_message_msgid.restype = STRING
+    gpo.po_message_msgid_plural.argtypes = [po_message_t]
     gpo.po_message_msgid_plural.restype = STRING
+    gpo.po_message_msgstr.argtypes = [po_message_t]
     gpo.po_message_msgstr.restype = STRING
+    gpo.po_message_msgstr_plural.argtypes = [po_message_t, c_int]
     gpo.po_message_msgstr_plural.restype = STRING
 
     # Message (set methods)
-    gpo.po_message_set_comments.argtypes = [c_int, STRING]
-    gpo.po_message_set_extracted_comments.argtypes = [c_int, STRING]
-    gpo.po_message_set_fuzzy.argtypes = [c_int, c_int]
-    gpo.po_message_set_msgctxt.argtypes = [c_int, STRING]
+    gpo.po_message_set_comments.argtypes = [po_message_t, STRING]
+    gpo.po_message_set_extracted_comments.argtypes = [po_message_t, STRING]
+    gpo.po_message_set_prev_msgctxt.argtypes = [po_message_t, STRING]
+    gpo.po_message_set_prev_msgid.argtypes = [po_message_t, STRING]
+    gpo.po_message_set_prev_msgid_plural.argtypes = [po_message_t, STRING]
+    gpo.po_message_set_obsolete.argtypes = [po_message_t, c_int]
+    gpo.po_message_set_fuzzy.argtypes = [po_message_t, c_int]
+    gpo.po_message_set_format.argtypes = [po_message_t, STRING, c_int]
+    gpo.po_message_set_msgctxt.argtypes = [po_message_t, STRING]
+    gpo.po_message_set_msgid.argtypes = [po_message_t, STRING]
+    gpo.po_message_set_msgstr.argtypes = [po_message_t, STRING]
+    gpo.po_message_set_msgstr_plural.argtypes = [po_message_t, c_int, STRING]
+    gpo.po_message_set_range.argtypes = [po_message_t, c_int, c_int]
 
 # Load libgettextpo
 gpo = None
@@ -232,13 +300,24 @@ class pounit(pocommon.pounit):
                 features = ['msgctxt', 'msgid', 'msgid_plural']
                 features += ['prev_' + x for x in features]
                 features += ['comments', 'extracted_comments',
-                             'msgstr', 'msgstr_plural']
+                             'msgstr']
                 for feature in features:
                     text = getattr(gpo, 'po_message_' + feature)(gpo_message)
                     if text:
                         getattr(gpo, 'po_message_set_' + feature)(
                             gpo_message,
                             text.decode(encoding).encode(self.CPO_ENC))
+                # Also iterate through plural forms
+                nplural = 0
+                text = True
+                while text:
+                    text = gpo.po_message_msgstr_plural(gpo_message, nplural)
+                    if text:
+                        gpo.po_message_set_msgstr_plural(
+                            gpo_message,
+                            text.decode(encoding).encode(self.CPO_ENC),
+                            nplural)
+                    nplural += 1
             self._gpo_message = gpo_message
         self.infer_state()
 
