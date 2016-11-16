@@ -11,7 +11,7 @@ env:
     - USECPO=0 MINVERSION=1 META=
     - USECPO=0 MINVERSION= META=
     - USECPO=0 MINVERSION= META=1
-    #- USECPO=1
+    - USECPO=1 MINVERSION= META=
     #- USECPO=2
 matrix:
   exclude:
@@ -33,6 +33,15 @@ matrix:
       env: USECPO=0 MINVERSION=1 META=1
     - python: 3.5
       env: USECPO=0 MINVERSION= META=1
+  allow_failures:
+    - python: 2.7
+      env: USECPO=1 MINVERSION= META=
+    - python: 3.3
+      env: USECPO=1 MINVERSION= META=
+    - python: 3.4
+      env: USECPO=1 MINVERSION= META=
+    - python: 3.5
+      env: USECPO=1 MINVERSION= META=
 #before_install:
 #  # Ubuntu used by Travis only supports python3-aeidon.
 #  - sudo apt-get install python-aeidon
