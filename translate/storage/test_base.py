@@ -19,6 +19,8 @@
 
 """tests for storage base classes"""
 
+from __future__ import print_function
+
 import os
 import six
 import warnings
