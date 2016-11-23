@@ -508,14 +508,15 @@ class tsfile(lisa.LISAfile):
         # For conformance with Qt output, post-process etree.tostring output,
         # replacing ' with &apos; and " with &quot; in text elements
         treestring = etree.tostring(root, doctype=doctype, pretty_print=True,
-                                    xml_declaration=False, encoding='unicode')
+                                    xml_declaration=False, encoding='utf-8')
         pos = 0
         while pos >= 0:
-            nextpos = treestring.find('<', pos)
-            value = treestring[pos:nextpos].replace("'", "&apos;").replace('"', "&quot;")
-            out.write(value.encode('utf-8'))
+            nextpos = treestring.find(b'<', pos)
+            out.write(
+                treestring[pos:nextpos].replace(b"'", b"&apos;").replace(b'"', b"&quot;")
+            )
             pos = nextpos
-            nextpos = treestring.find('>', pos)
-            out.write(treestring[pos:nextpos].encode('utf-8'))
+            nextpos = treestring.find(b'>', pos)
+            out.write(treestring[pos:nextpos])
             pos = nextpos
-        out.write(treestring[pos:].encode('utf-8'))
+        out.write(treestring[pos:])
