@@ -113,6 +113,10 @@ class l20nfile(base.TranslationStore):
         for entry in ast['body']:
             if entry['type'] == 'Entity':
                 self.parse_entity(entry)
+            elif entry['type'] == 'Section':
+                for entry in entry['body']:
+                    if entry['type'] == 'Entity':
+                        self.parse_entity(entry)
 
     def serialize(self, out):
         """Write the units back to file."""
