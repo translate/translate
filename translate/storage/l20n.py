@@ -38,6 +38,10 @@ def dump_l20n_entity_value(entity):
     return value
 
 
+def get_l20n_entry(value):
+    return u'unit = {}'.format(value)
+
+
 class l20nunit(base.TranslationUnit):
     """Single L20n Entity"""
 

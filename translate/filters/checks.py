@@ -41,6 +41,11 @@ from translate.lang import data, factory
 from translate.misc import lru
 
 
+try:
+    from translate.storage import l20n
+except ImportError as e:
+    l20n = None
+
 logger = logging.getLogger(__name__)
 
 # These are some regular expressions that are compiled for use in some tests
@@ -2370,6 +2375,20 @@ class L20nChecker(MozillaChecker):
             self.defaultfilters = saved_default_filters
 
         return result
+
+    @critical
+    def ftl_format(self, str1, str2):
+        """Checks for valid ftl syntax.
+
+        This checks the translation to detect any ftl parsing and syntax errors.
+        """
+        if l20n is not None:
+            parser = l20n.L20nParser()
+            l20nsrc = l20n.get_l20n_entry(str2)
+            ast_, errors = parser.parseResource(l20nsrc)
+            return not errors
+
+        return True
 
 
 projectcheckers = {
