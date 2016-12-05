@@ -307,13 +307,13 @@ class UnitChecker(object):
 
     preconditions = {}
 
-    #: Categories where each checking function falls into
-    #: Function names are used as keys, categories are the values
-    categories = {}
-
     def __init__(self, checkerconfig=None, excludefilters=None,
                  limitfilters=None, errorhandler=None):
         self.errorhandler = errorhandler
+
+        #: Categories where each checking function falls into
+        #: Function names are used as keys, categories are the values
+        self.categories = {}
 
         if checkerconfig is None:
             self.setconfig(CheckerConfig())
