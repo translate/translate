@@ -35,8 +35,8 @@ def critical(f):
 
     @wraps(f)
     def critical_f(self, *args, **kwargs):
-        if f.__name__ not in self.__class__.categories:
-            self.__class__.categories[f.__name__] = Category.CRITICAL
+        if f.__name__ not in self.categories:
+            self.categories[f.__name__] = Category.CRITICAL
 
         return f(self, *args, **kwargs)
 
@@ -47,8 +47,8 @@ def functional(f):
 
     @wraps(f)
     def functional_f(self, *args, **kwargs):
-        if f.__name__ not in self.__class__.categories:
-            self.__class__.categories[f.__name__] = Category.FUNCTIONAL
+        if f.__name__ not in self.categories:
+            self.categories[f.__name__] = Category.FUNCTIONAL
 
         return f(self, *args, **kwargs)
 
@@ -59,8 +59,8 @@ def cosmetic(f):
 
     @wraps(f)
     def cosmetic_f(self, *args, **kwargs):
-        if f.__name__ not in self.__class__.categories:
-            self.__class__.categories[f.__name__] = Category.COSMETIC
+        if f.__name__ not in self.categories:
+            self.categories[f.__name__] = Category.COSMETIC
 
         return f(self, *args, **kwargs)
 
@@ -71,8 +71,8 @@ def extraction(f):
 
     @wraps(f)
     def extraction_f(self, *args, **kwargs):
-        if f.__name__ not in self.__class__.categories:
-            self.__class__.categories[f.__name__] = Category.EXTRACTION
+        if f.__name__ not in self.categories:
+            self.categories[f.__name__] = Category.EXTRACTION
 
         return f(self, *args, **kwargs)
 

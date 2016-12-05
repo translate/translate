@@ -13,15 +13,7 @@ def strprep(str1, str2, message=None):
 
 def check_category(filterfunction):
     """Checks whether ``filterfunction`` has defined a category or not."""
-    has_category = []
-    classes = (checks.TeeChecker, checks.UnitChecker)
-
-    for klass in classes:
-        categories = getattr(klass, 'categories', None)
-        has_category.append(categories is not None and
-                            filterfunction.__name__ in categories)
-
-    return True in has_category
+    return filterfunction.__name__ in filterfunction.__self__.categories
 
 
 def passes(filterfunction, str1, str2):
@@ -1594,3 +1586,30 @@ def test_skip_checks_for_l20n_complex_units():
     assert 'variables' in failures.keys()
     assert 'brackets' in failures.keys()
     assert 'newlines' in failures.keys()
+
+
+def test_category():
+    """Tests checker categories aren't mixed up."""
+    from translate.storage import base
+    unit = base.TranslationUnit(u'foo')
+    unit.target = u'bar'
+
+    standard_checker = checks.StandardChecker()
+    assert standard_checker.categories == {}
+    standard_checker.run_filters(unit)
+    assert standard_checker.categories != {}
+    assert 'validxml' not in standard_checker.categories.keys()
+    standard_categories_count = len(standard_checker.categories.values())
+
+    libo_checker = checks.LibreOfficeChecker()
+    assert libo_checker.categories == {}
+    libo_checker.run_filters(unit)
+    assert libo_checker.categories != {}
+    assert 'validxml' in libo_checker.categories.keys()
+
+    standard_checker = checks.StandardChecker()
+    assert standard_checker.categories == {}
+    standard_checker.run_filters(unit)
+    assert standard_checker.categories != {}
+    assert len(standard_checker.categories.values()) == standard_categories_count
+    assert 'validxml' not in standard_checker.categories.keys()
