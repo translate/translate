@@ -6,4 +6,4 @@ pep8
 pytest==3.0.4
 pytest-cov
 pytest-xdist
-Sphinx>=1.2.2
+Sphinx==1.4.9  # rq.filter: !=1.5.0
