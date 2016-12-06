@@ -1,8 +1,8 @@
 -r optional.txt
 
 isort>=4.2.3
-pep257
-pep8
+pycodestyle==2.2.0
+pydocstyle==1.1.1
 pytest==3.0.5
 pytest-cov
 pytest-xdist
