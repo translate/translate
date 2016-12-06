@@ -159,6 +159,7 @@ def test(progressbar):
         progressbar.show("Some message")
         time.sleep(0.2)
 
+
 if __name__ == '__main__':
     p = HashProgressBar(0, 100, 50)
     test(p)

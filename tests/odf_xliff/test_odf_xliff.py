@@ -60,6 +60,7 @@ def args(src, tgt, **kwargs):
 def xliff___eq__(self, other):
     return self.units == other.units
 
+
 xliff.xlifffile.__eq__ = xliff___eq__
 
 
@@ -68,6 +69,7 @@ def print_diff(store1, store2):
     store2_lines = bytes(store2).decode(store2.encoding).split('\n')
     for line in difflib.unified_diff(store1_lines, store2_lines):
         print(line)
+
 
 SOURCE_ODF = u'test_2.odt'
 REFERENCE_XLF = u'test_2-test_odf2xliff-reference.xlf'

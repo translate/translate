@@ -61,6 +61,7 @@ class unormalizechar(dict):
     def __getitem__(self, key):
         return self.normalchars.get(key, u"_")
 
+
 unormalizetable = unormalizechar(normalfilenamechars.decode("ascii"))
 
 
@@ -128,6 +129,7 @@ def unescape_text(text):
     """Unescapes SDF text to be suitable for unit consumption."""
     return text.replace("\\\\", "\a").replace("\\n", "\n").replace("\\t", "\t") \
         .replace("\\r", "\r").replace("\a", "\\\\")
+
 
 helptagre = re.compile('''<[/]??[a-z_\-]+?(?:| +[a-z]+?=".*?") *[/]??>''')
 

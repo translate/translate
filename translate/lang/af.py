@@ -62,6 +62,7 @@ class af(common.Common):
                 return common.Common.capsstart(stripped[match.end():])
         return common.Common.capsstart(text)
 
+
 cyr2lat = {
     u"А": "A", u"а": "a",
     u"Б": "B", u"б": "b",

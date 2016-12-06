@@ -170,6 +170,7 @@ class SeriousFilterFailure(FilterFailure):
 
     pass
 
+
 #(tag, attribute, value) specifies a certain attribute which can be changed/
 #ignored if it exists inside tag. In the case where there is a third element
 #in the tuple, it indicates a property value that can be ignored if present
@@ -1961,6 +1962,7 @@ class StandardChecker(TranslationChecker):
 
 # code to actually run the tests (use unittest?)
 
+
 openofficeconfig = CheckerConfig(
     accelmarkers=["~"],
     varmatches=[("&", ";"), ("%", "%"), ("%", None), ("%", 0), ("$(", ")"),
@@ -1984,6 +1986,7 @@ class OpenOfficeChecker(StandardChecker):
 
         checkerconfig.update(openofficeconfig)
         StandardChecker.__init__(self, **kwargs)
+
 
 libreofficeconfig = CheckerConfig(
     accelmarkers=["~"],

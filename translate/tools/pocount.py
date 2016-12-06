@@ -363,5 +363,6 @@ def main():
 
     summarizer(args.files, args.style, args.incomplete_only)
 
+
 if __name__ == '__main__':
     main()

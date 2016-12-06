@@ -243,6 +243,7 @@ def parse_msgid_plural(parse_state, unit):
     parse_message(parse_state, 'msgid_plural', 12, unit.msgid_plural, unit.msgid_pluralcomments)
     return len(unit.msgid_plural) > 0 or len(unit.msgid_pluralcomments) > 0
 
+
 MSGSTR_ARRAY_ENTRY_LEN = len('msgstr[')
 
 

@@ -22,6 +22,7 @@ os.environ["PATH"] = os.pathsep.join([os.path.join(dir, "translate", "tools"),
 class TestMOUnit(test_base.TestTranslationUnit):
     UnitClass = mo.mounit
 
+
 posources = [
     r'''
 msgid ""

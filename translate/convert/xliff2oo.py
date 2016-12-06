@@ -188,6 +188,7 @@ class oofilteroptions(object):
     includereview = False
     autocorrect = False
 
+
 options = oofilteroptions()
 filter = oocheckfilter(options, [checks.OpenOfficeChecker, checks.StandardUnitChecker], checks.openofficeconfig)
 

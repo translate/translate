@@ -126,6 +126,7 @@ class LanguageIdentifier(object):
             return None
         return self.identify_lang(text)
 
+
 if __name__ == "__main__":
     from sys import argv
     script_dir = path.abspath(path.dirname(argv[0]))

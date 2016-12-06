@@ -86,6 +86,7 @@ def _examine_txt(storefile):
     storefile.seek(0)
     return pseudo_extension
 
+
 hiddenclasses = {"txt": _examine_txt}
 
 

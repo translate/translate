@@ -62,6 +62,8 @@ class UtxDialect(csv.Dialect):
     # differences
     lineterminator = "\r\n"
     quoting = csv.QUOTE_NONE
+
+
 csv.register_dialect("utx", UtxDialect)
 
 

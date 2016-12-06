@@ -434,6 +434,7 @@ def guess_language(team_string):
         return None
     return lang
 
+
 if __name__ == "__main__":
     from sys import argv
     from translate.storage import factory

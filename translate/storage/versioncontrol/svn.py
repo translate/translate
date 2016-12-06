@@ -28,6 +28,7 @@ def is_available():
     exitcode, output, error = run_command(["svn", "--version"])
     return exitcode == 0
 
+
 _version = None
 
 

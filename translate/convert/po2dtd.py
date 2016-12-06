@@ -33,6 +33,8 @@ from translate.storage import dtd, po
 
 def dtdwarning(message, category, filename, lineno, line=None):
     return "Warning: %s\n" % message
+
+
 warnings.formatwarning = dtdwarning
 
 

@@ -58,6 +58,8 @@ class OmegaTDialect(csv.Dialect):
     delimiter = "\t"
     lineterminator = "\r\n"
     quoting = csv.QUOTE_NONE
+
+
 csv.register_dialect("omegat", OmegaTDialect)
 
 

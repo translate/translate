@@ -96,6 +96,8 @@ class CatkeysDialect(csv.Dialect):
     delimiter = "\t"
     lineterminator = "\n"
     quoting = csv.QUOTE_NONE
+
+
 csv.register_dialect("catkeys", CatkeysDialect)
 
 

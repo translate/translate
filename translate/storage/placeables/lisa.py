@@ -65,6 +65,7 @@ def make_unknown(klass, node, xml_space="preserve"):
 
     return klass(sub=sub, id=id, rid=rid, xid=xid, xml_node=node)
 
+
 _class_dictionary = {
     #u'bpt': (xliff.Bpt, not_yet_implemented),
     u'bx': (xliff.Bx, make_empty_replacement_placeable),
@@ -151,6 +152,7 @@ def unknown_placeable_as_dom_node(placeable):
 
     return node
 
+
 _placeable_dictionary = {
     xliff.Bpt: lambda placeable: placeable_as_dom_node(placeable, 'bpt'),
     xliff.Bx: lambda placeable: placeable_as_dom_node(placeable, 'bx'),
@@ -215,4 +217,6 @@ def parse_xliff(pstr):
     except Exception as exc:
         raise
         return None
+
+
 xliff.parsers = [parse_xliff]

@@ -100,6 +100,7 @@ def namespaced(namespace, name):
     else:
         return name
 
+
 MULTIWHITESPACE_PATTERN = r"[\n\r\t ]+"
 MULTIWHITESPACE_RE = re.compile(MULTIWHITESPACE_PATTERN, re.MULTILINE)
 

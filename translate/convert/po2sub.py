@@ -82,5 +82,6 @@ def main(argv=None):
     parser.add_fuzzy_option()
     parser.run(argv)
 
+
 if __name__ == '__main__':
     main()

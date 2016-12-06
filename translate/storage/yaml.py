@@ -88,6 +88,7 @@ class YAMLDumper(yaml.SafeDumper):
     def represent_unsorted(self, data):
         return self.represent_dict(data.items())
 
+
 YAMLDumper.add_representer(UnsortableOrderedDict, YAMLDumper.represent_unsorted)
 
 

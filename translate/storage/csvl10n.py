@@ -96,6 +96,7 @@ class DefaultDialect(csv.excel):
     quoting = csv.QUOTE_NONNUMERIC
     escapechar = '\\'
 
+
 csv.register_dialect('default', DefaultDialect)
 
 

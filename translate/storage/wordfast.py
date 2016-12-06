@@ -194,6 +194,8 @@ class WordfastDialect(csv.Dialect):
     delimiter = "\t"
     lineterminator = "\r\n"
     quoting = csv.QUOTE_NONE
+
+
 csv.register_dialect("wordfast", WordfastDialect)
 
 

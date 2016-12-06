@@ -159,6 +159,7 @@ class Document(minidom.Document):
         e.ownerDocument = self
         return e
 
+
 theDOMImplementation = DOMImplementation()
 
 # an ExpatBuilder that allows us to use the above modifications

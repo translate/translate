@@ -355,6 +355,7 @@ def mozillaescapemarginspaces(source):
     else:
         return escapespace(source[0]) + source[1:-1] + escapespace(source[-1])
 
+
 propertyescapes = {
     # escapes that are self-escaping
     "\\": "\\", "'": "'", '"': '"',

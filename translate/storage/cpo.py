@@ -209,6 +209,7 @@ def setup_call_types(gpo):
     gpo.po_message_set_msgstr_plural.argtypes = [po_message_t, c_int, STRING]
     gpo.po_message_set_range.argtypes = [po_message_t, c_int, c_int]
 
+
 # Load libgettextpo
 gpo = None
 # 'gettextpo' is recognised on Unix, while only 'libgettextpo' is recognised on

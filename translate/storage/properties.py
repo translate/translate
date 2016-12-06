@@ -223,6 +223,7 @@ def _key_strip(key):
         newkey += key[len(newkey):len(newkey)+1]
     return newkey.lstrip()
 
+
 dialects = {}
 default_dialect = "java"
 

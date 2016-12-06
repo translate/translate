@@ -53,8 +53,8 @@ def test_reduce_tree():
 
     assert ([2, 4, 6, 8], 36) == misc.reduce_tree(get_even_and_total, test_tree_2, test_tree_2, get_children, [], 0)
 
-# compose_mappings
 
+# compose_mappings
 left_mapping = {1: u'a', 2: u'b', 3: u'c', 4: u'd', 5: u'e'}
 right_mapping = {u'a': -1, u'b': -2, u'd': -4, u'e': -5, u'f': -6}
 

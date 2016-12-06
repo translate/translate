@@ -169,6 +169,7 @@ class Generate:
                 for v, k in self.ngrams[lang].sorted_by_score():
                     fp.write("%s\t %d\n" % (k, v))
 
+
 if __name__ == '__main__':
     # Should you want to generate your own .lm files
     #conf = Generate('/tmp')

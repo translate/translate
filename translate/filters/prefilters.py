@@ -147,6 +147,7 @@ def filtervariables(startmarker, endmarker, varfilter):
         return fstr1
     return filtermarkedvariables
 
+
 # a list of special words with punctuation
 # all apostrophes in the middle of the word are handled already
 wordswithpunctuation = ["'n", "'t"]  # Afrikaans
