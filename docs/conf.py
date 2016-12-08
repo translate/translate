@@ -129,6 +129,17 @@ class Mock(object):
             return Mock()
 
 MOCK_MODULES = [
+    'lucene',
+    'PyLucene',
+]
+for mod_name in MOCK_MODULES:
+    sys.modules[mod_name] = Mock()
+
+# Needed for _get_pylucene_version() used by translate.search.indexing.__init__
+sys.modules['lucene'].VERSION = "2.3.0"
+sys.modules['PyLucene'].VERSION = "2.2.0"
+
+autodoc_mock_imports = [
     'aeidon',
     'aeidon.encodings',
     'aeidon.util',
@@ -138,8 +149,6 @@ MOCK_MODULES = [
     'gobject',
     'gtk',
     'iniparse',
-    'lucene',
-    'PyLucene',
     'vobject',
     'xapian',
     'xml',
@@ -147,12 +156,6 @@ MOCK_MODULES = [
     'xml.etree',
     'xml.parsers',
 ]
-for mod_name in MOCK_MODULES:
-    sys.modules[mod_name] = Mock()
-
-# Needed for _get_pylucene_version() used by translate.search.indexing.__init__
-sys.modules['lucene'].VERSION = "2.3.0"
-sys.modules['PyLucene'].VERSION = "2.2.0"
 
 # -- Options for HTML output --------------------------------------------------
 
