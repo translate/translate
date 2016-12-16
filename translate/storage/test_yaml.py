@@ -127,3 +127,11 @@ class TestRubyYAMLResourceStore(test_monolingual.TestMonolingualStore):
             store.parse,
             'yes: string'
         )
+
+    def test_invalid_value(self):
+        store = yaml.YAMLFile()
+        assert pytest.raises(
+            base.ParseError,
+            store.parse,
+            'val: "\\u string"'
+        )
