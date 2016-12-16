@@ -2,7 +2,8 @@
 
 import sys
 from io import BytesIO
-from translate.storage import yaml, test_monolingual
+import pytest
+from translate.storage import yaml, test_monolingual, base
 
 
 class TestYAMLResourceUnit(test_monolingual.TestMonolingualUnit):
@@ -118,3 +119,11 @@ class TestRubyYAMLResourceStore(test_monolingual.TestMonolingualStore):
         store.serialize(out)
 
         assert out.getvalue() == data.encode('ascii')
+
+    def test_invalid_key(self):
+        store = yaml.YAMLFile()
+        assert pytest.raises(
+            base.ParseError,
+            store.parse,
+            'yes: string'
+        )
