@@ -166,6 +166,11 @@ class YAMLFile(base.TranslationStore):
         """
         if isinstance(data, dict):
             for k, v in six.iteritems(data):
+                if not isinstance(k, six.string_types):
+                    raise base.ParseError(
+                        'Key not string: {0}/{1} ({2})'.format(prev, k, type(k))
+                    )
+
                 for x in self._flatten(v, ' / '.join((prev, k)) if prev else k):
                     yield x
         else:
