@@ -6,4 +6,4 @@ pydocstyle==1.1.1
 pytest==3.0.5
 pytest-cov
 pytest-xdist
-Sphinx==1.4.9  # rq.filter: !=1.5.0
+Sphinx==1.5.1  # rq.filter: !=1.5.0
