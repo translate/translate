@@ -556,7 +556,7 @@ class TranslationChecker(UnitChecker):
         return super(TranslationChecker, self).run_filters(unit, categorised)
 
 
-class TeeChecker:
+class TeeChecker(object):
     """A Checker that controls multiple checkers."""
 
     #: Categories where each checking function falls into

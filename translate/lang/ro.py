@@ -26,18 +26,13 @@ from __future__ import unicode_literals
 
 from functools import reduce
 
-from translate.lang import common
 from translate.filters.checks import TranslationChecker
 from translate.filters.decorators import cosmetic
+from translate.lang import common
 
 
 class RomanianChecker(TranslationChecker):
     """A Checker class for Romanian"""
-
-    def __init__(self, checkerconfig=None, excludefilters=None,
-                 limitfilters=None, errorhandler=None):
-        super(RomanianChecker, self).__init__(checkerconfig, excludefilters,
-                                              limitfilters, errorhandler)
 
     @cosmetic
     def cedillas(self, str1, str2):
