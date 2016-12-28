@@ -24,8 +24,6 @@
 
 from __future__ import unicode_literals
 
-from functools import reduce
-
 from translate.filters.checks import TranslationChecker
 from translate.filters.decorators import cosmetic
 from translate.lang import common
@@ -33,6 +31,19 @@ from translate.lang import common
 
 class RomanianChecker(TranslationChecker):
     """A Checker class for Romanian"""
+
+    def contains_illegal(self, illegal_sequence, target_str):
+        """
+        Generic method for matching a sequence of strings against a target str.
+        :param illegal_sequence: an iterable of illegal substrings
+        :param target_str: the string to check against occurences of illegals
+        :return: True if target_str doesn't match any of the elements in
+                 illegal_sequence
+        """
+        for s in illegal_sequence:
+            if s in target_str:
+                return True
+        return False
 
     @cosmetic
     def cedillas(self, str1, str2):
@@ -48,9 +59,15 @@ class RomanianChecker(TranslationChecker):
                :param str2: the target (translated) string
                :return: True if str2 contains a cedilla character
         """
-        illegal_chars = ['Ţ', 'Ş', 'ţ', 'ş']
-        contains_illegal = lambda x: x in illegal_chars
-        return reduce(lambda x, y: x or y, map(contains_illegal, str2))
+        return self.contains_illegal(['Ţ', 'Ş', 'ţ', 'ş'], str2)
+
+    @cosmetic
+    def niciun_nicio(self, str1, str2):
+        """
+        Checks for sequences containing 'nici un'/'nici o' which are obsolete
+        Romanian syntax. Correct is 'niciun'/'nicio'
+        """
+        return self.contains_illegal(['nici un', 'nici o'], str2)
 
 
 class ro(common.Common):
