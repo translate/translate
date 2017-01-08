@@ -29,9 +29,7 @@ from argparse import ArgumentParser
 from io import BytesIO
 from six.moves.urllib import parse
 
-import selector
-
-from translate.misc import wsgi
+from translate.misc import selector, wsgi
 from translate.storage import base, tmdb
 
 
