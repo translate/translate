@@ -293,3 +293,85 @@ class TestTMXFilter(BaseTestFilter):
     def test_isreview(self):
         """TMX doesn't support review"""
         pass
+
+
+class TestRomanianPOFilter(TestPOFilter):
+    """Test class for po-specific Romanian tests."""
+
+    def test_romanian_cedillas(self):
+        """Test the Romanian cedillas check"""
+        posource = '''
+msgid "cow"
+msgstr "blaŞbla"
+'''
+        pofile = self.parse_text(posource)
+        filter_result = self.filter(pofile,
+                                    cmdlineoptions=["--language=ro",
+                                                    "--test=cedillas"])
+        errors = first_translatable(filter_result).geterrors()
+        assert len(errors) == 1
+        assert 'cedillas' in errors
+
+        posource = '''
+msgid "cow"
+msgstr "blaSbla"
+'''
+        pofile = self.parse_text(posource)
+        filter_result = self.filter(pofile,
+                                    cmdlineoptions=["--language=ro",
+                                                    "--test=cedillas"])
+        errors = first_translatable(filter_result).geterrors()
+        assert len(errors) == 0
+        assert 'cedillas' not in errors
+
+    def test_romanian_niciun(self):
+        """Test the Romanian niciun check"""
+        posource = '''
+msgid "cow"
+msgstr "bla nici un bla"
+'''
+        pofile = self.parse_text(posource)
+        filter_result = self.filter(pofile,
+                                    cmdlineoptions=["--language=ro",
+                                                    "--test=niciun_nicio"])
+        errors = first_translatable(filter_result).geterrors()
+        assert len(errors) == 1
+        assert 'niciun_nicio' in errors
+
+        posource = '''
+msgid "cow"
+msgstr "bla niciun bla"
+'''
+        pofile = self.parse_text(posource)
+        filter_result = self.filter(pofile,
+                                    cmdlineoptions=["--language=ro",
+                                                    "--test=niciun_nicio"])
+        errors = first_translatable(filter_result).geterrors()
+        assert len(errors) == 0
+        assert 'niciun_nicio' not in errors
+
+    def test_romanian_nicio(self):
+        """Test the Romanian nicio check"""
+        posource = '''
+msgid "cow"
+msgstr "bla nici o bla"
+'''
+        pofile = self.parse_text(posource)
+        filter_result = self.filter(pofile,
+                                    cmdlineoptions=["--language=ro",
+                                                    "--test=niciun_nicio"])
+        errors = first_translatable(filter_result).geterrors()
+        assert len(errors) == 1
+        assert 'niciun_nicio' in errors
+
+        posource = '''
+msgid "cow"
+msgstr "bla nicio bla"
+'''
+        pofile = self.parse_text(posource)
+        filter_result = self.filter(pofile,
+                                    cmdlineoptions=["--language=ro",
+                                                    "--test=niciun_nicio"])
+        errors = first_translatable(filter_result).geterrors()
+        assert len(errors) == 0
+        assert 'niciun_nicio' not in errors
