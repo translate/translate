@@ -47,17 +47,22 @@ class RomanianChecker(TranslationChecker):
 
     @cosmetic
     def cedillas(self, str1, str2):
-        """
-        Checks if the translation strings contains an illegal cedilla character
-          illegal_chars = [u'Ţ', u'Ş', u'ţ', u'ş']
-        Cedillas are obsoleted diacritics for Romanian and should never be used
-          where the target string is Romanian.
-        Cedilla-letters are only valid for Turkish (S-cedilla)
-          and Gagauz languages (S-cedilla and T-comma)
-        Fun fact: Gagauz is the only known language to use T-cedilla
-               :param str1: the source string
-               :param str2: the target (translated) string
-               :return: True if str2 contains a cedilla character
+        """Check if the translation contains an illegal cedilla character
+
+        Cedillas are obsoleted diacritics for Romanian:
+
+          - U+0162 Latin capital letter T with cedilla
+          - U+0163 Latin small letter T with cedilla
+          - U+015E Latin capital letter S with cedilla
+          - U+015F Latin small letter S with cedilla
+
+        Cedilla-letters are only valid for Turkish (S-cedilla) and Gagauz
+        languages (S-cedilla and T-comma). Fun fact: Gagauz is the only known
+        language to use T-cedilla.
+
+        :param str1: the source string
+        :param str2: the target (translated) string
+        :return: True if str2 contains a cedilla character
         """
         return self.contains_illegal(['Ţ', 'Ş', 'ţ', 'ş'], str2)
 
@@ -73,4 +78,4 @@ class RomanianChecker(TranslationChecker):
 class ro(common.Common):
     """This class represents Romanian"""
 
-    checker = RomanianChecker
+    checker = RomanianChecker()
