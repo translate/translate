@@ -82,7 +82,7 @@ def build_checkerconfig(options):
     return checkerconfig
 
 
-class pocheckfilter:
+class pocheckfilter(object):
 
     def __init__(self, options, checkerclasses=None, checkerconfig=None):
         # excludefilters={}, limitfilters=None, includefuzzy=True, includereview=True, autocorrect=False):

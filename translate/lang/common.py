@@ -200,7 +200,7 @@ class Common(object):
     LibreOfficeChecker."""
 
     checker = None
-    """A language specific checker (see filters.checks).
+    """A language specific checker instance (see filters.checks).
 
     This doesn't need to be supplied, but will be used if it exists."""
 

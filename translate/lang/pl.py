@@ -18,15 +18,18 @@
 # along with this program; if not, see <http://www.gnu.org/licenses/>.
 
 """This module represents the Polish language.
+
+.. seealso:: https://en.wikipedia.org/wiki/Polish_language
 """
 
 from translate.lang import common
 
 
-class fi(common.Common):
+class pl(common.Common):
     """This class represents Polish."""
 
     validaccel = (u"abcdefghijklmnopqrstuvwxyz"
                   u"ABCDEFGHIJKLMNOPQRSTUVWXYZ"
                   u"1234567890"
-                  u"ąćęłńóśźżĄĆĘŁŃÓŚŹŻ")
+                  u"ąćęłńóśźż"
+                  u"ĄĆĘŁŃÓŚŹŻ")
