@@ -59,6 +59,7 @@ Options:
 --gnome              use the standard checks for Gnome translations
 --kde                use the standard checks for KDE translations
 --wx                 use the standard checks for wxWidgets translations -- identical to --kde
+--custom=DIR         use custom checks from DIR/custom.py
 --excludefilter=FILTER  don't use FILTER when filtering
 -t FILTER, --test=FILTER  only use test FILTERs specified with this option when filtering
 --notranslatefile=FILE   read list of untranslatable words from FILE (must not be translated)

@@ -33,6 +33,8 @@ When adding a new test here, please document and explain their behaviour on the
 import logging
 import re
 import six
+import sys
+from importlib import import_module
 
 from translate.filters import decoration, helpers, prefilters, spelling
 from translate.filters.decorators import (cosmetic, critical, extraction,
@@ -309,7 +311,7 @@ class UnitChecker(object):
     preconditions = {}
 
     def __init__(self, checkerconfig=None, excludefilters=None,
-                 limitfilters=None, errorhandler=None):
+                 limitfilters=None, customchecks=None, errorhandler=None):
         self.errorhandler = errorhandler
 
         #: Categories where each checking function falls into
@@ -330,10 +332,10 @@ class UnitChecker(object):
             if callable(function):
                 self.helperfunctions[functionname] = function
 
-        self.defaultfilters = self.getfilters(excludefilters, limitfilters)
+        self.defaultfilters = self.getfilters(excludefilters, limitfilters, customchecks)
         self.results_cache = {}
 
-    def getfilters(self, excludefilters=None, limitfilters=None):
+    def getfilters(self, excludefilters=None, limitfilters=None, customchecks=None):
         """Returns dictionary of available filters, including/excluding those
         in the given lists.
         """
@@ -342,6 +344,12 @@ class UnitChecker(object):
         if limitfilters is None:
             # use everything available unless instructed
             limitfilters = dir(self)
+            if customchecks is not None:
+                # add custom checks too
+                sys.path.append(customchecks)
+                mod = import_module('custom')
+                CustomChecker = getattr(mod, 'CustomChecker')
+                limitfilters.extend(dir(CustomChecker))
 
         if excludefilters is None:
             excludefilters = {}
@@ -509,9 +517,9 @@ class TranslationChecker(UnitChecker):
     """
 
     def __init__(self, checkerconfig=None, excludefilters=None,
-                 limitfilters=None, errorhandler=None):
+                 limitfilters=None, customchecks=None, errorhandler=None):
         super(TranslationChecker, self).__init__(checkerconfig, excludefilters,
-                                                 limitfilters, errorhandler)
+                                                 limitfilters, customchecks, errorhandler)
 
         self.locations = []
 
@@ -565,7 +573,7 @@ class TeeChecker(object):
 
     def __init__(self, checkerconfig=None, excludefilters=None,
                  limitfilters=None, checkerclasses=None, errorhandler=None,
-                 languagecode=None):
+                 languagecode=None, customchecks=None):
         """construct a TeeChecker from the given checkers"""
         self.limitfilters = limitfilters
 
@@ -575,6 +583,7 @@ class TeeChecker(object):
         self.checkers = [checkerclass(checkerconfig=checkerconfig,
                                       excludefilters=excludefilters,
                                       limitfilters=limitfilters,
+                                      customchecks=customchecks,
                                       errorhandler=errorhandler) for checkerclass in checkerclasses]
 
         if languagecode:
@@ -587,17 +596,17 @@ class TeeChecker(object):
             if lang_checker:
                 self.checkers.append(lang_checker)
 
-        self.combinedfilters = self.getfilters(excludefilters, limitfilters)
+        self.combinedfilters = self.getfilters(excludefilters, limitfilters, customchecks)
         self.config = checkerconfig or self.checkers[0].config
 
-    def getfilters(self, excludefilters=None, limitfilters=None):
+    def getfilters(self, excludefilters=None, limitfilters=None, customchecks=None):
         """Returns a dictionary of available filters, including/excluding
         those in the given lists.
         """
         if excludefilters is None:
             excludefilters = {}
 
-        filterslist = [checker.getfilters(excludefilters, limitfilters) for checker in self.checkers]
+        filterslist = [checker.getfilters(excludefilters, limitfilters, customchecks) for checker in self.checkers]
         self.combinedfilters = {}
 
         for filters in filterslist:

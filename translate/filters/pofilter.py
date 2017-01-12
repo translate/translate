@@ -31,6 +31,8 @@ for full descriptions of all tests.
 
 import os
 import six
+import sys
+from importlib import import_module
 
 from translate.filters import autocorrect, checks
 from translate.misc import optrecurse
@@ -38,11 +40,17 @@ from translate.storage import factory
 from translate.storage.poheader import poheader
 
 
-def build_checkerconfig(options):
+def build_checkerconfig(self, options):
     """Prepare the checker config from the given options.  This is mainly
     factored out for the sake of unit tests.
     """
     checkerconfig = checks.CheckerConfig(targetlanguage=options.targetlanguage)
+
+    if options.customchecks:
+        sys.path.append(options.customchecks)
+        mod = import_module('custom')
+        CustomChecker = getattr(mod, 'CustomChecker')
+        options.filterclass = CustomChecker
 
     if options.notranslatefile:
         options.notranslatefile = os.path.expanduser(options.notranslatefile)
@@ -191,12 +199,15 @@ class FilterOptionParser(optrecurse.RecursiveOptionParser):
         """
         (options, args) = self.parse_args()
 
+        checkerconfig = build_checkerconfig(self, options)
+
         if options.filterclass is None:
             checkerclasses = [checks.StandardChecker, checks.StandardUnitChecker]
+            if options.customchecks:
+                checkerclasses = [checks.CustomChecker[0], checks.StandardChecker, checks.StandardUnitChecker]
         else:
             checkerclasses = [options.filterclass, checks.StandardUnitChecker]
 
-        checkerconfig = build_checkerconfig(options)
         options.checkfilter = pocheckfilter(options, checkerclasses, checkerconfig)
 
         if not options.checkfilter.checker.combinedfilters:
@@ -286,6 +297,9 @@ def cmdlineparser():
         "", "--wx", dest="filterclass",
         action="store_const", default=None, const=checks.KdeChecker,
         help="use the standard checks for wxWidgets translations")
+    parser.add_option("", "--custom", dest="customchecks",
+        default=None, type="string", metavar="DIR",
+        help="use custom checks from DIR/custom.py")
     parser.add_option(
         "", "--excludefilter", dest="excludefilters",
         action="append", default=[], type="string", metavar="FILTER",

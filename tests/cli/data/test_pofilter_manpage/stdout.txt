@@ -4,7 +4,7 @@
 pofilter \- Perform quality checks on Gettext PO, XLIFF and TMX localization files.
 .SH SYNOPSIS
 .PP
-\fBpofilter \fR[\fP--version\fR]\fP \fR[\fP-h\fR|\fP--help\fR]\fP \fR[\fP--manpage\fR]\fP \fR[\fP--progress \fIPROGRESS\fP\fR]\fP \fR[\fP--errorlevel \fIERRORLEVEL\fP\fR]\fP \fR[\fP-i\fR|\fP--input\fR]\fP \fIINPUT\fP \fR[\fP-x\fR|\fP--exclude \fIEXCLUDE\fP\fR]\fP \fR[\fP-o\fR|\fP--output\fR]\fP \fIOUTPUT\fP \fR[\fP-l\fR|\fP--listfilters\fR]\fP \fR[\fP--review\fR]\fP \fR[\fP--noreview\fR]\fP \fR[\fP--fuzzy\fR]\fP \fR[\fP--nofuzzy\fR]\fP \fR[\fP--nonotes\fR]\fP \fR[\fP--autocorrect\fR]\fP \fR[\fP--language \fILANG\fP\fR]\fP \fR[\fP--openoffice\fR]\fP \fR[\fP--libreoffice\fR]\fP \fR[\fP--mozilla\fR]\fP \fR[\fP--drupal\fR]\fP \fR[\fP--gnome\fR]\fP \fR[\fP--kde\fR]\fP \fR[\fP--wx\fR]\fP \fR[\fP--excludefilter \fIFILTER\fP\fR]\fP \fR[\fP-t\fR|\fP--test \fIFILTER\fP\fR]\fP \fR[\fP--notranslatefile \fIFILE\fP\fR]\fP \fR[\fP--musttranslatefile \fIFILE\fP\fR]\fP \fR[\fP--validcharsfile \fIFILE\fP\fR]\fP\fP
+\fBpofilter \fR[\fP--version\fR]\fP \fR[\fP-h\fR|\fP--help\fR]\fP \fR[\fP--manpage\fR]\fP \fR[\fP--progress \fIPROGRESS\fP\fR]\fP \fR[\fP--errorlevel \fIERRORLEVEL\fP\fR]\fP \fR[\fP-i\fR|\fP--input\fR]\fP \fIINPUT\fP \fR[\fP-x\fR|\fP--exclude \fIEXCLUDE\fP\fR]\fP \fR[\fP-o\fR|\fP--output\fR]\fP \fIOUTPUT\fP \fR[\fP-l\fR|\fP--listfilters\fR]\fP \fR[\fP--review\fR]\fP \fR[\fP--noreview\fR]\fP \fR[\fP--fuzzy\fR]\fP \fR[\fP--nofuzzy\fR]\fP \fR[\fP--nonotes\fR]\fP \fR[\fP--autocorrect\fR]\fP \fR[\fP--language \fILANG\fP\fR]\fP \fR[\fP--openoffice\fR]\fP \fR[\fP--libreoffice\fR]\fP \fR[\fP--mozilla\fR]\fP \fR[\fP--drupal\fR]\fP \fR[\fP--gnome\fR]\fP \fR[\fP--kde\fR]\fP \fR[\fP--wx\fR]\fP \fR[\fP--custom \fIDIR\fP\fR]\fP \fR[\fP--excludefilter \fIFILTER\fP\fR]\fP \fR[\fP-t\fR|\fP--test \fIFILTER\fP\fR]\fP \fR[\fP--notranslatefile \fIFILE\fP\fR]\fP \fR[\fP--musttranslatefile \fIFILE\fP\fR]\fP \fR[\fP--validcharsfile \fIFILE\fP\fR]\fP\fP
 .SH DESCRIPTION
 Snippet files are created whenever a test fails.  These can be examined,
 corrected and merged back into the originals using pomerge.
@@ -85,6 +85,9 @@ use the standard checks for KDE translations
 .TP
 \-\-wx
 use the standard checks for wxWidgets translations
+.TP
+\-\-custom
+use custom checks from DIR/custom.py
 .TP
 \-\-excludefilter
 don't use FILTER when filtering
