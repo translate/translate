@@ -84,13 +84,9 @@ def main(argv=None):
         "-l", "--locale", dest="locale", default=None,
         help="set output locale (required as this sets the directory names)",
         metavar="LOCALE")
-    parser.add_option(
-        "", "--removeuntranslated", dest="remove_untranslated",
-        default=False, action="store_true",
-        help="remove untranslated strings from output")
     parser.add_threshold_option()
     parser.add_fuzzy_option()
-    parser.passthrough.append("remove_untranslated")
+    parser.add_remove_untranslated_option()
     parser.replacer = replacer
     parser.run(argv)
 

@@ -84,7 +84,7 @@ Options (po2prop):
                       java-utf8, skype, gaia, strings <option_personality>`
                       (for .properties files, default: java)
 --encoding=ENCODING  override the encoding set by the personality (since 1.8.0)
---removeuntranslated  remove key value from output if it is untranslated
+--removeuntranslated  remove untranslated strings from output
 --threshold=PERCENT  only convert files where the translation completion is above PERCENT
 --fuzzy              use translations marked fuzzy
 --nofuzzy            don't use translations marked fuzzy (default)

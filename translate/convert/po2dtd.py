@@ -197,13 +197,9 @@ def main(argv=None):
     # handle command line options
     formats = {"po": ("dtd", convertdtd), ("po", "dtd"): ("dtd", convertdtd)}
     parser = convert.ConvertOptionParser(formats, usetemplates=True, description=__doc__)
-    parser.add_option(
-        "", "--removeuntranslated", dest="remove_untranslated",
-        default=False, action="store_true",
-        help="remove untranslated strings from output")
     parser.add_threshold_option()
     parser.add_fuzzy_option()
-    parser.passthrough.append("remove_untranslated")
+    parser.add_remove_untranslated_option()
     parser.run(argv)
 
 
