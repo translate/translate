@@ -64,48 +64,20 @@ class TestXLIFFUnit(test_base.TestTranslationUnit):
         self.unit.target = u'Een\r'
 
     def test_unaccepted_control_chars(self):
-        """Tests we cannot assign the unaccepted control chars.
+        """Tests we cannot assign the unaccepted control chars without escaping.
 
         Source: https://en.wikipedia.org/wiki/Valid_characters_in_XML#XML_1.0
         """
-        ascii_control_codes = [
-            '0000',  # Unicode Character 'NULL' (U+0000)
-            '0001',  # Unicode Character 'START OF HEADING' (U+0001)
-            '0002',  # Unicode Character 'START OF TEXT' (U+0002)
-            '0003',  # Unicode Character 'END OF TEXT' (U+0003)
-            '0004',  # Unicode Character 'END OF TRANSMISSION' (U+0004)
-            '0005',  # Unicode Character 'ENQUIRY' (U+0005)
-            '0006',  # Unicode Character 'ACKNOWLEDGE' (U+0006)
-            '0007',  # Unicode Character 'BELL' (U+0007), "\a" in Python
-            '0008',  # Unicode Character 'BACKSPACE' (U+0008), "\b" in Python
-            '000b',  # Unicode Character 'LINE TABULATION' (U+000B), "\v" in Python
-            '000c',  # Unicode Character 'FORM FEED (FF)' (U+000C), "\f" in Python
-            '000e',  # Unicode Character 'SHIFT OUT' (U+000E)
-            '000f',  # Unicode Character 'SHIFT IN' (U+000F)
-            '0010',  # Unicode Character 'DATA LINK ESCAPE' (U+0010)
-            '0011',  # Unicode Character 'DEVICE CONTROL ONE' (U+0011)
-            '0012',  # Unicode Character 'DEVICE CONTROL TWO' (U+0012)
-            '0013',  # Unicode Character 'DEVICE CONTROL THREE' (U+0013)
-            '0014',  # Unicode Character 'DEVICE CONTROL FOUR' (U+0014)
-            '0015',  # Unicode Character 'NEGATIVE ACKNOWLEDGE' (U+0015)
-            '0016',  # Unicode Character 'SYNCHRONOUS IDLE' (U+0016)
-            '0017',  # Unicode Character 'END OF TRANSMISSION BLOCK' (U+0017)
-            '0018',  # Unicode Character 'CANCEL' (U+0018)
-            '0019',  # Unicode Character 'END OF MEDIUM' (U+0019)
-            '001a',  # Unicode Character 'SUBSTITUTE' (U+001A)
-            '001b',  # Unicode Character 'ESCAPE' (U+001B)
-            '001c',  # Unicode Character 'INFORMATION SEPARATOR FOUR' (U+001C)
-            '001d',  # Unicode Character 'INFORMATION SEPARATOR THREE' (U+001D)
-            '001e',  # Unicode Character 'INFORMATION SEPARATOR TWO' (U+001E)
-            '001f',  # Unicode Character 'INFORMATION SEPARATOR ONE' (U+001F)
-        ]
         exc_msg = ("All strings must be XML compatible: Unicode or ASCII, no "
                    "NULL bytes or control characters")
-        for code in ascii_control_codes:
+        for code in xliff.ASCII_CONTROL_CODES:
             self.unit.target = u'Een&#x%s;' % code.lstrip('0') or '0'
+            self.unit.createlanguageNode("af",
+                                         u'Een%s' % six.unichr(int(code, 16)),
+                                         "target")
             with pytest.raises(ValueError) as excinfo:
                 self.unit.target = u'Een%s' % six.unichr(int(code, 16))
-            assert exc_msg in excinfo.value
+            assert exc_msg in str(excinfo)
 
 
 class TestXLIFFfile(test_base.TestTranslationStore):
