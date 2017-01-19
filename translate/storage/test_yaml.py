@@ -2,7 +2,9 @@
 
 import sys
 from io import BytesIO
+
 import pytest
+
 from translate.storage import yaml, test_monolingual, base
 
 
@@ -122,16 +124,10 @@ class TestRubyYAMLResourceStore(test_monolingual.TestMonolingualStore):
 
     def test_invalid_key(self):
         store = yaml.YAMLFile()
-        assert pytest.raises(
-            base.ParseError,
-            store.parse,
-            'yes: string'
-        )
+        with pytest.raises(base.ParseError):
+            store.parse('yes: string')
 
     def test_invalid_value(self):
         store = yaml.YAMLFile()
-        assert pytest.raises(
-            base.ParseError,
-            store.parse,
-            'val: "\\u string"'
-        )
+        with pytest.raises(base.ParseError):
+            store.parse('val: "\\u string"')
