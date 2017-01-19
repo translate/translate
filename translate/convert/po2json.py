@@ -33,6 +33,7 @@ class rejson(object):
     def __init__(self, templatefile, inputstore):
         self.templatefile = templatefile
         self.templatestore = jsonl10n.JsonFile(templatefile)
+        self.ouputstore = jsonl10n.JsonFile()
         self.inputstore = inputstore
 
     def convertstore(self, includefuzzy=False):
@@ -47,7 +48,8 @@ class rejson(object):
                     unit.target = inputunit.target
             else:
                 unit.target = unit.source
-        return bytes(self.templatestore)
+            self.ouputstore.addunit(unit)
+        return bytes(self.ouputstore)
 
 
 def convertjson(inputfile, outputfile, templatefile, includefuzzy=False,
