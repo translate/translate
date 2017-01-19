@@ -36,11 +36,18 @@ class rejson(object):
         self.ouputstore = jsonl10n.JsonFile()
         self.inputstore = inputstore
 
-    def convertstore(self, includefuzzy=False):
+    def convertstore(self, includefuzzy=False, remove_untranslated=False):
         self.includefuzzy = includefuzzy
+        self.remove_untranslated = remove_untranslated
         self.inputstore.makeindex()
         for unit in self.templatestore.units:
             inputunit = self.inputstore.locationindex.get(unit.getid())
+            skip_unit = (self.remove_untranslated and
+                         (inputunit is None or
+                          inputunit.isfuzzy() or
+                          not inputunit.istranslated()))
+            if skip_unit:
+                continue
             if inputunit is not None:
                 if inputunit.isfuzzy() and not self.includefuzzy:
                     unit.target = unit.source
@@ -53,7 +60,7 @@ class rejson(object):
 
 
 def convertjson(inputfile, outputfile, templatefile, includefuzzy=False,
-                outputthreshold=None):
+                outputthreshold=None, remove_untranslated=False):
     inputstore = factory.getobject(inputfile)
 
     if not convert.should_output_store(inputstore, outputthreshold):
@@ -63,7 +70,7 @@ def convertjson(inputfile, outputfile, templatefile, includefuzzy=False,
         raise ValueError("Must have template file for JSON files")
 
     convertor = rejson(templatefile, inputstore)
-    outputstring = convertor.convertstore(includefuzzy)
+    outputstring = convertor.convertstore(includefuzzy, remove_untranslated)
     outputfile.write(outputstring)
     return True
 
@@ -77,6 +84,7 @@ def main(argv=None):
                                          description=__doc__)
     parser.add_threshold_option()
     parser.add_fuzzy_option()
+    parser.add_remove_untranslated_option()
     parser.run(argv)
 
 

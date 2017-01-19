@@ -1,0 +1,12 @@
+#: .stringone
+#, fuzzy
+msgid "Foo Bar"
+msgstr "Bar Foozie"
+
+#: .stringtwo
+msgid "Bar Foo"
+msgstr "Bar Foo Translated"
+
+#: .stringsix
+msgid "Spam Eggs"
+msgstr ""

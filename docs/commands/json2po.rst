@@ -63,6 +63,7 @@ Options (po2json):
 --threshold=PERCENT  only convert files where the translation completion is above PERCENT
 --fuzzy              use translations marked fuzzy
 --nofuzzy            don't use translations marked fuzzy (default)
+--removeuntranslated  remove untranslated strings from output
 
 .. _json2po#examples:
 
