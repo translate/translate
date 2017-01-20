@@ -5,7 +5,7 @@
 ##################
 BeautifulSoup4>=4.3  # Trados TM
 iniparse==0.4 ;python_version < '3.0'      # INI (ini2po)
-vobject==0.9.3       # iCal (ical2po)
+vobject==0.9.4       # iCal (ical2po)
 
 #aeidon>=0.14        # Subtitles (sub2po)
 # aeidon not available through pip/PyPI,
