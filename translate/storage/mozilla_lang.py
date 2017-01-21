@@ -89,6 +89,7 @@ class LangStore(txt.TxtFile):
         self.mark_active = mark_active
         self._headers = []
         self.eol = "\n"
+        self.location_root = getattr(inputfile, "location_root", "")
         super(LangStore, self).__init__(inputfile, **kwargs)
 
     def parse(self, lines):
@@ -138,7 +139,7 @@ class LangStore(txt.TxtFile):
                 source_unit = self.addsourceunit(line[1:])
                 source_unit.eol = self.eol
                 source_unit.addlocation(
-                    "%s:%d" % (self.filename, lineoffset + 1))
+                    "%s:%d" % (self.filename[len(self.location_root):], lineoffset + 1))
                 if comment is not None:
                     source_unit.addnote(comment[:-1], 'developer')
                     comment = ""
