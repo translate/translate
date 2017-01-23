@@ -76,6 +76,12 @@ ASCII_CONTROL_CODES = [
     '001f',  # Unicode Character 'INFORMATION SEPARATOR ONE' (U+001F)
 ]
 
+ASCII_CONTROL_CHARACTERS = {code: six.unichr(int(code, 16))
+                            for code in ASCII_CONTROL_CODES}
+
+ASCII_CONTROL_CHARACTERS_ESCAPES = {code: u'&#x%s;' % code.lstrip('0') or '0'
+                                    for code in ASCII_CONTROL_CODES}
+
 
 class xliffunit(lisa.LISAunit):
     """A single term in the xliff file."""
@@ -124,6 +130,17 @@ class xliffunit(lisa.LISAunit):
         if empty:
             return
         setXMLspace(self.xmlelement, "preserve")
+
+    def getNodeText(self, languageNode, xml_space="preserve"):
+        """Retrieves the term from the given :attr:`languageNode`."""
+        text = super(xliffunit, self).getNodeText(languageNode,
+                                                  xml_space=xml_space)
+        if text is not None:
+            # Unescape the unaccepted ASCII control characters.
+            for code, character in ASCII_CONTROL_CHARACTERS.items():
+                text = text.replace(ASCII_CONTROL_CHARACTERS_ESCAPES[code],
+                                    character)
+        return text
 
     def createlanguageNode(self, lang, text, purpose):
         """Returns an xml Element setup with given parameters."""
