@@ -56,7 +56,8 @@ class LangUnit(base.TranslationUnit):
         if self.source == self.target:
             target = self.target + " {ok}"
         if (self.rawtarget is not None
-            and self.target == strip_ok(self.rawtarget)):
+            and self.target == strip_ok(self.rawtarget)
+            and len(self.target) != len(strip_ok(self.rawtarget))):
             target = self.rawtarget
         if self.getnotes():
             notes = (self.eol).join(

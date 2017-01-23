@@ -64,6 +64,31 @@ class TestMozLangUnit(test_base.TestTranslationUnit):
             "# TAG: goodbye"
             in unit.getnotes(origin="developer").split("\n"))
 
+    def test_copy_target(self):
+        """Validate that self.rawtarget does not break a valid translation.
+
+        self.rawtarget is used to preserve strange format anomalies related to
+        {ok}.  But when units got translated it sometimes caused issues, in
+        that the unit was correctly translated but when serialised it used
+        self.rawtarget and thus output an untranslated unit.  This checks that
+        translation actually results in rawformat being ignored.
+        """
+        unit = self.UnitClass("Device")
+        unit.target == ""
+        unit.rawtarget = "Device"
+        assert not unit.istranslated()
+        assert str(unit) == ";Device\nDevice"
+
+        other = self.UnitClass("Device")
+        other.target = "Device"
+        assert other.istranslated()
+        assert str(other) == ";Device\nDevice {ok}"
+
+        unit.target = other.target
+        assert unit.istranslated()
+        assert unit.target == "Device"
+        assert str(unit) == ";Device\nDevice {ok}"
+
 
 class TestMozLangFile(test_base.TestTranslationStore):
     StoreClass = mozilla_lang.LangStore
