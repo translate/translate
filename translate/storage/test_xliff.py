@@ -56,12 +56,13 @@ class TestXLIFFUnit(test_base.TestTranslationUnit):
         """
         # Unicode Character 'CHARACTER TABULATION' (U+0009)
         self.unit.target = u'Een\t'
-
+        assert self.unit.target == u'Een\t'
         # Unicode Character 'LINE FEED (LF)' (U+000A)
         self.unit.target = u'Een\n'
-
+        assert self.unit.target == u'Een\n'
         # Unicode Character 'CARRIAGE RETURN (CR)' (U+000D)
         self.unit.target = u'Een\r'
+        assert self.unit.target == u'Een\r'
 
     def test_unaccepted_control_chars(self):
         """Tests we cannot assign the unaccepted control chars without escaping.
