@@ -108,7 +108,11 @@ class LangStore(txt.TxtFile):
                 self.is_active = True
                 continue
 
-            if line.startswith("## ") and not line.startswith('## TAG'):
+            header_meta_data = (
+                line.startswith("## ")
+                and not line.startswith('## TAG')
+                and not line.startswith('## MAX_LENGTH'))
+            if header_meta_data:
                 self._headers.append(line)
                 continue
 
@@ -131,9 +135,10 @@ class LangStore(txt.TxtFile):
             is_comment = (
                 line.startswith('#')
                 and (not line.startswith("##")
-                     or line.startswith('## TAG')))
+                     or line.startswith('## TAG')
+                     or line.startswith('## MAX_LENGTH')))
             if is_comment:
-                # Read comments, *including* meta tags (i.e. '## TAG')
+                # Read comments, *including* meta tags (e.g. '## TAG')
                 comment += line[1:].strip() + "\n"
 
             if line.startswith(';'):
