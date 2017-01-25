@@ -285,3 +285,17 @@ class TestMozLangFile(test_base.TestTranslationStore):
         assert (
             "# TAG: another_important_tag"
             in store.units[0].getnotes(origin="developer").split("\n"))
+
+    def test_maxlength(self):
+        """Ensure we can handle MAX_LENGTH meta data"""
+        lang = ("## MAX_LENGTH: 80\n"
+                "# Comment\n"
+                ";Source\n"
+                "Target\n"
+                "\n\n")
+        store = self.StoreClass.parsestring(lang)
+        assert not store.getlangheaders()
+        assert bytes(store).decode('utf-8') == lang
+        assert (
+            "# MAX_LENGTH: 80"
+            in store.units[0].getnotes(origin="developer").split("\n"))
