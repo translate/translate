@@ -1,0 +1,13 @@
+msgctxt "first"
+msgid "One"
+msgstr "Een"
+
+msgctxt "second"
+msgid "One"
+msgstr "Won"
+
+msgid "Two two"
+msgstr "Twee twee"
+
+msgid "Three three"
+msgstr ""
