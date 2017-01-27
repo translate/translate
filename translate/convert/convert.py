@@ -481,8 +481,8 @@ def should_output_store(store, threshold):
 
     from translate.storage import statsdb
 
-    units = filter(lambda unit: unit.istranslatable(), store.units)
-    translated = filter(lambda unit: unit.istranslated(), units)
+    units = list(filter(lambda unit: unit.istranslatable(), store.units))
+    translated = list(filter(lambda unit: unit.istranslated(), units))
     wordcounts = dict(map(lambda unit: (unit.getid(), statsdb.wordsinunit(unit)), units))
 
     def sourcewords(elementlist):
