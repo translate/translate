@@ -488,9 +488,9 @@ def should_output_store(store, threshold):
     def sourcewords(elementlist):
         return sum(map(lambda unit: wordcounts[unit.getid()][0], elementlist))
 
-    tranlated_count = sourcewords(translated)
+    translated_count = sourcewords(translated)
     total_count = sourcewords(units)
-    percent = tranlated_count * 100 / total_count
+    percent = translated_count * 100 / total_count
 
     return percent >= threshold
 
