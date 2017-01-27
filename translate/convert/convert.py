@@ -483,8 +483,11 @@ def should_output_store(store, threshold):
 
     units = filter(lambda unit: unit.istranslatable(), store.units)
     translated = filter(lambda unit: unit.istranslated(), units)
-    wordcounts = dict(map(lambda unit: (unit, statsdb.wordsinunit(unit)), units))
-    sourcewords = lambda elementlist: sum(map(lambda unit: wordcounts[unit][0], elementlist))
+    wordcounts = dict(map(lambda unit: (unit.getid(), statsdb.wordsinunit(unit)), units))
+
+    def sourcewords(elementlist):
+        return sum(map(lambda unit: wordcounts[unit.getid()][0], elementlist))
+
     tranlated_count = sourcewords(translated)
     total_count = sourcewords(units)
     percent = tranlated_count * 100 / total_count
