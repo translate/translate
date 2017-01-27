@@ -8,34 +8,19 @@ general improvements, it also specifically contains needed changes and
 optimizations for the upcoming [Pootle](http://pootle.translatehouse.org/)
 2.8.0 and [Virtaal](http://virtaal.translatehouse.org) releases.
 
-It is just over 4 weeks since the last release and there are many improvements
-across the board. A number of people contributed to this release and we've
-tried to credit them wherever possible (sorry if somehow we missed you).
+It is more than 1 year since the last stable release and there are many
+improvements across the board. A number of people contributed to this release
+and we've tried to credit them wherever possible (sorry if somehow we missed
+you).
 
 
 Getting it and sharing it
 =========================
-- pip install translate-toolkit
+
+- `pip install translate-toolkit`
 - Please share this URL
   [http://toolkit.translatehouse.org/download.html](http://toolkit.translatehouse.org/download.html)
   if you'd like to tweet or post about the release.
-
-
-2.0.0 vs 2.0.0rc3
-=================
-
-> **note**
->
-> Given the large number of important changes, mostly Python 3 support,
-> it was decided that the next version will be `2.0.0` instead of
-> `1.14.0` as previously planned. So `1.14.0-rc1` could be considered to
-> be `2.0.0b0`.
-
-
-- `po2txt` works correctly again when `--threshold` option is passed (issue
-  3499)
-- Minor fixes for Mozilla .lang format
-- Minor Python 3 fix
 
 
 Major changes
