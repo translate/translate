@@ -101,6 +101,22 @@ class ManHelpFormatter(optparse.HelpFormatter):
         return '\\fB%s\\fP' % ("\\fR, \\fP".join(opts))
 
 
+class StdoutWrapper(object):
+    out = sys.stdout
+
+    def __getattr__(self, name):
+        return getattr(self.out, name)
+
+    def write(self, content):
+        if six.PY3 and isinstance(content, bytes):
+            try:
+                self.out.write(content.decode('utf-8'))
+            except UnicodeDecodeError:
+                self.out.write("Unable to write binary content to the terminal")
+        else:
+            self.out.write(content)
+
+
 class RecursiveOptionParser(optparse.OptionParser, object):
     """A specialized Option Parser for recursing through directories."""
 
@@ -535,7 +551,7 @@ class RecursiveOptionParser(optparse.OptionParser, object):
     def openoutputfile(self, options, fulloutputpath):
         """Opens the output file."""
         if fulloutputpath is None:
-            return sys.stdout
+            return StdoutWrapper()
         return open(fulloutputpath, 'wb')
 
     def opentempoutputfile(self, options, fulloutputpath):
