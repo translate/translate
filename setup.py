@@ -207,7 +207,7 @@ else:
                     "innosetupscriptfile\\shell\\compile\\command")
                 compilecommand = _winreg.QueryValue(compile_key, "")
                 compile_key.Close()
-            except:
+            except Exception:
                 compilecommand = 'compil32.exe "%1"'
             return compilecommand
 

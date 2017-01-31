@@ -259,7 +259,7 @@ class AndroidResourceUnit(base.TranslationUnit):
             try:
                 # Try to handle it as legacy XML
                 newstring = etree.fromstring('<string>%s</string>' % target)
-            except:
+            except Exception:
                 # Fallback to string with XML escaping
                 xmltarget.text = self.escape(target)
             else:

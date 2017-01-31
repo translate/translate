@@ -41,7 +41,7 @@ def convertpot(input_file, output_file, template_file, tm=None,
                                     classes_str=classes_str)
     try:
         temp_store = factory.getobject(input_file, classes_str=classes_str)
-    except:
+    except Exception:
         # StringIO and other file like objects will be closed after parsing
         temp_store = None
 

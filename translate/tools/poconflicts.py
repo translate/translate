@@ -69,10 +69,10 @@ class ConflictOptionParser(optrecurse.RecursiveOptionParser):
         """recurse through directories and process files"""
         if self.isrecursive(options.input, 'input') and getattr(options, "allowrecursiveinput", True):
             if not self.isrecursive(options.output, 'output'):
+                self.warning("Output directory does not exist. Attempting to create")
                 try:
-                    self.warning("Output directory does not exist. Attempting to create")
                     os.mkdir(options.output)
-                except:
+                except Exception:
                     self.error(optrecurse.optparse.OptionValueError("Output directory does not exist, attempt to create failed"))
             if isinstance(options.input, list):
                 inputfiles = self.recurseinputfilelist(options)

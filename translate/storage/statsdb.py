@@ -150,7 +150,7 @@ def transaction(f):
             result = f(self, *args, **kwargs)
             self.con.commit()
             return result
-        except:
+        except Exception:
             # If ANY exception is raised, we're left in an
             # uncertain state and we MUST roll back any changes to avoid getting
             # stuck in an inconsistent state.

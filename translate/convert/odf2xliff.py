@@ -41,7 +41,7 @@ def convertodf(inputfile, outputfile, templates):
 
     try:
         store.setfilename(store.getfilenode('NoName'), inputfile.name)
-    except:
+    except Exception:
         print("couldn't set origin filename")
 
     contents = open_odf(inputfile)

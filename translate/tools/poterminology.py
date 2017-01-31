@@ -80,7 +80,7 @@ class TerminologyExtractor(object):
         if stopfile is None:
             try:
                 stopfile = file_discovery.get_abs_data_filename('stoplist-%s' % self.sourcelanguage)
-            except:
+            except Exception:
                 pass
         self.stopfile = stopfile
         self.parse_stopword_file()

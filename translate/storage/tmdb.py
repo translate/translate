@@ -115,7 +115,7 @@ CREATE UNIQUE INDEX IF NOT EXISTS targets_uniq_idx ON targets (sid, text, lang);
         try:
             self.cursor.executescript(script)
             self.connection.commit()
-        except:
+        except Exception:
             self.connection.rollback()
             raise
 
@@ -246,7 +246,7 @@ DROP TRIGGER IF EXISTS sources_delete_trig;
 
             if commit:
                 self.connection.commit()
-        except:
+        except Exception:
             if commit:
                 self.connection.rollback()
             raise

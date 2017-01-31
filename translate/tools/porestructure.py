@@ -55,12 +55,12 @@ class SplitOptionParser(optrecurse.RecursiveOptionParser):
     def recursiveprocess(self, options):
         """recurse through directories and process files"""
         if not self.isrecursive(options.output, 'output'):
+            self.warning("Output directory does not exist. Attempting to create")
             try:
-                self.warning("Output directory does not exist. Attempting to create")
                 # TODO: maybe we should only allow it to be created, otherwise
                 # we mess up an existing tree.
                 os.mkdir(options.output)
-            except:
+            except Exception:
                 self.error(optrecurse.optparse.OptionValueError("Output directory does not exist, attempt to create failed"))
         if self.isrecursive(options.input, 'input') and getattr(options, "allowrecursiveinput", True):
             if isinstance(options.input, list):

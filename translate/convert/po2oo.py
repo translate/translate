@@ -96,7 +96,7 @@ class reoo(object):
                     if isinstance(sourceunitlines, six.text_type):
                         sourceunitlines = sourceunitlines.encode("utf-8")
                     logger.warning(sourceunitlines)
-                except:
+                except Exception:
                     logger.warning("error outputting source unit %r", str(unit))
 
     def applytranslation(self, key, subkey, theoo, unit):

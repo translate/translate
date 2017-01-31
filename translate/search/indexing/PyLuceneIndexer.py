@@ -452,7 +452,7 @@ class PyLuceneDatabase(CommonIndexer.CommonDatabase):
                 if age > 15:
                     logging.warning("stale lock found in %s, removing.", self.location)
                     self.reader.unlock(self.reader.directory())
-            except:
+            except Exception:
                 pass
 
     def _writer_open(self):
