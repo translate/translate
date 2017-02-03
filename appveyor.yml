@@ -38,7 +38,7 @@ test_script:
   - "%PYTHON%\\python.exe -m compileall -q -f ."
   - "%PYTHON%\\python.exe setup.py --quiet build"
   - "%PYTHON%\\python.exe -m pip install ."
-  - "%PYTHON%\\python.exe py.test --cov=. -r EfsxX"
+  - "%PYTHON%\\python.exe -m pytest -r EfsxX"
 
 # after_test:
   # This step builds your wheels.
