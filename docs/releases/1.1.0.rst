@@ -1,0 +1,93 @@
+.. _changelog#1.1:
+
+1.1
+===
+
+.. _changelog#oo2po_help_helpcontent2_escaping_fixed:
+
+oo2po Help (helpcontent2) escaping fixed
+----------------------------------------
+
+OpenOffice.org Help (helpcontent2) has notoriously contained some unreadable
+esacping, e.g. ``\\\\<tag attr=\\"value\\"\\\\>``.  The escaping has been fixed
+and oo2po now understands helpcontent2 escaping while leaving the current GUI
+escape handling unaltered.
+
+If you have not translated helpcontent2 then you are unaffected by this change.
+If you have translated this content then you will need to follow these
+instructions when upgrading.
+
+If you follow normal procedures of creating POT files and upgrading your PO
+files using pot2po then your strings will not match and you will obtain files
+with many fuzzies.  To avoid this do the following:
+
+#. Make sure your PO files contain no fuzzy entries
+#. Use po2oo from the previous release to create and SDF file
+#. Upgrade to the latest Translate Toolkit with new po2oo
+#. Use ``po2oo -l xx-YY your.sdf po`` to create a new set of PO files with
+   correct escaping
+
+You can choose to do this with only your helpcontent2 PO files if needed, this
+will allow you to leave your GUI work in its current state.  Simply do the
+above procedure and discard all PO files except helpcontent2, then move these
+new helpcontent2 files into your current work.
+
+.. _changelog#prop2po_uses_developer_comments:
+
+prop2po uses developer comments
+-------------------------------
+
+prop2po used to place comments found in the source .properties file in
+traditional translator comments, they should of course go into developer
+comments.    The reason for this change is twofold, it allows these comments to
+be correctly managed and it is part of the process of cleaning up these formats
+so that they are closer to the base class and can thus work with XLIFF.
+
+For the user there will be fairly large changes as one comment format moves to
+the next.  It is best to :doc:`cleanup translator comments
+</guides/cleanup_translator_comments>` and get your translations into a fit
+state, i.e. no fuzzies, and then proceed with any migrations.
+
+.. _changelog#moz2po_no_longer_uses_kde_comments:
+
+moz2po no longer uses KDE comments
+----------------------------------
+
+moz2po has traditionally used KDE style comments for storing comments aimed at
+translators.  Many translators confuse these and try to translate them.  Thus
+these have been moved into automatic or developer comments.  The result for
+many people migrating Mozilla PO files will be that many strings will become
+fuzzy, you can avoid much of this by using pot2po which should intelligently be
+able to match without considering the KDE comments.
+
+The best strategy is to get your translations into a relatively good shape
+before migration.  You can then migrate them first to a new set of POT files
+generated from the same source files that the translation is based on.
+Eliminate all fuzzies as these should only relate to the changes in layout.
+Then proceed to migrate to a new set of POT files.  If you cannot work against
+the original source files then the best would be to also first eliminate fuzzy
+matches before proceeding to translation.  Your fuzzies will include changes in
+layout and changes in content so proceed carefully.
+
+At the end of this you should have PO files that conform to the Gettext
+standard without KDE comments.
+
+.. _changelog#read_and_write_mo_files:
+
+Read and Write MO files
+-----------------------
+
+You can read and write Gettext MO files (compiled PO files).  Thus pocount can
+now count files on your filesystem and you can also compile MO files using
+pocompile.  MO files can be compiled from either PO or XLIFF sources.
+
+MO will now also produce correct output for msgctxt and plural forms found in
+PO files.
+
+.. _changelog#read_qt_.qm_files:
+
+Read Qt .qm files
+-----------------
+
+We can now read Qt .qm files, thus pocount can count the contents of compiled
+files.  We cannot however write .qm files at this time.

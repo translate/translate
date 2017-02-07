@@ -1,0 +1,165 @@
+.. _changelog#1.0:
+
+1.0
+===
+
+.. _changelog#improved_xliff_support:
+
+Improved XLIFF support
+----------------------
+Many toolkit tools that only worked with PO files before, can now also work
+with XLIFF files. pogrep, pocount, pomerge, and pofilter all work with XLIFF,
+for example.
+
+.. _changelog#pretty_xml_output:
+
+Pretty XML output
+-----------------
+All XML formats should now be more human readable, and the converters to Qt .ts
+files should work correctly again.
+
+.. _changelog#fuzzy_matching_in_pot2po_is_optional:
+
+Fuzzy matching in pot2po is optional
+------------------------------------
+Fuzzy matching can now be entirely disabled in :doc:`/commands/pot2po` with the
+:opt:`--nofuzzymatching` parameter. This should make it much faster, although
+pot2po is **substantially** faster than earlier versions, especially if
+:doc:`python-Levenshtein </commands/levenshtein_distance>` is installed.
+
+.. _changelog#old_match/levenshtein.py*_can_cause_name_clash:
+
+Old match/Levenshtein.py* can cause name clash
+----------------------------------------------
+The file previously called match/Levenshtein.py was renamed to lshtein.py in
+order to use the python-Levenshtein package mentioned above. If you follow the
+basic installation instructions, the old file will not be overwritten, and can
+cause problems. Ensure that you remove all files starting with Levenshtein.py
+in the installation path of the translate toolkit, usually something like
+/usr/lib/python2.4/site-packages/translate/search/. It could be up to three
+files.
+
+.. _changelog#po_file_layout_now_follows_gettext_more_closely:
+
+PO file layout now follows Gettext more closely
+-----------------------------------------------
+
+The toolkits output PO format should now resemble Gettext PO files more
+closely.  Long lines are wrapped correctly, messages with long initial lines
+will start with a 'msgid ""' entry.  The reason for this change is to ensure
+that differences in files relate to content change not format change, no matter
+what tool you use.
+
+To understand the problem more clearly.  If a user creates POT files with e.g.
+:doc:`/commands/oo2po`.  She then edits them in a PO editor or manipulate them
+with the Gettext tools.  The layout of the file after manipulation was often
+different from the original produced by the Toolkit.  Thus making it hard to
+tell what where content changes as opposed to layout changes.
+
+The changes will affect you as follows:
+
+#. They will only impact you when using the Toolkit tools.
+#. You manipulate your files with a tool that follows Gettext PO layout
+
+   * your experience should now improve as the new PO files will align with
+     your existing files
+   * updates should now only include real content changes not layout changes
+
+#. You manipulate your files using Toolkit related tools or manual editing
+
+   * your files will go through a re-layout the first time you use any of the
+     tools
+   * subsequent usage should continue as normal
+   * any manipulation using Gettext tools will leave your files correctly laid
+     out.
+
+Our suggestion is that if you are about to suffer a major reflow that your
+initial merge contain only reflow and update changes.  Do content changes in
+subsequent steps.  Once you have gone through the reflow you should see no
+layout changes and only content changes.
+
+.. _changelog#language_awareness:
+
+Language awareness
+------------------
+The toolkit is gradually becoming more aware of the differences between
+languages. Currently this mostly affects pofilter checks (and therefore also
+Pootle) where tests involving punctuation and capitalisation will be more aware
+of the differences between English and some other languages. Provisional
+customisation for the following languages are in place and we will welcome more
+work on the language module: Amharic, Arabic, Greek, Persian, French, Armenian,
+Japanese,  Khmer, Vietnamese, all types of Chinese.
+
+.. _changelog#new_pofilter_tests:_newlines_and_tabs:
+
+New pofilter tests: newlines and tabs
+-------------------------------------
+
+The escapes test has been refined with two new tests, ``newlines`` and
+``tabs``.  This makes identifying the errors easier and makes it easier to
+control the results of the tests.  You shouldn't have to change your testing
+behaviour in any way.
+
+.. _changelog#merging_can_change_fuzzy_status:
+
+Merging can change fuzzy status
+-------------------------------
+
+pomerge now handles fuzzy states::
+
+  pomerge -t old -i merge -o new
+
+Messages that are fuzzy in *merge* will now also be fuzzy in *new*.  Similarly
+if a fuzzy state is present in *old* but removed in *merge* then the message in
+*new* will not be fuzzy.
+
+Previously no fuzzy states were changed during a merge.
+
+.. _changelog#pofilter_will_make_mozilla_accelerators_a_serious_failure:
+
+pofilter will make Mozilla accelerators a serious failure
+---------------------------------------------------------
+
+If you use :doc:`/commands/pofilter` with the :opt:`--mozilla` option then
+accelerator failures will produce a serious filter error, i.e. the message will
+be marked as ``fuzzy``.  This has been done because accelerator problems in
+your translations have the potential to break Mozilla applications.
+
+.. _changelog#po2prop_can_output_mozilla_or_java_style_properties:
+
+po2prop can output Mozilla or Java style properties
+---------------------------------------------------
+
+We have added the :opt:`--personality` option to allow a user to select output
+in either :opt:`java`, or :opt:`mozilla` style (Java property files use escaped
+Unicode, while Mozilla uses actual Unicode characters).  This functionality was
+always available but was not exposed to the user and we always defaulted to the
+Mozilla style.
+
+When using :doc:`po2moz </commands/moz2po>` the behaviour is not changed for
+the user as the programs will ensure that the properties convertor uses Mozilla
+style.
+
+However, when using :doc:`po2prop </commands/prop2po>` the default style is now
+``java``, thus if you are converting a single ``.properties`` file as part of a
+Mozilla conversion you will need to add :opt:`--personality=mozilla` to your
+conversion.  Thus::
+
+  po2prop -t moz.properties moz.properties.po my-moz.properties
+
+Would become::
+
+  po2prop --personality=mozilla -t moz.properties moz.properties.po my-moz.properties
+
+.. note:: Output in java style escaped Unicode will still be usable by Mozilla
+   but will be harder to read.
+
+.. _changelog#support_for_compressed_files:
+
+Support for compressed files
+----------------------------
+There is some initial support for reading from and writing to compressed files.
+Single files compressed with gzip or bzip2 compression is supported, but not
+tarballs.  Most tools don't support it, but pocount and the :opt:`--tm`
+parameter to pot2po will work with it, for example. Naturally it is slower than
+working with uncompressed files. Hopefully more tools can support it in future.

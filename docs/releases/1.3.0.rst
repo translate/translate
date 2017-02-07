@@ -1,0 +1,7 @@
+.. _changelog#1.3.0:
+
+1.3.0
+=====
+Several duplicate styles were removed as has been warned about long before.
+Please check the recommendations posted at the time that msgctxt was added on
+how to migrate.

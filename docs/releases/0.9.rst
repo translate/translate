@@ -1,0 +1,98 @@
+.. _changelog#0.9:
+
+0.9
+===
+
+.. _changelog#escaping_-_dtd_files_are_no_longer_escaped:
+
+Escaping -- DTD files are no longer escaped
+-------------------------------------------
+
+Previously each converter handled escaping, which made it a nightmare every
+time we identified an escaping related error or added a new format.  Escaping
+has now been moved into the format classes as much as possible, the result
+being that formats exchange Python strings and manage their own escaping.
+
+I doing this migration we revisited some of the format migration.  We found
+that we were escaping elements in our output DTD files.  DTD's should have no
+escaping i.e. ``\n`` is a literal ``\`` followed by an ``n`` not a newline.
+
+A result of this change is that older PO files will have different escaping to
+what po2moz will now expect. Probably resulting in bad output .dtd files.
+
+We did not make this backward compatible as the fix is relatively simple and is
+one you would have done for any migration of your PO files.
+
+1. Create a new set of POT files ::
+
+     moz2po -P mozilla pot
+
+2. Migrate your old PO files ::
+
+     pomigrate2 old new pot
+
+3. Fix all the fuzzy translations by editing your PO files
+4. Use pofilter to check for escaping problems and fix them ::
+
+      pofilter -t escapes new new-check
+
+5. Edit file in new-check in your PO editor ::
+
+      pomerge -t new -i new-check -o new-check
+
+.. _changelog#migration_to_base_class:
+
+Migration to base class
+-----------------------
+
+All filters are/have been migrate to a base class.  This move is so that it is
+easier to add new format, interchange formats and to create converters.  Thus
+xx2po and xx2xlf become easier to create.  Also adding a new format should be
+as simple as working towards the API exposed in the base class. An unexpected
+side effect will be the Pootle should be able to work directly with any base
+class file (although that will not be the normal Pootle operation)
+
+We have checks in place to ensure the current operation remains correct.
+However, nothing is perfect and unfortunately the only way to really expose all
+bugs is to release this software.
+
+If you discover a bug please report it on Bugzilla or on the Pootle mailing
+list.  If you have the skills please check on HEAD to see if it is not already
+fixed and if you regard it as critical discuss on the mailing list backporting
+the fix (note some fixes will not be backported because they may be too
+invasive for the stable branch).  If you are a developer please write a test to
+expose the bug and a fix if possible.
+
+.. _changelog#duplicate_merging_in_po_files_-_merge_now_the_default:
+
+Duplicate Merging in PO files -- merge now the default
+------------------------------------------------------
+
+We added the :opt:`--duplicatestyle` option to allow duplicate messages to be
+merged, commented or simply appear in the PO unmerged.  Initially we used the
+msgid_comments options as the default.  This adds a KDE style comment to all
+affected messages which created a good balance allowing users to see duplicates
+in the PO file but still create a valid PO file.
+
+'msgid_comments' was the default for 0.8 (FIXME check), however it seemed to
+create more confusion then it solved.  Thus we have reverted to using 'merge'
+as the default (this then completely mimics Gettext behaviour).
+
+As Gettext will soon introduce the msgctxt attribute we may revert to using
+that to manage disambiguation messages instead of KDE comments.  This we feel
+will put us back at a good balance of usefulness and usability.  We will only
+release this when msgctxt version of the Gettext tools are released.
+
+.. _changelog#.properties_files_no_longer_use_escaped_unicode:
+
+.properties files no longer use escaped Unicode
+-----------------------------------------------
+
+The main use of the .properties converter class is to translate Mozilla files,
+although .properties files are actually a Java standard.  The old Mozilla way,
+and still the Java way, of working with .properties files is to escape any
+Unicode characters using the ``\uNNNN`` convention.  Mozilla now allows you to
+use Unicode in UTF-8 encoding for these files.  Thus in 0.9 of the Toolkit we
+now output UTF-8 encoded properties files. :issue:`Issue 193 <193>` tracks the
+status of this and we hope to add a feature to prop2po to restore the correct
+Java convention as an option.

@@ -1,0 +1,63 @@
+.. _changelog#0.10:
+
+0.10
+====
+
+.. _changelog#po_to_xliff_conversion:
+
+PO to XLIFF conversion
+----------------------
+
+Conversion from PO to XLIFF is greatly improved in 0.10 and this was done
+according to the specification at
+http://xliff-tools.freedesktop.org/wiki/Projects/XliffPoGuide -- please let us
+know if there are features lacking.
+
+.. _changelog#pot2po_can_replace_msgmerge:
+
+pot2po can replace msgmerge
+---------------------------
+
+:doc:`/commands/pot2po` has undergone major changes which means that it now
+respects your header entries, can resurrect obsolete messages, does fuzzy
+matching using :doc:`Levenshtein distance </commands/levenshtein_distance>`
+algorithm, will correctly match messages with KDE style comments and can use an
+external Translation Memory.  You can now use pot2po instead of Gettext's
+msgmerge and it can also replace :doc:`/commands/pomigrate2`.  You may still
+want to use pomigrate2 if there where file movements between versions as pot2po
+can still not do intelligent matching of PO and POT files, pomigrate2 has also
+been adapted so that it can use pot2po as it background merging tool. ::
+
+  pomigrate2 --use-compendium --pot2po <old> <pot> <new>
+
+This will migrate file with a compendium built from PO files in *<old>* and
+will use pot2po as its conversion engine.
+
+.. _changelog#.properties_pretty_formatting:
+
+.properties pretty formatting
+-----------------------------
+
+When using templates for generating translated .properties files we will now
+preserve the formatting around the equal sign.
+
+.. code-block:: properties
+
+  # Previously if the template had
+  property     =      value
+
+.. code-block:: properties
+
+  # We output
+  property=translation
+
+.. code-block:: properties
+
+  # We will now output
+  property     =      translation
+
+This change ensures that there is less noise when checking differences against
+the template file.  However, there will be quite a bit of noise when you make
+your first .properties commits with the new pretty layout.  Our suggestion is
+that you make a single commit of .properties files without changes of
+translations to gt the formatting correct.

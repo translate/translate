@@ -1,0 +1,62 @@
+.. _changelog#1.2:
+
+1.2.0
+=====
+
+.. _changelog#new_formats:
+
+New formats
+-----------
+
+The toolkit now supports:
+
+* :doc:`/formats/qt_phrase_book`
+* :doc:`/formats/ts` v1.1
+
+This allows reading, counting and working on these formats.  The
+:doc:`/commands/ts2po` converter has not been changed so you will not be able
+to benefit from the new .ts support. However, you can use the format for
+translation memory, etc as its is now fully base class compliant.
+
+.. _changelog#stats_database_change:
+
+Stats database change
+---------------------
+There were some changes in the database used by pocount for storing statistics.
+The location of the database might also have changed, depending on what the
+last version is that you used. Remove the file stats.db from any of
+~/.translate_toolkit, ~/.wordforge (or the corresponding directories on your
+Windows installation.
+
+.. _changelog#valid_accelerators:
+
+Valid accelerators
+------------------
+
+The :doc:`/commands/pofilter` accelerator test is now able to make use of a
+list of valid accelerators.  This allows translators to control the behaviour
+of the test for their language and add or remove characters that can be used as
+accelerators.  Please define the :ref:`valid accelerators
+<guide:valid-accelerators>` for your language and these will then be included
+in future releases of the toolkit.  By default the old process is followed so
+that if you take no action then this check will continue to work as expected.
+
+.. _changelog#branches:
+
+branches
+========
+
+These are branches that contain quite invasive changes that will most likely be
+merged into the main development and be released sometime in the future.
+
+.. _changelog#toolkit-c-po:
+
+toolkit-C-po
+------------
+
+Converting the current Python based PO parser to the Gettext C based parser for
+PO.  This offers quite a dramatic speed improvement and conformance to the
+output found in Gettext itself.  For most users there will be a number of
+changes in layout of the files as they will now conform fully to Gettext
+layout.  The 'keep' option in :opt:`--duplicatestyle` will no longer be
+supported as this is not valid Gettext output.

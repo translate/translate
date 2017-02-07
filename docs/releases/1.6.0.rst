@@ -1,0 +1,14 @@
+.. _changelog#1.6.0:
+
+1.6.0
+=====
+
+.. _changelog#po_files_now_always_have_headers:
+
+PO files now always have headers
+--------------------------------
+Generated PO files now always contain headers. This will mainly affect the
+output of pofilter and pogrep. This should allow better interoperability with
+gettext tools, and allowed for some improvement in the code.  You should still
+be able to use headerless files in msgmerge, although it is recommended that PO
+files are consistently handled with headers wherever possible.

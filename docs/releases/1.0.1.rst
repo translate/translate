@@ -1,0 +1,15 @@
+.. _changelog#1.0.1:
+
+1.0.1
+=====
+
+.. _changelog#pot2po_will_create_new_empty_po_files_if_needed:
+
+pot2po will create new empty PO files if needed
+-----------------------------------------------
+
+From version 1.0.1, pot2po will create empty PO files corresponding to new POT
+files that might have been introduced. If some new POT files are present in the
+input to pot2po, you will see a new PO file appear in your output directory
+that was not in your old PO files.  You will not lose any data but in the worst
+case you will see new files on projects that you thought were fully translated.

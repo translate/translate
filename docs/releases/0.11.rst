@@ -1,0 +1,29 @@
+.. _changelog#0.11:
+
+0.11
+====
+
+.. _changelog#po2oo_defaults_to_not_check_for_errors:
+
+po2oo defaults to not check for errors
+--------------------------------------
+
+In po2oo we made the default :opt:`--filteraction=none` i.e. do nothing and
+don't warn.  Until we have a way of clearly marking false positives we'll have
+to disable this functionality as there is no way to quiet the output or mark
+non errors.  Also renamed exclude to exclude-all so that it is clearer what it
+does i.e. it excludes 'all' vs excludes 'serious'.
+
+.. _changelog#pofilter_xmltags_produces_less_false_positives:
+
+pofilter xmltags produces less false positives
+----------------------------------------------
+
+In the xmltags check we handle the case where we had some false positives. E.g.
+"<Error>" which looks like XML/HTML but should actually be translated. These
+are handled by
+
+#. identifying them as being the same length as the source text,
+#. not containing any '=' sign.  Thus the following would not be detected by
+   this hack. "An <Error> occurred" -> "<Error name="bob">", but these ones need
+   human eyes anyway.

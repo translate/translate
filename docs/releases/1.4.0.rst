@@ -1,0 +1,21 @@
+.. _changelog#1.4.0:
+
+1.4.0
+=====
+
+.. _changelog#java_and_mozilla_.properties:
+
+Java and Mozilla .properties
+----------------------------
+Unusual keys, separators and spacing should all be handled correctly now. Some
+Mozilla .properties files might now have changed. Regenerate your Mozilla l10n
+files from fresh POT files without any changes to your PO files to ensure that
+you can see and review these changes.
+
+.. _changelog#hashing_in_podebug:
+
+Hashing in podebug
+------------------
+The :opt:`--hash` option in :doc:`/commands/podebug` has been replaced by a
+format specifier %h to be able to better control the positioning of the hash
+value.
