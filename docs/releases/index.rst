@@ -5,6 +5,20 @@ Release Notes
 
 The following are release notes for Translate Toolkit:
 
+
+Upcoming releases
+=================
+
+
+.. toctree::
+   :maxdepth: 1
+
+   2.1.0 <2.1.0>
+
+
+Final releases
+==============
+
 .. toctree::
    :maxdepth: 1
 

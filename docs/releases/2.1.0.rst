@@ -1,0 +1,80 @@
+Translate Toolkit 2.1.0
+***********************
+
+*In development*
+
+This is the upcomming feature and bugfix release of the Translate Toolkit.
+
+Major changes
+=============
+
+-
+
+Detailed changes
+================
+
+Requirements
+------------
+
+- 
+
+
+Formats and Converters
+----------------------
+
+-
+
+
+Filters and Checks
+------------------
+
+- Added an iOS checker style to detect iOS variables styles such as ``%@`` and
+  ``$(VAR)``.
+
+Tools
+-----
+
+- 
+
+
+Languages
+---------
+
+- 
+
+
+Setup
+-----
+
+- 
+
+
+API changes
+-----------
+
+- 
+
+
+API deprecation
+---------------
+
+- 
+
+
+General
+-------
+
+- 
+
+
+...and loads of general code cleanups and of course many many bugfixes.
+
+
+Contributors
+============
+
+This release was made possible by the following people:
+
+%CONTRIBUTORS%
+
+And to all our bug finders and testers, a Very BIG Thank You.
