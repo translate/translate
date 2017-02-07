@@ -9,15 +9,6 @@ optimizations for the upcoming `Pootle <http://pootle.translatehouse.org/>`_
 2.8.0 and `Virtaal <http://virtaal.translatehouse.org>`_ releases.
 
 
-2.0.0 vs 2.0.0rc3
-=================
-
-- :doc:`po2txt </commands/txt2po>` works correctly again when ``--threshold``
-  option is passed (:issue:`3499`)
-- Minor fixes for Mozilla .lang format
-- Minor Python 3 fix
-
-
 Major changes
 =============
 
