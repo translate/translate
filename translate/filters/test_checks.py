@@ -84,6 +84,7 @@ def test_construct():
     loochecker = checks.LibreOfficeChecker()
     gnomechecker = checks.GnomeChecker()
     kdechecker = checks.KdeChecker()
+    ioschecker = checks.IOSChecker()
 
 
 def test_accelerator_markers():
@@ -1095,6 +1096,21 @@ def test_variables_cclicense():
     assert passes(checker.variables, "The @license_name_full@ is", "Die @license_name_full@ is")
     assert fails_serious(checker.variables, "The @license_name_full@ is", "Die @iiilicense_name_full@ is")
     assert fails_serious(checker.variables, "A @ccvar@", "'n @ccvertaaldeveranderlike@")
+
+
+def test_variables_ios():
+    """Test variables in iOS translations"""
+    ioschecker = checks.IOSChecker()
+    assert passes(ioschecker.variables, "Welcome $(NAME)", "Welkom $(NAME)")
+    assert fails_serious(ioschecker.variables, "Welcome $(NAME)", "Welkom $(NAAM)")
+    assert fails_serious(ioschecker.variables, "Welcome $(NAME)", "Welkom")
+
+    assert passes(ioschecker.variables, "Welcome %@", "Welkom %@")
+    assert fails_serious(ioschecker.variables, "Welcome %@", "Welkom $@")
+    assert fails_serious(ioschecker.variables, "Welcome %@", "Welkom")
+    assert passes(ioschecker.variables,
+                  "Downloading %1$@ at %2$@ speed",
+                  "Downloading at %2$@ speed the file %$1@")
 
 
 def test_xmltags():

@@ -2394,6 +2394,24 @@ class L20nChecker(MozillaChecker):
         return True
 
 
+iosconfig = CheckerConfig(
+    varmatches=[("$(", ")"), ("%", "@")],
+)
+
+
+class IOSChecker(StandardChecker):
+
+    def __init__(self, **kwargs):
+        checkerconfig = kwargs.get("checkerconfig", None)
+
+        if checkerconfig is None:
+            checkerconfig = CheckerConfig()
+            kwargs["checkerconfig"] = checkerconfig
+
+        checkerconfig.update(iosconfig)
+        StandardChecker.__init__(self, **kwargs)
+
+
 projectcheckers = {
     "standard": StandardChecker,
     "openoffice": OpenOfficeChecker,
@@ -2406,6 +2424,7 @@ projectcheckers = {
     "drupal": DrupalChecker,
     "terminology": TermChecker,
     "l20n": L20nChecker,
+    "ios": IOSChecker,
 }
 
 
