@@ -28,23 +28,6 @@ tried to credit them wherever possible (sorry if somehow we missed you).
 Highlighted improvements
 ========================
 
-1.12.0 vs 1.12.0-rc1
---------------------
-
-Changes since 1.12.0 RC1:
-
-- Added support for UTF-8 encoded OS X strings
-- RC format received some bugfixes and now ignores ``TEXTINCLUDE`` sections and
-  one line comments (``//``)
-- Qt Linguist files now output the XML declaration (:issue:`3198`)
-- ``xliff2po`` now supports files with ``.xliff`` extension
-- Minor change in placeables to correctly insert at an existing parent if
-  appropriate
-- Recovered diff-match-patch to provide support for old third party consumers
-- Added new tests for the UTF-8 encoded OS X strings, Qt linguist and RC
-  formats and the ``rc2po`` converter
-
-
 Major changes
 -------------
 
@@ -100,9 +83,28 @@ Formats and Converters
   - Added support for plurals
   - Text is now properly escaped when using markup
 
-- TS
+- Qt Linguist (.ts)
 
   - The message id attribute is added to contextname
+  - Files now output the XML declaration (:issue:`3198`)
+
+- RC
+
+  - RC format received some bugfixes and now ignores ``TEXTINCLUDE`` sections
+    and one line comments (``//``)
+
+- XLIFF
+
+  - ``xliff2po`` now supports files with ``.xliff`` extension
+
+- OS X .strings
+
+  - Added support for UTF-8 encoded OS X strings
+
+- Testing
+
+  - Added new tests for the UTF-8 encoded OS X strings, Qt linguist and RC
+    formats and the ``rc2po`` converter
 
 
 Version Control improvements
@@ -140,6 +142,9 @@ General
 - Extensive cleanup of setup script
 - Some bugfixes for placeables
 - Misc docs cleanups
+- Recovered diff-match-patch to provide support for old third party consumers
+- Minor change in placeables to correctly insert at an existing parent if
+  appropriate
 - Code cleanups:
 
   - Applied tons of PEP8 and style guide cleanups
