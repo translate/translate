@@ -28,14 +28,6 @@ you).
 Highlighted improvements
 ========================
 
-1.11.0 vs 1.11.0-rc1
---------------------
-Changes since 1.11.0 RC1:
-
-- Improve handling of escapes in wrapping
-- Handle a broken version of python-Levenshtein 
-- Output HTML source in po2html when a unit is fuzzy (:issue:`3145`)
-
 Major changes
 -------------
 - The PO format now matches Gettext more closely
@@ -74,6 +66,10 @@ Formats and Converters
 
   - Detect untranslatable resource strings
   - Various format improvements
+
+- HTML:
+
+  - Output HTML source in po2html when a unit is fuzzy (:issue:`3145`)
 
 - New conversion options:
 
@@ -127,6 +123,8 @@ General
 - Improve searching to find words with hyphens
 - Choose the closest repo in nested VCS
 - Test suite down to zero failing tests
+- Handle a broken version of python-Levenshtein
+- Improve handling of escapes in wrapping
 
 ...and loads of internal changes to improve maintainability, remove unused
 imports, remove unused code and general code cleanups, some changes to ensure
