@@ -41,7 +41,6 @@ Changelog and legal information are included here.
    :maxdepth: 1
 
    releases/index
-   changelog
    history
    license
 
