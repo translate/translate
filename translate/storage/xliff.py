@@ -869,3 +869,92 @@ class xlifffile(lisa.LISAfile):
                 from translate.storage import poxliff
                 xliff = poxliff.PoXliffFile.parsestring(storestring)
         return xliff
+
+
+class iOSXLIFFUnit(xliffunit):
+    """A single unit in the iOS XLIFF file."""
+
+    def getnotes(self, origin=None):
+        """Return the notes.
+
+        iOS XLIFF uses bare notes with no 'from' label, so all of them become
+        developer notes.
+        """
+        return '\n'.join(self._getnotelist(origin=None))
+
+    def get_state_n(self):
+        """Return the right state.
+
+        iOS XLIFF has no states thus they must be inferred from the context.
+        """
+        targetnode = self.getlanguageNode(lang=None, index=1)
+        if targetnode is None:
+            return self.S_UNTRANSLATED
+
+        xmlstate = targetnode.get("state", None)
+        state_n = self.statemap.get(xmlstate, self.S_UNTRANSLATED)
+
+        if state_n < self.S_TRANSLATED and self.target:
+            state_n = self.S_TRANSLATED
+
+        return state_n
+
+    def isapproved(self):
+        """Return approvedness.
+
+        iOS XLIFF has no states thus they must be inferred from the context.
+        """
+        return True
+
+    def _remove_attribute_from_tags(self, tag, attribute):
+        """Helper method to remove an attribute from nodes with same tag."""
+        for node in self.xmlelement.iterdescendants(self.namespaced(tag)):
+            if attribute in node.attrib:
+                del node.attrib[attribute]
+        #the_xpath = "//%s[@%s]" % (tag, attribute)
+        #import pdb; pdb.set_trace()
+        #for node in self.xmlelement.xpath(the_xpath):
+        #    del node.attrib[attribute]
+
+    def _clean_developer_notes(self):
+        """Remove the from="developer" in note tags."""
+        self._remove_attribute_from_tags("note", "from")
+
+    def _clean_target_states(self):
+        """Remove the state="translated" in target tags."""
+        self._remove_attribute_from_tags("target", "state")
+
+    def _remove_empty_targets(self):
+        """Remove empty target nodes."""
+        for node in self.xmlelement.iterdescendants(self.namespaced("target")):
+            if not node.getchildren():
+                node.getparent().remove(node)
+        
+        #for bad in tree.xpath("//fruit[@state=\'rotten\']"):
+        #    bad.getparent().remove(bad)
+
+    def _start_notes_on_their_line(self):
+        """Avoid </target><note> by putting <note> on a separate line."""
+        for node in self.xmlelement.iterdescendants(self.namespaced("note")):
+            if node.getprevious().tag == self.namespaced("target"):
+                #import pdb; pdb.set_trace()
+                pass
+            #if not node.getchildren():
+            #    node.getparent().remove(node)
+
+    def __str__(self):
+        self._clean_developer_notes()
+        self._clean_target_states()
+        if 'approved' in self.xmlelement.attrib:
+            del self.xmlelement.attrib['approved']
+        self._remove_empty_targets()
+        self._start_notes_on_their_line()
+        return super(iOSXLIFFUnit, self).__str__()
+        #output = super(iOSXLIFFUnit, self).__str__()
+        #return output.replace('<note from="developer">', '<note>').replace(' approved="yes"', '')
+
+
+class iOSXLIFFFile(xlifffile):
+    """Class representing a iOS XLIFF file."""
+
+    UnitClass = iOSXLIFFUnit
