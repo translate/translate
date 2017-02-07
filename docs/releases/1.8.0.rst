@@ -1,0 +1,7 @@
+Translate Toolkit 1.8.0
+=======================
+
+*Released on 17 August 2010*
+
+Release notes for this release are still to be recovered, feel free to do some
+way back searching and create a Pull Request for this release.

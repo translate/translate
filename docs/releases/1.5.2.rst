@@ -1,0 +1,7 @@
+Translate Toolkit 1.5.2
+=======================
+
+*Released on 13 January 2010*
+
+Release notes for this release are still to be recovered, feel free to do some
+way back searching and create a Pull Request for this release.

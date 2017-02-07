@@ -1,0 +1,7 @@
+Translate Toolkit 1.2.1
+=======================
+
+*Released on 29 December 2008*
+
+Release notes for this release are still to be recovered, feel free to do some
+way back searching and create a Pull Request for this release.
