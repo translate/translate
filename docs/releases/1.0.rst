@@ -1,7 +1,9 @@
 .. _changelog#1.0:
 
-1.0
-===
+Translate Toolkit 1.0
+=====================
+
+*Released on 1 June 2007*
 
 .. _changelog#improved_xliff_support:
 

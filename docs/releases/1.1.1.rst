@@ -1,7 +1,9 @@
 .. _changelog#1.1.1:
 
-1.1.1
-=====
+Translate Toolkit 1.1.1
+=======================
+
+*Released on 2 April 2008*
 
 .. _changelog#premature_termination_of_dtd_entities:
 

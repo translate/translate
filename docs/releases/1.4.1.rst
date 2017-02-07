@@ -1,7 +1,9 @@
 .. _changelog#1.4.1:
 
-1.4.1
-=====
+Translate Toolkit 1.4.1
+=======================
+
+*Released on 6 November 2009*
 
 .. _changelog#csv_column_header_names:
 

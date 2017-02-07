@@ -1,7 +1,9 @@
 .. _changelog#1.2:
 
-1.2.0
-=====
+Translate Toolkit 1.2.0
+=======================
+
+*Released on 24 November 2008*
 
 .. _changelog#new_formats:
 

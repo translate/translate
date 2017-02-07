@@ -1,7 +1,9 @@
 .. _changelog#0.11:
 
-0.11
-====
+Translate Toolkit 0.11
+======================
+
+*Released on 24 March 2007*
 
 .. _changelog#po2oo_defaults_to_not_check_for_errors:
 

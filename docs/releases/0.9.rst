@@ -1,7 +1,9 @@
 .. _changelog#0.9:
 
-0.9
-===
+Translate Toolkit 0.9
+=====================
+
+*Released on 15 June 2006*
 
 .. _changelog#escaping_-_dtd_files_are_no_longer_escaped:
 

@@ -1,7 +1,9 @@
 .. _changelog#0.10:
 
-0.10
-====
+Translate Toolkit 0.10
+======================
+
+*Released on 29 August 2006*
 
 .. _changelog#po_to_xliff_conversion:
 

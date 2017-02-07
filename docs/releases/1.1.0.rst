@@ -1,7 +1,9 @@
 .. _changelog#1.1:
 
-1.1
-===
+Translate Toolkit 1.1.0
+=======================
+
+*Released on 22 January 2008*
 
 .. _changelog#oo2po_help_helpcontent2_escaping_fixed:
 

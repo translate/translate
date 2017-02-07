@@ -1,7 +1,9 @@
 .. _changelog#1.0.1:
 
-1.0.1
-=====
+Translate Toolkit 1.0.1
+=======================
+
+*Released on 23 June 2007*
 
 .. _changelog#pot2po_will_create_new_empty_po_files_if_needed:
 

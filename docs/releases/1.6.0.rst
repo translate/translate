@@ -1,7 +1,9 @@
 .. _changelog#1.6.0:
 
-1.6.0
-=====
+Translate Toolkit 1.6.0
+=======================
+
+*Released on 3 March 2010*
 
 .. _changelog#po_files_now_always_have_headers:
 
