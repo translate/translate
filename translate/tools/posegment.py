@@ -25,7 +25,7 @@ for examples and usage instructions.
 """
 
 from translate.lang import factory as lang_factory
-from translate.storage import factory
+from translate.storage import factory, poheader
 
 
 class segment:
@@ -62,9 +62,11 @@ class segment:
 
     def convertstore(self, fromstore):
         tostore = type(fromstore)()
-        # We don't want the default header in the case of PO, but rather the
-        # one from `fromstore`.
-        tostore.units = []
+        if isinstance(fromstore, poheader.poheader):
+            # We don't want the default header in the case of PO, but rather the
+            # one from `fromstore`.
+            if fromstore.header() is not None:
+                tostore.units = []
         for unit in fromstore.units:
             newunits = self.segmentunit(unit)
             if newunits:
