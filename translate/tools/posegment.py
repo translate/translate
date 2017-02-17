@@ -62,6 +62,9 @@ class segment:
 
     def convertstore(self, fromstore):
         tostore = type(fromstore)()
+        # We don't want the default header in the case of PO, but rather the
+        # one from `fromstore`.
+        tostore.units = []
         for unit in fromstore.units:
             newunits = self.segmentunit(unit)
             if newunits:
