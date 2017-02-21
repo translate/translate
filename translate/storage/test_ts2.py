@@ -251,3 +251,28 @@ class TestTSfile(test_base.TestTranslationStore):
         """test that ts files are read and output properly"""
         tsfile = ts.tsfile.parsestring(TS_NUMERUS)
         assert bytes(tsfile).decode('utf-8') == TS_NUMERUS
+
+    def test_context(self):
+        tsfile = ts.tsfile.parsestring(TS_NUMERUS)
+        unit = tsfile.units[0]
+
+        contexts = [unit.getcontextname()]
+        commentnode = unit.xmlelement.find(unit.namespaced("comment"))
+        if commentnode is not None and commentnode.text is not None:
+            contexts.append(commentnode.text)
+        message_id = unit.xmlelement.get('id')
+        if message_id is not None:
+            contexts.append(message_id)
+        context = '\n'.join(filter(None, contexts))
+        assert unit.getcontext() == context
+        # setting the context does nothing atm - if the unit is inserted
+        unit.setcontext("FOO")
+        assert unit.getcontext() == context
+
+        # setting the context on a non-inserted unit works tho
+        newunit = unit.__class__("New unit")
+        assert newunit.getcontext() == ""
+        newunit.setcontext("")
+        assert newunit.getcontext() == ""
+        newunit.setcontext("Some context")
+        assert newunit.getcontext() == "Some context"
