@@ -94,6 +94,7 @@ class tsunit(lisa.LISAunit):
     }
 
     statemap_r = dict((i[1], i[0]) for i in six.iteritems(statemap))
+    _context = None
 
     def createlanguageNode(self, lang, text, purpose):
         """Returns an xml Element setup with given parameters."""
@@ -271,11 +272,24 @@ class tsunit(lisa.LISAunit):
     def getcontextname(self):
         parent = self.xmlelement.getparent()
         if parent is None:
+            if self._context:
+                return self._context
             return None
         context = parent.find("name")
         if context is None:
             return None
         return context.text
+
+    def setcontext(self, value):
+        if value == self.getcontextname():
+            return
+        parent = self.xmlelement.getparent()
+        if parent is None:
+            self._context = value
+        # TODO: if unit is inserted to ts store
+        # it should put unit in correct context
+        # if unit is already in store it should move
+        # and adjust store as necessary
 
     def getcontext(self):
         contexts = [self.getcontextname()]
