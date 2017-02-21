@@ -397,3 +397,13 @@ key=value
         assert result.startswith(bom)
         assert bom not in result[3:]
         assert b'None' not in result[3:]
+
+    def test_joomla(self):
+        """test various items used in Joomla files"""
+        propsource = '''; comment\nVALUE="I am a "_QQ_"value"_QQ_""\n'''.encode('utf-8')
+        propfile = self.propparse(propsource, personality="joomla")
+        assert len(propfile.units) == 1
+        propunit = propfile.units[0]
+        assert propunit.name == u'VALUE'
+        assert propunit.source == u'I am a "value"'
+        assert bytes(propfile) == propsource

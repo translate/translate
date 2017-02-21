@@ -176,7 +176,7 @@ def is_comment_one_line(line):
     :rtype: bool
     """
     stripped = line.strip()
-    line_starters = (u'#', u'!', u'//', )
+    line_starters = (u'#', u'!', u'//', u';')
     for starter in line_starters:
         if stripped.startswith(starter):
             return True
@@ -419,6 +419,29 @@ class DialectStrings(Dialect):
 class DialectStringsUtf8(DialectStrings):
     name = "strings-utf8"
     default_encoding = "utf-8"
+
+
+@register_dialect
+class DialectJoomla(Dialect):
+    name = "joomla"
+    default_encoding = "utf-8"
+    delimiters = [u"="]
+    out_delimiter_wrappers = u''
+
+    @classmethod
+    def value_strip(cls, value):
+        """Strip unneeded characters from the value"""
+        newvalue = value.strip()
+        if newvalue[0] == '"' and newvalue[-1] == '"':
+            newvalue = newvalue[1:-1]
+        return newvalue.replace('"_QQ_"', '"')
+
+    @classmethod
+    def encode(cls, string, encoding=None):
+        """Encode the string"""
+        if not string:
+            return string
+        return '"%s"' % string.replace("\n", r"\n").replace("\t", r"\t").replace('"', '"_QQ_"')
 
 
 @six.python_2_unicode_compatible
@@ -679,3 +702,12 @@ class stringsutf8file(propfile):
         kwargs['personality'] = "strings-utf8"
         kwargs['encoding'] = "utf-8"
         super(stringsutf8file, self).__init__(*args, **kwargs)
+
+
+class joomlafile(propfile):
+    Name = "Joomla Translations"
+    Extensions = ['ini']
+
+    def __init__(self, *args, **kwargs):
+        kwargs['personality'] = "joomla"
+        super(joomlafile, self).__init__(*args, **kwargs)
