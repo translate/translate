@@ -374,23 +374,23 @@ class XapianDatabase(CommonIndexer.CommonDatabase):
                                (result, fieldnames))
         return result
 
-    def _delete_stale_lock(self):
-        if not self._writer_is_open():
-            lockfile = os.path.join(self.location, 'flintlock')
-            if (os.path.exists(lockfile) and
-                (time.time() - os.path.getmtime(lockfile)) / 60 > 15):
-                logging.warning("Stale lock found in %s, removing.",
-                                self.location)
-                os.remove(lockfile)
-
     def _writer_open(self):
         """Open write access for the indexing database and acquire an
         exclusive lock.
         """
         if not self._writer_is_open():
-            self._delete_stale_lock()
             try:
                 self.writer = xapian.WritableDatabase(self.location, xapian.DB_OPEN)
+            except xapian.DatabaseLockError as err_msg:
+                # Do NOT delete the lock file - it's locked with fcntl()
+                # locking which the OS releases automatically when a
+                # process terminates so a "stale lock" is impossible.
+                # If it isn't in use, the failure will be some sort of
+                # system issue like running out of fds or processes.
+                raise ValueError("Indexer: failed to lock xapian database "
+                                 "(%s) for writing - it's probably in use "
+                                 "already: %s" %
+                                 (self.location, str(err_msg)))
             except xapian.DatabaseOpeningError as err_msg:
 
                 raise ValueError("Indexer: failed to open xapian database "
