@@ -9,11 +9,13 @@ from translate.storage import po, properties
 
 class TestProp2PO(object):
 
-    def prop2po(self, propsource, proptemplate=None, personality="java"):
+    def prop2po(self, propsource, proptemplate=None, personality="java",
+                failure_action="fail"):
         """helper that converts .properties source to po source without requiring files"""
         inputfile = wStringIO.StringIO(propsource)
         inputprop = properties.propfile(inputfile, personality=personality)
-        convertor = prop2po.prop2po(personality=personality)
+        convertor = prop2po.prop2po(personality=personality,
+                                    failure_action=failure_action)
         if proptemplate:
             templatefile = wStringIO.StringIO(proptemplate)
             templateprop = properties.propfile(templatefile)
@@ -277,17 +279,17 @@ message-multiedit-header2[other]={{ n }} selected 2
         assert not zero_unit.hasplural()
         assert zero_unit.source == u"Edit"
 
-    @mark.xfail(reason="Still not fixed")
     def test_duplicate_keys(self):
         """Check that we correctly handle duplicate keys."""
         source = '''
 key=value
 key=value
 '''
-        po_file = self.prop2po(source)
+        po_file = self.prop2po(source, failure_action="warn")
         assert self.countelements(po_file) == 1
-        po_unit = po_file.units[1]
+        po_unit = self.singleelement(po_file)
         assert po_unit.source == u"value"
+        assert po_unit.getlocations() == [u'key']
 
         source = '''
 key=value
@@ -325,4 +327,5 @@ class TestProp2POCommand(test_convert.TestConvertCommand, TestProp2PO):
         options = self.help_check(options, "-t TEMPLATE, --template=TEMPLATE")
         options = self.help_check(options, "--personality=TYPE")
         options = self.help_check(options, "--encoding=ENCODING")
-        options = self.help_check(options, "--duplicates=DUPLICATESTYLE", last=True)
+        options = self.help_check(options, "--duplicates=DUPLICATESTYLE")
+        options = self.help_check(options, "--on-failure=ACTION", last=True)
