@@ -29,12 +29,16 @@ directly, but can be used once cpo has been established to work.
 # - accept only unicodes everywhere
 
 import copy
+import logging
 import re
 import six
 
 from translate.lang import data
 from translate.misc.multistring import multistring
 from translate.storage import base, cpo, pocommon
+
+
+logger = logging.getLogger(__name__)
 
 
 lsep = " "
@@ -494,7 +498,13 @@ class pofile(pocommon.pofile):
                         origpo._msgctxt += " ".join(origpo.getlocations())
                         markedpos.append(thepo)
                     thepo._msgctxt += " ".join(thepo.getlocations())
-                    uniqueunits.append(thepo)
+                    if not thepo._msgctxt == id_dict[id]._msgctxt:
+                        uniqueunits.append(thepo)
+                    else:
+                        logger.warn(
+                            "Duplicate unit found with msgctx of '%s' and source '%s'",
+                            thepo._msgctxt,
+                            thepo.source)
             else:
                 if not id:
                     if duplicatestyle == "merge":

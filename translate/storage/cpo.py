@@ -754,12 +754,14 @@ class pofile(pocommon.pofile):
                         origpo.setcontext(" ".join(origpo.getlocations()))
                         markedpos.append(thepo)
                     thepo.setcontext(" ".join(thepo.getlocations()))
-                    if not thepo.msgctxt == id_dict[id].msgctxt:
+                    thepo_msgctxt = gpo.po_message_msgctxt(thepo._gpo_message)
+                    idpo_msgctxt = gpo.po_message_msgctxt(id_dict[id]._gpo_message)
+                    if not thepo_msgctxt == idpo_msgctxt:
                         uniqueunits.append(thepo)
                     else:
                         logger.warn(
                             "Duplicate unit found with msgctx of '%s' and source '%s'",
-                            thepo.msgctxt,
+                            thepo_msgctxt,
                             thepo.source)
             else:
                 if not id:
