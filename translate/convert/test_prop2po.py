@@ -277,7 +277,6 @@ message-multiedit-header2[other]={{ n }} selected 2
         assert not zero_unit.hasplural()
         assert zero_unit.source == u"Edit"
 
-    @mark.xfail(reason="Still not fixed")
     def test_duplicate_keys(self):
         """Check that we correctly handle duplicate keys."""
         source = '''
