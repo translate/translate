@@ -754,7 +754,13 @@ class pofile(pocommon.pofile):
                         origpo.setcontext(" ".join(origpo.getlocations()))
                         markedpos.append(thepo)
                     thepo.setcontext(" ".join(thepo.getlocations()))
-                    uniqueunits.append(thepo)
+                    if not thepo.msgctxt == id_dict[id].msgctxt:
+                        uniqueunits.append(thepo)
+                    else:
+                        logger.warn(
+                            "Duplicate unit found with msgctx of '%s' and source '%s'",
+                            thepo.msgctxt,
+                            thepo.source)
             else:
                 if not id:
                     if duplicatestyle == "merge":
