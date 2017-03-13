@@ -363,6 +363,84 @@ message-multiedit-header[other]={{ n }} gekies
         propfile = self.merge2prop(proptemplate, posource, personality="gaia")
         assert propfile == propexpected
 
+    def test_duplicates(self):
+        """Test back conversion of properties with duplicate units."""
+        # Test entries with same key and value.
+        proptemplate = '''
+key=value
+key=value
+'''
+        posource = r'''#: key
+msgid "value"
+msgstr "Waarde"
+'''
+        propexpected = '''
+key=Waarde
+key=Waarde
+'''
+        propfile = self.merge2prop(proptemplate, posource, personality="mozilla")
+        assert propfile == propexpected
+
+        # Test entries with same key and different value, and single
+        # corresponding entry in PO.
+        proptemplate = '''
+key=value
+key=another value
+'''
+        posource = r'''#: key
+msgid "value"
+msgstr "Waarde"
+'''
+        propexpected = '''
+key=Waarde
+key=Waarde
+'''
+        propfile = self.merge2prop(proptemplate, posource, personality="mozilla")
+        assert propfile == propexpected
+
+        # Test entries with same key and different value, and two different
+        # corresponding entries in PO.
+        proptemplate = '''
+key=value
+key=another value
+'''
+        posource = r'''#: key
+msgid "value"
+msgstr "Valor"
+
+#: key
+msgid "another value"
+msgstr "Outro valor"
+'''
+        propexpected = '''
+key=Valor
+key=Valor
+'''
+        propfile = self.merge2prop(proptemplate, posource, personality="mozilla")
+        assert propfile == propexpected
+
+        # Test entries with same key and different value.
+        proptemplate = '''
+key1=value
+key2=value
+'''
+        posource = r'''#: key1
+msgctxt "key1"
+msgid "value"
+msgstr "Waarde"
+
+#: key2
+msgctxt "key2"
+msgid "value"
+msgstr "Waarde"
+'''
+        propexpected = '''
+key1=Waarde
+key2=Waarde
+'''
+        propfile = self.merge2prop(proptemplate, posource, personality="mozilla")
+        assert propfile == propexpected
+
 
 class TestPO2PropCommand(test_convert.TestConvertCommand, TestPO2Prop):
     """Tests running actual po2prop commands on files"""
