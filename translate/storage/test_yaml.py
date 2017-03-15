@@ -45,6 +45,15 @@ class TestYAMLResourceStore(test_monolingual.TestMonolingualStore):
 
         assert out.getvalue() == u'key: zkouška\n'.encode('utf-8')
 
+    def test_parse_unicode_list(self):
+        store = yaml.YAMLFile()
+        store.parse(u'list:\n- zkouška')
+
+        out = BytesIO()
+        store.serialize(out)
+
+        assert out.getvalue() == u'list:\n- zkouška\n'.encode('utf-8')
+
     def test_ordering(self):
         store = yaml.YAMLFile()
         store.parse('''

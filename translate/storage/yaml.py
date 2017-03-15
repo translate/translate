@@ -21,6 +21,7 @@ r"""Class that manages YAML data files for translation
 """
 
 from __future__ import absolute_import
+from __future__ import unicode_literals
 
 import uuid
 from collections import OrderedDict
@@ -181,7 +182,7 @@ class YAMLFile(base.TranslationStore):
             elif isinstance(data, list):
                 for k, v in enumerate(data):
                     key = '[{0}]'.format(k)
-                    yield (' / '.join((prev, key)), str(v))
+                    yield (' / '.join((prev, key)), six.text_type(v))
             elif data is None:
                 pass
             else:
