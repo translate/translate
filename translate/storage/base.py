@@ -675,11 +675,10 @@ class TranslationStore(object):
             insert_unit(unit.source)
 
         for location in unit.getlocations():
-            if location in self.locationindex:
-                # if sources aren't unique, don't use them
-                #FIXME: maybe better store a list of units like sourceindex
-                self.locationindex[location] = None
-            else:
+            # If locations aren't unique, keep the first unit.
+            if location not in self.locationindex:
+                #FIXME: maybe better store a list of units like sourceindex in
+                # case there are several units with the same location.
                 self.locationindex[location] = unit
 
     def makeindex(self):
