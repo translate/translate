@@ -176,6 +176,7 @@ class htmlfile(html_parser.HTMLParser, base.TranslationStore):
         self.currentcomment = u""
         self.currenttag = None
         self.currentpos = -1
+        self.currentoffset = -1
         self.tag_path = []
         self.filesrc = u""
         self.currentsrc = u""
@@ -258,9 +259,9 @@ class htmlfile(html_parser.HTMLParser, base.TranslationStore):
         text = normalize_html(text)
         if self.has_translatable_content(text):
             unit = self.addsourceunit(text)
-            unit.addlocation("%s+%s:%d" %
+            unit.addlocation("%s+%s:%d-%d" %
                              (self.filename, ".".join(self.tag_path),
-                              self.currentpos))
+                              self.currentpos, self.currentoffset))
             unit.addnote(self.currentcomment)
 
     def has_translatable_content(self, text):
@@ -313,6 +314,7 @@ class htmlfile(html_parser.HTMLParser, base.TranslationStore):
         self.currentcomment = ""
         self.currenttag = tag
         self.currentpos = self.getpos()[0]
+        self.currentoffset = self.getpos()[1] + 1
         self.currentsrc = self.buildtag(tag, attrs)
 
     def endblock(self):
@@ -326,6 +328,7 @@ class htmlfile(html_parser.HTMLParser, base.TranslationStore):
         self.currentcomment = ""
         self.currenttag = None
         self.currentpos = -1
+        self.currentoffset = -1
         self.currentsrc = ""
 
     def handle_starttag(self, tag, attrs):
