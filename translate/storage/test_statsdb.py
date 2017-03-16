@@ -1,5 +1,6 @@
 import os
 import os.path
+import shutil
 
 from translate.filters import checks
 from translate.storage import factory, statsdb
@@ -71,18 +72,11 @@ msgstr ""
 """
 
 
-def rm_rf(path):
-    for dirpath, _, filenames in os.walk(path):
-        for filename in filenames:
-            os.remove(os.path.join(dirpath, filename))
-    os.rmdir(dirpath)
-
-
 class TestStatsDb:
 
     def remove_dirs(self, path):
         if os.path.exists(path):
-            rm_rf(path)
+            shutil.rmtree(path)
 
     def get_test_path(self, method):
         return os.path.realpath("%s_%s" % (self.__class__.__name__, method.__name__))
