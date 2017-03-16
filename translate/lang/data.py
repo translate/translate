@@ -161,7 +161,7 @@ languages = {
     'se': (u'Northern Sami', 2, '(n != 1)'),
     'si': (u'Sinhala; Sinhalese', 2, '(n != 1)'),
     'sk': (u'Slovak', 3, '(n==1) ? 0 : (n>=2 && n<=4) ? 1 : 2'),
-    'sl': (u'Slovenian', 4, '(n%100==1 ? 1 : n%100==2 ? 2 : n%100==3 || n%100==4 ? 3 : 0)'),
+    'sl': (u'Slovenian', 4, '(n%100==1 ? 0 : n%100==2 ? 1 : n%100==3 || n%100==4 ? 2 : 3)'),
     'so': (u'Somali', 2, '(n != 1)'),
     'son': (u'Songhai languages', 1, '0'),
     'sq': (u'Albanian', 2, '(n != 1)'),
