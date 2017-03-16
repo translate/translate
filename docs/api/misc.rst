@@ -69,14 +69,6 @@ quote
    :inherited-members:
 
 
-sparse
-------
-
-.. automodule:: translate.misc.sparse
-   :members:
-   :inherited-members:
-
-
 wsgi
 ----
 
