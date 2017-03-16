@@ -111,12 +111,13 @@ class TxtFile(base.TranslationStore):
     def parse(self, lines):
         """Read in text lines and create txtunits from the blocks of text"""
         block = []
-        startline = 0
+        current_line = 0
         pretext = ""
         posttext = ""
         if not isinstance(lines, list):
             lines = lines.split(b"\n")
         for linenum, line in enumerate(lines):
+            current_line = linenum + 1
             line = line.decode(self.encoding).rstrip("\r\n")
             for rule, prere, postre in self.flavour:
                 match = prere.match(line)
@@ -133,19 +134,17 @@ class TxtFile(base.TranslationStore):
                 isbreak = not line.strip()
             if isbreak and block:
                 unit = self.addsourceunit("\n".join(block))
-                unit.addlocation("%s:%d" % (self.filename, startline + 1))
+                unit.addlocation("%s:%d" % (self.filename, current_line))
                 unit.pretext = pretext
                 unit.posttext = posttext
                 pretext = ""
                 posttext = ""
                 block = []
             elif not isbreak:
-                if not block:
-                    startline = linenum
                 block.append(line)
         if block:
             unit = self.addsourceunit("\n".join(block))
-            unit.addlocation("%s:%d" % (self.filename, startline + 1))
+            unit.addlocation("%s:%d" % (self.filename, current_line))
 
     def serialize(self, out):
         for idx, unit in enumerate(self.units):

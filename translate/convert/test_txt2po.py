@@ -95,7 +95,9 @@ This is a wiki page.
         assert poresult.units[0].isheader()
         assert len(poresult.units) == 3
         assert poresult.units[1].source == "This is a fact."
+        assert poresult.units[1].getlocations() == [':1']
         assert poresult.units[2].source == "This is a fact."
+        assert poresult.units[2].getlocations() == [':2']
 
     def test_numbers(self):
         """Tests that we can convert some basic things."""
@@ -106,7 +108,9 @@ This is a wiki page.
         assert poresult.units[0].isheader()
         assert len(poresult.units) == 3
         assert poresult.units[1].source == "This is an item."
+        assert poresult.units[1].getlocations() == [':1']
         assert poresult.units[2].source == "This is an item."
+        assert poresult.units[2].getlocations() == [':2']
 
     def test_spacing(self):
         """Tests that we can convert some basic things."""
