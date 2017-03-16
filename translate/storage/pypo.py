@@ -104,20 +104,6 @@ def quoteforpo(text):
     return polines
 
 
-@deprecated("Use pypo.unescape() instead")
-def extractpoline(line):
-    """Remove quote and unescape line from po file.
-
-    :param line: a quoted line from a po file (msgid or msgstr)
-
-    .. deprecated:: 1.10
-       Replaced by :func:`unescape`. :func:`extractpoline` is kept to allow
-       tests of correctness, and in case of external users.
-    """
-    extracted = quote.extractwithoutquotes(line, '"', '"', '\\', includeescapes=unescapehandler)[0]
-    return extracted
-
-
 def unescape(line):
     """Unescape the given line.
 
