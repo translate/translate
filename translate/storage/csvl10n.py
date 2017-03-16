@@ -25,70 +25,7 @@ import csv
 import six
 
 from translate.misc import csv_utils
-from translate.misc import sparse
 from translate.storage import base
-
-
-class SimpleDictReader:
-
-    def __init__(self, fileobj, fieldnames):
-        self.fieldnames = fieldnames
-        self.contents = fileobj.read()
-        self.parser = sparse.SimpleParser(defaulttokenlist=[",", "\n"], whitespacechars="\r")
-        self.parser.stringescaping = 0
-        self.parser.quotechars = '"'
-        self.tokens = self.parser.tokenize(self.contents)
-        self.tokenpos = 0
-
-    def __iter__(self):
-        return self
-
-    def getvalue(self, value):
-        """returns a value, evaluating strings as neccessary"""
-        if (value.startswith("'") and value.endswith("'")) or (value.startswith('"') and value.endswith('"')):
-            return sparse.stringeval(value)
-        else:
-            return value
-
-    def next(self):
-        lentokens = len(self.tokens)
-        while self.tokenpos < lentokens and self.tokens[self.tokenpos] == "\n":
-            self.tokenpos += 1
-        if self.tokenpos >= lentokens:
-            raise StopIteration()
-        thistokens = []
-        while self.tokenpos < lentokens and self.tokens[self.tokenpos] != "\n":
-            thistokens.append(self.tokens[self.tokenpos])
-            self.tokenpos += 1
-        while self.tokenpos < lentokens and self.tokens[self.tokenpos] == "\n":
-            self.tokenpos += 1
-        fields = []
-        # patch together fields since we can have quotes inside a field
-        currentfield = ''
-        fieldparts = 0
-        for token in thistokens:
-            if token == ',':
-                # a field is only quoted if the whole thing is quoted
-                if fieldparts == 1:
-                    currentfield = self.getvalue(currentfield)
-                fields.append(currentfield)
-                currentfield = ''
-                fieldparts = 0
-            else:
-                currentfield += token
-                fieldparts += 1
-        # things after the last comma...
-        if fieldparts:
-            if fieldparts == 1:
-                currentfield = self.getvalue(currentfield)
-            fields.append(currentfield)
-        values = {}
-        for fieldnum in range(len(self.fieldnames)):
-            if fieldnum >= len(fields):
-                values[self.fieldnames[fieldnum]] = ""
-            else:
-                values[self.fieldnames[fieldnum]] = fields[fieldnum]
-        return values
 
 
 class DefaultDialect(csv.excel):
@@ -401,7 +338,6 @@ class csvfile(base.TranslationStore):
         inputfile = csv.StringIO(csvsrc if six.PY2 else text)
         reader = try_dialects(inputfile, self.fieldnames, self.dialect)
 
-        #reader = SimpleDictReader(csvfile, fieldnames=fieldnames, dialect=dialect)
         first_row = True
         for row in reader:
             newce = self.UnitClass()
