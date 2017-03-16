@@ -11,22 +11,13 @@ of the Translate Toolkit you may want to familiarize yourself with these
 changes.
 
 
-Upcoming releases
-=================
-
-
-.. toctree::
-   :maxdepth: 1
-
-   2.1.0 <2.1.0>
-
-
 Final releases
 ==============
 
 .. toctree::
    :maxdepth: 1
 
+   2.1.0 <2.1.0>
    2.0.0 <2.0.0>
    1.13.0 <1.13.0>
    1.12.0 <1.12.0>
