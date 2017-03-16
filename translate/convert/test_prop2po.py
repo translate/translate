@@ -1,5 +1,7 @@
 # -*- coding: utf-8 -*-
 
+from pytest import mark
+
 from translate.convert import prop2po, test_convert
 from translate.misc import wStringIO
 from translate.storage import po, properties
@@ -274,6 +276,17 @@ message-multiedit-header2[other]={{ n }} selected 2
         zero_unit = outputpo.units[-4]
         assert not zero_unit.hasplural()
         assert zero_unit.source == u"Edit"
+
+    def test_duplicate_keys(self):
+        """Check that we correctly handle duplicate keys."""
+        source = '''
+key=value
+key=value
+'''
+        po_file = self.prop2po(source)
+        assert self.countelements(po_file) == 1
+        po_unit = po_file.units[1]
+        assert po_unit.source == u"value"
 
 
 class TestProp2POCommand(test_convert.TestConvertCommand, TestProp2PO):

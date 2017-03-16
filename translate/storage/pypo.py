@@ -23,6 +23,7 @@ files (pofile).
 """
 
 import copy
+import logging
 import re
 import six
 import textwrap
@@ -33,6 +34,9 @@ from translate.misc import quote
 from translate.misc.deprecation import deprecated
 from translate.misc.multistring import multistring
 from translate.storage import pocommon, poparser
+
+
+logger = logging.getLogger(__name__)
 
 
 lsep = "\n#: "
@@ -791,7 +795,13 @@ class pofile(pocommon.pofile):
                         origpo.msgctxt.append('"%s"' % escapeforpo(" ".join(origpo.getlocations())))
                         markedpos.append(thepo)
                     thepo.msgctxt.append('"%s"' % escapeforpo(" ".join(thepo.getlocations())))
-                    uniqueunits.append(thepo)
+                    if not thepo.msgctxt == id_dict[id].msgctxt:
+                        uniqueunits.append(thepo)
+                    else:
+                        logger.warn(
+                            "Duplicate unit found with msgctx of '%s' and source '%s'",
+                            thepo.msgctxt,
+                            thepo.source)
             else:
                 if not id:
                     if duplicatestyle == "merge":
