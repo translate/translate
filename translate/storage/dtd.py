@@ -569,7 +569,7 @@ class dtdfile(base.TranslationStore):
             warnings.warn("DTD file '%s' does not validate" % self.filename)
             out.truncate(0)
 
-    # Deprecated on 1.14
+    # Deprecated on 2.0.0
     @deprecated("Use bytes(dtdfile) instead")
     def getoutput(self):
         return bytes(self)

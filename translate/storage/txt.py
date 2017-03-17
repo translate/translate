@@ -152,7 +152,7 @@ class TxtFile(base.TranslationStore):
                 out.write(b'\n\n')
             out.write(six.text_type(unit).encode(self.encoding))
 
-    # Deprecated on 1.14
+    # Deprecated on 2.0.0
     @deprecated("Use bytes(TxtFile) instead")
     def getoutput(self):
         return bytes(self)
