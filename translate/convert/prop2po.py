@@ -39,10 +39,11 @@ class prop2po(object):
     """
 
     def __init__(self, personality="java", blankmsgstr=False,
-                 duplicatestyle="msgctxt"):
+                 duplicatestyle="msgctxt", failure_action="fail"):
         self.personality = personality
         self.blankmsgstr = blankmsgstr
         self.duplicatestyle = duplicatestyle
+        self.failure_action = failure_action
         self.mixedkeys = {}
         self.mixer = UnitMixer(properties.labelsuffixes,
                                properties.accesskeysuffixes)
@@ -66,6 +67,7 @@ class prop2po(object):
         # properties file
         appendedheader = False
         waitingcomments = []
+        processed_keys = []
         for propunit in thepropfile.units:
             pounit = self.convertpropunit(thepropfile, propunit, "developer")
             if pounit is None:
@@ -81,6 +83,12 @@ class prop2po(object):
                     pounit = None
                 appendedheader = True
             if pounit is not None:
+                unit_key = propunit.getid()
+                if unit_key in processed_keys:
+                    if self.failure_action == "warn":
+                        logger.warning("Skipped duplicate key: %s" % unit_key)
+                    continue
+                processed_keys.append(unit_key)
                 pounit.addnote("\n".join(waitingcomments).rstrip(),
                                "developer", position="prepend")
                 waitingcomments = []
@@ -111,6 +119,7 @@ class prop2po(object):
         # the properties file
         appendedheader = False
         waitingcomments = []
+        processed_keys = []
         # loop through the original file, looking at units one by one
         for origprop in origpropfile.units:
             origpo = self.convertpropunit(origpropfile, origprop, "developer")
@@ -141,6 +150,12 @@ class prop2po(object):
                 translatedpo = None
             # if we have a valid po unit, get the translation and add it...
             if origpo is not None:
+                unit_key = origprop.getid()
+                if unit_key in processed_keys:
+                    if self.failure_action == "warn":
+                        logger.warning("Skipped duplicate key: %s" % unit_key)
+                    continue
+                processed_keys.append(unit_key)
                 if translatedpo is not None and not self.blankmsgstr:
                     origpo.target = translatedpo.source
                 origpo.addnote(u"".join(waitingcomments).rstrip(),
@@ -307,13 +322,15 @@ def convertmozillaprop(inputfile, outputfile, templatefile, pot=False,
 
 
 def convertprop(inputfile, outputfile, templatefile, personality="java",
-                pot=False, duplicatestyle="msgctxt", encoding=None):
+                pot=False, duplicatestyle="msgctxt", encoding=None,
+                failure_action="fail"):
     """reads in inputfile using properties, converts using prop2po, writes to
     outputfile
     """
     inputstore = properties.propfile(inputfile, personality, encoding)
     convertor = prop2po(personality=personality, blankmsgstr=pot,
-                        duplicatestyle=duplicatestyle)
+                        duplicatestyle=duplicatestyle,
+                        failure_action=failure_action)
     if templatefile is None:
         outputstore = convertor.convertstore(inputstore)
     else:
@@ -352,10 +369,22 @@ def main(argv=None):
         "", "--encoding", dest="encoding", default=None,
         help="override the encoding set by the personality",
         metavar="ENCODING")
+    failure_options = ["fail", "warn"]
+    failure_default = "fail"
+    parser.add_option(
+        "", "--on-failure",
+        dest="failure_action",
+        default=failure_default,
+        type="choice",
+        choices=failure_options,
+        help="tell what to do on failure: %s (default: %s)" % (
+            ", ".join(failure_options), failure_default),
+        metavar="ACTION")
     parser.add_duplicates_option()
     parser.passthrough.append("pot")
     parser.passthrough.append("personality")
     parser.passthrough.append("encoding")
+    parser.passthrough.append("failure_action")
     parser.run(argv)
 
 
