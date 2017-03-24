@@ -9,9 +9,9 @@ Translate Toolkit
     :alt: Build Status
     :target: https://travis-ci.org/translate/translate
 
-.. image:: https://img.shields.io/coveralls/translate/translate/master.svg?style=flat-square
-    :alt: Coverage Status
-    :target: https://coveralls.io/r/translate/translate?branch=master
+.. image:: https://img.shields.io/codecov/c/github/translate/translate/master.svg?style=flat-square
+    :alt: Test Coverage
+    :target: https://codecov.io/gh/translate/translate/branch/master
 
 .. image:: https://img.shields.io/pypi/v/translate-toolkit.svg?style=flat-square
     :alt: Downloads
