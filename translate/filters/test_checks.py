@@ -1352,6 +1352,173 @@ def test_nplurals():
     assert not checker.nplurals(unit)
 
 
+def test_untranslated_plurals_no_plural_unit():
+    """Test that we do not detect untranslated plurals on units with no plural.
+
+    Note that this test uses a UnitChecker, not a translation checker.
+    """
+    unit = po.pounit("")
+    unit.source = "%d files"
+
+    # No nplurals set.
+    checker = checks.StandardUnitChecker()
+
+    unit.target = ""
+    assert checker.untranslated_plurals(unit)
+    unit.target = "%d lêer"
+    assert checker.untranslated_plurals(unit)
+
+    # nplurals == 1 set.
+    checker = checks.StandardUnitChecker(
+        checks.CheckerConfig(targetlanguage='km'))
+
+    unit.target = ""
+    assert checker.untranslated_plurals(unit)
+    unit.target = "%d lêer"
+    assert checker.untranslated_plurals(unit)
+
+    # nplurals == 2 set.
+    checker = checks.StandardUnitChecker(
+        checks.CheckerConfig(targetlanguage='af'))
+
+    unit.target = ""
+    assert checker.untranslated_plurals(unit)
+    unit.target = "%d lêer"
+    assert checker.untranslated_plurals(unit)
+
+    # nplurals == 6 set.
+    checker = checks.StandardUnitChecker(
+        checks.CheckerConfig(targetlanguage='ar'))
+
+    unit.target = ""
+    assert checker.untranslated_plurals(unit)
+    unit.target = "%d lêer"
+    assert checker.untranslated_plurals(unit)
+
+
+def test_untranslated_plurals_unit_with_plurals():
+    """Test that we detect untranslated plurals.
+
+    Note that this test uses a UnitChecker, not a translation checker.
+    """
+    unit = po.pounit()
+    unit.source = ["%d file", "%d files"]
+
+    checker = checks.StandardUnitChecker()
+
+    # nplurals is unset, so no error should be triggered.
+    unit.target = [u"", u""]
+    assert checker.untranslated_plurals(unit)
+    unit.target = [u"%d lêer", u""]
+    assert checker.untranslated_plurals(unit)
+    unit.target = [u"%d lêer", u"%d lêers"]
+    assert checker.untranslated_plurals(unit)
+    unit.target = [u"%d lêer", u"%d lêers", u"%d lêeeeers"]
+    assert checker.untranslated_plurals(unit)
+    unit.target = [u"%d lêer", u"", u"%d lêeeeers"]
+    assert checker.untranslated_plurals(unit)
+    unit.target = [u""]
+    assert checker.untranslated_plurals(unit)
+    unit.target = [u"%d lêer"]
+    assert checker.untranslated_plurals(unit)
+
+    checker = checks.StandardUnitChecker(
+        checks.CheckerConfig(targetlanguage='km'))
+
+    # nplurals == 1 so these tests should pass.
+    unit.target = [u""]
+    assert checker.untranslated_plurals(unit)
+    unit.target = [u"%d ឯកសារ"]
+    assert checker.untranslated_plurals(unit)
+
+    # nplurals == 1 so these tests should not trigger any error because the
+    # number of targets is different than nplurals.
+    unit.target = [u"", u""]
+    assert checker.untranslated_plurals(unit)
+    unit.target = [u"%d ឯកសារ", u""]
+    assert checker.untranslated_plurals(unit)
+    unit.target = [u"%d ឯកសារ", u"%d lêers"]
+    assert checker.untranslated_plurals(unit)
+    unit.target = [u"%d ឯកសារ", u"%d lêers", u"%d lêeeeers"]
+    assert checker.untranslated_plurals(unit)
+    unit.target = [u"%d ឯកសារ", u"", u"%d lêeeeers"]
+    assert checker.untranslated_plurals(unit)
+    unit.target = [u"%d a1", u"%d a2", u"%d a3", u"%d a4", u"%d a5", u"%d a6"]
+    assert checker.untranslated_plurals(unit)
+
+    checker = checks.StandardUnitChecker(
+        checks.CheckerConfig(targetlanguage='af'))
+
+    # nplurals == 2 so these tests should pass.
+    unit.target = [u"", u""]
+    assert checker.untranslated_plurals(unit)
+    unit.target = [u"%d lêer", u"%d lêers"]
+    assert checker.untranslated_plurals(unit)
+
+    # nplurals == 2 so these tests should not trigger any error because the
+    # number of targets is different than nplurals.
+    unit.target = [u""]
+    assert checker.untranslated_plurals(unit)
+    unit.target = [u"%d lêer"]
+    assert checker.untranslated_plurals(unit)
+    unit.target = [u"%d lêer", u"%d lêers", u"%d lêeeeers"]
+    assert checker.untranslated_plurals(unit)
+    unit.target = [u"%d lêer", u"", u"%d lêeeeers"]
+    assert checker.untranslated_plurals(unit)
+    unit.target = [u"%d a1", u"%d a2", u"%d a3", u"%d a4", u"%d a5", u"%d a6"]
+    assert checker.untranslated_plurals(unit)
+
+    # nplurals == 2 so these tests should fail.
+    unit.target = [u"%d lêer", u""]
+    assert not checker.untranslated_plurals(unit)
+    unit.target = [u"", u"%d lêer"]
+    assert not checker.untranslated_plurals(unit)
+
+    checker = checks.StandardUnitChecker(
+        checks.CheckerConfig(targetlanguage='ar'))
+
+    # nplurals == 6 so these tests should pass.
+    unit.target = [u"", u"", u"", u"", u"", u""]
+    assert checker.untranslated_plurals(unit)
+    unit.target = [u"%d a1", u"%d a2", u"%d a3", u"%d a4", u"%d a5", u"%d a6"]
+    assert checker.untranslated_plurals(unit)
+
+    # nplurals == 6 so these tests should not trigger any error because the
+    # number of targets is different than nplurals.
+    unit.target = [u""]
+    assert checker.untranslated_plurals(unit)
+    unit.target = [u"%d lêer"]
+    assert checker.untranslated_plurals(unit)
+    unit.target = [u"", u""]
+    assert checker.untranslated_plurals(unit)
+    unit.target = [u"%d lêer", u""]
+    assert checker.untranslated_plurals(unit)
+    unit.target = [u"%d lêer", u"%d lêers"]
+    assert checker.untranslated_plurals(unit)
+    unit.target = [u"%d lêer", u"%d lêers", u"%d lêeeeers"]
+    assert checker.untranslated_plurals(unit)
+    unit.target = [u"%d lêer", u"", u"%d lêeeeers"]
+    assert checker.untranslated_plurals(unit)
+    unit.target = [u"a1", u"a2", u"a3", u"a4", u"a5", u"a6", u"a7", u"a8"]
+    assert checker.untranslated_plurals(unit)
+
+    # nplurals == 6 so these tests should fail.
+    unit.target = [u"", u"%d a2", u"%d a3", u"%d a4", u"%d a5", u"%d a6"]
+    assert not checker.untranslated_plurals(unit)
+    unit.target = [u"%d a1", u"", u"%d a3", u"%d a4", u"%d a5", u"%d a6"]
+    assert not checker.untranslated_plurals(unit)
+    unit.target = [u"%d a1", u"%d a2", u"", u"%d a4", u"%d a5", u"%d a6"]
+    assert not checker.untranslated_plurals(unit)
+    unit.target = [u"%d a1", u"%d a2", u"%d a3", u"", u"%d a5", u"%d a6"]
+    assert not checker.untranslated_plurals(unit)
+    unit.target = [u"%d a1", u"%d a2", u"%d a3", u"%d a4", u"", u"%d a6"]
+    assert not checker.untranslated_plurals(unit)
+    unit.target = [u"%d a1", u"%d a2", u"%d a3", u"%d a4", u"%d a5", u""]
+    assert not checker.untranslated_plurals(unit)
+    unit.target = [u"", u"%d a2", u"%d a3", u"", u"%d a5", u""]
+    assert not checker.untranslated_plurals(unit)
+
+
 def test_credits():
     """tests credits"""
     stdchecker = checks.StandardChecker()

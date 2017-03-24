@@ -2541,6 +2541,37 @@ class StandardUnitChecker(UnitChecker):
 
         return True
 
+    @critical
+    def untranslated_plurals(self, unit):
+        """Check if any of the plural forms is untranslated.
+
+        This check aborts if the language's nplurals is different than the
+        unit's plural targets count. This is so because otherwise no error
+        would be reported if for example a unit has more plural targets than
+        its language's nplurals, but only has translated exactly the same
+        number of plural targets as the language's nplurals. Also this error
+        is already covered by another filter.
+        """
+        if not unit.hasplural():
+            return True
+
+        nplurals = self.config.lang.nplurals
+
+        if not nplurals > 0:
+            return True
+
+        if len(unit.target.strings) != nplurals:
+            # Abort if unit has a number of targets different from its
+            # language's nplurals. This is already covered by another filter.
+            return True
+
+        translated_count = 0
+        for target in unit.target.strings:
+            if len(target) > 0:
+                translated_count += 1
+
+        return translated_count == 0 or translated_count == nplurals
+
     @extraction
     def hassuggestion(self, unit):
         """Checks if there is at least one suggested translation for this unit.

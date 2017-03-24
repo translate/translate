@@ -48,6 +48,7 @@ tabs	Checks whether tabs are consistent between the two strings.
 unchanged	Checks whether a translation is basically identical to the original
         string.
 untranslated	Checks whether a string has been translated at all.
+untranslated_plurals	Check if any of the plural forms is untranslated.
 urls	Checks that URLs are not translated.
 validchars	Checks that only characters specified as valid appear in the
         translation.
