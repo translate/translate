@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 from translate.convert import po2ts, test_convert
 from translate.misc import wStringIO
 from translate.storage import po
@@ -29,6 +31,18 @@ msgstr "asdf"'''
         assert "<source>Term</source>" in tsfile
         assert "<translation>asdf</translation>" in tsfile
         assert "<comment>" not in tsfile
+
+    def test_simple_unicode_unit(self):
+        """checks that a simple unit with unicode strings"""
+        minipo = r'''#: unicode.cpp
+msgid "ßource"
+msgstr "†arget"'''
+        tsfile = self.po2ts(minipo)
+        print(tsfile)
+        print(type(tsfile))
+        assert u"<name>unicode.cpp</name>" in tsfile
+        assert u"<source>ßource</source>" in tsfile
+        assert u"<translation>†arget</translation>" in tsfile
 
     def test_fullunit(self):
         """check that an entry with various settings is converted correctly"""
