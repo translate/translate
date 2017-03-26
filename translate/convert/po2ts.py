@@ -69,7 +69,7 @@ def convertpo(inputfile, outputfile, templatefile, context):
         return 0
     convertor = po2ts()
     outputstring = convertor.convertstore(inputstore, templatefile, context)
-    outputfile.write(outputstring)
+    outputfile.write(outputstring.encode('utf-8'))
     return 1
 
 
