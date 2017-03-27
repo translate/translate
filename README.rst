@@ -13,6 +13,10 @@ Translate Toolkit
     :alt: Test Coverage
     :target: https://codecov.io/gh/translate/translate/branch/master
 
+.. image:: https://img.shields.io/requires/github/translate/translate/master.svg?style=flat-square
+    :target: https://requires.io/github/translate/translate/requirements/?branch=master
+    :alt: Requirements
+
 .. image:: https://img.shields.io/pypi/v/translate-toolkit.svg?style=flat-square
     :alt: Downloads
     :target: https://pypi.python.org/pypi/translate-toolkit/
