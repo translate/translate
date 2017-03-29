@@ -1,0 +1,7 @@
+#: simple.cpp
+msgid "One"
+msgstr "Een"
+
+#: unicode.cpp
+msgid "†wo"
+msgstr "†wee"
