@@ -22,6 +22,8 @@
 .. seealso:: http://en.wikipedia.org/wiki/Afrikaans_language
 """
 
+from __future__ import unicode_literals
+
 import re
 
 from translate.lang import common
@@ -33,11 +35,11 @@ articlere = re.compile(r"'n\b")
 class af(common.Common):
     """This class represents Afrikaans."""
 
-    validdoublewords = [u"u"]
+    validdoublewords = ["u"]
 
-    punctuation = u"".join([common.Common.commonpunc, common.Common.quotes,
-                            common.Common.miscpunc])
-    sentenceend = u".!?…"
+    punctuation = "".join([common.Common.commonpunc, common.Common.quotes,
+                           common.Common.miscpunc])
+    sentenceend = ".!?…"
     sentencere = re.compile(r"""
         (?s)        # make . also match newlines
         .*?         # anything, but match non-greedy
@@ -47,7 +49,7 @@ class af(common.Common):
         # lookahead that next part starts with caps or 'n followed by caps
         """ % sentenceend, re.VERBOSE)
 
-    specialchars = u"ëïêôûáéíóúý"
+    specialchars = "ëïêôûáéíóúý"
 
     @classmethod
     def capsstart(cls, text):
@@ -55,7 +57,7 @@ class af(common.Common):
         match = articlere.search(text, 0, 20)
         if match:
             #construct a list of non-apostrophe punctuation:
-            nonapos = u"".join(cls.punctuation.split(u"'"))
+            nonapos = "".join(cls.punctuation.split("'"))
             stripped = text.lstrip().lstrip(nonapos)
             match = articlere.match(stripped)
             if match:
@@ -64,50 +66,50 @@ class af(common.Common):
 
 
 cyr2lat = {
-    u"А": "A", u"а": "a",
-    u"Б": "B", u"б": "b",
-    u"В": "W", u"в": "w",  # Different if at the end of a syllable see rule 2.
-    u"Г": "G", u"г": "g",  # see rule 3 and 4
-    u"Д": "D", u"д": "d",
-    u"ДЖ": "Dj", u"дж": "dj",
-    u"Е": "Je", u"е": "je",  # Sometimes e need to check when/why see rule 5.
-    u"Ё": "Jo", u"ё": "jo",  # see rule 6
-    u"ЕЙ": "Ei", u"ей": "ei",
-    u"Ж": "Zj", u"ж": "zj",
-    u"З": "Z", u"з": "z",
-    u"И": "I", u"и": "i",
-    u"Й": "J", u"й": "j",  # see rule 9 and 10
-    u"К": "K", u"к": "k",  # see note 11
-    u"Л": "L", u"л": "l",
-    u"М": "M", u"м": "m",
-    u"Н": "N", u"н": "n",
-    u"О": "O", u"о": "o",
-    u"П": "P", u"п": "p",
-    u"Р": "R", u"р": "r",
-    u"С": "S", u"с": "s",  # see note 12
-    u"Т": "T", u"т": "t",
-    u"У": "Oe", u"у": "oe",
-    u"Ф": "F", u"ф": "f",
-    u"Х": "Ch", u"х": "ch",  # see rule 12
-    u"Ц": "Ts", u"ц": "ts",
-    u"Ч": "Tj", u"ч": "tj",
-    u"Ш": "Sj", u"ш": "sj",
-    u"Щ": "Sjtsj", u"щ": "sjtsj",
-    u"Ы": "I", u"ы": "i",  # see note 13
-    u"Ъ": "", u"ъ": "",  # See note 14
-    u"Ь": "", u"ь": "",  # this letter is not in the AWS we assume it is left out as in the previous letter
-    u"Э": "E", u"э": "e",
-    u"Ю": "Joe", u"ю": "joe",
-    u"Я": "Ja", u"я": "ja",
+    "А": "A", "а": "a",
+    "Б": "B", "б": "b",
+    "В": "W", "в": "w",  # Different if at the end of a syllable see rule 2.
+    "Г": "G", "г": "g",  # see rule 3 and 4
+    "Д": "D", "д": "d",
+    "ДЖ": "Dj", "дж": "dj",
+    "Е": "Je", "е": "je",  # Sometimes e need to check when/why see rule 5.
+    "Ё": "Jo", "ё": "jo",  # see rule 6
+    "ЕЙ": "Ei", "ей": "ei",
+    "Ж": "Zj", "ж": "zj",
+    "З": "Z", "з": "z",
+    "И": "I", "и": "i",
+    "Й": "J", "й": "j",  # see rule 9 and 10
+    "К": "K", "к": "k",  # see note 11
+    "Л": "L", "л": "l",
+    "М": "M", "м": "m",
+    "Н": "N", "н": "n",
+    "О": "O", "о": "o",
+    "П": "P", "п": "p",
+    "Р": "R", "р": "r",
+    "С": "S", "с": "s",  # see note 12
+    "Т": "T", "т": "t",
+    "У": "Oe", "у": "oe",
+    "Ф": "F", "ф": "f",
+    "Х": "Ch", "х": "ch",  # see rule 12
+    "Ц": "Ts", "ц": "ts",
+    "Ч": "Tj", "ч": "tj",
+    "Ш": "Sj", "ш": "sj",
+    "Щ": "Sjtsj", "щ": "sjtsj",
+    "Ы": "I", "ы": "i",  # see note 13
+    "Ъ": "", "ъ": "",  # See note 14
+    "Ь": "", "ь": "",  # this letter is not in the AWS we assume it is left out as in the previous letter
+    "Э": "E", "э": "e",
+    "Ю": "Joe", "ю": "joe",
+    "Я": "Ja", "я": "ja",
 }
 """Mapping of Cyrillic to Latin letters for transliteration in Afrikaans"""
 
-cyr_vowels = u"аеёиоуыэюя"
+cyr_vowels = "аеёиоуыэюя"
 
 
 def tranliterate_cyrillic(text):
     """Convert Cyrillic text to Latin according to the AWS transliteration rules."""
-    trans = u""
+    trans = ""
     for i in text:
         trans += cyr2lat.get(i, i)
     return trans

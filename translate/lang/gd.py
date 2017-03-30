@@ -22,10 +22,12 @@
 .. seealso:: http://en.wikipedia.org/wiki/Gaelic_language
 """
 
+from __future__ import unicode_literals
+
 from translate.lang import common
 
 
 class gd(common.Common):
     """This class represents Gaelic."""
 
-    specialchars = u'àòùèìÀÈÌÒÙ⁊┐’…“”»‌‑'
+    specialchars = 'àòùèìÀÈÌÒÙ⁊┐’…“”»‌‑'

@@ -22,11 +22,13 @@
 .. seealso:: http://en.wikipedia.org/wiki/Chinese_language
 """
 
+from __future__ import unicode_literals
+
 from translate.lang.zh import zh
 
 
 class zh_hk(zh):
-    specialchars = u"←→↔×÷©…—‘’“”「」『』【】《》"
+    specialchars = "←→↔×÷©…—‘’“”「」『』【】《》"
 
     ignoretests = {
         'all': ["acronyms", "simplecaps", "startcaps"],

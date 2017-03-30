@@ -22,10 +22,12 @@
 .. seealso:: http://en.wikipedia.org/wiki/Songhai_languages
 """
 
+from __future__ import unicode_literals
+
 from translate.lang import common
 
 
 class son(common.Common):
     """This class represents Songhai."""
 
-    specialchars = u"ɲŋšžãõẽĩƝŊŠŽÃÕẼĨ"
+    specialchars = "ɲŋšžãõẽĩƝŊŠŽÃÕẼĨ"
