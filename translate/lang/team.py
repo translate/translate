@@ -21,7 +21,7 @@
 """Module to guess the language ISO code based on the 'Language-Team' entry in
 the header of a Gettext PO file.
 """
-from __future__ import print_function
+from __future__ import print_function, unicode_literals
 
 import re
 
@@ -54,7 +54,7 @@ LANG_TEAM_CONTACT_SNIPPETS = {
     "as": ("assam@mm.assam-glug.org", ),
     "ast": ("@softastur.org", "launchpad.net/~ubuntu-l10n-ast",
             "softast-xeneral@lists.sourceforge.net", "Softastur",),
-    "az": ("linuxaz@azerimal.net", "gnome@azitt.com", u"gnome@azətt.com",),
+    "az": ("linuxaz@azerimal.net", "gnome@azitt.com", "gnome@azətt.com",),
     "az_IR": ("az-ir@lists.sharif.edu",),
     "be": ("i18n@mova.org", "i18n@tut.by", "mozilla_byx@poczta.fm",),
     "be@latin": ("translation-team-be-latin@lists", "be-latin.open-tran.eu",),
@@ -233,7 +233,7 @@ LANG_TEAM_LANGUAGE_SNIPPETS = {
     "ar": ("Arabic", ),
     "as": ("Assamese", ),
     "ast": ("Asturian", ),
-    "az": ("Azerbaijani", u"Azərbaycan", ),
+    "az": ("Azerbaijani", "Azərbaycan", ),
     "bg": ("Bulgarian", ),
     "be@latin": ("Belarusian Latin", ),
     "be": ("Belarusian", "Belorussian", ),
@@ -253,13 +253,13 @@ LANG_TEAM_LANGUAGE_SNIPPETS = {
     "el": ("Greek", ),
     "en_GB": ("British English", "en_GB", "English (Great Britain)", ),
     "eo": ("Esperanto", ),
-    "es": ("Spanish", "es_ES", u"Español", ),
+    "es": ("Spanish", "es_ES", "Español", ),
     "et": ("Eesti", "Estonian", ),
     "eu": ("Basque", "Euskara", ),
     "fa": ("Persian", ),
     "fi": ("Finnish", "Suomi", ),
     "fo": ("Faroese", ),
-    "fr": ("French", u"Français", ),
+    "fr": ("French", "Français", ),
     "fur": ("Friulian", ),
     "ga": ("Irish", ),
     "gez": ("Geez", ),
@@ -289,7 +289,7 @@ LANG_TEAM_LANGUAGE_SNIPPETS = {
     "lg": ("Luganda", ),
     "li": ("Limburgish", ),
     "lt": ("Lithuanian", ),
-    "lv": ("Latvian", "lv_LV", "Valoda", u"Latviešu", ),
+    "lv": ("Latvian", "lv_LV", "Valoda", "Latviešu", ),
     "mal": ("Malayalam", ),
     "mg": ("Malagasy", ),
     "mi": ("Maori", ),
@@ -299,8 +299,8 @@ LANG_TEAM_LANGUAGE_SNIPPETS = {
     "mt": ("Marathi", ),
     "ms": ("Malay", "Bahasa Melayu", ),
     "my": ("Burmese", ),
-    "nb": ("Norwegian Bokmaal", u"Norsk bokmål", u"Norwegian Bokmål",
-           u"Norwegian bokmål", ),
+    "nb": ("Norwegian Bokmaal", "Norsk bokmål", "Norwegian Bokmål",
+           "Norwegian bokmål", ),
     "nds": ("Low Saxon", ),
     "nl": ("Dutch", "Nederlands", ),
     "nn": ("Norwegian nynorsk", "Nynorsk", ),
@@ -309,11 +309,11 @@ LANG_TEAM_LANGUAGE_SNIPPETS = {
     "pa": ("Punjabi", "Panjabi", ),
     "pl": ("Polish", ),
     "ps": ("Pashto", "Pushto", ),
-    "pt_BR": ("Brazilian Portuguese", u"Português/Brasil",
-              u"Português do Brasil", ),
+    "pt_BR": ("Brazilian Portuguese", "Português/Brasil",
+              "Português do Brasil", ),
     "pt": ("Portuguese", ),
     "rm": ("Rhaeto-Romance", ),
-    "ro": ("Romania", "Romanian", u"Română", ),
+    "ro": ("Romania", "Romanian", "Română", ),
     "ru": ("Russian", ),
     "si": ("Sinhala", "Sinhalese", ),
     "sk": ("Slovak", ),
@@ -331,13 +331,13 @@ LANG_TEAM_LANGUAGE_SNIPPETS = {
     "ti": ("Tigrinya", ),
     "tig": ("Tigre", ),
     "tl": ("Tagalog", ),
-    "tr": ("Turkish", u"Türkçe", u"Türkiye", ),
+    "tr": ("Turkish", "Türkçe", "Türkiye", ),
     "tt": ("Tatarish", ),
     "ug": ("Uighur", ),
     "uk": ("Ukrainian", ),
     "ur": ("Urdu", ),
     "uz": ("Uzbek", ),
-    "ve": ("Venda", u"Tshivenḓa", "Tshivenda", ),
+    "ve": ("Venda", "Tshivenḓa", "Tshivenda", ),
     "vi": ("Vietnamese", ),
     "wa": ("Walloon", ),
     "wal": ("Walamo", ),
@@ -430,7 +430,7 @@ def guess_language(team_string):
     # TODO Maybe clean everything and see of we have a language code only
 
     if not lang:
-        #print (u"MISSED: '%s'" % team_string).encode('utf-8')
+        #print ("MISSED: '%s'" % team_string).encode('utf-8')
         return None
     return lang
 
@@ -440,4 +440,4 @@ if __name__ == "__main__":
     from translate.storage import factory
     for fname in argv[1:]:
         store = factory.getobject(fname)
-        print(fname, guess_language(store.parseheader().get('Language-Team', u"")))
+        print(fname, guess_language(store.parseheader().get('Language-Team', "")))

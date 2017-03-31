@@ -25,6 +25,8 @@
 .. note:: Orignal code from http://thomas.mangin.me.uk/data/source/ngram.py
 """
 
+from __future__ import unicode_literals
+
 import glob
 import io
 import re
@@ -116,7 +118,7 @@ class NGram:
             try:
                 with io.open(fname, encoding='utf-8') as fp:
                     for i, line in enumerate(fp):
-                        ngram, _t, _f = line.partition(u'\t')
+                        ngram, _t, _f = line.partition('\t')
                         ngrams[ngram] = i
             except UnicodeDecodeError:
                 continue

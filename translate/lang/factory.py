@@ -19,6 +19,8 @@
 
 """This module provides a factory to instantiate language classes."""
 
+from __future__ import unicode_literals
+
 from translate.lang import common, data
 
 
