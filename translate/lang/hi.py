@@ -22,6 +22,8 @@
 .. seealso:: http://en.wikipedia.org/wiki/Hindi_language
 """
 
+from __future__ import unicode_literals
+
 from translate.lang import common
 
 

@@ -22,6 +22,8 @@
 .. seealso:: http://en.wikipedia.org/wiki/Chinese_language
 """
 
+from __future__ import unicode_literals
+
 import re
 
 from translate.lang import common
@@ -30,9 +32,9 @@ from translate.lang import common
 class zh(common.Common):
     """This class represents Chinese."""
 
-    listseperator = u"、"
+    listseperator = "、"
 
-    sentenceend = u"。！？!?…"
+    sentenceend = "。！？!?…"
 
     # Compared to common.py, we make the space after the sentence ending
     # optional and don't demand an uppercase letter to follow.
@@ -49,17 +51,17 @@ class zh(common.Common):
     # fullwidth comma ("，"). If comma is used as seperation of list items
     # like "apple, orange, grape, .....", "、" is used.
     puncdict = {
-        u". ": u"。",
-        u"; ": u"；",
-        u": ": u"：",
-        u"! ": u"！",
-        u"? ": u"？",
-        u".\n": u"。\n",
-        u";\n": u"；\n",
-        u":\n": u"：\n",
-        u"!\n": u"！\n",
-        u"?\n": u"？",
-        u"% ": u"%",
+        ". ": "。",
+        "; ": "；",
+        ": ": "：",
+        "! ": "！",
+        "? ": "？",
+        ".\n": "。\n",
+        ";\n": "；\n",
+        ":\n": "：\n",
+        "!\n": "！\n",
+        "?\n": "？",
+        "% ": "%",
     }
 
     @classmethod

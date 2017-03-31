@@ -20,10 +20,12 @@
 """This module represents the Turkish language.
 """
 
+from __future__ import unicode_literals
+
 from translate.lang import common
 
 
 class tr(common.Common):
     """This class represents Turkish."""
 
-    validaccel = u"abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890" + u"ığüşöçĞÜŞİÖÇ"
+    validaccel = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890" + "ığüşöçĞÜŞİÖÇ"

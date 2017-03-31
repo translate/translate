@@ -22,21 +22,23 @@
 .. seealso:: http://en.wikipedia.org/wiki/Urdu_language
 """
 
+from __future__ import unicode_literals
+
 from translate.lang import common
 
 
 class ur(common.Common):
     """This class represents Urdu."""
 
-    listseperator = u"، "
+    listseperator = "، "
 
     puncdict = {
-        u".": u"۔",
-        u",": u"،",
-        u";": u"؛",
-        u"?": u"؟",
+        ".": "۔",
+        ",": "،",
+        ";": "؛",
+        "?": "؟",
         #This causes problems with variables, so commented out for now:
-        #u"%": u"٪",
+        #"%": "٪",
     }
 
     ignoretests = {

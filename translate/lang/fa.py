@@ -22,6 +22,8 @@
 .. seealso:: http://en.wikipedia.org/wiki/Persian_language
 """
 
+from __future__ import unicode_literals
+
 import re
 
 from translate.lang import common
@@ -33,62 +35,62 @@ def guillemets(text):
         prefix = match.group(1)
         # Let's see that we didn't perhaps match an XML tag property like
         # <a href="something">
-        if prefix == u"=":
+        if prefix == "=":
             return match.group(0)
-        return u"%s«%s»" % (prefix, match.group(2))
+        return "%s«%s»" % (prefix, match.group(2))
 
     # Check that there is an even number of double quotes, otherwise it is
     # probably not safe to convert them.
-    if text.count(u'"') % 2 == 0:
+    if text.count('"') % 2 == 0:
         text = re.sub('(.|^)"([^"]+)"', convertquotation, text)
-    singlecount = text.count(u"'")
+    singlecount = text.count("'")
     if singlecount:
-        if singlecount == text.count(u'`'):
+        if singlecount == text.count('`'):
             text = re.sub("(.|^)`([^']+)'", convertquotation, text)
         elif singlecount % 2 == 0:
             text = re.sub("(.|^)'([^']+)'", convertquotation, text)
-    text = re.sub(u'(.|^)“([^”]+)”', convertquotation, text)
+    text = re.sub('(.|^)“([^”]+)”', convertquotation, text)
     return text
 
 
 class fa(common.Common):
     """This class represents Persian."""
 
-    listseperator = u"، "
+    listseperator = "، "
 
     puncdict = {
-        u",": u"،",
-        u";": u"؛",
-        u"?": u"؟",
+        ",": "،",
+        ";": "؛",
+        "?": "؟",
         #This causes problems with variables, so commented out for now:
-        #u"%": u"٪",
+        #"%": "٪",
     }
 
     numbertuple = (
         # It seems that Persian uses both Arabic-Indic and Extended
         # Arabic-Indic digits.
 
-        (u"0", u"٠"),  # U+0660 Arabic-Indic digit zero.
-        (u"1", u"١"),  # U+0661 Arabic-Indic digit one.
-        (u"2", u"٢"),  # U+0662 Arabic-Indic digit two.
-        (u"3", u"٣"),  # U+0663 Arabic-Indic digit three.
-        (u"4", u"٤"),  # U+0664 Arabic-Indic digit four.
-        (u"5", u"٥"),  # U+0665 Arabic-Indic digit five.
-        (u"6", u"٦"),  # U+0666 Arabic-Indic digit six.
-        (u"7", u"٧"),  # U+0667 Arabic-Indic digit seven.
-        (u"8", u"٨"),  # U+0668 Arabic-Indic digit eight.
-        (u"9", u"٩"),  # U+0669 Arabic-Indic digit nine.
+        ("0", "٠"),  # U+0660 Arabic-Indic digit zero.
+        ("1", "١"),  # U+0661 Arabic-Indic digit one.
+        ("2", "٢"),  # U+0662 Arabic-Indic digit two.
+        ("3", "٣"),  # U+0663 Arabic-Indic digit three.
+        ("4", "٤"),  # U+0664 Arabic-Indic digit four.
+        ("5", "٥"),  # U+0665 Arabic-Indic digit five.
+        ("6", "٦"),  # U+0666 Arabic-Indic digit six.
+        ("7", "٧"),  # U+0667 Arabic-Indic digit seven.
+        ("8", "٨"),  # U+0668 Arabic-Indic digit eight.
+        ("9", "٩"),  # U+0669 Arabic-Indic digit nine.
 
-        (u"0", u"۰"),  # U+06F0 Extended Arabic-Indic digit zero.
-        (u"1", u"۱"),  # U+06F1 Extended Arabic-Indic digit one.
-        (u"2", u"۲"),  # U+06F2 Extended Arabic-Indic digit two.
-        (u"3", u"۳"),  # U+06F3 Extended Arabic-Indic digit three.
-        (u"4", u"۴"),  # U+06F4 Extended Arabic-Indic digit four.
-        (u"5", u"۵"),  # U+06F5 Extended Arabic-Indic digit five.
-        (u"6", u"۶"),  # U+06F6 Extended Arabic-Indic digit six.
-        (u"7", u"۷"),  # U+06F7 Extended Arabic-Indic digit seven.
-        (u"8", u"۸"),  # U+06F8 Extended Arabic-Indic digit eight.
-        (u"9", u"۹"),  # U+06F9 Extended Arabic-Indic digit nine.
+        ("0", "۰"),  # U+06F0 Extended Arabic-Indic digit zero.
+        ("1", "۱"),  # U+06F1 Extended Arabic-Indic digit one.
+        ("2", "۲"),  # U+06F2 Extended Arabic-Indic digit two.
+        ("3", "۳"),  # U+06F3 Extended Arabic-Indic digit three.
+        ("4", "۴"),  # U+06F4 Extended Arabic-Indic digit four.
+        ("5", "۵"),  # U+06F5 Extended Arabic-Indic digit five.
+        ("6", "۶"),  # U+06F6 Extended Arabic-Indic digit six.
+        ("7", "۷"),  # U+06F7 Extended Arabic-Indic digit seven.
+        ("8", "۸"),  # U+06F8 Extended Arabic-Indic digit eight.
+        ("9", "۹"),  # U+06F9 Extended Arabic-Indic digit nine.
     )
 
     ignoretests = {

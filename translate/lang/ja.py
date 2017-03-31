@@ -22,6 +22,8 @@
 .. seealso:: http://en.wikipedia.org/wiki/Japanese_language
 """
 
+from __future__ import unicode_literals
+
 import re
 
 from translate.lang import common
@@ -30,9 +32,9 @@ from translate.lang import common
 class ja(common.Common):
     """This class represents Japanese."""
 
-    listseperator = u"、､，,"
+    listseperator = "、､，,"
 
-    sentenceend = u"。｡！？!?…"
+    sentenceend = "。｡！？!?…"
 
     # Compared to common.py, we make the space after the sentence ending
     # optional and don't demand an uppercase letter to follow.
@@ -43,10 +45,10 @@ class ja(common.Common):
                             """ % sentenceend, re.VERBOSE)
 
     puncdict = {
-        u". ": u"。",
-        u", ": u"、",
-        u".\n": u"。\n",
-        u",\n": u"、\n",
+        ". ": "。",
+        ", ": "、",
+        ".\n": "。\n",
+        ",\n": "、\n",
     }
 
     ignoretests = {

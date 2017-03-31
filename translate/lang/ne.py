@@ -22,6 +22,8 @@
 .. seealso:: http://en.wikipedia.org/wiki/Nepali_language
 """
 
+from __future__ import unicode_literals
+
 import re
 
 from translate.lang import common
@@ -30,7 +32,7 @@ from translate.lang import common
 class ne(common.Common):
     """This class represents Nepali."""
 
-    sentenceend = u"।!?…"
+    sentenceend = "।!?…"
 
     sentencere = re.compile(r"""(?s)    #make . also match newlines
                             .*?         #anything, but match non-greedy
@@ -41,8 +43,8 @@ class ne(common.Common):
                             """ % sentenceend, re.VERBOSE)
 
     puncdict = {
-        u".": u" ।",
-        u"?": u" ?",
+        ".": " ।",
+        "?": " ?",
     }
 
     ignoretests = {

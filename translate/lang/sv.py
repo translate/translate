@@ -22,14 +22,16 @@
 .. seealso:: http://en.wikipedia.org/wiki/Swedish_language
 """
 
+from __future__ import unicode_literals
+
 from translate.lang import common
 
 
 class sv(common.Common):
     """This class represents Swedish."""
 
-    validaccel = (u"abcdefghijklmnopqrstuvwxyz"
-                  u"ABCDEFGHIJKLMNOPQRSTUVWXYZ"
-                  u"1234567890"
-                  u"åäö"
-                  u"ÅÄÖ")
+    validaccel = ("abcdefghijklmnopqrstuvwxyz"
+                  "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+                  "1234567890"
+                  "åäö"
+                  "ÅÄÖ")

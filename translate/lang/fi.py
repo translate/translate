@@ -20,14 +20,16 @@
 """This module represents the Finnish language.
 """
 
+from __future__ import unicode_literals
+
 from translate.lang import common
 
 
 class fi(common.Common):
     """This class represents Finnish."""
 
-    validaccel = (u"abcdefghijklmnopqrstuvwxyz"
-                  u"ABCDEFGHIJKLMNOPQRSTUVWXYZ"
-                  u"1234567890"
-                  u"äö"
-                  u"ÄÖ")
+    validaccel = ("abcdefghijklmnopqrstuvwxyz"
+                  "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+                  "1234567890"
+                  "äö"
+                  "ÄÖ")

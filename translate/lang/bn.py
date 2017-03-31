@@ -22,6 +22,8 @@
 .. seealso:: http://en.wikipedia.org/wiki/Bengali_language
 """
 
+from __future__ import unicode_literals
+
 import re
 
 from translate.lang import common
@@ -30,7 +32,7 @@ from translate.lang import common
 class bn(common.Common):
     """This class represents Bengali."""
 
-    sentenceend = u"।!?…"
+    sentenceend = "।!?…"
 
     sentencere = re.compile(r"""(?s)    #make . also match newlines
                             .*?         #anything, but match non-greedy
@@ -40,21 +42,21 @@ class bn(common.Common):
                             """ % sentenceend, re.VERBOSE)
 
     puncdict = {
-        u". ": u"। ",
-        u".\n": u"।\n",
+        ". ": "। ",
+        ".\n": "।\n",
     }
 
     numbertuple = (
-        (u"0", u"০"),  # U+09E6 Bengali digit zero.
-        (u"1", u"১"),  # U+09E7 Bengali digit one.
-        (u"2", u"২"),  # U+09E8 Bengali digit two.
-        (u"3", u"৩"),  # U+09E9 Bengali digit three.
-        (u"4", u"৪"),  # U+09EA Bengali digit four.
-        (u"5", u"৫"),  # U+09EB Bengali digit five.
-        (u"6", u"৬"),  # U+09EC Bengali digit six.
-        (u"7", u"৭"),  # U+09ED Bengali digit seven.
-        (u"8", u"৮"),  # U+09EE Bengali digit eight.
-        (u"9", u"৯"),  # U+09EF Bengali digit nine.
+        ("0", "০"),  # U+09E6 Bengali digit zero.
+        ("1", "১"),  # U+09E7 Bengali digit one.
+        ("2", "২"),  # U+09E8 Bengali digit two.
+        ("3", "৩"),  # U+09E9 Bengali digit three.
+        ("4", "৪"),  # U+09EA Bengali digit four.
+        ("5", "৫"),  # U+09EB Bengali digit five.
+        ("6", "৬"),  # U+09EC Bengali digit six.
+        ("7", "৭"),  # U+09ED Bengali digit seven.
+        ("8", "৮"),  # U+09EE Bengali digit eight.
+        ("9", "৯"),  # U+09EF Bengali digit nine.
     )
 
     ignoretests = {

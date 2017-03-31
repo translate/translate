@@ -22,14 +22,16 @@
 .. seealso:: https://en.wikipedia.org/wiki/Polish_language
 """
 
+from __future__ import unicode_literals
+
 from translate.lang import common
 
 
 class pl(common.Common):
     """This class represents Polish."""
 
-    validaccel = (u"abcdefghijklmnopqrstuvwxyz"
-                  u"ABCDEFGHIJKLMNOPQRSTUVWXYZ"
-                  u"1234567890"
-                  u"ąćęłńóśźż"
-                  u"ĄĆĘŁŃÓŚŹŻ")
+    validaccel = ("abcdefghijklmnopqrstuvwxyz"
+                  "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+                  "1234567890"
+                  "ąćęłńóśźż"
+                  "ĄĆĘŁŃÓŚŹŻ")

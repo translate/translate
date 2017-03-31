@@ -22,6 +22,8 @@
 .. seealso:: http://en.wikipedia.org/wiki/Punjabi_language
 """
 
+from __future__ import unicode_literals
+
 import re
 
 from translate.lang import common
@@ -30,7 +32,7 @@ from translate.lang import common
 class pa(common.Common):
     """This class represents Punjabi."""
 
-    sentenceend = u"।!?…"
+    sentenceend = "।!?…"
 
     sentencere = re.compile(r"""(?s)    # make . also match newlines
                             .*?         # anything, but match non-greedy
@@ -41,8 +43,8 @@ class pa(common.Common):
                             """ % sentenceend, re.VERBOSE)
 
     puncdict = {
-        u". ": u"। ",
-        u".\n": u"।\n",
+        ". ": "। ",
+        ".\n": "।\n",
     }
 
     ignoretests = {

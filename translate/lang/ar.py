@@ -22,6 +22,8 @@
 .. seealso:: http://en.wikipedia.org/wiki/Arabic_language
 """
 
+from __future__ import unicode_literals
+
 import re
 
 from translate.lang import common
@@ -29,34 +31,34 @@ from translate.lang import common
 
 def reverse_quotes(text):
     def convertquotation(match):
-        return u"”%s“" % match.group(1)
-    return re.sub(u'“([^”]+)”', convertquotation, text)
+        return "”%s“" % match.group(1)
+    return re.sub('“([^”]+)”', convertquotation, text)
 
 
 class ar(common.Common):
     """This class represents Arabic."""
 
-    listseperator = u"، "
+    listseperator = "، "
 
     puncdict = {
-        u",": u"،",
-        u";": u"؛",
-        u"?": u"؟",
+        ",": "،",
+        ";": "؛",
+        "?": "؟",
         #This causes problems with variables, so commented out for now:
-        #u"%": u"٪",
+        #"%": "٪",
     }
 
     numbertuple = (
-        (u"0", u"٠"),  # U+0660 Arabic-Indic digit zero.
-        (u"1", u"١"),  # U+0661 Arabic-Indic digit one.
-        (u"2", u"٢"),  # U+0662 Arabic-Indic digit two.
-        (u"3", u"٣"),  # U+0663 Arabic-Indic digit three.
-        (u"4", u"٤"),  # U+0664 Arabic-Indic digit four.
-        (u"5", u"٥"),  # U+0665 Arabic-Indic digit five.
-        (u"6", u"٦"),  # U+0666 Arabic-Indic digit six.
-        (u"7", u"٧"),  # U+0667 Arabic-Indic digit seven.
-        (u"8", u"٨"),  # U+0668 Arabic-Indic digit eight.
-        (u"9", u"٩"),  # U+0669 Arabic-Indic digit nine.
+        ("0", "٠"),  # U+0660 Arabic-Indic digit zero.
+        ("1", "١"),  # U+0661 Arabic-Indic digit one.
+        ("2", "٢"),  # U+0662 Arabic-Indic digit two.
+        ("3", "٣"),  # U+0663 Arabic-Indic digit three.
+        ("4", "٤"),  # U+0664 Arabic-Indic digit four.
+        ("5", "٥"),  # U+0665 Arabic-Indic digit five.
+        ("6", "٦"),  # U+0666 Arabic-Indic digit six.
+        ("7", "٧"),  # U+0667 Arabic-Indic digit seven.
+        ("8", "٨"),  # U+0668 Arabic-Indic digit eight.
+        ("9", "٩"),  # U+0669 Arabic-Indic digit nine.
     )
 
     ignoretests = {

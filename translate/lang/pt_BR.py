@@ -22,13 +22,15 @@
 .. seealso:: https://en.wikipedia.org/wiki/Brazilian_Portuguese
 """
 
+from __future__ import unicode_literals
+
 from translate.lang.common import Common
 
 
 class pt_BR(Common):
     """This class represents Brazilian Portugues."""
 
-    miscpunc = Common.miscpunc.replace(u"·", u"")  # Middle dot is not valid.
+    miscpunc = Common.miscpunc.replace("·", "")  # Middle dot is not valid.
 
     validaccel = ("ABCDEFGHIJKLMNOPQRSTUVXYZ"
                   "abcdefghijklmnopqrstuvxyz"

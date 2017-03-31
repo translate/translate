@@ -22,14 +22,16 @@
 .. seealso:: https://en.wikipedia.org/wiki/Danish_language
 """
 
+from __future__ import unicode_literals
+
 from translate.lang import common
 
 
 class da(common.Common):
     """This class represents Danish."""
 
-    validaccel = (u"abcdefghijklmnopqrstuvwxyz"
-                  u"ABCDEFGHIJKLMNOPQRSTUVWXYZ"
-                  u"1234567890"
-                  u"æøåé"
-                  u"ÆØÅÉ")
+    validaccel = ("abcdefghijklmnopqrstuvwxyz"
+                  "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+                  "1234567890"
+                  "æøåé"
+                  "ÆØÅÉ")

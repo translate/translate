@@ -22,6 +22,8 @@
 .. seealso:: http://en.wikipedia.org/wiki/Vietnamese_language
 """
 
+from __future__ import unicode_literals
+
 from translate.lang import common, fr
 
 
@@ -31,8 +33,8 @@ class vi(common.Common):
     # Vietnamese uses similar rules for spacing two-part punctuation marks as
     # French, but does not use a space before '?'.
     puncdict = {}
-    for c in u":;!#":
-        puncdict[c] = u" %s" % c
+    for c in ":;!#":
+        puncdict[c] = " %s" % c
 
     @classmethod
     def punctranslate(cls, text):

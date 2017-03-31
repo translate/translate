@@ -22,6 +22,8 @@
 .. seealso:: https://en.wikipedia.org/wiki/Standard_Tibetan
 """
 
+from __future__ import unicode_literals
+
 from translate.lang import common
 
 

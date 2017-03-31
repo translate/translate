@@ -22,6 +22,8 @@
 .. seealso:: http://en.wikipedia.org/wiki/Thai_language
 """
 
+from __future__ import unicode_literals
+
 from translate.lang import common
 
 
@@ -29,8 +31,8 @@ class th(common.Common):
     """This class represents Thai."""
 
     puncdict = {
-        u". ": u" ",
-        #u"; ": u" ", # Test interaction with XML entities
+        ". ": " ",
+        #"; ": " ", # Test interaction with XML entities
     }
 
     # No capitalisation. While we can't do sentence segmentation, sentencecount

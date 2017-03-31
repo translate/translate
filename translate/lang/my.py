@@ -22,6 +22,8 @@
 .. seealso:: http://en.wikipedia.org/wiki/Burmese_language
 """
 
+from __future__ import unicode_literals
+
 from translate.lang import common
 
 
@@ -29,7 +31,7 @@ class my(common.Common):
     """This class represents Burmese."""
 
     puncdict = {
-        u".": u"။",
+        ".": "။",
     }
 
     ignoretests = {
