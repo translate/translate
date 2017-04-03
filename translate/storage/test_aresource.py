@@ -47,17 +47,17 @@ class TestAndroidResourceUnit(test_monolingual.TestMonolingualUnit):
 
     def test_escape_message_with_newline(self):
         string = 'message\nwith newline'
-        xml = '<string name="teststring">message\nwith newline</string>\n\n'
+        xml = '<string name="teststring">message\n\\nwith newline</string>\n\n'
         self.__check_escape(string, xml)
 
     def test_escape_quotes_with_newline(self):
         string = '\'message\'\nwith newline'
-        xml = '<string name="teststring">\\\'message\\\'\nwith newline</string>\n\n'
+        xml = '<string name="teststring">\\\'message\\\'\n\\nwith newline</string>\n\n'
         self.__check_escape(string, xml)
 
     def test_escape_message_with_newline_in_xml(self):
         string = 'message\n\nwith newline in xml\n'
-        xml = ('<string name="teststring">message\n\nwith newline in xml\n'
+        xml = ('<string name="teststring">message\n\\n\n\\nwith newline in xml\n\\n'
                '</string>\n\n')
         self.__check_escape(string, xml)
 
@@ -105,7 +105,7 @@ class TestAndroidResourceUnit(test_monolingual.TestMonolingualUnit):
 
     def test_escape_html_code_quote_newline(self):
         string = 'some \n<b>html code</b> \'here\''
-        xml = ('<string name="teststring">some \n<b>html code</b> \\\'here\\\''
+        xml = ('<string name="teststring">some \n\\n<b>html code</b> \\\'here\\\''
                '</string>\n\n')
         self.__check_escape(string, xml)
 
@@ -135,8 +135,8 @@ class TestAndroidResourceUnit(test_monolingual.TestMonolingualUnit):
     def test_plural_escape_message_with_newline(self):
         mString = multistring(['one message\nwith newline', 'other message\nwith newline'])
         xml = ('<plurals name="teststring">\n\t'
-               '<item quantity="one">one message\nwith newline</item>\n\t'
-               '<item quantity="other">other message\nwith newline</item>\n'
+               '<item quantity="one">one message\n\\nwith newline</item>\n\t'
+               '<item quantity="other">other message\n\\nwith newline</item>\n'
                '</plurals>\n\n')
         self.__check_escape(mString, xml, 'en')
 
@@ -199,7 +199,7 @@ class TestAndroidResourceUnit(test_monolingual.TestMonolingualUnit):
         self.__check_parse(string, xml)
 
     def test_parse_message_with_newline_in_xml(self):
-        string = 'message\n\nwith\n\nnewline\n\nin xml'
+        string = 'message \nwith\n newline\n in xml'
         xml = ('<string name="teststring">message\n\\nwith\\n\nnewline\\n\nin xml'
                '</string>\n\n')
         self.__check_parse(string, xml)
@@ -274,7 +274,7 @@ class TestAndroidResourceUnit(test_monolingual.TestMonolingualUnit):
         At least it seems to be what Android does.
         """
         string = 'newline\nin string'
-        xml = '<string name="teststring">newline\nin string</string>\n\n'
+        xml = '<string name="teststring">newline\\nin string</string>\n\n'
         self.__check_parse(string, xml)
 
     def test_parse_not_translatable_string(self):
