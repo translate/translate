@@ -407,3 +407,20 @@ key=value
         assert propunit.name == u'VALUE'
         assert propunit.source == u'I am a "value"'
         assert bytes(propfile) == propsource
+
+    def test_serialize_missing_delimiter(self):
+        propsource = 'key\n'.encode('utf-8')
+        propfile = self.propparse(propsource, personality="java-utf8")
+        propunit = propfile.units[0]
+        assert propunit.name == u'key'
+        assert propunit.value == u''
+        assert propunit.delimiter == u''
+        assert bytes(propfile) == propsource
+
+    def test_serialize_missing_value(self):
+        propsource = 'key=\n'.encode('utf-8')
+        propfile = self.propparse(propsource, personality="java-utf8")
+        propunit = propfile.units[0]
+        assert propunit.name == u'key'
+        assert propunit.value == u''
+        assert bytes(propfile) == propsource

@@ -643,6 +643,7 @@ class propfile(base.TranslationStore):
                 if delimiter_pos == -1:
                     newunit.name = self.personality.key_strip(line)
                     newunit.value = u""
+                    newunit.delimiter = u""
                     self.addunit(newunit)
                     newunit = propunit("", self.personality.name)
                 else:
