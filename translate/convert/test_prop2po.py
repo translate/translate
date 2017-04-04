@@ -60,6 +60,24 @@ class TestProp2PO(object):
         assert pounit.source == "Save file"
         assert pounit.target == ""
 
+    def test_no_value_entry(self):
+        """checks that a properties entry without value is converted"""
+        propsource = 'KEY = \n'
+        pofile = self.prop2po(propsource)
+        pounit = self.singleelement(pofile)
+        assert pounit.getcontext() == "KEY"
+        assert pounit.source == ""
+        assert pounit.target == ""
+
+    def test_no_separator_entry(self):
+        """checks that a properties entry without separator is converted"""
+        propsource = 'KEY\n'
+        pofile = self.prop2po(propsource)
+        pounit = self.singleelement(pofile)
+        assert pounit.getcontext() == "KEY"
+        assert pounit.source == ""
+        assert pounit.target == ""
+
     def test_tab_at_end_of_string(self):
         """check that we preserve tabs at the end of a string"""
         propsource = r"TAB_AT_END=This setence has a tab at the end.\t"

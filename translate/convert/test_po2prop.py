@@ -1,5 +1,7 @@
 # -*- coding: utf-8 -*-
 
+from pytest import mark
+
 from translate.convert import po2prop, test_convert
 from translate.misc import wStringIO
 from translate.storage import po
@@ -58,6 +60,25 @@ class TestPO2Prop(object):
         posource = '''#: prop\nmsgid "value"\nmsgstr "waarde"\n'''
         proptemplate = '''prop  =  value\n'''
         propexpected = '''prop  =  waarde\n'''
+        propfile = self.merge2prop(proptemplate, posource)
+        print(propfile)
+        assert propfile == propexpected
+
+    def test_no_value(self):
+        """check that we can handle keys without value"""
+        posource = '''#: KEY\nmsgctxt "KEY"\nmsgid ""\nmsgstr ""\n'''
+        proptemplate = '''KEY = \n'''
+        propexpected = '''KEY = \n'''
+        propfile = self.merge2prop(proptemplate, posource)
+        print(propfile)
+        assert propfile == propexpected
+
+    @mark.xfail(reason="This doesn't work as expected right now")
+    def test_no_separator(self):
+        """check that we can handle keys without separator"""
+        posource = '''#: KEY\nmsgctxt "KEY"\nmsgid ""\nmsgstr ""\n'''
+        proptemplate = '''KEY\n'''
+        propexpected = '''KEY\n'''
         propfile = self.merge2prop(proptemplate, posource)
         print(propfile)
         assert propfile == propexpected
