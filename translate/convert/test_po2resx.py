@@ -98,11 +98,11 @@ class TestPO2RESX(object):
 msgid "Source Text"
 msgstr "Some translated text"'''
         resx_template = self.XMLskeleton % '''<data name="key" xml:space="preserve">
-        <value></value>
-        </data>'''
+    <value></value>
+  </data>'''
         expected_output = self.XMLskeleton % '''<data name="key" xml:space="preserve">
-        <value>Some translated text</value>
-    </data>'''
+    <value>Some translated text</value>
+  </data>'''
         resx_file = self.po2resx(resx_template, po_source)
         assert resx_file == expected_output
 
@@ -126,11 +126,11 @@ msgid "Applications"
 msgstr "Toepassings"
 """
         resx_template = self.XMLskeleton % '''<data name="ResourceKey" xml:space="preserve">
-        <value></value>
-        </data>'''
+    <value></value>
+  </data>'''
         expected_output = self.XMLskeleton % '''<data name="ResourceKey" xml:space="preserve">
-        <value>Toepassings</value>
-    </data>'''
+    <value>Toepassings</value>
+  </data>'''
         resx_file = self.po2resx(resx_template, po_source)
         assert resx_file == expected_output
 
@@ -142,11 +142,11 @@ msgid "First part "
 msgstr "Eerste deel "
 "en ekstra"'''
         resx_template = self.XMLskeleton % '''<data name="ResourceKey" xml:space="preserve">
-        <value></value>
-        </data>'''
+    <value></value>
+  </data>'''
         expected_output = self.XMLskeleton % '''<data name="ResourceKey" xml:space="preserve">
-        <value>Eerste deel en ekstra</value>
-    </data>'''
+    <value>Eerste deel en ekstra</value>
+  </data>'''
         resx_file = self.po2resx(resx_template, po_source)
         assert resx_file == expected_output
 
@@ -157,12 +157,12 @@ msgid "First line\nSecond line"
 msgstr "Eerste lyn\nTweede lyn"
 '''
         resx_template = self.XMLskeleton % '''<data name="ResourceKey" xml:space="preserve">
-        <value></value>
-        </data>'''
+    <value></value>
+  </data>'''
         expected_output = self.XMLskeleton % '''<data name="ResourceKey" xml:space="preserve">
-        <value>Eerste lyn
+    <value>Eerste lyn
 Tweede lyn</value>
-    </data>'''
+  </data>'''
         resx_file = self.po2resx(resx_template, po_source)
         assert resx_file == expected_output
 
@@ -173,11 +173,11 @@ msgid "First column\tSecond column"
 msgstr "Eerste kolom\tTweede kolom"
 '''
         resx_template = self.XMLskeleton % '''<data name="ResourceKey" xml:space="preserve">
-        <value></value>
-        </data>'''
+    <value></value>
+  </data>'''
         expected_output = self.XMLskeleton % '''<data name="ResourceKey" xml:space="preserve">
-        <value>Eerste kolom\tTweede kolom</value>
-    </data>'''
+    <value>Eerste kolom\tTweede kolom</value>
+  </data>'''
         resx_file = self.po2resx(resx_template, po_source)
         assert resx_file == expected_output
 
@@ -191,11 +191,11 @@ msgid "Use \\\"."
 msgstr "Gebruik \\\"."
 '''
         resx_template = self.XMLskeleton % '''<data name="ResourceKey" xml:space="preserve">
-        <value></value>
-        </data>'''
+    <value></value>
+  </data>'''
         expected_output = self.XMLskeleton % '''<data name="ResourceKey" xml:space="preserve">
-        <value>Good day "All"</value>
-    </data>'''
+    <value>Good day "All"</value>
+  </data>'''
         resx_file = self.po2resx(resx_template, po_source)
         assert resx_file == expected_output
 
@@ -215,23 +215,23 @@ msgid ""
 msgstr "Drie"
 '''
         resx_template = self.XMLskeleton % '''<data name="ResourceKey" xml:space="preserve">
-        <value/>
-    </data>
-<data name="ResourceKey2" xml:space="preserve">
     <value/>
-</data>
-<data name="ResourceKey3" xml:space="preserve">
+  </data>
+  <data name="ResourceKey2" xml:space="preserve">
     <value/>
-</data>'''
+  </data>
+  <data name="ResourceKey3" xml:space="preserve">
+    <value/>
+  </data>'''
         expected_output = self.XMLskeleton % '''<data name="ResourceKey" xml:space="preserve">
-        <value/>
-    </data>
-<data name="ResourceKey2" xml:space="preserve">
     <value/>
-</data>
-<data name="ResourceKey3" xml:space="preserve">
+  </data>
+  <data name="ResourceKey2" xml:space="preserve">
     <value/>
-</data>'''
+  </data>
+  <data name="ResourceKey3" xml:space="preserve">
+    <value/>
+  </data>'''
         resx_file = self.po2resx(resx_template, po_source)
         assert resx_file == expected_output
 
@@ -243,11 +243,12 @@ msgid "Bézier curve"
 msgstr "Bézier-kurwe"
 '''
         resx_template = self.XMLskeleton % '''<data name="ResourceKey" xml:space="preserve">
-        <value></value>
-        </data>'''
+    <value></value>
+  </data>'''
         expected_output = self.XMLskeleton % u'''<data name="ResourceKey" xml:space="preserve">
-        <value>Bézier-kurwe</value>
-    <comment>This is a comment</comment></data>'''
+    <value>Bézier-kurwe</value>
+    <comment>This is a comment</comment>
+  </data>'''
         resx_file = self.po2resx(resx_template, po_source)
         assert resx_file == expected_output
 
@@ -259,12 +260,14 @@ msgid "Bézier curve"
 msgstr "Bézier-kurwe"
 '''
         resx_template = self.XMLskeleton % '''<data name="ResourceKey" xml:space="preserve">
-        <value></value>
-        <comment>This is an existing comment</comment></data>'''
+    <value></value>
+    <comment>This is an existing comment</comment>
+  </data>'''
         expected_output = self.XMLskeleton % u'''<data name="ResourceKey" xml:space="preserve">
-        <value>Bézier-kurwe</value>
+    <value>Bézier-kurwe</value>
     <comment>This is an existing comment
-This is a new comment</comment></data>'''
+This is a new comment</comment>
+  </data>'''
         resx_file = self.po2resx(resx_template, po_source)
         assert resx_file == expected_output
 
@@ -276,11 +279,13 @@ msgid "Bézier curve"
 msgstr "Bézier-kurwe"
 '''
         resx_template = self.XMLskeleton % '''<data name="ResourceKey" xml:space="preserve">
-        <value></value>
-        <comment>This is an existing comment</comment></data>'''
+    <value></value>
+    <comment>This is an existing comment</comment>
+  </data>'''
         expected_output = self.XMLskeleton % u'''<data name="ResourceKey" xml:space="preserve">
-        <value>Bézier-kurwe</value>
-    <comment>This is an existing comment</comment></data>'''
+    <value>Bézier-kurwe</value>
+    <comment>This is an existing comment</comment>
+  </data>'''
         resx_file = self.po2resx(resx_template, po_source)
         assert resx_file == expected_output
 
@@ -293,11 +298,13 @@ msgid "Bézier curve"
 msgstr "Bézier-kurwe"
 '''
         resx_template = self.XMLskeleton % '''<data name="ResourceKey" xml:space="preserve">
-        <value></value>
-        <comment> This is an existing comment with leading and trailing spaces </comment></data>'''
+    <value></value>
+    <comment> This is an existing comment with leading and trailing spaces </comment>
+  </data>'''
         expected_output = self.XMLskeleton % u'''<data name="ResourceKey" xml:space="preserve">
-        <value>Bézier-kurwe</value>
-    <comment>This is an existing comment with leading and trailing spaces</comment></data>'''
+    <value>Bézier-kurwe</value>
+    <comment>This is an existing comment with leading and trailing spaces</comment>
+  </data>'''
         resx_file = self.po2resx(resx_template, po_source)
         assert resx_file == expected_output
 
@@ -309,11 +316,12 @@ msgid "Bézier curve"
 msgstr "Bézier-kurwe"
 '''
         resx_template = self.XMLskeleton % '''<data name="ResourceKey" xml:space="preserve">
-        <value></value>
-        </data>'''
+    <value></value>
+  </data>'''
         expected_output = self.XMLskeleton % u'''<data name="ResourceKey" xml:space="preserve">
-        <value>Bézier-kurwe</value>
-    <comment>[Translator Comment: This is a translator comment : 22.12.14]</comment></data>'''
+    <value>Bézier-kurwe</value>
+    <comment>[Translator Comment: This is a translator comment : 22.12.14]</comment>
+  </data>'''
         resx_file = self.po2resx(resx_template, po_source)
         assert resx_file == expected_output
 
@@ -325,12 +333,14 @@ msgid "Bézier curve"
 msgstr "Bézier-kurwe"
 '''
         resx_template = self.XMLskeleton % '''<data name="ResourceKey" xml:space="preserve">
-        <value></value>
-        <comment>[Translator Comment: This is an existing comment]</comment></data>'''
+    <value></value>
+    <comment>[Translator Comment: This is an existing comment]</comment>
+  </data>'''
         expected_output = self.XMLskeleton % u'''<data name="ResourceKey" xml:space="preserve">
-        <value>Bézier-kurwe</value>
+    <value>Bézier-kurwe</value>
     <comment>[Translator Comment: This is an existing comment]
-[Translator Comment: This is a new translator comment]</comment></data>'''
+[Translator Comment: This is a new translator comment]</comment>
+  </data>'''
         resx_file = self.po2resx(resx_template, po_source)
         assert resx_file == expected_output
 
@@ -342,11 +352,13 @@ msgid "Bézier curve"
 msgstr "Bézier-kurwe"
 '''
         resx_template = self.XMLskeleton % '''<data name="ResourceKey" xml:space="preserve">
-        <value></value>
-        <comment>[Translator Comment: This is an existing translator comment]</comment></data>'''
+    <value></value>
+    <comment>[Translator Comment: This is an existing translator comment]</comment>
+  </data>'''
         expected_output = self.XMLskeleton % u'''<data name="ResourceKey" xml:space="preserve">
-        <value>Bézier-kurwe</value>
-    <comment>[Translator Comment: This is an existing translator comment]</comment></data>'''
+    <value>Bézier-kurwe</value>
+    <comment>[Translator Comment: This is an existing translator comment]</comment>
+  </data>'''
         resx_file = self.po2resx(resx_template, po_source)
         assert resx_file == expected_output
 
@@ -359,12 +371,13 @@ msgid "Bézier curve"
 msgstr "Bézier-kurwe"
 '''
         resx_template = self.XMLskeleton % '''<data name="ResourceKey" xml:space="preserve">
-        <value></value>
-        </data>'''
+    <value></value>
+  </data>'''
         expected_output = self.XMLskeleton % u'''<data name="ResourceKey" xml:space="preserve">
-        <value>Bézier-kurwe</value>
+    <value>Bézier-kurwe</value>
     <comment>This is a developer comment
-[Translator Comment: This is a translator comment : 22.12.14]</comment></data>'''
+[Translator Comment: This is a translator comment : 22.12.14]</comment>
+  </data>'''
         resx_file = self.po2resx(resx_template, po_source)
         assert resx_file == expected_output
 
@@ -378,12 +391,14 @@ msgid "Bézier curve"
 msgstr "Bézier-kurwe"
 '''
         resx_template = self.XMLskeleton % '''<data name="ResourceKey" xml:space="preserve">
-        <value></value>
-        <comment>This is an existing comment</comment></data>'''
+    <value></value>
+    <comment>This is an existing comment</comment>
+  </data>'''
         expected_output = self.XMLskeleton % u'''<data name="ResourceKey" xml:space="preserve">
-        <value>Bézier-kurwe</value>
+    <value>Bézier-kurwe</value>
     <comment>This is an existing comment
-[Translator Comment: This is a translator comment : 22.12.14]</comment></data>'''
+[Translator Comment: This is a translator comment : 22.12.14]</comment>
+  </data>'''
         resx_file = self.po2resx(resx_template, po_source)
         assert resx_file == expected_output
 
@@ -397,13 +412,15 @@ msgid "Bézier curve"
 msgstr "Bézier-kurwe"
 '''
         resx_template = self.XMLskeleton % '''<data name="ResourceKey" xml:space="preserve">
-        <value></value>
-        <comment>This is an existing comment</comment></data>'''
+    <value></value>
+    <comment>This is an existing comment</comment>
+  </data>'''
         expected_output = self.XMLskeleton % u'''<data name="ResourceKey" xml:space="preserve">
-        <value>Bézier-kurwe</value>
+    <value>Bézier-kurwe</value>
     <comment>This is an existing comment
 This is a new comment
-[Translator Comment: This is a translator comment : 22.12.14]</comment></data>'''
+[Translator Comment: This is a translator comment : 22.12.14]</comment>
+  </data>'''
         resx_file = self.po2resx(resx_template, po_source)
         assert resx_file == expected_output
 
@@ -416,13 +433,15 @@ msgid "Bézier curve"
 msgstr "Bézier-kurwe"
 '''
         resx_template = self.XMLskeleton % '''<data name="ResourceKey" xml:space="preserve">
-        <value></value>
-        <comment>This is an existing comment
-[Translator Comment: This is an existing translator comment : 22.12.14]</comment></data>'''
-        expected_output = self.XMLskeleton % u'''<data name="ResourceKey" xml:space="preserve">
-        <value>Bézier-kurwe</value>
+    <value></value>
     <comment>This is an existing comment
-[Translator Comment: This is an existing translator comment : 22.12.14]</comment></data>'''
+[Translator Comment: This is an existing translator comment : 22.12.14]</comment>
+  </data>'''
+        expected_output = self.XMLskeleton % u'''<data name="ResourceKey" xml:space="preserve">
+    <value>Bézier-kurwe</value>
+    <comment>This is an existing comment
+[Translator Comment: This is an existing translator comment : 22.12.14]</comment>
+  </data>'''
         resx_file = self.po2resx(resx_template, po_source)
         assert resx_file == expected_output
 
