@@ -381,7 +381,7 @@ class DialectSkype(Dialect):
 @register_dialect
 class DialectStrings(Dialect):
     name = "strings"
-    default_encoding = "utf-16"
+    default_encoding = "UTF-16LE"
     delimiters = [u"="]
     pair_terminator = u";"
     key_wrap_char = u'"'
