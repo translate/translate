@@ -65,7 +65,10 @@ class RESXUnit(lisa.LISAunit):
         targetnode = self._gettargetnode()
         targetnode.clear()
         targetnode.text = data.forceunicode(text) or u""
-        targetnode.tail = u"\n    "
+        # Assume no <comment> follows; allow the </data> element
+        # to be indented with 2 spaces (same level as the opening
+        # <data> element before <value>)
+        targetnode.tail = u"\n  "
 
     def gettarget(self, lang=None):
         targetnode = self._gettargetnode()
@@ -92,6 +95,14 @@ class RESXUnit(lisa.LISAunit):
                 note.text = "\n".join(filter(None, [current_notes, text_stripped]))
         else:
             note.text = text_stripped
+        if note.text:
+            # Correct the indent of <comment> by updating the tail of
+            # the preceding <value> element
+            targetnode = self._gettargetnode()
+            targetnode.tail = u"\n    "
+        # This also requires putting a matching tail on the <comment>,
+        # otherwise the </data> would yet again be misaligned
+        note.tail = u"\n  "
 
     def getnotes(self, origin=None):
         comments = []
