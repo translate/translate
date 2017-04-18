@@ -1,4 +1,3 @@
-
 .. _html2po:
 .. _po2html:
 
@@ -7,15 +6,17 @@ html2po
 
 Convert translatable items in HTML to the PO format.
 
+
 .. _html2po#usage:
 
 Usage
 =====
 
-::
+.. code-block:: console
 
   html2po [options] <html> <po>
   po2html [options] <po> <html>
+
 
 Where:
 
@@ -24,6 +25,7 @@ Where:
 +---------+-----------------------------------------------+
 | <po>    | is a PO file or directory of PO files         |
 +---------+-----------------------------------------------+
+
 
 Options (html2po):
 
@@ -71,17 +73,23 @@ Options (po2html):
 Examples
 ========
 
-::
+.. code-block:: console
 
   html2po -P site pot
 
-This will find all HTML files (.htm, .html, .xhtml) in *site*, convert them to
-POT files and place them in *pot*::
+
+This will find all HTML files (.htm, .html, .xhtml) in :file:`site`, convert
+them to POT files and place them in :file:`pot`.
+
+.. code-block:: console
 
   po2html -t site xh site-xh
 
-All the PO translations in *xh* will be converted to html using html files in
-*site* as templates and outputting new translated HTML files in *site-xh*
+
+All the PO translations in :file:`xh` will be converted to HTML using HTML
+files in :file:`site` as templates and outputting new translated HTML files in
+:file:`site-xh`.
+
 
 .. _html2po#bugs:
 

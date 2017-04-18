@@ -1,4 +1,3 @@
-
 .. _moz2po:
 .. _po2moz:
 
@@ -16,12 +15,13 @@ PO editors.
    and PO files for translating Mozilla products, please see the page on
    :doc:`mozilla_l10n_scripts`.
 
+
 .. _moz2po#usage:
 
 Usage
 =====
 
-::
+.. code-block:: console
 
   moz2po [options] <dir> <po>
   po2moz [options] <po> <dir>
@@ -92,20 +92,27 @@ Creating POT files
 .. seealso:: :doc:`Creating Mozilla POT files
    </guides/creating_mozilla_pot_files>`.
 
-After extracting the en-US l10n files, you can run the following command::
+After extracting the en-US l10n files, you can run the following command:
+
+.. code-block:: console
 
   moz2po -P l10n/en-US pot
+
 
 This creates a set of POT (:opt:`-P`) files in the ``pot`` directory from the
 Mozilla files in ``l10n/en-US`` for use as PO Templates.
 
 If you want to create a set of POT files with another base language try the
-following::
+following:
+
+.. code-block:: console
 
   moz2po -P l10n/fr-FR fr-pot
 
+
 This will create a set of POT files in ``fr-pot`` that have French as your
 source language.
+
 
 .. _moz2po#creating_po_files_from_existing_non-po_translations:
 
@@ -114,15 +121,21 @@ Creating PO files from existing non-PO translations
 
 If you have existing translations (Mozilla related or other Babelzilla files)
 and you wish to convert them to PO for future translation then the following
-generic instructions will work::
+generic instructions will work:
+
+.. code-block:: console
 
   moz2po -t en-US af-ZA af-ZA_pofiles
 
+
 This will combine the untranslated template en-US files from ``en-US`` combine
 them with your existing translations in ``af-ZA`` and output PO files to
-``af-ZA_pofiles``. ::
+``af-ZA_pofiles``.
+
+.. code-block:: console
 
   moz2po -t l10n/fr l10n/xh po/xh
+
 
 For those who are not English fluent you can do the same with another
 languages.  In this case ``msgid`` will contain the French text from
@@ -131,19 +144,22 @@ languages is not English but French, Spanish or Portuguese.  Please make sure
 that the source languages i.e. the ``msgid`` language is fully translated as
 against en-US.
 
+
 .. _moz2po#creating_mercurial_ready_translations:
 
 Creating Mercurial ready translations
 -----------------------------------------
 
-::
+.. code-block:: console
 
   po2moz -t l10n/en-US po/xh l10n/xh
+
 
 Create Mozilla files using the templates files in ``l10n/en-US`` (see above for
 how to create them) with PO translations in ``po/xh`` and output them to
 ``l10n/xh``.  The files now in ``l10n/xh`` are ready for submission to Mozilla
 and can be used to build a language pack or translated version of Mozilla.
+
 
 .. _moz2po#issues:
 
@@ -183,4 +199,3 @@ localisation note from the DTD file is lost, so take good care of those.
 The file extension of the original Mozilla file is required to tell the Toolkit
 how to do the conversion.  Therefore, a file like foo.dtd must be named
 foo.dtd.po in order to :doc:`po2moz <moz2po>` to recognise it as a DTD file.
-

@@ -1,4 +1,3 @@
-
 .. _csv2po:
 .. _po2csv:
 
@@ -14,15 +13,17 @@ your PO translations.
 If you are starting out with your own CSV files (not created by po2csv), take
 note of the assumptions of the column layout explained below.
 
+
 .. _csv2po#usage:
 
 Usage
 =====
 
-::
+.. code-block:: console
 
   csv2po [options] <csv> <po>
   po2csv [options] <po> <csv>
+
 
 Where:
 
@@ -31,6 +32,7 @@ Where:
 +--------+----------------------------------------------+
 | <po>   | is a file or directory containing PO files   |
 +--------+----------------------------------------------+
+
 
 Options (csv2po):
 
@@ -90,33 +92,44 @@ The resultant CSV file has the following layout
 |  C     | Target Language | The msgstr or target language               |
 +--------+-----------------+---------------------------------------------+
 
+
 .. _csv2po#examples:
 
 Examples
 ========
 
-These examples demonstrate the use of csv2po::
+These examples demonstrate the use of csv2po:
+
+.. code-block:: console
 
   po2csv -P pot csv
 
-We use the :opt:`-P` option to recognise POT files found in *pot* and convert
-them to CSV files placed in *csv*::
+
+We use the :opt:`-P` option to recognise POT files found in :file:`pot` and
+convert them to CSV files placed in :file:`csv`:
+
+.. code-block:: console
 
   csv2po csv po
 
-Convert CSV files in *csv* to PO files placed in *po*::
+
+Convert CSV files in :file:`csv` to PO files placed in :file:`po`:
+
+.. code-block:: console
 
   csv2po --charset=windows-1250 -t pot csv po
 
-User working on Windows will often return files encoded in everything but
-Unicode.  In this case we convert CSV files found in *csv* from *windows-1250*
-to UTF-8 and place the correctly encoded files in *po*.  We use the templates
-found in *pot* to ensure that we preserve formatting and other data.  Note that
-UTF-8 is the only available destination encoding.
 
-::
+User working on Windows will often return files encoded in everything but
+Unicode.  In this case we convert CSV files found in :file:`csv` from
+*windows-1250* to UTF-8 and place the correctly encoded files in :file:`po`. We
+use the templates found in :file:`pot` to ensure that we preserve formatting
+and other data.  Note that UTF-8 is the only available destination encoding.
+
+.. code-block:: console
 
   csv2po --columnorder=location,target,source fr.csv fr.po
+
 
 In case the CSV file has the columns in a different order you may use
 ``--columnorder``.

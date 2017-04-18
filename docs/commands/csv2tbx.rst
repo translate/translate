@@ -1,4 +1,3 @@
-
 .. _csv2tbx:
 
 csv2tbx
@@ -7,14 +6,16 @@ csv2tbx
 Convert between CSV (Comma Separated Value) files and the :doc:`/formats/tbx`
 format for terminology exchange.
 
+
 .. _csv2tbx#usage:
 
 Usage
 =====
 
-::
+.. code-block:: console
 
   csv2tbx [--charset=CHARSET] [--columnorder=COLUMNORDER] <csv> <tbx>
+
 
 Where:
 
@@ -23,6 +24,7 @@ Where:
 +--------+------------------------+
 | <tbx>  | is the target TBX file |
 +--------+------------------------+
+
 
 Options (csv2tbx):
 
@@ -61,40 +63,52 @@ characters like semicolons), of which the default layout is
 |  C     | Target Language | The msgstr or target language                   |
 +--------+-----------------+-------------------------------------------------+
 
+
 .. _csv2tbx#examples:
 
 Examples
 ========
 
-These examples demonstrate the use of csv2tbx::
+These examples demonstrate the use of csv2tbx:
+
+.. code-block:: console
 
   csv2tbx terms.csv terms.tbx
 
-to simply convert *terms.csv* to *terms.tbx*.
+
+to simply convert :file:`terms.csv` to :file:`terms.tbx`.
 
 To convert a directory recursively to another directory with the same structure
-of files::
+of files:
+
+.. code-block:: console
 
   csv2tbx csv-dir tbx-target-dir
 
-This will convert CSV files in *csv-dir* to TBX files placed in
-*tbx-target-dir*.::
+
+This will convert CSV files in :file:`csv-dir` to TBX files placed in
+:file:`tbx-target-dir`.
+
+.. code-block:: console
 
   csv2tbx --charset=windows-1250 csv tbx
 
+
 Users working on Windows will often return files in encoding other the Unicode
-based encodings.  In this case we convert CSV files found in *csv* from
-*windows-1250* to UTF-8 and place the correctly encoded files in *tbx*. Note
-that UTF-8 is the only available destination encoding.
+based encodings.  In this case we convert CSV files found in :file:`csv` from
+*windows-1250* to UTF-8 and place the correctly encoded files in :file:`tbx`.
+Note that UTF-8 is the only available destination encoding.
+
 
 .. _csv2tbx#two_column_csv:
 
 Two column CSV
 ==============
 
-::
+.. code-block:: console
 
   csv2tbx --columnorder=source,target foo.csv foo.tbx
+
 
 .. _csv2tbx#notes:
 
