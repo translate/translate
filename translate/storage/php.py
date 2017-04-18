@@ -260,14 +260,16 @@ class phpfile(base.TranslationStore):
             # If an array starts in the current line and is using array syntax
             if (line.lower().replace(" ", "").find('array(') != -1 and
                 line.lower().replace(" ", "").find('array()') == -1):
+                eqpos = line.find('=')
                 # If this is a nested array.
                 if inarray:
-                    prename = prename + line[:line.find('=')].strip() + "->"
+                    prename = prename + line[:eqpos].strip() + "->"
                 else:
                     equaldel = "=>"
                     enddel = ","
                     inarray = True
-                    prename = line[:line.find('=')].strip() + "->"
+                    if eqpos != -1:
+                        prename = prename + line[:eqpos].strip() + "->"
                 continue
 
             # If an array ends in the current line, reset variables to default
