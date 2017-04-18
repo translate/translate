@@ -118,6 +118,9 @@ class mounit(base.TranslationUnit):
             return None
         return "".join(self.msgctxt)
 
+    def setcontext(self, context):
+        self.msgctxt = [context]
+
     def isheader(self):
         """Is this a header entry?"""
         return self.source == u""
