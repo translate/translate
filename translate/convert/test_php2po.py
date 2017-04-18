@@ -136,6 +136,108 @@ $lang['prefPanel-smime'] = 'Security';'''
         pounit = self.singleelement(pofile)
         assert pounit.getlocations() == ["$lang[ 'credit' ]"]
 
+    def test_named_array(self):
+        phptemplate = '''$strings = array(\n'id-1' => 'source-1',\n);'''
+        phpsource = '''$strings = array(\n'id-1' => 'target-1',\n);'''
+        pofile = self.php2po(phpsource, phptemplate)
+        pounit = self.singleelement(pofile)
+        assert pounit.getlocations() == ["$strings->'id-1'"]
+
+    def test_unnamed_array(self):
+        phptemplate = '''return array(\n'id-1' => 'source-1',\n);'''
+        phpsource = '''return array(\n'id-1' => 'target-1',\n);'''
+        pofile = self.php2po(phpsource, phptemplate)
+        pounit = self.singleelement(pofile)
+        assert pounit.getlocations() == ["'id-1'"]
+
+    def test_named_nested_arrays(self):
+        phptemplate = '''$strings = array(
+            'name1' => 'source1',
+            'list1' => array(
+                'l1' => 'source_l1_1',
+                'l2' => 'source_l1_2',
+                'l3' => 'source_l1_3',
+            ),
+            'list2' => array(
+                'l1' => 'source_l2_1',
+                'l2' => 'source_l2_2',
+                'l3' => 'source_l2_3',
+            ),
+            'name2' => 'source2',
+        );'''
+        phpsource = '''$strings = array(
+            'name1' => 'target1',
+            'list1' => array(
+                'l1' => 'target_l1_1',
+                'l2' => 'target_l1_2',
+                'l3' => 'target_l1_3',
+            ),
+            'list2' => array(
+                'l1' => 'target_l2_1',
+                'l2' => 'target_l2_2',
+                'l3' => 'target_l2_3',
+            ),
+            'name2' => 'target2',
+        );'''
+        pofile = self.php2po(phpsource, phptemplate)
+        expected = {
+            "$strings->'name1'": ("source1", "target1"),
+            "$strings->'list1'->'l1'": ("source_l1_1", "target_l1_1"),
+            "$strings->'list1'->'l2'": ("source_l1_2", "target_l1_2"),
+            "$strings->'list1'->'l3'": ("source_l1_3", "target_l1_3"),
+            "$strings->'list2'->'l1'": ("source_l2_1", "target_l2_1"),
+            "$strings->'list2'->'l2'": ("source_l2_2", "target_l2_2"),
+            "$strings->'list2'->'l3'": ("source_l2_3", "target_l2_3"),
+            "$strings->'name2'": ("source2", "target2"),
+        }
+        for pounit in [x for x in pofile.units if x.source != '']:
+            assert ((pounit.source, pounit.target) ==
+                    expected.get(pounit.getlocations()[0]))
+
+    def test_unnamed_nested_arrays(self):
+        phptemplate = '''return array(
+            'name1' => 'source1',
+            'list1' => array(
+                'l1' => 'source_l1_1',
+                'l2' => 'source_l1_2',
+                'l3' => 'source_l1_3',
+            ),
+            'list2' => array(
+                'l1' => 'source_l2_1',
+                'l2' => 'source_l2_2',
+                'l3' => 'source_l2_3',
+            ),
+            'name2' => 'source2',
+        );'''
+        phpsource = '''return array  (
+            'name1' => 'target1',
+            'list1' => array(
+                'l1' => 'target_l1_1',
+                'l2' => 'target_l1_2',
+                'l3' => 'target_l1_3',
+            ),
+            'list2' => array(
+                'l1' => 'target_l2_1',
+                'l2' => 'target_l2_2',
+                'l3' => 'target_l2_3',
+            ),
+            'name2' => 'target2',
+        );'''
+        pofile = self.php2po(phpsource, phptemplate)
+        expected = {
+            "'name1'": ("source1", "target1"),
+            "'list1'->'l1'": ("source_l1_1", "target_l1_1"),
+            "'list1'->'l2'": ("source_l1_2", "target_l1_2"),
+            "'list1'->'l3'": ("source_l1_3", "target_l1_3"),
+            "'list2'->'l1'": ("source_l2_1", "target_l2_1"),
+            "'list2'->'l2'": ("source_l2_2", "target_l2_2"),
+            "'list2'->'l3'": ("source_l2_3", "target_l2_3"),
+            "'name2'": ("source2", "target2"),
+        }
+        for pounit in [x for x in pofile.units if x.source != '']:
+            assert ((pounit.source, pounit.target) ==
+                    expected.get(pounit.getlocations()[0]))
+
 
 class TestPhp2POCommand(test_convert.TestConvertCommand, TestPhp2PO):
     """Tests running actual php2po commands on files"""
