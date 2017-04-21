@@ -1,4 +1,6 @@
 six>=1.10.0
 
+selector==0.10.1
+
 # Required to provide compatibility for old Virtaal releases:
 diff-match-patch==20121119
