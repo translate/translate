@@ -817,11 +817,18 @@ class pofile(pocommon.pofile):
         at_start = True
         try:
             for unit in self.units:
-                if not at_start:
-                    out.write(b'\n')
-                else:
-                    at_start = False
-                out.write(unit._getoutput().encode(self.encoding))
+                try:
+                    if not at_start:
+                        out.write(b'\n')
+                    else:
+                        at_start = False
+                    out.write(unit._getoutput().encode(self.encoding))
+                except TypeError:
+                    if not at_start:
+                        out.write('\n')
+                    else:
+                        at_start = False
+                    out.write(unit._getoutput())
         except UnicodeEncodeError as e:
             if self.encoding == 'utf-8':
                 raise
