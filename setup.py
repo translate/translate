@@ -422,7 +422,7 @@ def parse_requirements(file_name):
 
 
 def getdatafiles():
-    datafiles = initfiles + infofiles
+    datafiles = initfiles
 
     def listfiles(srcdir):
         return (
