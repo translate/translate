@@ -141,6 +141,63 @@ msgstr "stringetjie"
         print(phpfile)
         assert "".join(phpfile) == phpexpected
 
+    def test_named_nested_array(self):
+        """check that we can handle nested arrays"""
+        posource = '''#: $lang->'codes'->'name'\nmsgid "value"\nmsgstr "waarde"\n'''
+        phptemplate = '''$lang = array(\n    'codes' => array(\n        'name' => 'value',\n),\n);\n'''
+        phpexpected = '''$lang = array(\n    'codes' => array(\n        'name' => 'waarde',\n),\n);\n'''
+        phpfile = self.merge2php(phptemplate, posource)
+        print(phpfile)
+        assert "".join(phpfile) == phpexpected
+
+    def test_unnamed_nested_arrays(self):
+        posource = '''
+#: 'name1'
+msgid "source1"
+msgstr "target1"
+
+#: 'list1'->'l1'
+msgid "source_l1_1"
+msgstr "target_l1_1"
+
+#: 'list1'->'list2'->'l1'
+msgid "source_l1_l2_l1"
+msgstr "target_l1_l2_l1"
+
+#: 'list1'->'l3'
+msgid "source_l1_3"
+msgstr "target_l1_3"
+
+#: 'name2'
+msgid "source2"
+msgstr "target2"
+'''
+        phptemplate = '''return array(
+            'name1' => 'source1',
+            'list1' => array(
+                'l1' => 'source_l1_1',
+                'list2' => array(
+                    'l1' => 'source_l1_l2_l1',
+                ),
+                'l3' => 'source_l1_3',
+            ),
+            'name2' => 'source2',
+        );'''
+        phpexpected = '''return array(
+            'name1' => 'target1',
+            'list1' => array(
+                'l1' => 'target_l1_1',
+                'list2' => array(
+                    'l1' => 'target_l1_l2_l1',
+                ),
+                'l3' => 'target_l1_3',
+            ),
+            'name2' => 'target2',
+        );\n'''
+        phpfile = self.merge2php(phptemplate, posource)
+        print(phpfile)
+        assert "".join(phpfile) == phpexpected
+
     @mark.xfail(reason="Need to review if we want this behaviour")
     def test_merging_propertyless_template(self):
         """check that when merging with a template with no property values that we copy the template"""
