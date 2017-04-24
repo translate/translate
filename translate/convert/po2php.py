@@ -75,10 +75,14 @@ class rephp(object):
         elif line.strip()[:2] == '//' or line.strip()[:2] == '/*':
             returnline = quote.rstripeol(line) + eol
         elif line.lower().replace(" ", "").find('array(') != -1:
-            self.inarray = True
-            self.prename = line[:line.find('=')].strip() + "->"
-            self.equaldel = "=>"
-            self.enddel = ","
+            # If this is a nested array.
+            if self.inarray:
+                self.prename += line[:line.find('=')].strip() + "->"
+            else:
+                self.inarray = True
+                self.prename = line[:line.find('=')].strip() + "->"
+                self.equaldel = "=>"
+                self.enddel = ","
             returnline = quote.rstripeol(line) + eol
         elif self.inarray and line.find(');') != -1:
             self.inarray = False
