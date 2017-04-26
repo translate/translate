@@ -500,10 +500,15 @@ $month_mar = 'Mar';"""
                 'Contacts' => 'Contacts',
                 'Accounts' => 'Accounts',
             ),
+            'tools' => array  (
+                'Pen' => 'Pen',
+                'Brush' => 'Brush',
+                'Pencil' => 'Pencil',
+            ),
             'FAQ' => 'FAQ',
         );'''
         phpfile = self.phpparse(phpsource)
-        assert len(phpfile.units) == 5
+        assert len(phpfile.units) == 8
         phpunit = phpfile.units[0]
         assert phpunit.name == "$app_list_strings->'Mailbox'"
         assert phpunit.source == "Mailbox"
@@ -517,8 +522,52 @@ $month_mar = 'Mar';"""
         assert phpunit.name == "$app_list_strings->'moduleList'->'Accounts'"
         assert phpunit.source == "Accounts"
         phpunit = phpfile.units[4]
+        assert phpunit.name == "$app_list_strings->'tools'->'Pen'"
+        assert phpunit.source == "Pen"
+        phpunit = phpfile.units[5]
+        assert phpunit.name == "$app_list_strings->'tools'->'Brush'"
+        assert phpunit.source == "Brush"
+        phpunit = phpfile.units[6]
+        assert phpunit.name == "$app_list_strings->'tools'->'Pencil'"
+        assert phpunit.source == "Pencil"
+        phpunit = phpfile.units[7]
         assert phpunit.name == "$app_list_strings->'FAQ'"
         assert phpunit.source == "FAQ"
+
+    def test_parsing_unnamed_nested_arrays(self):
+        """parse the unnamed nested array."""
+
+        phpsource = '''return array  (
+            'name1' => 'target1',
+            'list1' => array(
+                'l1' => 'target_l1_1',
+                'l2' => 'target_l1_2',
+                'l3' => 'target_l1_3',
+            ),
+            'list2' => array(
+                'l1' => 'target_l2_1',
+                'l2' => 'target_l2_2',
+                'l3' => 'target_l2_3',
+            ),
+            'name2' => 'target2',
+        );'''
+        phpfile = self.phpparse(phpsource)
+        assert len(phpfile.units) == 8
+        phpunit = phpfile.units[0]
+        assert phpunit.name == "'name1'"
+        assert phpunit.source == "target1"
+        phpunit = phpfile.units[1]
+        assert phpunit.name == "'list1'->'l1'"
+        assert phpunit.source == "target_l1_1"
+        phpunit = phpfile.units[2]
+        assert phpunit.name == "'list1'->'l2'"
+        assert phpunit.source == "target_l1_2"
+        phpunit = phpfile.units[3]
+        assert phpunit.name == "'list1'->'l3'"
+        assert phpunit.source == "target_l1_3"
+        phpunit = phpfile.units[4]
+        assert phpunit.name == "'list2'->'l1'"
+        assert phpunit.source == "target_l2_1"
 
     @mark.xfail(reason="Bug #2647")
     def test_parsing_nested_arrays_with_array_declaration_in_next_line(self):

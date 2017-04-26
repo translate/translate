@@ -284,7 +284,7 @@ class phpfile(base.TranslationStore):
             # If a nested array ends in the current line, reset prename to its
             # parent array default value by stripping out the last part.
             if inarray and line.find('),') != -1:
-                prename = prename[:prename.find("->")+2]
+                prename = re.sub(r'[^>]+->$', '', prename)
                 continue
 
             # If the current line hosts a define syntax translation.
