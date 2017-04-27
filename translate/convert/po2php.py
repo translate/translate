@@ -23,6 +23,7 @@ See: http://docs.translatehouse.org/projects/translate-toolkit/en/latest/command
 for examples and usage instructions.
 """
 
+import re
 import six
 
 from translate.convert import convert
@@ -75,12 +76,14 @@ class rephp(object):
         elif line.strip()[:2] == '//' or line.strip()[:2] == '/*':
             returnline = quote.rstripeol(line) + eol
         elif line.lower().replace(" ", "").find('array(') != -1:
+            eqpos = line.find('=')
             # If this is a nested array.
             if self.inarray:
-                self.prename += line[:line.find('=')].strip() + "->"
+                self.prename += line[:eqpos].strip() + "->"
             else:
                 self.inarray = True
-                self.prename = line[:line.find('=')].strip() + "->"
+                if eqpos != -1:
+                    self.prename += line[:eqpos].strip() + "->"
                 self.equaldel = "=>"
                 self.enddel = ","
             returnline = quote.rstripeol(line) + eol
@@ -89,6 +92,9 @@ class rephp(object):
             self.equaldel = "="
             self.enddel = ";"
             self.prename = ""
+            returnline = quote.rstripeol(line) + eol
+        elif self.inarray and line.find('),') != -1:
+            self.prename = re.sub(r'[^>]+->$', '', self.prename)
             returnline = quote.rstripeol(line) + eol
         else:
             line = quote.rstripeol(line)
