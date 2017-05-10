@@ -28,8 +28,8 @@ from translate.storage import l20n, po
 
 
 class l20n2po(object):
-    """convert a .l20n file to a .po file for handling the
-    translation."""
+    """convert a .l20n file to a .po file for handling the translation.
+    """
 
     def __init__(self, blankmsgstr=False, duplicatestyle="msgctxt"):
         self.blankmsgstr = blankmsgstr

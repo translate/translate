@@ -48,6 +48,7 @@ default_style = style_full
 class ConsoleColor:
     """Class to implement color mode.
     """
+
     # print using color? Default to true
     color_mode = True
     COLOR_PURPLE = "\033[95m"
