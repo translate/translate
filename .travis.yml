@@ -68,6 +68,7 @@ script:
   - if [[ ! $META ]]; then py.test --cov=. -r EfsxX; fi
   - if [[ ! $META ]]; then make test-functional; fi
   - if [[ $META ]]; then pycodestyle; fi
+  - if [[ $META ]]; then pydocstyle; fi
   - if [[ $META ]]; then make docs; fi
 after_success:
   - coveralls
