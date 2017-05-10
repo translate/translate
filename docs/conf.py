@@ -328,7 +328,7 @@ coverage_write_headline = False
 
 intersphinx_mapping = {
     'python': ('https://docs.python.org/2.7', None),
-    'pytest': ('http://pytest.org/latest/', None),
+    'pytest': ('https://docs.pytest.org/en/latest/', None),
     'django': ('http://django.readthedocs.org/en/latest/', None),
     'pootle': ('http://docs.translatehouse.org/projects/pootle/en/latest/', None),
     'virtaal': ('http://docs.translatehouse.org/projects/virtaal/en/latest/', None),
