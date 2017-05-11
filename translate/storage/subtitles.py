@@ -38,14 +38,20 @@ try:
                               SubStationAlpha, new)
     from aeidon.util import detect_format as determine
 except ImportError:
-    from gaupol import FormatDeterminer, documents
-    from gaupol.encodings import detect
-    from gaupol.files import (AdvSubStationAlpha, MicroDVD, SubRip,
-                              SubStationAlpha, new)
-    from gaupol.newlines import newlines
-    from gaupol.subtitle import Subtitle
-    _determiner = FormatDeterminer()
-    determine = _determiner.determine
+    try:
+        from gaupol import FormatDeterminer, documents
+        from gaupol.encodings import detect
+        from gaupol.files import (AdvSubStationAlpha, MicroDVD, SubRip,
+                                  SubStationAlpha, new)
+        from gaupol.newlines import newlines
+        from gaupol.subtitle import Subtitle
+        _determiner = FormatDeterminer()
+        determine = _determiner.determine
+    except ImportError:
+        if six.PY3:
+            raise ImportError('\naeidon or gaupol package required for Subtitle support')
+        else:
+            raise ImportError('\ngaupol package required for Subtitle support')
 
 from translate.storage import base
 
