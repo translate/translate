@@ -326,7 +326,8 @@ class tsunit(lisa.LISAunit):
                     location += ':' + line
                 else:
                     location = line
-            locations.append(location)
+            if location:
+                locations.append(location)
         return locations
 
     def merge(self, otherunit, overwrite=False, comments=True, authoritative=False):

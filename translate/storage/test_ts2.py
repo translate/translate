@@ -183,13 +183,24 @@ class TestTSfile(test_base.TestTranslationStore):
         <source>Choose style and palette based on your desktop settings.</source>
         <translation>Stílus és paletta alapú kiválasztása az asztali beállításokban.</translation>
     </message>
+    <message>
+        <location />
+        <source>Choose style and palette based on your desktop settings.</source>
+        <translation>Stílus és paletta alapú kiválasztása az asztali beállításokban.</translation>
+    </message>
+    <message>
+        <source>Choose style and palette based on your desktop settings.</source>
+        <translation>Stílus és paletta alapú kiválasztása az asztali beállításokban.</translation>
+    </message>
 </context>
 </TS>
 '''
         tsfile = ts.tsfile.parsestring(tsstr)
-        assert len(tsfile.units) == 2
+        assert len(tsfile.units) == 4
         assert tsfile.units[0].getlocations() == ['../tools/qtconfig/mainwindow.cpp:+202']
         assert tsfile.units[1].getlocations() == ['+5']
+        assert tsfile.units[2].getlocations() == []
+        assert tsfile.units[3].getlocations() == []
 
     def test_merge_with_fuzzies(self):
         """test that merge with fuzzy works well"""
