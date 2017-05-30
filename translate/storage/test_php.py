@@ -634,6 +634,31 @@ $month_mar = 'Mar';"""
         assert phpunit.name == "$lang->'item2'"
         assert phpunit.source == "value2"
 
+    @mark.xfail(reason="Bug #3627")
+    def test_slashstar_in_string(self):
+        """ignore the /* comment delimiter when it is part of a string.
+        Bug #3627"""
+        phpsource = '''$definition['key'] = 'Value /* value continued';
+      $lang = array(
+         'somekey' => 'Some value',
+         'otherkey' => 'Other value /* continued',
+         'thirdkey' => 'Third value',
+      );'''
+        phpfile = self.phpparse(phpsource)
+        assert len(phpfile.units) == 4
+        phpunit = phpfile.units[0]
+        assert phpunit.name == "$definition['key']"
+        assert phpunit.source == "Value /* value continued"
+        phpunit = phpfile.units[1]
+        assert phpunit.name == "$lang->'somekey'"
+        assert phpunit.source == "Some value"
+        phpunit = phpfile.units[2]
+        assert phpunit.name == "$lang->'otherkey'"
+        assert phpunit.source == "Other value /* continued"
+        phpunit = phpfile.units[3]
+        assert phpunit.name == "$lang->'thirdkey'"
+        assert phpunit.source == "Third value"
+
     @mark.xfail(reason="Bug #2611")
     def test_parsing_simple_heredoc_syntax(self):
         """parse the heredoc syntax. Bug #2611"""
