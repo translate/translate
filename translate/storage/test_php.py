@@ -461,6 +461,23 @@ $month_mar = 'Mar';"""
         assert phpunit.name == "$lang->'item2'"
         assert phpunit.source == "value2"
 
+    @mark.xfail(reason="Bug #3629")
+    def test_parsing_arrays_declared_in_a_single_line(self):
+        """parse an array declared in a single line.
+        Bug #3629"""
+        phpsource = '''$lang = array( 'item1' => 'value1', 'item2' => 'value2', 'item3' => 'value3' );'''
+        phpfile = self.phpparse(phpsource)
+        assert len(phpfile.units) == 3
+        phpunit = phpfile.units[0]
+        assert phpunit.name == "$lang->'item1'"
+        assert phpunit.source == "value1"
+        phpunit = phpfile.units[1]
+        assert phpunit.name == "$lang->'item2'"
+        assert phpunit.source == "value2"
+        phpunit = phpfile.units[2]
+        assert phpunit.name == "$lang->'item3'"
+        assert phpunit.source == "value3"
+
     @mark.xfail(reason="Bug #3626")
     def test_parsing_arrays_using_short_array_syntax(self):
         """parse short array syntax.
