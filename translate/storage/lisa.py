@@ -315,7 +315,7 @@ class LISAfile(base.TranslationStore):
             xml.seek(0)
             posrc = xml.read()
             xml = posrc
-        parser = etree.XMLParser(strip_cdata=False)
+        parser = etree.XMLParser(strip_cdata=False, resolve_entities=False)
         self.document = etree.fromstring(xml, parser).getroottree()
         self.encoding = self.document.docinfo.encoding
         self.initbody()

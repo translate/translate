@@ -101,7 +101,8 @@ def xml_to_strelem(dom_node, xml_space="preserve"):
     if dom_node is None:
         return StringElem()
     if isinstance(dom_node, six.string_types):
-        dom_node = etree.fromstring(dom_node)
+        parser = etree.XMLParser(resolve_entities=False)
+        dom_node = etree.fromstring(dom_node, parser)
     normalize_xml_space(dom_node, xml_space, remove_start=True)
     result = StringElem()
     sub = result.sub  # just an optimisation
@@ -213,7 +214,8 @@ def strelem_to_xml(parent_node, elem):
 
 def parse_xliff(pstr):
     try:
-        return xml_to_strelem(etree.fromstring('<source>%s</source>' % (pstr)))
+        parser = etree.XMLParser(resolve_entities=False)
+        return xml_to_strelem(etree.fromstring('<source>%s</source>' % (pstr), parser))
     except Exception as exc:
         raise
         return None
