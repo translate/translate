@@ -48,7 +48,7 @@ def translate_idml(template, input_file, translatable_files):
         the etrees for each of those translatable files.
         """
         idml_data = open_idml(template)
-        parser = etree.XMLParser(strip_cdata=False)
+        parser = etree.XMLParser(strip_cdata=False, resolve_entities=False)
         return dict((filename, etree.fromstring(data, parser).getroottree())
                     for filename, data in six.iteritems(idml_data))
 

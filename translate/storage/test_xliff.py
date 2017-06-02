@@ -416,3 +416,26 @@ class TestXLIFFfile(test_base.TestTranslationStore):
                  </trans-unit>'''
         xlifffile = xliff.xlifffile.parsestring(xlfsource)
         assert xlifffile.units[0].istranslatable()
+
+    def test_entities(self):
+        xlfsource = '''<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE foo [ <!ELEMENT foo ANY > <!ENTITY xxe SYSTEM "file:///etc/passwd" >]>
+<xliff version="1.1" xmlns="urn:oasis:names:tc:xliff:document:1.1">
+        <file original="doc.txt" source-language="en-US">
+                <body>
+                    <trans-unit id="1" xml:space="preserve" translate="yes">
+                        <source>&xxe;</source>
+                        <target/>
+                    </trans-unit>
+                    <trans-unit id="2" xml:space="preserve" translate="yes">
+                        <source>&amp;</source>
+                        <target/>
+                    </trans-unit>
+                </body>
+        </file>
+</xliff>'''
+        xlifffile = xliff.xlifffile.parsestring(xlfsource)
+        assert xlifffile.units[0].istranslatable()
+        assert xlifffile.units[0].source == ''
+        assert xlifffile.units[1].istranslatable()
+        assert xlifffile.units[1].source == '&'

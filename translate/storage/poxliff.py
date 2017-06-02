@@ -376,7 +376,8 @@ class PoXliffFile(xliff.xlifffile, poheader.poheader):
             xml.seek(0)
             xmlsrc = xml.read()
             xml = xmlsrc
-        self.document = etree.fromstring(xml).getroottree()
+        parser = etree.XMLParser(resolve_entities=False)
+        self.document = etree.fromstring(xml, parser).getroottree()
         self.initbody()
         root_node = self.document.getroot()
         assert root_node.tag == self.namespaced(self.rootNode)
