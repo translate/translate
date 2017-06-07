@@ -102,6 +102,7 @@ languages = {
     'jbo': ('Lojban', 1, '0'),
     'jv': ('Javanese', 2, '(n != 1)'),
     'ka': ('Georgian', 1, '0'),
+    'kab': ('Kabyle', 1, '(n > 1)'),
     'kk': ('Kazakh', 2, 'n != 1'),
     'kl': ('Greenlandic', 2, '(n != 1)'),
     'km': ('Central Khmer', 1, '0'),
