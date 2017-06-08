@@ -11,4 +11,4 @@ lxml>=3.5
 python-Levenshtein>=0.12
 
 # Encoding detection
-chardet==3.0.3
+chardet==3.0.4
