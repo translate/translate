@@ -420,7 +420,7 @@ def _fix_language_name(name):
     return name
 
 
-def gettext_lang(langcode=None):
+def gettext_lang(langcode=None, localedir=None):
     """Returns a gettext function to translate language names into the given
     language, or the system language if no language is specified.
     """
@@ -429,14 +429,20 @@ def gettext_lang(langcode=None):
             langcode = ""
             if os.name == "nt":
                 # On Windows the default locale is not used for some reason
-                t = gettext.translation('iso_639',
-                                        languages=[locale.getdefaultlocale()[0]],
-                                        fallback=True)
+                t = gettext.translation(
+                    'iso_639',
+                    languages=[locale.getdefaultlocale()[0]],
+                    localedir=localedir,
+                    fallback=True)
             else:
-                t = gettext.translation('iso_639', fallback=True)
+                t = gettext.translation(
+                    'iso_639', fallback=True, localedir=localedir)
         else:
-            t = gettext.translation('iso_639', languages=[langcode],
-                                    fallback=True)
+            t = gettext.translation(
+                'iso_639',
+                languages=[langcode],
+                localedir=localedir,
+                fallback=True)
         iso639[langcode] = t.ugettext if six.PY2 else t.gettext
     return iso639[langcode]
 
