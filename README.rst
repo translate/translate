@@ -125,16 +125,12 @@ it is available. This can improve the performance of pot2po, for example.  It
 is optional and no functionality is lost if it is not installed, only speed.
 <http://sourceforge.net/projects/translate/files/python-Levenshtein/>
 
-Functions in the lang.data module can supply functions to translate language
-names using the iso-codes package. It can even translate names in the format
-``Language (Country)``
-such as
-``English (South Africa)``
-This is used by Pootle and Virtaal. If the package is not installed, the
-language names will simply appear in English. It is therefore recommended you
-install the iso-codes package for your distribution, but it is optional.
-Alternatively, it is also available from
-http://packages.debian.org/unstable/source/iso-codes
+Functions in the `lang.data` module can supply functions to translate language
+names using the `pycountry` package. It can even translate names in the format
+``Language (Country)`` such as ``English (South Africa)`` This is used by
+Pootle and Virtaal. If the package is not installed, the language names will
+simply appear in English. It is therefore recommended you install the
+`pycountry` package.
 
 The package vobject is needed for ical2po and po2ical.
 

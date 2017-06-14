@@ -27,6 +27,11 @@ import os
 import re
 import six
 
+try:
+    import pycountry
+except ImportError:
+    pycountry = None
+
 
 languages = {
     'ach': ('Acholi', 2, 'n > 1'),
@@ -425,18 +430,21 @@ def gettext_lang(langcode=None):
     language, or the system language if no language is specified.
     """
     if langcode not in iso639:
-        if not langcode:
+        kwargs = {
+            'domain': 'iso_639',
+            'fallback': True,
+        }
+        if pycountry is not None:
+            kwargs['domain'] = 'iso639-3'
+            kwargs['localedir'] = pycountry.LOCALES_DIR
+        if langcode:
+            kwargs['languages'] = [langcode]
+        else:
             langcode = ""
             if os.name == "nt":
                 # On Windows the default locale is not used for some reason
-                t = gettext.translation('iso_639',
-                                        languages=[locale.getdefaultlocale()[0]],
-                                        fallback=True)
-            else:
-                t = gettext.translation('iso_639', fallback=True)
-        else:
-            t = gettext.translation('iso_639', languages=[langcode],
-                                    fallback=True)
+                kwargs['languages'] = [locale.getdefaultlocale()[0]]
+        t = gettext.translation(**kwargs)
         iso639[langcode] = t.ugettext if six.PY2 else t.gettext
     return iso639[langcode]
 
@@ -446,18 +454,21 @@ def gettext_country(langcode=None):
     language, or the system language if no language is specified.
     """
     if langcode not in iso3166:
-        if not langcode:
+        kwargs = {
+            'domain': 'iso_3166',
+            'fallback': True,
+        }
+        if pycountry is not None:
+            kwargs['domain'] = 'iso3166'
+            kwargs['localedir'] = pycountry.LOCALES_DIR
+        if langcode:
+            kwargs['languages'] = [langcode]
+        else:
             langcode = ""
             if os.name == "nt":
                 # On Windows the default locale is not used for some reason
-                t = gettext.translation('iso_3166',
-                                        languages=[locale.getdefaultlocale()[0]],
-                                        fallback=True)
-            else:
-                t = gettext.translation('iso_3166', fallback=True)
-        else:
-            t = gettext.translation('iso_3166', languages=[langcode],
-                                    fallback=True)
+                kwargs['languages'] = [locale.getdefaultlocale()[0]]
+        t = gettext.translation(**kwargs)
         iso3166[langcode] = t.ugettext if six.PY2 else t.gettext
     return iso3166[langcode]
 
