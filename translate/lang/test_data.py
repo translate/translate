@@ -40,3 +40,51 @@ def test_language_names():
     assert _(u"Spanish; Castillian") == u"Spanish"
     assert _(u"Mapudungun; Mapuche") == u"Mapudungun"
     assert _(u"Interlingua (International Auxiliary Language Association)") == u"Interlingua"
+
+
+def test_language_iso_fullname():
+    """Test language ISO fullnames."""
+    assert data.get_language_iso_fullname("af") == u'Afrikaans'
+    assert data.get_language_iso_fullname("cak") == u'Kaqchikel'
+    assert data.get_language_iso_fullname("en_ZA") == u'English (South Africa)'
+    assert data.get_language_iso_fullname("pt") == u'Portuguese'
+    assert data.get_language_iso_fullname("pt_PT") == u'Portuguese (Portugal)'
+    assert data.get_language_iso_fullname("pt_BR") == u'Portuguese (Brazil)'
+    assert data.get_language_iso_fullname("pt_br") == u'Portuguese (Brazil)'
+    assert data.get_language_iso_fullname("pt-BR") == u'Portuguese (Brazil)'
+    assert data.get_language_iso_fullname("pt-br") == u'Portuguese (Brazil)'
+    assert data.get_language_iso_fullname("ca") == u'Catalan'
+    assert data.get_language_iso_fullname("ca@valencia") == u''
+    assert data.get_language_iso_fullname("") == u''
+    assert data.get_language_iso_fullname("z") == u''
+    assert data.get_language_iso_fullname("zzz") == u''
+    assert data.get_language_iso_fullname("zzzz") == u''
+    assert data.get_language_iso_fullname("zz_BB") == u''
+    assert data.get_language_iso_fullname("zz-BB") == u''
+    assert data.get_language_iso_fullname("zzz_BBB") == u''
+    assert data.get_language_iso_fullname("zzz_BBB") == u''
+
+
+def test_country_iso_name():
+    """Test country ISO names."""
+    assert data.get_country_iso_name("ZA") == u'South Africa'
+    assert data.get_country_iso_name("PT") == u'Portugal'
+    assert data.get_country_iso_name("BR") == u'Brazil'
+    assert data.get_country_iso_name("br") == u'Brazil'
+    assert data.get_country_iso_name("ESP") == u'Spain'
+    assert data.get_country_iso_name("") == u''
+    assert data.get_country_iso_name("z") == u''
+    assert data.get_country_iso_name("zzz") == u''
+    assert data.get_country_iso_name("zzzz") == u''
+
+
+def test_language_iso_name():
+    """Test language ISO names."""
+    assert data.get_language_iso_name("af") == u'Afrikaans'
+    assert data.get_language_iso_name("cak") == u'Kaqchikel'
+    assert data.get_language_iso_name("en") == u'English'
+    assert data.get_language_iso_name("pt") == u'Portuguese'
+    assert data.get_language_iso_name("") == u''
+    assert data.get_language_iso_name("z") == u''
+    assert data.get_language_iso_name("zzz") == u''
+    assert data.get_language_iso_name("zzzz") == u''

@@ -381,6 +381,48 @@ def languagematch(languagecode, otherlanguagecode):
              variant_re.match(otherlanguagecode[len(languagecode):])))
 
 
+def get_country_iso_name(country_code):
+    """Return country ISO name."""
+    country_code = country_code.upper()
+    try:
+        if len(country_code) == 2:
+            return pycountry.countries.get(alpha_2=country_code).name
+        return pycountry.countries.get(alpha_3=country_code).name
+    except KeyError:
+        return u""
+
+
+def get_language_iso_name(language_code):
+    """Return language ISO name."""
+    try:
+        if len(language_code) == 2:
+            return pycountry.languages.get(alpha_2=language_code).name
+        return pycountry.languages.get(alpha_3=language_code).name
+    except KeyError:
+        return u""
+
+
+def get_language_iso_fullname(language_code):
+    """Return language ISO fullname.
+
+    If language code is not a simple ISO 639 code, then we try to split into a
+    two part language code (ISO 639 and ISO 3166).
+    """
+    if len(language_code) > 3:
+        language_code = language_code.replace("_", "-").replace("@", "-")
+        if "-" not in language_code:
+            return u""
+        language_code, country_code = language_code.split("-")
+        language_name = get_language_iso_name(language_code)
+        if not language_name:
+            return u""
+        country_name = get_country_iso_name(country_code)
+        if not country_name:
+            return u""
+        return u"%s (%s)" % (language_name, country_name)
+    return get_language_iso_name(language_code)
+
+
 dialect_name_re = re.compile(r"(.+)\s\(([^)\d]{,25})\)$")
 # The limit of 25 characters on the country name is so that "Interlingua (...)"
 # (see above) is correctly interpreted.
