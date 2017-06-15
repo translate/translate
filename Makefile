@@ -5,7 +5,7 @@ DOCS_DIR = docs
 all: help
 
 build: docs
-	python setup.py sdist --formats=bztar
+	python setup.py sdist --formats=gztar
 
 docs:
 	# Make sure that the submodule with docs theme is pulled and up-to-date.
