@@ -81,7 +81,7 @@ class AndroidResourceUnit(base.TranslationUnit):
     def getcontext(self):
         return self.xmlelement.get("name")
 
-    def unescape(self, text):
+    def unescape(self, text, strip=True):
         """
         Remove escaping from Android resource.
 
@@ -120,6 +120,8 @@ class AndroidResourceUnit(base.TranslationUnit):
                         # non-significant newlines/tabs etc.
                         text[i-space_count:i] = ' '
                         i -= space_count - 1
+                        if strip and (i == 1 or c is EOF):
+                            del text[i-1]
                     space_count = 0
                 elif space_count == 1:
                     # At this point we have a single whitespace character,
@@ -129,6 +131,8 @@ class AndroidResourceUnit(base.TranslationUnit):
                     # make sure that this kind of whitespace is always a
                     # standard space.
                     text[i-1] = ' '
+                    if strip and not active_quote and (i == 1 or c is EOF):
+                        del text[i-1]
                     space_count = 0
                 else:
                     space_count = 0
@@ -357,12 +361,12 @@ class AndroidResourceUnit(base.TranslationUnit):
 
             # Unescaping texts.
             if (cloned_target.text is not None):
-                cloned_target.text = self.unescape(cloned_target.text)
+                cloned_target.text = self.unescape(cloned_target.text, False)
             for xmlelement in cloned_target.iterdescendants():
                 if (xmlelement.text is not None):
-                    xmlelement.text = self.unescape(xmlelement.text)
+                    xmlelement.text = self.unescape(xmlelement.text, False)
                 if (xmlelement.tail is not None):
-                    xmlelement.tail = self.unescape(xmlelement.tail)
+                    xmlelement.tail = self.unescape(xmlelement.tail, False)
 
             # Grab root text (using a temporary xml element for text escaping)
             if (cloned_target.text is not None):

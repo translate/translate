@@ -257,6 +257,31 @@ class TestAndroidResourceUnit(test_monolingual.TestMonolingualUnit):
         xml = '<string name="teststring"></string>\n\n'
         self.__check_parse(string, xml)
 
+    def test_parse_trailing_space(self):
+        string = 'test'
+        xml = '<string name="teststring">test </string>\n\n'
+        self.__check_parse(string, xml)
+
+    def test_parse_trailing_spaces(self):
+        string = 'test'
+        xml = '<string name="teststring">test    </string>\n\n'
+        self.__check_parse(string, xml)
+
+    def test_parse_leading_spaces(self):
+        string = 'test'
+        xml = '<string name="teststring">    test</string>\n\n'
+        self.__check_parse(string, xml)
+
+    def test_parse_trailing_newline(self):
+        string = 'test'
+        xml = '<string name="teststring">test\n</string>\n\n'
+        self.__check_parse(string, xml)
+
+    def test_parse_many_quotes(self):
+        string = 'test'
+        xml = '<string name="teststring">""""""""""test"""""""</string>\n\n'
+        self.__check_parse(string, xml)
+
     def test_parse_blank_string_again(self):
         string = ''
         xml = '<string name="teststring"/>\n\n'
