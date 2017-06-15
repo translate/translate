@@ -140,7 +140,6 @@ checkout run:
     (build-ttk-release)$ pip install -r requirements/dev.txt
     (build-ttk-release)$ make build
     (build-ttk-release)$ deactivate
-    $ rmvirtualenv build-ttk-release
 
 
 This will create a tarball in :file:`dist/` which you can use for further
@@ -236,7 +235,7 @@ Publish on PyPI
 ---------------
 
 .. - `Submitting Packages to the Package Index
-  <http://wiki.python.org/moin/CheeseShopTutorial#Submitting_Packages_to_the_Package_Index>`_
+  <https://packaging.python.org/tutorials/distributing-packages/#uploading-your-project-to-pypi>`_
 
 
 .. note:: You need a username and password on `Python Package Index (PyPI)
@@ -244,21 +243,20 @@ Publish on PyPI
    can proceed with this step.
 
    These can be stored in :file:`$HOME/.pypirc` and will contain your username
-   and password. A first run of:
-
-   .. code-block:: console
-
-       $ ./setup.py register
-
-   will create such file. It will also actually publish the meta-data so only
-   do it when you are actually ready.
+   and password. Check `Create a PyPI account
+   <https://packaging.python.org/tutorials/distributing-packages/#create-an-account>`_
+   for more details.
 
 
 Run the following to publish the package on PyPI:
 
 .. code-block:: console
 
-    $ make publish-pypi
+    $ workon build-ttk-release
+    (build-ttk-release)$ pip install twine
+    (build-ttk-release)$ twine upload dist/translate-toolkit-*
+    (build-ttk-release)$ deactivate
+    $ rmvirtualenv build-ttk-release
 
 
 .. _releasing#create-github-release:

@@ -1,7 +1,7 @@
 DOCS_DIR = docs
 FORMATS=--formats=bztar
 
-.PHONY: all build docs requirements help publish-pypi sort-imports
+.PHONY: all build docs requirements help sort-imports
 
 all: help
 
@@ -18,9 +18,6 @@ docs:
 docs-review: docs
 	python -mwebbrowser file://$(shell pwd)/${DOCS_DIR}/_build/html/index.html
 
-publish-pypi:
-	python setup.py sdist ${FORMATS} upload
-
 sort-imports:
 	isort -rc .
 
@@ -33,7 +30,6 @@ help:
 	@echo "  docs-review - launch webbrowser to review docs"
 	@echo "  requirements - (re)generate pinned and minimum requirements"
 	@echo "  sort-imports - sort Python imports"
-	@echo "  publish-pypi - publish on PyPI"
 	@echo "  test - run unit test suite"
 	@echo "  test-functional - run the functional test suite"
 
