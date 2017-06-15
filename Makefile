@@ -1,12 +1,11 @@
 DOCS_DIR = docs
-FORMATS=--formats=bztar
 
 .PHONY: all build docs requirements help sort-imports
 
 all: help
 
 build: docs
-	python setup.py sdist ${FORMATS}
+	python setup.py sdist --formats=bztar
 
 docs:
 	# Make sure that the submodule with docs theme is pulled and up-to-date.
