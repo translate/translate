@@ -1,0 +1,90 @@
+Translate Toolkit 2.2.0
+***********************
+
+*Released on 15 June 2017*
+
+This release contains many improvements and bug fixes.
+
+
+Major changes
+=============
+
+- Avoid resolving external entities while parsing XML.
+- Improvements for Android, ts and resx formats.
+- Added support for PHP nested arrays.
+- Added Kabyle language
+
+
+Detailed changes
+================
+
+Requirements
+------------
+
+- Updated requirements.
+- Added `pycountry` recommended requirement for localized language names.
+
+
+Formats and Converters
+----------------------
+
+- XML formats
+
+  - Avoid resolving external entities while parsing.
+
+- Properties
+
+  - Improved behavior for strings with no value.
+
+- Android resources
+
+  - Improved newlines handling.
+  - Strip leading and trailing whitespace.
+
+- PHP
+
+  - Added support for nested named arrays and nested unnamed arrays.
+
+- ts
+
+  - Handle gracefully empty location tag.
+  - Encode `po2ts` output as UTF-8.
+
+- resx
+
+  - Improved skeleton.
+  - Fixed indent of the </data> elements.
+
+
+Languages
+---------
+
+- Added Kabyle language.
+
+
+API changes
+-----------
+
+- Added functions to retrieve language and country ISO names.
+- If available, `pycountry` is used first to get language names translations.
+
+
+General
+-------
+
+- Python 3 fixes
+- Added more tests
+
+
+...and loads of general code cleanups and of course many many bugfixes.
+
+
+Contributors
+============
+
+This release was made possible by the following people:
+
+Dwayne Bailey, Michal Čihař, Taras Semenenko, Leandro Regueiro, Rimas Kudelis,
+BhaaL, Muḥend Belqasem, Jens Petersen.
+
+And to all our bug finders and testers, a Very BIG Thank You.
