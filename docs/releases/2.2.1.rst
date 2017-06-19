@@ -1,0 +1,75 @@
+Translate Toolkit 2.2.1
+***********************
+
+*Released on 19 June 2017*
+
+This release contains many improvements and bug fixes.
+
+
+Major changes
+=============
+
+- Refactored functions for resolving language/country names translation to be
+  memory efficient.
+- Improvements for ts and subtitles formats.
+- Added `--preserveplaceholders` argument to `podebug`.
+- Fixed Montenegrin language name.
+
+
+Detailed changes
+================
+
+Formats and Converters
+----------------------
+
+- ts
+
+  - Write quotes as entities
+  - Remove not necessary encoding/decoding to UTF-8
+
+
+- Subtitles
+
+  - Avoid errors when subtitle support is missing
+
+
+Tools
+-----
+
+- Added `--preserveplaceholders` argument to `podebug` to avoid rewriting
+  placeholders
+
+
+Languages
+---------
+
+- Fixed Montenegrin language name.
+
+
+API changes
+-----------
+
+- Refactored functions for resolving language/country names translation to be
+  memory efficient
+
+
+General
+-------
+
+- Use gzip for packaging
+- Python 3 fixes
+- Added more tests
+
+
+...and loads of general code cleanups and of course many many bugfixes.
+
+
+Contributors
+============
+
+This release was made possible by the following people:
+
+Michal Čihař, Leandro Regueiro, Ryan Northey, Robbie Cole, Kai Pastor, Dwayne
+Bailey.
+
+And to all our bug finders and testers, a Very BIG Thank You.
