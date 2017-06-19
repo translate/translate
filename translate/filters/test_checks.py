@@ -980,6 +980,34 @@ def test_validchars():
     assert passes(stdchecker.validchars, "This sentence contains valid chars", u"\u004c\u032d")
 
 
+def test_minimalchecker():
+    """tests the Minimal quality checker"""
+    from translate.storage import base
+
+    # The minimal checker only checks for untranslated, unchanged and blank strings.
+    # All other quality checks should be ignored.
+    minimalchecker = checks.MinimalChecker()
+    assert fails(minimalchecker.untranslated, "I am untranslated", "")
+    assert passes(minimalchecker.untranslated, "I am translated", "Ek is vertaal")
+    assert fails(minimalchecker.unchanged, "Unchanged", "Unchanged")
+    assert passes(minimalchecker.unchanged, "Unchanged", "Changed")
+    assert fails(minimalchecker.blank, "Blank string", " ")
+
+    # Doublewords check is disabled.
+    src, tgt, __ = strprep(u"Save the rhino", u"Save the the rhino")
+    unit = base.TranslationUnit(src)
+    unit.target = tgt
+
+    assert 'doublewords' not in minimalchecker.run_filters(unit).keys()
+
+    # Printf check is disabled.
+    src, tgt, __ = strprep(u"Non-matching printf variables", u"Ek is %s")
+    unit = base.TranslationUnit(src)
+    unit.target = tgt
+
+    assert 'printf' not in minimalchecker.run_filters(unit).keys()
+
+
 def test_variables_kde():
     """tests variables in KDE translations"""
     # GNOME variables
