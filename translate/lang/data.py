@@ -343,9 +343,7 @@ def simplercode(code):
     """
     if not code:
         return code
-
-    normalized = normalize_code(code)
-    separator = normalized.rfind('-')
+    separator = normalize_code(code).rfind('-')
     if separator >= 0:
         return code[:separator]
     else:
@@ -360,11 +358,6 @@ expansion_factors = {
     'it': 0.2,
 }
 """Source to target string length expansion factors."""
-
-iso639 = {}
-"""ISO 639 language codes"""
-iso3166 = {}
-"""ISO 3166 country codes"""
 
 langcode_re = re.compile("^[a-z]{2,3}([_-][A-Z]{2,3}|)(@[a-zA-Z0-9]+|)$")
 langcode_ire = re.compile("^[a-z]{2,3}([_-][a-z]{2,3})?(@[a-z0-9]+)?$",
@@ -410,6 +403,7 @@ def get_language_iso_fullname(language_code):
     """
     if len(language_code) > 3:
         language_code = language_code.replace("_", "-").replace("@", "-")
+        language_code = "-".join(language_code.split("-")[:2])
         if "-" not in language_code:
             return u""
         language_code, country_code = language_code.split("-")
@@ -467,52 +461,37 @@ def _fix_language_name(name):
     return name
 
 
+def gettext_domain(langcode, domain, localedir=None):
+    """Returns a gettext function for given iso domain"""
+    kwargs = dict(
+        domain=domain,
+        localedir=localedir,
+        fallback=True)
+    if langcode:
+        kwargs['languages'] = [langcode]
+    elif os.name == "nt":
+        # On Windows the default locale is not used for some reason
+        kwargs['languages'] = [locale.getdefaultlocale()[0]]
+    t = gettext.translation(**kwargs)
+    return t.ugettext if six.PY2 else t.gettext
+
+
 def gettext_lang(langcode=None):
     """Returns a gettext function to translate language names into the given
     language, or the system language if no language is specified.
     """
-    if langcode not in iso639:
-        kwargs = {
-            'domain': 'iso_639',
-            'fallback': True,
-        }
-        if pycountry is not None:
-            kwargs['domain'] = 'iso639-3'
-            kwargs['localedir'] = pycountry.LOCALES_DIR
-        if langcode:
-            kwargs['languages'] = [langcode]
-        else:
-            langcode = ""
-            if os.name == "nt":
-                # On Windows the default locale is not used for some reason
-                kwargs['languages'] = [locale.getdefaultlocale()[0]]
-        t = gettext.translation(**kwargs)
-        iso639[langcode] = t.ugettext if six.PY2 else t.gettext
-    return iso639[langcode]
+    if pycountry is None:
+        return gettext_domain(langcode, 'iso_639')
+    return gettext_domain(langcode, 'iso639-3', pycountry.LOCALES_DIR)
 
 
 def gettext_country(langcode=None):
     """Returns a gettext function to translate country names into the given
     language, or the system language if no language is specified.
     """
-    if langcode not in iso3166:
-        kwargs = {
-            'domain': 'iso_3166',
-            'fallback': True,
-        }
-        if pycountry is not None:
-            kwargs['domain'] = 'iso3166'
-            kwargs['localedir'] = pycountry.LOCALES_DIR
-        if langcode:
-            kwargs['languages'] = [langcode]
-        else:
-            langcode = ""
-            if os.name == "nt":
-                # On Windows the default locale is not used for some reason
-                kwargs['languages'] = [locale.getdefaultlocale()[0]]
-        t = gettext.translation(**kwargs)
-        iso3166[langcode] = t.ugettext if six.PY2 else t.gettext
-    return iso3166[langcode]
+    if pycountry is None:
+        return gettext_domain(langcode, 'iso_3166')
+    return gettext_domain(langcode, 'iso3166', pycountry.LOCALES_DIR)
 
 
 def normalize(string, normal_form="NFC"):
