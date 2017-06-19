@@ -253,6 +253,7 @@ Run the following to publish the package on PyPI:
 .. code-block:: console
 
     $ workon build-ttk-release
+    (build-ttk-release)$ pip install --upgrade pyopenssl ndg-httpsclient pyasn1
     (build-ttk-release)$ pip install twine
     (build-ttk-release)$ twine upload dist/translate-toolkit-*
     (build-ttk-release)$ deactivate
