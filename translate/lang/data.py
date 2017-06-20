@@ -434,10 +434,12 @@ def tr_lang(langcode=None):
         match = dialect_name_re.match(name)
         if match:
             language, country = match.groups()
-            return u"%s (%s)" % (_fix_language_name(langfunc(language)),
-                                 countryfunc(country))
-        else:
-            return _fix_language_name(langfunc(name))
+            if country != "macrolanguage":
+                return (
+                    u"%s (%s)"
+                    % (_fix_language_name(langfunc(language)),
+                       countryfunc(country)))
+        return _fix_language_name(langfunc(name))
 
     return handlelanguage
 
