@@ -1,0 +1,22 @@
+Translate Toolkit 2.2.2
+***********************
+
+*Released on 20 June 2017*
+
+This release contains improvements and bug fixes.
+
+
+Changes
+=======
+
+- Fixed resolving of country names translations.
+
+
+Contributors
+============
+
+This release was made possible by the following people:
+
+Ryan Northey, Leandro Regueiro.
+
+And to all our bug finders and testers, a Very BIG Thank You.
