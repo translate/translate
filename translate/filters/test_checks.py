@@ -667,6 +667,25 @@ def test_puncspacing():
     assert passes(frchecker.puncspacing, u"Do \"this\"", u"Do «\u00a0this\u00a0»")
     assert fails(frchecker.puncspacing, "Do \"this\"", "Do «this»")
 
+    # Handle Bidi markers as non-characters
+    hechecker = checks.StandardChecker(checks.CheckerConfig(targetlanguage="he"))
+    assert passes(hechecker.puncspacing, "hi. there", u"שלום.\u200f לך")  # RLM
+    assert passes(hechecker.puncspacing, "hi. there", u"שלום.\u200e לך")  # LRM
+    assert passes(hechecker.puncspacing, "hi. there", u"שלום.\u202b לך")  # RLE
+    assert passes(hechecker.puncspacing, "hi. there", u"שלום.\u202a לך")  # LRE
+    assert passes(hechecker.puncspacing, "hi. there", u"שלום.\u202e לך")  # RLO
+    assert passes(hechecker.puncspacing, "hi. there", u"שלום.\u202d לך")  # LRO
+    assert passes(hechecker.puncspacing, "hi. there", u"שלום.\u202c לך")  # PDF
+    assert passes(hechecker.puncspacing, "hi. there", u"שלום.\u2069 לך")  # PDI
+    assert passes(hechecker.puncspacing, "hi. there", u"שלום.\u2068 לך")  # FSI
+    assert passes(hechecker.puncspacing, "hi. there", u"שלום.\u2067 לך")  # RLI
+    assert passes(hechecker.puncspacing, "hi. there", u"שלום.\u2066 לך")  # LRI
+
+    # ZWJ and ZWNJ handling as non-characters
+    archecker = checks.StandardChecker(checks.CheckerConfig(targetlanguage="ar"))
+    assert passes(archecker.puncspacing, "hi. there", u"السلام.\u200d عليكم")  # ZWJ
+    assert passes(archecker.puncspacing, "hi. there", u"السلام.\u200c عليكم")  # ZWNJ
+
 
 def test_purepunc():
     """tests messages containing only punctuation"""

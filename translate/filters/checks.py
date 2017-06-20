@@ -862,7 +862,27 @@ class StandardChecker(TranslationChecker):
             return True
 
         str2 = self.filteraccelerators(self.filtervariables(str2))
+        # Substitute: nbsp
         str2 = str2.replace(u"\u00a0", u" ")
+        # Strip: Bidi markers and ZW* chars
+        str2 = str2.translate(
+            {ord(c): None for c in (
+                # Bidi markers
+                u"\u200e",  # LRM
+                u"\u200f",  # RLM
+                u"\u202b",  # RLE
+                u"\u202a",  # LRE
+                u"\u202e",  # RLO
+                u"\u202d",  # LRO
+                u"\u202c",  # PDF
+                u"\u2069",  # PDI
+                u"\u2068",  # FSI
+                u"\u2067",  # RLI
+                u"\u2066",  # LRI
+                # ZW*
+                u"\u200d",  # ZWJ
+                u"\u200c",  # ZWNJ
+            )})
 
         for puncchar in self.config.punctuation:
             plaincount1 = str1.count(puncchar)
