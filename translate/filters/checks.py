@@ -2334,6 +2334,28 @@ class MinimalChecker(StandardChecker):
         StandardChecker.__init__(self, **kwargs)
 
 
+reducedconfig = CheckerConfig()
+
+
+class ReducedChecker(StandardChecker):
+
+    def __init__(self, **kwargs):
+        checkerconfig = kwargs.get("checkerconfig", None)
+
+        if checkerconfig is None:
+            checkerconfig = CheckerConfig()
+            kwargs["checkerconfig"] = checkerconfig
+
+        limitfilters = kwargs.get("limitfilters", None)
+
+        if limitfilters is None:
+            limitfilters = ["untranslated", "unchanged", "blank", "doublespacing", "doublewords", "spellcheck"]
+            kwargs["limitfilters"] = limitfilters
+
+        checkerconfig.update(minimalconfig)
+        StandardChecker.__init__(self, **kwargs)
+
+
 termconfig = CheckerConfig()
 
 

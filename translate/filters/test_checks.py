@@ -1008,6 +1008,39 @@ def test_minimalchecker():
     assert 'printf' not in minimalchecker.run_filters(unit).keys()
 
 
+def test_reducedchecker():
+    """tests the Reduced quality checker"""
+    from translate.storage import base
+
+    # The reduced checker only runs the following tests:
+    # untranslated, unchanged, blank, doublespacing, doublewords, spellcheck.
+    # All other quality checks should be ignored.
+    reducedchecker = checks.ReducedChecker()
+    assert fails(reducedchecker.untranslated, "I am untranslated", "")
+    assert passes(reducedchecker.untranslated, "I am translated", "Ek is vertaal")
+    assert fails(reducedchecker.unchanged, "Unchanged", "Unchanged")
+    assert passes(reducedchecker.unchanged, "Unchanged", "Changed")
+    assert fails(reducedchecker.blank, "Blank string", " ")
+    assert passes(reducedchecker.doublespacing, "Sentence. Another sentence.", "Sin. No double spacing.")
+    assert fails(reducedchecker.doublespacing, "Sentence. Another sentence.", "Sin.  Uneeded double space in translation.")
+    assert passes(reducedchecker.doublewords, "Save the rhino", "Save the rhino")
+    assert fails(reducedchecker.doublewords, "Save the rhino", "Save the the rhino")
+
+    # Printf check is disabled.
+    src, tgt, __ = strprep(u"Non-matching printf variables", u"Ek is %s")
+    unit = base.TranslationUnit(src)
+    unit.target = tgt
+
+    assert 'printf' not in reducedchecker.run_filters(unit).keys()
+
+    # Escapes check is disabled.
+    src, tgt, __ = strprep(u"A file", u"'n Leer\n")
+    unit = base.TranslationUnit(src)
+    unit.target = tgt
+
+    assert 'escapes' not in reducedchecker.run_filters(unit).keys()
+
+
 def test_variables_kde():
     """tests variables in KDE translations"""
     # GNOME variables
