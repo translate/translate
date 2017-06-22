@@ -2478,6 +2478,7 @@ class IOSChecker(StandardChecker):
 projectcheckers = {
     "minimal": MinimalChecker,
     "standard": StandardChecker,
+    "reduced": ReducedChecker,
     "openoffice": OpenOfficeChecker,
     "libreoffice": LibreOfficeChecker,
     "mozilla": MozillaChecker,
