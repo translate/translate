@@ -51,6 +51,8 @@ class po2txt(object):
         for unit in inputstore.units:
             if unit.isheader():
                 continue
+            if unit.isobsolete():
+                continue
             if unit.istranslated() or (includefuzzy and unit.isfuzzy()):
                 txtresult += self.wrapmessage(unit.target) + "\n\n"
             else:
