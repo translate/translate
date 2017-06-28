@@ -49,9 +49,7 @@ class po2txt(object):
         """converts a file to txt format"""
         txtresult = ""
         for unit in inputstore.units:
-            if unit.isheader():
-                continue
-            if unit.isobsolete():
+            if not unit.istranslatable():
                 continue
             if unit.istranslated() or (includefuzzy and unit.isfuzzy()):
                 txtresult += self.wrapmessage(unit.target) + "\n\n"
@@ -65,7 +63,7 @@ class po2txt(object):
         # TODO: make a list of blocks of text and translate them individually
         # rather than using replace
         for unit in inputstore.units:
-            if unit.isheader():
+            if not unit.istranslatable():
                 continue
             if not unit.isfuzzy() or includefuzzy:
                 txtsource = unit.source
