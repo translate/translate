@@ -85,6 +85,7 @@ def test_country_iso_name():
 def test_language_iso_name():
     """Test language ISO names."""
     assert data.get_language_iso_name("af") == u'Afrikaans'
+    assert data.get_language_iso_name("afr") == u'Afrikaans'
     assert data.get_language_iso_name("cak") == u'Kaqchikel'
     assert data.get_language_iso_name("en") == u'English'
     assert data.get_language_iso_name("pt") == u'Portuguese'
