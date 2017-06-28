@@ -393,8 +393,12 @@ def get_language_iso_name(language_code):
     """Return language ISO name."""
     try:
         if len(language_code) == 2:
-            return pycountry.languages.get(alpha_2=language_code).name
-        return pycountry.languages.get(alpha_3=language_code).name
+            language = pycountry.languages.get(alpha_2=language_code)
+        else:
+            language = pycountry.languages.get(alpha_3=language_code)
+        if hasattr(language, 'common_name'):
+            return language.common_name
+        return language.name
     except KeyError:
         return u""
 

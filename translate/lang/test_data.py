@@ -92,3 +92,7 @@ def test_language_iso_name():
     assert data.get_language_iso_name("z") == u''
     assert data.get_language_iso_name("zzz") == u''
     assert data.get_language_iso_name("zzzz") == u''
+
+    # Use common name if available
+    assert data.get_language_iso_name("bn") == u'Bangla'
+    assert data.get_language_iso_name("bn") != u'Bengali'
