@@ -379,8 +379,12 @@ def get_country_iso_name(country_code):
     country_code = country_code.upper()
     try:
         if len(country_code) == 2:
-            return pycountry.countries.get(alpha_2=country_code).name
-        return pycountry.countries.get(alpha_3=country_code).name
+            country = pycountry.countries.get(alpha_2=country_code)
+        else:
+            country = pycountry.countries.get(alpha_3=country_code)
+        if hasattr(country, 'common_name'):
+            return country.common_name
+        return country.name
     except KeyError:
         return u""
 

@@ -77,6 +77,10 @@ def test_country_iso_name():
     assert data.get_country_iso_name("zzz") == u''
     assert data.get_country_iso_name("zzzz") == u''
 
+    # Use common name if available
+    assert data.get_country_iso_name("TW") == u'Taiwan'
+    assert data.get_country_iso_name("TW") != u'Taiwan, Province of China'
+
 
 def test_language_iso_name():
     """Test language ISO names."""
