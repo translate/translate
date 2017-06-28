@@ -45,6 +45,22 @@ class TestPO2Txt(object):
         assert self.po2txt(posource) == "Heading\n\nLyfteks"
         assert self.po2txt(posource, txttemplate) == "Heading\n\nLyfteks"
 
+    def test_obsolete_ignore(self):
+        """check that we handle obsolete message by not using it"""
+        txttemplate = "Heading\n\nBody text"
+        posource = '''
+msgid "Heading"
+msgstr "Opskrif"
+
+msgid "Body text"
+msgstr "Lyfteks"
+
+#~ msgid "Obsolete"
+#~ msgstr "Oud"
+'''
+        assert self.po2txt(posource) == "Opskrif\n\nLyfteks"
+        assert self.po2txt(posource, txttemplate) == "Opskrif\n\nLyfteks"
+
 
 class TestPO2TxtCommand(test_convert.TestConvertCommand, TestPO2Txt):
     """Tests running actual po2txt commands on files"""
