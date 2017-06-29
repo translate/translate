@@ -61,6 +61,22 @@ msgstr "Lyfteks"
         assert self.po2txt(posource) == "Opskrif\n\nLyfteks"
         assert self.po2txt(posource, txttemplate) == "Opskrif\n\nLyfteks"
 
+    def test_header_ignore(self):
+        """check that we ignore headers"""
+        txttemplate = "Heading\n\nBody text"
+        posource = '''
+msgid ""
+msgstr "POT-Creation-Date: 2006-11-11 11:11+0000\n"
+
+msgid "Heading"
+msgstr "Opskrif"
+
+msgid "Body text"
+msgstr "Lyfteks"
+'''
+        assert self.po2txt(posource) == "Opskrif\n\nLyfteks"
+        assert self.po2txt(posource, txttemplate) == "Opskrif\n\nLyfteks"
+
 
 class TestPO2TxtCommand(test_convert.TestConvertCommand, TestPO2Txt):
     """Tests running actual po2txt commands on files"""
