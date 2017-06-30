@@ -93,6 +93,7 @@ def main():
     formats = {
         "po": ("po", segmentfile),
         "xlf": ("xlf", segmentfile),
+        "xliff": ("xliff", segmentfile),
         "tmx": ("tmx", segmentfile),
     }
     parser = convert.ConvertOptionParser(formats, usepots=True, description=__doc__)

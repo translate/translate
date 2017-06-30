@@ -99,6 +99,8 @@ def main(argv=None):
         ("po"): ("txt", converttxt),
         ("xlf", "txt"): ("txt", converttxt),
         ("xlf"): ("txt", converttxt),
+        ("xliff", "txt"): ("txt", converttxt),
+        ("xliff"): ("txt", converttxt),
     }
     parser = convert.ConvertOptionParser(formats, usetemplates=True, description=__doc__)
     parser.add_option(

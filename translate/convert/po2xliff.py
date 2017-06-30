@@ -105,6 +105,8 @@ def main(argv=None):
     formats = {
         "po": ("xlf", convertpo),
         ("po", "xlf"): ("xlf", convertpo),
+        "po": ("xliff", convertpo),
+        ("po", "xliff"): ("xliff", convertpo),
     }
     parser = convert.ConvertOptionParser(formats, usetemplates=True,
                                          description=__doc__)

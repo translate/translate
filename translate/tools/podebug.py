@@ -365,6 +365,7 @@ def main():
         "po": ("po", convertpo),
         "pot": ("po", convertpo),
         "xlf": ("xlf", convertpo),
+        "xliff": ("xliff", convertpo),
         "tmx": ("tmx", convertpo),
     }
     parser = convert.ConvertOptionParser(formats, description=__doc__)

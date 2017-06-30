@@ -206,6 +206,8 @@ def main(argv=None):
         ("po", "po"): ("po", pretranslate_file),
         "xlf": ("xlf", pretranslate_file),
         ("xlf", "xlf"): ("xlf", pretranslate_file),
+        "xliff": ("xliff", pretranslate_file),
+        ("xliff", "xliff"): ("xliff", pretranslate_file),
     }
     parser = convert.ConvertOptionParser(formats, usetemplates=True,
                                          allowmissingtemplate=True,

@@ -162,6 +162,8 @@ def main(argv=None):
     formats = {
         "oo": ("xlf", convertoo),
         "sdf": ("xlf", convertoo),
+        "oo": ("xliff", convertoo),
+        "sdf": ("xliff", convertoo),
     }
     # always treat the input as an archive unless it is a directory
     archiveformats = {(None, "input"): oo.oomultifile}

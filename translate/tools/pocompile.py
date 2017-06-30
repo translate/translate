@@ -76,6 +76,7 @@ def main():
     formats = {
         "po": ("mo", convertmo),
         "xlf": ("mo", convertmo),
+        "xliff": ("mo", convertmo),
     }
     parser = convert.ConvertOptionParser(formats, usepots=False, description=__doc__)
     parser.add_fuzzy_option()

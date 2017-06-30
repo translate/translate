@@ -71,6 +71,7 @@ def main():
     formats = {
         "po": ("po", runclean),
         "xlf": ("xlf", runclean),
+        "xliff": ("xliff", runclean),
         None: ("po", runclean),
     }
     parser = convert.ConvertOptionParser(formats, usetemplates=False, description=__doc__)

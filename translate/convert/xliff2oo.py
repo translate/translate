@@ -224,6 +224,8 @@ def main(argv=None):
         ("po", "oo"): ("oo", convertoo),
         ("xlf", "oo"): ("oo", convertoo),
         ("xlf", "sdf"): ("sdf", convertoo),
+        ("xliff", "oo"): ("oo", convertoo),
+        ("xliff", "sdf"): ("sdf", convertoo),
     }
     # always treat the input as an archive unless it is a directory
     archiveformats = {(None, "output"): oo.oomultifile, (None, "template"): oo.oomultifile}
