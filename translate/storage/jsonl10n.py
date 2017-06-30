@@ -225,3 +225,24 @@ class JsonFile(base.TranslationStore):
             unit = self.UnitClass(data, ref, item)
             unit.setid(k)
             self.addunit(unit)
+
+
+class JsonNestedFile(JsonFile):
+    """A JSON file with nested keys"""
+
+    def serialize(self, out):
+        def nested_set(target, path, value):
+            if len(path) > 1:
+                if path[0] not in target:
+                    target[path[0]] = OrderedDict()
+                nested_set(target[path[0]], path[1:], value)
+            else:
+                target[path[0]] = value
+
+        units = OrderedDict()
+        for unit in self.unit_iter():
+            path = unit.getid().lstrip('.').split('.')
+            nested_set(units, path, unit.target)
+        out.write(json.dumps(units, separators=(',', ': '),
+                             indent=4, ensure_ascii=False).encode(self.encoding))
+        out.write(b'\n')
