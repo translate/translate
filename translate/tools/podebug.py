@@ -362,7 +362,8 @@ def convertpo(inputfile, outputfile, templatefile, format=None, rewritestyle=Non
 def main():
     from translate.convert import convert
     formats = {
-        "po": ("po", convertpo), "pot": ("po", convertpo),
+        "po": ("po", convertpo),
+        "pot": ("po", convertpo),
         "xlf": ("xlf", convertpo),
         "tmx": ("tmx", convertpo),
     }

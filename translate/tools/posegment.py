@@ -90,7 +90,11 @@ def segmentfile(inputfile, outputfile, templatefile, sourcelanguage="en", target
 
 def main():
     from translate.convert import convert
-    formats = {"po": ("po", segmentfile), "xlf": ("xlf", segmentfile), "tmx": ("tmx", segmentfile)}
+    formats = {
+        "po": ("po", segmentfile),
+        "xlf": ("xlf", segmentfile),
+        "tmx": ("tmx", segmentfile),
+    }
     parser = convert.ConvertOptionParser(formats, usepots=True, description=__doc__)
     parser.add_option(
         "-l", "--language", dest="targetlanguage", default=None,

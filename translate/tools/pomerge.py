@@ -104,15 +104,17 @@ def mergestore(inputfile, outputfile, templatefile, mergeblanks="no", mergefuzzy
 
 def main():
     from translate.convert import convert
-    pooutput = ("po", mergestore)
-    potoutput = ("pot", mergestore)
-    xliffoutput = ("xlf", mergestore)
     formats = {
-        ("po", "po"): pooutput, ("po", "pot"): pooutput,
-        ("pot", "po"): pooutput, ("pot", "pot"): potoutput,
-        "po": pooutput, "pot": pooutput,
-        ("xlf", "po"): pooutput, ("xlf", "pot"): pooutput,
-        ("xlf", "xlf"): xliffoutput, ("po", "xlf"): xliffoutput,
+        ("po", "po"): ("po", mergestore),
+        ("po", "pot"): ("po", mergestore),
+        ("pot", "po"): ("po", mergestore),
+        ("pot", "pot"): ("pot", mergestore),
+        "po": ("po", mergestore),
+        "pot": ("po", mergestore),
+        ("xlf", "po"): ("po", mergestore),
+        ("xlf", "pot"): ("po", mergestore),
+        ("xlf", "xlf"): ("xlf", mergestore),
+        ("po", "xlf"): ("xlf", mergestore),
     }
     mergeblanksoption = convert.optparse.Option(
         "", "--mergeblanks",
