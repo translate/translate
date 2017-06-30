@@ -115,6 +115,10 @@ def main():
         ("xlf", "pot"): ("po", mergestore),
         ("xlf", "xlf"): ("xlf", mergestore),
         ("po", "xlf"): ("xlf", mergestore),
+        ("xliff", "po"): ("po", mergestore),
+        ("xliff", "pot"): ("po", mergestore),
+        ("xliff", "xliff"): ("xliff", mergestore),
+        ("po", "xliff"): ("xliff", mergestore),
     }
     mergeblanksoption = convert.optparse.Option(
         "", "--mergeblanks",
