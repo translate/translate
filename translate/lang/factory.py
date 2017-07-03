@@ -21,6 +21,8 @@
 
 from __future__ import unicode_literals
 
+import pkgutil
+
 from translate.lang import common, data
 
 
@@ -54,3 +56,20 @@ def getlanguage(code):
             return relatedlanguage
         else:
             return common.Common(code)
+
+
+def get_all_languages():
+    """Return all language classes."""
+    import translate.lang as package
+
+    is_language_module = lambda x: not (x.startswith("test_")
+                                        or x in ("common", "data", "factory",
+                                                 "identify", "ngram", "poedit",
+                                                 "team"))
+    lang_codes = []
+    for _imp, modname, _isp in pkgutil.walk_packages(package.__path__):
+        if is_language_module(modname):
+            if modname.startswith("code_"):
+                modname = modname.replace("code_", "")
+            lang_codes.append(modname)
+    return [getlanguage(lang_code) for lang_code in sorted(lang_codes)]
