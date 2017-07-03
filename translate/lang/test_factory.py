@@ -1,5 +1,7 @@
 # -*- coding: utf-8 -*-
 
+import pkgutil
+
 from translate.lang import factory
 
 
@@ -39,3 +41,21 @@ def test_getlanguage():
     #Test with a language code contains '@'
     language = factory.getlanguage('ca@valencia')
     assert language.nplurals == 2
+
+
+def test_get_all_languages():
+    """Tests that a basic call to get_all_languages() works."""
+    import translate.lang as package
+
+    is_language_module = lambda x: not (x.startswith("test_")
+                                        or x in ("common", "data", "factory",
+                                                 "identify", "ngram", "poedit",
+                                                 "team"))
+    lang_codes = []
+    for _imp, modname, _isp in pkgutil.walk_packages(package.__path__):
+        if is_language_module(modname):
+            if modname.startswith("code_"):
+                modname = modname.replace("code_", "")
+            lang_codes.append(modname)
+    langs = factory.get_all_languages()
+    assert len(langs) == len(lang_codes)
