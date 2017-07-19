@@ -246,3 +246,60 @@ class JsonNestedFile(JsonFile):
         out.write(json.dumps(units, separators=(',', ': '),
                              indent=4, ensure_ascii=False).encode(self.encoding))
         out.write(b'\n')
+
+
+class WebExtensionJsonUnit(base.TranslationUnit):
+    def __init__(self, source=None, ref=None, item=None):
+        if ref:
+            self._node = ref
+            self.notes = ref['description']
+            self._target = ref['message']
+        else:
+            self._node = OrderedDict((('message', ''), ('description', '')))
+        super(WebExtensionJsonUnit, self).__init__(source)
+
+    def setid(self, value):
+        self._id = value
+
+    def getid(self):
+        return self._id
+
+    def getlocations(self):
+        return [self.getid()]
+
+    def settarget(self, target):
+        super(WebExtensionJsonUnit, self).settarget(target)
+        self._node['message'] = target
+
+    def addnote(self, text, origin=None, position="append"):
+        super(WebExtensionJsonUnit, self).addnote(text, origin, position)
+        self._node['description'] = self.notes
+
+    def removenotes(self):
+        super(WebExtensionJsonUnit, self).removenotes()
+        self._node['description'] = self.notes
+
+
+class WebExtensionJsonFile(JsonFile):
+    """WebExtension JSON file
+
+    See following URLs for doc:
+
+    https://developer.chrome.com/extensions/i18n
+    https://developer.mozilla.org/en-US/Add-ons/WebExtensions/Internationalization
+    """
+
+    UnitClass = WebExtensionJsonUnit
+
+    def _extract_translatables(self, data, stop=None, prev="", name_node=None,
+                               name_last_node=None, last_node=None):
+        for item in data:
+            yield (item, item, data[item], None)
+
+    def serialize(self, out):
+        units = OrderedDict()
+        for unit in self.unit_iter():
+            units[unit.getid()] = unit._node
+        out.write(json.dumps(units, separators=(',', ': '),
+                             indent=4, ensure_ascii=False).encode(self.encoding))
+        out.write(b'\n')

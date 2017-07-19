@@ -53,3 +53,28 @@ class TestJSONNestedResourceStore(test_monolingual.TestMonolingualUnit):
 
         assert store.units[0].source == 'foo'
         assert store.units[1].getid() == '.bar.baz'
+
+
+class TestWebExtensionUnit(test_monolingual.TestMonolingualUnit):
+    UnitClass = jsonl10n.WebExtensionJsonUnit
+
+
+class TestWebExtensionStore(test_monolingual.TestMonolingualUnit):
+    StoreClass = jsonl10n.WebExtensionJsonFile
+
+    def test_serialize(self):
+        store = self.StoreClass()
+        store.parse('{"key": {"message": "value", "description": "note"}}')
+        out = BytesIO()
+        src = store.serialize(out)
+
+        assert out.getvalue() == b'{\n    "key": {\n        "message": "value",\n        "description": "note"\n    }\n}\n'
+
+    def test_set_target(self):
+        store = self.StoreClass()
+        store.parse('{"key": {"message": "value", "description": "note"}}')
+        store.units[0].settarget('another')
+        out = BytesIO()
+        src = store.serialize(out)
+
+        assert out.getvalue() == b'{\n    "key": {\n        "message": "another",\n        "description": "note"\n    }\n}\n'
