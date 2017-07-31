@@ -1,0 +1,52 @@
+Translate Toolkit 2.2.4
+***********************
+
+*Released on 31 July 2017*
+
+This release contains improvements and bug fixes.
+
+
+Changes
+=======
+
+Formats and Converters
+----------------------
+
+- XLIFF
+
+  - Added support for `.xliff` extension in all converters and tools that
+    support `.xlf` extension.
+
+- JSON
+
+  - Added support for nested JSON.
+  - Added support for WebExtension JSON dialect.
+
+- txt
+
+  - `po2txt` skips obsolete and non-translatable strings.
+
+
+Filters and Checks
+------------------
+
+- The `puncspace` check now strips Bidi markers chars before processing.
+- Added `ReducedChecker` checker to list of checkers.
+
+
+API changes
+-----------
+
+- Language and country default to `common_name` if available.
+- Added function to retrieve all language classes.
+
+
+Contributors
+============
+
+This release was made possible by the following people:
+
+Dwayne Bailey, Leandro Regueiro, Michal Čihař, Rimas Kudelis, Ludwig Nussel,
+Stuart Prescott.
+
+And to all our bug finders and testers, a Very BIG Thank You.
