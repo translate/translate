@@ -697,8 +697,7 @@ class pounit(pocommon.pounit):
 
         """
         location = data.forceunicode(location)
-        if location.find(" ") != -1:
-            location = pocommon.quote_plus(location)
+        location = pocommon.quote_plus(location)
         self.sourcecomments.append("#: %s\n" % location)
 
     def _extract_msgidcomments(self, text=None):
