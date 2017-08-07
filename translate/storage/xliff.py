@@ -124,6 +124,18 @@ class xliffunit(lisa.LISAunit):
         S_SIGNED_OFF: (state.FINAL, state.MAX),
     }
 
+    def settarget(self, text, lang='xx', append=False):
+        if not self.istranslated() and text:
+            self.markfuzzy(True)
+        if self.istranslated() and not text:
+            self.markapproved(False)
+        super(xliffunit, self).settarget(text, lang, append)
+
+    def gettarget(self, lang=None):
+        return super(xliffunit, self).gettarget(lang)
+
+    target = property(gettarget, settarget)
+
     def __init__(self, source, empty=False, **kwargs):
         """Override the constructor to set xml:space="preserve"."""
         super(xliffunit, self).__init__(source, empty, **kwargs)
@@ -412,7 +424,7 @@ class xliffunit(lisa.LISAunit):
         """Mark this unit as approved."""
         if value:
             self.xmlelement.set("approved", "yes")
-        elif self.isapproved():
+        else:
             self.xmlelement.set("approved", "no")
 
     def isreview(self):
