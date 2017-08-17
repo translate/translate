@@ -302,8 +302,24 @@ class LISAfile(base.TranslationStore):
         if new:
             self.body.append(unit.xmlelement)
 
+    def cleanindent(self, elem, level=0):
+        i = "\n" + level*"  "
+        if len(elem):
+            if not elem.text or not elem.text.strip():
+                elem.text = i + "  "
+            if not elem.tail or not elem.tail.strip():
+                elem.tail = i
+            for elem in elem:
+                self.cleanindent(elem, level+1)
+            if not elem.tail or not elem.tail.strip():
+                elem.tail = i
+        else:
+            if level and (not elem.tail or not elem.tail.strip()):
+                elem.tail = i
+
     def serialize(self, out=None):
         """Converts to a string containing the file's XML"""
+        self.cleanindent(self.document.getroot())
         self.document.write(out, pretty_print=True, xml_declaration=True,
                             encoding='utf-8')
 
