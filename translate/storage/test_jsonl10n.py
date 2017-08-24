@@ -70,6 +70,14 @@ class TestWebExtensionStore(test_monolingual.TestMonolingualUnit):
 
         assert out.getvalue() == b'{\n    "key": {\n        "message": "value",\n        "description": "note"\n    }\n}\n'
 
+    def test_serialize_no_description(self):
+        store = self.StoreClass()
+        store.parse('{"key": {"message": "value"}}')
+        out = BytesIO()
+        src = store.serialize(out)
+
+        assert out.getvalue() == b'{\n    "key": {\n        "message": "value"\n    }\n}\n'
+
     def test_set_target(self):
         store = self.StoreClass()
         store.parse('{"key": {"message": "value", "description": "note"}}')

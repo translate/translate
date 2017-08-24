@@ -252,7 +252,8 @@ class WebExtensionJsonUnit(base.TranslationUnit):
     def __init__(self, source=None, ref=None, item=None):
         if ref:
             self._node = ref
-            self.notes = ref['description']
+            if 'description' in ref:
+                self.notes = ref['description']
             self._target = ref['message']
         else:
             self._node = OrderedDict((('message', ''), ('description', '')))
@@ -277,7 +278,10 @@ class WebExtensionJsonUnit(base.TranslationUnit):
 
     def removenotes(self):
         super(WebExtensionJsonUnit, self).removenotes()
-        self._node['description'] = self.notes
+        if self.notes:
+            self._node['description'] = self.notes
+        else:
+            del self._node['description']
 
 
 class WebExtensionJsonFile(JsonFile):
