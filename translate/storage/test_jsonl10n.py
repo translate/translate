@@ -2,7 +2,34 @@
 
 import sys
 from io import BytesIO
+from translate.misc.multistring import multistring
 from translate.storage import jsonl10n, test_monolingual
+
+
+JSON_I18NEXT = b"""{
+    "key": "value",
+    "keyDeep": {
+        "inner": "value"
+    },
+    "keyPluralSimple": "the singular",
+    "keyPluralSimple_plural": "the plural",
+    "keyPluralMultipleEgArabic_0": "the plural form 0",
+    "keyPluralMultipleEgArabic_1": "the plural form 1",
+    "keyPluralMultipleEgArabic_2": "the plural form 2",
+    "keyPluralMultipleEgArabic_3": "the plural form 3",
+    "keyPluralMultipleEgArabic_4": "the plural form 4",
+    "keyPluralMultipleEgArabic_5": "the plural form 5"
+}
+"""
+JSON_I18NEXT_PLURAL = b"""{
+    "key": "value",
+    "keyDeep": {
+        "inner": "value"
+    },
+    "keyPluralSimple": "Ahoj",
+    "keyPluralMultipleEgArabic": "Nazdar"
+}
+"""
 
 
 class TestJSONResourceUnit(test_monolingual.TestMonolingualUnit):
@@ -86,3 +113,50 @@ class TestWebExtensionStore(test_monolingual.TestMonolingualUnit):
         src = store.serialize(out)
 
         assert out.getvalue() == b'{\n    "key": {\n        "message": "another",\n        "description": "note"\n    }\n}\n'
+
+
+class TestI18NextStore(test_monolingual.TestMonolingualUnit):
+    StoreClass = jsonl10n.I18NextFile
+
+    def test_serialize(self):
+        store = self.StoreClass()
+        store.parse(JSON_I18NEXT)
+        out = BytesIO()
+        src = store.serialize(out)
+
+        assert out.getvalue() == JSON_I18NEXT
+
+    def test_units(self):
+        store = self.StoreClass()
+        store.parse(JSON_I18NEXT)
+        assert len(store.units) == 4
+
+    def test_plurals(self):
+        store = self.StoreClass()
+        store.parse(JSON_I18NEXT)
+
+        # Remove plurals
+        store.units[2].target = 'Ahoj'
+        store.units[3].target = 'Nazdar'
+        out = BytesIO()
+        src = store.serialize(out)
+
+        assert out.getvalue() == JSON_I18NEXT_PLURAL
+
+        # Bring back plurals
+        store.units[2].target = multistring([
+            "the singular",
+            "the plural",
+        ])
+        store.units[3].target = multistring([
+            "the plural form 0",
+            "the plural form 1",
+            "the plural form 2",
+            "the plural form 3",
+            "the plural form 4",
+            "the plural form 5"
+        ])
+        out = BytesIO()
+        src = store.serialize(out)
+
+        assert out.getvalue() == JSON_I18NEXT

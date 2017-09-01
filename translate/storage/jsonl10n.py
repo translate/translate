@@ -73,6 +73,7 @@ from collections import OrderedDict
 
 import six
 
+from translate.misc.multistring import multistring
 from translate.storage import base
 
 
@@ -229,6 +230,7 @@ class JsonFile(base.TranslationStore):
 
 class JsonNestedFile(JsonFile):
     """A JSON file with nested keys"""
+
     def nested_set(self, target, path, value):
         if len(path) > 1:
             if path[0] not in target:
@@ -301,4 +303,154 @@ class WebExtensionJsonFile(JsonFile):
         units = OrderedDict()
         for unit in self.unit_iter():
             units[unit.getid()] = unit._node
+        return units
+
+
+class I18NextUnit(JsonUnit):
+    """A i18next v3 format, JSON with plurals.
+
+    See https://www.i18next.com/
+    """
+
+    def gettarget(self):
+
+        def change_type(value):
+            if isinstance(value, bool):
+                return str(value)
+            return value
+
+        if isinstance(self._item, list):
+            return multistring([
+                self._ref[item] for item in self._item
+            ])
+        if isinstance(self._ref, list):
+            return change_type(self._ref[self._item])
+        elif isinstance(self._ref, dict):
+            return change_type(self._ref[self._item])
+
+    def settarget(self, target):
+        def change_type(oldvalue, newvalue):
+            if isinstance(oldvalue, bool):
+                newvalue = bool(newvalue)
+            return newvalue
+
+        def get_base(item):
+            """Return base name for plurals"""
+            if '_0' in item[0]:
+                return item[0][:-2]
+            else:
+                return item[0]
+
+        def get_plurals(count, base):
+            if count <= 2:
+                return [base, base + '_plural'][:count]
+            return ['{0}_{1}'.format(base, i) for i in range(count)]
+
+        if isinstance(self._ref, list):
+            self._ref[int(self._item)] = change_type(self._ref[int(self._item)],
+                                                     target)
+        elif isinstance(self._ref, dict):
+            cleanup = ()
+            if isinstance(target, multistring):
+                count = len(target.strings)
+                if not isinstance(self._item, list):
+                    self._item = [self._item]
+                if count != len(self._item):
+                    # Generate new plural labels
+                    newitems = get_plurals(count, get_base(self._item))
+                    cleanup = set(self._item) - set(newitems)
+                    self._item = newitems
+                # Store plural values
+                for i, value in enumerate(target.strings):
+                    self._ref[self._item[i]] = value
+            elif isinstance(self._item, list):
+                # Changing plural to singular
+                newitem = get_base(self._item)
+                cleanup = set(self._item) - set([newitem])
+                self._item = newitem
+                self._ref[self._item] = target
+            else:
+                self._ref[self._item] = change_type(self._ref[self._item], target)
+            for item in cleanup:
+                if item in self._ref:
+                    del self._ref[item]
+        else:
+            raise ValueError("We don't know how to handle:\n"
+                             "Type: %s\n"
+                             "Value: %s" % (type(self._ref), target))
+    target = property(gettarget, settarget)
+
+    def get_path(self):
+        if isinstance(self._item, list):
+            base = self.getid().lstrip('.').split('.')[:-1]
+            return [base + [item] for item in self._item]
+        return self.getid().lstrip('.').split('.')
+
+
+class I18NextFile(JsonNestedFile):
+    """A i18next v3 format, this is nested JSON with several additions.
+
+    See https://www.i18next.com/
+    """
+
+    UnitClass = I18NextUnit
+
+    def _extract_translatables(self, data, stop=None, prev="", name_node=None,
+                               name_last_node=None, last_node=None):
+        if isinstance(data, dict):
+            plurals_multiple = [key.rsplit('_', 1)[0] for key in data if key.endswith('_0')]
+            plurals_simple = [key.rsplit('_', 1)[0] for key in data if key.endswith('_plural')]
+            processed = set()
+
+            for k, v in six.iteritems(data):
+                # Check already processed items
+                if k in processed:
+                    continue
+                plurals = []
+                plural_base = ''
+                if k in plurals_simple or k + '_plural' in plurals_simple:
+                    if k.endswith('_plural'):
+                        plural_base = k[:-7]
+                    else:
+                        plural_base = k
+                    plurals_simple.remove(plural_base)
+                    plurals = [k, k + '_plural']
+                elif '_' in k:
+                    plural_base, digit = k.rsplit('_', 1)
+                    if plural_base in plurals_multiple and digit.isdigit():
+                        plurals_multiple.remove(plural_base)
+                        plurals = ['{0}_{1}'.format(plural_base, order) for order in range(10)]
+                if plurals:
+                    sources = []
+                    items = []
+                    for key in plurals:
+                        if key not in data:
+                            break
+                        processed.add(key)
+                        sources.append(data[key])
+                        items.append(key)
+                    yield ("%s.%s" % (prev, plural_base), multistring(sources), data, items)
+                    continue
+
+                for x in self._extract_translatables(v, stop,
+                                                     "%s.%s" % (prev, k),
+                                                     k, None, data):
+                    yield x
+        else:
+            parent = super(I18NextFile, self)._extract_translatables(
+                data, stop, prev, name_node, name_last_node, last_node
+            )
+            for x in parent:
+                yield x
+
+    def serialize_units(self):
+        units = OrderedDict()
+        for unit in self.unit_iter():
+            target = unit.target
+            path = unit.get_path()
+            if isinstance(target, multistring):
+                for i, value in enumerate(target.strings):
+                    self.nested_set(units, path[i], value)
+            else:
+                self.nested_set(units, path, target)
         return units
