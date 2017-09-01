@@ -797,6 +797,14 @@ class xlifffile(lisa.LISAfile):
         bodynode = etree.SubElement(filenode, self.namespaced("body"))
         return bodynode
 
+    def addunit(self, unit, new=True):
+        parts = unit.getid().split("\x04")
+        if len(parts) > 1:
+            filename, unitid = parts[0], "\x04".join(parts[1:])
+            self.switchfile(filename, createifmissing=True)
+            unit.setid(unitid)
+        super(xlifffile, self).addunit(unit, new=new)
+
     def addsourceunit(self, source, filename="NoName", createifmissing=False):
         """adds the given trans-unit to the last used body node if the filename
         has changed it uses the slow method instead (will create the nodes
