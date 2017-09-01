@@ -68,7 +68,7 @@ TODO:
 """
 
 import json
-import os
+import uuid
 from collections import OrderedDict
 
 import six
@@ -81,9 +81,10 @@ class JsonUnit(base.TranslationUnit):
     """A JSON entry"""
 
     def __init__(self, source=None, ref=None, item=None, **kwargs):
-        self._id = None
-        self._item = str(os.urandom(30)) if item is None else item
-        self._ref = {} if ref is None else ref
+        identifier = str(uuid.uuid4())
+        self._id = '.' + identifier
+        self._item = identifier if item is None else item
+        self._ref = OrderedDict() if ref is None else ref
         if ref is None and item is None:
             self._ref[self._item] = ""
         if source:
@@ -249,6 +250,9 @@ class JsonNestedFile(JsonFile):
 
 class WebExtensionJsonUnit(base.TranslationUnit):
     def __init__(self, source=None, ref=None, item=None):
+        identifier = str(uuid.uuid4())
+        self._id = '.' + identifier
+        self._item = identifier if item is None else item
         if ref:
             self._node = ref
             if 'description' in ref:
