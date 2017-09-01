@@ -84,7 +84,8 @@ class TestTranslationUnit:
         assert unit1 != unit3
         assert unit4 != unit5
         if unit1.__class__.__name__ in ('RESXUnit', 'dtdunit', 'TxtUnit',
-                                        'JsonUnit', 'l20nunit', 'YAMLUnit'):
+                                        'JsonUnit', 'l20nunit', 'YAMLUnit',
+                                        'WebExtensionJsonUnit'):
             # unit1 will generally equal unit6 for monolingual formats (resx, dtd, txt, l20n)
             # with the default comparison method which compare units by their
             # target and source properties only.
