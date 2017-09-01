@@ -257,16 +257,20 @@ class JsonNestedFile(JsonFile):
 class WebExtensionJsonUnit(base.TranslationUnit):
     def __init__(self, source=None, ref=None, item=None):
         identifier = str(uuid.uuid4())
-        self._id = '.' + identifier
+        self._id = identifier
         self._item = identifier if item is None else item
+        self.notes = ''
+        self._rich_target = None
         if ref:
             self._node = ref
             if 'description' in ref:
                 self.notes = ref['description']
             self._target = ref['message']
         else:
-            self._node = OrderedDict((('message', ''), ('description', '')))
-        super(WebExtensionJsonUnit, self).__init__(source)
+            self._node = OrderedDict((('message', source if source else ''), ('description', '')))
+            if source:
+                self._target = source
+        super(WebExtensionJsonUnit, self).__init__()
 
     def setid(self, value):
         self._id = value
@@ -276,6 +280,13 @@ class WebExtensionJsonUnit(base.TranslationUnit):
 
     def getlocations(self):
         return [self.getid()]
+
+    def getsource(self):
+        return self.target
+
+    def setsource(self, source):
+        self.target = source
+    source = property(getsource, setsource)
 
     def settarget(self, target):
         super(WebExtensionJsonUnit, self).settarget(target)
@@ -294,9 +305,7 @@ class WebExtensionJsonUnit(base.TranslationUnit):
 
     def __str__(self):
         """Converts to a string representation."""
-        return ", ".join([
-            "%s: %s" % (k, self.__dict__[k]) for k in sorted(self.__dict__.keys()) if k not in ('_store', '_ref')
-        ])
+        return json.dumps(self._node, separators=(',', ': '), indent=4, ensure_ascii=False)
 
 
 class WebExtensionJsonFile(JsonFile):
@@ -313,7 +322,7 @@ class WebExtensionJsonFile(JsonFile):
     def _extract_translatables(self, data, stop=None, prev="", name_node=None,
                                name_last_node=None, last_node=None):
         for item in data:
-            yield (item, item, data[item], None)
+            yield (item, item, data[item], item)
 
     def serialize_units(self):
         units = OrderedDict()
