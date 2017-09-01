@@ -439,3 +439,43 @@ class TestXLIFFfile(test_base.TestTranslationStore):
         assert xlifffile.units[0].source == ''
         assert xlifffile.units[1].istranslatable()
         assert xlifffile.units[1].source == '&'
+
+    def test_multiple_filenodes(self):
+        xlfsource = '''<?xml version="1.0" encoding="utf-8"?>
+<xliff version="1.1" xmlns="urn:oasis:names:tc:xliff:document:1.1">
+  <file original="file0" source-language="en" datatype="plaintext">
+    <body>
+      <trans-unit id="hello" approved="yes">
+        <source>Hello</source>
+      </trans-unit>
+    </body>
+  </file>
+  <file original="file1" source-language="en" datatype="plaintext">
+    <body>
+      <trans-unit id="world" approved="yes">
+        <source>World</source>
+      </trans-unit>
+    </body>
+  </file>
+</xliff>'''
+        xfile = xliff.xlifffile.parsestring(xlfsource)
+        assert len(xfile.units) == 2
+        assert xfile.units[0].getid() == "file0\x04hello"
+        assert xfile.units[1].getid() == "file1\x04world"
+        xunit = xliff.xlifffile.UnitClass(source="goodbye")
+        xunit.setid("file2\x04goodbye")
+        xfile.addunit(xunit)
+        assert xfile.units[2].getid() == "file2\x04goodbye"
+        # if there is no file set it will use the active context
+        xunit = xliff.xlifffile.UnitClass(source="lastfile")
+        xunit.setid("lastfile")
+        xfile.addunit(xunit)
+        assert xfile.units[3].getid() == "file2\x04lastfile"
+        newxfile = xliff.xlifffile()
+        newxfile.addunit(xfile.units[0])
+        newxfile.addunit(xfile.units[1])
+        assert newxfile.units[0].getid() == "file0\x04hello"
+        assert newxfile.units[1].getid() == "file1\x04world"
+        assert newxfile.getfilenode("file0")
+        assert newxfile.getfilenode("file1")
+        assert not newxfile.getfilenode("foo")
