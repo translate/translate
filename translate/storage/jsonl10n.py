@@ -81,12 +81,8 @@ class JsonUnit(base.TranslationUnit):
 
     def __init__(self, source=None, ref=None, item=None, **kwargs):
         self._id = None
-        self._item = str(os.urandom(30))
-        if item is not None:
-            self._item = item
-        self._ref = {}
-        if ref is not None:
-            self._ref = ref
+        self._item = str(os.urandom(30)) if item is None else item
+        self._ref = {} if ref is None else ref
         if ref is None and item is None:
             self._ref[self._item] = ""
         if source:
