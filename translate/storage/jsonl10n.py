@@ -137,6 +137,12 @@ class JsonUnit(base.TranslationUnit):
     def getlocations(self):
         return [self.getid()]
 
+    def __str__(self):
+        """Converts to a string representation."""
+        return ", ".join([
+            "%s: %s" % (k, self.__dict__[k]) for k in sorted(self.__dict__.keys()) if k not in ('_store', '_ref')
+        ])
+
 
 class JsonFile(base.TranslationStore):
     """A JSON file"""
@@ -285,6 +291,12 @@ class WebExtensionJsonUnit(base.TranslationUnit):
             self._node['description'] = self.notes
         else:
             del self._node['description']
+
+    def __str__(self):
+        """Converts to a string representation."""
+        return ", ".join([
+            "%s: %s" % (k, self.__dict__[k]) for k in sorted(self.__dict__.keys()) if k not in ('_store', '_ref')
+        ])
 
 
 class WebExtensionJsonFile(JsonFile):
