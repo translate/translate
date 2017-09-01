@@ -154,11 +154,15 @@ class JsonFile(base.TranslationStore):
         if inputfile is not None:
             self.parse(inputfile)
 
-    def serialize(self, out):
+    def serialize_units(self):
         units = OrderedDict()
         for unit in self.unit_iter():
             path = unit.getid().lstrip('.')
             units[path] = unit.target
+        return units
+
+    def serialize(self, out):
+        units = self.serialize_units()
         out.write(json.dumps(units, separators=(',', ': '),
                              indent=4, ensure_ascii=False).encode(self.encoding))
         out.write(b'\n')
@@ -229,23 +233,20 @@ class JsonFile(base.TranslationStore):
 
 class JsonNestedFile(JsonFile):
     """A JSON file with nested keys"""
+    def nested_set(self, target, path, value):
+        if len(path) > 1:
+            if path[0] not in target:
+                target[path[0]] = OrderedDict()
+            self.nested_set(target[path[0]], path[1:], value)
+        else:
+            target[path[0]] = value
 
-    def serialize(self, out):
-        def nested_set(target, path, value):
-            if len(path) > 1:
-                if path[0] not in target:
-                    target[path[0]] = OrderedDict()
-                nested_set(target[path[0]], path[1:], value)
-            else:
-                target[path[0]] = value
-
+    def serialize_units(self):
         units = OrderedDict()
         for unit in self.unit_iter():
             path = unit.getid().lstrip('.').split('.')
-            nested_set(units, path, unit.target)
-        out.write(json.dumps(units, separators=(',', ': '),
-                             indent=4, ensure_ascii=False).encode(self.encoding))
-        out.write(b'\n')
+            self.nested_set(units, path, unit.target)
+        return units
 
 
 class WebExtensionJsonUnit(base.TranslationUnit):
@@ -300,10 +301,8 @@ class WebExtensionJsonFile(JsonFile):
         for item in data:
             yield (item, item, data[item], None)
 
-    def serialize(self, out):
+    def serialize_units(self):
         units = OrderedDict()
         for unit in self.unit_iter():
             units[unit.getid()] = unit._node
-        out.write(json.dumps(units, separators=(',', ': '),
-                             indent=4, ensure_ascii=False).encode(self.encoding))
-        out.write(b'\n')
+        return units
