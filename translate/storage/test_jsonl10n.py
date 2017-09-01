@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 
-import sys
 from io import BytesIO
 from translate.misc.multistring import multistring
 from translate.storage import jsonl10n, test_monolingual
@@ -43,7 +42,7 @@ class TestJSONResourceStore(test_monolingual.TestMonolingualStore):
         store = self.StoreClass()
         store.parse('{"key": "value"}')
         out = BytesIO()
-        src = store.serialize(out)
+        store.serialize(out)
 
         assert out.getvalue() == b'{\n    "key": "value"\n}\n'
 
@@ -66,7 +65,7 @@ class TestJSONNestedResourceStore(test_monolingual.TestMonolingualUnit):
         store = self.StoreClass()
         store.parse('{"key": {"second": "value"}}')
         out = BytesIO()
-        src = store.serialize(out)
+        store.serialize(out)
 
         assert out.getvalue() == b'{\n    "key": {\n        "second": "value"\n    }\n}\n'
 
@@ -93,7 +92,7 @@ class TestWebExtensionStore(test_monolingual.TestMonolingualStore):
         store = self.StoreClass()
         store.parse('{"key": {"message": "value", "description": "note"}}')
         out = BytesIO()
-        src = store.serialize(out)
+        store.serialize(out)
 
         assert out.getvalue() == b'{\n    "key": {\n        "message": "value",\n        "description": "note"\n    }\n}\n'
 
@@ -101,7 +100,7 @@ class TestWebExtensionStore(test_monolingual.TestMonolingualStore):
         store = self.StoreClass()
         store.parse('{"key": {"message": "value"}}')
         out = BytesIO()
-        src = store.serialize(out)
+        store.serialize(out)
 
         assert out.getvalue() == b'{\n    "key": {\n        "message": "value"\n    }\n}\n'
 
@@ -110,7 +109,7 @@ class TestWebExtensionStore(test_monolingual.TestMonolingualStore):
         store.parse('{"key": {"message": "value", "description": "note"}}')
         store.units[0].settarget('another')
         out = BytesIO()
-        src = store.serialize(out)
+        store.serialize(out)
 
         assert out.getvalue() == b'{\n    "key": {\n        "message": "another",\n        "description": "note"\n    }\n}\n'
 
@@ -122,7 +121,7 @@ class TestI18NextStore(test_monolingual.TestMonolingualStore):
         store = self.StoreClass()
         store.parse(JSON_I18NEXT)
         out = BytesIO()
-        src = store.serialize(out)
+        store.serialize(out)
 
         assert out.getvalue() == JSON_I18NEXT
 
@@ -139,7 +138,7 @@ class TestI18NextStore(test_monolingual.TestMonolingualStore):
         store.units[2].target = 'Ahoj'
         store.units[3].target = 'Nazdar'
         out = BytesIO()
-        src = store.serialize(out)
+        store.serialize(out)
 
         assert out.getvalue() == JSON_I18NEXT_PLURAL
 
@@ -157,6 +156,6 @@ class TestI18NextStore(test_monolingual.TestMonolingualStore):
             "the plural form 5"
         ])
         out = BytesIO()
-        src = store.serialize(out)
+        store.serialize(out)
 
         assert out.getvalue() == JSON_I18NEXT
