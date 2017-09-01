@@ -81,3 +81,4 @@ addons:
   apt:
     packages:
       - gettext
+      - libgettextpo-dev
