@@ -46,6 +46,12 @@ class TestJSONResourceStore(test_monolingual.TestMonolingualStore):
 
         assert out.getvalue() == b'{\n    "key": "value"\n}\n'
 
+    def test_filter(self):
+        store = self.StoreClass(filter=['key'])
+        store.parse('{"key": "value", "other": "second"}')
+        assert len(store.units) == 1
+        assert store.units[0].source == 'value'
+
     def test_ordering(self):
         store = self.StoreClass()
         store.parse('''{
