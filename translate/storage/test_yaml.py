@@ -215,7 +215,7 @@ foo: "Hello \n World."
 '''
 
     @pytest.mark.xfail(reason="Not Implemented")
-    def test_list(self):
+    def test_abbreviated_list(self):
         """These are used in Redmine and Discourse translation."""
         store = self.StoreClass()
         store.parse('''
@@ -238,7 +238,7 @@ day_names:        [Domingo, Luns, Martes, Mércores, Xoves, Venres, Sábado]
         assert store.units[6].source == 'Sábado'
         out = BytesIO()
         store.serialize(out)
-        assert out.getvalue() == '''day_names:        [Domingo, Luns, Martes, Mércores, Xoves, Venres, Sábado]
+        assert out.getvalue() == '''day_names: [Domingo, Luns, Martes, Mércores, Xoves, Venres, Sábado]
 '''
 
 
