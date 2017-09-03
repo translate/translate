@@ -210,10 +210,7 @@ class YAMLFile(base.TranslationStore):
         try:
             self._file = yaml.load(input, OrderedDictYAMLLoader)
         except yaml.YAMLError as e:
-            if hasattr(e, 'problem'):
-                message = e.problem
-            else:
-                message = e.message
+            message = e.problem if hasattr(e, 'problem') else e.message
             if hasattr(e, 'problem_mark'):
                 message += ' {0}'.format(e.problem_mark)
             raise base.ParseError(message)
