@@ -241,6 +241,25 @@ day_names:        [Domingo, Luns, Martes, Mércores, Xoves, Venres, Sábado]
         assert out.getvalue() == '''day_names: [Domingo, Luns, Martes, Mércores, Xoves, Venres, Sábado]
 '''
 
+    @pytest.mark.xfail(reason="Not Implemented")
+    def test_abbreviated_dictionary(self):
+        """Test abbreviated dictionary syntax."""
+        store = self.StoreClass()
+        store.parse('''
+martin: {name: Martin D'vloper, job: Developer, skill: Elite}
+''')
+        assert len(store.units) == 3
+        assert store.units[0].getid() == 'martin->name'
+        assert store.units[0].source == "Martin D'vloper"
+        assert store.units[1].getid() == 'martin->job'
+        assert store.units[1].source == 'Developer'
+        assert store.units[2].getid() == 'martin->skill'
+        assert store.units[2].source == 'Elite'
+        out = BytesIO()
+        store.serialize(out)
+        assert out.getvalue() == '''martin: {name: Martin D'vloper, job: Developer, skill: Elite}
+'''
+
 
 class TestRubyYAMLResourceStore(test_monolingual.TestMonolingualStore):
     StoreClass = yaml.RubyYAMLFile
