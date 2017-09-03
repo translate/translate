@@ -59,6 +59,7 @@ foo: foo
 bar: bar
 baz: baz
 ''')
+        assert len(store.units) == 3
         assert store.units[0].source == 'foo'
         assert store.units[2].source == 'baz'
 
@@ -69,6 +70,7 @@ baz: baz
 
 foo: bar
 ''')
+        assert len(store.units) == 1
         assert store.units[0].getid() == 'foo'
         assert store.units[0].source == 'bar'
         out = BytesIO()
@@ -81,6 +83,7 @@ foo: bar
         store.parse('''
 "yes": Oficina
 ''')
+        assert len(store.units) == 1
         assert store.units[0].getid() == 'yes'
         assert store.units[0].source == 'Oficina'
         out = BytesIO()
@@ -99,6 +102,7 @@ foo:
 
 eggs: spam
 ''')
+        assert len(store.units) == 3
         assert store.units[0].getid() == 'foo->bar'
         assert store.units[0].source == 'bar'
         assert store.units[1].getid() == 'foo->baz->boo'
@@ -126,6 +130,7 @@ invite: |-
 
 eggs: spam
 ''')
+        assert len(store.units) == 2
         assert store.units[0].getid() == 'invite'
         assert store.units[0].source == """Ola!
         Recibiches unha invitación para unirte a!"""
@@ -145,6 +150,7 @@ eggs: spam
         store.parse('''
 foo: True
 ''')
+        assert len(store.units) == 1
         assert store.units[0].getid() == 'foo'
         assert store.units[0].source == 'True'
         out = BytesIO()
@@ -185,6 +191,7 @@ spam: 'avoid escaping "quote"'
         store.parse('''
 foo: "Hello \"World\"."
 ''')
+        assert len(store.units) == 1
         assert store.units[0].getid() == 'foo'
         assert store.units[0].source == 'Hello "World"'
         out = BytesIO()
@@ -199,6 +206,7 @@ foo: "Hello \"World\"."
         store.parse('''
 foo: "Hello \n World."
 ''')
+        assert len(store.units) == 1
         assert store.units[0].getid() == 'foo'
         assert store.units[0].source == 'Hello \n World'
         out = BytesIO()
@@ -213,6 +221,7 @@ foo: "Hello \n World."
         store.parse('''
 day_names:        [Domingo, Luns, Martes, Mércores, Xoves, Venres, Sábado]
 ''')
+        assert len(store.units) == 7
         assert store.units[0].getid() == 'day_names->[0]'
         assert store.units[0].source == 'Domingo'
         assert store.units[1].getid() == 'day_names->[1]'
