@@ -24,7 +24,7 @@ class TestPO2YAML(object):
             template_file = wStringIO.StringIO(format_template_source)
         converter = self.ConverterClass(input_file, output_file, template_file,
                                         include_fuzzy, output_threshold)
-        assert converter.run() is True
+        assert converter.run() == 1
         return converter.target_store, output_file
 
     def format2po_file(self, po_input_source, format_template_source=None,
@@ -45,7 +45,7 @@ class TestPO2YAML(object):
         output_file = wStringIO.StringIO()
         template_file = wStringIO.StringIO()
         converter = self.ConverterClass(input_file, output_file, template_file)
-        assert converter.run() is True
+        assert converter.run() == 1
         assert converter.target_store.isempty()
         assert output_file.getvalue().decode('utf-8') == '{}\n'
 

@@ -85,11 +85,11 @@ class po2yaml(object):
     def run(self):
         """Run the converter."""
         if not self.should_output_store:
-            return False
+            return 0
 
         self.convert_store()
         self.target_store.serialize(self.output_file)
-        return True
+        return 1
 
 
 def run_converter(inputfile, outputfile, templatefile, includefuzzy=False,
