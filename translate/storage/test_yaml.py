@@ -74,12 +74,17 @@ foo:
     bar: bar
     baz:
         boo: booo
+
+
+eggs: spam
 ''')
 
         assert store.units[0].getid() == 'foo / bar'
         assert store.units[0].source == 'bar'
         assert store.units[1].getid() == 'foo / baz / boo'
         assert store.units[1].source == 'booo'
+        assert store.units[2].getid() == 'eggs'
+        assert store.units[2].source == 'spam'
 
         out = BytesIO()
         store.serialize(out)
@@ -88,6 +93,7 @@ foo:
   bar: bar
   baz:
     boo: booo
+eggs: spam
 '''
 
 
