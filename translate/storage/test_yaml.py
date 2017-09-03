@@ -206,6 +206,23 @@ eggs: No quoting at all
 spam: 'avoid escaping "quote"'
 '''
 
+    @pytest.mark.xfail(reason="Not Implemented")
+    def test_escaped_quotes(self):
+        """These are used in OpenStreeMap translation."""
+        store = yaml.YAMLFile()
+        store.parse('''
+foo: "Hello \"World\"."
+''')
+
+        assert store.units[0].getid() == 'foo'
+        assert store.units[0].source == 'Hello "World"'
+
+        out = BytesIO()
+        store.serialize(out)
+
+        assert out.getvalue() == b'''foo: "Hello \"World\"."
+'''
+
 
 class TestRubyYAMLResourceStore(test_monolingual.TestMonolingualStore):
     StoreClass = yaml.RubyYAMLFile
