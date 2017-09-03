@@ -19,6 +19,9 @@
 # along with this program; if not, see <http://www.gnu.org/licenses/>.
 
 """Convert Gettext PO localization files to YAML files.
+
+See: http://docs.translatehouse.org/projects/translate-toolkit/en/latest/commands/yaml2po.html
+for examples and usage instructions.
 """
 
 from translate.convert import convert
