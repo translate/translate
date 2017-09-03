@@ -33,20 +33,15 @@ class TestYAMLResourceStore(test_monolingual.TestMonolingualStore):
     def test_edit(self):
         store = yaml.YAMLFile()
         store.parse('key: value')
-
         store.units[0].settarget('second')
-
         out = BytesIO()
         store.serialize(out)
-
         assert out.getvalue() == b'key: second\n'
 
     def test_edit_unicode(self):
         store = yaml.YAMLFile()
         store.parse('key: value')
-
         store.units[0].settarget('zkouška')
-
         out = BytesIO()
         store.serialize(out)
 
@@ -55,10 +50,8 @@ class TestYAMLResourceStore(test_monolingual.TestMonolingualStore):
     def test_parse_unicode_list(self):
         store = yaml.YAMLFile()
         store.parse('list:\n- zkouška')
-
         out = BytesIO()
         store.serialize(out)
-
         assert out.getvalue() == 'list:\n- zkouška\n'.encode('utf-8')
 
     def test_ordering(self):
@@ -68,7 +61,6 @@ foo: foo
 bar: bar
 baz: baz
 ''')
-
         assert store.units[0].source == 'foo'
         assert store.units[2].source == 'baz'
 
@@ -79,13 +71,10 @@ baz: baz
 
 foo: bar
 ''')
-
         assert store.units[0].getid() == 'foo'
         assert store.units[0].source == 'bar'
-
         out = BytesIO()
         store.serialize(out)
-
         assert out.getvalue() == b'''foo: bar
 '''
 
@@ -94,13 +83,10 @@ foo: bar
         store.parse('''
 "yes": Oficina
 ''')
-
         assert store.units[0].getid() == 'yes'
         assert store.units[0].source == 'Oficina'
-
         out = BytesIO()
         store.serialize(out)
-
         assert out.getvalue() == b''''yes': Oficina
 '''
 
@@ -115,17 +101,14 @@ foo:
 
 eggs: spam
 ''')
-
         assert store.units[0].getid() == 'foo / bar'
         assert store.units[0].source == 'bar'
         assert store.units[1].getid() == 'foo / baz / boo'
         assert store.units[1].source == 'booo'
         assert store.units[2].getid() == 'eggs'
         assert store.units[2].source == 'spam'
-
         out = BytesIO()
         store.serialize(out)
-
         assert out.getvalue() == b'''foo:
   bar: bar
   baz:
@@ -145,16 +128,13 @@ invite: |-
 
 eggs: spam
 ''')
-
         assert store.units[0].getid() == 'invite'
         assert store.units[0].source == """Ola!
         Recibiches unha invitación para unirte a!"""
         assert store.units[1].getid() == 'eggs'
         assert store.units[1].source == 'spam'
-
         out = BytesIO()
         store.serialize(out)
-
         assert out.getvalue() == '''invite: |-
         Ola!
         Recibiches unha invitación para unirte!
@@ -167,13 +147,10 @@ eggs: spam
         store.parse('''
 foo: True
 ''')
-
         assert store.units[0].getid() == 'foo'
         assert store.units[0].source == 'True'
-
         out = BytesIO()
         store.serialize(out)
-
         assert out.getvalue() == b'''foo: True
 '''
 
@@ -187,7 +164,6 @@ bar: "quote, double"
 eggs: No quoting at all
 spam: 'avoid escaping "quote"'
 ''')
-
         assert store.units[0].getid() == 'foo'
         assert store.units[0].source == 'quote, single'
         assert store.units[1].getid() == 'bar'
@@ -196,10 +172,8 @@ spam: 'avoid escaping "quote"'
         assert store.units[2].source == 'No quoting at all'
         assert store.units[3].getid() == 'spam'
         assert store.units[3].source == 'avoid escaping "quote"'
-
         out = BytesIO()
         store.serialize(out)
-
         assert out.getvalue() == b'''foo: 'quote, single'
 bar: "quote, double"
 eggs: No quoting at all
@@ -213,13 +187,10 @@ spam: 'avoid escaping "quote"'
         store.parse('''
 foo: "Hello \"World\"."
 ''')
-
         assert store.units[0].getid() == 'foo'
         assert store.units[0].source == 'Hello "World"'
-
         out = BytesIO()
         store.serialize(out)
-
         assert out.getvalue() == b'''foo: "Hello \"World\"."
 '''
 
@@ -230,13 +201,10 @@ foo: "Hello \"World\"."
         store.parse('''
 foo: "Hello \n World."
 ''')
-
         assert store.units[0].getid() == 'foo'
         assert store.units[0].source == 'Hello \n World'
-
         out = BytesIO()
         store.serialize(out)
-
         assert out.getvalue() == b'''foo: "Hello \n World."
 '''
 
@@ -247,7 +215,6 @@ foo: "Hello \n World."
         store.parse('''
 day_names:        [Domingo, Luns, Martes, Mércores, Xoves, Venres, Sábado]
 ''')
-
         assert store.units[0].getid() == 'day_names / [0]'
         assert store.units[0].source == 'Domingo'
         assert store.units[1].getid() == 'day_names / [1]'
@@ -262,10 +229,8 @@ day_names:        [Domingo, Luns, Martes, Mércores, Xoves, Venres, Sábado]
         assert store.units[5].source == 'Venres'
         assert store.units[6].getid() == 'day_names / [6]'
         assert store.units[6].source == 'Sábado'
-
         out = BytesIO()
         store.serialize(out)
-
         assert out.getvalue() == '''day_names:        [Domingo, Luns, Martes, Mércores, Xoves, Venres, Sábado]
 '''
 
@@ -293,7 +258,6 @@ class TestRubyYAMLResourceStore(test_monolingual.TestMonolingualStore):
         store.parse(data)
         out = BytesIO()
         store.serialize(out)
-
         assert out.getvalue() == data.encode('ascii')
 
     def test_ruby(self):
@@ -306,10 +270,8 @@ class TestRubyYAMLResourceStore(test_monolingual.TestMonolingualStore):
 '''
         store = yaml.RubyYAMLFile()
         store.parse(data)
-
         out = BytesIO()
         store.serialize(out)
-
         assert out.getvalue() == data.encode('ascii')
 
     def test_invalid_key(self):
