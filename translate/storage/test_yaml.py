@@ -134,6 +134,34 @@ eggs: spam
 '''
 
     @pytest.mark.xfail(reason="Not Implemented")
+    def test_multiline(self):
+        """These are used in Discourse and Diaspora* translation."""
+        store = yaml.YAMLFile()
+        store.parse('''
+invite: |-
+        Ola!
+        Recibiches unha invitación para unirte!
+
+
+eggs: spam
+''')
+
+        assert store.units[0].getid() == 'invite'
+        assert store.units[0].source == """Ola!
+        Recibiches unha invitación para unirte a!"""
+        assert store.units[1].getid() == 'eggs'
+        assert store.units[1].source == 'spam'
+
+        out = BytesIO()
+        store.serialize(out)
+
+        assert out.getvalue() == '''invite: |-
+        Ola!
+        Recibiches unha invitación para unirte!
+eggs: spam
+'''
+
+    @pytest.mark.xfail(reason="Not Implemented")
     def test_boolean(self):
         store = yaml.YAMLFile()
         store.parse('''
