@@ -1,5 +1,7 @@
 # -*- coding: utf-8 -*-
 
+from __future__ import unicode_literals
+
 import sys
 from io import BytesIO
 
@@ -38,21 +40,21 @@ class TestYAMLResourceStore(test_monolingual.TestMonolingualStore):
         store = yaml.YAMLFile()
         store.parse('key: value')
 
-        store.units[0].settarget(u'zkouška')
+        store.units[0].settarget('zkouška')
 
         out = BytesIO()
         store.serialize(out)
 
-        assert out.getvalue() == u'key: zkouška\n'.encode('utf-8')
+        assert out.getvalue() == 'key: zkouška\n'.encode('utf-8')
 
     def test_parse_unicode_list(self):
         store = yaml.YAMLFile()
-        store.parse(u'list:\n- zkouška')
+        store.parse('list:\n- zkouška')
 
         out = BytesIO()
         store.serialize(out)
 
-        assert out.getvalue() == u'list:\n- zkouška\n'.encode('utf-8')
+        assert out.getvalue() == 'list:\n- zkouška\n'.encode('utf-8')
 
     def test_ordering(self):
         store = yaml.YAMLFile()
