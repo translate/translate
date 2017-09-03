@@ -27,7 +27,6 @@ class TestYAMLResourceStore(test_monolingual.TestMonolingualStore):
         store.parse('key: value')
         out = BytesIO()
         store.serialize(out)
-
         assert out.getvalue() == b'key: value\n'
 
     def test_edit(self):
@@ -44,7 +43,6 @@ class TestYAMLResourceStore(test_monolingual.TestMonolingualStore):
         store.units[0].settarget('zkouška')
         out = BytesIO()
         store.serialize(out)
-
         assert out.getvalue() == 'key: zkouška\n'.encode('utf-8')
 
     def test_parse_unicode_list(self):
