@@ -223,6 +223,23 @@ foo: "Hello \"World\"."
         assert out.getvalue() == b'''foo: "Hello \"World\"."
 '''
 
+    @pytest.mark.xfail(reason="Not Implemented")
+    def test_newlines(self):
+        """These are used in OpenStreeMap translation."""
+        store = yaml.YAMLFile()
+        store.parse('''
+foo: "Hello \n World."
+''')
+
+        assert store.units[0].getid() == 'foo'
+        assert store.units[0].source == 'Hello \n World'
+
+        out = BytesIO()
+        store.serialize(out)
+
+        assert out.getvalue() == b'''foo: "Hello \n World."
+'''
+
 
 class TestRubyYAMLResourceStore(test_monolingual.TestMonolingualStore):
     StoreClass = yaml.RubyYAMLFile
