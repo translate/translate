@@ -133,6 +133,22 @@ eggs: spam
 eggs: spam
 '''
 
+    @pytest.mark.xfail(reason="Not Implemented")
+    def test_boolean(self):
+        store = yaml.YAMLFile()
+        store.parse('''
+foo: True
+''')
+
+        assert store.units[0].getid() == 'foo'
+        assert store.units[0].source == 'True'
+
+        out = BytesIO()
+        store.serialize(out)
+
+        assert out.getvalue() == b'''foo: True
+'''
+
 
 class TestRubyYAMLResourceStore(test_monolingual.TestMonolingualStore):
     StoreClass = yaml.RubyYAMLFile
