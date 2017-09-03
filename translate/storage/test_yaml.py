@@ -72,6 +72,23 @@ baz: baz
         assert store.units[0].source == 'foo'
         assert store.units[2].source == 'baz'
 
+    def test_initial_comments(self):
+        store = yaml.YAMLFile()
+        store.parse('''
+# Hello world.
+
+foo: bar
+''')
+
+        assert store.units[0].getid() == 'foo'
+        assert store.units[0].source == 'bar'
+
+        out = BytesIO()
+        store.serialize(out)
+
+        assert out.getvalue() == b'''foo: bar
+'''
+
     def test_nested(self):
         store = yaml.YAMLFile()
         store.parse('''
