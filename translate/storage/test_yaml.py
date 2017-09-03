@@ -240,6 +240,35 @@ foo: "Hello \n World."
         assert out.getvalue() == b'''foo: "Hello \n World."
 '''
 
+    @pytest.mark.xfail(reason="Not Implemented")
+    def test_list(self):
+        """These are used in Redmine and Discourse translation."""
+        store = yaml.YAMLFile()
+        store.parse('''
+day_names:        [Domingo, Luns, Martes, Mércores, Xoves, Venres, Sábado]
+''')
+
+        assert store.units[0].getid() == 'day_names / [0]'
+        assert store.units[0].source == 'Domingo'
+        assert store.units[1].getid() == 'day_names / [1]'
+        assert store.units[1].source == 'Luns'
+        assert store.units[2].getid() == 'day_names / [2]'
+        assert store.units[2].source == 'Martes'
+        assert store.units[3].getid() == 'day_names / [3]'
+        assert store.units[3].source == 'Mércores'
+        assert store.units[4].getid() == 'day_names / [4]'
+        assert store.units[4].source == 'Xoves'
+        assert store.units[5].getid() == 'day_names / [5]'
+        assert store.units[5].source == 'Venres'
+        assert store.units[6].getid() == 'day_names / [6]'
+        assert store.units[6].source == 'Sábado'
+
+        out = BytesIO()
+        store.serialize(out)
+
+        assert out.getvalue() == '''day_names:        [Domingo, Luns, Martes, Mércores, Xoves, Venres, Sábado]
+'''
+
 
 class TestRubyYAMLResourceStore(test_monolingual.TestMonolingualStore):
     StoreClass = yaml.RubyYAMLFile
