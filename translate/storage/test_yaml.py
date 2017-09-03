@@ -89,6 +89,21 @@ foo: bar
         assert out.getvalue() == b'''foo: bar
 '''
 
+    def test_string_key(self):
+        store = yaml.YAMLFile()
+        store.parse('''
+"yes": Oficina
+''')
+
+        assert store.units[0].getid() == 'yes'
+        assert store.units[0].source == 'Oficina'
+
+        out = BytesIO()
+        store.serialize(out)
+
+        assert out.getvalue() == b''''yes': Oficina
+'''
+
     def test_nested(self):
         store = yaml.YAMLFile()
         store.parse('''
