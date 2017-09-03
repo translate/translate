@@ -158,30 +158,78 @@ foo: True
         assert out.getvalue() == b'''foo: True
 '''
 
+    def test_no_quote_strings(self):
+        """These are used in OpenStreeMap translation."""
+        store = self.StoreClass()
+        store.parse('''
+eggs: No quoting at all
+''')
+        assert len(store.units) == 1
+        assert store.units[0].getid() == 'eggs'
+        assert store.units[0].source == 'No quoting at all'
+        out = BytesIO()
+        store.serialize(out)
+        assert out.getvalue() == b'''eggs: No quoting at all
+'''
+
     @pytest.mark.xfail(reason="Not Implemented")
-    def test_strings(self):
+    def test_double_quote_strings(self):
+        """These are used in OpenStreeMap translation."""
+        store = self.StoreClass()
+        store.parse('''
+bar: "quote, double"
+''')
+        assert len(store.units) == 1
+        assert store.units[0].getid() == 'bar'
+        assert store.units[0].source == 'quote, double'
+        out = BytesIO()
+        store.serialize(out)
+        assert out.getvalue() == b'''bar: "quote, double"
+'''
+
+    @pytest.mark.xfail(reason="Not Implemented")
+    def test_single_quote_strings(self):
         """These are used in OpenStreeMap translation."""
         store = self.StoreClass()
         store.parse('''
 foo: 'quote, single'
-bar: "quote, double"
-eggs: No quoting at all
-spam: 'avoid escaping "quote"'
 ''')
+        assert len(store.units) == 1
         assert store.units[0].getid() == 'foo'
         assert store.units[0].source == 'quote, single'
-        assert store.units[1].getid() == 'bar'
-        assert store.units[1].source == 'quote, double'
-        assert store.units[2].getid() == 'eggs'
-        assert store.units[2].source == 'No quoting at all'
-        assert store.units[3].getid() == 'spam'
-        assert store.units[3].source == 'avoid escaping "quote"'
         out = BytesIO()
         store.serialize(out)
         assert out.getvalue() == b'''foo: 'quote, single'
-bar: "quote, double"
-eggs: No quoting at all
-spam: 'avoid escaping "quote"'
+'''
+
+    @pytest.mark.xfail(reason="Not Implemented")
+    def test_avoid_escaping_double_quote_strings(self):
+        """These are used in OpenStreeMap translation."""
+        store = self.StoreClass()
+        store.parse('''
+spam: 'avoid escaping "double quote"'
+''')
+        assert len(store.units) == 1
+        assert store.units[0].getid() == 'spam'
+        assert store.units[0].source == 'avoid escaping "double quote"'
+        out = BytesIO()
+        store.serialize(out)
+        assert out.getvalue() == b'''spam: 'avoid escaping "double quote"'
+'''
+
+    @pytest.mark.xfail(reason="Not Implemented")
+    def test_avoid_escaping_single_quote_strings(self):
+        """Test avoid escaping single quotes."""
+        store = self.StoreClass()
+        store.parse('''
+spam: "avoid escaping 'single quote'"
+''')
+        assert len(store.units) == 1
+        assert store.units[0].getid() == 'spam'
+        assert store.units[0].source == "avoid escaping 'single quote'"
+        out = BytesIO()
+        store.serialize(out)
+        assert out.getvalue() == b'''spam: "avoid escaping 'single quote'"
 '''
 
     @pytest.mark.xfail(reason="Not Implemented")
