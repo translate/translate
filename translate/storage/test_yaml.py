@@ -233,7 +233,7 @@ spam: "avoid escaping 'single quote'"
 '''
 
     @pytest.mark.xfail(reason="Not Implemented")
-    def test_escaped_quotes(self):
+    def test_escaped_double_quotes(self):
         """These are used in OpenStreeMap translation."""
         store = self.StoreClass()
         store.parse('''
@@ -245,6 +245,21 @@ foo: "Hello \"World\"."
         out = BytesIO()
         store.serialize(out)
         assert out.getvalue() == b'''foo: "Hello \"World\"."
+'''
+
+    @pytest.mark.xfail(reason="Not Implemented")
+    def test_escaped_single_quotes(self):
+        """Test escaping single quotes."""
+        store = self.StoreClass()
+        store.parse('''
+foo: 'Hello \'World\'.'
+''')
+        assert len(store.units) == 1
+        assert store.units[0].getid() == 'foo'
+        assert store.units[0].source == "Hello 'World'"
+        out = BytesIO()
+        store.serialize(out)
+        assert out.getvalue() == b'''foo: 'Hello \'World\'.'
 '''
 
     @pytest.mark.xfail(reason="Not Implemented")
