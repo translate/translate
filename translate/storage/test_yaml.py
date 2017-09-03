@@ -13,6 +13,11 @@ from translate.storage import yaml, test_monolingual, base
 class TestYAMLResourceUnit(test_monolingual.TestMonolingualUnit):
     UnitClass = yaml.YAMLUnit
 
+    def test_getlocations(self):
+        unit = self.UnitClass("teststring")
+        unit.setid('some-key')
+        assert unit.getlocations() == ['some-key']
+
 
 class TestYAMLResourceStore(test_monolingual.TestMonolingualStore):
     StoreClass = yaml.YAMLFile
