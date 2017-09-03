@@ -177,6 +177,35 @@ foo: True
         assert out.getvalue() == b'''foo: True
 '''
 
+    @pytest.mark.xfail(reason="Not Implemented")
+    def test_strings(self):
+        """These are used in OpenStreeMap translation."""
+        store = yaml.YAMLFile()
+        store.parse('''
+foo: 'quote, single'
+bar: "quote, double"
+eggs: No quoting at all
+spam: 'avoid escaping "quote"'
+''')
+
+        assert store.units[0].getid() == 'foo'
+        assert store.units[0].source == 'quote, single'
+        assert store.units[1].getid() == 'bar'
+        assert store.units[1].source == 'quote, double'
+        assert store.units[2].getid() == 'eggs'
+        assert store.units[2].source == 'No quoting at all'
+        assert store.units[3].getid() == 'spam'
+        assert store.units[3].source == 'avoid escaping "quote"'
+
+        out = BytesIO()
+        store.serialize(out)
+
+        assert out.getvalue() == b'''foo: 'quote, single'
+bar: "quote, double"
+eggs: No quoting at all
+spam: 'avoid escaping "quote"'
+'''
+
 
 class TestRubyYAMLResourceStore(test_monolingual.TestMonolingualStore):
     StoreClass = yaml.RubyYAMLFile
