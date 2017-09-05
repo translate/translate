@@ -261,9 +261,9 @@ newlines.</p></body></html>
         self.countunits(pofile, 2)
         # FIXME change this so that we check that the msgctxt is correctly added
         self.compareunit(pofile, 1, "Duplicate")
-        assert pofile.units[1].getlocations() == ['None html.body.p:1-26']
+        assert pofile.units[1].getlocations() == ['None+html.body.p:1-26']
         self.compareunit(pofile, 2, "Duplicate")
-        assert pofile.units[2].getlocations() == ['None html.body.p:1-42']
+        assert pofile.units[2].getlocations() == ['None+html.body.p:1-42']
 
     def test_multiline_reflow(self):
         """check that we reflow multiline content to make it more readable for translators"""
