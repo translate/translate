@@ -25,6 +25,7 @@ for examples and usage instructions.
 
 import six
 
+from translate.convert import convert
 from translate.storage import factory
 from translate.storage.pypo import po_escape_map
 from translate.storage.symbian import *
@@ -90,15 +91,12 @@ def build_location_index(store):
     return index
 
 
-def build_header_index(store):
-    po_header = store.parseheader()
-    return {'Author': po_header['Last-Translator']}
-
-
 def convert_symbian(input_file, output_file, template_file, pot=False, duplicatestyle="msgctxt"):
     store = factory.getobject(input_file)
     location_index = build_location_index(store)
-    header_index = build_header_index(store)
+    header_index = {
+        'Author': store.parseheader()['Last-Translator']
+    }
     output = write_symbian(template_file, header_index, location_index)
     for line in output:
         output_file.write(line)
@@ -106,7 +104,6 @@ def convert_symbian(input_file, output_file, template_file, pot=False, duplicate
 
 
 def main(argv=None):
-    from translate.convert import convert
     formats = {"po": ("r0", convert_symbian)}
     parser = convert.ConvertOptionParser(formats, usetemplates=True, description=__doc__)
     parser.add_duplicates_option()
