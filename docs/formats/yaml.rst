@@ -1,3 +1,6 @@
+.. _yaml:
+
+
 YAML
 ====
 
@@ -5,18 +8,71 @@ YAML
 
 :wp:`YAML` is a common format for web data interchange.
 
-Example:
 
-.. code-block:: yaml
+.. _yaml#non-conformance:
 
-    first-name: "John"
-    last-name: "Smith"
-    age: 25
-    address:
-        streetAddress: "21 2nd Street"
-        city: "New York"
-        state: "NY"
-        postalCode: 10021
-    phoneNumbers:
-        - home: "212 555-1234"
-        - fax: "646 555-4567"
+Non-Conformance
+===============
+
+The following are not yet supported:
+
+* Multiline strings:
+
+  .. code-block:: yaml
+
+      include_newlines: |
+                  exactly as you see
+                  will appear these three
+                  lines of poetry
+
+
+* Abbreviated lists:
+
+  .. code-block:: yaml
+
+      first-name: [Sun, Mon, Tue, Wed, Thu, Fri, Sat]
+
+
+* Abbreviated dictionaries:
+
+  .. code-block:: yaml
+
+      martin: {name: Martin D'vloper, job: Developer, skill: Elite}
+
+
+* Quoted strings:
+
+  .. code-block:: yaml
+
+      foo: "quote, double"
+      bar: 'quote, single'
+
+
+* Escaped quotes:
+
+  .. code-block:: yaml
+
+      foo: "Hello \"World\"."
+      bar: 'Hello \'World\'.'
+
+
+* Avoid escaping quotes:
+
+  .. code-block:: yaml
+
+      spamm: 'avoid escaping "double quote"'
+      eggs: "avoid escaping 'single quote'"
+
+
+* Newlines:
+
+  .. code-block:: yaml
+
+      foo: "Hello \n World."
+
+
+* Booleans:
+
+  .. code-block:: yaml
+
+      foo: True

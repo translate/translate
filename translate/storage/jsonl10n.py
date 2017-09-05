@@ -68,29 +68,33 @@ TODO:
 """
 
 import json
-import os
+import uuid
 from collections import OrderedDict
 
 import six
 
+from translate.misc.multistring import multistring
 from translate.storage import base
 
 
 class JsonUnit(base.TranslationUnit):
     """A JSON entry"""
 
-    def __init__(self, source=None, ref=None, item=None, **kwargs):
-        self._id = None
-        self._item = str(os.urandom(30))
-        if item is not None:
-            self._item = item
-        self._ref = {}
-        if ref is not None:
-            self._ref = ref
-        if ref is None and item is None:
-            self._ref[self._item] = ""
+    def __init__(self, source=None, item=None, notes=None, **kwargs):
+        identifier = str(uuid.uuid4())
+        # Global identifier across file
+        self._id = '.' + identifier
+        # Identifier at this level
+        self._item = identifier if item is None else item
+        # Type conversion for the unit
+        self._type = six.text_type if source is None else type(source)
+        if notes:
+            self.notes = notes
         if source:
-            self.source = source
+            if issubclass(self._type, six.string_types):
+                self.target = source
+            else:
+                self.target = str(source)
         super(JsonUnit, self).__init__(source)
 
     def getsource(self):
@@ -100,36 +104,6 @@ class JsonUnit(base.TranslationUnit):
         self.target = source
     source = property(getsource, setsource)
 
-    def gettarget(self):
-
-        def change_type(value):
-            if isinstance(value, bool):
-                return str(value)
-            return value
-
-        if isinstance(self._ref, list):
-            return change_type(self._ref[self._item])
-        elif isinstance(self._ref, dict):
-            return change_type(self._ref[self._item])
-
-    def settarget(self, target):
-
-        def change_type(oldvalue, newvalue):
-            if isinstance(oldvalue, bool):
-                newvalue = bool(newvalue)
-            return newvalue
-
-        if isinstance(self._ref, list):
-            self._ref[int(self._item)] = change_type(self._ref[int(self._item)],
-                                                     target)
-        elif isinstance(self._ref, dict):
-            self._ref[self._item] = change_type(self._ref[self._item], target)
-        else:
-            raise ValueError("We don't know how to handle:\n"
-                             "Type: %s\n"
-                             "Value: %s" % (type(self._ref), target))
-    target = property(gettarget, settarget)
-
     def setid(self, value):
         self._id = value
 
@@ -138,6 +112,23 @@ class JsonUnit(base.TranslationUnit):
 
     def getlocations(self):
         return [self.getid()]
+
+    def __str__(self):
+        """Converts to a string representation."""
+        return json.dumps(self.getvalue(), separators=(',', ': '), indent=4, ensure_ascii=False)
+
+    def getkey(self):
+        return self.getid().lstrip('.')
+
+    def converttarget(self):
+        if issubclass(self._type, six.string_types):
+            return self.target
+        else:
+            return self._type(self.target)
+
+    def getvalue(self):
+        """Return value to be stored in JSON file."""
+        return {self.getkey(): self.converttarget()}
 
 
 class JsonFile(base.TranslationStore):
@@ -155,10 +146,15 @@ class JsonFile(base.TranslationStore):
             self.parse(inputfile)
 
     def serialize(self, out):
+        def merge(d1, d2):
+            for k in d2:
+                if k in d1 and isinstance(d1[k], dict) and isinstance(d2[k], dict):
+                    merge(d1[k], d2[k])
+                else:
+                    d1[k] = d2[k]
         units = OrderedDict()
         for unit in self.unit_iter():
-            path = unit.getid().lstrip('.')
-            units[path] = unit.target
+            merge(units, unit.getvalue())
         out.write(json.dumps(units, separators=(',', ': '),
                              indent=4, ensure_ascii=False).encode(self.encoding))
         out.write(b'\n')
@@ -191,17 +187,7 @@ class JsonFile(base.TranslationStore):
               (isinstance(last_node, dict) and name_node in stop) or
               (isinstance(last_node, list) and name_last_node in stop)):
 
-            if isinstance(data, six.string_types):
-                yield (prev, data, last_node, name_node)
-            elif isinstance(data, bool):
-                yield (prev, str(data), last_node, name_node)
-            elif data is None:
-                pass
-            else:
-                raise ValueError("We don't handle these values:\n"
-                                 "Type: %s\n"
-                                 "Data: %s\n"
-                                 "Previous: %s" % (type(data), data, prev))
+            yield (prev, data, name_node, '')
 
     def parse(self, input):
         """parse the given file or file source string"""
@@ -220,64 +206,39 @@ class JsonFile(base.TranslationStore):
         except ValueError as e:
             raise base.ParseError(e.message)
 
-        for k, data, ref, item in self._extract_translatables(self._file,
-                                                              stop=self._filter):
-            unit = self.UnitClass(data, ref, item)
+        for k, data, item, notes in self._extract_translatables(self._file,
+                                                                stop=self._filter):
+            unit = self.UnitClass(data, item, notes)
             unit.setid(k)
             self.addunit(unit)
+
+
+class JsonNestedUnit(JsonUnit):
+
+    def getkey(self):
+        return self.getid().lstrip('.').split('.')
+
+    def getvalue(self):
+        ret = self.converttarget()
+        for k in reversed(self.getkey()):
+            ret = {k: ret}
+        return ret
 
 
 class JsonNestedFile(JsonFile):
     """A JSON file with nested keys"""
 
-    def serialize(self, out):
-        def nested_set(target, path, value):
-            if len(path) > 1:
-                if path[0] not in target:
-                    target[path[0]] = OrderedDict()
-                nested_set(target[path[0]], path[1:], value)
-            else:
-                target[path[0]] = value
-
-        units = OrderedDict()
-        for unit in self.unit_iter():
-            path = unit.getid().lstrip('.').split('.')
-            nested_set(units, path, unit.target)
-        out.write(json.dumps(units, separators=(',', ': '),
-                             indent=4, ensure_ascii=False).encode(self.encoding))
-        out.write(b'\n')
+    UnitClass = JsonNestedUnit
 
 
-class WebExtensionJsonUnit(base.TranslationUnit):
-    def __init__(self, source=None, ref=None, item=None):
-        if ref:
-            self._node = ref
-            self.notes = ref['description']
-            self._target = ref['message']
-        else:
-            self._node = OrderedDict((('message', ''), ('description', '')))
-        super(WebExtensionJsonUnit, self).__init__(source)
-
-    def setid(self, value):
-        self._id = value
-
-    def getid(self):
-        return self._id
-
-    def getlocations(self):
-        return [self.getid()]
-
-    def settarget(self, target):
-        super(WebExtensionJsonUnit, self).settarget(target)
-        self._node['message'] = target
-
-    def addnote(self, text, origin=None, position="append"):
-        super(WebExtensionJsonUnit, self).addnote(text, origin, position)
-        self._node['description'] = self.notes
-
-    def removenotes(self):
-        super(WebExtensionJsonUnit, self).removenotes()
-        self._node['description'] = self.notes
+class WebExtensionJsonUnit(JsonUnit):
+    def getvalue(self):
+        value = OrderedDict((
+            ('message', self.target),
+        ))
+        if self.notes:
+            value['description'] = self.notes
+        return {self.getid(): value}
 
 
 class WebExtensionJsonFile(JsonFile):
@@ -293,13 +254,108 @@ class WebExtensionJsonFile(JsonFile):
 
     def _extract_translatables(self, data, stop=None, prev="", name_node=None,
                                name_last_node=None, last_node=None):
-        for item in data:
-            yield (item, item, data[item], None)
+        for item, value in six.iteritems(data):
+            yield (item, value.get('message', ''), item, value.get('description', ''))
 
-    def serialize(self, out):
-        units = OrderedDict()
-        for unit in self.unit_iter():
-            units[unit.getid()] = unit._node
-        out.write(json.dumps(units, separators=(',', ': '),
-                             indent=4, ensure_ascii=False).encode(self.encoding))
-        out.write(b'\n')
+
+class I18NextUnit(JsonNestedUnit):
+    """A i18next v3 format, JSON with plurals.
+
+    See https://www.i18next.com/
+    """
+
+    def settarget(self, target):
+        def get_base(item):
+            """Return base name for plurals"""
+            if '_0' in item[0]:
+                return item[0][:-2]
+            else:
+                return item[0]
+
+        def get_plurals(count, base):
+            if count <= 2:
+                return [base, base + '_plural'][:count]
+            return ['{0}_{1}'.format(base, i) for i in range(count)]
+
+        if isinstance(target, multistring):
+            count = len(target.strings)
+            if not isinstance(self._item, list):
+                self._item = [self._item]
+            if count != len(self._item):
+                # Generate new plural labels
+                self._item = get_plurals(count, get_base(self._item))
+        elif isinstance(self._item, list):
+            # Changing plural to singular
+            self._item = get_base(self._item)
+        super(I18NextUnit, self).settarget(target)
+    target = property(lambda self: self._target, settarget)
+
+    def getvalue(self):
+        if not isinstance(self.target, multistring):
+            return super(I18NextUnit, self).getvalue()
+
+        ret = OrderedDict()
+        for i, value in enumerate(self.target.strings):
+            ret[self._item[i]] = value
+
+        path = self.getid().lstrip('.').split('.')[:-1]
+        for k in reversed(path):
+            ret = {k: ret}
+        return ret
+
+
+class I18NextFile(JsonNestedFile):
+    """A i18next v3 format, this is nested JSON with several additions.
+
+    See https://www.i18next.com/
+    """
+
+    UnitClass = I18NextUnit
+
+    def _extract_translatables(self, data, stop=None, prev="", name_node=None,
+                               name_last_node=None, last_node=None):
+        if isinstance(data, dict):
+            plurals_multiple = [key.rsplit('_', 1)[0] for key in data if key.endswith('_0')]
+            plurals_simple = [key.rsplit('_', 1)[0] for key in data if key.endswith('_plural')]
+            processed = set()
+
+            for k, v in six.iteritems(data):
+                # Check already processed items
+                if k in processed:
+                    continue
+                plurals = []
+                plural_base = ''
+                if k in plurals_simple or k + '_plural' in plurals_simple:
+                    if k.endswith('_plural'):
+                        plural_base = k[:-7]
+                    else:
+                        plural_base = k
+                    plurals_simple.remove(plural_base)
+                    plurals = [k, k + '_plural']
+                elif '_' in k:
+                    plural_base, digit = k.rsplit('_', 1)
+                    if plural_base in plurals_multiple and digit.isdigit():
+                        plurals_multiple.remove(plural_base)
+                        plurals = ['{0}_{1}'.format(plural_base, order) for order in range(10)]
+                if plurals:
+                    sources = []
+                    items = []
+                    for key in plurals:
+                        if key not in data:
+                            break
+                        processed.add(key)
+                        sources.append(data[key])
+                        items.append(key)
+                    yield ("%s.%s" % (prev, plural_base), multistring(sources), items, '')
+                    continue
+
+                for x in self._extract_translatables(v, stop,
+                                                     "%s.%s" % (prev, k),
+                                                     k, None, data):
+                    yield x
+        else:
+            parent = super(I18NextFile, self)._extract_translatables(
+                data, stop, prev, name_node, name_last_node, last_node
+            )
+            for x in parent:
+                yield x

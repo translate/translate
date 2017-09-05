@@ -1,0 +1,32 @@
+Translate Toolkit 2.2.5
+***********************
+
+*Released on 01 September 2017*
+
+This release contains improvements and bug fixes.
+
+
+Changes
+=======
+
+Formats and Converters
+----------------------
+
+- XLIFF
+
+  - Fixed bug when adding new units to XLIFF store.
+
+- JSON
+
+  - Added support for i18next JSON dialect.
+  - Improved WebExtension JSON dialect support.
+
+
+Contributors
+============
+
+This release was made possible by the following people:
+
+Michal Čihař, Leandro Regueiro, Ryan Northey.
+
+And to all our bug finders and testers, a Very BIG Thank You.

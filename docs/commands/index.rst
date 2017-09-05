@@ -35,6 +35,7 @@ Converters
    ts2po
    xliff2po
    l20n2po
+   yaml2po
 
 .. toctree::
    :maxdepth: 1
@@ -84,6 +85,8 @@ understanding that will make the converters much easier to use and understand.
 * :doc:`ts2po <ts2po>` -- Qt Linguist .ts converter
 * :doc:`xliff2po <xliff2po>` -- XLIFF (XML Localisation Interchange File
   Format) converter
+* :doc:`yaml2po <yaml2po>` -- YAML (Yet Another Markup Language) converter
+
 
 .. _commands#tools:
 

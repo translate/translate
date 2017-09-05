@@ -93,9 +93,9 @@ A format string can have these various options:
 A format string may look like this:
 
 * ``%cf`` -- the full filename without vowels
-* ``[%10cb] `` -- the first ten character after compressing the base of the
+* ``[%10cb]`` -- the first ten character after compressing the base of the
   filename and place it in square brackets with a space before the real message
-* ``[%5cd - %cB] `` -- the first 5 consonants of the directory, followed by a
+* ``[%5cd - %cB]`` -- the first 5 consonants of the directory, followed by a
   dash then the consonants of the filename with a .po extension.  All
   surrounded by square brackets with a space before the translations.
 * ``%4h.`` -- insert a hash value of length 4

@@ -42,7 +42,7 @@ def extract_msgid_comment(text):
 
 def quote_plus(text):
     """Quote the query fragment of a URL; replacing ' ' with '+'"""
-    return parse.quote_plus(text.encode("utf-8"))
+    return parse.quote_plus(text.encode("utf-8"), safe='()/:,')
 
 
 def unquote_plus(text):

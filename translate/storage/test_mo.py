@@ -9,6 +9,11 @@ from translate.storage import factory, mo, test_base
 class TestMOUnit(test_base.TestTranslationUnit):
     UnitClass = mo.mounit
 
+    def test_context(self):
+        unit = self.UnitClass("Message")
+        unit.setcontext('context')
+        assert unit.getcontext() == 'context'
+
 
 posources = [
     r'''
@@ -123,6 +128,14 @@ class TestMOFile(test_base.TestTranslationStore):
         store = self.StoreClass()
         store.updateheader(add=True, Language="zu")
         assert store.gettargetlanguage() == "zu"
+
+    def test_context(self):
+        store = self.StoreClass()
+        unit = self.StoreClass.UnitClass('source')
+        unit.target = 'target'
+        unit.setcontext('context')
+        store.addunit(unit)
+        assert b'context' in store.__bytes__()
 
     def test_output(self):
         for posource in posources:

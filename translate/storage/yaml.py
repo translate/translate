@@ -155,7 +155,7 @@ class YAMLFile(base.TranslationStore):
 
         units = UnsortableOrderedDict()
         for unit in self.unit_iter():
-            nested_set(units, unit.getid().split(' / '), unit.target)
+            nested_set(units, unit.getid().split('->'), unit.target)
         out.write(yaml.dump_all(
             [self.get_root_node(units)],
             Dumper=YAMLDumper,
@@ -172,7 +172,7 @@ class YAMLFile(base.TranslationStore):
                         'Key not string: {0}/{1} ({2})'.format(prev, k, type(k))
                     )
 
-                for x in self._flatten(v, ' / '.join((prev, k)) if prev else k):
+                for x in self._flatten(v, '->'.join((prev, k)) if prev else k):
                     yield x
         else:
             if isinstance(data, six.string_types):
@@ -182,7 +182,7 @@ class YAMLFile(base.TranslationStore):
             elif isinstance(data, list):
                 for k, v in enumerate(data):
                     key = '[{0}]'.format(k)
-                    yield (' / '.join((prev, key)), six.text_type(v))
+                    yield ('->'.join((prev, key)), six.text_type(v))
             elif data is None:
                 pass
             else:
@@ -210,10 +210,7 @@ class YAMLFile(base.TranslationStore):
         try:
             self._file = yaml.load(input, OrderedDictYAMLLoader)
         except yaml.YAMLError as e:
-            if hasattr(e, 'problem'):
-                message = e.problem
-            else:
-                message = e.message
+            message = e.problem if hasattr(e, 'problem') else e.message
             if hasattr(e, 'problem_mark'):
                 message += ' {0}'.format(e.problem_mark)
             raise base.ParseError(message)
