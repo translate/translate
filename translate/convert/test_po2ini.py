@@ -18,7 +18,7 @@ class TestPO2Ini(object):
         """helper that converts po source to .ini source without requiring files"""
         inputfile = wStringIO.StringIO(posource)
         inputpo = po.pofile(inputfile)
-        convertor = po2ini.reini()
+        convertor = po2ini.po2ini()
         outputini = convertor.convertstore(inputpo)
         return outputini
 
@@ -27,7 +27,7 @@ class TestPO2Ini(object):
         inputfile = wStringIO.StringIO(posource)
         inputpo = po.pofile(inputfile)
         templatefile = wStringIO.StringIO(inisource)
-        convertor = po2ini.reini(templatefile, inputpo, dialect=dialect)
+        convertor = po2ini.po2ini(templatefile, inputpo, dialect=dialect)
         outputini = convertor.convertstore()
         print(outputini)
         return outputini

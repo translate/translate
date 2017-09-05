@@ -24,14 +24,12 @@ for examples and usage instructions.
 """
 
 from translate.convert import convert
-from translate.storage import factory
+from translate.storage import ini, po
 
 
-class reini(object):
+class po2ini(object):
 
     def __init__(self, templatefile, inputstore, dialect="default"):
-        from translate.storage import ini
-        self.templatefile = templatefile
         self.templatestore = ini.inifile(templatefile, dialect=dialect)
         self.inputstore = inputstore
 
@@ -53,27 +51,29 @@ class reini(object):
 
 def convertini(inputfile, outputfile, templatefile, includefuzzy=False,
                dialect="default", outputthreshold=None):
-
-    inputstore = factory.getobject(inputfile)
-
-    if not convert.should_output_store(inputstore, outputthreshold):
-        return False
-
     if templatefile is None:
         raise ValueError("must have template file for ini files")
-    else:
-        convertor = reini(templatefile, inputstore, dialect)
 
+    inputstore = po.pofile(inputfile)
+    if not convert.should_output_store(inputstore, outputthreshold):
+        return 0
+
+    convertor = po2ini(templatefile, inputstore, dialect)
     outputstring = convertor.convertstore(includefuzzy)
     outputfile.write(outputstring)
-    return True
+    return 1
 
 
 def convertisl(inputfile, outputfile, templatefile, includefuzzy=False,
                dialect="inno", outputthreshold=None):
-
     convertini(inputfile, outputfile, templatefile, includefuzzy, dialect,
-               outputthreshold=outputthreshold)
+               outputthreshold)
+
+
+formats = {
+    ("po", "ini"): ("ini", convertini),
+    ("po", "isl"): ("isl", convertisl),
+}
 
 
 def main(argv=None):
@@ -83,10 +83,6 @@ def main(argv=None):
               "Python 3.")
         sys.exit()
 
-    formats = {
-        ("po", "ini"): ("ini", convertini),
-        ("po", "isl"): ("isl", convertisl),
-    }
     parser = convert.ConvertOptionParser(formats, usetemplates=True,
                                          description=__doc__)
     parser.add_threshold_option()
