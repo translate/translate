@@ -18,7 +18,7 @@ class TestPO2Sub(object):
         files"""
         inputfile = wStringIO.StringIO(posource)
         inputpo = po.pofile(inputfile)
-        convertor = po2sub.resub()
+        convertor = po2sub.po2sub()
         outputsub = convertor.convertstore(inputpo)
         return outputsub.decode('utf-8')
 
@@ -28,7 +28,7 @@ class TestPO2Sub(object):
         inputfile = wStringIO.StringIO(posource)
         inputpo = po.pofile(inputfile)
         templatefile = wStringIO.StringIO(subsource)
-        convertor = po2sub.resub(templatefile, inputpo)
+        convertor = po2sub.po2sub(templatefile, inputpo)
         outputsub = convertor.convertstore()
         print(outputsub)
         return outputsub.decode('utf-8')

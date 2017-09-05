@@ -24,19 +24,18 @@ for examples and usage instructions.
 """
 
 from translate.convert import convert
-from translate.storage import factory
+from translate.storage import po, subtitles
 
 
-class resub(object):
+class po2sub(object):
 
-    def __init__(self, templatefile, inputstore):
-        from translate.storage import subtitles
+    def __init__(self, templatefile, inputstore, includefuzzy=False):
+        self.includefuzzy = includefuzzy
         self.templatefile = templatefile
         self.templatestore = subtitles.SubtitleFile(templatefile)
         self.inputstore = inputstore
 
-    def convertstore(self, includefuzzy=False):
-        self.includefuzzy = includefuzzy
+    def convert_store(self):
         self.inputstore.makeindex()
         for unit in self.templatestore.units:
             for location in unit.getlocations():
@@ -53,28 +52,28 @@ class resub(object):
 
 def convertsub(inputfile, outputfile, templatefile, includefuzzy=False,
                outputthreshold=None):
-    inputstore = factory.getobject(inputfile)
-
-    if not convert.should_output_store(inputstore, outputthreshold):
-        return False
-
     if templatefile is None:
         raise ValueError("must have template file for subtitle files")
-    else:
-        convertor = resub(templatefile, inputstore)
-    outputstring = convertor.convertstore(includefuzzy)
+
+    inputstore = po.pofile(inputfile)
+    if not convert.should_output_store(inputstore, outputthreshold):
+        return 0
+
+    convertor = po2sub(templatefile, inputstore, includefuzzy)
+    outputstring = convertor.convert_store()
     outputfile.write(outputstring)
     return 1
 
 
+formats = {
+    ("po", "srt"): ("srt", convertsub),
+    ("po", "sub"): ("sub", convertsub),
+    ("po", "ssa"): ("ssa", convertsub),
+    ("po", "ass"): ("ass", convertsub),
+}
+
+
 def main(argv=None):
-    # handle command line options
-    formats = {
-        ("po", "srt"): ("srt", convertsub),
-        ("po", "sub"): ("sub", convertsub),
-        ("po", "ssa"): ("ssa", convertsub),
-        ("po", "ass"): ("ass", convertsub),
-    }
     parser = convert.ConvertOptionParser(formats, usetemplates=True,
                                          description=__doc__)
     parser.add_threshold_option()
