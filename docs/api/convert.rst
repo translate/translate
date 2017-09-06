@@ -236,6 +236,14 @@ po2rc
    :inherited-members:
 
 
+po2resx
+-------
+
+.. automodule:: translate.convert.po2resx
+   :members:
+   :inherited-members:
+
+
 po2sub
 ------
 
@@ -307,6 +315,14 @@ po2xliff
    :inherited-members:
 
 
+po2yaml
+-------
+
+.. automodule:: translate.convert.po2yaml
+   :members:
+   :inherited-members:
+
+
 pot2po
 ------
 
@@ -335,6 +351,14 @@ rc2po
 -----
 
 .. automodule:: translate.convert.rc2po
+   :members:
+   :inherited-members:
+
+
+resx2po
+-------
+
+.. automodule:: translate.convert.resx2po
    :members:
    :inherited-members:
 
@@ -406,5 +430,13 @@ xliff2po
 --------
 
 .. automodule:: translate.convert.xliff2po
+   :members:
+   :inherited-members:
+
+
+yaml2po
+-------
+
+.. automodule:: translate.convert.yaml2po
    :members:
    :inherited-members:
