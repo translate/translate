@@ -307,14 +307,6 @@ po2xliff
    :inherited-members:
 
 
-poreplace
----------
-
-.. automodule:: translate.convert.poreplace
-   :members:
-   :inherited-members:
-
-
 pot2po
 ------
 
