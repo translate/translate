@@ -6,12 +6,10 @@ import pytest
 
 from translate.convert import po2yaml, test_convert
 from translate.misc import wStringIO
-from translate.storage import po, yaml
 
 
 class TestPO2YAML(object):
-    StoreClass = po.pofile
-    TargetStoreClass = yaml.YAMLFile
+
     ConverterClass = po2yaml.po2yaml
 
     def _convert(self, po_input_source, format_template_source=None,

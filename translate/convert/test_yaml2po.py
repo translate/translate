@@ -4,12 +4,10 @@ from __future__ import unicode_literals
 
 from translate.convert import yaml2po, test_convert
 from translate.misc import wStringIO
-from translate.storage import po, yaml
 
 
 class TestYAML2PO(object):
-    StoreClass = yaml.YAMLFile
-    TargetStoreClass = po.pofile
+
     ConverterClass = yaml2po.yaml2po
 
     def _convert(self, format_input_source, format_template_source=None):
