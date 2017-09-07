@@ -6,21 +6,6 @@ from translate.convert import po2ical, test_convert
 from translate.misc import wStringIO
 
 
-icalboiler = '''BEGIN:VCALENDAR
-VERSION:2.0
-PRODID:-//hacksw/handcal//NONSGML v1.0//EN
-BEGIN:VEVENT
-UID:uid1@example.com
-DTSTART:19970714T170000Z
-DTEND:19970715T035959Z
-DTSTAMP:19970714T170000Z
-ORGANIZER;CN=John Doe:MAILTO:john.doe@example.com
-SUMMARY:%s
-END:VEVENT
-END:VCALENDAR
-'''.replace("\n", "\r\n")
-
-
 class TestPO2Ical(object):
 
     def format2po_text(self, po_input_source, format_template_source=None,
@@ -43,8 +28,21 @@ class TestPO2Ical(object):
 msgid "Value"
 msgstr "Waarde"
 """
-        template_source = icalboiler % "Value"
-        expected_output = icalboiler % "Waarde"
+        icalendar_boilerplate = '''BEGIN:VCALENDAR
+VERSION:2.0
+PRODID:-//hacksw/handcal//NONSGML v1.0//EN
+BEGIN:VEVENT
+UID:uid1@example.com
+DTSTART:19970714T170000Z
+DTEND:19970715T035959Z
+DTSTAMP:19970714T170000Z
+ORGANIZER;CN=John Doe:MAILTO:john.doe@example.com
+SUMMARY:%s
+END:VEVENT
+END:VCALENDAR
+'''.replace("\n", "\r\n")
+        template_source = icalendar_boilerplate % "Value"
+        expected_output = icalendar_boilerplate % "Waarde"
         assert expected_output == self.format2po_text(input_source,
                                                       template_source)
 
