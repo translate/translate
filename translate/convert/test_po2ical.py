@@ -2,6 +2,8 @@
 
 from __future__ import unicode_literals
 
+import pytest
+
 from translate.convert import po2ical, test_convert
 from translate.misc import wStringIO
 
@@ -173,6 +175,16 @@ END:VCALENDAR
         assert expected_output == self.format2po_text(input_source,
                                                       template_source,
                                                       include_fuzzy=True)
+
+    def test_no_template(self):
+        """Check that a template is required."""
+        input_source = """
+#: [uid1@example.com]SUMMARY
+msgid "Value"
+msgstr "Waarde"
+"""
+        with pytest.raises(ValueError):
+            self.format2po_text(input_source)
 
 
 class TestPO2IcalCommand(test_convert.TestConvertCommand, TestPO2Ical):
