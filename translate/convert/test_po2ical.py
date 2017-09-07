@@ -1,8 +1,9 @@
 # -*- coding: utf-8 -*-
 
+from __future__ import unicode_literals
+
 from translate.convert import po2ical, test_convert
 from translate.misc import wStringIO
-from translate.storage import po
 
 
 icalboiler = '''BEGIN:VCALENDAR
@@ -22,38 +23,30 @@ END:VCALENDAR
 
 class TestPO2Ical(object):
 
-    def po2ical(self, posource):
-        """helper that converts po source to .ics source without requiring
-        files"""
-        inputfile = wStringIO.StringIO(posource)
-        inputpo = po.pofile(inputfile)
-        convertor = po2ical.reical()
-        outputical = convertor.convertstore(inputpo)
-        return outputical
+    def format2po_text(self, po_input_source, format_template_source=None,
+                       include_fuzzy=False, output_threshold=None):
+        """Helper that converts PO source to format output without files."""
+        input_file = wStringIO.StringIO(po_input_source)
+        output_file = wStringIO.StringIO()
+        template_file = None
+        if format_template_source:
+            template_file = wStringIO.StringIO(format_template_source)
+        result = po2ical.convertical(input_file, output_file, template_file,
+                                     include_fuzzy, output_threshold)
+        assert result == 1
+        return output_file.getvalue().decode('utf-8')
 
-    def merge2ical(self, propsource, posource):
-        """helper that merges po translations to .ics source without requiring
-        files"""
-        inputfile = wStringIO.StringIO(posource)
-        inputpo = po.pofile(inputfile)
-        templatefile = wStringIO.StringIO(propsource)
-        #templateprop = properties.propfile(templatefile)
-        convertor = po2ical.reical(templatefile, inputpo)
-        outputical = convertor.convertstore()
-        print(outputical)
-        return outputical.decode('utf-8')
-
-    def test_simple_summary(self):
-        """test that we output correctly for Inno files."""
-        posource = u'''#: [uid1@example.com]SUMMARY
+    def test_summary(self):
+        """Check that a simple PO converts valid iCalendar SUMMARY."""
+        input_source = """
+#: [uid1@example.com]SUMMARY
 msgid "Value"
 msgstr "Waarde"
-'''
-        icaltemplate = icalboiler % "Value"
-        icalexpected = icalboiler % "Waarde"
-        icalfile = self.merge2ical(icaltemplate, posource)
-        print(icalexpected)
-        assert icalfile == icalexpected
+"""
+        template_source = icalboiler % "Value"
+        expected_output = icalboiler % "Waarde"
+        assert expected_output == self.format2po_text(input_source,
+                                                      template_source)
 
     # FIXME we should also test for DESCRIPTION, LOCATION and COMMENT
     # The library handle any special encoding issues, we might want to test
