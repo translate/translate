@@ -147,6 +147,33 @@ END:VCALENDAR
         assert expected_output == self.format2po_text(input_source,
                                                       template_source)
 
+    def test_convert_include_fuzzy(self):
+        """Check fuzzy units are converted with target text if specified."""
+        input_source = """
+#, fuzzy
+#: [uid1@example.com]SUMMARY
+msgid "Value"
+msgstr "Waarde"
+"""
+        icalendar_boilerplate = '''BEGIN:VCALENDAR
+VERSION:2.0
+PRODID:-//hacksw/handcal//NONSGML v1.0//EN
+BEGIN:VEVENT
+UID:uid1@example.com
+DTSTART:19970714T170000Z
+DTEND:19970715T035959Z
+DTSTAMP:19970714T170000Z
+ORGANIZER;CN=John Doe:MAILTO:john.doe@example.com
+SUMMARY:%s
+END:VEVENT
+END:VCALENDAR
+'''.replace("\n", "\r\n")
+        template_source = icalendar_boilerplate % "Value"
+        expected_output = icalendar_boilerplate % "Waarde"
+        assert expected_output == self.format2po_text(input_source,
+                                                      template_source,
+                                                      include_fuzzy=True)
+
 
 class TestPO2IcalCommand(test_convert.TestConvertCommand, TestPO2Ical):
     """Tests running actual po2ical commands on files"""
