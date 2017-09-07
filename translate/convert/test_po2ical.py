@@ -186,6 +186,31 @@ msgstr "Waarde"
         with pytest.raises(ValueError):
             self.format2po_text(input_source)
 
+    def test_template_location_not_in_source_file(self):
+        """Check conversion when template unit is not in source file."""
+        input_source = """
+#: [NOT_IN_TEMPLATE]SUMMARY
+msgid "Value"
+msgstr "Waarde"
+"""
+        icalendar_boilerplate = '''BEGIN:VCALENDAR
+VERSION:2.0
+PRODID:-//hacksw/handcal//NONSGML v1.0//EN
+BEGIN:VEVENT
+UID:uid1@example.com
+DTSTART:19970714T170000Z
+DTEND:19970715T035959Z
+DTSTAMP:19970714T170000Z
+ORGANIZER;CN=John Doe:MAILTO:john.doe@example.com
+SUMMARY:%s
+END:VEVENT
+END:VCALENDAR
+'''.replace("\n", "\r\n")
+        template_source = icalendar_boilerplate % "Random"
+        expected_output = icalendar_boilerplate % "Random"
+        assert expected_output == self.format2po_text(input_source,
+                                                      template_source)
+
 
 class TestPO2IcalCommand(test_convert.TestConvertCommand, TestPO2Ical):
     """Tests running actual po2ical commands on files"""
