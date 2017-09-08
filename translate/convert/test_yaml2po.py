@@ -27,8 +27,8 @@ class TestYAML2PO(object):
 
     def format2po_text(self, format_input_source, format_template_source=None):
         """Helper that converts format source to PO output without files."""
-        return self._convert(format_input_source,
-                             format_template_source)[1].getvalue()
+        return (self._convert(format_input_source, format_template_source)
+                )[1].getvalue().decode('utf-8')
 
     def single_element(self, po_file):
         """Helper to check PO file has one non-header unit, and return it."""
@@ -59,8 +59,7 @@ class TestYAML2PO(object):
 msgid "Hello, World!"
 msgstr ""
 """
-        assert (expected_unit_output in
-                self.format2po_text(input_source).decode('utf-8'))
+        assert expected_unit_output in self.format2po_text(input_source)
 
     def test_simple(self):
         """Check that a simple single entry YAML converts to a PO unit."""
