@@ -211,6 +211,68 @@ END:VCALENDAR
         assert expected_output == self.format2po_text(input_source,
                                                       template_source)
 
+    def test_convert_completion_below_threshold(self):
+        """Check no conversion if input completion is below threshold."""
+        input_source = """
+#: [uid1@example.com]SUMMARY
+msgid "Value"
+msgstr ""
+"""
+        icalendar_boilerplate = '''BEGIN:VCALENDAR
+VERSION:2.0
+PRODID:-//hacksw/handcal//NONSGML v1.0//EN
+BEGIN:VEVENT
+UID:uid1@example.com
+DTSTART:19970714T170000Z
+DTEND:19970715T035959Z
+DTSTAMP:19970714T170000Z
+ORGANIZER;CN=John Doe:MAILTO:john.doe@example.com
+SUMMARY:%s
+END:VEVENT
+END:VCALENDAR
+'''.replace("\n", "\r\n")
+        template_source = icalendar_boilerplate % "Value"
+        expected_output = ""
+        input_file = wStringIO.StringIO(input_source)
+        output_file = wStringIO.StringIO()
+        template_file = wStringIO.StringIO(template_source)
+        # Input completion is 0% so with a 70% threshold it should not output.
+        result = po2ical.convertical(input_file, output_file, template_file,
+                                     outputthreshold=70)
+        assert result is False
+        assert output_file.getvalue().decode('utf-8') == expected_output
+
+    def test_convert_completion_above_threshold(self):
+        """Check there is conversion if input completion is above threshold."""
+        input_source = """
+#: [uid1@example.com]SUMMARY
+msgid "Value"
+msgstr "Waarde"
+"""
+        icalendar_boilerplate = '''BEGIN:VCALENDAR
+VERSION:2.0
+PRODID:-//hacksw/handcal//NONSGML v1.0//EN
+BEGIN:VEVENT
+UID:uid1@example.com
+DTSTART:19970714T170000Z
+DTEND:19970715T035959Z
+DTSTAMP:19970714T170000Z
+ORGANIZER;CN=John Doe:MAILTO:john.doe@example.com
+SUMMARY:%s
+END:VEVENT
+END:VCALENDAR
+'''.replace("\n", "\r\n")
+        template_source = icalendar_boilerplate % "Value"
+        expected_output = icalendar_boilerplate % "Waarde"
+        input_file = wStringIO.StringIO(input_source)
+        output_file = wStringIO.StringIO()
+        template_file = wStringIO.StringIO(template_source)
+        # Input completion is 100% so with a 70% threshold it should output.
+        result = po2ical.convertical(input_file, output_file, template_file,
+                                     outputthreshold=70)
+        assert result == 1
+        assert output_file.getvalue().decode('utf-8') == expected_output
+
 
 class TestPO2IcalCommand(test_convert.TestConvertCommand, TestPO2Ical):
     """Tests running actual po2ical commands on files"""
