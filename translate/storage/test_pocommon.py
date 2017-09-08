@@ -18,3 +18,5 @@ def test_roundtrip_quote_plus():
         "path/file.c(2):3,path space/file.h:4",
         "path/file.c(2):3,path+space/file.h:4"
     )
+    roundtrip_quote_plus("[uid1@example.com]SUMMARY",
+                         "[uid1@example.com]SUMMARY")
