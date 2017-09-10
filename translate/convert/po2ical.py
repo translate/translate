@@ -24,7 +24,7 @@ for examples and usage instructions.
 """
 
 from translate.convert import convert
-from translate.storage import factory, ical
+from translate.storage import ical, po
 
 
 class reical(object):
@@ -52,7 +52,7 @@ class reical(object):
 
 def convertical(inputfile, outputfile, templatefile, includefuzzy=False,
                 outputthreshold=None):
-    inputstore = factory.getobject(inputfile)
+    inputstore = po.pofile(inputfile)
 
     if not convert.should_output_store(inputstore, outputthreshold):
         return False

@@ -26,7 +26,7 @@ class TestPO2Ical(object):
     def test_convert_empty_file(self):
         """Check that an empty PO converts to valid iCalendar."""
         input_source = ""
-        template_source = '''BEGIN:VCALENDAR
+        icalendar_boilerplate = '''BEGIN:VCALENDAR
 VERSION:2.0
 PRODID:-//hacksw/handcal//NONSGML v1.0//EN
 BEGIN:VEVENT
@@ -35,12 +35,14 @@ DTSTART:19970714T170000Z
 DTEND:19970715T035959Z
 DTSTAMP:19970714T170000Z
 ORGANIZER;CN=John Doe:MAILTO:john.doe@example.com
-SUMMARY:Value
+SUMMARY:%s
 END:VEVENT
 END:VCALENDAR
 '''.replace("\n", "\r\n")
-        with pytest.raises(ValueError):
-            self.convert_to_target_text(input_source, template_source)
+        template_source = icalendar_boilerplate % "Value"
+        expected_output = icalendar_boilerplate % "Value"
+        assert expected_output == self.convert_to_target_text(input_source,
+                                                              template_source)
 
     def test_summary(self):
         """Check that a simple PO converts valid iCalendar SUMMARY."""
