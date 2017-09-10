@@ -123,6 +123,50 @@ END:VCALENDAR
         assert expected_output == self.convert_to_target_text(input_source,
                                                               template_source)
 
+    def test_complex_icalendar(self):
+        """Check that a PO converts valid iCalendar."""
+        input_source = """
+#: [uid1@example.com]SUMMARY
+msgid "My summary"
+msgstr "Resumo"
+
+#: [uid1@example.com]DESCRIPTION
+msgid "My description"
+msgstr "A miña descrición"
+
+#: [uid1@example.com]LOCATION
+msgid "The location"
+msgstr "O lugar"
+
+#: [uid1@example.com]COMMENT
+msgid "Some comment"
+msgstr "Comentarios ao chou"
+"""
+        icalendar_boilerplate = '''BEGIN:VCALENDAR
+VERSION:2.0
+PRODID:-//hacksw/handcal//NONSGML v1.0//EN
+BEGIN:VEVENT
+UID:uid1@example.com
+DTSTART:19970714T170000Z
+DTEND:19970715T035959Z
+COMMENT:%s
+DESCRIPTION:%s
+DTSTAMP:19970714T170000Z
+LOCATION:%s
+ORGANIZER;CN=John Doe:MAILTO:john.doe@example.com
+SUMMARY:%s
+END:VEVENT
+END:VCALENDAR
+'''.replace("\n", "\r\n")
+        template_source = (icalendar_boilerplate %
+                           ("Some comment", "My description", "The location",
+                            "My summary"))
+        expected_output = (icalendar_boilerplate %
+                           ("Comentarios ao chou", "A miña descrición",
+                            "O lugar", "Resumo"))
+        assert expected_output == self.convert_to_target_text(input_source,
+                                                              template_source)
+
     def test_convert_skip_fuzzy(self):
         """Check that by default fuzzy units are converted with source text."""
         input_source = """
