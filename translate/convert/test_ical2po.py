@@ -2,6 +2,8 @@
 
 from __future__ import unicode_literals
 
+import pytest
+
 from translate.convert import ical2po, test_convert
 from translate.misc import wStringIO
 
@@ -20,6 +22,14 @@ class TestIcal2PO(object):
                                      blank_msgstr, duplicate_style)
         assert result == 1
         return output_file.getvalue().decode('utf-8')
+
+    def test_convert_empty_file(self):
+        """Check converting empty iCalendar returns no output."""
+        input_file = wStringIO.StringIO('')
+        output_file = wStringIO.StringIO()
+        template_file = None
+        with pytest.raises(StopIteration):
+            ical2po.convertical(input_file, output_file, template_file)
 
     def test_summary(self):
         """Check that iCalendar SUMMARY converts valid PO output."""
