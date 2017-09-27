@@ -131,7 +131,7 @@ class phpunit(base.TranslationUnit):
         """Construct a blank phpunit."""
         self.escape_type = None
         super(phpunit, self).__init__(source)
-        self.name = ""
+        self.name = "$TTK_PLACEHOLDER"
         self.value = ""
         self.translation = ""
         self._comments = []
