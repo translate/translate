@@ -131,7 +131,7 @@ $lang['prefPanel-smime'] = 'Security';'''
     def test_spaces_in_name(self):
         """checks that if we have spaces in the name we create a good PO with no spaces"""
         phptemplate = '''$lang[ 'credit' ] = 'Something';'''
-        phpsource = '''$lang[ 'credit' ] = ''n Ding';'''
+        phpsource = '''$lang[ 'credit' ] = 'n Ding';'''
         pofile = self.php2po(phpsource, phptemplate)
         pounit = self.singleelement(pofile)
         assert pounit.getlocations() == ["$lang[ 'credit' ]"]
