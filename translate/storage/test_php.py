@@ -718,7 +718,7 @@ FOOBAR;
 $month_mar = 'Mar';
         '''
         phpfile = self.phpparse(phpsource)
-        assert len(phpfile.units) == 3
+        assert len(phpfile.units) == 4
         phpunit = phpfile.units[0]
         assert phpunit.name == '$month_jan'
         assert phpunit.source == "Jan"
