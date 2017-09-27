@@ -1,7 +1,5 @@
 # -*- coding: utf-8 -*-
 
-from pytest import mark
-
 from translate.misc import wStringIO
 from translate.storage import php, test_monolingual
 
@@ -112,7 +110,8 @@ class TestPhpFile(test_monolingual.TestMonolingualStore):
 
     def test_simpledefinition_source(self):
         """checks that a simple php definition can be regenerated as source"""
-        phpsource = """$lang['mediaselect']='Bestand selectie';"""
+        phpsource = """<?php
+$lang['mediaselect'] = 'Bestand selectie';"""
         phpregen = self.phpregen(phpsource)
         assert phpsource + '\n' == phpregen
 
@@ -138,10 +137,10 @@ $foo = "bar";
         phpunit = phpfile.units[0]
         assert phpunit.name == "$foo"
         assert phpunit.source == "bar"
-        assert phpunit._comments == ["""/*""",
-                                     """ * Comment line 1""",
-                                     """ * Comment line 2""",
-                                     """ */"""]
+        assert phpunit._comments == ["""/*
+ * Comment line 1
+ * Comment line 2
+ */"""]
 
     def test_comment_blocks(self):
         """check that we don't process name value pairs in comment blocks"""
@@ -159,12 +158,11 @@ $lang[2] = "Yeah";
 
     def test_comment_output(self):
         """check that linebreaks and spacing is preserved when comments are output"""
-        # php.py uses single quotes and doesn't add spaces before or after '='
         phpsource = """/*
  * Comment line 1
  * Comment line 2
  */
-$foo='bar';
+$foo = 'bar';
 """
         phpfile = self.phpparse(phpsource)
         assert len(phpfile.units) == 1
@@ -174,7 +172,7 @@ $foo='bar';
     def test_comment_add(self):
         """check that comments are actually added"""
         phpsource = """/* NOTE 1 */
-$foo='bar';
+$foo = 'bar';
 """
         phpfile = self.phpparse(phpsource)
         assert len(phpfile.units) == 1
@@ -367,11 +365,11 @@ define('_CM_POSTED', 'Enviado'); // Posted date"""
         phpunit = phpfile.units[0]
         assert phpunit.name == 'define("_POSTEDON"'
         assert phpunit.source == "Enviado o"
-        assert phpunit._comments == ["Keep this short"]
+        assert phpunit._comments == ["// Keep this short"]
         phpunit = phpfile.units[1]
         assert phpunit.name == "define('_CM_POSTED'"
         assert phpunit.source == "Enviado"
-        assert phpunit._comments == ["Posted date"]
+        assert phpunit._comments == ["// Posted date"]
 
     def test_parsing_define_double_slash_comments_before_entries(self):
         """Parse define syntax with double slash comments before the entries"""
@@ -431,7 +429,6 @@ $month_mar = 'Mar';"""
         assert phpunit.name == '$month_mar'
         assert phpunit.source == "Mar"
 
-    @mark.xfail(reason="Bug #1685")
     def test_parsing_arrays_no_trailing_comma(self):
         """parse the array syntax where we don't have a trailing comma.
         Bug #1685"""
@@ -479,7 +476,6 @@ $month_mar = 'Mar';"""
         assert phpunit.name == "$lang->'item2'"
         assert phpunit.source == "value2"
 
-    @mark.xfail(reason="Bug #3629")
     def test_parsing_arrays_declared_in_a_single_line(self):
         """parse an array declared in a single line.
         Bug #3629"""
@@ -496,7 +492,6 @@ $month_mar = 'Mar';"""
         assert phpunit.name == "$lang->'item3'"
         assert phpunit.source == "value3"
 
-    @mark.xfail(reason="Bug #3626")
     def test_parsing_arrays_using_short_array_syntax(self):
         """parse short array syntax.
         Bug #3626"""
@@ -621,7 +616,6 @@ $month_mar = 'Mar';"""
         assert phpunit.name == "'list2'->'l1'"
         assert phpunit.source == "target_l2_1"
 
-    @mark.xfail(reason="Bug #2647")
     def test_parsing_nested_arrays_with_array_declaration_in_next_line(self):
         """parse the nested array syntax with array declaration in the next
         line. Bug #2647"""
@@ -645,7 +639,6 @@ $month_mar = 'Mar';"""
         assert phpunit.name == "$lang->'item2'"
         assert phpunit.source == "value2"
 
-    @mark.xfail(reason="Bug #3628")
     def test_parsing_array_with_newline_after_delimiter(self):
         """Parse array with newline between key and value.
 
@@ -668,7 +661,6 @@ $month_mar = 'Mar';"""
         assert phpunit.name == "$lang->'item2'"
         assert phpunit.source == "value2"
 
-    @mark.xfail(reason="Bug #2648")
     def test_parsing_nested_arrays_with_blank_entries(self):
         """parse the nested array syntax with blank entries. Bug #2648"""
         phpsource = '''$lang = array(
@@ -692,7 +684,6 @@ $month_mar = 'Mar';"""
         assert phpunit.name == "$lang->'item2'"
         assert phpunit.source == "value2"
 
-    @mark.xfail(reason="Bug #3627")
     def test_slashstar_in_string(self):
         """ignore the /* comment delimiter when it is part of a string.
         Bug #3627"""
@@ -717,7 +708,6 @@ $month_mar = 'Mar';"""
         assert phpunit.name == "$lang->'thirdkey'"
         assert phpunit.source == "Third value"
 
-    @mark.xfail(reason="Bug #2611")
     def test_parsing_simple_heredoc_syntax(self):
         """parse the heredoc syntax. Bug #2611"""
         phpsource = '''$month_jan = 'Jan';
@@ -763,3 +753,43 @@ $lang['mediaselect'] = 'Bestand selectie';"""
         phpunit = phpfile.units[1]
         assert phpunit.name == "$lang['mediaselect']"
         assert phpunit.source == "Bestand selectie"
+
+    def test_quotes(self):
+        phpsource = b'''<?php
+$txt[\'DISPLAYEDINFOS\'] = "<a href=\\"__PARAM2__\\">Modificar...</a>";
+'''
+        phpfile = self.phpparse(phpsource)
+        assert phpfile.__bytes__() == phpsource
+
+    def test_concatenation(self):
+        """Check that a simple definition after define is parsed correctly."""
+        phpsource = """
+$lang['mediaselect'] = "Really \\\"something\\\"" . $variable . "\\\"something else\\\"";"""
+        phpfile = self.phpparse(phpsource)
+        print(len(phpfile.units))
+        assert len(phpfile.units) == 1
+        phpunit = phpfile.units[0]
+        assert phpunit.name == "$lang['mediaselect']"
+        assert phpunit.source == "Really \"something\"$variable\"something else\""
+
+    def test_serialize(self):
+        phpsource = b"""<?php
+# Comment 1
+define("_FINISH", 'Rematar');
+// Comment 2
+define("_START", "Zacni");
+/* Comment 3 */
+$lang['mediaselect'] = 'Bestand selectie';
+$texts = array(
+    /*
+     * Multiline comment 4
+     */
+    'other' => 'Andere',
+    'nested' => array(
+        'and' => 'Und',
+        'second' => 'Zweite',
+    ),
+);
+"""
+        phpfile = self.phpparse(phpsource)
+        assert phpfile.__bytes__() == phpsource
