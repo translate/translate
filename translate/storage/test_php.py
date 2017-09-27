@@ -323,7 +323,7 @@ define( '_CM_POSTED','Enviado');"""
 
     def test_parsing_define_entries_with_quotes(self):
         """Parse define syntax for entries with quotes"""
-        phpsource = """define('_SETTINGS_COOKIEPREFIX', 'Prefixo da "cookie"');
+        phpsource = r"""define('_SETTINGS_COOKIEPREFIX', 'Prefixo da "cookie"');
 define('_YOUR_USERNAME', 'O seu nome de usuario: "cookie"');
 define("_REGISTER", "Register <a href=\"register.php\">here</a>");"""
         phpfile = self.phpparse(phpsource)
