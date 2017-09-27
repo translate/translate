@@ -54,11 +54,138 @@ implemented as outlined in the PHP documentation for the
 `String type <http://www.php.net/language.types.string>`_.
 """
 
-import logging
+from __future__ import unicode_literals
+
 import re
+
 import six
 
+from phply.phpparse import make_parser
+from phply.phplex import lexer, FilteredLexer, full_lexer, unparsed
+from phply.phpast import (Array, ArrayElement, ArrayOffset, Assignment,
+                          BinaryOp, FunctionCall, InlineHTML, Node, Return,
+                          Variable)
+
 from translate.storage import base
+
+
+def wrap_production(func):
+    """Decorator for production functions to store lexer positions."""
+    def prod(n):
+        func(n)
+        if isinstance(n[0], Node):
+            startpos = min([getattr(i, 'lexpos', 0) for i in n.slice[1:]])
+            endpos = max([getattr(i, 'endlexpos', 0) for i in n.slice[1:]])
+            n[0].lexpositions = startpos, endpos
+        elif isinstance(n[0], list) and n[0] and isinstance(n[0][-1], ArrayElement):
+            startpos = min([getattr(i, 'lexpos', 0) for i in n.slice[1:]])
+            endpos = max([getattr(i, 'endlexpos', 0) for i in n.slice[1:]])
+            n[0][-1].lexpositions = startpos, endpos
+    return prod
+
+
+class PHPLexer(FilteredLexer):
+    def __init__(self):
+        super(PHPLexer, self).__init__(full_lexer.clone())
+        self.tokens = []
+        self.pos = 0
+        self.codepos = 0
+
+    def next_token(self):
+        token = self.lexer.token()
+        if token is not None:
+            self.tokens.append(token)
+        return token
+
+    def token(self):
+        """Copied from FilteredLexer, only difference is that it uses
+        next_token method
+        """
+
+        t = self.next_token()
+
+        # Filter out tokens that the parser is not expecting.
+        while t and t.type in unparsed:
+
+            # Skip over open tags, but keep track of when we see them.
+            if t.type == 'OPEN_TAG':
+                if self.last_token and self.last_token.type == 'SEMI':
+                    # Rewrite ?><?php as a semicolon.
+                    t.type = 'SEMI'
+                    t.value = ';'
+                    break
+                self.last_token = t
+                t = self.next_token()
+                continue
+
+            # Rewrite <?= to yield an "echo" statement.
+            if t.type == 'OPEN_TAG_WITH_ECHO':
+                t.type = 'ECHO'
+                break
+
+            # Insert semicolons in place of close tags where necessary.
+            avoid_tags = ('OPEN_TAG', 'SEMI', 'COLON', 'LBRACE', 'RBRACE')
+            rewrite_as_semicolon = (t.type == 'CLOSE_TAG' and
+                                    (not self.last_token or
+                                     self.last_token.type not in avoid_tags))
+            if rewrite_as_semicolon:
+                # Rewrite close tag as a semicolon.
+                t.type = 'SEMI'
+                break
+
+            t = self.next_token()
+
+        self.last_token = t
+        return t
+
+    def extract_comments(self, end):
+        """Extract comments related to given parser positions.
+
+        Must be called sequentially for consequent statements.
+        """
+        comments = []
+        # Process all tokens to end of statement
+        while self.tokens[self.pos].lexpos < end:
+            if self.tokens[self.pos].type in ('COMMENT', 'DOC_COMMENT'):
+                comments.append(self.tokens[self.pos].value.strip())
+            self.pos += 1
+        # Skip end of statement
+        self.pos += 1
+        # Proceed comments till newline
+        length = len(self.tokens)
+        while self.pos < length and self.tokens[self.pos].type in ('COMMENT', 'WHITESPACE'):
+            token_type = self.tokens[self.pos].type
+            token_value = self.tokens[self.pos].value
+            self.pos += 1
+            if token_type == 'WHITESPACE':
+                if '\n' in token_value:
+                    break
+                continue
+            comments.append(token_value.strip())
+            if '\n' in token_value:
+                break
+        return comments
+
+    def extract_name(self, terminator, start, end):
+        """Extract current value name."""
+        result = ''
+        pos = self.pos
+        while self.tokens[pos].lexpos < start:
+            pos += 1
+        while self.tokens[pos].lexpos < end and self.tokens[pos].type != terminator:
+            result += self.tokens[pos].value
+            pos += 1
+        self.codepos = pos
+        return result.rstrip()
+
+    def extract_quote(self):
+        """Extract quote style."""
+        pos = max(self.pos, self.codepos)
+        while self.tokens[pos].type not in ('QUOTE', 'CONSTANT_ENCAPSED_STRING', 'START_NOWDOC'):
+            pos += 1
+        if self.tokens[pos].type == 'QUOTE':
+            return '"'
+        return '\''
 
 
 def phpencode(text, quotechar="'"):
@@ -129,7 +256,7 @@ class phpunit(base.TranslationUnit):
 
     def __init__(self, source=""):
         """Construct a blank phpunit."""
-        self.escape_type = None
+        self.escape_type = '\''
         super(phpunit, self).__init__(source)
         self.name = "$TTK_PLACEHOLDER"
         self.value = ""
@@ -158,9 +285,21 @@ class phpunit(base.TranslationUnit):
         """Convert to a string."""
         return self.getoutput()
 
-    def getoutput(self):
+    def getoutput(self, indent='', name=None):
         """Convert the unit back into formatted lines for a php file."""
-        return "\n".join(self._comments + ["%s='%s';\n" % (self.name, self.translation or self.value)])
+        if '->' in self.name:
+            fmt = '{0} => {1}{2}{1},\n'
+        elif self.name.startswith('define'):
+            fmt = '{0}, {1}{2}{1});\n'
+        else:
+            fmt = '{0} = {1}{2}{1};\n'
+        out = fmt.format(
+            name if name else self.name,
+            self.escape_type,
+            self.translation or self.value
+        )
+        joiner = '\n' + indent
+        return indent + joiner.join(self._comments + [out])
 
     def addlocation(self, location):
         self.name = location
@@ -194,6 +333,9 @@ class phpunit(base.TranslationUnit):
     def getid(self):
         return self.name
 
+    def setid(self, value):
+        self.name = value
+
 
 class phpfile(base.TranslationStore):
     """This class represents a PHP file, made up of phpunits."""
@@ -211,176 +353,138 @@ class phpfile(base.TranslationStore):
 
     def serialize(self, out):
         """Convert the units back to lines."""
+        def write(text):
+            out.write(text.encode(self.encoding))
+
+        def handle_array(unit, arrname, handled, indent=0):
+            if arrname in handled:
+                return
+            childs = set()
+            write('{}{} {} array(\n'.format(
+                ' ' * indent,
+                arrname.rsplit('->', 1)[-1],
+                '=>' if '->' in arrname else '='
+            ))
+            indent += 4
+            prefix = '{}->'.format(arrname)
+            pref_len = len(prefix)
+            for item in self.units:
+                if not item.name.startswith(prefix):
+                    continue
+                name = item.name[pref_len:]
+                if '->' in name:
+                    handle_array(item, prefix + name.split('->', 1)[0], childs, indent)
+                else:
+                    write(item.getoutput(' ' * indent, name))
+            write('{}){}\n'.format(
+                ' ' * (indent - 4),
+                ',' if '->' in arrname else ';'
+            ))
+            handled.add(arrname)
+
+        write('<?php\n')
+
+        # List of handled arrays
+        handled = set()
         for unit in self.units:
-            out.write(six.text_type(unit).encode(self.encoding))
+            if '->' in unit.name:
+                handle_array(unit, unit.name.split('->', 1)[0], handled)
+            else:
+                write(unit.getoutput())
+
+    def create_and_add_unit(self, name, value, escape_type, comments):
+        newunit = self.UnitClass()
+        newunit.escape_type = escape_type
+        newunit.addlocation(name)
+        newunit.source = value
+        for comment in comments:
+            newunit.addnote(comment, 'developer')
+        self.addunit(newunit)
 
     def parse(self, phpsrc):
         """Read the source of a PHP file in and include them as units."""
-        newunit = phpunit()
-        lastvalue = ""
-        value = ""
-        invalue = False
-        incomment = False
-        inarray = False
-        valuequote = ""  # Either ' or ".
-        equaldel = "="
-        enddel = ";"
-        prename = ""
-        keys_dict = {}
-        line_number = 0
-
-        # For each line in the PHP translation file.
-        for line in phpsrc.decode(self.encoding).split("\n"):
-            line_number += 1
-            commentstartpos = line.find("/*")
-            commentendpos = line.rfind("*/")
-
-            # If a multiline comment starts in the current line.
-            if commentstartpos != -1:
-                incomment = True
-
-                # If a comment ends in the current line.
-                if commentendpos != -1:
-                    newunit.addnote(line[commentstartpos:commentendpos+2],
-                                    "developer")
-                    incomment = False
+        def handle_array(prefix, nodes, lexer):
+            for item in nodes:
+                assert isinstance(item, ArrayElement)
+                # Skip empty keys
+                if item.key == '':
+                    continue
+                if isinstance(item.key, BinaryOp):
+                    name = '\'{0}\''.format(concatenate(item.key))
+                elif isinstance(item.key, (int, float)):
+                    name = '{0}'.format(item.key)
                 else:
-                    newunit.addnote(line[commentstartpos:], "developer")
+                    name = '\'{0}\''.format(item.key)
+                if prefix:
+                    name = '{0}->{1}'.format(prefix, name)
+                if isinstance(item.value, Array):
+                    handle_array(name, item.value.nodes, lexer)
+                elif isinstance(item.value, six.string_types):
+                    self.create_and_add_unit(
+                        name,
+                        item.value,
+                        lexer.extract_quote(),
+                        lexer.extract_comments(item.lexpositions[1]),
+                    )
 
-            # If this a multiline comment that ends in the current line.
-            if commentendpos != -1 and incomment:
-                newunit.addnote(line[:commentendpos+2], "developer")
-                incomment = False
+        def concatenate(item):
+            if isinstance(item, six.string_types):
+                return item
+            elif isinstance(item, Variable):
+                return item.name
+            assert isinstance(item, BinaryOp)
+            return concatenate(item.left) + concatenate(item.right)
 
-            # If this is a multiline comment which started in a previous line.
-            if incomment and commentstartpos == -1:
-                newunit.addnote(line, "developer")
-                continue
-
-            # If an array starts in the current line and is using array syntax
-            if (line.lower().replace(" ", "").find('array(') != -1 and
-                line.lower().replace(" ", "").find('array()') == -1):
-                eqpos = line.find('=')
-                # If this is a nested array.
-                if inarray:
-                    prename = prename + line[:eqpos].strip() + "->"
-                else:
-                    equaldel = "=>"
-                    enddel = ","
-                    inarray = True
-                    if eqpos != -1:
-                        prename = prename + line[:eqpos].strip() + "->"
-                continue
-
-            # If an array ends in the current line, reset variables to default
-            # values.
-            if inarray and line.find(');') != -1:
-                equaldel = "="
-                enddel = ";"
-                inarray = False
-                prename = ""
-                continue
-
-            # If a nested array ends in the current line, reset prename to its
-            # parent array default value by stripping out the last part.
-            if inarray and line.find('),') != -1:
-                prename = re.sub(r'[^>]+->$', '', prename)
-                continue
-
-            # If the current line hosts a define syntax translation.
-            if line.lstrip().startswith("define("):
-                equaldel = ","
-                enddel = ");"
-
-            equalpos = line.find(equaldel)
-            hashpos = line.find("#")
-            doubleslashpos = line.lstrip().find("//")
-
-            # If this is a '#' comment line or a '//' comment that starts at
-            # the line begining.
-            if 0 <= hashpos < equalpos or doubleslashpos == 0:
-                # Assume that this is a '#' comment line
-                newunit.addnote(line.strip(), "developer")
-                continue
-
-            # If equalpos is present in the current line and this line is not
-            # part of a multiline translation.
-            if equalpos != -1 and not invalue:
-                # Get the quoting character which encloses the translation
-                # (either ' or ").
-                valuequote = line[equalpos+len(equaldel):].lstrip()[0]
-
-                if valuequote in ['"', "'"]:
-                    # Get the location for the translation unit. prename is the
-                    # array name, or blank if no array is present. The line
-                    # (until the equal delimiter) is appended to the location.
-                    location = prename + line[:equalpos].strip()
-
-                    # Check for duplicate entries.
-                    if location in keys_dict.keys():
-                        # TODO Get the logger from the code that is calling
-                        # this class.
-                        logging.error("Duplicate key %s in %s:%d, first "
-                                      "occurrence in line %d", location,
-                                      self.filename, line_number,
-                                      keys_dict[location])
-                    else:
-                        keys_dict[location] = line_number
-
-                    # Add the location to the translation unit.
-                    newunit.addlocation(location)
-
-                    # Save the translation in the value variable.
-                    value = line[equalpos+len(equaldel):].lstrip()[1:]
-                    lastvalue = ""
-                    invalue = True
-            else:
-                # If no equalpos is present in the current line, but this is a
-                # multiline translation.
-                if invalue:
-                    value = line
-
-            # Get the end delimiter position.
-            enddelpos = value.rfind(enddel)
-
-            # Process the current line until all entries on it are parsed.
-            while enddelpos != -1:
-                # Check if the latest non-whitespace character before the end
-                # delimiter is the valuequote.
-                if value[:enddelpos].rstrip()[-1] == valuequote:
-                    # Save the value string without trailing whitespaces and
-                    # without the ending quotes.
-                    newunit.value = lastvalue + value[:enddelpos].rstrip()[:-1]
-                    newunit.escape_type = valuequote
-                    lastvalue = ""
-                    invalue = False
-
-                # If there is more text (a comment) after the translation.
-                if not invalue and enddelpos != (len(value) - 1):
-                    commentinlinepos = value.find("//", enddelpos)
-                    if commentinlinepos != -1:
-                        newunit.addnote(value[commentinlinepos+2:].strip(),
-                                        "developer")
-
-                # If the translation is already parsed, save it and initialize
-                # a new translation unit.
-                if not invalue:
-                    self.addunit(newunit)
-                    value = ""
-                    newunit = phpunit()
-
-                # Update end delimiter position to the previous last appearance
-                # of the end delimiter, because it might be several entries in
-                # the same line.
-                enddelpos = value.rfind(enddel, 0, enddelpos)
-            else:
-                # After processing current line, if we are not in an array,
-                # fall back to default dialect (PHP simple variable syntax).
-                if not inarray:
-                    equaldel = "="
-                    enddel = ";"
-
-            # If this is part of a multiline translation, just append it to the
-            # previous translation lines.
-            if invalue:
-                lastvalue = lastvalue + value + "\n"
+        parser = make_parser()
+        for item in parser.productions:
+            item.callable = wrap_production(item.callable)
+        lexer = PHPLexer()
+        tree = parser.parse(phpsrc.decode(self.encoding), lexer=lexer, tracking=True)
+        # Handle text without PHP start
+        if len(tree) == 1 and isinstance(tree[0], InlineHTML):
+            return self.parse(b'<?php\n' + phpsrc)
+        for item in tree:
+            if isinstance(item, FunctionCall):
+                if item.name == 'define':
+                    self.create_and_add_unit(
+                        lexer.extract_name('COMMA', *item.lexpositions),
+                        item.params[1].node,
+                        lexer.extract_quote(),
+                        lexer.extract_comments(item.lexpositions[1]),
+                    )
+            elif isinstance(item, Assignment):
+                if isinstance(item.node, ArrayOffset):
+                    if isinstance(item.expr, six.string_types):
+                        self.create_and_add_unit(
+                            lexer.extract_name('EQUALS', *item.lexpositions),
+                            item.expr,
+                            lexer.extract_quote(),
+                            lexer.extract_comments(item.lexpositions[1]),
+                        )
+                    elif isinstance(item.expr, BinaryOp) and item.expr.op == '.':
+                        self.create_and_add_unit(
+                            lexer.extract_name('EQUALS', *item.lexpositions),
+                            concatenate(item.expr),
+                            lexer.extract_quote(),
+                            lexer.extract_comments(item.lexpositions[1]),
+                        )
+                elif isinstance(item.node, Variable):
+                    if isinstance(item.expr, Array):
+                        handle_array(item.node.name, item.expr.nodes, lexer)
+                    elif isinstance(item.expr, six.string_types):
+                        self.create_and_add_unit(
+                            item.node.name,
+                            item.expr,
+                            lexer.extract_quote(),
+                            lexer.extract_comments(item.lexpositions[1]),
+                        )
+                    elif isinstance(item.expr, BinaryOp) and item.expr.op == '.':
+                        self.create_and_add_unit(
+                            item.node.name,
+                            concatenate(item.expr),
+                            lexer.extract_quote(),
+                            lexer.extract_comments(item.lexpositions[1]),
+                        )
+            elif isinstance(item, Return):
+                if isinstance(item.node, Array):
+                    handle_array('', item.node.nodes, lexer)
