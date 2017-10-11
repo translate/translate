@@ -35,7 +35,8 @@ class txt2po(object):
     TargetUnitClass = po.pounit
 
     def __init__(self, input_file, output_file, template_file=None,
-                 duplicate_style="msgctxt", encoding="utf-8", flavour=None):
+                 duplicate_style="msgctxt", encoding="utf-8", flavour=None,
+                 nosegmentation=False):
         """Initialize the converter."""
         self.duplicate_style = duplicate_style
 
@@ -43,14 +44,16 @@ class txt2po(object):
         self.output_file = output_file
         self.source_store = self.SourceStoreClass(input_file,
                                                   encoding=encoding,
-                                                  flavour=flavour)
+                                                  flavour=flavour,
+                                                  nosegmentation=nosegmentation)
         self.target_store = self.TargetStoreClass()
         self.template_store = None
 
         if template_file is not None:
             self.template_store = self.SourceStoreClass(template_file,
                                                         encoding=encoding,
-                                                        flavour=flavour)
+                                                        flavour=flavour,
+                                                        nosegmentation=nosegmentation)
 
     def convert_store(self):
         """Convert a single source format file to a target format file."""
@@ -85,11 +88,12 @@ class txt2po(object):
 
 
 def run_converter(input_file, output_file, template_file=None,
-                  duplicatestyle="msgctxt", encoding="utf-8", flavour=None):
+                  duplicatestyle="msgctxt", encoding="utf-8", flavour=None,
+                  nosegmentation=False):
     """Wrapper around converter."""
     return txt2po(input_file, output_file, template_file,
                   duplicate_style=duplicatestyle, encoding=encoding,
-                  flavour=flavour).run()
+                  flavour=flavour, nosegmentation=nosegmentation).run()
 
 
 formats = {
@@ -112,6 +116,10 @@ def main(argv=None):
                             "dokuwiki, mediawiki"),
                       metavar="FLAVOUR")
     parser.passthrough.append("flavour")
+    parser.add_option("", "--no-segmentation", dest="nosegmentation",
+                      default=False, action="store_true",
+                      help="Don't segment the file, treat it like a single message")
+    parser.passthrough.append("nosegmentation")
     parser.add_duplicates_option()
     parser.run(argv)
 

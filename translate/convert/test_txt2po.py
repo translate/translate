@@ -217,4 +217,5 @@ class TestTxt2POCommand(test_convert.TestConvertCommand, TestTxt2PO):
         options = self.help_check(options, "-P, --pot")
         options = self.help_check(options, "--duplicates")
         options = self.help_check(options, "--encoding")
-        options = self.help_check(options, "--flavour", last=True)
+        options = self.help_check(options, "--flavour")
+        options = self.help_check(options, "--no-segmentation", last=True)
