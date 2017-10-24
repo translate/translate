@@ -323,3 +323,48 @@ msgstr[1] "toetse"
         assert pofile.units[4].prev_source == multistring([u"tast", u"tasts"])
 
         assert bytes(pofile).decode('utf-8') == posource
+
+    def test_wrap(self):
+        hello = ' '.join(['Hello'] * 100)
+        posource = 'msgid "{0}"\nmsgstr "{0}"\n'.format(hello).encode('utf-8')
+
+        # Instance with no line wraps
+        store = self.StoreClass(width=-1)
+        store.parse(posource)
+        assert bytes(store) == posource
+        store.units[0].settarget(hello)
+        assert bytes(store) == posource
+
+        # Instance with long line wraps
+        store = self.StoreClass(width=1000)
+        store.parse(posource)
+        assert bytes(store) == posource
+        store.units[0].settarget(hello)
+        assert bytes(store) == posource
+
+        # Instance with default wraps (77)
+        store = self.StoreClass()
+        store.parse(posource)
+        assert bytes(store) == posource
+        store.units[0].settarget('Hello ' * 100)
+        # Should contain additional newlines now
+        assert bytes(store) != posource
+
+    def test_wrap_newlines(self):
+        hello = '\n '.join(['Hello'] * 100)
+        posource = 'msgid "{0}"\nmsgstr "{0}"\n'.format(hello.replace('\n', '\\n')).encode('utf-8')
+
+        # Instance with no line wraps
+        store = self.StoreClass(width=-1)
+        store.parse(posource)
+        assert bytes(store) == posource
+        store.units[0].settarget(hello)
+        assert bytes(store) == posource
+
+        # Instance with default wraps (77)
+        store = self.StoreClass()
+        store.parse(posource)
+        assert bytes(store) == posource
+        store.units[0].settarget('Hello ' * 100)
+        # Should contain additional newlines now
+        assert bytes(store) != posource
