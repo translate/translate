@@ -83,22 +83,26 @@ wrapper.wordsep_re = re.compile(
 wrapper.wordsep_re_uni = re.compile(wrapper.wordsep_re.pattern, re.UNICODE)
 
 
-def quoteforpo(text):
+def quoteforpo(text, wrapper_obj=None):
     """Quotes the given text for a PO file, returning quoted and escaped lines
     """
     if text is None:
         return []
+    if wrapper_obj is None:
+        wrapper_obj = wrapper
     text = escapeforpo(text)
+    if wrapper_obj.width == -1:
+        return [u'"%s"' % text]
     lines = text.split(u"\\n")
     for i, l in enumerate(lines[:-1]):
         lines[i] = l + u"\\n"
 
     polines = []
     len_lines = len(lines)
-    if len_lines > 2 or (len_lines == 2 and lines[1]) or len(lines[0]) > 71:
+    if len_lines > 2 or (len_lines == 2 and lines[1]) or len(lines[0]) > wrapper_obj.width - 6:
         polines.append(u'""')
     for line in lines:
-        lns = wrapper.wrap(line)
+        lns = wrapper_obj.wrap(line)
         for ln in lns:
             polines.append(u'"%s"' % ln)
     return polines
@@ -184,9 +188,10 @@ class pounit(pocommon.pounit):
 
     # Our homegrown way to indicate what must be copied in a shallow
     # fashion
-    __shallow__ = ['_store']
+    __shallow__ = ['_store', 'wrapper']
 
-    def __init__(self, source=None, **kwargs):
+    def __init__(self, source=None, wrapper=None, **kwargs):
+        self.wrapper = wrapper
         self.obsolete = False
         self._initallcomments(blankall=True)
         self.prev_msgctxt = []
@@ -225,6 +230,9 @@ class pounit(pocommon.pounit):
             return multistring([singular, pluralform])
         return singular
 
+    def quote(self, text):
+        return quoteforpo(text, self.wrapper)
+
     def _set_source_vars(self, source):
         msgid = None
         msgid_plural = None
@@ -234,13 +242,13 @@ class pounit(pocommon.pounit):
         if isinstance(source, multistring):
             source = source.strings
         if isinstance(source, list):
-            msgid = quoteforpo(source[0])
+            msgid = self.quote(source[0])
             if len(source) > 1:
-                msgid_plural = quoteforpo(source[1])
+                msgid_plural = self.quote(source[1])
             else:
                 msgid_plural = []
         else:
-            msgid = quoteforpo(source)
+            msgid = self.quote(source)
             msgid_plural = []
         return msgid, msgid_plural
 
@@ -296,11 +304,11 @@ class pounit(pocommon.pounit):
         if isinstance(templates, list):
             templates = {0: templates}
         if isinstance(target, list):
-            self.msgstr = dict([(i, quoteforpo(target[i])) for i in range(len(target))])
+            self.msgstr = dict([(i, self.quote(target[i])) for i in range(len(target))])
         elif isinstance(target, dict):
-            self.msgstr = dict([(i, quoteforpo(targetstring)) for i, targetstring in six.iteritems(target)])
+            self.msgstr = dict([(i, self.quote(targetstring)) for i, targetstring in six.iteritems(target)])
         else:
-            self.msgstr = quoteforpo(target)
+            self.msgstr = self.quote(target)
     target = property(gettarget, settarget)
 
     def getalttrans(self):
@@ -610,7 +618,7 @@ class pounit(pocommon.pounit):
                         comment = comment[:-len("\\n")]
                     #Before we used to strip. Necessary in some cases?
                     combinedcomment.append(comment)
-                partcomments = quoteforpo("_:%s" % "".join(combinedcomment))
+                partcomments = self.quote("_:%s" % "".join(combinedcomment))
             # comments first, no blank leader line needed
             partstr += "\n".join(partcomments)
             partstr = quote.rstripeol(partstr)
@@ -726,7 +734,7 @@ class pounit(pocommon.pounit):
 
     def setcontext(self, context):
         context = data.forceunicode(context)
-        self.msgctxt = quoteforpo(context)
+        self.msgctxt = self.quote(context)
 
     def getid(self):
         """Returns a unique identifier for this unit."""
@@ -749,6 +757,15 @@ class pofile(pocommon.pofile):
 
     UnitClass = pounit
 
+    def __init__(self, inputfile=None, width=None, **kwargs):
+        self.wrapper = copy.copy(wrapper)
+        if width is not None:
+            self.wrapper.width = width
+        super(pofile, self).__init__(inputfile, **kwargs)
+
+    def create_unit(self):
+        return self.UnitClass(wrapper=self.wrapper)
+
     def parse(self, input):
         """Parses the given file or file source string."""
         if hasattr(input, 'name'):
@@ -759,7 +776,7 @@ class pofile(pocommon.pofile):
             input = BytesIO(input)
         # clear units to get rid of automatically generated headers before parsing
         self.units = []
-        poparser.parse_units(poparser.ParseState(input, pounit), self)
+        poparser.parse_units(poparser.ParseState(input, self.create_unit), self)
 
     def removeduplicates(self, duplicatestyle="merge"):
         """Make sure each msgid is unique ; merge comments etc from
@@ -856,3 +873,7 @@ class pofile(pocommon.pofile):
         for unit in self.units:
             if not (unit.isheader() or unit.isobsolete()):
                 yield unit
+
+    def addunit(self, unit):
+        unit.wrapper = self.wrapper
+        super(pofile, self).addunit(unit)
