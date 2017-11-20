@@ -20,12 +20,14 @@ class TestPhp2PO(object):
             outputpo = convertor.convertstore(inputphp)
         return outputpo
 
-    def convertphp(self, phpsource):
+    def convertphp(self, phpsource, template=None, expected=1):
         """call the convertphp, return the outputfile"""
         inputfile = wStringIO.StringIO(phpsource)
         outputfile = wStringIO.StringIO()
         templatefile = None
-        assert php2po.convertphp(inputfile, outputfile, templatefile)
+        if template:
+            templatefile = wStringIO.StringIO(template)
+        assert php2po.convertphp(inputfile, outputfile, templatefile) == expected
         return outputfile.getvalue()
 
     def singleelement(self, pofile):
@@ -57,6 +59,34 @@ class TestPhp2PO(object):
         pounit = self.singleelement(pofile)
         assert pounit.source == "entry"
         assert pounit.target == ""
+
+    def test_convertphptemplate(self):
+        """checks that the convertphp function is working with template"""
+        phpsource = """$_LANG['simple'] = 'entry';"""
+        phptemplate = '''$_LANG['simple'] = 'source';'''
+        posource = self.convertphp(phpsource, phptemplate)
+        pofile = po.pofile(wStringIO.StringIO(posource))
+        pounit = self.singleelement(pofile)
+        assert pounit.source == "source"
+        assert pounit.target == "entry"
+
+    def test_convertphpmissing(self):
+        """checks that the convertphp function is working with missing key"""
+        phpsource = """$_LANG['simple'] = 'entry';"""
+        phptemplate = '''$_LANG['missing'] = 'source';'''
+        posource = self.convertphp(phpsource, phptemplate)
+        pofile = po.pofile(wStringIO.StringIO(posource))
+        pounit = self.singleelement(pofile)
+        assert pounit.source == "source"
+        assert pounit.target == ""
+
+    def test_convertphpempty(self):
+        """checks that the convertphp function is working with empty template"""
+        phpsource = ''
+        phptemplate = ''
+        posource = self.convertphp(phpsource, phptemplate, 0)
+        pofile = po.pofile(wStringIO.StringIO(posource))
+        assert len(pofile.units) == 0
 
     def test_unicode(self):
         """checks that unicode entries convert properly"""
