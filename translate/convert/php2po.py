@@ -71,14 +71,10 @@ class php2po(object):
                                                         "translator")
             else:
                 translatedoutputunit = None
-            # If we have a valid po unit, get the translation and add it.
-            if outputunit is not None:
-                if translatedoutputunit is not None and not blankmsgstr:
-                    outputunit.target = translatedoutputunit.source
-                outputstore.addunit(outputunit)
-            elif translatedoutputunit is not None:
-                logger("error converting original properties definition %s",
-                       templateunit.name)
+            # We have a valid po unit, get the translation and add it.
+            if translatedoutputunit is not None and not blankmsgstr:
+                outputunit.target = translatedoutputunit.source
+            outputstore.addunit(outputunit)
         outputstore.removeduplicates(duplicatestyle)
         return outputstore
 
