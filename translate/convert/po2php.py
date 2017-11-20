@@ -136,9 +136,6 @@ class rephp(object):
                     value = php.phpencode(value, self.quotechar)
                     self.inecho = False
 
-                    if isinstance(value, bytes):
-                        value = value.decode('utf8')
-
                     params = {
                         "key": key,
                         "pre": prespace,
