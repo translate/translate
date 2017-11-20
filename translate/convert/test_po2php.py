@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from pytest import mark
+from pytest import mark, raises
 
 from translate.convert import po2php, test_convert
 from translate.misc import wStringIO
@@ -28,6 +28,45 @@ class TestPO2Php(object):
         print(outputphp)
         return outputphp
 
+    def test_convertphp(self):
+        """test convertphp helper"""
+        posource = '''#: $lang['name']
+msgid "value"
+msgstr "waarde"
+'''
+        phptemplate = '''$lang['name'] = 'value';
+'''
+        phpexpected = b'''$lang['name'] = 'waarde';
+'''
+        inputfile = wStringIO.StringIO(posource)
+        templatefile = wStringIO.StringIO(phptemplate)
+        outputfile = wStringIO.StringIO()
+        assert po2php.convertphp(inputfile, outputfile, templatefile) == 1
+        assert outputfile.getvalue() == phpexpected
+
+    def test_convertphp_notemplate(self):
+        """test convertphp helper without template"""
+        posource = '''#: $lang['name']
+msgid "value"
+msgstr "waarde"
+'''
+        inputfile = wStringIO.StringIO(posource)
+        outputfile = wStringIO.StringIO()
+        with raises(ValueError):
+            po2php.convertphp(inputfile, outputfile, None)
+
+    def test_convertphp_empty_template(self):
+        """test convertphp helper with empty translation"""
+        posource = '''#: $lang['name']
+msgid "value"
+msgstr ""
+'''
+        inputfile = wStringIO.StringIO(posource)
+        templatefile = wStringIO.StringIO('')
+        outputfile = wStringIO.StringIO()
+        assert po2php.convertphp(inputfile, outputfile, templatefile, False, 100) is False
+        assert outputfile.getvalue() == b''
+
     def test_merging_simple(self):
         """check the simplest case of merging a translation"""
         posource = '''#: $lang['name']\nmsgid "value"\nmsgstr "waarde"\n'''
@@ -45,6 +84,42 @@ class TestPO2Php(object):
         phpfile = self.merge2php(phptemplate, posource)
         print(phpfile)
         assert phpfile == [phpexpected]
+
+    def test_preserve_unused_statement(self):
+        """check that we preserve any unused statements in php files when merging"""
+        posource = '''#: $lang['name']
+msgid "value"
+msgstr "waarde"
+'''
+        phptemplate = '''
+error_reporting(E_ALL);
+$lang['name']  =  'value';
+'''
+        phpexpected = '''
+error_reporting(E_ALL);
+$lang['name']  =  'waarde';
+'''
+        phpfile = self.merge2php(phptemplate, posource)
+        assert ''.join(phpfile) == phpexpected
+
+    def test_not_translated_multiline(self):
+        """check that we preserve not translated multiline strings in php files when merging"""
+        posource = '''#: $lang['name']
+msgid "value"
+msgstr "waarde"
+'''
+        phptemplate = '''
+$lang['name']  =  'value';
+$lang['second']  = "
+value";
+'''
+        phpexpected = '''
+$lang['name']  =  'waarde';
+$lang['second']  = "
+value";
+'''
+        phpfile = self.merge2php(phptemplate, posource)
+        assert ''.join(phpfile) == phpexpected
 
     def test_merging_blank_entries(self):
         """check that we can correctly merge entries that are blank in the template"""
@@ -85,6 +160,21 @@ msgstr ""'''
         phpfile = self.merge2php(phptemplate, posource)
         print(phpfile)
         assert phpfile == [phpexpected]
+
+    def test_block_comments(self):
+        """check that we include block comments from the template"""
+        posource = '''#: %24lang%5B+%27name%27+%5D
+msgid "value"
+msgstr "waarde"
+'''
+        phptemplate = '''/* some comment */
+$lang[ 'name' ]  =  'value';
+'''
+        phpexpected = '''/* some comment */
+$lang[ 'name' ]  =  'waarde';
+'''
+        phpfile = self.merge2php(phptemplate, posource)
+        assert ''.join(phpfile) == phpexpected
 
     def test_named_variables(self):
         """check that we convert correctly if using named variables."""
