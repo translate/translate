@@ -171,6 +171,24 @@ $foo='bar';
         phpunit = phpfile.units[0]
         assert str(phpunit) == phpsource
 
+    def test_comment_add(self):
+        """check that comments are actually added"""
+        phpsource = """/* NOTE 1 */
+$foo='bar';
+"""
+        phpfile = self.phpparse(phpsource)
+        assert len(phpfile.units) == 1
+        phpunit = phpfile.units[0]
+        assert phpunit.name == "$foo"
+        assert phpunit.source == "bar"
+        assert phpunit._comments == ['/* NOTE 1 */']
+        # Replace existing notes
+        phpunit.addnote('/* NOTE 2 */', None, 'replace')
+        # Set unknown note
+        phpunit.addnote('/* NOTE 2 */', 'unknown')
+        assert phpunit._comments == ['/* NOTE 2 */']
+        assert str(phpunit) == phpsource.replace('NOTE 1', 'NOTE 2')
+
     def test_multiline(self):
         """check that we preserve newlines in a multiline message"""
         phpsource = """$lang['multiline'] = "Line1%sLine2";"""
