@@ -65,7 +65,7 @@ script:
   - if [[ ! $META ]]; then python -m compileall -q -f .; fi     # Compile all the files
   - if [[ ! $META ]]; then python setup.py --quiet build; fi
   - if [[ ! $META ]]; then pip install .; fi
-  - if [[ ! $META ]]; then py.test --cov=. -r EfsxX; fi
+  - if [[ ! $META ]]; then py.test --cov=. -r EfsxX -W error::DeprecationWarning ; fi
   - if [[ ! $META ]]; then make test-functional; fi
   - if [[ $META ]]; then pycodestyle; fi
   - if [[ $META ]]; then pydocstyle; fi
