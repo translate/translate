@@ -20,6 +20,7 @@
 """Supports a hybrid Unicode string that can also have a list of alternate
 strings in the strings attribute
 """
+from __future__ import unicode_literals
 
 import warnings
 
@@ -32,6 +33,8 @@ def _create_text_type(newtype, string, encoding):
     """Helper to construct a text type out of characters or bytes. Required to
     temporarily preserve backwards compatibility. Must be removed in TTK2.
     """
+    if string is None:
+        string = ''
     if isinstance(string, six.text_type):
         return six.text_type.__new__(newtype, string)
 
@@ -40,7 +43,7 @@ def _create_text_type(newtype, string, encoding):
         '`multistring` is deprecated. Always pass unicode characters instead.',
         RemovedInTTK2Warning, stacklevel=2,
     )
-    return six.text_type.__new__(newtype, string or six.binary_type(), encoding)
+    return six.text_type.__new__(newtype, string, encoding)
 
 
 class multistring(six.text_type):
