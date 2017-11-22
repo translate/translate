@@ -323,6 +323,20 @@ martin: {name: Martin D'vloper, job: Developer, skill: Elite}
         assert out.getvalue() == '''martin: {name: Martin D'vloper, job: Developer, skill: Elite}
 '''
 
+    def test_key_nesting(self):
+        store = self.StoreClass()
+        unit = self.StoreClass.UnitClass("teststring")
+        unit.setid('key')
+        store.addunit(unit)
+        unit = self.StoreClass.UnitClass("teststring2")
+        unit.setid('key->value')
+        store.addunit(unit)
+        out = BytesIO()
+        store.serialize(out)
+        assert out.getvalue() == b'''key:
+  value: teststring2
+'''
+
 
 class TestRubyYAMLResourceStore(test_monolingual.TestMonolingualStore):
     StoreClass = yaml.RubyYAMLFile
