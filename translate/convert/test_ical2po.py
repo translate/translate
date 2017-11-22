@@ -31,6 +31,24 @@ class TestIcal2PO(object):
         with pytest.raises(StopIteration):
             ical2po.convertical(input_file, output_file, template_file)
 
+    def test_no_translations(self):
+        """Check that iCalendar with no translations returns correct result."""
+        input_source = """
+BEGIN:VCALENDAR
+VERSION:2.0
+PRODID:-//hacksw/handcal//NONSGML v1.0//EN
+BEGIN:VEVENT
+END:VEVENT
+END:VCALENDAR
+""".replace("\n", "\r\n")
+        input_file = wStringIO.StringIO(input_source)
+        output_file = wStringIO.StringIO()
+        template_file = None
+        result = ical2po.convertical(input_file, output_file, template_file)
+        assert result == 0
+        output = output_file.getvalue().decode('utf-8')
+        assert output == ""
+
     def test_summary(self):
         """Check that iCalendar SUMMARY converts valid PO output."""
         input_source = """
