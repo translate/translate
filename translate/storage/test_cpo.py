@@ -75,7 +75,8 @@ class TestCPOUnit(test_po.TestPOUnit):
         unit.addnote("Thank you", origin="translator")
         assert unit.getnotes("translator") == "Which meaning of file?\nThank you"
         assert unit.getnotes() == "Which meaning of file?\nThank you\nVerb"
-        assert raises(ValueError, unit.getnotes, "devteam")
+        with raises(ValueError):
+            unit.getnotes("devteam")
 
     def test_notes_withcomments(self):
         """tests that when we add notes that look like comments that we treat them properly"""

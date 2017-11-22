@@ -19,20 +19,20 @@ class TestQtFile(test_base.TestTranslationStore):
 
     def test_save(self):
         # QM does not implement saving
-        assert pytest.raises(Exception, self.StoreClass.savefile,
-                             self.StoreClass())
+        with pytest.raises(Exception):
+            self.StoreClass.savefile(self.StoreClass())
 
     def test_files(self):
         # QM does not implement saving
-        assert pytest.raises(Exception, self.StoreClass.savefile,
-                             self.StoreClass())
+        with pytest.raises(Exception):
+            self.StoreClass.savefile(self.StoreClass())
 
     def test_nonascii(self):
         # QM does not implement serialising
-        assert pytest.raises(Exception, self.StoreClass.serialize,
-                             self.StoreClass())
+        with pytest.raises(Exception):
+            self.StoreClass.serialize(self.StoreClass())
 
     def test_add(self):
         # QM does not implement serialising
-        assert pytest.raises(Exception, self.StoreClass.serialize,
-                             self.StoreClass())
+        with pytest.raises(Exception):
+            self.StoreClass.serialize(self.StoreClass())
