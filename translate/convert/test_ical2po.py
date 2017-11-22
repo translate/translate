@@ -135,6 +135,64 @@ msgstr ""
         assert expected_unit_output in output
         assert "extracted from " in output
 
+    def test_no_template_duplicate_style(self):
+        """Check that iCalendar extracts conforming duplicate style."""
+        input_source = """
+BEGIN:VCALENDAR
+VERSION:2.0
+PRODID:-//hacksw/handcal//NONSGML v1.0//EN
+BEGIN:VEVENT
+UID:uid1@example.com
+DTSTART:19970714T170000Z
+DTEND:19970715T035959Z
+DTSTAMP:19970714T170000Z
+ORGANIZER;CN=John Doe:MAILTO:john.doe@example.com
+SUMMARY:Value
+END:VEVENT
+BEGIN:VEVENT
+UID:uid2@example.com
+DTSTART:19970715T170000Z
+DTEND:19970716T035959Z
+DTSTAMP:19970715T170000Z
+ORGANIZER;CN=John Doe:MAILTO:john.doe@example.com
+SUMMARY:Value
+END:VEVENT
+END:VCALENDAR
+""".replace("\n", "\r\n")
+        expected_unit_output = """
+#. Start date: 1997-07-14 17:00:00+00:00
+#: [uid1@example.com]SUMMARY
+msgctxt "[uid1@example.com]SUMMARY"
+msgid "Value"
+msgstr ""
+
+#. Start date: 1997-07-15 17:00:00+00:00
+#: [uid2@example.com]SUMMARY
+msgctxt "[uid2@example.com]SUMMARY"
+msgid "Value"
+msgstr ""
+"""
+        output = self.convert_to_target_text(input_source)
+        assert expected_unit_output in output
+        assert "extracted from " in output
+
+        output = self.convert_to_target_text(input_source,
+                                             duplicate_style="msgctxt")
+        assert expected_unit_output in output
+        assert "extracted from " in output
+
+        expected_unit_output = """
+#. Start date: 1997-07-14 17:00:00+00:00
+#. Start date: 1997-07-15 17:00:00+00:00
+#: [uid1@example.com]SUMMARY
+#: [uid2@example.com]SUMMARY
+msgid "Value"
+msgstr ""
+"""
+        output = self.convert_to_target_text(input_source,
+                                             duplicate_style="merge")
+        assert expected_unit_output in output
+        assert "extracted from " in output
 
 class TestIcal2POCommand(test_convert.TestConvertCommand, TestIcal2PO):
     """Tests running actual ical2po commands on files"""
