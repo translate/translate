@@ -234,6 +234,47 @@ msgstr "Valor"
         assert expected_unit_output in output
         assert "extracted from " in output
 
+    def test_merge_blank_msgstr(self):
+        """Check merging two iCalendar files converts to valid POT output."""
+        input_source = """
+BEGIN:VCALENDAR
+VERSION:2.0
+PRODID:-//hacksw/handcal//NONSGML v1.0//EN
+BEGIN:VEVENT
+UID:uid1@example.com
+DTSTART:19970714T170000Z
+DTEND:19970715T035959Z
+DTSTAMP:19970714T170000Z
+ORGANIZER;CN=John Doe:MAILTO:john.doe@example.com
+SUMMARY:Valor
+END:VEVENT
+END:VCALENDAR
+""".replace("\n", "\r\n")
+        template_source = """
+BEGIN:VCALENDAR
+VERSION:2.0
+PRODID:-//hacksw/handcal//NONSGML v1.0//EN
+BEGIN:VEVENT
+UID:uid1@example.com
+DTSTART:19970718T170000Z
+DTEND:19970719T035959Z
+DTSTAMP:19970718T170000Z
+ORGANIZER;CN=John Doe:MAILTO:john.doe@example.com
+SUMMARY:Value
+END:VEVENT
+END:VCALENDAR
+""".replace("\n", "\r\n")
+        expected_unit_output = """
+#. Start date: 1997-07-18 17:00:00+00:00
+#: [uid1@example.com]SUMMARY
+msgid "Value"
+msgstr ""
+"""
+        output = self.convert_to_target_text(input_source, template_source,
+                                             blank_msgstr=True)
+        assert expected_unit_output in output
+        assert "extracted from " in output
+
 
 class TestIcal2POCommand(test_convert.TestConvertCommand, TestIcal2PO):
     """Tests running actual ical2po commands on files"""
