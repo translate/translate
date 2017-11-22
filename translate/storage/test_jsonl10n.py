@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 
+from __future__ import unicode_literals
 from io import BytesIO
 from translate.misc.multistring import multistring
 from translate.storage import jsonl10n, test_monolingual

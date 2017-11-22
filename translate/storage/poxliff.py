@@ -28,6 +28,7 @@ import six
 
 from lxml import etree
 
+from translate.lang import data
 from translate.misc.multistring import multistring
 from translate.misc.xml_helpers import setXMLspace
 from translate.storage import base, lisa, poheader, xliff
@@ -150,7 +151,7 @@ class PoXliffUnit(xliff.xliffunit):
 
     def gettarget(self):
         if self.hasplural():
-            strings = [unit.target for unit in self.units]
+            strings = [data.forceunicode(unit.target) for unit in self.units]
             if strings:
                 return multistring(strings)
             else:

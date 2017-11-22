@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+from __future__ import unicode_literals
 import pytest
 import six
 
@@ -80,7 +81,7 @@ class TestMultistring:
     def test_coercion(self):
         t = multistring.multistring
         assert str(t("test")) == "test"
-        assert str(t(u"téßt")) == "téßt"
+        assert six.text_type(t("téßt")) == "téßt"
 
     def test_unicode_coercion(self):
         t = multistring.multistring

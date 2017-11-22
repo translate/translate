@@ -385,7 +385,7 @@ class AndroidResourceUnit(base.TranslationUnit):
         if (self.xmlelement.tag == "plurals"):
             target = []
             for entry in self.xmlelement.iterchildren():
-                target.append(self.get_xml_text_value(entry))
+                target.append(data.forceunicode(self.get_xml_text_value(entry)))
             return multistring(target)
         else:
             return self.get_xml_text_value(self.xmlelement)
