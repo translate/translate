@@ -147,7 +147,9 @@ class YAMLFile(base.TranslationStore):
                         target[path[0]] = []
                     target[path[0]].append(value)
                 else:
-                    if path[0] not in target:
+                    # Add empty dict in case there is value and we
+                    # expect dict
+                    if path[0] not in target or not isinstance(target[path[0]], dict):
                         target[path[0]] = UnsortableOrderedDict()
                     nested_set(target[path[0]], path[1:], value)
             else:
