@@ -121,11 +121,11 @@ class tsunit(lisa.LISAunit):
 
     def getsource(self):
         # TODO: support <byte>. See bug 528.
-        sourcenode = self._getsourcenode()
+        text = data.forceunicode(self._getsourcenode().text)
         if self.hasplural():
-            return multistring([sourcenode.text])
+            return multistring([text])
         else:
-            return data.forceunicode(sourcenode.text)
+            return text
     source = property(getsource, lisa.LISAunit.setsource)
     rich_source = property(base.TranslationUnit._get_rich_source, base.TranslationUnit._set_rich_source)
 
@@ -169,7 +169,7 @@ class tsunit(lisa.LISAunit):
             return None
         if self.hasplural():
             numerus_nodes = targetnode.findall(self.namespaced("numerusform"))
-            return multistring([node.text or u"" for node in numerus_nodes])
+            return multistring([data.forceunicode(node.text) or u"" for node in numerus_nodes])
         else:
             return data.forceunicode(targetnode.text) or u""
     target = property(gettarget, settarget)
