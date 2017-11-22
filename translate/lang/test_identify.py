@@ -179,5 +179,7 @@ class TestLanguageIdentifier(object):
 
     def test_bad_init_data(self):
         """Test __init__ with bad conf files and data dirs"""
-        assert raises(ValueError, LanguageIdentifier, model_dir='missing')
-        assert raises(ValueError, LanguageIdentifier, conf_file='missing')
+        with raises(ValueError):
+            LanguageIdentifier(model_dir='missing')
+        with raises(ValueError):
+            LanguageIdentifier(conf_file='missing')

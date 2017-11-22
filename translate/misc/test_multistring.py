@@ -21,7 +21,8 @@ class TestMultistring:
         assert s2 == "test"
         assert s2.strings == ["test", u"mé"]
         assert s2 != s1
-        pytest.raises(ValueError, t, [])
+        with pytest.raises(ValueError):
+            t([])
 
     def test_repr(self):
         t = multistring.multistring

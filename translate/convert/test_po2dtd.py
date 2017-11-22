@@ -111,7 +111,8 @@ msgstr "Dimpled Ring"
         simpledtd = '''<!ENTITY simple.label "Simple String">
 <!ENTITY simple.accesskey "S">'''
         warnings.simplefilter("error")
-        assert pytest.raises(Warning, self.merge2dtd, simpledtd, simplepo)
+        with pytest.raises(Warning):
+            self.merge2dtd(simpledtd, simplepo)
 
     def test_accesskeycase(self):
         """tests that access keys come out with the same case as the original, regardless"""

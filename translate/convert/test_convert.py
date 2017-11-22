@@ -103,7 +103,8 @@ class TestConvertCommand(object):
         helpfile = self.open_testfile("help.txt", "w")
         sys.stdout = helpfile
         try:
-            pytest.raises(SystemExit, self.run_command, help=True)
+            with pytest.raises(SystemExit):
+                self.run_command(help=True)
         finally:
             sys.stdout = stdout
         helpfile.close()

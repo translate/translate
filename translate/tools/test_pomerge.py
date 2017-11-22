@@ -18,7 +18,8 @@ def test_str2bool():
     assert not pomerge.str2bool("no")
     assert not pomerge.str2bool("false")
     assert not pomerge.str2bool("0")
-    pytest.raises(ValueError, pomerge.str2bool, "2")
+    with pytest.raises(ValueError):
+        pomerge.str2bool("2")
 
 
 class TestPOMerge:
@@ -83,10 +84,10 @@ class TestPOMerge:
         templatefile = wStringIO.StringIO("")
         inputfile = wStringIO.StringIO("")
         outputfile = wStringIO.StringIO()
-        pytest.raises(ValueError, pomerge.mergestore, inputfile, outputfile,
-                      templatefile, mergeblanks="yay")
-        pytest.raises(ValueError, pomerge.mergestore, inputfile, outputfile,
-                      templatefile, mergecomments="yay")
+        with pytest.raises(ValueError):
+            pomerge.mergestore(inputfile, outputfile, templatefile, mergeblanks="yay")
+        with pytest.raises(ValueError):
+            pomerge.mergestore(inputfile, outputfile, templatefile, mergecomments="yay")
 
     def test_simplemerge(self):
         """checks that a simple po entry merges OK"""
