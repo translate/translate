@@ -743,8 +743,9 @@ class TranslationStore(object):
         """
         fileobj = getattr(self, "fileobj", None)
         if fileobj:
-            filename = getattr(fileobj, "name",
-                               getattr(fileobj, "filename", None))
+            filename = getattr(fileobj, "name", None)
+            if not filename:
+                filename = getattr(fileobj, "filename", None)
             if filename:
                 self.filename = filename
 
