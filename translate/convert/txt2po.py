@@ -33,8 +33,8 @@ class txt2po(object):
     SourceStoreClass = txt.TxtFile
     TargetStoreClass = po.pofile
 
-    def __init__(self, input_file, output_file, duplicate_style="msgctxt",
-                 encoding="utf-8", flavour=None):
+    def __init__(self, input_file, output_file, template_file=None,
+                 duplicate_style="msgctxt", encoding="utf-8", flavour=None):
         """Initialize the converter."""
         self.duplicate_style = duplicate_style
 
@@ -73,8 +73,9 @@ class txt2po(object):
 def run_converter(input_file, output_file, template_file=None,
                   duplicatestyle="msgctxt", encoding="utf-8", flavour=None):
     """Wrapper around converter."""
-    return txt2po(input_file, output_file, duplicate_style=duplicatestyle,
-                  encoding=encoding, flavour=flavour).run()
+    return txt2po(input_file, output_file, template_file,
+                  duplicate_style=duplicatestyle, encoding=encoding,
+                  flavour=flavour).run()
 
 
 formats = {
