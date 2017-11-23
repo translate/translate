@@ -13,11 +13,6 @@ class TestTxt2PO(object):
         outputpo = convertor.convertstore(inputtxt)
         return outputpo
 
-    def singleelement(self, storage):
-        """checks that the pofile contains a single non-header element, and returns it"""
-        print(bytes(storage))
-        assert len(storage.units) == 1
-        return storage.units[0]
 
     def test_simple(self):
         """test the most basic txt conversion"""
@@ -68,11 +63,6 @@ class TestDoku2po(object):
         outputpo = convertor.convertstore(inputtxt)
         return outputpo
 
-    def singleelement(self, storage):
-        """checks that the pofile contains a single non-header element, and returns it"""
-        print(bytes(storage))
-        assert len(storage.units) == 1
-        return storage.units[0]
 
     def test_basic(self):
         """Tests that we can convert some basic things."""
