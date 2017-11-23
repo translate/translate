@@ -35,6 +35,7 @@ class ical2po(object):
         output_store = po.pofile()
         output_header = output_store.header()
         output_header.addnote("extracted from %s" % input_store.filename, "developer")
+
         for input_unit in input_store.units:
             output_store.addunit(self.convert_unit(input_unit))
         output_store.removeduplicates(duplicatestyle)
@@ -50,7 +51,7 @@ class ical2po(object):
         input_store.makeindex()
         for template_unit in template_store.units:
             origpo = self.convert_unit(template_unit)
-            # try and find a translation of the same name...
+
             template_unit_name = "".join(template_unit.getlocations())
             add_translation = (not blankmsgstr and
                                template_unit_name in input_store.locationindex)
@@ -71,7 +72,8 @@ class ical2po(object):
         return output_unit
 
 
-def convertical(input_file, output_file, template_file, pot=False, duplicatestyle="msgctxt"):
+def run_converter(input_file, output_file, template_file, pot=False,
+                  duplicatestyle="msgctxt"):
     """Wrapper around converter."""
     input_store = ical.icalfile(input_file)
     convertor = ical2po()
@@ -88,9 +90,15 @@ def convertical(input_file, output_file, template_file, pot=False, duplicatestyl
     return 1
 
 
+formats = {
+    "ics": ("po", run_converter),
+    ("ics", "ics"): ("po", run_converter),
+}
+
+
 def main(argv=None):
-    formats = {"ics": ("po", convertical), ("ics", "ics"): ("po", convertical)}
-    parser = convert.ConvertOptionParser(formats, usetemplates=True, usepots=True, description=__doc__)
+    parser = convert.ConvertOptionParser(formats, usetemplates=True,
+                                         usepots=True, description=__doc__)
     parser.add_duplicates_option()
     parser.passthrough.append("pot")
     parser.run(argv)

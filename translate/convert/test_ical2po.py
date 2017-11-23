@@ -18,8 +18,8 @@ class TestIcal2PO(object):
         template_file = None
         if template_source:
             template_file = wStringIO.StringIO(template_source)
-        result = ical2po.convertical(input_file, output_file, template_file,
-                                     blank_msgstr, duplicate_style)
+        result = ical2po.run_converter(input_file, output_file, template_file,
+                                       blank_msgstr, duplicate_style)
         assert result == 1
         return output_file.getvalue().decode('utf-8')
 
@@ -29,7 +29,7 @@ class TestIcal2PO(object):
         output_file = wStringIO.StringIO()
         template_file = None
         with pytest.raises(StopIteration):
-            ical2po.convertical(input_file, output_file, template_file)
+            ical2po.run_converter(input_file, output_file, template_file)
 
     def test_no_translations(self):
         """Check that iCalendar with no translations returns correct result."""
@@ -44,7 +44,7 @@ END:VCALENDAR
         input_file = wStringIO.StringIO(input_source)
         output_file = wStringIO.StringIO()
         template_file = None
-        result = ical2po.convertical(input_file, output_file, template_file)
+        result = ical2po.run_converter(input_file, output_file, template_file)
         assert result == 0
         output = output_file.getvalue().decode('utf-8')
         assert output == ""
