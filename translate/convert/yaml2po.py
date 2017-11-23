@@ -40,6 +40,7 @@ class yaml2po(object):
         self.blank_msgstr = blank_msgstr
         self.duplicate_style = duplicate_style
 
+        self.extraction_msg = None
         self.output_file = output_file
         self.source_store = self.SourceStoreClass(input_file)
         self.target_store = self.TargetStoreClass()
@@ -61,12 +62,18 @@ class yaml2po(object):
 
     def convert_store(self):
         """Convert a single source format file to a target format file."""
+        self.extraction_msg = "extracted from %s" % self.source_store.filename
+
         for source_unit in self.source_store.units:
             target_unit = self.convert_unit(source_unit)
             self.target_store.addunit(target_unit)
 
     def merge_stores(self):
         """Convert two source format files to a target format file."""
+        self.extraction_msg = ("extracted from %s, %s" %
+                               (self.template_store.filename,
+                                self.source_store.filename))
+
         for template_unit in self.template_store.units:
             target_unit = self.convert_unit(template_unit)
             self.target_store.addunit(target_unit)
@@ -82,6 +89,10 @@ class yaml2po(object):
             self.convert_store()
         else:
             self.merge_stores()
+
+        if self.extraction_msg:
+            self.target_store.header().addnote(self.extraction_msg,
+                                               "developer")
 
         self.target_store.removeduplicates(self.duplicate_style)
 
