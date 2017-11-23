@@ -55,11 +55,9 @@ class ical2po(object):
             if template_unit_name in input_store.locationindex:
                 translatedini = input_store.locationindex[template_unit_name]
                 translatedpo = self.convert_unit(translatedini, "translator")
-            else:
-                translatedpo = None
-            # if we have a valid po unit, get the translation and add it...
-            if translatedpo is not None and not blankmsgstr:
-                origpo.target = translatedpo.source
+                # if we have a valid po unit, get the translation and add it...
+                if not blankmsgstr:
+                    origpo.target = translatedpo.source
             output_store.addunit(origpo)
         output_store.removeduplicates(duplicatestyle)
         return output_store
