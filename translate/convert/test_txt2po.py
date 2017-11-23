@@ -13,8 +13,8 @@ class BaseTxt2POTester(object):
         output_file = wStringIO.StringIO()
         inputtxt = txt.TxtFile(inputfile, flavour=self.Flavour)
         convertor = txt2po.txt2po(output_file)
-        outputpo = convertor.convertstore(inputtxt)
-        return outputpo
+        convertor.convertstore(inputtxt)
+        return convertor.target_store
 
 
 class TestTxt2PO(BaseTxt2POTester):
