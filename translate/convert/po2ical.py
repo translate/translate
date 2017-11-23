@@ -33,16 +33,22 @@ class po2ical(object):
     TargetStoreClass = ical.icalfile
     MissingTemplateMessage = "A template iCalendar file must be provided."
 
-    def __init__(self, source_store, output_file, template_file=None,
+    def __init__(self, input_file, output_file, template_file=None,
                  include_fuzzy=False, output_threshold=None):
         """Initialize the converter."""
         if template_file is None:
             raise ValueError(self.MissingTemplateMessage)
 
-        self.include_fuzzy = include_fuzzy
-        self.output_file = output_file
-        self.template_store = self.TargetStoreClass(template_file)
-        self.source_store = source_store
+        self.source_store = po.pofile(input_file)
+
+        self.should_output_store = convert.should_output_store(
+            self.source_store, output_threshold
+        )
+        if self.should_output_store:
+            self.include_fuzzy = include_fuzzy
+
+            self.output_file = output_file
+            self.template_store = self.TargetStoreClass(template_file)
 
     def merge_stores(self):
         """Convert a source file to a target file using a template file.
@@ -67,13 +73,12 @@ class po2ical(object):
 def run_converter(inputfile, outputfile, templatefile=None, includefuzzy=False,
                   outputthreshold=None):
     """Wrapper around converter."""
-    inputstore = po.pofile(inputfile)
+    convertor = po2ical(inputfile, outputfile, templatefile, includefuzzy,
+                        outputthreshold)
 
-    if not convert.should_output_store(inputstore, outputthreshold):
+    if not convertor.should_output_store:
         return False
 
-    convertor = po2ical(inputstore, outputfile, templatefile, includefuzzy,
-                        outputthreshold)
     convertor.merge_stores()
     return 1
 
