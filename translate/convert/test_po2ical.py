@@ -304,7 +304,7 @@ END:VCALENDAR
         # Input completion is 0% so with a 70% threshold it should not output.
         result = po2ical.run_converter(input_file, output_file, template_file,
                                        outputthreshold=70)
-        assert result is False
+        assert result == 0
         assert output_file.getvalue().decode('utf-8') == expected_output
 
     def test_convert_completion_above_threshold(self):

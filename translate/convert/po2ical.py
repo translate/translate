@@ -73,7 +73,7 @@ class po2ical(object):
     def run(self):
         """Run the converter."""
         if not self.should_output_store:
-            return False
+            return 0
 
         self.merge_stores()
         self.template_store.serialize(self.output_file)
