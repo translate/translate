@@ -63,7 +63,7 @@ def convertical(inputfile, outputfile, templatefile, includefuzzy=False,
                 outputthreshold=None):
     """Wrapper around converter."""
     if templatefile is None:
-        raise ValueError("must have template file for iCal files")
+        raise ValueError("A template iCalendar file must be provided.")
 
     inputstore = po.pofile(inputfile)
 
