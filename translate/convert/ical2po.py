@@ -34,12 +34,13 @@ class ical2po(object):
     TargetStoreClass = po.pofile
     TargetUnitClass = po.pounit
 
-    def __init__(self, input_file, template_file=None, blank_msgstr=False,
-                 duplicate_style="msgctxt"):
+    def __init__(self, input_file, output_file, template_file=None,
+                 blank_msgstr=False, duplicate_style="msgctxt"):
         """Initialize the converter."""
         self.blank_msgstr = blank_msgstr
         self.duplicate_style = duplicate_style
 
+        self.output_file = output_file
         self.source_store = self.SourceStoreClass(input_file)
         self.target_store = self.TargetStoreClass()
         self.template_store = None
@@ -90,8 +91,8 @@ class ical2po(object):
 def run_converter(input_file, output_file, template_file=None, pot=False,
                   duplicatestyle="msgctxt"):
     """Wrapper around converter."""
-    convertor = ical2po(input_file, template_file, blank_msgstr=pot,
-                        duplicate_style=duplicatestyle)
+    convertor = ical2po(input_file, output_file, template_file,
+                        blank_msgstr=pot, duplicate_style=duplicatestyle)
     if template_file is None:
         output_store = convertor.convert_store()
     else:
