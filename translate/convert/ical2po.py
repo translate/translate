@@ -23,13 +23,8 @@ See: http://docs.translatehouse.org/projects/translate-toolkit/en/latest/command
 for examples and usage instructions.
 """
 
-import logging
-
 from translate.convert import convert
 from translate.storage import ical, po
-
-
-logger = logging.getLogger(__name__)
 
 
 class ical2po(object):
@@ -42,8 +37,7 @@ class ical2po(object):
         output_header.addnote("extracted from %s" % input_store.filename, "developer")
         for input_unit in input_store.units:
             output_unit = self.convert_unit(input_unit, "developer")
-            if output_unit is not None:
-                output_store.addunit(output_unit)
+            output_store.addunit(output_unit)
         output_store.removeduplicates(duplicatestyle)
         return output_store
 
@@ -64,13 +58,9 @@ class ical2po(object):
             else:
                 translatedpo = None
             # if we have a valid po unit, get the translation and add it...
-            if origpo is not None:
-                if translatedpo is not None and not blankmsgstr:
-                    origpo.target = translatedpo.source
-                output_store.addunit(origpo)
-            elif translatedpo is not None:
-                logger.error("error converting original iCal definition %s",
-                             origpo.name)
+            if translatedpo is not None and not blankmsgstr:
+                origpo.target = translatedpo.source
+            output_store.addunit(origpo)
         output_store.removeduplicates(duplicatestyle)
         return output_store
 
