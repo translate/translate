@@ -48,7 +48,6 @@ class po2yaml(object):
         )
         if self.should_output_store:
             self.include_fuzzy = include_fuzzy
-            self.output_threshold = output_threshold
 
             self.output_file = output_file
             self.template_store = self.TargetStoreClass(template_file)
