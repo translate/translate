@@ -31,6 +31,7 @@ class txt2po(object):
     """Convert one plain text (.txt) file to a single PO file."""
 
     SourceStoreClass = txt.TxtFile
+    TargetStoreClass = po.pofile
 
     def __init__(self, input_file, output_file, duplicate_style="msgctxt",
                  encoding="utf-8", flavour=None):
@@ -41,10 +42,10 @@ class txt2po(object):
         self.source_store = self.SourceStoreClass(input_file,
                                                   encoding=encoding,
                                                   flavour=flavour)
+        self.target_store = self.TargetStoreClass()
 
     def convertstore(self):
         """Convert a single source format file to a target format file."""
-        self.target_store = po.pofile()
         targetheader = self.target_store.header()
         targetheader.addnote("extracted from %s" % self.source_store.filename,
                              "developer")
