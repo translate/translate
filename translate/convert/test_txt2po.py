@@ -3,16 +3,20 @@ from translate.misc import wStringIO
 from translate.storage import txt
 
 
-class TestTxt2PO(object):
+class BaseTxt2POTester(object):
 
-    def txt2po(self, txtsource, template=None):
-        """helper that converts txt source to po source without requiring files"""
+    Flavour = None
+
+    def _convert(self, txtsource, template=None):
+        """Helper that converts format to PO without files."""
         inputfile = wStringIO.StringIO(txtsource)
-        inputtxt = txt.TxtFile(inputfile)
+        inputtxt = txt.TxtFile(inputfile, flavour=self.Flavour)
         convertor = txt2po.txt2po()
         outputpo = convertor.convertstore(inputtxt)
         return outputpo
 
+
+class TestTxt2PO(BaseTxt2POTester):
 
     def test_simple(self):
         """test the most basic txt conversion"""
@@ -21,7 +25,7 @@ class TestTxt2PO(object):
 msgid "A simple string"
 msgstr ""
 '''
-        poresult = self.txt2po(txtsource)
+        poresult = self._convert(txtsource)
         assert str(poresult.units[1]) == poexpected
 
     def test_multiple_units(self):
@@ -35,7 +39,7 @@ Second unit is a heading
 Third unit with blank after but no more units.
 
 """
-        poresult = self.txt2po(txtsource)
+        poresult = self._convert(txtsource)
         assert poresult.units[0].isheader()
         assert len(poresult.units) == 4
 
@@ -48,21 +52,14 @@ helped to bridge the digital divide to a limited extent.\r
         txtexpected = '''The rapid expansion of telecommunications infrastructure in recent years has
 helped to bridge the digital divide to a limited extent.'''
 
-        poresult = self.txt2po(txtsource)
+        poresult = self._convert(txtsource)
         pounit = poresult.units[1]
         assert str(pounit.source) == txtexpected
 
 
-class TestDoku2po(object):
+class TestDoku2po(BaseTxt2POTester):
 
-    def doku2po(self, txtsource, template=None):
-        """helper that converts dokuwiki source to po source without requiring files."""
-        inputfile = wStringIO.StringIO(txtsource)
-        inputtxt = txt.TxtFile(inputfile, flavour="dokuwiki")
-        convertor = txt2po.txt2po()
-        outputpo = convertor.convertstore(inputtxt)
-        return outputpo
-
+    Flavour = "dokuwiki"
 
     def test_basic(self):
         """Tests that we can convert some basic things."""
@@ -70,7 +67,7 @@ class TestDoku2po(object):
 
 This is a wiki page.
 """
-        poresult = self.doku2po(dokusource)
+        poresult = self._convert(dokusource)
         assert poresult.units[0].isheader()
         assert len(poresult.units) == 3
         assert poresult.units[1].source == "Heading"
@@ -81,7 +78,7 @@ This is a wiki page.
         dokusource = """  * This is a fact.
   * This is a fact.
 """
-        poresult = self.doku2po(dokusource)
+        poresult = self._convert(dokusource)
         assert poresult.units[0].isheader()
         assert len(poresult.units) == 3
         assert poresult.units[1].source == "This is a fact."
@@ -94,7 +91,7 @@ This is a wiki page.
         dokusource = """  - This is an item.
   - This is an item.
 """
-        poresult = self.doku2po(dokusource)
+        poresult = self._convert(dokusource)
         assert poresult.units[0].isheader()
         assert len(poresult.units) == 3
         assert poresult.units[1].source == "This is an item."
@@ -109,7 +106,7 @@ This is a wiki page.
     * This is a subitem.
         * This is a tabbed item.
 """
-        poresult = self.doku2po(dokusource)
+        poresult = self._convert(dokusource)
         assert poresult.units[0].isheader()
         assert len(poresult.units) == 5
         assert poresult.units[1].source == "Heading"
