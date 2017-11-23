@@ -10,8 +10,9 @@ class BaseTxt2POTester(object):
     def _convert(self, txtsource, template=None):
         """Helper that converts format to PO without files."""
         inputfile = wStringIO.StringIO(txtsource)
+        output_file = wStringIO.StringIO()
         inputtxt = txt.TxtFile(inputfile, flavour=self.Flavour)
-        convertor = txt2po.txt2po()
+        convertor = txt2po.txt2po(output_file)
         outputpo = convertor.convertstore(inputtxt)
         return outputpo
 

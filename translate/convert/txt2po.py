@@ -30,9 +30,11 @@ from translate.storage import po, txt
 class txt2po(object):
     """Convert one plain text (.txt) file to a single PO file."""
 
-    def __init__(self, duplicate_style="msgctxt"):
+    def __init__(self, output_file, duplicate_style="msgctxt"):
         """Initialize the converter."""
         self.duplicate_style = duplicate_style
+
+        self.output_file = output_file
 
     def convertstore(self, thetxtfile):
         """Convert a single source format file to a target format file."""
@@ -52,7 +54,7 @@ def run_converter(inputfile, outputfile, templates, duplicatestyle="msgctxt",
                   encoding="utf-8", flavour=None):
     """Wrapper around converter."""
     inputstore = txt.TxtFile(inputfile, encoding=encoding, flavour=flavour)
-    convertor = txt2po(duplicate_style=duplicatestyle)
+    convertor = txt2po(outputfile, duplicate_style=duplicatestyle)
     outputstore = convertor.convertstore(inputstore)
     if outputstore.isempty():
         return 0
