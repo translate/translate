@@ -42,8 +42,9 @@ class ical2po(object):
         target_unit.target = ""
         return target_unit
 
-    def convert_store(self, source_store, duplicatestyle="msgctxt"):
+    def convert_store(self, input_file, duplicatestyle="msgctxt"):
         """Convert a single source format file to a target format file."""
+        source_store = ical.icalfile(input_file)
         target_store = self.TargetStoreClass()
         output_header = target_store.header()
         output_header.addnote("extracted from %s" % source_store.filename, "developer")
@@ -53,9 +54,11 @@ class ical2po(object):
         target_store.removeduplicates(duplicatestyle)
         return target_store
 
-    def merge_stores(self, template_store, source_store, blankmsgstr=False,
+    def merge_stores(self, template_file, input_file, blankmsgstr=False,
                      duplicatestyle="msgctxt"):
         """Convert two source format files to a target format file."""
+        template_store = ical.icalfile(template_file)
+        source_store = ical.icalfile(input_file)
         target_store = self.TargetStoreClass()
         output_header = target_store.header()
         output_header.addnote("extracted from %s, %s" % (template_store.filename, source_store.filename), "developer")
@@ -78,13 +81,11 @@ class ical2po(object):
 def run_converter(input_file, output_file, template_file=None, pot=False,
                   duplicatestyle="msgctxt"):
     """Wrapper around converter."""
-    input_store = ical.icalfile(input_file)
     convertor = ical2po()
     if template_file is None:
-        output_store = convertor.convert_store(input_store, duplicatestyle=duplicatestyle)
+        output_store = convertor.convert_store(input_file, duplicatestyle=duplicatestyle)
     else:
-        template_store = ical.icalfile(template_file)
-        output_store = convertor.merge_stores(template_store, input_store,
+        output_store = convertor.merge_stores(template_file, input_file,
                                               blankmsgstr=pot,
                                               duplicatestyle=duplicatestyle)
     if output_store.isempty():
