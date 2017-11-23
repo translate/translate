@@ -101,11 +101,11 @@ class yaml2po(object):
         return 1
 
 
-def run_converter(inputfile, outputfile, templatefile, pot=False,
+def run_converter(input_file, output_file, template_file=None, pot=False,
                   duplicatestyle="msgctxt"):
     """Wrapper around converter."""
     # TODO add Ruby personality.
-    return yaml2po(inputfile, outputfile, templatefile, blank_msgstr=pot,
+    return yaml2po(input_file, output_file, template_file, blank_msgstr=pot,
                    duplicate_style=duplicatestyle).run()
 
 
