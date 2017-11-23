@@ -38,7 +38,6 @@ class po2yaml(object):
     def __init__(self, input_file, output_file, template_file=None,
                  include_fuzzy=False, output_threshold=None):
         """Initialize the converter."""
-
         if template_file is None:
             raise ValueError(self.MissingTemplateMessage)
 
@@ -108,7 +107,6 @@ formats = {
 
 
 def main(argv=None):
-    # Handle command line options.
     parser = convert.ConvertOptionParser(formats, usetemplates=True,
                                          description=__doc__)
     parser.add_threshold_option()
