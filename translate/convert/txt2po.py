@@ -53,10 +53,16 @@ class txt2po(object):
         for txtunit in self.source_store.units:
             newunit = self.target_store.addsourceunit(txtunit.source)
             newunit.addlocations(txtunit.getlocations())
+
+    def run(self):
+        """Run the converter."""
+        self.convertstore()
+
         self.target_store.removeduplicates(self.duplicate_style)
 
         if self.target_store.isempty():
             return 0
+
         self.target_store.serialize(self.output_file)
         return 1
 
@@ -64,9 +70,8 @@ class txt2po(object):
 def run_converter(inputfile, outputfile, templates, duplicatestyle="msgctxt",
                   encoding="utf-8", flavour=None):
     """Wrapper around converter."""
-    convertor = txt2po(inputfile, outputfile, duplicate_style=duplicatestyle,
-                       encoding=encoding, flavour=flavour)
-    return convertor.convertstore()
+    return txt2po(inputfile, outputfile, duplicate_style=duplicatestyle,
+                  encoding=encoding, flavour=flavour).run()
 
 
 formats = {
