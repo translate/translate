@@ -78,9 +78,6 @@ class ical2po(object):
         """Converts a .ini unit to a .po unit. Returns None if empty or not for
         translation.
         """
-        if input_unit is None:
-            return None
-        # escape unicode
         output_unit = po.pounit(encoding="UTF-8")
         output_unit.addlocation("".join(input_unit.getlocations()))
         output_unit.addnote(input_unit.getnotes("developer"), "developer")
