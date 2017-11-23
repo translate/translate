@@ -89,7 +89,7 @@ class po2yaml(object):
         return 1
 
 
-def run_converter(inputfile, outputfile, templatefile, includefuzzy=False,
+def run_converter(inputfile, outputfile, templatefile=None, includefuzzy=False,
                   outputthreshold=None):
     """Wrapper around converter."""
     # TODO add Ruby personality.
