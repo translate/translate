@@ -38,6 +38,7 @@ class txt2po(object):
         """Initialize the converter."""
         self.duplicate_style = duplicate_style
 
+        self.extraction_msg = None
         self.output_file = output_file
         self.source_store = self.SourceStoreClass(input_file,
                                                   encoding=encoding,
@@ -46,9 +47,7 @@ class txt2po(object):
 
     def convert_store(self):
         """Convert a single source format file to a target format file."""
-        targetheader = self.target_store.header()
-        targetheader.addnote("extracted from %s" % self.source_store.filename,
-                             "developer")
+        self.extraction_msg = "extracted from %s" % self.source_store.filename
 
         for source_unit in self.source_store.units:
             target_unit = self.target_store.addsourceunit(source_unit.source)
@@ -57,6 +56,10 @@ class txt2po(object):
     def run(self):
         """Run the converter."""
         self.convert_store()
+
+        if self.extraction_msg:
+            self.target_store.header().addnote(self.extraction_msg,
+                                               "developer")
 
         self.target_store.removeduplicates(self.duplicate_style)
 
