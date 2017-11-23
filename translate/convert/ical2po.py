@@ -72,7 +72,7 @@ class ical2po(object):
         return target_store
 
 
-def run_converter(input_file, output_file, template_file, pot=False,
+def run_converter(input_file, output_file, template_file=None, pot=False,
                   duplicatestyle="msgctxt"):
     """Wrapper around converter."""
     input_store = ical.icalfile(input_file)
