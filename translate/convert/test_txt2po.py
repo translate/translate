@@ -24,7 +24,7 @@ msgstr ""
         poresult = self.txt2po(txtsource)
         assert str(poresult.units[1]) == poexpected
 
-    def test_miltiple_units(self):
+    def test_multiple_units(self):
         """test that we can handle txt with multiple units"""
         txtsource = """First unit
 Still part of first unit
