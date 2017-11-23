@@ -100,3 +100,7 @@ def main(argv=None):
     parser.passthrough.append("flavour")
     parser.add_duplicates_option()
     parser.run(argv)
+
+
+if __name__ == '__main__':
+    main()
