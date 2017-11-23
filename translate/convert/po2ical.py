@@ -34,7 +34,7 @@ class po2ical(object):
     MissingTemplateMessage = "A template iCalendar file must be provided."
 
     def __init__(self, output_file, template_file, source_store,
-                 include_fuzzy=False):
+                 include_fuzzy=False, output_threshold=None):
         """Initialize the converter."""
         if template_file is None:
             raise ValueError(self.MissingTemplateMessage)
@@ -72,7 +72,8 @@ def run_converter(inputfile, outputfile, templatefile, includefuzzy=False,
     if not convert.should_output_store(inputstore, outputthreshold):
         return False
 
-    convertor = po2ical(outputfile, templatefile, inputstore, includefuzzy)
+    convertor = po2ical(outputfile, templatefile, inputstore, includefuzzy,
+                        outputthreshold)
     convertor.merge_stores()
     return 1
 
