@@ -51,16 +51,16 @@ class po2ical(object):
         target format.
         """
         self.source_store.makeindex()
-        for unit in self.template_store.units:
-            for location in unit.getlocations():
+        for template_unit in self.template_store.units:
+            for location in template_unit.getlocations():
                 if location in self.source_store.locationindex:
-                    inputunit = self.source_store.locationindex[location]
-                    if inputunit.isfuzzy() and not self.include_fuzzy:
-                        unit.target = unit.source
+                    source_unit = self.source_store.locationindex[location]
+                    if source_unit.isfuzzy() and not self.include_fuzzy:
+                        template_unit.target = template_unit.source
                     else:
-                        unit.target = inputunit.target
+                        template_unit.target = source_unit.target
                 else:
-                    unit.target = unit.source
+                    template_unit.target = template_unit.source
         self.output_file.write(bytes(self.template_store))
 
 
