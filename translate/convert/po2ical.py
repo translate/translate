@@ -32,35 +32,35 @@ class po2ical(object):
 
     TargetStoreClass = ical.icalfile
 
-    def __init__(self, templatefile, inputstore, include_fuzzy=False):
+    def __init__(self, template_file, source_store, include_fuzzy=False):
         """Initialize the converter."""
         self.include_fuzzy = include_fuzzy
-        self.templatefile = templatefile
-        self.templatestore = self.TargetStoreClass(templatefile)
-        self.inputstore = inputstore
+        self.template_file = template_file
+        self.template_store = self.TargetStoreClass(template_file)
+        self.source_store = source_store
 
-    def convertstore(self):
+    def merge_stores(self):
         """Convert a source file to a target file using a template file.
 
         Source file is in source format, while target and template files use
         target format.
         """
-        self.inputstore.makeindex()
-        for unit in self.templatestore.units:
+        self.source_store.makeindex()
+        for unit in self.template_store.units:
             for location in unit.getlocations():
-                if location in self.inputstore.locationindex:
-                    inputunit = self.inputstore.locationindex[location]
+                if location in self.source_store.locationindex:
+                    inputunit = self.source_store.locationindex[location]
                     if inputunit.isfuzzy() and not self.include_fuzzy:
                         unit.target = unit.source
                     else:
                         unit.target = inputunit.target
                 else:
                     unit.target = unit.source
-        return bytes(self.templatestore)
+        return bytes(self.template_store)
 
 
-def convertical(inputfile, outputfile, templatefile, includefuzzy=False,
-                outputthreshold=None):
+def run_converter(inputfile, outputfile, templatefile, includefuzzy=False,
+                  outputthreshold=None):
     """Wrapper around converter."""
     if templatefile is None:
         raise ValueError("A template iCalendar file must be provided.")
@@ -71,13 +71,13 @@ def convertical(inputfile, outputfile, templatefile, includefuzzy=False,
         return False
 
     convertor = po2ical(templatefile, inputstore, includefuzzy)
-    outputstring = convertor.convertstore()
+    outputstring = convertor.merge_stores()
     outputfile.write(outputstring)
     return 1
 
 
 formats = {
-    ("po", "ics"): ("ics", convertical)
+    ("po", "ics"): ("ics", run_converter)
 }
 
 

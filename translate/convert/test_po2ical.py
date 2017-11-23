@@ -18,8 +18,8 @@ class TestPO2Ical(object):
         template_file = None
         if template_source:
             template_file = wStringIO.StringIO(template_source)
-        result = po2ical.convertical(input_file, output_file, template_file,
-                                     include_fuzzy, output_threshold)
+        result = po2ical.run_converter(input_file, output_file, template_file,
+                                       include_fuzzy, output_threshold)
         assert result == 1
         return output_file.getvalue().decode('utf-8')
 
@@ -302,8 +302,8 @@ END:VCALENDAR
         output_file = wStringIO.StringIO()
         template_file = wStringIO.StringIO(template_source)
         # Input completion is 0% so with a 70% threshold it should not output.
-        result = po2ical.convertical(input_file, output_file, template_file,
-                                     outputthreshold=70)
+        result = po2ical.run_converter(input_file, output_file, template_file,
+                                       outputthreshold=70)
         assert result is False
         assert output_file.getvalue().decode('utf-8') == expected_output
 
@@ -333,8 +333,8 @@ END:VCALENDAR
         output_file = wStringIO.StringIO()
         template_file = wStringIO.StringIO(template_source)
         # Input completion is 100% so with a 70% threshold it should output.
-        result = po2ical.convertical(input_file, output_file, template_file,
-                                     outputthreshold=70)
+        result = po2ical.run_converter(input_file, output_file, template_file,
+                                       outputthreshold=70)
         assert result == 1
         assert output_file.getvalue().decode('utf-8') == expected_output
 
