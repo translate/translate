@@ -30,46 +30,46 @@ from translate.storage import ical, po
 class ical2po(object):
     """Convert one or two iCalendar files to a single PO file."""
 
-    def convert_store(self, input_store, duplicatestyle="msgctxt"):
+    def convert_store(self, source_store, duplicatestyle="msgctxt"):
         """Convert a single source format file to a target format file."""
-        output_store = po.pofile()
-        output_header = output_store.header()
-        output_header.addnote("extracted from %s" % input_store.filename, "developer")
+        target_store = po.pofile()
+        output_header = target_store.header()
+        output_header.addnote("extracted from %s" % source_store.filename, "developer")
 
-        for input_unit in input_store.units:
-            output_store.addunit(self.convert_unit(input_unit))
-        output_store.removeduplicates(duplicatestyle)
-        return output_store
+        for source_unit in source_store.units:
+            target_store.addunit(self.convert_unit(source_unit))
+        target_store.removeduplicates(duplicatestyle)
+        return target_store
 
-    def merge_stores(self, template_store, input_store, blankmsgstr=False,
+    def merge_stores(self, template_store, source_store, blankmsgstr=False,
                      duplicatestyle="msgctxt"):
         """Convert two source format files to a target format file."""
-        output_store = po.pofile()
-        output_header = output_store.header()
-        output_header.addnote("extracted from %s, %s" % (template_store.filename, input_store.filename), "developer")
+        target_store = po.pofile()
+        output_header = target_store.header()
+        output_header.addnote("extracted from %s, %s" % (template_store.filename, source_store.filename), "developer")
 
-        input_store.makeindex()
+        source_store.makeindex()
         for template_unit in template_store.units:
-            origpo = self.convert_unit(template_unit)
+            target_unit = self.convert_unit(template_unit)
 
             template_unit_name = "".join(template_unit.getlocations())
             add_translation = (not blankmsgstr and
-                               template_unit_name in input_store.locationindex)
+                               template_unit_name in source_store.locationindex)
             if add_translation:
-                translatedini = input_store.locationindex[template_unit_name]
-                origpo.target = translatedini.source
-            output_store.addunit(origpo)
-        output_store.removeduplicates(duplicatestyle)
-        return output_store
+                source_unit = source_store.locationindex[template_unit_name]
+                target_unit.target = source_unit.source
+            target_store.addunit(target_unit)
+        target_store.removeduplicates(duplicatestyle)
+        return target_store
 
-    def convert_unit(self, input_unit):
+    def convert_unit(self, unit):
         """Convert a source format unit to a target format unit."""
-        output_unit = po.pounit(encoding="UTF-8")
-        output_unit.addlocation("".join(input_unit.getlocations()))
-        output_unit.addnote(input_unit.getnotes("developer"), "developer")
-        output_unit.source = input_unit.source
-        output_unit.target = ""
-        return output_unit
+        target_unit = po.pounit(encoding="UTF-8")
+        target_unit.addlocation("".join(unit.getlocations()))
+        target_unit.addnote(unit.getnotes("developer"), "developer")
+        target_unit.source = unit.source
+        target_unit.target = ""
+        return target_unit
 
 
 def run_converter(input_file, output_file, template_file, pot=False,
