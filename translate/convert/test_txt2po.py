@@ -17,6 +17,11 @@ class BaseTxt2POTester(object):
         convertor.run()
         return convertor.target_store
 
+    def _count_elements(self, po_file):
+        """Helper that counts the number of non-header units."""
+        assert po_file.units[0].isheader()
+        return len(po_file.units) - 1
+
 
 class TestTxt2PO(BaseTxt2POTester):
 
@@ -29,6 +34,34 @@ class TestTxt2PO(BaseTxt2POTester):
         assert converter.run() == 0
         assert converter.target_store.isempty()
         assert output_file.getvalue().decode('utf-8') == ''
+
+    def test_duplicates(self):
+        """Check converting drops duplicates."""
+        input_source = '''
+Simple
+
+Simple
+'''
+        # First test with default duplicate style (msgctxt).
+        po_file = self._convert(input_source)
+        assert self._count_elements(po_file) == 2
+        assert po_file.units[1].source == "Simple"
+        assert po_file.units[1].target == ""
+        assert po_file.units[2].source == "Simple"
+        assert po_file.units[2].target == ""
+
+        # Now test with merge duplicate style. This requires custom code to
+        # pass the duplicate style to the converter.
+        input_file = wStringIO.StringIO(input_source)
+        output_file = wStringIO.StringIO()
+        convertor = self.ConverterClass(input_file, output_file,
+                                        duplicate_style="merge",
+                                        flavour=self.Flavour)
+        convertor.run()
+        po_file = convertor.target_store
+        assert self._count_elements(po_file) == 1
+        assert po_file.units[1].source == "Simple"
+        assert po_file.units[1].target == ""
 
     def test_simple(self):
         """test the most basic txt conversion"""
@@ -82,6 +115,34 @@ class TestDoku2po(BaseTxt2POTester):
         assert converter.run() == 0
         assert converter.target_store.isempty()
         assert output_file.getvalue().decode('utf-8') == ''
+
+    def test_duplicates(self):
+        """Check converting drops duplicates."""
+        input_source = '''
+Simple
+
+Simple
+'''
+        # First test with default duplicate style (msgctxt).
+        po_file = self._convert(input_source)
+        assert self._count_elements(po_file) == 2
+        assert po_file.units[1].source == "Simple"
+        assert po_file.units[1].target == ""
+        assert po_file.units[2].source == "Simple"
+        assert po_file.units[2].target == ""
+
+        # Now test with merge duplicate style. This requires custom code to
+        # pass the duplicate style to the converter.
+        input_file = wStringIO.StringIO(input_source)
+        output_file = wStringIO.StringIO()
+        convertor = self.ConverterClass(input_file, output_file,
+                                        duplicate_style="merge",
+                                        flavour=self.Flavour)
+        convertor.run()
+        po_file = convertor.target_store
+        assert self._count_elements(po_file) == 1
+        assert po_file.units[1].source == "Simple"
+        assert po_file.units[1].target == ""
 
     def test_basic(self):
         """Tests that we can convert some basic things."""
