@@ -41,7 +41,8 @@ class ical2po(object):
         output_store.removeduplicates(duplicatestyle)
         return output_store
 
-    def merge_store(self, template_store, input_store, blankmsgstr=False, duplicatestyle="msgctxt"):
+    def merge_stores(self, template_store, input_store, blankmsgstr=False,
+                     duplicatestyle="msgctxt"):
         """Convert two source format files to a target format file."""
         output_store = po.pofile()
         output_header = output_store.header()
@@ -79,7 +80,9 @@ def convertical(input_file, output_file, template_file, pot=False, duplicatestyl
         output_store = convertor.convert_store(input_store, duplicatestyle=duplicatestyle)
     else:
         template_store = ical.icalfile(template_file)
-        output_store = convertor.merge_store(template_store, input_store, blankmsgstr=pot, duplicatestyle=duplicatestyle)
+        output_store = convertor.merge_stores(template_store, input_store,
+                                              blankmsgstr=pot,
+                                              duplicatestyle=duplicatestyle)
     if output_store.isempty():
         return 0
     output_store.serialize(output_file)
