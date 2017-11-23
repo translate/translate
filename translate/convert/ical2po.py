@@ -65,7 +65,6 @@ class ical2po(object):
         for source_unit in self.source_store.units:
             self.target_store.addunit(self.convert_unit(source_unit))
         self.target_store.removeduplicates(self.duplicate_style)
-        return self.target_store
 
     def merge_stores(self):
         """Convert two source format files to a target format file."""
@@ -85,19 +84,18 @@ class ical2po(object):
                 target_unit.target = source_unit.source
             self.target_store.addunit(target_unit)
         self.target_store.removeduplicates(self.duplicate_style)
-        return self.target_store
 
     def run(self):
         """Run the converter."""
         if self.template_store is None:
-            output_store = self.convert_store()
+            self.convert_store()
         else:
-            output_store = self.merge_stores()
+            self.merge_stores()
 
-        if output_store.isempty():
+        if self.target_store.isempty():
             return 0
 
-        output_store.serialize(self.output_file)
+        self.target_store.serialize(self.output_file)
         return 1
 
 
