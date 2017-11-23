@@ -87,20 +87,25 @@ class ical2po(object):
         self.target_store.removeduplicates(self.duplicate_style)
         return self.target_store
 
+    def run(self):
+        """Run the converter."""
+        if self.template_store is None:
+            output_store = self.convert_store()
+        else:
+            output_store = self.merge_stores()
+
+        if output_store.isempty():
+            return 0
+
+        output_store.serialize(self.output_file)
+        return 1
+
 
 def run_converter(input_file, output_file, template_file=None, pot=False,
                   duplicatestyle="msgctxt"):
     """Wrapper around converter."""
-    convertor = ical2po(input_file, output_file, template_file,
-                        blank_msgstr=pot, duplicate_style=duplicatestyle)
-    if template_file is None:
-        output_store = convertor.convert_store()
-    else:
-        output_store = convertor.merge_stores()
-    if output_store.isempty():
-        return 0
-    output_store.serialize(output_file)
-    return 1
+    return ical2po(input_file, output_file, template_file, blank_msgstr=pot,
+                   duplicate_style=duplicatestyle).run()
 
 
 formats = {
