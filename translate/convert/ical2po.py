@@ -41,6 +41,7 @@ class ical2po(object):
         self.duplicate_style = duplicate_style
 
         self.source_store = self.SourceStoreClass(input_file)
+        self.target_store = self.TargetStoreClass()
         self.template_store = None
 
         if template_file is not None:
@@ -57,19 +58,17 @@ class ical2po(object):
 
     def convert_store(self):
         """Convert a single source format file to a target format file."""
-        target_store = self.TargetStoreClass()
-        output_header = target_store.header()
+        output_header = self.target_store.header()
         output_header.addnote("extracted from %s" % self.source_store.filename, "developer")
 
         for source_unit in self.source_store.units:
-            target_store.addunit(self.convert_unit(source_unit))
-        target_store.removeduplicates(self.duplicate_style)
-        return target_store
+            self.target_store.addunit(self.convert_unit(source_unit))
+        self.target_store.removeduplicates(self.duplicate_style)
+        return self.target_store
 
     def merge_stores(self):
         """Convert two source format files to a target format file."""
-        target_store = self.TargetStoreClass()
-        output_header = target_store.header()
+        output_header = self.target_store.header()
         output_header.addnote("extracted from %s, %s" % (self.template_store.filename, self.source_store.filename), "developer")
 
         self.source_store.makeindex()
@@ -83,9 +82,9 @@ class ical2po(object):
             if add_translation:
                 source_unit = self.source_store.locationindex[template_unit_name]
                 target_unit.target = source_unit.source
-            target_store.addunit(target_unit)
-        target_store.removeduplicates(self.duplicate_style)
-        return target_store
+            self.target_store.addunit(target_unit)
+        self.target_store.removeduplicates(self.duplicate_style)
+        return self.target_store
 
 
 def run_converter(input_file, output_file, template_file=None, pot=False,
