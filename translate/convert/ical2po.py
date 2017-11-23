@@ -34,6 +34,10 @@ class ical2po(object):
     TargetStoreClass = po.pofile
     TargetUnitClass = po.pounit
 
+    def __init__(self, input_file):
+        """Initialize the converter."""
+        self.source_store = self.SourceStoreClass(input_file)
+
     def convert_unit(self, unit):
         """Convert a source format unit to a target format unit."""
         target_unit = self.TargetUnitClass(encoding="UTF-8")
@@ -43,36 +47,35 @@ class ical2po(object):
         target_unit.target = ""
         return target_unit
 
-    def convert_store(self, input_file, duplicatestyle="msgctxt"):
+    def convert_store(self, duplicatestyle="msgctxt"):
         """Convert a single source format file to a target format file."""
-        source_store = self.SourceStoreClass(input_file)
         target_store = self.TargetStoreClass()
         output_header = target_store.header()
-        output_header.addnote("extracted from %s" % source_store.filename, "developer")
+        output_header.addnote("extracted from %s" % self.source_store.filename, "developer")
 
-        for source_unit in source_store.units:
+        for source_unit in self.source_store.units:
             target_store.addunit(self.convert_unit(source_unit))
         target_store.removeduplicates(duplicatestyle)
         return target_store
 
-    def merge_stores(self, template_file, input_file, blankmsgstr=False,
+    def merge_stores(self, template_file, blankmsgstr=False,
                      duplicatestyle="msgctxt"):
         """Convert two source format files to a target format file."""
         template_store = self.SourceStoreClass(template_file)
-        source_store = self.SourceStoreClass(input_file)
         target_store = self.TargetStoreClass()
         output_header = target_store.header()
-        output_header.addnote("extracted from %s, %s" % (template_store.filename, source_store.filename), "developer")
+        output_header.addnote("extracted from %s, %s" % (template_store.filename, self.source_store.filename), "developer")
 
-        source_store.makeindex()
+        self.source_store.makeindex()
         for template_unit in template_store.units:
             target_unit = self.convert_unit(template_unit)
 
             template_unit_name = "".join(template_unit.getlocations())
-            add_translation = (not blankmsgstr and
-                               template_unit_name in source_store.locationindex)
+            add_translation = (
+                not blank_msgstr and
+                template_unit_name in self.source_store.locationindex)
             if add_translation:
-                source_unit = source_store.locationindex[template_unit_name]
+                source_unit = self.source_store.locationindex[template_unit_name]
                 target_unit.target = source_unit.source
             target_store.addunit(target_unit)
         target_store.removeduplicates(duplicatestyle)
@@ -82,12 +85,11 @@ class ical2po(object):
 def run_converter(input_file, output_file, template_file=None, pot=False,
                   duplicatestyle="msgctxt"):
     """Wrapper around converter."""
-    convertor = ical2po()
+    convertor = ical2po(input_file)
     if template_file is None:
-        output_store = convertor.convert_store(input_file, duplicatestyle=duplicatestyle)
+        output_store = convertor.convert_store(duplicatestyle=duplicatestyle)
     else:
-        output_store = convertor.merge_stores(template_file, input_file,
-                                              blankmsgstr=pot,
+        output_store = convertor.merge_stores(template_file, blankmsgstr=pot,
                                               duplicatestyle=duplicatestyle)
     if output_store.isempty():
         return 0
