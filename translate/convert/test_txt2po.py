@@ -14,7 +14,7 @@ class BaseTxt2POTester(object):
         output_file = wStringIO.StringIO()
         convertor = self.ConverterClass(inputfile, output_file,
                                         flavour=self.Flavour)
-        convertor.run()
+        assert convertor.run() == 1
         return convertor.target_store
 
     def _count_elements(self, po_file):
