@@ -166,6 +166,43 @@ eggs: spam
         assert yaml_file.units[2].source == "spam"
         assert yaml_file.units[2].target == "spam"
 
+    def test_convert_completion_below_threshold(self):
+        """Check no conversion if input completion is below threshold."""
+        input_source = """
+#: key
+msgid "Hello, World!"
+msgstr ""
+"""
+        template_source = 'key: "Hello, World!"'
+        expected_output = ""
+        input_file = wStringIO.StringIO(input_source)
+        output_file = wStringIO.StringIO()
+        template_file = wStringIO.StringIO(template_source)
+        # Input completion is 0% so with a 70% threshold it should not output.
+        result = po2yaml.run_converter(input_file, output_file, template_file,
+                                       outputthreshold=70)
+        assert result == 0
+        assert output_file.getvalue().decode('utf-8') == expected_output
+
+    def test_convert_completion_above_threshold(self):
+        """Check no conversion if input completion is above threshold."""
+        input_source = """
+#: key
+msgid "Hello, World!"
+msgstr "Ola mundo!"
+"""
+        template_source = 'key: "Hello, World!"'
+        expected_output = '''key: Ola mundo!
+'''
+        input_file = wStringIO.StringIO(input_source)
+        output_file = wStringIO.StringIO()
+        template_file = wStringIO.StringIO(template_source)
+        # Input completion is 100% so with a 70% threshold it should output.
+        result = po2yaml.run_converter(input_file, output_file, template_file,
+                                       outputthreshold=70)
+        assert result == 1
+        assert output_file.getvalue().decode('utf-8') == expected_output
+
 
 class TestPO2YAMLCommand(test_convert.TestConvertCommand, TestPO2YAML):
     """Tests running actual po2yaml commands on files"""
