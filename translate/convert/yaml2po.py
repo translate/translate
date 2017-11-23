@@ -74,12 +74,12 @@ class yaml2po(object):
         self.source_store.makeindex()
         for template_unit in self.template_store.units:
             target_unit = self.convert_unit(template_unit)
-            self.target_store.addunit(target_unit)
 
             for location in target_unit.getlocations():
                 if location in self.source_store.id_index:
                     source_unit = self.source_store.id_index[location]
                     target_unit.target = source_unit.target
+            self.target_store.addunit(target_unit)
 
     def run(self):
         """Run the converter."""
