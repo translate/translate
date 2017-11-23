@@ -20,6 +20,16 @@ class BaseTxt2POTester(object):
 
 class TestTxt2PO(BaseTxt2POTester):
 
+    def test_convert_empty(self):
+        """Check converting empty file returns no output."""
+        input_file = wStringIO.StringIO('')
+        output_file = wStringIO.StringIO()
+        template_file = None
+        converter = self.ConverterClass(input_file, output_file)
+        assert converter.run() == 0
+        assert converter.target_store.isempty()
+        assert output_file.getvalue().decode('utf-8') == ''
+
     def test_simple(self):
         """test the most basic txt conversion"""
         txtsource = "A simple string"
@@ -62,6 +72,16 @@ helped to bridge the digital divide to a limited extent.'''
 class TestDoku2po(BaseTxt2POTester):
 
     Flavour = "dokuwiki"
+
+    def test_convert_empty(self):
+        """Check converting empty file returns no output."""
+        input_file = wStringIO.StringIO('')
+        output_file = wStringIO.StringIO()
+        template_file = None
+        converter = self.ConverterClass(input_file, output_file)
+        assert converter.run() == 0
+        assert converter.target_store.isempty()
+        assert output_file.getvalue().decode('utf-8') == ''
 
     def test_basic(self):
         """Tests that we can convert some basic things."""
