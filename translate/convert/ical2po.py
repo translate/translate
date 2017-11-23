@@ -34,13 +34,17 @@ class ical2po(object):
     TargetStoreClass = po.pofile
     TargetUnitClass = po.pounit
 
-    def __init__(self, input_file, blank_msgstr=False,
+    def __init__(self, input_file, template_file=None, blank_msgstr=False,
                  duplicate_style="msgctxt"):
         """Initialize the converter."""
         self.blank_msgstr = blank_msgstr
         self.duplicate_style = duplicate_style
 
         self.source_store = self.SourceStoreClass(input_file)
+        self.template_store = None
+
+        if template_file is not None:
+            self.template_store = self.SourceStoreClass(template_file)
 
     def convert_unit(self, unit):
         """Convert a source format unit to a target format unit."""
@@ -62,15 +66,14 @@ class ical2po(object):
         target_store.removeduplicates(self.duplicate_style)
         return target_store
 
-    def merge_stores(self, template_file):
+    def merge_stores(self):
         """Convert two source format files to a target format file."""
-        template_store = self.SourceStoreClass(template_file)
         target_store = self.TargetStoreClass()
         output_header = target_store.header()
-        output_header.addnote("extracted from %s, %s" % (template_store.filename, self.source_store.filename), "developer")
+        output_header.addnote("extracted from %s, %s" % (self.template_store.filename, self.source_store.filename), "developer")
 
         self.source_store.makeindex()
-        for template_unit in template_store.units:
+        for template_unit in self.template_store.units:
             target_unit = self.convert_unit(template_unit)
 
             template_unit_name = "".join(template_unit.getlocations())
@@ -88,12 +91,12 @@ class ical2po(object):
 def run_converter(input_file, output_file, template_file=None, pot=False,
                   duplicatestyle="msgctxt"):
     """Wrapper around converter."""
-    convertor = ical2po(input_file, blank_msgstr=pot,
+    convertor = ical2po(input_file, template_file, blank_msgstr=pot,
                         duplicate_style=duplicatestyle)
     if template_file is None:
         output_store = convertor.convert_store()
     else:
-        output_store = convertor.merge_stores(template_file)
+        output_store = convertor.merge_stores()
     if output_store.isempty():
         return 0
     output_store.serialize(output_file)
