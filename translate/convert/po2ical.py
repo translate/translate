@@ -17,7 +17,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, see <http://www.gnu.org/licenses/>.
 
-"""Convert Gettext PO localization files to iCal files.
+"""Convert Gettext PO localization files to iCalendar files.
 
 See: http://docs.translatehouse.org/projects/translate-toolkit/en/latest/commands/ical2po.html
 for examples and usage instructions.
@@ -27,14 +27,21 @@ from translate.convert import convert
 from translate.storage import ical, po
 
 
-class reical(object):
+class po2ical(object):
+    """Convert a PO file and a template iCalendar file to a iCalendar file."""
 
     def __init__(self, templatefile, inputstore):
+        """Initialize the converter."""
         self.templatefile = templatefile
         self.templatestore = ical.icalfile(templatefile)
         self.inputstore = inputstore
 
     def convertstore(self, includefuzzy=False):
+        """Convert a source file to a target file using a template file.
+
+        Source file is in source format, while target and template files use
+        target format.
+        """
         self.includefuzzy = includefuzzy
         self.inputstore.makeindex()
         for unit in self.templatestore.units:
@@ -52,6 +59,7 @@ class reical(object):
 
 def convertical(inputfile, outputfile, templatefile, includefuzzy=False,
                 outputthreshold=None):
+    """Wrapper around converter."""
     inputstore = po.pofile(inputfile)
 
     if not convert.should_output_store(inputstore, outputthreshold):
@@ -60,15 +68,20 @@ def convertical(inputfile, outputfile, templatefile, includefuzzy=False,
     if templatefile is None:
         raise ValueError("must have template file for iCal files")
     else:
-        convertor = reical(templatefile, inputstore)
+        convertor = po2ical(templatefile, inputstore)
     outputstring = convertor.convertstore(includefuzzy)
     outputfile.write(outputstring)
     return 1
 
 
+formats = {
+    ("po", "ics"): ("ics", convertical)
+}
+
+
 def main(argv=None):
-    formats = {("po", "ics"): ("ics", convertical)}
-    parser = convert.ConvertOptionParser(formats, usetemplates=True, description=__doc__)
+    parser = convert.ConvertOptionParser(formats, usetemplates=True,
+                                         description=__doc__)
     parser.add_threshold_option()
     parser.add_fuzzy_option()
     parser.run(argv)
