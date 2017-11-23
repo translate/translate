@@ -34,8 +34,10 @@ class ical2po(object):
     TargetStoreClass = po.pofile
     TargetUnitClass = po.pounit
 
-    def __init__(self, input_file, duplicate_style="msgctxt"):
+    def __init__(self, input_file, blank_msgstr=False,
+                 duplicate_style="msgctxt"):
         """Initialize the converter."""
+        self.blank_msgstr = blank_msgstr
         self.duplicate_style = duplicate_style
 
         self.source_store = self.SourceStoreClass(input_file)
@@ -60,7 +62,7 @@ class ical2po(object):
         target_store.removeduplicates(self.duplicate_style)
         return target_store
 
-    def merge_stores(self, template_file, blankmsgstr=False):
+    def merge_stores(self, template_file):
         """Convert two source format files to a target format file."""
         template_store = self.SourceStoreClass(template_file)
         target_store = self.TargetStoreClass()
@@ -73,7 +75,7 @@ class ical2po(object):
 
             template_unit_name = "".join(template_unit.getlocations())
             add_translation = (
-                not blank_msgstr and
+                not self.blank_msgstr and
                 template_unit_name in self.source_store.locationindex)
             if add_translation:
                 source_unit = self.source_store.locationindex[template_unit_name]
@@ -86,11 +88,12 @@ class ical2po(object):
 def run_converter(input_file, output_file, template_file=None, pot=False,
                   duplicatestyle="msgctxt"):
     """Wrapper around converter."""
-    convertor = ical2po(input_file, duplicate_style=duplicatestyle)
+    convertor = ical2po(input_file, blank_msgstr=pot,
+                        duplicate_style=duplicatestyle)
     if template_file is None:
         output_store = convertor.convert_store()
     else:
-        output_store = convertor.merge_stores(template_file, blankmsgstr=pot)
+        output_store = convertor.merge_stores(template_file)
     if output_store.isempty():
         return 0
     output_store.serialize(output_file)
