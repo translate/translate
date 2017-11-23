@@ -30,6 +30,15 @@ from translate.storage import ical, po
 class ical2po(object):
     """Convert one or two iCalendar files to a single PO file."""
 
+    def convert_unit(self, unit):
+        """Convert a source format unit to a target format unit."""
+        target_unit = po.pounit(encoding="UTF-8")
+        target_unit.addlocation("".join(unit.getlocations()))
+        target_unit.addnote(unit.getnotes("developer"), "developer")
+        target_unit.source = unit.source
+        target_unit.target = ""
+        return target_unit
+
     def convert_store(self, source_store, duplicatestyle="msgctxt"):
         """Convert a single source format file to a target format file."""
         target_store = po.pofile()
@@ -61,15 +70,6 @@ class ical2po(object):
             target_store.addunit(target_unit)
         target_store.removeduplicates(duplicatestyle)
         return target_store
-
-    def convert_unit(self, unit):
-        """Convert a source format unit to a target format unit."""
-        target_unit = po.pounit(encoding="UTF-8")
-        target_unit.addlocation("".join(unit.getlocations()))
-        target_unit.addnote(unit.getnotes("developer"), "developer")
-        target_unit.source = unit.source
-        target_unit.target = ""
-        return target_unit
 
 
 def run_converter(input_file, output_file, template_file, pot=False,
