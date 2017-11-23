@@ -72,6 +72,7 @@ msgstr ""
 '''
         poresult = self._convert(txtsource)
         assert str(poresult.units[1]) == poexpected
+        assert "extracted from " in str(poresult.header())
 
     def test_multiple_units(self):
         """test that we can handle txt with multiple units"""
