@@ -30,14 +30,17 @@ from translate.storage import po, txt
 class txt2po(object):
     """Convert one plain text (.txt) file to a single PO file."""
 
+    SourceStoreClass = txt.TxtFile
+
     def __init__(self, input_file, output_file, duplicate_style="msgctxt",
                  encoding="utf-8", flavour=None):
         """Initialize the converter."""
         self.duplicate_style = duplicate_style
 
         self.output_file = output_file
-        self.source_store = txt.TxtFile(input_file, encoding=encoding,
-                                        flavour=flavour)
+        self.source_store = self.SourceStoreClass(input_file,
+                                                  encoding=encoding,
+                                                  flavour=flavour)
 
     def convertstore(self):
         """Convert a single source format file to a target format file."""
