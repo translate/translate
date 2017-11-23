@@ -14,7 +14,7 @@ class BaseTxt2POTester(object):
         output_file = wStringIO.StringIO()
         convertor = self.ConverterClass(inputfile, output_file,
                                         flavour=self.Flavour)
-        convertor.convert_store()
+        convertor.run()
         return convertor.target_store
 
 
