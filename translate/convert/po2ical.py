@@ -70,18 +70,20 @@ class po2ical(object):
                     template_unit.target = template_unit.source
         self.output_file.write(bytes(self.template_store))
 
+    def run(self):
+        """Run the converter."""
+        if not self.should_output_store:
+            return False
+
+        self.merge_stores()
+        return 1
+
 
 def run_converter(inputfile, outputfile, templatefile=None, includefuzzy=False,
                   outputthreshold=None):
     """Wrapper around converter."""
-    convertor = po2ical(inputfile, outputfile, templatefile, includefuzzy,
-                        outputthreshold)
-
-    if not convertor.should_output_store:
-        return False
-
-    convertor.merge_stores()
-    return 1
+    return po2ical(inputfile, outputfile, templatefile, includefuzzy,
+                   outputthreshold).run()
 
 
 formats = {
