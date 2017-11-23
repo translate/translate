@@ -17,7 +17,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, see <http://www.gnu.org/licenses/>.
 
-"""Convert iCal files to Gettext PO localization files.
+"""Convert iCalendar files to Gettext PO localization files.
 
 See: http://docs.translatehouse.org/projects/translate-toolkit/en/latest/commands/ical2po.html
 for examples and usage instructions.
@@ -28,10 +28,10 @@ from translate.storage import ical, po
 
 
 class ical2po(object):
-    """convert a iCal file to a .po file for handling the translation..."""
+    """Convert one or two iCalendar files to a single PO file."""
 
     def convert_store(self, input_store, duplicatestyle="msgctxt"):
-        """converts a iCal file to a .po file..."""
+        """Convert a single source format file to a target format file."""
         output_store = po.pofile()
         output_header = output_store.header()
         output_header.addnote("extracted from %s" % input_store.filename, "developer")
@@ -42,7 +42,7 @@ class ical2po(object):
         return output_store
 
     def merge_store(self, template_store, input_store, blankmsgstr=False, duplicatestyle="msgctxt"):
-        """converts two iCal files to a .po file..."""
+        """Convert two source format files to a target format file."""
         output_store = po.pofile()
         output_header = output_store.header()
         output_header.addnote("extracted from %s, %s" % (template_store.filename, input_store.filename), "developer")
@@ -62,9 +62,7 @@ class ical2po(object):
         return output_store
 
     def convert_unit(self, input_unit, commenttype):
-        """Converts a .ini unit to a .po unit. Returns None if empty or not for
-        translation.
-        """
+        """Convert a source format unit to a target format unit."""
         output_unit = po.pounit(encoding="UTF-8")
         output_unit.addlocation("".join(input_unit.getlocations()))
         output_unit.addnote(input_unit.getnotes("developer"), "developer")
@@ -74,9 +72,7 @@ class ical2po(object):
 
 
 def convertical(input_file, output_file, template_file, pot=False, duplicatestyle="msgctxt"):
-    """Reads in *input_file* using iCal, converts using :class:`ical2po`,
-    writes to *output_file*.
-    """
+    """Wrapper around converter."""
     input_store = ical.icalfile(input_file)
     convertor = ical2po()
     if template_file is None:
