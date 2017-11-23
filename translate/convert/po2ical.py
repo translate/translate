@@ -30,6 +30,7 @@ from translate.storage import ical, po
 class po2ical(object):
     """Convert a PO file and a template iCalendar file to a iCalendar file."""
 
+    SourceStoreClass = po.pofile
     TargetStoreClass = ical.icalfile
     MissingTemplateMessage = "A template iCalendar file must be provided."
 
@@ -39,7 +40,7 @@ class po2ical(object):
         if template_file is None:
             raise ValueError(self.MissingTemplateMessage)
 
-        self.source_store = po.pofile(input_file)
+        self.source_store = self.SourceStoreClass(input_file)
 
         self.should_output_store = convert.should_output_store(
             self.source_store, output_threshold
