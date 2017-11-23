@@ -23,16 +23,19 @@ See: http://docs.translatehouse.org/projects/translate-toolkit/en/latest/command
 for examples and usage instructions.
 """
 
+from translate.convert import convert
 from translate.storage import po, txt
 
 
 class txt2po(object):
+    """Convert one plain text (.txt) file to a single PO file."""
 
     def __init__(self, duplicatestyle="msgctxt"):
+        """Initialize the converter."""
         self.duplicatestyle = duplicatestyle
 
     def convertstore(self, thetxtfile):
-        """converts a file to .po format"""
+        """Convert a single source format file to a target format file."""
         thetargetfile = po.pofile()
         targetheader = thetargetfile.header()
         targetheader.addnote("extracted from %s" % thetxtfile.filename,
@@ -45,11 +48,9 @@ class txt2po(object):
         return thetargetfile
 
 
-def converttxt(inputfile, outputfile, templates, duplicatestyle="msgctxt",
-               encoding="utf-8", flavour=None):
-    """reads in stdin using fromfileclass, converts using convertorclass,
-    writes to stdout
-    """
+def run_converter(inputfile, outputfile, templates, duplicatestyle="msgctxt",
+                  encoding="utf-8", flavour=None):
+    """Wrapper around converter."""
     inputstore = txt.TxtFile(inputfile, encoding=encoding, flavour=flavour)
     convertor = txt2po(duplicatestyle=duplicatestyle)
     outputstore = convertor.convertstore(inputstore)
@@ -59,9 +60,13 @@ def converttxt(inputfile, outputfile, templates, duplicatestyle="msgctxt",
     return 1
 
 
+formats = {
+    "txt": ("po", run_converter),
+    "*": ("po", run_converter),
+}
+
+
 def main(argv=None):
-    from translate.convert import convert
-    formats = {"txt": ("po", converttxt), "*": ("po", converttxt)}
     parser = convert.ConvertOptionParser(formats, usepots=True,
                                          description=__doc__)
     parser.add_option("", "--encoding", dest="encoding", default='utf-8',
@@ -71,7 +76,8 @@ def main(argv=None):
     parser.add_option("", "--flavour", dest="flavour", default="plain",
                       type="choice",
                       choices=["plain", "dokuwiki", "mediawiki"],
-                      help="The flavour of text file: plain (default), dokuwiki, mediawiki",
+                      help=("The flavour of text file: plain (default), "
+                            "dokuwiki, mediawiki"),
                       metavar="FLAVOUR")
     parser.passthrough.append("flavour")
     parser.add_duplicates_option()
