@@ -68,7 +68,6 @@ class po2ical(object):
                         template_unit.target = source_unit.target
                 else:
                     template_unit.target = template_unit.source
-        self.output_file.write(bytes(self.template_store))
 
     def run(self):
         """Run the converter."""
@@ -76,6 +75,7 @@ class po2ical(object):
             return False
 
         self.merge_stores()
+        self.template_store.serialize(self.output_file)
         return 1
 
 
