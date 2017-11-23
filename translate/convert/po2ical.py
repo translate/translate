@@ -30,10 +30,12 @@ from translate.storage import ical, po
 class po2ical(object):
     """Convert a PO file and a template iCalendar file to a iCalendar file."""
 
+    TargetStoreClass = ical.icalfile
+
     def __init__(self, templatefile, inputstore):
         """Initialize the converter."""
         self.templatefile = templatefile
-        self.templatestore = ical.icalfile(templatefile)
+        self.templatestore = self.TargetStoreClass(templatefile)
         self.inputstore = inputstore
 
     def convertstore(self, includefuzzy=False):
