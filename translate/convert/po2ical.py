@@ -62,15 +62,15 @@ class po2ical(object):
 def convertical(inputfile, outputfile, templatefile, includefuzzy=False,
                 outputthreshold=None):
     """Wrapper around converter."""
+    if templatefile is None:
+        raise ValueError("must have template file for iCal files")
+
     inputstore = po.pofile(inputfile)
 
     if not convert.should_output_store(inputstore, outputthreshold):
         return False
 
-    if templatefile is None:
-        raise ValueError("must have template file for iCal files")
-    else:
-        convertor = po2ical(templatefile, inputstore, includefuzzy)
+    convertor = po2ical(templatefile, inputstore, includefuzzy)
     outputstring = convertor.convertstore()
     outputfile.write(outputstring)
     return 1
