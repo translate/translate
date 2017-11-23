@@ -51,13 +51,14 @@ class po2ical(object):
             self.output_file = output_file
             self.template_store = self.TargetStoreClass(template_file)
 
+            self.source_store.makeindex()
+
     def merge_stores(self):
         """Convert a source file to a target file using a template file.
 
         Source file is in source format, while target and template files use
         target format.
         """
-        self.source_store.makeindex()
         for template_unit in self.template_store.units:
             for location in template_unit.getlocations():
                 if location in self.source_store.locationindex:
