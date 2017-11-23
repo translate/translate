@@ -36,6 +36,7 @@ class po2txt(object):
     """
 
     def __init__(self, wrap=None):
+        """Initialize the converter."""
         self.wrap = wrap
 
     def wrapmessage(self, message):
@@ -46,7 +47,7 @@ class po2txt(object):
                           for line in message.split("\n")])
 
     def convertstore(self, inputstore, includefuzzy):
-        """converts a file to txt format"""
+        """Convert a source file to a target file."""
         txtresult = ""
         for unit in inputstore.units:
             if not unit.istranslatable():
@@ -58,7 +59,11 @@ class po2txt(object):
         return txtresult.rstrip()
 
     def mergestore(self, inputstore, templatetext, includefuzzy):
-        """converts a file to txt format"""
+        """Convert a source file to a target file using a template file.
+
+        Source file is in source format, while target and template files use
+        target format.
+        """
         txtresult = templatetext
         # TODO: make a list of blocks of text and translate them individually
         # rather than using replace
@@ -75,7 +80,7 @@ class po2txt(object):
 
 def converttxt(inputfile, outputfile, templatefile, wrap=None,
                includefuzzy=False, encoding='utf-8', outputthreshold=None):
-    """reads in stdin using fromfileclass, converts using convertorclass, writes to stdout"""
+    """Wrapper around converter."""
     inputstore = factory.getobject(inputfile)
 
     if not convert.should_output_store(inputstore, outputthreshold):
@@ -93,16 +98,19 @@ def converttxt(inputfile, outputfile, templatefile, wrap=None,
     return True
 
 
+formats = {
+    ("po", "txt"): ("txt", converttxt),
+    ("po"): ("txt", converttxt),
+    ("xlf", "txt"): ("txt", converttxt),
+    ("xlf"): ("txt", converttxt),
+    ("xliff", "txt"): ("txt", converttxt),
+    ("xliff"): ("txt", converttxt),
+}
+
+
 def main(argv=None):
-    formats = {
-        ("po", "txt"): ("txt", converttxt),
-        ("po"): ("txt", converttxt),
-        ("xlf", "txt"): ("txt", converttxt),
-        ("xlf"): ("txt", converttxt),
-        ("xliff", "txt"): ("txt", converttxt),
-        ("xliff"): ("txt", converttxt),
-    }
-    parser = convert.ConvertOptionParser(formats, usetemplates=True, description=__doc__)
+    parser = convert.ConvertOptionParser(formats, usetemplates=True,
+                                         description=__doc__)
     parser.add_option(
         "", "--encoding", dest="encoding", default='utf-8', type="string",
         help="The encoding of the template file (default: UTF-8)")
