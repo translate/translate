@@ -32,25 +32,25 @@ class po2ical(object):
 
     TargetStoreClass = ical.icalfile
 
-    def __init__(self, templatefile, inputstore):
+    def __init__(self, templatefile, inputstore, include_fuzzy=False):
         """Initialize the converter."""
+        self.include_fuzzy = include_fuzzy
         self.templatefile = templatefile
         self.templatestore = self.TargetStoreClass(templatefile)
         self.inputstore = inputstore
 
-    def convertstore(self, includefuzzy=False):
+    def convertstore(self):
         """Convert a source file to a target file using a template file.
 
         Source file is in source format, while target and template files use
         target format.
         """
-        self.includefuzzy = includefuzzy
         self.inputstore.makeindex()
         for unit in self.templatestore.units:
             for location in unit.getlocations():
                 if location in self.inputstore.locationindex:
                     inputunit = self.inputstore.locationindex[location]
-                    if inputunit.isfuzzy() and not self.includefuzzy:
+                    if inputunit.isfuzzy() and not self.include_fuzzy:
                         unit.target = unit.source
                     else:
                         unit.target = inputunit.target
@@ -70,8 +70,8 @@ def convertical(inputfile, outputfile, templatefile, includefuzzy=False,
     if templatefile is None:
         raise ValueError("must have template file for iCal files")
     else:
-        convertor = po2ical(templatefile, inputstore)
-    outputstring = convertor.convertstore(includefuzzy)
+        convertor = po2ical(templatefile, inputstore, includefuzzy)
+    outputstring = convertor.convertstore()
     outputfile.write(outputstring)
     return 1
 
