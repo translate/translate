@@ -49,8 +49,6 @@ class yaml2po(object):
         if template_file is not None:
             self.template_store = self.SourceStoreClass(template_file)
 
-        self.source_store.makeindex()
-
     def convert_unit(self, unit):
         """Convert a source format unit to a target format unit."""
         target_unit = self.TargetUnitClass(encoding="UTF-8")
@@ -74,6 +72,7 @@ class yaml2po(object):
                                (self.template_store.filename,
                                 self.source_store.filename))
 
+        self.source_store.makeindex()
         for template_unit in self.template_store.units:
             target_unit = self.convert_unit(template_unit)
             self.target_store.addunit(target_unit)
