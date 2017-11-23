@@ -36,15 +36,17 @@ class txt2po(object):
         self.duplicate_style = duplicate_style
 
         self.output_file = output_file
+        self.source_store = txt.TxtFile(input_file, encoding=encoding,
+                                        flavour=flavour)
 
-    def convertstore(self, thetxtfile):
+    def convertstore(self):
         """Convert a single source format file to a target format file."""
         self.target_store = po.pofile()
         targetheader = self.target_store.header()
-        targetheader.addnote("extracted from %s" % thetxtfile.filename,
+        targetheader.addnote("extracted from %s" % self.source_store.filename,
                              "developer")
 
-        for txtunit in thetxtfile.units:
+        for txtunit in self.source_store.units:
             newunit = self.target_store.addsourceunit(txtunit.source)
             newunit.addlocations(txtunit.getlocations())
         self.target_store.removeduplicates(self.duplicate_style)
@@ -58,10 +60,9 @@ class txt2po(object):
 def run_converter(inputfile, outputfile, templates, duplicatestyle="msgctxt",
                   encoding="utf-8", flavour=None):
     """Wrapper around converter."""
-    inputstore = txt.TxtFile(inputfile, encoding=encoding, flavour=flavour)
     convertor = txt2po(inputfile, outputfile, duplicate_style=duplicatestyle,
                        encoding=encoding, flavour=flavour)
-    return convertor.convertstore(inputstore)
+    return convertor.convertstore()
 
 
 formats = {
