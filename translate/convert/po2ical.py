@@ -33,12 +33,14 @@ class po2ical(object):
     TargetStoreClass = ical.icalfile
     MissingTemplateMessage = "A template iCalendar file must be provided."
 
-    def __init__(self, template_file, source_store, include_fuzzy=False):
+    def __init__(self, output_file, template_file, source_store,
+                 include_fuzzy=False):
         """Initialize the converter."""
         if template_file is None:
             raise ValueError(self.MissingTemplateMessage)
 
         self.include_fuzzy = include_fuzzy
+        self.output_file = output_file
         self.template_store = self.TargetStoreClass(template_file)
         self.source_store = source_store
 
@@ -59,7 +61,7 @@ class po2ical(object):
                         unit.target = inputunit.target
                 else:
                     unit.target = unit.source
-        return bytes(self.template_store)
+        self.output_file.write(bytes(self.template_store))
 
 
 def run_converter(inputfile, outputfile, templatefile, includefuzzy=False,
@@ -70,9 +72,8 @@ def run_converter(inputfile, outputfile, templatefile, includefuzzy=False,
     if not convert.should_output_store(inputstore, outputthreshold):
         return False
 
-    convertor = po2ical(templatefile, inputstore, includefuzzy)
-    outputstring = convertor.merge_stores()
-    outputfile.write(outputstring)
+    convertor = po2ical(outputfile, templatefile, inputstore, includefuzzy)
+    convertor.merge_stores()
     return 1
 
 
