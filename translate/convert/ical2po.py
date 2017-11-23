@@ -56,8 +56,7 @@ class ical2po(object):
                                template_unit_name in input_store.locationindex)
             if add_translation:
                 translatedini = input_store.locationindex[template_unit_name]
-                translatedpo = self.convert_unit(translatedini, "translator")
-                origpo.target = translatedpo.source
+                origpo.target = translatedini.source
             output_store.addunit(origpo)
         output_store.removeduplicates(duplicatestyle)
         return output_store
