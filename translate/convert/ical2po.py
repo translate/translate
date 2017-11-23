@@ -36,8 +36,7 @@ class ical2po(object):
         output_header = output_store.header()
         output_header.addnote("extracted from %s" % input_store.filename, "developer")
         for input_unit in input_store.units:
-            output_unit = self.convert_unit(input_unit)
-            output_store.addunit(output_unit)
+            output_store.addunit(self.convert_unit(input_unit))
         output_store.removeduplicates(duplicatestyle)
         return output_store
 
