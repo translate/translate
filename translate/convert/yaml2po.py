@@ -63,8 +63,7 @@ class yaml2po(object):
         self.extraction_msg = "extracted from %s" % self.source_store.filename
 
         for source_unit in self.source_store.units:
-            target_unit = self.convert_unit(source_unit)
-            self.target_store.addunit(target_unit)
+            self.target_store.addunit(self.convert_unit(source_unit))
 
     def merge_stores(self):
         """Convert two source format files to a target format file."""
