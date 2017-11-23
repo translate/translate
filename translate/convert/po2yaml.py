@@ -66,7 +66,7 @@ class po2yaml(object):
         target_unit.addnote(unit.getnotes("developer"), "developer")
         return target_unit
 
-    def convert_store(self):
+    def merge_stores(self):
         """Convert a source file to a target file using a template file.
 
         Source file is in source format, while target and template files use
@@ -84,7 +84,7 @@ class po2yaml(object):
         if not self.should_output_store:
             return 0
 
-        self.convert_store()
+        self.merge_stores()
         self.target_store.serialize(self.output_file)
         return 1
 
