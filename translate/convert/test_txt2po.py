@@ -5,13 +5,15 @@ from translate.storage import txt
 
 class BaseTxt2POTester(object):
 
+    ConverterClass = txt2po.txt2po
     Flavour = None
 
     def _convert(self, txtsource, template=None):
         """Helper that converts format to PO without files."""
         inputfile = wStringIO.StringIO(txtsource)
         output_file = wStringIO.StringIO()
-        convertor = txt2po.txt2po(inputfile, output_file, flavour=self.Flavour)
+        convertor = self.ConverterClass(inputfile, output_file,
+                                        flavour=self.Flavour)
         convertor.convert_store()
         return convertor.target_store
 
