@@ -102,6 +102,21 @@ msgstr ""
 """
         assert expected_output in self._convert(input_source, template_source)
 
+    def test_merge_blank_msgstr(self):
+        """Check merging two files returns output without translations."""
+        input_source = """[section]
+key=valor
+"""
+        template_source = """[section]
+key=value
+"""
+        expected_output = """#: [section]key
+msgid "value"
+msgstr ""
+"""
+        assert expected_output in self._convert(input_source, template_source,
+                                                blank_msgstr=True)
+
 
 class TestIni2POCommand(test_convert.TestConvertCommand, TestIni2PO):
     """Tests running actual ini2po commands on files"""
