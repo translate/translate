@@ -66,7 +66,6 @@ class ini2po(object):
 
         for source_unit in self.source_store.units:
             self.target_store.addunit(self.convert_unit(source_unit))
-        self.target_store.removeduplicates(self.duplicate_style)
 
     def merge_stores(self):
         """Convert two source format files to a target format file."""
@@ -87,7 +86,6 @@ class ini2po(object):
                 source_unit = self.source_store.locationindex[template_unit_name]
                 target_unit.target = source_unit.source
             self.target_store.addunit(target_unit)
-        self.target_store.removeduplicates(self.duplicate_style)
 
     def run(self):
         """Run the converter."""
@@ -95,6 +93,8 @@ class ini2po(object):
             self.convert_store()
         else:
             self.merge_stores()
+
+        self.target_store.removeduplicates(self.duplicate_style)
 
         if self.target_store.isempty():
             return 0
