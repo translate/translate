@@ -1,3 +1,5 @@
+import pytest
+
 from translate.convert import test_convert, txt2po
 from translate.misc import wStringIO
 from translate.storage import txt
@@ -104,6 +106,14 @@ helped to bridge the digital divide to a limited extent.'''
         poresult = self._convert(txtsource)
         pounit = poresult.units[1]
         assert str(pounit.source) == txtexpected
+
+    def test_merge(self):
+        """Check converter doesn't merge."""
+        input_file = wStringIO.StringIO()
+        output_file = wStringIO.StringIO()
+        template_file = wStringIO.StringIO()
+        with pytest.raises(txt2po.ConverterCantMergeError):
+            self.ConverterClass(input_file, output_file, template_file).run()
 
 
 class TestDoku2po(BaseTxt2POTester):

@@ -27,6 +27,10 @@ from translate.convert import convert
 from translate.storage import po, txt
 
 
+class ConverterCantMergeError(Exception):
+    pass
+
+
 class txt2po(object):
     """Convert one plain text (.txt) file to a single PO file."""
 
@@ -45,6 +49,12 @@ class txt2po(object):
                                                   encoding=encoding,
                                                   flavour=flavour)
         self.target_store = self.TargetStoreClass()
+        self.template_store = None
+
+        if template_file is not None:
+            self.template_store = self.SourceStoreClass(template_file,
+                                                        encoding=encoding,
+                                                        flavour=flavour)
 
     def convert_store(self):
         """Convert a single source format file to a target format file."""
@@ -54,9 +64,16 @@ class txt2po(object):
             target_unit = self.target_store.addsourceunit(source_unit.source)
             target_unit.addlocations(source_unit.getlocations())
 
+    def merge_stores(self):
+        """Convert two source format files to a target format file."""
+        raise ConverterCantMergeError
+
     def run(self):
         """Run the converter."""
-        self.convert_store()
+        if self.template_store is None:
+            self.convert_store()
+        else:
+            self.merge_stores()
 
         if self.extraction_msg:
             self.target_store.header().addnote(self.extraction_msg,
