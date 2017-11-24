@@ -81,9 +81,6 @@ class ini2po(object):
 
     def convert_unit(self, input_unit, commenttype):
         """Convert a source format unit to a target format unit."""
-        if input_unit is None:
-            return None
-        # Escape unicode.
         output_unit = po.pounit(encoding="UTF-8")
         output_unit.addlocation("".join(input_unit.getlocations()))
         output_unit.source = input_unit.source
