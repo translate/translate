@@ -30,16 +30,16 @@ from translate.storage import ini, po
 class po2ini(object):
     """Convert a PO file and a template INI file to a INI file."""
 
-    def __init__(self, inputstore, templatefile=None, include_fuzzy=False,
+    def __init__(self, inputstore, template_file=None, include_fuzzy=False,
                  dialect="default"):
         """Initialize the converter."""
-        if templatefile is None:
+        if template_file is None:
             raise ValueError("must have template file for ini files")
 
         self.include_fuzzy = include_fuzzy
 
-        self.templatestore = ini.inifile(templatefile, dialect=dialect)
-        self.inputstore = inputstore
+        self.template_store = ini.inifile(template_file, dialect=dialect)
+        self.source_store = inputstore
 
     def merge_stores(self):
         """Convert a source file to a target file using a template file.
@@ -47,18 +47,18 @@ class po2ini(object):
         Source file is in source format, while target and template files use
         target format.
         """
-        self.inputstore.makeindex()
-        for unit in self.templatestore.units:
-            for location in unit.getlocations():
-                if location in self.inputstore.locationindex:
-                    inputunit = self.inputstore.locationindex[location]
-                    if inputunit.isfuzzy() and not self.include_fuzzy:
-                        unit.target = unit.source
+        self.source_store.makeindex()
+        for template_unit in self.template_store.units:
+            for location in template_unit.getlocations():
+                if location in self.source_store.locationindex:
+                    source_unit = self.source_store.locationindex[location]
+                    if source_unit.isfuzzy() and not self.include_fuzzy:
+                        template_unit.target = template_unit.source
                     else:
-                        unit.target = inputunit.target
+                        template_unit.target = source_unit.target
                 else:
-                    unit.target = unit.source
-        return bytes(self.templatestore)
+                    template_unit.target = template_unit.source
+        return bytes(self.template_store)
 
 
 def run_converter(inputfile, outputfile, templatefile=None, includefuzzy=False,
