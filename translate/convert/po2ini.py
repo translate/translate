@@ -33,7 +33,7 @@ class po2ini(object):
     MissingTemplateMessage = "A template INI file must be provided."
 
     def __init__(self, inputstore, template_file=None, include_fuzzy=False,
-                 dialect="default"):
+                 output_threshold=None, dialect="default"):
         """Initialize the converter."""
         if template_file is None:
             raise ValueError(self.MissingTemplateMessage)
@@ -70,7 +70,8 @@ def run_converter(inputfile, outputfile, templatefile=None, includefuzzy=False,
     if not convert.should_output_store(inputstore, outputthreshold):
         return 0
 
-    convertor = po2ini(inputstore, templatefile, includefuzzy, dialect)
+    convertor = po2ini(inputstore, templatefile, includefuzzy, outputthreshold,
+                       dialect)
     outputstring = convertor.merge_stores()
     outputfile.write(outputstring)
     return 1
