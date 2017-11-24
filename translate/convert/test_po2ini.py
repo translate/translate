@@ -22,8 +22,9 @@ class TestPO2Ini(object):
         template_file = None
         if format_template_source:
             template_file = wStringIO.StringIO(format_template_source)
-        result = po2ini.convertini(input_file, output_file, template_file,
-                                   includefuzzy=include_fuzzy, dialect=dialect)
+        result = po2ini.run_converter(input_file, output_file, template_file,
+                                      includefuzzy=include_fuzzy,
+                                      dialect=dialect)
         assert result == 1
         return output_file.getvalue()
 
@@ -166,8 +167,8 @@ prop=value
         output_file = wStringIO.StringIO()
         template_file = wStringIO.StringIO(template_source)
         # Input completion is 0% so with a 70% threshold it should not output.
-        result = po2ini.convertini(input_file, output_file, template_file,
-                                   outputthreshold=70)
+        result = po2ini.run_converter(input_file, output_file, template_file,
+                                      outputthreshold=70)
         assert result == 0
         assert output_file.getvalue() == expected_output
 
@@ -187,8 +188,8 @@ prop=waarde
         output_file = wStringIO.StringIO()
         template_file = wStringIO.StringIO(template_source)
         # Input completion is 100% so with a 70% threshold it should output.
-        result = po2ini.convertini(input_file, output_file, template_file,
-                                   outputthreshold=70)
+        result = po2ini.run_converter(input_file, output_file, template_file,
+                                      outputthreshold=70)
         assert result == 1
         assert output_file.getvalue() == expected_output
 

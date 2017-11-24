@@ -28,12 +28,19 @@ from translate.storage import ini, po
 
 
 class po2ini(object):
+    """Convert a PO file and a template INI file to a INI file."""
 
     def __init__(self, templatefile, inputstore, dialect="default"):
+        """Initialize the converter."""
         self.templatestore = ini.inifile(templatefile, dialect=dialect)
         self.inputstore = inputstore
 
-    def convertstore(self, includefuzzy=False):
+    def merge_stores(self, includefuzzy=False):
+        """Convert a source file to a target file using a template file.
+
+        Source file is in source format, while target and template files use
+        target format.
+        """
         self.includefuzzy = includefuzzy
         self.inputstore.makeindex()
         for unit in self.templatestore.units:
@@ -49,8 +56,9 @@ class po2ini(object):
         return bytes(self.templatestore)
 
 
-def convertini(inputfile, outputfile, templatefile, includefuzzy=False,
-               dialect="default", outputthreshold=None):
+def run_converter(inputfile, outputfile, templatefile, includefuzzy=False,
+                  dialect="default", outputthreshold=None):
+    """Wrapper around converter."""
     if templatefile is None:
         raise ValueError("must have template file for ini files")
 
@@ -59,19 +67,19 @@ def convertini(inputfile, outputfile, templatefile, includefuzzy=False,
         return 0
 
     convertor = po2ini(templatefile, inputstore, dialect)
-    outputstring = convertor.convertstore(includefuzzy)
+    outputstring = convertor.merge_stores(includefuzzy)
     outputfile.write(outputstring)
     return 1
 
 
 def convertisl(inputfile, outputfile, templatefile, includefuzzy=False,
                dialect="inno", outputthreshold=None):
-    convertini(inputfile, outputfile, templatefile, includefuzzy, dialect,
-               outputthreshold)
+    run_converter(inputfile, outputfile, templatefile, includefuzzy, dialect,
+                  outputthreshold)
 
 
 formats = {
-    ("po", "ini"): ("ini", convertini),
+    ("po", "ini"): ("ini", run_converter),
     ("po", "isl"): ("isl", convertisl),
 }
 
