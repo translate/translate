@@ -33,6 +33,9 @@ class po2ini(object):
     def __init__(self, inputstore, templatefile=None, include_fuzzy=False,
                  dialect="default"):
         """Initialize the converter."""
+        if templatefile is None:
+            raise ValueError("must have template file for ini files")
+
         self.include_fuzzy = include_fuzzy
 
         self.templatestore = ini.inifile(templatefile, dialect=dialect)
@@ -61,9 +64,6 @@ class po2ini(object):
 def run_converter(inputfile, outputfile, templatefile=None, includefuzzy=False,
                   dialect="default", outputthreshold=None):
     """Wrapper around converter."""
-    if templatefile is None:
-        raise ValueError("must have template file for ini files")
-
     inputstore = po.pofile(inputfile)
     if not convert.should_output_store(inputstore, outputthreshold):
         return 0
