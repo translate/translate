@@ -15,7 +15,7 @@ importorskip("iniparse")
 class TestPO2Ini(object):
 
     def _convert(self, po_input_source, format_template_source=None,
-                 dialect="default"):
+                 include_fuzzy=False, dialect="default"):
         """Helper that converts PO to format without files."""
         input_file = wStringIO.StringIO(po_input_source)
         output_file = wStringIO.StringIO()
@@ -23,7 +23,7 @@ class TestPO2Ini(object):
         if format_template_source:
             template_file = wStringIO.StringIO(format_template_source)
         result = po2ini.convertini(input_file, output_file, template_file,
-                                   dialect=dialect)
+                                   includefuzzy=include_fuzzy, dialect=dialect)
         assert result == 1
         return output_file.getvalue()
 
@@ -176,6 +176,40 @@ prop=waarde
                                    outputthreshold=70)
         assert result == 1
         assert output_file.getvalue() == expected_output
+
+    def test_no_fuzzy(self):
+        """Check that a simple fuzzy PO converts to a untranslated target."""
+        input_source = """#: [section]prop
+#, fuzzy
+msgid "Hello, World!"
+msgstr "Ola mundo!"
+"""
+        template_source = """[section]
+prop=Hello, World!
+"""
+        expected_output = """[section]
+prop=Hello, World!
+"""
+        output = self._convert(input_source, template_source,
+                               include_fuzzy=False)
+        assert output == expected_output
+
+    def test_allow_fuzzy(self):
+        """Check that a simple fuzzy PO converts to a translated target."""
+        input_source = """#: [section]prop
+#, fuzzy
+msgid "Hello, World!"
+msgstr "Ola mundo!"
+"""
+        template_source = """[section]
+prop=Hello, World!
+"""
+        expected_output = """[section]
+prop=Ola mundo!
+"""
+        output = self._convert(input_source, template_source,
+                               include_fuzzy=True)
+        assert output == expected_output
 
 
 class TestPO2IniCommand(test_convert.TestConvertCommand, TestPO2Ini):
