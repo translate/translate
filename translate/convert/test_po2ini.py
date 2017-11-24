@@ -134,8 +134,8 @@ prop  =  value%tvalue%n
         iniexpected = """[section]
 prop  =  ṽḁḽṻḝ%tṽḁḽṻḝ2%n
 """
-        inifile = self._convert(posource, initemplate, "inno").decode('utf-8')
-        assert inifile == iniexpected
+        inifile = self._convert(posource, initemplate, dialect="inno")
+        assert inifile.decode('utf-8') == iniexpected
 
     def test_convert_completion_below_threshold(self):
         """Check no conversion if input completion is below threshold."""
