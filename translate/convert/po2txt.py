@@ -35,8 +35,8 @@ class po2txt(object):
     best to give it a template file otherwise will just concat msgstrs
     """
 
-    def __init__(self, input_file, include_fuzzy=False, output_threshold=None,
-                 encoding='utf-8', wrap=None):
+    def __init__(self, input_file, template_file=None, include_fuzzy=False,
+                 output_threshold=None, encoding='utf-8', wrap=None):
         """Initialize the converter."""
         self.source_store = factory.getobject(input_file)
 
@@ -45,7 +45,10 @@ class po2txt(object):
         )
         if self.should_output_store:
             self.include_fuzzy = include_fuzzy
+            self.encoding = encoding
             self.wrap = wrap
+
+            self.template_file = template_file
 
     def wrapmessage(self, message):
         """rewraps text as required"""
@@ -66,13 +69,13 @@ class po2txt(object):
                 txtresult += self.wrapmessage(unit.source) + "\n\n"
         return txtresult.rstrip()
 
-    def merge_stores(self, templatetext):
+    def merge_stores(self):
         """Convert a source file to a target file using a template file.
 
         Source file is in source format, while target and template files use
         target format.
         """
-        txtresult = templatetext
+        txtresult = self.template_file.read().decode(self.encoding)
         # TODO: make a list of blocks of text and translate them individually
         # rather than using replace
         for unit in self.source_store.units:
@@ -89,7 +92,7 @@ class po2txt(object):
 def run_converter(inputfile, outputfile, templatefile=None, wrap=None,
                   includefuzzy=False, encoding='utf-8', outputthreshold=None):
     """Wrapper around converter."""
-    convertor = po2txt(inputfile, include_fuzzy=includefuzzy,
+    convertor = po2txt(inputfile, templatefile, include_fuzzy=includefuzzy,
                        output_threshold=outputthreshold, encoding=encoding,
                        wrap=wrap)
 
@@ -99,8 +102,7 @@ def run_converter(inputfile, outputfile, templatefile=None, wrap=None,
     if templatefile is None:
         outputstring = convertor.convert_store()
     else:
-        templatestring = templatefile.read().decode(encoding)
-        outputstring = convertor.merge_stores(templatestring)
+        outputstring = convertor.merge_stores()
 
     outputfile.write(outputstring.encode('utf-8'))
     return True
