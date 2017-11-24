@@ -137,6 +137,46 @@ prop  =  ṽḁḽṻḝ%tṽḁḽṻḝ2%n
         inifile = self._convert(posource, initemplate, "inno").decode('utf-8')
         assert inifile == iniexpected
 
+    def test_convert_completion_below_threshold(self):
+        """Check no conversion if input completion is below threshold."""
+        input_source = """#: [section]prop
+msgid "value"
+msgstr ""
+"""
+        template_source = """[section]
+prop=value
+"""
+        expected_output = ""
+        input_file = wStringIO.StringIO(input_source)
+        output_file = wStringIO.StringIO()
+        template_file = wStringIO.StringIO(template_source)
+        # Input completion is 0% so with a 70% threshold it should not output.
+        result = po2ini.convertini(input_file, output_file, template_file,
+                                   outputthreshold=70)
+        assert result == 0
+        assert output_file.getvalue() == expected_output
+
+    def test_convert_completion_above_threshold(self):
+        """Check no conversion if input completion is above threshold."""
+        input_source = """#: [section]prop
+msgid "value"
+msgstr "waarde"
+"""
+        template_source = """[section]
+prop=value
+"""
+        expected_output = """[section]
+prop=waarde
+"""
+        input_file = wStringIO.StringIO(input_source)
+        output_file = wStringIO.StringIO()
+        template_file = wStringIO.StringIO(template_source)
+        # Input completion is 100% so with a 70% threshold it should output.
+        result = po2ini.convertini(input_file, output_file, template_file,
+                                   outputthreshold=70)
+        assert result == 1
+        assert output_file.getvalue() == expected_output
+
 
 class TestPO2IniCommand(test_convert.TestConvertCommand, TestPO2Ini):
     """Tests running actual po2ini commands on files"""
