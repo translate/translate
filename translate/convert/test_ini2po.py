@@ -88,6 +88,20 @@ msgstr "valor"
         assert expected_output in output
         assert "extracted from " in output
 
+    def test_merge_misaligned_files(self):
+        """Check merging two files that are not aligned."""
+        input_source = """[section]
+other=missing
+"""
+        template_source = """[section]
+key=value
+"""
+        expected_output = """#: [section]key
+msgid "value"
+msgstr ""
+"""
+        assert expected_output in self._convert(input_source, template_source)
+
 
 class TestIni2POCommand(test_convert.TestConvertCommand, TestIni2PO):
     """Tests running actual ini2po commands on files"""
