@@ -69,19 +69,21 @@ class po2ini(object):
                     template_unit.target = template_unit.source
         return bytes(self.template_store)
 
+    def run(self):
+        """Run the converter."""
+        if not self.should_output_store:
+            return 0
+
+        outputstring = self.merge_stores()
+        self.output_file.write(outputstring)
+        return 1
+
 
 def run_converter(inputfile, outputfile, templatefile=None, includefuzzy=False,
                   dialect="default", outputthreshold=None):
     """Wrapper around converter."""
-    convertor = po2ini(inputfile, outputfile, templatefile, includefuzzy,
-                       outputthreshold, dialect)
-
-    if not convertor.should_output_store:
-        return 0
-
-    outputstring = convertor.merge_stores()
-    outputfile.write(outputstring)
-    return 1
+    return po2ini(inputfile, outputfile, templatefile, includefuzzy,
+                  outputthreshold, dialect).run()
 
 
 def convertisl(inputfile, outputfile, templatefile=None, includefuzzy=False,
