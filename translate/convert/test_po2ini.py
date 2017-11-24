@@ -227,6 +227,42 @@ prop=Ola mundo!
                                include_fuzzy=True)
         assert output == expected_output
 
+    def test_merging_repeated_locations(self):
+        """Check merging when files have repeated locations."""
+        input_source = """#: [section]key
+msgid "first"
+msgstr "primeiro"
+
+#: [section]key
+msgid "second"
+msgstr "segundo"
+"""
+        template_source = """[section]
+key=first
+key=second
+"""
+        expected_output = """[section]
+key=first
+key=primeiro
+"""
+        output = self._convert(input_source, template_source)
+        assert output == expected_output
+
+        template_source = """[section]
+key=first
+
+[section]
+key=second
+"""
+        expected_output = """[section]
+key=first
+
+[section]
+key=primeiro
+"""
+        output = self._convert(input_source, template_source)
+        assert output == expected_output
+
 
 class TestPO2IniCommand(test_convert.TestConvertCommand, TestPO2Ini):
     """Tests running actual po2ini commands on files"""
