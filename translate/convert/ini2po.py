@@ -50,9 +50,7 @@ class ini2po(object):
                               "developer")
 
         for source_unit in input_store.units:
-            target_unit = self.convert_unit(source_unit)
-            if target_unit is not None:
-                target_store.addunit(target_unit)
+            target_store.addunit(self.convert_unit(source_unit))
         target_store.removeduplicates(self.duplicate_style)
         return target_store
 
