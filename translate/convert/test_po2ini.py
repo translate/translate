@@ -18,11 +18,12 @@ class TestPO2Ini(object):
                  dialect="default"):
         """Helper that converts PO to format without files."""
         input_file = wStringIO.StringIO(po_input_source)
-        inputpo = po.pofile(input_file)
+        output_file = wStringIO.StringIO()
         template_file = wStringIO.StringIO(format_template_source)
-        convertor = po2ini.po2ini(template_file, inputpo, dialect=dialect)
-        outputini = convertor.convertstore()
-        return outputini
+        result = po2ini.convertini(input_file, output_file, template_file,
+                                   dialect=dialect)
+        assert result == 1
+        return output_file.getvalue()
 
     def test_merging_simple(self):
         """check the simplest case of merging a translation"""
