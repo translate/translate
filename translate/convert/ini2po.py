@@ -58,13 +58,12 @@ class ini2po(object):
             origpo = self.convert_unit(template_unit, "developer")
             # Try and find a translation of the same name...
             template_unit_name = "".join(template_unit.getlocations())
-            if template_unit_name in input_store.locationindex:
+            add_translation = (
+                not blankmsgstr and
+                template_unit_name in input_store.locationindex)
+            if add_translation:
                 translatedini = input_store.locationindex[template_unit_name]
                 translatedpo = self.convert_unit(translatedini, "translator")
-            else:
-                translatedpo = None
-            # If we have a valid po unit, get the translation and add it...
-            if translatedpo is not None and not blankmsgstr:
                 origpo.target = translatedpo.source
             output_store.addunit(origpo)
         output_store.removeduplicates(duplicatestyle)
