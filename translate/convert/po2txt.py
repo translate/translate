@@ -35,7 +35,8 @@ class po2txt(object):
     best to give it a template file otherwise will just concat msgstrs
     """
 
-    def __init__(self, include_fuzzy=False, wrap=None):
+    def __init__(self, include_fuzzy=False, output_threshold=None,
+                 encoding='utf-8', wrap=None):
         """Initialize the converter."""
         self.include_fuzzy = include_fuzzy
         self.wrap = wrap
@@ -87,7 +88,9 @@ def run_converter(inputfile, outputfile, templatefile=None, wrap=None,
     if not convert.should_output_store(inputstore, outputthreshold):
         return False
 
-    convertor = po2txt(include_fuzzy=includefuzzy, wrap=wrap)
+    convertor = po2txt(include_fuzzy=includefuzzy,
+                       output_threshold=outputthreshold, encoding=encoding,
+                       wrap=wrap)
 
     if templatefile is None:
         outputstring = convertor.convert_store(inputstore)
