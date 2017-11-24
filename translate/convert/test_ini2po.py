@@ -63,6 +63,22 @@ msgstr ""
         assert expected_output in self._convert(input_source,
                                                 duplicate_style="merge")
 
+    def test_merge_simple(self):
+        """Check the simplest case of merging a translation."""
+        input_source = """[section]
+key=valor
+"""
+        template_source = """[section]
+key=value
+"""
+        expected_output = """#: [section]key
+msgid "value"
+msgstr "valor"
+"""
+        output = self._convert(input_source, template_source)
+        assert expected_output in output
+        assert "extracted from " in output
+
 
 class TestIni2POCommand(test_convert.TestConvertCommand, TestIni2PO):
     """Tests running actual ini2po commands on files"""
