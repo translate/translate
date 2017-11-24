@@ -78,7 +78,7 @@ class po2txt(object):
         return txtresult
 
 
-def run_converter(inputfile, outputfile, templatefile, wrap=None,
+def run_converter(inputfile, outputfile, templatefile=None, wrap=None,
                   includefuzzy=False, encoding='utf-8', outputthreshold=None):
     """Wrapper around converter."""
     inputstore = factory.getobject(inputfile)
