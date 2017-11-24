@@ -2,7 +2,7 @@
 
 from __future__ import unicode_literals
 
-from pytest import importorskip
+from pytest import importorskip, raises
 
 from translate.convert import po2ini, test_convert
 from translate.misc import wStringIO
@@ -26,6 +26,13 @@ class TestPO2Ini(object):
                                    dialect=dialect)
         assert result == 1
         return output_file.getvalue()
+
+    def test_convert_no_templates(self):
+        """Check converter doesn't allow to pass no templates."""
+        input_file = None
+        template_file = None
+        with raises(ValueError):
+            self._convert(input_file, template_file)
 
     def test_merging_simple(self):
         """check the simplest case of merging a translation"""
