@@ -38,6 +38,12 @@ class po2ini(object):
                  include_fuzzy=False, output_threshold=None,
                  dialect="default"):
         """Initialize the converter."""
+        import sys
+        if sys.version_info[0] == 3:
+            print("Translate Toolkit doesn't yet support converting to INI in "
+                  "Python 3.")
+            sys.exit()
+
         if template_file is None:
             raise ValueError(self.MissingTemplateMessage)
 
@@ -101,12 +107,6 @@ formats = {
 
 
 def main(argv=None):
-    import sys
-    if sys.version_info[0] == 3:
-        print("Translate Toolkit doesn't yet support converting to INI in "
-              "Python 3.")
-        sys.exit()
-
     parser = convert.ConvertOptionParser(formats, usetemplates=True,
                                          description=__doc__)
     parser.add_threshold_option()
