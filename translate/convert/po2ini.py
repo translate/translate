@@ -30,7 +30,7 @@ from translate.storage import ini, po
 class po2ini(object):
     """Convert a PO file and a template INI file to a INI file."""
 
-    def __init__(self, inputstore, templatefile, include_fuzzy=False,
+    def __init__(self, inputstore, templatefile=None, include_fuzzy=False,
                  dialect="default"):
         """Initialize the converter."""
         self.include_fuzzy = include_fuzzy
@@ -58,7 +58,7 @@ class po2ini(object):
         return bytes(self.templatestore)
 
 
-def run_converter(inputfile, outputfile, templatefile, includefuzzy=False,
+def run_converter(inputfile, outputfile, templatefile=None, includefuzzy=False,
                   dialect="default", outputthreshold=None):
     """Wrapper around converter."""
     if templatefile is None:
@@ -74,7 +74,7 @@ def run_converter(inputfile, outputfile, templatefile, includefuzzy=False,
     return 1
 
 
-def convertisl(inputfile, outputfile, templatefile, includefuzzy=False,
+def convertisl(inputfile, outputfile, templatefile=None, includefuzzy=False,
                dialect="inno", outputthreshold=None):
     run_converter(inputfile, outputfile, templatefile, includefuzzy, dialect,
                   outputthreshold)
