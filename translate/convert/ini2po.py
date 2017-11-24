@@ -30,7 +30,7 @@ from translate.storage import ini, po
 class ini2po(object):
     """Convert one or two INI files to a single PO file."""
 
-    def __init__(self, duplicate_style="msgctxt"):
+    def __init__(self, duplicate_style="msgctxt", dialect="default"):
         """Initialize the converter."""
         self.duplicate_style = duplicate_style
 
@@ -82,7 +82,7 @@ def run_converter(input_file, output_file, template_file=None, pot=False,
                   duplicatestyle="msgctxt", dialect="default"):
     """Wrapper around converter."""
     input_store = ini.inifile(input_file, dialect=dialect)
-    convertor = ini2po(duplicate_style=duplicatestyle)
+    convertor = ini2po(duplicate_style=duplicatestyle, dialect=dialect)
     if template_file is None:
         output_store = convertor.convert_store(input_store)
     else:
