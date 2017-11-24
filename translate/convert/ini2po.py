@@ -30,8 +30,10 @@ from translate.storage import ini, po
 class ini2po(object):
     """Convert one or two INI files to a single PO file."""
 
-    def __init__(self, duplicate_style="msgctxt", dialect="default"):
+    def __init__(self, blank_msgstr=False, duplicate_style="msgctxt",
+                 dialect="default"):
         """Initialize the converter."""
+        self.blank_msgstr = blank_msgstr
         self.duplicate_style = duplicate_style
 
     def convert_unit(self, unit):
@@ -54,7 +56,7 @@ class ini2po(object):
         target_store.removeduplicates(self.duplicate_style)
         return target_store
 
-    def merge_stores(self, template_store, input_store, blankmsgstr=False):
+    def merge_stores(self, template_store, input_store):
         """Convert two source format files to a target format file."""
         target_store = po.pofile()
         output_header = target_store.header()
@@ -68,7 +70,7 @@ class ini2po(object):
 
             template_unit_name = "".join(template_unit.getlocations())
             add_translation = (
-                not blankmsgstr and
+                not self.blank_msgstr and
                 template_unit_name in input_store.locationindex)
             if add_translation:
                 source_unit = input_store.locationindex[template_unit_name]
@@ -82,13 +84,13 @@ def run_converter(input_file, output_file, template_file=None, pot=False,
                   duplicatestyle="msgctxt", dialect="default"):
     """Wrapper around converter."""
     input_store = ini.inifile(input_file, dialect=dialect)
-    convertor = ini2po(duplicate_style=duplicatestyle, dialect=dialect)
+    convertor = ini2po(blank_msgstr=pot, duplicate_style=duplicatestyle,
+                       dialect=dialect)
     if template_file is None:
         output_store = convertor.convert_store(input_store)
     else:
         template_store = ini.inifile(template_file, dialect=dialect)
-        output_store = convertor.merge_stores(template_store, input_store,
-                                              blankmsgstr=pot)
+        output_store = convertor.merge_stores(template_store, input_store)
     if output_store.isempty():
         return 0
     output_store.serialize(output_file)
