@@ -14,14 +14,6 @@ importorskip("iniparse")
 
 class TestPO2Ini(object):
 
-    def po2ini(self, posource):
-        """helper that converts po source to .ini source without requiring files"""
-        inputfile = wStringIO.StringIO(posource)
-        inputpo = po.pofile(inputfile)
-        convertor = po2ini.po2ini()
-        outputini = convertor.convertstore(inputpo)
-        return outputini
-
     def merge2ini(self, inisource, posource, dialect="default"):
         """helper that merges po translations to .ini source without requiring files"""
         inputfile = wStringIO.StringIO(posource)
