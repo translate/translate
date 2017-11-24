@@ -32,16 +32,21 @@ class po2ini(object):
 
     MissingTemplateMessage = "A template INI file must be provided."
 
-    def __init__(self, inputstore, template_file=None, include_fuzzy=False,
+    def __init__(self, input_file, template_file=None, include_fuzzy=False,
                  output_threshold=None, dialect="default"):
         """Initialize the converter."""
         if template_file is None:
             raise ValueError(self.MissingTemplateMessage)
 
-        self.include_fuzzy = include_fuzzy
+        self.source_store = po.pofile(input_file)
 
-        self.template_store = ini.inifile(template_file, dialect=dialect)
-        self.source_store = inputstore
+        self.should_output_store = convert.should_output_store(
+            self.source_store, output_threshold
+        )
+        if self.should_output_store:
+            self.include_fuzzy = include_fuzzy
+
+            self.template_store = ini.inifile(template_file, dialect=dialect)
 
     def merge_stores(self):
         """Convert a source file to a target file using a template file.
@@ -66,12 +71,12 @@ class po2ini(object):
 def run_converter(inputfile, outputfile, templatefile=None, includefuzzy=False,
                   dialect="default", outputthreshold=None):
     """Wrapper around converter."""
-    inputstore = po.pofile(inputfile)
-    if not convert.should_output_store(inputstore, outputthreshold):
+    convertor = po2ini(inputfile, templatefile, includefuzzy, outputthreshold,
+                       dialect)
+
+    if not convertor.should_output_store:
         return 0
 
-    convertor = po2ini(inputstore, templatefile, includefuzzy, outputthreshold,
-                       dialect)
     outputstring = convertor.merge_stores()
     outputfile.write(outputstring)
     return 1
