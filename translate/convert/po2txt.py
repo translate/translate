@@ -35,11 +35,17 @@ class po2txt(object):
     best to give it a template file otherwise will just concat msgstrs
     """
 
-    def __init__(self, include_fuzzy=False, output_threshold=None,
+    def __init__(self, input_file, include_fuzzy=False, output_threshold=None,
                  encoding='utf-8', wrap=None):
         """Initialize the converter."""
-        self.include_fuzzy = include_fuzzy
-        self.wrap = wrap
+        self.source_store = factory.getobject(input_file)
+
+        self.should_output_store = convert.should_output_store(
+            self.source_store, output_threshold
+        )
+        if self.should_output_store:
+            self.include_fuzzy = include_fuzzy
+            self.wrap = wrap
 
     def wrapmessage(self, message):
         """rewraps text as required"""
@@ -48,10 +54,10 @@ class po2txt(object):
         return "\n".join([textwrap.fill(line, self.wrap, replace_whitespace=False)
                           for line in message.split("\n")])
 
-    def convert_store(self, inputstore):
+    def convert_store(self):
         """Convert a source file to a target file."""
         txtresult = ""
-        for unit in inputstore.units:
+        for unit in self.source_store.units:
             if not unit.istranslatable():
                 continue
             if unit.istranslated() or (self.include_fuzzy and unit.isfuzzy()):
@@ -60,7 +66,7 @@ class po2txt(object):
                 txtresult += self.wrapmessage(unit.source) + "\n\n"
         return txtresult.rstrip()
 
-    def merge_stores(self, inputstore, templatetext):
+    def merge_stores(self, templatetext):
         """Convert a source file to a target file using a template file.
 
         Source file is in source format, while target and template files use
@@ -69,7 +75,7 @@ class po2txt(object):
         txtresult = templatetext
         # TODO: make a list of blocks of text and translate them individually
         # rather than using replace
-        for unit in inputstore.units:
+        for unit in self.source_store.units:
             if not unit.istranslatable():
                 continue
             if not unit.isfuzzy() or self.include_fuzzy:
@@ -83,20 +89,18 @@ class po2txt(object):
 def run_converter(inputfile, outputfile, templatefile=None, wrap=None,
                   includefuzzy=False, encoding='utf-8', outputthreshold=None):
     """Wrapper around converter."""
-    inputstore = factory.getobject(inputfile)
-
-    if not convert.should_output_store(inputstore, outputthreshold):
-        return False
-
-    convertor = po2txt(include_fuzzy=includefuzzy,
+    convertor = po2txt(inputfile, include_fuzzy=includefuzzy,
                        output_threshold=outputthreshold, encoding=encoding,
                        wrap=wrap)
 
+    if not convertor.should_output_store:
+        return False
+
     if templatefile is None:
-        outputstring = convertor.convert_store(inputstore)
+        outputstring = convertor.convert_store()
     else:
         templatestring = templatefile.read().decode(encoding)
-        outputstring = convertor.merge_stores(inputstore, templatestring)
+        outputstring = convertor.merge_stores(templatestring)
 
     outputfile.write(outputstring.encode('utf-8'))
     return True
