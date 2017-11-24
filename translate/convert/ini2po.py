@@ -38,7 +38,7 @@ class ini2po(object):
                               "developer")
 
         for input_unit in input_store.units:
-            output_unit = self.convert_unit(input_unit, "developer")
+            output_unit = self.convert_unit(input_unit)
             if output_unit is not None:
                 output_store.addunit(output_unit)
         output_store.removeduplicates(duplicatestyle)
@@ -55,7 +55,7 @@ class ini2po(object):
 
         input_store.makeindex()
         for template_unit in template_store.units:
-            origpo = self.convert_unit(template_unit, "developer")
+            origpo = self.convert_unit(template_unit)
             # Try and find a translation of the same name...
             template_unit_name = "".join(template_unit.getlocations())
             add_translation = (
@@ -68,7 +68,7 @@ class ini2po(object):
         output_store.removeduplicates(duplicatestyle)
         return output_store
 
-    def convert_unit(self, input_unit, commenttype):
+    def convert_unit(self, input_unit):
         """Convert a source format unit to a target format unit."""
         output_unit = po.pounit(encoding="UTF-8")
         output_unit.addlocation("".join(input_unit.getlocations()))
