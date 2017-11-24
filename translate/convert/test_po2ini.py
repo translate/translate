@@ -25,68 +25,104 @@ class TestPO2Ini(object):
 
     def test_merging_simple(self):
         """check the simplest case of merging a translation"""
-        posource = '''#: [section]prop\nmsgid "value"\nmsgstr "waarde"\n'''
-        initemplate = '''[section]\nprop=value\n'''
-        iniexpected = '''[section]\nprop=waarde\n'''
+        posource = """#: [section]prop
+msgid "value"
+msgstr "waarde"
+"""
+        initemplate = """[section]
+prop=value
+"""
+        iniexpected = """[section]
+prop=waarde
+"""
         inifile = self._convert(posource, initemplate)
         assert inifile == iniexpected
 
     def test_space_preservation(self):
         """check that we preserve any spacing in ini files when merging"""
-        posource = '''#: [section]prop\nmsgid "value"\nmsgstr "waarde"\n'''
-        initemplate = '''[section]\nprop  =  value\n'''
-        iniexpected = '''[section]\nprop  =  waarde\n'''
+        posource = """#: [section]prop
+msgid "value"
+msgstr "waarde"
+"""
+        initemplate = """[section]
+prop  =  value
+"""
+        iniexpected = """[section]
+prop  =  waarde
+"""
         inifile = self._convert(posource, initemplate)
         assert inifile == iniexpected
 
     def test_merging_blank_entries(self):
         """check that we can correctly merge entries that are blank in the template"""
-        posource = r'''#: [section]accesskey-accept
+        posource = r"""#: [section]accesskey-accept
 msgid ""
 "_: accesskey-accept\n"
 ""
-msgstr ""'''
-        initemplate = '[section]\naccesskey-accept=\n'
-        iniexpected = '[section]\naccesskey-accept=\n'
+msgstr ""
+"""
+        initemplate = """[section]
+accesskey-accept=
+"""
+        iniexpected = """[section]
+accesskey-accept=
+"""
         inifile = self._convert(posource, initemplate)
         assert inifile == iniexpected
 
     def test_merging_fuzzy(self):
         """check merging a fuzzy translation"""
-        posource = '''#: [section]prop\n#, fuzzy\nmsgid "value"\nmsgstr "waarde"\n'''
-        initemplate = '''[section]\nprop=value\n'''
-        iniexpected = '''[section]\nprop=value\n'''
+        posource = """#: [section]prop
+#, fuzzy
+msgid "value"
+msgstr "waarde"
+"""
+        initemplate = """[section]
+prop=value
+"""
+        iniexpected = """[section]
+prop=value
+"""
         inifile = self._convert(posource, initemplate)
         assert inifile == iniexpected
 
     def test_merging_propertyless_template(self):
         """check that when merging with a template with no ini values that we copy the template"""
         posource = ""
-        initemplate = "# A comment\n"
+        initemplate = """# A comment
+"""
         iniexpected = initemplate
         inifile = self._convert(posource, initemplate)
         assert inifile == iniexpected
 
     def test_empty_value(self):
         """test that we handle an value in translation that is missing in the template"""
-        posource = '''#: [section]key
+        posource = """#: [section]key
 msgctxt "key"
 msgid ""
 msgstr "translated"
-'''
-        initemplate = '''[section]\nkey =\n'''
-        iniexpected = '''[section]\nkey =translated\n'''
+"""
+        initemplate = """[section]
+key =
+"""
+        iniexpected = """[section]
+key =translated
+"""
         inifile = self._convert(posource, initemplate)
         assert inifile == iniexpected
 
     def test_dialects_inno(self):
         """test that we output correctly for Inno files."""
-        posource = r'''#: [section]prop
+        posource = r"""#: [section]prop
 msgid "value\tvalue2\n"
 msgstr "ṽḁḽṻḝ\tṽḁḽṻḝ2\n"
-'''
-        initemplate = '''[section]\nprop  =  value%tvalue%n\n'''
-        iniexpected = '''[section]\nprop  =  ṽḁḽṻḝ%tṽḁḽṻḝ2%n\n'''
+"""
+        initemplate = """[section]
+prop  =  value%tvalue%n
+"""
+        iniexpected = """[section]
+prop  =  ṽḁḽṻḝ%tṽḁḽṻḝ2%n
+"""
         inifile = self._convert(posource, initemplate, "inno").decode('utf-8')
         assert inifile == iniexpected
 
