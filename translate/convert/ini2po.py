@@ -31,6 +31,7 @@ class ini2po(object):
     """Convert one or two INI files to a single PO file."""
 
     SourceStoreClass = ini.inifile
+    TargetStoreClass = po.pofile
 
     def __init__(self, input_file, output_file, template_file=None,
                  blank_msgstr=False, duplicate_style="msgctxt",
@@ -41,6 +42,7 @@ class ini2po(object):
 
         self.output_file = output_file
         self.source_store = self.SourceStoreClass(input_file, dialect=dialect)
+        self.target_store = self.TargetStoreClass()
         self.template_store = None
 
         if template_file is not None:
@@ -57,20 +59,18 @@ class ini2po(object):
 
     def convert_store(self):
         """Convert a single source format file to a target format file."""
-        target_store = po.pofile()
-        output_header = target_store.header()
+        output_header = self.target_store.header()
         output_header.addnote("extracted from %s" % self.source_store.filename,
                               "developer")
 
         for source_unit in self.source_store.units:
-            target_store.addunit(self.convert_unit(source_unit))
-        target_store.removeduplicates(self.duplicate_style)
-        return target_store
+            self.target_store.addunit(self.convert_unit(source_unit))
+        self.target_store.removeduplicates(self.duplicate_style)
+        return self.target_store
 
     def merge_stores(self):
         """Convert two source format files to a target format file."""
-        target_store = po.pofile()
-        output_header = target_store.header()
+        output_header = self.target_store.header()
         note = "extracted from %s, %s" % (self.template_store.filename,
                                           self.source_store.filename)
         output_header.addnote(note, "developer")
@@ -86,9 +86,9 @@ class ini2po(object):
             if add_translation:
                 source_unit = self.source_store.locationindex[template_unit_name]
                 target_unit.target = source_unit.source
-            target_store.addunit(target_unit)
-        target_store.removeduplicates(self.duplicate_style)
-        return target_store
+            self.target_store.addunit(target_unit)
+        self.target_store.removeduplicates(self.duplicate_style)
+        return self.target_store
 
 
 def run_converter(input_file, output_file, template_file=None, pot=False,
