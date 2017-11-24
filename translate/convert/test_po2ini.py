@@ -14,12 +14,13 @@ importorskip("iniparse")
 
 class TestPO2Ini(object):
 
-    def _convert(self, posource, inisource, dialect="default"):
+    def _convert(self, po_input_source, format_template_source,
+                 dialect="default"):
         """Helper that converts PO to format without files."""
-        inputfile = wStringIO.StringIO(posource)
-        inputpo = po.pofile(inputfile)
-        templatefile = wStringIO.StringIO(inisource)
-        convertor = po2ini.po2ini(templatefile, inputpo, dialect=dialect)
+        input_file = wStringIO.StringIO(po_input_source)
+        inputpo = po.pofile(input_file)
+        template_file = wStringIO.StringIO(format_template_source)
+        convertor = po2ini.po2ini(template_file, inputpo, dialect=dialect)
         outputini = convertor.convertstore()
         return outputini
 
