@@ -14,8 +14,8 @@ importorskip("iniparse")
 
 class TestPO2Ini(object):
 
-    def merge2ini(self, posource, inisource, dialect="default"):
-        """helper that merges po translations to .ini source without requiring files"""
+    def _convert(self, posource, inisource, dialect="default"):
+        """Helper that converts PO to format without files."""
         inputfile = wStringIO.StringIO(posource)
         inputpo = po.pofile(inputfile)
         templatefile = wStringIO.StringIO(inisource)
@@ -28,7 +28,7 @@ class TestPO2Ini(object):
         posource = '''#: [section]prop\nmsgid "value"\nmsgstr "waarde"\n'''
         initemplate = '''[section]\nprop=value\n'''
         iniexpected = '''[section]\nprop=waarde\n'''
-        inifile = self.merge2ini(posource, initemplate)
+        inifile = self._convert(posource, initemplate)
         assert inifile == iniexpected
 
     def test_space_preservation(self):
@@ -36,7 +36,7 @@ class TestPO2Ini(object):
         posource = '''#: [section]prop\nmsgid "value"\nmsgstr "waarde"\n'''
         initemplate = '''[section]\nprop  =  value\n'''
         iniexpected = '''[section]\nprop  =  waarde\n'''
-        inifile = self.merge2ini(posource, initemplate)
+        inifile = self._convert(posource, initemplate)
         assert inifile == iniexpected
 
     def test_merging_blank_entries(self):
@@ -48,7 +48,7 @@ msgid ""
 msgstr ""'''
         initemplate = '[section]\naccesskey-accept=\n'
         iniexpected = '[section]\naccesskey-accept=\n'
-        inifile = self.merge2ini(posource, initemplate)
+        inifile = self._convert(posource, initemplate)
         assert inifile == iniexpected
 
     def test_merging_fuzzy(self):
@@ -56,7 +56,7 @@ msgstr ""'''
         posource = '''#: [section]prop\n#, fuzzy\nmsgid "value"\nmsgstr "waarde"\n'''
         initemplate = '''[section]\nprop=value\n'''
         iniexpected = '''[section]\nprop=value\n'''
-        inifile = self.merge2ini(posource, initemplate)
+        inifile = self._convert(posource, initemplate)
         assert inifile == iniexpected
 
     def test_merging_propertyless_template(self):
@@ -64,7 +64,7 @@ msgstr ""'''
         posource = ""
         initemplate = "# A comment\n"
         iniexpected = initemplate
-        inifile = self.merge2ini(posource, initemplate)
+        inifile = self._convert(posource, initemplate)
         assert inifile == iniexpected
 
     def test_empty_value(self):
@@ -76,7 +76,7 @@ msgstr "translated"
 '''
         initemplate = '''[section]\nkey =\n'''
         iniexpected = '''[section]\nkey =translated\n'''
-        inifile = self.merge2ini(posource, initemplate)
+        inifile = self._convert(posource, initemplate)
         assert inifile == iniexpected
 
     def test_dialects_inno(self):
@@ -87,7 +87,7 @@ msgstr "ṽḁḽṻḝ\tṽḁḽṻḝ2\n"
 '''
         initemplate = '''[section]\nprop  =  value%tvalue%n\n'''
         iniexpected = '''[section]\nprop  =  ṽḁḽṻḝ%tṽḁḽṻḝ2%n\n'''
-        inifile = self.merge2ini(posource, initemplate, "inno").decode('utf-8')
+        inifile = self._convert(posource, initemplate, "inno").decode('utf-8')
         assert inifile == iniexpected
 
 
