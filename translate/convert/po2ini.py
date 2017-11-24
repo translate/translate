@@ -30,11 +30,13 @@ from translate.storage import ini, po
 class po2ini(object):
     """Convert a PO file and a template INI file to a INI file."""
 
+    MissingTemplateMessage = "A template INI file must be provided."
+
     def __init__(self, inputstore, template_file=None, include_fuzzy=False,
                  dialect="default"):
         """Initialize the converter."""
         if template_file is None:
-            raise ValueError("must have template file for ini files")
+            raise ValueError(self.MissingTemplateMessage)
 
         self.include_fuzzy = include_fuzzy
 
