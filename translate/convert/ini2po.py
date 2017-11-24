@@ -30,13 +30,13 @@ from translate.storage import ini, po
 class ini2po(object):
     """Convert one or two INI files to a single PO file."""
 
-    def convert_unit(self, input_unit):
+    def convert_unit(self, unit):
         """Convert a source format unit to a target format unit."""
-        output_unit = po.pounit(encoding="UTF-8")
-        output_unit.addlocation("".join(input_unit.getlocations()))
-        output_unit.source = input_unit.source
-        output_unit.target = ""
-        return output_unit
+        target_unit = po.pounit(encoding="UTF-8")
+        target_unit.addlocation("".join(unit.getlocations()))
+        target_unit.source = unit.source
+        target_unit.target = ""
+        return target_unit
 
     def convert_store(self, input_store, duplicatestyle="msgctxt"):
         """Convert a single source format file to a target format file."""
@@ -77,7 +77,7 @@ class ini2po(object):
         return output_store
 
 
-def run_converter(input_file, output_file, template_file, pot=False,
+def run_converter(input_file, output_file, template_file=None, pot=False,
                   duplicatestyle="msgctxt", dialect="default"):
     """Wrapper around converter."""
     input_store = ini.inifile(input_file, dialect=dialect)
@@ -96,10 +96,10 @@ def run_converter(input_file, output_file, template_file, pot=False,
     return 1
 
 
-def convertisl(input_file, output_file, template_file, pot=False,
+def convertisl(input_file, output_file, template_file=None, pot=False,
                duplicatestyle="msgctxt", dialect="inno"):
-    return run_converter(input_file, output_file, template_file, pot=False,
-                         duplicatestyle="msgctxt", dialect=dialect)
+    return run_converter(input_file, output_file, template_file, pot,
+                         duplicatestyle, dialect)
 
 
 formats = {
