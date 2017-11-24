@@ -30,6 +30,8 @@ from translate.storage import ini, po
 class po2ini(object):
     """Convert a PO file and a template INI file to a INI file."""
 
+    SourceStoreClass = po.pofile
+    TargetStoreClass = ini.inifile
     MissingTemplateMessage = "A template INI file must be provided."
 
     def __init__(self, input_file, output_file, template_file=None,
@@ -39,7 +41,7 @@ class po2ini(object):
         if template_file is None:
             raise ValueError(self.MissingTemplateMessage)
 
-        self.source_store = po.pofile(input_file)
+        self.source_store = self.SourceStoreClass(input_file)
 
         self.should_output_store = convert.should_output_store(
             self.source_store, output_threshold
@@ -48,7 +50,8 @@ class po2ini(object):
             self.include_fuzzy = include_fuzzy
 
             self.output_file = output_file
-            self.template_store = ini.inifile(template_file, dialect=dialect)
+            self.template_store = self.TargetStoreClass(template_file,
+                                                        dialect=dialect)
 
     def merge_stores(self):
         """Convert a source file to a target file using a template file.
