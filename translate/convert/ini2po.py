@@ -38,6 +38,12 @@ class ini2po(object):
                  blank_msgstr=False, duplicate_style="msgctxt",
                  dialect="default"):
         """Initialize the converter."""
+        import sys
+        if sys.version_info[0] == 3:
+            print("Translate Toolkit doesn't yet support converting from INI in "
+                  "Python 3.")
+            sys.exit()
+
         self.blank_msgstr = blank_msgstr
         self.duplicate_style = duplicate_style
 
@@ -129,12 +135,6 @@ formats = {
 
 
 def main(argv=None):
-    import sys
-    if sys.version_info[0] == 3:
-        print("Translate Toolkit doesn't yet support converting from INI in "
-              "Python 3.")
-        sys.exit()
-
     parser = convert.ConvertOptionParser(formats, usetemplates=True,
                                          usepots=True, description=__doc__)
     parser.add_duplicates_option()
