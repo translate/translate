@@ -32,12 +32,13 @@ class ini2po(object):
 
     SourceStoreClass = ini.inifile
 
-    def __init__(self, input_file, blank_msgstr=False,
+    def __init__(self, input_file, output_file, blank_msgstr=False,
                  duplicate_style="msgctxt", dialect="default"):
         """Initialize the converter."""
         self.blank_msgstr = blank_msgstr
         self.duplicate_style = duplicate_style
 
+        self.output_file = output_file
         self.source_store = self.SourceStoreClass(input_file, dialect=dialect)
 
     def convert_unit(self, unit):
@@ -87,7 +88,7 @@ class ini2po(object):
 def run_converter(input_file, output_file, template_file=None, pot=False,
                   duplicatestyle="msgctxt", dialect="default"):
     """Wrapper around converter."""
-    convertor = ini2po(input_file, blank_msgstr=pot,
+    convertor = ini2po(input_file, output_file, blank_msgstr=pot,
                        duplicate_style=duplicatestyle, dialect=dialect)
     if template_file is None:
         output_store = convertor.convert_store()
