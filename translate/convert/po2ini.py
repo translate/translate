@@ -67,15 +67,14 @@ class po2ini(object):
                         template_unit.target = source_unit.target
                 else:
                     template_unit.target = template_unit.source
-        return bytes(self.template_store)
 
     def run(self):
         """Run the converter."""
         if not self.should_output_store:
             return 0
 
-        outputstring = self.merge_stores()
-        self.output_file.write(outputstring)
+        self.merge_stores()
+        self.template_store.serialize(self.output_file)
         return 1
 
 
