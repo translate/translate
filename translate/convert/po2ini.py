@@ -30,24 +30,26 @@ from translate.storage import ini, po
 class po2ini(object):
     """Convert a PO file and a template INI file to a INI file."""
 
-    def __init__(self, templatefile, inputstore, dialect="default"):
+    def __init__(self, templatefile, inputstore, include_fuzzy=False,
+                 dialect="default"):
         """Initialize the converter."""
+        self.include_fuzzy = include_fuzzy
+
         self.templatestore = ini.inifile(templatefile, dialect=dialect)
         self.inputstore = inputstore
 
-    def merge_stores(self, includefuzzy=False):
+    def merge_stores(self):
         """Convert a source file to a target file using a template file.
 
         Source file is in source format, while target and template files use
         target format.
         """
-        self.includefuzzy = includefuzzy
         self.inputstore.makeindex()
         for unit in self.templatestore.units:
             for location in unit.getlocations():
                 if location in self.inputstore.locationindex:
                     inputunit = self.inputstore.locationindex[location]
-                    if inputunit.isfuzzy() and not self.includefuzzy:
+                    if inputunit.isfuzzy() and not self.include_fuzzy:
                         unit.target = unit.source
                     else:
                         unit.target = inputunit.target
@@ -66,8 +68,8 @@ def run_converter(inputfile, outputfile, templatefile, includefuzzy=False,
     if not convert.should_output_store(inputstore, outputthreshold):
         return 0
 
-    convertor = po2ini(templatefile, inputstore, dialect)
-    outputstring = convertor.merge_stores(includefuzzy)
+    convertor = po2ini(templatefile, inputstore, includefuzzy, dialect)
+    outputstring = convertor.merge_stores()
     outputfile.write(outputstring)
     return 1
 
