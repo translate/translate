@@ -117,6 +117,21 @@ msgstr ""
         assert expected_output in self._convert(input_source, template_source,
                                                 blank_msgstr=True)
 
+    def test_dialects_inno(self):
+        """Check that we output correctly for Inno files."""
+        input_source = """[section]
+prop  =  ṽḁḽṻḝ%tṽḁḽṻḝ2%n
+"""
+        template_source = """[section]
+prop  =  value%tvalue2%n
+"""
+        expected_output = r"""#: [section]prop
+msgid "value\tvalue2\n"
+msgstr "ṽḁḽṻḝ\tṽḁḽṻḝ2\n"
+"""
+        output = self._convert(input_source, template_source, dialect="inno")
+        assert expected_output in output.decode('utf-8')
+
 
 class TestIni2POCommand(test_convert.TestConvertCommand, TestIni2PO):
     """Tests running actual ini2po commands on files"""
