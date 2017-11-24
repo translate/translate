@@ -227,6 +227,18 @@ prop=Ola mundo!
                                include_fuzzy=True)
         assert output == expected_output
 
+    def test_merging_missing_source(self):
+        """Check merging when template locations are missing in source."""
+        input_source = """#: [section]missing
+msgid "value"
+msgstr "valor"
+"""
+        template_source = """[section]
+key=other
+"""
+        output = self._convert(input_source, template_source)
+        assert output == template_source
+
     def test_merging_repeated_locations(self):
         """Check merging when files have repeated locations."""
         input_source = """#: [section]key
