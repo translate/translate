@@ -23,13 +23,8 @@ See: http://docs.translatehouse.org/projects/translate-toolkit/en/latest/command
 for examples and usage instructions.
 """
 
-import logging
-
 from translate.convert import convert
 from translate.storage import ini, po
-
-
-logger = logging.getLogger(__name__)
 
 
 class ini2po(object):
@@ -69,13 +64,9 @@ class ini2po(object):
             else:
                 translatedpo = None
             # If we have a valid po unit, get the translation and add it...
-            if origpo is not None:
-                if translatedpo is not None and not blankmsgstr:
-                    origpo.target = translatedpo.source
-                output_store.addunit(origpo)
-            elif translatedpo is not None:
-                logger.error("error converting original ini definition %s",
-                             origpo.name)
+            if translatedpo is not None and not blankmsgstr:
+                origpo.target = translatedpo.source
+            output_store.addunit(origpo)
         output_store.removeduplicates(duplicatestyle)
         return output_store
 
