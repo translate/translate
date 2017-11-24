@@ -32,6 +32,7 @@ class txt2po(object):
 
     SourceStoreClass = txt.TxtFile
     TargetStoreClass = po.pofile
+    TargetUnitClass = po.pounit
 
     def __init__(self, input_file, output_file, template_file=None,
                  duplicate_style="msgctxt", encoding="utf-8", flavour=None):
