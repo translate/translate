@@ -30,6 +30,10 @@ from translate.storage import ini, po
 class ini2po(object):
     """Convert one or two INI files to a single PO file."""
 
+    def __init__(self, duplicate_style="msgctxt"):
+        """Initialize the converter."""
+        self.duplicate_style = duplicate_style
+
     def convert_unit(self, unit):
         """Convert a source format unit to a target format unit."""
         target_unit = po.pounit(encoding="UTF-8")
@@ -38,7 +42,7 @@ class ini2po(object):
         target_unit.target = ""
         return target_unit
 
-    def convert_store(self, input_store, duplicatestyle="msgctxt"):
+    def convert_store(self, input_store):
         """Convert a single source format file to a target format file."""
         output_store = po.pofile()
         output_header = output_store.header()
@@ -49,11 +53,10 @@ class ini2po(object):
             output_unit = self.convert_unit(input_unit)
             if output_unit is not None:
                 output_store.addunit(output_unit)
-        output_store.removeduplicates(duplicatestyle)
+        output_store.removeduplicates(self.duplicate_style)
         return output_store
 
-    def merge_stores(self, template_store, input_store, blankmsgstr=False,
-                     duplicatestyle="msgctxt"):
+    def merge_stores(self, template_store, input_store, blankmsgstr=False):
         """Convert two source format files to a target format file."""
         output_store = po.pofile()
         output_header = output_store.header()
@@ -73,7 +76,7 @@ class ini2po(object):
                 translatedini = input_store.locationindex[template_unit_name]
                 origpo.target = translatedini.source
             output_store.addunit(origpo)
-        output_store.removeduplicates(duplicatestyle)
+        output_store.removeduplicates(self.duplicate_style)
         return output_store
 
 
@@ -81,15 +84,13 @@ def run_converter(input_file, output_file, template_file=None, pot=False,
                   duplicatestyle="msgctxt", dialect="default"):
     """Wrapper around converter."""
     input_store = ini.inifile(input_file, dialect=dialect)
-    convertor = ini2po()
+    convertor = ini2po(duplicate_style=duplicatestyle)
     if template_file is None:
-        output_store = convertor.convert_store(input_store,
-                                               duplicatestyle=duplicatestyle)
+        output_store = convertor.convert_store(input_store)
     else:
         template_store = ini.inifile(template_file, dialect=dialect)
         output_store = convertor.merge_stores(template_store, input_store,
-                                              blankmsgstr=pot,
-                                              duplicatestyle=duplicatestyle)
+                                              blankmsgstr=pot)
     if output_store.isempty():
         return 0
     output_store.serialize(output_file)
