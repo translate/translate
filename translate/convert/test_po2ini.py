@@ -14,7 +14,7 @@ importorskip("iniparse")
 
 class TestPO2Ini(object):
 
-    def merge2ini(self, inisource, posource, dialect="default"):
+    def merge2ini(self, posource, inisource, dialect="default"):
         """helper that merges po translations to .ini source without requiring files"""
         inputfile = wStringIO.StringIO(posource)
         inputpo = po.pofile(inputfile)
@@ -29,7 +29,7 @@ class TestPO2Ini(object):
         posource = '''#: [section]prop\nmsgid "value"\nmsgstr "waarde"\n'''
         initemplate = '''[section]\nprop=value\n'''
         iniexpected = '''[section]\nprop=waarde\n'''
-        inifile = self.merge2ini(initemplate, posource)
+        inifile = self.merge2ini(posource, initemplate)
         print(inifile)
         assert inifile == iniexpected
 
@@ -38,7 +38,7 @@ class TestPO2Ini(object):
         posource = '''#: [section]prop\nmsgid "value"\nmsgstr "waarde"\n'''
         initemplate = '''[section]\nprop  =  value\n'''
         iniexpected = '''[section]\nprop  =  waarde\n'''
-        inifile = self.merge2ini(initemplate, posource)
+        inifile = self.merge2ini(posource, initemplate)
         print(inifile)
         assert inifile == iniexpected
 
@@ -51,7 +51,7 @@ msgid ""
 msgstr ""'''
         initemplate = '[section]\naccesskey-accept=\n'
         iniexpected = '[section]\naccesskey-accept=\n'
-        inifile = self.merge2ini(initemplate, posource)
+        inifile = self.merge2ini(posource, initemplate)
         print(inifile)
         assert inifile == iniexpected
 
@@ -60,7 +60,7 @@ msgstr ""'''
         posource = '''#: [section]prop\n#, fuzzy\nmsgid "value"\nmsgstr "waarde"\n'''
         initemplate = '''[section]\nprop=value\n'''
         iniexpected = '''[section]\nprop=value\n'''
-        inifile = self.merge2ini(initemplate, posource)
+        inifile = self.merge2ini(posource, initemplate)
         print(inifile)
         assert inifile == iniexpected
 
@@ -69,7 +69,7 @@ msgstr ""'''
         posource = ""
         initemplate = "# A comment\n"
         iniexpected = initemplate
-        inifile = self.merge2ini(initemplate, posource)
+        inifile = self.merge2ini(posource, initemplate)
         print(inifile)
         assert inifile == iniexpected
 
@@ -82,7 +82,7 @@ msgstr "translated"
 '''
         initemplate = '''[section]\nkey =\n'''
         iniexpected = '''[section]\nkey =translated\n'''
-        inifile = self.merge2ini(initemplate, posource)
+        inifile = self.merge2ini(posource, initemplate)
         print(inifile)
         assert inifile == iniexpected
 
@@ -94,7 +94,7 @@ msgstr "ṽḁḽṻḝ\tṽḁḽṻḝ2\n"
 '''
         initemplate = '''[section]\nprop  =  value%tvalue%n\n'''
         iniexpected = '''[section]\nprop  =  ṽḁḽṻḝ%tṽḁḽṻḝ2%n\n'''
-        inifile = self.merge2ini(initemplate, posource, "inno").decode('utf-8')
+        inifile = self.merge2ini(posource, initemplate, "inno").decode('utf-8')
         print(inifile)
         assert inifile == iniexpected
 
