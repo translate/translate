@@ -44,40 +44,40 @@ class ini2po(object):
 
     def convert_store(self, input_store):
         """Convert a single source format file to a target format file."""
-        output_store = po.pofile()
-        output_header = output_store.header()
+        target_store = po.pofile()
+        output_header = target_store.header()
         output_header.addnote("extracted from %s" % input_store.filename,
                               "developer")
 
-        for input_unit in input_store.units:
-            output_unit = self.convert_unit(input_unit)
-            if output_unit is not None:
-                output_store.addunit(output_unit)
-        output_store.removeduplicates(self.duplicate_style)
-        return output_store
+        for source_unit in input_store.units:
+            target_unit = self.convert_unit(source_unit)
+            if target_unit is not None:
+                target_store.addunit(target_unit)
+        target_store.removeduplicates(self.duplicate_style)
+        return target_store
 
     def merge_stores(self, template_store, input_store, blankmsgstr=False):
         """Convert two source format files to a target format file."""
-        output_store = po.pofile()
-        output_header = output_store.header()
+        target_store = po.pofile()
+        output_header = target_store.header()
         note = "extracted from %s, %s" % (template_store.filename,
                                           input_store.filename)
         output_header.addnote(note, "developer")
 
         input_store.makeindex()
         for template_unit in template_store.units:
-            origpo = self.convert_unit(template_unit)
-            # Try and find a translation of the same name...
+            target_unit = self.convert_unit(template_unit)
+
             template_unit_name = "".join(template_unit.getlocations())
             add_translation = (
                 not blankmsgstr and
                 template_unit_name in input_store.locationindex)
             if add_translation:
-                translatedini = input_store.locationindex[template_unit_name]
-                origpo.target = translatedini.source
-            output_store.addunit(origpo)
-        output_store.removeduplicates(self.duplicate_style)
-        return output_store
+                source_unit = input_store.locationindex[template_unit_name]
+                target_unit.target = source_unit.source
+            target_store.addunit(target_unit)
+        target_store.removeduplicates(self.duplicate_style)
+        return target_store
 
 
 def run_converter(input_file, output_file, template_file=None, pot=False,
