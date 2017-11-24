@@ -32,6 +32,7 @@ class ini2po(object):
 
     SourceStoreClass = ini.inifile
     TargetStoreClass = po.pofile
+    TargetUnitClass = po.pounit
 
     def __init__(self, input_file, output_file, template_file=None,
                  blank_msgstr=False, duplicate_style="msgctxt",
@@ -51,7 +52,7 @@ class ini2po(object):
 
     def convert_unit(self, unit):
         """Convert a source format unit to a target format unit."""
-        target_unit = po.pounit(encoding="UTF-8")
+        target_unit = self.TargetUnitClass(encoding="UTF-8")
         target_unit.addlocation("".join(unit.getlocations()))
         target_unit.source = unit.source
         target_unit.target = ""
