@@ -137,6 +137,21 @@ prop  =  ṽḁḽṻḝ%tṽḁḽṻḝ2%n
         inifile = self._convert(posource, initemplate, dialect="inno")
         assert inifile.decode('utf-8') == iniexpected
 
+    def test_misaligned_files(self):
+        """Check misaligned files conversions uses the template version."""
+        input_source = """#: [section]key
+msgid "Hello, World!"
+msgstr "Ola mundo!"
+"""
+        template_source = """[section]
+different=Other string
+"""
+        expected_output = """[section]
+different=Other string
+"""
+        output = self._convert(input_source, template_source)
+        assert output == expected_output
+
     def test_convert_completion_below_threshold(self):
         """Check no conversion if input completion is below threshold."""
         input_source = """#: [section]prop
