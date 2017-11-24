@@ -77,6 +77,42 @@ msgstr "Lyfteks"
         assert self.po2txt(posource) == "Opskrif\n\nLyfteks"
         assert self.po2txt(posource, txttemplate) == "Opskrif\n\nLyfteks"
 
+    def test_convert_completion_below_threshold(self):
+        """Check no conversion if input completion is below threshold."""
+        input_source = """
+#: key
+msgid "Hello, World!"
+msgstr ""
+"""
+        template_source = "Hello, World!"
+        expected_output = ""
+        input_file = wStringIO.StringIO(input_source)
+        output_file = wStringIO.StringIO()
+        template_file = wStringIO.StringIO(template_source)
+        # Input completion is 0% so with a 70% threshold it should not output.
+        result = po2txt.po2txt(input_file, output_file, template_file,
+                               output_threshold=70).run()
+        assert result == 0
+        assert output_file.getvalue().decode('utf-8') == expected_output
+
+    def test_convert_completion_above_threshold(self):
+        """Check no conversion if input completion is above threshold."""
+        input_source = """
+#: key
+msgid "Hello, World!"
+msgstr "Ola mundo!"
+"""
+        template_source = "Hello, World!"
+        expected_output = "Ola mundo!"
+        input_file = wStringIO.StringIO(input_source)
+        output_file = wStringIO.StringIO()
+        template_file = wStringIO.StringIO(template_source)
+        # Input completion is 100% so with a 70% threshold it should output.
+        result = po2txt.po2txt(input_file, output_file, template_file,
+                               output_threshold=70).run()
+        assert result == 1
+        assert output_file.getvalue().decode('utf-8') == expected_output
+
 
 class TestPO2TxtCommand(test_convert.TestConvertCommand, TestPO2Txt):
     """Tests running actual po2txt commands on files"""
