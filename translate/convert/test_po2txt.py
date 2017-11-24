@@ -15,7 +15,7 @@ class TestPO2Txt(object):
             templatefile = wStringIO.StringIO(txttemplate)
         else:
             templatefile = None
-        assert po2txt.converttxt(inputfile, outputfile, templatefile)
+        assert po2txt.run_converter(inputfile, outputfile, templatefile)
         print(outputfile.getvalue())
         return outputfile.getvalue().decode('utf-8')
 

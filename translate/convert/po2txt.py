@@ -46,7 +46,7 @@ class po2txt(object):
         return "\n".join([textwrap.fill(line, self.wrap, replace_whitespace=False)
                           for line in message.split("\n")])
 
-    def convertstore(self, inputstore, includefuzzy):
+    def convert_store(self, inputstore, includefuzzy):
         """Convert a source file to a target file."""
         txtresult = ""
         for unit in inputstore.units:
@@ -58,7 +58,7 @@ class po2txt(object):
                 txtresult += self.wrapmessage(unit.source) + "\n\n"
         return txtresult.rstrip()
 
-    def mergestore(self, inputstore, templatetext, includefuzzy):
+    def merge_stores(self, inputstore, templatetext, includefuzzy):
         """Convert a source file to a target file using a template file.
 
         Source file is in source format, while target and template files use
@@ -78,8 +78,8 @@ class po2txt(object):
         return txtresult
 
 
-def converttxt(inputfile, outputfile, templatefile, wrap=None,
-               includefuzzy=False, encoding='utf-8', outputthreshold=None):
+def run_converter(inputfile, outputfile, templatefile, wrap=None,
+                  includefuzzy=False, encoding='utf-8', outputthreshold=None):
     """Wrapper around converter."""
     inputstore = factory.getobject(inputfile)
 
@@ -89,22 +89,22 @@ def converttxt(inputfile, outputfile, templatefile, wrap=None,
     convertor = po2txt(wrap=wrap)
 
     if templatefile is None:
-        outputstring = convertor.convertstore(inputstore, includefuzzy)
+        outputstring = convertor.convert_store(inputstore, includefuzzy)
     else:
         templatestring = templatefile.read().decode(encoding)
-        outputstring = convertor.mergestore(inputstore, templatestring, includefuzzy)
+        outputstring = convertor.merge_stores(inputstore, templatestring, includefuzzy)
 
     outputfile.write(outputstring.encode('utf-8'))
     return True
 
 
 formats = {
-    ("po", "txt"): ("txt", converttxt),
-    ("po"): ("txt", converttxt),
-    ("xlf", "txt"): ("txt", converttxt),
-    ("xlf"): ("txt", converttxt),
-    ("xliff", "txt"): ("txt", converttxt),
-    ("xliff"): ("txt", converttxt),
+    ("po", "txt"): ("txt", run_converter),
+    ("po"): ("txt", run_converter),
+    ("xlf", "txt"): ("txt", run_converter),
+    ("xlf"): ("txt", run_converter),
+    ("xliff", "txt"): ("txt", run_converter),
+    ("xliff"): ("txt", run_converter),
 }
 
 
