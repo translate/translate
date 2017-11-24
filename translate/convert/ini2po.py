@@ -30,6 +30,14 @@ from translate.storage import ini, po
 class ini2po(object):
     """Convert one or two INI files to a single PO file."""
 
+    def convert_unit(self, input_unit):
+        """Convert a source format unit to a target format unit."""
+        output_unit = po.pounit(encoding="UTF-8")
+        output_unit.addlocation("".join(input_unit.getlocations()))
+        output_unit.source = input_unit.source
+        output_unit.target = ""
+        return output_unit
+
     def convert_store(self, input_store, duplicatestyle="msgctxt"):
         """Convert a single source format file to a target format file."""
         output_store = po.pofile()
@@ -67,14 +75,6 @@ class ini2po(object):
             output_store.addunit(origpo)
         output_store.removeduplicates(duplicatestyle)
         return output_store
-
-    def convert_unit(self, input_unit):
-        """Convert a source format unit to a target format unit."""
-        output_unit = po.pounit(encoding="UTF-8")
-        output_unit.addlocation("".join(input_unit.getlocations()))
-        output_unit.source = input_unit.source
-        output_unit.target = ""
-        return output_unit
 
 
 def run_converter(input_file, output_file, template_file, pot=False,
