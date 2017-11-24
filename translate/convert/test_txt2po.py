@@ -8,14 +8,17 @@ class BaseTxt2POTester(object):
     ConverterClass = txt2po.txt2po
     Flavour = None
 
-    def _convert(self, txtsource, template=None):
+    def _convert(self, format_input_source, format_template_source=None):
         """Helper that converts format to PO without files."""
-        inputfile = wStringIO.StringIO(txtsource)
+        input_file = wStringIO.StringIO(format_input_source)
         output_file = wStringIO.StringIO()
-        convertor = self.ConverterClass(inputfile, output_file,
+        template_file = None
+        if format_template_source:
+            template_file = wStringIO.StringIO(format_template_source)
+        converter = self.ConverterClass(input_file, output_file, template_file,
                                         flavour=self.Flavour)
-        assert convertor.run() == 1
-        return convertor.target_store
+        assert converter.run() == 1
+        return converter.target_store
 
     def _count_elements(self, po_file):
         """Helper that counts the number of non-header units."""
