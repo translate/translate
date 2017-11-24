@@ -35,8 +35,9 @@ class po2txt(object):
     best to give it a template file otherwise will just concat msgstrs
     """
 
-    def __init__(self, input_file, template_file=None, include_fuzzy=False,
-                 output_threshold=None, encoding='utf-8', wrap=None):
+    def __init__(self, input_file, output_file, template_file=None,
+                 include_fuzzy=False, output_threshold=None, encoding='utf-8',
+                 wrap=None):
         """Initialize the converter."""
         self.source_store = factory.getobject(input_file)
 
@@ -48,6 +49,7 @@ class po2txt(object):
             self.encoding = encoding
             self.wrap = wrap
 
+            self.output_file = output_file
             self.template_file = template_file
 
     def wrapmessage(self, message):
@@ -92,7 +94,8 @@ class po2txt(object):
 def run_converter(inputfile, outputfile, templatefile=None, wrap=None,
                   includefuzzy=False, encoding='utf-8', outputthreshold=None):
     """Wrapper around converter."""
-    convertor = po2txt(inputfile, templatefile, include_fuzzy=includefuzzy,
+    convertor = po2txt(inputfile, outputfile, templatefile,
+                       include_fuzzy=includefuzzy,
                        output_threshold=outputthreshold, encoding=encoding,
                        wrap=wrap)
 
