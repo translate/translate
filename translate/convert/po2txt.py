@@ -90,25 +90,26 @@ class po2txt(object):
                     txtresult = txtresult.replace(txtsource, txttarget)
         return txtresult
 
+    def run(self):
+        """Run the converter."""
+        if not self.should_output_store:
+            return False
+
+        if self.template_file is None:
+            outputstring = self.convert_store()
+        else:
+            outputstring = self.merge_stores()
+
+        self.output_file.write(outputstring.encode('utf-8'))
+        return True
+
 
 def run_converter(inputfile, outputfile, templatefile=None, wrap=None,
                   includefuzzy=False, encoding='utf-8', outputthreshold=None):
     """Wrapper around converter."""
-    convertor = po2txt(inputfile, outputfile, templatefile,
-                       include_fuzzy=includefuzzy,
-                       output_threshold=outputthreshold, encoding=encoding,
-                       wrap=wrap)
-
-    if not convertor.should_output_store:
-        return False
-
-    if templatefile is None:
-        outputstring = convertor.convert_store()
-    else:
-        outputstring = convertor.merge_stores()
-
-    outputfile.write(outputstring.encode('utf-8'))
-    return True
+    return po2txt(inputfile, outputfile, templatefile,
+                  include_fuzzy=includefuzzy, output_threshold=outputthreshold,
+                  encoding=encoding, wrap=wrap).run()
 
 
 formats = {
