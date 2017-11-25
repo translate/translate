@@ -12,7 +12,7 @@ class TestPo2Tiki(object):
 
     def test_convert(self):
         """Check converting simple file."""
-        input_file = """
+        input_source = """
 #: translated
 msgid "zero_source"
 msgstr "zero_target"
@@ -21,6 +21,7 @@ msgstr "zero_target"
 msgid "one_source"
 msgstr "one_target"
 """
+        input_file = wStringIO.StringIO(input_source)
         output_file = wStringIO.StringIO()
         po2tiki.convertpo(input_file, output_file)
         output = output_file.getvalue().decode('utf-8')
