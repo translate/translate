@@ -15,14 +15,6 @@ class TestLang2PO(object):
         outputpo = convertor.convertstore(inputlang)
         return outputpo
 
-    def convertlng(self, source):
-        """call the convertlng, return the outputfile"""
-        inputfile = wStringIO.StringIO(source)
-        outputfile = wStringIO.StringIO()
-        templatefile = None
-        assert lang2po.convertlang(inputfile, outputfile, templatefile)
-        return outputfile.getvalue()
-
     def _single_element(self, pofile):
         """checks that the pofile contains a single non-header element, and returns it"""
         assert len(pofile.units) == 2
