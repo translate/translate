@@ -59,17 +59,20 @@ class tiki2po(object):
             if not self.include_unused and "unused" in unit.getlocations():
                 continue
             self.target_store.addunit(self.convert_unit(unit))
-        return self.target_store
+
+    def run(self):
+        """Run the converter."""
+        self.convert_store()
+        if self.target_store.isempty():
+            return 0
+
+        self.target_store.serialize(self.output_file)
+        return 1
 
 
 def run_converter(inputfile, outputfile, template=None, includeunused=False):
     """Wrapper around converter."""
-    convertor = tiki2po(inputfile, outputfile, template, includeunused)
-    outputstore = convertor.convert_store()
-    if outputstore.isempty():
-        return 0
-    outputstore.serialize(outputfile)
-    return 1
+    return tiki2po(inputfile, outputfile, template, includeunused).run()
 
 
 formats = {
