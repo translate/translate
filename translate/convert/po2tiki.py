@@ -64,17 +64,20 @@ class po2tiki(object):
             if source_unit.isblank() or source_unit.isheader():
                 continue
             self.target_store.addunit(self.convert_unit(source_unit))
-        return self.target_store
+
+    def run(self):
+        """Run the converter."""
+        if self.source_store.isempty():
+            return 0
+
+        self.convert_store()
+        self.target_store.serialize(self.output_file)
+        return 1
 
 
 def run_converter(inputfile, outputfile, template=None):
     """Wrapper around converter."""
-    convertor = po2tiki(inputfile, outputfile, template)
-    if convertor.source_store.isempty():
-        return 0
-    outputstore = convertor.convert_store()
-    outputstore.serialize(outputfile)
-    return 1
+    return po2tiki(inputfile, outputfile, template).run()
 
 
 formats = {
