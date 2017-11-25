@@ -33,7 +33,7 @@ class po2tiki(object):
     TargetStoreClass = tiki.TikiStore
     TargetUnitClass = tiki.TikiUnit
 
-    def __init__(self, input_file, output_file):
+    def __init__(self, input_file, output_file, template_file=None):
         """Initialize the converter."""
         self.output_file = output_file
         self.target_store = self.TargetStoreClass()
@@ -71,7 +71,7 @@ def run_converter(inputfile, outputfile, template=None):
     inputstore = po.pofile(inputfile)
     if inputstore.isempty():
         return 0
-    convertor = po2tiki(inputfile, outputfile)
+    convertor = po2tiki(inputfile, outputfile, template)
     outputstore = convertor.convert_store(inputstore)
     outputstore.serialize(outputfile)
     return 1
