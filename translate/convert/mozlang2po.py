@@ -38,6 +38,9 @@ class lang2po(object):
                  blank_msgstr=False, duplicate_style="msgctxt",
                  encoding="utf-8"):
         """Initialize the converter."""
+        if template_file is not None:
+            raise NotImplementedError
+
         self.blank_msgstr = blank_msgstr
         self.duplicate_style = duplicate_style
 
@@ -66,9 +69,16 @@ class lang2po(object):
         for source_unit in self.source_store.units:
             self.target_store.addunit(self.convert_unit(source_unit))
 
+    def merge_stores(self):
+        """Convert two source format files to a target format file."""
+        raise NotImplementedError
+
     def run(self):
         """Run the converter."""
-        self.convert_store()
+        if self.template_store is None:
+            self.convert_store()
+        else:
+            self.merge_stores()
 
         if self.extraction_msg:
             self.target_store.header().addnote(self.extraction_msg,

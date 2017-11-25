@@ -1,5 +1,7 @@
 # -*- coding: utf-8 -*-
 
+import pytest
+
 from translate.convert import mozlang2po, test_convert
 from translate.misc import wStringIO
 from translate.storage import mozilla_lang as lang
@@ -7,11 +9,13 @@ from translate.storage import mozilla_lang as lang
 
 class TestLang2PO(object):
 
+    ConverterClass = mozlang2po.lang2po
+
     def _convert_to_store(self, source):
         """helper that converts .lang source to po source without requiring files"""
         inputfile = wStringIO.StringIO(source)
         output_file = wStringIO.StringIO()
-        convertor = mozlang2po.lang2po(inputfile, output_file)
+        convertor = self.ConverterClass(inputfile, output_file)
         assert convertor.run() == 1
         return convertor.target_store
 
@@ -49,6 +53,14 @@ msgid "One"
 msgstr "Een"
 """
         assert expected_output in self._convert_to_string(input_string)
+
+    def test_merge(self):
+        """Check converter doesn't merge."""
+        input_file = wStringIO.StringIO()
+        output_file = wStringIO.StringIO()
+        template_file = wStringIO.StringIO()
+        with pytest.raises(NotImplementedError):
+            self.ConverterClass(input_file, output_file, template_file).run()
 
     def test_simpleentry(self):
         """checks that a simple lang entry converts properly to a po entry"""
