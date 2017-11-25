@@ -30,12 +30,6 @@ class TestLang2PO(object):
         print(pofile)
         return pofile.units[1]
 
-    def countelements(self, pofile):
-        """counts the number of non-header entries"""
-        assert pofile.units[0].isheader()
-        print(pofile)
-        return len(pofile.units) - 1
-
     def test_simpleentry(self):
         """checks that a simple lang entry converts properly to a po entry"""
         source = ';One\nEen\n'
