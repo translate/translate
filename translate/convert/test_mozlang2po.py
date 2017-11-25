@@ -15,6 +15,17 @@ class TestLang2PO(object):
         outputpo = convertor.convertstore(inputlang)
         return outputpo
 
+    def _convert_to_string(self, input_string, template_string=None):
+        """Helper that converts to target format string without using files."""
+        input_file = wStringIO.StringIO(input_string)
+        output_file = wStringIO.StringIO()
+        template_file = None
+        if template_string:
+            template_file = wStringIO.StringIO(template_string)
+        result = mozlang2po.convertlang(input_file, output_file, template_file)
+        assert result == 1
+        return output_file.getvalue().decode('utf-8')
+
     def _single_element(self, pofile):
         """checks that the pofile contains a single non-header element, and returns it"""
         assert len(pofile.units) == 2
@@ -29,6 +40,17 @@ class TestLang2PO(object):
         result = mozlang2po.convertlang(input_file, output_file, template_file)
         assert result == 0
         assert output_file.getvalue().decode('utf-8') == ''
+
+    def test_simple_string(self):
+        """Checks a simple lang string converts correctly."""
+        input_string = """;One
+Een
+"""
+        expected_output = """
+msgid "One"
+msgstr "Een"
+"""
+        assert expected_output in self._convert_to_string(input_string)
 
     def test_simpleentry(self):
         """checks that a simple lang entry converts properly to a po entry"""
