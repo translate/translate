@@ -24,12 +24,14 @@ for examples and usage instructions.
 """
 
 from translate.convert import convert
-from translate.storage import po, subtitles
+from translate.storage import po
 
 
 class po2sub(object):
 
     def __init__(self, templatefile, inputstore, includefuzzy=False):
+        from translate.storage import subtitles
+
         self.includefuzzy = includefuzzy
         self.templatefile = templatefile
         self.templatestore = subtitles.SubtitleFile(templatefile)
