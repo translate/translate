@@ -30,25 +30,28 @@ from translate.storage import mozilla_lang as lang, po
 class lang2po(object):
     """Convert one Mozilla .lang file to a single PO file."""
 
+    TargetStoreClass = po.pofile
+
     def __init__(self, duplicate_style="msgctxt"):
         """Initialize the converter."""
         self.duplicate_style = duplicate_style
 
+        self.target_store = self.TargetStoreClass()
+
     def convert_store(self, thelangfile):
         """Convert a single source format file to a target format file."""
-        thetargetfile = po.pofile()
-        targetheader = thetargetfile.header()
+        targetheader = self.target_store.header()
         targetheader.addnote("extracted from %s" %
                              thelangfile.filename, "developer")
 
         for langunit in thelangfile.units:
-            newunit = thetargetfile.addsourceunit(langunit.source)
+            newunit = self.target_store.addsourceunit(langunit.source)
             newunit.target = langunit.target
             newunit.addlocations(langunit.getlocations())
             newunit.addnote(langunit.getnotes(), 'developer')
 
-        thetargetfile.removeduplicates(self.duplicate_style)
-        return thetargetfile
+        self.target_store.removeduplicates(self.duplicate_style)
+        return self.target_store
 
 
 def run_converter(inputfile, outputfile, templates, pot=False,
