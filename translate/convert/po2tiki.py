@@ -30,11 +30,13 @@ from translate.storage import po, tiki
 class po2tiki(object):
     """Convert a PO file and a template TikiWiki file to a TikiWiki file."""
 
+    SourceStoreClass = po.pofile
     TargetStoreClass = tiki.TikiStore
     TargetUnitClass = tiki.TikiUnit
 
     def __init__(self, input_file, output_file, template_file=None):
         """Initialize the converter."""
+        self.source_store = self.SourceStoreClass(input_file)
         self.output_file = output_file
         self.target_store = self.TargetStoreClass()
 
@@ -56,9 +58,8 @@ class po2tiki(object):
             target_unit.addlocation("translated")
         return target_unit
 
-    def convert_store(self, source_store):
+    def convert_store(self):
         """Convert a single source format file to a target format file."""
-        self.source_store = source_store
         for source_unit in self.source_store.units:
             if source_unit.isblank() or source_unit.isheader():
                 continue
@@ -68,11 +69,10 @@ class po2tiki(object):
 
 def run_converter(inputfile, outputfile, template=None):
     """Wrapper around converter."""
-    inputstore = po.pofile(inputfile)
-    if inputstore.isempty():
-        return 0
     convertor = po2tiki(inputfile, outputfile, template)
-    outputstore = convertor.convert_store(inputstore)
+    if convertor.source_store.isempty():
+        return 0
+    outputstore = convertor.convert_store()
     outputstore.serialize(outputfile)
     return 1
 
