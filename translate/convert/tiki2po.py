@@ -30,19 +30,23 @@ from translate.storage import po, tiki
 class tiki2po(object):
     """Convert one or two TikiWiki's language.php files to a single PO file."""
 
+    TargetStoreClass = po.pofile
+    TargetUnitClass = po.pounit
+
     def __init__(self, include_unused=False):
         """Initialize the converter."""
         self.include_unused = include_unused
 
+        self.target_store = self.TargetStoreClass()
+
     def convert_store(self, thetikifile):
         """Convert a single source format file to a target format file."""
         self.source_store = thetikifile
-        self.target_store = po.pofile()
 
         for unit in self.source_store.units:
             if not self.include_unused and "unused" in unit.getlocations():
                 continue
-            target_unit = po.pounit()
+            target_unit = self.TargetUnitClass()
             target_unit.source = unit.source
             target_unit.target = unit.target
             locations = unit.getlocations()
