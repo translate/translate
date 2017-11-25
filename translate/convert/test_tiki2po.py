@@ -18,8 +18,8 @@ class TestTiki2Po(object):
         template_file = None
         if format_template_source:
             template_file = wStringIO.StringIO(format_template_source)
-        result = tiki2po.converttiki(input_file, output_file, template_file,
-                                     include_unused)
+        result = tiki2po.run_converter(input_file, output_file, template_file,
+                                       include_unused)
         assert result == 1
         return output_file.getvalue().decode('utf-8')
 
@@ -27,7 +27,7 @@ class TestTiki2Po(object):
         """Check converting empty file returns no output."""
         input_file = wStringIO.StringIO()
         output_file = wStringIO.StringIO()
-        result = tiki2po.converttiki(input_file, output_file)
+        result = tiki2po.run_converter(input_file, output_file)
         assert result == 0
         assert output_file.getvalue().decode('utf-8') == ''
 

@@ -17,34 +17,29 @@
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, see <http://www.gnu.org/licenses/>.
 
-"""Convert TikiWiki's language.php files to GetText PO files.
+"""Convert TikiWiki's language.php files to Gettext PO localization files.
 
 See: http://docs.translatehouse.org/projects/translate-toolkit/en/latest/commands/tiki2po.html
 for examples and usage instructions.
 """
 
+from translate.convert import convert
 from translate.storage import po, tiki
 
 
 class tiki2po(object):
+    """Convert one or two TikiWiki's language.php files to a single PO file."""
 
-    def __init__(self, includeunused=False):
-        """
-        :param includeunused: On conversion, should the "unused" section be
-                              preserved?  Default: False
-        """
-        self.includeunused = includeunused
+    def __init__(self, include_unused=False):
+        """Initialize the converter."""
+        self.include_unused = include_unused
 
-    def convertstore(self, thetikifile):
-        """Converts a given (parsed) tiki file to a po file.
-
-        :param thetikifile: a tikifile pre-loaded with input data
-        """
+    def convert_store(self, thetikifile):
+        """Convert a single source format file to a target format file."""
         thetargetfile = po.pofile()
 
-        # For each lang unit, make the new po unit accordingly
         for unit in thetikifile.units:
-            if not self.includeunused and "unused" in unit.getlocations():
+            if not self.include_unused and "unused" in unit.getlocations():
                 continue
             newunit = po.pounit()
             newunit.source = unit.source
@@ -56,30 +51,23 @@ class tiki2po(object):
         return thetargetfile
 
 
-def converttiki(inputfile, outputfile, template=None, includeunused=False):
-    """Converts from tiki file format to po.
-
-    :param inputfile: file handle of the source
-    :param outputfile: file handle to write to
-    :param template: unused
-    :param includeunused: Include the "usused" section of the tiki
-                          file? Default: False
-    """
-    convertor = tiki2po(includeunused=includeunused)
+def run_converter(inputfile, outputfile, template=None, includeunused=False):
+    """Wrapper around converter."""
+    convertor = tiki2po(includeunused)
     inputstore = tiki.TikiStore(inputfile)
-    outputstore = convertor.convertstore(inputstore)
+    outputstore = convertor.convert_store(inputstore)
     if outputstore.isempty():
-        return False
+        return 0
     outputstore.serialize(outputfile)
-    return True
+    return 1
+
+
+formats = {
+    "php": ("po", run_converter),
+}
 
 
 def main(argv=None):
-    """Converts tiki .php files to .po."""
-    from translate.convert import convert
-
-    formats = {"php": ("po", converttiki)}
-
     parser = convert.ConvertOptionParser(formats, description=__doc__)
     parser.add_option("", "--include-unused", dest="includeunused",
                       action="store_true", default=False,
