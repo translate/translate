@@ -30,7 +30,12 @@ from translate.storage import po, tiki
 class po2tiki(object):
     """Convert a PO file and a template TikiWiki file to a TikiWiki file."""
 
+    TargetStoreClass = tiki.TikiStore
     TargetUnitClass = tiki.TikiUnit
+
+    def __init__(self):
+        """Initialize the converter."""
+        self.target_store = self.TargetStoreClass()
 
     def convert_unit(self, unit):
         """Convert a source format unit to a target format unit."""
@@ -53,7 +58,6 @@ class po2tiki(object):
     def convert_store(self, source_store):
         """Convert a single source format file to a target format file."""
         self.source_store = source_store
-        self.target_store = tiki.TikiStore()
         for source_unit in self.source_store.units:
             if source_unit.isblank() or source_unit.isheader():
                 continue
