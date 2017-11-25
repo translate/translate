@@ -30,30 +30,31 @@ from translate.storage import po, tiki
 class po2tiki(object):
     """Convert a PO file and a template TikiWiki file to a TikiWiki file."""
 
+    def convert_unit(self, unit):
+        """Convert a source format unit to a target format unit."""
+        target_unit = tiki.TikiUnit(unit.source)
+        target_unit.target = unit.target
+        locations = unit.getlocations()
+        if locations:
+            target_unit.addlocations(locations)
+        # If a word is "untranslated" but the target isn't empty and isn't the
+        # same as the source it's been translated and we switch it. This is an
+        # assumption but should remain true as long as these scripts are used.
+        change_location = (target_unit.getlocations() == ["untranslated"] and
+                           unit.source != unit.target and
+                           unit.target != "")
+        if change_location:
+            target_unit.location = []
+            target_unit.addlocation("translated")
+        return target_unit
+
     def convert_store(self, source_store):
         """Convert a single source format file to a target format file."""
         self.source_store = source_store
         self.target_store = tiki.TikiStore()
         for unit in self.source_store.units:
             if not (unit.isblank() or unit.isheader()):
-                target_unit = tiki.TikiUnit(unit.source)
-                target_unit.target = unit.target
-                locations = unit.getlocations()
-                if locations:
-                    target_unit.addlocations(locations)
-                # If a word is "untranslated" but the target isn't empty and
-                # isn't the same as the source it's been translated and we
-                # switch it. This is an assumption but should remain true as
-                # long as these scripts are used.
-                change_location = (
-                    target_unit.getlocations() == ["untranslated"] and
-                    unit.source != unit.target and
-                    unit.target != "")
-                if change_location:
-                    target_unit.location = []
-                    target_unit.addlocation("translated")
-
-                self.target_store.addunit(target_unit)
+                self.target_store.addunit(self.convert_unit(unit))
         return self.target_store
 
 
