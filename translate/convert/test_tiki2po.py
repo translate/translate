@@ -4,9 +4,8 @@
 # Author: Wil Clouser <wclouser@mozilla.com>
 # Date: 2008-12-01
 
-from io import BytesIO
-
 from translate.convert import test_convert, tiki2po
+from translate.misc import wStringIO
 
 
 class TestTiki2Po(object):
@@ -14,11 +13,11 @@ class TestTiki2Po(object):
     def _convert(self, format_input_source, format_template_source=None,
                  include_unused=False):
         """Helper that converts format to target format without files."""
-        input_file = BytesIO(format_input_source)
-        output_file = BytesIO()
+        input_file = wStringIO.StringIO(format_input_source)
+        output_file = wStringIO.StringIO()
         template_file = None
         if format_template_source:
-            template_file = BytesIO(format_template_source)
+            template_file = wStringIO.StringIO(format_template_source)
         result = tiki2po.converttiki(input_file, output_file, template_file,
                                      include_unused)
         assert result == 1
@@ -26,8 +25,8 @@ class TestTiki2Po(object):
 
     def test_convert_empty(self):
         """Check converting empty file returns no output."""
-        input_file = BytesIO()
-        output_file = BytesIO()
+        input_file = wStringIO.StringIO()
+        output_file = wStringIO.StringIO()
         result = tiki2po.converttiki(input_file, output_file)
         assert result == 0
         assert output_file.getvalue().decode('utf-8') == ''
