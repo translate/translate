@@ -68,11 +68,11 @@ class lang2po(object):
         for source_unit in self.source_store.units:
             self.target_store.addunit(self.convert_unit(source_unit))
 
-        self.target_store.removeduplicates(self.duplicate_style)
-
     def run(self):
         """Run the converter."""
         self.convert_store()
+
+        self.target_store.removeduplicates(self.duplicate_style)
 
         if self.target_store.isempty():
             return 0
