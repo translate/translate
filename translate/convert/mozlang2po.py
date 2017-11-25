@@ -34,15 +34,21 @@ class lang2po(object):
     TargetStoreClass = po.pofile
     TargetUnitClass = po.pounit
 
-    def __init__(self, input_file, output_file, duplicate_style="msgctxt",
+    def __init__(self, input_file, output_file, template_file=None,
+                 blank_msgstr=False, duplicate_style="msgctxt",
                  encoding="utf-8"):
         """Initialize the converter."""
+        self.blank_msgstr = blank_msgstr
         self.duplicate_style = duplicate_style
 
         self.output_file = output_file
         self.source_store = self.SourceStoreClass(input_file,
                                                   encoding=encoding)
         self.target_store = self.TargetStoreClass()
+        self.template_store = None
+
+        if template_file is not None:
+            self.template_store = self.SourceStoreClass(template_file)
 
     def convert_unit(self, unit):
         """Convert a source format unit to a target format unit."""
@@ -69,8 +75,8 @@ class lang2po(object):
 def run_converter(inputfile, outputfile, templates, pot=False,
                   duplicatestyle="msgctxt", encoding="utf-8"):
     """Wrapper around converter."""
-    convertor = lang2po(inputfile, outputfile, duplicate_style=duplicatestyle,
-                        encoding=encoding)
+    convertor = lang2po(inputfile, outputfile, templates, blank_msgstr=pot,
+                        duplicate_style=duplicatestyle, encoding=encoding)
     outputstore = convertor.convert_store()
     if outputstore.isempty():
         return 0
