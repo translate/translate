@@ -39,6 +39,16 @@ class tiki2po(object):
 
         self.target_store = self.TargetStoreClass()
 
+    def convert_unit(self, unit):
+        """Convert a source format unit to a target format unit."""
+        target_unit = self.TargetUnitClass()
+        target_unit.source = unit.source
+        target_unit.target = unit.target
+        locations = unit.getlocations()
+        if locations:
+            target_unit.addlocations(locations)
+        return target_unit
+
     def convert_store(self, thetikifile):
         """Convert a single source format file to a target format file."""
         self.source_store = thetikifile
@@ -46,13 +56,7 @@ class tiki2po(object):
         for unit in self.source_store.units:
             if not self.include_unused and "unused" in unit.getlocations():
                 continue
-            target_unit = self.TargetUnitClass()
-            target_unit.source = unit.source
-            target_unit.target = unit.target
-            locations = unit.getlocations()
-            if locations:
-                target_unit.addlocations(locations)
-            self.target_store.addunit(target_unit)
+            self.target_store.addunit(self.convert_unit(unit))
         return self.target_store
 
 
