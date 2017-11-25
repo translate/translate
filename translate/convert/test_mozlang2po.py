@@ -27,12 +27,13 @@ class TestLang2PO(object):
         """checks that the pofile contains a single non-header element, and returns it"""
         assert len(pofile.units) == 2
         assert pofile.units[0].isheader()
-        print(pofile)
         return pofile.units[1]
 
     def test_simpleentry(self):
         """checks that a simple lang entry converts properly to a po entry"""
-        source = ';One\nEen\n'
+        source = """;One
+Een
+"""
         pofile = self._convert_to_store(source)
         pounit = self._single_element(pofile)
         assert pounit.source == "One"
@@ -40,7 +41,10 @@ class TestLang2PO(object):
 
     def test_simplecomment(self):
         """Handle simple comments"""
-        source = '# Comment\n;One\nEen\n'
+        source = """# Comment
+;One
+Een
+"""
         pofile = self._convert_to_store(source)
         pounit = self._single_element(pofile)
         assert pounit.source == "One"
@@ -49,7 +53,11 @@ class TestLang2PO(object):
 
     def test_meta_tags(self):
         """Meta tags are not extracted"""
-        source = '## tag\n# Comment\n;One\nEen\n'
+        source = """## tag
+# Comment
+;One
+Een
+"""
         pofile = self._convert_to_store(source)
         pounit = self._single_element(pofile)
         assert "tag" not in pounit.getnotes()
@@ -65,4 +73,5 @@ class TestLang2POCommand(test_convert.TestConvertCommand, TestLang2PO):
         options = test_convert.TestConvertCommand.test_help(self)
         options = self.help_check(options, "-P, --pot")
         options = self.help_check(options, "--encoding=ENCODING")
-        options = self.help_check(options, "--duplicates=DUPLICATESTYLE", last=True)
+        options = self.help_check(options, "--duplicates=DUPLICATESTYLE",
+                                  last=True)
