@@ -36,19 +36,20 @@ class tiki2po(object):
 
     def convert_store(self, thetikifile):
         """Convert a single source format file to a target format file."""
-        thetargetfile = po.pofile()
+        self.source_store = thetikifile
+        self.target_store = po.pofile()
 
-        for unit in thetikifile.units:
+        for unit in self.source_store.units:
             if not self.include_unused and "unused" in unit.getlocations():
                 continue
-            newunit = po.pounit()
-            newunit.source = unit.source
-            newunit.target = unit.target
+            target_unit = po.pounit()
+            target_unit.source = unit.source
+            target_unit.target = unit.target
             locations = unit.getlocations()
             if locations:
-                newunit.addlocations(locations)
-            thetargetfile.addunit(newunit)
-        return thetargetfile
+                target_unit.addlocations(locations)
+            self.target_store.addunit(target_unit)
+        return self.target_store
 
 
 def run_converter(inputfile, outputfile, template=None, includeunused=False):
