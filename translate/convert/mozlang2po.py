@@ -23,43 +23,40 @@
 """Convert Mozilla .lang files to Gettext PO localization files.
 """
 
+from translate.convert import convert
 from translate.storage import mozilla_lang as lang, po
 
 
 class lang2po(object):
+    """Convert one Mozilla .lang file to a single PO file."""
 
-    def __init__(self, duplicatestyle="msgctxt"):
-        self.duplicatestyle = duplicatestyle
+    def __init__(self, duplicate_style="msgctxt"):
+        """Initialize the converter."""
+        self.duplicate_style = duplicate_style
 
-    def convertstore(self, thelangfile):
-        """converts a file to .po format"""
+    def convert_store(self, thelangfile):
+        """Convert a single source format file to a target format file."""
         thetargetfile = po.pofile()
-
-        # Set up the header
         targetheader = thetargetfile.header()
         targetheader.addnote("extracted from %s" %
                              thelangfile.filename, "developer")
 
-        # For each lang unit, make the new po unit accordingly
         for langunit in thelangfile.units:
             newunit = thetargetfile.addsourceunit(langunit.source)
             newunit.target = langunit.target
             newunit.addlocations(langunit.getlocations())
             newunit.addnote(langunit.getnotes(), 'developer')
 
-        # Remove duplicates, because we can
-        thetargetfile.removeduplicates(self.duplicatestyle)
+        thetargetfile.removeduplicates(self.duplicate_style)
         return thetargetfile
 
 
-def convertlang(inputfile, outputfile, templates, pot=False,
-                duplicatestyle="msgctxt", encoding="utf-8"):
-    """reads in stdin using fromfileclass, converts using convertorclass,
-    writes to stdout
-    """
+def run_converter(inputfile, outputfile, templates, pot=False,
+                  duplicatestyle="msgctxt", encoding="utf-8"):
+    """Wrapper around converter."""
     inputstore = lang.LangStore(inputfile, encoding=encoding)
-    convertor = lang2po(duplicatestyle=duplicatestyle)
-    outputstore = convertor.convertstore(inputstore)
+    convertor = lang2po(duplicate_style=duplicatestyle)
+    outputstore = convertor.convert_store(inputstore)
     if outputstore.isempty():
         return 0
     outputstore.serialize(outputfile)
@@ -67,12 +64,11 @@ def convertlang(inputfile, outputfile, templates, pot=False,
 
 
 formats = {
-    "lang": ("po", convertlang)
+    "lang": ("po", run_converter)
 }
 
 
 def main(argv=None):
-    from translate.convert import convert
     parser = convert.ConvertOptionParser(formats, usepots=True,
                                          description=__doc__)
     parser.add_option(

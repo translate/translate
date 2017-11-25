@@ -12,7 +12,7 @@ class TestLang2PO(object):
         inputfile = wStringIO.StringIO(source)
         inputlang = lang.LangStore(inputfile)
         convertor = mozlang2po.lang2po()
-        outputpo = convertor.convertstore(inputlang)
+        outputpo = convertor.convert_store(inputlang)
         return outputpo
 
     def _convert_to_string(self, input_string, template_string=None,
@@ -24,7 +24,8 @@ class TestLang2PO(object):
         if template_string:
             template_file = wStringIO.StringIO(template_string)
         expected_result = 1 if success_expected else 0
-        result = mozlang2po.convertlang(input_file, output_file, template_file)
+        result = mozlang2po.run_converter(input_file, output_file,
+                                          template_file)
         assert result == expected_result
         return output_file.getvalue().decode('utf-8')
 

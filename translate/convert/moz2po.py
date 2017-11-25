@@ -40,7 +40,7 @@ def main(argv=None):
         ("it", mozfunny2prop.it2po),
         ("ini", mozfunny2prop.ini2po),
         ("inc", mozfunny2prop.inc2po),
-        ("lang", mozlang2po.convertlang),
+        ("lang", mozlang2po.run_converter),
     ]
     for format, converter in converters:
         formats[(format, format)] = (format + ".po", converter)
