@@ -30,13 +30,16 @@ from translate.storage import mozilla_lang as lang, po
 class lang2po(object):
     """Convert one Mozilla .lang file to a single PO file."""
 
+    SourceStoreClass = lang.LangStore
     TargetStoreClass = po.pofile
     TargetUnitClass = po.pounit
 
-    def __init__(self, duplicate_style="msgctxt", encoding="utf-8"):
+    def __init__(self, input_file, duplicate_style="msgctxt", encoding="utf-8"):
         """Initialize the converter."""
         self.duplicate_style = duplicate_style
 
+        self.source_store = self.SourceStoreClass(input_file,
+                                                  encoding=encoding)
         self.target_store = self.TargetStoreClass()
 
     def convert_unit(self, unit):
@@ -48,9 +51,8 @@ class lang2po(object):
         target_unit.addnote(unit.getnotes(), 'developer')
         return target_unit
 
-    def convert_store(self, thelangfile):
+    def convert_store(self):
         """Convert a single source format file to a target format file."""
-        self.source_store = thelangfile
         targetheader = self.target_store.header()
         targetheader.addnote("extracted from %s" %
                              self.source_store.filename, "developer")
@@ -65,9 +67,9 @@ class lang2po(object):
 def run_converter(inputfile, outputfile, templates, pot=False,
                   duplicatestyle="msgctxt", encoding="utf-8"):
     """Wrapper around converter."""
-    inputstore = lang.LangStore(inputfile, encoding=encoding)
-    convertor = lang2po(duplicate_style=duplicatestyle, encoding=encoding)
-    outputstore = convertor.convert_store(inputstore)
+    convertor = lang2po(inputfile, duplicate_style=duplicatestyle,
+                        encoding=encoding)
+    outputstore = convertor.convert_store()
     if outputstore.isempty():
         return 0
     outputstore.serialize(outputfile)

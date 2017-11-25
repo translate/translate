@@ -10,9 +10,8 @@ class TestLang2PO(object):
     def _convert_to_store(self, source):
         """helper that converts .lang source to po source without requiring files"""
         inputfile = wStringIO.StringIO(source)
-        inputlang = lang.LangStore(inputfile)
-        convertor = mozlang2po.lang2po()
-        outputpo = convertor.convert_store(inputlang)
+        convertor = mozlang2po.lang2po(inputfile)
+        outputpo = convertor.convert_store()
         return outputpo
 
     def _convert_to_string(self, input_string, template_string=None,
