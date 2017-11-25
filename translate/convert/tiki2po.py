@@ -30,13 +30,15 @@ from translate.storage import po, tiki
 class tiki2po(object):
     """Convert one or two TikiWiki's language.php files to a single PO file."""
 
+    SourceStoreClass = tiki.TikiStore
     TargetStoreClass = po.pofile
     TargetUnitClass = po.pounit
 
-    def __init__(self, include_unused=False):
+    def __init__(self, input_file, include_unused=False):
         """Initialize the converter."""
         self.include_unused = include_unused
 
+        self.source_store = self.SourceStoreClass(input_file)
         self.target_store = self.TargetStoreClass()
 
     def convert_unit(self, unit):
@@ -49,10 +51,8 @@ class tiki2po(object):
             target_unit.addlocations(locations)
         return target_unit
 
-    def convert_store(self, thetikifile):
+    def convert_store(self):
         """Convert a single source format file to a target format file."""
-        self.source_store = thetikifile
-
         for unit in self.source_store.units:
             if not self.include_unused and "unused" in unit.getlocations():
                 continue
@@ -62,9 +62,8 @@ class tiki2po(object):
 
 def run_converter(inputfile, outputfile, template=None, includeunused=False):
     """Wrapper around converter."""
-    convertor = tiki2po(includeunused)
-    inputstore = tiki.TikiStore(inputfile)
-    outputstore = convertor.convert_store(inputstore)
+    convertor = tiki2po(inputfile, includeunused)
+    outputstore = convertor.convert_store()
     if outputstore.isempty():
         return 0
     outputstore.serialize(outputfile)
