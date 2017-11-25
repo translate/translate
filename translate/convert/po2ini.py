@@ -32,6 +32,7 @@ class po2ini(object):
 
     SourceStoreClass = po.pofile
     TargetStoreClass = ini.inifile
+    TargetUnitClass = ini.iniunit
     MissingTemplateMessage = "A template INI file must be provided."
 
     def __init__(self, input_file, output_file, template_file=None,
@@ -58,6 +59,7 @@ class po2ini(object):
             self.output_file = output_file
             self.template_store = self.TargetStoreClass(template_file,
                                                         dialect=dialect)
+            self.target_store = self.TargetStoreClass(dialect=dialect)
 
     def merge_stores(self):
         """Convert a source file to a target file using a template file.
