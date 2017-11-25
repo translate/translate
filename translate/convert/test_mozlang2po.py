@@ -7,7 +7,7 @@ from translate.storage import mozilla_lang as lang
 
 class TestLang2PO(object):
 
-    def lang2po(self, source):
+    def _convert_to_store(self, source):
         """helper that converts .lang source to po source without requiring files"""
         inputfile = wStringIO.StringIO(source)
         inputlang = lang.LangStore(inputfile)
@@ -33,7 +33,7 @@ class TestLang2PO(object):
     def test_simpleentry(self):
         """checks that a simple lang entry converts properly to a po entry"""
         source = ';One\nEen\n'
-        pofile = self.lang2po(source)
+        pofile = self._convert_to_store(source)
         pounit = self._single_element(pofile)
         assert pounit.source == "One"
         assert pounit.target == "Een"
@@ -41,7 +41,7 @@ class TestLang2PO(object):
     def test_simplecomment(self):
         """Handle simple comments"""
         source = '# Comment\n;One\nEen\n'
-        pofile = self.lang2po(source)
+        pofile = self._convert_to_store(source)
         pounit = self._single_element(pofile)
         assert pounit.source == "One"
         assert pounit.target == "Een"
@@ -50,7 +50,7 @@ class TestLang2PO(object):
     def test_meta_tags(self):
         """Meta tags are not extracted"""
         source = '## tag\n# Comment\n;One\nEen\n'
-        pofile = self.lang2po(source)
+        pofile = self._convert_to_store(source)
         pounit = self._single_element(pofile)
         assert "tag" not in pounit.getnotes()
 
