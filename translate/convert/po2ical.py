@@ -51,6 +51,7 @@ class po2ical(object):
 
             self.output_file = output_file
             self.template_store = self.TargetStoreClass(template_file)
+            self.output_store = self.TargetStoreClass()
 
             self.source_store.makeindex()
 
