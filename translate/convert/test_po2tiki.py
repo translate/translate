@@ -44,6 +44,16 @@ msgstr "one_target"
         assert '"one_source" => "one_target",' in output
         assert '"zero_source" => "zero_target",' in output
 
+    def test_convert_marked_untranslated(self):
+        """Check convert marked as untranslated keeps translation."""
+        input_source = """
+#: untranslated
+msgid "Do not translate"
+msgstr "It is translated"
+"""
+        output = self._convert(input_source)
+        assert '"Do not translate" => "It is translated",' in output
+
 
 class TestPo2TikiCommand(test_convert.TestConvertCommand, TestPo2Tiki):
     """Tests running actual po2tiki commands on files"""
