@@ -15,15 +15,17 @@ class TestLang2PO(object):
         outputpo = convertor.convertstore(inputlang)
         return outputpo
 
-    def _convert_to_string(self, input_string, template_string=None):
+    def _convert_to_string(self, input_string, template_string=None,
+                           success_expected=True):
         """Helper that converts to target format string without using files."""
         input_file = wStringIO.StringIO(input_string)
         output_file = wStringIO.StringIO()
         template_file = None
         if template_string:
             template_file = wStringIO.StringIO(template_string)
+        expected_result = 1 if success_expected else 0
         result = mozlang2po.convertlang(input_file, output_file, template_file)
-        assert result == 1
+        assert result == expected_result
         return output_file.getvalue().decode('utf-8')
 
     def _single_element(self, pofile):
@@ -34,12 +36,7 @@ class TestLang2PO(object):
 
     def test_convert_empty(self):
         """Check converting empty file returns no output."""
-        input_file = wStringIO.StringIO('')
-        output_file = wStringIO.StringIO()
-        template_file = None
-        result = mozlang2po.convertlang(input_file, output_file, template_file)
-        assert result == 0
-        assert output_file.getvalue().decode('utf-8') == ''
+        assert self._convert_to_string('', success_expected=False) == ''
 
     def test_simple_string(self):
         """Checks a simple lang string converts correctly."""
