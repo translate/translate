@@ -34,10 +34,12 @@ class tiki2po(object):
     TargetStoreClass = po.pofile
     TargetUnitClass = po.pounit
 
-    def __init__(self, input_file, include_unused=False):
+    def __init__(self, input_file, output_file, template_file=None,
+                 include_unused=False):
         """Initialize the converter."""
         self.include_unused = include_unused
 
+        self.output_file = output_file
         self.source_store = self.SourceStoreClass(input_file)
         self.target_store = self.TargetStoreClass()
 
@@ -62,7 +64,7 @@ class tiki2po(object):
 
 def run_converter(inputfile, outputfile, template=None, includeunused=False):
     """Wrapper around converter."""
-    convertor = tiki2po(inputfile, includeunused)
+    convertor = tiki2po(inputfile, outputfile, template, includeunused)
     outputstore = convertor.convert_store()
     if outputstore.isempty():
         return 0
