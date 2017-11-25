@@ -32,6 +32,7 @@ class po2ical(object):
 
     SourceStoreClass = po.pofile
     TargetStoreClass = ical.icalfile
+    TargetUnitClass = ical.icalunit
     MissingTemplateMessage = "A template iCalendar file must be provided."
 
     def __init__(self, input_file, output_file, template_file=None,
