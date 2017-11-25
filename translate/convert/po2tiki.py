@@ -23,16 +23,15 @@ See: http://docs.translatehouse.org/projects/translate-toolkit/en/latest/command
 for examples and usage instructions.
 """
 
+from translate.convert import convert
 from translate.storage import po, tiki
 
 
 class po2tiki(object):
+    """Convert a PO file and a template TikiWiki file to a TikiWiki file."""
 
-    def convertstore(self, thepofile):
-        """Converts a given (parsed) po file to a tiki file.
-
-        :param thepofile: a pofile pre-loaded with input data
-        """
+    def convert_store(self, thepofile):
+        """Convert a single source format file to a target format file."""
         thetargetfile = tiki.TikiStore()
         for unit in thepofile.units:
             if not (unit.isblank() or unit.isheader()):
@@ -41,10 +40,15 @@ class po2tiki(object):
                 locations = unit.getlocations()
                 if locations:
                     newunit.addlocations(locations)
-                # If a word is "untranslated" but the target isn't empty and isn't the same as the source
-                # it's been translated and we switch it. This is an assumption but should remain true as long
-                # as these scripts are used.
-                if newunit.getlocations() == ["untranslated"] and unit.source != unit.target and unit.target != "":
+                # If a word is "untranslated" but the target isn't empty and
+                # isn't the same as the source it's been translated and we
+                # switch it. This is an assumption but should remain true as
+                # long as these scripts are used.
+                change_location = (
+                    newunit.getlocations() == ["untranslated"] and
+                    unit.source != unit.target and
+                    unit.target != "")
+                if change_location:
                     newunit.location = []
                     newunit.addlocation("translated")
 
@@ -52,28 +56,23 @@ class po2tiki(object):
         return thetargetfile
 
 
-def convertpo(inputfile, outputfile, template=None):
-    """Converts from po file format to tiki.
-
-    :param inputfile: file handle of the source
-    :param outputfile: file handle to write to
-    :param template: unused
-    """
+def run_converter(inputfile, outputfile, template=None):
+    """Wrapper around converter."""
     inputstore = po.pofile(inputfile)
     if inputstore.isempty():
-        return False
+        return 0
     convertor = po2tiki()
-    outputstore = convertor.convertstore(inputstore)
+    outputstore = convertor.convert_store(inputstore)
     outputstore.serialize(outputfile)
-    return True
+    return 1
+
+
+formats = {
+    "po": ("tiki", run_converter),
+}
 
 
 def main(argv=None):
-    """Will convert from .po to tiki style .php"""
-    from translate.convert import convert
-
-    formats = {"po": ("tiki", convertpo)}
-
     parser = convert.ConvertOptionParser(formats, description=__doc__)
     parser.run(argv)
 
