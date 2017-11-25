@@ -11,6 +11,14 @@ from translate.convert import test_convert, tiki2po
 
 class TestTiki2Po(object):
 
+    def test_convert_empty(self):
+        """Check converting empty file returns no output."""
+        input_file = BytesIO()
+        output_file = BytesIO()
+        result = tiki2po.converttiki(input_file, output_file)
+        assert result == 0
+        assert output_file.getvalue().decode('utf-8') == ''
+
     def test_converttiki_defaults(self):
         inputfile = b"""
 "zero_source" => "zero_target",
