@@ -30,30 +30,31 @@ from translate.storage import po, tiki
 class po2tiki(object):
     """Convert a PO file and a template TikiWiki file to a TikiWiki file."""
 
-    def convert_store(self, thepofile):
+    def convert_store(self, source_store):
         """Convert a single source format file to a target format file."""
-        thetargetfile = tiki.TikiStore()
-        for unit in thepofile.units:
+        self.source_store = source_store
+        self.target_store = tiki.TikiStore()
+        for unit in self.source_store.units:
             if not (unit.isblank() or unit.isheader()):
-                newunit = tiki.TikiUnit(unit.source)
-                newunit.target = unit.target
+                target_unit = tiki.TikiUnit(unit.source)
+                target_unit.target = unit.target
                 locations = unit.getlocations()
                 if locations:
-                    newunit.addlocations(locations)
+                    target_unit.addlocations(locations)
                 # If a word is "untranslated" but the target isn't empty and
                 # isn't the same as the source it's been translated and we
                 # switch it. This is an assumption but should remain true as
                 # long as these scripts are used.
                 change_location = (
-                    newunit.getlocations() == ["untranslated"] and
+                    target_unit.getlocations() == ["untranslated"] and
                     unit.source != unit.target and
                     unit.target != "")
                 if change_location:
-                    newunit.location = []
-                    newunit.addlocation("translated")
+                    target_unit.location = []
+                    target_unit.addlocation("translated")
 
-                thetargetfile.addunit(newunit)
-        return thetargetfile
+                self.target_store.addunit(target_unit)
+        return self.target_store
 
 
 def run_converter(inputfile, outputfile, template=None):
