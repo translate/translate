@@ -30,9 +30,11 @@ from translate.storage import po, tiki
 class po2tiki(object):
     """Convert a PO file and a template TikiWiki file to a TikiWiki file."""
 
+    TargetUnitClass = tiki.TikiUnit
+
     def convert_unit(self, unit):
         """Convert a source format unit to a target format unit."""
-        target_unit = tiki.TikiUnit(unit.source)
+        target_unit = self.TargetUnitClass(unit.source)
         target_unit.target = unit.target
         locations = unit.getlocations()
         if locations:
@@ -52,9 +54,10 @@ class po2tiki(object):
         """Convert a single source format file to a target format file."""
         self.source_store = source_store
         self.target_store = tiki.TikiStore()
-        for unit in self.source_store.units:
-            if not (unit.isblank() or unit.isheader()):
-                self.target_store.addunit(self.convert_unit(unit))
+        for source_unit in self.source_store.units:
+            if source_unit.isblank() or source_unit.isheader():
+                continue
+            self.target_store.addunit(self.convert_unit(source_unit))
         return self.target_store
 
 
