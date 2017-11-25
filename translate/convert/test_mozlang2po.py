@@ -23,7 +23,7 @@ class TestLang2PO(object):
         assert lang2po.convertlang(inputfile, outputfile, templatefile)
         return outputfile.getvalue()
 
-    def singleelement(self, pofile):
+    def _single_element(self, pofile):
         """checks that the pofile contains a single non-header element, and returns it"""
         assert len(pofile.units) == 2
         assert pofile.units[0].isheader()
@@ -34,7 +34,7 @@ class TestLang2PO(object):
         """checks that a simple lang entry converts properly to a po entry"""
         source = ';One\nEen\n'
         pofile = self.lang2po(source)
-        pounit = self.singleelement(pofile)
+        pounit = self._single_element(pofile)
         assert pounit.source == "One"
         assert pounit.target == "Een"
 
@@ -42,7 +42,7 @@ class TestLang2PO(object):
         """Handle simple comments"""
         source = '# Comment\n;One\nEen\n'
         pofile = self.lang2po(source)
-        pounit = self.singleelement(pofile)
+        pounit = self._single_element(pofile)
         assert pounit.source == "One"
         assert pounit.target == "Een"
         assert pounit.getnotes() == "Comment"
@@ -51,7 +51,7 @@ class TestLang2PO(object):
         """Meta tags are not extracted"""
         source = '## tag\n# Comment\n;One\nEen\n'
         pofile = self.lang2po(source)
-        pounit = self.singleelement(pofile)
+        pounit = self._single_element(pofile)
         assert "tag" not in pounit.getnotes()
 
 
