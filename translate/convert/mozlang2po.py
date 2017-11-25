@@ -39,6 +39,15 @@ class lang2po(object):
 
         self.target_store = self.TargetStoreClass()
 
+    def convert_unit(self, unit):
+        """Convert a source format unit to a target format unit."""
+        target_unit = self.TargetUnitClass()
+        target_unit.source = unit.source
+        target_unit.target = unit.target
+        target_unit.addlocations(unit.getlocations())
+        target_unit.addnote(unit.getnotes(), 'developer')
+        return target_unit
+
     def convert_store(self, thelangfile):
         """Convert a single source format file to a target format file."""
         self.source_store = thelangfile
@@ -46,13 +55,8 @@ class lang2po(object):
         targetheader.addnote("extracted from %s" %
                              self.source_store.filename, "developer")
 
-        for unit in self.source_store.units:
-            target_unit = self.TargetUnitClass()
-            target_unit.source = unit.source
-            target_unit.target = unit.target
-            target_unit.addlocations(unit.getlocations())
-            target_unit.addnote(unit.getnotes(), 'developer')
-            self.target_store.addunit(target_unit)
+        for source_unit in self.source_store.units:
+            self.target_store.addunit(self.convert_unit(source_unit))
 
         self.target_store.removeduplicates(self.duplicate_style)
         return self.target_store
