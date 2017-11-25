@@ -31,6 +31,7 @@ class lang2po(object):
     """Convert one Mozilla .lang file to a single PO file."""
 
     TargetStoreClass = po.pofile
+    TargetUnitClass = po.pounit
 
     def __init__(self, duplicate_style="msgctxt"):
         """Initialize the converter."""
@@ -46,10 +47,12 @@ class lang2po(object):
                              self.source_store.filename, "developer")
 
         for unit in self.source_store.units:
-            target_unit = self.target_store.addsourceunit(unit.source)
+            target_unit = self.TargetUnitClass()
+            target_unit.source = unit.source
             target_unit.target = unit.target
             target_unit.addlocations(unit.getlocations())
             target_unit.addnote(unit.getnotes(), 'developer')
+            self.target_store.addunit(target_unit)
 
         self.target_store.removeduplicates(self.duplicate_style)
         return self.target_store
