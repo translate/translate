@@ -21,6 +21,15 @@ class TestLang2PO(object):
         assert pofile.units[0].isheader()
         return pofile.units[1]
 
+    def test_convert_empty(self):
+        """Check converting empty file returns no output."""
+        input_file = wStringIO.StringIO('')
+        output_file = wStringIO.StringIO()
+        template_file = None
+        result = mozlang2po.convertlang(input_file, output_file, template_file)
+        assert result == 0
+        assert output_file.getvalue().decode('utf-8') == ''
+
     def test_simpleentry(self):
         """checks that a simple lang entry converts properly to a po entry"""
         source = """;One
