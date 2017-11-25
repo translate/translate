@@ -69,19 +69,23 @@ class lang2po(object):
             self.target_store.addunit(self.convert_unit(source_unit))
 
         self.target_store.removeduplicates(self.duplicate_style)
-        return self.target_store
+
+    def run(self):
+        """Run the converter."""
+        self.convert_store()
+
+        if self.target_store.isempty():
+            return 0
+
+        self.target_store.serialize(self.output_file)
+        return 1
 
 
 def run_converter(inputfile, outputfile, templates, pot=False,
                   duplicatestyle="msgctxt", encoding="utf-8"):
     """Wrapper around converter."""
-    convertor = lang2po(inputfile, outputfile, templates, blank_msgstr=pot,
-                        duplicate_style=duplicatestyle, encoding=encoding)
-    outputstore = convertor.convert_store()
-    if outputstore.isempty():
-        return 0
-    outputstore.serialize(outputfile)
-    return 1
+    return lang2po(inputfile, outputfile, templates, blank_msgstr=pot,
+                   duplicate_style=duplicatestyle, encoding=encoding).run()
 
 
 formats = {

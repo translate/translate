@@ -12,8 +12,8 @@ class TestLang2PO(object):
         inputfile = wStringIO.StringIO(source)
         output_file = wStringIO.StringIO()
         convertor = mozlang2po.lang2po(inputfile, output_file)
-        outputpo = convertor.convert_store()
-        return outputpo
+        assert convertor.run() == 1
+        return convertor.target_store
 
     def _convert_to_string(self, input_string, template_string=None,
                            success_expected=True):
