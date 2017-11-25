@@ -33,7 +33,7 @@ class lang2po(object):
     TargetStoreClass = po.pofile
     TargetUnitClass = po.pounit
 
-    def __init__(self, duplicate_style="msgctxt"):
+    def __init__(self, duplicate_style="msgctxt", encoding="utf-8"):
         """Initialize the converter."""
         self.duplicate_style = duplicate_style
 
@@ -66,7 +66,7 @@ def run_converter(inputfile, outputfile, templates, pot=False,
                   duplicatestyle="msgctxt", encoding="utf-8"):
     """Wrapper around converter."""
     inputstore = lang.LangStore(inputfile, encoding=encoding)
-    convertor = lang2po(duplicate_style=duplicatestyle)
+    convertor = lang2po(duplicate_style=duplicatestyle, encoding=encoding)
     outputstore = convertor.convert_store(inputstore)
     if outputstore.isempty():
         return 0
