@@ -10,6 +10,17 @@ from translate.misc import wStringIO
 
 class TestPo2Tiki(object):
 
+    def _convert(self, format_input_source, format_template_source=None):
+        """Helper that converts format to target format without files."""
+        input_file = wStringIO.StringIO(format_input_source)
+        output_file = wStringIO.StringIO()
+        template_file = None
+        if format_template_source:
+            template_file = wStringIO.StringIO(format_template_source)
+        result = po2tiki.convertpo(input_file, output_file, template_file)
+        assert result == 1
+        return output_file.getvalue().decode('utf-8')
+
     def test_convert(self):
         """Check converting simple file."""
         input_source = """
@@ -21,10 +32,7 @@ msgstr "zero_target"
 msgid "one_source"
 msgstr "one_target"
 """
-        input_file = wStringIO.StringIO(input_source)
-        output_file = wStringIO.StringIO()
-        po2tiki.convertpo(input_file, output_file)
-        output = output_file.getvalue().decode('utf-8')
+        output = self._convert(input_source)
         assert '"one_source" => "one_target",' in output
         assert '"zero_source" => "zero_target",' in output
 
