@@ -32,15 +32,12 @@ class TestIcal2PO(object):
 
     def test_convert_empty_file(self):
         """Check converting empty iCalendar returns no output."""
-        input_file = wStringIO.StringIO('')
-        output_file = wStringIO.StringIO()
-        template_file = None
         with pytest.raises(StopIteration):
-            ical2po.run_converter(input_file, output_file, template_file)
+            self._convert_to_string('', success_expected=False)
 
     def test_no_translations(self):
         """Check that iCalendar with no translations returns correct result."""
-        input_source = """
+        input_string = """
 BEGIN:VCALENDAR
 VERSION:2.0
 PRODID:-//hacksw/handcal//NONSGML v1.0//EN
@@ -48,13 +45,8 @@ BEGIN:VEVENT
 END:VEVENT
 END:VCALENDAR
 """.replace("\n", "\r\n")
-        input_file = wStringIO.StringIO(input_source)
-        output_file = wStringIO.StringIO()
-        template_file = None
-        result = ical2po.run_converter(input_file, output_file, template_file)
-        assert result == 0
-        output = output_file.getvalue().decode('utf-8')
-        assert output == ""
+        output = self._convert_to_string(input_string, success_expected=False)
+        assert output == ''
 
     def test_summary(self):
         """Check that iCalendar SUMMARY converts valid PO output."""
