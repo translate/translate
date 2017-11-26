@@ -170,22 +170,18 @@ msgstr ""
 
     def test_convert_completion_above_threshold(self):
         """Check no conversion if input completion is above threshold."""
-        input_source = """
+        input_string = """
 #: key
 msgid "Hello, World!"
 msgstr "Ola mundo!"
 """
-        template_source = 'key: "Hello, World!"'
+        template_string = 'key: "Hello, World!"'
         expected_output = '''key: Ola mundo!
 '''
-        input_file = wStringIO.StringIO(input_source)
-        output_file = wStringIO.StringIO()
-        template_file = wStringIO.StringIO(template_source)
         # Input completion is 100% so with a 70% threshold it should output.
-        result = po2yaml.run_converter(input_file, output_file, template_file,
-                                       outputthreshold=70)
-        assert result == 1
-        assert output_file.getvalue().decode('utf-8') == expected_output
+        output = self._convert_to_string(input_string, template_string,
+                                         output_threshold=70)
+        assert output == expected_output
 
 
 class TestPO2YAMLCommand(test_convert.TestConvertCommand, TestPO2YAML):
