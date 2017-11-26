@@ -10,18 +10,25 @@ from translate.misc import wStringIO
 
 class TestPO2Ical(object):
 
-    def _convert_to_string(self, input_source, template_source=None,
-                           include_fuzzy=False, output_threshold=None):
-        """Helper that converts PO input to format output without files."""
-        input_file = wStringIO.StringIO(input_source)
+    ConverterClass = po2ical.po2ical
+
+    def _convert(self, input_string, template_string=None, include_fuzzy=False,
+                 output_threshold=None, success_expected=True):
+        """Helper that converts to target format without using files."""
+        input_file = wStringIO.StringIO(input_string)
         output_file = wStringIO.StringIO()
         template_file = None
-        if template_source:
-            template_file = wStringIO.StringIO(template_source)
-        result = po2ical.run_converter(input_file, output_file, template_file,
-                                       include_fuzzy, output_threshold)
-        assert result == 1
-        return output_file.getvalue().decode('utf-8')
+        if template_string:
+            template_file = wStringIO.StringIO(template_string)
+        expected_result = 1 if success_expected else 0
+        converter = self.ConverterClass(input_file, output_file, template_file,
+                                        include_fuzzy, output_threshold)
+        assert converter.run() == expected_result
+        return None, output_file
+
+    def _convert_to_string(self, *args, **kwargs):
+        """Helper that converts to target format string without using files."""
+        return self._convert(*args, **kwargs)[1].getvalue().decode('utf-8')
 
     def test_convert_empty_file(self):
         """Check that an empty PO converts to valid iCalendar."""
