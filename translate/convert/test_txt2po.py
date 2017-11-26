@@ -60,13 +60,7 @@ Simple
 
 Simple
 """
-        input_file = wStringIO.StringIO(input_source)
-        output_file = wStringIO.StringIO()
-        convertor = self.ConverterClass(input_file, output_file,
-                                        duplicate_style="merge",
-                                        flavour=self.Flavour)
-        convertor.run()
-        po_file = convertor.target_store
+        po_file = self._convert_to_store(input_source, duplicate_style="merge")
         assert self._count_elements(po_file) == 1
         assert po_file.units[1].source == "Simple"
         assert po_file.units[1].target == ""
