@@ -49,26 +49,26 @@ class TestYAML2PO(object):
 
     def test_simple_output(self):
         """Check that a simple single entry YAML converts valid PO output."""
-        input_source = 'key: "Hello, World!"'
-        expected_unit_output = """
+        input_string = 'key: "Hello, World!"'
+        expected_output = """
 #: key
 msgid "Hello, World!"
 msgstr ""
 """
-        assert expected_unit_output in self._convert_to_string(input_source)
+        assert expected_output in self._convert_to_string(input_string)
 
     def test_simple(self):
         """Check that a simple single entry YAML converts to a PO unit."""
-        input_source = 'key: "Hello, World!"'
-        po_file = self._convert_to_store(input_source)
-        po_unit = self._single_element(po_file)
-        assert po_unit.getlocations() == ["key"]
-        assert po_unit.source == "Hello, World!"
-        assert po_unit.target == ""
+        input_string = 'key: "Hello, World!"'
+        target_store = self._convert_to_store(input_string)
+        target_unit = self._single_element(target_store)
+        assert target_unit.getlocations() == ["key"]
+        assert target_unit.source == "Hello, World!"
+        assert target_unit.target == ""
 
     def test_nested(self):
         """Check converting nested YAML."""
-        input_source = '''
+        input_string = '''
 foo:
     bar: bar
     baz:
@@ -77,44 +77,44 @@ foo:
 
 eggs: spam
 '''
-        po_file = self._convert_to_store(input_source)
-        assert self._count_elements(po_file) == 3
-        assert po_file.units[1].getlocations() == ['foo->bar']
-        assert po_file.units[1].source == "bar"
-        assert po_file.units[1].target == ""
-        assert po_file.units[2].getlocations() == ['foo->baz->boo']
-        assert po_file.units[2].source == "booo"
-        assert po_file.units[2].target == ""
-        assert po_file.units[3].getlocations() == ['eggs']
-        assert po_file.units[3].source == "spam"
-        assert po_file.units[3].target == ""
+        target_store = self._convert_to_store(input_string)
+        assert self._count_elements(target_store) == 3
+        assert target_store.units[1].getlocations() == ['foo->bar']
+        assert target_store.units[1].source == "bar"
+        assert target_store.units[1].target == ""
+        assert target_store.units[2].getlocations() == ['foo->baz->boo']
+        assert target_store.units[2].source == "booo"
+        assert target_store.units[2].target == ""
+        assert target_store.units[3].getlocations() == ['eggs']
+        assert target_store.units[3].source == "spam"
+        assert target_store.units[3].target == ""
 
     def test_no_duplicates(self):
         """Check converting drops duplicates."""
-        input_source = '''
+        input_string = '''
 foo: bar
 foo: baz
 '''
-        po_file = self._convert_to_store(input_source)
-        assert self._count_elements(po_file) == 1
-        assert po_file.units[1].getlocations() == ['foo']
-        assert po_file.units[1].source == "baz"
-        assert po_file.units[1].target == ""
+        target_store = self._convert_to_store(input_string)
+        assert self._count_elements(target_store) == 1
+        assert target_store.units[1].getlocations() == ['foo']
+        assert target_store.units[1].source == "baz"
+        assert target_store.units[1].target == ""
 
     def test_convert_with_template(self):
         """Check converting a simple single-string YAML with newer template."""
-        input_source = 'key: "Ola mundo!"'
-        template_source = '''key: "Hello, World!"
+        input_string = 'key: "Ola mundo!"'
+        template_string = '''key: "Hello, World!"
 foo: What's up?
 '''
-        po_file = self._convert_to_store(input_source, template_source)
-        assert self._count_elements(po_file) == 2
-        assert po_file.units[1].getlocations() == ['key']
-        assert po_file.units[1].source == "Hello, World!"
-        assert po_file.units[1].target == "Ola mundo!"
-        assert po_file.units[2].getlocations() == ['foo']
-        assert po_file.units[2].source == "What's up?"
-        assert po_file.units[2].target == ""
+        target_store = self._convert_to_store(input_string, template_string)
+        assert self._count_elements(target_store) == 2
+        assert target_store.units[1].getlocations() == ['key']
+        assert target_store.units[1].source == "Hello, World!"
+        assert target_store.units[1].target == "Ola mundo!"
+        assert target_store.units[2].getlocations() == ['foo']
+        assert target_store.units[2].source == "What's up?"
+        assert target_store.units[2].target == ""
 
 
 class TestYAML2POCommand(test_convert.TestConvertCommand, TestYAML2PO):
