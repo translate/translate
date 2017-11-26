@@ -10,16 +10,20 @@ class BaseTxt2POTester(object):
     ConverterClass = txt2po.txt2po
     Flavour = None
 
-    def _convert(self, format_input_source, format_template_source=None):
-        """Helper that converts format to PO without files."""
-        input_file = wStringIO.StringIO(format_input_source)
+    def _convert_to_store(self, input_string, template_string=None,
+                          duplicate_style="msgctxt", encoding="utf-8",
+                          success_expected=True):
+        """Helper that converts to target format store without using files."""
+        input_file = wStringIO.StringIO(input_string)
         output_file = wStringIO.StringIO()
         template_file = None
-        if format_template_source:
-            template_file = wStringIO.StringIO(format_template_source)
+        if template_string:
+            template_file = wStringIO.StringIO(template_string)
+        expected_result = 1 if success_expected else 0
         converter = self.ConverterClass(input_file, output_file, template_file,
-                                        flavour=self.Flavour)
-        assert converter.run() == 1
+                                        duplicate_style, encoding,
+                                        self.Flavour)
+        assert converter.run() == expected_result
         return converter.target_store
 
     def _count_elements(self, po_file):
@@ -32,13 +36,8 @@ class TestTxt2PO(BaseTxt2POTester):
 
     def test_convert_empty(self):
         """Check converting empty file returns no output."""
-        input_file = wStringIO.StringIO('')
-        output_file = wStringIO.StringIO()
-        template_file = None
-        converter = self.ConverterClass(input_file, output_file)
-        assert converter.run() == 0
-        assert converter.target_store.isempty()
-        assert output_file.getvalue().decode('utf-8') == ''
+        target_store = self._convert_to_store('', success_expected=False)
+        assert self._count_elements(target_store) == 0
 
     def test_duplicates(self):
         """Check converting drops duplicates."""
@@ -48,7 +47,7 @@ Simple
 Simple
 '''
         # First test with default duplicate style (msgctxt).
-        po_file = self._convert(input_source)
+        po_file = self._convert_to_store(input_source)
         assert self._count_elements(po_file) == 2
         assert po_file.units[1].source == "Simple"
         assert po_file.units[1].target == ""
@@ -75,7 +74,7 @@ Simple
 msgid "A simple string"
 msgstr ""
 '''
-        poresult = self._convert(txtsource)
+        poresult = self._convert_to_store(txtsource)
         assert str(poresult.units[1]) == poexpected
         assert "extracted from " in str(poresult.header())
 
@@ -90,7 +89,7 @@ Second unit is a heading
 Third unit with blank after but no more units.
 
 """
-        poresult = self._convert(txtsource)
+        poresult = self._convert_to_store(txtsource)
         assert poresult.units[0].isheader()
         assert len(poresult.units) == 4
 
@@ -103,7 +102,7 @@ helped to bridge the digital divide to a limited extent.\r
         txtexpected = '''The rapid expansion of telecommunications infrastructure in recent years has
 helped to bridge the digital divide to a limited extent.'''
 
-        poresult = self._convert(txtsource)
+        poresult = self._convert_to_store(txtsource)
         pounit = poresult.units[1]
         assert str(pounit.source) == txtexpected
 
@@ -138,7 +137,7 @@ Simple
 Simple
 '''
         # First test with default duplicate style (msgctxt).
-        po_file = self._convert(input_source)
+        po_file = self._convert_to_store(input_source)
         assert self._count_elements(po_file) == 2
         assert po_file.units[1].source == "Simple"
         assert po_file.units[1].target == ""
@@ -164,7 +163,7 @@ Simple
 
 This is a wiki page.
 """
-        poresult = self._convert(dokusource)
+        poresult = self._convert_to_store(dokusource)
         assert poresult.units[0].isheader()
         assert len(poresult.units) == 3
         assert poresult.units[1].source == "Heading"
@@ -175,7 +174,7 @@ This is a wiki page.
         dokusource = """  * This is a fact.
   * This is a fact.
 """
-        poresult = self._convert(dokusource)
+        poresult = self._convert_to_store(dokusource)
         assert poresult.units[0].isheader()
         assert len(poresult.units) == 3
         assert poresult.units[1].source == "This is a fact."
@@ -188,7 +187,7 @@ This is a wiki page.
         dokusource = """  - This is an item.
   - This is an item.
 """
-        poresult = self._convert(dokusource)
+        poresult = self._convert_to_store(dokusource)
         assert poresult.units[0].isheader()
         assert len(poresult.units) == 3
         assert poresult.units[1].source == "This is an item."
@@ -203,7 +202,7 @@ This is a wiki page.
     * This is a subitem.
         * This is a tabbed item.
 """
-        poresult = self._convert(dokusource)
+        poresult = self._convert_to_store(dokusource)
         assert poresult.units[0].isheader()
         assert len(poresult.units) == 5
         assert poresult.units[1].source == "Heading"
