@@ -24,21 +24,21 @@ class TestYAML2PO(object):
         assert converter.run() == expected_result
         return converter.target_store, output_file
 
-    def format2po_file(self, *args, **kwargs):
+    def _convert_to_store(self, *args, **kwargs):
         """Helper that converts to target format store without using files."""
         return self._convert(*args, **kwargs)[0]
 
-    def format2po_text(self, *args, **kwargs):
+    def _convert_to_string(self, *args, **kwargs):
         """Helper that converts to target format string without using files."""
         return self._convert(*args, **kwargs)[1].getvalue().decode('utf-8')
 
-    def single_element(self, po_file):
+    def _single_element(self, po_file):
         """Helper to check PO file has one non-header unit, and return it."""
         assert len(po_file.units) == 2
         assert po_file.units[0].isheader()
         return po_file.units[1]
 
-    def count_elements(self, po_file):
+    def _count_elements(self, po_file):
         """Helper that counts the number of non-header units."""
         assert po_file.units[0].isheader()
         return len(po_file.units) - 1
@@ -61,13 +61,13 @@ class TestYAML2PO(object):
 msgid "Hello, World!"
 msgstr ""
 """
-        assert expected_unit_output in self.format2po_text(input_source)
+        assert expected_unit_output in self._convert_to_string(input_source)
 
     def test_simple(self):
         """Check that a simple single entry YAML converts to a PO unit."""
         input_source = 'key: "Hello, World!"'
-        po_file = self.format2po_file(input_source)
-        po_unit = self.single_element(po_file)
+        po_file = self._convert_to_store(input_source)
+        po_unit = self._single_element(po_file)
         assert po_unit.getlocations() == ["key"]
         assert po_unit.source == "Hello, World!"
         assert po_unit.target == ""
@@ -83,8 +83,8 @@ foo:
 
 eggs: spam
 '''
-        po_file = self.format2po_file(input_source)
-        assert self.count_elements(po_file) == 3
+        po_file = self._convert_to_store(input_source)
+        assert self._count_elements(po_file) == 3
         assert po_file.units[1].getlocations() == ['foo->bar']
         assert po_file.units[1].source == "bar"
         assert po_file.units[1].target == ""
@@ -101,8 +101,8 @@ eggs: spam
 foo: bar
 foo: baz
 '''
-        po_file = self.format2po_file(input_source)
-        assert self.count_elements(po_file) == 1
+        po_file = self._convert_to_store(input_source)
+        assert self._count_elements(po_file) == 1
         assert po_file.units[1].getlocations() == ['foo']
         assert po_file.units[1].source == "baz"
         assert po_file.units[1].target == ""
@@ -113,8 +113,8 @@ foo: baz
         template_source = '''key: "Hello, World!"
 foo: What's up?
 '''
-        po_file = self.format2po_file(input_source, template_source)
-        assert self.count_elements(po_file) == 2
+        po_file = self._convert_to_store(input_source, template_source)
+        assert self._count_elements(po_file) == 2
         assert po_file.units[1].getlocations() == ['key']
         assert po_file.units[1].source == "Hello, World!"
         assert po_file.units[1].target == "Ola mundo!"
