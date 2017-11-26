@@ -31,11 +31,7 @@ class TestPo2Tiki(object):
 
     def test_convert_empty(self):
         """Check converting empty file returns no output."""
-        input_file = wStringIO.StringIO()
-        output_file = wStringIO.StringIO()
-        result = po2tiki.run_converter(input_file, output_file)
-        assert result == 0
-        assert output_file.getvalue().decode('utf-8') == ''
+        assert self._convert_to_string('', success_expected=False) == ''
 
     def test_convert(self):
         """Check converting simple file."""
