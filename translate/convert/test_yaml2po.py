@@ -45,13 +45,7 @@ class TestYAML2PO(object):
 
     def test_convert_empty_YAML(self):
         """Check converting empty YAML returns no output."""
-        input_file = wStringIO.StringIO('')
-        output_file = wStringIO.StringIO()
-        template_file = None
-        converter = self.ConverterClass(input_file, output_file, template_file)
-        assert converter.run() == 0
-        assert converter.target_store.isempty()
-        assert output_file.getvalue().decode('utf-8') == ''
+        assert self._convert_to_string('', success_expected=False) == ''
 
     def test_simple_output(self):
         """Check that a simple single entry YAML converts valid PO output."""
