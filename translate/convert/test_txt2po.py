@@ -26,10 +26,10 @@ class BaseTxt2POTester(object):
         assert converter.run() == expected_result
         return converter.target_store
 
-    def _count_elements(self, po_file):
+    def _count_elements(self, po_store):
         """Helper that counts the number of non-header units."""
-        assert po_file.units[0].isheader()
-        return len(po_file.units) - 1
+        assert po_store.units[0].isheader()
+        return len(po_store.units) - 1
 
 
 class TestTxt2PO(BaseTxt2POTester):
