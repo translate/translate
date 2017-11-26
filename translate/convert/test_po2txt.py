@@ -32,74 +32,78 @@ class TestPO2Txt(object):
 
     def test_basic(self):
         """test basic conversion"""
-        posource = """msgid "Heading"
+        input_string = """msgid "Heading"
 msgstr "Opskrif"
 
 msgid "Body text"
 msgstr "Lyfteks"
 """
-        txttemplate = """Heading
+        template_string = """Heading
 
 Body text"""
         expected_output = """Opskrif
 
 Lyfteks"""
-        assert self._convert_to_string(posource, txttemplate) == expected_output
+        assert expected_output == self._convert_to_string(input_string,
+                                                          template_string)
 
     def test_nonascii(self):
         """test conversion with non-ascii text"""
-        posource = """msgid "Heading"
+        input_string = """msgid "Heading"
 msgstr "Opskrif"
 
 msgid "File content"
 msgstr "Lêerinhoud"
 """
-        txttemplate = """Heading
+        template_string = """Heading
 
 File content"""
         expected_output = """Opskrif
 
 Lêerinhoud"""
-        assert self._convert_to_string(posource, txttemplate) == expected_output
+        assert expected_output == self._convert_to_string(input_string,
+                                                          template_string)
 
     def test_blank_handling(self):
         """check that we discard blank messages"""
-        posource = """msgid "Heading"
+        input_string = """msgid "Heading"
 msgstr "Opskrif"
 
 msgid "Body text"
 msgstr ""
 """
-        txttemplate = """Heading
+        template_string = """Heading
 
 Body text"""
         expected_output = """Opskrif
 
 Body text"""
-        assert self._convert_to_string(posource) == expected_output
-        assert self._convert_to_string(posource, txttemplate) == expected_output
+        assert expected_output == self._convert_to_string(input_string)
+        assert expected_output == self._convert_to_string(input_string,
+                                                          template_string)
 
     def test_fuzzy_handling(self):
         """check that we handle fuzzy message correctly"""
-        posource = """#, fuzzy
+        input_string = """#, fuzzy
 msgid "Heading"
 msgstr "Opskrif"
 
 msgid "Body text"
 msgstr "Lyfteks"
 """
-        txttemplate = """Heading
+        template_string = """Heading
 
 Body text"""
         expected_output = """Heading
 
 Lyfteks"""
-        assert self._convert_to_string(posource) == expected_output
-        assert self._convert_to_string(posource, txttemplate) == expected_output
+        assert expected_output == self._convert_to_string(input_string)
+        assert expected_output == self._convert_to_string(input_string,
+                                                          template_string)
 
     def test_obsolete_ignore(self):
         """check that we handle obsolete message by not using it"""
-        posource = """
+        input_string = """
 msgid "Heading"
 msgstr "Opskrif"
 
@@ -109,32 +113,34 @@ msgstr "Lyfteks"
 #~ msgid "Obsolete"
 #~ msgstr "Oud"
 """
-        txttemplate = """Heading
+        template_string = """Heading
 
 Body text"""
         expected_output = """Opskrif
 
 Lyfteks"""
-        assert self._convert_to_string(posource) == expected_output
-        assert self._convert_to_string(posource, txttemplate) == expected_output
+        assert expected_output == self._convert_to_string(input_string)
+        assert expected_output == self._convert_to_string(input_string,
+                                                          template_string)
 
     def test_header_ignore(self):
         """check that we ignore headers"""
-        posource = """
+        input_string = """
 msgid "Heading"
 msgstr "Opskrif"
 
 msgid "Body text"
 msgstr "Lyfteks"
 """
-        txttemplate = """Heading
+        template_string = """Heading
 
 Body text"""
         expected_output = """Opskrif
 
 Lyfteks"""
-        assert self._convert_to_string(posource) == expected_output
-        assert self._convert_to_string(posource, txttemplate) == expected_output
+        assert expected_output == self._convert_to_string(input_string)
+        assert expected_output == self._convert_to_string(input_string,
+                                                          template_string)
 
     def test_convert_completion_below_threshold(self):
         """Check no conversion if input completion is below threshold."""
