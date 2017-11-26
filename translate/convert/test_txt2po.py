@@ -122,14 +122,13 @@ class TestDoku2po(BaseTxt2POTester):
         assert converter.target_store.isempty()
         assert output_file.getvalue().decode('utf-8') == ''
 
-    def test_duplicates(self):
-        """Test converting drops duplicates."""
+    def test_keep_duplicates(self):
+        """Check converting keeps duplicates."""
         input_string = """
 Simple
 
 Simple
 """
-        # First test with default duplicate style (msgctxt).
         po_store = self._convert_to_store(input_string)
         assert self._count_elements(po_store) == 2
         assert po_store.units[1].source == "Simple"
@@ -137,8 +136,13 @@ Simple
         assert po_store.units[2].source == "Simple"
         assert po_store.units[2].target == ""
 
-        # Now test with merge duplicate style. This requires custom code to
-        # pass the duplicate style to the converter.
+    def test_drop_duplicates(self):
+        """Test converting drops duplicates."""
+        input_string = """
+Simple
+
+Simple
+"""
         po_store = self._convert_to_store(input_string,
                                           duplicate_style="merge")
         assert self._count_elements(po_store) == 1
