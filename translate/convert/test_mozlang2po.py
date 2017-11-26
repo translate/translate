@@ -53,7 +53,7 @@ class TestLang2PO(object):
         assert self._convert_to_string('', success_expected=False) == ''
 
     def test_simple_string(self):
-        """Checks a simple lang string converts correctly."""
+        """Checs a simple lang string converts correctly."""
         input_string = """;One
 Een
 """
@@ -69,38 +69,38 @@ msgstr "Een"
             self._convert_to_store("this", "cannot be", "blank",
                                    success_expected=False)
 
-    def test_simpleentry(self):
-        """checks that a simple lang entry converts properly to a po entry"""
-        source = """;One
+    def test_simple_entry(self):
+        """Check that a simple lang entry converts properly to a po entry."""
+        input_string = """;One
 Een
 """
-        pofile = self._convert_to_store(source)
-        pounit = self._single_element(pofile)
-        assert pounit.source == "One"
-        assert pounit.target == "Een"
+        target_store = self._convert_to_store(input_string)
+        target_unit = self._single_element(target_store)
+        assert target_unit.source == "One"
+        assert target_unit.target == "Een"
 
-    def test_simplecomment(self):
-        """Handle simple comments"""
-        source = """# Comment
+    def test_simple_comment(self):
+        """Check handling of simple comments."""
+        input_string = """# Comment
 ;One
 Een
 """
-        pofile = self._convert_to_store(source)
-        pounit = self._single_element(pofile)
-        assert pounit.source == "One"
-        assert pounit.target == "Een"
-        assert pounit.getnotes() == "Comment"
+        target_store = self._convert_to_store(input_string)
+        target_unit = self._single_element(target_store)
+        assert target_unit.source == "One"
+        assert target_unit.target == "Een"
+        assert target_unit.getnotes() == "Comment"
 
     def test_meta_tags(self):
-        """Meta tags are not extracted"""
-        source = """## tag
+        """Check meta tags are not extracted."""
+        input_string = """## tag
 # Comment
 ;One
 Een
 """
-        pofile = self._convert_to_store(source)
-        pounit = self._single_element(pofile)
-        assert "tag" not in pounit.getnotes()
+        target_store = self._convert_to_store(input_string)
+        target_unit = self._single_element(target_store)
+        assert "tag" not in target_unit.getnotes()
 
     def test_keep_duplicates(self):
         """Check converting keeps duplicates."""
