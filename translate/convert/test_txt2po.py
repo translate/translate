@@ -199,6 +199,12 @@ This is a wiki page.
         assert target_store.units[3].source == "This is a subitem."
         assert target_store.units[4].source == "This is a tabbed item."
 
+    def test_merge(self):
+        """Test converter doesn't merge."""
+        with pytest.raises(NotImplementedError):
+            self._convert_to_store("this", "cannot be", "blank",
+                                   success_expected=False)
+
 
 class TestTxt2POCommand(test_convert.TestConvertCommand, TestTxt2PO):
     """Tests running actual txt2po commands on files"""
