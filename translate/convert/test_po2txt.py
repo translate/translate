@@ -32,15 +32,15 @@ class TestPO2Txt(object):
 
     def test_basic(self):
         """test basic conversion"""
-        txttemplate = """Heading
-
-Body text"""
         posource = """msgid "Heading"
 msgstr "Opskrif"
 
 msgid "Body text"
 msgstr "Lyfteks"
 """
+        txttemplate = """Heading
+
+Body text"""
         expected_output = """Opskrif
 
 Lyfteks"""
@@ -48,15 +48,15 @@ Lyfteks"""
 
     def test_nonascii(self):
         """test conversion with non-ascii text"""
-        txttemplate = """Heading
-
-File content"""
         posource = """msgid "Heading"
 msgstr "Opskrif"
 
 msgid "File content"
 msgstr "Lêerinhoud"
 """
+        txttemplate = """Heading
+
+File content"""
         expected_output = """Opskrif
 
 Lêerinhoud"""
@@ -64,15 +64,15 @@ Lêerinhoud"""
 
     def test_blank_handling(self):
         """check that we discard blank messages"""
-        txttemplate = """Heading
-
-Body text"""
         posource = """msgid "Heading"
 msgstr "Opskrif"
 
 msgid "Body text"
 msgstr ""
 """
+        txttemplate = """Heading
+
+Body text"""
         expected_output = """Opskrif
 
 Body text"""
@@ -81,9 +81,6 @@ Body text"""
 
     def test_fuzzy_handling(self):
         """check that we handle fuzzy message correctly"""
-        txttemplate = """Heading
-
-Body text"""
         posource = """#, fuzzy
 msgid "Heading"
 msgstr "Opskrif"
@@ -91,6 +88,9 @@ msgstr "Opskrif"
 msgid "Body text"
 msgstr "Lyfteks"
 """
+        txttemplate = """Heading
+
+Body text"""
         expected_output = """Heading
 
 Lyfteks"""
@@ -99,9 +99,6 @@ Lyfteks"""
 
     def test_obsolete_ignore(self):
         """check that we handle obsolete message by not using it"""
-        txttemplate = """Heading
-
-Body text"""
         posource = """
 msgid "Heading"
 msgstr "Opskrif"
@@ -112,6 +109,9 @@ msgstr "Lyfteks"
 #~ msgid "Obsolete"
 #~ msgstr "Oud"
 """
+        txttemplate = """Heading
+
+Body text"""
         expected_output = """Opskrif
 
 Lyfteks"""
@@ -120,9 +120,6 @@ Lyfteks"""
 
     def test_header_ignore(self):
         """check that we ignore headers"""
-        txttemplate = """Heading
-
-Body text"""
         posource = """
 msgid "Heading"
 msgstr "Opskrif"
@@ -130,6 +127,9 @@ msgstr "Opskrif"
 msgid "Body text"
 msgstr "Lyfteks"
 """
+        txttemplate = """Heading
+
+Body text"""
         expected_output = """Opskrif
 
 Lyfteks"""
