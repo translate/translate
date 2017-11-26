@@ -10,14 +10,14 @@ from translate.misc import wStringIO
 
 class TestTiki2Po(object):
 
-    def _convert(self, format_input_source, format_template_source=None,
-                 include_unused=False):
+    def _convert_to_string(self, input_string, template_string=None,
+                           include_unused=False):
         """Helper that converts format to target format without files."""
-        input_file = wStringIO.StringIO(format_input_source)
+        input_file = wStringIO.StringIO(input_string)
         output_file = wStringIO.StringIO()
         template_file = None
-        if format_template_source:
-            template_file = wStringIO.StringIO(format_template_source)
+        if template_string:
+            template_file = wStringIO.StringIO(template_string)
         result = tiki2po.run_converter(input_file, output_file, template_file,
                                        include_unused)
         assert result == 1
@@ -32,25 +32,25 @@ class TestTiki2Po(object):
         assert output_file.getvalue().decode('utf-8') == ''
 
     def test_converttiki_defaults(self):
-        input_source = """
+        input_string = """
 "zero_source" => "zero_target",
 // ### Start of unused words
 "one_source" => "one_target",
 // ### end of unused words
 """
-        output = self._convert(input_source)
+        output = self._convert_to_string(input_string)
         assert '#: translated' in output
         assert 'msgid "zero_source"' in output
         assert "one_source" not in output
 
     def test_converttiki_includeunused(self):
-        input_source = """
+        input_string = """
 "zero_source" => "zero_target",
 // ### Start of unused words
 "one_source" => "one_target",
 // ### end of unused words
 """
-        output = self._convert(input_source, include_unused=True)
+        output = self._convert_to_string(input_string, include_unused=True)
         assert '#: translated' in output
         assert 'msgid "zero_source"' in output
         assert '#: unused' in output
