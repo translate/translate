@@ -10,18 +10,25 @@ from translate.misc import wStringIO
 
 class TestIcal2PO(object):
 
-    def convert_to_target_text(self, input_string, template_string=None,
-                               blank_msgstr=False, duplicate_style="msgctxt"):
-        """Helper that converts format input to PO output without files."""
+    ConverterClass = ical2po.ical2po
+
+    def _convert(self, input_string, template_string=None, blank_msgstr=False,
+                 duplicate_style="msgctxt", success_expected=True):
+        """Helper that converts to target format without using files."""
         input_file = wStringIO.StringIO(input_string)
         output_file = wStringIO.StringIO()
         template_file = None
         if template_string:
             template_file = wStringIO.StringIO(template_string)
-        result = ical2po.run_converter(input_file, output_file, template_file,
-                                       blank_msgstr, duplicate_style)
-        assert result == 1
-        return output_file.getvalue().decode('utf-8')
+        expected_result = 1 if success_expected else 0
+        converter = self.ConverterClass(input_file, output_file, template_file,
+                                        blank_msgstr, duplicate_style)
+        assert converter.run() == expected_result
+        return converter.target_store, output_file
+
+    def _convert_to_string(self, *args, **kwargs):
+        """Helper that converts to target format string without using files."""
+        return self._convert(*args, **kwargs)[1].getvalue().decode('utf-8')
 
     def test_convert_empty_file(self):
         """Check converting empty iCalendar returns no output."""
@@ -71,7 +78,7 @@ END:VCALENDAR
 msgid "Value"
 msgstr ""
 """
-        output = self.convert_to_target_text(input_source)
+        output = self._convert_to_string(input_source)
         assert expected_unit_output in output
         assert "extracted from " in output
 
@@ -97,7 +104,7 @@ END:VCALENDAR
 msgid "Value"
 msgstr ""
 """
-        output = self.convert_to_target_text(input_source)
+        output = self._convert_to_string(input_source)
         assert expected_unit_output in output
         assert "extracted from " in output
 
@@ -123,7 +130,7 @@ END:VCALENDAR
 msgid "Value"
 msgstr ""
 """
-        output = self.convert_to_target_text(input_source)
+        output = self._convert_to_string(input_source)
         assert expected_unit_output in output
         assert "extracted from " in output
 
@@ -149,7 +156,7 @@ END:VCALENDAR
 msgid "Value"
 msgstr ""
 """
-        output = self.convert_to_target_text(input_source)
+        output = self._convert_to_string(input_source)
         assert expected_unit_output in output
         assert "extracted from " in output
 
@@ -190,12 +197,12 @@ msgctxt "[uid2@example.com]SUMMARY"
 msgid "Value"
 msgstr ""
 """
-        output = self.convert_to_target_text(input_source)
+        output = self._convert_to_string(input_source)
         assert expected_unit_output in output
         assert "extracted from " in output
 
-        output = self.convert_to_target_text(input_source,
-                                             duplicate_style="msgctxt")
+        output = self._convert_to_string(input_source,
+                                         duplicate_style="msgctxt")
         assert expected_unit_output in output
         assert "extracted from " in output
 
@@ -207,8 +214,8 @@ msgstr ""
 msgid "Value"
 msgstr ""
 """
-        output = self.convert_to_target_text(input_source,
-                                             duplicate_style="merge")
+        output = self._convert_to_string(input_source,
+                                         duplicate_style="merge")
         assert expected_unit_output in output
         assert "extracted from " in output
 
@@ -248,7 +255,7 @@ END:VCALENDAR
 msgid "Value"
 msgstr "Valor"
 """
-        output = self.convert_to_target_text(input_source, template_source)
+        output = self._convert_to_string(input_source, template_source)
         assert expected_unit_output in output
         assert "extracted from " in output
 
@@ -288,7 +295,7 @@ END:VCALENDAR
 msgid "Value"
 msgstr ""
 """
-        output = self.convert_to_target_text(input_source, template_source)
+        output = self._convert_to_string(input_source, template_source)
         assert expected_unit_output in output
         assert "extracted from " in output
 
@@ -328,8 +335,8 @@ END:VCALENDAR
 msgid "Value"
 msgstr ""
 """
-        output = self.convert_to_target_text(input_source, template_source,
-                                             blank_msgstr=True)
+        output = self._convert_to_string(input_source, template_source,
+                                         blank_msgstr=True)
         assert expected_unit_output in output
         assert "extracted from " in output
 
@@ -392,12 +399,12 @@ msgctxt "[uid2@example.com]SUMMARY"
 msgid "Value"
 msgstr "Valioso"
 """
-        output = self.convert_to_target_text(input_source, template_source)
+        output = self._convert_to_string(input_source, template_source)
         assert expected_unit_output in output
         assert "extracted from " in output
 
-        output = self.convert_to_target_text(input_source, template_source,
-                                             duplicate_style="msgctxt")
+        output = self._convert_to_string(input_source, template_source,
+                                         duplicate_style="msgctxt")
         assert expected_unit_output in output
         assert "extracted from " in output
 
@@ -410,8 +417,8 @@ msgstr "Valioso"
 msgid "Value"
 msgstr "Valor"
 """
-        output = self.convert_to_target_text(input_source, template_source,
-                                             duplicate_style="merge")
+        output = self._convert_to_string(input_source, template_source,
+                                         duplicate_style="merge")
         assert expected_unit_output in output
         assert "extracted from " in output
 
