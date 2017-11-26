@@ -10,16 +10,24 @@ from translate.misc import wStringIO
 
 class TestPo2Tiki(object):
 
-    def _convert(self, input_string, template_string=None):
-        """Helper that converts format to target format without files."""
+    ConverterClass = po2tiki.po2tiki
+
+    def _convert(self, input_string, template_string=None,
+                 success_expected=True):
+        """Helper that converts to target format without using files."""
         input_file = wStringIO.StringIO(input_string)
         output_file = wStringIO.StringIO()
         template_file = None
         if template_string:
             template_file = wStringIO.StringIO(template_string)
-        result = po2tiki.run_converter(input_file, output_file, template_file)
-        assert result == 1
-        return output_file.getvalue().decode('utf-8')
+        expected_result = 1 if success_expected else 0
+        converter = self.ConverterClass(input_file, output_file, template_file)
+        assert converter.run() == expected_result
+        return converter.target_store, output_file
+
+    def _convert_to_string(self, *args, **kwargs):
+        """Helper that converts to target format string without using files."""
+        return self._convert(*args, **kwargs)[1].getvalue().decode('utf-8')
 
     def test_convert_empty(self):
         """Check converting empty file returns no output."""
@@ -40,7 +48,7 @@ msgstr "zero_target"
 msgid "one_source"
 msgstr "one_target"
 """
-        output = self._convert(input_string)
+        output = self._convert_to_string(input_string)
         assert '"one_source" => "one_target",' in output
         assert '"zero_source" => "zero_target",' in output
 
@@ -51,7 +59,7 @@ msgstr "one_target"
 msgid "Do not translate"
 msgstr "It is translated"
 """
-        output = self._convert(input_string)
+        output = self._convert_to_string(input_string)
         assert '"Do not translate" => "It is translated",' in output
 
 
