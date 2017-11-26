@@ -1,5 +1,7 @@
 # -*- coding: utf-8 -*-
 
+from __future__ import unicode_literals
+
 from translate.convert import po2txt, test_convert
 from translate.misc import wStringIO
 
@@ -30,29 +32,70 @@ class TestPO2Txt(object):
 
     def test_basic(self):
         """test basic conversion"""
-        txttemplate = "Heading\n\nBody text"
-        posource = 'msgid "Heading"\nmsgstr "Opskrif"\n\nmsgid "Body text"\nmsgstr "Lyfteks"\n'
-        assert self._convert_to_string(posource, txttemplate) == "Opskrif\n\nLyfteks"
+        txttemplate = """Heading
+
+Body text"""
+        posource = """msgid "Heading"
+msgstr "Opskrif"
+
+msgid "Body text"
+msgstr "Lyfteks"
+"""
+        expected_output = """Opskrif
+
+Lyfteks"""
+        assert self._convert_to_string(posource, txttemplate) == expected_output
 
     def test_nonascii(self):
         """test conversion with non-ascii text"""
-        txttemplate = "Heading\n\nFile content"
-        posource = u'msgid "Heading"\nmsgstr "Opskrif"\n\nmsgid "File content"\nmsgstr "Lêerinhoud"\n'
-        assert self._convert_to_string(posource, txttemplate) == u"Opskrif\n\nLêerinhoud"
+        txttemplate = """Heading
+
+File content"""
+        posource = """msgid "Heading"
+msgstr "Opskrif"
+
+msgid "File content"
+msgstr "Lêerinhoud"
+"""
+        expected_output = """Opskrif
+
+Lêerinhoud"""
+        assert self._convert_to_string(posource, txttemplate) == expected_output
 
     def test_blank_handling(self):
         """check that we discard blank messages"""
-        txttemplate = "Heading\n\nBody text"
-        posource = 'msgid "Heading"\nmsgstr "Opskrif"\n\nmsgid "Body text"\nmsgstr ""\n'
-        assert self._convert_to_string(posource) == "Opskrif\n\nBody text"
-        assert self._convert_to_string(posource, txttemplate) == "Opskrif\n\nBody text"
+        txttemplate = """Heading
+
+Body text"""
+        posource = """msgid "Heading"
+msgstr "Opskrif"
+
+msgid "Body text"
+msgstr ""
+"""
+        expected_output = """Opskrif
+
+Body text"""
+        assert self._convert_to_string(posource) == expected_output
+        assert self._convert_to_string(posource, txttemplate) == expected_output
 
     def test_fuzzy_handling(self):
         """check that we handle fuzzy message correctly"""
-        txttemplate = "Heading\n\nBody text"
-        posource = '#, fuzzy\nmsgid "Heading"\nmsgstr "Opskrif"\n\nmsgid "Body text"\nmsgstr "Lyfteks"\n'
-        assert self._convert_to_string(posource) == "Heading\n\nLyfteks"
-        assert self._convert_to_string(posource, txttemplate) == "Heading\n\nLyfteks"
+        txttemplate = """Heading
+
+Body text"""
+        posource = """#, fuzzy
+msgid "Heading"
+msgstr "Opskrif"
+
+msgid "Body text"
+msgstr "Lyfteks"
+"""
+        expected_output = """Heading
+
+Lyfteks"""
+        assert self._convert_to_string(posource) == expected_output
+        assert self._convert_to_string(posource, txttemplate) == expected_output
 
     def test_obsolete_ignore(self):
         """check that we handle obsolete message by not using it"""
@@ -81,9 +124,6 @@ Lyfteks"""
 
 Body text"""
         posource = """
-msgid ""
-msgstr "POT-Creation-Date: 2006-11-11 11:11+0000\n"
-
 msgid "Heading"
 msgstr "Opskrif"
 
