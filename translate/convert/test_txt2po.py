@@ -88,8 +88,7 @@ Third unit with blank after but no more units.
 
 """
         po_store = self._convert_to_store(input_string)
-        assert po_store.units[0].isheader()
-        assert len(po_store.units) == 4
+        assert self._count_elements(po_store) == 3
 
     def test_carriage_return(self):
         """Remove carriage returns from files in dos format."""
@@ -104,11 +103,9 @@ helped to bridge the digital divide to a limited extent."""
 
     def test_merge(self):
         """Test converter doesn't merge."""
-        input_file = wStringIO.StringIO()
-        output_file = wStringIO.StringIO()
-        template_file = wStringIO.StringIO()
         with pytest.raises(txt2po.ConverterCantMergeError):
-            self.ConverterClass(input_file, output_file, template_file).run()
+            self._convert_to_store("this", "cannot be", "blank",
+                                   success_expected=False)
 
 
 class TestDoku2po(BaseTxt2POTester):
@@ -142,13 +139,8 @@ Simple
 
         # Now test with merge duplicate style. This requires custom code to
         # pass the duplicate style to the converter.
-        input_file = wStringIO.StringIO(input_string)
-        output_file = wStringIO.StringIO()
-        convertor = self.ConverterClass(input_file, output_file,
-                                        duplicate_style="merge",
-                                        flavour=self.Flavour)
-        convertor.run()
-        po_store = convertor.target_store
+        po_store = self._convert_to_store(input_string,
+                                          duplicate_style="merge")
         assert self._count_elements(po_store) == 1
         assert po_store.units[1].source == "Simple"
         assert po_store.units[1].target == ""
@@ -160,8 +152,7 @@ Simple
 This is a wiki page.
 """
         po_store = self._convert_to_store(input_string)
-        assert po_store.units[0].isheader()
-        assert len(po_store.units) == 3
+        assert self._count_elements(po_store) == 2
         assert po_store.units[1].source == "Heading"
         assert po_store.units[2].source == "This is a wiki page."
 
@@ -171,8 +162,7 @@ This is a wiki page.
   * This is a fact.
 """
         po_store = self._convert_to_store(input_string)
-        assert po_store.units[0].isheader()
-        assert len(po_store.units) == 3
+        assert self._count_elements(po_store) == 2
         assert po_store.units[1].source == "This is a fact."
         assert po_store.units[1].getlocations() == [':1']
         assert po_store.units[2].source == "This is a fact."
@@ -184,8 +174,7 @@ This is a wiki page.
   - This is an item.
 """
         po_store = self._convert_to_store(input_string)
-        assert po_store.units[0].isheader()
-        assert len(po_store.units) == 3
+        assert self._count_elements(po_store) == 2
         assert po_store.units[1].source == "This is an item."
         assert po_store.units[1].getlocations() == [':1']
         assert po_store.units[2].source == "This is an item."
@@ -199,8 +188,7 @@ This is a wiki page.
         * This is a tabbed item.
 """
         po_store = self._convert_to_store(input_string)
-        assert po_store.units[0].isheader()
-        assert len(po_store.units) == 5
+        assert self._count_elements(po_store) == 4
         assert po_store.units[1].source == "Heading"
         assert po_store.units[2].source == "This is an item."
         assert po_store.units[3].source == "This is a subitem."
