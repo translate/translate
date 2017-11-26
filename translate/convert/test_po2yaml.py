@@ -12,30 +12,27 @@ class TestPO2YAML(object):
 
     ConverterClass = po2yaml.po2yaml
 
-    def _convert(self, po_input_source, format_template_source=None,
-                 include_fuzzy=False, output_threshold=None):
-        """Helper that converts PO to format without files."""
-        input_file = wStringIO.StringIO(po_input_source)
+    def _convert(self, input_string, template_string=None, include_fuzzy=False,
+                 output_threshold=None, success_expected=True):
+        """Helper that converts to target format without using files."""
+        input_file = wStringIO.StringIO(input_string)
         output_file = wStringIO.StringIO()
         template_file = None
-        if format_template_source:
-            template_file = wStringIO.StringIO(format_template_source)
+        if template_string:
+            template_file = wStringIO.StringIO(template_string)
+        expected_result = 1 if success_expected else 0
         converter = self.ConverterClass(input_file, output_file, template_file,
                                         include_fuzzy, output_threshold)
-        assert converter.run() == 1
+        assert converter.run() == expected_result
         return converter.target_store, output_file
 
-    def format2po_file(self, po_input_source, format_template_source=None,
-                       include_fuzzy=False, output_threshold=None):
-        """Helper that converts PO source to format store without files."""
-        return self._convert(po_input_source, format_template_source,
-                             include_fuzzy, output_threshold)[0]
+    def format2po_file(self, *args, **kwargs):
+        """Helper that converts to target format store without using files."""
+        return self._convert(*args, **kwargs)[0]
 
-    def format2po_text(self, po_input_source, format_template_source=None,
-                       include_fuzzy=False, output_threshold=None):
-        """Helper that converts PO source to format output without files."""
-        return self._convert(po_input_source, format_template_source,
-                             include_fuzzy, output_threshold)[1].getvalue()
+    def format2po_text(self, *args, **kwargs):
+        """Helper that converts to target format string without using files."""
+        return self._convert(*args, **kwargs)[1].getvalue()
 
     def test_convert_empty_PO(self):
         """Check converting empty PO returns no output."""
