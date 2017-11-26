@@ -9,9 +9,9 @@ class BaseTxt2POTester(object):
     ConverterClass = txt2po.txt2po
     Flavour = None
 
-    def _convert_to_store(self, input_string, template_string=None,
-                          duplicate_style="msgctxt", encoding="utf-8",
-                          success_expected=True):
+    def _convert(self, input_string, template_string=None,
+                 duplicate_style="msgctxt", encoding="utf-8",
+                 success_expected=True):
         """Helper that converts to target format store without using files."""
         input_file = wStringIO.StringIO(input_string)
         output_file = wStringIO.StringIO()
@@ -23,7 +23,15 @@ class BaseTxt2POTester(object):
                                         duplicate_style, encoding,
                                         self.Flavour)
         assert converter.run() == expected_result
-        return converter.target_store
+        return converter.target_store, output_file
+
+    def _convert_to_store(self, *args, **kwargs):
+        """Helper that converts to target format store without using files."""
+        return self._convert(*args, **kwargs)[0]
+
+    def _convert_to_string(self, *args, **kwargs):
+        """Helper that converts to target format string without using files."""
+        return self._convert(*args, **kwargs)[1].getvalue().decode('utf-8')
 
     def _count_elements(self, po_store):
         """Helper that counts the number of non-header units."""
@@ -35,8 +43,7 @@ class TestTxt2PO(BaseTxt2POTester):
 
     def test_convert_empty(self):
         """Check converting empty file returns no output."""
-        target_store = self._convert_to_store("", success_expected=False)
-        assert self._count_elements(target_store) == 0
+        assert self._convert_to_string('', success_expected=False) == ''
 
     def test_keep_duplicates(self):
         """Check converting keeps duplicates."""
@@ -114,13 +121,7 @@ class TestDoku2po(BaseTxt2POTester):
 
     def test_convert_empty(self):
         """Test converting empty file returns no output."""
-        input_file = wStringIO.StringIO('')
-        output_file = wStringIO.StringIO()
-        template_file = None
-        converter = self.ConverterClass(input_file, output_file)
-        assert converter.run() == 0
-        assert converter.target_store.isempty()
-        assert output_file.getvalue().decode('utf-8') == ''
+        assert self._convert_to_string('', success_expected=False) == ''
 
     def test_keep_duplicates(self):
         """Check converting keeps duplicates."""
