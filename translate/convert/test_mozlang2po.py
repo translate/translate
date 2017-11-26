@@ -4,7 +4,6 @@ import pytest
 
 from translate.convert import mozlang2po, test_convert
 from translate.misc import wStringIO
-from translate.storage import mozilla_lang as lang
 
 
 class TestLang2PO(object):
