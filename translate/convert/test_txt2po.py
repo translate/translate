@@ -110,7 +110,7 @@ helped to bridge the digital divide to a limited extent."""
 
     def test_merge(self):
         """Test converter doesn't merge."""
-        with pytest.raises(txt2po.ConverterCantMergeError):
+        with pytest.raises(NotImplementedError):
             self._convert_to_store("this", "cannot be", "blank",
                                    success_expected=False)
 
