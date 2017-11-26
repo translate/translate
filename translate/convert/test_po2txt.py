@@ -6,18 +6,27 @@ from translate.misc import wStringIO
 
 class TestPO2Txt(object):
 
-    def po2txt(self, posource, txttemplate=None):
-        """helper that converts po source to txt source without requiring files"""
-        inputfile = wStringIO.StringIO(posource)
-        print(inputfile.getvalue())
-        outputfile = wStringIO.StringIO()
-        if txttemplate:
-            templatefile = wStringIO.StringIO(txttemplate)
-        else:
-            templatefile = None
-        assert po2txt.run_converter(inputfile, outputfile, templatefile)
-        print(outputfile.getvalue())
-        return outputfile.getvalue().decode('utf-8')
+    ConverterClass = po2txt.po2txt
+
+    def _convert(self, input_string, template_string=None, include_fuzzy=False,
+                 output_threshold=None, encoding='utf-8', wrap=None,
+                 success_expected=True):
+        """Helper that converts to target format without using files."""
+        input_file = wStringIO.StringIO(input_string)
+        output_file = wStringIO.StringIO()
+        template_file = None
+        if template_string:
+            template_file = wStringIO.StringIO(template_string)
+        expected_result = 1 if success_expected else 0
+        converter = self.ConverterClass(input_file, output_file, template_file,
+                                        include_fuzzy, output_threshold,
+                                        encoding, wrap)
+        assert converter.run() == expected_result
+        return None, output_file
+
+    def po2txt(self, *args, **kwargs):
+        """Helper that converts to target format string without using files."""
+        return self._convert(*args, **kwargs)[1].getvalue().decode('utf-8')
 
     def test_basic(self):
         """test basic conversion"""
