@@ -2,7 +2,6 @@ import pytest
 
 from translate.convert import test_convert, txt2po
 from translate.misc import wStringIO
-from translate.storage import txt
 
 
 class BaseTxt2POTester(object):
@@ -36,49 +35,50 @@ class TestTxt2PO(BaseTxt2POTester):
 
     def test_convert_empty(self):
         """Check converting empty file returns no output."""
-        target_store = self._convert_to_store('', success_expected=False)
+        target_store = self._convert_to_store("", success_expected=False)
         assert self._count_elements(target_store) == 0
 
     def test_keep_duplicates(self):
         """Check converting keeps duplicates."""
-        input_source = """
+        input_string = """
 Simple
 
 Simple
 """
-        po_file = self._convert_to_store(input_source)
-        assert self._count_elements(po_file) == 2
-        assert po_file.units[1].source == "Simple"
-        assert po_file.units[1].target == ""
-        assert po_file.units[2].source == "Simple"
-        assert po_file.units[2].target == ""
+        po_store = self._convert_to_store(input_string)
+        assert self._count_elements(po_store) == 2
+        assert po_store.units[1].source == "Simple"
+        assert po_store.units[1].target == ""
+        assert po_store.units[2].source == "Simple"
+        assert po_store.units[2].target == ""
 
     def test_drop_duplicates(self):
         """Check converting drops duplicates."""
-        input_source = """
+        input_string = """
 Simple
 
 Simple
 """
-        po_file = self._convert_to_store(input_source, duplicate_style="merge")
-        assert self._count_elements(po_file) == 1
-        assert po_file.units[1].source == "Simple"
-        assert po_file.units[1].target == ""
+        po_store = self._convert_to_store(input_string,
+                                          duplicate_style="merge")
+        assert self._count_elements(po_store) == 1
+        assert po_store.units[1].source == "Simple"
+        assert po_store.units[1].target == ""
 
     def test_simple(self):
-        """test the most basic txt conversion"""
-        txtsource = "A simple string"
-        poexpected = '''#: :1
+        """Test the most basic conversion."""
+        input_string = "A simple string"
+        expected_output = """#: :1
 msgid "A simple string"
 msgstr ""
-'''
-        poresult = self._convert_to_store(txtsource)
-        assert str(poresult.units[1]) == poexpected
-        assert "extracted from " in str(poresult.header())
+"""
+        po_store = self._convert_to_store(input_string)
+        assert str(po_store.units[1]) == expected_output
+        assert "extracted from " in str(po_store.header())
 
     def test_multiple_units(self):
-        """test that we can handle txt with multiple units"""
-        txtsource = """First unit
+        """Test that we can handle txt with multiple units."""
+        input_string = """First unit
 Still part of first unit
 
 Second unit is a heading
@@ -87,25 +87,23 @@ Second unit is a heading
 Third unit with blank after but no more units.
 
 """
-        poresult = self._convert_to_store(txtsource)
-        assert poresult.units[0].isheader()
-        assert len(poresult.units) == 4
+        po_store = self._convert_to_store(input_string)
+        assert po_store.units[0].isheader()
+        assert len(po_store.units) == 4
 
     def test_carriage_return(self):
         """Remove carriage returns from files in dos format."""
-        txtsource = '''The rapid expansion of telecommunications infrastructure in recent years has\r
+        input_string = """The rapid expansion of telecommunications infrastructure in recent years has\r
 helped to bridge the digital divide to a limited extent.\r
-'''
+"""
+        expected_output = """The rapid expansion of telecommunications infrastructure in recent years has
+helped to bridge the digital divide to a limited extent."""
 
-        txtexpected = '''The rapid expansion of telecommunications infrastructure in recent years has
-helped to bridge the digital divide to a limited extent.'''
-
-        poresult = self._convert_to_store(txtsource)
-        pounit = poresult.units[1]
-        assert str(pounit.source) == txtexpected
+        po_store = self._convert_to_store(input_string)
+        assert str(po_store.units[1].source) == expected_output
 
     def test_merge(self):
-        """Check converter doesn't merge."""
+        """Test converter doesn't merge."""
         input_file = wStringIO.StringIO()
         output_file = wStringIO.StringIO()
         template_file = wStringIO.StringIO()
@@ -118,7 +116,7 @@ class TestDoku2po(BaseTxt2POTester):
     Flavour = "dokuwiki"
 
     def test_convert_empty(self):
-        """Check converting empty file returns no output."""
+        """Test converting empty file returns no output."""
         input_file = wStringIO.StringIO('')
         output_file = wStringIO.StringIO()
         template_file = None
@@ -128,85 +126,85 @@ class TestDoku2po(BaseTxt2POTester):
         assert output_file.getvalue().decode('utf-8') == ''
 
     def test_duplicates(self):
-        """Check converting drops duplicates."""
-        input_source = '''
+        """Test converting drops duplicates."""
+        input_string = """
 Simple
 
 Simple
-'''
+"""
         # First test with default duplicate style (msgctxt).
-        po_file = self._convert_to_store(input_source)
-        assert self._count_elements(po_file) == 2
-        assert po_file.units[1].source == "Simple"
-        assert po_file.units[1].target == ""
-        assert po_file.units[2].source == "Simple"
-        assert po_file.units[2].target == ""
+        po_store = self._convert_to_store(input_string)
+        assert self._count_elements(po_store) == 2
+        assert po_store.units[1].source == "Simple"
+        assert po_store.units[1].target == ""
+        assert po_store.units[2].source == "Simple"
+        assert po_store.units[2].target == ""
 
         # Now test with merge duplicate style. This requires custom code to
         # pass the duplicate style to the converter.
-        input_file = wStringIO.StringIO(input_source)
+        input_file = wStringIO.StringIO(input_string)
         output_file = wStringIO.StringIO()
         convertor = self.ConverterClass(input_file, output_file,
                                         duplicate_style="merge",
                                         flavour=self.Flavour)
         convertor.run()
-        po_file = convertor.target_store
-        assert self._count_elements(po_file) == 1
-        assert po_file.units[1].source == "Simple"
-        assert po_file.units[1].target == ""
+        po_store = convertor.target_store
+        assert self._count_elements(po_store) == 1
+        assert po_store.units[1].source == "Simple"
+        assert po_store.units[1].target == ""
 
     def test_basic(self):
-        """Tests that we can convert some basic things."""
-        dokusource = """=====Heading=====
+        """Test basic Dokuwiki conversion."""
+        input_string = """=====Heading=====
 
 This is a wiki page.
 """
-        poresult = self._convert_to_store(dokusource)
-        assert poresult.units[0].isheader()
-        assert len(poresult.units) == 3
-        assert poresult.units[1].source == "Heading"
-        assert poresult.units[2].source == "This is a wiki page."
+        po_store = self._convert_to_store(input_string)
+        assert po_store.units[0].isheader()
+        assert len(po_store.units) == 3
+        assert po_store.units[1].source == "Heading"
+        assert po_store.units[2].source == "This is a wiki page."
 
-    def test_bullets(self):
-        """Tests that we can convert some basic things."""
-        dokusource = """  * This is a fact.
+    def test_bullet_list(self):
+        """Test Dokuwiki bullet list conversion."""
+        input_string = """  * This is a fact.
   * This is a fact.
 """
-        poresult = self._convert_to_store(dokusource)
-        assert poresult.units[0].isheader()
-        assert len(poresult.units) == 3
-        assert poresult.units[1].source == "This is a fact."
-        assert poresult.units[1].getlocations() == [':1']
-        assert poresult.units[2].source == "This is a fact."
-        assert poresult.units[2].getlocations() == [':2']
+        po_store = self._convert_to_store(input_string)
+        assert po_store.units[0].isheader()
+        assert len(po_store.units) == 3
+        assert po_store.units[1].source == "This is a fact."
+        assert po_store.units[1].getlocations() == [':1']
+        assert po_store.units[2].source == "This is a fact."
+        assert po_store.units[2].getlocations() == [':2']
 
-    def test_numbers(self):
-        """Tests that we can convert some basic things."""
-        dokusource = """  - This is an item.
+    def test_numbered_list(self):
+        """Test Dokuwiki numbered list conversion."""
+        input_string = """  - This is an item.
   - This is an item.
 """
-        poresult = self._convert_to_store(dokusource)
-        assert poresult.units[0].isheader()
-        assert len(poresult.units) == 3
-        assert poresult.units[1].source == "This is an item."
-        assert poresult.units[1].getlocations() == [':1']
-        assert poresult.units[2].source == "This is an item."
-        assert poresult.units[2].getlocations() == [':2']
+        po_store = self._convert_to_store(input_string)
+        assert po_store.units[0].isheader()
+        assert len(po_store.units) == 3
+        assert po_store.units[1].source == "This is an item."
+        assert po_store.units[1].getlocations() == [':1']
+        assert po_store.units[2].source == "This is an item."
+        assert po_store.units[2].getlocations() == [':2']
 
     def test_spacing(self):
-        """Tests that we can convert some basic things."""
-        dokusource = """ =====         Heading  =====
+        """Test Dokuwiki list nesting conversion."""
+        input_string = """ =====         Heading  =====
   * This is an item.
     * This is a subitem.
         * This is a tabbed item.
 """
-        poresult = self._convert_to_store(dokusource)
-        assert poresult.units[0].isheader()
-        assert len(poresult.units) == 5
-        assert poresult.units[1].source == "Heading"
-        assert poresult.units[2].source == "This is an item."
-        assert poresult.units[3].source == "This is a subitem."
-        assert poresult.units[4].source == "This is a tabbed item."
+        po_store = self._convert_to_store(input_string)
+        assert po_store.units[0].isheader()
+        assert len(po_store.units) == 5
+        assert po_store.units[1].source == "Heading"
+        assert po_store.units[2].source == "This is an item."
+        assert po_store.units[3].source == "This is a subitem."
+        assert po_store.units[4].source == "This is a tabbed item."
 
 
 class TestTxt2POCommand(test_convert.TestConvertCommand, TestTxt2PO):
