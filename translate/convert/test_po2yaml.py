@@ -40,11 +40,8 @@ class TestPO2YAML(object):
 
     def test_convert_no_templates(self):
         """Check converter doesn't allow to pass no templates."""
-        input_file = wStringIO.StringIO()
-        output_file = wStringIO.StringIO()
-        template_file = None
         with pytest.raises(ValueError):
-            self.ConverterClass(input_file, output_file, template_file)
+            self._convert_to_store('')
 
     def test_simple_output(self):
         """Check that a simple single entry PO converts valid YAML output."""
