@@ -26,11 +26,11 @@ class TestPO2YAML(object):
         assert converter.run() == expected_result
         return converter.target_store, output_file
 
-    def format2po_file(self, *args, **kwargs):
+    def _convert_to_store(self, *args, **kwargs):
         """Helper that converts to target format store without using files."""
         return self._convert(*args, **kwargs)[0]
 
-    def format2po_text(self, *args, **kwargs):
+    def _convert_to_string(self, *args, **kwargs):
         """Helper that converts to target format string without using files."""
         return self._convert(*args, **kwargs)[1].getvalue()
 
@@ -63,7 +63,7 @@ msgstr ""
         expected_output = '''key: Hello, World!
 '''
         assert (expected_output ==
-                self.format2po_text(input_source,
+                self._convert_to_string(input_source,
                                     template_source).decode('utf-8'))
 
     def test_simple(self):
@@ -74,7 +74,7 @@ msgid "Hello, World!"
 msgstr ""
 """
         template_source = 'key: "Hello, World!"'
-        yaml_file = self.format2po_file(input_source, template_source)
+        yaml_file = self._convert_to_store(input_source, template_source)
         yaml_unit = yaml_file.units[0]
         assert len(yaml_file.units) == 1
         assert yaml_unit.getid() == "key"
@@ -89,7 +89,7 @@ msgid "Hello, World!"
 msgstr "Ola mundo!"
 """
         template_source = 'key: "Hello, World!"'
-        yaml_file = self.format2po_file(input_source, template_source)
+        yaml_file = self._convert_to_store(input_source, template_source)
         yaml_unit = yaml_file.units[0]
         assert len(yaml_file.units) == 1
         assert yaml_unit.getid() == "key"
@@ -105,7 +105,7 @@ msgid "Hello, World!"
 msgstr "Ola mundo!"
 """
         template_source = 'key: "Hello, World!"'
-        yaml_file = self.format2po_file(input_source, template_source)
+        yaml_file = self._convert_to_store(input_source, template_source)
         yaml_unit = yaml_file.units[0]
         assert len(yaml_file.units) == 1
         assert yaml_unit.getid() == "key"
@@ -121,8 +121,8 @@ msgid "Hello, World!"
 msgstr "Ola mundo!"
 """
         template_source = 'key: "Hello, World!"'
-        yaml_file = self.format2po_file(input_source, template_source,
-                                        include_fuzzy=True)
+        yaml_file = self._convert_to_store(input_source, template_source,
+                                           include_fuzzy=True)
         yaml_unit = yaml_file.units[0]
         assert len(yaml_file.units) == 1
         assert yaml_unit.getid() == "key"
@@ -151,7 +151,7 @@ foo:
         boo: booo
 eggs: spam
 '''
-        yaml_file = self.format2po_file(input_source, template_source)
+        yaml_file = self._convert_to_store(input_source, template_source)
         assert len(yaml_file.units) == 3
         assert yaml_file.units[0].getlocations() == ['foo->bar']
         assert yaml_file.units[0].source == "bar"
