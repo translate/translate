@@ -24,7 +24,7 @@ class TestPO2Txt(object):
         assert converter.run() == expected_result
         return None, output_file
 
-    def po2txt(self, *args, **kwargs):
+    def _convert_to_string(self, *args, **kwargs):
         """Helper that converts to target format string without using files."""
         return self._convert(*args, **kwargs)[1].getvalue().decode('utf-8')
 
@@ -32,27 +32,27 @@ class TestPO2Txt(object):
         """test basic conversion"""
         txttemplate = "Heading\n\nBody text"
         posource = 'msgid "Heading"\nmsgstr "Opskrif"\n\nmsgid "Body text"\nmsgstr "Lyfteks"\n'
-        assert self.po2txt(posource, txttemplate) == "Opskrif\n\nLyfteks"
+        assert self._convert_to_string(posource, txttemplate) == "Opskrif\n\nLyfteks"
 
     def test_nonascii(self):
         """test conversion with non-ascii text"""
         txttemplate = "Heading\n\nFile content"
         posource = u'msgid "Heading"\nmsgstr "Opskrif"\n\nmsgid "File content"\nmsgstr "Lêerinhoud"\n'
-        assert self.po2txt(posource, txttemplate) == u"Opskrif\n\nLêerinhoud"
+        assert self._convert_to_string(posource, txttemplate) == u"Opskrif\n\nLêerinhoud"
 
     def test_blank_handling(self):
         """check that we discard blank messages"""
         txttemplate = "Heading\n\nBody text"
         posource = 'msgid "Heading"\nmsgstr "Opskrif"\n\nmsgid "Body text"\nmsgstr ""\n'
-        assert self.po2txt(posource) == "Opskrif\n\nBody text"
-        assert self.po2txt(posource, txttemplate) == "Opskrif\n\nBody text"
+        assert self._convert_to_string(posource) == "Opskrif\n\nBody text"
+        assert self._convert_to_string(posource, txttemplate) == "Opskrif\n\nBody text"
 
     def test_fuzzy_handling(self):
         """check that we handle fuzzy message correctly"""
         txttemplate = "Heading\n\nBody text"
         posource = '#, fuzzy\nmsgid "Heading"\nmsgstr "Opskrif"\n\nmsgid "Body text"\nmsgstr "Lyfteks"\n'
-        assert self.po2txt(posource) == "Heading\n\nLyfteks"
-        assert self.po2txt(posource, txttemplate) == "Heading\n\nLyfteks"
+        assert self._convert_to_string(posource) == "Heading\n\nLyfteks"
+        assert self._convert_to_string(posource, txttemplate) == "Heading\n\nLyfteks"
 
     def test_obsolete_ignore(self):
         """check that we handle obsolete message by not using it"""
@@ -72,8 +72,8 @@ msgstr "Lyfteks"
         expected_output = """Opskrif
 
 Lyfteks"""
-        assert self.po2txt(posource) == expected_output
-        assert self.po2txt(posource, txttemplate) == expected_output
+        assert self._convert_to_string(posource) == expected_output
+        assert self._convert_to_string(posource, txttemplate) == expected_output
 
     def test_header_ignore(self):
         """check that we ignore headers"""
@@ -93,8 +93,8 @@ msgstr "Lyfteks"
         expected_output = """Opskrif
 
 Lyfteks"""
-        assert self.po2txt(posource) == expected_output
-        assert self.po2txt(posource, txttemplate) == expected_output
+        assert self._convert_to_string(posource) == expected_output
+        assert self._convert_to_string(posource, txttemplate) == expected_output
 
     def test_convert_completion_below_threshold(self):
         """Check no conversion if input completion is below threshold."""
