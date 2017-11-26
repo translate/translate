@@ -300,14 +300,11 @@ END:VCALENDAR
 '''.replace("\n", "\r\n")
         template_string = icalendar_boilerplate % "Value"
         expected_output = ""
-        input_file = wStringIO.StringIO(input_string)
-        output_file = wStringIO.StringIO()
-        template_file = wStringIO.StringIO(template_string)
         # Input completion is 0% so with a 70% threshold it should not output.
-        result = po2ical.run_converter(input_file, output_file, template_file,
-                                       outputthreshold=70)
-        assert result == 0
-        assert output_file.getvalue().decode('utf-8') == expected_output
+        output = self._convert_to_string(input_string, template_string,
+                                         output_threshold=70,
+                                         success_expected=False)
+        assert output == expected_output
 
     def test_convert_completion_above_threshold(self):
         """Check there is conversion if input completion is above threshold."""
@@ -331,14 +328,10 @@ END:VCALENDAR
 '''.replace("\n", "\r\n")
         template_string = icalendar_boilerplate % "Value"
         expected_output = icalendar_boilerplate % "Waarde"
-        input_file = wStringIO.StringIO(input_string)
-        output_file = wStringIO.StringIO()
-        template_file = wStringIO.StringIO(template_string)
         # Input completion is 100% so with a 70% threshold it should output.
-        result = po2ical.run_converter(input_file, output_file, template_file,
-                                       outputthreshold=70)
-        assert result == 1
-        assert output_file.getvalue().decode('utf-8') == expected_output
+        output = self._convert_to_string(input_string, template_string,
+                                         output_threshold=70)
+        assert output == expected_output
 
 
 class TestPO2IcalCommand(test_convert.TestConvertCommand, TestPO2Ical):
