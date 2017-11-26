@@ -65,11 +65,9 @@ msgstr "Een"
 
     def test_merge(self):
         """Check converter doesn't merge."""
-        input_file = wStringIO.StringIO()
-        output_file = wStringIO.StringIO()
-        template_file = wStringIO.StringIO()
         with pytest.raises(NotImplementedError):
-            self.ConverterClass(input_file, output_file, template_file).run()
+            self._convert_to_store("this", "cannot be", "blank",
+                                   success_expected=False)
 
     def test_simpleentry(self):
         """checks that a simple lang entry converts properly to a po entry"""
