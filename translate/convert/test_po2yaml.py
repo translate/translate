@@ -45,83 +45,83 @@ class TestPO2YAML(object):
 
     def test_simple_output(self):
         """Check that a simple single entry PO converts valid YAML output."""
-        input_source = """
+        input_string = """
 #: key
 msgid "Hello, World!"
 msgstr ""
 """
-        template_source = 'key: "Hello, World!"'
+        template_string = 'key: "Hello, World!"'
         expected_output = '''key: Hello, World!
 '''
-        assert expected_output == self._convert_to_string(input_source,
-                                                          template_source)
+        assert expected_output == self._convert_to_string(input_string,
+                                                          template_string)
 
     def test_simple(self):
         """Check that a simple single entry PO converts to a YAML unit."""
-        input_source = """
+        input_string = """
 #: key
 msgid "Hello, World!"
 msgstr ""
 """
-        template_source = 'key: "Hello, World!"'
-        yaml_file = self._convert_to_store(input_source, template_source)
-        yaml_unit = yaml_file.units[0]
-        assert len(yaml_file.units) == 1
-        assert yaml_unit.getid() == "key"
-        assert yaml_unit.source == "Hello, World!"
-        assert yaml_unit.target == "Hello, World!"
+        template_string = 'key: "Hello, World!"'
+        target_store = self._convert_to_store(input_string, template_string)
+        target_unit = target_store.units[0]
+        assert len(target_store.units) == 1
+        assert target_unit.getid() == "key"
+        assert target_unit.source == "Hello, World!"
+        assert target_unit.target == "Hello, World!"
 
     def test_translated(self):
         """Check that a simple translated PO converts to a translated YAML."""
-        input_source = """
+        input_string = """
 #: key
 msgid "Hello, World!"
 msgstr "Ola mundo!"
 """
-        template_source = 'key: "Hello, World!"'
-        yaml_file = self._convert_to_store(input_source, template_source)
-        yaml_unit = yaml_file.units[0]
-        assert len(yaml_file.units) == 1
-        assert yaml_unit.getid() == "key"
-        assert yaml_unit.source == "Ola mundo!"
-        assert yaml_unit.target == "Ola mundo!"
+        template_string = 'key: "Hello, World!"'
+        target_store = self._convert_to_store(input_string, template_string)
+        target_unit = target_store.units[0]
+        assert len(target_store.units) == 1
+        assert target_unit.getid() == "key"
+        assert target_unit.source == "Ola mundo!"
+        assert target_unit.target == "Ola mundo!"
 
     def test_no_fuzzy(self):
         """Check that a simple fuzzy PO converts to a translated YAML."""
-        input_source = """
+        input_string = """
 #: key
 #, fuzzy
 msgid "Hello, World!"
 msgstr "Ola mundo!"
 """
-        template_source = 'key: "Hello, World!"'
-        yaml_file = self._convert_to_store(input_source, template_source)
-        yaml_unit = yaml_file.units[0]
-        assert len(yaml_file.units) == 1
-        assert yaml_unit.getid() == "key"
-        assert yaml_unit.source == "Hello, World!"
-        assert yaml_unit.target == "Hello, World!"
+        template_string = 'key: "Hello, World!"'
+        target_store = self._convert_to_store(input_string, template_string)
+        target_unit = target_store.units[0]
+        assert len(target_store.units) == 1
+        assert target_unit.getid() == "key"
+        assert target_unit.source == "Hello, World!"
+        assert target_unit.target == "Hello, World!"
 
     def test_allow_fuzzy(self):
         """Check that a simple fuzzy PO converts to a translated YAML."""
-        input_source = """
+        input_string = """
 #: key
 #, fuzzy
 msgid "Hello, World!"
 msgstr "Ola mundo!"
 """
-        template_source = 'key: "Hello, World!"'
-        yaml_file = self._convert_to_store(input_source, template_source,
-                                           include_fuzzy=True)
-        yaml_unit = yaml_file.units[0]
-        assert len(yaml_file.units) == 1
-        assert yaml_unit.getid() == "key"
-        assert yaml_unit.source == "Ola mundo!"
-        assert yaml_unit.target == "Ola mundo!"
+        template_string = 'key: "Hello, World!"'
+        target_store = self._convert_to_store(input_string, template_string,
+                                              include_fuzzy=True)
+        target_unit = target_store.units[0]
+        assert len(target_store.units) == 1
+        assert target_unit.getid() == "key"
+        assert target_unit.source == "Ola mundo!"
+        assert target_unit.target == "Ola mundo!"
 
     def test_nested(self):
         """Check converting to nested YAML."""
-        input_source = """
+        input_string = """
 #: foo->bar
 msgid "bar"
 msgstr ""
@@ -134,24 +134,24 @@ msgstr ""
 msgid "spam"
 msgstr ""
 """
-        template_source = '''
+        template_string = '''
 foo:
     bar: bar
     baz:
         boo: booo
 eggs: spam
 '''
-        yaml_file = self._convert_to_store(input_source, template_source)
-        assert len(yaml_file.units) == 3
-        assert yaml_file.units[0].getlocations() == ['foo->bar']
-        assert yaml_file.units[0].source == "bar"
-        assert yaml_file.units[0].target == "bar"
-        assert yaml_file.units[1].getlocations() == ['foo->baz->boo']
-        assert yaml_file.units[1].source == "booo"
-        assert yaml_file.units[1].target == "booo"
-        assert yaml_file.units[2].getlocations() == ['eggs']
-        assert yaml_file.units[2].source == "spam"
-        assert yaml_file.units[2].target == "spam"
+        target_store = self._convert_to_store(input_string, template_string)
+        assert len(target_store.units) == 3
+        assert target_store.units[0].getlocations() == ['foo->bar']
+        assert target_store.units[0].source == "bar"
+        assert target_store.units[0].target == "bar"
+        assert target_store.units[1].getlocations() == ['foo->baz->boo']
+        assert target_store.units[1].source == "booo"
+        assert target_store.units[1].target == "booo"
+        assert target_store.units[2].getlocations() == ['eggs']
+        assert target_store.units[2].source == "spam"
+        assert target_store.units[2].target == "spam"
 
     def test_convert_completion_below_threshold(self):
         """Check no conversion if input completion is below threshold."""
