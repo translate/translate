@@ -52,12 +52,12 @@ Simple
 
 Simple
 """
-        po_store = self._convert_to_store(input_string)
-        assert self._count_elements(po_store) == 2
-        assert po_store.units[1].source == "Simple"
-        assert po_store.units[1].target == ""
-        assert po_store.units[2].source == "Simple"
-        assert po_store.units[2].target == ""
+        target_store = self._convert_to_store(input_string)
+        assert self._count_elements(target_store) == 2
+        assert target_store.units[1].source == "Simple"
+        assert target_store.units[1].target == ""
+        assert target_store.units[2].source == "Simple"
+        assert target_store.units[2].target == ""
 
     def test_drop_duplicates(self):
         """Check converting drops duplicates."""
@@ -66,11 +66,11 @@ Simple
 
 Simple
 """
-        po_store = self._convert_to_store(input_string,
-                                          duplicate_style="merge")
-        assert self._count_elements(po_store) == 1
-        assert po_store.units[1].source == "Simple"
-        assert po_store.units[1].target == ""
+        target_store = self._convert_to_store(input_string,
+                                              duplicate_style="merge")
+        assert self._count_elements(target_store) == 1
+        assert target_store.units[1].source == "Simple"
+        assert target_store.units[1].target == ""
 
     def test_simple(self):
         """Test the most basic conversion."""
@@ -79,9 +79,9 @@ Simple
 msgid "A simple string"
 msgstr ""
 """
-        po_store = self._convert_to_store(input_string)
-        assert str(po_store.units[1]) == expected_output
-        assert "extracted from " in str(po_store.header())
+        target_store = self._convert_to_store(input_string)
+        assert str(target_store.units[1]) == expected_output
+        assert "extracted from " in str(target_store.header())
 
     def test_multiple_units(self):
         """Test that we can handle txt with multiple units."""
@@ -94,8 +94,8 @@ Second unit is a heading
 Third unit with blank after but no more units.
 
 """
-        po_store = self._convert_to_store(input_string)
-        assert self._count_elements(po_store) == 3
+        target_store = self._convert_to_store(input_string)
+        assert self._count_elements(target_store) == 3
 
     def test_carriage_return(self):
         """Remove carriage returns from files in dos format."""
@@ -105,8 +105,8 @@ helped to bridge the digital divide to a limited extent.\r
         expected_output = """The rapid expansion of telecommunications infrastructure in recent years has
 helped to bridge the digital divide to a limited extent."""
 
-        po_store = self._convert_to_store(input_string)
-        assert str(po_store.units[1].source) == expected_output
+        target_store = self._convert_to_store(input_string)
+        assert str(target_store.units[1].source) == expected_output
 
     def test_merge(self):
         """Test converter doesn't merge."""
@@ -130,12 +130,12 @@ Simple
 
 Simple
 """
-        po_store = self._convert_to_store(input_string)
-        assert self._count_elements(po_store) == 2
-        assert po_store.units[1].source == "Simple"
-        assert po_store.units[1].target == ""
-        assert po_store.units[2].source == "Simple"
-        assert po_store.units[2].target == ""
+        target_store = self._convert_to_store(input_string)
+        assert self._count_elements(target_store) == 2
+        assert target_store.units[1].source == "Simple"
+        assert target_store.units[1].target == ""
+        assert target_store.units[2].source == "Simple"
+        assert target_store.units[2].target == ""
 
     def test_drop_duplicates(self):
         """Test converting drops duplicates."""
@@ -144,11 +144,11 @@ Simple
 
 Simple
 """
-        po_store = self._convert_to_store(input_string,
-                                          duplicate_style="merge")
-        assert self._count_elements(po_store) == 1
-        assert po_store.units[1].source == "Simple"
-        assert po_store.units[1].target == ""
+        target_store = self._convert_to_store(input_string,
+                                              duplicate_style="merge")
+        assert self._count_elements(target_store) == 1
+        assert target_store.units[1].source == "Simple"
+        assert target_store.units[1].target == ""
 
     def test_basic(self):
         """Test basic Dokuwiki conversion."""
@@ -156,34 +156,34 @@ Simple
 
 This is a wiki page.
 """
-        po_store = self._convert_to_store(input_string)
-        assert self._count_elements(po_store) == 2
-        assert po_store.units[1].source == "Heading"
-        assert po_store.units[2].source == "This is a wiki page."
+        target_store = self._convert_to_store(input_string)
+        assert self._count_elements(target_store) == 2
+        assert target_store.units[1].source == "Heading"
+        assert target_store.units[2].source == "This is a wiki page."
 
     def test_bullet_list(self):
         """Test Dokuwiki bullet list conversion."""
         input_string = """  * This is a fact.
   * This is a fact.
 """
-        po_store = self._convert_to_store(input_string)
-        assert self._count_elements(po_store) == 2
-        assert po_store.units[1].source == "This is a fact."
-        assert po_store.units[1].getlocations() == [':1']
-        assert po_store.units[2].source == "This is a fact."
-        assert po_store.units[2].getlocations() == [':2']
+        target_store = self._convert_to_store(input_string)
+        assert self._count_elements(target_store) == 2
+        assert target_store.units[1].source == "This is a fact."
+        assert target_store.units[1].getlocations() == [':1']
+        assert target_store.units[2].source == "This is a fact."
+        assert target_store.units[2].getlocations() == [':2']
 
     def test_numbered_list(self):
         """Test Dokuwiki numbered list conversion."""
         input_string = """  - This is an item.
   - This is an item.
 """
-        po_store = self._convert_to_store(input_string)
-        assert self._count_elements(po_store) == 2
-        assert po_store.units[1].source == "This is an item."
-        assert po_store.units[1].getlocations() == [':1']
-        assert po_store.units[2].source == "This is an item."
-        assert po_store.units[2].getlocations() == [':2']
+        target_store = self._convert_to_store(input_string)
+        assert self._count_elements(target_store) == 2
+        assert target_store.units[1].source == "This is an item."
+        assert target_store.units[1].getlocations() == [':1']
+        assert target_store.units[2].source == "This is an item."
+        assert target_store.units[2].getlocations() == [':2']
 
     def test_spacing(self):
         """Test Dokuwiki list nesting conversion."""
@@ -192,12 +192,12 @@ This is a wiki page.
     * This is a subitem.
         * This is a tabbed item.
 """
-        po_store = self._convert_to_store(input_string)
-        assert self._count_elements(po_store) == 4
-        assert po_store.units[1].source == "Heading"
-        assert po_store.units[2].source == "This is an item."
-        assert po_store.units[3].source == "This is a subitem."
-        assert po_store.units[4].source == "This is a tabbed item."
+        target_store = self._convert_to_store(input_string)
+        assert self._count_elements(target_store) == 4
+        assert target_store.units[1].source == "Heading"
+        assert target_store.units[2].source == "This is an item."
+        assert target_store.units[3].source == "This is a subitem."
+        assert target_store.units[4].source == "This is a tabbed item."
 
 
 class TestTxt2POCommand(test_convert.TestConvertCommand, TestTxt2PO):
