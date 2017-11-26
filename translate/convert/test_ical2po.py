@@ -10,14 +10,14 @@ from translate.misc import wStringIO
 
 class TestIcal2PO(object):
 
-    def convert_to_target_text(self, input_source, template_source=None,
+    def convert_to_target_text(self, input_string, template_string=None,
                                blank_msgstr=False, duplicate_style="msgctxt"):
         """Helper that converts format input to PO output without files."""
-        input_file = wStringIO.StringIO(input_source)
+        input_file = wStringIO.StringIO(input_string)
         output_file = wStringIO.StringIO()
         template_file = None
-        if template_source:
-            template_file = wStringIO.StringIO(template_source)
+        if template_string:
+            template_file = wStringIO.StringIO(template_string)
         result = ical2po.run_converter(input_file, output_file, template_file,
                                        blank_msgstr, duplicate_style)
         assert result == 1
