@@ -10,25 +10,27 @@ class TestYAML2PO(object):
 
     ConverterClass = yaml2po.yaml2po
 
-    def _convert(self, format_input_source, format_template_source=None):
-        """Helper that converts format to PO without files."""
-        input_file = wStringIO.StringIO(format_input_source)
+    def _convert(self, input_string, template_string=None, blank_msgstr=False,
+                 duplicate_style="msgctxt", success_expected=True):
+        """Helper that converts to target format without using files."""
+        input_file = wStringIO.StringIO(input_string)
         output_file = wStringIO.StringIO()
         template_file = None
-        if format_template_source:
-            template_file = wStringIO.StringIO(format_template_source)
-        converter = self.ConverterClass(input_file, output_file, template_file)
-        assert converter.run() == 1
+        if template_string:
+            template_file = wStringIO.StringIO(template_string)
+        expected_result = 1 if success_expected else 0
+        converter = self.ConverterClass(input_file, output_file, template_file,
+                                        blank_msgstr, duplicate_style)
+        assert converter.run() == expected_result
         return converter.target_store, output_file
 
-    def format2po_file(self, format_input_source, format_template_source=None):
-        """Helper that converts format source to PO store without files."""
-        return self._convert(format_input_source, format_template_source)[0]
+    def format2po_file(self, *args, **kwargs):
+        """Helper that converts to target format store without using files."""
+        return self._convert(*args, **kwargs)[0]
 
-    def format2po_text(self, format_input_source, format_template_source=None):
-        """Helper that converts format source to PO output without files."""
-        return (self._convert(format_input_source, format_template_source)
-                )[1].getvalue().decode('utf-8')
+    def format2po_text(self, *args, **kwargs):
+        """Helper that converts to target format string without using files."""
+        return self._convert(*args, **kwargs)[1].getvalue().decode('utf-8')
 
     def single_element(self, po_file):
         """Helper to check PO file has one non-header unit, and return it."""
