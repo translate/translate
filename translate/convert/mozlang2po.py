@@ -38,9 +38,6 @@ class lang2po(object):
                  blank_msgstr=False, duplicate_style="msgctxt",
                  encoding="utf-8"):
         """Initialize the converter."""
-        if template_file is not None:
-            raise NotImplementedError
-
         self.blank_msgstr = blank_msgstr
         self.duplicate_style = duplicate_style
 
