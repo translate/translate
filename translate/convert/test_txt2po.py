@@ -12,7 +12,7 @@ class BaseTxt2POTester(object):
     def _convert(self, input_string, template_string=None,
                  duplicate_style="msgctxt", encoding="utf-8",
                  success_expected=True):
-        """Helper that converts to target format store without using files."""
+        """Helper that converts to target format without using files."""
         input_file = wStringIO.StringIO(input_string)
         output_file = wStringIO.StringIO()
         template_file = None

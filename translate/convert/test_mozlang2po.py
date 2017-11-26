@@ -35,10 +35,7 @@ class TestLang2PO(object):
         return self._convert(*args, **kwargs)[1].getvalue().decode('utf-8')
 
     def _single_element(self, po_store):
-        """Helper that returns first non-header unit.
-
-        It also checks that the store has a single non-header unit.
-        """
+        """Helper to check store has one non-header unit, and return it."""
         assert len(po_store.units) == 2
         assert po_store.units[0].isheader()
         return po_store.units[1]
@@ -53,7 +50,7 @@ class TestLang2PO(object):
         assert self._convert_to_string('', success_expected=False) == ''
 
     def test_simple_string(self):
-        """Checs a simple lang string converts correctly."""
+        """Check that a simple lang string converts correctly."""
         input_string = """;One
 Een
 """
