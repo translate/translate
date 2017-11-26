@@ -243,13 +243,8 @@ END:VCALENDAR
 
     def test_no_template(self):
         """Check that a template is required."""
-        input_source = """
-#: [uid1@example.com]SUMMARY
-msgid "Value"
-msgstr "Waarde"
-"""
         with pytest.raises(ValueError):
-            self.convert_to_target_text(input_source)
+            self.convert_to_target_text("")
 
     def test_template_location_not_in_source_file(self):
         """Check conversion when template unit is not in source file."""
