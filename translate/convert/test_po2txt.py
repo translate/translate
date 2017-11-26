@@ -47,8 +47,10 @@ class TestPO2Txt(object):
 
     def test_obsolete_ignore(self):
         """check that we handle obsolete message by not using it"""
-        txttemplate = "Heading\n\nBody text"
-        posource = '''
+        txttemplate = """Heading
+
+Body text"""
+        posource = """
 msgid "Heading"
 msgstr "Opskrif"
 
@@ -57,14 +59,19 @@ msgstr "Lyfteks"
 
 #~ msgid "Obsolete"
 #~ msgstr "Oud"
-'''
-        assert self.po2txt(posource) == "Opskrif\n\nLyfteks"
-        assert self.po2txt(posource, txttemplate) == "Opskrif\n\nLyfteks"
+"""
+        expected_output = """Opskrif
+
+Lyfteks"""
+        assert self.po2txt(posource) == expected_output
+        assert self.po2txt(posource, txttemplate) == expected_output
 
     def test_header_ignore(self):
         """check that we ignore headers"""
-        txttemplate = "Heading\n\nBody text"
-        posource = '''
+        txttemplate = """Heading
+
+Body text"""
+        posource = """
 msgid ""
 msgstr "POT-Creation-Date: 2006-11-11 11:11+0000\n"
 
@@ -73,9 +80,12 @@ msgstr "Opskrif"
 
 msgid "Body text"
 msgstr "Lyfteks"
-'''
-        assert self.po2txt(posource) == "Opskrif\n\nLyfteks"
-        assert self.po2txt(posource, txttemplate) == "Opskrif\n\nLyfteks"
+"""
+        expected_output = """Opskrif
+
+Lyfteks"""
+        assert self.po2txt(posource) == expected_output
+        assert self.po2txt(posource, txttemplate) == expected_output
 
     def test_convert_completion_below_threshold(self):
         """Check no conversion if input completion is below threshold."""
