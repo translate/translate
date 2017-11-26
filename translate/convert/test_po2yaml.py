@@ -36,13 +36,7 @@ class TestPO2YAML(object):
 
     def test_convert_empty_PO(self):
         """Check converting empty PO returns no output."""
-        input_file = wStringIO.StringIO('')
-        output_file = wStringIO.StringIO()
-        template_file = wStringIO.StringIO()
-        converter = self.ConverterClass(input_file, output_file, template_file)
-        assert converter.run() == 1
-        assert converter.target_store.isempty()
-        assert output_file.getvalue().decode('utf-8') == '{}\n'
+        assert self._convert_to_string('', '{}') == '{}\n'
 
     def test_convert_no_templates(self):
         """Check converter doesn't allow to pass no templates."""
