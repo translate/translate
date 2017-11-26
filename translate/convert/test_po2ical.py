@@ -10,8 +10,8 @@ from translate.misc import wStringIO
 
 class TestPO2Ical(object):
 
-    def convert_to_target_text(self, input_source, template_source=None,
-                               include_fuzzy=False, output_threshold=None):
+    def _convert_to_string(self, input_source, template_source=None,
+                           include_fuzzy=False, output_threshold=None):
         """Helper that converts PO input to format output without files."""
         input_file = wStringIO.StringIO(input_source)
         output_file = wStringIO.StringIO()
@@ -41,8 +41,8 @@ END:VCALENDAR
 '''.replace("\n", "\r\n")
         template_string = icalendar_boilerplate % "Value"
         expected_output = icalendar_boilerplate % "Value"
-        assert expected_output == self.convert_to_target_text(input_string,
-                                                              template_string)
+        assert expected_output == self._convert_to_string(input_string,
+                                                          template_string)
 
     def test_summary(self):
         """Check that a simple PO converts valid iCalendar SUMMARY."""
@@ -66,8 +66,8 @@ END:VCALENDAR
 '''.replace("\n", "\r\n")
         template_string = icalendar_boilerplate % "Value"
         expected_output = icalendar_boilerplate % "Waarde"
-        assert expected_output == self.convert_to_target_text(input_string,
-                                                              template_string)
+        assert expected_output == self._convert_to_string(input_string,
+                                                          template_string)
 
     def test_description(self):
         """Check that a simple PO converts valid iCalendar DESCRIPTION."""
@@ -91,8 +91,8 @@ END:VCALENDAR
 '''.replace("\n", "\r\n")
         template_string = icalendar_boilerplate % "My description"
         expected_output = icalendar_boilerplate % "A miña descrición"
-        assert expected_output == self.convert_to_target_text(input_string,
-                                                              template_string)
+        assert expected_output == self._convert_to_string(input_string,
+                                                          template_string)
 
     def test_location(self):
         """Check that a simple PO converts valid iCalendar LOCATION."""
@@ -116,8 +116,8 @@ END:VCALENDAR
 '''.replace("\n", "\r\n")
         template_string = icalendar_boilerplate % "The location"
         expected_output = icalendar_boilerplate % "O lugar"
-        assert expected_output == self.convert_to_target_text(input_string,
-                                                              template_string)
+        assert expected_output == self._convert_to_string(input_string,
+                                                          template_string)
 
     def test_comment(self):
         """Check that a simple PO converts valid iCalendar COMMENT."""
@@ -141,8 +141,8 @@ END:VCALENDAR
 '''.replace("\n", "\r\n")
         template_string = icalendar_boilerplate % "Some comment"
         expected_output = icalendar_boilerplate % "Comentarios ao chou"
-        assert expected_output == self.convert_to_target_text(input_string,
-                                                              template_string)
+        assert expected_output == self._convert_to_string(input_string,
+                                                          template_string)
 
     def test_complex_icalendar(self):
         """Check that a PO converts valid iCalendar."""
@@ -185,8 +185,8 @@ END:VCALENDAR
         expected_output = (icalendar_boilerplate %
                            ("Comentarios ao chou", "A miña descrición",
                             "O lugar", "Resumo"))
-        assert expected_output == self.convert_to_target_text(input_string,
-                                                              template_string)
+        assert expected_output == self._convert_to_string(input_string,
+                                                          template_string)
 
     def test_convert_skip_fuzzy(self):
         """Check that by default fuzzy units are converted with source text."""
@@ -211,8 +211,8 @@ END:VCALENDAR
 '''.replace("\n", "\r\n")
         template_string = icalendar_boilerplate % "Value"
         expected_output = icalendar_boilerplate % "Value"
-        assert expected_output == self.convert_to_target_text(input_string,
-                                                              template_string)
+        assert expected_output == self._convert_to_string(input_string,
+                                                          template_string)
 
     def test_convert_include_fuzzy(self):
         """Check fuzzy units are converted with target text if specified."""
@@ -238,13 +238,13 @@ END:VCALENDAR
         template_string = icalendar_boilerplate % "Value"
         expected_output = icalendar_boilerplate % "Waarde"
         assert (expected_output ==
-                self.convert_to_target_text(input_string, template_string,
-                                            include_fuzzy=True))
+                self._convert_to_string(input_string, template_string,
+                                        include_fuzzy=True))
 
     def test_no_template(self):
         """Check that a template is required."""
         with pytest.raises(ValueError):
-            self.convert_to_target_text("")
+            self._convert_to_string("")
 
     def test_template_location_not_in_source_file(self):
         """Check conversion when template unit is not in source file."""
@@ -268,8 +268,8 @@ END:VCALENDAR
 '''.replace("\n", "\r\n")
         template_string = icalendar_boilerplate % "Random"
         expected_output = icalendar_boilerplate % "Random"
-        assert expected_output == self.convert_to_target_text(input_string,
-                                                              template_string)
+        assert expected_output == self._convert_to_string(input_string,
+                                                          template_string)
 
     def test_convert_completion_below_threshold(self):
         """Check no conversion if input completion is below threshold."""
