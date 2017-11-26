@@ -10,18 +10,25 @@ from translate.misc import wStringIO
 
 class TestTiki2Po(object):
 
-    def _convert_to_string(self, input_string, template_string=None,
-                           include_unused=False):
-        """Helper that converts format to target format without files."""
+    ConverterClass = tiki2po.tiki2po
+
+    def _convert(self, input_string, template_string=None,
+                 include_unused=False, success_expected=True):
+        """Helper that converts to target format without using files."""
         input_file = wStringIO.StringIO(input_string)
         output_file = wStringIO.StringIO()
         template_file = None
         if template_string:
             template_file = wStringIO.StringIO(template_string)
-        result = tiki2po.run_converter(input_file, output_file, template_file,
-                                       include_unused)
-        assert result == 1
-        return output_file.getvalue().decode('utf-8')
+        expected_result = 1 if success_expected else 0
+        converter = self.ConverterClass(input_file, output_file, template_file,
+                                        include_unused)
+        assert converter.run() == expected_result
+        return converter.target_store, output_file
+
+    def _convert_to_string(self, *args, **kwargs):
+        """Helper that converts to target format string without using files."""
+        return self._convert(*args, **kwargs)[1].getvalue().decode('utf-8')
 
     def test_convert_empty(self):
         """Check converting empty file returns no output."""
