@@ -32,7 +32,7 @@ class TestPO2YAML(object):
 
     def _convert_to_string(self, *args, **kwargs):
         """Helper that converts to target format string without using files."""
-        return self._convert(*args, **kwargs)[1].getvalue()
+        return self._convert(*args, **kwargs)[1].getvalue().decode('utf-8')
 
     def test_convert_empty_PO(self):
         """Check converting empty PO returns no output."""
@@ -62,9 +62,8 @@ msgstr ""
         template_source = 'key: "Hello, World!"'
         expected_output = '''key: Hello, World!
 '''
-        assert (expected_output ==
-                self._convert_to_string(input_source,
-                                    template_source).decode('utf-8'))
+        assert expected_output == self._convert_to_string(input_source,
+                                                          template_source)
 
     def test_simple(self):
         """Check that a simple single entry PO converts to a YAML unit."""
