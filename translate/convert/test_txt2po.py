@@ -39,14 +39,13 @@ class TestTxt2PO(BaseTxt2POTester):
         target_store = self._convert_to_store('', success_expected=False)
         assert self._count_elements(target_store) == 0
 
-    def test_duplicates(self):
-        """Check converting drops duplicates."""
-        input_source = '''
+    def test_keep_duplicates(self):
+        """Check converting keeps duplicates."""
+        input_source = """
 Simple
 
 Simple
-'''
-        # First test with default duplicate style (msgctxt).
+"""
         po_file = self._convert_to_store(input_source)
         assert self._count_elements(po_file) == 2
         assert po_file.units[1].source == "Simple"
@@ -54,8 +53,13 @@ Simple
         assert po_file.units[2].source == "Simple"
         assert po_file.units[2].target == ""
 
-        # Now test with merge duplicate style. This requires custom code to
-        # pass the duplicate style to the converter.
+    def test_drop_duplicates(self):
+        """Check converting drops duplicates."""
+        input_source = """
+Simple
+
+Simple
+"""
         input_file = wStringIO.StringIO(input_source)
         output_file = wStringIO.StringIO()
         convertor = self.ConverterClass(input_file, output_file,
