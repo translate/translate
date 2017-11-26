@@ -42,6 +42,7 @@ class po2yaml(object):
             raise ValueError(self.MissingTemplateMessage)
 
         self.source_store = self.SourceStoreClass(input_file)
+        self.target_store = self.TargetStoreClass()
 
         self.should_output_store = convert.should_output_store(
             self.source_store, output_threshold
@@ -51,7 +52,6 @@ class po2yaml(object):
 
             self.output_file = output_file
             self.template_store = self.TargetStoreClass(template_file)
-            self.target_store = self.TargetStoreClass()
 
             self.source_store.makeindex()
 

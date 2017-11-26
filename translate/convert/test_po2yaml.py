@@ -155,21 +155,18 @@ eggs: spam
 
     def test_convert_completion_below_threshold(self):
         """Check no conversion if input completion is below threshold."""
-        input_source = """
+        input_string = """
 #: key
 msgid "Hello, World!"
 msgstr ""
 """
-        template_source = 'key: "Hello, World!"'
+        template_string = 'key: "Hello, World!"'
         expected_output = ""
-        input_file = wStringIO.StringIO(input_source)
-        output_file = wStringIO.StringIO()
-        template_file = wStringIO.StringIO(template_source)
         # Input completion is 0% so with a 70% threshold it should not output.
-        result = po2yaml.run_converter(input_file, output_file, template_file,
-                                       outputthreshold=70)
-        assert result == 0
-        assert output_file.getvalue().decode('utf-8') == expected_output
+        output = self._convert_to_string(input_string, template_string,
+                                         output_threshold=70,
+                                         success_expected=False)
+        assert output == expected_output
 
     def test_convert_completion_above_threshold(self):
         """Check no conversion if input completion is above threshold."""
