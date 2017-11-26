@@ -52,6 +52,11 @@ class TestLang2PO(object):
         assert po_store.units[0].isheader()
         return po_store.units[1]
 
+    def _count_elements(self, po_store):
+        """Helper that counts the number of non-header units."""
+        assert po_store.units[0].isheader()
+        return len(po_store.units) - 1
+
     def test_convert_empty(self):
         """Check converting empty file returns no output."""
         assert self._convert_to_string('', success_expected=False) == ''
@@ -107,6 +112,38 @@ Een
         pofile = self._convert_to_store(source)
         pounit = self._single_element(pofile)
         assert "tag" not in pounit.getnotes()
+
+    def test_keep_duplicates(self):
+        """Check converting keeps duplicates."""
+        input_string = '''
+;One
+Un
+
+;One
+Dous
+'''
+        target_store = self._convert_to_store(input_string,
+                                              duplicate_style="msgctxt")
+        assert self._count_elements(target_store) == 2
+        assert target_store.units[1].source == "One"
+        assert target_store.units[1].target == "Un"
+        assert target_store.units[2].source == "One"
+        assert target_store.units[2].target == "Dous"
+
+    def test_drop_duplicates(self):
+        """Check converting drops duplicates."""
+        input_string = '''
+;One
+Un
+
+;One
+Dous
+'''
+        target_store = self._convert_to_store(input_string,
+                                              duplicate_style="merge")
+        assert self._count_elements(target_store) == 1
+        assert target_store.units[1].source == "One"
+        assert target_store.units[1].target == "Un"
 
 
 class TestLang2POCommand(test_convert.TestConvertCommand, TestLang2PO):
