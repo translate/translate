@@ -77,8 +77,6 @@ class po2l20n(object):
                 newunit = self.convert_unit(po_unit)
                 self.target_store.addunit(newunit)
 
-        return self.target_store
-
     def run(self):
         """Run the converter."""
         self.should_output_store = convert.should_output_store(
@@ -87,7 +85,8 @@ class po2l20n(object):
         if not self.should_output_store:
             return 0
 
-        self.merge_stores().serialize(self.output_file)
+        self.merge_stores()
+        self.target_store.serialize(self.output_file)
         return 1
 
 
