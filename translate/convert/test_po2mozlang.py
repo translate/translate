@@ -174,6 +174,22 @@ Target
                                                           include_fuzzy=True,
                                                           mark_active=False)
 
+    def test_mark_active(self):
+        """Check output is marked as active."""
+        input_string = """
+#: prop
+msgid "Source"
+msgstr "Target"
+"""
+        expected_output = """## active ##
+;Source
+Target
+
+
+"""
+        assert expected_output == self._convert_to_string(input_string,
+                                                          mark_active=True)
+
 
 class TestPO2LangCommand(test_convert.TestConvertCommand, TestPO2Lang):
     """Tests running actual po2prop commands on files"""
