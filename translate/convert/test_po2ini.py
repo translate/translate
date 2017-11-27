@@ -26,14 +26,18 @@ class TestPO2Ini(object):
                                       includefuzzy=include_fuzzy,
                                       dialect=dialect)
         assert result == 1
-        return output_file.getvalue()
+        return None, output_file
+
+    def _convert_to_string(self, *args, **kwargs):
+        """Helper that converts to target format string without using files."""
+        return self._convert(*args, **kwargs)[1].getvalue().decode('utf-8')
 
     def test_convert_no_templates(self):
         """Check converter doesn't allow to pass no templates."""
         input_file = None
         template_file = None
         with raises(ValueError):
-            self._convert(input_file, template_file)
+            self._convert_to_string(input_file, template_file)
 
     def test_merging_simple(self):
         """check the simplest case of merging a translation"""
@@ -47,7 +51,7 @@ prop=value
         iniexpected = """[section]
 prop=waarde
 """
-        inifile = self._convert(posource, initemplate)
+        inifile = self._convert_to_string(posource, initemplate)
         assert inifile == iniexpected
 
     def test_space_preservation(self):
@@ -62,7 +66,7 @@ prop  =  value
         iniexpected = """[section]
 prop  =  waarde
 """
-        inifile = self._convert(posource, initemplate)
+        inifile = self._convert_to_string(posource, initemplate)
         assert inifile == iniexpected
 
     def test_merging_blank_entries(self):
@@ -79,7 +83,7 @@ accesskey-accept=
         iniexpected = """[section]
 accesskey-accept=
 """
-        inifile = self._convert(posource, initemplate)
+        inifile = self._convert_to_string(posource, initemplate)
         assert inifile == iniexpected
 
     def test_merging_fuzzy(self):
@@ -95,7 +99,7 @@ prop=value
         iniexpected = """[section]
 prop=value
 """
-        inifile = self._convert(posource, initemplate)
+        inifile = self._convert_to_string(posource, initemplate)
         assert inifile == iniexpected
 
     def test_merging_propertyless_template(self):
@@ -104,7 +108,7 @@ prop=value
         initemplate = """# A comment
 """
         iniexpected = initemplate
-        inifile = self._convert(posource, initemplate)
+        inifile = self._convert_to_string(posource, initemplate)
         assert inifile == iniexpected
 
     def test_empty_value(self):
@@ -120,7 +124,7 @@ key =
         iniexpected = """[section]
 key =translated
 """
-        inifile = self._convert(posource, initemplate)
+        inifile = self._convert_to_string(posource, initemplate)
         assert inifile == iniexpected
 
     def test_dialects_inno(self):
@@ -135,8 +139,8 @@ prop  =  value%tvalue%n
         iniexpected = """[section]
 prop  =  ṽḁḽṻḝ%tṽḁḽṻḝ2%n
 """
-        inifile = self._convert(posource, initemplate, dialect="inno")
-        assert inifile.decode('utf-8') == iniexpected
+        output = self._convert_to_string(posource, initemplate, dialect="inno")
+        assert output == iniexpected
 
     def test_misaligned_files(self):
         """Check misaligned files conversions uses the template version."""
@@ -150,7 +154,7 @@ different=Other string
         expected_output = """[section]
 different=Other string
 """
-        output = self._convert(input_source, template_source)
+        output = self._convert_to_string(input_source, template_source)
         assert output == expected_output
 
     def test_convert_completion_below_threshold(self):
@@ -206,8 +210,8 @@ prop=Hello, World!
         expected_output = """[section]
 prop=Hello, World!
 """
-        output = self._convert(input_source, template_source,
-                               include_fuzzy=False)
+        output = self._convert_to_string(input_source, template_source,
+                                         include_fuzzy=False)
         assert output == expected_output
 
     def test_allow_fuzzy(self):
@@ -223,8 +227,8 @@ prop=Hello, World!
         expected_output = """[section]
 prop=Ola mundo!
 """
-        output = self._convert(input_source, template_source,
-                               include_fuzzy=True)
+        output = self._convert_to_string(input_source, template_source,
+                                         include_fuzzy=True)
         assert output == expected_output
 
     def test_merging_missing_source(self):
@@ -236,7 +240,7 @@ msgstr "valor"
         template_source = """[section]
 key=other
 """
-        output = self._convert(input_source, template_source)
+        output = self._convert_to_string(input_source, template_source)
         assert output == template_source
 
     def test_merging_repeated_locations(self):
@@ -257,7 +261,7 @@ key=second
 key=first
 key=primeiro
 """
-        output = self._convert(input_source, template_source)
+        output = self._convert_to_string(input_source, template_source)
         assert output == expected_output
 
         template_source = """[section]
@@ -272,7 +276,7 @@ key=first
 [section]
 key=primeiro
 """
-        output = self._convert(input_source, template_source)
+        output = self._convert_to_string(input_source, template_source)
         assert output == expected_output
 
 
