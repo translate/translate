@@ -48,19 +48,23 @@ class po2lang(object):
             self.output_file = output_file
             self.target_store = self.TargetStoreClass(mark_active=mark_active)
 
+    def convert_unit(self, unit):
+        """Convert a source format unit to a target format unit."""
+        target_unit = self.TargetUnitClass(unit.source)
+        if self.include_fuzzy or not unit.isfuzzy():
+            target_unit.target = unit.target
+        else:
+            target_unit.target = ""
+        if unit.getnotes('developer'):
+            target_unit.addnote(unit.getnotes('developer'), 'developer')
+        return target_unit
+
     def convert_store(self):
         """Convert a single source format file to a target format file."""
         for source_unit in self.source_store.units:
             if source_unit.isheader() or not source_unit.istranslatable():
                 continue
-            target_unit = self.TargetUnitClass(source_unit.source)
-            if self.include_fuzzy or not source_unit.isfuzzy():
-                target_unit.target = source_unit.target
-            else:
-                target_unit.target = ""
-            if source_unit.getnotes('developer'):
-                target_unit.addnote(source_unit.getnotes('developer'), 'developer')
-            self.target_store.addunit(target_unit)
+            self.target_store.addunit(self.convert_unit(source_unit))
 
     def run(self):
         """Run the converter."""
