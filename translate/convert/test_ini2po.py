@@ -45,20 +45,20 @@ class TestIni2PO(object):
 
     def test_convert_simple(self):
         """Check the simplest case of converting a translation."""
-        input_source = """[section]
+        input_string = """[section]
 key=value
 """
         expected_output = """#: [section]key
 msgid "value"
 msgstr ""
 """
-        output = self._convert_to_string(input_source)
+        output = self._convert_to_string(input_string)
         assert expected_output in output
         assert "extracted from " in output
 
     def test_no_duplicates(self):
         """Check converting drops duplicates."""
-        input_source = """[section]
+        input_string = """[section]
 key=value
 key=different
 """
@@ -66,73 +66,73 @@ key=different
 msgid "different"
 msgstr ""
 """
-        output = self._convert_to_string(input_source,
+        output = self._convert_to_string(input_string,
                                          duplicate_style="msgctxt")
         assert expected_output in output
-        output = self._convert_to_string(input_source,
+        output = self._convert_to_string(input_string,
                                          duplicate_style="merge")
         assert expected_output in output
 
     def test_merge_simple(self):
         """Check the simplest case of merging a translation."""
-        input_source = """[section]
+        input_string = """[section]
 key=valor
 """
-        template_source = """[section]
+        template_string = """[section]
 key=value
 """
         expected_output = """#: [section]key
 msgid "value"
 msgstr "valor"
 """
-        output = self._convert_to_string(input_source, template_source)
+        output = self._convert_to_string(input_string, template_string)
         assert expected_output in output
         assert "extracted from " in output
 
     def test_merge_misaligned_files(self):
         """Check merging two files that are not aligned."""
-        input_source = """[section]
+        input_string = """[section]
 other=missing
 """
-        template_source = """[section]
+        template_string = """[section]
 key=value
 """
         expected_output = """#: [section]key
 msgid "value"
 msgstr ""
 """
-        assert expected_output in self._convert_to_string(input_source,
-                                                          template_source)
+        assert expected_output in self._convert_to_string(input_string,
+                                                          template_string)
 
     def test_merge_blank_msgstr(self):
         """Check merging two files returns output without translations."""
-        input_source = """[section]
+        input_string = """[section]
 key=valor
 """
-        template_source = """[section]
+        template_string = """[section]
 key=value
 """
         expected_output = """#: [section]key
 msgid "value"
 msgstr ""
 """
-        assert expected_output in self._convert_to_string(input_source,
-                                                          template_source,
+        assert expected_output in self._convert_to_string(input_string,
+                                                          template_string,
                                                           blank_msgstr=True)
 
     def test_dialects_inno(self):
         """Check that we output correctly for Inno files."""
-        input_source = """[section]
+        input_string = """[section]
 prop  =  ṽḁḽṻḝ%tṽḁḽṻḝ2%n
 """
-        template_source = """[section]
+        template_string = """[section]
 prop  =  value%tvalue2%n
 """
         expected_output = r"""#: [section]prop
 msgid "value\tvalue2\n"
 msgstr "ṽḁḽṻḝ\tṽḁḽṻḝ2\n"
 """
-        output = self._convert_to_string(input_source, template_source,
+        output = self._convert_to_string(input_string, template_string,
                                          dialect="inno")
         assert expected_output in output
 
