@@ -59,24 +59,25 @@ class po2lang(object):
                 target_unit.target = ""
             if source_unit.getnotes('developer'):
                 target_unit.addnote(source_unit.getnotes('developer'), 'developer')
-        return self.target_store
+
+    def run(self):
+        """Run the converter."""
+        if not self.should_output_store:
+            return 0
+
+        if self.source_store.isempty():
+            return 0
+
+        self.convert_store()
+        self.target_store.serialize(self.output_file)
+        return 1
 
 
 def run_converter(inputfile, outputfile, templatefile=None, includefuzzy=False,
                   mark_active=True, outputthreshold=None):
     """Wrapper around converter."""
-    convertor = po2lang(inputfile, outputfile, templatefile, includefuzzy,
-                        outputthreshold, mark_active)
-
-    if not convertor.should_output_store:
-        return 0
-
-    if convertor.source_store.isempty():
-        return 0
-
-    outputstore = convertor.convert_store()
-    outputstore.serialize(outputfile)
-    return 1
+    return po2lang(inputfile, outputfile, templatefile, includefuzzy,
+                   outputthreshold, mark_active).run()
 
 
 formats = {
