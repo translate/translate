@@ -87,6 +87,38 @@ msgstr "Ola"
                                                           template_string,
                                                           include_fuzzy=True)
 
+    def test_convert_completion_below_threshold(self):
+        """Check no conversion if input completion is below threshold."""
+        input_string = """#: l20n
+msgid "Hello"
+msgstr "Ola"
+"""
+        template_string = """l20n = Hello
+"""
+        expected_output = """l20n = Ola
+"""
+        # Input completion is 0% so with a 70% threshold it should not output.
+        output = self._convert_to_string(input_string, template_string,
+                                         output_threshold=70,
+                                         success_expected=True)
+        assert output == expected_output
+
+    def test_convert_completion_above_threshold(self):
+        """Check no conversion if input completion is below threshold."""
+        input_string = """#: l20n
+msgid "Hello"
+msgstr "Ola"
+"""
+        template_string = """l20n = Hello
+"""
+        expected_output = """l20n = Ola
+"""
+        # Input completion is 100% so with a 70% threshold it should output.
+        output = self._convert_to_string(input_string, template_string,
+                                         output_threshold=70,
+                                         success_expected=True)
+        assert output == expected_output
+
 
 class TestPO2L20nCommand(test_convert.TestConvertCommand, TestPO2L20n):
     """Tests running actual po2prop commands on files"""
