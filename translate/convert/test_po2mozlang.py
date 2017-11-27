@@ -9,11 +9,12 @@ class TestPO2Lang(object):
 
     def po2lang(self, input_string):
         """helper that converts po source to .lang source without requiring files"""
-        inputfile = wStringIO.StringIO(input_string)
-        inputpo = po.pofile(inputfile)
-        convertor = po2mozlang.po2lang(mark_active=False)
-        outputlang = convertor.convertstore(inputpo)
-        return bytes(outputlang).decode('utf-8')
+        input_file = wStringIO.StringIO(input_string)
+        output_file = wStringIO.StringIO()
+        template_file = None
+        po2mozlang.convertlang(input_file, output_file, template_file,
+                               mark_active=False)
+        return output_file.getvalue().decode('utf-8')
 
     def test_simple(self):
         """check the simplest case of merging a translation"""
