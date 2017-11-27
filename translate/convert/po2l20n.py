@@ -30,6 +30,7 @@ logger = logging.getLogger(__name__)
 
 
 class po2l20n(object):
+    """Convert a PO file and a template .ftl file to a .ftl file."""
 
     SourceStoreClass = po.pofile
     TargetStoreClass = l20n.l20nfile
@@ -37,7 +38,7 @@ class po2l20n(object):
 
     def __init__(self, input_file, output_file, template_file=None,
                  include_fuzzy=False, output_threshold=None):
-
+        """Initialize the converter."""
         if template_file is None:
             raise ValueError("must have template file for ftl files")
 
@@ -48,6 +49,7 @@ class po2l20n(object):
         self.output_threshold = output_threshold
 
     def convert_unit(self, unit):
+        """Convert a source format unit to a target format unit."""
         use_target = (unit.istranslated()
                       or unit.isfuzzy() and self.include_fuzzy)
         l20n_unit_value = unit.target if use_target else unit.source
@@ -73,30 +75,31 @@ class po2l20n(object):
         return self.target_store
 
     def run(self):
+        """Run the converter."""
         self.should_output_store = convert.should_output_store(
             self.source_store, self.output_threshold
         )
         if not self.should_output_store:
-            return False
+            return 0
 
         self.convert_store().serialize(self.output_file)
-        return True
+        return 1
 
 
-def convertl20n(inputfile, outputfile, templatefile, includefuzzy=False,
-                outputthreshold=None):
+def run_converter(inputfile, outputfile, templatefile, includefuzzy=False,
+                  outputthreshold=None):
+    """Wrapper around converter."""
     return po2l20n(inputfile, outputfile, templatefile, includefuzzy,
                    outputthreshold).run()
 
 
 formats = {
-    ("po", "ftl"): ("ftl", convertl20n),
-    "po": ("ftl", convertl20n),
+    ("po", "ftl"): ("ftl", run_converter),
+    "po": ("ftl", run_converter),
 }
 
 
 def main(argv=None):
-    # handle command line options
     parser = convert.ConvertOptionParser(formats, usetemplates=True,
                                          description=__doc__)
     parser.add_threshold_option()
