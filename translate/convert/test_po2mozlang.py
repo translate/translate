@@ -122,6 +122,24 @@ Target
                                          success_expected=True)
         assert output == expected_output
 
+    def test_convert_skip_non_translatable_input(self):
+        """Check no conversion skips non-translatable units in input."""
+        input_string = """
+msgid ""
+msgstr ""
+
+#: prop
+msgid "Source"
+msgstr "Target"
+"""
+        expected_output = """;Source
+Target
+
+
+"""
+        assert expected_output == self._convert_to_string(input_string,
+                                                          mark_active=False)
+
 
 class TestPO2LangCommand(test_convert.TestConvertCommand, TestPO2Lang):
     """Tests running actual po2prop commands on files"""
