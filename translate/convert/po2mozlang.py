@@ -32,6 +32,7 @@ class po2lang(object):
 
     SourceStoreClass = po.pofile
     TargetStoreClass = mozilla_lang.LangStore
+    TargetUnitClass = mozilla_lang.LangUnit
 
     def __init__(self, input_file, output_file, template_file=None,
                  include_fuzzy=False, output_threshold=None, mark_active=True):
@@ -52,13 +53,14 @@ class po2lang(object):
         for source_unit in self.source_store.units:
             if source_unit.isheader() or not source_unit.istranslatable():
                 continue
-            target_unit = self.target_store.addsourceunit(source_unit.source)
+            target_unit = self.TargetUnitClass(source_unit.source)
             if self.include_fuzzy or not source_unit.isfuzzy():
                 target_unit.target = source_unit.target
             else:
                 target_unit.target = ""
             if source_unit.getnotes('developer'):
                 target_unit.addnote(source_unit.getnotes('developer'), 'developer')
+            self.target_store.addunit(target_unit)
 
     def run(self):
         """Run the converter."""
