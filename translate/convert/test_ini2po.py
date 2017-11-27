@@ -24,7 +24,11 @@ class TestIni2PO(object):
         result = ini2po.run_converter(input_file, output_file, template_file,
                                       blank_msgstr, duplicate_style, dialect)
         assert result == 1
-        return output_file.getvalue()
+        return None, output_file
+
+    def _convert_to_string(self, *args, **kwargs):
+        """Helper that converts to target format string without using files."""
+        return self._convert(*args, **kwargs)[1].getvalue().decode('utf-8')
 
     def test_convert_empty_file(self):
         """Check converting empty INI returns no output."""
@@ -53,7 +57,7 @@ key=value
 msgid "value"
 msgstr ""
 """
-        output = self._convert(input_source)
+        output = self._convert_to_string(input_source)
         assert expected_output in output
         assert "extracted from " in output
 
@@ -67,10 +71,12 @@ key=different
 msgid "different"
 msgstr ""
 """
-        assert expected_output in self._convert(input_source,
-                                                duplicate_style="msgctxt")
-        assert expected_output in self._convert(input_source,
-                                                duplicate_style="merge")
+        output = self._convert_to_string(input_source,
+                                         duplicate_style="msgctxt")
+        assert expected_output in output
+        output = self._convert_to_string(input_source,
+                                         duplicate_style="merge")
+        assert expected_output in output
 
     def test_merge_simple(self):
         """Check the simplest case of merging a translation."""
@@ -84,7 +90,7 @@ key=value
 msgid "value"
 msgstr "valor"
 """
-        output = self._convert(input_source, template_source)
+        output = self._convert_to_string(input_source, template_source)
         assert expected_output in output
         assert "extracted from " in output
 
@@ -100,7 +106,8 @@ key=value
 msgid "value"
 msgstr ""
 """
-        assert expected_output in self._convert(input_source, template_source)
+        assert expected_output in self._convert_to_string(input_source,
+                                                          template_source)
 
     def test_merge_blank_msgstr(self):
         """Check merging two files returns output without translations."""
@@ -114,8 +121,9 @@ key=value
 msgid "value"
 msgstr ""
 """
-        assert expected_output in self._convert(input_source, template_source,
-                                                blank_msgstr=True)
+        assert expected_output in self._convert_to_string(input_source,
+                                                          template_source,
+                                                          blank_msgstr=True)
 
     def test_dialects_inno(self):
         """Check that we output correctly for Inno files."""
@@ -129,8 +137,9 @@ prop  =  value%tvalue2%n
 msgid "value\tvalue2\n"
 msgstr "ṽḁḽṻḝ\tṽḁḽṻḝ2\n"
 """
-        output = self._convert(input_source, template_source, dialect="inno")
-        assert expected_output in output.decode('utf-8')
+        output = self._convert_to_string(input_source, template_source,
+                                         dialect="inno")
+        assert expected_output in output
 
 
 class TestIni2POCommand(test_convert.TestConvertCommand, TestIni2PO):
