@@ -13,18 +13,22 @@ importorskip("iniparse")
 
 class TestIni2PO(object):
 
-    def _convert(self, input_source, template_source=None, blank_msgstr=False,
-                 duplicate_style="msgctxt", dialect="default"):
-        """Helper that converts format input to PO output without files."""
-        input_file = wStringIO.StringIO(input_source)
+    ConverterClass = ini2po.ini2po
+
+    def _convert(self, input_string, template_string=None, blank_msgstr=False,
+                 duplicate_style="msgctxt", dialect="default",
+                 success_expected=True):
+        """Helper that converts to target format without using files."""
+        input_file = wStringIO.StringIO(input_string)
         output_file = wStringIO.StringIO()
         template_file = None
-        if template_source:
-            template_file = wStringIO.StringIO(template_source)
-        result = ini2po.run_converter(input_file, output_file, template_file,
-                                      blank_msgstr, duplicate_style, dialect)
-        assert result == 1
-        return None, output_file
+        if template_string:
+            template_file = wStringIO.StringIO(template_string)
+        expected_result = 1 if success_expected else 0
+        converter = self.ConverterClass(input_file, output_file, template_file,
+                                        blank_msgstr, duplicate_style, dialect)
+        assert converter.run() == expected_result
+        return converter.target_store, output_file
 
     def _convert_to_string(self, *args, **kwargs):
         """Helper that converts to target format string without using files."""
