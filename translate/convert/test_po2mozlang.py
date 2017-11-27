@@ -17,26 +17,59 @@ class TestPO2Lang(object):
 
     def test_simple(self):
         """check the simplest case of merging a translation"""
-        input_string = '''#: prop\nmsgid "Source"\nmsgstr "Target"\n'''
-        expected_output = ''';Source\nTarget\n\n\n'''
+        input_string = """#: prop
+msgid "Source"
+msgstr "Target"
+"""
+        expected_output = """;Source
+Target
+
+
+"""
         assert expected_output == self.po2lang(input_string)
 
     def test_comment(self):
         """Simple # comments"""
-        input_string = '''#. Comment\n#: prop\nmsgid "Source"\nmsgstr "Target"\n'''
-        expected_output = '''# Comment\n;Source\nTarget\n\n\n'''
+        input_string = """#. Comment
+#: prop
+msgid "Source"
+msgstr "Target"
+"""
+        expected_output = """# Comment
+;Source
+Target
+
+
+"""
         assert expected_output == self.po2lang(input_string)
 
     def test_fuzzy(self):
         """What happens with a fuzzy string"""
-        input_string = '''#. Comment\n#: prop\n#, fuzzy\nmsgid "Source"\nmsgstr "Target"\n'''
-        expected_output = '''# Comment\n;Source\nSource\n\n\n'''
+        input_string = """#. Comment
+#: prop
+#, fuzzy
+msgid "Source"
+msgstr "Target"
+"""
+        expected_output = """# Comment
+;Source
+Source
+
+
+"""
         assert expected_output == self.po2lang(input_string)
 
     def test_ok_marker(self):
         """The {ok} marker"""
-        input_string = '''#: prop\nmsgid "Same"\nmsgstr "Same"\n'''
-        expected_output = ''';Same\nSame {ok}\n\n\n'''
+        input_string = """#: prop
+msgid "Same"
+msgstr "Same"
+"""
+        expected_output = """;Same
+Same {ok}
+
+
+"""
         assert expected_output == self.po2lang(input_string)
 
 
