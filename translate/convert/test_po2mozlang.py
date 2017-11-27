@@ -92,6 +92,36 @@ Same {ok}
         assert expected_output == self._convert_to_string(input_string,
                                                           mark_active=False)
 
+    def test_convert_completion_below_threshold(self):
+        """Check no conversion if input completion is below threshold."""
+        input_string = """#: prop
+msgid "Source"
+msgstr ""
+"""
+        expected_output = ""
+        # Input completion is 0% so with a 70% threshold it should not output.
+        output = self._convert_to_string(input_string, output_threshold=70,
+                                         mark_active=False,
+                                         success_expected=False)
+        assert output == expected_output
+
+    def test_convert_completion_above_threshold(self):
+        """Check no conversion if input completion is below threshold."""
+        input_string = """#: prop
+msgid "Source"
+msgstr "Target"
+"""
+        expected_output = """;Source
+Target
+
+
+"""
+        # Input completion is 100% so with a 70% threshold it should output.
+        output = self._convert_to_string(input_string, output_threshold=70,
+                                         mark_active=False,
+                                         success_expected=True)
+        assert output == expected_output
+
 
 class TestPO2LangCommand(test_convert.TestConvertCommand, TestPO2Lang):
     """Tests running actual po2prop commands on files"""
