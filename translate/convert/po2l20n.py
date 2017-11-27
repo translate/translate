@@ -20,13 +20,8 @@
 """Convert Gettext PO localization files to .ftl files.
 """
 
-import logging
-
 from translate.convert import convert
 from translate.storage import l20n, po
-
-
-logger = logging.getLogger(__name__)
 
 
 class po2l20n(object):
