@@ -6,13 +6,6 @@ from translate.misc import wStringIO
 
 class TestPO2L20n(object):
 
-    def po2l20n(self, po_source):
-        """helper that converts po source to .ftl (l20n) source without requiring files"""
-        inputfile = wStringIO.StringIO(po_source)
-        convertor = po2l20n.po2l20n(inputfile, None, None)
-        output_l20n = convertor.convert_store()
-        return u"%s" % output_l20n
-
     def merge2l20n(self, l20n_source, po_source):
         """helper that merges po translations to .ftl (l20n) source with templates"""
         inputfile = wStringIO.StringIO(po_source)
