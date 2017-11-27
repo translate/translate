@@ -61,7 +61,7 @@ class po2lang(object):
         return self.target_store
 
 
-def run_converter(inputfile, outputfile, templates, includefuzzy=False,
+def run_converter(inputfile, outputfile, templatefile=None, includefuzzy=False,
                   mark_active=True, outputthreshold=None):
     """Wrapper around converter."""
     convertor = po2lang(inputfile, includefuzzy, outputthreshold, mark_active)
