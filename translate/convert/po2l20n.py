@@ -38,6 +38,7 @@ class po2l20n(object):
             raise ValueError("must have template file for ftl files")
 
         self.source_store = self.SourceStoreClass(input_file)
+        self.target_store = self.TargetStoreClass()
 
         self.should_output_store = convert.should_output_store(
             self.source_store, output_threshold
@@ -66,7 +67,6 @@ class po2l20n(object):
         Source file is in source format, while target and template files use
         target format.
         """
-        self.target_store = self.TargetStoreClass()
         self.source_store.makeindex()
 
         for l20nunit in self.template_store.units:
