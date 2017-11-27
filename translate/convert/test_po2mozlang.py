@@ -9,7 +9,7 @@ class TestPO2Lang(object):
 
     def _convert(self, input_string, template_string=None, include_fuzzy=False,
                  output_threshold=None, remove_untranslated=None,
-                 mark_active=False, success_expected=True):
+                 mark_active=True, success_expected=True):
         """Helper that converts to target format without using files."""
         input_file = wStringIO.StringIO(input_string)
         output_file = wStringIO.StringIO()
@@ -38,7 +38,8 @@ Target
 
 
 """
-        assert expected_output == self._convert_to_string(input_string)
+        assert expected_output == self._convert_to_string(input_string,
+                                                          mark_active=False)
 
     def test_comment(self):
         """Simple # comments"""
@@ -53,7 +54,8 @@ Target
 
 
 """
-        assert expected_output == self._convert_to_string(input_string)
+        assert expected_output == self._convert_to_string(input_string,
+                                                          mark_active=False)
 
     def test_fuzzy(self):
         """What happens with a fuzzy string"""
@@ -69,7 +71,8 @@ Source
 
 
 """
-        assert expected_output == self._convert_to_string(input_string)
+        assert expected_output == self._convert_to_string(input_string,
+                                                          mark_active=False)
 
     def test_ok_marker(self):
         """The {ok} marker"""
@@ -82,7 +85,8 @@ Same {ok}
 
 
 """
-        assert expected_output == self._convert_to_string(input_string)
+        assert expected_output == self._convert_to_string(input_string,
+                                                          mark_active=False)
 
 
 class TestPO2LangCommand(test_convert.TestConvertCommand, TestPO2Lang):
