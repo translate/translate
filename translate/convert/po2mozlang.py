@@ -33,8 +33,8 @@ class po2lang(object):
     SourceStoreClass = po.pofile
     TargetStoreClass = mozilla_lang.LangStore
 
-    def __init__(self, input_file, include_fuzzy=False, output_threshold=None,
-                 mark_active=True):
+    def __init__(self, input_file, output_file, template_file=None,
+                 include_fuzzy=False, output_threshold=None, mark_active=True):
         """Initialize the converter."""
         self.source_store = self.SourceStoreClass(input_file)
 
@@ -44,6 +44,7 @@ class po2lang(object):
         if self.should_output_store:
             self.include_fuzzy = include_fuzzy
 
+            self.output_file = output_file
             self.target_store = self.TargetStoreClass(mark_active=mark_active)
 
     def convert_store(self):
@@ -64,7 +65,8 @@ class po2lang(object):
 def run_converter(inputfile, outputfile, templatefile=None, includefuzzy=False,
                   mark_active=True, outputthreshold=None):
     """Wrapper around converter."""
-    convertor = po2lang(inputfile, includefuzzy, outputthreshold, mark_active)
+    convertor = po2lang(inputfile, outputfile, templatefile, includefuzzy,
+                        outputthreshold, mark_active)
 
     if not convertor.should_output_store:
         return 0
