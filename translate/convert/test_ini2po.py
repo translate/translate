@@ -36,21 +36,12 @@ class TestIni2PO(object):
 
     def test_convert_empty_file(self):
         """Check converting empty INI returns no output."""
-        input_file = wStringIO.StringIO('')
-        output_file = wStringIO.StringIO()
-        template_file = None
-        result = ini2po.run_converter(input_file, output_file, template_file)
-        assert result == 0
-        assert output_file.getvalue() == ''
+        assert self._convert_to_string('', success_expected=False) == ''
 
     def test_convert_no_translation(self):
         """Check converting INI with no translatable text returns no output."""
-        input_file = wStringIO.StringIO('[section]')
-        output_file = wStringIO.StringIO()
-        template_file = None
-        result = ini2po.run_converter(input_file, output_file, template_file)
-        assert result == 0
-        assert output_file.getvalue() == ''
+        output = self._convert_to_string('[section]', success_expected=False)
+        assert output == ''
 
     def test_convert_simple(self):
         """Check the simplest case of converting a translation."""
