@@ -7,14 +7,25 @@ from translate.storage import po
 
 class TestPO2Lang(object):
 
-    def _convert_to_string(self, input_string):
-        """helper that converts po source to .lang source without requiring files"""
+    def _convert(self, input_string, template_string=None, include_fuzzy=False,
+                 output_threshold=None, remove_untranslated=None,
+                 mark_active=False, success_expected=True):
+        """Helper that converts to target format without using files."""
         input_file = wStringIO.StringIO(input_string)
         output_file = wStringIO.StringIO()
         template_file = None
-        po2mozlang.convertlang(input_file, output_file, template_file,
-                               mark_active=False)
-        return output_file.getvalue().decode('utf-8')
+        if template_string:
+            template_file = wStringIO.StringIO(template_string)
+        expected_result = 1 if success_expected else 0
+        result = po2mozlang.convertlang(input_file, output_file, template_file,
+                                        include_fuzzy, mark_active,
+                                        output_threshold, remove_untranslated)
+        assert result == expected_result
+        return None, output_file
+
+    def _convert_to_string(self, *args, **kwargs):
+        """Helper that converts to target format string without using files."""
+        return self._convert(*args, **kwargs)[1].getvalue().decode('utf-8')
 
     def test_simple(self):
         """check the simplest case of merging a translation"""
