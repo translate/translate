@@ -43,10 +43,15 @@ class po2l20n(object):
             raise ValueError("must have template file for ftl files")
 
         self.source_store = self.SourceStoreClass(input_file)
-        self.output_file = output_file
-        self.template_store = self.TargetStoreClass(template_file)
-        self.include_fuzzy = include_fuzzy
-        self.output_threshold = output_threshold
+
+        self.should_output_store = convert.should_output_store(
+            self.source_store, output_threshold
+        )
+        if self.should_output_store:
+            self.include_fuzzy = include_fuzzy
+
+            self.output_file = output_file
+            self.template_store = self.TargetStoreClass(template_file)
 
     def convert_unit(self, unit):
         """Convert a source format unit to a target format unit."""
@@ -79,9 +84,6 @@ class po2l20n(object):
 
     def run(self):
         """Run the converter."""
-        self.should_output_store = convert.should_output_store(
-            self.source_store, self.output_threshold
-        )
         if not self.should_output_store:
             return 0
 
