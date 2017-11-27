@@ -30,16 +30,18 @@ from translate.storage import mozilla_lang, po
 class po2lang(object):
     """Convert a PO file to a Mozilla .lang file."""
 
+    TargetStoreClass = mozilla_lang.LangStore
+
     def __init__(self, include_fuzzy=False, output_threshold=None,
                  mark_active=True):
         """Initialize the converter."""
         self.include_fuzzy = include_fuzzy
-        self.mark_active = mark_active
+
+        self.target_store = self.TargetStoreClass(mark_active=mark_active)
 
     def convert_store(self, source_store):
         """Convert a single source format file to a target format file."""
         self.source_store = source_store
-        self.target_store = mozilla_lang.LangStore(mark_active=self.mark_active)
 
         for source_unit in self.source_store.units:
             if source_unit.isheader() or not source_unit.istranslatable():
