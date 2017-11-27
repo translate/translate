@@ -58,6 +58,35 @@ msgstr ""
         assert expected_output == self._convert_to_string(input_string,
                                                           template_string)
 
+    def test_no_fuzzy(self):
+        """Check that a simple fuzzy source converts to a translated target."""
+        input_string = """#: l20n
+#, fuzzy
+msgid "Hello"
+msgstr "Ola"
+"""
+        template_string = """l20n = Hello
+"""
+        expected_output = template_string
+        assert expected_output == self._convert_to_string(input_string,
+                                                          template_string,
+                                                          include_fuzzy=False)
+
+    def test_allow_fuzzy(self):
+        """Check that a simple fuzzy source converts to a translated target."""
+        input_string = """#: l20n
+#, fuzzy
+msgid "Hello"
+msgstr "Ola"
+"""
+        template_string = """l20n = Hello
+"""
+        expected_output = """l20n = Ola
+"""
+        assert expected_output == self._convert_to_string(input_string,
+                                                          template_string,
+                                                          include_fuzzy=True)
+
 
 class TestPO2L20nCommand(test_convert.TestConvertCommand, TestPO2L20n):
     """Tests running actual po2prop commands on files"""
