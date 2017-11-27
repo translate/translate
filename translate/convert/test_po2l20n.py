@@ -6,8 +6,8 @@ from translate.misc import wStringIO
 
 class TestPO2L20n(object):
 
-    def merge2l20n(self, l20n_source, po_source):
-        """helper that merges po translations to .ftl (l20n) source with templates"""
+    def merge2l20n(self, po_source, l20n_source):
+        """Helper that converts to target format string without using files."""
         inputfile = wStringIO.StringIO(po_source)
         templatefile = wStringIO.StringIO(l20n_source)
         convertor = po2l20n.po2l20n(inputfile, None, templatefile)
@@ -17,20 +17,29 @@ class TestPO2L20n(object):
         return output_l20n.decode('utf8')
 
     def test_merging_simple(self):
-        """check the simplest case of merging a translation"""
-        po_source = '''#: l20n\nmsgid "value"\nmsgstr "waarde"\n'''
-        l20n_template = '''l20n = value\n'''
-        l20n_expected = '''l20n = waarde\n'''
-        l20n_file = self.merge2l20n(l20n_template, po_source)
-        assert l20n_file == l20n_expected
+        """Check the simplest case of merging a translation."""
+        input_string = """#: l20n
+msgid "value"
+msgstr "waarde"
+"""
+        template_string = """l20n = value
+"""
+        expected_output = """l20n = waarde
+"""
+        assert expected_output == self.merge2l20n(input_string,
+                                                  template_string)
 
     def test_merging_untranslated(self):
         """check the simplest case of merging an untranslated unit"""
-        po_source = '''#: l20n\nmsgid "value"\nmsgstr ""\n'''
-        l20n_template = '''l20n = value\n'''
-        l20n_expected = l20n_template
-        l20n_file = self.merge2l20n(l20n_template, po_source)
-        assert l20n_file == l20n_expected
+        input_string = """#: l20n
+msgid "value"
+msgstr ""
+"""
+        template_string = """l20n = value
+"""
+        expected_output = template_string
+        assert expected_output == self.merge2l20n(input_string,
+                                                  template_string)
 
 
 class TestPO2L20nCommand(test_convert.TestConvertCommand, TestPO2L20n):
