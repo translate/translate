@@ -66,7 +66,7 @@ def main(argv=None):
                ("it.po", "it"): ("it", prop2mozfunny.po2it),
                ("ini.po", "ini"): ("ini", prop2mozfunny.po2ini),
                ("inc.po", "inc"): ("inc", prop2mozfunny.po2inc),
-               ("lang.po", "lang"): ("lang", po2mozlang.convertlang),
+               ("lang.po", "lang"): ("lang", po2mozlang.run_converter),
                # (None, "*"): ("*", convert.copytemplate),
                ("*", "*"): ("*", convert.copyinput),
                "*": ("*", convert.copyinput)}

@@ -17,9 +17,10 @@ class TestPO2Lang(object):
         if template_string:
             template_file = wStringIO.StringIO(template_string)
         expected_result = 1 if success_expected else 0
-        result = po2mozlang.convertlang(input_file, output_file, template_file,
-                                        include_fuzzy, mark_active,
-                                        output_threshold, remove_untranslated)
+        result = po2mozlang.run_converter(input_file, output_file,
+                                          template_file, include_fuzzy,
+                                          mark_active, output_threshold,
+                                          remove_untranslated)
         assert result == expected_result
         return None, output_file
 

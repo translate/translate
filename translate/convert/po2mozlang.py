@@ -28,53 +28,53 @@ from translate.storage import mozilla_lang, po
 
 
 class po2lang(object):
+    """Convert a PO file to a Mozilla .lang file."""
 
-    def __init__(self, duplicatestyle="msgctxt", mark_active=True):
-        self.duplicatestyle = duplicatestyle
+    def __init__(self, duplicate_style="msgctxt", mark_active=True):
+        """Initialize the converter."""
+        self.duplicate_style = duplicate_style
         self.mark_active = mark_active
 
     def convert_store(self, source_store, include_fuzzy=False):
-        """converts a file to .lang format"""
+        """Convert a single source format file to a target format file."""
         self.include_fuzzy = include_fuzzy
         self.source_store = source_store
-        thetargetfile = mozilla_lang.LangStore(mark_active=self.mark_active)
+        self.target_store = mozilla_lang.LangStore(mark_active=self.mark_active)
 
-        # Run over the po units
-        for pounit in self.source_store.units:
-            if pounit.isheader() or not pounit.istranslatable():
+        for source_unit in self.source_store.units:
+            if source_unit.isheader() or not source_unit.istranslatable():
                 continue
-            newunit = thetargetfile.addsourceunit(pounit.source)
-            if self.include_fuzzy or not pounit.isfuzzy():
-                newunit.target = pounit.target
+            target_unit = self.target_store.addsourceunit(source_unit.source)
+            if self.include_fuzzy or not source_unit.isfuzzy():
+                target_unit.target = source_unit.target
             else:
-                newunit.target = ""
-            if pounit.getnotes('developer'):
-                newunit.addnote(pounit.getnotes('developer'), 'developer')
-        return thetargetfile
+                target_unit.target = ""
+            if source_unit.getnotes('developer'):
+                target_unit.addnote(source_unit.getnotes('developer'), 'developer')
+        return self.target_store
 
 
-def convertlang(inputfile, outputfile, templates, includefuzzy=False, mark_active=True,
-                outputthreshold=None, remove_untranslated=None):
-    """reads in stdin using fromfileclass, converts using convertorclass,
-    writes to stdout
-    """
+def run_converter(inputfile, outputfile, templates, includefuzzy=False,
+                  mark_active=True, outputthreshold=None,
+                  remove_untranslated=None):
+    """Wrapper around converter."""
     inputstore = po.pofile(inputfile)
 
     if not convert.should_output_store(inputstore, outputthreshold):
-        return False
+        return 0
 
     if inputstore.isempty():
-        return False
+        return 0
 
     convertor = po2lang(mark_active=mark_active)
     outputstore = convertor.convert_store(inputstore, includefuzzy)
     outputstore.serialize(outputfile)
-    return True
+    return 1
 
 
 formats = {
-    "po": ("lang", convertlang),
-    ("po", "lang"): ("lang", convertlang),
+    "po": ("lang", run_converter),
+    ("po", "lang"): ("lang", run_converter),
 }
 
 
