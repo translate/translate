@@ -88,7 +88,7 @@ class po2l20n(object):
         return 1
 
 
-def run_converter(inputfile, outputfile, templatefile, includefuzzy=False,
+def run_converter(inputfile, outputfile, templatefile=None, includefuzzy=False,
                   outputthreshold=None):
     """Wrapper around converter."""
     return po2l20n(inputfile, outputfile, templatefile, includefuzzy,
