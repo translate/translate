@@ -7,7 +7,7 @@ from translate.storage import po
 
 class TestPO2Lang(object):
 
-    def po2lang(self, input_string):
+    def _convert_to_string(self, input_string):
         """helper that converts po source to .lang source without requiring files"""
         input_file = wStringIO.StringIO(input_string)
         output_file = wStringIO.StringIO()
@@ -27,7 +27,7 @@ Target
 
 
 """
-        assert expected_output == self.po2lang(input_string)
+        assert expected_output == self._convert_to_string(input_string)
 
     def test_comment(self):
         """Simple # comments"""
@@ -42,7 +42,7 @@ Target
 
 
 """
-        assert expected_output == self.po2lang(input_string)
+        assert expected_output == self._convert_to_string(input_string)
 
     def test_fuzzy(self):
         """What happens with a fuzzy string"""
@@ -58,7 +58,7 @@ Source
 
 
 """
-        assert expected_output == self.po2lang(input_string)
+        assert expected_output == self._convert_to_string(input_string)
 
     def test_ok_marker(self):
         """The {ok} marker"""
@@ -71,7 +71,7 @@ Same {ok}
 
 
 """
-        assert expected_output == self.po2lang(input_string)
+        assert expected_output == self._convert_to_string(input_string)
 
 
 class TestPO2LangCommand(test_convert.TestConvertCommand, TestPO2Lang):
