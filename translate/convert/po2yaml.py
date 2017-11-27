@@ -53,8 +53,6 @@ class po2yaml(object):
             self.output_file = output_file
             self.template_store = self.TargetStoreClass(template_file)
 
-            self.source_store.makeindex()
-
     def convert_unit(self, unit):
         """Convert a source format unit to a target format unit."""
         use_target = (unit.istranslated()
@@ -72,6 +70,8 @@ class po2yaml(object):
         Source file is in source format, while target and template files use
         target format.
         """
+        self.source_store.makeindex()
+
         for template_unit in self.template_store.units:
             template_unit_id = template_unit.getid()
 
