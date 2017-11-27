@@ -43,15 +43,6 @@ class po2l20n(object):
         self.includefuzzy = includefuzzy
         self.outputthreshold = outputthreshold
 
-    def run(self):
-        should_output_store = convert.should_output_store(self.inputstore,
-                                                          self.outputthreshold)
-        if not should_output_store:
-            return False
-
-        self.convert_store().serialize(self.outputfile)
-        return True
-
     def convert_unit(self, unit):
         use_target = (unit.istranslated()
                       or unit.isfuzzy() and self.includefuzzy)
@@ -76,6 +67,15 @@ class po2l20n(object):
                 outputstore.addunit(newunit)
 
         return outputstore
+
+    def run(self):
+        should_output_store = convert.should_output_store(self.inputstore,
+                                                          self.outputthreshold)
+        if not should_output_store:
+            return False
+
+        self.convert_store().serialize(self.outputfile)
+        return True
 
 
 def convertl20n(inputfile, outputfile, templatefile, includefuzzy=False,
