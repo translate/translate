@@ -54,13 +54,13 @@ class po2l20n(object):
         """Convert a source format unit to a target format unit."""
         use_target = (unit.istranslated()
                       or unit.isfuzzy() and self.include_fuzzy)
-        l20n_unit_value = unit.target if use_target else unit.source
-        l20n_unit = self.TargetUnitClass(
-            source=l20n_unit_value,
+        target_unit_source = unit.target if use_target else unit.source
+        target_unit = self.TargetUnitClass(
+            source=target_unit_source,
             id=unit.getlocations()[0],
             comment=unit.getnotes("developer")
         )
-        return l20n_unit
+        return target_unit
 
     def merge_stores(self):
         """Convert a source file to a target file using a template file.
@@ -70,13 +70,12 @@ class po2l20n(object):
         """
         self.source_store.makeindex()
 
-        for l20nunit in self.template_store.units:
-            l20nunit_id = l20nunit.getid()
+        for template_unit in self.template_store.units:
+            template_unit_id = template_unit.getid()
 
-            if l20nunit_id in self.source_store.locationindex:
-                po_unit = self.source_store.locationindex[l20nunit_id]
-                newunit = self.convert_unit(po_unit)
-                self.target_store.addunit(newunit)
+            if template_unit_id in self.source_store.locationindex:
+                input_unit = self.source_store.locationindex[template_unit_id]
+                self.target_store.addunit(self.convert_unit(input_unit))
 
     def run(self):
         """Run the converter."""
