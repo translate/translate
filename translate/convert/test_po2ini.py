@@ -43,121 +43,122 @@ class TestPO2Ini(object):
 
     def test_merging_simple(self):
         """check the simplest case of merging a translation"""
-        posource = """#: [section]prop
+        input_string = """#: [section]prop
 msgid "value"
 msgstr "waarde"
 """
-        initemplate = """[section]
+        template_string = """[section]
 prop=value
 """
-        iniexpected = """[section]
+        expected_output = """[section]
 prop=waarde
 """
-        inifile = self._convert_to_string(posource, initemplate)
-        assert inifile == iniexpected
+        assert expected_output == self._convert_to_string(input_string,
+                                                          template_string)
 
     def test_space_preservation(self):
         """check that we preserve any spacing in ini files when merging"""
-        posource = """#: [section]prop
+        input_string = """#: [section]prop
 msgid "value"
 msgstr "waarde"
 """
-        initemplate = """[section]
+        template_string = """[section]
 prop  =  value
 """
-        iniexpected = """[section]
+        expected_output = """[section]
 prop  =  waarde
 """
-        inifile = self._convert_to_string(posource, initemplate)
-        assert inifile == iniexpected
+        assert expected_output == self._convert_to_string(input_string,
+                                                          template_string)
 
     def test_merging_blank_entries(self):
         """check that we can correctly merge entries that are blank in the template"""
-        posource = r"""#: [section]accesskey-accept
+        input_string = r"""#: [section]accesskey-accept
 msgid ""
 "_: accesskey-accept\n"
 ""
 msgstr ""
 """
-        initemplate = """[section]
+        template_string = """[section]
 accesskey-accept=
 """
-        iniexpected = """[section]
+        expected_output = """[section]
 accesskey-accept=
 """
-        inifile = self._convert_to_string(posource, initemplate)
-        assert inifile == iniexpected
+        assert expected_output == self._convert_to_string(input_string,
+                                                          template_string)
 
     def test_merging_fuzzy(self):
         """check merging a fuzzy translation"""
-        posource = """#: [section]prop
+        input_string = """#: [section]prop
 #, fuzzy
 msgid "value"
 msgstr "waarde"
 """
-        initemplate = """[section]
+        template_string = """[section]
 prop=value
 """
-        iniexpected = """[section]
+        expected_output = """[section]
 prop=value
 """
-        inifile = self._convert_to_string(posource, initemplate)
-        assert inifile == iniexpected
+        assert expected_output == self._convert_to_string(input_string,
+                                                          template_string)
 
     def test_merging_propertyless_template(self):
         """check that when merging with a template with no ini values that we copy the template"""
-        posource = ""
-        initemplate = """# A comment
+        input_string = ""
+        template_string = """# A comment
 """
-        iniexpected = initemplate
-        inifile = self._convert_to_string(posource, initemplate)
-        assert inifile == iniexpected
+        expected_output = template_string
+        assert expected_output == self._convert_to_string(input_string,
+                                                          template_string)
 
     def test_empty_value(self):
         """test that we handle an value in translation that is missing in the template"""
-        posource = """#: [section]key
+        input_string = """#: [section]key
 msgctxt "key"
 msgid ""
 msgstr "translated"
 """
-        initemplate = """[section]
+        template_string = """[section]
 key =
 """
-        iniexpected = """[section]
+        expected_output = """[section]
 key =translated
 """
-        inifile = self._convert_to_string(posource, initemplate)
-        assert inifile == iniexpected
+        assert expected_output == self._convert_to_string(input_string,
+                                                          template_string)
 
     def test_dialects_inno(self):
         """test that we output correctly for Inno files."""
-        posource = r"""#: [section]prop
+        input_string = r"""#: [section]prop
 msgid "value\tvalue2\n"
 msgstr "ṽḁḽṻḝ\tṽḁḽṻḝ2\n"
 """
-        initemplate = """[section]
+        template_string = """[section]
 prop  =  value%tvalue%n
 """
-        iniexpected = """[section]
+        expected_output = """[section]
 prop  =  ṽḁḽṻḝ%tṽḁḽṻḝ2%n
 """
-        output = self._convert_to_string(posource, initemplate, dialect="inno")
-        assert output == iniexpected
+        assert expected_output == self._convert_to_string(input_string,
+                                                          template_string,
+                                                          dialect="inno")
 
     def test_misaligned_files(self):
         """Check misaligned files conversions uses the template version."""
-        input_source = """#: [section]key
+        input_string = """#: [section]key
 msgid "Hello, World!"
 msgstr "Ola mundo!"
 """
-        template_source = """[section]
+        template_string = """[section]
 different=Other string
 """
         expected_output = """[section]
 different=Other string
 """
-        output = self._convert_to_string(input_source, template_source)
-        assert output == expected_output
+        assert expected_output == self._convert_to_string(input_string,
+                                                          template_string)
 
     def test_convert_completion_below_threshold(self):
         """Check no conversion if input completion is below threshold."""
@@ -201,53 +202,54 @@ prop=waarde
 
     def test_no_fuzzy(self):
         """Check that a simple fuzzy PO converts to a untranslated target."""
-        input_source = """#: [section]prop
+        input_string = """#: [section]prop
 #, fuzzy
 msgid "Hello, World!"
 msgstr "Ola mundo!"
 """
-        template_source = """[section]
+        template_string = """[section]
 prop=Hello, World!
 """
         expected_output = """[section]
 prop=Hello, World!
 """
-        output = self._convert_to_string(input_source, template_source,
-                                         include_fuzzy=False)
-        assert output == expected_output
+        assert expected_output == self._convert_to_string(input_string,
+                                                          template_string,
+                                                          include_fuzzy=False)
 
     def test_allow_fuzzy(self):
         """Check that a simple fuzzy PO converts to a translated target."""
-        input_source = """#: [section]prop
+        input_string = """#: [section]prop
 #, fuzzy
 msgid "Hello, World!"
 msgstr "Ola mundo!"
 """
-        template_source = """[section]
+        template_string = """[section]
 prop=Hello, World!
 """
         expected_output = """[section]
 prop=Ola mundo!
 """
-        output = self._convert_to_string(input_source, template_source,
-                                         include_fuzzy=True)
-        assert output == expected_output
+        assert expected_output == self._convert_to_string(input_string,
+                                                          template_string,
+                                                          include_fuzzy=True)
 
     def test_merging_missing_source(self):
         """Check merging when template locations are missing in source."""
-        input_source = """#: [section]missing
+        input_string = """#: [section]missing
 msgid "value"
 msgstr "valor"
 """
-        template_source = """[section]
+        template_string = """[section]
 key=other
 """
-        output = self._convert_to_string(input_source, template_source)
-        assert output == template_source
+        expected_output = template_string
+        assert expected_output == self._convert_to_string(input_string,
+                                                          template_string)
 
     def test_merging_repeated_locations(self):
         """Check merging when files have repeated locations."""
-        input_source = """#: [section]key
+        input_string = """#: [section]key
 msgid "first"
 msgstr "primeiro"
 
@@ -255,7 +257,7 @@ msgstr "primeiro"
 msgid "second"
 msgstr "segundo"
 """
-        template_source = """[section]
+        template_string = """[section]
 key=first
 key=second
 """
@@ -263,10 +265,10 @@ key=second
 key=first
 key=primeiro
 """
-        output = self._convert_to_string(input_source, template_source)
-        assert output == expected_output
+        assert expected_output == self._convert_to_string(input_string,
+                                                          template_string)
 
-        template_source = """[section]
+        template_string = """[section]
 key=first
 
 [section]
@@ -278,8 +280,8 @@ key=first
 [section]
 key=primeiro
 """
-        output = self._convert_to_string(input_source, template_source)
-        assert output == expected_output
+        assert expected_output == self._convert_to_string(input_string,
+                                                          template_string)
 
 
 class TestPO2IniCommand(test_convert.TestConvertCommand, TestPO2Ini):
