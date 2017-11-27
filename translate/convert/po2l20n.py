@@ -31,15 +31,19 @@ logger = logging.getLogger(__name__)
 
 class po2l20n(object):
 
+    SourceStoreClass = po.pofile
+    TargetStoreClass = l20n.l20nfile
+    TargetUnitClass = l20n.l20nunit
+
     def __init__(self, inputfile, outputfile, templatefile=None,
                  includefuzzy=False, outputthreshold=None):
 
         if templatefile is None:
             raise ValueError("must have template file for ftl files")
 
-        self.inputstore = po.pofile(inputfile)
+        self.inputstore = self.SourceStoreClass(inputfile)
         self.outputfile = outputfile
-        self.template_store = l20n.l20nfile(templatefile)
+        self.template_store = self.TargetStoreClass(templatefile)
         self.includefuzzy = includefuzzy
         self.outputthreshold = outputthreshold
 
@@ -47,7 +51,7 @@ class po2l20n(object):
         use_target = (unit.istranslated()
                       or unit.isfuzzy() and self.includefuzzy)
         l20n_unit_value = unit.target if use_target else unit.source
-        l20n_unit = l20n.l20nunit(
+        l20n_unit = self.TargetUnitClass(
             source=l20n_unit_value,
             id=unit.getlocations()[0],
             comment=unit.getnotes("developer")
@@ -55,7 +59,7 @@ class po2l20n(object):
         return l20n_unit
 
     def convert_store(self):
-        outputstore = l20n.l20nfile()
+        outputstore = self.TargetStoreClass()
         self.inputstore.makeindex()
 
         for l20nunit in self.template_store.units:
