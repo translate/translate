@@ -6,6 +6,8 @@ from translate.misc import wStringIO
 
 class TestPO2Lang(object):
 
+    ConverterClass = po2mozlang.po2lang
+
     def _convert(self, input_string, template_string=None, include_fuzzy=False,
                  output_threshold=None, mark_active=True,
                  success_expected=True):
@@ -16,10 +18,10 @@ class TestPO2Lang(object):
         if template_string:
             template_file = wStringIO.StringIO(template_string)
         expected_result = 1 if success_expected else 0
-        result = po2mozlang.run_converter(input_file, output_file,
-                                          template_file, include_fuzzy,
-                                          mark_active, output_threshold)
-        assert result == expected_result
+        converter = self.ConverterClass(input_file, output_file, template_file,
+                                        include_fuzzy, output_threshold,
+                                        mark_active)
+        assert converter.run() == expected_result
         return None, output_file
 
     def _convert_to_string(self, *args, **kwargs):
