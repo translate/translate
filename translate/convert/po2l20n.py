@@ -30,12 +30,13 @@ class po2l20n(object):
     SourceStoreClass = po.pofile
     TargetStoreClass = l20n.l20nfile
     TargetUnitClass = l20n.l20nunit
+    MissingTemplateMessage = "A template .ftl file must be provided."
 
     def __init__(self, input_file, output_file, template_file=None,
                  include_fuzzy=False, output_threshold=None):
         """Initialize the converter."""
         if template_file is None:
-            raise ValueError("must have template file for ftl files")
+            raise ValueError(self.MissingTemplateMessage)
 
         self.source_store = self.SourceStoreClass(input_file)
         self.target_store = self.TargetStoreClass()
