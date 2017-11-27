@@ -38,10 +38,8 @@ class TestPO2Ini(object):
 
     def test_convert_no_templates(self):
         """Check converter doesn't allow to pass no templates."""
-        input_file = None
-        template_file = None
         with raises(ValueError):
-            self._convert_to_string(input_file, template_file)
+            self._convert_to_string('')
 
     def test_merging_simple(self):
         """check the simplest case of merging a translation"""
