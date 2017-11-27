@@ -32,7 +32,7 @@ class TestPO2Lang(object):
         assert self._convert_to_string('', success_expected=False) == ''
 
     def test_simple(self):
-        """check the simplest case of merging a translation"""
+        """Check the simplest conversion case."""
         input_string = """#: prop
 msgid "Source"
 msgstr "Target"
@@ -55,23 +55,6 @@ msgstr "Target"
         expected_output = """# Comment
 ;Source
 Target
-
-
-"""
-        assert expected_output == self._convert_to_string(input_string,
-                                                          mark_active=False)
-
-    def test_fuzzy(self):
-        """What happens with a fuzzy string"""
-        input_string = """#. Comment
-#: prop
-#, fuzzy
-msgid "Source"
-msgstr "Target"
-"""
-        expected_output = """# Comment
-;Source
-Source
 
 
 """
