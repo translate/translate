@@ -60,7 +60,12 @@ class po2l20n(object):
         )
         return l20n_unit
 
-    def convert_store(self):
+    def merge_stores(self):
+        """Convert a source file to a target file using a template file.
+
+        Source file is in source format, while target and template files use
+        target format.
+        """
         self.target_store = self.TargetStoreClass()
         self.source_store.makeindex()
 
@@ -82,7 +87,7 @@ class po2l20n(object):
         if not self.should_output_store:
             return 0
 
-        self.convert_store().serialize(self.output_file)
+        self.merge_stores().serialize(self.output_file)
         return 1
 
 
