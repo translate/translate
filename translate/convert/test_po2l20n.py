@@ -6,15 +6,25 @@ from translate.misc import wStringIO
 
 class TestPO2L20n(object):
 
-    def merge2l20n(self, po_source, l20n_source):
+    ConverterClass = po2l20n.po2l20n
+
+    def _convert(self, input_string, template_string=None, include_fuzzy=False,
+                 output_threshold=None, success_expected=True):
+        """Helper that converts to target format without using files."""
+        input_file = wStringIO.StringIO(input_string)
+        output_file = wStringIO.StringIO()
+        template_file = None
+        if template_string:
+            template_file = wStringIO.StringIO(template_string)
+        expected_result = 1 if success_expected else 0
+        converter = self.ConverterClass(input_file, output_file, template_file,
+                                        include_fuzzy, output_threshold)
+        assert converter.run() == expected_result
+        return None, output_file
+
+    def _convert_to_string(self, *args, **kwargs):
         """Helper that converts to target format string without using files."""
-        inputfile = wStringIO.StringIO(po_source)
-        templatefile = wStringIO.StringIO(l20n_source)
-        convertor = po2l20n.po2l20n(inputfile, None, templatefile)
-        outputfile = wStringIO.StringIO()
-        convertor.convert_store().serialize(outputfile)
-        output_l20n = outputfile.getvalue()
-        return output_l20n.decode('utf8')
+        return self._convert(*args, **kwargs)[1].getvalue().decode('utf-8')
 
     def test_merging_simple(self):
         """Check the simplest case of merging a translation."""
@@ -26,8 +36,8 @@ msgstr "waarde"
 """
         expected_output = """l20n = waarde
 """
-        assert expected_output == self.merge2l20n(input_string,
-                                                  template_string)
+        assert expected_output == self._convert_to_string(input_string,
+                                                          template_string)
 
     def test_merging_untranslated(self):
         """check the simplest case of merging an untranslated unit"""
@@ -38,8 +48,8 @@ msgstr ""
         template_string = """l20n = value
 """
         expected_output = template_string
-        assert expected_output == self.merge2l20n(input_string,
-                                                  template_string)
+        assert expected_output == self._convert_to_string(input_string,
+                                                          template_string)
 
 
 class TestPO2L20nCommand(test_convert.TestConvertCommand, TestPO2L20n):
