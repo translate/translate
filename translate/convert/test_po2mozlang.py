@@ -140,6 +140,40 @@ Target
         assert expected_output == self._convert_to_string(input_string,
                                                           mark_active=False)
 
+    def test_no_fuzzy(self):
+        """Check fuzzy units are not converted."""
+        input_string = """
+#: prop
+#, fuzzy
+msgid "Source"
+msgstr "Target"
+"""
+        expected_output = """;Source
+Source
+
+
+"""
+        assert expected_output == self._convert_to_string(input_string,
+                                                          include_fuzzy=False,
+                                                          mark_active=False)
+
+    def test_allow_fuzzy(self):
+        """Check fuzzy units are converted."""
+        input_string = """
+#: prop
+#, fuzzy
+msgid "Source"
+msgstr "Target"
+"""
+        expected_output = """;Source
+Target
+
+
+"""
+        assert expected_output == self._convert_to_string(input_string,
+                                                          include_fuzzy=True,
+                                                          mark_active=False)
+
 
 class TestPO2LangCommand(test_convert.TestConvertCommand, TestPO2Lang):
     """Tests running actual po2prop commands on files"""
