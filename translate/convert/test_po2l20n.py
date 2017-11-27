@@ -14,7 +14,6 @@ class TestPO2L20n(object):
         outputfile = wStringIO.StringIO()
         convertor.convert_store().serialize(outputfile)
         output_l20n = outputfile.getvalue()
-        print(output_l20n)
         return output_l20n.decode('utf8')
 
     def test_merging_simple(self):
@@ -23,7 +22,6 @@ class TestPO2L20n(object):
         l20n_template = '''l20n = value\n'''
         l20n_expected = '''l20n = waarde\n'''
         l20n_file = self.merge2l20n(l20n_template, po_source)
-        print(l20n_file)
         assert l20n_file == l20n_expected
 
     def test_merging_untranslated(self):
@@ -32,7 +30,6 @@ class TestPO2L20n(object):
         l20n_template = '''l20n = value\n'''
         l20n_expected = l20n_template
         l20n_file = self.merge2l20n(l20n_template, po_source)
-        print(l20n_file)
         assert l20n_file == l20n_expected
 
 
