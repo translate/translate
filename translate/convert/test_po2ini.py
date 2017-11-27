@@ -162,43 +162,36 @@ different=Other string
 
     def test_convert_completion_below_threshold(self):
         """Check no conversion if input completion is below threshold."""
-        input_source = """#: [section]prop
+        input_string = """#: [section]prop
 msgid "value"
 msgstr ""
 """
-        template_source = """[section]
+        template_string = """[section]
 prop=value
 """
         expected_output = ""
-        input_file = wStringIO.StringIO(input_source)
-        output_file = wStringIO.StringIO()
-        template_file = wStringIO.StringIO(template_source)
         # Input completion is 0% so with a 70% threshold it should not output.
-        result = po2ini.run_converter(input_file, output_file, template_file,
-                                      outputthreshold=70)
-        assert result == 0
-        assert output_file.getvalue() == expected_output
+        output = self._convert_to_string(input_string, template_string,
+                                         output_threshold=70,
+                                         success_expected=False)
+        assert output == expected_output
 
     def test_convert_completion_above_threshold(self):
         """Check no conversion if input completion is above threshold."""
-        input_source = """#: [section]prop
+        input_string = """#: [section]prop
 msgid "value"
 msgstr "waarde"
 """
-        template_source = """[section]
+        template_string = """[section]
 prop=value
 """
         expected_output = """[section]
 prop=waarde
 """
-        input_file = wStringIO.StringIO(input_source)
-        output_file = wStringIO.StringIO()
-        template_file = wStringIO.StringIO(template_source)
         # Input completion is 100% so with a 70% threshold it should output.
-        result = po2ini.run_converter(input_file, output_file, template_file,
-                                      outputthreshold=70)
-        assert result == 1
-        assert output_file.getvalue() == expected_output
+        output = self._convert_to_string(input_string, template_string,
+                                         output_threshold=70)
+        assert output == expected_output
 
     def test_no_fuzzy(self):
         """Check that a simple fuzzy PO converts to a untranslated target."""
