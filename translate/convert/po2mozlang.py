@@ -30,9 +30,8 @@ from translate.storage import mozilla_lang, po
 class po2lang(object):
     """Convert a PO file to a Mozilla .lang file."""
 
-    def __init__(self, duplicate_style="msgctxt", mark_active=True):
+    def __init__(self, mark_active=True):
         """Initialize the converter."""
-        self.duplicate_style = duplicate_style
         self.mark_active = mark_active
 
     def convert_store(self, source_store, include_fuzzy=False):
@@ -55,8 +54,7 @@ class po2lang(object):
 
 
 def run_converter(inputfile, outputfile, templates, includefuzzy=False,
-                  mark_active=True, outputthreshold=None,
-                  remove_untranslated=None):
+                  mark_active=True, outputthreshold=None):
     """Wrapper around converter."""
     inputstore = po.pofile(inputfile)
 
@@ -66,7 +64,7 @@ def run_converter(inputfile, outputfile, templates, includefuzzy=False,
     if inputstore.isempty():
         return 0
 
-    convertor = po2lang(mark_active=mark_active)
+    convertor = po2lang(mark_active)
     outputstore = convertor.convert_store(inputstore, includefuzzy)
     outputstore.serialize(outputfile)
     return 1

@@ -8,8 +8,8 @@ from translate.storage import po
 class TestPO2Lang(object):
 
     def _convert(self, input_string, template_string=None, include_fuzzy=False,
-                 output_threshold=None, remove_untranslated=None,
-                 mark_active=True, success_expected=True):
+                 output_threshold=None, mark_active=True,
+                 success_expected=True):
         """Helper that converts to target format without using files."""
         input_file = wStringIO.StringIO(input_string)
         output_file = wStringIO.StringIO()
@@ -19,8 +19,7 @@ class TestPO2Lang(object):
         expected_result = 1 if success_expected else 0
         result = po2mozlang.run_converter(input_file, output_file,
                                           template_file, include_fuzzy,
-                                          mark_active, output_threshold,
-                                          remove_untranslated)
+                                          mark_active, output_threshold)
         assert result == expected_result
         return None, output_file
 
