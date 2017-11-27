@@ -35,21 +35,21 @@ class po2l20n(object):
     TargetStoreClass = l20n.l20nfile
     TargetUnitClass = l20n.l20nunit
 
-    def __init__(self, inputfile, outputfile, templatefile=None,
-                 includefuzzy=False, outputthreshold=None):
+    def __init__(self, input_file, output_file, template_file=None,
+                 include_fuzzy=False, output_threshold=None):
 
-        if templatefile is None:
+        if template_file is None:
             raise ValueError("must have template file for ftl files")
 
-        self.inputstore = self.SourceStoreClass(inputfile)
-        self.outputfile = outputfile
-        self.template_store = self.TargetStoreClass(templatefile)
-        self.includefuzzy = includefuzzy
-        self.outputthreshold = outputthreshold
+        self.source_store = self.SourceStoreClass(input_file)
+        self.output_file = output_file
+        self.template_store = self.TargetStoreClass(template_file)
+        self.include_fuzzy = include_fuzzy
+        self.output_threshold = output_threshold
 
     def convert_unit(self, unit):
         use_target = (unit.istranslated()
-                      or unit.isfuzzy() and self.includefuzzy)
+                      or unit.isfuzzy() and self.include_fuzzy)
         l20n_unit_value = unit.target if use_target else unit.source
         l20n_unit = self.TargetUnitClass(
             source=l20n_unit_value,
@@ -59,26 +59,27 @@ class po2l20n(object):
         return l20n_unit
 
     def convert_store(self):
-        outputstore = self.TargetStoreClass()
-        self.inputstore.makeindex()
+        self.target_store = self.TargetStoreClass()
+        self.source_store.makeindex()
 
         for l20nunit in self.template_store.units:
             l20nunit_id = l20nunit.getid()
 
-            if l20nunit_id in self.inputstore.locationindex:
-                po_unit = self.inputstore.locationindex[l20nunit_id]
+            if l20nunit_id in self.source_store.locationindex:
+                po_unit = self.source_store.locationindex[l20nunit_id]
                 newunit = self.convert_unit(po_unit)
-                outputstore.addunit(newunit)
+                self.target_store.addunit(newunit)
 
-        return outputstore
+        return self.target_store
 
     def run(self):
-        should_output_store = convert.should_output_store(self.inputstore,
-                                                          self.outputthreshold)
-        if not should_output_store:
+        self.should_output_store = convert.should_output_store(
+            self.source_store, self.output_threshold
+        )
+        if not self.should_output_store:
             return False
 
-        self.convert_store().serialize(self.outputfile)
+        self.convert_store().serialize(self.output_file)
         return True
 
 
