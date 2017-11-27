@@ -30,19 +30,24 @@ from translate.storage import mozilla_lang, po
 class po2lang(object):
     """Convert a PO file to a Mozilla .lang file."""
 
+    SourceStoreClass = po.pofile
     TargetStoreClass = mozilla_lang.LangStore
 
-    def __init__(self, include_fuzzy=False, output_threshold=None,
+    def __init__(self, input_file, include_fuzzy=False, output_threshold=None,
                  mark_active=True):
         """Initialize the converter."""
-        self.include_fuzzy = include_fuzzy
+        self.source_store = self.SourceStoreClass(input_file)
 
-        self.target_store = self.TargetStoreClass(mark_active=mark_active)
+        self.should_output_store = convert.should_output_store(
+            self.source_store, output_threshold
+        )
+        if self.should_output_store:
+            self.include_fuzzy = include_fuzzy
 
-    def convert_store(self, source_store):
+            self.target_store = self.TargetStoreClass(mark_active=mark_active)
+
+    def convert_store(self):
         """Convert a single source format file to a target format file."""
-        self.source_store = source_store
-
         for source_unit in self.source_store.units:
             if source_unit.isheader() or not source_unit.istranslatable():
                 continue
@@ -59,16 +64,15 @@ class po2lang(object):
 def run_converter(inputfile, outputfile, templates, includefuzzy=False,
                   mark_active=True, outputthreshold=None):
     """Wrapper around converter."""
-    inputstore = po.pofile(inputfile)
+    convertor = po2lang(inputfile, includefuzzy, outputthreshold, mark_active)
 
-    if not convert.should_output_store(inputstore, outputthreshold):
+    if not convertor.should_output_store:
         return 0
 
-    if inputstore.isempty():
+    if convertor.source_store.isempty():
         return 0
 
-    convertor = po2lang(includefuzzy, outputthreshold, mark_active)
-    outputstore = convertor.convert_store(inputstore)
+    outputstore = convertor.convert_store()
     outputstore.serialize(outputfile)
     return 1
 
