@@ -33,16 +33,18 @@ class po2lang(object):
         self.duplicatestyle = duplicatestyle
         self.mark_active = mark_active
 
-    def convertstore(self, inputstore, includefuzzy=False):
+    def convert_store(self, source_store, include_fuzzy=False):
         """converts a file to .lang format"""
+        self.include_fuzzy = include_fuzzy
+        self.source_store = source_store
         thetargetfile = mozilla_lang.LangStore(mark_active=self.mark_active)
 
         # Run over the po units
-        for pounit in inputstore.units:
+        for pounit in self.source_store.units:
             if pounit.isheader() or not pounit.istranslatable():
                 continue
             newunit = thetargetfile.addsourceunit(pounit.source)
-            if includefuzzy or not pounit.isfuzzy():
+            if self.include_fuzzy or not pounit.isfuzzy():
                 newunit.target = pounit.target
             else:
                 newunit.target = ""
@@ -65,7 +67,7 @@ def convertlang(inputfile, outputfile, templates, includefuzzy=False, mark_activ
         return False
 
     convertor = po2lang(mark_active=mark_active)
-    outputstore = convertor.convertstore(inputstore, includefuzzy)
+    outputstore = convertor.convert_store(inputstore, includefuzzy)
     outputstore.serialize(outputfile)
     return True
 
