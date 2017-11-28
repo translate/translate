@@ -7,9 +7,9 @@ from translate.storage import po
 
 class TestL20n2PO(object):
 
-    def l20n2po(self, l20n_source, l20n_template=None):
+    def l20n2po(self, input_string, l20n_template=None):
         """helper that converts .ftl (l20n) source to po source without requiring files"""
-        inputfile = wStringIO.StringIO(l20n_source)
+        inputfile = wStringIO.StringIO(input_string)
         outputfile = wStringIO.StringIO()
         templatefile = None
         if l20n_template:
@@ -30,68 +30,68 @@ class TestL20n2PO(object):
 
     def test_simpleentry(self):
         """checks that a simple l20n entry converts l20n to a po entry"""
-        l20n_source = 'l20n-string-id = Hello, L20n!\n'
-        pofile = self.l20n2po(l20n_source)
-        pounit = self._single_element(pofile)
-        assert pounit.source == "Hello, L20n!"
-        assert pounit.target == ""
+        input_string = 'l20n-string-id = Hello, L20n!\n'
+        target_store = self.l20n2po(input_string)
+        target_unit = self._single_element(target_store)
+        assert target_unit.source == "Hello, L20n!"
+        assert target_unit.target == ""
 
     def test_convertl20n(self):
         """checks that the convertprop function is working"""
-        l20n_source = 'l20n-string-id = Hello, L20n!\n'
-        pofile = self.l20n2po(l20n_source)
-        pounit = self._single_element(pofile)
-        assert pounit.source == "Hello, L20n!"
-        assert pounit.target == ""
+        input_string = 'l20n-string-id = Hello, L20n!\n'
+        target_store = self.l20n2po(input_string)
+        target_unit = self._single_element(target_store)
+        assert target_unit.source == "Hello, L20n!"
+        assert target_unit.target == ""
 
     def test_tab_at_start_of_value(self):
         """check that tabs in a property are ignored where appropriate"""
-        propsource = r"property	=	value"
-        pofile = self.l20n2po(propsource)
-        pounit = self._single_element(pofile)
-        assert pounit.getlocations()[0] == "property"
-        assert pounit.source == "value"
+        input_string = r"property	=	value"
+        target_store = self.l20n2po(input_string)
+        target_unit = self._single_element(target_store)
+        assert target_unit.getlocations()[0] == "property"
+        assert target_unit.source == "value"
 
     def test_multiline_escaping(self):
         """checks that multiline enties can be parsed"""
-        l20n_source = r"""description =
+        input_string = r"""description =
   | Loki is a simple micro-blogging
   | app written entirely in <i>HTML5</i>.
   | It uses L20n to implement localization."""
-        pofile = self.l20n2po(l20n_source)
-        assert self._count_elements(pofile) == 1
+        target_store = self.l20n2po(input_string)
+        assert self._count_elements(target_store) == 1
 
     def test_comments(self):
         """test to ensure that we take comments from .properties and place them in .po"""
-        l20n_source = r"""# Comment
+        input_string = r"""# Comment
 l20n-string-id = Hello, L20n!\n"""
-        pofile = self.l20n2po(l20n_source)
-        pounit = self._single_element(pofile)
-        assert pounit.getnotes("developer") == "Comment"
+        target_store = self.l20n2po(input_string)
+        target_unit = self._single_element(target_store)
+        assert target_unit.getnotes("developer") == "Comment"
 
     def test_multiline_comments(self):
         """test to ensure that we handle multiline comments well"""
-        l20n_source = """# Comment
+        input_string = """# Comment
 # Comment 2
 l20n-string-id = Hello, L20n!\n"""
 
-        pofile = self.l20n2po(l20n_source)
-        pounit = self._single_element(pofile)
-        assert pounit.getnotes("developer") == "Comment\nComment 2"
+        target_store = self.l20n2po(input_string)
+        target_unit = self._single_element(target_store)
+        assert target_unit.getnotes("developer") == "Comment\nComment 2"
 
     def test_plurals(self):
         """Test conversion of plural unit."""
-        l20n_source = """new-notifications = { PLURAL($num) ->
+        input_string = """new-notifications = { PLURAL($num) ->
   [0] No new notifications.
   [1] One new notification.
   [2] Two new notifications.
  *[other] { $num } new notifications.
 }
 """
-        pofile = self.l20n2po(l20n_source)
-        pounit = self._single_element(pofile)
-        assert pounit.getlocations() == [u'new-notifications']
-        assert pounit.source == """{ PLURAL($num) ->
+        target_store = self.l20n2po(input_string)
+        target_unit = self._single_element(target_store)
+        assert target_unit.getlocations() == [u'new-notifications']
+        assert target_unit.source == """{ PLURAL($num) ->
   [0] No new notifications.
   [1] One new notification.
   [2] Two new notifications.
