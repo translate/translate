@@ -34,10 +34,10 @@ class TestL20n2PO(object):
         assert po_store.units[0].isheader()
         return po_store.units[1]
 
-    def countelements(self, pofile):
-        """counts the number of non-header entries"""
-        assert pofile.units[0].isheader()
-        return len(pofile.units) - 1
+    def _count_elements(self, po_store):
+        """Helper that counts the number of non-header units."""
+        assert po_store.units[0].isheader()
+        return len(po_store.units) - 1
 
     def test_simpleentry(self):
         """checks that a simple l20n entry converts l20n to a po entry"""
@@ -71,7 +71,7 @@ class TestL20n2PO(object):
   | app written entirely in <i>HTML5</i>.
   | It uses L20n to implement localization."""
         pofile = self.l20n2po(l20n_source)
-        assert self.countelements(pofile) == 1
+        assert self._count_elements(pofile) == 1
 
     def test_comments(self):
         """test to ensure that we take comments from .properties and place them in .po"""
