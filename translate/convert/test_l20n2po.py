@@ -32,6 +32,11 @@ class TestL20n2PO(object):
         assert po_store.units[0].isheader()
         return len(po_store.units) - 1
 
+    def test_convert_empty(self):
+        """Check converting empty input file returns no output."""
+        target_store = self.l20n2po("# Comment", success_expected=False)
+        assert len(target_store.units) == 0
+
     def test_simpleentry(self):
         """checks that a simple l20n entry converts l20n to a po entry"""
         input_string = """l20n-string-id = Hello, L20n!"""
