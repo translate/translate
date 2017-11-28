@@ -2,7 +2,7 @@
 
 from translate.convert import l20n2po, test_convert
 from translate.misc import wStringIO
-from translate.storage import po, l20n
+from translate.storage import po
 
 
 class TestL20n2PO(object):
@@ -10,23 +10,12 @@ class TestL20n2PO(object):
     def l20n2po(self, l20n_source, l20n_template=None):
         """helper that converts .ftl (l20n) source to po source without requiring files"""
         inputfile = wStringIO.StringIO(l20n_source)
-        input_l20n = l20n.l20nfile(inputfile)
-        convertor = l20n2po.l20n2po()
-        if l20n_template:
-            templatefile = wStringIO.StringIO(l20n_template)
-            template_l20n = l20n.l20nfile(templatefile)
-            outputpo = convertor.merge_stores(template_l20n, input_l20n)
-        else:
-            outputpo = convertor.convert_store(input_l20n)
-        return outputpo
-
-    def convert_l20n(self, l20n_source):
-        """call the convert_l20n, return the outputfile"""
-        inputfile = wStringIO.StringIO(l20n_source)
         outputfile = wStringIO.StringIO()
         templatefile = None
+        if l20n_template:
+            templatefile = wStringIO.StringIO(l20n_template)
         assert l20n2po.convertl20n(inputfile, outputfile, templatefile)
-        return outputfile.getvalue()
+        return po.pofile(wStringIO.StringIO(outputfile.getvalue()))
 
     def _single_element(self, po_store):
         """Helper to check PO file has one non-header unit, and return it."""
@@ -50,8 +39,7 @@ class TestL20n2PO(object):
     def test_convertl20n(self):
         """checks that the convertprop function is working"""
         l20n_source = 'l20n-string-id = Hello, L20n!\n'
-        posource = self.convert_l20n(l20n_source)
-        pofile = po.pofile(wStringIO.StringIO(posource))
+        pofile = self.l20n2po(l20n_source)
         pounit = self._single_element(pofile)
         assert pounit.source == "Hello, L20n!"
         assert pounit.target == ""
