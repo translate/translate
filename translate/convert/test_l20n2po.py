@@ -46,7 +46,7 @@ class TestL20n2PO(object):
 
     def test_tab_at_start_of_value(self):
         """check that tabs in a property are ignored where appropriate"""
-        input_string = r"property	=	value"
+        input_string = "property\t=\tvalue"
         target_store = self.l20n2po(input_string)
         target_unit = self._single_element(target_store)
         assert target_unit.getlocations()[0] == "property"
@@ -54,7 +54,7 @@ class TestL20n2PO(object):
 
     def test_multiline_escaping(self):
         """checks that multiline enties can be parsed"""
-        input_string = r"""description =
+        input_string = """description =
   | Loki is a simple micro-blogging
   | app written entirely in <i>HTML5</i>.
   | It uses L20n to implement localization."""
@@ -63,7 +63,7 @@ class TestL20n2PO(object):
 
     def test_comments(self):
         """test to ensure that we take comments from .properties and place them in .po"""
-        input_string = r"""# Comment
+        input_string = """# Comment
 l20n-string-id = Hello, L20n!\n"""
         target_store = self.l20n2po(input_string)
         target_unit = self._single_element(target_store)
