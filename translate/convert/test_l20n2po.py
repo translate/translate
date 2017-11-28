@@ -30,7 +30,7 @@ class TestL20n2PO(object):
 
     def test_simpleentry(self):
         """checks that a simple l20n entry converts l20n to a po entry"""
-        input_string = 'l20n-string-id = Hello, L20n!\n'
+        input_string = """l20n-string-id = Hello, L20n!"""
         target_store = self.l20n2po(input_string)
         target_unit = self._single_element(target_store)
         assert target_unit.source == "Hello, L20n!"
@@ -38,7 +38,7 @@ class TestL20n2PO(object):
 
     def test_convertl20n(self):
         """checks that the convertprop function is working"""
-        input_string = 'l20n-string-id = Hello, L20n!\n'
+        input_string = """l20n-string-id = Hello, L20n!"""
         target_store = self.l20n2po(input_string)
         target_unit = self._single_element(target_store)
         assert target_unit.source == "Hello, L20n!"
@@ -57,14 +57,16 @@ class TestL20n2PO(object):
         input_string = """description =
   | Loki is a simple micro-blogging
   | app written entirely in <i>HTML5</i>.
-  | It uses L20n to implement localization."""
+  | It uses L20n to implement localization.
+"""
         target_store = self.l20n2po(input_string)
         assert self._count_elements(target_store) == 1
 
     def test_comments(self):
         """test to ensure that we take comments from .properties and place them in .po"""
         input_string = """# Comment
-l20n-string-id = Hello, L20n!\n"""
+l20n-string-id = Hello, L20n!
+"""
         target_store = self.l20n2po(input_string)
         target_unit = self._single_element(target_store)
         assert target_unit.getnotes("developer") == "Comment"
@@ -73,8 +75,8 @@ l20n-string-id = Hello, L20n!\n"""
         """test to ensure that we handle multiline comments well"""
         input_string = """# Comment
 # Comment 2
-l20n-string-id = Hello, L20n!\n"""
-
+l20n-string-id = Hello, L20n!
+"""
         target_store = self.l20n2po(input_string)
         target_unit = self._single_element(target_store)
         assert target_unit.getnotes("developer") == "Comment\nComment 2"
@@ -88,15 +90,16 @@ l20n-string-id = Hello, L20n!\n"""
  *[other] { $num } new notifications.
 }
 """
-        target_store = self.l20n2po(input_string)
-        target_unit = self._single_element(target_store)
-        assert target_unit.getlocations() == [u'new-notifications']
-        assert target_unit.source == """{ PLURAL($num) ->
+        expected_output = """{ PLURAL($num) ->
   [0] No new notifications.
   [1] One new notification.
   [2] Two new notifications.
  *[other] { $num } new notifications.
 }"""
+        target_store = self.l20n2po(input_string)
+        target_unit = self._single_element(target_store)
+        assert target_unit.getlocations() == ['new-notifications']
+        assert target_unit.source == expected_output
 
 
 class TestL20n2POCommand(test_convert.TestConvertCommand, TestL20n2PO):
