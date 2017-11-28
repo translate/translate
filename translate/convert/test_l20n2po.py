@@ -28,11 +28,11 @@ class TestL20n2PO(object):
         assert l20n2po.convertl20n(inputfile, outputfile, templatefile)
         return outputfile.getvalue()
 
-    def singleelement(self, pofile):
-        """checks that the pofile contains a single non-header element, and returns it"""
-        assert len(pofile.units) == 2
-        assert pofile.units[0].isheader()
-        return pofile.units[1]
+    def _single_element(self, po_store):
+        """Helper to check PO file has one non-header unit, and return it."""
+        assert len(po_store.units) == 2
+        assert po_store.units[0].isheader()
+        return po_store.units[1]
 
     def countelements(self, pofile):
         """counts the number of non-header entries"""
@@ -43,7 +43,7 @@ class TestL20n2PO(object):
         """checks that a simple l20n entry converts l20n to a po entry"""
         l20n_source = 'l20n-string-id = Hello, L20n!\n'
         pofile = self.l20n2po(l20n_source)
-        pounit = self.singleelement(pofile)
+        pounit = self._single_element(pofile)
         assert pounit.source == "Hello, L20n!"
         assert pounit.target == ""
 
@@ -52,7 +52,7 @@ class TestL20n2PO(object):
         l20n_source = 'l20n-string-id = Hello, L20n!\n'
         posource = self.convert_l20n(l20n_source)
         pofile = po.pofile(wStringIO.StringIO(posource))
-        pounit = self.singleelement(pofile)
+        pounit = self._single_element(pofile)
         assert pounit.source == "Hello, L20n!"
         assert pounit.target == ""
 
@@ -60,7 +60,7 @@ class TestL20n2PO(object):
         """check that tabs in a property are ignored where appropriate"""
         propsource = r"property	=	value"
         pofile = self.l20n2po(propsource)
-        pounit = self.singleelement(pofile)
+        pounit = self._single_element(pofile)
         assert pounit.getlocations()[0] == "property"
         assert pounit.source == "value"
 
@@ -78,7 +78,7 @@ class TestL20n2PO(object):
         l20n_source = r"""# Comment
 l20n-string-id = Hello, L20n!\n"""
         pofile = self.l20n2po(l20n_source)
-        pounit = self.singleelement(pofile)
+        pounit = self._single_element(pofile)
         assert pounit.getnotes("developer") == "Comment"
 
     def test_multiline_comments(self):
@@ -88,7 +88,7 @@ l20n-string-id = Hello, L20n!\n"""
 l20n-string-id = Hello, L20n!\n"""
 
         pofile = self.l20n2po(l20n_source)
-        pounit = self.singleelement(pofile)
+        pounit = self._single_element(pofile)
         assert pounit.getnotes("developer") == "Comment\nComment 2"
 
     def test_plurals(self):
@@ -101,7 +101,7 @@ l20n-string-id = Hello, L20n!\n"""
 }
 """
         pofile = self.l20n2po(l20n_source)
-        pounit = self.singleelement(pofile)
+        pounit = self._single_element(pofile)
         assert pounit.getlocations() == [u'new-notifications']
         assert pounit.source == """{ PLURAL($num) ->
   [0] No new notifications.
