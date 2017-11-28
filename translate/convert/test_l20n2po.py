@@ -7,14 +7,18 @@ from translate.storage import po
 
 class TestL20n2PO(object):
 
-    def l20n2po(self, input_string, l20n_template=None):
+    def l20n2po(self, input_string, l20n_template=None, blank_msgstr=False,
+                duplicate_style="msgctxt", success_expected=True):
         """helper that converts .ftl (l20n) source to po source without requiring files"""
         inputfile = wStringIO.StringIO(input_string)
         outputfile = wStringIO.StringIO()
         templatefile = None
         if l20n_template:
             templatefile = wStringIO.StringIO(l20n_template)
-        assert l20n2po.convertl20n(inputfile, outputfile, templatefile)
+        expected_result = 1 if success_expected else 0
+        result = l20n2po.convertl20n(inputfile, outputfile, templatefile,
+                                     blank_msgstr, duplicate_style)
+        assert result == expected_result
         return po.pofile(wStringIO.StringIO(outputfile.getvalue()))
 
     def _single_element(self, po_store):
