@@ -100,18 +100,19 @@ class TxtFile(base.TranslationStore):
 
     UnitClass = TxtUnit
 
-    def __init__(self, inputfile=None, flavour=None, nosegmentation=False, **kwargs):
+    def __init__(self, inputfile=None, flavour=None, no_segmentation=False,
+                 **kwargs):
         super(TxtFile, self).__init__(**kwargs)
         self.filename = getattr(inputfile, 'name', '')
         self.flavour = flavours.get(flavour, [])
-        self.nosegmentation = nosegmentation
+        self.no_segmentation = no_segmentation
         if inputfile is not None:
             txtsrc = inputfile.readlines()
             self.parse(txtsrc)
 
     def parse(self, lines):
         """Read in text lines and create txtunits from the blocks of text"""
-        if self.nosegmentation:
+        if self.no_segmentation:
             self.addsourceunit("".join(lines))
             return
         block = []
