@@ -11,15 +11,15 @@ class TestTxtUnit(test_monolingual.TestMonolingualUnit):
 class TestTxtFile(test_monolingual.TestMonolingualStore):
     StoreClass = txt.TxtFile
 
-    def txtparse(self, txtsource):
+    def txtparse(self, txtsource, no_segmentation=False):
         """helper that parses txt source without requiring files"""
         dummyfile = wStringIO.StringIO(txtsource)
-        txtfile = self.StoreClass(dummyfile)
+        txtfile = self.StoreClass(dummyfile, no_segmentation=no_segmentation)
         return txtfile
 
-    def txtregen(self, txtsource):
+    def txtregen(self, txtsource, no_segmentation=False):
         """helper that converts txt source to txtfile object and back"""
-        return bytes(self.txtparse(txtsource)).decode('utf-8')
+        return bytes(self.txtparse(txtsource, no_segmentation)).decode('utf-8')
 
     def test_simpleblock(self):
         """checks that a simple txt block is parsed correctly"""
@@ -46,3 +46,17 @@ class TestTxtFile(test_monolingual.TestMonolingualStore):
         txtfile = self.txtparse(txtsource)
         assert txtfile.getoutput() == bytes(txtfile)
         deprecated_call(txtfile.getoutput)
+
+    def test_no_segmentation(self):
+        """checks that a simple txt block is parsed correctly"""
+        input_string = """
+First paragraph
+
+Second paragraph
+"""
+        expected_output = input_string
+        target_store = self.txtparse(input_string, no_segmentation=True)
+        assert len(target_store.units) == 1
+        assert target_store.units[0].source == expected_output
+        output = self.txtregen(input_string, no_segmentation=True)
+        assert output == expected_output
