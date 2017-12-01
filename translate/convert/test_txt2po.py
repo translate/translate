@@ -11,7 +11,7 @@ class BaseTxt2POTester(object):
 
     def _convert(self, input_string, template_string=None,
                  duplicate_style="msgctxt", encoding="utf-8",
-                 success_expected=True):
+                 success_expected=True, no_segmentation=False):
         """Helper that converts to target format without using files."""
         input_file = wStringIO.StringIO(input_string)
         output_file = wStringIO.StringIO()
@@ -21,7 +21,7 @@ class BaseTxt2POTester(object):
         expected_result = 1 if success_expected else 0
         converter = self.ConverterClass(input_file, output_file, template_file,
                                         duplicate_style, encoding,
-                                        self.Flavour)
+                                        self.Flavour, no_segmentation)
         assert converter.run() == expected_result
         return converter.target_store, output_file
 
@@ -113,6 +113,20 @@ helped to bridge the digital divide to a limited extent."""
         with pytest.raises(NotImplementedError):
             self._convert_to_store("this", "cannot be", "blank",
                                    success_expected=False)
+
+    def test_no_segmentation(self):
+        """Check multiple paragraphs are extracted as a single unit."""
+        input_string = """
+First paragraph
+
+Second paragraph
+"""
+        expected_output = input_string
+        target_store = self._convert_to_store(input_string,
+                                              no_segmentation=True)
+        assert self._count_elements(target_store) == 1
+        assert target_store.units[1].source == expected_output
+        assert target_store.units[1].target == ""
 
 
 class TestDoku2po(BaseTxt2POTester):
