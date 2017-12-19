@@ -369,3 +369,17 @@ msgstr[1] "toetse"
         store.units[0].settarget('Hello ' * 100)
         # Should contain additional newlines now
         assert bytes(store) != posource
+
+    def test_unix_newlines(self):
+        """checks that unix newlines are properly parsed"""
+        posource = b'\nmsgid "test me"\nmsgstr ""\n'
+        pofile = self.poparse(posource)
+        assert len(pofile.units) == 1
+        assert pofile.units[0].source == 'test me'
+
+    def test_dos_newlines(self):
+        """checks that dos newlines are properly parsed"""
+        posource = b'\r\nmsgid "test me"\r\nmsgstr ""\r\n'
+        pofile = self.poparse(posource)
+        assert len(pofile.units) == 1
+        assert pofile.units[0].source == 'test me'
