@@ -47,7 +47,6 @@ Options (txt2po):
 -P, --pot            output PO Templates (.pot) rather than PO files (.po)
 --encoding=ENCODING    The encoding of the input file (default: UTF-8)
 --flavour=FLAVOUR      The flavour of text file: plain (default), dokuwiki, mediawiki
---no-segmentation      Don't segment the file, treat it like a single message
 --duplicates=DUPLICATESTYLE
                       what to do with duplicate strings (identical source
                       text): :doc:`merge, msgctxt <option_duplicates>`
