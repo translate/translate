@@ -137,6 +137,7 @@ class rcfile(base.TranslationStore):
         if inputfile is not None:
             rcsrc = inputfile.read().decode(self.encoding)
             inputfile.close()
+            rcsrc = rcsrc.replace('\r', '')
             self.parse(rcsrc)
 
     def parse(self, rcsrc):
