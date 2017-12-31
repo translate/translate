@@ -234,3 +234,59 @@ END
         rc_unit = rc_file.units[5]
         assert rc_unit.name == "STRINGTABLE.IDS_ERRORACTIV"
         assert rc_unit.source == "Error doing things"
+
+    def test_parse_newlines_lf(self):
+        """Test parsing a RC string with lf line endings."""
+        rc_source = """\n\
+LANGUAGE LANG_ENGLISH, SUBLANG_DEFAULT\n\
+\n\
+STRINGTABLE\n\
+BEGIN\n\
+    IDP_REGISTRONOV         "Data isn't valid"\n\
+    IDS_ACTIVARINSTALACION  "You need to try again and again."\n\
+END\n\
+"""
+        rc_file = self.source_parse(rc_source)
+        assert len(rc_file.units) == 2
+        rc_unit = rc_file.units[0]
+        assert rc_unit.name == "STRINGTABLE.IDP_REGISTRONOV"
+        assert rc_unit.source == "Data isn't valid"
+        rc_unit = rc_file.units[1]
+        assert rc_unit.name == "STRINGTABLE.IDS_ACTIVARINSTALACION"
+        assert rc_unit.source == "You need to try again and again."
+
+    def test_parse_newlines_crlf(self):
+        """Test parsing a RC string with crlf line endings."""
+        rc_source = """\r\n\
+LANGUAGE LANG_ENGLISH, SUBLANG_DEFAULT\r\n\
+\r\n\
+STRINGTABLE\r\n\
+BEGIN\r\n\
+    IDP_REGISTRONOV         "Data isn't valid"\r\n\
+    IDS_ACTIVARINSTALACION  "You need to try again and again."\r\n\
+END\r\n\
+"""
+        rc_file = self.source_parse(rc_source)
+        assert len(rc_file.units) == 2
+        rc_unit = rc_file.units[0]
+        assert rc_unit.name == "STRINGTABLE.IDP_REGISTRONOV"
+        assert rc_unit.source == "Data isn't valid"
+        rc_unit = rc_file.units[1]
+        assert rc_unit.name == "STRINGTABLE.IDS_ACTIVARINSTALACION"
+        assert rc_unit.source == "You need to try again and again."
+
+    def test_parse_newlines_cr(self):
+        """Test parsing a RC string with crlf line endings."""
+        rc_source = """\r\
+LANGUAGE LANG_ENGLISH, SUBLANG_DEFAULT\r\
+\r\
+STRINGTABLE\r\
+BEGIN\r\
+    IDP_REGISTRONOV         "Data isn't valid"\r\
+    IDS_ACTIVARINSTALACION  "You need to try again and again."\r\
+END\r\
+"""
+        rc_file = self.source_parse(rc_source)
+        assert len(rc_file.units) == 0
+
+
