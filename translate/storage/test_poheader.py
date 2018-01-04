@@ -122,13 +122,6 @@ def test_timezones():
         # Typically "+0200"
         assert poheader.tzstring() == time.strftime("%z")
 
-        os.environ['TZ'] = 'Africa/Windhoek'
-        time.tzset()
-        assert time.timezone == -3600
-        # Typically "+0100"
-        # For some reason python's %z doesn't know about Windhoek DST
-        #assert poheader.tzstring() == time.strftime("%z")
-
         os.environ['TZ'] = 'UTC'
         time.tzset()
         assert time.timezone == 0
