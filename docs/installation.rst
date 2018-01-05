@@ -147,9 +147,8 @@ or, running the tools from the source directory:
 
 .. code-block:: console
 
-   $ ./setuppath # Only needed the first time
-   $ . setpath  # Do this once for a session
-
+   $ su
+   $ pip install -e .
 
 .. _installation#verify_installed_version:
 
