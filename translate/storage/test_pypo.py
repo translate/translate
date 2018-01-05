@@ -383,3 +383,10 @@ msgstr[1] "toetse"
         pofile = self.poparse(posource)
         assert len(pofile.units) == 1
         assert pofile.units[0].source == 'test me'
+
+    def test_mac_newlines(self):
+        """checks that mac newlines are properly parsed"""
+        posource = b'\rmsgid "test me"\rmsgstr ""\r'
+        pofile = self.poparse(posource)
+        assert len(pofile.units) == 1
+        assert pofile.units[0].source == 'test me'
