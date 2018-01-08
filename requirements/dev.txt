@@ -6,4 +6,4 @@ pydocstyle==2.1.1
 pytest==3.3.2
 pytest-cov
 pytest-xdist
-Sphinx==1.6.5
+Sphinx==1.6.6
