@@ -31,8 +31,6 @@ from translate.lang import data
 from translate.storage import base, lisa
 from translate.misc.multistring import multistring
 
-from babel.core import Locale, UnknownLocaleError
-
 EOF = None
 WHITESPACE = ' \n\t'  # Whitespace that we collapse.
 MULTIWHITESPACE = re.compile('[ \n\t]{2}(?!\\\\n)')
@@ -302,12 +300,11 @@ class AndroidResourceUnit(base.TranslationUnit):
                 self.xmlelement.tail = '\n'
                 self.setid(old_id)
 
+            locale = self.gettargetlanguage().replace('_', '-').split('-')[0]
             try:
-                lang_tags = set(Locale(self.gettargetlanguage()).plural_form.tags)
-            except UnknownLocaleError:
-                lang_tags = set(Locale('en').plural_form.tags)
-            # Ensure that the implicit default "other" rule is present (usually omitted by Babel)
-            lang_tags.add('other')
+                lang_tags = data.plural_tags[locale]
+            except KeyError:
+                lang_tags = data.plural_tags['en']
 
             # Get plural tags in the right order.
             plural_tags = [tag for tag in ['zero', 'one', 'two', 'few', 'many', 'other'] if tag in lang_tags]
