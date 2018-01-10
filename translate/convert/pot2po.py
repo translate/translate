@@ -35,7 +35,7 @@ from translate.tools import pretranslate
 
 def convertpot(input_file, output_file, template_file, tm=None,
                min_similarity=75, fuzzymatching=True, classes=None,
-               classes_str=factory.classes_str, **kwargs):
+               classes_str=None, **kwargs):
     """Main conversion function."""
     input_store = factory.getobject(input_file, classes=classes,
                                     classes_str=classes_str)
