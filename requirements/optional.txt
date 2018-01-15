@@ -11,6 +11,6 @@ vobject==0.9.5       # iCal (ical2po)
 # aeidon not available through pip/PyPI,
 # so recording this dependency here is pointless except as a comment
 
-Babel==2.5.1         # Android plurals
+Babel==2.5.2         # Android plurals
 l20n==4.0.0a1        # l20n (l20n2po)
 PyYAML==3.12         # yaml
