@@ -113,7 +113,11 @@ class CatkeysHeader(object):
         if not header:
             self._header_dict = self._create_default_header()
         elif isinstance(header, dict):
-            self._header_dict = header
+            for key in FIELDNAMES_HEADER:
+                value = header.get(key, "")
+                if value is None:
+                    value = ""
+                self._header_dict[key] = value
 
     def _create_default_header(self):
         """Create a default catkeys header"""
@@ -127,6 +131,12 @@ class CatkeysHeader(object):
         #XXX assumption about the current structure of the languages dict in data
         self._header_dict['language'] = data.languages[newlang][0].lower()
     targetlanguage = property(None, settargetlanguage)
+
+    def setchecksum(self, checksum):
+        """Set the checksum for the file"""
+        if not checksum:
+            return
+        self._header_dict['checksum'] = str(checksum)
 
 
 @six.python_2_unicode_compatible
@@ -149,8 +159,13 @@ class CatkeysUnit(base.TranslationUnit):
         :param newdict: a new dictionary with catkeys line elements
         :type newdict: Dict
         """
-        # TODO First check that the values are OK
-        self._dict = newdict
+        # Process the input values
+        self._dict = {}
+        for key in FIELDNAMES:
+            value = newdict.get(key, "")
+            if value is None:
+                value = ""
+            self._dict[key] = value
     dict = property(getdict, setdict)
 
     def _get_source_or_target(self, key):
@@ -198,11 +213,14 @@ class CatkeysUnit(base.TranslationUnit):
 
     def getnotes(self, origin=None):
         if not origin or origin in ["programmer", "developer", "source code"]:
-            return self._dict["comment"]
+            return self._dict.get("comment", "")
         return u""
 
     def getcontext(self):
-        return self._dict["context"]
+        return self._dict.get("context", "")
+
+    def setcontext(self, context):
+        self._dict["context"] = context
 
     def getid(self):
         context = self.getcontext()
@@ -283,8 +301,48 @@ class CatkeysFile(base.TranslationStore):
     def serialize(self, out):
         output = csv.StringIO()
         writer = csv.DictWriter(output, FIELDNAMES, dialect="catkeys")
+        # Calculate/update fingerprint
+        self.header.setchecksum(self._compute_fingerprint())
         # No real headers, the first line contains metadata
         writer.writerow(dict(zip(FIELDNAMES, [self.header._header_dict[key] for key in FIELDNAMES_HEADER])))
         for unit in self.units:
             writer.writerow(unit.dict)
         out.write(output.getvalue().encode(self.encoding))
+
+    def _compute_fingerprint(self):
+        """
+        Compute the current hash key in the header for the current state of the store.
+        """
+
+        def hashfun(string, startValue):
+            """
+            This function is on CatKey::HashFun(). In this implementation C integer overflow is emulated.
+            https://github.com/haiku/haiku/blob/b65adbdfbc322bb7d86d74049389c688e9962f15/src/kits/locale/HashMapCatalog.cpp#L93
+            """
+            h = startValue
+            array = string.encode('utf-8')
+
+            for byte in six.iterbytes(array):
+                if byte > 127:
+                    byte -= 256
+                h = 5 * h + byte
+                h &= 0xFFFFFFFF
+
+            # Add 1
+            h = 5 * h + 1
+            h &= 0xFFFFFFFF
+
+            return h
+
+        fingerprint = 0
+        for unit in self.units:
+            stringhash = hashfun(unit.source, 0)
+            stringhash &= 0xFFFFFFFF
+            stringhash = hashfun(unit.getcontext(), stringhash)
+            stringhash &= 0xFFFFFFFF
+            stringhash = hashfun(unit.getnotes(), stringhash)
+            stringhash &= 0xFFFFFFFF
+            fingerprint += stringhash
+            fingerprint &= 0xFFFFFFFF
+
+        return fingerprint
