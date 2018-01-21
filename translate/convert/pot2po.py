@@ -123,9 +123,11 @@ def _store_pre_merge(input_store, output_store, template_store, **kwargs):
     if isinstance(input_store, poheader.poheader):
         _do_poheaders(input_store, output_store, template_store)
     elif isinstance(input_store, catkeys.CatkeysFile):
-        #FIXME: shouldn't we be merging template_store.header instead?
         #FIXME: also this should be a format specific hook
-        output_store.header = input_store.header
+        if template_store is not None:
+            output_store.header = template_store.header
+        else:
+            output_store.header = input_store.header
 
     # Dispatch to format specific functions
     store_pre_merge_hook = "_store_pre_merge_%s" % input_store.__class__.__name__
