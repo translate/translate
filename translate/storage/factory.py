@@ -31,7 +31,7 @@ decompressclass = {
 }
 
 
-classes_str = {
+_classes_str = {
     "csv": ("csvl10n", "csvfile"),
     "tab": ("omegat", "OmegaTFileTab"), "utf8": ("omegat", "OmegaTFile"),
     "po": ("po", "pofile"), "pot": ("po", "pofile"),
@@ -87,7 +87,7 @@ def _examine_txt(storefile):
     return pseudo_extension
 
 
-hiddenclasses = {"txt": _examine_txt}
+_hiddenclasses = {"txt": _examine_txt}
 
 
 def _guessextention(storefile):
@@ -135,12 +135,16 @@ def _getname(storefile):
 
 
 def getclass(storefile, localfiletype=None, ignore=None, classes=None,
-             classes_str=classes_str, hiddenclasses=hiddenclasses):
+             classes_str=None, hiddenclasses=None):
     """Factory that returns the applicable class for the type of file
     presented.  Specify ignore to ignore some part at the back of the name
     (like .gz).
     """
     storefilename = _getname(storefile)
+    if classes_str is None:
+        classes_str = _classes_str
+    if hiddenclasses is None:
+        hiddenclasses = _hiddenclasses
     if ignore and storefilename.endswith(ignore):
         storefilename = storefilename[:-len(ignore)]
     ext = localfiletype
@@ -175,7 +179,7 @@ def getclass(storefile, localfiletype=None, ignore=None, classes=None,
 
 
 def getobject(storefile, localfiletype=None, ignore=None, classes=None,
-              classes_str=classes_str, hiddenclasses=hiddenclasses):
+              classes_str=None, hiddenclasses=None):
     """Factory that returns a usable object for the type of file presented.
 
     :type storefile: file or str
@@ -183,7 +187,10 @@ def getobject(storefile, localfiletype=None, ignore=None, classes=None,
 
     Specify ignore to ignore some part at the back of the name (like .gz).
     """
-
+    if classes_str is None:
+        classes_str = _classes_str
+    if hiddenclasses is None:
+        hiddenclasses = _hiddenclasses
     if isinstance(storefile, six.string_types):
         if os.path.isdir(storefile) or storefile.endswith(os.path.sep):
             from translate.storage import directory
