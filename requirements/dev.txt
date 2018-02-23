@@ -2,8 +2,8 @@
 
 isort>=4.2.3
 pycodestyle==2.3.1
-pydocstyle==2.0.0
-pytest==3.2.1
+pydocstyle==2.1.1
+pytest==3.4.1
 pytest-cov
 pytest-xdist
-Sphinx==1.6.3
+Sphinx==1.7.1
