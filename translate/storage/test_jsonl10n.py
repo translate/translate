@@ -64,6 +64,25 @@ class TestJSONResourceStore(test_monolingual.TestMonolingualStore):
         assert store.units[0].source == 'foo'
         assert store.units[2].source == 'baz'
 
+    def test_args(self):
+        store = self.StoreClass()
+        store.parse('''{
+    "foo": "foo",
+    "bar": "bar",
+    "baz": "baz"
+}''')
+        store.dump_args['sort_keys'] = True
+
+        out = BytesIO()
+        store.serialize(out)
+
+        assert out.getvalue() == b'''{
+    "bar": "bar",
+    "baz": "baz",
+    "foo": "foo"
+}
+'''
+
 
 class TestJSONNestedResourceStore(test_monolingual.TestMonolingualUnit):
     StoreClass = jsonl10n.JsonNestedFile

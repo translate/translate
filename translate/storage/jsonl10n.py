@@ -142,6 +142,11 @@ class JsonFile(base.TranslationStore):
         self._filter = filter
         self.filename = ''
         self._file = u''
+        self.dump_args = {
+            'separators': (',', ': '),
+            'indent': 4,
+            'ensure_ascii': False,
+        }
         if inputfile is not None:
             self.parse(inputfile)
 
@@ -155,8 +160,7 @@ class JsonFile(base.TranslationStore):
         units = OrderedDict()
         for unit in self.unit_iter():
             merge(units, unit.getvalue())
-        out.write(json.dumps(units, separators=(',', ': '),
-                             indent=4, ensure_ascii=False).encode(self.encoding))
+        out.write(json.dumps(units, **self.dump_args).encode(self.encoding))
         out.write(b'\n')
 
     def _extract_translatables(self, data, stop=None, prev="", name_node=None,
