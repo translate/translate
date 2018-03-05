@@ -243,7 +243,6 @@ $foo = 'bar';
          'item 3' => 'value3',
       );'''
         phpfile = self.phpparse(phpsource)
-        print(len(phpfile.units))
         assert len(phpfile.units) == 2
         phpunit = phpfile.units[1]
         assert phpunit.name == "$lang->'item 3'"
@@ -254,7 +253,6 @@ $foo = 'bar';
         phpsource = """define("_FINISH", "Rematar");
 define('_POSTEDON', 'Enviado o');"""
         phpfile = self.phpparse(phpsource)
-        print(len(phpfile.units))
         assert len(phpfile.units) == 2
         phpunit = phpfile.units[0]
         assert phpunit.name == 'define("_FINISH"'
@@ -268,7 +266,6 @@ define('_POSTEDON', 'Enviado o');"""
         phpsource = """define( "_FINISH", "Rematar");
 define( '_CM_POSTED', 'Enviado');"""
         phpfile = self.phpparse(phpsource)
-        print(len(phpfile.units))
         assert len(phpfile.units) == 2
         phpunit = phpfile.units[0]
         assert phpunit.name == 'define( "_FINISH"'
@@ -282,7 +279,6 @@ define( '_CM_POSTED', 'Enviado');"""
         phpsource = """define("_RELOAD",       "Recargar");
 define('_CM_POSTED',    'Enviado');"""
         phpfile = self.phpparse(phpsource)
-        print(len(phpfile.units))
         assert len(phpfile.units) == 2
         phpunit = phpfile.units[0]
         assert phpunit.name == 'define("_RELOAD"'
@@ -298,7 +294,6 @@ define('_CM_POSTED',    'Enviado');"""
         phpsource = """define( "_FINISH",       "Rematar");
 define(  '_UPGRADE_CHARSET',    'Upgrade charset');"""
         phpfile = self.phpparse(phpsource)
-        print(len(phpfile.units))
         assert len(phpfile.units) == 2
         phpunit = phpfile.units[0]
         assert phpunit.name == 'define( "_FINISH"'
@@ -312,7 +307,6 @@ define(  '_UPGRADE_CHARSET',    'Upgrade charset');"""
         phpsource = """define("_POSTEDON","Enviado o");
 define('_UPGRADE_CHARSET','Upgrade charset');"""
         phpfile = self.phpparse(phpsource)
-        print(len(phpfile.units))
         assert len(phpfile.units) == 2
         phpunit = phpfile.units[0]
         assert phpunit.name == 'define("_POSTEDON"'
@@ -328,7 +322,6 @@ define('_UPGRADE_CHARSET','Upgrade charset');"""
         phpsource = """define( "_FINISH","Rematar");
 define( '_CM_POSTED','Enviado');"""
         phpfile = self.phpparse(phpsource)
-        print(len(phpfile.units))
         assert len(phpfile.units) == 2
         phpunit = phpfile.units[0]
         assert phpunit.name == 'define( "_FINISH"'
@@ -343,7 +336,6 @@ define( '_CM_POSTED','Enviado');"""
 define('_YOUR_USERNAME', 'O seu nome de usuario: "cookie"');
 define("_REGISTER", "Register <a href=\"register.php\">here</a>");"""
         phpfile = self.phpparse(phpsource)
-        print(len(phpfile.units))
         assert len(phpfile.units) == 3
         phpunit = phpfile.units[0]
         assert phpunit.name == "define('_SETTINGS_COOKIEPREFIX'"
@@ -360,7 +352,6 @@ define("_REGISTER", "Register <a href=\"register.php\">here</a>");"""
         phpsource = """define("_POSTEDON", "Enviado o");// Keep this short
 define('_CM_POSTED', 'Enviado'); // Posted date"""
         phpfile = self.phpparse(phpsource)
-        print(len(phpfile.units))
         assert len(phpfile.units) == 2
         phpunit = phpfile.units[0]
         assert phpunit.name == 'define("_POSTEDON"'
@@ -380,7 +371,6 @@ define("_FINISH", "Rematar");
 // It appears besides posts
 define('_CM_POSTED', 'Enviado');"""
         phpfile = self.phpparse(phpsource)
-        print(len(phpfile.units))
         assert len(phpfile.units) == 2
         phpunit = phpfile.units[0]
         assert phpunit.name == 'define("_FINISH"'
@@ -398,7 +388,6 @@ define('_CM_POSTED', 'Enviado');"""
 define("_FINISH", "Rematar"     );
 define("_RELOAD", "Recargar");"""
         phpfile = self.phpparse(phpsource)
-        print(len(phpfile.units))
         assert len(phpfile.units) == 3
         phpunit = phpfile.units[0]
         assert phpunit.name == 'define("_POSTEDON"'
@@ -417,7 +406,6 @@ define("_RELOAD", "Recargar");"""
 $month_feb = 'Feb'  ;
 $month_mar = 'Mar';"""
         phpfile = self.phpparse(phpsource)
-        print(len(phpfile.units))
         assert len(phpfile.units) == 3
         phpunit = phpfile.units[0]
         assert phpunit.name == '$month_jan'
@@ -745,7 +733,6 @@ $month_mar = 'Mar';
         phpsource = """define("_FINISH", "Rematar");
 $lang['mediaselect'] = 'Bestand selectie';"""
         phpfile = self.phpparse(phpsource)
-        print(len(phpfile.units))
         assert len(phpfile.units) == 2
         phpunit = phpfile.units[0]
         assert phpunit.name == 'define("_FINISH"'
@@ -766,7 +753,6 @@ $txt[\'DISPLAYEDINFOS\'] = "<a href=\\"__PARAM2__\\">Modificar...</a>";
         phpsource = """
 $lang['mediaselect'] = "Really \\\"something\\\"" . $variable . "\\\"something else\\\"";"""
         phpfile = self.phpparse(phpsource)
-        print(len(phpfile.units))
         assert len(phpfile.units) == 1
         phpunit = phpfile.units[0]
         assert phpunit.name == "$lang['mediaselect']"
