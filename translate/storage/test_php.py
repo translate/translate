@@ -793,3 +793,95 @@ $texts = array(
 """
         phpfile = self.phpparse(phpsource)
         assert phpfile.__bytes__() == phpsource
+
+    def test_space_before_comma(self):
+        """check that spacing before comma or semicolon doesn't break parser
+
+        See #1898
+        """
+        phpsource = """
+        $english = array(
+            'item:site'  =>  "Sítios",
+            'login'  =>  "Entrar" ,
+            'loginok'  =>  "Entrou com sucesso." ,
+        );
+        $month_jan = 'Jan';
+        $month_feb = 'Feb'  ;
+        $month_mar = 'Mar';
+        define("_SEARCH","Search");
+        define("_LOGIN","Login"  );
+        define("_POLLS","Polls");
+        """
+        phpfile = self.phpparse(phpsource)
+        assert len(phpfile.units) == 9
+
+    def test_equals_in_id(self):
+        """check that equals in id doesn't break parser
+
+        See #1929"""
+        phpsource = """
+        $strings['key = value'] = 'Message';
+        """
+        phpfile = self.phpparse(phpsource)
+        assert len(phpfile.units) == 1
+        assert phpfile.units[0].source == 'Message'
+        assert phpfile.units[0].name == "$strings['key = value']"
+
+    def test_comma_in_string(self):
+        """check that comma in string doesn't break parser
+
+        See #3608"""
+        phpsource = """
+        $t = array(
+            'key' => ' text (comment **),**',
+        );
+        """
+        phpfile = self.phpparse(phpsource)
+        assert len(phpfile.units) == 1
+        assert phpfile.units[0].source == ' text (comment **),**'
+        assert phpfile.units[0].name == "$t->'key'"
+
+    def test_nowdoc(self):
+        """check parsing nowdoc strings"""
+        phpsource = """$str = <<<'EOD'
+Example of string
+spanning multiple lines
+using nowdoc syntax.
+EOD;
+        """
+        phpfile = self.phpparse(phpsource)
+        assert len(phpfile.units) == 1
+        assert phpfile.units[0].source == '''Example of string
+spanning multiple lines
+using nowdoc syntax.'''
+        assert phpfile.units[0].name == '$str'
+
+    def test_concatenation(self):
+        """check parsing concatenated strings"""
+        phpsource = """$str = 'Concatenated' . ' ' . 'string';
+        $arr['x'] = 'Concatenated' . ' ' . 'string';
+        """
+        phpfile = self.phpparse(phpsource)
+        assert len(phpfile.units) == 2
+        assert phpfile.units[0].source == 'Concatenated string'
+        assert phpfile.units[0].name == '$str'
+        assert phpfile.units[1].source == 'Concatenated string'
+        assert phpfile.units[1].name == "$arr['x']"
+
+    def test_array_keys(self):
+        """check parsing different array keys"""
+        phpsource = """
+        $arr = [
+            '1234' => 'First',
+            1234 => 'Second',
+            '12' . '45' => 'Third',
+        ];
+        """
+        phpfile = self.phpparse(phpsource)
+        assert len(phpfile.units) == 3
+        assert phpfile.units[0].source == 'First'
+        assert phpfile.units[0].name == "$arr->'1234'"
+        assert phpfile.units[1].source == 'Second'
+        assert phpfile.units[1].name == "$arr->1234"
+        assert phpfile.units[2].source == 'Third'
+        assert phpfile.units[2].name == "$arr->'1245'"
