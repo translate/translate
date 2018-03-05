@@ -181,6 +181,17 @@ msgstr ""
         print(str(unit))
         assert str(unit) == expected
 
+    def test_wrap_on_slash(self):
+        """test that we wrap on /"""
+        string = "1/3/5/7/N/" * 11
+        expected = '''msgid ""
+"1/3/5/7/N/1/3/5/7/N/1/3/5/7/N/1/3/5/7/N/1/3/5/7/N/1/3/5/7/N/1/3/5/7/N/1/3/5/"
+"7/N/1/3/5/7/N/1/3/5/7/N/1/3/5/7/N/"
+msgstr ""
+'''
+        unit = self.UnitClass(string)
+        assert str(unit) == expected
+
     def test_spacing_max_line(self):
         """Test that the spacing of text is done the same as msgcat."""
         idstring = "Creates a new document using an existing template iiiiiiiiiiiiiiiiiiiiiii or "
