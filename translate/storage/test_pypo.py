@@ -137,13 +137,11 @@ class TestPYPOUnit(test_po.TestPOUnit):
         str_max = "123456789 123456789 123456789 123456789 123456789 123456789 123456789 1"
         unit = self.UnitClass(str_max)
         expected = 'msgid "%s"\nmsgstr ""\n' % str_max
-        print(expected, str(unit))
         assert str(unit) == expected
         # at this length we wrap
         str_wrap = str_max + '2'
         unit = self.UnitClass(str_wrap)
         expected = 'msgid ""\n"%s"\nmsgstr ""\n' % str_wrap
-        print(expected, str(unit))
         assert str(unit) == expected
 
     def test_wrap_on_newlines(self):
@@ -152,7 +150,6 @@ class TestPYPOUnit(test_po.TestPOUnit):
         postring = ('"123456789\\n"\n' * 3)[:-1]
         unit = self.UnitClass(string)
         expected = 'msgid ""\n%s\nmsgstr ""\n' % postring
-        print(expected, str(unit))
         assert str(unit) == expected
 
         # Now check for long newlines segments
@@ -167,7 +164,6 @@ class TestPYPOUnit(test_po.TestPOUnit):
 msgstr ""
 '''
         unit = self.UnitClass(longstring)
-        print(expected, str(unit))
         assert str(unit) == expected
 
     def test_wrap_on_max_line_length(self):
@@ -175,10 +171,6 @@ msgstr ""
         string = "1 3 5 7 N " * 11
         expected = 'msgid ""\n%s\nmsgstr ""\n' % '"1 3 5 7 N 1 3 5 7 N 1 3 5 7 N 1 3 5 7 N 1 3 5 7 N 1 3 5 7 N 1 3 5 7 N 1 3 5 "\n"7 N 1 3 5 7 N 1 3 5 7 N 1 3 5 7 N "'
         unit = self.UnitClass(string)
-        print("Expected:")
-        print(expected)
-        print("Actual:")
-        print(str(unit))
         assert str(unit) == expected
 
     def test_wrap_on_slash(self):
@@ -202,10 +194,6 @@ msgstr ""
 msgstr ""
 '''
         unit = self.UnitClass(idstring)
-        print("Expected:")
-        print(expected)
-        print("Actual:")
-        print(str(unit))
         assert str(unit) == expected
 
 
@@ -240,8 +228,6 @@ class TestPYPOFile(test_po.TestPOFile):
         assert len(pofile.units) == 2
         pofile.removeduplicates("merge")
         assert len(pofile.units) == 2
-        print(pofile.units[0].msgidcomments)
-        print(pofile.units[1].msgidcomments)
         assert pypo.unquotefrompo(pofile.units[0].msgidcomments) == "_: source1\n"
         assert pypo.unquotefrompo(pofile.units[1].msgidcomments) == "_: source2\n"
 
