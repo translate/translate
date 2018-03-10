@@ -1,0 +1,5 @@
+msgid "simple"
+msgstr "Een"
+
+msgid "unicode"
+msgstr "†wee"

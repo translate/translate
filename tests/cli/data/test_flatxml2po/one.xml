@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+    <str key="word">Word</str>
+    <str key="line">Line of text.</str>
+    <str key="trailing_space">Trailing space follows here: </str>
+    <str key="xml_characters">This XML has &lt;root&gt; and &lt;str&gt; elements.</str>
+    <str key="multiline">This string has 4 lines.
+And this is line two. Line three is empty.
+
+Because xml:space="preserve" is assumed by default, we don't have to specify it.</str>
+</root>

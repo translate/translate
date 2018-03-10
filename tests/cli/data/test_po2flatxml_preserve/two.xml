@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root xml:lang="de">
+    <str key="one" other="attribute">Eins</str>
+    <str key="two">Two</str>
+    <str key="three">Drei</str>
+    <!-- not used as translated resource -->
+    <constant name="answer">42</constant>
+</root>

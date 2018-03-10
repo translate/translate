@@ -1,0 +1,1 @@
+flatxml2po: WARNING: Error processing: input ./data/test_flatxml2po_wrongvalue/one.xml, output ./results/test_flatxml2po_wrongvalue/out.txt, template None: expected value name to be wrong but first node is str

@@ -1,0 +1,9 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<root xml:lang="de">
+  <str key="one" other="attribute">Eins</str>
+  <str key="two">Zwei-mod</str>
+  <str key="three">Drei</str>
+  <!-- not used as translated resource -->
+  <constant name="answer">42</constant>
+  <str key="four">Vier-new</str>
+</root>

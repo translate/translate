@@ -1,0 +1,1 @@
+flatxml2po: WARNING: Error processing: input ./data/test_flatxml2po_wrongkey/one.xml, output ./results/test_flatxml2po_wrongkey/out.txt, template None: expected key attribute to be wrong, found attribute(s): key
