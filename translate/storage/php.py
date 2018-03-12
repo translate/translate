@@ -91,52 +91,11 @@ class PHPLexer(FilteredLexer):
         self.pos = 0
         self.codepos = 0
 
-    def next_token(self):
+    def next_lexer_token(self):
         token = self.lexer.token()
         if token is not None:
             self.tokens.append(token)
         return token
-
-    def token(self):
-        """Copied from FilteredLexer, only difference is that it uses
-        next_token method
-        """
-
-        t = self.next_token()
-
-        # Filter out tokens that the parser is not expecting.
-        while t and t.type in unparsed:
-
-            # Skip over open tags, but keep track of when we see them.
-            if t.type == 'OPEN_TAG':
-                if self.last_token and self.last_token.type == 'SEMI':
-                    # Rewrite ?><?php as a semicolon.
-                    t.type = 'SEMI'
-                    t.value = ';'
-                    break
-                self.last_token = t
-                t = self.next_token()
-                continue
-
-            # Rewrite <?= to yield an "echo" statement.
-            if t.type == 'OPEN_TAG_WITH_ECHO':
-                t.type = 'ECHO'
-                break
-
-            # Insert semicolons in place of close tags where necessary.
-            avoid_tags = ('OPEN_TAG', 'SEMI', 'COLON', 'LBRACE', 'RBRACE')
-            rewrite_as_semicolon = (t.type == 'CLOSE_TAG' and
-                                    (not self.last_token or
-                                     self.last_token.type not in avoid_tags))
-            if rewrite_as_semicolon:
-                # Rewrite close tag as a semicolon.
-                t.type = 'SEMI'
-                break
-
-            t = self.next_token()
-
-        self.last_token = t
-        return t
 
     def extract_comments(self, end):
         """Extract comments related to given parser positions.
