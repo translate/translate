@@ -740,3 +740,9 @@ class StatsCache(object):
             stats["targetwordcount"].append(targetcount)
 
         return stats
+
+    def close(self):
+        for threads in self._caches.values():
+            for cache in threads.values():
+                cache.con.close()
+        self._caches = {}
