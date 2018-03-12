@@ -1,5 +1,7 @@
 # -*- coding: utf-8 -*-
 
+import os
+
 import six
 
 from translate.storage import base, po, xliff
@@ -208,9 +210,9 @@ msgstr "Test msgstr 3"
         for debug in debugs:
             for po_doc in po_docs:
                 postore = po.pofile(po_doc.encode('utf-8'))
-                postore.filename = "fullpath/to/fakefile.po"
+                postore.filename = os.path.join('fullpath', 'to', 'fakefile.po')
                 po_out = debug.convertstore(postore)
                 in_unit = postore.units[0]
                 out_unit = po_out.units[0]
                 assert in_unit.source == out_unit.source
-                assert out_unit.target == results.pop(0)
+                assert out_unit.target == results.pop(0).replace('/', os.sep)
