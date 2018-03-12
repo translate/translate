@@ -28,6 +28,8 @@ class TestSVN(HelperTest):
         file_path = os.path.join(self.co_path, "test1.txt")
         o.add(os.path.join(file_path))
         o = get_versioned_object(file_path)
-        assert os.path.samefile(o.location_abs, file_path)
+
+        # The samefile is available on Unix only, compare path only
+        assert os.path.abspath(o.location_abs) == os.path.abspath(file_path)
 
         assert o.getcleanfile().decode('utf-8') == "First file\n"
