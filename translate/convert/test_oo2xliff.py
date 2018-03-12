@@ -19,9 +19,9 @@ class TestOO2POCommand(test_convert.TestConvertCommand, TestOO2XLIFF):
     """Tests running actual oo2xliff commands on files"""
     convertmodule = oo2xliff
 
-    def test_help(self):
+    def test_help(self, capsys):
         """tests getting help"""
-        options = test_convert.TestConvertCommand.test_help(self)
+        options = test_convert.TestConvertCommand.test_help(self, capsys)
         options = self.help_check(options, "--source-language=LANG")
         options = self.help_check(options, "--language=LANG")
         options = self.help_check(options, "--duplicates=DUPLICATESTYLE")

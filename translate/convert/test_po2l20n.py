@@ -125,9 +125,9 @@ class TestPO2L20nCommand(test_convert.TestConvertCommand, TestPO2L20n):
     convertmodule = po2l20n
     defaultoptions = {"progress": "none"}
 
-    def test_help(self):
+    def test_help(self, capsys):
         """tests getting help"""
-        options = test_convert.TestConvertCommand.test_help(self)
+        options = test_convert.TestConvertCommand.test_help(self, capsys)
         options = self.help_check(options, "-t TEMPLATE, --template=TEMPLATE")
         options = self.help_check(options, "--fuzzy")
         options = self.help_check(options, "--threshold=PERCENT")

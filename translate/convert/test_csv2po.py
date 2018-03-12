@@ -128,9 +128,9 @@ class TestCSV2POCommand(test_convert.TestConvertCommand, TestCSV2PO):
     """Tests running actual csv2po commands on files"""
     convertmodule = csv2po
 
-    def test_help(self):
+    def test_help(self, capsys):
         """tests getting help"""
-        options = test_convert.TestConvertCommand.test_help(self)
+        options = test_convert.TestConvertCommand.test_help(self, capsys)
         options = self.help_check(options, "-t TEMPLATE, --template=TEMPLATE")
         options = self.help_check(options, "-P, --pot")
         options = self.help_check(options, "--charset=CHARSET")
