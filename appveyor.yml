@@ -1,0 +1,19 @@
+environment:
+  matrix:
+    - PYTHON: "C:\\Python27"
+
+install:
+  # We need wheel installed to build wheels
+  - "%PYTHON%\\python.exe -m pip install wheel"
+  # lxml 3.6.0 has binary release for Windows
+  - "%PYTHON%\\python.exe -m pip install lxml==3.6.0"
+  - "%PYTHON%\\python.exe -m pip install -r requirements\\dev.txt"
+  - "%PYTHON%\\python.exe -m pip freeze"
+
+build: off
+
+test_script:
+  - "%PYTHON%\\python.exe -m compileall -q -f ."
+  - "%PYTHON%\\python.exe setup.py --quiet build"
+  - "%PYTHON%\\python.exe -m pip install ."
+  - "%PYTHON%\\python.exe -m pytest -r EfsxX"
