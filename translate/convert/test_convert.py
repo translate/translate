@@ -101,6 +101,8 @@ class TestConvertCommand(object):
         with pytest.raises(SystemExit):
             self.run_command(help=True)
         help_string, err = capsys.readouterr()
+        # normalize newlines
+        help_string = help_string.replace('\r\n', '\n').replace('\r', '\n')
         convertsummary = self.convertmodule.__doc__.split("\n")[0]
         # the convertsummary might be wrapped. this will probably unwrap it
         assert convertsummary in help_string.replace("\n", " ")
