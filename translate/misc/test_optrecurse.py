@@ -1,5 +1,5 @@
 import os
-from tempfile import TemporaryFile
+from tempfile import NamedTemporaryFile
 
 from translate.misc import optrecurse
 
@@ -21,10 +21,14 @@ class TestRecursiveOptionParser:
     def test_outputfile_receives_bytes(self, capsys):
         parser = optrecurse.RecursiveOptionParser({"txt": ("po", None)})
 
-        temp_file = TemporaryFile()
-        with TemporaryFile() as tempfile:
+        temp_file = NamedTemporaryFile(delete=False)
+        temp_file.close()
+        try:
             out = parser.openoutputfile(None, temp_file.name)
             out.write(b'binary suff')
+            out.close()
+        finally:
+            os.unlink(temp_file.name)
 
         out = parser.openoutputfile(None, None)  # To sys.stdout
         out.write(b'binary suff')
