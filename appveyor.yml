@@ -1,19 +1,29 @@
 environment:
   matrix:
     - PYTHON: "C:\\Python27"
+    - PYTHON: "C:\\Python34"
+    - PYTHON: "C:\\Python35"
+    - PYTHON: "C:\\Python36"
+    - PYTHON: "C:\\Python36-x64"
 
 install:
+  - "SET PATH=%PYTHON%;%PYTHON%\\Scripts;%PATH%"
   # We need wheel installed to build wheels
-  - "%PYTHON%\\python.exe -m pip install wheel"
-  # lxml 3.6.0 has binary release for Windows
-  - "%PYTHON%\\python.exe -m pip install lxml==3.6.0"
-  - "%PYTHON%\\python.exe -m pip install -r requirements\\dev.txt"
-  - "%PYTHON%\\python.exe -m pip freeze"
+  - "python.exe -m pip install wheel"
+  - "python.exe -m pip install -r requirements\\dev.txt"
+  - "python.exe -m pip freeze"
 
-build: off
+build_script:
+  # Build the compiled extension
+  - "python setup.py build"
 
 test_script:
-  - "%PYTHON%\\python.exe -m compileall -q -f ."
-  - "%PYTHON%\\python.exe setup.py --quiet build"
-  - "%PYTHON%\\python.exe -m pip install ."
-  - "%PYTHON%\\python.exe -m pytest -r EfsxX"
+  - "python.exe -m pip install ."
+  - "python.exe -m pytest -r EfsxX"
+
+after_test:
+  - "python.exe setup.py bdist_wheel bdist_wininst"
+
+artifacts:
+  # bdist_wheel puts your built wheel in the dist directory
+  - path: dist\*
