@@ -19,6 +19,7 @@ class TestZIPFile(object):
 
     def teardown_method(self, method):
         """removes the attributes set up by setup_method"""
+        self.zip.close()
         self.cleardir(self.testzip)
 
     def cleardir(self, dirname):
