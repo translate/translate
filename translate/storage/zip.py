@@ -37,6 +37,7 @@ class ZIPFile(directory.Directory):
     def __init__(self, filename=None):
         self.filename = filename
         self.filedata = []
+        self.archive = None
 
     def unit_iter(self):
         """Iterator over all the units in all the files in this zip file."""
@@ -55,3 +56,8 @@ class ZIPFile(directory.Directory):
         for completename in self.archive.namelist():
             dir, name = path.split(completename)
             self.filedata.append((dir, name))
+
+    def close(self):
+        if self.archive is not None:
+            self.archive.close()
+            self.archive = None

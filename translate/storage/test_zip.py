@@ -52,8 +52,11 @@ class TestZIPFile(object):
         self.touchfiles(None, files, last=True)
 
         d = zip.ZIPFile(self.testzip)
-        filenames = [name for dir, name in d.getfiles()]
-        assert filenames == files
+        try:
+            filenames = [name for dir, name in d.getfiles()]
+            assert filenames == files
+        finally:
+            d.close()
 
     def test_structure(self):
         """Tests a small directory structure."""
@@ -63,8 +66,11 @@ class TestZIPFile(object):
         self.touchfiles(os.path.join(self.testzip, "bla"), files, last=True)
 
         d = zip.ZIPFile(self.testzip)
-        filenames = [name for dir, name in d.getfiles()]
-        assert filenames == files * 2
+        try:
+            filenames = [name for dir, name in d.getfiles()]
+            assert filenames == files * 2
+        finally:
+            d.close()
 
     def test_getunits(self):
         """Tests basic functionality."""
@@ -73,6 +79,9 @@ class TestZIPFile(object):
         self.touchfiles(self.testzip, files, posource, last=True)
 
         d = zip.ZIPFile(self.testzip)
-        for unit in d.getunits():
-            assert unit.target == "blabla"
-        assert len(d.getunits()) == 3
+        try:
+            for unit in d.getunits():
+                assert unit.target == "blabla"
+            assert len(d.getunits()) == 3
+        finally:
+            d.close()
