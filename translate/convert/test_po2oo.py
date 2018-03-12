@@ -159,9 +159,9 @@ class TestPO2OOCommand(test_convert.TestConvertCommand, TestPO2OO):
     """Tests running actual po2oo commands on files"""
     convertmodule = po2oo
 
-    def test_help(self):
+    def test_help(self, capsys):
         """tests getting help"""
-        options = test_convert.TestConvertCommand.test_help(self)
+        options = test_convert.TestConvertCommand.test_help(self, capsys)
         options = self.help_check(options, "--source-language=LANG")
         options = self.help_check(options, "--language=LANG")
         options = self.help_check(options, "-T, --keeptimestamp")

@@ -2,7 +2,6 @@
 
 import os
 import six
-import sys
 
 import pytest
 
@@ -97,19 +96,11 @@ class TestConvertCommand(object):
             assert newoptions == []
         return "\n".join(newoptions)
 
-    def test_help(self):
+    def test_help(self, capsys):
         """tests getting help (returning the help_string so further tests can be done)"""
-        stdout = sys.stdout
-        helpfile = self.open_testfile("help.txt", "w")
-        sys.stdout = helpfile
-        try:
-            with pytest.raises(SystemExit):
-                self.run_command(help=True)
-        finally:
-            sys.stdout = stdout
-        helpfile.close()
-        help_string = self.read_testfile("help.txt").decode('utf-8')
-        print(help_string)
+        with pytest.raises(SystemExit):
+            self.run_command(help=True)
+        help_string, err = capsys.readouterr()
         convertsummary = self.convertmodule.__doc__.split("\n")[0]
         # the convertsummary might be wrapped. this will probably unwrap it
         assert convertsummary in help_string.replace("\n", " ")

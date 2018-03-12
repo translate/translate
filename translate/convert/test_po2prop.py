@@ -468,9 +468,9 @@ class TestPO2PropCommand(test_convert.TestConvertCommand, TestPO2Prop):
     convertmodule = po2prop
     defaultoptions = {"progress": "none"}
 
-    def test_help(self):
+    def test_help(self, capsys):
         """tests getting help"""
-        options = test_convert.TestConvertCommand.test_help(self)
+        options = test_convert.TestConvertCommand.test_help(self, capsys)
         options = self.help_check(options, "-t TEMPLATE, --template=TEMPLATE")
         options = self.help_check(options, "--fuzzy")
         options = self.help_check(options, "--threshold=PERCENT")

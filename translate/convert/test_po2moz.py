@@ -10,9 +10,9 @@ class TestPO2MozCommand(test_convert.TestConvertCommand, TestPO2Moz):
     convertmodule = po2moz
     defaultoptions = {"progress": "none"}
 
-    def test_help(self):
+    def test_help(self, capsys):
         """tests getting help"""
-        options = test_convert.TestConvertCommand.test_help(self)
+        options = test_convert.TestConvertCommand.test_help(self, capsys)
         options = self.help_check(options, "-t TEMPLATE, --template=TEMPLATE")
         options = self.help_check(options, "-l LOCALE, --locale=LOCALE")
         options = self.help_check(options, "--removeuntranslated")
