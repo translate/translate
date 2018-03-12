@@ -22,8 +22,8 @@ class TestSVN(HelperTest):
     def test_add(self):
         o = get_versioned_object(self.co_path)
         self.create_files({
-            "test1.txt": "First file\n",
-            "test2.txt": "Second file\n",
+            "test1.txt": b"First file\n",
+            "test2.txt": b"Second file\n",
         })
         file_path = os.path.join(self.co_path, "test1.txt")
         o.add(os.path.join(file_path))
