@@ -57,7 +57,7 @@ class php2po(object):
         target_unit.target = ""
         return target_unit
 
-    def convertstore(self):
+    def convert_store(self):
         """Convert a single source format file to a target format file."""
         outputheader = self.target_store.header()
         outputheader.addnote("extracted from %s" % self.source_store.filename,
@@ -65,10 +65,8 @@ class php2po(object):
 
         for source_unit in self.source_store.units:
             self.target_store.addunit(self.convert_unit(source_unit))
-        self.target_store.removeduplicates(self.duplicate_style)
-        return self.target_store
 
-    def mergestore(self):
+    def merge_stores(self):
         """Convert two source format files to a target format file."""
         outputheader = self.target_store.header()
         outputheader.addnote("extracted from %s, %s" % (self.template_store.filename,
@@ -85,23 +83,28 @@ class php2po(object):
                 source_unit = self.source_store.locationindex[template_unit.name]
                 target_unit.target = source_unit.source
             self.target_store.addunit(target_unit)
+
+    def run(self):
+        """Run the converter."""
+        if self.template_store is None:
+            self.convert_store()
+        else:
+            self.merge_stores()
+
         self.target_store.removeduplicates(self.duplicate_style)
-        return self.target_store
+
+        if self.target_store.isempty():
+            return 0
+
+        self.target_store.serialize(self.output_file)
+        return 1
 
 
 def run_converter(inputfile, outputfile, templatefile=None, pot=False,
                   duplicatestyle="msgctxt"):
     """Wrapper around converter."""
-    convertor = php2po(inputfile, outputfile, templatefile, blank_msgstr=pot,
-                       duplicate_style=duplicatestyle)
-    if templatefile is None:
-        outputstore = convertor.convertstore()
-    else:
-        outputstore = convertor.mergestore()
-    if outputstore.isempty():
-        return 0
-    outputstore.serialize(outputfile)
-    return 1
+    return php2po(inputfile, outputfile, templatefile, blank_msgstr=pot,
+                  duplicate_style=duplicatestyle).run()
 
 
 formats = {

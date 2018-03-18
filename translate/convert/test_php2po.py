@@ -15,11 +15,8 @@ class TestPhp2PO(object):
         if phptemplate:
             templatefile = wStringIO.StringIO(phptemplate)
         convertor = php2po.php2po(inputfile, output_file, templatefile)
-        if phptemplate:
-            outputpo = convertor.mergestore()
-        else:
-            outputpo = convertor.convertstore()
-        return outputpo
+        convertor.run()
+        return convertor.target_store
 
     def convertphp(self, phpsource, template=None, expected=1):
         """call run_converter, return the outputfile"""
