@@ -30,9 +30,11 @@ from translate.storage import php, po
 class php2po(object):
     """Convert one or two PHP files to a single PO file."""
 
+    TargetUnitClass = po.pounit
+
     def convert_unit(self, unit, origin):
         """Convert a source format unit to a target format unit."""
-        target_unit = po.pounit(encoding="UTF-8")
+        target_unit = self.TargetUnitClass(encoding="UTF-8")
         target_unit.addnote(unit.getnotes(origin), origin)
         target_unit.addlocation("".join(unit.getlocations()))
         target_unit.source = unit.source
