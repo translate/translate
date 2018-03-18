@@ -18,7 +18,7 @@
 # along with this program; if not, see <http://www.gnu.org/licenses/>.
 
 from io import BytesIO
-from pytest import deprecated_call, mark
+from pytest import mark
 
 
 from translate.storage import dtd, test_monolingual
@@ -200,11 +200,6 @@ class TestDTD(test_monolingual.TestMonolingualStore):
     def dtdregen(self, dtdsource):
         """helper that converts dtd source to dtdfile object and back"""
         return bytes(self.dtdparse(dtdsource)).decode('utf-8')
-
-    def test_getouput_deprecated(self):
-        dtdfile = self.dtdparse('<!ENTITY test.me "bananas for sale">\n')
-        assert dtdfile.getoutput() == bytes(dtdfile)
-        deprecated_call(dtdfile.getoutput)
 
     def test_simpleentity(self):
         """checks that a simple dtd entity definition is parsed correctly"""

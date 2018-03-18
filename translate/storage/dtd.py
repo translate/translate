@@ -93,7 +93,6 @@ except ImportError:
     etree = None
 
 from translate.misc import quote
-from translate.misc.deprecation import deprecated
 from translate.storage import base
 
 
@@ -568,11 +567,6 @@ class dtdfile(base.TranslationStore):
         if not self._valid_store(content):
             warnings.warn("DTD file '%s' does not validate" % self.filename)
             out.truncate(0)
-
-    # Deprecated on 2.0.0
-    @deprecated("Use bytes(dtdfile) instead")
-    def getoutput(self):
-        return bytes(self)
 
     def makeindex(self):
         """makes self.id_index dictionary keyed on entities"""

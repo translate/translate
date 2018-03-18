@@ -1,5 +1,3 @@
-from py.test import deprecated_call
-
 from translate.misc import wStringIO
 from translate.storage import test_monolingual, txt
 
@@ -39,13 +37,6 @@ class TestTxtFile(test_monolingual.TestMonolingualStore):
         print("*%s*" % txtfile.units[0])
         assert bytes(txtfile).decode('utf-8') == txtsource
         assert self.txtregen(txtsource) == txtsource
-
-    def test_getoutput(self):
-        # Test deprecated method still works
-        txtsource = 'bananas for sale'
-        txtfile = self.txtparse(txtsource)
-        assert txtfile.getoutput() == bytes(txtfile)
-        deprecated_call(txtfile.getoutput)
 
     def test_no_segmentation(self):
         """checks that a simple txt block is parsed correctly"""

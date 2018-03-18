@@ -29,7 +29,6 @@ Supported formats are
 import re
 import six
 
-from translate.misc.deprecation import deprecated
 from translate.storage import base
 
 
@@ -157,8 +156,3 @@ class TxtFile(base.TranslationStore):
             if idx > 0:
                 out.write(b'\n\n')
             out.write(six.text_type(unit).encode(self.encoding))
-
-    # Deprecated on 2.0.0
-    @deprecated("Use bytes(TxtFile) instead")
-    def getoutput(self):
-        return bytes(self)
