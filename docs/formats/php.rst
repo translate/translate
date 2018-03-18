@@ -79,6 +79,47 @@ Our format support allows:
       define("another_key", "yet another string");
 
 
+* PHP `short array syntax <http://php.net/manual/en/language.types.array.php>`_
+
+  .. versionadded:: 2.3.0
+
+  .. code-block:: php
+
+      <?php
+      $variable = [
+          "foo" => "bar",
+          "bar" => "foo",
+      ];
+
+
+* `Heredoc
+  <http://www.php.net/manual/en/language.types.string.php#language.types.string.syntax.heredoc>`_
+
+  .. versionadded:: 2.3.0
+
+  .. code-block:: php
+
+      <?php
+      $variable = <<<EOT
+      bar
+      EOT;
+
+
+* `Nowdoc
+  <http://www.php.net/manual/en/language.types.string.php#language.types.string.syntax.nowdoc>`_
+
+  .. versionadded:: 2.3.0
+
+  .. code-block:: php
+
+      <?php
+      $variable = <<<'EOD'
+      Example of string
+      spanning multiple lines
+      using nowdoc syntax.
+      EOD;
+
+
 * Escape sequences (both for `single
   <http://www.php.net/manual/en/language.types.string.php#language.types.string.syntax.single>`_
   and `double
@@ -203,14 +244,9 @@ Our format support allows:
       $messages['file'] = 'File';
 
 
-.. _php#non-conformance:
+* Unnamed arrays:
 
-Non-Conformance
-===============
-
-The following are not yet supported:
-
-* Returning arrays:
+  .. versionadded:: 2.2.0
 
   .. code-block:: php
 
@@ -219,25 +255,10 @@ The following are not yet supported:
          "one" => "this",
       );
 
-* Keyless arrays:
-
-  .. code-block:: php
-
-      <?php
-      $days = array('Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday');
-
-      $messages['days_short'] = array('Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat');
-
-
-* Nested arrays without key for a nested array:
-
-  .. code-block:: php
-
-      <?php
-      $lang = array(array("key" => "value"));
-
 
 * Array entries without ending comma:
+
+  .. versionadded:: 2.3.0
 
   .. code-block:: php
 
@@ -248,7 +269,107 @@ The following are not yet supported:
       );
 
 
-* String concatenation:
+* Array entries with space before comma:
+
+  .. versionadded:: 2.3.0
+
+  .. code-block:: php
+
+      <?php
+      $variable = array(
+         "one" => "this",
+         "two" => "that"   ,
+      );
+
+
+* Nested arrays declared on the next line:
+
+  .. versionadded:: 2.3.0
+
+  .. code-block:: php
+
+      <?php
+      $variable = array(
+          "one" =>
+              array(
+                  "two" => "dous",
+              ),
+      );
+
+
+* Nested arrays with blank entries:
+
+  .. versionadded:: 2.3.0
+
+  .. code-block:: php
+
+      <?php
+      $variable = array(
+          "one" => array(
+                  "" => "",
+                  "two" => "dous",
+              ),
+      );
+
+
+* Strings with slash asterisk on them:
+
+  .. versionadded:: 2.3.0
+
+  .. code-block:: php
+
+      <?php
+      $variable = array(
+          'foo' => 'Other value /* continued',
+       );
+
+
+* Array entries with value on next line:
+
+  .. versionadded:: 2.3.0
+
+  .. code-block:: php
+
+      <?php
+      $variable = array(
+          'foo' =>
+              'bar',
+       );
+
+
+* Array defined in a single line:
+
+  .. versionadded:: 2.3.0
+
+  .. code-block:: php
+
+      <?php
+      $variable = array( 'item1' => 'value1', 'item2' => 'value2', 'item3' => 'value3' );
+
+
+* Keyless arrays:
+
+  .. versionadded:: 2.3.0
+
+  .. code-block:: php
+
+      <?php
+      $days = array('Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday');
+
+
+* Nested arrays without key for a nested array:
+
+  .. versionadded:: 2.3.0
+
+  .. code-block:: php
+
+      <?php
+      $lang = array(array("key" => "value"));
+
+
+* Concatenation of strings and variables:
+
+  .. versionadded:: 2.3.0
 
   .. code-block:: php
 
@@ -259,6 +380,8 @@ The following are not yet supported:
 
 * Assignment in the same line a multiline comment ends:
 
+  .. versionadded:: 2.3.0
+
   .. code-block:: php
 
       <?php
@@ -268,8 +391,18 @@ The following are not yet supported:
       */ $messages['help'] = 'Help';
 
 
-* `Heredoc
-  <http://www.php.net/manual/en/language.types.string.php#language.types.string.syntax.heredoc>`_
-* `Nowdoc
-  <http://www.php.net/manual/en/language.types.string.php#language.types.string.syntax.nowdoc>`_
+
+.. _php#non-conformance:
+
+Non-Conformance
+===============
+
+The following are not yet supported:
+
+* Keyless arrays assigned to another array:
+
+  .. code-block:: php
+
+      <?php
+      $messages['days_short'] = array('Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat');
 
