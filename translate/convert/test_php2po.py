@@ -11,11 +11,12 @@ class TestPhp2PO(object):
         """helper that converts .php source to po source without requiring files"""
         inputfile = wStringIO.StringIO(phpsource)
         output_file = wStringIO.StringIO()
-        convertor = php2po.php2po(inputfile, output_file)
+        templatefile = None
         if phptemplate:
             templatefile = wStringIO.StringIO(phptemplate)
-            templatephp = php.phpfile(templatefile)
-            outputpo = convertor.mergestore(templatephp)
+        convertor = php2po.php2po(inputfile, output_file, templatefile)
+        if phptemplate:
+            outputpo = convertor.mergestore()
         else:
             outputpo = convertor.convertstore()
         return outputpo

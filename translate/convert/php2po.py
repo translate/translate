@@ -34,8 +34,8 @@ class php2po(object):
     TargetStoreClass = po.pofile
     TargetUnitClass = po.pounit
 
-    def __init__(self, input_file, output_file, blank_msgstr=False,
-                 duplicate_style="msgctxt"):
+    def __init__(self, input_file, output_file, template_file=None,
+                 blank_msgstr=False, duplicate_style="msgctxt"):
         """Initialize the converter."""
         self.blank_msgstr = blank_msgstr
         self.duplicate_style = duplicate_style
@@ -43,6 +43,10 @@ class php2po(object):
         self.output_file = output_file
         self.source_store = self.SourceStoreClass(input_file)
         self.target_store = self.TargetStoreClass()
+        self.template_store = None
+
+        if template_file is not None:
+            self.template_store = self.SourceStoreClass(template_file)
 
     def convert_unit(self, unit):
         """Convert a source format unit to a target format unit."""
@@ -64,16 +68,16 @@ class php2po(object):
         self.target_store.removeduplicates(self.duplicate_style)
         return self.target_store
 
-    def mergestore(self, templatestore):
+    def mergestore(self):
         """Convert two source format files to a target format file."""
         outputheader = self.target_store.header()
-        outputheader.addnote("extracted from %s, %s" % (templatestore.filename,
+        outputheader.addnote("extracted from %s, %s" % (self.template_store.filename,
                                                         self.source_store.filename),
                              "developer")
 
         self.source_store.makeindex()
         # Loop through the original file, looking at units one by one.
-        for templateunit in templatestore.units:
+        for templateunit in self.template_store.units:
             outputunit = self.convert_unit(templateunit)
             # Try and find a translation of the same name.
             use_translation = (not self.blank_msgstr and
@@ -89,13 +93,12 @@ class php2po(object):
 def convertphp(inputfile, outputfile, templatefile=None, pot=False,
                duplicatestyle="msgctxt"):
     """Wrapper around converter."""
-    convertor = php2po(inputfile, outputfile, blank_msgstr=pot,
+    convertor = php2po(inputfile, outputfile, templatefile, blank_msgstr=pot,
                        duplicate_style=duplicatestyle)
     if templatefile is None:
         outputstore = convertor.convertstore()
     else:
-        templatestore = php.phpfile(templatefile)
-        outputstore = convertor.mergestore(templatestore)
+        outputstore = convertor.mergestore()
     if outputstore.isempty():
         return 0
     outputstore.serialize(outputfile)
