@@ -58,17 +58,11 @@ class php2po(object):
         for templateunit in templatestore.units:
             outputunit = self.convertunit(templateunit, "developer")
             # Try and find a translation of the same name.
-            if templateunit.name in inputstore.locationindex:
+            use_translation = (not blankmsgstr and
+                               templateunit.name in inputstore.locationindex)
+            if use_translation:
                 translatedinputunit = inputstore.locationindex[templateunit.name]
-                # Need to check that this comment is not a copy of the
-                # developer comments.
-                translatedoutputunit = self.convertunit(translatedinputunit,
-                                                        "translator")
-            else:
-                translatedoutputunit = None
-            # We have a valid po unit, get the translation and add it.
-            if translatedoutputunit is not None and not blankmsgstr:
-                outputunit.target = translatedoutputunit.source
+                outputunit.target = translatedinputunit.source
             outputstore.addunit(outputunit)
         outputstore.removeduplicates(duplicatestyle)
         return outputstore
