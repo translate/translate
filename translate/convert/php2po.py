@@ -52,10 +52,10 @@ class php2po(object):
     def convert_unit(self, unit):
         """Convert a source format unit to a target format unit."""
         target_unit = self.TargetUnitClass(encoding="UTF-8")
-        target_unit.addnote(unit.getnotes("developer"), "developer")
         target_unit.addlocation("".join(unit.getlocations()))
         target_unit.source = unit.source
         target_unit.target = ""
+        target_unit.addnote(unit.getnotes("developer"), "developer")
         return target_unit
 
     def convert_store(self):
@@ -74,7 +74,7 @@ class php2po(object):
         self.source_store.makeindex()
         for template_unit in self.template_store.units:
             target_unit = self.convert_unit(template_unit)
-            # Try and find a translation of the same name.
+
             use_translation = (not self.blank_msgstr and
                                template_unit.name in self.source_store.locationindex)
             if use_translation:
