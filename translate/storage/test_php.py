@@ -1,5 +1,7 @@
 # -*- coding: utf-8 -*-
 
+from pytest import mark
+
 from translate.misc import wStringIO
 from translate.storage import php, test_monolingual
 
@@ -506,6 +508,34 @@ $month_mar = 'Mar';"""
         phpunit = phpfile.units[6]
         assert phpunit.name == "$days->'None'"
         assert phpunit.source == "Saturday"
+
+    @mark.xfail
+    def test_parsing_arrays_with_no_keys_assigned_to_array(self):
+        """Parse an array with no keys assigned to another array."""
+        phpsource = """$messages['days_short'] = array('Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat');"""
+        phpfile = self.phpparse(phpsource)
+        assert len(phpfile.units) == 7
+        phpunit = phpfile.units[0]
+        assert phpunit.name == "$messages->'days_short'->'None'"
+        assert phpunit.source == "Sun"
+        phpunit = phpfile.units[1]
+        assert phpunit.name == "$messages->'days_short'->'None'"
+        assert phpunit.source == "Mon"
+        phpunit = phpfile.units[2]
+        assert phpunit.name == "$messages->'days_short'->'None'"
+        assert phpunit.source == "Tue"
+        phpunit = phpfile.units[3]
+        assert phpunit.name == "$messages->'days_short'->'None'"
+        assert phpunit.source == "Wed"
+        phpunit = phpfile.units[4]
+        assert phpunit.name == "$messages->'days_short'->'None'"
+        assert phpunit.source == "Thu"
+        phpunit = phpfile.units[5]
+        assert phpunit.name == "$messages->'days_short'->'None'"
+        assert phpunit.source == "Fri"
+        phpunit = phpfile.units[6]
+        assert phpunit.name == "$messages->'days_short'->'None'"
+        assert phpunit.source == "Sat"
 
     def test_parsing_nested_arrays_with_no_keys(self):
         """Parse a nested array with no keys."""
