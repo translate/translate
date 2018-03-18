@@ -55,9 +55,7 @@ class php2po(object):
                              "developer")
 
         for source_unit in self.source_store.units:
-            outputunit = self.convert_unit(source_unit)
-            if outputunit is not None:
-                self.target_store.addunit(outputunit)
+            self.target_store.addunit(self.convert_unit(source_unit))
         self.target_store.removeduplicates(self.duplicate_style)
         return self.target_store
 
