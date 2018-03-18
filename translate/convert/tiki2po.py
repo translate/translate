@@ -46,19 +46,19 @@ class tiki2po(object):
     def convert_unit(self, unit):
         """Convert a source format unit to a target format unit."""
         target_unit = self.TargetUnitClass()
-        target_unit.source = unit.source
-        target_unit.target = unit.target
         locations = unit.getlocations()
         if locations:
             target_unit.addlocations(locations)
+        target_unit.source = unit.source
+        target_unit.target = unit.target
         return target_unit
 
     def convert_store(self):
         """Convert a single source format file to a target format file."""
-        for unit in self.source_store.units:
-            if not self.include_unused and "unused" in unit.getlocations():
+        for source_unit in self.source_store.units:
+            if not self.include_unused and "unused" in source_unit.getlocations():
                 continue
-            self.target_store.addunit(self.convert_unit(unit))
+            self.target_store.addunit(self.convert_unit(source_unit))
 
     def run(self):
         """Run the converter."""
@@ -70,9 +70,9 @@ class tiki2po(object):
         return 1
 
 
-def run_converter(inputfile, outputfile, template=None, includeunused=False):
+def run_converter(input_file, output_file, template_file=None, includeunused=False):
     """Wrapper around converter."""
-    return tiki2po(inputfile, outputfile, template, includeunused).run()
+    return tiki2po(input_file, output_file, template_file, includeunused).run()
 
 
 formats = {
