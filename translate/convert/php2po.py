@@ -34,12 +34,13 @@ class php2po(object):
     TargetStoreClass = po.pofile
     TargetUnitClass = po.pounit
 
-    def __init__(self, input_file, blank_msgstr=False,
+    def __init__(self, input_file, output_file, blank_msgstr=False,
                  duplicate_style="msgctxt"):
         """Initialize the converter."""
         self.blank_msgstr = blank_msgstr
         self.duplicate_style = duplicate_style
 
+        self.output_file = output_file
         self.source_store = self.SourceStoreClass(input_file)
         self.target_store = self.TargetStoreClass()
 
@@ -88,7 +89,7 @@ class php2po(object):
 def convertphp(inputfile, outputfile, templatefile, pot=False,
                duplicatestyle="msgctxt"):
     """Wrapper around converter."""
-    convertor = php2po(inputfile, blank_msgstr=pot,
+    convertor = php2po(inputfile, outputfile, blank_msgstr=pot,
                        duplicate_style=duplicatestyle)
     if templatefile is None:
         outputstore = convertor.convertstore()
