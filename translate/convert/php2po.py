@@ -37,10 +37,10 @@ class php2po(object):
         self.blank_msgstr = blank_msgstr
         self.duplicate_style = duplicate_style
 
-    def convert_unit(self, unit, origin):
+    def convert_unit(self, unit):
         """Convert a source format unit to a target format unit."""
         target_unit = self.TargetUnitClass(encoding="UTF-8")
-        target_unit.addnote(unit.getnotes(origin), origin)
+        target_unit.addnote(unit.getnotes("developer"), "developer")
         target_unit.addlocation("".join(unit.getlocations()))
         target_unit.source = unit.source
         target_unit.target = ""
@@ -55,7 +55,7 @@ class php2po(object):
                              "developer")
 
         for source_unit in self.source_store.units:
-            outputunit = self.convert_unit(source_unit, "developer")
+            outputunit = self.convert_unit(source_unit)
             if outputunit is not None:
                 self.target_store.addunit(outputunit)
         self.target_store.removeduplicates(self.duplicate_style)
@@ -73,7 +73,7 @@ class php2po(object):
         self.source_store.makeindex()
         # Loop through the original file, looking at units one by one.
         for templateunit in templatestore.units:
-            outputunit = self.convert_unit(templateunit, "developer")
+            outputunit = self.convert_unit(templateunit)
             # Try and find a translation of the same name.
             use_translation = (not self.blank_msgstr and
                                templateunit.name in self.source_store.locationindex)
