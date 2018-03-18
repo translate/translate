@@ -31,6 +31,7 @@ class php2po(object):
     """Convert one or two PHP files to a single PO file."""
 
     SourceStoreClass = php.phpfile
+    TargetStoreClass = po.pofile
     TargetUnitClass = po.pounit
 
     def __init__(self, input_file, blank_msgstr=False,
@@ -40,6 +41,7 @@ class php2po(object):
         self.duplicate_style = duplicate_style
 
         self.source_store = self.SourceStoreClass(input_file)
+        self.target_store = self.TargetStoreClass()
 
     def convert_unit(self, unit):
         """Convert a source format unit to a target format unit."""
@@ -52,7 +54,6 @@ class php2po(object):
 
     def convertstore(self):
         """Convert a single source format file to a target format file."""
-        self.target_store = po.pofile()
         outputheader = self.target_store.header()
         outputheader.addnote("extracted from %s" % self.source_store.filename,
                              "developer")
@@ -64,7 +65,6 @@ class php2po(object):
 
     def mergestore(self, templatestore):
         """Convert two source format files to a target format file."""
-        self.target_store = po.pofile()
         outputheader = self.target_store.header()
         outputheader.addnote("extracted from %s, %s" % (templatestore.filename,
                                                         self.source_store.filename),
