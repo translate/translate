@@ -19,7 +19,8 @@
 
 """Convert Gettext PO localization files to flat XML files.
 
-TODO: examples/usage
+See: http://docs.translatehouse.org/projects/translate-toolkit/en/latest/commands/flatxml2po.html
+for examples and usage instructions.
 """
 
 from translate.convert import convert

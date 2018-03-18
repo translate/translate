@@ -108,6 +108,7 @@ Formats of translatable documents
    :hidden:
 
    html
+   flatxml
    ical
    json
    yaml
@@ -117,6 +118,7 @@ Formats of translatable documents
    subtitles
 
 * :doc:`html`
+* :doc:`flatxml` (single-level XML)
 * :doc:`ical`
 * :doc:`json`
 * :doc:`yaml`
