@@ -10,14 +10,13 @@ class TestPhp2PO(object):
     def php2po(self, phpsource, phptemplate=None):
         """helper that converts .php source to po source without requiring files"""
         inputfile = wStringIO.StringIO(phpsource)
-        inputphp = php.phpfile(inputfile)
-        convertor = php2po.php2po()
+        convertor = php2po.php2po(inputfile)
         if phptemplate:
             templatefile = wStringIO.StringIO(phptemplate)
             templatephp = php.phpfile(templatefile)
-            outputpo = convertor.mergestore(templatephp, inputphp)
+            outputpo = convertor.mergestore(templatephp)
         else:
-            outputpo = convertor.convertstore(inputphp)
+            outputpo = convertor.convertstore()
         return outputpo
 
     def convertphp(self, phpsource, template=None, expected=1):

@@ -30,12 +30,16 @@ from translate.storage import php, po
 class php2po(object):
     """Convert one or two PHP files to a single PO file."""
 
+    SourceStoreClass = php.phpfile
     TargetUnitClass = po.pounit
 
-    def __init__(self, blank_msgstr=False, duplicate_style="msgctxt"):
+    def __init__(self, input_file, blank_msgstr=False,
+                 duplicate_style="msgctxt"):
         """Initialize the converter."""
         self.blank_msgstr = blank_msgstr
         self.duplicate_style = duplicate_style
+
+        self.source_store = self.SourceStoreClass(input_file)
 
     def convert_unit(self, unit):
         """Convert a source format unit to a target format unit."""
@@ -46,9 +50,8 @@ class php2po(object):
         target_unit.target = ""
         return target_unit
 
-    def convertstore(self, inputstore):
+    def convertstore(self):
         """Convert a single source format file to a target format file."""
-        self.source_store = inputstore
         self.target_store = po.pofile()
         outputheader = self.target_store.header()
         outputheader.addnote("extracted from %s" % self.source_store.filename,
@@ -59,9 +62,8 @@ class php2po(object):
         self.target_store.removeduplicates(self.duplicate_style)
         return self.target_store
 
-    def mergestore(self, templatestore, inputstore):
+    def mergestore(self, templatestore):
         """Convert two source format files to a target format file."""
-        self.source_store = inputstore
         self.target_store = po.pofile()
         outputheader = self.target_store.header()
         outputheader.addnote("extracted from %s, %s" % (templatestore.filename,
@@ -86,13 +88,13 @@ class php2po(object):
 def convertphp(inputfile, outputfile, templatefile, pot=False,
                duplicatestyle="msgctxt"):
     """Wrapper around converter."""
-    inputstore = php.phpfile(inputfile)
-    convertor = php2po(blank_msgstr=pot, duplicate_style=duplicatestyle)
+    convertor = php2po(inputfile, blank_msgstr=pot,
+                       duplicate_style=duplicatestyle)
     if templatefile is None:
-        outputstore = convertor.convertstore(inputstore)
+        outputstore = convertor.convertstore()
     else:
         templatestore = php.phpfile(templatefile)
-        outputstore = convertor.mergestore(templatestore, inputstore)
+        outputstore = convertor.mergestore(templatestore)
     if outputstore.isempty():
         return 0
     outputstore.serialize(outputfile)
