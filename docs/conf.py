@@ -58,7 +58,7 @@ master_doc = 'index'
 
 # General information about the project.
 project = u'Translate Toolkit'
-copyright = u'2002-2017, Translate'
+copyright = u'2002-2018, Translate'
 
 # The version info for the project you're documenting, acts as replacement for
 # |version| and |release|, also used in various other places throughout the
