@@ -28,17 +28,17 @@ from translate.storage import php, po
 
 
 class php2po(object):
-    """Convert a .php file to a .po file for handling the translation."""
+    """Convert one or two PHP files to a single PO file."""
 
     def convertstore(self, inputstore, duplicatestyle="msgctxt"):
-        """Convert a .php file to a .po file."""
+        """Convert a single source format file to a target format file."""
         outputstore = po.pofile()
         outputheader = outputstore.header()
         outputheader.addnote("extracted from %s" % inputstore.filename,
                              "developer")
 
         for inputunit in inputstore.units:
-            outputunit = self.convertunit(inputunit, "developer")
+            outputunit = self.convert_unit(inputunit, "developer")
             if outputunit is not None:
                 outputstore.addunit(outputunit)
         outputstore.removeduplicates(duplicatestyle)
@@ -46,7 +46,7 @@ class php2po(object):
 
     def mergestore(self, templatestore, inputstore, blankmsgstr=False,
                    duplicatestyle="msgctxt"):
-        """Convert two .php files to a .po file."""
+        """Convert two source format files to a target format file."""
         outputstore = po.pofile()
         outputheader = outputstore.header()
         outputheader.addnote("extracted from %s, %s" % (templatestore.filename,
@@ -56,7 +56,7 @@ class php2po(object):
         inputstore.makeindex()
         # Loop through the original file, looking at units one by one.
         for templateunit in templatestore.units:
-            outputunit = self.convertunit(templateunit, "developer")
+            outputunit = self.convert_unit(templateunit, "developer")
             # Try and find a translation of the same name.
             use_translation = (not blankmsgstr and
                                templateunit.name in inputstore.locationindex)
@@ -67,19 +67,19 @@ class php2po(object):
         outputstore.removeduplicates(duplicatestyle)
         return outputstore
 
-    def convertunit(self, inputunit, origin):
-        """Convert a .php unit to a .po unit."""
-        outputunit = po.pounit(encoding="UTF-8")
-        outputunit.addnote(inputunit.getnotes(origin), origin)
-        outputunit.addlocation("".join(inputunit.getlocations()))
-        outputunit.source = inputunit.source
-        outputunit.target = ""
-        return outputunit
+    def convert_unit(self, unit, origin):
+        """Convert a source format unit to a target format unit."""
+        target_unit = po.pounit(encoding="UTF-8")
+        target_unit.addnote(unit.getnotes(origin), origin)
+        target_unit.addlocation("".join(unit.getlocations()))
+        target_unit.source = unit.source
+        target_unit.target = ""
+        return target_unit
 
 
 def convertphp(inputfile, outputfile, templatefile, pot=False,
                duplicatestyle="msgctxt"):
-    """Read inputfile using php, convert using php2po, write to outputfile."""
+    """Wrapper around converter."""
     inputstore = php.phpfile(inputfile)
     convertor = php2po()
     if templatefile is None:
@@ -96,11 +96,15 @@ def convertphp(inputfile, outputfile, templatefile, pot=False,
     return 1
 
 
+formats = {
+    "php": ("po", convertphp),
+    ("php", "php"): ("po", convertphp),
+    "html": ("po", convertphp),
+    ("html", "html"): ("po", convertphp),
+}
+
+
 def main(argv=None):
-    formats = {
-        "php": ("po", convertphp), ("php", "php"): ("po", convertphp),
-        "html": ("po", convertphp), ("html", "html"): ("po", convertphp),
-    }
     parser = convert.ConvertOptionParser(formats, usetemplates=True,
                                          usepots=True, description=__doc__)
     parser.add_duplicates_option()
