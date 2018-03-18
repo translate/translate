@@ -48,39 +48,41 @@ class php2po(object):
 
     def convertstore(self, inputstore):
         """Convert a single source format file to a target format file."""
-        outputstore = po.pofile()
-        outputheader = outputstore.header()
-        outputheader.addnote("extracted from %s" % inputstore.filename,
+        self.source_store = inputstore
+        self.target_store = po.pofile()
+        outputheader = self.target_store.header()
+        outputheader.addnote("extracted from %s" % self.source_store.filename,
                              "developer")
 
-        for inputunit in inputstore.units:
-            outputunit = self.convert_unit(inputunit, "developer")
+        for source_unit in self.source_store.units:
+            outputunit = self.convert_unit(source_unit, "developer")
             if outputunit is not None:
-                outputstore.addunit(outputunit)
-        outputstore.removeduplicates(self.duplicate_style)
-        return outputstore
+                self.target_store.addunit(outputunit)
+        self.target_store.removeduplicates(self.duplicate_style)
+        return self.target_store
 
     def mergestore(self, templatestore, inputstore):
         """Convert two source format files to a target format file."""
-        outputstore = po.pofile()
-        outputheader = outputstore.header()
+        self.source_store = inputstore
+        self.target_store = po.pofile()
+        outputheader = self.target_store.header()
         outputheader.addnote("extracted from %s, %s" % (templatestore.filename,
-                                                        inputstore.filename),
+                                                        self.source_store.filename),
                              "developer")
 
-        inputstore.makeindex()
+        self.source_store.makeindex()
         # Loop through the original file, looking at units one by one.
         for templateunit in templatestore.units:
             outputunit = self.convert_unit(templateunit, "developer")
             # Try and find a translation of the same name.
             use_translation = (not self.blank_msgstr and
-                               templateunit.name in inputstore.locationindex)
+                               templateunit.name in self.source_store.locationindex)
             if use_translation:
-                translatedinputunit = inputstore.locationindex[templateunit.name]
+                translatedinputunit = self.source_store.locationindex[templateunit.name]
                 outputunit.target = translatedinputunit.source
-            outputstore.addunit(outputunit)
-        outputstore.removeduplicates(self.duplicate_style)
-        return outputstore
+            self.target_store.addunit(outputunit)
+        self.target_store.removeduplicates(self.duplicate_style)
+        return self.target_store
 
 
 def convertphp(inputfile, outputfile, templatefile, pot=False,
