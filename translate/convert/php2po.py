@@ -23,13 +23,8 @@ See: http://docs.translatehouse.org/projects/translate-toolkit/en/latest/command
 for examples and usage instructions.
 """
 
-import logging
-
 from translate.convert import convert
 from translate.storage import php, po
-
-
-logger = logging.getLogger(__name__)
 
 
 class php2po(object):
