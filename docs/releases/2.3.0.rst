@@ -1,0 +1,79 @@
+Translate Toolkit 2.3.0
+***********************
+
+*Released on 18 March 2018*
+
+This release contains improvements and bug fixes.
+
+
+Changes
+=======
+
+Formats and Converters
+----------------------
+
+- PO
+
+  - Avoid escaping some characters (``()/:,``) that don't need to be escaped
+  - Wrap lines on ``/`` like Gettext
+  - Lines can be wrapped at specified length
+  - MO units now allow to set the unit context
+  - Always URL-encode locations
+
+- PHP
+
+  - Full rewrite of the PHP format using ``phply``:
+
+    - Fixes multiple issues
+    - Brings support for new dialects: ``heredoc``, ``nowdoc``, short array
+      syntax and nested arrays.
+
+- YAML
+
+  - Added ``yaml2po`` and ``po2yaml`` converters
+  - Fixed some minor bugs
+  - Documented unsupported features
+
+- JSON
+
+  - Refactored the storage classes to get rid of repeated shared code, reduce
+    memory usage and get readable representation of the units.
+
+- txt
+
+  - Added ``--no-segmentation`` flag to ``txt2po``
+
+
+Tools
+-----
+
+- Removed ``translate.convert.poreplace``
+
+
+General
+-------
+
+- Improved support for Windows
+- Refactored multiple converters to increase readability and use a common
+  pattern which will allow to further refactor repeated code
+- Tests:
+
+  - Enabled testing on Windows
+  - Added more tests
+  - Plenty of tests cleanups and fixes
+
+- Docs:
+
+  - Updated docs on installation
+  - Improved automatic generation of docs on factories
+
+
+Contributors
+============
+
+This release was made possible by the following people:
+
+Leandro Regueiro, Michal Čihař, Stuart Prescott, Nick Schonning, Johannes
+Marbach, andreistefan87, Alejandro Mantecon Guillen.
+
+And to all our bug finders and testers, a Very BIG Thank You.
