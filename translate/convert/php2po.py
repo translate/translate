@@ -76,22 +76,21 @@ class php2po(object):
                              "developer")
 
         self.source_store.makeindex()
-        # Loop through the original file, looking at units one by one.
-        for templateunit in self.template_store.units:
-            outputunit = self.convert_unit(templateunit)
+        for template_unit in self.template_store.units:
+            target_unit = self.convert_unit(template_unit)
             # Try and find a translation of the same name.
             use_translation = (not self.blank_msgstr and
-                               templateunit.name in self.source_store.locationindex)
+                               template_unit.name in self.source_store.locationindex)
             if use_translation:
-                translatedinputunit = self.source_store.locationindex[templateunit.name]
-                outputunit.target = translatedinputunit.source
-            self.target_store.addunit(outputunit)
+                source_unit = self.source_store.locationindex[template_unit.name]
+                target_unit.target = source_unit.source
+            self.target_store.addunit(target_unit)
         self.target_store.removeduplicates(self.duplicate_style)
         return self.target_store
 
 
-def convertphp(inputfile, outputfile, templatefile=None, pot=False,
-               duplicatestyle="msgctxt"):
+def run_converter(inputfile, outputfile, templatefile=None, pot=False,
+                  duplicatestyle="msgctxt"):
     """Wrapper around converter."""
     convertor = php2po(inputfile, outputfile, templatefile, blank_msgstr=pot,
                        duplicate_style=duplicatestyle)
@@ -106,10 +105,10 @@ def convertphp(inputfile, outputfile, templatefile=None, pot=False,
 
 
 formats = {
-    "php": ("po", convertphp),
-    ("php", "php"): ("po", convertphp),
-    "html": ("po", convertphp),
-    ("html", "html"): ("po", convertphp),
+    "php": ("po", run_converter),
+    ("php", "php"): ("po", run_converter),
+    "html": ("po", run_converter),
+    ("html", "html"): ("po", run_converter),
 }
 
 

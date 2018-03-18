@@ -22,13 +22,13 @@ class TestPhp2PO(object):
         return outputpo
 
     def convertphp(self, phpsource, template=None, expected=1):
-        """call the convertphp, return the outputfile"""
+        """call run_converter, return the outputfile"""
         inputfile = wStringIO.StringIO(phpsource)
         outputfile = wStringIO.StringIO()
         templatefile = None
         if template:
             templatefile = wStringIO.StringIO(template)
-        assert php2po.convertphp(inputfile, outputfile, templatefile) == expected
+        assert php2po.run_converter(inputfile, outputfile, templatefile) == expected
         return outputfile.getvalue()
 
     def singleelement(self, pofile):
