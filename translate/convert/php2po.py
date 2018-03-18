@@ -30,6 +30,15 @@ from translate.storage import php, po
 class php2po(object):
     """Convert one or two PHP files to a single PO file."""
 
+    def convert_unit(self, unit, origin):
+        """Convert a source format unit to a target format unit."""
+        target_unit = po.pounit(encoding="UTF-8")
+        target_unit.addnote(unit.getnotes(origin), origin)
+        target_unit.addlocation("".join(unit.getlocations()))
+        target_unit.source = unit.source
+        target_unit.target = ""
+        return target_unit
+
     def convertstore(self, inputstore, duplicatestyle="msgctxt"):
         """Convert a single source format file to a target format file."""
         outputstore = po.pofile()
@@ -66,15 +75,6 @@ class php2po(object):
             outputstore.addunit(outputunit)
         outputstore.removeduplicates(duplicatestyle)
         return outputstore
-
-    def convert_unit(self, unit, origin):
-        """Convert a source format unit to a target format unit."""
-        target_unit = po.pounit(encoding="UTF-8")
-        target_unit.addnote(unit.getnotes(origin), origin)
-        target_unit.addlocation("".join(unit.getlocations()))
-        target_unit.source = unit.source
-        target_unit.target = ""
-        return target_unit
 
 
 def convertphp(inputfile, outputfile, templatefile, pot=False,
