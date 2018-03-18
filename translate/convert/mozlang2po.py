@@ -54,15 +54,16 @@ class lang2po(object):
     def convert_unit(self, unit):
         """Convert a source format unit to a target format unit."""
         target_unit = self.TargetUnitClass()
+        target_unit.addlocations(unit.getlocations())
+        target_unit.addnote(unit.getnotes(), "developer")
         target_unit.source = unit.source
         target_unit.target = unit.target
-        target_unit.addlocations(unit.getlocations())
-        target_unit.addnote(unit.getnotes(), 'developer')
         return target_unit
 
     def convert_store(self):
         """Convert a single source format file to a target format file."""
         self.extraction_msg = "extracted from %s" % self.source_store.filename
+
         for source_unit in self.source_store.units:
             self.target_store.addunit(self.convert_unit(source_unit))
 
@@ -90,10 +91,10 @@ class lang2po(object):
         return 1
 
 
-def run_converter(inputfile, outputfile, templates, pot=False,
+def run_converter(input_file, output_file, template_file=None, pot=False,
                   duplicatestyle="msgctxt", encoding="utf-8"):
     """Wrapper around converter."""
-    return lang2po(inputfile, outputfile, templates, blank_msgstr=pot,
+    return lang2po(input_file, output_file, template_file, blank_msgstr=pot,
                    duplicate_style=duplicatestyle, encoding=encoding).run()
 
 
