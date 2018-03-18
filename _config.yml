@@ -3,7 +3,7 @@ markdown: kramdown
 
 name: Translate Toolkit
 description: A collection of useful tools for localization, and a powerful API for programmers of localization tools.
-latest_version: 2.2.5
+latest_version: 2.3.0
 author: Translate House
 
 about_url: http://translatehouse.org/about.html
