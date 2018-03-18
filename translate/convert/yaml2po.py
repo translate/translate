@@ -54,8 +54,8 @@ class yaml2po(object):
         target_unit = self.TargetUnitClass(encoding="UTF-8")
         target_unit.setid(unit.getid())
         target_unit.addlocation(unit.getid())
-        target_unit.source = unit.source
         target_unit.addnote(unit.getnotes(), "developer")
+        target_unit.source = unit.source
         return target_unit
 
     def convert_store(self):
