@@ -32,8 +32,9 @@ class php2po(object):
 
     TargetUnitClass = po.pounit
 
-    def __init__(self, duplicate_style="msgctxt"):
+    def __init__(self, blank_msgstr=False, duplicate_style="msgctxt"):
         """Initialize the converter."""
+        self.blank_msgstr = blank_msgstr
         self.duplicate_style = duplicate_style
 
     def convert_unit(self, unit, origin):
@@ -59,7 +60,7 @@ class php2po(object):
         outputstore.removeduplicates(self.duplicate_style)
         return outputstore
 
-    def mergestore(self, templatestore, inputstore, blankmsgstr=False):
+    def mergestore(self, templatestore, inputstore):
         """Convert two source format files to a target format file."""
         outputstore = po.pofile()
         outputheader = outputstore.header()
@@ -72,7 +73,7 @@ class php2po(object):
         for templateunit in templatestore.units:
             outputunit = self.convert_unit(templateunit, "developer")
             # Try and find a translation of the same name.
-            use_translation = (not blankmsgstr and
+            use_translation = (not self.blank_msgstr and
                                templateunit.name in inputstore.locationindex)
             if use_translation:
                 translatedinputunit = inputstore.locationindex[templateunit.name]
@@ -86,13 +87,12 @@ def convertphp(inputfile, outputfile, templatefile, pot=False,
                duplicatestyle="msgctxt"):
     """Wrapper around converter."""
     inputstore = php.phpfile(inputfile)
-    convertor = php2po(duplicate_style=duplicatestyle)
+    convertor = php2po(blank_msgstr=pot, duplicate_style=duplicatestyle)
     if templatefile is None:
         outputstore = convertor.convertstore(inputstore)
     else:
         templatestore = php.phpfile(templatefile)
-        outputstore = convertor.mergestore(templatestore, inputstore,
-                                           blankmsgstr=pot)
+        outputstore = convertor.mergestore(templatestore, inputstore)
     if outputstore.isempty():
         return 0
     outputstore.serialize(outputfile)
