@@ -229,9 +229,13 @@ class htmlfile(html_parser.HTMLParser, base.TranslationStore):
         The purpose of this is to remove all potential "tag-like" code from
         inside PHP.  The hash looks nothing like an HTML tag, but the following
         PHP::
+
           $a < $b ? $c : ($d > $e ? $f : $g)
+
         looks like it contains an HTML tag::
+
           < $b ? $c : ($d >
+
         to nearly any regex.  Hence, we replace all contents of PHP with simple
         strings to help our regexes out.
 
