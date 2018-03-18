@@ -175,9 +175,9 @@ class TestOO2POCommand(test_convert.TestConvertCommand, TestOO2PO):
     """Tests running actual oo2po commands on files"""
     convertmodule = oo2po
 
-    def test_help(self):
+    def test_help(self, capsys):
         """tests getting help"""
-        options = test_convert.TestConvertCommand.test_help(self)
+        options = test_convert.TestConvertCommand.test_help(self, capsys)
         options = self.help_check(options, "--source-language=LANG")
         options = self.help_check(options, "--language=LANG")
         options = self.help_check(options, "-P, --pot")

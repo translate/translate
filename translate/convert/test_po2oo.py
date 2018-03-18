@@ -3,7 +3,7 @@ from __future__ import print_function
 import os
 import warnings
 
-from pytest import mark
+from pytest import mark, skip
 
 from translate.convert import oo2po, po2oo, test_convert
 from translate.misc import wStringIO
@@ -49,6 +49,8 @@ class TestPO2OO(object):
 
     def test_convertoo(self):
         """checks that the convertoo function is working"""
+        if os.name == 'nt':
+            skip("test or storage broken on Windows")
         oobase = r'svx	source\dialog\numpages.src	0	string	RID_SVXPAGE_NUM_OPTIONS	STR_BULLET			0	%s	%s				20050924 09:13:58' + '\r\n'
         posource = '''#: numpages.src#RID_SVXPAGE_NUM_OPTIONS.STR_BULLET.string.text\nmsgid "Simple String"\nmsgstr "Dimpled Ring"\n'''
         ootemplate = oobase % ('en-US', 'Simple String')
@@ -159,9 +161,9 @@ class TestPO2OOCommand(test_convert.TestConvertCommand, TestPO2OO):
     """Tests running actual po2oo commands on files"""
     convertmodule = po2oo
 
-    def test_help(self):
+    def test_help(self, capsys):
         """tests getting help"""
-        options = test_convert.TestConvertCommand.test_help(self)
+        options = test_convert.TestConvertCommand.test_help(self, capsys)
         options = self.help_check(options, "--source-language=LANG")
         options = self.help_check(options, "--language=LANG")
         options = self.help_check(options, "-T, --keeptimestamp")

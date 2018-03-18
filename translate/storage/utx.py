@@ -183,7 +183,7 @@ class UtxFile(base.TranslationStore):
         self._header = {
             "version": "1.00",
             "source_language": "en",
-            "date_created": time.strftime("%FT%TZ%z",
+            "date_created": time.strftime("%Y-%m-%dT%H:%M:%SZ%z",
                                           time.localtime(time.time()))
         }
         if inputfile is not None:

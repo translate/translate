@@ -450,7 +450,7 @@ class TestPO2TSCommand(test_convert.TestConvertCommand, TestPO2RESX):
     """ Tests running actual po2ts commands on files """
     convertmodule = po2resx
 
-    def test_help(self):
+    def test_help(self, capsys):
         """ Tests getting help """
-        options = test_convert.TestConvertCommand.test_help(self)
+        options = test_convert.TestConvertCommand.test_help(self, capsys)
         options = self.help_check(options, "-t TEMPLATE, --template=TEMPLATE")

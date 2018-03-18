@@ -2,13 +2,20 @@
 
 import os
 import shutil
+import stat
+
+
+def remove_readonly(func, path, _):
+    "Clear the readonly bit and reattempt the removal"
+    os.chmod(path, stat.S_IWRITE)
+    func(path)
 
 
 class HelperTest(object):
 
     def remove_dirs(self, path):
         if os.path.exists(path):
-            shutil.rmtree(path)
+            shutil.rmtree(path, onerror=remove_readonly)
 
     def get_test_path(self, method):
         return os.path.realpath("%s_%s" % (self.__class__.__name__, method.__name__))
@@ -42,5 +49,5 @@ class HelperTest(object):
             dirs = os.path.dirname(name)
             if dirs:
                 os.path.makedirs(os.path.join(self.co_path, dirs))
-            with open(os.path.join(self.co_path, dirs, name), 'w') as fh:
+            with open(os.path.join(self.co_path, dirs, name), 'wb') as fh:
                 fh.write(content)

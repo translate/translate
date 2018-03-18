@@ -24,7 +24,6 @@
 
 # TODO: consider also providing directories as we currently provide files
 
-from os import path
 from zipfile import ZipFile
 
 from translate.misc import wStringIO
@@ -37,11 +36,12 @@ class ZIPFile(directory.Directory):
     def __init__(self, filename=None):
         self.filename = filename
         self.filedata = []
+        self.archive = None
 
     def unit_iter(self):
         """Iterator over all the units in all the files in this zip file."""
         for dirname, filename in self.file_iter():
-            strfile = wStringIO.StringIO(self.archive.read(path.join(dirname, filename)))
+            strfile = wStringIO.StringIO(self.archive.read('/'.join((dirname, filename))))
             strfile.filename = filename
             store = factory.getobject(strfile)
             # TODO: don't regenerate all the storage objects
@@ -53,5 +53,14 @@ class ZIPFile(directory.Directory):
         self.filedata = []
         self.archive = ZipFile(self.filename)
         for completename in self.archive.namelist():
-            dir, name = path.split(completename)
+            if '/' in completename:
+                dir, name = completename.rsplit('/', 1)
+            else:
+                dir = ''
+                name = completename
             self.filedata.append((dir, name))
+
+    def close(self):
+        if self.archive is not None:
+            self.archive.close()
+            self.archive = None
