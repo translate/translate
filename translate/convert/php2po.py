@@ -86,7 +86,7 @@ class php2po(object):
         return self.target_store
 
 
-def convertphp(inputfile, outputfile, templatefile, pot=False,
+def convertphp(inputfile, outputfile, templatefile=None, pot=False,
                duplicatestyle="msgctxt"):
     """Wrapper around converter."""
     convertor = php2po(inputfile, outputfile, blank_msgstr=pot,
