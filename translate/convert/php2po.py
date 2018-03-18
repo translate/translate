@@ -53,9 +53,9 @@ class php2po(object):
         """Convert a source format unit to a target format unit."""
         target_unit = self.TargetUnitClass(encoding="UTF-8")
         target_unit.addlocation("".join(unit.getlocations()))
+        target_unit.addnote(unit.getnotes("developer"), "developer")
         target_unit.source = unit.source
         target_unit.target = ""
-        target_unit.addnote(unit.getnotes("developer"), "developer")
         return target_unit
 
     def convert_store(self):
@@ -75,9 +75,10 @@ class php2po(object):
         for template_unit in self.template_store.units:
             target_unit = self.convert_unit(template_unit)
 
-            use_translation = (not self.blank_msgstr and
-                               template_unit.name in self.source_store.locationindex)
-            if use_translation:
+            add_translation = (
+                not self.blank_msgstr and
+                template_unit.name in self.source_store.locationindex)
+            if add_translation:
                 source_unit = self.source_store.locationindex[template_unit.name]
                 target_unit.target = source_unit.source
             self.target_store.addunit(target_unit)
@@ -102,10 +103,10 @@ class php2po(object):
         return 1
 
 
-def run_converter(inputfile, outputfile, templatefile=None, pot=False,
+def run_converter(input_file, output_file, template_file=None, pot=False,
                   duplicatestyle="msgctxt"):
     """Wrapper around converter."""
-    return php2po(inputfile, outputfile, templatefile, blank_msgstr=pot,
+    return php2po(input_file, output_file, template_file, blank_msgstr=pot,
                   duplicate_style=duplicatestyle).run()
 
 
