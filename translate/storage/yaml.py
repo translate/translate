@@ -179,7 +179,7 @@ class YAMLFile(base.TranslationStore):
         else:
             if isinstance(data, six.string_types):
                 yield (prev, data)
-            elif isinstance(data, bool):
+            elif isinstance(data, (bool, int)):
                 yield (prev, str(data))
             elif isinstance(data, list):
                 for k, v in enumerate(data):
