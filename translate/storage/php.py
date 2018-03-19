@@ -413,33 +413,35 @@ class phpfile(base.TranslationStore):
                     )
             elif isinstance(item, Assignment):
                 if isinstance(item.node, ArrayOffset):
+                    name = lexer.extract_name('EQUALS', *item.lexpositions)
                     if isinstance(item.expr, six.string_types):
                         self.create_and_add_unit(
-                            lexer.extract_name('EQUALS', *item.lexpositions),
+                            name,
                             item.expr,
                             lexer.extract_quote(),
                             lexer.extract_comments(item.lexpositions[1]),
                         )
                     elif isinstance(item.expr, BinaryOp) and item.expr.op == '.':
                         self.create_and_add_unit(
-                            lexer.extract_name('EQUALS', *item.lexpositions),
+                            name,
                             concatenate(item.expr),
                             lexer.extract_quote(),
                             lexer.extract_comments(item.lexpositions[1]),
                         )
                 elif isinstance(item.node, Variable):
+                    name = lexer.extract_name('EQUALS', *item.lexpositions)
                     if isinstance(item.expr, Array):
-                        handle_array(item.node.name, item.expr.nodes, lexer)
+                        handle_array(name, item.expr.nodes, lexer)
                     elif isinstance(item.expr, six.string_types):
                         self.create_and_add_unit(
-                            item.node.name,
+                            name,
                             item.expr,
                             lexer.extract_quote(),
                             lexer.extract_comments(item.lexpositions[1]),
                         )
                     elif isinstance(item.expr, BinaryOp) and item.expr.op == '.':
                         self.create_and_add_unit(
-                            item.node.name,
+                            name,
                             concatenate(item.expr),
                             lexer.extract_quote(),
                             lexer.extract_comments(item.lexpositions[1]),

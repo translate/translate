@@ -960,3 +960,12 @@ using nowdoc syntax.'''
         assert phpfile.units[1].name == "$arr->1234"
         assert phpfile.units[2].source == 'Third'
         assert phpfile.units[2].name == "$arr->'1245'"
+
+    def test_double_var(self):
+        """checks that a double $ is handled correctly"""
+        phpsource = """$$lang['mediaselect'] = 'Bestand selectie';"""
+        phpfile = self.phpparse(phpsource)
+        assert len(phpfile.units) == 1
+        phpunit = phpfile.units[0]
+        assert phpunit.name == "$$lang['mediaselect']"
+        assert phpunit.source == "Bestand selectie"
