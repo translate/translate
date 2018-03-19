@@ -144,7 +144,6 @@ eggs: spam
 eggs: spam
 '''
 
-    @pytest.mark.xfail(reason="Not Implemented")
     def test_boolean(self):
         store = self.StoreClass()
         store.parse('''
@@ -155,7 +154,20 @@ foo: True
         assert store.units[0].source == 'True'
         out = BytesIO()
         store.serialize(out)
-        assert out.getvalue() == b'''foo: True
+        assert out.getvalue() == b'''foo: 'True'
+'''
+
+    def test_integer(self):
+        store = self.StoreClass()
+        store.parse('''
+foo: 1
+''')
+        assert len(store.units) == 1
+        assert store.units[0].getid() == 'foo'
+        assert store.units[0].source == '1'
+        out = BytesIO()
+        store.serialize(out)
+        assert out.getvalue() == b'''foo: '1'
 '''
 
     def test_no_quote_strings(self):
