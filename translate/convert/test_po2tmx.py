@@ -46,7 +46,7 @@ msgstr "Toepassings"
         assert tmx.translate("Applications") == "Toepassings"
         assert tmx.translate("bla") is None
         xmltext = bytes(tmx).decode('utf-8')
-        assert xmltext.index('creationtool="Translate Toolkit - po2tmx"')
+        assert xmltext.index('creationtool="Translate Toolkit"')
         assert xmltext.index('adminlang')
         assert xmltext.index('creationtoolversion')
         assert xmltext.index('datatype')

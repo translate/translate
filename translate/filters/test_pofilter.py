@@ -258,7 +258,7 @@ class TestTMXFilter(BaseTestFilter):
     """Test class for TMX-specific tests."""
     filetext = '''<!DOCTYPE tmx SYSTEM "tmx14.dtd">
 <tmx version="1.4">
-  <header creationtool="Translate Toolkit - po2tmx"
+  <header creationtool="Translate Toolkit"
           creationtoolversion="1.1.1rc1" segtype="sentence" o-tmf="UTF-8"
           adminlang="en" srclang="en" datatype="PlainText"/>
   <body>
