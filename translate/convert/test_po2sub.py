@@ -19,7 +19,7 @@ class TestPO2Sub(object):
         inputfile = wStringIO.StringIO(posource)
         inputpo = po.pofile(inputfile)
         convertor = po2sub.po2sub()
-        outputsub = convertor.convertstore(inputpo)
+        outputsub = convertor.convert_store(inputpo)
         return outputsub.decode('utf-8')
 
     def merge2sub(self, subsource, posource):
@@ -29,7 +29,7 @@ class TestPO2Sub(object):
         inputpo = po.pofile(inputfile)
         templatefile = wStringIO.StringIO(subsource)
         convertor = po2sub.po2sub(templatefile, inputpo)
-        outputsub = convertor.convertstore()
+        outputsub = convertor.convert_store()
         print(outputsub)
         return outputsub.decode('utf-8')
 
