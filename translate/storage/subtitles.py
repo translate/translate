@@ -28,8 +28,8 @@ A patch to gaupol is required to open utf-8 files successfully.
 
 import os
 import six
-import tempfile
 from io import StringIO
+from tempfile import NamedTemporaryFile
 
 try:
     from aeidon import Subtitle, documents, newlines
@@ -144,14 +144,21 @@ class SubtitleFile(base.TranslationStore):
     def parse(self, input):
         if isinstance(input, bytes):
             # Gaupol does not allow parsing from strings
+            kwargs = {
+                'delete': False
+            }
             if self.filename:
-                tmpfile, tmpfilename = tempfile.mkstemp(suffix=self.filename)
-            else:
-                tmpfile, tmpfilename = tempfile.mkstemp()
-            with open(tmpfilename, 'wb') as fh:
-                fh.write(input)
-            self._parsefile(tmpfilename)
-            os.remove(tmpfilename)
+                kwargs['suffix'] = self.filename
+
+            temp_file = NamedTemporaryFile(**kwargs)
+            temp_file.close()
+
+            try:
+                with open(temp_file.name, 'wb') as fh:
+                    fh.write(input)
+                self._parsefile(temp_file.name)
+            finally:
+                os.unlink(temp_file.name)
         else:
             self._parsefile(input)
 

@@ -39,9 +39,6 @@ matrix:
       env: USECPO=0 MINVERSION=1 META=1
     - python: 3.6
       env: USECPO=0 MINVERSION= META=1
-#before_install:
-#  # Ubuntu used by Travis only supports python3-aeidon.
-#  - sudo apt-get install python-aeidon
 install:
   - pip install coveralls
   - pip install codecov
