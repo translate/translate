@@ -31,11 +31,11 @@ b : a string
 
 import re
 import sys
-from io import BytesIO
+from io import StringIO, BytesIO
 
-if sys.version_info[0] == 2:
+try:
     from iniparse import INIConfig
-else:
+except ImportError:
     INIConfig = None
 
 from translate.storage import base
@@ -64,7 +64,7 @@ class DialectDefault(Dialect):
         return text
 
     def escape(self, text):
-        return text.encode('utf-8')
+        return text
 
 
 @register_dialect
@@ -75,7 +75,7 @@ class DialectInno(DialectDefault):
         return text.replace("%n", "\n").replace("%t", "\t")
 
     def escape(self, text):
-        return text.replace("\t", "%t").replace("\n", "%n").encode('utf-8')
+        return text.replace("\t", "%t").replace("\n", "%n")
 
 
 class iniunit(base.TranslationUnit):
@@ -101,9 +101,8 @@ class inifile(base.TranslationStore):
 
     def __init__(self, inputfile=None, dialect="default", **kwargs):
         """construct an INI file, optionally reading in from inputfile."""
-        if sys.version_info[0] == 3:
-            raise NotImplementedError("Translate Toolkit does not yet provide "
-                                      "support for INI in Python 3.")
+        if INIConfig is None:
+            raise NotImplementedError("Missing iniparse library.")
 
         self._dialect = dialects.get(dialect, DialectDefault)()  # fail correctly/use getattr/
         super(inifile, self).__init__(**kwargs)
@@ -117,9 +116,15 @@ class inifile(base.TranslationStore):
         for unit in self.units:
             for location in unit.getlocations():
                 match = re.match('\\[(?P<section>.+)\\](?P<entry>.+)', location)
-                _outinifile[match.groupdict()['section']][match.groupdict()['entry']] = self._dialect.escape(unit.target)
+                value = self._dialect.escape(unit.target)
+                if sys.version_info[0] == 2:
+                    value = value.encode('utf-8')
+                _outinifile[match.groupdict()['section']][match.groupdict()['entry']] = value
         if _outinifile:
-            out.write(str(_outinifile))
+            if sys.version_info[0] == 3:
+                out.write(str(_outinifile).encode('utf-8'))
+            else:
+                out.write(str(_outinifile))
 
     def parse(self, input):
         """Parse the given file or file source string."""
@@ -133,7 +138,10 @@ class inifile(base.TranslationStore):
             input = inisrc
 
         if isinstance(input, bytes):
-            input = BytesIO(input)
+            if sys.version_info[0] == 3:
+                input = StringIO(input.decode('utf-8'))
+            else:
+                input = BytesIO(input)
             self._inifile = INIConfig(input, optionxformvalue=None)
         else:
             self._inifile = INIConfig(open(input), optionxformvalue=None)

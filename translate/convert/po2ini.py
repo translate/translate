@@ -23,6 +23,8 @@ See: http://docs.translatehouse.org/projects/translate-toolkit/en/latest/command
 for examples and usage instructions.
 """
 
+import sys
+
 from translate.convert import convert
 from translate.storage import ini, po
 
@@ -39,10 +41,8 @@ class po2ini(object):
                  include_fuzzy=False, output_threshold=None,
                  dialect="default"):
         """Initialize the converter."""
-        import sys
-        if sys.version_info[0] == 3:
-            print("Translate Toolkit doesn't yet support converting to INI in "
-                  "Python 3.")
+        if ini.INIConfig is None:
+            print("Missing iniparse library!")
             sys.exit()
 
         if template_file is None:
