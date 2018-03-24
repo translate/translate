@@ -223,13 +223,13 @@ class phpunit(base.TranslationUnit):
         self._comments = []
         self.source = source
 
+    def getsource(self):
+        return phpdecode(self.value, self.escape_type)
+
     def setsource(self, source):
         """Set the source AND the target to be equal."""
         self._rich_source = None
         self.value = phpencode(source, self.escape_type)
-
-    def getsource(self):
-        return phpdecode(self.value, self.escape_type)
     source = property(getsource, setsource)
 
     def settarget(self, target):

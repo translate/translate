@@ -57,6 +57,7 @@ class TxtUnit(base.TranslationUnit):
     def __init__(self, source="", **kwargs):
         """Construct the txtunit"""
         super(TxtUnit, self).__init__(source)
+        # Note that source and target are equivalent for monolingual units.
         self.source = source
         self.pretext = ""
         self.posttext = ""
@@ -66,15 +67,14 @@ class TxtUnit(base.TranslationUnit):
         """Convert a txt unit to a string"""
         return u"".join([self.pretext, self.source, self.posttext])
 
-    # Note that source and target are equivalent for monolingual units
+    def getsource(self):
+        """gets the unquoted source string"""
+        return self._source
+
     def setsource(self, source):
         """Sets the definition to the quoted value of source"""
         self._rich_source = None
         self._source = source
-
-    def getsource(self):
-        """gets the unquoted source string"""
-        return self._source
     source = property(getsource, setsource)
 
     def settarget(self, target):

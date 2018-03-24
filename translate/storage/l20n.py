@@ -48,10 +48,10 @@ class l20nunit(base.TranslationUnit):
     def __init__(self, source='', id='', comment=''):
         super(l20nunit, self).__init__(source)
         self.id = id
+        # Note that source and target are equivalent for monolingual units.
         self.value = source
         self.comment = comment
 
-    # Note that source and target are equivalent for monolingual units
     def getsource(self):
         return self.value
 

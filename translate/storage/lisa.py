@@ -108,15 +108,15 @@ class LISAunit(base.TranslationUnit):
         return self.getlanguageNode(lang=None, index=0)
     source_dom = property(get_source_dom, set_source_dom)
 
-    def setsource(self, text, sourcelang='en'):
-        self._rich_source = None
-        text = data.forceunicode(text)
-        self.source_dom = self.createlanguageNode(sourcelang, text, "source")
-
     def getsource(self):
         return self.getNodeText(self.source_dom,
                                 getXMLspace(self.xmlelement,
                                             self._default_xml_space))
+
+    def setsource(self, text, sourcelang='en'):
+        self._rich_source = None
+        text = data.forceunicode(text)
+        self.source_dom = self.createlanguageNode(sourcelang, text, "source")
     source = property(getsource, setsource)
 
     def set_target_dom(self, dom_node, append=False):
@@ -136,6 +136,14 @@ class LISAunit(base.TranslationUnit):
         else:
             return self.getlanguageNode(lang=None, index=1)
     target_dom = property(get_target_dom)
+
+    def gettarget(self, lang=None):
+        """retrieves the "target" text (second entry), or the entry in the
+        specified language, if it exists
+        """
+        return self.getNodeText(self.get_target_dom(lang),
+                                getXMLspace(self.xmlelement,
+                                            self._default_xml_space))
 
     def settarget(self, text, lang='xx', append=False):
         """Sets the "target" string (second language), or alternatively appends
@@ -165,14 +173,6 @@ class LISAunit(base.TranslationUnit):
                 languageNode.text = text
         else:
             self.set_target_dom(None, False)
-
-    def gettarget(self, lang=None):
-        """retrieves the "target" text (second entry), or the entry in the
-        specified language, if it exists
-        """
-        return self.getNodeText(self.get_target_dom(lang),
-                                getXMLspace(self.xmlelement,
-                                            self._default_xml_space))
     target = property(gettarget, settarget)
 
     def createlanguageNode(self, lang, text, purpose=None):

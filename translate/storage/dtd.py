@@ -244,6 +244,13 @@ class dtdunit(base.TranslationUnit):
         self.closing = ">"
 
     # Note that source and target are equivalent for monolingual units
+    def getsource(self):
+        """gets the unquoted source string"""
+        if self.android:
+            return unquotefromandroid(self.definition)
+        else:
+            return unquotefromdtd(self.definition)
+
     def setsource(self, source):
         """Sets the definition to the quoted value of source"""
         if self.android:
@@ -251,13 +258,6 @@ class dtdunit(base.TranslationUnit):
         else:
             self.definition = quotefordtd(source)
         self._rich_source = None
-
-    def getsource(self):
-        """gets the unquoted source string"""
-        if self.android:
-            return unquotefromandroid(self.definition)
-        else:
-            return unquotefromdtd(self.definition)
     source = property(getsource, setsource)
 
     def settarget(self, target):
