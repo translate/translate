@@ -28,6 +28,7 @@ import six
 from lxml import etree
 
 from translate.lang import data
+from translate.misc.deprecation import deprecated
 from translate.storage import base, lisa
 from translate.misc.multistring import multistring
 
@@ -248,15 +249,16 @@ class AndroidResourceUnit(base.TranslationUnit):
             return '"%s"' % text
         return text
 
-    def setsource(self, source):
-        super(AndroidResourceUnit, self).setsource(source)
-
-    def getsource(self):
+    @base.TranslationUnit.source.getter
+    def source(self):
         if super(AndroidResourceUnit, self).source is None:
             return self.target
         return super(AndroidResourceUnit, self).source
 
-    source = property(getsource, setsource)
+    # Deprecated on 2.3.1
+    @deprecated("Use `source` property instead")
+    def getsource(self):
+        return self.source
 
     def set_xml_text_value(self, target, xmltarget):
         if '<' in target:
