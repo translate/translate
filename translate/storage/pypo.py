@@ -253,18 +253,24 @@ class pounit(pocommon.pounit):
             msgid_plural = []
         return msgid, msgid_plural
 
-    def getsource(self):
+    @property
+    def source(self):
         """Returns the unescaped msgid"""
         return self._get_source_vars(self.msgid, self.msgid_plural)
 
-    def setsource(self, source):
+    @source.setter
+    def source(self, source):
         """Sets the msgid to the given (unescaped) value.
 
         :param source: an unescaped source string.
         """
         self._rich_source = None
         self.msgid, self.msgid_plural = self._set_source_vars(source)
-    source = property(getsource, setsource)
+
+    # Deprecated on 2.3.1
+    @deprecated("Use `source` property instead")
+    def getsource(self):
+        return self.source
 
     def _get_prev_source(self):
         """Returns the unescaped msgid"""
