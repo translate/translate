@@ -48,6 +48,7 @@ import six
 import time
 
 from translate.misc import csv_utils
+from translate.misc.deprecation import deprecated
 from translate.storage import base
 
 
@@ -138,13 +139,19 @@ class UtxUnit(base.TranslationUnit):
     def removenotes(self):
         self._set_field('comment', u'')
 
-    def getsource(self):
+    @property
+    def source(self):
         return self._get_field('src')
 
-    def setsource(self, source):
+    @source.setter
+    def source(self, source):
         self._rich_source = None
         self._set_field('src', source)
-    source = property(getsource, setsource)
+
+    # Deprecated on 2.3.1
+    @deprecated("Use `source` property instead")
+    def getsource(self):
+        return self.source
 
     def gettarget(self):
         return self._get_field('tgt')
