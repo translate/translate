@@ -251,7 +251,7 @@ class AndroidResourceUnit(base.TranslationUnit):
     def setsource(self, source):
         super(AndroidResourceUnit, self).setsource(source)
 
-    def getsource(self, lang=None):
+    def getsource(self):
         if super(AndroidResourceUnit, self).source is None:
             return self.target
         return super(AndroidResourceUnit, self).source
