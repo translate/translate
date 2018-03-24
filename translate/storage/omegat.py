@@ -117,17 +117,17 @@ class OmegaTUnit(base.TranslationUnit):
     def getsource(self):
         return self._get_field('source')
 
-    def setsource(self, newsource):
+    def setsource(self, source):
         self._rich_source = None
-        self._set_field('source', newsource)
+        self._set_field('source', source)
     source = property(getsource, setsource)
 
     def gettarget(self):
         return self._get_field('target')
 
-    def settarget(self, newtarget):
+    def settarget(self, target):
         self._rich_target = None
-        self._set_field('target', newtarget)
+        self._set_field('target', target)
     target = property(gettarget, settarget)
 
     def settargetlang(self, newlang):
