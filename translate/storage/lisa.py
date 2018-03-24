@@ -29,6 +29,7 @@ except ImportError as e:
     raise ImportError("lxml is not installed. It might be possible to continue without support for XML formats.")
 
 from translate.lang import data
+from translate.misc.deprecation import deprecated
 from translate.storage import base
 
 
@@ -108,16 +109,25 @@ class LISAunit(base.TranslationUnit):
         return self.getlanguageNode(lang=None, index=0)
     source_dom = property(get_source_dom, set_source_dom)
 
-    def getsource(self):
+    @property
+    def source(self):
         return self.getNodeText(self.source_dom,
                                 getXMLspace(self.xmlelement,
                                             self._default_xml_space))
+
+    @source.setter
+    def source(self, source):
+        self.setsource(source, sourcelang='en')
+
+    # Deprecated on 2.3.1
+    @deprecated("Use `source` property instead")
+    def getsource(self):
+        return self.source
 
     def setsource(self, text, sourcelang='en'):
         self._rich_source = None
         text = data.forceunicode(text)
         self.source_dom = self.createlanguageNode(sourcelang, text, "source")
-    source = property(getsource, setsource)
 
     def set_target_dom(self, dom_node, append=False):
         languageNodes = self.getlanguageNodes()
