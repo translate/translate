@@ -90,7 +90,6 @@ class pounit(pocommon.pounit):
 
     def setsource(self, source):
         self._rich_source = None
-#        assert isinstance(source, unicode)
         source = data.forceunicode(source or u"")
         source = source or u""
         if isinstance(source, multistring):
@@ -98,7 +97,6 @@ class pounit(pocommon.pounit):
         elif isinstance(source, six.text_type):
             self._source = source
         else:
-            #unicode, list, dict
             self._source = multistring(source)
     source = property(getsource, setsource)
 
