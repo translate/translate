@@ -52,7 +52,6 @@ Future Format Support
 """
 
 import re
-import sys
 from io import BytesIO
 
 import vobject
