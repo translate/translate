@@ -28,6 +28,7 @@ except ImportError:
     import pickle
 from io import BytesIO
 
+from translate.misc.deprecation import deprecated
 from translate.misc.multistring import multistring
 from translate.storage.placeables import StringElem, parse as rich_parse
 from translate.storage.workflow import StateEnum as states
@@ -176,11 +177,20 @@ class TranslationUnit(object):
             return [rich_parse(s, self.rich_parsers) for s in mulstring.strings]
         return [rich_parse(mulstring, self.rich_parsers)]
 
-    def setsource(self, source):
+    @property
+    def source(self):
+        return self._source
+
+    @source.setter
+    def source(self, source):
         """Set the source string to the given value."""
         self._rich_source = None
         self._source = source
-    source = property(lambda self: self._source, setsource)
+
+    # Deprecated on 2.3.1
+    @deprecated("Use `source` property instead")
+    def setsource(self, source):
+        self.source = source
 
     def settarget(self, target):
         """Set the target string to the given value."""
