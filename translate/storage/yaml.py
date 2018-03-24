@@ -30,6 +30,7 @@ import six
 import yaml
 import yaml.constructor
 
+from translate.misc.deprecation import deprecated
 from translate.storage import base
 
 
@@ -102,12 +103,18 @@ class YAMLUnit(base.TranslationUnit):
             self.source = source
         super(YAMLUnit, self).__init__(source)
 
-    def getsource(self):
+    @property
+    def source(self):
         return self.target
 
-    def setsource(self, source):
+    @source.setter
+    def source(self, source):
         self.target = source
-    source = property(getsource, setsource)
+
+    # Deprecated on 2.3.1
+    @deprecated("Use `source` property instead")
+    def getsource(self):
+        return self.source
 
     def setid(self, value):
         self._id = value
