@@ -469,20 +469,17 @@ class propunit(base.TranslationUnit):
         self.out_ending = getattr(self.personality, 'out_ending', u'')
 
     def getsource(self):
-        value = quote.propertiesdecode(self.value)
-        return value
+        return quote.propertiesdecode(self.value)
 
     def setsource(self, source):
         self._rich_source = None
-        source = data.forceunicode(source)
-        self.value = self.personality.encode(source or u"", self.encoding)
+        self.value = self.personality.encode(data.forceunicode(source) or u"",
+                                             self.encoding)
 
     source = property(getsource, setsource)
 
     def gettarget(self):
-        translation = quote.propertiesdecode(self.translation)
-        translation = re.sub(u"\\\\ ", u" ", translation)
-        return translation
+        return re.sub(u"\\\\ ", u" ", quote.propertiesdecode(self.translation))
 
     def settarget(self, target):
         self._rich_target = None

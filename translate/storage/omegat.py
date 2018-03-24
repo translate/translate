@@ -119,7 +119,7 @@ class OmegaTUnit(base.TranslationUnit):
 
     def setsource(self, newsource):
         self._rich_source = None
-        return self._set_field('source', newsource)
+        self._set_field('source', newsource)
     source = property(getsource, setsource)
 
     def gettarget(self):
@@ -127,7 +127,7 @@ class OmegaTUnit(base.TranslationUnit):
 
     def settarget(self, newtarget):
         self._rich_target = None
-        return self._set_field('target', newtarget)
+        self._set_field('target', newtarget)
     target = property(gettarget, settarget)
 
     def settargetlang(self, newlang):

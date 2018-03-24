@@ -141,17 +141,17 @@ class UtxUnit(base.TranslationUnit):
     def getsource(self):
         return self._get_field('src')
 
-    def setsource(self, newsource):
+    def setsource(self, source):
         self._rich_source = None
-        return self._set_field('src', newsource)
+        self._set_field('src', source)
     source = property(getsource, setsource)
 
     def gettarget(self):
         return self._get_field('tgt')
 
-    def settarget(self, newtarget):
+    def settarget(self, target):
         self._rich_target = None
-        return self._set_field('tgt', newtarget)
+        self._set_field('tgt', target)
     target = property(gettarget, settarget)
 
     def settargetlang(self, newlang):

@@ -109,8 +109,7 @@ class LISAunit(base.TranslationUnit):
     source_dom = property(get_source_dom, set_source_dom)
 
     def setsource(self, text, sourcelang='en'):
-        if self._rich_source is not None:
-            self._rich_source = None
+        self._rich_source = None
         text = data.forceunicode(text)
         self.source_dom = self.createlanguageNode(sourcelang, text, "source")
 
