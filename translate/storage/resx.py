@@ -23,6 +23,7 @@
 from lxml import etree
 
 from translate.lang import data
+from translate.misc.deprecation import deprecated
 from translate.misc.xml_helpers import setXMLspace
 from translate.storage import base, lisa
 from translate.storage.placeables import general
@@ -48,8 +49,14 @@ class RESXUnit(lisa.LISAunit):
     def _gettargetnode(self):
         return self.xmlelement.find(self.namespaced(self.languageNode))
 
-    def getsource(self):
+    @lisa.LISAunit.source.getter
+    def source(self):
         return self.target
+
+    # Deprecated on 2.3.1
+    @deprecated("Use `source` property instead")
+    def getsource(self):
+        return self.source
 
     def settarget(self, text, lang='xx', append=False):
         # Firstly deal with reinitialising to None or setting to identical
