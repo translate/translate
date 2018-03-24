@@ -93,6 +93,7 @@ except ImportError:
     etree = None
 
 from translate.misc import quote
+from translate.misc.deprecation import deprecated
 from translate.storage import base
 
 
@@ -244,21 +245,27 @@ class dtdunit(base.TranslationUnit):
         self.closing = ">"
 
     # Note that source and target are equivalent for monolingual units
-    def getsource(self):
+    @property
+    def source(self):
         """gets the unquoted source string"""
         if self.android:
             return unquotefromandroid(self.definition)
         else:
             return unquotefromdtd(self.definition)
 
-    def setsource(self, source):
+    @source.setter
+    def source(self, source):
         """Sets the definition to the quoted value of source"""
         if self.android:
             self.definition = quoteforandroid(source)
         else:
             self.definition = quotefordtd(source)
         self._rich_source = None
-    source = property(getsource, setsource)
+
+    # Deprecated on 2.3.1
+    @deprecated("Use `source` property instead")
+    def getsource(self):
+        return self.source
 
     def settarget(self, target):
         """Sets the definition to the quoted value of target"""
