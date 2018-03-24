@@ -125,6 +125,7 @@ from codecs import iterencode
 
 from translate.lang import data
 from translate.misc import quote
+from translate.misc.deprecation import deprecated
 from translate.storage import base
 
 
@@ -468,15 +469,20 @@ class propunit(base.TranslationUnit):
         # (e.g. ";" is required for Mac OS X strings)
         self.out_ending = getattr(self.personality, 'out_ending', u'')
 
-    def getsource(self):
+    @property
+    def source(self):
         return quote.propertiesdecode(self.value)
 
-    def setsource(self, source):
+    @source.setter
+    def source(self, source):
         self._rich_source = None
         self.value = self.personality.encode(data.forceunicode(source) or u"",
                                              self.encoding)
 
-    source = property(getsource, setsource)
+    # Deprecated on 2.3.1
+    @deprecated("Use `source` property instead")
+    def getsource(self):
+        return self.source
 
     def gettarget(self):
         return re.sub(u"\\\\ ", u" ", quote.propertiesdecode(self.translation))
