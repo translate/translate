@@ -59,6 +59,9 @@ import vobject
 from translate.storage import base
 
 
+ICAL_UNIT_LOCATION_RE = re.compile('\\[(?P<uid>.+)\\](?P<property>.+)')
+
+
 class icalunit(base.TranslationUnit):
     """An ical entry that is translatable"""
 
@@ -92,7 +95,7 @@ class icalfile(base.TranslationStore):
         _outicalfile = self._icalfile
         for unit in self.units:
             for location in unit.getlocations():
-                match = re.match('\\[(?P<uid>.+)\\](?P<property>.+)', location)
+                match = ICAL_UNIT_LOCATION_RE.match(location)
                 for component in self._icalfile.components():
                     if component.name != "VEVENT":
                         continue
