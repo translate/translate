@@ -29,6 +29,7 @@ Supported formats are
 import re
 import six
 
+from translate.misc.deprecation import deprecated
 from translate.storage import base
 
 
@@ -67,15 +68,10 @@ class TxtUnit(base.TranslationUnit):
         """Convert a txt unit to a string"""
         return u"".join([self.pretext, self.source, self.posttext])
 
+    # Deprecated on 2.3.1
+    @deprecated("Use `source` property instead")
     def getsource(self):
-        """gets the unquoted source string"""
-        return self._source
-
-    def setsource(self, source):
-        """Sets the definition to the quoted value of source"""
-        self._rich_source = None
-        self._source = source
-    source = property(getsource, setsource)
+        return self.source
 
     def settarget(self, target):
         """Sets the definition to the quoted value of target"""
