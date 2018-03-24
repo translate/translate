@@ -66,6 +66,7 @@ from phply.phpast import (Array, ArrayElement, ArrayOffset, Assignment,
                           BinaryOp, FunctionCall, InlineHTML, Node, Return,
                           Variable)
 
+from translate.misc.deprecation import deprecated
 from translate.storage import base
 
 
@@ -223,14 +224,20 @@ class phpunit(base.TranslationUnit):
         self._comments = []
         self.source = source
 
-    def getsource(self):
+    @property
+    def source(self):
         return phpdecode(self.value, self.escape_type)
 
-    def setsource(self, source):
+    @source.setter
+    def source(self, source):
         """Set the source AND the target to be equal."""
         self._rich_source = None
         self.value = phpencode(source, self.escape_type)
-    source = property(getsource, setsource)
+
+    # Deprecated on 2.3.1
+    @deprecated("Use `source` property instead")
+    def getsource(self):
+        return self.source
 
     def settarget(self, target):
         self._rich_target = None
