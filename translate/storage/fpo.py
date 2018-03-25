@@ -34,6 +34,7 @@ import re
 import six
 
 from translate.lang import data
+from translate.misc.deprecation import deprecated
 from translate.misc.multistring import multistring
 from translate.storage import base, cpo, pocommon
 
@@ -85,10 +86,12 @@ class pounit(pocommon.pounit):
             self.typecomments = []
             self.msgidcomment = u""
 
-    def getsource(self):
+    @property
+    def source(self):
         return self._source
 
-    def setsource(self, source):
+    @source.setter
+    def source(self, source):
         self._rich_source = None
         source = data.forceunicode(source or u"")
         source = source or u""
@@ -98,7 +101,11 @@ class pounit(pocommon.pounit):
             self._source = source
         else:  # If it is unicode, list or dict.
             self._source = multistring(source)
-    source = property(getsource, setsource)
+
+    # Deprecated on 2.3.1
+    @deprecated("Use `source` property instead")
+    def getsource(self):
+        return self.source
 
     def gettarget(self):
         """Returns the unescaped msgstr"""
