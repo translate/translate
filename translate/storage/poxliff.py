@@ -29,6 +29,7 @@ import six
 from lxml import etree
 
 from translate.lang import data
+from translate.misc.deprecation import deprecated
 from translate.misc.multistring import multistring
 from translate.misc.xml_helpers import setXMLspace
 from translate.storage import base, lisa, poheader, xliff
@@ -87,10 +88,20 @@ class PoXliffUnit(xliff.xliffunit):
 #        else:
 #            return self.units[0].getlanguageNodes()
 
-    def getsource(self):
+    @property
+    def source(self):
         if not self.hasplural():
-            return super(PoXliffUnit, self).getsource()
+            return super(PoXliffUnit, self).source
         return multistring([unit.source for unit in self.units])
+
+    @source.setter
+    def source(self, source):
+        self.setsource(source, sourcelang="en")
+
+    # Deprecated on 2.3.1
+    @deprecated("Use `source` property instead")
+    def getsource(self):
+        return self.source
 
     def setsource(self, source, sourcelang="en"):
         # TODO: consider changing from plural to singular, etc.
@@ -111,7 +122,6 @@ class PoXliffUnit(xliff.xliffunit):
                 self.units.append(newunit)
                 self.xmlelement.append(newunit.xmlelement)
             self.target = target
-    source = property(getsource, setsource)
 
     # We don't support any rich strings yet
     multistring_to_rich = base.TranslationUnit.multistring_to_rich
