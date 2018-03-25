@@ -39,6 +39,7 @@ from ctypes import (CFUNCTYPE, POINTER, Structure, c_char_p, c_int, c_long,
                     c_size_t, c_uint, cdll)
 
 from translate.lang import data
+from translate.misc.deprecation import deprecated
 from translate.misc.multistring import multistring
 from translate.storage import base, pocommon, pypo
 
@@ -342,8 +343,8 @@ class pounit(pocommon.pounit):
         gpo.po_message_set_msgid_plural(self._gpo_message, gpo_encode(msgid_plural))
     msgid_plural = property(None, setmsgid_plural)
 
-    def getsource(self):
-
+    @property
+    def source(self):
         def remove_msgid_comments(text):
             if not text:
                 return text
@@ -367,7 +368,8 @@ class pounit(pocommon.pounit):
         else:
             return u""
 
-    def setsource(self, source):
+    @source.setter
+    def source(self, source):
         if isinstance(source, multistring):
             source = source.strings
         if isinstance(source, list):
@@ -377,7 +379,11 @@ class pounit(pocommon.pounit):
         else:
             gpo.po_message_set_msgid(self._gpo_message, gpo_encode(source))
             gpo.po_message_set_msgid_plural(self._gpo_message, None)
-    source = property(getsource, setsource)
+
+    # Deprecated on 2.3.1
+    @deprecated("Use `source` property instead")
+    def getsource(self):
+        return self.source
 
     def gettarget(self):
         if self.hasplural():
