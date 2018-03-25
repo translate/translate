@@ -117,10 +117,7 @@ class PoXliffUnit(xliff.xliffunit):
     def getsource(self):
         if not self.hasplural():
             return super(PoXliffUnit, self).getsource()
-        else:
-            strings = []
-            strings.extend([unit.source for unit in self.units])
-            return multistring(strings)
+        return multistring([unit.source for unit in self.units])
     source = property(getsource, setsource)
 
     def settarget(self, text, lang='xx', append=False):
