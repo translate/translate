@@ -29,6 +29,7 @@
 import re
 import six
 
+from translate.misc.deprecation import deprecated
 from translate.storage import base
 
 
@@ -63,15 +64,20 @@ class rcunit(base.TranslationUnit):
         self.source = source
         self.match = None
 
-    def getsource(self):
+    @property
+    def source(self):
         return self._value
 
-    def setsource(self, source):
+    @source.setter
+    def source(self, source):
         """Sets the source AND the target to be equal"""
         self._rich_source = None
         self._value = source or ""
 
-    source = property(getsource, setsource)
+    # Deprecated on 2.3.1
+    @deprecated("Use `source` property instead")
+    def getsource(self):
+        return self.source
 
     def gettarget(self):
         return self.source
