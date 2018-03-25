@@ -167,9 +167,9 @@ class CatkeysUnit(base.TranslationUnit):
     def getsource(self):
         return self._get_source_or_target('source')
 
-    def setsource(self, newsource):
+    def setsource(self, source):
         self._rich_source = None
-        return self._set_source_or_target('source', newsource)
+        return self._set_source_or_target('source', source)
     source = property(getsource, setsource)
 
     def gettarget(self):
