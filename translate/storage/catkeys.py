@@ -54,6 +54,7 @@ import six
 
 from translate.lang import data
 from translate.misc import csv_utils
+from translate.misc.deprecation import deprecated
 from translate.storage import base
 
 
@@ -164,13 +165,19 @@ class CatkeysUnit(base.TranslationUnit):
         if key not in self._dict or newvalue != self._dict[key]:
             self._dict[key] = newvalue
 
-    def getsource(self):
+    @property
+    def source(self):
         return self._get_source_or_target('source')
 
-    def setsource(self, source):
+    @source.setter
+    def source(self, source):
         self._rich_source = None
         return self._set_source_or_target('source', source)
-    source = property(getsource, setsource)
+
+    # Deprecated on 2.3.1
+    @deprecated("Use `source` property instead")
+    def getsource(self):
+        return self.source
 
     def gettarget(self):
         return self._get_source_or_target('target')
