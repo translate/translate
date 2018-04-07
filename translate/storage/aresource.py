@@ -323,13 +323,10 @@ class AndroidResourceUnit(base.TranslationUnit):
             xmltarget.text = self.escape(target)
 
     def gettarget(self):
-        if self.xmlelement.tag == "plurals":
-            target = []
-            for entry in self.xmlelement.iterchildren():
-                target.append(data.forceunicode(self.get_xml_text_value(entry)))
-            return multistring(target)
-        else:
+        if self.xmlelement.tag != "plurals":
             return self.get_xml_text_value(self.xmlelement)
+        return multistring([data.forceunicode(self.get_xml_text_value(entry))
+                            for entry in self.xmlelement.iterchildren()])
 
     def settarget(self, target):
         if self.hasplurals(self.source) or self.hasplurals(target):
@@ -341,10 +338,7 @@ class AndroidResourceUnit(base.TranslationUnit):
                 self.setid(old_id)
 
             locale = self.gettargetlanguage().replace('_', '-').split('-')[0]
-            try:
-                lang_tags = data.plural_tags[locale]
-            except KeyError:
-                lang_tags = data.plural_tags['en']
+            lang_tags = data.plural_tags.get(locale, data.plural_tags['en'])
 
             # Get plural tags in the right order.
             plural_tags = [tag for tag in ['zero', 'one', 'two', 'few', 'many', 'other'] if tag in lang_tags]
