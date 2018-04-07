@@ -36,6 +36,7 @@ import six
 from lxml import etree
 
 from translate.lang import data
+from translate.misc.deprecation import deprecated
 from translate.misc.multistring import multistring
 from translate.storage import base, lisa
 from translate.storage.placeables import general
@@ -120,13 +121,19 @@ class tsunit(lisa.LISAunit):
         return [n for n in [self._getsourcenode(), self._gettargetnode()]
                 if n is not None]
 
-    def getsource(self):
+    @lisa.LISAunit.source.getter
+    def source(self):
         # TODO: support <byte>. See bug 528.
         text = data.forceunicode(self._getsourcenode().text)
         if self.hasplural():
             return multistring([text])
         return text
-    source = property(getsource, lisa.LISAunit.setsource)
+
+    # Deprecated on 2.3.1
+    @deprecated("Use `source` property instead")
+    def getsource(self):
+        return self.source
+
     rich_source = property(base.TranslationUnit._get_rich_source, base.TranslationUnit._set_rich_source)
 
     def settarget(self, text):
