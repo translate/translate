@@ -192,11 +192,20 @@ class TranslationUnit(object):
     def setsource(self, source):
         self.source = source
 
-    def settarget(self, target):
+    @property
+    def target(self):
+        return self._target
+
+    @target.setter
+    def target(self, target):
         """Set the target string to the given value."""
         self._rich_target = None
         self._target = target
-    target = property(lambda self: self._target, settarget)
+
+    # Deprecated on 2.3.1
+    @deprecated("Use `target` property instead")
+    def settarget(self, target):
+        self.target = target
 
     def _get_rich_source(self):
         if self._rich_source is None:
