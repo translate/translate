@@ -133,7 +133,7 @@ class TestWebExtensionStore(test_monolingual.TestMonolingualStore):
     def test_set_target(self):
         store = self.StoreClass()
         store.parse('{"key": {"message": "value", "description": "note"}}')
-        store.units[0].settarget('another')
+        store.units[0].target = 'another'
         out = BytesIO()
         store.serialize(out)
 

@@ -330,21 +330,21 @@ msgstr[1] "toetse"
         store = self.StoreClass(width=-1)
         store.parse(posource)
         assert bytes(store) == posource
-        store.units[0].settarget(hello)
+        store.units[0].target = hello
         assert bytes(store) == posource
 
         # Instance with long line wraps
         store = self.StoreClass(width=1000)
         store.parse(posource)
         assert bytes(store) == posource
-        store.units[0].settarget(hello)
+        store.units[0].target = hello
         assert bytes(store) == posource
 
         # Instance with default wraps (77)
         store = self.StoreClass()
         store.parse(posource)
         assert bytes(store) == posource
-        store.units[0].settarget('Hello ' * 100)
+        store.units[0].target = 'Hello ' * 100
         # Should contain additional newlines now
         assert bytes(store) != posource
 
@@ -356,14 +356,14 @@ msgstr[1] "toetse"
         store = self.StoreClass(width=-1)
         store.parse(posource)
         assert bytes(store) == posource
-        store.units[0].settarget(hello)
+        store.units[0].target = hello
         assert bytes(store) == posource
 
         # Instance with default wraps (77)
         store = self.StoreClass()
         store.parse(posource)
         assert bytes(store) == posource
-        store.units[0].settarget('Hello ' * 100)
+        store.units[0].target = 'Hello ' * 100
         # Should contain additional newlines now
         assert bytes(store) != posource
 

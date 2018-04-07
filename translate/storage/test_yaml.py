@@ -32,7 +32,7 @@ class TestYAMLResourceStore(test_monolingual.TestMonolingualStore):
     def test_edit(self):
         store = self.StoreClass()
         store.parse('key: value')
-        store.units[0].settarget('second')
+        store.units[0].target = 'second'
         out = BytesIO()
         store.serialize(out)
         assert out.getvalue() == b'key: second\n'
@@ -40,7 +40,7 @@ class TestYAMLResourceStore(test_monolingual.TestMonolingualStore):
     def test_edit_unicode(self):
         store = self.StoreClass()
         store.parse('key: value')
-        store.units[0].settarget('zkouška')
+        store.units[0].target = 'zkouška'
         out = BytesIO()
         store.serialize(out)
         assert out.getvalue() == 'key: zkouška\n'.encode('utf-8')
