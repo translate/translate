@@ -189,7 +189,9 @@ class tsunit(lisa.LISAunit):
         else:
             note = etree.SubElement(self.xmlelement, self.namespaced("translatorcomment"))
         if position == "append":
-            note.text = "\n".join(filter(None, [current_notes, text.strip()]))
+            note.text = "\n".join([item
+                                   for item in [current_notes, text.strip()]
+                                   if item])
         else:
             note.text = text.strip()
 
