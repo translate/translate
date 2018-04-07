@@ -96,7 +96,7 @@ class pounit(pocommon.pounit):
             self._source = source
         elif isinstance(source, six.text_type):
             self._source = source
-        else:
+        else:  # If it is unicode, list or dict.
             self._source = multistring(source)
     source = property(getsource, setsource)
 
