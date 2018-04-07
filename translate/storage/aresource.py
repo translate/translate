@@ -260,6 +260,36 @@ class AndroidResourceUnit(base.TranslationUnit):
     def getsource(self):
         return self.source
 
+    def get_xml_text_value(self, xmltarget):
+        if (len(xmltarget) == 0):
+            # There are no html markups, so unescaping it as plain text.
+            return self.unescape(xmltarget.text)
+        else:
+            # There are html markups, so clone it to perform unescaping for all elements.
+            cloned_target = copy.deepcopy(xmltarget)
+
+            # Unescaping texts.
+            if (cloned_target.text is not None):
+                cloned_target.text = self.unescape(cloned_target.text, False)
+            for xmlelement in cloned_target.iterdescendants():
+                if (xmlelement.text is not None):
+                    xmlelement.text = self.unescape(xmlelement.text, False)
+                if (xmlelement.tail is not None):
+                    xmlelement.tail = self.unescape(xmlelement.tail, False)
+
+            # Grab root text (using a temporary xml element for text escaping)
+            if (cloned_target.text is not None):
+                tmp_element = etree.Element('t')
+                tmp_element.text = cloned_target.text
+                target = data.forceunicode(etree.tostring(tmp_element, encoding='utf-8')[3:-4])
+            else:
+                target = u''
+
+            # Include markup as well
+            target += u''.join([data.forceunicode(etree.tostring(child, encoding='utf-8'))
+                                for child in cloned_target.iterchildren()])
+            return target
+
     def set_xml_text_value(self, target, xmltarget):
         if '<' in target:
             try:
@@ -291,6 +321,15 @@ class AndroidResourceUnit(base.TranslationUnit):
         else:
             # Handle text only
             xmltarget.text = self.escape(target)
+
+    def gettarget(self, lang=None):
+        if (self.xmlelement.tag == "plurals"):
+            target = []
+            for entry in self.xmlelement.iterchildren():
+                target.append(data.forceunicode(self.get_xml_text_value(entry)))
+            return multistring(target)
+        else:
+            return self.get_xml_text_value(self.xmlelement)
 
     def settarget(self, target):
         if (self.hasplurals(self.source) or self.hasplurals(target)):
@@ -348,45 +387,6 @@ class AndroidResourceUnit(base.TranslationUnit):
             self.set_xml_text_value(target, self.xmlelement)
 
         super(AndroidResourceUnit, self).settarget(target)
-
-    def get_xml_text_value(self, xmltarget):
-        if (len(xmltarget) == 0):
-            # There are no html markups, so unescaping it as plain text.
-            return self.unescape(xmltarget.text)
-        else:
-            # There are html markups, so clone it to perform unescaping for all elements.
-            cloned_target = copy.deepcopy(xmltarget)
-
-            # Unescaping texts.
-            if (cloned_target.text is not None):
-                cloned_target.text = self.unescape(cloned_target.text, False)
-            for xmlelement in cloned_target.iterdescendants():
-                if (xmlelement.text is not None):
-                    xmlelement.text = self.unescape(xmlelement.text, False)
-                if (xmlelement.tail is not None):
-                    xmlelement.tail = self.unescape(xmlelement.tail, False)
-
-            # Grab root text (using a temporary xml element for text escaping)
-            if (cloned_target.text is not None):
-                tmp_element = etree.Element('t')
-                tmp_element.text = cloned_target.text
-                target = data.forceunicode(etree.tostring(tmp_element, encoding='utf-8')[3:-4])
-            else:
-                target = u''
-
-            # Include markup as well
-            target += u''.join([data.forceunicode(etree.tostring(child, encoding='utf-8'))
-                                for child in cloned_target.iterchildren()])
-            return target
-
-    def gettarget(self, lang=None):
-        if (self.xmlelement.tag == "plurals"):
-            target = []
-            for entry in self.xmlelement.iterchildren():
-                target.append(data.forceunicode(self.get_xml_text_value(entry)))
-            return multistring(target)
-        else:
-            return self.get_xml_text_value(self.xmlelement)
 
     target = property(gettarget, settarget)
 
