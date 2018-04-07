@@ -114,19 +114,17 @@ class pounit(pocommon.pounit):
     def settarget(self, target):
         """Sets the msgstr to the given (unescaped) value"""
         self._rich_target = None
-#        assert isinstance(target, unicode)
-#        target = data.forceunicode(target)
         if self.hasplural():
             if isinstance(target, multistring):
                 self._target = target
-            else:
-                #unicode, list, dict
+            else:  # If it is unicode, list or dict.
                 self._target = multistring(target)
         elif isinstance(target, (dict, list)):
             if len(target) == 1:
                 self._target = target[0]
             else:
-                raise ValueError("po msgid element has no plural but msgstr has %d elements (%s)" % (len(target), target))
+                raise ValueError("po msgid element has no plural but msgstr"
+                                 "has %d elements (%s)" % (len(target), target))
         else:
             self._target = target
     target = property(gettarget, settarget)
