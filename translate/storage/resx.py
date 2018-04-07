@@ -58,6 +58,13 @@ class RESXUnit(lisa.LISAunit):
     def getsource(self):
         return self.source
 
+    def gettarget(self, lang=None):
+        targetnode = self._gettargetnode()
+        if targetnode is None:
+            etree.SubElement(self.xmlelement, self.namespaced("value"))
+            return None
+        return data.forceunicode(targetnode.text) or u""
+
     def settarget(self, text, lang='xx', append=False):
         # Firstly deal with reinitialising to None or setting to identical
         # string.
@@ -76,13 +83,6 @@ class RESXUnit(lisa.LISAunit):
         # to be indented with 2 spaces (same level as the opening
         # <data> element before <value>)
         targetnode.tail = u"\n  "
-
-    def gettarget(self, lang=None):
-        targetnode = self._gettargetnode()
-        if targetnode is None:
-            etree.SubElement(self.xmlelement, self.namespaced("value"))
-            return None
-        return data.forceunicode(targetnode.text) or u""
     target = property(gettarget, settarget)
     rich_target = property(base.TranslationUnit._get_rich_target, base.TranslationUnit._set_rich_target)
 

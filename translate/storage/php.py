@@ -239,12 +239,12 @@ class phpunit(base.TranslationUnit):
     def getsource(self):
         return self.source
 
+    def gettarget(self):
+        return phpdecode(self.translation, self.escape_type)
+
     def settarget(self, target):
         self._rich_target = None
         self.translation = phpencode(target, self.escape_type)
-
-    def gettarget(self):
-        return phpdecode(self.translation, self.escape_type)
     target = property(gettarget, settarget)
 
     def __str__(self):

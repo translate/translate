@@ -130,6 +130,16 @@ class PoXliffUnit(xliff.xliffunit):
     rich_source = base.TranslationUnit.rich_source
     rich_target = base.TranslationUnit.rich_target
 
+    def gettarget(self):
+        if self.hasplural():
+            strings = [data.forceunicode(unit.target) for unit in self.units]
+            if strings:
+                return multistring(strings)
+            else:
+                return None
+        else:
+            return super(PoXliffUnit, self).gettarget()
+
     def settarget(self, text, lang='xx', append=False):
         self._rich_target = None
         if self.target == text:
@@ -155,16 +165,6 @@ class PoXliffUnit(xliff.xliffunit):
 
         for i in range(len(self.units)):
             self.units[i].target = targets[i]
-
-    def gettarget(self):
-        if self.hasplural():
-            strings = [data.forceunicode(unit.target) for unit in self.units]
-            if strings:
-                return multistring(strings)
-            else:
-                return None
-        else:
-            return super(PoXliffUnit, self).gettarget()
 
     target = property(gettarget, settarget)
 
