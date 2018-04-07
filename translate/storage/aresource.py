@@ -45,7 +45,7 @@ class AndroidResourceUnit(base.TranslationUnit):
     def createfromxmlElement(cls, element):
         term = None
         # Actually this class supports only plurals and string tags
-        if ((element.tag == "plurals") or (element.tag == "string")):
+        if element.tag == "plurals" or element.tag == "string":
             term = cls(None, xmlelement=element)
         return term
 
@@ -261,7 +261,7 @@ class AndroidResourceUnit(base.TranslationUnit):
         return self.source
 
     def get_xml_text_value(self, xmltarget):
-        if (len(xmltarget) == 0):
+        if len(xmltarget) == 0:
             # There are no html markups, so unescaping it as plain text.
             return self.unescape(xmltarget.text)
         else:
@@ -269,16 +269,16 @@ class AndroidResourceUnit(base.TranslationUnit):
             cloned_target = copy.deepcopy(xmltarget)
 
             # Unescaping texts.
-            if (cloned_target.text is not None):
+            if cloned_target.text is not None:
                 cloned_target.text = self.unescape(cloned_target.text, False)
             for xmlelement in cloned_target.iterdescendants():
-                if (xmlelement.text is not None):
+                if xmlelement.text is not None:
                     xmlelement.text = self.unescape(xmlelement.text, False)
-                if (xmlelement.tail is not None):
+                if xmlelement.tail is not None:
                     xmlelement.tail = self.unescape(xmlelement.tail, False)
 
             # Grab root text (using a temporary xml element for text escaping)
-            if (cloned_target.text is not None):
+            if cloned_target.text is not None:
                 tmp_element = etree.Element('t')
                 tmp_element.text = cloned_target.text
                 target = data.forceunicode(etree.tostring(tmp_element, encoding='utf-8')[3:-4])
@@ -323,7 +323,7 @@ class AndroidResourceUnit(base.TranslationUnit):
             xmltarget.text = self.escape(target)
 
     def gettarget(self, lang=None):
-        if (self.xmlelement.tag == "plurals"):
+        if self.xmlelement.tag == "plurals":
             target = []
             for entry in self.xmlelement.iterchildren():
                 target.append(data.forceunicode(self.get_xml_text_value(entry)))
@@ -332,7 +332,7 @@ class AndroidResourceUnit(base.TranslationUnit):
             return self.get_xml_text_value(self.xmlelement)
 
     def settarget(self, target):
-        if (self.hasplurals(self.source) or self.hasplurals(target)):
+        if self.hasplurals(self.source) or self.hasplurals(target):
             # Fix the root tag if mismatching
             if self.xmlelement.tag != "plurals":
                 old_id = self.getid()
@@ -405,7 +405,7 @@ class AndroidResourceUnit(base.TranslationUnit):
     def getnotes(self, origin=None):
         if origin in ['programmer', 'developer', 'source code', None]:
             comments = []
-            if (self.xmlelement is not None):
+            if self.xmlelement is not None:
                 prevSibling = self.xmlelement.getprevious()
                 while ((prevSibling is not None) and (prevSibling.tag is etree.Comment)):
                     comments.insert(0, prevSibling.text)
@@ -481,13 +481,13 @@ class AndroidResourceFile(lisa.LISAfile):
         target_lang = super(AndroidResourceFile, self).gettargetlanguage()
 
         # If targetlanguage isn't set, we try to extract it from the filename path (if any).
-        if (target_lang is None) and hasattr(self, 'filename') and self.filename:
+        if target_lang is None and hasattr(self, 'filename') and self.filename:
             # Android standards expect resource files to be in a directory named "values[-<lang>[-r<region>]]".
             parent_dir = os.path.split(os.path.dirname(self.filename))[1]
             match = re.search('^values-(\w*)', parent_dir)
-            if (match is not None):
+            if match is not None:
                 target_lang = match.group(1)
-            elif (parent_dir == 'values'):
+            elif parent_dir == 'values':
                 # If the resource file is inside the "values" directory, then it is the default/source language.
                 target_lang = self.sourcelanguage
 
