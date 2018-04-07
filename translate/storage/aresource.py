@@ -322,7 +322,7 @@ class AndroidResourceUnit(base.TranslationUnit):
             # Handle text only
             xmltarget.text = self.escape(target)
 
-    def gettarget(self, lang=None):
+    def gettarget(self):
         if self.xmlelement.tag == "plurals":
             target = []
             for entry in self.xmlelement.iterchildren():
