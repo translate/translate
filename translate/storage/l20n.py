@@ -66,13 +66,18 @@ class l20nunit(base.TranslationUnit):
     def getsource(self):
         return self.source
 
-    def gettarget(self):
+    @property
+    def target(self):
         return self.value
 
-    def settarget(self, target):
+    @target.setter
+    def target(self, target):
         self.value = target
 
-    target = property(gettarget, settarget)
+    # Deprecated on 2.3.1
+    @deprecated("Use `target` property instead")
+    def gettarget(self):
+        return self.target
 
     def getid(self):
         return self.id
