@@ -117,15 +117,15 @@ class tsunit(lisa.LISAunit):
 
     def getlanguageNodes(self):
         """We override this to get source and target nodes."""
-        return [n for n in [self._getsourcenode(), self._gettargetnode()] if n is not None]
+        return [n for n in [self._getsourcenode(), self._gettargetnode()]
+                if n is not None]
 
     def getsource(self):
         # TODO: support <byte>. See bug 528.
         text = data.forceunicode(self._getsourcenode().text)
         if self.hasplural():
             return multistring([text])
-        else:
-            return text
+        return text
     source = property(getsource, lisa.LISAunit.setsource)
     rich_source = property(base.TranslationUnit._get_rich_source, base.TranslationUnit._set_rich_source)
 
