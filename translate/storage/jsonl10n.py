@@ -275,7 +275,12 @@ class I18NextUnit(JsonNestedUnit):
     See https://www.i18next.com/
     """
 
-    def settarget(self, target):
+    @property
+    def target(self):
+        return self._target
+
+    @target.setter
+    def target(self, target):
         def get_base(item):
             """Return base name for plurals"""
             if '_0' in item[0]:
@@ -298,8 +303,9 @@ class I18NextUnit(JsonNestedUnit):
         elif isinstance(self._item, list):
             # Changing plural to singular
             self._item = get_base(self._item)
-        super(I18NextUnit, self).settarget(target)
-    target = property(lambda self: self._target, settarget)
+
+        self._rich_target = None
+        self._target = target
 
     def getvalue(self):
         if not isinstance(self.target, multistring):
