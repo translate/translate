@@ -322,13 +322,15 @@ class AndroidResourceUnit(base.TranslationUnit):
             # Handle text only
             xmltarget.text = self.escape(target)
 
-    def gettarget(self):
+    @property
+    def target(self):
         if self.xmlelement.tag != "plurals":
             return self.get_xml_text_value(self.xmlelement)
         return multistring([data.forceunicode(self.get_xml_text_value(entry))
                             for entry in self.xmlelement.iterchildren()])
 
-    def settarget(self, target):
+    @target.setter
+    def target(self, target):
         if self.hasplurals(self.source) or self.hasplurals(target):
             # Fix the root tag if mismatching
             if self.xmlelement.tag != "plurals":
@@ -380,9 +382,13 @@ class AndroidResourceUnit(base.TranslationUnit):
 
             self.set_xml_text_value(target, self.xmlelement)
 
-        super(AndroidResourceUnit, self).settarget(target)
+        self._rich_target = None
+        self._target = target
 
-    target = property(gettarget, settarget)
+    # Deprecated on 2.3.1
+    @deprecated("Use `target` property instead")
+    def gettarget(self):
+        return self.target
 
     def getlanguageNode(self, lang=None, index=None):
         return self.xmlelement
