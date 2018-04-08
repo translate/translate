@@ -313,8 +313,9 @@ day_names:        [Domingo, Luns, Martes, Mércores, Xoves, Venres, Sábado]
         assert store.units[6].source == 'Sábado'
         out = BytesIO()
         store.serialize(out)
-        assert out.getvalue() == '''day_names: [Domingo, Luns, Martes, Mércores, Xoves, Venres, Sábado]
+        expected_output = '''day_names: [Domingo, Luns, Martes, Mércores, Xoves, Venres, Sábado]
 '''
+        assert out.getvalue().decode('utf8') == expected_output
 
     @pytest.mark.xfail(reason="Not Implemented")
     def test_abbreviated_dictionary(self):
