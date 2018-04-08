@@ -107,11 +107,13 @@ class pounit(pocommon.pounit):
     def getsource(self):
         return self.source
 
-    def gettarget(self):
+    @property
+    def target(self):
         """Returns the unescaped msgstr"""
         return self._target
 
-    def settarget(self, target):
+    @target.setter
+    def target(self, target):
         """Sets the msgstr to the given (unescaped) value"""
         self._rich_target = None
         if self.hasplural():
@@ -127,7 +129,11 @@ class pounit(pocommon.pounit):
                                  "has %d elements (%s)" % (len(target), target))
         else:
             self._target = target
-    target = property(gettarget, settarget)
+
+    # Deprecated on 2.3.1
+    @deprecated("Use `target` property instead")
+    def gettarget(self):
+        return self.target
 
     def getnotes(self, origin=None):
         """Return comments based on origin value (programmer, developer, source code and translator)"""
