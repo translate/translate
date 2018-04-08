@@ -92,7 +92,6 @@ class TestPO2OO(object):
         self.check_roundtrip(r'''"Single-Quote Escape \' "''')
         self.check_roundtrip(r"""'Both Quotes "" '' '""")
 
-    @mark.xfail(reason="this test fails because the resultant PO file returns as po.isempty since...")
     def test_roundtrip_spaces(self):
         # FIXME: this test fails because the resultant PO file returns as po.isempty since .isblank returns true
         # which is caused by isblankmsgtr returning True.  Its a complete mess which would mean unravelling lots

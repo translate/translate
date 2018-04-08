@@ -76,7 +76,6 @@ class TestHTMLParsing:
         store = h.parsestring("<h3>Some text <img><br><img></h3>")
         assert len(store.units) == 1
 
-    @mark.xfail(reason="Not implemented")
     def test_escaping_script_and_pre(self):
         """<script> and <pre> can contain < and > and these should not be
         interpretted as tags"""
