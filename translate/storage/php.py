@@ -239,13 +239,19 @@ class phpunit(base.TranslationUnit):
     def getsource(self):
         return self.source
 
-    def gettarget(self):
+    @property
+    def target(self):
         return phpdecode(self.translation, self.escape_type)
 
-    def settarget(self, target):
+    @target.setter
+    def target(self, target):
         self._rich_target = None
         self.translation = phpencode(target, self.escape_type)
-    target = property(gettarget, settarget)
+
+    # Deprecated on 2.3.1
+    @deprecated("Use `target` property instead")
+    def gettarget(self):
+        return self.target
 
     def __str__(self):
         """Convert to a string."""
