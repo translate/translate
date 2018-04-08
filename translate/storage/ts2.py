@@ -134,8 +134,6 @@ class tsunit(lisa.LISAunit):
     def getsource(self):
         return self.source
 
-    rich_source = property(base.TranslationUnit._get_rich_source, base.TranslationUnit._set_rich_source)
-
     @property
     def target(self):
         targetnode = self._gettargetnode()
