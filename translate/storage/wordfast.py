@@ -344,13 +344,19 @@ class WordfastUnit(base.TranslationUnit):
     def getsource(self):
         return self.source
 
-    def gettarget(self):
+    @property
+    def target(self):
         return self._get_source_or_target('target')
 
-    def settarget(self, target):
+    @target.setter
+    def target(self, target):
         self._rich_target = None
         self._set_source_or_target('target', target)
-    target = property(gettarget, settarget)
+
+    # Deprecated on 2.3.1
+    @deprecated("Use `target` property instead")
+    def gettarget(self):
+        return self.target
 
     def settargetlang(self, newlang):
         self._dict['target-lang'] = newlang
