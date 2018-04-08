@@ -182,9 +182,9 @@ class CatkeysUnit(base.TranslationUnit):
     def gettarget(self):
         return self._get_source_or_target('target')
 
-    def settarget(self, newtarget):
+    def settarget(self, target):
         self._rich_target = None
-        self._set_source_or_target('target', newtarget)
+        self._set_source_or_target('target', target)
     target = property(gettarget, settarget)
 
     def getnotes(self, origin=None):

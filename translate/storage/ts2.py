@@ -147,7 +147,7 @@ class tsunit(lisa.LISAunit):
         else:
             return data.forceunicode(targetnode.text) or u""
 
-    def settarget(self, text):
+    def settarget(self, target):
         # This is a fairly destructive implementation. Don't assume that this
         # is necessarily correct in all regards, but it does deal with a lot of
         # cases. It is hard to deal with plurals.
@@ -155,15 +155,15 @@ class tsunit(lisa.LISAunit):
         # Firstly deal with reinitialising to None or setting to identical
         # string.
         self._rich_target = None
-        if self.target == text:
+        if self.target == target:
             return
         strings = []
-        if isinstance(text, multistring):
-            strings = text.strings
-        elif isinstance(text, list):
-            strings = text
+        if isinstance(target, multistring):
+            strings = target.strings
+        elif isinstance(target, list):
+            strings = target
         else:
-            strings = [text]
+            strings = [target]
         targetnode = self._gettargetnode()
         type = targetnode.get("type")
         targetnode.clear()
@@ -177,7 +177,7 @@ class tsunit(lisa.LISAunit):
                 # manual, nasty pretty printing. See bug 1420.
                 numerus.tail = u"\n        "
         else:
-            targetnode.text = data.forceunicode(text) or u""
+            targetnode.text = data.forceunicode(target) or u""
             targetnode.tail = u"\n    "
 
     target = property(gettarget, settarget)
