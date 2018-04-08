@@ -476,6 +476,6 @@ class TestXLIFFfile(test_base.TestTranslationStore):
         newxfile.addunit(xfile.units[1])
         assert newxfile.units[0].getid() == "file0\x04hello"
         assert newxfile.units[1].getid() == "file1\x04world"
-        assert newxfile.getfilenode("file0")
-        assert newxfile.getfilenode("file1")
+        assert newxfile.getfilenode("file0") is not None
+        assert newxfile.getfilenode("file1") is not None
         assert not newxfile.getfilenode("foo")
