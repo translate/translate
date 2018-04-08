@@ -321,7 +321,7 @@ class TestXLIFFfile(test_base.TestTranslationStore):
         unit.markfuzzy()
         assert not unit.isfuzzy()  # untranslated
         unit.target = "Konsep"
-        assert unit.isfuzzy()
+        assert not unit.isfuzzy()  # translated
         unit.markfuzzy()
         assert unit.isfuzzy()
         unit.markfuzzy(False)
