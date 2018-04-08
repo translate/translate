@@ -73,15 +73,21 @@ class TxtUnit(base.TranslationUnit):
     def getsource(self):
         return self.source
 
-    def gettarget(self):
+    @property
+    def target(self):
         """gets the unquoted target string"""
         return self.source
 
-    def settarget(self, target):
+    @target.setter
+    def target(self, target):
         """Sets the definition to the quoted value of target"""
         self._rich_target = None
         self.source = target
-    target = property(gettarget, settarget)
+
+    # Deprecated on 2.3.1
+    @deprecated("Use `target` property instead")
+    def gettarget(self):
+        return self.target
 
     def addlocation(self, location):
         self.location.append(location)
