@@ -385,7 +385,8 @@ class pounit(pocommon.pounit):
     def getsource(self):
         return self.source
 
-    def gettarget(self):
+    @property
+    def target(self):
         if self.hasplural():
             plurals = []
             nplural = 0
@@ -402,7 +403,8 @@ class pounit(pocommon.pounit):
             multi = gpo_decode(gpo.po_message_msgstr(self._gpo_message)) or ""
         return multi
 
-    def settarget(self, target):
+    @target.setter
+    def target(self, target):
         # for plural strings: convert 'target' into a list
         if self.hasplural():
             if isinstance(target, multistring):
@@ -441,7 +443,11 @@ class pounit(pocommon.pounit):
                 gpo.po_message_set_msgstr(self._gpo_message, gpo_encode(""))
             else:
                 gpo.po_message_set_msgstr(self._gpo_message, gpo_encode(target))
-    target = property(gettarget, settarget)
+
+    # Deprecated on 2.3.1
+    @deprecated("Use `target` property instead")
+    def gettarget(self):
+        return self.target
 
     def getid(self):
         """The unique identifier for this unit according to the conventions in
