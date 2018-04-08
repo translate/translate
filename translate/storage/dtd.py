@@ -267,14 +267,16 @@ class dtdunit(base.TranslationUnit):
     def getsource(self):
         return self.source
 
-    def gettarget(self):
+    @property
+    def target(self):
         """gets the unquoted target string"""
         if self.android:
             return unquotefromandroid(self.definition)
         else:
             return unquotefromdtd(self.definition)
 
-    def settarget(self, target):
+    @target.setter
+    def target(self, target):
         """Sets the definition to the quoted value of target"""
         if target is None:
             target = ""
@@ -283,7 +285,11 @@ class dtdunit(base.TranslationUnit):
         else:
             self.definition = quotefordtd(target)
         self._rich_target = None
-    target = property(gettarget, settarget)
+
+    # Deprecated on 2.3.1
+    @deprecated("Use `target` property instead")
+    def gettarget(self):
+        return self.target
 
     def getid(self):
         return self.entity
