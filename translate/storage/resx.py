@@ -58,14 +58,16 @@ class RESXUnit(lisa.LISAunit):
     def getsource(self):
         return self.source
 
-    def gettarget(self):
+    @property
+    def target(self):
         targetnode = self._gettargetnode()
         if targetnode is None:
             etree.SubElement(self.xmlelement, self.namespaced("value"))
             return None
         return data.forceunicode(targetnode.text) or u""
 
-    def settarget(self, target):
+    @target.setter
+    def target(self, target):
         # Firstly deal with reinitialising to None or setting to identical
         # string.
         self._rich_target = None
@@ -83,7 +85,12 @@ class RESXUnit(lisa.LISAunit):
         # to be indented with 2 spaces (same level as the opening
         # <data> element before <value>)
         targetnode.tail = u"\n  "
-    target = property(gettarget, settarget)
+
+    # Deprecated on 2.3.1
+    @deprecated("Use `target` property instead")
+    def gettarget(self):
+        return self.target
+
     rich_target = property(base.TranslationUnit._get_rich_target, base.TranslationUnit._set_rich_target)
 
     def addnote(self, text, origin=None, position="append"):
