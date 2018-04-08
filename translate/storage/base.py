@@ -207,12 +207,17 @@ class TranslationUnit(object):
     def settarget(self, target):
         self.target = target
 
-    def _get_rich_source(self):
+    @property
+    def rich_source(self):
+        """
+        .. seealso:: :meth:`.rich_to_multistring`, :meth:`multistring_to_rich`
+        """
         if self._rich_source is None:
             self._rich_source = self.multistring_to_rich(self.source)
         return self._rich_source
 
-    def _set_rich_source(self, value):
+    @rich_source.setter
+    def rich_source(self, value):
         if not hasattr(value, '__iter__'):
             raise ValueError('value must be iterable')
         if len(value) < 1:
@@ -223,10 +228,6 @@ class TranslationUnit(object):
         multi = self.rich_to_multistring(value)
         if self.source != multi:
             self.source = multi
-    rich_source = property(_get_rich_source, _set_rich_source)
-    """
-    .. seealso:: :meth:`.rich_to_multistring`, :meth:`multistring_to_rich`
-    """
 
     def _get_rich_target(self):
         if self._rich_target is None:
