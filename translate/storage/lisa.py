@@ -183,7 +183,14 @@ class LISAunit(base.TranslationUnit):
                 languageNode.text = target
         else:
             self.set_target_dom(None, False)
-    target = property(gettarget, settarget)
+
+    @property
+    def target(self):
+        return self.gettarget()
+
+    @target.setter
+    def target(self, target):
+        self.settarget(target)
 
     def createlanguageNode(self, lang, text, purpose=None):
         """Returns a xml Element setup with given parameters to represent a
