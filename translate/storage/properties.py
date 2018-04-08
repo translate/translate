@@ -484,16 +484,21 @@ class propunit(base.TranslationUnit):
     def getsource(self):
         return self.source
 
-    def gettarget(self):
+    @property
+    def target(self):
         return re.sub(u"\\\\ ", u" ", quote.propertiesdecode(self.translation))
 
-    def settarget(self, target):
+    @target.setter
+    def target(self, target):
         self._rich_target = None
         target = data.forceunicode(target)
         self.translation = self.personality.encode(target or u"",
                                                    self.encoding)
 
-    target = property(gettarget, settarget)
+    # Deprecated on 2.3.1
+    @deprecated("Use `target` property instead")
+    def gettarget(self):
+        return self.target
 
     @property
     def encoding(self):
