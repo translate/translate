@@ -172,7 +172,7 @@ class CatkeysUnit(base.TranslationUnit):
     @source.setter
     def source(self, source):
         self._rich_source = None
-        return self._set_source_or_target('source', source)
+        self._set_source_or_target('source', source)
 
     # Deprecated on 2.3.1
     @deprecated("Use `source` property instead")
@@ -184,7 +184,7 @@ class CatkeysUnit(base.TranslationUnit):
 
     def settarget(self, newtarget):
         self._rich_target = None
-        return self._set_source_or_target('target', newtarget)
+        self._set_source_or_target('target', newtarget)
     target = property(gettarget, settarget)
 
     def getnotes(self, origin=None):
