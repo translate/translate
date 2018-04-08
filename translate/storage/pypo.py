@@ -284,14 +284,16 @@ class pounit(pocommon.pounit):
         self.prev_msgid, self.prev_msgid_plural = self._set_source_vars(source)
     prev_source = property(_get_prev_source, _set_prev_source)
 
-    def gettarget(self):
+    @property
+    def target(self):
         """Returns the unescaped msgstr"""
         if isinstance(self.msgstr, dict):
             return multistring(list(map(unquotefrompo, self.msgstr.values())))
         else:
             return unquotefrompo(self.msgstr)
 
-    def settarget(self, target):
+    @target.setter
+    def target(self, target):
         """Sets the msgstr to the given (unescaped) value"""
         self._rich_target = None
         if isinstance(target, bytes):
@@ -316,7 +318,11 @@ class pounit(pocommon.pounit):
             self.msgstr = dict([(i, self.quote(targetstring)) for i, targetstring in six.iteritems(target)])
         else:
             self.msgstr = self.quote(target)
-    target = property(gettarget, settarget)
+
+    # Deprecated on 2.3.1
+    @deprecated("Use `target` property instead")
+    def gettarget(self):
+        return self.target
 
     def getalttrans(self):
         """Return a list of alternate units.
