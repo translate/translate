@@ -140,28 +140,28 @@ class PoXliffUnit(xliff.xliffunit):
         else:
             return super(PoXliffUnit, self).gettarget()
 
-    def settarget(self, text, lang='xx', append=False):
+    def settarget(self, target, lang='xx', append=False):
         self._rich_target = None
-        if self.target == text:
+        if self.target == target:
             return
         if not self.hasplural():
-            super(PoXliffUnit, self).settarget(text, lang, append)
+            super(PoXliffUnit, self).settarget(target, lang, append)
             return
-        if not isinstance(text, multistring):
-            text = multistring(text)
+        if not isinstance(target, multistring):
+            target = multistring(target)
         source = self.source
         sourcel = len(source.strings)
-        targetl = len(text.strings)
+        targetl = len(target.strings)
         if sourcel < targetl:
             sources = source.strings + [source.strings[-1]] * (targetl - sourcel)
-            targets = text.strings
+            targets = target.strings
             id = self.getid()
             self.source = multistring(sources)
             self.setid(id)
         elif targetl < sourcel:
-            targets = text.strings + [""] * (sourcel - targetl)
+            targets = target.strings + [""] * (sourcel - targetl)
         else:
-            targets = text.strings
+            targets = target.strings
 
         for i in range(len(self.units)):
             self.units[i].target = targets[i]

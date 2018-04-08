@@ -450,10 +450,10 @@ class xliffunit(lisa.LISAunit):
             if state_id < self.S_UNREVIEWED:
                 self.set_state_n(self.S_UNREVIEWED)
 
-    def settarget(self, text, lang='xx', append=False):
+    def settarget(self, target, lang='xx', append=False):
         """Sets the target string to the given value."""
-        super(xliffunit, self).settarget(text, lang, append)
-        if text:
+        super(xliffunit, self).settarget(target, lang, append)
+        if target:
             self.marktranslated()
 
 # This code is commented while this will almost always return false.

@@ -65,20 +65,20 @@ class RESXUnit(lisa.LISAunit):
             return None
         return data.forceunicode(targetnode.text) or u""
 
-    def settarget(self, text):
+    def settarget(self, target):
         # Firstly deal with reinitialising to None or setting to identical
         # string.
         self._rich_target = None
-        if self.target == text:
+        if self.target == target:
             return
         strings = []
-        if isinstance(text, list):
-            strings = text
+        if isinstance(target, list):
+            strings = target
         else:
-            strings = [text]
+            strings = [target]
         targetnode = self._gettargetnode()
         targetnode.clear()
-        targetnode.text = data.forceunicode(text) or u""
+        targetnode.text = data.forceunicode(target) or u""
         # Assume no <comment> follows; allow the </data> element
         # to be indented with 2 spaces (same level as the opening
         # <data> element before <value>)

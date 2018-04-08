@@ -155,7 +155,7 @@ class LISAunit(base.TranslationUnit):
                                 getXMLspace(self.xmlelement,
                                             self._default_xml_space))
 
-    def settarget(self, text, lang='xx', append=False):
+    def settarget(self, target, lang='xx', append=False):
         """Sets the "target" string (second language), or alternatively appends
         to the list
         """
@@ -163,15 +163,15 @@ class LISAunit(base.TranslationUnit):
         # need to propagate it
         if self._rich_target is not None:
             self._rich_target = None
-        text = data.forceunicode(text)
+        target = data.forceunicode(target)
         # Firstly deal with reinitialising to None or setting to identical
         # string
-        if self.target == text:
+        if self.target == target:
             return
         languageNode = self.target_dom
-        if text is not None:
+        if target is not None:
             if languageNode is None:
-                languageNode = self.createlanguageNode(lang, text, "target")
+                languageNode = self.createlanguageNode(lang, target, "target")
                 self.set_target_dom(languageNode, append)
             else:
                 if self.textNode:
@@ -180,7 +180,7 @@ class LISAunit(base.TranslationUnit):
                         languageNode = next(terms)
                     except StopIteration as e:
                         pass
-                languageNode.text = text
+                languageNode.text = target
         else:
             self.set_target_dom(None, False)
     target = property(gettarget, settarget)
