@@ -58,14 +58,14 @@ class RESXUnit(lisa.LISAunit):
     def getsource(self):
         return self.source
 
-    def gettarget(self, lang=None):
+    def gettarget(self):
         targetnode = self._gettargetnode()
         if targetnode is None:
             etree.SubElement(self.xmlelement, self.namespaced("value"))
             return None
         return data.forceunicode(targetnode.text) or u""
 
-    def settarget(self, text, lang='xx', append=False):
+    def settarget(self, text):
         # Firstly deal with reinitialising to None or setting to identical
         # string.
         self._rich_target = None
