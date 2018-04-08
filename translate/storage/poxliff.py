@@ -166,8 +166,6 @@ class PoXliffUnit(xliff.xliffunit):
         for i in range(len(self.units)):
             self.units[i].target = targets[i]
 
-    target = property(gettarget, settarget)
-
     def addnote(self, text, origin=None, position="append"):
         """Add a note specifically in a "note" tag"""
         if isinstance(text, bytes):
