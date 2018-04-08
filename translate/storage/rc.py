@@ -79,15 +79,20 @@ class rcunit(base.TranslationUnit):
     def getsource(self):
         return self.source
 
-    def gettarget(self):
+    @property
+    def target(self):
         return self.source
 
-    def settarget(self, target):
+    @target.setter
+    def target(self, target):
         """.. note:: This also sets the ``.source`` attribute!"""
         self._rich_target = None
         self.source = target
 
-    target = property(gettarget, settarget)
+    # Deprecated on 2.3.1
+    @deprecated("Use `target` property instead")
+    def gettarget(self):
+        return self.target
 
     def __str__(self):
         """Convert to a string."""
