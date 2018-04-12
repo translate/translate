@@ -332,10 +332,16 @@ class phpfile(base.TranslationStore):
             if arrname in handled:
                 return
             childs = set()
-            write('{}{} {} array(\n'.format(
+            if '->' in arrname:
+                separator = ' =>'
+            elif arrname == 'return':
+                separator = ''
+            else:
+                separator = ' ='
+            write('{}{}{} array(\n'.format(
                 ' ' * indent,
                 arrname.rsplit('->', 1)[-1],
-                '=>' if '->' in arrname else '='
+                separator,
             ))
             indent += 4
             prefix = '{}->'.format(arrname)
@@ -461,4 +467,4 @@ class phpfile(base.TranslationStore):
                         )
             elif isinstance(item, Return):
                 if isinstance(item.node, Array):
-                    handle_array('', item.node.nodes, lexer)
+                    handle_array('return', item.node.nodes, lexer)

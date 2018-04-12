@@ -669,19 +669,19 @@ $month_mar = 'Mar';"""
         phpfile = self.phpparse(phpsource)
         assert len(phpfile.units) == 8
         phpunit = phpfile.units[0]
-        assert phpunit.name == "'name1'"
+        assert phpunit.name == "return->'name1'"
         assert phpunit.source == "target1"
         phpunit = phpfile.units[1]
-        assert phpunit.name == "'list1'->'l1'"
+        assert phpunit.name == "return->'list1'->'l1'"
         assert phpunit.source == "target_l1_1"
         phpunit = phpfile.units[2]
-        assert phpunit.name == "'list1'->'l2'"
+        assert phpunit.name == "return->'list1'->'l2'"
         assert phpunit.source == "target_l1_2"
         phpunit = phpfile.units[3]
-        assert phpunit.name == "'list1'->'l3'"
+        assert phpunit.name == "return->'list1'->'l3'"
         assert phpunit.source == "target_l1_3"
         phpunit = phpfile.units[4]
-        assert phpunit.name == "'list2'->'l1'"
+        assert phpunit.name == "return->'list2'->'l1'"
         assert phpunit.source == "target_l2_1"
 
     def test_parsing_nested_arrays_with_array_declaration_in_next_line(self):
@@ -969,3 +969,16 @@ using nowdoc syntax.'''
         phpunit = phpfile.units[0]
         assert phpunit.name == "$$lang['mediaselect']"
         assert phpunit.source == "Bestand selectie"
+
+    def test_return_array(self):
+        phpsource = """<?php
+return array(
+    'peach' => 'pesca',
+);
+"""
+        phpfile = self.phpparse(phpsource)
+        assert len(phpfile.units) == 1
+        phpunit = phpfile.units[0]
+        assert phpunit.name == "return->'peach'"
+        assert phpunit.source == "pesca"
+        assert phpfile.__bytes__() == phpsource
