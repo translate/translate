@@ -147,6 +147,14 @@ class PHPLexer(FilteredLexer):
             return '"'
         return '\''
 
+    def extract_array(self):
+        pos = max(self.pos, self.codepos)
+        while self.tokens[pos].type not in ('ARRAY', 'LBRACKET'):
+            pos += 1
+        if self.tokens[pos].type == 'ARRAY':
+            return ''
+        return '[]'
+
 
 def phpencode(text, quotechar="'"):
     """Convert Python string to PHP escaping.
@@ -332,17 +340,25 @@ class phpfile(base.TranslationStore):
             if arrname in handled:
                 return
             childs = set()
+            # Default to classic array
+            init = 'array('
+            close = ')'
+            name = arrname
+            # Handle [] style array
+            if name.endswith('[]'):
+                init = '['
+                close = ']'
+                name = name[:-2]
+            # Handle return, assignment or sub array
             if '->' in arrname:
                 separator = ' =>'
+                name = name.rsplit('->', 1)[-1]
             elif arrname == 'return':
                 separator = ''
             else:
                 separator = ' ='
-            write('{}{}{} array(\n'.format(
-                ' ' * indent,
-                arrname.rsplit('->', 1)[-1],
-                separator,
-            ))
+            # Write array start
+            write('{}{}{} {}\n'.format(' ' * indent, name, separator, init))
             indent += 4
             prefix = '{}->'.format(arrname)
             pref_len = len(prefix)
@@ -354,8 +370,10 @@ class phpfile(base.TranslationStore):
                     handle_array(item, prefix + name.split('->', 1)[0], childs, indent)
                 else:
                     write(item.getoutput(' ' * indent, name))
-            write('{}){}\n'.format(
+            # Write array end
+            write('{}{}{}\n'.format(
                 ' ' * (indent - 4),
+                close,
                 ',' if '->' in arrname else ';'
             ))
             handled.add(arrname)
@@ -382,6 +400,7 @@ class phpfile(base.TranslationStore):
     def parse(self, phpsrc):
         """Read the source of a PHP file in and include them as units."""
         def handle_array(prefix, nodes, lexer):
+            prefix += lexer.extract_array()
             for item in nodes:
                 assert isinstance(item, ArrayElement)
                 # Skip empty keys
