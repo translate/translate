@@ -176,7 +176,7 @@ $lang['prefPanel-smime'] = 'Security';'''
         phpsource = '''return array(\n'id-1' => 'target-1',\n);'''
         pofile = self.php2po(phpsource, phptemplate)
         pounit = self.singleelement(pofile)
-        assert pounit.getlocations() == ["'id-1'"]
+        assert pounit.getlocations() == ["return->'id-1'"]
 
     def test_named_nested_arrays(self):
         phptemplate = '''$strings = array(
@@ -253,14 +253,14 @@ $lang['prefPanel-smime'] = 'Security';'''
         );'''
         pofile = self.php2po(phpsource, phptemplate)
         expected = {
-            "'name1'": ("source1", "target1"),
-            "'list1'->'l1'": ("source_l1_1", "target_l1_1"),
-            "'list1'->'l2'": ("source_l1_2", "target_l1_2"),
-            "'list1'->'l3'": ("source_l1_3", "target_l1_3"),
-            "'list2'->'l1'": ("source_l2_1", "target_l2_1"),
-            "'list2'->'l2'": ("source_l2_2", "target_l2_2"),
-            "'list2'->'l3'": ("source_l2_3", "target_l2_3"),
-            "'name2'": ("source2", "target2"),
+            "return->'name1'": ("source1", "target1"),
+            "return->'list1'->'l1'": ("source_l1_1", "target_l1_1"),
+            "return->'list1'->'l2'": ("source_l1_2", "target_l1_2"),
+            "return->'list1'->'l3'": ("source_l1_3", "target_l1_3"),
+            "return->'list2'->'l1'": ("source_l2_1", "target_l2_1"),
+            "return->'list2'->'l2'": ("source_l2_2", "target_l2_2"),
+            "return->'list2'->'l3'": ("source_l2_3", "target_l2_3"),
+            "return->'name2'": ("source2", "target2"),
         }
         for pounit in [x for x in pofile.units if x.source != '']:
             assert ((pounit.source, pounit.target) ==
