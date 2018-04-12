@@ -563,18 +563,21 @@ $month_mar = 'Mar';"""
     def test_parsing_arrays_using_short_array_syntax(self):
         """parse short array syntax.
         Bug #3626"""
-        phpsource = '''$lang = [
-         'item1' => 'value1',
-         'item2' => 'value2'
-      ];'''
+        phpsource = b'''<?php
+$lang = [
+    'item1' => 'value1',
+    'item2' => 'value2',
+];
+'''
         phpfile = self.phpparse(phpsource)
         assert len(phpfile.units) == 2
         phpunit = phpfile.units[0]
-        assert phpunit.name == "$lang->'item1'"
+        assert phpunit.name == "$lang[]->'item1'"
         assert phpunit.source == "value1"
         phpunit = phpfile.units[1]
-        assert phpunit.name == "$lang->'item2'"
+        assert phpunit.name == "$lang[]->'item2'"
         assert phpunit.source == "value2"
+        assert phpfile.__bytes__() == phpsource
 
     def test_parsing_nested_arrays(self):
         """parse the nested array syntax. Bug #2240"""
@@ -955,11 +958,11 @@ using nowdoc syntax.'''
         phpfile = self.phpparse(phpsource)
         assert len(phpfile.units) == 3
         assert phpfile.units[0].source == 'First'
-        assert phpfile.units[0].name == "$arr->'1234'"
+        assert phpfile.units[0].name == "$arr[]->'1234'"
         assert phpfile.units[1].source == 'Second'
-        assert phpfile.units[1].name == "$arr->1234"
+        assert phpfile.units[1].name == "$arr[]->1234"
         assert phpfile.units[2].source == 'Third'
-        assert phpfile.units[2].name == "$arr->'1245'"
+        assert phpfile.units[2].name == "$arr[]->'1245'"
 
     def test_double_var(self):
         """checks that a double $ is handled correctly"""
@@ -971,7 +974,7 @@ using nowdoc syntax.'''
         assert phpunit.source == "Bestand selectie"
 
     def test_return_array(self):
-        phpsource = """<?php
+        phpsource = b"""<?php
 return array(
     'peach' => 'pesca',
 );
