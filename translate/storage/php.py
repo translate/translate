@@ -353,7 +353,7 @@ class phpfile(base.TranslationStore):
             if '->' in arrname:
                 separator = ' =>'
                 name = name.rsplit('->', 1)[-1]
-            elif arrname == 'return':
+            elif name == 'return':
                 separator = ''
             else:
                 separator = ' ='
