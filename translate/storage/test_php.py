@@ -62,7 +62,7 @@ def test_php_escaping_double_quote():
     assert php.phpdecode(r'\"', quotechar='"') == '"'       # See table of escaped characters
     assert php.phpdecode(r'\117\143\164\141\154', quotechar='"') == 'Octal'       # Octal: \[0-7]{1,3}
     assert php.phpdecode(r'\x48\x65\x78', quotechar='"') == 'Hex'                 # Hex: \x[0-9A-Fa-f]{1,2}
-    assert php.phpdecode(r'\117\\c\164\141\154', quotechar='"') == 'O\ctal'  # Mixed
+    assert php.phpdecode(r'\117\\c\164\141\154', quotechar='"') == r'O\ctal'  # Mixed
     # Decoding - special examples
     assert php.phpdecode(r"Don't escape me here\'s", quotechar='"') == r"Don't escape me here\'s"  # See bug #589
     assert php.phpdecode("Line1\nLine2") == "Line1\nLine2"      # Preserve newlines in multiline messages
@@ -76,7 +76,7 @@ def test_php_escaping_double_quote():
     assert php.phpencode("\f", quotechar='"') == r"\f"      # See table of escaped characters
     assert php.phpencode(r"\\", quotechar='"') == r"\\"      # See table of escaped characters
     #assert php.phpencode("\$", quotechar='"') == "$"      # See table of escaped characters - this may cause confusion with actual variables in roundtripping
-    assert php.phpencode("\$", quotechar='"') == r"\$"     # Just to check that we don't unescape this
+    assert php.phpencode(r"\$", quotechar='"') == r"\$"     # Just to check that we don't unescape this
     assert php.phpencode('"', quotechar='"') == r'\"'
     assert php.phpencode(r"Don't escape me here\'s", quotechar='"') == r"Don't escape me here\'s"  # See bug #589
 
