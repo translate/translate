@@ -985,3 +985,16 @@ return array(
         assert phpunit.name == "return->'peach'"
         assert phpunit.source == "pesca"
         assert phpfile.__bytes__() == phpsource
+
+    def test_return_array_short(self):
+        phpsource = b"""<?php
+return [
+    'peach' => 'pesca',
+];
+"""
+        phpfile = self.phpparse(phpsource)
+        assert len(phpfile.units) == 1
+        phpunit = phpfile.units[0]
+        assert phpunit.name == "return[]->'peach'"
+        assert phpunit.source == "pesca"
+        assert phpfile.__bytes__() == phpsource
