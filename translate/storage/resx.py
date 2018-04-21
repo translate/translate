@@ -73,11 +73,6 @@ class RESXUnit(lisa.LISAunit):
         self._rich_target = None
         if self.target == target:
             return
-        strings = []
-        if isinstance(target, list):
-            strings = target
-        else:
-            strings = [target]
         targetnode = self._gettargetnode()
         targetnode.clear()
         targetnode.text = data.forceunicode(target) or u""
