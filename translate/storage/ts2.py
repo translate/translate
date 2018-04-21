@@ -185,8 +185,6 @@ class tsunit(lisa.LISAunit):
     def gettarget(self):
         return self.target
 
-    rich_target = property(base.TranslationUnit._get_rich_target, base.TranslationUnit._set_rich_target)
-
     def hasplural(self):
         return self.xmlelement.get("numerus") == "yes"
 
