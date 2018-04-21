@@ -244,7 +244,14 @@ class xliffunit(lisa.LISAunit):
                                            self._default_xml_space))
             ]
         return self._rich_target
-    rich_target = property(get_rich_target, set_rich_target)
+
+    @property
+    def rich_target(self):
+        return self.get_rich_target()
+
+    @rich_target.setter
+    def rich_target(self, value):
+        self.set_rich_target(value)
 
     def addalttrans(self, txt, origin=None, lang=None, sourcetxt=None,
                     matchquality=None):
