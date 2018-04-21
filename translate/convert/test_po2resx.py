@@ -446,8 +446,8 @@ msgstr "Bézier-kurwe"
         assert resx_file == expected_output
 
 
-class TestPO2TSCommand(test_convert.TestConvertCommand, TestPO2RESX):
-    """ Tests running actual po2ts commands on files """
+class TestPO2RESXCommand(test_convert.TestConvertCommand, TestPO2RESX):
+    """ Tests running actual po2resx commands on files """
     convertmodule = po2resx
 
     def test_help(self, capsys):
