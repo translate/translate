@@ -44,6 +44,8 @@ class RESXUnit(lisa.LISAunit):
         langset = etree.Element(self.namespaced(self.languageNode))
 
         langset.text = text
+        # assume no <comment>, closing </data> indents with 2 spaces
+        langset.tail = u"\n  "
         return langset
 
     def _gettargetnode(self):
@@ -234,4 +236,20 @@ class RESXFile(lisa.LISAfile):
         if unit.getid() is None:
             self._messagenum += 1
             unit.setid(u"%s" % unit.source.strip(' '))
+        # adjust the current and previous elements for new ones;
+        # otherwise they will not be indented correctly.
+        if new:
+            previous_node = unit.xmlelement.getprevious()
+            if previous_node is None:
+                # this is the first element; adjust root.
+                # should not happen in a ResX file prepared by Visual Studio
+                # since it includes an inline XSD plus resheader at all times.
+                self.body.text = u"\n  "
+            else:
+                # adjust the <data> tag being added by updating the previous one.
+                previous_node.tail = u"\n  "
+            # adjust the indent of the following <value> element
+            unit.xmlelement.text = u"\n    "
+            # adjust the indent of the closing </root> tag
+            unit.xmlelement.tail = u"\n"
         return unit

@@ -92,6 +92,34 @@ class TestRESXUnitFromParsedString(TestRESXUnit):
         self.store = resx.RESXFile.parsestring(self.resxsource % '')
         self.unit = self.store.units[0]
 
+    def _assert_store(self, expected_resx):
+        output_file = wStringIO.StringIO()
+        self.store.serialize(output_file)
+        actual_resx = output_file.getvalue().decode("utf-8")
+        assert actual_resx == expected_resx
+
+    def test_newunit(self):
+        new_unit = resx.RESXUnit("New translated value")
+        new_unit.setid("test")
+        self.store.addunit(new_unit)
+
+        expected_resx = self.resxsource % '''<data name="test" xml:space="preserve">
+    <value>New translated value</value>
+  </data>'''
+        self._assert_store(expected_resx)
+
+    def test_newunit_comment(self):
+        new_unit = resx.RESXUnit("New translated value")
+        new_unit.setid("test")
+        new_unit.addnote("this unit didn't exist before")
+        self.store.addunit(new_unit)
+
+        expected_resx = self.resxsource % '''<data name="test" xml:space="preserve">
+    <value>New translated value</value>
+    <comment>this unit didn't exist before</comment>
+  </data>'''
+        self._assert_store(expected_resx)
+
 
 class TestRESXfile(test_monolingual.TestMonolingualStore):
     StoreClass = resx.RESXFile
