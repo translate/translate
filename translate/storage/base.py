@@ -229,12 +229,17 @@ class TranslationUnit(object):
         if self.source != multi:
             self.source = multi
 
-    def _get_rich_target(self):
+    @property
+    def rich_target(self):
+        """
+        .. seealso:: :meth:`.rich_to_multistring`, :meth:`.multistring_to_rich`
+        """
         if self._rich_target is None:
             self._rich_target = self.multistring_to_rich(self.target)
         return self._rich_target
 
-    def _set_rich_target(self, value):
+    @rich_target.setter
+    def rich_target(self, value):
         if not hasattr(value, '__iter__'):
             raise ValueError('value must be iterable')
         if len(value) < 1:
@@ -243,10 +248,6 @@ class TranslationUnit(object):
             raise ValueError('value[0] must be of type StringElem.')
         self._rich_target = list(value)
         self.target = self.rich_to_multistring(value)
-    rich_target = property(_get_rich_target, _set_rich_target)
-    """
-    .. seealso:: :meth:`.rich_to_multistring`, :meth:`.multistring_to_rich`
-    """
 
     def gettargetlen(self):
         """Returns the length of the target string.
