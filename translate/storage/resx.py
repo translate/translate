@@ -88,6 +88,11 @@ class RESXUnit(lisa.LISAunit):
     def gettarget(self):
         return self.target
 
+    # Deprecated on 2.3.1
+    @deprecated("Use `target` property instead")
+    def settarget(self, target):
+        self.target = target
+
     rich_target = property(base.TranslationUnit._get_rich_target, base.TranslationUnit._set_rich_target)
 
     def addnote(self, text, origin=None, position="append"):
