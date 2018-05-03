@@ -288,5 +288,3 @@ END\r\
 """
         rc_file = self.source_parse(rc_source)
         assert len(rc_file.units) == 0
-
-
