@@ -398,6 +398,19 @@ key=value
         assert bom not in result[3:]
         assert b'None' not in result[3:]
 
+    def test_joomla_set_target(self):
+        """test various items used in Joomla files"""
+        propsource = '''COM_EXAMPLE_FOO="This is a test"\n'''.encode('utf-8')
+        proptarget = '''COM_EXAMPLE_FOO="This is another test"\n'''.encode('utf-8')
+        propfile = self.propparse(propsource, personality="joomla")
+        assert len(propfile.units) == 1
+        propunit = propfile.units[0]
+        assert propunit.name == u'COM_EXAMPLE_FOO'
+        assert propunit.source == u'This is a test'
+        assert bytes(propfile) == propsource
+        propunit.target = 'This is another test'
+        assert bytes(propfile) == proptarget
+
     def test_joomla(self):
         """test various items used in Joomla files"""
         propsource = '''; comment\nVALUE="I am a "_QQ_"value"_QQ_""\n'''.encode('utf-8')

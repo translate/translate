@@ -259,6 +259,10 @@ class Dialect(object):
             return quote.javapropertiesencode(string or u"")
         return quote.java_utf8_properties_encode(string or u"")
 
+    @staticmethod
+    def decode(string):
+        return quote.propertiesdecode(string)
+
     @classmethod
     def find_delimiter(cls, line):
         """Find the type and position of the delimiter in a property line.
@@ -433,9 +437,15 @@ class DialectJoomla(Dialect):
     def value_strip(cls, value):
         """Strip unneeded characters from the value"""
         newvalue = value.strip()
+        if not newvalue:
+            return newvalue
         if newvalue[0] == '"' and newvalue[-1] == '"':
             newvalue = newvalue[1:-1]
         return newvalue.replace('"_QQ_"', '"')
+
+    @classmethod
+    def decode(cls, string):
+        return cls.value_strip(string)
 
     @classmethod
     def encode(cls, string, encoding=None):
@@ -471,7 +481,7 @@ class propunit(base.TranslationUnit):
 
     @property
     def source(self):
-        return quote.propertiesdecode(self.value)
+        return self.personality.decode(self.value)
 
     @source.setter
     def source(self, source):
@@ -486,7 +496,7 @@ class propunit(base.TranslationUnit):
 
     @property
     def target(self):
-        return re.sub(u"\\\\ ", u" ", quote.propertiesdecode(self.translation))
+        return re.sub(u"\\\\ ", u" ", self.personality.decode(self.translation))
 
     @target.setter
     def target(self, target):
