@@ -27,7 +27,7 @@ def test_find_delimiter_pos_multiple():
 def test_find_delimiter_pos_none():
     """Find delimiters when there isn't one"""
     assert properties.DialectJava.find_delimiter(u"key") == (None, -1)
-    assert properties.DialectJava.find_delimiter(u"key\=\:\ ") == (None, -1)
+    assert properties.DialectJava.find_delimiter(u"key\\=\\:\\ ") == (None, -1)
 
 
 def test_find_delimiter_pos_whitespace():
@@ -42,10 +42,10 @@ def test_find_delimiter_pos_whitespace():
 
 def test_find_delimiter_pos_escapes():
     """Find delimiters when potential earlier delimiters are escaped"""
-    assert properties.DialectJava.find_delimiter(u"key\:=value") == ('=', 5)
-    assert properties.DialectJava.find_delimiter(u"key\=: value") == (':', 5)
-    assert properties.DialectJava.find_delimiter(u"key\   value") == (' ', 5)
-    assert properties.DialectJava.find_delimiter(u"key\ key\ key\: = value") == ('=', 16)
+    assert properties.DialectJava.find_delimiter(u"key\\:=value") == ('=', 5)
+    assert properties.DialectJava.find_delimiter(u"key\\=: value") == (':', 5)
+    assert properties.DialectJava.find_delimiter(u"key\\   value") == (' ', 5)
+    assert properties.DialectJava.find_delimiter(u"key\\ key\\ key\\: = value") == ('=', 16)
 
 
 def test_is_line_continuation():
@@ -60,9 +60,9 @@ def test_is_line_continuation():
 def test_key_strip():
     assert properties._key_strip(u"key") == "key"
     assert properties._key_strip(u" key") == "key"
-    assert properties._key_strip(u"\ key") == "\ key"
+    assert properties._key_strip(u"\\ key") == "\\ key"
     assert properties._key_strip(u"key ") == "key"
-    assert properties._key_strip(u"key\ ") == "key\ "
+    assert properties._key_strip(u"key\\ ") == "key\\ "
 
 
 def test_is_comment_one_line():
@@ -159,8 +159,8 @@ class TestProp(test_monolingual.TestMonolingualStore):
         whitespaces = (
             ('key = value', 'key', 'value'),      # Standard for baseline
             (' key =  value', 'key', 'value'),    # Extra \s before key and value
-            ('\ key\ = value', '\ key\ ', 'value'),  # extra space at start and end of key
-            ('key = \ value ', 'key', ' value '),  # extra space at start end end of value
+            ('\\ key\\ = value', '\\ key\\ ', 'value'),  # extra space at start and end of key
+            ('key = \\ value ', 'key', ' value '),  # extra space at start end end of value
         )
         for propsource, key, value in whitespaces:
             propfile = self.propparse(propsource)
@@ -221,12 +221,12 @@ key=value
 
     def test_fullspec_escaped_key(self):
         """Escaped delimeters can be in the key"""
-        prop_source = u"\:\="
+        prop_source = u"\\:\\="
         prop_store = self.propparse(prop_source)
         assert len(prop_store.units) == 1
         unit = prop_store.units[0]
         print(unit)
-        assert unit.name == u"\:\="
+        assert unit.name == u"\\:\\="
 
     def test_fullspec_line_continuation(self):
         """Whitespace delimiter and pre whitespace in line continuation are dropped"""
