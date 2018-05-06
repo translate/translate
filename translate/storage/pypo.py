@@ -48,6 +48,29 @@ po_unescape_map = {"\\r": "\r", "\\t": "\t", '\\"': '"', '\\n': '\n', '\\\\': '\
 po_escape_map = dict([(value, key) for (key, value) in po_unescape_map.items()])
 
 
+def splitlines(text):
+    """Split lines based on first newline char.
+
+    Can not use univerzal newlines as they match any newline like
+    character inside text and that breaks on files with unix newlines
+    and LF chars inside comments.
+    """
+    # Find first newline
+    newline = b'\n'
+    for i, ch in enumerate(text):
+        # Iteration over bytes yields numbers in Python 3
+        if ch in ('\n', 10):
+            break
+        if ch in ('\r', 13):
+            if text[i + 1] in ('\n', 10):
+                newline = b'\r\n'
+            else:
+                newline = b'\r'
+            break
+
+    return [x + newline for x in text.split(newline)]
+
+
 def escapeforpo(line):
     """Escapes a line for po format. assumes no \n occurs in the line.
 
@@ -599,7 +622,7 @@ class pounit(pocommon.pounit):
         return len(self.msgid_plural) > 0
 
     def parse(self, src):
-        return poparser.parse_unit(poparser.ParseState(src.splitlines(True), pounit), self)
+        return poparser.parse_unit(poparser.ParseState(splitlines(src), pounit), self)
 
     def _getmsgpartstr(self, partname, partlines, partcomments=""):
         if isinstance(partlines, dict):
@@ -787,7 +810,7 @@ class pofile(pocommon.pofile):
             self.filename = ''
         if not isinstance(input, bytes):
             input = input.read()
-        input = iter(input.splitlines(True))
+        input = iter(splitlines(input))
         # clear units to get rid of automatically generated headers before parsing
         self.units = []
         poparser.parse_units(poparser.ParseState(input, self.create_unit), self)
