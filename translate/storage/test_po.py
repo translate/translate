@@ -835,7 +835,7 @@ msgstr "b"
         assert header_dict[u"Last-Translator"] == u"Tránslátór"
 
     def test_final_slash(self):
-        """Test that \ as last character is correcly interpreted (bug 960)."""
+        """Test that \\ as last character is correcly interpreted (bug 960)."""
         posource = r'''
 msgid ""
 msgstr ""
