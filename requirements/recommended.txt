@@ -14,4 +14,4 @@ python-Levenshtein>=0.12
 chardet==3.0.4
 
 # To provide translations for language names without need for OS package.
-pycountry==18.5.20
+pycountry==18.5.26
