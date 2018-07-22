@@ -130,6 +130,10 @@ msgstr ""
 msgid "booo"
 msgstr ""
 
+#: foo->
+msgid "bar2"
+msgstr ""
+
 #: eggs
 msgid "spam"
 msgstr ""
@@ -137,21 +141,25 @@ msgstr ""
         template_string = '''
 foo:
     bar: bar
+    '': bar2
     baz:
         boo: booo
 eggs: spam
 '''
         target_store = self._convert_to_store(input_string, template_string)
-        assert len(target_store.units) == 3
+        assert len(target_store.units) == 4
         assert target_store.units[0].getlocations() == ['foo->bar']
         assert target_store.units[0].source == "bar"
         assert target_store.units[0].target == "bar"
-        assert target_store.units[1].getlocations() == ['foo->baz->boo']
-        assert target_store.units[1].source == "booo"
-        assert target_store.units[1].target == "booo"
-        assert target_store.units[2].getlocations() == ['eggs']
-        assert target_store.units[2].source == "spam"
-        assert target_store.units[2].target == "spam"
+        assert target_store.units[1].getlocations() == ['foo->']
+        assert target_store.units[1].source == "bar2"
+        assert target_store.units[1].target == "bar2"
+        assert target_store.units[2].getlocations() == ['foo->baz->boo']
+        assert target_store.units[2].source == "booo"
+        assert target_store.units[2].target == "booo"
+        assert target_store.units[3].getlocations() == ['eggs']
+        assert target_store.units[3].source == "spam"
+        assert target_store.units[3].target == "spam"
 
     def test_convert_completion_below_threshold(self):
         """Check no conversion if input completion is below threshold."""
