@@ -96,15 +96,29 @@ class TestJSONNestedResourceStore(test_monolingual.TestMonolingualUnit):
         assert out.getvalue() == b'{\n    "key": {\n        "second": "value"\n    }\n}\n'
 
     def test_ordering(self):
-        store = self.StoreClass()
-        store.parse('''{
+        data = b'''{
     "foo": "foo",
     "bar": {
-        "baz": "baz"
-}}''')
+        "ba1": "bag",
+        "ba2": "bag",
+        "ba3": "bag",
+        "ba4": "baz"
+    }
+}
+'''
+        store = self.StoreClass()
+        store.parse(data)
 
         assert store.units[0].source == 'foo'
-        assert store.units[1].getid() == '.bar.baz'
+        assert store.units[1].getid() == '.bar.ba1'
+        assert store.units[2].getid() == '.bar.ba2'
+        assert store.units[3].getid() == '.bar.ba3'
+        assert store.units[4].getid() == '.bar.ba4'
+
+        out = BytesIO()
+        store.serialize(out)
+
+        assert out.getvalue() == data
 
 
 class TestWebExtensionUnit(test_monolingual.TestMonolingualUnit):
