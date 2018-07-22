@@ -71,6 +71,7 @@ msgstr ""
         input_string = '''
 foo:
     bar: bar
+    '': bar2
     baz:
         boo: booo
 
@@ -78,16 +79,19 @@ foo:
 eggs: spam
 '''
         target_store = self._convert_to_store(input_string)
-        assert self._count_elements(target_store) == 3
+        assert self._count_elements(target_store) == 4
         assert target_store.units[1].getlocations() == ['foo->bar']
         assert target_store.units[1].source == "bar"
         assert target_store.units[1].target == ""
-        assert target_store.units[2].getlocations() == ['foo->baz->boo']
-        assert target_store.units[2].source == "booo"
+        assert target_store.units[2].getlocations() == ['foo->']
+        assert target_store.units[2].source == "bar2"
         assert target_store.units[2].target == ""
-        assert target_store.units[3].getlocations() == ['eggs']
-        assert target_store.units[3].source == "spam"
+        assert target_store.units[3].getlocations() == ['foo->baz->boo']
+        assert target_store.units[3].source == "booo"
         assert target_store.units[3].target == ""
+        assert target_store.units[4].getlocations() == ['eggs']
+        assert target_store.units[4].source == "spam"
+        assert target_store.units[4].target == ""
 
     def test_no_duplicates(self):
         """Check converting drops duplicates."""

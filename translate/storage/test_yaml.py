@@ -350,6 +350,27 @@ martin: {name: Martin D'vloper, job: Developer, skill: Elite}
   value: teststring2
 '''
 
+    def test_empty_key(self):
+        store = self.StoreClass()
+        store.parse('''
+'': Jedna
+foo:
+  '': Dve
+''')
+        assert len(store.units) == 2
+        assert store.units[0].getid() == ''
+        assert store.units[0].source == 'Jedna'
+        assert store.units[1].getid() == 'foo->'
+        assert store.units[1].source == 'Dve'
+        out = BytesIO()
+        store.serialize(out)
+        assert out.getvalue() == b'''? ''
+: Jedna
+foo:
+  ? ''
+  : Dve
+'''
+
 
 class TestRubyYAMLResourceStore(test_monolingual.TestMonolingualStore):
     StoreClass = yaml.RubyYAMLFile

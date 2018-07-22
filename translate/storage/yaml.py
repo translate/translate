@@ -149,7 +149,7 @@ class YAMLFile(base.TranslationStore):
     def serialize(self, out):
         def nested_set(target, path, value):
             if len(path) > 1:
-                if len(path) == 2 and path[1][0] == '[' and path[1][-1] == ']' and path[1][1:-1].isdigit():
+                if len(path) == 2 and path[1] and path[1][0] == '[' and path[1][-1] == ']' and path[1][1:-1].isdigit():
                     if path[0] not in target:
                         target[path[0]] = []
                     target[path[0]].append(value)
