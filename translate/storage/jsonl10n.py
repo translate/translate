@@ -232,7 +232,7 @@ class JsonNestedUnit(JsonUnit):
     def getvalue(self):
         ret = self.converttarget()
         for k in reversed(self.getkey()):
-            ret = {k: ret}
+            ret = OrderedDict({k: ret})
         return ret
 
 
