@@ -37,10 +37,12 @@ class TestCSV(test_base.TestTranslationStore):
         assert store.units[0].target == 'zkouška sirén'
 
     def test_utf_8_sig(self):
-        store = self.parse_store('foo.c:1;test;zkouška sirén'.encode('utf-8-sig'))
+        content = '"location";"source";"target"\r\n"foo.c:1";"test";"zkouška sirén"\r\n'.encode('utf-8-sig')
+        store = self.parse_store(content)
         assert len(store.units) == 1
         assert store.units[0].source == 'test'
         assert store.units[0].target == 'zkouška sirén'
+        assert bytes(store) == content
 
     @mark.xfail(reason="Bug #3356")
     def test_context_is_parsed(self):

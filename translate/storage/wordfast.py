@@ -78,12 +78,16 @@ Extended Attributes
     The last 4 columns allow users to define and manage extended attributes.
     These are left as is and are not directly managed byour implemenation.
 """
+from __future__ import unicode_literals
 
-import csv
 import six
 import time
 
-from translate.misc import csv_utils
+if six.PY2:
+    from backports import csv
+else:
+    import csv
+
 from translate.misc.deprecation import deprecated
 from translate.storage import base
 
@@ -423,12 +427,11 @@ class WordfastTMFile(base.TranslationStore):
             return
 
         output = csv.StringIO()
-        writer = csv_utils.UnicodeDictWriter(
-            output, fieldnames=WF_FIELDNAMES, encoding=self.encoding, dialect="wordfast")
+        writer = csv.DictWriter(output, fieldnames=WF_FIELDNAMES, dialect="wordfast")
         # No real headers, the first line contains metadata
         self.header.tucount = len(translated_units)
         writer.writerow(dict(zip(WF_FIELDNAMES, [self.header.header[key] for key in WF_FIELDNAMES_HEADER])))
 
         for unit in translated_units:
             writer.writerow(unit.dict)
-        out.write(output.getvalue() if six.PY2 else output.getvalue().encode(self.encoding))
+        out.write(output.getvalue().encode(self.encoding))

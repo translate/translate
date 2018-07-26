@@ -48,12 +48,15 @@ Escaping
 
     Functions allow for :func:`._escape` and :func:`._unescape`.
 """
+from __future__ import unicode_literals
 
-import csv
 import six
+if six.PY2:
+    from backports import csv
+else:
+    import csv
 
 from translate.lang import data
-from translate.misc import csv_utils
 from translate.misc.deprecation import deprecated
 from translate.storage import base
 
@@ -266,8 +269,7 @@ class CatkeysFile(base.TranslationStore):
             tmsrc = input.read()
             input.close()
             input = tmsrc
-        if six.PY3:
-            input = input.decode(self.encoding)
+        input = input.decode(self.encoding)
         reader = csv.DictReader(input.split("\n"), fieldnames=FIELDNAMES, dialect="catkeys")
         for idx, line in enumerate(reader):
             if idx == 0:
@@ -280,9 +282,9 @@ class CatkeysFile(base.TranslationStore):
 
     def serialize(self, out):
         output = csv.StringIO()
-        writer = csv_utils.UnicodeDictWriter(output, FIELDNAMES, encoding=self.encoding, dialect="catkeys")
+        writer = csv.DictWriter(output, FIELDNAMES, dialect="catkeys")
         # No real headers, the first line contains metadata
         writer.writerow(dict(zip(FIELDNAMES, [self.header._header_dict[key] for key in FIELDNAMES_HEADER])))
         for unit in self.units:
             writer.writerow(unit.dict)
-        out.write(output.getvalue() if six.PY2 else output.getvalue().encode(self.encoding))
+        out.write(output.getvalue().encode(self.encoding))
