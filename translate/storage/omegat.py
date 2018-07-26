@@ -37,12 +37,15 @@ Encoding
     encoded files use the .utf8 extension while system encoded files use
     the .tab extension.
 """
+from __future__ import unicode_literals
 
-import csv
 import locale
 import six
+if six.PY2:
+    from backports import csv
+else:
+    import csv
 
-from translate.misc import csv_utils
 from translate.misc.deprecation import deprecated
 from translate.storage import base
 
@@ -199,11 +202,10 @@ class OmegaTFile(base.TranslationStore):
             return
 
         output = csv.StringIO()
-        writer = csv_utils.UnicodeDictWriter(
-            output, fieldnames=OMEGAT_FIELDNAMES, encoding=self.encoding, dialect="omegat")
+        writer = csv.DictWriter(output, fieldnames=OMEGAT_FIELDNAMES, dialect="omegat")
         for unit in translated_units:
             writer.writerow(unit.dict)
-        out.write(output.getvalue() if six.PY2 else output.getvalue().encode(self.encoding))
+        out.write(output.getvalue().encode(self.encoding))
 
 
 class OmegaTFileTab(OmegaTFile):

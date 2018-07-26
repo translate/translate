@@ -144,6 +144,9 @@ Gaupol might need the 'Universal Encoding Detector'
 Trados TXT TM support requires the BeautifulSoup parser
 <http://www.crummy.com/software/BeautifulSoup/>
 
+CSV based file formats require backports.csv package on Python 2
+<https://pypi.org/project/backports.csv/>.
+
 
 Program overview
 ----------------

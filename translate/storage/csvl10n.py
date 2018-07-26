@@ -21,10 +21,14 @@
 or entire files (csvfile) for use with localisation
 """
 
-import csv
-import six
+from __future__ import unicode_literals
 
-from translate.misc import csv_utils
+import six
+if six.PY2:
+    from backports import csv
+else:
+    import csv
+
 from translate.storage import base
 
 
@@ -35,22 +39,6 @@ class DefaultDialect(csv.excel):
 
 
 csv.register_dialect('default', DefaultDialect)
-
-
-def from_unicode(text, encoding='utf-8'):
-    if encoding == 'auto':
-        encoding = 'utf-8'
-    if isinstance(text, six.text_type):
-        return text.encode(encoding)
-    return text
-
-
-def to_unicode(text, encoding='utf-8'):
-    if encoding == 'auto':
-        encoding = 'utf-8'
-    if isinstance(text, six.text_type):
-        return text
-    return text.decode(encoding)
 
 
 @six.python_2_unicode_compatible
@@ -174,7 +162,6 @@ class csvunit(base.TranslationUnit):
             rkey = fieldname_map.get(key, key)
             if value is None or key is None or key == EXTRA_KEY:
                 continue
-            value = to_unicode(value, encoding)
             if rkey == "id":
                 self.id = value
             elif rkey == "source":
@@ -296,8 +283,6 @@ class csvfile(base.TranslationStore):
         if not fieldnames:
             self.fieldnames = ['location', 'source', 'target', 'id', 'fuzzy', 'context', 'translator_comments', 'developer_comments']
         else:
-            if isinstance(fieldnames, six.string_types):
-                fieldnames = [fieldname.strip() for fieldname in fieldnames.split(",")]
             self.fieldnames = fieldnames
         self.filename = getattr(inputfile, 'name', '')
         self.dialect = 'default'
@@ -312,11 +297,7 @@ class csvfile(base.TranslationStore):
         self.encoding = encoding or 'utf-8'
 
         sniffer = csv.Sniffer()
-        # sniff and detect_header want bytes on Python 2 but text on Python 3
-        if six.PY2:
-            sample = csvsrc[:1024]
-        else:
-            sample = text[:1024]
+        sample = text[:1024]
 
         try:
             self.dialect = sniffer.sniff(sample)
@@ -335,7 +316,7 @@ class csvfile(base.TranslationStore):
         except csv.Error:
             pass
 
-        inputfile = csv.StringIO(csvsrc if six.PY2 else text)
+        inputfile = csv.StringIO(text)
         reader = try_dialects(inputfile, self.fieldnames, self.dialect)
 
         first_row = True
@@ -349,18 +330,18 @@ class csvfile(base.TranslationStore):
     def serialize(self, out):
         """Write to file"""
         source = self.getoutput()
-        if not isinstance(source, six.text_type):
-            source = source.decode('utf-8')
-        out.write(source.encode(self.encoding))
+        if isinstance(source, six.text_type):
+            # Python 3
+            out.write(source.encode(self.encoding))
+        else:
+            out.write(source)
 
     def getoutput(self):
         output = csv.StringIO()
-        writer = csv_utils.UnicodeDictWriter(output, self.fieldnames,
-                                             encoding=self.encoding,
-                                             extrasaction='ignore',
-                                             dialect=self.dialect)
-        # writeheader() would need Python 2.7
-        writer.writerow(dict(zip(self.fieldnames, self.fieldnames)))
+        writer = csv.DictWriter(output, self.fieldnames,
+                                extrasaction='ignore',
+                                dialect=self.dialect)
+        writer.writeheader()
         for ce in self.units:
             writer.writerow(ce.todict())
         return output.getvalue()

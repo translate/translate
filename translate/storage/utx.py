@@ -42,12 +42,16 @@ Format Implementation
 Encoding
     The files are UTF-8 encoded with no BOM and CR+LF line terminators.
 """
+from __future__ import unicode_literals
 
-import csv
 import six
 import time
 
-from translate.misc import csv_utils
+if six.PY2:
+    from backports import csv
+else:
+    import csv
+
 from translate.misc.deprecation import deprecated
 from translate.storage import base
 
@@ -294,11 +298,10 @@ class UtxFile(base.TranslationStore):
             return
 
         output = csv.StringIO()
-        writer = csv_utils.UnicodeDictWriter(
-            output, fieldnames=self._fieldnames, encoding=self.encoding, dialect="utx")
+        writer = csv.DictWriter(output, fieldnames=self._fieldnames, dialect="utx")
         for unit in translated_units:
             writer.writerow(unit.dict)
 
-        result = output.getvalue() if six.PY2 else output.getvalue().encode(self.encoding)
+        result = output.getvalue().encode(self.encoding)
         out.write(self._write_header().encode(self.encoding))
         out.write(result)
