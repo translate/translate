@@ -209,6 +209,11 @@ class TestAndroidResourceUnit(test_monolingual.TestMonolingualUnit):
         xml = '<string name="teststring">\\@twitterescape</string>\n\n'
         self.__check_parse(string, xml)
 
+    def test_parse_question(self):
+        string = '?'
+        xml = '<string name="question">\\?</string>'
+        self.__check_parse(string, xml)
+
     def test_parse_quote(self):
         string = 'quote \'escape\''
         xml = '<string name="teststring">quote \\\'escape\\\'</string>\n\n'

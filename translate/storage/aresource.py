@@ -179,7 +179,7 @@ class AndroidResourceUnit(base.TranslationUnit):
                     elif c == ' ':
                         text[i-1:i+1] = ' '  # an actual space
                         i -= 1
-                    elif c in '"\'@':
+                    elif c in '"\'@?':
                         text[i-1:i] = ''  # remove the backslash
                         i -= 1
                     elif c == 'u':
