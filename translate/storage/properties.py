@@ -328,6 +328,14 @@ class Dialect(object):
         """Strip unneeded characters from the value"""
         return value.lstrip()
 
+    @classmethod
+    def is_line_continuation(cls, line):
+        return is_line_continuation(line)
+
+    @classmethod
+    def strip_line_continuation(cls, value):
+        return value[:-1]
+
 
 @register_dialect
 class DialectJava(Dialect):
@@ -418,6 +426,17 @@ class DialectStrings(Dialect):
     @classmethod
     def encode(cls, string, encoding=None):
         return string.replace("\n", r"\n").replace("\t", r"\t")
+
+    @classmethod
+    def is_line_continuation(self, line):
+        l = line.rstrip()
+        if l and l[-1] == ';':
+            return False
+        return True
+
+    @classmethod
+    def strip_line_continuation(cls, value):
+        return value
 
 
 @register_dialect
@@ -631,13 +650,15 @@ class propfile(base.TranslationStore):
             if inmultilinevalue:
                 newunit.value += line.lstrip()
                 # see if there's more
-                inmultilinevalue = is_line_continuation(newunit.value)
+                inmultilinevalue = self.personality.is_line_continuation(
+                    newunit.value)
                 # if we're still waiting for more...
                 if inmultilinevalue:
-                    # strip the backslash
-                    newunit.value = newunit.value[:-1]
+                    newunit.value = self.personality.strip_line_continuation(
+                        newunit.value)
                 if not inmultilinevalue:
                     # we're finished, add it to the list...
+                    newunit.value = self.personality.value_strip(newunit.value)
                     self.addunit(newunit)
                     newunit = propunit("", self.personality.name)
             # otherwise, this could be a comment
@@ -666,9 +687,12 @@ class propfile(base.TranslationStore):
                     newunit = propunit("", self.personality.name)
                 else:
                     newunit.name = self.personality.key_strip(line[:delimiter_pos])
-                    if is_line_continuation(line[delimiter_pos+1:].lstrip()):
+                    if self.personality.is_line_continuation(
+                            line[delimiter_pos+1:].lstrip()):
                         inmultilinevalue = True
                         newunit.value = line[delimiter_pos+1:].lstrip()[:-1]
+                        newunit.value = self.personality.strip_line_continuation(
+                            line[delimiter_pos+1:].lstrip())
                     else:
                         newunit.value = self.personality.value_strip(line[delimiter_pos+1:])
                         self.addunit(newunit)
@@ -713,7 +737,7 @@ class stringsfile(propfile):
         super(stringsfile, self).__init__(*args, **kwargs)
 
 
-class stringsutf8file(propfile):
+class stringsutf8file(stringsfile):
     Name = "OS X Strings (UTF-8)"
     Extensions = ['strings']
 

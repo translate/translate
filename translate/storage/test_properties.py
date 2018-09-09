@@ -262,6 +262,16 @@ key=value
         assert propunit.name == u'I am a "key"'
         assert propunit.source == u'I am a "value"'
 
+    def test_mac_multiline_strings(self):
+        """test can read multiline items used in Mac OS X strings files"""
+        propsource = (r'''"I am a \"key\"" = "I am a \"value\" ''' +
+                      '\n nextline";').encode('utf-16')
+        propfile = self.propparse(propsource, personality="strings")
+        assert len(propfile.units) == 1
+        propunit = propfile.units[0]
+        assert propunit.name == u'I am a "key"'
+        assert propunit.source == u"I am a \"value\" nextline"
+
     def test_mac_strings_unicode(self):
         """Ensure we can handle Unicode"""
         propsource = u'''"I am a “key”" = "I am a “value”";'''.encode('utf-16')
@@ -307,7 +317,7 @@ key=value
         propsource = (u'/* Foo\n'
                       u'Bar\n'
                       u'Baz */\n'
-                      u'"key" = "value"').encode('utf-16')
+                      u'"key" = "value";').encode('utf-16')
         propfile = self.propparse(propsource, personality="strings")
         assert len(propfile.units) == 1
         propunit = propfile.units[0]
