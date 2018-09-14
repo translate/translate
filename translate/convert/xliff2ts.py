@@ -59,8 +59,8 @@ def convertxliff(inputfile, outputfile, *args, **kwargs):
 
 def main(argv=None):
     formats = {
-        "xlf": ("ts", convertxliff),
         "xliff": ("ts", convertxliff),
+        "xlf": ("ts", convertxliff),
     }
     parser = convert.ConvertOptionParser(formats, description=__doc__)
     parser.run(argv)
