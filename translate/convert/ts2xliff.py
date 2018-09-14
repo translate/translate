@@ -47,8 +47,8 @@ class TS2Xliff(object):
         """converts a .ts file to .xliff format"""
         src = ts2.tsfile(inputfile)
         thetargetfile = xliff.xlifffile()
-        thetargetfile.setsourcelanguage(src.sourcelanguage)
-        thetargetfile.settargetlanguage(src.targetlanguage)
+        thetargetfile.setsourcelanguage(src.getsourcelanguage())
+        thetargetfile.settargetlanguage(src.gettargetlanguage())
 
         for srcunit in src.unit_iter():
             unit = self.convertunit(srcunit)
