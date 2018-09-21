@@ -6,7 +6,7 @@ from translate.storage import xliff, ts2
 
 
 class TS2Xliff(object):
-    def convertunit(self, inputunit):
+    def convertunit(self, inputunit, context):
         """
         :type tsunit: ts2.tsunit
         """
@@ -30,6 +30,7 @@ class TS2Xliff(object):
         if comment:
             unit.createcontextgroup("ts-entry", [("x-ts-trancomment", comment)], purpose="information")
             unit.addnote(comment, origin="translator")
+        unit.xmlelement.set("resname", context)
         return unit
 
     def contextlist(self, location):
@@ -49,10 +50,16 @@ class TS2Xliff(object):
         thetargetfile = xliff.xlifffile()
         thetargetfile.setsourcelanguage(src.getsourcelanguage())
         thetargetfile.settargetlanguage(src.gettargetlanguage())
-
+        units_by_context = {}
         for srcunit in src.unit_iter():
-            unit = self.convertunit(srcunit)
-            thetargetfile.addunit(unit)
+            context = srcunit.getcontextname()
+            unit = self.convertunit(srcunit, context)
+            units_by_context.setdefault(context, [])
+            units_by_context[context].append(unit)
+        for context, units in units_by_context.items():
+            thetargetfile.creategroup(context, createifmissing=True)
+            for unit in units:
+                thetargetfile.addunit(unit)
         return thetargetfile
 
 

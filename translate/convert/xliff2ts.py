@@ -5,6 +5,14 @@ from translate.storage import xliff, ts2
 """
 
 
+def convert_lang_code(code):
+    parts = code.split('-')
+    if len(parts) == 1:
+        return parts[0]
+    else:
+        return '%s_%s' % (parts[0], parts[1].upper())
+
+
 class Xliff2TS(object):
     def convertunit(self, inputunit):
         """
@@ -39,12 +47,15 @@ class Xliff2TS(object):
         """converts a .xliff file to .ts format"""
         src = xliff.xlifffile.parsestring(inputfile)
         thetargetfile = ts2.tsfile()
-        thetargetfile.header.set('sourcelanguage', src.getsourcelanguage())
-        thetargetfile.settargetlanguage(src.gettargetlanguage())
-        for srcunit in src.units:
-            unit = self.convertunit(srcunit)
-
-            thetargetfile.addunit(unit, contextname="Global")
+        thetargetfile.header.set('sourcelanguage', convert_lang_code(src.getsourcelanguage()))
+        thetargetfile.settargetlanguage(convert_lang_code(src.gettargetlanguage()))
+        for filename in src.getfilenames():
+            for srcunit in src.units:
+                resname = srcunit.xmlelement.get("resname")
+                if resname and resname != filename:
+                    continue
+                unit = self.convertunit(srcunit)
+                thetargetfile.addunit(unit, contextname=filename)
         return thetargetfile
 
 
