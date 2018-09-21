@@ -14,8 +14,6 @@ class Xliff2TS(object):
         unit.target = inputunit.gettarget()
         if inputunit.target:
             unit.markfuzzy(inputunit.isfuzzy())
-        else:
-            unit.markapproved(False)
 
         locations_ctx_names = [
             "reference",
