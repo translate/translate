@@ -118,7 +118,7 @@ different name on your distribution). This can greatly speed up access to PO
 files, but has not yet been tested as extensively. Feedback is most welcome.
 
 The package iniparse is necessary for ini2po and po2ini.
-http://code.google.com/p/iniparse/
+https://github.com/candlepin/python-iniparse
 
 The python-Levenshtein package will improve performance for fuzzy matching if
 it is available. This can improve the performance of pot2po, for example.  It
