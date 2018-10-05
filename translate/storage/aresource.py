@@ -238,6 +238,7 @@ class AndroidResourceUnit(base.TranslationUnit):
         text = text.replace('\n', '\n\\n')
         text = text.replace('\t', '\\t')
         text = text.replace('\'', '\\\'')
+        text = text.replace('?', '\\?')
         text = text.replace('"', '\\"')
 
         # @ needs to be escaped at start
