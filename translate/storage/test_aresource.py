@@ -71,6 +71,11 @@ class TestAndroidResourceUnit(test_monolingual.TestMonolingualUnit):
         xml = '<string name="teststring">quote \\\'escape\\\'</string>\n\n'
         self.__check_escape(string, xml)
 
+    def test_escape_question(self):
+        string = 'question?'
+        xml = '<string name="teststring">question\\?</string>\n\n'
+        self.__check_escape(string, xml)
+
     def test_escape_double_space(self):
         string = 'double  space'
         xml = '<string name="teststring">"double  space"</string>\n\n'
