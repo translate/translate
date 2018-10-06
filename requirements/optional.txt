@@ -9,4 +9,4 @@ vobject==0.9.5       # iCal (ical2po)
 aeidon==1.2.1 ;python_version > '3.0'      # Subtitles (sub2po)
 l20n==4.0.0a1        # l20n (l20n2po)
 PyYAML==3.12         # yaml
-phply==1.2.4         # PHP
+phply==1.2.5         # PHP
