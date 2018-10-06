@@ -1,0 +1,102 @@
+Translate Toolkit 2.3.1
+***********************
+
+*Released on 06 October 2018*
+
+This release contains improvements and bug fixes.
+
+
+Changes
+=======
+
+Formats and Converters
+----------------------
+
+- PO
+
+  - Fixed parsing of files with mixed newlines `\n` and `\r`.
+
+- Properties
+
+  - Fixed escaping of serialized string for Joomla dialect.
+  - Fixed loading of OS X strings dialect files having multiline strings.
+
+- Android resources
+
+  - Correctly handle escaping of question mark.
+
+- PHP
+
+  - Improved handling of unit name.
+  - Handle `[]` style arrays.
+  - Added support for `return` statement.
+
+- YAML
+
+  - Consistent handling of `int` and `bool`.
+  - Fixed serialization of empty keys.
+
+- JSON
+
+  - Nested values ordering is now preserved.
+
+- TMX
+
+  - Avoid mentioning `po2tmx` in creation tool.
+
+- RESX
+
+  - New unit elements are now properly indented.
+
+- INI
+
+  - Enabled support for Python3 provided that patched `iniparse` library is
+    available.
+
+- RC
+
+  - Altered to remove `\r` before parsing.
+
+
+API changes
+-----------
+
+- Use `backports.csv` module on Python 2 to align the behavior with Python 3
+  and drop many hacks.
+- Removed deprecated `getoutput` methods deprecated in version 2.0.0.
+- Added new deprecations:
+
+  - Deprecated `setsource`, `getsource`, `gettarget` and `settarget` methods in
+    favor of `source` and `target` properties for all storage classes, except
+    `LISAunit` and its subclasses since for those these methods do actually
+    accept additional arguments so can't just be always replaced by some
+    property.
+  - `xliffunit`: Deprecated `get_rich_source` in favor of `rich_source` property
+
+- Defined for all unit classes the `rich_source` and `rich_target` properties
+  without using methods. Since the old methods were private they were directly
+  removed without deprecating them.
+
+
+General
+-------
+
+- Refactored more converters to increase readability and use a common pattern
+  which will allow to further refactor repeated code
+- Code cleanups and simplification
+- Updated requirements
+- Tests:
+
+  - Added plenty of tests
+  - Tests cleanups and fixes
+
+
+Contributors
+============
+
+This release was made possible by the following people:
+
+Leandro Regueiro, Michal Čihař, BhaaL, Mark Jansen, Stuart Prescott, David
+Hontecillas.
+
+And to all our bug finders and testers, a Very BIG Thank You.
