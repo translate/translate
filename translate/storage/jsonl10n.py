@@ -78,13 +78,36 @@ from translate.misc.multistring import multistring
 from translate.storage import base
 
 
+class UnitId(object):
+    def __init__(self, parts):
+        self.parts = parts
+
+    def __str__(self):
+        def fmt(element, key):
+            if element == 'key':
+                return '.{}'.format(key)
+            elif element == 'index':
+                return '[{}]'.format(key)
+            else:
+                raise ValueError('Unsupported element: {}'.format(element))
+        return ''.join([fmt(*part) for part in self.parts])
+
+    def __add__(self, other):
+        if not isinstance(other, list):
+            raise ValueError('Not supported type for add: {}'.format(type(other)))
+        return UnitId(self.parts + other)
+
+    def encode(self, charset):
+        return self.__str__().encode(charset)
+
+
 class JsonUnit(base.TranslationUnit):
     """A JSON entry"""
 
     def __init__(self, source=None, item=None, notes=None, **kwargs):
         identifier = str(uuid.uuid4())
         # Global identifier across file
-        self._id = '.' + identifier
+        self._id = UnitId([('key', identifier)])
         # Identifier at this level
         self._item = identifier if item is None else item
         # Type conversion for the unit
@@ -118,14 +141,11 @@ class JsonUnit(base.TranslationUnit):
         return self._id
 
     def getlocations(self):
-        return [self.getid()]
+        return [str(self.getid())]
 
     def __str__(self):
         """Converts to a string representation."""
         return json.dumps(self.getvalue(), separators=(',', ': '), indent=4, ensure_ascii=False)
-
-    def getkey(self):
-        return self.getid().lstrip('.')
 
     def converttarget(self):
         if issubclass(self._type, six.string_types):
@@ -133,9 +153,38 @@ class JsonUnit(base.TranslationUnit):
         else:
             return self._type(self.target)
 
+    def storevalue(self, result, override_key=None, override_value=None):
+        ret = override_value if override_value else self.converttarget()
+        target = result
+        parts = self.getid().parts
+        for pos, part in enumerate(parts[:-1]):
+            element, key = part
+            default = [] if parts[pos + 1][0] == 'index' else OrderedDict()
+            if element == 'index':
+                if len(target) <= key:
+                    target.append(default)
+            elif element == 'key':
+                if key not in target:
+                    target[key] = default
+            else:
+                raise ValueError('Unsupported element: {}'.format(element))
+            target = target[key]
+        if override_key:
+            element, key = 'key', override_key
+        else:
+            element, key = parts[-1]
+        if element == 'key':
+            target[key] = ret
+        elif element == 'index':
+            target.append(ret)
+        else:
+            raise ValueError('Unsupported element: {}'.format(element))
+
     def getvalue(self):
         """Return value to be stored in JSON file."""
-        return {self.getkey(): self.converttarget()}
+        result = OrderedDict()
+        self.storevalue(result)
+        return result
 
 
 class JsonFile(base.TranslationStore):
@@ -158,19 +207,13 @@ class JsonFile(base.TranslationStore):
             self.parse(inputfile)
 
     def serialize(self, out):
-        def merge(d1, d2):
-            for k in d2:
-                if k in d1 and isinstance(d1[k], dict) and isinstance(d2[k], dict):
-                    merge(d1[k], d2[k])
-                else:
-                    d1[k] = d2[k]
         units = OrderedDict()
         for unit in self.unit_iter():
-            merge(units, unit.getvalue())
+            unit.storevalue(units)
         out.write(json.dumps(units, **self.dump_args).encode(self.encoding))
         out.write(b'\n')
 
-    def _extract_translatables(self, data, stop=None, prev="", name_node=None,
+    def _extract_translatables(self, data, stop=None, prev=None, name_node=None,
                                name_last_node=None, last_node=None):
         """Recursive function to extract items from the data files
 
@@ -181,16 +224,18 @@ class JsonFile(base.TranslationStore):
         :param name_last_node: the name of the last node
         :param last_node: the last list or dict
         """
+        if prev is None:
+            prev = UnitId([])
         if isinstance(data, dict):
             for k, v in six.iteritems(data):
                 for x in self._extract_translatables(v, stop,
-                                                     "%s.%s" % (prev, k),
+                                                     prev + [('key', k)],
                                                      k, None, data):
                     yield x
         elif isinstance(data, list):
             for i, item in enumerate(data):
                 for x in self._extract_translatables(item, stop,
-                                                     "%s[%s]" % (prev, i),
+                                                     prev + [('index', i)],
                                                      i, name_node, data):
                     yield x
         # apply filter
@@ -225,15 +270,7 @@ class JsonFile(base.TranslationStore):
 
 
 class JsonNestedUnit(JsonUnit):
-
-    def getkey(self):
-        return self.getid().lstrip('.').split('.')
-
-    def getvalue(self):
-        ret = self.converttarget()
-        for k in reversed(self.getkey()):
-            ret = OrderedDict({k: ret})
-        return ret
+    pass
 
 
 class JsonNestedFile(JsonFile):
@@ -243,13 +280,13 @@ class JsonNestedFile(JsonFile):
 
 
 class WebExtensionJsonUnit(JsonUnit):
-    def getvalue(self):
+    def storevalue(self, result):
         value = OrderedDict((
             ('message', self.target),
         ))
         if self.notes:
             value['description'] = self.notes
-        return {self.getid(): value}
+        super(WebExtensionJsonUnit, self).storevalue(result, override_value=value)
 
 
 class WebExtensionJsonFile(JsonFile):
@@ -263,10 +300,10 @@ class WebExtensionJsonFile(JsonFile):
 
     UnitClass = WebExtensionJsonUnit
 
-    def _extract_translatables(self, data, stop=None, prev="", name_node=None,
+    def _extract_translatables(self, data, stop=None, prev=None, name_node=None,
                                name_last_node=None, last_node=None):
         for item, value in six.iteritems(data):
-            yield (item, value.get('message', ''), item, value.get('description', ''))
+            yield (UnitId([('key', item)]), value.get('message', ''), item, value.get('description', ''))
 
 
 class I18NextUnit(JsonNestedUnit):
@@ -307,18 +344,12 @@ class I18NextUnit(JsonNestedUnit):
         self._rich_target = None
         self._target = target
 
-    def getvalue(self):
-        if not isinstance(self.target, multistring):
-            return super(I18NextUnit, self).getvalue()
-
-        ret = OrderedDict()
-        for i, value in enumerate(self.target.strings):
-            ret[self._item[i]] = value
-
-        path = self.getid().lstrip('.').split('.')[:-1]
-        for k in reversed(path):
-            ret = {k: ret}
-        return ret
+    def storevalue(self, result):
+        if isinstance(self.target, multistring):
+            for i, value in enumerate(self.target.strings):
+                super(I18NextUnit, self).storevalue(result, self._item[i], value)
+        else:
+            super(I18NextUnit, self).storevalue(result)
 
 
 class I18NextFile(JsonNestedFile):
@@ -329,8 +360,10 @@ class I18NextFile(JsonNestedFile):
 
     UnitClass = I18NextUnit
 
-    def _extract_translatables(self, data, stop=None, prev="", name_node=None,
+    def _extract_translatables(self, data, stop=None, prev=None, name_node=None,
                                name_last_node=None, last_node=None):
+        if prev is None:
+            prev = UnitId([])
         if isinstance(data, dict):
             plurals_multiple = [key.rsplit('_', 1)[0] for key in data if key.endswith('_0')]
             plurals_simple = [key.rsplit('_', 1)[0] for key in data if key.endswith('_plural')]
@@ -363,11 +396,11 @@ class I18NextFile(JsonNestedFile):
                         processed.add(key)
                         sources.append(data[key])
                         items.append(key)
-                    yield ("%s.%s" % (prev, plural_base), multistring(sources), items, '')
+                    yield prev + [('key', plural_base)], multistring(sources), items, ''
                     continue
 
                 for x in self._extract_translatables(v, stop,
-                                                     "%s.%s" % (prev, k),
+                                                     prev + [('key', k)],
                                                      k, None, data):
                     yield x
         else:

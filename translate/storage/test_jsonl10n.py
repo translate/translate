@@ -30,6 +30,24 @@ JSON_I18NEXT_PLURAL = b"""{
     "keyPluralMultipleEgArabic": "Nazdar"
 }
 """
+JSON_COMPLEX = b"""{
+    "key": "value",
+    "key[0]": "value2",
+    "key3": [
+        "one",
+        "two"
+    ],
+    "key4": [
+        {
+            "nested": "one"
+        },
+        [
+            "one",
+            "two"
+        ]
+    ]
+}
+"""
 
 
 class TestJSONResourceUnit(test_monolingual.TestMonolingualUnit):
@@ -83,6 +101,15 @@ class TestJSONResourceStore(test_monolingual.TestMonolingualStore):
 }
 '''
 
+    def test_complex(self):
+        store = self.StoreClass()
+        store.parse(JSON_COMPLEX)
+
+        out = BytesIO()
+        store.serialize(out)
+
+        assert out.getvalue() == JSON_COMPLEX
+
 
 class TestJSONNestedResourceStore(test_monolingual.TestMonolingualUnit):
     StoreClass = jsonl10n.JsonNestedFile
@@ -110,10 +137,10 @@ class TestJSONNestedResourceStore(test_monolingual.TestMonolingualUnit):
         store.parse(data)
 
         assert store.units[0].source == 'foo'
-        assert store.units[1].getid() == '.bar.ba1'
-        assert store.units[2].getid() == '.bar.ba2'
-        assert store.units[3].getid() == '.bar.ba3'
-        assert store.units[4].getid() == '.bar.ba4'
+        assert str(store.units[1].getid()) == '.bar.ba1'
+        assert str(store.units[2].getid()) == '.bar.ba2'
+        assert str(store.units[3].getid()) == '.bar.ba3'
+        assert str(store.units[4].getid()) == '.bar.ba4'
 
         out = BytesIO()
         store.serialize(out)

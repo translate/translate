@@ -40,7 +40,7 @@ class rejson(object):
         self.remove_untranslated = remove_untranslated
         self.inputstore.makeindex()
         for unit in self.templatestore.units:
-            inputunit = self.inputstore.locationindex.get(unit.getid())
+            inputunit = self.inputstore.locationindex.get(str(unit.getid()))
             skip_unit = (self.remove_untranslated and
                          (inputunit is None or
                           inputunit.isfuzzy() or
