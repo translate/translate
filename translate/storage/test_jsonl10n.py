@@ -31,6 +31,14 @@ JSON_I18NEXT_PLURAL = b"""{
     "keyPluralMultipleEgArabic": "Nazdar"
 }
 """
+JSON_ARRAY = b"""{
+    "key": [
+        "One",
+        "Two",
+        "Three"
+    ]
+}
+"""
 
 
 class TestJSONResourceUnit(test_monolingual.TestMonolingualUnit):
@@ -125,6 +133,15 @@ class TestJSONNestedResourceStore(test_monolingual.TestMonolingualUnit):
         store.serialize(out)
 
         assert out.getvalue() == data
+
+    def test_array(self):
+        store = self.StoreClass()
+        store.parse(JSON_ARRAY)
+
+        out = BytesIO()
+        store.serialize(out)
+
+        assert out.getvalue() == JSON_ARRAY
 
 
 class TestWebExtensionUnit(test_monolingual.TestMonolingualUnit):

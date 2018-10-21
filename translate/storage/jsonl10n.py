@@ -160,8 +160,13 @@ class JsonFile(base.TranslationStore):
     def serialize(self, out):
         def merge(d1, d2):
             for k in d2:
-                if k in d1 and isinstance(d1[k], dict) and isinstance(d2[k], dict):
-                    merge(d1[k], d2[k])
+                if k in d1:
+                    if isinstance(d1[k], dict) and isinstance(d2[k], dict):
+                        merge(d1[k], d2[k])
+                    elif isinstance(d1[k], list) and isinstance(d2[k], list):
+                        d1[k].extend(d2[k])
+                    else:
+                        d1[k] = d2[k]
                 else:
                     d1[k] = d2[k]
         units = OrderedDict()
@@ -232,6 +237,9 @@ class JsonNestedUnit(JsonUnit):
     def getvalue(self):
         ret = self.converttarget()
         for k in reversed(self.getkey()):
+            if '[' in k and k[-1] == ']':
+                k = k.split('[')[0]
+                ret = [ret]
             ret = OrderedDict({k: ret})
         return ret
 
