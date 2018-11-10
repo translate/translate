@@ -49,9 +49,10 @@ class po2pydict(object):
                 # The older convention is to prefix with "*** ":
                 #mydict[unit.source] = '*** ' + unit.source
 
+        str_obj.write('# -*- coding: utf-8 -*-\n')
         str_obj.write('{\n')
         for source_str in mydict:
-            str_obj.write("%s:%s,\n" % (repr(str(source_str)), repr(str(mydict[source_str]))))
+            str_obj.write("%s:%s,\n" % (repr(source_str.encode('utf-8')), repr(mydict[source_str].encode('utf-8'))))
         str_obj.write('}\n')
         str_obj.seek(0)
         return str_obj
