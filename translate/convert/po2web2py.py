@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 # -*- coding: utf-8 -*-
 #
 # Copyright 2009-2010 Zuza Software Foundation
@@ -51,28 +52,35 @@ class po2pydict(object):
 
         str_obj.write('# -*- coding: utf-8 -*-\n')
         str_obj.write('{\n')
-        for source_str in mydict:
-            str_obj.write("%s:%s,\n" % (repr(source_str.encode('utf-8')), repr(mydict[source_str].encode('utf-8'))))
+        for source_str, trans_str in sorted(mydict.iteritems()):
+            str_obj.write("%s: %s,\n" % (repr(source_str.encode('utf-8')), repr(trans_str.encode('utf-8'))))
         str_obj.write('}\n')
         str_obj.seek(0)
         return str_obj
 
 
 def convertpy(inputfile, outputfile, templatefile=None, includefuzzy=False,
-              outputthreshold=None):
+              outputthreshold=None, **kwargs):
     inputstore = factory.getobject(inputfile)
 
     if not convert.should_output_store(inputstore, outputthreshold):
-        return False
+        return 0
 
     convertor = po2pydict()
     outputstring = convertor.convertstore(inputstore, includefuzzy)
+
+    if outputstore.isempty():
+        return 0
+
     outputfile.write(outputstring.read())
     return 1
 
 
 def main(argv=None):
-    formats = {("po", "py"): ("py", convertpy), ("po"): ("py", convertpy)}
+    formats = {
+        ("po", "py"): ("py", convertpy),
+        ("po", None): ("py", convertpy)
+    }
     parser = convert.ConvertOptionParser(formats, usetemplates=False, description=__doc__)
     parser.add_threshold_option()
     parser.add_fuzzy_option()
