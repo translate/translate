@@ -69,7 +69,7 @@ def convertpy(inputfile, outputfile, templatefile=None, includefuzzy=False,
     convertor = po2pydict()
     outputstring = convertor.convertstore(inputstore, includefuzzy)
 
-    if outputstore.isempty():
+    if outputstring.isempty():
         return 0
 
     outputfile.write(outputstring.read())
