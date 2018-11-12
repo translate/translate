@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 # -*- coding: utf-8 -*-
 #
 # Copyright 2009-2010 Zuza Software Foundation
@@ -34,18 +35,17 @@ class web2py2po(object):
 
     def convertunit(self, source_str, target_str):
         pounit = po.pounit(encoding="UTF-8")
-        pounit.source = source_str
+        pounit.setsource(source_str)
         if target_str:
-            pounit.target = target_str
+            pounit.settarget(target_str)
         return pounit
 
     def convertstore(self, mydict):
-
         targetheader = self.mypofile.header()
         targetheader.addnote("extracted from web2py", "developer")
 
         for source_str in mydict.keys():
-            target_str = mydict[source_str]
+            target_str = mydict[source_str].decode('utf-8')
             if target_str == source_str:
                 # a convention with new (untranslated) web2py files
                 target_str = u''
@@ -58,7 +58,7 @@ class web2py2po(object):
         return self.mypofile
 
 
-def convertpy(inputfile, outputfile, encoding="UTF-8"):
+def convertpy(inputfile, outputfile, encoding="UTF-8", **kwargs):
 
     new_pofile = po.pofile()
     convertor = web2py2po(new_pofile)
@@ -72,7 +72,7 @@ def convertpy(inputfile, outputfile, encoding="UTF-8"):
     if outputstore.isempty():
         return 0
 
-    outputstore.serialize(outputfile)
+    outputfile.write(str(outputstore))
     return 1
 
 
