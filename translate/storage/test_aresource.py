@@ -450,3 +450,25 @@ class TestAndroidResourceFile(test_monolingual.TestMonolingualStore):
         store = self.StoreClass()
         store.parse(content)
         assert bytes(store) == content
+
+    def test_add_formatting(self):
+        content = b'''<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="test">Test</string>
+</resources>'''
+        other = b'''<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="other">Test</string>
+    <string name="other2">Test</string>
+</resources>'''
+        expected = b'''<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="test">Test</string>
+    <string name="other">Test</string>
+</resources>'''
+        store = self.StoreClass()
+        store.parse(content)
+        otherstore = self.StoreClass()
+        otherstore.parse(other)
+        store.addunit(otherstore.units[0], True)
+        assert bytes(store) == expected

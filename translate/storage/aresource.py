@@ -518,6 +518,11 @@ class AndroidResourceFile(lisa.LISAfile):
                     do_cleanup = True
                     newns[ns] = unit.xmlelement.nsmap[ns]
 
+            # Fixup formatting
+            if len(self.body):
+                self.body[-1].tail = '\n    '
+            unit.xmlelement.tail = '\n'
+
         super(AndroidResourceFile, self).addunit(unit, new)
         # Move aliased namespaces to the <resources> tag
         # The top_nsmap was introduced in LXML 3.5.0
