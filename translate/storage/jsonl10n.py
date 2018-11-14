@@ -215,7 +215,7 @@ class JsonFile(base.TranslationStore):
         try:
             self._file = json.loads(input, object_pairs_hook=OrderedDict)
         except ValueError as e:
-            raise base.ParseError(e.message)
+            raise base.ParseError(e)
 
         for k, data, item, notes in self._extract_translatables(self._file,
                                                                 stop=self._filter):
