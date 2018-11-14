@@ -459,6 +459,12 @@ class AndroidResourceFile(lisa.LISAfile):
         self.namespace = self.document.getroot().nsmap.get(None, None)
         self.body = self.document.getroot()
 
+    def serialize(self, out=None):
+        """Converts to a string containing the file's XML"""
+        out.write(b'<?xml version="1.0" encoding="utf-8"?>\n')
+        self.document.write(out, pretty_print=True, xml_declaration=False,
+                            encoding='utf-8')
+
     def parse(self, xml):
         """Populates this object from the given xml string"""
         if not hasattr(self, 'filename'):

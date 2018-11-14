@@ -441,3 +441,13 @@ class TestAndroidResourceFile(test_monolingual.TestMonolingualStore):
         newstore.addunit(store.units[0], new=True)
         print(newstore)
         assert b'<resources xmlns:tools="http://schemas.android.com/tools">' in bytes(newstore)
+
+    def test_serialize(self):
+        content = b'''<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="test">Test</string>
+</resources>
+'''
+        store = self.StoreClass()
+        store.parse(content)
+        assert bytes(store) == content
