@@ -462,7 +462,7 @@ class AndroidResourceFile(lisa.LISAfile):
     def serialize(self, out=None):
         """Converts to a string containing the file's XML"""
         out.write(b'<?xml version="1.0" encoding="utf-8"?>\n')
-        self.document.write(out, pretty_print=True, xml_declaration=False,
+        self.document.write(out, pretty_print=False, xml_declaration=False,
                             encoding='utf-8')
 
     def parse(self, xml):

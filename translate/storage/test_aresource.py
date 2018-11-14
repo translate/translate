@@ -446,8 +446,7 @@ class TestAndroidResourceFile(test_monolingual.TestMonolingualStore):
         content = b'''<?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="test">Test</string>
-</resources>
-'''
+</resources>'''
         store = self.StoreClass()
         store.parse(content)
         assert bytes(store) == content
