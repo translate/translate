@@ -363,13 +363,13 @@ class AndroidResourceUnit(base.TranslationUnit):
             for entry in self.xmlelement.iterchildren():
                 self.xmlelement.remove(entry)
 
-            self.xmlelement.text = "\n\t"
+            self.xmlelement.text = "\n    "
 
             for plural_tag, plural_string in zip(plural_tags, plural_strings):
                 item = etree.Element("item")
                 item.set("quantity", plural_tag)
                 self.set_xml_text_value(plural_string, item)
-                item.tail = "\n\t"
+                item.tail = "\n    "
                 self.xmlelement.append(item)
             # Remove the tab from last item
             item.tail = "\n"
