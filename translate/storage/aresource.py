@@ -485,7 +485,7 @@ class AndroidResourceFile(lisa.LISAfile):
         if target_lang is None and hasattr(self, 'filename') and self.filename:
             # Android standards expect resource files to be in a directory named "values[-<lang>[-r<region>]]".
             parent_dir = os.path.split(os.path.dirname(self.filename))[1]
-            match = re.search('^values-(\w*)', parent_dir)
+            match = re.search(r'^values-(\w*)', parent_dir)
             if match is not None:
                 target_lang = match.group(1)
             elif parent_dir == 'values':
