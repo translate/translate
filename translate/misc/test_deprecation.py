@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from pytest import deprecated_call, raises
+from pytest import deprecated_call, raises, mark
 
 from translate.misc.deprecation import deprecated
 
@@ -18,5 +18,6 @@ class TestDeprecation(object):
     def test_deprecated_decorator(self):
         deprecated_call(self.deprecated_helper)
 
-        with raises(AssertionError):
-            deprecated_call(self.active_helper)
+    @mark.filterwarnings("error")
+    def test_no_deprecated_decorator(self):
+        self.active_helper()
