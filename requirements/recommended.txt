@@ -14,7 +14,7 @@ python-Levenshtein>=0.12
 chardet==3.0.4
 
 # To provide translations for language names without need for OS package.
-pycountry==18.5.26
+pycountry==18.12.8
 
 # CSV based formats on Python 2
 backports.csv; python_version < '3.0'
