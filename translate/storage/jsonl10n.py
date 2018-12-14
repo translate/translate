@@ -81,7 +81,7 @@ from translate.storage import base
 class JsonUnit(base.TranslationUnit):
     """A JSON entry"""
 
-    def __init__(self, source=None, item=None, notes=None, **kwargs):
+    def __init__(self, source=None, item=None, notes=None, placeholders=None, **kwargs):
         identifier = str(uuid.uuid4())
         # Global identifier across file
         self._id = '.' + identifier
@@ -91,6 +91,7 @@ class JsonUnit(base.TranslationUnit):
         self._type = six.text_type if source is None else type(source)
         if notes:
             self.notes = notes
+        self.placeholders = placeholders
         if source:
             if issubclass(self._type, six.string_types):
                 self.target = source
@@ -251,6 +252,8 @@ class WebExtensionJsonUnit(JsonUnit):
         ))
         if self.notes:
             value['description'] = self.notes
+        if self.placeholders:
+            value['placeholders'] = self.placeholders
         return {self.getid(): value}
 
 
@@ -268,7 +271,10 @@ class WebExtensionJsonFile(JsonFile):
     def _extract_units(self, data, stop=None, prev="", name_node=None, name_last_node=None, last_node=None):
         for item, value in six.iteritems(data):
             unit = self.UnitClass(
-                value.get('message', ''), item, value.get('description', '')
+                value.get('message', ''),
+                item,
+                value.get('description', ''),
+                value.get('placeholders', None)
             )
             unit.setid(item)
             yield unit
