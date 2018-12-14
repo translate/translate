@@ -176,6 +176,28 @@ class TestWebExtensionStore(test_monolingual.TestMonolingualStore):
 
         assert out.getvalue() == b'{\n    "key": {\n        "message": "another",\n        "description": "note"\n    }\n}\n'
 
+    def test_placeholders(self):
+        DATA = """{
+    "youCanClose": {
+        "message": "Bravo ! Votre compte $SITE$ est relié à Scrobbly. Vous pouvez fermer et revenir en arrière",
+        "placeholders": {
+            "site": {
+                "content": "$1",
+                "example": "AniList"
+            }
+        }
+    }
+}
+""".encode('utf-8')
+
+        store = self.StoreClass()
+        store.parse(DATA)
+        assert store.units[0].placeholders is not None
+        out = BytesIO()
+        store.serialize(out)
+
+        assert out.getvalue() == DATA
+
 
 class TestI18NextStore(test_monolingual.TestMonolingualStore):
     StoreClass = jsonl10n.I18NextFile
