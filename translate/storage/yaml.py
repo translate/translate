@@ -146,8 +146,12 @@ class YAMLFile(base.TranslationStore):
         """Returns root node for serialize"""
         return node
 
+    def serialize_value(self, value):
+        return value
+
     def serialize(self, out):
         def nested_set(target, path, value):
+            value = self.serialize_value(value)
             if len(path) > 1:
                 if len(path) == 2 and path[1] and path[1][0] == '[' and path[1][-1] == ']' and path[1][1:-1].isdigit():
                     if path[0] not in target:
@@ -171,18 +175,22 @@ class YAMLFile(base.TranslationStore):
             default_flow_style=False, encoding='utf-8', allow_unicode=True
         ))
 
+    def _parse_dict(self, data, prev):
+        for k, v in six.iteritems(data):
+            if not isinstance(k, six.string_types):
+                raise base.ParseError(
+                    'Key not string: {0}/{1} ({2})'.format(prev, k, type(k))
+                )
+
+            for x in self._flatten(v, '->'.join((prev, k)) if prev else k):
+                yield x
+
     def _flatten(self, data, prev=""):
         """Flatten YAML dictionary.
         """
         if isinstance(data, dict):
-            for k, v in six.iteritems(data):
-                if not isinstance(k, six.string_types):
-                    raise base.ParseError(
-                        'Key not string: {0}/{1} ({2})'.format(prev, k, type(k))
-                    )
-
-                for x in self._flatten(v, '->'.join((prev, k)) if prev else k):
-                    yield x
+            for x in self._parse_dict(data, prev):
+                yield x
         else:
             if isinstance(data, six.string_types):
                 yield (prev, data)
