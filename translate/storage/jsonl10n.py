@@ -175,8 +175,7 @@ class JsonFile(base.TranslationStore):
         out.write(json.dumps(units, **self.dump_args).encode(self.encoding))
         out.write(b'\n')
 
-    def _extract_translatables(self, data, stop=None, prev="", name_node=None,
-                               name_last_node=None, last_node=None):
+    def _extract_units(self, data, stop=None, prev="", name_node=None, name_last_node=None, last_node=None):
         """Recursive function to extract items from the data files
 
         :param data: the current branch to walk down
@@ -188,22 +187,20 @@ class JsonFile(base.TranslationStore):
         """
         if isinstance(data, dict):
             for k, v in six.iteritems(data):
-                for x in self._extract_translatables(v, stop,
-                                                     "%s.%s" % (prev, k),
-                                                     k, None, data):
+                for x in self._extract_units(v, stop, "%s.%s" % (prev, k), k, None, data):
                     yield x
         elif isinstance(data, list):
             for i, item in enumerate(data):
-                for x in self._extract_translatables(item, stop,
-                                                     "%s[%s]" % (prev, i),
-                                                     i, name_node, data):
+                for x in self._extract_units(item, stop, "%s[%s]" % (prev, i), i, name_node, data):
                     yield x
         # apply filter
         elif (stop is None or
               (isinstance(last_node, dict) and name_node in stop) or
               (isinstance(last_node, list) and name_last_node in stop)):
 
-            yield (prev, data, name_node, '')
+            unit = self.UnitClass(data, name_node)
+            unit.setid(prev)
+            yield unit
 
     def parse(self, input):
         """parse the given file or file source string"""
@@ -222,10 +219,7 @@ class JsonFile(base.TranslationStore):
         except ValueError as e:
             raise base.ParseError(e)
 
-        for k, data, item, notes in self._extract_translatables(self._file,
-                                                                stop=self._filter):
-            unit = self.UnitClass(data, item, notes)
-            unit.setid(k)
+        for unit in self._extract_units(self._file, stop=self._filter):
             self.addunit(unit)
 
 
@@ -271,10 +265,13 @@ class WebExtensionJsonFile(JsonFile):
 
     UnitClass = WebExtensionJsonUnit
 
-    def _extract_translatables(self, data, stop=None, prev="", name_node=None,
-                               name_last_node=None, last_node=None):
+    def _extract_units(self, data, stop=None, prev="", name_node=None, name_last_node=None, last_node=None):
         for item, value in six.iteritems(data):
-            yield (item, value.get('message', ''), item, value.get('description', ''))
+            unit = self.UnitClass(
+                value.get('message', ''), item, value.get('description', '')
+            )
+            unit.setid(item)
+            yield unit
 
 
 class I18NextUnit(JsonNestedUnit):
@@ -337,8 +334,7 @@ class I18NextFile(JsonNestedFile):
 
     UnitClass = I18NextUnit
 
-    def _extract_translatables(self, data, stop=None, prev="", name_node=None,
-                               name_last_node=None, last_node=None):
+    def _extract_units(self, data, stop=None, prev="", name_node=None, name_last_node=None, last_node=None):
         if isinstance(data, dict):
             plurals_multiple = [key.rsplit('_', 1)[0] for key in data if key.endswith('_0')]
             plurals_simple = [key.rsplit('_', 1)[0] for key in data if key.endswith('_plural')]
@@ -371,15 +367,15 @@ class I18NextFile(JsonNestedFile):
                         processed.add(key)
                         sources.append(data[key])
                         items.append(key)
-                    yield ("%s.%s" % (prev, plural_base), multistring(sources), items, '')
+                    unit = self.UnitClass(multistring(sources), items)
+                    unit.setid("%s.%s" % (prev, plural_base))
+                    yield unit
                     continue
 
-                for x in self._extract_translatables(v, stop,
-                                                     "%s.%s" % (prev, k),
-                                                     k, None, data):
+                for x in self._extract_units(v, stop, "%s.%s" % (prev, k), k, None, data):
                     yield x
         else:
-            parent = super(I18NextFile, self)._extract_translatables(
+            parent = super(I18NextFile, self)._extract_units(
                 data, stop, prev, name_node, name_last_node, last_node
             )
             for x in parent:
