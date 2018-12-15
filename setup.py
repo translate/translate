@@ -501,6 +501,10 @@ def dosetup(name, version, packages, datafiles, scripts, ext_modules=[]):
         author_email="translate-devel@lists.sourceforge.net",
         url="http://toolkit.translatehouse.org/",
         download_url="https://github.com/translate/translate/releases/tag/" + version,
+        project_urls={
+            "Issue Tracker": "https://github.com/translate/translate/issues",
+            "Documentation": "http://docs.translatehouse.org/projects/translate-toolkit/",
+        },
         platforms=["any"],
         classifiers=classifiers,
         packages=packages,
