@@ -595,7 +595,7 @@ def get_country_iso_name(country_code):
         if hasattr(country, 'common_name'):
             return country.common_name
         return country.name
-    except KeyError:
+    except (KeyError, AttributeError):
         return u""
 
 
@@ -609,7 +609,7 @@ def get_language_iso_name(language_code):
         if hasattr(language, 'common_name'):
             return language.common_name
         return language.name
-    except KeyError:
+    except (KeyError, AttributeError):
         return u""
 
 
