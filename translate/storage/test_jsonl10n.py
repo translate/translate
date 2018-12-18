@@ -2,8 +2,9 @@
 
 from __future__ import unicode_literals
 from io import BytesIO
+from pytest import raises
 from translate.misc.multistring import multistring
-from translate.storage import jsonl10n, test_monolingual
+from translate.storage import base, jsonl10n, test_monolingual
 
 
 JSON_I18NEXT = b"""{
@@ -30,6 +31,14 @@ JSON_I18NEXT_PLURAL = b"""{
     "keyPluralMultipleEgArabic": "Nazdar"
 }
 """
+JSON_ARRAY = b"""{
+    "key": [
+        "One",
+        "Two",
+        "Three"
+    ]
+}
+"""
 
 
 class TestJSONResourceUnit(test_monolingual.TestMonolingualUnit):
@@ -46,6 +55,11 @@ class TestJSONResourceStore(test_monolingual.TestMonolingualStore):
         store.serialize(out)
 
         assert out.getvalue() == b'{\n    "key": "value"\n}\n'
+
+    def test_error(self):
+        store = self.StoreClass()
+        with raises(base.ParseError):
+            store.parse('{"key": "value"')
 
     def test_filter(self):
         store = self.StoreClass(filter=['key'])
@@ -119,6 +133,15 @@ class TestJSONNestedResourceStore(test_monolingual.TestMonolingualUnit):
         store.serialize(out)
 
         assert out.getvalue() == data
+
+    def test_array(self):
+        store = self.StoreClass()
+        store.parse(JSON_ARRAY)
+
+        out = BytesIO()
+        store.serialize(out)
+
+        assert out.getvalue() == JSON_ARRAY
 
 
 class TestWebExtensionUnit(test_monolingual.TestMonolingualUnit):

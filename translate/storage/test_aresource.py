@@ -139,17 +139,17 @@ class TestAndroidResourceUnit(test_monolingual.TestMonolingualUnit):
 
     def test_plural_escape_message_with_newline(self):
         mString = multistring(['one message\nwith newline', 'other message\nwith newline'])
-        xml = ('<plurals name="teststring">\n\t'
-               '<item quantity="one">one message\n\\nwith newline</item>\n\t'
-               '<item quantity="other">other message\n\\nwith newline</item>\n'
+        xml = ('<plurals name="teststring">\n'
+               '    <item quantity="one">one message\n\\nwith newline</item>\n'
+               '    <item quantity="other">other message\n\\nwith newline</item>\n'
                '</plurals>\n\n')
         self.__check_escape(mString, xml, 'en')
 
     def test_plural_invalid_lang(self):
         mString = multistring(['one message', 'other message'])
-        xml = ('<plurals name="teststring">\n\t'
-               '<item quantity="one">one message</item>\n\t'
-               '<item quantity="other">other message</item>\n'
+        xml = ('<plurals name="teststring">\n'
+               '    <item quantity="one">one message</item>\n'
+               '    <item quantity="other">other message</item>\n'
                '</plurals>\n\n')
         self.__check_escape(mString, xml, 'invalid')
 
@@ -320,9 +320,9 @@ class TestAndroidResourceUnit(test_monolingual.TestMonolingualUnit):
 
     def test_plural_parse_message_with_newline(self):
         mString = multistring(['one message\nwith newline', 'other message\nwith newline'])
-        xml = ('<plurals name="teststring">\n\t'
-               '<item quantity="one">one message\\nwith newline</item>\n\t'
-               '<item quantity="other">other message\\nwith newline</item>\n\n'
+        xml = ('<plurals name="teststring">\n'
+               '    <item quantity="one">one message\\nwith newline</item>\n'
+               '    <item quantity="other">other message\\nwith newline</item>\n\n'
                '</plurals>\n\n')
         self.__check_parse(mString, xml)
 
@@ -441,3 +441,34 @@ class TestAndroidResourceFile(test_monolingual.TestMonolingualStore):
         newstore.addunit(store.units[0], new=True)
         print(newstore)
         assert b'<resources xmlns:tools="http://schemas.android.com/tools">' in bytes(newstore)
+
+    def test_serialize(self):
+        content = b'''<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="test">Test</string>
+</resources>'''
+        store = self.StoreClass()
+        store.parse(content)
+        assert bytes(store) == content
+
+    def test_add_formatting(self):
+        content = b'''<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="test">Test</string>
+</resources>'''
+        other = b'''<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="other">Test</string>
+    <string name="other2">Test</string>
+</resources>'''
+        expected = b'''<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="test">Test</string>
+    <string name="other">Test</string>
+</resources>'''
+        store = self.StoreClass()
+        store.parse(content)
+        otherstore = self.StoreClass()
+        otherstore.parse(other)
+        store.addunit(otherstore.units[0], True)
+        assert bytes(store) == expected

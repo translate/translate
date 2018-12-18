@@ -363,13 +363,13 @@ class AndroidResourceUnit(base.TranslationUnit):
             for entry in self.xmlelement.iterchildren():
                 self.xmlelement.remove(entry)
 
-            self.xmlelement.text = "\n\t"
+            self.xmlelement.text = "\n    "
 
             for plural_tag, plural_string in zip(plural_tags, plural_strings):
                 item = etree.Element("item")
                 item.set("quantity", plural_tag)
                 self.set_xml_text_value(plural_string, item)
-                item.tail = "\n\t"
+                item.tail = "\n    "
                 self.xmlelement.append(item)
             # Remove the tab from last item
             item.tail = "\n"
@@ -459,6 +459,12 @@ class AndroidResourceFile(lisa.LISAfile):
         self.namespace = self.document.getroot().nsmap.get(None, None)
         self.body = self.document.getroot()
 
+    def serialize(self, out=None):
+        """Converts to a string containing the file's XML"""
+        out.write(b'<?xml version="1.0" encoding="utf-8"?>\n')
+        self.document.write(out, pretty_print=False, xml_declaration=False,
+                            encoding='utf-8')
+
     def parse(self, xml):
         """Populates this object from the given xml string"""
         if not hasattr(self, 'filename'):
@@ -485,7 +491,7 @@ class AndroidResourceFile(lisa.LISAfile):
         if target_lang is None and hasattr(self, 'filename') and self.filename:
             # Android standards expect resource files to be in a directory named "values[-<lang>[-r<region>]]".
             parent_dir = os.path.split(os.path.dirname(self.filename))[1]
-            match = re.search('^values-(\w*)', parent_dir)
+            match = re.search(r'^values-(\w*)', parent_dir)
             if match is not None:
                 target_lang = match.group(1)
             elif parent_dir == 'values':
@@ -511,6 +517,11 @@ class AndroidResourceFile(lisa.LISAfile):
                 if ns not in newns:
                     do_cleanup = True
                     newns[ns] = unit.xmlelement.nsmap[ns]
+
+            # Fixup formatting
+            if len(self.body):
+                self.body[-1].tail = '\n    '
+            unit.xmlelement.tail = '\n'
 
         super(AndroidResourceFile, self).addunit(unit, new)
         # Move aliased namespaces to the <resources> tag
