@@ -30,7 +30,9 @@ import six
 import yaml
 import yaml.constructor
 
+from translate.lang.data import cldr_plural_categories, plural_tags
 from translate.misc.deprecation import deprecated
+from translate.misc.multistring import multistring
 from translate.storage import base
 
 
@@ -257,3 +259,30 @@ class RubyYAMLFile(YAMLFile):
             result[self.targetlanguage] = node
             return result
         return node
+
+    def _parse_dict(self, data, prev):
+        # Does this look like a plural?
+        if all((x in cldr_plural_categories for x in data.keys())):
+            # Ensure we have correct plurals ordering.
+            values = [data[item] for item in cldr_plural_categories if item in data]
+            yield (prev, multistring(values))
+            return
+
+        # Handle normal dict
+        for x in super(RubyYAMLFile, self)._parse_dict(data, prev):
+            yield x
+
+    def serialize_value(self, value):
+        if not isinstance(value, multistring):
+            return value
+
+        tags = plural_tags.get(self.targetlanguage, plural_tags['en'])
+
+        strings = [six.text_type(s) for s in value.strings]
+
+        # Sync plural_strings elements to plural_tags count.
+        if len(strings) < len(tags):
+            strings += [''] * (len(tags) - len(strings))
+        strings = strings[:len(tags)]
+
+        return UnsortableOrderedDict(zip(tags, strings))

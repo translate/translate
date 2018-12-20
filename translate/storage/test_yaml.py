@@ -420,3 +420,16 @@ class TestRubyYAMLResourceStore(test_monolingual.TestMonolingualStore):
         store = yaml.YAMLFile()
         with pytest.raises(base.ParseError):
             store.parse('val: "\\u string"')
+
+    def test_ruby_plural(self):
+        data = '''en:
+  message:
+    one: There is one message
+    other: There are %{count} messages
+'''
+        store = self.StoreClass()
+        store.parse(data)
+        assert len(store.units) == 1
+        out = BytesIO()
+        store.serialize(out)
+        assert out.getvalue() == data.encode('ascii')
