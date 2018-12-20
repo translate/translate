@@ -166,6 +166,7 @@ classifiers = [
     "License :: OSI Approved :: GNU General Public License (GPL)",
     "Operating System :: OS Independent",
     "Operating System :: Microsoft :: Windows",
+    "Operating System :: MacOS :: MacOS X",
     "Operating System :: Unix",
     "Programming Language :: Python",
     "Programming Language :: Python :: 2.7",
@@ -173,6 +174,7 @@ classifiers = [
     "Programming Language :: Python :: 3.4",
     "Programming Language :: Python :: 3.5",
     "Programming Language :: Python :: 3.6",
+    "Programming Language :: Python :: 3.7",
     "Topic :: Software Development :: Libraries :: Python Modules",
     "Topic :: Software Development :: Localization",
 ]
@@ -501,6 +503,10 @@ def dosetup(name, version, packages, datafiles, scripts, ext_modules=[]):
         author_email="translate-devel@lists.sourceforge.net",
         url="http://toolkit.translatehouse.org/",
         download_url="https://github.com/translate/translate/releases/tag/" + version,
+        project_urls={
+            "Issue Tracker": "https://github.com/translate/translate/issues",
+            "Documentation": "http://docs.translatehouse.org/projects/translate-toolkit/",
+        },
         platforms=["any"],
         classifiers=classifiers,
         packages=packages,

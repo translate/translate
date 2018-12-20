@@ -30,7 +30,9 @@ import six
 import yaml
 import yaml.constructor
 
+from translate.lang.data import cldr_plural_categories, plural_tags
 from translate.misc.deprecation import deprecated
+from translate.misc.multistring import multistring
 from translate.storage import base
 
 
@@ -146,8 +148,12 @@ class YAMLFile(base.TranslationStore):
         """Returns root node for serialize"""
         return node
 
+    def serialize_value(self, value):
+        return value
+
     def serialize(self, out):
         def nested_set(target, path, value):
+            value = self.serialize_value(value)
             if len(path) > 1:
                 if len(path) == 2 and path[1] and path[1][0] == '[' and path[1][-1] == ']' and path[1][1:-1].isdigit():
                     if path[0] not in target:
@@ -171,18 +177,22 @@ class YAMLFile(base.TranslationStore):
             default_flow_style=False, encoding='utf-8', allow_unicode=True
         ))
 
+    def _parse_dict(self, data, prev):
+        for k, v in six.iteritems(data):
+            if not isinstance(k, six.string_types):
+                raise base.ParseError(
+                    'Key not string: {0}/{1} ({2})'.format(prev, k, type(k))
+                )
+
+            for x in self._flatten(v, '->'.join((prev, k)) if prev else k):
+                yield x
+
     def _flatten(self, data, prev=""):
         """Flatten YAML dictionary.
         """
         if isinstance(data, dict):
-            for k, v in six.iteritems(data):
-                if not isinstance(k, six.string_types):
-                    raise base.ParseError(
-                        'Key not string: {0}/{1} ({2})'.format(prev, k, type(k))
-                    )
-
-                for x in self._flatten(v, '->'.join((prev, k)) if prev else k):
-                    yield x
+            for x in self._parse_dict(data, prev):
+                yield x
         else:
             if isinstance(data, six.string_types):
                 yield (prev, data)
@@ -249,3 +259,30 @@ class RubyYAMLFile(YAMLFile):
             result[self.targetlanguage] = node
             return result
         return node
+
+    def _parse_dict(self, data, prev):
+        # Does this look like a plural?
+        if all((x in cldr_plural_categories for x in data.keys())):
+            # Ensure we have correct plurals ordering.
+            values = [data[item] for item in cldr_plural_categories if item in data]
+            yield (prev, multistring(values))
+            return
+
+        # Handle normal dict
+        for x in super(RubyYAMLFile, self)._parse_dict(data, prev):
+            yield x
+
+    def serialize_value(self, value):
+        if not isinstance(value, multistring):
+            return value
+
+        tags = plural_tags.get(self.targetlanguage, plural_tags['en'])
+
+        strings = [six.text_type(s) for s in value.strings]
+
+        # Sync plural_strings elements to plural_tags count.
+        if len(strings) < len(tags):
+            strings += [''] * (len(tags) - len(strings))
+        strings = strings[:len(tags)]
+
+        return UnsortableOrderedDict(zip(tags, strings))

@@ -341,10 +341,7 @@ class AndroidResourceUnit(base.TranslationUnit):
                 self.setid(old_id)
 
             locale = self.gettargetlanguage().replace('_', '-').split('-')[0]
-            lang_tags = data.plural_tags.get(locale, data.plural_tags['en'])
-
-            # Get plural tags in the right order.
-            plural_tags = [tag for tag in ['zero', 'one', 'two', 'few', 'many', 'other'] if tag in lang_tags]
+            plural_tags = data.plural_tags.get(locale, data.plural_tags['en'])
 
             # Get string list to handle, wrapping non multistring/list targets into a list.
             if isinstance(target, multistring):
