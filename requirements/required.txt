@@ -1,1 +1,4 @@
 six>=1.10.0
+
+# Required to provide compatibility for old Virtaal releases:
+diff-match-patch==20181111
