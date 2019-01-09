@@ -115,7 +115,7 @@ class PythonFormattingPlaceable(Ph):
     regex = re.compile(r"""(?x)
                        %                     # Start of formatting specifier
                        (%|                   # No argument converted %% creates a %
-                       (\([a-z_]+\)){0,1}    # Mapping key value (optional)
+                       (\([^)]+\)){0,1}      # Mapping key value (optional)
                        [\-\+0\s\#]{0,1}      # Conversion flags (optional)
                        (\d+|\*){0,1}         # Minimum field width (optional)
                        (\.(\d+|\*)){0,1}     # Precision (optional)
