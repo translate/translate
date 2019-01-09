@@ -143,4 +143,28 @@ def test_placeable_brace():
     assert bp.parse(u'There were {{number1}} cows and {number2} sheep')[3] == bp([u'{number2}'])
 
 
-# TODO: PythonFormattingPlaceable, JavaMessageFormatPlaceable, UrlPlaceable, XMLTagPlaceable
+def test_python_placeable():
+    pfp = general.PythonFormattingPlaceable
+    # No conversion
+    assert pfp.parse(u'100%% correct')[1] == pfp([u'%%'])
+
+    # Mapping keys
+    assert pfp.parse(u'There were %(number)d cows')[1] == pfp([u'%(number)d'])
+    assert pfp.parse(u'There were %(cows.number)d cows')[1] == pfp([u'%(cows.number)d'])
+    assert pfp.parse(u'There were %(number of cows)d cows')[1] == pfp([u'%(number of cows)d'])
+
+    # Conversion flags
+    assert pfp.parse(u'There were %(number)03d cows')[1] == pfp([u'%(number)03d'])
+    assert pfp.parse(u'There were %(number) 3d cows')[1] == pfp([u'%(number) 3d'])
+
+    # Minimum field width
+    assert pfp.parse(u'There were %(number)*d cows')[1] == pfp([u'%(number)*d'])
+
+    # Precision
+    assert pfp.parse(u'There were %(number)3.1d cows')[1] == pfp([u'%(number)3.1d'])
+
+    # Length modifier
+    assert pfp.parse(u'There were %(number)Ld cows')[1] == pfp([u'%(number)Ld'])
+
+
+# TODO: JavaMessageFormatPlaceable, UrlPlaceable, XMLTagPlaceable
