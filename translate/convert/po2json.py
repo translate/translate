@@ -31,8 +31,8 @@ class rejson(object):
 
     def __init__(self, templatefile, inputstore):
         self.templatefile = templatefile
-        self.templatestore = jsonl10n.JsonFile(templatefile)
-        self.ouputstore = jsonl10n.JsonFile()
+        self.templatestore = jsonl10n.JsonNestedFile(templatefile)
+        self.ouputstore = jsonl10n.JsonNestedFile()
         self.inputstore = inputstore
 
     def convertstore(self, includefuzzy=False, remove_untranslated=False):
