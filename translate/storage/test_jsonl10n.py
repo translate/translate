@@ -56,25 +56,6 @@ class TestJSONResourceStore(test_monolingual.TestMonolingualStore):
 
         assert out.getvalue() == b'{\n    "key": "value"\n}\n'
 
-    def test_serialize_more_complex(self):
-        store = self.StoreClass()
-        more_complex = b"""
-{
-"foo": {
-    "foo_2": {
-        "foo_3": "bar",
-        "foo_4": "bar2"
-    },
-    "fizz" : "buzz"
-    }
-}
-"""
-        store.parse(more_complex)
-        out = BytesIO()
-        store.serialize(out)
-
-        assert out.getvalue() == more_complex
-
     def test_error(self):
         store = self.StoreClass()
         with raises(base.ParseError):
@@ -127,6 +108,24 @@ class TestJSONNestedResourceStore(test_monolingual.TestMonolingualUnit):
         store.serialize(out)
 
         assert out.getvalue() == b'{\n    "key": {\n        "second": "value"\n    }\n}\n'
+
+    def test_serialize_more_complex(self):
+        store = self.StoreClass()
+        more_complex = b"""{
+    "foo": {
+        "foo_2": {
+            "foo_3": "bar",
+            "foo_4": "bar2"
+        },
+        "fizz": "buzz"
+    }
+}
+"""
+        store.parse(more_complex)
+        out = BytesIO()
+        store.serialize(out)
+
+        assert out.getvalue() == more_complex
 
     def test_ordering(self):
         data = b'''{
