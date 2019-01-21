@@ -3,25 +3,3 @@ Licenses of Toolkit and Other Code
 ==================================
 
 The Translate Toolkit is released the license listed in COPYING.
-
-
-Other licenses
-==============
-
-We import or have used code from the following projects:
-
-CherryPy
---------
-
-This is used by tmserver. Depending on the whole of CherryPy was overkill for
-just needing this server component.
-
-License: BSD copy in translate/misc/wsgiserver/LICENSE.txt
-
-Used in: translate/misc/wsgiserver/*
-
-From: CherryPy 3.2.4
-https://pypi.python.org/packages/source/C/CherryPy/CherryPy-3.2.4.tar.gz#md5=e2c8455e15c39c9d60e0393c264a4d16
-
-The code has been changed slightly:
-  1. from cherrypy import -> from translate.misc import

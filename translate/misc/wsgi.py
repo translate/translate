@@ -21,13 +21,14 @@
 
 import logging
 
+from cheroot.wsgi import Server
+
 
 def launch_server(host, port, app, **kwargs):
-    """Use CherryPy's WSGI server, a multithreaded scallable server."""
-    from translate.misc.wsgiserver import CherryPyWSGIServer
+    """Use cheroot WSGI server, a multithreaded scallable server."""
 
-    server = CherryPyWSGIServer((host, port), app, **kwargs)
-    logging.info("Starting CherryPy server, listening on port %s", port)
+    server = Server((host, port), app, **kwargs)
+    logging.info("Starting server, listening on port %s", port)
     try:
         server.start()
     except KeyboardInterrupt:
