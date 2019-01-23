@@ -24,76 +24,15 @@ from __future__ import absolute_import
 from __future__ import unicode_literals
 
 import uuid
-from collections import OrderedDict
 
 import six
-import yaml
-import yaml.constructor
+from ruamel.yaml import YAML, YAMLError
+from ruamel.yaml.comments import CommentedMap
 
 from translate.lang.data import cldr_plural_categories, plural_tags
 from translate.misc.deprecation import deprecated
 from translate.misc.multistring import multistring
 from translate.storage import base
-
-
-class OrderedDictYAMLLoader(yaml.SafeLoader):
-    """
-    A YAML loader that loads mappings into ordered dictionaries.
-    """
-
-    def __init__(self, *args, **kwargs):
-        yaml.SafeLoader.__init__(self, *args, **kwargs)
-
-        self.add_constructor(u'tag:yaml.org,2002:map', type(self).construct_yaml_map)
-        self.add_constructor(u'tag:yaml.org,2002:omap', type(self).construct_yaml_map)
-
-    def construct_yaml_map(self, node):
-        data = OrderedDict()
-        yield data
-        value = self.construct_mapping(node)
-        data.update(value)
-
-    def construct_mapping(self, node, deep=False):
-        if isinstance(node, yaml.MappingNode):
-            self.flatten_mapping(node)
-        else:
-            raise yaml.constructor.ConstructorError(
-                None, None,
-                'expected a mapping node, but found %s' % node.id, node.start_mark
-            )
-
-        mapping = OrderedDict()
-        for key_node, value_node in node.value:
-            key = self.construct_object(key_node, deep=deep)
-            try:
-                hash(key)
-            except TypeError as exc:
-                raise yaml.constructor.ConstructorError(
-                    'while constructing a mapping',
-                    node.start_mark,
-                    'found unacceptable key (%s)' % exc, key_node.start_mark
-                )
-            value = self.construct_object(value_node, deep=deep)
-            mapping[key] = value
-        return mapping
-
-
-class UnsortableList(list):
-    def sort(self, *args, **kwargs):
-        pass
-
-
-class UnsortableOrderedDict(OrderedDict):
-    def items(self, *args, **kwargs):
-        return UnsortableList(OrderedDict.items(self, *args, **kwargs))
-
-
-class YAMLDumper(yaml.SafeDumper):
-    def represent_unsorted(self, data):
-        return self.represent_dict(data.items())
-
-
-YAMLDumper.add_representer(UnsortableOrderedDict, YAMLDumper.represent_unsorted)
 
 
 class YAMLUnit(base.TranslationUnit):
@@ -163,19 +102,17 @@ class YAMLFile(base.TranslationStore):
                     # Add empty dict in case there is value and we
                     # expect dict
                     if path[0] not in target or not isinstance(target[path[0]], dict):
-                        target[path[0]] = UnsortableOrderedDict()
+                        target[path[0]] = CommentedMap()
                     nested_set(target[path[0]], path[1:], value)
             else:
                 target[path[0]] = value
 
-        units = UnsortableOrderedDict()
+        units = CommentedMap()
         for unit in self.unit_iter():
             nested_set(units, unit.getid().split('->'), unit.target)
-        out.write(yaml.dump_all(
-            [self.get_root_node(units)],
-            Dumper=YAMLDumper,
-            default_flow_style=False, encoding='utf-8', allow_unicode=True
-        ))
+        yaml = YAML()
+        yaml.default_flow_style = False
+        yaml.dump(self.get_root_node(units), out)
 
     def _parse_dict(self, data, prev):
         for k, v in six.iteritems(data):
@@ -226,9 +163,10 @@ class YAMLFile(base.TranslationStore):
             input = src
         if isinstance(input, bytes):
             input = input.decode('utf-8')
+        yaml = YAML()
         try:
-            self._file = yaml.load(input, OrderedDictYAMLLoader)
-        except yaml.YAMLError as e:
+            self._file = yaml.load(input)
+        except YAMLError as e:
             message = e.problem if hasattr(e, 'problem') else e.message
             if hasattr(e, 'problem_mark'):
                 message += ' {0}'.format(e.problem_mark)
@@ -246,7 +184,7 @@ class RubyYAMLFile(YAMLFile):
     """Ruby YAML file, it has language code as first node."""
 
     def preprocess(self, data):
-        if isinstance(data, OrderedDict) and len(data) == 1:
+        if isinstance(data, CommentedMap) and len(data) == 1:
             lang = list(data.keys())[0]
             self.settargetlanguage(lang)
             return data[lang]
@@ -255,7 +193,7 @@ class RubyYAMLFile(YAMLFile):
     def get_root_node(self, node):
         """Returns root node for serialize"""
         if self.targetlanguage is not None:
-            result = UnsortableOrderedDict()
+            result = CommentedMap()
             result[self.targetlanguage] = node
             return result
         return node
@@ -285,4 +223,4 @@ class RubyYAMLFile(YAMLFile):
             strings += [''] * (len(tags) - len(strings))
         strings = strings[:len(tags)]
 
-        return UnsortableOrderedDict(zip(tags, strings))
+        return CommentedMap(zip(tags, strings))
