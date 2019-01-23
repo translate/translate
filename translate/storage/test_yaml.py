@@ -88,7 +88,7 @@ foo: bar
         assert store.units[0].source == 'Oficina'
         out = BytesIO()
         store.serialize(out)
-        assert out.getvalue() == b''''yes': Oficina
+        assert out.getvalue() == b'''yes: Oficina
 '''
 
     def test_nested(self):
@@ -414,7 +414,7 @@ class TestRubyYAMLResourceStore(test_monolingual.TestMonolingualStore):
     def test_invalid_key(self):
         store = yaml.YAMLFile()
         with pytest.raises(base.ParseError):
-            store.parse('yes: string')
+            store.parse('1: string')
 
     def test_invalid_value(self):
         store = yaml.YAMLFile()
