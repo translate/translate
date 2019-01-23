@@ -29,6 +29,13 @@ class TestYAMLResourceStore(test_monolingual.TestMonolingualStore):
         store.serialize(out)
         assert out.getvalue() == b'key: value\n'
 
+    def test_empty(self):
+        store = self.StoreClass()
+        store.parse('{}')
+        out = BytesIO()
+        store.serialize(out)
+        assert out.getvalue() == b'{}\n'
+
     def test_edit(self):
         store = self.StoreClass()
         store.parse('key: value')
@@ -433,3 +440,10 @@ class TestRubyYAMLResourceStore(test_monolingual.TestMonolingualStore):
         out = BytesIO()
         store.serialize(out)
         assert out.getvalue() == data.encode('ascii')
+
+    def test_empty(self):
+        store = self.StoreClass()
+        store.parse('{}')
+        out = BytesIO()
+        store.serialize(out)
+        assert out.getvalue() == b'{}\n'
