@@ -2,6 +2,8 @@
 
 from __future__ import unicode_literals
 
+import pytest
+
 from translate.convert import yaml2po, test_convert
 from translate.misc import wStringIO
 
@@ -93,6 +95,7 @@ eggs: spam
         assert target_store.units[4].source == "spam"
         assert target_store.units[4].target == ""
 
+    @pytest.mark.xfail(reason="This is invalid YAML document")
     def test_no_duplicates(self):
         """Check converting drops duplicates."""
         input_string = '''
