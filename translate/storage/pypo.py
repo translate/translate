@@ -54,15 +54,20 @@ def splitlines(text):
     Can not use univerzal newlines as they match any newline like
     character inside text and that breaks on files with unix newlines
     and LF chars inside comments.
+
+    The code looks for first msgid and looks for newline used after it. This
+    should safely cover weird newlines used in comments or filenames, while
+    properly parsing po files with any newlines.
     """
     # Find first newline
     newline = b'\n'
-    for i, ch in enumerate(text):
+    msgid_pos = max(0, text.find(b'msgid'))
+    for i, ch in enumerate(text[msgid_pos:]):
         # Iteration over bytes yields numbers in Python 3
         if ch in ('\n', 10):
             break
         if ch in ('\r', 13):
-            if text[i + 1] in ('\n', 10):
+            if text[msgid_pos + i + 1] in ('\n', 10):
                 newline = b'\r\n'
             else:
                 newline = b'\r'
