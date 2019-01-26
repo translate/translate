@@ -399,3 +399,23 @@ msgstr ""
         assert len(pofile.units) == 1
         assert pofile.units[0].source == 'test me'
         assert bytes(pofile) == posource
+
+    def test_mixed_newlines_header(self):
+        """checks that mixed newlines are properly parsed"""
+        posource = b'''# Polish message file for YaST2 (@memory@).\r
+# Copyright (C) 2005 SUSE Linux Products GmbH.\r
+msgid ""
+msgstr ""
+"Project-Id-Version: YaST (@memory@)\\n"
+
+#. Rich text title for FcoeClient in proposals
+#: src/clients/fcoe-client_proposal.rb:82
+msgid "FcoeClient"
+msgstr "FcoeClient"
+'''
+        pofile = self.poparse(posource)
+        assert len(pofile.units) == 2
+        assert pofile.units[0].source == ''
+        assert pofile.units[1].source == 'FcoeClient'
+        print(repr(bytes(pofile)))
+        assert bytes(pofile) == posource
