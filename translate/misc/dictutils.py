@@ -74,9 +74,6 @@ class cidict(dict):
                 return 1
         return 0
 
-    def has_key(self, key):
-        return self.__contains__(key)
-
     def get(self, key, default=None):
         if key in self:
             return self[key]
