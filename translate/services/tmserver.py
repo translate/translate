@@ -77,7 +77,7 @@ class TMServer(object):
         start_response("200 OK", [('Content-type', 'text/plain')])
         candidates = self.tmdb.translate_unit(uid, slang, tlang)
         logging.debug("candidates: %s", six.text_type(candidates))
-        response = json.dumps(candidates, indent=4)
+        response = json.dumps(candidates, indent=4).encode('utf-8')
         params = parse.parse_qs(environ.get('QUERY_STRING', ''))
         try:
             callback = params.get('callback', [])[0]
