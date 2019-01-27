@@ -22,6 +22,7 @@ matrix:
     - python: 2.7
       env: USECPO=0 MINVERSION= META=1
 install:
+  - pip install --upgrade pip wheel
   - pip install coveralls
   - pip install codecov
   - if [[ $MINVERSION ]]; then make requirements/min-versions.txt; cat requirements/min-versions.txt;  CFLAGS="-O0" pip install -r requirements/min-versions.txt; fi
