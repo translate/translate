@@ -59,6 +59,10 @@ def splitlines(text):
     should safely cover weird newlines used in comments or filenames, while
     properly parsing po files with any newlines.
     """
+    # Strip UTF-8 BOM if present. This file would not be accepted
+    # by gettext, but some editors might create it, so better handle it.
+    if text[:3] == b'\xEF\xBB\xBF':
+        text = text[3:]
     # Find first newline
     newline = b'\n'
     msgid_pos = max(0, text.find(b'msgid'))
