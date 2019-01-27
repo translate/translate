@@ -419,3 +419,18 @@ msgstr "FcoeClient"
         assert pofile.units[1].source == 'FcoeClient'
         print(repr(bytes(pofile)))
         assert bytes(pofile) == posource
+
+    def test_bom(self):
+        """checks that BOM is parsed"""
+        posource = '''msgid ""
+msgstr ""
+"Project-Id-Version: YaST (@memory@)\\n"
+
+msgid "FcoeClient"
+msgstr "FcoeClient"
+'''.encode('utf-8-sig')
+        pofile = self.poparse(posource)
+        assert len(pofile.units) == 2
+        assert pofile.units[0].source == ''
+        assert pofile.units[1].source == 'FcoeClient'
+        assert bytes(pofile) == posource[3:]
