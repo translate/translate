@@ -99,11 +99,11 @@ class TestXLIFFfile(test_base.TestTranslationStore):
 </xliff>'''
 
     def test_basic(self):
-        xlifffile = xliff.xlifffile()
+        xlifffile = self.StoreClass()
         assert xlifffile.units == []
         xlifffile.addsourceunit("Bla")
         assert len(xlifffile.units) == 1
-        newfile = xliff.xlifffile.parsestring(bytes(xlifffile))
+        newfile = self.StoreClass.parsestring(bytes(xlifffile))
         print(bytes(xlifffile))
         assert len(newfile.units) == 1
         assert newfile.units[0].source == "Bla"
@@ -122,12 +122,12 @@ class TestXLIFFfile(test_base.TestTranslationStore):
         </xliff:body>
     </xliff:file>
 </xliff:xliff>'''
-        xlifffile = xliff.xlifffile.parsestring(xlfsource)
+        xlifffile = self.StoreClass.parsestring(xlfsource)
         print(bytes(xlifffile))
         assert xlifffile.units[0].source == "File 1"
 
     def test_rich_source(self):
-        xlifffile = xliff.xlifffile()
+        xlifffile = self.StoreClass()
         xliffunit = xlifffile.addsourceunit(u'')
 
         # Test 1
@@ -168,7 +168,7 @@ class TestXLIFFfile(test_base.TestTranslationStore):
         assert rich_source == [StringElem([u'foobaz', G(id='oof', sub=[G(id='zab', sub=[u'barrab'])])])]
 
     def test_rich_target(self):
-        xlifffile = xliff.xlifffile()
+        xlifffile = self.StoreClass()
         xliffunit = xlifffile.addsourceunit(u'')
 
         # Test 1
@@ -204,38 +204,38 @@ class TestXLIFFfile(test_base.TestTranslationStore):
         assert xliffunit.rich_target == [StringElem([u'foobaz', G(id='oof', sub=[G(id='zab', sub=[u'barrab'])])])]
 
     def test_source(self):
-        xlifffile = xliff.xlifffile()
+        xlifffile = self.StoreClass()
         xliffunit = xlifffile.addsourceunit("Concept")
         xliffunit.source = "Term"
-        newfile = xliff.xlifffile.parsestring(bytes(xlifffile))
+        newfile = self.StoreClass.parsestring(bytes(xlifffile))
         print(bytes(xlifffile))
         assert newfile.findunit("Concept") is None
         assert newfile.findunit("Term") is not None
 
     def test_target(self):
-        xlifffile = xliff.xlifffile()
+        xlifffile = self.StoreClass()
         xliffunit = xlifffile.addsourceunit("Concept")
         xliffunit.target = "Konsep"
-        newfile = xliff.xlifffile.parsestring(bytes(xlifffile))
+        newfile = self.StoreClass.parsestring(bytes(xlifffile))
         print(bytes(xlifffile))
         assert newfile.findunit("Concept").target == "Konsep"
 
     def test_sourcelanguage(self):
-        xlifffile = xliff.xlifffile(sourcelanguage="xh")
+        xlifffile = self.StoreClass(sourcelanguage="xh")
         xmltext = bytes(xlifffile).decode('utf-8')
         print(xmltext)
         assert xmltext.find('source-language="xh"') > 0
         #TODO: test that it also works for new files.
 
     def test_targetlanguage(self):
-        xlifffile = xliff.xlifffile(sourcelanguage="zu", targetlanguage="af")
+        xlifffile = self.StoreClass(sourcelanguage="zu", targetlanguage="af")
         xmltext = bytes(xlifffile).decode('utf-8')
         print(xmltext)
         assert xmltext.find('source-language="zu"') > 0
         assert xmltext.find('target-language="af"') > 0
 
     def test_notes(self):
-        xlifffile = xliff.xlifffile()
+        xlifffile = self.StoreClass()
         unit = xlifffile.addsourceunit("Concept")
         # We don't want to add unnecessary notes
         assert "note" not in bytes(xlifffile).decode('utf-8')
@@ -272,7 +272,7 @@ class TestXLIFFfile(test_base.TestTranslationStore):
 
     def test_alttrans(self):
         """Test xliff <alt-trans> accessors"""
-        xlifffile = xliff.xlifffile()
+        xlifffile = self.StoreClass()
         unit = xlifffile.addsourceunit("Testing")
 
         unit.addalttrans("ginmi")
@@ -316,7 +316,7 @@ class TestXLIFFfile(test_base.TestTranslationStore):
         assert unitformat.find("<source") < unitformat.find("<target") < unitformat.find("<alt-trans")
 
     def test_fuzzy(self):
-        xlifffile = xliff.xlifffile()
+        xlifffile = self.StoreClass()
         unit = xlifffile.addsourceunit("Concept")
         unit.markfuzzy()
         assert not unit.isfuzzy()  # untranslated
@@ -345,7 +345,7 @@ class TestXLIFFfile(test_base.TestTranslationStore):
             '''<trans-unit id="1" xml:space="preserve">
                    <source> File  1 </source>
                </trans-unit>''')
-        xlifffile = xliff.xlifffile.parsestring(xlfsource)
+        xlifffile = self.StoreClass.parsestring(xlfsource)
         assert xlifffile.units[0].source == " File  1 "
         root_node = xlifffile.document.getroot()
         setXMLspace(root_node, "preserve")
@@ -357,7 +357,7 @@ class TestXLIFFfile(test_base.TestTranslationStore):
             '''<trans-unit id="1" xml:space="default">
                    <source> File  1 </source>
                </trans-unit>''')
-        xlifffile = xliff.xlifffile.parsestring(xlfsource)
+        xlifffile = self.StoreClass.parsestring(xlfsource)
         assert xlifffile.units[0].source == "File 1"
         root_node = xlifffile.document.getroot()
         setXMLspace(root_node, "preserve")
@@ -370,7 +370,7 @@ class TestXLIFFfile(test_base.TestTranslationStore):
                    <source> File  1 </source>
                </trans-unit>''')
         # we currently always normalize as default behaviour for xliff
-        xlifffile = xliff.xlifffile.parsestring(xlfsource)
+        xlifffile = self.StoreClass.parsestring(xlfsource)
         assert xlifffile.units[0].source == "File 1"
         root_node = xlifffile.document.getroot()
         setXMLspace(root_node, "preserve")
@@ -384,7 +384,7 @@ class TestXLIFFfile(test_base.TestTranslationStore):
 </source>
                </trans-unit>''')
         # we currently always normalize as default behaviour for xliff
-        xlifffile = xliff.xlifffile.parsestring(xlfsource)
+        xlifffile = self.StoreClass.parsestring(xlfsource)
         assert xlifffile.units[0].source == "File 1"
         root_node = xlifffile.document.getroot()
         setXMLspace(root_node, "preserve")
@@ -398,7 +398,7 @@ class TestXLIFFfile(test_base.TestTranslationStore):
                      <source>File</source>
                      <target/>
                  </trans-unit>'''
-        xlifffile = xliff.xlifffile.parsestring(xlfsource)
+        xlifffile = self.StoreClass.parsestring(xlfsource)
         assert xlifffile.units[0].istranslatable()
 
         xlfsource = self.skeleton \
@@ -406,7 +406,7 @@ class TestXLIFFfile(test_base.TestTranslationStore):
                      <source>File</source>
                      <target/>
                  </trans-unit>'''
-        xlifffile = xliff.xlifffile.parsestring(xlfsource)
+        xlifffile = self.StoreClass.parsestring(xlfsource)
         assert not xlifffile.units[0].istranslatable()
 
         xlfsource = self.skeleton \
@@ -414,7 +414,7 @@ class TestXLIFFfile(test_base.TestTranslationStore):
                      <source>File</source>
                      <target/>
                  </trans-unit>'''
-        xlifffile = xliff.xlifffile.parsestring(xlfsource)
+        xlifffile = self.StoreClass.parsestring(xlfsource)
         assert xlifffile.units[0].istranslatable()
 
     def test_entities(self):
@@ -479,3 +479,135 @@ class TestXLIFFfile(test_base.TestTranslationStore):
         assert newxfile.getfilenode("file0") is not None
         assert newxfile.getfilenode("file1") is not None
         assert not newxfile.getfilenode("foo")
+
+
+class TestiOSXLIFFfile(object):
+    StoreClass = xliff.iOSXLIFFFile
+    skeleton = '''<?xml version="1.0" encoding="utf-8"?>
+<xliff version="1.1" xmlns="urn:oasis:names:tc:xliff:document:1.1">
+        <file original="doc.txt" source-language="en-US">
+                <body>
+                        %s
+                </body>
+        </file>
+</xliff>'''
+
+#    def test_parsing_no_approved(self):
+#        source_string = (self.skeleton %
+#            '''<trans-unit id="1">
+#                   <source>File</source>
+#                   <target/>
+#               </trans-unit>''')
+#        xliff_file = self.StoreClass.parsestring(source_string)
+#        assert xliff_file.units[0].isapproved()
+
+#    def test_parsing_no_state(self):
+#        source_string = (self.skeleton %
+#            '''<trans-unit id="1">
+#                   <source>File</source>
+#               </trans-unit>
+#               <trans-unit id="2">
+#                   <source>File</source>
+#                   <target/>
+#               </trans-unit>
+#               <trans-unit id="3">
+#                   <source>File</source>
+#                   <target></target>
+#               </trans-unit>
+#               <trans-unit id="4">
+#                   <source>File</source>
+#                   <target>Ficheiro</target>
+#               </trans-unit>''')
+#        xliff_file = self.StoreClass.parsestring(source_string)
+#        assert xliff_file.units[0].get_state_id() == self.StoreClass.UnitClass.S_UNTRANSLATED
+#        assert xliff_file.units[1].get_state_id() == self.StoreClass.UnitClass.S_UNTRANSLATED
+#        assert xliff_file.units[2].get_state_id() == self.StoreClass.UnitClass.S_UNTRANSLATED
+#        assert xliff_file.units[3].get_state_id() == self.StoreClass.UnitClass.S_TRANSLATED
+
+#    def test_parsing_bare_note(self):
+#        note_text = "This is a label"
+#        source_string = (self.skeleton %
+#            '''<trans-unit id="1">
+#                   <source>File</source>
+#                   <target>Ficheiro</target>
+#                   <note>%s</note>
+#               </trans-unit>''' % note_text)
+#        xliff_file = self.StoreClass.parsestring(source_string)
+#        assert xliff_file.units[0].getnotes() == note_text
+#        assert xliff_file.units[0].getnotes(origin="developer") == note_text
+
+#    def test_serializing_no_approved(self):
+#        xliff_file = self.StoreClass()
+#        unit = xliff_file.addsourceunit("File")
+#        unit.target = "Ficheiro"
+#        assert 'approved' not in str(unit)
+#        unit.markapproved()
+#        assert 'approved' not in str(unit)
+#        unit.markapproved(False)
+#        assert 'approved' not in str(unit)
+
+#    def test_serializing_no_state(self):
+#        xliff_file = self.StoreClass()
+#        unit = xliff_file.addsourceunit("File")
+#        unit.target = "Ficheiro"
+#        unit.markreviewneeded(needsreview=False)
+#        assert 'state="' not in str(unit)
+#        unit.markreviewneeded()
+#        assert 'state="' not in str(unit)
+
+    def test_serializing_no_state(self):
+
+
+
+        xliff_file = self.StoreClass()
+        unit = xliff_file.addsourceunit("File")
+        unit.target = "Konsep"
+        newfile = self.StoreClass.parsestring(bytes(xliff_file))
+        assert newfile.findunit("File").target == "Konsep"
+
+
+
+
+        xliff_file = self.StoreClass()
+        unit = xliff_file.addsourceunit("File")
+        #unit.rich_target = "Ficheiro"
+        unit.target = u"Ficheiro"
+        #unit.settarget(u"Ficheiro")
+        unit.addnote("This is a label", origin="developer")
+        assert unit.target == u"Ficheiro"
+        assert '</target>' in bytes(unit)
+        assert '  <node>' in bytes(unit)
+        assert '</target><node>' not in bytes(unit)
+
+#        note_text = "This is a label"
+#        source_string = (self.skeleton %
+#            '''<trans-unit id="1">
+#                   <source>File</source>
+#                   <target>Ficheiro</target>
+#                   <note>%s</note>
+#               </trans-unit>''' % note_text)
+#        xliff_file = self.StoreClass.parsestring(source_string)
+#        unit = xliff_file.units[0]
+#        import pdb; pdb.set_trace()
+#        assert '</target>' in str(unit)
+#        assert '  <node>' in str(unit)
+#        assert '</target><node>' not in str(unit)
+
+
+#    def test_serializing_bare_note(self):
+#        xliff_file = self.StoreClass()
+#        unit = xliff_file.addsourceunit("File")
+#        unit.target = "Ficheiro"
+#        note_text = "This is a label"
+#        unit.addnote(note_text, origin="developer")
+#        assert note_text in str(unit)
+#        assert 'from="developer"' not in str(unit)
+
+#    def test_serializing_no_empty_targets(self):
+#        xliff_file = self.StoreClass()
+#        unit = xliff_file.addsourceunit("File")
+#        assert '<target></target>' not in str(unit)
+#        assert '</target>' not in str(unit)
+#        unit.target = ""
+#        assert '<target></target>' not in str(unit)
+#        assert '</target>' not in str(unit)
