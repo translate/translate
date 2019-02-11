@@ -27,7 +27,7 @@ from lxml import etree
 
 from translate.misc.deprecation import deprecated
 from translate.misc.multistring import multistring
-from translate.misc.xml_helpers import getXMLspace, setXMLlang, setXMLspace
+from translate.misc.xml_helpers import getXMLspace, setXMLlang, setXMLspace, reindent
 from translate.storage import base, lisa
 from translate.storage.placeables.lisa import strelem_to_xml, xml_to_strelem
 from translate.storage.workflow import StateEnum as state
@@ -872,6 +872,7 @@ class xlifffile(lisa.LISAfile):
 
     def serialize(self, out):
         self.removedefaultfile()
+        reindent(self.document.getroot(), indent="  ", max_level=4)
         super(xlifffile, self).serialize(out)
 
     @classmethod

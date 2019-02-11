@@ -479,3 +479,34 @@ class TestXLIFFfile(test_base.TestTranslationStore):
         assert newxfile.getfilenode("file0") is not None
         assert newxfile.getfilenode("file1") is not None
         assert not newxfile.getfilenode("foo")
+
+    def test_indent(self):
+        xlfsource = b'''<?xml version='1.0' encoding='UTF-8'?>
+<xliff xmlns="urn:oasis:names:tc:xliff:document:1.1" version="1.1">
+  <file original="doc.txt" source-language="en-US">
+    <body>
+      <trans-unit id="1" xml:space="preserve">
+        <source>File</source>
+        <target/>
+      </trans-unit>
+    </body>
+  </file>
+</xliff>
+'''
+        xlfsourcenote = b'''<?xml version='1.0' encoding='UTF-8'?>
+<xliff xmlns="urn:oasis:names:tc:xliff:document:1.1" version="1.1">
+  <file original="doc.txt" source-language="en-US">
+    <body>
+      <trans-unit id="1" xml:space="preserve">
+        <source>File</source>
+        <target/>
+        <note>Test note</note>
+      </trans-unit>
+    </body>
+  </file>
+</xliff>
+'''
+        xfile = xliff.xlifffile.parsestring(xlfsource)
+        assert bytes(xfile) == xlfsource
+        xfile.units[0].addnote('Test note')
+        assert bytes(xfile) == xlfsourcenote
