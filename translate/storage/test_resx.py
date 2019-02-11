@@ -82,7 +82,7 @@ class TestRESXUnitFromParsedString(TestRESXUnit):
     <value>2.0</value>
   </resheader>
   <data name="key" xml:space="preserve">
-     <value>Test String</value>
+    <value>Test String</value>
   </data>
   %s
 </root>

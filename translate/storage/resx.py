@@ -24,7 +24,7 @@ from lxml import etree
 
 from translate.lang import data
 from translate.misc.deprecation import deprecated
-from translate.misc.xml_helpers import setXMLspace
+from translate.misc.xml_helpers import setXMLspace, reindent
 from translate.storage import base, lisa
 from translate.storage.placeables import general
 
@@ -44,8 +44,6 @@ class RESXUnit(lisa.LISAunit):
         langset = etree.Element(self.namespaced(self.languageNode))
 
         langset.text = text
-        # assume no <comment>, closing </data> indents with 2 spaces
-        langset.tail = u"\n  "
         return langset
 
     def _gettargetnode(self):
@@ -78,10 +76,6 @@ class RESXUnit(lisa.LISAunit):
         targetnode = self._gettargetnode()
         targetnode.clear()
         targetnode.text = data.forceunicode(target) or u""
-        # Assume no <comment> follows; allow the </data> element
-        # to be indented with 2 spaces (same level as the opening
-        # <data> element before <value>)
-        targetnode.tail = u"\n  "
 
     # Deprecated on 2.3.1
     @deprecated("Use `target` property instead")
@@ -113,10 +107,6 @@ class RESXUnit(lisa.LISAunit):
             # Correct the indent of <comment> by updating the tail of
             # the preceding <value> element
             targetnode = self._gettargetnode()
-            targetnode.tail = u"\n    "
-        # This also requires putting a matching tail on the <comment>,
-        # otherwise the </data> would yet again be misaligned
-        note.tail = u"\n  "
 
     def getnotes(self, origin=None):
         comments = []
@@ -248,11 +238,10 @@ class RESXFile(lisa.LISAfile):
                 # should not happen in a ResX file prepared by Visual Studio
                 # since it includes an inline XSD plus resheader at all times.
                 self.body.text = u"\n  "
-            else:
-                # adjust the <data> tag being added by updating the previous one.
-                previous_node.tail = u"\n  "
             # adjust the indent of the following <value> element
             unit.xmlelement.text = u"\n    "
-            # adjust the indent of the closing </root> tag
-            unit.xmlelement.tail = u"\n"
         return unit
+
+    def serialize(self, out=None):
+        reindent(self.document.getroot(), indent="  ", max_level=4)
+        super(RESXFile, self).serialize(out)
