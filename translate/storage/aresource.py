@@ -29,6 +29,7 @@ from lxml import etree
 
 from translate.lang import data
 from translate.misc.deprecation import deprecated
+from translate.misc.xml_helpers import reindent
 from translate.storage import base, lisa
 from translate.misc.multistring import multistring
 
@@ -57,7 +58,6 @@ class AndroidResourceUnit(base.TranslationUnit):
                 self.xmlelement = etree.Element("plurals")
             else:
                 self.xmlelement = etree.Element("string")
-            self.xmlelement.tail = '\n'
         if source is not None:
             self.setid(source)
         super(AndroidResourceUnit, self).__init__(source)
@@ -337,7 +337,6 @@ class AndroidResourceUnit(base.TranslationUnit):
             if self.xmlelement.tag != "plurals":
                 old_id = self.getid()
                 self.xmlelement = etree.Element("plurals")
-                self.xmlelement.tail = '\n'
                 self.setid(old_id)
 
             locale = self.gettargetlanguage().replace('_', '-').split('-')[0]
@@ -366,16 +365,12 @@ class AndroidResourceUnit(base.TranslationUnit):
                 item = etree.Element("item")
                 item.set("quantity", plural_tag)
                 self.set_xml_text_value(plural_string, item)
-                item.tail = "\n    "
                 self.xmlelement.append(item)
-            # Remove the tab from last item
-            item.tail = "\n"
         else:
             # Fix the root tag if mismatching
             if self.xmlelement.tag != "string":
                 old_id = self.getid()
                 self.xmlelement = etree.Element("string")
-                self.xmlelement.tail = '\n'
                 self.setid(old_id)
 
             self.set_xml_text_value(target, self.xmlelement)
@@ -459,6 +454,7 @@ class AndroidResourceFile(lisa.LISAfile):
     def serialize(self, out=None):
         """Converts to a string containing the file's XML"""
         out.write(b'<?xml version="1.0" encoding="utf-8"?>\n')
+        reindent(self.document.getroot(), indent="    ", max_level=3)
         self.document.write(out, pretty_print=False, xml_declaration=False,
                             encoding='utf-8')
 
@@ -514,11 +510,6 @@ class AndroidResourceFile(lisa.LISAfile):
                 if ns not in newns:
                     do_cleanup = True
                     newns[ns] = unit.xmlelement.nsmap[ns]
-
-            # Fixup formatting
-            if len(self.body):
-                self.body[-1].tail = '\n    '
-            unit.xmlelement.tail = '\n'
 
         super(AndroidResourceFile, self).addunit(unit, new)
         # Move aliased namespaces to the <resources> tag
