@@ -26,11 +26,14 @@ for examples and usage instructions.
 
 from translate.storage import po
 
+import six
+
 
 class web2py2po(object):
 
-    def __init__(self, pofile=None):
+    def __init__(self, pofile=None, duplicatestyle="msgctxt"):
         self.mypofile = pofile
+        self.duplicatestyle = duplicatestyle
 
     def convertunit(self, source_str, target_str):
         pounit = po.pounit(encoding="UTF-8")
@@ -40,25 +43,26 @@ class web2py2po(object):
         return pounit
 
     def convertstore(self, mydict):
-
         targetheader = self.mypofile.header()
         targetheader.addnote("extracted from web2py", "developer")
 
         for source_str in mydict.keys():
             target_str = mydict[source_str]
+            if six.PY2:
+                target_str = target_str.decode('utf-8')
+                source_str = source_str.decode('utf-8')
             if target_str == source_str:
                 # a convention with new (untranslated) web2py files
-                target_str = u''
-            elif target_str.startswith(u'*** '):
-                # an older convention
                 target_str = u''
             pounit = self.convertunit(source_str, target_str)
             self.mypofile.addunit(pounit)
 
+        self.mypofile.removeduplicates(self.duplicatestyle)
+
         return self.mypofile
 
 
-def convertpy(inputfile, outputfile, encoding="UTF-8"):
+def convertpy(inputfile, outputfile, encoding="UTF-8", duplicatestyle="msgctxt"):
 
     new_pofile = po.pofile()
     convertor = web2py2po(new_pofile)

@@ -24,10 +24,12 @@ See: http://docs.translatehouse.org/projects/translate-toolkit/en/latest/command
 for examples and usage instructions.
 """
 
-from io import BytesIO
+from io import StringIO
 
 from translate.convert import convert
 from translate.storage import factory
+
+import six
 
 
 class po2pydict(object):
@@ -36,7 +38,7 @@ class po2pydict(object):
         return
 
     def convertstore(self, inputstore, includefuzzy):
-        str_obj = BytesIO()
+        str_obj = StringIO()
 
         mydict = dict()
         for unit in inputstore.units:
@@ -46,13 +48,15 @@ class po2pydict(object):
                 mydict[unit.source] = unit.target
             else:
                 mydict[unit.source] = unit.source
-                # The older convention is to prefix with "*** ":
-                #mydict[unit.source] = '*** ' + unit.source
 
-        str_obj.write('{\n')
-        for source_str in mydict:
-            str_obj.write("%s:%s,\n" % (repr(str(source_str)), repr(str(mydict[source_str]))))
-        str_obj.write('}\n')
+        str_obj.write(u'# -*- coding: utf-8 -*-\n')
+        str_obj.write(u'{\n')
+        for source_str, trans_str in sorted(mydict.items()):
+            if six.PY2:
+                source_str = source_str.encode('utf-8')
+                trans_str = trans_str.encode('utf-8')
+            str_obj.write(u"%s: %s,\n" % (repr(source_str), repr(trans_str)))
+        str_obj.write(u'}\n')
         str_obj.seek(0)
         return str_obj
 
@@ -62,16 +66,23 @@ def convertpy(inputfile, outputfile, templatefile=None, includefuzzy=False,
     inputstore = factory.getobject(inputfile)
 
     if not convert.should_output_store(inputstore, outputthreshold):
-        return False
+        return 0
 
     convertor = po2pydict()
     outputstring = convertor.convertstore(inputstore, includefuzzy)
-    outputfile.write(outputstring.read())
+
+    if six.PY2:
+        outputfile.write(outputstring.read().decode('utf-8'))
+    else:
+        outputfile.write(bytes(outputstring.read(), 'utf-8'))
     return 1
 
 
 def main(argv=None):
-    formats = {("po", "py"): ("py", convertpy), ("po"): ("py", convertpy)}
+    formats = {
+        ("po", "py"): ("py", convertpy),
+        ("po", None): ("py", convertpy)
+    }
     parser = convert.ConvertOptionParser(formats, usetemplates=False, description=__doc__)
     parser.add_threshold_option()
     parser.add_fuzzy_option()
