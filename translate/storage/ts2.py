@@ -38,6 +38,7 @@ from lxml import etree
 from translate.lang import data
 from translate.misc.deprecation import deprecated
 from translate.misc.multistring import multistring
+from translate.misc.xml_helpers import reindent
 from translate.storage import base, lisa
 from translate.storage.placeables import general
 from translate.storage.workflow import StateEnum as state
@@ -174,11 +175,8 @@ class tsunit(lisa.LISAunit):
             for string in strings:
                 numerus = etree.SubElement(targetnode, self.namespaced("numerusform"))
                 numerus.text = data.forceunicode(string) or u""
-                # manual, nasty pretty printing. See bug 1420.
-                numerus.tail = u"\n        "
         else:
             targetnode.text = data.forceunicode(target) or u""
-            targetnode.tail = u"\n    "
 
     # Deprecated on 2.3.1
     @deprecated("Use `target` property instead")
@@ -509,6 +507,7 @@ class tsfile(lisa.LISAfile):
     def serialize(self, out):
         """Write the XML document to a file."""
         root = self.document.getroot()
+        reindent(root, indent="    ", skip=['TS'])
         doctype = self.document.docinfo.doctype
         # Iterate over empty tags without children and force empty text
         # This will prevent self-closing tags in pretty_print mode
