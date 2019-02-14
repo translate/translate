@@ -44,6 +44,19 @@ class TestCSV(test_base.TestTranslationStore):
         assert store.units[0].target == 'zkouška sirén'
         assert bytes(store) == content
 
+    def test_default(self):
+        content = '''ID,English
+GENERAL@2|Notes,"cable, motor, switch"
+*****END CALL*****|Ask,-'''
+        store = self.parse_store(content)
+        assert len(store.units) == 3
+        assert store.units[0].location == 'ID'
+        assert store.units[0].source == 'English'
+        assert store.units[1].location == 'GENERAL@2|Notes'
+        assert store.units[1].source == 'cable, motor, switch'
+        assert store.units[2].location == '*****END CALL*****|Ask'
+        assert store.units[2].source == '-'
+
     @mark.xfail(reason="Bug #3356")
     def test_context_is_parsed(self):
         """Tests that units with the same source are different based on context."""

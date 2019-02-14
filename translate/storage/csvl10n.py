@@ -34,7 +34,7 @@ from translate.storage import base
 
 class DefaultDialect(csv.excel):
     skipinitialspace = True
-    quoting = csv.QUOTE_NONNUMERIC
+    quoting = csv.QUOTE_ALL
     escapechar = '\\'
 
 
