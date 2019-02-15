@@ -97,7 +97,7 @@ class resx2po(object):
         if autocomments:
             devcomment, transcomment = autocomments.partition('[Translator Comment: ')[::2]
             if transcomment:
-                    origpo.addnote(transcomment.replace("]", ""), origin="translator")
+                origpo.addnote(transcomment.replace("]", ""), origin="translator")
             if devcomment:
                 origpo.addnote(devcomment.strip(), origin="developer", position="merge")
 
