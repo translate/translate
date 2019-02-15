@@ -64,6 +64,27 @@ The other line&apos;s translation may have quotes, too (&quot;&apos;&quot;,
 </TS>
 """
 
+TS_CONTEXT = """<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE TS>
+<TS version="2.0" language="cs">
+<defaultcodec>UTF-8</defaultcodec>
+<context>
+    <name></name>
+    <message>
+        <source>Hello, world!</source>
+        <translation>Ahoj svete!</translation>
+    </message>
+</context>
+<context>
+    <name>Second</name>
+    <message>
+        <source>Obsolete</source>
+        <translation type="obsolete">Thanks</translation>
+    </message>
+</context>
+</TS>
+"""
+
 xliffparsers = []
 for attrname in dir(xliff):
     attr = getattr(xliff, attrname)
@@ -293,3 +314,7 @@ class TestTSfile(test_base.TestTranslationStore):
         assert newunit.getcontext() == ""
         newunit.setcontext("Some context")
         assert newunit.getcontext() == "Some context"
+
+    def test_roundtrip_context(self):
+        tsfile = ts.tsfile.parsestring(TS_CONTEXT)
+        assert bytes(tsfile).decode('utf-8') == TS_CONTEXT

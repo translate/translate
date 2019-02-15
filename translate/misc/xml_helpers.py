@@ -135,7 +135,7 @@ def normalize_xml_space(node, xml_space, remove_start=False):
         normalize_xml_space(child, remove_start)
 
 
-def reindent(elem, level=0, indent="  ", max_level=4, skip=None):
+def reindent(elem, level=0, indent="  ", max_level=4, skip=None, toplevel=True):
     """Adjust indentation to match specification.
 
     Each nested tag is identified by indent string, up to
@@ -154,12 +154,12 @@ def reindent(elem, level=0, indent="  ", max_level=4, skip=None):
         if not elem.tail or not elem.tail.strip():
             elem.tail = i
         for child in elem:
-            reindent(child, next_level, indent, max_level)
+            reindent(child, next_level, indent, max_level, skip, False)
         if not child.tail or not child.tail.strip():
             child.tail = i
-    if level:
-        if not elem.tail or not elem.tail.strip():
-            elem.tail = i
-    else:
+    if toplevel:
         if not elem.tail or not elem.tail.strip():
             elem.tail = ''
+    else:
+        if not elem.tail or not elem.tail.strip():
+            elem.tail = i
