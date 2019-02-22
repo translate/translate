@@ -73,3 +73,11 @@ GENERAL@2|Notes,"cable, motor, switch"
         assert unit2.source == "Ogre"
         assert unit2.target == "Ogros"
         assert unit1.getid() != unit2.getid()
+
+    def test_newline(self):
+        content = b'"location";"source";"target"\r\n"foo.c:1";"te\\nst";"ot\\nher"\r\n'
+        store = self.parse_store(content)
+        assert len(store.units) == 1
+        assert store.units[0].source == 'te\\nst'
+        assert store.units[0].target == 'ot\\nher'
+        assert bytes(store) == content
