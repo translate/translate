@@ -1,3 +1,6 @@
+# -*- coding: utf-8 -*-
+from __future__ import unicode_literals
+
 from translate.convert import csv2po, test_convert
 from translate.misc import wStringIO
 from translate.storage import csvl10n, po
@@ -122,6 +125,14 @@ msgstr ""
         assert pounit._extract_msgidcomments() == 'KDE comment'
         assert pounit.source == "Source"
         assert pounit.target == "Target"
+
+    def test_newlines(self):
+        """Tests that things keep working with empty entries"""
+        minicsv = '"source","target"\r\n"yellow pencil","żółty\\nołówek"'
+        pofile = self.csv2po(minicsv)
+        assert pofile.findunit("yellow pencil") is not None
+        assert pofile.findunit("yellow pencil").target == "żółty\\nołówek"
+        assert headerless_len(pofile.units) == 1
 
 
 class TestCSV2POCommand(test_convert.TestConvertCommand, TestCSV2PO):

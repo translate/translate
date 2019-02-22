@@ -301,12 +301,10 @@ class csvfile(base.TranslationStore):
 
         try:
             self.dialect = sniffer.sniff(sample)
-            if not self.dialect.escapechar:
-                self.dialect.escapechar = '\\'
-                if self.dialect.quoting == csv.QUOTE_MINIMAL:
-                    #HACKISH: most probably a default, not real detection
-                    self.dialect.quoting = csv.QUOTE_ALL
-                    self.dialect.doublequote = True
+            if self.dialect.quoting == csv.QUOTE_MINIMAL:
+                #HACKISH: most probably a default, not real detection
+                self.dialect.quoting = csv.QUOTE_ALL
+                self.dialect.doublequote = True
         except csv.Error:
             self.dialect = 'default'
 
