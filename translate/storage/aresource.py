@@ -408,7 +408,7 @@ class AndroidResourceUnit(base.TranslationUnit):
         else:
             return super(AndroidResourceUnit, self).getnotes(origin)
 
-    def removenotes(self):
+    def removenotes(self, origin=None):
         if ((self.xmlelement is not None) and (self.xmlelement.getparent is not None)):
             prevSibling = self.xmlelement.getprevious()
             while ((prevSibling is not None) and (prevSibling.tag is etree.Comment)):

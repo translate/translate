@@ -172,7 +172,7 @@ class pounit(pocommon.pounit):
         else:
             self.othercomments = newcomments
 
-    def removenotes(self):
+    def removenotes(self, origin=None):
         """Remove all the translator's notes (other comments)"""
         self.othercomments = []
 

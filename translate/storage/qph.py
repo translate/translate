@@ -65,7 +65,7 @@ class QphUnit(lisa.LISAunit):
     def addnote(self, text, origin=None, position="append"):
         """Add a note specifically in a "definition" tag"""
         current_notes = self.getnotes(origin)
-        self.removenotes()
+        self.removenotes(origin)
         note = etree.SubElement(self.xmlelement, self.namespaced("definition"))
         note.text = "\n".join(filter(None, [current_notes, text.strip()]))
 
@@ -77,7 +77,7 @@ class QphUnit(lisa.LISAunit):
             comment = notenode.text
         return comment
 
-    def removenotes(self):
+    def removenotes(self, origin=None):
         """Remove all the translator notes."""
         note = self.xmlelement.find(self.namespaced("definition"))
         if note is not None:

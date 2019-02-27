@@ -115,7 +115,7 @@ class OmegaTUnit(base.TranslationUnit):
         else:
             self._set_field('comment', text)
 
-    def removenotes(self):
+    def removenotes(self, origin=None):
         self._set_field('comment', u'')
 
     @property

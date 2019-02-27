@@ -51,7 +51,7 @@ class tbxunit(lisa.LISAunit):
         # The id attribute is optional
         return self.xmlelement.get("id") or self.source
 
-    def removenotes(self, origin="translator"):
+    def removenotes(self, origin=None):
         """Remove all the translator notes."""
         notes = self.xmlelement.iterdescendants(self.namespaced("note"))
         for note in notes:

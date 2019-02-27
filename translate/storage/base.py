@@ -355,7 +355,7 @@ class TranslationUnit(object):
         else:
             self.notes = text
 
-    def removenotes(self):
+    def removenotes(self, origin=None):
         """Remove all the translator's notes."""
         self.notes = u''
 
