@@ -593,7 +593,7 @@ class propunit(base.TranslationUnit):
         else:
             return super(propunit, self).getnotes(origin)
 
-    def removenotes(self):
+    def removenotes(self, origin=None):
         self.comments = []
 
     def isblank(self):

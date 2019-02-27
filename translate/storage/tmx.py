@@ -81,7 +81,7 @@ class tmxunit(lisa.LISAunit):
     def getnotes(self, origin=None):
         return '\n'.join(self._getnotelist(origin=origin))
 
-    def removenotes(self):
+    def removenotes(self, origin=None):
         """Remove all the translator notes."""
         notes = self.xmlelement.iterdescendants(self.namespaced("note"))
         for note in notes:

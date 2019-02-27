@@ -115,7 +115,7 @@ class csvunit(base.TranslationUnit):
             else:
                 self.translator_comments = text
 
-    def removenotes(self):
+    def removenotes(self, origin=None):
         self.translator_comments = u''
 
     def isfuzzy(self):

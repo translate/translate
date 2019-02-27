@@ -520,7 +520,7 @@ class pounit(pocommon.pounit):
             else:
                 gpo.po_message_set_comments(self._gpo_message, newnotes)
 
-    def removenotes(self):
+    def removenotes(self, origin=None):
         gpo.po_message_set_comments(self._gpo_message, b"")
 
     def copy(self):

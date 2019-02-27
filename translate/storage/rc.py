@@ -114,7 +114,7 @@ class rcunit(base.TranslationUnit):
     def getnotes(self, origin=None):
         return '\n'.join(self.comments)
 
-    def removenotes(self):
+    def removenotes(self, origin=None):
         self.comments = []
 
     def isblank(self):

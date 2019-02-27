@@ -303,7 +303,7 @@ class phpunit(base.TranslationUnit):
         else:
             return super(phpunit, self).getnotes(origin)
 
-    def removenotes(self):
+    def removenotes(self, origin=None):
         self._comments = []
 
     def isblank(self):
