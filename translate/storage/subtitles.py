@@ -62,6 +62,7 @@ class SubtitleUnit(base.TranslationUnit):
     def __init__(self, source=None, **kwargs):
         self._start = None
         self._end = None
+        self._duration = None
         if source:
             self.source = source
         super(SubtitleUnit, self).__init__(source)
