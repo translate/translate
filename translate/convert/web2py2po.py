@@ -37,6 +37,7 @@ class web2py2po(object):
 
     def convertunit(self, source_str, target_str):
         pounit = po.pounit(encoding="UTF-8")
+        pounit.settypecomment('python-format')
         pounit.source = source_str
         if target_str:
             pounit.target = target_str
