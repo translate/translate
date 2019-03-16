@@ -126,6 +126,7 @@ from codecs import iterencode
 from translate.lang import data
 from translate.misc import quote
 from translate.misc.deprecation import deprecated
+from translate.misc.multistring import multistring
 from translate.storage import base
 
 
@@ -336,6 +337,18 @@ class Dialect(object):
     def strip_line_continuation(cls, value):
         return value[:-1]
 
+    @classmethod
+    def get_key_cldr_name(cls, key):
+        return (key, "other")
+
+    @classmethod
+    def get_cldr_names_order(cls):
+        return ["other"]
+
+    @classmethod
+    def get_key(cls, key, variant):
+        return u"%s[%s]" % (key, variant)
+
 
 @register_dialect
 class DialectJava(Dialect):
@@ -443,6 +456,206 @@ class DialectStrings(Dialect):
 class DialectStringsUtf8(DialectStrings):
     name = "strings-utf8"
     default_encoding = "utf-8"
+
+
+class proppluralunit(base.TranslationUnit):
+    KEY = 'other'
+
+    def __init__(self, source="", personality="java"):
+        """Construct a blank propunit."""
+        self.personality = get_dialect(personality)
+        super(proppluralunit, self).__init__(source)
+        self.units = {}
+        self.name = u""
+
+    @staticmethod
+    def _get_language_mapping(lang):
+        if lang:
+            locale = lang.replace('_', '-').split('-')[0]
+            cldr_mapping = data.plural_tags.get(locale, data.plural_tags['en'])
+            if cldr_mapping:
+                if len(cldr_mapping) > 0:
+                    return cldr_mapping
+                else:
+                    return [proppluralunit.KEY]
+        return None
+
+    def _get_target_mapping(self):
+        cldr_mapping = proppluralunit._get_language_mapping(self._store.targetlanguage)
+        if cldr_mapping:
+            return cldr_mapping
+        else:
+            return self.units.keys()
+
+    def _get_source_mapping(self):
+        cldr_mapping = proppluralunit._get_language_mapping(self._store.sourcelanguage)
+        if cldr_mapping:
+            return cldr_mapping
+        else:
+            return self.units.keys()
+
+    def _get_units(self, mapping):
+        ret = []
+        if len(self.units) > 1:
+            for name in mapping:
+                if name not in self.units:
+                    unit = propunit("", self.personality.name)
+                    unit.name = self.personality.get_key(self.name, name)
+                    self.units[name] = unit
+                ret.append(self.units[name])
+        else:
+            ret.append(self.units[proppluralunit.KEY])
+        return ret
+
+    def _get_strings(self, strings, mapping):
+        ret = []
+        if len(strings) > 1:
+            for i, name in enumerate(mapping):
+                if i < len(strings):
+                    ret.append(strings[i])
+                else:
+                    ret.append(u"")
+        else:
+            ret.append(strings[0])
+        return ret
+
+    def _get_source_unit(self):
+        self._get_units(self._get_source_mapping())  # Generate missing forms
+        return self.units[proppluralunit.KEY]
+
+    def _get_ordered_units(self):
+        # Used for str (GWT order)
+        mapping = self._get_target_mapping()
+        names = []
+        for name in self.personality.get_cldr_names_order():
+            if name in mapping:
+                names.append(name)
+        return self._get_units(names)
+
+    def hasplural(self, key=None):
+        if key is None:
+            return len(self.units) > 1
+        else:
+            return key in self.units
+
+    def settarget(self, text):
+        if isinstance(text, multistring):
+            strings = text.strings
+        elif isinstance(text, list):
+            strings = text
+        else:
+            strings = [text]
+
+        strings = self._get_strings(strings, self._get_target_mapping())
+        units = self._get_units(self._get_target_mapping())
+        if len(strings) != len(units):
+            raise Exception('Not same plural counts between "%s" and "%s"' % (str(strings), str(units)))
+
+        for a, b in zip(strings, units):
+            b.target = a
+
+    def gettarget(self):
+        ll = [x.target for x in self._get_units(self._get_target_mapping())]
+        if len(ll) > 1:
+            return multistring(ll)
+        else:
+            return ll[0]
+
+    target = property(gettarget, settarget)
+
+    def getsource(self):
+        source = self._get_source_unit().source
+        return multistring(source) if source is not None else None
+
+    def setsource(self, source):
+        if isinstance(source, multistring):
+            strings = source.strings
+        elif isinstance(source, list):
+            strings = source
+        else:
+            strings = [source]
+        self._get_source_unit().source = strings[0]
+
+    source = property(getsource, setsource)
+
+    def getvalue(self):
+        value = self._get_source_unit().value
+        return multistring(value) if value is not None else None
+
+    def setvalue(self, value):
+        if isinstance(value, multistring):
+            strings = value.strings
+        elif isinstance(value, list):
+            strings = value
+        else:
+            strings = [value]
+        self._get_source_unit().value = strings[0]
+
+    value = property(getvalue, setvalue)
+
+    def getcomments(self):
+        return self._get_source_unit().comments
+
+    def setcomments(self, comments):
+        self._get_source_unit().comments = comments
+
+    comments = property(getcomments, setcomments)
+
+    def getdelimiter(self):
+        return self._get_source_unit().delimiter
+
+    def setdelimiter(self, delimiter):
+        self._get_source_unit().delimiter = delimiter
+
+    delimiter = property(getdelimiter, setdelimiter)
+
+    def getnotes(self, origin=None):
+        return self._get_source_unit().getnotes(origin)
+
+    def getlocations(self):
+        return self._get_source_unit().getlocations()
+
+    def add_unit(self, unit, variant):
+        self.units[variant] = unit
+
+    def isblank(self):
+        """returns whether this is a blank element, containing only
+        comments.
+        """
+        return not (self.name or self.value)
+
+    def istranslatable(self):
+        return bool(self.name)
+
+    def getid(self):
+        return self.name
+
+    def setid(self, value):
+        self.name = value
+
+    def __str__(self):
+        """Convert to a string. Double check that unicode is handled
+        somehow here.
+        """
+        source = self.getoutput()
+        if six.PY2:
+            assert isinstance(source, unicode)
+            return source.encode(self.encoding)
+        else:
+            return source
+
+    def getoutput(self):
+        ret = u""
+        for x in self._get_ordered_units():
+            ret += x.getoutput()
+        return ret
+
+    @property
+    def encoding(self):
+        if self._store:
+            return self._store.encoding
+        else:
+            return self.personality.default_encoding
 
 
 @register_dialect
@@ -700,6 +913,27 @@ class propfile(base.TranslationStore):
         # see if there is a leftover one...
         if inmultilinevalue or len(newunit.comments) > 0:
             self.addunit(newunit)
+
+        self.fold()
+
+    def fold(self):
+        old_units = self.units
+        self.units = []
+        plurals = {}
+        for unit in old_units:
+            if not unit.istranslatable():
+                self.addunit(unit)
+                continue
+            (key, variant) = self.personality.get_key_cldr_name(unit.name)
+            if key not in plurals or plurals[key].hasplural(variant):
+                # Generate fake unit for each keys (MUST use None as source)
+                new_unit = proppluralunit(None, self.personality.name)
+                new_unit.name = key
+                self.addunit(new_unit)
+                plurals[key] = new_unit
+
+            # Put the unit
+            plurals[key].add_unit(unit, variant)
 
     def serialize(self, out):
         """Write the units back to file."""
