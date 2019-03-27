@@ -774,11 +774,10 @@ class TranslationStore(object):
     def parsestring(cls, storestring):
         """Convert the string representation back to an object."""
         newstore = cls()
-        if storestring:
-            if isinstance(storestring, six.text_type):
-                # parse() is expecting bytes
-                storestring = storestring.encode(cls.default_encoding)
-            newstore.parse(storestring)
+        if isinstance(storestring, six.text_type):
+            # parse() is expecting bytes
+            storestring = storestring.encode(cls.default_encoding)
+        newstore.parse(storestring)
         return newstore
 
     def fallback_detection(self, text):
@@ -895,9 +894,10 @@ class TranslationStore(object):
         if mode == 1 or "r" in mode:
             storestring = storefile.read()
             storefile.close()
+            newstore = cls.parsestring(storestring)
         else:
             storestring = ""
-        newstore = cls.parsestring(storestring)
+            newstore = cls()
         newstore.fileobj = storefile
         newstore._assignname()
         return newstore
