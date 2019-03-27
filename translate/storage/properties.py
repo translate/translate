@@ -634,7 +634,7 @@ class propfile(base.TranslationStore):
         text, encoding = self.detect_encoding(
             propsrc, default_encodings=[self.personality.default_encoding,
                                         'utf-8', 'utf-16'])
-        if not text:
+        if not text and propsrc:
             raise IOError("Cannot detect encoding for %s." % (self.filename or
                                                               "given string"))
         self.encoding = encoding
