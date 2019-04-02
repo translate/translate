@@ -229,8 +229,8 @@ class mofile(poheader.poheader, base.TranslationStore):
                              7 * 4 + 2 * (len(keys) * 8))  # offset of hash table
         # additional data is not necessary for empty mo files
         if (len(keys) > 0):
-            output = output + array.array("i", offsets).tostring()
-            output = output + hash_table.tostring()
+            output = output + array.array("i", offsets).tobytes()
+            output = output + hash_table.tobytes()
             output = output + ids
             output = output + strs
         return out.write(output)
