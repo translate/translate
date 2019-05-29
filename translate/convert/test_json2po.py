@@ -2,6 +2,8 @@ from translate.convert import json2po, test_convert
 from translate.misc import wStringIO
 from translate.storage import jsonl10n
 
+import codecs
+
 
 class TestJson2PO(object):
 
@@ -18,6 +20,17 @@ class TestJson2PO(object):
         print(bytes(storage))
         assert len(storage.units) == 1
         return storage.units[0]
+
+    def test_simple_with_bom(self):
+        """test the most basic json conversion"""
+        jsonsource = codecs.BOM_UTF8 + b'''{ "text": "A simple string"}'''
+        poexpected = '''#: .text
+msgid "A simple string"
+msgstr ""
+'''
+        poresult = self.json2po(jsonsource)
+        assert str(poresult.units[1]) == poexpected
+
 
     def test_simple(self):
         """test the most basic json conversion"""

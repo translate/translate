@@ -77,6 +77,7 @@ from translate.misc.deprecation import deprecated
 from translate.misc.multistring import multistring
 from translate.storage import base
 
+import codecs
 
 class JsonUnit(base.TranslationUnit):
     """A JSON entry"""
@@ -214,7 +215,10 @@ class JsonFile(base.TranslationStore):
             input.close()
             input = src
         if isinstance(input, bytes):
-            input = input.decode('utf-8')
+            encoding = "utf-8"
+            if input.startswith(codecs.BOM_UTF8):
+                encoding = "utf-8-sig"
+            input = input.decode(encoding)
         try:
             self._file = json.loads(input, object_pairs_hook=OrderedDict)
         except ValueError as e:
