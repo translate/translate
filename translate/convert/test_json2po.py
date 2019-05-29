@@ -31,7 +31,6 @@ msgstr ""
         poresult = self.json2po(jsonsource)
         assert str(poresult.units[1]) == poexpected
 
-
     def test_simple(self):
         """test the most basic json conversion"""
         jsonsource = '''{ "text": "A simple string"}'''

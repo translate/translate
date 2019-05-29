@@ -79,6 +79,7 @@ from translate.storage import base
 
 import codecs
 
+
 class JsonUnit(base.TranslationUnit):
     """A JSON entry"""
 
