@@ -378,6 +378,17 @@ foo:
   : Dve
 '''
 
+    def test_dict_in_list(self):
+        data = '''e1:
+- s1: Subtag 1
+'''
+        store = self.StoreClass()
+        store.parse(data)
+        assert len(store.units) == 1
+        out = BytesIO()
+        store.serialize(out)
+        assert out.getvalue() == data.encode('ascii')
+
 
 class TestRubyYAMLResourceStore(test_monolingual.TestMonolingualStore):
     StoreClass = yaml.RubyYAMLFile

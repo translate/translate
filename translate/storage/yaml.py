@@ -94,10 +94,15 @@ class YAMLFile(base.TranslationStore):
         def nested_set(target, path, value):
             value = self.serialize_value(value)
             if len(path) > 1:
-                if len(path) == 2 and path[1] and path[1][0] == '[' and path[1][-1] == ']' and path[1][1:-1].isdigit():
+                if len(path) >= 2 and path[1] and path[1][0] == '[' and path[1][-1] == ']' and path[1][1:-1].isdigit():
                     if path[0] not in target:
                         target[path[0]] = []
-                    target[path[0]].append(value)
+                    if len(path) > 2:
+                        new_value = CommentedMap()
+                        nested_set(new_value, path[2:], value)
+                        target[path[0]].append(new_value)
+                    else:
+                        target[path[0]].append(value)
                 else:
                     # Add empty dict in case there is value and we
                     # expect dict
@@ -138,7 +143,8 @@ class YAMLFile(base.TranslationStore):
             elif isinstance(data, list):
                 for k, v in enumerate(data):
                     key = '[{0}]'.format(k)
-                    yield ('->'.join((prev, key)), six.text_type(v))
+                    for value in self._flatten(v, '->'.join((prev, key))):
+                        yield value
             elif data is None:
                 pass
             else:
