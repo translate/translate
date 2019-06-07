@@ -269,6 +269,33 @@ class TestPYPOFile(test_po.TestPOFile):
         print(bytes(oldfile))
         assert len(oldfile.units) == 1
 
+    def test_unicode_header(self):
+        """checks that unicode header is parsed and saved correctly"""
+        posource = r'''msgid ""
+msgstr ""
+"PO-Revision-Date: 2006-02-09 23:33+0200\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8-bit\n"
+"Zkouška: něco\n"
+'''.encode('utf-8')
+        pofile = self.poparse(posource)
+        assert pofile.parseheader() == {
+            'Content-Transfer-Encoding': '8-bit',
+            'Content-Type': 'text/plain; charset=UTF-8',
+            'MIME-Version': '1.0',
+            'PO-Revision-Date': '2006-02-09 23:33+0200',
+            'Zkouška': 'něco'
+        }
+        update = {'zkouška': 'else'}
+        pofile.updateheader(add=True, **update)
+        assert pofile.units[0].target == """PO-Revision-Date: 2006-02-09 23:33+0200
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8-bit
+Zkouška: else
+"""
+
     def test_prevmsgid_parse(self):
         """checks that prevmsgid (i.e. #|) is parsed and saved correctly"""
         posource = r'''msgid ""
