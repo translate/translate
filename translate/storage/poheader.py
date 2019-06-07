@@ -48,8 +48,7 @@ def parseheaderstring(input):
         if not line or ":" not in line:
             continue
         key, value = line.split(":", 1)
-        #We don't want unicode keys
-        key = str(key.strip())
+        key = key.strip()
         headervalues[key] = value.strip()
     return headervalues
 
