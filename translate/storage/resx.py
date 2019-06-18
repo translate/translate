@@ -243,5 +243,11 @@ class RESXFile(lisa.LISAfile):
         return unit
 
     def serialize(self, out=None):
-        reindent(self.document.getroot(), indent="  ", max_level=4)
-        super(RESXFile, self).serialize(out)
+        root = self.document.getroot()
+        reindent(root, indent="  ", max_level=4)
+        # Use same header as Visual Studio
+        out.write(b'<?xml version="1.0" encoding="utf-8"?>\n')
+        content = etree.tostring(root, pretty_print=False, xml_declaration=False,
+                                 encoding='utf-8')
+        # Additional space on empty tags same as Visual Studio
+        out.write(content.replace(b'/>', b' />'))
