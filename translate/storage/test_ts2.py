@@ -81,6 +81,10 @@ TS_CONTEXT = """<?xml version="1.0" encoding="utf-8"?>
         <source>Obsolete</source>
         <translation type="obsolete">Thanks</translation>
     </message>
+    <message>
+        <source>Vanished</source>
+        <translation type="vanished">Thanks a lot</translation>
+    </message>
 </context>
 </TS>
 """
