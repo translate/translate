@@ -16,6 +16,9 @@
 .*.swp
 *~
 
+# PyCharm
+.idea/
+
 # distutils
 /build/
 /dist/
