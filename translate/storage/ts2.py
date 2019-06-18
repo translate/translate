@@ -82,6 +82,7 @@ class tsunit(lisa.LISAunit):
 
     statemap = {
         "obsolete": S_OBSOLETE,
+        "vanished": S_OBSOLETE,
         "unfinished": S_FUZZY,
         "": S_TRANSLATED,
         None: S_TRANSLATED,
@@ -349,7 +350,7 @@ class tsunit(lisa.LISAunit):
             self.markfuzzy(False)
 
     def isobsolete(self):
-        return self._gettype() == "obsolete"
+        return self._gettype() == "obsolete" or self._gettype() == "vanished"
 
     def get_state_n(self):
         type = self._gettype()
