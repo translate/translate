@@ -64,7 +64,7 @@ The other line&apos;s translation may have quotes, too (&quot;&apos;&quot;,
 </TS>
 """
 
-TS_CONTEXT = """<?xml version="1.0" encoding="utf-8"?>
+TS_CONTEXT_QT4 = """<?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE TS>
 <TS version="2.0" language="cs">
 <defaultcodec>UTF-8</defaultcodec>
@@ -80,6 +80,26 @@ TS_CONTEXT = """<?xml version="1.0" encoding="utf-8"?>
     <message>
         <source>Obsolete</source>
         <translation type="obsolete">Thanks</translation>
+    </message>
+</context>
+</TS>
+"""
+
+TS_CONTEXT_QT5 = """<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE TS>
+<TS version="2.1" language="cs" sourcelanguage="en">
+<context>
+    <name></name>
+    <message>
+        <source>Hello, world!</source>
+        <translation>Ahoj svete!</translation>
+    </message>
+</context>
+<context>
+    <name>Second</name>
+    <message>
+        <source>Obsolete</source>
+        <translation type="vanished">Thanks</translation>
     </message>
     <message>
         <source>Vanished</source>
@@ -196,6 +216,20 @@ class TestTSfile(test_base.TestTranslationStore):
             '>TargetString', ' type="unfinished">TestTarget'
         )
         assert newtsstr == bytes(tsfile).decode('utf-8')
+
+    def test_obsolete(self):
+        tsfile = ts.tsfile.parsestring(TS_CONTEXT_QT4)
+        assert tsfile.units[0].istranslatable()
+        assert not tsfile.units[0].isobsolete()
+        assert not tsfile.units[1].istranslatable()
+        assert tsfile.units[1].isobsolete()
+        tsfile = ts.tsfile.parsestring(TS_CONTEXT_QT5)
+        assert tsfile.units[0].istranslatable()
+        assert not tsfile.units[0].isobsolete()
+        assert not tsfile.units[1].istranslatable()
+        assert tsfile.units[1].isobsolete()
+        assert not tsfile.units[2].istranslatable()
+        assert tsfile.units[2].isobsolete()
 
     def test_locations(self):
         """test that locations work well"""
@@ -320,5 +354,7 @@ class TestTSfile(test_base.TestTranslationStore):
         assert newunit.getcontext() == "Some context"
 
     def test_roundtrip_context(self):
-        tsfile = ts.tsfile.parsestring(TS_CONTEXT)
-        assert bytes(tsfile).decode('utf-8') == TS_CONTEXT
+        tsfile = ts.tsfile.parsestring(TS_CONTEXT_QT4)
+        assert bytes(tsfile).decode('utf-8') == TS_CONTEXT_QT4
+        tsfile = ts.tsfile.parsestring(TS_CONTEXT_QT5)
+        assert bytes(tsfile).decode('utf-8') == TS_CONTEXT_QT5
