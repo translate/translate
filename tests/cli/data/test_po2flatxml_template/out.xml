@@ -1,0 +1,6 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<dictionary xmlns="urn:translate-toolkit:flatxml-test-suite">
+    <translation resource="one">Eins</translation>
+    <translation resource="two">Zwei</translation>
+    <translation resource="three">Drei</translation>
+</dictionary>

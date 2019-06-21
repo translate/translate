@@ -1,0 +1,1 @@
+flatxml2po: WARNING: Error processing: input ./data/test_flatxml2po_wrongns/one.xml, output ./results/test_flatxml2po_wrongns/out.txt, template None: expected root name to be {wrong}root but got root

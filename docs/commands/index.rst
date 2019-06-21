@@ -24,6 +24,7 @@ Converters
    csv2tbx
    tbx2po
    html2po
+   flatxml2po
    ical2po
    ini2po
    json2po
@@ -72,6 +73,7 @@ understanding that will make the converters much easier to use and understand.
 * :doc:`csv2tbx <csv2tbx>` -- Create TBX (TermBase eXchange) files from Comma
   Separated Value (CSV) files
 * :doc:`html2po <html2po>` -- HTML converter
+* :doc:`flatxml2po <flatxml2po>` -- Flat XML converter
 * :doc:`ical2po <ical2po>` -- iCalendar file converter
 * :doc:`ini2po <ini2po>` -- Windows INI file converter
 * :doc:`json2po <json2po>` -- JSON file converter
