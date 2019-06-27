@@ -248,9 +248,8 @@ def valid_fieldnames(fieldnames):
     return False
 
 
-def detect_header(sample, dialect, fieldnames):
+def detect_header(inputfile, dialect, fieldnames):
     """Test if file has a header or not, also returns number of columns in first row"""
-    inputfile = csv.StringIO(sample)
     try:
         reader = csv.reader(inputfile, dialect)
     except csv.Error:
@@ -308,13 +307,14 @@ class csvfile(base.TranslationStore):
         except csv.Error:
             self.dialect = 'default'
 
+        inputfile = csv.StringIO(text)
         try:
-            fieldnames = detect_header(sample, self.dialect, self.fieldnames)
+            fieldnames = detect_header(inputfile, self.dialect, self.fieldnames)
             self.fieldnames = fieldnames
         except csv.Error:
             pass
 
-        inputfile = csv.StringIO(text)
+        inputfile.seek(0)
         reader = try_dialects(inputfile, self.fieldnames, self.dialect)
 
         first_row = True
