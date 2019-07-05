@@ -36,22 +36,22 @@ class FlatXMLUnit(base.TranslationUnit):
         self.namespace = namespace
         self.element_name = element_name
         self.attribute_name = attribute_name
-        self.element = etree.Element(self.namespaced(self.element_name))
+        self.xmlelement = etree.Element(self.namespaced(self.element_name))
         super(FlatXMLUnit, self).__init__(source, **kwargs)
 
     def __str__(self):
         # "unicode" encoding keeps the unicode status of the output
-        return etree.tostring(self.element, encoding="unicode")
+        return etree.tostring(self.xmlelement, encoding="unicode")
 
     @property
     def source(self):
         """Returns the unique identifier of this unit."""
-        return self.element.get(self.attribute_name)
+        return self.xmlelement.get(self.attribute_name)
 
     @source.setter
     def source(self, source):
         """Updates the unique identifier of this unit."""
-        self.element.set(self.attribute_name, source)
+        self.xmlelement.set(self.attribute_name, source)
 
     @property
     def target(self):
@@ -64,7 +64,7 @@ class FlatXMLUnit(base.TranslationUnit):
         target = data.forceunicode(target)
         if self.target == target:
             return
-        self.element.text = target
+        self.xmlelement.text = target
 
     def namespaced(self, name):
         """Returns name in Clark notation."""
@@ -73,10 +73,10 @@ class FlatXMLUnit(base.TranslationUnit):
     @property
     def node_text(self):
         """Returns the text content of the XML element."""
-        if self.element is None:
+        if self.xmlelement is None:
             return None
 
-        return getText(self.element)
+        return getText(self.xmlelement)
 
     @classmethod
     def createfromxmlElement(cls, element,
@@ -96,7 +96,7 @@ class FlatXMLUnit(base.TranslationUnit):
                    namespace=namespace,
                    element_name=element_name,
                    attribute_name=attribute_name)
-        unit.element = element
+        unit.xmlelement = element
         return unit
 
 
@@ -138,7 +138,7 @@ class FlatXMLFile(base.TranslationStore):
         unit.namespace = self.namespace
         super(FlatXMLFile, self).addunit(unit)
         if new:
-            self.root.append(unit.element)
+            self.root.append(unit.xmlelement)
 
     def reindent(self):
         """Reindents the backing document to be consistent."""
