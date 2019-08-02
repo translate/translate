@@ -53,6 +53,7 @@ class ParseState(object):
         # and for decoding all further strings.
         self._input_iterator = input_iterator
         self.next_line = ''
+        self.lineno = 0
         self.eof = False
         self.encoding = encoding
         self.read_line()
@@ -70,8 +71,10 @@ class ParseState(object):
             return current
         try:
             self.next_line = next(self._input_iterator)
+            self.lineno += 1
             while not self.eof and self.next_line.isspace():
                 self.next_line = next(self._input_iterator)
+                self.lineno += 1
         except StopIteration:
             self.next_line = u''
             self.eof = True
@@ -372,4 +375,5 @@ def parse_units(parse_state, store):
         unit.infer_state()
         store.addunit(unit)
         unit = parse_unit(parse_state)
-    return parse_state.eof
+    if not parse_state.eof:
+        raise ValueError('Syntax error on line {}'.format(parse_state.lineno))

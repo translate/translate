@@ -514,3 +514,23 @@ msgstr ""
         pofile = self.poparse(posource_extra.encode('utf-8'))
         assert len(pofile.units) == 1
         assert bytes(pofile).decode('utf-8') == posource
+
+    def test_incomplete(self):
+        """checks that empty file raises error"""
+        posource = b'''msgid ""
+msgstr ""
+"Project-Id-Version: YaST (@memory@)\\n"
+
+EXTRA
+'''
+        with raises(ValueError):
+            pofile = self.poparse(posource)
+
+    def test_invalid(self):
+        """checks that empty file raises error"""
+        posource = b'''README
+
+This is just a random text file.
+'''
+        with raises(ValueError):
+            pofile = self.poparse(posource)
