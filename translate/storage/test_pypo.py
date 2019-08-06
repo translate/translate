@@ -262,6 +262,26 @@ class TestPYPOFile(test_po.TestPOFile):
         assert pofile.units[0].sourcecomments == ["#: source comment\n"]
         assert pofile.units[0].typecomments == ["#, fuzzy\n"]
 
+    def test_typecomments(self):
+        """test typecomments handling"""
+        posource = """#: 00-8C-41-10-00-00-31-10-12-05-42-44-00-2E
+#, max-length:10
+msgctxt "0"
+msgid "Aurora"
+msgstr ""
+"""
+        pofile = self.poparse(posource)
+        print(pofile)
+        assert len(pofile.units) == 1
+        assert bytes(pofile).decode('utf-8') == posource
+        unit = pofile.units[0]
+        assert unit.typecomments == ["#, max-length:10\n"]
+        assert unit.hastypecomment("max-length:10") is True
+        unit.target = "Aurora"
+        unit.markfuzzy()
+        assert unit.typecomments == ["#, fuzzy, max-length:10\n"]
+        assert unit.hastypecomment("max-length:10") is True
+
     def test_unassociated_comments(self):
         """tests behaviour of unassociated comments."""
         oldsource = '# old lonesome comment\n\nmsgid "one"\nmsgstr "een"\n'

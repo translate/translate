@@ -553,15 +553,21 @@ class pounit(pocommon.pounit):
         # Before, the equivalent of the following was the final return statement:
         # return len(self.source.strip()) == 0
 
-    def hastypecomment(self, typecomment):
+    def _extracttypecomment(self):
+        for tc in self.typecomments:
+            for flag in tc.split(","):
+                value = flag.strip()
+                if not value or value == '#':
+                    continue
+                yield value
+
+    def hastypecomment(self, typecomment, parsed=None):
         """Check whether the given type comment is present"""
         if not self.typecomments:
             return False
-        for tc in self.typecomments:
-            # check for word boundaries properly by using a regular expression
-            if re.search("\\b%s\\b" % typecomment, tc):
-                return True
-        return False
+        if not parsed:
+            parsed = self._extracttypecomment()
+        return typecomment in parsed
 
     def hasmarkedcomment(self, commentmarker):
         """Check whether the given comment marker is present.
@@ -578,8 +584,8 @@ class pounit(pocommon.pounit):
 
     def settypecomment(self, typecomment, present=True):
         """Alters whether a given typecomment is present"""
-        if self.hastypecomment(typecomment) != present:
-            typecomments = re.findall(r"\b[-\w]+\b", "\n".join(self.typecomments))
+        typecomments = list(self._extracttypecomment())
+        if self.hastypecomment(typecomment, typecomments) != present:
             if present:
                 typecomments.append(typecomment)
             else:
