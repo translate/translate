@@ -273,7 +273,7 @@ class AndroidResourceUnit(base.TranslationUnit):
             if cloned_target.text is not None:
                 cloned_target.text = self.unescape(cloned_target.text, False)
             for xmlelement in cloned_target.iterdescendants():
-                if xmlelement.text is not None:
+                if xmlelement.text is not None and xmlelement.tag is not etree.Entity:
                     xmlelement.text = self.unescape(xmlelement.text, False)
                 if xmlelement.tail is not None:
                     xmlelement.tail = self.unescape(xmlelement.tail, False)
@@ -292,11 +292,22 @@ class AndroidResourceUnit(base.TranslationUnit):
             return target
 
     def set_xml_text_value(self, target, xmltarget):
-        if '<' in target:
+        if '<' in target or '&' in target:
+            # Try to handle it as legacy XML
+            parser = etree.XMLParser(strip_cdata=False, resolve_entities=False)
+            if self._store is not None:
+                cloned_doc = copy.deepcopy(self._store.document)
+                cloned_root = cloned_doc.getroot()
+                for child in cloned_root.xpath('//string'):
+                    cloned_root.remove(child)
+                template = etree.tostring(cloned_doc, encoding='unicode')
+            else:
+                template = '<resources></resources>'
             try:
-                # Try to handle it as legacy XML
-                parser = etree.XMLParser(strip_cdata=False, resolve_entities=False)
-                newstring = etree.fromstring('<string>%s</string>' % target, parser)
+                newstring = etree.fromstring(
+                    template.replace('</resources>', '<string>%s</string></resources>' % target),
+                    parser
+                )[0]
             except Exception:
                 # Fallback to string with XML escaping
                 xmltarget.text = self.escape(target)
@@ -305,7 +316,7 @@ class AndroidResourceUnit(base.TranslationUnit):
                 if newstring.text is not None:
                     newstring.text = self.escape(newstring.text, False)
                 for x in newstring.iterdescendants():
-                    if x.text is not None:
+                    if x.text is not None and x.tag is not etree.Entity:
                         x.text = self.escape(x.text, False)
                     if x.tail is not None:
                         x.tail = self.escape(x.tail, False)

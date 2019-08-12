@@ -472,3 +472,20 @@ class TestAndroidResourceFile(test_monolingual.TestMonolingualStore):
         otherstore.parse(other)
         store.addunit(otherstore.units[0], True)
         assert bytes(store) == expected
+
+    def test_entity(self):
+        content = b'''<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE resources [
+<!ENTITY appName "Linphone">
+]>
+<resources>
+    <string name="app_name">&appName;</string>
+    <string name="app_core">&appName; Core</string>
+</resources>'''
+        store = self.StoreClass()
+        store.parse(content)
+        assert store.units[0].source == "&appName;"
+        store.units[0].target = "&appName;"
+        assert store.units[1].source == "&appName; Core"
+        store.units[1].target = "&appName; Core"
+        assert bytes(store) == content

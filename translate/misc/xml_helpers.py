@@ -141,6 +141,8 @@ def reindent(elem, level=0, indent="  ", max_level=4, skip=None, toplevel=True):
     Each nested tag is identified by indent string, up to
     max_level depth, possibly skipping tags listed in skip.
     """
+    if elem.tag is etree.Entity:
+        return
     i = "\n" + (indent * level)
     if skip and elem.tag in skip:
         next_level = level
@@ -149,13 +151,15 @@ def reindent(elem, level=0, indent="  ", max_level=4, skip=None, toplevel=True):
         next_level = level + 1
         extra_i = i + indent
     if len(elem) and level < max_level:
-        if (not elem.text or not elem.text.strip()) and getXMLspace(elem) != 'preserve':
+        if ((not elem.text or not elem.text.strip())
+                and getXMLspace(elem) != 'preserve'
+                and elem[0].tag is not etree.Entity):
             elem.text = extra_i
         if not elem.tail or not elem.tail.strip():
             elem.tail = i
         for child in elem:
             reindent(child, next_level, indent, max_level, skip, False)
-        if not child.tail or not child.tail.strip():
+        if (not child.tail or not child.tail.strip()) and child.tag is not etree.Entity:
             child.tail = i
     if toplevel:
         if not elem.tail or not elem.tail.strip():
