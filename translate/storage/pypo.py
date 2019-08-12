@@ -664,6 +664,9 @@ class pounit(pocommon.pounit):
                     #Before we used to strip. Necessary in some cases?
                     combinedcomment.append(comment)
                 partcomments = self.quote("_:%s" % "".join(combinedcomment))
+                # Strip heading empty line for multiline string, it was already added above
+                if partcomments[0] == '""':
+                    partcomments = partcomments[1:]
             # comments first, no blank leader line needed
             partstr += "\n".join(partcomments)
             partstr = quote.rstripeol(partstr)
@@ -671,7 +674,12 @@ class pounit(pocommon.pounit):
             partstr += '""'
         partstr += '\n'
         # add the rest
+        previous = None
         for partline in partlines[partstartline:]:
+            # Avoid duplicate empty lines
+            if previous == '""' and partline == '""':
+                continue
+            previous = partline
             partstr += partline + '\n'
         return partstr
 

@@ -461,3 +461,36 @@ msgstr "FcoeClient"
         assert pofile.units[0].source == ''
         assert pofile.units[1].source == 'FcoeClient'
         assert bytes(pofile) == posource[3:]
+
+    def test_long_msgidcomments(self):
+        posource = """#: networkstatus/connectionmanager.cpp:148
+msgid ""
+"_: Message shown when a network connection failed.  The placeholder contains "
+"the concrete description of the operation eg 'while performing this "
+"operation\\n"
+""
+"A network connection failed %1.  Do you want to place the application in "
+"offline mode?"
+msgstr ""
+"Připojení k síti se nezdařilo: %1. Chcete aplikaci přepnout do režimu "
+"offline?"
+"""
+        pofile = self.poparse(posource.encode('utf-8'))
+        assert len(pofile.units) == 1
+        assert bytes(pofile).decode('utf-8') == posource
+        posource_extra = """#: networkstatus/connectionmanager.cpp:148
+msgid ""
+""
+"_: Message shown when a network connection failed.  The placeholder contains "
+"the concrete description of the operation eg 'while performing this "
+"operation\\n"
+""
+"A network connection failed %1.  Do you want to place the application in "
+"offline mode?"
+msgstr ""
+"Připojení k síti se nezdařilo: %1. Chcete aplikaci přepnout do režimu "
+"offline?"
+"""
+        pofile = self.poparse(posource_extra.encode('utf-8'))
+        assert len(pofile.units) == 1
+        assert bytes(pofile).decode('utf-8') == posource
