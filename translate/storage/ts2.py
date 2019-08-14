@@ -82,7 +82,6 @@ class tsunit(lisa.LISAunit):
 
     statemap = {
         "obsolete": S_OBSOLETE,
-        "vanished": S_OBSOLETE,
         "unfinished": S_FUZZY,
         "": S_TRANSLATED,
         None: S_TRANSLATED,
@@ -361,6 +360,8 @@ class tsunit(lisa.LISAunit):
                 return self.S_FUZZY
             else:
                 return self.S_UNTRANSLATED
+        elif type == "vanished":
+            return self.S_OBSOLETE
         return self.statemap[type]
 
     def set_state_n(self, value):
@@ -444,7 +445,7 @@ class tsfile(lisa.LISAfile):
         name = etree.SubElement(context, self.namespaced("name"))
         name.text = contextname
         if comment:
-            comment_node = context.SubElement(context, "comment")
+            comment_node = etree.SubElement(context, "comment")
             comment_node.text = comment
         return context
 
@@ -466,7 +467,7 @@ class tsfile(lisa.LISAfile):
                 return contextnode
         return None
 
-    def addunit(self, unit, new=True, contextname=None, createifmissing=True):
+    def addunit(self, unit, new=True, contextname=None, comment=None, createifmissing=True):
         """Adds the given unit to the last used body node (current context).
 
         If the contextname is specified, switch to that context (creating it if
@@ -476,13 +477,13 @@ class tsfile(lisa.LISAfile):
             contextname = unit.getcontextname()
 
         if self._contextname != contextname:
-            if not self._switchcontext(contextname, createifmissing):
+            if not self._switchcontext(contextname, comment, createifmissing):
                 return None
         super(tsfile, self).addunit(unit, new)
 #        lisa.setXMLspace(unit.xmlelement, "preserve")
         return unit
 
-    def _switchcontext(self, contextname, createifmissing=False):
+    def _switchcontext(self, contextname, comment, createifmissing=False):
         """Switch the current context to the one named contextname, optionally
         creating it if it doesn't exist.
         """
@@ -491,7 +492,7 @@ class tsfile(lisa.LISAfile):
         if contextnode is None:
             if not createifmissing:
                 return False
-            contextnode = self._createcontext(contextname)
+            contextnode = self._createcontext(contextname, comment)
 
         self.body = contextnode
         if self.body is None:

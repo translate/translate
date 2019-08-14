@@ -60,6 +60,12 @@ The other line&apos;s translation may have quotes, too (&quot;&apos;&quot;,
 &apos;&quot;&apos;)</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>Line 1
+
+Line 3</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 </TS>
 """
