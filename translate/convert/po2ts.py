@@ -23,28 +23,23 @@ See: http://docs.translatehouse.org/projects/translate-toolkit/en/latest/command
 for examples and usage instructions.
 """
 
-from translate.storage import po, ts
+from translate.storage import po, ts2
 
 
 class po2ts(object):
 
-    def convertstore(self, inputstore, templatefile=None, context=None):
+    def convertstore(self, inputstore, outputfile, templatefile=None, context=None):
         """converts a .po file to .ts format (using a template .ts file if given)"""
         if templatefile is None:
-            tsfile = ts.QtTsParser()
+            tsfile = ts2.tsfile()
         else:
-            tsfile = ts.QtTsParser(templatefile)
+            tsfile = ts2.tsfile(templatefile)
         for inputunit in inputstore.units:
             if inputunit.isheader() or inputunit.isblank():
                 continue
             source = inputunit.source
             translation = inputunit.target
             comment = inputunit.getnotes("translator")
-            transtype = None
-            if not inputunit.istranslated():
-                transtype = "unfinished"
-            elif inputunit.getnotes("developer") == "(obsolete)":
-                transtype = "obsolete"
             if isinstance(source, bytes):
                 source = source.decode("utf-8")
             if isinstance(translation, bytes):
@@ -57,8 +52,14 @@ class po2ts(object):
                         contextname = sourcelocation
                 else:
                     contextname = context
-                tsfile.addtranslation(contextname, source, translation, comment, transtype, createifmissing=True)
-        return tsfile.getxml()
+                tsunit = ts2.tsunit(source)
+                tsunit.target = translation
+                if not inputunit.istranslated():
+                    tsunit.markfuzzy()
+                elif inputunit.getnotes("developer") == "(obsolete)":
+                    tsunit.set_state_n(tsunit.S_OBSOLETE)
+                tsfile.addunit(tsunit, True, contextname, comment, True)
+        tsfile.serialize(outputfile)
 
 
 def convertpo(inputfile, outputfile, templatefile, context):
@@ -67,8 +68,7 @@ def convertpo(inputfile, outputfile, templatefile, context):
     if inputstore.isempty():
         return 0
     convertor = po2ts()
-    outputstring = convertor.convertstore(inputstore, templatefile, context)
-    outputfile.write(outputstring.encode('utf-8'))
+    convertor.convertstore(inputstore, outputfile, templatefile, context)
     return 1
 
 

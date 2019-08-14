@@ -12,8 +12,9 @@ class TestPO2TS(object):
         inputfile = wStringIO.StringIO(posource)
         inputpo = po.pofile(inputfile)
         convertor = po2ts.po2ts()
-        outputts = convertor.convertstore(inputpo)
-        return outputts
+        output = wStringIO.StringIO()
+        convertor.convertstore(inputpo, output)
+        return output.getvalue().decode('utf-8')
 
     def singleelement(self, storage):
         """checks that the pofile contains a single non-header element, and returns it"""
@@ -91,6 +92,42 @@ msgstr "b"
         tsfile = self.po2ts(posource)
         print(tsfile)
         assert tsfile.find("English") != tsfile.rfind("English")
+
+    def test_linebreak(self):
+        """test that we can handle linebreaks"""
+        minipo = r'''#: linebreak.cpp
+msgid "Line 1\n"
+"Line 2"
+msgstr "Linea 1\n"
+"Linea 2"'''
+        tsfile = self.po2ts(minipo)
+        print(tsfile)
+        print(type(tsfile))
+        assert u"<name>linebreak.cpp</name>" in tsfile
+        assert r'''<source>Line 1
+Line 2</source>''' in tsfile
+        assert r'''<translation>Linea 1
+Linea 2</translation>''' in tsfile
+
+    def test_linebreak_consecutive(self):
+        """test that we can handle consecutive linebreaks"""
+        minipo = r'''#: linebreak.cpp
+msgid "Line 1\n"
+"\n"
+"Line 3"
+msgstr "Linea 1\n"
+"\n"
+"Linea 3"'''
+        tsfile = self.po2ts(minipo)
+        print(tsfile)
+        print(type(tsfile))
+        assert u"<name>linebreak.cpp</name>" in tsfile
+        assert r'''<source>Line 1
+
+Line 3</source>''' in tsfile
+        assert r'''<translation>Linea 1
+
+Linea 3</translation>''' in tsfile
 
 
 class TestPO2TSCommand(test_convert.TestConvertCommand, TestPO2TS):
