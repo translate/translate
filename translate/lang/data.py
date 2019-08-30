@@ -165,6 +165,7 @@ languages = {
     'sah': ('Yakut', 1, '0'),
     'sat': ('Santali', 2, '(n != 1)'),
     'sco': ('Scots', 2, '(n != 1)'),
+    'scn': ('Sicilian', 2, '(n != 1)'),
     'sd': ('Sindhi', 2, '(n != 1)'),
     'se': ('Northern Sami', 2, '(n != 1)'),
     'si': ('Sinhala; Sinhalese', 2, '(n != 1)'),
