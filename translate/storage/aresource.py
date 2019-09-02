@@ -339,7 +339,7 @@ class AndroidResourceUnit(base.TranslationUnit):
         if self.xmlelement.tag != "plurals":
             return self.get_xml_text_value(self.xmlelement)
         return multistring([data.forceunicode(self.get_xml_text_value(entry))
-                            for entry in self.xmlelement.iterchildren()])
+                            for entry in self.xmlelement.iterchildren('item')])
 
     @target.setter
     def target(self, target):

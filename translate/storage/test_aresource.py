@@ -326,6 +326,16 @@ class TestAndroidResourceUnit(test_monolingual.TestMonolingualUnit):
                '</plurals>\n')
         self.__check_parse(mString, xml)
 
+    def test_plural_parse_message_with_comments(self):
+        mString = multistring(['one message', 'other message'])
+        xml = ('<plurals name="teststring">\n'
+               '    <!-- comment of one string -->\n'
+               '    <item quantity="one">one message</item>\n'
+               '    <!-- comment of other string -->\n'
+               '    <item quantity="other">other message</item>\n'
+               '</plurals>\n')
+        self.__check_parse(mString, xml)
+
     def test_parse_html_quote(self):
         string = 'start \'here\' <b>html code \'to escape\'</b> also \'here\''
         xml = ('<string name="teststring">start \\\'here\\\' <b>html code \\\'to escape\\\'</b> also \\\'here\\\''
