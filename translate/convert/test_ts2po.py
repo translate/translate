@@ -107,6 +107,39 @@ new line</translation>
         # Test that we aren't following the old style
         assert "_ OBSOLETE" not in pofile.units[1].getnotes()
 
+    def test_comment(self):
+        """test that we can handle disambiguation identifiers."""
+        # Example from https://www.gnu.org/software/gettext/manual/html_node/Contexts.html
+        tssource = '''<!DOCTYPE TS><TS>
+<context>
+    <name>FileMenu</name>
+    <message>
+        <source>&amp;Open</source>
+        <comment>Menu|File|</comment>
+        <translation>&amp;Abrir</translation>
+    </message>
+</context>
+</TS>
+'''
+        pofile = self.ts2po(tssource)
+        assert pofile.units[1].getcontext() == "Menu|File|"
+
+    def test_extracomment(self):
+        """test that we can handle '//:' comments from developers to translators."""
+        tssource = '''<!DOCTYPE TS><TS>
+<context>
+    <name>AboutDialog</name>
+    <message>
+        <source>&amp;About</source>
+        <extracomment>Appears in the Help menu (on Windows and Linux) or the app menu (on macOS).</extracomment>
+        <translation>&amp;Giới thiệu</translation>
+    </message>
+</context>
+</TS>
+'''
+        pofile = self.ts2po(tssource)
+        assert pofile.units[1].getnotes() == "Appears in the Help menu (on Windows and Linux) or the app menu (on macOS)."
+
 
 class TestTS2POCommand(test_convert.TestConvertCommand, TestTS2PO):
     """Tests running actual ts2po commands on files"""

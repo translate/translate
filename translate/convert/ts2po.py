@@ -23,7 +23,7 @@ See: http://docs.translatehouse.org/projects/translate-toolkit/en/latest/command
 for examples and usage instructions.
 """
 
-from translate.storage import po, ts
+from translate.storage import po, ts2
 
 
 class ts2po(object):
@@ -32,13 +32,15 @@ class ts2po(object):
         self.duplicatestyle = duplicatestyle
         self.pot = pot
 
-    def convertmessage(self, contextname, messagenum, source, target, msgcomments, transtype):
+    def convertmessage(self, contextname, messagenum, source, target, disambiguation, msgcomments, transtype):
         """makes a pounit from the given message"""
         thepo = po.pounit(encoding="UTF-8")
         thepo.addlocation("%s#%d" % (contextname, messagenum))
         thepo.source = source
         if not self.pot:
             thepo.target = target
+        if len(disambiguation) > 0:
+            thepo.setcontext(disambiguation)
         if len(msgcomments) > 0:
             thepo.addnote(msgcomments)
         if transtype == "unfinished" and thepo.istranslated():
@@ -51,19 +53,25 @@ class ts2po(object):
 
     def convertfile(self, inputfile):
         """converts a .ts file to .po format"""
-        tsfile = ts.QtTsParser(inputfile)
+        tsfile = ts2.tsfile(inputfile)
         thetargetfile = po.pofile()
 
-        for contextname, messages in tsfile.iteritems():
-            messagenum = 0
-            for message in messages:
-                messagenum += 1
-                source = tsfile.getmessagesource(message)
-                translation = tsfile.getmessagetranslation(message)
-                comment = tsfile.getmessagecomment(message)
-                transtype = tsfile.getmessagetype(message)
-                thepo = self.convertmessage(contextname, messagenum, source, translation, comment, transtype)
-                thetargetfile.addunit(thepo)
+        previouscontext = ''
+        for inputunit in tsfile.units:
+            contexts = inputunit.getcontext().split('\n')
+
+            context = contexts[0]
+            if context != previouscontext:
+                previouscontext = context
+                messagenum = 0
+
+            disambiguation = ''
+            if len(contexts) > 1:
+                disambiguation = contexts[1]
+            messagenum += 1
+            thepo = self.convertmessage(context, messagenum, inputunit.source, inputunit.target, disambiguation, inputunit.getnotes(), inputunit._gettype())
+            thetargetfile.addunit(thepo)
+
         thetargetfile.removeduplicates(self.duplicatestyle)
         return thetargetfile
 
@@ -85,3 +93,7 @@ def main(argv=None):
     parser.add_duplicates_option()
     parser.passthrough.append("pot")
     parser.run(argv)
+
+
+if __name__ == '__main__':
+    main()
