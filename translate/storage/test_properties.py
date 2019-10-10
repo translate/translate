@@ -262,6 +262,17 @@ key=value
         assert propunit.name == u'I am a "key"'
         assert propunit.source == u'I am a "value"'
 
+    def test_utf_16_save(self):
+        """test saving of utf-16 java properties files"""
+        propsource = u'''key=zkouška\n'''.encode('utf-16')
+        propfile = self.propparse(propsource, personality="java-utf16")
+        assert propfile.encoding == 'utf-16'
+        assert len(propfile.units) == 1
+        propunit = propfile.units[0]
+        assert propunit.name == u'key'
+        assert propunit.source == u'zkouška'
+        assert bytes(propfile) == propsource
+
     def test_mac_multiline_strings(self):
         """test can read multiline items used in Mac OS X strings files"""
         propsource = (r'''"I am a \"key\"" = "I am a \"value\" ''' +
