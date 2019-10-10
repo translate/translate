@@ -255,7 +255,7 @@ class Dialect(object):
         """Encode the string"""
         # FIXME: dialects are a bad idea, not possible for subclasses
         # to override key methods
-        if encoding != "utf-8":
+        if encoding not in ("utf-8", "utf-16"):
             return quote.javapropertiesencode(string or u"")
         return quote.java_utf8_properties_encode(string or u"")
 
@@ -348,6 +348,17 @@ class DialectJava(Dialect):
 class DialectJavaUtf8(DialectJava):
     name = "java-utf8"
     default_encoding = "utf-8"
+    delimiters = [u"=", u":", u" "]
+
+    @classmethod
+    def encode(cls, string, encoding=None):
+        return quote.java_utf8_properties_encode(string or u"")
+
+
+@register_dialect
+class DialectJavaUtf16(DialectJava):
+    name = "java-utf16"
+    default_encoding = "utf-16"
     delimiters = [u"=", u":", u" "]
 
     @classmethod
@@ -725,6 +736,16 @@ class javautf8file(propfile):
     def __init__(self, *args, **kwargs):
         kwargs['personality'] = "java-utf8"
         kwargs['encoding'] = "utf-8"
+        super(javautf8file, self).__init__(*args, **kwargs)
+
+
+class javautf16file(propfile):
+    Name = "Java Properties (UTF-16)"
+    Extensions = ['properties']
+
+    def __init__(self, *args, **kwargs):
+        kwargs['personality'] = "java-utf16"
+        kwargs['encoding'] = "utf-16"
         super(javautf8file, self).__init__(*args, **kwargs)
 
 
