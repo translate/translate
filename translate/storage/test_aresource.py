@@ -499,3 +499,15 @@ class TestAndroidResourceFile(test_monolingual.TestMonolingualStore):
         assert store.units[1].source == "&appName; Core"
         store.units[1].target = "&appName; Core"
         assert bytes(store) == content
+
+    def test_indent(self):
+        content = '''<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE resources [
+<!ENTITY url_privacy_policy "http://example.com/">
+]>
+<resources>
+    <string name="privacy_policy"><u><a href="&url_privacy_policy;">Datenschutzerklärung</a></u></string>
+</resources>'''.encode('utf-8')
+        store = self.StoreClass()
+        store.parse(content)
+        assert bytes(store) == content
