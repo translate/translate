@@ -135,7 +135,7 @@ def normalize_xml_space(node, xml_space, remove_start=False):
         normalize_xml_space(child, remove_start)
 
 
-def reindent(elem, level=0, indent="  ", max_level=4, skip=None, toplevel=True):
+def reindent(elem, level=0, indent="  ", max_level=4, skip=None, toplevel=True, leaves=None):
     """Adjust indentation to match specification.
 
     Each nested tag is identified by indent string, up to
@@ -151,16 +151,19 @@ def reindent(elem, level=0, indent="  ", max_level=4, skip=None, toplevel=True):
         next_level = level + 1
         extra_i = i + indent
     if len(elem) and level < max_level:
+        is_leave = leaves and elem.tag in leaves
         if ((not elem.text or not elem.text.strip())
                 and getXMLspace(elem) != 'preserve'
-                and elem[0].tag is not etree.Entity):
+                and elem[0].tag is not etree.Entity
+                and not is_leave):
             elem.text = extra_i
         if not elem.tail or not elem.tail.strip():
             elem.tail = i
-        for child in elem:
-            reindent(child, next_level, indent, max_level, skip, False)
-        if (not child.tail or not child.tail.strip()) and child.tag is not etree.Entity:
-            child.tail = i
+        if not is_leave:
+            for child in elem:
+                reindent(child, next_level, indent, max_level, skip, False, leaves)
+            if (not child.tail or not child.tail.strip()) and child.tag is not etree.Entity:
+                child.tail = i
     if toplevel:
         if not elem.tail or not elem.tail.strip():
             elem.tail = ''
