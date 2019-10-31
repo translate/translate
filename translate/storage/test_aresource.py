@@ -511,3 +511,22 @@ class TestAndroidResourceFile(test_monolingual.TestMonolingualStore):
         store = self.StoreClass()
         store.parse(content)
         assert bytes(store) == content
+
+    def test_edit_plural_markup(self):
+        content = '''<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <plurals name="teststring">
+        <item quantity="one"><xliff:g xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2" id="count">%d</xliff:g> den</item>
+        <item quantity="few"><xliff:g xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2" id="count">%d</xliff:g> dny</item>
+        <item quantity="other"><xliff:g xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2" id="count">%d</xliff:g> dnu</item>
+    </plurals>
+</resources>'''.encode('utf-8')
+        store = self.StoreClass()
+        store.targetlanguage = 'cs'
+        store.parse(content)
+        store.units[0].target = multistring([
+            '<xliff:g xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2" id="count">%d</xliff:g> den',
+            '<xliff:g xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2" id="count">%d</xliff:g> dny',
+            '<xliff:g xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2" id="count">%d</xliff:g> dnu',
+        ])
+        assert bytes(store) == content
