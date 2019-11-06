@@ -454,6 +454,7 @@ class AndroidResourceFile(lisa.LISAfile):
     bodyNode = "resources"
     XMLskeleton = '''<?xml version="1.0" encoding="utf-8"?>
 <resources></resources>'''
+    _doctype = None
 
     def initbody(self):
         """Initialises self.body so it never needs to be retrieved from the XML
@@ -467,7 +468,7 @@ class AndroidResourceFile(lisa.LISAfile):
         out.write(b'<?xml version="1.0" encoding="utf-8"?>\n')
         reindent(self.document.getroot(), indent="    ", leaves=('string', 'item'))
         self.document.write(out, pretty_print=False, xml_declaration=False,
-                            encoding='utf-8')
+                            encoding='utf-8', doctype=self._doctype)
 
     def parse(self, xml):
         """Populates this object from the given xml string"""
@@ -516,11 +517,27 @@ class AndroidResourceFile(lisa.LISAfile):
         newns = {}
         do_cleanup = False
         if new:
+            # Include any possible new namespaces
             newns = self.body.nsmap
             for ns in unit.xmlelement.nsmap:
                 if ns not in newns:
                     do_cleanup = True
                     newns[ns] = unit.xmlelement.nsmap[ns]
+
+            # Detect if unit is using XML entities
+            hasentity = False
+            for xmlelement in unit.xmlelement.iterdescendants():
+                if xmlelement.tag is etree.Entity:
+                    hasentity = True
+                    break
+
+            # Copy doctype to include possibly new entities
+            if hasentity:
+                cloned_doc = copy.deepcopy(unit._store.document)
+                cloned_doc.getroot().clear()
+                self._doctype = etree.tostring(
+                    cloned_doc, xml_declaration=False, encoding='unicode'
+                ).rsplit('\n', 1)[0]
 
         super(AndroidResourceFile, self).addunit(unit, new)
         # Move aliased namespaces to the <resources> tag

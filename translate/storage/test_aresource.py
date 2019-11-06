@@ -530,3 +530,20 @@ class TestAndroidResourceFile(test_monolingual.TestMonolingualStore):
             '<xliff:g xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2" id="count">%d</xliff:g> dnu',
         ])
         assert bytes(store) == content
+
+    def test_entity_add(self):
+        content = '''<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE resources [
+<!ENTITY appName "Zkouška">
+]>
+<resources>
+    <string name="app_name">&appName;</string>
+    <string name="app_core">&appName; Core</string>
+</resources>'''.encode('utf-8')
+        store = self.StoreClass()
+        store.parse(content)
+        second = self.StoreClass()
+        second.addunit(store.units[0], True)
+        second.addunit(store.units[1], True)
+        store = self.StoreClass()
+        assert bytes(second) == content
