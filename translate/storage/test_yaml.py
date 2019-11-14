@@ -389,6 +389,18 @@ foo:
         store.serialize(out)
         assert out.getvalue() == data.encode('ascii')
 
+    def test_dump_args(self):
+        data = '''e1:
+- s1: Subtag 1
+'''
+        store = self.StoreClass()
+        store.dump_args['line_break'] = '\r\n'
+        store.parse(data)
+        assert len(store.units) == 1
+        out = BytesIO()
+        store.serialize(out)
+        assert out.getvalue() == data.replace('\n', '\r\n').encode('ascii')
+
 
 class TestRubyYAMLResourceStore(test_monolingual.TestMonolingualStore):
     StoreClass = yaml.RubyYAMLFile
