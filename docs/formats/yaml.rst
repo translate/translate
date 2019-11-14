@@ -46,22 +46,6 @@ but not saved in round trip):
       martin: {name: Martin D'vloper, job: Developer, skill: Elite}
 
 
-* Escaped quotes:
-
-  .. code-block:: yaml
-
-      foo: "Hello \"World\"."
-      bar: 'Hello \'World\'.'
-
-
-* Avoid escaping quotes:
-
-  .. code-block:: yaml
-
-      spamm: 'avoid escaping "double quote"'
-      eggs: "avoid escaping 'single quote'"
-
-
 * Newlines:
 
   .. code-block:: yaml
