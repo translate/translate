@@ -22,16 +22,6 @@ Non-Conformance
 The following are not yet supported (in most cases these are properly parsed,
 but not saved in round trip):
 
-* Multiline strings:
-
-  .. code-block:: yaml
-
-      include_newlines: |
-                  exactly as you see
-                  will appear these three
-                  lines of poetry
-
-
 * Abbreviated lists:
 
   .. code-block:: yaml

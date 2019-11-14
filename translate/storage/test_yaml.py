@@ -125,7 +125,6 @@ eggs: spam
 eggs: spam
 '''
 
-    @pytest.mark.xfail(reason="Not Implemented")
     def test_multiline(self):
         """These are used in Discourse and Diaspora* translation."""
         store = self.StoreClass()
@@ -140,14 +139,14 @@ eggs: spam
         assert len(store.units) == 2
         assert store.units[0].getid() == 'invite'
         assert store.units[0].source == """Ola!
-        Recibiches unha invitación para unirte a!"""
+Recibiches unha invitación para unirte!"""
         assert store.units[1].getid() == 'eggs'
         assert store.units[1].source == 'spam'
         out = BytesIO()
         store.serialize(out)
-        assert out.getvalue() == '''invite: |-
-        Ola!
-        Recibiches unha invitación para unirte!
+        assert out.getvalue().decode('utf-8') == '''invite: |-
+  Ola!
+  Recibiches unha invitación para unirte!
 eggs: spam
 '''
 
