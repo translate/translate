@@ -46,14 +46,6 @@ but not saved in round trip):
       martin: {name: Martin D'vloper, job: Developer, skill: Elite}
 
 
-* Quoted strings:
-
-  .. code-block:: yaml
-
-      foo: "quote, double"
-      bar: 'quote, single'
-
-
 * Escaped quotes:
 
   .. code-block:: yaml

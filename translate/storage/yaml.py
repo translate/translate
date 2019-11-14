@@ -82,6 +82,7 @@ class YAMLFile(base.TranslationStore):
         self._file = u''
         self.dump_args = {
             'default_flow_style': False,
+            'preserve_quotes': True,
         }
         if inputfile is not None:
             self.parse(inputfile)
