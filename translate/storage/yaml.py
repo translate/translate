@@ -80,6 +80,9 @@ class YAMLFile(base.TranslationStore):
         super(YAMLFile, self).__init__(**kwargs)
         self.filename = ''
         self._file = u''
+        self.dump_args = {
+            'default_flow_style': False,
+        }
         if inputfile is not None:
             self.parse(inputfile)
 
@@ -89,6 +92,13 @@ class YAMLFile(base.TranslationStore):
 
     def serialize_value(self, value):
         return value
+
+    @property
+    def yaml(self):
+        yaml = YAML()
+        for arg, value in self.dump_args.items():
+            setattr(yaml, arg, value)
+        return yaml
 
     def serialize(self, out):
         def nested_set(target, path, value):
@@ -115,9 +125,7 @@ class YAMLFile(base.TranslationStore):
         units = CommentedMap()
         for unit in self.unit_iter():
             nested_set(units, unit.getid().split('->'), unit.target)
-        yaml = YAML()
-        yaml.default_flow_style = False
-        yaml.dump(self.get_root_node(units), out)
+        self.yaml.dump(self.get_root_node(units), out)
 
     def _parse_dict(self, data, prev):
         for k, v in six.iteritems(data):
@@ -169,9 +177,8 @@ class YAMLFile(base.TranslationStore):
             input = src
         if isinstance(input, bytes):
             input = input.decode('utf-8')
-        yaml = YAML()
         try:
-            self._file = yaml.load(input)
+            self._file = self.yaml.load(input)
         except YAMLError as e:
             message = e.problem if hasattr(e, 'problem') else e.message
             if hasattr(e, 'problem_mark'):
