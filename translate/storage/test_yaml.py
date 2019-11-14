@@ -261,19 +261,18 @@ foo: "Hello \"World\"."
         assert out.getvalue() == br'''foo: "Hello \"World\"."
 '''
 
-    @pytest.mark.xfail(reason="Not Implemented")
     def test_newlines(self):
         """These are used in OpenStreeMap translation."""
         store = self.StoreClass()
-        store.parse('''
+        store.parse(r'''
 foo: "Hello \n World."
 ''')
         assert len(store.units) == 1
         assert store.units[0].getid() == 'foo'
-        assert store.units[0].source == 'Hello \n World'
+        assert store.units[0].source == 'Hello \n World.'
         out = BytesIO()
         store.serialize(out)
-        assert out.getvalue() == b'''foo: "Hello \n World."
+        assert out.getvalue() == br'''foo: "Hello \n World."
 '''
 
     @pytest.mark.xfail(reason="Not Implemented")
