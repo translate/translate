@@ -191,7 +191,6 @@ eggs: No quoting at all
         assert out.getvalue() == b'''eggs: No quoting at all
 '''
 
-    @pytest.mark.xfail(reason="Not Implemented")
     def test_double_quote_strings(self):
         """These are used in OpenStreeMap translation."""
         store = self.StoreClass()
@@ -206,7 +205,6 @@ bar: "quote, double"
         assert out.getvalue() == b'''bar: "quote, double"
 '''
 
-    @pytest.mark.xfail(reason="Not Implemented")
     def test_single_quote_strings(self):
         """These are used in OpenStreeMap translation."""
         store = self.StoreClass()
@@ -221,7 +219,6 @@ foo: 'quote, single'
         assert out.getvalue() == b'''foo: 'quote, single'
 '''
 
-    @pytest.mark.xfail(reason="Not Implemented")
     def test_avoid_escaping_double_quote_strings(self):
         """These are used in OpenStreeMap translation."""
         store = self.StoreClass()
@@ -236,7 +233,6 @@ spam: 'avoid escaping "double quote"'
         assert out.getvalue() == b'''spam: 'avoid escaping "double quote"'
 '''
 
-    @pytest.mark.xfail(reason="Not Implemented")
     def test_avoid_escaping_single_quote_strings(self):
         """Test avoid escaping single quotes."""
         store = self.StoreClass()
