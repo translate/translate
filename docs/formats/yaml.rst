@@ -46,13 +46,6 @@ but not saved in round trip):
       martin: {name: Martin D'vloper, job: Developer, skill: Elite}
 
 
-* Newlines:
-
-  .. code-block:: yaml
-
-      foo: "Hello \n World."
-
-
 * Booleans:
 
   .. code-block:: yaml
