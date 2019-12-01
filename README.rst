@@ -34,7 +34,7 @@ make the lives of localizers both more productive and less frustrating.  The
 Toolkit is part of the Translate project, hosted at
 <https://github.com/translate>.
 
-The software includes programs to covert localization formats to the common
+The software includes programs to convert localization formats to the common
 PO, and emerging XLIFF format.  There are also programs to check and manage PO
 and XLIFF files.  Online documentation includes guides on using the tools,
 running a localization project and how to localize various projects from
