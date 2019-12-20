@@ -205,7 +205,7 @@ do=translate me
         unit = self.singleelement(pofile)
         assert unit.source == "\nvalue\n"
 
-    def test_unassociated_comments(self):
+    def test_header_comments(self):
         """check that we can handle comments not directly associated with a property"""
         propsource = '''# Header comment\n\n# Comment\n\nprop=value\n'''
         pofile = self.prop2po(propsource)
@@ -219,7 +219,7 @@ do=translate me
         pofile = self.prop2po(propsource)
         unit = self.singleelement(pofile)
         assert unit.source == "value"
-        assert unit.getnotes("developer") == "# 1st Unassociated comment\n# 2nd Connected comment"
+        assert unit.getnotes("developer") == "# 1st Unassociated comment\n\n# 2nd Connected comment"
 
     def test_x_header(self):
         """Test that we correctly create the custom header entries
