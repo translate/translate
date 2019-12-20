@@ -654,6 +654,7 @@ class propfile(base.TranslationStore):
         newunit = propunit("", self.personality.name)
         inmultilinevalue = False
         inmultilinecomment = False
+        was_header = False
 
         for line in propsrc.split(u"\n"):
             # handle multiline value if we're in one
@@ -685,9 +686,16 @@ class propfile(base.TranslationStore):
                     inmultilinecomment = False
             elif not line.strip():
                 # this is a blank line...
-                if str(newunit).strip():
+                # avoid adding comment only units
+                if newunit.name:
                     self.addunit(newunit)
                     newunit = propunit("", self.personality.name)
+                elif not was_header and str(newunit).strip():
+                    self.addunit(newunit)
+                    newunit = propunit("", self.personality.name)
+                    was_header = True
+                elif newunit.comments:
+                    newunit.comments.append("")
             else:
                 newunit.delimiter, delimiter_pos = self.personality.find_delimiter(line)
                 if delimiter_pos == -1:

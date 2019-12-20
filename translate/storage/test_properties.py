@@ -458,3 +458,30 @@ key=value
         assert propunit.name == u'key'
         assert propunit.value == u''
         assert bytes(propfile) == propsource
+
+    def test_multi_comments(self):
+        propsource = """# This is free software; you can redistribute it and/or modify it
+# under the terms of the GNU Lesser General Public License as
+# published by the Free Software Foundation; either version 2.1 of
+# the License, or (at your option) any later version.
+
+# This contains the translations of the module in the default language
+# (generally English).
+
+job.log.begin=Starting job of type [{0}]
+""".encode('utf-8')
+        propfile = self.propparse(propsource, personality="java-utf8")
+        assert len(propfile.units) == 2
+        propunit = propfile.units[0]
+        assert propunit.name == u''
+        assert propunit.value == u''
+        assert propunit.getnotes() == """# This is free software; you can redistribute it and/or modify it
+# under the terms of the GNU Lesser General Public License as
+# published by the Free Software Foundation; either version 2.1 of
+# the License, or (at your option) any later version."""
+        propunit = propfile.units[1]
+        assert propunit.name == u'job.log.begin'
+        assert propunit.value == u'Starting job of type [{0}]'
+        print(bytes(propfile))
+        print(propsource)
+        assert bytes(propfile) == propsource
