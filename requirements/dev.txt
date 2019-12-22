@@ -6,5 +6,5 @@ pydocstyle==5.0.1
 pytest==5.3.2
 pytest-cov==2.8.1
 pytest-xdist==1.31.0
-Sphinx==2.3.0 ;python_version > '3.0'
-Sphinx==2.3.0 ;python_version < '3.0'
+Sphinx==2.3.1 ;python_version > '3.0'
+Sphinx==2.3.1 ;python_version < '3.0'
