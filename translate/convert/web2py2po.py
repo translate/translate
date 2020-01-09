@@ -52,7 +52,7 @@ class web2py2po(object):
             if six.PY2:
                 target_str = target_str.decode('utf-8')
                 source_str = source_str.decode('utf-8')
-            if target_str == source_str:
+            if target_str == source_str.replace('@markmin\x01', ''):
                 # a convention with new (untranslated) web2py files
                 target_str = u''
             pounit = self.convertunit(source_str, target_str)

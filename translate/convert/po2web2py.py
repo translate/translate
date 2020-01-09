@@ -47,7 +47,7 @@ class po2pydict(object):
             if unit.istranslated() or (includefuzzy and unit.isfuzzy()):
                 mydict[unit.source] = unit.target
             else:
-                mydict[unit.source] = unit.source
+                mydict[unit.source] = unit.source.replace('@markmin\x01', '')
 
         str_obj.write(u'# -*- coding: utf-8 -*-\n')
         str_obj.write(u'{\n')

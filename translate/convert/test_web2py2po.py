@@ -50,3 +50,16 @@ class TestWEB2PY2PO(object):
         pounit = self.singleelement(po_out)
         assert pounit.source == "Foobar"
         assert pounit.target == "Fúbär"
+
+    def test_markmin(self):
+        """test removal of @markmin in po to web2py conversion"""
+        input_web2py = '''# -*- coding: utf-8 -*-
+{
+'@markmin\\x01Hello **world**!': 'Hello **world**!',
+}
+'''
+
+        po_out = self.web2py2po(input_web2py)
+        pounit = self.singleelement(po_out)
+        assert pounit.source == "@markmin\x01Hello **world**!"
+        assert pounit.target == ""

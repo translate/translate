@@ -71,3 +71,17 @@ msgstr "zab"
 '''
         web2py_out = self.po2web2py(input_po)
         assert web2py_out == expected_web2py
+
+    def test_markmin(self):
+        """test removal of @markmin in po to web2py conversion"""
+        input_po = '''
+msgid "@markmin\x01Hello **world**!"
+msgstr ""
+'''
+        expected_web2py = '''# -*- coding: utf-8 -*-
+{
+'@markmin\\x01Hello **world**!': 'Hello **world**!',
+}
+'''
+        web2py_out = self.po2web2py(input_po)
+        assert web2py_out == expected_web2py
