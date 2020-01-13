@@ -222,7 +222,7 @@ class prop2po(object):
             for comment in propunit.comments:
                 if "DONT_TRANSLATE" in comment:
                     return "discard"
-            pounit.addnote(u"".join(propunit.getnotes()).rstrip(), commenttype)
+            pounit.addnote(propunit.getnotes().rstrip(), commenttype)
         # TODO: handle multiline msgid
         if propunit.isblank():
             return None
