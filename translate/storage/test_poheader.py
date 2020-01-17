@@ -261,6 +261,29 @@ msgstr ""
     assert "# Khaled Hosny <khaledhosny@domain.org>, 2006, 2007, 2008, %s." % time.strftime("%Y") in bytes(pofile).decode('utf-8')
 
 
+def test_updatecontributor_header():
+    """Test preserving empty lines in comments"""
+    # The replace introduces trailing whitespace
+    posource = r'''# Japanese translation of ibus.
+# Copyright (C) 2015-2019 Takao Fujiwara <takao.fujiwara1@gmail.com>
+# This file is distributed under the same license as the ibus package.
+#
+# Translators:
+# Takao Fujiwara <takao.fujiwara1@gmail.com>, 2012
+msgid ""
+msgstr ""
+"MIME-Version: 1.0"
+'''.replace("#\n", "# \n")
+    pofile = poparse(posource)
+
+    # Add contributor
+    pofile.updatecontributor("Grasvreter")
+
+    # Manually build expected output
+    expected = posource.replace("msgid", "# Grasvreter, %s.\nmsgid" % time.strftime("%Y"))
+    assert bytes(pofile).decode('utf-8') == expected
+
+
 def test_language():
     """Test that we can get a language from the relevant headers."""
     posource = r'''msgid ""
