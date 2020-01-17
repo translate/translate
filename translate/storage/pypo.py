@@ -379,12 +379,12 @@ class pounit(pocommon.pounit):
         :param origin: programmer, developer, source code, translator or None
         """
         if origin is None:
-            comments = u"".join([comment[2:] for comment in self.othercomments])
-            comments += u"".join([comment[3:] for comment in self.automaticcomments])
+            comments = u"".join([comment[2:] or "\n" for comment in self.othercomments])
+            comments += u"".join([comment[3:] or "\n" for comment in self.automaticcomments])
         elif origin == "translator":
-            comments = u"".join([comment[2:] for comment in self.othercomments])
+            comments = u"".join([comment[2:] or "\n" for comment in self.othercomments])
         elif origin in ["programmer", "developer", "source code"]:
-            comments = u"".join([comment[3:] for comment in self.automaticcomments])
+            comments = u"".join([comment[3:] or "\n" for comment in self.automaticcomments])
         else:
             raise ValueError("Comment type not valid")
         # Let's drop the last newline
