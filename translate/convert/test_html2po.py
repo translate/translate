@@ -384,13 +384,13 @@ years has helped to bridge the digital divide to a limited extent.</p> \r
         self.check_phpsnippet('''<?=($a < $b ? $foo : ($b > c ? $bar : $cat))?>''')
 
         # Make sure basically any symbol can be handled
-        self.check_phpsnippet(''' <? asdfghjkl qwertyuiop 1234567890!@#$%^&*()-=_+[]\{}|;':",./<>? ?> ''')
+        self.check_phpsnippet(''' <? asdfghjkl qwertyuiop 1234567890!@#$%^&*()-=_+[]\\{}|;':",./<>? ?> ''')
 
     def test_multiple_php(self):
         """Test multiple PHP snippets in a string to make sure they get restored properly"""
         php1 = '''<?=$phpvariable?>'''
         php2 = '''<?=($a < $b ? $foo : ($b > c ? $bar : $cat))?>'''
-        php3 = '''<? asdfghjklqwertyuiop1234567890!@#$%^&*()-=_+[]\{}|;':",./<>? ?>'''
+        php3 = '''<? asdfghjklqwertyuiop1234567890!@#$%^&*()-=_+[]\\{}|;':",./<>? ?>'''
 
         # Put 3 different strings into an html string
         innertext = '<a href="' + php1 + '/site.html">Body text</a> and some ' + php2 + ' more text ' + php2 + php3
