@@ -5,16 +5,13 @@ python:
   - 2.7
   - 3.5
   - 3.6
+  - 3.7
 env:
   matrix:
     - USECPO=0 MINVERSION= META=
     #- USECPO=2
 matrix:
   include:
-    # Obtain Python 3.7 from xenial as per https://github.com/travis-ci/travis-ci/issues/9815
-    - python: 3.7
-      dist: xenial
-      sudo: true
     # Do additional variations with Python 2.7 only
     - python: 2.7
       env: USECPO=0 MINVERSION=1 META=
