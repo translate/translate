@@ -5,7 +5,7 @@
 ##################
 BeautifulSoup4>=4.3  # Trados TM
 iniparse==0.4 ;python_version < '3.0'      # INI (ini2po)
-vobject==0.9.6.1       # iCal (ical2po)
+vobject==0.9.6.1     # iCal (ical2po)
 aeidon==1.2.1 ;python_version > '3.0'      # Subtitles (sub2po)
 l20n==4.0.0a1        # l20n (l20n2po)
 ruamel.yaml==0.15.97 # yaml
