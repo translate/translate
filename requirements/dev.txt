@@ -2,7 +2,8 @@
 
 isort>=4.2.3
 pycodestyle==2.5.0
-pydocstyle==3.0.0
+pydocstyle==5.0.2 ;python_version > '3.0'
+pydocstyle==3.0.0 ;python_version < '3.0'
 pytest==4.6.3
 pytest-cov==2.7.1
 pytest-xdist==1.29.0
