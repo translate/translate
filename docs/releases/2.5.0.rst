@@ -1,0 +1,73 @@
+Translate Toolkit 2.5.0
+***********************
+
+*Released on 18 January 2020*
+
+This release contains improvements and bug fixes.
+
+
+Changes
+=======
+
+Formats and Converters
+----------------------
+
+- PO
+
+  - Avoid stripping empty lines from comments.
+  - Raise error on invalid file content.
+  - Fixed handling typecomments with non word chars.
+  - Fixed serializing long msgidcomments.
+
+- Properties
+
+  - Avoid creating comment only units (:issue:`3928`).
+  - Fixed saving utf-16 Java files.
+
+- Android resources
+
+  - Document declaration is cloned when adding unit.
+  - Fixed parsing plurals with comment.
+  - Fixed setting plural with markup.
+  - Fixed indentation of markup in translation.
+  - Fixed XML entities handling.
+
+- YAML
+
+  - Quotes are preserved.
+
+- TS
+
+  - `ts2po` converts disambiguation notes and comments.
+  - `po2ts` no longer removes consecutive linebreaks in source and translation.
+
+- web2py
+
+  - `@markmin` string is no longer copied to the translation.
+
+
+Languages
+---------
+
+- Added Sicilian language checks
+
+
+General
+-------
+
+- Kept support for Python 2.7.
+- Added support for Python 3.8.
+- Minor docs improvements.
+- Minor cleanups in code.
+- Updated requirements.
+- Added and updated tests.
+
+
+Contributors
+============
+
+This release was made possible by the following people:
+
+Michal Čihař, Leandro Regueiro, Steve Mokris, Queen Vinyl Darkscratch, Matthias, David Paleino.
+
+And to all our bug finders and testers, a Very BIG Thank You.
