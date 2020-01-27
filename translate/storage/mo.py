@@ -283,5 +283,5 @@ class mofile(poheader.poheader, base.TranslationStore):
             newunit = mounit(source)
             newunit.target = target
             if context is not None:
-                newunit.msgctxt.append(context)
+                newunit.msgctxt.append(context.decode(self.encoding))
             self.addunit(newunit)
