@@ -137,6 +137,10 @@ class TestMOFile(test_base.TestTranslationStore):
         store.addunit(unit)
         assert b'context' in store.__bytes__()
 
+        newstore = self.StoreClass.parsestring(store.__bytes__())
+        assert len(newstore.units) == 1
+        assert newstore.units[0].getcontext(), 'context'
+
     def test_output(self):
         for posource in posources:
             print("PO source file")
