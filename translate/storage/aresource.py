@@ -331,6 +331,9 @@ class AndroidResourceUnit(base.TranslationUnit):
                 for x in newstring.iterchildren():
                     xmltarget.append(x)
         else:
+            # Remove possible old elements
+            for x in xmltarget.iterchildren():
+                xmltarget.remove(x)
             # Handle text only
             xmltarget.text = self.escape(target)
 

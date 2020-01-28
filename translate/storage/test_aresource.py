@@ -547,3 +547,16 @@ class TestAndroidResourceFile(test_monolingual.TestMonolingualStore):
         second.addunit(store.units[1], True)
         store = self.StoreClass()
         assert bytes(second) == content
+
+    def test_markup_remove(self):
+        template = '''<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="privacy_policy"><u>Datenschutzerklärung</u></string>
+</resources>'''
+        content = template.encode('utf-8')
+        newcontent = template.replace('<u>', '').replace('</u>', '').encode('utf-8')
+        store = self.StoreClass()
+        store.parse(content)
+        assert bytes(store) == content
+        store.units[0].target = "Datenschutzerklärung"
+        assert bytes(store) == newcontent
