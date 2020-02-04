@@ -33,6 +33,10 @@ from translate.storage import po, properties
 logger = logging.getLogger(__name__)
 
 
+class DiscardUnit(ValueError):
+    pass
+
+
 class prop2po(object):
     """convert a .properties file to a .po file for handling the translation.
     """
@@ -66,12 +70,12 @@ class prop2po(object):
         appendedheader = False
         waitingcomments = []
         for propunit in thepropfile.units:
-            pounit = self.convertpropunit(thepropfile, propunit, "developer")
+            try:
+                pounit = self.convertpropunit(thepropfile, propunit, "developer")
+            except DiscardUnit:
+                continue
             if pounit is None:
                 waitingcomments.extend(propunit.comments)
-            # FIXME the storage class should not be creating blank units
-            if pounit is "discard":
-                continue
             if not appendedheader:
                 if propunit.isblank():
                     targetheader.addnote("\n".join(waitingcomments).rstrip(),
@@ -112,12 +116,12 @@ class prop2po(object):
         waitingcomments = []
         # loop through the original file, looking at units one by one
         for origprop in origpropfile.units:
-            origpo = self.convertpropunit(origpropfile, origprop, "developer")
+            try:
+                origpo = self.convertpropunit(origpropfile, origprop, "developer")
+            except DiscardUnit:
+                continue
             if origpo is None:
                 waitingcomments.extend(origprop.comments)
-            # FIXME the storage class should not be creating blank units
-            if origpo is "discard":
-                continue
             # handle the header case specially...
             if not appendedheader:
                 if origprop.isblank():
@@ -131,10 +135,11 @@ class prop2po(object):
                 translatedprop = translatedpropfile.locationindex[origprop.name]
                 # Need to check that this comment is not a copy of the
                 # developer comments
-                translatedpo = self.convertpropunit(translatedpropfile,
-                                                    translatedprop,
-                                                    "translator")
-                if translatedpo is "discard":
+                try:
+                    translatedpo = self.convertpropunit(translatedpropfile,
+                                                        translatedprop,
+                                                        "translator")
+                except DiscardUnit:
                     continue
             else:
                 translatedpo = None
@@ -221,7 +226,7 @@ class prop2po(object):
         if hasattr(propunit, "comments"):
             for comment in propunit.comments:
                 if "DONT_TRANSLATE" in comment:
-                    return "discard"
+                    raise DiscardUnit(comment)
             pounit.addnote(propunit.getnotes().rstrip(), commenttype)
         # TODO: handle multiline msgid
         if propunit.isblank():
