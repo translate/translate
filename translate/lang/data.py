@@ -337,6 +337,7 @@ plural_tags = {
     'af': ['one', 'other'],
     'ak': ['one', 'other'],
     'am': ['one', 'other'],
+    'an': ['one', 'other'],
     'ar': ['zero', 'one', 'two', 'few', 'many', 'other'],
     'ars': ['zero', 'one', 'two', 'few', 'many', 'other'],
     'as': ['one', 'other'],
@@ -347,7 +348,7 @@ plural_tags = {
     'bem': ['one', 'other'],
     'bez': ['one', 'other'],
     'bg': ['one', 'other'],
-    'bh': ['one', 'other'],
+    'bho': ['one', 'other'],
     'bm': ['other'],
     'bn': ['one', 'other'],
     'bo': ['other'],
@@ -468,6 +469,7 @@ plural_tags = {
     'om': ['one', 'other'],
     'or': ['one', 'other'],
     'os': ['one', 'other'],
+    'osa': ['other'],
     'pa': ['one', 'other'],
     'pap': ['one', 'other'],
     'pl': ['one', 'few', 'many'],
@@ -508,6 +510,7 @@ plural_tags = {
     'ss': ['one', 'other'],
     'ssy': ['one', 'other'],
     'st': ['one', 'other'],
+    'su': ['other'],
     'sv': ['one', 'other'],
     'sw': ['one', 'other'],
     'syr': ['one', 'other'],
@@ -541,7 +544,7 @@ plural_tags = {
     'yo': ['other'],
     'yue': ['other'],
     'zh': ['other'],
-    'zu': ['one', 'other']
+    'zu': ['one', 'other'],
 }
 
 
