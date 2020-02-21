@@ -284,20 +284,18 @@ def parse_msgstr_array(parse_state, unit):
 
 
 def parse_plural(parse_state, unit):
-    if parse_msgid_plural(parse_state, unit) and \
-       (parse_msgstr_array(parse_state, unit) or parse_msgstr(parse_state, unit)):
-        return True
-    else:
-        return False
+    return bool(
+        parse_msgid_plural(parse_state, unit)
+        and (parse_msgstr_array(parse_state, unit) or parse_msgstr(parse_state, unit))
+    )
 
 
 def parse_msg_entries(parse_state, unit):
     parse_msgctxt(parse_state, unit)
-    if parse_msgid(parse_state, unit) and \
-       (parse_msgstr(parse_state, unit) or parse_plural(parse_state, unit)):
-        return True
-    else:
-        return False
+    return bool(
+        parse_msgid(parse_state, unit)
+        and (parse_msgstr(parse_state, unit) or parse_plural(parse_state, unit))
+    )
 
 
 def parse_unit(parse_state, unit=None):
