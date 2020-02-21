@@ -28,6 +28,7 @@ import re
 import six
 import textwrap
 from io import BytesIO
+from itertools import chain
 
 from translate.lang import data
 from translate.misc import quote
@@ -466,7 +467,7 @@ class pounit(pocommon.pounit):
 
         def mergelists(list1, list2, split=False):
             # Decode where necessary (either all bytestrings or all unicode)
-            if six.text_type in [type(item) for item in list2] + [type(item) for item in list1]:
+            if any(isinstance(item, six.text_type) for item in chain(list1, list2)):
                 for position, item in enumerate(list1):
                     if isinstance(item, bytes):
                         list1[position] = item.decode("utf-8")
