@@ -89,14 +89,14 @@ def escapeforpo(line):
     for special_key in po_escape_map:
         special_locations.extend(quote.find_all(line, special_key))
     special_locations = sorted(dict.fromkeys(special_locations).keys())
-    escaped_line = ""
+    escaped_line = []
     last_location = 0
     for location in special_locations:
-        escaped_line += line[last_location:location]
-        escaped_line += po_escape_map[line[location:location+1]]
+        escaped_line.append(line[last_location:location])
+        escaped_line.append(po_escape_map[line[location:location+1]])
         last_location = location + 1
-    escaped_line += line[last_location:]
-    return escaped_line
+    escaped_line.append(line[last_location:])
+    return "".join(escaped_line)
 
 
 def unescapehandler(escape):
@@ -175,17 +175,17 @@ def unescape(line):
         if true_escape:
             true_escape_places.append(escape_pos)
 
-    extracted = u""
+    extracted = []
     lastpos = 0
     for pos in true_escape_places:
         # everything leading up to the escape
-        extracted += line[lastpos:pos]
+        extracted.append(line[lastpos:pos])
         # the escaped sequence (consuming 2 characters)
-        extracted += unescapehandler(line[pos:pos+2])
+        extracted.append(unescapehandler(line[pos:pos+2]))
         lastpos = pos+2
 
-    extracted += line[lastpos:]
-    return extracted
+    extracted.append(line[lastpos:])
+    return u"".join(extracted)
 
 
 def unquotefrompo(postr):
@@ -643,21 +643,21 @@ class pounit(pocommon.pounit):
         if isinstance(partlines, dict):
             partkeys = sorted(partlines.keys())
             return "".join([self._getmsgpartstr("%s[%d]" % (partname, partkey), partlines[partkey], partcomments) for partkey in partkeys])
-        partstr = partname + " "
+        partstr = [partname, " "]
         partstartline = 0
         if len(partlines) > 0 and len(partcomments) == 0:
-            partstr += partlines[0]
+            partstr.append(partlines[0])
             partstartline = 1
         elif len(partcomments) > 0:
             if len(partlines) > 0 and len(unquotefrompo(partlines[:1])) == 0:
                 # if there is a blank leader line, it must come before the comment
-                partstr += partlines[0] + '\n'
+                partstr.extend((partlines[0], '\n'))
                 # but if the whole string is blank, leave it in
                 if len(partlines) > 1:
                     partstartline += 1
             else:
                 # All partcomments should start on a newline
-                partstr += '""\n'
+                partstr.append('""\n')
             # combine comments into one if more than one
             if len(partcomments) > 1:
                 combinedcomment = []
@@ -674,11 +674,10 @@ class pounit(pocommon.pounit):
                 if partcomments[0] == '""':
                     partcomments = partcomments[1:]
             # comments first, no blank leader line needed
-            partstr += "\n".join(partcomments)
-            partstr = quote.rstripeol(partstr)
+            partstr.append(quote.rstripeol("\n".join(partcomments)))
         else:
-            partstr += '""'
-        partstr += '\n'
+            partstr.append('""')
+        partstr.append('\n')
         # add the rest
         previous = None
         for partline in partlines[partstartline:]:
@@ -686,8 +685,8 @@ class pounit(pocommon.pounit):
             if previous == '""' and partline == '""':
                 continue
             previous = partline
-            partstr += partline + '\n'
-        return partstr
+            partstr.extend((partline, '\n'))
+        return "".join(partstr)
 
     def __str__(self):
         """Convert to a string."""
