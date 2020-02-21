@@ -263,7 +263,6 @@ msgstr ""
 
 def test_updatecontributor_header():
     """Test preserving empty lines in comments"""
-    # The replace introduces trailing whitespace
     posource = r'''# Japanese translation of ibus.
 # Copyright (C) 2015-2019 Takao Fujiwara <takao.fujiwara1@gmail.com>
 # This file is distributed under the same license as the ibus package.
@@ -273,7 +272,7 @@ def test_updatecontributor_header():
 msgid ""
 msgstr ""
 "MIME-Version: 1.0"
-'''.replace("#\n", "# \n")
+'''
     pofile = poparse(posource)
 
     # Add contributor

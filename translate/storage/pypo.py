@@ -399,14 +399,16 @@ class pounit(pocommon.pounit):
             return
         text = data.forceunicode(text)
         commentlist = self.othercomments
-        linestart = "# "
+        linestart = "#"
         autocomments = False
         if origin in ["programmer", "developer", "source code"]:
             autocomments = True
             commentlist = self.automaticcomments
-            linestart = "#. "
-        text = text.split("\n")
-        newcomments = [linestart + line + "\n" for line in text]
+            linestart = "#."
+        newcomments = [
+            "".join((linestart, " " if line else "", line, "\n"))
+            for line in text.split("\n")
+        ]
         if position == "append":
             newcomments = commentlist + newcomments
         elif position == "prepend":
