@@ -541,7 +541,7 @@ class pounit(pocommon.pounit):
                 and is_null(self.msgctxt))
 
     def isblank(self):
-        if self.isheader() or len(self.msgidcomments):
+        if self.isheader() or self.msgidcomments:
             return False
         if (self._msgidlen() == 0) and (self._msgstrlen() == 0) and (is_null(self.msgctxt)):
             return True
@@ -642,11 +642,11 @@ class pounit(pocommon.pounit):
             return "".join([self._getmsgpartstr("%s[%d]" % (partname, partkey), partlines[partkey], partcomments) for partkey in partkeys])
         partstr = [partname, " "]
         partstartline = 0
-        if len(partlines) > 0 and len(partcomments) == 0:
+        if partlines and not partcomments:
             partstr.append(partlines[0])
             partstartline = 1
-        elif len(partcomments) > 0:
-            if len(partlines) > 0 and len(unquotefrompo(partlines[:1])) == 0:
+        elif partcomments:
+            if partlines and not unquotefrompo(partlines[:1]):
                 # if there is a blank leader line, it must come before the comment
                 partstr.extend((partlines[0], '\n'))
                 # but if the whole string is blank, leave it in
@@ -693,7 +693,7 @@ class pounit(pocommon.pounit):
         """return this po element as a string"""
 
         def add_prev_msgid_lines(lines, prefix, header, var):
-            if len(var) > 0:
+            if var:
                 lines.append("%s %s %s\n" % (prefix, header, var[0]))
                 lines.extend("%s %s\n" % (prefix, line) for line in var[1:])
 

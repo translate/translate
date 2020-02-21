@@ -119,7 +119,7 @@ def parse_prev_msgid_plural(parse_state, unit):
 
 def parse_comment(parse_state, unit):
     next_line = parse_state.next_line.lstrip()
-    if len(next_line) > 0 and next_line[0] in ('#', '|'):
+    if next_line and next_line[0] in ('#', '|'):
         next_char = next_line[1]
         if next_char == '.':
             append(unit.automaticcomments, next_line)
@@ -265,7 +265,7 @@ def parse_msgstr_array_entry(parse_state, msgstr_dict):
     right_bracket_pos = find(line, ']', MSGSTR_ARRAY_ENTRY_LEN)
     if right_bracket_pos >= 0:
         entry = get_entry(parse_state, right_bracket_pos)
-        if len(entry) > 0:
+        if entry:
             add_to_dict(msgstr_dict, line, right_bracket_pos, entry)
             return True
         return False
@@ -309,13 +309,12 @@ def parse_unit(parse_state, unit=None):
     parsed_msg_entries = parse_msg_entries(parse_state, unit)
     if parsed_comments or parsed_msg_entries:
         return unit
-    else:
-        return None
+    return None
 
 
 def set_encoding(parse_state, store, unit):
     charset = None
-    if isinstance(unit.msgstr, list) and len(unit.msgstr) and isinstance(unit.msgstr[0], six.string_types):
+    if isinstance(unit.msgstr, list) and unit.msgstr and isinstance(unit.msgstr[0], six.string_types):
         charset = re.search("charset=([^\\s\\\\n]+)", "".join(unit.msgstr))
     if charset:
         encoding = charset.group(1)
