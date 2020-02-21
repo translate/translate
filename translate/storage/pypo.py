@@ -202,8 +202,7 @@ def extractstr(string):
     right = string.rfind('"')
     if right > -1:
         return string[left:right+1]
-    else:
-        return string[left:] + '"'
+    return string[left:] + '"'
 
 
 @six.python_2_unicode_compatible
@@ -322,8 +321,7 @@ class pounit(pocommon.pounit):
         """Returns the unescaped msgstr"""
         if isinstance(self.msgstr, dict):
             return multistring(list(map(unquotefrompo, self.msgstr.values())))
-        else:
-            return unquotefrompo(self.msgstr)
+        return unquotefrompo(self.msgstr)
 
     @target.setter
     def target(self, target):
@@ -448,15 +446,13 @@ class pounit(pocommon.pounit):
     def _msgidlen(self):
         if self.hasplural():
             return len(unquotefrompo(self.msgid)) + len(unquotefrompo(self.msgid_plural))
-        else:
-            return len(unquotefrompo(self.msgid))
+        return len(unquotefrompo(self.msgid))
 
     def _msgstrlen(self):
         if isinstance(self.msgstr, dict):
             combinedstr = "\n".join(filter(None, [unquotefrompo(msgstr) for msgstr in six.itervalues(self.msgstr)]))
             return len(combinedstr)
-        else:
-            return len(unquotefrompo(self.msgstr))
+        return len(unquotefrompo(self.msgstr))
 
     def merge(self, otherpo, overwrite=False, comments=True, authoritative=False):
         """Merges the otherpo (with the same msgid) into this one.

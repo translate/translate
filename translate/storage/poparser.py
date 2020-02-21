@@ -62,8 +62,7 @@ class ParseState(object):
     def decode(self, string):
         if self.encoding is not None:
             return decode(string, self.encoding)
-        else:
-            return string
+        return string
 
     def read_line(self):
         current = self.next_line
@@ -154,10 +153,9 @@ def parse_comment(parse_state, unit):
 def parse_comments(parse_state, unit):
     if not parse_comment(parse_state, unit):
         return None
-    else:
-        while parse_comment(parse_state, unit):
-            pass
-        return True
+    while parse_comment(parse_state, unit):
+        pass
+    return True
 
 
 def read_obsolete_lines(parse_state):
@@ -196,10 +194,9 @@ def parse_quoted(parse_state, start_pos=0):
         right = rfind(line, '"')
         if left != right:
             return parse_state.read_line()[left:right+1]
-        else:
-            # There is no terminating quote, so we append an extra quote, but
-            # we also ignore the newline at the end (therefore the -1)
-            return parse_state.read_line()[left:-1] + '"'
+        # There is no terminating quote, so we append an extra quote, but
+        # we also ignore the newline at the end (therefore the -1)
+        return parse_state.read_line()[left:-1] + '"'
     return None
 
 
@@ -271,10 +268,8 @@ def parse_msgstr_array_entry(parse_state, msgstr_dict):
         if len(entry) > 0:
             add_to_dict(msgstr_dict, line, right_bracket_pos, entry)
             return True
-        else:
-            return False
-    else:
         return False
+    return False
 
 
 def parse_msgstr_array(parse_state, unit):
