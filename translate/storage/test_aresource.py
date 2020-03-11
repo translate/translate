@@ -560,3 +560,17 @@ class TestAndroidResourceFile(test_monolingual.TestMonolingualStore):
         assert bytes(store) == content
         store.units[0].target = "Datenschutzerklärung"
         assert bytes(store) == newcontent
+
+    def test_markup_set(self):
+        template = '''<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!--Multimedia tab-->
+    <string name="id">Multimedia tab</string>
+</resources>'''
+        content = template.encode('utf-8')
+        newcontent = template.replace('>Multimedia tab<', '>Other <b>tab</b><').encode('utf-8')
+        store = self.StoreClass()
+        store.parse(content)
+        assert bytes(store) == content
+        store.units[0].target = "Other <b>tab</b>"
+        assert bytes(store) == newcontent

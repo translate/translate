@@ -298,7 +298,7 @@ class AndroidResourceUnit(base.TranslationUnit):
             if self._store is not None:
                 cloned_doc = copy.deepcopy(self._store.document)
                 cloned_root = cloned_doc.getroot()
-                for child in cloned_root.xpath('*'):
+                for child in cloned_root.iterchildren():
                     cloned_root.remove(child)
                 template = etree.tostring(cloned_doc, encoding='unicode')
             else:
