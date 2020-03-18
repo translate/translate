@@ -176,6 +176,16 @@ class TestTSfile(test_base.TestTranslationStore):
         assert checkunit.target == [u"Leêr", u"Leêrs"]
         assert checkunit.hasplural()
 
+    def test_nplural(self):
+        tsstr = '''<!DOCTYPE TS>
+<TS version="2.0" language="xx" sourcelanguage="de">
+</TS>
+'''
+        tsfile = ts.tsfile.parsestring(tsstr)
+        assert tsfile.nplural() == 1
+        tsfile = ts.tsfile.parsestring(TS_CONTEXT_QT4)
+        assert tsfile.nplural() == 3
+
     def test_language(self):
         """Check that we can get and set language and sourcelanguage
         in the header"""

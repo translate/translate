@@ -46,25 +46,6 @@ from translate.storage.workflow import StateEnum as state
 
 # TODO: handle translation types
 
-NPLURALS = {
-    'jp': 1,
-    'en': 2,
-    'fr': 2,
-    'lv': 3,
-    'ga': 3,
-    'cs': 3,
-    'sk': 3,
-    'mk': 3,
-    'lt': 3,
-    'ru': 3,
-    'pl': 3,
-    'ro': 3,
-    'sl': 4,
-    'mt': 4,
-    'cy': 5,
-    'ar': 6,
-}
-
 
 class tsunit(lisa.LISAunit):
     """A single term in the TS file."""
@@ -500,11 +481,10 @@ class tsfile(lisa.LISAfile):
         return True
 
     def nplural(self):
-        lang = self.header.get("language")
-        if lang in NPLURALS:
-            return NPLURALS[lang]
-        else:
+        lang = data.get_language(self.header.get("language"))
+        if lang is None:
             return 1
+        return lang[1]
 
     def serialize(self, out):
         """Write the XML document to a file."""
