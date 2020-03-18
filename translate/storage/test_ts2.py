@@ -364,3 +364,24 @@ class TestTSfile(test_base.TestTranslationStore):
         assert bytes(tsfile).decode('utf-8') == TS_CONTEXT_QT4
         tsfile = ts.tsfile.parsestring(TS_CONTEXT_QT5)
         assert bytes(tsfile).decode('utf-8') == TS_CONTEXT_QT5
+
+    def test_edit_missing_translation(self):
+        """test editing with missing translation element works well"""
+        tsstr = '''<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE TS>
+<TS version="2.0" language="hu">
+<context>
+    <name>MainWindow</name>
+    <message>
+        <source>SourceString</source>
+    </message>
+</context>
+</TS>
+'''
+        tsfile = ts.tsfile.parsestring(tsstr)
+        tsfile.units[0].markfuzzy(True)
+        tsfile.units[0].target = 'TestTarget'
+        newtsstr = tsstr.replace(
+            '/source>', '/source>\n        <translation type="unfinished">TestTarget</translation>'
+        )
+        assert newtsstr == bytes(tsfile).decode('utf-8')

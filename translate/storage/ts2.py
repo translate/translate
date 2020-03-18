@@ -115,7 +115,10 @@ class tsunit(lisa.LISAunit):
         return self.xmlelement.find(self.namespaced(self.languageNode))
 
     def _gettargetnode(self):
-        return self.xmlelement.find(self.namespaced("translation"))
+        result = self.xmlelement.find(self.namespaced("translation"))
+        if result is not None:
+            return result
+        return etree.SubElement(self.xmlelement, self.namespaced("translation"))
 
     def getlanguageNodes(self):
         """We override this to get source and target nodes."""
@@ -138,9 +141,6 @@ class tsunit(lisa.LISAunit):
     @property
     def target(self):
         targetnode = self._gettargetnode()
-        if targetnode is None:
-            etree.SubElement(self.xmlelement, self.namespaced("translation"))
-            return None
         if self.hasplural():
             numerus_nodes = targetnode.findall(self.namespaced("numerusform"))
             return multistring([data.forceunicode(node.text) or u"" for node in numerus_nodes])
@@ -229,10 +229,7 @@ class tsunit(lisa.LISAunit):
 
     def _gettype(self):
         """Returns the type of this translation."""
-        targetnode = self._gettargetnode()
-        if targetnode is not None:
-            return targetnode.get("type")
-        return None
+        return self._gettargetnode().get("type")
 
     def _settype(self, value=None):
         """Set the type of this translation."""
