@@ -6,8 +6,9 @@ import sys
 from io import BytesIO
 
 import pytest
+import ruamel.yaml
 
-from translate.storage import yaml, test_monolingual, base
+from translate.storage import base, test_monolingual, yaml
 
 
 class TestYAMLResourceUnit(test_monolingual.TestMonolingualUnit):
@@ -335,13 +336,14 @@ martin: {name: Martin D'vloper, job: Developer, skill: Elite}
   value: teststring2
 '''
 
+    @pytest.mark.skipif(ruamel.yaml.version_info < (0, 16, 6), reason='Empty keys serialization broken in ruamel.yaml<0.16.6')
     def test_empty_key(self):
-        store = self.StoreClass()
-        store.parse('''
-'': Jedna
+        yaml_souce = b''''': Jedna
 foo:
   '': Dve
-''')
+'''
+        store = self.StoreClass()
+        store.parse(yaml_souce)
         assert len(store.units) == 2
         assert store.units[0].getid() == ''
         assert store.units[0].source == 'Jedna'
@@ -349,12 +351,7 @@ foo:
         assert store.units[1].source == 'Dve'
         out = BytesIO()
         store.serialize(out)
-        assert out.getvalue() == b'''? ''
-: Jedna
-foo:
-  ? ''
-  : Dve
-'''
+        assert out.getvalue() == yaml_souce
 
     def test_dict_in_list(self):
         data = '''e1:
