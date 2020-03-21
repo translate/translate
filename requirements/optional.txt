@@ -8,6 +8,6 @@ iniparse==0.5 ;python_version < '3.0'      # INI (ini2po)
 vobject==0.9.6.1     # iCal (ical2po)
 aeidon==1.7.0 ;python_version > '3.0'      # Subtitles (sub2po)
 l20n==4.0.0a1        # l20n (l20n2po)
-ruamel.yaml==0.16.10  # yaml
+ruamel.yaml==0.16.10 # yaml
 phply==1.2.5         # PHP
 cheroot==8.3.0       # tmserver
