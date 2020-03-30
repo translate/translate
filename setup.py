@@ -22,6 +22,7 @@ import re
 import sys
 from distutils.sysconfig import get_python_lib
 from os.path import dirname, isfile, join
+from setuptools import setup
 
 try:
     from sphinx.setup_command import BuildDoc
@@ -186,8 +187,8 @@ try:
 except ImportError:
     py2exe = None
 else:
-    BuildCommand = py2exe.build_exe.py2exe
-    Distribution = py2exe.Distribution
+    BuildCommand = py2exe.distutils_buildexe.py2exe
+    Distribution = py2exe.py2exe_distutils.Distribution
 
     class InnoScript(object):
         """class that builds an InnoSetup script"""
@@ -487,7 +488,6 @@ def standardsetup(name, version, custompackages=[], customdatafiles=[]):
 
 
 def dosetup(name, version, packages, datafiles, scripts, ext_modules=[]):
-    from setuptools import setup
     description, long_description = __doc__.split("\n", 1)
     kwargs = {}
     if py2exe:
