@@ -10,3 +10,5 @@ pytest-cov==2.8.1
 pytest-xdist==1.31.0
 Sphinx==2.3.1 ;python_version > '3.0'
 Sphinx==1.8.5 ;python_version < '3.0'
+py2exe==0.9.2.2 ;python_version >= '3.3' and platform_system == 'Windows'
+py2exe==0.6.9 ;python_version < '3.3' and platform_system == 'Windows'

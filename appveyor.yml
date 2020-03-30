@@ -12,6 +12,7 @@ install:
   # We need wheel installed to build wheels
   - "python.exe -m pip install wheel"
   - "python.exe -m pip install -r requirements\\dev.txt"
+  - "python.exe -m pip install py2exe"
   - "python.exe -m pip freeze"
 
 build_script:
@@ -24,6 +25,7 @@ test_script:
 
 after_test:
   - "python.exe setup.py bdist_wheel bdist_wininst"
+  - "python.exe setup.py py2exe"
 
 artifacts:
   # bdist_wheel puts your built wheel in the dist directory
