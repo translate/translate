@@ -22,6 +22,7 @@ import re
 import sys
 from distutils.sysconfig import get_python_lib
 from os.path import dirname, isfile, join
+from setuptools import setup
 
 try:
     from sphinx.setup_command import BuildDoc
@@ -487,7 +488,6 @@ def standardsetup(name, version, custompackages=[], customdatafiles=[]):
 
 
 def dosetup(name, version, packages, datafiles, scripts, ext_modules=[]):
-    from setuptools import setup
     description, long_description = __doc__.split("\n", 1)
     kwargs = {}
     if py2exe:
