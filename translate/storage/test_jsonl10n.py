@@ -97,6 +97,15 @@ class TestJSONResourceStore(test_monolingual.TestMonolingualStore):
 }
 '''
 
+    def test_bom(self):
+        content = "{}\n".encode("utf-8-sig")
+        store = self.StoreClass()
+        store.parse(content)
+        assert len(store.units) == 0
+        out = BytesIO()
+        store.serialize(out)
+        assert out.getvalue() == content
+
 
 class TestJSONNestedResourceStore(test_monolingual.TestMonolingualUnit):
     StoreClass = jsonl10n.JsonNestedFile
