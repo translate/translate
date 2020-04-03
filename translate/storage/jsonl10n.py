@@ -214,7 +214,10 @@ class JsonFile(base.TranslationStore):
             input.close()
             input = src
         if isinstance(input, bytes):
-            input = input.decode('utf-8')
+            # The JSON files should be UTF-8, but implementations
+            # that parse JSON texts MAY ignore the presence of a byte order mark
+            # rather than treating it as an error, see RFC7159
+            input, self.encoding = self.detect_encoding(input)
         try:
             self._file = json.loads(input, object_pairs_hook=OrderedDict)
         except ValueError as e:
