@@ -159,7 +159,7 @@ the new release using:
 
     $ mkvirtualenv test-ttk-release
     (test-ttk-release)$ pip install --upgrade setuptools pip
-    (test-ttk-release)$ pip install dist/translate-toolkit-$version.tar.bz2
+    (test-ttk-release)$ pip install dist/translate-toolkit-$version.tar.gz
 
 
 You can then proceed with other tests such as checking:
