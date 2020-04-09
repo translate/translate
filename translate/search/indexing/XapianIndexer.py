@@ -42,7 +42,8 @@ import logging
 
 
 def is_available():
-    return xapian.major_version() > 0
+    # Gracefully handle mocking while building docs
+    return repr(xapian.major_version()) == "xapian.major_version" or xapian.major_version() > 0
 
 
 # in xapian there is a length restriction for term strings
