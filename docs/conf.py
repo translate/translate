@@ -141,9 +141,6 @@ sys.modules['PyLucene'].VERSION = "2.2.0"
 
 autodoc_mock_imports = [
     'aeidon',
-    'aeidon.encodings',
-    'aeidon.util',
-    'aeidon.files',
     'BeautifulSoup',
     'glib',
     'gobject',
@@ -151,10 +148,6 @@ autodoc_mock_imports = [
     'iniparse',
     'vobject',
     'xapian',
-    'xml',
-    'xml.dom',
-    'xml.etree',
-    'xml.parsers',
 ]
 
 # -- Options for HTML output --------------------------------------------------
