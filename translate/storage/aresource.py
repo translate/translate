@@ -375,6 +375,13 @@ class AndroidResourceUnit(base.TranslationUnit):
 
             self.xmlelement.text = "\n    "
 
+            # Include "other" as copy of "many" if "other" is not present. This avoids crashes
+            # of Android builts with broken plurals handling.
+            if "other" not in plural_tags and "many" in plural_tags:
+                # Create copy here to avoid modifications to laguage.data
+                plural_tags = plural_tags + ["other"]
+                plural_strings.append(plural_strings[-1])
+
             for plural_tag, plural_string in zip(plural_tags, plural_strings):
                 item = etree.Element("item")
                 item.set("quantity", plural_tag)
