@@ -12,7 +12,7 @@ translations.
 Conformance
 ===========
 
-The toolkit uses `iniparse <http://code.google.com/p/iniparse/>`_, an INI file
+The toolkit uses `iniparse <https://pypi.org/project/iniparse/>`_, an INI file
 parser that preserves layout and follows the .ini format as supported by the
 Python language.
 
