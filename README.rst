@@ -5,9 +5,9 @@ Translate Toolkit
    :alt: Join the chat at https://gitter.im/translate/pootle
    :target: https://gitter.im/translate/pootle
 
-.. image:: https://img.shields.io/travis/translate/translate/master.svg?style=flat-square
+.. image:: https://github.com/translate/translate/workflows/Test/badge.svg
     :alt: Build Status
-    :target: https://travis-ci.org/translate/translate
+    :target: https://github.com/translate/translate/actions
 
 .. image:: https://img.shields.io/codecov/c/github/translate/translate/master.svg?style=flat-square
     :alt: Test Coverage
