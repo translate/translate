@@ -1,0 +1,82 @@
+name: Test
+
+on: [push, pull_request]
+
+jobs:
+  test:
+
+    runs-on: ${{ matrix.os }}-latest
+    strategy:
+      matrix:
+        os: [ubuntu, windows, macos]
+        requirements: [latest]
+        python-version: [2.7, 3.5, 3.6, 3.7, 3.8]
+        exclude:
+          - os: windows
+            python-version: 2.7
+          - os: windows
+            python-version: 3.5
+          - os: windows
+            python-version: 3.6
+          - os: windows
+            python-version: 3.7
+          - os: macos
+            python-version: 3.6
+          - os: macos
+            python-version: 3.7
+        include:
+          - os: ubuntu
+            python-version: 2.7
+            requirements: minimal
+    name: ${{ matrix.os }}, Python ${{ matrix.python-version }}, ${{ matrix.requirements }}
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: Cache pip
+      uses: actions/cache@v1
+      with:
+        path: ~/.cache/pip
+        key: ${{ runner.os }}-pip-${{ matrix.python-version }}-${{ hashFiles('**/requirements*.txt') }}
+    - name: Set up Python ${{ matrix.python-version }}
+      uses: actions/setup-python@v1
+      with:
+        python-version: ${{ matrix.python-version }}
+    - name: Install apt dependencies
+      if: matrix.os == 'ubuntu'
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y libgettextpo-dev libxml2-dev libxmlsec1-dev gettext
+    - name: Install brew dependencies
+      if: matrix.os == 'macos'
+      run: |
+        brew install gettext
+        brew link gettext --force
+    - name: Update pip
+      run: pip install --upgrade pip wheel
+    - name: Install pip dependencies
+      if: matrix.requirements == 'latest'
+      run: pip install -r requirements/dev.txt
+    - name: Install pip dependencies
+      if: matrix.requirements == 'minimal'
+      run: |
+        make requirements/min-versions.txt
+        cat requirements/min-versions.txt
+        pip install -r requirements/min-versions.txt
+    - name: Compile all the files
+      run: python -m compileall -q -f .
+    - name: Setup build
+      run: python setup.py --quiet build
+    - name: Install
+      run: pip install .
+    - name: py.test
+      run: py.test --cov=. -r EfsxX -W error::DeprecationWarning
+    - name: test-functional
+      # Skip functional tests on Windows as they rely on UNIX end of lines
+      if: matrix.os != 'windows'
+      run: make test-functional
+    - name: Coverage
+      run: |
+        coverage xml
+    - uses: codecov/codecov-action@v1
+      with:
+        name: ${{ matrix.os }}, Python ${{ matrix.python-version }}, ${{ matrix.requirements }}
