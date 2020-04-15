@@ -1,0 +1,76 @@
+Translate Toolkit 2.5.1
+***********************
+
+*Released on 25 April 2020*
+
+This release contains improvements and bug fixes.
+
+
+Changes
+=======
+
+Formats and Converters
+----------------------
+
+- PO
+
+    - Avoid adding extra space on empty comment lines
+    - Several performance improvements
+
+- Android resources
+
+    - Workaround broken plural handling for languages missing other tag
+    - Fix setting rich content with comments
+    - Fix setting target and removing markup
+
+- YAML
+
+    - Fixed handling of empty keys
+    - Improved round trip preserving of comments and style
+
+- TS
+
+    - Avoid duplicating plurals definition
+    - Fixed possible crash on adding new translations
+
+- INI
+
+    - Now supported on Python 3 thanks to iniparse support for it
+
+
+- JSON
+
+    - Allow usage of BOM in JSON files
+
+- MO
+
+    - Fixed context parsing
+    - Fixed tests on big endian machines
+
+- Catkeys
+
+    - The catkeys format now has support for fingerprint calculation
+
+Languages
+---------
+
+- Updated plural definitions to match CLDR 36.
+
+General
+-------
+
+- Kept support for Python 2.7.
+- Fixed py2exe support on Python 2.7.
+- Minor docs improvements.
+- Minor cleanups in code.
+- Updated requirements.
+- Added and updated tests.
+
+Contributors
+============
+
+This release was made possible by the following people:
+
+Michal Čihař, Tomáš Chvátal, Niels Sascha Reedijk.
+
+And to all our bug finders and testers, a Very BIG Thank You.
