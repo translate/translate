@@ -117,8 +117,8 @@ use libgettextpo from the gettext-tools package (it might have a slightly
 different name on your distribution). This can greatly speed up access to PO
 files, but has not yet been tested as extensively. Feedback is most welcome.
 
-The package iniparse is necessary for ini2po and po2ini.
-https://github.com/candlepin/python-iniparse
+The package iniparse is necessary for ini2po and po2ini:
+<https://pypi.org/project/iniparse/>
 
 The python-Levenshtein package will improve performance for fuzzy matching if
 it is available. This can improve the performance of pot2po, for example.  It
