@@ -10,4 +10,4 @@ aeidon==1.7.0 ;python_version > '3.0'      # Subtitles (sub2po)
 l20n==4.0.0a1        # l20n (l20n2po)
 ruamel.yaml==0.16.10 # yaml
 phply==1.2.5         # PHP
-cheroot==8.2.1       # tmserver
+cheroot==8.3.0       # tmserver
