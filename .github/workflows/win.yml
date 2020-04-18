@@ -1,0 +1,42 @@
+name: Test on Windows
+
+on: [push, pull_request]
+
+jobs:
+  test:
+
+    runs-on: windows-latest
+    strategy:
+      matrix:
+        requirements: [latest]
+        python-version: [3.8]
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: Cache pip
+      uses: actions/cache@v1
+      with:
+        path: ~/.cache/pip
+        key: ${{ runner.os }}-pip-${{ matrix.python-version }}-${{ hashFiles('**/requirements*.txt') }}
+    - name: Set up Python ${{ matrix.python-version }}
+      uses: actions/setup-python@v1
+      with:
+        python-version: ${{ matrix.python-version }}
+    - name: Update pip
+      run: pip install --upgrade pip wheel
+    - name: Install pip dependencies
+      run: pip install -r requirements/dev.txt
+    - name: Compile all the files
+      run: python -m compileall -q -f .
+    - name: Setup build
+      run: python setup.py --quiet build
+    - name: Install
+      run: pip install .
+    - name: py.test
+      run: py.test --cov=. -r EfsxX -W error::DeprecationWarning
+    - name: Coverage
+      run: |
+        coverage xml
+    - uses: codecov/codecov-action@v1
+      with:
+        name: ${{ runner.os }}, Python ${{ matrix.python-version }}, ${{ matrix.requirements }}

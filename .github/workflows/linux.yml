@@ -1,34 +1,19 @@
-name: Test
+name: Test on Linux
 
 on: [push, pull_request]
 
 jobs:
   test:
 
-    runs-on: ${{ matrix.os }}-latest
+    runs-on: ubuntu-latest
     strategy:
       matrix:
-        os: [ubuntu, windows, macos]
         requirements: [latest]
         python-version: [2.7, 3.5, 3.6, 3.7, 3.8]
-        exclude:
-          - os: windows
-            python-version: 2.7
-          - os: windows
-            python-version: 3.5
-          - os: windows
-            python-version: 3.6
-          - os: windows
-            python-version: 3.7
-          - os: macos
-            python-version: 3.6
-          - os: macos
-            python-version: 3.7
         include:
-          - os: ubuntu
+          - os: ubuntu-latest
             python-version: 2.7
             requirements: minimal
-    name: ${{ matrix.os }}, Python ${{ matrix.python-version }}, ${{ matrix.requirements }}
 
     steps:
     - uses: actions/checkout@v2
@@ -42,15 +27,9 @@ jobs:
       with:
         python-version: ${{ matrix.python-version }}
     - name: Install apt dependencies
-      if: matrix.os == 'ubuntu'
       run: |
         sudo apt-get update
         sudo apt-get install -y libgettextpo-dev libxml2-dev libxmlsec1-dev gettext
-    - name: Install brew dependencies
-      if: matrix.os == 'macos'
-      run: |
-        brew install gettext
-        brew link gettext --force
     - name: Update pip
       run: pip install --upgrade pip wheel
     - name: Install pip dependencies
@@ -71,12 +50,10 @@ jobs:
     - name: py.test
       run: py.test --cov=. -r EfsxX -W error::DeprecationWarning
     - name: test-functional
-      # Skip functional tests on Windows as they rely on UNIX end of lines
-      if: matrix.os != 'windows'
       run: make test-functional
     - name: Coverage
       run: |
         coverage xml
     - uses: codecov/codecov-action@v1
       with:
-        name: ${{ matrix.os }}, Python ${{ matrix.python-version }}, ${{ matrix.requirements }}
+        name: ${{ runner.os }}, Python ${{ matrix.python-version }}, ${{ matrix.requirements }}
