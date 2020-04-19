@@ -151,6 +151,7 @@ class htmlfile(html_parser.HTMLParser, base.TranslationStore):
         "alt",
         "abbr",
         "content",
+        "lang",
         "standby",
         "summary",
         "title"

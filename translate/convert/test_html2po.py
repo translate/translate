@@ -57,14 +57,6 @@ class TestHTML2PO(object):
         self.check_single('<html><head></head><body><p>More things in <a href="' + php + '/site.html">Body text</a></p></body></html>', 'More things in <a href="' + php + '/site.html">Body text</a>')
         self.check_null('<html><head></head><body><p>' + php + '</p></body></html>')
 
-    def test_htmllang(self):
-        """test to ensure that we no longer use the lang attribure"""
-        markup = '''<html lang="en"><head><title>My title</title></head><body></body></html>'''
-        pofile = self.html2po(markup)
-        self.countunits(pofile, 1)
-        # Check that the first item is the <title> not <head>
-        self.compareunit(pofile, 1, "My title")
-
     def test_title(self):
         """test that we can extract the <title> tag"""
         self.check_single("<html><head><title>My title</title></head><body></body></html>", "My title")
@@ -422,6 +414,22 @@ ghi ?>'''
         self.compareunit(pofile, 1, 'A paragraph.')
         notes = pofile.getunits()[-1].getnotes()
         assert six.text_type(notes) == ' a comment \n with another comment '
+
+    def test_extract_lang_attribute_from_html_tag(self):
+        """Test to verify that the lang attribute is extracted from the html tag"""
+        markup = '''<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <title>translate lang attribute #3884</title>
+    </head>
+    <body>
+    </body>
+</html>
+'''
+        pofile = self.html2po(markup)
+        self.countunits(pofile, 2)
+        self.compareunit(pofile, 1, "en")
+        self.compareunit(pofile, 2, "translate lang attribute #3884")
 
 
 class TestHTML2POCommand(test_convert.TestConvertCommand, TestHTML2PO):
