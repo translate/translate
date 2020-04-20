@@ -102,7 +102,10 @@ def test_placeable_formatting():
     assert fp.parse(u'There were %d %s')[3] == fp([u'%s'])
     assert fp.parse(u'%1$s was kicked by %2$s')[0] == fp([u'%1$s'])
     assert fp.parse(u'There were %Id cows')[1] == fp([u'%Id'])
-    assert fp.parse(u'There were % d cows')[1] == fp([u'% d'])
+
+    # Skip placeholders with whitespace.
+    assert fp.parse(u'There were % d cows') is None
+
     # only a real space is allowed as formatting flag
     assert fp.parse(u'There were %\u00a0d cows') is None
     assert fp.parse(u"There were %'f cows")[1] == fp([u"%'f"])

@@ -162,7 +162,7 @@ class FormattingPlaceable(Ph):
     regex = re.compile(r"""
         %                         # introduction
         (\d+\$)?                  # selection of non-next variable (reordering)
-        [\-\+0 \#'I]?             # optional flag
+        [\-\+0\#'I]?              # optional flag
         ((\d+)|[*])?              # field width
         (\.\d+)?                  # precision
         [hlI]?                    # length
