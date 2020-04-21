@@ -79,7 +79,7 @@ class YAMLFile(base.TranslationStore):
         """construct a YAML file, optionally reading in from inputfile."""
         super(YAMLFile, self).__init__(**kwargs)
         self.filename = ''
-        self._file = u''
+        self._original = self.get_root_node()
         self.dump_args = {
             'default_flow_style': False,
             'preserve_quotes': True,
@@ -87,9 +87,9 @@ class YAMLFile(base.TranslationStore):
         if inputfile is not None:
             self.parse(inputfile)
 
-    def get_root_node(self, node):
+    def get_root_node(self):
         """Returns root node for serialize"""
-        return node
+        return CommentedMap()
 
     def serialize_value(self, value):
         return value
@@ -109,11 +109,12 @@ class YAMLFile(base.TranslationStore):
                     if path[0] not in target:
                         target[path[0]] = []
                     if len(path) > 2:
-                        new_value = CommentedMap()
-                        nested_set(new_value, path[2:], value)
-                        target[path[0]].append(new_value)
-                    else:
+                        value = nested_set(CommentedMap(), path[2:], value)
+                    pos = int(path[1][1:-1])
+                    if len(target[path[0]]) < pos + 1:
                         target[path[0]].append(value)
+                    else:
+                        target[path[0]][pos] = value
                 else:
                     # Add empty dict in case there is value and we
                     # expect dict
@@ -122,14 +123,16 @@ class YAMLFile(base.TranslationStore):
                     nested_set(target[path[0]], path[1:], value)
             else:
                 target[path[0]] = value
+            return target
 
-        units = CommentedMap()
+        units = self.preprocess(self._original)
         for unit in self.unit_iter():
             nested_set(units, unit.getid().split('->'), unit.target)
-        self.yaml.dump(self.get_root_node(units), out)
+        self.yaml.dump(self._original, out)
 
     def _parse_dict(self, data, prev):
-        for k, v in six.iteritems(data):
+        # Avoid using merged items, it is enough to have them once
+        for k, v in data.non_merged_items():
             if not isinstance(k, six.string_types):
                 raise base.ParseError(
                     'Key not string: {0}/{1} ({2})'.format(prev, k, type(k))
@@ -179,16 +182,16 @@ class YAMLFile(base.TranslationStore):
         if isinstance(input, bytes):
             input = input.decode('utf-8')
         try:
-            self._file = self.yaml.load(input)
+            self._original = self.yaml.load(input)
         except YAMLError as e:
             message = e.problem if hasattr(e, 'problem') else e.message
             if hasattr(e, 'problem_mark'):
                 message += ' {0}'.format(e.problem_mark)
             raise base.ParseError(message)
 
-        self._file = self.preprocess(self._file)
+        content = self.preprocess(self._original)
 
-        for k, data in self._flatten(self._file):
+        for k, data in self._flatten(content):
             unit = self.UnitClass(data)
             unit.setid(k)
             self.addunit(unit)
@@ -204,13 +207,13 @@ class RubyYAMLFile(YAMLFile):
             return data[lang]
         return data
 
-    def get_root_node(self, node):
+    def get_root_node(self):
         """Returns root node for serialize"""
         if self.targetlanguage is not None:
             result = CommentedMap()
-            result[self.targetlanguage] = node
+            result[self.targetlanguage] = CommentedMap()
             return result
-        return node
+        return CommentedMap()
 
     def _parse_dict(self, data, prev):
         # Does this look like a plural?

@@ -22,20 +22,6 @@ Non-Conformance
 The following are not yet supported (in most cases these are properly parsed,
 but not saved in round trip):
 
-* Abbreviated lists:
-
-  .. code-block:: yaml
-
-      first-name: [Sun, Mon, Tue, Wed, Thu, Fri, Sat]
-
-
-* Abbreviated dictionaries:
-
-  .. code-block:: yaml
-
-      martin: {name: Martin D'vloper, job: Developer, skill: Elite}
-
-
 * Booleans:
 
   .. code-block:: yaml
