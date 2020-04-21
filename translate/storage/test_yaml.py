@@ -3,7 +3,6 @@
 from __future__ import unicode_literals
 
 import sys
-from io import BytesIO
 
 import pytest
 import ruamel.yaml
@@ -26,39 +25,34 @@ class TestYAMLResourceStore(test_monolingual.TestMonolingualStore):
     def test_serialize(self):
         store = self.StoreClass()
         store.parse('key: value')
-        out = BytesIO()
-        store.serialize(out)
-        assert out.getvalue() == b'key: value\n'
+        assert bytes(store) == b'key: value\n'
 
     def test_empty(self):
         store = self.StoreClass()
         store.parse('{}')
-        out = BytesIO()
-        store.serialize(out)
-        assert out.getvalue() == b'{}\n'
+        assert bytes(store) == b'{}\n'
 
     def test_edit(self):
         store = self.StoreClass()
         store.parse('key: value')
         store.units[0].target = 'second'
-        out = BytesIO()
-        store.serialize(out)
-        assert out.getvalue() == b'key: second\n'
+        assert bytes(store) == b'key: second\n'
 
     def test_edit_unicode(self):
         store = self.StoreClass()
         store.parse('key: value')
         store.units[0].target = 'zkouška'
-        out = BytesIO()
-        store.serialize(out)
-        assert out.getvalue() == 'key: zkouška\n'.encode('utf-8')
+        assert bytes(store) == 'key: zkouška\n'.encode('utf-8')
 
     def test_parse_unicode_list(self):
+        data = '''list:
+- zkouška
+'''
         store = self.StoreClass()
-        store.parse('list:\n- zkouška')
-        out = BytesIO()
-        store.serialize(out)
-        assert out.getvalue() == 'list:\n- zkouška\n'.encode('utf-8')
+        store.parse(data)
+        assert bytes(store).decode('utf-8') == data
+        store.units[0].target = 'změna'
+        assert bytes(store).decode('utf-8') == data.replace('zkouška', 'změna')
 
     def test_ordering(self):
         store = self.StoreClass()
@@ -72,44 +66,38 @@ baz: baz
         assert store.units[2].source == 'baz'
 
     def test_initial_comments(self):
-        store = self.StoreClass()
-        store.parse('''
-# Hello world.
+        data = '''# Hello world.
 
 foo: bar
-''')
+'''
+        store = self.StoreClass()
+        store.parse(data)
         assert len(store.units) == 1
         assert store.units[0].getid() == 'foo'
         assert store.units[0].source == 'bar'
-        out = BytesIO()
-        store.serialize(out)
-        assert out.getvalue() == b'''foo: bar
-'''
+        assert bytes(store).decode('ascii') == data
 
     def test_string_key(self):
+        data = '''"yes": Oficina
+'''
         store = self.StoreClass()
-        store.parse('''
-"yes": Oficina
-''')
+        store.parse(data)
         assert len(store.units) == 1
         assert store.units[0].getid() == 'yes'
         assert store.units[0].source == 'Oficina'
-        out = BytesIO()
-        store.serialize(out)
-        assert out.getvalue() == b'''yes: Oficina
-'''
+        assert bytes(store).decode('ascii') == data
 
     def test_nested(self):
-        store = self.StoreClass()
-        store.parse('''
-foo:
-    bar: bar
-    baz:
-        boo: booo
+        data = '''foo:
+  bar: bar
+  baz:
+    boo: booo
 
 
 eggs: spam
-''')
+'''
+        store = self.StoreClass()
+        store.parse(data)
         assert len(store.units) == 3
         assert store.units[0].getid() == 'foo->bar'
         assert store.units[0].source == 'bar'
@@ -117,39 +105,26 @@ eggs: spam
         assert store.units[1].source == 'booo'
         assert store.units[2].getid() == 'eggs'
         assert store.units[2].source == 'spam'
-        out = BytesIO()
-        store.serialize(out)
-        assert out.getvalue() == b'''foo:
-  bar: bar
-  baz:
-    boo: booo
-eggs: spam
-'''
+        assert bytes(store).decode('ascii') == data
 
     def test_multiline(self):
         """These are used in Discourse and Diaspora* translation."""
-        store = self.StoreClass()
-        store.parse('''
-invite: |-
-        Ola!
-        Recibiches unha invitación para unirte!
+        data = '''invite: |-
+  Ola!
+  Recibiches unha invitación para unirte!
 
 
 eggs: spam
-''')
+'''
+        store = self.StoreClass()
+        store.parse(data)
         assert len(store.units) == 2
         assert store.units[0].getid() == 'invite'
         assert store.units[0].source == """Ola!
 Recibiches unha invitación para unirte!"""
         assert store.units[1].getid() == 'eggs'
         assert store.units[1].source == 'spam'
-        out = BytesIO()
-        store.serialize(out)
-        assert out.getvalue().decode('utf-8') == '''invite: |-
-  Ola!
-  Recibiches unha invitación para unirte!
-eggs: spam
-'''
+        assert bytes(store).decode('utf-8') == data
 
     def test_boolean(self):
         store = self.StoreClass()
@@ -159,9 +134,7 @@ foo: True
         assert len(store.units) == 1
         assert store.units[0].getid() == 'foo'
         assert store.units[0].source == 'True'
-        out = BytesIO()
-        store.serialize(out)
-        assert out.getvalue() == b'''foo: 'True'
+        assert bytes(store) == b'''foo: 'True'
 '''
 
     def test_integer(self):
@@ -172,9 +145,7 @@ foo: 1
         assert len(store.units) == 1
         assert store.units[0].getid() == 'foo'
         assert store.units[0].source == '1'
-        out = BytesIO()
-        store.serialize(out)
-        assert out.getvalue() == b'''foo: '1'
+        assert bytes(store) == b'''foo: '1'
 '''
 
     def test_no_quote_strings(self):
@@ -186,9 +157,7 @@ eggs: No quoting at all
         assert len(store.units) == 1
         assert store.units[0].getid() == 'eggs'
         assert store.units[0].source == 'No quoting at all'
-        out = BytesIO()
-        store.serialize(out)
-        assert out.getvalue() == b'''eggs: No quoting at all
+        assert bytes(store) == b'''eggs: No quoting at all
 '''
 
     def test_double_quote_strings(self):
@@ -200,9 +169,7 @@ bar: "quote, double"
         assert len(store.units) == 1
         assert store.units[0].getid() == 'bar'
         assert store.units[0].source == 'quote, double'
-        out = BytesIO()
-        store.serialize(out)
-        assert out.getvalue() == b'''bar: "quote, double"
+        assert bytes(store) == b'''bar: "quote, double"
 '''
 
     def test_single_quote_strings(self):
@@ -214,9 +181,7 @@ foo: 'quote, single'
         assert len(store.units) == 1
         assert store.units[0].getid() == 'foo'
         assert store.units[0].source == 'quote, single'
-        out = BytesIO()
-        store.serialize(out)
-        assert out.getvalue() == b'''foo: 'quote, single'
+        assert bytes(store) == b'''foo: 'quote, single'
 '''
 
     def test_avoid_escaping_double_quote_strings(self):
@@ -228,9 +193,7 @@ spam: 'avoid escaping "double quote"'
         assert len(store.units) == 1
         assert store.units[0].getid() == 'spam'
         assert store.units[0].source == 'avoid escaping "double quote"'
-        out = BytesIO()
-        store.serialize(out)
-        assert out.getvalue() == b'''spam: 'avoid escaping "double quote"'
+        assert bytes(store) == b'''spam: 'avoid escaping "double quote"'
 '''
 
     def test_avoid_escaping_single_quote_strings(self):
@@ -242,9 +205,7 @@ spam: "avoid escaping 'single quote'"
         assert len(store.units) == 1
         assert store.units[0].getid() == 'spam'
         assert store.units[0].source == "avoid escaping 'single quote'"
-        out = BytesIO()
-        store.serialize(out)
-        assert out.getvalue() == b'''spam: "avoid escaping 'single quote'"
+        assert bytes(store) == b'''spam: "avoid escaping 'single quote'"
 '''
 
     def test_escaped_double_quotes(self):
@@ -256,9 +217,7 @@ foo: "Hello \"World\"."
         assert len(store.units) == 1
         assert store.units[0].getid() == 'foo'
         assert store.units[0].source == 'Hello "World".'
-        out = BytesIO()
-        store.serialize(out)
-        assert out.getvalue() == br'''foo: "Hello \"World\"."
+        assert bytes(store) == br'''foo: "Hello \"World\"."
 '''
 
     def test_newlines(self):
@@ -270,18 +229,15 @@ foo: "Hello \n World."
         assert len(store.units) == 1
         assert store.units[0].getid() == 'foo'
         assert store.units[0].source == 'Hello \n World.'
-        out = BytesIO()
-        store.serialize(out)
-        assert out.getvalue() == br'''foo: "Hello \n World."
+        assert bytes(store) == br'''foo: "Hello \n World."
 '''
 
-    @pytest.mark.xfail(reason="Not Implemented")
     def test_abbreviated_list(self):
         """These are used in Redmine and Discourse translation."""
+        data = '''day_names: [Domingo, Luns, Martes, Mércores, Xoves, Venres, Sábado]
+'''
         store = self.StoreClass()
-        store.parse('''
-day_names:        [Domingo, Luns, Martes, Mércores, Xoves, Venres, Sábado]
-''')
+        store.parse(data)
         assert len(store.units) == 7
         assert store.units[0].getid() == 'day_names->[0]'
         assert store.units[0].source == 'Domingo'
@@ -297,19 +253,14 @@ day_names:        [Domingo, Luns, Martes, Mércores, Xoves, Venres, Sábado]
         assert store.units[5].source == 'Venres'
         assert store.units[6].getid() == 'day_names->[6]'
         assert store.units[6].source == 'Sábado'
-        out = BytesIO()
-        store.serialize(out)
-        expected_output = '''day_names: [Domingo, Luns, Martes, Mércores, Xoves, Venres, Sábado]
-'''
-        assert out.getvalue().decode('utf8') == expected_output
+        assert bytes(store).decode('utf-8') == data
 
-    @pytest.mark.xfail(reason="Not Implemented")
     def test_abbreviated_dictionary(self):
         """Test abbreviated dictionary syntax."""
+        data = '''martin: {name: Martin D'vloper, job: Developer, skill: Elite}
+'''
         store = self.StoreClass()
-        store.parse('''
-martin: {name: Martin D'vloper, job: Developer, skill: Elite}
-''')
+        store.parse(data)
         assert len(store.units) == 3
         assert store.units[0].getid() == 'martin->name'
         assert store.units[0].source == "Martin D'vloper"
@@ -317,10 +268,7 @@ martin: {name: Martin D'vloper, job: Developer, skill: Elite}
         assert store.units[1].source == 'Developer'
         assert store.units[2].getid() == 'martin->skill'
         assert store.units[2].source == 'Elite'
-        out = BytesIO()
-        store.serialize(out)
-        assert out.getvalue() == '''martin: {name: Martin D'vloper, job: Developer, skill: Elite}
-'''
+        assert bytes(store).decode('ascii') == data
 
     def test_key_nesting(self):
         store = self.StoreClass()
@@ -330,9 +278,7 @@ martin: {name: Martin D'vloper, job: Developer, skill: Elite}
         unit = self.StoreClass.UnitClass("teststring2")
         unit.setid('key->value')
         store.addunit(unit)
-        out = BytesIO()
-        store.serialize(out)
-        assert out.getvalue() == b'''key:
+        assert bytes(store) == b'''key:
   value: teststring2
 '''
 
@@ -349,9 +295,7 @@ foo:
         assert store.units[0].source == 'Jedna'
         assert store.units[1].getid() == 'foo->'
         assert store.units[1].source == 'Dve'
-        out = BytesIO()
-        store.serialize(out)
-        assert out.getvalue() == yaml_souce
+        assert bytes(store) == yaml_souce
 
     def test_dict_in_list(self):
         data = '''e1:
@@ -360,9 +304,7 @@ foo:
         store = self.StoreClass()
         store.parse(data)
         assert len(store.units) == 1
-        out = BytesIO()
-        store.serialize(out)
-        assert out.getvalue() == data.encode('ascii')
+        assert bytes(store) == data.encode('ascii')
 
     def test_dump_args(self):
         data = '''e1:
@@ -372,9 +314,22 @@ foo:
         store.dump_args['line_break'] = '\r\n'
         store.parse(data)
         assert len(store.units) == 1
-        out = BytesIO()
-        store.serialize(out)
-        assert out.getvalue() == data.replace('\n', '\r\n').encode('ascii')
+        assert bytes(store) == data.replace('\n', '\r\n').encode('ascii')
+
+    def test_anchors(self):
+        data = '''location: &location_attributes
+  title: Location
+  temporary_question: Temporary?
+  temporary: Temporary
+location_batch:
+  <<: *location_attributes
+  label: Label
+  prefix: Prefix
+'''
+        store = self.StoreClass()
+        store.parse(data)
+        assert len(store.units) == 5
+        assert bytes(store).decode('ascii') == data
 
 
 class TestRubyYAMLResourceStore(test_monolingual.TestMonolingualStore):
@@ -398,9 +353,7 @@ class TestRubyYAMLResourceStore(test_monolingual.TestMonolingualStore):
 '''
         store = self.StoreClass()
         store.parse(data)
-        out = BytesIO()
-        store.serialize(out)
-        assert out.getvalue() == data.encode('ascii')
+        assert bytes(store).decode('ascii') == data
 
     def test_ruby(self):
         data = '''en:
@@ -412,9 +365,7 @@ class TestRubyYAMLResourceStore(test_monolingual.TestMonolingualStore):
 '''
         store = self.StoreClass()
         store.parse(data)
-        out = BytesIO()
-        store.serialize(out)
-        assert out.getvalue() == data.encode('ascii')
+        assert bytes(store) == data.encode('ascii')
 
     def test_invalid_key(self):
         store = yaml.YAMLFile()
@@ -435,13 +386,25 @@ class TestRubyYAMLResourceStore(test_monolingual.TestMonolingualStore):
         store = self.StoreClass()
         store.parse(data)
         assert len(store.units) == 1
-        out = BytesIO()
-        store.serialize(out)
-        assert out.getvalue() == data.encode('ascii')
+        assert bytes(store) == data.encode('ascii')
 
     def test_empty(self):
         store = self.StoreClass()
         store.parse('{}')
-        out = BytesIO()
-        store.serialize(out)
-        assert out.getvalue() == b'{}\n'
+        assert bytes(store) == b'{}\n'
+
+    def test_anchors(self):
+        data = '''en:
+  location: &location_attributes
+    title: Location
+    temporary_question: Temporary?
+    temporary: Temporary
+  location_batch:
+    <<: *location_attributes
+    label: Label
+    prefix: Prefix
+'''
+        store = self.StoreClass()
+        store.parse(data)
+        assert len(store.units) == 5
+        assert bytes(store).decode('ascii') == data
