@@ -37,10 +37,6 @@ jobs:
     - name: Install pip dependencies
       if: matrix.requirements == 'latest'
       run: pip install -r requirements/dev.txt
-    - name: Compile all the files
-      run: python -m compileall -q -f .
-    - name: Setup build
-      run: python setup.py --quiet build
     - name: Install
       run: pip install .
     - name: py.test
