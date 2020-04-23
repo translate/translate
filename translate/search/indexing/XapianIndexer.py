@@ -33,12 +33,9 @@ It is not completely working, but it should give you a good start.
 
 import re
 import six
-import sys
 from . import CommonIndexer
 import xapian
 import os
-import time
-import logging
 
 
 def is_available():

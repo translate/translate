@@ -24,7 +24,6 @@ from lxml import etree
 from translate.lang import data
 from translate.misc.xml_helpers import getText, namespaced, reindent
 from translate.storage import base
-from translate.storage.placeables import general
 
 
 class FlatXMLUnit(base.TranslationUnit):

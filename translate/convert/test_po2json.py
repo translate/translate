@@ -1,6 +1,4 @@
 # -*- coding: utf-8 -*-
-import sys
-
 from translate.convert import po2json
 from translate.misc import wStringIO
 from translate.storage import po

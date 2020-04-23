@@ -2,8 +2,6 @@
 
 from __future__ import unicode_literals
 
-import sys
-
 import pytest
 import ruamel.yaml
 
