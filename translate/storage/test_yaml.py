@@ -280,6 +280,19 @@ foo: "Hello \n World."
   value: teststring2
 '''
 
+    def test_add_to_mepty(self):
+        store = self.StoreClass()
+        store.parse('')
+        unit = self.StoreClass.UnitClass("teststring")
+        unit.setid('key')
+        store.addunit(unit)
+        unit = self.StoreClass.UnitClass("teststring2")
+        unit.setid('key->value')
+        store.addunit(unit)
+        assert bytes(store).decode('utf-8') == '''key:
+  value: teststring2
+'''
+
     @pytest.mark.skipif(ruamel.yaml.version_info < (0, 16, 6), reason='Empty keys serialization broken in ruamel.yaml<0.16.6')
     def test_empty_key(self):
         yaml_souce = b''''': Jedna
