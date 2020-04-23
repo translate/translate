@@ -33,7 +33,7 @@ from translate.storage.base import ParseError
 
 # Override the piclose tag from simple > to ?> otherwise we consume HTML
 # within the processing instructions
-html_parser.piclose = re.compile('\?>')
+html_parser.piclose = re.compile(r'\?>')
 
 
 strip_html_re = re.compile(r'''
@@ -68,7 +68,7 @@ def strip_html(text):
     text = text.strip()
 
     # If all that is left is PHP, return ""
-    result = re.findall('(?s)^<\?.*?\?>$', text)
+    result = re.findall(r'(?s)^<\?.*?\?>$', text)
     if len(result) == 1:
         return ""
 
@@ -78,7 +78,7 @@ def strip_html(text):
     return text
 
 
-normalize_re = re.compile("\s\s+")
+normalize_re = re.compile(r"\s\s+")
 
 
 def normalize_html(text):
@@ -204,7 +204,7 @@ class htmlfile(html_parser.HTMLParser, base.TranslationStore):
     def _simple_callback(self, string):
         return string
 
-    ENCODING_RE = re.compile(b'''<meta.*
+    ENCODING_RE = re.compile(br'''<meta.*
                                 content.*=.*?charset.*?=\s*?
                                 ([^\s]*)
                                 \s*?["']\s*?>
@@ -247,7 +247,7 @@ class htmlfile(html_parser.HTMLParser, base.TranslationStore):
         strings to help our regexes out.
 
         """
-        result = re.findall('(?s)<\?(.*?)\?>', text)
+        result = re.findall(r'(?s)<\?(.*?)\?>', text)
         for pi in result:
             pi_escaped = pi.replace("<", "%lt;").replace(">", "%gt;")
             self.pidict[pi_escaped] = pi
@@ -289,7 +289,7 @@ class htmlfile(html_parser.HTMLParser, base.TranslationStore):
         if text == '&nbsp;':
             return False
 
-        pattern = '<\?.*?\?>'  # Lazily strip all PHP
+        pattern = r'<\?.*?\?>'  # Lazily strip all PHP
         result = re.sub(pattern, '', text).strip()
         pattern = '<[^>]*>'  # Strip all HTML tags
         result = re.sub(pattern, '', result).strip()

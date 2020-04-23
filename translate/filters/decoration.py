@@ -284,15 +284,15 @@ def getfunctions(str1):
 
 def getemails(str1):
     """returns the email addresses that are in a string"""
-    return re.findall('[\w\.\-]+@[\w\.\-]+', str1)
+    return re.findall(r'[\w\.\-]+@[\w\.\-]+', str1)
 
 
 def geturls(str1):
     """returns the URIs in a string"""
     # TODO turn this into a verbose and compiled regex
-    URLPAT = 'https?:[\w/\.:;+\-~\%#\$?=&,()]+|' + \
-             'www\.[\w/\.:;+\-~\%#\$?=&,()]+|' + \
-             'ftp:[\w/\.:;+\-~\%#?=&,]+'
+    URLPAT = r'https?:[\w/\.:;+\-~\%#\$?=&,()]+|' + \
+             r'www\.[\w/\.:;+\-~\%#\$?=&,()]+|' + \
+             r'ftp:[\w/\.:;+\-~\%#?=&,]+'
     return re.findall(URLPAT, str1)
 
 

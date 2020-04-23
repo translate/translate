@@ -55,7 +55,7 @@ logger = logging.getLogger(__name__)
 # Extended to support Python named format specifiers and objective-C special
 # "%@" format specifier
 # (see https://developer.apple.com/library/mac/documentation/Cocoa/Conceptual/Strings/Articles/formatSpecifiers.html)
-printf_pat = re.compile('''
+printf_pat = re.compile(r'''
         %(                          # initial %
         (?P<boost_ord>\d+)%         # boost::format style variable order, like %1%
         |
@@ -70,11 +70,11 @@ printf_pat = re.compile('''
         )''', re.VERBOSE)
 
 # The name of the XML tag
-tagname_re = re.compile("<[\s]*([\w\/]*).*?(/)?[\s]*>", re.DOTALL)
+tagname_re = re.compile(r"<[\s]*([\w\/]*).*?(/)?[\s]*>", re.DOTALL)
 
 # We allow escaped quotes, probably for old escaping style of OOo helpcontent
 #TODO: remove escaped strings once usage is audited
-property_re = re.compile(" (\w*)=((\\\\?\".*?\\\\?\")|(\\\\?'.*?\\\\?'))")
+property_re = re.compile(" (\\w*)=((\\\\?\".*?\\\\?\")|(\\\\?'.*?\\\\?'))")
 
 # The whole tag
 tag_re = re.compile("<[^>]+>")
@@ -1828,8 +1828,8 @@ class StandardChecker(TranslationChecker):
 
             return number
 
-        sourcepatterns = ["\(s\)"]
-        targetpatterns = ["\(s\)"]
+        sourcepatterns = [r"\(s\)"]
+        targetpatterns = [r"\(s\)"]
         sourcecount = numberofpatterns(str1, sourcepatterns)
         targetcount = numberofpatterns(str2, targetpatterns)
 
@@ -2127,7 +2127,7 @@ class MozillaChecker(StandardChecker):
 
         return True
 
-    mozilla_dialog_re = re.compile("""(                          # option pair "key: value;"
+    mozilla_dialog_re = re.compile(r"""(                         # option pair "key: value;"
                                       (?P<key>[-a-z]+)           # key
                                       :\s+                       # seperator
                                       (?P<number>\d+(?:[.]\d+)?) # number

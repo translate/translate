@@ -83,7 +83,7 @@ def filteraccelerators(accelmarker):
 
 
 def varname(variable, startmarker, endmarker):
-    u"""Variable filter that returns the variable name without the marking
+    r"""Variable filter that returns the variable name without the marking
     punctuation.
 
     .. note:: Currently this function simply returns *variable* unchanged, no
@@ -134,7 +134,7 @@ def filtervariables(startmarker, endmarker, varfilter):
         endmarkerlen = len(endmarker)
 
     def filtermarkedvariables(str1):
-        """Modifies the variables in *str1* marked with a given *\*marker*,
+        r"""Modifies the variables in *str1* marked with a given *\*marker*,
         using a given filter.
         """
         varlocs = decoration.findmarkedvariables(str1, startmarker, endmarker)
@@ -154,7 +154,7 @@ wordswithpunctuation = ["'n", "'t"]  # Afrikaans
 # map all the words to their non-punctified equivalent
 wordswithpunctuation = dict([(word, ''.join(filter(str.isalnum, word))) for word in wordswithpunctuation])
 
-word_with_apos_re = re.compile("(?u)\w+'\w+")
+word_with_apos_re = re.compile(r"(?u)\w+'\w+")
 
 
 def filterwordswithpunctuation(str1):

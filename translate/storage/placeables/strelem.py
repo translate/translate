@@ -673,7 +673,7 @@ class StringElem(object):
         return False
 
     def insert_between(self, left, right, text):
-        """Insert the given text between the two parameter ``StringElem``\s."""
+        r"""Insert the given text between the two parameter ``StringElem``\s."""
         if not isinstance(left, StringElem) and left is not None:
             raise ValueError('"left" is not a StringElem or None')
         if not isinstance(right, StringElem) and right is not None:
@@ -925,7 +925,7 @@ class StringElem(object):
 
     # TODO: Write unit test for this method
     def remove_type(self, ptype):
-        """Replace nodes with type ``ptype`` with base ``StringElem``\s,
+        r"""Replace nodes with type ``ptype`` with base ``StringElem``\s,
         containing the same sub-elements. This is only applicable to elements
         below the element tree root node.
         """

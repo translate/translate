@@ -131,7 +131,7 @@ def unescape_text(text):
         .replace("\\r", "\r").replace("\a", "\\\\")
 
 
-helptagre = re.compile('''<[/]??[a-z_\-]+?(?:| +[a-z]+?=".*?") *[/]??>''')
+helptagre = re.compile(r'''<[/]??[a-z_\-]+?(?:| +[a-z]+?=".*?") *[/]??>''')
 
 
 def escape_help_text(text):

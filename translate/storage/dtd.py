@@ -17,7 +17,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, see <http://www.gnu.org/licenses/>.
 
-"""Classes that hold units of .dtd files (:class:`dtdunit`) or entire files
+r"""Classes that hold units of .dtd files (:class:`dtdunit`) or entire files
 (:class:`dtdfile`).
 
 These are specific .dtd files for localisation used by mozilla.
@@ -554,7 +554,7 @@ class dtdfile(base.TranslationStore):
                     break
                 if lines[end].find(b'<!ENTITY') > -1:
                     foundentity = True
-                if foundentity and re.match(b"[\"']\s*>", lines[end]):
+                if foundentity and re.match(br"[\"']\s*>", lines[end]):
                     end += 1
                     break
                 end += 1

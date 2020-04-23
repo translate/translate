@@ -37,7 +37,7 @@ from six.moves import range
 
 
 nb_ngrams = 400
-white_space_re = re.compile('\s+')
+white_space_re = re.compile(r'\s+')
 
 
 class _NGram:

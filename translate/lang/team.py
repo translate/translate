@@ -37,7 +37,7 @@ LANG_TEAM_REGEX = (
     ("ubuntu-l10n", "ubuntu-l10n-([a-z_A-Z]+)@lists.ubuntu.com", None),
     ("translate-discuss",
      "translate-discuss-([a-z_A-Z]+)@lists.sourceforge.net", None),
-    ("kde-i18n", "kde-i18n-([a-z_A-Z]+)@(?:lists\.|mail\.|)kde.org", ["doc"]),
+    ("kde-i18n", r"kde-i18n-([a-z_A-Z]+)@(?:lists\.|mail\.|)kde.org", ["doc"]),
     ("kde-l10n", "kde-l10n-([a-z_A-Z]+)@kde.org", None),
     ("fedoraproject", "trans-([a-z_A-Z]+)@lists.fedoraproject.org", None),
     ("gnome.org", "gnome-([a-z_A-Z]+)-list@gnome.org", ["latin"]),

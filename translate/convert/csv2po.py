@@ -32,7 +32,7 @@ logger = logging.getLogger(__name__)
 
 
 def replacestrings(source, *pairs):
-    """Use ``pairs`` of ``(original, replacement)`` to replace text found in
+    r"""Use ``pairs`` of ``(original, replacement)`` to replace text found in
     ``source``.
 
     :param source: String to on which ``pairs`` of strings are to be replaced
