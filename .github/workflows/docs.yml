@@ -1,9 +1,23 @@
 name: Docs
 
-on: [push, pull_request]
+on:
+  push:
+    paths:
+      - "Makefile"
+      - ".github/workflows/docs.yml"
+      - "docs/**"
+      - "requirements/**"
+      - "tests/cli/example_test.sh"
+  pull_request:
+    paths:
+      - "Makefile"
+      - ".github/workflows/docs.yml"
+      - "docs/**"
+      - "requirements/**"
+      - "tests/cli/example_test.sh"
 
 jobs:
-  lint:
+  docs:
 
     runs-on: ubuntu-latest
 
