@@ -62,7 +62,7 @@ class pypo2phppo:
         return unit
 
     def convertstring(self, string):
-        return re.sub('\{(\d)\}',
+        return re.sub(r'\{(\d)\}',
                       lambda x: "%%%d$s" % (int(x.group(1)) + 1), string)
 
     def convertstrings(self, input):
@@ -74,7 +74,7 @@ class pypo2phppo:
             return self.convertstring(input)
 
         for index, string in enumerate(strings):
-            strings[index] = re.sub('\{(\d)\}',
+            strings[index] = re.sub(r'\{(\d)\}',
                                     lambda x: "%%%d$s" % (int(x.group(1)) + 1),
                                     string)
         return strings

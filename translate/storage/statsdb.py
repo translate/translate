@@ -41,7 +41,7 @@ from translate.storage.workflow import StateEnum
 logger = logging.getLogger(__name__)
 
 #kdepluralre = re.compile("^_n: ") #Restore this if you really need support for old kdeplurals
-brtagre = re.compile("<br\s*?/?>")
+brtagre = re.compile(r"<br\s*?/?>")
 # xmltagre is a direct copy of the from placeables/general.py
 xmltagre = re.compile(r'''
         <                         # start of opening tag

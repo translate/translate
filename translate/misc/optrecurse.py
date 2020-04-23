@@ -173,15 +173,15 @@ class RecursiveOptionParser(optparse.OptionParser, object):
         description_lines = self.description.split('\n\n')[1:]
         if description_lines:
             result.append('.SH DESCRIPTION\n')
-            result.append('\n\n'.join([re.sub('\.\. note::', 'Note:', l)
+            result.append('\n\n'.join([re.sub(r'\.\. note::', 'Note:', l)
                                        for l in description_lines]))
         result.append('.SH OPTIONS\n')
         ManHelpFormatter().store_option_strings(self)
         result.append('.PP\n')
         for option in self.option_list:
             result.append('.TP\n')
-            result.append('%s\n' % str(option).replace('-', '\-'))
-            result.append('%s\n' % option.help.replace('-', '\-'))
+            result.append('%s\n' % str(option).replace('-', r'\-'))
+            result.append('%s\n' % option.help.replace('-', r'\-'))
         return "".join(result)
 
     def print_manpage(self, file=None):

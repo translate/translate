@@ -17,7 +17,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, see <http://www.gnu.org/licenses/>.
 
-"""Classes that hold units of .properties, and similar, files that are used in
+r"""Classes that hold units of .properties, and similar, files that are used in
 translating Java, Mozilla, MacOS and other software.
 
 The :class:`propfile` class is a monolingual class with :class:`propunit`

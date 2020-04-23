@@ -17,7 +17,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, see <http://www.gnu.org/licenses/>.
 
-u"""Manage the Trados .txt Translation Memory format
+r"""Manage the Trados .txt Translation Memory format
 
 A Trados file looks like this:
 
@@ -179,7 +179,7 @@ class TradosUnit(base.TranslationUnit):
 class TradosSoup(BeautifulSoup):
 
     MARKUP_MASSAGE = [
-        (re.compile('<(?P<fulltag>(?P<tag>[^\s\/]+).*?)>(?P<content>.+)\r'),
+        (re.compile('<(?P<fulltag>(?P<tag>[^\\s\\/]+).*?)>(?P<content>.+)\r'),
          lambda x: '<%(fulltag)s>%(content)s</%(tag)s>' % x.groupdict()),
     ]
 

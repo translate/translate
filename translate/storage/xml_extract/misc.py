@@ -60,7 +60,7 @@ def compose_mappings(left, right):
     return result_map
 
 
-tag_pattern = re.compile('({(?P<namespace>(\w|[-:./])*)})?(?P<tag>(\w|[-])*)')
+tag_pattern = re.compile(r'({(?P<namespace>(\w|[-:./])*)})?(?P<tag>(\w|[-])*)')
 
 
 def parse_tag(full_tag):

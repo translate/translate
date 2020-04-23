@@ -83,7 +83,7 @@ def find_dom_root(parent_dom_node, dom_node):
 
 
 def find_placeable_dom_tree_roots(unit_node):
-    """For an inline placeable, find the root DOM node for the placeable in its
+    r"""For an inline placeable, find the root DOM node for the placeable in its
     parent.
 
     Consider the diagram. In this pseudo-ODF example, there is an inline span

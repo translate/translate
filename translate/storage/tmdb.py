@@ -32,7 +32,7 @@ from translate.lang import data
 from translate.search.lshtein import LevenshteinComparer
 
 
-STRIP_REGEXP = re.compile("\W", re.UNICODE)
+STRIP_REGEXP = re.compile(r"\W", re.UNICODE)
 
 
 class LanguageError(Exception):

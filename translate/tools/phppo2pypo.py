@@ -58,7 +58,7 @@ class phppo2pypo:
         return unit
 
     def convertstring(self, input):
-        return re.sub('%(\d)\$s', lambda x: "{%d}" % (int(x.group(1)) - 1), input)
+        return re.sub(r'%(\d)\$s', lambda x: "{%d}" % (int(x.group(1)) - 1), input)
 
     def convertstrings(self, input):
         if isinstance(input, multistring):
@@ -68,7 +68,7 @@ class phppo2pypo:
         else:
             return self.convertstring(input)
         for index, string in enumerate(strings):
-            strings[index] = re.sub('%(\d)\$s', lambda x: "{%d}" % (int(x.group(1)) - 1), string)
+            strings[index] = re.sub(r'%(\d)\$s', lambda x: "{%d}" % (int(x.group(1)) - 1), string)
         return multistring(strings)
 
 

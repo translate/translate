@@ -35,7 +35,7 @@ from translate.storage import base
 
 def escape_to_python(string):
     """Escape a given .rc string into a valid Python string."""
-    pystring = re.sub('"\s*\\\\\n\s*"', "", string)   # xxx"\n"xxx line continuation
+    pystring = re.sub('"\\s*\\\\\n\\s*"', "", string)   # xxx"\n"xxx line continuation
     pystring = re.sub("\\\\\\\n", "", pystring)       # backslash newline line continuation
     pystring = re.sub("\\\\n", "\n", pystring)        # Convert escaped newline to a real newline
     pystring = re.sub("\\\\t", "\t", pystring)        # Convert escape tab to a real tab
@@ -144,36 +144,36 @@ class rcfile(base.TranslationStore):
         """Read the source of a .rc file in and include them as units."""
         BLOCKS_RE = re.compile("""
                          (?:
-                         LANGUAGE\s+[^\n]*|                              # Language details
-                         /\*.*?\*/[^\n]*|                                      # Comments
-                         \/\/[^\n\r]*|                                  # One line comments
-                         (?:[0-9A-Z_]+\s+(?:MENU|DIALOG|DIALOGEX|TEXTINCLUDE)|STRINGTABLE)\s  # Translatable section or include text (visual studio)
+                         LANGUAGE\\s+[^\n]*|                              # Language details
+                         /\\*.*?\\*/[^\n]*|                                      # Comments
+                         \\/\\/[^\n\r]*|                                  # One line comments
+                         (?:[0-9A-Z_]+\\s+(?:MENU|DIALOG|DIALOGEX|TEXTINCLUDE)|STRINGTABLE)\\s  # Translatable section or include text (visual studio)
                          .*?
                          (?:
-                         BEGIN(?:\s*?POPUP.*?BEGIN.*?END\s*?)+?END|BEGIN.*?END|  # FIXME Need a much better approach to nesting menus
-                         {(?:\s*?POPUP.*?{.*?}\s*?)+?}|{.*?})+[\n]|
-                         \s*[\n]         # Whitespace
+                         BEGIN(?:\\s*?POPUP.*?BEGIN.*?END\\s*?)+?END|BEGIN.*?END|  # FIXME Need a much better approach to nesting menus
+                         {(?:\\s*?POPUP.*?{.*?}\\s*?)+?}|{.*?})+[\n]|
+                         \\s*[\n]         # Whitespace
                          )
                          """, re.DOTALL + re.VERBOSE)
         STRINGTABLE_RE = re.compile("""
-                         (?P<name>[0-9A-Za-z_]+?),?\s*
-                         L?"(?P<value>.*?)"\s*[\n]
+                         (?P<name>[0-9A-Za-z_]+?),?\\s*
+                         L?"(?P<value>.*?)"\\s*[\n]
                          """, re.DOTALL + re.VERBOSE)
         DIALOG_RE = re.compile("""
                          (?P<type>AUTOCHECKBOX|AUTORADIOBUTTON|CAPTION|Caption|CHECKBOX|CTEXT|CONTROL|DEFPUSHBUTTON|
                          GROUPBOX|LTEXT|PUSHBUTTON|RADIOBUTTON|RTEXT)  # Translatable types
-                         \s+
+                         \\s+
                          L?                                    # Unkown prefix see ./dlls/shlwapi/shlwapi_En.rc
                          "(?P<value>.*?)"                                      # String value
-                         (?:\s*,\s*|[\n])                          # FIXME ./dlls/mshtml/En.rc ID_DWL_DIALOG.LTEXT.ID_DWL_STATUS
-                         (?P<name>.*?|)\s*(?:/[*].*?[*]/|),
+                         (?:\\s*,\\s*|[\n])                          # FIXME ./dlls/mshtml/En.rc ID_DWL_DIALOG.LTEXT.ID_DWL_STATUS
+                         (?P<name>.*?|)\\s*(?:/[*].*?[*]/|),
                          """, re.DOTALL + re.VERBOSE)
         MENU_RE = re.compile("""
                          (?P<type>POPUP|MENUITEM)
-                         \s+
+                         \\s+
                          "(?P<value>.*?)"                                      # String value
-                         (?:\s*,?\s*)?
-                         (?P<name>[^\s]+).*?[\n]
+                         (?:\\s*,?\\s*)?
+                         (?P<name>[^\\s]+).*?[\n]
                          """, re.DOTALL + re.VERBOSE)
 
         processsection = False
@@ -181,13 +181,13 @@ class rcfile(base.TranslationStore):
         for blocknum, block in enumerate(self.blocks):
             processblock = None
             if block.startswith("LANGUAGE"):
-                if self.lang is None or self.sublang is None or re.match("LANGUAGE\s+%s,\s*%s\s*$" % (self.lang, self.sublang), block) is not None:
+                if self.lang is None or self.sublang is None or re.match(r"LANGUAGE\s+%s,\s*%s\s*$" % (self.lang, self.sublang), block) is not None:
                     processsection = True
                 else:
                     processsection = False
             else:
-                if re.match(".+LANGUAGE\s+[0-9A-Za-z_]+,\s*[0-9A-Za-z_]+\s*[\n]", block, re.DOTALL) is not None:
-                    if re.match(".+LANGUAGE\s+%s,\s*%s\s*[\n]" % (self.lang, self.sublang), block, re.DOTALL) is not None:
+                if re.match(".+LANGUAGE\\s+[0-9A-Za-z_]+,\\s*[0-9A-Za-z_]+\\s*[\n]", block, re.DOTALL) is not None:
+                    if re.match(".+LANGUAGE\\s+%s,\\s*%s\\s*[\n]" % (self.lang, self.sublang), block, re.DOTALL) is not None:
                         processblock = True
                     else:
                         processblock = False
@@ -207,10 +207,10 @@ class rcfile(base.TranslationStore):
                 continue
             if block.startswith("//"):  # One line comments
                 continue
-            if re.match("[0-9A-Z_]+\s+TEXTINCLUDE", block) is not None:  # TEXTINCLUDE is editor specific, not part of the app.
+            if re.match(r"[0-9A-Z_]+\s+TEXTINCLUDE", block) is not None:  # TEXTINCLUDE is editor specific, not part of the app.
                 continue
-            if re.match("[0-9A-Z_]+\s+DIALOG", block) is not None:
-                dialog = re.match("(?P<dialogname>[0-9A-Z_]+)\s+(?P<dialogtype>DIALOGEX|DIALOG)", block).groupdict()
+            if re.match(r"[0-9A-Z_]+\s+DIALOG", block) is not None:
+                dialog = re.match(r"(?P<dialogname>[0-9A-Z_]+)\s+(?P<dialogtype>DIALOGEX|DIALOG)", block).groupdict()
                 dialogname = dialog["dialogname"]
                 dialogtype = dialog["dialogtype"]
                 for match in DIALOG_RE.finditer(block):
@@ -228,8 +228,8 @@ class rcfile(base.TranslationStore):
                         newunit.name = "%s.%s.%s.%s" % (dialogtype, dialogname, type, name)
                     newunit.match = match
                     self.addunit(newunit)
-            if re.match("[0-9A-Z_]+\s+MENU", block) is not None:
-                menuname = re.match("(?P<menuname>[0-9A-Z_]+)\s+MENU", block).groupdict()["menuname"]
+            if re.match(r"[0-9A-Z_]+\s+MENU", block) is not None:
+                menuname = re.match(r"(?P<menuname>[0-9A-Z_]+)\s+MENU", block).groupdict()["menuname"]
                 for match in MENU_RE.finditer(block):
                     if not match.groupdict()['value']:
                         continue
