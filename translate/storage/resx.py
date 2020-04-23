@@ -25,7 +25,7 @@ from lxml import etree
 from translate.lang import data
 from translate.misc.deprecation import deprecated
 from translate.misc.xml_helpers import setXMLspace, reindent
-from translate.storage import base, lisa
+from translate.storage import lisa
 from translate.storage.placeables import general
 
 

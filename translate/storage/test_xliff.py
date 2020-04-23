@@ -1,4 +1,3 @@
-import pytest
 import six
 from lxml import etree
 

@@ -6,7 +6,6 @@ from pytest import importorskip, raises
 
 from translate.convert import po2ini, test_convert
 from translate.misc import wStringIO
-from translate.storage import po
 
 
 importorskip("iniparse")

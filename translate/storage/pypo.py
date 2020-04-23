@@ -27,7 +27,6 @@ import logging
 import re
 import six
 import textwrap
-from io import BytesIO
 from itertools import chain
 
 from translate.lang import data

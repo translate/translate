@@ -1,7 +1,4 @@
 # -*- coding: utf-8 -*-
-
-from pytest import mark
-
 from translate.convert import prop2po, test_convert
 from translate.misc import wStringIO
 from translate.storage import po, properties

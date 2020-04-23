@@ -61,7 +61,7 @@ import re
 import six
 
 from phply.phpparse import make_parser
-from phply.phplex import lexer, FilteredLexer, full_lexer, unparsed
+from phply.phplex import FilteredLexer, full_lexer
 from phply.phpast import (Array, ArrayElement, ArrayOffset, Assignment,
                           BinaryOp, FunctionCall, InlineHTML, Node, Return,
                           Variable)

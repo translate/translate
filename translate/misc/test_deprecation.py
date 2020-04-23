@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from pytest import deprecated_call, raises, mark
+from pytest import deprecated_call, mark
 
 from translate.misc.deprecation import deprecated
 

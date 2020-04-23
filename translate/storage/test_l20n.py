@@ -1,7 +1,5 @@
 # -*- coding: utf-8 -*-
 
-from pytest import raises
-
 from translate.misc import wStringIO
 from translate.storage import l20n, test_monolingual
 

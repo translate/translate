@@ -19,7 +19,7 @@
 
 """Tests for the HTML classes"""
 
-from pytest import mark, raises
+from pytest import raises
 
 from translate.storage import base, html
 

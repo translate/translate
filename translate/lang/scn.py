@@ -24,8 +24,6 @@
 
 from __future__ import unicode_literals
 
-import re
-
 from translate.filters.checks import FilterFailure, TranslationChecker, CheckerConfig
 from translate.filters.decorators import critical
 from translate.lang import common

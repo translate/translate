@@ -2,7 +2,7 @@
 
 from translate.convert import php2po, test_convert
 from translate.misc import wStringIO
-from translate.storage import php, po
+from translate.storage import po
 
 
 class TestPhp2PO(object):
