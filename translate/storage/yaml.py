@@ -125,6 +125,10 @@ class YAMLFile(base.TranslationStore):
                 target[path[0]] = value
             return target
 
+        # Always start with valid root even if original file was empty
+        if self._original is None:
+            self._original = self.get_root_node()
+
         units = self.preprocess(self._original)
         for unit in self.unit_iter():
             nested_set(units, unit.getid().split('->'), unit.target)
