@@ -125,7 +125,7 @@ class Selector(object):
         
         Prefix will override self.prefix for this mapping.
         """
-        # Thanks to Sébastien Pierre 
+        # Thanks to SÃ©bastien Pierre
         # for suggesting that this accept keyword args.
         if method_dict is None:
             method_dict = {}
@@ -282,7 +282,7 @@ class Selector(object):
 
 
 class SimpleParser(object):
-    """Callable to turn path expressions into regexes with named groups.
+    r"""Callable to turn path expressions into regexes with named groups.
     
     For instance ``"/hello/{name}"`` becomes ``r"^\/hello\/(?P<name>[^\^.]+)$"``
 
