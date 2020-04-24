@@ -13,12 +13,12 @@ Translate Toolkit
     :alt: Test Coverage
     :target: https://codecov.io/gh/translate/translate/branch/master
 
-.. image:: https://img.shields.io/requires/github/translate/translate/master.svg?style=flat-square
-    :target: https://requires.io/github/translate/translate/requirements/?branch=master
+.. image:: https://api.dependabot.com/badges/status?host=github&repo=translate/translate
+    :target: https://app.dependabot.com/accounts/translate/repos/3769696
     :alt: Requirements
 
 .. image:: https://img.shields.io/pypi/v/translate-toolkit.svg?style=flat-square
-    :alt: Downloads
+    :alt: Released version
     :target: https://pypi.python.org/pypi/translate-toolkit/
 
 .. image:: https://img.shields.io/pypi/pyversions/translate-toolkit.svg?style=flat-square
