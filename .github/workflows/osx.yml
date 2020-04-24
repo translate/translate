@@ -31,7 +31,7 @@ jobs:
     - name: Install brew dependencies
       run: |
         brew install gettext
-        brew link gettext --force
+        echo "::add-path::/usr/local/opt/gettext/bin"
     - name: Update pip
       run: pip install --upgrade pip wheel
     - name: Install pip dependencies
