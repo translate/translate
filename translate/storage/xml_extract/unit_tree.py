@@ -28,8 +28,8 @@ class XPathTree(object):
         self.children = {}
 
     def __eq__(self, other):
-        return (isinstance(other, XPathTree) and self.unit == other.unit and
-                self.children == other.children)
+        return (isinstance(other, XPathTree) and self.unit == other.unit
+                and self.children == other.children)
 
 
 def _split_xpath_component(xpath_component):
@@ -115,8 +115,8 @@ def build_unit_tree(store, filename=None):
     for unit in store.units:
         if unit.source and not unit.isfuzzy():
             locations = unit.getlocations()
-            if (filename is not None and len(locations) > 1 and
-                filename != locations[1]):
+            if (filename is not None and len(locations) > 1
+                and filename != locations[1]):
                 # Skip units that don't come from the filename we are currently
                 # trying to get units for.
                 # This is not used for ODF, right now only for IDML.

@@ -587,9 +587,9 @@ def languagematch(languagecode, otherlanguagecode):
     """matches a languagecode to another, ignoring regions in the second"""
     if languagecode is None:
         return langcode_re.match(otherlanguagecode)
-    return (languagecode == otherlanguagecode or
-            (otherlanguagecode.startswith(languagecode) and
-             variant_re.match(otherlanguagecode[len(languagecode):])))
+    return (languagecode == otherlanguagecode
+            or (otherlanguagecode.startswith(languagecode) and
+                variant_re.match(otherlanguagecode[len(languagecode):])))
 
 
 def get_country_iso_name(country_code):

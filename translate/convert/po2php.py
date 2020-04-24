@@ -127,8 +127,8 @@ class rephp(object):
 
                 if lookupkey in self.inputstore.locationindex:
                     unit = self.inputstore.locationindex[lookupkey]
-                    if ((unit.isfuzzy() and not self.includefuzzy) or
-                        len(unit.target) == 0):
+                    if ((unit.isfuzzy() and not self.includefuzzy)
+                        or len(unit.target) == 0):
                         value = unit.source
                     else:
                         value = unit.target

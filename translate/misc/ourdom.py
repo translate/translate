@@ -87,8 +87,8 @@ def getElementsByTagName_helper(parent, name, dummy=None):
     yieldElementsByTagName
     """
     for node in parent.childNodes:
-        if (node.nodeType == minidom.Node.ELEMENT_NODE and
-            (name == "*" or node.tagName == name)):
+        if (node.nodeType == minidom.Node.ELEMENT_NODE
+            and (name == "*" or node.tagName == name)):
             yield node
         if node.hasChildNodes():
             for othernode in node.getElementsByTagName(name):
@@ -98,11 +98,11 @@ def getElementsByTagName_helper(parent, name, dummy=None):
 def searchElementsByTagName_helper(parent, name, onlysearch):
     """limits the search to within tags occuring in onlysearch"""
     for node in parent.childNodes:
-        if (node.nodeType == minidom.Node.ELEMENT_NODE and
-            (name == "*" or node.tagName == name)):
+        if (node.nodeType == minidom.Node.ELEMENT_NODE
+            and (name == "*" or node.tagName == name)):
             yield node
-        if (node.nodeType == minidom.Node.ELEMENT_NODE and
-            node.tagName in onlysearch):
+        if (node.nodeType == minidom.Node.ELEMENT_NODE
+            and node.tagName in onlysearch):
             for node in node.searchElementsByTagName(name, onlysearch):
                 yield node
 

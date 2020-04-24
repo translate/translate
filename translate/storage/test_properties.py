@@ -275,8 +275,8 @@ key=value
 
     def test_mac_multiline_strings(self):
         """test can read multiline items used in Mac OS X strings files"""
-        propsource = (r'''"I am a \"key\"" = "I am a \"value\" ''' +
-                      '\n nextline";').encode('utf-16')
+        propsource = (r'''"I am a \"key\"" = "I am a \"value\" '''
+                      + '\n nextline";').encode('utf-16')
         propfile = self.propparse(propsource, personality="strings")
         assert len(propfile.units) == 1
         propunit = propfile.units[0]

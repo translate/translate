@@ -2195,8 +2195,8 @@ class MozillaChecker(StandardChecker):
 
         Special handling for Mozilla to ignore entries that are dialog sizes.
         """
-        if (self.mozilla_dialog_re.findall(str1) or
-            str1.strip().lstrip('0123456789') in self.mozilla_dialog_valid_units):
+        if (self.mozilla_dialog_re.findall(str1)
+            or str1.strip().lstrip('0123456789') in self.mozilla_dialog_valid_units):
             return True
 
         return super(MozillaChecker, self).unchanged(str1, str2)

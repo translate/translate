@@ -118,8 +118,8 @@ class l20nfile(base.TranslationStore):
         text, encoding = self.detect_encoding(
             l20nsrc, default_encodings=[self.encoding])
         if not text:
-            raise IOError("Cannot detect encoding for %s." % (self.filename or
-                                                              "given string"))
+            raise IOError("Cannot detect encoding for %s." % (self.filename
+                                                              or "given string"))
         l20nsrc = text
 
         parser = L20nParser()

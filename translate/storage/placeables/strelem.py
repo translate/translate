@@ -97,14 +97,14 @@ class StringElem(object):
             return False
 
         return (
-            self.id == rhs.id and
-            self.iseditable == rhs.iseditable and
-            self.istranslatable == rhs.istranslatable and
-            self.isvisible == rhs.isvisible and
-            self.rid == rhs.rid and
-            self.xid == rhs.xid and
-            len(self.sub) == len(rhs.sub) and
-            not [i for i in range(len(self.sub)) if self.sub[i] != rhs.sub[i]])
+            self.id == rhs.id
+            and self.iseditable == rhs.iseditable
+            and self.istranslatable == rhs.istranslatable
+            and self.isvisible == rhs.isvisible
+            and self.rid == rhs.rid
+            and self.xid == rhs.xid
+            and len(self.sub) == len(rhs.sub)
+            and not [i for i in range(len(self.sub)) if self.sub[i] != rhs.sub[i]])
 
     def __ge__(self, rhs):
         """Emulate the ``unicode`` class."""
@@ -266,9 +266,9 @@ class StringElem(object):
             return removed, None, None
 
         # Case 2: An entire element #
-        if (start['elem'] is end['elem'] and start['offset'] == 0 and
-            end['offset'] == len(start['elem']) or
-            (not start['elem'].iseditable and start['elem'].isfragile)):
+        if (start['elem'] is end['elem'] and start['offset'] == 0
+            and end['offset'] == len(start['elem'])
+            or (not start['elem'].iseditable and start['elem'].isfragile)):
             ##### FOR DEBUGGING #####
             #s = ''
             #for e in self.flatten():
@@ -371,14 +371,14 @@ class StringElem(object):
                 pass
 
         if start['elem'] is not end['elem']:
-            if (start_offset == start['index'] or
-                (not start['elem'].iseditable and start['elem'].isfragile)):
+            if (start_offset == start['index']
+                or (not start['elem'].iseditable and start['elem'].isfragile)):
                 self.delete_elem(start['elem'])
             elif start['elem'].iseditable:
                 start['elem'].sub = [u''.join(start['elem'].sub)[:start['offset']]]
 
-            if (end_offset + len(end['elem']) == end['index'] or
-                (not end['elem'].iseditable and end['elem'].isfragile)):
+            if (end_offset + len(end['elem']) == end['index']
+                or (not end['elem'].iseditable and end['elem'].isfragile)):
                 self.delete_elem(end['elem'])
             elif end['elem'].iseditable:
                 end['elem'].sub = [u''.join(end['elem'].sub)[end['offset']:]]
@@ -530,7 +530,7 @@ class StringElem(object):
             raise ValueError('text must be of type StringElem')
 
         def checkleaf(elem, text):
-            if elem.isleaf() and type(text) is StringElem and text.isleaf():
+            if elem.isleaf() and isinstance(text, StringElem) and text.isleaf():
                 return six.text_type(text)
             return text
 
@@ -600,7 +600,7 @@ class StringElem(object):
                     s = six.text_type(oelem)  # Collapse all sibling strings into one
                     head = s[:eoffset]
                     tail = s[eoffset:]
-                    if type(text) is StringElem and text.isleaf():
+                    if isinstance(text, StringElem) and text.isleaf():
                         oelem.sub = [head + six.text_type(text) + tail]
                     else:
                         oelem.sub = [StringElem(head), text, StringElem(tail)]
@@ -862,27 +862,27 @@ class StringElem(object):
                 # Symbolically: X->StringElem(leaf) => X(leaf)
                 #   (where X is any sub-class of StringElem,
                 #   but not StringElem)
-                if type(child) is StringElem and child.isleaf():
+                if isinstance(child, StringElem) and child.isleaf():
                     elem.sub = child.sub
 
                 # Symbolically:
                 #   StringElem->StringElem2->(leaves) => StringElem->(leaves)
-                if type(elem) is StringElem and type(child) is StringElem:
+                if isinstance(elem, StringElem) and isinstance(child, StringElem):
                     elem.sub = child.sub
                     changed = True
 
                 # Symbolically: StringElem->X(leaf) => X(leaf)
                 #   (where X is any sub-class of StringElem,
                 #   but not StringElem)
-                if (type(elem) is StringElem and
-                    isinstance(child, StringElem) and
-                    type(child) is not StringElem):
+                if (isinstance(elem, StringElem)
+                    and isinstance(child, StringElem)
+                    and not isinstance(child, StringElem)):
                     parent = self.get_parent_elem(elem)
                     if parent is not None:
                         parent.sub[parent.sub.index(elem)] = child
                         changed = True
 
-            if type(elem) is StringElem and elem.isleaf():
+            if isinstance(elem, StringElem) and elem.isleaf():
                 # Collapse all strings in this leaf into one string.
                 elem.sub = [u''.join(elem.sub)]
 
@@ -890,8 +890,8 @@ class StringElem(object):
                 # Remove empty strings or StringElem nodes
                 # (but not StringElem sub-class instances, because they
                 # might contain important (non-rendered) data.
-                if ((type(elem.sub[i]) == StringElem or isinstance(elem.sub[i], six.string_types)) and
-                    len(elem.sub[i]) == 0):
+                if ((isinstance(elem.sub[i], StringElem) or isinstance(elem.sub[i], six.string_types))
+                    and len(elem.sub[i]) == 0):
                     del elem.sub[i]
                     continue
 
@@ -909,8 +909,8 @@ class StringElem(object):
                         lsub = elem.sub[i]
                         rsub = elem.sub[i+1]
 
-                        if (type(lsub) is StringElem and
-                            type(rsub) is StringElem):
+                        if (isinstance(lsub, StringElem)
+                            and isinstance(rsub, StringElem)):
                             changed = True
                             lsub.sub.extend(rsub.sub)
                             del elem.sub[i+1]
@@ -930,7 +930,7 @@ class StringElem(object):
         below the element tree root node.
         """
         for elem in self.iter_depth_first():
-            if type(elem) is ptype:
+            if isinstance(elem, ptype):
                 parent = self.get_parent_elem(elem)
                 pindex = parent.sub.index(elem)
                 parent.sub[pindex] = StringElem(

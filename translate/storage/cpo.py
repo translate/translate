@@ -468,8 +468,8 @@ class pounit(pocommon.pounit):
 
     def getnotes(self, origin=None):
         if origin is None:
-            comments = (gpo.po_message_comments(self._gpo_message) +
-                        gpo.po_message_extracted_comments(self._gpo_message))
+            comments = (gpo.po_message_comments(self._gpo_message)
+                        + gpo.po_message_extracted_comments(self._gpo_message))
         elif origin == "translator":
             comments = gpo.po_message_comments(self._gpo_message)
         elif origin in ["programmer", "developer", "source code"]:
@@ -670,7 +670,7 @@ class pounit(pocommon.pounit):
         """Build a native unit from a foreign unit, preserving as much
         information as possible.
         """
-        if type(unit) == cls and hasattr(unit, "copy") and callable(unit.copy):
+        if isinstance(unit, cls) and hasattr(unit, "copy") and callable(unit.copy):
             return unit.copy()
         elif isinstance(unit, pocommon.pounit):
             newunit = cls(unit.source, encoding)

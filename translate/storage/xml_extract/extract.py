@@ -133,8 +133,8 @@ def _has_idml_translatable_content(dom_node):
                 # The Content node can just have a child before any nested
                 # text, and therefore its text is None, so we have to check if
                 # it has children, and if any of its children has text.
-                if (not isinstance(child, etree._ProcessingInstruction) and
-                    child.text is not None and child.text.strip()):
+                if (not isinstance(child, etree._ProcessingInstruction)
+                    and child.text is not None and child.text.strip()):
                     return True
 
                 if child.tail is not None and child.tail.strip():
@@ -253,8 +253,8 @@ def find_translatable_dom_nodes(dom_node, state,
     # For now, we only want to deal with XML elements.
     # And we want to avoid processing instructions, which
     # are XML elements (in the inheritance hierarchy).
-    if (not isinstance(dom_node, etree._Element) or
-        isinstance(dom_node, etree._ProcessingInstruction)):
+    if (not isinstance(dom_node, etree._Element)
+        or isinstance(dom_node, etree._ProcessingInstruction)):
         return []
 
     namespace, tag = misc.parse_tag(dom_node.tag)
@@ -373,8 +373,8 @@ def _walk_translatable_tree(translatables, store_adder, parent_translatable,
     Inline translatables are not added to the Store.
     """
     for translatable in translatables:
-        store_here = (translatable.has_translatable_text and
-                      (not translatable.is_inline or not stored_by_parent))
+        store_here = (translatable.has_translatable_text
+                      and (not translatable.is_inline or not stored_by_parent))
         if store_here:
             store_adder(parent_translatable, translatable)
         new_parent_translatable = parent_translatable

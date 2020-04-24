@@ -42,7 +42,7 @@ extensions = [
 ]
 
 # Display todo notes. See http://sphinx-doc.org/ext/todo.html#directive-todo
-todo_include_todos=True
+todo_include_todos = True
 
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ['_templates']
@@ -127,6 +127,7 @@ class Mock(object):
             return mockType
         else:
             return Mock()
+
 
 MOCK_MODULES = [
     'lucene',
@@ -248,8 +249,8 @@ latex_elements = {
 # Grouping the document tree into LaTeX files. List of tuples
 # (source start file, target name, title, author, documentclass [howto/manual])
 latex_documents = [
-  ('index', 'TranslateToolkit.tex', u'Translate Toolkit Documentation',
-   u'Translate.org.za', 'manual'),
+    ('index', 'TranslateToolkit.tex', u'Translate Toolkit Documentation',
+     u'Translate.org.za', 'manual'),
 ]
 
 # The name of an image file (relative to this directory) to place at the top of
@@ -292,9 +293,9 @@ man_pages = [
 # (source start file, target name, title, author,
 #  dir menu entry, description, category)
 texinfo_documents = [
-  ('index', 'TranslateToolkit', u'Translate Toolkit Documentation',
-   u'Translate.org.za', 'TranslateToolkit', 'One line description of project.',
-   'Miscellaneous'),
+    ('index', 'TranslateToolkit', u'Translate Toolkit Documentation',
+     u'Translate.org.za', 'TranslateToolkit', 'One line description of project.',
+     'Miscellaneous'),
 ]
 
 # Documents to append as an appendix to all manuals.

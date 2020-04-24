@@ -91,8 +91,8 @@ class csv2po(object):
             # do simpler matching in case things have been mangled...
             simpleid = simplify(source)
             # but check for duplicates
-            if (simpleid in self.simpleindex and
-                not (source in self.sourceindex)):
+            if (simpleid in self.simpleindex
+                and not (source in self.sourceindex)):
                 # keep a list of them...
                 self.simpleindex[simpleid].append(pounit)
             else:
@@ -114,8 +114,8 @@ class csv2po(object):
 
     def handlecsvunit(self, csvunit):
         """handles reintegrating a csv unit into the .po file"""
-        if (len(csvunit.location.strip()) > 0 and
-            csvunit.location in self.commentindex):
+        if (len(csvunit.location.strip()) > 0
+            and csvunit.location in self.commentindex):
             pounit = self.commentindex[csvunit.location]
         elif csvunit.source in self.sourceindex:
             pounit = self.sourceindex[csvunit.source]
@@ -123,8 +123,8 @@ class csv2po(object):
             thepolist = self.simpleindex[simplify(csvunit.source)]
             if len(thepolist) > 1:
                 csvfilename = getattr(self.csvfile, "filename", "(unknown)")
-                matches = "\n  ".join(["possible match: " +
-                                       pounit.source for pounit in thepolist])
+                matches = "\n  ".join(["possible match: "
+                                       + pounit.source for pounit in thepolist])
                 logger.warning("%s - csv entry not unique in pofile, "
                                "multiple matches found:\n"
                                "  location\t%s\n"
@@ -195,8 +195,8 @@ class csv2po(object):
                 mightbeheader = False
                 if csvunit.match_header():
                     continue
-                if (len(csvunit.location.strip()) == 0 and
-                    csvunit.source.find("Content-Type:") != -1):
+                if (len(csvunit.location.strip()) == 0
+                    and csvunit.source.find("Content-Type:") != -1):
                     continue
             if mergemode:
                 self.handlecsvunit(csvunit)

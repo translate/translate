@@ -64,8 +64,8 @@ class oo2po(object):
         if self.sourcelanguage in theoo.languages:
             part1 = theoo.languages[self.sourcelanguage]
         else:
-            logger.error("/".join(theoo.lines[0].getkey()) +
-                         "language not found: %s", self.sourcelanguage)
+            logger.error("/".join(theoo.lines[0].getkey())
+                         + "language not found: %s", self.sourcelanguage)
             return []
         if self.blankmsgstr:
             # use a blank part2

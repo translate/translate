@@ -154,18 +154,18 @@ class TerminologyExtractor(object):
 
     def addphrases(self, words, skips, translation, partials=True):
         """adds (sub)phrases with non-skipwords and more than one word"""
-        if (len(words) > skips + 1 and
-            'skip' not in self.stopword(words[0]) and
-            'skip' not in self.stopword(words[-1])):
+        if (len(words) > skips + 1
+            and 'skip' not in self.stopword(words[0])
+            and 'skip' not in self.stopword(words[-1])):
             self.glossary.setdefault(' '.join(words), []).append(translation)
         if partials:
             part = list(words)
             while len(part) > 2:
                 if 'skip' in self.stopword(part.pop()):
                     skips -= 1
-                if (len(part) > skips + 1 and
-                    'skip' not in self.stopword(part[0]) and
-                    'skip' not in self.stopword(part[-1])):
+                if (len(part) > skips + 1
+                    and 'skip' not in self.stopword(part[0])
+                    and 'skip' not in self.stopword(part[-1])):
                     self.glossary.setdefault(' '.join(part), []).append(translation)
 
     def processunits(self, units, fullinputpath):

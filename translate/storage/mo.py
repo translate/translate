@@ -180,8 +180,8 @@ class mofile(poheader.poheader, base.TranslationStore):
             if not unit.istranslated():
                 continue
             if isinstance(unit.source, multistring):
-                source = (lst_encode(unit.msgidcomments) +
-                          lst_encode(unit.source.strings, b"\0"))
+                source = (lst_encode(unit.msgidcomments)
+                          + lst_encode(unit.source.strings, b"\0"))
             else:
                 source = lst_encode(unit.msgidcomments) + unit.source.encode('utf-8')
             if unit.msgctxt:

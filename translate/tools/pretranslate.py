@@ -77,9 +77,9 @@ def match_template_location(input_unit, template_store):
     # this makes no sense for normal gettext files
     for location in locations:
         matching_unit = template_store.locationindex.get(location, None)
-        if (matching_unit is not None and
-            matching_unit.source == input_unit.source and
-            matching_unit.gettargetlen() > 0):
+        if (matching_unit is not None
+            and matching_unit.source == input_unit.source
+            and matching_unit.gettargetlen() > 0):
             return matching_unit
 
 

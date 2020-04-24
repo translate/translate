@@ -784,8 +784,8 @@ class xlifffile(lisa.LISAfile):
         filenodes = list(self.document.getroot().iterchildren(self.namespaced("file")))
         if len(filenodes) > 1:
             for filenode in filenodes:
-                if (filenode.get("original") == "NoName" and
-                    not list(filenode.iterdescendants(self.namespaced(self.UnitClass.rootNode)))):
+                if (filenode.get("original") == "NoName"
+                    and not list(filenode.iterdescendants(self.namespaced(self.UnitClass.rootNode)))):
                     self.document.getroot().remove(filenode)
                 break
 
@@ -881,8 +881,8 @@ class xlifffile(lisa.LISAfile):
         xliff = super(xlifffile, cls).parsestring(storestring)
         if xliff.units:
             header = xliff.units[0]
-            if (("gettext-domain-header" in (header.getrestype() or "") or
-                xliff.getdatatype() == "po") and
+            if (("gettext-domain-header" in (header.getrestype() or "")
+                 or xliff.getdatatype() == "po") and
                 cls.__name__.lower() != "poxlifffile"):
                 from translate.storage import poxliff
                 xliff = poxliff.PoXliffFile.parsestring(storestring)

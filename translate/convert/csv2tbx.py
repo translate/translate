@@ -48,8 +48,8 @@ class csv2tbx(object):
                 mightbeheader = False
                 if csvunit.match_header():
                     continue
-                if (len(csvunit.location.strip()) == 0 and
-                    csvunit.source.find("Content-Type:") != -1):
+                if (len(csvunit.location.strip()) == 0
+                    and csvunit.source.find("Content-Type:") != -1):
                     continue
             term = tbx.tbxunit.buildfromunit(csvunit)
             # TODO: we might want to get the location or other information

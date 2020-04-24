@@ -142,7 +142,7 @@ def placeable_as_dom_node(placeable, tagname):
 
 
 def unknown_placeable_as_dom_node(placeable):
-    assert type(placeable) is xliff.UnknownXML
+    assert isinstance(placeable, xliff.UnknownXML)
 
     from copy import copy
     node = copy(placeable.xml_node)
@@ -197,7 +197,7 @@ def strelem_to_xml(parent_node, elem):
     if not isinstance(elem, StringElem):
         return parent_node
 
-    if type(elem) is StringElem and elem.isleaf():
+    if isinstance(elem, StringElem) and elem.isleaf():
         return xml_append_string(parent_node, elem)
 
     if elem.__class__ in _placeable_dictionary:

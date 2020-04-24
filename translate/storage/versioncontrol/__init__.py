@@ -53,9 +53,9 @@ def __get_rcs_class(name):
             module = __import__("translate.storage.versioncontrol.%s" % name,
                                 globals(), {}, name)
             # the module function "is_available" must return "True"
-            if (hasattr(module, "is_available") and
-                callable(module.is_available) and
-                module.is_available()):
+            if (hasattr(module, "is_available")
+                and callable(module.is_available)
+                and module.is_available()):
                 # we found an appropriate module
                 rcs_class = getattr(module, name)
             else:

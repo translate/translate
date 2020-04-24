@@ -169,7 +169,7 @@ def findmarkedvariables(str1, startmarker, endmarker, ignorelist=[]):
                 if currentpos < endmatch:
                     variable = str1[currentpos:endmatch]
                 currentpos = endmatch
-            elif type(endmarker) == int:
+            elif isinstance(endmarker, int):
                 # setting endmarker to an int means it is a fixed-length
                 # variable string (usually endmarker==1)
                 endmatch = currentpos + endmarker
@@ -193,8 +193,8 @@ def findmarkedvariables(str1, startmarker, endmarker, ignorelist=[]):
                 variable = str1[currentpos:endmatch]
                 currentpos = endmatch + len(endmarker)
             if variable is not None and variable not in ignorelist:
-                if (not variable or
-                    variable.replace("_", "").replace(".", "").isalnum()):
+                if (not variable
+                    or variable.replace("_", "").replace(".", "").isalnum()):
                     variables.append((startmatch, variable))
     return variables
 

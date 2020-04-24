@@ -118,7 +118,7 @@ TS_CONTEXT_QT5 = """<?xml version="1.0" encoding="utf-8"?>
 xliffparsers = []
 for attrname in dir(xliff):
     attr = getattr(xliff, attrname)
-    if type(attr) is type and \
+    if isinstance(attr, type) and \
        attrname not in ('XLIFFPlaceable') and \
        hasattr(attr, 'parse') and \
        attr.parse is not None:

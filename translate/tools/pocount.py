@@ -103,9 +103,9 @@ def calcstats_old(filename):
     stats["fuzzy"] = len(fuzzy)
     stats["untranslated"] = len(untranslated)
     stats["review"] = len(review)
-    stats["total"] = (stats["translated"] +
-                      stats["fuzzy"] +
-                      stats["untranslated"])
+    stats["total"] = (stats["translated"]
+                      + stats["fuzzy"]
+                      + stats["untranslated"])
 
     # words
     stats["translatedsourcewords"] = sourcewords(translated)
@@ -113,9 +113,9 @@ def calcstats_old(filename):
     stats["fuzzysourcewords"] = sourcewords(fuzzy)
     stats["untranslatedsourcewords"] = sourcewords(untranslated)
     stats["reviewsourcewords"] = sourcewords(review)
-    stats["totalsourcewords"] = (stats["translatedsourcewords"] +
-                                 stats["fuzzysourcewords"] +
-                                 stats["untranslatedsourcewords"])
+    stats["totalsourcewords"] = (stats["translatedsourcewords"]
+                                 + stats["fuzzysourcewords"]
+                                 + stats["untranslatedsourcewords"])
     return stats
 
 
@@ -167,14 +167,14 @@ def summarize(title, stats, style=style_full, indent=8, incomplete_only=False):
               ConsoleColor.OKGREEN() + str(stats["translated"]) + ConsoleColor.ENDC(),
               ConsoleColor.WARNING() + str(stats["fuzzy"]) + ConsoleColor.ENDC(),
               ConsoleColor.FAIL() + str(stats["untranslated"]) + ConsoleColor.ENDC(),
-              ConsoleColor.OKGREEN() +
-              str(percent(stats["translated"], stats["total"]))
+              ConsoleColor.OKGREEN()
+              + str(percent(stats["translated"], stats["total"]))
               + "%" + ConsoleColor.ENDC(),
-              ConsoleColor.WARNING() +
-              str(percent(stats["fuzzy"], stats["total"]))
+              ConsoleColor.WARNING()
+              + str(percent(stats["fuzzy"], stats["total"]))
               + "%" + ConsoleColor.ENDC(),
-              ConsoleColor.FAIL() +
-              str(percent(stats["untranslated"], stats["total"]))
+              ConsoleColor.FAIL()
+              + str(percent(stats["untranslated"], stats["total"]))
               + "%" + ConsoleColor.ENDC()))
     elif (style == style_short_words):
         spaces = " " * (indent - len(title))
@@ -185,14 +185,14 @@ def summarize(title, stats, style=style_full, indent=8, incomplete_only=False):
             ConsoleColor.OKGREEN() + str(stats["translatedsourcewords"]) + ConsoleColor.ENDC(),
             ConsoleColor.WARNING() + str(stats["fuzzysourcewords"]) + ConsoleColor.ENDC(),
             ConsoleColor.FAIL() + str(stats["untranslatedsourcewords"]) + ConsoleColor.ENDC(),
-            ConsoleColor.OKGREEN() +
-            str(percent(stats["translatedsourcewords"], stats["totalsourcewords"]))
+            ConsoleColor.OKGREEN()
+            + str(percent(stats["translatedsourcewords"], stats["totalsourcewords"]))
             + "%" + ConsoleColor.ENDC(),
-            ConsoleColor.WARNING() +
-            str(percent(stats["fuzzysourcewords"], stats["totalsourcewords"]))
+            ConsoleColor.WARNING()
+            + str(percent(stats["fuzzysourcewords"], stats["totalsourcewords"]))
             + "%" + ConsoleColor.ENDC(),
-            ConsoleColor.FAIL() +
-            str(percent(stats["untranslatedsourcewords"], stats["totalsourcewords"]))
+            ConsoleColor.FAIL()
+            + str(percent(stats["untranslatedsourcewords"], stats["totalsourcewords"]))
             + "%" + ConsoleColor.ENDC()))
     else:  # style == style_full
         print("Processing file : " + ConsoleColor.HEADER() + title + ConsoleColor.ENDC())
@@ -208,14 +208,14 @@ def summarize(title, stats, style=style_full, indent=8, incomplete_only=False):
             stats["fuzzy"],
             percent(stats["fuzzy"], stats["total"]),
             stats["fuzzysourcewords"],
-            percent(stats["fuzzysourcewords"], stats["totalsourcewords"])) +
-            ConsoleColor.ENDC())
+            percent(stats["fuzzysourcewords"], stats["totalsourcewords"]))
+            + ConsoleColor.ENDC())
         print(ConsoleColor.FAIL() + "Untranslated: %5d (%3d%%) %10d (%3d%%)             n/a" % (
             stats["untranslated"],
             percent(stats["untranslated"], stats["total"]),
             stats["untranslatedsourcewords"],
-            percent(stats["untranslatedsourcewords"], stats["totalsourcewords"])) +
-            ConsoleColor.ENDC())
+            percent(stats["untranslatedsourcewords"], stats["totalsourcewords"]))
+            + ConsoleColor.ENDC())
         print("Total:        %5d %17d %22d" % (
             stats["total"],
             stats["totalsourcewords"],

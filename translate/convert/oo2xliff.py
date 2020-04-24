@@ -69,8 +69,8 @@ class oo2xliff(object):
         if self.sourcelanguage in theoo.languages:
             part1 = theoo.languages[self.sourcelanguage]
         else:
-            logging.error("/".join(theoo.lines[0].getkey()) +
-                          "language not found: %s", self.sourcelanguage)
+            logging.error("/".join(theoo.lines[0].getkey())
+                          + "language not found: %s", self.sourcelanguage)
             return []
         if self.blankmsgstr:
             # use a blank part2
@@ -142,8 +142,8 @@ def convertoo(inputfile, outputfile, templates, pot=False, sourcelanguage=None, 
                        "(contains %s)",
                        sourcelanguage, inputfilename,
                        ", ".join(inputstore.languages))
-    if not pot and (targetlanguage and
-                    targetlanguage not in inputstore.languages):
+    if not pot and (targetlanguage
+                    and targetlanguage not in inputstore.languages):
         logger.warning("targetlanguage '%s' not found in inputfile '%s' "
                        "(contains %s)",
                        targetlanguage, inputfilename,

@@ -46,16 +46,15 @@ def _get_available_indexers():
     indexer_dir = os.path.dirname(os.path.abspath(__file__))
     # sort the files in the directory by name - to make it determinable,
     # which indexing engine is chosen in case of multiple possibilities
-    all_files = os.listdir(indexer_dir)
-    all_files.sort()
+    all_files = sorted(os.listdir(indexer_dir))
     for mod_file in all_files:
         if mod_file == __file__:
             # we should not import ourself
             continue
         mod_path = os.path.join(indexer_dir, mod_file)
-        if (not mod_path.endswith(".py") or
-            not os.path.isfile(mod_path) or
-            not os.access(mod_path, os.R_OK)):
+        if (not mod_path.endswith(".py")
+            or not os.path.isfile(mod_path)
+            or not os.access(mod_path, os.R_OK)):
             # no file / wrong extension / not readable -> skip it
             continue
         # strip the ".py" prefix
@@ -67,9 +66,9 @@ def _get_available_indexers():
             # maybe it is unusable or dependencies are missing
             continue
         # the module function "is_available" must return "True"
-        if not (hasattr(module, "is_available") and
-                callable(module.is_available) and
-                module.is_available()):
+        if not (hasattr(module, "is_available")
+                and callable(module.is_available)
+                and module.is_available()):
             continue
         for item in dir(module):
             try:

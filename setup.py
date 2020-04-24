@@ -46,7 +46,7 @@ packagesdir = get_python_lib()
 sitepackages = packagesdir.replace(sys.prefix + os.sep, '')
 
 infofiles = [(join(sitepackages, 'translate'),
-             [filename for filename in ('COPYING', 'README.rst')])]
+              [filename for filename in ('COPYING', 'README.rst')])]
 initfiles = [(join(sitepackages, 'translate'), [join('translate', '__init__.py')])]
 
 subpackages = [

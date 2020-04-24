@@ -211,8 +211,8 @@ class prop2po(object):
 
         # if everything went well, there should be nothing left in plurals
         if len(plurals) != 0:
-            logger.warning("Not all plural units converted correctly:" +
-                           "\n".join(plurals.keys()))
+            logger.warning("Not all plural units converted correctly:"
+                           + "\n".join(plurals.keys()))
         return new_store
 
     def convertunit(self, propunit, commenttype):

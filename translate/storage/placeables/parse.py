@@ -67,8 +67,8 @@ def parse(tree, parse_funcs):
 
         subleaves = parse_func(unileaf)
         if subleaves is not None:
-            if (len(subleaves) == 1 and isinstance(subleaves[0], type(leaf)) and
-                leaf == subleaves[0]):
+            if (len(subleaves) == 1 and isinstance(subleaves[0], type(leaf))
+                and leaf == subleaves[0]):
                 pass
             elif isinstance(leaf, six.text_type):
                 parent = tree.get_parent_elem(leaf)

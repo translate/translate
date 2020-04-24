@@ -204,7 +204,7 @@ class RecursiveOptionParser(optparse.OptionParser, object):
         if options:
             if options.errorlevel == "traceback":
                 errorinfo = "\n".join(traceback.format_exception(exc_info[0],
-                                      exc_info[1], exc_info[2]))
+                                                                 exc_info[1], exc_info[2]))
             elif options.errorlevel == "exception":
                 errorinfo = "\n".join(traceback.format_exception_only(exc_info[0], exc_info[1]))
             elif options.errorlevel == "message":
@@ -468,8 +468,8 @@ class RecursiveOptionParser(optparse.OptionParser, object):
         """Gets the absolute path to a template file."""
         if not options.recursivetemplate:
             return templatepath
-        elif (templatepath is not None and
-              self.usetemplates and options.template):
+        elif (templatepath is not None
+              and self.usetemplates and options.template):
             return os.path.join(options.template, templatepath)
         else:
             return None
@@ -502,19 +502,19 @@ class RecursiveOptionParser(optparse.OptionParser, object):
                 options.input = os.path.dirname(options.input)
             else:
                 inputfiles = [options.input]
-        options.recursiveoutput = (self.isrecursive(options.output, 'output') and
-                                   getattr(options, "allowrecursiveoutput", True))
-        options.recursivetemplate = (self.usetemplates and
-                                     self.isrecursive(options.template, 'template') and
-                                     getattr(options, "allowrecursivetemplate", True))
+        options.recursiveoutput = (self.isrecursive(options.output, 'output')
+                                   and getattr(options, "allowrecursiveoutput", True))
+        options.recursivetemplate = (self.usetemplates
+                                     and self.isrecursive(options.template, 'template')
+                                     and getattr(options, "allowrecursivetemplate", True))
         progress_bar = ProgressBar(options.progress, inputfiles)
         for inputpath in inputfiles:
             try:
                 templatepath = self.gettemplatename(options, inputpath)
                 # If we have a recursive template, but the template doesn't
                 # have this input file, let's drop it.
-                if (options.recursivetemplate and templatepath is None and
-                    not self.allowmissingtemplate):
+                if (options.recursivetemplate and templatepath is None
+                    and not self.allowmissingtemplate):
                     self.warning("No template at %s. Skipping %s." %
                                  (templatepath, inputpath))
                     continue
@@ -579,8 +579,8 @@ class RecursiveOptionParser(optparse.OptionParser, object):
                     fulloutputpath, fulltemplatepath):
         """Process an individual file."""
         inputfile = self.openinputfile(options, fullinputpath)
-        if (fulloutputpath and
-            fulloutputpath in (fullinputpath, fulltemplatepath)):
+        if (fulloutputpath
+            and fulloutputpath in (fullinputpath, fulltemplatepath)):
             outputfile = self.opentempoutputfile(options, fulloutputpath)
             tempoutput = True
         else:
@@ -739,5 +739,5 @@ class RecursiveOptionParser(optparse.OptionParser, object):
     def isvalidinputname(self, inputname):
         """Checks if this is a valid input filename."""
         inputbase, inputext = self.splitinputext(inputname)
-        return ((inputext in self.inputformats) or
-                ("*" in self.inputformats))
+        return ((inputext in self.inputformats)
+                or ("*" in self.inputformats))

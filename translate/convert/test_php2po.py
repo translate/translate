@@ -219,8 +219,8 @@ $lang['prefPanel-smime'] = 'Security';'''
             "$strings->'name2'": ("source2", "target2"),
         }
         for pounit in [x for x in pofile.units if x.source != '']:
-            assert ((pounit.source, pounit.target) ==
-                    expected.get(pounit.getlocations()[0]))
+            assert ((pounit.source, pounit.target)
+                    == expected.get(pounit.getlocations()[0]))
 
     def test_unnamed_nested_arrays(self):
         phptemplate = '''return array(
@@ -263,8 +263,8 @@ $lang['prefPanel-smime'] = 'Security';'''
             "return->'name2'": ("source2", "target2"),
         }
         for pounit in [x for x in pofile.units if x.source != '']:
-            assert ((pounit.source, pounit.target) ==
-                    expected.get(pounit.getlocations()[0]))
+            assert ((pounit.source, pounit.target)
+                    == expected.get(pounit.getlocations()[0]))
 
 
 class TestPhp2POCommand(test_convert.TestConvertCommand, TestPhp2PO):

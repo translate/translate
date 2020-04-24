@@ -14,11 +14,11 @@ class TestMultistring:
     def test_constructor(self):
         t = multistring.multistring
         s1 = t("test")
-        assert type(s1) == t
+        assert isinstance(s1, t)
         assert s1 == "test"
         assert s1.strings == ["test"]
         s2 = t(["test", u"mé"])
-        assert type(s2) == t
+        assert isinstance(s2, t)
         assert s2 == "test"
         assert s2.strings == ["test", u"mé"]
         assert s2 != s1
@@ -43,7 +43,7 @@ class TestMultistring:
         s1 = t(["abcdef", "def"])
 
         result = s1.replace("e", "")
-        assert type(result) == t
+        assert isinstance(result, t)
         assert result == t(["abcdf", "df"])
 
         result = s1.replace("e", "xx")

@@ -180,8 +180,8 @@ def _store_post_merge_pofile(input_store, output_store, template_store):
         for unit in template_store.units:
             if unit.isheader() or unit.isblank():
                 continue
-            if (unit.target and not (input_store.findid(unit.getid()) or
-                hasattr(unit, "reused"))):
+            if (unit.target and not (input_store.findid(unit.getid())
+                                     or hasattr(unit, "reused"))):
                 # Not in .pot, make it obsolete
                 unit.makeobsolete()
                 newlyobsoleted.append(unit)

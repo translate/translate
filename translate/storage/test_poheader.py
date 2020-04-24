@@ -76,7 +76,7 @@ def check_po_date(datestring):
 
     # Get the timezone offset (last 4 digits):
     tz = datestring[-4:]
-    assert type(int(tz)) == int
+    assert isinstance(int(tz), int)
 
     # Strip the timezone from the string, typically something like "+0200".
     # This is to make the datestring conform to the specified format,
@@ -84,7 +84,7 @@ def check_po_date(datestring):
     datestring = datestring[0:-5]
 
     # Check that the date can be parsed
-    assert type(time.strptime(datestring, date_format)) == time.struct_time
+    assert isinstance(time.strptime(datestring, date_format), time.struct_time)
 
 
 def test_po_dates():

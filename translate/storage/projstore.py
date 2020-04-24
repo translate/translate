@@ -107,11 +107,11 @@ class ProjectStore(object):
     # SPECIAL METHODS #
     def __in__(self, lhs):
         """@returns ``True`` if ``lhs`` is a file name or file object in the project store."""
-        return (lhs in self._sourcefiles or
-                lhs in self._targetfiles or
-                lhs in self._transfiles or
-                lhs in self._files or
-                lhs in self._files.values())
+        return (lhs in self._sourcefiles
+                or lhs in self._targetfiles
+                or lhs in self._transfiles
+                or lhs in self._files
+                or lhs in self._files.values())
 
     # METHODS #
     def append_file(self, afile, fname, ftype='trans', delete_orig=False):

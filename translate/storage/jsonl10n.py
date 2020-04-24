@@ -195,9 +195,9 @@ class JsonFile(base.TranslationStore):
                 for x in self._extract_units(item, stop, "%s[%s]" % (prev, i), i, name_node, data):
                     yield x
         # apply filter
-        elif (stop is None or
-              (isinstance(last_node, dict) and name_node in stop) or
-              (isinstance(last_node, list) and name_last_node in stop)):
+        elif (stop is None
+              or (isinstance(last_node, dict) and name_node in stop)
+              or (isinstance(last_node, list) and name_last_node in stop)):
 
             unit = self.UnitClass(data, name_node)
             unit.setid(prev)

@@ -76,8 +76,7 @@ class _NGram:
         return self
 
     def sorted_by_score(self):
-        sorted = [(self.ngrams[k], k) for k in self.ngrams]
-        sorted.sort()
+        sorted = sorted([(self.ngrams[k], k) for k in self.ngrams])
         sorted.reverse()
         sorted = sorted[:nb_ngrams]
         return sorted

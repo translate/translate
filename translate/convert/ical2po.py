@@ -77,8 +77,8 @@ class ical2po(object):
 
             template_unit_name = "".join(template_unit.getlocations())
             add_translation = (
-                not self.blank_msgstr and
-                template_unit_name in self.source_store.locationindex)
+                not self.blank_msgstr
+                and template_unit_name in self.source_store.locationindex)
             if add_translation:
                 source_unit = self.source_store.locationindex[template_unit_name]
                 target_unit.target = source_unit.source

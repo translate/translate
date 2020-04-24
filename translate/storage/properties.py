@@ -308,9 +308,9 @@ class Dialect(object):
         if mindelimiter is None and delimiters.get(u" ", -1) != -1:
             # Use space delimiter if we found nothing else
             return (u" ", delimiters[" "])
-        if (mindelimiter is not None and
-            u" " in delimiters and
-            delimiters[u" "] < delimiters[mindelimiter]):
+        if (mindelimiter is not None
+            and u" " in delimiters
+            and delimiters[u" "] < delimiters[mindelimiter]):
             # If space delimiter occurs earlier than ":" or "=" then it is the
             # delimiter only if there are non-whitespace characters between it and
             # the other detected delimiter.
@@ -646,8 +646,8 @@ class propfile(base.TranslationStore):
             propsrc, default_encodings=[self.personality.default_encoding,
                                         'utf-8', 'utf-16'])
         if not text and propsrc:
-            raise IOError("Cannot detect encoding for %s." % (self.filename or
-                                                              "given string"))
+            raise IOError("Cannot detect encoding for %s." % (self.filename
+                                                              or "given string"))
         self.encoding = encoding
         propsrc = text
 
@@ -675,8 +675,8 @@ class propfile(base.TranslationStore):
                     newunit = propunit("", self.personality.name)
             # otherwise, this could be a comment
             # FIXME handle // inline comments
-            elif (inmultilinecomment or is_comment_one_line(line) or
-                  is_comment_start(line) or is_comment_end(line)):
+            elif (inmultilinecomment or is_comment_one_line(line)
+                  or is_comment_start(line) or is_comment_end(line)):
                 # add a comment
                 if line not in self.personality.drop_comments:
                     newunit.comments.append(line)

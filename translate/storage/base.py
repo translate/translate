@@ -466,7 +466,7 @@ class TranslationUnit(object):
         """Build a native unit from a foreign unit, preserving as much
         information as possible.
         """
-        if type(unit) == cls and hasattr(unit, "copy") and callable(unit.copy):
+        if isinstance(unit, cls) and hasattr(unit, "copy") and callable(unit.copy):
             return unit.copy()
         newunit = cls(unit.source)
         newunit.target = unit.target
@@ -674,9 +674,9 @@ class TranslationStore(object):
             remove_unit(unit.source)
 
         for location in unit.getlocations():
-            if (location in self.locationindex and
-                self.locationindex[location] is not None and
-                self.locationindex[location] == unit):
+            if (location in self.locationindex
+                and self.locationindex[location] is not None
+                and self.locationindex[location] == unit):
                 del(self.locationindex[location])
 
     def add_unit_to_index(self, unit):

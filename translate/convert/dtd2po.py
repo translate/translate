@@ -36,8 +36,8 @@ def is_css_entity(entity):
     """
     if '.' in entity:
         prefix, suffix = entity.rsplit('.', 1)
-        if (suffix in ["height", "width", "unixWidth", "macWidth", "size"] or
-            suffix.startswith("style")):
+        if (suffix in ["height", "width", "unixWidth", "macWidth", "size"]
+            or suffix.startswith("style")):
             return True
     return False
 
@@ -92,9 +92,9 @@ class dtd2po(object):
         # start and end quotes
         if len(lines) > 1:
             po_unit.source = "".join(
-                [lines[0].rstrip() + ' '] +
-                [line.strip() + ' ' for line in lines[1:-1]] +
-                [lines[-1].lstrip()])
+                [lines[0].rstrip() + ' ']
+                + [line.strip() + ' ' for line in lines[1:-1]]
+                + [lines[-1].lstrip()])
         elif lines:
             po_unit.source = lines[0]
         else:
@@ -289,8 +289,8 @@ def convertdtd(inputfile, outputfile, templatefile, pot=False,
     android_dtd = False
     if hasattr(inputfile, "name"):
         # Check if it is an Android DTD file.
-        if ("embedding/android" in inputfile.name or
-            "mobile/android/base" in inputfile.name):
+        if ("embedding/android" in inputfile.name
+            or "mobile/android/base" in inputfile.name):
             android_dtd = True
     inputstore = dtd.dtdfile(inputfile, android=android_dtd)
     convertor = dtd2po(blankmsgstr=pot, duplicatestyle=duplicatestyle)

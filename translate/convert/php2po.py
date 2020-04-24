@@ -76,8 +76,8 @@ class php2po(object):
             target_unit = self.convert_unit(template_unit)
 
             add_translation = (
-                not self.blank_msgstr and
-                template_unit.name in self.source_store.locationindex)
+                not self.blank_msgstr
+                and template_unit.name in self.source_store.locationindex)
             if add_translation:
                 source_unit = self.source_store.locationindex[template_unit.name]
                 target_unit.target = source_unit.source

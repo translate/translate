@@ -76,8 +76,7 @@ def extract(source, startdelim, enddelim,
     else:
         enddelim_places = [pos + lenend for pos in enddelim_places]
     # Get a unique sorted list of the significant places in the string
-    significant_places = [0] + startdelim_places + enddelim_places + [len(source)-1]
-    significant_places.sort()
+    significant_places = sorted([0] + startdelim_places + enddelim_places + [len(source)-1])
     extracted = ""
     lastpos = None
     for pos in significant_places:
@@ -89,8 +88,8 @@ def extract(source, startdelim, enddelim,
             extracted += source[lastpos:pos]
             instring = False
             lastpos = pos
-        if ((not instring) and pos in startdelim_places and
-            not (enteredonce and not allowreentry)):
+        if ((not instring) and pos in startdelim_places
+            and not (enteredonce and not allowreentry)):
             instring = True
             enteredonce = True
             lastpos = pos
@@ -134,8 +133,7 @@ def extractwithoutquotes(source, startdelim, enddelim, escape=None,
     else:
         enddelim_places = [pos + lenend for pos in enddelim_places]
     # get a unique sorted list of the significant places in the string
-    significant_places = [0] + startdelim_places + enddelim_places + [len(source)-1]
-    significant_places.sort()
+    significant_places = sorted([0] + startdelim_places + enddelim_places + [len(source)-1])
     extracted = ""
     lastpos = 0
     callable_includeescapes = callable(includeescapes)
@@ -167,8 +165,8 @@ def extractwithoutquotes(source, startdelim, enddelim, escape=None,
             extracted += section
             instring = False
             lastpos = pos
-        if ((not instring) and pos in startdelim_places and
-            not (enteredonce and not allowreentry)):
+        if ((not instring) and pos in startdelim_places
+            and not (enteredonce and not allowreentry)):
             instring = True
             enteredonce = True
             lastpos = pos
@@ -181,8 +179,8 @@ def extractwithoutquotes(source, startdelim, enddelim, escape=None,
             last_epos = 0
             for epos in escape_list:
                 new_section += section[last_epos:epos]
-                if (callable_includeescapes and
-                    includeescapes(section[epos:epos + lenescape + 1])):
+                if (callable_includeescapes
+                    and includeescapes(section[epos:epos + lenescape + 1])):
                     last_epos = epos
                 else:
                     last_epos = epos + lenescape
@@ -219,8 +217,8 @@ def entityencode(source, codepoint2name):
                 output += "&" + possibleentity + ";"
                 inentity = False
             elif char == " ":
-                output += (_encode_entity_char("&", codepoint2name) +
-                           entityencode(possibleentity + char, codepoint2name))
+                output += (_encode_entity_char("&", codepoint2name)
+                           + entityencode(possibleentity + char, codepoint2name))
                 inentity = False
             else:
                 possibleentity += char
@@ -228,8 +226,8 @@ def entityencode(source, codepoint2name):
             output += _encode_entity_char(char, codepoint2name)
     if inentity:
         # Handle nonentities at end of string.
-        output += (_encode_entity_char("&", codepoint2name) +
-                   entityencode(possibleentity, codepoint2name))
+        output += (_encode_entity_char("&", codepoint2name)
+                   + entityencode(possibleentity, codepoint2name))
 
     return output
 
@@ -261,8 +259,8 @@ def entitydecode(source, name2codepoint):
             continue
         if inentity:
             if char == ";":
-                if (len(possibleentity) > 0 and
-                    possibleentity in name2codepoint):
+                if (len(possibleentity) > 0
+                    and possibleentity in name2codepoint):
                     entchar = six.unichr(name2codepoint[possibleentity])
                     if entchar == u'&' and _has_entity_end(source[i+1:]):
                         output += "&" + possibleentity + ";"

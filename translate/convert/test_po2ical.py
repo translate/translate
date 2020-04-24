@@ -244,9 +244,9 @@ END:VCALENDAR
 '''.replace("\n", "\r\n")
         template_string = icalendar_boilerplate % "Value"
         expected_output = icalendar_boilerplate % "Waarde"
-        assert (expected_output ==
-                self._convert_to_string(input_string, template_string,
-                                        include_fuzzy=True))
+        assert (expected_output
+                == self._convert_to_string(input_string, template_string,
+                                           include_fuzzy=True))
 
     def test_no_template(self):
         """Check that a template is required."""

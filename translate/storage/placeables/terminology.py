@@ -95,8 +95,8 @@ class TerminologyPlaceable(base.Ph):
         return parts or None
 
     def translate(self):
-        return (self.translations and self.translations[0] or
-                super(TerminologyPlaceable, self).translate())
+        return (self.translations and self.translations[0]
+                or super(TerminologyPlaceable, self).translate())
 
 
 parsers = [TerminologyPlaceable.parse]

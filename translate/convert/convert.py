@@ -350,8 +350,8 @@ class ArchiveConvertOptionParser(ConvertOptionParser):
     def opentemplatefile(self, options, fulltemplatepath):
         """Opens the template file (if required)."""
         if fulltemplatepath is not None:
-            if (options.recursivetemplate and
-                self.isarchive(options.template, 'template')):
+            if (options.recursivetemplate
+                and self.isarchive(options.template, 'template')):
                 # TODO: deal with different names in input/template archives
                 if fulltemplatepath in self.templatearchive:
                     return self.templatearchive.openinputfile(fulltemplatepath)
@@ -413,12 +413,12 @@ class ArchiveConvertOptionParser(ConvertOptionParser):
             self.archiveoptions = {'multifilestyle': options.multifilestyle}
             for filetype in ("input", "output", "template"):
                 allowoption = "allowrecursive%s" % filetype
-                if (options.multifilestyle == "onefile" and
-                    getattr(options, allowoption, True)):
+                if (options.multifilestyle == "onefile"
+                    and getattr(options, allowoption, True)):
                     setattr(options, allowoption, False)
 
-        if (self.usetemplates and options.template and
-            self.isarchive(options.template, 'template')):
+        if (self.usetemplates and options.template
+            and self.isarchive(options.template, 'template')):
             self.templatearchive = self.openarchive(options.template, 'template')
 
         if options.output and self.isarchive(options.output, 'output'):

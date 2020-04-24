@@ -25,8 +25,7 @@ class TestMatch:
         """Test basic matching"""
         csvfile = self.buildcsv(["hand", "asdf", "fdas", "haas", "pond"])
         matcher = match.matcher(csvfile)
-        candidates = self.candidatestrings(matcher.matches("hond"))
-        candidates.sort()
+        candidates = sorted(self.candidatestrings(matcher.matches("hond")))
         assert candidates == ["hand", "pond"]
         message = "Ek skop die bal"
         csvfile = self.buildcsv([
@@ -48,8 +47,7 @@ class TestMatch:
         csvfile1 = self.buildcsv(["hand", "asdf", "fdas"])
         csvfile2 = self.buildcsv(["haas", "pond"])
         matcher = match.matcher([csvfile1, csvfile2])
-        candidates = self.candidatestrings(matcher.matches("hond"))
-        candidates.sort()
+        candidates = sorted(self.candidatestrings(matcher.matches("hond")))
         assert candidates == ["hand", "pond"]
         message = "Ek skop die bal"
         csvfile1 = self.buildcsv([
@@ -83,8 +81,7 @@ class TestMatch:
     def test_terminology(self):
         csvfile = self.buildcsv(["file", "computer", "directory"])
         matcher = match.terminologymatcher(csvfile)
-        candidates = self.candidatestrings(matcher.matches("Copy the files from your computer"))
-        candidates.sort()
+        candidates = sorted(self.candidatestrings(matcher.matches("Copy the files from your computer")))
         assert candidates == ["computer", "file"]
 
     def test_brackets(self):

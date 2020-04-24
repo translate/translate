@@ -305,7 +305,7 @@ DROP TRIGGER IF EXISTS sources_delete_trig;
                        AND fulltext MATCH ?"""
             search_str = " OR ".join(unit_words)
             self.cursor.execute(query, (source_langs, target_langs, minlen,
-                                maxlen, search_str))
+                                        maxlen, search_str))
         else:
             logging.debug("nonfulltext matching")
             query = """SELECT s.text, t.text, s.context, s.lang, t.lang FROM sources s JOIN targets t ON s.sid = t.sid
