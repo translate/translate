@@ -55,7 +55,7 @@ class TestHTML2PO:
         if the results are as expected"""
         self.check_single('<html><head></head><body><p><a href="' + php + '/site.html">Body text</a></p></body></html>', "Body text")
         self.check_single('<html><head></head><body><p>More things in <a href="' + php + '/site.html">Body text</a></p></body></html>', 'More things in <a href="' + php + '/site.html">Body text</a>')
-        self.check_null('<html><head></head><body><p>' + php + '</p></body></html>')
+        self.check_single('<html><head></head><body><p>' + php + '</p></body></html>', php)
 
     def test_extract_lang_attribute_from_html_tag(self):
         """Test that the lang attribute is extracted from the html tag, issue #3884"""
@@ -455,6 +455,10 @@ years has helped to bridge the digital divide to a limited extent.</p> \r
         # Contains HTML tag characters (< and >)
         self.check_phpsnippet('''<?=($a < $b ? $foo : ($b > c ? $bar : $cat))?>''')
 
+        # Make sure basically any symbol can be handled
+        # NOTE quotation mark removed since it violates the HTML format when placed in an attribute
+        self.check_phpsnippet('''<? asdfghjkl qwertyuiop 1234567890!@#$%^&*()-=_+[]\\{}|;':,./<>? ?>''')
+
     def test_multiple_php(self):
         """Test multiple PHP snippets in a string to make sure they get restored properly"""
         php1 = '''<?=$phpvariable?>'''
@@ -462,7 +466,7 @@ years has helped to bridge the digital divide to a limited extent.</p> \r
         php3 = '''<? asdfghjklqwertyuiop1234567890!@#$%^&*()-=_+[]\\{}|;':",./<>? ?>'''
 
         # Put 3 different strings into an html string
-        innertext = '<a href="' + php1 + '/site.html">Body text</a> and some ' + php2 + ' more text ' + php2 + php3 + ' even more text'
+        innertext = '<a href="' + php1 + '/site.html">Body text</a> and some ' + php2 + ' more text ' + php2 + php3
         htmlsource = '<html><head></head><body><p>' + innertext + '</p></body></html>'
         self.check_single(htmlsource, innertext)
 
@@ -474,8 +478,8 @@ def
 ghi ?>'''
 
         # Scatter the php strings throughout the file, and show what the translation should be
-        innertext = '<a href="' + php1 + '/site.html">Body text</a> and some ' + php1 + ' more text ' + php1 + php1 + ' even more text'
-        innertrans = '<a href="' + php1 + '/site.html">Texte de corps</a> et encore de ' + php1 + ' plus de texte ' + php1 + php1 + ' encore plus de texte'
+        innertext = '<a href="' + php1 + '/site.html">Body text</a> and some ' + php1 + ' more text ' + php1 + php1
+        innertrans = '<a href="' + php1 + '/site.html">Texte de corps</a> et encore de ' + php1 + ' plus de texte ' + php1 + php1
 
         htmlsource = '<html><head></head><body><p>' + innertext + '</p></body></html>'  # Current html file
         transsource = '<html><head></head><body><p>' + innertrans + '</p></body></html>'  # Expected translation

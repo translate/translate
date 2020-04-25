@@ -287,7 +287,9 @@ class htmlfile(html.parser.HTMLParser, base.TranslationStore):
 
     @staticmethod
     def has_translatable_content(markup):
-        return markup['type'] == 'data' and markup['html_content'].strip()
+        # processing instructions count as translatable content, because PHP
+        return markup['type'] in {'data', 'pi'} \
+            and markup['html_content'].strip()
 
     def extract_translatable_attributes(self, tag, attrs):
         result = []
