@@ -14,42 +14,42 @@ Formats and Converters
 
 - PO
 
-    - Avoid adding extra space on empty comment lines
-    - Several performance improvements
+  - Avoid adding extra space on empty comment lines
+  - Several performance improvements
 
 - Android resources
 
-    - Workaround broken plural handling for languages missing other tag
-    - Fix setting rich content with comments
-    - Fix setting target and removing markup
+  - Workaround broken plural handling for languages missing other tag
+  - Fix setting rich content with comments
+  - Fix setting target and removing markup
 
 - YAML
 
-    - Fixed handling of empty keys
-    - Improved round trip preserving of comments and style
+  - Fixed handling of empty keys
+  - Improved round trip preserving of comments and style
 
 - TS
 
-    - Avoid duplicating plurals definition
-    - Fixed possible crash on adding new translations
+  - Avoid duplicating plurals definition
+  - Fixed possible crash on adding new translations
 
 - INI
 
-    - Now supported on Python 3 thanks to iniparse support for it
+  - Now supported on Python 3 thanks to iniparse support for it
 
 
 - JSON
 
-    - Allow usage of BOM in JSON files
+  - Allow usage of BOM in JSON files
 
 - MO
 
-    - Fixed context parsing
-    - Fixed tests on big endian machines
+  - Fixed context parsing
+  - Fixed tests on big endian machines
 
 - Catkeys
 
-    - The catkeys format now has support for fingerprint calculation
+  - The catkeys format now has support for fingerprint calculation
 
 Languages
 ---------
