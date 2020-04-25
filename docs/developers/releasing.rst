@@ -226,7 +226,7 @@ Release documentation
 We need a tagged release before we can do this. The docs are published on Read
 The Docs.
 
-- https://readthedocs.org/dashboard/translate-toolkit/versions/
+- https://readthedocs.org/projects/translate-toolkit/versions/
 
 Use the admin pages to flag a version that should be published.
 
