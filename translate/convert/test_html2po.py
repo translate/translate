@@ -58,11 +58,11 @@ class TestHTML2PO:
         self.check_null('<html><head></head><body><p>' + php + '</p></body></html>')
 
     def test_extract_lang_attribute_from_html_tag(self):
-        """Test that the lang attribute is extracted from the html tag"""
+        """Test that the lang attribute is extracted from the html tag, issue #3884"""
         markup = '''<!DOCTYPE html>
 <html lang="en">
     <head>
-        <title>translate lang attribute #3884</title>
+        <title>translate lang attribute</title>
     </head>
     <body>
     </body>
@@ -71,7 +71,7 @@ class TestHTML2PO:
         pofile = self.html2po(markup)
         self.countunits(pofile, 2)
         self.compareunit(pofile, 1, "en")
-        self.compareunit(pofile, 2, "translate lang attribute #3884")
+        self.compareunit(pofile, 2, "translate lang attribute")
 
     def test_do_not_extract_lang_attribute_from_tags_other_than_html(self):
         """Test that the lang attribute is extracted from the html tag"""

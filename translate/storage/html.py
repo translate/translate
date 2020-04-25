@@ -94,7 +94,7 @@ class htmlfile(html.parser.HTMLParser, base.TranslationStore):
         "keywords"
     ]
     """Document metadata from meta elements with these names will be extracted as translation units.
-    `Reference <https://developer.mozilla.org/en-US/docs/Web/HTML/Element/meta/name>`_"""
+    Reference `<https://developer.mozilla.org/en-US/docs/Web/HTML/Element/meta/name>`_"""
 
     EMPTY_HTML_ELEMENTS = [
         "area",
@@ -115,7 +115,7 @@ class htmlfile(html.parser.HTMLParser, base.TranslationStore):
     """An empty element is an element that cannot have any child nodes (i.e., nested 
     elements or text nodes). In HTML, using a closing tag on an empty element is 
     usually invalid.
-    `Reference <https://developer.mozilla.org/en-US/docs/Glossary/Empty_element>`_"""
+    Reference `<https://developer.mozilla.org/en-US/docs/Glossary/Empty_element>`_"""
 
     WHITESPACE_RE = re.compile(r"\s+")
 
