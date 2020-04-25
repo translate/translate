@@ -76,28 +76,31 @@ Examples
   html2po -P site pot
 
 This will find all HTML files (.htm, .html, .xhtml) in *site*, convert them to
-POT files and place them in *pot*::
+POT files and place them in *pot*.
 
-  po2html -t site xh site-xh
+You can create and update PO files for different languages using the
+:doc:`pot2po` command.
 
-All the PO translations in *xh* will be converted to html using html files in
-*site* as templates and outputting new translated HTML files in *site-xh*
+::
+
+  po2html -t site -i xh -o site-xh
+
+All the PO translations in *xh* will be converted to HTML using HTML files in
+*site* as templates and outputting new translated HTML files in *site-xh*.
+
+
+.. _html2po#notes:
+
+Notes
+=====
+
+The :doc:`HTML format description </formats/html>` gives more details on the 
+format of the localisable HTML content and the capabilities of this converter.
+
 
 .. _html2po#bugs:
 
 Bugs
 ====
 
-We don't hide enough of some of the tags, e.g. <a> tags have too much exposed,
-we should expose only what needs to be translated and allow the changing on
-position of the tag within the translation block.  Similarly there is some
-markup that could be excluded e.g. <b> tags that appear at the start and end of
-a msgid, i.e. they don't need placement from the translator.
-
-If the HTML is indented you get very odd msgid's
-
 Some items end up in the msgid's that should not be translated
-
-It might be worth investigating
-http://opensource.bureau-cornavin.com/html2pot-po2html/index.html which uses
-XSLT to transform XHTML to Gettext PO

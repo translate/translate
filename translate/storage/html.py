@@ -23,7 +23,7 @@
 import re
 
 import html.parser
-from html.entities import name2codepoint
+from html.entities import html5
 
 from translate.storage import base
 from translate.storage.base import ParseError
@@ -34,82 +34,12 @@ from translate.storage.base import ParseError
 html.parser.piclose = re.compile(r'\?>')
 
 
-strip_html_re = re.compile(r'''
-(?s)^       # We allow newlines, and match start of line
-<(?P<tag>[^\s?>]+)  # Match start of tag and the first character (not ? or >)
-(?:
-  (?:
-    [^>]    # Anything that's not a > is valid tag material
-      |
-    (?:<\?.*?\?>) # Matches <? foo ?> lazily; PHP is valid
-  )*        # Repeat over valid tag material
-  [^?>]     # If we have > 1 char, the last char can't be ? or >
-)?          # The repeated chars are optional, so that <a>, <p> work
->           # Match ending > of opening tag
-
-(.*)        # Match actual contents of tag
-
-</(?P=tag)>   # Match ending tag; can't end with ?> and must be >=1 char
-$           # Match end of line
-''', re.VERBOSE)
-
-
-def strip_html(text):
-    """Strip unnecessary html from the text.
-
-    HTML tags are deemed unnecessary if it fully encloses the translatable
-    text, eg. '<a href="index.html">Home Page</a>'.
-
-    HTML tags that occurs within the normal flow of text will not be removed,
-    eg. 'This is a link to the <a href="index.html">Home Page</a>.'
-    """
-    text = text.strip()
-
-    # If all that is left is PHP, return ""
-    result = re.findall(r'(?s)^<\?.*?\?>$', text)
-    if len(result) == 1:
-        return ""
-
-    result = strip_html_re.findall(text)
-    if len(result) == 1:
-        text = strip_html(result[0][1])
-    return text
-
-
-normalize_re = re.compile(r"\s\s+")
-
-
-def normalize_html(text):
-    """Remove double spaces from HTML snippets"""
-    return normalize_re.sub(" ", text)
-
-
-def safe_escape(html):
-    """Escape &, < and >"""
-    # FIXME we need to relook at these.  Escaping to cleanup htmlentity codes
-    # is important but we can't mix "<code>&lt;".  In these cases we should
-    # then abort the escaping
-    return re.sub("&(?![a-zA-Z0-9]+;)", "&amp;", html)
-
-
 class htmlunit(base.TranslationUnit):
     """A unit of translatable/localisable HTML content"""
 
     def __init__(self, source=None):
+        base.TranslationUnit.__init__(self, source)
         self.locations = []
-        self.source = source
-
-    @property
-    def source(self):
-        #TODO: Rethink how clever we should try to be with html entities.
-        text = self._text.replace("&amp;", "&")
-        text = text.replace("\r\n", " ").replace("\n", " ").replace("\r", " ")
-        return text
-
-    @source.setter
-    def source(self, source):
-        self._rich_source = None
-        self._text = safe_escape(source)
 
     def addlocation(self, location):
         self.locations.append(location)
@@ -121,73 +51,104 @@ class htmlunit(base.TranslationUnit):
 class htmlfile(html.parser.HTMLParser, base.TranslationStore):
     UnitClass = htmlunit
 
-    MARKINGTAGS = [
+    TRANSLATABLE_ELEMENTS = [
         "address",
+        "article",
+        "aside",
+        "blockquote",
         "caption",
+        "dd", "dt",
         "div",
-        "dt", "dd",
         "figcaption",
+        "footer",
+        "header",
         "h1", "h2", "h3", "h4", "h5", "h6",
         "li",
+        "main",
+        "nav",
+        "option",
         "p",
         "pre",
-        "title",
-        "th", "td",
-    ]
-    """Text in these tags that will be extracted from the HTML document"""
-
-    MARKINGATTRS = []
-    """Text from tags with these attributes will be extracted from the HTML
-    document"""
-
-    INCLUDEATTRS = [
-        "alt",
-        "abbr",
-        "content",
-        "standby",
-        "summary",
+        "section",
+        "td", "th",
         "title"
     ]
-    """Text from these attributes are extracted"""
+    """These HTML elements (tags) will be extracted as translation units, unless 
+    they lack translatable text content.
+    In case one translatable element is embedded in another, the outer translation 
+    unit will be split into the parts before and after the inner translation unit."""
 
-    SELF_CLOSING_TAGS = [
-        u"area",
-        u"base",
-        u"basefont",
-        u"br",
-        u"col",
-        u"frame",
-        u"hr",
-        u"img",
-        u"input",
-        u"link",
-        u"meta",
-        u"param",
+    TRANSLATABLE_ATTRIBUTES = [
+        "abbr", # abbreviation for a table header cell
+        "alt",
+        "lang", # only for the html element -- see extract_translatable_attributes()
+        "summary",
+        "title", # tooltip text for an element
+        "value"
     ]
-    """HTML self-closing tags.  Tags that should be specified as <img /> but
-    might be <img>.
-    `Reference <http://learnwebsitemaking.com/htmlselfclosingtags.html>`_"""
+    """Text from these HTML attributes will be extracted as translation units.
+    Note: the content attribute of meta tags is a special case."""
+
+    TRANSLATABLE_METADATA = [
+        "description",
+        "keywords"
+    ]
+    """Document metadata from meta elements with these names will be extracted as translation units.
+    `Reference <https://developer.mozilla.org/en-US/docs/Web/HTML/Element/meta/name>`_"""
+
+    EMPTY_HTML_ELEMENTS = [
+        "area",
+        "base",
+        "br",
+        "col",
+        "embed",
+        "hr",
+        "img",
+        "input",
+        "link",
+        "meta",
+        "param",
+        "source",
+        "track",
+        "wbr"
+    ]
+    """An empty element is an element that cannot have any child nodes (i.e., nested 
+    elements or text nodes). In HTML, using a closing tag on an empty element is 
+    usually invalid.
+    `Reference <https://developer.mozilla.org/en-US/docs/Glossary/Empty_element>`_"""
+
+    WHITESPACE_RE = re.compile(r"\s+")
+
+    LEADING_WHITESPACE_RE = re.compile(r"^(\s+)")
+
+    TRAILING_WHITESPACE_RE = re.compile(r"(\s+)$")
+
+    ENCODING_RE = re.compile(br'''<meta.*
+                                content.*=.*?charset.*?=\s*?
+                                ([^\s]*)
+                                \s*?["']\s*?>
+                             ''', re.VERBOSE | re.IGNORECASE)
 
     def __init__(self, includeuntaggeddata=None, inputfile=None,
                  callback=None):
+        html.parser.HTMLParser.__init__(self, convert_charrefs=False)
         base.TranslationStore.__init__(self)
+        
+        # store parameters
         self.filename = getattr(inputfile, 'name', None)
-        self.currentblock = u""
-        self.currentcomment = u""
-        self.currenttag = None
-        self.currentpos = -1
-        self.currentoffset = -1
-        self.tag_path = []
-        self.filesrc = u""
-        self.currentsrc = u""
-        self.pidict = {}
         if callback is None:
             self.callback = self._simple_callback
         else:
             self.callback = callback
         self.includeuntaggeddata = includeuntaggeddata
-        html.parser.HTMLParser.__init__(self, convert_charrefs=True)
 
+        # initialize state
+        self.filesrc = u""
+        self.tag_path = []
+        self.tu_content = []
+        self.tu_location = None
+
+        # parse
         if inputfile is not None:
             htmlsrc = inputfile.read()
             inputfile.close()
@@ -196,18 +157,10 @@ class htmlfile(html.parser.HTMLParser, base.TranslationStore):
     def _simple_callback(self, string):
         return string
 
-    ENCODING_RE = re.compile(br'''<meta.*
-                                content.*=.*?charset.*?=\s*?
-                                ([^\s]*)
-                                \s*?["']\s*?>
-                             ''', re.VERBOSE | re.IGNORECASE)
-
     def guess_encoding(self, htmlsrc):
         """Returns the encoding of the html text.
-
         We look for 'charset=' within a meta tag to do this.
         """
-
         result = self.ENCODING_RE.findall(htmlsrc)
         if result:
             self.encoding = result[0].decode('ascii')
@@ -218,214 +171,319 @@ class htmlfile(html.parser.HTMLParser, base.TranslationStore):
         self.guess_encoding(htmlsrc)
         return htmlsrc.decode(self.encoding)
 
-    def pi_escape(self, text):
-        """Replaces all instances of process instruction with placeholders,
-        and returns the new text and a dictionary of tags.  The current
-        implementation replaces <?foo?> with <?md5(foo)?>.  The hash => code
-        conversions are stored in self.pidict for later use in restoring the
-        real PHP.
-
-        The purpose of this is to remove all potential "tag-like" code from
-        inside PHP.  The hash looks nothing like an HTML tag, but the following
-        PHP::
-
-          $a < $b ? $c : ($d > $e ? $f : $g)
-
-        looks like it contains an HTML tag::
-
-          < $b ? $c : ($d >
-
-        to nearly any regex.  Hence, we replace all contents of PHP with simple
-        strings to help our regexes out.
-
-        """
-        result = re.findall(r'(?s)<\?(.*?)\?>', text)
-        for pi in result:
-            pi_escaped = pi.replace("<", "%lt;").replace(">", "%gt;")
-            self.pidict[pi_escaped] = pi
-            text = text.replace(pi, pi_escaped)
-        return text
-
-    def pi_unescape(self, text):
-        """Replaces the PHP placeholders in text with the real code"""
-        for pi_escaped, pi in self.pidict.items():
-            text = text.replace(pi_escaped, pi)
-        return text
-
     def parse(self, htmlsrc):
         htmlsrc = self.do_encoding(htmlsrc)
-        htmlsrc = self.pi_escape(htmlsrc)  # Clear out the PHP before parsing
         self.feed(htmlsrc)
 
-    def addhtmlblock(self, text):
-        text = strip_html(text)
-        text = self.pi_unescape(text)  # Before adding anything, restore PHP
-        text = normalize_html(text)
-        if self.has_translatable_content(text):
-            unit = self.addsourceunit(text)
-            unit.addlocation("%s+%s:%d-%d" %
-                             (self.filename, ".".join(self.tag_path),
-                              self.currentpos, self.currentoffset))
-            unit.addnote(self.currentcomment)
+    def begin_translation_unit(self):
+        # at the start of a translation unit:
+        # this interrupts any translation unit in progress, so process the queue
+        # and prepare for the new.
+        self.emit_translation_unit()
+        self.tu_content = []
+        self.tu_location = "%s+%s:%d-%d" % (
+                            self.filename, ".".join(self.tag_path),
+                            self.getpos()[0], self.getpos()[1] + 1)
 
-    def has_translatable_content(self, text):
-        """Check if the supplied HTML snippet has any content that needs to be
-        translated.
-        """
-        text = text.strip()
-        result = re.findall('(?i).*(charset.*=.*)', text)
-        if len(result) == 1:
-            return False
-
-        # TODO: Get a better way to find untranslatable entities.
-        if text == '&nbsp;':
-            return False
-
-        pattern = r'<\?.*?\?>'  # Lazily strip all PHP
-        result = re.sub(pattern, '', text).strip()
-        pattern = '<[^>]*>'  # Strip all HTML tags
-        result = re.sub(pattern, '', result).strip()
-        if result:
-            return True
+    def end_translation_unit(self):
+        # at the end of a translation unit:
+        # process the queue and reset state.
+        self.emit_translation_unit()
+        self.tu_content = []
+        self.tu_location = None
+    
+    def append_markup(self, markup):
+        # if within a translation unit: add to the queue to be processed later.
+        # otherwise handle immediately.
+        if self.tu_location:
+            self.tu_content.append(markup)
         else:
-            return False
+            self.emit_attribute_translation_units(markup)
+            self.filesrc += markup['html_content']
 
-    def buildtag(self, tag, attrs=None, startend=False):
-        """Create an HTML tag"""
-        selfclosing = u""
-        if startend:
-            selfclosing = u" /"
-        if attrs != [] and attrs is not None:
-            return u"<%(tag)s %(attrs)s%(selfclosing)s>" % {
-                "tag": tag,
-                "attrs": " ".join(['%s="%s"' % pair for pair in attrs]),
-                "selfclosing": selfclosing
+    def emit_translation_unit(self):
+        # scan through the queue:
+        # - find the first and last translatable markup elements: the captured 
+        #   interval [start, end)
+        # - match start and end tags
+        start = 0
+        end = 0
+        tagstack = []
+        tagmap = {}
+        tag = None
+        for pos in range(len(self.tu_content)):
+            if self.tu_content[pos]['type'] != 'endtag' \
+                and tag in self.EMPTY_HTML_ELEMENTS:
+                match = tagstack.pop()
+                tag = None
+
+            if self.has_translatable_content(self.tu_content[pos]):
+                if end == 0:
+                    start = pos
+                end = pos + 1
+            elif self.tu_content[pos]['type'] == 'starttag':
+                tagstack.append(pos)
+                tag = self.tu_content[pos]['tag']
+            elif self.tu_content[pos]['type'] == 'endtag':
+                if tagstack:
+                    match = tagstack.pop()
+                    tagmap[match] = pos
+                    tagmap[pos] = match
+                tag = None
+
+        # if no translatable content found: process all the content in the queue
+        # as if the translation unit didn't exist.
+        if end == 0:
+            for markup in self.tu_content:
+                self.emit_attribute_translation_units(markup)
+                self.filesrc += markup['html_content']
+            return
+
+        # scan the start and end tags captured between translatable content;
+        # extend the captured interval to include the matching tags
+        for pos in range(start + 1, end - 1):
+            if (self.tu_content[pos]['type'] == 'starttag' or \
+                self.tu_content[pos]['type'] == 'endtag') and \
+                pos in tagmap:
+                match = tagmap[pos]
+                start = min(start, match)
+                end = max(end, match + 1)
+
+        # emit leading uncaptured markup elements
+        for markup in self.tu_content[0:start]:
+            if markup['type'] != 'comment':
+                self.emit_attribute_translation_units(markup)
+                self.filesrc += markup['html_content']
+
+        # emit captured markup elements
+        if start < end:
+            html_content = ""
+            for markup in self.tu_content[start:end]:
+                if markup['type'] != 'comment':
+                    if 'untranslated_html' in markup:
+                        html_content += markup['untranslated_html']
+                    else:
+                        html_content += markup['html_content']
+            normalized_content = self.WHITESPACE_RE.sub(" ", html_content.strip())
+            assert normalized_content # shouldn't be here otherwise
+
+            unit = self.addsourceunit(normalized_content)
+            unit.addlocation(self.tu_location)
+            comments = [markup['note'] for markup in self.tu_content \
+                if markup['type'] == 'comment']
+            if comments:
+                unit.addnote("\n".join(comments))
+
+            html_content = self.get_leading_whitespace(html_content) + \
+                self.callback(normalized_content) + \
+                self.get_trailing_whitespace(html_content)
+            self.filesrc += html_content
+
+        # emit trailing uncaptured markup elements
+        for markup in self.tu_content[end:len(self.tu_content)]:
+            if markup['type'] != 'comment':
+                self.emit_attribute_translation_units(markup)
+                self.filesrc += markup['html_content']
+
+    @staticmethod
+    def has_translatable_content(markup):
+        return markup['type'] == 'data' and markup['html_content'].strip()
+
+    def extract_translatable_attributes(self, tag, attrs):
+        result = []
+        if tag == 'meta':
+            tu = self.create_metadata_attribute_tu(attrs)
+            if tu:
+                result.append(tu)
+        else:
+            for attrname, attrvalue in attrs:
+                if attrname in self.TRANSLATABLE_ATTRIBUTES \
+                    and self.translatable_attribute_matches_tag(attrname, tag):
+                    tu = self.create_attribute_tu(attrname, attrvalue)
+                    if tu:
+                        result.append(tu)
+        return result
+
+    def create_metadata_attribute_tu(self, attrs):
+        attrs_dict = dict(attrs)
+        name = attrs_dict['name'].lower() if 'name' in attrs_dict else None
+        if name in self.TRANSLATABLE_METADATA and 'content' in attrs_dict:
+            return self.create_attribute_tu('content', attrs_dict['content'])
+
+    def translatable_attribute_matches_tag(self, attrname, tag):
+        if attrname == 'lang':
+            return tag == 'html'
+        return True
+
+    def create_attribute_tu(self, attrname, attrvalue):
+        normalized_value = self.WHITESPACE_RE.sub(" ", attrvalue).strip()
+        if normalized_value:
+            return {
+                'html_content': normalized_value,
+                'location': "%s+%s:%d-%d" % (
+                                self.filename, 
+                                ".".join(self.tag_path) + '[' + attrname + ']',
+                                self.getpos()[0], self.getpos()[1] + 1)
             }
-        else:
-            return u"<%(tag)s%(selfclosing)s>" % {"tag": tag,
-                                                  "selfclosing": selfclosing}
 
-#From here on below, follows the methods of the HTMLParser
+    def emit_attribute_translation_units(self, markup):
+        if 'attribute_tus' in markup:
+            for tu in markup['attribute_tus']:
+                unit = self.addsourceunit(tu['html_content'])
+                unit.addlocation(tu['location'])
 
-    def startblock(self, tag, attrs=None):
-        self.addhtmlblock(self.currentblock)
-        if self.callback(normalize_html(strip_html(self.currentsrc))):
-            self.filesrc += self.currentsrc.replace(strip_html(self.currentsrc),
-                                                    self.callback(normalize_html(strip_html(self.currentsrc)).replace("\n", " ")))
-        else:
-            self.filesrc += self.currentsrc
-        self.currentblock = ""
-        self.currentcomment = ""
-        self.currenttag = tag
-        self.currentpos = self.getpos()[0]
-        self.currentoffset = self.getpos()[1] + 1
-        self.currentsrc = self.buildtag(tag, attrs)
+    def translate_attributes(self, attrs):
+        result = []
+        for attrname, attrvalue in attrs:
+            if attrvalue:
+                normalized_value = self.WHITESPACE_RE.sub(" ", attrvalue).strip()
+                translated_value = self.callback(normalized_value)
+                if translated_value != normalized_value:
+                    result.append((attrname, translated_value))
+                    continue
+            result.append((attrname, attrvalue))
+        return result
 
-    def endblock(self):
-        self.addhtmlblock(self.currentblock)
-        if self.callback(normalize_html(strip_html(self.currentsrc))) is not None:
-            self.filesrc += self.currentsrc.replace(strip_html(self.currentsrc),
-                                                    self.callback(normalize_html(strip_html(self.currentsrc).replace("\n", " "))))
-        else:
-            self.filesrc += self.currentsrc
-        self.currentblock = ""
-        self.currentcomment = ""
-        self.currenttag = None
-        self.currentpos = -1
-        self.currentoffset = -1
-        self.currentsrc = ""
+    def create_start_tag(self, tag, attrs=None, startend=False):
+        attr_strings = []
+        for attrname, attrvalue in attrs:
+            if attrvalue is None:
+                attr_strings.append(" " + attrname)
+            else:
+                attr_strings.append(' %s="%s"' % (attrname, attrvalue))
+        return "<%s%s%s>" % (
+            tag,
+            "".join(attr_strings),
+            " /" if startend else ""
+        )
+
+    def auto_close_empty_element(self):
+        if self.tag_path and self.tag_path[-1] in self.EMPTY_HTML_ELEMENTS:
+            self.tag_path.pop()
+
+    def get_leading_whitespace(self, str):
+        match = self.LEADING_WHITESPACE_RE.search(str)
+        return match.group(1) if match else ""
+
+    def get_trailing_whitespace(self, str):
+        match = self.TRAILING_WHITESPACE_RE.search(str)
+        return match.group(1) if match else ""
+
+    # From here on below, follows the methods of the HTMLParser
 
     def handle_starttag(self, tag, attrs):
-        newblock = False
-        if self.tag_path != [] \
-           and self.tag_path[-1:][0] in self.SELF_CLOSING_TAGS:
-            self.tag_path.pop()
+        self.auto_close_empty_element()
         self.tag_path.append(tag)
-        if tag in self.MARKINGTAGS:
-            newblock = True
-        for i, attr in enumerate(attrs):
-            attrname, attrvalue = attr
-            if attrname in self.MARKINGATTRS:
-                newblock = True
-            if attrname in self.INCLUDEATTRS and self.currentblock == "":
-                self.addhtmlblock(attrvalue)
-                attrs[i] = (attrname,
-                            self.callback(normalize_html(attrvalue).replace("\n", " ")))
 
-        if newblock:
-            self.startblock(tag, attrs)
-        elif self.currenttag is not None:
-            self.currentblock += self.get_starttag_text()
-            self.currentsrc += self.get_starttag_text()
-        else:
-            self.filesrc += self.buildtag(tag, attrs)
+        if tag in self.TRANSLATABLE_ELEMENTS:
+            self.begin_translation_unit()
 
-    def handle_startendtag(self, tag, attrs):
-        for i, attr in enumerate(attrs):
-            attrname, attrvalue = attr
-            if attrname in self.INCLUDEATTRS and self.currentblock == "":
-                self.addhtmlblock(attrvalue)
-                attrs[i] = (attrname,
-                            self.callback(normalize_html(attrvalue).replace("\n", " ")))
-        if self.currenttag is not None:
-            self.currentblock += self.get_starttag_text()
-            self.currentsrc += self.get_starttag_text()
-        else:
-            self.filesrc += self.buildtag(tag, attrs, startend=True)
+        translated_attrs = self.translate_attributes(attrs)
+        markup = {
+            'type': 'starttag',
+            'tag': tag,
+            'html_content': self.create_start_tag(tag, translated_attrs),
+            'untranslated_html': self.create_start_tag(tag, attrs),
+            'attribute_tus': self.extract_translatable_attributes(tag, attrs)
+        }
+        self.append_markup(markup)
 
     def handle_endtag(self, tag):
-        if tag == self.currenttag:
-            self.currentsrc += "</%(tag)s>" % {"tag": tag}
-            self.endblock()
-        elif self.currenttag is not None:
-            self.currentblock += '</%s>' % tag
-            self.currentsrc += '</%s>' % tag
-        else:
-            self.filesrc += '</%s>' % tag
         try:
             popped = self.tag_path.pop()
         except IndexError:
             raise ParseError("Mismatched tags: no more tags: line %s" %
                              self.getpos()[0])
-        while popped in self.SELF_CLOSING_TAGS:
+        if popped != tag and popped in self.EMPTY_HTML_ELEMENTS:
             popped = self.tag_path.pop()
         if popped != tag:
             raise ParseError("Mismatched closing tag: "
                              "expected '%s' got '%s' at line %s" %
                              (popped, tag, self.getpos()[0]))
 
+        self.append_markup({
+            'type': 'endtag',
+            'html_content': '</%s>' % tag
+        })
+
+        if tag in self.TRANSLATABLE_ELEMENTS:
+            self.end_translation_unit()
+            if any(t in self.TRANSLATABLE_ELEMENTS for t in self.tag_path):
+                self.begin_translation_unit()
+
+    def handle_startendtag(self, tag, attrs):
+        self.auto_close_empty_element()
+        self.tag_path.append(tag)
+
+        if tag in self.TRANSLATABLE_ELEMENTS:
+            self.begin_translation_unit()
+
+        translated_attrs = self.translate_attributes(attrs)
+        markup = {
+            'type': 'startendtag',
+            'html_content': self.create_start_tag(tag, translated_attrs, startend=True),
+            'untranslated_html': self.create_start_tag(tag, attrs, startend=True),
+            'attribute_tus': self.extract_translatable_attributes(tag, attrs)
+        }
+        self.append_markup(markup)
+
+        if tag in self.TRANSLATABLE_ELEMENTS:
+            self.end_translation_unit()
+            if any(t in self.TRANSLATABLE_ELEMENTS for t in self.tag_path):
+                self.begin_translation_unit()
+                
+        self.tag_path.pop()
+
     def handle_data(self, data):
-        if self.currenttag is not None:
-            self.currentblock += data
-            self.currentsrc += self.callback(data)
-        elif self.includeuntaggeddata:
-            self.startblock(None)
-            self.currentblock += data
-            self.currentsrc += data
-        else:
-            self.filesrc += self.callback(data)
+        self.auto_close_empty_element()
+        self.append_markup({
+            'type': 'data',
+            'html_content': data
+        })
 
     def handle_charref(self, name):
         """Handle entries in the form &#NNNN; e.g. &#8417;"""
-        self.handle_data(chr(int(name)))
+        if name.lower().startswith('x'):
+            self.handle_data(chr(int(name[1:], 16)))
+        else:
+            self.handle_data(chr(int(name)))
 
     def handle_entityref(self, name):
         """Handle named entities of the form &aaaa; e.g. &rsquo;"""
-        if name in ['gt', 'lt', 'amp']:
+        converted = html5.get(name + ";", None)
+        if name in ['gt', 'lt', 'amp'] or not converted:
             self.handle_data("&%s;" % name)
         else:
-            self.handle_data(chr(name2codepoint.get(name, u"&%s;" % name)))
+            self.handle_data(converted)
 
     def handle_comment(self, data):
-        # we can place comments above the msgid as translator comments!
-        if self.currentcomment == "":
-            self.currentcomment = data
-        else:
-            self.currentcomment += u'\n' + data
-        self.filesrc += "<!--%s-->" % data
+        self.auto_close_empty_element()
+        self.append_markup({
+            'type': 'comment',
+            'html_content': "<!--%s-->" % data,
+            'note': data
+        })
+
+    def handle_decl(self, decl):
+        self.auto_close_empty_element()
+        self.append_markup({
+            'type': 'decl',
+            'html_content': "<!%s>" % decl
+        })
 
     def handle_pi(self, data):
-        self.handle_data("<?%s?>" % self.pi_unescape(data))
+        self.auto_close_empty_element()
+        self.append_markup({
+            'type': 'pi',
+            'html_content': "<?%s?>" % data
+        })
+
+    def unknown_decl(self, data):
+        self.auto_close_empty_element()
+        self.append_markup({
+            'type': 'cdecl',
+            'html_content': "<![%s]>" % data
+        })
 
 
 class POHTMLParser(htmlfile):
