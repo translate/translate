@@ -98,6 +98,7 @@ Update the version number in:
 
 - :file:`translate/__version__.py`
 - :file:`docs/conf.py`
+- :file:`tests/cli/data/test_pofilter_manpage/stdout.txt`
 
 In :file:`translate/__version__.py`, bump the build number if anybody used the
 Translate Toolkit with the previous number, and there have been any changes to
@@ -230,6 +231,12 @@ The Docs.
 
 Use the admin pages to flag a version that should be published.
 
+.. note::
+
+    The branches like ``stable/2.2.x`` are automatically enabled on Read the
+    Docs using :guilabel:`Automation Rules`, so there might be nothing to do
+    here.
+
 
 Publish on PyPI
 ---------------
@@ -280,7 +287,7 @@ Do the following to create the release:
    the major changes with *This is a bugfix release for the X.X.X branch.*
 #. Add the converted major changes to the release description
 #. Include at the bottom of the release description a link to the full release
-   notes at Read The Docs
+   notes at Read the Docs
 #. Attach the tarball to the release
 #. Mark it as pre-release if it's a release candidate
 
@@ -298,8 +305,7 @@ We use github pages for the website. First we need to checkout the pages:
 #. In :file:`_posts/` add a new release posting.  This is in Markdown format
    (for now), so we need to change the release notes .rst to .md, which mostly
    means changing URL links from ```xxx <link>`_`` to ``[xxx](link)``.
-#. Change ``$version`` as needed. See :file:`download.html`,
-   :file:`_config.yml` and :command:`egrep -r $old_release *`
+#. Change ``$version`` as needed. See :file:`_config.yml` and :command:`git grep $old_release`.
 #. :command:`git commit` and :command:`git push` -- changes are quite quick, so
    easy to review.
 
@@ -309,26 +315,10 @@ Announce to the world
 
 Let people know that there is a new version:
 
-#. Announce on mailing lists **using plain text** emails using the same text
-   (adjusting what needs to be adjusted) used for the :ref:`Create a release on
-   Github <releasing#create-github-release>` description:
+#. Tweet about the release.
 
-   - translate-announce@lists.sourceforge.net
-   - translate-pootle@lists.sourceforge.net
-   - translate-devel@lists.sourceforge.net
+#. Post link to release Tweet to the `Translate gitter channel <https://gitter.im/translate/dev>`_.
 
-#. Adjust the Pootle gitter channel topic. Use ``/topic [new topic]`` to change
-   the topic.
-
-#. Adjust the #pootle channel notice. Use ``/topic [new topic]`` to change the
-   topic. It is easier if you copy the previous topic and adjust it.
-
-   .. note:: You might need to identify yourself by using
-      ``/msg nickserv identify [password]`` so the IRC server knows you in
-      order to check if you have enough permissions.
-
-#. Email important users
-#. Tweet about it
 #. Update `Translate Toolkit's Wikipedia page
    <http://en.wikipedia.org/wiki/Translate_Toolkit>`_
 
