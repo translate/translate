@@ -504,6 +504,7 @@ ghi ?>'''
         pofile = self.html2po(htmlsource)
         self.compareunit(pofile, 1, 'EPS färg')
 
+
 class TestHTML2POCommand(test_convert.TestConvertCommand, TestHTML2PO):
     """Tests running actual html2po commands on files"""
     convertmodule = html2po

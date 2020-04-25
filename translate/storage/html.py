@@ -73,17 +73,17 @@ class htmlfile(html.parser.HTMLParser, base.TranslationStore):
         "td", "th",
         "title"
     ]
-    """These HTML elements (tags) will be extracted as translation units, unless 
+    """These HTML elements (tags) will be extracted as translation units, unless
     they lack translatable text content.
-    In case one translatable element is embedded in another, the outer translation 
+    In case one translatable element is embedded in another, the outer translation
     unit will be split into the parts before and after the inner translation unit."""
 
     TRANSLATABLE_ATTRIBUTES = [
-        "abbr", # abbreviation for a table header cell
+        "abbr",       # abbreviation for a table header cell
         "alt",
-        "lang", # only for the html element -- see extract_translatable_attributes()
+        "lang",       # only for the html element -- see extract_translatable_attributes()
         "summary",
-        "title", # tooltip text for an element
+        "title",      # tooltip text for an element
         "value"
     ]
     """Text from these HTML attributes will be extracted as translation units.
@@ -112,8 +112,8 @@ class htmlfile(html.parser.HTMLParser, base.TranslationStore):
         "track",
         "wbr"
     ]
-    """An empty element is an element that cannot have any child nodes (i.e., nested 
-    elements or text nodes). In HTML, using a closing tag on an empty element is 
+    """An empty element is an element that cannot have any child nodes (i.e., nested
+    elements or text nodes). In HTML, using a closing tag on an empty element is
     usually invalid.
     Reference `<https://developer.mozilla.org/en-US/docs/Glossary/Empty_element>`_"""
 
@@ -133,7 +133,7 @@ class htmlfile(html.parser.HTMLParser, base.TranslationStore):
                  callback=None):
         html.parser.HTMLParser.__init__(self, convert_charrefs=False)
         base.TranslationStore.__init__(self)
-        
+
         # store parameters
         self.filename = getattr(inputfile, 'name', None)
         if callback is None:
@@ -182,8 +182,8 @@ class htmlfile(html.parser.HTMLParser, base.TranslationStore):
         self.emit_translation_unit()
         self.tu_content = []
         self.tu_location = "%s+%s:%d-%d" % (
-                            self.filename, ".".join(self.tag_path),
-                            self.getpos()[0], self.getpos()[1] + 1)
+                           self.filename, ".".join(self.tag_path),
+                           self.getpos()[0], self.getpos()[1] + 1)
 
     def end_translation_unit(self):
         # at the end of a translation unit:
@@ -191,7 +191,7 @@ class htmlfile(html.parser.HTMLParser, base.TranslationStore):
         self.emit_translation_unit()
         self.tu_content = []
         self.tu_location = None
-    
+
     def append_markup(self, markup):
         # if within a translation unit: add to the queue to be processed later.
         # otherwise handle immediately.
@@ -203,7 +203,7 @@ class htmlfile(html.parser.HTMLParser, base.TranslationStore):
 
     def emit_translation_unit(self):
         # scan through the queue:
-        # - find the first and last translatable markup elements: the captured 
+        # - find the first and last translatable markup elements: the captured
         #   interval [start, end)
         # - match start and end tags
         start = 0
@@ -213,7 +213,7 @@ class htmlfile(html.parser.HTMLParser, base.TranslationStore):
         tag = None
         for pos in range(len(self.tu_content)):
             if self.tu_content[pos]['type'] != 'endtag' \
-                and tag in self.EMPTY_HTML_ELEMENTS:
+                    and tag in self.EMPTY_HTML_ELEMENTS:
                 match = tagstack.pop()
                 tag = None
 
@@ -242,9 +242,9 @@ class htmlfile(html.parser.HTMLParser, base.TranslationStore):
         # scan the start and end tags captured between translatable content;
         # extend the captured interval to include the matching tags
         for pos in range(start + 1, end - 1):
-            if (self.tu_content[pos]['type'] == 'starttag' or \
-                self.tu_content[pos]['type'] == 'endtag') and \
-                pos in tagmap:
+            if (self.tu_content[pos]['type'] == 'starttag' or
+                    self.tu_content[pos]['type'] == 'endtag') and \
+                    pos in tagmap:
                 match = tagmap[pos]
                 start = min(start, match)
                 end = max(end, match + 1)
@@ -265,12 +265,12 @@ class htmlfile(html.parser.HTMLParser, base.TranslationStore):
                     else:
                         html_content += markup['html_content']
             normalized_content = self.WHITESPACE_RE.sub(" ", html_content.strip())
-            assert normalized_content # shouldn't be here otherwise
+            assert normalized_content  # shouldn't be here otherwise
 
             unit = self.addsourceunit(normalized_content)
             unit.addlocation(self.tu_location)
-            comments = [markup['note'] for markup in self.tu_content \
-                if markup['type'] == 'comment']
+            comments = [markup['note'] for markup in self.tu_content
+                        if markup['type'] == 'comment']
             if comments:
                 unit.addnote("\n".join(comments))
 
@@ -298,7 +298,7 @@ class htmlfile(html.parser.HTMLParser, base.TranslationStore):
         else:
             for attrname, attrvalue in attrs:
                 if attrname in self.TRANSLATABLE_ATTRIBUTES \
-                    and self.translatable_attribute_matches_tag(attrname, tag):
+                        and self.translatable_attribute_matches_tag(attrname, tag):
                     tu = self.create_attribute_tu(attrname, attrvalue)
                     if tu:
                         result.append(tu)
@@ -321,9 +321,9 @@ class htmlfile(html.parser.HTMLParser, base.TranslationStore):
             return {
                 'html_content': normalized_value,
                 'location': "%s+%s:%d-%d" % (
-                                self.filename, 
-                                ".".join(self.tag_path) + '[' + attrname + ']',
-                                self.getpos()[0], self.getpos()[1] + 1)
+                            self.filename,
+                            ".".join(self.tag_path) + '[' + attrname + ']',
+                            self.getpos()[0], self.getpos()[1] + 1)
             }
 
     def emit_attribute_translation_units(self, markup):
@@ -431,7 +431,7 @@ class htmlfile(html.parser.HTMLParser, base.TranslationStore):
             self.end_translation_unit()
             if any(t in self.TRANSLATABLE_ELEMENTS for t in self.tag_path):
                 self.begin_translation_unit()
-                
+
         self.tag_path.pop()
 
     def handle_data(self, data):
