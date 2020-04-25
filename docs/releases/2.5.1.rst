@@ -71,6 +71,6 @@ Contributors
 
 This release was made possible by the following people:
 
-Michal Čihař, Tomáš Chvátal, Niels Sascha Reedijk.
+Michal Čihař, Nick Schonning, Tomáš Chvátal, Niels Sascha Reedijk.
 
 And to all our bug finders and testers, a Very BIG Thank You.
