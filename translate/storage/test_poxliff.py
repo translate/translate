@@ -72,6 +72,23 @@ class TestPOXLIFFfile(test_xliff.TestXLIFFfile):
         assert xlifffile.units[0].source == "cow"
         assert xlifffile.units[0].source == multistring(["cow", "cows"])
 
+    def test_parse_plural_alpha_id(self):
+        minixlf = self.xliffskeleton % '''<group restype="x-gettext-plurals">
+        <trans-unit id="test[0]" xml:space="preserve">
+            <source>cow</source>
+            <target>inkomo</target>
+        </trans-unit>
+        <trans-unit id="test[1]" xml:space="preserve">
+            <source>cows</source>
+            <target>iinkomo</target>
+        </trans-unit>
+</group>'''
+        xlifffile = self.StoreClass.parsestring(minixlf)
+        assert len(xlifffile.units) == 1
+        assert xlifffile.translate("cow") == "inkomo"
+        assert xlifffile.units[0].source == "cow"
+        assert xlifffile.units[0].source == multistring(["cow", "cows"])
+
     def test_notes(self):
         minixlf = self.xliffskeleton % '''<group restype="x-gettext-plurals">
         <trans-unit id="1[0]" xml:space="preserve">

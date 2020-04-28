@@ -371,7 +371,7 @@ class PoXliffFile(xliff.xlifffile, poheader.poheader):
             We want to filter out all the plural nodes, except the very first
             one in each group.
             """
-            return re.match(r"\d+\[[123456]\]$", node.get("id") or "") is None
+            return re.match(r".+\[[123456]\]$", node.get("id") or "") is None
 
         def pluralunits(pluralgroups):
             for pluralgroup in pluralgroups:
