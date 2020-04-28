@@ -109,10 +109,8 @@ class BaseTestFactory:
     def test_bz2file(self):
         """Test that we can open a gzip file correctly."""
         filename = os.path.join(self.testdir, self.filename + '.bz2')
-        # `with open(...) as` syntax with BZ2File requires Python 2.7
-        bz2file = BZ2File(filename, mode="wb")
-        bz2file.write(self.file_content)
-        bz2file.close()
+        with BZ2File(filename, mode="wb") as bz2file:
+            bz2file.write(self.file_content)
         store = factory.getobject(filename)
         assert isinstance(store, self.expected_instance)
 
