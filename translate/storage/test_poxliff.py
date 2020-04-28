@@ -1,4 +1,3 @@
-from __future__ import unicode_literals
 from translate.misc.multistring import multistring
 from translate.storage import poxliff, test_xliff
 

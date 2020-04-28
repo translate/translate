@@ -1,5 +1,4 @@
 """Tests for the directory module"""
-from __future__ import print_function
 
 import os
 

@@ -20,7 +20,6 @@
 """Supports a hybrid Unicode string that can also have a list of alternate
 strings in the strings attribute
 """
-from __future__ import unicode_literals
 
 import warnings
 

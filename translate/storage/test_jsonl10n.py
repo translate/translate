@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 
-from __future__ import unicode_literals
 from io import BytesIO
 from pytest import raises
 from translate.misc.multistring import multistring

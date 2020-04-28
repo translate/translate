@@ -22,7 +22,6 @@
 .. seealso:: https://en.wikipedia.org/wiki/Odia_language
 """
 
-from __future__ import unicode_literals
 
 import re
 

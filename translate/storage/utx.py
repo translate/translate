@@ -42,7 +42,6 @@ Format Implementation
 Encoding
     The files are UTF-8 encoded with no BOM and CR+LF line terminators.
 """
-from __future__ import unicode_literals
 
 import six
 import time

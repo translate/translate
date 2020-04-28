@@ -18,7 +18,6 @@
 # along with this program; if not, see <http://www.gnu.org/licenses/>.
 
 """Import units from translations files into tmdb."""
-from __future__ import print_function
 
 import logging
 import os

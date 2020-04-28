@@ -1,5 +1,4 @@
 """Tests for the zip storage module"""
-from __future__ import print_function
 
 import os
 from zipfile import ZipFile

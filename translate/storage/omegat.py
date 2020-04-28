@@ -37,7 +37,6 @@ Encoding
     encoded files use the .utf8 extension while system encoded files use
     the .tab extension.
 """
-from __future__ import unicode_literals
 
 import locale
 import six

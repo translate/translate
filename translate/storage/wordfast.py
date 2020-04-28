@@ -78,7 +78,6 @@ Extended Attributes
     The last 4 columns allow users to define and manage extended attributes.
     These are left as is and are not directly managed byour implemenation.
 """
-from __future__ import unicode_literals
 
 import six
 import time

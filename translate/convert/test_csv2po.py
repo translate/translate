@@ -1,5 +1,4 @@
 # -*- coding: utf-8 -*-
-from __future__ import unicode_literals
 
 from translate.convert import csv2po, test_convert
 from translate.misc import wStringIO

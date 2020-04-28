@@ -22,7 +22,6 @@
 .. seealso:: https://en.wikipedia.org/wiki/Brazilian_Portuguese
 """
 
-from __future__ import unicode_literals
 
 from translate.lang.common import Common
 

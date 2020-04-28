@@ -22,7 +22,6 @@
 .. seealso:: http://en.wikipedia.org/wiki/Amharic_language
 """
 
-from __future__ import unicode_literals
 
 import re
 

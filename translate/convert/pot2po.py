@@ -23,7 +23,6 @@ files, preserving existing translations.
 See: http://docs.translatehouse.org/projects/translate-toolkit/en/latest/commands/pot2po.html
 for examples and usage instructions.
 """
-from __future__ import unicode_literals
 
 import six
 

@@ -20,7 +20,6 @@
 """This module represents the Turkish language.
 """
 
-from __future__ import unicode_literals
 
 from translate.lang import common
 

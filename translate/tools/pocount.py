@@ -25,7 +25,6 @@ See: http://docs.translatehouse.org/projects/translate-toolkit/en/latest/command
 for examples and usage instructions.
 """
 
-from __future__ import print_function
 
 import logging
 import os

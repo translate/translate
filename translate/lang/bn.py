@@ -22,7 +22,6 @@
 .. seealso:: http://en.wikipedia.org/wiki/Bengali_language
 """
 
-from __future__ import unicode_literals
 
 import re
 

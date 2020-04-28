@@ -25,7 +25,6 @@
    (v1.4.2) to ensure that we match currently released versions of Poedit.
 """
 
-from __future__ import unicode_literals
 
 lang_codes = {
     "aa": "Afar",

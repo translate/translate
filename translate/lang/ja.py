@@ -22,7 +22,6 @@
 .. seealso:: http://en.wikipedia.org/wiki/Japanese_language
 """
 
-from __future__ import unicode_literals
 
 import re
 

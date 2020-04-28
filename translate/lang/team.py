@@ -20,7 +20,6 @@
 """Module to guess the language ISO code based on the 'Language-Team' entry in
 the header of a Gettext PO file.
 """
-from __future__ import print_function, unicode_literals
 
 import re
 

@@ -22,7 +22,6 @@
 .. seealso:: http://en.wikipedia.org/wiki/Sicilian_language
 """
 
-from __future__ import unicode_literals
 
 from translate.filters.checks import FilterFailure, TranslationChecker, CheckerConfig
 from translate.filters.decorators import critical

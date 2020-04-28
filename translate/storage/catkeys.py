@@ -48,7 +48,6 @@ Escaping
 
     Functions allow for :func:`._escape` and :func:`._unescape`.
 """
-from __future__ import unicode_literals
 
 import six
 import csv

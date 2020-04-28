@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 
-from __future__ import unicode_literals
 
 from translate.filters.test_checks import fails, passes
 from translate.lang.scn import SicilianChecker

@@ -19,7 +19,6 @@
 
 """This module stores information and functionality that relates to plurals."""
 
-from __future__ import unicode_literals
 
 import gettext
 import locale

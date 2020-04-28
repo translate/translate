@@ -23,7 +23,6 @@
    it could also be used for Asturian, Galician, or Catalan.
 """
 
-from __future__ import unicode_literals
 
 from translate.lang import common
 

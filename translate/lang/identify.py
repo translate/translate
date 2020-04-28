@@ -21,7 +21,6 @@
 This module contains functions for identifying languages based on language
 models.
 """
-from __future__ import print_function
 
 import io
 from os import extsep, path

@@ -54,7 +54,6 @@ implemented as outlined in the PHP documentation for the
 `String type <http://www.php.net/language.types.string>`_.
 """
 
-from __future__ import unicode_literals
 
 import re
 

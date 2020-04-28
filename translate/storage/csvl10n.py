@@ -21,7 +21,6 @@
 or entire files (csvfile) for use with localisation
 """
 
-from __future__ import unicode_literals
 
 import six
 import csv

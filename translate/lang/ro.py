@@ -22,7 +22,6 @@
 .. seealso:: http://en.wikipedia.org/wiki/Romanian_language
 """
 
-from __future__ import unicode_literals
 
 from translate.filters.checks import FilterFailure, TranslationChecker
 from translate.filters.decorators import cosmetic

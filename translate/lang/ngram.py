@@ -25,7 +25,6 @@
 .. note:: Orignal code from http://thomas.mangin.me.uk/data/source/ngram.py
 """
 
-from __future__ import unicode_literals
 
 import glob
 import io

@@ -59,7 +59,6 @@ TODOs and Ideas for possible features:
   - phrases
 """
 
-from __future__ import unicode_literals
 
 import logging
 import re

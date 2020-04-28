@@ -22,7 +22,6 @@
 .. seealso:: https://en.wikipedia.org/wiki/Assamese_language
 """
 
-from __future__ import unicode_literals
 
 from translate.lang import common
 
