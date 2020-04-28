@@ -99,7 +99,7 @@ class BundleProjectStore(ProjectStore):
         """Remove the file with the given project name from the project."""
         super(BundleProjectStore, self).remove_file(fname, ftype)
         self._zip_delete([fname])
-        tempfiles = [tmpf for tmpf, prjf in six.iteritems(self._tempfiles) if prjf == fname]
+        tempfiles = [tmpf for tmpf, prjf in self._tempfiles.items() if prjf == fname]
         if tempfiles:
             for tmpf in tempfiles:
                 try:

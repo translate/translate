@@ -371,7 +371,7 @@ controlchars = {
 
 def escapecontrols(source):
     """escape control characters in the given string"""
-    for key, value in six.iteritems(controlchars):
+    for key, value in controlchars.items():
         source = source.replace(key, value)
     return source
 

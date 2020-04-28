@@ -43,7 +43,7 @@ class TestConvertCommand(object):
         argv = list(argv)
         kwoptions = getattr(self, "defaultoptions", {}).copy()
         kwoptions.update(kwargs)
-        for key, value in six.iteritems(kwoptions):
+        for key, value in kwoptions.items():
             if value is True:
                 argv.append("--%s" % key)
             else:

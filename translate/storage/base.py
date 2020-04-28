@@ -481,7 +481,7 @@ class TranslationUnit(object):
     def get_state_id(self, n=None):
         if n is None:
             n = self.get_state_n()
-        for state_id, state_range in six.iteritems(self.STATE):
+        for state_id, state_range in self.STATE.items():
             if state_range[0] <= n < state_range[1]:
                 return state_id
         if self.STATE:

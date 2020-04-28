@@ -187,7 +187,7 @@ class JsonFile(base.TranslationStore):
         :param last_node: the last list or dict
         """
         if isinstance(data, dict):
-            for k, v in six.iteritems(data):
+            for k, v in data.items():
                 for x in self._extract_units(v, stop, "%s.%s" % (prev, k), k, None, data):
                     yield x
         elif isinstance(data, list):
@@ -272,7 +272,7 @@ class WebExtensionJsonFile(JsonFile):
     UnitClass = WebExtensionJsonUnit
 
     def _extract_units(self, data, stop=None, prev="", name_node=None, name_last_node=None, last_node=None):
-        for item, value in six.iteritems(data):
+        for item, value in data.items():
             unit = self.UnitClass(
                 value.get('message', ''),
                 item,
@@ -349,7 +349,7 @@ class I18NextFile(JsonNestedFile):
             plurals_simple = [key.rsplit('_', 1)[0] for key in data if key.endswith('_plural')]
             processed = set()
 
-            for k, v in six.iteritems(data):
+            for k, v in data.items():
                 # Check already processed items
                 if k in processed:
                     continue

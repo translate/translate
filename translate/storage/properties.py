@@ -283,7 +283,7 @@ class Dialect(object):
             delimiter_dict[delimiter] = -1
         delimiters = delimiter_dict
         # Find the position of each delimiter type
-        for delimiter, pos in six.iteritems(delimiters):
+        for delimiter, pos in delimiters.items():
             start_pos = len(line) - len(line.lstrip())  # Skip initial whitespace
             if cls.key_wrap_char != '' and line[start_pos] == cls.key_wrap_char:
                 # Skip the key if it is delimited by some char
@@ -299,7 +299,7 @@ class Dialect(object):
         # Find the first delimiter
         mindelimiter = None
         minpos = -1
-        for delimiter, pos in six.iteritems(delimiters):
+        for delimiter, pos in delimiters.items():
             if pos == -1 or delimiter == u" ":
                 continue
             if minpos == -1 or pos < minpos:

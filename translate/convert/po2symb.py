@@ -32,7 +32,7 @@ from translate.storage.symbian import *
 
 
 def escape(text):
-    for key, val in six.iteritems(po_escape_map):
+    for key, val in po_escape_map.items():
         text = text.replace(key, val)
     return '"%s"' % text
 

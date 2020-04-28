@@ -239,7 +239,7 @@ class UtxFile(base.TranslationStore):
             "date": self._header["date_created"],
         }
         items = []
-        for key, value in six.iteritems(self._header):
+        for key, value in self._header.items():
             if key in ["version", "source_language",
                        "target_language", "date_created"]:
                 continue

@@ -46,7 +46,7 @@ def setup_module(module):
 def args(src, tgt, **kwargs):
     arg_list = []
     arg_list.extend([u'--errorlevel=traceback', src, tgt])
-    for flag, value in six.iteritems(kwargs):
+    for flag, value in kwargs.items():
         value = six.text_type(value)
         if len(flag) == 1:
             arg_list.append(u'-%s' % flag)

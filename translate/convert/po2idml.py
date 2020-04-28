@@ -50,7 +50,7 @@ def translate_idml(template, input_file, translatable_files):
         idml_data = open_idml(template)
         parser = etree.XMLParser(strip_cdata=False, resolve_entities=False)
         return dict((filename, etree.fromstring(data, parser).getroottree())
-                    for filename, data in six.iteritems(idml_data))
+                    for filename, data in idml_data.items())
 
     def load_unit_tree(input_file):
         """Return a dict with the translations grouped by files IDML package.
@@ -122,7 +122,7 @@ def translate_idml(template, input_file, translatable_files):
 
         make_parse_state = lambda: ParseState(NO_TRANSLATE_ELEMENTS,
                                               INLINE_ELEMENTS)
-        for filename, dom_tree in six.iteritems(dom_trees):
+        for filename, dom_tree in dom_trees.items():
             file_unit_tree = unit_trees[filename]
             apply_translations(dom_tree.getroot(), file_unit_tree,
                                replace_dom_text(make_parse_state,
@@ -143,7 +143,7 @@ def write_idml(template_zip, output_file, dom_trees):
     output_zip = copy_idml(template_zip, output_zip, dom_trees.keys())
 
     # Replace the translated files in the IDML package.
-    for filename, dom_tree in six.iteritems(dom_trees):
+    for filename, dom_tree in dom_trees.items():
         output_zip.writestr(filename, etree.tostring(dom_tree,
                                                      encoding='UTF-8',
                                                      xml_declaration=True,

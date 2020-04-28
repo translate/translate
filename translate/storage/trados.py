@@ -90,14 +90,14 @@ http://msdn.microsoft.com/en-us/library/aa140283(v=office.10).aspx
 
 def unescape(text):
     """Convert Trados text to normal Unicode string"""
-    for trados_escape, char in six.iteritems(RTF_ESCAPES):
+    for trados_escape, char in RTF_ESCAPES.items():
         text = text.replace(trados_escape, char)
     return text
 
 
 def escape(text):
     """Convert Unicode string to Trodas escapes"""
-    for trados_escape, char in six.iteritems(RTF_ESCAPES):
+    for trados_escape, char in RTF_ESCAPES.items():
         text = text.replace(char, trados_escape)
     return text
 

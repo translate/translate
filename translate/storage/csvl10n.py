@@ -128,7 +128,7 @@ class csvunit(base.TranslationUnit):
     def match_header(self):
         """see if unit might be a header"""
         some_value = False
-        for key, value in six.iteritems(self.todict()):
+        for key, value in self.todict().items():
             if value:
                 some_value = True
             if key.lower() != 'fuzzy' and value and key.lower() != value.lower():
@@ -154,7 +154,7 @@ class csvunit(base.TranslationUnit):
         return source, target
 
     def fromdict(self, cedict, encoding='utf-8'):
-        for key, value in six.iteritems(cedict):
+        for key, value in cedict.items():
             rkey = fieldname_map.get(key, key)
             if value is None or key is None or key == EXTRA_KEY:
                 continue

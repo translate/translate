@@ -53,7 +53,7 @@ class cidict(dict):
         """D.update(E) -> None.
         Update D from E: for k in E.keys(): D[k] = E[k]
         """
-        for key, value in six.iteritems(updatedict):
+        for key, value in updatedict.items():
             self[key] = value
 
     def __delitem__(self, key):

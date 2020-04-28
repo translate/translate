@@ -273,7 +273,7 @@ class RecursiveOptionParser(optparse.OptionParser, object):
         templateformats = []
         self.outputoptions = {}
         self.usetemplates = usetemplates
-        for formatgroup, outputoptions in six.iteritems(formats):
+        for formatgroup, outputoptions in formats.items():
             if isinstance(formatgroup, six.string_types) or formatgroup is None:
                 formatgroup = (formatgroup, )
             if not isinstance(formatgroup, tuple):

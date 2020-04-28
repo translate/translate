@@ -530,7 +530,7 @@ class StatsCache(object):
                 if unitindex:
                     index = unitindex
                 failures = checker.run_filters(unit)
-                for checkname, checkmessage in six.iteritems(failures):
+                for checkname, checkmessage in failures.items():
                     unitvalues.append((index, fileid, configid, checkname, checkmessage))
                     errornames.append("check-" + checkname)
         checker.setsuggestionstore(None)

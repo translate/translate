@@ -76,7 +76,7 @@ class tsunit(lisa.LISAunit):
         S_TRANSLATED: (state.UNREVIEWED, state.MAX),
     }
 
-    statemap_r = dict((i[1], i[0]) for i in six.iteritems(statemap))
+    statemap_r = dict((i[1], i[0]) for i in statemap.items())
     _context = None
 
     def createlanguageNode(self, lang, text, purpose):

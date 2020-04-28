@@ -494,7 +494,7 @@ class UnitChecker(object):
         self.results_cache = {}
 
         if not categorised:
-            for name, info in six.iteritems(failures):
+            for name, info in failures.items():
                 failures[name] = info['message']
         return failures
 

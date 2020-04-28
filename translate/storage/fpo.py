@@ -182,7 +182,7 @@ class pounit(pocommon.pounit):
         # self.__shallow__
         shallow = set(self.__shallow__)
         # Make deep copies of all members which are not in shallow
-        for key, value in six.iteritems(self.__dict__):
+        for key, value in self.__dict__.items():
             if key not in shallow:
                 setattr(new_unit, key, copy.deepcopy(value))
         # Make shallow copies of all members which are in shallow

@@ -406,7 +406,7 @@ def _snippet_guesser(snippets_dict, string, filter_=_nofilter):
     before examination
     """
     string = filter_(string)
-    for possible_lang, snippets in six.iteritems(snippets_dict):
+    for possible_lang, snippets in snippets_dict.items():
         for snippet in snippets:
             if filter_(snippet) in string:
                 return possible_lang

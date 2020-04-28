@@ -144,7 +144,7 @@ class Statistics(object):
         #TODO: decoding should not be done here
 #        checkresult = self.checker.run_filters(unit, source, target)
         checkresult = {}
-        for checkname, checkmessage in six.iteritems(checkresult):
+        for checkname, checkmessage in checkresult.items():
             classes.append("check-" + checkname)
         return classes
 

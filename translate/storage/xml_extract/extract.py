@@ -384,7 +384,7 @@ def _walk_translatable_tree(translatables, store_adder, parent_translatable,
 
 
 def reverse_map(a_map):
-    return dict((value, key) for key, value in six.iteritems(a_map))
+    return dict((value, key) for key, value in a_map.items())
 
 
 def build_idml_store(odf_file, store, parse_state, store_adder=None):

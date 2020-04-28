@@ -57,7 +57,7 @@ class reoo(object):
     def makeindex(self):
         """makes an index of the oo keys that are used in the source file"""
         self.index = {}
-        for ookey, theoo in six.iteritems(self.o.ookeys):
+        for ookey, theoo in self.o.ookeys.items():
             sourcekey = oo.makekey(ookey, self.long_keys)
             self.index[sourcekey] = theoo
 
@@ -160,7 +160,7 @@ class oocheckfilter(pofilter.pocheckfilter):
         filterresult = self.filterunit(unit)
         if filterresult:
             if filterresult != autocorrect:
-                for filtername, filtermessage in six.iteritems(filterresult):
+                for filtername, filtermessage in filterresult.items():
                     location = unit.getlocations()[0]
                     if filtername in self.options.error:
                         logger.error("Error at %s::%s: %s",

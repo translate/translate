@@ -44,7 +44,7 @@ def _get_tag_arrays(dom_node):
 
 def apply_translations(dom_node, unit_node, do_translate):
     tag_array = _get_tag_arrays(dom_node)
-    for unit_child_index, unit_child in six.iteritems(unit_node.children):
+    for unit_child_index, unit_child in unit_node.children.items():
         tag, index = unit_child_index
         try:
             dom_child = tag_array[XmlNamer(dom_node).name(tag)][index]

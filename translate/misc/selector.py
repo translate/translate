@@ -145,7 +145,7 @@ class Selector(object):
         app, svars, methods, matched = \
             self.select(environ['PATH_INFO'], environ['REQUEST_METHOD'])
         unnamed, named = [], {}
-        for k, v in six.iteritems(svars):
+        for k, v in svars.items():
             if k.startswith('__pos'):
                 k = k[5:]
             named[k] = v

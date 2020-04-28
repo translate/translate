@@ -94,7 +94,7 @@ def update(existing, add=False, **kwargs):
             removed.append(key)
         elif add and key in fixedargs:
             headerargs[key] = fixedargs.pop(key)
-    for key, value in six.iteritems(existing):
+    for key, value in existing.items():
         if key not in removed:
             headerargs[key] = value
     if add:

@@ -136,7 +136,7 @@ class ConflictOptionParser(optrecurse.RecursiveOptionParser):
     def buildconflictmap(self):
         """work out which strings are conflicting"""
         self.conflictmap = {}
-        for source, translations in six.iteritems(self.textmap):
+        for source, translations in self.textmap.items():
             source = self.flatten(source, " ")
             if len(source) <= 1:
                 continue
@@ -153,7 +153,7 @@ class ConflictOptionParser(optrecurse.RecursiveOptionParser):
         def str_len(x):
             return len(x)
 
-        for source, translations in six.iteritems(self.conflictmap):
+        for source, translations in self.conflictmap.items():
             words = source.split()
             words.sort(key=str_len)
             source = words[-1]
@@ -163,9 +163,9 @@ class ConflictOptionParser(optrecurse.RecursiveOptionParser):
         for word in reducedmap:
             if word + "s" in reducedmap:
                 plurals[word] = word + "s"
-        for word, pluralword in six.iteritems(plurals):
+        for word, pluralword in plurals.items():
             reducedmap[word].extend(reducedmap.pop(pluralword))
-        for source, translations in six.iteritems(reducedmap):
+        for source, translations in reducedmap.items():
             flatsource = self.flatten(source, "-")
             fulloutputpath = os.path.join(options.output, flatsource + os.extsep + "po")
             conflictfile = po.pofile()

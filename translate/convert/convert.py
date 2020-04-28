@@ -133,7 +133,7 @@ class ConvertOptionParser(optrecurse.RecursiveOptionParser, object):
         """Filters output options, processing relevant switches in options."""
         if self.usepots and options.pot:
             outputoptions = {}
-            for (inputformat, templateformat), (outputformat, convertor) in six.iteritems(self.outputoptions):
+            for (inputformat, templateformat), (outputformat, convertor) in self.outputoptions.items():
                 inputformat = self.potifyformat(inputformat)
                 templateformat = self.potifyformat(templateformat)
                 outputformat = self.potifyformat(outputformat)

@@ -301,7 +301,7 @@ class ProjectStore(object):
         # Add conversion mappings
         if self.convert_map:
             conversions_el = etree.Element('conversions')
-            for in_fname, (out_fname, templ_fname) in six.iteritems(self.convert_map):
+            for in_fname, (out_fname, templ_fname) in self.convert_map.items():
                 if in_fname not in self._files or out_fname not in self._files:
                     continue
                 conv_el = etree.Element('conv')
