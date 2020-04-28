@@ -26,7 +26,7 @@ import logging
 import six
 from argparse import ArgumentParser
 from io import BytesIO
-from six.moves.urllib import parse
+from urllib import parse
 
 from translate.misc import selector, wsgi
 from translate.storage import base, tmdb

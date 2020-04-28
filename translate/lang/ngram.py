@@ -33,7 +33,6 @@ import re
 import six
 import sys
 from os import path
-from six.moves import range
 
 
 nb_ngrams = 400

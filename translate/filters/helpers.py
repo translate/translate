@@ -20,7 +20,7 @@
 """a set of helper functions for filters..."""
 
 import operator
-from six.moves import reduce
+from functools import reduce
 
 
 def countmatch(str1, str2, countstr):

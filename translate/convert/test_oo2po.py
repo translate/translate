@@ -4,7 +4,7 @@ from __future__ import print_function
 import os
 import six
 from io import BytesIO
-from six.moves.urllib import parse
+from urllib import parse
 
 from translate.convert import oo2po, po2oo, test_convert
 from translate.storage import oo, po

@@ -23,8 +23,8 @@
 import re
 import six
 
-from six.moves import html_parser
-from six.moves.html_entities import name2codepoint
+import html.parser
+from html.entities import name2codepoint
 
 from translate.misc.deprecation import deprecated
 from translate.storage import base
@@ -33,7 +33,7 @@ from translate.storage.base import ParseError
 
 # Override the piclose tag from simple > to ?> otherwise we consume HTML
 # within the processing instructions
-html_parser.piclose = re.compile(r'\?>')
+html.parser.piclose = re.compile(r'\?>')
 
 
 strip_html_re = re.compile(r'''
@@ -125,7 +125,7 @@ class htmlunit(base.TranslationUnit):
         return self.locations
 
 
-class htmlfile(html_parser.HTMLParser, base.TranslationStore):
+class htmlfile(html.parser.HTMLParser, base.TranslationStore):
     UnitClass = htmlunit
 
     MARKINGTAGS = [
@@ -194,7 +194,7 @@ class htmlfile(html_parser.HTMLParser, base.TranslationStore):
             self.callback = callback
         self.includeuntaggeddata = includeuntaggeddata
         htmlargs = {'convert_charrefs': True} if six.PY34 else {}
-        html_parser.HTMLParser.__init__(self, **htmlargs)
+        html.parser.HTMLParser.__init__(self, **htmlargs)
 
         if inputfile is not None:
             htmlsrc = inputfile.read()

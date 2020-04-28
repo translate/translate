@@ -28,7 +28,8 @@ import re
 import six
 import stat
 import sys
-from six.moves import _thread, UserDict
+from collections import UserDict
+import _thread
 from sqlite3 import dbapi2
 
 from translate import __version__ as toolkitversion

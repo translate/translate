@@ -23,8 +23,7 @@ delimiters
 
 import logging
 import six
-
-from six.moves import html_entities
+import html.entities
 
 
 def find_all(searchin, substr):
@@ -290,7 +289,7 @@ def htmlentityencode(source):
 
     :param unicode source: Source string to encode
     """
-    return entityencode(source, html_entities.codepoint2name)
+    return entityencode(source, html.entities.codepoint2name)
 
 
 def htmlentitydecode(source):
@@ -298,7 +297,7 @@ def htmlentitydecode(source):
 
     :param unicode source: Source string to decode
     """
-    return entitydecode(source, html_entities.name2codepoint)
+    return entitydecode(source, html.entities.name2codepoint)
 
 
 def javapropertiesencode(source):

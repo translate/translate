@@ -19,7 +19,7 @@
 
 import re
 import six
-from six.moves.urllib import parse
+from urllib import parse
 
 from translate.storage import base, poheader
 from translate.storage.workflow import StateEnum as state

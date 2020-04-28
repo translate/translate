@@ -25,7 +25,7 @@ for examples and usage instructions.
 """
 
 import logging
-from six.moves.urllib import parse
+from urllib import parse
 
 
 from translate.storage import oo, xliff

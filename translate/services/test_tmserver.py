@@ -11,7 +11,7 @@ from cheroot.wsgi import Server
 
 from pytest import mark
 
-from six.moves.urllib.request import urlopen
+from urllib.request import urlopen
 
 from translate.services.tmserver import TMServer
 

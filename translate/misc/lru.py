@@ -19,7 +19,6 @@
 
 import gc
 from collections import deque
-from six.moves import range
 from weakref import WeakValueDictionary
 
 
