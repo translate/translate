@@ -22,10 +22,7 @@
 import codecs
 import logging
 import six
-try:
-    import cPickle as pickle
-except ImportError:
-    import pickle
+import pickle
 from io import BytesIO
 
 from translate.misc.deprecation import deprecated
