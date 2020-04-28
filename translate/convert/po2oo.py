@@ -25,7 +25,6 @@ for examples and usage instructions.
 
 import logging
 import os
-import six
 import time
 
 from translate.convert import convert

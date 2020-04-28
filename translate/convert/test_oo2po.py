@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 
 import os
-import six
 from io import BytesIO
 from urllib import parse
 

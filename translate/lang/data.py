@@ -24,7 +24,6 @@ import gettext
 import locale
 import os
 import re
-import six
 
 try:
     import pycountry

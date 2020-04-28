@@ -27,7 +27,6 @@ Supported formats are
 """
 
 import re
-import six
 
 from translate.misc.deprecation import deprecated
 from translate.storage import base

@@ -25,7 +25,6 @@ Luke Arno can be found at http://lukearno.com/
 """
 
 import re
-import six
 from itertools import starmap
 from wsgiref.util import shift_path_info
 

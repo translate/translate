@@ -19,7 +19,6 @@
 
 import os
 
-import six
 from lxml import etree
 
 

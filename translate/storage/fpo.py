@@ -31,7 +31,6 @@ directly, but can be used once cpo has been established to work.
 import copy
 import logging
 import re
-import six
 
 from translate.lang import data
 from translate.misc.deprecation import deprecated

@@ -20,7 +20,6 @@
 """functions to get decorative/informative text out of strings..."""
 
 import re
-import six
 import unicodedata
 
 from translate.lang import data

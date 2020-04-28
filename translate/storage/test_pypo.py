@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 
-import six
 from pytest import raises
 
 from translate.misc import wStringIO

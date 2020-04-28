@@ -41,7 +41,6 @@ in very small files.
 
 import array
 import re
-import six
 import struct
 
 from translate.misc.multistring import multistring

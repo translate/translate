@@ -21,7 +21,6 @@
 """module for parsing html files for translation"""
 
 import re
-import six
 
 import html.parser
 from html.entities import name2codepoint

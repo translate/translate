@@ -23,7 +23,6 @@
 import copy
 import os
 import re
-import six
 
 from lxml import etree
 

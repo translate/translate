@@ -32,7 +32,6 @@ import ctypes.util
 import logging
 import os
 import re
-import six
 import sys
 import tempfile
 from ctypes import (CFUNCTYPE, POINTER, Structure, c_char_p, c_int, c_long,

@@ -22,7 +22,6 @@ import shutil
 import tempfile
 from zipfile import ZipFile
 
-import six
 
 from translate.storage.projstore import *
 

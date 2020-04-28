@@ -25,7 +25,6 @@
 import logging
 import os.path
 import re
-import six
 import stat
 import sys
 from collections import UserDict

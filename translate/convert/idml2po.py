@@ -19,7 +19,6 @@
 
 """Convert IDML files to PO localization files."""
 
-import six
 from io import BytesIO
 
 from translate.convert import convert

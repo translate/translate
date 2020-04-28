@@ -21,7 +21,6 @@
 
 
 import os
-import six
 import warnings
 from io import BytesIO
 

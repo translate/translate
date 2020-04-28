@@ -79,7 +79,6 @@ Extended Attributes
     These are left as is and are not directly managed byour implemenation.
 """
 
-import six
 import time
 
 import csv

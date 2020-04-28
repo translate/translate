@@ -19,7 +19,6 @@
 
 """Parent class for LISA standards (TMX, TBX, XLIFF)"""
 
-import six
 
 try:
     from lxml import etree

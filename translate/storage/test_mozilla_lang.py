@@ -2,7 +2,6 @@
 
 import io
 
-import six
 
 import pytest
 

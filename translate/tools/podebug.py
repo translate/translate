@@ -25,7 +25,6 @@ for examples and usage instructions.
 
 import os
 import re
-import six
 from hashlib import md5
 
 from translate.convert import dtd2po

@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 
 
-import six
 from pytest import mark, raises
 
 from translate.misc import wStringIO

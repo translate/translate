@@ -62,7 +62,6 @@ TODOs and Ideas for possible features:
 
 import logging
 import re
-import six
 
 from translate.lang import data
 

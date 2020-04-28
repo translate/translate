@@ -27,7 +27,6 @@ take a look at PyLuceneIndexer1.py for the PyLucene v1.x interface
 
 import logging
 import os
-import six
 import time
 
 # try to import the PyLucene package (with the two possible names)

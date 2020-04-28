@@ -19,7 +19,6 @@
 
 import os
 
-import six
 
 from translate.convert import factory as convert_factory
 from translate.storage.projstore import ProjectStore

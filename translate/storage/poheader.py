@@ -20,7 +20,6 @@
 """class that handles all header functions for a header in a po file"""
 
 import re
-import six
 import time
 from collections import OrderedDict
 

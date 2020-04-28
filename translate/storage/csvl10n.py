@@ -22,7 +22,6 @@ or entire files (csvfile) for use with localisation
 """
 
 
-import six
 import csv
 
 from translate.storage import base

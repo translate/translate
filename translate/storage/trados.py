@@ -41,7 +41,6 @@ A Trados file looks like this:
 """
 
 import re
-import six
 import time
 
 try:

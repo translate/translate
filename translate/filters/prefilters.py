@@ -21,7 +21,6 @@
 """
 
 import re
-import six
 
 from translate.filters import decoration
 from translate.misc import quote

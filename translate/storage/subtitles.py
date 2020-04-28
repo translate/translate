@@ -27,7 +27,6 @@ A patch to gaupol is required to open utf-8 files successfully.
 """
 
 import os
-import six
 from io import StringIO
 from tempfile import NamedTemporaryFile
 

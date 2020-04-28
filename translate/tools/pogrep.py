@@ -29,7 +29,6 @@ for examples and usage instructions.
 
 import locale
 import re
-import six
 
 from translate.lang import data
 from translate.misc import optrecurse

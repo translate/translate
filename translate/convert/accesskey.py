@@ -19,7 +19,6 @@
 
 """functions used to manipulate access keys in strings"""
 
-import six
 
 from translate.storage.placeables.general import XMLEntityPlaceable
 

@@ -35,8 +35,6 @@ state values correspond to similar states. For example state 0 should be
 define similar states.
 """
 
-import six
-
 
 class StateEnum:
     """Only contains the constants for default states."""

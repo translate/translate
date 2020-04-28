@@ -21,7 +21,6 @@
 import difflib
 import os
 import os.path as path
-import six
 import sys
 import zipfile
 

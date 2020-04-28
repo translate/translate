@@ -18,7 +18,6 @@
 # along with this program; if not, see <http://www.gnu.org/licenses/>.
 
 import re
-import six
 
 
 def reduce_tree(f, parent_unit_node, unit_node, get_children, *state):

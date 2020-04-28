@@ -21,7 +21,6 @@
 
 import codecs
 import logging
-import six
 import pickle
 from io import BytesIO
 

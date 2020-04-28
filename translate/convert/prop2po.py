@@ -24,7 +24,6 @@ for examples and usage instructions.
 """
 
 import logging
-import six
 
 from translate.convert.accesskey import UnitMixer
 from translate.storage import po, properties

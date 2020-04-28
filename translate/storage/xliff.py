@@ -22,7 +22,6 @@
 The official recommendation is to use the extention .xlf for XLIFF files.
 """
 
-import six
 from lxml import etree
 
 from translate.misc.deprecation import deprecated

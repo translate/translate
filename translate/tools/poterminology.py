@@ -23,7 +23,6 @@ for examples and usage instructions.
 import logging
 import os
 import re
-import six
 import sys
 from operator import itemgetter
 

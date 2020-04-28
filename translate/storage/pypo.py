@@ -25,7 +25,6 @@ files (pofile).
 import copy
 import logging
 import re
-import six
 import textwrap
 from itertools import chain
 

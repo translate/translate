@@ -23,7 +23,6 @@ strings in the strings attribute
 
 import warnings
 
-import six
 
 from .deprecation import RemovedInTTK2Warning
 

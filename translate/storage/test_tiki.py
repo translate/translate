@@ -4,7 +4,6 @@
 # Author: Wil Clouser <wclouser@mozilla.com>
 # Date: 2008-12-01
 
-import six
 
 from translate.storage import tiki
 

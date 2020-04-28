@@ -32,7 +32,6 @@ both.
 `2 <http://doc.qt.io/qt-5/qstring.html#arg-2>`_
 """
 
-import six
 from lxml import etree
 
 from translate.lang import data

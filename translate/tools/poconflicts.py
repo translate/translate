@@ -24,7 +24,6 @@ for examples and usage instructions.
 """
 
 import os
-import six
 import sys
 
 from translate.misc import optrecurse

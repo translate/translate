@@ -30,7 +30,6 @@
 import glob
 import os
 import shutil
-import six
 import tempfile
 import time
 from subprocess import Popen, PIPE

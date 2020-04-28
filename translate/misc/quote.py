@@ -22,7 +22,6 @@ delimiters
 """
 
 import logging
-import six
 import html.entities
 
 

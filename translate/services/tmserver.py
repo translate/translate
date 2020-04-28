@@ -23,7 +23,6 @@ clients using JSON over HTTP.
 
 import json
 import logging
-import six
 from argparse import ArgumentParser
 from io import BytesIO
 from urllib import parse

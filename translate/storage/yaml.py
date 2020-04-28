@@ -23,7 +23,6 @@ r"""Class that manages YAML data files for translation
 
 import uuid
 
-import six
 from ruamel.yaml import YAML, YAMLError
 from ruamel.yaml.comments import CommentedMap
 

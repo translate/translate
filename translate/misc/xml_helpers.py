@@ -20,7 +20,6 @@
 """Helper functions for working with XML."""
 
 import re
-import six
 
 from lxml import etree
 

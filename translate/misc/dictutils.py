@@ -21,8 +21,6 @@
 dictionary
 """
 
-import six
-
 
 class cidict(dict):
 

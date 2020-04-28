@@ -46,7 +46,6 @@ overwritten and replaced.
 import logging
 import os
 import re
-import six
 from glob import glob
 from shutil import move, rmtree
 from subprocess import PIPE, CalledProcessError, Popen

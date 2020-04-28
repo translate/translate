@@ -24,7 +24,6 @@ fit into any other sub-category.
 
 import re
 
-import six
 
 from translate.storage.placeables.base import G, Ph, StringElem
 

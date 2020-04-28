@@ -26,7 +26,6 @@ as minidom.parseString, since the functionality provided here will not be in
 those objects.
 """
 
-import six
 from xml.dom import expatbuilder, minidom
 
 

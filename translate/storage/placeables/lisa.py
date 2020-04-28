@@ -17,7 +17,6 @@
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, see <http://www.gnu.org/licenses/>.
 
-import six
 from lxml import etree
 
 from translate.misc.xml_helpers import normalize_xml_space

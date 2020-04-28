@@ -18,7 +18,6 @@
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, see <http://www.gnu.org/licenses/>.
 
-import six
 from pytest import mark
 
 from translate.storage.placeables import StringElem, base, general, parse, xliff

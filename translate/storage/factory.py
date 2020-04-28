@@ -20,7 +20,6 @@
 """factory methods to build real storage objects that conform to base.py"""
 
 import os
-import six
 
 
 #TODO: Monolingual formats (with template?)

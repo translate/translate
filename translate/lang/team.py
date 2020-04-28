@@ -23,8 +23,6 @@ the header of a Gettext PO file.
 
 import re
 
-import six
-
 
 __all__ = ('LANG_TEAM_CONTACT_SNIPPETS', 'guess_language')
 

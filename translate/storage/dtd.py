@@ -84,7 +84,6 @@ Escaping in Android DTD
 """
 
 import re
-import six
 import warnings
 from io import BytesIO
 try:

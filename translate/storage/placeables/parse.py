@@ -22,7 +22,6 @@ Contains the ``parse`` function that parses normal strings into StringElem-
 based "rich" string element trees.
 """
 
-import six
 
 from translate.storage.placeables import StringElem
 

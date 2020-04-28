@@ -24,7 +24,6 @@ parsed rich-string tree. It is the base class of all placeables.
 """
 
 import logging
-import six
 import sys
 
 

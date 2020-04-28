@@ -24,7 +24,6 @@ This way the API supports plurals as if it was a PO file, for example.
 """
 
 import re
-import six
 
 from lxml import etree
 

@@ -22,7 +22,6 @@
 """
 
 import os.path
-import six
 from io import BytesIO
 
 from translate.misc import optrecurse

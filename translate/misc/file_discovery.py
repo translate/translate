@@ -24,8 +24,6 @@ __all__ = ('get_abs_data_filename', )
 import os
 import sys
 
-import six
-
 
 def get_abs_data_filename(path_parts, basedirs=None):
     """Get the absolute path to the given file- or directory name in the

@@ -120,7 +120,6 @@ Name and Value pairs:
 """
 
 import re
-import six
 from codecs import iterencode
 
 from translate.lang import data

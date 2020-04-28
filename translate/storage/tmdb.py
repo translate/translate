@@ -23,7 +23,6 @@
 import logging
 import math
 import re
-import six
 import threading
 import time
 from sqlite3 import dbapi2

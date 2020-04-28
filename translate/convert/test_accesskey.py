@@ -20,7 +20,6 @@
 """Test the various functions for combining and extracting accesskeys and
 labels"""
 
-import six
 
 from translate.convert import accesskey
 

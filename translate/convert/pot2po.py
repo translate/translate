@@ -24,7 +24,6 @@ See: http://docs.translatehouse.org/projects/translate-toolkit/en/latest/command
 for examples and usage instructions.
 """
 
-import six
 
 from translate.misc.multistring import multistring
 from translate.search import match

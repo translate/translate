@@ -28,7 +28,6 @@ for examples and usage instructions.
 
 import logging
 import os
-import six
 import sys
 from argparse import ArgumentParser
 

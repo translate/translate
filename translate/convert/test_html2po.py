@@ -1,4 +1,3 @@
-import six
 from pytest import mark
 
 from translate.convert import html2po, po2html, test_convert

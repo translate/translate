@@ -21,7 +21,6 @@
 """An API to provide spell checking for use in checks or elsewhere."""
 
 import logging
-import six
 
 
 logger = logging.getLogger(__name__)

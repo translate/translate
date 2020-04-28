@@ -53,7 +53,6 @@ As far as I know no detailed documentation exists for the tiki language.php file
 
 import datetime
 import re
-import six
 
 from translate.misc import wStringIO
 from translate.storage import base

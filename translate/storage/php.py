@@ -57,7 +57,6 @@ implemented as outlined in the PHP documentation for the
 
 import re
 
-import six
 
 from phply.phpparse import make_parser
 from phply.phplex import FilteredLexer, full_lexer

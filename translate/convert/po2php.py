@@ -24,7 +24,6 @@ for examples and usage instructions.
 """
 
 import re
-import six
 
 from translate.convert import convert
 from translate.misc import quote

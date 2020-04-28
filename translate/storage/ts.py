@@ -29,7 +29,6 @@ use the newer .ts format which are documented here:
 `2 <http://doc.qt.io/qt-5/qstring.html#arg-2>`_
 """
 
-import six
 
 from translate.misc import ourdom
 

@@ -43,7 +43,6 @@ Encoding
     The files are UTF-8 encoded with no BOM and CR+LF line terminators.
 """
 
-import six
 import time
 
 import csv

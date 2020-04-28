@@ -29,7 +29,6 @@ for full descriptions of all tests.
 """
 
 import os
-import six
 
 from translate.filters import autocorrect, checks
 from translate.misc import optrecurse

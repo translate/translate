@@ -71,7 +71,6 @@ import json
 import uuid
 from collections import OrderedDict
 
-import six
 
 from translate.misc.deprecation import deprecated
 from translate.misc.multistring import multistring

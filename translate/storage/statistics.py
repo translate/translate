@@ -21,7 +21,6 @@
 
 """
 
-import six
 
 from translate.lang import factory
 

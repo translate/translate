@@ -22,7 +22,6 @@ import logging
 import optparse
 import os.path
 import re
-import six
 import sys
 import traceback
 from collections import OrderedDict

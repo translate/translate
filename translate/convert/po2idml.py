@@ -22,7 +22,6 @@ strings in the IDML template. It creates a new IDML file using the translations
 of the PO file.
 """
 
-import six
 from io import BytesIO
 from zipfile import ZIP_DEFLATED, ZipFile
 

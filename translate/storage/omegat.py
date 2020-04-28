@@ -39,7 +39,6 @@ Encoding
 """
 
 import locale
-import six
 import csv
 
 from translate.misc.deprecation import deprecated

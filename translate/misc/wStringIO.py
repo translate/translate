@@ -21,7 +21,6 @@
 input
 """
 
-import six
 from io import BytesIO
 
 

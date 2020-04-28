@@ -23,7 +23,6 @@ units.
 
 import heapq
 import re
-import six
 from operator import itemgetter
 
 from translate.misc.multistring import multistring
