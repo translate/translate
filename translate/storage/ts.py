@@ -113,7 +113,7 @@ class QtTsParser:
         if context is None:
             return self.document.searchElementsByTagName("message", self.messageancestors)
         else:
-            if isinstance(context, six.string_types):
+            if isinstance(context, str):
                 # look up the context node by name
                 context = self.getcontextnode(context)
                 if context is None:

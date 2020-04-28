@@ -422,7 +422,7 @@ class PyLuceneDatabase(CommonIndexer.CommonDatabase):
         :return: a list of dicts containing the specified field(s)
         :rtype: list of dicts
         """
-        if isinstance(fieldnames, six.string_types):
+        if isinstance(fieldnames, str):
             fieldnames = [fieldnames]
         hits = self.searcher.search(query)
         if _COMPILER == 'jcc':

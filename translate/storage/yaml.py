@@ -135,7 +135,7 @@ class YAMLFile(base.TranslationStore):
     def _parse_dict(self, data, prev):
         # Avoid using merged items, it is enough to have them once
         for k, v in data.non_merged_items():
-            if not isinstance(k, six.string_types):
+            if not isinstance(k, str):
                 raise base.ParseError(
                     'Key not string: {0}/{1} ({2})'.format(prev, k, type(k))
                 )
@@ -150,7 +150,7 @@ class YAMLFile(base.TranslationStore):
             for x in self._parse_dict(data, prev):
                 yield x
         else:
-            if isinstance(data, six.string_types):
+            if isinstance(data, str):
                 yield (prev, data)
             elif isinstance(data, (bool, int)):
                 yield (prev, str(data))

@@ -106,7 +106,7 @@ class Project(object):
             raise ValueError('Cannot convert a target document further: %s' % (input_fname))
 
         templ_fname = None
-        if isinstance(template, six.string_types):
+        if isinstance(template, str):
             template, templ_fname = self.get_file(template)
 
         if template and not templ_fname:

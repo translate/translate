@@ -207,7 +207,7 @@ class WordfastTime(object):
         self._time = None
         if not newtime:
             self.time = None
-        elif isinstance(newtime, six.string_types):
+        elif isinstance(newtime, str):
             self.timestring = newtime
         elif isinstance(newtime, time.struct_time):
             self.time = newtime

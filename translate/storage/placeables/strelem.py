@@ -179,7 +179,7 @@ class StringElem(object):
         """
         for elem in self.flatten():
             for i in range(len(elem.sub)):
-                if isinstance(elem.sub[i], six.string_types):
+                if isinstance(elem.sub[i], str):
                     elem.sub[i] = f(elem.sub[i])
 
     def copy(self):
@@ -458,7 +458,7 @@ class StringElem(object):
         """Find sub-string ``x`` in this string tree and return the position at
         which it starts.
         """
-        if isinstance(x, six.string_types):
+        if isinstance(x, str):
             return six.text_type(self).find(x)
         if isinstance(x, StringElem):
             return six.text_type(self).find(six.text_type(x))
@@ -523,7 +523,7 @@ class StringElem(object):
         """
         if offset < 0 or offset > len(self):
             raise IndexError('Index out of range: %d' % (offset))
-        if isinstance(text, six.string_types):
+        if isinstance(text, str):
             text = StringElem(text)
         if not isinstance(text, StringElem):
             raise ValueError('text must be of type StringElem')
@@ -788,7 +788,7 @@ class StringElem(object):
         :rtype: bool
         """
         for e in self.sub:
-            if not isinstance(e, six.string_types):
+            if not isinstance(e, str):
                 return False
         return True
 
@@ -889,12 +889,12 @@ class StringElem(object):
                 # Remove empty strings or StringElem nodes
                 # (but not StringElem sub-class instances, because they
                 # might contain important (non-rendered) data.
-                if ((type(elem.sub[i]) == StringElem or isinstance(elem.sub[i], six.string_types)) and
+                if ((type(elem.sub[i]) == StringElem or isinstance(elem.sub[i], str)) and
                     len(elem.sub[i]) == 0):
                     del elem.sub[i]
                     continue
 
-                if isinstance(elem.sub[i], six.string_types) and not elem.isleaf():
+                if isinstance(elem.sub[i], str) and not elem.isleaf():
                     elem.sub[i] = StringElem(elem.sub[i])
                     changed = True
 

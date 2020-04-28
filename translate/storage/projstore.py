@@ -128,7 +128,7 @@ class ProjectStore(object):
         if ftype not in self.TYPE_INFO['f_prefix']:
             raise ValueError('Invalid file type: %s' % (ftype))
 
-        if isinstance(afile, six.string_types) and os.path.isfile(afile) and not fname:
+        if isinstance(afile, str) and os.path.isfile(afile) and not fname:
             # Try and use afile as the file name
             fname, afile = afile, open(afile)
 
@@ -218,7 +218,7 @@ class ProjectStore(object):
             raise FileNotInProjectError(fname)
 
         rfile = self._files[fname]
-        if isinstance(rfile, six.string_types):
+        if isinstance(rfile, str):
             rfile = open(rfile, 'rb')
         # Check that the file is actually open
         if getattr(rfile, 'closed', False):

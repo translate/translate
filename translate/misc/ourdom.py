@@ -255,7 +255,7 @@ class ExpatBuilderNS(expatbuilder.ExpatBuilderNS):
 def parse(file, parser=None, bufsize=None):
     """Parse a file into a DOM by filename or file object."""
     builder = ExpatBuilderNS()
-    if isinstance(file, six.string_types):
+    if isinstance(file, str):
         with open(file, 'rb') as fp:
             result = builder.parseFile(fp)
     else:

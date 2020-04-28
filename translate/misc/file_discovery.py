@@ -34,7 +34,7 @@ def get_abs_data_filename(path_parts, basedirs=None):
     :type  path_parts: list
     :param path_parts: The path parts that can be joined by ``os.path.join()``.
     """
-    if isinstance(path_parts, six.string_types):
+    if isinstance(path_parts, str):
         path_parts = [path_parts]
 
     DATA_DIRS = [

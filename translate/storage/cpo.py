@@ -409,7 +409,7 @@ class pounit(pocommon.pounit):
         if self.hasplural():
             if isinstance(target, multistring):
                 target = target.strings
-            elif isinstance(target, six.string_types):
+            elif isinstance(target, str):
                 target = [target]
         # for non-plurals: check number of items in 'target'
         elif isinstance(target, (dict, list)):

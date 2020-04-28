@@ -124,7 +124,7 @@ class SubtitleFile(base.TranslationStore):
         elif hasattr(storefile, 'filename'):
             self.filename = storefile.filename
             storefile.close()
-        elif isinstance(storefile, six.string_types):
+        elif isinstance(storefile, str):
             self.filename = storefile
 
         if self.filename and os.path.exists(self.filename):

@@ -92,7 +92,7 @@ def run(cmd, expected_status=0, fail_msg=None, stdout=-1, stderr=-1):
     if stderr == -1:
         stderr = std
 
-    cmdstring = cmd if isinstance(cmd, six.string_types) else ' '.join(cmd)
+    cmdstring = cmd if isinstance(cmd, str) else ' '.join(cmd)
     logger.debug('>>> %s $ %s', os.getcwd(), cmdstring)
     p = Popen(cmd, stdout=stdout, stderr=stderr)
     (output, error) = p.communicate()

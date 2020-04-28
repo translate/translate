@@ -270,7 +270,7 @@ class poheader(object):
 
     def updateheaderplural(self, nplurals, plural):
         """Update the Plural-Form PO header."""
-        if isinstance(nplurals, six.string_types):
+        if isinstance(nplurals, str):
             nplurals = int(nplurals)
         self.updateheader(add=True, Plural_Forms="nplurals=%d; plural=%s;" % (nplurals, plural))
 
@@ -310,7 +310,7 @@ class poheader(object):
         :param lang: the new target language code
         :type lang: str
         """
-        if isinstance(lang, six.string_types) and len(lang) > 1:
+        if isinstance(lang, str) and len(lang) > 1:
             self.updateheader(add=True, Language=lang, X_Poedit_Language=None, X_Poedit_Country=None)
 
     def getprojectstyle(self):

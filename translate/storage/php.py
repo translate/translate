@@ -414,7 +414,7 @@ class phpfile(base.TranslationStore):
                     name = '{0}->{1}'.format(prefix, name)
                 if isinstance(item.value, Array):
                     handle_array(name, item.value.nodes, lexer)
-                elif isinstance(item.value, six.string_types):
+                elif isinstance(item.value, str):
                     self.create_and_add_unit(
                         name,
                         item.value,
@@ -423,7 +423,7 @@ class phpfile(base.TranslationStore):
                     )
 
         def concatenate(item):
-            if isinstance(item, six.string_types):
+            if isinstance(item, str):
                 return item
             elif isinstance(item, Variable):
                 return item.name
@@ -450,7 +450,7 @@ class phpfile(base.TranslationStore):
             elif isinstance(item, Assignment):
                 if isinstance(item.node, ArrayOffset):
                     name = lexer.extract_name('EQUALS', *item.lexpositions)
-                    if isinstance(item.expr, six.string_types):
+                    if isinstance(item.expr, str):
                         self.create_and_add_unit(
                             name,
                             item.expr,
@@ -468,7 +468,7 @@ class phpfile(base.TranslationStore):
                     name = lexer.extract_name('EQUALS', *item.lexpositions)
                     if isinstance(item.expr, Array):
                         handle_array(name, item.expr.nodes, lexer)
-                    elif isinstance(item.expr, six.string_types):
+                    elif isinstance(item.expr, str):
                         self.create_and_add_unit(
                             name,
                             item.expr,

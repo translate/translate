@@ -32,7 +32,7 @@ class cidict(dict):
             self.update(fromdict)
 
     def __getitem__(self, key):
-        if not isinstance(key, six.string_types):
+        if not isinstance(key, str):
             raise TypeError("cidict can only have str or unicode as key (got %r)" %
                             type(key))
         for akey in self.keys():
@@ -41,7 +41,7 @@ class cidict(dict):
         raise IndexError
 
     def __setitem__(self, key, value):
-        if not isinstance(key, six.string_types):
+        if not isinstance(key, str):
             raise TypeError("cidict can only have str or unicode as key (got %r)" %
                             type(key))
         for akey in self.keys():
@@ -57,7 +57,7 @@ class cidict(dict):
             self[key] = value
 
     def __delitem__(self, key):
-        if not isinstance(key, six.string_types):
+        if not isinstance(key, str):
             raise TypeError("cidict can only have str or unicode as key (got %r)" %
                             type(key))
         for akey in self.keys():
@@ -66,7 +66,7 @@ class cidict(dict):
         raise IndexError
 
     def __contains__(self, key):
-        if not isinstance(key, six.string_types):
+        if not isinstance(key, str):
             raise TypeError("cidict can only have str or unicode as key (got %r)" %
                             type(key))
         for akey in self.keys():

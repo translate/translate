@@ -108,7 +108,7 @@ class TradosTxtDate(object):
     def __init__(self, newtime=None):
         self._time = None
         if newtime:
-            if isinstance(newtime, six.string_types):
+            if isinstance(newtime, str):
                 self.timestring = newtime
             elif isinstance(newtime, time.struct_time):
                 self.time = newtime

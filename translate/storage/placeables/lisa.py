@@ -100,7 +100,7 @@ def as_unicode(string):
 def xml_to_strelem(dom_node, xml_space="preserve"):
     if dom_node is None:
         return StringElem()
-    if isinstance(dom_node, six.string_types):
+    if isinstance(dom_node, str):
         parser = etree.XMLParser(resolve_entities=False)
         dom_node = etree.fromstring(dom_node, parser)
     normalize_xml_space(dom_node, xml_space, remove_start=True)

@@ -41,7 +41,7 @@ white_space_re = re.compile(r'\s+')
 class _NGram:
 
     def __init__(self, arg=None):
-        if isinstance(arg, six.string_types):
+        if isinstance(arg, str):
             self.addText(arg)
             self.normalise()
         elif isinstance(arg, dict):

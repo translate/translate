@@ -93,7 +93,7 @@ class JsonUnit(base.TranslationUnit):
             self.notes = notes
         self.placeholders = placeholders
         if source:
-            if issubclass(self._type, six.string_types):
+            if issubclass(self._type, str):
                 self.target = source
             else:
                 self.target = str(source)
@@ -129,7 +129,7 @@ class JsonUnit(base.TranslationUnit):
         return self.getid().lstrip('.')
 
     def converttarget(self):
-        if issubclass(self._type, six.string_types):
+        if issubclass(self._type, str):
             return self.target
         else:
             return self._type(self.target)

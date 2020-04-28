@@ -312,7 +312,7 @@ def parse_unit(parse_state, unit=None):
 
 def set_encoding(parse_state, store, unit):
     charset = None
-    if isinstance(unit.msgstr, list) and unit.msgstr and isinstance(unit.msgstr[0], six.string_types):
+    if isinstance(unit.msgstr, list) and unit.msgstr and isinstance(unit.msgstr[0], str):
         charset = re.search("charset=([^\\s\\\\n]+)", "".join(unit.msgstr))
     if charset:
         encoding = charset.group(1)

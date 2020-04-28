@@ -28,7 +28,7 @@ from io import BytesIO
 class StringIO(BytesIO):
 
     def __init__(self, buf=''):
-        if not isinstance(buf, six.string_types):
+        if not isinstance(buf, str):
             buf = bytes(buf)
         if isinstance(buf, six.text_type):
             buf = buf.encode('utf-8')

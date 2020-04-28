@@ -848,7 +848,7 @@ class TranslationStore(object):
 
     def savefile(self, storefile):
         """Write the string representation to the given file (or filename)."""
-        if isinstance(storefile, six.string_types):
+        if isinstance(storefile, str):
             storefile = open(storefile, 'wb')
         self.fileobj = storefile
         self._assignname()
@@ -876,7 +876,7 @@ class TranslationStore(object):
         """Reads the given file (or opens the given filename) and parses back
         to an object.
         """
-        if isinstance(storefile, six.string_types):
+        if isinstance(storefile, str):
             storefile = open(storefile, 'rb')
         mode = getattr(storefile, "mode", 'rb')
         #For some reason GzipFile returns 1, so we have to test for that here

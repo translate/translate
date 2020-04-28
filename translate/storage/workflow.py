@@ -135,9 +135,9 @@ class Workflow(object):
 
     # METHODS #
     def add_edge(self, from_state, to_state):
-        if isinstance(from_state, six.string_types):
+        if isinstance(from_state, str):
             from_state = self.get_state_by_name(from_state)
-        if isinstance(to_state, six.string_types):
+        if isinstance(to_state, str):
             to_state = self.get_state_by_name(to_state)
         for s in (from_state, to_state):
             if s not in self.states:
@@ -182,7 +182,7 @@ class Workflow(object):
         ``enter`` method is still called. For edge transitions, see the
         ``trans`` method.
         """
-        if isinstance(state, six.string_types):
+        if isinstance(state, str):
             state = self.get_state_by_name(state)
         if state not in self.states:
             raise StateNotInWorkflowError(state)
@@ -194,7 +194,7 @@ class Workflow(object):
 
     def set_initial_state(self, state):
         """Sets the initial state, used by the :meth:`.reset` method."""
-        if isinstance(state, six.string_types):
+        if isinstance(state, str):
             state = self.get_state_by_name(state)
         if not isinstance(state, State):
             raise InvalidStateObjectError(state)
@@ -206,7 +206,7 @@ class Workflow(object):
         """Reset the work flow to the initial state using the given object."""
         self._workflow_obj = wf_obj
         if init_state is not None:
-            if isinstance(init_state, six.string_types):
+            if isinstance(init_state, str):
                 init_state = self.get_state_by_name(init_state)
             if init_state not in self.states:
                 raise StateNotInWorkflowError()
@@ -224,7 +224,7 @@ class Workflow(object):
         """
         if self._current_state is None:
             raise ValueError('No current state set')
-        if isinstance(to_state, six.string_types):
+        if isinstance(to_state, str):
             to_state = self.get_state_by_name(to_state)
         if to_state is None:
             to_state = self.get_to_states()
