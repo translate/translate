@@ -76,8 +76,8 @@ def parse_tag(full_tag):
         ret = []
         for k in ("namespace", "tag"):
             value = match.groupdict()[k] or ""
-            if not isinstance(value, six.text_type):
-                value = six.text_type(value, encoding="utf-8")
+            if not isinstance(value, str):
+                value = str(value, encoding="utf-8")
             ret.append(value)
         return ret[0], ret[1]
     else:

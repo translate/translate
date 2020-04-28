@@ -77,21 +77,21 @@ class TestMultistring:
     def test_coercion(self):
         t = multistring.multistring
         assert str(t("test")) == "test"
-        assert six.text_type(t("téßt")) == "téßt"
+        assert str(t("téßt")) == "téßt"
 
     def test_unicode_coercion(self):
         t = multistring.multistring
-        assert six.text_type(t("test")) == u"test"
-        assert six.text_type(t(u"test")) == u"test"
-        assert six.text_type(t("téßt")) == u"téßt"
-        assert six.text_type(t(u"téßt")) == u"téßt"
-        assert six.text_type(t(["téßt", "blāh"])) == u"téßt"
-        assert six.text_type(t([u"téßt"])) == u"téßt"
+        assert str(t("test")) == u"test"
+        assert str(t(u"test")) == u"test"
+        assert str(t("téßt")) == u"téßt"
+        assert str(t(u"téßt")) == u"téßt"
+        assert str(t(["téßt", "blāh"])) == u"téßt"
+        assert str(t([u"téßt"])) == u"téßt"
 
     def test_list_coercion(self):
         t = multistring.multistring
-        assert six.text_type([t(u"test")]) == u"[multistring([%s'test'])]" % str_prefix
-        assert six.text_type([t(u"tést")]) == u"[multistring(['tést'])]"
+        assert str([t(u"test")]) == u"[multistring([%s'test'])]" % str_prefix
+        assert str([t(u"tést")]) == u"[multistring(['tést'])]"
 
     def test_multistring_hash(self):
         t = multistring.multistring

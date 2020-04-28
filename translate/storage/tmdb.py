@@ -54,8 +54,8 @@ class TMDB(object):
         self.min_similarity = min_similarity
         self.max_length = max_length
 
-        if not isinstance(db_file, six.text_type):
-            db_file = six.text_type(db_file)  # don't know which encoding
+        if not isinstance(db_file, str):
+            db_file = str(db_file)  # don't know which encoding
         self.db_file = db_file
         # share connections to same database file between different instances
         if db_file not in self._tm_dbs:
@@ -327,7 +327,7 @@ DROP TRIGGER IF EXISTS sources_delete_trig;
                 })
         results.sort(key=lambda match: match['quality'], reverse=True)
         results = results[:self.max_candidates]
-        logging.debug("results: %s", six.text_type(results))
+        logging.debug("results: %s", str(results))
         return results
 
 

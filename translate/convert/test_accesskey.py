@@ -61,7 +61,7 @@ def test_unicode():
     assert accesskey.extract(u"E_ḓiṱ", u"_") == (u"Eḓiṱ", u"ḓ")
     label, akey = accesskey.extract(u"E&ḓiṱ")
     assert label, akey == (u"Eḓiṱ", u"ḓ")
-    assert isinstance(label, six.text_type) and isinstance(akey, six.text_type)
+    assert isinstance(label, str) and isinstance(akey, str)
     assert accesskey.combine(u"Eḓiṱ", u"ḓ") == (u"E&ḓiṱ")
 
 

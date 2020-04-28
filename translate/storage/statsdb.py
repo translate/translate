@@ -336,7 +336,7 @@ class StatsCache(object):
                 if not os.path.exists(cachedir):
                     os.mkdir(cachedir)
                 if isinstance(cachedir, bytes):
-                    cachedir = six.text_type(cachedir, sys.getfilesystemencoding())
+                    cachedir = str(cachedir, sys.getfilesystemencoding())
                 cls.defaultfile = os.path.realpath(os.path.join(cachedir, u"stats.db"))
             statsfile = cls.defaultfile
         else:
@@ -408,7 +408,7 @@ class StatsCache(object):
         store can be a TranslationFile object or a callback that returns one.
         """
         if isinstance(filename, bytes):
-            filename = six.text_type(filename, sys.getfilesystemencoding())
+            filename = str(filename, sys.getfilesystemencoding())
         realpath = os.path.realpath(filename)
         self.cur.execute("""SELECT fileid, st_mtime, st_size FROM files
                 WHERE path=?;""", (realpath,))

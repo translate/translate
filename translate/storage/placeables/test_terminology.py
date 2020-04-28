@@ -58,5 +58,5 @@ msgstr "lêernaam"
         term = tree.sub[3].sub[1]
 
         assert isinstance(term, TerminologyPlaceable)
-        assert six.text_type(term) == self.term_po.getunits()[2].source
-        assert term.translate() == six.text_type(self.term_po.getunits()[2].target)
+        assert str(term) == self.term_po.getunits()[2].source
+        assert term.translate() == str(self.term_po.getunits()[2].target)

@@ -235,7 +235,7 @@ class RubyYAMLFile(YAMLFile):
 
         tags = plural_tags.get(self.targetlanguage, plural_tags['en'])
 
-        strings = [six.text_type(s) for s in value.strings]
+        strings = [str(s) for s in value.strings]
 
         # Sync plural_strings elements to plural_tags count.
         if len(strings) < len(tags):

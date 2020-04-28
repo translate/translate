@@ -174,7 +174,7 @@ class reprop(object):
                     else:
                         value = self._handle_accesskeys(unit, key)
                     self.inecho = False
-                    assert isinstance(value, six.text_type)
+                    assert isinstance(value, str)
                     returnline = "%(key)s%(del)s%(value)s%(term)s%(eol)s" % {
                         "key": "%s%s%s" % (self.personality.key_wrap_char,
                                            key,
@@ -189,7 +189,7 @@ class reprop(object):
             else:
                 self.inecho = True
                 returnline = line + eol
-        assert isinstance(returnline, six.text_type)
+        assert isinstance(returnline, str)
         return returnline
 
 

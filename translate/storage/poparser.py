@@ -36,10 +36,10 @@ From the GNU gettext manual:
 """
 
 SINGLE_BYTE_ENCODING = 'iso-8859-1'
-isspace = six.text_type.isspace
-find = six.text_type.find
-rfind = six.text_type.rfind
-startswith = six.text_type.startswith
+isspace = str.isspace
+find = str.find
+rfind = str.rfind
+startswith = str.startswith
 append = list.append
 decode = bytes.decode
 

@@ -93,8 +93,8 @@ def isvalidaccelerator(accelerator, acceptlist=None):
     :rtype: Boolean
     :return: True if the supplied character is an acceptable accelerator
     """
-    assert isinstance(accelerator, six.text_type)
-    assert isinstance(acceptlist, six.text_type) or acceptlist is None
+    assert isinstance(accelerator, str)
+    assert isinstance(acceptlist, str) or acceptlist is None
     if len(accelerator) == 0:
         return False
     if acceptlist is not None:
@@ -229,7 +229,7 @@ def getvariables(startmarker, endmarker):
 def getnumbers(str1):
     """returns any numbers that are in the string"""
     # TODO: handle locale-based periods e.g. 2,5 for Afrikaans
-    assert isinstance(str1, six.text_type)
+    assert isinstance(str1, str)
     numbers = []
     innumber = False
     degreesign = u'\xb0'

@@ -75,11 +75,11 @@ class podebug:
         if not isinstance(string, StringElem):
             string = StringElem(string)
         string.sub.insert(0, prepend)
-        if six.text_type(string).endswith(u'\n'):
+        if str(string).endswith(u'\n'):
             # Try and remove the last character from the tree
             try:
                 lastnode = string.flatten()[-1]
-                if isinstance(lastnode.sub[-1], six.text_type):
+                if isinstance(lastnode.sub[-1], str):
                     lastnode.sub[-1] = lastnode.sub[-1].rstrip(u'\n')
             except IndexError:
                 pass

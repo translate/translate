@@ -37,7 +37,7 @@ class TestHTML2PO(object):
             unitnumber = unitnumber - 1
         print('unit source: ' + pofile.units[unitnumber].source + '|')
         print('expected: ' + expected + '|')
-        assert six.text_type(pofile.units[unitnumber].source) == six.text_type(expected)
+        assert str(pofile.units[unitnumber].source) == str(expected)
 
     def check_single(self, markup, itemtext):
         """checks that converting this markup produces a single element with value itemtext"""
@@ -421,7 +421,7 @@ ghi ?>'''
         pofile = self.html2po('<!-- comment outside block --><p><!-- a comment -->A paragraph<!-- with another comment -->.</p>', keepcomments=True)
         self.compareunit(pofile, 1, 'A paragraph.')
         notes = pofile.getunits()[-1].getnotes()
-        assert six.text_type(notes) == ' a comment \n with another comment '
+        assert str(notes) == ' a comment \n with another comment '
 
 
 class TestHTML2POCommand(test_convert.TestConvertCommand, TestHTML2PO):

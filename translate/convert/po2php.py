@@ -59,7 +59,7 @@ class rephp(object):
         return outputlines
 
     def convertline(self, line):
-        line = six.text_type(line, 'utf-8')
+        line = str(line, 'utf-8')
         returnline = ""
 
         # handle multiline msgid if we're in one
@@ -161,7 +161,7 @@ class rephp(object):
                 if endpos == -1 or line[endpos-1] == '\\':
                     self.inmultilinemsgid = True
 
-        if isinstance(returnline, six.text_type):
+        if isinstance(returnline, str):
             returnline = returnline.encode('utf-8')
 
         return returnline

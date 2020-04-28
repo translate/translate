@@ -256,7 +256,7 @@ class oounit:
                 lines = [new_line]
         else:
             lines = self.lines
-        return "\r\n".join([six.text_type(line) for line in lines])
+        return "\r\n".join([str(line) for line in lines])
 
 
 class oofile:

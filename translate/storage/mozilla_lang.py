@@ -155,10 +155,10 @@ class LangStore(txt.TxtFile):
             out.write(b"## active ##")
             out.write(eol)
         for header in self._headers:
-            out.write(six.text_type(header).encode('utf-8'))
+            out.write(str(header).encode('utf-8'))
             out.write(eol)
         for unit in self.units:
-            out.write(six.text_type(unit).encode('utf-8'))
+            out.write(str(unit).encode('utf-8'))
             out.write(eol * 3)
 
     def getlangheaders(self):

@@ -17,7 +17,7 @@ class TestOO2PO(object):
 
     def convert(self, oosource, sourcelanguage='en-US', targetlanguage='af-ZA'):
         """helper that converts oo source to po source without requiring files"""
-        if isinstance(oosource, six.text_type):
+        if isinstance(oosource, str):
             oosource = oosource.encode('utf-8')
         inputoo = oo.oofile(oosource)
         convertor = self.conversion_class(sourcelanguage, targetlanguage)

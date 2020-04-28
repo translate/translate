@@ -92,7 +92,7 @@ class reoo(object):
                                key, len(self.index))
                 try:
                     sourceunitlines = str(unit)
-                    if isinstance(sourceunitlines, six.text_type):
+                    if isinstance(sourceunitlines, str):
                         sourceunitlines = sourceunitlines.encode("utf-8")
                     logger.warning(sourceunitlines)
                 except Exception:

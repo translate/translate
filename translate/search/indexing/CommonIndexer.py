@@ -177,8 +177,8 @@ class CommonDatabase(object):
             elif isinstance(query, tuple):
                 field, value = query
                 # perform unicode normalization
-                field = translate.lang.data.normalize(six.text_type(field))
-                value = translate.lang.data.normalize(six.text_type(value))
+                field = translate.lang.data.normalize(str(field))
+                value = translate.lang.data.normalize(str(value))
                 # check for the choosen match type
                 if analyzer is None:
                     analyzer = self.get_field_analyzers(field)
@@ -189,7 +189,7 @@ class CommonDatabase(object):
                 if analyzer is None:
                     analyzer = self.analyzer
                 # perform unicode normalization
-                query = translate.lang.data.normalize(six.text_type(query))
+                query = translate.lang.data.normalize(str(query))
                 result.append(self._create_query_for_string(
                     query, require_all=require_all, analyzer=analyzer))
             else:
@@ -574,8 +574,8 @@ class CommonDatabase(object):
                 result = text.decode("UTF-8")
             except UnicodeDecodeError:
                 result = text.decode("charmap")
-        elif not isinstance(text, six.text_type):
-            result = six.text_type(text)
+        elif not isinstance(text, str):
+            result = str(text)
         else:
             result = text
         # perform unicode normalization

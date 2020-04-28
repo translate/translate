@@ -238,12 +238,11 @@ class TestPYPOFile(test_po.TestPOFile):
         print(bytes(pofile))
         thepo = pofile.units[0]
         assert str(thepo) == posource
-        assert six.text_type(thepo) == posource
         # Now if we set the msgstr to Unicode
         # this is an escaped half character (1/2)
         halfstr = b"\xbd ...".decode("latin-1")
         thepo.target = halfstr
-        assert halfstr in six.text_type(thepo)
+        assert halfstr in str(thepo)
         thepo.target = halfstr.encode("UTF-8")
 
     def test_posections(self):

@@ -31,14 +31,14 @@ class TestStringElem:
         self.elem = parse(self.ORIGSTR, general.parsers)
 
     def test_parse(self):
-        assert six.text_type(self.elem) == self.ORIGSTR
+        assert str(self.elem) == self.ORIGSTR
 
     def test_tree(self):
         assert len(self.elem.sub) == 4
-        assert six.text_type(self.elem.sub[0]) == u'Ģët '
-        assert six.text_type(self.elem.sub[1]) == u'<a href="http://www.example.com" alt="Ģët &brand;!">'
-        assert six.text_type(self.elem.sub[2]) == u'&brandLong;'
-        assert six.text_type(self.elem.sub[3]) == u'</a>'
+        assert str(self.elem.sub[0]) == u'Ģët '
+        assert str(self.elem.sub[1]) == u'<a href="http://www.example.com" alt="Ģët &brand;!">'
+        assert str(self.elem.sub[2]) == u'&brandLong;'
+        assert str(self.elem.sub[3]) == u'</a>'
 
         assert len(self.elem.sub[0].sub) == 1 and self.elem.sub[0].sub[0] == u'Ģët '
         assert len(self.elem.sub[1].sub) == 1 and self.elem.sub[1].sub[0] == u'<a href="http://www.example.com" alt="Ģët &brand;!">'
@@ -92,7 +92,7 @@ class TestStringElem:
         assert len(self.elem.find_elems_with('a')) == 3
 
     def test_flatten(self):
-        assert u''.join([six.text_type(i) for i in self.elem.flatten()]) == self.ORIGSTR
+        assert u''.join([str(i) for i in self.elem.flatten()]) == self.ORIGSTR
 
     def test_delete_range_case1(self):
         # Case 1: Entire string #
@@ -127,7 +127,7 @@ class TestStringElem:
         assert parent is None
         assert offset is None
         assert len(elem.sub) == 2
-        assert six.text_type(elem) == u'Ģët <a href="http://www.example.com" alt="Ģët &brand;!">'
+        assert str(elem) == u'Ģët <a href="http://www.example.com" alt="Ģët &brand;!">'
 
         # A separate test case where the delete range include elements between
         # the start- and end elements.
@@ -138,34 +138,34 @@ class TestStringElem:
         assert deleted == origelem
         assert parent is None
         assert offset is None
-        assert six.text_type(elem) == 'foobar'
+        assert str(elem) == 'foobar'
 
     def test_insert(self):
         # Test inserting at the beginning
         elem = self.elem.copy()
         elem.insert(0, u'xxx')
-        assert six.text_type(elem.sub[0]) == u'xxx' + six.text_type(self.elem.sub[0])
+        assert str(elem.sub[0]) == u'xxx' + str(self.elem.sub[0])
 
         # Test inserting at the end
         elem = self.elem.copy()
         elem.insert(len(elem), u'xxx')
         assert elem.flatten()[-1] == StringElem(u'xxx')
-        assert six.text_type(elem).endswith('&brandLong;</a>xxx')
+        assert str(elem).endswith('&brandLong;</a>xxx')
 
         elem = self.elem.copy()
         elem.insert(len(elem), u">>>", preferred_parent=elem.sub[-1])
-        assert six.text_type(elem.flatten()[-1]) == u'</a>>>>'
-        assert six.text_type(elem).endswith('&brandLong;</a>>>>')
+        assert str(elem.flatten()[-1]) == u'</a>>>>'
+        assert str(elem).endswith('&brandLong;</a>>>>')
 
         # Test inserting in the middle of an existing string
         elem = self.elem.copy()
         elem.insert(2, u'xxx')
-        assert six.text_type(elem.sub[0]) == u'Ģëxxxt '
+        assert str(elem.sub[0]) == u'Ģëxxxt '
 
         # Test inserting between elements
         elem = self.elem.copy()
         elem.insert(56, u'xxx')
-        assert six.text_type(elem)[56:59] == u'xxx'
+        assert str(elem)[56:59] == u'xxx'
 
     def test_isleaf(self):
         for child in self.elem.sub:
@@ -189,7 +189,7 @@ class TestConverters:
         # The following asserts say that, even though tree and newtree represent the same string
         # (the unicode() results are the same), they are composed of different classes (and so
         # their repr()s are different
-        assert six.text_type(self.elem) == six.text_type(basetree)
+        assert str(self.elem) == str(basetree)
         assert repr(self.elem) != repr(basetree)
 
     @mark.xfail(reason="Test needs fixing, disabled for now")
@@ -202,12 +202,12 @@ class TestConverters:
     def test_to_xliff_placeables(self):
         basetree = base.to_base_placeables(self.elem)
         xliff_from_base = xliff.to_xliff_placeables(basetree)
-        assert six.text_type(xliff_from_base) != six.text_type(self.elem)
+        assert str(xliff_from_base) != str(self.elem)
         assert repr(xliff_from_base) != repr(self.elem)
 
         xliff_from_gen = xliff.to_xliff_placeables(self.elem)
-        assert six.text_type(xliff_from_gen) != six.text_type(self.elem)
+        assert str(xliff_from_gen) != str(self.elem)
         assert repr(xliff_from_gen) != repr(self.elem)
 
-        assert six.text_type(xliff_from_base) == six.text_type(xliff_from_gen)
+        assert str(xliff_from_base) == str(xliff_from_gen)
         assert repr(xliff_from_base) == repr(xliff_from_gen)

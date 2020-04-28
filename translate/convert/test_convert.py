@@ -72,7 +72,7 @@ class TestConvertCommand(object):
 
     def create_testfile(self, filename, contents):
         """creates the given file in the testdirectory with the given contents"""
-        if isinstance(contents, six.text_type):
+        if isinstance(contents, str):
             contents = contents.encode('utf-8')
         testfile = self.open_testfile(filename, "wb")
         testfile.write(contents)

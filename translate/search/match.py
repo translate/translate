@@ -116,8 +116,8 @@ class matcher(object):
                 if len(candidate.source.strings) > 1:
                     simpleunit.orig_source = candidate.source
                     simpleunit.orig_target = candidate.target
-                simpleunit.source = six.text_type(candidate.source)
-                simpleunit.target = six.text_type(candidate.target)
+                simpleunit.source = str(candidate.source)
+                simpleunit.target = str(candidate.target)
             else:
                 simpleunit.source = candidate.source
                 simpleunit.target = candidate.target

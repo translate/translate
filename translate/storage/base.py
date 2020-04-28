@@ -158,7 +158,7 @@ class TranslationUnit(object):
         >>> TranslationUnit.rich_to_multistring(rich)
         multistring(u'foo bar')
         """
-        return multistring([six.text_type(elem) for elem in elem_list])
+        return multistring([str(elem) for elem in elem_list])
 
     def multistring_to_rich(self, mulstring):
         """Convert a multistring to a list of "rich" string trees:
@@ -763,7 +763,7 @@ class TranslationStore(object):
     def parsestring(cls, storestring):
         """Convert the string representation back to an object."""
         newstore = cls()
-        if isinstance(storestring, six.text_type):
+        if isinstance(storestring, str):
             # parse() is expecting bytes
             storestring = storestring.encode(cls.default_encoding)
         newstore.parse(storestring)
@@ -832,7 +832,7 @@ class TranslationStore(object):
 
         for encoding in encodings:
             try:
-                r_text = six.text_type(text, encoding)
+                r_text = str(text, encoding)
                 r_encoding = encoding
                 break
             except UnicodeDecodeError:

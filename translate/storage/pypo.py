@@ -463,7 +463,7 @@ class pounit(pocommon.pounit):
 
         def mergelists(list1, list2, split=False):
             # Decode where necessary (either all bytestrings or all unicode)
-            if any(isinstance(item, six.text_type) for item in chain(list1, list2)):
+            if any(isinstance(item, str) for item in chain(list1, list2)):
                 for position, item in enumerate(list1):
                     if isinstance(item, bytes):
                         list1[position] = item.decode("utf-8")
@@ -907,7 +907,7 @@ class pofile(pocommon.pofile):
         """encode any unicode strings in lines in self.encoding"""
         newlines = []
         for line in lines:
-            if isinstance(line, six.text_type):
+            if isinstance(line, str):
                 line = line.encode(self.encoding)
             newlines.append(line)
         return newlines

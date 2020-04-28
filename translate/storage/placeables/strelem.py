@@ -61,11 +61,11 @@ class StringElem(object):
     def __init__(self, sub=None, id=None, rid=None, xid=None, **kwargs):
         if sub is None:
             self.sub = []
-        elif isinstance(sub, (six.text_type, StringElem)):
+        elif isinstance(sub, (str, StringElem)):
             self.sub = [sub]
         else:
             for elem in sub:
-                if not isinstance(elem, (six.text_type, StringElem)):
+                if not isinstance(elem, (str, StringElem)):
                     raise ValueError(elem)
             self.sub = sub
             self.prune()
@@ -82,11 +82,11 @@ class StringElem(object):
     # SPECIAL METHODS #
     def __add__(self, rhs):
         """Emulate the ``unicode`` class."""
-        return six.text_type(self) + rhs
+        return str(self) + rhs
 
     def __contains__(self, item):
         """Emulate the ``unicode`` class."""
-        return item in six.text_type(self)
+        return item in str(self)
 
     def __eq__(self, rhs):
         """:returns: ``True`` if (and only if) all members as well as sub-trees
@@ -107,19 +107,19 @@ class StringElem(object):
 
     def __ge__(self, rhs):
         """Emulate the ``unicode`` class."""
-        return six.text_type(self) >= rhs
+        return str(self) >= rhs
 
     def __getitem__(self, i):
         """Emulate the ``unicode`` class."""
-        return six.text_type(self)[i]
+        return str(self)[i]
 
     def __getslice__(self, i, j):
         """Emulate the ``unicode`` class."""
-        return six.text_type(self)[i:j]
+        return str(self)[i:j]
 
     def __gt__(self, rhs):
         """Emulate the ``unicode`` class."""
-        return six.text_type(self) > rhs
+        return str(self) > rhs
 
     def __iter__(self):
         """Create an iterator of this element's sub-elements."""
@@ -128,19 +128,19 @@ class StringElem(object):
 
     def __le__(self, rhs):
         """Emulate the ``unicode`` class."""
-        return six.text_type(self) <= rhs
+        return str(self) <= rhs
 
     def __len__(self):
         """Emulate the ``unicode`` class."""
-        return len(six.text_type(self))
+        return len(str(self))
 
     def __lt__(self, rhs):
         """Emulate the ``unicode`` class."""
-        return six.text_type(self) < rhs
+        return str(self) < rhs
 
     def __mul__(self, rhs):
         """Emulate the ``unicode`` class."""
-        return six.text_type(self) * rhs
+        return str(self) * rhs
 
     def __ne__(self, rhs):
         return not self.__eq__(rhs)
@@ -168,7 +168,7 @@ class StringElem(object):
             return self.renderer(self)
         if not self.isvisible:
             return u''
-        return u''.join([six.text_type(elem) for elem in self.sub])
+        return u''.join([str(elem) for elem in self.sub])
 
     # METHODS #
     def apply_to_strings(self, f):
@@ -404,7 +404,7 @@ class StringElem(object):
 
     def encode(self, encoding=sys.getdefaultencoding()):
         """More ``unicode`` class emulation."""
-        return six.text_type(self).encode(encoding)
+        return str(self).encode(encoding)
 
     def elem_offset(self, elem):
         """Find the offset of ``elem`` in the current tree.
@@ -431,10 +431,10 @@ class StringElem(object):
             if e.isleaf():
                 leafoffset = 0
                 for s in e.sub:
-                    if six.text_type(s) == six.text_type(elem):
+                    if str(s) == str(elem):
                         return offset + leafoffset
                     else:
-                        leafoffset += len(six.text_type(s))
+                        leafoffset += len(str(s))
                 offset += len(e)
         return -1
 
@@ -459,14 +459,14 @@ class StringElem(object):
         which it starts.
         """
         if isinstance(x, str):
-            return six.text_type(self).find(x)
+            return str(self).find(x)
         if isinstance(x, StringElem):
-            return six.text_type(self).find(six.text_type(x))
+            return str(self).find(str(x))
         return None
 
     def find_elems_with(self, x):
         """Find all elements in the current sub-tree containing ``x``."""
-        return [elem for elem in self.flatten() if x in six.text_type(elem)]
+        return [elem for elem in self.flatten() if x in str(elem)]
 
     def flatten(self, filter=None):
         """Flatten the tree by returning a depth-first search over the tree's
@@ -530,7 +530,7 @@ class StringElem(object):
 
         def checkleaf(elem, text):
             if elem.isleaf() and type(text) is StringElem and text.isleaf():
-                return six.text_type(text)
+                return str(text)
             return text
 
         # There are 4 general cases (including specific cases) where text can
@@ -596,11 +596,11 @@ class StringElem(object):
                 #logging.debug('Case 3')
                 eoffset = offset - self.elem_offset(oelem)
                 if oelem.isleaf():
-                    s = six.text_type(oelem)  # Collapse all sibling strings into one
+                    s = str(oelem)  # Collapse all sibling strings into one
                     head = s[:eoffset]
                     tail = s[eoffset:]
                     if type(text) is StringElem and text.isleaf():
-                        oelem.sub = [head + six.text_type(text) + tail]
+                        oelem.sub = [head + str(text) + tail]
                     else:
                         oelem.sub = [StringElem(head), text, StringElem(tail)]
                     return True
@@ -686,7 +686,7 @@ class StringElem(object):
                 raise ValueError('"left" and "right" refer to the same element and is not empty.')
             if not left.iseditable:
                 return False
-        if isinstance(text, six.text_type):
+        if isinstance(text, str):
             text = StringElem(text)
 
         if left is right:
@@ -839,7 +839,7 @@ class StringElem(object):
         """
         indent_prefix = " " * indent * 2
         out = (u"%s%s [%s]" % (indent_prefix, self.__class__.__name__,
-                               six.text_type(self))).encode('utf-8')
+                               str(self))).encode('utf-8')
         if verbose:
             out += u' ' + repr(self)
 

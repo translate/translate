@@ -573,7 +573,7 @@ class dtdfile(base.TranslationStore):
         """Write content to file"""
         content = b''
         for dtd in self.units:
-            unit_str = six.text_type(dtd).encode(self.encoding)
+            unit_str = str(dtd).encode(self.encoding)
             out.write(unit_str)
             content += unit_str
         if not self._valid_store(content):

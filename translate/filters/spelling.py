@@ -51,7 +51,7 @@ try:
         spellchecker = _get_checker(lang)
         if not spellchecker:
             return
-        spellchecker.set_text(six.text_type(text))
+        spellchecker.set_text(str(text))
         for err in spellchecker:
             yield err.word, err.wordpos, err.suggest()
 
@@ -59,7 +59,7 @@ try:
         spellchecker = _get_checker(lang)
         if not spellchecker:
             return
-        spellchecker.set_text(six.text_type(text))
+        spellchecker.set_text(str(text))
         for err in spellchecker:
             yield err.word
 

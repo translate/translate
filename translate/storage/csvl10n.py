@@ -323,7 +323,7 @@ class csvfile(base.TranslationStore):
     def serialize(self, out):
         """Write to file"""
         source = self.getoutput()
-        if isinstance(source, six.text_type):
+        if isinstance(source, str):
             # Python 3
             out.write(source.encode(self.encoding))
         else:

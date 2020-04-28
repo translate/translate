@@ -272,11 +272,11 @@ def get_libgettextpo_version():
 
 
 def gpo_encode(value):
-    return value.encode('utf-8') if isinstance(value, six.text_type) else value
+    return value.encode('utf-8') if isinstance(value, str) else value
 
 
 def gpo_decode(value):
-    if isinstance(value, six.text_type):
+    if isinstance(value, str):
         return value
     elif isinstance(value, bytes):
         return value.decode('utf-8')
@@ -635,7 +635,7 @@ class pounit(pocommon.pounit):
             if locline == -1:
                 locstring = locname
             else:
-                locstring = u":".join([locname, six.text_type(locline)])
+                locstring = u":".join([locname, str(locline)])
             locations.append(pocommon.unquote_plus(locstring))
             i += 1
             location = gpo.po_message_filepos(self._gpo_message, i)

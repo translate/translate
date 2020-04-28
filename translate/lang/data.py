@@ -750,7 +750,7 @@ def forceunicode(string):
         encoding = getattr(string, "encoding", "utf-8")
         string = string.decode(encoding)
     elif isinstance(string, StringElem):
-        string = six.text_type(string)
+        string = str(string)
     return string
 
 

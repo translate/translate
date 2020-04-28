@@ -152,7 +152,7 @@ class FilterFailure(Exception):
         if not isinstance(messages, list):
             messages = [messages]
 
-        assert isinstance(messages[0], six.text_type)  # Assumption: all of same type
+        assert isinstance(messages[0], str)  # Assumption: all of same type
 
         self.messages = messages
 
@@ -465,7 +465,7 @@ class UnitChecker(object):
                 filterresult = self.run_test(filterfunction, unit)
             except FilterFailure as e:
                 filterresult = False
-                filtermessage = six.text_type(e)
+                filtermessage = str(e)
             except Exception as e:
                 if self.errorhandler is None:
                     raise ValueError("error in filter %s: %r, %r, %s" %
@@ -529,7 +529,7 @@ class TranslationChecker(UnitChecker):
 
             for pluralform in unit.target.strings:
                 try:
-                    if not test(self.str1, six.text_type(pluralform)):
+                    if not test(self.str1, str(pluralform)):
                         filterresult = False
                 except FilterFailure as e:
                     filterresult = False
@@ -1534,11 +1534,11 @@ class StandardChecker(TranslationChecker):
         # serves no purpose to get sourcelang.sentenceend
         str1 = re.sub(u"[^%s]( I )" % self.config.sourcelang.sentenceend, u" i ", str1)
 
-        capitals1 = helpers.filtercount(str1, six.text_type.isupper)
-        capitals2 = helpers.filtercount(str2, six.text_type.isupper)
+        capitals1 = helpers.filtercount(str1, str.isupper)
+        capitals2 = helpers.filtercount(str2, str.isupper)
 
-        alpha1 = helpers.filtercount(str1, six.text_type.isalpha)
-        alpha2 = helpers.filtercount(str2, six.text_type.isalpha)
+        alpha1 = helpers.filtercount(str1, str.isalpha)
+        alpha2 = helpers.filtercount(str2, str.isalpha)
 
         # Capture the all caps case
         if capitals1 == alpha1:

@@ -118,8 +118,8 @@ def extract(string, accesskey_marker=DEFAULT_ACCESSKEY_MARKER):
     :type accesskey_marker: Char
     :param accesskey_marker: The character that is used to prefix an access key
     """
-    assert isinstance(string, six.text_type)
-    assert isinstance(accesskey_marker, six.text_type)
+    assert isinstance(string, str)
+    assert isinstance(accesskey_marker, str)
     assert len(accesskey_marker) == 1
     if string == u"":
         return u"", u""
@@ -160,8 +160,8 @@ def combine(label, accesskey,
     :rtype: unicode or None
     :return: label+accesskey string or None if uncombineable
     """
-    assert isinstance(label, six.text_type)
-    assert isinstance(accesskey, six.text_type)
+    assert isinstance(label, str)
+    assert isinstance(accesskey, str)
 
     if len(accesskey) == 0:
         return None

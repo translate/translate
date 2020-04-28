@@ -156,4 +156,4 @@ class TxtFile(base.TranslationStore):
         for idx, unit in enumerate(self.units):
             if idx > 0:
                 out.write(b'\n\n')
-            out.write(six.text_type(unit).encode(self.encoding))
+            out.write(str(unit).encode(self.encoding))

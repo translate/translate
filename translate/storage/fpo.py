@@ -96,7 +96,7 @@ class pounit(pocommon.pounit):
         source = source or u""
         if isinstance(source, multistring):
             self._source = source
-        elif isinstance(source, six.text_type):
+        elif isinstance(source, str):
             self._source = source
         else:  # If it is unicode, list or dict.
             self._source = multistring(source)
@@ -218,7 +218,7 @@ class pounit(pocommon.pounit):
 
         def mergelists(list1, list2, split=False):
             # Decode where necessary (either all bytestrings or all unicode)
-            if six.text_type in [type(item) for item in list2] + [type(item) for item in list1]:
+            if str in [type(item) for item in list2] + [type(item) for item in list1]:
                 for position, item in enumerate(list1):
                     if isinstance(item, bytes):
                         list1[position] = item.decode("utf-8")

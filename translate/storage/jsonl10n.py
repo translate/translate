@@ -88,7 +88,7 @@ class JsonUnit(base.TranslationUnit):
         # Identifier at this level
         self._item = identifier if item is None else item
         # Type conversion for the unit
-        self._type = six.text_type if source is None else type(source)
+        self._type = str if source is None else type(source)
         if notes:
             self.notes = notes
         self.placeholders = placeholders

@@ -91,7 +91,7 @@ class reoo(object):
                                key, len(self.index))
                 try:
                     sourceunitlines = str(unit)
-                    if isinstance(sourceunitlines, six.text_type):
+                    if isinstance(sourceunitlines, str):
                         sourceunitlines = sourceunitlines.encode("utf-8")
                     logger.warning(sourceunitlines)
                 except Exception:
@@ -121,7 +121,7 @@ class reoo(object):
         # If there is no translation, we don't want to add a line
         if len(unquotedstr.strip()) == 0:
             return
-        if isinstance(unquotedstr, six.text_type):
+        if isinstance(unquotedstr, str):
             unquotedstr = unquotedstr.encode("UTF-8")
         # finally set the new definition in the oo, but not if its empty
         if len(unquotedstr) > 0:
