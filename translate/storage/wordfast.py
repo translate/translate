@@ -83,10 +83,7 @@ from __future__ import unicode_literals
 import six
 import time
 
-if six.PY2:
-    from backports import csv
-else:
-    import csv
+import csv
 
 from translate.misc.deprecation import deprecated
 from translate.storage import base

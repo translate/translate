@@ -51,10 +51,7 @@ Escaping
 from __future__ import unicode_literals
 
 import six
-if six.PY2:
-    from backports import csv
-else:
-    import csv
+import csv
 
 from translate.lang import data
 from translate.misc.deprecation import deprecated

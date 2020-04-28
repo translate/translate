@@ -24,10 +24,7 @@ or entire files (csvfile) for use with localisation
 from __future__ import unicode_literals
 
 import six
-if six.PY2:
-    from backports import csv
-else:
-    import csv
+import csv
 
 from translate.storage import base
 
