@@ -77,7 +77,7 @@ ASCII_CONTROL_CODES = [
     '001f',  # Unicode Character 'INFORMATION SEPARATOR ONE' (U+001F)
 ]
 
-ASCII_CONTROL_CHARACTERS = {code: six.unichr(int(code, 16))
+ASCII_CONTROL_CHARACTERS = {code: chr(int(code, 16))
                             for code in ASCII_CONTROL_CODES}
 
 ASCII_CONTROL_CHARACTERS_ESCAPES = {code: u'&#x%s;' % code.lstrip('0') or '0'
@@ -158,7 +158,7 @@ class xliffunit(lisa.LISAunit):
         # Escape the unaccepted ASCII control characters.
         for code in ASCII_CONTROL_CODES:
             text = text.replace(
-                six.unichr(int(code, 16)),
+                chr(int(code, 16)),
                 u'&#x%s;' % code.lstrip('0') or '0')
 
         langset.text = text

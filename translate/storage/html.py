@@ -414,14 +414,14 @@ class htmlfile(html.parser.HTMLParser, base.TranslationStore):
 
     def handle_charref(self, name):
         """Handle entries in the form &#NNNN; e.g. &#8417;"""
-        self.handle_data(six.unichr(int(name)))
+        self.handle_data(chr(int(name)))
 
     def handle_entityref(self, name):
         """Handle named entities of the form &aaaa; e.g. &rsquo;"""
         if name in ['gt', 'lt', 'amp']:
             self.handle_data("&%s;" % name)
         else:
-            self.handle_data(six.unichr(name2codepoint.get(name, u"&%s;" % name)))
+            self.handle_data(chr(name2codepoint.get(name, u"&%s;" % name)))
 
     def handle_comment(self, data):
         # we can place comments above the msgid as translator comments!

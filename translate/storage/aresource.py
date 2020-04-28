@@ -201,7 +201,7 @@ class AndroidResourceUnit(base.TranslationUnit):
                             # it will ignore leading/trailing whitespace.
                             if not codepoint_str.isalnum():
                                 raise ValueError(codepoint_str)
-                            codepoint = six.unichr(int(codepoint_str, 16))
+                            codepoint = chr(int(codepoint_str, 16))
                         except ValueError:
                             raise ValueError('bad unicode escape sequence')
 

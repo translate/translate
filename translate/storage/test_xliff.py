@@ -72,14 +72,14 @@ class TestXLIFFUnit(test_base.TestTranslationUnit):
                    "NULL bytes or control characters")
         for code in xliff.ASCII_CONTROL_CODES:
             self.unit.target = u'Een&#x%s;' % code.lstrip('0') or '0'
-            assert self.unit.target == u'Een%s' % six.unichr(int(code, 16))
-            self.unit.target = u'Een%s' % six.unichr(int(code, 16))
-            assert self.unit.target == u'Een%s' % six.unichr(int(code, 16))
+            assert self.unit.target == u'Een%s' % chr(int(code, 16))
+            self.unit.target = u'Een%s' % chr(int(code, 16))
+            assert self.unit.target == u'Een%s' % chr(int(code, 16))
 
     def test_unaccepted_control_chars_escapes_roundtrip(self):
         """Test control characters go ok on escaping roundtrip."""
         for code in xliff.ASCII_CONTROL_CODES:
-            special = u'Een%s' % six.unichr(int(code, 16))
+            special = u'Een%s' % chr(int(code, 16))
             self.unit.source = special
             print("unit.source:", repr(self.unit.source))
             print("special:", repr(special))
