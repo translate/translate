@@ -212,7 +212,7 @@ class prop2po(object):
         # if everything went well, there should be nothing left in plurals
         if len(plurals) != 0:
             logger.warning("Not all plural units converted correctly:" +
-                           "\n".join(plurals.keys()))
+                           "\n".join(plurals))
         return new_store
 
     def convertunit(self, propunit, commenttype):
@@ -350,7 +350,7 @@ def main(argv=None):
         type="choice",
         choices=list(properties.dialects.keys()),
         help="override the input file format: %s (for .properties files, default: %s)" % (
-            ", ".join(six.iterkeys(properties.dialects)), properties.default_dialect),
+            ", ".join(properties.dialects.keys()), properties.default_dialect),
         metavar="TYPE")
     parser.add_option(
         "", "--encoding", dest="encoding", default=None,

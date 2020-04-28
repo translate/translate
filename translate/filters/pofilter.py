@@ -148,7 +148,7 @@ class pocheckfilter(object):
 
             if filter_result:
                 if filter_result != autocorrect:
-                    for filter_name in six.iterkeys(filter_result):
+                    for filter_name in filter_result:
                         filter_message = filter_result[filter_name]['message']
 
                         if self.options.addnotes:
