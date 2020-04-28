@@ -218,7 +218,6 @@ def phpdecode(text, quotechar="'"):
         return text.replace("\\'", "'").replace("\\\\", "\\")
 
 
-@six.python_2_unicode_compatible
 class phpunit(base.TranslationUnit):
     """A unit of a PHP file: a name, a value, and any comments associated."""
 

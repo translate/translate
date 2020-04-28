@@ -38,7 +38,6 @@ class DefaultDialect(csv.excel):
 csv.register_dialect('default', DefaultDialect)
 
 
-@six.python_2_unicode_compatible
 class csvunit(base.TranslationUnit):
     spreadsheetescapes = [("+", "\\+"), ("-", "\\-"), ("=", "\\="), ("'", "\\'")]
 

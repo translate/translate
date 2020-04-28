@@ -32,7 +32,6 @@ class ElementNotFoundError(ValueError):
     pass
 
 
-@six.python_2_unicode_compatible
 class StringElem(object):
     """
     This class represents a sub-tree of a string parsed into a rich structure.

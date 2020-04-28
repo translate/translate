@@ -51,7 +51,6 @@ class ParseError(Exception):
         return repr(self.inner_exc)
 
 
-@six.python_2_unicode_compatible
 class TranslationUnit(object):
     """Base class for translation units.
 

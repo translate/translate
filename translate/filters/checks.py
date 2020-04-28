@@ -143,7 +143,6 @@ def tagproperties(strings, ignore):
     return properties
 
 
-@six.python_2_unicode_compatible
 class FilterFailure(Exception):
     """This exception signals that a Filter didn't pass, and gives an
     explanation or a comment.

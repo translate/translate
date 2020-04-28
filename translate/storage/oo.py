@@ -228,7 +228,6 @@ class ooline(object):
                 self.localid, self.platform)
 
 
-@six.python_2_unicode_compatible
 class oounit:
     """this represents a number of translations of a resource"""
 

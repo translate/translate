@@ -59,7 +59,6 @@ from translate.misc import wStringIO
 from translate.storage import base
 
 
-@six.python_2_unicode_compatible
 class TikiUnit(base.TranslationUnit):
     """A tiki unit entry."""
 

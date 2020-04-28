@@ -21,8 +21,6 @@
 
 import os
 
-import six
-
 
 #from translate.convert import prop2po, po2prop, odf2xliff, xliff2odf
 
@@ -40,7 +38,6 @@ converters = {}
 #        converters[extension].append(module.formats[extension])
 
 
-@six.python_2_unicode_compatible
 class UnknownExtensionError(Exception):
 
     def __init__(self, afile):
@@ -50,7 +47,6 @@ class UnknownExtensionError(Exception):
         return 'Unable to find extension for file: %s' % (self.file)
 
 
-@six.python_2_unicode_compatible
 class UnsupportedConversionError(Exception):
 
     def __init__(self, in_ext=None, out_ext=None, templ_ext=None):

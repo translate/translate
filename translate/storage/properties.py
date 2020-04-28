@@ -485,7 +485,6 @@ class DialectJoomla(Dialect):
         return '"%s"' % string.replace("\n", r"\n").replace("\t", r"\t").replace('"', '"_QQ_"')
 
 
-@six.python_2_unicode_compatible
 class propunit(base.TranslationUnit):
     """An element of a properties file i.e. a name and value, and any comments
     associated.

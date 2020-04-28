@@ -52,7 +52,6 @@ msgstr ""
 '''
 
 
-@six.python_2_unicode_compatible
 class pounit(pocommon.pounit):
     # othercomments = []      #   # this is another comment
     # automaticcomments = []  #   #. comment extracted from the source code

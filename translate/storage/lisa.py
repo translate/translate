@@ -33,7 +33,6 @@ from translate.misc.deprecation import deprecated
 from translate.storage import base
 
 
-@six.python_2_unicode_compatible
 class LISAunit(base.TranslationUnit):
     """
     A single unit in the file.  Provisional work is done to make several

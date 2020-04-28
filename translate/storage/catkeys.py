@@ -136,7 +136,6 @@ class CatkeysHeader(object):
         self._header_dict['checksum'] = str(checksum)
 
 
-@six.python_2_unicode_compatible
 class CatkeysUnit(base.TranslationUnit):
     """A catkeys translation memory unit"""
 

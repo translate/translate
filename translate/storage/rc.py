@@ -51,7 +51,6 @@ def escape_to_rc(string):
     return rcstring
 
 
-@six.python_2_unicode_compatible
 class rcunit(base.TranslationUnit):
     """A unit of an rc file"""
 

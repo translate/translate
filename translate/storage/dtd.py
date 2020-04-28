@@ -225,7 +225,6 @@ def removeinvalidamps(name, value):
     return value
 
 
-@six.python_2_unicode_compatible
 class dtdunit(base.TranslationUnit):
     """An entity definition from a DTD file (and any associated comments)."""
 
