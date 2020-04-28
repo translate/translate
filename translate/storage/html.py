@@ -193,8 +193,7 @@ class htmlfile(html.parser.HTMLParser, base.TranslationStore):
         else:
             self.callback = callback
         self.includeuntaggeddata = includeuntaggeddata
-        htmlargs = {'convert_charrefs': True} if six.PY34 else {}
-        html.parser.HTMLParser.__init__(self, **htmlargs)
+        html.parser.HTMLParser.__init__(self, convert_charrefs=True)
 
         if inputfile is not None:
             htmlsrc = inputfile.read()

@@ -237,8 +237,7 @@ class TestPYPOFile(test_po.TestPOFile):
         assert len(pofile.units) == 1
         print(bytes(pofile))
         thepo = pofile.units[0]
-        # On Python 2, str() returns bytestrings while on Python 3, str() returns unicode
-        assert str(thepo) == posource if six.PY3 else posource.encode("UTF-8")
+        assert str(thepo) == posource
         assert six.text_type(thepo) == posource
         # Now if we set the msgstr to Unicode
         # this is an escaped half character (1/2)

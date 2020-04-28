@@ -108,7 +108,7 @@ class StdoutWrapper(object):
         return getattr(self.out, name)
 
     def write(self, content):
-        if six.PY3 and isinstance(content, bytes):
+        if isinstance(content, bytes):
             try:
                 self.out.write(content.decode('utf-8'))
             except UnicodeDecodeError:

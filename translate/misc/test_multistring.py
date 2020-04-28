@@ -5,7 +5,7 @@ import six
 from translate.misc import multistring
 
 
-str_prefix = '' if six.PY3 else 'u'
+str_prefix = ''
 
 
 class TestMultistring:
@@ -31,10 +31,7 @@ class TestMultistring:
         assert eval(u'multistring.%s' % repr(s1)) == s1
 
         s2 = t(["test", u"mé"])
-        if six.PY3:
-            assert repr(s2) == "multistring(['test', 'mé'])"
-        else:
-            assert repr(s2) == "multistring([u'test', u'm\\xe9'])"
+        assert repr(s2) == "multistring(['test', 'mé'])"
         assert eval(u'multistring.%s' % repr(s2)) == s2
 
     def test_replace(self):
@@ -94,10 +91,7 @@ class TestMultistring:
     def test_list_coercion(self):
         t = multistring.multistring
         assert six.text_type([t(u"test")]) == u"[multistring([%s'test'])]" % str_prefix
-        if six.PY3:
-            assert six.text_type([t(u"tést")]) == u"[multistring(['tést'])]"
-        else:
-            assert six.text_type([t(u"tést")]) == u"[multistring([u't\\xe9st'])]"
+        assert six.text_type([t(u"tést")]) == u"[multistring(['tést'])]"
 
     def test_multistring_hash(self):
         t = multistring.multistring

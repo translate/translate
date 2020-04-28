@@ -883,8 +883,7 @@ msgstr ""
 msgid "a"
 msgstr "d"
 '''
-        if six.PY3:
-            posource = posource.encode('utf-8')
+        posource = posource.encode('utf-8')
         pofile = self.poparse(posource)
         unit = pofile.units[1]
         unit.target = u"ḓ"
