@@ -89,10 +89,7 @@ Requirements
    Will install all recommended requirements, while ``optional.txt`` will also
    install support for all other formats.
 
-Python 2.7 or later is required.
-
-Python 2.6 is no longer supported by the Python Software Foundation, while the
-Toolkit may work in versions before Python 2.7 this is not supported.
+The Toolkit requires Python 3.5 or newer.
 
 The package lxml is needed for XML file processing. You should install version
 3.5.0 or later. <http://lxml.de/> Depending on your platform, the easiest way
