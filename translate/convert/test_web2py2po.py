@@ -3,9 +3,6 @@ from translate.convert import web2py2po
 from translate.storage import po
 from translate.storage.test_base import first_translatable, headerless_len
 
-import six
-import pytest
-
 
 class TestWEB2PY2PO(object):
 
@@ -35,7 +32,6 @@ class TestWEB2PY2PO(object):
         assert pounit.source == "A simple string"
         assert pounit.target == "Du texte simple"
 
-    @pytest.mark.skipif(six.PY2, reason='Skipping unicode tests on PY2')
     def test_unicode(self):
         """test a web2py to po conversion with unicode"""
         input_web2py = '''# -*- coding: utf-8 -*-

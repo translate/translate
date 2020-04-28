@@ -4,9 +4,6 @@ from translate.convert import po2web2py
 from translate.misc import wStringIO
 from translate.storage import po
 
-import six
-import pytest
-
 
 class TestPO2WEB2PY(object):
 
@@ -32,7 +29,6 @@ msgstr "Du texte simple"
         web2py_out = self.po2web2py(input_po)
         assert web2py_out == expected_web2py
 
-    @pytest.mark.skipif(six.PY2, reason='Skipping unicode tests on PY2')
     def test_unicode(self):
         """test a po to web2py conversion with unicode"""
         input_po = '''#: .text

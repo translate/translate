@@ -29,8 +29,6 @@ from io import StringIO
 from translate.convert import convert
 from translate.storage import factory
 
-import six
-
 
 class po2pydict(object):
 
@@ -52,9 +50,6 @@ class po2pydict(object):
         str_obj.write(u'# -*- coding: utf-8 -*-\n')
         str_obj.write(u'{\n')
         for source_str, trans_str in sorted(mydict.items()):
-            if six.PY2:
-                source_str = source_str.encode('utf-8')
-                trans_str = trans_str.encode('utf-8')
             str_obj.write(u"%s: %s,\n" % (repr(source_str), repr(trans_str)))
         str_obj.write(u'}\n')
         str_obj.seek(0)
@@ -71,10 +66,7 @@ def convertpy(inputfile, outputfile, templatefile=None, includefuzzy=False,
     convertor = po2pydict()
     outputstring = convertor.convertstore(inputstore, includefuzzy)
 
-    if six.PY2:
-        outputfile.write(outputstring.read().decode('utf-8'))
-    else:
-        outputfile.write(bytes(outputstring.read(), 'utf-8'))
+    outputfile.write(bytes(outputstring.read(), 'utf-8'))
     return 1
 
 

@@ -299,7 +299,7 @@ class StatsCache(object):
 
             def connect(cache):
                 # sqlite needs to get the name in utf-8 on all platforms
-                cache.con = dbapi2.connect(statsfile.encode('utf-8') if six.PY2 else statsfile)
+                cache.con = dbapi2.connect(statsfile)
                 cache.cur = cache.con.cursor()
 
             def clear_old_data(cache):

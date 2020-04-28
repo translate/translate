@@ -701,7 +701,7 @@ def gettext_domain(langcode, domain, localedir=None):
         # On Windows the default locale is not used for some reason
         kwargs['languages'] = [locale.getdefaultlocale()[0]]
     t = gettext.translation(**kwargs)
-    return t.ugettext if six.PY2 else t.gettext
+    return t.gettext
 
 
 def gettext_lang(langcode=None):

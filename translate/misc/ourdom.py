@@ -201,15 +201,8 @@ class ExpatBuilderNS(expatbuilder.ExpatBuilderNS):
                 else:
                     a = minidom.Attr("xmlns", expatbuilder.XMLNS_NAMESPACE,
                                      "xmlns", expatbuilder.EMPTY_PREFIX)
-                if six.PY2:
-                    d = a.childNodes[0].__dict__
-                    d['data'] = d['nodeValue'] = uri
-                    d = a.__dict__
-                    d['value'] = d['nodeValue'] = uri
-                    d['ownerDocument'] = self.document
-                else:
-                    a.value = uri
-                    a.ownerDocument = self.document
+                a.value = uri
+                a.ownerDocument = self.document
                 expatbuilder._set_attribute_node(node, a)
             del self._ns_ordered_prefixes[:]
 
@@ -231,17 +224,9 @@ class ExpatBuilderNS(expatbuilder.ExpatBuilderNS):
                                      aname, expatbuilder.EMPTY_PREFIX)
                     _attrs[aname] = a
                     _attrsNS[(expatbuilder.EMPTY_NAMESPACE, aname)] = a
-                if six.PY2:
-                    d = a.childNodes[0].__dict__
-                    d['data'] = d['nodeValue'] = value
-                    d = a.__dict__
-                    d['ownerDocument'] = self.document
-                    d['value'] = d['nodeValue'] = value
-                    d['ownerElement'] = node
-                else:
-                    a.ownerDocument = self.document
-                    a.value = value
-                    a.ownerElement = node
+                a.ownerDocument = self.document
+                a.value = value
+                a.ownerElement = node
 
     if __debug__:
         # This only adds some asserts to the original

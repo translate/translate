@@ -94,15 +94,9 @@ class multistring(six.text_type):
         return self.__cmp__(otherstring) == 0
 
     def __repr__(self):
-        _repr = u"multistring(%r)" % (
+        return u"multistring(%r)" % (
             [six.text_type(item) for item in self.strings]
         )
-        return _repr.encode('utf-8') if six.PY2 else _repr
-
-    def __str__(self):
-        if six.PY2:
-            return self.encode('utf-8')
-        return super(multistring, self).__str__()
 
     def replace(self, old, new, count=None):
         if count is None:

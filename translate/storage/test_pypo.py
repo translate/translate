@@ -247,8 +247,6 @@ class TestPYPOFile(test_po.TestPOFile):
         thepo.target = halfstr
         assert halfstr in six.text_type(thepo)
         thepo.target = halfstr.encode("UTF-8")
-        if six.PY2:
-            assert halfstr.encode("UTF-8") in str(thepo)
 
     def test_posections(self):
         """checks the content of all the expected sections of a PO message"""

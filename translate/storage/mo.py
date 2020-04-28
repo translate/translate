@@ -74,7 +74,7 @@ def hashpjw(str_param):
     s = str_param
     for s in str_param:
         hval = hval << 4
-        hval += ord(s) if six.PY2 else s
+        hval += s
         g = hval & 0xf << (HASHWORDBITS - 4)
         if (g != 0):
             hval = hval ^ g >> (HASHWORDBITS - 8)

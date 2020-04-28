@@ -727,13 +727,6 @@ class TranslationStore(object):
         odict['fileobj'] = None
         return odict
 
-    def __str__(self):
-        # This allows the old str(store) method for serialization to be kept
-        # for compatibility purpose.
-        if six.PY2:
-            return self.__bytes__()
-        return super(TranslationStore, self).__str__()
-
     def __bytes__(self):
         out = BytesIO()
         self.serialize(out)

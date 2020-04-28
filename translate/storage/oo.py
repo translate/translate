@@ -307,13 +307,6 @@ class oofile:
             thisline = ooline(parts)
             self.addline(thisline)
 
-    def __str__(self, *args, **kwargs):
-        if six.PY2:
-            out = BytesIO()
-            self.serialize(out, **kwargs)
-            return out.getvalue()
-        return super(oofile, self).__str__()
-
     def __bytes__(self):
         out = BytesIO()
         self.serialize(out)

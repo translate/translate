@@ -907,8 +907,6 @@ msgid "a"
 msgid_plural "aa"
 msgstr[0] ""
 '''
-        if six.PY2:
-            posource = posource.decode('utf-8')
         pofile = self.poparse(posource)
         unit = pofile.units[1]
         print(str(unit))
@@ -1020,8 +1018,6 @@ msgid ""
 msgstr ""
 "_: I'll be clever and translate in a text editor and duplicate the KDE comment"
 '''
-        if six.PY2:
-            posource = posource.decode('utf-8')
         pofile = self.poparse(posource)
         unit = pofile.units[1]
         assert unit.source == u'The actual source text'

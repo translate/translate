@@ -16,7 +16,6 @@
 # You should have received a copy of the GNU General Public License along with
 # this program; if not, see <http://www.gnu.org/licenses/>.
 
-import six
 import warnings
 from functools import wraps
 
@@ -37,7 +36,7 @@ def deprecated(message=""):
             msg = message  # Hack to avoid UnboundLocalError.
             if msg:
                 msg = "\n" + msg
-            func_code = func.func_code if six.PY2 else func.__code__
+            func_code = func.__code__
             warnings.warn_explicit(
                 "Call to deprecated function {0}.{1}".format(func.__name__,
                                                              msg),
