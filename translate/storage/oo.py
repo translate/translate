@@ -33,9 +33,9 @@ comments.
 
 import os
 import re
-import six
 import warnings
 from io import BytesIO
+import struct
 
 from translate.misc import quote, wStringIO
 
@@ -44,7 +44,8 @@ from translate.misc import quote, wStringIO
 
 normalfilenamechars = b"/#.0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
 normalizetable = b""
-for i in map(six.int2byte, range(256)):
+int2byte = struct.Struct(">B").pack
+for i in map(int2byte, range(256)):
     if i in normalfilenamechars:
         normalizetable += i
     else:

@@ -29,7 +29,6 @@
 import glob
 import io
 import re
-import six
 import sys
 from os import path
 
@@ -131,7 +130,7 @@ class NGram:
         ngram = _NGram(text)
         r = 'guess'
 
-        min = six.MAXSIZE
+        min = sys.maxsize
 
         for lang in self.ngrams:
             d = self.ngrams[lang].compare(ngram)

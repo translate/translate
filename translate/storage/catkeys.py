@@ -49,7 +49,6 @@ Escaping
     Functions allow for :func:`._escape` and :func:`._unescape`.
 """
 
-import six
 import csv
 
 from translate.lang import data
@@ -317,7 +316,7 @@ class CatkeysFile(base.TranslationStore):
             h = startValue
             array = string.encode('utf-8')
 
-            for byte in six.iterbytes(array):
+            for byte in array:
                 if byte > 127:
                     byte -= 256
                 h = 5 * h + byte
