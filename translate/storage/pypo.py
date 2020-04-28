@@ -450,7 +450,7 @@ class pounit(pocommon.pounit):
 
     def _msgstrlen(self):
         if isinstance(self.msgstr, dict):
-            combinedstr = "\n".join(filter(None, [unquotefrompo(msgstr) for msgstr in six.itervalues(self.msgstr)]))
+            combinedstr = "\n".join(filter(None, [unquotefrompo(msgstr) for msgstr in self.msgstr.values()]))
             return len(combinedstr)
         return len(unquotefrompo(self.msgstr))
 

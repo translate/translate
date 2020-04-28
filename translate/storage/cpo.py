@@ -435,7 +435,7 @@ class pounit(pocommon.pounit):
                 gpo.po_message_set_msgstr_plural(self._gpo_message, i, gpo_encode(targetstring))
         # add the values of a dict
         elif isinstance(target, dict):
-            for i, targetstring in enumerate(six.itervalues(target)):
+            for i, targetstring in enumerate(target.values()):
                 gpo.po_message_set_msgstr_plural(self._gpo_message, i, gpo_encode(targetstring))
         # add a single string
         else:
