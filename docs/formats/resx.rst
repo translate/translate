@@ -11,7 +11,7 @@ described as a name/value pair.
 
 Comments can be added per string using the optional ``<comment>`` field. As only one comment field is available,
 both translator and developer comments are stored in the same place. Translator comments are
-automatically wrapped with brackets and pre-fixed with 'Translator Comment:' during the po2resx process to
+automatically wrapped with brackets and prefixed with 'Translator Comment:' during the po2resx process to
 make it easy to distinguish comment origin inside the .resx files.
 
 Example:
