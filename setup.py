@@ -397,27 +397,6 @@ else:
         return data_file
 
 
-def parse_requirements(file_name):
-    """Parses a pip requirements file and returns a list of packages.
-
-    Use the result of this function in the ``install_requires`` field.
-    Copied from cburgmer/pdfserver.
-    """
-    requirements = []
-    with open(file_name, 'r') as fh:
-        for line in fh:
-            # Ignore comments, blank lines and included requirements files
-            if re.match(r'(\s*#)|(\s*$)|(-r .*$)', line):
-                continue
-
-            if re.match(r'\s*-e\s+', line):
-                requirements.append(re.sub(r'\s*-e\s+.*#egg=(.*)$', r'\1', line))
-            elif not re.match(r'\s*-f\s+', line):
-                requirements.append(line.rstrip('\n'))
-
-    return requirements
-
-
 def getdatafiles():
     datafiles = initfiles + infofiles
 
@@ -510,7 +489,6 @@ def dosetup(name, version, packages, datafiles, scripts, ext_modules=[]):
         scripts=scripts,
         ext_modules=ext_modules,
         cmdclass=cmdclass,
-        install_requires=parse_requirements('requirements/required.txt'),
         **kwargs
     )
 
