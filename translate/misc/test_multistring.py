@@ -4,9 +4,6 @@ import pytest
 from translate.misc import multistring
 
 
-str_prefix = ''
-
-
 class TestMultistring:
 
     def test_constructor(self):
@@ -26,7 +23,7 @@ class TestMultistring:
     def test_repr(self):
         t = multistring.multistring
         s1 = t(u"test")
-        assert repr(s1) == "multistring([%s'test'])" % str_prefix
+        assert repr(s1) == "multistring(['test'])"
         assert eval(u'multistring.%s' % repr(s1)) == s1
 
         s2 = t(["test", u"mé"])
@@ -89,7 +86,7 @@ class TestMultistring:
 
     def test_list_coercion(self):
         t = multistring.multistring
-        assert str([t(u"test")]) == u"[multistring([%s'test'])]" % str_prefix
+        assert str([t(u"test")]) == u"[multistring(['test'])]"
         assert str([t(u"tést")]) == u"[multistring(['tést'])]"
 
     def test_multistring_hash(self):
