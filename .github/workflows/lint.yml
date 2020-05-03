@@ -7,6 +7,8 @@ on:
       - ".github/workflows/lint.yml"
       - "requirements/**"
       - "**/*.py"
+    branches-ignore:
+      - "dependabot/**"
   pull_request:
     paths:
       - "setup.cfg"
