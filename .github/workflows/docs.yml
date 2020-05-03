@@ -8,6 +8,8 @@ on:
       - "docs/**"
       - "requirements/**"
       - "tests/cli/example_test.sh"
+    branches-ignore:
+      - "dependabot/**"
   pull_request:
     paths:
       - "Makefile"
