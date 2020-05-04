@@ -149,6 +149,7 @@ class PHPLexer(FilteredLexer):
         pos = max(self.pos, self.codepos)
         while self.tokens[pos].type not in ('ARRAY', 'LBRACKET'):
             pos += 1
+        self.codepos = pos
         if self.tokens[pos].type == 'ARRAY':
             return ''
         return '[]'
@@ -264,7 +265,9 @@ class phpunit(base.TranslationUnit):
 
     def getoutput(self, indent='', name=None):
         """Convert the unit back into formatted lines for a php file."""
-        if '->' in self.name:
+        if '->' in self.name and name == "[]":
+            fmt = "{1}{2}{1},\n"
+        elif '->' in self.name:
             fmt = '{0} => {1}{2}{1},\n'
         elif self.name.startswith('define'):
             fmt = '{0}, {1}{2}{1});\n'
@@ -400,15 +403,17 @@ class phpfile(base.TranslationStore):
             prefix += lexer.extract_array()
             for item in nodes:
                 assert isinstance(item, ArrayElement)
-                # Skip empty keys
-                if item.key == '':
-                    continue
-                if isinstance(item.key, BinaryOp):
-                    name = '\'{0}\''.format(concatenate(item.key))
-                elif isinstance(item.key, (int, float)):
-                    name = '{0}'.format(item.key)
+                if item.key is None:
+                    name = []
                 else:
-                    name = '\'{0}\''.format(item.key)
+                    # To update lexer current position
+                    lexer.extract_name('DOUBLE_ARROW', *item.lexpositions)
+                    if isinstance(item.key, BinaryOp):
+                        name = '\'{0}\''.format(concatenate(item.key))
+                    elif isinstance(item.key, (int, float)):
+                        name = '{0}'.format(item.key)
+                    else:
+                        name = '\'{0}\''.format(item.key)
                 if prefix:
                     name = '{0}->{1}'.format(prefix, name)
                 if isinstance(item.value, Array):
@@ -449,7 +454,9 @@ class phpfile(base.TranslationStore):
             elif isinstance(item, Assignment):
                 if isinstance(item.node, ArrayOffset):
                     name = lexer.extract_name('EQUALS', *item.lexpositions)
-                    if isinstance(item.expr, str):
+                    if isinstance(item.expr, Array):
+                        handle_array(name, item.expr.nodes, lexer)
+                    elif isinstance(item.expr, str):
                         self.create_and_add_unit(
                             name,
                             item.expr,
@@ -483,4 +490,6 @@ class phpfile(base.TranslationStore):
                         )
             elif isinstance(item, Return):
                 if isinstance(item.node, Array):
+                    # Adjustextractor position
+                    lexer.extract_name('RETURN', *item.lexpositions)
                     handle_array('return', item.node.nodes, lexer)

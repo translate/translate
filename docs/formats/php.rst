@@ -391,6 +391,14 @@ Our format support allows:
       */ $messages['help'] = 'Help';
 
 
+* Keyless arrays assigned to another array:
+
+  .. code-block:: php
+
+      <?php
+      $messages['days_short'] = array('Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat');
+
+
 
 .. _php#non-conformance:
 
@@ -399,10 +407,4 @@ Non-Conformance
 
 The following are not yet supported:
 
-* Keyless arrays assigned to another array:
-
-  .. code-block:: php
-
-      <?php
-      $messages['days_short'] = array('Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat');
-
+* There are currently no known limitations.
