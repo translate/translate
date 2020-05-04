@@ -484,57 +484,78 @@ $month_mar = 'Mar';"""
 
     def test_parsing_arrays_with_no_keys(self):
         """Parse an array with no keys."""
-        phpsource = """$days = array('Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday');"""
+        phpsource = """<?php
+$days = array(
+    'Sunday',
+    'Monday',
+    'Tuesday',
+    'Wednesday',
+    'Thursday',
+    'Friday',
+    "Saturday",
+);
+"""
         phpfile = self.phpparse(phpsource)
         assert len(phpfile.units) == 7
         phpunit = phpfile.units[0]
-        assert phpunit.name == "$days->'None'"
+        assert phpunit.name == "$days->[]"
         assert phpunit.source == "Sunday"
         phpunit = phpfile.units[1]
-        assert phpunit.name == "$days->'None'"
+        assert phpunit.name == "$days->[]"
         assert phpunit.source == "Monday"
         phpunit = phpfile.units[2]
-        assert phpunit.name == "$days->'None'"
+        assert phpunit.name == "$days->[]"
         assert phpunit.source == "Tuesday"
         phpunit = phpfile.units[3]
-        assert phpunit.name == "$days->'None'"
+        assert phpunit.name == "$days->[]"
         assert phpunit.source == "Wednesday"
         phpunit = phpfile.units[4]
-        assert phpunit.name == "$days->'None'"
+        assert phpunit.name == "$days->[]"
         assert phpunit.source == "Thursday"
         phpunit = phpfile.units[5]
-        assert phpunit.name == "$days->'None'"
+        assert phpunit.name == "$days->[]"
         assert phpunit.source == "Friday"
         phpunit = phpfile.units[6]
-        assert phpunit.name == "$days->'None'"
+        assert phpunit.name == "$days->[]"
         assert phpunit.source == "Saturday"
+        assert bytes(phpfile).decode() == phpsource
 
-    @mark.xfail
     def test_parsing_arrays_with_no_keys_assigned_to_array(self):
         """Parse an array with no keys assigned to another array."""
-        phpsource = """$messages['days_short'] = array('Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat');"""
+        phpsource = """<?php
+$messages['days_short'] = array(
+    'Sun',
+    'Mon',
+    'Tue',
+    'Wed',
+    'Thu',
+    "Fri",
+    'Sat',
+);
+"""
         phpfile = self.phpparse(phpsource)
+        assert bytes(phpfile).decode() == phpsource
         assert len(phpfile.units) == 7
         phpunit = phpfile.units[0]
-        assert phpunit.name == "$messages->'days_short'->'None'"
+        assert phpunit.name == "$messages['days_short']->[]"
         assert phpunit.source == "Sun"
         phpunit = phpfile.units[1]
-        assert phpunit.name == "$messages->'days_short'->'None'"
+        assert phpunit.name == "$messages['days_short']->[]"
         assert phpunit.source == "Mon"
         phpunit = phpfile.units[2]
-        assert phpunit.name == "$messages->'days_short'->'None'"
+        assert phpunit.name == "$messages['days_short']->[]"
         assert phpunit.source == "Tue"
         phpunit = phpfile.units[3]
-        assert phpunit.name == "$messages->'days_short'->'None'"
+        assert phpunit.name == "$messages['days_short']->[]"
         assert phpunit.source == "Wed"
         phpunit = phpfile.units[4]
-        assert phpunit.name == "$messages->'days_short'->'None'"
+        assert phpunit.name == "$messages['days_short']->[]"
         assert phpunit.source == "Thu"
         phpunit = phpfile.units[5]
-        assert phpunit.name == "$messages->'days_short'->'None'"
+        assert phpunit.name == "$messages['days_short']->[]"
         assert phpunit.source == "Fri"
         phpunit = phpfile.units[6]
-        assert phpunit.name == "$messages->'days_short'->'None'"
+        assert phpunit.name == "$messages['days_short']->[]"
         assert phpunit.source == "Sat"
 
     def test_parsing_nested_arrays_with_no_keys(self):
@@ -543,7 +564,7 @@ $month_mar = 'Mar';"""
         phpfile = self.phpparse(phpsource)
         assert len(phpfile.units) == 1
         phpunit = phpfile.units[0]
-        assert phpunit.name == "$lang->'None'->'key'"
+        assert phpunit.name == "$lang->[]->'key'"
         assert phpunit.source == "value"
 
     def test_assignment_in_line_where_multiline_comment_ends(self):
@@ -734,26 +755,31 @@ $lang = [
 
     def test_parsing_nested_arrays_with_blank_entries(self):
         """parse the nested array syntax with blank entries. Bug #2648"""
-        phpsource = '''$lang = array(
-            'item1' => 'value1',
-            'newsletter_frequency_dom' =>
-                array(
-                    '' => '',
-                    'Weekly' => 'Weekly',
-                ),
-            'item2' => 'value2',
-        );'''
+        phpsource = '''<?php
+$lang = array(
+    'item1' => 'value1',
+    'newsletter_frequency_dom' => array(
+        '' => '',
+        'Weekly' => 'Weekly',
+    ),
+    'item2' => 'value2',
+);
+'''
         phpfile = self.phpparse(phpsource)
-        assert len(phpfile.units) == 3
+        assert len(phpfile.units) == 4
         phpunit = phpfile.units[0]
         assert phpunit.name == "$lang->'item1'"
         assert phpunit.source == "value1"
         phpunit = phpfile.units[1]
+        assert phpunit.name == "$lang->'newsletter_frequency_dom'->''"
+        assert phpunit.source == ""
+        phpunit = phpfile.units[2]
         assert phpunit.name == "$lang->'newsletter_frequency_dom'->'Weekly'"
         assert phpunit.source == "Weekly"
-        phpunit = phpfile.units[2]
+        phpunit = phpfile.units[3]
         assert phpunit.name == "$lang->'item2'"
         assert phpunit.source == "value2"
+        assert bytes(phpfile).decode() == phpsource
 
     def test_slashstar_in_string(self):
         """ignore the /* comment delimiter when it is part of a string.
@@ -997,4 +1023,26 @@ return [
         phpunit = phpfile.units[0]
         assert phpunit.name == "return[]->'peach'"
         assert phpunit.source == "pesca"
-        assert phpfile.__bytes__() == phpsource
+        assert bytes(phpfile) == phpsource
+        phpunit.source = "ryba"
+        assert bytes(phpfile) != phpsource
+        phpunit.source = "pesca"
+        assert bytes(phpfile) == phpsource
+
+    def test_return_array_short_quotes(self):
+        phpsource = r"""<?php
+return [
+    'peach' => "foo \"pesca\"",
+];
+"""
+        phpfile = self.phpparse(phpsource)
+        assert len(phpfile.units) == 1
+        phpunit = phpfile.units[0]
+        assert phpunit.escape_type == '"'
+        assert phpunit.name == "return[]->'peach'"
+        assert phpunit.source == "foo \"pesca\""
+        assert bytes(phpfile).decode() == phpsource
+        phpunit.source = "ryba"
+        assert bytes(phpfile) != phpsource
+        phpunit.source = "foo \"pesca\""
+        assert bytes(phpfile).decode() == phpsource
