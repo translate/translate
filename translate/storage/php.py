@@ -231,13 +231,13 @@ class phpunit(base.TranslationUnit):
 
     @property
     def source(self):
-        return phpdecode(self.value, self.escape_type)
+        return self.value
 
     @source.setter
     def source(self, source):
         """Set the source AND the target to be equal."""
         self._rich_source = None
-        self.value = phpencode(source, self.escape_type)
+        self.value = source
 
     # Deprecated on 2.3.1
     @deprecated("Use `source` property instead")
@@ -246,12 +246,12 @@ class phpunit(base.TranslationUnit):
 
     @property
     def target(self):
-        return phpdecode(self.translation, self.escape_type)
+        return self.translation
 
     @target.setter
     def target(self, target):
         self._rich_target = None
-        self.translation = phpencode(target, self.escape_type)
+        self.translation = target
 
     # Deprecated on 2.3.1
     @deprecated("Use `target` property instead")
@@ -273,7 +273,7 @@ class phpunit(base.TranslationUnit):
         out = fmt.format(
             name if name else self.name,
             self.escape_type,
-            self.translation or self.value
+            phpencode(self.translation or self.value, self.escape_type),
         )
         joiner = '\n' + indent
         return indent + joiner.join(self._comments + [out])
