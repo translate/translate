@@ -399,6 +399,15 @@ Our format support allows:
       $messages['days_short'] = array('Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat');
 
 
+* Laravel plurals are supported in the ``LaravelPHPFile`` class:
+
+  .. code-block:: php
+
+        <?php
+        return [
+            'apples' => 'There is one apple|There are many apples',
+        ];
+
 
 .. _php#non-conformance:
 

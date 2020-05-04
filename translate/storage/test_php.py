@@ -3,6 +3,7 @@
 from pytest import mark
 
 from translate.misc import wStringIO
+from translate.misc.multistring import multistring
 from translate.storage import php, test_monolingual
 
 
@@ -1046,3 +1047,36 @@ return [
         assert bytes(phpfile) != phpsource
         phpunit.source = "foo \"pesca\""
         assert bytes(phpfile).decode() == phpsource
+
+
+class TestLaravelPhpUnit(test_monolingual.TestMonolingualUnit):
+    UnitClass = php.LaravelPHPUnit
+
+
+class TestLaravelPhpFile(test_monolingual.TestMonolingualStore):
+    StoreClass = php.LaravelPHPFile
+
+    def phpparse(self, phpsource):
+        """helper that parses php source without requiring files"""
+        dummyfile = wStringIO.StringIO(phpsource)
+        phpfile = self.StoreClass(dummyfile)
+        return phpfile
+
+    def test_plurals(self):
+        phpsource = r"""<?php
+return [
+    'welcome' => 'Welcome to our application',
+    'apples' => 'There is one apple|There are many apples',
+];
+"""
+        phpfile = self.phpparse(phpsource)
+        assert len(phpfile.units) == 2
+        phpunit = phpfile.units[0]
+        assert phpunit.name == "return[]->'welcome'"
+        assert phpunit.source == "Welcome to our application"
+        phpunit = phpfile.units[1]
+        assert phpunit.name == "return[]->'apples'"
+        assert phpunit.source == multistring(['There is one apple', 'There are many apples'])
+        assert bytes(phpfile).decode() == phpsource
+        phpunit.source = multistring(['There is an apple', 'There are many apples'])
+        assert bytes(phpfile).decode() == phpsource.replace("one apple", "an apple")

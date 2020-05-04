@@ -65,6 +65,7 @@ from phply.phpast import (Array, ArrayElement, ArrayOffset, Assignment,
                           Variable)
 
 from translate.misc.deprecation import deprecated
+from translate.misc.multistring import multistring
 from translate.storage import base
 
 
@@ -263,6 +264,9 @@ class phpunit(base.TranslationUnit):
         """Convert to a string."""
         return self.getoutput()
 
+    def get_raw_value(self):
+        return self.translation or self.value
+
     def getoutput(self, indent='', name=None):
         """Convert the unit back into formatted lines for a php file."""
         if '->' in self.name and name == "[]":
@@ -276,7 +280,7 @@ class phpunit(base.TranslationUnit):
         out = fmt.format(
             name if name else self.name,
             self.escape_type,
-            phpencode(self.translation or self.value, self.escape_type),
+            phpencode(self.get_raw_value(), self.escape_type),
         )
         joiner = '\n' + indent
         return indent + joiner.join(self._comments + [out])
@@ -493,3 +497,20 @@ class phpfile(base.TranslationStore):
                     # Adjustextractor position
                     lexer.extract_name('RETURN', *item.lexpositions)
                     handle_array('return', item.node.nodes, lexer)
+
+
+class LaravelPHPUnit(phpunit):
+    def get_raw_value(self):
+        result = self.translation or self.value
+        if isinstance(result, multistring):
+            return '|'.join(result.strings)
+        return result
+
+
+class LaravelPHPFile(phpfile):
+    UnitClass = LaravelPHPUnit
+
+    def create_and_add_unit(self, name, value, escape_type, comments):
+        if '|' in value:
+            value = multistring(value.split('|'))
+        super().create_and_add_unit(name, value, escape_type, comments)
