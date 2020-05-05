@@ -27,7 +27,7 @@ from translate.convert import convert
 from translate.storage import mozilla_lang, po
 
 
-class po2lang(object):
+class po2lang:
     """Convert a PO file to a Mozilla .lang file."""
 
     SourceStoreClass = po.pofile

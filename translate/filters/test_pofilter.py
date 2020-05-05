@@ -6,7 +6,7 @@ from translate.storage import factory, xliff
 from translate.storage.test_base import first_translatable, headerless_len
 
 
-class BaseTestFilter(object):
+class BaseTestFilter:
     """Base class for filter tests."""
 
     filename = ""

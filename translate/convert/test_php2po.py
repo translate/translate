@@ -5,7 +5,7 @@ from translate.misc import wStringIO
 from translate.storage import po
 
 
-class TestPhp2PO(object):
+class TestPhp2PO:
 
     def php2po(self, phpsource, phptemplate=None):
         """helper that converts .php source to po source without requiring files"""

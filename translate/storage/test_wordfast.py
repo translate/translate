@@ -3,7 +3,7 @@
 from translate.storage import test_base, wordfast as wf
 
 
-class TestWFTime(object):
+class TestWFTime:
 
     def test_timestring(self):
         """Setting and getting times set using a timestring"""

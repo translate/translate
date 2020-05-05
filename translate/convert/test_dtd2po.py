@@ -7,7 +7,7 @@ from translate.misc import wStringIO
 from translate.storage import dtd, po
 
 
-class TestDTD2PO(object):
+class TestDTD2PO:
 
     def dtd2po(self, dtdsource, dtdtemplate=None):
         """helper that converts dtd source to po source without requiring files"""

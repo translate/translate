@@ -45,7 +45,7 @@ def _sort_matches(matches, match_info):
     matches.sort(key=lambda x: match_info[x.source]['pos'])
 
 
-class matcher(object):
+class matcher:
     """A class that will do matching and store configuration for the matching
     process.
     """

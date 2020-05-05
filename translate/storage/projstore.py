@@ -33,7 +33,7 @@ class FileNotInProjectError(Exception):
     pass
 
 
-class ProjectStore(object):
+class ProjectStore:
     """Basic project file container."""
 
     # INITIALIZERS #

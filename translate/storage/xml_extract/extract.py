@@ -25,7 +25,7 @@ from translate.storage.placeables import StringElem, xliff
 from translate.storage.xml_extract import misc, xpath_breadcrumb
 
 
-class Translatable(object):
+class Translatable:
     """A node corresponds to a translatable element. A node may have children,
     which correspond to placeables.
     """
@@ -60,7 +60,7 @@ def reduce_unit_tree(f, unit_node, *state):
                             lambda unit_node: unit_node.placeables, *state)
 
 
-class ParseState(object):
+class ParseState:
     """Maintain constants and variables used during the walking of a DOM tree
     (via the function apply).
     """
@@ -265,7 +265,7 @@ def find_translatable_dom_nodes(dom_node, state,
             return _process_children(dom_node, state, process_func)
 
 
-class IdMaker(object):
+class IdMaker:
 
     def __init__(self):
         self._max_id = 0

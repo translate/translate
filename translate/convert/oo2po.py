@@ -35,7 +35,7 @@ from translate.storage import oo, po
 logger = logging.getLogger(__name__)
 
 
-class oo2po(object):
+class oo2po:
 
     def __init__(self, sourcelanguage, targetlanguage, blankmsgstr=False, long_keys=False):
         """construct an oo2po converter for the specified languages"""

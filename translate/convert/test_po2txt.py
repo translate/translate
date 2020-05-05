@@ -5,7 +5,7 @@ from translate.convert import po2txt, test_convert
 from translate.misc import wStringIO
 
 
-class TestPO2Txt(object):
+class TestPO2Txt:
 
     ConverterClass = po2txt.po2txt
 

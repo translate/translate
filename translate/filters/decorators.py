@@ -23,7 +23,7 @@ from functools import wraps
 
 
 #: Quality checks' failure categories
-class Category(object):
+class Category:
     CRITICAL = 100
     FUNCTIONAL = 60
     COSMETIC = 30

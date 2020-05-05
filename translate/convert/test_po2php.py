@@ -7,7 +7,7 @@ from translate.misc import wStringIO
 from translate.storage import po
 
 
-class TestPO2Php(object):
+class TestPO2Php:
 
     def po2php(self, posource):
         """helper that converts po source to .php source without requiring files"""

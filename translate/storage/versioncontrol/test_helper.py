@@ -11,7 +11,7 @@ def remove_readonly(func, path, _):
     func(path)
 
 
-class HelperTest(object):
+class HelperTest:
 
     def remove_dirs(self, path):
         if os.path.exists(path):

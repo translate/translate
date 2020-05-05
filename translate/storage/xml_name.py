@@ -19,7 +19,7 @@
 #
 
 
-class XmlNamespace(object):
+class XmlNamespace:
 
     def __init__(self, namespace):
         self._namespace = namespace
@@ -28,7 +28,7 @@ class XmlNamespace(object):
         return "{%s}%s" % (self._namespace, tag)
 
 
-class XmlNamer(object):
+class XmlNamer:
     """Initialize me with a DOM node or a DOM document node (the
     toplevel node you get when parsing an XML file). Then use me
     to generate fully qualified XML names.

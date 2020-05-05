@@ -13,7 +13,7 @@ def test_replacestrings():
                                  ("two", "twee")) == "Test een twee three"
 
 
-class TestCSV2PO(object):
+class TestCSV2PO:
 
     def csv2po(self, csvsource, template=None):
         """helper that converts csv source to po source without requiring files"""

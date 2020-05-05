@@ -27,7 +27,7 @@ from translate.convert import convert
 from translate.storage import ical, po
 
 
-class ical2po(object):
+class ical2po:
     """Convert one or two iCalendar files to a single PO file."""
 
     SourceStoreClass = ical.icalfile

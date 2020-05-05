@@ -26,7 +26,7 @@ for examples and usage instructions.
 from translate.storage import po, ts2
 
 
-class ts2po(object):
+class ts2po:
 
     def __init__(self, duplicatestyle="msgctxt", pot=False):
         self.duplicatestyle = duplicatestyle

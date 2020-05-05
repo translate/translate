@@ -161,7 +161,7 @@ zusammen.
 ]
 
 
-class TestLanguageIdentifier(object):
+class TestLanguageIdentifier:
 
     def setup_class(self):
         self.langident = LanguageIdentifier()

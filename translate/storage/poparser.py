@@ -43,7 +43,7 @@ append = list.append
 decode = bytes.decode
 
 
-class ParseState(object):
+class ParseState:
 
     def __init__(self, input_iterator, UnitClass, encoding=SINGLE_BYTE_ENCODING):
         # A single-byte encoding is first defined to be able to read the header

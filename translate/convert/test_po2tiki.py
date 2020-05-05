@@ -8,7 +8,7 @@ from translate.convert import po2tiki, test_convert
 from translate.misc import wStringIO
 
 
-class TestPo2Tiki(object):
+class TestPo2Tiki:
 
     ConverterClass = po2tiki.po2tiki
 

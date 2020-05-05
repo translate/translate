@@ -108,7 +108,7 @@ Example:
         print('See you %s.' % name)
 
 
-    class MyClass(object):
+    class MyClass:
         """This is a simple docstring"""
 
         def __init__(self, name):
@@ -679,7 +679,7 @@ Docstring comments:
 
   .. code-block:: python
 
-    class User(object):
+    class User:
         #: the name of the user as unicode string
         name = Column(String)
         #: the sha1 hash of the password + inline salt

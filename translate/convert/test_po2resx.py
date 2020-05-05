@@ -25,7 +25,7 @@ from translate.storage import po
 from translate.misc import wStringIO
 
 
-class TestPO2RESX(object):
+class TestPO2RESX:
     XMLskeleton = '''<?xml version="1.0" encoding="utf-8"?>
 <root>
   <xsd:schema xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata" id="root">

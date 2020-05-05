@@ -29,7 +29,7 @@ from translate.convert import convert
 from translate.storage import ini, po
 
 
-class ini2po(object):
+class ini2po:
     """Convert one or two INI files to a single PO file."""
 
     SourceStoreClass = ini.inifile

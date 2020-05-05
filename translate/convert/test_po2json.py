@@ -4,7 +4,7 @@ from translate.misc import wStringIO
 from translate.storage import po
 
 
-class TestPO2JSON(object):
+class TestPO2JSON:
 
     def po2json(self, po_source, json_template):
         """helper that converts po source to json source without requiring files"""

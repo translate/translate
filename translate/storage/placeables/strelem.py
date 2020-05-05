@@ -31,7 +31,7 @@ class ElementNotFoundError(ValueError):
     pass
 
 
-class StringElem(object):
+class StringElem:
     """
     This class represents a sub-tree of a string parsed into a rich structure.
     It is also the base class of all placeables.

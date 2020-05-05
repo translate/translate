@@ -4,7 +4,7 @@ from translate.convert import html2po, po2html, test_convert
 from translate.misc import wStringIO
 
 
-class TestHTML2PO(object):
+class TestHTML2PO:
 
     def html2po(self, markup, includeuntagged=False, duplicatestyle="msgctxt", keepcomments=False):
         """Helper to convert html to po without a file."""

@@ -42,7 +42,7 @@ def is_css_entity(entity):
     return False
 
 
-class dtd2po(object):
+class dtd2po:
 
     def __init__(self, blankmsgstr=False, duplicatestyle="msgctxt"):
         self.currentgroup = None

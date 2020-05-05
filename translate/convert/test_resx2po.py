@@ -27,7 +27,7 @@ from translate.storage.poheader import poheader
 from translate.storage.test_base import headerless_len
 
 
-class TestRESX2PO(object):
+class TestRESX2PO:
     target_filetype = po.pofile
     XMLskeleton = '''<?xml version="1.0" encoding="utf-8"?>
     <root>

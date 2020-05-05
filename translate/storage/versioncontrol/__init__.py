@@ -108,7 +108,7 @@ def youngest_ancestor(files):
     return os.path.commonprefix([os.path.dirname(f) for f in files])
 
 
-class GenericRevisionControlSystem(object):
+class GenericRevisionControlSystem:
     """The super class for all version control classes.
 
     Always inherit from this class to implement another RC interface.

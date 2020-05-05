@@ -5,7 +5,7 @@ from translate.storage.poheader import poheader
 from translate.storage.test_base import first_translatable, headerless_len
 
 
-class TestXLIFF2PO(object):
+class TestXLIFF2PO:
     target_filetype = po.pofile
     xliffskeleton = '''<?xml version="1.0" ?>
 <xliff version="1.1" xmlns="urn:oasis:names:tc:xliff:document:1.1">

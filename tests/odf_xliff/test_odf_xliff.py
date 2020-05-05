@@ -101,7 +101,7 @@ def is_content_file(filename):
     return filename in (u'content.xml', u'meta.xml', u'styles.xml')
 
 
-class ODF(object):
+class ODF:
 
     encoding = 'utf-8'
 

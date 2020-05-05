@@ -9,7 +9,7 @@ from translate.misc import wStringIO
 from translate.storage import dtd, po
 
 
-class TestPO2DTD(object):
+class TestPO2DTD:
 
     def setup_method(self, method):
         warnings.resetwarnings()

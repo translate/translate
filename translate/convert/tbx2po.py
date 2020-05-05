@@ -26,7 +26,7 @@ for examples and usage instructions
 from translate.storage import po, tbx
 
 
-class tbx2po(object):
+class tbx2po:
     """A class that takes translations from a .tbx file and puts them in a .po
     file
     """

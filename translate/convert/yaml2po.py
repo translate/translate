@@ -27,7 +27,7 @@ from translate.convert import convert
 from translate.storage import po, yaml
 
 
-class yaml2po(object):
+class yaml2po:
     """Convert one or two YAML files to a single PO file."""
 
     SourceStoreClass = yaml.YAMLFile

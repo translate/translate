@@ -195,7 +195,7 @@ class TestTranslationUnit:
             assert unit.target == u'Tëst <x>string</x>'
 
 
-class TestTranslationStore(object):
+class TestTranslationStore:
     """Tests a TranslationStore.
     Derived classes can reuse these tests by pointing StoreClass to a derived Store"""
     StoreClass = base.TranslationStore

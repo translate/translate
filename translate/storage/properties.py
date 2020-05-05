@@ -238,7 +238,7 @@ def get_dialect(dialect=default_dialect):
     return dialects.get(dialect)
 
 
-class Dialect(object):
+class Dialect:
     """Settings for the various behaviours in key=value files."""
 
     name = None

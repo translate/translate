@@ -31,7 +31,7 @@ from translate.misc import selector, wsgi
 from translate.storage import base, tmdb
 
 
-class TMServer(object):
+class TMServer:
     """A RESTful JSON TM server."""
 
     def __init__(self, tmdbfile, tmfiles, max_candidates=3, min_similarity=75,

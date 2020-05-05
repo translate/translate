@@ -85,7 +85,7 @@ class TestHTMLParsing:
         assert len(store.units) == 1
 
 
-class TestHTMLExtraction(object):
+class TestHTMLExtraction:
 
     h = html.htmlfile
 

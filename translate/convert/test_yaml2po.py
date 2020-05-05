@@ -7,7 +7,7 @@ from translate.convert import yaml2po, test_convert
 from translate.misc import wStringIO
 
 
-class TestYAML2PO(object):
+class TestYAML2PO:
 
     ConverterClass = yaml2po.yaml2po
 

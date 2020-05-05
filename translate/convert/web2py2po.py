@@ -27,7 +27,7 @@ for examples and usage instructions.
 from translate.storage import po
 
 
-class web2py2po(object):
+class web2py2po:
 
     def __init__(self, pofile=None, duplicatestyle="msgctxt"):
         self.mypofile = pofile
