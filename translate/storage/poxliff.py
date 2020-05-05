@@ -56,7 +56,7 @@ class PoXliffUnit(xliff.xliffunit):
             return
 
         if not hasplurals(source):
-            super(PoXliffUnit, self).__init__(source)
+            super().__init__(source)
             return
 
         self.xmlelement = etree.Element(self.namespaced("group"))
@@ -67,7 +67,7 @@ class PoXliffUnit(xliff.xliffunit):
         if isinstance(other, PoXliffUnit):
             if len(self.units) != len(other.units):
                 return False
-            if not super(PoXliffUnit, self).__eq__(other):
+            if not super().__eq__(other):
                 return False
             for i in range(len(self.units) - 1):
                 if not self.units[i+1] == other.units[i+1]:
@@ -75,7 +75,7 @@ class PoXliffUnit(xliff.xliffunit):
             return True
         if len(self.units) <= 1:
             if isinstance(other, lisa.LISAunit):
-                return super(PoXliffUnit, self).__eq__(other)
+                return super().__eq__(other)
             else:
                 return self.source == other.source and self.target == other.target
         return False
@@ -83,14 +83,14 @@ class PoXliffUnit(xliff.xliffunit):
 #XXX: We don't return language nodes correctly at the moment
 #    def getlanguageNodes(self):
 #        if not self.hasplural():
-#            return super(PoXliffUnit, self).getlanguageNodes()
+#            return super().getlanguageNodes()
 #        else:
 #            return self.units[0].getlanguageNodes()
 
     @property
     def source(self):
         if not self.hasplural():
-            return super(PoXliffUnit, self).source
+            return super().source
         return multistring([unit.source for unit in self.units])
 
     @source.setter
@@ -106,7 +106,7 @@ class PoXliffUnit(xliff.xliffunit):
         # TODO: consider changing from plural to singular, etc.
         self._rich_source = None
         if not hasplurals(source):
-            super(PoXliffUnit, self).setsource(source, sourcelang)
+            super().setsource(source, sourcelang)
         else:
             target = self.target
             for unit in self.units:
@@ -137,14 +137,14 @@ class PoXliffUnit(xliff.xliffunit):
             else:
                 return None
         else:
-            return super(PoXliffUnit, self).gettarget(lang)
+            return super().gettarget(lang)
 
     def settarget(self, target, lang='xx', append=False):
         self._rich_target = None
         if self.target == target:
             return
         if not self.hasplural():
-            super(PoXliffUnit, self).settarget(target, lang, append)
+            super().settarget(target, lang, append)
             return
         if not isinstance(target, multistring):
             target = multistring(target)
@@ -179,7 +179,7 @@ class PoXliffUnit(xliff.xliffunit):
     def getnotes(self, origin=None):
         #NOTE: We support both <context> and <note> tags in xliff files for comments
         if origin == "translator":
-            notes = super(PoXliffUnit, self).getnotes("translator")
+            notes = super().getnotes("translator")
             trancomments = self.gettranslatorcomments()
             if notes == trancomments or trancomments.find(notes) >= 0:
                 notes = ""
@@ -189,7 +189,7 @@ class PoXliffUnit(xliff.xliffunit):
             trancomments = trancomments + notes
             return trancomments
         elif origin in ["programmer", "developer", "source code"]:
-            devcomments = super(PoXliffUnit, self).getnotes("developer")
+            devcomments = super().getnotes("developer")
             autocomments = self.getautomaticcomments()
             if devcomments == autocomments or autocomments.find(devcomments) >= 0:
                 devcomments = ""
@@ -198,20 +198,20 @@ class PoXliffUnit(xliff.xliffunit):
                 devcomments = ""
             return autocomments
         else:
-            return super(PoXliffUnit, self).getnotes(origin)
+            return super().getnotes(origin)
 
     def markfuzzy(self, value=True):
-        super(PoXliffUnit, self).markfuzzy(value)
+        super().markfuzzy(value)
         for unit in self.units[1:]:
             unit.markfuzzy(value)
 
     def marktranslated(self):
-        super(PoXliffUnit, self).marktranslated()
+        super().marktranslated()
         for unit in self.units[1:]:
             unit.marktranslated()
 
     def setid(self, id):
-        super(PoXliffUnit, self).setid(id)
+        super().setid(id)
         if len(self.units) > 1:
             for i in range(len(self.units)):
                 self.units[i].setid("%s[%d]" % (id, i))
@@ -268,7 +268,7 @@ class PoXliffUnit(xliff.xliffunit):
         return "gettext-domain-header" in (self.getrestype() or "")
 
     def istranslatable(self):
-        return super(PoXliffUnit, self).istranslatable() and not self.isheader()
+        return super().istranslatable() and not self.isheader()
 
     @classmethod
     def createfromxmlElement(cls, element, namespace=None):
@@ -305,7 +305,7 @@ class PoXliffFile(xliff.xlifffile, poheader.poheader):
     def createfilenode(self, filename, sourcelanguage="en-US", datatype="po"):
         # Let's ignore the sourcelanguage parameter opting for the internal
         # one. PO files will probably be one language
-        return super(PoXliffFile, self).createfilenode(filename, sourcelanguage=self.sourcelanguage, datatype="po")
+        return super().createfilenode(filename, sourcelanguage=self.sourcelanguage, datatype="po")
 
     def _insert_header(self, header):
         header.xmlelement.set("restype", "x-gettext-domain-header")

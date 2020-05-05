@@ -38,7 +38,7 @@ class BundleProjectStore(ProjectStore):
 
     # INITIALIZERS #
     def __init__(self, fname):
-        super(BundleProjectStore, self).__init__()
+        super().__init__()
         self._tempfiles = {}
         if fname and os.path.isfile(fname):
             self.load(fname)
@@ -83,7 +83,7 @@ class BundleProjectStore(ProjectStore):
         if not fname and isinstance(afile, str) and afile in self.zip.namelist():
             raise ValueError("File already in bundle archive: %s" % (afile))
 
-        afile, fname = super(BundleProjectStore, self).append_file(afile, fname, ftype)
+        afile, fname = super().append_file(afile, fname, ftype)
         self._zip_add(fname, afile)
 
         if delete_orig and hasattr(afile, 'name') and afile.name not in self._tempfiles:
@@ -96,7 +96,7 @@ class BundleProjectStore(ProjectStore):
 
     def remove_file(self, fname, ftype=None):
         """Remove the file with the given project name from the project."""
-        super(BundleProjectStore, self).remove_file(fname, ftype)
+        super().remove_file(fname, ftype)
         self._zip_delete([fname])
         tempfiles = [tmpf for tmpf, prjf in self._tempfiles.items() if prjf == fname]
         if tempfiles:
@@ -108,7 +108,7 @@ class BundleProjectStore(ProjectStore):
                 del self._tempfiles[tmpf]
 
     def close(self):
-        super(BundleProjectStore, self).close()
+        super().close()
         self.cleanup()
         self.zip.close()
 
@@ -148,7 +148,7 @@ class BundleProjectStore(ProjectStore):
     def get_proj_filename(self, realfname):
         """Try and find a project file name for the given real file name."""
         try:
-            fname = super(BundleProjectStore, self).get_proj_filename(realfname)
+            fname = super().get_proj_filename(realfname)
         except ValueError as ve:
             fname = None
         if fname:
@@ -206,7 +206,7 @@ class BundleProjectStore(ProjectStore):
             raise FileNotInProjectError(pfname)
 
         if pfname not in self.zip.namelist():
-            return super(BundleProjectStore, self).update_file(pfname, infile)
+            return super().update_file(pfname, infile)
 
         self._zip_delete([pfname])
         self._zip_add(pfname, infile)
@@ -215,7 +215,7 @@ class BundleProjectStore(ProjectStore):
         """Grab the project.xtp file from the zip file and load it."""
         if 'project.xtp' not in self.zip.namelist():
             raise InvalidBundleError('Not a translate project bundle')
-        super(BundleProjectStore, self)._load_settings(self.zip.open('project.xtp').read())
+        super()._load_settings(self.zip.open('project.xtp').read())
 
     def _create_temp_zipfile(self):
         """Create a new zip file with a temporary file name (with mode 'w')."""

@@ -55,7 +55,7 @@ class rcunit(base.TranslationUnit):
 
     def __init__(self, source="", **kwargs):
         """Construct a blank rcunit."""
-        super(rcunit, self).__init__(source)
+        super().__init__(source)
         self.name = ""
         self._value = ""
         self.comments = []
@@ -128,7 +128,7 @@ class rcfile(base.TranslationStore):
 
     def __init__(self, inputfile=None, lang=None, sublang=None, **kwargs):
         """Construct an rcfile, optionally reading in from inputfile."""
-        super(rcfile, self).__init__(**kwargs)
+        super().__init__(**kwargs)
         self.filename = getattr(inputfile, 'name', '')
         self.lang = lang
         self.sublang = sublang

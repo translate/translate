@@ -40,7 +40,7 @@ class csvunit(base.TranslationUnit):
     spreadsheetescapes = [("+", "\\+"), ("-", "\\-"), ("=", "\\="), ("'", "\\'")]
 
     def __init__(self, source=None):
-        super(csvunit, self).__init__(source)
+        super().__init__(source)
         self.location = ""
         self.source = source or ""
         self.target = ""
@@ -272,7 +272,7 @@ class csvfile(base.TranslationStore):
     Extensions = ["csv"]
 
     def __init__(self, inputfile=None, fieldnames=None, encoding='auto'):
-        super(csvfile, self).__init__(encoding=encoding)
+        super().__init__(encoding=encoding)
         if not fieldnames:
             self.fieldnames = ['location', 'source', 'target', 'id', 'fuzzy', 'context', 'translator_comments', 'developer_comments']
         else:

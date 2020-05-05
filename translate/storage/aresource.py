@@ -58,7 +58,7 @@ class AndroidResourceUnit(base.TranslationUnit):
                 self.xmlelement = etree.Element("string")
         if source is not None:
             self.setid(source)
-        super(AndroidResourceUnit, self).__init__(source)
+        super().__init__(source)
 
     def istranslatable(self):
         return (
@@ -250,9 +250,9 @@ class AndroidResourceUnit(base.TranslationUnit):
 
     @base.TranslationUnit.source.getter
     def source(self):
-        if super(AndroidResourceUnit, self).source is None:
+        if super().source is None:
             return self.target
-        return super(AndroidResourceUnit, self).source
+        return super().source
 
     # Deprecated on 2.3.1
     @deprecated("Use `source` property instead")
@@ -410,9 +410,7 @@ class AndroidResourceUnit(base.TranslationUnit):
         if origin in ['programmer', 'developer', 'source code', None]:
             self.xmlelement.addprevious(etree.Comment(text))
         else:
-            return super(AndroidResourceUnit, self).addnote(text,
-                                                            origin=origin,
-                                                            position=position)
+            return super().addnote(text, origin=origin, position=position)
 
     def getnotes(self, origin=None):
         if origin in ['programmer', 'developer', 'source code', None]:
@@ -425,7 +423,7 @@ class AndroidResourceUnit(base.TranslationUnit):
 
             return u'\n'.join(comments)
         else:
-            return super(AndroidResourceUnit, self).getnotes(origin)
+            return super().getnotes(origin)
 
     def removenotes(self, origin=None):
         if ((self.xmlelement is not None) and (self.xmlelement.getparent is not None)):
@@ -434,7 +432,7 @@ class AndroidResourceUnit(base.TranslationUnit):
                 prevSibling.getparent().remove(prevSibling)
                 prevSibling = self.xmlelement.getprevious()
 
-        super(AndroidResourceUnit, self).removenotes()
+        super().removenotes()
 
     def __str__(self):
         return etree.tostring(self.xmlelement, pretty_print=True,
@@ -498,7 +496,7 @@ class AndroidResourceFile(lisa.LISAfile):
                 self.addunit(term, new=False)
 
     def gettargetlanguage(self):
-        target_lang = super(AndroidResourceFile, self).gettargetlanguage()
+        target_lang = super().gettargetlanguage()
 
         # If targetlanguage isn't set, we try to extract it from the filename path (if any).
         if target_lang is None and hasattr(self, 'filename') and self.filename:
@@ -547,7 +545,7 @@ class AndroidResourceFile(lisa.LISAfile):
                     cloned_doc, xml_declaration=False, encoding='unicode'
                 ).rsplit('\n', 1)[0]
 
-        super(AndroidResourceFile, self).addunit(unit, new)
+        super().addunit(unit, new)
         # Move aliased namespaces to the <resources> tag
         # The top_nsmap was introduced in LXML 3.5.0
         if do_cleanup:

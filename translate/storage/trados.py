@@ -155,7 +155,7 @@ class TradosUnit(base.TranslationUnit):
 
     def __init__(self, source=None):
         self._soup = None
-        super(TradosUnit, self).__init__(source)
+        super().__init__(source)
 
     @property
     def source(self):
@@ -194,7 +194,7 @@ class TradosTxtTmFile(base.TranslationStore):
 
     def __init__(self, inputfile=None, **kwargs):
         """construct a Wordfast TM, optionally reading in from inputfile."""
-        super(TradosTxtTmFile, self).__init__(**kwargs)
+        super().__init__(**kwargs)
         self.filename = ''
         if inputfile is not None:
             self.parse(inputfile)

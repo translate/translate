@@ -63,7 +63,7 @@ class TikiUnit(base.TranslationUnit):
 
     def __init__(self, source=None, **kwargs):
         self.location = []
-        super(TikiUnit, self).__init__(source)
+        super().__init__(source)
 
     def __str__(self):
         """Returns a string formatted to be inserted into a tiki language.php file."""
@@ -96,7 +96,7 @@ class TikiStore(base.TranslationStore):
 
         :param inputfile: Either a string or a filehandle of the source file
         """
-        super(TikiStore, self).__init__()
+        super().__init__()
         self.filename = getattr(inputfile, 'name', '')
         if inputfile is not None:
             self.parse(inputfile)

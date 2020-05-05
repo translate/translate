@@ -81,7 +81,7 @@ class PyLuceneDatabase(CommonIndexer.CommonDatabase):
         """
         jvm = PyLucene.getVMEnv()
         jvm.attachCurrentThread()
-        super(PyLuceneDatabase, self).__init__(
+        super().__init__(
             basedir, analyzer=analyzer, create_allowed=create_allowed)
         self.pyl_analyzer = PyLucene.StandardAnalyzer()
         self.writer = None
@@ -178,7 +178,7 @@ class PyLuceneDatabase(CommonIndexer.CommonDatabase):
     def make_query(self, *args, **kwargs):
         jvm = PyLucene.getVMEnv()
         jvm.attachCurrentThread()
-        return super(PyLuceneDatabase, self).make_query(*args, **kwargs)
+        return super().make_query(*args, **kwargs)
 
     def _create_query_for_query(self, query):
         """generate a query based on an existing query object
@@ -392,7 +392,7 @@ class PyLuceneDatabase(CommonIndexer.CommonDatabase):
         return PyLuceneHits(self.searcher.search(query))
 
     def delete_doc(self, ident):
-        super(PyLuceneDatabase, self).delete_doc(ident)
+        super().delete_doc(ident)
         self.reader.flush()
         self._index_refresh()
 

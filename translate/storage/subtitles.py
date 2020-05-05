@@ -61,7 +61,7 @@ class SubtitleUnit(base.TranslationUnit):
         self._duration = None
         if source:
             self.source = source
-        super(SubtitleUnit, self).__init__(source)
+        super().__init__(source)
 
     def getnotes(self, origin=None):
         if origin in ['programmer', 'developer', 'source code', None]:
@@ -83,7 +83,7 @@ class SubtitleFile(base.TranslationStore):
 
     def __init__(self, inputfile=None, **kwargs):
         """construct an Subtitle file, optionally reading in from inputfile."""
-        super(SubtitleFile, self).__init__(**kwargs)
+        super().__init__(**kwargs)
         self.filename = None
         self._subtitlefile = None
         if inputfile is not None:
@@ -173,7 +173,7 @@ class SubRipFile(SubtitleFile):
     Extensions = ['srt']
 
     def __init__(self, *args, **kwargs):
-        super(SubRipFile, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
         if self._subtitlefile is None:
             self._subtitlefile = SubRip(self.filename or '', self.encoding)
         if self._subtitlefile.newline is None:
@@ -187,7 +187,7 @@ class MicroDVDFile(SubtitleFile):
     Extensions = ['sub']
 
     def __init__(self, *args, **kwargs):
-        super(MicroDVDFile, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
         if self._subtitlefile is None:
             self._subtitlefile = MicroDVD(self.filename or '', self.encoding)
         if self._subtitlefile.newline is None:
@@ -201,7 +201,7 @@ class AdvSubStationAlphaFile(SubtitleFile):
     Extensions = ['ass']
 
     def __init__(self, *args, **kwargs):
-        super(AdvSubStationAlphaFile, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
         if self._subtitlefile is None:
             self._subtitlefile = AdvSubStationAlpha(self.filename or '', self.encoding)
         if self._subtitlefile.newline is None:
@@ -215,7 +215,7 @@ class SubStationAlphaFile(SubtitleFile):
     Extensions = ['ssa']
 
     def __init__(self, *args, **kwargs):
-        super(SubStationAlphaFile, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
         if self._subtitlefile is None:
             self._subtitlefile = SubStationAlpha(self.filename or '', self.encoding)
         if self._subtitlefile.newline is None:

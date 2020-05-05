@@ -126,15 +126,14 @@ class xliffunit(lisa.LISAunit):
 
     def __init__(self, source, empty=False, **kwargs):
         """Override the constructor to set xml:space="preserve"."""
-        super(xliffunit, self).__init__(source, empty, **kwargs)
+        super().__init__(source, empty, **kwargs)
         if empty:
             return
         setXMLspace(self.xmlelement, "preserve")
 
     def getNodeText(self, languageNode, xml_space="preserve"):
         """Retrieves the term from the given :attr:`languageNode`."""
-        text = super(xliffunit, self).getNodeText(languageNode,
-                                                  xml_space=xml_space)
+        text = super().getNodeText(languageNode, xml_space=xml_space)
         if text is not None:
             # Unescape the unaccepted ASCII control characters.
             for code, character in ASCII_CONTROL_CHARACTERS.items():
@@ -468,7 +467,7 @@ class xliffunit(lisa.LISAunit):
 
     def settarget(self, target, lang='xx', append=False):
         """Sets the target string to the given value."""
-        super(xliffunit, self).settarget(target, lang, append)
+        super().settarget(target, lang, append)
         if target:
             self.marktranslated()
 
@@ -562,7 +561,7 @@ class xliffunit(lisa.LISAunit):
 
     def merge(self, otherunit, overwrite=False, comments=True, authoritative=False):
         # TODO: consider other attributes like "approved"
-        super(xliffunit, self).merge(otherunit, overwrite, comments)
+        super().merge(otherunit, overwrite, comments)
         if self.target:
             self.marktranslated()
             if otherunit.isfuzzy():
@@ -712,7 +711,7 @@ class xlifffile(lisa.LISAfile):
 
     def getids(self, filename=None):
         if not filename:
-            return super(xlifffile, self).getids()
+            return super().getids()
 
         self.id_index = {}
         prefix = filename + ID_SEPARATOR
@@ -819,7 +818,7 @@ class xlifffile(lisa.LISAfile):
             filename, unitid = parts[0], "\x04".join(parts[1:])
             self.switchfile(filename, createifmissing=True)
             unit.setid(unitid)
-        super(xlifffile, self).addunit(unit, new=new)
+        super().addunit(unit, new=new)
 
     def addsourceunit(self, source, filename="NoName", createifmissing=False):
         """adds the given trans-unit to the last used body node if the filename
@@ -829,7 +828,7 @@ class xlifffile(lisa.LISAfile):
         if self._filename != filename:
             if not self.switchfile(filename, createifmissing):
                 return None
-        unit = super(xlifffile, self).addsourceunit(source)
+        unit = super().addsourceunit(source)
         self._messagenum += 1
         unit.setid("%d" % self._messagenum)
         return unit
@@ -872,12 +871,12 @@ class xlifffile(lisa.LISAfile):
     def serialize(self, out):
         self.removedefaultfile()
         reindent(self.document.getroot(), indent="  ", max_level=4)
-        super(xlifffile, self).serialize(out)
+        super().serialize(out)
 
     @classmethod
     def parsestring(cls, storestring):
         """Parses the string to return the correct file object"""
-        xliff = super(xlifffile, cls).parsestring(storestring)
+        xliff = super().parsestring(storestring)
         if xliff.units:
             header = xliff.units[0]
             if (("gettext-domain-header" in (header.getrestype() or "") or

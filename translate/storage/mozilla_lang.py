@@ -89,7 +89,7 @@ class LangStore(txt.TxtFile):
         self._headers = []
         self.eol = "\n"
         self.location_root = getattr(inputfile, "location_root", "")
-        super(LangStore, self).__init__(inputfile, **kwargs)
+        super().__init__(inputfile, **kwargs)
 
     def parse(self, lines):
         source_unit = None

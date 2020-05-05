@@ -492,7 +492,7 @@ class propunit(base.TranslationUnit):
     def __init__(self, source="", personality="java"):
         """Construct a blank propunit."""
         self.personality = get_dialect(personality)
-        super(propunit, self).__init__(source)
+        super().__init__(source)
         self.name = u""
         self.value = u""
         self.translation = u""
@@ -593,14 +593,13 @@ class propunit(base.TranslationUnit):
             text = data.forceunicode(text)
             self.comments.append(text)
         else:
-            return super(propunit, self).addnote(text, origin=origin,
-                                                 position=position)
+            return super().addnote(text, origin=origin, position=position)
 
     def getnotes(self, origin=None):
         if origin in ['programmer', 'developer', 'source code', None]:
             return u'\n'.join(self.comments)
         else:
-            return super(propunit, self).getnotes(origin)
+            return super().getnotes(origin)
 
     def removenotes(self, origin=None):
         self.comments = []
@@ -627,7 +626,7 @@ class propfile(base.TranslationStore):
 
     def __init__(self, inputfile=None, personality="java", encoding=None):
         """construct a propfile, optionally reading in from inputfile"""
-        super(propfile, self).__init__()
+        super().__init__()
         self.personality = get_dialect(personality)
         self.encoding = encoding or self.personality.default_encoding
         self.filename = getattr(inputfile, 'name', '')
@@ -732,7 +731,7 @@ class javafile(propfile):
     def __init__(self, *args, **kwargs):
         kwargs['personality'] = "java"
         kwargs['encoding'] = "auto"
-        super(javafile, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
 
 
 class javautf8file(propfile):
@@ -742,7 +741,7 @@ class javautf8file(propfile):
     def __init__(self, *args, **kwargs):
         kwargs['personality'] = "java-utf8"
         kwargs['encoding'] = "utf-8"
-        super(javautf8file, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
 
 
 class javautf16file(propfile):
@@ -752,7 +751,7 @@ class javautf16file(propfile):
     def __init__(self, *args, **kwargs):
         kwargs['personality'] = "java-utf16"
         kwargs['encoding'] = "utf-16"
-        super(javautf8file, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
 
 
 class stringsfile(propfile):
@@ -761,7 +760,7 @@ class stringsfile(propfile):
 
     def __init__(self, *args, **kwargs):
         kwargs['personality'] = "strings"
-        super(stringsfile, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
 
 
 class stringsutf8file(stringsfile):
@@ -771,7 +770,7 @@ class stringsutf8file(stringsfile):
     def __init__(self, *args, **kwargs):
         kwargs['personality'] = "strings-utf8"
         kwargs['encoding'] = "utf-8"
-        super(stringsutf8file, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
 
 
 class joomlafile(propfile):
@@ -780,4 +779,4 @@ class joomlafile(propfile):
 
     def __init__(self, *args, **kwargs):
         kwargs['personality'] = "joomla"
-        super(joomlafile, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)

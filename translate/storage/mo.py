@@ -108,7 +108,7 @@ class mounit(base.TranslationUnit):
     def __init__(self, source=None, **kwargs):
         self.msgctxt = []
         self.msgidcomments = []
-        super(mounit, self).__init__(source)
+        super().__init__(source)
 
     def getcontext(self):
         """Get the message context"""
@@ -139,7 +139,7 @@ class mofile(poheader.poheader, base.TranslationStore):
     _binary = True
 
     def __init__(self, inputfile=None, **kwargs):
-        super(mofile, self).__init__(**kwargs)
+        super().__init__(**kwargs)
         self.filename = ''
         if inputfile is not None:
             self.parsestring(inputfile)

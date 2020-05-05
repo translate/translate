@@ -69,7 +69,7 @@ class OmegaTUnit(base.TranslationUnit):
         self._dict = {}
         if source:
             self.source = source
-        super(OmegaTUnit, self).__init__(source)
+        super().__init__(source)
 
     def getdict(self):
         """Get the dictionary of values for a OmegaT line"""
@@ -162,7 +162,7 @@ class OmegaTFile(base.TranslationStore):
     def __init__(self, inputfile=None, **kwargs):
         """Construct an OmegaT glossary, optionally reading in from inputfile.
         """
-        super(OmegaTFile, self).__init__(**kwargs)
+        super().__init__(**kwargs)
         self.filename = ''
         self.extension = ''
         if inputfile is not None:

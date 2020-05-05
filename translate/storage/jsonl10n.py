@@ -96,7 +96,7 @@ class JsonUnit(base.TranslationUnit):
                 self.target = source
             else:
                 self.target = str(source)
-        super(JsonUnit, self).__init__(source)
+        super().__init__(source)
 
     @property
     def source(self):
@@ -145,7 +145,7 @@ class JsonFile(base.TranslationStore):
 
     def __init__(self, inputfile=None, filter=None, **kwargs):
         """construct a JSON file, optionally reading in from inputfile."""
-        super(JsonFile, self).__init__(**kwargs)
+        super().__init__(**kwargs)
         self._filter = filter
         self.filename = ''
         self._file = u''
@@ -322,7 +322,7 @@ class I18NextUnit(JsonNestedUnit):
 
     def getvalue(self):
         if not isinstance(self.target, multistring):
-            return super(I18NextUnit, self).getvalue()
+            return super().getvalue()
 
         ret = OrderedDict()
         for i, value in enumerate(self.target.strings):
@@ -383,7 +383,7 @@ class I18NextFile(JsonNestedFile):
                 for x in self._extract_units(v, stop, "%s.%s" % (prev, k), k, None, data):
                     yield x
         else:
-            parent = super(I18NextFile, self)._extract_units(
+            parent = super()._extract_units(
                 data, stop, prev, name_node, name_last_node, last_node
             )
             for x in parent:

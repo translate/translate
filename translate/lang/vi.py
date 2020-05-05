@@ -43,7 +43,7 @@ class vi(common.Common):
             - % and $ are not touched yet for fear of variables
             - Double spaces might be introduced
         """
-        text = super(cls, cls).punctranslate(text)
+        text = super().punctranslate(text)
         return fr.guillemets(text)
 
     mozilla_nplurals = 2

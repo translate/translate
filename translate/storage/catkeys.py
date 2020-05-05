@@ -141,7 +141,7 @@ class CatkeysUnit(base.TranslationUnit):
         self._dict = {}
         if source:
             self.source = source
-        super(CatkeysUnit, self).__init__(source)
+        super().__init__(source)
 
     def getdict(self):
         """Get the dictionary of values for a catkeys line"""
@@ -262,7 +262,7 @@ class CatkeysFile(base.TranslationStore):
 
     def __init__(self, inputfile=None, **kwargs):
         """Construct a catkeys store, optionally reading in from inputfile."""
-        super(CatkeysFile, self).__init__(**kwargs)
+        super().__init__(**kwargs)
         self.filename = ''
         self.header = CatkeysHeader()
         if inputfile is not None:

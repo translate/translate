@@ -39,7 +39,7 @@ class YAMLUnit(base.TranslationUnit):
         self._id = None
         if source:
             self.source = source
-        super(YAMLUnit, self).__init__(source)
+        super().__init__(source)
 
     @property
     def source(self):
@@ -74,7 +74,7 @@ class YAMLFile(base.TranslationStore):
 
     def __init__(self, inputfile=None, **kwargs):
         """construct a YAML file, optionally reading in from inputfile."""
-        super(YAMLFile, self).__init__(**kwargs)
+        super().__init__(**kwargs)
         self.filename = ''
         self._original = self.get_root_node()
         self.dump_args = {
@@ -225,7 +225,7 @@ class RubyYAMLFile(YAMLFile):
             return
 
         # Handle normal dict
-        for x in super(RubyYAMLFile, self)._parse_dict(data, prev):
+        for x in super()._parse_dict(data, prev):
             yield x
 
     def serialize_value(self, value):

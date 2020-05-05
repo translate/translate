@@ -62,12 +62,12 @@ class LISAunit(base.TranslationUnit):
             return
         self.xmlelement = etree.Element(self.namespaced(self.rootNode))
         #add descrip, note, etc.
-        super(LISAunit, self).__init__(source)
+        super().__init__(source)
 
     def __eq__(self, other):
         """Compares two units"""
         if not isinstance(other, LISAunit):
-            return super(LISAunit, self).__eq__(other)
+            return super().__eq__(other)
         languageNodes = self.getlanguageNodes()
         otherlanguageNodes = other.getlanguageNodes()
         if len(languageNodes) != len(otherlanguageNodes):
@@ -268,7 +268,7 @@ class LISAfile(base.TranslationStore):
 
     def __init__(self, inputfile=None, sourcelanguage='en',
                  targetlanguage=None, **kwargs):
-        super(LISAfile, self).__init__(**kwargs)
+        super().__init__(**kwargs)
         if inputfile is not None:
             self.parse(inputfile)
             assert self.document.getroot().tag == self.namespaced(self.rootNode)
@@ -311,7 +311,7 @@ class LISAfile(base.TranslationStore):
 
     def addunit(self, unit, new=True):
         unit.namespace = self.namespace
-        super(LISAfile, self).addunit(unit)
+        super().addunit(unit)
         if new:
             self.body.append(unit.xmlelement)
 

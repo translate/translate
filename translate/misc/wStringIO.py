@@ -31,7 +31,7 @@ class StringIO(BytesIO):
             buf = bytes(buf)
         if isinstance(buf, str):
             buf = buf.encode('utf-8')
-        super(StringIO, self).__init__(buf)
+        super().__init__(buf)
 
 
 class CatchStringOutput(StringIO):
@@ -50,7 +50,7 @@ class CatchStringOutput(StringIO):
         """
         value = self.getvalue()
         self.onclose(value)
-        super(CatchStringOutput, self).close()
+        super().close()
 
     def slam(self):
         """use this method to force the closing of the stream if it isn't

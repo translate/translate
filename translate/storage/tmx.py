@@ -51,7 +51,7 @@ class tmxunit(lisa.LISAunit):
         property is only mandated to be unique from TMX 2.0.
         """
         id = self.xmlelement.get("tuid", "")
-        return id or super(tmxunit, self).getid()
+        return id or super().getid()
 
     def istranslatable(self):
         return bool(self.source)

@@ -503,7 +503,7 @@ class pounit(pocommon.pounit):
                         if item not in list1 or len(item) < 5:
                             list1.append(item)
         if not isinstance(otherpo, pounit):
-            super(pounit, self).merge(otherpo, overwrite, comments)
+            super().merge(otherpo, overwrite, comments)
             return
         if comments:
             mergelists(self.othercomments, otherpo.othercomments)
@@ -618,14 +618,14 @@ class pounit(pocommon.pounit):
 
     def makeobsolete(self):
         """Makes this unit obsolete"""
-        super(pounit, self).makeobsolete()
+        super().makeobsolete()
         self.obsolete = True
         self.sourcecomments = []
         self.automaticcomments = []
 
     def resurrect(self):
         """Makes an obsolete unit normal"""
-        super(pounit, self).resurrect()
+        super().resurrect()
         self.obsolete = False
 
     def hasplural(self):
@@ -815,7 +815,7 @@ class pofile(pocommon.pofile):
         self.wrapper = copy.copy(wrapper)
         if width is not None:
             self.wrapper.width = width
-        super(pofile, self).__init__(inputfile, **kwargs)
+        super().__init__(inputfile, **kwargs)
 
     def create_unit(self):
         return self.UnitClass(wrapper=self.wrapper)
@@ -931,4 +931,4 @@ class pofile(pocommon.pofile):
 
     def addunit(self, unit):
         unit.wrapper = self.wrapper
-        super(pofile, self).addunit(unit)
+        super().addunit(unit)

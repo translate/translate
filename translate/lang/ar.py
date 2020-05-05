@@ -66,5 +66,5 @@ class ar(common.Common):
 
     @classmethod
     def punctranslate(cls, text):
-        text = super(cls, cls).punctranslate(text)
+        text = super().punctranslate(text)
         return reverse_quotes(text)

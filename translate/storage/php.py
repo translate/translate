@@ -86,7 +86,7 @@ def wrap_production(func):
 
 class PHPLexer(FilteredLexer):
     def __init__(self):
-        super(PHPLexer, self).__init__(full_lexer.clone())
+        super().__init__(full_lexer.clone())
         self.tokens = []
         self.pos = 0
         self.codepos = 0
@@ -224,7 +224,7 @@ class phpunit(base.TranslationUnit):
     def __init__(self, source=""):
         """Construct a blank phpunit."""
         self.escape_type = '\''
-        super(phpunit, self).__init__(source)
+        super().__init__(source)
         self.name = "$TTK_PLACEHOLDER"
         self.value = ""
         self.translation = ""
@@ -298,14 +298,13 @@ class phpunit(base.TranslationUnit):
             else:
                 self._comments = [text]
         else:
-            return super(phpunit, self).addnote(text, origin=origin,
-                                                position=position)
+            return super().addnote(text, origin=origin, position=position)
 
     def getnotes(self, origin=None):
         if origin in ['programmer', 'developer', 'source code', None]:
             return '\n'.join(self._comments)
         else:
-            return super(phpunit, self).getnotes(origin)
+            return super().getnotes(origin)
 
     def removenotes(self, origin=None):
         self._comments = []
@@ -328,7 +327,7 @@ class phpfile(base.TranslationStore):
 
     def __init__(self, inputfile=None, **kwargs):
         """Construct a phpfile, optionally reading in from inputfile."""
-        super(phpfile, self).__init__(**kwargs)
+        super().__init__(**kwargs)
         self.filename = getattr(inputfile, 'name', '')
         if inputfile is not None:
             phpsrc = inputfile.read()

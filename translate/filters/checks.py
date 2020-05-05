@@ -507,8 +507,7 @@ class TranslationChecker(UnitChecker):
 
     def __init__(self, checkerconfig=None, excludefilters=None,
                  limitfilters=None, errorhandler=None):
-        super(TranslationChecker, self).__init__(checkerconfig, excludefilters,
-                                                 limitfilters, errorhandler)
+        super().__init__(checkerconfig, excludefilters, limitfilters, errorhandler)
 
         self.locations = []
 
@@ -550,7 +549,7 @@ class TranslationChecker(UnitChecker):
         self.hasplural = unit.hasplural()
         self.locations = unit.getlocations()
 
-        return super(TranslationChecker, self).run_filters(unit, categorised)
+        return super().run_filters(unit, categorised)
 
 
 class TeeChecker(object):
@@ -2184,7 +2183,7 @@ class MozillaChecker(StandardChecker):
         if self.mozilla_dialog_re.findall(str1):
             return True
 
-        return super(MozillaChecker, self).numbers(str1, str2)
+        return super().numbers(str1, str2)
 
     @functional
     def unchanged(self, str1, str2):
@@ -2197,7 +2196,7 @@ class MozillaChecker(StandardChecker):
             str1.strip().lstrip('0123456789') in self.mozilla_dialog_valid_units):
             return True
 
-        return super(MozillaChecker, self).unchanged(str1, str2)
+        return super().unchanged(str1, str2)
 
     @cosmetic
     def accelerators(self, str1, str2):
@@ -2228,7 +2227,7 @@ class MozillaChecker(StandardChecker):
             return True
 
         # Default accelerators behavior.
-        return super(MozillaChecker, self).accelerators(str1, str2)
+        return super().accelerators(str1, str2)
 
 
 drupalconfig = CheckerConfig(

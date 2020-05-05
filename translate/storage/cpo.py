@@ -535,7 +535,7 @@ class pounit(pocommon.pounit):
         """
 
         if not isinstance(otherpo, pounit):
-            super(pounit, self).merge(otherpo, overwrite, comments)
+            super().merge(otherpo, overwrite, comments)
             return
         if comments:
             self.addnote(otherpo.getnotes("translator"), origin="translator", position="merge")
@@ -718,12 +718,12 @@ class pofile(pocommon.pofile):
             if not noheader:
                 self.init_headers()
         else:
-            super(pofile, self).__init__(inputfile=inputfile, **kwargs)
+            super().__init__(inputfile=inputfile, **kwargs)
 
     def addunit(self, unit, new=True):
         if new:
             gpo.po_message_insert(self._gpo_message_iterator, unit._gpo_message)
-        super(pofile, self).addunit(unit)
+        super().addunit(unit)
 
     def _insert_header(self, header):
         header._store = self

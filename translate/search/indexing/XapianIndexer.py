@@ -74,8 +74,7 @@ class XapianDatabase(CommonIndexer.CommonDatabase):
         :type create_allowed: bool
         """
         # call the __init__ function of our parent
-        super(XapianDatabase, self).__init__(basedir, analyzer=analyzer,
-                                             create_allowed=create_allowed)
+        super().__init__(basedir, analyzer=analyzer, create_allowed=create_allowed)
         self.reader = None
         self.writer = None
         if os.path.exists(self.location):
@@ -125,10 +124,10 @@ class XapianDatabase(CommonIndexer.CommonDatabase):
 
     def make_query(self, *args, **kwargs):
         try:
-            return super(XapianDatabase, self).make_query(*args, **kwargs)
+            return super().make_query(*args, **kwargs)
         except xapian.DatabaseModifiedError:
             self._index_refresh()
-            return super(XapianDatabase, self).make_query(*args, **kwargs)
+            return super().make_query(*args, **kwargs)
 
     def _create_query_for_query(self, query):
         """generate a query based on an existing query object

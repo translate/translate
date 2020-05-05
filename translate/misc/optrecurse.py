@@ -70,8 +70,7 @@ class ManPageOption(optparse.Option, object):
         if action == "manpage":
             parser.print_manpage()
             sys.exit(0)
-        return super(ManPageOption, self).take_action(action, dest, opt, value,
-                                                      values, parser)
+        return super().take_action(action, dest, opt, value, values, parser)
 
 
 class ManHelpFormatter(optparse.HelpFormatter):
@@ -196,7 +195,7 @@ class RecursiveOptionParser(optparse.OptionParser, object):
         if usage is None:
             self.usage = "%prog " + " ".join([self.getusagestring(option) for option in self.option_list])
         else:
-            super(RecursiveOptionParser, self).set_usage(usage)
+            super().set_usage(usage)
 
     def warning(self, msg, options=None, exc_info=None):
         """Print a warning message incorporating 'msg' to stderr and exit."""
@@ -365,7 +364,7 @@ class RecursiveOptionParser(optparse.OptionParser, object):
         """Parses the command line options, handling implicit input/output
         args.
         """
-        (options, args) = super(RecursiveOptionParser, self).parse_args(args, values)
+        (options, args) = super().parse_args(args, values)
         # some intelligent as to what reasonable people might give on the
         # command line
         if args and not options.input:
