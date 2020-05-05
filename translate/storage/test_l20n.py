@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from translate.misc import wStringIO
+from io import BytesIO
 from translate.storage import l20n, test_monolingual
 
 
@@ -19,7 +19,7 @@ class TestL20n(test_monolingual.TestMonolingualStore):
 
     def l20n_parse(self, l20n_source):
         """helper that parses l20n source without requiring files"""
-        dummyfile = wStringIO.StringIO(l20n_source)
+        dummyfile = BytesIO(l20n_source.encode())
         l20n_file = l20n.l20nfile(dummyfile)
         return l20n_file
 

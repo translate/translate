@@ -1,14 +1,14 @@
 # -*- coding: utf-8 -*-
 
+from io import BytesIO
 from translate.convert import test_convert, ts2po
-from translate.misc import wStringIO
 
 
 class TestTS2PO:
 
     def ts2po(self, tssource):
         converter = ts2po.ts2po()
-        tsfile = wStringIO.StringIO(tssource)
+        tsfile = BytesIO(tssource.encode())
         outputpo = converter.convertfile(tsfile)
         print("The generated po:")
         print(bytes(outputpo))

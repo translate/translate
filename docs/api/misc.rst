@@ -77,13 +77,6 @@ wsgi
    :inherited-members:
 
 
-wStringIO
----------
-
-.. automodule:: translate.misc.wStringIO
-   :members:
-
-
 xml_helpers
 -----------
 

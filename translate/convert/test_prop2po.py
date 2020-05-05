@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
+from io import BytesIO
 from translate.convert import prop2po, test_convert
-from translate.misc import wStringIO
 from translate.storage import po, properties
 
 
@@ -8,11 +8,11 @@ class TestProp2PO:
 
     def prop2po(self, propsource, proptemplate=None, personality="java"):
         """helper that converts .properties source to po source without requiring files"""
-        inputfile = wStringIO.StringIO(propsource)
+        inputfile = BytesIO(propsource.encode())
         inputprop = properties.propfile(inputfile, personality=personality)
         convertor = prop2po.prop2po(personality=personality)
         if proptemplate:
-            templatefile = wStringIO.StringIO(proptemplate)
+            templatefile = BytesIO(proptemplate.encode())
             templateprop = properties.propfile(templatefile)
             outputpo = convertor.mergestore(templateprop, inputprop)
         else:
@@ -21,8 +21,8 @@ class TestProp2PO:
 
     def convertprop(self, propsource):
         """call the convertprop, return the outputfile"""
-        inputfile = wStringIO.StringIO(propsource)
-        outputfile = wStringIO.StringIO()
+        inputfile = BytesIO(propsource.encode())
+        outputfile = BytesIO()
         templatefile = None
         assert prop2po.convertprop(inputfile, outputfile, templatefile)
         return outputfile.getvalue()
@@ -52,7 +52,7 @@ class TestProp2PO:
         """checks that the convertprop function is working"""
         propsource = 'SAVEENTRY=Save file\n'
         posource = self.convertprop(propsource)
-        pofile = po.pofile(wStringIO.StringIO(posource))
+        pofile = po.pofile(BytesIO(posource))
         pounit = self.singleelement(pofile)
         assert pounit.source == "Save file"
         assert pounit.target == ""

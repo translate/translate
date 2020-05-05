@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
-from translate.misc import wStringIO
+from io import BytesIO
+
 from translate.storage import po, xliff
 from translate.storage.test_base import first_translatable, headerless_len
 from translate.tools import pogrep
@@ -10,7 +11,7 @@ class TestPOGrep:
 
     def poparse(self, posource):
         """helper that parses po source without requiring files"""
-        dummyfile = wStringIO.StringIO(posource)
+        dummyfile = BytesIO(posource.encode())
         pofile = po.pofile(dummyfile)
         return pofile
 
@@ -139,7 +140,7 @@ class TestXLiffGrep:
 
     def xliff_parse(self, xliff_text):
         """helper that parses po source without requiring files"""
-        dummyfile = wStringIO.StringIO(xliff_text)
+        dummyfile = BytesIO(xliff_text)
         xliff_file = xliff.xlifffile(dummyfile)
         return xliff_file
 
@@ -149,13 +150,13 @@ class TestXLiffGrep:
             cmdlineoptions = []
         options, args = pogrep.cmdlineparser().parse_args(["xxx.xliff"] + cmdlineoptions)
         grepfilter = pogrep.GrepFilter(searchstring, options.searchparts, options.ignorecase, options.useregexp, options.invertmatch, options.accelchar)
-        tofile = grepfilter.filterfile(self.xliff_parse(xliff_text))
+        tofile = grepfilter.filterfile(self.xliff_parse(xliff_text.encode()))
         return bytes(tofile)
 
     def test_simplegrep(self):
         """grep for a simple string."""
         xliff_text = self.xliff_text
-        xliff_file = self.xliff_parse(xliff_text)
+        xliff_file = self.xliff_parse(xliff_text.encode())
         xliff_result = self.xliff_parse(self.xliff_grep(xliff_text, "rêd"))
         assert first_translatable(xliff_result).source == u"rêd"
         assert first_translatable(xliff_result).target == u"rooi"

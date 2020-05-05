@@ -1,10 +1,9 @@
 # -*- coding: utf-8 -*-
 
-
+from io import BytesIO
 from pytest import importorskip
 
 from translate.convert import ini2po, test_convert
-from translate.misc import wStringIO
 
 
 importorskip("iniparse")
@@ -18,11 +17,11 @@ class TestIni2PO:
                  duplicate_style="msgctxt", dialect="default",
                  success_expected=True):
         """Helper that converts to target format without using files."""
-        input_file = wStringIO.StringIO(input_string)
-        output_file = wStringIO.StringIO()
+        input_file = BytesIO(input_string.encode())
+        output_file = BytesIO()
         template_file = None
         if template_string:
-            template_file = wStringIO.StringIO(template_string)
+            template_file = BytesIO(template_string.encode())
         expected_result = 1 if success_expected else 0
         converter = self.ConverterClass(input_file, output_file, template_file,
                                         blank_msgstr, duplicate_style, dialect)

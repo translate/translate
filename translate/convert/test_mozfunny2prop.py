@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
+from io import BytesIO
 
 from translate.convert import mozfunny2prop
-from translate.misc import wStringIO
 from translate.storage import po
 
 
@@ -9,15 +9,15 @@ class TestInc2PO:
 
     def inc2po(self, incsource, inctemplate=None):
         """helper that converts .inc source to po source without requiring files"""
-        inputfile = wStringIO.StringIO(incsource)
+        inputfile = BytesIO(incsource.encode())
         if inctemplate:
-            templatefile = wStringIO.StringIO(inctemplate)
+            templatefile = BytesIO(inctemplate.encode())
         else:
             templatefile = None
-        outputfile = wStringIO.StringIO()
+        outputfile = BytesIO()
         result = mozfunny2prop.inc2po(inputfile, outputfile, templatefile)
         outputpo = outputfile.getvalue()
-        outputpofile = po.pofile(wStringIO.StringIO(outputpo))
+        outputpofile = po.pofile(BytesIO(outputpo))
         return outputpofile
 
     def singleelement(self, pofile):

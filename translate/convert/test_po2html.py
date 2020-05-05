@@ -1,17 +1,17 @@
+from io import BytesIO
 from pytest import mark
 
 from translate.convert import po2html, test_convert
-from translate.misc import wStringIO
 
 
 class TestPO2Html:
 
     def converthtml(self, posource, htmltemplate, includefuzzy=False):
         """helper to exercise the command line function"""
-        inputfile = wStringIO.StringIO(posource)
+        inputfile = BytesIO(posource.encode())
         print(inputfile.getvalue())
-        outputfile = wStringIO.StringIO()
-        templatefile = wStringIO.StringIO(htmltemplate)
+        outputfile = BytesIO()
+        templatefile = BytesIO(htmltemplate.encode())
         assert po2html.converthtml(inputfile, outputfile, templatefile, includefuzzy)
         print(outputfile.getvalue())
         return outputfile.getvalue().decode('utf-8')

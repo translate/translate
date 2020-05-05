@@ -1,23 +1,24 @@
+from io import BytesIO
 from pytest import mark
 
 from translate.convert import html2po, po2html, test_convert
-from translate.misc import wStringIO
 
 
 class TestHTML2PO:
 
     def html2po(self, markup, includeuntagged=False, duplicatestyle="msgctxt", keepcomments=False):
         """Helper to convert html to po without a file."""
-        inputfile = wStringIO.StringIO(markup)
+        inputfile = BytesIO(markup.encode() if isinstance(markup, str) else markup)
         convertor = html2po.html2po()
         outputpo = convertor.convertfile(inputfile, "test", includeuntagged, duplicatestyle, keepcomments)
         return outputpo
 
     def po2html(self, posource, htmltemplate):
         """Helper to convert po to html without a file."""
-        inputfile = wStringIO.StringIO(posource)
-        outputfile = wStringIO.StringIO()
-        templatefile = wStringIO.StringIO(htmltemplate)
+        # Convert pofile object to bytes
+        inputfile = BytesIO(bytes(posource))
+        outputfile = BytesIO()
+        templatefile = BytesIO(htmltemplate.encode())
         assert po2html.converthtml(inputfile, outputfile, templatefile)
         return outputfile.getvalue().decode('utf-8')
 

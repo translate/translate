@@ -1,11 +1,11 @@
 # -*- coding: utf-8 -*-
 
+from io import BytesIO
 import warnings
 
 from pytest import mark
 
 from translate.convert import pot2po, test_convert
-from translate.misc import wStringIO
 from translate.storage import po
 
 
@@ -19,12 +19,12 @@ class TestPOT2PO:
 
     def convertpot(self, potsource, posource=None):
         """helper that converts pot source to po source without requiring files"""
-        potfile = wStringIO.StringIO(potsource)
+        potfile = BytesIO(potsource.encode())
         if posource:
-            pofile = wStringIO.StringIO(posource)
+            pofile = BytesIO(posource.encode())
         else:
             pofile = None
-        pooutfile = wStringIO.StringIO()
+        pooutfile = BytesIO()
         pot2po.convertpot(potfile, pooutfile, pofile)
         pooutfile.seek(0)
         return po.pofile(pooutfile.read())

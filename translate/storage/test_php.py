@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 
+from io import BytesIO
 from pytest import mark
 
-from translate.misc import wStringIO
 from translate.misc.multistring import multistring
 from translate.storage import php, test_monolingual
 
@@ -94,7 +94,7 @@ class TestPhpFile(test_monolingual.TestMonolingualStore):
 
     def phpparse(self, phpsource):
         """helper that parses php source without requiring files"""
-        dummyfile = wStringIO.StringIO(phpsource)
+        dummyfile = BytesIO(phpsource.encode())
         phpfile = php.phpfile(dummyfile)
         return phpfile
 
@@ -585,7 +585,7 @@ $messages['days_short'] = array(
     def test_parsing_arrays_using_short_array_syntax(self):
         """parse short array syntax.
         Bug #3626"""
-        phpsource = b'''<?php
+        phpsource = '''<?php
 $lang = [
     'item1' => 'value1',
     'item2' => 'value2',
@@ -599,7 +599,7 @@ $lang = [
         phpunit = phpfile.units[1]
         assert phpunit.name == "$lang[]->'item2'"
         assert phpunit.source == "value2"
-        assert phpfile.__bytes__() == phpsource
+        assert bytes(phpfile).decode() == phpsource
 
     def test_parsing_nested_arrays(self):
         """parse the nested array syntax. Bug #2240"""
@@ -852,11 +852,11 @@ $lang['mediaselect'] = 'Bestand selectie';"""
         assert phpunit.source == "Bestand selectie"
 
     def test_quotes(self):
-        phpsource = b'''<?php
+        phpsource = '''<?php
 $txt[\'DISPLAYEDINFOS\'] = "<a href=\\"__PARAM2__\\">Modificar...</a>";
 '''
         phpfile = self.phpparse(phpsource)
-        assert phpfile.__bytes__() == phpsource
+        assert bytes(phpfile).decode() == phpsource
 
     def test_concatenation(self):
         """Check that concatenating strings and variables is parsed correctly."""
@@ -878,7 +878,7 @@ $messages['greeting'] = 'Hi ' . $name;
         assert phpunit.source == "Hi $name"
 
     def test_serialize(self):
-        phpsource = b"""<?php
+        phpsource = """<?php
 # Comment 1
 define("_FINISH", 'Rematar');
 // Comment 2
@@ -897,7 +897,7 @@ $texts = array(
 );
 """
         phpfile = self.phpparse(phpsource)
-        assert phpfile.__bytes__() == phpsource
+        assert bytes(phpfile).decode() == phpsource
 
     def test_space_before_comma(self):
         """check that spacing before comma or semicolon doesn't break parser
@@ -1001,7 +1001,7 @@ using nowdoc syntax.'''
         assert phpunit.source == "Bestand selectie"
 
     def test_return_array(self):
-        phpsource = b"""<?php
+        phpsource = """<?php
 return array(
     'peach' => 'pesca',
 );
@@ -1011,10 +1011,10 @@ return array(
         phpunit = phpfile.units[0]
         assert phpunit.name == "return->'peach'"
         assert phpunit.source == "pesca"
-        assert phpfile.__bytes__() == phpsource
+        assert bytes(phpfile).decode() == phpsource
 
     def test_return_array_short(self):
-        phpsource = b"""<?php
+        phpsource = """<?php
 return [
     'peach' => 'pesca',
 ];
@@ -1024,11 +1024,11 @@ return [
         phpunit = phpfile.units[0]
         assert phpunit.name == "return[]->'peach'"
         assert phpunit.source == "pesca"
-        assert bytes(phpfile) == phpsource
+        assert bytes(phpfile).decode() == phpsource
         phpunit.source = "ryba"
-        assert bytes(phpfile) != phpsource
+        assert bytes(phpfile).decode() != phpsource
         phpunit.source = "pesca"
-        assert bytes(phpfile) == phpsource
+        assert bytes(phpfile).decode() == phpsource
 
     def test_return_array_short_quotes(self):
         phpsource = r"""<?php
@@ -1058,7 +1058,7 @@ class TestLaravelPhpFile(test_monolingual.TestMonolingualStore):
 
     def phpparse(self, phpsource):
         """helper that parses php source without requiring files"""
-        dummyfile = wStringIO.StringIO(phpsource)
+        dummyfile = BytesIO(phpsource.encode())
         phpfile = self.StoreClass(dummyfile)
         return phpfile
 

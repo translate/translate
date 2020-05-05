@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
 
+from io import BytesIO
 from pytest import mark
 
 from translate.convert import dtd2po, test_convert
-from translate.misc import wStringIO
 from translate.storage import dtd, po
 
 
@@ -11,21 +11,21 @@ class TestDTD2PO:
 
     def dtd2po(self, dtdsource, dtdtemplate=None):
         """helper that converts dtd source to po source without requiring files"""
-        inputfile = wStringIO.StringIO(dtdsource)
+        inputfile = BytesIO(dtdsource.encode())
         inputdtd = dtd.dtdfile(inputfile)
         convertor = dtd2po.dtd2po()
         if dtdtemplate is None:
             outputpo = convertor.convertstore(inputdtd)
         else:
-            templatefile = wStringIO.StringIO(dtdtemplate)
+            templatefile = BytesIO(dtdtemplate.encode())
             templatedtd = dtd.dtdfile(templatefile)
             outputpo = convertor.mergestore(templatedtd, inputdtd)
         return outputpo
 
     def convertdtd(self, dtdsource):
         """call the convertdtd, return the outputfile"""
-        inputfile = wStringIO.StringIO(dtdsource)
-        outputfile = wStringIO.StringIO()
+        inputfile = BytesIO(dtdsource.encode())
+        outputfile = BytesIO()
         templatefile = None
         assert dtd2po.convertdtd(inputfile, outputfile, templatefile)
         return outputfile.getvalue()
@@ -63,7 +63,7 @@ class TestDTD2PO:
         """checks that the convertdtd function is working"""
         dtdsource = '<!ENTITY saveas.label "Save As...">\n'
         posource = self.convertdtd(dtdsource)
-        pofile = po.pofile(wStringIO.StringIO(posource))
+        pofile = po.pofile(BytesIO(posource))
         unit = self.singleelement(pofile)
         assert unit.source == "Save As..."
         assert unit.target == ""

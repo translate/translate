@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
+from io import BytesIO
 from translate.convert import po2ts, test_convert
-from translate.misc import wStringIO
 from translate.storage import po
 
 
@@ -9,10 +9,10 @@ class TestPO2TS:
 
     def po2ts(self, posource):
         """helper that converts po source to ts source without requiring files"""
-        inputfile = wStringIO.StringIO(posource)
+        inputfile = BytesIO(posource.encode())
         inputpo = po.pofile(inputfile)
         convertor = po2ts.po2ts()
-        output = wStringIO.StringIO()
+        output = BytesIO()
         convertor.convertstore(inputpo, output)
         return output.getvalue().decode('utf-8')
 

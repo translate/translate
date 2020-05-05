@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
+from io import BytesIO
 from translate.convert import po2json
-from translate.misc import wStringIO
 from translate.storage import po
 
 
@@ -8,8 +8,8 @@ class TestPO2JSON:
 
     def po2json(self, po_source, json_template):
         """helper that converts po source to json source without requiring files"""
-        input_file = wStringIO.StringIO(po_source)
-        json_file = wStringIO.StringIO(json_template)
+        input_file = BytesIO(po_source.encode())
+        json_file = BytesIO(json_template.encode())
         input_po = po.pofile(input_file)
         convertor = po2json.rejson(json_template, input_po)
         output_json = convertor.convertstore()

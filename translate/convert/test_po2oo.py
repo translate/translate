@@ -1,11 +1,11 @@
 
+from io import BytesIO
 import os
 import warnings
 
 from pytest import mark
 
 from translate.convert import oo2po, po2oo, test_convert
-from translate.misc import wStringIO
 from translate.storage import po
 
 
@@ -19,23 +19,23 @@ class TestPO2OO:
 
     def convertoo(self, posource, ootemplate, language="en-US"):
         """helper to exercise the command line function"""
-        inputfile = wStringIO.StringIO(posource)
-        outputfile = wStringIO.StringIO()
-        templatefile = wStringIO.StringIO(ootemplate)
+        inputfile = BytesIO(posource.encode())
+        outputfile = BytesIO()
+        templatefile = BytesIO(ootemplate.encode())
         assert po2oo.convertoo(inputfile, outputfile, templatefile, targetlanguage=language, timestamp=0)
         return outputfile.getvalue()
 
     def roundtripstring(self, entitystring):
         oointro, oooutro = r'svx	source\dialog\numpages.src	0	string	RID_SVXPAGE_NUM_OPTIONS	STR_BULLET			0	en-US	', '				2002-02-02 02:02:02' + '\r\n'
         oosource = oointro + entitystring + oooutro
-        ooinputfile = wStringIO.StringIO(oosource)
-        ooinputfile2 = wStringIO.StringIO(oosource)
-        pooutputfile = wStringIO.StringIO()
+        ooinputfile = BytesIO(oosource.encode())
+        ooinputfile2 = BytesIO(oosource.encode())
+        pooutputfile = BytesIO()
         oo2po.convertoo(ooinputfile, pooutputfile, ooinputfile2, targetlanguage='en-US')
         posource = pooutputfile.getvalue()
-        poinputfile = wStringIO.StringIO(posource)
-        ootemplatefile = wStringIO.StringIO(oosource)
-        oooutputfile = wStringIO.StringIO()
+        poinputfile = BytesIO(posource)
+        ootemplatefile = BytesIO(oosource.encode())
+        oooutputfile = BytesIO()
         po2oo.convertoo(poinputfile, oooutputfile, ootemplatefile, targetlanguage="en-US")
         ooresult = oooutputfile.getvalue().decode('utf-8')
         print("original oo:\n", oosource, "po version:\n", posource, "output oo:\n", ooresult)
@@ -104,9 +104,9 @@ class TestPO2OO:
         """test to ensure that we revert to the default timestamp"""
         oointro, oooutro = r'svx	source\dialog\numpages.src	0	string	RID_SVXPAGE_NUM_OPTIONS	STR_BULLET			0	en-US	Text				', '\r\n'
         posource = '''#: numpages.src#RID_SVXPAGE_NUM_OPTIONS.STR_BULLET.string.text\nmsgid "Text"\nmsgstr "Text"\n'''
-        inputfile = wStringIO.StringIO(posource)
-        outputfile = wStringIO.StringIO()
-        templatefile = wStringIO.StringIO(oointro + '20050924 09:13:58' + oooutro)
+        inputfile = BytesIO(posource.encode())
+        outputfile = BytesIO()
+        templatefile = BytesIO((oointro + '20050924 09:13:58' + oooutro).encode())
         assert po2oo.convertoo(inputfile, outputfile, templatefile, targetlanguage="en-US")
         assert outputfile.getvalue().decode('utf-8') == oointro + '2002-02-02 02:02:02' + oooutro
 
@@ -114,9 +114,9 @@ class TestPO2OO:
         """test to ensure that we convert escapes correctly"""
         oosource = r'svx	source\dialog\numpages.src	0	string	RID_SVXPAGE_NUM_OPTIONS	STR_BULLET			0	en-US	Column1\tColumn2\r\n				2002-02-02 02:02:02' + '\r\n'
         posource = '''#: numpages.src#RID_SVXPAGE_NUM_OPTIONS.STR_BULLET.string.text\nmsgid "Column1\\tColumn2\\r\\n"\nmsgstr "Kolom1\\tKolom2\\r\\n"\n'''
-        inputfile = wStringIO.StringIO(posource)
-        outputfile = wStringIO.StringIO()
-        templatefile = wStringIO.StringIO(oosource)
+        inputfile = BytesIO(posource.encode())
+        outputfile = BytesIO()
+        templatefile = BytesIO(oosource.encode())
         assert po2oo.convertoo(inputfile, outputfile, templatefile, targetlanguage="af-ZA")
         assert b"\tKolom1\\tKolom2\\r\\n\t" in outputfile.getvalue()
 
@@ -134,9 +134,9 @@ msgstr ""
 "<ahelp  hid=\".\" >Zeee 3DDDD-Settings toolbar controls properties of selected 3D "
 "objects.</ahelp>"
 '''
-        inputfile = wStringIO.StringIO(posource)
-        outputfile = wStringIO.StringIO()
-        templatefile = wStringIO.StringIO(oosource)
+        inputfile = BytesIO(posource.encode())
+        outputfile = BytesIO()
+        templatefile = BytesIO(oosource.encode())
         assert po2oo.convertoo(inputfile, outputfile, templatefile, targetlanguage="af-ZA")
         assert br"\<ahelp  hid=\".\" \>Zeee 3DDDD-Settings toolbar controls properties of selected 3D objects.\</ahelp\>" in outputfile.getvalue()
 
@@ -147,9 +147,9 @@ msgstr ""
 msgid "A1: <empty>"
 msgstr "Aa1: <empty>"
 '''
-        inputfile = wStringIO.StringIO(posource)
-        outputfile = wStringIO.StringIO()
-        templatefile = wStringIO.StringIO(oosource)
+        inputfile = BytesIO(posource.encode())
+        outputfile = BytesIO()
+        templatefile = BytesIO(oosource.encode())
         assert po2oo.convertoo(inputfile, outputfile, templatefile, targetlanguage="af-ZA")
         assert b"Aa1: <empty>" in outputfile.getvalue()
 
