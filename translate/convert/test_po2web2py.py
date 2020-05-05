@@ -5,7 +5,7 @@ from translate.misc import wStringIO
 from translate.storage import po
 
 
-class TestPO2WEB2PY(object):
+class TestPO2WEB2PY:
 
     def po2web2py(self, po_source):
         """helper that converts po source to web2py source without requiring files"""

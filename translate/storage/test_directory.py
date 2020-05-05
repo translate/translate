@@ -5,7 +5,7 @@ import os
 from translate.storage import directory
 
 
-class TestDirectory(object):
+class TestDirectory:
     """a test class to run tests on a test Pootle Server"""
 
     def setup_method(self, method):

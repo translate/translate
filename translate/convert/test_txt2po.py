@@ -4,7 +4,7 @@ from translate.convert import test_convert, txt2po
 from translate.misc import wStringIO
 
 
-class BaseTxt2POTester(object):
+class BaseTxt2POTester:
 
     ConverterClass = txt2po.txt2po
     Flavour = None

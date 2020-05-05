@@ -31,7 +31,7 @@ from translate import __version__
 from translate.misc import progressbar
 
 
-class ProgressBar(object):
+class ProgressBar:
     progress_types = OrderedDict([
         ("dots", progressbar.DotsProgressBar),
         ("none", progressbar.NoProgressBar),
@@ -99,7 +99,7 @@ class ManHelpFormatter(optparse.HelpFormatter):
         return '\\fB%s\\fP' % ("\\fR, \\fP".join(opts))
 
 
-class StdoutWrapper(object):
+class StdoutWrapper:
     out = sys.stdout
 
     def __getattr__(self, name):

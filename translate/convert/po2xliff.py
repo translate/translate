@@ -26,7 +26,7 @@ for examples and usage instructions.
 from translate.storage import po, poxliff
 
 
-class po2xliff(object):
+class po2xliff:
 
     def convertunit(self, outputstore, inputunit, filename):
         """creates a transunit node"""

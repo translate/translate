@@ -26,7 +26,7 @@ from translate.storage.placeables.general import XMLEntityPlaceable
 DEFAULT_ACCESSKEY_MARKER = u"&"
 
 
-class UnitMixer(object):
+class UnitMixer:
     """Helper to mix separately defined labels and accesskeys into one unit."""
 
     def __init__(self, labelsuffixes, accesskeysuffixes):

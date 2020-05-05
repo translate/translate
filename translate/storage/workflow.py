@@ -50,7 +50,7 @@ class StateEnum:
     MAX = 127
 
 
-class State(object):
+class State:
 
     def __init__(self, name, enter_action=None, leave_action=None):
         self.name = name
@@ -112,7 +112,7 @@ class StateNotInWorkflowError(Exception):
             'State not in workflow: %s' % (state))
 
 
-class Workflow(object):
+class Workflow:
 
     # INITIALISERS #
     def __init__(self, wf_obj=None):

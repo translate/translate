@@ -27,7 +27,7 @@ from translate.convert import convert
 from translate.storage import po, yaml
 
 
-class po2yaml(object):
+class po2yaml:
     """Convert a PO file and a template YAML file to a YAML file."""
 
     SourceStoreClass = po.pofile

@@ -27,7 +27,7 @@ from translate.convert import convert
 from translate.storage import flatxml, po
 
 
-class po2flatxml(object):
+class po2flatxml:
     """Convert to a single PO file to a single XML file, optionally
     applying modifications to a template file instead of creating
     one from scratch based on input parameters.

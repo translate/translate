@@ -58,7 +58,7 @@ def simplify(string):
     return ''.join(filter(type(string).isalnum, string))
 
 
-class csv2po(object):
+class csv2po:
     """a class that takes translations from a .csv file and puts them in a .po
     file
     """

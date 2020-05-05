@@ -49,7 +49,7 @@ def register_dialect(dialect):
     return dialect
 
 
-class Dialect(object):
+class Dialect:
     """Base class for differentiating dialect options and functions"""
 
     name = None

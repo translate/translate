@@ -13,7 +13,7 @@ second line''') == "First line second line"
  "second line''') == "First line second line"
 
 
-class TestRcFile(object):
+class TestRcFile:
     StoreClass = rc.rcfile
 
     def source_parse(self, source):

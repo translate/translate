@@ -40,7 +40,7 @@ def is_available():
     return False
 
 
-class CommonDatabase(object):
+class CommonDatabase:
     """Base class for indexing support.
 
     Any real implementation must override most methods of this class.
@@ -581,7 +581,7 @@ class CommonDatabase(object):
         return translate.lang.data.normalize(result)
 
 
-class CommonEnquire(object):
+class CommonEnquire:
     """An enquire object contains the information about the result of a request.
     """
 

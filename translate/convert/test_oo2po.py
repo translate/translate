@@ -9,7 +9,7 @@ from translate.storage import oo, po
 from translate.storage.poheader import poheader
 
 
-class TestOO2PO(object):
+class TestOO2PO:
     target_filetype = po.pofile
     conversion_module = oo2po
     conversion_class = oo2po.oo2po

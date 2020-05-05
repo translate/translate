@@ -30,7 +30,7 @@ from translate.convert import convert
 from translate.storage import factory
 
 
-class po2pydict(object):
+class po2pydict:
 
     def __init__(self):
         return

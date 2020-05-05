@@ -7,7 +7,7 @@ from translate.convert import ical2po, test_convert
 from translate.misc import wStringIO
 
 
-class TestIcal2PO(object):
+class TestIcal2PO:
 
     ConverterClass = ical2po.ical2po
 

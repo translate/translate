@@ -72,7 +72,7 @@ def applytranslation(entity, dtdunit, inputunit, mixedentities):
     dtdunit.source = unquotedstr
 
 
-class redtd(object):
+class redtd:
     """this is a convertor class that creates a new dtd based on a template using translations in a po"""
 
     def __init__(self, dtdfile, android=False, remove_untranslated=False):
@@ -101,7 +101,7 @@ class redtd(object):
                     applytranslation(entity, dtdunit, inunit, mixedentities)
 
 
-class po2dtd(object):
+class po2dtd:
     """this is a convertor class that creates a new dtd file based on a po file without a template"""
 
     def __init__(self, android=False, remove_untranslated=False):

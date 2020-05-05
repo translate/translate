@@ -59,7 +59,7 @@ def not_found(environ, start_response):
             "The server has not found anything matching the Request-URI."]
 
 
-class Selector(object):
+class Selector:
     """WSGI middleware for URL paths and HTTP method based delegation.
     
     See http://lukearno.com/projects/selector/
@@ -280,7 +280,7 @@ class Selector(object):
         return path, methods
 
 
-class SimpleParser(object):
+class SimpleParser:
     r"""Callable to turn path expressions into regexes with named groups.
     
     For instance ``"/hello/{name}"`` becomes ``r"^\/hello\/(?P<name>[^\^.]+)$"``
@@ -405,7 +405,7 @@ class SimpleParser(object):
             return self.lastly(self.parse(url_pattern))
 
 
-class EnvironDispatcher(object):
+class EnvironDispatcher:
     """Dispatch based on list of rules."""
 
     def __init__(self, rules):
@@ -422,7 +422,7 @@ class EnvironDispatcher(object):
                 return app(environ, start_response)
 
 
-class MiddlewareComposer(object):
+class MiddlewareComposer:
     """Compose middleware based on list of rules."""
 
     def __init__(self, app, rules):
@@ -458,7 +458,7 @@ def expose(obj):
     return obj
 
 
-class Naked(object):
+class Naked:
     """Naked object style dispatch base class."""
 
     _not_found = staticmethod(not_found)
@@ -485,7 +485,7 @@ class Naked(object):
             return self._not_found(environ, start_response)
     
 
-class ByMethod(object):
+class ByMethod:
     """Base class for dispatching to method named by ``REQUEST_METHOD``."""
 
     _method_not_allowed = staticmethod(method_not_allowed)
@@ -522,7 +522,7 @@ def opliant(meth):
     ``wsgiorg.routing_args``
     ::
 
-        class App(object):
+        class App:
             @opliant
             def __call__(self, environ, start_response, arg1, arg2, foo='bar'):
                 ...

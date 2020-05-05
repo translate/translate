@@ -101,7 +101,7 @@ def escape(text):
     return text
 
 
-class TradosTxtDate(object):
+class TradosTxtDate:
     """Manages the timestamps in the Trados .txt format of DDMMYYY, hh:mm:ss"""
 
     def __init__(self, newtime=None):

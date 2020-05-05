@@ -36,7 +36,7 @@ class DiscardUnit(ValueError):
     pass
 
 
-class prop2po(object):
+class prop2po:
     """convert a .properties file to a .po file for handling the translation.
     """
 

@@ -100,7 +100,7 @@ class CatkeysDialect(csv.Dialect):
 csv.register_dialect("catkeys", CatkeysDialect)
 
 
-class CatkeysHeader(object):
+class CatkeysHeader:
     """A catkeys translation memory header"""
 
     def __init__(self, header=None):

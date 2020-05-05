@@ -185,7 +185,7 @@ common_canchangetags = [
 # Actually the title tag is allowed on many tags in HTML (but probably not all)
 
 
-class CheckerConfig(object):
+class CheckerConfig:
     """Object representing the configuration of a checker."""
 
     def __init__(self, targetlanguage=None, accelmarkers=None, varmatches=None,
@@ -298,7 +298,7 @@ def cache_results(f):
     return cached_f
 
 
-class UnitChecker(object):
+class UnitChecker:
     """Parent Checker class which does the checking based on functions
     available in derived classes.
     """
@@ -552,7 +552,7 @@ class TranslationChecker(UnitChecker):
         return super().run_filters(unit, categorised)
 
 
-class TeeChecker(object):
+class TeeChecker:
     """A Checker that controls multiple checkers."""
 
     #: Categories where each checking function falls into

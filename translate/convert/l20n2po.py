@@ -27,7 +27,7 @@ from translate.convert import convert
 from translate.storage import l20n, po
 
 
-class l20n2po(object):
+class l20n2po:
     """convert a .l20n file to a .po file for handling the translation.
     """
 

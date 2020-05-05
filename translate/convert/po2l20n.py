@@ -24,7 +24,7 @@ from translate.convert import convert
 from translate.storage import l20n, po
 
 
-class po2l20n(object):
+class po2l20n:
     """Convert a PO file and a template .ftl file to a .ftl file."""
 
     SourceStoreClass = po.pofile

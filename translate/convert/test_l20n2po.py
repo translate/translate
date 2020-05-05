@@ -5,7 +5,7 @@ from translate.misc import wStringIO
 from translate.storage import po
 
 
-class TestL20n2PO(object):
+class TestL20n2PO:
 
     def l20n2po(self, input_string, l20n_template=None, blank_msgstr=False,
                 duplicate_style="msgctxt", success_expected=True):

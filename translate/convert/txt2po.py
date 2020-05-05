@@ -27,7 +27,7 @@ from translate.convert import convert
 from translate.storage import po, txt
 
 
-class txt2po(object):
+class txt2po:
     """Convert one plain text (.txt) file to a single PO file."""
 
     SourceStoreClass = txt.TxtFile

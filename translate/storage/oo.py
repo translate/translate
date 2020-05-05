@@ -163,7 +163,7 @@ def unescape_help_text(text):
     return text.replace(r"\<", "<").replace(r"\>", ">").replace(r'\"', '"').replace(r"\\", "\\")
 
 
-class ooline(object):
+class ooline:
     """this represents one line, one translation in an .oo file"""
 
     def __init__(self, parts=None):

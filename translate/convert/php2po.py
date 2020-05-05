@@ -27,7 +27,7 @@ from translate.convert import convert
 from translate.storage import php, po
 
 
-class php2po(object):
+class php2po:
     """Convert one or two PHP files to a single PO file."""
 
     SourceStoreClass = php.phpfile

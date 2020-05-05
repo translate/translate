@@ -6,7 +6,7 @@ from translate.convert import po2l20n, test_convert
 from translate.misc import wStringIO
 
 
-class TestPO2L20n(object):
+class TestPO2L20n:
 
     ConverterClass = po2l20n.po2l20n
 

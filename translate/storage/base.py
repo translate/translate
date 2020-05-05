@@ -50,7 +50,7 @@ class ParseError(Exception):
         return repr(self.inner_exc)
 
 
-class TranslationUnit(object):
+class TranslationUnit:
     """Base class for translation units.
 
     Our concept of a *translation unit* is influenced heavily by `XLIFF
@@ -504,7 +504,7 @@ class TranslationUnit(object):
         pass
 
 
-class TranslationStore(object):
+class TranslationStore:
     """Base class for stores for multiple translation units of type UnitClass.
     """
 

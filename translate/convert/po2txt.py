@@ -29,7 +29,7 @@ from translate.convert import convert
 from translate.storage import factory
 
 
-class po2txt(object):
+class po2txt:
     """po2txt can take a po file and generate txt.
 
     best to give it a template file otherwise will just concat msgstrs

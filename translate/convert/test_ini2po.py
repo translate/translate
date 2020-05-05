@@ -10,7 +10,7 @@ from translate.misc import wStringIO
 importorskip("iniparse")
 
 
-class TestIni2PO(object):
+class TestIni2PO:
 
     ConverterClass = ini2po.ini2po
 

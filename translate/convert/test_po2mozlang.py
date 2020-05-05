@@ -4,7 +4,7 @@ from translate.convert import po2mozlang, test_convert
 from translate.misc import wStringIO
 
 
-class TestPO2Lang(object):
+class TestPO2Lang:
 
     ConverterClass = po2mozlang.po2lang
 

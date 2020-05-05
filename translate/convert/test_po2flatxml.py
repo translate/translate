@@ -6,7 +6,7 @@ from translate.convert import po2flatxml, test_convert
 from translate.misc import wStringIO
 
 
-class TestPO2FlatXML(object):
+class TestPO2FlatXML:
     postring = '''msgid "one"
 msgstr "One"
 

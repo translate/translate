@@ -5,7 +5,7 @@ from pytest import deprecated_call, mark
 from translate.misc.deprecation import deprecated
 
 
-class TestDeprecation(object):
+class TestDeprecation:
 
     # Deprecated on 2.x.x
     @deprecated("Use XXX instead")

@@ -7,7 +7,7 @@ from translate.convert import po2ical, test_convert
 from translate.misc import wStringIO
 
 
-class TestPO2Ical(object):
+class TestPO2Ical:
 
     ConverterClass = po2ical.po2ical
 

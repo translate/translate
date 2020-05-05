@@ -21,7 +21,7 @@
 from translate.storage import xliff
 
 
-class XPathTree(object):
+class XPathTree:
 
     def __init__(self, unit=None):
         self.unit = unit

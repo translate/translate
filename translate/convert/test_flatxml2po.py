@@ -6,7 +6,7 @@ from translate.convert import flatxml2po, test_convert
 from translate.misc import wStringIO
 
 
-class TestFlatXML2PO(object):
+class TestFlatXML2PO:
     def _convert(self, xmlstring, templatestring=None, **kwargs):
         """Helper that converts xml source to po target without requiring files"""
         inputfile = wStringIO.StringIO(xmlstring)

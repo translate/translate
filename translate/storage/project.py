@@ -53,7 +53,7 @@ def split_extensions(filename):
     return os.extsep.join(filename_parts[:-len(extensions)]), os.extsep.join(extensions)
 
 
-class Project(object):
+class Project:
     """Manages a project store as well as the processes involved in a project
     workflow.
     """

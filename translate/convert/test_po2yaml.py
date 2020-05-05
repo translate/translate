@@ -7,7 +7,7 @@ from translate.convert import po2yaml, test_convert
 from translate.misc import wStringIO
 
 
-class TestPO2YAML(object):
+class TestPO2YAML:
 
     ConverterClass = po2yaml.po2yaml
 

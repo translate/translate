@@ -182,7 +182,7 @@ else:
     BuildCommand = py2exe.build_exe.py2exe
     Distribution = py2exe.Distribution
 
-    class InnoScript(object):
+    class InnoScript:
         """class that builds an InnoSetup script"""
 
         def __init__(self, name, lib_dir, dist_dir, exe_files=[],

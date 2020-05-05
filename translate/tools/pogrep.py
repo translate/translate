@@ -37,7 +37,7 @@ from translate.storage import factory
 from translate.storage.poheader import poheader
 
 
-class GrepMatch(object):
+class GrepMatch:
     """Just a small data structure that represents a search match."""
 
     # INITIALIZERS #

@@ -108,7 +108,7 @@ pygments_style = 'sphinx'
 import sys
 
 
-class Mock(object):
+class Mock:
     VERSION = None
 
     def __init__(self, *args, **kwargs):

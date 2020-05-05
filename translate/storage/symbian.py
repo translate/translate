@@ -30,7 +30,7 @@ def identity(x):
     return x
 
 
-class ParseState(object):
+class ParseState:
 
     def __init__(self, f, charset, read_hook=identity):
         self.f = f

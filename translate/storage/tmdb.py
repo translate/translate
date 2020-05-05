@@ -43,7 +43,7 @@ class LanguageError(Exception):
         return str(self.value)
 
 
-class TMDB(object):
+class TMDB:
     _tm_dbs = {}
 
     def __init__(self, db_file, max_candidates=3, min_similarity=75,

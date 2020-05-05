@@ -6,7 +6,7 @@ from zipfile import ZipFile
 from translate.storage import zip
 
 
-class TestZIPFile(object):
+class TestZIPFile:
     """A test class to test the zip class that provides the directory interface."""
 
     def setup_method(self, method):

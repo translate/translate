@@ -199,7 +199,7 @@ class WordfastDialect(csv.Dialect):
 csv.register_dialect("wordfast", WordfastDialect)
 
 
-class WordfastTime(object):
+class WordfastTime:
     """Manages time stamps in the Wordfast format of YYYYMMDD~hhmmss"""
 
     def __init__(self, newtime=None):
@@ -250,7 +250,7 @@ class WordfastTime(object):
             return self.timestring
 
 
-class WordfastHeader(object):
+class WordfastHeader:
     """A wordfast translation memory header"""
 
     def __init__(self, header=None):

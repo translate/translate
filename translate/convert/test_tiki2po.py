@@ -8,7 +8,7 @@ from translate.convert import test_convert, tiki2po
 from translate.misc import wStringIO
 
 
-class TestTiki2Po(object):
+class TestTiki2Po:
 
     ConverterClass = tiki2po.tiki2po
 

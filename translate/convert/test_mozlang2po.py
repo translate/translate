@@ -6,7 +6,7 @@ from translate.convert import mozlang2po, test_convert
 from translate.misc import wStringIO
 
 
-class TestLang2PO(object):
+class TestLang2PO:
 
     ConverterClass = mozlang2po.lang2po
 

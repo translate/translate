@@ -27,7 +27,7 @@ from translate.convert import convert
 from translate.storage import po
 
 
-class po2sub(object):
+class po2sub:
 
     def __init__(self, templatefile, inputstore, includefuzzy=False):
         from translate.storage import subtitles
