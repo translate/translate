@@ -17,31 +17,17 @@
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, see <http://www.gnu.org/licenses/>.
 
-"""A thin wrapper around BytesIO that accepts and auto-convert non bytes
-input
-"""
-
 from io import BytesIO
 
 
-class StringIO(BytesIO):
-
-    def __init__(self, buf=''):
-        if not isinstance(buf, str):
-            buf = bytes(buf)
-        if isinstance(buf, str):
-            buf = buf.encode('utf-8')
-        super().__init__(buf)
-
-
-class CatchStringOutput(StringIO):
+class CatchStringOutput(BytesIO):
     """catches the output before it is closed and sends it to an onclose method
     """
 
     def __init__(self, onclose):
         """Set up the output stream, and remember a method to call on closing
         """
-        StringIO.__init__(self)
+        super().__init__()
         self.onclose = onclose
 
     def close(self):

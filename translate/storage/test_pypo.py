@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 
+from io import BytesIO
 from pytest import raises
 
-from translate.misc import wStringIO
 from translate.misc.multistring import multistring
 from translate.storage import pypo, test_po
 
@@ -232,7 +232,7 @@ class TestPYPOFile(test_po.TestPOFile):
     def test_output_str_unicode(self):
         """checks that we can str(element) which is in unicode"""
         posource = u'''#: nb\nmsgid "Norwegian Bokm\xe5l"\nmsgstr ""\n'''
-        pofile = self.StoreClass(wStringIO.StringIO(posource.encode("UTF-8")), encoding="UTF-8")
+        pofile = self.StoreClass(BytesIO(posource.encode("UTF-8")), encoding="UTF-8")
         assert len(pofile.units) == 1
         print(bytes(pofile))
         thepo = pofile.units[0]

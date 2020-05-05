@@ -20,8 +20,8 @@
 """Converts additional Mozilla files to properties files.
 """
 
+from io import BytesIO
 from translate.convert import prop2po
-from translate.misc.wStringIO import StringIO
 
 
 def inc2prop(lines):
@@ -87,11 +87,11 @@ def inc2po(inputfile, outputfile, templatefile, encoding=None, pot=False, duplic
     """wraps prop2po but converts input/template files to properties first"""
     inputlines = inputfile.readlines()
     inputproplines = [line for line in inc2prop(inputlines)]
-    inputpropfile = StringIO("".join(inputproplines))
+    inputpropfile = BytesIO("".join(inputproplines).encode())
     if templatefile is not None:
         templatelines = templatefile.readlines()
         templateproplines = [line for line in inc2prop(templatelines)]
-        templatepropfile = StringIO("".join(templateproplines))
+        templatepropfile = BytesIO("".join(templateproplines).encode())
     else:
         templatepropfile = None
     return prop2po.convertprop(inputpropfile, outputfile, templatepropfile, personality="mozilla", pot=pot, duplicatestyle=duplicatestyle)
@@ -101,11 +101,11 @@ def it2po(inputfile, outputfile, templatefile, encoding="cp1252", pot=False, dup
     """wraps prop2po but converts input/template files to properties first"""
     inputlines = inputfile.readlines()
     inputproplines = [line for line in it2prop(inputlines, encoding=encoding)]
-    inputpropfile = StringIO("".join(inputproplines))
+    inputpropfile = BytesIO("".join(inputproplines).encode())
     if templatefile is not None:
         templatelines = templatefile.readlines()
         templateproplines = [line for line in it2prop(templatelines, encoding=encoding)]
-        templatepropfile = StringIO("".join(templateproplines))
+        templatepropfile = BytesIO("".join(templateproplines).encode())
     else:
         templatepropfile = None
     return prop2po.convertprop(inputpropfile, outputfile, templatepropfile, personality="mozilla", pot=pot, duplicatestyle=duplicatestyle)

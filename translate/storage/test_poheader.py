@@ -1,10 +1,10 @@
 # -*- coding: utf-8 -*-
 
+from io import BytesIO
 import os
 import time
 from collections import OrderedDict
 
-from translate.misc import wStringIO
 from translate.storage import po, poheader, poxliff
 
 
@@ -52,7 +52,7 @@ def test_update():
 
 def poparse(posource):
     """helper that parses po source without requiring files"""
-    dummyfile = wStringIO.StringIO(posource)
+    dummyfile = BytesIO(posource.encode())
     return po.pofile(dummyfile)
 
 

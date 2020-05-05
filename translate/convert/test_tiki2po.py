@@ -4,8 +4,8 @@
 # Author: Wil Clouser <wclouser@mozilla.com>
 # Date: 2008-12-01
 
+from io import BytesIO
 from translate.convert import test_convert, tiki2po
-from translate.misc import wStringIO
 
 
 class TestTiki2Po:
@@ -15,11 +15,11 @@ class TestTiki2Po:
     def _convert(self, input_string, template_string=None,
                  include_unused=False, success_expected=True):
         """Helper that converts to target format without using files."""
-        input_file = wStringIO.StringIO(input_string)
-        output_file = wStringIO.StringIO()
+        input_file = BytesIO(input_string.encode())
+        output_file = BytesIO()
         template_file = None
         if template_string:
-            template_file = wStringIO.StringIO(template_string)
+            template_file = BytesIO(template_string.encode())
         expected_result = 1 if success_expected else 0
         converter = self.ConverterClass(input_file, output_file, template_file,
                                         include_unused)

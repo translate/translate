@@ -2,8 +2,8 @@
 
 """Tests converting Gettext PO localization files to flat XML files"""
 
+from io import BytesIO
 from translate.convert import po2flatxml, test_convert
-from translate.misc import wStringIO
 
 
 class TestPO2FlatXML:
@@ -16,11 +16,11 @@ msgstr "Two"
 
     def _convert(self, postring, templatestring=None, **kwargs):
         """Helper that converts po source to xml target without requiring files"""
-        inputfile = wStringIO.StringIO(postring)
+        inputfile = BytesIO(postring.encode())
         templatefile = None
         if templatestring:
-            templatefile = wStringIO.StringIO(templatestring)
-        outputfile = wStringIO.StringIO()
+            templatefile = BytesIO(templatestring.encode())
+        outputfile = BytesIO()
         converter = po2flatxml.po2flatxml(inputfile, outputfile, templatefile, **kwargs)
         converter.run()
         return converter.target_store, outputfile

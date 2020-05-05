@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 
+from io import BytesIO
 from pytest import raises
 
-from translate.misc import wStringIO
 from translate.storage import properties, test_monolingual
 
 
@@ -100,7 +100,7 @@ class TestProp(test_monolingual.TestMonolingualStore):
 
     def propparse(self, propsource, personality="java", encoding=None):
         """helper that parses properties source without requiring files"""
-        dummyfile = wStringIO.StringIO(propsource)
+        dummyfile = BytesIO(propsource.encode() if isinstance(propsource, str) else propsource)
         propfile = properties.propfile(dummyfile, personality, encoding)
         return propfile
 

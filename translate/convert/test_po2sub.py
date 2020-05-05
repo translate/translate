@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
+from io import BytesIO
 
 from pytest import importorskip
 
 from translate.convert import po2sub, test_convert
-from translate.misc import wStringIO
 from translate.storage import po
 
 
@@ -16,7 +16,7 @@ class TestPO2Sub:
     def po2sub(self, posource):
         """helper that converts po source to subtitle source without requiring
         files"""
-        inputfile = wStringIO.StringIO(posource)
+        inputfile = BytesIO(posource.encode())
         inputpo = po.pofile(inputfile)
         convertor = po2sub.po2sub()
         outputsub = convertor.convert_store(inputpo)
@@ -25,9 +25,9 @@ class TestPO2Sub:
     def merge2sub(self, subsource, posource):
         """helper that merges po translations to subtitle source without
         requiring files"""
-        inputfile = wStringIO.StringIO(posource)
+        inputfile = BytesIO(posource.encode())
         inputpo = po.pofile(inputfile)
-        templatefile = wStringIO.StringIO(subsource)
+        templatefile = BytesIO(subsource.encode())
         convertor = po2sub.po2sub(templatefile, inputpo)
         outputsub = convertor.convert_store()
         print(outputsub)

@@ -1,4 +1,4 @@
-from translate.misc import wStringIO
+from io import BytesIO
 from translate.storage import test_monolingual, txt
 
 
@@ -11,7 +11,7 @@ class TestTxtFile(test_monolingual.TestMonolingualStore):
 
     def txtparse(self, txtsource, no_segmentation=False):
         """helper that parses txt source without requiring files"""
-        dummyfile = wStringIO.StringIO(txtsource)
+        dummyfile = BytesIO(txtsource.encode())
         txtfile = self.StoreClass(dummyfile, no_segmentation=no_segmentation)
         return txtfile
 

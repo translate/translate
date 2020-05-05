@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 
+from io import BytesIO
 import sys
 
 from pytest import importorskip, mark, raises
@@ -9,7 +10,6 @@ pytestmark = mark.skipif(
     reason="cpo is only available on Linux"
 )
 
-from translate.misc import wStringIO
 from translate.misc.multistring import multistring
 from translate.storage import test_po
 
@@ -155,7 +155,7 @@ class TestCPOFile(test_po.TestPOFile):
     def test_output_str_unicode(self):
         """checks that we can serialize pofile, unit content is in unicode"""
         posource = u'''#: nb\nmsgid "Norwegian Bokm\xe5l"\nmsgstr ""\n'''
-        pofile = self.StoreClass(wStringIO.StringIO(posource.encode("UTF-8")), encoding="UTF-8")
+        pofile = self.StoreClass(BytesIO(posource.encode("UTF-8")), encoding="UTF-8")
         assert len(pofile.units) == 1
         print(bytes(pofile))
         thepo = pofile.units[0]

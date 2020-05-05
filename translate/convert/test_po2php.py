@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
 
+from io import BytesIO
 from pytest import mark, raises
 
 from translate.convert import po2php, test_convert
-from translate.misc import wStringIO
 from translate.storage import po
 
 
@@ -11,7 +11,7 @@ class TestPO2Php:
 
     def po2php(self, posource):
         """helper that converts po source to .php source without requiring files"""
-        inputfile = wStringIO.StringIO(posource)
+        inputfile = BytesIO(posource.encode())
         inputpo = po.pofile(inputfile)
         convertor = po2php.po2php()
         outputphp = convertor.convertstore(inputpo)
@@ -19,9 +19,9 @@ class TestPO2Php:
 
     def merge2php(self, phpsource, posource):
         """helper that merges po translations to .php source without requiring files"""
-        inputfile = wStringIO.StringIO(posource)
+        inputfile = BytesIO(posource.encode())
         inputpo = po.pofile(inputfile)
-        templatefile = wStringIO.StringIO(phpsource)
+        templatefile = BytesIO(phpsource.encode())
         #templatephp = php.phpfile(templatefile)
         convertor = po2php.rephp(templatefile, inputpo)
         outputphp = [line.decode('utf-8') for line in convertor.convertstore()]
@@ -38,9 +38,9 @@ msgstr "waarde"
 '''
         phpexpected = b'''$lang['name'] = 'waarde';
 '''
-        inputfile = wStringIO.StringIO(posource)
-        templatefile = wStringIO.StringIO(phptemplate)
-        outputfile = wStringIO.StringIO()
+        inputfile = BytesIO(posource.encode())
+        templatefile = BytesIO(phptemplate.encode())
+        outputfile = BytesIO()
         assert po2php.convertphp(inputfile, outputfile, templatefile) == 1
         assert outputfile.getvalue() == phpexpected
 
@@ -50,8 +50,8 @@ msgstr "waarde"
 msgid "value"
 msgstr "waarde"
 '''
-        inputfile = wStringIO.StringIO(posource)
-        outputfile = wStringIO.StringIO()
+        inputfile = BytesIO(posource.encode())
+        outputfile = BytesIO()
         with raises(ValueError):
             po2php.convertphp(inputfile, outputfile, None)
 
@@ -61,9 +61,9 @@ msgstr "waarde"
 msgid "value"
 msgstr ""
 '''
-        inputfile = wStringIO.StringIO(posource)
-        templatefile = wStringIO.StringIO('')
-        outputfile = wStringIO.StringIO()
+        inputfile = BytesIO(posource.encode())
+        templatefile = BytesIO(b'')
+        outputfile = BytesIO()
         assert po2php.convertphp(inputfile, outputfile, templatefile, False, 100) is False
         assert outputfile.getvalue() == b''
 

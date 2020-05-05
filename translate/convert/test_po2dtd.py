@@ -1,11 +1,11 @@
 # -*- coding: utf-8 -*-
 
 import warnings
+from io import BytesIO
 
 import pytest
 
 from translate.convert import dtd2po, po2dtd, test_convert
-from translate.misc import wStringIO
 from translate.storage import dtd, po
 
 
@@ -19,7 +19,7 @@ class TestPO2DTD:
 
     def po2dtd(self, posource, remove_untranslated=False):
         """helper that converts po source to dtd source without requiring files"""
-        inputfile = wStringIO.StringIO(posource)
+        inputfile = BytesIO(posource.encode())
         inputpo = po.pofile(inputfile)
         convertor = po2dtd.po2dtd(remove_untranslated=remove_untranslated)
         outputdtd = convertor.convertstore(inputpo)
@@ -27,9 +27,9 @@ class TestPO2DTD:
 
     def merge2dtd(self, dtdsource, posource):
         """helper that merges po translations to dtd source without requiring files"""
-        inputfile = wStringIO.StringIO(posource)
+        inputfile = BytesIO(posource.encode())
         inputpo = po.pofile(inputfile)
-        templatefile = wStringIO.StringIO(dtdsource)
+        templatefile = BytesIO(dtdsource.encode())
         templatedtd = dtd.dtdfile(templatefile)
         convertor = po2dtd.redtd(templatedtd)
         outputdtd = convertor.convertstore(inputpo)
@@ -37,23 +37,23 @@ class TestPO2DTD:
 
     def convertdtd(self, posource, dtdtemplate, remove_untranslated=False):
         """helper to exercise the command line function"""
-        inputfile = wStringIO.StringIO(posource)
-        outputfile = wStringIO.StringIO()
-        templatefile = wStringIO.StringIO(dtdtemplate)
+        inputfile = BytesIO(posource.encode())
+        outputfile = BytesIO()
+        templatefile = BytesIO(dtdtemplate.encode())
         assert po2dtd.convertdtd(inputfile, outputfile, templatefile,
                                  remove_untranslated=remove_untranslated)
         return outputfile.getvalue().decode('utf-8')
 
     def roundtripsource(self, dtdsource):
         """converts dtd source to po and back again, returning the resulting source"""
-        dtdinputfile = wStringIO.StringIO(dtdsource)
-        dtdinputfile2 = wStringIO.StringIO(dtdsource)
-        pooutputfile = wStringIO.StringIO()
+        dtdinputfile = BytesIO(dtdsource.encode())
+        dtdinputfile2 = BytesIO(dtdsource.encode())
+        pooutputfile = BytesIO()
         dtd2po.convertdtd(dtdinputfile, pooutputfile, dtdinputfile2)
         posource = pooutputfile.getvalue()
-        poinputfile = wStringIO.StringIO(posource)
-        dtdtemplatefile = wStringIO.StringIO(dtdsource)
-        dtdoutputfile = wStringIO.StringIO()
+        poinputfile = BytesIO(posource)
+        dtdtemplatefile = BytesIO(dtdsource.encode())
+        dtdoutputfile = BytesIO()
         po2dtd.convertdtd(poinputfile, dtdoutputfile, dtdtemplatefile)
         dtdresult = dtdoutputfile.getvalue().decode('utf-8')
         print_string = "Original DTD:\n%s\n\nPO version:\n%s\n\n"

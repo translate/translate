@@ -1,4 +1,4 @@
-from translate.misc import wStringIO
+from io import BytesIO
 from translate.storage import rc
 
 
@@ -18,7 +18,7 @@ class TestRcFile:
 
     def source_parse(self, source):
         """Helper that parses source without requiring files."""
-        dummy_file = wStringIO.StringIO(source)
+        dummy_file = BytesIO(source.encode())
         parsed_file = self.StoreClass(dummy_file)
         return parsed_file
 

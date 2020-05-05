@@ -18,7 +18,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, see <http://www.gnu.org/licenses/>.
 
-from translate.misc import wStringIO
+from io import BytesIO
 from translate.storage import test_monolingual, resx
 
 
@@ -92,7 +92,7 @@ class TestRESXUnitFromParsedString(TestRESXUnit):
         self.unit = self.store.units[0]
 
     def _assert_store(self, expected_resx):
-        output_file = wStringIO.StringIO()
+        output_file = BytesIO()
         self.store.serialize(output_file)
         actual_resx = output_file.getvalue().decode("utf-8")
         assert actual_resx == expected_resx
@@ -125,6 +125,6 @@ class TestRESXfile(test_monolingual.TestMonolingualStore):
 
     def resxparse(self, resxsource):
         """helper that parses resx source without requiring files"""
-        dummyfile = wStringIO.StringIO(resxsource)
+        dummyfile = BytesIO(resxsource.encode())
         txtfile = self.StoreClass(dummyfile)
         return txtfile

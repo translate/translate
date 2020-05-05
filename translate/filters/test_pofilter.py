@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
+from io import BytesIO
 from translate.filters import checks, pofilter
-from translate.misc import wStringIO
 from translate.storage import factory, xliff
 from translate.storage.test_base import first_translatable, headerless_len
 
@@ -13,7 +13,7 @@ class BaseTestFilter:
 
     def parse_text(self, filetext):
         """helper that parses xliff file content without requiring files"""
-        dummyfile = wStringIO.StringIO(filetext)
+        dummyfile = BytesIO(filetext.encode())
         dummyfile.name = self.filename
         store = factory.getobject(dummyfile)
         return store

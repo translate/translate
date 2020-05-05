@@ -1,5 +1,5 @@
+from io import BytesIO
 from translate.convert import csv2po, po2csv, test_convert
-from translate.misc import wStringIO
 from translate.storage import csvl10n, po
 from translate.storage.test_base import first_translatable, headerless_len
 
@@ -8,7 +8,7 @@ class TestPO2CSV:
 
     def po2csv(self, posource):
         """helper that converts po source to csv source without requiring files"""
-        inputfile = wStringIO.StringIO(posource)
+        inputfile = BytesIO(posource.encode())
         inputpo = po.pofile(inputfile)
         convertor = po2csv.po2csv()
         outputcsv = convertor.convertstore(inputpo)
@@ -16,10 +16,10 @@ class TestPO2CSV:
 
     def csv2po(self, csvsource, template=None):
         """helper that converts csv source to po source without requiring files"""
-        inputfile = wStringIO.StringIO(csvsource)
+        inputfile = BytesIO(csvsource)
         inputcsv = csvl10n.csvfile(inputfile)
         if template:
-            templatefile = wStringIO.StringIO(template)
+            templatefile = BytesIO(template.encode())
             inputpot = po.pofile(templatefile)
         else:
             inputpot = None

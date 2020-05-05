@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 
+from io import BytesIO
 from pytest import mark
 
-from translate.misc import wStringIO
 from translate.storage import csvl10n, test_base
 
 
@@ -15,7 +15,7 @@ class TestCSV(test_base.TestTranslationStore):
 
     def parse_store(self, source):
         """Helper that parses source without requiring files."""
-        return self.StoreClass(wStringIO.StringIO(source))
+        return self.StoreClass(BytesIO(source))
 
     def test_singlequoting(self):
         """Tests round trip on single quoting at start of string"""
@@ -44,7 +44,7 @@ class TestCSV(test_base.TestTranslationStore):
         assert bytes(store) == content
 
     def test_default(self):
-        content = '''ID,English
+        content = b'''ID,English
 GENERAL@2|Notes,"cable, motor, switch"
 *****END CALL*****|Ask,-'''
         store = self.parse_store(content)

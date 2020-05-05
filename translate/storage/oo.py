@@ -406,7 +406,7 @@ class oomultifile:
     def openinputfile(self, subfile):
         """returns a pseudo-file object for the given subfile"""
         subfilesrc = self.getsubfilesrc(subfile)
-        inputfile = wStringIO.StringIO(subfilesrc)
+        inputfile = BytesIO(subfilesrc.encode())
         inputfile.filename = subfile
         return inputfile
 

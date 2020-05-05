@@ -20,9 +20,9 @@
 
 """ Tests converting Gettext PO localisation files to .Net Resource (.resx) files """
 
+from io import BytesIO
 from translate.convert import po2resx, test_convert
 from translate.storage import po
-from translate.misc import wStringIO
 
 
 class TestPO2RESX:
@@ -86,7 +86,7 @@ class TestPO2RESX:
     def po2resx(self, resxsource, po_source):
         """ Helper that merges po translations to .resx source without requiring files """
         po_store = po.pofile(po_source.encode('utf-8'))
-        template_file = wStringIO.StringIO(resxsource)
+        template_file = BytesIO(resxsource.encode())
         convertor = po2resx.po2resx(template_file, po_store)
         output_resx = convertor.convertstore()
         return output_resx.decode('utf-8')

@@ -1,4 +1,4 @@
-from translate.misc import wStringIO
+from io import BytesIO
 from translate.storage import test_base, tmx
 
 
@@ -31,7 +31,7 @@ class TestTMXfile(test_base.TestTranslationStore):
 
     def tmxparse(self, tmxsource):
         """helper that parses tmx source without requiring files"""
-        dummyfile = wStringIO.StringIO(tmxsource)
+        dummyfile = BytesIO(tmxsource)
         print(tmxsource)
         tmxfile = tmx.tmxfile(dummyfile)
         return tmxfile

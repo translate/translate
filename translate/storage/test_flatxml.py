@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 
+from io import BytesIO
 from pytest import raises
 
-from translate.misc import wStringIO
 from translate.storage import test_monolingual, flatxml
 
 
@@ -14,13 +14,13 @@ class TestFlatXMLFile(test_monolingual.TestMonolingualStore):
     StoreClass = flatxml.FlatXMLFile
 
     def _store_to_string(self, store):
-        outputfile = wStringIO.StringIO()
+        outputfile = BytesIO()
         store.serialize(outputfile)
         return outputfile.getvalue().decode("utf-8")
 
     def _encoded_file(self, string, encoding="utf-8"):
         xmldecl = '<?xml version="1.0" encoding="%s"?>' % encoding
-        stringfile = wStringIO.StringIO(xmldecl + string)
+        stringfile = BytesIO((xmldecl + string).encode())
         return stringfile
 
     def test_root_config_detect(self):

@@ -3,8 +3,8 @@
 import os
 from bz2 import BZ2File
 from gzip import GzipFile
+from io import BytesIO
 
-from translate.misc import wStringIO
 from translate.storage import factory
 from translate.storage.directory import Directory
 
@@ -17,7 +17,7 @@ def classname(filename):
 
 def givefile(filename, content):
     """returns a file dummy object with the given content"""
-    file = wStringIO.StringIO(content)
+    file = BytesIO(content)
     file.name = filename
     return file
 
@@ -92,7 +92,7 @@ class BaseTestFactory:
 
     def test_get_noname_object(self):
         """Tests that we get a valid object from a file object without a name."""
-        fileobj = wStringIO.StringIO(self.file_content)
+        fileobj = BytesIO(self.file_content)
         assert not hasattr(fileobj, 'name')
         store = factory.getobject(fileobj)
         assert isinstance(store, self.expected_instance)

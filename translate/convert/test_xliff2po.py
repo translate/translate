@@ -1,5 +1,5 @@
+from io import BytesIO
 from translate.convert import test_convert, xliff2po
-from translate.misc import wStringIO
 from translate.storage import po, xliff
 from translate.storage.poheader import poheader
 from translate.storage.test_base import first_translatable, headerless_len
@@ -18,7 +18,7 @@ class TestXLIFF2PO:
 
     def xliff2po(self, xliffsource):
         """helper that converts xliff source to po source without requiring files"""
-        inputfile = wStringIO.StringIO(xliffsource)
+        inputfile = BytesIO(xliffsource.encode())
         convertor = xliff2po.xliff2po()
         outputpo = convertor.convertstore(inputfile)
         print("The generated po:")

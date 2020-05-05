@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
+from io import BytesIO
 
 from translate.convert import l20n2po, test_convert
-from translate.misc import wStringIO
 from translate.storage import po
 
 
@@ -10,16 +10,16 @@ class TestL20n2PO:
     def l20n2po(self, input_string, l20n_template=None, blank_msgstr=False,
                 duplicate_style="msgctxt", success_expected=True):
         """helper that converts .ftl (l20n) source to po source without requiring files"""
-        inputfile = wStringIO.StringIO(input_string)
-        outputfile = wStringIO.StringIO()
+        inputfile = BytesIO(input_string.encode())
+        outputfile = BytesIO()
         templatefile = None
         if l20n_template:
-            templatefile = wStringIO.StringIO(l20n_template)
+            templatefile = BytesIO(l20n_template.encode())
         expected_result = 1 if success_expected else 0
         result = l20n2po.convertl20n(inputfile, outputfile, templatefile,
                                      blank_msgstr, duplicate_style)
         assert result == expected_result
-        return po.pofile(wStringIO.StringIO(outputfile.getvalue()))
+        return po.pofile(BytesIO(outputfile.getvalue()))
 
     def _single_element(self, po_store):
         """Helper to check PO file has one non-header unit, and return it."""

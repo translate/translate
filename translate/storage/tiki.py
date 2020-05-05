@@ -52,9 +52,9 @@ As far as I know no detailed documentation exists for the tiki language.php file
 """
 
 import datetime
+from io import BytesIO
 import re
 
-from translate.misc import wStringIO
 from translate.storage import base
 
 
@@ -155,7 +155,7 @@ class TikiStore(base.TranslationStore):
             self.filename = input.name
 
         if isinstance(input, bytes):
-            input = wStringIO.StringIO(input)
+            input = BytesIO(input)
 
         _split_regex = re.compile(r"^(?:// )?\"(.*)\" => \"(.*)\",$", re.UNICODE)
 

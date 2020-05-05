@@ -1,9 +1,8 @@
 # -*- coding: utf-8 -*-
 
-
+from io import BytesIO
 from pytest import mark, raises
 
-from translate.misc import wStringIO
 from translate.misc.multistring import multistring
 from translate.storage import po, pypo, test_base
 
@@ -186,7 +185,7 @@ class TestPOFile(test_base.TestTranslationStore):
 
     def poparse(self, posource):
         """helper that parses po source without requiring files"""
-        dummyfile = wStringIO.StringIO(posource)
+        dummyfile = BytesIO(posource.encode() if isinstance(posource, str) else posource)
         pofile = self.StoreClass(dummyfile)
         return pofile
 

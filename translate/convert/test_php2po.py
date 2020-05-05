@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
+from io import BytesIO
 
 from translate.convert import php2po, test_convert
-from translate.misc import wStringIO
 from translate.storage import po
 
 
@@ -9,22 +9,22 @@ class TestPhp2PO:
 
     def php2po(self, phpsource, phptemplate=None):
         """helper that converts .php source to po source without requiring files"""
-        inputfile = wStringIO.StringIO(phpsource)
-        output_file = wStringIO.StringIO()
+        inputfile = BytesIO(phpsource.encode())
+        output_file = BytesIO()
         templatefile = None
         if phptemplate:
-            templatefile = wStringIO.StringIO(phptemplate)
+            templatefile = BytesIO(phptemplate.encode())
         convertor = php2po.php2po(inputfile, output_file, templatefile)
         convertor.run()
         return convertor.target_store
 
     def convertphp(self, phpsource, template=None, expected=1):
         """call run_converter, return the outputfile"""
-        inputfile = wStringIO.StringIO(phpsource)
-        outputfile = wStringIO.StringIO()
+        inputfile = BytesIO(phpsource.encode())
+        outputfile = BytesIO()
         templatefile = None
         if template:
-            templatefile = wStringIO.StringIO(template)
+            templatefile = BytesIO(template.encode())
         assert php2po.run_converter(inputfile, outputfile, templatefile) == expected
         return outputfile.getvalue()
 
@@ -53,7 +53,7 @@ class TestPhp2PO:
         """checks that the convertphp function is working"""
         phpsource = """$_LANG['simple'] = 'entry';"""
         posource = self.convertphp(phpsource)
-        pofile = po.pofile(wStringIO.StringIO(posource))
+        pofile = po.pofile(BytesIO(posource))
         pounit = self.singleelement(pofile)
         assert pounit.source == "entry"
         assert pounit.target == ""
@@ -63,7 +63,7 @@ class TestPhp2PO:
         phpsource = """$_LANG['simple'] = 'entry';"""
         phptemplate = '''$_LANG['simple'] = 'source';'''
         posource = self.convertphp(phpsource, phptemplate)
-        pofile = po.pofile(wStringIO.StringIO(posource))
+        pofile = po.pofile(BytesIO(posource))
         pounit = self.singleelement(pofile)
         assert pounit.source == "source"
         assert pounit.target == "entry"
@@ -73,7 +73,7 @@ class TestPhp2PO:
         phpsource = """$_LANG['simple'] = 'entry';"""
         phptemplate = '''$_LANG['missing'] = 'source';'''
         posource = self.convertphp(phpsource, phptemplate)
-        pofile = po.pofile(wStringIO.StringIO(posource))
+        pofile = po.pofile(BytesIO(posource))
         pounit = self.singleelement(pofile)
         assert pounit.source == "source"
         assert pounit.target == ""
@@ -83,7 +83,7 @@ class TestPhp2PO:
         phpsource = ''
         phptemplate = ''
         posource = self.convertphp(phpsource, phptemplate, 0)
-        pofile = po.pofile(wStringIO.StringIO(posource))
+        pofile = po.pofile(BytesIO(posource))
         assert len(pofile.units) == 0
 
     def test_unicode(self):

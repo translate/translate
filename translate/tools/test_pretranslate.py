@@ -1,11 +1,11 @@
 # -*- coding: utf-8 -*-
 
+from io import BytesIO
 import warnings
 
 from pytest import mark
 
 from translate.convert import test_convert
-from translate.misc import wStringIO
 from translate.storage import po, xliff
 from translate.tools import pretranslate
 
@@ -28,12 +28,12 @@ class TestPretranslate:
 
     def pretranslatepo(self, input_source, template_source=None):
         """helper that converts strings to po source without requiring files"""
-        input_file = wStringIO.StringIO(input_source)
+        input_file = BytesIO(input_source.encode())
         if template_source:
-            template_file = wStringIO.StringIO(template_source)
+            template_file = BytesIO(template_source.encode())
         else:
             template_file = None
-        output_file = wStringIO.StringIO()
+        output_file = BytesIO()
 
         pretranslate.pretranslate_file(input_file, output_file, template_file)
         output_file.seek(0)
@@ -41,12 +41,12 @@ class TestPretranslate:
 
     def pretranslatexliff(self, input_source, template_source=None):
         """helper that converts strings to po source without requiring files"""
-        input_file = wStringIO.StringIO(input_source)
+        input_file = BytesIO(input_source)
         if template_source:
-            template_file = wStringIO.StringIO(template_source)
+            template_file = BytesIO(template_source)
         else:
             template_file = None
-        output_file = wStringIO.StringIO()
+        output_file = BytesIO()
 
         pretranslate.pretranslate_file(input_file, output_file, template_file)
         output_file.seek(0)
@@ -292,7 +292,8 @@ msgstr "36em"
 
         template = xliff.xlifffile.parsestring(xlf_template)
         old = xliff.xlifffile.parsestring(xlf_old)
-        new = self.pretranslatexliff(template, old)
+        # Serialize files
+        new = self.pretranslatexliff(bytes(template), bytes(old))
         print(bytes(old))
         print('---')
         print(bytes(new))

@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
+from io import BytesIO
 
 from pytest import mark
 
 from translate.convert import po2prop, test_convert
-from translate.misc import wStringIO
 from translate.storage import po
 
 
@@ -11,7 +11,7 @@ class TestPO2Prop:
 
     def po2prop(self, posource):
         """helper that converts po source to .properties source without requiring files"""
-        inputfile = wStringIO.StringIO(posource)
+        inputfile = BytesIO(posource.encode())
         inputpo = po.pofile(inputfile)
         convertor = po2prop.po2prop()
         outputprop = convertor.convertstore(inputpo)
@@ -19,9 +19,9 @@ class TestPO2Prop:
 
     def merge2prop(self, propsource, posource, personality="java", remove_untranslated=False, encoding='utf-8'):
         """helper that merges po translations to .properties source without requiring files"""
-        inputfile = wStringIO.StringIO(posource)
+        inputfile = BytesIO(posource.encode())
         inputpo = po.pofile(inputfile)
-        templatefile = wStringIO.StringIO(propsource)
+        templatefile = BytesIO(propsource.encode() if isinstance(propsource, str) else propsource)
         #templateprop = properties.propfile(templatefile)
         convertor = po2prop.reprop(templatefile, inputpo, personality=personality, remove_untranslated=remove_untranslated)
         outputprop = convertor.convertstore()

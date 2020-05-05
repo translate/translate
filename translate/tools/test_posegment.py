@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
+from io import BytesIO
 from translate.lang import factory as lang_factory
-from translate.misc import wStringIO
 from translate.storage import po
 from translate.tools import posegment
 
@@ -10,7 +10,7 @@ class TestPOSegment:
 
     def posegment(self, posource, sourcelanguage, targetlanguage, stripspaces=True, onlyaligned=True):
         """helper that convert po source without requiring files"""
-        inputfile = wStringIO.StringIO(posource)
+        inputfile = BytesIO(posource.encode())
         inputpo = po.pofile(inputfile)
         sourcelang = lang_factory.getlanguage(sourcelanguage)
         targetlang = lang_factory.getlanguage(targetlanguage)
