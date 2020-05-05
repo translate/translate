@@ -81,7 +81,7 @@ class qmunit(base.TranslationUnit):
     """A class representing a .qm translation message."""
 
     def __init__(self, source=None):
-        super(qmunit, self).__init__(source)
+        super().__init__(source)
 
 
 class qmfile(base.TranslationStore):
@@ -94,7 +94,7 @@ class qmfile(base.TranslationStore):
     _binary = True
 
     def __init__(self, inputfile=None, **kwargs):
-        super(qmfile, self).__init__(**kwargs)
+        super().__init__(**kwargs)
         self.filename = ''
         if inputfile is not None:
             self.parsestring(inputfile)

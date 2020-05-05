@@ -39,7 +39,7 @@ class TerminologyPlaceable(base.Ph):
 
     def __init__(self, *args, **kwargs):
         self.translations = []
-        super(TerminologyPlaceable, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
 
     @classmethod
     def parse(cls, pstr):
@@ -96,7 +96,7 @@ class TerminologyPlaceable(base.Ph):
 
     def translate(self):
         return (self.translations and self.translations[0] or
-                super(TerminologyPlaceable, self).translate())
+                super().translate())
 
 
 parsers = [TerminologyPlaceable.parse]

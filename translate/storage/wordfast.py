@@ -292,7 +292,7 @@ class WordfastUnit(base.TranslationUnit):
         self._dict = {}
         if source:
             self.source = source
-        super(WordfastUnit, self).__init__(source)
+        super().__init__(source)
 
     def _update_timestamp(self):
         """Refresh the timestamp for the unit"""
@@ -380,7 +380,7 @@ class WordfastTMFile(base.TranslationStore):
 
     def __init__(self, inputfile=None, **kwargs):
         """construct a Wordfast TM, optionally reading in from inputfile."""
-        super(WordfastTMFile, self).__init__(**kwargs)
+        super().__init__(**kwargs)
         self.filename = ''
         self.header = WordfastHeader()
         if inputfile is not None:

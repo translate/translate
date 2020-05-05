@@ -253,7 +253,7 @@ class pounit(pocommon.pounit):
                             list1.append(item)
 
         if not isinstance(otherpo, pounit):
-            super(pounit, self).merge(otherpo, overwrite, comments)
+            super().merge(otherpo, overwrite, comments)
             return
         if comments:
             mergelists(self.othercomments, otherpo.othercomments)
@@ -315,7 +315,7 @@ class pounit(pocommon.pounit):
                 self.typecomments = filter(lambda tcline: tcline.strip() != "#,", typecomments)
 
     def istranslated(self):
-        return super(pounit, self).istranslated() and not self.isobsolete()
+        return super().istranslated() and not self.isobsolete()
 
     def istranslatable(self):
         return not (self.isheader() or self.isblank() or self.isobsolete())
@@ -330,7 +330,7 @@ class pounit(pocommon.pounit):
         """Makes this unit obsolete"""
         self.sourcecomments = []
         self.automaticcomments = []
-        super(pounit, self).makeobsolete()
+        super().makeobsolete()
 
     def hasplural(self):
         """returns whether this pounit contains plural strings..."""

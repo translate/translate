@@ -55,7 +55,7 @@ class TxtUnit(base.TranslationUnit):
 
     def __init__(self, source="", **kwargs):
         """Construct the txtunit"""
-        super(TxtUnit, self).__init__(source)
+        super().__init__(source)
         # Note that source and target are equivalent for monolingual units.
         self.source = source
         self.pretext = ""
@@ -101,7 +101,7 @@ class TxtFile(base.TranslationStore):
 
     def __init__(self, inputfile=None, flavour=None, no_segmentation=False,
                  **kwargs):
-        super(TxtFile, self).__init__(**kwargs)
+        super().__init__(**kwargs)
         self.filename = getattr(inputfile, 'name', '')
         self.flavour = flavours.get(flavour, [])
         self.no_segmentation = no_segmentation

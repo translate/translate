@@ -61,7 +61,7 @@ class ConflictOptionParser(optrecurse.RecursiveOptionParser):
             self.usage = "%prog " + " ".join([self.getusagestring(option) for option in self.option_list]) + \
                 "\n  input directory is searched for PO files, PO files with name of conflicting string are output in output directory"
         else:
-            super(ConflictOptionParser, self).set_usage(usage)
+            super().set_usage(usage)
 
     def recursiveprocess(self, options):
         """recurse through directories and process files"""

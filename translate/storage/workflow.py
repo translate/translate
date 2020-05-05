@@ -78,7 +78,7 @@ class UnitState(State):
 
     def __init__(self, name, state_value):
         self.state_value = state_value
-        super(UnitState, self).__init__(name, self._enter)
+        super().__init__(name, self._enter)
 
     def __repr__(self):
         return '<UnitState name=%s value=%d>' % (self.name, self.state_value)
@@ -102,13 +102,13 @@ class TransitionError(WorkflowError):
 class InvalidStateObjectError(WorkflowError):
 
     def __init__(self, obj):
-        super(InvalidStateObjectError, self).__init__('Invalid state object: %s' % (obj))
+        super().__init__('Invalid state object: %s' % (obj))
 
 
 class StateNotInWorkflowError(Exception):
 
     def __init__(self, state):
-        super(StateNotInWorkflowError, self).__init__(
+        super().__init__(
             'State not in workflow: %s' % (state))
 
 

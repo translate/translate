@@ -388,7 +388,7 @@ class TerminologyOptionParser(optrecurse.RecursiveOptionParser):
             self.usage = "%prog " + " ".join([self.getusagestring(option) for option in self.option_list]) + \
                 "\n  input directory is searched for PO files, terminology PO file is output file"
         else:
-            super(TerminologyOptionParser, self).set_usage(usage)
+            super().set_usage(usage)
 
     def run(self):
         """parses the arguments, and runs recursiveprocess with the resulting options"""

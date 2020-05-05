@@ -133,7 +133,7 @@ class RESXUnit(lisa.LISAunit):
         return [self.getid()]
 
     def merge(self, otherunit, overwrite=False, comments=True, authoritative=False):
-        super(RESXUnit, self).merge(otherunit, overwrite, comments)
+        super().merge(otherunit, overwrite, comments)
         if otherunit.isfuzzy():
             self.markfuzzy()
 
@@ -224,7 +224,7 @@ class RESXFile(lisa.LISAfile):
 
     def addunit(self, unit, new=True):
         """Adds the given unit to the body node."""
-        super(RESXFile, self).addunit(unit, new)
+        super().addunit(unit, new)
         setXMLspace(unit.xmlelement, "preserve")
         if unit.getid() is None:
             self._messagenum += 1

@@ -231,7 +231,7 @@ class dtdunit(base.TranslationUnit):
         """construct the dtdunit, prepare it for parsing"""
         self.android = android
 
-        super(dtdunit, self).__init__(source)
+        super().__init__(source)
         self.comments = []
         self.unparsedlines = []
         self.incomment = False
@@ -530,7 +530,7 @@ class dtdfile(base.TranslationStore):
 
     def __init__(self, inputfile=None, android=False):
         """construct a dtdfile, optionally reading in from inputfile"""
-        super(dtdfile, self).__init__()
+        super().__init__()
         self.filename = getattr(inputfile, 'name', '')
         self.android = android
         if inputfile is not None:

@@ -78,7 +78,7 @@ class fr(common.Common):
             - % and $ are not touched yet for fear of variables
             - Double spaces might be introduced
         """
-        text = super(cls, cls).punctranslate(text)
+        text = super().punctranslate(text)
         # We might get problems where we got a space in URIs such as
         # http ://
         text = text.replace("\u00a0://", "://")

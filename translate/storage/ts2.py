@@ -318,7 +318,7 @@ class tsunit(lisa.LISAunit):
         return locations
 
     def merge(self, otherunit, overwrite=False, comments=True, authoritative=False):
-        super(tsunit, self).merge(otherunit, overwrite, comments)
+        super().merge(otherunit, overwrite, comments)
         # TODO: check if this is necessary:
         if otherunit.isfuzzy():
             self.markfuzzy()
@@ -456,7 +456,7 @@ class tsfile(lisa.LISAfile):
         if self._contextname != contextname:
             if not self._switchcontext(contextname, comment, createifmissing):
                 return None
-        super(tsfile, self).addunit(unit, new)
+        super().addunit(unit, new)
 #        lisa.setXMLspace(unit.xmlelement, "preserve")
         return unit
 

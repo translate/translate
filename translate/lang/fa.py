@@ -101,5 +101,5 @@ class fa(common.Common):
     @classmethod
     def punctranslate(cls, text):
         """Implement "French" quotation marks."""
-        text = super(cls, cls).punctranslate(text)
+        text = super().punctranslate(text)
         return guillemets(text)

@@ -59,7 +59,7 @@ class multistring(str):
         return newstring
 
     def __init__(self, *args, **kwargs):
-        super(multistring, self).__init__()
+        super().__init__()
         if not hasattr(self, "strings"):
             self.strings = []
 
@@ -98,9 +98,9 @@ class multistring(str):
 
     def replace(self, old, new, count=None):
         if count is None:
-            newstr = multistring(super(multistring, self).replace(old, new))
+            newstr = multistring(super().replace(old, new))
         else:
-            newstr = multistring(super(multistring, self).replace(old, new, count))
+            newstr = multistring(super().replace(old, new, count))
         for s in self.strings[1:]:
             if count is None:
                 newstr.strings.append(s.replace(old, new))

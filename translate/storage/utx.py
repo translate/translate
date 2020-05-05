@@ -91,7 +91,7 @@ class UtxUnit(base.TranslationUnit):
         self._dict = {}
         if source:
             self.source = source
-        super(UtxUnit, self).__init__(source)
+        super().__init__(source)
 
     def getdict(self):
         """Get the dictionary of values for a UTX line"""
@@ -187,7 +187,7 @@ class UtxFile(base.TranslationStore):
     def __init__(self, inputfile=None, **kwargs):
         """Construct an UTX dictionary, optionally reading in from inputfile.
         """
-        super(UtxFile, self).__init__(**kwargs)
+        super().__init__(**kwargs)
         self.filename = ''
         self.extension = ''
         self._fieldnames = ['src', 'tgt', 'src:pos']

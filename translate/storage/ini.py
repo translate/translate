@@ -84,7 +84,7 @@ class iniunit(base.TranslationUnit):
         self.location = ""
         if source:
             self.source = source
-        super(iniunit, self).__init__(source)
+        super().__init__(source)
 
     def addlocation(self, location):
         self.location = location
@@ -104,7 +104,7 @@ class inifile(base.TranslationStore):
             raise NotImplementedError("Missing iniparse library.")
 
         self._dialect = dialects.get(dialect, DialectDefault)()  # fail correctly/use getattr/
-        super(inifile, self).__init__(**kwargs)
+        super().__init__(**kwargs)
         self.filename = ''
         self._inifile = None
         if inputfile is not None:

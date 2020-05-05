@@ -108,7 +108,7 @@ class pounit(base.TranslationUnit):
             self.addnote(newnotes, origin="translator")
 
     def istranslated(self):
-        return super(pounit, self).istranslated() and not self.isobsolete() and not self.isheader()
+        return super().istranslated() and not self.isobsolete() and not self.isheader()
 
     def istranslatable(self):
         return not (self.isheader() or self.isblank() or self.isobsolete())
@@ -148,7 +148,7 @@ class pounit(base.TranslationUnit):
         raise NotImplementedError()
 
     def get_state_n(self):
-        value = super(pounit, self).get_state_n()
+        value = super().get_state_n()
         if value <= self.S_OBSOLETE:
             return value
         if self.target:
@@ -160,7 +160,7 @@ class pounit(base.TranslationUnit):
             return self.S_UNTRANSLATED
 
     def set_state_n(self, value):
-        super(pounit, self).set_state_n(value)
+        super().set_state_n(value)
         has_target = False
         if self.hasplural():
             for string in self.target.strings:
@@ -174,7 +174,7 @@ class pounit(base.TranslationUnit):
                 self.STATE[self.S_FUZZY_OBSOLETE][0] <= value < self.STATE[self.S_FUZZY_OBSOLETE][1]
             self._domarkfuzzy(isfuzzy)  # Implementation specific fuzzy-marking
         else:
-            super(pounit, self).set_state_n(self.S_UNTRANSLATED)
+            super().set_state_n(self.S_UNTRANSLATED)
             self._domarkfuzzy(False)
 
 
@@ -186,7 +186,7 @@ class pofile(poheader.poheader, base.TranslationStore):
     _binary = True
 
     def __init__(self, inputfile=None, **kwargs):
-        super(pofile, self).__init__(**kwargs)
+        super().__init__(**kwargs)
         self.filename = ''
         if inputfile is not None:
             self.parse(inputfile)

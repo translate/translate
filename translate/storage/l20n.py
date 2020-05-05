@@ -46,7 +46,7 @@ class l20nunit(base.TranslationUnit):
     """Single L20n Entity"""
 
     def __init__(self, source='', id='', comment=''):
-        super(l20nunit, self).__init__(source)
+        super().__init__(source)
         self.id = id
         # Note that source and target are equivalent for monolingual units.
         self.value = source
@@ -93,7 +93,7 @@ class l20nfile(base.TranslationStore):
     encoding = 'utf8'
 
     def __init__(self, inputfile=None):
-        super(l20nfile, self).__init__(unitclass=self.UnitClass)
+        super().__init__(unitclass=self.UnitClass)
         self.filename = getattr(inputfile, 'name', '')
         if inputfile is not None:
             l20nsrc = inputfile.read()

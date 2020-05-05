@@ -313,7 +313,7 @@ class GrepOptionParser(optrecurse.RecursiveOptionParser):
         if usage is None:
             self.usage = "%prog searchstring " + " ".join([self.getusagestring(option) for option in self.option_list])
         else:
-            super(GrepOptionParser, self).set_usage(usage)
+            super().set_usage(usage)
 
     def run(self):
         """parses the arguments, and runs recursiveprocess with the resulting options"""
