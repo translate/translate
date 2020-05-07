@@ -508,7 +508,7 @@ class pofile(pocommon.pofile):
                     if not thepo._msgctxt == id_dict[id]._msgctxt:
                         uniqueunits.append(thepo)
                     else:
-                        logger.warn(
+                        logger.warning(
                             "Duplicate unit found with msgctx of '%s' and source '%s'",
                             thepo._msgctxt,
                             thepo.source)
