@@ -820,11 +820,11 @@ class TranslationStore:
             if encoding == self.encoding and suffix == 'sig':
                 encodings.append(detected_encoding['encoding'])
             elif detected_encoding['encoding'] != self.encoding:
-                logging.warn("trying to parse %s with encoding: %s but "
-                             "detected encoding is %s (confidence: %s)",
-                             self.filename, self.encoding,
-                             detected_encoding['encoding'],
-                             detected_encoding['confidence'])
+                logging.warning("trying to parse %s with encoding: %s but "
+                                "detected encoding is %s (confidence: %s)",
+                                self.filename, self.encoding,
+                                detected_encoding['encoding'],
+                                detected_encoding['confidence'])
             encodings.append(self.encoding)
         else:
             encodings.append(self.encoding)

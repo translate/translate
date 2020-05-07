@@ -442,13 +442,13 @@ def propertiesdecode(source):
             output += unichr2(x)
         elif c == "N":
             if source[s] != "{":
-                logging.warn("Invalid named unicode escape: no { after \\N")
+                logging.warning("Invalid named unicode escape: no { after \\N")
                 output += "\\" + c
                 continue
             s += 1
             e = source.find("}", s)
             if e == -1:
-                logging.warn("Invalid named unicode escape: no } after \\N{")
+                logging.warning("Invalid named unicode escape: no } after \\N{")
                 output += "\\" + c
                 continue
             import unicodedata
