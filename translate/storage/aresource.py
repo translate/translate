@@ -397,11 +397,6 @@ class AndroidResourceUnit(base.TranslationUnit):
         self._rich_target = None
         self._target = target
 
-    # Deprecated on 2.3.1
-    @deprecated("Use `target` property instead")
-    def gettarget(self):
-        return self.target
-
     def getlanguageNode(self, lang=None, index=None):
         return self.xmlelement
 

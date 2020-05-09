@@ -158,11 +158,6 @@ class tsunit(lisa.LISAunit):
         else:
             targetnode.text = data.forceunicode(target) or u""
 
-    # Deprecated on 2.3.1
-    @deprecated("Use `target` property instead")
-    def gettarget(self):
-        return self.target
-
     def hasplural(self):
         return self.xmlelement.get("numerus") == "yes"
 

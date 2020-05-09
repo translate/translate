@@ -533,11 +533,6 @@ class propunit(base.TranslationUnit):
         self.translation = self.personality.encode(target or u"",
                                                    self.encoding)
 
-    # Deprecated on 2.3.1
-    @deprecated("Use `target` property instead")
-    def gettarget(self):
-        return self.target
-
     @property
     def encoding(self):
         if self._store:

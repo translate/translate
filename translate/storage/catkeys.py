@@ -200,11 +200,6 @@ class CatkeysUnit(base.TranslationUnit):
         self._rich_target = None
         self._set_source_or_target('target', target)
 
-    # Deprecated on 2.3.1
-    @deprecated("Use `target` property instead")
-    def gettarget(self):
-        return self.target
-
     def getnotes(self, origin=None):
         if not origin or origin in ["programmer", "developer", "source code"]:
             return self._dict.get("comment", "")

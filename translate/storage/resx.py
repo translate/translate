@@ -77,11 +77,6 @@ class RESXUnit(lisa.LISAunit):
         targetnode.clear()
         targetnode.text = data.forceunicode(target) or u""
 
-    # Deprecated on 2.3.1
-    @deprecated("Use `target` property instead")
-    def gettarget(self):
-        return self.target
-
     def addnote(self, text, origin=None, position="append"):
         """Add a note specifically in the appropriate "comment" tag"""
         if isinstance(text, bytes):

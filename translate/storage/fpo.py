@@ -128,11 +128,6 @@ class pounit(pocommon.pounit):
         else:
             self._target = target
 
-    # Deprecated on 2.3.1
-    @deprecated("Use `target` property instead")
-    def gettarget(self):
-        return self.target
-
     def getnotes(self, origin=None):
         """Return comments based on origin value (programmer, developer, source code and translator)"""
         if origin is None:

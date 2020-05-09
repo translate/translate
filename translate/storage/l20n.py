@@ -73,11 +73,6 @@ class l20nunit(base.TranslationUnit):
     def target(self, target):
         self.value = target
 
-    # Deprecated on 2.3.1
-    @deprecated("Use `target` property instead")
-    def gettarget(self):
-        return self.target
-
     def getid(self):
         return self.id
 

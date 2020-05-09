@@ -284,11 +284,6 @@ class dtdunit(base.TranslationUnit):
             self.definition = quotefordtd(target)
         self._rich_target = None
 
-    # Deprecated on 2.3.1
-    @deprecated("Use `target` property instead")
-    def gettarget(self):
-        return self.target
-
     def getid(self):
         return self.entity
 

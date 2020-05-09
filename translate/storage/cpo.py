@@ -443,11 +443,6 @@ class pounit(pocommon.pounit):
             else:
                 gpo.po_message_set_msgstr(self._gpo_message, gpo_encode(target))
 
-    # Deprecated on 2.3.1
-    @deprecated("Use `target` property instead")
-    def gettarget(self):
-        return self.target
-
     def getid(self):
         """The unique identifier for this unit according to the conventions in
         .mo files.

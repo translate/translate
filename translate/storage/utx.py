@@ -159,11 +159,6 @@ class UtxUnit(base.TranslationUnit):
         self._rich_target = None
         self._set_field('tgt', target)
 
-    # Deprecated on 2.3.1
-    @deprecated("Use `target` property instead")
-    def gettarget(self):
-        return self.target
-
     def settargetlang(self, newlang):
         self._dict['target-lang'] = newlang
     targetlang = property(None, settargetlang)

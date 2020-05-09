@@ -347,11 +347,6 @@ class pounit(pocommon.pounit):
         else:
             self.msgstr = self.quote(target)
 
-    # Deprecated on 2.3.1
-    @deprecated("Use `target` property instead")
-    def gettarget(self):
-        return self.target
-
     def getalttrans(self):
         """Return a list of alternate units.
 

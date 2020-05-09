@@ -253,11 +253,6 @@ class phpunit(base.TranslationUnit):
         self._rich_target = None
         self.translation = target
 
-    # Deprecated on 2.3.1
-    @deprecated("Use `target` property instead")
-    def gettarget(self):
-        return self.target
-
     def __str__(self):
         """Convert to a string."""
         return self.getoutput()

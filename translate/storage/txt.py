@@ -82,11 +82,6 @@ class TxtUnit(base.TranslationUnit):
         self._rich_target = None
         self.source = target
 
-    # Deprecated on 2.3.1
-    @deprecated("Use `target` property instead")
-    def gettarget(self):
-        return self.target
-
     def addlocation(self, location):
         self.location.append(location)
 
