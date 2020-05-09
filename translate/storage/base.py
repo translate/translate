@@ -197,11 +197,6 @@ class TranslationUnit:
         self._rich_target = None
         self._target = target
 
-    # Deprecated on 2.3.1
-    @deprecated("Use `target` property instead")
-    def settarget(self, target):
-        self.target = target
-
     @property
     def rich_source(self):
         """

@@ -82,11 +82,6 @@ class RESXUnit(lisa.LISAunit):
     def gettarget(self):
         return self.target
 
-    # Deprecated on 2.3.1
-    @deprecated("Use `target` property instead")
-    def settarget(self, target):
-        self.target = target
-
     def addnote(self, text, origin=None, position="append"):
         """Add a note specifically in the appropriate "comment" tag"""
         if isinstance(text, bytes):
