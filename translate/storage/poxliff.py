@@ -28,7 +28,6 @@ import re
 from lxml import etree
 
 from translate.lang import data
-from translate.misc.deprecation import deprecated
 from translate.misc.multistring import multistring
 from translate.misc.xml_helpers import setXMLspace
 from translate.storage import base, lisa, poheader, xliff
@@ -96,11 +95,6 @@ class PoXliffUnit(xliff.xliffunit):
     @source.setter
     def source(self, source):
         self.setsource(source, sourcelang="en")
-
-    # Deprecated on 2.3.1
-    @deprecated("Use `source` property instead")
-    def getsource(self):
-        return self.source
 
     def setsource(self, source, sourcelang="en"):
         # TODO: consider changing from plural to singular, etc.

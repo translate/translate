@@ -124,7 +124,6 @@ from codecs import iterencode
 
 from translate.lang import data
 from translate.misc import quote
-from translate.misc.deprecation import deprecated
 from translate.storage import base
 
 
@@ -516,11 +515,6 @@ class propunit(base.TranslationUnit):
         self._rich_source = None
         self.value = self.personality.encode(data.forceunicode(source) or u"",
                                              self.encoding)
-
-    # Deprecated on 2.3.1
-    @deprecated("Use `source` property instead")
-    def getsource(self):
-        return self.source
 
     @property
     def target(self):

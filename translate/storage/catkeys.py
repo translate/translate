@@ -52,7 +52,6 @@ Escaping
 import csv
 
 from translate.lang import data
-from translate.misc.deprecation import deprecated
 from translate.storage import base
 
 
@@ -185,11 +184,6 @@ class CatkeysUnit(base.TranslationUnit):
     def source(self, source):
         self._rich_source = None
         self._set_source_or_target('source', source)
-
-    # Deprecated on 2.3.1
-    @deprecated("Use `source` property instead")
-    def getsource(self):
-        return self.source
 
     @property
     def target(self):

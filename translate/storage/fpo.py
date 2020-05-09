@@ -33,7 +33,6 @@ import logging
 import re
 
 from translate.lang import data
-from translate.misc.deprecation import deprecated
 from translate.misc.multistring import multistring
 from translate.storage import base, cpo, pocommon
 
@@ -99,11 +98,6 @@ class pounit(pocommon.pounit):
             self._source = source
         else:  # If it is unicode, list or dict.
             self._source = multistring(source)
-
-    # Deprecated on 2.3.1
-    @deprecated("Use `source` property instead")
-    def getsource(self):
-        return self.source
 
     @property
     def target(self):

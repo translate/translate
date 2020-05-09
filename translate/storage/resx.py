@@ -23,7 +23,6 @@
 from lxml import etree
 
 from translate.lang import data
-from translate.misc.deprecation import deprecated
 from translate.misc.xml_helpers import setXMLspace, reindent
 from translate.storage import lisa
 from translate.storage.placeables import general
@@ -52,11 +51,6 @@ class RESXUnit(lisa.LISAunit):
     @lisa.LISAunit.source.getter
     def source(self):
         return self.target
-
-    # Deprecated on 2.3.1
-    @deprecated("Use `source` property instead")
-    def getsource(self):
-        return self.source
 
     @property
     def target(self):

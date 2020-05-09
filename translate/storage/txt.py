@@ -28,7 +28,6 @@ Supported formats are
 
 import re
 
-from translate.misc.deprecation import deprecated
 from translate.storage import base
 
 
@@ -65,11 +64,6 @@ class TxtUnit(base.TranslationUnit):
     def __str__(self):
         """Convert a txt unit to a string"""
         return u"".join([self.pretext, self.source, self.posttext])
-
-    # Deprecated on 2.3.1
-    @deprecated("Use `source` property instead")
-    def getsource(self):
-        return self.source
 
     @property
     def target(self):

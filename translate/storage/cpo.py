@@ -38,7 +38,6 @@ from ctypes import (CFUNCTYPE, POINTER, Structure, c_char_p, c_int, c_long,
                     c_size_t, c_uint, cdll)
 
 from translate.lang import data
-from translate.misc.deprecation import deprecated
 from translate.misc.multistring import multistring
 from translate.storage import base, pocommon, pypo
 
@@ -378,11 +377,6 @@ class pounit(pocommon.pounit):
         else:
             gpo.po_message_set_msgid(self._gpo_message, gpo_encode(source))
             gpo.po_message_set_msgid_plural(self._gpo_message, None)
-
-    # Deprecated on 2.3.1
-    @deprecated("Use `source` property instead")
-    def getsource(self):
-        return self.source
 
     @property
     def target(self):

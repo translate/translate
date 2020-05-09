@@ -27,7 +27,6 @@ import re
 from lxml import etree
 
 from translate.lang import data
-from translate.misc.deprecation import deprecated
 from translate.misc.xml_helpers import reindent
 from translate.storage import base, lisa
 from translate.misc.multistring import multistring
@@ -253,11 +252,6 @@ class AndroidResourceUnit(base.TranslationUnit):
         if super().source is None:
             return self.target
         return super().source
-
-    # Deprecated on 2.3.1
-    @deprecated("Use `source` property instead")
-    def getsource(self):
-        return self.source
 
     def get_xml_text_value(self, xmltarget):
         if len(xmltarget) == 0:

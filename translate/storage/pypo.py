@@ -296,11 +296,6 @@ class pounit(pocommon.pounit):
         self._rich_source = None
         self.msgid, self.msgid_plural = self._set_source_vars(source)
 
-    # Deprecated on 2.3.1
-    @deprecated("Use `source` property instead")
-    def getsource(self):
-        return self.source
-
     def _get_prev_source(self):
         """Returns the unescaped msgid"""
         return self._get_source_vars(self.prev_msgid, self.prev_msgid_plural)

@@ -92,7 +92,6 @@ except ImportError:
     etree = None
 
 from translate.misc import quote
-from translate.misc.deprecation import deprecated
 from translate.storage import base
 
 
@@ -259,11 +258,6 @@ class dtdunit(base.TranslationUnit):
         else:
             self.definition = quotefordtd(source)
         self._rich_source = None
-
-    # Deprecated on 2.3.1
-    @deprecated("Use `source` property instead")
-    def getsource(self):
-        return self.source
 
     @property
     def target(self):

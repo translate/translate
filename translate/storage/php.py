@@ -62,7 +62,6 @@ from phply.phpast import (Array, ArrayElement, ArrayOffset, Assignment,
                           BinaryOp, FunctionCall, InlineHTML, Node, Return,
                           Variable)
 
-from translate.misc.deprecation import deprecated
 from translate.misc.multistring import multistring
 from translate.storage import base
 
@@ -238,11 +237,6 @@ class phpunit(base.TranslationUnit):
         """Set the source AND the target to be equal."""
         self._rich_source = None
         self.value = source
-
-    # Deprecated on 2.3.1
-    @deprecated("Use `source` property instead")
-    def getsource(self):
-        return self.source
 
     @property
     def target(self):

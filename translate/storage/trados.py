@@ -49,7 +49,6 @@ try:
 except ImportError:
     raise ImportError("BeautifulSoup 4 is not installed. Support for Trados txt is disabled.")
 
-from translate.misc.deprecation import deprecated
 from translate.storage import base
 
 __all__ = (
@@ -164,11 +163,6 @@ class TradosUnit(base.TranslationUnit):
     @source.setter
     def source(self, source):
         pass
-
-    # Deprecated on 2.3.1
-    @deprecated("Use `source` property instead")
-    def getsource(self):
-        return self.source
 
     def gettarget(self):
         return unescape(self._soup.findAll('seg')[1].contents[0])

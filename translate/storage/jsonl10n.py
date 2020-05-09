@@ -71,8 +71,6 @@ import json
 import uuid
 from collections import OrderedDict
 
-
-from translate.misc.deprecation import deprecated
 from translate.misc.multistring import multistring
 from translate.storage import base
 
@@ -105,11 +103,6 @@ class JsonUnit(base.TranslationUnit):
     @source.setter
     def source(self, source):
         self.target = source
-
-    # Deprecated on 2.3.1
-    @deprecated("Use `source` property instead")
-    def getsource(self):
-        return self.source
 
     def setid(self, value):
         self._id = value

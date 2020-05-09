@@ -46,7 +46,6 @@ Encoding
 import csv
 import time
 
-from translate.misc.deprecation import deprecated
 from translate.storage import base
 
 
@@ -144,11 +143,6 @@ class UtxUnit(base.TranslationUnit):
     def source(self, source):
         self._rich_source = None
         self._set_field('src', source)
-
-    # Deprecated on 2.3.1
-    @deprecated("Use `source` property instead")
-    def getsource(self):
-        return self.source
 
     @property
     def target(self):

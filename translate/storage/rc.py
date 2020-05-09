@@ -28,7 +28,6 @@
 
 import re
 
-from translate.misc.deprecation import deprecated
 from translate.storage import base
 
 
@@ -71,11 +70,6 @@ class rcunit(base.TranslationUnit):
         """Sets the source AND the target to be equal"""
         self._rich_source = None
         self._value = source or ""
-
-    # Deprecated on 2.3.1
-    @deprecated("Use `source` property instead")
-    def getsource(self):
-        return self.source
 
     @property
     def target(self):

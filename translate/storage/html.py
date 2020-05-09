@@ -25,7 +25,6 @@ import re
 import html.parser
 from html.entities import name2codepoint
 
-from translate.misc.deprecation import deprecated
 from translate.storage import base
 from translate.storage.base import ParseError
 
@@ -111,11 +110,6 @@ class htmlunit(base.TranslationUnit):
     def source(self, source):
         self._rich_source = None
         self._text = safe_escape(source)
-
-    # Deprecated on 2.3.1
-    @deprecated("Use `source` property instead")
-    def getsource(self):
-        return self.source
 
     def addlocation(self, location):
         self.locations.append(location)

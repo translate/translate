@@ -28,7 +28,6 @@ except ImportError as e:
     raise ImportError("lxml is not installed. It might be possible to continue without support for XML formats.")
 
 from translate.lang import data
-from translate.misc.deprecation import deprecated
 from translate.storage import base
 
 
@@ -116,11 +115,6 @@ class LISAunit(base.TranslationUnit):
     @source.setter
     def source(self, source):
         self.setsource(source, sourcelang='en')
-
-    # Deprecated on 2.3.1
-    @deprecated("Use `source` property instead")
-    def getsource(self):
-        return self.source
 
     def setsource(self, text, sourcelang='en'):
         self._rich_source = None

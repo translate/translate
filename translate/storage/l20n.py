@@ -23,7 +23,6 @@ from codecs import iterencode
 from l20n.format.parser import FTLParser as L20nParser
 from l20n.format.serializer import FTLSerializer as L20nSerializer
 
-from translate.misc.deprecation import deprecated
 from translate.storage import base
 
 
@@ -59,11 +58,6 @@ class l20nunit(base.TranslationUnit):
     @source.setter
     def source(self, source):
         self.value = source
-
-    # Deprecated on 2.3.1
-    @deprecated("Use `source` property instead")
-    def getsource(self):
-        return self.source
 
     @property
     def target(self):

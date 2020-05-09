@@ -27,7 +27,6 @@ from ruamel.yaml import YAML, YAMLError
 from ruamel.yaml.comments import CommentedMap
 
 from translate.lang.data import cldr_plural_categories, plural_tags
-from translate.misc.deprecation import deprecated
 from translate.misc.multistring import multistring
 from translate.storage import base
 
@@ -48,11 +47,6 @@ class YAMLUnit(base.TranslationUnit):
     @source.setter
     def source(self, source):
         self.target = source
-
-    # Deprecated on 2.3.1
-    @deprecated("Use `source` property instead")
-    def getsource(self):
-        return self.source
 
     def setid(self, value):
         self._id = value

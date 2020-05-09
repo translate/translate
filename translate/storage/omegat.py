@@ -41,7 +41,6 @@ Encoding
 import csv
 import locale
 
-from translate.misc.deprecation import deprecated
 from translate.storage import base
 
 
@@ -120,11 +119,6 @@ class OmegaTUnit(base.TranslationUnit):
     def source(self, source):
         self._rich_source = None
         self._set_field('source', source)
-
-    # Deprecated on 2.3.1
-    @deprecated("Use `source` property instead")
-    def getsource(self):
-        return self.source
 
     @property
     def target(self):

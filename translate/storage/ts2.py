@@ -35,7 +35,6 @@ both.
 from lxml import etree
 
 from translate.lang import data
-from translate.misc.deprecation import deprecated
 from translate.misc.multistring import multistring
 from translate.misc.xml_helpers import reindent
 from translate.storage import lisa
@@ -112,11 +111,6 @@ class tsunit(lisa.LISAunit):
         if self.hasplural():
             return multistring([text])
         return text
-
-    # Deprecated on 2.3.1
-    @deprecated("Use `source` property instead")
-    def getsource(self):
-        return self.source
 
     @property
     def target(self):
