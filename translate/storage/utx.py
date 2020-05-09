@@ -43,9 +43,8 @@ Encoding
     The files are UTF-8 encoded with no BOM and CR+LF line terminators.
 """
 
-import time
-
 import csv
+import time
 
 from translate.misc.deprecation import deprecated
 from translate.storage import base

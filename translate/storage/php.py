@@ -54,9 +54,7 @@ implemented as outlined in the PHP documentation for the
 `String type <http://www.php.net/language.types.string>`_.
 """
 
-
 import re
-
 
 from phply.phpparse import make_parser
 from phply.phplex import FilteredLexer, full_lexer

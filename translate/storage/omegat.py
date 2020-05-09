@@ -38,8 +38,8 @@ Encoding
     the .tab extension.
 """
 
-import locale
 import csv
+import locale
 
 from translate.misc.deprecation import deprecated
 from translate.storage import base

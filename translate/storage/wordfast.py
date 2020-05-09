@@ -79,9 +79,8 @@ Extended Attributes
     These are left as is and are not directly managed byour implemenation.
 """
 
-import time
-
 import csv
+import time
 
 from translate.misc.deprecation import deprecated
 from translate.storage import base
