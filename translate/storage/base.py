@@ -24,7 +24,6 @@ import logging
 import pickle
 from io import BytesIO
 
-from translate.misc.deprecation import deprecated
 from translate.misc.multistring import multistring
 from translate.storage.placeables import StringElem, parse as rich_parse
 from translate.storage.workflow import StateEnum as states
@@ -181,11 +180,6 @@ class TranslationUnit:
         """Set the source string to the given value."""
         self._rich_source = None
         self._source = source
-
-    # Deprecated on 2.3.1
-    @deprecated("Use `source` property instead")
-    def setsource(self, source):
-        self.source = source
 
     @property
     def target(self):
