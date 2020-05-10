@@ -36,7 +36,6 @@ from translate.filters import decoration, helpers, prefilters, spelling
 from translate.filters.decorators import (cosmetic, critical, extraction,
                                           functional)
 from translate.lang import data, factory
-from translate.misc import lru
 
 
 try:
@@ -510,10 +509,6 @@ class TranslationChecker(UnitChecker):
         super().__init__(checkerconfig, excludefilters, limitfilters, errorhandler)
 
         self.locations = []
-
-        # caches for spell checking results across units/runs
-        self.source_spell_cache = lru.LRUCachingDict(256, cullsize=5, aggressive_gc=False)
-        self.target_spell_cache = lru.LRUCachingDict(512, cullsize=5, aggressive_gc=False)
 
     def run_test(self, test, unit):
         """Runs the given test on the given unit.
@@ -1876,20 +1871,14 @@ class StandardChecker(TranslationChecker):
         errors = set()
 
         # We cache spelling results of source texts:
-        ignore1 = self.source_spell_cache.get(str1, None)
-        if ignore1 is None:
-            ignore1 = set(spelling.simple_check(str1, lang=self.config.sourcelang.code))
-            self.source_spell_cache[str1] = ignore1
+        ignore1 = set(spelling.simple_check(str1, lang=self.config.sourcelang.code))
 
         # We cache spelling results of target texts sentence-by-sentence. This
         # way we can reuse most of the results while someone is typing a long
         # segment in Virtaal.
         sentences2 = self.config.lang.sentences(str2)
         for sentence in sentences2:
-            sentence_errors = self.target_spell_cache.get(sentence, None)
-            if sentence_errors is None:
-                sentence_errors = spelling.simple_check(sentence, lang=self.config.targetlanguage)
-                self.target_spell_cache[sentence] = sentence_errors
+            sentence_errors = spelling.simple_check(sentence, lang=self.config.targetlanguage)
             errors.update(sentence_errors)
 
         errors.difference_update(ignore1, self.config.notranslatewords)
