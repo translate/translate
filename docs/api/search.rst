@@ -5,37 +5,6 @@ search
    :show-inheritance:
 
 
-indexing
---------
-
-.. automodule:: translate.search.indexing
-   :show-inheritance:
-
-
-CommonIndexer
-~~~~~~~~~~~~~
-
-.. automodule:: translate.search.indexing.CommonIndexer
-   :members:
-   :inherited-members:
-
-
-PyLuceneIndexer
-~~~~~~~~~~~~~~~
-
-.. automodule:: translate.search.indexing.PyLuceneIndexer
-   :members:
-   :inherited-members:
-
-
-XapianIndexer
-~~~~~~~~~~~~~
-
-.. automodule:: translate.search.indexing.XapianIndexer
-   :members:
-   :inherited-members:
-
-
 lshtein
 -------
 
