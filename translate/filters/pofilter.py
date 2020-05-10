@@ -168,7 +168,7 @@ class FilterOptionParser(optrecurse.RecursiveOptionParser):
 
     def __init__(self, formats):
         """Construct the specialized Option Parser."""
-        optrecurse.RecursiveOptionParser.__init__(self, formats)
+        super().__init__(formats)
 
         self.set_usage()
         self.add_option(

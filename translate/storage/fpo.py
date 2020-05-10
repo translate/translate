@@ -68,7 +68,7 @@ class pounit(pocommon.pounit):
     __shallow__ = ['_store']
 
     def __init__(self, source=None, **kwargs):
-        pocommon.pounit.__init__(self, source)
+        super().__init__(source)
         self._initallcomments(blankall=True)
         self._msgctxt = u""
 

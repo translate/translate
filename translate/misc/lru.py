@@ -37,7 +37,7 @@ class LRUCachingDict(WeakValueDictionary):
         self.aggressive_gc = aggressive_gc
         self.peakmult = peakmult
         self.queue = deque()
-        WeakValueDictionary.__init__(self, *args, **kwargs)
+        super().__init__(*args, **kwargs)
 
     def cull(self):
         """free memory by deleting old items from cache"""

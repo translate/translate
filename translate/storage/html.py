@@ -38,7 +38,7 @@ class htmlunit(base.TranslationUnit):
     """A unit of translatable/localisable HTML content"""
 
     def __init__(self, source=None):
-        base.TranslationUnit.__init__(self, source)
+        super().__init__(source)
         self.locations = []
 
     def addlocation(self, location):

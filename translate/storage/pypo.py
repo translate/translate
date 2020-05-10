@@ -232,7 +232,7 @@ class pounit(pocommon.pounit):
         self.msgid_pluralcomments = []
         self.msgid_plural = []
         self.msgstr = []
-        pocommon.pounit.__init__(self, source)
+        super().__init__(source)
 
     def _initallcomments(self, blankall=False):
         """Initialises allcomments"""
