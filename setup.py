@@ -52,7 +52,6 @@ subpackages = [
     join("storage", "versioncontrol"),
     join("storage", "xml_extract"),
     "search",
-    join("search", "indexing"),
     "services",
     "tools",
 ]
@@ -348,7 +347,7 @@ else:
             py2exeoptions["packages"] = ["translate", "encodings"]
             py2exeoptions["compressed"] = True
             py2exeoptions["excludes"] = [
-                "PyLucene", "Tkconstants", "Tkinter", "tcl",
+                "Tkconstants", "Tkinter", "tcl",
                 "enchant",  # Need to do more to support spell checking on Windows
                 # strange things unnecessarily included with some versions of pyenchant:
                 "win32ui", "_win32sysloader", "win32pipe", "py2exe", "win32com",
