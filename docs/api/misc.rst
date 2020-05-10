@@ -21,14 +21,6 @@ file_discovery
    :inherited-members:
 
 
-lru
----
-
-.. automodule:: translate.misc.lru
-   :members:
-   :inherited-members:
-
-
 multistring
 -----------
 

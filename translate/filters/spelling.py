@@ -21,6 +21,7 @@
 """An API to provide spell checking for use in checks or elsewhere."""
 
 import logging
+from functools import lru_cache
 
 
 logger = logging.getLogger(__name__)
@@ -54,13 +55,13 @@ try:
         for err in spellchecker:
             yield err.word, err.wordpos, err.suggest()
 
+    @lru_cache(maxsize=1024)
     def simple_check(text, lang):
         spellchecker = _get_checker(lang)
         if not spellchecker:
-            return
+            return []
         spellchecker.set_text(str(text))
-        for err in spellchecker:
-            yield err.word
+        return [err.word for err in spellchecker]
 
 
 except ImportError:
