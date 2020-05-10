@@ -31,32 +31,6 @@ def test_guess_encoding():
     assert h.guess_encoding(b'''<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN" "http://www.w3.org/TR/REC-html40/loose.dtd"><html><head><meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"><!-- base href="http://home.online.no/~rut-aane/linux.html" --><link rel="shortcut icon" href="http://home.online.no/~rut-aane/peng16x16a.gif"><meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1"><meta name="Description" content="Linux newbie stuff and a little about Watching TV under Linux"><meta name="MSSmartTagsPreventParsing" content="TRUE"><meta name="GENERATOR" content="Mozilla/4.7 [en] (X11; I; Linux 2.2.5-15 i586) [Netscape]"><title>Some Linux for beginners</title><style type="text/css">''') == "iso-8859-1"
 
 
-def test_strip_html():
-    assert html.strip_html("<a>Something</a>") == "Something"
-    assert html.strip_html("You are <a>Something</a>") == "You are <a>Something</a>"
-    assert html.strip_html("<b>You</b> are <a>Something</a>") == "<b>You</b> are <a>Something</a>"
-    assert html.strip_html('<strong><font class="headingwhite">Projects</font></strong>') == "Projects"
-    assert html.strip_html("<strong>Something</strong> else.") == "<strong>Something</strong> else."
-    assert html.strip_html("<h1><strong>Something</strong> else.</h1>") == "<strong>Something</strong> else."
-    assert html.strip_html('<h1 id="moral"><strong>We believe</strong> that the internet should be public, open and accessible.</h1>') == "<strong>We believe</strong> that the internet should be public, open and accessible."
-    #assert html.strip_html('<h3><a href="http://www.firefox.com/" class="producttitle"><img src="../images/product-firefox-50.png" width="50" height="50" alt="" class="featured" style="display: block; margin-bottom: 30px;" /><strong>Firefox for Desktop</strong></a></h3>') == 'Firefox for Desktop'
-
-
-def test_strip_html_with_pi():
-    h = html.htmlfile()
-    assert html.strip_html(h.pi_escape('<a href="<?$var?>">Something</a>')) == "Something"
-    assert html.strip_html(h.pi_escape('<a href="<?=($a < $b ? $foo : ($b > c ? $bar : $cat))?>">Something</a>')) == "Something"
-
-
-def test_normalize_html():
-    assert html.normalize_html("<p>Simple  double  spaced</p>") == "<p>Simple double spaced</p>"
-
-
-def test_pi_escaping():
-    h = html.htmlfile()
-    assert h.pi_escape('<a href="<?=($a < $b ? $foo : ($b > c ? $bar : $cat))?>">') == '<a href="<?=($a %lt; $b ? $foo : ($b %gt; c ? $bar : $cat))?>">'
-
-
 class TestHTMLParsing:
 
     h = html.htmlfile
@@ -88,6 +62,21 @@ class TestHTMLParsing:
 class TestHTMLExtraction:
 
     h = html.htmlfile
+
+    def strip_html(self, str):
+        h = html.htmlfile()
+        store = h.parsestring(str)
+        return "\n".join([u.source for u in store.units])
+
+    def test_strip_html(self):
+        assert self.strip_html("<p><a>Something</a></p>") == "Something"
+        assert self.strip_html("<p>You are <a>Something</a></p>") == "You are <a>Something</a>"
+        assert self.strip_html("<p><b>You</b> are <a>Something</a></p>") == "<b>You</b> are <a>Something</a>"
+        assert self.strip_html('<p><strong><font class="headingwhite">Projects</font></strong></p>') == "Projects"
+        assert self.strip_html("<p><strong>Something</strong> else.</p>") == "<strong>Something</strong> else."
+        assert self.strip_html("<h1><strong>Something</strong> else.</h1>") == "<strong>Something</strong> else."
+        assert self.strip_html('<h1 id="moral"><strong>We believe</strong> that the internet should be public, open and accessible.</h1>') == "<strong>We believe</strong> that the internet should be public, open and accessible."
+        assert self.strip_html('<h3><a href="http://www.firefox.com/" class="producttitle"><img src="../images/product-firefox-50.png" width="50" height="50" alt="" class="featured" style="display: block; margin-bottom: 30px;" /><strong>Firefox for Desktop</strong></a></h3>') == 'Firefox for Desktop'
 
     def test_extraction_tag_figcaption(self):
         """Check that we can extract figcaption"""
@@ -146,13 +135,10 @@ class TestHTMLExtraction:
             <p><abbr title="World Health Organization">WHO</abbr> was founded in 1948.</p>
             <p title="Free Web tutorials">W3Schools.com</p>""")
         print(store.units[0].source)
-        assert len(store.units) == 4
-        assert store.units[0].source == "World Health Organization"
-        # FIXME this is not ideal we need to either drop title= as we've
-        # extracted it already or not extract it earlier
-        assert store.units[1].source == '<abbr title="World Health Organization">WHO</abbr> was founded in 1948.'
-        assert store.units[2].source == "Free Web tutorials"
-        assert store.units[3].source == "W3Schools.com"
+        assert len(store.units) == 3
+        assert store.units[0].source == '<abbr title="World Health Organization">WHO</abbr> was founded in 1948.'
+        assert store.units[1].source == "Free Web tutorials"
+        assert store.units[2].source == "W3Schools.com"
 
         # Example from http://www.netmechanic.com/news/vol6/html_no1.htm
         store = h.parsestring("""
@@ -160,13 +146,14 @@ class TestHTMLExtraction:
         """)
         assert len(store.units) == 1
         assert store.units[0].source == "Henry Jacobs Camp summer 2003 schedule"
-        # FIXME this doesn't extract as I'd have expected
-        #store = h.parsestring("""
-        #    <a href="page1.html" title="HS Jacobs - a UAHC camp in Utica, MS">Henry S. Jacobs Camp</a>
-        #""")
-        #assert len(store.units) == 2
-        #assert store.units[0].source == "HS Jacobs - a UAHC camp in Utica, MS"
-        #assert store.units[1].source == "Henry S. Jacobs Camp"
+
+        store = h.parsestring("""
+           <div><a href="page1.html" title="HS Jacobs - a UAHC camp in Utica, MS">Henry S. Jacobs Camp</a></div>
+        """)
+        assert len(store.units) == 2
+        assert store.units[0].source == "HS Jacobs - a UAHC camp in Utica, MS"
+        assert store.units[1].source == "Henry S. Jacobs Camp"
+
         store = h.parsestring("""
             <form name="application" title="Henry Jacobs camper application" method="  " action="  ">
         """)
