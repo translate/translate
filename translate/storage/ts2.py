@@ -359,7 +359,7 @@ class tsfile(lisa.LISAfile):
 
     def __init__(self, *args, **kwargs):
         self._contextname = None
-        lisa.LISAfile.__init__(self, *args, **kwargs)
+        super().__init__(*args, **kwargs)
 
     def initbody(self):
         """Initialises self.body."""

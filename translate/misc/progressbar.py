@@ -109,7 +109,7 @@ class MessageProgressBar(ProgressBar):
     def __init__(self, *args, **kwargs):
         import sys
         self.sys = sys
-        ProgressBar.__init__(self, *args, **kwargs)
+        super().__init__(*args, **kwargs)
 
     def show(self, verbosemessage):
         self.sys.stderr.write(verbosemessage + '\n')
@@ -123,7 +123,7 @@ class HashProgressBar(ProgressBar):
     def __init__(self, *args, **kwargs):
         import sys
         self.sys = sys
-        ProgressBar.__init__(self, *args, **kwargs)
+        super().__init__(*args, **kwargs)
 
     def show(self, verbosemessage):
         self.sys.stderr.write(str(self) + '\r')
@@ -141,7 +141,7 @@ class VerboseProgressBar(HashProgressBar):
 
     def __init__(self, *args, **kwargs):
         self.lastwidth = 0
-        HashProgressBar.__init__(self, *args, **kwargs)
+        super().__init__(*args, **kwargs)
 
     def show(self, verbosemessage):
         output = str(self)

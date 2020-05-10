@@ -33,8 +33,7 @@ class MozConvertOptionParser(convert.ConvertOptionParser):
 
     def __init__(self, formats, usetemplates=False, usepots=False,
                  description=None):
-        convert.ConvertOptionParser.__init__(self, formats, usetemplates, usepots,
-                                             description=description)
+        super().__init__(formats, usetemplates, usepots, description=description)
 
     def splitinputext(self, inputpath):
         """splits a inputpath into name and extension

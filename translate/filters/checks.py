@@ -2001,7 +2001,7 @@ class OpenOfficeChecker(StandardChecker):
             kwargs["checkerconfig"] = checkerconfig
 
         checkerconfig.update(openofficeconfig)
-        StandardChecker.__init__(self, **kwargs)
+        super().__init__(**kwargs)
 
 
 libreofficeconfig = CheckerConfig(
@@ -2027,7 +2027,7 @@ class LibreOfficeChecker(StandardChecker):
 
         checkerconfig.update(libreofficeconfig)
         checkerconfig.update(openofficeconfig)
-        StandardChecker.__init__(self, **kwargs)
+        super().__init__(**kwargs)
 
     @critical
     def validxml(self, str1, str2):
@@ -2104,7 +2104,7 @@ class MozillaChecker(StandardChecker):
             kwargs["checkerconfig"] = checkerconfig
 
         checkerconfig.update(mozillaconfig)
-        StandardChecker.__init__(self, **kwargs)
+        super().__init__(**kwargs)
 
     @extraction
     def credits(self, str1, str2):
@@ -2245,7 +2245,7 @@ class DrupalChecker(StandardChecker):
             kwargs["checkerconfig"] = checkerconfig
 
         checkerconfig.update(drupalconfig)
-        StandardChecker.__init__(self, **kwargs)
+        super().__init__(**kwargs)
 
 
 gnomeconfig = CheckerConfig(
@@ -2265,7 +2265,7 @@ class GnomeChecker(StandardChecker):
             kwargs["checkerconfig"] = checkerconfig
 
         checkerconfig.update(gnomeconfig)
-        StandardChecker.__init__(self, **kwargs)
+        super().__init__(**kwargs)
 
     @functional
     def gconf(self, str1, str2):
@@ -2310,7 +2310,7 @@ class KdeChecker(StandardChecker):
             kwargs["checkerconfig"] = checkerconfig
 
         checkerconfig.update(kdeconfig)
-        StandardChecker.__init__(self, **kwargs)
+        super().__init__(**kwargs)
 
 
 cclicenseconfig = CheckerConfig(varmatches=[("@", "@")])
@@ -2326,7 +2326,7 @@ class CCLicenseChecker(StandardChecker):
             kwargs["checkerconfig"] = checkerconfig
 
         checkerconfig.update(cclicenseconfig)
-        StandardChecker.__init__(self, **kwargs)
+        super().__init__(**kwargs)
 
 
 minimalconfig = CheckerConfig()
@@ -2348,7 +2348,7 @@ class MinimalChecker(StandardChecker):
             kwargs["limitfilters"] = limitfilters
 
         checkerconfig.update(minimalconfig)
-        StandardChecker.__init__(self, **kwargs)
+        super().__init__(**kwargs)
 
 
 reducedconfig = CheckerConfig()
@@ -2370,7 +2370,7 @@ class ReducedChecker(StandardChecker):
             kwargs["limitfilters"] = limitfilters
 
         checkerconfig.update(minimalconfig)
-        StandardChecker.__init__(self, **kwargs)
+        super().__init__(**kwargs)
 
 
 termconfig = CheckerConfig()
@@ -2386,7 +2386,7 @@ class TermChecker(StandardChecker):
             kwargs["checkerconfig"] = checkerconfig
 
         checkerconfig.update(termconfig)
-        StandardChecker.__init__(self, **kwargs)
+        super().__init__(**kwargs)
 
 
 l20nconfig = CheckerConfig(
@@ -2417,7 +2417,7 @@ class L20nChecker(MozillaChecker):
             kwargs["checkerconfig"] = checkerconfig
 
         checkerconfig.update(l20nconfig)
-        MozillaChecker.__init__(self, **kwargs)
+        super().__init__(**kwargs)
 
     def run_filters(self, unit, categorised=False):
         is_unit_complex = (self.complex_unit_pattern in unit.source
@@ -2469,7 +2469,7 @@ class IOSChecker(StandardChecker):
             kwargs["checkerconfig"] = checkerconfig
 
         checkerconfig.update(iosconfig)
-        StandardChecker.__init__(self, **kwargs)
+        super().__init__(**kwargs)
 
 
 projectcheckers = {

@@ -37,9 +37,9 @@ class ConvertOptionParser(optrecurse.RecursiveOptionParser, object):
     def __init__(self, formats, usetemplates=False, usepots=False,
                  allowmissingtemplate=False, description=None):
         """construct the specialized Option Parser"""
-        optrecurse.RecursiveOptionParser.__init__(self, formats, usetemplates,
-                                                  allowmissingtemplate=allowmissingtemplate,
-                                                  description=description)
+        super().__init__(formats, usetemplates,
+                         allowmissingtemplate=allowmissingtemplate,
+                         description=description)
         self.usepots = usepots
         self.settimestampoption()
         self.setpotoption()
@@ -262,8 +262,7 @@ class ArchiveConvertOptionParser(ConvertOptionParser):
         else:
             self.archiveformats = archiveformats
         self.archiveoptions = {}
-        ConvertOptionParser.__init__(self, formats, usetemplates, usepots,
-                                     description=description)
+        super().__init__(formats, usetemplates, usepots, description=description)
 
     def isrecursive(self, fileoption, filepurpose='input'):
         """Checks if **fileoption** is a recursive file."""

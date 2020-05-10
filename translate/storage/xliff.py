@@ -623,7 +623,7 @@ class xlifffile(lisa.LISAfile):
 
     def __init__(self, *args, **kwargs):
         self._filename = None
-        lisa.LISAfile.__init__(self, *args, **kwargs)
+        super().__init__(*args, **kwargs)
         self._messagenum = 0
 
     def initbody(self):

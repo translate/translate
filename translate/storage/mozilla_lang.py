@@ -44,7 +44,7 @@ class LangUnit(base.TranslationUnit):
         self.locations = []
         self.eol = "\n"
         self.rawtarget = None
-        base.TranslationUnit.__init__(self, source)
+        super().__init__(source)
 
     def __str__(self):
         if self.istranslated():

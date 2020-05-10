@@ -57,7 +57,7 @@ class SicilianChecker(TranslationChecker):
             kwargs["checkerconfig"] = checkerconfig
 
         checkerconfig.update(sicilianconfig)
-        TranslationChecker.__init__(self, **kwargs)
+        super().__init__(**kwargs)
 
     @critical
     def italianisms(self, str1, str2):

@@ -77,8 +77,7 @@ class ManHelpFormatter(optparse.HelpFormatter):
 
     def __init__(self, indent_increment=0, max_help_position=0, width=80,
                  short_first=1):
-        optparse.HelpFormatter.__init__(
-            self, indent_increment, max_help_position, width, short_first)
+        super().__init__(indent_increment, max_help_position, width, short_first)
 
     def format_option_strings(self, option):
         """Return a comma-separated list of option strings & metavariables."""
@@ -115,7 +114,7 @@ class StdoutWrapper:
             self.out.write(content)
 
 
-class RecursiveOptionParser(optparse.OptionParser, object):
+class RecursiveOptionParser(optparse.OptionParser):
     """A specialized Option Parser for recursing through directories."""
 
     def __init__(self, formats, usetemplates=False, allowmissingtemplate=False,
@@ -127,8 +126,7 @@ class RecursiveOptionParser(optparse.OptionParser, object):
         for an explanation of the formats parameter.
         """
 
-        optparse.OptionParser.__init__(self, version="%prog " + __version__.sver,
-                                       description=description)
+        super().__init__(version="%prog " + __version__.sver, description=description)
         self.setmanpageoption()
         self.setprogressoptions()
         self.seterrorleveloptions()

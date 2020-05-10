@@ -197,7 +197,7 @@ class RESXFile(lisa.LISAfile):
     namespace = ''
 
     def __init__(self, *args, **kwargs):
-        lisa.LISAfile.__init__(self, *args, **kwargs)
+        super().__init__(*args, **kwargs)
         self._messagenum = 0
 
     def initbody(self):

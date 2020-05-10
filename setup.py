@@ -375,7 +375,7 @@ else:
                 options["innosetup"] = py2exeoptions.copy()
                 options["innosetup"]["install_script"] = []
             baseattrs.update(attrs)
-            Distribution.__init__(self, baseattrs)
+            super().__init__(baseattrs)
 
     def map_data_file(data_file):
         """remaps a data_file (could be a directory) to a different location
