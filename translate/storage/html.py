@@ -159,6 +159,7 @@ class htmlfile(html.parser.HTMLParser, base.TranslationStore):
 
     def guess_encoding(self, htmlsrc):
         """Returns the encoding of the html text.
+
         We look for 'charset=' within a meta tag to do this.
         """
         result = self.ENCODING_RE.findall(htmlsrc)
