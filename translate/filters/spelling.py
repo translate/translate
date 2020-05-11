@@ -42,7 +42,7 @@ try:
                 checkers[lang].check(u'bla')
             except EnchantError as e:
                 # sometimes this is raised instead of DictNotFoundError
-                logger.error(str(e))
+                logger.error('Dictionary not found: %s', e)
                 checkers[lang] = None
 
         return checkers[lang]

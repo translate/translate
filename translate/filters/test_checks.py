@@ -2,7 +2,7 @@
 
 from pytest import mark
 
-from translate.filters import checks
+from translate.filters import checks, spelling
 from translate.lang import data
 from translate.storage import po, xliff
 
@@ -841,7 +841,10 @@ def test_simplecaps():
     assert passes(stdchecker.simplecaps, "Flies, flies, everywhere! Ack!", u"Vlieë, oral vlieë! Jig!")
 
 
-@mark.xfail(reason="FIXME: spell checking test not working")
+@mark.skipif(
+    not spelling.available or not spelling._get_checker("af"),
+    reason="Spell checking for af is not available"
+)
 def test_spellcheck():
     """tests spell checking"""
     stdchecker = checks.StandardChecker(checks.CheckerConfig(targetlanguage="af"))
