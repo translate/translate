@@ -41,6 +41,7 @@ sitepackages = packagesdir.replace(sys.prefix + os.sep, '')
 infofiles = [(join(sitepackages, 'translate'),
              [filename for filename in ('COPYING', 'README.rst')])]
 initfiles = [(join(sitepackages, 'translate'), [join('translate', '__init__.py')])]
+testfiles = [(join(sitepackages, 'translate', 'convert'), [join('translate', 'convert', 'test.odt')])]
 
 subpackages = [
     "convert",
@@ -418,7 +419,7 @@ def parse_requirements(file_name):
 
 
 def getdatafiles():
-    datafiles = initfiles + infofiles
+    datafiles = initfiles + infofiles + testfiles
 
     def listfiles(srcdir):
         return (
