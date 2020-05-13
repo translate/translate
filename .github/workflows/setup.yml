@@ -28,6 +28,8 @@ jobs:
       run: |
         sudo apt-get update
         sudo apt-get install -y libgettextpo-dev
+    - name: Update pip
+      run: pip install --upgrade pip wheel
     - name: Install pip dependencies
       run: |
         pip install -r requirements/dev.txt
@@ -42,3 +44,10 @@ jobs:
         . ./test-ttk-release/bin/activate
         pip install dist/translate-toolkit-*.tar.gz
         moz2po --help
+    - name: Run setup
+      run: coverage run ./setup.py sdist
+    - name: Coverage
+      run: coverage xml
+    - uses: codecov/codecov-action@v1
+      with:
+        name: setup
