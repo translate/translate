@@ -21,6 +21,8 @@
 
 import os
 
+from translate.storage.base import TranslationStore
+
 
 #TODO: Monolingual formats (with template?)
 
@@ -181,11 +183,13 @@ def getobject(storefile, localfiletype=None, ignore=None, classes=None,
               classes_str=None, hiddenclasses=None):
     """Factory that returns a usable object for the type of file presented.
 
-    :type storefile: file or str
+    :type storefile: file or str or TranslationStore
     :param storefile: File object or file name.
 
     Specify ignore to ignore some part at the back of the name (like .gz).
     """
+    if isinstance(storefile, TranslationStore):
+        return storefile
     if classes_str is None:
         classes_str = _classes_str
     if hiddenclasses is None:
