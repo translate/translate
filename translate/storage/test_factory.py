@@ -84,6 +84,13 @@ class BaseTestFactory:
         assert not classname("file.po.bz2") == "tmxfile"
         assert not classname("file.po.bz2") == "xlifffile"
 
+    def test_getobject_store(self):
+        """Tests that we get a valid object."""
+        fileobj = givefile(self.filename, self.file_content)
+        store = factory.getobject(fileobj)
+        assert isinstance(store, self.expected_instance)
+        assert store == factory.getobject(store)
+
     def test_getobject(self):
         """Tests that we get a valid object."""
         fileobj = givefile(self.filename, self.file_content)
