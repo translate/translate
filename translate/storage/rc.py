@@ -277,6 +277,8 @@ class rcfile(base.TranslationStore):
 
                 if self.lang is None or statement.language == self.lang:
                     if self.sublang is None or statement.sublanguage == self.sublang:
+                        self.lang = statement.language
+                        self.sublang = statement.sublanguage
                         processblocks = True
                     else:
                         processblocks = False
