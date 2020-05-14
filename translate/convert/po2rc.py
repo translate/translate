@@ -16,16 +16,16 @@
 #
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, see <http://www.gnu.org/licenses/>.
-import collections
-import types
-from translate.storage.rc import generate_popup_caption_name,\
-    generate_popup_pre_name, generate_menu_pre_name
-
 """Convert Gettext PO localization files back to Windows Resource (.rc) files.
 
 See: http://docs.translatehouse.org/projects/translate-toolkit/en/latest/commands/rc2po.html
 for examples and usage instructions.
 """
+
+import codecs
+from collections.abc import Iterable
+from translate.storage.rc import generate_popup_caption_name,\
+    generate_popup_pre_name, generate_menu_pre_name
 
 
 from translate.convert import convert
@@ -40,7 +40,7 @@ EMPTY_LOCATION = ""
 
 def is_iterable_but_not_string(o):
     """Check if object is iterable but not a string."""
-    return isinstance(o, collections.Iterable) and not isinstance(o, types.StringTypes)
+    return isinstance(o, Iterable) and not isinstance(o, str)
 
 
 class rerc:
