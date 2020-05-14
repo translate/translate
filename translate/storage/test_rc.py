@@ -288,3 +288,15 @@ END\r\
 """
         rc_file = self.source_parse(rc_source)
         assert len(rc_file.units) == 0
+
+    def test_parse_no_language(self):
+        """Test parsing a RC string with missing language tag."""
+        rc_source = """
+STRINGTABLE
+BEGIN
+    IDP_REGISTRONOV         "Data isn't valid"
+END
+"""
+        rc_file = self.source_parse(rc_source)
+        assert len(rc_file.units) == 1
+        assert rc_file.units[0].source == "Data isn't valid"
