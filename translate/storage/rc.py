@@ -262,8 +262,10 @@ class rcfile(base.TranslationStore):
 
     def parse(self, rcsrc):
         """Read the source of a .rc file in and include them as units."""
+        self.encoding = "auto"
+        rcsrc, self.encoding = self.detect_encoding(rcsrc, default_encodings=[self.default_encoding])
 
-        rcsrc = rcsrc.decode(self.encoding).replace('\r', '')
+        rcsrc = rcsrc.replace('\r', '')
 
         # Parse the strings into a structure.
         results = rc_statement().searchString(rcsrc)
