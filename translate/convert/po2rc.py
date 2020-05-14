@@ -307,7 +307,12 @@ def convertrc(inputfile, outputfile, templatefile, includefuzzy=False,
     else:
         convertor = rerc(templatefile, charset, lang, sublang)
     outputrclines = convertor.convertstore(inputstore, includefuzzy)
-    outputfile.write(outputrclines.encode('ISO-8859-15'))
+    try:
+        outputfile.write(outputrclines.encode('cp1252'))
+    except UnicodeEncodeError:
+        outputfile.write(codecs.BOM_UTF16_LE)
+        outputfile.write(outputrclines.encode('utf-16-le'))
+    outputfile.close()
     return 1
 
 
