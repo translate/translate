@@ -270,10 +270,9 @@ class rcfile(base.TranslationStore):
         # Parse the strings into a structure.
         results = rc_statement().searchString(rcsrc)
 
-        processblocks = False
+        processblocks = True
 
         for statement in results:
-
             if statement.language:
 
                 if self.lang is None or statement.language == self.lang:
