@@ -313,6 +313,7 @@ def convertrc(inputfile, outputfile, templatefile, includefuzzy=False,
         outputfile.write(codecs.BOM_UTF16_LE)
         outputfile.write(outputrclines.encode('utf-16-le'))
     outputfile.close()
+    templatefile.close()
     return 1
 
 
