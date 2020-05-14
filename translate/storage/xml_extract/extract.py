@@ -336,7 +336,7 @@ def make_postore_adder(store, id_maker, filename):
 
         # Get the plain text for the unit source. The output is enclosed within
         # XLIFF source tags we don't want, so strip them.
-        unit_source = etree.tostring(xliff_unit.source_dom)
+        unit_source = etree.tostring(xliff_unit.source_dom).decode()
         unit_source = unit_source[unit_source.find(">", 1) + 1:]
         unit_source = unit_source[:unit_source.rfind("<", 1)]
 
