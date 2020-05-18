@@ -82,6 +82,18 @@ software.
 Requirements
 ------------
 
+There are several extra requirements which you might to install to get full
+feature set. This cal be easily specified during pip installation::
+
+    # Install with XML support
+    pip install translate-toolkit[XML]
+
+    # Install all recommended
+    pip install translate-toolkit[recommended]
+
+    # Install all optional
+    pip install translate-toolkit[all]
+
 .. note:: Please check ``requirements/*.txt``::
 
        pip install -r requirements/recommended.txt

@@ -5,13 +5,13 @@
 ###############
 
 # lxml - for XML processing (XLIFF, TMX, TBX, ts, Android)
-lxml>=4.0,!=4.3.1
+lxml>=4.0,!=4.3.1           # XML
 
 # Faster matching in e.g. pot2po
-python-Levenshtein>=0.12
+python-Levenshtein>=0.12    # Levenshtein
 
 # Encoding detection
-chardet==3.0.4
+chardet==3.0.4              # chardet
 
 # To provide translations for language names without need for OS package.
-pycountry==19.8.18
+pycountry==19.8.18          # Languages

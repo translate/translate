@@ -3,12 +3,12 @@
 ##################
 # Format support #
 ##################
-BeautifulSoup4>=4.3  # Trados TM
-iniparse==0.5        # INI (ini2po)
-vobject==0.9.6.1     # iCal (ical2po)
-aeidon==1.7.0        # Subtitles (sub2po)
-l20n==4.0.0a1        # l20n (l20n2po)
-ruamel.yaml==0.16.10 # yaml
+BeautifulSoup4>=4.3  # Trados
+iniparse==0.5        # INI
+vobject==0.9.6.1     # iCal
+aeidon==1.7.0        # Subtitles
+l20n==4.0.0a1        # l20n
+ruamel.yaml==0.16.10 # YAML
 phply==1.2.5         # PHP
 cheroot==8.3.0       # tmserver
 pyenchant==3.0.1     # spellcheck

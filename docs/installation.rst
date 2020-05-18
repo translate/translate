@@ -106,10 +106,9 @@ virtualenvs.
 2. Open cmd.exe or similar
 3. `pip install virtualenvwrapper-win`
 4. `mkvirtualenv ttk` where "ttk" is the name for the new virtualenv
-5. `pip install translate-toolkit` to install latest stable or `pip install
-   --pre translate-toolkit` to try a pre-release
-6. `pip install lxml>=3.5` to be able to use XLIFF or other XML formats
-7. `po2prop --version` to double check you have the right version
+5. `pip install translate-toolkit[recommended]` to install latest stable or `pip install
+   --pre translate-toolkit[recommended]` to try a pre-release
+6. `po2prop --version` to double check you have the right version
 
 Next times you need to use Translate Toolkit just remember to:
 
