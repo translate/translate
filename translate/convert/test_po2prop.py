@@ -1,8 +1,6 @@
 # -*- coding: utf-8 -*-
 from io import BytesIO
 
-from pytest import mark
-
 from translate.convert import po2prop, test_convert
 from translate.storage import po
 
@@ -73,7 +71,6 @@ class TestPO2Prop:
         print(propfile)
         assert propfile == propexpected
 
-    @mark.xfail(reason="This doesn't work as expected right now")
     def test_no_separator(self):
         """check that we can handle keys without separator"""
         posource = '''#: KEY\nmsgctxt "KEY"\nmsgid ""\nmsgstr ""\n'''
