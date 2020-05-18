@@ -181,6 +181,30 @@ classifiers = [
 ]
 
 
+# Generate extras requires
+def update_requires(filename, extras_require, recommended):
+    with open(filename) as requirements:
+        for line in requirements:
+            line = line.strip()
+            # Skip comments, inclusion or blank lines
+            if not line or line.startswith("-r") or line.startswith("#"):
+                continue
+            dependency, section = line.split("#")
+            dependency = dependency.strip()
+            section = section.strip()
+            if section not in extras_require:
+                extras_require[section] = [dependency]
+            else:
+                extras_require[section].append(dependency)
+            extras_require["all"].append(dependency)
+            if recommended:
+                extras_require["recommended"].append(dependency)
+
+
+extras_require = {"recommended": [], "all": []}
+update_requires("requirements/optional.txt", extras_require, False)
+update_requires("requirements/recommended.txt", extras_require, True)
+
 # py2exe-specific stuff
 try:
     import py2exe
@@ -510,6 +534,7 @@ def dosetup(name, version, packages, datafiles, scripts, ext_modules=[]):
         },
         platforms=["any"],
         classifiers=classifiers,
+        extras_require=extras_require,
         packages=packages,
         data_files=datafiles,
         entry_points={
