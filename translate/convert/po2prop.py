@@ -178,7 +178,7 @@ class reprop:
                         "key": "%s%s%s" % (self.personality.key_wrap_char,
                                            key,
                                            self.personality.key_wrap_char),
-                        "del": delimiter,
+                        "del": delimiter if delimiter_pos != -1 or value else "",
                         "value": "%s%s%s" % (self.personality.value_wrap_char,
                                              self.personality.encode(value),
                                              self.personality.value_wrap_char),
