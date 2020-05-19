@@ -102,17 +102,30 @@ def unescapehandler(escape):
     return po_unescape_map.get(escape, escape)
 
 
-wrapper = textwrap.TextWrapper(
-    width=77, replace_whitespace=False, expand_tabs=False,
-    drop_whitespace=False)
-wrapper.wordsep_re = re.compile(
-    r'(\s+|'                                  # any whitespace
-    r'[a-z0-9A-Z_-]+/|'                       # nicely split long URLs
-    r'\w*\\.|'                                # any escape should not be split
-    r'[\w\!\'\&\.\,\?]+\s+|'                  # space should go with a word
-    r'[^\s\w]*\w+[a-zA-Z]-(?=\w+[a-zA-Z])|'   # hyphenated words
-    r'(?<=[\w\!\"\'\&\.\,\?])-{2,}(?=\w))')   # em-dash
-wrapper.wordsep_re_uni = re.compile(wrapper.wordsep_re.pattern, re.UNICODE)
+class PoWrapper(textwrap.TextWrapper):
+    wordsep_re = re.compile(
+        r'''
+            (
+            \s+|                                  # any whitespace
+            [a-z0-9A-Z_-]+/|                      # nicely split long URLs
+            \w*\\.\w*|                            # any escape should not be split
+            n(?=%)|                               # wrap insidide plural equation
+            \.(?=\w)|                             # full stop inside word
+            [\w\!\'\&\.\,\?=<>%]+\s+|             # space should go with a word
+            [^\s\w]*\w+[a-zA-Z]-(?=\w+[a-zA-Z])|  # hyphenated words
+            (?<=[\w\!\"\'\&\.\,\?])-{2,}(?=\w)    # em-dash
+            )
+        ''',
+        re.VERBOSE
+    )
+
+    def __init__(self, width=77, replace_whitespace=False, expand_tabs=False, drop_whitespace=False):
+        super().__init__(
+            width=width,
+            replace_whitespace=replace_whitespace,
+            expand_tabs=expand_tabs,
+            drop_whitespace=drop_whitespace,
+        )
 
 
 def quoteforpo(text, wrapper_obj=None):
@@ -121,7 +134,7 @@ def quoteforpo(text, wrapper_obj=None):
     if text is None:
         return []
     if wrapper_obj is None:
-        wrapper_obj = wrapper
+        wrapper_obj = PoWrapper()
     text = escapeforpo(text)
     if wrapper_obj.width == -1:
         return [u'"%s"' % text]
@@ -802,9 +815,10 @@ class pofile(pocommon.pofile):
     UnitClass = pounit
 
     def __init__(self, inputfile=None, width=None, **kwargs):
-        self.wrapper = copy.copy(wrapper)
+        wrapargs = {}
         if width is not None:
-            self.wrapper.width = width
+            wrapargs = {"width": width}
+        self.wrapper = PoWrapper(**wrapargs)
         super().__init__(inputfile, **kwargs)
 
     def create_unit(self):
