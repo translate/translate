@@ -38,6 +38,17 @@ JSON_ARRAY = b"""{
     ]
 }
 """
+JSON_GOI18N = b"""{
+    "key": "simple value",
+    "keyPlural1": {
+        "other": "Plural for {{.Person}}"
+    },
+    "keyPluralN": {
+        "one":  "I have {{.Count}} item.",
+        "other":  "I have {{.Count}} items."
+    }
+}
+"""
 
 
 class TestJSONResourceUnit(test_monolingual.TestMonolingualUnit):
@@ -293,3 +304,96 @@ class TestI18NextStore(test_monolingual.TestMonolingualStore):
         store.serialize(out)
 
         assert out.getvalue() == EXPECTED
+
+
+class TestI18NextStore(test_monolingual.TestMonolingualStore):
+    StoreClass = jsonl10n.GoI18nJsonFile
+
+    #def test_serialize(self):
+    #    store = self.StoreClass()
+    #    store.parse(JSON_GOI18N)
+    #    out = BytesIO()
+    #    store.serialize(out)
+
+    #    assert out.getvalue() == JSON_GOI18N
+
+    def test_units(self):
+        store = self.StoreClass()
+        store.parse(JSON_GOI18N)
+        assert [x.getid() for x in store.units] == [
+            '.key',
+            '.keyPlural1',
+            '.keyPluralN',
+        ]
+
+    # def test_plurals(self):
+    #     store = self.StoreClass()
+    #     store.parse(JSON_GOI18N)
+
+    #     # Remove plurals
+    #     store.units[2].target = 'Ahoj'
+    #     store.units[3].target = 'Nazdar'
+    #     out = BytesIO()
+    #     store.serialize(out)
+
+    #     assert out.getvalue() == JSON_I18NEXT_PLURAL
+
+    #     # Bring back plurals
+    #     store.units[2].target = multistring([
+    #         "the singular",
+    #         "the plural",
+    #     ])
+    #     store.units[3].target = multistring([
+    #         "the plural form 0",
+    #         "the plural form 1",
+    #         "the plural form 2",
+    #         "the plural form 3",
+    #         "the plural form 4",
+    #         "the plural form 5"
+    #     ])
+    #     out = BytesIO()
+    #     store.serialize(out)
+
+    #     assert out.getvalue() == JSON_I18NEXT
+
+    # def test_new_plural(self):
+    #     EXPECTED = b'''{
+    # "simple": "the singular",
+    # "simple_plural": "the plural",
+    # "complex_0": "the plural form 0",
+    # "complex_1": "the plural form 1",
+    # "complex_2": "the plural form 2",
+    # "complex_3": "the plural form 3",
+    # "complex_4": "the plural form 4",
+    # "complex_5": "the plural form 5"
+#}
+#'''
+    #     store = self.StoreClass()
+
+    #     unit = self.StoreClass.UnitClass(
+    #         multistring([
+    #             "the singular",
+    #             "the plural",
+    #         ]),
+    #         'simple'
+    #     )
+    #     store.addunit(unit)
+
+    #     unit = self.StoreClass.UnitClass(
+    #         multistring([
+    #             "the plural form 0",
+    #             "the plural form 1",
+    #             "the plural form 2",
+    #             "the plural form 3",
+    #             "the plural form 4",
+    #             "the plural form 5"
+    #         ]),
+    #         'complex'
+    #     )
+    #     store.addunit(unit)
+
+    #     out = BytesIO()
+    #     store.serialize(out)
+
+    #     assert out.getvalue() == EXPECTED
+
