@@ -19,9 +19,8 @@ jobs:
         requirements: [latest]
         python-version: [3.5, 3.6, 3.7, 3.8]
         include:
-          - os: ubuntu-latest
+          - requirements: minimal
             python-version: 3.5
-            requirements: minimal
 
     steps:
     - uses: actions/checkout@v2
