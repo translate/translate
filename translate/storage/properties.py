@@ -522,7 +522,7 @@ class proppluralunit(base.TranslationUnit):
         """Construct a blank propunit."""
         self.personality = get_dialect(personality)
         super(proppluralunit, self).__init__(source)
-        self.units = {}
+        self.units = collections.OrderedDict()
         self.name = u""
 
     @staticmethod
@@ -531,25 +531,20 @@ class proppluralunit(base.TranslationUnit):
             locale = lang.replace('_', '-').split('-')[0]
             cldr_mapping = data.plural_tags.get(locale, data.plural_tags['en'])
             if cldr_mapping:
-                if len(cldr_mapping) > 0:
-                    return cldr_mapping
-                else:
-                    return [proppluralunit.KEY]
+                return cldr_mapping
         return None
 
     def _get_target_mapping(self):
         cldr_mapping = proppluralunit._get_language_mapping(self._store.targetlanguage)
         if cldr_mapping:
             return cldr_mapping
-        else:
-            return self.units.keys()
+        return self.units.keys()
 
     def _get_source_mapping(self):
         cldr_mapping = proppluralunit._get_language_mapping(self._store.sourcelanguage)
         if cldr_mapping:
             return cldr_mapping
-        else:
-            return self.units.keys()
+        return self.units.keys()
 
     def _get_units(self, mapping):
         ret = []
@@ -592,8 +587,7 @@ class proppluralunit(base.TranslationUnit):
     def hasplural(self, key=None):
         if key is None:
             return len(self.units) > 1
-        else:
-            return key in self.units
+        return key in self.units
 
     def settarget(self, text):
         mapping = None
@@ -602,7 +596,7 @@ class proppluralunit(base.TranslationUnit):
         elif isinstance(text, list):
             strings = text
         elif isinstance(text, dict):
-            mapping, strings = tuple(map(list, zip(*six.iteritems(text))))
+            mapping, strings = map(list, zip(*text.items()))
         else:
             strings = [text]
         if mapping is None:
@@ -620,8 +614,7 @@ class proppluralunit(base.TranslationUnit):
         ll = [x.target for x in self._get_units(self._get_target_mapping())]
         if len(ll) > 1:
             return multistring(ll)
-        else:
-            return ll[0]
+        return ll[0]
 
     target = property(gettarget, settarget)
 
@@ -632,14 +625,14 @@ class proppluralunit(base.TranslationUnit):
         else:
             return ll[0]
 
-    def setsource(self, source):
+    def setsource(self, text):
         mapping = None
         if isinstance(text, multistring):
             strings = text.strings
         elif isinstance(text, list):
             strings = text
         elif isinstance(text, dict):
-            mapping, strings = tuple(map(list, zip(*six.iteritems(text))))
+            mapping, strings = tuple(map(list, zip(*text.items())))
         else:
             strings = [text]
         if mapping is None:
@@ -726,8 +719,7 @@ class proppluralunit(base.TranslationUnit):
     def encoding(self):
         if self._store:
             return self._store.encoding
-        else:
-            return self.personality.default_encoding
+        return self.personality.default_encoding
 
 
 @register_dialect

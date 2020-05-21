@@ -228,7 +228,7 @@ class prop2po:
             plurals[key].variants[variant] = unit
 
         # Rework the set
-        for key, plural in six.iteritems(plurals):
+        for key, plural in plurals.items():
             # We should have at least "other" (no variant in GWT)
             if "other" not in plural.variants:
                 raise Exception("Should have property %s without any variant" % (key))
