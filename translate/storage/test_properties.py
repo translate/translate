@@ -97,11 +97,11 @@ class TestPropUnit(test_monolingual.TestMonolingualUnit):
 
 
 class TestGwtProp(test_monolingual.TestMonolingualStore):
-    StoreClass = properties.propfile
+    StoreClass = properties.gwtfile
 
     def propparse(self, propsource, personality="gwt", encoding=None, sourcelanguage=None, targetlanguage=None):
         """helper that parses properties source without requiring files"""
-        dummyfile = BytesIO(propsource)
+        dummyfile = BytesIO(propsource.encode())
         propfile = properties.propfile(None, personality, encoding)
         if sourcelanguage:
             propfile.sourcelanguage = sourcelanguage
@@ -134,12 +134,15 @@ class TestGwtProp(test_monolingual.TestMonolingualStore):
         propunit = propfile.units[0]
         assert propunit.name == "test_me"
         assert propunit.source.strings == ["I can code!", "I can code single!"]
+        assert propunit.value == ["I can code!", "I can code single!"]
+        propunit.value = ["I can code!", "I can code single!"]
+        assert propunit.value == ["I can code!", "I can code single!"]
 
     def test_doubledefinition_source(self):
         """checks that a double properties definition can be regenerated as source"""
-        propsource = b'test_me=I can code!\ntest_me[one]=I can code single!'
-        propregen = self.propregen(propsource)
-        assert propsource + b'\n' == propregen
+        propsource = 'test_me=I can code!\ntest_me[one]=I can code single!'
+        propregen = self.propregen(propsource).decode()
+        assert propsource + '\n' == propregen
 
     def test_reduce(self):
         """checks that if the target language has less plural form the generated properties file is correct """
@@ -174,6 +177,12 @@ class TestGwtProp(test_monolingual.TestMonolingualStore):
                b'test_me[two]=two\ntest_me[few]=few\ntest_me[many]=many\n' == propfile.__bytes__()
 
         propunit.target = ['zero', 'one', 'two', 'few', 'many', 'other']
+        assert isinstance(propunit.target, multistring)
+        assert propunit.target.strings == ['zero', 'one', 'two', 'few', 'many', 'other']
+        assert b'test_me=other\ntest_me[none]=zero\ntest_me[one]=one\n' + \
+               b'test_me[two]=two\ntest_me[few]=few\ntest_me[many]=many\n' == propfile.__bytes__()
+
+        propunit.source = ['zero', 'one', 'two', 'few', 'many', 'other']
         assert isinstance(propunit.target, multistring)
         assert propunit.target.strings == ['zero', 'one', 'two', 'few', 'many', 'other']
         assert b'test_me=other\ntest_me[none]=zero\ntest_me[one]=one\n' + \
