@@ -524,8 +524,7 @@ class proppluralunit(base.TranslationUnit):
             if cldr_mapping:
                 if len(cldr_mapping) > 0:
                     return cldr_mapping
-                else:
-                    return [proppluralunit.KEY]
+                return [proppluralunit.KEY]
         return None
 
     def _get_target_mapping(self):
@@ -539,8 +538,7 @@ class proppluralunit(base.TranslationUnit):
         cldr_mapping = proppluralunit._get_language_mapping(self._store.sourcelanguage)
         if cldr_mapping:
             return cldr_mapping
-        else:
-            return self.units.keys()
+        return self.units.keys()
 
     def _get_units(self, mapping):
         ret = []
@@ -583,8 +581,7 @@ class proppluralunit(base.TranslationUnit):
     def hasplural(self, key=None):
         if key is None:
             return len(self.units) > 1
-        else:
-            return key in self.units
+        return key in self.units
 
     def settarget(self, text):
         mapping = None
@@ -611,8 +608,7 @@ class proppluralunit(base.TranslationUnit):
         ll = [x.target for x in self._get_units(self._get_target_mapping())]
         if len(ll) > 1:
             return multistring(ll)
-        else:
-            return ll[0]
+        return ll[0]
 
     target = property(gettarget, settarget)
 
@@ -709,8 +705,7 @@ class proppluralunit(base.TranslationUnit):
         if six.PY2:
             assert isinstance(source, unicode)
             return source.encode(self.encoding)
-        else:
-            return source
+        return source
 
     def getoutput(self):
         ret = u""
@@ -722,8 +717,7 @@ class proppluralunit(base.TranslationUnit):
     def encoding(self):
         if self._store:
             return self._store.encoding
-        else:
-            return self.personality.default_encoding
+        return self.personality.default_encoding
 
 
 @register_dialect
