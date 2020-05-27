@@ -86,10 +86,8 @@ Escaping in Android DTD
 import re
 import warnings
 from io import BytesIO
-try:
-    from lxml import etree
-except ImportError:
-    etree = None
+
+from lxml import etree
 
 from translate.misc import quote
 from translate.storage import base
@@ -584,7 +582,7 @@ class dtdfile(base.TranslationStore):
         :rtype: Boolean
         """
         # Android files are invalid DTDs
-        if etree is not None and not self.android:
+        if not self.android:
             # #expand is a Mozilla hack and are removed as they are not valid in DTDs
             _input = re.sub(b"#expand", b"", content)
             try:
