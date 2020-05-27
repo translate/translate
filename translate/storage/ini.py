@@ -35,7 +35,7 @@ from io import StringIO, BytesIO
 try:
     from iniparse import INIConfig
 except ImportError:
-    INIConfig = None
+    raise ImportError("Missing iniparse library.")
 
 from translate.storage import base
 
@@ -100,9 +100,6 @@ class inifile(base.TranslationStore):
 
     def __init__(self, inputfile=None, dialect="default", **kwargs):
         """construct an INI file, optionally reading in from inputfile."""
-        if INIConfig is None:
-            raise NotImplementedError("Missing iniparse library.")
-
         self._dialect = dialects.get(dialect, DialectDefault)()  # fail correctly/use getattr/
         super().__init__(**kwargs)
         self.filename = ''
