@@ -1,0 +1,2 @@
+# lxml - for XML processing (XLIFF, TMX, TBX, ts, Android)
+lxml>=4.0,!=4.3.1

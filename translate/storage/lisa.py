@@ -19,15 +19,11 @@
 
 """Parent class for LISA standards (TMX, TBX, XLIFF)"""
 
-
-try:
-    from lxml import etree
-    from translate.misc.xml_helpers import (getText, getXMLlang, getXMLspace,
-                                            namespaced)
-except ImportError as e:
-    raise ImportError("lxml is not installed. It might be possible to continue without support for XML formats.")
+from lxml import etree
 
 from translate.lang import data
+from translate.misc.xml_helpers import (getText, getXMLlang, getXMLspace,
+                                        namespaced)
 from translate.storage import base
 
 

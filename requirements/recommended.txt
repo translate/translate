@@ -4,9 +4,6 @@
 # Recommended #
 ###############
 
-# lxml - for XML processing (XLIFF, TMX, TBX, ts, Android)
-lxml>=4.0,!=4.3.1           # XML
-
 # Faster matching in e.g. pot2po
 python-Levenshtein>=0.12    # Levenshtein
 

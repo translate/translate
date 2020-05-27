@@ -103,10 +103,9 @@ feature set. This cal be easily specified during pip installation::
 
 The Toolkit requires Python 3.5 or newer.
 
-The package lxml is needed for XML file processing. You should install version
-3.5.0 or later. <http://lxml.de/> Depending on your platform, the easiest way
-to install might be through your system's package management. Alternatively you
-can try ::
+The package lxml is required. You should install version 4.0.0 or later.
+<http://lxml.de/> Depending on your platform, the easiest way to install might
+be through your system's package management. Alternatively you can try ::
 
     pip install lxml
 
