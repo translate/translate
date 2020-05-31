@@ -11,4 +11,4 @@ l20n==4.0.0a1        # l20n
 ruamel.yaml==0.16.10 # YAML
 phply==1.2.5         # PHP
 cheroot==8.3.0       # tmserver
-pyenchant==3.1.0     # spellcheck
+pyenchant==3.1.1     # spellcheck
