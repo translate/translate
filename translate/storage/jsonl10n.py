@@ -71,6 +71,7 @@ import json
 import uuid
 from collections import OrderedDict
 
+from translate.lang.data import cldr_plural_categories, plural_tags
 from translate.misc.multistring import multistring
 from translate.storage import base
 
@@ -78,10 +79,12 @@ from translate.storage import base
 class JsonUnit(base.TranslationUnit):
     """A JSON entry"""
 
+    ID_FORMAT = ".{}"
+
     def __init__(self, source=None, item=None, notes=None, placeholders=None, **kwargs):
         identifier = str(uuid.uuid4())
         # Global identifier across file
-        self._id = '.' + identifier
+        self._id = self.ID_FORMAT.format(identifier)
         # Identifier at this level
         self._item = identifier if item is None else item
         # Type conversion for the unit
@@ -381,3 +384,66 @@ class I18NextFile(JsonNestedFile):
             )
             for x in parent:
                 yield x
+
+
+class GoI18NJsonUnit(JsonUnit):
+    ID_FORMAT = "{}"
+
+    def getvalue(self):
+        target = self.target
+        if isinstance(target, multistring):
+            strings = list(target.strings)
+            if len(self._store.plural_tags) > len(target.strings):
+                strings += [""] * (len(self._store.plural_tags) - len(target.strings))
+            target = OrderedDict([
+                (plural, strings[offset]) for offset, plural in enumerate(self._store.plural_tags)
+            ])
+        value = OrderedDict((
+            ('id', self.getid()),
+        ))
+        if self.notes:
+            value['description'] = self.notes
+        value['translation'] = target
+        return value
+
+
+class GoI18NJsonFile(JsonFile):
+    """go-i18n JSON file
+
+    See following URLs for doc:
+
+    https://github.com/nicksnyder/go-i18n
+    https://godoc.org/github.com/nicksnyder/go-i18n/v2
+    """
+
+    UnitClass = GoI18NJsonUnit
+
+    @property
+    def plural_tags(self):
+        locale = self.gettargetlanguage()
+        if locale:
+            locale = locale.replace('_', '-').split('-')[0]
+        else:
+            locale = "en"
+        return plural_tags.get(locale, plural_tags['en'])
+
+    def _extract_units(self, data, stop=None, prev="", name_node=None, name_last_node=None, last_node=None):
+        for value in data:
+            translation = value.get('translation', '')
+            if isinstance(translation, dict):
+                # Ordered list of plurals
+                translation = multistring(
+                    [translation.get(key) for key in cldr_plural_categories if key in translation]
+                )
+            unit = self.UnitClass(
+                translation,
+                value.get('id', ''),
+                value.get('description', ''),
+            )
+            unit.setid(value.get('id', ''))
+            yield unit
+
+    def serialize(self, out):
+        units = [unit.getvalue() for unit in self.units]
+        out.write(json.dumps(units, **self.dump_args).encode(self.encoding))
+        out.write(b'\n')

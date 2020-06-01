@@ -38,6 +38,22 @@ JSON_ARRAY = b"""{
     ]
 }
 """
+JSON_GOI18N = b"""[
+    {
+        "id": "tag",
+        "description": "a piece or strip of strong paper, plastic, metal, leather, etc., for attaching by one end to something as a mark or label",
+        "translation": {
+            "one": "{{.count}} tag",
+            "other": "{{.count}} tags"
+        }
+    },
+    {
+        "id": "table",
+        "description": "an article of furniture consisting of a flat, slablike top supported on one or more legs or other supports",
+        "translation": "Table"
+    }
+]
+"""
 
 
 class TestJSONResourceUnit(test_monolingual.TestMonolingualUnit):
@@ -293,3 +309,25 @@ class TestI18NextStore(test_monolingual.TestMonolingualStore):
         store.serialize(out)
 
         assert out.getvalue() == EXPECTED
+
+
+class TestGoI18NJsonFile(test_monolingual.TestMonolingualStore):
+    StoreClass = jsonl10n.GoI18NJsonFile
+
+    def test_plurals(self):
+        store = self.StoreClass()
+        store.parse(JSON_GOI18N)
+
+        assert len(store.units) == 2
+        assert store.units[0].target == multistring(["{{.count}} tag", "{{.count}} tags"])
+        assert store.units[1].target == "Table"
+
+        assert bytes(store).decode() == JSON_GOI18N.decode()
+
+    def test_plurals_missing(self):
+        store = self.StoreClass()
+        store.parse(JSON_GOI18N)
+
+        store.units[0].target = multistring(["{{.count}} tag"])
+
+        assert '"other": ""' in bytes(store).decode()
