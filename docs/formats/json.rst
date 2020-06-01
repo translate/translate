@@ -30,3 +30,10 @@ Example:
            }
        ]
    }
+
+Following JSON dialects are supported
+
+* Plain JSON files.
+* i18next
+* Web Extension i18n
+* `go-i18n <https://github.com/nicksnyder/go-i18n>`_
