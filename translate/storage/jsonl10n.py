@@ -447,3 +447,67 @@ class GoI18NJsonFile(JsonFile):
         units = [unit.getvalue() for unit in self.units]
         out.write(json.dumps(units, **self.dump_args).encode(self.encoding))
         out.write(b'\n')
+
+
+class ARBJsonUnit(JsonUnit):
+    ID_FORMAT = "{}"
+
+    def __init__(self, source=None, item=None, notes=None, placeholders=None, metadata=None, **kwargs):
+        super().__init__(source, item, notes, placeholders, **kwargs)
+        self.metadata = metadata or {}
+
+    def getvalue(self):
+        if self.notes:
+            self.metadata['description'] = self.notes
+        identifier = self.getid()
+        if identifier == "@":
+            return self.metadata
+        return OrderedDict((
+            (identifier, self.target),
+            ('@{}'.format(identifier), self.metadata),
+        ))
+
+    def isheader(self):
+        return self._id == "@"
+
+
+class ARBJsonFile(JsonFile):
+    """ARB JSON file
+
+    See following URLs for doc:
+
+    https://github.com/google/app-resource-bundle/wiki/ApplicationResourceBundleSpecification
+    https://flutter.dev/docs/development/accessibility-and-localization/internationalization#appendix-using-the-dart-intl-tools
+    """
+
+    UnitClass = ARBJsonUnit
+
+    def __init__(self, inputfile=None, filter=None, **kwargs):
+        super().__init__(inputfile, filter, **kwargs)
+        self.dump_args = {
+            'separators': (',', ': '),
+            'indent': 2,
+            'ensure_ascii': False,
+        }
+
+    def _extract_units(self, data, stop=None, prev="", name_node=None, name_last_node=None, last_node=None):
+        # Extract metadata as header
+        metadata = OrderedDict([(key, value) for key, value in data.items() if key.startswith("@@")])
+        if metadata:
+            unit = self.UnitClass(metadata=metadata)
+            unit.setid("@")
+            yield unit
+
+        for item, value in data.items():
+            if item.startswith("@"):
+                continue
+            metadata = data.get("@{}".format(item), {})
+            unit = self.UnitClass(
+                value,
+                item,
+                metadata.get('description', ''),
+                metadata.get('placeholders', None),
+                metadata=metadata,
+            )
+            unit.setid(item)
+            yield unit

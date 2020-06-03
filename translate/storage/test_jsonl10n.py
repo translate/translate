@@ -55,6 +55,26 @@ JSON_GOI18N = b"""[
 ]
 """
 
+JSON_ARB = b"""{
+  "@@last_modified": "2019-11-06T22:41:37.002648",
+  "Back": "Back",
+  "@Back": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "Next": "Next",
+  "@Next": {
+    "type": "text",
+    "placeholders": {}
+  },
+  "Done": "Done",
+  "@Done": {
+    "type": "text",
+    "placeholders": {}
+  }
+}
+"""
+
 
 class TestJSONResourceUnit(test_monolingual.TestMonolingualUnit):
     UnitClass = jsonl10n.JsonUnit
@@ -331,3 +351,19 @@ class TestGoI18NJsonFile(test_monolingual.TestMonolingualStore):
         store.units[0].target = multistring(["{{.count}} tag"])
 
         assert '"other": ""' in bytes(store).decode()
+
+
+class TestARBJsonFile(test_monolingual.TestMonolingualStore):
+    StoreClass = jsonl10n.ARBJsonFile
+
+    def test_roundtrip(self):
+        store = self.StoreClass()
+        store.parse(JSON_ARB)
+
+        assert len(store.units) == 4
+        assert store.units[0].isheader()
+        assert store.units[1].target == "Back"
+        assert store.units[2].target == "Next"
+        assert store.units[3].target == "Done"
+
+        assert bytes(store).decode() == JSON_ARB.decode()
