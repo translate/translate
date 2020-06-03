@@ -37,3 +37,4 @@ Following JSON dialects are supported
 * i18next
 * Web Extension i18n
 * `go-i18n <https://github.com/nicksnyder/go-i18n>`_
+* `ARB <https://github.com/google/app-resource-bundle/wiki/ApplicationResourceBundleSpecification>`_
