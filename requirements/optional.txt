@@ -12,4 +12,4 @@ ruamel.yaml==0.16.10 # YAML
 phply==1.2.5         # PHP
 cheroot==8.3.0       # tmserver
 pyenchant==3.1.1     # spellcheck
-pyparsing==2.4.6     # RC aka Windows Resources (rc2po and po2rc)
+pyparsing==2.4.7     # RC aka Windows Resources (rc2po and po2rc)
