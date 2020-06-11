@@ -23,7 +23,7 @@
 from translate.storage.placeables.general import XMLEntityPlaceable
 
 
-DEFAULT_ACCESSKEY_MARKER = u"&"
+DEFAULT_ACCESSKEY_MARKER = "&"
 
 
 class UnitMixer:
@@ -120,9 +120,9 @@ def extract(string, accesskey_marker=DEFAULT_ACCESSKEY_MARKER):
     assert isinstance(string, str)
     assert isinstance(accesskey_marker, str)
     assert len(accesskey_marker) == 1
-    if string == u"":
-        return u"", u""
-    accesskey = u""
+    if string == "":
+        return "", ""
+    accesskey = ""
     label = string
     marker_pos = 0
     while marker_pos >= 0:

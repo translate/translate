@@ -378,10 +378,10 @@ years has helped to bridge the digital divide to a limited extent.</p> \r
 '''
         pofile = self.html2po(htmlsource)
         self.countunits(pofile, 4)
-        self.compareunit(pofile, 1, u'FMFI - South Africa - CSIR Openphone - Overview')
-        self.compareunit(pofile, 2, u'fmfi, first mile, first inch, wireless, rural development, access devices, mobile devices, wifi, connectivity, rural connectivty, ict, low cost, cheap, digital divide, csir, idrc, community')
-        self.compareunit(pofile, 3, u'We aim to please \x96 will you aim too, please?')
-        self.compareunit(pofile, 4, u'South Africa\x92s language diversity can be challenging.')
+        self.compareunit(pofile, 1, 'FMFI - South Africa - CSIR Openphone - Overview')
+        self.compareunit(pofile, 2, 'fmfi, first mile, first inch, wireless, rural development, access devices, mobile devices, wifi, connectivity, rural connectivty, ict, low cost, cheap, digital divide, csir, idrc, community')
+        self.compareunit(pofile, 3, 'We aim to please \x96 will you aim too, please?')
+        self.compareunit(pofile, 4, 'South Africa\x92s language diversity can be challenging.')
 
     def test_strip_html(self):
         """Ensure that unnecessary html is stripped from the resulting unit."""
@@ -419,8 +419,8 @@ years has helped to bridge the digital divide to a limited extent.</p> \r
 '''
         pofile = self.html2po(htmlsource)
         self.countunits(pofile, 3)
-        self.compareunit(pofile, 2, u'Projects')
-        self.compareunit(pofile, 3, u'Home Page')
+        self.compareunit(pofile, 2, 'Projects')
+        self.compareunit(pofile, 3, 'Home Page')
 
         # Translate and convert back:
         pofile.units[2].target = 'Projekte'
@@ -434,17 +434,17 @@ years has helped to bridge the digital divide to a limited extent.</p> \r
     def test_entityrefs_in_text(self):
         """Should extract html entityrefs, preserving the ones representing reserved characters"""
         """`See <https://developer.mozilla.org/en-US/docs/Glossary/Entity>`."""
-        self.check_single("<html><head></head><body><p>&lt;not an element&gt; &amp; &quot; &apos; &rsquo;</p></body></html>", u"&lt;not an element&gt; &amp; \" ' \u2019")
+        self.check_single("<html><head></head><body><p>&lt;not an element&gt; &amp; &quot; &apos; &rsquo;</p></body></html>", "&lt;not an element&gt; &amp; \" ' \u2019")
 
     def test_entityrefs_in_attributes(self):
         """Should convert html entityrefs in attribute values"""
         # it would be even nicer if &quot; and &apos; could be preserved, but the automatic unescaping of
         # attributes is deep inside html.HTMLParser.
-        self.check_single("<html><head></head><body><img alt=\"&lt;not an element&gt; &amp; &quot; &apos; &rsquo;\"></body></html>", u"<not an element> & \" ' \u2019")
+        self.check_single("<html><head></head><body><img alt=\"&lt;not an element&gt; &amp; &quot; &apos; &rsquo;\"></body></html>", "<not an element> & \" ' \u2019")
 
     def test_charrefs(self):
         """Should extract html charrefs"""
-        self.check_single("<html><head></head><body><p>&#8217; &#x2019;</p></body></html>", u"\u2019 \u2019")
+        self.check_single("<html><head></head><body><p>&#8217; &#x2019;</p></body></html>", "\u2019 \u2019")
 
     def test_php(self):
         """Test that PHP snippets don't interfere"""

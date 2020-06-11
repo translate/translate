@@ -126,7 +126,7 @@ class prop2po:
             # handle the header case specially...
             if not appendedheader:
                 if origprop.isblank():
-                    targetheader.addnote(u"".join(waitingcomments).rstrip(),
+                    targetheader.addnote("".join(waitingcomments).rstrip(),
                                          "developer", position="prepend")
                     waitingcomments = []
                     origpo = None
@@ -148,7 +148,7 @@ class prop2po:
             if origpo is not None:
                 if translatedpo is not None and not self.blankmsgstr:
                     origpo.target = translatedpo.source
-                origpo.addnote(u"".join(waitingcomments).rstrip(),
+                origpo.addnote("".join(waitingcomments).rstrip(),
                                "developer", position="prepend")
                 waitingcomments = []
                 thetargetfile.addunit(origpo)
@@ -207,7 +207,7 @@ class prop2po:
             variant = match.group(2)
             if key not in plurals:
                 # Generate fake unit for each keys
-                new_unit = new_store.addsourceunit(u"fish")
+                new_unit = new_store.addsourceunit("fish")
                 plurals[key] = Variants(new_unit)
 
             # No variant => other
@@ -263,16 +263,16 @@ class prop2po:
 
         new_store = type(postore)()
         plurals = {}
-        current_plural = u""
+        current_plural = ""
         for unit in postore.units:
             if not unit.istranslatable():
                 #TODO: reconsider: we could lose header comments here
                 continue
-            if u"plural(n)" in unit.source:
+            if "plural(n)" in unit.source:
                 if current_plural:
                     # End of a set of plural units
                     _append_plural_unit(new_store, plurals, current_plural)
-                    current_plural = u""
+                    current_plural = ""
                 # start of a set of plural units
                 location = unit.getlocations()[0]
                 current_plural = location
@@ -289,14 +289,14 @@ class prop2po:
                 elif current_plural:
                     # End of a set of plural units
                     _append_plural_unit(new_store, plurals, current_plural)
-                    current_plural = u""
+                    current_plural = ""
 
                 new_store.addunit(unit)
 
         if current_plural:
             # The file ended with a set of plural units
             _append_plural_unit(new_store, plurals, current_plural)
-            current_plural = u""
+            current_plural = ""
 
         # if everything went well, there should be nothing left in plurals
         if len(plurals) != 0:
@@ -322,7 +322,7 @@ class prop2po:
             return None
         pounit.addlocation(propunit.name)
         pounit.source = propunit.source
-        pounit.target = u""
+        pounit.target = ""
         return pounit
 
     def convertmixedunit(self, labelprop, accesskeyprop, commenttype):

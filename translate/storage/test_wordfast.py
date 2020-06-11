@@ -53,7 +53,7 @@ class TestWFUnit(test_base.TestTranslationUnit):
         for escaped, real in wf.WF_ESCAPE_MAP[:16]:  # Only common and Windows, not testing Mac
             compare(real, escaped)
         # Real world cases
-        unit = self.UnitClass(u"Open &File. ’n Probleem.")
+        unit = self.UnitClass("Open &File. ’n Probleem.")
         assert unit.dict['source'] == "Open &'26;File. &'92;n Probleem."
 
     def test_newlines(self):

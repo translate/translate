@@ -38,11 +38,11 @@ class TestCPOUnit(test_po.TestPOUnit):
         assert unit.target.strings == ["Koei", "Koeie"]
         assert unit.target == "Koei"
 
-        unit.target = [u"Sk\u00ear", u"Sk\u00eare"]
+        unit.target = ["Sk\u00ear", "Sk\u00eare"]
         assert isinstance(unit.target, multistring)
-        assert unit.target.strings == [u"Sk\u00ear", u"Sk\u00eare"]
-        assert unit.target.strings == [u"Sk\u00ear", u"Sk\u00eare"]
-        assert unit.target == u"Sk\u00ear"
+        assert unit.target.strings == ["Sk\u00ear", "Sk\u00eare"]
+        assert unit.target.strings == ["Sk\u00ear", "Sk\u00eare"]
+        assert unit.target == "Sk\u00ear"
 
     def test_plural_reduction(self):
         """checks that reducing the number of plurals supplied works"""
@@ -154,14 +154,14 @@ class TestCPOFile(test_po.TestPOFile):
 
     def test_output_str_unicode(self):
         """checks that we can serialize pofile, unit content is in unicode"""
-        posource = u'''#: nb\nmsgid "Norwegian Bokm\xe5l"\nmsgstr ""\n'''
+        posource = '''#: nb\nmsgid "Norwegian Bokm\xe5l"\nmsgstr ""\n'''
         pofile = self.StoreClass(BytesIO(posource.encode("UTF-8")), encoding="UTF-8")
         assert len(pofile.units) == 1
         print(bytes(pofile))
         thepo = pofile.units[0]
 #        assert bytes(pofile) == posource.encode("UTF-8")
         # extra test: what if we set the msgid to a unicode? this happens in prop2po etc
-        thepo.source = u"Norwegian Bokm\xe5l"
+        thepo.source = "Norwegian Bokm\xe5l"
 #        assert str(thepo) == posource.encode("UTF-8")
         # Now if we set the msgstr to Unicode
         # this is an escaped half character (1/2)

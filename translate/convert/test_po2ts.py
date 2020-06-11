@@ -41,9 +41,9 @@ msgstr "†arget"'''
         tsfile = self.po2ts(minipo)
         print(tsfile)
         print(type(tsfile))
-        assert u"<name>unicode.cpp</name>" in tsfile
-        assert u"<source>ßource</source>" in tsfile
-        assert u"<translation>†arget</translation>" in tsfile
+        assert "<name>unicode.cpp</name>" in tsfile
+        assert "<source>ßource</source>" in tsfile
+        assert "<translation>†arget</translation>" in tsfile
 
     def test_fullunit(self):
         """check that an entry with various settings is converted correctly"""
@@ -103,7 +103,7 @@ msgstr "Linea 1\n"
         tsfile = self.po2ts(minipo)
         print(tsfile)
         print(type(tsfile))
-        assert u"<name>linebreak.cpp</name>" in tsfile
+        assert "<name>linebreak.cpp</name>" in tsfile
         assert r'''<source>Line 1
 Line 2</source>''' in tsfile
         assert r'''<translation>Linea 1
@@ -121,7 +121,7 @@ msgstr "Linea 1\n"
         tsfile = self.po2ts(minipo)
         print(tsfile)
         print(type(tsfile))
-        assert u"<name>linebreak.cpp</name>" in tsfile
+        assert "<name>linebreak.cpp</name>" in tsfile
         assert r'''<source>Line 1
 
 Line 3</source>''' in tsfile

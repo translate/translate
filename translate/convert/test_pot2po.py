@@ -638,8 +638,8 @@ msgstr "trans"
         assert len(newpo.units) == 2
         assert newpo.units[0].isheader()
         unit = newpo.units[1]
-        assert unit.source == u""
-        assert unit.getid() == u"bla\04"
+        assert unit.source == ""
+        assert unit.getid() == "bla\04"
         assert unit.target == "trans"
         assert not unit.isfuzzy()
 
@@ -676,8 +676,8 @@ msgstr "trans"
         assert len(newpo.units) == 2
         assert newpo.units[0].isheader()
         unit = newpo.units[1]
-        assert unit.source == u""
-        assert unit.getid() == u"bla\04"
+        assert unit.source == ""
+        assert unit.getid() == "bla\04"
         assert unit.target == "trans"
         assert not unit.isfuzzy()
 

@@ -160,7 +160,7 @@ class BaseTestFilter:
     def test_notes(self):
         """tests the optional adding of notes"""
         # let's make sure we trigger the 'long' and/or 'doubleword' test
-        self.unit.target = u"asdf asdf asdf asdf asdf asdf asdf"
+        self.unit.target = "asdf asdf asdf asdf asdf asdf asdf"
         filter_result = self.filter(self.translationstore)
         assert headerless_len(filter_result.units) == 1
         assert first_translatable(filter_result).geterrors()
@@ -179,8 +179,8 @@ class BaseTestFilter:
     def test_unicode(self):
         """tests that we can handle UTF-8 encoded characters when there is no
         known header specified encoding"""
-        self.unit.source = u'Bézier curve'
-        self.unit.target = u'Bézier-kurwe'
+        self.unit.source = 'Bézier curve'
+        self.unit.target = 'Bézier-kurwe'
         filter_result = self.filter(self.translationstore)
         assert headerless_len(filter_result.units) == 0
 

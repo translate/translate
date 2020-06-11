@@ -177,11 +177,11 @@ def is_comment_one_line(line):
     :rtype: bool
     """
     stripped = line.strip()
-    line_starters = (u'#', u'!', u'//', u';')
+    line_starters = ('#', '!', '//', ';')
     for starter in line_starters:
         if stripped.startswith(starter):
             return True
-    if stripped.startswith(u'/*') and stripped.endswith(u'*/'):
+    if stripped.startswith('/*') and stripped.endswith('*/'):
         return True
     return False
 
@@ -245,9 +245,9 @@ class Dialect:
     name = None
     default_encoding = 'iso-8859-1'
     delimiters = None
-    pair_terminator = u""
-    key_wrap_char = u""
-    value_wrap_char = u""
+    pair_terminator = ""
+    key_wrap_char = ""
+    value_wrap_char = ""
     drop_comments = []
 
     @classmethod
@@ -256,8 +256,8 @@ class Dialect:
         # FIXME: dialects are a bad idea, not possible for subclasses
         # to override key methods
         if encoding not in ("utf-8", "utf-16"):
-            return quote.javapropertiesencode(string or u"")
-        return quote.java_utf8_properties_encode(string or u"")
+            return quote.javapropertiesencode(string or "")
+        return quote.java_utf8_properties_encode(string or "")
 
     @staticmethod
     def decode(string):
@@ -288,11 +288,11 @@ class Dialect:
             if cls.key_wrap_char != '' and line[start_pos] == cls.key_wrap_char:
                 # Skip the key if it is delimited by some char
                 start_pos += 1
-                while (line[start_pos] != cls.key_wrap_char or line[start_pos-1] == u"\\"):
+                while (line[start_pos] != cls.key_wrap_char or line[start_pos-1] == "\\"):
                     start_pos += 1
             pos = line.find(delimiter, start_pos)
             while pos != -1:
-                if delimiters[delimiter] == -1 and line[pos-1] != u"\\":
+                if delimiters[delimiter] == -1 and line[pos-1] != "\\":
                     delimiters[delimiter] = pos
                     break
                 pos = line.find(delimiter, pos + 1)
@@ -300,22 +300,22 @@ class Dialect:
         mindelimiter = None
         minpos = -1
         for delimiter, pos in delimiters.items():
-            if pos == -1 or delimiter == u" ":
+            if pos == -1 or delimiter == " ":
                 continue
             if minpos == -1 or pos < minpos:
                 minpos = pos
                 mindelimiter = delimiter
-        if mindelimiter is None and delimiters.get(u" ", -1) != -1:
+        if mindelimiter is None and delimiters.get(" ", -1) != -1:
             # Use space delimiter if we found nothing else
-            return (u" ", delimiters[" "])
+            return (" ", delimiters[" "])
         if (mindelimiter is not None and
-            u" " in delimiters and
-            delimiters[u" "] < delimiters[mindelimiter]):
+            " " in delimiters and
+            delimiters[" "] < delimiters[mindelimiter]):
             # If space delimiter occurs earlier than ":" or "=" then it is the
             # delimiter only if there are non-whitespace characters between it and
             # the other detected delimiter.
-            if len(line[delimiters[u" "]:delimiters[mindelimiter]].strip()) > 0:
-                return (u" ", delimiters[u" "])
+            if len(line[delimiters[" "]:delimiters[mindelimiter]].strip()) > 0:
+                return (" ", delimiters[" "])
         return (mindelimiter, minpos)
 
     @classmethod
@@ -349,29 +349,29 @@ class Dialect:
 class DialectJava(Dialect):
     name = "java"
     default_encoding = "iso-8859-1"
-    delimiters = [u"=", u":", u" "]
+    delimiters = ["=", ":", " "]
 
 
 @register_dialect
 class DialectJavaUtf8(DialectJava):
     name = "java-utf8"
     default_encoding = "utf-8"
-    delimiters = [u"=", u":", u" "]
+    delimiters = ["=", ":", " "]
 
     @classmethod
     def encode(cls, string, encoding=None):
-        return quote.java_utf8_properties_encode(string or u"")
+        return quote.java_utf8_properties_encode(string or "")
 
 
 @register_dialect
 class DialectJavaUtf16(DialectJava):
     name = "java-utf16"
     default_encoding = "utf-16"
-    delimiters = [u"=", u":", u" "]
+    delimiters = ["=", ":", " "]
 
     @classmethod
     def encode(cls, string, encoding=None):
-        return quote.java_utf8_properties_encode(string or u"")
+        return quote.java_utf8_properties_encode(string or "")
 
 
 @register_dialect
@@ -383,20 +383,20 @@ class DialectFlex(DialectJava):
 @register_dialect
 class DialectMozilla(DialectJavaUtf8):
     name = "mozilla"
-    delimiters = [u"="]
+    delimiters = ["="]
 
     @classmethod
     def encode(cls, string, encoding=None):
         """Encode the string"""
-        string = quote.java_utf8_properties_encode(string or u"")
-        string = quote.mozillaescapemarginspaces(string or u"")
+        string = quote.java_utf8_properties_encode(string or "")
+        string = quote.mozillaescapemarginspaces(string or "")
         return string
 
 
 @register_dialect
 class DialectGaia(DialectMozilla):
     name = "gaia"
-    delimiters = [u"="]
+    delimiters = ["="]
 
 
 @register_dialect
@@ -404,7 +404,7 @@ class DialectGwt(DialectJava):
     plural_regex = re.compile(r'([^\[\]]*)(?:\[(.*)\])?')
     name = "gwt"
     default_encoding = "utf-8"
-    delimiters = [u"="]
+    delimiters = ["="]
 
     gwt_plural_categories = [
         ('', "other"),
@@ -443,34 +443,34 @@ class DialectGwt(DialectJava):
         # Some sanity checks
         if not variant:
             raise Exception("Key \"%s\" variant \"%s\" is invalid" % (key, variant))
-        return u"%s[%s]" % (key, variant)
+        return "%s[%s]" % (key, variant)
 
     @classmethod
     def encode(cls, string, encoding=None):
-        return quote.java_utf8_properties_encode(string or u"")
+        return quote.java_utf8_properties_encode(string or "")
 
 
 @register_dialect
 class DialectSkype(Dialect):
     name = "skype"
     default_encoding = "utf-16"
-    delimiters = [u"="]
+    delimiters = ["="]
 
     @classmethod
     def encode(cls, string, encoding=None):
-        return quote.java_utf8_properties_encode(string or u"")
+        return quote.java_utf8_properties_encode(string or "")
 
 
 @register_dialect
 class DialectStrings(Dialect):
     name = "strings"
     default_encoding = "utf-16"
-    delimiters = [u"="]
-    pair_terminator = u";"
-    key_wrap_char = u'"'
-    value_wrap_char = u'"'
-    out_ending = u';'
-    out_delimiter_wrappers = u' '
+    delimiters = ["="]
+    pair_terminator = ";"
+    key_wrap_char = '"'
+    value_wrap_char = '"'
+    out_ending = ';'
+    out_delimiter_wrappers = ' '
     drop_comments = ["/* No comment provided by engineer. */"]
 
     @classmethod
@@ -523,7 +523,7 @@ class proppluralunit(base.TranslationUnit):
         self.personality = get_dialect(personality)
         super(proppluralunit, self).__init__(source)
         self.units = collections.OrderedDict()
-        self.name = u""
+        self.name = ""
 
     @staticmethod
     def _get_language_mapping(lang):
@@ -566,7 +566,7 @@ class proppluralunit(base.TranslationUnit):
                 if i < len(strings):
                     ret.append(strings[i])
                 else:
-                    ret.append(u"")
+                    ret.append("")
         else:
             ret.append(strings[0])
         return ret
@@ -710,7 +710,7 @@ class proppluralunit(base.TranslationUnit):
         return self.getoutput()
 
     def getoutput(self):
-        ret = u""
+        ret = ""
         for x in self._get_ordered_units():
             ret += x.getoutput()
         return ret
@@ -726,8 +726,8 @@ class proppluralunit(base.TranslationUnit):
 class DialectJoomla(Dialect):
     name = "joomla"
     default_encoding = "utf-8"
-    delimiters = [u"="]
-    out_delimiter_wrappers = u''
+    delimiters = ["="]
+    out_delimiter_wrappers = ''
 
     @classmethod
     def value_strip(cls, value):
@@ -760,19 +760,19 @@ class propunit(base.TranslationUnit):
         """Construct a blank propunit."""
         self.personality = get_dialect(personality)
         super().__init__(source)
-        self.name = u""
-        self.value = u""
-        self.translation = u""
-        self.delimiter = u"="
+        self.name = ""
+        self.value = ""
+        self.translation = ""
+        self.delimiter = "="
         self.comments = []
         self.source = source
         # a pair of symbols to enclose delimiter on the output
         # (a " " can be used for the sake of convenience)
         self.out_delimiter_wrappers = getattr(self.personality,
-                                              'out_delimiter_wrappers', u'')
+                                              'out_delimiter_wrappers', '')
         # symbol that should end every property sentence
         # (e.g. ";" is required for Mac OS X strings)
-        self.out_ending = getattr(self.personality, 'out_ending', u'')
+        self.out_ending = getattr(self.personality, 'out_ending', '')
 
     @property
     def source(self):
@@ -781,18 +781,18 @@ class propunit(base.TranslationUnit):
     @source.setter
     def source(self, source):
         self._rich_source = None
-        self.value = self.personality.encode(data.forceunicode(source) or u"",
+        self.value = self.personality.encode(data.forceunicode(source) or "",
                                              self.encoding)
 
     @property
     def target(self):
-        return re.sub(u"\\\\ ", u" ", self.personality.decode(self.translation))
+        return re.sub("\\\\ ", " ", self.personality.decode(self.translation))
 
     @target.setter
     def target(self, target):
         self._rich_target = None
         target = data.forceunicode(target)
-        self.translation = self.personality.encode(target or u"",
+        self.translation = self.personality.encode(target or "",
                                                    self.encoding)
 
     @property
@@ -811,9 +811,9 @@ class propunit(base.TranslationUnit):
         """
         notes = self.getnotes()
         if notes:
-            notes += u"\n"
+            notes += "\n"
         if self.isblank():
-            return notes + u"\n"
+            return notes + "\n"
         else:
             self.value = self.personality.encode(self.source, self.encoding)
             self.translation = self.personality.encode(self.target,
@@ -840,7 +840,7 @@ class propunit(base.TranslationUnit):
                 "value": value,
                 "ending": ending,
             }
-            return u"%(notes)s%(key)s%(del)s%(value)s%(ending)s\n" % out_dict
+            return "%(notes)s%(key)s%(del)s%(value)s%(ending)s\n" % out_dict
 
     def getlocations(self):
         return [self.name]
@@ -854,7 +854,7 @@ class propunit(base.TranslationUnit):
 
     def getnotes(self, origin=None):
         if origin in ['programmer', 'developer', 'source code', None]:
-            return u'\n'.join(self.comments)
+            return '\n'.join(self.comments)
         else:
             return super().getnotes(origin)
 
@@ -910,7 +910,7 @@ class propfile(base.TranslationStore):
         inmultilinecomment = False
         was_header = False
 
-        for line in propsrc.split(u"\n"):
+        for line in propsrc.split("\n"):
             # handle multiline value if we're in one
             line = quote.rstripeol(line)
             if inmultilinevalue:
@@ -954,8 +954,8 @@ class propfile(base.TranslationStore):
                 newunit.delimiter, delimiter_pos = self.personality.find_delimiter(line)
                 if delimiter_pos == -1:
                     newunit.name = self.personality.key_strip(line)
-                    newunit.value = u""
-                    newunit.delimiter = u""
+                    newunit.value = ""
+                    newunit.delimiter = ""
                     self.addunit(newunit)
                     newunit = propunit("", self.personality.name)
                 else:

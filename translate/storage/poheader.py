@@ -380,7 +380,7 @@ class poheader:
         outcontrib = False
         for line in header.getnotes("translator").split('\n'):
             line = line.strip()
-            if line == u"FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.":
+            if line == "FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.":
                 incontrib = True
                 continue
             if author_re.match(line):

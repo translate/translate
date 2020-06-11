@@ -57,7 +57,7 @@ class csvunit(base.TranslationUnit):
         result = self.source
         context = self.context
         if context:
-            result = u"%s\04%s" % (context, result)
+            result = "%s\04%s" % (context, result)
 
         return result
 
@@ -110,7 +110,7 @@ class csvunit(base.TranslationUnit):
                 self.translator_comments = text
 
     def removenotes(self, origin=None):
-        self.translator_comments = u''
+        self.translator_comments = ''
 
     def isfuzzy(self):
         if self.fuzzy.lower() in ('1', 'x', 'true', 'yes', 'fuzzy'):

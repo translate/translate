@@ -36,7 +36,7 @@ def extract_msgid_comment(text):
     msgidcomment = msgid_comment_re.match(text)
     if msgidcomment:
         return msgidcomment.group(1)
-    return u""
+    return ""
 
 
 def quote_plus(text):
@@ -72,7 +72,7 @@ class pounit(base.TranslationUnit):
 
     def adderror(self, errorname, errortext):
         """Adds an error message to this unit."""
-        text = u'(pofilter) %s: %s' % (errorname, errortext)
+        text = '(pofilter) %s: %s' % (errorname, errortext)
         # Don't add the same error twice:
         if text not in self.getnotes(origin='translator'):
             self.addnote(text, origin="translator")

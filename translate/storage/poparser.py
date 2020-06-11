@@ -74,7 +74,7 @@ class ParseState:
                 self.next_line = next(self._input_iterator)
                 self.lineno += 1
         except StopIteration:
-            self.next_line = u''
+            self.next_line = ''
             self.eof = True
         else:
             if isinstance(self.next_line, bytes) and self.encoding is not None:

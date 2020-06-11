@@ -19,11 +19,11 @@ class TestPOXLIFFUnit(test_xliff.TestXLIFFUnit):
         assert unit.target.strings == ["Koei", "Koeie"]
         assert unit.target == "Koei"
 
-        unit.target = [u"Sk\u00ear", u"Sk\u00eare"]
+        unit.target = ["Sk\u00ear", "Sk\u00eare"]
         assert isinstance(unit.target, multistring)
-        assert unit.target.strings == [u"Sk\u00ear", u"Sk\u00eare"]
-        assert unit.target.strings == [u"Sk\u00ear", u"Sk\u00eare"]
-        assert unit.target == u"Sk\u00ear"
+        assert unit.target.strings == ["Sk\u00ear", "Sk\u00eare"]
+        assert unit.target.strings == ["Sk\u00ear", "Sk\u00eare"]
+        assert unit.target == "Sk\u00ear"
 
     def test_ids(self):
         """Tests that ids are assigned correctly, especially for plurals"""

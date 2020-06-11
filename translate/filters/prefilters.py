@@ -160,7 +160,7 @@ def filterwordswithpunctuation(str1):
     """Goes through a list of known words that have punctuation and removes the
     punctuation from them.
     """
-    if u"'" not in str1:
+    if "'" not in str1:
         return str1
     occurrences = []
     for word, replacement in wordswithpunctuation.items():

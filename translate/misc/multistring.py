@@ -69,7 +69,7 @@ class multistring(str):
         return self.__cmp__(otherstring) == 0
 
     def __repr__(self):
-        return u"multistring(%r)" % (
+        return "multistring(%r)" % (
             [str(item) for item in self.strings]
         )
 

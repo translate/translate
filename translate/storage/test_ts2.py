@@ -169,11 +169,11 @@ class TestTSfile(test_base.TestTranslationStore):
         """Test basic plurals"""
         tsfile = ts.tsfile()
         tsunit = tsfile.addsourceunit("File(s)")
-        tsunit.target = [u"Leêr", u"Leêrs"]
+        tsunit.target = ["Leêr", "Leêrs"]
         newfile = ts.tsfile.parsestring(bytes(tsfile))
         print(bytes(tsfile))
         checkunit = newfile.findunit("File(s)")
-        assert checkunit.target == [u"Leêr", u"Leêrs"]
+        assert checkunit.target == ["Leêr", "Leêrs"]
         assert checkunit.hasplural()
 
     def test_nplural(self):

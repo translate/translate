@@ -127,13 +127,13 @@ class UtxUnit(base.TranslationUnit):
         currentnote = self._get_field('comment')
         if (position == "append" and
             currentnote is not None and
-            currentnote != u''):
+            currentnote != ''):
             self._set_field('comment', currentnote + '\n' + text)
         else:
             self._set_field('comment', text)
 
     def removenotes(self, origin=None):
-        self._set_field('comment', u'')
+        self._set_field('comment', '')
 
     @property
     def source(self):

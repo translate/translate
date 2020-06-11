@@ -23,25 +23,25 @@ from . import xpath_breadcrumb
 
 def test_breadcrumb():
     xb = xpath_breadcrumb.XPathBreadcrumb()
-    assert xb.xpath == u''
+    assert xb.xpath == ''
 
-    xb.start_tag(u'a')
-    assert xb.xpath == u'a[0]'
+    xb.start_tag('a')
+    assert xb.xpath == 'a[0]'
 
-    xb.start_tag(u'b')
-    assert xb.xpath == u'a[0]/b[0]'
+    xb.start_tag('b')
+    assert xb.xpath == 'a[0]/b[0]'
     xb.end_tag()
 
-    assert xb.xpath == u'a[0]'
+    assert xb.xpath == 'a[0]'
 
-    xb.start_tag(u'b')
-    assert xb.xpath == u'a[0]/b[1]'
+    xb.start_tag('b')
+    assert xb.xpath == 'a[0]/b[1]'
     xb.end_tag()
 
-    assert xb.xpath == u'a[0]'
+    assert xb.xpath == 'a[0]'
     xb.end_tag()
 
-    assert xb.xpath == u''
+    assert xb.xpath == ''
 
-    xb.start_tag(u'a')
-    assert xb.xpath == u'a[1]'
+    xb.start_tag('a')
+    assert xb.xpath == 'a[1]'

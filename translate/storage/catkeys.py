@@ -197,7 +197,7 @@ class CatkeysUnit(base.TranslationUnit):
     def getnotes(self, origin=None):
         if not origin or origin in ["programmer", "developer", "source code"]:
             return self._dict.get("comment", "")
-        return u""
+        return ""
 
     def getcontext(self):
         return self._dict.get("context", "")
@@ -210,14 +210,14 @@ class CatkeysUnit(base.TranslationUnit):
         notes = self.getnotes()
         id = self.source
         if notes:
-            id = u"%s\04%s" % (notes, id)
+            id = "%s\04%s" % (notes, id)
         if context:
-            id = u"%s\04%s" % (context, id)
+            id = "%s\04%s" % (context, id)
         return id
 
     def markfuzzy(self, present=True):
         if present:
-            self.target = u""
+            self.target = ""
 
     def settargetlang(self, newlang):
         self._dict['target-lang'] = newlang

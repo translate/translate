@@ -88,13 +88,13 @@ class TestPhp2PO:
 
     def test_unicode(self):
         """checks that unicode entries convert properly"""
-        unistring = u'Norsk bokm\u00E5l'
+        unistring = 'Norsk bokm\u00E5l'
         phpsource = """$lang['nb'] = '%s';""" % unistring
         pofile = self.php2po(phpsource)
         pounit = self.singleelement(pofile)
         print(repr(pofile.units[0].target))
         print(repr(pounit.source))
-        assert pounit.source == u'Norsk bokm\u00E5l'
+        assert pounit.source == 'Norsk bokm\u00E5l'
 
     def test_multiline(self):
         """checks that multiline enties can be parsed"""

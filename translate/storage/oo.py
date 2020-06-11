@@ -60,7 +60,7 @@ class unormalizechar(dict):
             self.normalchars[ord(char)] = char
 
     def __getitem__(self, key):
-        return self.normalchars.get(key, u"_")
+        return self.normalchars.get(key, "_")
 
 
 unormalizetable = unormalizechar(normalfilenamechars.decode("ascii"))

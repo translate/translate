@@ -30,7 +30,7 @@ from translate.misc import quote
 from translate.storage import po, properties
 
 
-eol = u"\n"
+eol = "\n"
 
 
 def applytranslation(key, propunit, inunit, mixedkeys):
@@ -94,7 +94,7 @@ class reprop:
         for line in content.splitlines(True):
             outputstr = self.convertline(line)
             outputlines.append(outputstr)
-        return u"".join(outputlines).encode(self.encoding)
+        return "".join(outputlines).encode(self.encoding)
 
     def _handle_accesskeys(self, inunit, currkey):
         value = inunit.target
@@ -126,7 +126,7 @@ class reprop:
                 if category == 'zero':
                     # [zero] cases are translated as separate units
                     continue
-                new_unit = self.inputstore.addsourceunit(u"fish")  # not used
+                new_unit = self.inputstore.addsourceunit("fish")  # not used
                 new_location = '%s[%s]' % (location, category)
                 new_unit.addlocation(new_location)
                 new_unit.target = text
@@ -157,7 +157,7 @@ class reprop:
             names = [cldr2gwt.get(name) for name in names]
             location = unit.getlocations()[0]
             for category, text in zip(names, unit.target.strings):
-                new_unit = self.inputstore.addsourceunit(u"fish")  # not used
+                new_unit = self.inputstore.addsourceunit("fish")  # not used
                 if category != '':
                     new_location = '%s[%s]' % (location, category)
                 else:
@@ -167,7 +167,7 @@ class reprop:
                 self.inputstore.locationindex[new_location] = new_unit
 
     def convertline(self, line):
-        returnline = u""
+        returnline = ""
         # handle multiline msgid if we're in one
         if self.inmultilinemsgid:
             msgid = quote.rstripeol(line).strip()
@@ -198,7 +198,7 @@ class reprop:
             if key in self.inputstore.locationindex:
                 unit = self.inputstore.locationindex[key]
                 if unit is None or not unit.istranslated() and bool(unit.source) and self.remove_untranslated:
-                    returnline = u""
+                    returnline = ""
                     self.inecho = False
                 else:
                     if unit.isfuzzy() and not self.includefuzzy or len(unit.target) == 0:

@@ -122,7 +122,7 @@ class mounit(base.TranslationUnit):
 
     def isheader(self):
         """Is this a header entry?"""
-        return self.source == u""
+        return self.source == ""
 
     def istranslatable(self):
         """Is this message translateable?"""

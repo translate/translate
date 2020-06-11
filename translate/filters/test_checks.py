@@ -119,7 +119,7 @@ def test_accelerators():
     assert fails(stdchecker.accelerators, "File", "&Fayile")
     assert passes(stdchecker.accelerators, "Mail && News", "Pos en Nuus")
     assert fails(stdchecker.accelerators, "Mail &amp; News", "Pos en Nuus")
-    assert passes(stdchecker.accelerators, "&Allow", u'&\ufeb2\ufee3\ufe8e\ufea3')
+    assert passes(stdchecker.accelerators, "&Allow", '&\ufeb2\ufee3\ufe8e\ufea3')
     assert fails(stdchecker.accelerators, "Open &File", "Vula& Ifayile")
     kdechecker = checks.KdeChecker()
     assert passes(kdechecker.accelerators, "&File", "&Fayile")
@@ -249,10 +249,10 @@ def test_doublequoting():
     assert passes(frchecker.doublequoting, "Do \"this\"", "Do « this »")
     assert fails(frchecker.doublequoting, "Do \"this\"", "Do « this » « this »")
     # This used to fail because we strip variables, and was left with an empty quotation that was not converted
-    assert passes(frchecker.doublequoting, u"Copying `%s' to `%s'", u"Copie de « %s » vers « %s »")
+    assert passes(frchecker.doublequoting, "Copying `%s' to `%s'", "Copie de « %s » vers « %s »")
 
     vichecker = checks.StandardChecker(checks.CheckerConfig(targetlanguage="vi"))
-    assert passes(vichecker.doublequoting, 'Save "File"', u"Lưu « Tập tin »")
+    assert passes(vichecker.doublequoting, 'Save "File"', "Lưu « Tập tin »")
 
     # Had a small exception with such a case:
     eschecker = checks.StandardChecker(checks.CheckerConfig(targetlanguage="es"))
@@ -306,22 +306,22 @@ def test_endpunc():
     assert passes(mozillachecker.endpunc, "Upgrades an existing $ProductShortName$ installation.", "Ku antswisiwa ka ku nghenisiwa ka $ProductShortName$.")
     # Real examples
     assert passes(stdchecker.endpunc, "A nickname that identifies this publishing site (e.g.: 'MySite')", "Vito ro duvulela leri tirhisiwaka ku kuma sayiti leri ro kandziyisa (xik.: 'Sayiti ra Mina')")
-    assert fails(stdchecker.endpunc, "Question", u"Wrong\u2026")
+    assert fails(stdchecker.endpunc, "Question", "Wrong\u2026")
     # Making sure singlequotes don't confuse things
     assert passes(stdchecker.endpunc, "Pseudo-elements can't be negated '%1$S'.", "Pseudo-elemente kan nie '%1$S' ontken word nie.")
 
     stdchecker = checks.StandardChecker(checks.CheckerConfig(targetlanguage='km'))
-    assert passes(stdchecker.endpunc, "In this new version, there are some minor conversion improvements on complex style in Openoffice.org Writer.", u"នៅ​ក្នុង​កំណែ​ថ្មីនេះ មាន​ការ​កែសម្រួល​មួយ​ចំនួន​តូច​ទាក់​ទង​នឹង​ការ​បំលែង​ពុម្ពអក្សរ​ខ្មែរ​ ក្នុង​កម្មវិធី​ការិយាល័យ​ ស្លឹករឹត ដែល​មាន​ប្រើ​ប្រាស់​រចនាប័ទ្មស្មុគស្មាញច្រើន\u00a0។")
+    assert passes(stdchecker.endpunc, "In this new version, there are some minor conversion improvements on complex style in Openoffice.org Writer.", "នៅ​ក្នុង​កំណែ​ថ្មីនេះ មាន​ការ​កែសម្រួល​មួយ​ចំនួន​តូច​ទាក់​ទង​នឹង​ការ​បំលែង​ពុម្ពអក្សរ​ខ្មែរ​ ក្នុង​កម្មវិធី​ការិយាល័យ​ ស្លឹករឹត ដែល​មាន​ប្រើ​ប្រាស់​រចនាប័ទ្មស្មុគស្មាញច្រើន\u00a0។")
 
     stdchecker = checks.StandardChecker(checks.CheckerConfig(targetlanguage='zh'))
-    assert passes(stdchecker.endpunc, "To activate your account, follow this link:\n", u"要啟用戶口，請瀏覽這個鏈結：\n")
+    assert passes(stdchecker.endpunc, "To activate your account, follow this link:\n", "要啟用戶口，請瀏覽這個鏈結：\n")
 
     stdchecker = checks.StandardChecker(checks.CheckerConfig(targetlanguage='vi'))
-    assert passes(stdchecker.endpunc, "Do you want to delete the XX dialog?", u"Bạn có muốn xoá hộp thoại XX không?")
+    assert passes(stdchecker.endpunc, "Do you want to delete the XX dialog?", "Bạn có muốn xoá hộp thoại XX không?")
 
     stdchecker = checks.StandardChecker(checks.CheckerConfig(targetlanguage='fr'))
-    assert passes(stdchecker.endpunc, "Header:", u"En-tête :")
-    assert passes(stdchecker.endpunc, "Header:", u"En-tête\u00a0:")
+    assert passes(stdchecker.endpunc, "Header:", "En-tête :")
+    assert passes(stdchecker.endpunc, "Header:", "En-tête\u00a0:")
 
 
 def test_endwhitespace():
@@ -441,7 +441,7 @@ def test_musttranslatewords():
     assert fails(stdchecker.musttranslatewords, "Click 'Mozilla' button", "Kliek 'Mozilla' knoppie")
     assert passes(stdchecker.musttranslatewords, 'Click "Mozilla" button', 'Kliek "Motzille" knoppie')
     assert fails(stdchecker.musttranslatewords, 'Click "Mozilla" button', 'Kliek "Mozilla" knoppie')
-    assert fails(stdchecker.musttranslatewords, 'Click "Mozilla" button', u'Kliek «Mozilla» knoppie')
+    assert fails(stdchecker.musttranslatewords, 'Click "Mozilla" button', 'Kliek «Mozilla» knoppie')
     assert passes(stdchecker.musttranslatewords, "Click (Mozilla) button", "Kliek (Motzille) knoppie")
     assert fails(stdchecker.musttranslatewords, "Click (Mozilla) button", "Kliek (Mozilla) knoppie")
     assert passes(stdchecker.musttranslatewords, "Click Mozilla!", "Kliek Motzille!")
@@ -452,7 +452,7 @@ def test_musttranslatewords():
     stdchecker = checks.StandardChecker(checks.CheckerConfig(varmatches=[("%", None), ], musttranslatewords=["OK"]))
     assert passes(stdchecker.musttranslatewords, "Click %OK to start", "Kliek %OK om te begin")
     # Unicode
-    assert fails(stdchecker.musttranslatewords, "Click OK", u"Kiḽikani OK")
+    assert fails(stdchecker.musttranslatewords, "Click OK", "Kiḽikani OK")
 
 
 def test_notranslatewords():
@@ -467,7 +467,7 @@ def test_notranslatewords():
     # should always pass if there are no stopwords in the original
     assert passes(stdchecker.notranslatewords, "This uses something else. Don't you?", "hierdie gebruik Mozilla soos jy")
     # Cope with commas
-    assert passes(stdchecker.notranslatewords, "using Mozilla Task Manager", u"šomiša Selaola Mošomo sa Mozilla, gomme")
+    assert passes(stdchecker.notranslatewords, "using Mozilla Task Manager", "šomiša Selaola Mošomo sa Mozilla, gomme")
     # Find words even if they are embedded in punctuation
     assert fails(stdchecker.notranslatewords, "Click 'Mozilla' button", "Kliek 'Motzille' knoppie")
     assert passes(stdchecker.notranslatewords, "Click 'Mozilla' button", "Kliek 'Mozilla' knoppie")
@@ -485,8 +485,8 @@ def test_notranslatewords():
     stdchecker = checks.StandardChecker(checks.CheckerConfig(notranslatewords=["Writer"]))
     assert fails(stdchecker.notranslatewords, "&[ProductName] Writer/Web", "&[ProductName] Umbhali/iWebhu")
     # Unicode - different decompositions
-    stdchecker = checks.StandardChecker(checks.CheckerConfig(notranslatewords=[u"\u1e3cike"]))
-    assert passes(stdchecker.notranslatewords, u"You \u1e3cike me", u"Ek \u004c\u032dike jou")
+    stdchecker = checks.StandardChecker(checks.CheckerConfig(notranslatewords=["\u1e3cike"]))
+    assert passes(stdchecker.notranslatewords, "You \u1e3cike me", "Ek \u004c\u032dike jou")
 
 
 def test_numbers():
@@ -519,48 +519,48 @@ def test_numbers():
 def test_persian_numbers():
     """test non latin numbers for Persian (RTL)"""
     fa_checker = checks.StandardChecker(checks.CheckerConfig(targetlanguage='fa'))
-    assert passes(fa_checker.numbers, u"&حرکت آهسته (۰.۵×)", u"&Slow Motion (0.5×)")
-    assert passes(fa_checker.numbers, u"&حرکت آهسته (0.5×)", u"&Slow Motion (0.5×)")
-    assert passes(fa_checker.numbers, u'<img alt="١۰" width="10" />', u'<img alt="10" width="10" />')
-    assert passes(fa_checker.numbers, u'<img alt="10" width="10" />', u'<img alt="10" width="10" />')
-    assert passes(fa_checker.numbers, u"دسترسی مسدود شده است (۴۰۳)", u"Access denied (403)")
-    assert passes(fa_checker.numbers, u"کتاب موزیلا، ۱۵:۱", u"The Book of Mozilla, 15:1")
-    assert passes(fa_checker.numbers, u"<p>نشانی درخواست مشخصا(به عنوان مثال<q>mozilla.org:80</q>برای درگاه ۸۰ بر روی  mozilla.org)  ازدرگاهی استفاده می کندکه در حالت عادی به عنوان کاربردی <em>به غیر</em> از وبگردی استفاده می شود.مرورگر برای حفاظت و امنیت شما این درخواست را لغوکرد.</p>", u"<p>The requested address specified a port (e.g. <q>mozilla.org:80</q> for port 80 on mozilla.org) normally used for purposes <em>other</em> than Web browsing. The browser has canceled the request for your protection and security.</p>")
-    assert passes(fa_checker.numbers, u"دستور پردازشی <?%1$S?> دیگر تأثیری خارج از prolog ندارد (برای اطلاعات بیشتر، اشکال ۳۶۰۱۱۹ را مشاهده کنید).", u"<?%1$S?> processing instruction does not have any effect outside the prolog anymore (see bug 360119).")
-    assert passes(fa_checker.numbers, u"encoding حروف این سند بسیار دیرتر از آنکه مورد اثر واقع شود شناسایی شد.encoding فایل برای شناسایی باید به ۱۰۲۴ بایت اول فایل برای شناسایی منتقل شود.", u"The character encoding declaration of document was found too late for it to take effect. The encoding declaration needs to be moved to be within the first 1024 bytes of the file.")
-    assert passes(fa_checker.numbers, u"ویدئو یا صدا در این صفحه نرم‌افزار DRMای احتیاج دارد که نسخه ۶۴ بیتی از %1$S از آن پیشتیبانی نمی‌کند. %2$S", u"The audio or video on this page requires DRM software that this 64-bit build of %1$S does not support. %2$S")
-    assert passes(fa_checker.numbers, u"شما اندازه خیلی بزرگی برای حداقل اندازه قلم انتخاب کرده‌اید (بیش از ۲۴ پیکسل). این ممکن است باعث شود پیکربندی صفحاتی مانند این سخت یا غیرممکن بشود.", u"You have selected a very large minimum font size (more than 24 pixels). This may make it difficult or impossible to use some important configuration pages like this one.")
+    assert passes(fa_checker.numbers, "&حرکت آهسته (۰.۵×)", "&Slow Motion (0.5×)")
+    assert passes(fa_checker.numbers, "&حرکت آهسته (0.5×)", "&Slow Motion (0.5×)")
+    assert passes(fa_checker.numbers, '<img alt="١۰" width="10" />', '<img alt="10" width="10" />')
+    assert passes(fa_checker.numbers, '<img alt="10" width="10" />', '<img alt="10" width="10" />')
+    assert passes(fa_checker.numbers, "دسترسی مسدود شده است (۴۰۳)", "Access denied (403)")
+    assert passes(fa_checker.numbers, "کتاب موزیلا، ۱۵:۱", "The Book of Mozilla, 15:1")
+    assert passes(fa_checker.numbers, "<p>نشانی درخواست مشخصا(به عنوان مثال<q>mozilla.org:80</q>برای درگاه ۸۰ بر روی  mozilla.org)  ازدرگاهی استفاده می کندکه در حالت عادی به عنوان کاربردی <em>به غیر</em> از وبگردی استفاده می شود.مرورگر برای حفاظت و امنیت شما این درخواست را لغوکرد.</p>", "<p>The requested address specified a port (e.g. <q>mozilla.org:80</q> for port 80 on mozilla.org) normally used for purposes <em>other</em> than Web browsing. The browser has canceled the request for your protection and security.</p>")
+    assert passes(fa_checker.numbers, "دستور پردازشی <?%1$S?> دیگر تأثیری خارج از prolog ندارد (برای اطلاعات بیشتر، اشکال ۳۶۰۱۱۹ را مشاهده کنید).", "<?%1$S?> processing instruction does not have any effect outside the prolog anymore (see bug 360119).")
+    assert passes(fa_checker.numbers, "encoding حروف این سند بسیار دیرتر از آنکه مورد اثر واقع شود شناسایی شد.encoding فایل برای شناسایی باید به ۱۰۲۴ بایت اول فایل برای شناسایی منتقل شود.", "The character encoding declaration of document was found too late for it to take effect. The encoding declaration needs to be moved to be within the first 1024 bytes of the file.")
+    assert passes(fa_checker.numbers, "ویدئو یا صدا در این صفحه نرم‌افزار DRMای احتیاج دارد که نسخه ۶۴ بیتی از %1$S از آن پیشتیبانی نمی‌کند. %2$S", "The audio or video on this page requires DRM software that this 64-bit build of %1$S does not support. %2$S")
+    assert passes(fa_checker.numbers, "شما اندازه خیلی بزرگی برای حداقل اندازه قلم انتخاب کرده‌اید (بیش از ۲۴ پیکسل). این ممکن است باعث شود پیکربندی صفحاتی مانند این سخت یا غیرممکن بشود.", "You have selected a very large minimum font size (more than 24 pixels). This may make it difficult or impossible to use some important configuration pages like this one.")
 
 
 def test_bengali_numbers():
     """test non latin numbers for Bengali (LTR)"""
     bn_checker = checks.StandardChecker(checks.CheckerConfig(targetlanguage='bn'))
-    assert passes(bn_checker.numbers, u"উচ্চ গতি (১.৫ গুন)", u"&High Speed (1.5×)")
-    assert passes(bn_checker.numbers, u"উচ্চ গতি (0.5 গুন)", u"&Slow Motion (0.5×)")
-    assert passes(bn_checker.numbers, u'<img alt="১০" width="10" />', u'<img alt="10" width="10" />')
-    assert passes(bn_checker.numbers, u'<img alt="10" width="10" />', u'<img alt="10" width="10" />')
-    assert passes(bn_checker.numbers, u"<strong>Mozilla-র বই</strong>১৫: ১ পাতা থেকে সংগৃহীত", u"from <strong>The Book of Mozilla,</strong> 15:1")
-    assert passes(bn_checker.numbers, u"ট্যাগ গুলি ২৫ টি অক্ষরের মধ্যে সীমাবদ্ধ", u"Tags are limited to 25 characters")
-    assert passes(bn_checker.numbers, u"পাসওয়ার্ড অন্তত ৮-টি অক্ষর বিশিষ্ট হওয়া আবশ্যক এবং এই ক্ষেত্রে ব্যবহারকারী অ্যাকাউন্টের নাম অথবা পুনরুদ্ধারের (key) পাসওয়ার্ড রূপে ব্যবহার করা যাবে না।", u"Your password must be at least 8 characters long.  It cannot be the same as either your user name or your Recovery Key.")
+    assert passes(bn_checker.numbers, "উচ্চ গতি (১.৫ গুন)", "&High Speed (1.5×)")
+    assert passes(bn_checker.numbers, "উচ্চ গতি (0.5 গুন)", "&Slow Motion (0.5×)")
+    assert passes(bn_checker.numbers, '<img alt="১০" width="10" />', '<img alt="10" width="10" />')
+    assert passes(bn_checker.numbers, '<img alt="10" width="10" />', '<img alt="10" width="10" />')
+    assert passes(bn_checker.numbers, "<strong>Mozilla-র বই</strong>১৫: ১ পাতা থেকে সংগৃহীত", "from <strong>The Book of Mozilla,</strong> 15:1")
+    assert passes(bn_checker.numbers, "ট্যাগ গুলি ২৫ টি অক্ষরের মধ্যে সীমাবদ্ধ", "Tags are limited to 25 characters")
+    assert passes(bn_checker.numbers, "পাসওয়ার্ড অন্তত ৮-টি অক্ষর বিশিষ্ট হওয়া আবশ্যক এবং এই ক্ষেত্রে ব্যবহারকারী অ্যাকাউন্টের নাম অথবা পুনরুদ্ধারের (key) পাসওয়ার্ড রূপে ব্যবহার করা যাবে না।", "Your password must be at least 8 characters long.  It cannot be the same as either your user name or your Recovery Key.")
 
 
 def test_arabic_numbers():
     """test non latin numbers for Arabic"""
     ar_checker = checks.StandardChecker(checks.CheckerConfig(targetlanguage='ar'))
-    assert passes(ar_checker.numbers, u"أقصى طول للوسم ٢٥ حرفًا", u"Tags are limited to 25 characters")
-    assert passes(ar_checker.numbers, u"حركة ب&طيئة (٠٫٥×)", u"&Slow Motion (0.5×)")
-    assert passes(ar_checker.numbers, u"متصفح &٣٦٠ الآمن", u"&360 Secure Browser")
-    assert passes(ar_checker.numbers, u"من <strong>كتاب موزيلا،</strong> ١٥‏:١", u"from <strong>The Book of Mozilla,</strong> 15:1")
-    assert passes(ar_checker.numbers, u"١٧٥٪", u"175%")
+    assert passes(ar_checker.numbers, "أقصى طول للوسم ٢٥ حرفًا", "Tags are limited to 25 characters")
+    assert passes(ar_checker.numbers, "حركة ب&طيئة (٠٫٥×)", "&Slow Motion (0.5×)")
+    assert passes(ar_checker.numbers, "متصفح &٣٦٠ الآمن", "&360 Secure Browser")
+    assert passes(ar_checker.numbers, "من <strong>كتاب موزيلا،</strong> ١٥‏:١", "from <strong>The Book of Mozilla,</strong> 15:1")
+    assert passes(ar_checker.numbers, "١٧٥٪", "175%")
 
 
 def test_assamese_numbers():
     """test non latin numbers for Assamese"""
     as_checker = checks.StandardChecker(checks.CheckerConfig(targetlanguage='as'))
-    assert passes(as_checker.numbers, u"প্ৰতি ৩ ছেকেণ্ডত স্বচালিতভাৱে সতেজ কৰক", u"Autorefresh every 3 seconds")
-    assert passes(as_checker.numbers, u"পৃষ্ঠা পুনৰ ল'ড কৰা হৈছিল, কাৰণ HTML দস্তাবেজৰ আখৰ এনক'ডিং যোষণা ফাইলৰ প্ৰথম ১০২৪ বাইট পূৰ্বস্কেন কৰোতে পোৱা নগল। এনক'ডিং ঘোষণাক ফাইলৰ প্ৰথম ১০২৪ বাইটৰ মাজত স্থানান্তৰ কৰিব লাগিব।", u"The page was reloaded, because the character encoding declaration of the HTML document was not found when prescanning the first 1024 bytes of the file. The encoding declaration needs to be moved to be within the first 1024 bytes of the file.")
-    assert passes(as_checker.numbers, u"সংস্কৰণ ৩", u"Version 3")
-    assert passes(as_checker.numbers, u"১৭৫%", u"175%")
+    assert passes(as_checker.numbers, "প্ৰতি ৩ ছেকেণ্ডত স্বচালিতভাৱে সতেজ কৰক", "Autorefresh every 3 seconds")
+    assert passes(as_checker.numbers, "পৃষ্ঠা পুনৰ ল'ড কৰা হৈছিল, কাৰণ HTML দস্তাবেজৰ আখৰ এনক'ডিং যোষণা ফাইলৰ প্ৰথম ১০২৪ বাইট পূৰ্বস্কেন কৰোতে পোৱা নগল। এনক'ডিং ঘোষণাক ফাইলৰ প্ৰথম ১০২৪ বাইটৰ মাজত স্থানান্তৰ কৰিব লাগিব।", "The page was reloaded, because the character encoding declaration of the HTML document was not found when prescanning the first 1024 bytes of the file. The encoding declaration needs to be moved to be within the first 1024 bytes of the file.")
+    assert passes(as_checker.numbers, "সংস্কৰণ ৩", "Version 3")
+    assert passes(as_checker.numbers, "১৭৫%", "175%")
 
 
 def test_options():
@@ -664,27 +664,27 @@ def test_puncspacing():
     # Some languages have padded puntuation marks
     frchecker = checks.StandardChecker(checks.CheckerConfig(targetlanguage="fr"))
     assert passes(frchecker.puncspacing, "Do \"this\"", "Do « this »")
-    assert passes(frchecker.puncspacing, u"Do \"this\"", u"Do «\u00a0this\u00a0»")
+    assert passes(frchecker.puncspacing, "Do \"this\"", "Do «\u00a0this\u00a0»")
     assert fails(frchecker.puncspacing, "Do \"this\"", "Do «this»")
 
     # Handle Bidi markers as non-characters
     hechecker = checks.StandardChecker(checks.CheckerConfig(targetlanguage="he"))
-    assert passes(hechecker.puncspacing, "hi. there", u"שלום.\u200f לך")  # RLM
-    assert passes(hechecker.puncspacing, "hi. there", u"שלום.\u200e לך")  # LRM
-    assert passes(hechecker.puncspacing, "hi. there", u"שלום.\u202b לך")  # RLE
-    assert passes(hechecker.puncspacing, "hi. there", u"שלום.\u202a לך")  # LRE
-    assert passes(hechecker.puncspacing, "hi. there", u"שלום.\u202e לך")  # RLO
-    assert passes(hechecker.puncspacing, "hi. there", u"שלום.\u202d לך")  # LRO
-    assert passes(hechecker.puncspacing, "hi. there", u"שלום.\u202c לך")  # PDF
-    assert passes(hechecker.puncspacing, "hi. there", u"שלום.\u2069 לך")  # PDI
-    assert passes(hechecker.puncspacing, "hi. there", u"שלום.\u2068 לך")  # FSI
-    assert passes(hechecker.puncspacing, "hi. there", u"שלום.\u2067 לך")  # RLI
-    assert passes(hechecker.puncspacing, "hi. there", u"שלום.\u2066 לך")  # LRI
+    assert passes(hechecker.puncspacing, "hi. there", "שלום.\u200f לך")  # RLM
+    assert passes(hechecker.puncspacing, "hi. there", "שלום.\u200e לך")  # LRM
+    assert passes(hechecker.puncspacing, "hi. there", "שלום.\u202b לך")  # RLE
+    assert passes(hechecker.puncspacing, "hi. there", "שלום.\u202a לך")  # LRE
+    assert passes(hechecker.puncspacing, "hi. there", "שלום.\u202e לך")  # RLO
+    assert passes(hechecker.puncspacing, "hi. there", "שלום.\u202d לך")  # LRO
+    assert passes(hechecker.puncspacing, "hi. there", "שלום.\u202c לך")  # PDF
+    assert passes(hechecker.puncspacing, "hi. there", "שלום.\u2069 לך")  # PDI
+    assert passes(hechecker.puncspacing, "hi. there", "שלום.\u2068 לך")  # FSI
+    assert passes(hechecker.puncspacing, "hi. there", "שלום.\u2067 לך")  # RLI
+    assert passes(hechecker.puncspacing, "hi. there", "שלום.\u2066 לך")  # LRI
 
     # ZWJ and ZWNJ handling as non-characters
     archecker = checks.StandardChecker(checks.CheckerConfig(targetlanguage="ar"))
-    assert passes(archecker.puncspacing, "hi. there", u"السلام.\u200d عليكم")  # ZWJ
-    assert passes(archecker.puncspacing, "hi. there", u"السلام.\u200c عليكم")  # ZWNJ
+    assert passes(archecker.puncspacing, "hi. there", "السلام.\u200d عليكم")  # ZWJ
+    assert passes(archecker.puncspacing, "hi. there", "السلام.\u200c عليكم")  # ZWNJ
 
 
 def test_purepunc():
@@ -750,8 +750,8 @@ def test_singlequoting():
 
 def test_vietnamese_singlequoting():
     vichecker = checks.StandardChecker(checks.CheckerConfig(targetlanguage="vi"))
-    assert passes(vichecker.singlequoting, "Save 'File'", u"Lưu « Tập tin »")
-    assert passes(vichecker.singlequoting, "Save `File'", u"Lưu « Tập tin »")
+    assert passes(vichecker.singlequoting, "Save 'File'", "Lưu « Tập tin »")
+    assert passes(vichecker.singlequoting, "Save `File'", "Lưu « Tập tin »")
 
 
 @mark.xfail(reason="Bug #3408")
@@ -760,14 +760,14 @@ def test_persian_single_and_double_quote_fail_at_the_same_time():
     checker = checks.StandardChecker(checks.CheckerConfig(targetlanguage="fa"))
 
     # With single quote check.
-    assert fails(checker.singlequoting, "Path: '%S'", u"مسیر: '%S'‎")
-    assert fails(checker.singlequoting, "Path: '%S'", u"مسیر: \"%S\"‎")
-    assert passes(checker.singlequoting, "Path: '%S'", u"مسیر: «%S»")
+    assert fails(checker.singlequoting, "Path: '%S'", "مسیر: '%S'‎")
+    assert fails(checker.singlequoting, "Path: '%S'", "مسیر: \"%S\"‎")
+    assert passes(checker.singlequoting, "Path: '%S'", "مسیر: «%S»")
 
     # With double quote check.
-    assert passes(checker.doublequoting, "Path: '%S'", u"مسیر: '%S'‎")
-    assert passes(checker.doublequoting, "Path: '%S'", u"مسیر: \"%S\"‎")
-    assert passes(checker.doublequoting, "Path: '%S'", u"مسیر: «%S»")
+    assert passes(checker.doublequoting, "Path: '%S'", "مسیر: '%S'‎")
+    assert passes(checker.doublequoting, "Path: '%S'", "مسیر: \"%S\"‎")
+    assert passes(checker.doublequoting, "Path: '%S'", "مسیر: «%S»")
 
 
 def test_persian_quoting():
@@ -775,41 +775,41 @@ def test_persian_quoting():
     checker = checks.StandardChecker(checks.CheckerConfig(targetlanguage="fa"))
 
     # Just double quoting.
-    assert fails(checker.doublequoting, "Path: \"%S\"", u"مسیر: '%S'‎")
-    assert fails(checker.doublequoting, "Path: \"%S\"", u"مسیر: \"%S\"‎")
-    assert passes(checker.doublequoting, "Path: \"%S\"", u"مسیر: «%S»")
+    assert fails(checker.doublequoting, "Path: \"%S\"", "مسیر: '%S'‎")
+    assert fails(checker.doublequoting, "Path: \"%S\"", "مسیر: \"%S\"‎")
+    assert passes(checker.doublequoting, "Path: \"%S\"", "مسیر: «%S»")
 
     # Just XML quoting.
-    assert passes(checker.singlequoting, "<area shape=\"circle\">", u"<area shape=\"circle\">")
-    assert passes(checker.doublequoting, "<area shape=\"circle\">", u"<area shape=\"circle\">")
+    assert passes(checker.singlequoting, "<area shape=\"circle\">", "<area shape=\"circle\">")
+    assert passes(checker.doublequoting, "<area shape=\"circle\">", "<area shape=\"circle\">")
 
     # XML quoting and double quoting.
-    assert passes(checker.singlequoting, "The \"coords\" attribute of the <area shape=\"circle\"> tag has a negative radius.", u"مشخصهٔ «coords» برچسب ‪<area shape=\"circle\">‬ دارای «radius» منفی است.")
-    assert passes(checker.doublequoting, "The \"coords\" attribute of the <area shape=\"circle\"> tag has a negative \"radius\".", u"مشخصهٔ «coords» برچسب ‪<area shape=\"circle\">‬ دارای «radius» منفی است.")
+    assert passes(checker.singlequoting, "The \"coords\" attribute of the <area shape=\"circle\"> tag has a negative radius.", "مشخصهٔ «coords» برچسب ‪<area shape=\"circle\">‬ دارای «radius» منفی است.")
+    assert passes(checker.doublequoting, "The \"coords\" attribute of the <area shape=\"circle\"> tag has a negative \"radius\".", "مشخصهٔ «coords» برچسب ‪<area shape=\"circle\">‬ دارای «radius» منفی است.")
 
     # Single quotes with variables in source fails both single and double quote
     # checks.
-    assert fails(checker.singlequoting, "'%1$S' is not a directory", u"'%1$S' یک شاخه نیست")
+    assert fails(checker.singlequoting, "'%1$S' is not a directory", "'%1$S' یک شاخه نیست")
     # TODO the following should fail.
-    assert passes(checker.singlequoting, "'%1$S' is not a directory", u"\"%1$S\" یک شاخه نیست")
-    assert fails(checker.doublequoting, "'%1$S' is not a directory", u"'%1$S' یک شاخه نیست")
-    assert fails(checker.doublequoting, "'%1$S' is not a directory", u"\"%1$S\" یک شاخه نیست")
+    assert passes(checker.singlequoting, "'%1$S' is not a directory", "\"%1$S\" یک شاخه نیست")
+    assert fails(checker.doublequoting, "'%1$S' is not a directory", "'%1$S' یک شاخه نیست")
+    assert fails(checker.doublequoting, "'%1$S' is not a directory", "\"%1$S\" یک شاخه نیست")
     # But works when using the right quoting in translation.
-    assert passes(checker.singlequoting, "'%1$S' is not a directory", u"«%1$S» یک شاخه نیست")
-    assert passes(checker.doublequoting, "'%1$S' is not a directory", u"«%1$S» یک شاخه نیست")
+    assert passes(checker.singlequoting, "'%1$S' is not a directory", "«%1$S» یک شاخه نیست")
+    assert passes(checker.doublequoting, "'%1$S' is not a directory", "«%1$S» یک شاخه نیست")
 
     # Mixing single quotes and and single quotes that shouldn't be translated.
-    assert fails(checker.singlequoting, "Can't find property '%S'", u"خاصیت '%S' یافت نشد")
-    assert passes(checker.singlequoting, "Can't find property '%S'", u"خاصیت «%S» یافت نشد")
+    assert fails(checker.singlequoting, "Can't find property '%S'", "خاصیت '%S' یافت نشد")
+    assert passes(checker.singlequoting, "Can't find property '%S'", "خاصیت «%S» یافت نشد")
 
     # Mixed single quotes do not trigger double quote check.
-    assert passes(checker.doublequoting, "Can't find property '%S'", u"خاصیت '%S' یافت نشد")
+    assert passes(checker.doublequoting, "Can't find property '%S'", "خاصیت '%S' یافت نشد")
     # TODO the following should pass.
-    assert fails(checker.doublequoting, "Can't find property '%S'", u"خاصیت «%S» یافت نشد")
+    assert fails(checker.doublequoting, "Can't find property '%S'", "خاصیت «%S» یافت نشد")
 
     # Single quotes that are not errors pass.
-    assert passes(checker.singlequoting, "Request the version of a user's client.", u"درخواست نسخه کلاینت کاربر.")
-    assert passes(checker.doublequoting, "Request the version of a user's client.", u"درخواست نسخه کلاینت کاربر.")
+    assert passes(checker.singlequoting, "Request the version of a user's client.", "درخواست نسخه کلاینت کاربر.")
+    assert passes(checker.doublequoting, "Request the version of a user's client.", "درخواست نسخه کلاینت کاربر.")
 
 
 def test_simplecaps():
@@ -838,7 +838,7 @@ def test_simplecaps():
     lochecker = checks.LibreOfficeChecker()
     assert passes(lochecker.simplecaps, "SOLK (%PRODUCTNAME Link)", "SOLK (%PRODUCTNAME Thumanyo)")
     assert passes(lochecker.simplecaps, "%STAROFFICE Image", "Tshifanyiso tsha %STAROFFICE")
-    assert passes(stdchecker.simplecaps, "Flies, flies, everywhere! Ack!", u"Vlieë, oral vlieë! Jig!")
+    assert passes(stdchecker.simplecaps, "Flies, flies, everywhere! Ack!", "Vlieë, oral vlieë! Jig!")
 
 
 @mark.skipif(
@@ -885,13 +885,13 @@ def test_startcaps():
     assert fails(stdchecker.startcaps, "'Find", "'vind")
     assert fails(stdchecker.startcaps, "'find", "'Vind")
     # Unicode
-    assert passes(stdchecker.startcaps, "Find", u"Šind")
-    assert passes(stdchecker.startcaps, "find", u"šind")
-    assert fails(stdchecker.startcaps, "Find", u"šind")
-    assert fails(stdchecker.startcaps, "find", u"Šind")
+    assert passes(stdchecker.startcaps, "Find", "Šind")
+    assert passes(stdchecker.startcaps, "find", "šind")
+    assert fails(stdchecker.startcaps, "Find", "šind")
+    assert fails(stdchecker.startcaps, "find", "Šind")
     # Unicode further down the Unicode tables
-    assert passes(stdchecker.startcaps, "A text enclosed...", u"Ḽiṅwalwa ḽo katelwaho...")
-    assert fails(stdchecker.startcaps, "A text enclosed...", u"ḽiṅwalwa ḽo katelwaho...")
+    assert passes(stdchecker.startcaps, "A text enclosed...", "Ḽiṅwalwa ḽo katelwaho...")
+    assert fails(stdchecker.startcaps, "A text enclosed...", "ḽiṅwalwa ḽo katelwaho...")
     # Accelerators
     stdchecker = checks.StandardChecker(checks.CheckerConfig(accelmarkers="&"))
     assert passes(stdchecker.startcaps, "&Find", "Vi&nd")
@@ -905,7 +905,7 @@ def test_startcaps():
     assert passes(afchecker.startcaps, "A cow", "'n Koei")
     assert passes(afchecker.startcaps, "A list of ", "'n Lys van ")
     # should pass:
-    #assert passes(afchecker.startcaps, "A 1k file", u"'n 1k-lêer")
+    #assert passes(afchecker.startcaps, "A 1k file", "'n 1k-lêer")
     assert passes(afchecker.startcaps, "'Do it'", "'Doen dit'")
     assert fails(afchecker.startcaps, "'Closer than'", "'nader as'")
     assert passes(afchecker.startcaps, "List", "Lys")
@@ -920,17 +920,17 @@ def test_startpunc():
     stdchecker = checks.StandardChecker()
     assert passes(stdchecker.startpunc, "<< Previous", "<< Correct")
     assert fails(stdchecker.startpunc, " << Previous", "Wrong")
-    assert fails(stdchecker.startpunc, "Question", u"\u2026Wrong")
+    assert fails(stdchecker.startpunc, "Question", "\u2026Wrong")
 
     assert passes(stdchecker.startpunc, "<fish>hello</fish> world", "world <fish>hello</fish>")
 
     # The inverted Spanish question mark should be accepted
     stdchecker = checks.StandardChecker(checks.CheckerConfig(targetlanguage='es'))
-    assert passes(stdchecker.startpunc, "Do you want to reload the file?", u"¿Quiere recargar el archivo?")
+    assert passes(stdchecker.startpunc, "Do you want to reload the file?", "¿Quiere recargar el archivo?")
 
     # The Afrikaans indefinite article should be accepted
     stdchecker = checks.StandardChecker(checks.CheckerConfig(targetlanguage='af'))
-    assert passes(stdchecker.startpunc, "A human?", u"'n Mens?")
+    assert passes(stdchecker.startpunc, "A human?", "'n Mens?")
 
 
 def test_startwhitespace():
@@ -994,12 +994,12 @@ def test_validchars():
     stdchecker = checks.StandardChecker(checks.CheckerConfig(validchars='⠁⠂⠃⠄⠅⠆⠇⠈⠉⠊⠋⠌⠍⠎⠏⠐⠑⠒⠓⠔⠕⠖⠗⠘⠙⠚⠛⠜⠝⠞⠟⠠⠡⠢⠣⠤⠥⠦⠧⠨⠩⠪⠫⠬⠭⠮⠯⠰'))
     assert passes(stdchecker.validchars, "Our target language is all non-ascii", "⠁⠂⠃⠄⠆⠇⠈⠉⠜⠝⠞⠟⠠⠡⠢⠣⠤⠥⠦⠧⠨⠩⠪⠫")
     assert fails(stdchecker.validchars, "Our target language is all non-ascii", "Some ascii⠁⠂⠃⠄⠆⠇⠈⠉⠜⠝⠞⠟⠠⠡⠢⠣⠤⠥⠦⠧⠨⠩⠪⠫")
-    stdchecker = checks.StandardChecker(checks.CheckerConfig(validchars=u'\u004c\u032d'))
-    assert passes(stdchecker.validchars, "This sentence contains valid chars", u"\u004c\u032d")
-    assert passes(stdchecker.validchars, "This sentence contains valid chars", u"\u1e3c")
-    stdchecker = checks.StandardChecker(checks.CheckerConfig(validchars=u'\u1e3c'))
-    assert passes(stdchecker.validchars, "This sentence contains valid chars", u"\u1e3c")
-    assert passes(stdchecker.validchars, "This sentence contains valid chars", u"\u004c\u032d")
+    stdchecker = checks.StandardChecker(checks.CheckerConfig(validchars='\u004c\u032d'))
+    assert passes(stdchecker.validchars, "This sentence contains valid chars", "\u004c\u032d")
+    assert passes(stdchecker.validchars, "This sentence contains valid chars", "\u1e3c")
+    stdchecker = checks.StandardChecker(checks.CheckerConfig(validchars='\u1e3c'))
+    assert passes(stdchecker.validchars, "This sentence contains valid chars", "\u1e3c")
+    assert passes(stdchecker.validchars, "This sentence contains valid chars", "\u004c\u032d")
 
 
 def test_minimalchecker():
@@ -1016,14 +1016,14 @@ def test_minimalchecker():
     assert fails(minimalchecker.blank, "Blank string", " ")
 
     # Doublewords check is disabled.
-    src, tgt, __ = strprep(u"Save the rhino", u"Save the the rhino")
+    src, tgt, __ = strprep("Save the rhino", "Save the the rhino")
     unit = base.TranslationUnit(src)
     unit.target = tgt
 
     assert 'doublewords' not in minimalchecker.run_filters(unit).keys()
 
     # Printf check is disabled.
-    src, tgt, __ = strprep(u"Non-matching printf variables", u"Ek is %s")
+    src, tgt, __ = strprep("Non-matching printf variables", "Ek is %s")
     unit = base.TranslationUnit(src)
     unit.target = tgt
 
@@ -1049,14 +1049,14 @@ def test_reducedchecker():
     assert fails(reducedchecker.doublewords, "Save the rhino", "Save the the rhino")
 
     # Printf check is disabled.
-    src, tgt, __ = strprep(u"Non-matching printf variables", u"Ek is %s")
+    src, tgt, __ = strprep("Non-matching printf variables", "Ek is %s")
     unit = base.TranslationUnit(src)
     unit.target = tgt
 
     assert 'printf' not in reducedchecker.run_filters(unit).keys()
 
     # Escapes check is disabled.
-    src, tgt, __ = strprep(u"A file", u"'n Leer\n")
+    src, tgt, __ = strprep("A file", "'n Leer\n")
     unit = base.TranslationUnit(src)
     unit.target = tgt
 
@@ -1260,7 +1260,7 @@ def test_ooxmltags():
 
         # Reported OOo error
         ## Bug 1910
-        assert fails(ooochecker.xmltags, u"""<variable id="FehlendesElement">In a database file window, click the <emph>Queries</emph> icon, then choose <emph>Edit - Edit</emph>. When referenced fields no longer exist, you see this dialog</variable>""", u"""<variable id="FehlendesElement">Dans  une fenêtre de fichier de base de données, cliquez sur l'icône <emph>Requêtes</emph>, puis choisissez <emph>Éditer - Éditer</emp>. Lorsque les champs de référence n'existent plus, vous voyez cette boîte de dialogue</variable>""")
+        assert fails(ooochecker.xmltags, """<variable id="FehlendesElement">In a database file window, click the <emph>Queries</emph> icon, then choose <emph>Edit - Edit</emph>. When referenced fields no longer exist, you see this dialog</variable>""", """<variable id="FehlendesElement">Dans  une fenêtre de fichier de base de données, cliquez sur l'icône <emph>Requêtes</emph>, puis choisissez <emph>Éditer - Éditer</emp>. Lorsque les champs de référence n'existent plus, vous voyez cette boîte de dialogue</variable>""")
         assert fails(ooochecker.xmltags, "<variable> <emph></emph> <emph></emph> </variable>", "<variable> <emph></emph> <emph></emp> </variable>")
 
 
@@ -1302,8 +1302,8 @@ def test_simpleplurals():
 
     # Test a language that doesn't use plurals
     stdchecker = checks.StandardChecker(checks.CheckerConfig(targetlanguage='vi'))
-    assert passes(stdchecker.simpleplurals, "computer(s)", u"Máy tính")
-    assert fails(stdchecker.simpleplurals, "computer(s)", u"Máy tính(s)")
+    assert passes(stdchecker.simpleplurals, "computer(s)", "Máy tính")
+    assert fails(stdchecker.simpleplurals, "computer(s)", "Máy tính(s)")
 
 
 def test_nplurals():
@@ -1313,7 +1313,7 @@ def test_nplurals():
     unit = po.pounit("")
 
     unit.source = ["%d file", "%d files"]
-    unit.target = [u"%d lêer", u"%d lêers"]
+    unit.target = ["%d lêer", "%d lêers"]
     assert checker.nplurals(unit)
 
     checker = checks.StandardUnitChecker(checks.CheckerConfig(targetlanguage='af'))
@@ -1322,15 +1322,15 @@ def test_nplurals():
     assert checker.nplurals(unit)
 
     unit.source = ["%d file", "%d files"]
-    unit.target = [u"%d lêer", u"%d lêers"]
+    unit.target = ["%d lêer", "%d lêers"]
     assert checker.nplurals(unit)
 
     unit.source = ["%d file", "%d files"]
-    unit.target = [u"%d lêer", u"%d lêers", u"%d lêeeeers"]
+    unit.target = ["%d lêer", "%d lêers", "%d lêeeeers"]
     assert not checker.nplurals(unit)
 
     unit.source = ["%d file", "%d files"]
-    unit.target = [u"%d lêer"]
+    unit.target = ["%d lêer"]
     assert not checker.nplurals(unit)
 
     checker = checks.StandardUnitChecker(checks.CheckerConfig(targetlanguage='km'))
@@ -1339,11 +1339,11 @@ def test_nplurals():
     assert checker.nplurals(unit)
 
     unit.source = ["%d file", "%d files"]
-    unit.target = [u"%d ឯកសារ"]
+    unit.target = ["%d ឯកសារ"]
     assert checker.nplurals(unit)
 
     unit.source = ["%d file", "%d files"]
-    unit.target = [u"%d ឯកសារ", u"%d lêers"]
+    unit.target = ["%d ឯកសារ", "%d lêers"]
     assert not checker.nplurals(unit)
 
 
@@ -1473,7 +1473,7 @@ def test_skip_checks_per_language_in_some_checkers():
                                            targetlanguage="gl")
     )
 
-    str1, str2, __ = strprep(u"&Check for updates", u"আপডেইটসমূহৰ বাবে নিৰীক্ষণ কৰক")
+    str1, str2, __ = strprep("&Check for updates", "আপডেইটসমূহৰ বাবে নিৰীক্ষণ কৰক")
     unit = base.TranslationUnit(str1)
     unit.target = str2
 
@@ -1526,7 +1526,7 @@ def test_noaccelerators_only_in_mozilla_checker():
 
     # Accelerators check passes for Assamesse in Mozilla checker. It fails for
     # Assamesse in Standard checker or for other languages in Mozilla Checker.
-    str1, str2, __ = strprep(u"&Check for updates", u"আপডেইটসমূহৰ বাবে নিৰীক্ষণ কৰক")
+    str1, str2, __ = strprep("&Check for updates", "আপডেইটসমূহৰ বাবে নিৰীক্ষণ কৰক")
     unit = base.TranslationUnit(str1)
     unit.target = str2
 
@@ -1541,7 +1541,7 @@ def test_noaccelerators_only_in_mozilla_checker():
 
     # Accelerators check passes. The ampersand should be detected as part of
     # a variable.
-    str1, str2, __ = strprep(u"About &brandFullName;", u"&brandFullName; ৰ বিষয়ে")
+    str1, str2, __ = strprep("About &brandFullName;", "&brandFullName; ৰ বিষয়ে")
     unit = base.TranslationUnit(str1)
     unit.target = str2
 
@@ -1552,7 +1552,7 @@ def test_noaccelerators_only_in_mozilla_checker():
     # Accelerators check fails for Assamesse in Mozilla checker since the
     # accelerator is present in the target. It passes for other languages or
     # other checkers.
-    str1, str2, __ = strprep(u"&Cancel", u"বাতিল কৰক (&C)")
+    str1, str2, __ = strprep("&Cancel", "বাতিল কৰক (&C)")
     unit = base.TranslationUnit(str1)
     unit.target = str2
 
@@ -1578,7 +1578,7 @@ def test_ensure_accelerators_not_in_target_if_not_in_source():
 
     # Afrikaans passes: Correct use of accesskeys.
     # Khmer fails: Translation shouldn't have an accesskey.
-    src, tgt, __ = strprep(u"&One", u"&Een")
+    src, tgt, __ = strprep("&One", "&Een")
     unit = base.TranslationUnit(src)
     unit.target = tgt
 
@@ -1590,7 +1590,7 @@ def test_ensure_accelerators_not_in_target_if_not_in_source():
 
     # Afrikaans fails: Translation is missing the accesskey.
     # Khmer passes: Translation doesn't need accesskey for this language.
-    src, tgt, __ = strprep(u"&Two", u"Twee")
+    src, tgt, __ = strprep("&Two", "Twee")
     unit = base.TranslationUnit(src)
     unit.target = tgt
 
@@ -1602,7 +1602,7 @@ def test_ensure_accelerators_not_in_target_if_not_in_source():
 
     # Afrikaans fails: No accesskey in the source, but yes on translation.
     # Khmer fails: Translation doesn't need accesskey, but it has accesskey.
-    src, tgt, __ = strprep(u"Three", u"&Drie")
+    src, tgt, __ = strprep("Three", "&Drie")
     unit = base.TranslationUnit(src)
     unit.target = tgt
 
@@ -1634,8 +1634,8 @@ def test_ensure_bengali_languages_script_is_correct():
 def test_category():
     """Tests checker categories aren't mixed up."""
     from translate.storage import base
-    unit = base.TranslationUnit(u'foo')
-    unit.target = u'bar'
+    unit = base.TranslationUnit('foo')
+    unit.target = 'bar'
 
     standard_checker = checks.StandardChecker()
     assert standard_checker.categories == {}

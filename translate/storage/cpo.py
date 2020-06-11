@@ -351,7 +351,7 @@ class pounit(pocommon.pounit):
                 if remainder:
                     return remainder.group(1)
                 else:
-                    return u""
+                    return ""
             else:
                 return text
         singular = remove_msgid_comments(gpo_decode(gpo.po_message_msgid(self._gpo_message)) or "")
@@ -364,7 +364,7 @@ class pounit(pocommon.pounit):
             else:
                 return singular
         else:
-            return u""
+            return ""
 
     @source.setter
     def source(self, source):
@@ -391,7 +391,7 @@ class pounit(pocommon.pounit):
             if plurals:
                 multi = multistring(plurals)
             else:
-                multi = multistring(u"")
+                multi = multistring("")
         else:
             multi = gpo_decode(gpo.po_message_msgstr(self._gpo_message)) or ""
         return multi
@@ -451,7 +451,7 @@ class pounit(pocommon.pounit):
 #            id = '%s\0%s' % (id, plural)
         context = gpo.po_message_msgctxt(self._gpo_message)
         if context:
-            id = u"%s\04%s" % (gpo_decode(context), id)
+            id = "%s\04%s" % (gpo_decode(context), id)
         return id
 
     def getnotes(self, origin=None):
@@ -552,7 +552,7 @@ class pounit(pocommon.pounit):
                 self.markfuzzy()
 
     def isheader(self):
-        #return self.source == u"" and self.target != u""
+        #return self.source == "" and self.target != ""
         # we really want to make sure that there is no msgidcomment or msgctxt
         return self.getid() == "" and len(self.target) > 0
 
@@ -601,11 +601,11 @@ class pounit(pocommon.pounit):
             text = gpo_decode(gpo.po_message_msgid(self._gpo_message)) or ""
         if text:
             return pocommon.extract_msgid_comment(text)
-        return u""
+        return ""
 
     def setmsgidcomment(self, msgidcomment):
         if msgidcomment:
-            self.source = u"_: %s\n%s" % (msgidcomment, self.source)
+            self.source = "_: %s\n%s" % (msgidcomment, self.source)
     msgidcomment = property(_extract_msgidcomments, setmsgidcomment)
 
     def __str__(self):
@@ -623,7 +623,7 @@ class pounit(pocommon.pounit):
             if locline == -1:
                 locstring = locname
             else:
-                locstring = u":".join([locname, str(locline)])
+                locstring = ":".join([locname, str(locline)])
             locations.append(pocommon.unquote_plus(locstring))
             i += 1
             location = gpo.po_message_filepos(self._gpo_message, i)

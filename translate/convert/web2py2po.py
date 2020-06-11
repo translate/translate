@@ -49,7 +49,7 @@ class web2py2po:
             target_str = mydict[source_str]
             if target_str == source_str.replace('@markmin\x01', ''):
                 # a convention with new (untranslated) web2py files
-                target_str = u''
+                target_str = ''
             pounit = self.convertunit(source_str, target_str)
             self.mypofile.addunit(pounit)
 

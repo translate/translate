@@ -143,7 +143,7 @@ class htmlfile(html.parser.HTMLParser, base.TranslationStore):
         self.includeuntaggeddata = includeuntaggeddata
 
         # initialize state
-        self.filesrc = u""
+        self.filesrc = ""
         self.tag_path = []
         self.tu_content = []
         self.tu_location = None

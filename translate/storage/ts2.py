@@ -117,9 +117,9 @@ class tsunit(lisa.LISAunit):
         targetnode = self._gettargetnode()
         if self.hasplural():
             numerus_nodes = targetnode.findall(self.namespaced("numerusform"))
-            return multistring([data.forceunicode(node.text) or u"" for node in numerus_nodes])
+            return multistring([data.forceunicode(node.text) or "" for node in numerus_nodes])
         else:
-            return data.forceunicode(targetnode.text) or u""
+            return data.forceunicode(targetnode.text) or ""
 
     @target.setter
     def target(self, target):
@@ -148,9 +148,9 @@ class tsunit(lisa.LISAunit):
             self.xmlelement.set("numerus", "yes")
             for string in strings:
                 numerus = etree.SubElement(targetnode, self.namespaced("numerusform"))
-                numerus.text = data.forceunicode(string) or u""
+                numerus.text = data.forceunicode(string) or ""
         else:
-            targetnode.text = data.forceunicode(target) or u""
+            targetnode.text = data.forceunicode(target) or ""
 
     def hasplural(self):
         return self.xmlelement.get("numerus") == "yes"

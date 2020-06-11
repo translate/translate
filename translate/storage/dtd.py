@@ -107,8 +107,8 @@ def quoteforandroid(source):
     """Escapes a line for Android DTD files."""
     # Replace "'" character with the \u0027 escape. Other possible replaces are
     # "\\&apos;" or "\\'".
-    source = source.replace(u"'", u"\\u0027")
-    source = source.replace(u"\"", u"\\&quot;")
+    source = source.replace("'", "\\u0027")
+    source = source.replace("\"", "\\&quot;")
     value = quotefordtd(source)  # value is an UTF-8 encoded string.
     return value
 
@@ -116,9 +116,9 @@ def quoteforandroid(source):
 def unquotefromandroid(source):
     """Unquotes a quoted Android DTD definition."""
     value = unquotefromdtd(source)  # value is an UTF-8 encoded string.
-    value = value.replace(u"\\&apos;", u"'")
-    value = value.replace(u"\\'", u"'")
-    value = value.replace(u"\\u0027", u"'")
+    value = value.replace("\\&apos;", "'")
+    value = value.replace("\\'", "'")
+    value = value.replace("\\u0027", "'")
     value = value.replace("\\\"", "\"")  # This converts \&quot; to ".
     return value
 
@@ -153,7 +153,7 @@ _DTD_NAME2CODEPOINT = {
     #"gt": ord(">"),  # Not really so useful.
     # FIXME these should probably be handled in a more general way
     "#x0022": ord('"'),
-    "#187": ord(u"»"),
+    "#187": ord("»"),
     "#037": ord("%"),
     "#37": ord("%"),
     "#x25": ord("%"),

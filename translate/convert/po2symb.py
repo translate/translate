@@ -58,7 +58,7 @@ def parse(ps, header_replacements, body_replacements):
                 key = match.groupdict()['id']
                 if key in body_replacements:
                     value = body_replacements[key].target or body_replacements[key].source
-                    ps.current_line = match.expand(u'\\g<start>\\g<id>\\g<space>%s\n' % escape(value))
+                    ps.current_line = match.expand('\\g<start>\\g<id>\\g<space>%s\n' % escape(value))
             ps.read_line()
     except StopIteration:
         pass

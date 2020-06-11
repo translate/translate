@@ -192,7 +192,7 @@ def extractwithoutquotes(source, startdelim, enddelim, escape=None,
 def _encode_entity_char(char, codepoint2name):
     charnum = ord(char)
     if charnum in codepoint2name:
-        return u"&%s;" % codepoint2name[charnum]
+        return "&%s;" % codepoint2name[charnum]
     else:
         return char
 
@@ -205,7 +205,7 @@ def entityencode(source, codepoint2name):
            (without the the leading ``&`` or the trailing ``;``)
     :type codepoint2name: :meth:`dict`
     """
-    output = u""
+    output = ""
     inentity = False
     for char in source:
         if char == "&":
@@ -249,7 +249,7 @@ def entitydecode(source, name2codepoint):
            the leading ``&`` or the trailing ``;``) to code points
     :type name2codepoint: :meth:`dict`
     """
-    output = u""
+    output = ""
     inentity = False
     for i, char in enumerate(source):
         char = source[i]
@@ -262,7 +262,7 @@ def entitydecode(source, name2codepoint):
                 if (len(possibleentity) > 0 and
                     possibleentity in name2codepoint):
                     entchar = chr(name2codepoint[possibleentity])
-                    if entchar == u'&' and _has_entity_end(source[i+1:]):
+                    if entchar == '&' and _has_entity_end(source[i+1:]):
                         output += "&" + possibleentity + ";"
                     else:
                         output += entchar
@@ -284,7 +284,7 @@ def entitydecode(source, name2codepoint):
 
 
 def htmlentityencode(source):
-    u"""Encode ``source`` using HTML entities e.g. © -> ``&copy;``
+    """Encode ``source`` using HTML entities e.g. © -> ``&copy;``
 
     :param unicode source: Source string to encode
     """
@@ -292,7 +292,7 @@ def htmlentityencode(source):
 
 
 def htmlentitydecode(source):
-    u"""Decode source using HTML entities e.g. ``&copy;`` -> ©.
+    """Decode source using HTML entities e.g. ``&copy;`` -> ©.
 
     :param unicode source: Source string to decode
     """
@@ -303,9 +303,9 @@ def javapropertiesencode(source):
     """Encodes source in the escaped-unicode encoding used by Java
     .properties files
     """
-    output = u""
-    if source and source[0] == u" ":
-        output = u"\\"
+    output = ""
+    if source and source[0] == " ":
+        output = "\\"
     for char in source:
         charnum = ord(char)
         if char in controlchars:
@@ -313,7 +313,7 @@ def javapropertiesencode(source):
         elif 0 <= charnum < 128:
             output += str(char)
         else:
-            output += u"\\u%04X" % charnum
+            output += "\\u%04X" % charnum
     return output
 
 
@@ -321,7 +321,7 @@ def java_utf8_properties_encode(source):
     """Encodes source in the escaped-unicode encoding used by java utf-8
     .properties files.
     """
-    output = u""
+    output = ""
     for char in source:
         if char in controlchars:
             output += controlchars[char]
@@ -333,20 +333,20 @@ def java_utf8_properties_encode(source):
 def escapespace(char):
     assert(len(char) == 1)
     if char.isspace():
-        return u"\\u%04X" % ord(char)
+        return "\\u%04X" % ord(char)
     return char
 
 
 def mozillaescapemarginspaces(source):
     """Escape leading and trailing spaces for Mozilla .properties files."""
     if not source:
-        return u""
+        return ""
 
     if len(source) == 1 and source.isspace():
         # FIXME: This is hack for people using white-space to mark empty
         # Mozilla strings translated, drop this once we have better way to
         # handle this in Pootle.
-        return u""
+        return ""
 
     if len(source) == 1:
         return escapespace(source)
@@ -385,7 +385,7 @@ def propertiesdecode(source):
     don't want to we reimplemented the algorithm from Python Objects/unicode.c
     in Python and modify it to retain escaped control characters.
     """
-    output = u""
+    output = ""
     s = 0
 
     def unichr2(i):

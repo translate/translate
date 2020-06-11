@@ -144,7 +144,7 @@ class JsonFile(base.TranslationStore):
         super().__init__(**kwargs)
         self._filter = filter
         self.filename = ''
-        self._file = u''
+        self._file = ''
         self.dump_args = {
             'separators': (',', ': '),
             'indent': 4,

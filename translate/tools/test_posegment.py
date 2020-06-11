@@ -33,14 +33,14 @@ msgstr ""
         poresult = self.posegment(posource, "en", "ja")
         out_unit = poresult.units[1]
         assert out_unit.source == "Please let us know if you have any specific needs (A/V requirements, multiple microphones, a table, etc)."
-        assert out_unit.target == u"特に必要な物(A/V機器、複数のマイク、テーブルetc)があれば教えて下さい。"
+        assert out_unit.target == "特に必要な物(A/V機器、複数のマイク、テーブルetc)があれば教えて下さい。"
         out_unit = poresult.units[2]
         assert out_unit.source == "Note for example that 'audio out' is not provided for your computer unless you tell us in advance."
-        assert out_unit.target == u"例として、コンピュータからの「音声出力」は事前にお知らせ頂いていない場合は提供できないことに注意して下さい。"
+        assert out_unit.target == "例として、コンピュータからの「音声出力」は事前にお知らせ頂いていない場合は提供できないことに注意して下さい。"
 
     def test_en_ja_punctuation(self):
         """checks that a half-width punctuation"""
-        posource = u'''
+        posource = '''
 #: docs/intro/contributing.txt:184
 msgid ""
 "Note that the latest Django trunk may not always be stable. When developing "
@@ -52,8 +52,8 @@ msgstr ""
         poresult = self.posegment(posource, "en", "ja")
         out_unit = poresult.units[1]
         assert out_unit.source == "Note that the latest Django trunk may not always be stable."
-        assert out_unit.target == u"開発中の､最新の Django ではステーブルとは限りません｡"
+        assert out_unit.target == "開発中の､最新の Django ではステーブルとは限りません｡"
 
         out_unit = poresult.units[2]
         assert out_unit.source == "When developing against trunk, you can check Django's continuous integration builds."
-        assert out_unit.target == u"トランクバージョンで開発を行う場合､ Django の継続インテグレーションビルドをチェックしてください｡"
+        assert out_unit.target == "トランクバージョンで開発を行う場合､ Django の継続インテグレーションビルドをチェックしてください｡"

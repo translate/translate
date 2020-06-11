@@ -32,7 +32,7 @@ __all__ = ('xml_to_strelem', 'strelem_to_xml')
 def make_empty_replacement_placeable(klass, node, xml_space="preserve"):
     try:
         return klass(
-            id=node.attrib[u'id'],
+            id=node.attrib['id'],
             rid=node.attrib.get('rid', None),
             xid=node.attrib.get('xid', None),
             xml_attrib=node.attrib,
@@ -44,7 +44,7 @@ def make_empty_replacement_placeable(klass, node, xml_space="preserve"):
 
 def make_g_placeable(klass, node, xml_space="default"):
     return klass(
-        id=node.attrib[u'id'],
+        id=node.attrib['id'],
         sub=xml_to_strelem(node, xml_space).sub,
         xml_attrib=node.attrib,
     )
@@ -66,15 +66,15 @@ def make_unknown(klass, node, xml_space="preserve"):
 
 
 _class_dictionary = {
-    #u'bpt': (xliff.Bpt, not_yet_implemented),
-    u'bx': (xliff.Bx, make_empty_replacement_placeable),
-    #u'ept': (xliff.Ept, not_yet_implemented),
-    u'ex': (xliff.Ex, make_empty_replacement_placeable),
-    u'g': (xliff.G, make_g_placeable),
-    #u'it': (xliff.It, not_yet_implemented),
-    #u'ph': (xliff.Ph, not_yet_implemented),
-    #u'sub': (xliff.Sub, not_yet_implemented),
-    u'x': (xliff.X, make_empty_replacement_placeable),
+    #'bpt': (xliff.Bpt, not_yet_implemented),
+    'bx': (xliff.Bx, make_empty_replacement_placeable),
+    #'ept': (xliff.Ept, not_yet_implemented),
+    'ex': (xliff.Ex, make_empty_replacement_placeable),
+    'g': (xliff.G, make_g_placeable),
+    #'it': (xliff.It, not_yet_implemented),
+    #'ph': (xliff.Ph, not_yet_implemented),
+    #'sub': (xliff.Sub, not_yet_implemented),
+    'x': (xliff.X, make_empty_replacement_placeable),
 }
 
 
