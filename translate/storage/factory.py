@@ -50,9 +50,6 @@ _classes_str = {
     "ts": ("ts2", "tsfile"),
     "xliff": ("xliff", "xlifffile"), "xlf": ("xliff", "xlifffile"),
     "sdlxliff": ("xliff", "xlifffile"),
-
-    # Monolingual formats
-    "ftl": ("l20n", "l20nfile"),
 }
 ###  XXX:  if you add anything here, you must also add it to translate.storage.
 

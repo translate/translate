@@ -38,11 +38,6 @@ from translate.filters.decorators import (cosmetic, critical, extraction,
 from translate.lang import data, factory
 
 
-try:
-    from translate.storage import l20n
-except ImportError as e:
-    l20n = None
-
 logger = logging.getLogger(__name__)
 
 # These are some regular expressions that are compiled for use in some tests
@@ -2378,11 +2373,6 @@ class TermChecker(StandardChecker):
         super().__init__(**kwargs)
 
 
-l20nconfig = CheckerConfig(
-    varmatches=[("$", None), ],
-)
-
-
 class L20nChecker(MozillaChecker):
     excluded_filters_for_complex_units = [
         "escapes",
@@ -2405,7 +2395,6 @@ class L20nChecker(MozillaChecker):
             checkerconfig = CheckerConfig()
             kwargs["checkerconfig"] = checkerconfig
 
-        checkerconfig.update(l20nconfig)
         super().__init__(**kwargs)
 
     def run_filters(self, unit, categorised=False):
@@ -2427,20 +2416,6 @@ class L20nChecker(MozillaChecker):
             self.defaultfilters = saved_default_filters
 
         return result
-
-    @critical
-    def ftl_format(self, str1, str2):
-        """Checks for valid ftl syntax.
-
-        This checks the translation to detect any ftl parsing and syntax errors.
-        """
-        if l20n is not None:
-            parser = l20n.L20nParser()
-            l20nsrc = l20n.get_l20n_entry(str2)
-            ast_, errors = parser.parseResource(l20nsrc)
-            return not errors
-
-        return True
 
 
 iosconfig = CheckerConfig(
@@ -2474,7 +2449,6 @@ projectcheckers = {
     "creativecommons": CCLicenseChecker,
     "drupal": DrupalChecker,
     "terminology": TermChecker,
-    "l20n": L20nChecker,
     "ios": IOSChecker,
 }
 
