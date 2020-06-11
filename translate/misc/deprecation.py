@@ -20,10 +20,6 @@ import warnings
 from functools import wraps
 
 
-class RemovedInTTK2Warning(DeprecationWarning):
-    pass
-
-
 def deprecated(message=""):
     """Decorator that marks functions and methods as deprecated.
 
