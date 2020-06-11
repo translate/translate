@@ -35,7 +35,6 @@ Converters
    tiki2po
    ts2po
    xliff2po
-   l20n2po
    yaml2po
 
 .. toctree::

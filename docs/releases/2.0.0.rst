@@ -79,8 +79,7 @@ Formats and Converters
 
   - Added this new format storage class
   - Added variants and traits support
-  - Added new converters :doc:`l20n2po </commands/l20n2po>` and
-    :ref:`po2l20n <po2l20n>`
+  - Added new converters ``l20n2po`` and ``po2l20n``
 
 - Android
 

@@ -158,7 +158,6 @@ Formats that we would like to support but don't currently support:
    :maxdepth: 1
    :hidden:
 
-   l20n
    wml
 
 * Wordfast:
@@ -250,7 +249,6 @@ Formats that we would like to support but don't currently support:
   <http://dvx.atril.com/docs/DVX/InstructionsExternalView.pdf>`_, `Description
   of external view options and process
   <http://simmer-lossner.com/lib/presentations/External_Proofreading_for_DVX.pdf>`_
-* :doc:`Mozilla's l20n <l20n>`.
 
 .. _formats#unlikely_to_be_supported:
 
