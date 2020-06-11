@@ -135,8 +135,8 @@ msgstr ""
         po_result = self.resx2po(resx_source)
 
         assert len(po_result.units) == 3
-        assert po_result.units[1].getnotes("developer") == u"This is a comment"
-        assert po_result.units[2].getnotes("developer") == u""
+        assert po_result.units[1].getnotes("developer") == "This is a comment"
+        assert po_result.units[2].getnotes("developer") == ""
 
     def test_translatorcomments(self):
         """ Tests translator comments """
@@ -151,10 +151,10 @@ msgstr ""
         po_result = self.resx2po(resx_source)
 
         assert len(po_result.units) == 3
-        assert po_result.units[1].getnotes("developer") == u"This is a developer comment"
-        assert po_result.units[1].getnotes("translator") == u"This is a translator comment"
-        assert po_result.units[2].getnotes("developer") == u""
-        assert po_result.units[2].getnotes("translator") == u""
+        assert po_result.units[1].getnotes("developer") == "This is a developer comment"
+        assert po_result.units[1].getnotes("translator") == "This is a translator comment"
+        assert po_result.units[2].getnotes("developer") == ""
+        assert po_result.units[2].getnotes("translator") == ""
 
     def test_locations(self):
         """ Tests location comments (#:) """
@@ -207,8 +207,8 @@ class TestRESX2POCommand(test_convert.TestConvertCommand, TestRESX2PO):
         po_result = po.pofile(self.open_testfile("simple.pot"))
         po_element = self.single_element(po_result)
 
-        assert po_element.source == u"A simple string"
-        assert po_element.target == u""
+        assert po_element.source == "A simple string"
+        assert po_element.target == ""
 
     def test_simple_po(self):
         """ Tests the simplest possible conversion to a po file """
@@ -235,4 +235,4 @@ class TestRESX2POCommand(test_convert.TestConvertCommand, TestRESX2PO):
         po_result = self.target_filetype(self.open_testfile("simple.po"))
 
         assert len(po_result.units) == 2
-        assert po_result.units[1].source == u"A simple string"
+        assert po_result.units[1].source == "A simple string"

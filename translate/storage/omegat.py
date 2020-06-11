@@ -103,13 +103,13 @@ class OmegaTUnit(base.TranslationUnit):
 
     def addnote(self, text, origin=None, position="append"):
         currentnote = self._get_field('comment')
-        if position == "append" and currentnote is not None and currentnote != u'':
+        if position == "append" and currentnote is not None and currentnote != '':
             self._set_field('comment', currentnote + '\n' + text)
         else:
             self._set_field('comment', text)
 
     def removenotes(self, origin=None):
-        self._set_field('comment', u'')
+        self._set_field('comment', '')
 
     @property
     def source(self):

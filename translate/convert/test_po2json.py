@@ -18,7 +18,7 @@ class TestPO2JSON:
     def test_basic(self):
         """test a basic po to json conversion"""
         json_template = '''{ "text": "A simple string"}'''
-        input_po = u'''#: .text
+        input_po = '''#: .text
 msgid "A simple string"
 msgstr "Du texte simple"
 '''

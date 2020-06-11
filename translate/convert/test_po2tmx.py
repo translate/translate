@@ -136,56 +136,56 @@ msgstr "Drie"
 
     def test_nonascii(self):
         """Tests that non-ascii conversion works."""
-        minipo = u'''msgid "Bézier curve"
+        minipo = '''msgid "Bézier curve"
 msgstr "Bézier-kurwe"
 '''
         tmx = self.po2tmx(minipo)
         print(bytes(tmx))
-        assert tmx.translate(u"Bézier curve") == u"Bézier-kurwe"
+        assert tmx.translate("Bézier curve") == "Bézier-kurwe"
 
     def test_nonecomments(self):
         """Tests that none comments are imported."""
-        minipo = u'''#My comment rules
+        minipo = '''#My comment rules
 msgid "Bézier curve"
 msgstr "Bézier-kurwe"
 '''
         tmx = self.po2tmx(minipo)
         print(bytes(tmx))
-        unit = tmx.findunits(u"Bézier curve")
+        unit = tmx.findunits("Bézier curve")
         assert len(unit[0].getnotes()) == 0
 
     def test_otherscomments(self):
         """Tests that others comments are imported."""
-        minipo = u'''#My comment rules
+        minipo = '''#My comment rules
 msgid "Bézier curve"
 msgstr "Bézier-kurwe"
 '''
         tmx = self.po2tmx(minipo, comment='others')
         print(bytes(tmx))
-        unit = tmx.findunits(u"Bézier curve")
-        assert unit[0].getnotes() == u"My comment rules"
+        unit = tmx.findunits("Bézier curve")
+        assert unit[0].getnotes() == "My comment rules"
 
     def test_sourcecomments(self):
         """Tests that source comments are imported."""
-        minipo = u'''#: ../PuzzleFourSided.h:45
+        minipo = '''#: ../PuzzleFourSided.h:45
 msgid "Bézier curve"
 msgstr "Bézier-kurwe"
 '''
         tmx = self.po2tmx(minipo, comment='source')
         print(bytes(tmx))
-        unit = tmx.findunits(u"Bézier curve")
-        assert unit[0].getnotes() == u"../PuzzleFourSided.h:45"
+        unit = tmx.findunits("Bézier curve")
+        assert unit[0].getnotes() == "../PuzzleFourSided.h:45"
 
     def test_typecomments(self):
         """Tests that others comments are imported."""
-        minipo = u'''#, csharp-format
+        minipo = '''#, csharp-format
 msgid "Bézier curve"
 msgstr "Bézier-kurwe"
 '''
         tmx = self.po2tmx(minipo, comment='type')
         print(bytes(tmx))
-        unit = tmx.findunits(u"Bézier curve")
-        assert unit[0].getnotes() == u"csharp-format"
+        unit = tmx.findunits("Bézier curve")
+        assert unit[0].getnotes() == "csharp-format"
 
 
 class TestPO2TMXCommand(test_convert.TestConvertCommand, TestPO2TMX):

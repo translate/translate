@@ -112,7 +112,7 @@ class rerc:
                 else:
                     tmp.append(a)
 
-            out.append(u",".join(tmp))
+            out.append(",".join(tmp))
             out.append(NL)
 
         out.append(BLOCK_END)

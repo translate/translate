@@ -62,24 +62,24 @@ TRADOS_TIMEFORMAT = "%d%m%Y, %H:%M:%S"
 """Time format used by Trados .txt"""
 
 RTF_ESCAPES = {
-    u"\\emdash": u"—",
-    u"\\endash": u"–",
+    "\\emdash": "—",
+    "\\endash": "–",
     # Nonbreaking space equal to width of character "m" in current font.
-    u"\\emspace": u"\u2003",
+    "\\emspace": "\u2003",
     # Nonbreaking space equal to width of character "n" in current font.
-    u"\\enspace": u"\u2002",
-    #u"\\qmspace": "",    # One-quarter em space.
-    u"\\bullet": u"•",     # Bullet character.
-    u"\\lquote": u"‘",     # Left single quotation mark. \u2018
-    u"\\rquote": u"’",     # Right single quotation mark. \u2019
-    u"\\ldblquote": u"“",  # Left double quotation mark. \u201C
-    u"\\rdblquote": u"”",  # Right double quotation mark. \u201D
-    u"\\~": u"\u00a0",  # Nonbreaking space
-    u"\\-": u"\u00ad",  # Optional hyphen.
-    u"\\_": u"‑",  # Nonbreaking hyphen \U2011
+    "\\enspace": "\u2002",
+    #"\\qmspace": "",    # One-quarter em space.
+    "\\bullet": "•",     # Bullet character.
+    "\\lquote": "‘",     # Left single quotation mark. \u2018
+    "\\rquote": "’",     # Right single quotation mark. \u2019
+    "\\ldblquote": "“",  # Left double quotation mark. \u201C
+    "\\rdblquote": "”",  # Right double quotation mark. \u201D
+    "\\~": "\u00a0",  # Nonbreaking space
+    "\\-": "\u00ad",  # Optional hyphen.
+    "\\_": "‑",  # Nonbreaking hyphen \U2011
     # A hexadecimal value, based on the specified character set (may be used to
     # identify 8-bit values).
-    #u"\\'hh": "",
+    #"\\'hh": "",
 }
 """RTF control to Unicode map. See
 http://msdn.microsoft.com/en-us/library/aa140283(v=office.10).aspx

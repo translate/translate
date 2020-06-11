@@ -118,7 +118,7 @@ class TestProp2PO:
         pounit = self.singleelement(pofile)
         print(repr(pofile.units[0].target))
         print(repr(pounit.source))
-        assert pounit.source == u'Norsk bokm\u00E5l'
+        assert pounit.source == 'Norsk bokm\u00E5l'
 
     def test_multiline_escaping(self):
         """checks that multiline enties can be parsed"""
@@ -248,12 +248,12 @@ message-multiedit-header[other]={{ n }} selected
         outputpo = self.prop2po(propsource, personality="gaia")
         pounit = outputpo.units[-1]
         assert pounit.hasplural()
-        assert pounit.getlocations() == [u'message-multiedit-header']
+        assert pounit.getlocations() == ['message-multiedit-header']
 
         print(outputpo)
         zero_unit = outputpo.units[-2]
         assert not zero_unit.hasplural()
-        assert zero_unit.source == u"Edit"
+        assert zero_unit.source == "Edit"
 
     def test_successive_gaia_plurals(self):
         """Test conversion of two successive gaia plural units."""
@@ -277,20 +277,20 @@ message-multiedit-header2[other]={{ n }} selected 2
         outputpo = self.prop2po(propsource, personality="gaia")
         pounit = outputpo.units[-1]
         assert pounit.hasplural()
-        assert pounit.getlocations() == [u'message-multiedit-header2']
+        assert pounit.getlocations() == ['message-multiedit-header2']
 
         pounit = outputpo.units[-3]
         assert pounit.hasplural()
-        assert pounit.getlocations() == [u'message-multiedit-header']
+        assert pounit.getlocations() == ['message-multiedit-header']
 
         print(outputpo)
         zero_unit = outputpo.units[-2]
         assert not zero_unit.hasplural()
-        assert zero_unit.source == u"Edit 2"
+        assert zero_unit.source == "Edit 2"
 
         zero_unit = outputpo.units[-4]
         assert not zero_unit.hasplural()
-        assert zero_unit.source == u"Edit"
+        assert zero_unit.source == "Edit"
 
     def test_duplicate_keys(self):
         """Check that we correctly handle duplicate keys."""
@@ -301,7 +301,7 @@ key=value
         po_file = self.prop2po(source)
         assert self.countelements(po_file) == 1
         po_unit = self.singleelement(po_file)
-        assert po_unit.source == u"value"
+        assert po_unit.source == "value"
 
         source = '''
 key=value
@@ -310,11 +310,11 @@ key=another value
         po_file = self.prop2po(source)
         assert self.countelements(po_file) == 2
         po_unit = po_file.units[1]
-        assert po_unit.source == u"value"
-        assert po_unit.getlocations() == [u'key']
+        assert po_unit.source == "value"
+        assert po_unit.getlocations() == ['key']
         po_unit = po_file.units[2]
-        assert po_unit.source == u"another value"
-        assert po_unit.getlocations() == [u'key']
+        assert po_unit.source == "another value"
+        assert po_unit.getlocations() == ['key']
 
         source = '''
 key1=value
@@ -323,11 +323,11 @@ key2=value
         po_file = self.prop2po(source)
         assert self.countelements(po_file) == 2
         po_unit = po_file.units[1]
-        assert po_unit.source == u"value"
-        assert po_unit.getlocations() == [u'key1']
+        assert po_unit.source == "value"
+        assert po_unit.getlocations() == ['key1']
         po_unit = po_file.units[2]
-        assert po_unit.source == u"value"
-        assert po_unit.getlocations() == [u'key2']
+        assert po_unit.source == "value"
+        assert po_unit.getlocations() == ['key2']
 
     def test_gwt_plurals(self):
         """Test conversion of gwt plural units."""
@@ -341,7 +341,7 @@ message-multiedit-header[many]={0,number} selected
 '''
         outputpo = self.prop2po(propsource, personality="gwt")
         pounit = outputpo.units[-1]
-        assert pounit.getlocations() == [u'message-multiedit-header']
+        assert pounit.getlocations() == ['message-multiedit-header']
 
 
 class TestProp2POCommand(test_convert.TestConvertCommand, TestProp2PO):

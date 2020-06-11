@@ -58,7 +58,7 @@ class RESXUnit(lisa.LISAunit):
         if targetnode is None:
             etree.SubElement(self.xmlelement, self.namespaced("value"))
             return None
-        return data.forceunicode(targetnode.text) or u""
+        return data.forceunicode(targetnode.text) or ""
 
     @target.setter
     def target(self, target):
@@ -69,7 +69,7 @@ class RESXUnit(lisa.LISAunit):
             return
         targetnode = self._gettargetnode()
         targetnode.clear()
-        targetnode.text = data.forceunicode(target) or u""
+        targetnode.text = data.forceunicode(target) or ""
 
     def addnote(self, text, origin=None, position="append"):
         """Add a note specifically in the appropriate "comment" tag"""
@@ -212,7 +212,7 @@ class RESXFile(lisa.LISAfile):
         setXMLspace(unit.xmlelement, "preserve")
         if unit.getid() is None:
             self._messagenum += 1
-            unit.setid(u"%s" % unit.source.strip(' '))
+            unit.setid("%s" % unit.source.strip(' '))
         # adjust the current and previous elements for new ones;
         # otherwise they will not be indented correctly.
         if new:
@@ -221,9 +221,9 @@ class RESXFile(lisa.LISAfile):
                 # this is the first element; adjust root.
                 # should not happen in a ResX file prepared by Visual Studio
                 # since it includes an inline XSD plus resheader at all times.
-                self.body.text = u"\n  "
+                self.body.text = "\n  "
             # adjust the indent of the following <value> element
-            unit.xmlelement.text = u"\n    "
+            unit.xmlelement.text = "\n    "
         return unit
 
     def serialize(self, out=None):

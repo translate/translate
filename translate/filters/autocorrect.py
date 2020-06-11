@@ -33,10 +33,10 @@ def correct(source, target):
     old_target = target
     if target == "":
         return None
-    if u"…" in source and "..." in target:
-        target = target.replace("...", u"…")
-    elif "..." in source and u"…" in target:
-        target = target.replace(u"…", "...")
+    if "…" in source and "..." in target:
+        target = target.replace("...", "…")
+    elif "..." in source and "…" in target:
+        target = target.replace("…", "...")
     if decoration.spacestart(source) != decoration.spacestart(target) or decoration.spaceend(source) != decoration.spaceend(target):
         target = decoration.spacestart(source) + target.strip() + decoration.spaceend(source)
     punctuation = (".", ":", ". ", ": ", "?")

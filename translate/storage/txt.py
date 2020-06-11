@@ -63,7 +63,7 @@ class TxtUnit(base.TranslationUnit):
 
     def __str__(self):
         """Convert a txt unit to a string"""
-        return u"".join([self.pretext, self.source, self.posttext])
+        return "".join([self.pretext, self.source, self.posttext])
 
     @property
     def target(self):

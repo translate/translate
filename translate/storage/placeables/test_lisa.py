@@ -25,97 +25,97 @@ from translate.storage.placeables.xliff import Bx, Ex, G, UnknownXML, X
 
 
 def test_xml_to_strelem():
-    source = etree.fromstring(u'<source>a</source>')
+    source = etree.fromstring('<source>a</source>')
     elem = lisa.xml_to_strelem(source)
-    assert elem == StringElem(u'a')
+    assert elem == StringElem('a')
 
-    source = etree.fromstring(u'<source>a<x id="foo[1]/bar[1]/baz[1]"/></source>')
+    source = etree.fromstring('<source>a<x id="foo[1]/bar[1]/baz[1]"/></source>')
     elem = lisa.xml_to_strelem(source)
-    assert elem.sub == [StringElem(u'a'), X(id=u'foo[1]/bar[1]/baz[1]')]
+    assert elem.sub == [StringElem('a'), X(id='foo[1]/bar[1]/baz[1]')]
 
-    source = etree.fromstring(u'<source>a<x id="foo[1]/bar[1]/baz[1]"/>é</source>')
+    source = etree.fromstring('<source>a<x id="foo[1]/bar[1]/baz[1]"/>é</source>')
     elem = lisa.xml_to_strelem(source)
-    assert elem.sub == [StringElem(u'a'), X(id=u'foo[1]/bar[1]/baz[1]'), StringElem(u'é')]
+    assert elem.sub == [StringElem('a'), X(id='foo[1]/bar[1]/baz[1]'), StringElem('é')]
 
-    source = etree.fromstring(u'<source>a<g id="foo[2]/bar[2]/baz[2]">b<x id="foo[1]/bar[1]/baz[1]"/>c</g>é</source>')
+    source = etree.fromstring('<source>a<g id="foo[2]/bar[2]/baz[2]">b<x id="foo[1]/bar[1]/baz[1]"/>c</g>é</source>')
     elem = lisa.xml_to_strelem(source)
-    assert elem.sub == [StringElem(u'a'), G(id=u'foo[2]/bar[2]/baz[2]', sub=[StringElem(u'b'), X(id=u'foo[1]/bar[1]/baz[1]'), StringElem(u'c')]), StringElem(u'é')]
+    assert elem.sub == [StringElem('a'), G(id='foo[2]/bar[2]/baz[2]', sub=[StringElem('b'), X(id='foo[1]/bar[1]/baz[1]'), StringElem('c')]), StringElem('é')]
 
 
 def test_xml_space():
-    source = etree.fromstring(u'<source xml:space="default"> a <x id="foo[1]/bar[1]/baz[1]"/> </source>')
+    source = etree.fromstring('<source xml:space="default"> a <x id="foo[1]/bar[1]/baz[1]"/> </source>')
     elem = lisa.xml_to_strelem(source)
     print(elem.sub)
-    assert elem.sub == [StringElem(u'a '), X(id=u'foo[1]/bar[1]/baz[1]'), StringElem(u' ')]
+    assert elem.sub == [StringElem('a '), X(id='foo[1]/bar[1]/baz[1]'), StringElem(' ')]
 
 
 def test_chunk_list():
-    left = StringElem([u'a', G(id='foo[2]/bar[2]/baz[2]', sub=[u'b', X(id='foo[1]/bar[1]/baz[1]'), u'c']), u'é'])
-    right = StringElem([u'a', G(id='foo[2]/bar[2]/baz[2]', sub=[u'b', X(id='foo[1]/bar[1]/baz[1]'), u'c']), u'é'])
+    left = StringElem(['a', G(id='foo[2]/bar[2]/baz[2]', sub=['b', X(id='foo[1]/bar[1]/baz[1]'), 'c']), 'é'])
+    right = StringElem(['a', G(id='foo[2]/bar[2]/baz[2]', sub=['b', X(id='foo[1]/bar[1]/baz[1]'), 'c']), 'é'])
     assert left == right
 
 
 def test_set_strelem_to_xml():
-    source = etree.Element(u'source')
-    lisa.strelem_to_xml(source, StringElem(u'a'))
+    source = etree.Element('source')
+    lisa.strelem_to_xml(source, StringElem('a'))
     assert etree.tostring(source, encoding='UTF-8') == b'<source>a</source>'
 
-    source = etree.Element(u'source')
-    lisa.strelem_to_xml(source, StringElem([u'a', u'é']))
+    source = etree.Element('source')
+    lisa.strelem_to_xml(source, StringElem(['a', 'é']))
     assert etree.tostring(source, encoding='UTF-8') == b'<source>a\xc3\xa9</source>'
 
-    source = etree.Element(u'source')
+    source = etree.Element('source')
     lisa.strelem_to_xml(source, StringElem(X(id='foo[1]/bar[1]/baz[1]')))
     assert etree.tostring(source, encoding='UTF-8') == b'<source><x id="foo[1]/bar[1]/baz[1]"/></source>'
 
-    source = etree.Element(u'source')
-    lisa.strelem_to_xml(source, StringElem([u'a', X(id='foo[1]/bar[1]/baz[1]')]))
+    source = etree.Element('source')
+    lisa.strelem_to_xml(source, StringElem(['a', X(id='foo[1]/bar[1]/baz[1]')]))
     assert etree.tostring(source, encoding='UTF-8') == b'<source>a<x id="foo[1]/bar[1]/baz[1]"/></source>'
 
-    source = etree.Element(u'source')
-    lisa.strelem_to_xml(source, StringElem([u'a', X(id='foo[1]/bar[1]/baz[1]'), u'é']))
+    source = etree.Element('source')
+    lisa.strelem_to_xml(source, StringElem(['a', X(id='foo[1]/bar[1]/baz[1]'), 'é']))
     assert etree.tostring(source, encoding='UTF-8') == b'<source>a<x id="foo[1]/bar[1]/baz[1]"/>\xc3\xa9</source>'
 
-    source = etree.Element(u'source')
-    lisa.strelem_to_xml(source, StringElem([u'a', G(id='foo[2]/bar[2]/baz[2]', sub=[u'b', X(id='foo[1]/bar[1]/baz[1]'), u'c']), u'é']))
+    source = etree.Element('source')
+    lisa.strelem_to_xml(source, StringElem(['a', G(id='foo[2]/bar[2]/baz[2]', sub=['b', X(id='foo[1]/bar[1]/baz[1]'), 'c']), 'é']))
     assert etree.tostring(source, encoding='UTF-8') == b'<source>a<g id="foo[2]/bar[2]/baz[2]">b<x id="foo[1]/bar[1]/baz[1]"/>c</g>\xc3\xa9</source>'
 
 
 def test_unknown_xml_placeable():
     # The XML below is (modified) from the official XLIFF example file Sample_AlmostEverything_1.2_strict.xlf
-    source = etree.fromstring(u"""<source xml:lang="en-us">Text <g id="_1_ski_040">g</g>TEXT<bpt id="_1_ski_139">bpt<sub>sub</sub>
+    source = etree.fromstring("""<source xml:lang="en-us">Text <g id="_1_ski_040">g</g>TEXT<bpt id="_1_ski_139">bpt<sub>sub</sub>
                </bpt>TEXT<ept id="_1_ski_238">ept</ept>TEXT<ph id="_1_ski_337"/>TEXT<it id="_1_ski_436" pos="open">it</it>TEXT<mrk mtype="x-test">mrk</mrk>
                <x id="_1_ski_535"/>TEXT<bx id="_1_ski_634"/>TEXT<ex id="_1_ski_733"/>TEXT.</source>""")
     elem = lisa.xml_to_strelem(source)
 
     from copy import copy
     custom = StringElem([
-        StringElem(u'Text '),
-        G(u'g', id='_1_ski_040'),
-        StringElem(u'TEXT'),
+        StringElem('Text '),
+        G('g', id='_1_ski_040'),
+        StringElem('TEXT'),
         UnknownXML(
             [
-                StringElem(u'bpt'),
-                UnknownXML(u'sub', xml_node=copy(source[1][0])),
-                StringElem(u'\n               '),
+                StringElem('bpt'),
+                UnknownXML('sub', xml_node=copy(source[1][0])),
+                StringElem('\n               '),
             ],
             id='_1_ski_139',
             xml_node=copy(source[3])),
-        StringElem(u'TEXT'),
-        UnknownXML(u'ept', id=u'_1_ski_238', xml_node=copy(source[2])),
-        StringElem(u'TEXT'),
+        StringElem('TEXT'),
+        UnknownXML('ept', id='_1_ski_238', xml_node=copy(source[2])),
+        StringElem('TEXT'),
         UnknownXML(id='_1_ski_337', xml_node=copy(source[3])),  # ph-tag
-        StringElem(u'TEXT'),
-        UnknownXML(u'it', id='_1_ski_436', xml_node=copy(source[4])),
-        StringElem(u'TEXT'),
-        UnknownXML(u'mrk', xml_node=copy(source[5])),
-        StringElem(u'\n               '),
+        StringElem('TEXT'),
+        UnknownXML('it', id='_1_ski_436', xml_node=copy(source[4])),
+        StringElem('TEXT'),
+        UnknownXML('mrk', xml_node=copy(source[5])),
+        StringElem('\n               '),
         X(id='_1_ski_535'),
-        StringElem(u'TEXT'),
+        StringElem('TEXT'),
         Bx(id='_1_ski_634'),
-        StringElem(u'TEXT'),
+        StringElem('TEXT'),
         Ex(id='_1_ski_733'),
-        StringElem(u'TEXT.')
+        StringElem('TEXT.')
     ])
     assert elem == custom
 

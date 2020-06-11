@@ -126,7 +126,7 @@ def test_unquotefromdtd():
     assert dtd.unquotefromdtd('"A &#x0022;thing&#x0022;"') == "A \"thing\""
     assert dtd.unquotefromdtd("'<a href=\"http'") == "<a href=\"http"
     # other chars
-    assert dtd.unquotefromdtd('"&#187;"') == u"»"
+    assert dtd.unquotefromdtd('"&#187;"') == "»"
 
 
 def test_android_roundtrip_quoting():

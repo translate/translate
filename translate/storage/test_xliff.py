@@ -53,14 +53,14 @@ class TestXLIFFUnit(test_base.TestTranslationUnit):
         Source: https://en.wikipedia.org/wiki/Valid_characters_in_XML#XML_1.0
         """
         # Unicode Character 'CHARACTER TABULATION' (U+0009)
-        self.unit.target = u'Een\t'
-        assert self.unit.target == u'Een\t'
+        self.unit.target = 'Een\t'
+        assert self.unit.target == 'Een\t'
         # Unicode Character 'LINE FEED (LF)' (U+000A)
-        self.unit.target = u'Een\n'
-        assert self.unit.target == u'Een\n'
+        self.unit.target = 'Een\n'
+        assert self.unit.target == 'Een\n'
         # Unicode Character 'CARRIAGE RETURN (CR)' (U+000D)
-        self.unit.target = u'Een\r'
-        assert self.unit.target == u'Een\r'
+        self.unit.target = 'Een\r'
+        assert self.unit.target == 'Een\r'
 
     def test_unaccepted_control_chars(self):
         """Tests we cannot assign the unaccepted control chars without escaping.
@@ -70,15 +70,15 @@ class TestXLIFFUnit(test_base.TestTranslationUnit):
         exc_msg = ("All strings must be XML compatible: Unicode or ASCII, no "
                    "NULL bytes or control characters")
         for code in xliff.ASCII_CONTROL_CODES:
-            self.unit.target = u'Een&#x%s;' % code.lstrip('0') or '0'
-            assert self.unit.target == u'Een%s' % chr(int(code, 16))
-            self.unit.target = u'Een%s' % chr(int(code, 16))
-            assert self.unit.target == u'Een%s' % chr(int(code, 16))
+            self.unit.target = 'Een&#x%s;' % code.lstrip('0') or '0'
+            assert self.unit.target == 'Een%s' % chr(int(code, 16))
+            self.unit.target = 'Een%s' % chr(int(code, 16))
+            assert self.unit.target == 'Een%s' % chr(int(code, 16))
 
     def test_unaccepted_control_chars_escapes_roundtrip(self):
         """Test control characters go ok on escaping roundtrip."""
         for code in xliff.ASCII_CONTROL_CODES:
-            special = u'Een%s' % chr(int(code, 16))
+            special = 'Een%s' % chr(int(code, 16))
             self.unit.source = special
             print("unit.source:", repr(self.unit.source))
             print("special:", repr(special))
@@ -126,80 +126,80 @@ class TestXLIFFfile(test_base.TestTranslationStore):
 
     def test_rich_source(self):
         xlifffile = xliff.xlifffile()
-        xliffunit = xlifffile.addsourceunit(u'')
+        xliffunit = xlifffile.addsourceunit('')
 
         # Test 1
-        xliffunit.rich_source = [StringElem([u'foo', X(id='bar'), u'baz'])]
+        xliffunit.rich_source = [StringElem(['foo', X(id='bar'), 'baz'])]
         source_dom_node = xliffunit.getlanguageNode(None, 0)
         x_placeable = source_dom_node[0]
 
         assert source_dom_node.text == 'foo'
 
-        assert x_placeable.tag == u'x'
+        assert x_placeable.tag == 'x'
         assert x_placeable.attrib['id'] == 'bar'
         assert x_placeable.tail == 'baz'
 
         xliffunit.rich_source[0].print_tree(2)
         print(xliffunit.rich_source)
-        assert xliffunit.rich_source == [StringElem([StringElem(u'foo'), X(id='bar'), StringElem(u'baz')])]
+        assert xliffunit.rich_source == [StringElem([StringElem('foo'), X(id='bar'), StringElem('baz')])]
 
         # Test 2
-        xliffunit.rich_source = [StringElem([u'foo', u'baz', G(id='oof', sub=[G(id='zab', sub=[u'bar', u'rab'])])])]
+        xliffunit.rich_source = [StringElem(['foo', 'baz', G(id='oof', sub=[G(id='zab', sub=['bar', 'rab'])])])]
         source_dom_node = xliffunit.getlanguageNode(None, 0)
         g_placeable = source_dom_node[0]
         nested_g_placeable = g_placeable[0]
 
-        assert source_dom_node.text == u'foobaz'
+        assert source_dom_node.text == 'foobaz'
 
-        assert g_placeable.tag == u'g'
+        assert g_placeable.tag == 'g'
         assert g_placeable.text is None
-        assert g_placeable.attrib[u'id'] == u'oof'
+        assert g_placeable.attrib['id'] == 'oof'
         assert g_placeable.tail is None
 
-        assert nested_g_placeable.tag == u'g'
-        assert nested_g_placeable.text == u'barrab'
-        assert nested_g_placeable.attrib[u'id'] == u'zab'
+        assert nested_g_placeable.tag == 'g'
+        assert nested_g_placeable.text == 'barrab'
+        assert nested_g_placeable.attrib['id'] == 'zab'
         assert nested_g_placeable.tail is None
 
         rich_source = xliffunit.rich_source
         rich_source[0].print_tree(2)
-        assert rich_source == [StringElem([u'foobaz', G(id='oof', sub=[G(id='zab', sub=[u'barrab'])])])]
+        assert rich_source == [StringElem(['foobaz', G(id='oof', sub=[G(id='zab', sub=['barrab'])])])]
 
     def test_rich_target(self):
         xlifffile = xliff.xlifffile()
-        xliffunit = xlifffile.addsourceunit(u'')
+        xliffunit = xlifffile.addsourceunit('')
 
         # Test 1
-        xliffunit.set_rich_target([StringElem([u'foo', X(id='bar'), u'baz'])], u'fr')
+        xliffunit.set_rich_target([StringElem(['foo', X(id='bar'), 'baz'])], 'fr')
         target_dom_node = xliffunit.getlanguageNode(None, 1)
         x_placeable = target_dom_node[0]
 
         assert target_dom_node.text == 'foo'
-        assert x_placeable.tag == u'x'
+        assert x_placeable.tag == 'x'
         assert x_placeable.attrib['id'] == 'bar'
         assert x_placeable.tail == 'baz'
 
         # Test 2
-        xliffunit.set_rich_target([StringElem([u'foo', u'baz', G(id='oof', sub=[G(id='zab', sub=[u'bar', u'rab'])])])], u'fr')
+        xliffunit.set_rich_target([StringElem(['foo', 'baz', G(id='oof', sub=[G(id='zab', sub=['bar', 'rab'])])])], 'fr')
         target_dom_node = xliffunit.getlanguageNode(None, 1)
         g_placeable = target_dom_node[0]
         nested_g_placeable = g_placeable[0]
 
-        assert target_dom_node.text == u'foobaz'
+        assert target_dom_node.text == 'foobaz'
 
-        assert g_placeable.tag == u'g'
+        assert g_placeable.tag == 'g'
         print('g_placeable.text: %s (%s)' % (g_placeable.text, type(g_placeable.text)))
         assert g_placeable.text is None
-        assert g_placeable.attrib[u'id'] == u'oof'
+        assert g_placeable.attrib['id'] == 'oof'
         assert g_placeable.tail is None
 
-        assert nested_g_placeable.tag == u'g'
-        assert nested_g_placeable.text == u'barrab'
-        assert nested_g_placeable.attrib[u'id'] == u'zab'
+        assert nested_g_placeable.tag == 'g'
+        assert nested_g_placeable.text == 'barrab'
+        assert nested_g_placeable.attrib['id'] == 'zab'
         assert nested_g_placeable.tail is None
 
         xliffunit.rich_target[0].print_tree(2)
-        assert xliffunit.rich_target == [StringElem([u'foobaz', G(id='oof', sub=[G(id='zab', sub=[u'barrab'])])])]
+        assert xliffunit.rich_target == [StringElem(['foobaz', G(id='oof', sub=[G(id='zab', sub=['barrab'])])])]
 
     def test_source(self):
         xlifffile = xliff.xlifffile()
@@ -308,7 +308,7 @@ class TestXLIFFfile(test_base.TestTranslationStore):
         assert altformat.find("<source") < altformat.find("<target")
 
         # test that a new target is still before alt-trans (bug 1098)
-        unit.target = u"newester target"
+        unit.target = "newester target"
         unitformat = str(unit)
         print(unitformat)
         assert unitformat.find("<source") < unitformat.find("<target") < unitformat.find("<alt-trans")
@@ -533,5 +533,5 @@ class TestXLIFFfile(test_base.TestTranslationStore):
 '''
         xfile = xliff.xlifffile.parsestring(xlfsource)
         assert bytes(xfile) == xlfsource
-        xfile.units[0].rich_target = [u"Soubor"]
+        xfile.units[0].rich_target = ["Soubor"]
         assert bytes(xfile).decode('ascii') == xlftarget

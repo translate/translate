@@ -70,5 +70,5 @@ class XPathBreadcrumb:
     def xpath(self):
         def str_component(component):
             tag, pos = component
-            return u"%s[%d]" % (tag, pos)
-        return u"/".join(str_component(component) for component in self._xpath)
+            return "%s[%d]" % (tag, pos)
+        return "/".join(str_component(component) for component in self._xpath)

@@ -173,7 +173,7 @@ def convertdtd(inputfile, outputfile, templatefile, includefuzzy=False,
     # identify them seems to be on their file path in the tree (based on code
     # in compare-locales).
     android_dtd = False
-    header_comment = u""
+    header_comment = ""
     input_header = inputstore.header()
     if input_header:
         header_comment = input_header.getnotes("developer")

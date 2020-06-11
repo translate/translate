@@ -83,15 +83,15 @@ class SicilianChecker(TranslationChecker):
         # The above is full of strange quotes and things in utf-8 encoding.
         # single apostrophe perhaps problematic in words like "doesn't"
         for separator in self.config.punctuation:
-            str1 = str1.replace(separator, u" ")
-            str2 = str2.replace(separator, u" ")
+            str1 = str1.replace(separator, " ")
+            str2 = str2.replace(separator, " ")
 
         words1 = self.filteraccelerators(str1).split()
         words2 = self.filteraccelerators(str2).split()
         stopwords = ["%s (%s)" % (word, errors[word]) for word in words2 if word.lower() in errors.keys() and word not in words1]
 
         if stopwords:
-            raise FilterFailure(u"Please translate: %s" % (u", ".join(stopwords)))
+            raise FilterFailure("Please translate: %s" % (", ".join(stopwords)))
 
         return True
 
@@ -120,7 +120,7 @@ class SicilianChecker(TranslationChecker):
                     stopwords.append(word.lower())
 
         if stopwords:
-            raise FilterFailure(u"Please respect vocalism: %s" % (u", ".join(stopwords)))
+            raise FilterFailure("Please respect vocalism: %s" % (", ".join(stopwords)))
         return True
 
     @critical
@@ -143,7 +143,7 @@ class SicilianChecker(TranslationChecker):
                     stopwords.append("%s (-%s)" % (word, suffixes[suffix]))
 
         if stopwords:
-            raise FilterFailure(u"Please use the correct word endings: %s" % (u", ".join(stopwords)))
+            raise FilterFailure("Please use the correct word endings: %s" % (", ".join(stopwords)))
         return True
 
 

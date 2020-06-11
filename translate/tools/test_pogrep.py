@@ -70,9 +70,9 @@ class TestPOGrep:
     def test_unicode_message_searchstring(self):
         """check that we can grep unicode messages and use unicode search strings"""
         poascii = '# comment\n#: test.c\nmsgid "test"\nmsgstr "rest"\n'
-        pounicode = u'# comment\n#: test.c\nmsgid "test"\nmsgstr "rešṱ"\n'
+        pounicode = '# comment\n#: test.c\nmsgid "test"\nmsgstr "rešṱ"\n'
         queryascii = 'rest'
-        queryunicode = u'rešṱ'
+        queryunicode = 'rešṱ'
         for source, search, expected in [(poascii, queryascii, poascii),
                                          (poascii, queryunicode, ''),
                                          (pounicode, queryascii, ''),
@@ -84,9 +84,9 @@ class TestPOGrep:
     def test_unicode_message_regex_searchstring(self):
         """check that we can grep unicode messages and use unicode regex search strings"""
         poascii = '# comment\n#: test.c\nmsgid "test"\nmsgstr "rest"\n'
-        pounicode = u'# comment\n#: test.c\nmsgid "test"\nmsgstr "rešṱ"\n'
+        pounicode = '# comment\n#: test.c\nmsgid "test"\nmsgstr "rešṱ"\n'
         queryascii = 'rest'
-        queryunicode = u'rešṱ'
+        queryunicode = 'rešṱ'
         for source, search, expected in [(poascii, queryascii, poascii),
                                          (poascii, queryunicode, ''),
                                          (pounicode, queryascii, ''),
@@ -105,14 +105,14 @@ class TestPOGrep:
 
     def test_unicode_normalise(self):
         """check that we normlise unicode strings before comparing"""
-        source_template = u'# comment\n#: test.c\nmsgid "test"\nmsgstr "t%sst"\n'
+        source_template = '# comment\n#: test.c\nmsgid "test"\nmsgstr "t%sst"\n'
         # é, e + '
         # Ḽ, L + ^
         # Ṏ
         groups = [
-            (u"\u00e9", u"\u0065\u0301"),
-            (u"\u1e3c", u"\u004c\u032d"),
-            (u"\u1e4e", u"\u004f\u0303\u0308", u"\u00d5\u0308")
+            ("\u00e9", "\u0065\u0301"),
+            ("\u1e3c", "\u004c\u032d"),
+            ("\u1e4e", "\u004f\u0303\u0308", "\u00d5\u0308")
         ]
         for letters in groups:
             for source_letter in letters:
@@ -158,8 +158,8 @@ class TestXLiffGrep:
         xliff_text = self.xliff_text
         xliff_file = self.xliff_parse(xliff_text.encode())
         xliff_result = self.xliff_parse(self.xliff_grep(xliff_text, "rêd"))
-        assert first_translatable(xliff_result).source == u"rêd"
-        assert first_translatable(xliff_result).target == u"rooi"
+        assert first_translatable(xliff_result).source == "rêd"
+        assert first_translatable(xliff_result).target == "rooi"
 
         xliff_result = self.xliff_parse(self.xliff_grep(xliff_text, "unavailable string"))
         assert xliff_result.isempty()

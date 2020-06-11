@@ -137,19 +137,19 @@ def quoteforpo(text, wrapper_obj=None):
         wrapper_obj = PoWrapper()
     text = escapeforpo(text)
     if wrapper_obj.width == -1:
-        return [u'"%s"' % text]
-    lines = text.split(u"\\n")
+        return ['"%s"' % text]
+    lines = text.split("\\n")
     for i, l in enumerate(lines[:-1]):
-        lines[i] = l + u"\\n"
+        lines[i] = l + "\\n"
 
     polines = []
     len_lines = len(lines)
     if len_lines > 2 or (len_lines == 2 and lines[1]) or len(lines[0]) > wrapper_obj.width - 6:
-        polines.append(u'""')
+        polines.append('""')
     for line in lines:
         lns = wrapper_obj.wrap(line)
         for ln in lns:
-            polines.append(u'"%s"' % ln)
+            polines.append('"%s"' % ln)
     return polines
 
 
@@ -158,7 +158,7 @@ def unescape(line):
 
     Quotes on either side should already have been removed.
     """
-    escape_places = quote.find_all(line, u"\\")
+    escape_places = quote.find_all(line, "\\")
     if not escape_places:
         return line
 
@@ -183,11 +183,11 @@ def unescape(line):
         lastpos = pos+2
 
     extracted.append(line[lastpos:])
-    return u"".join(extracted)
+    return "".join(extracted)
 
 
 def unquotefrompo(postr):
-    return u"".join([unescape(line[1:-1]) for line in postr])
+    return "".join([unescape(line[1:-1]) for line in postr])
 
 
 def is_null(lst):
@@ -364,12 +364,12 @@ class pounit(pocommon.pounit):
         :param origin: programmer, developer, source code, translator or None
         """
         if origin is None:
-            comments = u"".join([comment[2:] or "\n" for comment in self.othercomments])
-            comments += u"".join([comment[3:] or "\n" for comment in self.automaticcomments])
+            comments = "".join([comment[2:] or "\n" for comment in self.othercomments])
+            comments += "".join([comment[3:] or "\n" for comment in self.automaticcomments])
         elif origin == "translator":
-            comments = u"".join([comment[2:] or "\n" for comment in self.othercomments])
+            comments = "".join([comment[2:] or "\n" for comment in self.othercomments])
         elif origin in ["programmer", "developer", "source code"]:
-            comments = u"".join([comment[3:] or "\n" for comment in self.automaticcomments])
+            comments = "".join([comment[3:] or "\n" for comment in self.automaticcomments])
         else:
             raise ValueError("Comment type not valid")
         # Let's drop the last newline
@@ -706,24 +706,24 @@ class pounit(pocommon.pounit):
                 # We need to account for a multiline msgid or msgstr here
                 obsoletelines[index] = obsoleteline.replace('\n"', '\n#~ "')
             lines.extend(obsoletelines)
-            return u"".join(lines)
+            return "".join(lines)
         # if there's no msgid don't do msgid and string, unless we're the
         # header this will also discard any comments other than plain
         # othercomments...
         if is_null(self.msgid):
             if not (self.isheader() or self.getcontext() or self.sourcecomments):
-                return u"".join(lines)
+                return "".join(lines)
         lines.extend(self.automaticcomments)
         lines.extend(self.sourcecomments)
         lines.extend(self.typecomments)
         add_prev_msgid_info(lines, prefix="#|")
         if self.msgctxt:
-            lines.append(self._getmsgpartstr(u"msgctxt", self.msgctxt))
-        lines.append(self._getmsgpartstr(u"msgid", self.msgid, self.msgidcomments))
+            lines.append(self._getmsgpartstr("msgctxt", self.msgctxt))
+        lines.append(self._getmsgpartstr("msgid", self.msgid, self.msgidcomments))
         if self.msgid_plural or self.msgid_pluralcomments:
-            lines.append(self._getmsgpartstr(u"msgid_plural", self.msgid_plural, self.msgid_pluralcomments))
-        lines.append(self._getmsgpartstr(u"msgstr", self.msgstr))
-        postr = u"".join(lines)
+            lines.append(self._getmsgpartstr("msgid_plural", self.msgid_plural, self.msgid_pluralcomments))
+        lines.append(self._getmsgpartstr("msgstr", self.msgstr))
+        postr = "".join(lines)
         return postr
 
     def getlocations(self):
@@ -789,9 +789,9 @@ class pounit(pocommon.pounit):
 #        id = '\0'.join(self.source.strings)
         id = self.source
         if self.msgidcomments:
-            id = u"_: %s\n%s" % (context, id)
+            id = "_: %s\n%s" % (context, id)
         elif context:
-            id = u"%s\04%s" % (context, id)
+            id = "%s\04%s" % (context, id)
         return id
 
 

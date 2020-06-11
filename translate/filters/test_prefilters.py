@@ -6,24 +6,24 @@ from translate.filters import prefilters
 
 
 def test_removekdecomments():
-    assert prefilters.removekdecomments(u"Some sṱring") == u"Some sṱring"
-    assert prefilters.removekdecomments(u"_: Commenṱ\\n\nSome sṱring") == u"Some sṱring"
-    assert prefilters.removekdecomments(u"_: Commenṱ\\n\n") == u""
+    assert prefilters.removekdecomments("Some sṱring") == "Some sṱring"
+    assert prefilters.removekdecomments("_: Commenṱ\\n\nSome sṱring") == "Some sṱring"
+    assert prefilters.removekdecomments("_: Commenṱ\\n\n") == ""
 
 
 def test_filterwordswithpunctuation():
-    string = u"Nothing in here."
+    string = "Nothing in here."
     filtered = prefilters.filterwordswithpunctuation(string)
     assert filtered == string
     # test listed words (start / end with apostrophe)
-    string = u"'n Boom het 'n tak."
+    string = "'n Boom het 'n tak."
     filtered = prefilters.filterwordswithpunctuation(string)
     assert filtered == "n Boom het n tak."
     # test words containing apostrophe
-    string = u"It's in it's own place."
+    string = "It's in it's own place."
     filtered = prefilters.filterwordswithpunctuation(string)
     assert filtered == "Its in its own place."
     # test strings in unicode
-    string = u"Iṱ'š"
+    string = "Iṱ'š"
     filtered = prefilters.filterwordswithpunctuation(string)
-    assert filtered == u"Iṱš"
+    assert filtered == "Iṱš"

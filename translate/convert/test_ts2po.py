@@ -48,7 +48,7 @@ class TestTS2PO:
         pofile = self.ts2po(tssource)
         assert len(pofile.units) == 2
         assert pofile.units[1].source == "&About"
-        assert pofile.units[1].target == u"&Giới thiệu"
+        assert pofile.units[1].target == "&Giới thiệu"
         assert pofile.units[1].getlocations()[0].startswith("AboutDialog")
 
     def test_unfinished(self):

@@ -154,18 +154,18 @@ class TranslationUnit:
         >>> from translate.storage.placeables.interfaces import X
         >>> rich = [StringElem(['foo', X(id='xxx', sub=[' ']), 'bar'])]
         >>> TranslationUnit.rich_to_multistring(rich)
-        multistring(u'foo bar')
+        multistring('foo bar')
         """
         return multistring([str(elem) for elem in elem_list])
 
     def multistring_to_rich(self, mulstring):
         """Convert a multistring to a list of "rich" string trees:
 
-        >>> target = multistring([u'foo', u'bar', u'baz'])
+        >>> target = multistring(['foo', 'bar', 'baz'])
         >>> TranslationUnit.multistring_to_rich(target)
-        [<StringElem([<StringElem([u'foo'])>])>,
-         <StringElem([<StringElem([u'bar'])>])>,
-         <StringElem([<StringElem([u'baz'])>])>]
+        [<StringElem([<StringElem(['foo'])>])>,
+         <StringElem([<StringElem(['bar'])>])>,
+         <StringElem([<StringElem(['baz'])>])>]
         """
         if isinstance(mulstring, multistring):
             return [rich_parse(s, self.rich_parsers) for s in mulstring.strings]
@@ -341,7 +341,7 @@ class TranslationUnit:
 
     def removenotes(self, origin=None):
         """Remove all the translator's notes."""
-        self.notes = u''
+        self.notes = ''
 
     def adderror(self, errorname, errortext):
         """Adds an error message to this unit.

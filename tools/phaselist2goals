@@ -7,8 +7,8 @@ function goalkeeper () {
 		lastgoal=$goal
 	fi
 	if [ "$goal" != "$lastgoal" ]; then
-		echo "  u'"$lastgoal"':"
-		echo "    files = u'"$files"'"
+		echo "  '"$lastgoal"':"
+		echo "    files = '"$files"'"
 		lastgoal=$goal
 		files=""
 	fi

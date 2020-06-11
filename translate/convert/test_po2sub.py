@@ -35,7 +35,7 @@ class TestPO2Sub:
 
     def test_subrip(self):
         """test SubRip or .srt files."""
-        posource = u'''#: 00:00:20.000-->00:00:24.400
+        posource = '''#: 00:00:20.000-->00:00:24.400
 msgid "Altocumulus clouds occur between six thousand"
 msgstr "Blah blah blah blah"
 

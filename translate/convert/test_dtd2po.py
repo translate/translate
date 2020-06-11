@@ -95,8 +95,8 @@ class TestDTD2PO:
         """checks that two empty entitu definitions have correct context (bug 2190)."""
         dtdsource = '<!ENTITY community.exp.start "">\n<!ENTITY contribute.end "">\n'
         pofile = self.dtd2po(dtdsource)
-        assert pofile.units[-2].getcontext() == u"community.exp.start"
-        assert pofile.units[-1].getcontext() == u"contribute.end"
+        assert pofile.units[-2].getcontext() == "community.exp.start"
+        assert pofile.units[-1].getcontext() == "contribute.end"
 
     def test_emptyentity_translated(self):
         """checks that if we translate an empty entity it makes it into the PO, bug 101"""
@@ -303,9 +303,9 @@ Some other text
         pofile = self.dtd2po(dtdlanguage, dtdtemplate)
         print(pofile)
         assert pofile.units[3].source == "Manage Certificates..."
-        assert pofile.units[3].target == u"ﺇﺩﺍﺭﺓ ﺎﻠﺸﻫﺍﺩﺎﺗ..."
+        assert pofile.units[3].target == "ﺇﺩﺍﺭﺓ ﺎﻠﺸﻫﺍﺩﺎﺗ..."
         assert pofile.units[4].source == "M"
-        assert pofile.units[4].target == u"ﺩ"
+        assert pofile.units[4].target == "ﺩ"
 
     @mark.xfail(reason="Not Implemented")
     def test_accelerator_keys_not_in_sentence(self):

@@ -27,87 +27,87 @@ from translate.convert import accesskey
 def test_get_label_and_accesskey():
     """test that we can extract the label and accesskey components from an
     accesskey+label string"""
-    assert accesskey.extract(u"") == (u"", u"")
-    assert accesskey.extract(u"File") == (u"File", u"")
-    assert accesskey.extract(u"&File") == (u"File", u"F")
-    assert accesskey.extract(u"~File", u"~") == (u"File", u"F")
-    assert accesskey.extract(u"_File", u"_") == (u"File", u"F")
+    assert accesskey.extract("") == ("", "")
+    assert accesskey.extract("File") == ("File", "")
+    assert accesskey.extract("&File") == ("File", "F")
+    assert accesskey.extract("~File", "~") == ("File", "F")
+    assert accesskey.extract("_File", "_") == ("File", "F")
 
 
 def test_extract_bad_accesskeys():
     """Test what we do in situations that are bad fof accesskeys"""
     # Space is not valid accesskey so we don't extract anything
-    assert accesskey.extract(u"More& Whitespace") == (u"More& Whitespace", u"")
+    assert accesskey.extract("More& Whitespace") == ("More& Whitespace", "")
 
 
 def test_ignore_entities():
     """test that we don't get confused with entities and a & access key
     marker"""
-    assert accesskey.extract(u"Set &browserName; as &Default") != (u"Set &browserName; as &Default", u"b")
-    assert accesskey.extract(u"Set &browserName; as &Default") == (u"Set &browserName; as Default", u"D")
+    assert accesskey.extract("Set &browserName; as &Default") != ("Set &browserName; as &Default", "b")
+    assert accesskey.extract("Set &browserName; as &Default") == ("Set &browserName; as Default", "D")
 
 
 def test_alternate_accesskey_marker():
     """check that we can identify the accesskey if the marker is different"""
-    assert accesskey.extract(u"~File", u"~") == (u"File", u"F")
-    assert accesskey.extract(u"&File", u"~") == (u"&File", u"")
+    assert accesskey.extract("~File", "~") == ("File", "F")
+    assert accesskey.extract("&File", "~") == ("&File", "")
 
 
 def test_unicode():
     """test that we can do the same with unicode strings"""
-    assert accesskey.extract(u"Eḓiṱ") == (u"Eḓiṱ", u"")
-    assert accesskey.extract(u"E&ḓiṱ") == (u"Eḓiṱ", u"ḓ")
-    assert accesskey.extract(u"E_ḓiṱ", u"_") == (u"Eḓiṱ", u"ḓ")
-    label, akey = accesskey.extract(u"E&ḓiṱ")
-    assert label, akey == (u"Eḓiṱ", u"ḓ")
+    assert accesskey.extract("Eḓiṱ") == ("Eḓiṱ", "")
+    assert accesskey.extract("E&ḓiṱ") == ("Eḓiṱ", "ḓ")
+    assert accesskey.extract("E_ḓiṱ", "_") == ("Eḓiṱ", "ḓ")
+    label, akey = accesskey.extract("E&ḓiṱ")
+    assert label, akey == ("Eḓiṱ", "ḓ")
     assert isinstance(label, str) and isinstance(akey, str)
-    assert accesskey.combine(u"Eḓiṱ", u"ḓ") == (u"E&ḓiṱ")
+    assert accesskey.combine("Eḓiṱ", "ḓ") == ("E&ḓiṱ")
 
 
 def test_numeric():
     """test combining and extracting numeric markers"""
-    assert accesskey.extract(u"&100%") == (u"100%", u"1")
-    assert accesskey.combine(u"100%", u"1") == u"&100%"
+    assert accesskey.extract("&100%") == ("100%", "1")
+    assert accesskey.combine("100%", "1") == "&100%"
 
 
 def test_empty_string():
     """test that we can handle and empty label+accesskey string"""
-    assert accesskey.extract(u"") == (u"", u"")
-    assert accesskey.extract(u"", u"~") == (u"", u"")
+    assert accesskey.extract("") == ("", "")
+    assert accesskey.extract("", "~") == ("", "")
 
 
 def test_end_of_string():
     """test that we can handle an accesskey at the end of the string"""
-    assert accesskey.extract(u"Hlola&") == (u"Hlola&", u"")
+    assert accesskey.extract("Hlola&") == ("Hlola&", "")
 
 
 def test_combine_label_accesskey():
     """test that we can combine accesskey and label to create a label+accesskey
     string"""
-    assert accesskey.combine(u"File", u"F") == u"&File"
-    assert accesskey.combine(u"File", u"F", u"~") == u"~File"
+    assert accesskey.combine("File", "F") == "&File"
+    assert accesskey.combine("File", "F", "~") == "~File"
 
 
 def test_combine_label_accesskey_different_capitals():
     """test that we can combine accesskey and label to create a label+accesskey
     string when we have more then one case or case is wrong."""
     # Prefer the correct case, even when an alternate case occurs first
-    assert accesskey.combine(u"Close Other Tabs", u"o") == u"Cl&ose Other Tabs"
-    assert accesskey.combine(u"Other Closed Tab", u"o") == u"Other Cl&osed Tab"
-    assert accesskey.combine(u"Close Other Tabs", u"O") == u"Close &Other Tabs"
+    assert accesskey.combine("Close Other Tabs", "o") == "Cl&ose Other Tabs"
+    assert accesskey.combine("Other Closed Tab", "o") == "Other Cl&osed Tab"
+    assert accesskey.combine("Close Other Tabs", "O") == "Close &Other Tabs"
     # Correct case is missing from string, so use alternate case
-    assert accesskey.combine(u"Close Tabs", u"O") == u"Cl&ose Tabs"
-    assert accesskey.combine(u"Other Tabs", u"o") == u"&Other Tabs"
+    assert accesskey.combine("Close Tabs", "O") == "Cl&ose Tabs"
+    assert accesskey.combine("Other Tabs", "o") == "&Other Tabs"
 
 
 def test_uncombinable():
     """test our behaviour when we cannot combine label and accesskey"""
-    assert accesskey.combine(u"File", u"D") is None
-    assert accesskey.combine(u"File", u"") is None
-    assert accesskey.combine(u"", u"") is None
+    assert accesskey.combine("File", "D") is None
+    assert accesskey.combine("File", "") is None
+    assert accesskey.combine("", "") is None
 
 
 def test_accesskey_already_in_text():
     """test that we can combine if the accesskey is already in the text"""
-    assert accesskey.combine(u"Mail & Newsgroups", u"N") == u"Mail & &Newsgroups"
-    assert accesskey.extract(u"Mail & &Newsgroups") == (u"Mail & Newsgroups", u"N")
+    assert accesskey.combine("Mail & Newsgroups", "N") == "Mail & &Newsgroups"
+    assert accesskey.extract("Mail & &Newsgroups") == ("Mail & Newsgroups", "N")

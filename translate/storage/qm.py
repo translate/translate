@@ -176,7 +176,7 @@ class qmfile(base.TranslationStore):
                         target = multistring(string)
                     pos = pos + 4 + length
                 else:
-                    target = u""
+                    target = ""
                     pos = pos + 4
             elif subsection == 0x06:  # SourceText
                 source = input[pos + 4:pos + 4 + length].decode('iso-8859-1')

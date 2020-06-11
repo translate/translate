@@ -35,7 +35,7 @@ class ParseState:
     def __init__(self, f, charset, read_hook=identity):
         self.f = f
         self.charset = charset
-        self.current_line = u''
+        self.current_line = ''
         self.read_hook = read_hook
         self.read_line()
 

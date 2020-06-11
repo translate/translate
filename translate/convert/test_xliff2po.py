@@ -306,4 +306,4 @@ class TestXLIFF2POCommand(test_convert.TestConvertCommand, TestXLIFF2PO):
         self.run_command("simple.xlf", "simple.po", error="traceback", duplicates="merge")
         pofile = self.target_filetype(self.open_testfile("simple.po"))
         assert len(pofile.units) == 2
-        assert pofile.units[1].target == u"matlhapolosa"
+        assert pofile.units[1].target == "matlhapolosa"

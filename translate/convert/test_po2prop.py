@@ -145,7 +145,7 @@ prop.accesskey=V
 
     def test_mozilla_margin_whitespace(self):
         """Check handling of Mozilla leading and trailing spaces"""
-        posource = u'''#: sepAnd
+        posource = '''#: sepAnd
 msgid " and "
 msgstr " و "
 
@@ -156,7 +156,7 @@ msgstr "، "
         proptemplate = r'''sepAnd = \u0020and\u0020
 sepComma = ,\u20
 '''
-        propexpected = u'''sepAnd = \\u0020و\\u0020
+        propexpected = '''sepAnd = \\u0020و\\u0020
 sepComma = ،\\u0020
 '''
         propfile = self.merge2prop(proptemplate, posource, personality="mozilla")
@@ -166,7 +166,7 @@ sepComma = ،\\u0020
     def test_mozilla_all_whitespace(self):
         """Check for all white-space Mozilla hack, remove when the
         corresponding code is removed."""
-        posource = u'''#: accesskey-accept
+        posource = '''#: accesskey-accept
 msgctxt "accesskey-accept"
 msgid ""
 msgstr " "
@@ -178,7 +178,7 @@ msgstr "م"
         proptemplate = '''accesskey-accept=
 accesskey-help=H
 '''
-        propexpected = u'''accesskey-accept=
+        propexpected = '''accesskey-accept=
 accesskey-help=م
 '''
         propfile = self.merge2prop(proptemplate, posource, personality="mozilla")
@@ -220,23 +220,23 @@ msgstr "translated"
 
     def test_personalities(self):
         """test that we output correctly for Java and Mozilla style property files.  Mozilla uses Unicode, while Java uses escaped Unicode"""
-        posource = u'''#: prop\nmsgid "value"\nmsgstr "ṽḁḽṻḝ"\n'''
-        proptemplate = u'''prop  =  value\n'''
-        propexpectedjava = u'''prop  =  \\u1E7D\\u1E01\\u1E3D\\u1E7B\\u1E1D\n'''
+        posource = '''#: prop\nmsgid "value"\nmsgstr "ṽḁḽṻḝ"\n'''
+        proptemplate = '''prop  =  value\n'''
+        propexpectedjava = '''prop  =  \\u1E7D\\u1E01\\u1E3D\\u1E7B\\u1E1D\n'''
         propfile = self.merge2prop(proptemplate, posource)
         assert propfile == propexpectedjava
 
-        propexpectedmozilla = u'''prop  =  ṽḁḽṻḝ\n'''
+        propexpectedmozilla = '''prop  =  ṽḁḽṻḝ\n'''
         propfile = self.merge2prop(proptemplate, posource, personality="mozilla")
         assert propfile == propexpectedmozilla
 
-        proptemplate = u'''prop  =  value\n'''.encode('utf-16')
-        propexpectedskype = u'''prop  =  ṽḁḽṻḝ\n'''
+        proptemplate = '''prop  =  value\n'''.encode('utf-16')
+        propexpectedskype = '''prop  =  ṽḁḽṻḝ\n'''
         propfile = self.merge2prop(proptemplate, posource, personality="skype", encoding='utf-16')
         assert propfile == propexpectedskype
 
-        proptemplate = u'''"prop" = "value";\n'''.encode('utf-16')
-        propexpectedstrings = u'''"prop" = "ṽḁḽṻḝ";\n'''
+        proptemplate = '''"prop" = "value";\n'''.encode('utf-16')
+        propexpectedstrings = '''"prop" = "ṽḁḽṻḝ";\n'''
         propfile = self.merge2prop(proptemplate, posource, personality="strings", encoding='utf-16')
         assert propfile == propexpectedstrings
 

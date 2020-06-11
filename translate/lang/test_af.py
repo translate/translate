@@ -6,13 +6,13 @@ from translate.lang import af, factory
 def test_sentences():
     """Tests basic functionality of sentence segmentation."""
     language = factory.getlanguage('af')
-    sentences = language.sentences(u"Normal case. Nothing interesting.")
-    assert sentences == [u"Normal case.", "Nothing interesting."]
-    sentences = language.sentences(u"Wat? 'n Fout?")
-    assert sentences == [u"Wat?", "'n Fout?"]
-    sentences = language.sentences(u"Dit sal a.g.v. 'n fout gebeur.")
-    assert sentences == [u"Dit sal a.g.v. 'n fout gebeur."]
-    sentences = language.sentences(u"Weet nie hoe om lêer '%s' te open nie.\nMiskien is dit 'n tipe beeld wat nog nie ondersteun word nie.\n\nKies liewer 'n ander prent.")
+    sentences = language.sentences("Normal case. Nothing interesting.")
+    assert sentences == ["Normal case.", "Nothing interesting."]
+    sentences = language.sentences("Wat? 'n Fout?")
+    assert sentences == ["Wat?", "'n Fout?"]
+    sentences = language.sentences("Dit sal a.g.v. 'n fout gebeur.")
+    assert sentences == ["Dit sal a.g.v. 'n fout gebeur."]
+    sentences = language.sentences("Weet nie hoe om lêer '%s' te open nie.\nMiskien is dit 'n tipe beeld wat nog nie ondersteun word nie.\n\nKies liewer 'n ander prent.")
     assert len(sentences) == 3
 
 
@@ -37,4 +37,4 @@ def test_transliterate_cyrillic():
         trans = af.tranliterate_cyrillic(text)
         print(("Trans: %s" % trans).encode("utf-8"))
         return trans
-    assert trans(u"Борис Николаевич Ельцин") == u"Boris Nikolajewitj Jeltsin"
+    assert trans("Борис Николаевич Ельцин") == "Boris Nikolajewitj Jeltsin"

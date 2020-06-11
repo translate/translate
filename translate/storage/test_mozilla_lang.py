@@ -198,10 +198,10 @@ class TestMozLangFile(test_base.TestTranslationStore):
         store = self.StoreClass.parsestring(lang)
         assert (
             store.getlangheaders()
-            == [u'## some_tag ##',
-                u'## another_tag ##',
-                u'## NOTE: foo',
-                u'', u''])
+            == ['## some_tag ##',
+                '## another_tag ##',
+                '## NOTE: foo',
+                '', ''])
         out = io.BytesIO()
         store.serialize(out)
         out.seek(0)

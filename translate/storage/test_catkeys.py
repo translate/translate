@@ -47,20 +47,20 @@ class TestCatkeysFile(test_base.TestTranslationStore):
         """Tests that the checksum for a file is properly calculated."""
         # The following test is based on: https://github.com/haiku/haiku/blob/d30c60446a40ba4aa1418a548c82e6aaf72b409a/data/catalogs/add-ons/disk_systems/fat/tr.catkeys
         store = self.StoreClass()
-        unit1 = store.addsourceunit(u"Auto (default)")
-        unit1.setcontext(u"FAT_Initialize_Parameter")
-        unit2 = store.addsourceunit(u"FAT bits:")
-        unit2.setcontext(u"FAT_Initialize_Parameter")
-        unit3 = store.addsourceunit(u"Name:")
-        unit3.setcontext(u"FAT_Initialize_Parameter")
+        unit1 = store.addsourceunit("Auto (default)")
+        unit1.setcontext("FAT_Initialize_Parameter")
+        unit2 = store.addsourceunit("FAT bits:")
+        unit2.setcontext("FAT_Initialize_Parameter")
+        unit3 = store.addsourceunit("Name:")
+        unit3.setcontext("FAT_Initialize_Parameter")
         assert store._compute_fingerprint() == 2766737426
 
         # setting translations should not change the fingerprint
-        unit1.target = u"Otomatik (öntanımlı)"
-        unit2.target = u"FAT bitleri:"
-        unit3.target = u"Ad:"
+        unit1.target = "Otomatik (öntanımlı)"
+        unit2.target = "FAT bitleri:"
+        unit3.target = "Ad:"
         assert store._compute_fingerprint() == 2766737426
 
         # changing a source string should change the fingerprint
-        unit1.source = u"Auto(no longer default)"
+        unit1.source = "Auto(no longer default)"
         assert store._compute_fingerprint() != 2766737426

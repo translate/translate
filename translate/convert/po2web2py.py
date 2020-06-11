@@ -47,11 +47,11 @@ class po2pydict:
             else:
                 mydict[unit.source] = unit.source.replace('@markmin\x01', '')
 
-        str_obj.write(u'# -*- coding: utf-8 -*-\n')
-        str_obj.write(u'{\n')
+        str_obj.write('# -*- coding: utf-8 -*-\n')
+        str_obj.write('{\n')
         for source_str, trans_str in sorted(mydict.items()):
-            str_obj.write(u"%s: %s,\n" % (repr(source_str), repr(trans_str)))
-        str_obj.write(u'}\n')
+            str_obj.write("%s: %s,\n" % (repr(source_str), repr(trans_str)))
+        str_obj.write('}\n')
         str_obj.seek(0)
         return str_obj
 
