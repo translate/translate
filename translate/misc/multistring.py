@@ -21,40 +21,17 @@
 strings in the strings attribute
 """
 
-import warnings
-
-
-from .deprecation import RemovedInTTK2Warning
-
-
-def _create_text_type(newtype, string, encoding):
-    """Helper to construct a text type out of characters or bytes. Required to
-    temporarily preserve backwards compatibility. Must be removed in TTK2.
-    """
-    if string is None:
-        string = ''
-    if isinstance(string, str):
-        return str.__new__(newtype, string)
-
-    warnings.warn(
-        'Passing non-ASCII bytes as well as the `encoding` argument to '
-        '`multistring` is deprecated. Always pass unicode characters instead.',
-        RemovedInTTK2Warning, stacklevel=2,
-    )
-    return str.__new__(newtype, string, encoding)
-
 
 class multistring(str):
 
-    def __new__(newtype, string=u"", *args, **kwargs):
-        encoding = kwargs.pop('encoding', 'utf-8')
+    def __new__(newtype, string=""):
         if isinstance(string, list):
             if not string:
                 raise ValueError("multistring must contain at least one string")
-            newstring = _create_text_type(newtype, string[0], encoding)
+            newstring = str.__new__(newtype, string[0])
             newstring.strings = [newstring] + [multistring.__new__(newtype, altstring) for altstring in string[1:]]
         else:
-            newstring = _create_text_type(newtype, string, encoding)
+            newstring = str.__new__(newtype, string)
             newstring.strings = [newstring]
         return newstring
 
