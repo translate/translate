@@ -21,14 +21,6 @@ match
    :inherited-members:
 
 
-segment
--------
-
-.. automodule:: translate.search.segment
-   :members:
-   :inherited-members:
-
-
 terminology
 -----------
 
