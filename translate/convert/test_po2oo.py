@@ -174,11 +174,6 @@ class TestPO2OOCommand(test_convert.TestConvertCommand, TestPO2OO):
         options = self.help_check(options, "-t TEMPLATE, --template=TEMPLATE")
         options = self.help_check(options, "--multifile=MULTIFILESTYLE", last=True)
 
-    def merge2oo(self, oosource, posource):
-        """helper that merges po translations to oo source through files"""
-        outputoo = convertor.convertstore(inputpo)
-        return outputoo
-
     def convertoo(self, posource, ootemplate, language="en-US"):
         """helper to exercise the command line function"""
         self.create_testfile(os.path.join("input", "svx", "source", "dialog.po"), posource)
