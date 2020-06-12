@@ -29,6 +29,9 @@ import os
 from io import StringIO
 from tempfile import NamedTemporaryFile
 
+from translate.storage import base
+
+
 try:
     from aeidon import Subtitle, documents, newlines
     from aeidon.encodings import detect
@@ -47,8 +50,6 @@ except ImportError:
         determine = _determiner.determine
     except ImportError:
         raise ImportError('\naeidon or gaupol package required for Subtitle support')
-
-from translate.storage import base
 
 
 class SubtitleUnit(base.TranslationUnit):

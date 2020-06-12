@@ -1,8 +1,7 @@
 
 from pytest import importorskip
-importorskip("bs4")
 
-from translate.storage import trados
+trados = importorskip("translate.storage.trados")
 
 
 def test_unescape():

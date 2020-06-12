@@ -21,7 +21,7 @@
 
 from io import BytesIO
 
-from translate.convert import test_convert, resx2po
+from translate.convert import resx2po, test_convert
 from translate.storage import po, resx
 from translate.storage.poheader import poheader
 from translate.storage.test_base import headerless_len

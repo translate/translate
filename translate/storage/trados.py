@@ -42,13 +42,15 @@ A Trados file looks like this:
 import re
 import time
 
+from translate.storage import base
+
+
 try:
     # FIXME see if we can't use lxml
     from bs4 import BeautifulSoup
 except ImportError:
     raise ImportError("BeautifulSoup 4 is not installed. Support for Trados txt is disabled.")
 
-from translate.storage import base
 
 __all__ = (
     'TRADOS_TIMEFORMAT', 'RTF_ESCAPES',

@@ -26,9 +26,10 @@ import re
 from lxml import etree
 
 from translate.lang import data
+from translate.misc.multistring import multistring
 from translate.misc.xml_helpers import reindent
 from translate.storage import base, lisa
-from translate.misc.multistring import multistring
+
 
 EOF = None
 WHITESPACE = ' \n\t'  # Whitespace that we collapse.

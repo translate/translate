@@ -20,6 +20,7 @@
 """ Tests converting Gettext PO localisation files to .Net Resource (.resx) files """
 
 from io import BytesIO
+
 from translate.convert import po2resx, test_convert
 from translate.storage import po
 

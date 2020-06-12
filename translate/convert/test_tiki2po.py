@@ -4,6 +4,7 @@
 # Date: 2008-12-01
 
 from io import BytesIO
+
 from translate.convert import test_convert, tiki2po
 
 

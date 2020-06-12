@@ -1,5 +1,6 @@
 
 from io import BytesIO
+
 from pytest import mark, raises
 
 from translate.convert import po2php, test_convert

@@ -26,7 +26,6 @@ for examples and usage instructions.
 import logging
 from urllib import parse
 
-
 from translate.storage import oo, xliff
 
 

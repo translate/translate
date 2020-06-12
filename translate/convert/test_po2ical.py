@@ -1,5 +1,6 @@
 
 from io import BytesIO
+
 import pytest
 
 from translate.convert import po2ical, test_convert

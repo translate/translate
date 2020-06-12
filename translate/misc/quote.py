@@ -20,8 +20,8 @@
 delimiters
 """
 
-import logging
 import html.entities
+import logging
 
 
 def find_all(searchin, substr):

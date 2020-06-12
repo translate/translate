@@ -1,8 +1,8 @@
 
-from io import BytesIO
 import os
 import time
 from collections import OrderedDict
+from io import BytesIO
 
 from translate.storage import po, poheader, poxliff
 

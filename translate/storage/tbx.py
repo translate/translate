@@ -20,7 +20,7 @@
 
 from lxml import etree
 
-from translate.misc.xml_helpers import setXMLlang, getXMLspace
+from translate.misc.xml_helpers import getXMLspace, setXMLlang
 from translate.storage import lisa
 
 

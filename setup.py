@@ -21,7 +21,11 @@ import re
 import sys
 from distutils.sysconfig import get_python_lib
 from os.path import dirname, isfile, join
+
 from setuptools import setup
+
+from translate import __doc__, __version__
+
 
 try:
     from sphinx.setup_command import BuildDoc
@@ -29,7 +33,6 @@ try:
 except ImportError:
     cmdclass = {}
 
-from translate import __doc__, __version__
 
 PRETTY_NAME = 'Translate Toolkit'
 translateversion = __version__.sver

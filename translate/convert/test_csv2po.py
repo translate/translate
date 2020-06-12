@@ -1,5 +1,6 @@
 
 from io import BytesIO
+
 from translate.convert import csv2po, test_convert
 from translate.storage import csvl10n, po
 from translate.storage.test_base import first_translatable, headerless_len

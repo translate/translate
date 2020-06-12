@@ -22,7 +22,7 @@ based "rich" string element trees.
 """
 
 
-from translate.storage.placeables import StringElem
+from translate.storage.placeables.strelem import StringElem
 
 
 def parse(tree, parse_funcs):

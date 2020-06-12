@@ -1,7 +1,7 @@
 
-from io import BytesIO
 import os
 import warnings
+from io import BytesIO
 
 from pytest import mark
 

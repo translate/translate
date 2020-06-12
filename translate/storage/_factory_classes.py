@@ -21,19 +21,9 @@ just for the sake of the Windows installer to easily pick up all the stuff that
 we need and ensure they make it into the installer.
 """
 
-from . import catkeys
-from . import csvl10n
-from . import mo
-from . import omegat
-from . import po
-from . import qm
-from . import qph
-from . import tbx
-from . import tmx
-from . import ts2
-from . import utx
-from . import wordfast
-from . import xliff
+from . import (catkeys, csvl10n, mo, omegat, po, qm, qph, tbx, tmx, ts2, utx,
+               wordfast, xliff)
+
 
 try:
     from . import trados

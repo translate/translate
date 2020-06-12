@@ -1,5 +1,6 @@
 
 from io import BytesIO
+
 from translate.lang import factory as lang_factory
 from translate.storage import po
 from translate.tools import posegment

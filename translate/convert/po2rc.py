@@ -23,12 +23,13 @@ for examples and usage instructions.
 
 import codecs
 from collections.abc import Iterable
-from translate.storage.rc import generate_popup_caption_name,\
-    generate_popup_pre_name, generate_menu_pre_name
-
 
 from translate.convert import convert
 from translate.storage import po, rc
+from translate.storage.rc import (generate_menu_pre_name,
+                                  generate_popup_caption_name,
+                                  generate_popup_pre_name)
+
 
 NL = "\r\n"
 BLOCK_START = "BEGIN"

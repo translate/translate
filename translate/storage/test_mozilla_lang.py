@@ -1,7 +1,6 @@
 
 import io
 
-
 import pytest
 
 from translate.storage import mozilla_lang, test_base

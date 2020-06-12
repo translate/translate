@@ -19,7 +19,8 @@
 
 from pytest import mark
 
-from translate.storage.placeables import StringElem, base, general, parse, xliff
+from translate.storage.placeables import (StringElem, base, general, parse,
+                                          xliff)
 
 
 class TestStringElem:

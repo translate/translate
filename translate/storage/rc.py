@@ -27,11 +27,12 @@
 
 import re
 
-from translate.storage import base
+from pyparsing import (Combine, Forward, Group, Keyword, Optional, SkipTo,
+                       Word, ZeroOrMore, alphanums, alphas, commaSeparatedList,
+                       cStyleComment, delimitedList, nums, quotedString,
+                       restOfLine)
 
-from pyparsing import restOfLine, cStyleComment, Word, alphanums, alphas,\
-    Optional, SkipTo, ZeroOrMore, Group, Keyword, quotedString, delimitedList,\
-    nums, commaSeparatedList, Forward, Combine
+from translate.storage import base
 
 
 def escape_to_python(string):

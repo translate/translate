@@ -27,6 +27,7 @@ from translate.misc.multistring import multistring
 from translate.storage.placeables import StringElem, parse as rich_parse
 from translate.storage.workflow import StateEnum as states
 
+
 # Simple BOM based encoding detection
 ENCODING_BOMS = (
     (codecs.BOM_UTF8, 'utf-8-sig'),

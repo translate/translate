@@ -1,4 +1,5 @@
 from io import BytesIO
+
 import pytest
 
 from translate.convert import test_convert, txt2po

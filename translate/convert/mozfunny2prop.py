@@ -20,6 +20,7 @@
 """
 
 from io import BytesIO
+
 from translate.convert import prop2po
 
 

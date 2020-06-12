@@ -1,5 +1,6 @@
 
 from io import BytesIO
+
 from pytest import mark
 
 from translate.convert import dtd2po, test_convert

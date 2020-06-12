@@ -29,14 +29,15 @@ b : a string
 """
 
 import re
-from io import StringIO, BytesIO
+from io import BytesIO, StringIO
+
+from translate.storage import base
+
 
 try:
     from iniparse import INIConfig
 except ImportError:
     raise ImportError("Missing iniparse library.")
-
-from translate.storage import base
 
 
 dialects = {}

@@ -2,6 +2,7 @@
 """Tests converting flat XML files to Gettext PO localization files"""
 
 from io import BytesIO
+
 from translate.convert import flatxml2po, test_convert
 
 

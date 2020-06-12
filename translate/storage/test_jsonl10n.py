@@ -1,6 +1,8 @@
 
 from io import BytesIO
+
 from pytest import raises
+
 from translate.misc.multistring import multistring
 from translate.storage import base, jsonl10n, test_monolingual
 
