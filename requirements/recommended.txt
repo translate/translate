@@ -4,11 +4,11 @@
 # Recommended #
 ###############
 
-# Faster matching in e.g. pot2po
-python-Levenshtein>=0.12    # Levenshtein
-
 # Encoding detection
 chardet==3.0.4              # chardet
 
 # To provide translations for language names without need for OS package.
 pycountry==19.8.18          # Languages
+
+# Faster matching in e.g. pot2po
+python-Levenshtein>=0.12    # Levenshtein
