@@ -961,7 +961,7 @@ spanning multiple lines
 using nowdoc syntax.'''
         assert phpfile.units[0].name == '$str'
 
-    def test_concatenation(self):
+    def test_plain_concatenation(self):
         """check parsing concatenated strings"""
         phpsource = """$str = 'Concatenated' . ' ' . 'string';
         $arr['x'] = 'Concatenated' . ' ' . 'string';

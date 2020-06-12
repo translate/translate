@@ -125,8 +125,8 @@ msgstr ""
         assert pounit.source == "Source"
         assert pounit.target == "Target"
 
-    def test_newlines(self):
-        """Tests that things keep working with empty entries"""
+    def test_escaped_newlines(self):
+        """Tests that things keep working with escaped newlines"""
         minicsv = '"source","target"\r\n"yellow pencil","żółty\\nołówek"'
         pofile = self.csv2po(minicsv)
         assert pofile.findunit("yellow pencil") is not None

@@ -1052,7 +1052,7 @@ msgstr ""
         assert unit.source == 'The actual source text'
         assert unit.target.startswith('_: ')
 
-    def test_unicode(self):
+    def test_unicode_ids(self):
         posource = b'''
 msgid ""
 msgstr ""
