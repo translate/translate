@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 
 from io import BytesIO
 from translate.lang import factory as lang_factory

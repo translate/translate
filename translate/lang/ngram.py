@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 #
 # Copyright (c) 2006 Thomas Mangin
 # Copyright (c) 2009-2010 Zuza Software Foundation

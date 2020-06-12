@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 
 # pypo2phppo unit tests
 # Author: Wil Clouser <wclouser@mozilla.com>

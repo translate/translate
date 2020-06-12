@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 #
 # These test classes should be used as super class of test classes for the
 # classes that doesn't support the target property

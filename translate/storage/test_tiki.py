@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 
 # tiki unit tests
 # Author: Wil Clouser <wclouser@mozilla.com>

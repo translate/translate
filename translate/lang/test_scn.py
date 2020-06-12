@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 
 
 from translate.filters.test_checks import fails, passes

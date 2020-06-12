@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 
 from io import BytesIO
 from translate.convert import test_convert, ts2po

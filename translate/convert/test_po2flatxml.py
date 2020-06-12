@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 
 """Tests converting Gettext PO localization files to flat XML files"""
 

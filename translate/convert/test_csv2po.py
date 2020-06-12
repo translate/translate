@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 
 from io import BytesIO
 from translate.convert import csv2po, test_convert

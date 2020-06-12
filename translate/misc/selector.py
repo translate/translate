@@ -1,4 +1,3 @@
-# -*- coding: latin-1 -*-
 """selector - WSGI delegation based on URL path and method.
 
 (See the docstring of selector.Selector.)

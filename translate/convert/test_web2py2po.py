@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 from translate.convert import web2py2po
 from translate.storage import po
 from translate.storage.test_base import first_translatable, headerless_len

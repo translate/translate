@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 #
 # Copyright 2009 Mozilla Corporation, Zuza Software Foundation
 #
