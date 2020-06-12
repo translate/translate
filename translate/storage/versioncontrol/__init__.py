@@ -405,10 +405,6 @@ if __name__ == "__main__":
             sys.stdout.write("\n\n******** %s ********\n\n" % filename)
             sys.stdout.write(contents)
     else:
-        # first: make sure, that the translate toolkit is available
-        # (useful if "python __init__.py" was called without an appropriate
-        # PYTHONPATH)
-        import translate.storage.versioncontrol
         # print the names of locally available version control systems
         for rcs in get_available_version_control_systems():
             print(rcs)

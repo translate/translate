@@ -1,8 +1,6 @@
 
 from io import BytesIO
 
-from pytest import mark
-
 from translate.misc.multistring import multistring
 from translate.storage import php, test_monolingual
 

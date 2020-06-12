@@ -1,7 +1,5 @@
 from io import BytesIO
 
-from pytest import mark
-
 from translate.convert import po2html, test_convert
 
 
