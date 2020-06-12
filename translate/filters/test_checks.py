@@ -71,6 +71,7 @@ def test_defaults():
     stdchecker = checks.StandardChecker()
     assert stdchecker.config.varmatches == []
     mozillachecker = checks.MozillaChecker()
+    assert len(mozillachecker.config.varmatches) == 9
     stdchecker = checks.StandardChecker()
     assert stdchecker.config.varmatches == []
 

@@ -21,7 +21,9 @@ class TestCSV(test_base.TestTranslationStore):
         """Tests round trip on single quoting at start of string"""
         store = self.StoreClass()
         unit1 = store.addsourceunit("Test 'String'")
+        assert unit1.source == "Test 'String'"
         unit2 = store.addsourceunit("'Blessed' String")
+        assert unit2.source == "'Blessed' String"
         unit3 = store.addsourceunit("'Quoted String'")
         assert unit3.source == "'Quoted String'"
         newstore = self.reparse(store)

@@ -311,7 +311,7 @@ msgstr "Sertifikate"
 
         # Now test with real units present in posource
         posource2 = '''msgid "Old"\nmsgstr "Oud"\n'''
-        newpo = self.convertpot(potsource, posource)
+        newpo = self.convertpot(potsource, posource2)
         assert len(newpo.units) == 3
         assert newpo.units[0].isheader()
         assert newpo.units[2].isobsolete()
