@@ -1,0 +1,75 @@
+Translate Toolkit 3.0.0
+***********************
+
+*Released on 15 June 2020*
+
+This release contains improvements and bug fixes.
+
+
+Changes
+=======
+
+Formats and Converters
+----------------------
+
+- PO
+
+    - Bring line wrapping closer to gettext
+
+- XLIFF 
+
+    - Support non numeric ids on plurals in poxliff
+
+- JSON
+
+    - Added support for ARB files
+    - Added support for go-i18n files
+
+- Properties
+
+    - Added support for GWT personality
+    - Fix round trip of empty values without delimiter
+
+- HTML
+
+    - A makeover of the HTML parsing to fix several issues
+
+- PHP
+
+    - Add support for Laravel plurals
+    - Improve round trip of some statements
+
+- Windows RC
+
+    - Rewritten parser using pyparsing
+
+- l20n
+
+    - Dropped support for deprecated format
+
+
+General
+-------
+
+- Dropped support for Python 2.7.
+- Python 3.5 or newer is now required.
+- Minor docs improvements.
+- Several cleanups in code.
+- Removed deprecated interfaces:
+    - multistring no longer accepts encoding
+    - search.segment is removed
+    - pofile.extractpoline is removed
+    - simplify_to_common no longer accepts languages parameter
+    - getsource/setsource/gettarget/settarget methods removed from storages
+- Updated requirements, lxml is no longer optional.
+- Added and updated tests.
+- Optional deps can be specified using pip extras.
+
+Contributors
+============
+
+This release was made possible by the following people:
+
+Michal Čihař, papeh, Yann Diorcet, Nick Schonning, Anders Kaplan, Leandro Regueiro, Javier Alfonso, Julen Ruiz Aizpuru
+
+And to all our bug finders and testers, a Very BIG Thank You.
