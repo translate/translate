@@ -1,10 +1,10 @@
 # -*- coding: utf-8 -*-
 
-
+import pytest
 from lxml import etree
 
-from translate.storage import aresource, test_monolingual
 from translate.misc.multistring import multistring
+from translate.storage import aresource, test_monolingual
 from translate.storage.base import TranslationStore
 
 
@@ -389,6 +389,11 @@ class TestAndroidResourceUnit(test_monolingual.TestMonolingualUnit):
                '<g:test xmlns:g="ttt" g:somevalue="aaaa  &quot;  aaa">value</g:test> outer &amp; text'
                '</string>\n')
         self.__check_parse(string, xml)
+
+    def test_parse_unicode(self):
+        with pytest.raises(ValueError):
+            self.__check_parse('', r'<string name="test">\utest</string>')
+        self.__check_parse('\u0230', r'<string name="test">\u0230</string>')
 
 
 class TestAndroidResourceFile(test_monolingual.TestMonolingualStore):

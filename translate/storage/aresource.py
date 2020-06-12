@@ -179,7 +179,7 @@ class AndroidResourceUnit(base.TranslationUnit):
                     elif c in '"\'@?':
                         text[i-1:i] = ''  # remove the backslash
                         i -= 1
-                    elif c == '':
+                    elif c == 'u':
                         # Unicode sequence. Android is nice enough to deal
                         # with those in a way which let's us just capture
                         # the next 4 characters and raise an error if they
