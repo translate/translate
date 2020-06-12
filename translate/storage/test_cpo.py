@@ -122,8 +122,8 @@ class TestCPOFile(test_po.TestPOFile):
         assert len(pofile.units) == 2
         print(pofile.units[0].msgidcomments)
         print(pofile.units[1].msgidcomments)
-        assert po.unquotefrompo(pofile.units[0].msgidcomments) == "_: source1\n"
-        assert po.unquotefrompo(pofile.units[1].msgidcomments) == "_: source2\n"
+        assert cpo.unquotefrompo(pofile.units[0].msgidcomments) == "_: source1\n"
+        assert cpo.unquotefrompo(pofile.units[1].msgidcomments) == "_: source2\n"
 
     @mark.xfail(reason="Were disabled during port of Pypo to cPO - they might work")
     def test_msgid_comment(self):
@@ -133,8 +133,8 @@ class TestCPOFile(test_po.TestPOFile):
         assert len(pofile.units) == 2
         pofile.removeduplicates("msgid_comment")
         assert len(pofile.units) == 2
-        assert po.unquotefrompo(pofile.units[0].msgidcomments) == "_: source0\n"
-        assert po.unquotefrompo(pofile.units[1].msgidcomments) == "_: source1\n"
+        assert cpo.unquotefrompo(pofile.units[0].msgidcomments) == "_: source0\n"
+        assert cpo.unquotefrompo(pofile.units[1].msgidcomments) == "_: source1\n"
         # Now lets check for formating
         for i in (0, 1):
             expected = '''#: source%d\nmsgid ""\n"_: source%d\\n"\n"Same"\nmsgstr ""\n''' % (i, i)
@@ -149,8 +149,8 @@ class TestCPOFile(test_po.TestPOFile):
         pofile.removeduplicates("keep")
         assert len(pofile.units) == 2
         # check we don't add msgidcomments
-        assert po.unquotefrompo(pofile.units[0].msgidcomments) == ""
-        assert po.unquotefrompo(pofile.units[1].msgidcomments) == ""
+        assert cpo.unquotefrompo(pofile.units[0].msgidcomments) == ""
+        assert cpo.unquotefrompo(pofile.units[1].msgidcomments) == ""
 
     def test_output_str_unicode(self):
         """checks that we can serialize pofile, unit content is in unicode"""
