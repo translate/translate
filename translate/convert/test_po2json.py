@@ -9,7 +9,6 @@ class TestPO2JSON:
     def po2json(self, po_source, json_template):
         """helper that converts po source to json source without requiring files"""
         input_file = BytesIO(po_source.encode())
-        json_file = BytesIO(json_template.encode())
         input_po = po.pofile(input_file)
         convertor = po2json.rejson(json_template, input_po)
         output_json = convertor.convertstore()

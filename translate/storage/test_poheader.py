@@ -99,8 +99,6 @@ def test_po_dates():
 
 
 def test_timezones():
-    pofile = po.pofile()
-
     # The following will only work on Unix because of tzset() and %z
     if 'tzset' in time.__dict__:
         os.environ['TZ'] = 'Asia/Kabul'
@@ -213,7 +211,7 @@ msgstr ""
         assert header.isheader()
         assert not header.isblank()
 
-        headeritems = pofile.parseheader()
+        pofile.parseheader()
         nplural, plural = pofile.getheaderplural()
         assert nplural == "2"
         assert plural == "(n != 1)"
@@ -234,7 +232,7 @@ msgstr ""
     assert header.isheader()
     assert not header.isblank()
 
-    headeritems = pofile.parseheader()
+    pofile.parseheader()
     nplural, plural = pofile.getheaderplural()
     assert nplural == "3"
     assert plural == "(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2)"

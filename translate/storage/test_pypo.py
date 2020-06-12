@@ -518,7 +518,7 @@ msgstr ""
 EXTRA
 '''
         with raises(ValueError):
-            pofile = self.poparse(posource)
+            self.poparse(posource)
 
     def test_invalid(self):
         """checks that empty file raises error"""
@@ -527,4 +527,4 @@ EXTRA
 This is just a random text file.
 '''
         with raises(ValueError):
-            pofile = self.poparse(posource)
+            self.poparse(posource)

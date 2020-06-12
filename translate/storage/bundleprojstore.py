@@ -147,7 +147,7 @@ class BundleProjectStore(ProjectStore):
         """Try and find a project file name for the given real file name."""
         try:
             fname = super().get_proj_filename(realfname)
-        except ValueError as ve:
+        except ValueError:
             fname = None
         if fname:
             return fname

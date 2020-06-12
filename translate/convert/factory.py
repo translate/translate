@@ -152,7 +152,7 @@ def convert(inputfile, template=None, options=None, convert_options=None):
         if not in_ext and 'in_fname' in options:
             in_ext = get_extension(options['in_fname'])
         if template and not templ_ext and 'templ_fname' in options:
-            templ_fname = get_extension(options['templ_fname'])
+            templ_ext = get_extension(options['templ_fname'])
 
     # If we still do not have extensions, get it from the file names
     if not in_ext and hasattr(inputfile, 'name'):

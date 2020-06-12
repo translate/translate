@@ -155,7 +155,7 @@ class TestXLiffGrep:
     def test_simplegrep(self):
         """grep for a simple string."""
         xliff_text = self.xliff_text
-        xliff_file = self.xliff_parse(xliff_text.encode())
+        self.xliff_parse(xliff_text.encode())
         xliff_result = self.xliff_parse(self.xliff_grep(xliff_text, "rêd"))
         assert first_translatable(xliff_result).source == "rêd"
         assert first_translatable(xliff_result).target == "rooi"

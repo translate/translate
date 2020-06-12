@@ -6,7 +6,6 @@ class TestLevenshtein:
 
     def test_basic_distance(self):
         """Tests distance correctness with a few basic values"""
-        levenshtein = lshtein.LevenshteinComparer()
         assert lshtein.distance("word", "word") == 0
         assert lshtein.distance("word", "") == 4
         assert lshtein.distance("", "word") == 4

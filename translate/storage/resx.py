@@ -89,7 +89,7 @@ class RESXUnit(lisa.LISAunit):
         if note.text:
             # Correct the indent of <comment> by updating the tail of
             # the preceding <value> element
-            targetnode = self._gettargetnode()
+            self._gettargetnode()
 
     def getnotes(self, origin=None):
         comments = []

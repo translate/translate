@@ -197,7 +197,7 @@ msgstr "Dimpled Ring"
         newpo = '''#: newMenu.label newMenu.accesskey\nmsgid "&New"\nmsgstr "&Nuwe"\n'''
         expectedpo = '''#: newMenu.label%snewMenu.accesskey\nmsgid "&New"\nmsgstr "&Nuwe"\n''' % po.lsep
         pofile = self.mergestore(templatepo, newpo)
-        pounit = self.singleunit(pofile)
+        self.singleunit(pofile)
         print(pofile)
         assert bytes(pofile).decode('utf-8') == expectedpo
 
@@ -213,7 +213,7 @@ msgstr "blabla"
         newpo = templatepo
         expectedpo = templatepo
         pofile = self.mergestore(templatepo, newpo)
-        pounit = self.singleunit(pofile)
+        self.singleunit(pofile)
         print(pofile)
         assert bytes(pofile).decode('utf-8') == expectedpo
 

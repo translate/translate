@@ -128,22 +128,18 @@ class qmfile(base.TranslationStore):
             section_type, length = struct.unpack(">BL", input[startsection:startsection + sectionheader])
             if section_type == 0x42:
                 #section_debug("Hash", section_type, startsection, length)
-                hashash = True
                 hash_start = startsection + sectionheader
                 hash_data = struct.unpack(">%db" % length, input[startsection + sectionheader:startsection + sectionheader + length])
             elif section_type == 0x69:
                 #section_debug("Messages", section_type, startsection, length)
-                hasmessages = True
                 messages_start = startsection + sectionheader
                 messages_data = struct.unpack(">%db" % length, input[startsection + sectionheader:startsection + sectionheader + length])
             elif section_type == 0x2f:
                 #section_debug("Contexts", section_type, startsection, length)
-                hascontexts = True
                 contexts_start = startsection + sectionheader
                 contexts_data = struct.unpack(">%db" % length, input[startsection + sectionheader:startsection + sectionheader + length])
             elif section_type == 0x88:
                 #section_debug("NumerusRules", section_type, startsection, length)
-                hasnumerusrules = True
                 numerusrules_start = startsection + sectionheader
                 numerusrules_data = struct.unpack(">%db" % length, input[startsection + sectionheader:startsection + sectionheader + length])
             else:

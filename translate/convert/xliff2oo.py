@@ -114,7 +114,6 @@ class reoo:
                 makecopy = True
         if makecopy:
             part2 = oo.ooline(part1.getparts())
-        unquotedid = unit.source
         unquotedstr = unit.target
         # If there is no translation, we don't want to add a line
         if len(unquotedstr.strip()) == 0:

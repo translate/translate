@@ -285,7 +285,6 @@ class podebug:
         return unit
 
     def convertstore(self, store):
-        filename = self.shrinkfilename(store.filename)
         prefix = self.format
         for formatstr in re.findall("%[0-9c]*[sfFbBdh]", self.format):
             if formatstr.endswith("s"):

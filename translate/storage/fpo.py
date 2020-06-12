@@ -515,7 +515,7 @@ class pofile(pocommon.pofile):
         self._cpo_store = cpo.pofile(encoding=self.encoding, noheader=True)
         try:
             self._build_cpo_from_self()
-        except UnicodeEncodeError as e:
+        except UnicodeEncodeError:
             self.encoding = "utf-8"
             self.updateheader(add=True, Content_Type="text/plain; charset=UTF-8")
             self._build_cpo_from_self()

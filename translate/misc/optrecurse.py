@@ -485,7 +485,7 @@ class RecursiveOptionParser(optparse.OptionParser):
                 try:
                     self.warning("Output directory does not exist. Attempting to create")
                     os.mkdir(options.output)
-                except IOError as e:
+                except IOError:
                     self.error(optparse.OptionValueError("Output directory does not exist, attempt to create failed"))
             if isinstance(options.input, list):
                 inputfiles = self.recurseinputfilelist(options)
