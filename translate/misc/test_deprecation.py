@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 
 from pytest import deprecated_call, mark
 

@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 #
 # Translate Toolkit documentation build configuration file, created by
 # sphinx-quickstart on Mon Mar 26 23:48:04 2012.

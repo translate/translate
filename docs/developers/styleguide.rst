@@ -617,7 +617,6 @@ Module header:
 
   .. code-block:: python
 
-    # -*- coding: utf-8 -*-
     #
     ... LICENSE BLOCK...
 

@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 #
 # Copyright 2012 Michal Čihař
 # Copyright 2014 Luca De Petrillo

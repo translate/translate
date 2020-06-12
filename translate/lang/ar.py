@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 #
 # Copyright 2007,2009,2011 Zuza Software Foundation
 #
