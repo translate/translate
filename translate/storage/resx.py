@@ -22,7 +22,7 @@
 from lxml import etree
 
 from translate.lang import data
-from translate.misc.xml_helpers import setXMLspace, reindent
+from translate.misc.xml_helpers import reindent, setXMLspace
 from translate.storage import lisa
 from translate.storage.placeables import general
 

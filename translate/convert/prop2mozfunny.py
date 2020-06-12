@@ -19,8 +19,8 @@
 """Converts properties files to additional Mozilla format files.
 """
 
-from io import BytesIO
 import sys
+from io import BytesIO
 
 from translate.convert import mozfunny2prop, po2prop
 from translate.storage import properties

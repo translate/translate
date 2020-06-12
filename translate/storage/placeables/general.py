@@ -23,7 +23,6 @@ fit into any other sub-category.
 
 import re
 
-
 from translate.storage.placeables.base import G, Ph, StringElem
 
 

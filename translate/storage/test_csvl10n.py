@@ -1,5 +1,6 @@
 
 from io import BytesIO
+
 from pytest import mark
 
 from translate.storage import csvl10n, test_base

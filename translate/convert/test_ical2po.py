@@ -1,5 +1,6 @@
 
 from io import BytesIO
+
 import pytest
 
 from translate.convert import ical2po, test_convert

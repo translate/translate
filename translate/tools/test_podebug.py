@@ -1,7 +1,6 @@
 
 import os
 
-
 from translate.storage import base, po, xliff
 from translate.tools import podebug
 

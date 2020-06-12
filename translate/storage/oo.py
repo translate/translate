@@ -32,9 +32,9 @@ comments.
 
 import os
 import re
+import struct
 import warnings
 from io import BytesIO
-import struct
 
 from translate.misc import quote, wStringIO
 

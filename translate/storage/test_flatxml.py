@@ -1,8 +1,9 @@
 
 from io import BytesIO
+
 from pytest import raises
 
-from translate.storage import test_monolingual, flatxml
+from translate.storage import flatxml, test_monolingual
 
 
 class TestFlatXMLUnit(test_monolingual.TestMonolingualUnit):

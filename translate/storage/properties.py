@@ -118,8 +118,8 @@ Name and Value pairs:
 
 """
 
-import re
 import collections
+import re
 from codecs import iterencode
 
 from translate.lang import data

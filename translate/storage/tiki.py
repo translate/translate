@@ -51,8 +51,8 @@ As far as I know no detailed documentation exists for the tiki language.php file
 """
 
 import datetime
-from io import BytesIO
 import re
+from io import BytesIO
 
 from translate.storage import base
 

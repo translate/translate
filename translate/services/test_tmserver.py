@@ -4,12 +4,10 @@ import os
 import shutil
 import tempfile
 import threading
+from urllib.request import urlopen
 
 from cheroot.wsgi import Server
-
 from pytest import mark
-
-from urllib.request import urlopen
 
 from translate.services.tmserver import TMServer
 

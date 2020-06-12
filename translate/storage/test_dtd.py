@@ -17,8 +17,8 @@
 # along with this program; if not, see <http://www.gnu.org/licenses/>.
 
 from io import BytesIO
-from pytest import mark
 
+from pytest import mark
 
 from translate.storage import dtd, test_monolingual
 

@@ -1,4 +1,5 @@
 from io import BytesIO
+
 from translate.storage import test_base, tmx
 
 

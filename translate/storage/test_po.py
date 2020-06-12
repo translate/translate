@@ -1,5 +1,6 @@
 
 from io import BytesIO
+
 from pytest import mark, raises
 
 from translate.misc.multistring import multistring

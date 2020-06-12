@@ -24,7 +24,8 @@ The official recommendation is to use the extention .xlf for XLIFF files.
 from lxml import etree
 
 from translate.misc.multistring import multistring
-from translate.misc.xml_helpers import getXMLspace, setXMLlang, setXMLspace, reindent
+from translate.misc.xml_helpers import (getXMLspace, reindent, setXMLlang,
+                                        setXMLspace)
 from translate.storage import base, lisa
 from translate.storage.placeables.lisa import strelem_to_xml, xml_to_strelem
 from translate.storage.workflow import StateEnum as state

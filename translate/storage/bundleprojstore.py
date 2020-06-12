@@ -21,7 +21,6 @@ import shutil
 import tempfile
 from zipfile import ZipFile
 
-
 from translate.storage.projstore import *
 
 

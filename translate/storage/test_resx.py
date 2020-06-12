@@ -18,7 +18,8 @@
 # along with this program; if not, see <http://www.gnu.org/licenses/>.
 
 from io import BytesIO
-from translate.storage import test_monolingual, resx
+
+from translate.storage import resx, test_monolingual
 
 
 class TestRESXUnit(test_monolingual.TestMonolingualUnit):

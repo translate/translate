@@ -27,9 +27,9 @@ import re
 import stat
 import sys
 from collections import UserDict
-import _thread
 from sqlite3 import dbapi2
 
+import _thread
 from translate import __version__ as toolkitversion
 from translate.lang.common import Common
 from translate.misc.multistring import multistring

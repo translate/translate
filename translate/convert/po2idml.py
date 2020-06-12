@@ -28,8 +28,8 @@ import lxml.etree as etree
 
 from translate.convert import convert
 from translate.storage import factory
-from translate.storage.idml import (NO_TRANSLATE_ELEMENTS,
-                                    INLINE_ELEMENTS, copy_idml, open_idml)
+from translate.storage.idml import (INLINE_ELEMENTS, NO_TRANSLATE_ELEMENTS,
+                                    copy_idml, open_idml)
 from translate.storage.xml_extract.extract import (ParseState,
                                                    process_idml_translatable)
 from translate.storage.xml_extract.generate import (apply_translations,

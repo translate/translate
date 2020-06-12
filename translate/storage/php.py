@@ -55,11 +55,11 @@ implemented as outlined in the PHP documentation for the
 
 import re
 
-from phply.phpparse import make_parser
-from phply.phplex import FilteredLexer, full_lexer
 from phply.phpast import (Array, ArrayElement, ArrayOffset, Assignment,
                           BinaryOp, FunctionCall, InlineHTML, Node, Return,
                           Variable)
+from phply.phplex import FilteredLexer, full_lexer
+from phply.phpparse import make_parser
 
 from translate.misc.multistring import multistring
 from translate.storage import base

@@ -19,9 +19,8 @@
 
 """module for parsing html files for translation"""
 
-import re
-
 import html.parser
+import re
 from html.entities import html5
 
 from translate.storage import base

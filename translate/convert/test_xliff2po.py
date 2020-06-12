@@ -1,4 +1,5 @@
 from io import BytesIO
+
 from translate.convert import test_convert, xliff2po
 from translate.storage import po, xliff
 from translate.storage.poheader import poheader
