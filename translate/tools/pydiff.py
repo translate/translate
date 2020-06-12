@@ -137,8 +137,8 @@ class DirDiffer:
                                       (fromfile, tofile))
                 else:
                     if os.path.isdir(tofile):
-                        parser.error("File %s is a regular file while file %s is a directory\n" %
-                                     (fromfile, tofile))
+                        outfile.write("File %s is a regular file while file %s is a directory\n" %
+                                      (fromfile, tofile))
                     else:
                         filediffer = FileDiffer(fromfile, tofile, self.options)
                         filediffer.writediff(outfile)
