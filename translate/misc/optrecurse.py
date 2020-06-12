@@ -249,7 +249,7 @@ class RecursiveOptionParser(optparse.OptionParser):
     def setformats(self, formats, usetemplates):
         """Sets the format options using the given format dictionary.
 
-        :type formats: Dictionary
+        :type formats: Dictionary or iterable
         :param formats: The dictionary *keys* should be:
 
                         - Single strings (or 1-tuples) containing an
@@ -268,7 +268,9 @@ class RecursiveOptionParser(optparse.OptionParser):
         templateformats = []
         self.outputoptions = {}
         self.usetemplates = usetemplates
-        for formatgroup, outputoptions in formats.items():
+        if isinstance(formats, dict):
+            formats = formats.items()
+        for formatgroup, outputoptions in formats:
             if isinstance(formatgroup, str) or formatgroup is None:
                 formatgroup = (formatgroup, )
             if not isinstance(formatgroup, tuple):

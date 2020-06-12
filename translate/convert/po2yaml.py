@@ -96,12 +96,12 @@ def run_converter(inputfile, outputfile, templatefile=None, includefuzzy=False,
                    outputthreshold).run()
 
 
-formats = {
-    ("po", "yml"): ("yml", run_converter),
-    "po": ("yml", run_converter),
-    ("po", "yaml"): ("yaml", run_converter),
-    "po": ("yaml", run_converter),
-}
+formats = (
+    (("po", "yml"), ("yml", run_converter)),
+    ("po", ("yml", run_converter)),
+    (("po", "yaml"), ("yaml", run_converter)),
+    ("po", ("yaml", run_converter)),
+)
 
 
 def main(argv=None):
