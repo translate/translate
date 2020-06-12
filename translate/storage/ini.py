@@ -29,7 +29,7 @@ b : a string
 """
 
 import re
-from io import BytesIO, StringIO
+from io import StringIO
 
 from translate.storage import base
 

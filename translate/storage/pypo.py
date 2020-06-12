@@ -29,7 +29,6 @@ from itertools import chain
 
 from translate.lang import data
 from translate.misc import quote
-from translate.misc.deprecation import deprecated
 from translate.misc.multistring import multistring
 from translate.storage import pocommon, poparser
 
