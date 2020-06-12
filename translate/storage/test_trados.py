@@ -1,6 +1,7 @@
 
 from pytest import importorskip
 
+
 trados = importorskip("translate.storage.trados")
 
 
