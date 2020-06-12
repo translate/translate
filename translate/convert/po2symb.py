@@ -26,7 +26,10 @@ for examples and usage instructions.
 from translate.convert import convert
 from translate.storage import factory
 from translate.storage.pypo import po_escape_map
-from translate.storage.symbian import *
+from translate.storage.symbian import (ParseState, eat_whitespace,
+                                       header_item_or_end_re, header_item_re,
+                                       read_charset, read_while,
+                                       skip_no_translate, string_entry_re)
 
 
 def escape(text):
