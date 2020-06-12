@@ -28,7 +28,8 @@ class BaseTestFilter:
                                                             cmdlineoptions)
         checkerclasses = [checks.StandardChecker, checks.StandardUnitChecker]
         if checkerconfig is None:
-            checkerconfig = pofilter.build_checkerconfig(options)
+            parser = pofilter.FilterOptionParser({})
+            checkerconfig = parser.build_checkerconfig(options)
         checkfilter = pofilter.pocheckfilter(options, checkerclasses,
                                              checkerconfig)
         tofile = checkfilter.filterfile(translationstore)
