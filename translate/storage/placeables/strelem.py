@@ -364,7 +364,7 @@ class StringElem:
         for node in marked_nodes:
             try:
                 self.delete_elem(node)
-            except ElementNotFoundError as e:
+            except ElementNotFoundError:
                 pass
 
         if start['elem'] is not end['elem']:

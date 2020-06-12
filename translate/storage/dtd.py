@@ -585,7 +585,7 @@ class dtdfile(base.TranslationStore):
             # #expand is a Mozilla hack and are removed as they are not valid in DTDs
             _input = re.sub(b"#expand", b"", content)
             try:
-                dtd = etree.DTD(BytesIO(_input))
+                etree.DTD(BytesIO(_input))
             except etree.DTDParseError as e:
                 warnings.warn("DTD parse error: %s" % e.error_log)
                 return False

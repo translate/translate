@@ -317,7 +317,7 @@ class TestTranslationStore:
             answer = answer.decode("utf-8")
         assert answer == "Beziér-kurwe"
         #Just test that __str__ doesn't raise exception:
-        src = store.serialize(BytesIO())
+        store.serialize(BytesIO())
 
     def test_extensions(self):
         """Test that the factory knows the extensions for this class."""

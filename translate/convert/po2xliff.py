@@ -84,7 +84,7 @@ class po2xliff:
         for inputunit in inputstore.units:
             if inputunit.isblank():
                 continue
-            transunitnode = self.convertunit(outputstore, inputunit, filename)
+            self.convertunit(outputstore, inputunit, filename)
         return bytes(outputstore)
 
 

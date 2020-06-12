@@ -94,7 +94,6 @@ class AndroidResourceUnit(base.TranslationUnit):
         active_quote = False
         active_percent = False
         active_escape = False
-        formatted = False
         i = 0
         text = list(text) + [EOF]
         while i < len(text):
@@ -144,7 +143,6 @@ class AndroidResourceUnit(base.TranslationUnit):
             if c == '%' and not active_escape:
                 active_percent = not active_percent
             elif not active_escape and active_percent:
-                formatted = True
                 active_percent = False
 
             # Handle escapes

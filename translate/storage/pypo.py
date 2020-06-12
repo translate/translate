@@ -882,7 +882,7 @@ class pofile(pocommon.pofile):
                 else:
                     at_start = False
                 out.write(unit._getoutput().encode(self.encoding))
-        except UnicodeEncodeError as e:
+        except UnicodeEncodeError:
             if self.encoding == 'utf-8':
                 raise
             self.updateheader(add=True, Content_Type="text/plain; charset=UTF-8")

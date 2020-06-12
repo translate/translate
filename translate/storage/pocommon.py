@@ -48,7 +48,7 @@ def unquote_plus(text):
     try:
         # Enforce utf-8 validation
         return parse.unquote_plus(text, errors="strict")
-    except (UnicodeEncodeError, UnicodeDecodeError) as e:
+    except (UnicodeEncodeError, UnicodeDecodeError):
         # for some reason there is a non-ascii character here. Let's assume it
         # is already unicode (because of originally decoding the file)
         return text

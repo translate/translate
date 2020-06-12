@@ -67,8 +67,6 @@ class TestXLIFFUnit(test_base.TestTranslationUnit):
 
         Source: https://en.wikipedia.org/wiki/Valid_characters_in_XML#XML_1.0
         """
-        exc_msg = ("All strings must be XML compatible: Unicode or ASCII, no "
-                   "NULL bytes or control characters")
         for code in xliff.ASCII_CONTROL_CODES:
             self.unit.target = 'Een&#x%s;' % code.lstrip('0') or '0'
             assert self.unit.target == 'Een%s' % chr(int(code, 16))

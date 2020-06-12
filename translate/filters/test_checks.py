@@ -20,7 +20,7 @@ def passes(filterfunction, str1, str2):
     str1, str2, no_message = strprep(str1, str2)
     try:
         filterresult = filterfunction(str1, str2)
-    except checks.FilterFailure as e:
+    except checks.FilterFailure:
         filterresult = False
 
     filterresult = filterresult and check_category(filterfunction)
@@ -33,7 +33,7 @@ def fails(filterfunction, str1, str2, message=None):
     str1, str2, message = strprep(str1, str2, message)
     try:
         filterresult = filterfunction(str1, str2)
-    except checks.SeriousFilterFailure as e:
+    except checks.SeriousFilterFailure:
         filterresult = True
     except checks.FilterFailure as e:
         if message:
@@ -78,13 +78,13 @@ def test_defaults():
 
 def test_construct():
     """tests that the checkers can be constructed"""
-    stdchecker = checks.StandardChecker()
-    mozillachecker = checks.MozillaChecker()
-    ooochecker = checks.OpenOfficeChecker()
-    loochecker = checks.LibreOfficeChecker()
-    gnomechecker = checks.GnomeChecker()
-    kdechecker = checks.KdeChecker()
-    ioschecker = checks.IOSChecker()
+    checks.StandardChecker()
+    checks.MozillaChecker()
+    checks.OpenOfficeChecker()
+    checks.LibreOfficeChecker()
+    checks.GnomeChecker()
+    checks.KdeChecker()
+    checks.IOSChecker()
 
 
 def test_accelerator_markers():

@@ -164,7 +164,7 @@ class LISAunit(base.TranslationUnit):
                     terms = languageNode.iter(self.namespaced(self.textNode))
                     try:
                         languageNode = next(terms)
-                    except StopIteration as e:
+                    except StopIteration:
                         pass
                 languageNode.text = target
         else:

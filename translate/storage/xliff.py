@@ -672,7 +672,7 @@ class xlifffile(lisa.LISAfile):
         if targetlanguage:
             filenode.set("target-language", targetlanguage)
         filenode.set("datatype", datatype)
-        bodyNode = etree.SubElement(filenode, self.namespaced(self.bodyNode))
+        etree.SubElement(filenode, self.namespaced(self.bodyNode))
         return filenode
 
     def getfilename(self, filenode):
