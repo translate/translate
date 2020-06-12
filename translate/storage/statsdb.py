@@ -28,8 +28,8 @@ import stat
 import sys
 from collections import UserDict
 from sqlite3 import dbapi2
+from threading import current_thread
 
-import _thread
 from translate import __version__ as toolkitversion
 from translate.lang.common import Common
 from translate.misc.multistring import multistring
@@ -292,7 +292,7 @@ class StatsCache:
     """The current cursor"""
 
     def __new__(cls, statsfile=None):
-        current_thread = _thread.get_ident()
+        current_thread_ident = current_thread().ident
 
         def make_database(statsfile):
 
@@ -316,7 +316,7 @@ class StatsCache:
                 except dbapi2.OperationalError:
                     return False
 
-            cache = cls._caches.setdefault(current_thread, {})[statsfile] = object.__new__(cls)
+            cache = cls._caches.setdefault(current_thread_ident, {})[statsfile] = object.__new__(cls)
             connect(cache)
             if clear_old_data(cache):
                 connect(cache)
@@ -340,8 +340,8 @@ class StatsCache:
         else:
             statsfile = os.path.realpath(statsfile)
         # First see if a cache for this file already exists:
-        if current_thread in cls._caches and statsfile in cls._caches[current_thread]:
-            return cls._caches[current_thread][statsfile]
+        if current_thread_ident in cls._caches and statsfile in cls._caches[current_thread_ident]:
+            return cls._caches[current_thread_ident][statsfile]
         # No existing cache. Let's build a new one and keep a copy
         return make_database(statsfile)
 
