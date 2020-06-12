@@ -110,7 +110,7 @@ class TMServer:
         start_response("200 OK", [('Content-type', 'text/plain')])
         #uid = unicode(urllib.unquote_plus(uid), "utf-8")
 
-        return [response]
+        return ["FIXME"]
 
     @selector.opliant
     def get_store_stats(self, environ, start_response, sid):
@@ -118,7 +118,7 @@ class TMServer:
         start_response("200 OK", [('Content-type', 'text/plain')])
         #sid = unicode(urllib.unquote_plus(sid), "utf-8")
 
-        return [response]
+        return ["FIXME"]
 
     @selector.opliant
     def upload_store(self, environ, start_response, sid, slang, tlang):
@@ -147,7 +147,7 @@ class TMServer:
         start_response("200 OK", [('Content-type', 'text/plain')])
         #sid = unicode(urllib.unquote_plus(sid), "utf-8")
 
-        return [response]
+        return ["FIXME"]
 
 
 def main():
