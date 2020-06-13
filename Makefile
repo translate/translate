@@ -37,7 +37,7 @@ requirements:
 	$(MAKE) -W $(REQFILE) requirements/min-versions.txt requirements.txt
 
 REQS=.reqs
-REQFILE=requirements/recommended.txt
+REQFILE=requirements/optional.txt
 
 requirements.txt: $(REQFILE)
 	@set -e;							\
