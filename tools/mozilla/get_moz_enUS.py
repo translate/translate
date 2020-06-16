@@ -19,7 +19,7 @@
 
 import os
 import shutil
-from ConfigParser import ConfigParser, NoSectionError
+from configparser import ConfigParser, NoSectionError
 
 
 srccheckout = "mozilla"
