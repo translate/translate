@@ -31,6 +31,8 @@ TODO:
 
 import os
 import subprocess
+from functools import lru_cache
+from importlib import import_module
 
 
 DEFAULT_RCS = ["svn", "cvs", "darcs", "git", "bzr", "hg"]
@@ -40,36 +42,28 @@ modules of the same name containing a class with the same name are expected
 to be defined below 'translate.storage.versioncontrol'
 """
 
-__CACHED_RCS_CLASSES = {}
-"""The dynamically loaded revision control system implementations (python
-modules) are cached here for faster access.
-"""
 
-
+@lru_cache(maxsize=128)
 def __get_rcs_class(name):
-    if name not in __CACHED_RCS_CLASSES:
-        try:
-            module = __import__("translate.storage.versioncontrol.%s" % name,
-                                globals(), {}, name)
-            # the module function "is_available" must return "True"
-            if (hasattr(module, "is_available") and
-                callable(module.is_available) and
-                module.is_available()):
-                # we found an appropriate module
-                rcs_class = getattr(module, name)
-            else:
-                # the RCS client does not seem to be installed
-                rcs_class = None
-                try:
-                    DEFAULT_RCS.remove(name)
-                except ValueError:
-                    # we might have had a race condition and another thread
-                    # already removed it
-                    pass
-        except (ImportError, AttributeError):
-            rcs_class = None
-        __CACHED_RCS_CLASSES[name] = rcs_class
-    return __CACHED_RCS_CLASSES[name]
+    try:
+        module = import_module("translate.storage.versioncontrol.%s" % name)
+        # the module function "is_available" must return "True"
+        if (hasattr(module, "is_available") and
+            callable(module.is_available) and
+            module.is_available()):
+            # we found an appropriate module
+            return getattr(module, name)
+        else:
+            # the RCS client does not seem to be installed
+            try:
+                DEFAULT_RCS.remove(name)
+            except ValueError:
+                # we might have had a race condition and another thread
+                # already removed it
+                pass
+            return None
+    except (ImportError, AttributeError):
+        return None
 
 
 def run_command(command, cwd=None):
