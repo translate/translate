@@ -22,6 +22,7 @@ import os
 import pstats
 import random
 import sys
+from importlib import import_module
 
 from translate.storage import factory, placeables
 
@@ -117,8 +118,7 @@ if __name__ == "__main__":
 
     if storetype in factory.classes_str:
         _module, _class = factory.classes_str[storetype]
-        module = __import__("translate.storage.%s" % _module,
-                            globals(), fromlist=_module)
+        module = import_module("translate.storage.%s" % _module)
         storeclass = getattr(module, _class)
     else:
         print("StoreClass: '%s' is not a base class that the class factory can load" % storetype)
