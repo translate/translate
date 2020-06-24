@@ -802,7 +802,7 @@ class propunit(base.TranslationUnit):
     @property
     def missing(self):
         return self.explicitely_missing\
-               or (not bool(self.translation) and not bool(self.source))
+            or (not bool(self.translation) and not bool(self.source))
 
     @missing.setter
     def missing(self, missing):

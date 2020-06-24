@@ -329,10 +329,12 @@ def java_utf8_properties_encode(source):
             output += char
     return output
 
+
 def xwiki_properties_encode(source):
     if re.search(r"\{[0-9]+\}", source):
         source = source.replace("'", "''")
     return javapropertiesencode(source)
+
 
 def escapespace(char):
     assert(len(char) == 1)
@@ -463,10 +465,12 @@ def propertiesdecode(source):
             output += c  # Drop any \ that we don't specifically handle
     return output
 
+
 def xwiki_properties_decode(source):
     if re.search(r"\{[0-9]+\}", source):
         source = source.replace("''", "'")
     return propertiesdecode(source)
+
 
 def findend(string, substring):
     s = string.find(substring)

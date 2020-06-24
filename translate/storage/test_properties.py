@@ -601,7 +601,7 @@ class TestXWiki(test_monolingual.TestMonolingualStore):
         propunit = propfile.units[0]
         assert propunit.name == "test_me"
         assert propunit.source == "I can code!"
-        assert propunit.missing == False
+        assert not propunit.missing
 
     def test_missing_definition(self):
         """checks that a simple missing properties definition is parsed correctly"""
@@ -611,11 +611,11 @@ class TestXWiki(test_monolingual.TestMonolingualStore):
         propunit = propfile.units[0]
         assert propunit.name == "test_me"
         assert propunit.source == "I can code!"
-        assert propunit.missing == True
+        assert propunit.missing
         propunit.target = ""
-        assert propunit.missing == True
+        assert propunit.missing
         propunit.target = "Je peux coder"
-        assert propunit.missing == False
+        assert not propunit.missing
 
     def test_missing_definition_source(self):
         propsource = '### Missing: test_me=I can code!'
@@ -629,7 +629,7 @@ class TestXWiki(test_monolingual.TestMonolingualStore):
         propunit = propfile.units[0]
         assert propunit.name == "test_me"
         assert propunit.source == "A 'quoted' translation"
-        assert propunit.missing == False
+        assert not propunit.missing
         assert propunit.getoutput() == propsource + "\n"
 
     def test_definition_with_simple_quote_and_argument(self):
@@ -639,5 +639,5 @@ class TestXWiki(test_monolingual.TestMonolingualStore):
         propunit = propfile.units[0]
         assert propunit.name == "test_me"
         assert propunit.source == "A 'quoted' translation for {0}"
-        assert propunit.missing == False
+        assert not propunit.missing
         assert propunit.getoutput() == propsource + "\n"
