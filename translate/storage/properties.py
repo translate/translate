@@ -380,6 +380,7 @@ class DialectXWiki(DialectJava):
     simple quotes: they are escaped by doubling them when an argument on the form "{X}"
     is provided, X being a number.
     """
+
     name = "xwiki"
     default_encoding = "iso-8859-1"
     delimiters = ["=", ":", " "]
@@ -931,10 +932,12 @@ class propunit(base.TranslationUnit):
 
 
 class xwikiunit(propunit):
-    """Represents an XWiki translation unit. The difference with a propunit is twofold:
+    """
+    Represents an XWiki translation unit. The difference with a propunit is twofold:
             1. the dialect used is xwiki for simple quote escape handling
             2. missing translations are output with a dedicated "### Missing: " prefix
-        """
+    """
+
     def __init__(self, source="", personality="xwiki"):
         super().__init__(source, personality)
         self.output_missing = True
