@@ -580,6 +580,7 @@ job.log.begin=Starting job of type [{0}]
         print(propsource)
         assert bytes(propfile) == propsource
 
+
 class TestXWiki(test_monolingual.TestMonolingualStore):
     StoreClass = properties.xwikifile
 
