@@ -579,3 +579,65 @@ job.log.begin=Starting job of type [{0}]
         print(bytes(propfile))
         print(propsource)
         assert bytes(propfile) == propsource
+
+class TestXWiki(test_monolingual.TestMonolingualStore):
+    StoreClass = properties.xwikifile
+
+    def propparse(self, propsource):
+        """helper that parses properties source without requiring files"""
+        dummyfile = BytesIO(propsource.encode() if isinstance(propsource, str) else propsource)
+        propfile = properties.xwikifile(dummyfile)
+        return propfile
+
+    def propregen(self, propsource):
+        """helper that converts properties source to propfile object and back"""
+        return bytes(self.propparse(propsource)).decode('utf-8')
+
+    def test_simpledefinition(self):
+        """checks that a simple properties definition is parsed correctly"""
+        propsource = 'test_me=I can code!'
+        propfile = self.propparse(propsource)
+        assert len(propfile.units) == 1
+        propunit = propfile.units[0]
+        assert propunit.name == "test_me"
+        assert propunit.source == "I can code!"
+        assert propunit.missing == False
+
+    def test_missing_definition(self):
+        """checks that a simple missing properties definition is parsed correctly"""
+        propsource = '### Missing: test_me=I can code!'
+        propfile = self.propparse(propsource)
+        assert len(propfile.units) == 1
+        propunit = propfile.units[0]
+        assert propunit.name == "test_me"
+        assert propunit.source == "I can code!"
+        assert propunit.missing == True
+        propunit.target = ""
+        assert propunit.missing == True
+        propunit.target = "Je peux coder"
+        assert propunit.missing == False
+
+    def test_missing_definition_source(self):
+        propsource = '### Missing: test_me=I can code!'
+        propgen = self.propregen(propsource)
+        assert propsource + '\n' == propgen
+
+    def test_definition_with_simple_quote(self):
+        propsource = 'test_me=A \'quoted\' translation'
+        propfile = self.propparse(propsource)
+        assert len(propfile.units) == 1
+        propunit = propfile.units[0]
+        assert propunit.name == "test_me"
+        assert propunit.source == "A 'quoted' translation"
+        assert propunit.missing == False
+        assert propunit.getoutput() == propsource + "\n"
+
+    def test_definition_with_simple_quote_and_argument(self):
+        propsource = "test_me=A ''quoted'' translation for {0}"
+        propfile = self.propparse(propsource)
+        assert len(propfile.units) == 1
+        propunit = propfile.units[0]
+        assert propunit.name == "test_me"
+        assert propunit.source == "A 'quoted' translation for {0}"
+        assert propunit.missing == False
+        assert propunit.getoutput() == propsource + "\n"
