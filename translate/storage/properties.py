@@ -33,6 +33,7 @@ Currently we support:
 - Adobe Flex files
 - MacOS X .strings files
 - Skype .lang files
+- XWiki .properties
 
 The following provides references and descriptions of the various
 dialects supported:
@@ -72,6 +73,13 @@ Flex
 
 Skype
     Skype .lang files seem to be UTF-16 encoded .properties files.
+
+XWiki
+    XWiki translations files are standard Java .properties but with specific escaping
+    support for simple quotes, and support of missing translations.
+    This
+    `page <https://dev.xwiki.org/xwiki/bin/view/Community/XWiki%20Translations%20Formats/>`_
+    provides the information used to implement the dialect.
 
 A simple summary of what is permissible follows.
 
@@ -726,6 +734,10 @@ class proppluralunit(base.TranslationUnit):
     @property
     def missing(self):
         return self._get_source_unit().missing
+
+    @missing.setter
+    def missing(self, missing):
+        self._get_source_unit().missing = missing
 
     def __str__(self):
         """Convert to a string. Double check that unicode is handled
