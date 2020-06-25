@@ -60,7 +60,6 @@ subpackages = [
     "misc",
     "storage",
     join("storage", "placeables"),
-    join("storage", "versioncontrol"),
     join("storage", "xml_extract"),
     "search",
     "services",
