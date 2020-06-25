@@ -78,7 +78,7 @@ XWiki
     XWiki translations files are standard Java .properties but with specific escaping
     support for simple quotes, and support of missing translations.
     This
-    `page <https://dev.xwiki.org/xwiki/bin/view/Community/XWiki%20Translations%20Formats/>`_
+    `XWiki document <https://dev.xwiki.org/xwiki/bin/view/Community/XWiki%20Translations%20Formats/>`_
     provides the information used to implement the dialect.
 
 A simple summary of what is permissible follows.
