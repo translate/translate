@@ -395,7 +395,7 @@ class DialectXWiki(DialectJava):
 
     @classmethod
     def encode(cls, string, encoding=None):
-        return quote.xwiki_properties_encode(string or "")
+        return quote.xwiki_properties_encode(string or "", encoding)
 
     @classmethod
     def decode(cls, string):

@@ -330,10 +330,13 @@ def java_utf8_properties_encode(source):
     return output
 
 
-def xwiki_properties_encode(source):
+def xwiki_properties_encode(source, encoding):
     if re.search(r"\{[0-9]+\}", source):
         source = source.replace("'", "''")
-    return javapropertiesencode(source)
+    if encoding == 'utf-8':
+        return java_utf8_properties_encode(source)
+    else:
+        return javapropertiesencode(source)
 
 
 def escapespace(char):
