@@ -1190,6 +1190,7 @@ class XWikiPageProperties(xwikifile):
     Represents an XWiki Page containing translation properties as described in
     https://dev.xwiki.org/xwiki/bin/view/Community/XWiki%20Translations%20Formats/#HXWikiPageProperties
     """
+
     Name = "XWiki Page Properties"
     Extensions = ['xml']
     XML_HEADER = """<?xml version="1.1" encoding="UTF-8"?>
@@ -1216,7 +1217,7 @@ class XWikiPageProperties(xwikifile):
 
     """
 
-    XWIKI_BASIC_XML = """<xwikidoc version="1.3" reference="" locale="">
+    XWIKI_BASIC_XML = """<xwikidoc>
     <translation>0</translation>
     <language/>
     <content/>
@@ -1270,6 +1271,7 @@ class XWikiFullPage(XWikiPageProperties):
     More information on
     https://dev.xwiki.org/xwiki/bin/view/Community/XWiki%20Translations%20Formats/#HXWikiFullContentTranslation
     """
+    
     Name = "XWiki Full Page"
 
     def parse(self, propsrc):

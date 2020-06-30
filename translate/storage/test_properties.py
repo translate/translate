@@ -646,14 +646,14 @@ class TestXWiki(test_monolingual.TestMonolingualStore):
 
 class TestXWikiPageProperties(test_monolingual.TestMonolingualStore):
     StoreClass = properties.XWikiPageProperties
-    FILE_SCHEME = properties.XWikiPageProperties.XML_HEADER + """<xwikidoc version="1.3" reference="" locale="">
+    FILE_SCHEME = properties.XWikiPageProperties.XML_HEADER + """<xwikidoc>
     <translation>1</translation>
     <language />
     <content>%(content)s</content>
     </xwikidoc>"""
 
     def getcontent(self, content):
-        return self.FILE_SCHEME % { 'content': content }
+        return self.FILE_SCHEME % {'content': content}
 
     def propparse(self, propsource):
         """helper that parses properties source without requiring files"""
