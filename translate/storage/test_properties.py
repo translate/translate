@@ -785,8 +785,10 @@ class TestXWikiFullPage(test_monolingual.TestMonolingualStore):
         store.makeindex()
         newstore = self.reparse(store)
         assert 2 == len(newstore.units)
-        assert newstore.units[0] == newstore.units[0]
-        assert newstore.units[1] == newstore.units[1]
+        assert newstore.units[0]._get_source_unit().name == store.units[2].name
+        assert newstore.units[0]._get_source_unit().source == store.units[2].target
+        assert newstore.units[1]._get_source_unit().name == store.units[3].name
+        assert newstore.units[1]._get_source_unit().source == store.units[3].target
 
     def test_files(self):
         """Tests saving to and loading from files
@@ -811,8 +813,10 @@ class TestXWikiFullPage(test_monolingual.TestMonolingualStore):
         store.savefile(self.filename)
         newstore = self.StoreClass.parsefile(self.filename)
         assert 2 == len(newstore.units)
-        assert newstore.units[0] == newstore.units[0]
-        assert newstore.units[1] == newstore.units[1]
+        assert newstore.units[0]._get_source_unit().name == store.units[2].name
+        assert newstore.units[0]._get_source_unit().source == store.units[2].target
+        assert newstore.units[1]._get_source_unit().name == store.units[3].name
+        assert newstore.units[1]._get_source_unit().source == store.units[3].target
 
     def test_save(self):
         """Tests that we can save directly back to the original file.
@@ -839,5 +843,7 @@ class TestXWikiFullPage(test_monolingual.TestMonolingualStore):
         store.save()
         newstore = self.StoreClass.parsefile(self.filename)
         assert 2 == len(newstore.units)
-        assert newstore.units[0] == newstore.units[0]
-        assert newstore.units[1] == newstore.units[1]
+        assert newstore.units[0]._get_source_unit().name == store.units[2].name
+        assert newstore.units[0]._get_source_unit().source == store.units[2].target
+        assert newstore.units[1]._get_source_unit().name == store.units[3].name
+        assert newstore.units[1]._get_source_unit().source == store.units[3].target
