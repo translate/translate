@@ -643,12 +643,18 @@ class TestXWiki(test_monolingual.TestMonolingualStore):
         assert not propunit.missing
         assert propunit.getoutput() == propsource + "\n"
 
+    def test_header_preserved(self):
+        propsource = """# -----\n# Header\n# -----\n\ntest_me=I can code"""
+        propgen = self.propregen(propsource)
+        assert propsource + '\n' == propgen
+
 
 class TestXWikiPageProperties(test_monolingual.TestMonolingualStore):
     StoreClass = properties.XWikiPageProperties
     FILE_SCHEME = properties.XWikiPageProperties.XML_HEADER + """<xwikidoc>
     <translation>1</translation>
     <language />
+    <title />
     <content>%(content)s</content>
     </xwikidoc>"""
 
@@ -717,3 +723,121 @@ class TestXWikiPageProperties(test_monolingual.TestMonolingualStore):
         generatedcontent = BytesIO()
         propfile.serialize(generatedcontent)
         assert generatedcontent.getvalue().decode("utf-8") == propsource + "\n"
+
+
+class TestXWikiFullPage(test_monolingual.TestMonolingualStore):
+    StoreClass = properties.XWikiFullPage
+    FILE_SCHEME = properties.XWikiPageProperties.XML_HEADER + """<xwikidoc>
+        <translation>1</translation>
+        <language />
+        <title>%(title)s</title>
+        <content>%(content)s</content>
+        </xwikidoc>"""
+
+    def getcontent(self, content, title):
+        return self.FILE_SCHEME % {'content': content, 'title': title}
+
+    def propparse(self, propsource):
+        """helper that parses properties source without requiring files"""
+        dummyfile = BytesIO(
+            propsource.encode() if isinstance(propsource, str) else propsource)
+        propfile = properties.XWikiFullPage(dummyfile)
+        return propfile
+
+    def propregen(self, propsource):
+        """helper that converts properties source to propfile object and back"""
+        return bytes(self.propparse(propsource)).decode('utf-8')
+
+    def test_simpledefinition(self):
+        """checks that a simple properties definition is parsed correctly"""
+        propsource = self.getcontent('I can code!', 'This is a title')
+        propfile = self.propparse(propsource)
+        assert len(propfile.units) == 2
+        propunit = propfile.units[0]
+        assert propunit.name == "content"
+        assert propunit.source == "I can code!"
+        assert not propunit.missing
+        propunit = propfile.units[1]
+        assert propunit.name == "title"
+        assert propunit.source == "This is a title"
+        assert not propunit.missing
+
+    def test_parse(self):
+        """Tests converting to a string and parsing the resulting string.
+        In case of an XWiki Full Page new units are ignored
+        unless they are using 'content' or 'title' ids.
+        """
+        store = self.StoreClass()
+        unit1 = store.addsourceunit("Test String")
+        unit1.target = "Test String"
+        unit2 = store.addsourceunit("Test String 2")
+        unit2.target = "Test String 2"
+        newstore = self.reparse(store)
+        assert 0 == len(newstore.units)
+        unit3 = properties.xwikiunit("Some content")
+        unit3.name = "content"
+        unit3.target = "Some content"
+        store.addunit(unit3)
+        unit4 = properties.xwikiunit("A title")
+        unit4.name = "title"
+        unit4.target = "Specific title"
+        store.addunit(unit4)
+        store.makeindex()
+        newstore = self.reparse(store)
+        assert 2 == len(newstore.units)
+        assert newstore.units[0] == newstore.units[0]
+        assert newstore.units[1] == newstore.units[1]
+
+    def test_files(self):
+        """Tests saving to and loading from files
+        In case of an XWiki Full Page new units are ignored."""
+        store = self.StoreClass()
+        unit1 = store.addsourceunit("Test String")
+        unit1.target = "Test String"
+        unit2 = store.addsourceunit("Test String 2")
+        unit2.target = "Test String 2"
+        store.savefile(self.filename)
+        newstore = self.StoreClass.parsefile(self.filename)
+        assert 0 == len(newstore.units)
+        unit3 = properties.xwikiunit("Some content")
+        unit3.name = "content"
+        unit3.target = "Some content"
+        store.addunit(unit3)
+        unit4 = properties.xwikiunit("A title")
+        unit4.name = "title"
+        unit4.target = "Specific title"
+        store.addunit(unit4)
+        store.makeindex()
+        store.savefile(self.filename)
+        newstore = self.StoreClass.parsefile(self.filename)
+        assert 2 == len(newstore.units)
+        assert newstore.units[0] == newstore.units[0]
+        assert newstore.units[1] == newstore.units[1]
+
+    def test_save(self):
+        """Tests that we can save directly back to the original file.
+        In case of an XWiki Full Page new units are ignored."""
+        store = self.StoreClass()
+        unit1 = store.addsourceunit("Test String")
+        unit1.target = "Test String"
+        unit2 = store.addsourceunit("Test String 2")
+        unit2.target = "Test String 2"
+        store.savefile(self.filename)
+        store.save()
+        newstore = self.StoreClass.parsefile(self.filename)
+        assert 0 == len(newstore.units)
+        unit3 = properties.xwikiunit("Some content")
+        unit3.name = "content"
+        unit3.target = "Some content"
+        store.addunit(unit3)
+        unit4 = properties.xwikiunit("A title")
+        unit4.name = "title"
+        unit4.target = "Specific title"
+        store.addunit(unit4)
+        store.makeindex()
+        store.savefile(self.filename)
+        store.save()
+        newstore = self.StoreClass.parsefile(self.filename)
+        assert 2 == len(newstore.units)
+        assert newstore.units[0] == newstore.units[0]
+        assert newstore.units[1] == newstore.units[1]

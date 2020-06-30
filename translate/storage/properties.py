@@ -1220,6 +1220,7 @@ class XWikiPageProperties(xwikifile):
     XWIKI_BASIC_XML = """<xwikidoc>
     <translation>0</translation>
     <language/>
+    <title/>
     <content/>
     </xwikidoc>
     """
@@ -1271,7 +1272,7 @@ class XWikiFullPage(XWikiPageProperties):
     More information on
     https://dev.xwiki.org/xwiki/bin/view/Community/XWiki%20Translations%20Formats/#HXWikiFullContentTranslation
     """
-    
+
     Name = "XWiki Full Page"
 
     def parse(self, propsrc):
@@ -1282,17 +1283,24 @@ class XWikiFullPage(XWikiPageProperties):
                 .replace("\n", "\\n")
             title = ""\
                 .join(self.root.find("title").itertext())
-            forparsing = "title={}\ncontent={}"\
-                .format(unescape(title), unescape(content))\
-                .encode(self.encoding)
-            super(XWikiPageProperties, self).parse(forparsing)
+            forparsing = ""
+            if content != "":
+                forparsing += "content={}\n"\
+                    .format(unescape(content))
+            if title != "":
+                forparsing += "title={}\n" \
+                    .format(unescape(title))
+            super(XWikiPageProperties, self).parse(forparsing.encode(self.encoding))
 
     def serialize(self, out):
         unit_title = self.findid("title")
         unit_content = self.findid("content")
-
+        if self.root is None:
+            self.root = ElementTree.XML(self.XML_HEADER + self.XWIKI_BASIC_XML)
         newroot = deepcopy(self.root)
-        newroot.find("title").text = unit_title.target
-        newroot.find("content").text = unit_content.target.replace("\\n", "\n")
+        if unit_title is not None:
+            newroot.find("title").text = unit_title.target
+        if unit_content is not None:
+            newroot.find("content").text = unit_content.target.replace("\\n", "\n")
         self.set_xwiki_xml_attributes(newroot)
         self.write_xwiki_xml(newroot, out)
