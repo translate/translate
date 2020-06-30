@@ -662,18 +662,19 @@ class TestXWikiPageProperties(test_monolingual.TestMonolingualStore):
     StoreClass = properties.XWikiPageProperties
     FILE_SCHEME = properties.XWikiPageProperties.XML_HEADER + """<xwikidoc>
     <translation>1</translation>
-    <language />
+    <language>%(language)s</language>
     <title />
     <content>%(content)s</content>
     </xwikidoc>"""
 
-    def getcontent(self, content):
-        return self.FILE_SCHEME % {'content': content}
+    def getcontent(self, content, language='en'):
+        return self.FILE_SCHEME % {'content': content, 'language': language}
 
     def propparse(self, propsource):
         """helper that parses properties source without requiring files"""
         dummyfile = BytesIO(propsource.encode() if isinstance(propsource, str) else propsource)
         propfile = properties.XWikiPageProperties(dummyfile)
+        propfile.settargetlanguage('en')
         return propfile
 
     def propregen(self, propsource):
@@ -689,6 +690,16 @@ class TestXWikiPageProperties(test_monolingual.TestMonolingualStore):
         assert propunit.name == "test_me"
         assert propunit.source == "I can code!"
         assert not propunit.missing
+        generatedcontent = BytesIO()
+        propfile.serialize(generatedcontent)
+        assert generatedcontent.getvalue().decode(propfile.encoding) == propsource + "\n"
+        # check translation and language attribute
+        propfile.settargetlanguage('fr')
+        propunit.target = "Je peux coder"
+        expectedcontent = self.getcontent("test_me=Je peux coder", "fr")
+        generatedcontent = BytesIO()
+        propfile.serialize(generatedcontent)
+        assert generatedcontent.getvalue().decode(propfile.encoding) == expectedcontent + "\n"
 
     def test_missing_definition(self):
         """checks that a simple missing properties definition is parsed correctly"""
@@ -743,19 +754,20 @@ class TestXWikiFullPage(test_monolingual.TestMonolingualStore):
     StoreClass = properties.XWikiFullPage
     FILE_SCHEME = properties.XWikiPageProperties.XML_HEADER + """<xwikidoc>
     <translation>1</translation>
-    <language />
+    <language>%(language)s</language>
     <title>%(title)s</title>
     <content>%(content)s</content>
     </xwikidoc>"""
 
-    def getcontent(self, content, title):
-        return self.FILE_SCHEME % {'content': content, 'title': title}
+    def getcontent(self, content, title, language='en'):
+        return self.FILE_SCHEME % {'content': content, 'title': title, 'language': language}
 
     def propparse(self, propsource):
         """helper that parses properties source without requiring files"""
         dummyfile = BytesIO(
             propsource.encode() if isinstance(propsource, str) else propsource)
         propfile = properties.XWikiFullPage(dummyfile)
+        propfile.settargetlanguage('en')
         return propfile
 
     def propregen(self, propsource):
@@ -776,9 +788,10 @@ class TestXWikiFullPage(test_monolingual.TestMonolingualStore):
         assert propunit.name == "title"
         assert propunit.source == "This is a title"
         assert not propunit.missing
-        # Check encoding
+        # Check encoding and language attribute
+        propfile.settargetlanguage('fr')
         propunit.target = "تىپتىكى خىزمەتنى باشلاش"
-        expected_content = self.getcontent("A new code!", "تىپتىكى خىزمەتنى باشلاش")
+        expected_content = self.getcontent("A new code!", "تىپتىكى خىزمەتنى باشلاش", "fr")
         generatedcontent = BytesIO()
         propfile.serialize(generatedcontent)
         assert generatedcontent.getvalue().decode(propfile.encoding) == expected_content + "\n"
