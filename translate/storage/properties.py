@@ -1226,9 +1226,9 @@ class XWikiPageProperties(xwikifile):
     """
 
     def __init__(self, *args, **kwargs):
-        kwargs['personality'] = "java-utf8"
+        kwargs['personality'] = "xwiki"
         kwargs['encoding'] = "utf-8"
-        super(XWikiPageProperties, self).__init__(*args, **kwargs)
+        super(xwikifile, self).__init__(*args, **kwargs)
         self.root = None
 
     def parse(self, propsrc):
@@ -1249,7 +1249,7 @@ class XWikiPageProperties(xwikifile):
 
     def write_xwiki_xml(self, newroot, out):
         xml_content = ElementTree.tostring(newroot,
-                                           encoding=None,
+                                           encoding=self.encoding,
                                            method="xml")
         out.write(self.XML_HEADER.encode(self.encoding))
         out.write(xml_content)

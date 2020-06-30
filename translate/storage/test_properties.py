@@ -617,6 +617,15 @@ class TestXWiki(test_monolingual.TestMonolingualStore):
         assert propunit.missing
         propunit.target = "Je peux coder"
         assert not propunit.missing
+        # Check encoding
+        propunit.target = "تىپتىكى خىزمەتنى باشلاش"
+        expected_content = "test_me=\\u062A\\u0649\\u067E\\u062A\\u0649\\u0643\\u0649 " \
+                           "\\u062E\\u0649\\u0632\\u0645\\u06D5\\u062A\\u0646\\u0649 " \
+                           "\\u0628\\u0627\\u0634\\u0644\\u0627\\u0634"
+
+        generatedcontent = BytesIO()
+        propfile.serialize(generatedcontent)
+        assert generatedcontent.getvalue().decode(propfile.encoding) == expected_content + "\n"
 
     def test_missing_definition_source(self):
         propsource = '### Missing: test_me=I can code!'
@@ -694,6 +703,11 @@ class TestXWikiPageProperties(test_monolingual.TestMonolingualStore):
         assert propunit.missing
         propunit.target = "Je peux coder"
         assert not propunit.missing
+        propunit.target = "تىپتىكى خىزمەتنى باشلاش"
+        expected_content = self.getcontent("test_me=تىپتىكى خىزمەتنى باشلاش")
+        generatedcontent = BytesIO()
+        propfile.serialize(generatedcontent)
+        assert generatedcontent.getvalue().decode(propfile.encoding) == expected_content + "\n"
 
     def test_missing_definition_source(self):
         propsource = self.getcontent('### Missing: test_me=I can code!')
@@ -710,7 +724,7 @@ class TestXWikiPageProperties(test_monolingual.TestMonolingualStore):
         assert not propunit.missing
         generatedcontent = BytesIO()
         propfile.serialize(generatedcontent)
-        assert generatedcontent.getvalue().decode("utf-8") == propsource + "\n"
+        assert generatedcontent.getvalue().decode(propfile.encoding) == propsource + "\n"
 
     def test_definition_with_simple_quote_and_argument(self):
         propsource = self.getcontent("test_me=A ''quoted'' translation for {0}")
@@ -722,17 +736,17 @@ class TestXWikiPageProperties(test_monolingual.TestMonolingualStore):
         assert not propunit.missing
         generatedcontent = BytesIO()
         propfile.serialize(generatedcontent)
-        assert generatedcontent.getvalue().decode("utf-8") == propsource + "\n"
+        assert generatedcontent.getvalue().decode(propfile.encoding) == propsource + "\n"
 
 
 class TestXWikiFullPage(test_monolingual.TestMonolingualStore):
     StoreClass = properties.XWikiFullPage
     FILE_SCHEME = properties.XWikiPageProperties.XML_HEADER + """<xwikidoc>
-        <translation>1</translation>
-        <language />
-        <title>%(title)s</title>
-        <content>%(content)s</content>
-        </xwikidoc>"""
+    <translation>1</translation>
+    <language />
+    <title>%(title)s</title>
+    <content>%(content)s</content>
+    </xwikidoc>"""
 
     def getcontent(self, content, title):
         return self.FILE_SCHEME % {'content': content, 'title': title}
@@ -757,10 +771,17 @@ class TestXWikiFullPage(test_monolingual.TestMonolingualStore):
         assert propunit.name == "content"
         assert propunit.source == "I can code!"
         assert not propunit.missing
+        propunit.target = "A new code!"
         propunit = propfile.units[1]
         assert propunit.name == "title"
         assert propunit.source == "This is a title"
         assert not propunit.missing
+        # Check encoding
+        propunit.target = "تىپتىكى خىزمەتنى باشلاش"
+        expected_content = self.getcontent("A new code!", "تىپتىكى خىزمەتنى باشلاش")
+        generatedcontent = BytesIO()
+        propfile.serialize(generatedcontent)
+        assert generatedcontent.getvalue().decode(propfile.encoding) == expected_content + "\n"
 
     def test_parse(self):
         """Tests converting to a string and parsing the resulting string.
