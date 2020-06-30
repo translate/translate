@@ -1,5 +1,5 @@
 
-from io import BytesIO
+from io import BytesIO, StringIO
 
 from pytest import raises
 
@@ -642,3 +642,78 @@ class TestXWiki(test_monolingual.TestMonolingualStore):
         assert propunit.source == "A 'quoted' translation for {0}"
         assert not propunit.missing
         assert propunit.getoutput() == propsource + "\n"
+
+
+class TestXWikiPageProperties(test_monolingual.TestMonolingualStore):
+    StoreClass = properties.XWikiPageProperties
+    FILE_SCHEME = properties.XWikiPageProperties.XML_HEADER + """<xwikidoc version="1.3" reference="" locale="">
+    <translation>1</translation>
+    <language />
+    <content>%(content)s</content>
+    </xwikidoc>"""
+
+    def getcontent(self, content):
+        return self.FILE_SCHEME % { 'content': content }
+
+    def propparse(self, propsource):
+        """helper that parses properties source without requiring files"""
+        dummyfile = BytesIO(propsource.encode() if isinstance(propsource, str) else propsource)
+        propfile = properties.XWikiPageProperties(dummyfile)
+        return propfile
+
+    def propregen(self, propsource):
+        """helper that converts properties source to propfile object and back"""
+        return bytes(self.propparse(propsource)).decode('utf-8')
+
+    def test_simpledefinition(self):
+        """checks that a simple properties definition is parsed correctly"""
+        propsource = self.getcontent('test_me=I can code!')
+        propfile = self.propparse(propsource)
+        assert len(propfile.units) == 1
+        propunit = propfile.units[0]
+        assert propunit.name == "test_me"
+        assert propunit.source == "I can code!"
+        assert not propunit.missing
+
+    def test_missing_definition(self):
+        """checks that a simple missing properties definition is parsed correctly"""
+        propsource = self.getcontent('### Missing: test_me=I can code!')
+        propfile = self.propparse(propsource)
+        assert len(propfile.units) == 1
+        propunit = propfile.units[0]
+        assert propunit.name == "test_me"
+        assert propunit.source == "I can code!"
+        assert propunit.missing
+        propunit.target = ""
+        assert propunit.missing
+        propunit.target = "Je peux coder"
+        assert not propunit.missing
+
+    def test_missing_definition_source(self):
+        propsource = self.getcontent('### Missing: test_me=I can code!')
+        propgen = self.propregen(propsource)
+        assert propsource + '\n' == propgen
+
+    def test_definition_with_simple_quote(self):
+        propsource = self.getcontent('test_me=A \'quoted\' translation')
+        propfile = self.propparse(propsource)
+        assert len(propfile.units) == 1
+        propunit = propfile.units[0]
+        assert propunit.name == "test_me"
+        assert propunit.source == "A 'quoted' translation"
+        assert not propunit.missing
+        generatedcontent = BytesIO()
+        propfile.serialize(generatedcontent)
+        assert generatedcontent.getvalue().decode("utf-8") == propsource + "\n"
+
+    def test_definition_with_simple_quote_and_argument(self):
+        propsource = self.getcontent("test_me=A ''quoted'' translation for {0}")
+        propfile = self.propparse(propsource)
+        assert len(propfile.units) == 1
+        propunit = propfile.units[0]
+        assert propunit.name == "test_me"
+        assert propunit.source == "A 'quoted' translation for {0}"
+        assert not propunit.missing
+        generatedcontent = BytesIO()
+        propfile.serialize(generatedcontent)
+        assert generatedcontent.getvalue().decode("utf-8") == propsource + "\n"

@@ -134,6 +134,9 @@ from translate.lang import data
 from translate.misc import quote
 from translate.misc.multistring import multistring
 from translate.storage import base
+from copy import deepcopy
+from xml.etree import ElementTree
+from xml.sax.saxutils import escape, unescape
 
 
 labelsuffixes = (".label", ".title")
@@ -1180,3 +1183,114 @@ class joomlafile(propfile):
     def __init__(self, *args, **kwargs):
         kwargs['personality'] = "joomla"
         super().__init__(*args, **kwargs)
+
+
+class XWikiPageProperties(xwikifile):
+    """
+    Represents an XWiki Page containing translation properties as described in
+    https://dev.xwiki.org/xwiki/bin/view/Community/XWiki%20Translations%20Formats/#HXWikiPageProperties
+    """
+    Name = "XWiki Page Properties"
+    Extensions = ['xml']
+    XML_HEADER = """<?xml version="1.1" encoding="UTF-8"?>
+
+    <!--
+     * See the NOTICE file distributed with this work for additional
+     * information regarding copyright ownership.
+     *
+     * This is free software; you can redistribute it and/or modify it
+     * under the terms of the GNU Lesser General Public License as
+     * published by the Free Software Foundation; either version 2.1 of
+     * the License, or (at your option) any later version.
+     *
+     * This software is distributed in the hope that it will be useful,
+     * but WITHOUT ANY WARRANTY; without even the implied warranty of
+     * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+     * Lesser General Public License for more details.
+     *
+     * You should have received a copy of the GNU Lesser General Public
+     * License along with this software; if not, write to the Free
+     * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
+     * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
+    -->
+
+    """
+
+    XWIKI_BASIC_XML = """<xwikidoc version="1.3" reference="" locale="">
+    <translation>0</translation>
+    <language/>
+    <content/>
+    </xwikidoc>
+    """
+
+    def __init__(self, *args, **kwargs):
+        kwargs['personality'] = "java-utf8"
+        kwargs['encoding'] = "utf-8"
+        super(XWikiPageProperties, self).__init__(*args, **kwargs)
+        self.root = None
+
+    def parse(self, propsrc):
+        if propsrc != b"\n":
+            self.root = ElementTree.XML(propsrc)
+            content = ""\
+                .join(self.root.find("content").itertext())
+            content = unescape(content).encode(self.encoding)
+            super(XWikiPageProperties, self).parse(content)
+
+    def set_xwiki_xml_attributes(self, newroot):
+        for e in newroot.findall("object"):
+            newroot.remove(e)
+        for e in newroot.findall("attachment"):
+            newroot.remove(e)
+        newroot.find("translation").text = "1"
+        newroot.find("language").text = self.gettargetlanguage()
+
+    def write_xwiki_xml(self, newroot, out):
+        xml_content = ElementTree.tostring(newroot,
+                                           encoding=None,
+                                           method="xml")
+        out.write(self.XML_HEADER.encode(self.encoding))
+        out.write(xml_content)
+        out.write(b'\n')
+
+    def serialize(self, out):
+        if self.root is None:
+            self.root = ElementTree.XML(self.XML_HEADER + self.XWIKI_BASIC_XML)
+        newroot = deepcopy(self.root)
+        newroot.find("content").text = escape(
+            "".join(unit.getoutput() for unit in self.units)).strip()
+        self.set_xwiki_xml_attributes(newroot)
+        self.write_xwiki_xml(newroot, out)
+
+
+class XWikiFullPage(XWikiPageProperties):
+    """
+    Represents a full XWiki Page translation: this file does not contains properties
+    but its whole content needs to be translated.
+    More information on
+    https://dev.xwiki.org/xwiki/bin/view/Community/XWiki%20Translations%20Formats/#HXWikiFullContentTranslation
+    """
+    Name = "XWiki Full Page"
+
+    def parse(self, propsrc):
+        if propsrc != b"\n":
+            self.root = ElementTree.XML(propsrc)
+            content = ""\
+                .join(self.root.find("content").itertext())\
+                .replace("\n", "\\n")
+            title = ""\
+                .join(self.root.find("title").itertext())
+            forparsing = "title={}\ncontent={}"\
+                .format(unescape(title), unescape(content))\
+                .encode(self.encoding)
+            super(XWikiPageProperties, self).parse(forparsing)
+
+    def serialize(self, out):
+        unit_title = self.findid("title")
+        unit_content = self.findid("content")
+
+        newroot = deepcopy(self.root)
+        newroot.find("title").text = unit_title.target
+        newroot.find("content").text = unit_content.target.replace("\\n", "\n")
+        self.set_xwiki_xml_attributes(newroot)
+        self.write_xwiki_xml(newroot, out)
