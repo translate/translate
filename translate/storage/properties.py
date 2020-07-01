@@ -1280,8 +1280,7 @@ class XWikiFullPage(XWikiPageProperties):
             content = ""\
                 .join(self.root.find("content").itertext())\
                 .replace("\n", "\\n")
-            title = ""\
-                .join(self.root.find("title").itertext())
+            title = "".join(self.root.find("title").itertext())
             forparsing = ""
             if content != "":
                 forparsing += "content={}\n"\
