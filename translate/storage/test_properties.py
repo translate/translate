@@ -749,6 +749,106 @@ class TestXWikiPageProperties(test_monolingual.TestMonolingualStore):
         propfile.serialize(generatedcontent)
         assert generatedcontent.getvalue().decode(propfile.encoding) == propsource + "\n"
 
+    def test_cleaning_attributes(self):
+        """Ensure that the XML is correctly formatted during serialization:
+        it should not contain objects or attachments tags, and translation should be
+        set to 1."""
+        propsource = properties.XWikiPageProperties.XML_HEADER + """<xwikidoc version="1.3" reference="XWiki.AdminTranslations" locale="">
+            <web>XWiki</web>
+            <name>AdminTranslations</name>
+            <language/>
+            <defaultLanguage>en</defaultLanguage>
+            <translation>0</translation>
+            <creator>xwiki:XWiki.Admin</creator>
+            <parent>XWiki.WebHome</parent>
+            <author>xwiki:XWiki.Admin</author>
+            <contentAuthor>xwiki:XWiki.Admin</contentAuthor>
+            <version>1.1</version>
+            <title>AdminTranslations</title>
+            <comment/>
+            <minorEdit>false</minorEdit>
+            <syntaxId>plain/1.0</syntaxId>
+            <hidden>true</hidden>
+            <content># Users Section
+            test_me=I can code!
+            </content>
+            <object>
+                <name>XWiki.AdminTranslations</name>
+                <number>0</number>
+                <className>XWiki.TranslationDocumentClass</className>
+                <guid>554b2ee4-98dc-48ef-b436-ef0cf7d38c4f</guid>
+                <class>
+                  <name>XWiki.TranslationDocumentClass</name>
+                  <customClass/>
+                  <customMapping/>
+                  <defaultViewSheet/>
+                  <defaultEditSheet/>
+                  <defaultWeb/>
+                  <nameField/>
+                  <validationScript/>
+                  <scope>
+                    <cache>0</cache>
+                    <disabled>0</disabled>
+                    <displayType>select</displayType>
+                    <freeText>forbidden</freeText>
+                    <multiSelect>0</multiSelect>
+                    <name>scope</name>
+                    <number>1</number>
+                    <prettyName>Scope</prettyName>
+                    <relationalStorage>0</relationalStorage>
+                    <separator> </separator>
+                    <separators>|, </separators>
+                    <size>1</size>
+                    <unmodifiable>0</unmodifiable>
+                    <values>GLOBAL|WIKI|USER|ON_DEMAND</values>
+                    <classType>com.xpn.xwiki.objects.classes.StaticListClass</classType>
+                  </scope>
+                </class>
+                <property>
+                  <scope>WIKI</scope>
+                </property>
+            </object>
+            <attachment>
+                <filename>XWikiLogo.png</filename>
+                <mimetype>image/png</mimetype>
+                <filesize>1390</filesize>
+                <author>xwiki:XWiki.Admin</author>
+                <version>1.1</version>
+                <comment/>
+                <content>something=toto</content>
+            </attachment>
+        </xwikidoc>"""
+        propfile = self.propparse(propsource)
+        assert len(propfile.units) == 1
+        propunit = propfile.units[0]
+        propfile.settargetlanguage("fr")
+        assert propunit.name == "test_me"
+        assert propunit.source == "I can code!"
+        assert not propunit.missing
+        propunit.target = "Je peux coder !"
+        generatedcontent = BytesIO()
+        propfile.serialize(generatedcontent)
+        expected_xml = properties.XWikiPageProperties.XML_HEADER + """<xwikidoc version="1.3" reference="XWiki.AdminTranslations" locale="">
+            <web>XWiki</web>
+            <name>AdminTranslations</name>
+            <language>fr</language>
+            <defaultLanguage>en</defaultLanguage>
+            <translation>1</translation>
+            <creator>xwiki:XWiki.Admin</creator>
+            <parent>XWiki.WebHome</parent>
+            <author>xwiki:XWiki.Admin</author>
+            <contentAuthor>xwiki:XWiki.Admin</contentAuthor>
+            <version>1.1</version>
+            <title>AdminTranslations</title>
+            <comment />
+            <minorEdit>false</minorEdit>
+            <syntaxId>plain/1.0</syntaxId>
+            <hidden>true</hidden>
+            <content># Users Section
+test_me=Je peux coder !</content>
+            </xwikidoc>"""
+        assert generatedcontent.getvalue().decode(propfile.encoding) == expected_xml + "\n"
+
 
 class TestXWikiFullPage(test_monolingual.TestMonolingualStore):
     StoreClass = properties.XWikiFullPage
@@ -881,3 +981,127 @@ class TestXWikiFullPage(test_monolingual.TestMonolingualStore):
         assert newstore.units[0]._get_source_unit().source == store.units[2].target
         assert newstore.units[1]._get_source_unit().name == store.units[3].name
         assert newstore.units[1]._get_source_unit().source == store.units[3].target
+
+    def test_cleaning_attributes(self):
+        """Ensure that the XML is correctly formatted during serialization:
+        it should not contain objects or attachments tags, and translation should be
+        set to 1."""
+        propsource = properties.XWikiPageProperties.XML_HEADER + """<xwikidoc version="1.3" reference="XWiki.AdminTranslations" locale="">
+            <web>XWiki</web>
+            <name>AdminTranslations</name>
+            <language/>
+            <defaultLanguage>en</defaultLanguage>
+            <translation>0</translation>
+            <creator>xwiki:XWiki.Admin</creator>
+            <parent>XWiki.WebHome</parent>
+            <author>xwiki:XWiki.Admin</author>
+            <contentAuthor>xwiki:XWiki.Admin</contentAuthor>
+            <version>1.1</version>
+            <title>Some page title</title>
+            <comment/>
+            <minorEdit>false</minorEdit>
+            <syntaxId>plain/1.0</syntaxId>
+            <hidden>true</hidden>
+            <content>A Lorem Ipsum or whatever might be contained there.
+
+            == A wiki title ==
+
+            Some other stuff.
+            </content>
+            <object>
+                <name>XWiki.AdminTranslations</name>
+                <number>0</number>
+                <className>XWiki.TranslationDocumentClass</className>
+                <guid>554b2ee4-98dc-48ef-b436-ef0cf7d38c4f</guid>
+                <class>
+                  <name>XWiki.TranslationDocumentClass</name>
+                  <customClass/>
+                  <customMapping/>
+                  <defaultViewSheet/>
+                  <defaultEditSheet/>
+                  <defaultWeb/>
+                  <nameField/>
+                  <validationScript/>
+                  <scope>
+                    <cache>0</cache>
+                    <disabled>0</disabled>
+                    <displayType>select</displayType>
+                    <freeText>forbidden</freeText>
+                    <multiSelect>0</multiSelect>
+                    <name>scope</name>
+                    <number>1</number>
+                    <prettyName>Scope</prettyName>
+                    <relationalStorage>0</relationalStorage>
+                    <separator> </separator>
+                    <separators>|, </separators>
+                    <size>1</size>
+                    <unmodifiable>0</unmodifiable>
+                    <values>GLOBAL|WIKI|USER|ON_DEMAND</values>
+                    <classType>com.xpn.xwiki.objects.classes.StaticListClass</classType>
+                  </scope>
+                </class>
+                <property>
+                  <scope>WIKI</scope>
+                </property>
+            </object>
+            <attachment>
+                <filename>XWikiLogo.png</filename>
+                <mimetype>image/png</mimetype>
+                <filesize>1390</filesize>
+                <author>xwiki:XWiki.Admin</author>
+                <version>1.1</version>
+                <comment/>
+                <content>something=toto</content>
+            </attachment>
+        </xwikidoc>"""
+        propfile = self.propparse(propsource)
+        assert len(propfile.units) == 2
+        propunit = propfile.units[0]
+        assert propunit.name == "content"
+        assert propunit.source == """A Lorem Ipsum or whatever might be contained there.
+
+            == A wiki title ==
+
+            Some other stuff.
+            """
+        assert not propunit.missing
+        propunit.target = """Un Lorem Ipsum ou quoi que ce soit qui puisse être là.
+
+            == Un titre de wiki ==
+
+            D'autres trucs.
+            """
+        propunit = propfile.units[1]
+        assert propunit.name == "title"
+        assert propunit.source == "Some page title"
+        assert not propunit.missing
+        propunit.target = "Un titre de page"
+
+        generatedcontent = BytesIO()
+        propfile.settargetlanguage("fr")
+        propfile.serialize(generatedcontent)
+        expected_xml = properties.XWikiPageProperties.XML_HEADER + """<xwikidoc version="1.3" reference="XWiki.AdminTranslations" locale="">
+            <web>XWiki</web>
+            <name>AdminTranslations</name>
+            <language>fr</language>
+            <defaultLanguage>en</defaultLanguage>
+            <translation>1</translation>
+            <creator>xwiki:XWiki.Admin</creator>
+            <parent>XWiki.WebHome</parent>
+            <author>xwiki:XWiki.Admin</author>
+            <contentAuthor>xwiki:XWiki.Admin</contentAuthor>
+            <version>1.1</version>
+            <title>Un titre de page</title>
+            <comment />
+            <minorEdit>false</minorEdit>
+            <syntaxId>plain/1.0</syntaxId>
+            <hidden>true</hidden>
+            <content>Un Lorem Ipsum ou quoi que ce soit qui puisse être là.
+
+            == Un titre de wiki ==
+
+            D'autres trucs.
+            </content>
+            </xwikidoc>"""
+        assert generatedcontent.getvalue().decode(
+            propfile.encoding) == expected_xml + "\n"

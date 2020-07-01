@@ -1228,8 +1228,8 @@ class XWikiPageProperties(xwikifile):
     def __init__(self, *args, **kwargs):
         kwargs['personality'] = "xwiki"
         kwargs['encoding'] = "utf-8"
-        super(xwikifile, self).__init__(*args, **kwargs)
         self.root = None
+        super(xwikifile, self).__init__(*args, **kwargs)
 
     def parse(self, propsrc):
         if propsrc != b"\n":
