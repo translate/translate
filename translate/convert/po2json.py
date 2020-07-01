@@ -47,10 +47,22 @@ class rejson:
             if skip_unit:
                 continue
             if inputunit is not None:
-                if inputunit.isfuzzy() and not self.includefuzzy:
-                    unit.target = unit.source
+                if inputunit.isfuzzy():
+                    if self.includefuzzy:
+                        # inputunit.istranslated() is always False now,
+                        # because inputunit.isfuzzy() is True.
+                        # So we need to check if inputunit.target is truthy.
+                        if inputunit.target:
+                            unit.target = inputunit.target
+                        else:
+                            unit.target = unit.source
+                    else:
+                        unit.target = unit.source
                 else:
-                    unit.target = inputunit.target
+                    if inputunit.istranslated():
+                        unit.target = inputunit.target
+                    else:
+                        unit.target = unit.source
             else:
                 unit.target = unit.source
             self.ouputstore.addunit(unit)
