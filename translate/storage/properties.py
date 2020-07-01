@@ -1285,8 +1285,7 @@ class XWikiFullPage(XWikiPageProperties):
             if content != "":
                 forparsing += "content={}\n".format(unescape(content))
             if title != "":
-                forparsing += "title={}\n" \
-                    .format(unescape(title))
+                forparsing += "title={}\n".format(unescape(title))
             super(XWikiPageProperties, self).parse(forparsing.encode(self.encoding))
 
     def serialize(self, out):
