@@ -1,5 +1,5 @@
 
-from io import BytesIO, StringIO
+from io import BytesIO
 
 from pytest import raises
 
@@ -1103,5 +1103,4 @@ class TestXWikiFullPage(test_monolingual.TestMonolingualStore):
             D'autres trucs.
             </content>
             </xwikidoc>"""
-        assert generatedcontent.getvalue().decode(
-            propfile.encoding) == expected_xml + "\n"
+        assert generatedcontent.getvalue().decode(propfile.encoding) == expected_xml + "\n"
