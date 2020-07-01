@@ -158,10 +158,17 @@ class JsonFile(base.TranslationStore):
                 if k in d1:
                     if isinstance(d1[k], dict) and isinstance(d2[k], dict):
                         merge(d1[k], d2[k])
+                    elif isinstance(d1[k], list) and isinstance(d2[k], tuple):
+                        if len(d1[k]) > d2[k][0]:
+                            d1[k][d2[k][0]].update(d2[k][1])
+                        else:
+                            d1[k].append(d2[k][1])
                     elif isinstance(d1[k], list) and isinstance(d2[k], list):
                         d1[k].extend(d2[k])
                     else:
                         d1[k] = d2[k]
+                elif isinstance(d2[k], tuple):
+                    d1[k] = [d2[k][1]]
                 else:
                     d1[k] = d2[k]
         units = OrderedDict()
@@ -230,8 +237,8 @@ class JsonNestedUnit(JsonUnit):
         ret = self.converttarget()
         for k in reversed(self.getkey()):
             if '[' in k and k[-1] == ']':
-                k = k.split('[')[0]
-                ret = [ret]
+                k, pos = k[:-1].split('[')
+                ret = (int(pos), ret)
             ret = OrderedDict({k: ret})
         return ret
 

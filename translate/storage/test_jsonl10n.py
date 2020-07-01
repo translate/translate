@@ -31,6 +31,19 @@ JSON_I18NEXT_PLURAL = b"""{
     "keyPluralMultipleEgArabic": "Nazdar"
 }
 """
+JSON_I18NEXT_NESTED_ARRAY = """{
+    "apps": [
+        {
+            "title": "app1",
+            "description": "test description"
+        },
+        {
+            "title": "app2",
+            "description": "test description 2"
+        }
+    ]
+}
+"""
 JSON_ARRAY = b"""{
     "key": [
         "One",
@@ -289,6 +302,18 @@ class TestI18NextStore(test_monolingual.TestMonolingualStore):
         store.serialize(out)
 
         assert out.getvalue() == JSON_I18NEXT
+
+    def test_nested_array(self):
+        store = self.StoreClass()
+        store.parse(JSON_I18NEXT_NESTED_ARRAY)
+
+        assert len(store.units) == 4
+        assert store.units[0].getid() == ".apps[0].title"
+        assert store.units[1].getid() == ".apps[0].description"
+        assert store.units[2].getid() == ".apps[1].title"
+        assert store.units[3].getid() == ".apps[1].description"
+
+        assert bytes(store).decode() == JSON_I18NEXT_NESTED_ARRAY
 
     def test_new_plural(self):
         EXPECTED = b'''{
