@@ -1234,8 +1234,7 @@ class XWikiPageProperties(xwikifile):
     def parse(self, propsrc):
         if propsrc != b"\n":
             self.root = ElementTree.XML(propsrc)
-            content = ""\
-                .join(self.root.find("content").itertext())
+            content = "".join(self.root.find("content").itertext())
             content = unescape(content).encode(self.encoding)
             super(XWikiPageProperties, self).parse(content)
 
