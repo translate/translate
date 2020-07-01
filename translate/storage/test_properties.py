@@ -753,7 +753,10 @@ class TestXWikiPageProperties(test_monolingual.TestMonolingualStore):
         """Ensure that the XML is correctly formatted during serialization:
         it should not contain objects or attachments tags, and translation should be
         set to 1."""
-        propsource = properties.XWikiPageProperties.XML_HEADER + """<xwikidoc version="1.3" reference="XWiki.AdminTranslations" locale="">
+        ## Real XWiki files are containing multiple attributes on xwikidoc tag: we're not testing it there
+        ## because ElementTree changed its implementation between Python 3.7 and 3.8 which changed the order of output of the attributes
+        ## it makes it more difficult to assert it on multiple versions of Python.
+        propsource = properties.XWikiPageProperties.XML_HEADER + """<xwikidoc reference="XWiki.AdminTranslations">
             <web>XWiki</web>
             <name>AdminTranslations</name>
             <language/>
@@ -828,7 +831,7 @@ class TestXWikiPageProperties(test_monolingual.TestMonolingualStore):
         propunit.target = "Je peux coder !"
         generatedcontent = BytesIO()
         propfile.serialize(generatedcontent)
-        expected_xml = properties.XWikiPageProperties.XML_HEADER + """<xwikidoc version="1.3" reference="XWiki.AdminTranslations" locale="">
+        expected_xml = properties.XWikiPageProperties.XML_HEADER + """<xwikidoc reference="XWiki.AdminTranslations">
             <web>XWiki</web>
             <name>AdminTranslations</name>
             <language>fr</language>
@@ -986,7 +989,10 @@ class TestXWikiFullPage(test_monolingual.TestMonolingualStore):
         """Ensure that the XML is correctly formatted during serialization:
         it should not contain objects or attachments tags, and translation should be
         set to 1."""
-        propsource = properties.XWikiPageProperties.XML_HEADER + """<xwikidoc version="1.3" reference="XWiki.AdminTranslations" locale="">
+        ## Real XWiki files are containing multiple attributes on xwikidoc tag: we're not testing it there
+        ## because ElementTree changed its implementation between Python 3.7 and 3.8 which changed the order of output of the attributes
+        ## it makes it more difficult to assert it on multiple versions of Python.
+        propsource = properties.XWikiPageProperties.XML_HEADER + """<xwikidoc reference="XWiki.AdminTranslations">
             <web>XWiki</web>
             <name>AdminTranslations</name>
             <language/>
@@ -1080,7 +1086,7 @@ class TestXWikiFullPage(test_monolingual.TestMonolingualStore):
         generatedcontent = BytesIO()
         propfile.settargetlanguage("fr")
         propfile.serialize(generatedcontent)
-        expected_xml = properties.XWikiPageProperties.XML_HEADER + """<xwikidoc version="1.3" reference="XWiki.AdminTranslations" locale="">
+        expected_xml = properties.XWikiPageProperties.XML_HEADER + """<xwikidoc reference="XWiki.AdminTranslations">
             <web>XWiki</web>
             <name>AdminTranslations</name>
             <language>fr</language>
