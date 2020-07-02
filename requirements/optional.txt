@@ -13,7 +13,7 @@ iniparse==0.5        # INI
 # Format support
 phply==1.2.5         # PHP
 # To provide translations for language names without need for OS package.
-pycountry==19.8.18          # Languages
+pycountry==20.7.2          # Languages
 pyenchant==3.1.1     # spellcheck
 # Windows Resources (rc2po and po2rc)
 pyparsing==2.4.7     # RC
