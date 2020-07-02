@@ -33,6 +33,7 @@ Currently we support:
 - Adobe Flex files
 - MacOS X .strings files
 - Skype .lang files
+- XWiki .properties
 
 The following provides references and descriptions of the various
 dialects supported:
@@ -72,6 +73,13 @@ Flex
 
 Skype
     Skype .lang files seem to be UTF-16 encoded .properties files.
+
+XWiki
+    XWiki translations files are standard Java .properties but with specific escaping
+    support for simple quotes, and support of missing translations.
+    This
+    `XWiki document <https://dev.xwiki.org/xwiki/bin/view/Community/XWiki%20Translations%20Formats/>`_
+    provides the information used to implement the dialect.
 
 A simple summary of what is permissible follows.
 
@@ -126,6 +134,9 @@ from translate.lang import data
 from translate.misc import quote
 from translate.misc.multistring import multistring
 from translate.storage import base
+from copy import deepcopy
+from xml.etree import ElementTree
+from xml.sax.saxutils import escape, unescape
 
 
 labelsuffixes = (".label", ".title")
@@ -258,8 +269,8 @@ class Dialect:
             return quote.javapropertiesencode(string or "")
         return quote.java_utf8_properties_encode(string or "")
 
-    @staticmethod
-    def decode(string):
+    @classmethod
+    def decode(cls, string):
         return quote.propertiesdecode(string)
 
     @classmethod
@@ -371,6 +382,27 @@ class DialectJavaUtf16(DialectJava):
     @classmethod
     def encode(cls, string, encoding=None):
         return quote.java_utf8_properties_encode(string or "")
+
+
+@register_dialect
+class DialectXWiki(DialectJava):
+    """
+    XWiki dialect is mainly a Java properties behaviour but with special handling of
+    simple quotes: they are escaped by doubling them when an argument on the form "{X}"
+    is provided, X being a number.
+    """
+
+    name = "xwiki"
+    default_encoding = "iso-8859-1"
+    delimiters = ["=", ":", " "]
+
+    @classmethod
+    def encode(cls, string, encoding=None):
+        return quote.xwiki_properties_encode(string or "", encoding)
+
+    @classmethod
+    def decode(cls, string):
+        return quote.xwiki_properties_decode(string)
 
 
 @register_dialect
@@ -702,6 +734,14 @@ class proppluralunit(base.TranslationUnit):
     def setid(self, value):
         self.name = value
 
+    @property
+    def missing(self):
+        return self._get_source_unit().missing
+
+    @missing.setter
+    def missing(self, missing):
+        self._get_source_unit().missing = missing
+
     def __str__(self):
         """Convert to a string. Double check that unicode is handled
         somehow here.
@@ -772,6 +812,32 @@ class propunit(base.TranslationUnit):
         # symbol that should end every property sentence
         # (e.g. ";" is required for Mac OS X strings)
         self.out_ending = getattr(self.personality, 'out_ending', '')
+        self.explicitely_missing = False
+        self.output_missing = False
+
+    @property
+    def missing(self):
+        return self.explicitely_missing\
+            or (not bool(self.translation) and not bool(self.source))
+
+    @missing.setter
+    def missing(self, missing):
+        self.explicitely_missing = missing
+
+    @classmethod
+    def get_missing_part(cls):
+        """Return the string representing a missing translation."""
+        return ""
+
+    @classmethod
+    def strip_missing_part(cls, line):
+        """Remove the missing prefix from the line."""
+        return line
+
+    @classmethod
+    def represents_missing(cls, line):
+        """The line represents a missing translation"""
+        return False
 
     @property
     def source(self):
@@ -793,6 +859,7 @@ class propunit(base.TranslationUnit):
         target = data.forceunicode(target)
         self.translation = self.personality.encode(target or "",
                                                    self.encoding)
+        self.explicitely_missing = not bool(target)
 
     @property
     def encoding(self):
@@ -832,14 +899,18 @@ class propunit(base.TranslationUnit):
             wrappers = self.out_delimiter_wrappers
             delimiter = '%s%s%s' % (wrappers, self.delimiter, wrappers)
             ending = self.out_ending
+            missing_prefix = ''
+            if self.missing and self.output_missing:
+                missing_prefix = self.get_missing_part()
             out_dict = {
                 "notes": notes,
+                "missing_prefix": missing_prefix,
                 "key": key,
                 "del": delimiter,
                 "value": value,
                 "ending": ending,
             }
-            return "%(notes)s%(key)s%(del)s%(value)s%(ending)s\n" % out_dict
+            return "%(notes)s%(missing_prefix)s%(key)s%(del)s%(value)s%(ending)s\n" % out_dict
 
     def getlocations(self):
         return [self.name]
@@ -875,6 +946,33 @@ class propunit(base.TranslationUnit):
         self.name = value
 
 
+class xwikiunit(propunit):
+    """
+    Represents an XWiki translation unit. The difference with a propunit is twofold:
+            1. the dialect used is xwiki for simple quote escape handling
+            2. missing translations are output with a dedicated "### Missing: " prefix
+    """
+
+    def __init__(self, source="", personality="xwiki"):
+        super().__init__(source, personality)
+        self.output_missing = True
+
+    @classmethod
+    def get_missing_part(cls):
+        """Return the string representing a missing translation."""
+        return "### Missing: "
+
+    @classmethod
+    def strip_missing_part(cls, line):
+        """Remove the missing prefix from the line."""
+        return line.replace(cls.get_missing_part(), '')
+
+    @classmethod
+    def represents_missing(cls, line):
+        """Return true if the line represents a missing translation"""
+        return line.startswith(cls.get_missing_part())
+
+
 class propfile(base.TranslationStore):
     """this class represents a .properties file, made up of propunits"""
 
@@ -904,7 +1002,7 @@ class propfile(base.TranslationStore):
         self.encoding = encoding
         propsrc = text
 
-        newunit = propunit("", self.personality.name)
+        newunit = self.UnitClass("", self.personality.name)
         inmultilinevalue = False
         inmultilinecomment = False
         was_header = False
@@ -925,11 +1023,12 @@ class propfile(base.TranslationStore):
                     # we're finished, add it to the list...
                     newunit.value = self.personality.value_strip(newunit.value)
                     self.addunit(newunit)
-                    newunit = propunit("", self.personality.name)
+                    newunit = self.UnitClass("", self.personality.name)
             # otherwise, this could be a comment
             # FIXME handle // inline comments
-            elif (inmultilinecomment or is_comment_one_line(line) or
-                  is_comment_start(line) or is_comment_end(line)):
+            elif ((inmultilinecomment or is_comment_one_line(line) or
+                  is_comment_start(line) or is_comment_end(line))
+                  and not self.UnitClass.represents_missing(line)):
                 # add a comment
                 if line not in self.personality.drop_comments:
                     newunit.comments.append(line)
@@ -942,23 +1041,29 @@ class propfile(base.TranslationStore):
                 # avoid adding comment only units
                 if newunit.name:
                     self.addunit(newunit)
-                    newunit = propunit("", self.personality.name)
+                    newunit = self.UnitClass("", self.personality.name)
                 elif not was_header and str(newunit).strip():
                     self.addunit(newunit)
-                    newunit = propunit("", self.personality.name)
+                    newunit = self.UnitClass("", self.personality.name)
                     was_header = True
                 elif newunit.comments:
                     newunit.comments.append("")
             else:
+                ismissing = False
+                if self.UnitClass.represents_missing(line):
+                    line = self.UnitClass.strip_missing_part(line)
+                    ismissing = True
                 newunit.delimiter, delimiter_pos = self.personality.find_delimiter(line)
                 if delimiter_pos == -1:
                     newunit.name = self.personality.key_strip(line)
                     newunit.value = ""
                     newunit.delimiter = ""
+                    newunit.missing = ismissing
                     self.addunit(newunit)
-                    newunit = propunit("", self.personality.name)
+                    newunit = self.UnitClass("", self.personality.name)
                 else:
                     newunit.name = self.personality.key_strip(line[:delimiter_pos])
+                    newunit.missing = ismissing
                     if self.personality.is_line_continuation(
                             line[delimiter_pos+1:].lstrip()):
                         inmultilinevalue = True
@@ -968,7 +1073,7 @@ class propfile(base.TranslationStore):
                     else:
                         newunit.value = self.personality.value_strip(line[delimiter_pos+1:])
                         self.addunit(newunit)
-                        newunit = propunit("", self.personality.name)
+                        newunit = self.UnitClass("", self.personality.name)
         # see if there is a leftover one...
         if inmultilinevalue or len(newunit.comments) > 0:
             self.addunit(newunit)
@@ -999,6 +1104,17 @@ class propfile(base.TranslationStore):
         # Thanks to iterencode, a possible BOM is written only once
         for chunk in iterencode((unit.getoutput() for unit in self.units), self.encoding):
             out.write(chunk)
+
+
+class xwikifile(propfile):
+    Name = "XWiki Properties"
+    Extensions = ['properties']
+    UnitClass = xwikiunit
+
+    def __init__(self, *args, **kwargs):
+        kwargs['personality'] = "xwiki"
+        kwargs['encoding'] = "iso-8859-1"
+        super().__init__(*args, **kwargs)
 
 
 class javafile(propfile):
@@ -1067,3 +1183,120 @@ class joomlafile(propfile):
     def __init__(self, *args, **kwargs):
         kwargs['personality'] = "joomla"
         super().__init__(*args, **kwargs)
+
+
+class XWikiPageProperties(xwikifile):
+    """
+    Represents an XWiki Page containing translation properties as described in
+    https://dev.xwiki.org/xwiki/bin/view/Community/XWiki%20Translations%20Formats/#HXWikiPageProperties
+    """
+
+    Name = "XWiki Page Properties"
+    Extensions = ['xml']
+    XML_HEADER = """<?xml version="1.1" encoding="UTF-8"?>
+
+    <!--
+     * See the NOTICE file distributed with this work for additional
+     * information regarding copyright ownership.
+     *
+     * This is free software; you can redistribute it and/or modify it
+     * under the terms of the GNU Lesser General Public License as
+     * published by the Free Software Foundation; either version 2.1 of
+     * the License, or (at your option) any later version.
+     *
+     * This software is distributed in the hope that it will be useful,
+     * but WITHOUT ANY WARRANTY; without even the implied warranty of
+     * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+     * Lesser General Public License for more details.
+     *
+     * You should have received a copy of the GNU Lesser General Public
+     * License along with this software; if not, write to the Free
+     * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
+     * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
+    -->
+
+    """
+
+    XWIKI_BASIC_XML = """<xwikidoc>
+    <translation>0</translation>
+    <language/>
+    <title/>
+    <content/>
+    </xwikidoc>
+    """
+
+    def __init__(self, *args, **kwargs):
+        kwargs['personality'] = "xwiki"
+        kwargs['encoding'] = "utf-8"
+        self.root = None
+        super(xwikifile, self).__init__(*args, **kwargs)
+
+    def parse(self, propsrc):
+        if propsrc != b"\n":
+            self.root = ElementTree.XML(propsrc)
+            content = "".join(self.root.find("content").itertext())
+            content = unescape(content).encode(self.encoding)
+            super(XWikiPageProperties, self).parse(content)
+
+    def set_xwiki_xml_attributes(self, newroot):
+        for e in newroot.findall("object"):
+            newroot.remove(e)
+        for e in newroot.findall("attachment"):
+            newroot.remove(e)
+        newroot.find("translation").text = "1"
+        newroot.find("language").text = self.gettargetlanguage()
+
+    def write_xwiki_xml(self, newroot, out):
+        xml_content = ElementTree.tostring(newroot,
+                                           encoding=self.encoding,
+                                           method="xml")
+        out.write(self.XML_HEADER.encode(self.encoding))
+        out.write(xml_content)
+        out.write(b'\n')
+
+    def serialize(self, out):
+        if self.root is None:
+            self.root = ElementTree.XML(self.XML_HEADER + self.XWIKI_BASIC_XML)
+        newroot = deepcopy(self.root)
+        newroot.find("content").text = escape(
+            "".join(unit.getoutput() for unit in self.units)).strip()
+        self.set_xwiki_xml_attributes(newroot)
+        self.write_xwiki_xml(newroot, out)
+
+
+class XWikiFullPage(XWikiPageProperties):
+    """
+    Represents a full XWiki Page translation: this file does not contains properties
+    but its whole content needs to be translated.
+    More information on
+    https://dev.xwiki.org/xwiki/bin/view/Community/XWiki%20Translations%20Formats/#HXWikiFullContentTranslation
+    """
+
+    Name = "XWiki Full Page"
+
+    def parse(self, propsrc):
+        if propsrc != b"\n":
+            self.root = ElementTree.XML(propsrc)
+            content = ""\
+                .join(self.root.find("content").itertext())\
+                .replace("\n", "\\n")
+            title = "".join(self.root.find("title").itertext())
+            forparsing = ""
+            if content != "":
+                forparsing += "content={}\n".format(unescape(content))
+            if title != "":
+                forparsing += "title={}\n".format(unescape(title))
+            super(XWikiPageProperties, self).parse(forparsing.encode(self.encoding))
+
+    def serialize(self, out):
+        unit_title = self.findid("title")
+        unit_content = self.findid("content")
+        if self.root is None:
+            self.root = ElementTree.XML(self.XML_HEADER + self.XWIKI_BASIC_XML)
+        newroot = deepcopy(self.root)
+        if unit_title is not None:
+            newroot.find("title").text = unit_title.target
+        if unit_content is not None:
+            newroot.find("content").text = unit_content.target.replace("\\n", "\n")
+        self.set_xwiki_xml_attributes(newroot)
+        self.write_xwiki_xml(newroot, out)

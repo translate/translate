@@ -22,6 +22,7 @@ delimiters
 
 import html.entities
 import logging
+import re
 
 
 def find_all(searchin, substr):
@@ -329,6 +330,15 @@ def java_utf8_properties_encode(source):
     return output
 
 
+def xwiki_properties_encode(source, encoding):
+    if re.search(r"\{[0-9]+\}", source):
+        source = source.replace("'", "''")
+    if encoding == 'utf-8':
+        return java_utf8_properties_encode(source)
+    else:
+        return javapropertiesencode(source)
+
+
 def escapespace(char):
     assert(len(char) == 1)
     if char.isspace():
@@ -457,6 +467,12 @@ def propertiesdecode(source):
         else:
             output += c  # Drop any \ that we don't specifically handle
     return output
+
+
+def xwiki_properties_decode(source):
+    if re.search(r"\{[0-9]+\}", source):
+        source = source.replace("''", "'")
+    return propertiesdecode(source)
 
 
 def findend(string, substring):

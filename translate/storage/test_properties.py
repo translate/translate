@@ -579,3 +579,534 @@ job.log.begin=Starting job of type [{0}]
         print(bytes(propfile))
         print(propsource)
         assert bytes(propfile) == propsource
+
+
+class TestXWiki(test_monolingual.TestMonolingualStore):
+    StoreClass = properties.xwikifile
+
+    def propparse(self, propsource):
+        """helper that parses properties source without requiring files"""
+        dummyfile = BytesIO(propsource.encode() if isinstance(propsource, str) else propsource)
+        propfile = properties.xwikifile(dummyfile)
+        return propfile
+
+    def propregen(self, propsource):
+        """helper that converts properties source to propfile object and back"""
+        return bytes(self.propparse(propsource)).decode('utf-8')
+
+    def test_simpledefinition(self):
+        """checks that a simple properties definition is parsed correctly"""
+        propsource = 'test_me=I can code!'
+        propfile = self.propparse(propsource)
+        assert len(propfile.units) == 1
+        propunit = propfile.units[0]
+        assert propunit.name == "test_me"
+        assert propunit.source == "I can code!"
+        assert not propunit.missing
+
+    def test_missing_definition(self):
+        """checks that a simple missing properties definition is parsed correctly"""
+        propsource = '### Missing: test_me=I can code!'
+        propfile = self.propparse(propsource)
+        assert len(propfile.units) == 1
+        propunit = propfile.units[0]
+        assert propunit.name == "test_me"
+        assert propunit.source == "I can code!"
+        assert propunit.missing
+        propunit.target = ""
+        assert propunit.missing
+        propunit.target = "Je peux coder"
+        assert not propunit.missing
+        # Check encoding
+        propunit.target = "تىپتىكى خىزمەتنى باشلاش"
+        expected_content = "test_me=\\u062A\\u0649\\u067E\\u062A\\u0649\\u0643\\u0649 " \
+                           "\\u062E\\u0649\\u0632\\u0645\\u06D5\\u062A\\u0646\\u0649 " \
+                           "\\u0628\\u0627\\u0634\\u0644\\u0627\\u0634"
+
+        generatedcontent = BytesIO()
+        propfile.serialize(generatedcontent)
+        assert generatedcontent.getvalue().decode(propfile.encoding) == expected_content + "\n"
+
+    def test_missing_definition_source(self):
+        propsource = '### Missing: test_me=I can code!'
+        propgen = self.propregen(propsource)
+        assert propsource + '\n' == propgen
+
+    def test_definition_with_simple_quote(self):
+        propsource = 'test_me=A \'quoted\' translation'
+        propfile = self.propparse(propsource)
+        assert len(propfile.units) == 1
+        propunit = propfile.units[0]
+        assert propunit.name == "test_me"
+        assert propunit.source == "A 'quoted' translation"
+        assert not propunit.missing
+        assert propunit.getoutput() == propsource + "\n"
+
+    def test_definition_with_simple_quote_and_argument(self):
+        propsource = "test_me=A ''quoted'' translation for {0}"
+        propfile = self.propparse(propsource)
+        assert len(propfile.units) == 1
+        propunit = propfile.units[0]
+        assert propunit.name == "test_me"
+        assert propunit.source == "A 'quoted' translation for {0}"
+        assert not propunit.missing
+        assert propunit.getoutput() == propsource + "\n"
+
+    def test_header_preserved(self):
+        propsource = """# -----\n# Header\n# -----\n\ntest_me=I can code"""
+        propgen = self.propregen(propsource)
+        assert propsource + '\n' == propgen
+
+
+class TestXWikiPageProperties(test_monolingual.TestMonolingualStore):
+    StoreClass = properties.XWikiPageProperties
+    FILE_SCHEME = properties.XWikiPageProperties.XML_HEADER + """<xwikidoc>
+    <translation>1</translation>
+    <language>%(language)s</language>
+    <title />
+    <content>%(content)s</content>
+    </xwikidoc>"""
+
+    def getcontent(self, content, language='en'):
+        return self.FILE_SCHEME % {'content': content, 'language': language}
+
+    def propparse(self, propsource):
+        """helper that parses properties source without requiring files"""
+        dummyfile = BytesIO(propsource.encode() if isinstance(propsource, str) else propsource)
+        propfile = properties.XWikiPageProperties(dummyfile)
+        propfile.settargetlanguage('en')
+        return propfile
+
+    def propregen(self, propsource):
+        """helper that converts properties source to propfile object and back"""
+        return bytes(self.propparse(propsource)).decode('utf-8')
+
+    def test_simpledefinition(self):
+        """checks that a simple properties definition is parsed correctly"""
+        propsource = self.getcontent('test_me=I can code!')
+        propfile = self.propparse(propsource)
+        assert len(propfile.units) == 1
+        propunit = propfile.units[0]
+        assert propunit.name == "test_me"
+        assert propunit.source == "I can code!"
+        assert not propunit.missing
+        generatedcontent = BytesIO()
+        propfile.serialize(generatedcontent)
+        assert generatedcontent.getvalue().decode(propfile.encoding) == propsource + "\n"
+        # check translation and language attribute
+        propfile.settargetlanguage('fr')
+        propunit.target = "Je peux coder"
+        expectedcontent = self.getcontent("test_me=Je peux coder", "fr")
+        generatedcontent = BytesIO()
+        propfile.serialize(generatedcontent)
+        assert generatedcontent.getvalue().decode(propfile.encoding) == expectedcontent + "\n"
+
+    def test_missing_definition(self):
+        """checks that a simple missing properties definition is parsed correctly"""
+        propsource = self.getcontent('### Missing: test_me=I can code!')
+        propfile = self.propparse(propsource)
+        assert len(propfile.units) == 1
+        propunit = propfile.units[0]
+        assert propunit.name == "test_me"
+        assert propunit.source == "I can code!"
+        assert propunit.missing
+        propunit.target = ""
+        assert propunit.missing
+        propunit.target = "Je peux coder"
+        assert not propunit.missing
+        propunit.target = "تىپتىكى خىزمەتنى باشلاش"
+        expected_content = self.getcontent("test_me=تىپتىكى خىزمەتنى باشلاش")
+        generatedcontent = BytesIO()
+        propfile.serialize(generatedcontent)
+        assert generatedcontent.getvalue().decode(propfile.encoding) == expected_content + "\n"
+
+    def test_missing_definition_source(self):
+        propsource = self.getcontent('### Missing: test_me=I can code!')
+        propgen = self.propregen(propsource)
+        assert propsource + '\n' == propgen
+
+    def test_definition_with_simple_quote(self):
+        propsource = self.getcontent('test_me=A \'quoted\' translation')
+        propfile = self.propparse(propsource)
+        assert len(propfile.units) == 1
+        propunit = propfile.units[0]
+        assert propunit.name == "test_me"
+        assert propunit.source == "A 'quoted' translation"
+        assert not propunit.missing
+        generatedcontent = BytesIO()
+        propfile.serialize(generatedcontent)
+        assert generatedcontent.getvalue().decode(propfile.encoding) == propsource + "\n"
+
+    def test_definition_with_simple_quote_and_argument(self):
+        propsource = self.getcontent("test_me=A ''quoted'' translation for {0}")
+        propfile = self.propparse(propsource)
+        assert len(propfile.units) == 1
+        propunit = propfile.units[0]
+        assert propunit.name == "test_me"
+        assert propunit.source == "A 'quoted' translation for {0}"
+        assert not propunit.missing
+        generatedcontent = BytesIO()
+        propfile.serialize(generatedcontent)
+        assert generatedcontent.getvalue().decode(propfile.encoding) == propsource + "\n"
+
+    def test_cleaning_attributes(self):
+        """Ensure that the XML is correctly formatted during serialization:
+        it should not contain objects or attachments tags, and translation should be
+        set to 1."""
+        ## Real XWiki files are containing multiple attributes on xwikidoc tag: we're not testing it there
+        ## because ElementTree changed its implementation between Python 3.7 and 3.8 which changed the order of output of the attributes
+        ## it makes it more difficult to assert it on multiple versions of Python.
+        propsource = properties.XWikiPageProperties.XML_HEADER + """<xwikidoc reference="XWiki.AdminTranslations">
+            <web>XWiki</web>
+            <name>AdminTranslations</name>
+            <language/>
+            <defaultLanguage>en</defaultLanguage>
+            <translation>0</translation>
+            <creator>xwiki:XWiki.Admin</creator>
+            <parent>XWiki.WebHome</parent>
+            <author>xwiki:XWiki.Admin</author>
+            <contentAuthor>xwiki:XWiki.Admin</contentAuthor>
+            <version>1.1</version>
+            <title>AdminTranslations</title>
+            <comment/>
+            <minorEdit>false</minorEdit>
+            <syntaxId>plain/1.0</syntaxId>
+            <hidden>true</hidden>
+            <content># Users Section
+            test_me=I can code!
+            </content>
+            <object>
+                <name>XWiki.AdminTranslations</name>
+                <number>0</number>
+                <className>XWiki.TranslationDocumentClass</className>
+                <guid>554b2ee4-98dc-48ef-b436-ef0cf7d38c4f</guid>
+                <class>
+                  <name>XWiki.TranslationDocumentClass</name>
+                  <customClass/>
+                  <customMapping/>
+                  <defaultViewSheet/>
+                  <defaultEditSheet/>
+                  <defaultWeb/>
+                  <nameField/>
+                  <validationScript/>
+                  <scope>
+                    <cache>0</cache>
+                    <disabled>0</disabled>
+                    <displayType>select</displayType>
+                    <freeText>forbidden</freeText>
+                    <multiSelect>0</multiSelect>
+                    <name>scope</name>
+                    <number>1</number>
+                    <prettyName>Scope</prettyName>
+                    <relationalStorage>0</relationalStorage>
+                    <separator> </separator>
+                    <separators>|, </separators>
+                    <size>1</size>
+                    <unmodifiable>0</unmodifiable>
+                    <values>GLOBAL|WIKI|USER|ON_DEMAND</values>
+                    <classType>com.xpn.xwiki.objects.classes.StaticListClass</classType>
+                  </scope>
+                </class>
+                <property>
+                  <scope>WIKI</scope>
+                </property>
+            </object>
+            <attachment>
+                <filename>XWikiLogo.png</filename>
+                <mimetype>image/png</mimetype>
+                <filesize>1390</filesize>
+                <author>xwiki:XWiki.Admin</author>
+                <version>1.1</version>
+                <comment/>
+                <content>something=toto</content>
+            </attachment>
+        </xwikidoc>"""
+        propfile = self.propparse(propsource)
+        assert len(propfile.units) == 1
+        propunit = propfile.units[0]
+        propfile.settargetlanguage("fr")
+        assert propunit.name == "test_me"
+        assert propunit.source == "I can code!"
+        assert not propunit.missing
+        propunit.target = "Je peux coder !"
+        generatedcontent = BytesIO()
+        propfile.serialize(generatedcontent)
+        expected_xml = properties.XWikiPageProperties.XML_HEADER + """<xwikidoc reference="XWiki.AdminTranslations">
+            <web>XWiki</web>
+            <name>AdminTranslations</name>
+            <language>fr</language>
+            <defaultLanguage>en</defaultLanguage>
+            <translation>1</translation>
+            <creator>xwiki:XWiki.Admin</creator>
+            <parent>XWiki.WebHome</parent>
+            <author>xwiki:XWiki.Admin</author>
+            <contentAuthor>xwiki:XWiki.Admin</contentAuthor>
+            <version>1.1</version>
+            <title>AdminTranslations</title>
+            <comment />
+            <minorEdit>false</minorEdit>
+            <syntaxId>plain/1.0</syntaxId>
+            <hidden>true</hidden>
+            <content># Users Section
+test_me=Je peux coder !</content>
+            </xwikidoc>"""
+        assert generatedcontent.getvalue().decode(propfile.encoding) == expected_xml + "\n"
+
+
+class TestXWikiFullPage(test_monolingual.TestMonolingualStore):
+    StoreClass = properties.XWikiFullPage
+    FILE_SCHEME = properties.XWikiPageProperties.XML_HEADER + """<xwikidoc>
+    <translation>1</translation>
+    <language>%(language)s</language>
+    <title>%(title)s</title>
+    <content>%(content)s</content>
+    </xwikidoc>"""
+
+    def getcontent(self, content, title, language='en'):
+        return self.FILE_SCHEME % {'content': content, 'title': title, 'language': language}
+
+    def propparse(self, propsource):
+        """helper that parses properties source without requiring files"""
+        dummyfile = BytesIO(
+            propsource.encode() if isinstance(propsource, str) else propsource)
+        propfile = properties.XWikiFullPage(dummyfile)
+        propfile.settargetlanguage('en')
+        return propfile
+
+    def propregen(self, propsource):
+        """helper that converts properties source to propfile object and back"""
+        return bytes(self.propparse(propsource)).decode('utf-8')
+
+    def test_simpledefinition(self):
+        """checks that a simple properties definition is parsed correctly"""
+        propsource = self.getcontent('I can code!', 'This is a title')
+        propfile = self.propparse(propsource)
+        assert len(propfile.units) == 2
+        propunit = propfile.units[0]
+        assert propunit.name == "content"
+        assert propunit.source == "I can code!"
+        assert not propunit.missing
+        propunit.target = "A new code!"
+        propunit = propfile.units[1]
+        assert propunit.name == "title"
+        assert propunit.source == "This is a title"
+        assert not propunit.missing
+        # Check encoding and language attribute
+        propfile.settargetlanguage('fr')
+        propunit.target = "تىپتىكى خىزمەتنى باشلاش"
+        expected_content = self.getcontent("A new code!", "تىپتىكى خىزمەتنى باشلاش", "fr")
+        generatedcontent = BytesIO()
+        propfile.serialize(generatedcontent)
+        assert generatedcontent.getvalue().decode(propfile.encoding) == expected_content + "\n"
+
+    def test_parse(self):
+        """Tests converting to a string and parsing the resulting string.
+        In case of an XWiki Full Page new units are ignored
+        unless they are using 'content' or 'title' ids.
+        """
+        store = self.StoreClass()
+        unit1 = store.addsourceunit("Test String")
+        unit1.target = "Test String"
+        unit2 = store.addsourceunit("Test String 2")
+        unit2.target = "Test String 2"
+        newstore = self.reparse(store)
+        assert 0 == len(newstore.units)
+        unit3 = properties.xwikiunit("Some content")
+        unit3.name = "content"
+        unit3.target = "Some content"
+        store.addunit(unit3)
+        unit4 = properties.xwikiunit("A title")
+        unit4.name = "title"
+        unit4.target = "Specific title"
+        store.addunit(unit4)
+        store.makeindex()
+        newstore = self.reparse(store)
+        assert 2 == len(newstore.units)
+        assert newstore.units[0]._get_source_unit().name == store.units[2].name
+        assert newstore.units[0]._get_source_unit().source == store.units[2].target
+        assert newstore.units[1]._get_source_unit().name == store.units[3].name
+        assert newstore.units[1]._get_source_unit().source == store.units[3].target
+
+    def test_files(self):
+        """Tests saving to and loading from files
+        In case of an XWiki Full Page new units are ignored."""
+        store = self.StoreClass()
+        unit1 = store.addsourceunit("Test String")
+        unit1.target = "Test String"
+        unit2 = store.addsourceunit("Test String 2")
+        unit2.target = "Test String 2"
+        store.savefile(self.filename)
+        newstore = self.StoreClass.parsefile(self.filename)
+        assert 0 == len(newstore.units)
+        unit3 = properties.xwikiunit("Some content")
+        unit3.name = "content"
+        unit3.target = "Some content"
+        store.addunit(unit3)
+        unit4 = properties.xwikiunit("A title")
+        unit4.name = "title"
+        unit4.target = "Specific title"
+        store.addunit(unit4)
+        store.makeindex()
+        store.savefile(self.filename)
+        newstore = self.StoreClass.parsefile(self.filename)
+        assert 2 == len(newstore.units)
+        assert newstore.units[0]._get_source_unit().name == store.units[2].name
+        assert newstore.units[0]._get_source_unit().source == store.units[2].target
+        assert newstore.units[1]._get_source_unit().name == store.units[3].name
+        assert newstore.units[1]._get_source_unit().source == store.units[3].target
+
+    def test_save(self):
+        """Tests that we can save directly back to the original file.
+        In case of an XWiki Full Page new units are ignored."""
+        store = self.StoreClass()
+        unit1 = store.addsourceunit("Test String")
+        unit1.target = "Test String"
+        unit2 = store.addsourceunit("Test String 2")
+        unit2.target = "Test String 2"
+        store.savefile(self.filename)
+        store.save()
+        newstore = self.StoreClass.parsefile(self.filename)
+        assert 0 == len(newstore.units)
+        unit3 = properties.xwikiunit("Some content")
+        unit3.name = "content"
+        unit3.target = "Some content"
+        store.addunit(unit3)
+        unit4 = properties.xwikiunit("A title")
+        unit4.name = "title"
+        unit4.target = "Specific title"
+        store.addunit(unit4)
+        store.makeindex()
+        store.savefile(self.filename)
+        store.save()
+        newstore = self.StoreClass.parsefile(self.filename)
+        assert 2 == len(newstore.units)
+        assert newstore.units[0]._get_source_unit().name == store.units[2].name
+        assert newstore.units[0]._get_source_unit().source == store.units[2].target
+        assert newstore.units[1]._get_source_unit().name == store.units[3].name
+        assert newstore.units[1]._get_source_unit().source == store.units[3].target
+
+    def test_cleaning_attributes(self):
+        """Ensure that the XML is correctly formatted during serialization:
+        it should not contain objects or attachments tags, and translation should be
+        set to 1."""
+        ## Real XWiki files are containing multiple attributes on xwikidoc tag: we're not testing it there
+        ## because ElementTree changed its implementation between Python 3.7 and 3.8 which changed the order of output of the attributes
+        ## it makes it more difficult to assert it on multiple versions of Python.
+        propsource = properties.XWikiPageProperties.XML_HEADER + """<xwikidoc reference="XWiki.AdminTranslations">
+            <web>XWiki</web>
+            <name>AdminTranslations</name>
+            <language/>
+            <defaultLanguage>en</defaultLanguage>
+            <translation>0</translation>
+            <creator>xwiki:XWiki.Admin</creator>
+            <parent>XWiki.WebHome</parent>
+            <author>xwiki:XWiki.Admin</author>
+            <contentAuthor>xwiki:XWiki.Admin</contentAuthor>
+            <version>1.1</version>
+            <title>Some page title</title>
+            <comment/>
+            <minorEdit>false</minorEdit>
+            <syntaxId>plain/1.0</syntaxId>
+            <hidden>true</hidden>
+            <content>A Lorem Ipsum or whatever might be contained there.
+
+            == A wiki title ==
+
+            Some other stuff.
+            </content>
+            <object>
+                <name>XWiki.AdminTranslations</name>
+                <number>0</number>
+                <className>XWiki.TranslationDocumentClass</className>
+                <guid>554b2ee4-98dc-48ef-b436-ef0cf7d38c4f</guid>
+                <class>
+                  <name>XWiki.TranslationDocumentClass</name>
+                  <customClass/>
+                  <customMapping/>
+                  <defaultViewSheet/>
+                  <defaultEditSheet/>
+                  <defaultWeb/>
+                  <nameField/>
+                  <validationScript/>
+                  <scope>
+                    <cache>0</cache>
+                    <disabled>0</disabled>
+                    <displayType>select</displayType>
+                    <freeText>forbidden</freeText>
+                    <multiSelect>0</multiSelect>
+                    <name>scope</name>
+                    <number>1</number>
+                    <prettyName>Scope</prettyName>
+                    <relationalStorage>0</relationalStorage>
+                    <separator> </separator>
+                    <separators>|, </separators>
+                    <size>1</size>
+                    <unmodifiable>0</unmodifiable>
+                    <values>GLOBAL|WIKI|USER|ON_DEMAND</values>
+                    <classType>com.xpn.xwiki.objects.classes.StaticListClass</classType>
+                  </scope>
+                </class>
+                <property>
+                  <scope>WIKI</scope>
+                </property>
+            </object>
+            <attachment>
+                <filename>XWikiLogo.png</filename>
+                <mimetype>image/png</mimetype>
+                <filesize>1390</filesize>
+                <author>xwiki:XWiki.Admin</author>
+                <version>1.1</version>
+                <comment/>
+                <content>something=toto</content>
+            </attachment>
+        </xwikidoc>"""
+        propfile = self.propparse(propsource)
+        assert len(propfile.units) == 2
+        propunit = propfile.units[0]
+        assert propunit.name == "content"
+        assert propunit.source == """A Lorem Ipsum or whatever might be contained there.
+
+            == A wiki title ==
+
+            Some other stuff.
+            """
+        assert not propunit.missing
+        propunit.target = """Un Lorem Ipsum ou quoi que ce soit qui puisse être là.
+
+            == Un titre de wiki ==
+
+            D'autres trucs.
+            """
+        propunit = propfile.units[1]
+        assert propunit.name == "title"
+        assert propunit.source == "Some page title"
+        assert not propunit.missing
+        propunit.target = "Un titre de page"
+
+        generatedcontent = BytesIO()
+        propfile.settargetlanguage("fr")
+        propfile.serialize(generatedcontent)
+        expected_xml = properties.XWikiPageProperties.XML_HEADER + """<xwikidoc reference="XWiki.AdminTranslations">
+            <web>XWiki</web>
+            <name>AdminTranslations</name>
+            <language>fr</language>
+            <defaultLanguage>en</defaultLanguage>
+            <translation>1</translation>
+            <creator>xwiki:XWiki.Admin</creator>
+            <parent>XWiki.WebHome</parent>
+            <author>xwiki:XWiki.Admin</author>
+            <contentAuthor>xwiki:XWiki.Admin</contentAuthor>
+            <version>1.1</version>
+            <title>Un titre de page</title>
+            <comment />
+            <minorEdit>false</minorEdit>
+            <syntaxId>plain/1.0</syntaxId>
+            <hidden>true</hidden>
+            <content>Un Lorem Ipsum ou quoi que ce soit qui puisse être là.
+
+            == Un titre de wiki ==
+
+            D'autres trucs.
+            </content>
+            </xwikidoc>"""
+        assert generatedcontent.getvalue().decode(propfile.encoding) == expected_xml + "\n"
