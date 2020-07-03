@@ -668,7 +668,7 @@ class TestXWikiPageProperties(test_monolingual.TestMonolingualStore):
     </xwikidoc>"""
 
     def getcontent(self, content, language='en'):
-        return self.FILE_SCHEME % {'content': content, 'language': language}
+        return self.FILE_SCHEME % {'content': content + "\n", 'language': language}
 
     def propparse(self, propsource):
         """helper that parses properties source without requiring files"""
@@ -848,7 +848,8 @@ class TestXWikiPageProperties(test_monolingual.TestMonolingualStore):
             <syntaxId>plain/1.0</syntaxId>
             <hidden>true</hidden>
             <content># Users Section
-test_me=Je peux coder !</content>
+test_me=Je peux coder !
+</content>
             </xwikidoc>"""
         assert generatedcontent.getvalue().decode(propfile.encoding) == expected_xml + "\n"
 
