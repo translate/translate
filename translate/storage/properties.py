@@ -1258,8 +1258,10 @@ class XWikiPageProperties(xwikifile):
         if self.root is None:
             self.root = ElementTree.XML(self.XML_HEADER + self.XWIKI_BASIC_XML)
         newroot = deepcopy(self.root)
+        # We add a line break to ensure to have a line break before
+        # closing of content tag.
         newroot.find("content").text = escape(
-            "".join(unit.getoutput() for unit in self.units)).strip()
+            "".join(unit.getoutput() for unit in self.units)).strip() + "\n"
         self.set_xwiki_xml_attributes(newroot)
         self.write_xwiki_xml(newroot, out)
 
