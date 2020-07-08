@@ -177,13 +177,13 @@ class TestAndroidResourceUnit(test_monolingual.TestMonolingualUnit):
 
     def test_escape_html_double_space(self):
         string = '<b>html code \'to  escape\'</b> some \'here\''
-        xml = ('<string name="teststring"><b>"html code \\\'to  escape\\\'"</b> some \\\'here\\\''
+        xml = ('<string name="teststring"><b>html code \\\'to \\u0020escape\\\'</b> some \\\'here\\\''
                '</string>\n')
         self.__check_escape(string, xml)
 
     def test_escape_html_deep_double_space(self):
         string = '<b>html code \'to  <i>escape</i>\'</b> some \'here\''
-        xml = ('<string name="teststring"><b>"html code \\\'to  "<i>escape</i>\\\'</b> some \\\'here\\\''
+        xml = ('<string name="teststring"><b>html code \\\'to \\u0020<i>escape</i>\\\'</b> some \\\'here\\\''
                '</string>\n')
         self.__check_escape(string, xml)
 
@@ -372,7 +372,7 @@ class TestAndroidResourceUnit(test_monolingual.TestMonolingualUnit):
 
     def test_parse_html_double_space_quoted(self):
         string = '<b>html code \'to  escape\'</b> some \'here\''
-        xml = ('<string name="teststring"><b>"html code \'to  escape\'"</b>" some \'here\'"'
+        xml = ('<string name="teststring"><b>html code \'to \\u0020escape\'</b> some \'here\''
                '</string>\n')
         self.__check_parse(string, xml)
 
@@ -597,3 +597,16 @@ class TestAndroidResourceFile(test_monolingual.TestMonolingualStore):
             '<xliff:g xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2" id="count">%d</xliff:g> dnu',
         ])
         assert bytes(store) == content
+
+    def test_markup_quotes_set(self):
+        template = '''<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="id">Test</string>
+</resources>'''
+        content = template.encode()
+        newcontent = template.replace('>Test<', '>Test <b>string</b> with \\u0020space<')
+        store = self.StoreClass()
+        store.parse(content)
+        assert bytes(store) == content
+        store.units[0].target = 'Test <b>string</b> with  space'
+        assert bytes(store).decode() == newcontent
