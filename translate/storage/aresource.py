@@ -166,8 +166,14 @@ class AndroidResourceUnit(base.TranslationUnit):
                         # in the clauses below without issue.
                         pass
                     elif c == 'n' or c == 'N':
-                        text[i-1:i+1] = '\n'  # an actual newline
-                        i -= 1
+                        # Remove whitespace just before newline. Most likely this is result of
+                        # having real newline in the XML in front of \n.
+                        if i >= 2 and text[i-2] == " ":
+                            offset = 2
+                        else:
+                            offset = 1
+                        text[i - offset:i + 1] = '\n'  # an actual newline
+                        i -= offset
                     elif c == 't' or c == 'T':
                         text[i-1:i+1] = '\t'  # an actual tab
                         i -= 1

@@ -194,6 +194,15 @@ class TestAndroidResourceUnit(test_monolingual.TestMonolingualUnit):
                '</string>\n')
         self.__check_escape(string, xml)
 
+    def test_escape_quoted_newlines(self):
+        self.__check_escape(
+            "\n\nstring with newlines",
+            r"""<string name="teststring">"
+\n
+\nstring with newlines"</string>
+"""
+        )
+
     ############################ Check string parse ###########################
 
     def test_parse_message_with_newline(self):
@@ -202,7 +211,7 @@ class TestAndroidResourceUnit(test_monolingual.TestMonolingualUnit):
         self.__check_parse(string, xml)
 
     def test_parse_message_with_newline_in_xml(self):
-        string = 'message \nwith\n newline\n in xml'
+        string = 'message\nwith\n newline\n in xml'
         xml = ('<string name="teststring">message\n\\nwith\\n\nnewline\\n\nin xml'
                '</string>\n')
         self.__check_parse(string, xml)
@@ -231,6 +240,15 @@ class TestAndroidResourceUnit(test_monolingual.TestMonolingualUnit):
         string = ' leading space'
         xml = '<string name="teststring">" leading space"</string>\n'
         self.__check_parse(string, xml)
+
+    def test_parse_quoted_newlines(self):
+        self.__check_parse(
+            "\n\nstring with newlines",
+            r"""<string name="teststring">"
+\n
+\nstring with newlines"</string>
+"""
+        )
 
     def test_parse_xml_entities(self):
         string = '>xml&entities'
