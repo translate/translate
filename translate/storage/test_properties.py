@@ -1,4 +1,4 @@
-
+import sys
 from io import BytesIO
 
 from pytest import raises
@@ -665,7 +665,7 @@ class TestXWiki(test_monolingual.TestMonolingualStore):
 
 class TestXWikiPageProperties(test_monolingual.TestMonolingualStore):
     StoreClass = properties.XWikiPageProperties
-    FILE_SCHEME = properties.XWikiPageProperties.XML_HEADER + """<xwikidoc>
+    FILE_SCHEME = properties.XWikiPageProperties.XML_HEADER + """<xwikidoc locale="%(language)s">
     <translation>1</translation>
     <language>%(language)s</language>
     <title />
@@ -847,7 +847,12 @@ class TestXWikiPageProperties(test_monolingual.TestMonolingualStore):
         propunit.target = "Je peux coder !"
         generatedcontent = BytesIO()
         propfile.serialize(generatedcontent)
-        expected_xml = properties.XWikiPageProperties.XML_HEADER + """<xwikidoc reference="XWiki.AdminTranslations">
+        ## ElementTree changed the way to process the attribute between Python 3.7 and 3.8
+        if sys.version_info.minor >= 8:
+            xml_open = "<xwikidoc reference=\"XWiki.AdminTranslations\" locale=\"fr\">"
+        else:
+            xml_open = "<xwikidoc locale=\"fr\" reference=\"XWiki.AdminTranslations\">"
+        expected_xml = properties.XWikiPageProperties.XML_HEADER + xml_open + """
             <web>XWiki</web>
             <name>AdminTranslations</name>
             <language>fr</language>
@@ -873,7 +878,7 @@ test_me=Je peux coder !
 
 class TestXWikiFullPage(test_monolingual.TestMonolingualStore):
     StoreClass = properties.XWikiFullPage
-    FILE_SCHEME = properties.XWikiPageProperties.XML_HEADER + """<xwikidoc>
+    FILE_SCHEME = properties.XWikiPageProperties.XML_HEADER + """<xwikidoc locale="%(language)s">
     <translation>1</translation>
     <language>%(language)s</language>
     <title>%(title)s</title>
@@ -1104,7 +1109,13 @@ class TestXWikiFullPage(test_monolingual.TestMonolingualStore):
         generatedcontent = BytesIO()
         propfile.settargetlanguage("fr")
         propfile.serialize(generatedcontent)
-        expected_xml = properties.XWikiPageProperties.XML_HEADER + """<xwikidoc reference="XWiki.AdminTranslations">
+
+        ## ElementTree changed the way to process the attribute between Python 3.7 and 3.8
+        if sys.version_info.minor >= 8:
+            xml_open = "<xwikidoc reference=\"XWiki.AdminTranslations\" locale=\"fr\">"
+        else:
+            xml_open = "<xwikidoc locale=\"fr\" reference=\"XWiki.AdminTranslations\">"
+        expected_xml = properties.XWikiPageProperties.XML_HEADER + xml_open + """
             <web>XWiki</web>
             <name>AdminTranslations</name>
             <language>fr</language>

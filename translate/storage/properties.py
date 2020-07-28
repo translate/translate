@@ -1231,12 +1231,21 @@ class XWikiPageProperties(xwikifile):
         self.root = None
         super(xwikifile, self).__init__(*args, **kwargs)
 
+    def extract_language(self):
+        language_node = self.root.find("language")
+        if language_node is not None and language_node.text:
+            self.setsourcelanguage(language_node.text)
+        else:
+            language_node = self.root.find("defaultLanguage")
+            if language_node is not None and language_node.text:
+                self.setsourcelanguage(language_node.text)
+
     def parse(self, propsrc):
         if propsrc != b"\n":
             self.root = ElementTree.XML(propsrc)
             content = "".join(self.root.find("content").itertext())
             content = unescape(content).encode(self.encoding)
-            self.setsourcelanguage(self.root.find("language").text)
+            self.extract_language()
             super(XWikiPageProperties, self).parse(content)
 
     def set_xwiki_xml_attributes(self, newroot):
@@ -1245,10 +1254,15 @@ class XWikiPageProperties(xwikifile):
         for e in newroot.findall("attachment"):
             newroot.remove(e)
         newroot.find("translation").text = "1"
+        language_node = newroot.find("language")
+
         if self.gettargetlanguage():
-            newroot.find("language").text = self.gettargetlanguage()
+            language_node.text = self.gettargetlanguage()
         else:
-            newroot.find("language").text = self.getsourcelanguage()
+            language_node.text = self.getsourcelanguage()
+
+        if language_node.text:
+            newroot.set("locale", language_node.text)
 
     def write_xwiki_xml(self, newroot, out):
         xml_content = ElementTree.tostring(newroot,
@@ -1292,7 +1306,13 @@ class XWikiFullPage(XWikiPageProperties):
                 forparsing += "content={}\n".format(unescape(content))
             if title != "":
                 forparsing += "title={}\n".format(unescape(title))
+            self.extract_language()
             super(XWikiPageProperties, self).parse(forparsing.encode(self.encoding))
+
+    def output_unit(self, unit):
+        value = unit.personality.encode(unit.source, unit.encoding)
+        translation = unit.personality.encode(unit.target, unit.encoding)
+        return translation or value
 
     def serialize(self, out):
         unit_title = self.findid("title")
@@ -1301,8 +1321,9 @@ class XWikiFullPage(XWikiPageProperties):
             self.root = ElementTree.XML(self.XML_HEADER + self.XWIKI_BASIC_XML)
         newroot = deepcopy(self.root)
         if unit_title is not None:
-            newroot.find("title").text = unit_title.target
+            newroot.find("title").text = self.output_unit(unit_title)
         if unit_content is not None:
-            newroot.find("content").text = unit_content.target.replace("\\n", "\n")
+            newroot.find("content").text = self.output_unit(unit_content) \
+                .replace("\\n", "\n")
         self.set_xwiki_xml_attributes(newroot)
         self.write_xwiki_xml(newroot, out)
