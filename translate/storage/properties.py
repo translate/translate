@@ -1195,27 +1195,27 @@ class XWikiPageProperties(xwikifile):
     Extensions = ['xml']
     XML_HEADER = """<?xml version="1.1" encoding="UTF-8"?>
 
-    <!--
-     * See the NOTICE file distributed with this work for additional
-     * information regarding copyright ownership.
-     *
-     * This is free software; you can redistribute it and/or modify it
-     * under the terms of the GNU Lesser General Public License as
-     * published by the Free Software Foundation; either version 2.1 of
-     * the License, or (at your option) any later version.
-     *
-     * This software is distributed in the hope that it will be useful,
-     * but WITHOUT ANY WARRANTY; without even the implied warranty of
-     * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
-     * Lesser General Public License for more details.
-     *
-     * You should have received a copy of the GNU Lesser General Public
-     * License along with this software; if not, write to the Free
-     * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
-     * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
-    -->
+<!--
+ * See the NOTICE file distributed with this work for additional
+ * information regarding copyright ownership.
+ *
+ * This is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation; either version 2.1 of
+ * the License, or (at your option) any later version.
+ *
+ * This software is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this software; if not, write to the Free
+ * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
+ * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
+-->
 
-    """
+"""
 
     XWIKI_BASIC_XML = """<xwikidoc>
     <translation>0</translation>
@@ -1236,6 +1236,7 @@ class XWikiPageProperties(xwikifile):
             self.root = ElementTree.XML(propsrc)
             content = "".join(self.root.find("content").itertext())
             content = unescape(content).encode(self.encoding)
+            self.setsourcelanguage(self.root.find("language").text)
             super(XWikiPageProperties, self).parse(content)
 
     def set_xwiki_xml_attributes(self, newroot):
@@ -1244,7 +1245,10 @@ class XWikiPageProperties(xwikifile):
         for e in newroot.findall("attachment"):
             newroot.remove(e)
         newroot.find("translation").text = "1"
-        newroot.find("language").text = self.gettargetlanguage()
+        if self.gettargetlanguage():
+            newroot.find("language").text = self.gettargetlanguage()
+        else:
+            newroot.find("language").text = self.getsourcelanguage()
 
     def write_xwiki_xml(self, newroot, out):
         xml_content = ElementTree.tostring(newroot,
