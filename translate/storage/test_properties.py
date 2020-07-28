@@ -655,7 +655,12 @@ class TestXWiki(test_monolingual.TestMonolingualStore):
     def test_header_preserved(self):
         propsource = """# -----\n# Header\n# -----\n\ntest_me=I can code"""
         propgen = self.propregen(propsource)
-        assert propsource + '\n' == propgen
+        assert propgen == propsource + '\n'
+
+    def test_blank_line_before_comment_preserved(self):
+        propsource = """\n# My comment\ntest_me=I can code"""
+        propgen = self.propregen(propsource)
+        assert propgen == propsource + '\n'
 
 
 class TestXWikiPageProperties(test_monolingual.TestMonolingualStore):

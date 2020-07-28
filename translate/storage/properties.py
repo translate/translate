@@ -1046,7 +1046,7 @@ class propfile(base.TranslationStore):
                     self.addunit(newunit)
                     newunit = self.UnitClass("", self.personality.name)
                     was_header = True
-                elif newunit.comments:
+                else:
                     newunit.comments.append("")
             else:
                 ismissing = False
@@ -1075,7 +1075,7 @@ class propfile(base.TranslationStore):
                         self.addunit(newunit)
                         newunit = self.UnitClass("", self.personality.name)
         # see if there is a leftover one...
-        if inmultilinevalue or len(newunit.comments) > 0:
+        if inmultilinevalue or len(newunit.comments) > 0 and not(len(newunit.comments) == 1 and not(newunit.comments[0])):
             self.addunit(newunit)
 
         self.fold()
