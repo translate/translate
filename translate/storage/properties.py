@@ -1260,8 +1260,8 @@ class XWikiPageProperties(xwikifile):
         newroot = deepcopy(self.root)
         # We add a line break to ensure to have a line break before
         # closing of content tag.
-        newroot.find("content").text = escape(
-            "".join(unit.getoutput() for unit in self.units)).strip() + "\n"
+        newroot.find("content").text = "".join(unit.getoutput() for unit in self.units)\
+                                       .strip() + "\n"
         self.set_xwiki_xml_attributes(newroot)
         self.write_xwiki_xml(newroot, out)
 

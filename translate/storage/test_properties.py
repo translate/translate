@@ -749,6 +749,18 @@ class TestXWikiPageProperties(test_monolingual.TestMonolingualStore):
         propfile.serialize(generatedcontent)
         assert generatedcontent.getvalue().decode(propfile.encoding) == propsource + "\n"
 
+    def test_definition_with_encoded_html(self):
+        propsource = self.getcontent("test_me=A translation &lt; another one.")
+        propfile = self.propparse(propsource)
+        assert len(propfile.units) == 1
+        propunit = propfile.units[0]
+        assert propunit.name == "test_me"
+        assert propunit.source == "A translation < another one."
+        assert not propunit.missing
+        generatedcontent = BytesIO()
+        propfile.serialize(generatedcontent)
+        assert generatedcontent.getvalue().decode(propfile.encoding) == propsource + "\n"
+
     def test_cleaning_attributes(self):
         """Ensure that the XML is correctly formatted during serialization:
         it should not contain objects or attachments tags, and translation should be
