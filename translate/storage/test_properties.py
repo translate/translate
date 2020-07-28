@@ -674,7 +674,6 @@ class TestXWikiPageProperties(test_monolingual.TestMonolingualStore):
         """helper that parses properties source without requiring files"""
         dummyfile = BytesIO(propsource.encode() if isinstance(propsource, str) else propsource)
         propfile = properties.XWikiPageProperties(dummyfile)
-        propfile.settargetlanguage('en')
         return propfile
 
     def propregen(self, propsource):
@@ -864,6 +863,7 @@ test_me=Je peux coder !
 </content>
             </xwikidoc>"""
         assert generatedcontent.getvalue().decode(propfile.encoding) == expected_xml + "\n"
+        assert "<?xml version=\"1.1\" encoding=\"UTF-8\"?>\n\n<!--\n * See the NOTICE file distributed with this work for additional" in generatedcontent.getvalue().decode(propfile.encoding)
 
 
 class TestXWikiFullPage(test_monolingual.TestMonolingualStore):
