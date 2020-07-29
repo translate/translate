@@ -847,12 +847,7 @@ class TestXWikiPageProperties(test_monolingual.TestMonolingualStore):
         propunit.target = "Je peux coder !"
         generatedcontent = BytesIO()
         propfile.serialize(generatedcontent)
-        ## ElementTree changed the way to process the attribute between Python 3.7 and 3.8
-        if sys.version_info.minor >= 8:
-            xml_open = "<xwikidoc reference=\"XWiki.AdminTranslations\" locale=\"fr\">"
-        else:
-            xml_open = "<xwikidoc locale=\"fr\" reference=\"XWiki.AdminTranslations\">"
-        expected_xml = properties.XWikiPageProperties.XML_HEADER + xml_open + """
+        expected_xml = properties.XWikiPageProperties.XML_HEADER + """<xwikidoc reference="XWiki.AdminTranslations" locale="fr">
             <web>XWiki</web>
             <name>AdminTranslations</name>
             <language>fr</language>
@@ -1110,12 +1105,8 @@ class TestXWikiFullPage(test_monolingual.TestMonolingualStore):
         propfile.settargetlanguage("fr")
         propfile.serialize(generatedcontent)
 
-        ## ElementTree changed the way to process the attribute between Python 3.7 and 3.8
-        if sys.version_info.minor >= 8:
-            xml_open = "<xwikidoc reference=\"XWiki.AdminTranslations\" locale=\"fr\">"
-        else:
-            xml_open = "<xwikidoc locale=\"fr\" reference=\"XWiki.AdminTranslations\">"
-        expected_xml = properties.XWikiPageProperties.XML_HEADER + xml_open + """
+
+        expected_xml = properties.XWikiPageProperties.XML_HEADER + """<xwikidoc reference="XWiki.AdminTranslations" locale="fr">
             <web>XWiki</web>
             <name>AdminTranslations</name>
             <language>fr</language>
