@@ -135,8 +135,8 @@ from translate.misc import quote
 from translate.misc.multistring import multistring
 from translate.storage import base
 from copy import deepcopy
-from xml.etree import ElementTree
-from xml.sax.saxutils import escape, unescape
+from lxml import etree as ElementTree
+from xml.sax.saxutils import unescape
 
 
 labelsuffixes = (".label", ".title")
@@ -1274,7 +1274,7 @@ class XWikiPageProperties(xwikifile):
 
     def serialize(self, out):
         if self.root is None:
-            self.root = ElementTree.XML(self.XML_HEADER + self.XWIKI_BASIC_XML)
+            self.root = ElementTree.XML(self.XWIKI_BASIC_XML)
         newroot = deepcopy(self.root)
         # We add a line break to ensure to have a line break before
         # closing of content tag.
@@ -1318,7 +1318,7 @@ class XWikiFullPage(XWikiPageProperties):
         unit_title = self.findid("title")
         unit_content = self.findid("content")
         if self.root is None:
-            self.root = ElementTree.XML(self.XML_HEADER + self.XWIKI_BASIC_XML)
+            self.root = ElementTree.XML(self.XWIKI_BASIC_XML)
         newroot = deepcopy(self.root)
         if unit_title is not None:
             newroot.find("title").text = self.output_unit(unit_title)

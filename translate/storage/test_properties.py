@@ -668,7 +668,7 @@ class TestXWikiPageProperties(test_monolingual.TestMonolingualStore):
     FILE_SCHEME = properties.XWikiPageProperties.XML_HEADER + """<xwikidoc locale="%(language)s">
     <translation>1</translation>
     <language>%(language)s</language>
-    <title />
+    <title/>
     <content>%(content)s</content>
     </xwikidoc>"""
 
@@ -864,7 +864,7 @@ class TestXWikiPageProperties(test_monolingual.TestMonolingualStore):
             <contentAuthor>xwiki:XWiki.Admin</contentAuthor>
             <version>1.1</version>
             <title>AdminTranslations</title>
-            <comment />
+            <comment/>
             <minorEdit>false</minorEdit>
             <syntaxId>plain/1.0</syntaxId>
             <hidden>true</hidden>
@@ -1127,7 +1127,7 @@ class TestXWikiFullPage(test_monolingual.TestMonolingualStore):
             <contentAuthor>xwiki:XWiki.Admin</contentAuthor>
             <version>1.1</version>
             <title>Un titre de page</title>
-            <comment />
+            <comment/>
             <minorEdit>false</minorEdit>
             <syntaxId>plain/1.0</syntaxId>
             <hidden>true</hidden>
