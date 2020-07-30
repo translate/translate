@@ -135,8 +135,7 @@ from translate.misc import quote
 from translate.misc.multistring import multistring
 from translate.storage import base
 from copy import deepcopy
-from xml.etree import ElementTree
-from xml.sax.saxutils import escape, unescape
+from lxml import etree
 
 
 labelsuffixes = (".label", ".title")
@@ -1231,13 +1230,25 @@ class XWikiPageProperties(xwikifile):
         self.root = None
         super(xwikifile, self).__init__(*args, **kwargs)
 
+    def get_parser(self):
+        return etree.XMLParser(strip_cdata=False, resolve_entities=False)
+
+    def extract_language(self):
+        language_node = self.root.find("language")
+        if language_node is not None and language_node.text:
+            self.setsourcelanguage(language_node.text)
+        else:
+            language_node = self.root.find("defaultLanguage")
+            if language_node is not None and language_node.text:
+                self.setsourcelanguage(language_node.text)
+
     def parse(self, propsrc):
         if propsrc != b"\n":
-            self.root = ElementTree.XML(propsrc)
+            self.root = etree.XML(propsrc, self.get_parser())
             content = "".join(self.root.find("content").itertext())
-            content = unescape(content).encode(self.encoding)
-            self.setsourcelanguage(self.root.find("language").text)
-            super(XWikiPageProperties, self).parse(content)
+            content = content.encode(self.encoding)
+            self.extract_language()
+            super().parse(content)
 
     def set_xwiki_xml_attributes(self, newroot):
         for e in newroot.findall("object"):
@@ -1245,22 +1256,25 @@ class XWikiPageProperties(xwikifile):
         for e in newroot.findall("attachment"):
             newroot.remove(e)
         newroot.find("translation").text = "1"
+        language_node = newroot.find("language")
+
         if self.gettargetlanguage():
-            newroot.find("language").text = self.gettargetlanguage()
+            language_node.text = self.gettargetlanguage()
         else:
-            newroot.find("language").text = self.getsourcelanguage()
+            language_node.text = self.getsourcelanguage()
+
+        if language_node.text:
+            newroot.set("locale", language_node.text)
 
     def write_xwiki_xml(self, newroot, out):
-        xml_content = ElementTree.tostring(newroot,
-                                           encoding=self.encoding,
-                                           method="xml")
+        xml_content = etree.tostring(newroot, encoding=self.encoding, method="xml")
         out.write(self.XML_HEADER.encode(self.encoding))
         out.write(xml_content)
         out.write(b'\n')
 
     def serialize(self, out):
         if self.root is None:
-            self.root = ElementTree.XML(self.XML_HEADER + self.XWIKI_BASIC_XML)
+            self.root = etree.XML(self.XWIKI_BASIC_XML, self.get_parser())
         newroot = deepcopy(self.root)
         # We add a line break to ensure to have a line break before
         # closing of content tag.
@@ -1282,27 +1296,34 @@ class XWikiFullPage(XWikiPageProperties):
 
     def parse(self, propsrc):
         if propsrc != b"\n":
-            self.root = ElementTree.XML(propsrc)
+            self.root = etree.XML(propsrc, self.get_parser())
             content = ""\
                 .join(self.root.find("content").itertext())\
                 .replace("\n", "\\n")
             title = "".join(self.root.find("title").itertext())
             forparsing = ""
             if content != "":
-                forparsing += "content={}\n".format(unescape(content))
+                forparsing += "content={}\n".format(content)
             if title != "":
-                forparsing += "title={}\n".format(unescape(title))
+                forparsing += "title={}\n".format(title)
+            self.extract_language()
             super(XWikiPageProperties, self).parse(forparsing.encode(self.encoding))
+
+    def output_unit(self, unit):
+        value = unit.personality.encode(unit.source, unit.encoding)
+        translation = unit.personality.encode(unit.target, unit.encoding)
+        return translation or value
 
     def serialize(self, out):
         unit_title = self.findid("title")
         unit_content = self.findid("content")
         if self.root is None:
-            self.root = ElementTree.XML(self.XML_HEADER + self.XWIKI_BASIC_XML)
+            self.root = etree.XML(self.XWIKI_BASIC_XML, self.get_parser())
         newroot = deepcopy(self.root)
         if unit_title is not None:
-            newroot.find("title").text = unit_title.target
+            newroot.find("title").text = self.output_unit(unit_title)
         if unit_content is not None:
-            newroot.find("content").text = unit_content.target.replace("\\n", "\n")
+            newroot.find("content").text = self.output_unit(unit_content) \
+                .replace("\\n", "\n")
         self.set_xwiki_xml_attributes(newroot)
         self.write_xwiki_xml(newroot, out)

@@ -1,4 +1,4 @@
-
+import sys
 from io import BytesIO
 
 from pytest import raises
@@ -665,10 +665,10 @@ class TestXWiki(test_monolingual.TestMonolingualStore):
 
 class TestXWikiPageProperties(test_monolingual.TestMonolingualStore):
     StoreClass = properties.XWikiPageProperties
-    FILE_SCHEME = properties.XWikiPageProperties.XML_HEADER + """<xwikidoc>
+    FILE_SCHEME = properties.XWikiPageProperties.XML_HEADER + """<xwikidoc locale="%(language)s">
     <translation>1</translation>
     <language>%(language)s</language>
-    <title />
+    <title/>
     <content>%(content)s</content>
     </xwikidoc>"""
 
@@ -754,16 +754,17 @@ class TestXWikiPageProperties(test_monolingual.TestMonolingualStore):
         assert generatedcontent.getvalue().decode(propfile.encoding) == propsource + "\n"
 
     def test_definition_with_encoded_html(self):
-        propsource = self.getcontent("test_me=A translation &lt; another one.")
+        propsource = self.getcontent("test_me=A &amp; is represented with &amp;amp;")
         propfile = self.propparse(propsource)
         assert len(propfile.units) == 1
         propunit = propfile.units[0]
         assert propunit.name == "test_me"
-        assert propunit.source == "A translation < another one."
+        assert propunit.source == "A & is represented with &amp;"
         assert not propunit.missing
         generatedcontent = BytesIO()
         propfile.serialize(generatedcontent)
-        assert generatedcontent.getvalue().decode(propfile.encoding) == propsource + "\n"
+        assert generatedcontent.getvalue().decode(
+            propfile.encoding) == propsource + "\n"
 
     def test_cleaning_attributes(self):
         """Ensure that the XML is correctly formatted during serialization:
@@ -847,7 +848,7 @@ class TestXWikiPageProperties(test_monolingual.TestMonolingualStore):
         propunit.target = "Je peux coder !"
         generatedcontent = BytesIO()
         propfile.serialize(generatedcontent)
-        expected_xml = properties.XWikiPageProperties.XML_HEADER + """<xwikidoc reference="XWiki.AdminTranslations">
+        expected_xml = properties.XWikiPageProperties.XML_HEADER + """<xwikidoc reference="XWiki.AdminTranslations" locale="fr">
             <web>XWiki</web>
             <name>AdminTranslations</name>
             <language>fr</language>
@@ -859,7 +860,7 @@ class TestXWikiPageProperties(test_monolingual.TestMonolingualStore):
             <contentAuthor>xwiki:XWiki.Admin</contentAuthor>
             <version>1.1</version>
             <title>AdminTranslations</title>
-            <comment />
+            <comment/>
             <minorEdit>false</minorEdit>
             <syntaxId>plain/1.0</syntaxId>
             <hidden>true</hidden>
@@ -873,7 +874,7 @@ test_me=Je peux coder !
 
 class TestXWikiFullPage(test_monolingual.TestMonolingualStore):
     StoreClass = properties.XWikiFullPage
-    FILE_SCHEME = properties.XWikiPageProperties.XML_HEADER + """<xwikidoc>
+    FILE_SCHEME = properties.XWikiPageProperties.XML_HEADER + """<xwikidoc locale="%(language)s">
     <translation>1</translation>
     <language>%(language)s</language>
     <title>%(title)s</title>
@@ -1104,7 +1105,8 @@ class TestXWikiFullPage(test_monolingual.TestMonolingualStore):
         generatedcontent = BytesIO()
         propfile.settargetlanguage("fr")
         propfile.serialize(generatedcontent)
-        expected_xml = properties.XWikiPageProperties.XML_HEADER + """<xwikidoc reference="XWiki.AdminTranslations">
+
+        expected_xml = properties.XWikiPageProperties.XML_HEADER + """<xwikidoc reference="XWiki.AdminTranslations" locale="fr">
             <web>XWiki</web>
             <name>AdminTranslations</name>
             <language>fr</language>
@@ -1116,7 +1118,7 @@ class TestXWikiFullPage(test_monolingual.TestMonolingualStore):
             <contentAuthor>xwiki:XWiki.Admin</contentAuthor>
             <version>1.1</version>
             <title>Un titre de page</title>
-            <comment />
+            <comment/>
             <minorEdit>false</minorEdit>
             <syntaxId>plain/1.0</syntaxId>
             <hidden>true</hidden>
