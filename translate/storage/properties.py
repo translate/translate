@@ -135,7 +135,7 @@ from translate.misc import quote
 from translate.misc.multistring import multistring
 from translate.storage import base
 from copy import deepcopy
-from lxml import etree as ElementTree
+from lxml import etree
 from xml.sax.saxutils import unescape
 
 
@@ -1229,6 +1229,7 @@ class XWikiPageProperties(xwikifile):
         kwargs['personality'] = "xwiki"
         kwargs['encoding'] = "utf-8"
         self.root = None
+        self.parser = etree.XMLParser(strip_cdata=False, resolve_entities=False)
         super(xwikifile, self).__init__(*args, **kwargs)
 
     def extract_language(self):
@@ -1242,7 +1243,7 @@ class XWikiPageProperties(xwikifile):
 
     def parse(self, propsrc):
         if propsrc != b"\n":
-            self.root = ElementTree.XML(propsrc)
+            self.root = etree.XML(propsrc, self.parser)
             content = "".join(self.root.find("content").itertext())
             content = unescape(content).encode(self.encoding)
             self.extract_language()
@@ -1265,16 +1266,14 @@ class XWikiPageProperties(xwikifile):
             newroot.set("locale", language_node.text)
 
     def write_xwiki_xml(self, newroot, out):
-        xml_content = ElementTree.tostring(newroot,
-                                           encoding=self.encoding,
-                                           method="xml")
+        xml_content = etree.tostring(newroot, encoding=self.encoding, method="xml")
         out.write(self.XML_HEADER.encode(self.encoding))
         out.write(xml_content)
         out.write(b'\n')
 
     def serialize(self, out):
         if self.root is None:
-            self.root = ElementTree.XML(self.XWIKI_BASIC_XML)
+            self.root = etree.XML(self.XWIKI_BASIC_XML, self.parser)
         newroot = deepcopy(self.root)
         # We add a line break to ensure to have a line break before
         # closing of content tag.
@@ -1296,7 +1295,7 @@ class XWikiFullPage(XWikiPageProperties):
 
     def parse(self, propsrc):
         if propsrc != b"\n":
-            self.root = ElementTree.XML(propsrc)
+            self.root = etree.XML(propsrc, self.parser)
             content = ""\
                 .join(self.root.find("content").itertext())\
                 .replace("\n", "\\n")
@@ -1318,7 +1317,7 @@ class XWikiFullPage(XWikiPageProperties):
         unit_title = self.findid("title")
         unit_content = self.findid("content")
         if self.root is None:
-            self.root = ElementTree.XML(self.XWIKI_BASIC_XML)
+            self.root = etree.XML(self.XWIKI_BASIC_XML, self.parser)
         newroot = deepcopy(self.root)
         if unit_title is not None:
             newroot.find("title").text = self.output_unit(unit_title)
