@@ -1229,8 +1229,10 @@ class XWikiPageProperties(xwikifile):
         kwargs['personality'] = "xwiki"
         kwargs['encoding'] = "utf-8"
         self.root = None
-        self.parser = etree.XMLParser(strip_cdata=False, resolve_entities=False)
         super(xwikifile, self).__init__(*args, **kwargs)
+
+    def get_parser(self):
+        return etree.XMLParser(strip_cdata=False, resolve_entities=False)
 
     def extract_language(self):
         language_node = self.root.find("language")
@@ -1243,7 +1245,7 @@ class XWikiPageProperties(xwikifile):
 
     def parse(self, propsrc):
         if propsrc != b"\n":
-            self.root = etree.XML(propsrc, self.parser)
+            self.root = etree.XML(propsrc, self.get_parser())
             content = "".join(self.root.find("content").itertext())
             content = unescape(content).encode(self.encoding)
             self.extract_language()
@@ -1273,7 +1275,7 @@ class XWikiPageProperties(xwikifile):
 
     def serialize(self, out):
         if self.root is None:
-            self.root = etree.XML(self.XWIKI_BASIC_XML, self.parser)
+            self.root = etree.XML(self.XWIKI_BASIC_XML, self.get_parser())
         newroot = deepcopy(self.root)
         # We add a line break to ensure to have a line break before
         # closing of content tag.
@@ -1295,7 +1297,7 @@ class XWikiFullPage(XWikiPageProperties):
 
     def parse(self, propsrc):
         if propsrc != b"\n":
-            self.root = etree.XML(propsrc, self.parser)
+            self.root = etree.XML(propsrc, self.get_parser())
             content = ""\
                 .join(self.root.find("content").itertext())\
                 .replace("\n", "\\n")
@@ -1317,7 +1319,7 @@ class XWikiFullPage(XWikiPageProperties):
         unit_title = self.findid("title")
         unit_content = self.findid("content")
         if self.root is None:
-            self.root = etree.XML(self.XWIKI_BASIC_XML, self.parser)
+            self.root = etree.XML(self.XWIKI_BASIC_XML, self.get_parser())
         newroot = deepcopy(self.root)
         if unit_title is not None:
             newroot.find("title").text = self.output_unit(unit_title)
