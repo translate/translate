@@ -136,7 +136,6 @@ from translate.misc.multistring import multistring
 from translate.storage import base
 from copy import deepcopy
 from lxml import etree
-from xml.sax.saxutils import unescape
 
 
 labelsuffixes = (".label", ".title")
@@ -1247,9 +1246,9 @@ class XWikiPageProperties(xwikifile):
         if propsrc != b"\n":
             self.root = etree.XML(propsrc, self.get_parser())
             content = "".join(self.root.find("content").itertext())
-            content = unescape(content).encode(self.encoding)
+            content = content.encode(self.encoding)
             self.extract_language()
-            super(XWikiPageProperties, self).parse(content)
+            super().parse(content)
 
     def set_xwiki_xml_attributes(self, newroot):
         for e in newroot.findall("object"):
@@ -1304,9 +1303,9 @@ class XWikiFullPage(XWikiPageProperties):
             title = "".join(self.root.find("title").itertext())
             forparsing = ""
             if content != "":
-                forparsing += "content={}\n".format(unescape(content))
+                forparsing += "content={}\n".format(content)
             if title != "":
-                forparsing += "title={}\n".format(unescape(title))
+                forparsing += "title={}\n".format(title)
             self.extract_language()
             super(XWikiPageProperties, self).parse(forparsing.encode(self.encoding))
 

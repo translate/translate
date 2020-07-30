@@ -754,16 +754,17 @@ class TestXWikiPageProperties(test_monolingual.TestMonolingualStore):
         assert generatedcontent.getvalue().decode(propfile.encoding) == propsource + "\n"
 
     def test_definition_with_encoded_html(self):
-        propsource = self.getcontent("test_me=A translation &lt; another one.")
+        propsource = self.getcontent("test_me=A &amp; is represented with &amp;amp;")
         propfile = self.propparse(propsource)
         assert len(propfile.units) == 1
         propunit = propfile.units[0]
         assert propunit.name == "test_me"
-        assert propunit.source == "A translation < another one."
+        assert propunit.source == "A & is represented with &amp;"
         assert not propunit.missing
         generatedcontent = BytesIO()
         propfile.serialize(generatedcontent)
-        assert generatedcontent.getvalue().decode(propfile.encoding) == propsource + "\n"
+        assert generatedcontent.getvalue().decode(
+            propfile.encoding) == propsource + "\n"
 
     def test_cleaning_attributes(self):
         """Ensure that the XML is correctly formatted during serialization:
