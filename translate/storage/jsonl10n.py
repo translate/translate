@@ -75,7 +75,7 @@ from translate.misc.multistring import multistring
 from translate.storage import base
 
 
-class JsonUnit(base.TranslationUnit):
+class JsonUnit(base.DictUnit):
     """A JSON entry"""
 
     ID_FORMAT = ".{}"
@@ -133,7 +133,7 @@ class JsonUnit(base.TranslationUnit):
         return {self.getkey(): self.converttarget()}
 
 
-class JsonFile(base.TranslationStore):
+class JsonFile(base.DictStore):
     """A JSON file"""
 
     UnitClass = JsonUnit
@@ -153,27 +153,8 @@ class JsonFile(base.TranslationStore):
             self.parse(inputfile)
 
     def serialize(self, out):
-        def merge(d1, d2):
-            for k in d2:
-                if k in d1:
-                    if isinstance(d1[k], dict) and isinstance(d2[k], dict):
-                        merge(d1[k], d2[k])
-                    elif isinstance(d1[k], list) and isinstance(d2[k], tuple):
-                        if len(d1[k]) > d2[k][0]:
-                            d1[k][d2[k][0]].update(d2[k][1])
-                        else:
-                            d1[k].append(d2[k][1])
-                    elif isinstance(d1[k], list) and isinstance(d2[k], list):
-                        d1[k].extend(d2[k])
-                    else:
-                        d1[k] = d2[k]
-                elif isinstance(d2[k], tuple):
-                    d1[k] = [d2[k][1]]
-                else:
-                    d1[k] = d2[k]
         units = OrderedDict()
-        for unit in self.unit_iter():
-            merge(units, unit.getvalue())
+        self.serialize_units(units)
         out.write(json.dumps(units, **self.dump_args).encode(self.encoding))
         out.write(b'\n')
 
