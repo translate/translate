@@ -29,11 +29,27 @@ from translate.misc.multistring import multistring
 from translate.storage import base
 
 
+class YAMLUnitId(base.UnitId):
+    KEY_SEPARATOR = "->"
+    INDEX_SEPARATOR = "->"
+
+    def __str__(self):
+        result = super().__str__()
+        # Strip leading ->
+        if result.startswith(self.KEY_SEPARATOR):
+            return result[len(self.KEY_SEPARATOR):]
+        return result
+
+
 class YAMLUnit(base.DictUnit):
     """A YAML entry"""
 
+    IdClass = YAMLUnitId
+    DefaultDict = dict
+
     def __init__(self, source=None, **kwargs):
-        self._id = None
+        # Ensure we have ID (for serialization)
+        self._id = str(uuid.uuid4())
         if source:
             self.source = source
         super().__init__(source)
@@ -50,30 +66,16 @@ class YAMLUnit(base.DictUnit):
         self._id = value
 
     def getid(self):
-        # Ensure we have ID (for serialization)
-        if self._id is None:
-            self._id = str(uuid.uuid4())
         return self._id
 
     def getlocations(self):
         return [self.getid()]
 
-    def getkey(self):
-        return self.getid().split('->')
-
     def convert_target(self):
         return self.target
 
-    def getvalue(self):
-        ret = self.convert_target()
-        for k in reversed(self.getkey()):
-            if '[' in k and k[-1] == ']':
-                k, pos = k[:-1].split('[')
-                ret = (int(pos), ret)
-                if not k:
-                    continue
-            ret = {k: ret}
-        return ret
+    def storevalues(self, output):
+        self.storevalue(output, self.convert_target())
 
 
 class YAMLFile(base.DictStore):
@@ -121,12 +123,14 @@ class YAMLFile(base.DictStore):
                     'Key not string: {0}/{1} ({2})'.format(prev, k, type(k))
                 )
 
-            for x in self._flatten(v, '->'.join((prev, k)) if prev else k):
+            for x in self._flatten(v, prev + [('key', k)]):
                 yield x
 
-    def _flatten(self, data, prev=""):
+    def _flatten(self, data, prev=None):
         """Flatten YAML dictionary.
         """
+        if prev is None:
+            prev = self.UnitClass.IdClass([])
         if isinstance(data, dict):
             for x in self._parse_dict(data, prev):
                 yield x
@@ -137,8 +141,7 @@ class YAMLFile(base.DictStore):
                 yield (prev, str(data))
             elif isinstance(data, list):
                 for k, v in enumerate(data):
-                    key = '[{0}]'.format(k)
-                    for value in self._flatten(v, '->'.join((prev, key))):
+                    for value in self._flatten(v, prev + [('index', k)]):
                         yield value
             elif data is None:
                 pass
@@ -176,7 +179,7 @@ class YAMLFile(base.DictStore):
 
         for k, data in self._flatten(content):
             unit = self.UnitClass(data)
-            unit.setid(k)
+            unit.set_unitid(k)
             self.addunit(unit)
 
 

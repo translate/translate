@@ -18,6 +18,7 @@
 
 """Base classes for storage interfaces."""
 
+from collections import OrderedDict
 import codecs
 import logging
 import pickle
@@ -889,38 +890,100 @@ class TranslationStore:
         return "id"
 
 
+class UnitId:
+    KEY_SEPARATOR = "."
+    INDEX_SEPARATOR = ""
+
+    def __init__(self, parts):
+        self.parts = parts
+
+    def __str__(self):
+        def fmt(element, key):
+            if element == 'key':
+                return '{}{}'.format(self.KEY_SEPARATOR, key)
+            elif element == 'index':
+                return '{}[{}]'.format(self.INDEX_SEPARATOR, key)
+            else:
+                raise ValueError('Unsupported element: {}'.format(element))
+        return ''.join([fmt(*part) for part in self.parts])
+
+    def __add__(self, other):
+        if not isinstance(other, list):
+            raise ValueError('Not supported type for add: {}'.format(type(other)))
+        return self.__class__(self.parts + other)
+
+    @classmethod
+    def from_string(cls, text):
+        result = []
+        # Strip possible leading separator
+        if text.startswith(cls.KEY_SEPARATOR):
+            text = text[len(cls.KEY_SEPARATOR):]
+        for item in text.split(cls.KEY_SEPARATOR):
+            if '[' in item and item[-1] == ']':
+                item, pos = item[:-1].split('[')
+                if cls.INDEX_SEPARATOR and item:
+                    result.append(("key", item))
+                result.append(("index", int(pos)))
+            else:
+                result.append(("key", item))
+        return cls(result)
+
+
 class DictUnit(TranslationUnit):
+    IdClass = UnitId
+    DefaultDict = OrderedDict
+
+    def __init__(self, source=None):
+        super().__init__(source)
+        self._unitid = None
+
+    def storevalue(self, output, value, override_key=None):
+        target = output
+        if self._unitid is None:
+            self._unitid = self.IdClass.from_string(self._id)
+        parts = self._unitid.parts
+        for pos, part in enumerate(parts[:-1]):
+            element, key = part
+            default = [] if parts[pos + 1][0] == 'index' else self.DefaultDict()
+            if element == 'index':
+                if len(target) <= key:
+                    target.append(default)
+            elif element == 'key':
+                if key not in target or isinstance(target[key], str):
+                    target[key] = default
+            else:
+                raise ValueError('Unsupported element: {}'.format(element))
+            target = target[key]
+        if override_key:
+            element, key = 'key', override_key
+        else:
+            element, key = parts[-1]
+        if element == 'key':
+            target[key] = value
+        elif element == 'index':
+            if len(target) <= key:
+                target.append(value)
+            else:
+                target[key] = value
+        else:
+            raise ValueError('Unsupported element: {}'.format(element))
+
+    def storevalues(self, output):
+        self.storevalue(output, self.value)
+
     def getvalue(self):
         """Returns dictionary for serialization."""
-        raise NotImplementedError()
+        result = {}
+        self.storevalues(result)
+        return result
+
+    def set_unitid(self, unitid):
+        self.setid(str(unitid))
+        self._unitid = unitid
 
 
 class DictStore(TranslationStore):
-    def serialize_merge(self, d1, d2):
-        for k in d2:
-            if k in d1:
-                if isinstance(d1[k], dict) and isinstance(d2[k], dict):
-                    self.serialize_merge(d1[k], d2[k])
-                elif isinstance(d1[k], list) and isinstance(d2[k], tuple):
-                    if isinstance(d2[k][1], dict):
-                        if len(d1[k]) > d2[k][0]:
-                            d1[k][d2[k][0]].update(d2[k][1])
-                        else:
-                            d1[k].append(d2[k][1])
-                    else:
-                        if len(d1[k]) > d2[k][0]:
-                            d1[k][d2[k][0]] = d2[k][1]
-                        else:
-                            d1[k].append(d2[k][1])
-                elif isinstance(d1[k], list) and isinstance(d2[k], list):
-                    d1[k].extend(d2[k])
-                else:
-                    d1[k] = d2[k]
-            elif isinstance(d2[k], tuple):
-                d1[k] = [d2[k][1]]
-            else:
-                d1[k] = d2[k]
 
     def serialize_units(self, output):
         for unit in self.unit_iter():
-            self.serialize_merge(output, unit.getvalue())
+            unit.storevalues(output)
