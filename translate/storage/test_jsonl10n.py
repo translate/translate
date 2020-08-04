@@ -52,6 +52,25 @@ JSON_ARRAY = b"""{
     ]
 }
 """
+JSON_COMPLEX = b"""{
+    "key": "value",
+    "key.key": "value",
+    "key[0]": "value2",
+    "key3": [
+        "one",
+        "two"
+    ],
+    "key4": [
+        {
+            "nested": "one"
+        },
+        [
+            "one",
+            "two"
+        ]
+    ]
+}
+"""
 JSON_GOI18N = b"""[
     {
         "id": "tag",
@@ -154,6 +173,15 @@ class TestJSONResourceStore(test_monolingual.TestMonolingualStore):
         out = BytesIO()
         store.serialize(out)
         assert out.getvalue() == content
+
+    def test_complex(self):
+        store = self.StoreClass()
+        store.parse(JSON_COMPLEX)
+
+        out = BytesIO()
+        store.serialize(out)
+
+        assert out.getvalue() == JSON_COMPLEX
 
 
 class TestJSONNestedResourceStore(test_monolingual.TestMonolingualUnit):
