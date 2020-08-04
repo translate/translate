@@ -902,10 +902,16 @@ class DictStore(TranslationStore):
                 if isinstance(d1[k], dict) and isinstance(d2[k], dict):
                     self.serialize_merge(d1[k], d2[k])
                 elif isinstance(d1[k], list) and isinstance(d2[k], tuple):
-                    if len(d1[k]) > d2[k][0]:
-                        d1[k][d2[k][0]].update(d2[k][1])
+                    if isinstance(d2[k][1], dict):
+                        if len(d1[k]) > d2[k][0]:
+                            d1[k][d2[k][0]].update(d2[k][1])
+                        else:
+                            d1[k].append(d2[k][1])
                     else:
-                        d1[k].append(d2[k][1])
+                        if len(d1[k]) > d2[k][0]:
+                            d1[k][d2[k][0]] = d2[k][1]
+                        else:
+                            d1[k].append(d2[k][1])
                 elif isinstance(d1[k], list) and isinstance(d2[k], list):
                     d1[k].extend(d2[k])
                 else:
