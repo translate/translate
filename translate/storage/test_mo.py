@@ -151,8 +151,8 @@ class TestMOFile(test_base.TestTranslationStore):
             with open(PO_FILE, 'wb') as out_file:
                 out_file.write(posource)
 
-            subprocess.call(['msgfmt', PO_FILE, '-o', MO_MSGFMT, '--endianness', sys.byteorder])
-            subprocess.call(['pocompile', '--errorlevel=traceback', PO_FILE, MO_POCOMPILE])
+            subprocess.check_call(['msgfmt', PO_FILE, '-o', MO_MSGFMT, '--endianness', sys.byteorder])
+            subprocess.check_call(['pocompile', '--errorlevel=traceback', PO_FILE, MO_POCOMPILE])
 
             store = factory.getobject(BytesIO(posource))
             if store.isempty() and not os.path.exists(MO_POCOMPILE):
