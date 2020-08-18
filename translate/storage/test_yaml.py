@@ -417,3 +417,20 @@ class TestRubyYAMLResourceStore(test_monolingual.TestMonolingualStore):
         store.parse(data)
         assert len(store.units) == 5
         assert bytes(store).decode('ascii') == data
+
+    def test_type_change(self):
+        original = '''en:
+  days_on: '["Sunday", "Monday"]'
+'''
+        changed = '''en:
+  days_on:
+  - Sunday
+  - Monday
+'''
+        store = self.StoreClass()
+        store.parse(original)
+        update = self.StoreClass()
+        update.parse(changed)
+        for unit in update.units:
+            store.addunit(unit)
+        assert bytes(store).decode('ascii') == changed
