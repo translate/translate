@@ -33,6 +33,10 @@ requirements/min-versions.txt
 # Coverage
 .coverage*
 
+# Common virtualenv locations
+.venv
+venv
+
 ##############################
 # translate/ specific excludes
 ##############################
