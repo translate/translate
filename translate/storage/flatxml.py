@@ -138,6 +138,10 @@ class FlatXMLFile(base.TranslationStore):
         if new:
             self.root.append(unit.xmlelement)
 
+    def removeunit(self, unit):
+        super().removeunit(unit)
+        self.root.remove(unit.xmlelement)
+
     def reindent(self):
         """Reindents the backing document to be consistent."""
         # no elements? nothing to do.

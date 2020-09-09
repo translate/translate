@@ -586,6 +586,18 @@ class TranslationStore:
         unit._store = self
         self.units.append(unit)
 
+    def removeunit(self, unit):
+        """Remove the given unit to the object's list of units.
+
+        This method should always be used rather than trying to modify the
+        list manually.
+
+        :type unit: :class:`TranslationUnit`
+        :param unit: The unit that will be added.
+        """
+        self.units.remove(unit)
+        self.remove_unit_from_index(unit)
+
     def addsourceunit(self, source):
         """Add and returns a new unit with the given source string.
 
@@ -925,7 +937,7 @@ class DictUnit(TranslationUnit):
         super().__init__(source)
         self._unitid = None
 
-    def storevalue(self, output, value, override_key=None):
+    def storevalue(self, output, value, override_key=None, unset=False):
         target = output
         if self._unitid is None:
             self._unitid = self.IdClass.from_string(self._id)
@@ -934,7 +946,7 @@ class DictUnit(TranslationUnit):
             element, key = part
             default = [] if parts[pos + 1][0] == 'index' else self.DefaultDict()
             if element == 'index':
-                if len(target) <= key:
+                if len(target) <= key and not unset:
                     target.append(default)
             elif element == 'key':
                 if key not in target or isinstance(target[key], str):
@@ -947,12 +959,19 @@ class DictUnit(TranslationUnit):
         else:
             element, key = parts[-1]
         if element == 'key':
-            target[key] = value
-        elif element == 'index':
-            if len(target) <= key:
-                target.append(value)
+            if unset:
+                del target[key]
             else:
                 target[key] = value
+        elif element == 'index':
+            if len(target) <= key:
+                if not unset:
+                    target.append(value)
+            else:
+                if unset:
+                    del target[key]
+                else:
+                    target[key] = value
         else:
             raise ValueError('Unsupported element: {}'.format(element))
 
