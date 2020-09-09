@@ -35,3 +35,8 @@ class TestQtFile(test_base.TestTranslationStore):
         # QM does not implement serialising
         with pytest.raises(Exception):
             self.StoreClass.serialize(self.StoreClass())
+
+    def test_remove(self):
+        # QM does not implement serialising
+        with pytest.raises(Exception):
+            self.StoreClass.serialize(self.StoreClass())

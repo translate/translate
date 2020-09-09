@@ -197,3 +197,7 @@ class TestCPOFile(test_po.TestPOFile):
         print("serialize", bytes(oldfile))
         assert len(oldfile.units) == 1
         assert "# old lonesome comment\nmsgid" in bytes(oldfile).decode('utf-8')
+
+    @mark.xfail(reason="removal not working in cPO")
+    def test_remove(self):
+        super().test_remove()

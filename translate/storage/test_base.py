@@ -226,6 +226,21 @@ class TestTranslationStore:
         assert headerless_len(store.units) == 1
         assert unit.source == "Test String"
 
+    def test_remove(self):
+        """Tests removing a unit with a source string"""
+        store = self.StoreClass()
+        unit = store.addsourceunit("Test String")
+        # Some storages (MO, OmegaT) serialize only translated units
+        unit.target = "Test target"
+        assert headerless_len(store.units) == 1
+        withunit = bytes(store)
+        print(withunit)
+        store.removeunit(unit)
+        assert headerless_len(store.units) == 0
+        withoutunit = bytes(store)
+        print(withoutunit)
+        assert withoutunit != withunit
+
     def test_find(self):
         """Tests searching for a given source string"""
         store = self.StoreClass()

@@ -304,6 +304,10 @@ class LISAfile(base.TranslationStore):
         if new:
             self.body.append(unit.xmlelement)
 
+    def removeunit(self, unit):
+        super().removeunit(unit)
+        unit.xmlelement.getparent().remove(unit.xmlelement)
+
     def serialize(self, out=None):
         """Converts to a string containing the file's XML"""
         self.document.write(out, pretty_print=True, xml_declaration=True,

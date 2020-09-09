@@ -182,6 +182,12 @@ class YAMLFile(base.DictStore):
             unit.set_unitid(k)
             self.addunit(unit)
 
+    def removeunit(self, unit):
+        if self._original is not None:
+            units = self.preprocess(self._original)
+            unit.storevalue(units, None, unset=True)
+        super().removeunit(unit)
+
 
 class RubyYAMLUnit(YAMLUnit):
     def convert_target(self):

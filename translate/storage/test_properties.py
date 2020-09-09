@@ -1,7 +1,7 @@
 import sys
 from io import BytesIO
 
-from pytest import raises
+from pytest import mark, raises
 
 from translate.misc.multistring import multistring
 from translate.storage import properties, test_monolingual
@@ -1130,3 +1130,7 @@ class TestXWikiFullPage(test_monolingual.TestMonolingualStore):
             </content>
             </xwikidoc>"""
         assert generatedcontent.getvalue().decode(propfile.encoding) == expected_xml + "\n"
+
+    @mark.xfail(reason="removal not working in full page")
+    def test_remove(self):
+        super().test_remove()

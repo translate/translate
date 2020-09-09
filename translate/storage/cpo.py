@@ -710,6 +710,10 @@ class pofile(pocommon.pofile):
             gpo.po_message_insert(self._gpo_message_iterator, unit._gpo_message)
         super().addunit(unit)
 
+    def removeunit(self, unit):
+        # There seems to be no API to remove a message
+        raise ValueError("Unit removal not supported by cpo")
+
     def _insert_header(self, header):
         header._store = self
         self.units.insert(0, header)
