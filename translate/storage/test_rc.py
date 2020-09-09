@@ -382,3 +382,17 @@ END
         assert rc_file.units[0].source == "Select Media Type"
         assert rc_file.units[1].source == "OK"
         assert rc_file.units[2].source == "Cancel"
+
+    def test_multiline(self):
+        rc_source = r"""
+LANGUAGE LANG_ENGLISH, SUBLANG_DEFAULT
+
+STRINGTABLE
+BEGIN
+    IDS_ADJACENT_STRINGS    "Line1\n"
+                            "Line2"
+END
+"""
+        rc_file = self.source_parse(rc_source)
+        assert len(rc_file.units) == 1
+        assert rc_file.units[0].source == "Line1\nLine2"

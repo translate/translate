@@ -27,10 +27,10 @@
 
 import re
 
-from pyparsing import (Combine, Forward, Group, Keyword, Optional, SkipTo,
-                       Word, ZeroOrMore, alphanums, alphas, commaSeparatedList,
-                       cStyleComment, delimitedList, nums, quotedString,
-                       restOfLine)
+from pyparsing import (Combine, Forward, Group, Keyword, OneOrMore, Optional,
+                       SkipTo, Word, ZeroOrMore, alphanums, alphas,
+                       commaSeparatedList, cStyleComment, delimitedList, nums,
+                       quotedString, restOfLine)
 
 from translate.storage import base
 
@@ -43,6 +43,10 @@ def escape_to_python(string):
     pystring = re.sub("\\\\t", "\t", pystring)          # Convert escape tab to a real tab
     pystring = re.sub("\\\\\\\\", "\\\\", pystring)     # Convert escape backslash to a real escaped backslash
     return pystring
+
+
+def extract_text(values):
+    return "".join(escape_to_python(value[1:-1]) for value in values if isinstance(value, str) and value.startswith('"'))
 
 
 def escape_to_rc(string):
@@ -146,11 +150,13 @@ def rc_statement():
 
     combined_constants = delimitedList(constant, '|')
 
+    concatenated_string = OneOrMore(quotedString)
+
     block_options = Optional(SkipTo(
         Keyword("CAPTION"), failOn=block_start)("pre_caption") + Keyword("CAPTION") + quotedString("caption")) + SkipTo(block_start)("post_caption")
 
     undefined_control = Group(name_id.setResultsName(
-        "id_control") + delimitedList(quotedString ^ constant ^ numbers ^ Group(combined_constants)).setResultsName("values_"))
+        "id_control") + delimitedList(concatenated_string ^ constant ^ numbers ^ Group(combined_constants)).setResultsName("values_"))
 
     block = block_start + \
         ZeroOrMore(undefined_control)("controls") + block_end
@@ -251,7 +257,7 @@ class rcfile(base.TranslationStore):
             if element.block_type and element.block_type == "MENUITEM":
 
                 if element.values_ and len(element.values_) >= 2:
-                    newunit = rcunit(escape_to_python(element.values_[0][1:-1]))
+                    newunit = rcunit(extract_text(element.values_))
                     newunit.name = generate_menuitem_name(pre_name, element.block_type, element.values_[1])
                     newunit.match = element
                     self.addunit(newunit)
@@ -302,8 +308,7 @@ class rcfile(base.TranslationStore):
                                 and (control.values_[0].startswith('"') or control.values_[0].startswith("'")):
 
                             # The first value without quoted chars.
-                            escaped_value = escape_to_python(control.values_[0][1:-1])
-                            newunit = rcunit(escaped_value)
+                            newunit = rcunit(extract_text(control.values_))
                             newunit.name = generate_dialog_control_name(statement.block_type, statement.block_id[0], control.id_control[0], control.values_[1])
                             newunit.match = control
                             self.addunit(newunit)
@@ -324,7 +329,7 @@ class rcfile(base.TranslationStore):
 
                     for text in statement.controls:
 
-                        newunit = rcunit(escape_to_python(text.values_[0][1:-1]))
+                        newunit = rcunit(extract_text(text.values_))
                         newunit.name = generate_stringtable_name(text.id_control[0])
                         newunit.match = text
                         self.addunit(newunit)
