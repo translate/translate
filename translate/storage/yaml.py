@@ -214,11 +214,9 @@ class RubyYAMLFile(YAMLFile):
 
     def get_root_node(self):
         """Returns root node for serialize"""
-        if self.targetlanguage is not None:
-            result = CommentedMap()
-            result[self.targetlanguage] = CommentedMap()
-            return result
-        return CommentedMap()
+        result = CommentedMap()
+        result[self.targetlanguage or "en"] = CommentedMap()
+        return result
 
     def _parse_dict(self, data, prev):
         # Does this look like a plural?
