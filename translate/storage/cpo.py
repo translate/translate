@@ -703,10 +703,7 @@ class pofile(pocommon.pofile):
             self._encoding = kwargs.get('encoding')
             self._gpo_memory_file = gpo.po_file_create()
             self._gpo_message_iterator = gpo.po_message_iterator(self._gpo_memory_file, None)
-            if not noheader:
-                self.init_headers()
-        else:
-            super().__init__(inputfile=inputfile, **kwargs)
+        super().__init__(inputfile=inputfile, noheader=noheader, **kwargs)
 
     def addunit(self, unit, new=True):
         if new:

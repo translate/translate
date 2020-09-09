@@ -522,6 +522,9 @@ class TranslationStore:
         if unitclass:
             self.UnitClass = unitclass
         self._encoding = encoding
+        self.locationindex = {}
+        self.sourceindex = {}
+        self.id_index = {}
 
     @property
     def encoding(self):
@@ -602,13 +605,9 @@ class TranslationStore:
 
         :rtype: :class:`TranslationUnit` or None
         """
-        if len(getattr(self, "sourceindex", [])):
-            if source in self.sourceindex:
-                return self.sourceindex[source][0]
-        else:
-            for unit in self.units:
-                if unit.source == source:
-                    return unit
+        self.require_index()
+        if source in self.sourceindex:
+            return self.sourceindex[source][0]
         return None
 
     def findunits(self, source):
@@ -616,17 +615,9 @@ class TranslationStore:
 
         :rtype: :class:`TranslationUnit` or None
         """
-        if len(getattr(self, "sourceindex", [])):
-            if source in self.sourceindex:
-                return self.sourceindex[source]
-        else:
-            #FIXME: maybe we should generate index here instead since
-            #we'll scan all units anyway
-            result = []
-            for unit in self.units:
-                if unit.source == source:
-                    result.append(unit)
-            return result
+        self.require_index()
+        if source in self.sourceindex:
+            return self.sourceindex[source]
         return None
 
     def translate(self, source):
@@ -643,20 +634,17 @@ class TranslationStore:
     def remove_unit_from_index(self, unit):
         """Remove a unit from source and locaton indexes"""
 
-        def remove_unit(source):
+        def remove_source(source):
             if source in self.sourceindex:
-                try:
-                    self.sourceindex[source].remove(unit)
-                    if len(self.sourceindex[source]) == 0:
-                        del(self.sourceindex[source])
-                except ValueError:
-                    pass
+                self.sourceindex[source].remove(unit)
+                if len(self.sourceindex[source]) == 0:
+                    del(self.sourceindex[source])
 
         if unit.hasplural():
             for source in unit.source.strings:
-                remove_unit(source)
+                remove_source(source)
         else:
-            remove_unit(unit.source)
+            remove_source(unit.source)
 
         for location in unit.getlocations():
             if (location in self.locationindex and
@@ -701,7 +689,7 @@ class TranslationStore:
 
     def require_index(self):
         """make sure source index exists"""
-        if not hasattr(self, "id_index"):
+        if not self.id_index:
             self.makeindex()
 
     def getids(self, filename=None):

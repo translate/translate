@@ -88,6 +88,7 @@ class redtd:
     def handleinunit(self, inunit, includefuzzy):
         entities = inunit.getlocations()
         mixedentities = self.mixer.match_entities(entities)
+        self.dtdfile.require_index()
         for entity in entities:
             if entity in self.dtdfile.id_index:
                 # now we need to replace the definition of entity with msgstr
