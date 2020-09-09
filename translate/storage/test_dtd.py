@@ -245,7 +245,7 @@ class TestDTD(test_monolingual.TestMonolingualStore):
         assert len(dtdfile.units) == 1
         dtdunit = dtdfile.units[0]
         print(dtdunit)
-        assert dtdunit.isnull()
+        assert dtdunit.isblank()
 
     def test_newlines_in_entity(self):
         """tests that we can handle newlines in the entity itself"""

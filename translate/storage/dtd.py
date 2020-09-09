@@ -290,14 +290,14 @@ class dtdunit(base.TranslationUnit):
         """Set the entity to the given "location"."""
         self.entity = location
 
-    def isnull(self):
+    def isblank(self):
         """returns whether this dtdunit doesn't actually have an entity definition"""
         # for dtds, we currently return a blank string if there is no .entity (==location in other files)
         # TODO: this needs to work better with base class expectations
         return self.entity is None
 
     def istranslatable(self):
-        if getattr(self, "entityparameter", None) == "SYSTEM" or self.isnull():
+        if getattr(self, "entityparameter", None) == "SYSTEM" or self.isblank():
             return False
         return True
 
@@ -491,7 +491,7 @@ class dtdunit(base.TranslationUnit):
         lines = []
         lines.extend([comment for commenttype, comment in self.comments])
         lines.extend(self.unparsedlines)
-        if self.isnull():
+        if self.isblank():
             result = "".join(lines)
             return result.rstrip() + "\n"
         # for f in self._locfilenotes: yield f
@@ -522,7 +522,6 @@ class dtdfile(base.TranslationStore):
         if inputfile is not None:
             dtdsrc = inputfile.read()
             self.parse(dtdsrc)
-            self.makeindex()
 
     def parse(self, dtdsrc):
         """read the source code of a dtd file in and include them as dtdunits in self.units"""
@@ -548,7 +547,7 @@ class dtdfile(base.TranslationStore):
                 newdtd = dtdunit(android=self.android)
                 try:
                     linesprocessed = newdtd.parse((b"\n".join(lines[start:end])).decode(self.encoding))
-                    if linesprocessed >= 1 and (not newdtd.isnull() or newdtd.unparsedlines):
+                    if linesprocessed >= 1 and (not newdtd.isblank() or newdtd.unparsedlines):
                         self.units.append(newdtd)
                 except Exception as e:
                     warnings.warn("%s\nError occured between lines %d and %d:\n%s" % (e, start + 1, end, b"\n".join(lines[start:end])))
@@ -564,13 +563,6 @@ class dtdfile(base.TranslationStore):
         if not self._valid_store(content):
             warnings.warn("DTD file '%s' does not validate" % self.filename)
             out.truncate(0)
-
-    def makeindex(self):
-        """makes self.id_index dictionary keyed on entities"""
-        self.id_index = {}
-        for dtd in self.units:
-            if not dtd.isnull():
-                self.id_index[dtd.entity] = dtd
 
     def _valid_store(self, content):
         """Validate the store to determine if it is valid
