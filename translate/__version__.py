@@ -18,16 +18,16 @@
 
 """This file contains the version of the Translate Toolkit."""
 
-build = 30000
+build = 30100
 """The build number is used by external users of the Translate Toolkit to
 trigger refreshes.  Thus increase the build number whenever changes are made to
 code touching stats or quality checks.  An increased build number will force a
 toolkit user, like Pootle, to regenerate it's stored stats and check
 results."""
 
-sver = "3.0.0"
+sver = "3.1.0"
 """Human readable version number. Used for version number display."""
 
-ver = (3, 0, 0)
+ver = (3, 1, 0)
 """Machine readable version number. Used by tools that need to adjust code
 paths based on a Translate Toolkit release number."""
