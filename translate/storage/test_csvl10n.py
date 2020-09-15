@@ -82,3 +82,12 @@ GENERAL@2|Notes,"cable, motor, switch"
         assert store.units[0].source == 'te\\nst'
         assert store.units[0].target == 'ot\\nher'
         assert bytes(store) == content
+
+    def test_parse_sample(self):
+        content = b'"location";"source";"target"\r\n"foo.c:1";"te\\nst";"ot\\nher"\r\n'
+        store = self.StoreClass()
+        store.parse(content, sample_length=None)
+        assert len(store.units) == 1
+        assert store.units[0].source == 'te\\nst'
+        assert store.units[0].target == 'ot\\nher'
+        assert bytes(store) == content
