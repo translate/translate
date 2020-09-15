@@ -283,13 +283,16 @@ class csvfile(base.TranslationStore):
             inputfile.close()
             self.parse(csvsrc)
 
-    def parse(self, csvsrc):
+    def parse(self, csvsrc, sample_length=1024):
         text, encoding = self.detect_encoding(csvsrc, default_encodings=['utf-8', 'utf-16'])
         #FIXME: raise parse error if encoding detection fails?
         self.encoding = encoding or 'utf-8'
 
         sniffer = csv.Sniffer()
-        sample = text[:1024]
+        if sample_length:
+            sample = text[:sample_length]
+        else:
+            sample = text
 
         try:
             self.dialect = sniffer.sniff(sample)
