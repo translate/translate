@@ -61,8 +61,7 @@ GENERAL@2|Notes,"cable, motor, switch"
     @mark.xfail(reason="Bug #3356")
     def test_context_is_parsed(self):
         """Tests that units with the same source are different based on context."""
-        source = ('"65066","Ogre","Ogro"\n'
-                  '"65067","Ogre","Ogros"')
+        source = b'"65066","Ogre","Ogro"\n"65067","Ogre","Ogros"'
         store = self.parse_store(source)
         assert len(store.units) == 2
         unit1 = store.units[0]
