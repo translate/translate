@@ -282,6 +282,9 @@ class rerc:
 
                 escaped_source = rc.escape_to_rc(unit.source)
 
+                if not escaped_source:
+                    continue
+
                 if escaped_source not in self.inputdict:
                     self.inputdict[escaped_source] = {}
 
