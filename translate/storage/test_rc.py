@@ -396,3 +396,16 @@ END
         rc_file = self.source_parse(rc_source)
         assert len(rc_file.units) == 1
         assert rc_file.units[0].source == "Line1\nLine2"
+
+    def test_str(self):
+        rc_source = r"""
+LANGUAGE LANG_ENGLISH, SUBLANG_DEFAULT
+
+STRINGTABLE
+BEGIN
+    IDS_STRINGS    "Line1"
+END
+"""
+        rc_file = self.source_parse(rc_source)
+        assert len(rc_file.units) == 1
+        assert str(rc_file.units[0]) == "STRINGTABLE.IDS_STRINGS=Line1\n"

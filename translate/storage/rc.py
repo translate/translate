@@ -98,7 +98,7 @@ class rcunit(base.TranslationUnit):
         if self.isblank():
             return "".join(self.comments + ["\n"])
         else:
-            return "".join(self.comments + ["%s=%s\n" % (self.name, self.value)])
+            return "".join(self.comments + ["%s=%s\n" % (self.name, self._value)])
 
     def getlocations(self):
         return [self.name]
