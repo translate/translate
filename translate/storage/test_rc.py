@@ -409,3 +409,16 @@ END
         rc_file = self.source_parse(rc_source)
         assert len(rc_file.units) == 1
         assert str(rc_file.units[0]) == "STRINGTABLE.IDS_STRINGS=Line1\n"
+
+    def test_empty(self):
+        rc_source = """
+LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_US
+
+IDD_DIALOG DIALOG 0, 0, 339, 179
+CAPTION "Caption"
+BEGIN
+    CONTROL         "", IDC_HEADSEPARATOR, "Static", SS_BLACKFRAME | SS_SUNKEN, 0, 28, 339, 1
+END
+"""
+        rc_file = self.source_parse(rc_source)
+        assert len(rc_file.units) == 1

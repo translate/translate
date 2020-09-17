@@ -46,7 +46,13 @@ def escape_to_python(string):
 
 
 def extract_text(values):
-    return "".join(escape_to_python(value[1:-1]) for value in values if isinstance(value, str) and value.startswith('"'))
+    result = []
+    for value in values:
+        if isinstance(value, str) and value.startswith('"'):
+            result.append(escape_to_python(value[1:-1]))
+        else:
+            break
+    return "".join(result)
 
 
 def escape_to_rc(string):
@@ -257,10 +263,12 @@ class rcfile(base.TranslationStore):
             if element.block_type and element.block_type == "MENUITEM":
 
                 if element.values_ and len(element.values_) >= 2:
-                    newunit = rcunit(extract_text(element.values_))
-                    newunit.name = generate_menuitem_name(pre_name, element.block_type, element.values_[1])
-                    newunit.match = element
-                    self.addunit(newunit)
+                    newtext = extract_text(element.values_)
+                    if newtext:
+                        newunit = rcunit(newtext)
+                        newunit.name = generate_menuitem_name(pre_name, element.block_type, element.values_[1])
+                        newunit.match = element
+                        self.addunit(newunit)
                 # Else it can be a separator.
             elif element.popups:
                 for sub_popup in element.popups:
@@ -308,10 +316,12 @@ class rcfile(base.TranslationStore):
                                 and (control.values_[0].startswith('"') or control.values_[0].startswith("'")):
 
                             # The first value without quoted chars.
-                            newunit = rcunit(extract_text(control.values_))
-                            newunit.name = generate_dialog_control_name(statement.block_type, statement.block_id[0], control.id_control[0], control.values_[1])
-                            newunit.match = control
-                            self.addunit(newunit)
+                            newtext = extract_text(control.values_)
+                            if newtext:
+                                newunit = rcunit(newtext)
+                                newunit.name = generate_dialog_control_name(statement.block_type, statement.block_id[0], control.id_control[0], control.values_[1])
+                                newunit.match = control
+                                self.addunit(newunit)
 
                     continue
 
@@ -329,10 +339,12 @@ class rcfile(base.TranslationStore):
 
                     for text in statement.controls:
 
-                        newunit = rcunit(extract_text(text.values_))
-                        newunit.name = generate_stringtable_name(text.id_control[0])
-                        newunit.match = text
-                        self.addunit(newunit)
+                        newtext = extract_text(text.values_)
+                        if newtext:
+                            newunit = rcunit(newtext)
+                            newunit.name = generate_stringtable_name(text.id_control[0])
+                            newunit.match = text
+                            self.addunit(newunit)
 
                     continue
 
