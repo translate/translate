@@ -81,7 +81,10 @@ class JsonUnit(base.DictUnit):
     ID_FORMAT = ".{}"
 
     def __init__(self, source=None, item=None, notes=None, placeholders=None, **kwargs):
-        identifier = str(uuid.uuid4())
+        if source:
+            identifier = hex(hash(source))
+        else:
+            identifier = str(uuid.uuid4())
         # Global identifier across file
         self._id = self.ID_FORMAT.format(identifier)
         # Identifier at this level

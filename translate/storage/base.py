@@ -133,7 +133,7 @@ class TranslationUnit:
         :return: Returns *True* if the supplied :class:`TranslationUnit`
                  equals this unit.
         """
-        return self.source == other.source and self.target == other.target
+        return self.source == other.source and self.target == other.target and self.getid() == other.getid()
 
     def __ne__(self, other):
         return not self.__eq__(other)
@@ -456,6 +456,7 @@ class TranslationUnit:
         newunit = cls(unit.source)
         newunit.target = unit.target
         newunit.markfuzzy(unit.isfuzzy())
+        newunit.setid(unit.getid())
         locations = unit.getlocations()
         if locations:
             newunit.addlocations(locations)

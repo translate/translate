@@ -166,6 +166,7 @@ class TestPOUnit(test_base.TestTranslationUnit):
         from translate.storage.php import phpunit
         unit = phpunit("test source")
         unit_copy = self.UnitClass.buildfromunit(unit)
+        unit.setid(unit_copy.getid())
         assert unit is not unit_copy
         assert unit == unit_copy
 

@@ -49,9 +49,11 @@ class YAMLUnit(base.DictUnit):
 
     def __init__(self, source=None, **kwargs):
         # Ensure we have ID (for serialization)
-        self._id = str(uuid.uuid4())
         if source:
             self.source = source
+            self._id = hex(hash(source))
+        else:
+            self._id = str(uuid.uuid4())
         super().__init__(source)
 
     @property
