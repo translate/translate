@@ -17,10 +17,10 @@ jobs:
     strategy:
       matrix:
         requirements: [latest]
-        python-version: [3.5, 3.6, 3.7, 3.8]
+        python-version: [3.6, 3.7, 3.8]
         include:
           - requirements: minimal
-            python-version: 3.5
+            python-version: 3.6
 
     steps:
     - uses: actions/checkout@v2
