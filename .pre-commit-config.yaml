@@ -23,3 +23,8 @@ repos:
         entry: pydocstyle
         language: system
         types: [python]
+      - id: pycodestyle
+        name: pycodestyle
+        entry: pycodestyle
+        language: system
+        types: [python]
