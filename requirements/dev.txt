@@ -1,6 +1,7 @@
 -r optional.txt
 
 isort>=4.2.3
+pre-commit==2.7.1
 pycodestyle==2.6.0
 pydocstyle==5.1.1
 pytest==6.0.2
@@ -9,4 +10,3 @@ pytest-xdist==2.1.0
 Sphinx==3.2.1
 twine==3.2.0
 virtualenv==20.0.31
-pre-commit==2.7.1
