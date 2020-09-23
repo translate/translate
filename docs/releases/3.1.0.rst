@@ -14,37 +14,37 @@ Formats and Converters
 
 - YAML
 
-    - Fix generating blank Ruby storage
-    - Fix changing type of an unit
-    - Preserve structured IDs on round trip
-    - Several serialization fixes
+  - Fix generating blank Ruby storage
+  - Fix changing type of an unit
+  - Preserve structured IDs on round trip
+  - Several serialization fixes
 
 - JSON
 
-    - Preserve structured IDs on round trip
-    - Several serialization fixes
+  - Preserve structured IDs on round trip
+  - Several serialization fixes
     
 - Android
 
-    - Fix round trip of strings with newlines
-    - Fix escaping double space with HTML
+  - Fix round trip of strings with newlines
+  - Fix escaping double space with HTML
 
 - CSV
 
-    - Allow to control format autodetection
+  - Allow to control format autodetection
 
 - XWiki
 
-    - Added support for several XWiki formats
+  - Added support for several XWiki formats
 
 - RC
 
-    - Fix parsing adjancent strings
-    - Fix handling empty strings
+  - Fix parsing adjancent strings
+  - Fix handling empty strings
 
 - po2json
 
-    - Never use empty translation in po2json
+  - Never use empty translation in po2json
 
 General
 -------
