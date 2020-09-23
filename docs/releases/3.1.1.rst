@@ -1,0 +1,25 @@
+Translate Toolkit 3.1.1
+***********************
+
+*Released on 23 September 2020*
+
+This release contains bug fixes.
+
+
+Changes
+=======
+
+General
+-------
+
+- Fixed comparing units
+- Fixed removal of units from a storage
+
+Contributors
+============
+
+This release was made possible by the following people:
+
+Michal Čihař
+
+And to all our bug finders and testers, a Very BIG Thank You.
