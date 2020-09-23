@@ -12,10 +12,6 @@ repos:
     hooks:
       - id: check-hooks-apply
       - id: check-useless-excludes
-  - repo: https://github.com/pre-commit/mirrors-isort
-    rev: v5.5.2
-    hooks:
-      - id: isort
   - repo: local
     hooks:
       - id: pydocstyle
@@ -26,6 +22,11 @@ repos:
       - id: pycodestyle
         name: pycodestyle
         entry: pycodestyle
+        language: system
+        types: [python]
+      - id: isort
+        name: isort
+        entry: isort
         language: system
         types: [python]
       - id: flake8

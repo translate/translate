@@ -23,6 +23,7 @@ from distutils.sysconfig import get_python_lib
 from os.path import dirname, isfile, join
 
 from setuptools import setup
+
 from translate import __doc__, __version__
 
 
