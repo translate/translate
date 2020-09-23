@@ -18,7 +18,6 @@
 
 import os
 import os.path as path
-import sys
 from subprocess import call
 
 from lxml import etree

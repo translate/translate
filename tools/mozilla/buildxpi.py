@@ -173,7 +173,6 @@ ac_add_options --enable-application=%(product)s
                 version = fh.read().strip()
             version = re.sub(r'(^[0-9]*\.[0-9]*).*', r'\1.*', version)
             moz_app_version = ['MOZ_APP_MAXVERSION=%s' % version]
-            locale_mergedir = ['LOCALE_MERGEDIR=$(pwd)/merge-%s']
         # make merge-cy LOCALE_MERGEDIR=$PWD/merge-cy
         # make langpack-cy LOCALE_MERGEDIR=$PWD/merge-cy
         for lang in langs:

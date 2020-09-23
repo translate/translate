@@ -128,20 +128,23 @@ class qmfile(base.TranslationStore):
             section_type, length = struct.unpack(">BL", input[startsection:startsection + sectionheader])
             if section_type == 0x42:
                 #section_debug("Hash", section_type, startsection, length)
-                hash_start = startsection + sectionheader
-                hash_data = struct.unpack(">%db" % length, input[startsection + sectionheader:startsection + sectionheader + length])
+                #hash_start = startsection + sectionheader
+                #hash_data = struct.unpack(">%db" % length, input[startsection + sectionheader:startsection + sectionheader + length])
+                pass
             elif section_type == 0x69:
                 #section_debug("Messages", section_type, startsection, length)
                 messages_start = startsection + sectionheader
                 messages_data = struct.unpack(">%db" % length, input[startsection + sectionheader:startsection + sectionheader + length])
             elif section_type == 0x2f:
                 #section_debug("Contexts", section_type, startsection, length)
-                contexts_start = startsection + sectionheader
-                contexts_data = struct.unpack(">%db" % length, input[startsection + sectionheader:startsection + sectionheader + length])
+                #contexts_start = startsection + sectionheader
+                #contexts_data = struct.unpack(">%db" % length, input[startsection + sectionheader:startsection + sectionheader + length])
+                pass
             elif section_type == 0x88:
                 #section_debug("NumerusRules", section_type, startsection, length)
-                numerusrules_start = startsection + sectionheader
-                numerusrules_data = struct.unpack(">%db" % length, input[startsection + sectionheader:startsection + sectionheader + length])
+                #numerusrules_start = startsection + sectionheader
+                #numerusrules_data = struct.unpack(">%db" % length, input[startsection + sectionheader:startsection + sectionheader + length])
+                pass
             else:
                 section_debug("Unkown", section_type, startsection, length)
             startsection = startsection + sectionheader + length
@@ -177,13 +180,13 @@ class qmfile(base.TranslationStore):
                 source = input[pos + 4:pos + 4 + length].decode('iso-8859-1')
                 pos = pos + 4 + length
             elif subsection == 0x07:  # Context
-                context = input[pos + 4:pos + 4 + length].decode('iso-8859-1')
+                # context = input[pos + 4:pos + 4 + length].decode('iso-8859-1')
                 pos = pos + 4 + length
             elif subsection == 0x08:  # Disambiguating-comment
-                comment = input[pos + 4:pos + 4 + length]
+                # comment = input[pos + 4:pos + 4 + length]
                 pos = pos + 4 + length
             elif subsection == 0x05:  # hash
-                hash = input[pos:pos + 4]
+                # hash = input[pos:pos + 4]
                 pos = pos + 4
             else:
                 if subsection == 0x02:  # SourceText16

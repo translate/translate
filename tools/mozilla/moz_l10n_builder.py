@@ -38,7 +38,7 @@ join = os.path.join
 
 try:
     # Make sure that all convertion tools are available
-    from translate.convert import moz2po, po2moz, po2prop, txt2po
+    from translate.convert import moz2po, po2moz, po2prop, txt2po  # noqa: F401
 except ImportError:
     raise Exception('Could not find the Translate Toolkit convertion tools. Please check your installation.')
 
@@ -488,7 +488,7 @@ def create_diff(lang, buildlang):
     with open(outfile, 'w') as fh:
         run(['svn', 'diff',
              '--diff-cmd',
-             'diff -x "-u --ignore-matching-lines=^\"POT\|^\"X-Gene"'],
+             r'diff -x "-u --ignore-matching-lines=^\"POT\|^\"X-Gene"'],
             stdout=fh)
     os.chdir(olddir)
 
@@ -622,7 +622,7 @@ def main(langs=['ALL'], mozproduct='browser', mozcheckout=False, moztag='-A',
          recover=False, potpack=False, potincl=[], migrate=True, popack=False,
          update_trans=False, debug=False, diff=False, langpack=False,
          verbose=True):
-    global options
+    global options, targetapp
     options['verbose'] = verbose
     targetapp = mozproduct
     langs = get_langs(langs)
