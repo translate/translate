@@ -7,6 +7,7 @@ repos:
       - id: check-yaml
       - id: check-merge-conflict
       - id: check-json
+      - id: requirements-txt-fixer
   - repo: meta
     hooks:
       - id: check-hooks-apply
