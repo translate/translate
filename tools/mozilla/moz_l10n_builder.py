@@ -38,10 +38,7 @@ join = os.path.join
 
 try:
     # Make sure that all convertion tools are available
-    from translate.convert import moz2po
-    from translate.convert import po2moz
-    from translate.convert import po2prop
-    from translate.convert import txt2po
+    from translate.convert import moz2po, po2moz, po2prop, txt2po
 except ImportError:
     raise Exception('Could not find the Translate Toolkit convertion tools. Please check your installation.')
 

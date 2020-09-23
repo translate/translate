@@ -18,10 +18,10 @@
 
 """Base classes for storage interfaces."""
 
-from collections import OrderedDict
 import codecs
 import logging
 import pickle
+from collections import OrderedDict
 from io import BytesIO
 
 from translate.misc.multistring import multistring

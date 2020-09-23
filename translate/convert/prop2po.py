@@ -187,8 +187,9 @@ class prop2po:
                 self.unit = unit
                 self.variants = {}
 
-        from translate.lang import data
         import re
+
+        from translate.lang import data
         regex = re.compile(r'([^\[\]]*)(?:\[(.*)\])?')
         names = data.cldr_plural_categories
         new_store = type(postore)()
