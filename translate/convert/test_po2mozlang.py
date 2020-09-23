@@ -176,6 +176,7 @@ Target
 
 class TestPO2LangCommand(test_convert.TestConvertCommand, TestPO2Lang):
     """Tests running actual po2prop commands on files"""
+
     convertmodule = po2mozlang
     defaultoptions = {"progress": "none"}
 

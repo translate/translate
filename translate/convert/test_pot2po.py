@@ -123,8 +123,10 @@ msgstr[1] "%d handleidings."
         assert str(self.singleunit(newpo)) == poexpected
 
     def test_merging_location_and_whitespace_change(self):
-        """test that even if the location changes that if the msgid
-        only has whitespace changes we can still merge"""
+        """
+        test that even if the location changes that if the msgid
+        only has whitespace changes we can still merge
+        """
 
         potsource = '''#: singlespace.label%ssinglespace.accesskey\nmsgid "&We have spaces"\nmsgstr ""\n''' % po.lsep
         posource = '''#: doublespace.label%sdoublespace.accesskey\nmsgid "&We  have  spaces"\nmsgstr "&One  het  spasies"\n''' % po.lsep
@@ -134,8 +136,11 @@ msgstr[1] "%d handleidings."
         assert str(self.singleunit(newpo)) == poexpected
 
     def test_merging_location_ambiguous_with_disambiguous(self):
-        """test that when we have a PO in ambiguous (Gettext form) and merge with disamabiguous (KDE comment form)
-        that we don't duplicate the location #: comments"""
+        """
+        test that when we have a PO in ambiguous (Gettext form) and merge with
+        disamabiguous (KDE comment form) that we don't duplicate the
+        location #: comments
+        """
         potsource = '''#: location.c:1\nmsgid ""\n"_: location.c:1\\n"\n"Source"\nmsgstr ""\n\n''' + \
                     '''#: location.c:10\nmsgid ""\n"_: location.c:10\\n"\n"Source"\nmsgstr ""\n'''
         posource = '''#: location.c:1\n#: location.c:10\nmsgid "Source"\nmsgstr "Target"\n\n'''
@@ -643,9 +648,11 @@ msgstr "trans"
         assert not unit.isfuzzy()
 
     def test_migrate_msgidcomment_to_msgctxt(self):
-        """Test that we migrate correctly from msgidcomments to msgctxt.
+        """
+        Test that we migrate correctly from msgidcomments to msgctxt.
 
-        This is needed for our move away from using msgidcomments for mozilla."""
+        This is needed for our move away from using msgidcomments for mozilla.
+        """
         potsource = r'''
 msgid ""
 msgstr ""
@@ -708,8 +715,10 @@ msgstr "Eerste eenheid"
         assert 'msgctxt "context2"' in str(newpo.units[3])
 
     def test_small_strings(self):
-        """Test that units with small source strings are not incorrectly
-        populated by means of fuzzy matching."""
+        """
+        Test that units with small source strings are not incorrectly
+        populated by means of fuzzy matching.
+        """
         potsource = r'''#, fuzzy
 msgid ""
 msgstr ""
@@ -778,6 +787,7 @@ msgstr ""
 
 class TestPOT2POCommand(test_convert.TestConvertCommand, TestPOT2PO):
     """Tests running actual pot2po commands on files"""
+
     convertmodule = pot2po
 
     def test_help(self, capsys):

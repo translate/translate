@@ -129,8 +129,10 @@ class TestPYPOUnit(test_po.TestPOUnit):
         assert unit.getnotes() == "# Double commented comment"
 
     def test_wrap_firstlines(self):
-        '''tests that we wrap the first line correctly a first line if longer then 71 chars
-        as at 71 chars we should align the text on the left and preceed with with a msgid ""'''
+        """
+        tests that we wrap the first line correctly a first line if longer then 71 chars
+        as at 71 chars we should align the text on the left and preceed with with a msgid ""
+        """
         # longest before we wrap text
         str_max = "123456789 123456789 123456789 123456789 123456789 123456789 123456789 1"
         unit = self.UnitClass(str_max)

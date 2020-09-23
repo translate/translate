@@ -50,8 +50,10 @@ class TestHTMLParsing:
         assert len(store.units) == 1
 
     def test_escaping_script_and_pre(self):
-        """<script> and <pre> can contain < and > and these should not be
-        interpretted as tags"""
+        """
+        <script> and <pre> can contain < and > and these should not be
+        interpretted as tags
+        """
         h = html.htmlfile()
         store = h.parsestring("<p>We are here</p><script>Some </tag>like data<script></p>")
         print(store.units[0].source)

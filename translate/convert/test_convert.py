@@ -8,6 +8,7 @@ from translate.convert import convert
 
 class TestConvertCommand:
     """Tests running actual commands on files"""
+
     convertmodule = convert
     defaultoptions = {"progress": "none"}
 

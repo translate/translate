@@ -17,7 +17,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, see <http://www.gnu.org/licenses/>.
 
-""" Tests converting Gettext PO localisation files to .Net Resource (.resx) files """
+"""Tests converting Gettext PO localisation files to .Net Resource (.resx) files"""
 
 from io import BytesIO
 
@@ -84,7 +84,7 @@ class TestPO2RESX:
 </root>'''
 
     def po2resx(self, resxsource, po_source):
-        """ Helper that merges po translations to .resx source without requiring files """
+        """Helper that merges po translations to .resx source without requiring files"""
         po_store = po.pofile(po_source.encode('utf-8'))
         template_file = BytesIO(resxsource.encode())
         convertor = po2resx.po2resx(template_file, po_store)
@@ -92,7 +92,7 @@ class TestPO2RESX:
         return output_resx.decode('utf-8')
 
     def test_simpleunit(self):
-        """ Checks that a simple po entry definition converts properly to a resx entry """
+        """Checks that a simple po entry definition converts properly to a resx entry"""
         po_source = r'''#: key
 msgid "Source Text"
 msgstr "Some translated text"'''
@@ -134,7 +134,7 @@ msgstr "Toepassings"
         assert resx_file == expected_output
 
     def test_multiline(self):
-        """ Test multiline po entry """
+        """Test multiline po entry"""
         po_source = r'''#: ResourceKey
 msgid "First part "
 "and extra"
@@ -150,7 +150,7 @@ msgstr "Eerste deel "
         assert resx_file == expected_output
 
     def test_escapednewlines(self):
-        """ Test the escaping of newlines """
+        """Test the escaping of newlines"""
         po_source = r'''#: ResourceKey
 msgid "First line\nSecond line"
 msgstr "Eerste lyn\nTweede lyn"
@@ -166,7 +166,7 @@ Tweede lyn</value>
         assert resx_file == expected_output
 
     def test_escapedtabs(self):
-        """ Test the escaping of tabs """
+        """Test the escaping of tabs"""
         po_source = r'''#: ResourceKey
 msgid "First column\tSecond column"
 msgstr "Eerste kolom\tTweede kolom"
@@ -181,7 +181,7 @@ msgstr "Eerste kolom\tTweede kolom"
         assert resx_file == expected_output
 
     def test_escapedquotes(self):
-        """ Test the escaping of quotes (and slash) """
+        """Test the escaping of quotes (and slash)"""
         po_source = r'''#: ResourceKey
 msgid "Hello \"Everyone\""
 msgstr "Good day \"All\""
@@ -199,7 +199,7 @@ msgstr "Gebruik \\\"."
         assert resx_file == expected_output
 
     def test_exclusions(self):
-        """ Test that empty and fuzzy messages are excluded """
+        """Test that empty and fuzzy messages are excluded"""
         po_source = r'''#: ResourceKey
 #, fuzzy
 msgid "One"
@@ -235,7 +235,7 @@ msgstr "Drie"
         assert resx_file == expected_output
 
     def test_automaticcomments(self):
-        """ Tests that automatic comments are imported """
+        """Tests that automatic comments are imported"""
         po_source = '''#. This is a comment
 #: ResourceKey
 msgid "Bézier curve"
@@ -252,7 +252,7 @@ msgstr "Bézier-kurwe"
         assert resx_file == expected_output
 
     def test_automaticcomments_existingcomment(self):
-        """ Tests a differing automatic comment is added if there is an existing automatic comment """
+        """Tests a differing automatic comment is added if there is an existing automatic comment"""
         po_source = '''#. This is a new comment
 #: ResourceKey
 msgid "Bézier curve"
@@ -271,7 +271,7 @@ This is a new comment</comment>
         assert resx_file == expected_output
 
     def test_automaticcomments_existingduplicatecomment(self):
-        """ Tests there is no duplication of automatic comments if it already exists and hasn't changed """
+        """Tests there is no duplication of automatic comments if it already exists and hasn't changed"""
         po_source = '''#. This is an existing comment
 #: ResourceKey
 msgid "Bézier curve"
@@ -289,8 +289,10 @@ msgstr "Bézier-kurwe"
         assert resx_file == expected_output
 
     def test_automaticcomments_existingduplicatecommentwithwhitespace(self):
-        """ Tests there is no duplication of automatic comments if it already exists, hasn't changed but has leading or
-        trailing whitespaces """
+        """
+        Tests there is no duplication of automatic comments if it already
+        exists, hasn't changed but has leading or trailing whitespaces
+        """
         po_source = '''#.  This is an existing comment with leading and trailing spaces
 #: ResourceKey
 msgid "Bézier curve"
@@ -308,7 +310,7 @@ msgstr "Bézier-kurwe"
         assert resx_file == expected_output
 
     def test_translatorcomments(self):
-        """ Tests that translator comments are imported """
+        """Tests that translator comments are imported"""
         po_source = '''# This is a translator comment : 22.12.14
 #: ResourceKey
 msgid "Bézier curve"
@@ -325,7 +327,7 @@ msgstr "Bézier-kurwe"
         assert resx_file == expected_output
 
     def test_translatorcomments_existingcomment(self):
-        """ Tests a differing translator comment is added if there is an existing translator comment """
+        """Tests a differing translator comment is added if there is an existing translator comment"""
         po_source = '''# This is a new translator comment
 #: ResourceKey
 msgid "Bézier curve"
@@ -344,7 +346,7 @@ msgstr "Bézier-kurwe"
         assert resx_file == expected_output
 
     def test_translatorcomments_existingduplicatecomment(self):
-        """ Tests there is no duplication of translator comments if it already exists and hasn't changed """
+        """Tests there is no duplication of translator comments if it already exists and hasn't changed"""
         po_source = '''# This is an existing translator comment
 #: ResourceKey
 msgid "Bézier curve"
@@ -362,7 +364,7 @@ msgstr "Bézier-kurwe"
         assert resx_file == expected_output
 
     def test_combocomments(self):
-        """ Tests that translator comments and automatic comments are imported """
+        """Tests that translator comments and automatic comments are imported"""
         po_source = '''#. This is a developer comment
 # This is a translator comment : 22.12.14
 #: ResourceKey
@@ -381,8 +383,10 @@ msgstr "Bézier-kurwe"
         assert resx_file == expected_output
 
     def test_combocomments_existingduplicatecomment(self):
-        """ Tests there is no duplication of automatic comment if it already exists and hasn't changed, but still adds
-        the translator comment """
+        """
+        Tests there is no duplication of automatic comment if it already exists
+        and hasn't changed, but still adds the translator comment
+        """
         po_source = '''#. This is an existing comment
 # This is a translator comment : 22.12.14
 #: ResourceKey
@@ -402,8 +406,10 @@ msgstr "Bézier-kurwe"
         assert resx_file == expected_output
 
     def test_combocomments_existingcomment(self):
-        """ Tests a differing automatic comment is added if there is an existing automatic comment, but still adds
-        the translator comment """
+        """
+        Tests a differing automatic comment is added if there is an existing
+        automatic comment, but still adds the translator comment
+        """
         po_source = '''#. This is a new comment
 # This is a translator comment : 22.12.14
 #: ResourceKey
@@ -424,7 +430,7 @@ This is a new comment
         assert resx_file == expected_output
 
     def test_existingcomments(self):
-        """ Tests that no extra space is added when there are no changes to existing comments"""
+        """Tests that no extra space is added when there are no changes to existing comments"""
         po_source = '''#. This is an existing comment
 # This is an existing translator comment : 22.12.14
 #: ResourceKey
@@ -446,10 +452,11 @@ msgstr "Bézier-kurwe"
 
 
 class TestPO2RESXCommand(test_convert.TestConvertCommand, TestPO2RESX):
-    """ Tests running actual po2resx commands on files """
+    """Tests running actual po2resx commands on files"""
+
     convertmodule = po2resx
 
     def test_help(self, capsys):
-        """ Tests getting help """
+        """Tests getting help"""
         options = test_convert.TestConvertCommand.test_help(self, capsys)
         options = self.help_check(options, "-t TEMPLATE, --template=TEMPLATE")

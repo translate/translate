@@ -8,7 +8,7 @@ from translate.storage import po, poheader, poxliff
 
 
 def test_parseheaderstring():
-    """ test for the header parsing function"""
+    """test for the header parsing function"""
     source = r'''item1: one
 item2: two:two
 this item must get ignored because there is no colon sign in it
@@ -23,7 +23,7 @@ item3: three
 
 
 def test_update():
-    '''test the update function'''
+    """test the update function"""
     # do we really add nothing if add==False ?
     d = poheader.update({}, test='hello')
     assert len(d) == 0
@@ -197,8 +197,10 @@ msgstr ""
 
 
 def test_plural_equation():
-    """test that we work with the equation even is the last semicolon is left out, since gettext
-    tools don't seem to mind"""
+    """
+    test that we work with the equation even is the last semicolon is left out, since gettext
+    tools don't seem to mind
+    """
     posource = r'''msgid ""
 msgstr ""
 "Plural-Forms: nplurals=2; plural=(n != 1)%s\n"

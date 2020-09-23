@@ -6,7 +6,8 @@ from translate.storage import php, test_monolingual
 
 
 def test_php_escaping_single_quote():
-    """Test the helper escaping funtions for 'single quotes'
+    """
+    Test the helper escaping funtions for 'single quotes'
 
     The tests are built mostly from examples from the PHP
     `string type definition <http://www.php.net/manual/en/language.types.string.php#language.types.string.syntax.single>`_.
@@ -289,7 +290,8 @@ define('_CM_POSTED',    'Enviado');"""
         assert phpunit.source == "Enviado"
 
     def test_parsing_define_spaces_after_equal_delimiter_and_before_key(self):
-        """Parse define syntax with spaces after the equal delimiter as well
+        """
+        Parse define syntax with spaces after the equal delimiter as well
         before the key
         """
         phpsource = """define( "_FINISH",       "Rematar");
@@ -317,7 +319,8 @@ define('_UPGRADE_CHARSET','Upgrade charset');"""
         assert phpunit.source == "Upgrade charset"
 
     def test_parsing_define_no_spaces_after_equaldel_but_before_key(self):
-        """Parse define syntax without spaces after the equal delimiter but
+        """
+        Parse define syntax without spaces after the equal delimiter but
         with spaces before the key
         """
         phpsource = """define( "_FINISH","Rematar");
@@ -401,8 +404,7 @@ define("_RELOAD", "Recargar");"""
         assert phpunit.source == "Recargar"
 
     def test_parsing_simpledefinition_spaces_before_end_delimiter(self):
-        """Parse simple definition syntax with spaces before the end
-        delimiter"""
+        """Parse simple definition syntax with spaces before the end delimiter"""
         phpsource = """$month_jan = 'Jan';
 $month_feb = 'Feb'  ;
 $month_mar = 'Mar';"""
@@ -419,8 +421,11 @@ $month_mar = 'Mar';"""
         assert phpunit.source == "Mar"
 
     def test_parsing_arrays_no_trailing_comma(self):
-        """parse the array syntax where we don't have a trailing comma.
-        Bug #1685"""
+        """
+        Parse the array syntax where we don't have a trailing comma.
+
+        Bug #1685
+        """
         phpsource = '''$lang = array(
          'item1' => 'value1',
          'item2' => 'value2'
@@ -435,7 +440,11 @@ $month_mar = 'Mar';"""
         assert phpunit.source == "value2"
 
     def test_parsing_arrays_space_before_comma(self):
-        """parse the array syntax with spaces before the comma. Bug #1898"""
+        """
+        parse the array syntax with spaces before the comma.
+
+        Bug #1898
+        """
         phpsource = '''$lang = array(
          'item1' => 'value1',
          'item2' => 'value2' ,
@@ -450,8 +459,11 @@ $month_mar = 'Mar';"""
         assert phpunit.source == "value2"
 
     def test_parsing_arrays_with_space_before_array_declaration(self):
-        """parse the array syntax with spaces before the array declaration.
-        Bug #2646"""
+        """
+        parse the array syntax with spaces before the array declaration.
+
+        Bug #2646
+        """
         phpsource = '''$lang = array   (
          'item1' => 'value1',
          'item2' => 'value2',
@@ -466,8 +478,11 @@ $month_mar = 'Mar';"""
         assert phpunit.source == "value2"
 
     def test_parsing_arrays_declared_in_a_single_line(self):
-        """parse an array declared in a single line.
-        Bug #3629"""
+        """
+        parse an array declared in a single line.
+
+        Bug #3629
+        """
         phpsource = '''$lang = array( 'item1' => 'value1', 'item2' => 'value2', 'item3' => 'value3' );'''
         phpfile = self.phpparse(phpsource)
         assert len(phpfile.units) == 3
@@ -581,8 +596,7 @@ $messages['days_short'] = array(
         assert phpunit.source == "Help"
 
     def test_parsing_arrays_using_short_array_syntax(self):
-        """parse short array syntax.
-        Bug #3626"""
+        """parse short array syntax.  Bug #3626"""
         phpsource = '''<?php
 $lang = [
     'item1' => 'value1',
@@ -629,8 +643,7 @@ $lang = [
         assert phpunit.source == "FAQ"
 
     def test_parsing_nested_arrays_with_space_before_array_declaration(self):
-        """parse the nested array syntax with whitespace before the array
-        declaration."""
+        """parse the nested array syntax with whitespace before the array declaration."""
         phpsource = '''$app_list_strings = array  (
             'Mailbox' => 'Mailbox',
             'moduleList' => array  (
@@ -708,8 +721,11 @@ $lang = [
         assert phpunit.source == "target_l2_1"
 
     def test_parsing_nested_arrays_with_array_declaration_in_next_line(self):
-        """parse the nested array syntax with array declaration in the next
-        line. Bug #2647"""
+        """
+        parse the nested array syntax with array declaration in the next line.
+
+        Bug #2647
+        """
         phpsource = '''$lang = array(
             'item1' => 'value1',
             'newsletter_frequency_dom' =>
@@ -731,9 +747,11 @@ $lang = [
         assert phpunit.source == "value2"
 
     def test_parsing_array_with_newline_after_delimiter(self):
-        """Parse array with newline between key and value.
+        """
+        Parse array with newline between key and value.
 
-        Bug #3628."""
+        Bug #3628.
+        """
         phpsource = '''$lang = array(
             'item1' => 'value1',
             'frequency' =>
@@ -781,8 +799,7 @@ $lang = array(
         assert bytes(phpfile).decode() == phpsource
 
     def test_slashstar_in_string(self):
-        """ignore the /* comment delimiter when it is part of a string.
-        Bug #3627"""
+        """ignore the /* comment delimiter when it is part of a string.  Bug #3627"""
         phpsource = '''$definition['key'] = 'Value /* value continued';
       $lang = array(
          'somekey' => 'Some value',
@@ -898,7 +915,8 @@ $texts = array(
         assert bytes(phpfile).decode() == phpsource
 
     def test_space_before_comma(self):
-        """check that spacing before comma or semicolon doesn't break parser
+        """
+        check that spacing before comma or semicolon doesn't break parser
 
         See #1898
         """
@@ -919,9 +937,11 @@ $texts = array(
         assert len(phpfile.units) == 9
 
     def test_equals_in_id(self):
-        """check that equals in id doesn't break parser
+        """
+        Check that equals in id doesn't break parser.
 
-        See #1929"""
+        See #1929
+        """
         phpsource = """
         $strings['key = value'] = 'Message';
         """
@@ -931,9 +951,11 @@ $texts = array(
         assert phpfile.units[0].name == "$strings['key = value']"
 
     def test_comma_in_string(self):
-        """check that comma in string doesn't break parser
+        """
+        Check that comma in string doesn't break parser.
 
-        See #3608"""
+        See #3608
+        """
         phpsource = """
         $t = array(
             'key' => ' text (comment **),**',

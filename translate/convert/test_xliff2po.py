@@ -213,6 +213,7 @@ garbage</note>
 
 class TestBasicXLIFF2PO(test_convert.TestConvertCommand, TestXLIFF2PO):
     """This tests a basic XLIFF file without xmlns attribute"""
+
     convertmodule = xliff2po
 
     xliffskeleton = '''<?xml version="1.0" ?>
@@ -237,6 +238,7 @@ class TestBasicXLIFF2PO(test_convert.TestConvertCommand, TestXLIFF2PO):
 
 class TestXLIFF2POCommand(test_convert.TestConvertCommand, TestXLIFF2PO):
     """Tests running actual xliff2po commands on files"""
+
     convertmodule = xliff2po
 
     def singleelement(self, pofile):

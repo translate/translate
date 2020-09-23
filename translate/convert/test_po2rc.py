@@ -70,7 +70,7 @@ class TestPO2RCCommand(test_convert.TestConvertCommand):
         options = self.help_check(options, "-l LANG, --lang=LANG")
 
     def test_convert(self):
-        """ Tests the conversion to a po file """
+        """Tests the conversion to a po file"""
         self.create_testfile("simple.rc", RC_SOURCE)
         self.create_testfile("simple.po", POFILE)
         self.run_command(

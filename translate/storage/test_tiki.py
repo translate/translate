@@ -44,9 +44,11 @@ class TestTikiStore:
         assert tikifile.units[0].target == r"test: |\n \r \t \\ \$ \"|"
 
     def test_parse_locations(self):
-        """This function will test to make sure the location matching is working.  It
+        """
+        This function will test to make sure the location matching is working.  It
         tests that locations are detected, the default "translated" case, and that
-        "unused" lines can start with //"""
+        "unused" lines can start with //
+        """
         tikisource = b"""
 "zero_source" => "zero_target",
 // ### Start of unused words

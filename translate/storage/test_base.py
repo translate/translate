@@ -42,8 +42,11 @@ def first_translatable(store):
 
 
 class TestTranslationUnit:
-    """Tests a TranslationUnit.
-    Derived classes can reuse these tests by pointing UnitClass to a derived Unit"""
+    """
+    Tests a TranslationUnit.
+    Derived classes can reuse these tests by pointing UnitClass to a derived Unit
+    """
+
     UnitClass = base.TranslationUnit
 
     def setup_method(self, method):
@@ -105,8 +108,10 @@ class TestTranslationUnit:
         assert unit.target == ""
 
     def test_escapes(self):
-        """Test all sorts of characters that might go wrong in a quoting and
-        escaping roundtrip."""
+        """
+        Test all sorts of characters that might go wrong in a quoting and
+        escaping roundtrip.
+        """
         unit = self.unit
         specials = ['Fish & chips', 'five < six', 'six > five', 'five &lt; six',
                     'Use &nbsp;', 'Use &amp;nbsp;', 'Use &amp;amp;nbsp;',
@@ -119,8 +124,10 @@ class TestTranslationUnit:
             assert unit.source == special
 
     def test_difficult_escapes(self):
-        """Test difficult characters that might go wrong in a quoting and
-        escaping roundtrip."""
+        """
+        Test difficult characters that might go wrong in a quoting and
+        escaping roundtrip.
+        """
 
         unit = self.unit
         specials = ['\\n', '\\t', '\\"', '\\ ',
@@ -193,8 +200,12 @@ class TestTranslationUnit:
 
 
 class TestTranslationStore:
-    """Tests a TranslationStore.
-    Derived classes can reuse these tests by pointing StoreClass to a derived Store"""
+    """
+    Tests a TranslationStore.
+
+    Derived classes can reuse these tests by pointing StoreClass to a derived Store
+    """
+
     StoreClass = base.TranslationStore
 
     def setup_method(self, method):

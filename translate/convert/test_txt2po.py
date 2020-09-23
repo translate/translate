@@ -223,6 +223,7 @@ This is a wiki page.
 
 class TestTxt2POCommand(test_convert.TestConvertCommand, TestTxt2PO):
     """Tests running actual txt2po commands on files"""
+
     convertmodule = txt2po
     defaultoptions = {"progress": "none"}
 

@@ -134,6 +134,7 @@ msgstr "Vind\\Opsies"
 
 class TestPO2CSVCommand(test_convert.TestConvertCommand, TestPO2CSV):
     """Tests running actual po2csv commands on files"""
+
     convertmodule = po2csv
 
     def test_help(self, capsys):

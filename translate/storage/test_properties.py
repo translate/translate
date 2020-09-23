@@ -145,7 +145,7 @@ class TestGwtProp(test_monolingual.TestMonolingualStore):
         assert propsource + '\n' == propregen
 
     def test_reduce(self):
-        """checks that if the target language has less plural form the generated properties file is correct """
+        """checks that if the target language has less plural form the generated properties file is correct"""
         propsource = 'test_me=I can code!\ntest_me[one]=I can code single!'
         propfile = self.propparse(propsource, "gwt", None, "en", "ja")  # Only "other" plural form
         print(propfile)
@@ -153,7 +153,7 @@ class TestGwtProp(test_monolingual.TestMonolingualStore):
         assert b'test_me=I can code!\n' == propfile.__bytes__()
 
     def test_increase(self):
-        """checks that if the target language has more plural form the generated properties file is correct """
+        """checks that if the target language has more plural form the generated properties file is correct"""
         propsource = 'test_me=I can code!\ntest_me[one]=I can code single!'
         propfile = self.propparse(propsource, "gwt", None, "en", "ar")  # All plural forms
         assert len(propfile.units) == 1
@@ -243,7 +243,7 @@ class TestProp(test_monolingual.TestMonolingualStore):
         assert b"\\" not in regensource
 
     def test_newlines_startend(self):
-        """check that we preserve \n that appear at start and end of properties"""
+        r"""check that we preserve \n that appear at start and end of properties"""
         propsource = "newlines=\\ntext\\n"
         propregen = self.propregen(propsource)
         assert propsource + '\n' == propregen
@@ -269,8 +269,10 @@ class TestProp(test_monolingual.TestMonolingualStore):
             assert propunit.source == value
 
     def test_key_value_delimiters_simple(self):
-        """test that we can handle colon, equals and space delimiter
-        between key and value.  We don't test any space removal or escaping"""
+        """
+        test that we can handle colon, equals and space delimiter
+        between key and value.  We don't test any space removal or escaping
+        """
         delimiters = [":", "=", " "]
         for delimiter in delimiters:
             propsource = "key%svalue" % delimiter
@@ -396,7 +398,7 @@ key=value
         assert propfile.personality.encode(propunit.source) == 'I am a “value”'
 
     def test_mac_strings_newlines(self):
-        """test newlines \n within a strings files"""
+        r"""test newlines \n within a strings files"""
         propsource = r'''"key" = "value\nvalue";'''.encode('utf-16')
         propfile = self.propparse(propsource, personality="strings")
         assert len(propfile.units) == 1
@@ -767,9 +769,11 @@ class TestXWikiPageProperties(test_monolingual.TestMonolingualStore):
             propfile.encoding) == propsource + "\n"
 
     def test_cleaning_attributes(self):
-        """Ensure that the XML is correctly formatted during serialization:
+        """
+        Ensure that the XML is correctly formatted during serialization:
         it should not contain objects or attachments tags, and translation should be
-        set to 1."""
+        set to 1.
+        """
         ## Real XWiki files are containing multiple attributes on xwikidoc tag: we're not testing it there
         ## because ElementTree changed its implementation between Python 3.7 and 3.8 which changed the order of output of the attributes
         ## it makes it more difficult to assert it on multiple versions of Python.
@@ -919,7 +923,9 @@ class TestXWikiFullPage(test_monolingual.TestMonolingualStore):
         assert generatedcontent.getvalue().decode(propfile.encoding) == expected_content + "\n"
 
     def test_parse(self):
-        """Tests converting to a string and parsing the resulting string.
+        """
+        Tests converting to a string and parsing the resulting string.
+
         In case of an XWiki Full Page new units are ignored
         unless they are using 'content' or 'title' ids.
         """
@@ -947,8 +953,11 @@ class TestXWikiFullPage(test_monolingual.TestMonolingualStore):
         assert newstore.units[1]._get_source_unit().source == store.units[3].target
 
     def test_files(self):
-        """Tests saving to and loading from files
-        In case of an XWiki Full Page new units are ignored."""
+        """
+        Tests saving to and loading from files
+
+        In case of an XWiki Full Page new units are ignored.
+        """
         store = self.StoreClass()
         unit1 = store.addsourceunit("Test String")
         unit1.target = "Test String"
@@ -975,8 +984,10 @@ class TestXWikiFullPage(test_monolingual.TestMonolingualStore):
         assert newstore.units[1]._get_source_unit().source == store.units[3].target
 
     def test_save(self):
-        """Tests that we can save directly back to the original file.
-        In case of an XWiki Full Page new units are ignored."""
+        """
+        Tests that we can save directly back to the original file.
+        In case of an XWiki Full Page new units are ignored.
+        """
         store = self.StoreClass()
         unit1 = store.addsourceunit("Test String")
         unit1.target = "Test String"
@@ -1005,9 +1016,11 @@ class TestXWikiFullPage(test_monolingual.TestMonolingualStore):
         assert newstore.units[1]._get_source_unit().source == store.units[3].target
 
     def test_cleaning_attributes(self):
-        """Ensure that the XML is correctly formatted during serialization:
+        """
+        Ensure that the XML is correctly formatted during serialization:
         it should not contain objects or attachments tags, and translation should be
-        set to 1."""
+        set to 1.
+        """
         ## Real XWiki files are containing multiple attributes on xwikidoc tag: we're not testing it there
         ## because ElementTree changed its implementation between Python 3.7 and 3.8 which changed the order of output of the attributes
         ## it makes it more difficult to assert it on multiple versions of Python.

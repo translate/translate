@@ -75,6 +75,7 @@ msgstr ""
 
 class TestJson2POCommand(test_convert.TestConvertCommand, TestJson2PO):
     """Tests running actual json2po commands on files"""
+
     convertmodule = json2po
     defaultoptions = {"progress": "none"}
 

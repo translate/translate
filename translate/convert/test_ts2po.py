@@ -143,6 +143,7 @@ new line</translation>
 
 class TestTS2POCommand(test_convert.TestConvertCommand, TestTS2PO):
     """Tests running actual ts2po commands on files"""
+
     convertmodule = ts2po
 
     def test_help(self, capsys):

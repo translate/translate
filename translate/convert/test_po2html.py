@@ -152,6 +152,7 @@ sin.
 
 class TestPO2HtmlCommand(test_convert.TestConvertCommand, TestPO2Html):
     """Tests running actual po2oo commands on files"""
+
     convertmodule = po2html
 
     def test_help(self, capsys):

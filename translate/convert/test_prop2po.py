@@ -346,6 +346,7 @@ message-multiedit-header[many]={0,number} selected
 
 class TestProp2POCommand(test_convert.TestConvertCommand, TestProp2PO):
     """Tests running actual prop2po commands on files"""
+
     convertmodule = prop2po
     defaultoptions = {"progress": "none"}
 

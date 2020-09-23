@@ -27,16 +27,20 @@ class TestMozLangUnit(test_base.TestTranslationUnit):
     UnitClass = mozilla_lang.LangUnit
 
     def test_translate_but_same(self):
-        """Mozilla allows {ok} to indicate a line that is the
-        same in source and target on purpose"""
+        """
+        Mozilla allows {ok} to indicate a line that is the
+        same in source and target on purpose
+        """
         unit = self.UnitClass("Open")
         unit.target = "Open"
         assert unit.target == "Open"
         assert str(unit).endswith(" {ok}")
 
     def test_untranslated(self):
-        """The target is always written to files and is never blank. If it is
-        truly untranslated then it won't end with '{ok}."""
+        """
+        The target is always written to files and is never blank. If it is
+        truly untranslated then it won't end with '{ok}.
+        """
         unit = self.UnitClass("Open")
         assert unit.target is None
         assert str(unit).find("Open") == 1
@@ -110,7 +114,7 @@ class TestMozLangFile(test_base.TestTranslationStore):
         assert bytes(store).decode('utf-8') == lang
 
     def test_crlf(self):
-        """While \n is preferred \r\n is allowed"""
+        r"""While \n is preferred \r\n is allowed"""
         lang = ("# Comment\r\n"
                 ";Source\r\n"
                 "Target\r\n"

@@ -215,7 +215,7 @@ class TestDTD2PO:
         assert self.countelements(pofile) == 2
 
     def test_carriage_return_in_multiline_dtd(self):
-        """test that we create nice PO files when we find a \r\n in a multiline DTD element"""
+        r"""test that we create nice PO files when we find a \r\n in a multiline DTD element"""
         dtdsource = ('<!ENTITY  noupdatesfound.intro "First line then \r\n'
                      '                                next lines.">\n')
         pofile = self.dtd2po(dtdsource)
@@ -365,6 +365,7 @@ Some other text
 
 class TestDTD2POCommand(test_convert.TestConvertCommand, TestDTD2PO):
     """Tests running actual dtd2po commands on files"""
+
     convertmodule = dtd2po
     defaultoptions = {"progress": "none"}
 

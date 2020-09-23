@@ -6,11 +6,12 @@ class TestCatkeysUnit(test_base.TestTranslationUnit):
     UnitClass = catkeys.CatkeysUnit
 
     def test_difficult_escapes(self):
-        r"""Catkeys files need to perform magic with escapes.
+        r"""
+        Catkeys files need to perform magic with escapes.
 
-           Catkeys does not accept line breaks in its TM (even though they would be
-           valid in CSV) thus we turn \\n into \n and reimplement the base class test but
-           eliminate a few of the actual tests.
+        Catkeys does not accept line breaks in its TM (even though they would
+        be valid in CSV) thus we turn \\n into \n and reimplement the base
+        class test but eliminate a few of the actual tests.
         """
         unit = self.unit
         specials = ['\\"', '\\ ',

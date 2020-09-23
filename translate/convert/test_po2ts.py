@@ -132,6 +132,7 @@ Linea 3</translation>''' in tsfile
 
 class TestPO2TSCommand(test_convert.TestConvertCommand, TestPO2TS):
     """Tests running actual po2ts commands on files"""
+
     convertmodule = po2ts
 
     def test_help(self, capsys):
