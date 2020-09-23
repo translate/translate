@@ -33,7 +33,6 @@ jobs:
     - name: Install pip dependencies
       run: |
         pip install -r requirements/dev.txt
-        pip install twine virtualenv
     - name: Build sdist
       run: make build
     - name: Twine check
