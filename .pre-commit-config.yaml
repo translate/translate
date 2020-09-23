@@ -16,8 +16,10 @@ repos:
     rev: v5.5.2
     hooks:
       - id: isort
-  - repo: https://github.com/PyCQA/pydocstyle
-    rev: 5.1.1
+  - repo: local
     hooks:
       - id: pydocstyle
-        args: ["--config=setup.cfg"]
+        name: pydocstyle
+        entry: pydocstyle
+        language: system
+        types: [python]
