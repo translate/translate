@@ -469,6 +469,7 @@ class UnitChecker:
                 if not filtermessage:
                     # Should be quite rare
                     import pydoc
+
                     # Strip out unnecessary whitespace from docstring
                     filtermessage = pydoc.getdoc(filterfunction)
                 # We test some preconditions that aren't actually a cause for

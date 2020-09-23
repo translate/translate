@@ -129,13 +129,14 @@ Name and Value pairs:
 import collections
 import re
 from codecs import iterencode
+from copy import deepcopy
+
+from lxml import etree
 
 from translate.lang import data
 from translate.misc import quote
 from translate.misc.multistring import multistring
 from translate.storage import base
-from copy import deepcopy
-from lxml import etree
 
 
 labelsuffixes = (".label", ".title")
