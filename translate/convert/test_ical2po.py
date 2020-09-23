@@ -415,6 +415,7 @@ msgstr "Valor"
 
 class TestIcal2POCommand(test_convert.TestConvertCommand, TestIcal2PO):
     """Tests running actual ical2po commands on files"""
+
     convertmodule = ical2po
     defaultoptions = {"progress": "none"}
 

@@ -50,8 +50,7 @@ class TestHTML2PO:
         self.countunits(pofile, 0)
 
     def check_phpsnippet(self, php):
-        """Given a snippet of php, put it into an HTML shell and see
-        if the results are as expected"""
+        """Given a snippet of php, put it into an HTML shell and see if the results are as expected"""
         self.check_single('<html><head></head><body><p><a href="' + php + '/site.html">Body text</a></p></body></html>', "Body text")
         self.check_single('<html><head></head><body><p>More things in <a href="' + php + '/site.html">Body text</a></p></body></html>', 'More things in <a href="' + php + '/site.html">Body text</a>')
         self.check_single('<html><head></head><body><p>' + php + '</p></body></html>', php)
@@ -510,6 +509,7 @@ ghi ?>'''
 
 class TestHTML2POCommand(test_convert.TestConvertCommand, TestHTML2PO):
     """Tests running actual html2po commands on files"""
+
     convertmodule = html2po
     defaultoptions = {"progress": "none"}
 

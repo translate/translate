@@ -1307,8 +1307,10 @@ def test_simpleplurals():
 
 
 def test_nplurals():
-    """Test that we can find the wrong number of plural forms. Note that this
-    test uses a UnitChecker, not a translation checker."""
+    """
+    Test that we can find the wrong number of plural forms. Note that this
+    test uses a UnitChecker, not a translation checker.
+    """
     checker = checks.StandardUnitChecker()
     unit = po.pounit("")
 
@@ -1488,7 +1490,8 @@ def test_skip_checks_per_language_in_some_checkers():
 
 
 def test_mozilla_no_accelerators_for_indic():
-    """Test accelerators in MozillaChecker fails if accelerator in target.
+    """
+    Test accelerators in MozillaChecker fails if accelerator in target.
 
     No-accelerators is a special behavior of accelerators check in some
     languages that is present in MozillaChecker.
@@ -1506,7 +1509,8 @@ def test_mozilla_no_accelerators_for_indic():
 
 
 def test_noaccelerators_only_in_mozilla_checker():
-    """Test no-accelerators check is only present in Mozilla checker.
+    """
+    Test no-accelerators check is only present in Mozilla checker.
 
     No-accelerators is a special behavior of accelerators check in some
     languages that is present in MozillaChecker.

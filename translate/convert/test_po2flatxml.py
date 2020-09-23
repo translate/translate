@@ -131,6 +131,7 @@ msgstr "Two"
 
 class TestPO2FlatXMLCommand(test_convert.TestConvertCommand):
     """Tests running actual po2flatxml commands on files"""
+
     convertmodule = po2flatxml
 
     def test_help(self, capsys):

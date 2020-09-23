@@ -29,7 +29,7 @@ class TestTxtFile(test_monolingual.TestMonolingualStore):
         assert self.txtregen(txtsource) == txtsource
 
     def test_multipleblocks(self):
-        """ check that multiple blocks are parsed correctly"""
+        """check that multiple blocks are parsed correctly"""
         txtsource = '''One\nOne\n\nTwo\n---\n\nThree'''
         txtfile = self.txtparse(txtsource)
         assert len(txtfile.units) == 3

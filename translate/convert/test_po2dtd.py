@@ -93,7 +93,7 @@ class TestPO2DTD:
         assert b"</span>" in dtdsource
 
     def test_escapedstr(self):
-        """tests that \n in msgstr is escaped correctly in dtd"""
+        r"""tests that \n in msgstr is escaped correctly in dtd"""
         multilinepo = '''#: pref.menuPath\nmsgid "Hello\\nEveryone"\nmsgstr "Good day\\nAll"\n'''
         dtdfile = self.po2dtd(multilinepo)
         dtdsource = bytes(dtdfile)
@@ -165,9 +165,11 @@ msgstr "Ileti"
         assert '"S"' in dtdsource
 
     def test_accesskey_and_amp_case_no_accesskey(self):
-        """tests that accesskey and &amp; can work together
+        """
+        tests that accesskey and &amp; can work together
 
-        If missing we use the source accesskey"""
+        If missing we use the source accesskey
+        """
         po_snippet = r'''#: key.label
 #: key.accesskey
 msgid "Colour & &Light"
@@ -182,9 +184,11 @@ msgstr "Lig en Kleur"
         assert '"L"' in dtdsource
 
     def test_accesskey_and_amp_source_no_amp_in_target(self):
-        """tests that accesskey and &amp; can work together
+        """
+        tests that accesskey and &amp; can work together
 
-        If present we use the target accesskey"""
+        If present we use the target accesskey
+        """
         po_snippet = r'''#: key.label
 #: key.accesskey
 msgid "Colour & &Light"
@@ -199,10 +203,12 @@ msgstr "Lig en &Kleur"
         assert '"K"' in dtdsource
 
     def test_accesskey_and_amp_case_both_amp_and_accesskey(self):
-        """tests that accesskey and &amp; can work together
+        """
+        tests that accesskey and &amp; can work together
 
         If present both & (and) and a marker then we use the correct source
-        accesskey"""
+        accesskey
+        """
         po_snippet = r'''#: key.label
 #: key.accesskey
 msgid "Colour & &Light"
@@ -217,10 +223,12 @@ msgstr "Lig & &Kleur"
         assert '"K"' in dtdsource
 
     def test_accesskey_and_amp_case_amp_no_accesskey(self):
-        """tests that accesskey and &amp; can work together
+        """
+        tests that accesskey and &amp; can work together
 
         If present both & (and) and a no marker then we use the correct source
-        accesskey"""
+        accesskey
+        """
         po_snippet = r'''#: key.label
 #: key.accesskey
 msgid "Colour & &Light"
@@ -365,7 +373,7 @@ msgstr "Simple string 3"
         assert bytes(newdtd_no_template).decode('utf-8') == dtdexpected_no_template
 
     def test_newlines_escapes(self):
-        """check that we can handle a \n in the PO file"""
+        r"""check that we can handle a \n in the PO file"""
         posource = '''#: simple.label\n#: simple.accesskey\nmsgid "A hard coded newline.\\n"\nmsgstr "Hart gekoeerde nuwe lyne\\n"\n'''
         dtdtemplate = '<!ENTITY  simple.label "A hard coded newline.\n">\n'
         dtdexpected = '''<!ENTITY  simple.label "Hart gekoeerde nuwe lyne\n">\n'''
@@ -508,6 +516,7 @@ msgstr "Dipukutshwayo3"
 
 class TestPO2DTDCommand(test_convert.TestConvertCommand, TestPO2DTD):
     """Tests running actual po2dtd commands on files"""
+
     convertmodule = po2dtd
     defaultoptions = {"progress": "none"}
     # TODO: because of having 2 base classes, we need to call all their setup and teardown methods

@@ -33,9 +33,11 @@ class TestOO2PO:
             return pofile.units[0]
 
     def roundtripstring(self, filename, entitystring):
-        """Convert the supplied string as part of an OpenOffice.org GSI file to po and back.
+        """
+        Convert the supplied string as part of an OpenOffice.org GSI file to po and back.
 
-        Return the string once it has been through all the conversions."""
+        Return the string once it has been through all the conversions.
+        """
 
         ootemplate = r'helpcontent2	%s	0	help	par_id3150670 35				0	en-US	%s				2002-02-02 02:02:02'
 
@@ -170,6 +172,7 @@ class TestOO2PO:
 
 class TestOO2POCommand(test_convert.TestConvertCommand, TestOO2PO):
     """Tests running actual oo2po commands on files"""
+
     convertmodule = oo2po
 
     def test_help(self, capsys):

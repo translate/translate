@@ -130,6 +130,7 @@ class TestFlatXML2PO:
 
 class TestFlatXML2POCommand(test_convert.TestConvertCommand):
     """Tests running actual flatxml2po commands on files"""
+
     convertmodule = flatxml2po
 
     def test_help(self, capsys):

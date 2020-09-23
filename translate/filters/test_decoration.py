@@ -28,9 +28,11 @@ def test_isvalidaccelerator():
 
 
 def test_find_marked_variables():
-    """check that we can identify variables correctly, the first returned
+    """
+    check that we can identify variables correctly, the first returned
     value is the start location, the second returned value is the actual
-    variable sans decoations"""
+    variable sans decoations
+    """
     variables = decoration.findmarkedvariables("The <variable> string", "<", ">")
     assert variables == [(4, "variable")]
     variables = decoration.findmarkedvariables("The $variable string", "$", 1)

@@ -16,16 +16,19 @@
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, see <http://www.gnu.org/licenses/>.
 
-"""Test the various functions for combining and extracting accesskeys and
-labels"""
-
+"""
+Test the various functions for combining and extracting accesskeys and
+labels
+"""
 
 from translate.convert import accesskey
 
 
 def test_get_label_and_accesskey():
-    """test that we can extract the label and accesskey components from an
-    accesskey+label string"""
+    """
+    test that we can extract the label and accesskey components from an
+    accesskey+label string
+    """
     assert accesskey.extract("") == ("", "")
     assert accesskey.extract("File") == ("File", "")
     assert accesskey.extract("&File") == ("File", "F")
@@ -40,8 +43,10 @@ def test_extract_bad_accesskeys():
 
 
 def test_ignore_entities():
-    """test that we don't get confused with entities and a & access key
-    marker"""
+    """
+    test that we don't get confused with entities and a & access key
+    marker
+    """
     assert accesskey.extract("Set &browserName; as &Default") != ("Set &browserName; as &Default", "b")
     assert accesskey.extract("Set &browserName; as &Default") == ("Set &browserName; as Default", "D")
 
@@ -81,15 +86,19 @@ def test_end_of_string():
 
 
 def test_combine_label_accesskey():
-    """test that we can combine accesskey and label to create a label+accesskey
-    string"""
+    """
+    test that we can combine accesskey and label to create a label+accesskey
+    string
+    """
     assert accesskey.combine("File", "F") == "&File"
     assert accesskey.combine("File", "F", "~") == "~File"
 
 
 def test_combine_label_accesskey_different_capitals():
-    """test that we can combine accesskey and label to create a label+accesskey
-    string when we have more then one case or case is wrong."""
+    """
+    test that we can combine accesskey and label to create a label+accesskey
+    string when we have more then one case or case is wrong.
+    """
     # Prefer the correct case, even when an alternate case occurs first
     assert accesskey.combine("Close Other Tabs", "o") == "Cl&ose Other Tabs"
     assert accesskey.combine("Other Closed Tab", "o") == "Other Cl&osed Tab"

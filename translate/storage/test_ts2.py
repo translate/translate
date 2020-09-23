@@ -186,8 +186,7 @@ class TestTSfile(test_base.TestTranslationStore):
         assert tsfile.nplural() == 3
 
     def test_language(self):
-        """Check that we can get and set language and sourcelanguage
-        in the header"""
+        """Check that we can get and set language and sourcelanguage in the header"""
         tsstr = '''<!DOCTYPE TS>
 <TS version="2.0" language="fr" sourcelanguage="de">
 </TS>

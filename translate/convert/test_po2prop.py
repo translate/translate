@@ -163,8 +163,10 @@ sepComma = ،\\u0020
         assert propfile == propexpected
 
     def test_mozilla_all_whitespace(self):
-        """Check for all white-space Mozilla hack, remove when the
-        corresponding code is removed."""
+        """
+        Check for all white-space Mozilla hack, remove when the corresponding code
+        is removed.
+        """
         posource = '''#: accesskey-accept
 msgctxt "accesskey-accept"
 msgid ""
@@ -493,6 +495,7 @@ message-multiedit-header[many]={0,number} gekies
 
 class TestPO2PropCommand(test_convert.TestConvertCommand, TestPO2Prop):
     """Tests running actual po2prop commands on files"""
+
     convertmodule = po2prop
     defaultoptions = {"progress": "none"}
 

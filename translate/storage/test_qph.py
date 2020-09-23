@@ -73,8 +73,7 @@ class TestQphFile(test_base.TestTranslationStore):
         assert newfile.findunit("Concept").target == "Konsep"
 
     def test_language(self):
-        """Check that we can get and set language and sourcelanguage
-        in the header"""
+        """Check that we can get and set language and sourcelanguage in the header"""
         qphstr = '''<!DOCTYPE QPH>
 <QPH language="fr" sourcelanguage="de">
 </QPH>

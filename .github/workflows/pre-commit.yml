@@ -28,3 +28,25 @@ jobs:
           pip install -r requirements/dev.txt
       - name: pre-commit
         run: pre-commit run --all
+
+  pydocstyle:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/cache@v2.1.1
+        with:
+          path: |
+            ~/.cache/pip
+            ~/.cache/pre-commit
+          key: ${{ runner.os }}-pre-commit-${{ hashFiles('requirements/*.txt') }}-${{ hashFiles('.pre-commit-config.yaml') }}
+      - name: Setup Python
+        uses: actions/setup-python@v2.1.2
+        with:
+          python-version: 3.8
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip wheel
+          pip install -r requirements/dev.txt
+      - name: Run pydocstyle
+        run: pydocstyle

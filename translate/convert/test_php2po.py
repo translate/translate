@@ -268,6 +268,7 @@ $lang['prefPanel-smime'] = 'Security';'''
 
 class TestPhp2POCommand(test_convert.TestConvertCommand, TestPhp2PO):
     """Tests running actual php2po commands on files"""
+
     convertmodule = php2po
     defaultoptions = {"progress": "none"}
 

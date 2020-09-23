@@ -20,8 +20,10 @@ class BaseTestFilter:
 
     def filter(self, translationstore, checkerconfig=None,
                cmdlineoptions=None):
-        """Helper that passes a translations store through a filter, and
-        returns the resulting store."""
+        """
+        Helper that passes a translations store through a filter, and
+        returns the resulting store.
+        """
         if cmdlineoptions is None:
             cmdlineoptions = []
         options, args = pofilter.cmdlineparser().parse_args([self.filename] +
@@ -56,8 +58,10 @@ class BaseTestFilter:
         assert headerless_len(filter_result.units) == 0
 
     def test_ignore_if_already_marked(self):
-        """check that we don't add another failing marker if the message is
-        already marked as failed"""
+        """
+        check that we don't add another failing marker if the message is
+        already marked as failed
+        """
         self.unit.target = ''
         filter_result = self.filter(self.translationstore,
                                     cmdlineoptions=["--test=untranslated"])
@@ -74,8 +78,7 @@ class BaseTestFilter:
         assert 'untranslated' in errors
 
     def test_non_existant_check(self):
-        """check that we report an error if a user tries to run a non-existant
-        test"""
+        """check that we report an error if a user tries to run a non-existant test"""
         filter_result = self.filter(self.translationstore,
                                     cmdlineoptions=["-t nonexistant"])
         # TODO Not sure how to check for the stderror result of: warning: could
@@ -178,8 +181,10 @@ class BaseTestFilter:
         assert len(first_translatable(filter_result).geterrors()) == 0
 
     def test_unicode(self):
-        """tests that we can handle UTF-8 encoded characters when there is no
-        known header specified encoding"""
+        """
+        tests that we can handle UTF-8 encoded characters when there is no
+        known header specified encoding
+        """
         self.unit.source = 'Bézier curve'
         self.unit.target = 'Bézier-kurwe'
         filter_result = self.filter(self.translationstore)
@@ -198,6 +203,7 @@ class BaseTestFilter:
 
 class TestPOFilter(BaseTestFilter):
     """Test class for po-specific tests."""
+
     filetext = '#: test.c\nmsgid "test"\nmsgstr "rest"\n'
     filename = 'test.po'
 
@@ -221,6 +227,7 @@ msgstr "koei"
 
 class TestXliffFilter(BaseTestFilter):
     """Test class for xliff-specific tests."""
+
     filetext = '''<?xml version="1.0" encoding="utf-8"?>
 <xliff version="1.1" xmlns="urn:oasis:names:tc:xliff:document:1.1">
 <file original='NoName' source-language="en" datatype="plaintext">
@@ -257,6 +264,7 @@ class TestXliffFilter(BaseTestFilter):
 
 class TestTMXFilter(BaseTestFilter):
     """Test class for TMX-specific tests."""
+
     filetext = '''<!DOCTYPE tmx SYSTEM "tmx14.dtd">
 <tmx version="1.4">
   <header creationtool="Translate Toolkit"

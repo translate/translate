@@ -16,6 +16,7 @@ class TestOO2XLIFF(test_oo2po.TestOO2PO):
 
 class TestOO2POCommand(test_convert.TestConvertCommand, TestOO2XLIFF):
     """Tests running actual oo2xliff commands on files"""
+
     convertmodule = oo2xliff
 
     def test_help(self, capsys):

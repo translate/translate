@@ -13,8 +13,7 @@ importorskip("aeidon")
 class TestPO2Sub:
 
     def po2sub(self, posource):
-        """helper that converts po source to subtitle source without requiring
-        files"""
+        """helper that converts po source to subtitle source without requiring files"""
         inputfile = BytesIO(posource.encode())
         inputpo = po.pofile(inputfile)
         convertor = po2sub.po2sub()
@@ -22,8 +21,7 @@ class TestPO2Sub:
         return outputsub.decode('utf-8')
 
     def merge2sub(self, subsource, posource):
-        """helper that merges po translations to subtitle source without
-        requiring files"""
+        """helper that merges po translations to subtitle source without requiring files"""
         inputfile = BytesIO(posource.encode())
         inputpo = po.pofile(inputfile)
         templatefile = BytesIO(subsource.encode())
@@ -65,6 +63,7 @@ Koei koei koei koei
 
 class TestPO2SubCommand(test_convert.TestConvertCommand, TestPO2Sub):
     """Tests running actual po2sub commands on files"""
+
     convertmodule = po2sub
     defaultoptions = {"progress": "none"}
 

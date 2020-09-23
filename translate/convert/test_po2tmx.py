@@ -189,6 +189,7 @@ msgstr "Bézier-kurwe"
 
 class TestPO2TMXCommand(test_convert.TestConvertCommand, TestPO2TMX):
     """Tests running actual po2tmx commands on files"""
+
     convertmodule = po2tmx
 
     def test_help(self, capsys):

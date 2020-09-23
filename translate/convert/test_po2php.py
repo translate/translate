@@ -189,9 +189,11 @@ msgstr "Jaar"
         assert phpfile == [phpexpected]
 
     def test_multiline(self):
-        """Check that we convert multiline strings correctly.
+        """
+        Check that we convert multiline strings correctly.
 
-        Bug 1296."""
+        Bug 1296.
+        """
         posource = r'''#: $string['upgradesure']
 msgid ""
 "Your Moodle files have been changed, and you are\n"
@@ -301,6 +303,7 @@ msgstr "target2"
 
 class TestPO2PhpCommand(test_convert.TestConvertCommand, TestPO2Php):
     """Tests running actual po2php commands on files"""
+
     convertmodule = po2php
     defaultoptions = {"progress": "none"}
 

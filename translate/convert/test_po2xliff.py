@@ -120,8 +120,10 @@ msgstr "Gebruik \\\"."
         assert xmltext.find(r"\\") == -1
 
     def getcontexttuples(self, node, namespace):
-        """Returns all the information in the context nodes as a list of tuples
-        of (type, text)"""
+        """
+        Returns all the information in the context nodes as a list of tuples
+        of (type, text)
+        """
         contexts = node.findall(".//{%s}context" % namespace)
         return [(context.get("context-type"), getText(context)) for context in contexts]
 

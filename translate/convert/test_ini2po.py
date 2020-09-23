@@ -137,6 +137,7 @@ msgstr "ṽḁḽṻḝ\tṽḁḽṻḝ2\n"
 
 class TestIni2POCommand(test_convert.TestConvertCommand, TestIni2PO):
     """Tests running actual ini2po commands on files"""
+
     convertmodule = ini2po
     defaultoptions = {"progress": "none"}
 

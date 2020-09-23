@@ -172,6 +172,7 @@ msgstr "Ola mundo!"
 
 class TestPO2TxtCommand(test_convert.TestConvertCommand, TestPO2Txt):
     """Tests running actual po2txt commands on files"""
+
     convertmodule = po2txt
     defaultoptions = {"progress": "none"}
 

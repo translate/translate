@@ -136,6 +136,7 @@ msgstr ""
 
 class TestCSV2POCommand(test_convert.TestConvertCommand, TestCSV2PO):
     """Tests running actual csv2po commands on files"""
+
     convertmodule = csv2po
 
     def test_help(self, capsys):

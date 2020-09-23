@@ -276,6 +276,7 @@ key=primeiro
 
 class TestPO2IniCommand(test_convert.TestConvertCommand, TestPO2Ini):
     """Tests running actual po2ini commands on files"""
+
     convertmodule = po2ini
     defaultoptions = {"progress": "none"}
 

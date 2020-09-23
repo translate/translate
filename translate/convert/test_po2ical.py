@@ -334,6 +334,7 @@ END:VCALENDAR
 
 class TestPO2IcalCommand(test_convert.TestConvertCommand, TestPO2Ical):
     """Tests running actual po2ical commands on files"""
+
     convertmodule = po2ical
     defaultoptions = {"progress": "none"}
 

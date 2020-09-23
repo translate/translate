@@ -156,6 +156,7 @@ msgstr "Aa1: <empty>"
 
 class TestPO2OOCommand(test_convert.TestConvertCommand, TestPO2OO):
     """Tests running actual po2oo commands on files"""
+
     convertmodule = po2oo
 
     def test_help(self, capsys):
