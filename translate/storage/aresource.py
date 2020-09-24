@@ -301,16 +301,19 @@ class AndroidResourceUnit(base.TranslationUnit):
             if self._store is not None:
                 cloned_doc = copy.deepcopy(self._store.document)
                 cloned_root = cloned_doc.getroot()
-                for child in cloned_root.iterchildren():
-                    cloned_root.remove(child)
-                template = etree.tostring(cloned_doc, encoding='unicode')
+                cloned_root.clear()
+                template = etree.tostring(cloned_doc, encoding='unicode', doctype=copy.copy(self._store._doctype))
             else:
                 template = '<resources></resources>'
+            if '</resources>' in template:
+                match = "</resources>"
+                prefix = ""
+            else:
+                match = "<resources/>"
+                prefix = "<resources>"
+            newstring = template.replace(match, f'{prefix}<string>{target}</string></resources>')
             try:
-                newstring = etree.fromstring(
-                    template.replace('</resources>', '<string>%s</string></resources>' % target),
-                    parser
-                )[0]
+                newstring = etree.fromstring(newstring, parser)[0]
             except Exception:
                 # Fallback to string with XML escaping
                 xmltarget.text = self.escape(target)

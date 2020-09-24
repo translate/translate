@@ -1,3 +1,4 @@
+from copy import deepcopy
 
 import pytest
 from lxml import etree
@@ -560,14 +561,20 @@ class TestAndroidResourceFile(test_monolingual.TestMonolingualStore):
 <resources>
     <string name="app_name">&appName;</string>
     <string name="app_core">&appName; Core</string>
-</resources>'''.encode('utf-8')
+</resources>'''
         store = self.StoreClass()
-        store.parse(content)
+        store.parse(content.encode())
         second = self.StoreClass()
-        second.addunit(store.units[0], True)
-        second.addunit(store.units[1], True)
-        store = self.StoreClass()
-        assert bytes(second) == content
+        newunit = deepcopy(store.units[0])
+        second.addunit(newunit, True)
+        newunit.target = "&appName;"
+        newunit = deepcopy(store.units[1])
+        second.addunit(newunit, True)
+        newunit.target = "&appName; Core"
+        # The original store should be unchanged
+        assert bytes(store).decode() == content
+        # The new store should have same content
+        assert bytes(second).decode() == content
 
     def test_markup_remove(self):
         template = '''<?xml version="1.0" encoding="utf-8"?>
