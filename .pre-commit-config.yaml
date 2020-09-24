@@ -8,6 +8,8 @@ repos:
       - id: check-merge-conflict
       - id: check-json
       - id: requirements-txt-fixer
+      - id: fix-encoding-pragma
+        args: [--remove]
   - repo: meta
     hooks:
       - id: check-hooks-apply
