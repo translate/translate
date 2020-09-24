@@ -522,6 +522,21 @@ class TestAndroidResourceFile(test_monolingual.TestMonolingualStore):
         store.units[1].target = "&appName; Core"
         assert bytes(store) == content
 
+    def test_invalid_entity(self):
+        content = '''<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE resources [
+<!ENTITY appName "Linphone">
+]>
+<resources>
+    <string name="app_name">&appName;</string>
+    <string name="app_core">&appName; Core</string>
+</resources>'''
+        store = self.StoreClass()
+        store.parse(content.encode())
+        store.units[0].target = "&appName;"
+        store.units[1].target = "&otherName; Core"
+        assert bytes(store).decode() == content.replace('&appName; Core', '&amp;otherName; Core')
+
     def test_indent(self):
         content = '''<?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE resources [
@@ -553,7 +568,7 @@ class TestAndroidResourceFile(test_monolingual.TestMonolingualStore):
         ])
         assert bytes(store) == content
 
-    def test_entity_add(self):
+    def test_entity_add(self, edit=True):
         content = '''<?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE resources [
 <!ENTITY appName "Zkouška">
@@ -567,14 +582,19 @@ class TestAndroidResourceFile(test_monolingual.TestMonolingualStore):
         second = self.StoreClass()
         newunit = deepcopy(store.units[0])
         second.addunit(newunit, True)
-        newunit.target = "&appName;"
+        if edit:
+            newunit.target = "&appName;"
         newunit = deepcopy(store.units[1])
         second.addunit(newunit, True)
-        newunit.target = "&appName; Core"
+        if edit:
+            newunit.target = "&appName; Core"
         # The original store should be unchanged
         assert bytes(store).decode() == content
         # The new store should have same content
         assert bytes(second).decode() == content
+
+    def test_entity_add_noedit(self):
+        self.test_entity_add(edit=False)
 
     def test_markup_remove(self):
         template = '''<?xml version="1.0" encoding="utf-8"?>

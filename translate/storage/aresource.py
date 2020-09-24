@@ -294,6 +294,13 @@ class AndroidResourceUnit(base.TranslationUnit):
                                for child in cloned_target.iterchildren()])
             return target
 
+    def set_xml_text_plain(self, target, xmltarget):
+        # Remove possible old elements
+        for x in xmltarget.iterchildren():
+            xmltarget.remove(x)
+        # Handle text only
+        xmltarget.text = self.escape(target)
+
     def set_xml_text_value(self, target, xmltarget):
         if '<' in target or '&' in target:
             # Try to handle it as legacy XML
@@ -315,8 +322,7 @@ class AndroidResourceUnit(base.TranslationUnit):
             try:
                 newstring = etree.fromstring(newstring, parser)[0]
             except Exception:
-                # Fallback to string with XML escaping
-                xmltarget.text = self.escape(target)
+                self.set_xml_text_plain(target, xmltarget)
             else:
                 # Escape all text parts.
                 if newstring.text is not None:
@@ -337,11 +343,7 @@ class AndroidResourceUnit(base.TranslationUnit):
                 for x in newstring.iterchildren():
                     xmltarget.append(x)
         else:
-            # Remove possible old elements
-            for x in xmltarget.iterchildren():
-                xmltarget.remove(x)
-            # Handle text only
-            xmltarget.text = self.escape(target)
+            self.set_xml_text_plain(target, xmltarget)
 
     @property
     def target(self):
