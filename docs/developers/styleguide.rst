@@ -227,6 +227,7 @@ Like in :pep:`8`, but:
     from lxml.html import fromstring
 
     from translate.filters import checks
+    from translate.storage import base
     from translate.storage.aresource import (EOF, WHITESPACE, AndroidFile,
                                              AndroidUnit, android_decode,
                                              android_encode)
