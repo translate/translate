@@ -35,8 +35,8 @@ def is_css_entity(entity):
     """
     if '.' in entity:
         prefix, suffix = entity.rsplit('.', 1)
-        if (suffix in ["height", "width", "unixWidth", "macWidth", "size"] or
-            suffix.startswith("style")):
+        suffixes = ["height", "width", "unixWidth", "macWidth", "size"]
+        if suffix in suffixes or suffix.startswith("style"):
             return True
     return False
 
