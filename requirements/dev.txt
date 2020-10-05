@@ -1,6 +1,6 @@
 -r optional.txt
 
-flake8==3.8.3
+flake8==3.8.4
 flake8-breakpoint==1.1.0
 flake8-isort==4.0.0
 flake8-mutable==1.2.0
