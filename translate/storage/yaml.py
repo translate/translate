@@ -22,7 +22,7 @@ r"""Class that manages YAML data files for translation
 import uuid
 
 from ruamel.yaml import YAML, YAMLError
-from ruamel.yaml.comments import CommentedMap
+from ruamel.yaml.comments import CommentedMap, TaggedScalar
 
 from translate.lang.data import cldr_plural_categories, plural_tags
 from translate.misc.multistring import multistring
@@ -145,6 +145,8 @@ class YAMLFile(base.DictStore):
                 for k, v in enumerate(data):
                     for value in self._flatten(v, prev + [('index', k)]):
                         yield value
+            elif isinstance(data, TaggedScalar):
+                yield (prev, data.value)
             elif data is None:
                 pass
             else:

@@ -340,6 +340,13 @@ location_batch:
         assert len(store.units) == 5
         assert bytes(store).decode('ascii') == data
 
+    def test_tagged_scalar(self):
+        store = self.StoreClass()
+        store.parse('key: =')
+        assert store.units[0].target == '='
+        store.units[0].target = 'second'
+        assert bytes(store) == b'key: second\n'
+
 
 class TestRubyYAMLResourceStore(test_monolingual.TestMonolingualStore):
     StoreClass = yaml.RubyYAMLFile
