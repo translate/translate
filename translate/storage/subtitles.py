@@ -56,11 +56,12 @@ class SubtitleUnit(base.TranslationUnit):
     """A subtitle entry that is translatable"""
 
     def __init__(self, source=None, **kwargs):
-        self._start = None
-        self._end = None
-        self._duration = None
+        self._start = "00:00:00.000"
+        self._end = "00:00:00.000"
+        self._duration = 0.0
         if source:
             self.source = source
+            self.target = source
         super().__init__(source)
 
     def getnotes(self, origin=None):
