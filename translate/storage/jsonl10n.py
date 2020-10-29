@@ -75,7 +75,7 @@ from translate.misc.multistring import multistring
 from translate.storage import base
 
 
-class JsonUnit(base.DictUnit):
+class BaseJsonUnit(base.DictUnit):
     """A JSON entry"""
 
     ID_FORMAT = ".{}"
@@ -132,10 +132,24 @@ class JsonUnit(base.DictUnit):
         self.storevalue(output, self.converttarget())
 
 
+class FlatUnitId(base.UnitId):
+    @classmethod
+    def from_string(cls, text):
+        if text.startswith("."):
+            key = text[1:]
+        else:
+            key = text
+        return cls([("key", key)])
+
+
+class FlatJsonUnit(BaseJsonUnit):
+    IdClass = FlatUnitId
+
+
 class JsonFile(base.DictStore):
     """A JSON file"""
 
-    UnitClass = JsonUnit
+    UnitClass = FlatJsonUnit
 
     def __init__(self, inputfile=None, filter=None, **kwargs):
         """construct a JSON file, optionally reading in from inputfile."""
@@ -210,7 +224,7 @@ class JsonFile(base.DictStore):
             self.addunit(unit)
 
 
-class JsonNestedUnit(JsonUnit):
+class JsonNestedUnit(BaseJsonUnit):
 
     def storevalues(self, output):
         self.storevalue(output, self.converttarget())
@@ -222,7 +236,7 @@ class JsonNestedFile(JsonFile):
     UnitClass = JsonNestedUnit
 
 
-class WebExtensionJsonUnit(JsonUnit):
+class WebExtensionJsonUnit(BaseJsonUnit):
     def storevalues(self, output):
         value = OrderedDict((
             ('message', self.target),
@@ -362,7 +376,7 @@ class I18NextFile(JsonNestedFile):
                 yield x
 
 
-class GoI18NJsonUnit(JsonUnit):
+class GoI18NJsonUnit(BaseJsonUnit):
     ID_FORMAT = "{}"
 
     def getvalue(self):
@@ -425,7 +439,7 @@ class GoI18NJsonFile(JsonFile):
         out.write(b'\n')
 
 
-class ARBJsonUnit(JsonUnit):
+class ARBJsonUnit(BaseJsonUnit):
     ID_FORMAT = "{}"
 
     def __init__(self, source=None, item=None, notes=None, placeholders=None, metadata=None, **kwargs):
