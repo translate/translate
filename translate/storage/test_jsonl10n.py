@@ -110,7 +110,7 @@ JSON_ARB = b"""{
 
 
 class TestJSONResourceUnit(test_monolingual.TestMonolingualUnit):
-    UnitClass = jsonl10n.JsonUnit
+    UnitClass = jsonl10n.BaseJsonUnit
 
 
 class TestJSONResourceStore(test_monolingual.TestMonolingualStore):
@@ -183,6 +183,20 @@ class TestJSONResourceStore(test_monolingual.TestMonolingualStore):
 
         assert out.getvalue() == JSON_COMPLEX
 
+    def test_add(self):
+        store = self.StoreClass()
+
+        unit = self.StoreClass.UnitClass(
+            "source",
+        )
+        unit.setid('simple.key')
+        store.addunit(unit)
+
+        assert bytes(store).decode() == """{
+    "simple.key": "source"
+}
+"""
+
 
 class TestJSONNestedResourceStore(test_monolingual.TestMonolingualUnit):
     StoreClass = jsonl10n.JsonNestedFile
@@ -228,6 +242,22 @@ class TestJSONNestedResourceStore(test_monolingual.TestMonolingualUnit):
         store.serialize(out)
 
         assert out.getvalue() == JSON_ARRAY
+
+    def test_add(self):
+        store = self.StoreClass()
+
+        unit = self.StoreClass.UnitClass(
+            "source",
+        )
+        unit.setid('simple.key')
+        store.addunit(unit)
+
+        assert bytes(store).decode() == """{
+    "simple": {
+        "key": "source"
+    }
+}
+"""
 
 
 class TestWebExtensionUnit(test_monolingual.TestMonolingualUnit):
