@@ -1,0 +1,42 @@
+Translate Toolkit 3.2.0
+***********************
+
+*Released on 4 November 2020*
+
+This release contains improvements and bug fixes.
+
+Changes
+=======
+
+Formats and Converters
+----------------------
+
+- JSON
+
+  - Fix handling of newly created units for flat JSON format
+
+- YAML
+
+  - Handle TaggedScalar type while parsing
+    
+- Android
+
+  - Fix setting escaped content for XML
+  - Fix adding units with entities
+    
+- Subtitles
+
+  - Add basic tests for the formats
+
+General
+-------
+
+- Dropped support for Python 3.5.
+- Improved CI and linting
+
+Contributors
+============
+
+This release was made possible by the following people:
+
+Michal Čihař
