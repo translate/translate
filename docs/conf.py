@@ -51,6 +51,9 @@ templates_path = ['_templates']
 # This pattern also affects html_static_path and html_extra_path.
 exclude_patterns = ['_build', '_themes/README.rst', 'releases/README.rst']
 
+# The master toctree document.
+master_doc = 'index'
+
 # -- Missing modules --------------------------------------------------
 
 autodoc_mock_imports = [
