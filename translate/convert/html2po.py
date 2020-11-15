@@ -28,12 +28,11 @@ from translate.storage import html, po
 
 class html2po:
 
-    def convertfile(self, inputfile, filename, includeuntagged=False,
-                    duplicatestyle="msgctxt", keepcomments=False):
+    def convertfile(self, inputfile, filename, duplicatestyle="msgctxt",
+                    keepcomments=False):
         """converts a html file to .po format"""
         thetargetfile = po.pofile()
-        htmlparser = html.htmlfile(includeuntaggeddata=includeuntagged,
-                                   inputfile=inputfile)
+        htmlparser = html.htmlfile(inputfile=inputfile)
         for htmlunit in htmlparser.units:
             thepo = thetargetfile.addsourceunit(htmlunit.source)
             thepo.addlocations(htmlunit.getlocations())
@@ -43,15 +42,14 @@ class html2po:
         return thetargetfile
 
 
-def converthtml(inputfile, outputfile, templates, includeuntagged=False,
-                pot=False, duplicatestyle="msgctxt", keepcomments=False):
+def converthtml(inputfile, outputfile, templates, pot=False,
+                duplicatestyle="msgctxt", keepcomments=False):
     """reads in stdin using fromfileclass, converts using convertorclass,
     writes to stdout
     """
     convertor = html2po()
     outputstore = convertor.convertfile(inputfile, getattr(inputfile, "name",
                                                            "unknown"),
-                                        includeuntagged,
                                         duplicatestyle=duplicatestyle,
                                         keepcomments=keepcomments)
     outputstore.serialize(outputfile)
@@ -68,10 +66,6 @@ def main(argv=None):
     }
     parser = convert.ConvertOptionParser(formats, usepots=True,
                                          description=__doc__)
-    parser.add_option("-u", "--untagged", dest="includeuntagged",
-                      default=False, action="store_true",
-                      help="include untagged sections")
-    parser.passthrough.append("includeuntagged")
     parser.add_option("--keepcomments", dest="keepcomments", default=False,
                       action="store_true",
                       help="preserve html comments as translation notes in the output")
