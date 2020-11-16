@@ -124,7 +124,9 @@ class BundleProjectStore(ProjectStore):
         retfile = None
         if fname in self._files or fname in self.zip.namelist():
             # Check if the file has not already been extracted to a temp file
-            tempfname = [tfn for tfn in self._tempfiles if self._tempfiles[tfn] == fname]
+            tempfname = [
+                tfn for tfn in self._tempfiles if self._tempfiles[tfn] == fname
+            ]
             if tempfname and os.path.isfile(tempfname[0]):
                 tempfname = tempfname[0]
             else:
@@ -217,7 +219,9 @@ class BundleProjectStore(ProjectStore):
 
     def _create_temp_zipfile(self):
         """Create a new zip file with a temporary file name (with mode 'w')."""
-        newzipfd, newzipfname = tempfile.mkstemp(prefix='translate_bundle', suffix='.zip')
+        newzipfd, newzipfname = tempfile.mkstemp(
+            prefix='translate_bundle', suffix='.zip'
+        )
         os.close(newzipfd)
         return ZipFile(newzipfname, 'w')
 

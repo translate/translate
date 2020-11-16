@@ -121,8 +121,9 @@ class CatkeysHeader:
         """Set a human readable target language"""
         if not newlang or newlang not in data.languages:
             return
-        #XXX assumption about the current structure of the languages dict in data
+        # XXX assumption about the current structure of the languages dict in data
         self._header_dict['language'] = data.languages[newlang][0].lower()
+
     targetlanguage = property(None, settargetlanguage)
 
     def setchecksum(self, checksum):
@@ -158,6 +159,7 @@ class CatkeysUnit(base.TranslationUnit):
             if value is None:
                 value = ""
             self._dict[key] = value
+
     dict = property(getdict, setdict)
 
     def _get_source_or_target(self, key):
@@ -220,6 +222,7 @@ class CatkeysUnit(base.TranslationUnit):
 
     def settargetlang(self, newlang):
         self._dict['target-lang'] = newlang
+
     targetlang = property(None, settargetlang)
 
     def __str__(self):
@@ -230,11 +233,14 @@ class CatkeysUnit(base.TranslationUnit):
             return False
         return bool(self._dict.get('target', None))
 
-    def merge(self, otherunit, overwrite=False, comments=True,
-              authoritative=False):
+    def merge(self, otherunit, overwrite=False, comments=True, authoritative=False):
         """Do basic format agnostic merging."""
         # We can't go fuzzy, so just do nothing
-        if self.source != otherunit.source or self.getcontext() != otherunit.getcontext() or otherunit.isfuzzy():
+        if (
+            self.source != otherunit.source
+            or self.getcontext() != otherunit.getcontext()
+            or otherunit.isfuzzy()
+        ):
             return
         if not self.istranslated() or overwrite:
             self.rich_target = otherunit.rich_target
@@ -270,7 +276,9 @@ class CatkeysFile(base.TranslationStore):
             input.close()
             input = tmsrc
         input = input.decode(self.encoding)
-        reader = csv.DictReader(input.split("\n"), fieldnames=FIELDNAMES, dialect="catkeys")
+        reader = csv.DictReader(
+            input.split("\n"), fieldnames=FIELDNAMES, dialect="catkeys"
+        )
         for idx, line in enumerate(reader):
             if idx == 0:
                 header = dict(zip(FIELDNAMES_HEADER, [line[key] for key in FIELDNAMES]))
@@ -286,7 +294,14 @@ class CatkeysFile(base.TranslationStore):
         # Calculate/update fingerprint
         self.header.setchecksum(self._compute_fingerprint())
         # No real headers, the first line contains metadata
-        writer.writerow(dict(zip(FIELDNAMES, [self.header._header_dict[key] for key in FIELDNAMES_HEADER])))
+        writer.writerow(
+            dict(
+                zip(
+                    FIELDNAMES,
+                    [self.header._header_dict[key] for key in FIELDNAMES_HEADER],
+                )
+            )
+        )
         for unit in self.units:
             writer.writerow(unit.dict)
         out.write(output.getvalue().encode(self.encoding))

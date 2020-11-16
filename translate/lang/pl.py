@@ -28,8 +28,10 @@ from translate.lang import common
 class pl(common.Common):
     """This class represents Polish."""
 
-    validaccel = ("abcdefghijklmnopqrstuvwxyz"
-                  "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
-                  "1234567890"
-                  "ąćęłńóśźż"
-                  "ĄĆĘŁŃÓŚŹŻ")
+    validaccel = (
+        "abcdefghijklmnopqrstuvwxyz"
+        "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+        "1234567890"
+        "ąćęłńóśźż"
+        "ĄĆĘŁŃÓŚŹŻ"
+    )

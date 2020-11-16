@@ -1,4 +1,3 @@
-
 from io import BytesIO
 
 from translate.convert import po2tmx, test_convert
@@ -7,16 +6,19 @@ from translate.storage import tmx
 
 
 class TestPO2TMX:
-
-    def po2tmx(self, posource, sourcelanguage='en', targetlanguage='af',
-               comment=None):
+    def po2tmx(self, posource, sourcelanguage='en', targetlanguage='af', comment=None):
         """helper that converts po source to tmx source without requiring files"""
         inputfile = BytesIO(posource.encode('utf-8'))
         outputfile = BytesIO()
         outputfile.tmxfile = tmx.tmxfile(inputfile=None, sourcelanguage=sourcelanguage)
-        po2tmx.convertpo(inputfile, outputfile, templatefile=None,
-                         sourcelanguage=sourcelanguage,
-                         targetlanguage=targetlanguage, comment=comment)
+        po2tmx.convertpo(
+            inputfile,
+            outputfile,
+            templatefile=None,
+            sourcelanguage=sourcelanguage,
+            targetlanguage=targetlanguage,
+            comment=comment,
+        )
         return outputfile.tmxfile
 
     def test_basic(self):
@@ -67,7 +69,7 @@ msgstr "Toepassings"
         print("The generated xml:")
         print(bytes(tmx))
         tuv = tmx.document.findall(".//%s" % tmx.namespaced("tuv"))[1]
-        #tag[0] will be the source, we want the target tuv
+        # tag[0] will be the source, we want the target tuv
         assert tuv.get("{%s}lang" % XML_NS) == "xh"
 
     def test_multiline(self):
@@ -99,7 +101,9 @@ msgstr "Eerste kolom\tTweede kolom"
         tmx = self.po2tmx(minipo)
         print("The generated xml:")
         print(bytes(tmx))
-        assert tmx.translate("First column\tSecond column") == "Eerste kolom\tTweede kolom"
+        assert (
+            tmx.translate("First column\tSecond column") == "Eerste kolom\tTweede kolom"
+        )
 
     def test_escapedquotes(self):
         """Test the escaping of quotes (and slash)"""

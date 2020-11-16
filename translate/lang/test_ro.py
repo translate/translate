@@ -1,5 +1,3 @@
-
-
 from translate.filters.test_checks import fails, passes
 from translate.lang.ro import RomanianChecker
 

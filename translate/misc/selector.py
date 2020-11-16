@@ -32,52 +32,65 @@ try:
     from resolver import resolve
 except ImportError:
     # resolver not essential for basic featurs
-    #FIXME: this library is overkill, simplify
+    # FIXME: this library is overkill, simplify
     pass
 
-class MappingFileError(Exception): pass
+
+class MappingFileError(Exception):
+    pass
 
 
-class PathExpressionParserError(Exception): pass
+class PathExpressionParserError(Exception):
+    pass
 
 
 def method_not_allowed(environ, start_response):
     """Respond with a 405 and appropriate Allow header."""
-    start_response("405 Method Not Allowed", 
-                   [('Allow', ', '.join(environ['selector.methods'])),
-                    ('Content-Type', 'text/plain')])
-    return ["405 Method Not Allowed\n\n"
-            "The method specified in the Request-Line is not allowed "
-            "for the resource identified by the Request-URI."] 
+    start_response(
+        "405 Method Not Allowed",
+        [
+            ('Allow', ', '.join(environ['selector.methods'])),
+            ('Content-Type', 'text/plain'),
+        ],
+    )
+    return [
+        "405 Method Not Allowed\n\n"
+        "The method specified in the Request-Line is not allowed "
+        "for the resource identified by the Request-URI."
+    ]
 
 
 def not_found(environ, start_response):
     """Respond with a 404."""
     start_response("404 Not Found", [('Content-Type', 'text/plain')])
-    return ["404 Not Found\n\n"
-            "The server has not found anything matching the Request-URI."]
+    return [
+        "404 Not Found\n\n"
+        "The server has not found anything matching the Request-URI."
+    ]
 
 
 class Selector:
     """WSGI middleware for URL paths and HTTP method based delegation.
-    
+
     See http://lukearno.com/projects/selector/
 
     Mappings are given are an iterable that returns tuples like this::
 
         (path_expression, http_methods_dict, optional_prefix)
     """
-    
+
     status405 = staticmethod(method_not_allowed)
     status404 = staticmethod(not_found)
-    
-    def __init__(self, 
-                 mappings=None, 
-                 prefix="", 
-                 parser=None, 
-                 wrap=None, 
-                 mapfile=None,
-                 consume_path=True):
+
+    def __init__(
+        self,
+        mappings=None,
+        prefix="",
+        parser=None,
+        wrap=None,
+        mapfile=None,
+        consume_path=True,
+    ):
         """Initialize selector."""
         self.mappings = []
         self.prefix = prefix
@@ -88,13 +101,13 @@ class Selector:
         self.wrap = wrap
         if mapfile is not None:
             self.slurp_file(mapfile)
-        if mappings is not None: 
+        if mappings is not None:
             self.slurp(mappings)
         self.consume_path = consume_path
 
     def slurp(self, mappings, prefix=None, parser=None, wrap=None):
         """Slurp in a whole list (or iterable) of mappings.
-        
+
         Prefix and parser args will override self.parser and self.args
         for the given mappings.
         """
@@ -117,10 +130,10 @@ class Selector:
 
     def add(self, path, method_dict=None, prefix=None, **http_methods):
         """Add a mapping.
-        
+
         HTTP methods can be specified in a dict or using kwargs,
         but kwargs will override if both are given.
-        
+
         Prefix will override self.prefix for this mapping.
         """
         # Thanks to Sébastien Pierre
@@ -140,8 +153,9 @@ class Selector:
 
     def __call__(self, environ, start_response):
         """Delegate request to the appropriate WSGI app."""
-        app, svars, methods, matched = \
-            self.select(environ['PATH_INFO'], environ['REQUEST_METHOD'])
+        app, svars, methods, matched = self.select(
+            environ['PATH_INFO'], environ['REQUEST_METHOD']
+        )
         unnamed, named = [], {}
         for k, v in svars.items():
             if k.startswith('__pos'):
@@ -151,7 +165,8 @@ class Selector:
         for k in named.keys():
             if k.isdigit():
                 unnamed.append((k, named.pop(k)))
-        unnamed.sort(); unnamed = [v for k, v in unnamed]
+        unnamed.sort()
+        unnamed = [v for k, v in unnamed]
         cur_unnamed, cur_named = environ.get('wsgiorg.routing_args', ([], {}))
         unnamed = cur_unnamed + unnamed
         named.update(cur_named)
@@ -160,7 +175,7 @@ class Selector:
         environ.setdefault('selector.matches', []).append(matched)
         if self.consume_path:
             environ['SCRIPT_NAME'] = environ.get('SCRIPT_NAME', '') + matched
-            environ['PATH_INFO'] = environ['PATH_INFO'][len(matched):]
+            environ['PATH_INFO'] = environ['PATH_INFO'][len(matched) :]
         return app(environ, start_response)
 
     def select(self, path, method):
@@ -170,33 +185,37 @@ class Selector:
             if match:
                 methods = method_dict.keys()
                 if method in method_dict:
-                    return (method_dict[method], 
-                            match.groupdict(), 
-                            methods, 
-                            match.group(0))
+                    return (
+                        method_dict[method],
+                        match.groupdict(),
+                        methods,
+                        match.group(0),
+                    )
                 elif '_ANY_' in method_dict:
-                    return (method_dict['_ANY_'],
-                            match.groupdict(), 
-                            methods, 
-                            match.group(0))
+                    return (
+                        method_dict['_ANY_'],
+                        match.groupdict(),
+                        methods,
+                        match.group(0),
+                    )
                 else:
                     return self.status405, {}, methods, ''
         return self.status404, {}, [], ''
 
     def slurp_file(self, the_file, prefix=None, parser=None, wrap=None):
         """Read mappings from a simple text file.
-        
+
         Format looks like this::
 
             {{{
-            
+
             # Comments if first non-whitespace char on line is '#'
             # Blank lines are ignored
 
             /foo/{id}[/]
                 GET somemodule:some_wsgi_app
                 POST pak.subpak.mod:other_wsgi_app
-            
+
             @prefix /myapp
             /path[/]
                 GET module:app
@@ -204,13 +223,13 @@ class Selector:
                 PUT package.module:FooApp('hello', resolve('module.setting'))
 
             @parser :lambda x: x
-            @prefix 
+            @prefix
             ^/spam/eggs[/]$
                 GET mod:regex_mapped_app
 
             }}}
 
-        ``@prefix`` and ``@parser`` directives take effect 
+        ``@prefix`` and ``@parser`` directives take effect
         until the end of the file or until changed.
         """
         if isinstance(the_file, str):
@@ -227,15 +246,15 @@ class Selector:
         path = methods = None
         lineno = 0
         try:
-            #try:
-                # accumulate methods (notice add in 2 places)
-                for line in the_file:
-                    lineno += 1
-                    path, methods = self._parse_line(line, path, methods)
-                if path and methods:
-                    self.add(path, methods)
-            #except Exception, e:
-            #    raise MappingFileError("Mapping line %s: %s" % (lineno, e))
+            # try:
+            # accumulate methods (notice add in 2 places)
+            for line in the_file:
+                lineno += 1
+                path, methods = self._parse_line(line, path, methods)
+            if path and methods:
+                self.add(path, methods)
+        # except Exception, e:
+        #    raise MappingFileError("Mapping line %s: %s" % (lineno, e))
         finally:
             the_file.close()
             self.wrap = oldwrap
@@ -244,13 +263,13 @@ class Selector:
 
     def _parse_line(self, line, path, methods):
         """Parse one line of a mapping file.
-        
+
         This method is for the use of selector.slurp_file.
         """
         if not line.strip() or line.strip()[0] == '#':
             pass
         elif not line.strip() or line.strip()[0] == '@':
-            #   
+            #
             if path and methods:
                 self.add(path, methods)
             path = line.strip()
@@ -281,7 +300,7 @@ class Selector:
 
 class SimpleParser:
     r"""Callable to turn path expressions into regexes with named groups.
-    
+
     For instance ``"/hello/{name}"`` becomes ``r"^\/hello\/(?P<name>[^\^.]+)$"``
 
     For ``/hello/{name:pattern}``
@@ -309,15 +328,17 @@ class SimpleParser:
 
     start, end = '{}'
     ostart, oend = '[]'
-    _patterns = {'word': r'\w+',
-                 'alpha': r'[a-zA-Z]+',
-                 'digits': r'\d+',
-                 'number': r'\d*.?\d+',
-                 'chunk': r'[^/^.]+',
-                 'segment': r'[^/]+',
-                 'any': r'.+'}
+    _patterns = {
+        'word': r'\w+',
+        'alpha': r'[a-zA-Z]+',
+        'digits': r'\d+',
+        'number': r'\d*.?\d+',
+        'chunk': r'[^/^.]+',
+        'segment': r'[^/]+',
+        'any': r'.+',
+    }
     default_pattern = 'chunk'
-    
+
     def __init__(self, patterns=None):
         """Initialize with character class mappings."""
         self.patterns = dict(self._patterns)
@@ -338,14 +359,14 @@ class SimpleParser:
 
     def lastly(self, regex):
         """Process the result of __call__ right before it returns.
-        
+
         Adds the ^ and the $ to the beginning and the end, respectively.
         """
         return "^%s$" % regex
 
     def openended(self, regex):
         """Process the result of ``__call__`` right before it returns.
-        
+
         Adds the ^ to the beginning but no $ to the end.
         Called as a special alternative to lastly.
         """
@@ -363,9 +384,9 @@ class SimpleParser:
                     buffer = ""
                 else:
                     buffer += c
-                starts +=1
+                starts += 1
             elif c == self.oend:
-                ends +=1
+                ends += 1
                 if starts == ends:
                     parts.append(buffer)
                     buffer = ""
@@ -375,9 +396,7 @@ class SimpleParser:
             else:
                 buffer += c
         if not starts == ends == 0:
-            raise PathExpressionParserError(
-                "Mismatch of optional portion delimiters."
-            )
+            raise PathExpressionParserError("Mismatch of optional portion delimiters.")
         parts.append(buffer)
         return parts
 
@@ -388,8 +407,7 @@ class SimpleParser:
             parts = map(self.parse, parts)
             parts[1::2] = ["(%s)?" % p for p in parts[1::2]]
         else:
-            parts = [part.split(self.end) 
-                     for part in text.split(self.start)]
+            parts = [part.split(self.end) for part in text.split(self.start)]
             parts = [y for x in parts for y in x]
             parts[::2] = map(re.escape, parts[::2])
             parts[1::2] = map(self.lookup, parts[1::2])
@@ -400,7 +418,7 @@ class SimpleParser:
         self._pos = 0
         if url_pattern.endswith('|'):
             return self.openended(self.parse(url_pattern[:-1]))
-        else:    
+        else:
             return self.lastly(self.parse(url_pattern))
 
 
@@ -413,7 +431,7 @@ class EnvironDispatcher:
 
     def __call__(self, environ, start_response):
         """Call the first app whose predicate is true.
-        
+
         Each predicate is passes the environ to evaluate.
         """
         for predicate, app in self.rules:
@@ -431,7 +449,7 @@ class MiddlewareComposer:
 
     def __call__(self, environ, start_response):
         """Apply each middleware whose predicate is true.
-        
+
         Each predicate is passes the environ to evaluate.
 
         Given this set of rules::
@@ -466,36 +484,36 @@ class Naked:
 
     def _is_exposed(self, obj):
         """Determine if obj should be exposed.
-        
+
         If ``self._expose_all`` is True, always return True.
         Otherwise, look at obj._exposed.
         """
         return self._expose_all or getattr(obj, '_exposed', False)
-    
+
     def __call__(self, environ, start_response):
         """Dispatch to the method named by the next bit of PATH_INFO."""
-        name = shift_path_info(dict(SCRIPT_NAME=environ['SCRIPT_NAME'],
-                                    PATH_INFO=environ['PATH_INFO']))
+        name = shift_path_info(
+            dict(SCRIPT_NAME=environ['SCRIPT_NAME'], PATH_INFO=environ['PATH_INFO'])
+        )
         callable = getattr(self, name or 'index', None)
         if callable is not None and self._is_exposed(callable):
             shift_path_info(environ)
             return callable(environ, start_response)
         else:
             return self._not_found(environ, start_response)
-    
+
 
 class ByMethod:
     """Base class for dispatching to method named by ``REQUEST_METHOD``."""
 
     _method_not_allowed = staticmethod(method_not_allowed)
-    
+
     def __call__(self, environ, start_response):
         """Dispatch based on REQUEST_METHOD."""
-        environ['selector.methods'] = \
-            [m for m in dir(self) if not m.startswith('_')]
-        return getattr(self, 
-                       environ['REQUEST_METHOD'], 
-                       self._method_not_allowed)(environ, start_response)
+        environ['selector.methods'] = [m for m in dir(self) if not m.startswith('_')]
+        return getattr(self, environ['REQUEST_METHOD'], self._method_not_allowed)(
+            environ, start_response
+        )
 
 
 def pliant(func):
@@ -507,15 +525,17 @@ def pliant(func):
         def app(environ, start_response, arg1, arg2, foo='bar'):
             ...
     """
+
     def wsgi_func(environ, start_response):
         args, kwargs = environ.get('wsgiorg.routing_args', ([], {}))
         args = list(args)
         args.insert(0, start_response)
         args.insert(0, environ)
         return func(*args, **dict(kwargs))
+
     return wsgi_func
 
-        
+
 def opliant(meth):
     """Decorate a bound wsgi callable taking args from
     ``wsgiorg.routing_args``
@@ -526,6 +546,7 @@ def opliant(meth):
             def __call__(self, environ, start_response, arg1, arg2, foo='bar'):
                 ...
     """
+
     def wsgi_meth(self, environ, start_response):
         args, kwargs = environ.get('wsgiorg.routing_args', ([], {}))
         args = list(args)
@@ -533,4 +554,5 @@ def opliant(meth):
         args.insert(0, environ)
         args.insert(0, self)
         return meth(*args, **dict(kwargs))
+
     return wsgi_meth

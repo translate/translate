@@ -1,4 +1,3 @@
-
 import os
 
 from translate.storage import base, po, xliff
@@ -89,18 +88,24 @@ class TestPODebug:
     def test_rewrite_unicode_preserves_html(self):
         """Test the unicode rewrite function"""
         debug = podebug.podebug(preserveplaceholders=True)
-        assert str(debug.rewrite_unicode("<style0>Test</style0>")) == "<style0>Ŧḗşŧ</style0>"
+        assert (
+            str(debug.rewrite_unicode("<style0>Test</style0>"))
+            == "<style0>Ŧḗşŧ</style0>"
+        )
 
     def test_rewrite_unicode_preserves_multiple_styles_of_placeholder(self):
         """Test the unicode rewrite function"""
         debug = podebug.podebug(preserveplaceholders=True)
-        assert str(debug.rewrite_unicode("<b>{{ph}}Test{ph}@@ph@@Test</b>")) == "<b>{{ph}}Ŧḗşŧ{ph}@@ph@@Ŧḗşŧ</b>"
+        assert (
+            str(debug.rewrite_unicode("<b>{{ph}}Test{ph}@@ph@@Test</b>"))
+            == "<b>{{ph}}Ŧḗşŧ{ph}@@ph@@Ŧḗşŧ</b>"
+        )
 
     def test_rewrite_flipped(self):
         """Test the unicode rewrite function"""
         assert str(self.debug.rewrite_flipped("Test")) == "\u202e⊥ǝsʇ"
         # alternative with reversed string and no RTL override:
-        #assert unicode(self.debug.rewrite_flipped("Test")) == "ʇsǝ⊥"
+        # assert unicode(self.debug.rewrite_flipped("Test")) == "ʇsǝ⊥"
         # Chars < ! and > z are returned as is
         assert str(self.debug.rewrite_flipped(" ")) == "\u202e "
         assert str(self.debug.rewrite_flipped("©")) == "\u202e©"
@@ -108,7 +113,9 @@ class TestPODebug:
     def test_rewrite_flipped_preserves_at_placeholders(self):
         """Test the unicode rewrite function"""
         debug = podebug.podebug(preserveplaceholders=True)
-        assert str(debug.rewrite_flipped("@@ph@@Test @@ph@@")) == "\u202e@@ph@@⊥ǝsʇ @@ph@@"
+        assert (
+            str(debug.rewrite_flipped("@@ph@@Test @@ph@@")) == "\u202e@@ph@@⊥ǝsʇ @@ph@@"
+        )
 
     def test_rewrite_flipped_preserves_single_brace_placeholders(self):
         """Test the unicode rewrite function"""
@@ -118,18 +125,25 @@ class TestPODebug:
     def test_rewrite_flipped_preserves_double_brace_placeholders(self):
         """Test the unicode rewrite function"""
         debug = podebug.podebug(preserveplaceholders=True)
-        assert str(debug.rewrite_flipped("{{ph}}Test {{ph}}")) == "\u202e{{ph}}⊥ǝsʇ {{ph}}"
+        assert (
+            str(debug.rewrite_flipped("{{ph}}Test {{ph}}")) == "\u202e{{ph}}⊥ǝsʇ {{ph}}"
+        )
 
     def test_rewrite_flipped_preserves_html(self):
         """Test the unicode rewrite function"""
         debug = podebug.podebug(preserveplaceholders=True)
-        assert str(debug.rewrite_flipped("<style0>Test </style0>")) == "\u202e<style0>⊥ǝsʇ </style0>"
+        assert (
+            str(debug.rewrite_flipped("<style0>Test </style0>"))
+            == "\u202e<style0>⊥ǝsʇ </style0>"
+        )
 
     def test_rewrite_flipped_multiple_styles_of_placeholder(self):
         """Test the unicode rewrite function"""
         debug = podebug.podebug(preserveplaceholders=True)
-        assert str(
-            debug.rewrite_flipped("<b>{{ph}}Test{ph}@@ph@@Test</b>")) == "\u202e<b>{{ph}}⊥ǝsʇ{ph}@@ph@@⊥ǝsʇ</b>"
+        assert (
+            str(debug.rewrite_flipped("<b>{{ph}}Test{ph}@@ph@@Test</b>"))
+            == "\u202e<b>{{ph}}⊥ǝsʇ{ph}@@ph@@⊥ǝsʇ</b>"
+        )
 
     def test_rewrite_chef(self):
         """Test the chef rewrite function
@@ -137,7 +151,10 @@ class TestPODebug:
         This is not realy critical to test but a simple tests ensures
         that it stays working.
         """
-        assert str(self.debug.rewrite_chef("Mock Swedish test you muppet")) == "Mock Swedish test yooo mooppet"
+        assert (
+            str(self.debug.rewrite_chef("Mock Swedish test you muppet"))
+            == "Mock Swedish test yooo mooppet"
+        )
 
     def test_po_variables(self):
         debug = podebug.podebug(rewritestyle='unicode')
@@ -150,7 +167,10 @@ class TestPODebug:
         print(out_unit.target)
         print(bytes(po_out))
         rewrite_func = self.debug.rewrite_unicode
-        assert out_unit.target == "%s%%s%s" % (rewrite_func('This is a '), rewrite_func(' test, hooray.'))
+        assert out_unit.target == "%s%%s%s" % (
+            rewrite_func('This is a '),
+            rewrite_func(' test, hooray.'),
+        )
 
     def test_xliff_rewrite(self):
         debug = podebug.podebug(rewritestyle='xxx')
@@ -180,29 +200,40 @@ msgstr "Test msgstr 2"
 msgctxt "test context 3"
 msgid "Test msgid 3"
 msgstr "Test msgstr 3"
-""")
-        debugs = (podebug.podebug(format="%h "),
-                  podebug.podebug(format="%6h."),
-                  podebug.podebug(format="zzz%7h.zzz"),
-                  podebug.podebug(format="%f %F %b %B %d %s "),
-                  podebug.podebug(format="%3f %4F %5b %6B %7d %8s "),
-                  podebug.podebug(format="%cf %cF %cb %cB %cd %cs "),
-                  podebug.podebug(format="%3cf %4cF %5cb %6cB %7cd %8cs "),)
-        results = ["85a9 Test msgstr 1", "a15d Test msgstr 2", "6398 Test msgstr 3",
-                   "85a917.Test msgstr 1", "a15d71.Test msgstr 2", "639898.Test msgstr 3",
-                   "zzz85a9170.zzzTest msgstr 1", "zzza15d718.zzzTest msgstr 2", "zzz639898c.zzzTest msgstr 3",
-                   "fullpath/to/fakefile fullpath/to/fakefile.po fakefile fakefile.po fullpath/to full-t-fake Test msgstr 1",
-                   "fullpath/to/fakefile fullpath/to/fakefile.po fakefile fakefile.po fullpath/to full-t-fake Test msgstr 2",
-                   "fullpath/to/fakefile fullpath/to/fakefile.po fakefile fakefile.po fullpath/to full-t-fake Test msgstr 3",
-                   "ful full fakef fakefi fullpat full-t-f Test msgstr 1",
-                   "ful full fakef fakefi fullpat full-t-f Test msgstr 2",
-                   "ful full fakef fakefi fullpat full-t-f Test msgstr 3",
-                   "fllpth/t/fkfl fllpth/t/fkfl.p fkfl fkfl.p fllpth/t fll-t-fk Test msgstr 1",
-                   "fllpth/t/fkfl fllpth/t/fkfl.p fkfl fkfl.p fllpth/t fll-t-fk Test msgstr 2",
-                   "fllpth/t/fkfl fllpth/t/fkfl.p fkfl fkfl.p fllpth/t fll-t-fk Test msgstr 3",
-                   "fll fllp fkfl fkfl.p fllpth/ fll-t-fk Test msgstr 1",
-                   "fll fllp fkfl fkfl.p fllpth/ fll-t-fk Test msgstr 2",
-                   "fll fllp fkfl fkfl.p fllpth/ fll-t-fk Test msgstr 3"]
+""",
+        )
+        debugs = (
+            podebug.podebug(format="%h "),
+            podebug.podebug(format="%6h."),
+            podebug.podebug(format="zzz%7h.zzz"),
+            podebug.podebug(format="%f %F %b %B %d %s "),
+            podebug.podebug(format="%3f %4F %5b %6B %7d %8s "),
+            podebug.podebug(format="%cf %cF %cb %cB %cd %cs "),
+            podebug.podebug(format="%3cf %4cF %5cb %6cB %7cd %8cs "),
+        )
+        results = [
+            "85a9 Test msgstr 1",
+            "a15d Test msgstr 2",
+            "6398 Test msgstr 3",
+            "85a917.Test msgstr 1",
+            "a15d71.Test msgstr 2",
+            "639898.Test msgstr 3",
+            "zzz85a9170.zzzTest msgstr 1",
+            "zzza15d718.zzzTest msgstr 2",
+            "zzz639898c.zzzTest msgstr 3",
+            "fullpath/to/fakefile fullpath/to/fakefile.po fakefile fakefile.po fullpath/to full-t-fake Test msgstr 1",
+            "fullpath/to/fakefile fullpath/to/fakefile.po fakefile fakefile.po fullpath/to full-t-fake Test msgstr 2",
+            "fullpath/to/fakefile fullpath/to/fakefile.po fakefile fakefile.po fullpath/to full-t-fake Test msgstr 3",
+            "ful full fakef fakefi fullpat full-t-f Test msgstr 1",
+            "ful full fakef fakefi fullpat full-t-f Test msgstr 2",
+            "ful full fakef fakefi fullpat full-t-f Test msgstr 3",
+            "fllpth/t/fkfl fllpth/t/fkfl.p fkfl fkfl.p fllpth/t fll-t-fk Test msgstr 1",
+            "fllpth/t/fkfl fllpth/t/fkfl.p fkfl fkfl.p fllpth/t fll-t-fk Test msgstr 2",
+            "fllpth/t/fkfl fllpth/t/fkfl.p fkfl fkfl.p fllpth/t fll-t-fk Test msgstr 3",
+            "fll fllp fkfl fkfl.p fllpth/ fll-t-fk Test msgstr 1",
+            "fll fllp fkfl fkfl.p fllpth/ fll-t-fk Test msgstr 2",
+            "fll fllp fkfl fkfl.p fllpth/ fll-t-fk Test msgstr 3",
+        ]
 
         for debug in debugs:
             for po_doc in po_docs:

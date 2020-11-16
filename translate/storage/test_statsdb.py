@@ -73,7 +73,6 @@ msgstr ""
 
 
 class TestStatsDb:
-
     def remove_dirs(self, path):
         if os.path.exists(path):
             shutil.rmtree(path)
@@ -124,9 +123,12 @@ class TestStatsDb:
         cache.close()
 
     def make_file_and_return_id(self, cache, filename):
-        cache.cur.execute("""
+        cache.cur.execute(
+            """
             SELECT fileid, st_mtime, st_size FROM files
-            WHERE path=?;""", (os.path.realpath(filename),))
+            WHERE path=?;""",
+            (os.path.realpath(filename),),
+        )
         return cache.cur.fetchone()
 
     def test_if_cached_after_filestats(self):

@@ -92,10 +92,10 @@ class TestTranslationUnit:
             # - phpunit and propunit (properties) can have different source/target
             #   and are reunited when serializing through `self.translation or self.value`
             assert unit1 == unit6
-            assert not(unit1 != unit6)
+            assert not (unit1 != unit6)
         else:
             assert unit1 != unit6
-            assert not(unit1 == unit6)
+            assert not (unit1 == unit6)
 
     def test_target(self):
         unit = self.unit
@@ -113,10 +113,27 @@ class TestTranslationUnit:
         escaping roundtrip.
         """
         unit = self.unit
-        specials = ['Fish & chips', 'five < six', 'six > five', 'five &lt; six',
-                    'Use &nbsp;', 'Use &amp;nbsp;', 'Use &amp;amp;nbsp;',
-                    'A "solution"', "skop 'n bal", '"""', "'''", 'µ',
-                    '\n', '\t', '\r', '\r\n', '\\r', '\\', '\\\r']
+        specials = [
+            'Fish & chips',
+            'five < six',
+            'six > five',
+            'five &lt; six',
+            'Use &nbsp;',
+            'Use &amp;nbsp;',
+            'Use &amp;amp;nbsp;',
+            'A "solution"',
+            "skop 'n bal",
+            '"""',
+            "'''",
+            'µ',
+            '\n',
+            '\t',
+            '\r',
+            '\r\n',
+            '\\r',
+            '\\',
+            '\\\r',
+        ]
         for special in specials:
             unit.source = special
             print("unit.source:", repr(unit.source))
@@ -130,9 +147,22 @@ class TestTranslationUnit:
         """
 
         unit = self.unit
-        specials = ['\\n', '\\t', '\\"', '\\ ',
-                    '\\\n', '\\\t', '\\\\n', '\\\\t', '\\\\r', '\\\\"',
-                    '\\r\\n', '\\\\r\\n', '\\r\\\\n', '\\\\n\\\\r']
+        specials = [
+            '\\n',
+            '\\t',
+            '\\"',
+            '\\ ',
+            '\\\n',
+            '\\\t',
+            '\\\\n',
+            '\\\\t',
+            '\\\\r',
+            '\\\\"',
+            '\\r\\n',
+            '\\\\r\\n',
+            '\\r\\\\n',
+            '\\\\n\\\\r',
+        ]
         for special in specials:
             unit.source = special
             print("unit.source:", repr(unit.source) + '|')
@@ -282,7 +312,10 @@ class TestTranslationStore:
             store2unit = store2.units[n]
             match = store1unit == store2unit
             if not match:
-                print("match failed between elements %d of %d" % ((n + 1), headerless_len(store1.units)))
+                print(
+                    "match failed between elements %d of %d"
+                    % ((n + 1), headerless_len(store1.units))
+                )
                 print("store1:")
                 print(bytes(store1))
                 print("store2:")
@@ -340,16 +373,23 @@ class TestTranslationStore:
         if isinstance(answer, bytes):
             answer = answer.decode("utf-8")
         assert answer == "Beziér-kurwe"
-        #Just test that __str__ doesn't raise exception:
+        # Just test that __str__ doesn't raise exception:
         store.serialize(BytesIO())
 
     def test_extensions(self):
         """Test that the factory knows the extensions for this class."""
         supported = factory.supported_files()
-        supported_dict = dict([(name, (extensions, mimetypes)) for name, extensions, mimetypes in supported])
+        supported_dict = dict(
+            [
+                (name, (extensions, mimetypes))
+                for name, extensions, mimetypes in supported
+            ]
+        )
         if not (self.StoreClass.Name and self.StoreClass.Name in supported_dict):
             return
-        detail = supported_dict[self.StoreClass.Name]  # will start to get problematic once translated
+        detail = supported_dict[
+            self.StoreClass.Name
+        ]  # will start to get problematic once translated
         print("Factory:", detail[0])
         print("StoreClass:", self.StoreClass.Extensions)
         for ext in detail[0]:
@@ -360,10 +400,17 @@ class TestTranslationStore:
     def test_mimetypes(self):
         """Test that the factory knows the mimetypes for this class."""
         supported = factory.supported_files()
-        supported_dict = dict([(name, (extensions, mimetypes)) for name, extensions, mimetypes in supported])
+        supported_dict = dict(
+            [
+                (name, (extensions, mimetypes))
+                for name, extensions, mimetypes in supported
+            ]
+        )
         if not (self.StoreClass.Name and self.StoreClass.Name in supported_dict):
             return
-        detail = supported_dict[self.StoreClass.Name]  # will start to get problematic once translated
+        detail = supported_dict[
+            self.StoreClass.Name
+        ]  # will start to get problematic once translated
         print("Factory:", detail[1])
         print("StoreClass:", self.StoreClass.Mimetypes)
         for ext in detail[1]:

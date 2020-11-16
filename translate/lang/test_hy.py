@@ -1,4 +1,3 @@
-
 from translate.lang import factory
 
 
@@ -20,7 +19,16 @@ def test_sentences():
     sentences = language.sentences("")
     assert sentences == []
 
-    sentences = language.sentences("Արխիվն արդեն գոյություն ունի։ Դուք ցանկանու՞մ եք կրկին գրել այն։")
-    assert sentences == ["Արխիվն արդեն գոյություն ունի։", "Դուք ցանկանու՞մ եք կրկին գրել այն։"]
-    sentences = language.sentences("Արխիվն արդեն գոյություն ունի։ դուք ցանկանու՞մ եք կրկին գրել այն։")
-    assert sentences == ["Արխիվն արդեն գոյություն ունի։ դուք ցանկանու՞մ եք կրկին գրել այն։"]
+    sentences = language.sentences(
+        "Արխիվն արդեն գոյություն ունի։ Դուք ցանկանու՞մ եք կրկին գրել այն։"
+    )
+    assert sentences == [
+        "Արխիվն արդեն գոյություն ունի։",
+        "Դուք ցանկանու՞մ եք կրկին գրել այն։",
+    ]
+    sentences = language.sentences(
+        "Արխիվն արդեն գոյություն ունի։ դուք ցանկանու՞մ եք կրկին գրել այն։"
+    )
+    assert sentences == [
+        "Արխիվն արդեն գոյություն ունի։ դուք ցանկանու՞մ եք կրկին գրել այն։"
+    ]

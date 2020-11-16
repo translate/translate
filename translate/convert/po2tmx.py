@@ -30,7 +30,6 @@ from translate.storage import po, tmx
 
 
 class po2tmx:
-
     def cleancomments(self, comments, comment_type=None):
         """Removes the comment marks from the PO strings."""
         # FIXME this is a bit hacky, needs some fixes in the PO classes
@@ -43,12 +42,18 @@ class po2tmx:
 
         return ''.join(comments)
 
-    def convertfiles(self, inputfile, tmxfile, sourcelanguage='en',
-                     targetlanguage=None, comment=None):
+    def convertfiles(
+        self, inputfile, tmxfile, sourcelanguage='en', targetlanguage=None, comment=None
+    ):
         """converts a .po file (possibly many) to TMX file"""
         inputstore = po.pofile(inputfile)
         for inunit in inputstore.units:
-            if inunit.isheader() or inunit.isblank() or not inunit.istranslated() or inunit.isfuzzy():
+            if (
+                inunit.isheader()
+                or inunit.isblank()
+                or not inunit.istranslated()
+                or inunit.isfuzzy()
+            ):
                 continue
             source = inunit.source
             translation = inunit.target
@@ -59,21 +64,28 @@ class po2tmx:
                 'others': self.cleancomments(inunit.othercomments),
             }.get(comment, None)
 
-            tmxfile.addtranslation(source, sourcelanguage, translation,
-                                   targetlanguage, commenttext)
+            tmxfile.addtranslation(
+                source, sourcelanguage, translation, targetlanguage, commenttext
+            )
 
 
-def convertpo(inputfile, outputfile, templatefile, sourcelanguage='en',
-              targetlanguage=None, comment=None):
+def convertpo(
+    inputfile,
+    outputfile,
+    templatefile,
+    sourcelanguage='en',
+    targetlanguage=None,
+    comment=None,
+):
     """reads in stdin using fromfileclass, converts using convertorclass, writes to stdout"""
     convertor = po2tmx()
-    convertor.convertfiles(inputfile, outputfile.tmxfile, sourcelanguage,
-                           targetlanguage, comment)
+    convertor.convertfiles(
+        inputfile, outputfile.tmxfile, sourcelanguage, targetlanguage, comment
+    )
     return 1
 
 
 class tmxmultifile:
-
     def __init__(self, filename, mode=None):
         """initialises tmxmultifile from a seekable inputfile or writable outputfile"""
         self.filename = filename
@@ -83,9 +95,9 @@ class tmxmultifile:
             else:
                 mode = 'w'
         self.mode = mode
-#        self.multifilestyle = multifilestyle
+        #        self.multifilestyle = multifilestyle
         self.multifilename = os.path.splitext(filename)[0]
-#        self.multifile = open(filename, mode)
+        #        self.multifile = open(filename, mode)
         self.tmxfile = tmx.tmxfile()
 
     def openoutputfile(self, subfile):
@@ -93,6 +105,7 @@ class tmxmultifile:
 
         def onclose(contents):
             pass
+
         outputfile = wStringIO.CatchStringOutput(onclose)
         outputfile.filename = subfile
         outputfile.tmxfile = self.tmxfile
@@ -100,7 +113,6 @@ class tmxmultifile:
 
 
 class TmxOptionParser(convert.ArchiveConvertOptionParser):
-
     def recursiveprocess(self, options):
         if not options.targetlanguage:
             raise ValueError("You must specify the target language")
@@ -113,18 +125,42 @@ class TmxOptionParser(convert.ArchiveConvertOptionParser):
 def main(argv=None):
     formats = {"po": ("tmx", convertpo), ("po", "tmx"): ("tmx", convertpo)}
     archiveformats = {(None, "output"): tmxmultifile, (None, "template"): tmxmultifile}
-    parser = TmxOptionParser(formats, usepots=False, usetemplates=False, description=__doc__, archiveformats=archiveformats)
+    parser = TmxOptionParser(
+        formats,
+        usepots=False,
+        usetemplates=False,
+        description=__doc__,
+        archiveformats=archiveformats,
+    )
     parser.add_option(
-        "-l", "--language", dest="targetlanguage", default=None,
-        help="set target language code (e.g. af-ZA) [required]", metavar="LANG")
+        "-l",
+        "--language",
+        dest="targetlanguage",
+        default=None,
+        help="set target language code (e.g. af-ZA) [required]",
+        metavar="LANG",
+    )
     parser.add_option(
-        "", "--source-language", dest="sourcelanguage", default='en',
-        help="set source language code (default: en)", metavar="LANG")
+        "",
+        "--source-language",
+        dest="sourcelanguage",
+        default='en',
+        help="set source language code (default: en)",
+        metavar="LANG",
+    )
     comments = ['source', 'type', 'others', 'none']
-    comments_help = ("set default comment import: none, source, type or "
-                     "others (default: none)")
-    parser.add_option("", "--comments", dest="comment", default="none",
-                      type="choice", choices=comments, help=comments_help)
+    comments_help = (
+        "set default comment import: none, source, type or " "others (default: none)"
+    )
+    parser.add_option(
+        "",
+        "--comments",
+        dest="comment",
+        default="none",
+        type="choice",
+        choices=comments,
+        help=comments_help,
+    )
     parser.passthrough.append("sourcelanguage")
     parser.passthrough.append("targetlanguage")
     parser.passthrough.append("comment")

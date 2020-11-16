@@ -8,7 +8,9 @@ class TestReindent:
         return etree.fromstring(xmlstring)
 
     def _xmltostring(self, xml):
-        return etree.tostring(xml, pretty_print=True, xml_declaration=True, encoding='utf-8')
+        return etree.tostring(
+            xml, pretty_print=True, xml_declaration=True, encoding='utf-8'
+        )
 
     def test_indent_four_spaces(self):
         """Test that using 4 spaces for indent yields a consistent result."""

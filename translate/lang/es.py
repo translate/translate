@@ -31,8 +31,7 @@ class es(common.Common):
 
     @classmethod
     def punctranslate(cls, text):
-        """Implement some extra features for inverted punctuation.
-        """
+        """Implement some extra features for inverted punctuation."""
         text = super().punctranslate(text)
         # If the first sentence ends with ? or !, prepend inverted ¿ or ¡
         firstmatch = cls.sentencere.match(text)

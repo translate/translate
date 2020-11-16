@@ -4,7 +4,6 @@ from translate.convert import po2html, test_convert
 
 
 class TestPO2Html:
-
     def converthtml(self, posource, htmltemplate, includefuzzy=False):
         """helper to exercise the command line function"""
         inputfile = BytesIO(posource.encode())
@@ -54,7 +53,9 @@ msgstr ""
 sin.
 </div>
 </body>'''
-        assert htmlexpected.replace("\n", " ") in self.converthtml(posource, htmlsource).replace("\n", " ")
+        assert htmlexpected.replace("\n", " ") in self.converthtml(
+            posource, htmlsource
+        ).replace("\n", " ")
 
     def test_replace_substrings(self):
         """Should replace substrings correctly, issue #3416"""
@@ -136,11 +137,15 @@ sin.
         posource = '#: html:3\n#, fuzzy\nmsgid "aaa"\nmsgstr "bbb"\n'
         htmltarget = '<div>bbb</div>'
         # Don't use fuzzies
-        assert htmltarget not in self.converthtml(posource, htmlsource, includefuzzy=False)
+        assert htmltarget not in self.converthtml(
+            posource, htmlsource, includefuzzy=False
+        )
         assert htmlsource in self.converthtml(posource, htmlsource, includefuzzy=False)
         # Use fuzzies
         assert htmltarget in self.converthtml(posource, htmlsource, includefuzzy=True)
-        assert htmlsource not in self.converthtml(posource, htmlsource, includefuzzy=True)
+        assert htmlsource not in self.converthtml(
+            posource, htmlsource, includefuzzy=True
+        )
 
     def test_untranslated_attributes(self):
         """Verify that untranslated attributes are output as source, not dropped."""

@@ -1,4 +1,3 @@
-
 from translate.storage import catkeys, test_base
 
 
@@ -14,8 +13,7 @@ class TestCatkeysUnit(test_base.TestTranslationUnit):
         class test but eliminate a few of the actual tests.
         """
         unit = self.unit
-        specials = ['\\"', '\\ ',
-                    '\\\n', '\\\t', '\\\\r', '\\\\"']
+        specials = ['\\"', '\\ ', '\\\n', '\\\t', '\\\\r', '\\\\"']
         for special in specials:
             unit.source = special
             print("unit.source:", repr(unit.source) + '|')

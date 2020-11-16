@@ -49,13 +49,19 @@ try:
     # FIXME see if we can't use lxml
     from bs4 import BeautifulSoup
 except ImportError:
-    raise ImportError("BeautifulSoup 4 is not installed. Support for Trados txt is disabled.")
+    raise ImportError(
+        "BeautifulSoup 4 is not installed. Support for Trados txt is disabled."
+    )
 
 
 __all__ = (
-    'TRADOS_TIMEFORMAT', 'RTF_ESCAPES',
-    'escape', 'unescape',
-    'TradosTxtDate', 'TradosUnit', 'TradosTxtTmFile',
+    'TRADOS_TIMEFORMAT',
+    'RTF_ESCAPES',
+    'escape',
+    'unescape',
+    'TradosTxtDate',
+    'TradosUnit',
+    'TradosTxtTmFile',
 )
 
 
@@ -69,10 +75,10 @@ RTF_ESCAPES = {
     "\\emspace": "\u2003",
     # Nonbreaking space equal to width of character "n" in current font.
     "\\enspace": "\u2002",
-    #"\\qmspace": "",    # One-quarter em space.
-    "\\bullet": "•",     # Bullet character.
-    "\\lquote": "‘",     # Left single quotation mark. \u2018
-    "\\rquote": "’",     # Right single quotation mark. \u2019
+    # "\\qmspace": "",    # One-quarter em space.
+    "\\bullet": "•",  # Bullet character.
+    "\\lquote": "‘",  # Left single quotation mark. \u2018
+    "\\rquote": "’",  # Right single quotation mark. \u2019
     "\\ldblquote": "“",  # Left double quotation mark. \u201C
     "\\rdblquote": "”",  # Right double quotation mark. \u201D
     "\\~": "\u00a0",  # Nonbreaking space
@@ -80,7 +86,7 @@ RTF_ESCAPES = {
     "\\_": "‑",  # Nonbreaking hyphen \U2011
     # A hexadecimal value, based on the specified character set (may be used to
     # identify 8-bit values).
-    #"\\'hh": "",
+    # "\\'hh": "",
 }
 """RTF control to Unicode map. See
 http://msdn.microsoft.com/en-us/library/aa140283(v=office.10).aspx
@@ -126,6 +132,7 @@ class TradosTxtDate:
         :type timestring: String
         """
         self._time = time.strptime(timestring, TRADOS_TIMEFORMAT)
+
     timestring = property(get_timestring, set_timestring)
 
     def get_time(self):
@@ -142,6 +149,7 @@ class TradosTxtDate:
             self._time = newtime
         else:
             self._time = None
+
     time = property(get_time, set_time)
 
     def __str__(self):
@@ -152,7 +160,6 @@ class TradosTxtDate:
 
 
 class TradosUnit(base.TranslationUnit):
-
     def __init__(self, source=None):
         self._soup = None
         super().__init__(source)
@@ -167,14 +174,17 @@ class TradosUnit(base.TranslationUnit):
 
     def gettarget(self):
         return unescape(self._soup.findAll('seg')[1].contents[0])
+
     target = property(gettarget, None)
 
 
 class TradosSoup(BeautifulSoup):
 
     MARKUP_MASSAGE = [
-        (re.compile('<(?P<fulltag>(?P<tag>[^\\s\\/]+).*?)>(?P<content>.+)\r'),
-         lambda x: '<%(fulltag)s>%(content)s</%(tag)s>' % x.groupdict()),
+        (
+            re.compile('<(?P<fulltag>(?P<tag>[^\\s\\/]+).*?)>(?P<content>.+)\r'),
+            lambda x: '<%(fulltag)s>%(content)s</%(tag)s>' % x.groupdict(),
+        ),
     ]
 
 

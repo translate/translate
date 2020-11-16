@@ -22,15 +22,12 @@ from translate.storage.xml_extract import misc
 
 # reduce_tree
 
-test_tree_1 = ('a',
-               [('b', []),
-                ('c', [('d', []), ('e', [])]),
-                ('f', [('g', [('h', [])])])])
+test_tree_1 = (
+    'a',
+    [('b', []), ('c', [('d', []), ('e', [])]), ('f', [('g', [('h', [])])])],
+)
 
-test_tree_2 = (1,
-               [(2, []),
-                (3, [(4, []), (5, [])]),
-                (6, [(7, [(8, [])])])])
+test_tree_2 = (1, [(2, []), (3, [(4, []), (5, [])]), (6, [(7, [(8, [])])])])
 
 
 def get_children(node):
@@ -38,11 +35,12 @@ def get_children(node):
 
 
 def test_reduce_tree():
-
     def concatenate(parent_node, node, string):
         return string + node[0]
 
-    assert 'abcdefgh' == misc.reduce_tree(concatenate, test_tree_1, test_tree_1, get_children, '')
+    assert 'abcdefgh' == misc.reduce_tree(
+        concatenate, test_tree_1, test_tree_1, get_children, ''
+    )
 
     def get_even_and_total(parent_node, node, even_lst, total):
         num = node[0]
@@ -50,7 +48,9 @@ def test_reduce_tree():
             even_lst.append(num)
         return even_lst, total + num
 
-    assert ([2, 4, 6, 8], 36) == misc.reduce_tree(get_even_and_total, test_tree_2, test_tree_2, get_children, [], 0)
+    assert ([2, 4, 6, 8], 36) == misc.reduce_tree(
+        get_even_and_total, test_tree_2, test_tree_2, get_children, [], 0
+    )
 
 
 # compose_mappings
@@ -63,12 +63,16 @@ composed_mapping = {1: -1, 2: -2, 4: -4, 5: -5}
 def test_compose_mappings():
     assert composed_mapping == misc.compose_mappings(left_mapping, right_mapping)
 
+
 # parse_tag
 
 
 def test_parse_tag():
-    assert ('some-urn', 'some-tag') == \
-        misc.parse_tag('{some-urn}some-tag')
+    assert ('some-urn', 'some-tag') == misc.parse_tag('{some-urn}some-tag')
 
-    assert ('urn:oasis:names:tc:opendocument:xmlns:office:1.0', 'document-content') == \
-        misc.parse_tag('{urn:oasis:names:tc:opendocument:xmlns:office:1.0}document-content')
+    assert (
+        'urn:oasis:names:tc:opendocument:xmlns:office:1.0',
+        'document-content',
+    ) == misc.parse_tag(
+        '{urn:oasis:names:tc:opendocument:xmlns:office:1.0}document-content'
+    )

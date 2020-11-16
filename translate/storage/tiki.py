@@ -123,12 +123,15 @@ class TikiStore(base.TranslationStore):
         out.write(b"// ### Start of unused words\n")
         for unit in _unused:
             out.write(str(unit).encode(self.encoding))
-        out.write(b"// ### end of unused words\n\n"
-                  b"// ### start of untranslated words\n")
+        out.write(
+            b"// ### end of unused words\n\n" b"// ### start of untranslated words\n"
+        )
         for unit in _untranslated:
             out.write(str(unit).encode(self.encoding))
-        out.write(b"// ### end of untranslated words\n\n"
-                  b"// ### start of possibly untranslated words\n")
+        out.write(
+            b"// ### end of untranslated words\n\n"
+            b"// ### start of possibly untranslated words\n"
+        )
         for unit in _possiblyuntranslated:
             out.write(str(unit).encode(self.encoding))
         out.write(b"// ### end of possibly untranslated words\n\n")
@@ -139,7 +142,10 @@ class TikiStore(base.TranslationStore):
 
     def _tiki_header(self):
         """Returns a tiki-file header string."""
-        return "<?php // -*- coding:utf-8 -*-\n// Generated from po2tiki on %s\n\n$lang=Array(\n" % datetime.datetime.now()
+        return (
+            "<?php // -*- coding:utf-8 -*-\n// Generated from po2tiki on %s\n\n$lang=Array(\n"
+            % datetime.datetime.now()
+        )
 
     def _tiki_footer(self):
         """Returns a tiki-file footer string."""

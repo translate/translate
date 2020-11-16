@@ -33,17 +33,22 @@ class lang2po:
     TargetStoreClass = po.pofile
     TargetUnitClass = po.pounit
 
-    def __init__(self, input_file, output_file, template_file=None,
-                 blank_msgstr=False, duplicate_style="msgctxt",
-                 encoding="utf-8"):
+    def __init__(
+        self,
+        input_file,
+        output_file,
+        template_file=None,
+        blank_msgstr=False,
+        duplicate_style="msgctxt",
+        encoding="utf-8",
+    ):
         """Initialize the converter."""
         self.blank_msgstr = blank_msgstr
         self.duplicate_style = duplicate_style
 
         self.extraction_msg = None
         self.output_file = output_file
-        self.source_store = self.SourceStoreClass(input_file,
-                                                  encoding=encoding)
+        self.source_store = self.SourceStoreClass(input_file, encoding=encoding)
         self.target_store = self.TargetStoreClass()
         self.template_store = None
 
@@ -78,8 +83,7 @@ class lang2po:
             self.merge_stores()
 
         if self.extraction_msg:
-            self.target_store.header().addnote(self.extraction_msg,
-                                               "developer")
+            self.target_store.header().addnote(self.extraction_msg, "developer")
 
         self.target_store.removeduplicates(self.duplicate_style)
 
@@ -90,24 +94,37 @@ class lang2po:
         return 1
 
 
-def run_converter(input_file, output_file, template_file=None, pot=False,
-                  duplicatestyle="msgctxt", encoding="utf-8"):
+def run_converter(
+    input_file,
+    output_file,
+    template_file=None,
+    pot=False,
+    duplicatestyle="msgctxt",
+    encoding="utf-8",
+):
     """Wrapper around converter."""
-    return lang2po(input_file, output_file, template_file, blank_msgstr=pot,
-                   duplicate_style=duplicatestyle, encoding=encoding).run()
+    return lang2po(
+        input_file,
+        output_file,
+        template_file,
+        blank_msgstr=pot,
+        duplicate_style=duplicatestyle,
+        encoding=encoding,
+    ).run()
 
 
-formats = {
-    "lang": ("po", run_converter)
-}
+formats = {"lang": ("po", run_converter)}
 
 
 def main(argv=None):
-    parser = convert.ConvertOptionParser(formats, usepots=True,
-                                         description=__doc__)
+    parser = convert.ConvertOptionParser(formats, usepots=True, description=__doc__)
     parser.add_option(
-        "", "--encoding", dest="encoding", default='utf-8',
-        help="The encoding of the input file (default: UTF-8)")
+        "",
+        "--encoding",
+        dest="encoding",
+        default='utf-8',
+        help="The encoding of the input file (default: UTF-8)",
+    )
     parser.passthrough.append("encoding")
     parser.add_duplicates_option()
     parser.run(argv)

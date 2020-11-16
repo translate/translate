@@ -133,7 +133,9 @@ class tmxfile(lisa.LISAfile):
 </tmx>'''
 
     def addheader(self):
-        headernode = next(self.document.getroot().iterchildren(self.namespaced("header")))
+        headernode = next(
+            self.document.getroot().iterchildren(self.namespaced("header"))
+        )
         headernode.set("creationtool", "Translate Toolkit")
         headernode.set("creationtoolversion", __version__.sver)
         headernode.set("segtype", "sentence")
@@ -143,11 +145,10 @@ class tmxfile(lisa.LISAfile):
         # targetlanguage
         headernode.set("srclang", self.sourcelanguage)
         headernode.set("datatype", "PlainText")
-        #headernode.set("creationdate", "YYYYMMDDTHHMMSSZ"
-        #headernode.set("creationid", "CodeSyntax"
+        # headernode.set("creationdate", "YYYYMMDDTHHMMSSZ"
+        # headernode.set("creationid", "CodeSyntax"
 
-    def addtranslation(self, source, srclang, translation, translang,
-                       comment=None):
+    def addtranslation(self, source, srclang, translation, translang, comment=None):
         """addtranslation method for testing old unit tests"""
         unit = self.addsourceunit(source)
         unit.target = translation

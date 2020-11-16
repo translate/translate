@@ -35,17 +35,22 @@ class af(common.Common):
 
     validdoublewords = [""]
 
-    punctuation = "".join([common.Common.commonpunc, common.Common.quotes,
-                           common.Common.miscpunc])
+    punctuation = "".join(
+        [common.Common.commonpunc, common.Common.quotes, common.Common.miscpunc]
+    )
     sentenceend = ".!?…"
-    sentencere = re.compile(r"""
+    sentencere = re.compile(
+        r"""
         (?s)        # make . also match newlines
         .*?         # anything, but match non-greedy
         [%s]        # the puntuation for sentence ending
         \s+         # the spacing after the puntuation
         (?='n\s[A-Z]|[^'a-z\d]|'[^n])
         # lookahead that next part starts with caps or 'n followed by caps
-        """ % sentenceend, re.VERBOSE)
+        """
+        % sentenceend,
+        re.VERBOSE,
+    )
 
     specialchars = "ëïêôûáéíóúý"
 
@@ -54,51 +59,86 @@ class af(common.Common):
         """Modify this for the indefinite article ('n)."""
         match = articlere.search(text, 0, 20)
         if match:
-            #construct a list of non-apostrophe punctuation:
+            # construct a list of non-apostrophe punctuation:
             nonapos = "".join(cls.punctuation.split("'"))
             stripped = text.lstrip().lstrip(nonapos)
             match = articlere.match(stripped)
             if match:
-                return common.Common.capsstart(stripped[match.end():])
+                return common.Common.capsstart(stripped[match.end() :])
         return common.Common.capsstart(text)
 
 
 cyr2lat = {
-    "А": "A", "а": "a",
-    "Б": "B", "б": "b",
-    "В": "W", "в": "w",  # Different if at the end of a syllable see rule 2.
-    "Г": "G", "г": "g",  # see rule 3 and 4
-    "Д": "D", "д": "d",
-    "ДЖ": "Dj", "дж": "dj",
-    "Е": "Je", "е": "je",  # Sometimes e need to check when/why see rule 5.
-    "Ё": "Jo", "ё": "jo",  # see rule 6
-    "ЕЙ": "Ei", "ей": "ei",
-    "Ж": "Zj", "ж": "zj",
-    "З": "Z", "з": "z",
-    "И": "I", "и": "i",
-    "Й": "J", "й": "j",  # see rule 9 and 10
-    "К": "K", "к": "k",  # see note 11
-    "Л": "L", "л": "l",
-    "М": "M", "м": "m",
-    "Н": "N", "н": "n",
-    "О": "O", "о": "o",
-    "П": "P", "п": "p",
-    "Р": "R", "р": "r",
-    "С": "S", "с": "s",  # see note 12
-    "Т": "T", "т": "t",
-    "У": "Oe", "у": "oe",
-    "Ф": "F", "ф": "f",
-    "Х": "Ch", "х": "ch",  # see rule 12
-    "Ц": "Ts", "ц": "ts",
-    "Ч": "Tj", "ч": "tj",
-    "Ш": "Sj", "ш": "sj",
-    "Щ": "Sjtsj", "щ": "sjtsj",
-    "Ы": "I", "ы": "i",  # see note 13
-    "Ъ": "", "ъ": "",  # See note 14
-    "Ь": "", "ь": "",  # this letter is not in the AWS we assume it is left out as in the previous letter
-    "Э": "E", "э": "e",
-    "Ю": "Joe", "ю": "joe",
-    "Я": "Ja", "я": "ja",
+    "А": "A",
+    "а": "a",
+    "Б": "B",
+    "б": "b",
+    "В": "W",
+    "в": "w",  # Different if at the end of a syllable see rule 2.
+    "Г": "G",
+    "г": "g",  # see rule 3 and 4
+    "Д": "D",
+    "д": "d",
+    "ДЖ": "Dj",
+    "дж": "dj",
+    "Е": "Je",
+    "е": "je",  # Sometimes e need to check when/why see rule 5.
+    "Ё": "Jo",
+    "ё": "jo",  # see rule 6
+    "ЕЙ": "Ei",
+    "ей": "ei",
+    "Ж": "Zj",
+    "ж": "zj",
+    "З": "Z",
+    "з": "z",
+    "И": "I",
+    "и": "i",
+    "Й": "J",
+    "й": "j",  # see rule 9 and 10
+    "К": "K",
+    "к": "k",  # see note 11
+    "Л": "L",
+    "л": "l",
+    "М": "M",
+    "м": "m",
+    "Н": "N",
+    "н": "n",
+    "О": "O",
+    "о": "o",
+    "П": "P",
+    "п": "p",
+    "Р": "R",
+    "р": "r",
+    "С": "S",
+    "с": "s",  # see note 12
+    "Т": "T",
+    "т": "t",
+    "У": "Oe",
+    "у": "oe",
+    "Ф": "F",
+    "ф": "f",
+    "Х": "Ch",
+    "х": "ch",  # see rule 12
+    "Ц": "Ts",
+    "ц": "ts",
+    "Ч": "Tj",
+    "ч": "tj",
+    "Ш": "Sj",
+    "ш": "sj",
+    "Щ": "Sjtsj",
+    "щ": "sjtsj",
+    "Ы": "I",
+    "ы": "i",  # see note 13
+    "Ъ": "",
+    "ъ": "",  # See note 14
+    "Ь": "",
+    "ь": "",  # this letter is not in the AWS we assume it is left out as in the previous letter
+    "Э": "E",
+    "э": "e",
+    "Ю": "Joe",
+    "ю": "joe",
+    "Я": "Ja",
+    "я": "ja",
 }
 """Mapping of Cyrillic to Latin letters for transliteration in Afrikaans"""
 

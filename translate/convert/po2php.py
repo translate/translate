@@ -33,7 +33,6 @@ eol = "\n"
 
 
 class rephp:
-
     def __init__(self, templatefile, inputstore):
         self.templatefile = templatefile
         self.inputstore = inputstore
@@ -65,7 +64,7 @@ class rephp:
             # see if there's more
             endpos = line.rfind("%s%s" % (self.quotechar, self.enddel))
             # if there was no '; or the quote is escaped, we have to continue
-            if endpos >= 0 and line[endpos-1] != '\\':
+            if endpos >= 0 and line[endpos - 1] != '\\':
                 self.inmultilinemsgid = False
             # if we're echoing...
             if self.inecho:
@@ -111,22 +110,29 @@ class rephp:
                 key = line[:equalspos].rstrip()
                 lookupkey = self.prename + key.lstrip()
                 # Calculate space around the equal sign
-                prespace = line[len(line[:equalspos].rstrip()):equalspos]
-                postspacestart = len(line[equalspos+len(self.equaldel):])
-                postspaceend = len(line[equalspos+len(self.equaldel):].lstrip())
-                postspace = line[equalspos+len(self.equaldel):equalspos+(postspacestart-postspaceend)+len(self.equaldel)]
-                self.quotechar = line[equalspos+(postspacestart-postspaceend)+len(self.equaldel)]
-                inlinecomment_pos = line.rfind("%s%s" % (self.quotechar,
-                                                         self.enddel))
+                prespace = line[len(line[:equalspos].rstrip()) : equalspos]
+                postspacestart = len(line[equalspos + len(self.equaldel) :])
+                postspaceend = len(line[equalspos + len(self.equaldel) :].lstrip())
+                postspace = line[
+                    equalspos
+                    + len(self.equaldel) : equalspos
+                    + (postspacestart - postspaceend)
+                    + len(self.equaldel)
+                ]
+                self.quotechar = line[
+                    equalspos + (postspacestart - postspaceend) + len(self.equaldel)
+                ]
+                inlinecomment_pos = line.rfind("%s%s" % (self.quotechar, self.enddel))
                 if inlinecomment_pos > -1:
-                    inlinecomment = line[inlinecomment_pos+2:]
+                    inlinecomment = line[inlinecomment_pos + 2 :]
                 else:
                     inlinecomment = ""
 
                 if lookupkey in self.inputstore.locationindex:
                     unit = self.inputstore.locationindex[lookupkey]
-                    if ((unit.isfuzzy() and not self.includefuzzy) or
-                        len(unit.target) == 0):
+                    if (unit.isfuzzy() and not self.includefuzzy) or len(
+                        unit.target
+                    ) == 0:
                         value = unit.source
                     else:
                         value = unit.target
@@ -145,9 +151,11 @@ class rephp:
                         "comment": inlinecomment,
                         "eol": eol,
                     }
-                    returnline = ("%(key)s%(pre)s%(del)s%(post)s%(quote)s"
-                                  "%(value)s%(quote)s%(enddel)s%(comment)s"
-                                  "%(eol)s" % params)
+                    returnline = (
+                        "%(key)s%(pre)s%(del)s%(post)s%(quote)s"
+                        "%(value)s%(quote)s%(enddel)s%(comment)s"
+                        "%(eol)s" % params
+                    )
                 else:
                     self.inecho = True
                     returnline = line + eol
@@ -156,7 +164,7 @@ class rephp:
                 endpos = line.rfind("%s%s" % (self.quotechar, self.enddel))
                 # if there was no '; or the quote is escaped, we have to
                 # continue
-                if endpos == -1 or line[endpos-1] == '\\':
+                if endpos == -1 or line[endpos - 1] == '\\':
                     self.inmultilinemsgid = True
 
         if isinstance(returnline, str):
@@ -165,8 +173,9 @@ class rephp:
         return returnline
 
 
-def convertphp(inputfile, outputfile, templatefile, includefuzzy=False,
-               outputthreshold=None):
+def convertphp(
+    inputfile, outputfile, templatefile, includefuzzy=False, outputthreshold=None
+):
     inputstore = po.pofile(inputfile)
 
     if not convert.should_output_store(inputstore, outputthreshold):
@@ -187,8 +196,9 @@ def main(argv=None):
         ("po", "php"): ("php", convertphp),
         ("po", "html"): ("html", convertphp),
     }
-    parser = convert.ConvertOptionParser(formats, usetemplates=True,
-                                         description=__doc__)
+    parser = convert.ConvertOptionParser(
+        formats, usetemplates=True, description=__doc__
+    )
     parser.add_threshold_option()
     parser.add_fuzzy_option()
     parser.run(argv)

@@ -35,17 +35,22 @@ from translate.storage import base
 try:
     from aeidon import Subtitle, documents, newlines
     from aeidon.encodings import detect
-    from aeidon.files import (AdvSubStationAlpha, MicroDVD, SubRip,
-                              SubStationAlpha, new)
+    from aeidon.files import AdvSubStationAlpha, MicroDVD, SubRip, SubStationAlpha, new
     from aeidon.util import detect_format as determine
 except ImportError:
     try:
         from gaupol import FormatDeterminer, documents
         from gaupol.encodings import detect
-        from gaupol.files import (AdvSubStationAlpha, MicroDVD, SubRip,
-                                  SubStationAlpha, new)
+        from gaupol.files import (
+            AdvSubStationAlpha,
+            MicroDVD,
+            SubRip,
+            SubStationAlpha,
+            new,
+        )
         from gaupol.newlines import newlines
         from gaupol.subtitle import Subtitle
+
         _determiner = FormatDeterminer()
         determine = _determiner.determine
     except ImportError:
@@ -142,9 +147,7 @@ class SubtitleFile(base.TranslationStore):
     def parse(self, input):
         if isinstance(input, bytes):
             # Gaupol does not allow parsing from strings
-            kwargs = {
-                'delete': False
-            }
+            kwargs = {'delete': False}
             if self.filename:
                 kwargs['suffix'] = self.filename
 

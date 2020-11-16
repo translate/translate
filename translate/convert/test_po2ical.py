@@ -1,4 +1,3 @@
-
 from io import BytesIO
 
 import pytest
@@ -10,8 +9,14 @@ class TestPO2Ical:
 
     ConverterClass = po2ical.po2ical
 
-    def _convert(self, input_string, template_string=None, include_fuzzy=False,
-                 output_threshold=None, success_expected=True):
+    def _convert(
+        self,
+        input_string,
+        template_string=None,
+        include_fuzzy=False,
+        output_threshold=None,
+        success_expected=True,
+    ):
         """Helper that converts to target format without using files."""
         input_file = BytesIO(input_string.encode())
         output_file = BytesIO()
@@ -19,8 +24,9 @@ class TestPO2Ical:
         if template_string:
             template_file = BytesIO(template_string.encode())
         expected_result = 1 if success_expected else 0
-        converter = self.ConverterClass(input_file, output_file, template_file,
-                                        include_fuzzy, output_threshold)
+        converter = self.ConverterClass(
+            input_file, output_file, template_file, include_fuzzy, output_threshold
+        )
         assert converter.run() == expected_result
         return None, output_file
 
@@ -43,11 +49,12 @@ ORGANIZER;CN=John Doe:MAILTO:john.doe@example.com
 SUMMARY:%s
 END:VEVENT
 END:VCALENDAR
-'''.replace("\n", "\r\n")
+'''.replace(
+            "\n", "\r\n"
+        )
         template_string = icalendar_boilerplate % "Value"
         expected_output = icalendar_boilerplate % "Value"
-        assert expected_output == self._convert_to_string(input_string,
-                                                          template_string)
+        assert expected_output == self._convert_to_string(input_string, template_string)
 
     def test_summary(self):
         """Check that a simple PO converts valid iCalendar SUMMARY."""
@@ -68,11 +75,12 @@ ORGANIZER;CN=John Doe:MAILTO:john.doe@example.com
 SUMMARY:%s
 END:VEVENT
 END:VCALENDAR
-'''.replace("\n", "\r\n")
+'''.replace(
+            "\n", "\r\n"
+        )
         template_string = icalendar_boilerplate % "Value"
         expected_output = icalendar_boilerplate % "Waarde"
-        assert expected_output == self._convert_to_string(input_string,
-                                                          template_string)
+        assert expected_output == self._convert_to_string(input_string, template_string)
 
     def test_description(self):
         """Check that a simple PO converts valid iCalendar DESCRIPTION."""
@@ -93,11 +101,12 @@ DTSTAMP:19970714T170000Z
 ORGANIZER;CN=John Doe:MAILTO:john.doe@example.com
 END:VEVENT
 END:VCALENDAR
-'''.replace("\n", "\r\n")
+'''.replace(
+            "\n", "\r\n"
+        )
         template_string = icalendar_boilerplate % "My description"
         expected_output = icalendar_boilerplate % "A miña descrición"
-        assert expected_output == self._convert_to_string(input_string,
-                                                          template_string)
+        assert expected_output == self._convert_to_string(input_string, template_string)
 
     def test_location(self):
         """Check that a simple PO converts valid iCalendar LOCATION."""
@@ -118,11 +127,12 @@ LOCATION:%s
 ORGANIZER;CN=John Doe:MAILTO:john.doe@example.com
 END:VEVENT
 END:VCALENDAR
-'''.replace("\n", "\r\n")
+'''.replace(
+            "\n", "\r\n"
+        )
         template_string = icalendar_boilerplate % "The location"
         expected_output = icalendar_boilerplate % "O lugar"
-        assert expected_output == self._convert_to_string(input_string,
-                                                          template_string)
+        assert expected_output == self._convert_to_string(input_string, template_string)
 
     def test_comment(self):
         """Check that a simple PO converts valid iCalendar COMMENT."""
@@ -143,11 +153,12 @@ DTSTAMP:19970714T170000Z
 ORGANIZER;CN=John Doe:MAILTO:john.doe@example.com
 END:VEVENT
 END:VCALENDAR
-'''.replace("\n", "\r\n")
+'''.replace(
+            "\n", "\r\n"
+        )
         template_string = icalendar_boilerplate % "Some comment"
         expected_output = icalendar_boilerplate % "Comentarios ao chou"
-        assert expected_output == self._convert_to_string(input_string,
-                                                          template_string)
+        assert expected_output == self._convert_to_string(input_string, template_string)
 
     def test_complex_icalendar(self):
         """Check that a PO converts valid iCalendar."""
@@ -183,15 +194,22 @@ ORGANIZER;CN=John Doe:MAILTO:john.doe@example.com
 SUMMARY:%s
 END:VEVENT
 END:VCALENDAR
-'''.replace("\n", "\r\n")
-        template_string = (icalendar_boilerplate %
-                           ("Some comment", "My description", "The location",
-                            "My summary"))
-        expected_output = (icalendar_boilerplate %
-                           ("Comentarios ao chou", "A miña descrición",
-                            "O lugar", "Resumo"))
-        assert expected_output == self._convert_to_string(input_string,
-                                                          template_string)
+'''.replace(
+            "\n", "\r\n"
+        )
+        template_string = icalendar_boilerplate % (
+            "Some comment",
+            "My description",
+            "The location",
+            "My summary",
+        )
+        expected_output = icalendar_boilerplate % (
+            "Comentarios ao chou",
+            "A miña descrición",
+            "O lugar",
+            "Resumo",
+        )
+        assert expected_output == self._convert_to_string(input_string, template_string)
 
     def test_convert_skip_fuzzy(self):
         """Check that by default fuzzy units are converted with source text."""
@@ -213,11 +231,12 @@ ORGANIZER;CN=John Doe:MAILTO:john.doe@example.com
 SUMMARY:%s
 END:VEVENT
 END:VCALENDAR
-'''.replace("\n", "\r\n")
+'''.replace(
+            "\n", "\r\n"
+        )
         template_string = icalendar_boilerplate % "Value"
         expected_output = icalendar_boilerplate % "Value"
-        assert expected_output == self._convert_to_string(input_string,
-                                                          template_string)
+        assert expected_output == self._convert_to_string(input_string, template_string)
 
     def test_convert_include_fuzzy(self):
         """Check fuzzy units are converted with target text if specified."""
@@ -239,12 +258,14 @@ ORGANIZER;CN=John Doe:MAILTO:john.doe@example.com
 SUMMARY:%s
 END:VEVENT
 END:VCALENDAR
-'''.replace("\n", "\r\n")
+'''.replace(
+            "\n", "\r\n"
+        )
         template_string = icalendar_boilerplate % "Value"
         expected_output = icalendar_boilerplate % "Waarde"
-        assert (expected_output ==
-                self._convert_to_string(input_string, template_string,
-                                        include_fuzzy=True))
+        assert expected_output == self._convert_to_string(
+            input_string, template_string, include_fuzzy=True
+        )
 
     def test_no_template(self):
         """Check that a template is required."""
@@ -270,11 +291,12 @@ ORGANIZER;CN=John Doe:MAILTO:john.doe@example.com
 SUMMARY:%s
 END:VEVENT
 END:VCALENDAR
-'''.replace("\n", "\r\n")
+'''.replace(
+            "\n", "\r\n"
+        )
         template_string = icalendar_boilerplate % "Random"
         expected_output = icalendar_boilerplate % "Random"
-        assert expected_output == self._convert_to_string(input_string,
-                                                          template_string)
+        assert expected_output == self._convert_to_string(input_string, template_string)
 
     def test_convert_completion_below_threshold(self):
         """Check no conversion if input completion is below threshold."""
@@ -295,13 +317,15 @@ ORGANIZER;CN=John Doe:MAILTO:john.doe@example.com
 SUMMARY:%s
 END:VEVENT
 END:VCALENDAR
-'''.replace("\n", "\r\n")
+'''.replace(
+            "\n", "\r\n"
+        )
         template_string = icalendar_boilerplate % "Value"
         expected_output = ""
         # Input completion is 0% so with a 70% threshold it should not output.
-        output = self._convert_to_string(input_string, template_string,
-                                         output_threshold=70,
-                                         success_expected=False)
+        output = self._convert_to_string(
+            input_string, template_string, output_threshold=70, success_expected=False
+        )
         assert output == expected_output
 
     def test_convert_completion_above_threshold(self):
@@ -323,12 +347,15 @@ ORGANIZER;CN=John Doe:MAILTO:john.doe@example.com
 SUMMARY:%s
 END:VEVENT
 END:VCALENDAR
-'''.replace("\n", "\r\n")
+'''.replace(
+            "\n", "\r\n"
+        )
         template_string = icalendar_boilerplate % "Value"
         expected_output = icalendar_boilerplate % "Waarde"
         # Input completion is 100% so with a 70% threshold it should output.
-        output = self._convert_to_string(input_string, template_string,
-                                         output_threshold=70)
+        output = self._convert_to_string(
+            input_string, template_string, output_threshold=70
+        )
         assert output == expected_output
 
 

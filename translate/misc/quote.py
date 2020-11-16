@@ -40,8 +40,9 @@ def find_all(searchin, substr):
     return locations
 
 
-def extract(source, startdelim, enddelim,
-            escape=None, startinstring=False, allowreentry=True):
+def extract(
+    source, startdelim, enddelim, escape=None, startinstring=False, allowreentry=True
+):
     """Extracts a doublequote-delimited string from a string, allowing for
     backslash-escaping returns tuple of (quoted string with quotes, still in
     string at end).
@@ -69,12 +70,20 @@ def extract(source, startdelim, enddelim,
                 true_escape = True
             if true_escape:
                 true_escape_places.append(escape_pos)
-        startdelim_places = [pos for pos in startdelim_places if pos - lenescape not in true_escape_places]
-        enddelim_places = [pos + lenend for pos in enddelim_places if pos - lenescape not in true_escape_places]
+        startdelim_places = [
+            pos
+            for pos in startdelim_places
+            if pos - lenescape not in true_escape_places
+        ]
+        enddelim_places = [
+            pos + lenend
+            for pos in enddelim_places
+            if pos - lenescape not in true_escape_places
+        ]
     else:
         enddelim_places = [pos + lenend for pos in enddelim_places]
     # Get a unique sorted list of the significant places in the string
-    significant_places = [0] + startdelim_places + enddelim_places + [len(source)-1]
+    significant_places = [0] + startdelim_places + enddelim_places + [len(source) - 1]
     significant_places.sort()
     extracted = ""
     lastpos = None
@@ -87,8 +96,11 @@ def extract(source, startdelim, enddelim,
             extracted += source[lastpos:pos]
             instring = False
             lastpos = pos
-        if ((not instring) and pos in startdelim_places and
-            not (enteredonce and not allowreentry)):
+        if (
+            (not instring)
+            and pos in startdelim_places
+            and not (enteredonce and not allowreentry)
+        ):
             instring = True
             enteredonce = True
             lastpos = pos
@@ -97,9 +109,15 @@ def extract(source, startdelim, enddelim,
     return (extracted, instring)
 
 
-def extractwithoutquotes(source, startdelim, enddelim, escape=None,
-                         startinstring=False, includeescapes=True,
-                         allowreentry=True):
+def extractwithoutquotes(
+    source,
+    startdelim,
+    enddelim,
+    escape=None,
+    startinstring=False,
+    includeescapes=True,
+    allowreentry=True,
+):
     """Extracts a doublequote-delimited string from a string, allowing for
     backslash-escaping includeescapes can also be a function that takes the
     whole escaped string and returns the replaced version.
@@ -113,7 +131,7 @@ def extractwithoutquotes(source, startdelim, enddelim, escape=None,
         enddelim_places = startdelim_places[:]
     else:
         enddelim_places = find_all(source, enddelim)
-    #hell slow because it is called far too often
+    # hell slow because it is called far too often
     if escape is not None:
         lenescape = len(escape)
         escape_places = find_all(source, escape)
@@ -127,12 +145,20 @@ def extractwithoutquotes(source, startdelim, enddelim, escape=None,
                 true_escape = True
             if true_escape:
                 true_escape_places.append(escape_pos)
-        startdelim_places = [pos for pos in startdelim_places if pos - lenescape not in true_escape_places]
-        enddelim_places = [pos + lenend for pos in enddelim_places if pos - lenescape not in true_escape_places]
+        startdelim_places = [
+            pos
+            for pos in startdelim_places
+            if pos - lenescape not in true_escape_places
+        ]
+        enddelim_places = [
+            pos + lenend
+            for pos in enddelim_places
+            if pos - lenescape not in true_escape_places
+        ]
     else:
         enddelim_places = [pos + lenend for pos in enddelim_places]
     # get a unique sorted list of the significant places in the string
-    significant_places = [0] + startdelim_places + enddelim_places + [len(source)-1]
+    significant_places = [0] + startdelim_places + enddelim_places + [len(source) - 1]
     significant_places.sort()
     extracted = ""
     lastpos = 0
@@ -143,20 +169,28 @@ def extractwithoutquotes(source, startdelim, enddelim, escape=None,
             section_start, section_end = lastpos + len(startdelim), pos - len(enddelim)
             section = source[section_start:section_end]
             if escape is not None and checkescapes:
-                escape_list = [epos - section_start for epos in true_escape_places if section_start <= epos <= section_end]
+                escape_list = [
+                    epos - section_start
+                    for epos in true_escape_places
+                    if section_start <= epos <= section_end
+                ]
                 new_section = ""
                 last_epos = 0
                 for epos in escape_list:
                     new_section += section[last_epos:epos]
                     if callable_includeescapes:
-                        replace_escape = includeescapes(section[epos:epos + lenescape + 1])
+                        replace_escape = includeescapes(
+                            section[epos : epos + lenescape + 1]
+                        )
                         # TODO: deprecate old method of returning boolean from
                         # includeescape, by removing this if block
                         if not isinstance(replace_escape, str):
                             if replace_escape:
-                                replace_escape = section[epos:epos + lenescape + 1]
+                                replace_escape = section[epos : epos + lenescape + 1]
                             else:
-                                replace_escape = section[epos + lenescape:epos + lenescape + 1]
+                                replace_escape = section[
+                                    epos + lenescape : epos + lenescape + 1
+                                ]
                         new_section += replace_escape
                         last_epos = epos + lenescape + 1
                     else:
@@ -165,8 +199,11 @@ def extractwithoutquotes(source, startdelim, enddelim, escape=None,
             extracted += section
             instring = False
             lastpos = pos
-        if ((not instring) and pos in startdelim_places and
-            not (enteredonce and not allowreentry)):
+        if (
+            (not instring)
+            and pos in startdelim_places
+            and not (enteredonce and not allowreentry)
+        ):
             instring = True
             enteredonce = True
             lastpos = pos
@@ -174,13 +211,18 @@ def extractwithoutquotes(source, startdelim, enddelim, escape=None,
         section_start = lastpos + len(startdelim)
         section = source[section_start:]
         if escape is not None and not includeescapes:
-            escape_list = [epos - section_start for epos in true_escape_places if section_start <= epos]
+            escape_list = [
+                epos - section_start
+                for epos in true_escape_places
+                if section_start <= epos
+            ]
             new_section = ""
             last_epos = 0
             for epos in escape_list:
                 new_section += section[last_epos:epos]
-                if (callable_includeescapes and
-                    includeescapes(section[epos:epos + lenescape + 1])):
+                if callable_includeescapes and includeescapes(
+                    section[epos : epos + lenescape + 1]
+                ):
                     last_epos = epos
                 else:
                     last_epos = epos + lenescape
@@ -217,8 +259,9 @@ def entityencode(source, codepoint2name):
                 output += "&" + possibleentity + ";"
                 inentity = False
             elif char == " ":
-                output += (_encode_entity_char("&", codepoint2name) +
-                           entityencode(possibleentity + char, codepoint2name))
+                output += _encode_entity_char("&", codepoint2name) + entityencode(
+                    possibleentity + char, codepoint2name
+                )
                 inentity = False
             else:
                 possibleentity += char
@@ -226,8 +269,9 @@ def entityencode(source, codepoint2name):
             output += _encode_entity_char(char, codepoint2name)
     if inentity:
         # Handle nonentities at end of string.
-        output += (_encode_entity_char("&", codepoint2name) +
-                   entityencode(possibleentity, codepoint2name))
+        output += _encode_entity_char("&", codepoint2name) + entityencode(
+            possibleentity, codepoint2name
+        )
 
     return output
 
@@ -259,10 +303,9 @@ def entitydecode(source, name2codepoint):
             continue
         if inentity:
             if char == ";":
-                if (len(possibleentity) > 0 and
-                    possibleentity in name2codepoint):
+                if len(possibleentity) > 0 and possibleentity in name2codepoint:
                     entchar = chr(name2codepoint[possibleentity])
-                    if entchar == '&' and _has_entity_end(source[i+1:]):
+                    if entchar == '&' and _has_entity_end(source[i + 1 :]):
                         output += "&" + possibleentity + ";"
                     else:
                         output += entchar
@@ -340,7 +383,7 @@ def xwiki_properties_encode(source, encoding):
 
 
 def escapespace(char):
-    assert(len(char) == 1)
+    assert len(char) == 1
     if char.isspace():
         return "\\u%04X" % ord(char)
     return char
@@ -365,15 +408,23 @@ def mozillaescapemarginspaces(source):
 
 propertyescapes = {
     # escapes that are self-escaping
-    "\\": "\\", "'": "'", '"': '"',
+    "\\": "\\",
+    "'": "'",
+    '"': '"',
     # control characters that we keep
-    "f": "\f", "n": "\n", "r": "\r", "t": "\t",
+    "f": "\f",
+    "n": "\n",
+    "r": "\r",
+    "t": "\t",
 }
 
 controlchars = {
     # the reverse of the above...
     "\\": "\\\\",
-    "\f": "\\f", "\n": "\\n", "\r": "\\r", "\t": "\\t",
+    "\f": "\\f",
+    "\n": "\\n",
+    "\r": "\\r",
+    "\t": "\\t",
 }
 
 
@@ -461,6 +512,7 @@ def propertiesdecode(source):
                 output += "\\" + c
                 continue
             import unicodedata
+
             name = source[s:e]
             output += unicodedata.lookup(name)
             s = e + 1

@@ -1,4 +1,3 @@
-
 from io import BytesIO
 
 from pytest import mark
@@ -8,7 +7,6 @@ from translate.storage import dtd, po
 
 
 class TestDTD2PO:
-
     def dtd2po(self, dtdsource, dtdtemplate=None):
         """helper that converts dtd source to po source without requiring files"""
         inputfile = BytesIO(dtdsource.encode())
@@ -122,13 +120,20 @@ class TestDTD2PO:
         pofile = self.dtd2po(dtdsource)
         posource = bytes(pofile).decode('utf-8')
         print(posource)
-        assert posource.count('#.') == 5  # 1 Header extracted from, 3 comment lines, 1 autoinserted comment
+        assert (
+            posource.count('#.') == 5
+        )  # 1 Header extracted from, 3 comment lines, 1 autoinserted comment
 
     def test_localisation_note_merge(self):
         """test that LOCALIZATION NOTES are added properly as #. comments and disambiguated with msgctxt entries"""
-        dtdtemplate = '<!--LOCALIZATION NOTE (%s): Some note -->\n' + \
-            '<!ENTITY %s "Source text">\n'
-        dtdsource = dtdtemplate % ("note1.label", "note1.label") + dtdtemplate % ("note2.label", "note2.label")
+        dtdtemplate = (
+            '<!--LOCALIZATION NOTE (%s): Some note -->\n'
+            + '<!ENTITY %s "Source text">\n'
+        )
+        dtdsource = dtdtemplate % ("note1.label", "note1.label") + dtdtemplate % (
+            "note2.label",
+            "note2.label",
+        )
         pofile = self.dtd2po(dtdsource)
         posource = str(pofile.units[1]) + str(pofile.units[2])
         print(posource)
@@ -152,8 +157,10 @@ class TestDTD2PO:
 
     def test_donttranslate_label(self):
         """test strangeness when label entity is marked DONT_TRANSLATE and accesskey is not, bug 30"""
-        dtdsource = '<!--LOCALIZATION NOTE (editorCheck.label): DONT_TRANSLATE -->\n' + \
-            '<!ENTITY editorCheck.label "Composer">\n<!ENTITY editorCheck.accesskey "c">\n'
+        dtdsource = (
+            '<!--LOCALIZATION NOTE (editorCheck.label): DONT_TRANSLATE -->\n'
+            + '<!ENTITY editorCheck.label "Composer">\n<!ENTITY editorCheck.accesskey "c">\n'
+        )
         pofile = self.dtd2po(dtdsource)
         posource = bytes(pofile).decode('utf-8')
         # we need to decided what we're going to do here - see the comments in bug 30
@@ -178,46 +185,60 @@ class TestDTD2PO:
     def test_spaces_at_start_of_dtd_lines(self):
         """test that pretty print spaces at the start of subsequent DTD element lines are removed from the PO file, bug 79"""
         # Space at the end of the line
-        dtdsource = ('<!ENTITY  noupdatesfound.intro "First line then \n'
-                     '                                next lines.">\n')
+        dtdsource = (
+            '<!ENTITY  noupdatesfound.intro "First line then \n'
+            '                                next lines.">\n'
+        )
         pofile = self.dtd2po(dtdsource)
         pounit = self.singleelement(pofile)
         # We still need to decide how we handle line line breaks in the DTD entities.  It seems that we should actually
         # drop the line break but this has not been implemented yet.
         assert pounit.source == "First line then next lines."
         # No space at the end of the line
-        dtdsource = ('<!ENTITY  noupdatesfound.intro "First line then\n'
-                     '                                next lines.">\n')
+        dtdsource = (
+            '<!ENTITY  noupdatesfound.intro "First line then\n'
+            '                                next lines.">\n'
+        )
         pofile = self.dtd2po(dtdsource)
         pounit = self.singleelement(pofile)
         assert pounit.source == "First line then next lines."
 
     def test_accesskeys_folding(self):
         """test that we fold accesskeys into message strings"""
-        dtdsource_template = '<!ENTITY  fileSaveAs.%s "Save As...">\n<!ENTITY  fileSaveAs.%s "S">\n'
-        lang_template = '<!ENTITY  fileSaveAs.%s "Gcina ka...">\n<!ENTITY  fileSaveAs.%s "G">\n'
+        dtdsource_template = (
+            '<!ENTITY  fileSaveAs.%s "Save As...">\n<!ENTITY  fileSaveAs.%s "S">\n'
+        )
+        lang_template = (
+            '<!ENTITY  fileSaveAs.%s "Gcina ka...">\n<!ENTITY  fileSaveAs.%s "G">\n'
+        )
         for label in ("label", "title"):
             for accesskey in ("accesskey", "accessKey", "akey"):
                 pofile = self.dtd2po(dtdsource_template % (label, accesskey))
                 pounit = self.singleelement(pofile)
                 assert pounit.source == "&Save As..."
                 # Test with template (bug 155)
-                pofile = self.dtd2po(lang_template % (label, accesskey), dtdsource_template % (label, accesskey))
+                pofile = self.dtd2po(
+                    lang_template % (label, accesskey),
+                    dtdsource_template % (label, accesskey),
+                )
                 pounit = self.singleelement(pofile)
                 assert pounit.source == "&Save As..."
                 assert pounit.target == "&Gcina ka..."
 
     def test_accesskeys_mismatch(self):
         """check that we can handle accesskeys that don't match and thus can't be folded into the .label entry"""
-        dtdsource = ('<!ENTITY  fileSave.label "Save">\n'
-                     '<!ENTITY  fileSave.accesskey "z">\n')
+        dtdsource = (
+            '<!ENTITY  fileSave.label "Save">\n' '<!ENTITY  fileSave.accesskey "z">\n'
+        )
         pofile = self.dtd2po(dtdsource)
         assert self.countelements(pofile) == 2
 
     def test_carriage_return_in_multiline_dtd(self):
         r"""test that we create nice PO files when we find a \r\n in a multiline DTD element"""
-        dtdsource = ('<!ENTITY  noupdatesfound.intro "First line then \r\n'
-                     '                                next lines.">\n')
+        dtdsource = (
+            '<!ENTITY  noupdatesfound.intro "First line then \r\n'
+            '                                next lines.">\n'
+        )
         pofile = self.dtd2po(dtdsource)
         unit = self.singleelement(pofile)
         assert unit.source == "First line then next lines."
@@ -242,7 +263,9 @@ Some other text
 '''
         pofile = self.dtd2po(dtdsource)
         unit = self.singleelement(pofile)
-        assert unit.source == '<span>opsies</span><span class="noWin">preferences</span>'
+        assert (
+            unit.source == '<span>opsies</span><span class="noWin">preferences</span>'
+        )
 
     def test_preserving_spaces(self):
         """test that we preserve space that appear at the start of the first line of a DTD entity"""
@@ -269,7 +292,10 @@ Some other text
         print(thedtd)
         print(thepo.source)
         # \n in a dtd should also appear as \n in the PO file
-        assert thepo.source == r"A hard coded newline.\nAnd tab\t and a \r carriage return."
+        assert (
+            thepo.source
+            == r"A hard coded newline.\nAnd tab\t and a \r carriage return."
+        )
 
     def test_abandoned_accelerator(self):
         """test that when a language DTD has an accelerator but the template DTD does not that we abandon the accelerator"""

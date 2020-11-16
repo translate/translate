@@ -25,6 +25,7 @@ def deprecated(message=""):
     A warning will be emitted when the function or method is used. If a custom
     message is provided, it will be shown after the default warning message.
     """
+
     def inner_render(func):
         @wraps(func)
         def new_func(*args, **kwargs):
@@ -33,12 +34,13 @@ def deprecated(message=""):
                 msg = "\n" + msg
             func_code = func.__code__
             warnings.warn_explicit(
-                "Call to deprecated function {0}.{1}".format(func.__name__,
-                                                             msg),
+                "Call to deprecated function {0}.{1}".format(func.__name__, msg),
                 category=DeprecationWarning,
                 filename=func_code.co_filename,
-                lineno=func_code.co_firstlineno + 1
+                lineno=func_code.co_firstlineno + 1,
             )
             return func(*args, **kwargs)
+
         return new_func
+
     return inner_render

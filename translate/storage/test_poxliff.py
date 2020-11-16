@@ -55,7 +55,9 @@ class TestPOXLIFFfile(test_xliff.TestXLIFFfile):
 </xliff>'''
 
     def test_parse(self):
-        minixlf = self.xliffskeleton % '''<group restype="x-gettext-plurals">
+        minixlf = (
+            self.xliffskeleton
+            % '''<group restype="x-gettext-plurals">
         <trans-unit id="1[0]" xml:space="preserve">
             <source>cow</source>
             <target>inkomo</target>
@@ -65,6 +67,7 @@ class TestPOXLIFFfile(test_xliff.TestXLIFFfile):
             <target>iinkomo</target>
         </trans-unit>
 </group>'''
+        )
         xlifffile = self.StoreClass.parsestring(minixlf)
         assert len(xlifffile.units) == 1
         assert xlifffile.translate("cow") == "inkomo"
@@ -72,7 +75,9 @@ class TestPOXLIFFfile(test_xliff.TestXLIFFfile):
         assert xlifffile.units[0].source == multistring(["cow", "cows"])
 
     def test_parse_plural_alpha_id(self):
-        minixlf = self.xliffskeleton % '''<group restype="x-gettext-plurals">
+        minixlf = (
+            self.xliffskeleton
+            % '''<group restype="x-gettext-plurals">
         <trans-unit id="test[0]" xml:space="preserve">
             <source>cow</source>
             <target>inkomo</target>
@@ -82,6 +87,7 @@ class TestPOXLIFFfile(test_xliff.TestXLIFFfile):
             <target>iinkomo</target>
         </trans-unit>
 </group>'''
+        )
         xlifffile = self.StoreClass.parsestring(minixlf)
         assert len(xlifffile.units) == 1
         assert xlifffile.translate("cow") == "inkomo"
@@ -89,7 +95,9 @@ class TestPOXLIFFfile(test_xliff.TestXLIFFfile):
         assert xlifffile.units[0].source == multistring(["cow", "cows"])
 
     def test_notes(self):
-        minixlf = self.xliffskeleton % '''<group restype="x-gettext-plurals">
+        minixlf = (
+            self.xliffskeleton
+            % '''<group restype="x-gettext-plurals">
         <trans-unit id="1[0]" xml:space="preserve">
             <source>cow</source>
             <target>inkomo</target>
@@ -103,7 +111,14 @@ class TestPOXLIFFfile(test_xliff.TestXLIFFfile):
 <note from="developer">azoozoo come back!</note>
         </trans-unit>
 </group>'''
+        )
         xlifffile = self.StoreClass.parsestring(minixlf)
-        assert xlifffile.units[0].getnotes() == "Zulu translation of program ABC\nazoozoo come back!"
+        assert (
+            xlifffile.units[0].getnotes()
+            == "Zulu translation of program ABC\nazoozoo come back!"
+        )
         assert xlifffile.units[0].getnotes("developer") == "azoozoo come back!"
-        assert xlifffile.units[0].getnotes("po-translator") == "Zulu translation of program ABC"
+        assert (
+            xlifffile.units[0].getnotes("po-translator")
+            == "Zulu translation of program ABC"
+        )

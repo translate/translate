@@ -1,4 +1,3 @@
-
 # tiki unit tests
 # Author: Wil Clouser <wclouser@mozilla.com>
 # Date: 2008-12-01
@@ -8,7 +7,6 @@ from translate.storage import tiki
 
 
 class TestTikiUnit:
-
     def test_locations(self):
         unit = tiki.TikiUnit("one")
         unit.addlocation('blah')
@@ -28,7 +26,6 @@ class TestTikiUnit:
 
 
 class TestTikiStore:
-
     def test_parse_simple(self):
         tikisource = br'"Top authors" => "Top autoren",'
         tikifile = tiki.TikiStore(tikisource)

@@ -1,4 +1,3 @@
-
 import json
 import os
 import shutil
@@ -12,22 +11,20 @@ from pytest import mark
 from translate.services.tmserver import TMServer
 
 
-class TestTMServer():
+class TestTMServer:
     def create_server(self, *args, **kwargs):
         test_dir = tempfile.mkdtemp()
         po_file = os.path.join(test_dir, 'test.po')
         with open(po_file, 'w') as handle:
-            handle.write('''
+            handle.write(
+                '''
 msgid "Hello"
 msgstr "Ahoj"
-''')
+'''
+            )
         test_file = os.path.join(test_dir, 'test.tmdb')
         application = TMServer(
-            test_file,
-            tmfiles=[po_file],
-            source_lang='en',
-            target_lang='cs',
-            **kwargs
+            test_file, tmfiles=[po_file], source_lang='en', target_lang='cs', **kwargs
         )
         return test_dir, application
 

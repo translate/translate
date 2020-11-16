@@ -30,6 +30,7 @@ from translate.lang import common
 def reverse_quotes(text):
     def convertquotation(match):
         return "”%s“" % match.group(1)
+
     return re.sub('“([^”]+)”', convertquotation, text)
 
 

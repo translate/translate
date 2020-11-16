@@ -34,12 +34,18 @@ def funcmatch(str1, str2, func, *args):
 
 def countsmatch(str1, str2, countlist):
     """checks whether each element in countlist occurs the same number of times in str1 and str2"""
-    return reduce(operator.and_, [countmatch(str1, str2, countstr) for countstr in countlist], True)
+    return reduce(
+        operator.and_,
+        [countmatch(str1, str2, countstr) for countstr in countlist],
+        True,
+    )
 
 
 def funcsmatch(str1, str2, funclist):
     """checks whether the results of each func in funclist match for str1 and str2"""
-    return reduce(operator.and_, [funcmatch(str1, str2, funcstr) for funcstr in funclist], True)
+    return reduce(
+        operator.and_, [funcmatch(str1, str2, funcstr) for funcstr in funclist], True
+    )
 
 
 def filtercount(str1, func):
@@ -52,6 +58,7 @@ def filtertestmethod(testmethod, strfilter):
 
     def filteredmethod(str1, str2):
         return testmethod(strfilter(str1), strfilter(str2))
+
     filteredmethod.__doc__ = testmethod.__doc__
     filteredmethod.name = getattr(testmethod, 'name', testmethod.__name__)
     return filteredmethod
@@ -69,6 +76,7 @@ def multifiltertestmethod(testmethod, strfilters):
 
     def filteredmethod(str1, str2):
         return testmethod(multifilter(str1, strfilters), multifilter(str2, strfilters))
+
     filteredmethod.__doc__ = testmethod.__doc__
     filteredmethod.name = getattr(testmethod, 'name', testmethod.__name__)
     return filteredmethod

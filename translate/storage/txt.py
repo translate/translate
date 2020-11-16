@@ -31,14 +31,38 @@ from translate.storage import base
 
 
 dokuwiki = []
-dokuwiki.append(("Dokuwiki heading", re.compile(r"( ?={2,6}[\s]*)(.+)"), re.compile(r"([\s]*={2,6}[\s]*)$")))
-dokuwiki.append(("Dokuwiki bullet", re.compile(r"([\s]{2,}\*[\s]*)(.+)"), re.compile(r"[\s]+$")))
-dokuwiki.append(("Dokuwiki numbered item", re.compile(r"([\s]{2,}-[\s]*)(.+)"), re.compile(r"[\s]+$")))
+dokuwiki.append(
+    (
+        "Dokuwiki heading",
+        re.compile(r"( ?={2,6}[\s]*)(.+)"),
+        re.compile(r"([\s]*={2,6}[\s]*)$"),
+    )
+)
+dokuwiki.append(
+    ("Dokuwiki bullet", re.compile(r"([\s]{2,}\*[\s]*)(.+)"), re.compile(r"[\s]+$"))
+)
+dokuwiki.append(
+    (
+        "Dokuwiki numbered item",
+        re.compile(r"([\s]{2,}-[\s]*)(.+)"),
+        re.compile(r"[\s]+$"),
+    )
+)
 
 mediawiki = []
-mediawiki.append(("MediaWiki heading", re.compile(r"(={1,5}[\s]*)(.+)"), re.compile(r"([\s]*={1,5}[\s]*)$")))
-mediawiki.append(("MediaWiki bullet", re.compile(r"(\*+[\s]*)(.+)"), re.compile(r"[\s]+$")))
-mediawiki.append(("MediaWiki numbered item", re.compile(r"(#+[\s]*)(.+)"), re.compile(r"[\s]+$")))
+mediawiki.append(
+    (
+        "MediaWiki heading",
+        re.compile(r"(={1,5}[\s]*)(.+)"),
+        re.compile(r"([\s]*={1,5}[\s]*)$"),
+    )
+)
+mediawiki.append(
+    ("MediaWiki bullet", re.compile(r"(\*+[\s]*)(.+)"), re.compile(r"[\s]+$"))
+)
+mediawiki.append(
+    ("MediaWiki numbered item", re.compile(r"(#+[\s]*)(.+)"), re.compile(r"[\s]+$"))
+)
 
 flavours = {
     "dokuwiki": dokuwiki,
@@ -87,8 +111,7 @@ class TxtFile(base.TranslationStore):
 
     UnitClass = TxtUnit
 
-    def __init__(self, inputfile=None, flavour=None, no_segmentation=False,
-                 **kwargs):
+    def __init__(self, inputfile=None, flavour=None, no_segmentation=False, **kwargs):
         super().__init__(**kwargs)
         self.filename = getattr(inputfile, 'name', '')
         self.flavour = flavours.get(flavour, [])
@@ -100,8 +123,7 @@ class TxtFile(base.TranslationStore):
     def parse(self, lines):
         """Read in text lines and create txtunits from the blocks of text"""
         if self.no_segmentation:
-            self.addsourceunit("".join([line.decode(self.encoding)
-                                        for line in lines]))
+            self.addsourceunit("".join([line.decode(self.encoding) for line in lines]))
             return
         block = []
         current_line = 0
@@ -119,7 +141,7 @@ class TxtFile(base.TranslationStore):
                     postmatch = postre.search(source)
                     if postmatch:
                         posttext = postmatch.group()
-                        source = source[:postmatch.start()]
+                        source = source[: postmatch.start()]
                     block.append(source)
                     isbreak = True
                     break

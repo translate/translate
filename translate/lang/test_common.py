@@ -1,4 +1,3 @@
-
 from pytest import mark
 
 from translate.lang import common
@@ -33,9 +32,11 @@ def test_words():
     assert words == ["Don’t", "send", "e-mail"]
 
 
-@mark.xfail(reason="ZWS is not considered a space in Python 2.6+. Khmer "
-                   "should extend words() to include \\u200b in addition to "
-                   "other word breakers.")
+@mark.xfail(
+    reason="ZWS is not considered a space in Python 2.6+. Khmer "
+    "should extend words() to include \\u200b in addition to "
+    "other word breakers."
+)
 def test_word_khmer():
     language = common.Common
     # Let's test Khmer with zero width space (\u200b)
@@ -70,8 +71,13 @@ def test_sentences():
     assert sentences == ["Apples, bananas, etc. are nice."]
     sentences = language.sentences("Apples, bananas, etc.\nNext part")
     assert sentences == ["Apples, bananas, etc.", "Next part"]
-    sentences = language.sentences("No font for displaying text in encoding '%s' found,\nbut an alternative encoding '%s' is available.\nDo you want to use this encoding (otherwise you will have to choose another one)?")
-    assert sentences == ["No font for displaying text in encoding '%s' found,\nbut an alternative encoding '%s' is available.", "Do you want to use this encoding (otherwise you will have to choose another one)?"]
+    sentences = language.sentences(
+        "No font for displaying text in encoding '%s' found,\nbut an alternative encoding '%s' is available.\nDo you want to use this encoding (otherwise you will have to choose another one)?"
+    )
+    assert sentences == [
+        "No font for displaying text in encoding '%s' found,\nbut an alternative encoding '%s' is available.",
+        "Do you want to use this encoding (otherwise you will have to choose another one)?",
+    ]
     # Test that a newline at the end won't confuse us
     sentences = language.sentences("The first sentence. The second sentence.\n")
     assert sentences == ["The first sentence.", "The second sentence."]

@@ -4,12 +4,13 @@ from translate.storage import po, poxliff
 
 
 class TestPO2XLIFF:
-
     def po2xliff(self, posource, sourcelanguage='en', targetlanguage=None):
         """helper that converts po source to xliff source without requiring files"""
         postore = po.pofile(posource.encode('utf-8'))
         convertor = po2xliff.po2xliff()
-        outputxliff = convertor.convertstore(postore, None, sourcelanguage=sourcelanguage, targetlanguage=targetlanguage)
+        outputxliff = convertor.convertstore(
+            postore, None, sourcelanguage=sourcelanguage, targetlanguage=targetlanguage
+        )
         return poxliff.PoXliffFile(outputxliff)
 
     def getnode(self, xliff):
@@ -95,7 +96,10 @@ msgstr "Eerste kolom\tTweede kolom"
         print("The generated xml:")
         xmltext = bytes(xliff).decode('utf-8')
         print(xmltext)
-        assert xliff.translate("First column\tSecond column") == "Eerste kolom\tTweede kolom"
+        assert (
+            xliff.translate("First column\tSecond column")
+            == "Eerste kolom\tTweede kolom"
+        )
         assert xliff.translate("First column\\tSecond column") is None
         assert xmltext.find("column\\tSecond") == -1
         assert xmltext.find("kolom\\tTweede") == -1
@@ -145,7 +149,11 @@ msgstr "kunye"
             assert group.get("name") == "po-reference"
             assert group.get("purpose") == "location"
         tuples = self.getcontexttuples(node, xliff.namespace)
-        assert tuples == [("sourcefile", "file.c"), ("linenumber", "123"), ("sourcefile", "asdf.c")]
+        assert tuples == [
+            ("sourcefile", "file.c"),
+            ("linenumber", "123"),
+            ("sourcefile", "asdf.c"),
+        ]
 
     def test_othercomments(self):
         minipo = r'''# Translate?
@@ -209,7 +217,9 @@ msgstr ""
         assert unit.xmlelement.get("restype") == "x-gettext-domain-header"
         assert unit.xmlelement.get("approved") != "yes"
         assert unit.xmlelement.get("{%s}space" % XML_NS) == "preserve"
-        assert unit.getnotes("po-translator") == "Pulana  Translation for bla\nHallo Ma!"
+        assert (
+            unit.getnotes("po-translator") == "Pulana  Translation for bla\nHallo Ma!"
+        )
 
     def test_fuzzy(self):
         minipo = r'''#, fuzzy

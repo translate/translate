@@ -27,7 +27,6 @@ from translate.storage import po
 
 
 class web2py2po:
-
     def __init__(self, pofile=None, duplicatestyle="msgctxt"):
         self.mypofile = pofile
         self.duplicatestyle = duplicatestyle
@@ -77,13 +76,11 @@ def convertpy(inputfile, outputfile, encoding="UTF-8", duplicatestyle="msgctxt")
 
 def main(argv=None):
     from translate.convert import convert
-    formats = {
-        ("py", "po"): ("po", convertpy),
-        ("py", None): ("po", convertpy)
-    }
-    parser = convert.ConvertOptionParser(formats, usetemplates=False,
-                                         usepots=True,
-                                         description=__doc__)
+
+    formats = {("py", "po"): ("po", convertpy), ("py", None): ("po", convertpy)}
+    parser = convert.ConvertOptionParser(
+        formats, usetemplates=False, usepots=True, description=__doc__
+    )
     parser.add_duplicates_option()
     parser.run(argv)
 

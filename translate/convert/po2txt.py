@@ -34,9 +34,16 @@ class po2txt:
     best to give it a template file otherwise will just concat msgstrs
     """
 
-    def __init__(self, input_file, output_file, template_file=None,
-                 include_fuzzy=False, output_threshold=None, encoding='utf-8',
-                 wrap=None):
+    def __init__(
+        self,
+        input_file,
+        output_file,
+        template_file=None,
+        include_fuzzy=False,
+        output_threshold=None,
+        encoding='utf-8',
+        wrap=None,
+    ):
         """Initialize the converter."""
         self.source_store = factory.getobject(input_file)
 
@@ -55,8 +62,12 @@ class po2txt:
         """rewraps text as required"""
         if self.wrap is None:
             return message
-        return "\n".join([textwrap.fill(line, self.wrap, replace_whitespace=False)
-                          for line in message.split("\n")])
+        return "\n".join(
+            [
+                textwrap.fill(line, self.wrap, replace_whitespace=False)
+                for line in message.split("\n")
+            ]
+        )
 
     def convert_store(self):
         """Convert a source file to a target file."""
@@ -103,12 +114,25 @@ class po2txt:
         return True
 
 
-def run_converter(inputfile, outputfile, templatefile=None, wrap=None,
-                  includefuzzy=False, encoding='utf-8', outputthreshold=None):
+def run_converter(
+    inputfile,
+    outputfile,
+    templatefile=None,
+    wrap=None,
+    includefuzzy=False,
+    encoding='utf-8',
+    outputthreshold=None,
+):
     """Wrapper around converter."""
-    return po2txt(inputfile, outputfile, templatefile,
-                  include_fuzzy=includefuzzy, output_threshold=outputthreshold,
-                  encoding=encoding, wrap=wrap).run()
+    return po2txt(
+        inputfile,
+        outputfile,
+        templatefile,
+        include_fuzzy=includefuzzy,
+        output_threshold=outputthreshold,
+        encoding=encoding,
+        wrap=wrap,
+    ).run()
 
 
 formats = {
@@ -122,15 +146,27 @@ formats = {
 
 
 def main(argv=None):
-    parser = convert.ConvertOptionParser(formats, usetemplates=True,
-                                         description=__doc__)
+    parser = convert.ConvertOptionParser(
+        formats, usetemplates=True, description=__doc__
+    )
     parser.add_option(
-        "", "--encoding", dest="encoding", default='utf-8', type="string",
-        help="The encoding of the template file (default: UTF-8)")
+        "",
+        "--encoding",
+        dest="encoding",
+        default='utf-8',
+        type="string",
+        help="The encoding of the template file (default: UTF-8)",
+    )
     parser.passthrough.append("encoding")
     parser.add_option(
-        "-w", "--wrap", dest="wrap", default=None, type="int",
-        help="set number of columns to wrap text at", metavar="WRAP")
+        "-w",
+        "--wrap",
+        dest="wrap",
+        default=None,
+        type="int",
+        help="set number of columns to wrap text at",
+        metavar="WRAP",
+    )
     parser.passthrough.append("wrap")
     parser.add_threshold_option()
     parser.add_fuzzy_option()

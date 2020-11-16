@@ -64,7 +64,7 @@ class csvunit(base.TranslationUnit):
         self.id = value
 
     def getlocations(self):
-        #FIXME: do we need to support more than one location
+        # FIXME: do we need to support more than one location
         return [self.location]
 
     def addlocation(self, location):
@@ -172,11 +172,11 @@ class csvunit(base.TranslationUnit):
             elif rkey == "developer_comments":
                 self.developer_comments = value
 
-        #self.source, self.target = self.remove_spreadsheet_escapes(self.source, self.target)
+        # self.source, self.target = self.remove_spreadsheet_escapes(self.source, self.target)
 
     def todict(self, **kwargs):
-        #FIXME: use apis?
-        #source, target = self.add_spreadsheet_escapes(self.source, self.target)
+        # FIXME: use apis?
+        # source, target = self.add_spreadsheet_escapes(self.source, self.target)
         source = self.source
         target = self.target
         output = {
@@ -215,17 +215,23 @@ EXTRA_KEY = '__CSVL10N__EXTRA__'
 
 
 def try_dialects(inputfile, fieldnames, dialect):
-    #FIXME: does it verify at all if we don't actually step through the file?
+    # FIXME: does it verify at all if we don't actually step through the file?
     try:
         inputfile.seek(0)
-        reader = csv.DictReader(inputfile, fieldnames=fieldnames, dialect=dialect, restkey=EXTRA_KEY)
+        reader = csv.DictReader(
+            inputfile, fieldnames=fieldnames, dialect=dialect, restkey=EXTRA_KEY
+        )
     except csv.Error:
         try:
             inputfile.seek(0)
-            reader = csv.DictReader(inputfile, fieldnames=fieldnames, dialect='default', restkey=EXTRA_KEY)
+            reader = csv.DictReader(
+                inputfile, fieldnames=fieldnames, dialect='default', restkey=EXTRA_KEY
+            )
         except csv.Error:
             inputfile.seek(0)
-            reader = csv.DictReader(inputfile, fieldnames=fieldnames, dialect='excel', restkey=EXTRA_KEY)
+            reader = csv.DictReader(
+                inputfile, fieldnames=fieldnames, dialect='excel', restkey=EXTRA_KEY
+            )
     return reader
 
 
@@ -273,7 +279,16 @@ class csvfile(base.TranslationStore):
     def __init__(self, inputfile=None, fieldnames=None, encoding='auto'):
         super().__init__(encoding=encoding)
         if not fieldnames:
-            self.fieldnames = ['location', 'source', 'target', 'id', 'fuzzy', 'context', 'translator_comments', 'developer_comments']
+            self.fieldnames = [
+                'location',
+                'source',
+                'target',
+                'id',
+                'fuzzy',
+                'context',
+                'translator_comments',
+                'developer_comments',
+            ]
         else:
             self.fieldnames = fieldnames
         self.filename = getattr(inputfile, 'name', '')
@@ -284,8 +299,10 @@ class csvfile(base.TranslationStore):
             self.parse(csvsrc)
 
     def parse(self, csvsrc, sample_length=1024):
-        text, encoding = self.detect_encoding(csvsrc, default_encodings=['utf-8', 'utf-16'])
-        #FIXME: raise parse error if encoding detection fails?
+        text, encoding = self.detect_encoding(
+            csvsrc, default_encodings=['utf-8', 'utf-16']
+        )
+        # FIXME: raise parse error if encoding detection fails?
         self.encoding = encoding or 'utf-8'
 
         sniffer = csv.Sniffer()
@@ -297,7 +314,7 @@ class csvfile(base.TranslationStore):
         try:
             self.dialect = sniffer.sniff(sample)
             if self.dialect.quoting == csv.QUOTE_MINIMAL:
-                #HACKISH: most probably a default, not real detection
+                # HACKISH: most probably a default, not real detection
                 self.dialect.quoting = csv.QUOTE_ALL
                 self.dialect.doublequote = True
         except csv.Error:
@@ -332,9 +349,9 @@ class csvfile(base.TranslationStore):
 
     def getoutput(self):
         output = csv.StringIO()
-        writer = csv.DictWriter(output, self.fieldnames,
-                                extrasaction='ignore',
-                                dialect=self.dialect)
+        writer = csv.DictWriter(
+            output, self.fieldnames, extrasaction='ignore', dialect=self.dialect
+        )
         writer.writeheader()
         for ce in self.units:
             writer.writerow(ce.todict())

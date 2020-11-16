@@ -24,10 +24,17 @@ for examples and usage instructions.
 
 from translate.storage import factory
 from translate.storage.pypo import unescape
-from translate.storage.symbian import (ParseState, eat_whitespace,
-                                       header_item_or_end_re, header_item_re,
-                                       identity, read_charset, read_while,
-                                       skip_no_translate, string_entry_re)
+from translate.storage.symbian import (
+    ParseState,
+    eat_whitespace,
+    header_item_or_end_re,
+    header_item_re,
+    identity,
+    read_charset,
+    read_while,
+    skip_no_translate,
+    string_entry_re,
+)
 
 
 def read_header_items(ps):
@@ -56,7 +63,9 @@ def parse(ps):
             skip_no_translate(ps)
             match = string_entry_re.match(ps.current_line)
             if match is not None:
-                units.append((match.groupdict()['id'], unescape(match.groupdict()['str'][1:-1])))
+                units.append(
+                    (match.groupdict()['id'], unescape(match.groupdict()['str'][1:-1]))
+                )
             ps.read_line()
     except StopIteration:
         pass
@@ -97,7 +106,9 @@ def build_output(units, template_header, template_dict):
     return output_store
 
 
-def convert_symbian(input_file, output_file, template_file, pot=False, duplicatestyle="msgctxt"):
+def convert_symbian(
+    input_file, output_file, template_file, pot=False, duplicatestyle="msgctxt"
+):
     header, units = read_symbian(input_file)
     template_header, template_dict = get_template_dict(template_file)
     output_store = build_output(units, template_header, template_dict)
@@ -111,8 +122,11 @@ def convert_symbian(input_file, output_file, template_file, pot=False, duplicate
 
 def main(argv=None):
     from translate.convert import convert
+
     formats = {"r01": ("po", convert_symbian)}
-    parser = convert.ConvertOptionParser(formats, usetemplates=True, usepots=True, description=__doc__)
+    parser = convert.ConvertOptionParser(
+        formats, usetemplates=True, usepots=True, description=__doc__
+    )
     parser.add_duplicates_option()
     parser.passthrough.append("pot")
     parser.run(argv)

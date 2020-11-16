@@ -4,12 +4,19 @@ from translate.convert import html2po, po2html, test_convert
 
 
 class TestHTML2PO:
-
-    def html2po(self, markup, includeuntagged=False, duplicatestyle="msgctxt", keepcomments=False):
+    def html2po(
+        self,
+        markup,
+        includeuntagged=False,
+        duplicatestyle="msgctxt",
+        keepcomments=False,
+    ):
         """Helper to convert html to po without a file."""
         inputfile = BytesIO(markup.encode() if isinstance(markup, str) else markup)
         convertor = html2po.html2po()
-        outputpo = convertor.convertfile(inputfile, "test", includeuntagged, duplicatestyle, keepcomments)
+        outputpo = convertor.convertfile(
+            inputfile, "test", includeuntagged, duplicatestyle, keepcomments
+        )
         return outputpo
 
     def po2html(self, posource, htmltemplate):
@@ -51,9 +58,21 @@ class TestHTML2PO:
 
     def check_phpsnippet(self, php):
         """Given a snippet of php, put it into an HTML shell and see if the results are as expected"""
-        self.check_single('<html><head></head><body><p><a href="' + php + '/site.html">Body text</a></p></body></html>', "Body text")
-        self.check_single('<html><head></head><body><p>More things in <a href="' + php + '/site.html">Body text</a></p></body></html>', 'More things in <a href="' + php + '/site.html">Body text</a>')
-        self.check_single('<html><head></head><body><p>' + php + '</p></body></html>', php)
+        self.check_single(
+            '<html><head></head><body><p><a href="'
+            + php
+            + '/site.html">Body text</a></p></body></html>',
+            "Body text",
+        )
+        self.check_single(
+            '<html><head></head><body><p>More things in <a href="'
+            + php
+            + '/site.html">Body text</a></p></body></html>',
+            'More things in <a href="' + php + '/site.html">Body text</a>',
+        )
+        self.check_single(
+            '<html><head></head><body><p>' + php + '</p></body></html>', php
+        )
 
     def test_extract_lang_attribute_from_html_tag(self):
         """Test that the lang attribute is extracted from the html tag, issue #3884"""
@@ -77,7 +96,9 @@ class TestHTML2PO:
 
     def test_title(self):
         """test that we can extract the <title> tag"""
-        self.check_single("<html><head><title>My title</title></head><body></body></html>", "My title")
+        self.check_single(
+            "<html><head><title>My title</title></head><body></body></html>", "My title"
+        )
 
     def test_title_with_linebreak(self):
         """Test a linebreak in the <title> tag"""
@@ -94,11 +115,16 @@ title</title>
 
     def test_meta(self):
         """Test that we can extract certain <meta> info from <head>."""
-        self.check_single('''<html><head><meta name="keywords" content="these are keywords"></head><body></body></html>''', "these are keywords")
+        self.check_single(
+            '''<html><head><meta name="keywords" content="these are keywords"></head><body></body></html>''',
+            "these are keywords",
+        )
 
     def test_tag_p(self):
         """test that we can extract the <p> tag"""
-        self.check_single("<html><head></head><body><p>A paragraph.</p></body></html>", "A paragraph.")
+        self.check_single(
+            "<html><head></head><body><p>A paragraph.</p></body></html>", "A paragraph."
+        )
 
     def test_tag_p_with_br(self):
         """test that we can extract the <p> tag with an embedded <br> element"""
@@ -120,7 +146,10 @@ with indentation, and it consists of at least one sentence.
 </body>
 </html>
 '''
-        self.check_single(htmltext, "A paragraph is a section in a piece of writing, usually highlighting a particular point or topic. It always begins on a new line and usually with indentation, and it consists of at least one sentence.")
+        self.check_single(
+            htmltext,
+            "A paragraph is a section in a piece of writing, usually highlighting a particular point or topic. It always begins on a new line and usually with indentation, and it consists of at least one sentence.",
+        )
 
     def test_tag_p_with_linebreak_and_embedded_br(self):
         """Test newlines within the <p> tag when there is an embedded <br> element."""
@@ -130,11 +159,16 @@ with indentation, and it consists of at least one sentence.
 
     def test_uppercase_html(self):
         """Should ignore the casing of the html tags."""
-        self.check_single("<HTML><HEAD></HEAD><BODY><P>A paragraph.</P></BODY></HTML>", "A paragraph.")
+        self.check_single(
+            "<HTML><HEAD></HEAD><BODY><P>A paragraph.</P></BODY></HTML>", "A paragraph."
+        )
 
     def test_tag_div(self):
         """test that we can extract the <div> tag"""
-        self.check_single("<html><head></head><body><div>A paragraph.</div></body></html>", "A paragraph.")
+        self.check_single(
+            "<html><head></head><body><div>A paragraph.</div></body></html>",
+            "A paragraph.",
+        )
         markup = "<div>First line.<br>Second line.</div>"
         pofile = self.html2po(markup)
         self.compareunit(pofile, 1, "First line.<br>Second line.")
@@ -153,14 +187,20 @@ with indentation, and it consists of at least one sentence.
 </body>
 </html>
 '''
-        self.check_single(htmltext, "A paragraph is a section in a piece of writing, usually highlighting a particular point or topic. It always begins on a new line and usually with indentation, and it consists of at least one sentence.")
+        self.check_single(
+            htmltext,
+            "A paragraph is a section in a piece of writing, usually highlighting a particular point or topic. It always begins on a new line and usually with indentation, and it consists of at least one sentence.",
+        )
         markup = "<div>First\nline.<br>Second\nline.</div>"
         pofile = self.html2po(markup)
         self.compareunit(pofile, 1, "First line.<br>Second line.")
 
     def test_tag_a(self):
         """test that we can extract the <a> tag"""
-        self.check_single('<html><head></head><body><p>A paragraph with <a href="http://translate.org.za/">hyperlink</a>.</p></body></html>', 'A paragraph with <a href="http://translate.org.za/">hyperlink</a>.')
+        self.check_single(
+            '<html><head></head><body><p>A paragraph with <a href="http://translate.org.za/">hyperlink</a>.</p></body></html>',
+            'A paragraph with <a href="http://translate.org.za/">hyperlink</a>.',
+        )
 
     def test_tag_a_with_linebreak(self):
         """Test that we can extract the <a> tag with newlines in it."""
@@ -175,15 +215,24 @@ href="http://translate.org.za/">hyperlink</a>
 and
 newlines.</p></body></html>
 '''
-        self.check_single(htmltext, 'A paragraph with <a href="http://translate.org.za/">hyperlink</a> and newlines.')
+        self.check_single(
+            htmltext,
+            'A paragraph with <a href="http://translate.org.za/">hyperlink</a> and newlines.',
+        )
 
     def test_sequence_of_anchor_elements(self):
         """test that we can extract a sequence of anchor elements without mixing up start/end tags, issue #3768"""
-        self.check_single('<p><a href="http://example.com">This is a link</a> but this is not. <a href="http://example.com">However this is too</a></p>', '<a href="http://example.com">This is a link</a> but this is not. <a href="http://example.com">However this is too</a>')
+        self.check_single(
+            '<p><a href="http://example.com">This is a link</a> but this is not. <a href="http://example.com">However this is too</a></p>',
+            '<a href="http://example.com">This is a link</a> but this is not. <a href="http://example.com">However this is too</a>',
+        )
 
     def test_tag_img(self):
         """Test that we can extract the alt attribute from the <img> tag."""
-        self.check_single('''<html><head></head><body><img src="picture.png" alt="A picture"></body></html>''', "A picture")
+        self.check_single(
+            '''<html><head></head><body><img src="picture.png" alt="A picture"></body></html>''',
+            "A picture",
+        )
 
     def test_img_empty(self):
         """Test that we can extract the alt attribute from the <img> tag."""
@@ -192,11 +241,17 @@ newlines.</p></body></html>
 
     def test_tag_img_inside_a(self):
         """Test that we can extract the alt attribute from the <img> tag when the img is embedded in a link."""
-        self.check_single('''<html><head></head><body><p><a href="#"><img src="picture.png" alt="A picture" /></a></p></body></html>''', "A picture")
+        self.check_single(
+            '''<html><head></head><body><p><a href="#"><img src="picture.png" alt="A picture" /></a></p></body></html>''',
+            "A picture",
+        )
 
     def test_tag_table_summary(self):
         """Test that we can extract the summary attribute."""
-        self.check_single('''<html><head></head><body><table summary="Table summary"></table></body></html>''', "Table summary")
+        self.check_single(
+            '''<html><head></head><body><table summary="Table summary"></table></body></html>''',
+            "Table summary",
+        )
 
     def test_table_simple(self):
         """Test that we can fully extract a simple table."""
@@ -228,9 +283,15 @@ newlines.</p></body></html>
         A table is deemed empty if it has no translatable content.
         """
 
-        self.check_null('''<html><head></head><body><table><tr><td><img src="bob.png"></td></tr></table></body></html>''')
-        self.check_null('''<html><head></head><body><table><tr><td>&nbsp;</td></tr></table></body></html>''')
-        self.check_null('''<html><head></head><body><table><tr><td><strong></strong></td></tr></table></body></html>''')
+        self.check_null(
+            '''<html><head></head><body><table><tr><td><img src="bob.png"></td></tr></table></body></html>'''
+        )
+        self.check_null(
+            '''<html><head></head><body><table><tr><td>&nbsp;</td></tr></table></body></html>'''
+        )
+        self.check_null(
+            '''<html><head></head><body><table><tr><td><strong></strong></td></tr></table></body></html>'''
+        )
 
     def test_address(self):
         """Test to see if the address element is extracted"""
@@ -262,15 +323,24 @@ newlines.</p></body></html>
 
     def test_dt(self):
         """Test to see if the definition list title (dt) element is extracted"""
-        self.check_single("<html><head></head><body><dl><dt>Definition List Item Title</dt></dl></body></html>", "Definition List Item Title")
+        self.check_single(
+            "<html><head></head><body><dl><dt>Definition List Item Title</dt></dl></body></html>",
+            "Definition List Item Title",
+        )
 
     def test_dd(self):
         """Test to see if the definition list description (dd) element is extracted"""
-        self.check_single("<html><head></head><body><dl><dd>Definition List Item Description</dd></dl></body></html>", "Definition List Item Description")
+        self.check_single(
+            "<html><head></head><body><dl><dd>Definition List Item Description</dd></dl></body></html>",
+            "Definition List Item Description",
+        )
 
     def test_span(self):
         """test to check that we don't double extract a span item"""
-        self.check_single("<html><head></head><body><p>You are a <span>Spanish</span> sentence.</p></body></html>", "You are a <span>Spanish</span> sentence.")
+        self.check_single(
+            "<html><head></head><body><p>You are a <span>Spanish</span> sentence.</p></body></html>",
+            "You are a <span>Spanish</span> sentence.",
+        )
 
     def test_ul(self):
         """Test to see if the list item <li> is extracted"""
@@ -311,7 +381,9 @@ newlines.</p></body></html>
 
     def test_duplicates(self):
         """check that we use the default style of msgctxt to disambiguate duplicate messages"""
-        markup = "<html><head></head><body><p>Duplicate</p><p>Duplicate</p></body></html>"
+        markup = (
+            "<html><head></head><body><p>Duplicate</p><p>Duplicate</p></body></html>"
+        )
         pofile = self.html2po(markup)
         self.countunits(pofile, 2)
         # FIXME change this so that we check that the msgctxt is correctly added
@@ -322,8 +394,11 @@ newlines.</p></body></html>
 
     def test_multiline_reflow(self):
         """check that we reflow multiline content to make it more readable for translators"""
-        self.check_single('''<td valign="middle" width="96%"><font class="headingwhite">South
-                  Africa</font></td>''', '''South Africa''')
+        self.check_single(
+            '''<td valign="middle" width="96%"><font class="headingwhite">South
+                  Africa</font></td>''',
+            '''South Africa''',
+        )
 
     def test_nested_tags(self):
         """check that we can extract items within nested tags"""
@@ -349,7 +424,10 @@ years has helped to bridge the digital divide to a limited extent.</p> \r
 <!-- InstanceEnd --></html>\r
 '''
 
-        self.check_single(htmlsource, 'The rapid expansion of telecommunications infrastructure in recent years has helped to bridge the digital divide to a limited extent.')
+        self.check_single(
+            htmlsource,
+            'The rapid expansion of telecommunications infrastructure in recent years has helped to bridge the digital divide to a limited extent.',
+        )
 
     def test_encoding_latin1(self):
         """Convert HTML input in iso-8859-1 correctly to unicode."""
@@ -377,9 +455,15 @@ years has helped to bridge the digital divide to a limited extent.</p> \r
         pofile = self.html2po(htmlsource)
         self.countunits(pofile, 4)
         self.compareunit(pofile, 1, 'FMFI - South Africa - CSIR Openphone - Overview')
-        self.compareunit(pofile, 2, 'fmfi, first mile, first inch, wireless, rural development, access devices, mobile devices, wifi, connectivity, rural connectivty, ict, low cost, cheap, digital divide, csir, idrc, community')
+        self.compareunit(
+            pofile,
+            2,
+            'fmfi, first mile, first inch, wireless, rural development, access devices, mobile devices, wifi, connectivity, rural connectivty, ict, low cost, cheap, digital divide, csir, idrc, community',
+        )
         self.compareunit(pofile, 3, 'We aim to please \x96 will you aim too, please?')
-        self.compareunit(pofile, 4, 'South Africa\x92s language diversity can be challenging.')
+        self.compareunit(
+            pofile, 4, 'South Africa\x92s language diversity can be challenging.'
+        )
 
     def test_strip_html(self):
         """Ensure that unnecessary html is stripped from the resulting unit."""
@@ -423,7 +507,12 @@ years has helped to bridge the digital divide to a limited extent.</p> \r
         # Translate and convert back:
         pofile.units[2].target = 'Projekte'
         pofile.units[3].target = 'Tuisblad'
-        htmlresult = self.po2html(bytes(pofile), htmlsource).replace('\n', ' ').replace('= "', '="').replace('> <', '><')
+        htmlresult = (
+            self.po2html(bytes(pofile), htmlsource)
+            .replace('\n', ' ')
+            .replace('= "', '="')
+            .replace('> <', '><')
+        )
         snippet = '<td width="96%"><strong><font class="headingwhite">Projekte</font></strong></td>'
         assert snippet in htmlresult
         snippet = '<td width="96%"><a href="index.html">Tuisblad</a></td>'
@@ -432,17 +521,26 @@ years has helped to bridge the digital divide to a limited extent.</p> \r
     def test_entityrefs_in_text(self):
         """Should extract html entityrefs, preserving the ones representing reserved characters"""
         """`See <https://developer.mozilla.org/en-US/docs/Glossary/Entity>`."""
-        self.check_single("<html><head></head><body><p>&lt;not an element&gt; &amp; &quot; &apos; &rsquo;</p></body></html>", "&lt;not an element&gt; &amp; \" ' \u2019")
+        self.check_single(
+            "<html><head></head><body><p>&lt;not an element&gt; &amp; &quot; &apos; &rsquo;</p></body></html>",
+            "&lt;not an element&gt; &amp; \" ' \u2019",
+        )
 
     def test_entityrefs_in_attributes(self):
         """Should convert html entityrefs in attribute values"""
         # it would be even nicer if &quot; and &apos; could be preserved, but the automatic unescaping of
         # attributes is deep inside html.HTMLParser.
-        self.check_single("<html><head></head><body><img alt=\"&lt;not an element&gt; &amp; &quot; &apos; &rsquo;\"></body></html>", "<not an element> & \" ' \u2019")
+        self.check_single(
+            "<html><head></head><body><img alt=\"&lt;not an element&gt; &amp; &quot; &apos; &rsquo;\"></body></html>",
+            "<not an element> & \" ' \u2019",
+        )
 
     def test_charrefs(self):
         """Should extract html charrefs"""
-        self.check_single("<html><head></head><body><p>&#8217; &#x2019;</p></body></html>", "\u2019 \u2019")
+        self.check_single(
+            "<html><head></head><body><p>&#8217; &#x2019;</p></body></html>",
+            "\u2019 \u2019",
+        )
 
     def test_php(self):
         """Test that PHP snippets don't interfere"""
@@ -455,7 +553,9 @@ years has helped to bridge the digital divide to a limited extent.</p> \r
 
         # Make sure basically any symbol can be handled
         # NOTE quotation mark removed since it violates the HTML format when placed in an attribute
-        self.check_phpsnippet('''<? asdfghjkl qwertyuiop 1234567890!@#$%^&*()-=_+[]\\{}|;':,./<>? ?>''')
+        self.check_phpsnippet(
+            '''<? asdfghjkl qwertyuiop 1234567890!@#$%^&*()-=_+[]\\{}|;':,./<>? ?>'''
+        )
 
     def test_multiple_php(self):
         """Test multiple PHP snippets in a string to make sure they get restored properly"""
@@ -464,7 +564,15 @@ years has helped to bridge the digital divide to a limited extent.</p> \r
         php3 = '''<? asdfghjklqwertyuiop1234567890!@#$%^&*()-=_+[]\\{}|;':",./<>? ?>'''
 
         # Put 3 different strings into an html string
-        innertext = '<a href="' + php1 + '/site.html">Body text</a> and some ' + php2 + ' more text ' + php2 + php3
+        innertext = (
+            '<a href="'
+            + php1
+            + '/site.html">Body text</a> and some '
+            + php2
+            + ' more text '
+            + php2
+            + php3
+        )
         htmlsource = '<html><head></head><body><p>' + innertext + '</p></body></html>'
         self.check_single(htmlsource, innertext)
 
@@ -476,11 +584,31 @@ def
 ghi ?>'''
 
         # Scatter the php strings throughout the file, and show what the translation should be
-        innertext = '<a href="' + php1 + '/site.html">Body text</a> and some ' + php1 + ' more text ' + php1 + php1
-        innertrans = '<a href="' + php1 + '/site.html">Texte de corps</a> et encore de ' + php1 + ' plus de texte ' + php1 + php1
+        innertext = (
+            '<a href="'
+            + php1
+            + '/site.html">Body text</a> and some '
+            + php1
+            + ' more text '
+            + php1
+            + php1
+        )
+        innertrans = (
+            '<a href="'
+            + php1
+            + '/site.html">Texte de corps</a> et encore de '
+            + php1
+            + ' plus de texte '
+            + php1
+            + php1
+        )
 
-        htmlsource = '<html><head></head><body><p>' + innertext + '</p></body></html>'  # Current html file
-        transsource = '<html><head></head><body><p>' + innertrans + '</p></body></html>'  # Expected translation
+        htmlsource = (
+            '<html><head></head><body><p>' + innertext + '</p></body></html>'
+        )  # Current html file
+        transsource = (
+            '<html><head></head><body><p>' + innertrans + '</p></body></html>'
+        )  # Expected translation
 
         pofile = self.html2po(htmlsource)
         pofile.units[1].target = innertrans  # Register the translation in the PO file
@@ -489,11 +617,17 @@ ghi ?>'''
 
     def test_php_with_embedded_html(self):
         """Should not consume HTML within processing instructions"""
-        self.check_single("<html><head></head><body><p>a <? <p>b</p> ?> c</p></body></html>", "a <? <p>b</p> ?> c")
+        self.check_single(
+            "<html><head></head><body><p>a <? <p>b</p> ?> c</p></body></html>",
+            "a <? <p>b</p> ?> c",
+        )
 
     def test_comments(self):
         """Test that HTML comments are converted to translator notes in output"""
-        pofile = self.html2po('<!-- comment outside block --><p><!-- a comment -->A paragraph<!-- with another comment -->.</p>', keepcomments=True)
+        pofile = self.html2po(
+            '<!-- comment outside block --><p><!-- a comment -->A paragraph<!-- with another comment -->.</p>',
+            keepcomments=True,
+        )
         self.compareunit(pofile, 1, 'A paragraph.')
         notes = pofile.getunits()[-1].getnotes()
         assert str(notes) == ' a comment \n with another comment '

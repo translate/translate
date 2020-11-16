@@ -22,11 +22,13 @@ from io import BytesIO
 
 from translate.convert import convert
 from translate.storage import factory
-from translate.storage.idml import (INLINE_ELEMENTS, NO_TRANSLATE_ELEMENTS,
-                                    open_idml)
-from translate.storage.xml_extract.extract import (IdMaker, ParseState,
-                                                   build_idml_store,
-                                                   make_postore_adder)
+from translate.storage.idml import INLINE_ELEMENTS, NO_TRANSLATE_ELEMENTS, open_idml
+from translate.storage.xml_extract.extract import (
+    IdMaker,
+    ParseState,
+    build_idml_store,
+    make_postore_adder,
+)
 
 
 def convert_idml(inputfile, outputfile, template):
@@ -40,8 +42,9 @@ def convert_idml(inputfile, outputfile, template):
     for filename, translatable_file in contents.items():
         parse_state = ParseState(NO_TRANSLATE_ELEMENTS, INLINE_ELEMENTS)
         po_store_adder = make_postore_adder(store, id_maker, filename)
-        build_idml_store(BytesIO(translatable_file), store, parse_state,
-                         store_adder=po_store_adder)
+        build_idml_store(
+            BytesIO(translatable_file), store, parse_state, store_adder=po_store_adder
+        )
 
     store.save()
     return True

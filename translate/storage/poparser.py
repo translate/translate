@@ -43,7 +43,6 @@ decode = bytes.decode
 
 
 class ParseState:
-
     def __init__(self, input_iterator, UnitClass, encoding=SINGLE_BYTE_ENCODING):
         # A single-byte encoding is first defined to be able to read the header
         # without risking UnicodeDecodeErrors. As soon as the header is parsed,
@@ -94,7 +93,7 @@ def read_prevmsgid_lines(parse_state):
     while startswith(next_line, '#| ') or startswith(next_line, '| '):
         content = parse_state.read_line()
         prefix_len = content.index('| ')
-        content = content[prefix_len+2:]
+        content = content[prefix_len + 2 :]
         append(prevmsgid_lines, content)
         next_line = parse_state.next_line
     return prevmsgid_lines
@@ -191,7 +190,7 @@ def parse_quoted(parse_state, start_pos=0):
     if left == start_pos or isspace(line[start_pos:left]):
         right = rfind(line, '"')
         if left != right:
-            return parse_state.read_line()[left:right+1]
+            return parse_state.read_line()[left : right + 1]
         # There is no terminating quote, so we append an extra quote, but
         # we also ignore the newline at the end (therefore the -1)
         return parse_state.read_line()[left:-1] + '"'
@@ -217,9 +216,13 @@ def parse_multiple_quoted(parse_state, msg_list, msg_comment_list, first_start_p
             string = parse_msg_comment(parse_state, msg_comment_list, string)
 
 
-def parse_message(parse_state, start_of_string, start_of_string_len, msg_list, msg_comment_list=None):
+def parse_message(
+    parse_state, start_of_string, start_of_string_len, msg_list, msg_comment_list=None
+):
     if startswith(parse_state.next_line, start_of_string):
-        return parse_multiple_quoted(parse_state, msg_list, msg_comment_list, start_of_string_len)
+        return parse_multiple_quoted(
+            parse_state, msg_list, msg_comment_list, start_of_string_len
+        )
 
 
 def parse_msgctxt(parse_state, unit):
@@ -238,7 +241,9 @@ def parse_msgstr(parse_state, unit):
 
 
 def parse_msgid_plural(parse_state, unit):
-    parse_message(parse_state, 'msgid_plural', 12, unit.msgid_plural, unit.msgid_pluralcomments)
+    parse_message(
+        parse_state, 'msgid_plural', 12, unit.msgid_plural, unit.msgid_pluralcomments
+    )
     return len(unit.msgid_plural) > 0 or len(unit.msgid_pluralcomments) > 0
 
 
@@ -310,7 +315,11 @@ def parse_unit(parse_state, unit=None):
 
 def set_encoding(parse_state, store, unit):
     charset = None
-    if isinstance(unit.msgstr, list) and unit.msgstr and isinstance(unit.msgstr[0], str):
+    if (
+        isinstance(unit.msgstr, list)
+        and unit.msgstr
+        and isinstance(unit.msgstr[0], str)
+    ):
         charset = re.search("charset=([^\\s\\\\n]+)", "".join(unit.msgstr))
     if charset:
         encoding = charset.group(1)
@@ -333,15 +342,32 @@ def decode_header(unit, decode):
     re-encode it to decode values with the proper encoding defined in the header
     (using decode_list above).
     """
-    for attr in ('msgctxt', 'msgid', 'msgid_pluralcomments',
-                 'msgid_plural', 'msgstr',
-                 'othercomments', 'automaticcomments', 'sourcecomments',
-                 'typecomments', 'msgidcomments'):
+    for attr in (
+        'msgctxt',
+        'msgid',
+        'msgid_pluralcomments',
+        'msgid_plural',
+        'msgstr',
+        'othercomments',
+        'automaticcomments',
+        'sourcecomments',
+        'typecomments',
+        'msgidcomments',
+    ):
         element = getattr(unit, attr)
         if isinstance(element, list):
             setattr(unit, attr, decode_list(element, decode))
         else:
-            setattr(unit, attr, dict([(key, decode_list(value, decode)) for key, value in element.items()]))
+            setattr(
+                unit,
+                attr,
+                dict(
+                    [
+                        (key, decode_list(value, decode))
+                        for key, value in element.items()
+                    ]
+                ),
+            )
 
 
 def parse_header(parse_state, store):

@@ -47,8 +47,10 @@ class csv2tbx:
                 mightbeheader = False
                 if csvunit.match_header():
                     continue
-                if (len(csvunit.location.strip()) == 0 and
-                    csvunit.source.find("Content-Type:") != -1):
+                if (
+                    len(csvunit.location.strip()) == 0
+                    and csvunit.source.find("Content-Type:") != -1
+                ):
                     continue
             term = tbx.tbxunit.buildfromunit(csvunit)
             # TODO: we might want to get the location or other information
@@ -57,8 +59,7 @@ class csv2tbx:
         return self.tbxfile
 
 
-def convertcsv(inputfile, outputfile, templatefile, charset=None,
-               columnorder=None):
+def convertcsv(inputfile, outputfile, templatefile, charset=None, columnorder=None):
     """reads in inputfile using csvl10n, converts using csv2tbx, writes to
     outputfile
     """
@@ -73,18 +74,29 @@ def convertcsv(inputfile, outputfile, templatefile, charset=None,
 
 def main():
     from translate.convert import convert
+
     formats = {
         ("csv", "tbx"): ("tbx", convertcsv),
         ("csv", None): ("tbx", convertcsv),
     }
-    parser = convert.ConvertOptionParser(formats, usetemplates=False,
-                                         description=__doc__)
+    parser = convert.ConvertOptionParser(
+        formats, usetemplates=False, description=__doc__
+    )
     parser.add_option(
-        "", "--charset", dest="charset", default=None,
-        help="set charset to decode from csv files", metavar="CHARSET")
+        "",
+        "--charset",
+        dest="charset",
+        default=None,
+        help="set charset to decode from csv files",
+        metavar="CHARSET",
+    )
     parser.add_option(
-        "", "--columnorder", dest="columnorder", default=None,
-        help="specify the order and position of columns (comment,source,target)")
+        "",
+        "--columnorder",
+        dest="columnorder",
+        default=None,
+        help="specify the order and position of columns (comment,source,target)",
+    )
     parser.passthrough.append("charset")
     parser.passthrough.append("columnorder")
     parser.run()

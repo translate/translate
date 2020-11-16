@@ -48,7 +48,9 @@ def removekdecomments(str1):
             break
         if iskdecomment and line.strip().endswith("\\n"):
             iskdecomment = False
-    lines = [lines[linenum] for linenum in range(len(lines)) if linenum not in removelines]
+    lines = [
+        lines[linenum] for linenum in range(len(lines)) if linenum not in removelines
+    ]
     return "\n".join(lines)
 
 
@@ -77,6 +79,7 @@ def filteraccelerators(accelmarker):
             pos = accelstart + accelmarkerlen + len(accelerator)
         fstr1 += str1[pos:]
         return fstr1
+
     return filtermarkedaccelerators
 
 
@@ -94,11 +97,13 @@ def varname(variable, startmarker, endmarker):
     return variable
     # if the punctuation were included, we'd do the following:
     if startmarker is None:
-        return variable[:variable.rfind(endmarker)]
+        return variable[: variable.rfind(endmarker)]
     elif endmarker is None:
-        return variable[variable.find(startmarker)+len(startmarker):]
+        return variable[variable.find(startmarker) + len(startmarker) :]
     else:
-        return variable[variable.find(startmarker)+len(startmarker):variable.rfind(endmarker)]
+        return variable[
+            variable.find(startmarker) + len(startmarker) : variable.rfind(endmarker)
+        ]
 
 
 def varnone(variable, startmarker, endmarker):
@@ -143,6 +148,7 @@ def filtervariables(startmarker, endmarker, varfilter):
             pos = varstart + startmarkerlen + len(variable) + endmarkerlen
         fstr1 += str1[pos:]
         return fstr1
+
     return filtermarkedvariables
 
 
@@ -150,7 +156,9 @@ def filtervariables(startmarker, endmarker, varfilter):
 # all apostrophes in the middle of the word are handled already
 wordswithpunctuation = ["'n", "'t"]  # Afrikaans
 # map all the words to their non-punctified equivalent
-wordswithpunctuation = dict([(word, ''.join(filter(str.isalnum, word))) for word in wordswithpunctuation])
+wordswithpunctuation = dict(
+    [(word, ''.join(filter(str.isalnum, word))) for word in wordswithpunctuation]
+)
 
 word_with_apos_re = re.compile(r"(?u)\w+'\w+")
 
@@ -163,7 +171,9 @@ def filterwordswithpunctuation(str1):
         return str1
     occurrences = []
     for word, replacement in wordswithpunctuation.items():
-        occurrences.extend([(pos, word, replacement) for pos in quote.find_all(str1, word)])
+        occurrences.extend(
+            [(pos, word, replacement) for pos in quote.find_all(str1, word)]
+        )
     for match in word_with_apos_re.finditer(str1):
         word = match.group()
         replacement = ''.join(filter(str.isalnum, word))

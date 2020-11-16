@@ -22,8 +22,7 @@ See: http://docs.translatehouse.org/projects/translate-toolkit/en/latest/command
 for examples and usage instructions.
 """
 
-from translate.convert import (convert, dtd2po, mozfunny2prop, mozlang2po,
-                               prop2po)
+from translate.convert import convert, dtd2po, mozfunny2prop, mozlang2po, prop2po
 
 
 def main(argv=None):
@@ -47,14 +46,15 @@ def main(argv=None):
     # handle search and replace
     replacer = convert.Replacer("en-US", "${locale}")
     for replaceformat in ("js", "rdf", "manifest"):
-        formats[(None, replaceformat)] = (replaceformat,
-                                          replacer.searchreplacetemplate)
-        formats[(replaceformat, replaceformat)] = (replaceformat,
-                                                   replacer.searchreplaceinput)
+        formats[(None, replaceformat)] = (replaceformat, replacer.searchreplacetemplate)
+        formats[(replaceformat, replaceformat)] = (
+            replaceformat,
+            replacer.searchreplaceinput,
+        )
         formats[replaceformat] = (replaceformat, replacer.searchreplaceinput)
-    parser = convert.ConvertOptionParser(formats, usetemplates=True,
-                                         usepots=True,
-                                         description=__doc__)
+    parser = convert.ConvertOptionParser(
+        formats, usetemplates=True, usepots=True, description=__doc__
+    )
     parser.add_duplicates_option()
     parser.passthrough.append("pot")
     parser.run(argv)

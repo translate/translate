@@ -1,4 +1,3 @@
-
 from translate.lang import factory
 
 
@@ -22,15 +21,24 @@ def test_punctranslate():
     assert language.punctranslate("Watch the ' mark") == "Watch the ' mark"
     assert language.punctranslate("Watch the ` mark") == "Watch the ` mark"
     assert language.punctranslate('Watch the “mark”') == "Watch the «mark»"
-    assert language.punctranslate('The <a href="info">user</a> "root"?') == 'The <a href="info">user</a> «root»؟'
-    assert language.punctranslate("The <a href='info'>user</a> 'root'?") == "The <a href='info'>user</a> «root»؟"
-    #Broken because we test for equal number of ` and ' in the string
-    #assert language.punctranslate("The <a href='info'>user</a> `root'?") == "The <a href='info'>user</a> «root»؟"
-    assert language.punctranslate("The <a href='http://koeie'>user</a>") == "The <a href='http://koeie'>user</a>"
+    assert (
+        language.punctranslate('The <a href="info">user</a> "root"?')
+        == 'The <a href="info">user</a> «root»؟'
+    )
+    assert (
+        language.punctranslate("The <a href='info'>user</a> 'root'?")
+        == "The <a href='info'>user</a> «root»؟"
+    )
+    # Broken because we test for equal number of ` and ' in the string
+    # assert language.punctranslate("The <a href='info'>user</a> `root'?") == "The <a href='info'>user</a> «root»؟"
+    assert (
+        language.punctranslate("The <a href='http://koeie'>user</a>")
+        == "The <a href='http://koeie'>user</a>"
+    )
 
     assert language.punctranslate("Copying `%s' to `%s'") == "Copying «%s» to «%s»"
     # We are very careful by checking that the ` and ' match, so we miss this because of internal punctuation:
-    #assert language.punctranslate("Shlib `%s' didn't contain `%s'") == "Shlib «%s» didn't contain «%s»"
+    # assert language.punctranslate("Shlib `%s' didn't contain `%s'") == "Shlib «%s» didn't contain «%s»"
 
 
 def test_sentences():

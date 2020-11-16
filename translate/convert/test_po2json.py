@@ -33,8 +33,9 @@ msgid "qux"
 msgstr ""
 '''
 
-    def po2json(self, po_source, json_template, includefuzzy=False,
-                remove_untranslated=False):
+    def po2json(
+        self, po_source, json_template, includefuzzy=False, remove_untranslated=False
+    ):
         """helper that converts po source to json source without requiring files"""
         input_file = BytesIO(po_source.encode())
         input_po = po.pofile(input_file)
@@ -111,10 +112,12 @@ msgstr ""
     "qux": "qux"
 }
 '''
-        json_out = self.po2json(self.example_input_po,
-                                self.example_json_template,
-                                includefuzzy=False,
-                                remove_untranslated=False)
+        json_out = self.po2json(
+            self.example_input_po,
+            self.example_json_template,
+            includefuzzy=False,
+            remove_untranslated=False,
+        )
         assert json_out == expected_json
 
     def test_includefuzzy_false_remove_untranslated_true(self):
@@ -124,10 +127,12 @@ msgstr ""
     "foo": "oof"
 }
 '''
-        json_out = self.po2json(self.example_input_po,
-                                self.example_json_template,
-                                includefuzzy=False,
-                                remove_untranslated=True)
+        json_out = self.po2json(
+            self.example_input_po,
+            self.example_json_template,
+            includefuzzy=False,
+            remove_untranslated=True,
+        )
         assert json_out == expected_json
 
     def test_includefuzzy_true_remove_untranslated_false(self):
@@ -140,10 +145,12 @@ msgstr ""
     "qux": "qux"
 }
 '''
-        json_out = self.po2json(self.example_input_po,
-                                self.example_json_template,
-                                includefuzzy=True,
-                                remove_untranslated=False)
+        json_out = self.po2json(
+            self.example_input_po,
+            self.example_json_template,
+            includefuzzy=True,
+            remove_untranslated=False,
+        )
         assert json_out == expected_json
 
     def test_includefuzzy_true_remove_untranslated_true(self):
@@ -153,8 +160,10 @@ msgstr ""
     "foo": "oof"
 }
 '''
-        json_out = self.po2json(self.example_input_po,
-                                self.example_json_template,
-                                includefuzzy=True,
-                                remove_untranslated=True)
+        json_out = self.po2json(
+            self.example_input_po,
+            self.example_json_template,
+            includefuzzy=True,
+            remove_untranslated=True,
+        )
         assert json_out == expected_json

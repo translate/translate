@@ -1,4 +1,3 @@
-
 import pkgutil
 
 from translate.lang import factory
@@ -29,7 +28,7 @@ def test_getlanguage():
     language = factory.getlanguage(None)
     assert language.code == ''
 
-    #Test with a language code that is a reserved word in Python
+    # Test with a language code that is a reserved word in Python
     language = factory.getlanguage('is')
     assert language.nplurals == 2
     assert language.fullname == 'Icelandic'
@@ -37,7 +36,7 @@ def test_getlanguage():
     language = factory.getlanguage('or')
     assert "startcaps" in language.ignoretests['all']
 
-    #Test with a language code contains '@'
+    # Test with a language code contains '@'
     language = factory.getlanguage('ca@valencia')
     assert language.nplurals == 2
 
@@ -46,10 +45,10 @@ def test_get_all_languages():
     """Tests that a basic call to get_all_languages() works."""
     import translate.lang as package
 
-    is_language_module = lambda x: not (x.startswith("test_")
-                                        or x in ("common", "data", "factory",
-                                                 "identify", "ngram", "poedit",
-                                                 "team"))
+    is_language_module = lambda x: not (
+        x.startswith("test_")
+        or x in ("common", "data", "factory", "identify", "ngram", "poedit", "team")
+    )
     lang_codes = []
     for _imp, modname, _isp in pkgutil.walk_packages(package.__path__):
         if is_language_module(modname):

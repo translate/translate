@@ -1,4 +1,3 @@
-
 # tiki2po unit tests
 # Author: Wil Clouser <wclouser@mozilla.com>
 # Date: 2008-12-01
@@ -12,8 +11,13 @@ class TestTiki2Po:
 
     ConverterClass = tiki2po.tiki2po
 
-    def _convert(self, input_string, template_string=None,
-                 include_unused=False, success_expected=True):
+    def _convert(
+        self,
+        input_string,
+        template_string=None,
+        include_unused=False,
+        success_expected=True,
+    ):
         """Helper that converts to target format without using files."""
         input_file = BytesIO(input_string.encode())
         output_file = BytesIO()
@@ -21,8 +25,9 @@ class TestTiki2Po:
         if template_string:
             template_file = BytesIO(template_string.encode())
         expected_result = 1 if success_expected else 0
-        converter = self.ConverterClass(input_file, output_file, template_file,
-                                        include_unused)
+        converter = self.ConverterClass(
+            input_file, output_file, template_file, include_unused
+        )
         assert converter.run() == expected_result
         return converter.target_store, output_file
 

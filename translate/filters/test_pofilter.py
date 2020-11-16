@@ -1,4 +1,3 @@
-
 from io import BytesIO
 
 from translate.filters import checks, pofilter
@@ -18,22 +17,21 @@ class BaseTestFilter:
         store = factory.getobject(dummyfile)
         return store
 
-    def filter(self, translationstore, checkerconfig=None,
-               cmdlineoptions=None):
+    def filter(self, translationstore, checkerconfig=None, cmdlineoptions=None):
         """
         Helper that passes a translations store through a filter, and
         returns the resulting store.
         """
         if cmdlineoptions is None:
             cmdlineoptions = []
-        options, args = pofilter.cmdlineparser().parse_args([self.filename] +
-                                                            cmdlineoptions)
+        options, args = pofilter.cmdlineparser().parse_args(
+            [self.filename] + cmdlineoptions
+        )
         checkerclasses = [checks.StandardChecker, checks.StandardUnitChecker]
         if checkerconfig is None:
             parser = pofilter.FilterOptionParser({})
             checkerconfig = parser.build_checkerconfig(options)
-        checkfilter = pofilter.pocheckfilter(options, checkerclasses,
-                                             checkerconfig)
+        checkfilter = pofilter.pocheckfilter(options, checkerclasses, checkerconfig)
         tofile = checkfilter.filterfile(translationstore)
         return tofile
 
@@ -63,32 +61,34 @@ class BaseTestFilter:
         already marked as failed
         """
         self.unit.target = ''
-        filter_result = self.filter(self.translationstore,
-                                    cmdlineoptions=["--test=untranslated"])
+        filter_result = self.filter(
+            self.translationstore, cmdlineoptions=["--test=untranslated"]
+        )
         errors = first_translatable(filter_result).geterrors()
         assert len(errors) == 1
         assert 'untranslated' in errors
 
         # Run a filter test on the result, to check that it doesn't mark the
         # same error twice.
-        filter_result2 = self.filter(filter_result,
-                                     cmdlineoptions=["--test=untranslated"])
+        filter_result2 = self.filter(
+            filter_result, cmdlineoptions=["--test=untranslated"]
+        )
         errors = first_translatable(filter_result2).geterrors()
         assert len(errors) == 1
         assert 'untranslated' in errors
 
     def test_non_existant_check(self):
         """check that we report an error if a user tries to run a non-existant test"""
-        filter_result = self.filter(self.translationstore,
-                                    cmdlineoptions=["-t nonexistant"])
+        filter_result = self.filter(
+            self.translationstore, cmdlineoptions=["-t nonexistant"]
+        )
         # TODO Not sure how to check for the stderror result of: warning: could
         # not find filter  nonexistant
         assert headerless_len(filter_result.units) == 0
 
     def test_list_all_tests(self):
         """lists all available tests"""
-        filter_result = self.filter(self.translationstore,
-                                    cmdlineoptions=["-l"])
+        filter_result = self.filter(self.translationstore, cmdlineoptions=["-l"])
         # TODO again not sure how to check the stderror output
         assert headerless_len(filter_result.units) == 0
 
@@ -96,69 +96,69 @@ class BaseTestFilter:
         """test whether to run tests against fuzzy translations"""
         self.unit.markfuzzy()
 
-        filter_result = self.filter(self.translationstore,
-                                    cmdlineoptions=["--fuzzy"])
+        filter_result = self.filter(self.translationstore, cmdlineoptions=["--fuzzy"])
         assert 'isfuzzy' in first_translatable(filter_result).geterrors()
 
-        filter_result = self.filter(self.translationstore,
-                                    cmdlineoptions=["--nofuzzy"])
+        filter_result = self.filter(self.translationstore, cmdlineoptions=["--nofuzzy"])
         assert headerless_len(filter_result.units) == 0
 
         # Re-initialize the translation store object in order to get an unfuzzy
         # unit with no filter notes.
         self.setup_method(self)
 
-        filter_result = self.filter(self.translationstore,
-                                    cmdlineoptions=["--fuzzy"])
+        filter_result = self.filter(self.translationstore, cmdlineoptions=["--fuzzy"])
         assert headerless_len(filter_result.units) == 0
 
-        filter_result = self.filter(self.translationstore,
-                                    cmdlineoptions=["--nofuzzy"])
+        filter_result = self.filter(self.translationstore, cmdlineoptions=["--nofuzzy"])
         assert headerless_len(filter_result.units) == 0
 
     def test_test_against_review(self):
         """test whether to run tests against translations marked for review"""
         self.unit.markreviewneeded()
-        filter_result = self.filter(self.translationstore,
-                                    cmdlineoptions=["--review"])
+        filter_result = self.filter(self.translationstore, cmdlineoptions=["--review"])
         assert first_translatable(filter_result).isreview()
 
-        filter_result = self.filter(self.translationstore,
-                                    cmdlineoptions=["--noreview"])
+        filter_result = self.filter(
+            self.translationstore, cmdlineoptions=["--noreview"]
+        )
         assert headerless_len(filter_result.units) == 0
 
         # Re-initialize the translation store object.
         self.setup_method(self)
 
-        filter_result = self.filter(self.translationstore,
-                                    cmdlineoptions=["--review"])
+        filter_result = self.filter(self.translationstore, cmdlineoptions=["--review"])
         assert headerless_len(filter_result.units) == 0
-        filter_result = self.filter(self.translationstore,
-                                    cmdlineoptions=["--noreview"])
+        filter_result = self.filter(
+            self.translationstore, cmdlineoptions=["--noreview"]
+        )
         assert headerless_len(filter_result.units) == 0
 
     def test_isfuzzy(self):
         """tests the extraction of items marked fuzzy"""
         self.unit.markfuzzy()
 
-        filter_result = self.filter(self.translationstore,
-                                    cmdlineoptions=["--test=isfuzzy"])
+        filter_result = self.filter(
+            self.translationstore, cmdlineoptions=["--test=isfuzzy"]
+        )
         assert "isfuzzy" in first_translatable(filter_result).geterrors()
 
         self.unit.markfuzzy(False)
-        filter_result = self.filter(self.translationstore,
-                                    cmdlineoptions=["--test=isfuzzy"])
+        filter_result = self.filter(
+            self.translationstore, cmdlineoptions=["--test=isfuzzy"]
+        )
         assert headerless_len(filter_result.units) == 0
 
     def test_isreview(self):
         """tests the extraction of items marked review"""
-        filter_result = self.filter(self.translationstore,
-                                    cmdlineoptions=["--test=isreview"])
+        filter_result = self.filter(
+            self.translationstore, cmdlineoptions=["--test=isreview"]
+        )
         assert headerless_len(filter_result.units) == 0
 
         self.unit.markreviewneeded()
-        filter_result = self.filter(self.translationstore,
-                                    cmdlineoptions=["--test=isreview"])
+        filter_result = self.filter(
+            self.translationstore, cmdlineoptions=["--test=isreview"]
+        )
         assert first_translatable(filter_result).isreview()
 
     def test_notes(self):
@@ -175,8 +175,7 @@ class BaseTestFilter:
             self.unit.removenotes(origin='pofilter')
         else:
             self.unit.removenotes()
-        filter_result = self.filter(self.translationstore,
-                                    cmdlineoptions=["--nonotes"])
+        filter_result = self.filter(self.translationstore, cmdlineoptions=["--nonotes"])
         assert headerless_len(filter_result.units) == 1
         assert len(first_translatable(filter_result).geterrors()) == 0
 
@@ -314,9 +313,9 @@ msgid "cow"
 msgstr "blaŞbla"
 '''
         pofile = self.parse_text(posource)
-        filter_result = self.filter(pofile,
-                                    cmdlineoptions=["--language=ro",
-                                                    "--test=cedillas"])
+        filter_result = self.filter(
+            pofile, cmdlineoptions=["--language=ro", "--test=cedillas"]
+        )
         errors = first_translatable(filter_result).geterrors()
         assert len(errors) == 1
         assert 'cedillas' in errors
@@ -326,9 +325,9 @@ msgid "cow"
 msgstr "blaSbla"
 '''
         pofile = self.parse_text(posource)
-        filter_result = self.filter(pofile,
-                                    cmdlineoptions=["--language=ro",
-                                                    "--test=cedillas"])
+        filter_result = self.filter(
+            pofile, cmdlineoptions=["--language=ro", "--test=cedillas"]
+        )
         errors = first_translatable(filter_result).geterrors()
         assert len(errors) == 0
         assert 'cedillas' not in errors
@@ -340,9 +339,9 @@ msgid "cow"
 msgstr "bla nici un bla"
 '''
         pofile = self.parse_text(posource)
-        filter_result = self.filter(pofile,
-                                    cmdlineoptions=["--language=ro",
-                                                    "--test=niciun_nicio"])
+        filter_result = self.filter(
+            pofile, cmdlineoptions=["--language=ro", "--test=niciun_nicio"]
+        )
         errors = first_translatable(filter_result).geterrors()
         assert len(errors) == 1
         assert 'niciun_nicio' in errors
@@ -352,9 +351,9 @@ msgid "cow"
 msgstr "bla niciun bla"
 '''
         pofile = self.parse_text(posource)
-        filter_result = self.filter(pofile,
-                                    cmdlineoptions=["--language=ro",
-                                                    "--test=niciun_nicio"])
+        filter_result = self.filter(
+            pofile, cmdlineoptions=["--language=ro", "--test=niciun_nicio"]
+        )
         errors = first_translatable(filter_result).geterrors()
         assert len(errors) == 0
         assert 'niciun_nicio' not in errors
@@ -366,9 +365,9 @@ msgid "cow"
 msgstr "bla nici o bla"
 '''
         pofile = self.parse_text(posource)
-        filter_result = self.filter(pofile,
-                                    cmdlineoptions=["--language=ro",
-                                                    "--test=niciun_nicio"])
+        filter_result = self.filter(
+            pofile, cmdlineoptions=["--language=ro", "--test=niciun_nicio"]
+        )
         errors = first_translatable(filter_result).geterrors()
         assert len(errors) == 1
         assert 'niciun_nicio' in errors
@@ -378,9 +377,9 @@ msgid "cow"
 msgstr "bla nicio bla"
 '''
         pofile = self.parse_text(posource)
-        filter_result = self.filter(pofile,
-                                    cmdlineoptions=["--language=ro",
-                                                    "--test=niciun_nicio"])
+        filter_result = self.filter(
+            pofile, cmdlineoptions=["--language=ro", "--test=niciun_nicio"]
+        )
         errors = first_translatable(filter_result).geterrors()
         assert len(errors) == 0
         assert 'niciun_nicio' not in errors

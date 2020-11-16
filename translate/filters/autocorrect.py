@@ -36,8 +36,12 @@ def correct(source, target):
         target = target.replace("...", "…")
     elif "..." in source and "…" in target:
         target = target.replace("…", "...")
-    if decoration.spacestart(source) != decoration.spacestart(target) or decoration.spaceend(source) != decoration.spaceend(target):
-        target = decoration.spacestart(source) + target.strip() + decoration.spaceend(source)
+    if decoration.spacestart(source) != decoration.spacestart(
+        target
+    ) or decoration.spaceend(source) != decoration.spaceend(target):
+        target = (
+            decoration.spacestart(source) + target.strip() + decoration.spaceend(source)
+        )
     punctuation = (".", ":", ". ", ": ", "?")
     puncendid = decoration.puncend(source, punctuation)
     puncendstr = decoration.puncend(target, punctuation)
@@ -45,7 +49,7 @@ def correct(source, target):
         if not puncendstr:
             target = target + puncendid
         else:
-            target = target[:-len(puncendstr)] + puncendid
+            target = target[: -len(puncendstr)] + puncendid
     if source[:1].isalpha() and target[:1].isalpha():
         if source[:1].isupper() and target[:1].islower():
             target = target[:1].upper() + target[1:]

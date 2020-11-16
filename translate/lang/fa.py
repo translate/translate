@@ -28,7 +28,6 @@ from translate.lang import common
 
 
 def guillemets(text):
-
     def convertquotation(match):
         prefix = match.group(1)
         # Let's see that we didn't perhaps match an XML tag property like
@@ -60,14 +59,13 @@ class fa(common.Common):
         ",": "،",
         ";": "؛",
         "?": "؟",
-        #This causes problems with variables, so commented out for now:
-        #"%": "٪",
+        # This causes problems with variables, so commented out for now:
+        # "%": "٪",
     }
 
     numbertuple = (
         # It seems that Persian uses both Arabic-Indic and Extended
         # Arabic-Indic digits.
-
         ("0", "٠"),  # U+0660 Arabic-Indic digit zero.
         ("1", "١"),  # U+0661 Arabic-Indic digit one.
         ("2", "٢"),  # U+0662 Arabic-Indic digit two.
@@ -78,7 +76,6 @@ class fa(common.Common):
         ("7", "٧"),  # U+0667 Arabic-Indic digit seven.
         ("8", "٨"),  # U+0668 Arabic-Indic digit eight.
         ("9", "٩"),  # U+0669 Arabic-Indic digit nine.
-
         ("0", "۰"),  # U+06F0 Extended Arabic-Indic digit zero.
         ("1", "۱"),  # U+06F1 Extended Arabic-Indic digit one.
         ("2", "۲"),  # U+06F2 Extended Arabic-Indic digit two.
@@ -94,8 +91,8 @@ class fa(common.Common):
     ignoretests = {
         'all': ["simplecaps", "startcaps"],
     }
-    #TODO: check persian numerics
-    #TODO: zwj and zwnj?
+    # TODO: check persian numerics
+    # TODO: zwj and zwnj?
 
     @classmethod
     def punctranslate(cls, text):

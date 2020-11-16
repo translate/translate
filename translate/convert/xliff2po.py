@@ -26,7 +26,6 @@ from translate.storage import po, xliff
 
 
 class xliff2po:
-
     def converttransunit(self, transunit):
         """makes a pounit from the given transunit"""
         thepo = po.pounit()
@@ -72,13 +71,17 @@ class xliff2po:
             if transunit.isheader():
                 thetargetfile.updateheader(add=True, **XliffFile.parseheader())
                 if transunit.getnotes('translator'):
-                    targetheader.addnote(transunit.getnotes('translator'),
-                                         origin='translator',
-                                         position='replace')
+                    targetheader.addnote(
+                        transunit.getnotes('translator'),
+                        origin='translator',
+                        position='replace',
+                    )
                 if transunit.getnotes('developer'):
-                    targetheader.addnote(transunit.getnotes('developer'),
-                                         origin='developer',
-                                         position='replace')
+                    targetheader.addnote(
+                        transunit.getnotes('developer'),
+                        origin='developer',
+                        position='replace',
+                    )
                 targetheader.markfuzzy(transunit.isfuzzy())
                 continue
             thepo = self.converttransunit(transunit)
@@ -101,11 +104,11 @@ def convertxliff(inputfile, outputfile, templates, duplicatestyle="msgctxt"):
 
 def main(argv=None):
     from translate.convert import convert
+
     formats = {
         "xlf": ("po", convertxliff),
         "xliff": ("po", convertxliff),
     }
-    parser = convert.ConvertOptionParser(formats, usepots=True,
-                                         description=__doc__)
+    parser = convert.ConvertOptionParser(formats, usepots=True, description=__doc__)
     parser.add_duplicates_option()
     parser.run(argv)

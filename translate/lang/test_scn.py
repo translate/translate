@@ -1,5 +1,3 @@
-
-
 from translate.filters.test_checks import fails, passes
 from translate.lang.scn import SicilianChecker
 

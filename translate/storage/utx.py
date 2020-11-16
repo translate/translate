@@ -102,6 +102,7 @@ class UtxUnit(base.TranslationUnit):
         """
         # TODO First check that the values are OK
         self._dict = newdict
+
     dict = property(getdict, setdict)
 
     def _get_field(self, key):
@@ -124,9 +125,7 @@ class UtxUnit(base.TranslationUnit):
 
     def addnote(self, text, origin=None, position="append"):
         currentnote = self._get_field('comment')
-        if (position == "append" and
-            currentnote is not None and
-            currentnote != ''):
+        if position == "append" and currentnote is not None and currentnote != '':
             self._set_field('comment', currentnote + '\n' + text)
         else:
             self._set_field('comment', text)
@@ -154,6 +153,7 @@ class UtxUnit(base.TranslationUnit):
 
     def settargetlang(self, newlang):
         self._dict['target-lang'] = newlang
+
     targetlang = property(None, settargetlang)
 
     def __str__(self):
@@ -172,8 +172,7 @@ class UtxFile(base.TranslationStore):
     UnitClass = UtxUnit
 
     def __init__(self, inputfile=None, **kwargs):
-        """Construct an UTX dictionary, optionally reading in from inputfile.
-        """
+        """Construct an UTX dictionary, optionally reading in from inputfile."""
         super().__init__(**kwargs)
         self.filename = ''
         self.extension = ''
@@ -181,8 +180,9 @@ class UtxFile(base.TranslationStore):
         self._header = {
             "version": "1.00",
             "source_language": "en",
-            "date_created": time.strftime("%Y-%m-%dT%H:%M:%SZ%z",
-                                          time.localtime(time.time()))
+            "date_created": time.strftime(
+                "%Y-%m-%dT%H:%M:%SZ%z", time.localtime(time.time())
+            ),
         }
         if inputfile is not None:
             self.parse(inputfile)
@@ -212,7 +212,7 @@ class UtxFile(base.TranslationStore):
         for data in header_components[3:]:
             key, value = data.strip().split(":")
             self._header[key] = value.strip()
-        self._fieldnames = header_lines[-1:][0].replace("#", ""). split('\t')
+        self._fieldnames = header_lines[-1:][0].replace("#", "").split('\t')
         return len(header_lines)
 
     def _write_header(self):
@@ -225,8 +225,7 @@ class UtxFile(base.TranslationStore):
         }
         items = []
         for key, value in self._header.items():
-            if key in ["version", "source_language",
-                       "target_language", "date_created"]:
+            if key in ["version", "source_language", "target_language", "date_created"]:
                 continue
             items.append("%s: %s" % (key, value))
         if len(items):
@@ -266,7 +265,8 @@ class UtxFile(base.TranslationStore):
         lines = csv.DictReader(
             input.split(UtxDialect.lineterminator)[header_length:],
             fieldnames=self._fieldnames,
-            dialect="utx")
+            dialect="utx",
+        )
         for line in lines:
             newunit = UtxUnit()
             newunit.dict = line

@@ -39,17 +39,20 @@ from translate.storage.workflow import StateEnum
 
 logger = logging.getLogger(__name__)
 
-#kdepluralre = re.compile("^_n: ") #Restore this if you really need support for old kdeplurals
+# kdepluralre = re.compile("^_n: ") #Restore this if you really need support for old kdeplurals
 brtagre = re.compile(r"<br\s*?/?>")
 # xmltagre is a direct copy of the from placeables/general.py
-xmltagre = re.compile(r'''
+xmltagre = re.compile(
+    r'''
         <                         # start of opening tag
         ([\w.:]+)                 # tag name, possibly namespaced
         (\s([\w.:]+=              # space and attribute name followed by =
             ((".*?")|('.*?'))     # attribute value, single or double quoted
         )?)*/?>                   # end of opening tag, possibly self closing
         |</([\w.]+)>              # or a closing tag
-        ''', re.VERBOSE)
+        ''',
+    re.VERBOSE,
+)
 numberre = re.compile("\\D\\.\\D")
 
 extended_state_strings = {
@@ -74,7 +77,7 @@ state_strings = {
 
 def wordcount(string):
     # TODO: po class should understand KDE style plurals ##
-    #string = kdepluralre.sub("", string) #Restore this if you really need support for old kdeplurals
+    # string = kdepluralre.sub("", string) #Restore this if you really need support for old kdeplurals
     string = brtagre.sub("\n", string)
     string = xmltagre.sub("", string)
     string = numberre.sub(" ", string)
@@ -106,8 +109,9 @@ def wordsinunit(unit):
 
 
 class Record(UserDict):
-
-    def __init__(self, record_keys, record_values=None, compute_derived_values=lambda x: x):
+    def __init__(
+        self, record_keys, record_values=None, compute_derived_values=lambda x: x
+    ):
         if record_values is None:
             record_values = (0 for _i in record_keys)
         self.record_keys = record_keys
@@ -156,6 +160,7 @@ def transaction(f):
             if self.con:
                 self.con.rollback()
             raise
+
     return decorated_f
 
 
@@ -169,20 +174,23 @@ def statefordb(unit):
 
 
 class FileTotals:
-    keys = ['translatedsourcewords',
-            'fuzzysourcewords',
-            'untranslatedsourcewords',
-            'translated',
-            'fuzzy',
-            'untranslated',
-            'translatedtargetwords']
+    keys = [
+        'translatedsourcewords',
+        'fuzzysourcewords',
+        'untranslatedsourcewords',
+        'translated',
+        'fuzzy',
+        'untranslated',
+        'translatedtargetwords',
+    ]
 
     def db_keys(self):
         return ",".join(self.keys)
 
     def __init__(self, cur):
         self.cur = cur
-        self.cur.execute("""
+        self.cur.execute(
+            """
             CREATE TABLE IF NOT EXISTS filetotals(
                 fileid                  INTEGER PRIMARY KEY AUTOINCREMENT,
                 translatedsourcewords   INTEGER NOT NULL,
@@ -191,7 +199,8 @@ class FileTotals:
                 translated              INTEGER NOT NULL,
                 fuzzy                   INTEGER NOT NULL,
                 untranslated            INTEGER NOT NULL,
-                translatedtargetwords   INTEGER NOT NULL);""")
+                translatedtargetwords   INTEGER NOT NULL);"""
+        )
 
     @classmethod
     def new_record(cls, state_for_db=None, sourcewords=None, targetwords=None):
@@ -211,32 +220,44 @@ class FileTotals:
 
     @classmethod
     def _compute_derived_values(cls, record):
-        record["total"] = (record["untranslated"] +
-                           record["translated"] +
-                           record["fuzzy"])
-        record["totalsourcewords"] = (record["untranslatedsourcewords"] +
-                                      record["translatedsourcewords"] +
-                                      record["fuzzysourcewords"])
+        record["total"] = (
+            record["untranslated"] + record["translated"] + record["fuzzy"]
+        )
+        record["totalsourcewords"] = (
+            record["untranslatedsourcewords"]
+            + record["translatedsourcewords"]
+            + record["fuzzysourcewords"]
+        )
         record["review"] = 0
 
     def __getitem__(self, fileid):
-        result = self.cur.execute("""
+        result = self.cur.execute(
+            """
             SELECT %(keys)s
             FROM   filetotals
-            WHERE  fileid=?;""" % {'keys': self.db_keys()}, (fileid,))
+            WHERE  fileid=?;"""
+            % {'keys': self.db_keys()},
+            (fileid,),
+        )
         return Record(FileTotals.keys, result.fetchone(), self._compute_derived_values)
 
     def __setitem__(self, fileid, record):
-        self.cur.execute("""
+        self.cur.execute(
+            """
             INSERT OR REPLACE into filetotals
             VALUES (%(fileid)d, %(vals)s);
-        """ % {'fileid': fileid, 'vals': record.as_string_for_db()})
+        """
+            % {'fileid': fileid, 'vals': record.as_string_for_db()}
+        )
 
     def __delitem__(self, fileid):
-        self.cur.execute("""
+        self.cur.execute(
+            """
             DELETE FROM filetotals
             WHERE fileid=?;
-        """, (fileid,))
+        """,
+            (fileid,),
+        )
 
 
 def emptyfiletotals():
@@ -295,7 +316,6 @@ class StatsCache:
         current_thread_ident = current_thread().ident
 
         def make_database(statsfile):
-
             def connect(cache):
                 # sqlite needs to get the name in utf-8 on all platforms
                 cache.con = dbapi2.connect(statsfile)
@@ -316,7 +336,9 @@ class StatsCache:
                 except dbapi2.OperationalError:
                     return False
 
-            cache = cls._caches.setdefault(current_thread_ident, {})[statsfile] = object.__new__(cls)
+            cache = cls._caches.setdefault(current_thread_ident, {})[
+                statsfile
+            ] = object.__new__(cls)
             connect(cache)
             if clear_old_data(cache):
                 connect(cache)
@@ -340,7 +362,10 @@ class StatsCache:
         else:
             statsfile = os.path.realpath(statsfile)
         # First see if a cache for this file already exists:
-        if current_thread_ident in cls._caches and statsfile in cls._caches[current_thread_ident]:
+        if (
+            current_thread_ident in cls._caches
+            and statsfile in cls._caches[current_thread_ident]
+        ):
             return cls._caches[current_thread_ident][statsfile]
         # No existing cache. Let's build a new one and keep a copy
         return make_database(statsfile)
@@ -350,17 +375,22 @@ class StatsCache:
         """Create all tables and indexes."""
         self.file_totals = FileTotals(self.cur)
 
-        self.cur.execute("""CREATE TABLE IF NOT EXISTS files(
+        self.cur.execute(
+            """CREATE TABLE IF NOT EXISTS files(
             fileid INTEGER PRIMARY KEY AUTOINCREMENT,
             path VARCHAR NOT NULL UNIQUE,
             st_mtime INTEGER NOT NULL,
             st_size INTEGER NOT NULL,
-            toolkitbuild INTEGER NOT NULL);""")
+            toolkitbuild INTEGER NOT NULL);"""
+        )
 
-        self.cur.execute("""CREATE UNIQUE INDEX IF NOT EXISTS filepathindex
-            ON files (path);""")
+        self.cur.execute(
+            """CREATE UNIQUE INDEX IF NOT EXISTS filepathindex
+            ON files (path);"""
+        )
 
-        self.cur.execute("""CREATE TABLE IF NOT EXISTS units(
+        self.cur.execute(
+            """CREATE TABLE IF NOT EXISTS units(
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             unitid VARCHAR NOT NULL,
             fileid INTEGER NOT NULL,
@@ -370,28 +400,39 @@ class StatsCache:
             state INTEGER,
             e_state INTEGER,
             sourcewords INTEGER,
-            targetwords INTEGER);""")
+            targetwords INTEGER);"""
+        )
 
-        self.cur.execute("""CREATE INDEX IF NOT EXISTS fileidindex
-            ON units(fileid);""")
+        self.cur.execute(
+            """CREATE INDEX IF NOT EXISTS fileidindex
+            ON units(fileid);"""
+        )
 
-        self.cur.execute("""CREATE TABLE IF NOT EXISTS checkerconfigs(
+        self.cur.execute(
+            """CREATE TABLE IF NOT EXISTS checkerconfigs(
             configid INTEGER PRIMARY KEY AUTOINCREMENT,
-            config VARCHAR);""")
+            config VARCHAR);"""
+        )
 
-        self.cur.execute("""CREATE INDEX IF NOT EXISTS configindex
-            ON checkerconfigs(config);""")
+        self.cur.execute(
+            """CREATE INDEX IF NOT EXISTS configindex
+            ON checkerconfigs(config);"""
+        )
 
-        self.cur.execute("""CREATE TABLE IF NOT EXISTS uniterrors(
+        self.cur.execute(
+            """CREATE TABLE IF NOT EXISTS uniterrors(
             errorid INTEGER PRIMARY KEY AUTOINCREMENT,
             unitindex INTEGER NOT NULL,
             fileid INTEGER NOT NULL,
             configid INTEGER NOT NULL,
             name VARCHAR NOT NULL,
-            message VARCHAR);""")
+            message VARCHAR);"""
+        )
 
-        self.cur.execute("""CREATE INDEX IF NOT EXISTS uniterrorindex
-            ON uniterrors(fileid, configid);""")
+        self.cur.execute(
+            """CREATE INDEX IF NOT EXISTS uniterrorindex
+            ON uniterrors(fileid, configid);"""
+        )
 
     @transaction
     def _getfileid(self, filename, check_mod_info=True, store=None):
@@ -408,17 +449,23 @@ class StatsCache:
         if isinstance(filename, bytes):
             filename = str(filename, sys.getfilesystemencoding())
         realpath = os.path.realpath(filename)
-        self.cur.execute("""SELECT fileid, st_mtime, st_size FROM files
-                WHERE path=?;""", (realpath,))
+        self.cur.execute(
+            """SELECT fileid, st_mtime, st_size FROM files
+                WHERE path=?;""",
+            (realpath,),
+        )
         filerow = self.cur.fetchone()
         mod_info = get_mod_info(realpath)
         if filerow:
             fileid = filerow[0]
             if not check_mod_info:
                 # Update the mod_info of the file
-                self.cur.execute("""UPDATE files
+                self.cur.execute(
+                    """UPDATE files
                         SET st_mtime=?, st_size=?
-                        WHERE fileid=?;""", (mod_info[0], mod_info[1], fileid))
+                        WHERE fileid=?;""",
+                    (mod_info[0], mod_info[1], fileid),
+                )
                 return fileid
             if (filerow[1], filerow[2]) == mod_info:
                 return fileid
@@ -434,8 +481,11 @@ class StatsCache:
     def _getstoredcheckerconfig(self, checker):
         """See if this checker configuration has been used before."""
         config = str(checker.config.__dict__)
-        self.cur.execute("""SELECT configid, config FROM checkerconfigs WHERE
-            config=?;""", (config,))
+        self.cur.execute(
+            """SELECT configid, config FROM checkerconfigs WHERE
+            config=?;""",
+            (config,),
+        )
         configrow = self.cur.fetchone()
         if not configrow or configrow[1] != config:
             return None
@@ -443,7 +493,9 @@ class StatsCache:
             return configrow[0]
 
     @transaction
-    def _cacheunitstats(self, units, fileid, unitindex=None, file_totals_record=FileTotals.new_record()):
+    def _cacheunitstats(
+        self, units, fileid, unitindex=None, file_totals_record=FileTotals.new_record()
+    ):
         """Cache the statistics for the supplied unit(s)."""
         unitvalues = []
         for index, unit in enumerate(units):
@@ -453,18 +505,29 @@ class StatsCache:
                     index = unitindex
                 # what about plurals in .source and .target?
                 unit_state_for_db = statefordb(unit)
-                unitvalues.append((unit.getid(), fileid, index,
-                                   unit.source, unit.target,
-                                   sourcewords, targetwords,
-                                   unit_state_for_db,
-                                   unit.get_state_id()))
-                file_totals_record = file_totals_record + FileTotals.new_record(unit_state_for_db, sourcewords, targetwords)
+                unitvalues.append(
+                    (
+                        unit.getid(),
+                        fileid,
+                        index,
+                        unit.source,
+                        unit.target,
+                        sourcewords,
+                        targetwords,
+                        unit_state_for_db,
+                        unit.get_state_id(),
+                    )
+                )
+                file_totals_record = file_totals_record + FileTotals.new_record(
+                    unit_state_for_db, sourcewords, targetwords
+                )
         # XXX: executemany is non-standard
         self.cur.executemany(
             """INSERT INTO units
             (unitid, fileid, unitindex, source, target, sourcewords, targetwords, state, e_state)
             values (?, ?, ?, ?, ?, ?, ?, ?, ?);""",
-            unitvalues)
+            unitvalues,
+        )
         self.file_totals[fileid] = file_totals_record
         if unitindex:
             return state_strings[statefordb(units[0])]
@@ -475,16 +538,23 @@ class StatsCache:
         """Calculates and caches the statistics of the given store
         unconditionally.
         """
-        self.cur.execute("""DELETE FROM files WHERE
-            path=?;""", (realpath,))
+        self.cur.execute(
+            """DELETE FROM files WHERE
+            path=?;""",
+            (realpath,),
+        )
         self.cur.execute(
             """INSERT INTO files
             (fileid, path, st_mtime, st_size, toolkitbuild) values (NULL, ?, ?, ?, ?);""",
-            (realpath, mod_info[0], mod_info[1], toolkitversion.build))
+            (realpath, mod_info[0], mod_info[1], toolkitversion.build),
+        )
         # Unusual capitalisation intended. See bug 2073.
         fileid = self.cur.lastrowid
-        self.cur.execute("""DELETE FROM units WHERE
-            fileid=?""", (fileid,))
+        self.cur.execute(
+            """DELETE FROM units WHERE
+            fileid=?""",
+            (fileid,),
+        )
         self._cacheunitstats(store.units, fileid)
         return fileid
 
@@ -492,8 +562,11 @@ class StatsCache:
         stats = {}
         fileid = self._getfileid(filename, store=store)
 
-        self.cur.execute("""SELECT e_state, COUNT(id), SUM(sourcewords), SUM(targetwords)
-            FROM units WHERE fileid=? GROUP BY e_state""", (fileid,))
+        self.cur.execute(
+            """SELECT e_state, COUNT(id), SUM(sourcewords), SUM(targetwords)
+            FROM units WHERE fileid=? GROUP BY e_state""",
+            (fileid,),
+        )
         values = self.cur.fetchall()
 
         for value in values:
@@ -529,7 +602,9 @@ class StatsCache:
                     index = unitindex
                 failures = checker.run_filters(unit)
                 for checkname, checkmessage in failures.items():
-                    unitvalues.append((index, fileid, configid, checkname, checkmessage))
+                    unitvalues.append(
+                        (index, fileid, configid, checkname, checkmessage)
+                    )
                     errornames.append("check-" + checkname)
         checker.setsuggestionstore(None)
 
@@ -543,7 +618,9 @@ class StatsCache:
         self.cur.executemany(
             "INSERT INTO uniterrors "
             "(unitindex, fileid, configid, name, message) "
-            "values (?, ?, ?, ?, ?);", unitvalues)
+            "values (?, ?, ?, ?, ?);",
+            unitvalues,
+        )
         return errornames
 
     @transaction
@@ -553,24 +630,33 @@ class StatsCache:
         """
         # Let's purge all previous failures because they will probably just
         # fill up the database without much use.
-        self.cur.execute("""DELETE FROM uniterrors WHERE
-            fileid=?;""", (fileid,))
+        self.cur.execute(
+            """DELETE FROM uniterrors WHERE
+            fileid=?;""",
+            (fileid,),
+        )
         self._cacheunitschecks(store.units, fileid, configid, checker)
         return fileid
 
     def get_unit_stats(self, fileid, unitid):
-        values = self.cur.execute("""
+        values = self.cur.execute(
+            """
             SELECT   state, sourcewords, targetwords
             FROM     units
             WHERE    fileid=? AND unitid=?
-        """, (fileid, unitid))
+        """,
+            (fileid, unitid),
+        )
         result = values.fetchone()
         if result is not None:
             return result
         else:
-            logger.warning("Database in inconsistent state - fileid %d and "
-                           "unitid %s have no entries in the table units.",
-                           fileid, unitid)
+            logger.warning(
+                "Database in inconsistent state - fileid %d and "
+                "unitid %s have no entries in the table units.",
+                fileid,
+                unitid,
+            )
             # If values.fetchone() is None, then we return an empty list,
             # to make FileTotals.new_record(*self.get_unit_stats(fileid, unitid))
             # do the right thing.
@@ -589,31 +675,48 @@ class StatsCache:
         configid = self._get_config_id(fileid, checker)
         unitid = unit.getid()
         # get the unit index
-        totals_without_unit = (self.file_totals[fileid] -
-                               FileTotals.new_record(*self.get_unit_stats(fileid,
-                                                                          unitid)))
-        self.cur.execute("""SELECT unitindex FROM units WHERE
-            fileid=? AND unitid=?;""", (fileid, unitid))
+        totals_without_unit = self.file_totals[fileid] - FileTotals.new_record(
+            *self.get_unit_stats(fileid, unitid)
+        )
+        self.cur.execute(
+            """SELECT unitindex FROM units WHERE
+            fileid=? AND unitid=?;""",
+            (fileid, unitid),
+        )
         unitindex = self.cur.fetchone()[0]
-        self.cur.execute("""DELETE FROM units WHERE
-            fileid=? AND unitid=?;""", (fileid, unitid))
+        self.cur.execute(
+            """DELETE FROM units WHERE
+            fileid=? AND unitid=?;""",
+            (fileid, unitid),
+        )
         state = [self._cacheunitstats([unit], fileid, unitindex, totals_without_unit)]
         # remove the current errors
-        self.cur.execute("""DELETE FROM uniterrors WHERE
-            fileid=? AND unitindex=?;""", (fileid, unitindex))
+        self.cur.execute(
+            """DELETE FROM uniterrors WHERE
+            fileid=? AND unitindex=?;""",
+            (fileid, unitindex),
+        )
         if os.path.exists(suggestion_filename(filename)):
-            checker.setsuggestionstore(factory.getobject(suggestion_filename(filename), ignore=suggestion_extension()))
-        state.extend(self._cacheunitschecks([unit], fileid, configid, checker, unitindex))
+            checker.setsuggestionstore(
+                factory.getobject(
+                    suggestion_filename(filename), ignore=suggestion_extension()
+                )
+            )
+        state.extend(
+            self._cacheunitschecks([unit], fileid, configid, checker, unitindex)
+        )
         return state
 
     def _checkerrors(self, filename, fileid, configid, checker, store):
-
         def geterrors():
-            self.cur.execute("""SELECT
+            self.cur.execute(
+                """SELECT
                 name,
                 unitindex
                 FROM uniterrors WHERE fileid=? and configid=?
-                ORDER BY unitindex;""", (fileid, configid))
+                ORDER BY unitindex;""",
+                (fileid, configid),
+            )
             return self.cur.fetchone(), self.cur
 
         first, cur = geterrors()
@@ -628,7 +731,11 @@ class StatsCache:
             store = store or factory.getobject(filename)
 
         if os.path.exists(suggestion_filename(filename)):
-            checker.setsuggestionstore(factory.getobject(suggestion_filename(filename), ignore=suggestion_extension()))
+            checker.setsuggestionstore(
+                factory.getobject(
+                    suggestion_filename(filename), ignore=suggestion_extension()
+                )
+            )
         self._cachestorechecks(fileid, store, checker, configid)
         return geterrors()
 
@@ -645,9 +752,9 @@ class StatsCache:
         if configid:
             return configid
         self.cur.execute(
-            "INSERT INTO checkerconfigs "
-            "(configid, config) values (NULL, ?);",
-            (str(checker.config.__dict__),))
+            "INSERT INTO checkerconfigs " "(configid, config) values (NULL, ?);",
+            (str(checker.config.__dict__),),
+        )
         # Unusual capitalisation intended. See bug 2073.
         return self.cur.lastrowid
 
@@ -663,10 +770,10 @@ class StatsCache:
         for value in values:
             if value[1] == -1:
                 continue
-            checkkey = 'check-' + value[0]      # value[0] is the error name
+            checkkey = 'check-' + value[0]  # value[0] is the error name
             if checkkey not in errors:
                 errors[checkkey] = []
-            errors[checkkey].append(value[1])   # value[1] is the unitindex
+            errors[checkkey].append(value[1])  # value[1] is the unitindex
 
         return errors
 
@@ -674,11 +781,14 @@ class StatsCache:
         fileid = self._getfileid(filename)
         configid = self._get_config_id(fileid, checker)
         self._checkerrors(filename, fileid, configid, checker, None)
-        self.cur.execute("""SELECT
+        self.cur.execute(
+            """SELECT
             name,
             unitindex
             FROM uniterrors
-            WHERE fileid=? and configid=? and name=?;""", (fileid, configid, name))
+            WHERE fileid=? and configid=? and name=?;""",
+            (fileid, configid, name),
+        )
         return self.cur.fetchone() is not None
 
     def filestatestats(self, filename, store=None, extended=False):
@@ -691,8 +801,11 @@ class StatsCache:
 
         fileid = self._getfileid(filename, store=store)
 
-        self.cur.execute("""SELECT state, e_state, unitindex
-            FROM units WHERE fileid=? ORDER BY unitindex;""", (fileid,))
+        self.cur.execute(
+            """SELECT state, e_state, unitindex
+            FROM units WHERE fileid=? ORDER BY unitindex;""",
+            (fileid,),
+        )
         values = self.cur.fetchall()
 
         for value in values:
@@ -726,13 +839,16 @@ class StatsCache:
         """
         stats = emptyunitstats()
 
-        #stats.update(self.unitchecks(filename, lang, store))
+        # stats.update(self.unitchecks(filename, lang, store))
         fileid = self._getfileid(filename, store=store)
 
-        self.cur.execute("""SELECT
+        self.cur.execute(
+            """SELECT
           sourcewords, targetwords
           FROM units WHERE fileid=?
-          ORDER BY unitindex;""", (fileid,))
+          ORDER BY unitindex;""",
+            (fileid,),
+        )
 
         for sourcecount, targetcount in self.cur.fetchall():
             stats["sourcewordcount"].append(sourcecount)

@@ -36,7 +36,9 @@ class SplitOptionParser(optrecurse.RecursiveOptionParser):
 
     def parse_args(self, args=None, values=None):
         """parses the command line options, handling implicit input/output args"""
-        (options, args) = optrecurse.RecursiveOptionParser.parse_args(self, args, values)
+        (options, args) = optrecurse.RecursiveOptionParser.parse_args(
+            self, args, values
+        )
         if not options.output:
             self.error("Output file is rquired")
         return (options, args)
@@ -44,9 +46,12 @@ class SplitOptionParser(optrecurse.RecursiveOptionParser):
     def set_usage(self, usage=None):
         """sets the usage string - if usage not given, uses getusagestring for each option"""
         if usage is None:
-            self.usage = "%prog " + " ".join([self.getusagestring(option) for option in self.option_list]) + \
-                         "\n  " + \
-                         "input directory is searched for PO files with (poconflicts) comments, all entries are written to files in a directory structure for pomerge"
+            self.usage = (
+                "%prog "
+                + " ".join([self.getusagestring(option) for option in self.option_list])
+                + "\n  "
+                + "input directory is searched for PO files with (poconflicts) comments, all entries are written to files in a directory structure for pomerge"
+            )
         else:
             super().set_usage(usage)
 
@@ -59,8 +64,14 @@ class SplitOptionParser(optrecurse.RecursiveOptionParser):
                 # we mess up an existing tree.
                 os.mkdir(options.output)
             except Exception:
-                self.error(optrecurse.optparse.OptionValueError("Output directory does not exist, attempt to create failed"))
-        if self.isrecursive(options.input, 'input') and getattr(options, "allowrecursiveinput", True):
+                self.error(
+                    optrecurse.optparse.OptionValueError(
+                        "Output directory does not exist, attempt to create failed"
+                    )
+                )
+        if self.isrecursive(options.input, 'input') and getattr(
+            options, "allowrecursiveinput", True
+        ):
             if isinstance(options.input, list):
                 inputfiles = self.recurseinputfilelist(options)
             else:
@@ -78,7 +89,11 @@ class SplitOptionParser(optrecurse.RecursiveOptionParser):
             try:
                 success = self.processfile(options, fullinputpath)
             except Exception:
-                self.warning("Error processing: input %s" % (fullinputpath), options, sys.exc_info())
+                self.warning(
+                    "Error processing: input %s" % (fullinputpath),
+                    options,
+                    sys.exc_info(),
+                )
                 success = False
             progress_bar.report_progress(inputpath, success)
         del progress_bar
@@ -95,7 +110,7 @@ class SplitOptionParser(optrecurse.RecursiveOptionParser):
                             pounit.othercomments.remove(comment)
                             break
                     # TODO: refactor writing out
-                    outputpath = comment[comment.find(")") + 2:].strip()
+                    outputpath = comment[comment.find(")") + 2 :].strip()
                     self.checkoutputsubdir(options, os.path.dirname(outputpath))
                     fulloutputpath = os.path.join(options.output, outputpath)
                     if os.path.isfile(fulloutputpath):
@@ -103,7 +118,9 @@ class SplitOptionParser(optrecurse.RecursiveOptionParser):
                         outputpofile = po.pofile(outputfile)
                     else:
                         outputpofile = po.pofile()
-                    outputpofile.units.append(pounit)   # TODO:perhaps check to see if it's already there...
+                    outputpofile.units.append(
+                        pounit
+                    )  # TODO:perhaps check to see if it's already there...
                     with open(fulloutputpath, 'wb') as fh:
                         outputpofile.serialize(fh)
 

@@ -231,7 +231,7 @@ def _key_strip(key):
     newkey = key.rstrip()
     # If string now ends in \ we put back the whitespace that was escaped
     if newkey[-1:] == "\\":
-        newkey += key[len(newkey):len(newkey)+1]
+        newkey += key[len(newkey) : len(newkey) + 1]
     return newkey.lstrip()
 
 
@@ -298,11 +298,13 @@ class Dialect:
             if cls.key_wrap_char != '' and line[start_pos] == cls.key_wrap_char:
                 # Skip the key if it is delimited by some char
                 start_pos += 1
-                while (line[start_pos] != cls.key_wrap_char or line[start_pos-1] == "\\"):
+                while (
+                    line[start_pos] != cls.key_wrap_char or line[start_pos - 1] == "\\"
+                ):
                     start_pos += 1
             pos = line.find(delimiter, start_pos)
             while pos != -1:
-                if delimiters[delimiter] == -1 and line[pos-1] != "\\":
+                if delimiters[delimiter] == -1 and line[pos - 1] != "\\":
                     delimiters[delimiter] = pos
                     break
                 pos = line.find(delimiter, pos + 1)
@@ -318,13 +320,15 @@ class Dialect:
         if mindelimiter is None and delimiters.get(" ", -1) != -1:
             # Use space delimiter if we found nothing else
             return (" ", delimiters[" "])
-        if (mindelimiter is not None and
-            " " in delimiters and
-            delimiters[" "] < delimiters[mindelimiter]):
+        if (
+            mindelimiter is not None
+            and " " in delimiters
+            and delimiters[" "] < delimiters[mindelimiter]
+        ):
             # If space delimiter occurs earlier than ":" or "=" then it is the
             # delimiter only if there are non-whitespace characters between it and
             # the other detected delimiter.
-            if len(line[delimiters[" "]:delimiters[mindelimiter]].strip()) > 0:
+            if len(line[delimiters[" "] : delimiters[mindelimiter]].strip()) > 0:
                 return (" ", delimiters[" "])
         return (mindelimiter, minpos)
 
@@ -510,7 +514,7 @@ class DialectStrings(Dialect):
         newkey = key.rstrip().rstrip('"')
         # If string now ends in \ we put back the char that was escaped
         if newkey[-1:] == "\\":
-            newkey += key[len(newkey):len(newkey)+1]
+            newkey += key[len(newkey) : len(newkey) + 1]
         ret = newkey.lstrip().lstrip('"')
         return ret.replace('\\"', '"')
 
@@ -520,7 +524,7 @@ class DialectStrings(Dialect):
         newvalue = value.rstrip().rstrip(';').rstrip('"')
         # If string now ends in \ we put back the char that was escaped
         if newvalue[-1:] == "\\":
-            newvalue += value[len(newvalue):len(newvalue)+1]
+            newvalue += value[len(newvalue) : len(newvalue) + 1]
         ret = newvalue.lstrip().lstrip('"')
         return ret.replace('\\"', '"')
 
@@ -636,7 +640,10 @@ class proppluralunit(base.TranslationUnit):
         strings = self._get_strings(strings, mapping)
         units = self._get_units(mapping)
         if len(strings) != len(units):
-            raise Exception('Not same plural counts between "%s" and "%s"' % (str(strings), str(units)))
+            raise Exception(
+                'Not same plural counts between "%s" and "%s"'
+                % (str(strings), str(units))
+            )
 
         for a, b in zip(strings, units):
             b.target = a
@@ -672,7 +679,10 @@ class proppluralunit(base.TranslationUnit):
         strings = self._get_strings(strings, mapping)
         units = self._get_units(mapping)
         if len(strings) != len(units):
-            raise Exception('Not same plural counts between "%s" and "%s"' % (str(strings), str(units)))
+            raise Exception(
+                'Not same plural counts between "%s" and "%s"'
+                % (str(strings), str(units))
+            )
 
         for a, b in zip(strings, units):
             b.source = a
@@ -787,7 +797,9 @@ class DialectJoomla(Dialect):
         """Encode the string"""
         if not string:
             return string
-        return '"%s"' % string.replace("\n", r"\n").replace("\t", r"\t").replace('"', '"_QQ_"')
+        return '"%s"' % string.replace("\n", r"\n").replace("\t", r"\t").replace(
+            '"', '"_QQ_"'
+        )
 
 
 class propunit(base.TranslationUnit):
@@ -807,8 +819,9 @@ class propunit(base.TranslationUnit):
         self.source = source
         # a pair of symbols to enclose delimiter on the output
         # (a " " can be used for the sake of convenience)
-        self.out_delimiter_wrappers = getattr(self.personality,
-                                              'out_delimiter_wrappers', '')
+        self.out_delimiter_wrappers = getattr(
+            self.personality, 'out_delimiter_wrappers', ''
+        )
         # symbol that should end every property sentence
         # (e.g. ";" is required for Mac OS X strings)
         self.out_ending = getattr(self.personality, 'out_ending', '')
@@ -817,8 +830,9 @@ class propunit(base.TranslationUnit):
 
     @property
     def missing(self):
-        return self.explicitely_missing\
-            or (not bool(self.translation) and not bool(self.source))
+        return self.explicitely_missing or (
+            not bool(self.translation) and not bool(self.source)
+        )
 
     @missing.setter
     def missing(self, missing):
@@ -846,8 +860,9 @@ class propunit(base.TranslationUnit):
     @source.setter
     def source(self, source):
         self._rich_source = None
-        self.value = self.personality.encode(data.forceunicode(source) or "",
-                                             self.encoding)
+        self.value = self.personality.encode(
+            data.forceunicode(source) or "", self.encoding
+        )
 
     @property
     def target(self):
@@ -857,8 +872,7 @@ class propunit(base.TranslationUnit):
     def target(self, target):
         self._rich_target = None
         target = data.forceunicode(target)
-        self.translation = self.personality.encode(target or "",
-                                                   self.encoding)
+        self.translation = self.personality.encode(target or "", self.encoding)
         self.explicitely_missing = not bool(target)
 
     @property
@@ -873,8 +887,7 @@ class propunit(base.TranslationUnit):
         return self.getoutput()
 
     def getoutput(self):
-        """Convert the element back into formatted lines for a .properties file
-        """
+        """Convert the element back into formatted lines for a .properties file"""
         notes = self.getnotes()
         if notes:
             notes += "\n"
@@ -882,8 +895,7 @@ class propunit(base.TranslationUnit):
             return notes + "\n"
         else:
             self.value = self.personality.encode(self.source, self.encoding)
-            self.translation = self.personality.encode(self.target,
-                                                       self.encoding)
+            self.translation = self.personality.encode(self.target, self.encoding)
             # encode key, if needed
             key = self.name
             kwc = self.personality.key_wrap_char
@@ -910,7 +922,10 @@ class propunit(base.TranslationUnit):
                 "value": value,
                 "ending": ending,
             }
-            return "%(notes)s%(missing_prefix)s%(key)s%(del)s%(value)s%(ending)s\n" % out_dict
+            return (
+                "%(notes)s%(missing_prefix)s%(key)s%(del)s%(value)s%(ending)s\n"
+                % out_dict
+            )
 
     def getlocations(self):
         return [self.name]
@@ -932,8 +947,7 @@ class propunit(base.TranslationUnit):
         self.comments = []
 
     def isblank(self):
-        """returns whether this is a blank element, containing only comments.
-        """
+        """returns whether this is a blank element, containing only comments."""
         return not (self.name or self.value)
 
     def istranslatable(self):
@@ -991,14 +1005,15 @@ class propfile(base.TranslationStore):
             self.makeindex()
 
     def parse(self, propsrc):
-        """Read the source of a properties file in and include them as units.
-        """
+        """Read the source of a properties file in and include them as units."""
         text, encoding = self.detect_encoding(
-            propsrc, default_encodings=[self.personality.default_encoding,
-                                        'utf-8', 'utf-16'])
+            propsrc,
+            default_encodings=[self.personality.default_encoding, 'utf-8', 'utf-16'],
+        )
         if not text and propsrc:
-            raise IOError("Cannot detect encoding for %s." % (self.filename or
-                                                              "given string"))
+            raise IOError(
+                "Cannot detect encoding for %s." % (self.filename or "given string")
+            )
         self.encoding = encoding
         propsrc = text
 
@@ -1013,12 +1028,12 @@ class propfile(base.TranslationStore):
             if inmultilinevalue:
                 newunit.value += line.lstrip()
                 # see if there's more
-                inmultilinevalue = self.personality.is_line_continuation(
-                    newunit.value)
+                inmultilinevalue = self.personality.is_line_continuation(newunit.value)
                 # if we're still waiting for more...
                 if inmultilinevalue:
                     newunit.value = self.personality.strip_line_continuation(
-                        newunit.value)
+                        newunit.value
+                    )
                 if not inmultilinevalue:
                     # we're finished, add it to the list...
                     newunit.value = self.personality.value_strip(newunit.value)
@@ -1026,9 +1041,12 @@ class propfile(base.TranslationStore):
                     newunit = self.UnitClass("", self.personality.name)
             # otherwise, this could be a comment
             # FIXME handle // inline comments
-            elif ((inmultilinecomment or is_comment_one_line(line) or
-                  is_comment_start(line) or is_comment_end(line))
-                  and not self.UnitClass.represents_missing(line)):
+            elif (
+                inmultilinecomment
+                or is_comment_one_line(line)
+                or is_comment_start(line)
+                or is_comment_end(line)
+            ) and not self.UnitClass.represents_missing(line):
                 # add a comment
                 if line not in self.personality.drop_comments:
                     newunit.comments.append(line)
@@ -1065,17 +1083,25 @@ class propfile(base.TranslationStore):
                     newunit.name = self.personality.key_strip(line[:delimiter_pos])
                     newunit.missing = ismissing
                     if self.personality.is_line_continuation(
-                            line[delimiter_pos+1:].lstrip()):
+                        line[delimiter_pos + 1 :].lstrip()
+                    ):
                         inmultilinevalue = True
-                        newunit.value = line[delimiter_pos+1:].lstrip()[:-1]
+                        newunit.value = line[delimiter_pos + 1 :].lstrip()[:-1]
                         newunit.value = self.personality.strip_line_continuation(
-                            line[delimiter_pos+1:].lstrip())
+                            line[delimiter_pos + 1 :].lstrip()
+                        )
                     else:
-                        newunit.value = self.personality.value_strip(line[delimiter_pos+1:])
+                        newunit.value = self.personality.value_strip(
+                            line[delimiter_pos + 1 :]
+                        )
                         self.addunit(newunit)
                         newunit = self.UnitClass("", self.personality.name)
         # see if there is a leftover one...
-        if inmultilinevalue or len(newunit.comments) > 0 and not(len(newunit.comments) == 1 and not(newunit.comments[0])):
+        if (
+            inmultilinevalue
+            or len(newunit.comments) > 0
+            and not (len(newunit.comments) == 1 and not (newunit.comments[0]))
+        ):
             self.addunit(newunit)
 
         self.fold()
@@ -1102,7 +1128,9 @@ class propfile(base.TranslationStore):
     def serialize(self, out):
         """Write the units back to file."""
         # Thanks to iterencode, a possible BOM is written only once
-        for chunk in iterencode((unit.getoutput() for unit in self.units), self.encoding):
+        for chunk in iterencode(
+            (unit.getoutput() for unit in self.units), self.encoding
+        ):
             out.write(chunk)
 
 
@@ -1279,8 +1307,9 @@ class XWikiPageProperties(xwikifile):
         newroot = deepcopy(self.root)
         # We add a line break to ensure to have a line break before
         # closing of content tag.
-        newroot.find("content").text = "".join(unit.getoutput() for unit in self.units)\
-                                       .strip() + "\n"
+        newroot.find("content").text = (
+            "".join(unit.getoutput() for unit in self.units).strip() + "\n"
+        )
         self.set_xwiki_xml_attributes(newroot)
         self.write_xwiki_xml(newroot, out)
 
@@ -1298,9 +1327,7 @@ class XWikiFullPage(XWikiPageProperties):
     def parse(self, propsrc):
         if propsrc != b"\n":
             self.root = etree.XML(propsrc, self.get_parser())
-            content = ""\
-                .join(self.root.find("content").itertext())\
-                .replace("\n", "\\n")
+            content = "".join(self.root.find("content").itertext()).replace("\n", "\\n")
             title = "".join(self.root.find("title").itertext())
             forparsing = ""
             if content != "":
@@ -1324,7 +1351,8 @@ class XWikiFullPage(XWikiPageProperties):
         if unit_title is not None:
             newroot.find("title").text = self.output_unit(unit_title)
         if unit_content is not None:
-            newroot.find("content").text = self.output_unit(unit_content) \
-                .replace("\\n", "\n")
+            newroot.find("content").text = self.output_unit(unit_content).replace(
+                "\\n", "\n"
+            )
         self.set_xwiki_xml_attributes(newroot)
         self.write_xwiki_xml(newroot, out)

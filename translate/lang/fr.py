@@ -28,7 +28,6 @@ from translate.lang import common
 
 
 def guillemets(text):
-
     def convertquotation(match):
         prefix = match.group(1)
         # Let's see that we didn't perhaps match an XML tag property like
@@ -54,11 +53,9 @@ def guillemets(text):
 class fr(common.Common):
     """This class represents French."""
 
-    validaccel = ("abcdefghijklmnopqrstuvwxyz"
-                  "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
-                  "1234567890"
-                  "é"
-                  "É")
+    validaccel = (
+        "abcdefghijklmnopqrstuvwxyz" "ABCDEFGHIJKLMNOPQRSTUVWXYZ" "1234567890" "é" "É"
+    )
 
     # According to http://french.about.com/library/writing/bl-punctuation.htm,
     # in French, a space is required both before and after all two- (or more)

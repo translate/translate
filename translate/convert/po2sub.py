@@ -27,7 +27,6 @@ from translate.storage import po
 
 
 class po2sub:
-
     def __init__(self, templatefile, inputstore, includefuzzy=False):
         from translate.storage import subtitles
 
@@ -51,8 +50,9 @@ class po2sub:
         return bytes(self.templatestore)
 
 
-def convertsub(inputfile, outputfile, templatefile, includefuzzy=False,
-               outputthreshold=None):
+def convertsub(
+    inputfile, outputfile, templatefile, includefuzzy=False, outputthreshold=None
+):
     if templatefile is None:
         raise ValueError("must have template file for subtitle files")
 
@@ -75,8 +75,9 @@ formats = {
 
 
 def main(argv=None):
-    parser = convert.ConvertOptionParser(formats, usetemplates=True,
-                                         description=__doc__)
+    parser = convert.ConvertOptionParser(
+        formats, usetemplates=True, description=__doc__
+    )
     parser.add_threshold_option()
     parser.add_fuzzy_option()
     parser.run(argv)

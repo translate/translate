@@ -90,14 +90,18 @@ class tbxunit(lisa.LISAunit):
         # TODO: consider using xpath to construct initial_list directly
         # or to simply get the correct text from the outset (just remember to
         # check for duplication.
-        initial_list = [lisa.getText(note,
-                                     getXMLspace(self.xmlelement,
-                                                 self._default_xml_space))
-                        for note in note_nodes]
+        initial_list = [
+            lisa.getText(note, getXMLspace(self.xmlelement, self._default_xml_space))
+            for note in note_nodes
+        ]
 
         # Remove duplicate entries from list:
         dictset = {}
-        note_list = [dictset.setdefault(note, note) for note in initial_list if note not in dictset]
+        note_list = [
+            dictset.setdefault(note, note)
+            for note in initial_list
+            if note not in dictset
+        ]
 
         return note_list
 

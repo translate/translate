@@ -6,7 +6,6 @@ from translate.storage.test_base import first_translatable, headerless_len
 
 
 class TestPO2CSV:
-
     def po2csv(self, posource):
         """helper that converts po source to csv source without requiring files"""
         inputfile = BytesIO(posource.encode())
@@ -78,7 +77,10 @@ msgstr "Eerste kolom\tTweede kolom"
         unit = self.singleelement(csvfile)
         assert unit.source == "First column\tSecond column"
         assert unit.target == "Eerste kolom\tTweede kolom"
-        assert csvfile.findunit("First column\tSecond column").target == "Eerste kolom\tTweede kolom"
+        assert (
+            csvfile.findunit("First column\tSecond column").target
+            == "Eerste kolom\tTweede kolom"
+        )
 
     def test_escapedquotes(self):
         """Test the escaping of quotes (and slash)"""

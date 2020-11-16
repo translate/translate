@@ -34,8 +34,14 @@ class po2ical:
     TargetUnitClass = ical.icalunit
     MissingTemplateMessage = "A template iCalendar file must be provided."
 
-    def __init__(self, input_file, output_file, template_file=None,
-                 include_fuzzy=False, output_threshold=None):
+    def __init__(
+        self,
+        input_file,
+        output_file,
+        template_file=None,
+        include_fuzzy=False,
+        output_threshold=None,
+    ):
         """Initialize the converter."""
         if template_file is None:
             raise ValueError(self.MissingTemplateMessage)
@@ -81,21 +87,22 @@ class po2ical:
         return 1
 
 
-def run_converter(inputfile, outputfile, templatefile=None, includefuzzy=False,
-                  outputthreshold=None):
+def run_converter(
+    inputfile, outputfile, templatefile=None, includefuzzy=False, outputthreshold=None
+):
     """Wrapper around converter."""
-    return po2ical(inputfile, outputfile, templatefile, includefuzzy,
-                   outputthreshold).run()
+    return po2ical(
+        inputfile, outputfile, templatefile, includefuzzy, outputthreshold
+    ).run()
 
 
-formats = {
-    ("po", "ics"): ("ics", run_converter)
-}
+formats = {("po", "ics"): ("ics", run_converter)}
 
 
 def main(argv=None):
-    parser = convert.ConvertOptionParser(formats, usetemplates=True,
-                                         description=__doc__)
+    parser = convert.ConvertOptionParser(
+        formats, usetemplates=True, description=__doc__
+    )
     parser.add_threshold_option()
     parser.add_fuzzy_option()
     parser.run(argv)

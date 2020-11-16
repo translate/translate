@@ -1,4 +1,3 @@
-
 from translate.lang.team import guess_language
 
 

@@ -31,11 +31,14 @@ def _do_msgidcomment(string):
 
 
 class POCompile:
-
     def convertstore(self, inputfile, includefuzzy=False):
         outputfile = mo.mofile()
         for unit in inputfile.units:
-            if unit.istranslated() or (unit.isfuzzy() and includefuzzy and unit.target) or unit.isheader():
+            if (
+                unit.istranslated()
+                or (unit.isfuzzy() and includefuzzy and unit.target)
+                or unit.isheader()
+            ):
                 mounit = mo.mounit()
                 if unit.isheader():
                     mounit.source = ""
@@ -44,9 +47,14 @@ class POCompile:
                     context = unit.getcontext()
                     if unit.msgidcomment:
                         if mounit.hasplural():
-                            mounit.source = multistring(_do_msgidcomment(unit.msgidcomment) + mounit.source, *mounit.source.strings[1:])
+                            mounit.source = multistring(
+                                _do_msgidcomment(unit.msgidcomment) + mounit.source,
+                                *mounit.source.strings[1:]
+                            )
                         else:
-                            mounit.source = _do_msgidcomment(unit.msgidcomment) + mounit.source
+                            mounit.source = (
+                                _do_msgidcomment(unit.msgidcomment) + mounit.source
+                            )
                     elif context:
                         mounit.msgctxt = [context]
                 mounit.target = unit.target
@@ -72,6 +80,7 @@ def convertmo(inputfile, outputfile, templatefile, includefuzzy=False):
 
 def main():
     from translate.convert import convert
+
     formats = {
         "po": ("mo", convertmo),
         "xlf": ("mo", convertmo),

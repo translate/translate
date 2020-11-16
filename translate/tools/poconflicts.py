@@ -34,7 +34,9 @@ class ConflictOptionParser(optrecurse.RecursiveOptionParser):
 
     def parse_args(self, args=None, values=None):
         """parses the command line options, handling implicit input/output args"""
-        (options, args) = optrecurse.optparse.OptionParser.parse_args(self, args, values)
+        (options, args) = optrecurse.optparse.OptionParser.parse_args(
+            self, args, values
+        )
         # some intelligence as to what reasonable people might give on the command line
         if args and not options.input:
             if not options.output:
@@ -49,7 +51,9 @@ class ConflictOptionParser(optrecurse.RecursiveOptionParser):
         if not options.output:
             self.error("output file is required")
         if args:
-            self.error("You have used an invalid combination of --input, --output and freestanding args")
+            self.error(
+                "You have used an invalid combination of --input, --output and freestanding args"
+            )
         if isinstance(options.input, list) and len(options.input) == 1:
             options.input = options.input[0]
         return (options, args)
@@ -57,20 +61,29 @@ class ConflictOptionParser(optrecurse.RecursiveOptionParser):
     def set_usage(self, usage=None):
         """sets the usage string - if usage not given, uses getusagestring for each option"""
         if usage is None:
-            self.usage = "%prog " + " ".join([self.getusagestring(option) for option in self.option_list]) + \
-                "\n  input directory is searched for PO files, PO files with name of conflicting string are output in output directory"
+            self.usage = (
+                "%prog "
+                + " ".join([self.getusagestring(option) for option in self.option_list])
+                + "\n  input directory is searched for PO files, PO files with name of conflicting string are output in output directory"
+            )
         else:
             super().set_usage(usage)
 
     def recursiveprocess(self, options):
         """recurse through directories and process files"""
-        if self.isrecursive(options.input, 'input') and getattr(options, "allowrecursiveinput", True):
+        if self.isrecursive(options.input, 'input') and getattr(
+            options, "allowrecursiveinput", True
+        ):
             if not self.isrecursive(options.output, 'output'):
                 self.warning("Output directory does not exist. Attempting to create")
                 try:
                     os.mkdir(options.output)
                 except Exception:
-                    self.error(optrecurse.optparse.OptionValueError("Output directory does not exist, attempt to create failed"))
+                    self.error(
+                        optrecurse.optparse.OptionValueError(
+                            "Output directory does not exist, attempt to create failed"
+                        )
+                    )
             if isinstance(options.input, list):
                 inputfiles = self.recurseinputfilelist(options)
             else:
@@ -88,7 +101,11 @@ class ConflictOptionParser(optrecurse.RecursiveOptionParser):
             try:
                 success = self.processfile(None, options, fullinputpath)
             except Exception:
-                self.warning("Error processing: input %s" % (fullinputpath), options, sys.exc_info())
+                self.warning(
+                    "Error processing: input %s" % (fullinputpath),
+                    options,
+                    sys.exc_info(),
+                )
                 success = False
             progress_bar.report_progress(inputpath, success)
         del progress_bar
@@ -139,13 +156,18 @@ class ConflictOptionParser(optrecurse.RecursiveOptionParser):
             if len(source) <= 1:
                 continue
             if len(translations) > 1:
-                uniquetranslations = dict.fromkeys([target for target, unit, filename in translations])
+                uniquetranslations = dict.fromkeys(
+                    [target for target, unit, filename in translations]
+                )
                 if len(uniquetranslations) > 1:
                     self.conflictmap[source] = translations
 
     def outputconflicts(self, options):
         """saves the result of the conflict match"""
-        print("%d/%d different strings have conflicts" % (len(self.conflictmap), len(self.textmap)))
+        print(
+            "%d/%d different strings have conflicts"
+            % (len(self.conflictmap), len(self.textmap))
+        )
         reducedmap = {}
 
         def str_len(x):
@@ -178,14 +200,29 @@ def main():
     formats = {"po": ("po", None), None: ("po", None)}
     parser = ConflictOptionParser(formats)
     parser.add_option(
-        "-I", "--ignore-case", dest="ignorecase",
-        action="store_true", default=False, help="ignore case distinctions")
+        "-I",
+        "--ignore-case",
+        dest="ignorecase",
+        action="store_true",
+        default=False,
+        help="ignore case distinctions",
+    )
     parser.add_option(
-        "-v", "--invert", dest="invert",
-        action="store_true", default=False, help="invert the conflicts thus extracting conflicting destination words")
+        "-v",
+        "--invert",
+        dest="invert",
+        action="store_true",
+        default=False,
+        help="invert the conflicts thus extracting conflicting destination words",
+    )
     parser.add_option(
-        "", "--accelerator", dest="accelchars", default="",
-        metavar="ACCELERATORS", help="ignores the given accelerator characters when matching")
+        "",
+        "--accelerator",
+        dest="accelchars",
+        default="",
+        metavar="ACCELERATORS",
+        help="ignores the given accelerator characters when matching",
+    )
     parser.set_usage()
     parser.description = __doc__
     parser.run()

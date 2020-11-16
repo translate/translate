@@ -121,29 +121,42 @@ class qmfile(base.TranslationStore):
         sectionheader = 5
 
         def section_debug(name, section_type, startsection, length):
-            print("Section: %s (type: %#x, offset: %#x, length: %d)" % (name, section_type, startsection, length))
+            print(
+                "Section: %s (type: %#x, offset: %#x, length: %d)"
+                % (name, section_type, startsection, length)
+            )
             return
 
         while startsection < len(input):
-            section_type, length = struct.unpack(">BL", input[startsection:startsection + sectionheader])
+            section_type, length = struct.unpack(
+                ">BL", input[startsection : startsection + sectionheader]
+            )
             if section_type == 0x42:
-                #section_debug("Hash", section_type, startsection, length)
-                #hash_start = startsection + sectionheader
-                #hash_data = struct.unpack(">%db" % length, input[startsection + sectionheader:startsection + sectionheader + length])
+                # section_debug("Hash", section_type, startsection, length)
+                # hash_start = startsection + sectionheader
+                # hash_data = struct.unpack(">%db" % length, input[startsection + sectionheader:startsection + sectionheader + length])
                 pass
             elif section_type == 0x69:
-                #section_debug("Messages", section_type, startsection, length)
+                # section_debug("Messages", section_type, startsection, length)
                 messages_start = startsection + sectionheader
-                messages_data = struct.unpack(">%db" % length, input[startsection + sectionheader:startsection + sectionheader + length])
-            elif section_type == 0x2f:
-                #section_debug("Contexts", section_type, startsection, length)
-                #contexts_start = startsection + sectionheader
-                #contexts_data = struct.unpack(">%db" % length, input[startsection + sectionheader:startsection + sectionheader + length])
+                messages_data = struct.unpack(
+                    ">%db" % length,
+                    input[
+                        startsection
+                        + sectionheader : startsection
+                        + sectionheader
+                        + length
+                    ],
+                )
+            elif section_type == 0x2F:
+                # section_debug("Contexts", section_type, startsection, length)
+                # contexts_start = startsection + sectionheader
+                # contexts_data = struct.unpack(">%db" % length, input[startsection + sectionheader:startsection + sectionheader + length])
                 pass
             elif section_type == 0x88:
-                #section_debug("NumerusRules", section_type, startsection, length)
-                #numerusrules_start = startsection + sectionheader
-                #numerusrules_data = struct.unpack(">%db" % length, input[startsection + sectionheader:startsection + sectionheader + length])
+                # section_debug("NumerusRules", section_type, startsection, length)
+                # numerusrules_start = startsection + sectionheader
+                # numerusrules_data = struct.unpack(">%db" % length, input[startsection + sectionheader:startsection + sectionheader + length])
                 pass
             else:
                 section_debug("Unkown", section_type, startsection, length)
@@ -151,7 +164,7 @@ class qmfile(base.TranslationStore):
         pos = messages_start
         source = target = None
         while pos < messages_start + len(messages_data):
-            subsection, = struct.unpack(">B", input[pos:pos + 1])
+            (subsection,) = struct.unpack(">B", input[pos : pos + 1])
             if subsection == 0x01:  # End
                 pos = pos + 1
                 if source is not None and target is not None:
@@ -162,11 +175,12 @@ class qmfile(base.TranslationStore):
                     raise ValueError("Old .qm format with no source defined")
                 continue
             pos = pos + 1
-            length, = struct.unpack(">l", input[pos:pos + 4])
+            (length,) = struct.unpack(">l", input[pos : pos + 4])
             if subsection == 0x03:  # Translation
                 if length != -1:
-                    raw, = struct.unpack(">%ds" % length,
-                                         input[pos + 4:pos + 4 + length])
+                    (raw,) = struct.unpack(
+                        ">%ds" % length, input[pos + 4 : pos + 4 + length]
+                    )
                     string, templen = codecs.utf_16_be_decode(raw)
                     if target:
                         target.strings.append(string)
@@ -177,7 +191,7 @@ class qmfile(base.TranslationStore):
                     target = ""
                     pos = pos + 4
             elif subsection == 0x06:  # SourceText
-                source = input[pos + 4:pos + 4 + length].decode('iso-8859-1')
+                source = input[pos + 4 : pos + 4 + length].decode('iso-8859-1')
                 pos = pos + 4 + length
             elif subsection == 0x07:  # Context
                 # context = input[pos + 4:pos + 4 + length].decode('iso-8859-1')
@@ -195,8 +209,7 @@ class qmfile(base.TranslationStore):
                     subsection_name = "Context16"
                 else:
                     subsection_name = "Unknown"
-                logger.warning("Unimplemented: 0x%x %s",
-                               subsection, subsection_name)
+                logger.warning("Unimplemented: 0x%x %s", subsection, subsection_name)
                 return
 
     def savefile(self, storefile):

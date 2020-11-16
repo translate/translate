@@ -9,9 +9,15 @@ class TestLang2PO:
 
     ConverterClass = mozlang2po.lang2po
 
-    def _convert(self, input_string, template_string=None, blank_msgstr=False,
-                 duplicate_style="msgctxt", encoding="utf-8",
-                 success_expected=True):
+    def _convert(
+        self,
+        input_string,
+        template_string=None,
+        blank_msgstr=False,
+        duplicate_style="msgctxt",
+        encoding="utf-8",
+        success_expected=True,
+    ):
         """Helper that converts to target format without using files."""
         input_file = BytesIO(input_string.encode())
         output_file = BytesIO()
@@ -19,9 +25,14 @@ class TestLang2PO:
         if template_string:
             template_file = BytesIO(template_string.encode())
         expected_result = 1 if success_expected else 0
-        converter = self.ConverterClass(input_file, output_file, template_file,
-                                        blank_msgstr, duplicate_style,
-                                        encoding)
+        converter = self.ConverterClass(
+            input_file,
+            output_file,
+            template_file,
+            blank_msgstr,
+            duplicate_style,
+            encoding,
+        )
         assert converter.run() == expected_result
         return converter.target_store, output_file
 
@@ -62,8 +73,7 @@ msgstr "Een"
     def test_merge(self):
         """Check converter doesn't merge."""
         with pytest.raises(NotImplementedError):
-            self._convert_to_store("this", "cannot be", "blank",
-                                   success_expected=False)
+            self._convert_to_store("this", "cannot be", "blank", success_expected=False)
 
     def test_simple_entry(self):
         """Check that a simple lang entry converts properly to a po entry."""
@@ -107,8 +117,7 @@ Un
 ;One
 Dous
 '''
-        target_store = self._convert_to_store(input_string,
-                                              duplicate_style="msgctxt")
+        target_store = self._convert_to_store(input_string, duplicate_style="msgctxt")
         assert self._count_elements(target_store) == 2
         assert target_store.units[1].source == "One"
         assert target_store.units[1].target == "Un"
@@ -124,8 +133,7 @@ Un
 ;One
 Dous
 '''
-        target_store = self._convert_to_store(input_string,
-                                              duplicate_style="merge")
+        target_store = self._convert_to_store(input_string, duplicate_style="merge")
         assert self._count_elements(target_store) == 1
         assert target_store.units[1].source == "One"
         assert target_store.units[1].target == "Un"
@@ -142,5 +150,4 @@ class TestLang2POCommand(test_convert.TestConvertCommand, TestLang2PO):
         options = test_convert.TestConvertCommand.test_help(self, capsys)
         options = self.help_check(options, "-P, --pot")
         options = self.help_check(options, "--encoding=ENCODING")
-        options = self.help_check(options, "--duplicates=DUPLICATESTYLE",
-                                  last=True)
+        options = self.help_check(options, "--duplicates=DUPLICATESTYLE", last=True)

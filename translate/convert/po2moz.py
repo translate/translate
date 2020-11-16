@@ -24,14 +24,11 @@ for examples and usage instructions.
 
 import os.path
 
-from translate.convert import (convert, po2dtd, po2mozlang, po2prop,
-                               prop2mozfunny)
+from translate.convert import convert, po2dtd, po2mozlang, po2prop, prop2mozfunny
 
 
 class MozConvertOptionParser(convert.ConvertOptionParser):
-
-    def __init__(self, formats, usetemplates=False, usepots=False,
-                 description=None):
+    def __init__(self, formats, usetemplates=False, usepots=False, description=None):
         super().__init__(formats, usetemplates, usepots, description=description)
 
     def splitinputext(self, inputpath):
@@ -46,7 +43,7 @@ class MozConvertOptionParser(convert.ConvertOptionParser):
         if s2 == -1:
             return (inputpath, "")
         root = os.path.join(d, n[:s2])
-        ext = n[s2+1:]
+        ext = n[s2 + 1 :]
         return (root, ext)
 
     def recursiveprocess(self, options):
@@ -58,29 +55,35 @@ class MozConvertOptionParser(convert.ConvertOptionParser):
 
 def main(argv=None):
     # handle command line options
-    formats = {("dtd.po", "dtd"): ("dtd", po2dtd.convertdtd),
-               ("properties.po", "properties"): ("properties",
-                                                 po2prop.convertmozillaprop),
-               ("it.po", "it"): ("it", prop2mozfunny.po2it),
-               ("ini.po", "ini"): ("ini", prop2mozfunny.po2ini),
-               ("inc.po", "inc"): ("inc", prop2mozfunny.po2inc),
-               ("lang.po", "lang"): ("lang", po2mozlang.run_converter),
-               # (None, "*"): ("*", convert.copytemplate),
-               ("*", "*"): ("*", convert.copyinput),
-               "*": ("*", convert.copyinput)}
+    formats = {
+        ("dtd.po", "dtd"): ("dtd", po2dtd.convertdtd),
+        ("properties.po", "properties"): ("properties", po2prop.convertmozillaprop),
+        ("it.po", "it"): ("it", prop2mozfunny.po2it),
+        ("ini.po", "ini"): ("ini", prop2mozfunny.po2ini),
+        ("inc.po", "inc"): ("inc", prop2mozfunny.po2inc),
+        ("lang.po", "lang"): ("lang", po2mozlang.run_converter),
+        # (None, "*"): ("*", convert.copytemplate),
+        ("*", "*"): ("*", convert.copyinput),
+        "*": ("*", convert.copyinput),
+    }
     # handle search and replace
     replacer = convert.Replacer("${locale}", None)
     for replaceformat in ("js", "rdf", "manifest"):
-        formats[(None, replaceformat)] = (replaceformat,
-                                          replacer.searchreplacetemplate)
-        formats[(replaceformat, replaceformat)] = (replaceformat,
-                                                   replacer.searchreplaceinput)
+        formats[(None, replaceformat)] = (replaceformat, replacer.searchreplacetemplate)
+        formats[(replaceformat, replaceformat)] = (
+            replaceformat,
+            replacer.searchreplaceinput,
+        )
         formats[replaceformat] = (replaceformat, replacer.searchreplaceinput)
     parser = MozConvertOptionParser(formats, usetemplates=True, description=__doc__)
     parser.add_option(
-        "-l", "--locale", dest="locale", default=None,
+        "-l",
+        "--locale",
+        dest="locale",
+        default=None,
         help="set output locale (required as this sets the directory names)",
-        metavar="LOCALE")
+        metavar="LOCALE",
+    )
     parser.add_threshold_option()
     parser.add_fuzzy_option()
     parser.add_remove_untranslated_option()

@@ -32,13 +32,17 @@ class ne(common.Common):
 
     sentenceend = "।!?…"
 
-    sentencere = re.compile(r"""(?s)    #make . also match newlines
+    sentencere = re.compile(
+        r"""(?s)    #make . also match newlines
                             .*?         #anything, but match non-greedy
                             \s?         #the single space before the punctuation
                             [%s]        #the puntuation for sentence ending
                             \s+         #the spacing after the puntuation
                             (?=[^a-z\d])#lookahead that next part starts with caps
-                            """ % sentenceend, re.VERBOSE)
+                            """
+        % sentenceend,
+        re.VERBOSE,
+    )
 
     puncdict = {
         ".": " ।",

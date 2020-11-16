@@ -52,19 +52,20 @@ class LangUnit(base.TranslationUnit):
             target = self.source
         if self.source == self.target:
             target = self.target + " {ok}"
-        if (self.rawtarget is not None
+        if (
+            self.rawtarget is not None
             and self.target == strip_ok(self.rawtarget)
-            and len(self.target) != len(strip_ok(self.rawtarget))):
+            and len(self.target) != len(strip_ok(self.rawtarget))
+        ):
             target = self.rawtarget
         if self.getnotes():
             notes = (self.eol).join(
-                [("#%s" % note
-                  if note.startswith("#")
-                  else "# %s" % note)
-                 for note
-                 in self.getnotes('developer').split("\n")])
-            return "%s%s;%s%s%s" % (
-                notes, self.eol, self.source, self.eol, target)
+                [
+                    ("#%s" % note if note.startswith("#") else "# %s" % note)
+                    for note in self.getnotes('developer').split("\n")
+                ]
+            )
+            return "%s%s;%s%s%s" % (notes, self.eol, self.source, self.eol, target)
         return ";%s%s%s" % (self.source, self.eol, target)
 
     def getlocations(self):
@@ -108,7 +109,8 @@ class LangStore(txt.TxtFile):
             header_meta_data = (
                 line.startswith("## ")
                 and not line.startswith('## TAG')
-                and not line.startswith('## MAX_LENGTH'))
+                and not line.startswith('## MAX_LENGTH')
+            )
             if header_meta_data:
                 self._headers.append(line)
                 continue
@@ -129,11 +131,11 @@ class LangStore(txt.TxtFile):
                 source_unit = None
                 continue
 
-            is_comment = (
-                line.startswith('#')
-                and (not line.startswith("##")
-                     or line.startswith('## TAG')
-                     or line.startswith('## MAX_LENGTH')))
+            is_comment = line.startswith('#') and (
+                not line.startswith("##")
+                or line.startswith('## TAG')
+                or line.startswith('## MAX_LENGTH')
+            )
             if is_comment:
                 # Read comments, *including* meta tags (e.g. '## TAG')
                 comment += line[1:].strip() + "\n"
@@ -142,7 +144,8 @@ class LangStore(txt.TxtFile):
                 source_unit = self.addsourceunit(line[1:])
                 source_unit.eol = self.eol
                 source_unit.addlocation(
-                    "%s:%d" % (self.filename[len(self.location_root):], lineoffset + 1))
+                    "%s:%d" % (self.filename[len(self.location_root) :], lineoffset + 1)
+                )
                 if comment is not None:
                     source_unit.addnote(comment[:-1], 'developer')
                     comment = ""

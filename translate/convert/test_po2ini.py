@@ -1,4 +1,3 @@
-
 from io import BytesIO
 
 from pytest import importorskip, raises
@@ -13,9 +12,15 @@ class TestPO2Ini:
 
     ConverterClass = po2ini.po2ini
 
-    def _convert(self, input_string, template_string=None, include_fuzzy=False,
-                 output_threshold=None, dialect="default",
-                 success_expected=True):
+    def _convert(
+        self,
+        input_string,
+        template_string=None,
+        include_fuzzy=False,
+        output_threshold=None,
+        dialect="default",
+        success_expected=True,
+    ):
         """Helper that converts to target format without using files."""
         input_file = BytesIO(input_string.encode())
         output_file = BytesIO()
@@ -23,9 +28,14 @@ class TestPO2Ini:
         if template_string:
             template_file = BytesIO(template_string.encode())
         expected_result = 1 if success_expected else 0
-        converter = self.ConverterClass(input_file, output_file, template_file,
-                                        include_fuzzy, output_threshold,
-                                        dialect)
+        converter = self.ConverterClass(
+            input_file,
+            output_file,
+            template_file,
+            include_fuzzy,
+            output_threshold,
+            dialect,
+        )
         assert converter.run() == expected_result
         return None, output_file
 
@@ -50,8 +60,7 @@ prop=value
         expected_output = """[section]
 prop=waarde
 """
-        assert expected_output == self._convert_to_string(input_string,
-                                                          template_string)
+        assert expected_output == self._convert_to_string(input_string, template_string)
 
     def test_space_preservation(self):
         """check that we preserve any spacing in ini files when merging"""
@@ -65,8 +74,7 @@ prop  =  value
         expected_output = """[section]
 prop  =  waarde
 """
-        assert expected_output == self._convert_to_string(input_string,
-                                                          template_string)
+        assert expected_output == self._convert_to_string(input_string, template_string)
 
     def test_merging_blank_entries(self):
         """check that we can correctly merge entries that are blank in the template"""
@@ -82,8 +90,7 @@ accesskey-accept=
         expected_output = """[section]
 accesskey-accept=
 """
-        assert expected_output == self._convert_to_string(input_string,
-                                                          template_string)
+        assert expected_output == self._convert_to_string(input_string, template_string)
 
     def test_merging_fuzzy(self):
         """check merging a fuzzy translation"""
@@ -98,8 +105,7 @@ prop=value
         expected_output = """[section]
 prop=value
 """
-        assert expected_output == self._convert_to_string(input_string,
-                                                          template_string)
+        assert expected_output == self._convert_to_string(input_string, template_string)
 
     def test_merging_propertyless_template(self):
         """check that when merging with a template with no ini values that we copy the template"""
@@ -107,8 +113,7 @@ prop=value
         template_string = """# A comment
 """
         expected_output = template_string
-        assert expected_output == self._convert_to_string(input_string,
-                                                          template_string)
+        assert expected_output == self._convert_to_string(input_string, template_string)
 
     def test_empty_value(self):
         """test that we handle an value in translation that is missing in the template"""
@@ -123,8 +128,7 @@ key =
         expected_output = """[section]
 key =translated
 """
-        assert expected_output == self._convert_to_string(input_string,
-                                                          template_string)
+        assert expected_output == self._convert_to_string(input_string, template_string)
 
     def test_dialects_inno(self):
         """test that we output correctly for Inno files."""
@@ -138,9 +142,9 @@ prop  =  value%tvalue%n
         expected_output = """[section]
 prop  =  ṽḁḽṻḝ%tṽḁḽṻḝ2%n
 """
-        assert expected_output == self._convert_to_string(input_string,
-                                                          template_string,
-                                                          dialect="inno")
+        assert expected_output == self._convert_to_string(
+            input_string, template_string, dialect="inno"
+        )
 
     def test_misaligned_files(self):
         """Check misaligned files conversions uses the template version."""
@@ -154,8 +158,7 @@ different=Other string
         expected_output = """[section]
 different=Other string
 """
-        assert expected_output == self._convert_to_string(input_string,
-                                                          template_string)
+        assert expected_output == self._convert_to_string(input_string, template_string)
 
     def test_convert_completion_below_threshold(self):
         """Check no conversion if input completion is below threshold."""
@@ -168,9 +171,9 @@ prop=value
 """
         expected_output = ""
         # Input completion is 0% so with a 70% threshold it should not output.
-        output = self._convert_to_string(input_string, template_string,
-                                         output_threshold=70,
-                                         success_expected=False)
+        output = self._convert_to_string(
+            input_string, template_string, output_threshold=70, success_expected=False
+        )
         assert output == expected_output
 
     def test_convert_completion_above_threshold(self):
@@ -186,8 +189,9 @@ prop=value
 prop=waarde
 """
         # Input completion is 100% so with a 70% threshold it should output.
-        output = self._convert_to_string(input_string, template_string,
-                                         output_threshold=70)
+        output = self._convert_to_string(
+            input_string, template_string, output_threshold=70
+        )
         assert output == expected_output
 
     def test_no_fuzzy(self):
@@ -203,9 +207,9 @@ prop=Hello, World!
         expected_output = """[section]
 prop=Hello, World!
 """
-        assert expected_output == self._convert_to_string(input_string,
-                                                          template_string,
-                                                          include_fuzzy=False)
+        assert expected_output == self._convert_to_string(
+            input_string, template_string, include_fuzzy=False
+        )
 
     def test_allow_fuzzy(self):
         """Check that a simple fuzzy PO converts to a translated target."""
@@ -220,9 +224,9 @@ prop=Hello, World!
         expected_output = """[section]
 prop=Ola mundo!
 """
-        assert expected_output == self._convert_to_string(input_string,
-                                                          template_string,
-                                                          include_fuzzy=True)
+        assert expected_output == self._convert_to_string(
+            input_string, template_string, include_fuzzy=True
+        )
 
     def test_merging_missing_source(self):
         """Check merging when template locations are missing in source."""
@@ -234,8 +238,7 @@ msgstr "valor"
 key=other
 """
         expected_output = template_string
-        assert expected_output == self._convert_to_string(input_string,
-                                                          template_string)
+        assert expected_output == self._convert_to_string(input_string, template_string)
 
     def test_merging_repeated_locations(self):
         """Check merging when files have repeated locations."""
@@ -255,8 +258,7 @@ key=second
 key=first
 key=primeiro
 """
-        assert expected_output == self._convert_to_string(input_string,
-                                                          template_string)
+        assert expected_output == self._convert_to_string(input_string, template_string)
 
         template_string = """[section]
 key=first
@@ -270,8 +272,7 @@ key=first
 [section]
 key=primeiro
 """
-        assert expected_output == self._convert_to_string(input_string,
-                                                          template_string)
+        assert expected_output == self._convert_to_string(input_string, template_string)
 
 
 class TestPO2IniCommand(test_convert.TestConvertCommand, TestPO2Ini):

@@ -26,7 +26,7 @@ from translate.storage.base import TranslationStore
 from translate.storage.directory import Directory
 
 
-#TODO: Monolingual formats (with template?)
+# TODO: Monolingual formats (with template?)
 
 decompressclass = {
     'gz': ("gzip", "GzipFile"),
@@ -36,21 +36,24 @@ decompressclass = {
 
 _classes_str = {
     "csv": ("csvl10n", "csvfile"),
-    "tab": ("omegat", "OmegaTFileTab"), "utf8": ("omegat", "OmegaTFile"),
-    "po": ("po", "pofile"), "pot": ("po", "pofile"),
-    "mo": ("mo", "mofile"), "gmo": ("mo", "mofile"),
+    "tab": ("omegat", "OmegaTFileTab"),
+    "utf8": ("omegat", "OmegaTFile"),
+    "po": ("po", "pofile"),
+    "pot": ("po", "pofile"),
+    "mo": ("mo", "mofile"),
+    "gmo": ("mo", "mofile"),
     "qm": ("qm", "qmfile"),
     "lang": ("mozilla_lang", "LangStore"),
     "utx": ("utx", "UtxFile"),
     "_wftm": ("wordfast", "WordfastTMFile"),
     "_trados_txt_tm": ("trados", "TradosTxtTmFile"),
     "catkeys": ("catkeys", "CatkeysFile"),
-
     "qph": ("qph", "QphFile"),
     "tbx": ("tbx", "tbxfile"),
     "tmx": ("tmx", "tmxfile"),
     "ts": ("ts2", "tsfile"),
-    "xliff": ("xliff", "xlifffile"), "xlf": ("xliff", "xlifffile"),
+    "xliff": ("xliff", "xlifffile"),
+    "xlf": ("xliff", "xlifffile"),
     "sdlxliff": ("xliff", "xlifffile"),
 }
 ###  XXX:  if you add anything here, you must also add it to translate.storage.
@@ -72,6 +75,7 @@ def _examine_txt(storefile):
         raise ValueError("Need to read object to determine type")
     # Some encoding magic for Wordfast
     from translate.storage import wordfast
+
     if wordfast.TAB_UTF16 in start.split(b"\n")[0]:
         encoding = 'utf-16'
     else:
@@ -123,7 +127,9 @@ def _getdummyname(storefile):
 def _getname(storefile):
     """returns the filename"""
     if storefile is None:
-        raise ValueError("This method cannot magically produce a filename when given None as input.")
+        raise ValueError(
+            "This method cannot magically produce a filename when given None as input."
+        )
     if not isinstance(storefile, str):
         if not hasattr(storefile, "name"):
             storefilename = _getdummyname(storefile)
@@ -142,8 +148,14 @@ def import_class(module_name, class_name, prefix=None):
     return getattr(module, class_name)
 
 
-def getclass(storefile, localfiletype=None, ignore=None, classes=None,
-             classes_str=None, hiddenclasses=None):
+def getclass(
+    storefile,
+    localfiletype=None,
+    ignore=None,
+    classes=None,
+    classes_str=None,
+    hiddenclasses=None,
+):
     """Factory that returns the applicable class for the type of file
     presented.  Specify ignore to ignore some part at the back of the name
     (like .gz).
@@ -154,16 +166,16 @@ def getclass(storefile, localfiletype=None, ignore=None, classes=None,
     if hiddenclasses is None:
         hiddenclasses = _hiddenclasses
     if ignore and storefilename.endswith(ignore):
-        storefilename = storefilename[:-len(ignore)]
+        storefilename = storefilename[: -len(ignore)]
     ext = localfiletype
     if ext is None:
         root, ext = os.path.splitext(storefilename)
-        ext = ext[len(os.path.extsep):].lower()
+        ext = ext[len(os.path.extsep) :].lower()
         decomp = None
         if ext in decompressclass:
             decomp = ext
             root, ext = os.path.splitext(root)
-            ext = ext[len(os.path.extsep):].lower()
+            ext = ext[len(os.path.extsep) :].lower()
         if ext in hiddenclasses:
             guesserfn = hiddenclasses[ext]
             if decomp:
@@ -182,8 +194,14 @@ def getclass(storefile, localfiletype=None, ignore=None, classes=None,
     return storeclass
 
 
-def getobject(storefile, localfiletype=None, ignore=None, classes=None,
-              classes_str=None, hiddenclasses=None):
+def getobject(
+    storefile,
+    localfiletype=None,
+    ignore=None,
+    classes=None,
+    classes_str=None,
+    hiddenclasses=None,
+):
     """Factory that returns a usable object for the type of file presented.
 
     :type storefile: file or str or TranslationStore
@@ -201,11 +219,17 @@ def getobject(storefile, localfiletype=None, ignore=None, classes=None,
         if os.path.isdir(storefile) or storefile.endswith(os.path.sep):
             return Directory(storefile)
     storefilename = _getname(storefile)
-    storeclass = getclass(storefile, localfiletype, ignore, classes=classes,
-                          classes_str=classes_str, hiddenclasses=hiddenclasses)
+    storeclass = getclass(
+        storefile,
+        localfiletype,
+        ignore,
+        classes=classes,
+        classes_str=classes_str,
+        hiddenclasses=hiddenclasses,
+    )
     if os.path.exists(storefilename) or not getattr(storefile, "closed", True):
         name, ext = os.path.splitext(storefilename)
-        ext = ext[len(os.path.extsep):].lower()
+        ext = ext[len(os.path.extsep) :].lower()
         if ext in decompressclass:
             _file = import_class(*decompressclass[ext])
             storefile = _file(storefilename)
@@ -217,9 +241,26 @@ def getobject(storefile, localfiletype=None, ignore=None, classes=None,
 
 
 supported = [
-    ('Gettext PO file', ['po', 'pot'], ["text/x-gettext-catalog", "text/x-gettext-translation", "text/x-po", "text/x-pot"]),
-    ('XLIFF Translation File', ['xlf', 'xliff', 'sdlxliff'], ["application/x-xliff", "application/x-xliff+xml"]),
-    ('Gettext MO file', ['mo', 'gmo'], ["application/x-gettext-catalog", "application/x-mo"]),
+    (
+        'Gettext PO file',
+        ['po', 'pot'],
+        [
+            "text/x-gettext-catalog",
+            "text/x-gettext-translation",
+            "text/x-po",
+            "text/x-pot",
+        ],
+    ),
+    (
+        'XLIFF Translation File',
+        ['xlf', 'xliff', 'sdlxliff'],
+        ["application/x-xliff", "application/x-xliff+xml"],
+    ),
+    (
+        'Gettext MO file',
+        ['mo', 'gmo'],
+        ["application/x-gettext-catalog", "application/x-mo"],
+    ),
     ('Qt .qm file', ['qm'], ["application/x-qm"]),
     ('TBX Glossary', ['tbx'], ['application/x-tbx']),
     ('TMX Translation Memory', ['tmx'], ["application/x-tmx"]),

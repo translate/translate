@@ -35,39 +35,93 @@ def main():
     """main program for pydiff"""
     parser = ArgumentParser()
     # GNU diff like options
-    parser.add_argument("-i", "--ignore-case", default=False, action="store_true",
-                        help='Ignore case differences in file contents.')
-    parser.add_argument("-U", "--unified", type=int, metavar="NUM", default=3,
-                        dest="unified_lines",
-                        help='Output NUM (default %(default)s) lines of unified context')
-    parser.add_argument("-r", "--recursive", default=False, action="store_true",
-                        help='Recursively compare any subdirectories found.')
-    parser.add_argument("-N", "--new-file", default=False, action="store_true",
-                        help='Treat absent files as empty.')
-    parser.add_argument("--unidirectional-new-file", default=False,
-                        action="store_true",
-                        help='Treat absent first files as empty.')
-    parser.add_argument("-s", "--report-identical-files", default=False,
-                        action="store_true",
-                        help='Report when two files are the same.')
-    parser.add_argument("-x", "--exclude", default=["CVS", "*.po~"],
-                        action="append", metavar="PAT",
-                        help='Exclude files that match PAT.')
+    parser.add_argument(
+        "-i",
+        "--ignore-case",
+        default=False,
+        action="store_true",
+        help='Ignore case differences in file contents.',
+    )
+    parser.add_argument(
+        "-U",
+        "--unified",
+        type=int,
+        metavar="NUM",
+        default=3,
+        dest="unified_lines",
+        help='Output NUM (default %(default)s) lines of unified context',
+    )
+    parser.add_argument(
+        "-r",
+        "--recursive",
+        default=False,
+        action="store_true",
+        help='Recursively compare any subdirectories found.',
+    )
+    parser.add_argument(
+        "-N",
+        "--new-file",
+        default=False,
+        action="store_true",
+        help='Treat absent files as empty.',
+    )
+    parser.add_argument(
+        "--unidirectional-new-file",
+        default=False,
+        action="store_true",
+        help='Treat absent first files as empty.',
+    )
+    parser.add_argument(
+        "-s",
+        "--report-identical-files",
+        default=False,
+        action="store_true",
+        help='Report when two files are the same.',
+    )
+    parser.add_argument(
+        "-x",
+        "--exclude",
+        default=["CVS", "*.po~"],
+        action="append",
+        metavar="PAT",
+        help='Exclude files that match PAT.',
+    )
     # our own options
-    parser.add_argument("--fromcontains", type=str, default=None,
-                        metavar="TEXT",
-                        help='Only show changes where fromfile contains TEXT')
-    parser.add_argument("--tocontains", type=str, default=None,
-                        metavar="TEXT",
-                        help='Only show changes where tofile contains TEXT')
-    parser.add_argument("--contains", type=str, default=None,
-                        metavar="TEXT",
-                        help='Only show changes where fromfile or tofile contains TEXT')
-    parser.add_argument("-I", "--ignore-case-contains", default=False, action="store_true",
-                        help='Ignore case differences when matching any of the changes')
-    parser.add_argument("--accelerator", dest="accelchars", default="",
-                        metavar="ACCELERATORS",
-                        help="ignores the given accelerator characters when matching")
+    parser.add_argument(
+        "--fromcontains",
+        type=str,
+        default=None,
+        metavar="TEXT",
+        help='Only show changes where fromfile contains TEXT',
+    )
+    parser.add_argument(
+        "--tocontains",
+        type=str,
+        default=None,
+        metavar="TEXT",
+        help='Only show changes where tofile contains TEXT',
+    )
+    parser.add_argument(
+        "--contains",
+        type=str,
+        default=None,
+        metavar="TEXT",
+        help='Only show changes where fromfile or tofile contains TEXT',
+    )
+    parser.add_argument(
+        "-I",
+        "--ignore-case-contains",
+        default=False,
+        action="store_true",
+        help='Ignore case differences when matching any of the changes',
+    )
+    parser.add_argument(
+        "--accelerator",
+        dest="accelchars",
+        default="",
+        metavar="ACCELERATORS",
+        help="ignores the given accelerator characters when matching",
+    )
     parser.add_argument("fromfile", nargs=1)
     parser.add_argument("tofile", nargs=1)
     args = parser.parse_args()
@@ -80,12 +134,16 @@ def main():
         if os.path.isdir(tofile):
             differ = DirDiffer(fromfile, tofile, args)
         else:
-            parser.error("File %s is a directory while file %s is a regular file" %
-                         (fromfile, tofile))
+            parser.error(
+                "File %s is a directory while file %s is a regular file"
+                % (fromfile, tofile)
+            )
     else:
         if os.path.isdir(tofile):
-            parser.error("File %s is a regular file while file %s is a directory" %
-                         (fromfile, tofile))
+            parser.error(
+                "File %s is a regular file while file %s is a directory"
+                % (fromfile, tofile)
+            )
         else:
             differ = FileDiffer(fromfile, tofile, args)
     differ.writediff(sys.stdout)
@@ -118,9 +176,12 @@ class DirDiffer:
         for difffile in difffiles:
             if self.isexcluded(difffile):
                 continue
-            from_ok = (difffile in fromfiles or self.options.new_file or
-                       self.options.unidirectional_new_file)
-            to_ok = (difffile in tofiles or self.options.new_file)
+            from_ok = (
+                difffile in fromfiles
+                or self.options.new_file
+                or self.options.unidirectional_new_file
+            )
+            to_ok = difffile in tofiles or self.options.new_file
             if from_ok and to_ok:
                 fromfile = os.path.join(self.fromdir, difffile)
                 tofile = os.path.join(self.todir, difffile)
@@ -130,15 +191,21 @@ class DirDiffer:
                             differ = DirDiffer(fromfile, tofile, self.options)
                             differ.writediff(outfile)
                         else:
-                            outfile.write("Common subdirectories: %s and %s\n" %
-                                          (fromfile, tofile))
+                            outfile.write(
+                                "Common subdirectories: %s and %s\n"
+                                % (fromfile, tofile)
+                            )
                     else:
-                        outfile.write("File %s is a directory while file %s is a regular file\n" %
-                                      (fromfile, tofile))
+                        outfile.write(
+                            "File %s is a directory while file %s is a regular file\n"
+                            % (fromfile, tofile)
+                        )
                 else:
                     if os.path.isdir(tofile):
-                        outfile.write("File %s is a regular file while file %s is a directory\n" %
-                                      (fromfile, tofile))
+                        outfile.write(
+                            "File %s is a regular file while file %s is a directory\n"
+                            % (fromfile, tofile)
+                        )
                     else:
                         filediffer = FileDiffer(fromfile, tofile, self.options)
                         filediffer.writediff(outfile)
@@ -207,7 +274,9 @@ class FileDiffer:
             hunk = "".join([line for line in self.unified_diff(group)])
             if self.options.fromcontains:
                 if self.options.ignore_case_contains:
-                    hunk_from_lines = "".join([line.lower() for line in self.get_from_lines(group)])
+                    hunk_from_lines = "".join(
+                        [line.lower() for line in self.get_from_lines(group)]
+                    )
                 else:
                     hunk_from_lines = "".join(self.get_from_lines(group))
                 for accelerator in self.options.accelchars:
@@ -216,7 +285,9 @@ class FileDiffer:
                     continue
             if self.options.tocontains:
                 if self.options.ignore_case_contains:
-                    hunk_to_lines = "".join([line.lower() for line in self.get_to_lines(group)])
+                    hunk_to_lines = "".join(
+                        [line.lower() for line in self.get_to_lines(group)]
+                    )
                 else:
                     hunk_to_lines = "".join(self.get_to_lines(group))
                 for accelerator in self.options.accelchars:
@@ -225,9 +296,17 @@ class FileDiffer:
                     continue
             if self.options.contains:
                 if self.options.ignore_case_contains:
-                    hunk_lines = "".join([line.lower() for line in self.get_from_lines(group) + self.get_to_lines(group)])
+                    hunk_lines = "".join(
+                        [
+                            line.lower()
+                            for line in self.get_from_lines(group)
+                            + self.get_to_lines(group)
+                        ]
+                    )
                 else:
-                    hunk_lines = "".join(self.get_from_lines(group) + self.get_to_lines(group))
+                    hunk_lines = "".join(
+                        self.get_from_lines(group) + self.get_to_lines(group)
+                    )
                 for accelerator in self.options.accelchars:
                     hunk_lines = hunk_lines.replace(accelerator, "")
                 if self.options.contains not in hunk_lines:
@@ -238,8 +317,9 @@ class FileDiffer:
                 started = True
             outfile.write(hunk)
         if not started and self.options.report_identical_files:
-            outfile.write("Files %s and %s are identical\n" %
-                          (self.fromfile, self.tofile))
+            outfile.write(
+                "Files %s and %s are identical\n" % (self.fromfile, self.tofile)
+            )
 
     def get_from_lines(self, group):
         """returns the lines referred to by group, from the fromfile"""

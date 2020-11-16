@@ -22,8 +22,7 @@
 """
 
 
-from translate.filters.checks import (CheckerConfig, FilterFailure,
-                                      TranslationChecker)
+from translate.filters.checks import CheckerConfig, FilterFailure, TranslationChecker
 from translate.filters.decorators import critical
 from translate.lang import common
 
@@ -88,7 +87,11 @@ class SicilianChecker(TranslationChecker):
 
         words1 = self.filteraccelerators(str1).split()
         words2 = self.filteraccelerators(str2).split()
-        stopwords = ["%s (%s)" % (word, errors[word]) for word in words2 if word.lower() in errors.keys() and word not in words1]
+        stopwords = [
+            "%s (%s)" % (word, errors[word])
+            for word in words2
+            if word.lower() in errors.keys() and word not in words1
+        ]
 
         if stopwords:
             raise FilterFailure("Please translate: %s" % (", ".join(stopwords)))
@@ -143,7 +146,9 @@ class SicilianChecker(TranslationChecker):
                     stopwords.append("%s (-%s)" % (word, suffixes[suffix]))
 
         if stopwords:
-            raise FilterFailure("Please use the correct word endings: %s" % (", ".join(stopwords)))
+            raise FilterFailure(
+                "Please use the correct word endings: %s" % (", ".join(stopwords))
+            )
         return True
 
 

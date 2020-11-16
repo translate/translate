@@ -117,10 +117,12 @@ TS_CONTEXT_QT5 = """<?xml version="1.0" encoding="utf-8"?>
 xliffparsers = []
 for attrname in dir(xliff):
     attr = getattr(xliff, attrname)
-    if type(attr) is type and \
-       attrname not in ('XLIFFPlaceable') and \
-       hasattr(attr, 'parse') and \
-       attr.parse is not None:
+    if (
+        type(attr) is type
+        and attrname not in ('XLIFFPlaceable')
+        and hasattr(attr, 'parse')
+        and attr.parse is not None
+    ):
         xliffparsers.append(attr.parse)
 
 
@@ -226,9 +228,7 @@ class TestTSfile(test_base.TestTranslationStore):
         tsfile = ts.tsfile.parsestring(tsstr)
         tsfile.units[1].target = 'TestTarget'
         tsfile.units[1].markfuzzy(True)
-        newtsstr = tsstr.replace(
-            '>TargetString', ' type="unfinished">TestTarget'
-        )
+        newtsstr = tsstr.replace('>TargetString', ' type="unfinished">TestTarget')
         assert newtsstr == bytes(tsfile).decode('utf-8')
 
     def test_obsolete(self):
@@ -276,7 +276,9 @@ class TestTSfile(test_base.TestTranslationStore):
 '''
         tsfile = ts.tsfile.parsestring(tsstr)
         assert len(tsfile.units) == 4
-        assert tsfile.units[0].getlocations() == ['../tools/qtconfig/mainwindow.cpp:+202']
+        assert tsfile.units[0].getlocations() == [
+            '../tools/qtconfig/mainwindow.cpp:+202'
+        ]
         assert tsfile.units[1].getlocations() == ['+5']
         assert tsfile.units[2].getlocations() == []
         assert tsfile.units[3].getlocations() == []
@@ -390,6 +392,7 @@ class TestTSfile(test_base.TestTranslationStore):
         tsfile.units[0].markfuzzy(True)
         tsfile.units[0].target = 'TestTarget'
         newtsstr = tsstr.replace(
-            '/source>', '/source>\n        <translation type="unfinished">TestTarget</translation>'
+            '/source>',
+            '/source>\n        <translation type="unfinished">TestTarget</translation>',
         )
         assert newtsstr == bytes(tsfile).decode('utf-8')

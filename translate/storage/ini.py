@@ -100,7 +100,9 @@ class inifile(base.TranslationStore):
 
     def __init__(self, inputfile=None, dialect="default", **kwargs):
         """construct an INI file, optionally reading in from inputfile."""
-        self._dialect = dialects.get(dialect, DialectDefault)()  # fail correctly/use getattr/
+        self._dialect = dialects.get(
+            dialect, DialectDefault
+        )()  # fail correctly/use getattr/
         super().__init__(**kwargs)
         self.filename = ''
         self._inifile = None
@@ -113,7 +115,9 @@ class inifile(base.TranslationStore):
             for location in unit.getlocations():
                 match = re.match('\\[(?P<section>.+)\\](?P<entry>.+)', location)
                 value = self._dialect.escape(unit.target)
-                _outinifile[match.groupdict()['section']][match.groupdict()['entry']] = value
+                _outinifile[match.groupdict()['section']][
+                    match.groupdict()['entry']
+                ] = value
         if _outinifile:
             out.write(str(_outinifile).encode('utf-8'))
 

@@ -1,4 +1,3 @@
-
 """Tests converting Gettext PO localization files to flat XML files"""
 
 from io import BytesIO
@@ -85,9 +84,9 @@ msgstr "Two"
         """
         templatestring = '''<?xml version="1.0" encoding="utf-8"?>
 <root xmlns="urn:tt:test"/>'''
-        actual = self._convert_to_string(self.postring,
-                                         templatestring=templatestring,
-                                         ns="urn:tt:test")
+        actual = self._convert_to_string(
+            self.postring, templatestring=templatestring, ns="urn:tt:test"
+        )
         expected = '''<?xml version='1.0' encoding='UTF-8'?>
 <root xmlns="urn:tt:test">
   <str key="one">One</str>

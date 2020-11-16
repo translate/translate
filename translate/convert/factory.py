@@ -21,14 +21,14 @@
 import os
 
 
-#from translate.convert import prop2po, po2prop, odf2xliff, xliff2odf
+# from translate.convert import prop2po, po2prop, odf2xliff, xliff2odf
 
 
 __all__ = ('converters', 'UnknownExtensionError', 'UnsupportedConversionError')
 
 # Turn into property to support lazy loading of things?
 converters = {}
-#for module in (prop2po, po2prop, odf2xliff, xliff2odf):
+# for module in (prop2po, po2prop, odf2xliff, xliff2odf):
 #    if not hasattr(module, 'formats'):
 #        continue
 #    for extension in module.formats:
@@ -38,7 +38,6 @@ converters = {}
 
 
 class UnknownExtensionError(Exception):
-
     def __init__(self, afile):
         self.file = afile
 
@@ -47,7 +46,6 @@ class UnknownExtensionError(Exception):
 
 
 class UnsupportedConversionError(Exception):
-
     def __init__(self, in_ext=None, out_ext=None, templ_ext=None):
         self.in_ext = in_ext
         self.out_ext = out_ext
@@ -189,11 +187,16 @@ def convert(inputfile, template=None, options=None, convert_options=None):
     #      (eg. TranslationStore.savefile()). Therefore none of mkstemp()'s
     #      security features are being utilised.
     import tempfile
-    tempfd, tempfname = tempfile.mkstemp(prefix='ttk_convert', suffix=os.extsep + out_ext)
+
+    tempfd, tempfname = tempfile.mkstemp(
+        prefix='ttk_convert', suffix=os.extsep + out_ext
+    )
     os.close(tempfd)
 
     if convert_options is None:
         convert_options = {}
     with open(tempfname, 'w') as output_file:
-        get_converter(in_ext, out_ext, templ_ext)(inputfile, output_file, template, **convert_options)
+        get_converter(in_ext, out_ext, templ_ext)(
+            inputfile, output_file, template, **convert_options
+        )
     return output_file, out_ext

@@ -34,8 +34,14 @@ class po2yaml:
     TargetUnitClass = yaml.YAMLUnit
     MissingTemplateMessage = "A template YAML file must be provided."
 
-    def __init__(self, input_file, output_file, template_file=None,
-                 include_fuzzy=False, output_threshold=None):
+    def __init__(
+        self,
+        input_file,
+        output_file,
+        template_file=None,
+        include_fuzzy=False,
+        output_threshold=None,
+    ):
         """Initialize the converter."""
         if template_file is None:
             raise ValueError(self.MissingTemplateMessage)
@@ -54,8 +60,7 @@ class po2yaml:
 
     def convert_unit(self, unit):
         """Convert a source format unit to a target format unit."""
-        use_target = (unit.istranslated()
-                      or unit.isfuzzy() and self.include_fuzzy)
+        use_target = unit.istranslated() or unit.isfuzzy() and self.include_fuzzy
         target_unit = self.TargetUnitClass(
             source=unit.target if use_target else unit.source,
         )
@@ -88,12 +93,14 @@ class po2yaml:
         return 1
 
 
-def run_converter(inputfile, outputfile, templatefile=None, includefuzzy=False,
-                  outputthreshold=None):
+def run_converter(
+    inputfile, outputfile, templatefile=None, includefuzzy=False, outputthreshold=None
+):
     """Wrapper around converter."""
     # TODO add Ruby personality.
-    return po2yaml(inputfile, outputfile, templatefile, includefuzzy,
-                   outputthreshold).run()
+    return po2yaml(
+        inputfile, outputfile, templatefile, includefuzzy, outputthreshold
+    ).run()
 
 
 formats = (
@@ -105,8 +112,9 @@ formats = (
 
 
 def main(argv=None):
-    parser = convert.ConvertOptionParser(formats, usetemplates=True,
-                                         description=__doc__)
+    parser = convert.ConvertOptionParser(
+        formats, usetemplates=True, description=__doc__
+    )
     parser.add_threshold_option()
     parser.add_fuzzy_option()
     parser.run(argv)

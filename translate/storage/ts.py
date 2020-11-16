@@ -47,7 +47,15 @@ class QtTsParser:
             self.document = ourdom.parse(inputfile)
             assert self.document.documentElement.tagName == "TS"
 
-    def addtranslation(self, contextname, source, translation, comment=None, transtype=None, createifmissing=False):
+    def addtranslation(
+        self,
+        contextname,
+        source,
+        translation,
+        comment=None,
+        transtype=None,
+        createifmissing=False,
+    ):
         """adds the given translation (will create the nodes required if asked). Returns success"""
         contextnode = self.getcontextnode(contextname)
         if contextnode is None:
@@ -99,7 +107,9 @@ class QtTsParser:
         contextnode = self.knowncontextnodes.get(contextname, None)
         if contextnode is not None:
             return contextnode
-        contextnodes = self.document.searchElementsByTagName("context", self.contextancestors)
+        contextnodes = self.document.searchElementsByTagName(
+            "context", self.contextancestors
+        )
         for contextnode in contextnodes:
             if self.getcontextname(contextnode) == contextname:
                 self.knowncontextnodes[contextname] = contextnode
@@ -109,7 +119,9 @@ class QtTsParser:
     def getmessagenodes(self, context=None):
         """returns all the messagenodes, limiting to the given context (name or node) if given"""
         if context is None:
-            return self.document.searchElementsByTagName("message", self.messageancestors)
+            return self.document.searchElementsByTagName(
+                "message", self.messageancestors
+            )
         else:
             if isinstance(context, str):
                 # look up the context node by name
@@ -142,7 +154,9 @@ class QtTsParser:
 
     def iteritems(self):
         """iterates through (contextname, messages)"""
-        for contextnode in self.document.searchElementsByTagName("context", self.contextancestors):
+        for contextnode in self.document.searchElementsByTagName(
+            "context", self.contextancestors
+        ):
             yield self.getcontextname(contextnode), self.getmessagenodes(contextnode)
 
     def __del__(self):

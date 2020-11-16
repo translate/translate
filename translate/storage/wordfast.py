@@ -87,13 +87,35 @@ from translate.storage import base
 WF_TIMEFORMAT = "%Y%m%d~%H%M%S"
 """Time format used by Wordfast"""
 
-WF_FIELDNAMES_HEADER = ["date", "userlist", "tucount", "src-lang", "version",
-                        "target-lang", "license", "attr1list", "attr2list",
-                        "attr3list", "attr4list", "attr5list"]
+WF_FIELDNAMES_HEADER = [
+    "date",
+    "userlist",
+    "tucount",
+    "src-lang",
+    "version",
+    "target-lang",
+    "license",
+    "attr1list",
+    "attr2list",
+    "attr3list",
+    "attr4list",
+    "attr5list",
+]
 """Field names for the Wordfast header"""
 
-WF_FIELDNAMES = ["date", "user", "reuse", "src-lang", "source", "target-lang",
-                 "target", "attr1", "attr2", "attr3", "attr4"]
+WF_FIELDNAMES = [
+    "date",
+    "user",
+    "reuse",
+    "src-lang",
+    "source",
+    "target-lang",
+    "target",
+    "attr1",
+    "attr2",
+    "attr3",
+    "attr4",
+]
 """Field names for a Wordfast TU"""
 
 WF_FIELDNAMES_HEADER_DEFAULTS = {
@@ -118,7 +140,7 @@ WF_FIELDNAMES_HEADER_DEFAULTS = {
 # Macintosh code points found for the respective character sets on Linux.
 WF_ESCAPE_MAP = (
     ("&'26;", "\u0026"),  # & - Ampersand (must be first to prevent
-                          #     escaping of escapes)
+    #     escaping of escapes)
     ("&'82;", "\u201A"),  # ‚ - Single low-9 quotation mark
     ("&'85;", "\u2026"),  # … - Elippsis
     ("&'91;", "\u2018"),  # ‘ - left single quotation mark
@@ -153,7 +175,7 @@ WF_ESCAPE_MAP = (
     # Other markers
     # Soft-break - XXX creates a problem with roundtripping could
     # also be represented by \u2028
-    #("&'B;", "\n"),
+    # ("&'B;", "\n"),
 )
 """Mapping of Wordfast &'XX; escapes to correct Unicode characters"""
 
@@ -222,6 +244,7 @@ class WordfastTime:
         :type timestring: String
         """
         self._time = time.strptime(timestring, WF_TIMEFORMAT)
+
     timestring = property(get_timestring, set_timestring)
 
     def get_time(self):
@@ -238,6 +261,7 @@ class WordfastTime:
             self._time = newtime
         else:
             self._time = None
+
     time = property(get_time, set_time)
 
     def __str__(self):
@@ -271,14 +295,17 @@ class WordfastHeader:
 
     def setheader(self, newheader):
         self._header_dict = newheader
+
     header = property(getheader, setheader)
 
     def settargetlang(self, newlang):
         self._header_dict['target-lang'] = '%%%s' % newlang
+
     targetlang = property(None, settargetlang)
 
     def settucount(self, count):
         self._header_dict['tucount'] = '%%TU=%08d' % count
+
     tucount = property(None, settucount)
 
 
@@ -307,6 +334,7 @@ class WordfastUnit(base.TranslationUnit):
         """
         # TODO First check that the values are OK
         self._dict = newdict
+
     dict = property(getdict, setdict)
 
     def _get_source_or_target(self, key):
@@ -345,6 +373,7 @@ class WordfastUnit(base.TranslationUnit):
 
     def settargetlang(self, newlang):
         self._dict['target-lang'] = newlang
+
     targetlang = property(None, settargetlang)
 
     def __str__(self):
@@ -390,11 +419,17 @@ class WordfastTMFile(base.TranslationStore):
         try:
             input = input.decode(self.encoding)
         except Exception:
-            raise ValueError("Wordfast files are either UTF-16 (UCS2) or ISO-8859-1 encoded")
-        reader = csv.DictReader(input.split("\n"), fieldnames=WF_FIELDNAMES, dialect="wordfast")
+            raise ValueError(
+                "Wordfast files are either UTF-16 (UCS2) or ISO-8859-1 encoded"
+            )
+        reader = csv.DictReader(
+            input.split("\n"), fieldnames=WF_FIELDNAMES, dialect="wordfast"
+        )
         for idx, line in enumerate(reader):
             if idx == 0:
-                header = dict(zip(WF_FIELDNAMES_HEADER, [line[key] for key in WF_FIELDNAMES]))
+                header = dict(
+                    zip(WF_FIELDNAMES_HEADER, [line[key] for key in WF_FIELDNAMES])
+                )
                 self.header = WordfastHeader(header)
                 continue
             newunit = WordfastUnit()
@@ -411,7 +446,14 @@ class WordfastTMFile(base.TranslationStore):
         writer = csv.DictWriter(output, fieldnames=WF_FIELDNAMES, dialect="wordfast")
         # No real headers, the first line contains metadata
         self.header.tucount = len(translated_units)
-        writer.writerow(dict(zip(WF_FIELDNAMES, [self.header.header[key] for key in WF_FIELDNAMES_HEADER])))
+        writer.writerow(
+            dict(
+                zip(
+                    WF_FIELDNAMES,
+                    [self.header.header[key] for key in WF_FIELDNAMES_HEADER],
+                )
+            )
+        )
 
         for unit in translated_units:
             writer.writerow(unit.dict)

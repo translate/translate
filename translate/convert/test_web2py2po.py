@@ -4,7 +4,6 @@ from translate.storage.test_base import first_translatable, headerless_len
 
 
 class TestWEB2PY2PO:
-
     def web2py2po(self, web2py_source):
         """helper that converts po source to web2py source without requiring files"""
         input_web2py = eval(web2py_source)

@@ -19,7 +19,6 @@
 
 
 class XmlNamespace:
-
     def __init__(self, namespace):
         self._namespace = namespace
 

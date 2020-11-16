@@ -10,6 +10,7 @@ class TestODF2XLIFFCommand(test_convert.TestConvertCommand):
 
     def test_convert(self):
         self.run_command(
-            o="simple.xlf", i=os.path.join(os.path.dirname(__file__), "test.odt"),
+            o="simple.xlf",
+            i=os.path.join(os.path.dirname(__file__), "test.odt"),
         )
         assert b"Hello, world!" in self.read_testfile("simple.xlf")

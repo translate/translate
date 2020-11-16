@@ -1,11 +1,9 @@
-
 from io import BytesIO
 
 from translate.convert import test_convert, ts2po
 
 
 class TestTS2PO:
-
     def ts2po(self, tssource):
         converter = ts2po.ts2po()
         tsfile = BytesIO(tssource.encode())
@@ -138,7 +136,10 @@ new line</translation>
 </TS>
 '''
         pofile = self.ts2po(tssource)
-        assert pofile.units[1].getnotes() == "Appears in the Help menu (on Windows and Linux) or the app menu (on macOS)."
+        assert (
+            pofile.units[1].getnotes()
+            == "Appears in the Help menu (on Windows and Linux) or the app menu (on macOS)."
+        )
 
 
 class TestTS2POCommand(test_convert.TestConvertCommand, TestTS2PO):

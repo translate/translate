@@ -81,6 +81,7 @@ class OmegaTUnit(base.TranslationUnit):
         """
         # TODO First check that the values are OK
         self._dict = newdict
+
     dict = property(getdict, setdict)
 
     def _get_field(self, key):
@@ -130,6 +131,7 @@ class OmegaTUnit(base.TranslationUnit):
 
     def settargetlang(self, newlang):
         self._dict['target-lang'] = newlang
+
     targetlang = property(None, settargetlang)
 
     def __str__(self):
@@ -148,8 +150,7 @@ class OmegaTFile(base.TranslationStore):
     UnitClass = OmegaTUnit
 
     def __init__(self, inputfile=None, **kwargs):
-        """Construct an OmegaT glossary, optionally reading in from inputfile.
-        """
+        """Construct an OmegaT glossary, optionally reading in from inputfile."""
         super().__init__(**kwargs)
         self.filename = ''
         self.extension = ''
@@ -169,9 +170,12 @@ class OmegaTFile(base.TranslationStore):
         try:
             input = input.decode(self.encoding)
         except Exception:
-            raise ValueError("OmegaT files are either UTF-8 encoded or use the default system encoding")
-        lines = csv.DictReader(input.split("\n"), fieldnames=OMEGAT_FIELDNAMES,
-                               dialect="omegat")
+            raise ValueError(
+                "OmegaT files are either UTF-8 encoded or use the default system encoding"
+            )
+        lines = csv.DictReader(
+            input.split("\n"), fieldnames=OMEGAT_FIELDNAMES, dialect="omegat"
+        )
         for line in lines:
             newunit = OmegaTUnit()
             newunit.dict = line

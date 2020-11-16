@@ -30,16 +30,13 @@ import lxml.etree as etree
 from translate.convert import convert
 from translate.storage import factory
 from translate.storage.odf_io import copy_odf, open_odf
-from translate.storage.odf_shared import (inline_elements,
-                                          no_translate_content_elements)
+from translate.storage.odf_shared import inline_elements, no_translate_content_elements
 from translate.storage.xml_extract.extract import ParseState
-from translate.storage.xml_extract.generate import (apply_translations,
-                                                    replace_dom_text)
+from translate.storage.xml_extract.generate import apply_translations, replace_dom_text
 from translate.storage.xml_extract.unit_tree import XPathTree, build_unit_tree
 
 
 def translate_odf(template, input_file):
-
     def load_dom_trees(template):
         """Return a dict with translatable files in the template ODF package.
 
@@ -47,8 +44,10 @@ def translate_odf(template, input_file):
         the etrees for each of those translatable files.
         """
         odf_data = open_odf(template)
-        return dict((filename, etree.parse(BytesIO(data)))
-                    for filename, data in odf_data.items())
+        return dict(
+            (filename, etree.parse(BytesIO(data)))
+            for filename, data in odf_data.items()
+        )
 
     def load_unit_tree(input_file):
         """Return a dict with the translations grouped by files ODF package.
@@ -70,9 +69,13 @@ def translate_odf(template, input_file):
 
             return (filename, file_tree)
 
-        return dict([extract_unit_tree('content.xml', 'office:document-content'),
-                     extract_unit_tree('meta.xml', 'office:document-meta'),
-                     extract_unit_tree('styles.xml', 'office:document-styles')])
+        return dict(
+            [
+                extract_unit_tree('content.xml', 'office:document-content'),
+                extract_unit_tree('meta.xml', 'office:document-meta'),
+                extract_unit_tree('styles.xml', 'office:document-styles'),
+            ]
+        )
 
     def translate_dom_trees(unit_trees, dom_trees):
         """Return a dict with the translated files for the ODF package.
@@ -81,12 +84,14 @@ def translate_odf(template, input_file):
         template ODF package, and the values are etree ElementTree instances
         for each of those files.
         """
-        make_parse_state = lambda: ParseState(no_translate_content_elements,
-                                              inline_elements)
+        make_parse_state = lambda: ParseState(
+            no_translate_content_elements, inline_elements
+        )
         for filename, dom_tree in dom_trees.items():
             file_unit_tree = unit_trees[filename]
-            apply_translations(dom_tree.getroot(), file_unit_tree,
-                               replace_dom_text(make_parse_state))
+            apply_translations(
+                dom_tree.getroot(), file_unit_tree, replace_dom_text(make_parse_state)
+            )
         return dom_trees
 
     dom_trees = load_dom_trees(template)
@@ -101,17 +106,16 @@ def write_odf(template, output_file, dom_trees):
     translatable files replaced by their translated versions.
     """
     template_zip = zipfile.ZipFile(template, 'r')
-    output_zip = zipfile.ZipFile(output_file, 'w',
-                                 compression=zipfile.ZIP_DEFLATED)
+    output_zip = zipfile.ZipFile(output_file, 'w', compression=zipfile.ZIP_DEFLATED)
 
     # Copy the ODF package.
     output_zip = copy_odf(template_zip, output_zip, dom_trees.keys())
 
     # Overwrite the translated files to the ODF package.
     for filename, dom_tree in dom_trees.items():
-        output_zip.writestr(filename, etree.tostring(dom_tree,
-                                                     encoding='UTF-8',
-                                                     xml_declaration=True))
+        output_zip.writestr(
+            filename, etree.tostring(dom_tree, encoding='UTF-8', xml_declaration=True)
+        )
 
 
 def convertxliff(input_file, output_file, template):
@@ -141,7 +145,9 @@ def main(argv=None):
         ('xlf', 'oti'): ("oti", convertxliff),  # Image template
         ('xlf', 'oth'): ("oth", convertxliff),  # Web page template
     }
-    parser = convert.ConvertOptionParser(formats, usetemplates=True, description=__doc__)
+    parser = convert.ConvertOptionParser(
+        formats, usetemplates=True, description=__doc__
+    )
     parser.run(argv)
 
 

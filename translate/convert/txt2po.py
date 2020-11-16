@@ -33,26 +33,37 @@ class txt2po:
     TargetStoreClass = po.pofile
     TargetUnitClass = po.pounit
 
-    def __init__(self, input_file, output_file, template_file=None,
-                 duplicate_style="msgctxt", encoding="utf-8", flavour=None,
-                 no_segmentation=False):
+    def __init__(
+        self,
+        input_file,
+        output_file,
+        template_file=None,
+        duplicate_style="msgctxt",
+        encoding="utf-8",
+        flavour=None,
+        no_segmentation=False,
+    ):
         """Initialize the converter."""
         self.duplicate_style = duplicate_style
 
         self.extraction_msg = None
         self.output_file = output_file
-        self.source_store = self.SourceStoreClass(input_file,
-                                                  encoding=encoding,
-                                                  flavour=flavour,
-                                                  no_segmentation=no_segmentation)
+        self.source_store = self.SourceStoreClass(
+            input_file,
+            encoding=encoding,
+            flavour=flavour,
+            no_segmentation=no_segmentation,
+        )
         self.target_store = self.TargetStoreClass()
         self.template_store = None
 
         if template_file is not None:
-            self.template_store = self.SourceStoreClass(template_file,
-                                                        encoding=encoding,
-                                                        flavour=flavour,
-                                                        no_segmentation=no_segmentation)
+            self.template_store = self.SourceStoreClass(
+                template_file,
+                encoding=encoding,
+                flavour=flavour,
+                no_segmentation=no_segmentation,
+            )
 
     def convert_store(self):
         """Convert a single source format file to a target format file."""
@@ -74,8 +85,7 @@ class txt2po:
             self.merge_stores()
 
         if self.extraction_msg:
-            self.target_store.header().addnote(self.extraction_msg,
-                                               "developer")
+            self.target_store.header().addnote(self.extraction_msg, "developer")
 
         self.target_store.removeduplicates(self.duplicate_style)
 
@@ -86,13 +96,25 @@ class txt2po:
         return 1
 
 
-def run_converter(input_file, output_file, template_file=None,
-                  duplicatestyle="msgctxt", encoding="utf-8", flavour=None,
-                  no_segmentation=False):
+def run_converter(
+    input_file,
+    output_file,
+    template_file=None,
+    duplicatestyle="msgctxt",
+    encoding="utf-8",
+    flavour=None,
+    no_segmentation=False,
+):
     """Wrapper around converter."""
-    return txt2po(input_file, output_file, template_file,
-                  duplicate_style=duplicatestyle, encoding=encoding,
-                  flavour=flavour, no_segmentation=no_segmentation).run()
+    return txt2po(
+        input_file,
+        output_file,
+        template_file,
+        duplicate_style=duplicatestyle,
+        encoding=encoding,
+        flavour=flavour,
+        no_segmentation=no_segmentation,
+    ).run()
 
 
 formats = {
@@ -102,22 +124,35 @@ formats = {
 
 
 def main(argv=None):
-    parser = convert.ConvertOptionParser(formats, usepots=True,
-                                         description=__doc__)
-    parser.add_option("", "--encoding", dest="encoding", default='utf-8',
-                      type="string",
-                      help="The encoding of the input file (default: UTF-8)")
+    parser = convert.ConvertOptionParser(formats, usepots=True, description=__doc__)
+    parser.add_option(
+        "",
+        "--encoding",
+        dest="encoding",
+        default='utf-8',
+        type="string",
+        help="The encoding of the input file (default: UTF-8)",
+    )
     parser.passthrough.append("encoding")
-    parser.add_option("", "--flavour", dest="flavour", default="plain",
-                      type="choice",
-                      choices=["plain", "dokuwiki", "mediawiki"],
-                      help=("The flavour of text file: plain (default), "
-                            "dokuwiki, mediawiki"),
-                      metavar="FLAVOUR")
+    parser.add_option(
+        "",
+        "--flavour",
+        dest="flavour",
+        default="plain",
+        type="choice",
+        choices=["plain", "dokuwiki", "mediawiki"],
+        help=("The flavour of text file: plain (default), " "dokuwiki, mediawiki"),
+        metavar="FLAVOUR",
+    )
     parser.passthrough.append("flavour")
-    parser.add_option("", "--no-segmentation", dest="no_segmentation",
-                      default=False, action="store_true",
-                      help="Don't segment the file, treat it like a single message")
+    parser.add_option(
+        "",
+        "--no-segmentation",
+        dest="no_segmentation",
+        default=False,
+        action="store_true",
+        help="Don't segment the file, treat it like a single message",
+    )
     parser.passthrough.append("no_segmentation")
     parser.add_duplicates_option()
     parser.run(argv)

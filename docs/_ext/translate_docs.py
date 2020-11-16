@@ -23,9 +23,6 @@ import docutils
 
 def setup(app):
     # :opt: to mark options -P --pot and options values --progress=dots
-    app.add_generic_role(
-        name="opt",
-        nodeclass=docutils.nodes.literal
-    )
+    app.add_generic_role(name="opt", nodeclass=docutils.nodes.literal)
 
     return {"parallel_read_safe": True}

@@ -1,4 +1,3 @@
-
 import warnings
 from io import BytesIO
 
@@ -9,7 +8,6 @@ from translate.storage import po
 
 
 class TestPOT2PO:
-
     def setup_method(self, method):
         warnings.resetwarnings()
 
@@ -37,7 +35,10 @@ class TestPOT2PO:
 
     def test_convertpot_blank(self):
         """checks that the convertpot function is working for a simple file initialisation"""
-        potsource = '''#: simple.label%ssimple.accesskey\nmsgid "A &hard coded newline.\\n"\nmsgstr ""\n''' % po.lsep
+        potsource = (
+            '''#: simple.label%ssimple.accesskey\nmsgid "A &hard coded newline.\\n"\nmsgstr ""\n'''
+            % po.lsep
+        )
         newpo = self.convertpot(potsource)
         assert str(self.singleunit(newpo)) == potsource
 
@@ -65,15 +66,27 @@ msgstr[0] ""
 
     def test_merging_simple(self):
         """checks that the convertpot function is working for a simple merge"""
-        potsource = '''#: simple.label%ssimple.accesskey\nmsgid "A &hard coded newline.\\n"\nmsgstr ""\n''' % po.lsep
-        posource = '''#: simple.label%ssimple.accesskey\nmsgid "A &hard coded newline.\\n"\nmsgstr "&Hart gekoeerde nuwe lyne\\n"\n''' % po.lsep
+        potsource = (
+            '''#: simple.label%ssimple.accesskey\nmsgid "A &hard coded newline.\\n"\nmsgstr ""\n'''
+            % po.lsep
+        )
+        posource = (
+            '''#: simple.label%ssimple.accesskey\nmsgid "A &hard coded newline.\\n"\nmsgstr "&Hart gekoeerde nuwe lyne\\n"\n'''
+            % po.lsep
+        )
         newpo = self.convertpot(potsource, posource)
         assert str(self.singleunit(newpo)) == posource
 
     def test_merging_messages_marked_fuzzy(self):
         """test that when we merge PO files with a fuzzy message that it remains fuzzy"""
-        potsource = '''#: simple.label%ssimple.accesskey\nmsgid "A &hard coded newline.\\n"\nmsgstr ""\n''' % po.lsep
-        posource = '''#: simple.label%ssimple.accesskey\n#, fuzzy\nmsgid "A &hard coded newline.\\n"\nmsgstr "&Hart gekoeerde nuwe lyne\\n"\n''' % po.lsep
+        potsource = (
+            '''#: simple.label%ssimple.accesskey\nmsgid "A &hard coded newline.\\n"\nmsgstr ""\n'''
+            % po.lsep
+        )
+        posource = (
+            '''#: simple.label%ssimple.accesskey\n#, fuzzy\nmsgid "A &hard coded newline.\\n"\nmsgstr "&Hart gekoeerde nuwe lyne\\n"\n'''
+            % po.lsep
+        )
         newpo = self.convertpot(potsource, posource)
         assert str(self.singleunit(newpo)) == posource
 
@@ -115,9 +128,18 @@ msgstr[1] "%d handleidings."
 
     def test_merging_location_change(self):
         """tests that if the location changes but the msgid stays the same that we merge"""
-        potsource = '''#: new_simple.label%snew_simple.accesskey\nmsgid "A &hard coded newline.\\n"\nmsgstr ""\n''' % po.lsep
-        posource = '''#: simple.label%ssimple.accesskey\nmsgid "A &hard coded newline.\\n"\nmsgstr "&Hart gekoeerde nuwe lyne\\n"\n''' % po.lsep
-        poexpected = '''#: new_simple.label%snew_simple.accesskey\nmsgid "A &hard coded newline.\\n"\nmsgstr "&Hart gekoeerde nuwe lyne\\n"\n''' % po.lsep
+        potsource = (
+            '''#: new_simple.label%snew_simple.accesskey\nmsgid "A &hard coded newline.\\n"\nmsgstr ""\n'''
+            % po.lsep
+        )
+        posource = (
+            '''#: simple.label%ssimple.accesskey\nmsgid "A &hard coded newline.\\n"\nmsgstr "&Hart gekoeerde nuwe lyne\\n"\n'''
+            % po.lsep
+        )
+        poexpected = (
+            '''#: new_simple.label%snew_simple.accesskey\nmsgid "A &hard coded newline.\\n"\nmsgstr "&Hart gekoeerde nuwe lyne\\n"\n'''
+            % po.lsep
+        )
         newpo = self.convertpot(potsource, posource)
         print(newpo)
         assert str(self.singleunit(newpo)) == poexpected
@@ -128,9 +150,18 @@ msgstr[1] "%d handleidings."
         only has whitespace changes we can still merge
         """
 
-        potsource = '''#: singlespace.label%ssinglespace.accesskey\nmsgid "&We have spaces"\nmsgstr ""\n''' % po.lsep
-        posource = '''#: doublespace.label%sdoublespace.accesskey\nmsgid "&We  have  spaces"\nmsgstr "&One  het  spasies"\n''' % po.lsep
-        poexpected = '''#: singlespace.label%ssinglespace.accesskey\n#, fuzzy\nmsgid "&We have spaces"\nmsgstr "&One  het  spasies"\n''' % po.lsep
+        potsource = (
+            '''#: singlespace.label%ssinglespace.accesskey\nmsgid "&We have spaces"\nmsgstr ""\n'''
+            % po.lsep
+        )
+        posource = (
+            '''#: doublespace.label%sdoublespace.accesskey\nmsgid "&We  have  spaces"\nmsgstr "&One  het  spasies"\n'''
+            % po.lsep
+        )
+        poexpected = (
+            '''#: singlespace.label%ssinglespace.accesskey\n#, fuzzy\nmsgid "&We have spaces"\nmsgstr "&One  het  spasies"\n'''
+            % po.lsep
+        )
         newpo = self.convertpot(potsource, posource)
         print(newpo)
         assert str(self.singleunit(newpo)) == poexpected
@@ -141,9 +172,13 @@ msgstr[1] "%d handleidings."
         disamabiguous (KDE comment form) that we don't duplicate the
         location #: comments
         """
-        potsource = '''#: location.c:1\nmsgid ""\n"_: location.c:1\\n"\n"Source"\nmsgstr ""\n\n''' + \
-                    '''#: location.c:10\nmsgid ""\n"_: location.c:10\\n"\n"Source"\nmsgstr ""\n'''
-        posource = '''#: location.c:1\n#: location.c:10\nmsgid "Source"\nmsgstr "Target"\n\n'''
+        potsource = (
+            '''#: location.c:1\nmsgid ""\n"_: location.c:1\\n"\n"Source"\nmsgstr ""\n\n'''
+            + '''#: location.c:10\nmsgid ""\n"_: location.c:10\\n"\n"Source"\nmsgstr ""\n'''
+        )
+        posource = (
+            '''#: location.c:1\n#: location.c:10\nmsgid "Source"\nmsgstr "Target"\n\n'''
+        )
         poexpected1 = '''#: location.c:1\n#, fuzzy\nmsgid ""\n"_: location.c:1\\n"\n"Source"\nmsgstr "Target"\n'''
         poexpected2 = '''#: location.c:10\n#, fuzzy\nmsgid ""\n"_: location.c:10\\n"\n"Source"\nmsgstr "Target"\n'''
         newpo = self.convertpot(potsource, posource)
@@ -164,7 +199,9 @@ msgstr[1] "%d handleidings."
     @mark.xfail(reason="Not Implemented - review if this is even correct")
     def test_lines_cut_differently(self):
         """Checks that the correct formatting is preserved when pot an po lines differ."""
-        potsource = '''#: simple.label\nmsgid "Line split "\n"differently"\nmsgstr ""\n'''
+        potsource = (
+            '''#: simple.label\nmsgid "Line split "\n"differently"\nmsgstr ""\n'''
+        )
         posource = '''#: simple.label\nmsgid "Line"\n" split differently"\nmsgstr "Lyne verskillend gesny"\n'''
         newpo = self.convertpot(potsource, posource)
         newpounit = self.singleunit(newpo)
@@ -182,7 +219,9 @@ msgstr[1] "%d handleidings."
         """ensure that new #. comments override the old comments"""
         potsource = '''#. new comment\n#: someline.c\nmsgid "&About"\nmsgstr ""\n'''
         posource = '''#. old comment\n#: someline.c\nmsgid "&About"\nmsgstr "&Info"\n'''
-        poexpected = '''#. new comment\n#: someline.c\nmsgid "&About"\nmsgstr "&Info"\n'''
+        poexpected = (
+            '''#. new comment\n#: someline.c\nmsgid "&About"\nmsgstr "&Info"\n'''
+        )
         newpo = self.convertpot(potsource, posource)
         newpounit = self.singleunit(newpo)
         assert str(newpounit) == poexpected
@@ -284,7 +323,7 @@ msgstr "Sertifikate"
 
     def test_merging_obsoleting_messages(self):
         """check that we obsolete messages no longer present in the new file"""
-        #add emtpy msgid line to help factory identify format
+        # add emtpy msgid line to help factory identify format
         potsource = 'msgid ""\nmsgstr ""\n'
         posource = '# Some comment\n#. Extracted comment\n#: obsoleteme:10\nmsgid "One"\nmsgstr "Een"\n'
         expected = '# Some comment\n#~ msgid "One"\n#~ msgstr "Een"\n'
@@ -295,7 +334,7 @@ msgstr "Sertifikate"
 
     def test_not_obsoleting_empty_messages(self):
         """check that we don't obsolete (and keep) untranslated messages"""
-        #add emtpy msgid line to help factory identify format
+        # add emtpy msgid line to help factory identify format
         potsource = 'msgid ""\nmsgstr ""\n'
         posource = '#: obsoleteme:10\nmsgid "One"\nmsgstr ""\n'
         newpo = self.convertpot(potsource, posource)
@@ -337,8 +376,10 @@ msgstr "Sertifikate"
 
     def test_merging_resurect_obsolete_messages_into_msgidcomment(self):
         """check that we can reuse old obsolete messages even if the recipient has a msgidcomment"""
-        potsource = '''#: resurect1.c\nmsgid "About"\nmsgstr ""\n\n''' + \
-                    '''#: resurect2.c\nmsgid ""\n"_: resurect2.c\\n"\n"About"\nmsgstr ""\n'''
+        potsource = (
+            '''#: resurect1.c\nmsgid "About"\nmsgstr ""\n\n'''
+            + '''#: resurect2.c\nmsgid ""\n"_: resurect2.c\\n"\n"About"\nmsgstr ""\n'''
+        )
         posource = '''#~ msgid "About"\n#~ msgstr "Omtrent"\n'''
         expected1 = '''#: resurect1.c\nmsgid "About"\nmsgstr "Omtrent"\n'''
         expected2 = '''#: resurect2.c\n#, fuzzy\nmsgid ""\n"_: resurect2.c\\n"\n"About"\nmsgstr "Omtrent"\n'''
@@ -413,7 +454,9 @@ msgstr ""
         """Test that we can merge with typecomments"""
         potsource = '''#: file.c:1\n#, c-format\nmsgid "%d pipes"\nmsgstr ""\n'''
         posource = '''#: file.c:2\nmsgid "%d pipes"\nmsgstr "%d pype"\n'''
-        poexpected = '''#: file.c:1\n#, c-format\nmsgid "%d pipes"\nmsgstr "%d pype"\n'''
+        poexpected = (
+            '''#: file.c:1\n#, c-format\nmsgid "%d pipes"\nmsgstr "%d pype"\n'''
+        )
         newpo = self.convertpot(potsource, posource)
         newpounit = self.singleunit(newpo)
         print(newpounit)
@@ -625,7 +668,7 @@ msgstr "A szükséges lemezterület kiszámítása"
 
     def test_empty_msgid(self):
         """Test that we handle empty msgids correctly."""
-        #TODO: this test will fail if we don't have the gettext location
+        # TODO: this test will fail if we don't have the gettext location
         # comment in the pot file
         potsource = '#: file:1\nmsgctxt "bla"\nmsgid ""\nmsgstr ""\n'
         posource = r"""
@@ -796,5 +839,7 @@ class TestPOT2POCommand(test_convert.TestConvertCommand, TestPOT2PO):
         options = self.help_check(options, "-t TEMPLATE, --template=TEMPLATE")
         options = self.help_check(options, "-P, --pot")
         options = self.help_check(options, "--tm")
-        options = self.help_check(options, "-s MIN_SIMILARITY, --similarity=MIN_SIMILARITY")
+        options = self.help_check(
+            options, "-s MIN_SIMILARITY, --similarity=MIN_SIMILARITY"
+        )
         options = self.help_check(options, "--nofuzzymatching", last=True)

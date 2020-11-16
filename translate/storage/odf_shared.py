@@ -33,33 +33,28 @@ svg_uri = 'urn:oasis:names:tc:opendocument:xmlns:svg-compatible:1.0'
 inline_elements = [
     (text_uri, 'page-count'),
     (text_uri, 'page-number'),
-
     (text_uri, 'a'),
     (text_uri, 'line-break'),
     (text_uri, 'ruby-base'),
     (text_uri, 's'),
     (text_uri, 'span'),
-    (text_uri, 'tab')
+    (text_uri, 'tab'),
 ]
 
 
 no_translate_content_elements = [  # It is named skip_content_elements in itools.
-
     # Config
     (config_uri, 'config-item'),
-
     # Dublin core
     (dc_uri, 'creator'),
     (dc_uri, 'date'),
-    #(dc_uri, 'description'),
+    # (dc_uri, 'description'),
     (dc_uri, 'language'),
-    #(dc_uri, 'subject'),
-    #(dc_uri, 'title'),
-
+    # (dc_uri, 'subject'),
+    # (dc_uri, 'title'),
     # Form
     (form_uri, 'item'),
     (form_uri, 'option'),
-
     # Meta
     (meta_uri, 'creation-date'),
     (meta_uri, 'date-string'),
@@ -67,56 +62,52 @@ no_translate_content_elements = [  # It is named skip_content_elements in itools
     (meta_uri, 'editing-duration'),
     (meta_uri, 'generator'),
     (meta_uri, 'initial-creator'),
-    #(meta_uri, 'keyword'),
+    # (meta_uri, 'keyword'),
     (meta_uri, 'printed-by'),
     (meta_uri, 'print-date'),
     (meta_uri, 'user-defined'),
-
     # Number
     (number_uri, 'currency-symbol'),
     (number_uri, 'embedded-text'),
     (number_uri, 'text'),
-
     # Office
     (office_uri, 'binary-data'),
-
     # Presentation
     (presentation_uri, 'date-time-decl'),
-    #(presentation_uri, 'footer-decl'),
-    #(presentation_uri, 'header-decl'),
-
+    # (presentation_uri, 'footer-decl'),
+    # (presentation_uri, 'header-decl'),
     # Text
     (text_uri, 'author-initials'),
     (text_uri, 'author-name'),
     # XXX (text_uri, 'bibliography-mark'),
     (text_uri, 'bookmark-ref'),
-    #(text_uri, 'chapter'),
+    # (text_uri, 'chapter'),
     (text_uri, 'character-count'),
-    #(text_uri, 'conditional-text'),
+    # (text_uri, 'conditional-text'),
     (text_uri, 'creation-date'),
     (text_uri, 'creation-time'),
     (text_uri, 'creator'),
     (text_uri, 'date'),
     (text_uri, 'dde-connection'),
-    #(text_uri, 'description'),
+    # (text_uri, 'description'),
     (text_uri, 'editing-cycles'),
     (text_uri, 'editing-duration'),
     (text_uri, 'expression'),
     (text_uri, 'file-name'),
-    #(text_uri, 'hidden-paragraph'),
-    #(text_uri, 'hidden-text'),
+    # (text_uri, 'hidden-paragraph'),
+    # (text_uri, 'hidden-text'),
     (text_uri, 'image-count'),
-    #(text_uri, 'index-entry-span'),
+    # (text_uri, 'index-entry-span'),
     (text_uri, 'index-title-template'),
     (text_uri, 'initial-creator'),
-    #(text_uri, 'keywords'),
+    # (text_uri, 'keywords'),
     (text_uri, 'linenumbering-separator'),
     (text_uri, 'measure'),
     (text_uri, 'modification-date'),
     (text_uri, 'modification-time'),
-    #(text_uri, 'note-citation'),
-    #(text_uri, 'note-continuation-notice-backward'),
-    #(text_uri, 'note-continuation-notice-forward'),
+    # (text_uri, 'note-citation'),
+    # (text_uri, 'note-continuation-notice-backward'),
+    # (text_uri, 'note-continuation-notice-forward'),
     (text_uri, 'note-ref'),
     (text_uri, 'number'),
     (text_uri, 'object-count'),
@@ -126,12 +117,12 @@ no_translate_content_elements = [  # It is named skip_content_elements in itools
     (text_uri, 'page-variable-get'),
     (text_uri, 'page-variable-set'),
     (text_uri, 'paragraph-count'),
-    #(text_uri, 'placeholder'),
+    # (text_uri, 'placeholder'),
     (text_uri, 'print-date'),
     (text_uri, 'print-time'),
     (text_uri, 'printed-by'),
     (text_uri, 'reference-ref'),
-    #(text_uri, 'ruby-text'),
+    # (text_uri, 'ruby-text'),
     (text_uri, 'script'),
     (text_uri, 'sender-city'),
     (text_uri, 'sender-company'),
@@ -143,21 +134,21 @@ no_translate_content_elements = [  # It is named skip_content_elements in itools
     (text_uri, 'sender-lastname'),
     (text_uri, 'sender-phone-private'),
     (text_uri, 'sender-phone-work'),
-    #(text_uri, 'sender-position'),
+    # (text_uri, 'sender-position'),
     (text_uri, 'sender-postal-code'),
     (text_uri, 'sender-state-or-province'),
     (text_uri, 'sender-street'),
-    #(text_uri, 'sender-title'),
+    # (text_uri, 'sender-title'),
     (text_uri, 'sequence'),
     (text_uri, 'sequence-ref'),
     (text_uri, 'sheet-name'),
-    #(text_uri, 'subject'),
+    # (text_uri, 'subject'),
     (text_uri, 'table-count'),
     (text_uri, 'table-formula'),
     (text_uri, 'template-name'),
     (text_uri, 'text-input'),
     (text_uri, 'time'),
-    #(text_uri, 'title'),
+    # (text_uri, 'title'),
     (text_uri, 'user-defined'),
     (text_uri, 'user-field-get'),
     (text_uri, 'user-field-input'),
@@ -165,11 +156,9 @@ no_translate_content_elements = [  # It is named skip_content_elements in itools
     (text_uri, 'variable-input'),
     (text_uri, 'variable-set'),
     (text_uri, 'word-count'),
-
     # SVG
-    #(svg_uri, 'title'),
-    #(svg_uri, 'desc')
-
+    # (svg_uri, 'title'),
+    # (svg_uri, 'desc')
     # From translate
     (text_uri, 'tracked-changes'),
 ]

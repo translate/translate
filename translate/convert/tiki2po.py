@@ -33,8 +33,9 @@ class tiki2po:
     TargetStoreClass = po.pofile
     TargetUnitClass = po.pounit
 
-    def __init__(self, input_file, output_file, template_file=None,
-                 include_unused=False):
+    def __init__(
+        self, input_file, output_file, template_file=None, include_unused=False
+    ):
         """Initialize the converter."""
         self.include_unused = include_unused
 
@@ -81,9 +82,14 @@ formats = {
 
 def main(argv=None):
     parser = convert.ConvertOptionParser(formats, description=__doc__)
-    parser.add_option("", "--include-unused", dest="includeunused",
-                      action="store_true", default=False,
-                      help="Include strings in the unused section")
+    parser.add_option(
+        "",
+        "--include-unused",
+        dest="includeunused",
+        action="store_true",
+        default=False,
+        help="Include strings in the unused section",
+    )
     parser.passthrough.append("includeunused")
     parser.run(argv)
 

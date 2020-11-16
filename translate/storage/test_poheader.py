@@ -1,4 +1,3 @@
-
 import os
 import time
 from collections import OrderedDict
@@ -44,7 +43,9 @@ def test_update():
     d['POT-Creation-Date'] = 'now'
     d = poheader.update(d, add=True, Test='hello', Report_Msgid_Bugs_To='bugs@list.org')
     assert list(d.keys()) == [
-        "Project-Id-Version", "Report-Msgid-Bugs-To", "POT-Creation-Date",
+        "Project-Id-Version",
+        "Report-Msgid-Bugs-To",
+        "POT-Creation-Date",
         "Test",
     ]
 
@@ -92,8 +93,9 @@ def test_po_dates():
     check_po_date(headerdict["POT-Creation-Date"])
     check_po_date(headerdict["PO-Revision-Date"])
 
-    headerdict = pofile.makeheaderdict(pot_creation_date=time.localtime(),
-                                       po_revision_date=time.localtime())
+    headerdict = pofile.makeheaderdict(
+        pot_creation_date=time.localtime(), po_revision_date=time.localtime()
+    )
     check_po_date(headerdict["POT-Creation-Date"])
     check_po_date(headerdict["PO-Revision-Date"])
 
@@ -127,7 +129,6 @@ def test_timezones():
 
 
 def test_header_blank():
-
     def compare(pofile):
         print(pofile)
         assert len(pofile.units) == 1
@@ -164,6 +165,7 @@ msgstr ""
 '''
     pofile = poparse(posource)
     compare(pofile)
+
 
 ## TODO: enable this code if PoXliffFile is able to parse a header
 ##
@@ -217,6 +219,8 @@ msgstr ""
         nplural, plural = pofile.getheaderplural()
         assert nplural == "2"
         assert plural == "(n != 1)"
+
+
 ##    TODO: add the same test for PoXliffFile
 
 
@@ -237,7 +241,12 @@ msgstr ""
     pofile.parseheader()
     nplural, plural = pofile.getheaderplural()
     assert nplural == "3"
-    assert plural == "(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2)"
+    assert (
+        plural
+        == "(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2)"
+    )
+
+
 ##    TODO: add the same test for PoXliffFile
 
 
@@ -257,7 +266,11 @@ msgstr ""
     pofile.header().addnote("Khaled Hosny <khaledhosny@domain.org>, 2006, 2007, 2008.")
     pofile.updatecontributor("Khaled Hosny", "khaledhosny@domain.org")
     print(bytes(pofile))
-    assert "# Khaled Hosny <khaledhosny@domain.org>, 2006, 2007, 2008, %s." % time.strftime("%Y") in bytes(pofile).decode('utf-8')
+    assert (
+        "# Khaled Hosny <khaledhosny@domain.org>, 2006, 2007, 2008, %s."
+        % time.strftime("%Y")
+        in bytes(pofile).decode('utf-8')
+    )
 
 
 def test_updatecontributor_header():
@@ -278,7 +291,9 @@ msgstr ""
     pofile.updatecontributor("Grasvreter")
 
     # Manually build expected output
-    expected = posource.replace("msgid", "# Grasvreter, %s.\nmsgid" % time.strftime("%Y"))
+    expected = posource.replace(
+        "msgid", "# Grasvreter, %s.\nmsgid" % time.strftime("%Y")
+    )
     assert bytes(pofile).decode('utf-8') == expected
 
 

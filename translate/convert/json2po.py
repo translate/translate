@@ -37,8 +37,7 @@ class json2po:
         """Converts a JSON file to a PO file"""
         output_store = po.pofile()
         output_header = output_store.header()
-        output_header.addnote("extracted from %s" % input_store.filename,
-                              "developer")
+        output_header.addnote("extracted from %s" % input_store.filename, "developer")
         for input_unit in input_store.units:
             output_unit = self.convert_unit(input_unit, "developer")
             if output_unit is not None:
@@ -46,14 +45,16 @@ class json2po:
         output_store.removeduplicates(duplicatestyle)
         return output_store
 
-    def merge_store(self, template_store, input_store, blankmsgstr=False,
-                    duplicatestyle="msgctxt"):
+    def merge_store(
+        self, template_store, input_store, blankmsgstr=False, duplicatestyle="msgctxt"
+    ):
         """Converts two JSON files to a PO file"""
         output_store = po.pofile()
         output_header = output_store.header()
-        output_header.addnote("extracted from %s, %s" % (template_store.filename,
-                                                         input_store.filename),
-                              "developer")
+        output_header.addnote(
+            "extracted from %s, %s" % (template_store.filename, input_store.filename),
+            "developer",
+        )
 
         input_store.makeindex()
         for template_unit in template_store.units:
@@ -71,8 +72,9 @@ class json2po:
                     origpo.target = translatedpo.source
                 output_store.addunit(origpo)
             elif translatedpo is not None:
-                logger.error("error converting original JSON definition %s",
-                             origpo.name)
+                logger.error(
+                    "error converting original JSON definition %s", origpo.name
+                )
         output_store.removeduplicates(duplicatestyle)
         return output_store
 
@@ -91,24 +93,33 @@ class json2po:
         return output_unit
 
 
-def convertjson(input_file, output_file, template_file, pot=False,
-                duplicatestyle="msgctxt", dialect="default", filter=None):
+def convertjson(
+    input_file,
+    output_file,
+    template_file,
+    pot=False,
+    duplicatestyle="msgctxt",
+    dialect="default",
+    filter=None,
+):
     """Reads in *input_file* using jsonl10n, converts using :class:`json2po`,
     writes to *output_file*.
     """
     from translate.storage import jsonl10n
+
     if filter is not None:
         filter = filter.split(',')
     input_store = jsonl10n.JsonFile(input_file, filter=filter)
     convertor = json2po()
     if template_file is None:
-        output_store = convertor.convert_store(input_store,
-                                               duplicatestyle=duplicatestyle)
+        output_store = convertor.convert_store(
+            input_store, duplicatestyle=duplicatestyle
+        )
     else:
         template_store = jsonl10n.JsonFile(template_file)
-        output_store = convertor.merge_store(template_store, input_store,
-                                             blankmsgstr=pot,
-                                             duplicatestyle=duplicatestyle)
+        output_store = convertor.merge_store(
+            template_store, input_store, blankmsgstr=pot, duplicatestyle=duplicatestyle
+        )
     if output_store.isempty():
         return 0
     output_store.serialize(output_file)
@@ -117,16 +128,22 @@ def convertjson(input_file, output_file, template_file, pot=False,
 
 def main(argv=None):
     from translate.convert import convert
+
     formats = {
         "json": ("po", convertjson),
         ("json", "json"): ("po", convertjson),
     }
-    parser = convert.ConvertOptionParser(formats, usetemplates=True,
-                                         usepots=True, description=__doc__)
+    parser = convert.ConvertOptionParser(
+        formats, usetemplates=True, usepots=True, description=__doc__
+    )
     parser.add_option(
-        "", "--filter", dest="filter", default=None,
+        "",
+        "--filter",
+        dest="filter",
+        default=None,
         help="leaves to extract e.g. 'name,desc': (default: extract everything)",
-        metavar="FILTER")
+        metavar="FILTER",
+    )
     parser.add_duplicates_option()
     parser.passthrough.append("pot")
     parser.passthrough.append("filter")

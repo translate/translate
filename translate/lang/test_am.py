@@ -1,4 +1,3 @@
-
 from translate.lang import factory
 
 
@@ -19,6 +18,8 @@ def test_sentences():
     sentences = language.sentences("")
     assert sentences == []
 
-    sentences = language.sentences("ለምልክቱ መግቢያ የተለየ መለያ። ይህ የሚጠቅመው የታሪኩን ዝርዝር ለማስቀመጥ ነው።")
+    sentences = language.sentences(
+        "ለምልክቱ መግቢያ የተለየ መለያ። ይህ የሚጠቅመው የታሪኩን ዝርዝር ለማስቀመጥ ነው።"
+    )
     print(sentences)
     assert sentences == ["ለምልክቱ መግቢያ የተለየ መለያ።", "ይህ የሚጠቅመው የታሪኩን ዝርዝር ለማስቀመጥ ነው።"]

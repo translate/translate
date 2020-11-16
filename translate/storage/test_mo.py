@@ -37,21 +37,21 @@ msgstr ""
 ''',
     # The following test is commented out, because the hash-size is different
     # compared to gettext, since we're not counting untranslated units.
-    #r'''
-    #msgid ""
-    #msgstr ""
-    #"PO-Revision-Date: 2006-02-09 23:33+0200\n"
-    #"MIME-Version: 1.0\n"
-    #"Content-Type: text/plain; charset=UTF-8\n"
-    #"Content-Transfer-Encoding: 8-bit\n"
+    # r'''
+    # msgid ""
+    # msgstr ""
+    # "PO-Revision-Date: 2006-02-09 23:33+0200\n"
+    # "MIME-Version: 1.0\n"
+    # "Content-Type: text/plain; charset=UTF-8\n"
+    # "Content-Transfer-Encoding: 8-bit\n"
     #
-    #msgid "plant"
-    #msgstr ""
+    # msgid "plant"
+    # msgstr ""
     #
-    #msgid ""
-    #"_: Noun\n"
-    #"convert"
-    #msgstr "bekeerling"
+    # msgid ""
+    # "_: Noun\n"
+    # "convert"
+    # msgstr "bekeerling"
     #''',
     r'''
 msgid ""
@@ -106,9 +106,11 @@ class TestMOFile(test_base.TestTranslationStore):
     StoreClass = mo.mofile
 
     def get_mo_and_po(self):
-        return (os.path.abspath(self.filename + '.po'),
-                os.path.abspath(self.filename + '.msgfmt.mo'),
-                os.path.abspath(self.filename + '.pocompile.mo'))
+        return (
+            os.path.abspath(self.filename + '.po'),
+            os.path.abspath(self.filename + '.msgfmt.mo'),
+            os.path.abspath(self.filename + '.pocompile.mo'),
+        )
 
     def remove_po_and_mo(self):
         for file in self.get_mo_and_po():
@@ -151,8 +153,12 @@ class TestMOFile(test_base.TestTranslationStore):
             with open(PO_FILE, 'wb') as out_file:
                 out_file.write(posource)
 
-            subprocess.check_call(['msgfmt', PO_FILE, '-o', MO_MSGFMT, '--endianness', sys.byteorder])
-            subprocess.check_call(['pocompile', '--errorlevel=traceback', PO_FILE, MO_POCOMPILE])
+            subprocess.check_call(
+                ['msgfmt', PO_FILE, '-o', MO_MSGFMT, '--endianness', sys.byteorder]
+            )
+            subprocess.check_call(
+                ['pocompile', '--errorlevel=traceback', PO_FILE, MO_POCOMPILE]
+            )
 
             store = factory.getobject(BytesIO(posource))
             if store.isempty() and not os.path.exists(MO_POCOMPILE):

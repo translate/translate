@@ -1,4 +1,3 @@
-
 # pypo2phppo unit tests
 # Author: Wil Clouser <wclouser@mozilla.com>
 # Date: 2009-12-03
@@ -10,7 +9,6 @@ from translate.tools import pypo2phppo
 
 
 class TestPyPo2PhpPo:
-
     def test_single_po(self):
         inputfile = b"""
 # This user comment refers to: {0}

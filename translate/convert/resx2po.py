@@ -37,9 +37,9 @@ class resx2po:
     def convert_store(self, input_store, duplicatestyle="msgctxt"):
         """Converts a RESX file to a PO file"""
         output_store = po.pofile()
-        output_header = output_store.init_headers(charset="UTF-8",
-                                                  encoding="8bit",
-                                                  x_accelerator_marker="&")
+        output_header = output_store.init_headers(
+            charset="UTF-8", encoding="8bit", x_accelerator_marker="&"
+        )
         output_header.addnote("extracted from %s" % input_store.filename, "developer")
         for input_unit in input_store.units:
             if input_unit.istranslatable():
@@ -54,15 +54,18 @@ class resx2po:
         output_store.removeduplicates(duplicatestyle)
         return output_store
 
-    def merge_store(self, template_store, input_store, blankmsgstr=False, duplicatestyle="msgctxt"):
+    def merge_store(
+        self, template_store, input_store, blankmsgstr=False, duplicatestyle="msgctxt"
+    ):
         """Converts two RESX files to a PO file"""
         output_store = po.pofile()
-        output_header = output_store.init_headers(charset="UTF-8",
-                                                  encoding="8bit",
-                                                  x_accelerator_marker="&")
-        output_header.addnote("extracted from %s, %s" % (template_store.filename,
-                                                         input_store.filename),
-                              "developer")
+        output_header = output_store.init_headers(
+            charset="UTF-8", encoding="8bit", x_accelerator_marker="&"
+        )
+        output_header.addnote(
+            "extracted from %s, %s" % (template_store.filename, input_store.filename),
+            "developer",
+        )
 
         input_store.makeindex()
         for template_unit in template_store.units:
@@ -95,7 +98,9 @@ class resx2po:
     def split_comments(self, origpo, translatedpo):
         autocomments = translatedpo.getnotes("developer")
         if autocomments:
-            devcomment, transcomment = autocomments.partition('[Translator Comment: ')[::2]
+            devcomment, transcomment = autocomments.partition('[Translator Comment: ')[
+                ::2
+            ]
             if transcomment:
                 origpo.addnote(transcomment.replace("]", ""), origin="translator")
             if devcomment:
@@ -117,19 +122,28 @@ class resx2po:
         return output_unit
 
 
-def convert_resx(input_file, output_file, template_file, pot=False, duplicatestyle="msgctxt", filter=None):
+def convert_resx(
+    input_file,
+    output_file,
+    template_file,
+    pot=False,
+    duplicatestyle="msgctxt",
+    filter=None,
+):
 
     from translate.storage import resx
 
     input_store = resx.RESXFile(input_file)
     convertor = resx2po()
     if template_file is None:
-        output_store = convertor.convert_store(input_store, duplicatestyle=duplicatestyle)
+        output_store = convertor.convert_store(
+            input_store, duplicatestyle=duplicatestyle
+        )
     else:
         template_store = resx.RESXFile(template_file)
-        output_store = convertor.merge_store(template_store, input_store,
-                                             blankmsgstr=pot,
-                                             duplicatestyle=duplicatestyle)
+        output_store = convertor.merge_store(
+            template_store, input_store, blankmsgstr=pot, duplicatestyle=duplicatestyle
+        )
     if output_store.isempty():
         return 0
     output_store.serialize(output_file)
@@ -138,15 +152,22 @@ def convert_resx(input_file, output_file, template_file, pot=False, duplicatesty
 
 def main(argv=None):
     from translate.convert import convert
+
     formats = {
         "resx": ("po", convert_resx),
         ("resx", "resx"): ("po", convert_resx),
     }
-    parser = convert.ConvertOptionParser(formats, usetemplates=True, usepots=True, description=__doc__)
+    parser = convert.ConvertOptionParser(
+        formats, usetemplates=True, usepots=True, description=__doc__
+    )
     parser.add_option(
-        "", "--filter", dest="filter", default=None,
+        "",
+        "--filter",
+        dest="filter",
+        default=None,
         help="leaves to extract e.g. 'name,desc': (default: extract everything)",
-        metavar="FILTER")
+        metavar="FILTER",
+    )
     parser.add_duplicates_option()
     parser.passthrough.append("pot")
     parser.passthrough.append("filter")

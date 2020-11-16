@@ -1,4 +1,3 @@
-
 from io import BytesIO
 
 from pytest import mark, raises
@@ -8,7 +7,6 @@ from translate.storage import po
 
 
 class TestPO2Php:
-
     def po2php(self, posource):
         """helper that converts po source to .php source without requiring files"""
         inputfile = BytesIO(posource.encode())
@@ -22,7 +20,7 @@ class TestPO2Php:
         inputfile = BytesIO(posource.encode())
         inputpo = po.pofile(inputfile)
         templatefile = BytesIO(phpsource.encode())
-        #templatephp = php.phpfile(templatefile)
+        # templatephp = php.phpfile(templatefile)
         convertor = po2php.rephp(templatefile, inputpo)
         outputphp = [line.decode('utf-8') for line in convertor.convertstore()]
         print(outputphp)
@@ -64,7 +62,9 @@ msgstr ""
         inputfile = BytesIO(posource.encode())
         templatefile = BytesIO(b'')
         outputfile = BytesIO()
-        assert po2php.convertphp(inputfile, outputfile, templatefile, False, 100) is False
+        assert (
+            po2php.convertphp(inputfile, outputfile, templatefile, False, 100) is False
+        )
         assert outputfile.getvalue() == b''
 
     def test_merging_simple(self):

@@ -43,8 +43,9 @@ def mergestores(store1, store2, mergeblanks, mergefuzzy, mergecomments):
         if unit1 is None:
             unit1 = store1.findunit(unit2.source)
         if unit1 is None:
-            logging.error("The template does not contain the following unit:\n%s",
-                          str(unit2))
+            logging.error(
+                "The template does not contain the following unit:\n%s", str(unit2)
+            )
         else:
             if not mergeblanks:
                 if len(unit2.target.strip()) == 0:
@@ -73,8 +74,14 @@ def str2bool(option):
         raise ValueError("invalid boolean value: %r" % option)
 
 
-def mergestore(inputfile, outputfile, templatefile, mergeblanks="no", mergefuzzy="no",
-               mergecomments="yes"):
+def mergestore(
+    inputfile,
+    outputfile,
+    templatefile,
+    mergeblanks="no",
+    mergefuzzy="no",
+    mergecomments="yes",
+):
     try:
         mergecomments = str2bool(mergecomments)
     except ValueError:
@@ -93,8 +100,9 @@ def mergestore(inputfile, outputfile, templatefile, mergeblanks="no", mergefuzzy
         templatestore = type(inputstore)()
     else:
         templatestore = factory.getobject(templatefile)
-    outputstore = mergestores(templatestore, inputstore, mergeblanks,
-                              mergefuzzy, mergecomments)
+    outputstore = mergestores(
+        templatestore, inputstore, mergeblanks, mergefuzzy, mergecomments
+    )
     if outputstore.isempty():
         return 0
     outputstore.serialize(outputfile)
@@ -103,6 +111,7 @@ def mergestore(inputfile, outputfile, templatefile, mergeblanks="no", mergefuzzy
 
 def main():
     from translate.convert import convert
+
     formats = {
         ("po", "po"): ("po", mergestore),
         ("po", "pot"): ("po", mergestore),
@@ -120,19 +129,32 @@ def main():
         ("po", "xliff"): ("xliff", mergestore),
     }
     mergeblanksoption = convert.optparse.Option(
-        "", "--mergeblanks",
-        dest="mergeblanks", action="store", default="yes",
-        help="whether to overwrite existing translations with blank translations (yes/no). Default is yes.")
+        "",
+        "--mergeblanks",
+        dest="mergeblanks",
+        action="store",
+        default="yes",
+        help="whether to overwrite existing translations with blank translations (yes/no). Default is yes.",
+    )
     mergefuzzyoption = convert.optparse.Option(
-        "", "--mergefuzzy",
-        dest="mergefuzzy", action="store", default="yes",
-        help="whether to consider fuzzy translations from input (yes/no). Default is yes.")
+        "",
+        "--mergefuzzy",
+        dest="mergefuzzy",
+        action="store",
+        default="yes",
+        help="whether to consider fuzzy translations from input (yes/no). Default is yes.",
+    )
     mergecommentsoption = convert.optparse.Option(
-        "", "--mergecomments",
-        dest="mergecomments", action="store", default="yes",
-        help="whether to merge comments as well as translations (yes/no). Default is yes.")
-    parser = convert.ConvertOptionParser(formats, usetemplates=True,
-                                         description=__doc__)
+        "",
+        "--mergecomments",
+        dest="mergecomments",
+        action="store",
+        default="yes",
+        help="whether to merge comments as well as translations (yes/no). Default is yes.",
+    )
+    parser = convert.ConvertOptionParser(
+        formats, usetemplates=True, description=__doc__
+    )
     parser.add_option(mergeblanksoption)
     parser.passthrough.append("mergeblanks")
     parser.add_option(mergefuzzyoption)

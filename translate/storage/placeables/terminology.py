@@ -67,9 +67,9 @@ class TerminologyPlaceable(base.Ph):
                 end = info['pos'] + info['newtermlen']
 
             if lastend < info['pos']:
-                parts.append(StringElem(pstr[lastend:info['pos']]))
+                parts.append(StringElem(pstr[lastend : info['pos']]))
 
-            term_string = pstr[info['pos']:end]
+            term_string = pstr[info['pos'] : end]
             term_placeable = cls([term_string])
             parts.append(term_placeable)
 
@@ -94,8 +94,7 @@ class TerminologyPlaceable(base.Ph):
         return parts or None
 
     def translate(self):
-        return (self.translations and self.translations[0] or
-                super().translate())
+        return self.translations and self.translations[0] or super().translate()
 
 
 parsers = [TerminologyPlaceable.parse]

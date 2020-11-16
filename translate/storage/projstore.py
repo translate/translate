@@ -48,7 +48,7 @@ class ProjectStore:
         # eg. convert_map = {
         #    'sources/doc.odt':   ('trans/doc.odt.xlf', None),
         #    'trans/doc.odt.xlf': ('targets/doc.odt', 'sources/doc.odt')
-        #}
+        # }
 
         # The following dict groups together sets of mappings from a file
         # "type" string ("src", "tgt" or "trans") to various other values
@@ -77,7 +77,7 @@ class ProjectStore:
                 'src': 'sources',
                 'tgt': 'targets',
                 'trans': 'transfiles',
-            }
+            },
         }
 
     def __del__(self):
@@ -90,26 +90,31 @@ class ProjectStore:
     def _get_sourcefiles(self):
         """Read-only access to ``self._sourcefiles``."""
         return tuple(self._sourcefiles)
+
     sourcefiles = property(_get_sourcefiles)
 
     def _get_targetfiles(self):
         """Read-only access to ``self._targetfiles``."""
         return tuple(self._targetfiles)
+
     targetfiles = property(_get_targetfiles)
 
     def _get_transfiles(self):
         """Read-only access to ``self._transfiles``."""
         return tuple(self._transfiles)
+
     transfiles = property(_get_transfiles)
 
     # SPECIAL METHODS #
     def __in__(self, lhs):
         """@returns ``True`` if ``lhs`` is a file name or file object in the project store."""
-        return (lhs in self._sourcefiles or
-                lhs in self._targetfiles or
-                lhs in self._transfiles or
-                lhs in self._files or
-                lhs in self._files.values())
+        return (
+            lhs in self._sourcefiles
+            or lhs in self._targetfiles
+            or lhs in self._transfiles
+            or lhs in self._files
+            or lhs in self._files.values()
+        )
 
     # METHODS #
     def append_file(self, afile, fname, ftype='trans', delete_orig=False):

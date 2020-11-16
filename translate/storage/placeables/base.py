@@ -21,18 +21,17 @@ Contains base placeable classes with names based on XLIFF placeables. See the
 XLIFF standard for more information about what the names mean.
 """
 
-from translate.storage.placeables.interfaces import (Delimiter,
-                                                     MaskingPlaceable,
-                                                     PairedDelimiter,
-                                                     ReplacementPlaceable,
-                                                     SubflowPlaceable)
+from translate.storage.placeables.interfaces import (
+    Delimiter,
+    MaskingPlaceable,
+    PairedDelimiter,
+    ReplacementPlaceable,
+    SubflowPlaceable,
+)
 from translate.storage.placeables.strelem import StringElem
 
 
-__all__ = (
-    'Bpt', 'Ept', 'Ph', 'It', 'G', 'Bx',
-    'Ex', 'X', 'Sub', 'to_base_placeables'
-)
+__all__ = ('Bpt', 'Ept', 'Ph', 'It', 'G', 'Bx', 'Ex', 'X', 'Sub', 'to_base_placeables')
 
 
 # Basic placeable types.
@@ -93,8 +92,11 @@ def to_base_placeables(tree):
     if not isinstance(tree, StringElem):
         return tree
 
-    base_class = [klass for klass in tree.__class__.__bases__
-                  if klass in [Bpt, Ept, Ph, It, G, Bx, Ex, X, Sub]]
+    base_class = [
+        klass
+        for klass in tree.__class__.__bases__
+        if klass in [Bpt, Ept, Ph, It, G, Bx, Ex, X, Sub]
+    ]
 
     if not base_class:
         base_class = tree.__class__

@@ -20,9 +20,13 @@ import re
 
 
 charset_re = re.compile('CHARACTER_SET[ ]+(?P<charset>.*)')
-header_item_or_end_re = re.compile('(((?P<key>[^ ]+)(?P<space>[ ]*:[ ]*)(?P<value>.*))|(?P<end_comment>[*]/))')
+header_item_or_end_re = re.compile(
+    '(((?P<key>[^ ]+)(?P<space>[ ]*:[ ]*)(?P<value>.*))|(?P<end_comment>[*]/))'
+)
 header_item_re = re.compile('(?P<key>[^ ]+)(?P<space>[ ]*:[ ]*)(?P<value>.*)')
-string_entry_re = re.compile('(?P<start>rls_string[ ]+)(?P<id>[^ ]+)(?P<space>[ ]+)(?P<str>.*)')
+string_entry_re = re.compile(
+    '(?P<start>rls_string[ ]+)(?P<id>[^ ]+)(?P<space>[ ]+)(?P<str>.*)'
+)
 
 
 def identity(x):
@@ -30,7 +34,6 @@ def identity(x):
 
 
 class ParseState:
-
     def __init__(self, f, charset, read_hook=identity):
         self.f = f
         self.charset = charset
@@ -60,7 +63,9 @@ def eat_whitespace(ps):
 def skip_no_translate(ps):
     if ps.current_line.startswith('// DO NOT TRANSLATE'):
         ps.read_line()
-        read_while(ps, identity, lambda line: not line.startswith('// DO NOT TRANSLATE'))
+        read_while(
+            ps, identity, lambda line: not line.startswith('// DO NOT TRANSLATE')
+        )
         ps.read_line()
         eat_whitespace(ps)
 

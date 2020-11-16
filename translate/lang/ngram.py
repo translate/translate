@@ -37,7 +37,6 @@ white_space_re = re.compile(r'\s+')
 
 
 class _NGram:
-
     def __init__(self, arg=None):
         if isinstance(arg, str):
             self.addText(arg)
@@ -102,7 +101,6 @@ class _NGram:
 
 
 class NGram:
-
     def __init__(self, folder, ext='.lm'):
         self.ngrams = {}
         folder = path.join(folder, '*' + ext)
@@ -143,7 +141,6 @@ class NGram:
 
 
 class Generate:
-
     def __init__(self, folder, ext='.txt'):
         self.ngrams = dict()
         folder = path.join(folder, '*' + ext)
@@ -170,10 +167,11 @@ class Generate:
 
 if __name__ == '__main__':
     # Should you want to generate your own .lm files
-    #conf = Generate('/tmp')
-    #conf.save('/tmp')
+    # conf = Generate('/tmp')
+    # conf.save('/tmp')
 
     text = sys.stdin.readline()
     from translate.misc.file_discovery import get_abs_data_filename
+
     lm = NGram(get_abs_data_filename('langmodels'))
     print(lm.classify(text))

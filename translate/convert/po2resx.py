@@ -73,8 +73,9 @@ class po2resx:
             unit.addnote(combocomment)
 
 
-def convertresx(inputfile, outputfile, templatefile, includefuzzy=False,
-                outputthreshold=None):
+def convertresx(
+    inputfile, outputfile, templatefile, includefuzzy=False, outputthreshold=None
+):
 
     inputstore = factory.getobject(inputfile)
 
@@ -92,8 +93,9 @@ def main(argv=None):
     formats = {
         ("po", "resx"): ("resx", convertresx),
     }
-    parser = convert.ConvertOptionParser(formats, usetemplates=True,
-                                         description=__doc__)
+    parser = convert.ConvertOptionParser(
+        formats, usetemplates=True, description=__doc__
+    )
     parser.add_fuzzy_option()
     parser.run(argv)
 

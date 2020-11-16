@@ -102,9 +102,12 @@ class TestRESXUnitFromParsedString(TestRESXUnit):
         new_unit.setid("test")
         self.store.addunit(new_unit)
 
-        expected_resx = self.resxsource % '''<data name="test" xml:space="preserve">
+        expected_resx = (
+            self.resxsource
+            % '''<data name="test" xml:space="preserve">
     <value>New translated value</value>
   </data>'''
+        )
         self._assert_store(expected_resx)
 
     def test_newunit_comment(self):
@@ -113,10 +116,13 @@ class TestRESXUnitFromParsedString(TestRESXUnit):
         new_unit.addnote("this unit didn't exist before")
         self.store.addunit(new_unit)
 
-        expected_resx = self.resxsource % '''<data name="test" xml:space="preserve">
+        expected_resx = (
+            self.resxsource
+            % '''<data name="test" xml:space="preserve">
     <value>New translated value</value>
     <comment>this unit didn't exist before</comment>
   </data>'''
+        )
         self._assert_store(expected_resx)
 
 

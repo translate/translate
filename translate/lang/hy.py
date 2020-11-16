@@ -32,18 +32,28 @@ class hy(common.Common):
 
     armenianpunc = "։՝՜՞"
 
-    punctuation = "".join([common.Common.commonpunc, common.Common.quotes,
-                           common.Common.miscpunc, armenianpunc])
+    punctuation = "".join(
+        [
+            common.Common.commonpunc,
+            common.Common.quotes,
+            common.Common.miscpunc,
+            armenianpunc,
+        ]
+    )
 
     sentenceend = "։՝՜…"
 
-    sentencere = re.compile(r"""
+    sentencere = re.compile(
+        r"""
         (?s)        # make . also match newlines
         .*?         # anything, but match non-greedy
         [%s]        # the puntuation for sentence ending
         \s+         # the spacing after the puntuation
         (?=[^a-zա-ֆ\d])  # lookahead that next part starts with caps
-        """ % sentenceend, re.VERBOSE | re.UNICODE)
+        """
+        % sentenceend,
+        re.VERBOSE | re.UNICODE,
+    )
 
     puncdict = {
         ".": "։",

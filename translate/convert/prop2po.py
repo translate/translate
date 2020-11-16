@@ -36,17 +36,14 @@ class DiscardUnit(ValueError):
 
 
 class prop2po:
-    """convert a .properties file to a .po file for handling the translation.
-    """
+    """convert a .properties file to a .po file for handling the translation."""
 
-    def __init__(self, personality="java", blankmsgstr=False,
-                 duplicatestyle="msgctxt"):
+    def __init__(self, personality="java", blankmsgstr=False, duplicatestyle="msgctxt"):
         self.personality = personality
         self.blankmsgstr = blankmsgstr
         self.duplicatestyle = duplicatestyle
         self.mixedkeys = {}
-        self.mixer = UnitMixer(properties.labelsuffixes,
-                               properties.accesskeysuffixes)
+        self.mixer = UnitMixer(properties.labelsuffixes, properties.accesskeysuffixes)
 
     def convertstore(self, thepropfile):
         """converts a .properties file to a .po file..."""
@@ -58,8 +55,7 @@ class prop2po:
             )
         else:
             targetheader = thetargetfile.header()
-        targetheader.addnote("extracted from %s" % thepropfile.filename,
-                             "developer")
+        targetheader.addnote("extracted from %s" % thepropfile.filename, "developer")
 
         thepropfile.makeindex()
         self.mixedkeys = self.mixer.match_entities(thepropfile.id_index)
@@ -76,14 +72,18 @@ class prop2po:
                 waitingcomments.extend(propunit.comments)
             if not appendedheader:
                 if propunit.isblank():
-                    targetheader.addnote("\n".join(waitingcomments).rstrip(),
-                                         "developer", position="prepend")
+                    targetheader.addnote(
+                        "\n".join(waitingcomments).rstrip(),
+                        "developer",
+                        position="prepend",
+                    )
                     waitingcomments = []
                     pounit = None
                 appendedheader = True
             if pounit is not None:
-                pounit.addnote("\n".join(waitingcomments).rstrip(),
-                               "developer", position="prepend")
+                pounit.addnote(
+                    "\n".join(waitingcomments).rstrip(), "developer", position="prepend"
+                )
                 waitingcomments = []
                 thetargetfile.addunit(pounit)
         if self.personality == "gaia":
@@ -103,10 +103,13 @@ class prop2po:
             )
         else:
             targetheader = thetargetfile.header()
-        targetheader.addnote("extracted from %s, %s" % (origpropfile.filename, translatedpropfile.filename),
-                             "developer")
+        targetheader.addnote(
+            "extracted from %s, %s"
+            % (origpropfile.filename, translatedpropfile.filename),
+            "developer",
+        )
         origpropfile.makeindex()
-        #TODO: self.mixedkeys is overwritten below, so this is useless:
+        # TODO: self.mixedkeys is overwritten below, so this is useless:
         self.mixedkeys = self.mixer.match_entities(origpropfile.id_index)
         translatedpropfile.makeindex()
         self.mixedkeys = self.mixer.match_entities(translatedpropfile.id_index)
@@ -125,8 +128,11 @@ class prop2po:
             # handle the header case specially...
             if not appendedheader:
                 if origprop.isblank():
-                    targetheader.addnote("".join(waitingcomments).rstrip(),
-                                         "developer", position="prepend")
+                    targetheader.addnote(
+                        "".join(waitingcomments).rstrip(),
+                        "developer",
+                        position="prepend",
+                    )
                     waitingcomments = []
                     origpo = None
                 appendedheader = True
@@ -136,9 +142,9 @@ class prop2po:
                 # Need to check that this comment is not a copy of the
                 # developer comments
                 try:
-                    translatedpo = self.convertpropunit(translatedpropfile,
-                                                        translatedprop,
-                                                        "translator")
+                    translatedpo = self.convertpropunit(
+                        translatedpropfile, translatedprop, "translator"
+                    )
                 except DiscardUnit:
                     continue
             else:
@@ -147,13 +153,15 @@ class prop2po:
             if origpo is not None:
                 if translatedpo is not None and not self.blankmsgstr:
                     origpo.target = translatedpo.source
-                origpo.addnote("".join(waitingcomments).rstrip(),
-                               "developer", position="prepend")
+                origpo.addnote(
+                    "".join(waitingcomments).rstrip(), "developer", position="prepend"
+                )
                 waitingcomments = []
                 thetargetfile.addunit(origpo)
             elif translatedpo is not None:
-                logger.error("didn't convert original property definition '%s'",
-                             origprop.name)
+                logger.error(
+                    "didn't convert original property definition '%s'", origprop.name
+                )
         if self.personality == "gaia":
             thetargetfile = self.fold_gaia_plurals(thetargetfile)
         elif self.personality == "gwt":
@@ -190,13 +198,14 @@ class prop2po:
         import re
 
         from translate.lang import data
+
         regex = re.compile(r'([^\[\]]*)(?:\[(.*)\])?')
         names = data.cldr_plural_categories
         new_store = type(postore)()
         plurals = {}
         for unit in postore.units:
             if not unit.istranslatable():
-                #TODO: reconsider: we could lose header comments here
+                # TODO: reconsider: we could lose header comments here
                 continue
             string = unit.getlocations()[0]
             match = regex.match(string)
@@ -222,7 +231,10 @@ class prop2po:
             if not variant:
                 raise Exception("Variant invalid: %s" % (old_variant))
             if variant in plurals[key].variants:
-                logger.warn("Override %s[%s]: %s by %s" % (key, variant, str(plurals[key].variants[variant]), str(unit)))
+                logger.warn(
+                    "Override %s[%s]: %s by %s"
+                    % (key, variant, str(plurals[key].variants[variant]), str(unit))
+                )
 
             # Put the unit
             plurals[key].variants[variant] = unit
@@ -266,7 +278,7 @@ class prop2po:
         current_plural = ""
         for unit in postore.units:
             if not unit.istranslatable():
-                #TODO: reconsider: we could lose header comments here
+                # TODO: reconsider: we could lose header comments here
                 continue
             if "plural(n)" in unit.source:
                 if current_plural:
@@ -300,8 +312,9 @@ class prop2po:
 
         # if everything went well, there should be nothing left in plurals
         if len(plurals) != 0:
-            logger.warning("Not all plural units converted correctly:" +
-                           "\n".join(plurals))
+            logger.warning(
+                "Not all plural units converted correctly:" + "\n".join(plurals)
+            )
         return new_store
 
     def convertunit(self, propunit, commenttype):
@@ -361,7 +374,7 @@ class prop2po:
             # The mix failed before
             return self.convertunit(unit, commenttype)
 
-        #assert alreadymixed is None
+        # assert alreadymixed is None
         labelkey, accesskeykey = self.mixer.find_mixed_pair(self.mixedkeys, store, unit)
         labelprop = store.id_index.get(labelkey, None)
         accesskeyprop = store.id_index.get(accesskeykey, None)
@@ -383,30 +396,57 @@ class prop2po:
         return self.convertunit(unit, commenttype)
 
 
-def convertstrings(inputfile, outputfile, templatefile, personality="strings",
-                   pot=False, duplicatestyle="msgctxt", encoding=None):
+def convertstrings(
+    inputfile,
+    outputfile,
+    templatefile,
+    personality="strings",
+    pot=False,
+    duplicatestyle="msgctxt",
+    encoding=None,
+):
     """.strings specific convertor function"""
-    return convertprop(inputfile, outputfile, templatefile,
-                       personality="strings", pot=pot,
-                       duplicatestyle=duplicatestyle, encoding=encoding)
+    return convertprop(
+        inputfile,
+        outputfile,
+        templatefile,
+        personality="strings",
+        pot=pot,
+        duplicatestyle=duplicatestyle,
+        encoding=encoding,
+    )
 
 
-def convertmozillaprop(inputfile, outputfile, templatefile, pot=False,
-                       duplicatestyle="msgctxt"):
+def convertmozillaprop(
+    inputfile, outputfile, templatefile, pot=False, duplicatestyle="msgctxt"
+):
     """Mozilla specific convertor function"""
-    return convertprop(inputfile, outputfile, templatefile,
-                       personality="mozilla", pot=pot,
-                       duplicatestyle=duplicatestyle)
+    return convertprop(
+        inputfile,
+        outputfile,
+        templatefile,
+        personality="mozilla",
+        pot=pot,
+        duplicatestyle=duplicatestyle,
+    )
 
 
-def convertprop(inputfile, outputfile, templatefile, personality="java",
-                pot=False, duplicatestyle="msgctxt", encoding=None):
+def convertprop(
+    inputfile,
+    outputfile,
+    templatefile,
+    personality="java",
+    pot=False,
+    duplicatestyle="msgctxt",
+    encoding=None,
+):
     """reads in inputfile using properties, converts using prop2po, writes to
     outputfile
     """
     inputstore = properties.propfile(inputfile, personality, encoding)
-    convertor = prop2po(personality=personality, blankmsgstr=pot,
-                        duplicatestyle=duplicatestyle)
+    convertor = prop2po(
+        personality=personality, blankmsgstr=pot, duplicatestyle=duplicatestyle
+    )
     if templatefile is None:
         outputstore = convertor.convertstore(inputstore)
     else:
@@ -430,21 +470,29 @@ formats = {
 
 def main(argv=None):
     from translate.convert import convert
-    parser = convert.ConvertOptionParser(formats, usetemplates=True,
-                                         usepots=True,
-                                         description=__doc__)
+
+    parser = convert.ConvertOptionParser(
+        formats, usetemplates=True, usepots=True, description=__doc__
+    )
     parser.add_option(
-        "", "--personality", dest="personality",
+        "",
+        "--personality",
+        dest="personality",
         default=properties.default_dialect,
         type="choice",
         choices=list(properties.dialects.keys()),
-        help="override the input file format: %s (for .properties files, default: %s)" % (
-            ", ".join(properties.dialects.keys()), properties.default_dialect),
-        metavar="TYPE")
+        help="override the input file format: %s (for .properties files, default: %s)"
+        % (", ".join(properties.dialects.keys()), properties.default_dialect),
+        metavar="TYPE",
+    )
     parser.add_option(
-        "", "--encoding", dest="encoding", default=None,
+        "",
+        "--encoding",
+        dest="encoding",
+        default=None,
         help="override the encoding set by the personality",
-        metavar="ENCODING")
+        metavar="ENCODING",
+    )
     parser.add_duplicates_option()
     parser.passthrough.append("pot")
     parser.passthrough.append("personality")

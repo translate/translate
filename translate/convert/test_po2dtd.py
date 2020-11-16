@@ -1,4 +1,3 @@
-
 import warnings
 from io import BytesIO
 
@@ -9,7 +8,6 @@ from translate.storage import dtd, po
 
 
 class TestPO2DTD:
-
     def setup_method(self, method):
         warnings.resetwarnings()
 
@@ -39,8 +37,9 @@ class TestPO2DTD:
         inputfile = BytesIO(posource.encode())
         outputfile = BytesIO()
         templatefile = BytesIO(dtdtemplate.encode())
-        assert po2dtd.convertdtd(inputfile, outputfile, templatefile,
-                                 remove_untranslated=remove_untranslated)
+        assert po2dtd.convertdtd(
+            inputfile, outputfile, templatefile, remove_untranslated=remove_untranslated
+        )
         return outputfile.getvalue().decode('utf-8')
 
     def roundtripsource(self, dtdsource):
@@ -66,7 +65,7 @@ class TestPO2DTD:
         dtdsource = dtdintro + entitystring + dtdoutro
         dtdresult = self.roundtripsource(dtdsource)
         assert dtdresult.startswith(dtdintro) and dtdresult.endswith(dtdoutro)
-        return dtdresult[len(dtdintro):-len(dtdoutro)]
+        return dtdresult[len(dtdintro) : -len(dtdoutro)]
 
     def check_roundtrip(self, dtdsource, dtdcompare=None):
         """Checks that the round-tripped string is the same as dtdcompare.
@@ -94,7 +93,9 @@ class TestPO2DTD:
 
     def test_escapedstr(self):
         r"""tests that \n in msgstr is escaped correctly in dtd"""
-        multilinepo = '''#: pref.menuPath\nmsgid "Hello\\nEveryone"\nmsgstr "Good day\\nAll"\n'''
+        multilinepo = (
+            '''#: pref.menuPath\nmsgid "Hello\\nEveryone"\nmsgstr "Good day\\nAll"\n'''
+        )
         dtdfile = self.po2dtd(multilinepo)
         dtdsource = bytes(dtdfile)
         assert b"Good day\nAll" in dtdsource
@@ -114,10 +115,14 @@ msgstr "Dimpled Ring"
 
     def test_accesskeycase(self):
         """tests that access keys come out with the same case as the original, regardless"""
-        simplepo_template = '''#: simple.label\n#: simple.accesskey\nmsgid "%s"\nmsgstr "%s"\n'''
-        simpledtd_template = '''<!ENTITY simple.label "Simple %s">\n<!ENTITY simple.accesskey "%s">'''
+        simplepo_template = (
+            '''#: simple.label\n#: simple.accesskey\nmsgid "%s"\nmsgstr "%s"\n'''
+        )
+        simpledtd_template = (
+            '''<!ENTITY simple.label "Simple %s">\n<!ENTITY simple.accesskey "%s">'''
+        )
         possibilities = [
-            #(en label, en akey, en po, af po, af label, expected af akey)
+            # (en label, en akey, en po, af po, af label, expected af akey)
             ("Sis", "S", "&Sis", "&Sies", "Sies", "S"),
             ("Sis", "s", "Si&s", "&Sies", "Sies", "S"),
             ("Sis", "S", "&Sis", "Sie&s", "Sies", "s"),
@@ -128,7 +133,14 @@ msgstr "Dimpled Ring"
             ("Suck", "S", "&Suck", "", "Suck", "S"),
             ("Suck", "s", "&Suck", "", "Suck", "s"),
         ]
-        for (en_label, en_akey, po_source, po_target, target_label, target_akey) in possibilities:
+        for (
+            en_label,
+            en_akey,
+            po_source,
+            po_target,
+            target_label,
+            target_akey,
+        ) in possibilities:
             simplepo = simplepo_template % (po_source, po_target)
             simpledtd = simpledtd_template % (en_label, en_akey)
             dtdfile = self.merge2dtd(simpledtd, simplepo)
@@ -138,7 +150,9 @@ msgstr "Dimpled Ring"
 
     def test_accesskey_types(self):
         """tests that we can detect the various styles of accesskey"""
-        simplepo_template = '''#: simple.%s\n#: simple.%s\nmsgid "&File"\nmsgstr "F&aele"\n'''
+        simplepo_template = (
+            '''#: simple.%s\n#: simple.%s\nmsgid "&File"\nmsgstr "F&aele"\n'''
+        )
         simpledtd_template = '''<!ENTITY simple.%s "File">\n<!ENTITY simple.%s "a">'''
         for label in ("label", "title"):
             for accesskey in ("accesskey", "accessKey", "akey"):
@@ -146,7 +160,12 @@ msgstr "Dimpled Ring"
                 simpledtd = simpledtd_template % (label, accesskey)
                 dtdfile = self.merge2dtd(simpledtd, simplepo)
                 dtdfile.makeindex()
-                assert dtd.unquotefromdtd(dtdfile.id_index["simple.%s" % accesskey].definition) == "a"
+                assert (
+                    dtd.unquotefromdtd(
+                        dtdfile.id_index["simple.%s" % accesskey].definition
+                    )
+                    == "a"
+                )
 
     def test_accesskey_missing(self):
         """tests that missing ampersands use the source accesskey"""
@@ -251,7 +270,9 @@ msgstr "Lig & Kleur"
 
     def test_entities(self):
         """tests that entities are correctly idnetified in the dtd"""
-        simplestring = '''#: simple.string\nmsgid "Simple String"\nmsgstr "Dimpled Ring"\n'''
+        simplestring = (
+            '''#: simple.string\nmsgid "Simple String"\nmsgstr "Dimpled Ring"\n'''
+        )
         dtdfile = self.po2dtd(simplestring)
         dtdsource = bytes(dtdfile)
         assert dtdsource.startswith(b"<!ENTITY simple.string")
@@ -365,7 +386,9 @@ msgstr "Simple string 3"
         dtdexpected_no_template = '''<!ENTITY simple.label "Dimpled ring">
 <!ENTITY simple.label3 "Simple string 3">
 '''
-        newdtd_with_template = self.convertdtd(posource, dtdtemplate, remove_untranslated=True)
+        newdtd_with_template = self.convertdtd(
+            posource, dtdtemplate, remove_untranslated=True
+        )
         print(newdtd_with_template)
         assert newdtd_with_template == dtdexpected_with_template
         newdtd_no_template = self.po2dtd(posource, remove_untranslated=True)
@@ -405,8 +428,9 @@ msgstr "Simple string 3"
         #
         # Thus the string cannot be compared with itself and therefore another
         # string should be provided to compare with the roundtrip result.
-        self.check_roundtrip(r"""'Quote Escape "" '""",
-                             r'''"Quote Escape &quot;&quot; "''')
+        self.check_roundtrip(
+            r"""'Quote Escape "" '""", r'''"Quote Escape &quot;&quot; "'''
+        )
         self.check_roundtrip(r'''"Double-Quote Escape &quot;&quot; "''')
         self.check_roundtrip(r'''"Single-Quote ' "''')
         self.check_roundtrip(r'''"Single-Quote Escape \' "''')
@@ -419,8 +443,10 @@ msgstr "Simple string 3"
         #
         # Thus the string cannot be compared with itself and therefore another
         # string should be provided to compare with the roundtrip result.
-        self.check_roundtrip(r"""'Both Quotes "" &apos;&apos; '""",
-                             r'''"Both Quotes &quot;&quot; &apos;&apos; "''')
+        self.check_roundtrip(
+            r"""'Both Quotes "" &apos;&apos; '""",
+            r'''"Both Quotes &quot;&quot; &apos;&apos; "''',
+        )
         self.check_roundtrip(r'''"Both Quotes &quot;&quot; &apos;&apos; "''')
         # NOTE: during the roundtrip, if &quot; is present, then ' is converted
         # to &apos; Also the resulting string is always enclosed between "
@@ -429,8 +455,10 @@ msgstr "Simple string 3"
         #
         # Thus the string cannot be compared with itself and therefore another
         # string should be provided to compare with the roundtrip result.
-        self.check_roundtrip(r'''"Both Quotes &quot;&quot; '' "''',
-                             r'''"Both Quotes &quot;&quot; &apos;&apos; "''')
+        self.check_roundtrip(
+            r'''"Both Quotes &quot;&quot; '' "''',
+            r'''"Both Quotes &quot;&quot; &apos;&apos; "''',
+        )
 
     def test_roundtrip_amp(self):
         """Checks that quotes make it through a DTD->PO->DTD roundtrip.
@@ -442,8 +470,10 @@ msgstr "Simple string 3"
     def test_merging_entries_with_spaces_removed(self):
         """dtd2po removes pretty printed spaces, this tests that we can merge this back into the pretty printed dtd"""
         posource = '''#: simple.label\nmsgid "First line then "\n"next lines."\nmsgstr "Eerste lyne en dan volgende lyne."\n'''
-        dtdtemplate = ('<!ENTITY simple.label "First line then\n'
-                       '                           next lines.">\n')
+        dtdtemplate = (
+            '<!ENTITY simple.label "First line then\n'
+            '                           next lines.">\n'
+        )
         dtdexpected = '<!ENTITY simple.label "Eerste lyne en dan volgende lyne.">\n'
         dtdfile = self.merge2dtd(dtdtemplate, posource)
         print(bytes(dtdfile))

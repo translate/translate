@@ -1,4 +1,3 @@
-
 import warnings
 from io import BytesIO
 
@@ -7,27 +6,108 @@ from translate.storage import oo
 
 def test_makekey():
     """checks the makekey function for consistency"""
-    assert oo.makekey(('project', r'path\to\the\sourcefile.src', 'resourcetype', 'GROUP_ID', 'LOCAL_ID', 'platform'), False) == "sourcefile.src#GROUP_ID.LOCAL_ID.resourcetype"
+    assert (
+        oo.makekey(
+            (
+                'project',
+                r'path\to\the\sourcefile.src',
+                'resourcetype',
+                'GROUP_ID',
+                'LOCAL_ID',
+                'platform',
+            ),
+            False,
+        )
+        == "sourcefile.src#GROUP_ID.LOCAL_ID.resourcetype"
+    )
     # Testwith long_key i.e. used in multifile options
-    assert oo.makekey(('project', r'path\to\the\sourcefile.src', 'resourcetype', 'GROUP_ID', 'LOCAL_ID', 'platform'), True) == "project/path/to/the/sourcefile.src#GROUP_ID.LOCAL_ID.resourcetype"
-    assert oo.makekey(('project', r'path\to\the\sourcefile.src', 'resourcetype', 'GROUP_ID', '', 'platform'), False) == "sourcefile.src#GROUP_ID.resourcetype"
-    assert oo.makekey(('project', r'path\to\the\sourcefile.src', 'resourcetype', '', 'LOCAL_ID', 'platform'), False) == "sourcefile.src#LOCAL_ID.resourcetype"
-    assert oo.makekey(('project', r'path\to\the\sourcefile.src', '', 'GROUP_ID', 'LOCAL_ID', 'platform'), False) == "sourcefile.src#GROUP_ID.LOCAL_ID"
-    assert oo.makekey(('project', r'path\to\the\sourcefile.src', '', 'GROUP_ID', '', 'platform'), False) == "sourcefile.src#GROUP_ID"
+    assert (
+        oo.makekey(
+            (
+                'project',
+                r'path\to\the\sourcefile.src',
+                'resourcetype',
+                'GROUP_ID',
+                'LOCAL_ID',
+                'platform',
+            ),
+            True,
+        )
+        == "project/path/to/the/sourcefile.src#GROUP_ID.LOCAL_ID.resourcetype"
+    )
+    assert (
+        oo.makekey(
+            (
+                'project',
+                r'path\to\the\sourcefile.src',
+                'resourcetype',
+                'GROUP_ID',
+                '',
+                'platform',
+            ),
+            False,
+        )
+        == "sourcefile.src#GROUP_ID.resourcetype"
+    )
+    assert (
+        oo.makekey(
+            (
+                'project',
+                r'path\to\the\sourcefile.src',
+                'resourcetype',
+                '',
+                'LOCAL_ID',
+                'platform',
+            ),
+            False,
+        )
+        == "sourcefile.src#LOCAL_ID.resourcetype"
+    )
+    assert (
+        oo.makekey(
+            (
+                'project',
+                r'path\to\the\sourcefile.src',
+                '',
+                'GROUP_ID',
+                'LOCAL_ID',
+                'platform',
+            ),
+            False,
+        )
+        == "sourcefile.src#GROUP_ID.LOCAL_ID"
+    )
+    assert (
+        oo.makekey(
+            ('project', r'path\to\the\sourcefile.src', '', 'GROUP_ID', '', 'platform'),
+            False,
+        )
+        == "sourcefile.src#GROUP_ID"
+    )
 
 
 def test_escape_help_text():
     """Check the help text escape function"""
-    assert oo.escape_help_text("If we don't know <tag> we don't <br> escape it") == "If we don't know <tag> we don't <br> escape it"
+    assert (
+        oo.escape_help_text("If we don't know <tag> we don't <br> escape it")
+        == "If we don't know <tag> we don't <br> escape it"
+    )
     # Bug 694
     assert oo.escape_help_text("A szó: <nyelv>") == "A szó: <nyelv>"
-    assert oo.escape_help_text("""...következő: "<kiszolgáló> <témakör> <elem>", ahol...""") == """...következő: "<kiszolgáló> <témakör> <elem>", ahol..."""
+    assert (
+        oo.escape_help_text(
+            """...következő: "<kiszolgáló> <témakör> <elem>", ahol..."""
+        )
+        == """...következő: "<kiszolgáló> <témakör> <elem>", ahol..."""
+    )
     # See bug 694 comments 8-10 not fully resolved.
-    assert oo.escape_help_text(r"...törtjel (\) létrehozásához...") == r"...törtjel (\\) létrehozásához..."
+    assert (
+        oo.escape_help_text(r"...törtjel (\) létrehozásához...")
+        == r"...törtjel (\\) létrehozásához..."
+    )
 
 
 class TestOO:
-
     def setup_method(self, method):
         warnings.resetwarnings()
 
@@ -53,7 +133,14 @@ class TestOO:
         oe = oofile.units[0]
         assert list(oe.languages.keys()) == ["en-US"]
         ol = oofile.oolines[0]
-        assert ol.getkey() == ('svx', r'source\dialog\numpages.src', 'string', 'RID_SVXPAGE_NUM_OPTIONS', 'STR_BULLET', '')
+        assert ol.getkey() == (
+            'svx',
+            r'source\dialog\numpages.src',
+            'string',
+            'RID_SVXPAGE_NUM_OPTIONS',
+            'STR_BULLET',
+            '',
+        )
         assert ol.text == 'Character'
         assert str(ol) == oosource
 
@@ -65,7 +152,14 @@ class TestOO:
         oe = oofile.units[0]
         assert list(oe.languages.keys()) == ["en-US"]
         ol = oofile.oolines[0]
-        assert ol.getkey() == ('sd', r'source\ui\dlg\sdobjpal.src', 'imagebutton', 'FLTWIN_SDOBJPALETTE', 'BTN_SYMSIZE', '')
+        assert ol.getkey() == (
+            'sd',
+            r'source\ui\dlg\sdobjpal.src',
+            'imagebutton',
+            'FLTWIN_SDOBJPALETTE',
+            'BTN_SYMSIZE',
+            '',
+        )
         assert ol.quickhelptext == 'Toggle Symbol Size'
         assert str(ol) == oosource
 
@@ -77,7 +171,14 @@ class TestOO:
         oe = oofile.units[0]
         assert list(oe.languages.keys()) == ["en-US"]
         ol = oofile.oolines[0]
-        assert ol.getkey() == ('dbaccess', r'source\ui\dlg\indexdialog.src', 'querybox', 'QUERY_SAVE_CURRENT_INDEX', '', '')
+        assert ol.getkey() == (
+            'dbaccess',
+            r'source\ui\dlg\indexdialog.src',
+            'querybox',
+            'QUERY_SAVE_CURRENT_INDEX',
+            '',
+            '',
+        )
         assert ol.title == 'Exit Index Design'
         assert str(ol) == oosource
 

@@ -40,13 +40,17 @@ class TestTMXfile(test_base.TestTranslationStore):
     def test_translate(self):
         tmxfile = tmx.tmxfile()
         assert tmxfile.translate("Anything") is None
-        tmxfile.addtranslation("A string of characters", "en", "'n String karakters", "af")
+        tmxfile.addtranslation(
+            "A string of characters", "en", "'n String karakters", "af"
+        )
         assert tmxfile.translate("A string of characters") == "'n String karakters"
 
     def test_addtranslation(self):
         """tests that addtranslation() stores strings correctly"""
         tmxfile = tmx.tmxfile()
-        tmxfile.addtranslation("A string of characters", "en", "'n String karakters", "af")
+        tmxfile.addtranslation(
+            "A string of characters", "en", "'n String karakters", "af"
+        )
         newfile = self.tmxparse(bytes(tmxfile))
         print(bytes(tmxfile))
         assert newfile.translate("A string of characters") == "'n String karakters"
@@ -54,8 +58,9 @@ class TestTMXfile(test_base.TestTranslationStore):
     def test_withcomment(self):
         """tests that addtranslation() stores string's comments correctly"""
         tmxfile = tmx.tmxfile()
-        tmxfile.addtranslation("A string of chars",
-                               "en", "'n String karakters", "af", "comment")
+        tmxfile.addtranslation(
+            "A string of chars", "en", "'n String karakters", "af", "comment"
+        )
         newfile = self.tmxparse(bytes(tmxfile))
         print(bytes(tmxfile))
         assert newfile.findunit("A string of chars").getnotes() == "comment"
@@ -63,7 +68,9 @@ class TestTMXfile(test_base.TestTranslationStore):
     def test_withnewlines(self):
         """test addtranslation() with newlines"""
         tmxfile = tmx.tmxfile()
-        tmxfile.addtranslation("First line\nSecond line", "en", "Eerste lyn\nTweede lyn", "af")
+        tmxfile.addtranslation(
+            "First line\nSecond line", "en", "Eerste lyn\nTweede lyn", "af"
+        )
         newfile = self.tmxparse(bytes(tmxfile))
         print(bytes(tmxfile))
         assert newfile.translate("First line\nSecond line") == "Eerste lyn\nTweede lyn"

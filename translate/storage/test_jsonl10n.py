@@ -1,4 +1,3 @@
-
 from io import BytesIO
 
 from pytest import raises
@@ -150,33 +149,40 @@ class TestJSONResourceStore(test_monolingual.TestMonolingualStore):
 
     def test_ordering(self):
         store = self.StoreClass()
-        store.parse('''{
+        store.parse(
+            '''{
     "foo": "foo",
     "bar": "bar",
     "baz": "baz"
-}''')
+}'''
+        )
 
         assert store.units[0].source == 'foo'
         assert store.units[2].source == 'baz'
 
     def test_args(self):
         store = self.StoreClass()
-        store.parse('''{
+        store.parse(
+            '''{
     "foo": "foo",
     "bar": "bar",
     "baz": "baz"
-}''')
+}'''
+        )
         store.dump_args['sort_keys'] = True
 
         out = BytesIO()
         store.serialize(out)
 
-        assert out.getvalue() == b'''{
+        assert (
+            out.getvalue()
+            == b'''{
     "bar": "bar",
     "baz": "baz",
     "foo": "foo"
 }
 '''
+        )
 
     def test_bom(self):
         content = "{}\n".encode("utf-8-sig")
@@ -214,10 +220,13 @@ class TestJSONResourceStore(test_monolingual.TestMonolingualStore):
         unit.setid('simple.key')
         store.addunit(unit)
 
-        assert bytes(store).decode() == """{
+        assert (
+            bytes(store).decode()
+            == """{
     "simple.key": "source"
 }
 """
+        )
 
 
 class TestJSONNestedResourceStore(test_monolingual.TestMonolingualUnit):
@@ -229,7 +238,9 @@ class TestJSONNestedResourceStore(test_monolingual.TestMonolingualUnit):
         out = BytesIO()
         store.serialize(out)
 
-        assert out.getvalue() == b'{\n    "key": {\n        "second": "value"\n    }\n}\n'
+        assert (
+            out.getvalue() == b'{\n    "key": {\n        "second": "value"\n    }\n}\n'
+        )
 
     def test_ordering(self):
         data = b'''{
@@ -274,12 +285,15 @@ class TestJSONNestedResourceStore(test_monolingual.TestMonolingualUnit):
         unit.setid('simple.key')
         store.addunit(unit)
 
-        assert bytes(store).decode() == """{
+        assert (
+            bytes(store).decode()
+            == """{
     "simple": {
         "key": "source"
     }
 }
 """
+        )
 
 
 class TestWebExtensionUnit(test_monolingual.TestMonolingualUnit):
@@ -295,7 +309,10 @@ class TestWebExtensionStore(test_monolingual.TestMonolingualStore):
         out = BytesIO()
         store.serialize(out)
 
-        assert out.getvalue() == b'{\n    "key": {\n        "message": "value",\n        "description": "note"\n    }\n}\n'
+        assert (
+            out.getvalue()
+            == b'{\n    "key": {\n        "message": "value",\n        "description": "note"\n    }\n}\n'
+        )
 
     def test_serialize_no_description(self):
         store = self.StoreClass()
@@ -303,7 +320,9 @@ class TestWebExtensionStore(test_monolingual.TestMonolingualStore):
         out = BytesIO()
         store.serialize(out)
 
-        assert out.getvalue() == b'{\n    "key": {\n        "message": "value"\n    }\n}\n'
+        assert (
+            out.getvalue() == b'{\n    "key": {\n        "message": "value"\n    }\n}\n'
+        )
 
     def test_set_target(self):
         store = self.StoreClass()
@@ -312,7 +331,10 @@ class TestWebExtensionStore(test_monolingual.TestMonolingualStore):
         out = BytesIO()
         store.serialize(out)
 
-        assert out.getvalue() == b'{\n    "key": {\n        "message": "another",\n        "description": "note"\n    }\n}\n'
+        assert (
+            out.getvalue()
+            == b'{\n    "key": {\n        "message": "another",\n        "description": "note"\n    }\n}\n'
+        )
 
     def test_placeholders(self):
         DATA = """{
@@ -326,7 +348,9 @@ class TestWebExtensionStore(test_monolingual.TestMonolingualStore):
         }
     }
 }
-""".encode('utf-8')
+""".encode(
+            'utf-8'
+        )
 
         store = self.StoreClass()
         store.parse(DATA)
@@ -366,18 +390,22 @@ class TestI18NextStore(test_monolingual.TestMonolingualStore):
         assert out.getvalue() == JSON_I18NEXT_PLURAL
 
         # Bring back plurals
-        store.units[2].target = multistring([
-            "the singular",
-            "the plural",
-        ])
-        store.units[3].target = multistring([
-            "the plural form 0",
-            "the plural form 1",
-            "the plural form 2",
-            "the plural form 3",
-            "the plural form 4",
-            "the plural form 5"
-        ])
+        store.units[2].target = multistring(
+            [
+                "the singular",
+                "the plural",
+            ]
+        )
+        store.units[3].target = multistring(
+            [
+                "the plural form 0",
+                "the plural form 1",
+                "the plural form 2",
+                "the plural form 3",
+                "the plural form 4",
+                "the plural form 5",
+            ]
+        )
         out = BytesIO()
         store.serialize(out)
 
@@ -410,24 +438,28 @@ class TestI18NextStore(test_monolingual.TestMonolingualStore):
         store = self.StoreClass()
 
         unit = self.StoreClass.UnitClass(
-            multistring([
-                "the singular",
-                "the plural",
-            ]),
-            'simple'
+            multistring(
+                [
+                    "the singular",
+                    "the plural",
+                ]
+            ),
+            'simple',
         )
         store.addunit(unit)
 
         unit = self.StoreClass.UnitClass(
-            multistring([
-                "the plural form 0",
-                "the plural form 1",
-                "the plural form 2",
-                "the plural form 3",
-                "the plural form 4",
-                "the plural form 5"
-            ]),
-            'complex'
+            multistring(
+                [
+                    "the plural form 0",
+                    "the plural form 1",
+                    "the plural form 2",
+                    "the plural form 3",
+                    "the plural form 4",
+                    "the plural form 5",
+                ]
+            ),
+            'complex',
         )
         store.addunit(unit)
 
@@ -445,7 +477,9 @@ class TestGoI18NJsonFile(test_monolingual.TestMonolingualStore):
         store.parse(JSON_GOI18N)
 
         assert len(store.units) == 2
-        assert store.units[0].target == multistring(["{{.count}} tag", "{{.count}} tags"])
+        assert store.units[0].target == multistring(
+            ["{{.count}} tag", "{{.count}} tags"]
+        )
         assert store.units[1].target == "Table"
 
         assert bytes(store).decode() == JSON_GOI18N.decode()

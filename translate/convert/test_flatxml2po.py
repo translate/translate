@@ -1,4 +1,3 @@
-
 """Tests converting flat XML files to Gettext PO localization files"""
 
 from io import BytesIO
@@ -108,11 +107,9 @@ class TestFlatXML2PO:
             <stuff dude="two">Two</stuff>
         </fancy>
         '''
-        actual = self._convert_to_store(xmlstring,
-                                        root="fancy",
-                                        value="stuff",
-                                        key="dude",
-                                        ns="urn:tt:test")
+        actual = self._convert_to_store(
+            xmlstring, root="fancy", value="stuff", key="dude", ns="urn:tt:test"
+        )
         self._do_assert_store(actual)
 
     def test_empty_file_is_empty_store(self):

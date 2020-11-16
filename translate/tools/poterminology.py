@@ -33,13 +33,19 @@ from translate.storage import factory, po
 logger = logging.getLogger(__name__)
 
 
-def create_termunit(term, unit, targets, locations, sourcenotes, transnotes, filecounts):
+def create_termunit(
+    term, unit, targets, locations, sourcenotes, transnotes, filecounts
+):
     termunit = po.pounit(term)
     if unit is not None:
         termunit.merge(unit, overwrite=False, comments=False)
     if len(targets.keys()) > 1:
-        txt = '; '.join(["%s {%s}" % (target, ', '.join(files))
-                         for target, files in targets.items()])
+        txt = '; '.join(
+            [
+                "%s {%s}" % (target, ', '.join(files))
+                for target, files in targets.items()
+            ]
+        )
         if termunit.target.find('};') < 0:
             termunit.target = txt
             termunit.markfuzzy()
@@ -58,9 +64,16 @@ def create_termunit(term, unit, targets, locations, sourcenotes, transnotes, fil
 
 
 class TerminologyExtractor:
-
-    def __init__(self, foldtitle=True, ignorecase=False, accelchars="", termlength=3,
-                 sourcelanguage="en", invert=False, stopfile=None):
+    def __init__(
+        self,
+        foldtitle=True,
+        ignorecase=False,
+        accelchars="",
+        termlength=3,
+        sourcelanguage="en",
+        invert=False,
+        stopfile=None,
+    ):
         self.foldtitle = foldtitle
         self.ignorecase = ignorecase
         self.accelchars = accelchars
@@ -76,29 +89,39 @@ class TerminologyExtractor:
 
         if stopfile is None:
             try:
-                stopfile = file_discovery.get_abs_data_filename('stoplist-%s' % self.sourcelanguage)
+                stopfile = file_discovery.get_abs_data_filename(
+                    'stoplist-%s' % self.sourcelanguage
+                )
             except Exception:
                 pass
         self.stopfile = stopfile
         self.parse_stopword_file()
 
         # handles c-format and python-format
-        self.formatpat = re.compile(r"%(?:\([^)]+\)|[0-9]+\$)?[-+#0]*[0-9.*]*(?:[hlLzjt][hl])?[EFGXc-ginoprsux]")
+        self.formatpat = re.compile(
+            r"%(?:\([^)]+\)|[0-9]+\$)?[-+#0]*[0-9.*]*(?:[hlLzjt][hl])?[EFGXc-ginoprsux]"
+        )
         # handles XML/HTML elements (<foo>text</foo> => text)
         self.xmlelpat = re.compile(r"<(?:![[-]|[/?]?[A-Za-z_:])[^>]*>")
         # handles XML/HTML entities (&#32; &#x20; &amp; &my_entity;)
-        self.xmlentpat = re.compile(r"&(?:#(?:[0-9]+|x[0-9a-f]+)|[a-z_:][\w.-:]*);",
-                                    flags=re.UNICODE | re.IGNORECASE)
+        self.xmlentpat = re.compile(
+            r"&(?:#(?:[0-9]+|x[0-9a-f]+)|[a-z_:][\w.-:]*);",
+            flags=re.UNICODE | re.IGNORECASE,
+        )
 
         self.units = 0
         self.glossary = {}
 
     def parse_stopword_file(self):
 
-        actions = {'+': frozenset(), ':': frozenset(['skip']),
-                   '<': frozenset(['phrase']), '=': frozenset(['word']),
-                   '>': frozenset(['word', 'skip']),
-                   '@': frozenset(['word', 'phrase'])}
+        actions = {
+            '+': frozenset(),
+            ':': frozenset(['skip']),
+            '<': frozenset(['phrase']),
+            '=': frozenset(['word']),
+            '>': frozenset(['word', 'skip']),
+            '@': frozenset(['word', 'phrase']),
+        }
 
         with open(self.stopfile, "r") as stopfile:
             line = 0
@@ -118,17 +141,25 @@ class TerminologyExtractor:
                         elif stopline[1] == 'I':
                             self.stopignorecase = True
                         else:
-                            logger.warning("%s:%d - bad case mapping directive",
-                                           self.stopfile, line)
+                            logger.warning(
+                                "%s:%d - bad case mapping directive",
+                                self.stopfile,
+                                line,
+                            )
                     elif stoptype == '/':
                         self.stoprelist.append(re.compile(stopline[1:-1] + '$'))
                     else:
                         self.stopwords[stopline[1:-1]] = actions[stoptype]
             except KeyError as character:
-                logger.warning("%s:%d - bad stopword entry starts with '%s'",
-                               self.stopfile, line, str(character))
-                logger.warning("%s:%d all lines after error ignored",
-                               self.stopfile, line + 1)
+                logger.warning(
+                    "%s:%d - bad stopword entry starts with '%s'",
+                    self.stopfile,
+                    line,
+                    str(character),
+                )
+                logger.warning(
+                    "%s:%d all lines after error ignored", self.stopfile, line + 1
+                )
 
     def clean(self, string):
         """returns the cleaned string that contains the text to be matched"""
@@ -152,18 +183,22 @@ class TerminologyExtractor:
 
     def addphrases(self, words, skips, translation, partials=True):
         """adds (sub)phrases with non-skipwords and more than one word"""
-        if (len(words) > skips + 1 and
-            'skip' not in self.stopword(words[0]) and
-            'skip' not in self.stopword(words[-1])):
+        if (
+            len(words) > skips + 1
+            and 'skip' not in self.stopword(words[0])
+            and 'skip' not in self.stopword(words[-1])
+        ):
             self.glossary.setdefault(' '.join(words), []).append(translation)
         if partials:
             part = list(words)
             while len(part) > 2:
                 if 'skip' in self.stopword(part.pop()):
                     skips -= 1
-                if (len(part) > skips + 1 and
-                    'skip' not in self.stopword(part[0]) and
-                    'skip' not in self.stopword(part[-1])):
+                if (
+                    len(part) > skips + 1
+                    and 'skip' not in self.stopword(part[0])
+                    and 'skip' not in self.stopword(part[-1])
+                ):
                     self.glossary.setdefault(' '.join(part), []).append(translation)
 
     def processunits(self, units, fullinputpath):
@@ -201,7 +236,11 @@ class TerminologyExtractor:
                     if 'word' not in ignore:
                         # reduce plurals
                         root = word
-                        if len(word) > 3 and word[-1] == 's' and word[0:-1] in self.glossary:
+                        if (
+                            len(word) > 3
+                            and word[-1] == 's'
+                            and word[0:-1] in self.glossary
+                        ):
                             root = word[0:-1]
                         elif len(root) > 2 and root + 's' in self.glossary:
                             self.glossary[root] = self.glossary.pop(root + 's')
@@ -225,7 +264,9 @@ class TerminologyExtractor:
                                         skips -= 1
                                 self.addphrases(words, skips, translation)
                             else:
-                                self.addphrases(words, skips, translation, partials=False)
+                                self.addphrases(
+                                    words, skips, translation, partials=False
+                                )
                 if self.termlength > 1:
                     # add trailing phrases in sentence after reaching end
                     while self.termlength > 1 and len(words) > 2:
@@ -234,7 +275,14 @@ class TerminologyExtractor:
                             skips -= 1
                         self.addphrases(words, skips, translation)
 
-    def extract_terms(self, create_termunit=create_termunit, inputmin=1, fullmsgmin=1, substrmin=2, locmin=2):
+    def extract_terms(
+        self,
+        create_termunit=create_termunit,
+        inputmin=1,
+        fullmsgmin=1,
+        substrmin=2,
+        locmin=2,
+    ):
         terms = {}
         locre = re.compile(r":[0-9]+$")
         logger.info("%d terms from %d units", len(self.glossary), self.units)
@@ -285,10 +333,13 @@ class TerminologyExtractor:
             locmax = 2 * locmin
             if numlocs > locmax:
                 locations = list(locations)[0:locmax]
-                locations.append("(poterminology) %d more locations" %
-                                 (numlocs - locmax))
+                locations.append(
+                    "(poterminology) %d more locations" % (numlocs - locmax)
+                )
 
-            termunit = create_termunit(term, bestunit, targets, locations, sourcenotes, transnotes, filecounts)
+            termunit = create_termunit(
+                term, bestunit, targets, locations, sourcenotes, transnotes, filecounts
+            )
             terms[term] = ((10 * numfiles) + numsources, termunit)
         return terms
 
@@ -338,7 +389,9 @@ class TerminologyOptionParser(optrecurse.RecursiveOptionParser):
 
     def parse_args(self, args=None, values=None):
         """parses the command line options, handling implicit input/output args"""
-        (options, args) = optrecurse.optparse.OptionParser.parse_args(self, args, values)
+        (options, args) = optrecurse.optparse.OptionParser.parse_args(
+            self, args, values
+        )
         # some intelligence as to what reasonable people might give on the command line
         if args and not options.input:
             if not options.output and not options.update and len(args) > 1:
@@ -351,13 +404,18 @@ class TerminologyOptionParser(optrecurse.RecursiveOptionParser):
         # due to shell wildcard expansion
         if args and not options.output and not options.update:
             if os.path.lexists(args[-1]) and not os.path.isdir(args[-1]):
-                self.error("To overwrite %s, specify it with -o/--output or -u/--update" % (args[-1]))
+                self.error(
+                    "To overwrite %s, specify it with -o/--output or -u/--update"
+                    % (args[-1])
+                )
             options.output = args[-1]
             args = args[:-1]
         if options.output and options.update:
             self.error("You cannot use both -u/--update and -o/--output")
         if args:
-            self.error("You have used an invalid combination of -i/--input, -o/--output, -u/--update and freestanding args")
+            self.error(
+                "You have used an invalid combination of -i/--input, -o/--output, -u/--update and freestanding args"
+            )
         if not options.input:
             self.error("No input file or directory was specified")
         if isinstance(options.input, list) and len(options.input) == 1:
@@ -384,8 +442,11 @@ class TerminologyOptionParser(optrecurse.RecursiveOptionParser):
     def set_usage(self, usage=None):
         """sets the usage string - if usage not given, uses getusagestring for each option"""
         if usage is None:
-            self.usage = "%prog " + " ".join([self.getusagestring(option) for option in self.option_list]) + \
-                "\n  input directory is searched for PO files, terminology PO file is output file"
+            self.usage = (
+                "%prog "
+                + " ".join([self.getusagestring(option) for option in self.option_list])
+                + "\n  input directory is searched for PO files, terminology PO file is output file"
+            )
         else:
             super().set_usage(usage)
 
@@ -393,15 +454,22 @@ class TerminologyOptionParser(optrecurse.RecursiveOptionParser):
         """parses the arguments, and runs recursiveprocess with the resulting options"""
         self.files = 0
         (options, args) = self.parse_args()
-        self.extractor = TerminologyExtractor(foldtitle=options.foldtitle, ignorecase=options.ignorecase,
-                                              accelchars=options.accelchars, termlength=options.termlength,
-                                              sourcelanguage=options.sourcelanguage,
-                                              invert=options.invert, stopfile=options.stopfile)
+        self.extractor = TerminologyExtractor(
+            foldtitle=options.foldtitle,
+            ignorecase=options.ignorecase,
+            accelchars=options.accelchars,
+            termlength=options.termlength,
+            sourcelanguage=options.sourcelanguage,
+            invert=options.invert,
+            stopfile=options.stopfile,
+        )
         self.recursiveprocess(options)
 
     def recursiveprocess(self, options):
         """recurse through directories and process files"""
-        if self.isrecursive(options.input, 'input') and getattr(options, "allowrecursiveinput", True):
+        if self.isrecursive(options.input, 'input') and getattr(
+            options, "allowrecursiveinput", True
+        ):
             if isinstance(options.input, list):
                 inputfiles = self.recurseinputfilelist(options)
             else:
@@ -423,7 +491,11 @@ class TerminologyOptionParser(optrecurse.RecursiveOptionParser):
             try:
                 self.processfile(None, options, fullinputpath)
             except Exception:
-                self.warning("Error processing: input %s" % (fullinputpath), options, sys.exc_info())
+                self.warning(
+                    "Error processing: input %s" % (fullinputpath),
+                    options,
+                    sys.exc_info(),
+                )
                 success = False
             progress_bar.report_progress(inputpath, success)
         del progress_bar
@@ -439,11 +511,15 @@ class TerminologyOptionParser(optrecurse.RecursiveOptionParser):
         """saves the generated terminology glossary"""
         termfile = po.pofile()
         logger.info("scanned %d files", self.files)
-        terms = self.extractor.extract_terms(inputmin=options.inputmin,
-                                             fullmsgmin=options.fullmsgmin,
-                                             substrmin=options.substrmin,
-                                             locmin=options.locmin)
-        termitems = self.extractor.filter_terms(terms, nonstopmin=options.nonstopmin, sortorders=options.sortorders)
+        terms = self.extractor.extract_terms(
+            inputmin=options.inputmin,
+            fullmsgmin=options.fullmsgmin,
+            substrmin=options.substrmin,
+            locmin=options.locmin,
+        )
+        termitems = self.extractor.filter_terms(
+            terms, nonstopmin=options.nonstopmin, sortorders=options.sortorders
+        )
         for count, unit in termitems:
             termfile.units.append(unit)
         with open(options.output, "wb") as fh:
@@ -464,58 +540,138 @@ def main():
     parser = TerminologyOptionParser(formats)
 
     parser.add_option(
-        "-u", "--update", type="string", dest="update",
-        metavar="UPDATEFILE", help="update terminology in UPDATEFILE")
+        "-u",
+        "--update",
+        type="string",
+        dest="update",
+        metavar="UPDATEFILE",
+        help="update terminology in UPDATEFILE",
+    )
 
-    parser.add_option("-S", "--stopword-list", type="string", metavar="STOPFILE", dest="stopfile",
-                      help="read stopword (term exclusion) list from STOPFILE (default %s)" %
-                      file_discovery.get_abs_data_filename('stoplist-en'))
+    parser.add_option(
+        "-S",
+        "--stopword-list",
+        type="string",
+        metavar="STOPFILE",
+        dest="stopfile",
+        help="read stopword (term exclusion) list from STOPFILE (default %s)"
+        % file_discovery.get_abs_data_filename('stoplist-en'),
+    )
 
     parser.set_defaults(foldtitle=True, ignorecase=False)
     parser.add_option(
-        "-F", "--fold-titlecase", callback=fold_case_option,
-        action="callback", help="fold \"Title Case\" to lowercase (default)")
+        "-F",
+        "--fold-titlecase",
+        callback=fold_case_option,
+        action="callback",
+        help="fold \"Title Case\" to lowercase (default)",
+    )
     parser.add_option(
-        "-C", "--preserve-case", callback=preserve_case_option,
-        action="callback", help="preserve all uppercase/lowercase")
+        "-C",
+        "--preserve-case",
+        callback=preserve_case_option,
+        action="callback",
+        help="preserve all uppercase/lowercase",
+    )
     parser.add_option(
-        "-I", "--ignore-case", dest="ignorecase",
-        action="store_true", help="make all terms lowercase")
+        "-I",
+        "--ignore-case",
+        dest="ignorecase",
+        action="store_true",
+        help="make all terms lowercase",
+    )
 
     parser.add_option(
-        "", "--accelerator", dest="accelchars", default="",
-        metavar="ACCELERATORS", help="ignore the given accelerator characters when matching")
+        "",
+        "--accelerator",
+        dest="accelchars",
+        default="",
+        metavar="ACCELERATORS",
+        help="ignore the given accelerator characters when matching",
+    )
 
     parser.add_option(
-        "-t", "--term-words", type="int", dest="termlength", default="3",
-        help="generate terms of up to LENGTH words (default 3)", metavar="LENGTH")
+        "-t",
+        "--term-words",
+        type="int",
+        dest="termlength",
+        default="3",
+        help="generate terms of up to LENGTH words (default 3)",
+        metavar="LENGTH",
+    )
     parser.add_option(
-        "", "--nonstop-needed", type="int", dest="nonstopmin", default="1",
-        help="omit terms with less than MIN nonstop words (default 1)", metavar="MIN")
+        "",
+        "--nonstop-needed",
+        type="int",
+        dest="nonstopmin",
+        default="1",
+        help="omit terms with less than MIN nonstop words (default 1)",
+        metavar="MIN",
+    )
     parser.add_option(
-        "", "--inputs-needed", type="int", dest="inputmin",
-        help="omit terms appearing in less than MIN input files (default 2, or 1 if only one input file)", metavar="MIN")
+        "",
+        "--inputs-needed",
+        type="int",
+        dest="inputmin",
+        help="omit terms appearing in less than MIN input files (default 2, or 1 if only one input file)",
+        metavar="MIN",
+    )
     parser.add_option(
-        "", "--fullmsg-needed", type="int", dest="fullmsgmin", default="1",
-        help="omit full message terms appearing in less than MIN different messages (default 1)", metavar="MIN")
+        "",
+        "--fullmsg-needed",
+        type="int",
+        dest="fullmsgmin",
+        default="1",
+        help="omit full message terms appearing in less than MIN different messages (default 1)",
+        metavar="MIN",
+    )
     parser.add_option(
-        "", "--substr-needed", type="int", dest="substrmin", default="2",
-        help="omit substring-only terms appearing in less than MIN different messages (default 2)", metavar="MIN")
+        "",
+        "--substr-needed",
+        type="int",
+        dest="substrmin",
+        default="2",
+        help="omit substring-only terms appearing in less than MIN different messages (default 2)",
+        metavar="MIN",
+    )
     parser.add_option(
-        "", "--locs-needed", type="int", dest="locmin", default="2",
-        help="omit terms appearing in less than MIN different original source files (default 2)", metavar="MIN")
+        "",
+        "--locs-needed",
+        type="int",
+        dest="locmin",
+        default="2",
+        help="omit terms appearing in less than MIN different original source files (default 2)",
+        metavar="MIN",
+    )
 
     parser.add_option(
-        "", "--sort", dest="sortorders", action="append",
-        type="choice", choices=TerminologyExtractor.sortorders_default, metavar="ORDER",
-        help="output sort order(s): %s (may repeat option, default is all in above order)" % ', '.join(TerminologyExtractor.sortorders_default))
+        "",
+        "--sort",
+        dest="sortorders",
+        action="append",
+        type="choice",
+        choices=TerminologyExtractor.sortorders_default,
+        metavar="ORDER",
+        help="output sort order(s): %s (may repeat option, default is all in above order)"
+        % ', '.join(TerminologyExtractor.sortorders_default),
+    )
 
     parser.add_option(
-        "", "--source-language", dest="sourcelanguage", default="en",
-        help="the source language code (default 'en')", metavar="LANG")
+        "",
+        "--source-language",
+        dest="sourcelanguage",
+        default="en",
+        help="the source language code (default 'en')",
+        metavar="LANG",
+    )
     parser.add_option(
-        "-v", "--invert", dest="invert",
-        action="store_true", default=False, help="invert the source and target languages for terminology")
+        "-v",
+        "--invert",
+        dest="invert",
+        action="store_true",
+        default=False,
+        help="invert the source and target languages for terminology",
+    )
     parser.set_usage()
     parser.description = __doc__
     parser.run()

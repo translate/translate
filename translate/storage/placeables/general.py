@@ -26,7 +26,13 @@ import re
 from translate.storage.placeables.base import G, Ph, StringElem
 
 
-__all__ = ('AltAttrPlaceable', 'XMLEntityPlaceable', 'XMLTagPlaceable', 'parsers', 'to_general_placeables')
+__all__ = (
+    'AltAttrPlaceable',
+    'XMLEntityPlaceable',
+    'XMLTagPlaceable',
+    'parsers',
+    'to_general_placeables',
+)
 
 
 def regex_parse(cls, pstr):
@@ -90,12 +96,14 @@ class QtFormattingPlaceable(Ph):
 
     iseditable = False
     istranslatable = False
-    regex = re.compile(r"""(?x)
+    regex = re.compile(
+        r"""(?x)
                        %                 # Start of a place marker
                        L?                # The sequence is replaced with a localized representation (optional)
                        [1-9]\d{0,1}      # Place marker numbers must be in the range 1 to 99.
                        (?=([^\d]|$))     # Double check that we aren't matching %100+ (non consuming match)
-                       """)
+                       """
+    )
     parse = classmethod(regex_parse)
 
 
@@ -109,7 +117,8 @@ class PythonFormattingPlaceable(Ph):
     iseditable = False
     istranslatable = False
     # Need to correctly define a python identifier.
-    regex = re.compile(r"""(?x)
+    regex = re.compile(
+        r"""(?x)
                        %                     # Start of formatting specifier
                        (%|                   # No argument converted %% creates a %
                        (\([^)]+\)){0,1}      # Mapping key value (optional)
@@ -117,7 +126,8 @@ class PythonFormattingPlaceable(Ph):
                        (\d+|\*){0,1}         # Minimum field width (optional)
                        (\.(\d+|\*)){0,1}     # Precision (optional)
                        [hlL]{0,1}            # Length modifier (optional)
-                       [diouxXeEfFgGcrs]{1}) # Conversion type""")
+                       [diouxXeEfFgGcrs]{1}) # Conversion type"""
+    )
     parse = classmethod(regex_parse)
 
 
@@ -136,7 +146,8 @@ class JavaMessageFormatPlaceable(Ph):
     iseditable = False  # TODO: Technically incorrect as you need to change
     istranslatable = False
     # things in a choice entry
-    regex = re.compile(r"""(?x)
+    regex = re.compile(
+        r"""(?x)
       {                      # Start of MessageFormat
       [0-9]+                 # Number, positive array reference
       (,\s*                  # FormatType (optional) one of number,date,time,choice
@@ -144,7 +155,8 @@ class JavaMessageFormatPlaceable(Ph):
          (date|time)(,\s*(short|medium|long|full|.+?))?|                  # date/time FormatStyle (optional)
          choice,([^{]+({.+})?)+)?                                      # choice with format, format required
       )?                     # END: (optional) FormatType
-      }                      # END: MessageFormat""")
+      }                      # END: MessageFormat"""
+    )
     parse = classmethod(regex_parse)
 
 
@@ -156,7 +168,8 @@ class FormattingPlaceable(Ph):
 
     iseditable = False
     istranslatable = False
-    regex = re.compile(r"""
+    regex = re.compile(
+        r"""
         %                         # introduction
         (\d+\$)?                  # selection of non-next variable (reordering)
         [\-\+0 \#'I]?             # optional flag
@@ -164,7 +177,9 @@ class FormattingPlaceable(Ph):
         (\.\d+)?                  # precision
         [hlI]?                    # length
         [cCdiouxXeEfgGnpsS]       # conversion specifier
-        """, re.VERBOSE)
+        """,
+        re.VERBOSE,
+    )
     parse = classmethod(regex_parse)
 
 
@@ -190,7 +205,8 @@ class UrlPlaceable(Ph):
     """Placeable handling URI."""
 
     istranslatable = False
-    regex = re.compile(r"""
+    regex = re.compile(
+        r"""
     ((((news|nttp|file|https?|ftp|irc)://)       # has to start with a protocol
     |((www|ftp)[-A-Za-z0-9]*\.))                 # or www... or ftp... hostname
     ([-A-Za-z0-9]+(\.[-A-Za-z0-9]+)*)            # hostname
@@ -198,7 +214,9 @@ class UrlPlaceable(Ph):
     (:[0-9]{1,5})?                               # optional port
     (/[-A-Za-z0-9_\$\.\+\!\*\(\),;:@&=\?/~\#\%]*)?     # optional trailing path
     (?=$|\s|([]'}>\),\"]))
-    """, re.VERBOSE)
+    """,
+        re.VERBOSE,
+    )
     parse = classmethod(regex_parse)
 
 
@@ -218,7 +236,9 @@ class EmailPlaceable(Ph):
     """Placeable handling emails."""
 
     istranslatable = False
-    regex = re.compile(r"((mailto:)|)[A-Za-z0-9]+[-a-zA-Z0-9._%]*@(([-A-Za-z0-9]+)\.)+[a-zA-Z]{2,4}")
+    regex = re.compile(
+        r"((mailto:)|)[A-Za-z0-9]+[-a-zA-Z0-9._%]*@(([-A-Za-z0-9]+)\.)+[a-zA-Z]{2,4}"
+    )
     # TODO: What about internationalised domain names? ;-)
     parse = classmethod(regex_parse)
 
@@ -243,7 +263,7 @@ class PunctuationPlaceable(Ph):
              –|              # U2013 - en dash
              [ ]             # U202F - narrow no-break space
             )+''',
-        re.VERBOSE
+        re.VERBOSE,
     )
     parse = classmethod(regex_parse)
 
@@ -253,10 +273,13 @@ class XMLEntityPlaceable(Ph):
 
     iseditable = False
     istranslatable = False
-    regex = re.compile(r'''&(
+    regex = re.compile(
+        r'''&(
         ([a-zA-Z][a-zA-Z0-9\.-]*)            #named entity
          |([#](\d{1,5}|x[a-fA-F0-9]{1,5})+)  #numeric entity
-        );''', re.VERBOSE)
+        );''',
+        re.VERBOSE,
+    )
     parse = classmethod(regex_parse)
 
 
@@ -272,13 +295,15 @@ class CamelCasePlaceable(Ph):
     """Placeable handling camel case strings."""
 
     iseditable = True
-    regex = re.compile(r'''(?x)
+    regex = re.compile(
+        r'''(?x)
             \b(
                [a-z]+[A-Z]|         #Not that strict if we start with lower (iPod)
                [A-Z]+[a-z]+[A-Z]|   #One capital at the start is not enough (OpenTran)
                [A-Z]{2,}[a-z]       #Two capitals at the start is enough (KBabel)
             )[a-zA-Z0-9]*           #Let's allow any final lower/upper/digit
-            \b''')
+            \b'''
+    )
     parse = classmethod(regex_parse)
 
 
@@ -287,10 +312,13 @@ class SpacesPlaceable(Ph):
 
     iseditable = True
     istranslatable = False
-    regex = re.compile(r"""(?m)  #Multiline expression
+    regex = re.compile(
+        r"""(?m)  #Multiline expression
         [ ]{2,}|     #More than two consecutive
         ^[ ]+|       #At start of a line
-        [ ]+$        #At end of line""", re.VERBOSE)
+        [ ]+$        #At end of line""",
+        re.VERBOSE,
+    )
 
     parse = classmethod(regex_parse)
 
@@ -300,14 +328,17 @@ class XMLTagPlaceable(Ph):
 
     iseditable = True
     istranslatable = False
-    regex = re.compile(r'''
+    regex = re.compile(
+        r'''
         <                         # start of opening tag
         ([\w.:]+)                 # tag name, possibly namespaced
         (\s([\w.:]+=              # space and attribute name followed by =
             ((".*?")|('.*?'))     # attribute value, single or double quoted
         )?)*/?>                   # end of opening tag, possibly self closing
         |</([\w.]+)>              # or a closing tag
-        ''', re.VERBOSE)
+        ''',
+        re.VERBOSE,
+    )
     parse = classmethod(regex_parse)
 
 
@@ -315,27 +346,33 @@ class OptionPlaceable(Ph):
     """Placeble handling command line options e.g. --help"""
 
     istranslatable = False
-    regex = re.compile(r'''(?x)
+    regex = re.compile(
+        r'''(?x)
                       \B(             # Empty string at the start of a non-word, ensures [space]-
                         -[a-zA-Z]|    # Single letter options: -i, -I
                         --[a-z\-]+    # Word options: --help
-                      )\b''')
-    #regex = re.compile(r'''(-[a-zA-Z]|--[-a-z]+)\b''')
+                      )\b'''
+    )
+    # regex = re.compile(r'''(-[a-zA-Z]|--[-a-z]+)\b''')
     parse = classmethod(regex_parse)
 
 
-def to_general_placeables(tree,
-                          classmap={
-                              G: (AltAttrPlaceable,),
-                              Ph: (NumberPlaceable,
-                                   XMLEntityPlaceable,
-                                   XMLTagPlaceable,
-                                   UrlPlaceable,
-                                   FilePlaceable,
-                                   EmailPlaceable,
-                                   OptionPlaceable,
-                                   PunctuationPlaceable,),
-                          }):
+def to_general_placeables(
+    tree,
+    classmap={
+        G: (AltAttrPlaceable,),
+        Ph: (
+            NumberPlaceable,
+            XMLEntityPlaceable,
+            XMLTagPlaceable,
+            UrlPlaceable,
+            FilePlaceable,
+            EmailPlaceable,
+            OptionPlaceable,
+            PunctuationPlaceable,
+        ),
+    },
+):
     if not isinstance(tree, StringElem):
         return tree
 

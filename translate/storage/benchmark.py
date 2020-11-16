@@ -51,7 +51,14 @@ class TranslateBenchmarker:
             os.rmdir(self.test_dir)
         assert not os.path.exists(self.test_dir)
 
-    def create_sample_files(self, num_dirs, files_per_dir, strings_per_file, source_words_per_string, target_words_per_string):
+    def create_sample_files(
+        self,
+        num_dirs,
+        files_per_dir,
+        strings_per_file,
+        source_words_per_string,
+        target_words_per_string,
+    ):
         """creates sample files for benchmarking"""
         if not os.path.exists(self.test_dir):
             os.mkdir(self.test_dir)
@@ -69,10 +76,22 @@ class TranslateBenchmarker:
             for filenum in range(files_per_dir):
                 sample_file = self.StoreClass()
                 for stringnum in range(strings_per_file):
-                    source_string = " ".join(["word%d" % (random.randint(0, strings_per_file) * i) for i in range(source_words_per_string)])
+                    source_string = " ".join(
+                        [
+                            "word%d" % (random.randint(0, strings_per_file) * i)
+                            for i in range(source_words_per_string)
+                        ]
+                    )
                     sample_unit = sample_file.addsourceunit(source_string)
-                    sample_unit.target = " ".join(["drow%d" % (random.randint(0, strings_per_file) * i) for i in range(target_words_per_string)])
-                sample_file.savefile(os.path.join(dirname, "file_%d.%s" % (filenum, self.extension)))
+                    sample_unit.target = " ".join(
+                        [
+                            "drow%d" % (random.randint(0, strings_per_file) * i)
+                            for i in range(target_words_per_string)
+                        ]
+                    )
+                sample_file.savefile(
+                    os.path.join(dirname, "file_%d.%s" % (filenum, self.extension))
+                )
 
     def parse_files(self, file_dir=None):
         """parses all the files in the test directory into memory"""
@@ -101,17 +120,33 @@ class TranslateBenchmarker:
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description='Process some integers.')
-    parser.add_argument('podir', metavar='DIR', type=str, nargs='?',
-                        help='PO dir to use (default: create sample files)')
-    parser.add_argument('--store-type', dest='storetype',
-                        action='store_const', const='po', default="po",
-                        help='type of the store to benchmark (default: %(default)s)')
-    parser.add_argument('--check-parsing', dest='check_parsing',
-                        action='store_true',
-                        help='benchmark parsing files')
-    parser.add_argument('--check-placeables', dest='check_placeables',
-                        action='store_true',
-                        help='benchmark placeables')
+    parser.add_argument(
+        'podir',
+        metavar='DIR',
+        type=str,
+        nargs='?',
+        help='PO dir to use (default: create sample files)',
+    )
+    parser.add_argument(
+        '--store-type',
+        dest='storetype',
+        action='store_const',
+        const='po',
+        default="po",
+        help='type of the store to benchmark (default: %(default)s)',
+    )
+    parser.add_argument(
+        '--check-parsing',
+        dest='check_parsing',
+        action='store_true',
+        help='benchmark parsing files',
+    )
+    parser.add_argument(
+        '--check-placeables',
+        dest='check_placeables',
+        action='store_true',
+        help='benchmark placeables',
+    )
     args = parser.parse_args()
 
     storetype = args.storetype
@@ -121,13 +156,22 @@ if __name__ == "__main__":
         module = import_module("translate.storage.%s" % _module)
         storeclass = getattr(module, _class)
     else:
-        print("StoreClass: '%s' is not a base class that the class factory can load" % storetype)
+        print(
+            "StoreClass: '%s' is not a base class that the class factory can load"
+            % storetype
+        )
         sys.exit()
 
     sample_files = [
         # num_dirs, files_per_dir, strings_per_file, source_words_per_string, target_words_per_string
         # (1, 1, 2, 2, 2),
-        (1, 1, 10000, 5, 10),   # Creat 1 very large file with German like ratios or source to target
+        (
+            1,
+            1,
+            10000,
+            5,
+            10,
+        ),  # Creat 1 very large file with German like ratios or source to target
         # (100, 10, 10, 5, 10),   # Create lots of directories and files with smaller then avarage size
         # (1, 5, 10, 10, 10),
         # (1, 10, 10, 10, 10),
@@ -154,7 +198,10 @@ if __name__ == "__main__":
 
         for methodname, methodparam in methods:
             print("_______________________________________________________")
-            statsfile = "%s_%s" % (methodname, storetype) + '_%d_%d_%d_%d_%d.stats' % sample_file_sizes
+            statsfile = (
+                "%s_%s" % (methodname, storetype)
+                + '_%d_%d_%d_%d_%d.stats' % sample_file_sizes
+            )
             cProfile.run('benchmarker.%s(%s)' % (methodname, methodparam), statsfile)
             stats = pstats.Stats(statsfile)
             stats.sort_stats('time').print_stats(20)

@@ -120,6 +120,7 @@ def xml_to_strelem(dom_node, xml_space="preserve"):
         sub.append(str(node_text))
     return result
 
+
 # ==========================================================
 
 
@@ -143,6 +144,7 @@ def unknown_placeable_as_dom_node(placeable):
     assert type(placeable) is xliff.UnknownXML
 
     from copy import copy
+
     node = copy(placeable.xml_node)
     for i in range(len(node)):
         del node[0]

@@ -21,14 +21,16 @@ from translate.storage import xliff
 
 
 class XPathTree:
-
     def __init__(self, unit=None):
         self.unit = unit
         self.children = {}
 
     def __eq__(self, other):
-        return (isinstance(other, XPathTree) and self.unit == other.unit and
-                self.children == other.children)
+        return (
+            isinstance(other, XPathTree)
+            and self.unit == other.unit
+            and self.children == other.children
+        )
 
 
 def _split_xpath_component(xpath_component):
@@ -40,7 +42,7 @@ def _split_xpath_component(xpath_component):
     lbrac = xpath_component.rfind('[')
     rbrac = xpath_component.rfind(']')
     tag = xpath_component[:lbrac]
-    index = int(xpath_component[lbrac+1:rbrac])
+    index = int(xpath_component[lbrac + 1 : rbrac])
     return tag, index
 
 
@@ -80,7 +82,9 @@ def _add_unit_to_tree(node, xpath_components, unit):
     components left to pop. Thus, ``node.unit = unit`` is executed.
     """
     if len(xpath_components) > 0:
-        component = xpath_components.pop()  # pop the stack; is a component such as ('p', 4)
+        component = (
+            xpath_components.pop()
+        )  # pop the stack; is a component such as ('p', 4)
         # if the current node does not have any children indexed by
         # the current component, add such a child
         if component not in node.children:
@@ -114,8 +118,7 @@ def build_unit_tree(store, filename=None):
     for unit in store.units:
         if unit.source and not unit.isfuzzy():
             locations = unit.getlocations()
-            if (filename is not None and len(locations) > 1 and
-                filename != locations[1]):
+            if filename is not None and len(locations) > 1 and filename != locations[1]:
                 # Skip units that don't come from the filename we are currently
                 # trying to get units for.
                 # This is not used for ODF, right now only for IDML.

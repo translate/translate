@@ -119,7 +119,11 @@ class pounit(base.TranslationUnit):
         return self.hasmarkedcomment("review") or self.hasmarkedcomment("pofilter")
 
     def isobsolete(self):
-        return self.STATE[self.S_FUZZY_OBSOLETE][0] <= self.get_state_n() < self.STATE[self.S_OBSOLETE][1]
+        return (
+            self.STATE[self.S_FUZZY_OBSOLETE][0]
+            <= self.get_state_n()
+            < self.STATE[self.S_OBSOLETE][1]
+        )
 
     def isfuzzy(self):
         # implementation specific fuzzy detection, must not use get_state_n()
@@ -169,8 +173,12 @@ class pounit(base.TranslationUnit):
         else:
             has_target = bool(self.target)
         if has_target:
-            isfuzzy = self.STATE[self.S_FUZZY][0] <= value < self.STATE[self.S_FUZZY][1] or \
-                self.STATE[self.S_FUZZY_OBSOLETE][0] <= value < self.STATE[self.S_FUZZY_OBSOLETE][1]
+            isfuzzy = (
+                self.STATE[self.S_FUZZY][0] <= value < self.STATE[self.S_FUZZY][1]
+                or self.STATE[self.S_FUZZY_OBSOLETE][0]
+                <= value
+                < self.STATE[self.S_FUZZY_OBSOLETE][1]
+            )
             self._domarkfuzzy(isfuzzy)  # Implementation specific fuzzy-marking
         else:
             super().set_state_n(self.S_UNTRANSLATED)
@@ -179,7 +187,12 @@ class pounit(base.TranslationUnit):
 
 class pofile(poheader.poheader, base.TranslationStore):
     Name = "Gettext PO file"  # pylint: disable=E0602
-    Mimetypes = ["text/x-gettext-catalog", "text/x-gettext-translation", "text/x-po", "text/x-pot"]
+    Mimetypes = [
+        "text/x-gettext-catalog",
+        "text/x-gettext-translation",
+        "text/x-po",
+        "text/x-pot",
+    ]
     Extensions = ["po", "pot"]
     # We don't want windows line endings on Windows:
     _binary = True

@@ -1,4 +1,3 @@
-
 import sys
 from io import BytesIO
 
@@ -9,8 +8,7 @@ from translate.storage import test_po
 
 
 pytestmark = mark.skipif(
-    not sys.platform.startswith('linux'),
-    reason="cpo is only available on Linux"
+    not sys.platform.startswith('linux'), reason="cpo is only available on Linux"
 )
 
 
@@ -115,7 +113,9 @@ class TestCPOFile(test_po.TestPOFile):
     @mark.xfail(reason="Were disabled during port of Pypo to cPO - they might work")
     def test_merge_blanks(self):
         """checks that merging adds msgid_comments to blanks"""
-        posource = '#: source1\nmsgid ""\nmsgstr ""\n\n#: source2\nmsgid ""\nmsgstr ""\n'
+        posource = (
+            '#: source1\nmsgid ""\nmsgstr ""\n\n#: source2\nmsgid ""\nmsgstr ""\n'
+        )
         pofile = self.poparse(posource)
         assert len(pofile.units) == 2
         pofile.removeduplicates("merge")
@@ -137,13 +137,18 @@ class TestCPOFile(test_po.TestPOFile):
         assert cpo.unquotefrompo(pofile.units[1].msgidcomments) == "_: source1\n"
         # Now lets check for formating
         for i in (0, 1):
-            expected = '''#: source%d\nmsgid ""\n"_: source%d\\n"\n"Same"\nmsgstr ""\n''' % (i, i)
+            expected = (
+                '''#: source%d\nmsgid ""\n"_: source%d\\n"\n"Same"\nmsgstr ""\n'''
+                % (i, i)
+            )
             assert pofile.units[i].__str__() == expected
 
     @mark.xfail(reason="Were disabled during port of Pypo to cPO - they might work")
     def test_keep_blanks(self):
         """checks that keeping keeps blanks and doesn't add msgid_comments"""
-        posource = '#: source1\nmsgid ""\nmsgstr ""\n\n#: source2\nmsgid ""\nmsgstr ""\n'
+        posource = (
+            '#: source1\nmsgid ""\nmsgstr ""\n\n#: source2\nmsgid ""\nmsgstr ""\n'
+        )
         pofile = self.poparse(posource)
         assert len(pofile.units) == 2
         pofile.removeduplicates("keep")
@@ -159,17 +164,18 @@ class TestCPOFile(test_po.TestPOFile):
         assert len(pofile.units) == 1
         print(bytes(pofile))
         thepo = pofile.units[0]
-#        assert bytes(pofile) == posource.encode("UTF-8")
+        #        assert bytes(pofile) == posource.encode("UTF-8")
         # extra test: what if we set the msgid to a unicode? this happens in prop2po etc
         thepo.source = "Norwegian Bokm\xe5l"
-#        assert str(thepo) == posource.encode("UTF-8")
+        #        assert str(thepo) == posource.encode("UTF-8")
         # Now if we set the msgstr to Unicode
         # this is an escaped half character (1/2)
         halfstr = b"\xbd ...".decode("latin-1")
         thepo.target = halfstr
-#        assert halfstr in bytes(pofile).decode("UTF-8")
+        #        assert halfstr in bytes(pofile).decode("UTF-8")
         thepo.target = halfstr.encode("UTF-8")
-#        assert halfstr.encode("UTF-8") in bytes(pofile)
+
+    #        assert halfstr.encode("UTF-8") in bytes(pofile)
 
     def test_posections(self):
         """checks the content of all the expected sections of a PO message"""

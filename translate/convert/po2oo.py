@@ -35,8 +35,15 @@ logger = logging.getLogger(__name__)
 
 
 class reoo:
-
-    def __init__(self, templatefile, languages=None, timestamp=None, includefuzzy=False, long_keys=False, filteraction="exclude"):
+    def __init__(
+        self,
+        templatefile,
+        languages=None,
+        timestamp=None,
+        includefuzzy=False,
+        long_keys=False,
+        filteraction="exclude",
+    ):
         """construct a reoo converter for the specified languages (timestamp=0 means leave unchanged)"""
         # languages is a pair of language ids
         self.long_keys = long_keys
@@ -74,7 +81,7 @@ class reoo:
         # but we handle multiple ones just to be safe...
         for location in locations:
             subkeypos = location.rfind('.')
-            subkey = location[subkeypos+1:]
+            subkey = location[subkeypos + 1 :]
             key = location[:subkeypos]
             # this is just to handle our old system of using %s/%s:%s instead of %s/%s#%s
             key = key.replace(':', '#')
@@ -86,8 +93,9 @@ class reoo:
                 theoo = self.index[key]  # find the oo
                 self.applytranslation(key, subkey, theoo, unit)
             else:
-                logger.warning("couldn't find key %s from po in %d keys",
-                               key, len(self.index))
+                logger.warning(
+                    "couldn't find key %s from po in %d keys", key, len(self.index)
+                )
                 try:
                     sourceunitlines = str(unit)
                     if isinstance(sourceunitlines, str):
@@ -142,11 +150,11 @@ class reoo:
 
 def getmtime(filename):
     import stat
+
     return time.localtime(os.stat(filename)[stat.ST_MTIME])
 
 
 class oocheckfilter(pofilter.pocheckfilter):
-
     def validelement(self, unit, filename, filteraction):
         """Returns whether or not to use unit in conversion. (filename is just for error reporting)"""
         if filteraction == "none":
@@ -157,12 +165,14 @@ class oocheckfilter(pofilter.pocheckfilter):
                 for filtername, filtermessage in filterresult.items():
                     location = unit.getlocations()[0].encode('utf-8')
                     if filtername in self.options.error:
-                        logger.error("Error at %s::%s: %s",
-                                     filename, location, filtermessage)
+                        logger.error(
+                            "Error at %s::%s: %s", filename, location, filtermessage
+                        )
                         return filteraction not in ["exclude-all", "exclude-serious"]
                     if filtername in self.options.warning or self.options.alwayswarn:
-                        logger.warning("Warning at %s::%s: %s",
-                                       filename, location, filtermessage)
+                        logger.warning(
+                            "Warning at %s::%s: %s", filename, location, filtermessage
+                        )
                         return filteraction not in ["exclude-all"]
         return True
 
@@ -170,12 +180,12 @@ class oocheckfilter(pofilter.pocheckfilter):
 class oofilteroptions:
     error = ['variables', 'xmltags', 'escapes']
     warning = ['blank']
-    #To only issue warnings for tests listed in warning, change the following to False:
+    # To only issue warnings for tests listed in warning, change the following to False:
     alwayswarn = True
     limitfilters = error + warning
-    #To use all available tests, uncomment the following:
-    #limitfilters = []
-    #To exclude certain tests, list them in here:
+    # To use all available tests, uncomment the following:
+    # limitfilters = []
+    # To exclude certain tests, list them in here:
     excludefilters = {}
     includefuzzy = False
     includereview = False
@@ -183,13 +193,26 @@ class oofilteroptions:
 
 
 options = oofilteroptions()
-filter = oocheckfilter(options, [checks.OpenOfficeChecker, checks.StandardUnitChecker], checks.openofficeconfig)
+filter = oocheckfilter(
+    options,
+    [checks.OpenOfficeChecker, checks.StandardUnitChecker],
+    checks.openofficeconfig,
+)
 
 
-def convertoo(inputfile, outputfile, templatefile, sourcelanguage=None,
-              targetlanguage=None, timestamp=None, includefuzzy=False,
-              multifilestyle="single", skip_source=False, filteraction=None,
-              outputthreshold=None):
+def convertoo(
+    inputfile,
+    outputfile,
+    templatefile,
+    sourcelanguage=None,
+    targetlanguage=None,
+    timestamp=None,
+    includefuzzy=False,
+    multifilestyle="single",
+    skip_source=False,
+    filteraction=None,
+    outputthreshold=None,
+):
     inputstore = factory.getobject(inputfile)
 
     if not convert.should_output_store(inputstore, outputthreshold):
@@ -207,10 +230,14 @@ def convertoo(inputfile, outputfile, templatefile, sourcelanguage=None,
     if templatefile is None:
         raise ValueError("must have template file for oo files")
     else:
-        convertor = reoo(templatefile, languages=languages,
-                         timestamp=timestamp, includefuzzy=includefuzzy,
-                         long_keys=multifilestyle != "single",
-                         filteraction=filteraction)
+        convertor = reoo(
+            templatefile,
+            languages=languages,
+            timestamp=timestamp,
+            includefuzzy=includefuzzy,
+            long_keys=multifilestyle != "single",
+            filteraction=filteraction,
+        )
     outputstore = convertor.convertstore(inputstore)
     # TODO: check if we need to manually delete missing items
     outputstore.serialize(outputfile, skip_source, targetlanguage)
@@ -225,31 +252,70 @@ def main(argv=None):
         ("po", "sdf"): ("sdf", convertoo),
     }
     # always treat the input as an archive unless it is a directory
-    archiveformats = {(None, "output"): oo.oomultifile, (None, "template"): oo.oomultifile}
-    parser = convert.ArchiveConvertOptionParser(formats, usetemplates=True, description=__doc__, archiveformats=archiveformats)
-    parser.add_option("-l", "--language", dest="targetlanguage", default=None,
-                      help="set target language code (e.g. af-ZA) [required]",
-                      metavar="LANG")
-    parser.add_option("", "--source-language", dest="sourcelanguage",
-                      default=None,
-                      help="set source language code (default en-US)",
-                      metavar="LANG")
+    archiveformats = {
+        (None, "output"): oo.oomultifile,
+        (None, "template"): oo.oomultifile,
+    }
+    parser = convert.ArchiveConvertOptionParser(
+        formats, usetemplates=True, description=__doc__, archiveformats=archiveformats
+    )
     parser.add_option(
-        "-T", "--keeptimestamp", dest="timestamp", default=None,
-        action="store_const", const=0,
-        help="don't change the timestamps of the strings")
-    parser.add_option("", "--nonrecursiveoutput", dest="allowrecursiveoutput",
-                      default=True, action="store_false",
-                      help="don't treat the output oo as a recursive store")
-    parser.add_option("", "--nonrecursivetemplate",
-                      dest="allowrecursivetemplate", default=True,
-                      action="store_false",
-                      help="don't treat the template oo as a recursive store")
-    parser.add_option("", "--skipsource", dest="skip_source", default=False,
-                      action="store_true",
-                      help="don't output the source language, but fallback to it where needed")
-    parser.add_option("", "--filteraction", dest="filteraction", default="none", metavar="ACTION",
-                      help="action on pofilter failure: none (default), warn, exclude-serious, exclude-all")
+        "-l",
+        "--language",
+        dest="targetlanguage",
+        default=None,
+        help="set target language code (e.g. af-ZA) [required]",
+        metavar="LANG",
+    )
+    parser.add_option(
+        "",
+        "--source-language",
+        dest="sourcelanguage",
+        default=None,
+        help="set source language code (default en-US)",
+        metavar="LANG",
+    )
+    parser.add_option(
+        "-T",
+        "--keeptimestamp",
+        dest="timestamp",
+        default=None,
+        action="store_const",
+        const=0,
+        help="don't change the timestamps of the strings",
+    )
+    parser.add_option(
+        "",
+        "--nonrecursiveoutput",
+        dest="allowrecursiveoutput",
+        default=True,
+        action="store_false",
+        help="don't treat the output oo as a recursive store",
+    )
+    parser.add_option(
+        "",
+        "--nonrecursivetemplate",
+        dest="allowrecursivetemplate",
+        default=True,
+        action="store_false",
+        help="don't treat the template oo as a recursive store",
+    )
+    parser.add_option(
+        "",
+        "--skipsource",
+        dest="skip_source",
+        default=False,
+        action="store_true",
+        help="don't output the source language, but fallback to it where needed",
+    )
+    parser.add_option(
+        "",
+        "--filteraction",
+        dest="filteraction",
+        default="none",
+        metavar="ACTION",
+        help="action on pofilter failure: none (default), warn, exclude-serious, exclude-all",
+    )
     parser.add_threshold_option()
     parser.add_fuzzy_option()
     parser.add_multifile_option()

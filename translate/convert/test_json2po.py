@@ -5,7 +5,6 @@ from translate.storage import jsonl10n
 
 
 class TestJson2PO:
-
     def json2po(self, jsonsource, template=None, filter=None):
         """helper that converts json source to po source without requiring files"""
         inputfile = BytesIO(jsonsource.encode())

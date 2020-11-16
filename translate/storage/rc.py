@@ -27,21 +27,40 @@
 
 import re
 
-from pyparsing import (Combine, Forward, Group, Keyword, OneOrMore, Optional,
-                       SkipTo, Word, ZeroOrMore, alphanums, alphas,
-                       commaSeparatedList, cStyleComment, delimitedList, nums,
-                       quotedString, restOfLine)
+from pyparsing import (
+    Combine,
+    Forward,
+    Group,
+    Keyword,
+    OneOrMore,
+    Optional,
+    SkipTo,
+    Word,
+    ZeroOrMore,
+    alphanums,
+    alphas,
+    commaSeparatedList,
+    cStyleComment,
+    delimitedList,
+    nums,
+    quotedString,
+    restOfLine,
+)
 
 from translate.storage import base
 
 
 def escape_to_python(string):
     """Escape a given .rc string into a valid Python string."""
-    pystring = re.sub('"\\s*\\\\\n\\s*"', "", string)   # xxx"\n"xxx line continuation
-    pystring = re.sub("\\\\\\\n", "", pystring)         # backslash newline line continuation
-    pystring = re.sub("\\\\n", "\n", pystring)          # Convert escaped newline to a real newline
-    pystring = re.sub("\\\\t", "\t", pystring)          # Convert escape tab to a real tab
-    pystring = re.sub("\\\\\\\\", "\\\\", pystring)     # Convert escape backslash to a real escaped backslash
+    pystring = re.sub('"\\s*\\\\\n\\s*"', "", string)  # xxx"\n"xxx line continuation
+    pystring = re.sub("\\\\\\\n", "", pystring)  # backslash newline line continuation
+    pystring = re.sub(
+        "\\\\n", "\n", pystring
+    )  # Convert escaped newline to a real newline
+    pystring = re.sub("\\\\t", "\t", pystring)  # Convert escape tab to a real tab
+    pystring = re.sub(
+        "\\\\\\\\", "\\\\", pystring
+    )  # Convert escape backslash to a real escaped backslash
     return pystring
 
 
@@ -136,54 +155,79 @@ def rc_statement():
 
     precompiler = Word('#', alphanums) + restOfLine
 
-    language_definition = "LANGUAGE" + Word(alphas + '_').setResultsName(
-        "language") + Optional(',' + Word(alphas + '_').setResultsName("sublanguage"))
+    language_definition = (
+        "LANGUAGE"
+        + Word(alphas + '_').setResultsName("language")
+        + Optional(',' + Word(alphas + '_').setResultsName("sublanguage"))
+    )
 
     block_start = (Keyword('{') | Keyword("BEGIN")).setName("block_start")
     block_end = (Keyword('}') | Keyword("END")).setName("block_end")
 
     reserved_words = block_start | block_end
 
-    name_id = ~reserved_words + \
-        Word(alphas, alphanums + '_').setName("name_id")
+    name_id = ~reserved_words + Word(alphas, alphanums + '_').setName("name_id")
 
     numbers = Word(nums)
 
     integerconstant = numbers ^ Combine('0x' + numbers)
 
     constant = Combine(
-        Optional(Keyword("NOT")) + (name_id | integerconstant), adjacent=False, joinString=' ')
+        Optional(Keyword("NOT")) + (name_id | integerconstant),
+        adjacent=False,
+        joinString=' ',
+    )
 
     combined_constants = delimitedList(constant, '|')
 
     concatenated_string = OneOrMore(quotedString)
 
-    block_options = Optional(SkipTo(
-        Keyword("CAPTION"), failOn=block_start)("pre_caption") + Keyword("CAPTION") + quotedString("caption")) + SkipTo(block_start)("post_caption")
+    block_options = Optional(
+        SkipTo(Keyword("CAPTION"), failOn=block_start)("pre_caption")
+        + Keyword("CAPTION")
+        + quotedString("caption")
+    ) + SkipTo(block_start)("post_caption")
 
-    undefined_control = Group(name_id.setResultsName(
-        "id_control") + delimitedList(concatenated_string ^ constant ^ numbers ^ Group(combined_constants)).setResultsName("values_"))
+    undefined_control = Group(
+        name_id.setResultsName("id_control")
+        + delimitedList(
+            concatenated_string ^ constant ^ numbers ^ Group(combined_constants)
+        ).setResultsName("values_")
+    )
 
-    block = block_start + \
-        ZeroOrMore(undefined_control)("controls") + block_end
+    block = block_start + ZeroOrMore(undefined_control)("controls") + block_end
 
-    dialog = name_id(
-        "block_id") + (Keyword("DIALOGEX") | Keyword("DIALOG"))("block_type") + block_options + block
+    dialog = (
+        name_id("block_id")
+        + (Keyword("DIALOGEX") | Keyword("DIALOG"))("block_type")
+        + block_options
+        + block
+    )
 
-    string_table = Keyword("STRINGTABLE")(
-        "block_type") + block_options + block
+    string_table = Keyword("STRINGTABLE")("block_type") + block_options + block
 
-    menu_item = Keyword(
-        "MENUITEM")("block_type") + (commaSeparatedList("values_") | Keyword("SEPARATOR"))
+    menu_item = Keyword("MENUITEM")("block_type") + (
+        commaSeparatedList("values_") | Keyword("SEPARATOR")
+    )
 
     popup_block = Forward()
 
-    popup_block <<= Group(Keyword("POPUP")("block_type") + Optional(quotedString("caption")) + block_start +
-                          ZeroOrMore(Group(menu_item | popup_block))("elements") + block_end)("popups*")
+    popup_block <<= Group(
+        Keyword("POPUP")("block_type")
+        + Optional(quotedString("caption"))
+        + block_start
+        + ZeroOrMore(Group(menu_item | popup_block))("elements")
+        + block_end
+    )("popups*")
 
-    menu = name_id("block_id") + \
-        Keyword("MENU")("block_type") + block_options + \
-        block_start + ZeroOrMore(popup_block) + block_end
+    menu = (
+        name_id("block_id")
+        + Keyword("MENU")("block_type")
+        + block_options
+        + block_start
+        + ZeroOrMore(popup_block)
+        + block_end
+    )
 
     statem = comments ^ precompiler ^ language_definition ^ dialog ^ string_table ^ menu
 
@@ -266,18 +310,25 @@ class rcfile(base.TranslationStore):
                     newtext = extract_text(element.values_)
                     if newtext:
                         newunit = rcunit(newtext)
-                        newunit.name = generate_menuitem_name(pre_name, element.block_type, element.values_[1])
+                        newunit.name = generate_menuitem_name(
+                            pre_name, element.block_type, element.values_[1]
+                        )
                         newunit.match = element
                         self.addunit(newunit)
                 # Else it can be a separator.
             elif element.popups:
                 for sub_popup in element.popups:
-                    self.add_popup_units(generate_popup_pre_name(pre_name, popup.caption[1:-1]), sub_popup)
+                    self.add_popup_units(
+                        generate_popup_pre_name(pre_name, popup.caption[1:-1]),
+                        sub_popup,
+                    )
 
     def parse(self, rcsrc):
         """Read the source of a .rc file in and include them as units."""
         self.encoding = "auto"
-        rcsrc, self.encoding = self.detect_encoding(rcsrc, default_encodings=[self.default_encoding])
+        rcsrc, self.encoding = self.detect_encoding(
+            rcsrc, default_encodings=[self.default_encoding]
+        )
 
         rcsrc = rcsrc.replace('\r', '')
 
@@ -306,20 +357,31 @@ class rcfile(base.TranslationStore):
 
                     if statement.caption:
                         newunit = rcunit(escape_to_python(statement.caption[1:-1]))
-                        newunit.name = generate_dialog_caption_name(statement.block_type, statement.block_id[0])
+                        newunit.name = generate_dialog_caption_name(
+                            statement.block_type, statement.block_id[0]
+                        )
                         newunit.match = statement
                         self.addunit(newunit)
 
                     for control in statement.controls:
 
-                        if control.id_control[0] in ("AUTOCHECKBOX AUTORADIOBUTTON CAPTION CHECKBOX CTEXT CONTROL DEFPUSHBUTTON GROUPBOX LTEXT PUSHBUTTON RADIOBUTTON RTEXT")\
-                                and (control.values_[0].startswith('"') or control.values_[0].startswith("'")):
+                        if control.id_control[0] in (
+                            "AUTOCHECKBOX AUTORADIOBUTTON CAPTION CHECKBOX CTEXT CONTROL DEFPUSHBUTTON GROUPBOX LTEXT PUSHBUTTON RADIOBUTTON RTEXT"
+                        ) and (
+                            control.values_[0].startswith('"')
+                            or control.values_[0].startswith("'")
+                        ):
 
                             # The first value without quoted chars.
                             newtext = extract_text(control.values_)
                             if newtext:
                                 newunit = rcunit(newtext)
-                                newunit.name = generate_dialog_control_name(statement.block_type, statement.block_id[0], control.id_control[0], control.values_[1])
+                                newunit.name = generate_dialog_control_name(
+                                    statement.block_type,
+                                    statement.block_id[0],
+                                    control.id_control[0],
+                                    control.values_[1],
+                                )
                                 newunit.match = control
                                 self.addunit(newunit)
 
@@ -327,7 +389,9 @@ class rcfile(base.TranslationStore):
 
                 if statement.block_type in ("MENU"):
 
-                    pre_name = generate_menu_pre_name(statement.block_type, statement.block_id[0])
+                    pre_name = generate_menu_pre_name(
+                        statement.block_type, statement.block_id[0]
+                    )
 
                     for popup in statement.popups:
 

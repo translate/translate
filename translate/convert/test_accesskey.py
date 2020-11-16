@@ -47,8 +47,14 @@ def test_ignore_entities():
     test that we don't get confused with entities and a & access key
     marker
     """
-    assert accesskey.extract("Set &browserName; as &Default") != ("Set &browserName; as &Default", "b")
-    assert accesskey.extract("Set &browserName; as &Default") == ("Set &browserName; as Default", "D")
+    assert accesskey.extract("Set &browserName; as &Default") != (
+        "Set &browserName; as &Default",
+        "b",
+    )
+    assert accesskey.extract("Set &browserName; as &Default") == (
+        "Set &browserName; as Default",
+        "D",
+    )
 
 
 def test_alternate_accesskey_marker():

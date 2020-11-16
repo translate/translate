@@ -1,4 +1,3 @@
-
 from io import BytesIO
 
 from translate.convert import po2txt, test_convert
@@ -8,9 +7,16 @@ class TestPO2Txt:
 
     ConverterClass = po2txt.po2txt
 
-    def _convert(self, input_string, template_string=None, include_fuzzy=False,
-                 output_threshold=None, encoding='utf-8', wrap=None,
-                 success_expected=True):
+    def _convert(
+        self,
+        input_string,
+        template_string=None,
+        include_fuzzy=False,
+        output_threshold=None,
+        encoding='utf-8',
+        wrap=None,
+        success_expected=True,
+    ):
         """Helper that converts to target format without using files."""
         input_file = BytesIO(input_string.encode())
         output_file = BytesIO()
@@ -18,9 +24,15 @@ class TestPO2Txt:
         if template_string:
             template_file = BytesIO(template_string.encode())
         expected_result = 1 if success_expected else 0
-        converter = self.ConverterClass(input_file, output_file, template_file,
-                                        include_fuzzy, output_threshold,
-                                        encoding, wrap)
+        converter = self.ConverterClass(
+            input_file,
+            output_file,
+            template_file,
+            include_fuzzy,
+            output_threshold,
+            encoding,
+            wrap,
+        )
         assert converter.run() == expected_result
         return None, output_file
 
@@ -42,8 +54,7 @@ Body text"""
         expected_output = """Opskrif
 
 Lyfteks"""
-        assert expected_output == self._convert_to_string(input_string,
-                                                          template_string)
+        assert expected_output == self._convert_to_string(input_string, template_string)
 
     def test_nonascii(self):
         """test conversion with non-ascii text"""
@@ -59,8 +70,7 @@ File content"""
         expected_output = """Opskrif
 
 Lêerinhoud"""
-        assert expected_output == self._convert_to_string(input_string,
-                                                          template_string)
+        assert expected_output == self._convert_to_string(input_string, template_string)
 
     def test_blank_handling(self):
         """check that we discard blank messages"""
@@ -77,8 +87,7 @@ Body text"""
 
 Body text"""
         assert expected_output == self._convert_to_string(input_string)
-        assert expected_output == self._convert_to_string(input_string,
-                                                          template_string)
+        assert expected_output == self._convert_to_string(input_string, template_string)
 
     def test_fuzzy_handling(self):
         """check that we handle fuzzy message correctly"""
@@ -96,8 +105,7 @@ Body text"""
 
 Lyfteks"""
         assert expected_output == self._convert_to_string(input_string)
-        assert expected_output == self._convert_to_string(input_string,
-                                                          template_string)
+        assert expected_output == self._convert_to_string(input_string, template_string)
 
     def test_obsolete_ignore(self):
         """check that we handle obsolete message by not using it"""
@@ -118,8 +126,7 @@ Body text"""
 
 Lyfteks"""
         assert expected_output == self._convert_to_string(input_string)
-        assert expected_output == self._convert_to_string(input_string,
-                                                          template_string)
+        assert expected_output == self._convert_to_string(input_string, template_string)
 
     def test_header_ignore(self):
         """check that we ignore headers"""
@@ -137,8 +144,7 @@ Body text"""
 
 Lyfteks"""
         assert expected_output == self._convert_to_string(input_string)
-        assert expected_output == self._convert_to_string(input_string,
-                                                          template_string)
+        assert expected_output == self._convert_to_string(input_string, template_string)
 
     def test_convert_completion_below_threshold(self):
         """Check no conversion if input completion is below threshold."""
@@ -150,9 +156,9 @@ msgstr ""
         template_string = "Hello, World!"
         expected_output = ""
         # Input completion is 0% so with a 70% threshold it should not output.
-        output = self._convert_to_string(input_string, template_string,
-                                         output_threshold=70,
-                                         success_expected=False)
+        output = self._convert_to_string(
+            input_string, template_string, output_threshold=70, success_expected=False
+        )
         assert output == expected_output
 
     def test_convert_completion_above_threshold(self):
@@ -165,8 +171,9 @@ msgstr "Ola mundo!"
         template_string = "Hello, World!"
         expected_output = "Ola mundo!"
         # Input completion is 100% so with a 70% threshold it should output.
-        output = self._convert_to_string(input_string, template_string,
-                                         output_threshold=70)
+        output = self._convert_to_string(
+            input_string, template_string, output_threshold=70
+        )
         assert output == expected_output
 
 

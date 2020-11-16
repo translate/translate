@@ -1,4 +1,3 @@
-
 from translate.lang import af, factory
 
 
@@ -11,7 +10,9 @@ def test_sentences():
     assert sentences == ["Wat?", "'n Fout?"]
     sentences = language.sentences("Dit sal a.g.v. 'n fout gebeur.")
     assert sentences == ["Dit sal a.g.v. 'n fout gebeur."]
-    sentences = language.sentences("Weet nie hoe om lêer '%s' te open nie.\nMiskien is dit 'n tipe beeld wat nog nie ondersteun word nie.\n\nKies liewer 'n ander prent.")
+    sentences = language.sentences(
+        "Weet nie hoe om lêer '%s' te open nie.\nMiskien is dit 'n tipe beeld wat nog nie ondersteun word nie.\n\nKies liewer 'n ander prent."
+    )
     assert len(sentences) == 3
 
 
@@ -30,10 +31,10 @@ def test_capsstart():
 
 
 def test_transliterate_cyrillic():
-
     def trans(text):
         print(("Orig: %s" % text).encode("utf-8"))
         trans = af.tranliterate_cyrillic(text)
         print(("Trans: %s" % trans).encode("utf-8"))
         return trans
+
     assert trans("Борис Николаевич Ельцин") == "Boris Nikolajewitj Jeltsin"

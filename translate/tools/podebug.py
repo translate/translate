@@ -28,8 +28,7 @@ from hashlib import md5
 
 from translate.convert import dtd2po
 from translate.storage import factory
-from translate.storage.placeables import (StringElem, general,
-                                          parse as rich_parse)
+from translate.storage.placeables import StringElem, general, parse as rich_parse
 
 
 def add_prefix(prefix, stringelems):
@@ -47,8 +46,13 @@ podebug_parsers.remove(general.CamelCasePlaceable.parse)
 
 
 class podebug:
-
-    def __init__(self, format=None, rewritestyle=None, ignoreoption=None, preserveplaceholders=False):
+    def __init__(
+        self,
+        format=None,
+        rewritestyle=None,
+        ignoreoption=None,
+        preserveplaceholders=False,
+    ):
         if format is None:
             self.format = ""
         else:
@@ -61,11 +65,16 @@ class podebug:
         """Applies func to all translatable strings in string."""
         string.map(
             lambda e: e.apply_to_strings(func),
-            lambda e: e.isleaf() and e.istranslatable)
+            lambda e: e.isleaf() and e.istranslatable,
+        )
 
     @classmethod
     def rewritelist(cls):
-        return [rewrite.replace("rewrite_", "") for rewrite in dir(cls) if rewrite.startswith("rewrite_")]
+        return [
+            rewrite.replace("rewrite_", "")
+            for rewrite in dir(cls)
+            if rewrite.startswith("rewrite_")
+        ]
 
     def _rewrite_prepend_append(self, string, prepend, append=None):
         if append is None:
@@ -107,32 +116,33 @@ class podebug:
         # From Dive into Python which itself got it elsewhere
         # http://www.renderx.com/demos/examples/diveintopython.pdf
         subs = (
-               (r'a([nu])', r'u\1'),
-               (r'A([nu])', r'U\1'),
-               (r'a\B', r'e'),
-               (r'A\B', r'E'),
-               (r'en\b', r'ee'),
-               (r'\Bew', r'oo'),
-               (r'\Be\b', r'e-a'),
-               (r'\be', r'i'),
-               (r'\bE', r'I'),
-               (r'\Bf', r'ff'),
-               (r'\Bir', r'ur'),
-               (r'(\w*?)i(\w*?)$', r'\1ee\2'),
-               (r'\bow', r'oo'),
-               (r'\bo', r'oo'),
-               (r'\bO', r'Oo'),
-               (r'the', r'zee'),
-               (r'The', r'Zee'),
-               (r'th\b', r't'),
-               (r'\Btion', r'shun'),
-               (r'\Bu', r'oo'),
-               (r'\BU', r'Oo'),
-               (r'v', r'f'),
-               (r'V', r'F'),
-               (r'w', r'w'),
-               (r'W', r'W'),
-               (r'([a-z])[.]', r'\1. Bork Bork Bork!'))
+            (r'a([nu])', r'u\1'),
+            (r'A([nu])', r'U\1'),
+            (r'a\B', r'e'),
+            (r'A\B', r'E'),
+            (r'en\b', r'ee'),
+            (r'\Bew', r'oo'),
+            (r'\Be\b', r'e-a'),
+            (r'\be', r'i'),
+            (r'\bE', r'I'),
+            (r'\Bf', r'ff'),
+            (r'\Bir', r'ur'),
+            (r'(\w*?)i(\w*?)$', r'\1ee\2'),
+            (r'\bow', r'oo'),
+            (r'\bo', r'oo'),
+            (r'\bO', r'Oo'),
+            (r'the', r'zee'),
+            (r'The', r'Zee'),
+            (r'th\b', r't'),
+            (r'\Btion', r'shun'),
+            (r'\Bu', r'oo'),
+            (r'\BU', r'Oo'),
+            (r'v', r'f'),
+            (r'V', r'F'),
+            (r'w', r'w'),
+            (r'W', r'W'),
+            (r'([a-z])[.]', r'\1. Bork Bork Bork!'),
+        )
         for a, b in subs:
             self.apply_to_translatables(string, lambda s: re.sub(a, b, s))
         return string
@@ -143,7 +153,7 @@ class podebug:
         general.XMLTagPlaceable.parse,
         general.DoubleAtPlaceable.parse,
         general.BracePlaceable.parse,
-        general.PythonFormattingPlaceable.parse
+        general.PythonFormattingPlaceable.parse,
     ]
     # These parsers extract placeholders that should NOT be transformed during character-level rewrites
     # when the preserveplaceholders flag is True. It is not the full set of placeable parsers available
@@ -164,7 +174,9 @@ class podebug:
 
         return ''.join(transformed)
 
-    REWRITE_UNICODE_MAP = "ȦƁƇḒḖƑƓĦĪĴĶĿḾȠǾƤɊŘŞŦŬṼẆẊẎẐ" + "[\\]^_`" + "ȧƀƈḓḗƒɠħīĵķŀḿƞǿƥɋřşŧŭṽẇẋẏẑ"
+    REWRITE_UNICODE_MAP = (
+        "ȦƁƇḒḖƑƓĦĪĴĶĿḾȠǾƤɊŘŞŦŬṼẆẊẎẐ" + "[\\]^_`" + "ȧƀƈḓḗƒɠħīĵķŀḿƞǿƥɋřşŧŭṽẇẋẏẑ"
+    )
 
     def rewrite_unicode(self, string):
         """Convert to Unicode characters that look like the source string"""
@@ -187,9 +199,11 @@ class podebug:
         return string
 
     REWRITE_FLIPPED_MAP = (
-        "¡„#$%⅋,()⁎+´-˙/012Ɛᔭ59Ƚ86:;<=>¿@" +
-        "∀ԐↃᗡƎℲ⅁HIſӼ⅂WNOԀÒᴚS⊥∩ɅＭX⅄Z" +
-        "[\\]ᵥ_," + "ɐqɔpǝɟƃɥıɾʞʅɯuodbɹsʇnʌʍxʎz")
+        "¡„#$%⅋,()⁎+´-˙/012Ɛᔭ59Ƚ86:;<=>¿@"
+        + "∀ԐↃᗡƎℲ⅁HIſӼ⅂WNOԀÒᴚS⊥∩ɅＭX⅄Z"
+        + "[\\]ᵥ_,"
+        + "ɐqɔpǝɟƃɥıɾʞʅɯuodbɹsʇnʌʍxʎz"
+    )
     # Brackets should be swapped if the string will be reversed in memory.
     # If a right-to-left override is used, the brackets should be
     # unchanged.
@@ -213,17 +227,24 @@ class podebug:
 
         def transformer(s):
             if self.preserveplaceholders:
-                return "\u202e" + self.transform_characters_preserving_placeholders(s, transpose)
+                return "\u202e" + self.transform_characters_preserving_placeholders(
+                    s, transpose
+                )
             else:
                 return "\u202e" + ''.join([transpose(c) for c in s])
             # To reverse instead of using the RTL override:
-            #return ''.join(reversed([transpose(c) for c in s]))
+            # return ''.join(reversed([transpose(c) for c in s]))
+
         self.apply_to_translatables(string, transformer)
         return string
 
     @classmethod
     def ignorelist(cls):
-        return [ignore.replace("ignore_", "") for ignore in dir(cls) if ignore.startswith("ignore_")]
+        return [
+            ignore.replace("ignore_", "")
+            for ignore in dir(cls)
+            if ignore.startswith("ignore_")
+        ]
 
     def ignore_openoffice(self, unit):
         for location in unit.getlocations():
@@ -270,13 +291,18 @@ class podebug:
                 hashable = unit.getlocations()[0]
             else:
                 hashable = unit.source
-            prefix = prefix.replace("@hash_placeholder@", md5(hashable.encode('utf-8')).hexdigest()[:self.hash_len])
+            prefix = prefix.replace(
+                "@hash_placeholder@",
+                md5(hashable.encode('utf-8')).hexdigest()[: self.hash_len],
+            )
         if unit.istranslated():
             rich_string = unit.rich_target
         else:
             rich_string = unit.rich_source
         if not isinstance(rich_string, StringElem):
-            rich_string = [rich_parse(string, podebug_parsers) for string in rich_string]
+            rich_string = [
+                rich_parse(string, podebug_parsers) for string in rich_string
+            ]
         if self.rewritefunc:
             rewritten = [self.rewritefunc(string) for string in rich_string]
             if rewritten:
@@ -303,7 +329,9 @@ class podebug:
                 formatted = os.path.dirname(store.filename)
             elif formatstr.endswith("h"):
                 try:
-                    self.hash_len = int(''.join([c for c in formatstr[1:-1] if c.isdigit()]))
+                    self.hash_len = int(
+                        ''.join([c for c in formatstr[1:-1] if c.isdigit()])
+                    )
                 except ValueError:
                     self.hash_len = 4
                 formatted = "@hash_placeholder@"
@@ -312,10 +340,12 @@ class podebug:
             formatoptions = formatstr[1:-1]
             if formatoptions and not formatstr.endswith("h"):
                 if "c" in formatoptions and formatted:
-                    formatted = formatted[0] + ''.join([c for c in formatted[1:] if c.lower() not in "aeiou"])
+                    formatted = formatted[0] + ''.join(
+                        [c for c in formatted[1:] if c.lower() not in "aeiou"]
+                    )
                 length = ''.join([c for c in formatoptions if c.isdigit()])
                 if length:
-                    formatted = formatted[:int(length)]
+                    formatted = formatted[: int(length)]
             prefix = prefix.replace(formatstr, formatted)
         for unit in store.units:
             if not unit.istranslatable():
@@ -336,21 +366,30 @@ class podebug:
                 dirshrunk += "".join([dirpart[0] for dirpart in dirparts[1:]]) + "-"
         baseshrunk = os.path.basename(filename)[:4]
         if "." in baseshrunk:
-            baseshrunk = baseshrunk[:baseshrunk.find(".")]
+            baseshrunk = baseshrunk[: baseshrunk.find(".")]
         return dirshrunk + baseshrunk
 
 
-def convertpo(inputfile, outputfile, templatefile, format=None, rewritestyle=None, ignoreoption=None,
-              preserveplaceholders=None):
+def convertpo(
+    inputfile,
+    outputfile,
+    templatefile,
+    format=None,
+    rewritestyle=None,
+    ignoreoption=None,
+    preserveplaceholders=None,
+):
     """Reads in inputfile, changes it to have debug strings, writes to outputfile."""
     # note that templatefile is not used, but it is required by the converter...
     inputstore = factory.getobject(inputfile)
     if inputstore.isempty():
         return 0
-    convertor = podebug(format=format,
-                        rewritestyle=rewritestyle,
-                        ignoreoption=ignoreoption,
-                        preserveplaceholders=preserveplaceholders)
+    convertor = podebug(
+        format=format,
+        rewritestyle=rewritestyle,
+        ignoreoption=ignoreoption,
+        preserveplaceholders=preserveplaceholders,
+    )
     outputstore = convertor.convertstore(inputstore)
     outputstore.serialize(outputfile)
     return 1
@@ -358,6 +397,7 @@ def convertpo(inputfile, outputfile, templatefile, format=None, rewritestyle=Non
 
 def main():
     from translate.convert import convert
+
     formats = {
         "po": ("po", convertpo),
         "pot": ("po", convertpo),
@@ -368,21 +408,37 @@ def main():
     parser = convert.ConvertOptionParser(formats, description=__doc__)
     # TODO: add documentation on format strings...
     parser.add_option(
-        "-f", "--format", dest="format", default="",
-        help="specify format string")
+        "-f", "--format", dest="format", default="", help="specify format string"
+    )
     parser.add_option(
-        "", "--rewrite", dest="rewritestyle",
-        type="choice", choices=podebug.rewritelist(), metavar="STYLE",
-        help="the translation rewrite style: %s" % ", ".join(podebug.rewritelist()))
+        "",
+        "--rewrite",
+        dest="rewritestyle",
+        type="choice",
+        choices=podebug.rewritelist(),
+        metavar="STYLE",
+        help="the translation rewrite style: %s" % ", ".join(podebug.rewritelist()),
+    )
     parser.add_option(
-        "", "--ignore", dest="ignoreoption",
-        type="choice", choices=podebug.ignorelist(), metavar="APPLICATION",
-        help="apply tagging ignore rules for the given application: %s" % ", ".join(podebug.ignorelist()))
-    parser.add_option("", "--preserveplaceholders", dest="preserveplaceholders",
-                      default=False, action="store_true",
-                      help="attempt to exclude characters that are part of placeholders when performing character-level"
-                           " rewrites so that consuming applications can still use the placeholders to generate final "
-                           "output")
+        "",
+        "--ignore",
+        dest="ignoreoption",
+        type="choice",
+        choices=podebug.ignorelist(),
+        metavar="APPLICATION",
+        help="apply tagging ignore rules for the given application: %s"
+        % ", ".join(podebug.ignorelist()),
+    )
+    parser.add_option(
+        "",
+        "--preserveplaceholders",
+        dest="preserveplaceholders",
+        default=False,
+        action="store_true",
+        help="attempt to exclude characters that are part of placeholders when performing character-level"
+        " rewrites so that consuming applications can still use the placeholders to generate final "
+        "output",
+    )
     parser.passthrough.append("format")
     parser.passthrough.append("rewritestyle")
     parser.passthrough.append("ignoreoption")

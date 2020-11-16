@@ -230,7 +230,8 @@ class RESXFile(lisa.LISAfile):
         reindent(root, indent="  ", max_level=4)
         # Use same header as Visual Studio
         out.write(b'<?xml version="1.0" encoding="utf-8"?>\n')
-        content = etree.tostring(root, pretty_print=False, xml_declaration=False,
-                                 encoding='utf-8')
+        content = etree.tostring(
+            root, pretty_print=False, xml_declaration=False, encoding='utf-8'
+        )
         # Additional space on empty tags same as Visual Studio
         out.write(content.replace(b'/>', b' />'))

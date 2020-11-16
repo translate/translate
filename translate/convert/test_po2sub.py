@@ -11,7 +11,6 @@ importorskip("aeidon")
 
 
 class TestPO2Sub:
-
     def po2sub(self, posource):
         """helper that converts po source to subtitle source without requiring files"""
         inputfile = BytesIO(posource.encode())

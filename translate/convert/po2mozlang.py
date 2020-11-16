@@ -33,8 +33,15 @@ class po2lang:
     TargetStoreClass = mozilla_lang.LangStore
     TargetUnitClass = mozilla_lang.LangUnit
 
-    def __init__(self, input_file, output_file, template_file=None,
-                 include_fuzzy=False, output_threshold=None, mark_active=True):
+    def __init__(
+        self,
+        input_file,
+        output_file,
+        template_file=None,
+        include_fuzzy=False,
+        output_threshold=None,
+        mark_active=True,
+    ):
         """Initialize the converter."""
         self.source_store = self.SourceStoreClass(input_file)
 
@@ -78,11 +85,18 @@ class po2lang:
         return 1
 
 
-def run_converter(inputfile, outputfile, templatefile=None, includefuzzy=False,
-                  mark_active=True, outputthreshold=None):
+def run_converter(
+    inputfile,
+    outputfile,
+    templatefile=None,
+    includefuzzy=False,
+    mark_active=True,
+    outputthreshold=None,
+):
     """Wrapper around converter."""
-    return po2lang(inputfile, outputfile, templatefile, includefuzzy,
-                   outputthreshold, mark_active).run()
+    return po2lang(
+        inputfile, outputfile, templatefile, includefuzzy, outputthreshold, mark_active
+    ).run()
 
 
 formats = {
@@ -92,11 +106,17 @@ formats = {
 
 
 def main(argv=None):
-    parser = convert.ConvertOptionParser(formats, usetemplates=True,
-                                         description=__doc__)
+    parser = convert.ConvertOptionParser(
+        formats, usetemplates=True, description=__doc__
+    )
     parser.add_option(
-        "", "--mark-active", dest="mark_active", default=False,
-        action="store_true", help="mark the file as active")
+        "",
+        "--mark-active",
+        dest="mark_active",
+        default=False,
+        action="store_true",
+        help="mark the file as active",
+    )
     parser.add_threshold_option()
     parser.add_fuzzy_option()
     parser.passthrough.append("mark_active")

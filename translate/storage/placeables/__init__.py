@@ -51,5 +51,10 @@ from .strelem import StringElem
 
 
 __all__ = (
-    'base', 'interfaces', 'general', 'parse', 'StringElem', 'xliff'
+    'base',
+    'interfaces',
+    'general',
+    'parse',
+    'StringElem',
+    'xliff',
 ) + all_your_base

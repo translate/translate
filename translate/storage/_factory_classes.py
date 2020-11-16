@@ -21,8 +21,21 @@ just for the sake of the Windows installer to easily pick up all the stuff that
 we need and ensure they make it into the installer.
 """
 
-from . import (catkeys, csvl10n, mo, omegat, po, qm, qph, tbx, tmx, ts2, utx,
-               wordfast, xliff)
+from . import (
+    catkeys,
+    csvl10n,
+    mo,
+    omegat,
+    po,
+    qm,
+    qph,
+    tbx,
+    tmx,
+    ts2,
+    utx,
+    wordfast,
+    xliff,
+)
 
 
 try:
@@ -31,5 +44,18 @@ except ImportError:
     pass
 
 __all__ = [
-    "catkeys", "csvl10n", "mo", "omegat", "po", "qm", "qph", "tbx", "tmx", "ts2", "utx", "wordfast", "xliff", "trados"
+    "catkeys",
+    "csvl10n",
+    "mo",
+    "omegat",
+    "po",
+    "qm",
+    "qph",
+    "tbx",
+    "tmx",
+    "ts2",
+    "utx",
+    "wordfast",
+    "xliff",
+    "trados",
 ]

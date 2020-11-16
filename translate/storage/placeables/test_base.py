@@ -19,8 +19,7 @@
 
 from pytest import mark
 
-from translate.storage.placeables import (StringElem, base, general, parse,
-                                          xliff)
+from translate.storage.placeables import StringElem, base, general, parse, xliff
 
 
 class TestStringElem:
@@ -35,19 +34,28 @@ class TestStringElem:
     def test_tree(self):
         assert len(self.elem.sub) == 4
         assert str(self.elem.sub[0]) == 'Ģët '
-        assert str(self.elem.sub[1]) == '<a href="http://www.example.com" alt="Ģët &brand;!">'
+        assert (
+            str(self.elem.sub[1])
+            == '<a href="http://www.example.com" alt="Ģët &brand;!">'
+        )
         assert str(self.elem.sub[2]) == '&brandLong;'
         assert str(self.elem.sub[3]) == '</a>'
 
         assert len(self.elem.sub[0].sub) == 1 and self.elem.sub[0].sub[0] == 'Ģët '
-        assert len(self.elem.sub[1].sub) == 1 and self.elem.sub[1].sub[0] == '<a href="http://www.example.com" alt="Ģët &brand;!">'
-        assert len(self.elem.sub[2].sub) == 1 and self.elem.sub[2].sub[0] == '&brandLong;'
+        assert (
+            len(self.elem.sub[1].sub) == 1
+            and self.elem.sub[1].sub[0]
+            == '<a href="http://www.example.com" alt="Ģët &brand;!">'
+        )
+        assert (
+            len(self.elem.sub[2].sub) == 1 and self.elem.sub[2].sub[0] == '&brandLong;'
+        )
         assert len(self.elem.sub[3].sub) == 1 and self.elem.sub[3].sub[0] == '</a>'
 
     def test_add(self):
         assert self.elem + ' ' == self.ORIGSTR + ' '
         # ... and __radd__() ... doesn't work
-        #assert ' ' + self.elem == ' ' + self.ORIGSTR
+        # assert ' ' + self.elem == ' ' + self.ORIGSTR
 
     def test_contains(self):
         assert 'href' in self.elem
@@ -121,7 +129,9 @@ class TestStringElem:
         # Case 4: Across multiple elements #
         elem = self.elem.copy()
         # Delete the last two elements
-        deleted, parent, offset = elem.delete_range(elem.elem_offset(elem.sub[2]), len(elem))
+        deleted, parent, offset = elem.delete_range(
+            elem.elem_offset(elem.sub[2]), len(elem)
+        )
         assert deleted == self.elem
         assert parent is None
         assert offset is None
@@ -179,7 +189,6 @@ class TestStringElem:
 
 
 class TestConverters:
-
     def setup_method(self, method):
         self.elem = parse(TestStringElem.ORIGSTR, general.parsers)
 

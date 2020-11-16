@@ -1,4 +1,3 @@
-
 from io import BytesIO
 
 import pytest
@@ -10,8 +9,14 @@ class TestPO2YAML:
 
     ConverterClass = po2yaml.po2yaml
 
-    def _convert(self, input_string, template_string=None, include_fuzzy=False,
-                 output_threshold=None, success_expected=True):
+    def _convert(
+        self,
+        input_string,
+        template_string=None,
+        include_fuzzy=False,
+        output_threshold=None,
+        success_expected=True,
+    ):
         """Helper that converts to target format without using files."""
         input_file = BytesIO(input_string.encode())
         output_file = BytesIO()
@@ -19,8 +24,9 @@ class TestPO2YAML:
         if template_string:
             template_file = BytesIO(template_string.encode())
         expected_result = 1 if success_expected else 0
-        converter = self.ConverterClass(input_file, output_file, template_file,
-                                        include_fuzzy, output_threshold)
+        converter = self.ConverterClass(
+            input_file, output_file, template_file, include_fuzzy, output_threshold
+        )
         assert converter.run() == expected_result
         return converter.target_store, output_file
 
@@ -51,8 +57,7 @@ msgstr ""
         template_string = 'key: "Hello, World!"'
         expected_output = '''key: Hello, World!
 '''
-        assert expected_output == self._convert_to_string(input_string,
-                                                          template_string)
+        assert expected_output == self._convert_to_string(input_string, template_string)
 
     def test_simple(self):
         """Check that a simple single entry PO converts to a YAML unit."""
@@ -109,8 +114,9 @@ msgid "Hello, World!"
 msgstr "Ola mundo!"
 """
         template_string = 'key: "Hello, World!"'
-        target_store = self._convert_to_store(input_string, template_string,
-                                              include_fuzzy=True)
+        target_store = self._convert_to_store(
+            input_string, template_string, include_fuzzy=True
+        )
         target_unit = target_store.units[0]
         assert len(target_store.units) == 1
         assert target_unit.getid() == "key"
@@ -169,9 +175,9 @@ msgstr ""
         template_string = 'key: "Hello, World!"'
         expected_output = ""
         # Input completion is 0% so with a 70% threshold it should not output.
-        output = self._convert_to_string(input_string, template_string,
-                                         output_threshold=70,
-                                         success_expected=False)
+        output = self._convert_to_string(
+            input_string, template_string, output_threshold=70, success_expected=False
+        )
         assert output == expected_output
 
     def test_convert_completion_above_threshold(self):
@@ -185,8 +191,9 @@ msgstr "Ola mundo!"
         expected_output = '''key: Ola mundo!
 '''
         # Input completion is 100% so with a 70% threshold it should output.
-        output = self._convert_to_string(input_string, template_string,
-                                         output_threshold=70)
+        output = self._convert_to_string(
+            input_string, template_string, output_threshold=70
+        )
         assert output == expected_output
 
 

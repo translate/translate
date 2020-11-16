@@ -33,17 +33,23 @@ class flatxml2po:
     TargetStoreClass = po.pofile
     TargetUnitClass = po.pounit
 
-    def __init__(self, inputfile, outputfile, templatefile=None,
-                 root="root", value="str", key="key", ns=None):
+    def __init__(
+        self,
+        inputfile,
+        outputfile,
+        templatefile=None,
+        root="root",
+        value="str",
+        key="key",
+        ns=None,
+    ):
         """Initialize the converter."""
         self.inputfile = inputfile
         self.outputfile = outputfile
 
-        self.source_store = self.SourceStoreClass(inputfile,
-                                                  root_name=root,
-                                                  value_name=value,
-                                                  key_name=key,
-                                                  namespace=ns)
+        self.source_store = self.SourceStoreClass(
+            inputfile, root_name=root, value_name=value, key_name=key, namespace=ns
+        )
         self.target_store = self.TargetStoreClass()
 
     def convert_unit(self, unit):
@@ -67,11 +73,17 @@ class flatxml2po:
         return 1
 
 
-def run_converter(inputfile, outputfile, templatefile=None,
-                  root="root", value="str", key="key", ns=None):
+def run_converter(
+    inputfile,
+    outputfile,
+    templatefile=None,
+    root="root",
+    value="str",
+    key="key",
+    ns=None,
+):
     """Wrapper around the converter."""
-    return flatxml2po(inputfile, outputfile, templatefile,
-                      root, value, key, ns).run()
+    return flatxml2po(inputfile, outputfile, templatefile, root, value, key, ns).run()
 
 
 formats = {
@@ -80,21 +92,40 @@ formats = {
 
 
 def main(argv=None):
-    parser = convert.ConvertOptionParser(formats,
-                                         description=__doc__)
+    parser = convert.ConvertOptionParser(formats, description=__doc__)
 
-    parser.add_option("-r", "--root", action="store", dest="root",
-                      default="root",
-                      help='name of the XML root element (default: "root")')
-    parser.add_option("-v", "--value", action="store", dest="value",
-                      default="str",
-                      help='name of the XML value element (default: "str")')
-    parser.add_option("-k", "--key", action="store", dest="key",
-                      default="key",
-                      help='name of the XML key attribute (default: "key")')
-    parser.add_option("-n", "--namespace", action="store", dest="ns",
-                      default=None,
-                      help="XML namespace uri (default: None)")
+    parser.add_option(
+        "-r",
+        "--root",
+        action="store",
+        dest="root",
+        default="root",
+        help='name of the XML root element (default: "root")',
+    )
+    parser.add_option(
+        "-v",
+        "--value",
+        action="store",
+        dest="value",
+        default="str",
+        help='name of the XML value element (default: "str")',
+    )
+    parser.add_option(
+        "-k",
+        "--key",
+        action="store",
+        dest="key",
+        default="key",
+        help='name of the XML key attribute (default: "key")',
+    )
+    parser.add_option(
+        "-n",
+        "--namespace",
+        action="store",
+        dest="ns",
+        default=None,
+        help="XML namespace uri (default: None)",
+    )
 
     parser.passthrough.append("root")
     parser.passthrough.append("value")

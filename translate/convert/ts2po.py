@@ -26,12 +26,20 @@ from translate.storage import po, ts2
 
 
 class ts2po:
-
     def __init__(self, duplicatestyle="msgctxt", pot=False):
         self.duplicatestyle = duplicatestyle
         self.pot = pot
 
-    def convertmessage(self, contextname, messagenum, source, target, disambiguation, msgcomments, transtype):
+    def convertmessage(
+        self,
+        contextname,
+        messagenum,
+        source,
+        target,
+        disambiguation,
+        msgcomments,
+        transtype,
+    ):
         """makes a pounit from the given message"""
         thepo = po.pounit(encoding="UTF-8")
         thepo.addlocation("%s#%d" % (contextname, messagenum))
@@ -68,7 +76,15 @@ class ts2po:
             if len(contexts) > 1:
                 disambiguation = contexts[1]
             messagenum += 1
-            thepo = self.convertmessage(context, messagenum, inputunit.source, inputunit.target, disambiguation, inputunit.getnotes(), inputunit._gettype())
+            thepo = self.convertmessage(
+                context,
+                messagenum,
+                inputunit.source,
+                inputunit.target,
+                disambiguation,
+                inputunit.getnotes(),
+                inputunit._gettype(),
+            )
             thetargetfile.addunit(thepo)
 
         thetargetfile.removeduplicates(self.duplicatestyle)
@@ -87,6 +103,7 @@ def convertts(inputfile, outputfile, templates, pot=False, duplicatestyle="msgct
 
 def main(argv=None):
     from translate.convert import convert
+
     formats = {"ts": ("po", convertts)}
     parser = convert.ConvertOptionParser(formats, usepots=True, description=__doc__)
     parser.add_duplicates_option()

@@ -112,7 +112,9 @@ class ODF:
         return self.odf.read(filename)
 
     def _get_doc_root(self, filename):
-        return etree.tostring(etree.fromstring(self._get_data(filename)), pretty_print=True)
+        return etree.tostring(
+            etree.fromstring(self._get_data(filename)), pretty_print=True
+        )
 
     def __eq__(self, other):
         if other is None:

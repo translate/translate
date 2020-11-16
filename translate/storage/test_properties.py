@@ -8,6 +8,7 @@ from translate.storage import properties, test_monolingual
 
 # Note that DialectJava delimitors are ["=", ":", " "]
 
+
 def test_find_delimiter_pos_simple():
     """Simple tests to find the various delimiters"""
     assert properties.DialectJava.find_delimiter("key=value") == ('=', 3)
@@ -45,7 +46,10 @@ def test_find_delimiter_pos_escapes():
     assert properties.DialectJava.find_delimiter("key\\:=value") == ('=', 5)
     assert properties.DialectJava.find_delimiter("key\\=: value") == (':', 5)
     assert properties.DialectJava.find_delimiter("key\\   value") == (' ', 5)
-    assert properties.DialectJava.find_delimiter("key\\ key\\ key\\: = value") == ('=', 16)
+    assert properties.DialectJava.find_delimiter("key\\ key\\ key\\: = value") == (
+        '=',
+        16,
+    )
 
 
 def test_is_line_continuation():
@@ -53,7 +57,9 @@ def test_is_line_continuation():
     assert not properties.is_line_continuation("some text")
     assert properties.is_line_continuation("""some text\\""")
     assert not properties.is_line_continuation("""some text\\\\""")  # Escaped \
-    assert properties.is_line_continuation("""some text\\\\\\""")  # Odd num. \ is line continuation
+    assert properties.is_line_continuation(
+        """some text\\\\\\"""
+    )  # Odd num. \ is line continuation
     assert properties.is_line_continuation("""\\\\\\""")
 
 
@@ -98,7 +104,14 @@ class TestPropUnit(test_monolingual.TestMonolingualUnit):
 class TestGwtProp(test_monolingual.TestMonolingualStore):
     StoreClass = properties.gwtfile
 
-    def propparse(self, propsource, personality="gwt", encoding=None, sourcelanguage=None, targetlanguage=None):
+    def propparse(
+        self,
+        propsource,
+        personality="gwt",
+        encoding=None,
+        sourcelanguage=None,
+        targetlanguage=None,
+    ):
         """helper that parses properties source without requiring files"""
         dummyfile = BytesIO(propsource.encode())
         propfile = properties.propfile(None, personality, encoding)
@@ -146,7 +159,9 @@ class TestGwtProp(test_monolingual.TestMonolingualStore):
     def test_reduce(self):
         """checks that if the target language has less plural form the generated properties file is correct"""
         propsource = 'test_me=I can code!\ntest_me[one]=I can code single!'
-        propfile = self.propparse(propsource, "gwt", None, "en", "ja")  # Only "other" plural form
+        propfile = self.propparse(
+            propsource, "gwt", None, "en", "ja"
+        )  # Only "other" plural form
         print(propfile)
         print(str(propfile))
         assert b'test_me=I can code!\n' == propfile.__bytes__()
@@ -154,38 +169,62 @@ class TestGwtProp(test_monolingual.TestMonolingualStore):
     def test_increase(self):
         """checks that if the target language has more plural form the generated properties file is correct"""
         propsource = 'test_me=I can code!\ntest_me[one]=I can code single!'
-        propfile = self.propparse(propsource, "gwt", None, "en", "ar")  # All plural forms
+        propfile = self.propparse(
+            propsource, "gwt", None, "en", "ar"
+        )  # All plural forms
         assert len(propfile.units) == 1
         propunit = propfile.units[0]
 
         assert isinstance(propunit.target, multistring)
         assert propunit.target.strings == ['', '', '', '', '', '']
-        assert b'test_me=I can code!\ntest_me[none]=\ntest_me[one]=I can code single!\n' + \
-               b'test_me[two]=\ntest_me[few]=\ntest_me[many]=\n' == propfile.__bytes__()
+        assert (
+            b'test_me=I can code!\ntest_me[none]=\ntest_me[one]=I can code single!\n'
+            + b'test_me[two]=\ntest_me[few]=\ntest_me[many]=\n'
+            == propfile.__bytes__()
+        )
 
-        propunit.target = {'other': 'other', 'one': 'one', 'zero': 'zero', 'few': 'few', 'two': 'two', 'many': 'many'}
+        propunit.target = {
+            'other': 'other',
+            'one': 'one',
+            'zero': 'zero',
+            'few': 'few',
+            'two': 'two',
+            'many': 'many',
+        }
         assert isinstance(propunit.target, multistring)
         assert propunit.target.strings == ['zero', 'one', 'two', 'few', 'many', 'other']
-        assert b'test_me=other\ntest_me[none]=zero\ntest_me[one]=one\n' + \
-               b'test_me[two]=two\ntest_me[few]=few\ntest_me[many]=many\n' == propfile.__bytes__()
+        assert (
+            b'test_me=other\ntest_me[none]=zero\ntest_me[one]=one\n'
+            + b'test_me[two]=two\ntest_me[few]=few\ntest_me[many]=many\n'
+            == propfile.__bytes__()
+        )
 
         propunit.target = multistring(['zero', 'one', 'two', 'few', 'many', 'other'])
         assert isinstance(propunit.target, multistring)
         assert propunit.target.strings == ['zero', 'one', 'two', 'few', 'many', 'other']
-        assert b'test_me=other\ntest_me[none]=zero\ntest_me[one]=one\n' + \
-               b'test_me[two]=two\ntest_me[few]=few\ntest_me[many]=many\n' == propfile.__bytes__()
+        assert (
+            b'test_me=other\ntest_me[none]=zero\ntest_me[one]=one\n'
+            + b'test_me[two]=two\ntest_me[few]=few\ntest_me[many]=many\n'
+            == propfile.__bytes__()
+        )
 
         propunit.target = ['zero', 'one', 'two', 'few', 'many', 'other']
         assert isinstance(propunit.target, multistring)
         assert propunit.target.strings == ['zero', 'one', 'two', 'few', 'many', 'other']
-        assert b'test_me=other\ntest_me[none]=zero\ntest_me[one]=one\n' + \
-               b'test_me[two]=two\ntest_me[few]=few\ntest_me[many]=many\n' == propfile.__bytes__()
+        assert (
+            b'test_me=other\ntest_me[none]=zero\ntest_me[one]=one\n'
+            + b'test_me[two]=two\ntest_me[few]=few\ntest_me[many]=many\n'
+            == propfile.__bytes__()
+        )
 
         propunit.source = ['zero', 'one', 'two', 'few', 'many', 'other']
         assert isinstance(propunit.target, multistring)
         assert propunit.target.strings == ['zero', 'one', 'two', 'few', 'many', 'other']
-        assert b'test_me=other\ntest_me[none]=zero\ntest_me[one]=one\n' + \
-               b'test_me[two]=two\ntest_me[few]=few\ntest_me[many]=many\n' == propfile.__bytes__()
+        assert (
+            b'test_me=other\ntest_me[none]=zero\ntest_me[one]=one\n'
+            + b'test_me[two]=two\ntest_me[few]=few\ntest_me[many]=many\n'
+            == propfile.__bytes__()
+        )
 
 
 class TestProp(test_monolingual.TestMonolingualStore):
@@ -193,7 +232,9 @@ class TestProp(test_monolingual.TestMonolingualStore):
 
     def propparse(self, propsource, personality="java", encoding=None):
         """helper that parses properties source without requiring files"""
-        dummyfile = BytesIO(propsource.encode() if isinstance(propsource, str) else propsource)
+        dummyfile = BytesIO(
+            propsource.encode() if isinstance(propsource, str) else propsource
+        )
         propfile = properties.propfile(dummyfile, personality, encoding)
         return propfile
 
@@ -250,10 +291,18 @@ class TestProp(test_monolingual.TestMonolingualStore):
     def test_whitespace_handling(self):
         """check that we remove extra whitespace around property"""
         whitespaces = (
-            ('key = value', 'key', 'value'),      # Standard for baseline
-            (' key =  value', 'key', 'value'),    # Extra \s before key and value
-            ('\\ key\\ = value', '\\ key\\ ', 'value'),  # extra space at start and end of key
-            ('key = \\ value ', 'key', ' value '),  # extra space at start end end of value
+            ('key = value', 'key', 'value'),  # Standard for baseline
+            (' key =  value', 'key', 'value'),  # Extra \s before key and value
+            (
+                '\\ key\\ = value',
+                '\\ key\\ ',
+                'value',
+            ),  # extra space at start and end of key
+            (
+                'key = \\ value ',
+                'key',
+                ' value ',
+            ),  # extra space at start end end of value
         )
         for propsource, key, value in whitespaces:
             propfile = self.propparse(propsource)
@@ -286,9 +335,12 @@ class TestProp(test_monolingual.TestMonolingualStore):
         """checks that we handle # and ! comments"""
         markers = ['#', '!']
         for comment_marker in markers:
-            propsource = '''%s A comment
+            propsource = (
+                '''%s A comment
 key=value
-''' % comment_marker
+'''
+                % comment_marker
+            )
             propfile = self.propparse(propsource)
             print(repr(propsource))
             print("Comment marker: '%s'" % comment_marker)
@@ -306,7 +358,12 @@ key=value
 
     def test_fullspec_delimiters(self):
         """test the full definiation as found in Java docs"""
-        proplist = ['Truth = Beauty\n', '       Truth:Beauty', 'Truth                  :Beauty', 'Truth        Beauty']
+        proplist = [
+            'Truth = Beauty\n',
+            '       Truth:Beauty',
+            'Truth                  :Beauty',
+            'Truth        Beauty',
+        ]
         for propsource in proplist:
             propfile = self.propparse(propsource)
             propunit = propfile.units[0]
@@ -370,8 +427,9 @@ key=value
 
     def test_mac_multiline_strings(self):
         """test can read multiline items used in Mac OS X strings files"""
-        propsource = (r'''"I am a \"key\"" = "I am a \"value\" ''' +
-                      '\n nextline";').encode('utf-16')
+        propsource = (
+            r'''"I am a \"key\"" = "I am a \"value\" ''' + '\n nextline";'
+        ).encode('utf-16')
         propfile = self.propparse(propsource, personality="strings")
         assert len(propfile.units) == 1
         propunit = propfile.units[0]
@@ -410,7 +468,9 @@ key=value
         """test .string comment types"""
         propsource = '''/* Comment */
 // Comment
-"key" = "value";'''.encode('utf-16')
+"key" = "value";'''.encode(
+            'utf-16'
+        )
         propfile = self.propparse(propsource, personality="strings")
         assert len(propfile.units) == 1
         propunit = propfile.units[0]
@@ -420,10 +480,7 @@ key=value
 
     def test_mac_strings_multilines_comments(self):
         """test .string multiline comments"""
-        propsource = ('/* Foo\n'
-                      'Bar\n'
-                      'Baz */\n'
-                      '"key" = "value";').encode('utf-16')
+        propsource = ('/* Foo\n' 'Bar\n' 'Baz */\n' '"key" = "value";').encode('utf-16')
         propfile = self.propparse(propsource, personality="strings")
         assert len(propfile.units) == 1
         propunit = propfile.units[0]
@@ -434,7 +491,9 @@ key=value
     def test_mac_strings_comments_dropping(self):
         """.string generic (and unuseful) comments should be dropped"""
         propsource = '''/* No comment provided by engineer. */
-"key" = "value";'''.encode('utf-16')
+"key" = "value";'''.encode(
+            'utf-16'
+        )
         propfile = self.propparse(propsource, personality="strings")
         assert len(propfile.units) == 1
         propunit = propfile.units[0]
@@ -444,7 +503,9 @@ key=value
 
     def test_mac_strings_quotes(self):
         """test that parser unescapes characters used as wrappers"""
-        propsource = r'"key with \"quotes\"" = "value with \"quotes\"";'.encode('utf-16')
+        propsource = r'"key with \"quotes\"" = "value with \"quotes\"";'.encode(
+            'utf-16'
+        )
         propfile = self.propparse(propsource, personality="strings")
         propunit = propfile.units[0]
         assert propunit.name == 'key with "quotes"'
@@ -460,7 +521,9 @@ key=value
 
     def test_mac_strings_serialization(self):
         """test that serializer quotes mac strings properly"""
-        propsource = r'"key with \"quotes\"" = "value with \"quotes\"";'.encode('utf-16')
+        propsource = r'"key with \"quotes\"" = "value with \"quotes\"";'.encode(
+            'utf-16'
+        )
         propfile = self.propparse(propsource, personality="strings")
         # we don't care about leading and trailing newlines and zero bytes
         # in the assert, we just want to make sure that
@@ -564,16 +627,21 @@ key=value
 # (generally English).
 
 job.log.begin=Starting job of type [{0}]
-""".encode('utf-8')
+""".encode(
+            'utf-8'
+        )
         propfile = self.propparse(propsource, personality="java-utf8")
         assert len(propfile.units) == 2
         propunit = propfile.units[0]
         assert propunit.name == ''
         assert propunit.value == ''
-        assert propunit.getnotes() == """# This is free software; you can redistribute it and/or modify it
+        assert (
+            propunit.getnotes()
+            == """# This is free software; you can redistribute it and/or modify it
 # under the terms of the GNU Lesser General Public License as
 # published by the Free Software Foundation; either version 2.1 of
 # the License, or (at your option) any later version."""
+        )
         propunit = propfile.units[1]
         assert propunit.name == 'job.log.begin'
         assert propunit.value == 'Starting job of type [{0}]'
@@ -587,7 +655,9 @@ class TestXWiki(test_monolingual.TestMonolingualStore):
 
     def propparse(self, propsource):
         """helper that parses properties source without requiring files"""
-        dummyfile = BytesIO(propsource.encode() if isinstance(propsource, str) else propsource)
+        dummyfile = BytesIO(
+            propsource.encode() if isinstance(propsource, str) else propsource
+        )
         propfile = properties.xwikifile(dummyfile)
         return propfile
 
@@ -620,13 +690,18 @@ class TestXWiki(test_monolingual.TestMonolingualStore):
         assert not propunit.missing
         # Check encoding
         propunit.target = "تىپتىكى خىزمەتنى باشلاش"
-        expected_content = "test_me=\\u062A\\u0649\\u067E\\u062A\\u0649\\u0643\\u0649 " \
-                           "\\u062E\\u0649\\u0632\\u0645\\u06D5\\u062A\\u0646\\u0649 " \
-                           "\\u0628\\u0627\\u0634\\u0644\\u0627\\u0634"
+        expected_content = (
+            "test_me=\\u062A\\u0649\\u067E\\u062A\\u0649\\u0643\\u0649 "
+            "\\u062E\\u0649\\u0632\\u0645\\u06D5\\u062A\\u0646\\u0649 "
+            "\\u0628\\u0627\\u0634\\u0644\\u0627\\u0634"
+        )
 
         generatedcontent = BytesIO()
         propfile.serialize(generatedcontent)
-        assert generatedcontent.getvalue().decode(propfile.encoding) == expected_content + "\n"
+        assert (
+            generatedcontent.getvalue().decode(propfile.encoding)
+            == expected_content + "\n"
+        )
 
     def test_missing_definition_source(self):
         propsource = '### Missing: test_me=I can code!'
@@ -666,19 +741,24 @@ class TestXWiki(test_monolingual.TestMonolingualStore):
 
 class TestXWikiPageProperties(test_monolingual.TestMonolingualStore):
     StoreClass = properties.XWikiPageProperties
-    FILE_SCHEME = properties.XWikiPageProperties.XML_HEADER + """<xwikidoc locale="%(language)s">
+    FILE_SCHEME = (
+        properties.XWikiPageProperties.XML_HEADER
+        + """<xwikidoc locale="%(language)s">
     <translation>1</translation>
     <language>%(language)s</language>
     <title/>
     <content>%(content)s</content>
     </xwikidoc>"""
+    )
 
     def getcontent(self, content, language='en'):
         return self.FILE_SCHEME % {'content': content + "\n", 'language': language}
 
     def propparse(self, propsource):
         """helper that parses properties source without requiring files"""
-        dummyfile = BytesIO(propsource.encode() if isinstance(propsource, str) else propsource)
+        dummyfile = BytesIO(
+            propsource.encode() if isinstance(propsource, str) else propsource
+        )
         propfile = properties.XWikiPageProperties(dummyfile)
         return propfile
 
@@ -697,14 +777,19 @@ class TestXWikiPageProperties(test_monolingual.TestMonolingualStore):
         assert not propunit.missing
         generatedcontent = BytesIO()
         propfile.serialize(generatedcontent)
-        assert generatedcontent.getvalue().decode(propfile.encoding) == propsource + "\n"
+        assert (
+            generatedcontent.getvalue().decode(propfile.encoding) == propsource + "\n"
+        )
         # check translation and language attribute
         propfile.settargetlanguage('fr')
         propunit.target = "Je peux coder"
         expectedcontent = self.getcontent("test_me=Je peux coder", "fr")
         generatedcontent = BytesIO()
         propfile.serialize(generatedcontent)
-        assert generatedcontent.getvalue().decode(propfile.encoding) == expectedcontent + "\n"
+        assert (
+            generatedcontent.getvalue().decode(propfile.encoding)
+            == expectedcontent + "\n"
+        )
 
     def test_missing_definition(self):
         """checks that a simple missing properties definition is parsed correctly"""
@@ -723,7 +808,10 @@ class TestXWikiPageProperties(test_monolingual.TestMonolingualStore):
         expected_content = self.getcontent("test_me=تىپتىكى خىزمەتنى باشلاش")
         generatedcontent = BytesIO()
         propfile.serialize(generatedcontent)
-        assert generatedcontent.getvalue().decode(propfile.encoding) == expected_content + "\n"
+        assert (
+            generatedcontent.getvalue().decode(propfile.encoding)
+            == expected_content + "\n"
+        )
 
     def test_missing_definition_source(self):
         propsource = self.getcontent('### Missing: test_me=I can code!')
@@ -740,7 +828,9 @@ class TestXWikiPageProperties(test_monolingual.TestMonolingualStore):
         assert not propunit.missing
         generatedcontent = BytesIO()
         propfile.serialize(generatedcontent)
-        assert generatedcontent.getvalue().decode(propfile.encoding) == propsource + "\n"
+        assert (
+            generatedcontent.getvalue().decode(propfile.encoding) == propsource + "\n"
+        )
 
     def test_definition_with_simple_quote_and_argument(self):
         propsource = self.getcontent("test_me=A ''quoted'' translation for {0}")
@@ -752,7 +842,9 @@ class TestXWikiPageProperties(test_monolingual.TestMonolingualStore):
         assert not propunit.missing
         generatedcontent = BytesIO()
         propfile.serialize(generatedcontent)
-        assert generatedcontent.getvalue().decode(propfile.encoding) == propsource + "\n"
+        assert (
+            generatedcontent.getvalue().decode(propfile.encoding) == propsource + "\n"
+        )
 
     def test_definition_with_encoded_html(self):
         propsource = self.getcontent("test_me=A &amp; is represented with &amp;amp;")
@@ -764,8 +856,9 @@ class TestXWikiPageProperties(test_monolingual.TestMonolingualStore):
         assert not propunit.missing
         generatedcontent = BytesIO()
         propfile.serialize(generatedcontent)
-        assert generatedcontent.getvalue().decode(
-            propfile.encoding) == propsource + "\n"
+        assert (
+            generatedcontent.getvalue().decode(propfile.encoding) == propsource + "\n"
+        )
 
     def test_cleaning_attributes(self):
         """
@@ -776,7 +869,9 @@ class TestXWikiPageProperties(test_monolingual.TestMonolingualStore):
         ## Real XWiki files are containing multiple attributes on xwikidoc tag: we're not testing it there
         ## because ElementTree changed its implementation between Python 3.7 and 3.8 which changed the order of output of the attributes
         ## it makes it more difficult to assert it on multiple versions of Python.
-        propsource = properties.XWikiPageProperties.XML_HEADER + """<xwikidoc reference="XWiki.AdminTranslations">
+        propsource = (
+            properties.XWikiPageProperties.XML_HEADER
+            + """<xwikidoc reference="XWiki.AdminTranslations">
             <web>XWiki</web>
             <name>AdminTranslations</name>
             <language/>
@@ -841,6 +936,7 @@ class TestXWikiPageProperties(test_monolingual.TestMonolingualStore):
                 <content>something=toto</content>
             </attachment>
         </xwikidoc>"""
+        )
         propfile = self.propparse(propsource)
         assert len(propfile.units) == 1
         propunit = propfile.units[0]
@@ -851,7 +947,9 @@ class TestXWikiPageProperties(test_monolingual.TestMonolingualStore):
         propunit.target = "Je peux coder !"
         generatedcontent = BytesIO()
         propfile.serialize(generatedcontent)
-        expected_xml = properties.XWikiPageProperties.XML_HEADER + """<xwikidoc reference="XWiki.AdminTranslations" locale="fr">
+        expected_xml = (
+            properties.XWikiPageProperties.XML_HEADER
+            + """<xwikidoc reference="XWiki.AdminTranslations" locale="fr">
             <web>XWiki</web>
             <name>AdminTranslations</name>
             <language>fr</language>
@@ -871,26 +969,39 @@ class TestXWikiPageProperties(test_monolingual.TestMonolingualStore):
 test_me=Je peux coder !
 </content>
             </xwikidoc>"""
-        assert generatedcontent.getvalue().decode(propfile.encoding) == expected_xml + "\n"
-        assert "<?xml version=\"1.1\" encoding=\"UTF-8\"?>\n\n<!--\n * See the NOTICE file distributed with this work for additional" in generatedcontent.getvalue().decode(propfile.encoding)
+        )
+        assert (
+            generatedcontent.getvalue().decode(propfile.encoding) == expected_xml + "\n"
+        )
+        assert "<?xml version=\"1.1\" encoding=\"UTF-8\"?>\n\n<!--\n * See the NOTICE file distributed with this work for additional" in generatedcontent.getvalue().decode(
+            propfile.encoding
+        )
 
 
 class TestXWikiFullPage(test_monolingual.TestMonolingualStore):
     StoreClass = properties.XWikiFullPage
-    FILE_SCHEME = properties.XWikiPageProperties.XML_HEADER + """<xwikidoc locale="%(language)s">
+    FILE_SCHEME = (
+        properties.XWikiPageProperties.XML_HEADER
+        + """<xwikidoc locale="%(language)s">
     <translation>1</translation>
     <language>%(language)s</language>
     <title>%(title)s</title>
     <content>%(content)s</content>
     </xwikidoc>"""
+    )
 
     def getcontent(self, content, title, language='en'):
-        return self.FILE_SCHEME % {'content': content, 'title': title, 'language': language}
+        return self.FILE_SCHEME % {
+            'content': content,
+            'title': title,
+            'language': language,
+        }
 
     def propparse(self, propsource):
         """helper that parses properties source without requiring files"""
         dummyfile = BytesIO(
-            propsource.encode() if isinstance(propsource, str) else propsource)
+            propsource.encode() if isinstance(propsource, str) else propsource
+        )
         propfile = properties.XWikiFullPage(dummyfile)
         propfile.settargetlanguage('en')
         return propfile
@@ -916,10 +1027,15 @@ class TestXWikiFullPage(test_monolingual.TestMonolingualStore):
         # Check encoding and language attribute
         propfile.settargetlanguage('fr')
         propunit.target = "تىپتىكى خىزمەتنى باشلاش"
-        expected_content = self.getcontent("A new code!", "تىپتىكى خىزمەتنى باشلاش", "fr")
+        expected_content = self.getcontent(
+            "A new code!", "تىپتىكى خىزمەتنى باشلاش", "fr"
+        )
         generatedcontent = BytesIO()
         propfile.serialize(generatedcontent)
-        assert generatedcontent.getvalue().decode(propfile.encoding) == expected_content + "\n"
+        assert (
+            generatedcontent.getvalue().decode(propfile.encoding)
+            == expected_content + "\n"
+        )
 
     def test_parse(self):
         """
@@ -1023,7 +1139,9 @@ class TestXWikiFullPage(test_monolingual.TestMonolingualStore):
         ## Real XWiki files are containing multiple attributes on xwikidoc tag: we're not testing it there
         ## because ElementTree changed its implementation between Python 3.7 and 3.8 which changed the order of output of the attributes
         ## it makes it more difficult to assert it on multiple versions of Python.
-        propsource = properties.XWikiPageProperties.XML_HEADER + """<xwikidoc reference="XWiki.AdminTranslations">
+        propsource = (
+            properties.XWikiPageProperties.XML_HEADER
+            + """<xwikidoc reference="XWiki.AdminTranslations">
             <web>XWiki</web>
             <name>AdminTranslations</name>
             <language/>
@@ -1091,16 +1209,20 @@ class TestXWikiFullPage(test_monolingual.TestMonolingualStore):
                 <content>something=toto</content>
             </attachment>
         </xwikidoc>"""
+        )
         propfile = self.propparse(propsource)
         assert len(propfile.units) == 2
         propunit = propfile.units[0]
         assert propunit.name == "content"
-        assert propunit.source == """A Lorem Ipsum or whatever might be contained there.
+        assert (
+            propunit.source
+            == """A Lorem Ipsum or whatever might be contained there.
 
             == A wiki title ==
 
             Some other stuff.
             """
+        )
         assert not propunit.missing
         propunit.target = """Un Lorem Ipsum ou quoi que ce soit qui puisse être là.
 
@@ -1118,7 +1240,9 @@ class TestXWikiFullPage(test_monolingual.TestMonolingualStore):
         propfile.settargetlanguage("fr")
         propfile.serialize(generatedcontent)
 
-        expected_xml = properties.XWikiPageProperties.XML_HEADER + """<xwikidoc reference="XWiki.AdminTranslations" locale="fr">
+        expected_xml = (
+            properties.XWikiPageProperties.XML_HEADER
+            + """<xwikidoc reference="XWiki.AdminTranslations" locale="fr">
             <web>XWiki</web>
             <name>AdminTranslations</name>
             <language>fr</language>
@@ -1141,7 +1265,10 @@ class TestXWikiFullPage(test_monolingual.TestMonolingualStore):
             D'autres trucs.
             </content>
             </xwikidoc>"""
-        assert generatedcontent.getvalue().decode(propfile.encoding) == expected_xml + "\n"
+        )
+        assert (
+            generatedcontent.getvalue().decode(propfile.encoding) == expected_xml + "\n"
+        )
 
     @mark.xfail(reason="removal not working in full page")
     def test_remove(self):

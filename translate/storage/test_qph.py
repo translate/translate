@@ -25,10 +25,12 @@ from translate.storage.placeables import parse, xliff
 xliffparsers = []
 for attrname in dir(xliff):
     attr = getattr(xliff, attrname)
-    if type(attr) is type and \
-       attrname not in ('XLIFFPlaceable') and \
-       hasattr(attr, 'parse') and \
-       attr.parse is not None:
+    if (
+        type(attr) is type
+        and attrname not in ('XLIFFPlaceable')
+        and hasattr(attr, 'parse')
+        and attr.parse is not None
+    ):
         xliffparsers.append(attr.parse)
 
 

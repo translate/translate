@@ -35,8 +35,9 @@ logger = logging.getLogger(__name__)
 
 
 class oo2po:
-
-    def __init__(self, sourcelanguage, targetlanguage, blankmsgstr=False, long_keys=False):
+    def __init__(
+        self, sourcelanguage, targetlanguage, blankmsgstr=False, long_keys=False
+    ):
         """construct an oo2po converter for the specified languages"""
         self.sourcelanguage = sourcelanguage
         self.targetlanguage = targetlanguage
@@ -45,7 +46,7 @@ class oo2po:
 
     def maketargetunit(self, part1, part2, translators_comment, key, subkey):
         """makes a base unit (.po or XLIFF) out of a subkey of two parts"""
-        #TODO: Do better
+        # TODO: Do better
         text1 = getattr(part1, subkey)
         if text1 == "":
             return None
@@ -63,8 +64,10 @@ class oo2po:
         if self.sourcelanguage in theoo.languages:
             part1 = theoo.languages[self.sourcelanguage]
         else:
-            logger.error("/".join(theoo.lines[0].getkey()) +
-                         "language not found: %s", self.sourcelanguage)
+            logger.error(
+                "/".join(theoo.lines[0].getkey()) + "language not found: %s",
+                self.sourcelanguage,
+            )
             return []
         if self.blankmsgstr:
             # use a blank part2
@@ -82,8 +85,7 @@ class oo2po:
         key = oo.makekey(part1.getkey(), self.long_keys)
         unitlist = []
         for subkey in ("text", "quickhelptext", "title"):
-            unit = self.maketargetunit(part1, part2, translators_comment,
-                                       key, subkey)
+            unit = self.maketargetunit(part1, part2, translators_comment, key, subkey)
             if unit is not None:
                 unitlist.append(unit)
         return unitlist
@@ -92,22 +94,21 @@ class oo2po:
         """converts an entire oo file to a base class format (.po or XLIFF)"""
         thetargetfile = po.pofile()
         # create a header for the file
-        bug_url = 'http://qa.openoffice.org/issues/enter_bug.cgi?%s' % \
-                  parse.urlencode({
-                      "subcomponent": "ui",
-                      "comment": "",
-                      "short_desc": "Localization issue in file: %s" %
-                                    theoofile.filename,
-                      "component": "l10n",
-                      "form_name": "enter_issue",
-                  })
+        bug_url = 'http://qa.openoffice.org/issues/enter_bug.cgi?%s' % parse.urlencode(
+            {
+                "subcomponent": "ui",
+                "comment": "",
+                "short_desc": "Localization issue in file: %s" % theoofile.filename,
+                "component": "l10n",
+                "form_name": "enter_issue",
+            }
+        )
         targetheader = thetargetfile.init_headers(
             x_accelerator_marker="~",
             x_merge_on="location",
             report_msgid_bugs_to=bug_url,
         )
-        targetheader.addnote("extracted from %s" % theoofile.filename,
-                             "developer")
+        targetheader.addnote("extracted from %s" % theoofile.filename, "developer")
         thetargetfile.setsourcelanguage(self.sourcelanguage)
         thetargetfile.settargetlanguage(self.targetlanguage)
         # go through the oo and convert each element
@@ -122,10 +123,21 @@ class oo2po:
 def verifyoptions(options):
     """verifies the commandline options"""
     if not options.pot and not options.targetlanguage:
-        raise ValueError("You must specify the target language unless generating POT files (-P)")
+        raise ValueError(
+            "You must specify the target language unless generating POT files (-P)"
+        )
 
 
-def convertoo(inputfile, outputfile, templates, pot=False, sourcelanguage=None, targetlanguage=None, duplicatestyle="msgid_comment", multifilestyle="single"):
+def convertoo(
+    inputfile,
+    outputfile,
+    templates,
+    pot=False,
+    sourcelanguage=None,
+    targetlanguage=None,
+    duplicatestyle="msgid_comment",
+    multifilestyle="single",
+):
     """reads in stdin using inputstore class, converts using convertorclass, writes to stdout"""
     inputstore = oo.oofile()
     if hasattr(inputfile, "filename"):
@@ -141,16 +153,25 @@ def convertoo(inputfile, outputfile, templates, pot=False, sourcelanguage=None, 
         else:
             sourcelanguage = "en-US"
     if sourcelanguage not in inputstore.languages:
-        logger.warning("sourcelanguage '%s' not found in inputfile '%s' "
-                       "(contains %s)",
-                       sourcelanguage, inputfilename,
-                       ", ".join(inputstore.languages))
+        logger.warning(
+            "sourcelanguage '%s' not found in inputfile '%s' " "(contains %s)",
+            sourcelanguage,
+            inputfilename,
+            ", ".join(inputstore.languages),
+        )
     if targetlanguage and targetlanguage not in inputstore.languages:
-        logger.warning("targetlanguage '%s' not found in inputfile '%s' "
-                       "(contains %s)",
-                       targetlanguage, inputfilename,
-                       ", ".join(inputstore.languages))
-    convertor = oo2po(sourcelanguage, targetlanguage, blankmsgstr=pot, long_keys=multifilestyle != "single")
+        logger.warning(
+            "targetlanguage '%s' not found in inputfile '%s' " "(contains %s)",
+            targetlanguage,
+            inputfilename,
+            ", ".join(inputstore.languages),
+        )
+    convertor = oo2po(
+        sourcelanguage,
+        targetlanguage,
+        blankmsgstr=pot,
+        long_keys=multifilestyle != "single",
+    )
     outputstore = convertor.convertstore(inputstore, duplicatestyle)
     if outputstore.isempty():
         return 0
@@ -160,24 +181,40 @@ def convertoo(inputfile, outputfile, templates, pot=False, sourcelanguage=None, 
 
 def main(argv=None):
     from translate.convert import convert
+
     formats = {
         "oo": ("po", convertoo),
         "sdf": ("po", convertoo),
     }
     # always treat the input as an archive unless it is a directory
     archiveformats = {(None, "input"): oo.oomultifile}
-    parser = convert.ArchiveConvertOptionParser(formats, usepots=True,
-                                                description=__doc__,
-                                                archiveformats=archiveformats)
-    parser.add_option("-l", "--language", dest="targetlanguage", default=None,
-                      help="set target language to extract from oo file (e.g. af-ZA)",
-                      metavar="LANG")
+    parser = convert.ArchiveConvertOptionParser(
+        formats, usepots=True, description=__doc__, archiveformats=archiveformats
+    )
     parser.add_option(
-        "", "--source-language", dest="sourcelanguage", default=None,
-        help="set source language code (default en-US)", metavar="LANG")
-    parser.add_option("", "--nonrecursiveinput", dest="allowrecursiveinput",
-                      default=True, action="store_false",
-                      help="don't treat the input oo as a recursive store")
+        "-l",
+        "--language",
+        dest="targetlanguage",
+        default=None,
+        help="set target language to extract from oo file (e.g. af-ZA)",
+        metavar="LANG",
+    )
+    parser.add_option(
+        "",
+        "--source-language",
+        dest="sourcelanguage",
+        default=None,
+        help="set source language code (default en-US)",
+        metavar="LANG",
+    )
+    parser.add_option(
+        "",
+        "--nonrecursiveinput",
+        dest="allowrecursiveinput",
+        default=True,
+        action="store_false",
+        help="don't treat the input oo as a recursive store",
+    )
     parser.add_duplicates_option()
     parser.add_multifile_option()
     parser.passthrough.append("pot")

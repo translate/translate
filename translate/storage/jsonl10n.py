@@ -120,7 +120,9 @@ class BaseJsonUnit(base.DictUnit):
 
     def __str__(self):
         """Converts to a string representation."""
-        return json.dumps(self.getvalue(), separators=(',', ': '), indent=4, ensure_ascii=False)
+        return json.dumps(
+            self.getvalue(), separators=(',', ': '), indent=4, ensure_ascii=False
+        )
 
     def converttarget(self):
         if issubclass(self._type, str):
@@ -171,7 +173,15 @@ class JsonFile(base.DictStore):
         out.write(json.dumps(units, **self.dump_args).encode(self.encoding))
         out.write(b'\n')
 
-    def _extract_units(self, data, stop=None, prev=None, name_node=None, name_last_node=None, last_node=None):
+    def _extract_units(
+        self,
+        data,
+        stop=None,
+        prev=None,
+        name_node=None,
+        name_last_node=None,
+        last_node=None,
+    ):
         """Recursive function to extract items from the data files
 
         :param data: the current branch to walk down
@@ -185,16 +195,22 @@ class JsonFile(base.DictStore):
             prev = self.UnitClass.IdClass([])
         if isinstance(data, dict):
             for k, v in data.items():
-                for x in self._extract_units(v, stop, prev + [('key', k)], k, None, data):
+                for x in self._extract_units(
+                    v, stop, prev + [('key', k)], k, None, data
+                ):
                     yield x
         elif isinstance(data, list):
             for i, item in enumerate(data):
-                for x in self._extract_units(item, stop, prev + [('index', i)], i, name_node, data):
+                for x in self._extract_units(
+                    item, stop, prev + [('index', i)], i, name_node, data
+                ):
                     yield x
         # apply filter
-        elif (stop is None or
-              (isinstance(last_node, dict) and name_node in stop) or
-              (isinstance(last_node, list) and name_last_node in stop)):
+        elif (
+            stop is None
+            or (isinstance(last_node, dict) and name_node in stop)
+            or (isinstance(last_node, list) and name_last_node in stop)
+        ):
 
             unit = self.UnitClass(data, name_node)
             unit.set_unitid(prev)
@@ -225,7 +241,6 @@ class JsonFile(base.DictStore):
 
 
 class JsonNestedUnit(BaseJsonUnit):
-
     def storevalues(self, output):
         self.storevalue(output, self.converttarget())
 
@@ -238,9 +253,7 @@ class JsonNestedFile(JsonFile):
 
 class WebExtensionJsonUnit(BaseJsonUnit):
     def storevalues(self, output):
-        value = OrderedDict((
-            ('message', self.target),
-        ))
+        value = OrderedDict((('message', self.target),))
         if self.notes:
             value['description'] = self.notes
         if self.placeholders:
@@ -259,13 +272,21 @@ class WebExtensionJsonFile(JsonFile):
 
     UnitClass = WebExtensionJsonUnit
 
-    def _extract_units(self, data, stop=None, prev=None, name_node=None, name_last_node=None, last_node=None):
+    def _extract_units(
+        self,
+        data,
+        stop=None,
+        prev=None,
+        name_node=None,
+        name_last_node=None,
+        last_node=None,
+    ):
         for item, value in data.items():
             unit = self.UnitClass(
                 value.get('message', ''),
                 item,
                 value.get('description', ''),
-                value.get('placeholders', None)
+                value.get('placeholders', None),
             )
             unit.setid(item)
             yield unit
@@ -325,12 +346,24 @@ class I18NextFile(JsonNestedFile):
 
     UnitClass = I18NextUnit
 
-    def _extract_units(self, data, stop=None, prev=None, name_node=None, name_last_node=None, last_node=None):
+    def _extract_units(
+        self,
+        data,
+        stop=None,
+        prev=None,
+        name_node=None,
+        name_last_node=None,
+        last_node=None,
+    ):
         if prev is None:
             prev = self.UnitClass.IdClass([])
         if isinstance(data, dict):
-            plurals_multiple = [key.rsplit('_', 1)[0] for key in data if key.endswith('_0')]
-            plurals_simple = [key.rsplit('_', 1)[0] for key in data if key.endswith('_plural')]
+            plurals_multiple = [
+                key.rsplit('_', 1)[0] for key in data if key.endswith('_0')
+            ]
+            plurals_simple = [
+                key.rsplit('_', 1)[0] for key in data if key.endswith('_plural')
+            ]
             processed = set()
 
             for k, v in data.items():
@@ -350,7 +383,9 @@ class I18NextFile(JsonNestedFile):
                     plural_base, digit = k.rsplit('_', 1)
                     if plural_base in plurals_multiple and digit.isdigit():
                         plurals_multiple.remove(plural_base)
-                        plurals = ['{0}_{1}'.format(plural_base, order) for order in range(10)]
+                        plurals = [
+                            '{0}_{1}'.format(plural_base, order) for order in range(10)
+                        ]
                 if plurals:
                     sources = []
                     items = []
@@ -366,7 +401,9 @@ class I18NextFile(JsonNestedFile):
                     yield unit
                     continue
 
-                for x in self._extract_units(v, stop, prev + [('key', k)], k, None, data):
+                for x in self._extract_units(
+                    v, stop, prev + [('key', k)], k, None, data
+                ):
                     yield x
         else:
             parent = super()._extract_units(
@@ -385,12 +422,13 @@ class GoI18NJsonUnit(BaseJsonUnit):
             strings = list(target.strings)
             if len(self._store.plural_tags) > len(target.strings):
                 strings += [""] * (len(self._store.plural_tags) - len(target.strings))
-            target = OrderedDict([
-                (plural, strings[offset]) for offset, plural in enumerate(self._store.plural_tags)
-            ])
-        value = OrderedDict((
-            ('id', self.getid()),
-        ))
+            target = OrderedDict(
+                [
+                    (plural, strings[offset])
+                    for offset, plural in enumerate(self._store.plural_tags)
+                ]
+            )
+        value = OrderedDict((('id', self.getid()),))
         if self.notes:
             value['description'] = self.notes
         value['translation'] = target
@@ -417,13 +455,25 @@ class GoI18NJsonFile(JsonFile):
             locale = "en"
         return plural_tags.get(locale, plural_tags['en'])
 
-    def _extract_units(self, data, stop=None, prev=None, name_node=None, name_last_node=None, last_node=None):
+    def _extract_units(
+        self,
+        data,
+        stop=None,
+        prev=None,
+        name_node=None,
+        name_last_node=None,
+        last_node=None,
+    ):
         for value in data:
             translation = value.get('translation', '')
             if isinstance(translation, dict):
                 # Ordered list of plurals
                 translation = multistring(
-                    [translation.get(key) for key in cldr_plural_categories if key in translation]
+                    [
+                        translation.get(key)
+                        for key in cldr_plural_categories
+                        if key in translation
+                    ]
                 )
             unit = self.UnitClass(
                 translation,
@@ -442,7 +492,15 @@ class GoI18NJsonFile(JsonFile):
 class ARBJsonUnit(BaseJsonUnit):
     ID_FORMAT = "{}"
 
-    def __init__(self, source=None, item=None, notes=None, placeholders=None, metadata=None, **kwargs):
+    def __init__(
+        self,
+        source=None,
+        item=None,
+        notes=None,
+        placeholders=None,
+        metadata=None,
+        **kwargs
+    ):
         super().__init__(source, item, notes, placeholders, **kwargs)
         self.metadata = metadata or {}
 
@@ -455,7 +513,9 @@ class ARBJsonUnit(BaseJsonUnit):
                 self.storevalue(output, value, override_key=key)
         else:
             self.storevalue(output, self.target, override_key=identifier)
-            self.storevalue(output, self.metadata, override_key='@{}'.format(identifier))
+            self.storevalue(
+                output, self.metadata, override_key='@{}'.format(identifier)
+            )
 
     def isheader(self):
         return self._id == "@"
@@ -480,9 +540,19 @@ class ARBJsonFile(JsonFile):
             'ensure_ascii': False,
         }
 
-    def _extract_units(self, data, stop=None, prev=None, name_node=None, name_last_node=None, last_node=None):
+    def _extract_units(
+        self,
+        data,
+        stop=None,
+        prev=None,
+        name_node=None,
+        name_last_node=None,
+        last_node=None,
+    ):
         # Extract metadata as header
-        metadata = OrderedDict([(key, value) for key, value in data.items() if key.startswith("@@")])
+        metadata = OrderedDict(
+            [(key, value) for key, value in data.items() if key.startswith("@@")]
+        )
         if metadata:
             unit = self.UnitClass(metadata=metadata)
             unit.setid("@")

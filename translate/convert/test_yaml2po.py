@@ -1,4 +1,3 @@
-
 from io import BytesIO
 
 import pytest
@@ -10,8 +9,14 @@ class TestYAML2PO:
 
     ConverterClass = yaml2po.yaml2po
 
-    def _convert(self, input_string, template_string=None, blank_msgstr=False,
-                 duplicate_style="msgctxt", success_expected=True):
+    def _convert(
+        self,
+        input_string,
+        template_string=None,
+        blank_msgstr=False,
+        duplicate_style="msgctxt",
+        success_expected=True,
+    ):
         """Helper that converts to target format without using files."""
         input_file = BytesIO(input_string.encode())
         output_file = BytesIO()
@@ -19,8 +24,9 @@ class TestYAML2PO:
         if template_string:
             template_file = BytesIO(template_string.encode())
         expected_result = 1 if success_expected else 0
-        converter = self.ConverterClass(input_file, output_file, template_file,
-                                        blank_msgstr, duplicate_style)
+        converter = self.ConverterClass(
+            input_file, output_file, template_file, blank_msgstr, duplicate_style
+        )
         assert converter.run() == expected_result
         return converter.target_store, output_file
 

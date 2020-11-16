@@ -1,4 +1,3 @@
-
 import os
 from bz2 import BZ2File
 from gzip import GzipFile
@@ -22,7 +21,6 @@ def givefile(filename, content):
 
 
 class BaseTestFactory:
-
     def setup_method(self, method):
         """sets up a test directory"""
         self.testdir = "%s_testdir" % (self.__class__.__name__)
@@ -128,6 +126,7 @@ class BaseTestFactory:
 
 class TestPOFactory(BaseTestFactory):
     from translate.storage import po
+
     expected_instance = po.pofile
     filename = 'dummy.po'
     file_content = b'''#: test.c\nmsgid "test"\nmsgstr "rest"\n'''
@@ -135,6 +134,7 @@ class TestPOFactory(BaseTestFactory):
 
 class TestXliffFactory(BaseTestFactory):
     from translate.storage import xliff
+
     expected_instance = xliff.xlifffile
     filename = 'dummy.xliff'
     file_content = b'''<?xml version="1.0" encoding="utf-8"?>
@@ -152,6 +152,7 @@ class TestXliffFactory(BaseTestFactory):
 
 class TestPOXliffFactory(BaseTestFactory):
     from translate.storage import poxliff
+
     expected_instance = poxliff.PoXliffFile
     filename = 'dummy.xliff'
     file_content = b'''<?xml version="1.0" encoding="utf-8"?>
@@ -170,8 +171,10 @@ Content-Transfer-Encoding: 8bit
 
 class TestWordfastFactory(BaseTestFactory):
     from translate.storage import wordfast
+
     expected_instance = wordfast.WordfastTMFile
     filename = 'dummy.txt'
     file_content = (
         b'''%20070801~103212	%User ID,S,S SMURRAY,SMS Samuel Murray-Smit,SM Samuel Murray-Smit,MW Mary White,DS Deepak Shota,MT! Machine translation (15),AL! Alignment (10),SM Samuel Murray,	%TU=00000075	%AF-ZA	%Wordfast TM v.5.51r/00	%EN-ZA	%---80597535	Subject (5),EL,EL Electronics,AC Accounting,LE Legal,ME Mechanics,MD Medical,LT Literary,AG Agriculture,CO Commercial	Client (5),LS,LS LionSoft Corp,ST SuperTron Inc,CA CompArt Ltd			'''
-        b'''20070801~103248	SM	0	AF-ZA	Langeraad en duimpie	EN-ZA	Big Ben and Little John	EL	LS''')
+        b'''20070801~103248	SM	0	AF-ZA	Langeraad en duimpie	EN-ZA	Big Ben and Little John	EL	LS'''
+    )

@@ -84,7 +84,7 @@ class tsunit(lisa.LISAunit):
             purpose = "translation"
         langset = etree.Element(self.namespaced(purpose))
         # TODO: check language
-        #lisa.setXMLlang(langset, lang)
+        # lisa.setXMLlang(langset, lang)
 
         langset.text = text
         return langset
@@ -100,8 +100,9 @@ class tsunit(lisa.LISAunit):
 
     def getlanguageNodes(self):
         """We override this to get source and target nodes."""
-        return [n for n in [self._getsourcenode(), self._gettargetnode()]
-                if n is not None]
+        return [
+            n for n in [self._getsourcenode(), self._gettargetnode()] if n is not None
+        ]
 
     @lisa.LISAunit.source.getter
     def source(self):
@@ -116,7 +117,9 @@ class tsunit(lisa.LISAunit):
         targetnode = self._gettargetnode()
         if self.hasplural():
             numerus_nodes = targetnode.findall(self.namespaced("numerusform"))
-            return multistring([data.forceunicode(node.text) or "" for node in numerus_nodes])
+            return multistring(
+                [data.forceunicode(node.text) or "" for node in numerus_nodes]
+            )
         else:
             return data.forceunicode(targetnode.text) or ""
 
@@ -163,11 +166,13 @@ class tsunit(lisa.LISAunit):
         if origin in ["programmer", "developer", "source code"]:
             note = etree.SubElement(self.xmlelement, self.namespaced("extracomment"))
         else:
-            note = etree.SubElement(self.xmlelement, self.namespaced("translatorcomment"))
+            note = etree.SubElement(
+                self.xmlelement, self.namespaced("translatorcomment")
+            )
         if position == "append":
-            note.text = "\n".join([item
-                                   for item in [current_notes, text.strip()]
-                                   if item])
+            note.text = "\n".join(
+                [item for item in [current_notes, text.strip()] if item]
+            )
         else:
             note.text = text.strip()
 
@@ -406,7 +411,9 @@ class tsfile(lisa.LISAfile):
 
     def _createcontext(self, contextname, comment=None):
         """Creates a context node with an optional comment"""
-        context = etree.SubElement(self.document.getroot(), self.namespaced(self.bodyNode))
+        context = etree.SubElement(
+            self.document.getroot(), self.namespaced(self.bodyNode)
+        )
         name = etree.SubElement(context, self.namespaced("name"))
         name.text = contextname
         if comment:
@@ -421,7 +428,9 @@ class tsfile(lisa.LISAfile):
     def _getcontextnames(self):
         """Returns all contextnames in this TS file."""
         contextnodes = self.document.findall(self.namespaced("context"))
-        contextnames = [self.getcontextname(contextnode) for contextnode in contextnodes]
+        contextnames = [
+            self.getcontextname(contextnode) for contextnode in contextnodes
+        ]
         return contextnames
 
     def _getcontextnode(self, contextname):
@@ -432,7 +441,9 @@ class tsfile(lisa.LISAfile):
                 return contextnode
         return None
 
-    def addunit(self, unit, new=True, contextname=None, comment=None, createifmissing=True):
+    def addunit(
+        self, unit, new=True, contextname=None, comment=None, createifmissing=True
+    ):
         """Adds the given unit to the last used body node (current context).
 
         If the contextname is specified, switch to that context (creating it if
@@ -445,7 +456,7 @@ class tsfile(lisa.LISAfile):
             if not self._switchcontext(contextname, comment, createifmissing):
                 return None
         super().addunit(unit, new)
-#        lisa.setXMLspace(unit.xmlelement, "preserve")
+        #        lisa.setXMLspace(unit.xmlelement, "preserve")
         return unit
 
     def _switchcontext(self, contextname, comment, createifmissing=False):
@@ -478,19 +489,28 @@ class tsfile(lisa.LISAfile):
         # Iterate over empty tags without children and force empty text
         # This will prevent self-closing tags in pretty_print mode
         # Qt Linguist does self-close the "location" elements though
-        for e in root.xpath("//*[not(./node()) and not(text()) and not(name() = 'location')]"):
+        for e in root.xpath(
+            "//*[not(./node()) and not(text()) and not(name() = 'location')]"
+        ):
             e.text = ""
         # For conformance with Qt output, write XML declaration with double quotes
         out.write(str('<?xml version="1.0" encoding="utf-8"?>\n').encode('utf-8'))
         # For conformance with Qt output, post-process etree.tostring output,
         # replacing ' with &apos; and " with &quot; in text elements
-        treestring = etree.tostring(root, doctype=doctype, pretty_print=True,
-                                    xml_declaration=False, encoding='utf-8')
+        treestring = etree.tostring(
+            root,
+            doctype=doctype,
+            pretty_print=True,
+            xml_declaration=False,
+            encoding='utf-8',
+        )
         pos = 0
         while pos >= 0:
             nextpos = treestring.find(b'<', pos)
             out.write(
-                treestring[pos:nextpos].replace(b"'", b"&apos;").replace(b'"', b"&quot;")
+                treestring[pos:nextpos]
+                .replace(b"'", b"&apos;")
+                .replace(b'"', b"&quot;")
             )
             pos = nextpos
             nextpos = treestring.find(b'>', pos)

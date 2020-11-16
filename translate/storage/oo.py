@@ -41,7 +41,9 @@ from translate.misc import quote, wStringIO
 
 # File normalisation
 
-normalfilenamechars = b"/#.0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
+normalfilenamechars = (
+    b"/#.0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
+)
 normalizetable = b""
 int2byte = struct.Struct(">B").pack
 for i in map(int2byte, range(256)):
@@ -52,7 +54,6 @@ for i in map(int2byte, range(256)):
 
 
 class unormalizechar(dict):
-
     def __init__(self, normalchars):
         self.normalchars = {}
         for char in normalchars:
@@ -99,6 +100,7 @@ def makekey(ookey, long_keys):
     key = "%s#%s" % (sourcebase, fullid)
     return normalizefilename(key)
 
+
 # These are functions that deal with escaping and unescaping of the text fields
 # of the SDF file. These should only be applied to the text column.
 # The fields quickhelptext and title are assumed to carry no escaping.
@@ -127,8 +129,13 @@ def escape_text(text):
 
 def unescape_text(text):
     """Unescapes SDF text to be suitable for unit consumption."""
-    return text.replace("\\\\", "\a").replace("\\n", "\n").replace("\\t", "\t") \
-        .replace("\\r", "\r").replace("\a", "\\\\")
+    return (
+        text.replace("\\\\", "\a")
+        .replace("\\n", "\n")
+        .replace("\\t", "\t")
+        .replace("\\r", "\r")
+        .replace("\a", "\\\\")
+    )
 
 
 helptagre = re.compile(r'''<[/]??[a-z_\-]+?(?:| +[a-z]+?=".*?") *[/]??>''')
@@ -144,9 +151,20 @@ def escape_help_text(text):
     text = text.replace("\\", "\\\\")
     for tag in helptagre.findall(text):
         escapethistag = False
-        for escape_tag in ["ahelp", "link", "item", "emph", "defaultinline",
-                           "switchinline", "caseinline", "variable",
-                           "bookmark_value", "image", "embedvar", "alt"]:
+        for escape_tag in [
+            "ahelp",
+            "link",
+            "item",
+            "emph",
+            "defaultinline",
+            "switchinline",
+            "caseinline",
+            "variable",
+            "bookmark_value",
+            "image",
+            "embedvar",
+            "alt",
+        ]:
             if tag.startswith("<%s" % escape_tag) or tag == "</%s>" % escape_tag:
                 escapethistag = True
         if tag in ["<br/>", "<help-id-missing/>"]:
@@ -159,7 +177,12 @@ def escape_help_text(text):
 
 def unescape_help_text(text):
     """Unescapes normal text to be suitable for writing to the SDF file."""
-    return text.replace(r"\<", "<").replace(r"\>", ">").replace(r'\"', '"').replace(r"\\", "\\")
+    return (
+        text.replace(r"\<", "<")
+        .replace(r"\>", ">")
+        .replace(r'\"', '"')
+        .replace(r"\\", "\\")
+    )
 
 
 class ooline:
@@ -168,35 +191,76 @@ class ooline:
     def __init__(self, parts=None):
         """construct an ooline from its parts"""
         if parts is None:
-            self.project, self.sourcefile, self.dummy, self.resourcetype, \
-                self.groupid, self.localid, self.helpid, self.platform, \
-                self.width, self.languageid, self.text, self.helptext, \
-                self.quickhelptext, self.title, self.timestamp = [""] * 15
+            (
+                self.project,
+                self.sourcefile,
+                self.dummy,
+                self.resourcetype,
+                self.groupid,
+                self.localid,
+                self.helpid,
+                self.platform,
+                self.width,
+                self.languageid,
+                self.text,
+                self.helptext,
+                self.quickhelptext,
+                self.title,
+                self.timestamp,
+            ) = [""] * 15
         else:
             self.setparts(parts)
 
     def setparts(self, parts):
         """create a line from its tab-delimited parts"""
         if len(parts) != 15:
-            warnings.warn("oo line contains %d parts, it should contain 15: %r" %
-                          (len(parts), parts))
+            warnings.warn(
+                "oo line contains %d parts, it should contain 15: %r"
+                % (len(parts), parts)
+            )
             newparts = list(parts)
             if len(newparts) < 15:
                 newparts = newparts + [""] * (15 - len(newparts))
             else:
                 newparts = newparts[:15]
             parts = tuple(newparts)
-        self.project, self.sourcefile, self.dummy, self.resourcetype, \
-            self.groupid, self.localid, self.helpid, self.platform, \
-            self.width, self.languageid, self._text, self.helptext, \
-            self.quickhelptext, self.title, self.timestamp = parts
+        (
+            self.project,
+            self.sourcefile,
+            self.dummy,
+            self.resourcetype,
+            self.groupid,
+            self.localid,
+            self.helpid,
+            self.platform,
+            self.width,
+            self.languageid,
+            self._text,
+            self.helptext,
+            self.quickhelptext,
+            self.title,
+            self.timestamp,
+        ) = parts
 
     def getparts(self):
         """return a list of parts in this line"""
-        return (self.project, self.sourcefile, self.dummy, self.resourcetype,
-                self.groupid, self.localid, self.helpid, self.platform,
-                self.width, self.languageid, self._text, self.helptext,
-                self.quickhelptext, self.title, self.timestamp)
+        return (
+            self.project,
+            self.sourcefile,
+            self.dummy,
+            self.resourcetype,
+            self.groupid,
+            self.localid,
+            self.helpid,
+            self.platform,
+            self.width,
+            self.languageid,
+            self._text,
+            self.helptext,
+            self.quickhelptext,
+            self.title,
+            self.timestamp,
+        )
 
     def gettext(self):
         """Obtains the text column and handle escaping."""
@@ -211,6 +275,7 @@ class ooline:
             self._text = escape_help_text(text)
         else:
             self._text = escape_text(text)
+
     text = property(gettext, settext)
 
     def __str__(self):
@@ -224,8 +289,14 @@ class ooline:
 
     def getkey(self):
         """get the key that identifies the resource"""
-        return (self.project, self.sourcefile, self.resourcetype, self.groupid,
-                self.localid, self.platform)
+        return (
+            self.project,
+            self.sourcefile,
+            self.resourcetype,
+            self.groupid,
+            self.localid,
+            self.platform,
+        )
 
 
 class oounit:
@@ -320,9 +391,15 @@ class oofile:
         lines = []
         for oe in self.units:
             if len(oe.lines) > 2:
-                warnings.warn("contains %d lines (should be 2 at most): languages %r" % (len(oe.lines), oe.languages))
+                warnings.warn(
+                    "contains %d lines (should be 2 at most): languages %r"
+                    % (len(oe.lines), oe.languages)
+                )
                 oekeys = [line.getkey() for line in oe.lines]
-                warnings.warn("contains %d lines (should be 2 at most): keys %r" % (len(oe.lines), oekeys))
+                warnings.warn(
+                    "contains %d lines (should be 2 at most): keys %r"
+                    % (len(oe.lines), oekeys)
+                )
             oeline = oe.getoutput(skip_source, fallback_lang) + "\r\n"
             lines.append(oeline)
         return "".join(lines)
@@ -417,6 +494,7 @@ class oomultifile:
                 contents = contents.decode(self.encoding)
             self.multifile.write(contents)
             self.multifile.flush()
+
         outputfile = wStringIO.CatchStringOutput(onclose)
         outputfile.filename = subfile
         return outputfile

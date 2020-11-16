@@ -1,4 +1,3 @@
-
 from io import BytesIO
 
 from pytest import mark
@@ -8,17 +7,22 @@ from translate.tools import pocount
 
 
 class TestCount:
-
     def count(self, source, expectedsource, target=None, expectedtarget=None):
         """simple helper to check the respective word counts"""
         poelement = po.pounit(source)
         if target is not None:
             poelement.target = target
         wordssource, wordstarget = statsdb.wordsinunit(poelement)
-        print('Source (expected=%d; actual=%d): "%s"' % (expectedsource, wordssource, source))
+        print(
+            'Source (expected=%d; actual=%d): "%s"'
+            % (expectedsource, wordssource, source)
+        )
         assert wordssource == expectedsource
         if target is not None:
-            print('Target (expected=%d; actual=%d): "%s"' % (expectedtarget, wordstarget, target))
+            print(
+                'Target (expected=%d; actual=%d): "%s"'
+                % (expectedtarget, wordstarget, target)
+            )
             assert wordstarget == expectedtarget
 
     def test_simple_count_zero(self):

@@ -1,4 +1,3 @@
-
 from translate.misc import quote
 
 
@@ -17,32 +16,78 @@ def test_extract():
     """tests the extract function"""
     assert quote.extract("the <quoted> part", "<", ">", "\\", 0) == ("<quoted>", False)
     assert quote.extract("the 'quoted' part", "'", "'", "\\", 0) == ("'quoted'", False)
-    assert quote.extract("the 'isn\\'t escaping fun' part", "'", "'", "\\", 0) == ("'isn\\'t escaping fun'", False)
-    assert quote.extract("the 'isn\\'t something ", "'", "'", "\\", 0) == ("'isn\\'t something ", True)
+    assert quote.extract("the 'isn\\'t escaping fun' part", "'", "'", "\\", 0) == (
+        "'isn\\'t escaping fun'",
+        False,
+    )
+    assert quote.extract("the 'isn\\'t something ", "'", "'", "\\", 0) == (
+        "'isn\\'t something ",
+        True,
+    )
     assert quote.extract("<quoted>\\", "<", ">", "\\", 0) == ("<quoted>", False)
-    assert quote.extract("<quoted><again>", "<", ">", "\\", 0) == ("<quoted><again>", False)
-    assert quote.extract("<quoted>\\\\<again>", "<", ">", "\\", 0) == ("<quoted><again>", False)
+    assert quote.extract("<quoted><again>", "<", ">", "\\", 0) == (
+        "<quoted><again>",
+        False,
+    )
+    assert quote.extract("<quoted>\\\\<again>", "<", ">", "\\", 0) == (
+        "<quoted><again>",
+        False,
+    )
     assert quote.extract("<quoted\\>", "<", ">", "\\", 0) == ("<quoted\\>", True)
-    assert quote.extract(' -->\n<!ENTITY blah "Some">', "<!--", "-->", None, 1) == (" -->", False)
+    assert quote.extract(' -->\n<!ENTITY blah "Some">', "<!--", "-->", None, 1) == (
+        " -->",
+        False,
+    )
     assert quote.extract('">\n', '"', '"', None, True) == ('"', False)
 
 
 def test_extractwithoutquotes():
     """tests the extractwithoutquotes function"""
-    assert quote.extractwithoutquotes("the <quoted> part", "<", ">", "\\", 0) == ("quoted", False)
-    assert quote.extractwithoutquotes("the 'quoted' part", "'", "'", "\\", 0) == ("quoted", False)
-    assert quote.extractwithoutquotes("the 'isn\\'t escaping fun' part", "'", "'", "\\", 0) == ("isn\\'t escaping fun", False)
-    assert quote.extractwithoutquotes("the 'isn\\'t something ", "'", "'", "\\", 0) == ("isn\\'t something ", True)
-    assert quote.extractwithoutquotes("<quoted>\\", "<", ">", "\\", 0) == ("quoted", False)
-    assert quote.extractwithoutquotes("<quoted>\\\\<again>", "<", ">", "\\", 0) == ("quotedagain", False)
-    assert quote.extractwithoutquotes("<quoted><again\\\\", "<", ">", "\\", 0, True) == ("quotedagain\\\\", True)
+    assert quote.extractwithoutquotes("the <quoted> part", "<", ">", "\\", 0) == (
+        "quoted",
+        False,
+    )
+    assert quote.extractwithoutquotes("the 'quoted' part", "'", "'", "\\", 0) == (
+        "quoted",
+        False,
+    )
+    assert quote.extractwithoutquotes(
+        "the 'isn\\'t escaping fun' part", "'", "'", "\\", 0
+    ) == ("isn\\'t escaping fun", False)
+    assert quote.extractwithoutquotes("the 'isn\\'t something ", "'", "'", "\\", 0) == (
+        "isn\\'t something ",
+        True,
+    )
+    assert quote.extractwithoutquotes("<quoted>\\", "<", ">", "\\", 0) == (
+        "quoted",
+        False,
+    )
+    assert quote.extractwithoutquotes("<quoted>\\\\<again>", "<", ">", "\\", 0) == (
+        "quotedagain",
+        False,
+    )
+    assert quote.extractwithoutquotes(
+        "<quoted><again\\\\", "<", ">", "\\", 0, True
+    ) == ("quotedagain\\\\", True)
     # don't include escapes...
-    assert quote.extractwithoutquotes("the 'isn\\'t escaping fun' part", "'", "'", "\\", 0, False) == ("isn't escaping fun", False)
-    assert quote.extractwithoutquotes("the 'isn\\'t something ", "'", "'", "\\", 0, False) == ("isn't something ", True)
-    assert quote.extractwithoutquotes("<quoted\\", "<", ">", "\\", 0, False) == ("quoted", True)
-    assert quote.extractwithoutquotes("<quoted><again\\\\", "<", ">", "\\", 0, False) == ("quotedagain\\", True)
+    assert quote.extractwithoutquotes(
+        "the 'isn\\'t escaping fun' part", "'", "'", "\\", 0, False
+    ) == ("isn't escaping fun", False)
+    assert quote.extractwithoutquotes(
+        "the 'isn\\'t something ", "'", "'", "\\", 0, False
+    ) == ("isn't something ", True)
+    assert quote.extractwithoutquotes("<quoted\\", "<", ">", "\\", 0, False) == (
+        "quoted",
+        True,
+    )
+    assert quote.extractwithoutquotes(
+        "<quoted><again\\\\", "<", ">", "\\", 0, False
+    ) == ("quotedagain\\", True)
     # escaping of quote char
-    assert quote.extractwithoutquotes("<quoted\\>", "<", ">", "\\", 0, False) == ("quoted>", True)
+    assert quote.extractwithoutquotes("<quoted\\>", "<", ">", "\\", 0, False) == (
+        "quoted>",
+        True,
+    )
 
 
 def isnewlineortabescape(escape):
@@ -53,7 +98,9 @@ def isnewlineortabescape(escape):
 
 def test_extractwithoutquotes_passfunc():
     """tests the extractwithoutquotes function with a function for includeescapes as a parameter"""
-    assert quote.extractwithoutquotes("<test \\r \\n \\t \\\\>", "<", ">", "\\", 0, isnewlineortabescape) == ("test r \\n \\t \\", False)
+    assert quote.extractwithoutquotes(
+        "<test \\r \\n \\t \\\\>", "<", ">", "\\", 0, isnewlineortabescape
+    ) == ("test r \\n \\t \\", False)
 
 
 def test_stripcomment():
@@ -61,7 +108,6 @@ def test_stripcomment():
 
 
 class TestEncoding:
-
     def test_javapropertiesencode(self):
         assert quote.javapropertiesencode("abc") == "abc"
         assert quote.javapropertiesencode("abcḓ") == r"abc\u1E13"
@@ -123,7 +169,9 @@ class TestEncoding:
 
     def test_htmlencoding_passthrough(self):
         """test that we can encode and decode things that look like HTML entities but aren't"""
-        raw_encoded = [("copy quot", "copy quot")]     # Raw text should have nothing done to it.
+        raw_encoded = [
+            ("copy quot", "copy quot")
+        ]  # Raw text should have nothing done to it.
         self._html_encoding_helper(raw_encoded)
 
     def test_htmlencoding_nonentities(self):

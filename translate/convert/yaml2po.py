@@ -33,8 +33,14 @@ class yaml2po:
     TargetStoreClass = po.pofile
     TargetUnitClass = po.pounit
 
-    def __init__(self, input_file, output_file, template_file=None,
-                 blank_msgstr=False, duplicate_style="msgctxt"):
+    def __init__(
+        self,
+        input_file,
+        output_file,
+        template_file=None,
+        blank_msgstr=False,
+        duplicate_style="msgctxt",
+    ):
         """Initialize the converter."""
         self.blank_msgstr = blank_msgstr
         self.duplicate_style = duplicate_style
@@ -66,9 +72,10 @@ class yaml2po:
 
     def merge_stores(self):
         """Convert two source format files to a target format file."""
-        self.extraction_msg = ("extracted from %s, %s" %
-                               (self.template_store.filename,
-                                self.source_store.filename))
+        self.extraction_msg = "extracted from %s, %s" % (
+            self.template_store.filename,
+            self.source_store.filename,
+        )
 
         self.source_store.makeindex()
         for template_unit in self.template_store.units:
@@ -88,8 +95,7 @@ class yaml2po:
             self.merge_stores()
 
         if self.extraction_msg:
-            self.target_store.header().addnote(self.extraction_msg,
-                                               "developer")
+            self.target_store.header().addnote(self.extraction_msg, "developer")
 
         self.target_store.removeduplicates(self.duplicate_style)
 
@@ -100,12 +106,18 @@ class yaml2po:
         return 1
 
 
-def run_converter(input_file, output_file, template_file=None, pot=False,
-                  duplicatestyle="msgctxt"):
+def run_converter(
+    input_file, output_file, template_file=None, pot=False, duplicatestyle="msgctxt"
+):
     """Wrapper around converter."""
     # TODO add Ruby personality.
-    return yaml2po(input_file, output_file, template_file, blank_msgstr=pot,
-                   duplicate_style=duplicatestyle).run()
+    return yaml2po(
+        input_file,
+        output_file,
+        template_file,
+        blank_msgstr=pot,
+        duplicate_style=duplicatestyle,
+    ).run()
 
 
 formats = {
@@ -117,8 +129,9 @@ formats = {
 
 
 def main(argv=None):
-    parser = convert.ConvertOptionParser(formats, usetemplates=True,
-                                         usepots=True, description=__doc__)
+    parser = convert.ConvertOptionParser(
+        formats, usetemplates=True, usepots=True, description=__doc__
+    )
     parser.add_duplicates_option()
     parser.passthrough.append("pot")
     parser.run(argv)

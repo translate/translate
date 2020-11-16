@@ -5,7 +5,6 @@ from translate.storage import po
 
 
 class TestInc2PO:
-
     def inc2po(self, incsource, inctemplate=None):
         """helper that converts .inc source to po source without requiring files"""
         inputfile = BytesIO(incsource.encode())

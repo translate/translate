@@ -50,7 +50,6 @@ class StateEnum:
 
 
 class State:
-
     def __init__(self, name, enter_action=None, leave_action=None):
         self.name = name
         self.enter_action = enter_action
@@ -74,7 +73,6 @@ class State:
 
 
 class UnitState(State):
-
     def __init__(self, name, state_value):
         self.state_value = state_value
         super().__init__(name, self._enter)
@@ -99,16 +97,13 @@ class TransitionError(WorkflowError):
 
 
 class InvalidStateObjectError(WorkflowError):
-
     def __init__(self, obj):
         super().__init__('Invalid state object: %s' % (obj))
 
 
 class StateNotInWorkflowError(Exception):
-
     def __init__(self, state):
-        super().__init__(
-            'State not in workflow: %s' % (state))
+        super().__init__('State not in workflow: %s' % (state))
 
 
 class Workflow:
@@ -124,10 +119,12 @@ class Workflow:
     # ACCESSORS #
     def _get_edges(self):
         return list(self._edges)
+
     edges = property(_get_edges)
 
     def _get_states(self):
         return list(self._states)
+
     states = property(_get_states)
 
     # METHODS #
@@ -231,8 +228,9 @@ class Workflow:
         if to_state not in self.states:
             raise StateNotInWorkflowError(to_state)
         if (self._current_state, to_state) not in self.edges:
-            raise TransitionError('No edge between edges %s and %s' % (
-                                  self._current_state, to_state))
+            raise TransitionError(
+                'No edge between edges %s and %s' % (self._current_state, to_state)
+            )
         self._current_state.leave(self._workflow_obj)
         self._current_state = to_state
         self._current_state.enter(self._workflow_obj)

@@ -1,9 +1,7 @@
-
 from translate.storage import test_base, wordfast as wf
 
 
 class TestWFTime:
-
     def test_timestring(self):
         """Setting and getting times set using a timestring"""
         wftime = wf.WordfastTime()
@@ -31,8 +29,7 @@ class TestWFUnit(test_base.TestTranslationUnit):
         class test but eliminate a few of the actual tests.
         """
         unit = self.unit
-        specials = ['\\"', '\\ ',
-                    '\\\n', '\\\t', '\\\\r', '\\\\"']
+        specials = ['\\"', '\\ ', '\\\n', '\\\t', '\\\\r', '\\\\"']
         for special in specials:
             unit.source = special
             print("unit.source:", repr(unit.source) + '|')
@@ -50,7 +47,10 @@ class TestWFUnit(test_base.TestTranslationUnit):
             unit.target = real
             assert unit.target == real
             assert unit.dict['target'] == escaped
-        for escaped, real in wf.WF_ESCAPE_MAP[:16]:  # Only common and Windows, not testing Mac
+
+        for escaped, real in wf.WF_ESCAPE_MAP[
+            :16
+        ]:  # Only common and Windows, not testing Mac
             compare(real, escaped)
         # Real world cases
         unit = self.UnitClass("Open &File. ’n Probleem.")

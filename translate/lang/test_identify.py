@@ -1,4 +1,3 @@
-
 from pytest import raises
 
 from translate.lang.identify import LanguageIdentifier
@@ -156,12 +155,11 @@ Ethik hängt eng mit einer Dauerkrise der""",
 ,Hundeschläger' für die Dezimierung der
 Momente ihrer Erfahrung".
 zusammen.
-"""
+""",
 ]
 
 
 class TestLanguageIdentifier:
-
     def setup_class(self):
         self.langident = LanguageIdentifier()
 

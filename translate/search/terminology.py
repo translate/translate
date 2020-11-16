@@ -20,7 +20,6 @@
 
 
 class TerminologyComparer:
-
     def __init__(self, max_len=500):
         self.match_info = {}
         self.MAX_LEN = max_len
@@ -37,7 +36,7 @@ class TerminologyComparer:
         # in the word "format", for example. A word like "at" will trigger too
         # many false positives.
 
-        text = text[:self.MAX_LEN]
+        text = text[: self.MAX_LEN]
 
         pos = text.find(term)
         if pos >= 0:

@@ -27,7 +27,6 @@ from translate.storage import factory, poheader
 
 
 class segment:
-
     def __init__(self, sourcelang, targetlang, stripspaces=True, onlyaligned=False):
         self.sourcelang = sourcelang
         self.targetlang = targetlang
@@ -73,7 +72,15 @@ class segment:
         return tostore
 
 
-def segmentfile(inputfile, outputfile, templatefile, sourcelanguage="en", targetlanguage=None, stripspaces=True, onlyaligned=False):
+def segmentfile(
+    inputfile,
+    outputfile,
+    templatefile,
+    sourcelanguage="en",
+    targetlanguage=None,
+    stripspaces=True,
+    onlyaligned=False,
+):
     """reads in inputfile, segments it then, writes to outputfile"""
     # note that templatefile is not used, but it is required by the converter...
     inputstore = factory.getobject(inputfile)
@@ -81,7 +88,9 @@ def segmentfile(inputfile, outputfile, templatefile, sourcelanguage="en", target
         return 0
     sourcelang = lang_factory.getlanguage(sourcelanguage)
     targetlang = lang_factory.getlanguage(targetlanguage)
-    convertor = segment(sourcelang, targetlang, stripspaces=stripspaces, onlyaligned=onlyaligned)
+    convertor = segment(
+        sourcelang, targetlang, stripspaces=stripspaces, onlyaligned=onlyaligned
+    )
     outputstore = convertor.convertstore(inputstore)
     outputstore.serialize(outputfile)
     return 1
@@ -89,6 +98,7 @@ def segmentfile(inputfile, outputfile, templatefile, sourcelanguage="en", target
 
 def main():
     from translate.convert import convert
+
     formats = {
         "po": ("po", segmentfile),
         "xlf": ("xlf", segmentfile),
@@ -97,20 +107,40 @@ def main():
     }
     parser = convert.ConvertOptionParser(formats, usepots=True, description=__doc__)
     parser.add_option(
-        "-l", "--language", dest="targetlanguage", default=None,
-        help="the target language code", metavar="LANG")
+        "-l",
+        "--language",
+        dest="targetlanguage",
+        default=None,
+        help="the target language code",
+        metavar="LANG",
+    )
     parser.add_option(
-        "", "--source-language", dest="sourcelanguage", default=None,
-        help="the source language code (default 'en')", metavar="LANG")
+        "",
+        "--source-language",
+        dest="sourcelanguage",
+        default=None,
+        help="the source language code (default 'en')",
+        metavar="LANG",
+    )
     parser.passthrough.append("sourcelanguage")
     parser.passthrough.append("targetlanguage")
     parser.add_option(
-        "", "--keepspaces", dest="stripspaces", action="store_false",
-        default=True, help="Disable automatic stripping of whitespace")
+        "",
+        "--keepspaces",
+        dest="stripspaces",
+        action="store_false",
+        default=True,
+        help="Disable automatic stripping of whitespace",
+    )
     parser.passthrough.append("stripspaces")
     parser.add_option(
-        "", "--only-aligned", dest="onlyaligned", action="store_true",
-        default=False, help="Removes units where sentence number does not correspond")
+        "",
+        "--only-aligned",
+        dest="onlyaligned",
+        action="store_true",
+        default=False,
+        help="Removes units where sentence number does not correspond",
+    )
     parser.passthrough.append("onlyaligned")
     parser.run()
 

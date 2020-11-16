@@ -1,4 +1,3 @@
-
 from io import BytesIO
 
 from pytest import importorskip
@@ -13,9 +12,15 @@ class TestIni2PO:
 
     ConverterClass = ini2po.ini2po
 
-    def _convert(self, input_string, template_string=None, blank_msgstr=False,
-                 duplicate_style="msgctxt", dialect="default",
-                 success_expected=True):
+    def _convert(
+        self,
+        input_string,
+        template_string=None,
+        blank_msgstr=False,
+        duplicate_style="msgctxt",
+        dialect="default",
+        success_expected=True,
+    ):
         """Helper that converts to target format without using files."""
         input_file = BytesIO(input_string.encode())
         output_file = BytesIO()
@@ -23,8 +28,14 @@ class TestIni2PO:
         if template_string:
             template_file = BytesIO(template_string.encode())
         expected_result = 1 if success_expected else 0
-        converter = self.ConverterClass(input_file, output_file, template_file,
-                                        blank_msgstr, duplicate_style, dialect)
+        converter = self.ConverterClass(
+            input_file,
+            output_file,
+            template_file,
+            blank_msgstr,
+            duplicate_style,
+            dialect,
+        )
         assert converter.run() == expected_result
         return converter.target_store, output_file
 
@@ -64,11 +75,9 @@ key=different
 msgid "different"
 msgstr ""
 """
-        output = self._convert_to_string(input_string,
-                                         duplicate_style="msgctxt")
+        output = self._convert_to_string(input_string, duplicate_style="msgctxt")
         assert expected_output in output
-        output = self._convert_to_string(input_string,
-                                         duplicate_style="merge")
+        output = self._convert_to_string(input_string, duplicate_style="merge")
         assert expected_output in output
 
     def test_merge_simple(self):
@@ -99,8 +108,7 @@ key=value
 msgid "value"
 msgstr ""
 """
-        assert expected_output in self._convert_to_string(input_string,
-                                                          template_string)
+        assert expected_output in self._convert_to_string(input_string, template_string)
 
     def test_merge_blank_msgstr(self):
         """Check merging two files returns output without translations."""
@@ -114,9 +122,9 @@ key=value
 msgid "value"
 msgstr ""
 """
-        assert expected_output in self._convert_to_string(input_string,
-                                                          template_string,
-                                                          blank_msgstr=True)
+        assert expected_output in self._convert_to_string(
+            input_string, template_string, blank_msgstr=True
+        )
 
     def test_dialects_inno(self):
         """Check that we output correctly for Inno files."""
@@ -130,8 +138,7 @@ prop  =  value%tvalue2%n
 msgid "value\tvalue2\n"
 msgstr "ṽḁḽṻḝ\tṽḁḽṻḝ2\n"
 """
-        output = self._convert_to_string(input_string, template_string,
-                                         dialect="inno")
+        output = self._convert_to_string(input_string, template_string, dialect="inno")
         assert expected_output in output
 
 

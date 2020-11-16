@@ -123,8 +123,8 @@ def unquotefromandroid(source):
 _DTD_CODEPOINT2NAME = {
     ord("%"): "#037",  # Always escape % sign as &#037;.
     ord("&"): "amp",
-    #ord("<"): "lt",  # Not really so useful.
-    #ord(">"): "gt",  # Not really so useful.
+    # ord("<"): "lt",  # Not really so useful.
+    # ord(">"): "gt",  # Not really so useful.
 }
 
 
@@ -146,8 +146,8 @@ def quotefordtd(source):
 _DTD_NAME2CODEPOINT = {
     "quot": ord('"'),
     "amp": ord("&"),
-    #"lt": ord("<"),  # Not really so useful.
-    #"gt": ord(">"),  # Not really so useful.
+    # "lt": ord("<"),  # Not really so useful.
+    # "gt": ord(">"),  # Not really so useful.
     # FIXME these should probably be handled in a more general way
     "#x0022": ord('"'),
     "#187": ord("»"),
@@ -165,7 +165,9 @@ def unquotefromdtd(source):
     # The quote characters should be the first and last characters in the
     # string. Of course there could also be quote characters within the string.
     quotechar = source[0]
-    extracted, quotefinished = quote.extractwithoutquotes(source, quotechar, quotechar, allowreentry=False)
+    extracted, quotefinished = quote.extractwithoutquotes(
+        source, quotechar, quotechar, allowreentry=False
+    )
     if isinstance(extracted, bytes):
         extracted = extracted.decode('utf-8')
     if quotechar == "'":
@@ -215,7 +217,7 @@ def removeinvalidamps(name, value):
         warnings.warn("invalid ampersands in dtd entity %s" % (name))
         adjustment = 0
         for amppos in invalid_amps:
-            value = value[:amppos-adjustment] + value[amppos-adjustment+1:]
+            value = value[: amppos - adjustment] + value[amppos - adjustment + 1 :]
             adjustment += 1
     return value
 
@@ -325,14 +327,14 @@ class dtdunit(base.TranslationUnit):
             line += "\n"
             linesprocessed += 1
             if not self.incomment:
-                if (line.find('<!--') != -1):
+                if line.find('<!--') != -1:
                     self.incomment = True
                     self.continuecomment = False
                     # now work out the type of comment, and save it (remember we're not in the comment yet)
                     (comment, dummy) = quote.extract(line, "<!--", "-->", None, 0)
                     if comment.find('LOCALIZATION NOTE') != -1:
                         l = quote.findend(comment, 'LOCALIZATION NOTE')
-                        while (comment[l] == ' '):
+                        while comment[l] == ' ':
                             l += 1
                         if comment.find('FILE', l) == l:
                             self.commenttype = "locfile"
@@ -345,7 +347,7 @@ class dtdunit(base.TranslationUnit):
                     else:
                         # plain comment
                         self.commenttype = "comment"
-                #FIXME: bloody entity might share a line with something important
+                # FIXME: bloody entity might share a line with something important
                 elif not self.inentity and re.search("%.*;", line):
                     # now work out the type of comment, and save it (remember we're not in the comment yet)
                     self.comments.append(("comment", line))
@@ -354,7 +356,9 @@ class dtdunit(base.TranslationUnit):
 
             if self.incomment:
                 # some kind of comment
-                (comment, self.incomment) = quote.extract(line, "<!--", "-->", None, self.continuecomment)
+                (comment, self.incomment) = quote.extract(
+                    line, "<!--", "-->", None, self.continuecomment
+                )
                 self.continuecomment = self.incomment
                 # strip the comment out of what will be parsed
                 line = line.replace(comment, "", 1)
@@ -405,24 +409,24 @@ class dtdunit(base.TranslationUnit):
                 if self.entitypart == "name":
                     s = 0
                     e = 0
-                    while (e < len(line) and line[e].isspace()):
+                    while e < len(line) and line[e].isspace():
                         e += 1
                     self.space_pre_entity = ' ' * (e - s)
                     s = e
                     self.entity = ''
-                    if (e < len(line) and line[e] == '%'):
+                    if e < len(line) and line[e] == '%':
                         self.entitytype = "external"
                         self.entityparameter = ""
                         e += 1
-                        while (e < len(line) and line[e].isspace()):
+                        while e < len(line) and line[e].isspace():
                             e += 1
-                    while (e < len(line) and not line[e].isspace()):
+                    while e < len(line) and not line[e].isspace():
                         self.entity += line[e]
                         e += 1
                     s = e
 
                     assert quote.rstripeol(self.entity) == self.entity
-                    while (e < len(line) and line[e].isspace()):
+                    while e < len(line) and line[e].isspace():
                         e += 1
                     self.space_pre_definition = ' ' * (e - s)
                     if self.entity:
@@ -439,13 +443,13 @@ class dtdunit(base.TranslationUnit):
                             self.entityhelp = (e, line[e])
                             self.instring = False
                 if self.entitypart == "parameter":
-                    while (e < len(line) and line[e].isspace()):
+                    while e < len(line) and line[e].isspace():
                         e += 1
                     paramstart = e
-                    while (e < len(line) and line[e].isalnum()):
+                    while e < len(line) and line[e].isalnum():
                         e += 1
                     self.entityparameter += line[paramstart:e]
-                    while (e < len(line) and line[e].isspace()):
+                    while e < len(line) and line[e].isspace():
                         e += 1
                     line = line[e:]
                     e = 0
@@ -458,7 +462,7 @@ class dtdunit(base.TranslationUnit):
                 if self.entitypart == "definition":
                     if self.entityhelp is None:
                         e = 0
-                        while (e < len(line) and line[e].isspace()):
+                        while e < len(line) and line[e].isspace():
                             e += 1
                         if e == len(line):
                             continue
@@ -466,17 +470,31 @@ class dtdunit(base.TranslationUnit):
                         self.instring = False
                     # actually the lines below should remember instring, rather than using it as dummy
                     e = self.entityhelp[0]
-                    if (self.entityhelp[1] == "'"):
-                        (defpart, self.instring) = quote.extract(line[e:], "'", "'", startinstring=self.instring, allowreentry=False)
-                    elif (self.entityhelp[1] == '"'):
-                        (defpart, self.instring) = quote.extract(line[e:], '"', '"', startinstring=self.instring, allowreentry=False)
+                    if self.entityhelp[1] == "'":
+                        (defpart, self.instring) = quote.extract(
+                            line[e:],
+                            "'",
+                            "'",
+                            startinstring=self.instring,
+                            allowreentry=False,
+                        )
+                    elif self.entityhelp[1] == '"':
+                        (defpart, self.instring) = quote.extract(
+                            line[e:],
+                            '"',
+                            '"',
+                            startinstring=self.instring,
+                            allowreentry=False,
+                        )
                     else:
-                        raise ValueError("Unexpected quote character... %r" % (self.entityhelp[1]))
+                        raise ValueError(
+                            "Unexpected quote character... %r" % (self.entityhelp[1])
+                        )
                     # for any following lines, start at the beginning of the line. remember the quote character
                     self.entityhelp = (0, self.entityhelp[1])
                     self.definition += defpart
                     if not self.instring:
-                        self.closing = line[e+len(defpart):].rstrip("\n\r")
+                        self.closing = line[e + len(defpart) :].rstrip("\n\r")
                         self.inentity = False
                         break
 
@@ -500,9 +518,24 @@ class dtdunit(base.TranslationUnit):
         # for n in self._locnotes: yield n
         if len(self.entity) > 0:
             if getattr(self, 'entitytype', None) == 'external':
-                entityline = '<!ENTITY % ' + self.entity + ' ' + self.entityparameter + ' ' + self.definition + self.closing
+                entityline = (
+                    '<!ENTITY % '
+                    + self.entity
+                    + ' '
+                    + self.entityparameter
+                    + ' '
+                    + self.definition
+                    + self.closing
+                )
             else:
-                entityline = '<!ENTITY' + self.space_pre_entity + self.entity + self.space_pre_definition + self.definition + self.closing
+                entityline = (
+                    '<!ENTITY'
+                    + self.space_pre_entity
+                    + self.entity
+                    + self.space_pre_definition
+                    + self.definition
+                    + self.closing
+                )
             if getattr(self, 'hashprefix', None):
                 entityline = self.hashprefix + " " + entityline
             lines.append(entityline + '\n')
@@ -529,7 +562,7 @@ class dtdfile(base.TranslationStore):
         end = 0
         lines = dtdsrc.split(b"\n")
         while end < len(lines):
-            if (start == end):
+            if start == end:
                 end += 1
             foundentity = False
             while end < len(lines):
@@ -546,11 +579,18 @@ class dtdfile(base.TranslationStore):
             while linesprocessed >= 1:
                 newdtd = dtdunit(android=self.android)
                 try:
-                    linesprocessed = newdtd.parse((b"\n".join(lines[start:end])).decode(self.encoding))
-                    if linesprocessed >= 1 and (not newdtd.isblank() or newdtd.unparsedlines):
+                    linesprocessed = newdtd.parse(
+                        (b"\n".join(lines[start:end])).decode(self.encoding)
+                    )
+                    if linesprocessed >= 1 and (
+                        not newdtd.isblank() or newdtd.unparsedlines
+                    ):
                         self.units.append(newdtd)
                 except Exception as e:
-                    warnings.warn("%s\nError occured between lines %d and %d:\n%s" % (e, start + 1, end, b"\n".join(lines[start:end])))
+                    warnings.warn(
+                        "%s\nError occured between lines %d and %d:\n%s"
+                        % (e, start + 1, end, b"\n".join(lines[start:end]))
+                    )
                 start += linesprocessed
 
     def serialize(self, out):

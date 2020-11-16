@@ -37,7 +37,7 @@ class YAMLUnitId(base.UnitId):
         result = super().__str__()
         # Strip leading ->
         if result.startswith(self.KEY_SEPARATOR):
-            return result[len(self.KEY_SEPARATOR):]
+            return result[len(self.KEY_SEPARATOR) :]
         return result
 
 
@@ -129,8 +129,7 @@ class YAMLFile(base.DictStore):
                 yield x
 
     def _flatten(self, data, prev=None):
-        """Flatten YAML dictionary.
-        """
+        """Flatten YAML dictionary."""
         if prev is None:
             prev = self.UnitClass.IdClass([])
         if isinstance(data, dict):
@@ -150,10 +149,12 @@ class YAMLFile(base.DictStore):
             elif data is None:
                 pass
             else:
-                raise ValueError("We don't handle these values:\n"
-                                 "Type: %s\n"
-                                 "Data: %s\n"
-                                 "Previous: %s" % (type(data), data, prev))
+                raise ValueError(
+                    "We don't handle these values:\n"
+                    "Type: %s\n"
+                    "Data: %s\n"
+                    "Previous: %s" % (type(data), data, prev)
+                )
 
     def preprocess(self, data):
         """Preprocess hook for child formats"""
@@ -205,7 +206,7 @@ class RubyYAMLUnit(YAMLUnit):
         # Sync plural_strings elements to plural_tags count.
         if len(strings) < len(tags):
             strings += [''] * (len(tags) - len(strings))
-        strings = strings[:len(tags)]
+        strings = strings[: len(tags)]
 
         return CommentedMap(zip(tags, strings))
 

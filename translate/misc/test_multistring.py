@@ -4,7 +4,6 @@ from translate.misc import multistring
 
 
 class TestMultistring:
-
     def test_constructor(self):
         t = multistring.multistring
         s1 = t("test")

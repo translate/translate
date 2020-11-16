@@ -1,4 +1,3 @@
-
 from io import BytesIO
 
 from pytest import raises
@@ -7,7 +6,7 @@ from translate.misc.multistring import multistring
 from translate.storage import pypo, test_po
 
 
-class TestHelpers():
+class TestHelpers:
     def test_unescape(self):
         assert pypo.unescape(r"koei") == "koei"
         assert pypo.unescape(r"koei\n") == "koei\n"
@@ -32,32 +31,57 @@ class TestHelpers():
         # Newline handling
         assert pypo.quoteforpo("One\nTwo\n") == ['""', '"One\\n"', '"Two\\n"']
         # First line wrapping
-        assert pypo.quoteforpo("A very long sentence. A very long sentence. A very long sentence. A ver") == [
-            '"A very long sentence. A very long sentence. A very long sentence. A ver"']
-        assert pypo.quoteforpo("A very long sentence. A very long sentence. A very long sentence. A very") == [
+        assert pypo.quoteforpo(
+            "A very long sentence. A very long sentence. A very long sentence. A ver"
+        ) == [
+            '"A very long sentence. A very long sentence. A very long sentence. A ver"'
+        ]
+        assert pypo.quoteforpo(
+            "A very long sentence. A very long sentence. A very long sentence. A very"
+        ) == [
             '""',
-            '"A very long sentence. A very long sentence. A very long sentence. A very"']
+            '"A very long sentence. A very long sentence. A very long sentence. A very"',
+        ]
         # Long line with a newline
-        assert pypo.quoteforpo("A very long sentence. A very long sentence. A very long sentence. A very lon\n") == [
-            '""', '"A very long sentence. A very long sentence. A very long sentence. A very "', '"lon\\n"']
-        assert pypo.quoteforpo("A very long sentence. A very long sentence. A very long sentence. A very 123\n") == [
-            '""', '"A very long sentence. A very long sentence. A very long sentence. A very "', '"123\\n"']
+        assert pypo.quoteforpo(
+            "A very long sentence. A very long sentence. A very long sentence. A very lon\n"
+        ) == [
+            '""',
+            '"A very long sentence. A very long sentence. A very long sentence. A very "',
+            '"lon\\n"',
+        ]
+        assert pypo.quoteforpo(
+            "A very long sentence. A very long sentence. A very long sentence. A very 123\n"
+        ) == [
+            '""',
+            '"A very long sentence. A very long sentence. A very long sentence. A very "',
+            '"123\\n"',
+        ]
         # Special 77 char failure.
-        assert pypo.quoteforpo("Ukuba uyayiqonda into eyenzekayo, \nungaxelela i-&brandShortName; ukuba iqalise ukuthemba ufaniso lwale sayithi. \n<b>Nokuba uyayithemba isayithi, le mposiso isenokuthetha ukuba   kukho umntu \nobhucabhuca ukudibanisa kwakho.</b>") == [
+        assert pypo.quoteforpo(
+            "Ukuba uyayiqonda into eyenzekayo, \nungaxelela i-&brandShortName; ukuba iqalise ukuthemba ufaniso lwale sayithi. \n<b>Nokuba uyayithemba isayithi, le mposiso isenokuthetha ukuba   kukho umntu \nobhucabhuca ukudibanisa kwakho.</b>"
+        ) == [
             '""',
             '"Ukuba uyayiqonda into eyenzekayo, \\n"',
             '"ungaxelela i-&brandShortName; ukuba iqalise ukuthemba ufaniso lwale sayithi. "',
             '"\\n"',
             '"<b>Nokuba uyayithemba isayithi, le mposiso isenokuthetha ukuba   kukho umntu "',
             '"\\n"',
-            '"obhucabhuca ukudibanisa kwakho.</b>"']
+            '"obhucabhuca ukudibanisa kwakho.</b>"',
+        ]
 
     def test_quoteforpo_escaped_quotes(self):
         """Ensure that we don't break \" in two when wrapping
 
         See :issue:`3140`
         """
-        assert pypo.quoteforpo('''You can get a copy of an recovery key by going to "My Recovery Key" under "Manage Account".''') == ['""', '"You can get a copy of an recovery key by going to \\"My Recovery Key\\" under "', '"\\"Manage Account\\"."']
+        assert pypo.quoteforpo(
+            '''You can get a copy of an recovery key by going to "My Recovery Key" under "Manage Account".'''
+        ) == [
+            '""',
+            '"You can get a copy of an recovery key by going to \\"My Recovery Key\\" under "',
+            '"\\"Manage Account\\"."',
+        ]
 
 
 class TestPYPOUnit(test_po.TestPOUnit):
@@ -111,9 +135,14 @@ class TestPYPOUnit(test_po.TestPOUnit):
         unit.addnote("Which meaning of file?")
         assert str(unit) == '# Which meaning of file?\nmsgid "File"\nmsgstr ""\n'
         unit.addnote("Verb", origin="programmer")
-        assert str(unit) == '# Which meaning of file?\n#. Verb\nmsgid "File"\nmsgstr ""\n'
+        assert (
+            str(unit) == '# Which meaning of file?\n#. Verb\nmsgid "File"\nmsgstr ""\n'
+        )
         unit.addnote("Thank you", origin="translator")
-        assert str(unit) == '# Which meaning of file?\n# Thank you\n#. Verb\nmsgid "File"\nmsgstr ""\n'
+        assert (
+            str(unit)
+            == '# Which meaning of file?\n# Thank you\n#. Verb\nmsgid "File"\nmsgstr ""\n'
+        )
 
         assert unit.getnotes("developer") == "Verb"
         assert unit.getnotes("translator") == "Which meaning of file?\nThank you"
@@ -134,7 +163,9 @@ class TestPYPOUnit(test_po.TestPOUnit):
         as at 71 chars we should align the text on the left and preceed with with a msgid ""
         """
         # longest before we wrap text
-        str_max = "123456789 123456789 123456789 123456789 123456789 123456789 123456789 1"
+        str_max = (
+            "123456789 123456789 123456789 123456789 123456789 123456789 123456789 1"
+        )
         unit = self.UnitClass(str_max)
         expected = 'msgid "%s"\nmsgstr ""\n' % str_max
         assert str(unit) == expected
@@ -169,7 +200,10 @@ msgstr ""
     def test_wrap_on_max_line_length(self):
         """test that we wrap all lines on the maximum line length"""
         string = "1 3 5 7 N " * 11
-        expected = 'msgid ""\n%s\nmsgstr ""\n' % '"1 3 5 7 N 1 3 5 7 N 1 3 5 7 N 1 3 5 7 N 1 3 5 7 N 1 3 5 7 N 1 3 5 7 N 1 3 5 "\n"7 N 1 3 5 7 N 1 3 5 7 N 1 3 5 7 N "'
+        expected = (
+            'msgid ""\n%s\nmsgstr ""\n'
+            % '"1 3 5 7 N 1 3 5 7 N 1 3 5 7 N 1 3 5 7 N 1 3 5 7 N 1 3 5 7 N 1 3 5 7 N 1 3 5 "\n"7 N 1 3 5 7 N 1 3 5 7 N 1 3 5 7 N "'
+        )
         unit = self.UnitClass(string)
         assert str(unit) == expected
 
@@ -223,7 +257,9 @@ class TestPYPOFile(test_po.TestPOFile):
 
     def test_merge_blanks(self):
         """checks that merging adds msgid_comments to blanks"""
-        posource = '#: source1\nmsgid ""\nmsgstr ""\n\n#: source2\nmsgid ""\nmsgstr ""\n'
+        posource = (
+            '#: source1\nmsgid ""\nmsgstr ""\n\n#: source2\nmsgid ""\nmsgstr ""\n'
+        )
         pofile = self.poparse(posource)
         assert len(pofile.units) == 2
         pofile.removeduplicates("merge")
@@ -294,23 +330,28 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8-bit\n"
 "Zkouška: něco\n"
-'''.encode('utf-8')
+'''.encode(
+            'utf-8'
+        )
         pofile = self.poparse(posource)
         assert pofile.parseheader() == {
             'Content-Transfer-Encoding': '8-bit',
             'Content-Type': 'text/plain; charset=UTF-8',
             'MIME-Version': '1.0',
             'PO-Revision-Date': '2006-02-09 23:33+0200',
-            'Zkouška': 'něco'
+            'Zkouška': 'něco',
         }
         update = {'zkouška': 'else'}
         pofile.updateheader(add=True, **update)
-        assert pofile.units[0].target == """PO-Revision-Date: 2006-02-09 23:33+0200
+        assert (
+            pofile.units[0].target
+            == """PO-Revision-Date: 2006-02-09 23:33+0200
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8-bit
 Zkouška: else
 """
+        )
 
     def test_prevmsgid_parse(self):
         """checks that prevmsgid (i.e. #|) is parsed and saved correctly"""
@@ -393,7 +434,9 @@ msgstr[1] "toetse"
 
     def test_wrap_newlines(self):
         hello = '\n '.join(['Hello'] * 100)
-        posource = 'msgid "{0}"\nmsgstr "{0}"\n'.format(hello.replace('\n', '\\n')).encode('utf-8')
+        posource = 'msgid "{0}"\nmsgstr "{0}"\n'.format(
+            hello.replace('\n', '\\n')
+        ).encode('utf-8')
 
         # Instance with no line wraps
         store = self.StoreClass(width=-1)
@@ -471,7 +514,9 @@ msgstr ""
 
 msgid "FcoeClient"
 msgstr "FcoeClient"
-'''.encode('utf-8-sig')
+'''.encode(
+            'utf-8-sig'
+        )
         pofile = self.poparse(posource)
         assert len(pofile.units) == 2
         assert pofile.units[0].source == ''

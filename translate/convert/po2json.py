@@ -27,7 +27,6 @@ from translate.storage import factory, jsonl10n
 
 
 class rejson:
-
     def __init__(self, templatefile, inputstore):
         self.templatefile = templatefile
         self.templatestore = jsonl10n.JsonFile(templatefile)
@@ -40,10 +39,9 @@ class rejson:
         self.inputstore.makeindex()
         for unit in self.templatestore.units:
             inputunit = self.inputstore.locationindex.get(unit.getid())
-            skip_unit = (self.remove_untranslated and
-                         (inputunit is None or
-                          inputunit.isfuzzy() or
-                          not inputunit.istranslated()))
+            skip_unit = self.remove_untranslated and (
+                inputunit is None or inputunit.isfuzzy() or not inputunit.istranslated()
+            )
             if skip_unit:
                 continue
             if inputunit is not None:
@@ -69,8 +67,14 @@ class rejson:
         return bytes(self.ouputstore)
 
 
-def convertjson(inputfile, outputfile, templatefile, includefuzzy=False,
-                outputthreshold=None, remove_untranslated=False):
+def convertjson(
+    inputfile,
+    outputfile,
+    templatefile,
+    includefuzzy=False,
+    outputthreshold=None,
+    remove_untranslated=False,
+):
     inputstore = factory.getobject(inputfile)
 
     if not convert.should_output_store(inputstore, outputthreshold):
@@ -90,8 +94,9 @@ def main(argv=None):
     formats = {
         ("po", "json"): ("json", convertjson),
     }
-    parser = convert.ConvertOptionParser(formats, usetemplates=True,
-                                         description=__doc__)
+    parser = convert.ConvertOptionParser(
+        formats, usetemplates=True, description=__doc__
+    )
     parser.add_threshold_option()
     parser.add_fuzzy_option()
     parser.add_remove_untranslated_option()

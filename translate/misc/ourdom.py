@@ -85,8 +85,9 @@ def getElementsByTagName_helper(parent, name, dummy=None):
     yieldElementsByTagName
     """
     for node in parent.childNodes:
-        if (node.nodeType == minidom.Node.ELEMENT_NODE and
-            (name == "*" or node.tagName == name)):
+        if node.nodeType == minidom.Node.ELEMENT_NODE and (
+            name == "*" or node.tagName == name
+        ):
             yield node
         if node.hasChildNodes():
             for othernode in node.getElementsByTagName(name):
@@ -96,11 +97,11 @@ def getElementsByTagName_helper(parent, name, dummy=None):
 def searchElementsByTagName_helper(parent, name, onlysearch):
     """limits the search to within tags occuring in onlysearch"""
     for node in parent.childNodes:
-        if (node.nodeType == minidom.Node.ELEMENT_NODE and
-            (name == "*" or node.tagName == name)):
+        if node.nodeType == minidom.Node.ELEMENT_NODE and (
+            name == "*" or node.tagName == name
+        ):
             yield node
-        if (node.nodeType == minidom.Node.ELEMENT_NODE and
-            node.tagName in onlysearch):
+        if node.nodeType == minidom.Node.ELEMENT_NODE and node.tagName in onlysearch:
             for node in node.searchElementsByTagName(name, onlysearch):
                 yield node
 
@@ -116,17 +117,16 @@ def getnodetext(node):
         return ""
     return "".join([t.data for t in node.childNodes if t.nodeType == t.TEXT_NODE])
 
+
 # various modifications to minidom classes to add functionality we like
 
 
 class DOMImplementation(minidom.DOMImplementation):
-
     def _create_document(self):
         return Document()
 
 
 class Element(minidom.Element):
-
     def yieldElementsByTagName(self, name):
         return getElementsByTagName_helper(self, name)
 
@@ -164,11 +164,11 @@ theDOMImplementation = DOMImplementation()
 
 
 class ExpatBuilderNS(expatbuilder.ExpatBuilderNS):
-
     def reset(self):
         """Free all data structures used during DOM construction."""
         self.document = theDOMImplementation.createDocument(
-            expatbuilder.EMPTY_NAMESPACE, None, None)
+            expatbuilder.EMPTY_NAMESPACE, None, None
+        )
         self.curNode = self.document
         self._elem_info = self.document._elem_info
         self._cdata = False
@@ -195,10 +195,17 @@ class ExpatBuilderNS(expatbuilder.ExpatBuilderNS):
                 if prefix:
                     a = minidom.Attr(
                         expatbuilder._intern(self, 'xmlns:' + prefix),
-                        expatbuilder.XMLNS_NAMESPACE, prefix, "xmlns")
+                        expatbuilder.XMLNS_NAMESPACE,
+                        prefix,
+                        "xmlns",
+                    )
                 else:
-                    a = minidom.Attr("xmlns", expatbuilder.XMLNS_NAMESPACE,
-                                     "xmlns", expatbuilder.EMPTY_PREFIX)
+                    a = minidom.Attr(
+                        "xmlns",
+                        expatbuilder.XMLNS_NAMESPACE,
+                        "xmlns",
+                        expatbuilder.EMPTY_PREFIX,
+                    )
                 a.value = uri
                 a.ownerDocument = self.document
                 expatbuilder._set_attribute_node(node, a)
@@ -211,15 +218,21 @@ class ExpatBuilderNS(expatbuilder.ExpatBuilderNS):
             _attrsNS = node._attrsNS
             for i in range(0, len(attributes), 2):
                 aname = attributes[i]
-                value = attributes[i+1]
+                value = attributes[i + 1]
                 if ' ' in aname:
-                    uri, localname, prefix, qname = expatbuilder._parse_ns_name(self, aname)
+                    uri, localname, prefix, qname = expatbuilder._parse_ns_name(
+                        self, aname
+                    )
                     a = minidom.Attr(qname, uri, localname, prefix)
                     _attrs[qname] = a
                     _attrsNS[(uri, localname)] = a
                 else:
-                    a = minidom.Attr(aname, expatbuilder.EMPTY_NAMESPACE,
-                                     aname, expatbuilder.EMPTY_PREFIX)
+                    a = minidom.Attr(
+                        aname,
+                        expatbuilder.EMPTY_NAMESPACE,
+                        aname,
+                        expatbuilder.EMPTY_PREFIX,
+                    )
                     _attrs[aname] = a
                     _attrsNS[(expatbuilder.EMPTY_NAMESPACE, aname)] = a
                 a.ownerDocument = self.document
@@ -236,16 +249,21 @@ class ExpatBuilderNS(expatbuilder.ExpatBuilderNS):
             curNode = self.curNode
             if ' ' in name:
                 uri, localname, prefix, qname = expatbuilder._parse_ns_name(self, name)
-                assert (curNode.namespaceURI == uri
-                        and curNode.localName == localname
-                        and curNode.prefix == prefix), "element stack messed up! (namespace)"
+                assert (
+                    curNode.namespaceURI == uri
+                    and curNode.localName == localname
+                    and curNode.prefix == prefix
+                ), "element stack messed up! (namespace)"
             else:
-                assert curNode.nodeName == name, \
-                    "element stack messed up - bad nodeName"
-                assert curNode.namespaceURI == expatbuilder.EMPTY_NAMESPACE, \
-                    "element stack messed up - bad namespaceURI"
+                assert (
+                    curNode.nodeName == name
+                ), "element stack messed up - bad nodeName"
+                assert (
+                    curNode.namespaceURI == expatbuilder.EMPTY_NAMESPACE
+                ), "element stack messed up - bad namespaceURI"
             self.curNode = curNode.parentNode
             self._finish_end_element(curNode)
+
 
 # parser methods that use our modified xml classes
 

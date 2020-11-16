@@ -39,14 +39,14 @@ class UnitMixer:
         for entity in index:
             for labelsuffix in self.labelsuffixes:
                 if entity.endswith(labelsuffix):
-                    entitybase = entity[:entity.rfind(labelsuffix)]
+                    entitybase = entity[: entity.rfind(labelsuffix)]
                     # see if there is a matching accesskey in this line,
                     # making this a mixed entity
                     for akeytype in self.accesskeysuffixes:
                         if (entitybase + akeytype) in index:
                             # add both versions to the list of mixed entities
                             mixedentities[entity] = {}
-                            mixedentities[entitybase+akeytype] = {}
+                            mixedentities[entitybase + akeytype] = {}
                     # check if this could be a mixed entity (labelsuffix and
                     # ".accesskey")
         return mixedentities
@@ -58,10 +58,13 @@ class UnitMixer:
         """
         target_unit.addlocations(label_unit.getlocations())
         target_unit.addlocations(accesskey_unit.getlocations())
-        target_unit.msgidcomment = (target_unit._extract_msgidcomments() +
-                                    label_unit._extract_msgidcomments())
-        target_unit.msgidcomment = (target_unit._extract_msgidcomments() +
-                                    accesskey_unit._extract_msgidcomments())
+        target_unit.msgidcomment = (
+            target_unit._extract_msgidcomments() + label_unit._extract_msgidcomments()
+        )
+        target_unit.msgidcomment = (
+            target_unit._extract_msgidcomments()
+            + accesskey_unit._extract_msgidcomments()
+        )
         target_unit.addnote(label_unit.getnotes("developer"), "developer")
         target_unit.addnote(accesskey_unit.getnotes("developer"), "developer")
         target_unit.addnote(label_unit.getnotes("translator"), "translator")
@@ -85,18 +88,23 @@ class UnitMixer:
         labelentity, accesskeyentity = None, None
         for labelsuffix in self.labelsuffixes:
             if entity.endswith(labelsuffix):
-                entitybase = entity[:entity.rfind(labelsuffix)]
+                entitybase = entity[: entity.rfind(labelsuffix)]
                 for akeytype in self.accesskeysuffixes:
                     if (entitybase + akeytype) in store.id_index:
                         labelentity = entity
-                        accesskeyentity = labelentity[:labelentity.rfind(labelsuffix)] + akeytype
+                        accesskeyentity = (
+                            labelentity[: labelentity.rfind(labelsuffix)] + akeytype
+                        )
                         break
         else:
             for akeytype in self.accesskeysuffixes:
                 if entity.endswith(akeytype):
                     accesskeyentity = entity
                     for labelsuffix in self.labelsuffixes:
-                        labelentity = accesskeyentity[:accesskeyentity.rfind(akeytype)] + labelsuffix
+                        labelentity = (
+                            accesskeyentity[: accesskeyentity.rfind(akeytype)]
+                            + labelsuffix
+                        )
                         if labelentity in store.id_index:
                             break
                     else:
@@ -130,19 +138,19 @@ def extract(string, accesskey_marker=DEFAULT_ACCESSKEY_MARKER):
             marker_pos += 1
             if marker_pos == len(string):
                 break
-            if (accesskey_marker == '&' and
-                XMLEntityPlaceable.regex.match(string[marker_pos-1:])):
+            if accesskey_marker == '&' and XMLEntityPlaceable.regex.match(
+                string[marker_pos - 1 :]
+            ):
                 continue
             # FIXME This is weak filtering, we should have a richer set of
             # invalid accesskeys, not just space.
             if string[marker_pos] != " ":
-                label = string[:marker_pos-1] + string[marker_pos:]
+                label = string[: marker_pos - 1] + string[marker_pos:]
                 accesskey = string[marker_pos]
     return label, accesskey
 
 
-def combine(label, accesskey,
-            accesskey_marker=DEFAULT_ACCESSKEY_MARKER):
+def combine(label, accesskey, accesskey_marker=DEFAULT_ACCESSKEY_MARKER):
     """Combine a label and and accesskey to form a label+accesskey string
 
     We place an accesskey marker before the accesskey in the label and this

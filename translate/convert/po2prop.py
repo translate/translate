@@ -56,7 +56,10 @@ def applytranslation(key, propunit, inunit, mixedkeys):
                         # For the sake of diffs we keep the case of the
                         # accesskey the same if we know the translation didn't
                         # change. Casing matters in XUL.
-                        if value == propunit.source and original.lower() == value.lower():
+                        if (
+                            value == propunit.source
+                            and original.lower() == value.lower()
+                        ):
                             if original.isupper():
                                 value = value.upper()
                             elif original.islower():
@@ -65,9 +68,14 @@ def applytranslation(key, propunit, inunit, mixedkeys):
 
 
 class reprop:
-
-    def __init__(self, templatefile, inputstore, personality, encoding=None,
-                 remove_untranslated=False):
+    def __init__(
+        self,
+        templatefile,
+        inputstore,
+        personality,
+        encoding=None,
+        remove_untranslated=False,
+    ):
         self.templatefile = templatefile
         self.inputstore = inputstore
         self.personality = properties.get_dialect(personality)
@@ -75,8 +83,9 @@ class reprop:
         if self.encoding is None:
             self.encoding = self.personality.default_encoding
         self.remove_untranslated = remove_untranslated
-        self.mixer = accesskey.UnitMixer(properties.labelsuffixes,
-                                         properties.accesskeysuffixes)
+        self.mixer = accesskey.UnitMixer(
+            properties.labelsuffixes, properties.accesskeysuffixes
+        )
 
     def convertstore(self, includefuzzy=False):
         self.includefuzzy = includefuzzy
@@ -111,6 +120,7 @@ class reprop:
     def _explode_gaia_plurals(self):
         """Explode the gaia plurals."""
         from translate.lang import data
+
         for unit in self.inputstore.units:
             if not unit.hasplural():
                 continue
@@ -146,6 +156,7 @@ class reprop:
             'other': '',
         }
         from translate.lang import data
+
         for unit in self.inputstore.units:
             if not unit.hasplural():
                 continue
@@ -171,7 +182,7 @@ class reprop:
         if self.inmultilinemsgid:
             msgid = quote.rstripeol(line).strip()
             # see if there's more
-            self.inmultilinemsgid = (msgid[-1:] == '\\')
+            self.inmultilinemsgid = msgid[-1:] == '\\'
             # if we're echoing...
             if self.inecho:
                 returnline = line
@@ -189,31 +200,51 @@ class reprop:
             else:
                 key = self.personality.key_strip(line[:delimiter_pos])
                 # Calculate space around the equal sign
-                prespace = line[line.find(' ', len(key)):delimiter_pos]
-                postspacestart = len(line[delimiter_pos+1:])
-                postspaceend = len(line[delimiter_pos+1:].lstrip())
-                postspace = line[delimiter_pos+1:delimiter_pos+(postspacestart-postspaceend)+1]
+                prespace = line[line.find(' ', len(key)) : delimiter_pos]
+                postspacestart = len(line[delimiter_pos + 1 :])
+                postspaceend = len(line[delimiter_pos + 1 :].lstrip())
+                postspace = line[
+                    delimiter_pos
+                    + 1 : delimiter_pos
+                    + (postspacestart - postspaceend)
+                    + 1
+                ]
                 delimiter = prespace + delimiter_char + postspace
             if key in self.inputstore.locationindex:
                 unit = self.inputstore.locationindex[key]
-                if unit is None or not unit.istranslated() and bool(unit.source) and self.remove_untranslated:
+                if (
+                    unit is None
+                    or not unit.istranslated()
+                    and bool(unit.source)
+                    and self.remove_untranslated
+                ):
                     returnline = ""
                     self.inecho = False
                 else:
-                    if unit.isfuzzy() and not self.includefuzzy or len(unit.target) == 0:
+                    if (
+                        unit.isfuzzy()
+                        and not self.includefuzzy
+                        or len(unit.target) == 0
+                    ):
                         value = unit.source
                     else:
                         value = self._handle_accesskeys(unit, key)
                     self.inecho = False
                     assert isinstance(value, str)
                     returnline = "%(key)s%(del)s%(value)s%(term)s%(eol)s" % {
-                        "key": "%s%s%s" % (self.personality.key_wrap_char,
-                                           key,
-                                           self.personality.key_wrap_char),
+                        "key": "%s%s%s"
+                        % (
+                            self.personality.key_wrap_char,
+                            key,
+                            self.personality.key_wrap_char,
+                        ),
                         "del": delimiter if delimiter_pos != -1 or value else "",
-                        "value": "%s%s%s" % (self.personality.value_wrap_char,
-                                             self.personality.encode(value),
-                                             self.personality.value_wrap_char),
+                        "value": "%s%s%s"
+                        % (
+                            self.personality.value_wrap_char,
+                            self.personality.encode(value),
+                            self.personality.value_wrap_char,
+                        ),
                         "term": self.personality.pair_terminator,
                         "eol": eol,
                     }
@@ -224,29 +255,59 @@ class reprop:
         return returnline
 
 
-def convertstrings(inputfile, outputfile, templatefile, personality="strings",
-                   includefuzzy=False, encoding=None, outputthreshold=None,
-                   remove_untranslated=False):
+def convertstrings(
+    inputfile,
+    outputfile,
+    templatefile,
+    personality="strings",
+    includefuzzy=False,
+    encoding=None,
+    outputthreshold=None,
+    remove_untranslated=False,
+):
     """.strings specific convertor function"""
-    return convertprop(inputfile, outputfile, templatefile,
-                       personality="strings", includefuzzy=includefuzzy,
-                       encoding=encoding, outputthreshold=outputthreshold,
-                       remove_untranslated=remove_untranslated)
+    return convertprop(
+        inputfile,
+        outputfile,
+        templatefile,
+        personality="strings",
+        includefuzzy=includefuzzy,
+        encoding=encoding,
+        outputthreshold=outputthreshold,
+        remove_untranslated=remove_untranslated,
+    )
 
 
-def convertmozillaprop(inputfile, outputfile, templatefile,
-                       includefuzzy=False, remove_untranslated=False,
-                       outputthreshold=None):
+def convertmozillaprop(
+    inputfile,
+    outputfile,
+    templatefile,
+    includefuzzy=False,
+    remove_untranslated=False,
+    outputthreshold=None,
+):
     """Mozilla specific convertor function"""
-    return convertprop(inputfile, outputfile, templatefile,
-                       personality="mozilla", includefuzzy=includefuzzy,
-                       remove_untranslated=remove_untranslated,
-                       outputthreshold=outputthreshold)
+    return convertprop(
+        inputfile,
+        outputfile,
+        templatefile,
+        personality="mozilla",
+        includefuzzy=includefuzzy,
+        remove_untranslated=remove_untranslated,
+        outputthreshold=outputthreshold,
+    )
 
 
-def convertprop(inputfile, outputfile, templatefile, personality="java",
-                includefuzzy=False, encoding=None, remove_untranslated=False,
-                outputthreshold=None):
+def convertprop(
+    inputfile,
+    outputfile,
+    templatefile,
+    personality="java",
+    includefuzzy=False,
+    encoding=None,
+    remove_untranslated=False,
+    outputthreshold=None,
+):
     inputstore = po.pofile(inputfile)
 
     if not convert.should_output_store(inputstore, outputthreshold):
@@ -256,8 +317,9 @@ def convertprop(inputfile, outputfile, templatefile, personality="java",
         raise ValueError("must have template file for properties files")
         # convertor = po2prop()
     else:
-        convertor = reprop(templatefile, inputstore, personality, encoding,
-                           remove_untranslated)
+        convertor = reprop(
+            templatefile, inputstore, personality, encoding, remove_untranslated
+        )
     outputprop = convertor.convertstore(includefuzzy)
     outputfile.write(outputprop)
     return True
@@ -272,19 +334,28 @@ formats = {
 
 def main(argv=None):
     # handle command line options
-    parser = convert.ConvertOptionParser(formats, usetemplates=True,
-                                         description=__doc__)
+    parser = convert.ConvertOptionParser(
+        formats, usetemplates=True, description=__doc__
+    )
     parser.add_option(
-        "", "--personality", dest="personality",
-        default=properties.default_dialect, type="choice",
+        "",
+        "--personality",
+        dest="personality",
+        default=properties.default_dialect,
+        type="choice",
         choices=list(properties.dialects),
-        help="override the input file format: %s (for .properties files, default: %s)" % (
-            ", ".join(properties.dialects), properties.default_dialect),
-        metavar="TYPE")
+        help="override the input file format: %s (for .properties files, default: %s)"
+        % (", ".join(properties.dialects), properties.default_dialect),
+        metavar="TYPE",
+    )
     parser.add_option(
-        "", "--encoding", dest="encoding", default=None,
+        "",
+        "--encoding",
+        dest="encoding",
+        default=None,
         help="override the encoding set by the personality",
-        metavar="ENCODING")
+        metavar="ENCODING",
+    )
     parser.add_threshold_option()
     parser.add_fuzzy_option()
     parser.add_remove_untranslated_option()

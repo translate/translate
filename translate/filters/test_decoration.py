@@ -1,4 +1,3 @@
-
 """tests decoration handling functions that are used by checks"""
 
 from translate.filters import decoration
@@ -11,7 +10,12 @@ def test_spacestart():
     # non-breaking space
     assert decoration.spacestart("\u00a0\u202fStart") == "\u00a0\u202f"
     # Some exotic spaces
-    assert decoration.spacestart("\u2000\u2001\u2002\u2003\u2004\u2005\u2006\u2007\u2008\u2009\u200aStart") == "\u2000\u2001\u2002\u2003\u2004\u2005\u2006\u2007\u2008\u2009\u200a"
+    assert (
+        decoration.spacestart(
+            "\u2000\u2001\u2002\u2003\u2004\u2005\u2006\u2007\u2008\u2009\u200aStart"
+        )
+        == "\u2000\u2001\u2002\u2003\u2004\u2005\u2006\u2007\u2008\u2009\u200a"
+    )
 
 
 def test_isvalidaccelerator():
@@ -43,7 +47,9 @@ def test_find_marked_variables():
     assert variables == [(4, "")]
     variables = decoration.findmarkedvariables("The &variable; string", "&", ";")
     assert variables == [(4, "variable")]
-    variables = decoration.findmarkedvariables("The &variable.variable; string", "&", ";")
+    variables = decoration.findmarkedvariables(
+        "The &variable.variable; string", "&", ";"
+    )
     assert variables == [(4, "variable.variable")]
 
 
@@ -55,21 +61,39 @@ def test_getnumbers():
     assert decoration.getnumbers("Two numbers: 2 and 3") == ["2", "3"]
     assert decoration.getnumbers("R5.99") == ["5.99"]
     # TODO fix these so that we are able to consider locale specific numbers
-    #assert decoration.getnumbers("R5,99") == ["5.99"]
-    #assert decoration.getnumbers("1\u00a0000,99") == ["1000.99"]
+    # assert decoration.getnumbers("R5,99") == ["5.99"]
+    # assert decoration.getnumbers("1\u00a0000,99") == ["1000.99"]
     assert decoration.getnumbers("36°") == ["36°"]
-    assert decoration.getnumbers("English 123, Bengali \u09e7\u09e8\u09e9") == ["123", "\u09e7\u09e8\u09e9"]
+    assert decoration.getnumbers("English 123, Bengali \u09e7\u09e8\u09e9") == [
+        "123",
+        "\u09e7\u09e8\u09e9",
+    ]
 
 
 def test_getfunctions():
     """test operation of getfunctions()"""
     assert decoration.getfunctions("") == []
     assert decoration.getfunctions("There is no function") == []
-    assert decoration.getfunctions("Use the getfunction() function.") == ["getfunction()"]
-    assert decoration.getfunctions("Use the getfunction1() function or the getfunction2() function.") == ["getfunction1()", "getfunction2()"]
-    assert decoration.getfunctions("The module.getfunction() method") == ["module.getfunction()"]
-    assert decoration.getfunctions("The module->getfunction() method") == ["module->getfunction()"]
-    assert decoration.getfunctions("The module::getfunction() method") == ["module::getfunction()"]
-    assert decoration.getfunctions("The function().function() function") == ["function().function()"]
+    assert decoration.getfunctions("Use the getfunction() function.") == [
+        "getfunction()"
+    ]
+    assert decoration.getfunctions(
+        "Use the getfunction1() function or the getfunction2() function."
+    ) == ["getfunction1()", "getfunction2()"]
+    assert decoration.getfunctions("The module.getfunction() method") == [
+        "module.getfunction()"
+    ]
+    assert decoration.getfunctions("The module->getfunction() method") == [
+        "module->getfunction()"
+    ]
+    assert decoration.getfunctions("The module::getfunction() method") == [
+        "module::getfunction()"
+    ]
+    assert decoration.getfunctions("The function().function() function") == [
+        "function().function()"
+    ]
     assert decoration.getfunctions("Deprecated, use function().") == ["function()"]
-    assert decoration.getfunctions("Deprecated, use function() or other().") == ["function()", "other()"]
+    assert decoration.getfunctions("Deprecated, use function() or other().") == [
+        "function()",
+        "other()",
+    ]

@@ -30,6 +30,7 @@ available = False
 try:
     # Enchant
     from enchant import Error as EnchantError, checker
+
     available = True
     checkers = {}
 

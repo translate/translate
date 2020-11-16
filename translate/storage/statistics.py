@@ -43,13 +43,17 @@ class Statistics:
         self.sourcelanguage = sourcelanguage
         self.targetlanguage = targetlanguage
         self.language = factory.getlanguage(self.sourcelanguage)
-#        self.init_checker(checkerstyle)
+        #        self.init_checker(checkerstyle)
 
         self.classification = {}
 
     def init_checker(self, checkerstyle=None):
         from translate.filters import checks, pofilter
-        checkerclasses = [checkerstyle or checks.StandardChecker, pofilter.StandardPOChecker]
+
+        checkerclasses = [
+            checkerstyle or checks.StandardChecker,
+            pofilter.StandardPOChecker,
+        ]
         self.checker = pofilter.POTeeChecker(checkerclasses=checkerclasses)
 
     def fuzzy_units(self):
@@ -133,13 +137,13 @@ class Statistics:
             classes.append("blank")
         if unit.istranslated():
             classes.append("translated")
-        #TODO: we don't handle checking plurals at all yet, as this is tricky...
+        # TODO: we don't handle checking plurals at all yet, as this is tricky...
         source = unit.source
         target = unit.target
         if isinstance(source, bytes) and isinstance(target, str):
             source = source.decode(getattr(unit, "encoding", "utf-8"))
-        #TODO: decoding should not be done here
-#        checkresult = self.checker.run_filters(unit, source, target)
+        # TODO: decoding should not be done here
+        #        checkresult = self.checker.run_filters(unit, source, target)
         checkresult = {}
         for checkname, checkmessage in checkresult.items():
             classes.append("check-" + checkname)
@@ -156,12 +160,12 @@ class Statistics:
         self.classification["translated"] = []
         self.classification["has-suggestion"] = []
         self.classification["total"] = []
-#        for checkname in self.checker.getfilters().keys():
-#            self.classification["check-" + checkname] = []
+        #        for checkname in self.checker.getfilters().keys():
+        #            self.classification["check-" + checkname] = []
         for item, unit in enumerate(self.unit_iter()):
             classes = self.classifyunit(unit)
-#            if self.basefile.getsuggestions(item):
-#                classes.append("has-suggestion")
+            #            if self.basefile.getsuggestions(item):
+            #                classes.append("has-suggestion")
             for classname in classes:
                 if classname in self.classification:
                     self.classification[classname].append(item)
@@ -174,8 +178,12 @@ class Statistics:
         self.sourcewordcounts = []
         self.targetwordcounts = []
         for unit in self.unit_iter():
-            self.sourcewordcounts.append([self.wordcount(text) for text in getattr(unit.source, "strings", [""])])
-            self.targetwordcounts.append([self.wordcount(text) for text in getattr(unit.target, "strings", [""])])
+            self.sourcewordcounts.append(
+                [self.wordcount(text) for text in getattr(unit.source, "strings", [""])]
+            )
+            self.targetwordcounts.append(
+                [self.wordcount(text) for text in getattr(unit.target, "strings", [""])]
+            )
 
     def reclassifyunit(self, item):
         """Updates the classification of a unit in self.classification.
@@ -183,11 +191,15 @@ class Statistics:
         :param item: an integer that is an index in .getunits().
         """
         unit = self.getunits()[item]
-        self.sourcewordcounts[item] = [self.wordcount(text) for text in unit.source.strings]
-        self.targetwordcounts[item] = [self.wordcount(text) for text in unit.target.strings]
+        self.sourcewordcounts[item] = [
+            self.wordcount(text) for text in unit.source.strings
+        ]
+        self.targetwordcounts[item] = [
+            self.wordcount(text) for text in unit.target.strings
+        ]
         classes = self.classifyunit(unit)
-#        if self.basefile.getsuggestions(item):
-#            classes.append("has-suggestion")
+        #        if self.basefile.getsuggestions(item):
+        #            classes.append("has-suggestion")
         for classname, matchingitems in self.classification.items():
             if (classname in classes) != (item in matchingitems):
                 if classname in classes:
@@ -195,4 +207,6 @@ class Statistics:
                 else:
                     self.classification[classname].remove(item)
                 self.classification[classname].sort()
+
+
 #        self.savestats()

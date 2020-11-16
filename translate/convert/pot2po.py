@@ -30,12 +30,21 @@ from translate.storage import catkeys, factory, poheader
 from translate.tools import pretranslate
 
 
-def convertpot(input_file, output_file, template_file, tm=None,
-               min_similarity=75, fuzzymatching=True, classes=None,
-               classes_str=None, **kwargs):
+def convertpot(
+    input_file,
+    output_file,
+    template_file,
+    tm=None,
+    min_similarity=75,
+    fuzzymatching=True,
+    classes=None,
+    classes_str=None,
+    **kwargs
+):
     """Main conversion function."""
-    input_store = factory.getobject(input_file, classes=classes,
-                                    classes_str=classes_str)
+    input_store = factory.getobject(
+        input_file, classes=classes, classes_str=classes_str
+    )
     try:
         temp_store = factory.getobject(input_file, classes_str=classes_str)
     except Exception:
@@ -44,18 +53,31 @@ def convertpot(input_file, output_file, template_file, tm=None,
 
     template_store = None
     if template_file is not None:
-        template_store = factory.getobject(template_file,
-                                           classes_str=classes_str)
+        template_store = factory.getobject(template_file, classes_str=classes_str)
 
-    output_store = convert_stores(input_store, template_store, temp_store, tm,
-                                  min_similarity, fuzzymatching, **kwargs)
+    output_store = convert_stores(
+        input_store,
+        template_store,
+        temp_store,
+        tm,
+        min_similarity,
+        fuzzymatching,
+        **kwargs
+    )
     output_store.serialize(output_file)
 
     return 1
 
 
-def convert_stores(input_store, template_store, temp_store=None, tm=None,
-                   min_similarity=75, fuzzymatching=True, **kwargs):
+def convert_stores(
+    input_store,
+    template_store,
+    temp_store=None,
+    tm=None,
+    min_similarity=75,
+    fuzzymatching=True,
+    **kwargs
+):
     """Actual conversion function, works on stores not files, returns
     a properly initialized pretranslated output store, with structure
     based on input_store, metadata based on template_store, migrates
@@ -70,30 +92,38 @@ def convert_stores(input_store, template_store, temp_store=None, tm=None,
     _prepare_merge(input_store, temp_store, template_store)
     if fuzzymatching:
         if template_store:
-            matcher = match.matcher(template_store, max_candidates=1,
-                                    min_similarity=min_similarity,
-                                    max_length=3000, usefuzzy=True)
+            matcher = match.matcher(
+                template_store,
+                max_candidates=1,
+                min_similarity=min_similarity,
+                max_length=3000,
+                usefuzzy=True,
+            )
             matcher.addpercentage = False
             matchers.append(matcher)
         if tm:
-            matcher = pretranslate.memory(tm, max_candidates=1,
-                                          min_similarity=min_similarity,
-                                          max_length=1000)
+            matcher = pretranslate.memory(
+                tm, max_candidates=1, min_similarity=min_similarity, max_length=1000
+            )
             matcher.addpercentage = False
             matchers.append(matcher)
 
-    #initialize store
+    # initialize store
     _store_pre_merge(input_store, temp_store, template_store)
 
     # Do matching
     for input_unit in temp_store.units:
         if input_unit.istranslatable():
             input_unit = pretranslate.pretranslate_unit(
-                input_unit, template_store, matchers, mark_reused=True,
-                merge_on=input_store.merge_on)
+                input_unit,
+                template_store,
+                matchers,
+                mark_reused=True,
+                merge_on=input_store.merge_on,
+            )
             _unit_post_merge(input_unit, input_store, temp_store, template_store)
 
-    #finalize store
+    # finalize store
     _store_post_merge(input_store, temp_store, template_store)
 
     return temp_store
@@ -105,8 +135,9 @@ def _prepare_merge(input_store, output_store, template_store, **kwargs):
     # Dispatch to format specific functions
     prepare_merge_hook = "_prepare_merge_%s" % input_store.__class__.__name__
     if prepare_merge_hook in globals():
-        globals()[prepare_merge_hook](input_store, output_store,
-                                      template_store, **kwargs)
+        globals()[prepare_merge_hook](
+            input_store, output_store, template_store, **kwargs
+        )
 
     # Generate an index so we can search by source string and location later on
     input_store.makeindex()
@@ -116,11 +147,11 @@ def _prepare_merge(input_store, output_store, template_store, **kwargs):
 
 def _store_pre_merge(input_store, output_store, template_store, **kwargs):
     """Initialize the new file with things like headers and metadata."""
-    #formats that implement poheader interface are a special case
+    # formats that implement poheader interface are a special case
     if isinstance(input_store, poheader.poheader):
         _do_poheaders(input_store, output_store, template_store)
     elif isinstance(input_store, catkeys.CatkeysFile):
-        #FIXME: also this should be a format specific hook
+        # FIXME: also this should be a format specific hook
         if template_store is not None:
             output_store.header = template_store.header
         else:
@@ -129,8 +160,9 @@ def _store_pre_merge(input_store, output_store, template_store, **kwargs):
     # Dispatch to format specific functions
     store_pre_merge_hook = "_store_pre_merge_%s" % input_store.__class__.__name__
     if store_pre_merge_hook in globals():
-        globals()[store_pre_merge_hook](input_store, output_store,
-                                        template_store, **kwargs)
+        globals()[store_pre_merge_hook](
+            input_store, output_store, template_store, **kwargs
+        )
 
 
 def _store_post_merge(input_store, output_store, template_store, **kwargs):
@@ -140,27 +172,27 @@ def _store_post_merge(input_store, output_store, template_store, **kwargs):
     # Dispatch to format specific functions
     store_post_merge_hook = "_store_post_merge_%s" % input_store.__class__.__name__
     if store_post_merge_hook in globals():
-        globals()[store_post_merge_hook](input_store, output_store,
-                                         template_store, **kwargs)
+        globals()[store_post_merge_hook](
+            input_store, output_store, template_store, **kwargs
+        )
 
 
-def _unit_post_merge(input_unit, input_store, output_store, template_store,
-                     **kwargs):
+def _unit_post_merge(input_unit, input_store, output_store, template_store, **kwargs):
     """Handle any unit level cleanup and situations not handled by the merge()
     function.
     """
-    #dispatch to format specific functions
+    # dispatch to format specific functions
     unit_post_merge_hook = "_unit_post_merge_%s" % input_unit.__class__.__name__
     if unit_post_merge_hook in globals():
-        globals()[unit_post_merge_hook](input_unit, input_store, output_store,
-                                        template_store, **kwargs)
+        globals()[unit_post_merge_hook](
+            input_unit, input_store, output_store, template_store, **kwargs
+        )
 
 
 ## Format specific functions
-def _unit_post_merge_pounit(input_unit, input_store, output_store,
-                            template_store):
+def _unit_post_merge_pounit(input_unit, input_store, output_store, template_store):
     """PO format specific plural string initializtion logic."""
-    #FIXME: do we want to do that for poxliff also?
+    # FIXME: do we want to do that for poxliff also?
     if input_unit.hasplural() and len(input_unit.target) == 0:
         # untranslated plural unit; Let's ensure that we have the correct
         # number of plural forms:
@@ -177,8 +209,9 @@ def _store_post_merge_pofile(input_store, output_store, template_store):
         for unit in template_store.units:
             if unit.isheader() or unit.isblank():
                 continue
-            if (unit.target and not (input_store.findid(unit.getid()) or
-                hasattr(unit, "reused"))):
+            if unit.target and not (
+                input_store.findid(unit.getid()) or hasattr(unit, "reused")
+            ):
                 # Not in .pot, make it obsolete
                 unit.makeobsolete()
                 newlyobsoleted.append(unit)
@@ -225,9 +258,15 @@ def _do_poheaders(input_store, output_store, template_store):
 
     inputheadervalues = input_store.parseheader()
     for key, value in inputheadervalues.items():
-        if key in ("Project-Id-Version", "Last-Translator", "Language-Team",
-                   "PO-Revision-Date", "Content-Type",
-                   "Content-Transfer-Encoding", "Plural-Forms"):
+        if key in (
+            "Project-Id-Version",
+            "Last-Translator",
+            "Language-Team",
+            "PO-Revision-Date",
+            "Content-Type",
+            "Content-Transfer-Encoding",
+            "Plural-Forms",
+        ):
             # want to carry these from the template so we ignore them
             pass
         elif key == "POT-Creation-Date":
@@ -247,7 +286,8 @@ def _do_poheaders(input_store, output_store, template_store):
         language_team=language_team,
         mime_version=mime_version,
         plural_forms=plural_forms,
-        **kwargs)
+        **kwargs
+    )
 
     # Get the header comments and fuzziness state
     # override some values from input file
@@ -255,13 +295,17 @@ def _do_poheaders(input_store, output_store, template_store):
         template_header = template_store.header()
         if template_header is not None:
             if template_header.getnotes("translator"):
-                output_header.addnote(template_header.getnotes("translator"),
-                                      "translator", position="replace")
+                output_header.addnote(
+                    template_header.getnotes("translator"),
+                    "translator",
+                    position="replace",
+                )
             output_header.markfuzzy(template_header.isfuzzy())
 
 
 def main(argv=None):
     from translate.convert import convert
+
     formats = {
         "pot": ("po", convertpot),
         ("pot", "po"): ("po", convertpot),
@@ -277,25 +321,40 @@ def main(argv=None):
         ("catkeys", "catkeys"): ("catkeys", convertpot),
     }
     parser = convert.ConvertOptionParser(
-        formats, usepots=True, usetemplates=True, allowmissingtemplate=True,
-        description=__doc__)
+        formats,
+        usepots=True,
+        usetemplates=True,
+        allowmissingtemplate=True,
+        description=__doc__,
+    )
 
     parser.add_option(
-        "", "--tm", dest="tm", default=None,
-        help="The file to use as translation memory when fuzzy matching")
+        "",
+        "--tm",
+        dest="tm",
+        default=None,
+        help="The file to use as translation memory when fuzzy matching",
+    )
     parser.passthrough.append("tm")
 
     defaultsimilarity = 75
     parser.add_option(
-        "-s", "--similarity", dest="min_similarity",
-        default=defaultsimilarity, type="float",
-        help="The minimum similarity for inclusion (default: %d%%)" %
-        defaultsimilarity)
+        "-s",
+        "--similarity",
+        dest="min_similarity",
+        default=defaultsimilarity,
+        type="float",
+        help="The minimum similarity for inclusion (default: %d%%)" % defaultsimilarity,
+    )
     parser.passthrough.append("min_similarity")
 
     parser.add_option(
-        "--nofuzzymatching", dest="fuzzymatching",
-        action="store_false", default=True, help="Disable fuzzy matching")
+        "--nofuzzymatching",
+        dest="fuzzymatching",
+        action="store_false",
+        default=True,
+        help="Disable fuzzy matching",
+    )
     parser.passthrough.append("fuzzymatching")
 
     parser.run(argv)

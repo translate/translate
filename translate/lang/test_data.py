@@ -1,4 +1,3 @@
-
 from translate.lang import data
 
 
@@ -11,7 +10,7 @@ def test_languagematch():
     # Handle variants
     assert data.languagematch("pt", "pt_PT")
     # FIXME don't think this one is correct
-    #assert not data.languagematch("sr", "sr@Latn")
+    # assert not data.languagematch("sr", "sr@Latn")
 
     # No first language code, we just check that the other code is valid
     assert data.languagematch(None, "en")
@@ -38,7 +37,9 @@ def test_language_names():
     assert _("Bokmål, Norwegian; Norwegian Bokmål") == "Norwegian Bokmål"
     assert _("Spanish; Castillian") == "Spanish"
     assert _("Mapudungun; Mapuche") == "Mapudungun"
-    assert _("Interlingua (International Auxiliary Language Association)") == "Interlingua"
+    assert (
+        _("Interlingua (International Auxiliary Language Association)") == "Interlingua"
+    )
 
 
 def test_language_iso_fullname():

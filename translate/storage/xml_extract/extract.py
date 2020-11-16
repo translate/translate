@@ -29,8 +29,7 @@ class Translatable:
     which correspond to placeables.
     """
 
-    def __init__(self, placeable_name, xpath, dom_node, source,
-                 is_inline=False):
+    def __init__(self, placeable_name, xpath, dom_node, source, is_inline=False):
         self.placeable_name = placeable_name
         self.source = source
         self.xpath = xpath
@@ -39,8 +38,11 @@ class Translatable:
 
     @property
     def placeables(self):
-        return [placeable for placeable in self.source
-                if isinstance(placeable, Translatable)]
+        return [
+            placeable
+            for placeable in self.source
+            if isinstance(placeable, Translatable)
+        ]
 
     @property
     def has_translatable_text(self):
@@ -55,8 +57,9 @@ class Translatable:
 
 
 def reduce_unit_tree(f, unit_node, *state):
-    return misc.reduce_tree(f, unit_node, unit_node,
-                            lambda unit_node: unit_node.placeables, *state)
+    return misc.reduce_tree(
+        f, unit_node, unit_node, lambda unit_node: unit_node.placeables, *state
+    )
 
 
 class ParseState:
@@ -64,8 +67,7 @@ class ParseState:
     (via the function apply).
     """
 
-    def __init__(self, no_translate_content_elements, inline_elements={},
-                 nsmap={}):
+    def __init__(self, no_translate_content_elements, inline_elements={}, nsmap={}):
         self.no_translate_content_elements = no_translate_content_elements
         self.inline_elements = inline_elements
         self.is_inline = False
@@ -81,21 +83,21 @@ def _process_placeable(dom_node, state):
     Translatable object, or just returns an empty Translatable object for this
     placeable if there is no nested translatable content.
     """
-    placeable = find_translatable_dom_nodes(dom_node, state,
-                                            process_translatable)
+    placeable = find_translatable_dom_nodes(dom_node, state, process_translatable)
 
     if len(placeable) == 0:
         # There are no recognized child tags and thus no Translatable object is
         # returned. So create a Translatable with the name "placeable".
-        return Translatable("placeable", state.xpath_breadcrumb.xpath,
-                            dom_node, [])
+        return Translatable("placeable", state.xpath_breadcrumb.xpath, dom_node, [])
     elif len(placeable) == 1:
         # The ideal situation: we got exactly one Translatable back when
         # processing this tree.
         return placeable[0]
     else:
-        raise Exception("BUG: find_translatable_dom_nodes should never return "
-                        "more than a single Translatable object")
+        raise Exception(
+            "BUG: find_translatable_dom_nodes should never return "
+            "more than a single Translatable object"
+        )
 
 
 def process_translatable(dom_node, state):
@@ -111,9 +113,13 @@ def process_translatable(dom_node, state):
         source.append(_process_placeable(child, state))
         source.append(str(child.tail or ""))
 
-    translatable = Translatable(state.placeable_name,
-                                state.xpath_breadcrumb.xpath, dom_node, source,
-                                state.is_inline)
+    translatable = Translatable(
+        state.placeable_name,
+        state.xpath_breadcrumb.xpath,
+        dom_node,
+        source,
+        state.is_inline,
+    )
     return [translatable]
 
 
@@ -131,8 +137,11 @@ def _has_idml_translatable_content(dom_node):
                 # The Content node can just have a child before any nested
                 # text, and therefore its text is None, so we have to check if
                 # it has children, and if any of its children has text.
-                if (not isinstance(child, etree._ProcessingInstruction) and
-                    child.text is not None and child.text.strip()):
+                if (
+                    not isinstance(child, etree._ProcessingInstruction)
+                    and child.text is not None
+                    and child.text.strip()
+                ):
                     return True
 
                 if child.tail is not None and child.tail.strip():
@@ -148,10 +157,12 @@ def _retrieve_idml_placeables(dom_node, state):
             continue
 
         if isinstance(child, etree._ProcessingInstruction):
-            #TODO this probably won't be using the right xpath.
-            source.append(Translatable("placeable",
-                                       state.xpath_breadcrumb.xpath, child, [],
-                                       False))
+            # TODO this probably won't be using the right xpath.
+            source.append(
+                Translatable(
+                    "placeable", state.xpath_breadcrumb.xpath, child, [], False
+                )
+            )
 
             if child.tail is not None and child.tail.strip():
                 source.append(str(child.tail))
@@ -163,7 +174,7 @@ def _retrieve_idml_placeables(dom_node, state):
         with parse_status_set(namespace, tag, state):
             # Ensure we extract all the tags below ParagraphStyleRange as
             # placeables, independently of them being translatable or not.
-            #state.is_inline = True
+            # state.is_inline = True
 
             nested_stuff = []
 
@@ -172,9 +183,15 @@ def _retrieve_idml_placeables(dom_node, state):
 
             nested_stuff.extend(_retrieve_idml_placeables(child, state))
 
-            source.append(Translatable("placeable",
-                                       state.xpath_breadcrumb.xpath, child,
-                                       nested_stuff, state.is_inline))
+            source.append(
+                Translatable(
+                    "placeable",
+                    state.xpath_breadcrumb.xpath,
+                    child,
+                    nested_stuff,
+                    state.is_inline,
+                )
+            )
 
             if child.tail is not None and child.tail.strip():
                 source.append(str(child.tail))
@@ -186,9 +203,13 @@ def process_idml_translatable(dom_node, state):
     if _has_idml_translatable_content(dom_node):
         source = _retrieve_idml_placeables(dom_node, state)
 
-        translatable = Translatable(state.placeable_name,
-                                    state.xpath_breadcrumb.xpath, dom_node,
-                                    source, state.is_inline)
+        translatable = Translatable(
+            state.placeable_name,
+            state.xpath_breadcrumb.xpath,
+            dom_node,
+            source,
+            state.is_inline,
+        )
         return [translatable]
 
     return []
@@ -200,17 +221,18 @@ def _process_children(dom_node, state, process_func):
     Since the node is untranslatable it just returns any translatable content
     present in its child nodes.
     """
-    children = [find_translatable_dom_nodes(child, state, process_func)
-                for child in dom_node]
+    children = [
+        find_translatable_dom_nodes(child, state, process_func) for child in dom_node
+    ]
 
     # Flatten a list of lists into a list of elements
     children = [child for child_list in children for child in child_list]
 
     if len(children) > 1:
         _namespace, tag = misc.parse_tag(dom_node.tag)
-        intermediate_translatable = Translatable(tag,
-                                                 state.xpath_breadcrumb.xpath,
-                                                 dom_node, children)
+        intermediate_translatable = Translatable(
+            tag, state.xpath_breadcrumb.xpath, dom_node, children
+        )
         return [intermediate_translatable]
     else:
         return children
@@ -246,13 +268,13 @@ def parse_status_set(namespace, tag, state):
     state.xpath_breadcrumb.end_tag()
 
 
-def find_translatable_dom_nodes(dom_node, state,
-                                process_func=process_translatable):
+def find_translatable_dom_nodes(dom_node, state, process_func=process_translatable):
     # For now, we only want to deal with XML elements.
     # And we want to avoid processing instructions, which
     # are XML elements (in the inheritance hierarchy).
-    if (not isinstance(dom_node, etree._Element) or
-        isinstance(dom_node, etree._ProcessingInstruction)):
+    if not isinstance(dom_node, etree._Element) or isinstance(
+        dom_node, etree._ProcessingInstruction
+    ):
         return []
 
     namespace, tag = misc.parse_tag(dom_node.tag)
@@ -265,7 +287,6 @@ def find_translatable_dom_nodes(dom_node, state,
 
 
 class IdMaker:
-
     def __init__(self):
         self._max_id = 0
         self._obj_id_map = {}
@@ -310,8 +331,9 @@ def _make_store_adder(store):
         information and add it to 'store'.
         """
         unit = store.UnitClass('')
-        unit.rich_source = [StringElem(_to_placeables(parent_translatable,
-                                                      translatable, id_maker))]
+        unit.rich_source = [
+            StringElem(_to_placeables(parent_translatable, translatable, id_maker))
+        ]
         unit.addlocation(translatable.xpath)
         store.addunit(unit)
 
@@ -336,8 +358,8 @@ def make_postore_adder(store, id_maker, filename):
         # Get the plain text for the unit source. The output is enclosed within
         # XLIFF source tags we don't want, so strip them.
         unit_source = etree.tostring(xliff_unit.source_dom).decode()
-        unit_source = unit_source[unit_source.find(">", 1) + 1:]
-        unit_source = unit_source[:unit_source.rfind("<", 1)]
+        unit_source = unit_source[unit_source.find(">", 1) + 1 :]
+        unit_source = unit_source[: unit_source.rfind("<", 1)]
 
         # Create the PO unit and add it to the PO store.
         po_unit = store.UnitClass(unit_source)
@@ -348,8 +370,7 @@ def make_postore_adder(store, id_maker, filename):
     return add_translatable_to_store
 
 
-def _walk_idml_translatable_tree(translatables, store_adder,
-                                 parent_translatable):
+def _walk_idml_translatable_tree(translatables, store_adder, parent_translatable):
     """Traverse all the found IDML translatables and add them to the Store.
 
     Inline translatables are not added to the Store.
@@ -360,25 +381,31 @@ def _walk_idml_translatable_tree(translatables, store_adder,
             continue
 
         new_parent_translatable = parent_translatable
-        _walk_idml_translatable_tree(translatable.placeables, store_adder,
-                                     new_parent_translatable)
+        _walk_idml_translatable_tree(
+            translatable.placeables, store_adder, new_parent_translatable
+        )
 
 
-def _walk_translatable_tree(translatables, store_adder, parent_translatable,
-                            stored_by_parent=False):
+def _walk_translatable_tree(
+    translatables, store_adder, parent_translatable, stored_by_parent=False
+):
     """Traverse all the found translatables and add them to the Store.
 
     Inline translatables are not added to the Store.
     """
     for translatable in translatables:
-        store_here = (translatable.has_translatable_text and
-                      (not translatable.is_inline or not stored_by_parent))
+        store_here = translatable.has_translatable_text and (
+            not translatable.is_inline or not stored_by_parent
+        )
         if store_here:
             store_adder(parent_translatable, translatable)
         new_parent_translatable = parent_translatable
-        _walk_translatable_tree(translatable.placeables, store_adder,
-                                new_parent_translatable,
-                                store_here or stored_by_parent)
+        _walk_translatable_tree(
+            translatable.placeables,
+            store_adder,
+            new_parent_translatable,
+            store_here or stored_by_parent,
+        )
 
 
 def reverse_map(a_map):
@@ -391,8 +418,9 @@ def build_idml_store(odf_file, store, parse_state, store_adder=None):
     tree = etree.parse(odf_file)
     root = tree.getroot()
     parse_state.nsmap = reverse_map(root.nsmap)
-    translatables = find_translatable_dom_nodes(root, parse_state,
-                                                process_idml_translatable)
+    translatables = find_translatable_dom_nodes(
+        root, parse_state, process_idml_translatable
+    )
     _walk_idml_translatable_tree(translatables, store_adder, None)
     return tree
 

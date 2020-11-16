@@ -73,9 +73,14 @@ def convertpo(inputpofile, outputpotfile, template, reverse=False):
             unit.source = unit.target
         elif not reverse:
             if inputpo.filename:
-                unit.addnote("No translation found in %s" % inputpo.filename, origin="programmer")
+                unit.addnote(
+                    "No translation found in %s" % inputpo.filename, origin="programmer"
+                )
             else:
-                unit.addnote("No translation found in the supplied source language", origin="programmer")
+                unit.addnote(
+                    "No translation found in the supplied source language",
+                    origin="programmer",
+                )
         unit.target = ""
         unit.markfuzzy(False)
         if templateunit:
@@ -89,11 +94,22 @@ def convertpo(inputpofile, outputpotfile, template, reverse=False):
 
 
 def main(argv=None):
-    formats = {("po", "po"): ("po", convertpo), ("po", "pot"): ("po", convertpo), "po": ("po", convertpo)}
-    parser = convert.ConvertOptionParser(formats, usetemplates=True, description=__doc__)
+    formats = {
+        ("po", "po"): ("po", convertpo),
+        ("po", "pot"): ("po", convertpo),
+        "po": ("po", convertpo),
+    }
+    parser = convert.ConvertOptionParser(
+        formats, usetemplates=True, description=__doc__
+    )
     parser.add_option(
-        "", "--reverse", dest="reverse", default=False, action="store_true",
-        help="reverse the process of intermediate language conversion")
+        "",
+        "--reverse",
+        dest="reverse",
+        default=False,
+        action="store_true",
+        help="reverse the process of intermediate language conversion",
+    )
     parser.passthrough.append("reverse")
     parser.run(argv)
 

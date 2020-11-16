@@ -28,6 +28,7 @@ class DotsProgressBar:
 
     def __init__(self):
         import sys
+
         self.stderr = sys.stderr
         self.amount = 0
 
@@ -63,12 +64,12 @@ class ProgressBar:
     """A plain progress bar that doesn't know very much about output."""
 
     def __init__(self, minValue=0, maxValue=100, totalWidth=50):
-        self.progBar = "[]"   # This holds the progress bar string
+        self.progBar = "[]"  # This holds the progress bar string
         self.min = minValue
         self.max = maxValue
         self.span = maxValue - minValue
         self.width = totalWidth
-        self.amount = 0       # When amount == max, we are 100% done
+        self.amount = 0  # When amount == max, we are 100% done
 
     def __str__(self):
         """Produces the string representing the progress bar."""
@@ -89,9 +90,11 @@ class ProgressBar:
         numHashes = int(round(numHashes))
 
         # build a progress bar with hashes and spaces
-        self.progBar = "[%s%s] %3d%%" % ('#' * numHashes,
-                                         ' ' * (allFull - numHashes),
-                                         percentDone)
+        self.progBar = "[%s%s] %3d%%" % (
+            '#' * numHashes,
+            ' ' * (allFull - numHashes),
+            percentDone,
+        )
         return str(self.progBar)
 
     def show(self, verbosemessage):
@@ -107,6 +110,7 @@ class MessageProgressBar(ProgressBar):
 
     def __init__(self, *args, **kwargs):
         import sys
+
         self.sys = sys
         super().__init__(*args, **kwargs)
 
@@ -116,11 +120,11 @@ class MessageProgressBar(ProgressBar):
 
 
 class HashProgressBar(ProgressBar):
-    """A ProgressBar which knows how to go back to the beginning of the line.
-    """
+    """A ProgressBar which knows how to go back to the beginning of the line."""
 
     def __init__(self, *args, **kwargs):
         import sys
+
         self.sys = sys
         super().__init__(*args, **kwargs)
 
@@ -137,7 +141,6 @@ class HashProgressBar(ProgressBar):
 
 
 class VerboseProgressBar(HashProgressBar):
-
     def __init__(self, *args, **kwargs):
         self.lastwidth = 0
         super().__init__(*args, **kwargs)
@@ -153,6 +156,7 @@ class VerboseProgressBar(HashProgressBar):
 
 def test(progressbar):
     import time
+
     for n in range(progressbar.min, progressbar.max + 1, 5):
         progressbar.amount = n
         progressbar.show("Some message")

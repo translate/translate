@@ -28,17 +28,18 @@ import lxml.etree as etree
 
 from translate.convert import convert
 from translate.storage import factory
-from translate.storage.idml import (INLINE_ELEMENTS, NO_TRANSLATE_ELEMENTS,
-                                    copy_idml, open_idml)
-from translate.storage.xml_extract.extract import (ParseState,
-                                                   process_idml_translatable)
-from translate.storage.xml_extract.generate import (apply_translations,
-                                                    replace_dom_text)
+from translate.storage.idml import (
+    INLINE_ELEMENTS,
+    NO_TRANSLATE_ELEMENTS,
+    copy_idml,
+    open_idml,
+)
+from translate.storage.xml_extract.extract import ParseState, process_idml_translatable
+from translate.storage.xml_extract.generate import apply_translations, replace_dom_text
 from translate.storage.xml_extract.unit_tree import XPathTree, build_unit_tree
 
 
 def translate_idml(template, input_file, translatable_files):
-
     def load_dom_trees(template):
         """Return a dict with translatable files in the template IDML package.
 
@@ -47,8 +48,10 @@ def translate_idml(template, input_file, translatable_files):
         """
         idml_data = open_idml(template)
         parser = etree.XMLParser(strip_cdata=False, resolve_entities=False)
-        return dict((filename, etree.fromstring(data, parser).getroottree())
-                    for filename, data in idml_data.items())
+        return dict(
+            (filename, etree.fromstring(data, parser).getroottree())
+            for filename, data in idml_data.items()
+        )
 
     def load_unit_tree(input_file):
         """Return a dict with the translations grouped by files IDML package.
@@ -71,8 +74,10 @@ def translate_idml(template, input_file, translatable_files):
 
             return (filename, file_tree)
 
-        return dict(extract_unit_tree(filename, 'idPkg:Story')
-                    for filename in translatable_files)
+        return dict(
+            extract_unit_tree(filename, 'idPkg:Story')
+            for filename in translatable_files
+        )
 
     def translate_dom_trees(unit_trees, dom_trees):
         """Return a dict with the translated files for the IDML package.
@@ -81,6 +86,7 @@ def translate_idml(template, input_file, translatable_files):
         template IDML package, and the values are etree ElementTree instances
         for each of those files.
         """
+
         def get_po_doms(unit):
             """Return a tuple with unit source and target DOM objects.
 
@@ -90,6 +96,7 @@ def translate_idml(template, input_file, translatable_files):
             Since POunit doesn't have any source_dom nor target_dom attributes,
             it is necessary to craft those objects.
             """
+
             def add_node_content(string, node):
                 """Append the translatable content to the node.
 
@@ -118,14 +125,18 @@ def translate_idml(template, input_file, translatable_files):
 
             return (source_dom, target_dom)
 
-        make_parse_state = lambda: ParseState(NO_TRANSLATE_ELEMENTS,
-                                              INLINE_ELEMENTS)
+        make_parse_state = lambda: ParseState(NO_TRANSLATE_ELEMENTS, INLINE_ELEMENTS)
         for filename, dom_tree in dom_trees.items():
             file_unit_tree = unit_trees[filename]
-            apply_translations(dom_tree.getroot(), file_unit_tree,
-                               replace_dom_text(make_parse_state,
-                                                dom_retriever=get_po_doms,
-                                                process_translatable=process_idml_translatable))
+            apply_translations(
+                dom_tree.getroot(),
+                file_unit_tree,
+                replace_dom_text(
+                    make_parse_state,
+                    dom_retriever=get_po_doms,
+                    process_translatable=process_idml_translatable,
+                ),
+            )
         return dom_trees
 
     dom_trees = load_dom_trees(template)
@@ -142,10 +153,12 @@ def write_idml(template_zip, output_file, dom_trees):
 
     # Replace the translated files in the IDML package.
     for filename, dom_tree in dom_trees.items():
-        output_zip.writestr(filename, etree.tostring(dom_tree,
-                                                     encoding='UTF-8',
-                                                     xml_declaration=True,
-                                                     standalone='yes'))
+        output_zip.writestr(
+            filename,
+            etree.tostring(
+                dom_tree, encoding='UTF-8', xml_declaration=True, standalone='yes'
+            ),
+        )
 
 
 def convertpo(input_file, output_file, template):
@@ -153,8 +166,11 @@ def convertpo(input_file, output_file, template):
     # Now proceed with the conversion.
     template_zip = ZipFile(template, 'r')
 
-    translatable_files = [filename for filename in template_zip.namelist()
-                          if filename.startswith('Stories/')]
+    translatable_files = [
+        filename
+        for filename in template_zip.namelist()
+        if filename.startswith('Stories/')
+    ]
 
     po_data = input_file.read()
     dom_trees = translate_idml(template, BytesIO(po_data), translatable_files)
@@ -168,8 +184,9 @@ def main(argv=None):
     formats = {
         ('po', 'idml'): ("idml", convertpo),
     }
-    parser = convert.ConvertOptionParser(formats, usetemplates=True,
-                                         description=__doc__)
+    parser = convert.ConvertOptionParser(
+        formats, usetemplates=True, description=__doc__
+    )
     parser.run(argv)
 
 

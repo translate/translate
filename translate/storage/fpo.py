@@ -22,7 +22,7 @@ This implementation assumes that cpo is working. This should not be used
 directly, but can be used once cpo has been established to work.
 """
 
-#TODO:
+# TODO:
 # - handle headerless PO files better
 # - previous msgid and msgctxt
 # - accept only unicodes everywhere
@@ -116,8 +116,10 @@ class pounit(pocommon.pounit):
             if len(target) == 1:
                 self._target = target[0]
             else:
-                raise ValueError("po msgid element has no plural but msgstr"
-                                 "has %d elements (%s)" % (len(target), target))
+                raise ValueError(
+                    "po msgid element has no plural but msgstr"
+                    "has %d elements (%s)" % (len(target), target)
+                )
         else:
             self._target = target
 
@@ -213,7 +215,7 @@ class pounit(pocommon.pounit):
                     if isinstance(item, bytes):
                         list2[position] = item.decode("utf-8")
 
-            #Determine the newline style of list2
+            # Determine the newline style of list2
             lineend = ""
             if list2 and list2[0]:
                 for candidate in ["\n", "\r", "\n\r"]:
@@ -222,7 +224,7 @@ class pounit(pocommon.pounit):
                 if not lineend:
                     lineend = ""
 
-            #Split if directed to do so:
+            # Split if directed to do so:
             if split:
                 splitlist1 = []
                 splitlist2 = []
@@ -232,7 +234,7 @@ class pounit(pocommon.pounit):
                     splitlist2.extend(item.split())
                 list1.extend([item for item in splitlist2 if item not in splitlist1])
             else:
-                #Normal merge, but conform to list1 newline style
+                # Normal merge, but conform to list1 newline style
                 if list1 != list2:
                     for item in list2:
                         item = item.rstrip(lineend)
@@ -250,14 +252,19 @@ class pounit(pocommon.pounit):
                 # We don't bring across otherpo.automaticcomments as we consider ourself
                 # to be the the authority.  Same applies to otherpo.msgidcomments
                 mergelists(self.automaticcomments, otherpo.automaticcomments)
-#                mergelists(self.msgidcomments, otherpo.msgidcomments) #XXX?
+                #                mergelists(self.msgidcomments, otherpo.msgidcomments) #XXX?
                 mergelists(self.sourcecomments, otherpo.sourcecomments, split=True)
         if not self.istranslated() or overwrite:
             # Remove kde-style comments from the translation (if any). XXX - remove
             if pocommon.extract_msgid_comment(otherpo.target):
-                otherpo.target = otherpo.target.replace('_: ' + otherpo._extract_msgidcomments() + '\n', '')
+                otherpo.target = otherpo.target.replace(
+                    '_: ' + otherpo._extract_msgidcomments() + '\n', ''
+                )
             self.target = otherpo.target
-            if self.source != otherpo.source or self.getcontext() != otherpo.getcontext():
+            if (
+                self.source != otherpo.source
+                or self.getcontext() != otherpo.getcontext()
+            ):
                 self.markfuzzy()
             else:
                 self.markfuzzy(otherpo.isfuzzy())
@@ -269,20 +276,32 @@ class pounit(pocommon.pounit):
                 self.markfuzzy()
 
     def isheader(self):
-        #TODO: fix up nicely
+        # TODO: fix up nicely
         return not self.getid() and len(self.target) > 0
 
     def isblank(self):
         if self.isheader() or self.msgidcomment:
             return False
-        if (self._msgidlen() == 0) and (self._msgstrlen() == 0) and len(self._msgctxt) == 0:
+        if (
+            (self._msgidlen() == 0)
+            and (self._msgstrlen() == 0)
+            and len(self._msgctxt) == 0
+        ):
             return True
         return False
 
     def hastypecomment(self, typecomment):
         """Check whether the given type comment is present"""
         # check for word boundaries properly by using a regular expression...
-        return sum(map(lambda tcline: len(re.findall("\\b%s\\b" % typecomment, tcline)), self.typecomments)) != 0
+        return (
+            sum(
+                map(
+                    lambda tcline: len(re.findall("\\b%s\\b" % typecomment, tcline)),
+                    self.typecomments,
+                )
+            )
+            != 0
+        )
 
     def hasmarkedcomment(self, commentmarker):
         """Check whether the given comment marker is present as # (commentmarker) ..."""
@@ -299,8 +318,13 @@ class pounit(pocommon.pounit):
                 self.typecomments.append("#, %s\n" % typecomment)
             else:
                 # this should handle word boundaries properly ...
-                typecomments = map(lambda tcline: re.sub("\\b%s\\b[ \t,]*" % typecomment, "", tcline), self.typecomments)
-                self.typecomments = filter(lambda tcline: tcline.strip() != "#,", typecomments)
+                typecomments = map(
+                    lambda tcline: re.sub("\\b%s\\b[ \t,]*" % typecomment, "", tcline),
+                    self.typecomments,
+                )
+                self.typecomments = filter(
+                    lambda tcline: tcline.strip() != "#,", typecomments
+                )
 
     def istranslated(self):
         return super().istranslated() and not self.isobsolete()
@@ -337,7 +361,7 @@ class pounit(pocommon.pounit):
         return: A list of the locations with '#: ' stripped
 
         """
-        #TODO: rename to .locations
+        # TODO: rename to .locations
         return self.sourcecomments
 
     def addlocation(self, location):
@@ -374,7 +398,7 @@ class pounit(pocommon.pounit):
         # the msgid. For generation of .mo files, we might want to use this
         # code to generate the entry for the hash table, but for now, it is
         # commented out for conformance to gettext.
-#        id = '\0'.join(self.source.strings)
+        #        id = '\0'.join(self.source.strings)
         id = self.source
         if self.msgidcomment:
             id = "_: %s\n%s" % (context, id)
@@ -392,7 +416,7 @@ class pounit(pocommon.pounit):
         elif isinstance(unit, pocommon.pounit):
             newunit = cls(unit.source)
             newunit.target = unit.target
-            #context
+            # context
             newunit.msgidcomment = unit._extract_msgidcomments()
             if not newunit.msgidcomment:
                 newunit.setcontext(unit.getcontext())
@@ -442,9 +466,11 @@ class pofile(pocommon.pofile):
         self._cpo_store = cpo.pofile(noheader=True)
         for unit in self.units:
             if not unit.isblank():
-                self._cpo_store.addunit(cpo.pofile.UnitClass.buildfromunit(unit, self.encoding))
+                self._cpo_store.addunit(
+                    cpo.pofile.UnitClass.buildfromunit(unit, self.encoding)
+                )
         if not self._cpo_store.header():
-            #only add a temporary header
+            # only add a temporary header
             self._cpo_store.makeheader(charset=self.encoding, encoding="8bit")
 
     def parse(self, input):
@@ -474,6 +500,7 @@ class pofile(pocommon.pofile):
         def addcomment(thepo):
             thepo.msgidcomment = " ".join(thepo.getlocations())
             markedpos.append(thepo)
+
         for thepo in self.units:
             id = thepo.getid()
             if thepo.isheader() and not thepo.getlocations():
@@ -499,7 +526,8 @@ class pofile(pocommon.pofile):
                         logger.warning(
                             "Duplicate unit found with msgctx of '%s' and source '%s'",
                             thepo._msgctxt,
-                            thepo.source)
+                            thepo.source,
+                        )
             else:
                 if not id:
                     if duplicatestyle == "merge":

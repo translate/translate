@@ -30,6 +30,4 @@ class pt_BR(Common):
 
     miscpunc = Common.miscpunc.replace("·", "")  # Middle dot is not valid.
 
-    validaccel = ("ABCDEFGHIJKLMNOPQRSTUVXYZ"
-                  "abcdefghijklmnopqrstuvxyz"
-                  "1234567890")
+    validaccel = "ABCDEFGHIJKLMNOPQRSTUVXYZ" "abcdefghijklmnopqrstuvxyz" "1234567890"

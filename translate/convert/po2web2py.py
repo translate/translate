@@ -30,7 +30,6 @@ from translate.storage import factory
 
 
 class po2pydict:
-
     def __init__(self):
         return
 
@@ -55,8 +54,9 @@ class po2pydict:
         return str_obj
 
 
-def convertpy(inputfile, outputfile, templatefile=None, includefuzzy=False,
-              outputthreshold=None):
+def convertpy(
+    inputfile, outputfile, templatefile=None, includefuzzy=False, outputthreshold=None
+):
     inputstore = factory.getobject(inputfile)
 
     if not convert.should_output_store(inputstore, outputthreshold):
@@ -70,11 +70,10 @@ def convertpy(inputfile, outputfile, templatefile=None, includefuzzy=False,
 
 
 def main(argv=None):
-    formats = {
-        ("po", "py"): ("py", convertpy),
-        ("po", None): ("py", convertpy)
-    }
-    parser = convert.ConvertOptionParser(formats, usetemplates=False, description=__doc__)
+    formats = {("po", "py"): ("py", convertpy), ("po", None): ("py", convertpy)}
+    parser = convert.ConvertOptionParser(
+        formats, usetemplates=False, description=__doc__
+    )
     parser.add_threshold_option()
     parser.add_fuzzy_option()
     parser.run(argv)

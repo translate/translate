@@ -51,7 +51,15 @@ class matcher:
 
     sort_reverse = False
 
-    def __init__(self, store, max_candidates=10, min_similarity=75, max_length=70, comparer=None, usefuzzy=False):
+    def __init__(
+        self,
+        store,
+        max_candidates=10,
+        min_similarity=75,
+        max_length=70,
+        comparer=None,
+        usefuzzy=False,
+    ):
         """max_candidates is the maximum number of candidates that should be
         assembled, min_similarity is the minimum similarity that must be
         attained to be included in the result, comparer is an optional Comparer
@@ -67,7 +75,7 @@ class matcher:
 
     def usable(self, unit):
         """Returns whether this translation unit is usable for TM"""
-        #TODO: We might want to consider more attributes, such as approved, reviewed, etc.
+        # TODO: We might want to consider more attributes, such as approved, reviewed, etc.
         source = unit.source
         target = unit.target
         if source and target and (self.usefuzzy or not unit.isfuzzy()):
@@ -161,8 +169,8 @@ class matcher:
                  percentage in the notes.
         """
         bestcandidates = [(0.0, None)] * self.MAX_CANDIDATES
-        #We use self.MIN_SIMILARITY, but if we already know we have max_candidates
-        #that are better, we can adjust min_similarity upwards for speedup
+        # We use self.MIN_SIMILARITY, but if we already know we have max_candidates
+        # that are better, we can adjust min_similarity upwards for speedup
         min_similarity = self.MIN_SIMILARITY
 
         # We want to limit our search in self.candidates, so we want to ignore
@@ -201,9 +209,9 @@ class matcher:
                     min_similarity = lowestscore
                     stoplength = self.getstoplength(min_similarity, text)
 
-        #Remove the empty ones:
+        # Remove the empty ones:
         bestcandidates = [item for item in bestcandidates if item[0] != 0]
-        #Sort for use as a general list, and reverse so the best one is at index 0
+        # Sort for use as a general list, and reverse so the best one is at index 0
         bestcandidates.sort(key=itemgetter(0), reverse=True)
         return self.buildunits(bestcandidates)
 
@@ -236,10 +244,10 @@ class matcher:
 # The tuples define a regular expression to search for, and with what it
 # should be replaced.
 ignorepatterns = [
-    (r"y\s*$", "ie"),          # category/categories, identify/identifies, apply/applied
-    (r"[\s-]+", ""),           # down time / downtime, pre-order / preorder
-    ("-", " "),               # pre-order / pre order
-    (" ", "-"),               # pre order / pre-order
+    (r"y\s*$", "ie"),  # category/categories, identify/identifies, apply/applied
+    (r"[\s-]+", ""),  # down time / downtime, pre-order / preorder
+    ("-", " "),  # pre-order / pre order
+    (" ", "-"),  # pre order / pre-order
 ]
 ignorepatterns_re = [(re.compile(a), b) for (a, b) in ignorepatterns]
 
@@ -251,10 +259,18 @@ class terminologymatcher(matcher):
 
     sort_reverse = True
 
-    def __init__(self, store, max_candidates=10, min_similarity=75, max_length=500, comparer=None):
+    def __init__(
+        self, store, max_candidates=10, min_similarity=75, max_length=500, comparer=None
+    ):
         if comparer is None:
             comparer = terminology.TerminologyComparer(max_length)
-        super().__init__(store, max_candidates, min_similarity=10, max_length=max_length, comparer=comparer)
+        super().__init__(
+            store,
+            max_candidates,
+            min_similarity=10,
+            max_length=max_length,
+            comparer=comparer,
+        )
         self.addpercentage = False
         self.match_info = {}
 
@@ -374,7 +390,7 @@ def unit2dict(unit):
         "source": unit.source,
         "target": unit.target,
         "quality": _parse_quality(unit.getnotes()),
-        "context": unit.getcontext()
+        "context": unit.getcontext(),
     }
 
 

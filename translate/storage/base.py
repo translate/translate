@@ -42,7 +42,6 @@ ENCODING_BOMS = (
 
 
 class ParseError(Exception):
-
     def __init__(self, inner_exc):
         self.inner_exc = inner_exc
 
@@ -133,7 +132,11 @@ class TranslationUnit:
         :return: Returns *True* if the supplied :class:`TranslationUnit`
                  equals this unit.
         """
-        return self.source == other.source and self.target == other.target and self.getid() == other.getid()
+        return (
+            self.source == other.source
+            and self.target == other.target
+            and self.getid() == other.getid()
+        )
 
     def __ne__(self, other):
         return not self.__eq__(other)
@@ -144,9 +147,13 @@ class TranslationUnit:
     def __str__(self):
         """Converts to a string representation. Most often overriden by subclasses."""
         # no point in showing store object.
-        return ", ".join([
-            "%s: %s" % (k, self.__dict__[k]) for k in sorted(self.__dict__.keys()) if k != '_store'
-        ])
+        return ", ".join(
+            [
+                "%s: %s" % (k, self.__dict__[k])
+                for k in sorted(self.__dict__.keys())
+                if k != '_store'
+            ]
+        )
 
     @classmethod
     def rich_to_multistring(cls, elem_list):
@@ -423,7 +430,7 @@ class TranslationUnit:
 
     def hasplural(self):
         """Tells whether or not this specific unit has plural strings."""
-        #TODO: Reconsider
+        # TODO: Reconsider
         return False
 
     def getsourcelanguage(self):
@@ -432,8 +439,7 @@ class TranslationUnit:
     def gettargetlanguage(self):
         return self._store.gettargetlanguage()
 
-    def merge(self, otherunit, overwrite=False, comments=True,
-              authoritative=False):
+    def merge(self, otherunit, overwrite=False, comments=True, authoritative=False):
         """Do basic format agnostic merging."""
         if not self.target or overwrite:
             self.rich_target = otherunit.rich_target
@@ -496,8 +502,7 @@ class TranslationUnit:
 
 
 class TranslationStore:
-    """Base class for stores for multiple translation units of type UnitClass.
-    """
+    """Base class for stores for multiple translation units of type UnitClass."""
 
     UnitClass = TranslationUnit
     """The class of units that will be instantiated and used by this class"""
@@ -651,7 +656,7 @@ class TranslationStore:
             if source in self.sourceindex:
                 self.sourceindex[source].remove(unit)
                 if len(self.sourceindex[source]) == 0:
-                    del(self.sourceindex[source])
+                    del self.sourceindex[source]
 
         if unit.hasplural():
             for source in unit.source.strings:
@@ -660,10 +665,12 @@ class TranslationStore:
             remove_source(unit.source)
 
         for location in unit.getlocations():
-            if (location in self.locationindex and
-                self.locationindex[location] is not None and
-                self.locationindex[location] == unit):
-                del(self.locationindex[location])
+            if (
+                location in self.locationindex
+                and self.locationindex[location] is not None
+                and self.locationindex[location] == unit
+            ):
+                del self.locationindex[location]
 
     def add_unit_to_index(self, unit):
         """Add a unit to source and location idexes"""
@@ -684,7 +691,7 @@ class TranslationStore:
         for location in unit.getlocations():
             # If locations aren't unique, keep the first unit.
             if location not in self.locationindex:
-                #FIXME: maybe better store a list of units like sourceindex in
+                # FIXME: maybe better store a list of units like sourceindex in
                 # case there are several units with the same location.
                 self.locationindex[location] = unit
 
@@ -765,10 +772,7 @@ class TranslationStore:
         """
         for bom, encoding in ENCODING_BOMS:
             if text.startswith(bom):
-                return {
-                    'encoding': encoding,
-                    'confidence': 1.0
-                }
+                return {'encoding': encoding, 'confidence': 1.0}
         return None
 
     def detect_encoding(self, text, default_encodings=None):
@@ -811,11 +815,14 @@ class TranslationStore:
             if encoding == self.encoding and suffix == 'sig':
                 encodings.append(detected_encoding['encoding'])
             elif detected_encoding['encoding'] != self.encoding:
-                logging.warning("trying to parse %s with encoding: %s but "
-                                "detected encoding is %s (confidence: %s)",
-                                self.filename, self.encoding,
-                                detected_encoding['encoding'],
-                                detected_encoding['confidence'])
+                logging.warning(
+                    "trying to parse %s with encoding: %s but "
+                    "detected encoding is %s (confidence: %s)",
+                    self.filename,
+                    self.encoding,
+                    detected_encoding['encoding'],
+                    detected_encoding['confidence'],
+                )
             encodings.append(self.encoding)
         else:
             encodings.append(self.encoding)
@@ -846,16 +853,14 @@ class TranslationStore:
         storefile.close()
 
     def save(self):
-        """Save to the file that data was originally read from, if available.
-        """
+        """Save to the file that data was originally read from, if available."""
         fileobj = getattr(self, "fileobj", None)
         if not fileobj:
             if hasattr(self, "filename"):
                 fileobj = open(self.filename, 'wb')
         else:
             fileobj.close()
-            filename = getattr(fileobj, "name",
-                               getattr(fileobj, "filename", None))
+            filename = getattr(fileobj, "name", getattr(fileobj, "filename", None))
             if not filename:
                 raise ValueError("No file or filename to save to")
             fileobj = open(filename, 'wb')
@@ -869,7 +874,7 @@ class TranslationStore:
         if isinstance(storefile, str):
             storefile = open(storefile, 'rb')
         mode = getattr(storefile, "mode", 'rb')
-        #For some reason GzipFile returns 1, so we have to test for that here
+        # For some reason GzipFile returns 1, so we have to test for that here
         if mode == 1 or "r" in mode:
             storestring = storefile.read()
             storefile.close()
@@ -906,6 +911,7 @@ class UnitId:
                 return '{}[{}]'.format(self.INDEX_SEPARATOR, key)
             else:
                 raise ValueError('Unsupported element: {}'.format(element))
+
         return ''.join([fmt(*part) for part in self.parts])
 
     def __add__(self, other):
@@ -918,7 +924,7 @@ class UnitId:
         result = []
         # Strip possible leading separator
         if text.startswith(cls.KEY_SEPARATOR):
-            text = text[len(cls.KEY_SEPARATOR):]
+            text = text[len(cls.KEY_SEPARATOR) :]
         for item in text.split(cls.KEY_SEPARATOR):
             if '[' in item and item[-1] == ']':
                 item, pos = item[:-1].split('[')
@@ -991,7 +997,6 @@ class DictUnit(TranslationUnit):
 
 
 class DictStore(TranslationStore):
-
     def get_root_node(self):
         if self.units and self.units[0].getid().startswith('['):
             return []

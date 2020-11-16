@@ -31,7 +31,6 @@ class Category:
 
 
 def critical(f):
-
     @wraps(f)
     def critical_f(self, *args, **kwargs):
         if f.__name__ not in self.categories:
@@ -43,7 +42,6 @@ def critical(f):
 
 
 def functional(f):
-
     @wraps(f)
     def functional_f(self, *args, **kwargs):
         if f.__name__ not in self.categories:
@@ -55,7 +53,6 @@ def functional(f):
 
 
 def cosmetic(f):
-
     @wraps(f)
     def cosmetic_f(self, *args, **kwargs):
         if f.__name__ not in self.categories:
@@ -67,7 +64,6 @@ def cosmetic(f):
 
 
 def extraction(f):
-
     @wraps(f)
     def extraction_f(self, *args, **kwargs):
         if f.__name__ not in self.categories:

@@ -1,4 +1,3 @@
-
 import pytest
 
 from translate.storage import qm, test_base

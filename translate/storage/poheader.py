@@ -128,23 +128,25 @@ class poheader:
 
     def init_headers(self, charset='UTF-8', encoding='8bit', **kwargs):
         """sets default values for po headers"""
-        #FIXME: we need to allow at least setting target language, pluralforms and generator
+        # FIXME: we need to allow at least setting target language, pluralforms and generator
         headerdict = self.makeheaderdict(charset=charset, encoding=encoding, **kwargs)
         self.updateheader(add=True, **headerdict)
         return self.header()
 
-    def makeheaderdict(self,
-                       charset="CHARSET",
-                       encoding="ENCODING",
-                       project_id_version=None,
-                       pot_creation_date=None,
-                       po_revision_date=None,
-                       last_translator=None,
-                       language_team=None,
-                       mime_version=None,
-                       plural_forms=None,
-                       report_msgid_bugs_to=None,
-                       **kwargs):
+    def makeheaderdict(
+        self,
+        charset="CHARSET",
+        encoding="ENCODING",
+        project_id_version=None,
+        pot_creation_date=None,
+        po_revision_date=None,
+        last_translator=None,
+        language_team=None,
+        mime_version=None,
+        plural_forms=None,
+        report_msgid_bugs_to=None,
+        **kwargs
+    ):
         """Create a header dictionary with useful defaults.
 
         pot_creation_date can be None (current date) or a value (datetime or string)
@@ -159,7 +161,9 @@ class poheader:
         if pot_creation_date is None or pot_creation_date is True:
             pot_creation_date = time.strftime("%Y-%m-%d %H:%M") + tzstring()
         if isinstance(pot_creation_date, time.struct_time):
-            pot_creation_date = time.strftime("%Y-%m-%d %H:%M", pot_creation_date) + tzstring()
+            pot_creation_date = (
+                time.strftime("%Y-%m-%d %H:%M", pot_creation_date) + tzstring()
+            )
         if po_revision_date is None:
             po_revision_date = "YEAR-MO-DA HO:MI+ZONE"
         elif po_revision_date is False:
@@ -167,7 +171,9 @@ class poheader:
         elif po_revision_date is True:
             po_revision_date = time.strftime("%Y-%m-%d %H:%M") + tzstring()
         if isinstance(po_revision_date, time.struct_time):
-            po_revision_date = time.strftime("%Y-%m-%d %H:%M", po_revision_date) + tzstring()
+            po_revision_date = (
+                time.strftime("%Y-%m-%d %H:%M", po_revision_date) + tzstring()
+            )
         if last_translator is None:
             last_translator = "FULL NAME <EMAIL@ADDRESS>"
         if language_team is None:
@@ -228,16 +234,22 @@ class poheader:
         else:
             headeritems = update(self.parseheader(), add, **kwargs)
             keys = headeritems.keys()
-            if "Content-Type" not in keys or "charset=CHARSET" in headeritems["Content-Type"]:
+            if (
+                "Content-Type" not in keys
+                or "charset=CHARSET" in headeritems["Content-Type"]
+            ):
                 headeritems["Content-Type"] = "text/plain; charset=UTF-8"
-            if "Content-Transfer-Encoding" not in keys or "ENCODING" in headeritems["Content-Transfer-Encoding"]:
+            if (
+                "Content-Transfer-Encoding" not in keys
+                or "ENCODING" in headeritems["Content-Transfer-Encoding"]
+            ):
                 headeritems["Content-Transfer-Encoding"] = "8bit"
             headerString = ""
             for key, value in headeritems.items():
                 if value is not None:
                     headerString += "%s: %s\n" % (key, value)
             header.target = headerString
-            header.markfuzzy(False)    # TODO: check why we do this?
+            header.markfuzzy(False)  # TODO: check why we do this?
         return header
 
     def _insert_header(self, header):
@@ -270,7 +282,9 @@ class poheader:
         """Update the Plural-Form PO header."""
         if isinstance(nplurals, str):
             nplurals = int(nplurals)
-        self.updateheader(add=True, Plural_Forms="nplurals=%d; plural=%s;" % (nplurals, plural))
+        self.updateheader(
+            add=True, Plural_Forms="nplurals=%d; plural=%s;" % (nplurals, plural)
+        )
 
     def gettargetlanguage(self):
         """Return the target language based on information in the header.
@@ -284,12 +298,14 @@ class poheader:
         lang = header.get('Language', None)
         if lang is not None:
             from translate.lang.data import langcode_ire
+
             if langcode_ire.match(lang):
                 return lang
             else:
                 lang = None
         if 'X-Poedit-Language' in header:
             from translate.lang import poedit
+
             language = header.get('X-Poedit-Language')
             country = header.get('X-Poedit-Country')
             return poedit.isocode(language, country)
@@ -297,6 +313,7 @@ class poheader:
             return header.get('Language-Code')
         if 'Language-Team' in header:
             from translate.lang.team import guess_language
+
             return guess_language(header.get('Language-Team'))
         return None
 
@@ -309,7 +326,9 @@ class poheader:
         :type lang: str
         """
         if isinstance(lang, str) and len(lang) > 1:
-            self.updateheader(add=True, Language=lang, X_Poedit_Language=None, X_Poedit_Country=None)
+            self.updateheader(
+                add=True, Language=lang, X_Poedit_Language=None, X_Poedit_Country=None
+            )
 
     def getprojectstyle(self):
         """Return the project based on information in the header.
@@ -361,9 +380,19 @@ class poheader:
         """
 
         newvalues = otherstore.parseheader()
-        retain_list = ("Project-Id-Version", "PO-Revision-Date", "Last-Translator",
-                       "Language-Team", "Plural-Forms")
-        retain = dict((key, newvalues[key]) for key in retain_list if newvalues.get(key, None) and newvalues[key] != default_header.get(key, None))
+        retain_list = (
+            "Project-Id-Version",
+            "PO-Revision-Date",
+            "Last-Translator",
+            "Language-Team",
+            "Plural-Forms",
+        )
+        retain = dict(
+            (key, newvalues[key])
+            for key in retain_list
+            if newvalues.get(key, None)
+            and newvalues[key] != default_header.get(key, None)
+        )
         self.updateheader(**retain)
 
     def updatecontributor(self, name, email=None):
@@ -405,7 +434,7 @@ class poheader:
                 if year in line:
                     break
                 else:
-                    #The contributor is there, but not for this year
+                    # The contributor is there, but not for this year
                     if line[-1] == '.':
                         line = line[:-1]
                     contriblines[i] = "%s, %s." % (line, year)

@@ -59,21 +59,24 @@ def runclean(inputfile, outputfile, templatefile):
     fromfile = factory.getobject(inputfile)
 
     cleanfile(fromfile)
-#    if fromfile.isempty():
-#        return False
+    #    if fromfile.isempty():
+    #        return False
     fromfile.serialize(outputfile)
     return True
 
 
 def main():
     from translate.convert import convert
+
     formats = {
         "po": ("po", runclean),
         "xlf": ("xlf", runclean),
         "xliff": ("xliff", runclean),
         None: ("po", runclean),
     }
-    parser = convert.ConvertOptionParser(formats, usetemplates=False, description=__doc__)
+    parser = convert.ConvertOptionParser(
+        formats, usetemplates=False, description=__doc__
+    )
     parser.run()
 
 

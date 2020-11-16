@@ -23,12 +23,12 @@ class TestLevenshtein:
 
     def test_long_similarity(self):
         """Tests that very long strings are handled well."""
-        #A sentence with 240 characters:
+        # A sentence with 240 characters:
         sentence = "A long, dreary sentence about a cow that never new his mother. Actually it didn't known its father either. One day he decided that enough is enough, and that he would stop making long, dreary sentences just for the sake of making sentences."
         levenshtein = lshtein.LevenshteinComparer()
         assert levenshtein.similarity("Cow", sentence, 10) < 10
         assert levenshtein.similarity(sentence, "Cow", 10) < 10
-        #The difference in the next comparison is supposed to be 25.83, but
-        #since the sentence is long it might be chopped and report higher.
+        # The difference in the next comparison is supposed to be 25.83, but
+        # since the sentence is long it might be chopped and report higher.
         assert levenshtein.similarity(sentence, sentence[0:62], 0) > 25
         assert levenshtein.similarity(sentence, sentence[0:62], 0) < 50

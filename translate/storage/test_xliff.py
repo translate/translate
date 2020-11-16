@@ -139,10 +139,16 @@ class TestXLIFFfile(test_base.TestTranslationStore):
 
         xliffunit.rich_source[0].print_tree(2)
         print(xliffunit.rich_source)
-        assert xliffunit.rich_source == [StringElem([StringElem('foo'), X(id='bar'), StringElem('baz')])]
+        assert xliffunit.rich_source == [
+            StringElem([StringElem('foo'), X(id='bar'), StringElem('baz')])
+        ]
 
         # Test 2
-        xliffunit.rich_source = [StringElem(['foo', 'baz', G(id='oof', sub=[G(id='zab', sub=['bar', 'rab'])])])]
+        xliffunit.rich_source = [
+            StringElem(
+                ['foo', 'baz', G(id='oof', sub=[G(id='zab', sub=['bar', 'rab'])])]
+            )
+        ]
         source_dom_node = xliffunit.getlanguageNode(None, 0)
         g_placeable = source_dom_node[0]
         nested_g_placeable = g_placeable[0]
@@ -161,7 +167,9 @@ class TestXLIFFfile(test_base.TestTranslationStore):
 
         rich_source = xliffunit.rich_source
         rich_source[0].print_tree(2)
-        assert rich_source == [StringElem(['foobaz', G(id='oof', sub=[G(id='zab', sub=['barrab'])])])]
+        assert rich_source == [
+            StringElem(['foobaz', G(id='oof', sub=[G(id='zab', sub=['barrab'])])])
+        ]
 
     def test_rich_target(self):
         xlifffile = xliff.xlifffile()
@@ -178,7 +186,14 @@ class TestXLIFFfile(test_base.TestTranslationStore):
         assert x_placeable.tail == 'baz'
 
         # Test 2
-        xliffunit.set_rich_target([StringElem(['foo', 'baz', G(id='oof', sub=[G(id='zab', sub=['bar', 'rab'])])])], 'fr')
+        xliffunit.set_rich_target(
+            [
+                StringElem(
+                    ['foo', 'baz', G(id='oof', sub=[G(id='zab', sub=['bar', 'rab'])])]
+                )
+            ],
+            'fr',
+        )
         target_dom_node = xliffunit.getlanguageNode(None, 1)
         g_placeable = target_dom_node[0]
         nested_g_placeable = g_placeable[0]
@@ -197,7 +212,9 @@ class TestXLIFFfile(test_base.TestTranslationStore):
         assert nested_g_placeable.tail is None
 
         xliffunit.rich_target[0].print_tree(2)
-        assert xliffunit.rich_target == [StringElem(['foobaz', G(id='oof', sub=[G(id='zab', sub=['barrab'])])])]
+        assert xliffunit.rich_target == [
+            StringElem(['foobaz', G(id='oof', sub=[G(id='zab', sub=['barrab'])])])
+        ]
 
     def test_source(self):
         xlifffile = xliff.xlifffile()
@@ -221,7 +238,7 @@ class TestXLIFFfile(test_base.TestTranslationStore):
         xmltext = bytes(xlifffile).decode('utf-8')
         print(xmltext)
         assert xmltext.find('source-language="xh"') > 0
-        #TODO: test that it also works for new files.
+        # TODO: test that it also works for new files.
 
     def test_targetlanguage(self):
         xlifffile = xliff.xlifffile(sourcelanguage="zu", targetlanguage="af")
@@ -259,10 +276,16 @@ class TestXLIFFfile(test_base.TestTranslationStore):
         assert notenodes[2].get("from") == "Dad"
         assert unit.getnotes(origin="Dad") == "Don't forget the beer"
 
-        assert not unit.getnotes(origin="Bob") == "Please buy bread\nPlease buy milk\nDon't forget the beer"
+        assert (
+            not unit.getnotes(origin="Bob")
+            == "Please buy bread\nPlease buy milk\nDon't forget the beer"
+        )
         assert not notenodes[2].get("from") == "Mom"
         assert "from" not in notenodes[0].attrib
-        assert unit.getnotes() == "Please buy bread\nPlease buy milk\nDon't forget the beer"
+        assert (
+            unit.getnotes()
+            == "Please buy bread\nPlease buy milk\nDon't forget the beer"
+        )
         assert unit.correctorigin(notenodes[2], "ad")
         assert not unit.correctorigin(notenodes[2], "om")
 
@@ -294,7 +317,7 @@ class TestXLIFFfile(test_base.TestTranslationStore):
         assert alternatives[0].target == "ginmi"
         assert alternatives[1].target == "shikenki"
 
-        #clean up:
+        # clean up:
         alternatives = unit.getalttrans()
         for alt in alternatives:
             unit.delalttrans(alt)
@@ -309,7 +332,11 @@ class TestXLIFFfile(test_base.TestTranslationStore):
         unit.target = "newester target"
         unitformat = str(unit)
         print(unitformat)
-        assert unitformat.find("<source") < unitformat.find("<target") < unitformat.find("<alt-trans")
+        assert (
+            unitformat.find("<source")
+            < unitformat.find("<target")
+            < unitformat.find("<alt-trans")
+        )
 
     def test_fuzzy(self):
         xlifffile = xliff.xlifffile()
@@ -325,22 +352,23 @@ class TestXLIFFfile(test_base.TestTranslationStore):
         unit.markfuzzy(True)
         assert unit.isfuzzy()
 
-        #If there is no target, we can't really indicate fuzzyness, so we set
-        #approved to "no". If we want isfuzzy() to reflect that, the line can
-        #be uncommented
+        # If there is no target, we can't really indicate fuzzyness, so we set
+        # approved to "no". If we want isfuzzy() to reflect that, the line can
+        # be uncommented
         unit.target = None
         assert unit.target is None
         print(unit)
         unit.markfuzzy(True)
         assert 'approved="no"' in str(unit)
-        #assert unit.isfuzzy()
+        # assert unit.isfuzzy()
 
     def test_xml_space(self):
         """Test for the correct handling of xml:space attributes."""
         xlfsource = self.skeleton % (
             '''<trans-unit id="1" xml:space="preserve">
                    <source> File  1 </source>
-               </trans-unit>''')
+               </trans-unit>'''
+        )
         xlifffile = xliff.xlifffile.parsestring(xlfsource)
         assert xlifffile.units[0].source == " File  1 "
         root_node = xlifffile.document.getroot()
@@ -352,7 +380,8 @@ class TestXLIFFfile(test_base.TestTranslationStore):
         xlfsource = self.skeleton % (
             '''<trans-unit id="1" xml:space="default">
                    <source> File  1 </source>
-               </trans-unit>''')
+               </trans-unit>'''
+        )
         xlifffile = xliff.xlifffile.parsestring(xlfsource)
         assert xlifffile.units[0].source == "File 1"
         root_node = xlifffile.document.getroot()
@@ -364,7 +393,8 @@ class TestXLIFFfile(test_base.TestTranslationStore):
         xlfsource = self.skeleton % (
             '''<trans-unit id="1">
                    <source> File  1 </source>
-               </trans-unit>''')
+               </trans-unit>'''
+        )
         # we currently always normalize as default behaviour for xliff
         xlifffile = xliff.xlifffile.parsestring(xlfsource)
         assert xlifffile.units[0].source == "File 1"
@@ -378,7 +408,8 @@ class TestXLIFFfile(test_base.TestTranslationStore):
             '''<trans-unit id="1">
                    <source> File  1
 </source>
-               </trans-unit>''')
+               </trans-unit>'''
+        )
         # we currently always normalize as default behaviour for xliff
         xlifffile = xliff.xlifffile.parsestring(xlfsource)
         assert xlifffile.units[0].source == "File 1"
@@ -389,27 +420,33 @@ class TestXLIFFfile(test_base.TestTranslationStore):
         assert xlifffile.units[0].source == "File 1"
 
     def test_parsing(self):
-        xlfsource = self.skeleton \
+        xlfsource = (
+            self.skeleton
             % '''<trans-unit id="1" xml:space="preserve">
                      <source>File</source>
                      <target/>
                  </trans-unit>'''
+        )
         xlifffile = xliff.xlifffile.parsestring(xlfsource)
         assert xlifffile.units[0].istranslatable()
 
-        xlfsource = self.skeleton \
+        xlfsource = (
+            self.skeleton
             % '''<trans-unit id="1" xml:space="preserve" translate="no">
                      <source>File</source>
                      <target/>
                  </trans-unit>'''
+        )
         xlifffile = xliff.xlifffile.parsestring(xlfsource)
         assert not xlifffile.units[0].istranslatable()
 
-        xlfsource = self.skeleton \
+        xlfsource = (
+            self.skeleton
             % '''<trans-unit id="1" xml:space="preserve" translate="yes">
                      <source>File</source>
                      <target/>
                  </trans-unit>'''
+        )
         xlifffile = xliff.xlifffile.parsestring(xlfsource)
         assert xlifffile.units[0].istranslatable()
 

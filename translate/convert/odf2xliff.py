@@ -27,8 +27,7 @@ from io import BytesIO
 from translate.convert import convert
 from translate.storage import factory
 from translate.storage.odf_io import open_odf
-from translate.storage.odf_shared import (inline_elements,
-                                          no_translate_content_elements)
+from translate.storage.odf_shared import inline_elements, no_translate_content_elements
 from translate.storage.xml_extract.extract import ParseState, build_store
 
 

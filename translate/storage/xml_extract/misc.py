@@ -40,7 +40,9 @@ def reduce_tree(f, parent_unit_node, unit_node, get_children, *state):
 
     state = f(parent_unit_node, unit_node, *state)
     for child_unit_node in get_children(unit_node):
-        state = reduce_tree(f, unit_node, child_unit_node, get_children, *as_tuple(state))
+        state = reduce_tree(
+            f, unit_node, child_unit_node, get_children, *as_tuple(state)
+        )
     return state
 
 

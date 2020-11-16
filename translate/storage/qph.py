@@ -59,7 +59,9 @@ class QphUnit(lisa.LISAunit):
 
     def getlanguageNodes(self):
         """We override this to get source and target nodes."""
-        return [n for n in [self._getsourcenode(), self._gettargetnode()] if n is not None]
+        return [
+            n for n in [self._getsourcenode(), self._gettargetnode()] if n is not None
+        ]
 
     def addnote(self, text, origin=None, position="append"):
         """Add a note specifically in a "definition" tag"""
@@ -69,7 +71,7 @@ class QphUnit(lisa.LISAunit):
         note.text = "\n".join(filter(None, [current_notes, text.strip()]))
 
     def getnotes(self, origin=None):
-        #TODO: consider only responding when origin has certain values
+        # TODO: consider only responding when origin has certain values
         notenode = self.xmlelement.find(self.namespaced("definition"))
         comment = ''
         if notenode is not None:
@@ -144,5 +146,6 @@ class QphFile(lisa.LISAfile):
         We have to override this to ensure mimic the Qt convention:
             - no XML declaration
         """
-        self.document.write(out, pretty_print=True, xml_declaration=False,
-                            encoding='utf-8')
+        self.document.write(
+            out, pretty_print=True, xml_declaration=False, encoding='utf-8'
+        )

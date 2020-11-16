@@ -39,7 +39,7 @@ def build_langs(langs, verbose):
         update_trans=True,
         diff=False,
         langpack=True,
-        verbose=verbose
+        verbose=verbose,
     )
 
     os.chdir(olddir)
@@ -65,11 +65,12 @@ def create_option_parser():
 
     parser = ArgumentParser(usage=USAGE)
     parser.add_argument(
-        '-q', '--quiet',
+        '-q',
+        '--quiet',
         dest='verbose',
         action='store_false',
         default=True,
-        help='Print as little as possible output.'
+        help='Print as little as possible output.',
     )
 
     return parser

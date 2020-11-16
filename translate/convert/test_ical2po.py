@@ -1,4 +1,3 @@
-
 from io import BytesIO
 
 import pytest
@@ -10,8 +9,14 @@ class TestIcal2PO:
 
     ConverterClass = ical2po.ical2po
 
-    def _convert(self, input_string, template_string=None, blank_msgstr=False,
-                 duplicate_style="msgctxt", success_expected=True):
+    def _convert(
+        self,
+        input_string,
+        template_string=None,
+        blank_msgstr=False,
+        duplicate_style="msgctxt",
+        success_expected=True,
+    ):
         """Helper that converts to target format without using files."""
         input_file = BytesIO(input_string.encode())
         output_file = BytesIO()
@@ -19,8 +24,9 @@ class TestIcal2PO:
         if template_string:
             template_file = BytesIO(template_string.encode())
         expected_result = 1 if success_expected else 0
-        converter = self.ConverterClass(input_file, output_file, template_file,
-                                        blank_msgstr, duplicate_style)
+        converter = self.ConverterClass(
+            input_file, output_file, template_file, blank_msgstr, duplicate_style
+        )
         assert converter.run() == expected_result
         return converter.target_store, output_file
 
@@ -42,7 +48,9 @@ PRODID:-//hacksw/handcal//NONSGML v1.0//EN
 BEGIN:VEVENT
 END:VEVENT
 END:VCALENDAR
-""".replace("\n", "\r\n")
+""".replace(
+            "\n", "\r\n"
+        )
         output = self._convert_to_string(input_string, success_expected=False)
         assert output == ''
 
@@ -61,7 +69,9 @@ ORGANIZER;CN=John Doe:MAILTO:john.doe@example.com
 SUMMARY:Value
 END:VEVENT
 END:VCALENDAR
-""".replace("\n", "\r\n")
+""".replace(
+            "\n", "\r\n"
+        )
         expected_output = """
 #. Start date: 1997-07-14 17:00:00+00:00
 #: [uid1@example.com]SUMMARY
@@ -87,7 +97,9 @@ DTSTAMP:19970714T170000Z
 ORGANIZER;CN=John Doe:MAILTO:john.doe@example.com
 END:VEVENT
 END:VCALENDAR
-""".replace("\n", "\r\n")
+""".replace(
+            "\n", "\r\n"
+        )
         expected_output = """
 #. Start date: 1997-07-14 17:00:00+00:00
 #: [uid1@example.com]DESCRIPTION
@@ -113,7 +125,9 @@ LOCATION:Value
 ORGANIZER;CN=John Doe:MAILTO:john.doe@example.com
 END:VEVENT
 END:VCALENDAR
-""".replace("\n", "\r\n")
+""".replace(
+            "\n", "\r\n"
+        )
         expected_output = """
 #. Start date: 1997-07-14 17:00:00+00:00
 #: [uid1@example.com]LOCATION
@@ -139,7 +153,9 @@ DTSTAMP:19970714T170000Z
 ORGANIZER;CN=John Doe:MAILTO:john.doe@example.com
 END:VEVENT
 END:VCALENDAR
-""".replace("\n", "\r\n")
+""".replace(
+            "\n", "\r\n"
+        )
         expected_output = """
 #. Start date: 1997-07-14 17:00:00+00:00
 #: [uid1@example.com]COMMENT
@@ -173,7 +189,9 @@ ORGANIZER;CN=John Doe:MAILTO:john.doe@example.com
 SUMMARY:Value
 END:VEVENT
 END:VCALENDAR
-""".replace("\n", "\r\n")
+""".replace(
+            "\n", "\r\n"
+        )
         expected_output = """
 #. Start date: 1997-07-14 17:00:00+00:00
 #: [uid1@example.com]SUMMARY
@@ -191,8 +209,7 @@ msgstr ""
         assert expected_output in output
         assert "extracted from " in output
 
-        output = self._convert_to_string(input_string,
-                                         duplicate_style="msgctxt")
+        output = self._convert_to_string(input_string, duplicate_style="msgctxt")
         assert expected_output in output
         assert "extracted from " in output
 
@@ -204,8 +221,7 @@ msgstr ""
 msgid "Value"
 msgstr ""
 """
-        output = self._convert_to_string(input_string,
-                                         duplicate_style="merge")
+        output = self._convert_to_string(input_string, duplicate_style="merge")
         assert expected_output in output
         assert "extracted from " in output
 
@@ -224,7 +240,9 @@ ORGANIZER;CN=John Doe:MAILTO:john.doe@example.com
 SUMMARY:Valor
 END:VEVENT
 END:VCALENDAR
-""".replace("\n", "\r\n")
+""".replace(
+            "\n", "\r\n"
+        )
         template_string = """
 BEGIN:VCALENDAR
 VERSION:2.0
@@ -238,7 +256,9 @@ ORGANIZER;CN=John Doe:MAILTO:john.doe@example.com
 SUMMARY:Value
 END:VEVENT
 END:VCALENDAR
-""".replace("\n", "\r\n")
+""".replace(
+            "\n", "\r\n"
+        )
         expected_output = """
 #. Start date: 1997-07-18 17:00:00+00:00
 #: [uid1@example.com]SUMMARY
@@ -264,7 +284,9 @@ ORGANIZER;CN=John Doe:MAILTO:john.doe@example.com
 SUMMARY:Valor
 END:VEVENT
 END:VCALENDAR
-""".replace("\n", "\r\n")
+""".replace(
+            "\n", "\r\n"
+        )
         template_string = """
 BEGIN:VCALENDAR
 VERSION:2.0
@@ -278,7 +300,9 @@ ORGANIZER;CN=John Doe:MAILTO:john.doe@example.com
 SUMMARY:Value
 END:VEVENT
 END:VCALENDAR
-""".replace("\n", "\r\n")
+""".replace(
+            "\n", "\r\n"
+        )
         expected_output = """
 #. Start date: 1997-07-18 17:00:00+00:00
 #: [uid1@example.com]SUMMARY
@@ -304,7 +328,9 @@ ORGANIZER;CN=John Doe:MAILTO:john.doe@example.com
 SUMMARY:Valor
 END:VEVENT
 END:VCALENDAR
-""".replace("\n", "\r\n")
+""".replace(
+            "\n", "\r\n"
+        )
         template_string = """
 BEGIN:VCALENDAR
 VERSION:2.0
@@ -318,15 +344,18 @@ ORGANIZER;CN=John Doe:MAILTO:john.doe@example.com
 SUMMARY:Value
 END:VEVENT
 END:VCALENDAR
-""".replace("\n", "\r\n")
+""".replace(
+            "\n", "\r\n"
+        )
         expected_output = """
 #. Start date: 1997-07-18 17:00:00+00:00
 #: [uid1@example.com]SUMMARY
 msgid "Value"
 msgstr ""
 """
-        output = self._convert_to_string(input_string, template_string,
-                                         blank_msgstr=True)
+        output = self._convert_to_string(
+            input_string, template_string, blank_msgstr=True
+        )
         assert expected_output in output
         assert "extracted from " in output
 
@@ -353,7 +382,9 @@ ORGANIZER;CN=John Doe:MAILTO:john.doe@example.com
 SUMMARY:Valioso
 END:VEVENT
 END:VCALENDAR
-""".replace("\n", "\r\n")
+""".replace(
+            "\n", "\r\n"
+        )
         template_string = """
 BEGIN:VCALENDAR
 VERSION:2.0
@@ -375,7 +406,9 @@ ORGANIZER;CN=John Doe:MAILTO:john.doe@example.com
 SUMMARY:Value
 END:VEVENT
 END:VCALENDAR
-""".replace("\n", "\r\n")
+""".replace(
+            "\n", "\r\n"
+        )
         expected_output = """
 #. Start date: 1997-07-14 17:00:00+00:00
 #: [uid1@example.com]SUMMARY
@@ -393,8 +426,9 @@ msgstr "Valioso"
         assert expected_output in output
         assert "extracted from " in output
 
-        output = self._convert_to_string(input_string, template_string,
-                                         duplicate_style="msgctxt")
+        output = self._convert_to_string(
+            input_string, template_string, duplicate_style="msgctxt"
+        )
         assert expected_output in output
         assert "extracted from " in output
 
@@ -407,8 +441,9 @@ msgstr "Valioso"
 msgid "Value"
 msgstr "Valor"
 """
-        output = self._convert_to_string(input_string, template_string,
-                                         duplicate_style="merge")
+        output = self._convert_to_string(
+            input_string, template_string, duplicate_style="merge"
+        )
         assert expected_output in output
         assert "extracted from " in output
 

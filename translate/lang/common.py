@@ -154,8 +154,18 @@ class Common:
     miscpunc = "…±°¹²³·©®×£¥€"
     """The middle dot (·) is used by Greek and Georgian."""
 
-    punctuation = "".join([commonpunc, quotes, invertedpunc, rtlpunc, CJKpunc,
-                           indicpunc, ethiopicpunc, miscpunc])
+    punctuation = "".join(
+        [
+            commonpunc,
+            quotes,
+            invertedpunc,
+            rtlpunc,
+            CJKpunc,
+            indicpunc,
+            ethiopicpunc,
+            miscpunc,
+        ]
+    )
     """We include many types of punctuation here, simply since this is only
     meant to determine if something is punctuation. Hopefully we catch some
     languages which might not be represented with modules. Most languages won't
@@ -165,17 +175,21 @@ class Common:
     """These marks can indicate a sentence end. Once again we try to account
     for many languages. Most langauges won't need to override this."""
 
-    #The following tries to account for a lot of things. For the best idea of
-    #what works, see test_common.py. We try to ignore abbreviations, for
-    #example, by checking that the following sentence doesn't start with lower
-    #case or numbers.
-    sentencere = re.compile(r"""
+    # The following tries to account for a lot of things. For the best idea of
+    # what works, see test_common.py. We try to ignore abbreviations, for
+    # example, by checking that the following sentence doesn't start with lower
+    # case or numbers.
+    sentencere = re.compile(
+        r"""
         (?s)        # make . also match newlines
         .*?         # anything, but match non-greedy
         [%s]        # the puntuation for sentence ending
         \s+         # the spacing after the puntuation
         (?=[^a-zа-џ\d])  # lookahead that next part starts with caps
-        """ % sentenceend, re.VERBOSE | re.UNICODE)
+        """
+        % sentenceend,
+        re.VERBOSE | re.UNICODE,
+    )
 
     puncdict = {}
     """A dictionary of punctuation transformation rules that can be used by
@@ -229,8 +243,7 @@ class Common:
         while code:
             langdata = data.get_language(code)
             if langdata:
-                language.fullname, language.nplurals, \
-                    language.pluralequation = langdata
+                language.fullname, language.nplurals, language.pluralequation = langdata
                 break
             code = data.simplercode(code)
         return language
@@ -263,7 +276,7 @@ class Common:
         """Converts the punctuation in a string according to the rules of the
         language.
         """
-        #TODO: look at po::escapeforpo() for performance idea
+        # TODO: look at po::escapeforpo() for performance idea
         if not text:
             return text
         ellipses_end = text.endswith("...")
@@ -281,8 +294,7 @@ class Common:
         # As a simple improvement for messages ending in ellipses (...), we
         # test that the last character is different from the second last
         # This is only relevant if the string has two characters or more
-        if ((text[-1] + " " in cls.puncdict) and
-            (len(text) < 2 or text[-2] != text[-1])):
+        if (text[-1] + " " in cls.puncdict) and (len(text) < 2 or text[-2] != text[-1]):
             text = text[:-1] + cls.puncdict[text[-1] + " "].rstrip()
         return text
 
@@ -322,6 +334,7 @@ class Common:
                 else:
                     text = text[-extra:]
             return text
+
         expanded = []
         for subtext in text.split("\n\n"):
             expanded.append(alter_it(subtext))
@@ -331,7 +344,7 @@ class Common:
     @classmethod
     def character_iter(cls, text):
         """Returns an iterator over the characters in text."""
-        #We don't return more than one consecutive whitespace character
+        # We don't return more than one consecutive whitespace character
         prev = 'A'
         for c in text:
             if c.isspace() and prev.isspace():
@@ -348,7 +361,7 @@ class Common:
     @classmethod
     def word_iter(cls, text):
         """Returns an iterator over the words in text."""
-        #TODO: Consider replacing puctuation with space before split()
+        # TODO: Consider replacing puctuation with space before split()
         for w in text.split():
             word = w.strip(cls.punctuation)
             if word:

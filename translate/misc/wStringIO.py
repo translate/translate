@@ -20,12 +20,10 @@ from io import BytesIO
 
 
 class CatchStringOutput(BytesIO):
-    """catches the output before it is closed and sends it to an onclose method
-    """
+    """catches the output before it is closed and sends it to an onclose method"""
 
     def __init__(self, onclose):
-        """Set up the output stream, and remember a method to call on closing
-        """
+        """Set up the output stream, and remember a method to call on closing"""
         super().__init__()
         self.onclose = onclose
 

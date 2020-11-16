@@ -35,8 +35,17 @@ class po2flatxml:
     TargetStoreClass = flatxml.FlatXMLFile
     TargetUnitClass = flatxml.FlatXMLUnit
 
-    def __init__(self, inputfile, outputfile, templatefile=None,
-                 root="root", value="str", key="key", ns=None, indent=2):
+    def __init__(
+        self,
+        inputfile,
+        outputfile,
+        templatefile=None,
+        root="root",
+        value="str",
+        key="key",
+        ns=None,
+        indent=2,
+    ):
         """Initialize the converter."""
         self.inputfile = inputfile
         self.outputfile = outputfile
@@ -48,22 +57,26 @@ class po2flatxml:
 
         indent_chars = None
         if indent > 0:
-            indent_chars = (" " * indent)
+            indent_chars = " " * indent
 
         self.source_store = po.pofile(inputfile)
-        self.target_store = self.TargetStoreClass(templatefile,
-                                                  root_name=root,
-                                                  value_name=value,
-                                                  key_name=key,
-                                                  namespace=ns,
-                                                  indent_chars=indent_chars)
+        self.target_store = self.TargetStoreClass(
+            templatefile,
+            root_name=root,
+            value_name=value,
+            key_name=key,
+            namespace=ns,
+            indent_chars=indent_chars,
+        )
 
     def convert_unit(self, unit):
         """Convert a source format unit to a target format unit."""
-        target_unit = self.TargetUnitClass(source=None,
-                                           namespace=self.namespace,
-                                           element_name=self.value_name,
-                                           attribute_name=self.key_name)
+        target_unit = self.TargetUnitClass(
+            source=None,
+            namespace=self.namespace,
+            element_name=self.value_name,
+            attribute_name=self.key_name,
+        )
         target_unit.source = unit.source
         if unit.istranslated() or not bool(unit.source):
             target_unit.target = unit.target
@@ -95,11 +108,20 @@ class po2flatxml:
         return 1
 
 
-def run_converter(inputfile, outputfile, templatefile=None,
-                  root="root", value="str", key="key", ns=None, indent=2):
+def run_converter(
+    inputfile,
+    outputfile,
+    templatefile=None,
+    root="root",
+    value="str",
+    key="key",
+    ns=None,
+    indent=2,
+):
     """Wrapper around the converter."""
-    return po2flatxml(inputfile, outputfile, templatefile,
-                      root, value, key, ns, indent).run()
+    return po2flatxml(
+        inputfile, outputfile, templatefile, root, value, key, ns, indent
+    ).run()
 
 
 formats = {
@@ -109,25 +131,51 @@ formats = {
 
 
 def main(argv=None):
-    parser = convert.ConvertOptionParser(formats,
-                                         usetemplates=True,
-                                         description=__doc__)
+    parser = convert.ConvertOptionParser(
+        formats, usetemplates=True, description=__doc__
+    )
 
-    parser.add_option("-r", "--root", action="store", dest="root",
-                      default="root",
-                      help='name of the XML root element (default: "root")')
-    parser.add_option("-v", "--value", action="store", dest="value",
-                      default="str",
-                      help='name of the XML value element (default: "str")')
-    parser.add_option("-k", "--key", action="store", dest="key",
-                      default="key",
-                      help='name of the XML key attribute (default: "key")')
-    parser.add_option("-n", "--namespace", action="store", dest="ns",
-                      default=None,
-                      help="XML namespace uri (default: None)")
-    parser.add_option("-w", "--indent", action="store", dest="indent",
-                      type="int", default=2,
-                      help="indent width in spaces, 0 for no indent (default: 2)")
+    parser.add_option(
+        "-r",
+        "--root",
+        action="store",
+        dest="root",
+        default="root",
+        help='name of the XML root element (default: "root")',
+    )
+    parser.add_option(
+        "-v",
+        "--value",
+        action="store",
+        dest="value",
+        default="str",
+        help='name of the XML value element (default: "str")',
+    )
+    parser.add_option(
+        "-k",
+        "--key",
+        action="store",
+        dest="key",
+        default="key",
+        help='name of the XML key attribute (default: "key")',
+    )
+    parser.add_option(
+        "-n",
+        "--namespace",
+        action="store",
+        dest="ns",
+        default=None,
+        help="XML namespace uri (default: None)",
+    )
+    parser.add_option(
+        "-w",
+        "--indent",
+        action="store",
+        dest="indent",
+        type="int",
+        default=2,
+        help="indent width in spaces, 0 for no indent (default: 2)",
+    )
 
     parser.passthrough.append("root")
     parser.passthrough.append("value")

@@ -1,4 +1,3 @@
-
 # po2tiki unit tests
 # Author: Wil Clouser <wclouser@mozilla.com>
 # Date: 2008-12-01
@@ -11,8 +10,7 @@ class TestPo2Tiki:
 
     ConverterClass = po2tiki.po2tiki
 
-    def _convert(self, input_string, template_string=None,
-                 success_expected=True):
+    def _convert(self, input_string, template_string=None, success_expected=True):
         """Helper that converts to target format without using files."""
         input_file = BytesIO(input_string.encode())
         output_file = BytesIO()

@@ -26,9 +26,11 @@ from collections.abc import Iterable
 
 from translate.convert import convert
 from translate.storage import po, rc
-from translate.storage.rc import (generate_menu_pre_name,
-                                  generate_popup_caption_name,
-                                  generate_popup_pre_name)
+from translate.storage.rc import (
+    generate_menu_pre_name,
+    generate_popup_caption_name,
+    generate_popup_pre_name,
+)
 
 
 NL = "\r\n"
@@ -44,7 +46,6 @@ def is_iterable_but_not_string(o):
 
 
 class rerc:
-
     def __init__(self, templatefile, charset="utf-8", lang=None, sublang=None):
         self.templatefile = templatefile
         self.inputdict = {}
@@ -88,13 +89,15 @@ class rerc:
             if len(c[0]) >= 16:
                 out.append(c[0])
                 # If more than 16 char, put it on a new line to align it.
-                out.append("\n"+" "*(16+4))
+                out.append("\n" + " " * (16 + 4))
             else:
                 out.append(c[0].ljust(16))
 
             tmp = []
 
-            name = rc.generate_dialog_control_name(toks.block_type, toks.block_id[0], c.id_control[0], c.values_[1])
+            name = rc.generate_dialog_control_name(
+                toks.block_type, toks.block_id[0], c.id_control[0], c.values_[1]
+            )
             msgid = c[1][1:-1]
             if c[1].startswith(("'", '"')) and msgid in self.inputdict:
                 if name in self.inputdict[msgid]:
@@ -130,7 +133,7 @@ class rerc:
             out.append("    ")
             if len(c[0]) >= 24:
                 out.append(c[0])
-                out.append("\n"+" "*(24+4))
+                out.append("\n" + " " * (24 + 4))
             else:
                 out.append(c[0].ljust(24))
 
@@ -197,13 +200,17 @@ class rerc:
 
                 if element.values_ and len(element.values_) >= 2:
 
-                    name = rc.generate_menuitem_name(pre_name, element.block_type, element.values_[1])
+                    name = rc.generate_menuitem_name(
+                        pre_name, element.block_type, element.values_[1]
+                    )
                     msgid = element.values_[0][1:-1]
                     if msgid in self.inputdict:
                         if name in self.inputdict[msgid]:
                             element.values_[0] = '"' + self.inputdict[msgid][name] + '"'
                         elif EMPTY_LOCATION in self.inputdict[msgid]:
-                            element.values_[0] = '"' + self.inputdict[msgid][EMPTY_LOCATION] + '"'
+                            element.values_[0] = (
+                                '"' + self.inputdict[msgid][EMPTY_LOCATION] + '"'
+                            )
 
                     out.append(", ".join(element.values_))
                 elif element.values_[0] == "SEPARATOR":
@@ -215,7 +222,13 @@ class rerc:
 
             elif element.popups:
                 for sub_popup in element.popups:
-                    out.extend(self.convert_popup(sub_popup, generate_popup_pre_name(pre_name, popup.caption[1:-1]), ident+1))
+                    out.extend(
+                        self.convert_popup(
+                            sub_popup,
+                            generate_popup_pre_name(pre_name, popup.caption[1:-1]),
+                            ident + 1,
+                        )
+                    )
         out.append(identation)
         out.append(BLOCK_END)
         out.append(NL)
@@ -289,14 +302,26 @@ class rerc:
                     self.inputdict[escaped_source] = {}
 
                 if len(unit.getlocations()) == 0:
-                    self.inputdict[escaped_source][EMPTY_LOCATION] = rc.escape_to_rc(rcstring)
+                    self.inputdict[escaped_source][EMPTY_LOCATION] = rc.escape_to_rc(
+                        rcstring
+                    )
                 else:
                     for location in unit.getlocations():
-                        self.inputdict[escaped_source][location] = rc.escape_to_rc(rcstring)
+                        self.inputdict[escaped_source][location] = rc.escape_to_rc(
+                            rcstring
+                        )
 
 
-def convertrc(inputfile, outputfile, templatefile, includefuzzy=False,
-              charset=None, lang=None, sublang=None, outputthreshold=None):
+def convertrc(
+    inputfile,
+    outputfile,
+    templatefile,
+    includefuzzy=False,
+    charset=None,
+    lang=None,
+    sublang=None,
+    outputthreshold=None,
+):
     inputstore = po.pofile(inputfile)
 
     if not convert.should_output_store(inputstore, outputthreshold):
@@ -323,20 +348,30 @@ def convertrc(inputfile, outputfile, templatefile, includefuzzy=False,
 def main(argv=None):
     # handle command line options
     formats = {("po", "rc"): ("rc", convertrc)}
-    parser = convert.ConvertOptionParser(formats, usetemplates=True,
-                                         description=__doc__)
+    parser = convert.ConvertOptionParser(
+        formats, usetemplates=True, description=__doc__
+    )
     defaultcharset = "utf-8"
     parser.add_option(
-        "", "--charset", dest="charset", default=defaultcharset,
+        "",
+        "--charset",
+        dest="charset",
+        default=defaultcharset,
         help="charset to use to decode the RC files (default: %s)" % defaultcharset,
-        metavar="CHARSET")
+        metavar="CHARSET",
+    )
     parser.add_option(
-        "-l", "--lang", dest="lang", default=None,
-        help="LANG entry", metavar="LANG")
+        "-l", "--lang", dest="lang", default=None, help="LANG entry", metavar="LANG"
+    )
     defaultsublang = "SUBLANG_DEFAULT"
     parser.add_option(
-        "", "--sublang", dest="sublang", default=defaultsublang,
-        help="SUBLANG entry (default: %s)" % defaultsublang, metavar="SUBLANG")
+        "",
+        "--sublang",
+        dest="sublang",
+        default=defaultsublang,
+        help="SUBLANG entry (default: %s)" % defaultsublang,
+        metavar="SUBLANG",
+    )
     parser.passthrough.append("charset")
     parser.passthrough.append("lang")
     parser.passthrough.append("sublang")

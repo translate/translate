@@ -5,7 +5,6 @@ from translate.storage import po
 
 
 class TestPO2Prop:
-
     def po2prop(self, posource):
         """helper that converts po source to .properties source without requiring files"""
         inputfile = BytesIO(posource.encode())
@@ -14,13 +13,27 @@ class TestPO2Prop:
         outputprop = convertor.convertstore(inputpo)
         return outputprop
 
-    def merge2prop(self, propsource, posource, personality="java", remove_untranslated=False, encoding='utf-8'):
+    def merge2prop(
+        self,
+        propsource,
+        posource,
+        personality="java",
+        remove_untranslated=False,
+        encoding='utf-8',
+    ):
         """helper that merges po translations to .properties source without requiring files"""
         inputfile = BytesIO(posource.encode())
         inputpo = po.pofile(inputfile)
-        templatefile = BytesIO(propsource.encode() if isinstance(propsource, str) else propsource)
-        #templateprop = properties.propfile(templatefile)
-        convertor = po2prop.reprop(templatefile, inputpo, personality=personality, remove_untranslated=remove_untranslated)
+        templatefile = BytesIO(
+            propsource.encode() if isinstance(propsource, str) else propsource
+        )
+        # templateprop = properties.propfile(templatefile)
+        convertor = po2prop.reprop(
+            templatefile,
+            inputpo,
+            personality=personality,
+            remove_untranslated=remove_untranslated,
+        )
         outputprop = convertor.convertstore()
         print(outputprop)
         return outputprop.decode(encoding)
@@ -233,12 +246,16 @@ msgstr "translated"
 
         proptemplate = '''prop  =  value\n'''.encode('utf-16')
         propexpectedskype = '''prop  =  ṽḁḽṻḝ\n'''
-        propfile = self.merge2prop(proptemplate, posource, personality="skype", encoding='utf-16')
+        propfile = self.merge2prop(
+            proptemplate, posource, personality="skype", encoding='utf-16'
+        )
         assert propfile == propexpectedskype
 
         proptemplate = '''"prop" = "value";\n'''.encode('utf-16')
         propexpectedstrings = '''"prop" = "ṽḁḽṻḝ";\n'''
-        propfile = self.merge2prop(proptemplate, posource, personality="strings", encoding='utf-16')
+        propfile = self.merge2prop(
+            proptemplate, posource, personality="strings", encoding='utf-16'
+        )
         assert propfile == propexpectedstrings
 
     def test_merging_untranslated_simple(self):

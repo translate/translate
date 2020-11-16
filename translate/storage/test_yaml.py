@@ -1,5 +1,3 @@
-
-
 import pytest
 import ruamel.yaml
 
@@ -52,11 +50,13 @@ class TestYAMLResourceStore(test_monolingual.TestMonolingualStore):
 
     def test_ordering(self):
         store = self.StoreClass()
-        store.parse('''
+        store.parse(
+            '''
 foo: foo
 bar: bar
 baz: baz
-''')
+'''
+        )
         assert len(store.units) == 3
         assert store.units[0].source == 'foo'
         assert store.units[2].source == 'baz'
@@ -116,117 +116,165 @@ eggs: spam
         store.parse(data)
         assert len(store.units) == 2
         assert store.units[0].getid() == 'invite'
-        assert store.units[0].source == """Ola!
+        assert (
+            store.units[0].source
+            == """Ola!
 Recibiches unha invitación para unirte!"""
+        )
         assert store.units[1].getid() == 'eggs'
         assert store.units[1].source == 'spam'
         assert bytes(store).decode('utf-8') == data
 
     def test_boolean(self):
         store = self.StoreClass()
-        store.parse('''
+        store.parse(
+            '''
 foo: True
-''')
+'''
+        )
         assert len(store.units) == 1
         assert store.units[0].getid() == 'foo'
         assert store.units[0].source == 'True'
-        assert bytes(store) == b'''foo: 'True'
+        assert (
+            bytes(store)
+            == b'''foo: 'True'
 '''
+        )
 
     def test_integer(self):
         store = self.StoreClass()
-        store.parse('''
+        store.parse(
+            '''
 foo: 1
-''')
+'''
+        )
         assert len(store.units) == 1
         assert store.units[0].getid() == 'foo'
         assert store.units[0].source == '1'
-        assert bytes(store) == b'''foo: '1'
+        assert (
+            bytes(store)
+            == b'''foo: '1'
 '''
+        )
 
     def test_no_quote_strings(self):
         """These are used in OpenStreeMap translation."""
         store = self.StoreClass()
-        store.parse('''
+        store.parse(
+            '''
 eggs: No quoting at all
-''')
+'''
+        )
         assert len(store.units) == 1
         assert store.units[0].getid() == 'eggs'
         assert store.units[0].source == 'No quoting at all'
-        assert bytes(store) == b'''eggs: No quoting at all
+        assert (
+            bytes(store)
+            == b'''eggs: No quoting at all
 '''
+        )
 
     def test_double_quote_strings(self):
         """These are used in OpenStreeMap translation."""
         store = self.StoreClass()
-        store.parse('''
+        store.parse(
+            '''
 bar: "quote, double"
-''')
+'''
+        )
         assert len(store.units) == 1
         assert store.units[0].getid() == 'bar'
         assert store.units[0].source == 'quote, double'
-        assert bytes(store) == b'''bar: "quote, double"
+        assert (
+            bytes(store)
+            == b'''bar: "quote, double"
 '''
+        )
 
     def test_single_quote_strings(self):
         """These are used in OpenStreeMap translation."""
         store = self.StoreClass()
-        store.parse('''
+        store.parse(
+            '''
 foo: 'quote, single'
-''')
+'''
+        )
         assert len(store.units) == 1
         assert store.units[0].getid() == 'foo'
         assert store.units[0].source == 'quote, single'
-        assert bytes(store) == b'''foo: 'quote, single'
+        assert (
+            bytes(store)
+            == b'''foo: 'quote, single'
 '''
+        )
 
     def test_avoid_escaping_double_quote_strings(self):
         """These are used in OpenStreeMap translation."""
         store = self.StoreClass()
-        store.parse('''
+        store.parse(
+            '''
 spam: 'avoid escaping "double quote"'
-''')
+'''
+        )
         assert len(store.units) == 1
         assert store.units[0].getid() == 'spam'
         assert store.units[0].source == 'avoid escaping "double quote"'
-        assert bytes(store) == b'''spam: 'avoid escaping "double quote"'
+        assert (
+            bytes(store)
+            == b'''spam: 'avoid escaping "double quote"'
 '''
+        )
 
     def test_avoid_escaping_single_quote_strings(self):
         """Test avoid escaping single quotes."""
         store = self.StoreClass()
-        store.parse('''
+        store.parse(
+            '''
 spam: "avoid escaping 'single quote'"
-''')
+'''
+        )
         assert len(store.units) == 1
         assert store.units[0].getid() == 'spam'
         assert store.units[0].source == "avoid escaping 'single quote'"
-        assert bytes(store) == b'''spam: "avoid escaping 'single quote'"
+        assert (
+            bytes(store)
+            == b'''spam: "avoid escaping 'single quote'"
 '''
+        )
 
     def test_escaped_double_quotes(self):
         """These are used in OpenStreeMap translation."""
         store = self.StoreClass()
-        store.parse(r'''
+        store.parse(
+            r'''
 foo: "Hello \"World\"."
-''')
+'''
+        )
         assert len(store.units) == 1
         assert store.units[0].getid() == 'foo'
         assert store.units[0].source == 'Hello "World".'
-        assert bytes(store) == br'''foo: "Hello \"World\"."
+        assert (
+            bytes(store)
+            == br'''foo: "Hello \"World\"."
 '''
+        )
 
     def test_newlines(self):
         """These are used in OpenStreeMap translation."""
         store = self.StoreClass()
-        store.parse(r'''
+        store.parse(
+            r'''
 foo: "Hello \n World."
-''')
+'''
+        )
         assert len(store.units) == 1
         assert store.units[0].getid() == 'foo'
         assert store.units[0].source == 'Hello \n World.'
-        assert bytes(store) == br'''foo: "Hello \n World."
+        assert (
+            bytes(store)
+            == br'''foo: "Hello \n World."
 '''
+        )
 
     def test_abbreviated_list(self):
         """These are used in Redmine and Discourse translation."""
@@ -274,9 +322,12 @@ foo: "Hello \n World."
         unit = self.StoreClass.UnitClass("teststring2")
         unit.setid('key->value')
         store.addunit(unit)
-        assert bytes(store) == b'''key:
+        assert (
+            bytes(store)
+            == b'''key:
   value: teststring2
 '''
+        )
 
     def test_add_to_mepty(self):
         store = self.StoreClass()
@@ -287,11 +338,17 @@ foo: "Hello \n World."
         unit = self.StoreClass.UnitClass("teststring2")
         unit.setid('key->value')
         store.addunit(unit)
-        assert bytes(store).decode('utf-8') == '''key:
+        assert (
+            bytes(store).decode('utf-8')
+            == '''key:
   value: teststring2
 '''
+        )
 
-    @pytest.mark.skipif(ruamel.yaml.version_info < (0, 16, 6), reason='Empty keys serialization broken in ruamel.yaml<0.16.6')
+    @pytest.mark.skipif(
+        ruamel.yaml.version_info < (0, 16, 6),
+        reason='Empty keys serialization broken in ruamel.yaml<0.16.6',
+    )
     def test_empty_key(self):
         yaml_souce = b''''': Jedna
 foo:

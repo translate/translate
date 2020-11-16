@@ -1,4 +1,3 @@
-
 from io import BytesIO
 
 from translate.convert import csv2po, test_convert
@@ -8,13 +7,13 @@ from translate.storage.test_base import first_translatable, headerless_len
 
 def test_replacestrings():
     """Test the _replacestring function"""
-    assert csv2po.replacestrings("Test one two three",
-                                 ("one", "een"),
-                                 ("two", "twee")) == "Test een twee three"
+    assert (
+        csv2po.replacestrings("Test one two three", ("one", "een"), ("two", "twee"))
+        == "Test een twee three"
+    )
 
 
 class TestCSV2PO:
-
     def csv2po(self, csvsource, template=None):
         """helper that converts csv source to po source without requiring files"""
         inputfile = BytesIO(csvsource.encode())
@@ -82,7 +81,10 @@ wat lank aanhou"
         unit = self.singleelement(pofile)
         print(unit.source)
         assert unit.source == "First column\tSecond column"
-        assert not pofile.findunit("First column\tSecond column").target == "Twee kolomme gesky met \\t"
+        assert (
+            not pofile.findunit("First column\tSecond column").target
+            == "Twee kolomme gesky met \\t"
+        )
 
     def test_quotes(self):
         """Test the escaping of quotes (and slash)"""
@@ -100,7 +102,8 @@ wat lank aanhou"
             print(unit.source)
             print(unit.target)
             print()
-#        assert pofile.findunit('Use \\".').target == 'Gebruik \\".'
+
+    #        assert pofile.findunit('Use \\".').target == 'Gebruik \\".'
 
     def test_empties(self):
         """Tests that things keep working with empty entries"""

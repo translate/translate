@@ -38,15 +38,21 @@ languages = {
     'am': ('Amharic', 2, 'n > 1'),
     'an': ('Aragonese', 2, '(n != 1)'),
     'anp': ('Angika', 2, '(n != 1)'),
-    'ar': ('Arabic', 6,
-           'n==0 ? 0 : n==1 ? 1 : n==2 ? 2 : n%100>=3 && n%100<=10 ? 3 : n%100>=11 ? 4 : 5'),
+    'ar': (
+        'Arabic',
+        6,
+        'n==0 ? 0 : n==1 ? 1 : n==2 ? 2 : n%100>=3 && n%100<=10 ? 3 : n%100>=11 ? 4 : 5',
+    ),
     'arn': ('Mapudungun; Mapuche', 2, 'n > 1'),
     'as': ('Assamese', 2, '(n != 1)'),
     'ast': ('Asturian; Bable; Leonese; Asturleonese', 2, '(n != 1)'),
     'ay': ('Aymará', 1, '0'),
     'az': ('Azerbaijani', 2, '(n != 1)'),
-    'be': ('Belarusian', 3,
-           'n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2'),
+    'be': (
+        'Belarusian',
+        3,
+        'n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2',
+    ),
     'bg': ('Bulgarian', 2, '(n != 1)'),
     'bn': ('Bengali', 2, '(n != 1)'),
     'bn_BD': ('Bengali (Bangladesh)', 2, '(n != 1)'),
@@ -54,14 +60,20 @@ languages = {
     'bo': ('Tibetan', 1, '0'),
     'br': ('Breton', 2, 'n > 1'),
     'brx': ('Bodo', 2, '(n != 1)'),
-    'bs': ('Bosnian', 3,
-           'n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2'),
+    'bs': (
+        'Bosnian',
+        3,
+        'n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2',
+    ),
     'ca': ('Catalan; Valencian', 2, '(n != 1)'),
     'ca@valencia': ('Catalan; Valencian (Valencia)', 2, '(n != 1)'),
     'cgg': ('Chiga', 1, '0'),
     'cs': ('Czech', 3, '(n==1) ? 0 : (n>=2 && n<=4) ? 1 : 2'),
-    'csb': ('Kashubian', 3,
-            'n==1 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2'),
+    'csb': (
+        'Kashubian',
+        3,
+        'n==1 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2',
+    ),
     'cy': ('Welsh', 2, '(n==2) ? 1 : 0'),
     'da': ('Danish', 2, '(n != 1)'),
     'de': ('German', 2, '(n != 1)'),
@@ -85,7 +97,11 @@ languages = {
     'fur': ('Friulian', 2, '(n != 1)'),
     'fy': ('Frisian', 2, '(n != 1)'),
     'ga': ('Irish', 5, 'n==1 ? 0 : n==2 ? 1 : (n>2 && n<7) ? 2 :(n>6 && n<11) ? 3 : 4'),
-    'gd': ('Gaelic; Scottish Gaelic', 4, '(n==1 || n==11) ? 0 : (n==2 || n==12) ? 1 : (n > 2 && n < 20) ? 2 : 3'),
+    'gd': (
+        'Gaelic; Scottish Gaelic',
+        4,
+        '(n==1 || n==11) ? 0 : (n==2 || n==12) ? 1 : (n > 2 && n < 20) ? 2 : 3',
+    ),
     'gl': ('Galician', 2, '(n != 1)'),
     'gu': ('Gujarati', 2, '(n != 1)'),
     'gun': ('Gun', 2, '(n > 1)'),
@@ -93,7 +109,11 @@ languages = {
     'he': ('Hebrew', 2, '(n != 1)'),
     'hi': ('Hindi', 2, '(n != 1)'),
     'hne': ('Chhattisgarhi', 2, '(n != 1)'),
-    'hr': ('Croatian', 3, '(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2)'),
+    'hr': (
+        'Croatian',
+        3,
+        '(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2)',
+    ),
     'ht': ('Haitian; Haitian Creole', 2, '(n != 1)'),
     'hu': ('Hungarian', 2, '(n != 1)'),
     'hy': ('Armenian', 1, '0'),
@@ -119,10 +139,18 @@ languages = {
     'lb': ('Luxembourgish; Letzeburgesch', 2, '(n != 1)'),
     'ln': ('Lingala', 2, '(n > 1)'),
     'lo': ('Lao', 1, '0'),
-    'lt': ('Lithuanian', 3, '(n%10==1 && n%100!=11 ? 0 : n%10>=2 && (n%100<10 || n%100>=20) ? 1 : 2)'),
+    'lt': (
+        'Lithuanian',
+        3,
+        '(n%10==1 && n%100!=11 ? 0 : n%10>=2 && (n%100<10 || n%100>=20) ? 1 : 2)',
+    ),
     'lv': ('Latvian', 3, '(n%10==1 && n%100!=11 ? 0 : n != 0 ? 1 : 2)'),
     'mai': ('Maithili', 2, '(n != 1)'),
-    'me': ('Montenegrin', 3, 'n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2'),
+    'me': (
+        'Montenegrin',
+        3,
+        'n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2',
+    ),
     'mfe': ('Morisyen', 2, '(n > 1)'),
     'mg': ('Malagasy', 2, '(n > 1)'),
     'mi': ('Maori', 2, '(n > 1)'),
@@ -133,8 +161,11 @@ languages = {
     'mnk': ('Mandinka', 3, '(n==0 ? 0 : n==1 ? 1 : 2)'),
     'mr': ('Marathi', 2, '(n != 1)'),
     'ms': ('Malay', 1, '0'),
-    'mt': ('Maltese', 4,
-           '(n==1 ? 0 : n==0 || ( n%100>1 && n%100<11) ? 1 : (n%100>10 && n%100<20 ) ? 2 : 3)'),
+    'mt': (
+        'Maltese',
+        4,
+        '(n==1 ? 0 : n==0 || ( n%100>1 && n%100<11) ? 1 : (n%100>10 && n%100<20 ) ? 2 : 3)',
+    ),
     'my': ('Burmese', 1, '0'),
     'nah': ('Nahuatl languages', 2, '(n != 1)'),
     'nap': ('Neapolitan', 2, '(n != 1)'),
@@ -148,16 +179,22 @@ languages = {
     'or': ('Odia', 2, '(n != 1)'),
     'pa': ('Panjabi; Punjabi', 2, '(n != 1)'),
     'pap': ('Papiamento', 2, '(n != 1)'),
-    'pl': ('Polish', 3,
-           '(n==1 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2)'),
+    'pl': (
+        'Polish',
+        3,
+        '(n==1 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2)',
+    ),
     'pms': ('Piemontese', 2, '(n != 1)'),
     'ps': ('Pushto; Pashto', 2, '(n != 1)'),
     'pt': ('Portuguese', 2, '(n != 1)'),
     'pt_BR': ('Portuguese (Brazil)', 2, '(n > 1)'),
     'rm': ('Romansh', 2, '(n != 1)'),
     'ro': ('Romanian', 3, '(n==1 ? 0 : (n==0 || (n%100 > 0 && n%100 < 20)) ? 1 : 2)'),
-    'ru': ('Russian', 3,
-           '(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2)'),
+    'ru': (
+        'Russian',
+        3,
+        '(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2)',
+    ),
     'rw': ('Kinyarwanda', 2, '(n != 1)'),
     'sa': ('Sanskrit', 3, '(n==1 ? 0 : n==2 ? 1 : 2)'),
     'sah': ('Yakut', 1, '0'),
@@ -168,18 +205,28 @@ languages = {
     'se': ('Northern Sami', 2, '(n != 1)'),
     'si': ('Sinhala; Sinhalese', 2, '(n != 1)'),
     'sk': ('Slovak', 3, '(n==1) ? 0 : (n>=2 && n<=4) ? 1 : 2'),
-    'sl': ('Slovenian', 4, '(n%100==1 ? 0 : n%100==2 ? 1 : n%100==3 || n%100==4 ? 2 : 3)'),
+    'sl': (
+        'Slovenian',
+        4,
+        '(n%100==1 ? 0 : n%100==2 ? 1 : n%100==3 || n%100==4 ? 2 : 3)',
+    ),
     'so': ('Somali', 2, '(n != 1)'),
     'son': ('Songhai languages', 1, '0'),
     'sq': ('Albanian', 2, '(n != 1)'),
-    'sr': ('Serbian', 3,
-           '(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2)'),
+    'sr': (
+        'Serbian',
+        3,
+        '(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2)',
+    ),
     'st': ('Sotho, Southern', 2, '(n != 1)'),
     'su': ('Sundanese', 1, '0'),
     'sv': ('Swedish', 2, '(n != 1)'),
     'sw': ('Swahili', 2, '(n != 1)'),
-    'szl': ('Silesian', 3,
-            '(n==1 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2)'),
+    'szl': (
+        'Silesian',
+        3,
+        '(n==1 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2)',
+    ),
     'ta': ('Tamil', 2, '(n != 1)'),
     'te': ('Telugu', 2, '(n != 1)'),
     'tg': ('Tajik', 1, '0'),
@@ -189,8 +236,11 @@ languages = {
     'tr': ('Turkish', 2, '(n != 1)'),
     'tt': ('Tatar', 1, '0'),
     'ug': ('Uighur; Uyghur', 1, '0'),
-    'uk': ('Ukrainian', 3,
-           '(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2)'),
+    'uk': (
+        'Ukrainian',
+        3,
+        '(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2)',
+    ),
     'ur': ('Urdu', 2, '(n != 1)'),
     'uz': ('Uzbek', 2, '(n > 1)'),
     've': ('Venda', 2, '(n != 1)'),
@@ -256,16 +306,16 @@ scripts = {
         'bho',  # https://en.wikipedia.org/wiki/Bhojpuri_language
         'brx',  # https://en.wikipedia.org/wiki/Bodo_language
         'doi',  # https://en.wikipedia.org/wiki/Dogri_language
-        'hi',   # https://en.wikipedia.org/wiki/Hindi
+        'hi',  # https://en.wikipedia.org/wiki/Hindi
         'kfy',  # https://en.wikipedia.org/wiki/Kumaoni_language
         'kok',  # https://en.wikipedia.org/wiki/Konkani_language
         'mai',  # https://en.wikipedia.org/wiki/Maithili_language
-        'mr',   # https://en.wikipedia.org/wiki/Marathi_language
-        'sa',   # https://en.wikipedia.org/wiki/Sanskrit
+        'mr',  # https://en.wikipedia.org/wiki/Marathi_language
+        'sa',  # https://en.wikipedia.org/wiki/Sanskrit
         'sat',  # https://en.wikipedia.org/wiki/Santali_language
     ],
     'Beng': [
-        'bn',   # https://en.wikipedia.org/wiki/Bengali_language
+        'bn',  # https://en.wikipedia.org/wiki/Bengali_language
         'mni',  # https://en.wikipedia.org/wiki/Manipuri_language
     ],
     'Tibt': [
@@ -290,7 +340,7 @@ scripts = {
         'ml',  # https://en.wikipedia.org/wiki/Malayalam
     ],
     'Mymr': [
-        'my',   # https://en.wikipedia.org/wiki/Burmese_language
+        'my',  # https://en.wikipedia.org/wiki/Burmese_language
         'shn',  # https://en.wikipedia.org/wiki/Shan_language
     ],
     'Sind': [
@@ -576,8 +626,7 @@ expansion_factors = {
 """Source to target string length expansion factors."""
 
 langcode_re = re.compile("^[a-z]{2,3}([_-][A-Z]{2,3}|)(@[a-zA-Z0-9]+|)$")
-langcode_ire = re.compile("^[a-z]{2,3}([_-][a-z]{2,3})?(@[a-z0-9]+)?$",
-                          re.IGNORECASE)
+langcode_ire = re.compile("^[a-z]{2,3}([_-][a-z]{2,3})?(@[a-z0-9]+)?$", re.IGNORECASE)
 variant_re = re.compile("^[_-][A-Z]{2,3}(@[a-zA-Z0-9]+|)$")
 
 
@@ -585,9 +634,10 @@ def languagematch(languagecode, otherlanguagecode):
     """matches a languagecode to another, ignoring regions in the second"""
     if languagecode is None:
         return langcode_re.match(otherlanguagecode)
-    return (languagecode == otherlanguagecode or
-            (otherlanguagecode.startswith(languagecode) and
-             variant_re.match(otherlanguagecode[len(languagecode):])))
+    return languagecode == otherlanguagecode or (
+        otherlanguagecode.startswith(languagecode)
+        and variant_re.match(otherlanguagecode[len(languagecode) :])
+    )
 
 
 def get_country_iso_name(country_code):
@@ -659,10 +709,10 @@ def tr_lang(langcode=None):
         if match:
             language, country = match.groups()
             if country != "macrolanguage":
-                return (
-                    "%s (%s)"
-                    % (_fix_language_name(langfunc(language)),
-                       countryfunc(country)))
+                return "%s (%s)" % (
+                    _fix_language_name(langfunc(language)),
+                    countryfunc(country),
+                )
         return _fix_language_name(langfunc(name))
 
     return handlelanguage
@@ -683,16 +733,13 @@ def _fix_language_name(name):
         # translation of ISO codes suggests these as the upper bounds.
         split_point = name[5:].find(';')
         if split_point >= 0:
-            return name[:5+split_point]
+            return name[: 5 + split_point]
     return name
 
 
 def gettext_domain(langcode, domain, localedir=None):
     """Returns a gettext function for given iso domain"""
-    kwargs = dict(
-        domain=domain,
-        localedir=localedir,
-        fallback=True)
+    kwargs = dict(domain=domain, localedir=localedir, fallback=True)
     if langcode:
         kwargs['languages'] = [langcode]
     elif os.name == "nt":
@@ -731,6 +778,7 @@ def normalize(string, normal_form="NFC"):
         return None
     else:
         import unicodedata
+
         return unicodedata.normalize(normal_form, string)
 
 
@@ -745,6 +793,7 @@ def forceunicode(string):
     if string is None:
         return None
     from translate.storage.placeables import StringElem
+
     if isinstance(string, bytes):
         encoding = getattr(string, "encoding", "utf-8")
         string = string.decode(encoding)
@@ -776,7 +825,7 @@ def simplify_to_common(language_code):
     if simpler == "":
         return language_code
 
-    if (normalize_code(language_code) in __normalised_languages):
+    if normalize_code(language_code) in __normalised_languages:
         return language_code
 
     return simplify_to_common(simpler)

@@ -28,9 +28,14 @@ from translate.storage import base
 class FlatXMLUnit(base.TranslationUnit):
     """A single term in the XML file."""
 
-    def __init__(self, source=None,
-                 namespace=None, element_name="str", attribute_name="key",
-                 **kwargs):
+    def __init__(
+        self,
+        source=None,
+        namespace=None,
+        element_name="str",
+        attribute_name="key",
+        **kwargs
+    ):
         self.namespace = namespace
         self.element_name = element_name
         self.attribute_name = attribute_name
@@ -77,10 +82,9 @@ class FlatXMLUnit(base.TranslationUnit):
         return getText(self.xmlelement)
 
     @classmethod
-    def createfromxmlElement(cls, element,
-                             namespace=None,
-                             element_name="str",
-                             attribute_name="key"):
+    def createfromxmlElement(
+        cls, element, namespace=None, element_name="str", attribute_name="key"
+    ):
         """Attempts to create a unit from the passed element.
 
         element must not be None and must match the given element name
@@ -90,10 +94,12 @@ class FlatXMLUnit(base.TranslationUnit):
             return None
         if element.tag != namespaced(namespace, element_name):
             return None
-        unit = cls(source=None,
-                   namespace=namespace,
-                   element_name=element_name,
-                   attribute_name=attribute_name)
+        unit = cls(
+            source=None,
+            namespace=namespace,
+            element_name=element_name,
+            attribute_name=attribute_name,
+        )
         unit.xmlelement = element
         return unit
 
@@ -106,17 +112,19 @@ class FlatXMLFile(base.TranslationStore):
     Mimetypes = ["text/xml"]
     Extensions = ["xml"]
 
-    def __init__(self,
-                 inputfile=None,
-                 sourcelanguage="en",
-                 targetlanguage=None,
-                 root_name="root",
-                 value_name="str",
-                 key_name="key",
-                 namespace=None,
-                 indent_chars="  ",
-                 trailing_eol=True,
-                 **kwargs):
+    def __init__(
+        self,
+        inputfile=None,
+        sourcelanguage="en",
+        targetlanguage=None,
+        root_name="root",
+        value_name="str",
+        key_name="key",
+        namespace=None,
+        indent_chars="  ",
+        trailing_eol=True,
+        **kwargs
+    ):
         self.root_name = root_name
         self.value_name = value_name
         self.key_name = key_name
@@ -145,7 +153,7 @@ class FlatXMLFile(base.TranslationStore):
     def reindent(self):
         """Reindents the backing document to be consistent."""
         # no elements? nothing to do.
-        if not(len(self.root)):
+        if not (len(self.root)):
             pass
 
         if self.indent_chars is None:
@@ -184,8 +192,10 @@ class FlatXMLFile(base.TranslationStore):
         self.encoding = self.document.docinfo.encoding
 
         root_name = self.namespaced(self.root_name)
-        assert self.root.tag == root_name, \
-            "expected root name to be %s but got %s" % (root_name, self.root.tag)
+        assert self.root.tag == root_name, "expected root name to be %s but got %s" % (
+            root_name,
+            self.root.tag,
+        )
         if len(self.root):
             # we'd expect at least one child element to have the correct
             # name and attributes; otherwise the name parameters might've
@@ -193,20 +203,27 @@ class FlatXMLFile(base.TranslationStore):
             # coming up empty when the file actually contains entries.
             value_name = self.namespaced(self.value_name)
             matching_nodes = list(self.root.iterchildren(value_name))
-            assert len(matching_nodes), \
-                "expected value name to be %s but first node is %s" % (
-                    value_name, self.root[0].tag)
+            assert len(
+                matching_nodes
+            ), "expected value name to be %s but first node is %s" % (
+                value_name,
+                self.root[0].tag,
+            )
 
-            assert matching_nodes[0].get(self.key_name), \
-                "expected key attribute to be %s, found attribute(s): %s" % (
-                    self.key_name, ",".join(matching_nodes[0].attrib))
+            assert matching_nodes[0].get(
+                self.key_name
+            ), "expected key attribute to be %s, found attribute(s): %s" % (
+                self.key_name,
+                ",".join(matching_nodes[0].attrib),
+            )
 
         for entry in self.root:
             unit = self.UnitClass.createfromxmlElement(
                 entry,
                 namespace=self.namespace,
                 element_name=self.value_name,
-                attribute_name=self.key_name)
+                attribute_name=self.key_name,
+            )
             if unit is not None:
                 self.addunit(unit, new=False)
 

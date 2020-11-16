@@ -35,9 +35,15 @@ class ini2po:
     TargetStoreClass = po.pofile
     TargetUnitClass = po.pounit
 
-    def __init__(self, input_file, output_file, template_file=None,
-                 blank_msgstr=False, duplicate_style="msgctxt",
-                 dialect="default"):
+    def __init__(
+        self,
+        input_file,
+        output_file,
+        template_file=None,
+        blank_msgstr=False,
+        duplicate_style="msgctxt",
+        dialect="default",
+    ):
         """Initialize the converter."""
         if ini.INIConfig is None:
             print("Missing iniparse library!")
@@ -53,8 +59,7 @@ class ini2po:
         self.template_store = None
 
         if template_file is not None:
-            self.template_store = self.SourceStoreClass(template_file,
-                                                        dialect=dialect)
+            self.template_store = self.SourceStoreClass(template_file, dialect=dialect)
 
     def convert_unit(self, unit):
         """Convert a source format unit to a target format unit."""
@@ -73,9 +78,10 @@ class ini2po:
 
     def merge_stores(self):
         """Convert two source format files to a target format file."""
-        self.extraction_msg = ("extracted from %s, %s" %
-                               (self.template_store.filename,
-                                self.source_store.filename))
+        self.extraction_msg = "extracted from %s, %s" % (
+            self.template_store.filename,
+            self.source_store.filename,
+        )
 
         self.source_store.makeindex()
         for template_unit in self.template_store.units:
@@ -83,8 +89,9 @@ class ini2po:
 
             template_unit_name = "".join(template_unit.getlocations())
             add_translation = (
-                not self.blank_msgstr and
-                template_unit_name in self.source_store.locationindex)
+                not self.blank_msgstr
+                and template_unit_name in self.source_store.locationindex
+            )
             if add_translation:
                 source_unit = self.source_store.locationindex[template_unit_name]
                 target_unit.target = source_unit.source
@@ -98,8 +105,7 @@ class ini2po:
             self.merge_stores()
 
         if self.extraction_msg:
-            self.target_store.header().addnote(self.extraction_msg,
-                                               "developer")
+            self.target_store.header().addnote(self.extraction_msg, "developer")
 
         self.target_store.removeduplicates(self.duplicate_style)
 
@@ -110,17 +116,36 @@ class ini2po:
         return 1
 
 
-def run_converter(input_file, output_file, template_file=None, pot=False,
-                  duplicatestyle="msgctxt", dialect="default"):
+def run_converter(
+    input_file,
+    output_file,
+    template_file=None,
+    pot=False,
+    duplicatestyle="msgctxt",
+    dialect="default",
+):
     """Wrapper around converter."""
-    return ini2po(input_file, output_file, template_file, blank_msgstr=pot,
-                  duplicate_style=duplicatestyle, dialect=dialect).run()
+    return ini2po(
+        input_file,
+        output_file,
+        template_file,
+        blank_msgstr=pot,
+        duplicate_style=duplicatestyle,
+        dialect=dialect,
+    ).run()
 
 
-def convertisl(input_file, output_file, template_file=None, pot=False,
-               duplicatestyle="msgctxt", dialect="inno"):
-    return run_converter(input_file, output_file, template_file, pot,
-                         duplicatestyle, dialect)
+def convertisl(
+    input_file,
+    output_file,
+    template_file=None,
+    pot=False,
+    duplicatestyle="msgctxt",
+    dialect="inno",
+):
+    return run_converter(
+        input_file, output_file, template_file, pot, duplicatestyle, dialect
+    )
 
 
 formats = {
@@ -134,8 +159,9 @@ formats = {
 
 
 def main(argv=None):
-    parser = convert.ConvertOptionParser(formats, usetemplates=True,
-                                         usepots=True, description=__doc__)
+    parser = convert.ConvertOptionParser(
+        formats, usetemplates=True, usepots=True, description=__doc__
+    )
     parser.add_duplicates_option()
     parser.passthrough.append("pot")
     parser.run(argv)

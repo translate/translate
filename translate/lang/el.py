@@ -34,28 +34,33 @@ class el(common.Common):
     # Greek uses ; as question mark and the middot instead
     sentenceend = ".!;…"
 
-    sentencere = re.compile(r"""
+    sentencere = re.compile(
+        r"""
         (?s)        # make . also match newlines
         .*?         # anything, but match non-greedy
         [%s]        # the puntuation for sentence ending
         \s+         # the spacing after the puntuation
         (?=[^a-zά-ώ\d])  # lookahead that next part starts with caps
-        """ % sentenceend, re.VERBOSE | re.UNICODE)
+        """
+        % sentenceend,
+        re.VERBOSE | re.UNICODE,
+    )
 
-    puncdict = OrderedDict([
-        (";", "·"),
-        ("?", ";"),
-    ])
+    puncdict = OrderedDict(
+        [
+            (";", "·"),
+            ("?", ";"),
+        ]
+    )
 
     # Valid latin characters for use as accelerators
-    valid_latin_accel = ("abcdefghijklmnopqrstuvwxyz"
-                         "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
-                         "1234567890")
+    valid_latin_accel = (
+        "abcdefghijklmnopqrstuvwxyz" "ABCDEFGHIJKLMNOPQRSTUVWXYZ" "1234567890"
+    )
 
     # Valid greek characters for use as accelerators (accented characters
     # and "ς" omitted)
-    valid_greek_accel = ("αβγδεζηθικλμνξοπρστυφχψω"
-                         "ΑΒΓΔΕΖΗΘΙΚΛΜΝΞΟΠΡΣΤΥΦΧΨΩ")
+    valid_greek_accel = "αβγδεζηθικλμνξοπρστυφχψω" "ΑΒΓΔΕΖΗΘΙΚΛΜΝΞΟΠΡΣΤΥΦΧΨΩ"
 
     # Valid accelerators
     validaccel = "".join([valid_latin_accel, valid_greek_accel])

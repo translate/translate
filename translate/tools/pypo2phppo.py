@@ -26,7 +26,6 @@ from translate.storage import po
 
 
 class pypo2phppo:
-
     def convertstore(self, inputstore):
         """Converts a given .po file (Python Format) to a PHP format .po file.
 
@@ -61,8 +60,7 @@ class pypo2phppo:
         return unit
 
     def convertstring(self, string):
-        return re.sub(r'\{(\d)\}',
-                      lambda x: "%%%d$s" % (int(x.group(1)) + 1), string)
+        return re.sub(r'\{(\d)\}', lambda x: "%%%d$s" % (int(x.group(1)) + 1), string)
 
     def convertstrings(self, input):
         if isinstance(input, multistring):
@@ -73,9 +71,9 @@ class pypo2phppo:
             return self.convertstring(input)
 
         for index, string in enumerate(strings):
-            strings[index] = re.sub(r'\{(\d)\}',
-                                    lambda x: "%%%d$s" % (int(x.group(1)) + 1),
-                                    string)
+            strings[index] = re.sub(
+                r'\{(\d)\}', lambda x: "%%%d$s" % (int(x.group(1)) + 1), string
+            )
         return strings
 
 

@@ -33,12 +33,21 @@ optparse = optrecurse.optparse
 class ConvertOptionParser(optrecurse.RecursiveOptionParser, object):
     """A specialized Option Parser for convertor tools..."""
 
-    def __init__(self, formats, usetemplates=False, usepots=False,
-                 allowmissingtemplate=False, description=None):
+    def __init__(
+        self,
+        formats,
+        usetemplates=False,
+        usepots=False,
+        allowmissingtemplate=False,
+        description=None,
+    ):
         """construct the specialized Option Parser"""
-        super().__init__(formats, usetemplates,
-                         allowmissingtemplate=allowmissingtemplate,
-                         description=description)
+        super().__init__(
+            formats,
+            usetemplates,
+            allowmissingtemplate=allowmissingtemplate,
+            description=description,
+        )
         self.usepots = usepots
         self.settimestampoption()
         self.setpotoption()
@@ -52,49 +61,79 @@ class ConvertOptionParser(optrecurse.RecursiveOptionParser, object):
             fuzzyhelp += " (default)"
         else:
             nofuzzyhelp += " (default)"
-        self.add_option("", "--fuzzy", dest="includefuzzy",
-                        action="store_true", default=default, help=fuzzyhelp)
-        self.add_option("", "--nofuzzy", dest="includefuzzy",
-                        action="store_false", default=default, help=nofuzzyhelp)
+        self.add_option(
+            "",
+            "--fuzzy",
+            dest="includefuzzy",
+            action="store_true",
+            default=default,
+            help=fuzzyhelp,
+        )
+        self.add_option(
+            "",
+            "--nofuzzy",
+            dest="includefuzzy",
+            action="store_false",
+            default=default,
+            help=nofuzzyhelp,
+        )
         self.passthrough.append("includefuzzy")
 
     def add_remove_untranslated_option(self, default=False):
         """Adds an option to remove key value from output if it is
         untranslated.
         """
-        self.add_option("", "--removeuntranslated", dest="remove_untranslated",
-                        default=False, action="store_true",
-                        help="remove untranslated strings from output")
+        self.add_option(
+            "",
+            "--removeuntranslated",
+            dest="remove_untranslated",
+            default=False,
+            action="store_true",
+            help="remove untranslated strings from output",
+        )
         self.passthrough.append("remove_untranslated")
 
     def add_threshold_option(self, default=None):
         """Adds an option to output only stores where translation percentage
         exceeds the threshold.
         """
-        self.add_option("", "--threshold", dest="outputthreshold", default=default,
-                        metavar="PERCENT", type="int",
-                        help="only convert files where the translation completion is above PERCENT")
+        self.add_option(
+            "",
+            "--threshold",
+            dest="outputthreshold",
+            default=default,
+            metavar="PERCENT",
+            type="int",
+            help="only convert files where the translation completion is above PERCENT",
+        )
         self.passthrough.append("outputthreshold")
 
     def add_duplicates_option(self, default="msgctxt"):
         """Adds an option to say what to do with duplicate strings."""
         self.add_option(
-            "", "--duplicates", dest="duplicatestyle", default=default,
-            type="choice", choices=["msgctxt", "merge"],
-            help="what to do with duplicate strings (identical source text): merge, msgctxt (default: '%s')" %
-                 default,
-            metavar="DUPLICATESTYLE"
+            "",
+            "--duplicates",
+            dest="duplicatestyle",
+            default=default,
+            type="choice",
+            choices=["msgctxt", "merge"],
+            help="what to do with duplicate strings (identical source text): merge, msgctxt (default: '%s')"
+            % default,
+            metavar="DUPLICATESTYLE",
         )
         self.passthrough.append("duplicatestyle")
 
     def add_multifile_option(self, default="single"):
         """Adds an option to say how to split the po/pot files."""
         self.add_option(
-            "", "--multifile",
-            dest="multifilestyle", default=default,
-            type="choice", choices=["single", "toplevel", "onefile"],
+            "",
+            "--multifile",
+            dest="multifilestyle",
+            default=default,
+            type="choice",
+            choices=["single", "toplevel", "onefile"],
             help="how to split po/pot files (single, toplevel or onefile)",
-            metavar="MULTIFILESTYLE"
+            metavar="MULTIFILESTYLE",
         )
         self.passthrough.append("multifilestyle")
 
@@ -131,7 +170,10 @@ class ConvertOptionParser(optrecurse.RecursiveOptionParser, object):
         """Filters output options, processing relevant switches in options."""
         if self.usepots and options.pot:
             outputoptions = {}
-            for (inputformat, templateformat), (outputformat, convertor) in self.outputoptions.items():
+            for (inputformat, templateformat), (
+                outputformat,
+                convertor,
+            ) in self.outputoptions.items():
                 inputformat = self.potifyformat(inputformat)
                 templateformat = self.potifyformat(templateformat)
                 outputformat = self.potifyformat(outputformat)
@@ -146,18 +188,24 @@ class ConvertOptionParser(optrecurse.RecursiveOptionParser, object):
         """
         if self.usepots:
             potoption = optparse.Option(
-                "-P", "--pot",
-                action="store_true", dest="pot", default=False,
-                help="output PO Templates (.pot) rather than PO files (.po)"
+                "-P",
+                "--pot",
+                action="store_true",
+                dest="pot",
+                default=False,
+                help="output PO Templates (.pot) rather than PO files (.po)",
             )
             self.define_option(potoption)
 
     def settimestampoption(self):
         """Sets ``-S``/``--timestamp`` option."""
         timestampopt = optparse.Option(
-            "-S", "--timestamp",
-            action="store_true", dest="timestamp", default=False,
-            help="skip conversion if the output file has newer timestamp"
+            "-S",
+            "--timestamp",
+            action="store_true",
+            dest="timestamp",
+            default=False,
+            help="skip conversion if the output file has newer timestamp",
         )
         self.define_option(timestampopt)
 
@@ -178,14 +226,15 @@ class ConvertOptionParser(optrecurse.RecursiveOptionParser, object):
             self.error(str(e))
         self.recursiveprocess(options)
 
-    def processfile(self, fileprocessor, options, fullinputpath,
-                    fulloutputpath, fulltemplatepath):
+    def processfile(
+        self, fileprocessor, options, fullinputpath, fulloutputpath, fulltemplatepath
+    ):
         if options.timestamp and _output_is_newer(fullinputpath, fulloutputpath):
             return False
 
         return super().processfile(
-            fileprocessor, options, fullinputpath, fulloutputpath,
-            fulltemplatepath)
+            fileprocessor, options, fullinputpath, fulloutputpath, fulltemplatepath
+        )
 
 
 def copyinput(inputfile, outputfile, templatefile, **kwargs):
@@ -214,19 +263,18 @@ class Replacer:
         else:
             return text
 
-    def searchreplaceinput(self, inputfile, outputfile,
-                           templatefile, **kwargs):
+    def searchreplaceinput(self, inputfile, outputfile, templatefile, **kwargs):
         """copies the input file to the output file, searching and replacing"""
         outputfile.write(self.doreplace(inputfile.read()))
         return True
 
-    def searchreplacetemplate(self, inputfile, outputfile,
-                              templatefile, **kwargs):
+    def searchreplacetemplate(self, inputfile, outputfile, templatefile, **kwargs):
         """Copies the template file to the output file, searching and
         replacing.
         """
         outputfile.write(self.doreplace(templatefile.read()))
         return True
+
 
 # archive files need to know how to:
 # - openarchive: creates an archive object for the archivefilename
@@ -254,8 +302,14 @@ class ArchiveConvertOptionParser(ConvertOptionParser):
     as ``(extension, filepurpose)``.
     """
 
-    def __init__(self, formats, usetemplates=False, usepots=False,
-                 description=None, archiveformats=None):
+    def __init__(
+        self,
+        formats,
+        usetemplates=False,
+        usepots=False,
+        description=None,
+        archiveformats=None,
+    ):
         if archiveformats is None:
             self.archiveformats = {}
         else:
@@ -273,13 +327,16 @@ class ArchiveConvertOptionParser(ConvertOptionParser):
         """Returns whether the file option is an archive file."""
         if not isinstance(fileoption, str):
             return False
-        mustexist = (filepurpose != 'output')
+        mustexist = filepurpose != 'output'
         if mustexist and not os.path.isfile(fileoption):
             return False
         fileext = self.splitext(fileoption)[1]
         # if None is in the archive formats, then treat all non-directory
         # inputs as archives
-        return self.getarchiveclass(fileext, filepurpose, os.path.isdir(fileoption)) is not None
+        return (
+            self.getarchiveclass(fileext, filepurpose, os.path.isdir(fileoption))
+            is not None
+        )
 
     def getarchiveclass(self, fileext, filepurpose, isdir=False):
         """Returns the archiveclass for the given fileext and filepurpose"""
@@ -301,8 +358,9 @@ class ArchiveConvertOptionParser(ConvertOptionParser):
     def openarchive(self, archivefilename, filepurpose, **kwargs):
         """Creates an archive object for the given file."""
         archiveext = self.splitext(archivefilename)[1]
-        archiveclass = self.getarchiveclass(archiveext, filepurpose,
-                                            os.path.isdir(archivefilename))
+        archiveclass = self.getarchiveclass(
+            archiveext, filepurpose, os.path.isdir(archivefilename)
+        )
         archiveoptions = self.archiveoptions.copy()
         archiveoptions.update(kwargs)
         return archiveclass(archivefilename, **archiveoptions)
@@ -346,8 +404,9 @@ class ArchiveConvertOptionParser(ConvertOptionParser):
     def opentemplatefile(self, options, fulltemplatepath):
         """Opens the template file (if required)."""
         if fulltemplatepath is not None:
-            if (options.recursivetemplate and
-                self.isarchive(options.template, 'template')):
+            if options.recursivetemplate and self.isarchive(
+                options.template, 'template'
+            ):
                 # TODO: deal with different names in input/template archives
                 if fulltemplatepath in self.templatearchive:
                     return self.templatearchive.openinputfile(fulltemplatepath)
@@ -396,8 +455,10 @@ class ArchiveConvertOptionParser(ConvertOptionParser):
         if self.isarchive(options.output, 'output'):
             outputstream = self.outputarchive.openoutputfile(fulloutputpath)
             if outputstream is None:
-                self.warning("Could not find where to put %s in output "
-                             "archive; writing to tmp" % fulloutputpath)
+                self.warning(
+                    "Could not find where to put %s in output "
+                    "archive; writing to tmp" % fulloutputpath
+                )
                 return BytesIO()
             return outputstream
         else:
@@ -409,21 +470,25 @@ class ArchiveConvertOptionParser(ConvertOptionParser):
             self.archiveoptions = {'multifilestyle': options.multifilestyle}
             for filetype in ("input", "output", "template"):
                 allowoption = "allowrecursive%s" % filetype
-                if (options.multifilestyle == "onefile" and
-                    getattr(options, allowoption, True)):
+                if options.multifilestyle == "onefile" and getattr(
+                    options, allowoption, True
+                ):
                     setattr(options, allowoption, False)
 
-        if (self.usetemplates and options.template and
-            self.isarchive(options.template, 'template')):
+        if (
+            self.usetemplates
+            and options.template
+            and self.isarchive(options.template, 'template')
+        ):
             self.templatearchive = self.openarchive(options.template, 'template')
 
         if options.output and self.isarchive(options.output, 'output'):
-            self.outputarchive = self.openarchive(options.output, 'output',
-                                                  mode="w")
+            self.outputarchive = self.openarchive(options.output, 'output', mode="w")
         return super().recursiveprocess(options)
 
-    def processfile(self, fileprocessor, options, fullinputpath,
-                    fulloutputpath, fulltemplatepath):
+    def processfile(
+        self, fileprocessor, options, fullinputpath, fulloutputpath, fulltemplatepath
+    ):
         """Run an invidividual conversion."""
         if options.timestamp and _output_is_newer(fullinputpath, fulloutputpath):
             return False
@@ -434,8 +499,7 @@ class ArchiveConvertOptionParser(ConvertOptionParser):
             templatefile = self.opentemplatefile(options, fulltemplatepath)
             outputfile = self.openoutputfile(options, fulloutputpath)
             passthroughoptions = self.getpassthroughoptions(options)
-            if fileprocessor(inputfile, outputfile, templatefile,
-                             **passthroughoptions):
+            if fileprocessor(inputfile, outputfile, templatefile, **passthroughoptions):
                 if not outputfile.isatty():
                     outputfile.close()
                 return True
@@ -446,8 +510,8 @@ class ArchiveConvertOptionParser(ConvertOptionParser):
                 return False
         else:
             return super().processfile(
-                fileprocessor, options, fullinputpath, fulloutputpath,
-                fulltemplatepath)
+                fileprocessor, options, fullinputpath, fulloutputpath, fulltemplatepath
+            )
 
 
 def _output_is_newer(input_path, output_path):
@@ -478,7 +542,9 @@ def should_output_store(store, threshold):
 
     units = list(filter(lambda unit: unit.istranslatable(), store.units))
     translated = list(filter(lambda unit: unit.istranslated(), units))
-    wordcounts = dict(map(lambda unit: (unit.getid(), statsdb.wordsinunit(unit)), units))
+    wordcounts = dict(
+        map(lambda unit: (unit.getid(), statsdb.wordsinunit(unit)), units)
+    )
 
     def sourcewords(elementlist):
         return sum(map(lambda unit: wordcounts[unit.getid()][0], elementlist))

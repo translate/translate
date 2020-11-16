@@ -21,9 +21,11 @@ import zipfile
 
 def open_odf(filename):
     z = zipfile.ZipFile(filename, 'r')
-    return {'content.xml': z.read("content.xml"),
-            'meta.xml': z.read("meta.xml"),
-            'styles.xml': z.read("styles.xml")}
+    return {
+        'content.xml': z.read("content.xml"),
+        'meta.xml': z.read("meta.xml"),
+        'styles.xml': z.read("styles.xml"),
+    }
 
 
 def copy_odf(input_zip, output_zip, exclusion_list):

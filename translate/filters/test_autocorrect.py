@@ -1,9 +1,7 @@
-
 from translate.filters import autocorrect
 
 
 class TestAutocorrect:
-
     def correct(self, msgid, msgstr, expected):
         """helper to run correct function from autocorrect module"""
         corrected = autocorrect.correct(msgid, msgstr)
@@ -38,9 +36,9 @@ class TestAutocorrect:
     def test_correct_end_punc(self):
         """test that we can correct end punctuation"""
         self.correct("Simple string:", "Dimpled ring", "Dimpled ring:")
-        #self.correct("Simple string: ", "Dimpled ring", "Dimpled ring: ")
+        # self.correct("Simple string: ", "Dimpled ring", "Dimpled ring: ")
         self.correct("Simple string.", "Dimpled ring", "Dimpled ring.")
-        #self.correct("Simple string. ", "Dimpled ring", "Dimpled ring. ")
+        # self.correct("Simple string. ", "Dimpled ring", "Dimpled ring. ")
         self.correct("Simple string?", "Dimpled ring", "Dimpled ring?")
 
     def test_correct_combinations(self):

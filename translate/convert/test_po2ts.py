@@ -1,4 +1,3 @@
-
 from io import BytesIO
 
 from translate.convert import po2ts, test_convert
@@ -6,7 +5,6 @@ from translate.storage import po
 
 
 class TestPO2TS:
-
     def po2ts(self, posource):
         """helper that converts po source to ts source without requiring files"""
         inputfile = BytesIO(posource.encode())
@@ -104,10 +102,16 @@ msgstr "Linea 1\n"
         print(tsfile)
         print(type(tsfile))
         assert "<name>linebreak.cpp</name>" in tsfile
-        assert r'''<source>Line 1
-Line 2</source>''' in tsfile
-        assert r'''<translation>Linea 1
-Linea 2</translation>''' in tsfile
+        assert (
+            r'''<source>Line 1
+Line 2</source>'''
+            in tsfile
+        )
+        assert (
+            r'''<translation>Linea 1
+Linea 2</translation>'''
+            in tsfile
+        )
 
     def test_linebreak_consecutive(self):
         """test that we can handle consecutive linebreaks"""
@@ -122,12 +126,18 @@ msgstr "Linea 1\n"
         print(tsfile)
         print(type(tsfile))
         assert "<name>linebreak.cpp</name>" in tsfile
-        assert r'''<source>Line 1
+        assert (
+            r'''<source>Line 1
 
-Line 3</source>''' in tsfile
-        assert r'''<translation>Linea 1
+Line 3</source>'''
+            in tsfile
+        )
+        assert (
+            r'''<translation>Linea 1
 
-Linea 3</translation>''' in tsfile
+Linea 3</translation>'''
+            in tsfile
+        )
 
 
 class TestPO2TSCommand(test_convert.TestConvertCommand, TestPO2TS):
@@ -139,4 +149,6 @@ class TestPO2TSCommand(test_convert.TestConvertCommand, TestPO2TS):
         """tests getting help"""
         options = test_convert.TestConvertCommand.test_help(self, capsys)
         options = self.help_check(options, "-c CONTEXT, --context=CONTEXT")
-        options = self.help_check(options, "-t TEMPLATE, --template=TEMPLATE", last=True)
+        options = self.help_check(
+            options, "-t TEMPLATE, --template=TEMPLATE", last=True
+        )

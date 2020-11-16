@@ -7,9 +7,15 @@ class TestPO2Lang:
 
     ConverterClass = po2mozlang.po2lang
 
-    def _convert(self, input_string, template_string=None, include_fuzzy=False,
-                 output_threshold=None, mark_active=True,
-                 success_expected=True):
+    def _convert(
+        self,
+        input_string,
+        template_string=None,
+        include_fuzzy=False,
+        output_threshold=None,
+        mark_active=True,
+        success_expected=True,
+    ):
         """Helper that converts to target format without using files."""
         input_file = BytesIO(input_string.encode())
         output_file = BytesIO()
@@ -17,9 +23,14 @@ class TestPO2Lang:
         if template_string:
             template_file = BytesIO(template_string.encode())
         expected_result = 1 if success_expected else 0
-        converter = self.ConverterClass(input_file, output_file, template_file,
-                                        include_fuzzy, output_threshold,
-                                        mark_active)
+        converter = self.ConverterClass(
+            input_file,
+            output_file,
+            template_file,
+            include_fuzzy,
+            output_threshold,
+            mark_active,
+        )
         assert converter.run() == expected_result
         return None, output_file
 
@@ -42,8 +53,9 @@ Target
 
 
 """
-        assert expected_output == self._convert_to_string(input_string,
-                                                          mark_active=False)
+        assert expected_output == self._convert_to_string(
+            input_string, mark_active=False
+        )
 
     def test_comment(self):
         """Simple # comments"""
@@ -58,8 +70,9 @@ Target
 
 
 """
-        assert expected_output == self._convert_to_string(input_string,
-                                                          mark_active=False)
+        assert expected_output == self._convert_to_string(
+            input_string, mark_active=False
+        )
 
     def test_ok_marker(self):
         """The {ok} marker"""
@@ -72,8 +85,9 @@ Same {ok}
 
 
 """
-        assert expected_output == self._convert_to_string(input_string,
-                                                          mark_active=False)
+        assert expected_output == self._convert_to_string(
+            input_string, mark_active=False
+        )
 
     def test_convert_completion_below_threshold(self):
         """Check no conversion if input completion is below threshold."""
@@ -83,9 +97,9 @@ msgstr ""
 """
         expected_output = ""
         # Input completion is 0% so with a 70% threshold it should not output.
-        output = self._convert_to_string(input_string, output_threshold=70,
-                                         mark_active=False,
-                                         success_expected=False)
+        output = self._convert_to_string(
+            input_string, output_threshold=70, mark_active=False, success_expected=False
+        )
         assert output == expected_output
 
     def test_convert_completion_above_threshold(self):
@@ -100,9 +114,9 @@ Target
 
 """
         # Input completion is 100% so with a 70% threshold it should output.
-        output = self._convert_to_string(input_string, output_threshold=70,
-                                         mark_active=False,
-                                         success_expected=True)
+        output = self._convert_to_string(
+            input_string, output_threshold=70, mark_active=False, success_expected=True
+        )
         assert output == expected_output
 
     def test_convert_skip_non_translatable_input(self):
@@ -120,8 +134,9 @@ Target
 
 
 """
-        assert expected_output == self._convert_to_string(input_string,
-                                                          mark_active=False)
+        assert expected_output == self._convert_to_string(
+            input_string, mark_active=False
+        )
 
     def test_no_fuzzy(self):
         """Check fuzzy units are not converted."""
@@ -136,9 +151,9 @@ Source
 
 
 """
-        assert expected_output == self._convert_to_string(input_string,
-                                                          include_fuzzy=False,
-                                                          mark_active=False)
+        assert expected_output == self._convert_to_string(
+            input_string, include_fuzzy=False, mark_active=False
+        )
 
     def test_allow_fuzzy(self):
         """Check fuzzy units are converted."""
@@ -153,9 +168,9 @@ Target
 
 
 """
-        assert expected_output == self._convert_to_string(input_string,
-                                                          include_fuzzy=True,
-                                                          mark_active=False)
+        assert expected_output == self._convert_to_string(
+            input_string, include_fuzzy=True, mark_active=False
+        )
 
     def test_mark_active(self):
         """Check output is marked as active."""
@@ -170,8 +185,9 @@ Target
 
 
 """
-        assert expected_output == self._convert_to_string(input_string,
-                                                          mark_active=True)
+        assert expected_output == self._convert_to_string(
+            input_string, mark_active=True
+        )
 
 
 class TestPO2LangCommand(test_convert.TestConvertCommand, TestPO2Lang):

@@ -5,7 +5,6 @@ from translate.storage import po, properties
 
 
 class TestProp2PO:
-
     def prop2po(self, propsource, proptemplate=None, personality="java"):
         """helper that converts .properties source to po source without requiring files"""
         inputfile = BytesIO(propsource.encode())
@@ -82,7 +81,9 @@ class TestProp2PO:
         pounit = self.singleelement(pofile)
         assert pounit.source == "This setence has a tab at the end.\t"
 
-        propsource = r"SPACE_THEN_TAB_AT_END=This setence has a space then tab at the end. \t"
+        propsource = (
+            r"SPACE_THEN_TAB_AT_END=This setence has a space then tab at the end. \t"
+        )
         pofile = self.prop2po(propsource)
         pounit = self.singleelement(pofile)
         assert pounit.source == "This setence has a space then tab at the end. \t"
@@ -92,7 +93,9 @@ class TestProp2PO:
         pounit = self.singleelement(pofile)
         assert pounit.source == "This setence will keep its 4 spaces at the end.    "
 
-        propsource = r"SPACE_AT_END_NO_TRIM=This setence will keep its 4 spaces at the end.\    "
+        propsource = (
+            r"SPACE_AT_END_NO_TRIM=This setence will keep its 4 spaces at the end.\    "
+        )
         pofile = self.prop2po(propsource)
         pounit = self.singleelement(pofile)
         assert pounit.source == "This setence will keep its 4 spaces at the end.    "
@@ -148,7 +151,7 @@ prefPanel-smime=
 '''
         pofile = self.prop2po(propsource)
         print(bytes(pofile))
-        #header comments:
+        # header comments:
         assert b"#. # Comment\n#. # commenty 2" in bytes(pofile)
         pounit = self.singleelement(pofile)
         assert pounit.getnotes("developer") == "## @name GENERIC_ERROR\n## @loc none"
@@ -191,7 +194,7 @@ do=translate me
             pounit = self.singleelement(pofile)
             assert pounit.getlocations() == ["credit"]
             # FIXME we don't seem to get a _: comment but we should
-            #assert pounit.getcontext() == "credit"
+            # assert pounit.getcontext() == "credit"
             assert pounit.source == ""
             assert pounit.target == "Translators Names"
 
@@ -216,7 +219,10 @@ do=translate me
         pofile = self.prop2po(propsource)
         unit = self.singleelement(pofile)
         assert unit.source == "value"
-        assert unit.getnotes("developer") == "# 1st Unassociated comment\n\n# 2nd Connected comment"
+        assert (
+            unit.getnotes("developer")
+            == "# 1st Unassociated comment\n\n# 2nd Connected comment"
+        )
 
     def test_x_header(self):
         """Test that we correctly create the custom header entries

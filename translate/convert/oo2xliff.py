@@ -34,8 +34,9 @@ logger = logging.getLogger(__name__)
 
 
 class oo2xliff:
-
-    def __init__(self, sourcelanguage, targetlanguage, blankmsgstr=False, long_keys=False):
+    def __init__(
+        self, sourcelanguage, targetlanguage, blankmsgstr=False, long_keys=False
+    ):
         """construct an oo2xliff converter for the specified languages"""
         self.sourcelanguage = sourcelanguage
         self.targetlanguage = targetlanguage
@@ -44,7 +45,7 @@ class oo2xliff:
 
     def maketargetunit(self, part1, part2, translators_comment, key, subkey):
         """makes a base unit (.po or XLIFF) out of a subkey of two parts"""
-        #TODO: Do better
+        # TODO: Do better
         text1 = getattr(part1, subkey)
         if text1 == "":
             return None
@@ -66,8 +67,10 @@ class oo2xliff:
         if self.sourcelanguage in theoo.languages:
             part1 = theoo.languages[self.sourcelanguage]
         else:
-            logging.error("/".join(theoo.lines[0].getkey()) +
-                          "language not found: %s", self.sourcelanguage)
+            logging.error(
+                "/".join(theoo.lines[0].getkey()) + "language not found: %s",
+                self.sourcelanguage,
+            )
             return []
         if self.blankmsgstr:
             # use a blank part2
@@ -109,7 +112,16 @@ def verifyoptions(options):
         raise ValueError("You must specify the target language.")
 
 
-def convertoo(inputfile, outputfile, templates, pot=False, sourcelanguage=None, targetlanguage=None, duplicatestyle="msgctxt", multifilestyle="single"):
+def convertoo(
+    inputfile,
+    outputfile,
+    templates,
+    pot=False,
+    sourcelanguage=None,
+    targetlanguage=None,
+    duplicatestyle="msgctxt",
+    multifilestyle="single",
+):
     """reads in stdin using inputstore class, converts using convertorclass, writes to stdout"""
     inputstore = oo.oofile()
     if hasattr(inputfile, "filename"):
@@ -125,18 +137,25 @@ def convertoo(inputfile, outputfile, templates, pot=False, sourcelanguage=None, 
         else:
             sourcelanguage = "en-US"
     if sourcelanguage not in inputstore.languages:
-        logger.warning("sourcelanguage '%s' not found in inputfile '%s' "
-                       "(contains %s)",
-                       sourcelanguage, inputfilename,
-                       ", ".join(inputstore.languages))
-    if not pot and (targetlanguage and
-                    targetlanguage not in inputstore.languages):
-        logger.warning("targetlanguage '%s' not found in inputfile '%s' "
-                       "(contains %s)",
-                       targetlanguage, inputfilename,
-                       ", ".join(inputstore.languages))
-    convertor = oo2xliff(sourcelanguage, targetlanguage, blankmsgstr=pot,
-                         long_keys=(multifilestyle != "single"))
+        logger.warning(
+            "sourcelanguage '%s' not found in inputfile '%s' " "(contains %s)",
+            sourcelanguage,
+            inputfilename,
+            ", ".join(inputstore.languages),
+        )
+    if not pot and (targetlanguage and targetlanguage not in inputstore.languages):
+        logger.warning(
+            "targetlanguage '%s' not found in inputfile '%s' " "(contains %s)",
+            targetlanguage,
+            inputfilename,
+            ", ".join(inputstore.languages),
+        )
+    convertor = oo2xliff(
+        sourcelanguage,
+        targetlanguage,
+        blankmsgstr=pot,
+        long_keys=(multifilestyle != "single"),
+    )
     outputstore = convertor.convertstore(inputstore, duplicatestyle)
     if outputstore.isempty():
         return 0
@@ -146,6 +165,7 @@ def convertoo(inputfile, outputfile, templates, pot=False, sourcelanguage=None, 
 
 def main(argv=None):
     from translate.convert import convert
+
     formats = (
         ("oo", ("xlf", convertoo)),
         ("sdf", ("xlf", convertoo)),
@@ -154,18 +174,33 @@ def main(argv=None):
     )
     # always treat the input as an archive unless it is a directory
     archiveformats = {(None, "input"): oo.oomultifile}
-    parser = convert.ArchiveConvertOptionParser(formats, usepots=False,
-                                                description=__doc__,
-                                                archiveformats=archiveformats)
-    parser.add_option("-l", "--language", dest="targetlanguage", default=None,
-                      help="set target language to extract from oo file (e.g. af-ZA)",
-                      metavar="LANG")
+    parser = convert.ArchiveConvertOptionParser(
+        formats, usepots=False, description=__doc__, archiveformats=archiveformats
+    )
     parser.add_option(
-        "", "--source-language", dest="sourcelanguage", default=None,
-        help="set source language code (default en-US)", metavar="LANG")
-    parser.add_option("", "--nonrecursiveinput", dest="allowrecursiveinput",
-                      default=True, action="store_false",
-                      help="don't treat the input oo as a recursive store")
+        "-l",
+        "--language",
+        dest="targetlanguage",
+        default=None,
+        help="set target language to extract from oo file (e.g. af-ZA)",
+        metavar="LANG",
+    )
+    parser.add_option(
+        "",
+        "--source-language",
+        dest="sourcelanguage",
+        default=None,
+        help="set source language code (default en-US)",
+        metavar="LANG",
+    )
+    parser.add_option(
+        "",
+        "--nonrecursiveinput",
+        dest="allowrecursiveinput",
+        default=True,
+        action="store_false",
+        help="don't treat the input oo as a recursive store",
+    )
     parser.add_duplicates_option()
     parser.add_multifile_option()
     parser.passthrough.append("sourcelanguage")

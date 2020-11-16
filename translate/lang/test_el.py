@@ -1,4 +1,3 @@
-
 from translate.lang import factory
 
 
@@ -18,8 +17,13 @@ def test_sentences():
     sentences = language.sentences("")
     assert sentences == []
 
-    sentences = language.sentences("Θέλετε να αποθηκεύσετε το παιχνίδι σας; (Θα σβησθούν οι Αυτόματες-Αποθηκεύσεις)")
-    assert sentences == ["Θέλετε να αποθηκεύσετε το παιχνίδι σας;", "(Θα σβησθούν οι Αυτόματες-Αποθηκεύσεις)"]
+    sentences = language.sentences(
+        "Θέλετε να αποθηκεύσετε το παιχνίδι σας; (Θα σβησθούν οι Αυτόματες-Αποθηκεύσεις)"
+    )
+    assert sentences == [
+        "Θέλετε να αποθηκεύσετε το παιχνίδι σας;",
+        "(Θα σβησθούν οι Αυτόματες-Αποθηκεύσεις)",
+    ]
     sentences = language.sentences("Πρώτη πρόταση. Δεύτερη πρόταση.")
     assert sentences == ["Πρώτη πρόταση.", "Δεύτερη πρόταση."]
     sentences = language.sentences("Πρώτη πρόταση. δεύτερη πρόταση.")

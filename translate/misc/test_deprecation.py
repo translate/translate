@@ -1,4 +1,3 @@
-
 from pytest import deprecated_call, mark
 
 from translate.misc.deprecation import deprecated

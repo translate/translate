@@ -36,9 +36,15 @@ class po2ini:
     TargetUnitClass = ini.iniunit
     MissingTemplateMessage = "A template INI file must be provided."
 
-    def __init__(self, input_file, output_file, template_file=None,
-                 include_fuzzy=False, output_threshold=None,
-                 dialect="default"):
+    def __init__(
+        self,
+        input_file,
+        output_file,
+        template_file=None,
+        include_fuzzy=False,
+        output_threshold=None,
+        dialect="default",
+    ):
         """Initialize the converter."""
         if ini.INIConfig is None:
             print("Missing iniparse library!")
@@ -56,8 +62,7 @@ class po2ini:
             self.include_fuzzy = include_fuzzy
 
             self.output_file = output_file
-            self.template_store = self.TargetStoreClass(template_file,
-                                                        dialect=dialect)
+            self.template_store = self.TargetStoreClass(template_file, dialect=dialect)
             self.target_store = self.TargetStoreClass(dialect=dialect)
 
     def merge_stores(self):
@@ -88,17 +93,31 @@ class po2ini:
         return 1
 
 
-def run_converter(inputfile, outputfile, templatefile=None, includefuzzy=False,
-                  dialect="default", outputthreshold=None):
+def run_converter(
+    inputfile,
+    outputfile,
+    templatefile=None,
+    includefuzzy=False,
+    dialect="default",
+    outputthreshold=None,
+):
     """Wrapper around converter."""
-    return po2ini(inputfile, outputfile, templatefile, includefuzzy,
-                  outputthreshold, dialect).run()
+    return po2ini(
+        inputfile, outputfile, templatefile, includefuzzy, outputthreshold, dialect
+    ).run()
 
 
-def convertisl(inputfile, outputfile, templatefile=None, includefuzzy=False,
-               dialect="inno", outputthreshold=None):
-    run_converter(inputfile, outputfile, templatefile, includefuzzy, dialect,
-                  outputthreshold)
+def convertisl(
+    inputfile,
+    outputfile,
+    templatefile=None,
+    includefuzzy=False,
+    dialect="inno",
+    outputthreshold=None,
+):
+    run_converter(
+        inputfile, outputfile, templatefile, includefuzzy, dialect, outputthreshold
+    )
 
 
 formats = {
@@ -108,8 +127,9 @@ formats = {
 
 
 def main(argv=None):
-    parser = convert.ConvertOptionParser(formats, usetemplates=True,
-                                         description=__doc__)
+    parser = convert.ConvertOptionParser(
+        formats, usetemplates=True, description=__doc__
+    )
     parser.add_threshold_option()
     parser.add_fuzzy_option()
     parser.run(argv)

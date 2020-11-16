@@ -30,7 +30,6 @@ from translate.storage import po, wordfast
 
 
 class po2wordfast:
-
     def convertfiles(self, inputfile, wffile, sourcelanguage='en', targetlanguage=None):
         """converts a .po file (possibly many) to a Wordfast TM file"""
         inputstore = po.pofile(inputfile)
@@ -44,7 +43,9 @@ class po2wordfast:
             newunit.targetlang = targetlanguage
 
 
-def convertpo(inputfile, outputfile, templatefile, sourcelanguage='en', targetlanguage=None):
+def convertpo(
+    inputfile, outputfile, templatefile, sourcelanguage='en', targetlanguage=None
+):
     """reads in stdin using fromfileclass, converts using convertorclass, writes to stdout"""
     convertor = po2wordfast()
     outputfile.wffile.header.targetlang = targetlanguage
@@ -53,7 +54,6 @@ def convertpo(inputfile, outputfile, templatefile, sourcelanguage='en', targetla
 
 
 class wfmultifile:
-
     def __init__(self, filename, mode=None):
         """initialises wfmultifile from a seekable inputfile or writable outputfile"""
         self.filename = filename
@@ -71,6 +71,7 @@ class wfmultifile:
 
         def onclose(contents):
             pass
+
         outputfile = wStringIO.CatchStringOutput(onclose)
         outputfile.filename = subfile
         outputfile.wffile = self.wffile
@@ -78,24 +79,41 @@ class wfmultifile:
 
 
 class WfOptionParser(convert.ArchiveConvertOptionParser):
-
     def recursiveprocess(self, options):
         if not options.targetlanguage:
             raise ValueError("You must specify the target language")
         super().recursiveprocess(options)
         with open(options.output, 'wb') as self.output:
-            #self.outputarchive.wffile.setsourcelanguage(options.sourcelanguage)
+            # self.outputarchive.wffile.setsourcelanguage(options.sourcelanguage)
             self.outputarchive.wffile.serialize(self.output)
 
 
 def main(argv=None):
     formats = {"po": ("txt", convertpo), ("po", "txt"): ("txt", convertpo)}
     archiveformats = {(None, "output"): wfmultifile, (None, "template"): wfmultifile}
-    parser = WfOptionParser(formats, usepots=False, usetemplates=False, description=__doc__, archiveformats=archiveformats)
-    parser.add_option("-l", "--language", dest="targetlanguage", default=None,
-                      help="set target language code (e.g. af-ZA) [required]", metavar="LANG")
-    parser.add_option("", "--source-language", dest="sourcelanguage", default='en',
-                      help="set source language code (default: en)", metavar="LANG")
+    parser = WfOptionParser(
+        formats,
+        usepots=False,
+        usetemplates=False,
+        description=__doc__,
+        archiveformats=archiveformats,
+    )
+    parser.add_option(
+        "-l",
+        "--language",
+        dest="targetlanguage",
+        default=None,
+        help="set target language code (e.g. af-ZA) [required]",
+        metavar="LANG",
+    )
+    parser.add_option(
+        "",
+        "--source-language",
+        dest="sourcelanguage",
+        default='en',
+        help="set source language code (default: en)",
+        metavar="LANG",
+    )
     parser.passthrough.append("sourcelanguage")
     parser.passthrough.append("targetlanguage")
     parser.run(argv)

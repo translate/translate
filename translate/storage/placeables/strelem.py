@@ -94,14 +94,15 @@ class StringElem:
             return False
 
         return (
-            self.id == rhs.id and
-            self.iseditable == rhs.iseditable and
-            self.istranslatable == rhs.istranslatable and
-            self.isvisible == rhs.isvisible and
-            self.rid == rhs.rid and
-            self.xid == rhs.xid and
-            len(self.sub) == len(rhs.sub) and
-            not [i for i in range(len(self.sub)) if self.sub[i] != rhs.sub[i]])
+            self.id == rhs.id
+            and self.iseditable == rhs.iseditable
+            and self.istranslatable == rhs.istranslatable
+            and self.isvisible == rhs.isvisible
+            and self.rid == rhs.rid
+            and self.xid == rhs.xid
+            and len(self.sub) == len(rhs.sub)
+            and not [i for i in range(len(self.sub)) if self.sub[i] != rhs.sub[i]]
+        )
 
     def __ge__(self, rhs):
         """Emulate the ``unicode`` class."""
@@ -186,7 +187,7 @@ class StringElem:
 
         .. note:: ``self.renderer`` is **not** copied.
         """
-        #logging.debug('Copying instance of class %s' % (self.__class__.__name__))
+        # logging.debug('Copying instance of class %s' % (self.__class__.__name__))
         cp = self.__class__(id=self.id, xid=self.xid, rid=self.rid)
         for sub in self.sub:
             if isinstance(sub, StringElem):
@@ -227,8 +228,9 @@ class StringElem:
         if start_index == end_index:
             return StringElem(), self, 0
         if start_index > end_index:
-            raise IndexError('start_index > end_index: %d > %d' %
-                             (start_index, end_index))
+            raise IndexError(
+                'start_index > end_index: %d > %d' % (start_index, end_index)
+            )
         if start_index < 0 or start_index > len(self):
             raise IndexError('start_index: %d' % (start_index))
         if end_index < 1 or end_index > len(self) + 1:
@@ -246,7 +248,7 @@ class StringElem:
             end['offset'] = end['offset'][0]
         assert start['elem'].isleaf() and end['elem'].isleaf()
 
-        #logging.debug('FROM %s TO %s' % (start, end))
+        # logging.debug('FROM %s TO %s' % (start, end))
 
         # Ranges can be one of 3 types:
         # 1) The entire string.
@@ -257,23 +259,26 @@ class StringElem:
 
         # Case 1: Entire string #
         if start_index == 0 and end_index == len(self):
-            #logging.debug('Case 1: [%s]' % (unicode(self)))
+            # logging.debug('Case 1: [%s]' % (unicode(self)))
             removed = self.copy()
             self.sub = []
             return removed, None, None
 
         # Case 2: An entire element #
-        if (start['elem'] is end['elem'] and start['offset'] == 0 and
-            end['offset'] == len(start['elem']) or
-            (not start['elem'].iseditable and start['elem'].isfragile)):
+        if (
+            start['elem'] is end['elem']
+            and start['offset'] == 0
+            and end['offset'] == len(start['elem'])
+            or (not start['elem'].iseditable and start['elem'].isfragile)
+        ):
             ##### FOR DEBUGGING #####
-            #s = ''
-            #for e in self.flatten():
+            # s = ''
+            # for e in self.flatten():
             #    if e is start['elem']:
             #        s += '[' + unicode(e) + ']'
             #    else:
             #        s += unicode(e)
-            #logging.debug('Case 2: %s' % (s))
+            # logging.debug('Case 2: %s' % (s))
             #########################
 
             if start['elem'] is self and self.__class__ is StringElem:
@@ -294,8 +299,8 @@ class StringElem:
         # Case 3: Within a single element #
         if start['elem'] is end['elem'] and start['elem'].iseditable:
             ##### FOR DEBUGGING #####
-            #s = ''
-            #for e in self.flatten():
+            # s = ''
+            # for e in self.flatten():
             #    if e is start['elem']:
             #        s += '%s[%s]%s' % (
             #            e[:start['offset']],
@@ -304,14 +309,14 @@ class StringElem:
             #        )
             #    else:
             #        s += unicode(e)
-            #logging.debug('Case 3: %s' % (s))
+            # logging.debug('Case 3: %s' % (s))
             #########################
 
             # XXX: This might not have the expected result if start['elem']
             # is a StringElem sub-class instance.
             newstr = ''.join(start['elem'].sub)
-            removed = StringElem(newstr[start['offset']:end['offset']])
-            newstr = newstr[:start['offset']] + newstr[end['offset']:]
+            removed = StringElem(newstr[start['offset'] : end['offset']])
+            newstr = newstr[: start['offset']] + newstr[end['offset'] :]
             parent = self.get_parent_elem(start['elem'])
             if parent is None and start['elem'] is self:
                 parent = self
@@ -329,30 +334,32 @@ class StringElem:
             elif range_nodes[i] is end['elem']:
                 endidx = i
                 break
-        range_nodes = range_nodes[startidx:endidx+1]
-        #assert (range_nodes[0] is start['elem'] and
+        range_nodes = range_nodes[startidx : endidx + 1]
+        # assert (range_nodes[0] is start['elem'] and
         #        range_nodes[-1] is end['elem'])
-        #logging.debug("Nodes in delete range: %s" % (str(range_nodes)))
+        # logging.debug("Nodes in delete range: %s" % (str(range_nodes)))
 
-        marked_nodes = []  # Contains nodes that have been marked for deletion (directly or inderectly (via parent)).
+        marked_nodes = (
+            []
+        )  # Contains nodes that have been marked for deletion (directly or inderectly (via parent)).
         for node in range_nodes[1:-1]:
             if [n for n in marked_nodes if n is node]:
                 continue
             subtree = node.depth_first()
             if not [e for e in subtree if e is end['elem']]:
-                #logging.debug("Marking node: %s" % (subtree))
+                # logging.debug("Marking node: %s" % (subtree))
                 marked_nodes.extend(subtree)  # "subtree" does not include "node"
 
         ##### FOR DEBUGGING #####
-        #s = ''
-        #for e in self.flatten():
+        # s = ''
+        # for e in self.flatten():
         #    if e is start['elem']:
         #        s += '%s[%s' % (e[:start['offset']], e[start['offset']:])
         #    elif e is end['elem']:
         #        s += '%s]%s' % (e[:end['offset']], e[end['offset']:])
         #    else:
         #        s += unicode(e)
-        #logging.debug('Case 4: %s' % (s))
+        # logging.debug('Case 4: %s' % (s))
         #########################
 
         removed = self.copy()
@@ -368,17 +375,19 @@ class StringElem:
                 pass
 
         if start['elem'] is not end['elem']:
-            if (start_offset == start['index'] or
-                (not start['elem'].iseditable and start['elem'].isfragile)):
+            if start_offset == start['index'] or (
+                not start['elem'].iseditable and start['elem'].isfragile
+            ):
                 self.delete_elem(start['elem'])
             elif start['elem'].iseditable:
-                start['elem'].sub = [''.join(start['elem'].sub)[:start['offset']]]
+                start['elem'].sub = [''.join(start['elem'].sub)[: start['offset']]]
 
-            if (end_offset + len(end['elem']) == end['index'] or
-                (not end['elem'].iseditable and end['elem'].isfragile)):
+            if end_offset + len(end['elem']) == end['index'] or (
+                not end['elem'].iseditable and end['elem'].isfragile
+            ):
                 self.delete_elem(end['elem'])
             elif end['elem'].iseditable:
-                end['elem'].sub = [''.join(end['elem'].sub)[end['offset']:]]
+                end['elem'].sub = [''.join(end['elem'].sub)[end['offset'] :]]
 
         self.prune()
         return removed, None, None
@@ -472,7 +481,9 @@ class StringElem:
         """
         if filter is None or not callable(filter):
             filter = lambda e: True
-        return [elem for elem in self.iter_depth_first(lambda e: e.isleaf() and filter(e))]
+        return [
+            elem for elem in self.iter_depth_first(lambda e: e.isleaf() and filter(e))
+        ]
 
     def get_ancestor_where(self, child, criteria):
         parent = self.get_parent_elem(child)
@@ -550,13 +561,13 @@ class StringElem:
         if offset == 0:
             # 1.1 #
             if oelem.iseditable:
-                #logging.debug('Case 1.1')
+                # logging.debug('Case 1.1')
                 oelem.sub.insert(0, checkleaf(oelem, text))
                 oelem.prune()
                 return True
             # 1.2 #
             else:
-                #logging.debug('Case 1.2')
+                # logging.debug('Case 1.2')
                 oparent = self.get_ancestor_where(oelem, lambda x: x.iseditable)
                 if oparent is not None:
                     oparent.sub.insert(0, checkleaf(oparent, text))
@@ -568,7 +579,7 @@ class StringElem:
 
         # Case 2 #
         if offset == len(self):
-            #logging.debug('Case 2')
+            # logging.debug('Case 2')
             last = self.flatten()[-1]
             parent = self.get_ancestor_where(last, lambda x: x.iseditable)
             if parent is None:
@@ -591,7 +602,7 @@ class StringElem:
         # Case 3 #
         if oelem is before:
             if oelem.iseditable:
-                #logging.debug('Case 3')
+                # logging.debug('Case 3')
                 eoffset = offset - self.elem_offset(oelem)
                 if oelem.isleaf():
                     s = str(oelem)  # Collapse all sibling strings into one
@@ -609,7 +620,7 @@ class StringElem:
         # And the only case left: Case 4 #
         # 4.1 #
         if not before.iseditable and not oelem.iseditable:
-            #logging.debug('Case 4.1')
+            # logging.debug('Case 4.1')
             # Neither are editable, so we add it as a sibling (to the right)
             # of before
             bparent = self.get_parent_elem(before)
@@ -629,7 +640,7 @@ class StringElem:
 
         # 4.2 #
         elif before.iseditable and oelem.iseditable:
-            #logging.debug('Case 4.2')
+            # logging.debug('Case 4.2')
             # We can add to either, but we try hard to add to the correct one
             # so that we avoid inserting text in the wrong place on undo, for
             # example.
@@ -659,12 +670,12 @@ class StringElem:
 
         # 4.3 #
         elif before.iseditable and not oelem.iseditable:
-            #logging.debug('Case 4.3')
+            # logging.debug('Case 4.3')
             return before.insert(len(before), text)  # Reinterpret as a case 2
 
         # 4.4 #
         elif not before.iseditable and oelem.iseditable:
-            #logging.debug('Case 4.4')
+            # logging.debug('Case 4.4')
             return oelem.insert(0, text)  # Reinterpret as a case 1
 
         return False
@@ -681,14 +692,16 @@ class StringElem:
                 # element ("left is right"), if it has any other content.
                 # If an element has content, it will be at least directly
                 # left or directly right of the current cursor position.
-                raise ValueError('"left" and "right" refer to the same element and is not empty.')
+                raise ValueError(
+                    '"left" and "right" refer to the same element and is not empty.'
+                )
             if not left.iseditable:
                 return False
         if isinstance(text, str):
             text = StringElem(text)
 
         if left is right:
-            #logging.debug('left%s.sub.append(%s)' % (repr(left), repr(text)))
+            # logging.debug('left%s.sub.append(%s)' % (repr(left), repr(text)))
             left.sub.append(text)
             return True
         # XXX: The "in" keyword is *not* used below, because the "in" tests
@@ -697,13 +710,13 @@ class StringElem:
 
         if left is None:
             if self is right:
-                #logging.debug('self%s.sub.insert(0, %s)' %
+                # logging.debug('self%s.sub.insert(0, %s)' %
                 #              (repr(self), repr(text)))
                 self.sub.insert(0, text)
                 return True
             parent = self.get_parent_elem(right)
             if parent is not None:
-                #logging.debug('parent%s.sub.insert(0, %s)' %
+                # logging.debug('parent%s.sub.insert(0, %s)' %
                 #              (repr(parent), repr(text)))
                 parent.sub.insert(0, text)
                 return True
@@ -711,13 +724,13 @@ class StringElem:
 
         if right is None:
             if self is left:
-                #logging.debug('self%s.sub.append(%s)' %
+                # logging.debug('self%s.sub.append(%s)' %
                 #              (repr(self), repr(text)))
                 self.sub.append(text)
                 return True
             parent = self.get_parent_elem(left)
             if parent is not None:
-                #logging.debug('parent%s.sub.append(%s)' %
+                # logging.debug('parent%s.sub.append(%s)' %
                 #              (repr(parent), repr(text)))
                 parent.sub.append(text)
                 return True
@@ -732,7 +745,7 @@ class StringElem:
                 ischild = True
                 break
         if ischild:
-            #logging.debug('left%s.sub.insert(0, %s)' %
+            # logging.debug('left%s.sub.insert(0, %s)' %
             #              (repr(left), repr(text)))
             left.sub.insert(0, text)
             return True
@@ -743,7 +756,7 @@ class StringElem:
                 ischild = True
                 break
         if ischild:
-            #logging.debug('right%s.sub.append(%s)' %
+            # logging.debug('right%s.sub.append(%s)' %
             #              (repr(right), repr(text)))
             right.sub.append(text)
             return True
@@ -755,7 +768,7 @@ class StringElem:
                 if child is left:
                     break
                 idx += 1
-            #logging.debug('parent%s.sub.insert(%d, %s)' %
+            # logging.debug('parent%s.sub.insert(%d, %s)' %
             #              (repr(parent), idx, repr(text)))
             parent.sub.insert(idx, text)
             return True
@@ -767,13 +780,14 @@ class StringElem:
                 if child is right:
                     break
                 idx += 1
-            #logging.debug('parent%s.sub.insert(%d, %s)' %
+            # logging.debug('parent%s.sub.insert(%d, %s)' %
             #              (repr(parent), idx, repr(text)))
             parent.sub.insert(0, text)
             return True
 
-        logging.debug('Could not insert between %s and %s... odd.' %
-                      (repr(left), repr(right)))
+        logging.debug(
+            'Could not insert between %s and %s... odd.' % (repr(left), repr(right))
+        )
         return False
 
     def isleaf(self):
@@ -836,8 +850,9 @@ class StringElem:
         manner.
         """
         indent_prefix = " " * indent * 2
-        out = ("%s%s [%s]" % (indent_prefix, self.__class__.__name__,
-                              str(self))).encode('utf-8')
+        out = (
+            "%s%s [%s]" % (indent_prefix, self.__class__.__name__, str(self))
+        ).encode('utf-8')
         if verbose:
             out += ' ' + repr(self)
 
@@ -847,8 +862,9 @@ class StringElem:
             if isinstance(elem, StringElem):
                 elem.print_tree(indent + 1, verbose=verbose)
             else:
-                print(('%s%s[%s]' % (indent_prefix, indent_prefix,
-                                     elem)).encode('utf-8'))
+                print(
+                    ('%s%s[%s]' % (indent_prefix, indent_prefix, elem)).encode('utf-8')
+                )
 
     def prune(self):
         """Remove unnecessary nodes to make the tree optimal."""
@@ -871,9 +887,11 @@ class StringElem:
                 # Symbolically: StringElem->X(leaf) => X(leaf)
                 #   (where X is any sub-class of StringElem,
                 #   but not StringElem)
-                if (type(elem) is StringElem and
-                    isinstance(child, StringElem) and
-                    type(child) is not StringElem):
+                if (
+                    type(elem) is StringElem
+                    and isinstance(child, StringElem)
+                    and type(child) is not StringElem
+                ):
                     parent = self.get_parent_elem(elem)
                     if parent is not None:
                         parent.sub[parent.sub.index(elem)] = child
@@ -887,8 +905,9 @@ class StringElem:
                 # Remove empty strings or StringElem nodes
                 # (but not StringElem sub-class instances, because they
                 # might contain important (non-rendered) data.
-                if ((type(elem.sub[i]) == StringElem or isinstance(elem.sub[i], str)) and
-                    len(elem.sub[i]) == 0):
+                if (
+                    type(elem.sub[i]) == StringElem or isinstance(elem.sub[i], str)
+                ) and len(elem.sub[i]) == 0:
                     del elem.sub[i]
                     continue
 
@@ -904,13 +923,12 @@ class StringElem:
 
                     for i in range(len(elem.sub) - 1):
                         lsub = elem.sub[i]
-                        rsub = elem.sub[i+1]
+                        rsub = elem.sub[i + 1]
 
-                        if (type(lsub) is StringElem and
-                            type(rsub) is StringElem):
+                        if type(lsub) is StringElem and type(rsub) is StringElem:
                             changed = True
                             lsub.sub.extend(rsub.sub)
-                            del elem.sub[i+1]
+                            del elem.sub[i + 1]
                             leafchanged = True
                             break
 

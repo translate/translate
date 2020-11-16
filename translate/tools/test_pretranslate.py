@@ -1,4 +1,3 @@
-
 import warnings
 from io import BytesIO
 
@@ -68,21 +67,36 @@ class TestPretranslate:
         checks that the pretranslatepo function is working for a simple file
         initialisation
         """
-        input_source = '''#: simple.label%ssimple.accesskey\nmsgid "A &hard coded newline.\\n"\nmsgstr ""\n''' % po.lsep
+        input_source = (
+            '''#: simple.label%ssimple.accesskey\nmsgid "A &hard coded newline.\\n"\nmsgstr ""\n'''
+            % po.lsep
+        )
         newpo = self.pretranslatepo(input_source)
         assert str(self.singleunit(newpo)) == input_source
 
     def test_merging_simple(self):
         """checks that the pretranslatepo function is working for a simple merge"""
-        input_source = '''#: simple.label%ssimple.accesskey\nmsgid "A &hard coded newline.\\n"\nmsgstr ""\n''' % po.lsep
-        template_source = '''#: simple.label%ssimple.accesskey\nmsgid "A &hard coded newline.\\n"\nmsgstr "&Hart gekoeerde nuwe lyne\\n"\n''' % po.lsep
+        input_source = (
+            '''#: simple.label%ssimple.accesskey\nmsgid "A &hard coded newline.\\n"\nmsgstr ""\n'''
+            % po.lsep
+        )
+        template_source = (
+            '''#: simple.label%ssimple.accesskey\nmsgid "A &hard coded newline.\\n"\nmsgstr "&Hart gekoeerde nuwe lyne\\n"\n'''
+            % po.lsep
+        )
         newpo = self.pretranslatepo(input_source, template_source)
         assert str(self.singleunit(newpo)) == template_source
 
     def test_merging_messages_marked_fuzzy(self):
         """test that when we merge PO files with a fuzzy message that it remains fuzzy"""
-        input_source = '''#: simple.label%ssimple.accesskey\nmsgid "A &hard coded newline.\\n"\nmsgstr ""\n''' % po.lsep
-        template_source = '''#: simple.label%ssimple.accesskey\n#, fuzzy\nmsgid "A &hard coded newline.\\n"\nmsgstr "&Hart gekoeerde nuwe lyne\\n"\n''' % po.lsep
+        input_source = (
+            '''#: simple.label%ssimple.accesskey\nmsgid "A &hard coded newline.\\n"\nmsgstr ""\n'''
+            % po.lsep
+        )
+        template_source = (
+            '''#: simple.label%ssimple.accesskey\n#, fuzzy\nmsgid "A &hard coded newline.\\n"\nmsgstr "&Hart gekoeerde nuwe lyne\\n"\n'''
+            % po.lsep
+        )
         newpo = self.pretranslatepo(input_source, template_source)
         assert str(self.singleunit(newpo)) == template_source
 
@@ -130,9 +144,18 @@ msgstr[1] "%d handleidings."
         tests that if the location changes but the msgid stays the same that
         we merge
         """
-        input_source = '''#: new_simple.label%snew_simple.accesskey\nmsgid "A &hard coded newline.\\n"\nmsgstr ""\n''' % po.lsep
-        template_source = '''#: simple.label%ssimple.accesskey\nmsgid "A &hard coded newline.\\n"\nmsgstr "&Hart gekoeerde nuwe lyne\\n"\n''' % po.lsep
-        poexpected = '''#: new_simple.label%snew_simple.accesskey\nmsgid "A &hard coded newline.\\n"\nmsgstr "&Hart gekoeerde nuwe lyne\\n"\n''' % po.lsep
+        input_source = (
+            '''#: new_simple.label%snew_simple.accesskey\nmsgid "A &hard coded newline.\\n"\nmsgstr ""\n'''
+            % po.lsep
+        )
+        template_source = (
+            '''#: simple.label%ssimple.accesskey\nmsgid "A &hard coded newline.\\n"\nmsgstr "&Hart gekoeerde nuwe lyne\\n"\n'''
+            % po.lsep
+        )
+        poexpected = (
+            '''#: new_simple.label%snew_simple.accesskey\nmsgid "A &hard coded newline.\\n"\nmsgstr "&Hart gekoeerde nuwe lyne\\n"\n'''
+            % po.lsep
+        )
         newpo = self.pretranslatepo(input_source, template_source)
         print(bytes(newpo))
         assert bytes(newpo).decode('utf-8') == poexpected
@@ -142,9 +165,18 @@ msgstr[1] "%d handleidings."
         test that even if the location changes that if the msgid only has
         whitespace changes we can still merge
         """
-        input_source = '''#: singlespace.label%ssinglespace.accesskey\nmsgid "&We have spaces"\nmsgstr ""\n''' % po.lsep
-        template_source = '''#: doublespace.label%sdoublespace.accesskey\nmsgid "&We  have  spaces"\nmsgstr "&One  het  spasies"\n''' % po.lsep
-        poexpected = '''#: singlespace.label%ssinglespace.accesskey\n#, fuzzy\nmsgid "&We have spaces"\nmsgstr "&One  het  spasies"\n''' % po.lsep
+        input_source = (
+            '''#: singlespace.label%ssinglespace.accesskey\nmsgid "&We have spaces"\nmsgstr ""\n'''
+            % po.lsep
+        )
+        template_source = (
+            '''#: doublespace.label%sdoublespace.accesskey\nmsgid "&We  have  spaces"\nmsgstr "&One  het  spasies"\n'''
+            % po.lsep
+        )
+        poexpected = (
+            '''#: singlespace.label%ssinglespace.accesskey\n#, fuzzy\nmsgid "&We have spaces"\nmsgstr "&One  het  spasies"\n'''
+            % po.lsep
+        )
         newpo = self.pretranslatepo(input_source, template_source)
         print(bytes(newpo))
         assert bytes(newpo).decode('utf-8') == poexpected
@@ -168,7 +200,9 @@ msgstr[1] "%d handleidings."
         Checks that the correct formatting is preserved when pot an po lines
         differ.
         """
-        input_source = '''#: simple.label\nmsgid "Line split "\n"differently"\nmsgstr ""\n'''
+        input_source = (
+            '''#: simple.label\nmsgid "Line split "\n"differently"\nmsgstr ""\n'''
+        )
         template_source = '''#: simple.label\nmsgid "Line"\n" split differently"\nmsgstr "Lyne verskillend gesny"\n'''
         newpo = self.pretranslatepo(input_source, template_source)
         newpounit = self.singleunit(newpo)
@@ -185,8 +219,12 @@ msgstr[1] "%d handleidings."
     def test_merging_automatic_comments_new_overides_old(self):
         """ensure that new #. comments override the old comments"""
         input_source = '''#. new comment\n#: someline.c\nmsgid "&About"\nmsgstr ""\n'''
-        template_source = '''#. old comment\n#: someline.c\nmsgid "&About"\nmsgstr "&Info"\n'''
-        poexpected = '''#. new comment\n#: someline.c\nmsgid "&About"\nmsgstr "&Info"\n'''
+        template_source = (
+            '''#. old comment\n#: someline.c\nmsgid "&About"\nmsgstr "&Info"\n'''
+        )
+        poexpected = (
+            '''#. new comment\n#: someline.c\nmsgid "&About"\nmsgstr "&Info"\n'''
+        )
         newpo = self.pretranslatepo(input_source, template_source)
         newpounit = self.singleunit(newpo)
         assert str(newpounit) == poexpected
@@ -245,7 +283,9 @@ msgstr "36em"
 
     def test_merging_plurals(self):
         """ensure that we can merge plural messages"""
-        input_source = '''msgid "One"\nmsgid_plural "Two"\nmsgstr[0] ""\nmsgstr[1] ""\n'''
+        input_source = (
+            '''msgid "One"\nmsgid_plural "Two"\nmsgstr[0] ""\nmsgstr[1] ""\n'''
+        )
         template_source = '''msgid "One"\nmsgid_plural "Two"\nmsgstr[0] "Een"\nmsgstr[1] "Twee"\nmsgstr[2] "Drie"\n'''
         newpo = self.pretranslatepo(input_source, template_source)
         print(newpo)
@@ -267,7 +307,9 @@ msgstr "36em"
     def test_merging_comments(self):
         """Test that we can merge comments correctly"""
         input_source = '''#. Don't do it!\n#: file.py:1\nmsgid "One"\nmsgstr ""\n'''
-        template_source = '''#. Don't do it!\n#: file.py:2\nmsgid "One"\nmsgstr "Een"\n'''
+        template_source = (
+            '''#. Don't do it!\n#: file.py:2\nmsgid "One"\nmsgstr "Een"\n'''
+        )
         poexpected = '''#. Don't do it!\n#: file.py:1\nmsgid "One"\nmsgstr "Een"\n'''
         newpo = self.pretranslatepo(input_source, template_source)
         print(newpo)
@@ -278,7 +320,9 @@ msgstr "36em"
         """Test that we can merge with typecomments"""
         input_source = '''#: file.c:1\n#, c-format\nmsgid "%d pipes"\nmsgstr ""\n'''
         template_source = '''#: file.c:2\nmsgid "%d pipes"\nmsgstr "%d pype"\n'''
-        poexpected = '''#: file.c:1\n#, c-format\nmsgid "%d pipes"\nmsgstr "%d pype"\n'''
+        poexpected = (
+            '''#: file.c:1\n#, c-format\nmsgid "%d pipes"\nmsgstr "%d pype"\n'''
+        )
         newpo = self.pretranslatepo(input_source, template_source)
         newpounit = self.singleunit(newpo)
         print(newpounit)
@@ -297,12 +341,14 @@ msgstr "36em"
         xlf_template = self.xliff_skeleton % (
             '''<trans-unit id="1" xml:space="preserve">
                    <source> File  1 </source>
-               </trans-unit>''')
+               </trans-unit>'''
+        )
         xlf_old = self.xliff_skeleton % (
             '''<trans-unit id="1" xml:space="preserve" approved="yes">
                    <source> File  1 </source>
                    <target> Lêer 1 </target>
-               </trans-unit>''')
+               </trans-unit>'''
+        )
 
         template = xliff.xlifffile.parsestring(xlf_template)
         old = xliff.xlifffile.parsestring(xlf_old)
@@ -326,5 +372,7 @@ class TestPretranslateCommand(test_convert.TestConvertCommand, TestPretranslate)
         options = test_convert.TestConvertCommand.test_help(self, capsys)
         options = self.help_check(options, "-t TEMPLATE, --template=TEMPLATE")
         options = self.help_check(options, "--tm")
-        options = self.help_check(options, "-s MIN_SIMILARITY, --similarity=MIN_SIMILARITY")
+        options = self.help_check(
+            options, "-s MIN_SIMILARITY, --similarity=MIN_SIMILARITY"
+        )
         options = self.help_check(options, "--nofuzzymatching", last=True)

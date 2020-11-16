@@ -22,7 +22,7 @@ from translate.convert import factory as convert_factory
 from translate.storage.projstore import ProjectStore
 
 
-__all__ = ('Project', )
+__all__ = ('Project',)
 
 
 def split_extensions(filename):
@@ -48,7 +48,9 @@ def split_extensions(filename):
 
     if len(extensions) == len(filename_parts):
         extensions = extensions[1:]
-    return os.extsep.join(filename_parts[:-len(extensions)]), os.extsep.join(extensions)
+    return os.extsep.join(filename_parts[: -len(extensions)]), os.extsep.join(
+        extensions
+    )
 
 
 class Project:
@@ -71,12 +73,16 @@ class Project:
         """Proxy for ``self.store.append_sourcefile()``."""
         return self.store.append_sourcefile(srcfile, src_fname)
 
-    def add_source_convert(self, srcfile, src_fname=None, convert_options=None, extension=None):
+    def add_source_convert(
+        self, srcfile, src_fname=None, convert_options=None, extension=None
+    ):
         """Convenience method that calls :meth:`~Project.add_source` and
         :meth:`~Project.convert_forward` and returns the results from both.
         """
         srcfile, srcfname = self.add_source(srcfile, src_fname)
-        transfile, transfname = self.convert_forward(srcfname, convert_options=convert_options)
+        transfile, transfname = self.convert_forward(
+            srcfname, convert_options=convert_options
+        )
         return srcfile, srcfname, transfile, transfname
 
     def close(self):
@@ -100,7 +106,9 @@ class Project:
         input_type = self.store.get_filename_type(input_fname)
 
         if input_type == 'tgt':
-            raise ValueError('Cannot convert a target document further: %s' % (input_fname))
+            raise ValueError(
+                'Cannot convert a target document further: %s' % (input_fname)
+            )
 
         templ_fname = None
         if isinstance(template, str):
@@ -136,7 +144,8 @@ class Project:
             inputfile,
             template=template,
             options=conv_options,
-            convert_options=options.get('convert_options', None))
+            convert_options=options.get('convert_options', None),
+        )
 
         # Determine the file name and path where the output should be moved.
         if not output_fname:
@@ -175,7 +184,8 @@ class Project:
 
         output_type = self.store.TYPE_INFO['next_type'][input_type]
         outputfile, output_fname = self.store.append_file(
-            output_fname, None, ftype=output_type, delete_orig=True)
+            output_fname, None, ftype=output_type, delete_orig=True
+        )
         self.store.convert_map[input_fname] = (output_fname, templ_fname)
 
         return outputfile, output_fname

@@ -1,4 +1,3 @@
-
 from io import BytesIO
 
 import pytest
@@ -30,32 +29,50 @@ class TestPOMerge:
   </file>
 </xliff>'''
 
-    def mergestore(self, templatesource, inputsource, mergeblanks="yes",
-                   mergefuzzy="yes",
-                   mergecomments="yes"):
+    def mergestore(
+        self,
+        templatesource,
+        inputsource,
+        mergeblanks="yes",
+        mergefuzzy="yes",
+        mergecomments="yes",
+    ):
         """merges the sources of the given files and returns a new pofile object"""
         templatefile = BytesIO(templatesource.encode())
         inputfile = BytesIO(inputsource.encode())
         outputfile = BytesIO()
-        assert pomerge.mergestore(inputfile, outputfile, templatefile,
-                                  mergeblanks=mergeblanks,
-                                  mergefuzzy=mergefuzzy,
-                                  mergecomments=mergecomments,)
+        assert pomerge.mergestore(
+            inputfile,
+            outputfile,
+            templatefile,
+            mergeblanks=mergeblanks,
+            mergefuzzy=mergefuzzy,
+            mergecomments=mergecomments,
+        )
         outputpostring = outputfile.getvalue()
         outputpofile = po.pofile(outputpostring)
         return outputpofile
 
-    def mergexliff(self, templatesource, inputsource, mergeblanks="yes",
-                   mergefuzzy="yes",
-                   mergecomments="yes"):
+    def mergexliff(
+        self,
+        templatesource,
+        inputsource,
+        mergeblanks="yes",
+        mergefuzzy="yes",
+        mergecomments="yes",
+    ):
         """merges the sources of the given files and returns a new xlifffile object"""
         templatefile = BytesIO(templatesource.encode())
         inputfile = BytesIO(inputsource.encode())
         outputfile = BytesIO()
-        assert pomerge.mergestore(inputfile, outputfile, templatefile,
-                                  mergeblanks=mergeblanks,
-                                  mergefuzzy=mergefuzzy,
-                                  mergecomments=mergecomments)
+        assert pomerge.mergestore(
+            inputfile,
+            outputfile,
+            templatefile,
+            mergeblanks=mergeblanks,
+            mergefuzzy=mergefuzzy,
+            mergecomments=mergecomments,
+        )
         outputxliffstring = outputfile.getvalue()
         print("Generated XML:")
         print(outputxliffstring)
@@ -106,7 +123,9 @@ msgstr "Dimpled Ring"'''
 
     def test_replacemerge(self):
         """checks that a simple po entry merges OK"""
-        templatepo = '''#: simple.test\nmsgid "Simple String"\nmsgstr "Dimpled Ring"\n'''
+        templatepo = (
+            '''#: simple.test\nmsgid "Simple String"\nmsgstr "Dimpled Ring"\n'''
+        )
         inputpo = '''#: simple.test\nmsgid "Simple String"\nmsgstr "Dimpled King"\n'''
         pofile = self.mergestore(templatepo, inputpo)
         pounit = self.singleunit(pofile)
@@ -115,7 +134,9 @@ msgstr "Dimpled Ring"'''
 
     def test_merging_blanks(self):
         """By default we will merge blanks, but we can also override that"""
-        templatepo = '''#: simple.test\nmsgid "Simple String"\nmsgstr "Dimpled Ring"\n'''
+        templatepo = (
+            '''#: simple.test\nmsgid "Simple String"\nmsgstr "Dimpled Ring"\n'''
+        )
         inputpo = '''#: simple.test\nmsgid "Simple String"\nmsgstr ""\n'''
         pofile = self.mergestore(templatepo, inputpo)
         pounit = self.singleunit(pofile)
@@ -128,7 +149,9 @@ msgstr "Dimpled Ring"'''
 
     def test_merging_fuzzies(self):
         """By default we will merge fuzzies, but can can also override that."""
-        templatepo = '''#: simple.test\nmsgid "Simple String"\nmsgstr "Dimpled Ring"\n'''
+        templatepo = (
+            '''#: simple.test\nmsgid "Simple String"\nmsgstr "Dimpled Ring"\n'''
+        )
         inputpo = '''#: simple.test\n#, fuzzy\nmsgid "Simple String"\nmsgstr "changed fish"\n'''
         pofile = self.mergestore(templatepo, inputpo)
         pounit = self.singleunit(pofile)
@@ -146,9 +169,14 @@ msgstr "Dimpled Ring"'''
         check that locations on separate lines are output in Gettext form
         of all on one line
         """
-        templatepo = '''#: location.c:1\n#: location.c:2\nmsgid "Simple String"\nmsgstr ""\n'''
+        templatepo = (
+            '''#: location.c:1\n#: location.c:2\nmsgid "Simple String"\nmsgstr ""\n'''
+        )
         inputpo = '''#: location.c:1\n#: location.c:2\nmsgid "Simple String"\nmsgstr "Dimpled Ring"\n'''
-        expectedpo = '''#: location.c:1%slocation.c:2\nmsgid "Simple String"\nmsgstr "Dimpled Ring"\n''' % po.lsep
+        expectedpo = (
+            '''#: location.c:1%slocation.c:2\nmsgid "Simple String"\nmsgstr "Dimpled Ring"\n'''
+            % po.lsep
+        )
         pofile = self.mergestore(templatepo, inputpo)
         print(pofile)
         assert bytes(pofile).decode('utf-8') == expectedpo
@@ -194,9 +222,14 @@ msgstr "Dimpled Ring"
         ensure that we don't duplicate source comments (locations) if they
         have been reflowed
         """
-        templatepo = '''#: newMenu.label\n#: newMenu.accesskey\nmsgid "&New"\nmsgstr ""\n'''
+        templatepo = (
+            '''#: newMenu.label\n#: newMenu.accesskey\nmsgid "&New"\nmsgstr ""\n'''
+        )
         newpo = '''#: newMenu.label newMenu.accesskey\nmsgid "&New"\nmsgstr "&Nuwe"\n'''
-        expectedpo = '''#: newMenu.label%snewMenu.accesskey\nmsgid "&New"\nmsgstr "&Nuwe"\n''' % po.lsep
+        expectedpo = (
+            '''#: newMenu.label%snewMenu.accesskey\nmsgid "&New"\nmsgstr "&Nuwe"\n'''
+            % po.lsep
+        )
         pofile = self.mergestore(templatepo, newpo)
         self.singleunit(pofile)
         print(pofile)
@@ -227,7 +260,7 @@ msgstr "blabla"
         mergepo = '''# Translation comment\nmsgid "Bob"\nmsgstr "Builder"\n'''
         expectedpo = '''# Lonely comment\n# Translation comment\nmsgid "Bob"\nmsgstr "Builder"\n'''
         pofile = self.mergestore(templatepo, mergepo)
-#        pounit = self.singleunit(pofile)
+        #        pounit = self.singleunit(pofile)
         print(pofile)
         assert bytes(pofile).decode('utf-8') == expectedpo
 
@@ -246,7 +279,9 @@ msgstr "blabla"
         expectedpo2 = '''msgid "Simple string\\n"\nmsgstr "Dimpled ring\\n"\n'''
         pofile = self.mergestore(templatepo, mergepo)
         print("Expected:\n%s\n\nMerged:\n%s" % (expectedpo, bytes(pofile)))
-        assert bytes(pofile).decode('utf-8') == expectedpo or bytes(pofile) == expectedpo2
+        assert (
+            bytes(pofile).decode('utf-8') == expectedpo or bytes(pofile) == expectedpo2
+        )
 
     def test_preserve_format_minor_start_and_end_of_sentence_changes(self):
         """
@@ -280,15 +315,23 @@ msgstr "blabla"
         line.  Test that we preserve this
         """
         templatepo = '''msgid "First"\nmsgstr ""\n\nmsgid "Second"\nmsgstr ""\n'''
-        mergepo = '''msgid "First"\nmsgstr "Eerste"\n\nmsgid "Second"\nmsgstr "Tweede"\n'''
-        expectedpo = '''msgid "First"\nmsgstr "Eerste"\n\nmsgid "Second"\nmsgstr "Tweede"\n'''
+        mergepo = (
+            '''msgid "First"\nmsgstr "Eerste"\n\nmsgid "Second"\nmsgstr "Tweede"\n'''
+        )
+        expectedpo = (
+            '''msgid "First"\nmsgstr "Eerste"\n\nmsgid "Second"\nmsgstr "Tweede"\n'''
+        )
         pofile = self.mergestore(templatepo, mergepo)
         print("Expected:\n%s\n\nMerged:\n%s" % (expectedpo, bytes(pofile)))
         assert bytes(pofile).decode('utf-8') == expectedpo
 
         templatepo = '''msgid "First"\nmsgstr ""\n\nmsgid "Second"\nmsgstr ""\n\n'''
-        mergepo = '''msgid "First"\nmsgstr "Eerste"\n\nmsgid "Second"\nmsgstr "Tweede"\n'''
-        expectedpo = '''msgid "First"\nmsgstr "Eerste"\n\nmsgid "Second"\nmsgstr "Tweede"\n'''
+        mergepo = (
+            '''msgid "First"\nmsgstr "Eerste"\n\nmsgid "Second"\nmsgstr "Tweede"\n'''
+        )
+        expectedpo = (
+            '''msgid "First"\nmsgstr "Eerste"\n\nmsgid "Second"\nmsgstr "Tweede"\n'''
+        )
         pofile = self.mergestore(templatepo, mergepo)
         print("Expected:\n%s\n\nMerged:\n%s" % (expectedpo, bytes(pofile)))
         assert bytes(pofile).decode('utf-8') == expectedpo
@@ -342,14 +385,20 @@ msgstr "Eerste\tTweede"
         assert bytes(pofile).decode('utf-8') == expectedpo
 
     def test_xliff_into_xliff(self):
-        templatexliff = self.xliffskeleton % '''<trans-unit>
+        templatexliff = (
+            self.xliffskeleton
+            % '''<trans-unit>
         <source>red</source>
         <target></target>
 </trans-unit>'''
-        mergexliff = self.xliffskeleton % '''<trans-unit>
+        )
+        mergexliff = (
+            self.xliffskeleton
+            % '''<trans-unit>
         <source>red</source>
         <target>rooi</target>
 </trans-unit>'''
+        )
         xlifffile = self.mergexliff(templatexliff, mergexliff)
         assert len(xlifffile.units) == 1
         unit = xlifffile.units[0]
@@ -357,10 +406,13 @@ msgstr "Eerste\tTweede"
         assert unit.target == "rooi"
 
     def test_po_into_xliff(self):
-        templatexliff = self.xliffskeleton % '''<trans-unit>
+        templatexliff = (
+            self.xliffskeleton
+            % '''<trans-unit>
         <source>red</source>
         <target></target>
 </trans-unit>'''
+        )
         mergepo = 'msgid "red"\nmsgstr "rooi"'
         xlifffile = self.mergexliff(templatexliff, mergepo)
         assert len(xlifffile.units) == 1
@@ -370,10 +422,13 @@ msgstr "Eerste\tTweede"
 
     def test_xliff_into_po(self):
         templatepo = '# my comment\nmsgid "red"\nmsgstr ""'
-        mergexliff = self.xliffskeleton % '''<trans-unit>
+        mergexliff = (
+            self.xliffskeleton
+            % '''<trans-unit>
         <source>red</source>
         <target>rooi</target>
 </trans-unit>'''
+        )
         expectedpo = '# my comment\nmsgid "red"\nmsgstr "rooi"\n'
         pofile = self.mergestore(templatepo, mergexliff)
         assert bytes(pofile).decode('utf-8') == expectedpo
@@ -426,7 +481,10 @@ msgid ""
 "_: sendMessageCheckWindowTitle sendMessageCheckWindowTitle.accesskey\n"
 "Send Message"
 msgstr "Stuur"
-''' % (po.lsep, po.lsep)
+''' % (
+            po.lsep,
+            po.lsep,
+        )
         expectedpo = mergepo
         pofile = self.mergestore(templatepo, mergepo)
         print("Expected:\n%s\n---\nMerged:\n%s\n---" % (expectedpo, bytes(pofile)))

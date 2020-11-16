@@ -1,4 +1,3 @@
-
 import os
 from io import BytesIO
 from urllib import parse
@@ -46,15 +45,26 @@ class TestOO2PO:
         ootemplatefile = BytesIO(oosource)
         pooutputfile = BytesIO()
 
-        self.conversion_module.convertoo(ooinputfile, pooutputfile, ootemplatefile, targetlanguage='en-US')
+        self.conversion_module.convertoo(
+            ooinputfile, pooutputfile, ootemplatefile, targetlanguage='en-US'
+        )
         posource = pooutputfile.getvalue()
 
         poinputfile = BytesIO(posource)
         ootemplatefile = BytesIO(oosource)
         oooutputfile = BytesIO()
-        po2oo.convertoo(poinputfile, oooutputfile, ootemplatefile, targetlanguage="en-US")
+        po2oo.convertoo(
+            poinputfile, oooutputfile, ootemplatefile, targetlanguage="en-US"
+        )
         ooresult = oooutputfile.getvalue().decode('utf-8')
-        print("original oo:\n", oosource, "po version:\n", posource, "output oo:\n", ooresult)
+        print(
+            "original oo:\n",
+            oosource,
+            "po version:\n",
+            posource,
+            "output oo:\n",
+            ooresult,
+        )
         return ooresult.split('\t')[10]
 
     def check_roundtrip(self, filename, text):
@@ -81,15 +91,32 @@ class TestOO2PO:
         assert "CR \r CR" in pounit.source
 
     def test_roundtrip_escape(self):
-        self.check_roundtrip('strings.src', r'The given command is not a SELECT statement.\nOnly queries are allowed.')
-        self.check_roundtrip('source\\ui\\dlg\\AutoControls_tmpl.hrc', r';\t59\t,\t44\t:\t58\t{Tab}\t9\t{Space}\t32')
-        self.check_roundtrip('inc_openoffice\\windows\\msi_languages\\Nsis.ulf', r'The installation files must be unpacked and copied to your hard disk in preparation for the installation. After that, the %PRODUCTNAME installation will start automatically.\r\n\r\nClick \'Next\' to continue.')
+        self.check_roundtrip(
+            'strings.src',
+            r'The given command is not a SELECT statement.\nOnly queries are allowed.',
+        )
+        self.check_roundtrip(
+            'source\\ui\\dlg\\AutoControls_tmpl.hrc',
+            r';\t59\t,\t44\t:\t58\t{Tab}\t9\t{Space}\t32',
+        )
+        self.check_roundtrip(
+            'inc_openoffice\\windows\\msi_languages\\Nsis.ulf',
+            r'The installation files must be unpacked and copied to your hard disk in preparation for the installation. After that, the %PRODUCTNAME installation will start automatically.\r\n\r\nClick \'Next\' to continue.',
+        )
         self.check_roundtrip('file.xhp', r'\<ahelp\>')
         self.check_roundtrip('file.xhp', r'\<ahelp prop=\"value\"\>')
-        self.check_roundtrip('file.xhp', r'\<ahelp prop=\"value\"\>marked up text\</ahelp\>')
+        self.check_roundtrip(
+            'file.xhp', r'\<ahelp prop=\"value\"\>marked up text\</ahelp\>'
+        )
         self.check_roundtrip('file.xhp', r'\<ahelp prop=\"value>>\"\>')
-        self.check_roundtrip('file.xhp', r'''\<ahelp prop=\"value>>\"\>'Next'>> or "<<Previous"\</ahelp\>''')
-        self.check_roundtrip('address_auto.xhp', r'''example, \<item type=\"literal\"\>'Harry\\'s Bar'.\</item\>''')
+        self.check_roundtrip(
+            'file.xhp',
+            r'''\<ahelp prop=\"value>>\"\>'Next'>> or "<<Previous"\</ahelp\>''',
+        )
+        self.check_roundtrip(
+            'address_auto.xhp',
+            r'''example, \<item type=\"literal\"\>'Harry\\'s Bar'.\</item\>''',
+        )
 
     def test_roundtrip_whitespaceonly(self):
         """check items that are only special instances of whitespce"""
@@ -136,7 +163,9 @@ class TestOO2PO:
         xcommentsource = r"wizards	source\formwizard\dbwizres.src	0	string	RID_DB_FORM_WIZARD_START + 19				0	x-comment	%s		%s	%s	20050924 09:13:58"
         # Real comment
         comment = "Comment"
-        commentsource = en_USsource + '\n' + xcommentsource % (comment, comment, comment)
+        commentsource = (
+            en_USsource + '\n' + xcommentsource % (comment, comment, comment)
+        )
         pofile = self.convert(commentsource)
         if isinstance(pofile, poheader):
             units = pofile.units[1:]
@@ -153,7 +182,9 @@ class TestOO2PO:
         assert comment in titleunit.getnotes("developer")
         # Whitespace and blank
         for comment in ("   ", ""):
-            commentsource = en_USsource + '\n' + xcommentsource % (comment, comment, comment)
+            commentsource = (
+                en_USsource + '\n' + xcommentsource % (comment, comment, comment)
+            )
             pofile = self.convert(commentsource)
             if isinstance(pofile, poheader):
                 units = pofile.units[1:]
@@ -233,7 +264,14 @@ sd	source\ui\animations\CustomAnimationSchemesPane.src	0	checkbox	DLG_CUSTOMANIM
 sd	source\ui\animations\CustomAnimationSchemesPane.src	0	checkbox	DLG_CUSTOMANIMATION_SCHEMES_PANE	4			0	fr	Aperçu automatique				20060725 03:26:42
 '''
         self.create_testfile("simple.oo", oosource)
-        self.run_command("simple.oo", "simple.po", language="fr", multifile="onefile", error="traceback", duplicates="merge")
+        self.run_command(
+            "simple.oo",
+            "simple.po",
+            language="fr",
+            multifile="onefile",
+            error="traceback",
+            duplicates="merge",
+        )
         pofile = self.target_filetype(self.open_testfile("simple.po"))
         assert len(pofile.units) == 2
         assert pofile.units[1].target == "Aperçu automatique"

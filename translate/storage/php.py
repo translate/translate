@@ -55,9 +55,18 @@ implemented as outlined in the PHP documentation for the
 
 import re
 
-from phply.phpast import (Array, ArrayElement, ArrayOffset, Assignment,
-                          BinaryOp, FunctionCall, InlineHTML, Node, Return,
-                          Variable)
+from phply.phpast import (
+    Array,
+    ArrayElement,
+    ArrayOffset,
+    Assignment,
+    BinaryOp,
+    FunctionCall,
+    InlineHTML,
+    Node,
+    Return,
+    Variable,
+)
 from phply.phplex import FilteredLexer, full_lexer
 from phply.phpparse import make_parser
 
@@ -67,6 +76,7 @@ from translate.storage import base
 
 def wrap_production(func):
     """Decorator for production functions to store lexer positions."""
+
     def prod(n):
         func(n)
         if isinstance(n[0], Node):
@@ -77,6 +87,7 @@ def wrap_production(func):
             startpos = min([getattr(i, 'lexpos', 0) for i in n.slice[1:]])
             endpos = max([getattr(i, 'endlexpos', 0) for i in n.slice[1:]])
             n[0][-1].lexpositions = startpos, endpos
+
     return prod
 
 
@@ -108,7 +119,10 @@ class PHPLexer(FilteredLexer):
         self.pos += 1
         # Proceed comments till newline
         length = len(self.tokens)
-        while self.pos < length and self.tokens[self.pos].type in ('COMMENT', 'WHITESPACE'):
+        while self.pos < length and self.tokens[self.pos].type in (
+            'COMMENT',
+            'WHITESPACE',
+        ):
             token_type = self.tokens[self.pos].type
             token_value = self.tokens[self.pos].value
             self.pos += 1
@@ -136,7 +150,11 @@ class PHPLexer(FilteredLexer):
     def extract_quote(self):
         """Extract quote style."""
         pos = max(self.pos, self.codepos)
-        while self.tokens[pos].type not in ('QUOTE', 'CONSTANT_ENCAPSED_STRING', 'START_NOWDOC'):
+        while self.tokens[pos].type not in (
+            'QUOTE',
+            'CONSTANT_ENCAPSED_STRING',
+            'START_NOWDOC',
+        ):
             pos += 1
         if self.tokens[pos].type == 'QUOTE':
             return '"'
@@ -171,9 +189,14 @@ def phpencode(text, quotechar="'"):
         # lose some "blah\nblah" layouts but that's probably not the most
         # frequent use case. See bug 588
         escapes = [
-            ("\\", "\\\\"), ("\r", "\\r"), ("\t", "\\t"),
-            ("\v", "\\v"), ("\f", "\\f"), ("\\\\$", "\\$"),
-            ('"', '\\"'), ("\\\\", "\\"),
+            ("\\", "\\\\"),
+            ("\r", "\\r"),
+            ("\t", "\\t"),
+            ("\v", "\\v"),
+            ("\f", "\\f"),
+            ("\\\\$", "\\$"),
+            ('"', '\\"'),
+            ("\\\\", "\\"),
         ]
         for a, b in escapes:
             text = text.replace(a, b)
@@ -202,8 +225,13 @@ def phpdecode(text, quotechar="'"):
         # We do not escape \$ as it is used by variables and we can't
         # roundtrip that item.
         escapes = [
-            ('\\"', '"'), ("\\\\", "\\"), ("\\n", "\n"), ("\\r", "\r"),
-            ("\\t", "\t"), ("\\v", "\v"), ("\\f", "\f"),
+            ('\\"', '"'),
+            ("\\\\", "\\"),
+            ("\\n", "\n"),
+            ("\\r", "\r"),
+            ("\\t", "\t"),
+            ("\\v", "\v"),
+            ("\\f", "\f"),
         ]
         for a, b in escapes:
             text = text.replace(a, b)
@@ -322,6 +350,7 @@ class phpfile(base.TranslationStore):
 
     def serialize(self, out):
         """Convert the units back to lines."""
+
         def write(text):
             out.write(text.encode(self.encoding))
 
@@ -360,11 +389,11 @@ class phpfile(base.TranslationStore):
                 else:
                     write(item.getoutput(' ' * indent, name))
             # Write array end
-            write('{}{}{}\n'.format(
-                ' ' * (indent - 4),
-                close,
-                ',' if '->' in arrname else ';'
-            ))
+            write(
+                '{}{}{}\n'.format(
+                    ' ' * (indent - 4), close, ',' if '->' in arrname else ';'
+                )
+            )
             handled.add(arrname)
 
         write('<?php\n')
@@ -388,6 +417,7 @@ class phpfile(base.TranslationStore):
 
     def parse(self, phpsrc):
         """Read the source of a PHP file in and include them as units."""
+
         def handle_array(prefix, nodes, lexer):
             prefix += lexer.extract_array()
             for item in nodes:

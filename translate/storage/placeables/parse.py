@@ -54,7 +54,7 @@ def parse(tree, parse_funcs):
     parse_func = parse_funcs[0]
 
     for leaf in tree.flatten():
-        #FIXME: we might rather want to test for editability, but for now this
+        # FIXME: we might rather want to test for editability, but for now this
         # works better
         if not leaf.istranslatable:
             continue
@@ -65,8 +65,11 @@ def parse(tree, parse_funcs):
 
         subleaves = parse_func(unileaf)
         if subleaves is not None:
-            if (len(subleaves) == 1 and isinstance(subleaves[0], type(leaf)) and
-                leaf == subleaves[0]):
+            if (
+                len(subleaves) == 1
+                and isinstance(subleaves[0], type(leaf))
+                and leaf == subleaves[0]
+            ):
                 pass
             elif isinstance(leaf, str):
                 parent = tree.get_parent_elem(leaf)

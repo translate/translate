@@ -26,12 +26,18 @@ from translate.storage.xml_extract import unit_tree
 def test__split_xpath_component():
     assert ('some-tag', 0) == unit_tree._split_xpath_component('some-tag[0]')
 
+
 # _split_xpath
 
 
 def test__split_xpath():
-    assert [('p', 4), ('text', 3), ('body', 2), ('document-content', 1)] == \
-        unit_tree._split_xpath('document-content[1]/body[2]/text[3]/p[4]')
+    assert [
+        ('p', 4),
+        ('text', 3),
+        ('body', 2),
+        ('document-content', 1),
+    ] == unit_tree._split_xpath('document-content[1]/body[2]/text[3]/p[4]')
+
 
 # _add_unit_to_tree
 
@@ -77,8 +83,9 @@ def make_tree_2(unit_1, unit_2):
 
 def test__add_unit_to_tree():
     from translate.storage import xliff
+
     xliff_file = xliff.xlifffile
-#    xliff_file = factory.classes['xlf']()
+    #    xliff_file = factory.classes['xlf']()
 
     # Add the first unit
 
@@ -86,9 +93,9 @@ def test__add_unit_to_tree():
     xpath_1 = 'document-content[1]/body[1]/text[1]/p[1]'
 
     constructed_tree_1 = unit_tree.XPathTree()
-    unit_tree._add_unit_to_tree(constructed_tree_1,
-                                unit_tree._split_xpath(xpath_1),
-                                unit_1)
+    unit_tree._add_unit_to_tree(
+        constructed_tree_1, unit_tree._split_xpath(xpath_1), unit_1
+    )
     test_tree_1 = make_tree_1(unit_1)
     assert test_tree_1 == constructed_tree_1
 
@@ -98,8 +105,8 @@ def test__add_unit_to_tree():
     xpath_2 = 'document-content[1]/body[2]/text[3]/p[4]'
 
     constructed_tree_2 = make_tree_1(unit_1)
-    unit_tree._add_unit_to_tree(constructed_tree_2,
-                                unit_tree._split_xpath(xpath_2),
-                                unit_2)
+    unit_tree._add_unit_to_tree(
+        constructed_tree_2, unit_tree._split_xpath(xpath_2), unit_2
+    )
     test_tree_2 = make_tree_2(unit_1, unit_2)
     assert test_tree_2 == constructed_tree_2

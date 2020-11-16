@@ -68,11 +68,11 @@ class LanguageIdentifier:
                 # Make sure lname is not prefixed by directory names
                 lname = path.split(lname)[-1]
                 if extsep in lname:
-                    lname = lname[:lname.rindex(extsep)]  # Remove extension if it has
+                    lname = lname[: lname.rindex(extsep)]  # Remove extension if it has
 
                 # Remove trailing '[_-]-utf8' from code
                 if lcode.endswith('-utf8'):
-                    lcode = lcode[:-len('-utf8')]
+                    lcode = lcode[: -len('-utf8')]
                 if lcode.endswith('-') or lcode.endswith('_'):
                     lcode = lcode[:-1]
 
@@ -100,7 +100,11 @@ class LanguageIdentifier:
         if not isinstance(instore, (TranslationStore, list, tuple)):
             return None
 
-        text = ' '.join(unit.source for unit in instore[:50] if unit.istranslatable() and unit.source)
+        text = ' '.join(
+            unit.source
+            for unit in instore[:50]
+            if unit.istranslatable() and unit.source
+        )
         if not text:
             return None
         return self.identify_lang(text)
@@ -118,7 +122,11 @@ class LanguageIdentifier:
         if not isinstance(instore, (TranslationStore, list, tuple)):
             return None
 
-        text = ' '.join(unit.target for unit in instore[:200] if unit.istranslatable() and unit.target)
+        text = ' '.join(
+            unit.target
+            for unit in instore[:200]
+            if unit.istranslatable() and unit.target
+        )
         if not text:
             return None
         return self.identify_lang(text)
@@ -126,6 +134,7 @@ class LanguageIdentifier:
 
 if __name__ == "__main__":
     from sys import argv
+
     script_dir = path.abspath(path.dirname(argv[0]))
     identifier = LanguageIdentifier()
     with io.open(argv[1], 'r') as fh:

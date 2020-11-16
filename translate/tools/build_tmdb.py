@@ -29,7 +29,6 @@ logger = logging.getLogger(__name__)
 
 
 class Builder:
-
     def __init__(self, tmdbfile, source_lang, target_lang, filenames):
         self.tmdb = tmdb.TMDB(tmdbfile)
         self.source_lang = source_lang
@@ -77,17 +76,27 @@ class Builder:
 def main():
     parser = ArgumentParser()
     parser.add_argument(
-        "-d", "--tmdb", dest="tmdb_file", default="tm.db",
-        help="translation memory database file (default: %(default)s)")
-    parser.add_argument(
-        "-s", "--import-source-lang", dest="source_lang", default="en",
-        help="source language of translation files (default: %(default)s)")
-    parser.add_argument(
-        "-t", "--import-target-lang", dest="target_lang",
-        help="target language of translation files", required=True)
-    parser.add_argument(
-        "files", metavar="input files", nargs="+"
+        "-d",
+        "--tmdb",
+        dest="tmdb_file",
+        default="tm.db",
+        help="translation memory database file (default: %(default)s)",
     )
+    parser.add_argument(
+        "-s",
+        "--import-source-lang",
+        dest="source_lang",
+        default="en",
+        help="source language of translation files (default: %(default)s)",
+    )
+    parser.add_argument(
+        "-t",
+        "--import-target-lang",
+        dest="target_lang",
+        help="target language of translation files",
+        required=True,
+    )
+    parser.add_argument("files", metavar="input files", nargs="+")
     args = parser.parse_args()
 
     logging.basicConfig(format="%(name)s: %(levelname)s: %(message)s")

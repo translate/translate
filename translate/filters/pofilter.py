@@ -37,25 +37,28 @@ from translate.storage.poheader import poheader
 
 
 class pocheckfilter:
-
     def __init__(self, options, checkerclasses=None, checkerconfig=None):
         # excludefilters={}, limitfilters=None, includefuzzy=True, includereview=True, autocorrect=False):
         """Builds a checkfilter using the given checker (a list is allowed too)"""
         if checkerclasses is None:
             checkerclasses = [checks.StandardChecker, checks.StandardUnitChecker]
 
-        self.checker = checks.TeeChecker(checkerconfig=checkerconfig,
-                                         excludefilters=options.excludefilters,
-                                         limitfilters=options.limitfilters,
-                                         checkerclasses=checkerclasses,
-                                         languagecode=checkerconfig.targetlanguage)
+        self.checker = checks.TeeChecker(
+            checkerconfig=checkerconfig,
+            excludefilters=options.excludefilters,
+            limitfilters=options.limitfilters,
+            checkerclasses=checkerclasses,
+            languagecode=checkerconfig.targetlanguage,
+        )
         self.options = options
 
     def getfilterdocs(self):
         """Lists the docs for filters available on checker."""
         filterdict = self.checker.getfilters()
-        filterdocs = ["%s\t%s" % (name, filterfunc.__doc__.split('\n\n')[0])
-                      for (name, filterfunc) in filterdict.items()]
+        filterdocs = [
+            "%s\t%s" % (name, filterfunc.__doc__.split('\n\n')[0])
+            for (name, filterfunc) in filterdict.items()
+        ]
         filterdocs.sort()
 
         return "\n".join(filterdocs)
@@ -128,9 +131,15 @@ class FilterOptionParser(optrecurse.RecursiveOptionParser):
 
         self.set_usage()
         self.add_option(
-            "-l", "--listfilters", action="callback", dest='listfilters',
-            default=False, callback_kwargs={'dest_value': True},
-            callback=self.parse_noinput, help="list filters available")
+            "-l",
+            "--listfilters",
+            action="callback",
+            dest='listfilters',
+            default=False,
+            callback_kwargs={'dest_value': True},
+            callback=self.parse_noinput,
+            help="list filters available",
+        )
 
     def parse_noinput(self, option, opt, value, parser, *args, **kwargs):
         """This sets an option to *True*, but also sets input to *-* to prevent
@@ -171,7 +180,9 @@ class FilterOptionParser(optrecurse.RecursiveOptionParser):
             options.notranslatefile = os.path.expanduser(options.notranslatefile)
 
             if not os.path.exists(options.notranslatefile):
-                self.error("notranslatefile %r does not exist" % options.notranslatefile)
+                self.error(
+                    "notranslatefile %r does not exist" % options.notranslatefile
+                )
 
             with open(options.notranslatefile, 'r') as fp:
                 notranslatewords = [line.strip() for line in fp.readlines()]
@@ -183,7 +194,9 @@ class FilterOptionParser(optrecurse.RecursiveOptionParser):
             options.musttranslatefile = os.path.expanduser(options.musttranslatefile)
 
             if not os.path.exists(options.musttranslatefile):
-                self.error("musttranslatefile %r does not exist" % options.musttranslatefile)
+                self.error(
+                    "musttranslatefile %r does not exist" % options.musttranslatefile
+                )
 
             with open(options.musttranslatefile, 'r') as fp:
                 musttranslatewords = [line.strip() for line in fp.readlines()]
@@ -220,8 +233,10 @@ def runfilter(inputfile, outputfile, templatefile, checkfilter=None):
 
 def cmdlineparser():
     formats = {
-        "po": ("po", runfilter), "pot": ("pot", runfilter),
-        "xliff": ("xliff", runfilter), "xlf": ("xlf", runfilter),
+        "po": ("po", runfilter),
+        "pot": ("pot", runfilter),
+        "xliff": ("xliff", runfilter),
+        "xlf": ("xlf", runfilter),
         "tmx": ("tmx", runfilter),
         None: ("po", runfilter),
     }
@@ -229,80 +244,171 @@ def cmdlineparser():
     parser = FilterOptionParser(formats)
 
     parser.add_option(
-        "", "--review", dest="includereview",
-        action="store_true", default=True,
-        help="include units marked for review (default)")
+        "",
+        "--review",
+        dest="includereview",
+        action="store_true",
+        default=True,
+        help="include units marked for review (default)",
+    )
     parser.add_option(
-        "", "--noreview", dest="includereview",
-        action="store_false", default=True,
-        help="exclude units marked for review")
+        "",
+        "--noreview",
+        dest="includereview",
+        action="store_false",
+        default=True,
+        help="exclude units marked for review",
+    )
     parser.add_option(
-        "", "--fuzzy", dest="includefuzzy",
-        action="store_true", default=True,
-        help="include units marked fuzzy (default)")
+        "",
+        "--fuzzy",
+        dest="includefuzzy",
+        action="store_true",
+        default=True,
+        help="include units marked fuzzy (default)",
+    )
     parser.add_option(
-        "", "--nofuzzy", dest="includefuzzy",
-        action="store_false", default=True,
-        help="exclude units marked fuzzy")
+        "",
+        "--nofuzzy",
+        dest="includefuzzy",
+        action="store_false",
+        default=True,
+        help="exclude units marked fuzzy",
+    )
     parser.add_option(
-        "", "--nonotes", dest="addnotes",
-        action="store_false", default=True,
-        help="don't add notes about the errors")
+        "",
+        "--nonotes",
+        dest="addnotes",
+        action="store_false",
+        default=True,
+        help="don't add notes about the errors",
+    )
     parser.add_option(
-        "", "--autocorrect", dest="autocorrect",
-        action="store_true", default=False,
-        help="output automatic corrections where possible rather than describing issues")
+        "",
+        "--autocorrect",
+        dest="autocorrect",
+        action="store_true",
+        default=False,
+        help="output automatic corrections where possible rather than describing issues",
+    )
     parser.add_option(
-        "", "--language", dest="targetlanguage", default=None,
-        help="set target language code (e.g. af-ZA) [required for spell check and recommended in general]", metavar="LANG")
+        "",
+        "--language",
+        dest="targetlanguage",
+        default=None,
+        help="set target language code (e.g. af-ZA) [required for spell check and recommended in general]",
+        metavar="LANG",
+    )
     parser.add_option(
-        "", "--openoffice", dest="filterclass",
-        action="store_const", default=None, const=checks.OpenOfficeChecker,
-        help="use the standard checks for OpenOffice translations")
+        "",
+        "--openoffice",
+        dest="filterclass",
+        action="store_const",
+        default=None,
+        const=checks.OpenOfficeChecker,
+        help="use the standard checks for OpenOffice translations",
+    )
     parser.add_option(
-        "", "--libreoffice", dest="filterclass",
-        action="store_const", default=None, const=checks.LibreOfficeChecker,
-        help="use the standard checks for LibreOffice translations")
+        "",
+        "--libreoffice",
+        dest="filterclass",
+        action="store_const",
+        default=None,
+        const=checks.LibreOfficeChecker,
+        help="use the standard checks for LibreOffice translations",
+    )
     parser.add_option(
-        "", "--mozilla", dest="filterclass",
-        action="store_const", default=None, const=checks.MozillaChecker,
-        help="use the standard checks for Mozilla translations")
+        "",
+        "--mozilla",
+        dest="filterclass",
+        action="store_const",
+        default=None,
+        const=checks.MozillaChecker,
+        help="use the standard checks for Mozilla translations",
+    )
     parser.add_option(
-        "", "--drupal", dest="filterclass",
-        action="store_const", default=None, const=checks.DrupalChecker,
-        help="use the standard checks for Drupal translations")
+        "",
+        "--drupal",
+        dest="filterclass",
+        action="store_const",
+        default=None,
+        const=checks.DrupalChecker,
+        help="use the standard checks for Drupal translations",
+    )
     parser.add_option(
-        "", "--gnome", dest="filterclass",
-        action="store_const", default=None, const=checks.GnomeChecker,
-        help="use the standard checks for Gnome translations")
+        "",
+        "--gnome",
+        dest="filterclass",
+        action="store_const",
+        default=None,
+        const=checks.GnomeChecker,
+        help="use the standard checks for Gnome translations",
+    )
     parser.add_option(
-        "", "--kde", dest="filterclass",
-        action="store_const", default=None, const=checks.KdeChecker,
-        help="use the standard checks for KDE translations")
+        "",
+        "--kde",
+        dest="filterclass",
+        action="store_const",
+        default=None,
+        const=checks.KdeChecker,
+        help="use the standard checks for KDE translations",
+    )
     parser.add_option(
-        "", "--wx", dest="filterclass",
-        action="store_const", default=None, const=checks.KdeChecker,
-        help="use the standard checks for wxWidgets translations")
+        "",
+        "--wx",
+        dest="filterclass",
+        action="store_const",
+        default=None,
+        const=checks.KdeChecker,
+        help="use the standard checks for wxWidgets translations",
+    )
     parser.add_option(
-        "", "--excludefilter", dest="excludefilters",
-        action="append", default=[], type="string", metavar="FILTER",
-        help="don't use FILTER when filtering")
+        "",
+        "--excludefilter",
+        dest="excludefilters",
+        action="append",
+        default=[],
+        type="string",
+        metavar="FILTER",
+        help="don't use FILTER when filtering",
+    )
     parser.add_option(
-        "-t", "--test", dest="limitfilters",
-        action="append", default=None, type="string", metavar="FILTER",
-        help="only use test FILTERs specified with this option when filtering")
+        "-t",
+        "--test",
+        dest="limitfilters",
+        action="append",
+        default=None,
+        type="string",
+        metavar="FILTER",
+        help="only use test FILTERs specified with this option when filtering",
+    )
     parser.add_option(
-        "", "--notranslatefile", dest="notranslatefile",
-        default=None, type="string", metavar="FILE",
-        help="read list of untranslatable words from FILE (must not be translated)")
+        "",
+        "--notranslatefile",
+        dest="notranslatefile",
+        default=None,
+        type="string",
+        metavar="FILE",
+        help="read list of untranslatable words from FILE (must not be translated)",
+    )
     parser.add_option(
-        "", "--musttranslatefile", dest="musttranslatefile",
-        default=None, type="string", metavar="FILE",
-        help="read list of translatable words from FILE (must be translated)")
+        "",
+        "--musttranslatefile",
+        dest="musttranslatefile",
+        default=None,
+        type="string",
+        metavar="FILE",
+        help="read list of translatable words from FILE (must be translated)",
+    )
     parser.add_option(
-        "", "--validcharsfile", dest="validcharsfile",
-        default=None, type="string", metavar="FILE",
-        help="read list of all valid characters from FILE (must be in UTF-8)")
+        "",
+        "--validcharsfile",
+        dest="validcharsfile",
+        default=None,
+        type="string",
+        metavar="FILE",
+        help="read list of all valid characters from FILE (must be in UTF-8)",
+    )
 
     parser.passthrough.append('checkfilter')
     parser.description = __doc__

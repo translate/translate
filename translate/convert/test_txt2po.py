@@ -10,9 +10,15 @@ class BaseTxt2POTester:
     ConverterClass = txt2po.txt2po
     Flavour = None
 
-    def _convert(self, input_string, template_string=None,
-                 duplicate_style="msgctxt", encoding="utf-8",
-                 success_expected=True, no_segmentation=False):
+    def _convert(
+        self,
+        input_string,
+        template_string=None,
+        duplicate_style="msgctxt",
+        encoding="utf-8",
+        success_expected=True,
+        no_segmentation=False,
+    ):
         """Helper that converts to target format without using files."""
         input_file = BytesIO(input_string.encode())
         output_file = BytesIO()
@@ -20,9 +26,15 @@ class BaseTxt2POTester:
         if template_string:
             template_file = BytesIO(template_string.encode())
         expected_result = 1 if success_expected else 0
-        converter = self.ConverterClass(input_file, output_file, template_file,
-                                        duplicate_style, encoding,
-                                        self.Flavour, no_segmentation)
+        converter = self.ConverterClass(
+            input_file,
+            output_file,
+            template_file,
+            duplicate_style,
+            encoding,
+            self.Flavour,
+            no_segmentation,
+        )
         assert converter.run() == expected_result
         return converter.target_store, output_file
 
@@ -41,7 +53,6 @@ class BaseTxt2POTester:
 
 
 class TestTxt2PO(BaseTxt2POTester):
-
     def test_convert_empty(self):
         """Check converting empty file returns no output."""
         assert self._convert_to_string('', success_expected=False) == ''
@@ -67,8 +78,7 @@ Simple
 
 Simple
 """
-        target_store = self._convert_to_store(input_string,
-                                              duplicate_style="merge")
+        target_store = self._convert_to_store(input_string, duplicate_style="merge")
         assert self._count_elements(target_store) == 1
         assert target_store.units[1].source == "Simple"
         assert target_store.units[1].target == ""
@@ -112,8 +122,7 @@ helped to bridge the digital divide to a limited extent."""
     def test_merge(self):
         """Test converter doesn't merge."""
         with pytest.raises(NotImplementedError):
-            self._convert_to_store("this", "cannot be", "blank",
-                                   success_expected=False)
+            self._convert_to_store("this", "cannot be", "blank", success_expected=False)
 
     def test_no_segmentation(self):
         """Check multiple paragraphs are extracted as a single unit."""
@@ -123,8 +132,7 @@ First paragraph
 Second paragraph
 """
         expected_output = input_string
-        target_store = self._convert_to_store(input_string,
-                                              no_segmentation=True)
+        target_store = self._convert_to_store(input_string, no_segmentation=True)
         assert self._count_elements(target_store) == 1
         assert target_store.units[1].source == expected_output
         assert target_store.units[1].target == ""
@@ -159,8 +167,7 @@ Simple
 
 Simple
 """
-        target_store = self._convert_to_store(input_string,
-                                              duplicate_style="merge")
+        target_store = self._convert_to_store(input_string, duplicate_style="merge")
         assert self._count_elements(target_store) == 1
         assert target_store.units[1].source == "Simple"
         assert target_store.units[1].target == ""
@@ -217,8 +224,7 @@ This is a wiki page.
     def test_merge(self):
         """Test converter doesn't merge."""
         with pytest.raises(NotImplementedError):
-            self._convert_to_store("this", "cannot be", "blank",
-                                   success_expected=False)
+            self._convert_to_store("this", "cannot be", "blank", success_expected=False)
 
 
 class TestTxt2POCommand(test_convert.TestConvertCommand, TestTxt2PO):

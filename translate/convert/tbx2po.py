@@ -46,8 +46,7 @@ class tbx2po:
         return self.pofile
 
 
-def converttbx(inputfile, outputfile, templatefile, charset=None,
-               columnorder=None):
+def converttbx(inputfile, outputfile, templatefile, charset=None, columnorder=None):
     """Reads in inputfile using tbx, converts using tbx2po, writes to
     outputfile
     """
@@ -62,11 +61,13 @@ def converttbx(inputfile, outputfile, templatefile, charset=None,
 
 def main():
     from translate.convert import convert
+
     formats = {
         ("tbx", None): ("po", converttbx),
     }
-    parser = convert.ConvertOptionParser(formats, usetemplates=False,
-                                         description=__doc__)
+    parser = convert.ConvertOptionParser(
+        formats, usetemplates=False, description=__doc__
+    )
     parser.run()
 
 

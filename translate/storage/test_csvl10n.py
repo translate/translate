@@ -1,4 +1,3 @@
-
 from io import BytesIO
 
 from pytest import mark
@@ -38,7 +37,9 @@ class TestCSV(test_base.TestTranslationStore):
         assert store.units[0].target == 'zkouška sirén'
 
     def test_utf_8_sig(self):
-        content = '"location";"source";"target"\r\n"foo.c:1";"test";"zkouška sirén"\r\n'.encode('utf-8-sig')
+        content = '"location";"source";"target"\r\n"foo.c:1";"test";"zkouška sirén"\r\n'.encode(
+            'utf-8-sig'
+        )
         store = self.parse_store(content)
         assert len(store.units) == 1
         assert store.units[0].source == 'test'

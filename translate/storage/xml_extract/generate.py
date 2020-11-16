@@ -98,8 +98,11 @@ def find_placeable_dom_tree_roots(unit_node):
     """
 
     def set_dom_root_for_unit_node(parent_unit_node, unit_node, dom_tree_roots):
-        dom_tree_roots[unit_node] = find_dom_root(parent_unit_node.dom_node, unit_node.dom_node)
+        dom_tree_roots[unit_node] = find_dom_root(
+            parent_unit_node.dom_node, unit_node.dom_node
+        )
         return dom_tree_roots
+
     return extract.reduce_unit_tree(set_dom_root_for_unit_node, unit_node, {})
 
 
@@ -125,7 +128,9 @@ def _map_source_dom_to_doc_dom(unit_node, source_dom_node):
     source_dom_to_doc_dom = {}
 
     def loop(unit_node, source_dom_node):
-        for child_unit_node, child_source_dom in zip(unit_node.placeables, source_dom_node):
+        for child_unit_node, child_source_dom in zip(
+            unit_node.placeables, source_dom_node
+        ):
             source_dom_to_doc_dom[child_source_dom] = dom_tree_roots[child_unit_node]
             loop(child_unit_node, child_source_dom)
 
@@ -203,9 +208,11 @@ def _build_translated_dom(dom_node, target_node, target_dom_to_doc_dom):
     #    in 'target_node' to a node in 'dom_node' and assigns the tail text of
     #    'target_node' to the mapped node.
     # 4. Add all of these mapped nodes to 'dom_node'
-    dom_node.extend(_get_translated_node(child, target_dom_to_doc_dom)
-                    for child in target_node
-                    if target_dom_to_doc_dom[child] is not None)
+    dom_node.extend(
+        _get_translated_node(child, target_dom_to_doc_dom)
+        for child in target_node
+        if target_dom_to_doc_dom[child] is not None
+    )
     # Recursively call this function on pairs of matched children in
     # dom_node and target_node.
     for dom_child, target_child in zip(dom_node, target_node):
@@ -224,9 +231,11 @@ def get_xliff_source_target_doms(unit):
     return (unit.source_dom, unit.source_dom)
 
 
-def replace_dom_text(make_parse_state,
-                     dom_retriever=get_xliff_source_target_doms,
-                     process_translatable=extract.process_translatable):
+def replace_dom_text(
+    make_parse_state,
+    dom_retriever=get_xliff_source_target_doms,
+    process_translatable=extract.process_translatable,
+):
     """Return a function::
 
           action: etree_Element x base.TranslationUnit -> None
@@ -235,6 +244,7 @@ def replace_dom_text(make_parse_state,
     according to rearrangement of placeables in unit.target (relative to their
     positions in unit.source).
     """
+
     def action(dom_node, unit):
         """Use the unit's target (or source in the case where there is no
         translation) to update the text in the dom_node and at the tails of its
@@ -244,10 +254,12 @@ def replace_dom_text(make_parse_state,
 
         # Build a tree of (non-DOM) nodes which correspond to the translatable DOM nodes in 'dom_node'.
         # Pass in a fresh parse_state every time, so as avoid working with stale parse state info.
-        unit_node = extract.find_translatable_dom_nodes(dom_node,
-                                                        make_parse_state(),
-                                                        process_translatable)[0]
-        target_dom_to_doc_dom = _build_target_dom_to_doc_dom(unit_node, source_dom, target_dom)
+        unit_node = extract.find_translatable_dom_nodes(
+            dom_node, make_parse_state(), process_translatable
+        )[0]
+        target_dom_to_doc_dom = _build_target_dom_to_doc_dom(
+            unit_node, source_dom, target_dom
+        )
         # Before we start reconstructing the sub-tree rooted at dom_node, we must clear out its children
         dom_node[:] = []
         _build_translated_dom(dom_node, target_dom, target_dom_to_doc_dom)

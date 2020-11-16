@@ -1,4 +1,3 @@
-
 from io import BytesIO
 
 from pytest import mark, raises
@@ -8,15 +7,33 @@ from translate.storage import po, pypo, test_base
 
 
 def test_roundtrip_quoting():
-    specials = ['Fish & chips', 'five < six', 'six > five',
-                'Use &nbsp;', 'Use &amp;nbsp;'
-                'A "solution"', "skop 'n bal", '"""', "'''",
-                '\n', '\t', '\r',
-                '\\n', '\\t', '\\r', '\\"', '\r\n', '\\r\\n', '\\']
+    specials = [
+        'Fish & chips',
+        'five < six',
+        'six > five',
+        'Use &nbsp;',
+        'Use &amp;nbsp;' 'A "solution"',
+        "skop 'n bal",
+        '"""',
+        "'''",
+        '\n',
+        '\t',
+        '\r',
+        '\\n',
+        '\\t',
+        '\\r',
+        '\\"',
+        '\r\n',
+        '\\r\\n',
+        '\\',
+    ]
     for special in specials:
         quoted_special = pypo.quoteforpo(special)
         unquoted_special = pypo.unquotefrompo(quoted_special)
-        print("special: %r\nquoted: %r\nunquoted: %r\n" % (special, quoted_special, unquoted_special))
+        print(
+            "special: %r\nquoted: %r\nunquoted: %r\n"
+            % (special, quoted_special, unquoted_special)
+        )
         assert special == unquoted_special
 
 
@@ -52,6 +69,7 @@ class TestPOUnit(test_base.TestTranslationUnit):
             unit.addlocation(location)
             assert len(unit.getlocations()) == 1
             assert unit.getlocations() == [location]
+
         locations_helper("key")
         locations_helper("file.c:100")
         locations_helper("I am a key")
@@ -164,11 +182,13 @@ class TestPOUnit(test_base.TestTranslationUnit):
 
         # Test with a unit without copy() method (will call base.buildfromunit)
         from translate.storage.php import phpunit
+
         unit = phpunit("test source")
         unit_copy = self.UnitClass.buildfromunit(unit)
         unit.setid(unit_copy.getid())
         assert unit is not unit_copy
         assert unit == unit_copy
+
 
 #     def test_rich_source(self):
 #         unit = self.unit
@@ -186,7 +206,9 @@ class TestPOFile(test_base.TestTranslationStore):
 
     def poparse(self, posource):
         """helper that parses po source without requiring files"""
-        dummyfile = BytesIO(posource.encode() if isinstance(posource, str) else posource)
+        dummyfile = BytesIO(
+            posource.encode() if isinstance(posource, str) else posource
+        )
         pofile = self.StoreClass(dummyfile)
         return pofile
 
@@ -311,7 +333,9 @@ msgstr[1] "Kóeie"
 
     def test_nongettext_location(self):
         """test that we correctly handle a non-gettext (file:linenumber) location"""
-        posource = '#: programming/C/programming.xml:44(para)\nmsgid "test"\nmsgstr "rest"\n'
+        posource = (
+            '#: programming/C/programming.xml:44(para)\nmsgid "test"\nmsgstr "rest"\n'
+        )
         pofile = self.poparse(posource)
         u = pofile.units[-1]
 
@@ -323,7 +347,9 @@ msgstr[1] "Kóeie"
 
     def test_percent_location(self):
         """test that we correctly handle a location with percent chars"""
-        posource = '#: /foo/bar/%%var%%www%%about.html:44\nmsgid "test"\nmsgstr "rest"\n'
+        posource = (
+            '#: /foo/bar/%%var%%www%%about.html:44\nmsgid "test"\nmsgstr "rest"\n'
+        )
         pofile = self.poparse(posource)
         u = pofile.units[-1]
 
@@ -380,7 +406,9 @@ msgstr "POT-Creation-Date: 2006-03-08 17:30+0200\n"
 
         posource = '#, fuzzy, python-format\nmsgid "ball"\nmsgstr "bal"\n'
         expectednonfuzzy = '#, python-format\nmsgid "ball"\nmsgstr "bal"\n'
-        expectedfuzzyagain = '#, fuzzy, python-format\nmsgid "ball"\nmsgstr "bal"\n'  # must be sorted
+        expectedfuzzyagain = (
+            '#, fuzzy, python-format\nmsgid "ball"\nmsgstr "bal"\n'  # must be sorted
+        )
         pofile = self.poparse(posource)
         print(pofile)
         assert pofile.units[0].isfuzzy()
@@ -394,7 +422,9 @@ msgstr "POT-Creation-Date: 2006-03-08 17:30+0200\n"
         # test the same, but with flags in a different order
         posource = '#, python-format, fuzzy\nmsgid "ball"\nmsgstr "bal"\n'
         expectednonfuzzy = '#, python-format\nmsgid "ball"\nmsgstr "bal"\n'
-        expectedfuzzyagain = '#, fuzzy, python-format\nmsgid "ball"\nmsgstr "bal"\n'  # must be sorted
+        expectedfuzzyagain = (
+            '#, fuzzy, python-format\nmsgid "ball"\nmsgstr "bal"\n'  # must be sorted
+        )
         pofile = self.poparse(posource)
         print(pofile)
         assert pofile.units[0].isfuzzy()
@@ -427,7 +457,9 @@ msgstr "POT-Creation-Date: 2006-03-08 17:30+0200\n"
 
     def test_malformed_units(self):
         """Test that we handle malformed units reasonably."""
-        posource = 'msgid "thing\nmsgstr "ding"\nmsgid "Second thing"\nmsgstr "Tweede ding"\n'
+        posource = (
+            'msgid "thing\nmsgstr "ding"\nmsgid "Second thing"\nmsgstr "Tweede ding"\n'
+        )
         pofile = self.poparse(posource)
         assert len(pofile.units) == 2
         print(repr(pofile.units[0].source))
@@ -459,8 +491,8 @@ msgstr "tweede"
         pofile = self.poparse(posource)
         assert len(pofile.units) == 2
         # FIXME we still need to handle this correctly for proper Uniforum support if required
-        #assert pofile.units[0].getlocations() == "File: somefile, line: 300"
-        #assert pofile.units[1].getlocations() == "File: anotherfile, line: 200"
+        # assert pofile.units[0].getlocations() == "File: somefile, line: 300"
+        # assert pofile.units[1].getlocations() == "File: anotherfile, line: 200"
 
     def test_obsolete(self):
         """Tests that obsolete messages work"""
@@ -527,7 +559,12 @@ msgstr "een"
 
     def test_header_escapes(self):
         pofile = self.StoreClass()
-        pofile.updateheader(add=True, **{"Report-Msgid-Bugs-To": r"http://qa.openoffice.org/issues/enter_bug.cgi?subcomponent=ui&comment=&short_desc=Localization%20issue%20in%20file%3A%20dbaccess\source\core\resource.oo&component=l10n&form_name=enter_issue"})
+        pofile.updateheader(
+            add=True,
+            **{
+                "Report-Msgid-Bugs-To": r"http://qa.openoffice.org/issues/enter_bug.cgi?subcomponent=ui&comment=&short_desc=Localization%20issue%20in%20file%3A%20dbaccess\source\core\resource.oo&component=l10n&form_name=enter_issue"
+            }
+        )
         filecontents = bytes(pofile).decode('utf-8')
         print(filecontents)
         # We need to make sure that the \r didn't get misrepresented as a
@@ -691,11 +728,17 @@ msgstr "omskakel"
         assert unit.getnotes() == 'Test multiline context'
 
         unit = pofile.units[1]
-        assert unit.getcontext() == 'Verb. Converting from "something" to "something else".'
+        assert (
+            unit.getcontext()
+            == 'Verb. Converting from "something" to "something else".'
+        )
         assert unit.getnotes() == 'Test quotes'
 
         unit = pofile.units[2]
-        assert unit.getcontext() == 'Verb.\nConverting from "something" to "something else".'
+        assert (
+            unit.getcontext()
+            == 'Verb.\nConverting from "something" to "something else".'
+        )
         assert unit.getnotes() == 'Test quotes, newlines and multiline.'
 
     def test_kde_context(self):
@@ -770,7 +813,8 @@ msgstr[0] ""
         # the msgid. For generation of .mo files, we might want to use this
         # code to generate the entry for the hash table, but for now, it is
         # commented out for conformance to gettext.
-#        assert pofile.units[4].getid() == "tree\0trees"
+
+    #        assert pofile.units[4].getid() == "tree\0trees"
 
     def test_non_ascii_header_comments(self):
         posource = r'''
@@ -824,7 +868,9 @@ msgstr ""
 
 msgid "a"
 msgstr "b"
-'''.encode('ISO-8859-1')
+'''.encode(
+            'ISO-8859-1'
+        )
 
         pofile = self.poparse(posource)
         assert "Tránslátór" in pofile.units[0].target
